@@ -1,0 +1,14 @@
+0-1	default	10.10.1.1#1:0
+1-12	default	uncontrolled
+2-12	default	uncontrolled
+0-2	reversed	10.10.1.1#2:100
+2-23	default	uncontrolled
+3-23	default	uncontrolled
+0-3	default	10.10.1.1#5:0
+0-4	reversed	10.10.1.1#6:170
+3-34	default	uncontrolled
+4-34	default	uncontrolled
+1-4	default	uncontrolled
+0-12	dark	uncontrolled
+0-23	dark	uncontrolled
+0-34	dark	uncontrolled

@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="gov.nist.math.jama" type="repository">
+    <properties maven-id="gov.nist.math.jama:gov.nist.math.jama:1.1.1" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/gov/nist/math/jama/gov.nist.math.jama/1.1.1/gov.nist.math.jama-1.1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
