@@ -12,7 +12,7 @@ class Edge
     @vertices = vertices
     @signal_to = nil
     @signal_from = nil
-    @strips = Array.new(STRIPS_PER_EDGE) { |i| EdgeStrip.new(id: "#{id}-#{i}",vertices: vertices, edge_id: id) }
+    @strips = Array.new(STRIPS_PER_EDGE) { EdgeStrip.new(vertices: vertices, edge_id: id) }
   end
 
   def length
@@ -65,8 +65,7 @@ class Edge
 end
 
 class EdgeStrip
-  def initialize(id:, vertices:, edge_id:)
-    @id = id
+  def initialize(vertices:, edge_id:)
     @vertices = vertices
     @edge_id = edge_id
   end
@@ -83,6 +82,6 @@ class EdgeStrip
     @length ||= vertices[1].distance(vertices[0])
   end
 
-  attr_accessor :id, :vertices, :edge_id
+  attr_accessor :vertices, :edge_id
 end
 

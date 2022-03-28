@@ -39,6 +39,7 @@ class JunctionBox
       ((JunctionBoxCircuit::MAX_CURRENT - circuit.current) / current_per_strip).floor
     end
 
+    puts "#{id} #{edge.id} #{slots}"
     slots >= edge.strips.length
   end
 

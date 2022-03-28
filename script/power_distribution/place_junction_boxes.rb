@@ -172,18 +172,16 @@ def mirror_assignments(junction_boxes:, graph:)
       mirrored_vertex = graph.vertices.values.find do |v|
         v.x == box.vertex.x * transform[0] && v.z == box.vertex.z * transform[1]
       end
-      next if mirrored_vertex.nil?
+
       new_box = JunctionBox.new(vertex: mirrored_vertex)
       box.circuits.each_with_index do |circuit|
-        circuit.edge_strips.each_with_index do |strip, i|
+        circuit.edge_strips.each do |strip, i|
           mirrored_strip = find_mirror_edge_strip(edge_strip: strip, transform: transform, graph: graph)
-          next if mirrored_strip.nil?
           new_box.circuits[i].edge_strips << mirrored_strip
         end
 
-        circuit.panel_strips.each_with_index do |strip, i|
-          mirrored_strip = find_mirror_panel_strip(panel_strip: strip, transform: transform, graph: graph)
-          next if mirrored_strip.nil?
+        circuit.panel_strips.each do |strip|
+          mirrored_strip = find_mirror_panel_strip(edge_strip: strip, transform: transform, graph: graph)
           new_box.circuits[i].panel_strips << mirrored_strip
         end
       end
@@ -199,25 +197,22 @@ def find_mirror_edge_strip(edge_strip:, transform:, graph:)
       v.x * transform[0] == w.x && v.z * transform[1] == w.z
     end
   end
-  return nil if mirrored_vertices.any?(&:nil?)
   pp mirrored_vertices
-  edge = graph.edges[mirrored_vertices.map(&:id).sort.join('-')]
+  edge = graph.edges[mirrored_vertices.join('-')]
   _, _, index = edge_strip.id.split('-')
   edge.strips[index.to_i]
 end
 
 def find_mirror_panel_strip(panel_strip:, transform:, graph:)
   mirrored_vertices = panel_strip.vertices.map do |v|
-    graph.vertices.values.find do |w|
+    graph.vertices.find do |w|
       v.x * transform[0] == w.x && v.z * transform[1] == w.z
     end
-  end
-  return nil if mirrored_vertices.any?(&:nil?)
+  end.sort_by(&:id)
 
   panel = graph.panels.values.find do |p|
-    (p.vertices.map(&:id) & mirrored_vertices).length == 3
+    (panel.vertices.map(&:id) & mirrored_vertices).length == 3
   end
-  return nil if panel.nil?
 
   _, index = panel_strip.id.split('-')
   panel.strips[index.to_i]
@@ -252,3 +247,5 @@ boxes.values.flatten.each do |box|
     end
   end
 end
+
+pp edge_to_box
