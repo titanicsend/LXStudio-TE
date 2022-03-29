@@ -1,113 +1,199 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.heronarts</groupId>
-	<artifactId>LXStudio-TE</artifactId>
-	<version>0.4.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+    <groupId>com.titanicsend</groupId>
+    <artifactId>LXStudio-TE</artifactId>
+    <version>0.2.0-SNAPSHOT</version>
 
-	<properties>
-		<maven.compiler.release>11</maven.compiler.release>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <name>Titanic's End</name>
+    <description>
+        Massively massive art car for Burning Man. It's an iceberg. You know,
+        the one that ended the Titanic.
+    </description>
 
-		<maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
-		<exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
-		<maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
-		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
-	</properties>
+    <properties>
+        <!-- https://stackoverflow.com/a/43103038 -->
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.heronarts</groupId>
-			<artifactId>lx</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+        <!-- Plugin versions -->
+        <exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
+        <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
+        <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
 
-		<dependency>
-			<groupId>com.heronarts</groupId>
-			<artifactId>p4lx</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+        <!-- LX dependency versions -->
+        <coremidi4j.version>1.6</coremidi4j.version>
+        <gson.version>2.9.0</gson.version>
+        <jogamp.version>2.4.0-rc-20210111</jogamp.version>
+        <lx.version>0.4.1-SNAPSHOT</lx.version>
+        <processing.version>4.0b7</processing.version>
 
-		<dependency>
-			<groupId>com.heronarts</groupId>
-			<artifactId>lxstudio</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+        <!-- Project dependency versions -->
+        <gigglepixel.version>0.0.3</gigglepixel.version>
+        <gov-nist-math-jama.version>1.1.1</gov-nist-math-jama.version>
+        <junit-jupiter.version>5.8.2</junit-jupiter.version>
+    </properties>
 
-		<dependency>
-			<groupId>org.processing</groupId>
-			<artifactId>core</artifactId>
-			<version>4.0b2</version>
-			<scope>provided</scope>
-		</dependency>
+    <!-- Define a local repository -->
+    <repositories>
+        <repository>
+            <id>project-repo</id>
+            <name>project-repo</name>
+            <url>file://${project.basedir}/repo</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
 
-		<dependency>
-			<groupId>org.jogamp.jogl</groupId>
-			<artifactId>jogl-all</artifactId>
-			<version>2.4.0-rc-20210111</version>
-			<scope>provided</scope>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.jogamp.gluegen</groupId>
-			<artifactId>gluegen-rt-main</artifactId>
-			<version>2.4.0-rc-20210111</version>
-			<scope>provided</scope>
-		</dependency>
+        <dependency>
+            <groupId>com.heronarts</groupId>
+            <artifactId>lx</artifactId>
+            <version>${lx.version}</version>
+        </dependency>
 
-                <dependency>
-                        <groupId>playasystems</groupId>
-                        <artifactId>gigglepixel</artifactId>
-                        <version>0.0.3</version>
-                        <scope>provided</scope>
-                </dependency>
+        <dependency>
+            <groupId>com.heronarts</groupId>
+            <artifactId>lxstudio</artifactId>
+            <version>${lx.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.heronarts</groupId>
+            <artifactId>p4lx</artifactId>
+            <version>${lx.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>gov.nist.math.jama</groupId>
+            <artifactId>gov.nist.math.jama</artifactId>
+            <version>${gov-nist-math-jama.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jogamp.gluegen</groupId>
+            <artifactId>gluegen-rt</artifactId>
+            <version>${jogamp.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jogamp.gluegen</groupId>
+            <artifactId>gluegen-rt</artifactId>
+            <version>${jogamp.version}</version>
+            <classifier>natives-macosx-universal</classifier>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jogamp.jogl</groupId>
+            <artifactId>jogl-all</artifactId>
+            <version>${jogamp.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jogamp.jogl</groupId>
+            <artifactId>jogl-all</artifactId>
+            <version>${jogamp.version}</version>
+            <classifier>natives-macosx-universal</classifier>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.playasystems</groupId>
+            <artifactId>gigglepixel</artifactId>
+            <version>${gigglepixel.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.processing</groupId>
+            <artifactId>core</artifactId>
+            <version>${processing.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.co.xfactory-librarians</groupId>
+            <artifactId>coremidi4j</artifactId>
+            <version>${coremidi4j.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
+            <version>${junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin.version}</version>
-				<configuration>
-					<compilerArgs>
-						<arg>-Xlint</arg>
-						<arg>-Xpkginfo:always</arg>
-					</compilerArgs>
-				</configuration>
-			</plugin>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-Xlint</arg>
+                        <arg>-Xpkginfo:always</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>${maven-assembly-plugin.version}</version>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${maven-assembly-plugin.version}</version>
 
-				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-				</configuration>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>titanicsend.app.TEApp</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
 
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec-maven-plugin.version}</version>
+
+                <executions>
+                    <execution>
+                        <id>Main</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>titanicsend.app.TEApp</mainClass>
+                            <arguments>
+                            </arguments>
+                            <stopUnresponsiveDaemonThreads>true</stopUnresponsiveDaemonThreads>
+                            <systemProperties>
+                            </systemProperties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

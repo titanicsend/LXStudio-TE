@@ -1,9 +1,9 @@
 **/Icon*
 
-.idea/*# Compiled class file
+.idea/
 *.class
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# JVM crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
 update-libs.sh
@@ -19,5 +19,3 @@ bin/
 target/
 classes/
 Projects/project.lxp
-
-.idea/uiDesigner.xml
