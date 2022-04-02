@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>com.heronarts</groupId>
+  <artifactId>lx</artifactId>
+  <versioning>
+    <lastUpdated>20220329035645</lastUpdated>
+    <snapshot>
+      <localCopy>true</localCopy>
+    </snapshot>
+    <snapshotVersions>
+      <snapshotVersion>
+        <classifier>javadoc</classifier>
+        <extension>jar</extension>
+        <value>0.4.1-SNAPSHOT</value>
+        <updated>20220329035645</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <classifier>sources</classifier>
+        <extension>jar</extension>
+        <value>0.4.1-SNAPSHOT</value>
+        <updated>20220329035645</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>0.4.1-SNAPSHOT</value>
+        <updated>20220329035645</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>0.4.1-SNAPSHOT</value>
+        <updated>20220329035645</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+  <version>0.4.1-SNAPSHOT</version>
+</metadata>

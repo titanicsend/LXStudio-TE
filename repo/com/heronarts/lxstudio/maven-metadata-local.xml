@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.heronarts</groupId>
+  <artifactId>lxstudio</artifactId>
+  <versioning>
+    <versions>
+      <version>0.4.1-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20220329035849</lastUpdated>
+  </versioning>
+</metadata>
