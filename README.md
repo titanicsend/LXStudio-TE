@@ -108,6 +108,13 @@ Steps for setup:
    button just to the left of the configurations drop-down that used to say
    "Add Configuration..." and now says "TEApp".
 
+### Potential issues
+
+`Maven resources compiler: Failed to copy [...]/target/generated-test-sources/test-annotations/Icon
+' to '[...]/target/test-classes/Icon`
+
+Go to the top of your TE repo and run `find . -name Icon\? -delete`
+
 ### Recognize LX Studio JSON file extensions
 
 It can be handy to edit LX Studio's JSON config files in the IDE. Add the .lxf
