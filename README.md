@@ -7,91 +7,142 @@ You may wish to get context first from the [Lighting Design Doc](https://docs.go
 
 TE is using the full IDE-ready distribution instead of the P4 Processing Applet version. Don't struggle - ask questions in [#Lighting on Slack](https://titanicsend.slack.com/archives/C02L0MDQB2M).
 
-We need your help right now. The problems that need to be solved are on a [board on Notion](https://www.notion.so/titanicsend/d4a7f54ab5f84784b79268e81c9342a7?v=1950f7f8703d498cb51e6e01ec84c577).
+## Getting the code and running it
 
-### Suggested quick start
+Clone the Git repository here:
+```shell
+git clone https://github.com/titanicsend/LXStudio-TE.git
+cd LXStudio-TE
+```
 
-_Note: Some of these instructions are from when we only had the testahedron;
-if you run into trouble, ask for help on Slack and/or edit these instructions._
+You'll also need to download and install [Processing 4](https://processing.org/download). Just drag the uncompressed app to Applications. If you already had a Java IDE running, you should now restart it to resolve dependencies on GlueGen, JOGL, and Processing Core.
 
-* Clone the repo. Have Jeff give you write access on GitHub.
-    ```
-    git clone https://github.com/titanicsend/LXStudio-TE.git
-    ```
-* Download and install [Processing 4](https://processing.org/download). Just drag the uncompressed app to Applications. If you already had a Java IDE running, you should now restart it to resolve dependencies on GlueGen, JOGL, and Processing Core.
-* Follow the [quick IDE setup](IDE%20Setup.md)
-* Build and run the project under /LXStudio-IDE.
-    * Play with the UI for 10-30 minutes
+## Running TE directly from the command line
+
+If you're going to be editing the code, you can just skip straight to the Editing section below. But
+if you just want to run it, here are some quick command line instructions (without full explanations)
+for how you can do that without having to install the whole IDE:
+
+0. Install Temurin JDK
+
+Either go to https://adoptium.net/installation/ or, on a Mac with Homebrew, `brew install temurin17`
+
+(If you'll be using an IDE, it'll do this for you; skip to the Editing section.)
+
+1. Build into a runnable JAR:
+   ```shell
+   mvn clean package  # Packaging creates the JAR and cleaning is optional
+   ```
+2. Execute the JAR (Note that the version number may be different — The version
+   as of this document revision is 0.2.0-SNAPSHOT — substitute the correct
+   version as necessary):
+   ```shell
+   java -jar target/LXStudio-TE-0.2.0-SNAPSHOT-jar-with-dependencies.jar vehicle Vehicle.lxp
+   ```
+3. If the Temurin JDK isn't your default Java, then you can use the full path,
+   for example:
+   ```shell
+   /Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java -jar target/LXStudio-TE-0.2.0-SNAPSHOT-jar-with-dependencies.jar vehicle Vehicle.lxp
+   ```
+4. Use Maven to execute the program instead of the `java` command:
+   ```shell
+   mvn clean compile  # Cleaning and compiling is optional, depending on your needs
+   mvn exec:java@Main vehicle Vehicle.lxp
+   ```
+
+   Fun fact: The "Main" target isn't defined in the POM to have arguments, but
+   it could, in which case you wouldn't need the `vehicle Vehicle.lxp` args.
+
+## Potential issues
+
+If your `~/.m2` Maven cache has any conflicting things, you may need to delete
+the conflicts, otherwise the execution may complain about things like missing
+libraries or invalid versions, and the like. Finding the conflicts is a more
+advanced approach. A simple one is to just delete that whole directory:
+
+```shell
+rm -r ~/.m2
+```
+
+## Celebrating the installation
+
+Once it's running, go tell Slack so we can celebrate with you and maybe give you a tour.
+Or, if you prefer self-guided tours:
+
     * Read the [LX Studio Wiki](https://github.com/heronarts/LXStudio/wiki)
     * Play with the UI until you have a modulator controlling the parameter for a pattern, and an effect applied on top.
        * See [this guide](https://github.com/tracyscott/RainbowStudio/blob/master/LXStudioUserGuide.md) from another memorable Burning Man art piece
     * Define a new fixture in the UI
     * [Optional] Save your playgorund as a new project with your name: `Playground <YourName>.lxp`. You can mess this project up and experiment broadly.
-* Load Testahedron.lxp
-    * Save as `Testaherdron <YourName>.lxp`. 
-    * Make a sound reactive pattern in the UI; chose a song. Demo this at a weekly TE meeting.
-* Let's code
-    * Look through the very [BasicRainbowPattern](https://github.com/titanicsend/testahedron/blob/main/LXStudio-IDE/src/main/java/titanicsend/pattern/jeff/BasicRainbowPattern.java) by Jeff
-    * Look through the patterns developed by others in these projects:
-        * [EnvelopLX](https://github.com/EnvelopSound/EnvelopLX)'s [patterns](https://github.com/EnvelopSound/EnvelopLX/blob/master/EnvelopLX/Patterns.pde) are advanced (by Mark the creator of LX)
-        * [Temple Galaxia](https://github.com/temple2018/Galaxia) (2018) [patterns](https://github.com/temple2018/Galaxia/tree/master/src/main/java/org/templegalaxia/patterns) - I think this has a sane multi-contributor repo layout
-        * [star-cats/blinky-dome](https://github.com/star-cats/blinky-dome) (2018) [patterns](https://github.com/star-cats/blinky-dome/tree/master/src/main/java/com/github/starcats/blinkydome/pattern)
-        * [Entwined](https://github.com/squaredproject/Entwined) (2022) has some nice beginner [pattern code](https://github.com/squaredproject/Entwined/blob/master/oldlx/Trees/Patterns_ColinHunt.java)
-        * [RainbowBridge](https://github.com/tracyscott/RainbowStudio) (2018) kind of an example of a more scattered file structure. [Patterns](https://github.com/tracyscott/RainbowStudio/tree/master/src/main/java/com/giantrainbow/patterns)
-        * [Titanic's End 2014](https://github.com/nottombrown/TitanicsEnd) was one of the first Burning Man projects to use LX. It uses a very early version, but the basic renderer paradigm is easier to study in these patterns.
-    * Develop a pattern in Java using the [LX renderer/shader convention for patterns](https://github.com/heronarts/LXStudio/wiki/Learning-LX:-Patterns)
-    * Save as `testahedron/LXStudio-IDE/src/main/java/titanicsend/pattern/<YourName>/<PatternName>.java`. (Java directory conventions - just, whoa)
-    * Remember to register it to LXStudioApp's initialize() to see it listed in the UI
-* Resources for getting better
-    * LX (underlying engine, not the Studio UI) [core classes](https://github.com/heronarts/LX/tree/master/src/main/java/heronarts/lx)
 
-### Switching between titanicsend and testahedron
+## Editing and improving the code, writing patterns
 
-At press time, the default model imported for the mapping of edges, panels, and points is the mapping produced from the CAD renderings for the art car, Titanic's End. You can see these files (just text files) listed under: `LXStudio-IDE/resources/vehicle`
+If you'd like to change the TE code, you'll need write access to the repo. Ask
+for that on Slack before you do anything else, just in case it takes a while.
 
-However, some of the original purpose of this repo is to test with a scaled-down testahedron shape. The geometry for these points also exist in a similar resource location. Switching between the geometries is pretty simple!
+The other thing you'll need is an IDE (editor). IntelliJ's Community Edition is the best
+free one available. You can download it here:
+https://www.jetbrains.com/idea/
 
-1. Open [TEApp.java](https://github.com/titanicsend/testahedron/blob/main/LXStudio-IDE/src/main/java/titanicsend/app/TEApp.java#L58)
-2. Uncomment whichever `subdir` line is commented out and comment the other one
-3. Rebuild
+Steps for setup:
+1. Open the project directory when you're presented with "New Project" and
+   "Open" options. That's the initial screen.
+2. File → Project Structure (or ⌘-;)
+   1. Platform Settings → SDKs
+      1. Either add the installed Temurin 17 JDK
+      2. Or, if that JDK is not installed, you can click the '+' and then select
+         "Download JDK..."
+         1. Select 17 as the Version
+         2. Select "Eclipse Temarin" as the Vendor
+   2. Project Settings → Project
+      1. Select the Temurin 17 JDK
+3. Top window button bar → Add Configuration... (to the right of the hammer)
+   1. Add new Application configuration
+   2. Leave the "java 17 SDK of 'LXStudio-TE' module" as it is
+   3. Name: TEApp
+   4. Main class: titanicsend.app.TEApp
+   5. Program arguments: vehicle Vehicle.lxp
+   6. Leave the "Working directory" as-is
+   7. Hit the "OK" button
+4. Hit the green arrow "play" button. If you just want to build, hit the hammer
+   button just to the left of the configurations drop-down that used to say
+   "Add Configuration..." and now says "TEApp".
 
-### Writing a Pattern
+### Recognize LX Studio JSON file extensions
 
-You've got the IDE up and running and you're working in the simulator. You saw some examples above. Check out the example and the breakdown below.
+It can be handy to edit LX Studio's JSON config files in the IDE. Add the .lxf
+and .lxp extensions to be recognized as JSON.
 
-#### Example
+1. Open IntelliJ preferences (⌘-, on Mac) and go to Editor → File Types → JSON.
+2. Next, add "*.lxp" to the list, and so on.
 
-Here's a very simple example:
+![JSON File Types](assets/IDE%20Setup/JSON%20File%20Types.png)
 
-https://github.com/titanicsend/testahedron/blob/main/LXStudio-IDE/src/main/java/titanicsend/pattern/tom/Bounce.java
+### Optional Plugins
 
-This class only operates on the edges. (the metal bars lit with LEDs that follow the superstructure)
+Jeff's enjoying the following (he comes from Sublime and vim):
 
-It defines a public class `public class Bounce extends TEPattern` that defines a pattern.
+* CodeGlance
+* Rainbow Brackets
+* IdeaVim
+* CSV
+* KeyPromoter X
+* Python Community Edition
 
-It instantiates and extends some base LXStudio attributes (parameter: `CompoundParameter`, modulator: `SinLFO`) you can [read about here in source](https://github.com/heronarts/LX/tree/master/src/main/java/heronarts/lx).
+### Coming from VS Code?
 
-It exposes a public constructor (`public Bounce`) start starts the modulator we instantiated (the `SinLFO`) and adds a new `rate` parameter. (the `CompoundParameter`) This should be public.
+Many of you may use VS Code in your day-to-day life. If you do, and you'd like
+IntelliJ to behave more like VS Code, I'd recommend:
 
-Then, it exposes a public `run` method that LXStudio will call. The only information passed between is the time the `run` was last called, in milliseconds. We range over all edges (`model.edgesById.values()`) and then over all points on the edge (`edge.points`) and update the semi-public `colors` map (which addresses all possible lit pixels as points, by index) and bounces white pixels along the edges between the vertices.
+1. In IntelliJ, open the "IntelliJ IDEA" menu and select "Preferences"
+2. Click "Plugins"
+3. Search for "VSCode Keymap"; install
+4. Go back to "Preferences"
+5. Go to "Keymap", select one of the VS Code keymap options, (either macOS or
+   not) hit apply, and enjoy increased happiness in your IDE
 
-### What's next?
+## Eclipse
 
-- Visualize: What would be cool as a pattern on the art car?
-- Break down: How can you distill this vision into a series of programmable steps, addressing individual pixels along edges and 
-- Contribute: create a new github branch, (`git checkout -b <your branch name>`) add a pattern under `src/main/java/titanicsend/pattern/<your name>/<PatternName>.java`, and make it flow in the simulator
-  - When you feel good, commit your code to your branch (`git commit -v -m <your message for your commit>`) put up a pull request and get a review (`git push -u origin HEAD` and open it with a button that'll appear at https://github.com/titanicsend/testahedron)
-- Orchestrate: How would that work in concert with music, lasers, projection mapping, etc. to make a complete experience?
-- Forecast: How will people operate this on an art car in a dust storm? How will a DJ be able to synchronize a certain pattern to the music?
-- Collaborate: Check out the [SW Tasks page on Notion](https://www.notion.so/titanicsend/d4a7f54ab5f84784b79268e81c9342a7?v=1950f7f8703d498cb51e6e01ec84c577) and the #lighting channel in Slack
-
-### About LX Studio
-
-Initial impressions are that [LX](https://github.com/heronarts/LXStudio) is powerful and thoughtful, though less documented than ideal. The maintainer, Mark Slee, is incredibly kind and responsive over email ([mark@heronarts.com](mailto:mark@heronarts.com)). LX is not open source - I've copied some of it's license here:
-
----
-
-**BY DOWNLOADING OR USING THE LX STUDIO SOFTWARE OR ANY PART THEREOF, YOU AGREE TO THE TERMS AND CONDITIONS OF THE [LX STUDIO SOFTWARE LICENSE AND DISTRIBUTION AGREEMENT](http://lx.studio/license).**
-
-Please note that LX Studio is not open-source software. The license grants permission to use this software freely in non-commercial applications. Commercial use is subject to a total annual revenue limit of $25K on any and all projects associated with the software. If this licensing is obstructive to your needs or you are unclear as to whether your desired use case is compliant, contact me to discuss proprietary licensing: mark@heronarts.com
+If Eclipse is like a warm snuggie to you, we'd appreciate you adding any SDK and
+environment configuration tips here.
 
