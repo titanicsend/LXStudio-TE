@@ -96,13 +96,13 @@ Steps for setup:
          2. Select "Eclipse Temarin" as the Vendor
    2. Project Settings → Project
       1. Select the Temurin 17 JDK
-3. Top window button bar → Add Configuration... (to the right of the hammer)
-   1. Add new Application configuration
+3. Top window button bar → `Add Configuration...` (to the right of the hammer)
+   1. `Add new run configuration` → `Application`
    2. Leave the "java 17 SDK of 'LXStudio-TE' module" as it is
-   3. Name: TEApp
+   3. Name: `Titanic's End`
    4. Main class: titanicsend.app.TEApp
    5. Program arguments: vehicle Vehicle.lxp
-   6. Leave the "Working directory" as-is
+   6. Leave the "Working directory" as-is and the environment variables blank
    7. Hit the "OK" button
 4. Hit the green arrow "play" button. If you just want to build, hit the hammer
    button just to the left of the configurations drop-down that used to say
