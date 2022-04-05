@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Titanic's End" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="titanicsend.app.TEApp" />
+    <module name="LXStudio-TE" />
+    <option name="PROGRAM_PARAMETERS" value="vehicle Vehicle.lxp" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
