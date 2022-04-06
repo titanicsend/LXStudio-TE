@@ -4,6 +4,7 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
+import heronarts.lx.modulator.Click;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.StringParameter;
@@ -14,20 +15,20 @@ import heronarts.p4lx.ui.UI2dComponent;
 import heronarts.p4lx.ui.UI2dContainer;
 import heronarts.p4lx.ui.component.UIButton;
 import heronarts.p4lx.ui.component.UIParameterControl;
-import heronarts.p4lx.ui.component.UISwitch;
 import heronarts.p4lx.ui.component.UITextBox;
 import titanicsend.app.TEVirtualColor;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEVertex;
-import titanicsend.pattern.PeriodicPattern;
+import titanicsend.pattern.TEPattern;
 
 import java.util.*;
 
 import static java.lang.Math.floorMod;
 
 @LXCategory("TE Debugging")
-public class ModuleEditor extends PeriodicPattern implements UIDeviceControls<ModuleEditor> {
+public class ModuleEditor extends TEPattern implements UIDeviceControls<ModuleEditor> {
   private static final double MOVE_PERIOD_MSEC = 50.0;
+  protected final Click mover = new Click(MOVE_PERIOD_MSEC);
 
   private static class Link {
     TEEdgeModel edge;
@@ -62,7 +63,7 @@ public class ModuleEditor extends PeriodicPattern implements UIDeviceControls<Mo
     this.modNumsByEdge = new HashMap<>();
     this.edgesByModNum = new HashMap<>();
     this.routesByModule = new HashMap<>();
-    super.register(this::moveDots, MOVE_PERIOD_MSEC);
+    startModulator(this.mover);
     phase = 0;
   }
 
@@ -90,7 +91,7 @@ public class ModuleEditor extends PeriodicPattern implements UIDeviceControls<Mo
                 }
               }
             }
-            .setLabel("Load").setMomentary(true)
+                    .setLabel("Load").setMomentary(true)
     );
 
     tbModParts.setEmptyValueAllowed(true);
@@ -261,7 +262,7 @@ public class ModuleEditor extends PeriodicPattern implements UIDeviceControls<Mo
             //int sat = ((i++ % 10) == (phase % 10)) ? 0 : 100;
             int sat = 100;
             int MIN_BRI = 20;
-            int bri = MIN_BRI + (100-MIN_BRI) * (400-j) / (400-MIN_BRI);
+            int bri = MIN_BRI + (100 - MIN_BRI) * (400 - j) / (400 - MIN_BRI);
             if (bri > 100) bri = 100;
             if (bri < MIN_BRI) bri = MIN_BRI;
             j++;
@@ -283,11 +284,20 @@ public class ModuleEditor extends PeriodicPattern implements UIDeviceControls<Mo
         if (!this.modNumsByEdge.containsKey(e)) unassignedEdgeCount++;
       }
       int color;
-      if (unassignedEdgeCount == 0) color = LXColor.rgb(50,50,50);
-      else if (unassignedEdgeCount % 3 == 0) color = LXColor.rgb(0,150,200);
-      else if (unassignedEdgeCount % 3 == 1) color = LXColor.rgb(200,0,0);
-      else color = LXColor.rgb(200,180,0);
+      if (unassignedEdgeCount == 0) color = LXColor.rgb(50, 50, 50);
+      else if (unassignedEdgeCount % 3 == 0) color = LXColor.rgb(0, 150, 200);
+      else if (unassignedEdgeCount % 3 == 1) color = LXColor.rgb(200, 0, 0);
+      else color = LXColor.rgb(200, 180, 0);
       v.virtualColor = new TEVirtualColor(color, 0xFF);
+    }
+  }
+
+  @Override
+  public void run(double deltaMsec) {
+    if (this.mover.click()) {
+      for (int i = 0; i < mover.numLoops(); i++) {
+        this.moveDots();
+      }
     }
   }
 }
