@@ -8,17 +8,28 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
 
+import heronarts.lx.modulator.Click;
+import heronarts.lx.parameter.DiscreteParameter;
 import titanicsend.app.TEVirtualColor;
 import titanicsend.model.*;
-import titanicsend.pattern.PeriodicPattern;
+import titanicsend.pattern.TEPattern;
 import titanicsend.util.TEColor;
 
 import static titanicsend.util.TEColor.TRANSPARENT;
 
 @LXCategory("Combo FG")
-public class EdgeRunner extends PeriodicPattern {
-  private static final int NUM_RUNNERS = 10;  // TODO: Make this a config variable in the UI, and gracefully handle changes
-  private static final double MOVE_PERIOD_MSEC = 5.0;
+public class EdgeRunner extends TEPattern {
+  public final DiscreteParameter numRunners =
+          new DiscreteParameter("Runners", 10, 0, 50)
+                  .setDescription("Number of concurrent runners");
+
+  private static final double MOVE_PERIOD_MSEC = 1.0;
+  private static final double MOVES_PER_RESET = 10000;
+  private static final double RESET_PERIOD_MSEC = MOVE_PERIOD_MSEC * MOVES_PER_RESET;
+
+  protected final Click mover = new Click(MOVE_PERIOD_MSEC);
+  protected final Click spawner = new Click(2500);
+  protected final Click resetter = new Click(RESET_PERIOD_MSEC);
 
   // Useful data related to LIT panels
   private static class PanelData {
@@ -64,31 +75,34 @@ public class EdgeRunner extends PeriodicPattern {
 
   public EdgeRunner(LX lx) {
     super(lx);
-    super.register(this::update, MOVE_PERIOD_MSEC);
     this.edgeLastVisit = new HashMap<TEEdgeModel, Integer>();
     this.pointLastVisit = new HashMap<LXPoint, Integer>();
     this.runners = new ArrayList<>();
-
-    Iterator<TEEdgeModel> edges = model.edgesById.values().iterator();
-    for (int i = 0; i < NUM_RUNNERS; i++) {
-      try {
-        this.runners.add(new Runner(edges.next()));
-      } catch (NoSuchElementException e) {
-        // TODO: Handle this case (where there are more runners than edges)
-      }
-    }
+    startModulator(this.mover);
+    startModulator(this.spawner);
+    startModulator(this.resetter);
+    this.spawner.fire();
     this.moveNumber = 0;
-    for (TEVertex v : model.vertexesById.values()) {
-      // Initialize all vertexes to gray
-      v.virtualColor = new TEVirtualColor(50, 50, 50, 255);
-    }
     this.panelData = new HashMap<>();
     for (TEPanelModel panel : model.panelsById.values()) {
       if (!panel.panelType.equals(TEPanelModel.LIT)) continue;
       int numEdgePixels = panel.e0.points.length + panel.e1.points.length + panel.e2.points.length;
-
       PanelData pd = new PanelData(numEdgePixels);
       this.panelData.put(panel, pd);
+    }
+    this.reset();
+  }
+
+  private void reset() {
+    this.edgeLastVisit.clear();
+    this.pointLastVisit.clear();
+    for (PanelData pd : this.panelData.values()) {
+      pd.litEdgePixels = 0;
+    }
+
+    for (TEVertex v : model.vertexesById.values()) {
+      // Initialize all vertexes to gray
+      v.virtualColor = new TEVirtualColor(50, 50, 50, 255);
     }
   }
 
@@ -163,14 +177,27 @@ public class EdgeRunner extends PeriodicPattern {
   }
 
   @Override
-  public void runHook(double deltaMsec) {
-    updateVirtualColors(deltaMsec);
-  }
+  public void run(double deltaMsec) {
+    if (this.resetter.click()) this.reset();
 
-  public void update() {
-    for (Runner runner : this.runners){
-      this.mark(runner);
-      this.move(runner);
+    updateVirtualColors(deltaMsec);
+    if (this.mover.click()) {
+      for (int i = 0; i < mover.numLoops(); i++)
+        for (Runner runner : this.runners) {
+          this.mark(runner);
+          this.move(runner);
+        }
+    }
+    if (this.spawner.click()) {
+      while(this.runners.size() > this.numRunners.getValuei()) {
+        this.runners.remove(0);
+      }
+      if (this.runners.size() < this.numRunners.getValuei()) {
+        // Spawn from Edge 37-44, if it exists, or else just whatever comes first
+        TEEdgeModel edge = model.edgesById.get("37-44");
+        if (edge == null) edge = model.edgesById.values().iterator().next();
+        this.runners.add(new Runner(edge));
+      }
     }
 
     int runnerColor = this.runnerColor.calcColor();
