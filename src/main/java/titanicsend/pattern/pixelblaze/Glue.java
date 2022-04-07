@@ -1,5 +1,7 @@
 package titanicsend.pattern.pixelblaze;
 
+import heronarts.lx.LX;
+
 import java.util.Random;
 
 public class Glue {
@@ -15,6 +17,7 @@ public class Glue {
   }
 
   public static void hsv(float h, float s, float v) {
+    LX.log(h + " " + s + " " + v);
     hue = h;
     saturation = s;
     brightness = v;

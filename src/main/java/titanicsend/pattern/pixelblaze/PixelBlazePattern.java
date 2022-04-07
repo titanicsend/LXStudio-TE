@@ -9,11 +9,13 @@ import javax.script.Invocable;
 
 public class PixelBlazePattern extends TEPattern {
   private Invocable invocable = null;
+//  private static String PB_CLASS = "firework dust";
+  private static String PB_CLASS = "fireflies";
 
   public PixelBlazePattern(LX lx) {
     super(lx);
     try {
-      this.invocable = Wrapper.makeInvocable("firework dust");
+      this.invocable = Wrapper.makeInvocable(PB_CLASS);
     } catch (Exception e) {
       LX.error(e);
     }
@@ -21,6 +23,14 @@ public class PixelBlazePattern extends TEPattern {
 
   public void run(double deltaMs) {
     if (this.invocable == null) return;
+    try {
+      this.invocable.invokeFunction("teInit", this.model.points.length);
+      this.invocable.invokeFunction("beforeRender", deltaMs);
+    } catch (Exception e) {
+      LX.error(e);
+      return;
+    }
+
     for (LXPoint point : this.model.points) {
       try {
         this.invocable.invokeFunction("render", point.index);
@@ -28,7 +38,7 @@ public class PixelBlazePattern extends TEPattern {
         LX.error(e);
         return;
       }
-      int rgb = LXColor.hsb(360.0 * Glue.hue,100.0 * Glue.saturation,
+      int rgb = LXColor.hsb(360.0 * Glue.hue, 100.0 * Glue.saturation,
               100.0 * Glue.brightness);
       colors[point.index] = rgb;
     }
