@@ -2,6 +2,7 @@ package titanicsend.pattern.pixelblaze;
 
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
+import titanicsend.util.TEColor;
 
 import java.util.Random;
 
@@ -9,7 +10,7 @@ public class Glue {
   public static int color;
 
   public static void reset() {
-    color = LXColor.rgba(0,0,0,0);
+    color = TEColor.TRANSPARENT;
   }
   public static void hsv(float h, float s, float v) {
     h = h % 1f;
