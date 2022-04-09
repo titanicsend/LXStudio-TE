@@ -14,17 +14,17 @@ export function beforeRender(delta) {
 }
 
 function xorf(v1, v2) {
-	v1 *= 65536
-	v2 *= 65536
-	return (v1 ^ v2) / 65536
+  v1 *= 65536
+  v2 *= 65536
+  return (v1 ^ v2) / 65536
 }
 
 export function render3D(index, x, y, z) {
-	x /= worldscale
-	y /= worldscale
-	z /= worldscale
+  x /= worldscale
+  y /= worldscale
+  z /= worldscale
 
-	y += time(.1) //blittery waterfalls!
+  y += time(.1) //blittery waterfalls!
 
   m = .3 + triangle(t1) * .2
   h = sin(t2)

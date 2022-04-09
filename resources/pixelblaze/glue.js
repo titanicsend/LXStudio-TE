@@ -9,7 +9,7 @@ var global = this;
 var PI2 = Math.PI * 2;
 
 function random(v) {
-	return Math.random() * v
+  return Math.random() * v
 }
 
 function array(n) {
@@ -19,18 +19,18 @@ function array(n) {
 }
 
 function time(interval) {
-	return ((new Date().getTime() / 65536) % interval) / interval
+  return ((new Date().getTime() / 65536) % interval) / interval
 }
 
 function wave(v) {
-	return (sin(v*PI*2) + 1)/2
+  return (sin(v*PI*2) + 1)/2
 }
 
 function triangle(v) {
-	v = v * 2 % 2;
-	if (v < 0)
-		v += 2
-	return v < 1 ? v : 2 - v
+  v = v * 2 % 2;
+  if (v < 0)
+    v += 2
+  return v < 1 ? v : 2 - v
 }
 
 function hsv(h, s, v) {
