@@ -9,7 +9,7 @@ public class Glue {
   public static int color;
 
   public static void reset() {
-    color = LXColor.BLACK;
+    color = LXColor.rgba(0,0,0,0);
   }
   public static void hsv(float h, float s, float v) {
     h = h % 1f;
