@@ -19,7 +19,7 @@ function array(n) {
 }
 
 function time(interval) {
-  return ((new Date().getTime() / 65536) % interval) / interval
+  return ((__now / 65536) % interval) / interval
 }
 
 function wave(v) {
@@ -34,5 +34,19 @@ function triangle(v) {
 }
 
 function hsv(h, s, v) {
-  return glue.hsv(h, s, v);
+  __color = glue.hsv(h, s, v);
+}
+function rgb(r, g, b) {
+  __color = glue.rgb(r, g, b);
+}
+
+function glueRender() {
+  var r = render3D || render2D || render
+  var i, point
+  for (i = 0; i < __points.length; i++) {
+    __color = 0;
+    point = __points[i]
+    r(point.index, point.x, point.y, point.z)
+    __colors[point.index] = __color;
+  }
 }

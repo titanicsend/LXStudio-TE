@@ -1,12 +1,8 @@
 package titanicsend.pattern.pixelblaze;
 
 import heronarts.lx.LX;
-import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import titanicsend.pattern.TEPattern;
-
-import javax.script.Invocable;
-import java.io.File;
 
 public class PixelblazePattern extends TEPattern {
   private Wrapper wrapper;
@@ -17,7 +13,7 @@ public class PixelblazePattern extends TEPattern {
     super(lx);
 
     try {
-      wrapper = Wrapper.fromResource(PB_CLASS, this.model.points.length);
+      wrapper = Wrapper.fromResource(PB_CLASS, model.points, colors);
     } catch (Exception e) {
       e.printStackTrace();
       LX.error(e);
@@ -29,15 +25,14 @@ public class PixelblazePattern extends TEPattern {
       return;
     try {
       wrapper.reloadIfNecessary();
-      wrapper.beforeRender(deltaMs);
-
-      //TODO scale LXpoints to world units based on boundaryPoints. e.g. boundaryPoints.minXBoundaryPoint.x
-
-      for (LXPoint point : this.model.points) {
-        Glue.reset();
-        wrapper.render(point);
-        colors[point.index] = Glue.color;
-      }
+      wrapper.render(deltaMs);
+//      wrapper.beforeRender(deltaMs);
+//
+//      //TODO scale LXpoints to world units based on boundaryPoints. e.g. boundaryPoints.minXBoundaryPoint.x
+//
+//      for (LXPoint point : this.model.points) {
+//        wrapper.render(point, colors);
+//      }
 
     } catch (Exception e) {
       e.printStackTrace();

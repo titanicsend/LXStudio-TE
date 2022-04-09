@@ -5,33 +5,38 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import java.io.File;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import heronarts.lx.LX;
 import heronarts.lx.model.LXPoint;
 import org.openjdk.nashorn.api.scripting.NashornScriptEngineFactory;
+import titanicsend.util.TEColor;
 
 public class Wrapper {
+
   private static String getJsFromFile(String pbClass) throws IOException {
     return Files.readString(Path.of("resources/pixelblaze/" + pbClass + ".js"));
   }
 
-  public static Wrapper fromResource(String pbClass, int pixelCount) throws Exception {
-    return new Wrapper(new File("resources/pixelblaze/" + pbClass + ".js"), pixelCount);
+  public static Wrapper fromResource(String pbClass, LXPoint[] points, int[] colors) throws Exception {
+    return new Wrapper(new File("resources/pixelblaze/" + pbClass + ".js"), points, colors);
   }
 
   File file;
+  LXPoint[] points;
+  int[] colors;
   int pixelCount;
   long lastModified;
   ScriptEngine engine;
   Invocable invocable;
   String renderName;
 
-  public Wrapper(File file, int pixelCount) throws ScriptException, IOException {
+  public Wrapper(File file, LXPoint[] points, int[] colors) throws ScriptException, IOException {
     this.file = file;
-    this.pixelCount = pixelCount;
+    this.points = points;
+    this.colors = colors;
+    this.pixelCount = points.length;
     load();
   }
 
@@ -53,25 +58,19 @@ public class Wrapper {
     invocable = (Invocable)engine;
 
     engine.put("pixelCount", pixelCount);
+    engine.put("__now", System.currentTimeMillis());
     engine.eval(getJsFromFile("glue"));
     engine.eval(js);
-
-    if (engine.get("render3D") != null) {
-      renderName = "render3D";
-    } else if (engine.get("render2D") != null) {
-      renderName = "render2D";
-    } else {
-      renderName = "render";
-    }
   }
 
-  public void beforeRender(double deltaMs) throws ScriptException, NoSuchMethodException, IOException {
+  public void render(double deltaMs) throws ScriptException, NoSuchMethodException, IOException {
     engine.put("pixelCount", pixelCount);
-    invocable.invokeFunction("beforeRender", deltaMs);
-  }
+    engine.put("__now", System.currentTimeMillis());
+    engine.put("__points", points);
+    engine.put("__colors", colors);
 
-  public void render(LXPoint point) throws ScriptException, NoSuchMethodException {
-    this.invocable.invokeFunction(renderName, point.index, point.x, point.y, point.z);
+    invocable.invokeFunction("beforeRender", deltaMs);
+    invocable.invokeFunction("glueRender");
   }
 
 }
