@@ -21,7 +21,7 @@ public class Checkers extends TEPattern {
           registerColor("Even", "even", ColorType.SECONDARY,
                   "Color of the even panels");
 
-  private final HashMap<TEPanelModel, Integer> panelGroup;
+  protected final HashMap<TEPanelModel, Integer> panelGroup;
 
   public Checkers(LX lx) {
     super(lx);
@@ -47,6 +47,7 @@ public class Checkers extends TEPattern {
     }
   }
 
+  @Override
   public void run(double deltaMs) {
     int color0 = this.oddColor.calcColor();
     int color1 = this.evenColor.calcColor();

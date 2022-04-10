@@ -5,6 +5,7 @@ import heronarts.lx.model.LXPoint;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.pattern.TEPattern;
+import titanicsend.pattern.mike.Checkers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +14,7 @@ import java.util.Map;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
-public class PixelblazePatternParallel extends TEPattern {
+public class PixelblazePatternParallel extends Checkers {
   public static final int N_THREADS = 4;
   private ArrayList<Wrapper> wrappers = new ArrayList<>();
 
@@ -33,9 +34,12 @@ public class PixelblazePatternParallel extends TEPattern {
         wrappers.add(Wrapper.fromResource("neon_ice", model.edgePoints.toArray(chunkPoints), colors));
       }
 
-      //one for every panel
-      for (TEPanelModel panelModel : model.panelsById.values()) {
-        wrappers.add(Wrapper.fromResource("xorcery", panelModel.points, colors));
+      //one for each of a checkered subset of panels
+      for (Map.Entry<TEPanelModel, Integer> entry : this.panelGroup.entrySet()) {
+        TEPanelModel panel = entry.getKey();
+        int panelGroup = entry.getValue();
+        if (panelGroup == 0) continue;
+        wrappers.add(Wrapper.fromResource("xorcery", panel.points, colors));
       }
 
       LX.log("parallel chunks=" + wrappers.size());
@@ -46,6 +50,7 @@ public class PixelblazePatternParallel extends TEPattern {
     }
   }
 
+  @Override
   public void run(double deltaMs) {
     if (wrappers.size() == 0)
       return;
