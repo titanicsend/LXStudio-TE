@@ -27,9 +27,14 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
     EDGE(1),      // Primary color to use on edges
     SECONDARY(2), // Secondary color to use on edges or panels (or lasers?)
     PANEL(3);     // Primary color to use on panels
-    public final int index;
+    public final int index;  // The UI index (1-indexed)
     private ColorType(int index) {
       this.index = index;
+    }
+
+    // UI swatches are 1-indexed; internally, swatch arrays are 0-indexed
+    public int swatchIndex() {
+      return index - 1;
     }
   }
 
@@ -46,7 +51,7 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
 
 
   /*
-     Color methods
+   * Color methods
    */
 
 
@@ -63,19 +68,19 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
   // palette changes are known and transitions are smooth
   protected void updateGradients() {
     paletteGradient.setPaletteGradient(lx.engine.palette, 0, lx.engine.palette.swatch.colors.size());
-    edgeGradient.stops[0].set(lx.engine.palette.getSwatchColor(ColorType.EDGE.index - 1));
-    edgeGradient.stops[1].set(lx.engine.palette.getSwatchColor(ColorType.SECONDARY.index - 1));
-    panelGradient.stops[0].set(lx.engine.palette.getSwatchColor(ColorType.PANEL.index - 1));
-    edgeGradient.stops[1].set(lx.engine.palette.getSwatchColor(ColorType.SECONDARY.index - 1));
+    edgeGradient.stops[0].set(lx.engine.palette.getSwatchColor(ColorType.EDGE.swatchIndex()));
+    edgeGradient.stops[1].set(lx.engine.palette.getSwatchColor(ColorType.SECONDARY.swatchIndex()));
+    panelGradient.stops[0].set(lx.engine.palette.getSwatchColor(ColorType.PANEL.swatchIndex()));
+    panelGradient.stops[1].set(lx.engine.palette.getSwatchColor(ColorType.SECONDARY.swatchIndex()));
   }
 
   // Given a value in 0..1 (and wrapped back outside that range)
   // Return a color within the edgeGradient
   public int getEdgeGradientColor(float lerp) {
     /* HSV2 mode wraps returned colors around the color wheel via the shortest
-    hue distance. In other words, we usually want a gradient to go from yellow
-    to red via orange, not via lime, green, cyan, blue, purple, red.
-    */
+     * hue distance. In other words, we usually want a gradient to go from yellow
+     * to red via orange, not via lime, green, cyan, blue, purple, red.
+     */
     return edgeGradient.getColor(
             TEMath.trianglef(lerp / 2), // Allow wrapping
             GradientUtils.BlendMode.HSV2.function);
@@ -108,27 +113,27 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
   }
 
   /*
-     Audio and tempo methods
-  */
+   *  Audio and tempo methods
+   */
 
   /**
-   * Get the percent into a measure, assuming a four beat measure
-   * @return 0..1 ramp of progress (percent) into the current measure
+   * Get the fraction into a measure, assuming a four beat measure
+   * @return 0..1 ramp of progress (fraction) into the current measure
    */
-  public double wholenote() {
+  public double wholeNote() {
     return lx.engine.tempo.getBasis(Tempo.Division.WHOLE);
   }
   /**
-   * Get the percent into a musical phrase, assuming 8 * 4 beat phrases
-   * @return 0..1 ramp of progress (percent) into the current phrase
+   * Get the fraction into a musical phrase, assuming 8 * 4 beat phrases
+   * @return 0..1 ramp of progress (fraction) into the current phrase
    */
   public double phrase() {
     return lx.engine.tempo.getCompositeBasis() / 32 % 1.0D;
   }
 
   /**
-   * Get the percent into a measure for any defined measure length
-   * @return 0..1 ramp of progress (percent) into the current measure
+   * Get the fraction into a measure for any defined measure length
+   * @return 0..1 ramp of progress (fraction) into the current measure
    */
   public double measure() {
     return (

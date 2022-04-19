@@ -31,18 +31,18 @@ public class BasicRainbowPattern extends TEPattern {
              */
 
             // a 0..1 fraction of the total LEDs
-            float indexPct = (float) (p.index) / model.points.length;
+            float indexFrac = (float) (p.index) / model.points.length;
 
             // ramp is a timer going from 0 to 1 every 4500 ms
             //
             // Wrap around the color wheel by adding the two 0..1 values (one a function of
             // time, and one a function of position) and taking the fractional part.
 
-            float huePct = (ramp.getValuef() + indexPct) % 1.F;
+            float hueFrac = (ramp.getValuef() + indexFrac) % 1.F;
 
             colors[p.index] = LXColor.hsb(
-                    // Hue is a 360 degree wheel, so the 0..1 huePct is multiplied by 360
-                    360 * huePct,
+                    // Hue is a 360 degree wheel, so the 0..1 hueFrac is multiplied by 360
+                    360 * hueFrac,
                     100,
                     100);
         }

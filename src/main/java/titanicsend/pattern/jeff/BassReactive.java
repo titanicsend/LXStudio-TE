@@ -6,39 +6,36 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.CompoundParameter;
 import titanicsend.model.TEEdgeModel;
-import titanicsend.pattern.TEPattern;
+import titanicsend.pattern.TEAudioPattern;
 
-import heronarts.lx.audio.GraphicMeter;
 
 /**
  * One of our pattern standards is that the pattern should be audio-reactive,
  * even without accurate tempo data present from an external clock or
  * the internal `lx.engine.tempo` metronome.
  *
- * This pattern demonstrates how to use the audio input in code and
- * change pixels based on how much bass is currently in the audio, relative
+ * TEAudioPattern provides bassRatio and other fields and methods for processing
+ * the live audio stream data. Example patterns are preloaded within the Audio
+ * Examples workspace project (Select this at the top center of the UI).
+ *
+ * This pattern demonstrates how to use the audio input within pattern code to
+ * activate pixels based on how much bass is currently in the audio, relative
  * to how much has been there recently.
  *
- * Note that the standard way to do this is probably to define a
- * CompoundParameter for the bar's height, then add a Beat modulator. In
- * the LX Studio UI you can link it's output to control the red height.
+ * An alternate way to do this within the LX Studio UI would be to define a
+ * CompoundParameter in this pattern that controls the bar's height, then add
+ * a Beat Modulator that is linked to control that height parameter.
  *
- * This demonstrates a simple instant-to-running-average ratio approach, which
- * helps it auto-scale to various inputs. It would be best combined with a gate,
- * so that long periods of silence are ignored instead of establishing a low bar.
+ * Be sure to try this pattern with an audio input source selected. In the top
+ * left of the UI, click "GLOBAL", enable the Audio with the green top-left toggle,
+ * and select an input.
  *
  * If you find it too jumpy, try lengthening the release parameter on the audio
- * GraphicMeter (top left corner under Global)
+ * GraphicMeter.
  */
 
 @LXCategory("Audio Examples")
-public class BassReactive extends TEPattern {
-    // The GraphicMeter holds the analyzed frequency content for the audio input
-    protected final GraphicMeter eq = lx.engine.audio.meter;
-
-    // Accumulate recent bass levels into a running average
-    protected double runningAvgBass = 0;
-
+public class BassReactive extends TEAudioPattern {
     // Titanic's End wants all patterns to implement a parameter called "Energy",
     // which controls the amount of motion, light, movement, action, particles, etc.
     // We'll use it here to scale the bass meter
@@ -52,25 +49,18 @@ public class BassReactive extends TEPattern {
         addParameter("energy", energy);
     }
 
+
+    @Override
     public void run(double deltaMs) {
-        // Average bass level of the bottom 12.5% of frequency bands.
-        // The default lx.engine.audio.meter breaks up sound into 16 bands,
-        // so this averages the bottom 2 bands.
-        double bassLevel = eq.getAverage(0, Math.max(1, eq.numBands / 8));
+        // Grab recent audio and run analysis, updating `bassRatio`
+        computeAudio(deltaMs);
 
-        // https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average
-        // where alpha = .01
-        // The downside is that this approach can be frame rate dependent.
-        runningAvgBass = .99 * runningAvgBass + .01 * bassLevel;
-
-        // A bass ratio of instantaneous bass level to the recent running average.
-        // .01 = 1% of recent average bass
-        // 1    = Exactly the recent average bass
-        // 5    = 5 times higher than the recent average bass
-        double bassRatio = bassLevel / runningAvgBass;
-
-        // Scale this ratio by the Energy param and some selected constants
-        // to give a good height in 0..1 controlled by the Energy param
+        /* Scale the bassRatio by the Energy param and some selected constants
+         * to give a good height in 0..1 controlled by the Energy param. See:
+         * https://www.desmos.com/calculator/bee9cgf5mb to understand selected
+         * constants below. In my experience, each pattern takes some
+         * individual fiddling to get the range correct.
+         */
         double bassHeightNormalized = (bassRatio - .5) / (1.01 - energy.getNormalized()) / 3 - .2;
 
         clearPixels();  // Sets all pixels to transparent for starters
@@ -78,9 +68,9 @@ public class BassReactive extends TEPattern {
         for (TEEdgeModel edge : model.edgesById.values()) {
             for (LXPoint point : edge.points) {
                 // If the normalized Y height of this edge pixel is below the current
-                // bass level, color it red.
-                if (point.yn < bassHeightNormalized)
-                    colors[point.index] = LXColor.RED;
+                // bass level, color it red. If not, it stays transparent.
+                // Red is used for brevity. For real show patterns use LinkedColorParameters.
+                if (point.yn < bassHeightNormalized) colors[point.index] = LXColor.RED;
             }
         }
     }
