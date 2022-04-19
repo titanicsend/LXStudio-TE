@@ -1,6 +1,8 @@
 package titanicsend.pattern;
 
 import heronarts.lx.LX;
+import heronarts.lx.Tempo;
+import heronarts.lx.color.GradientUtils;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
@@ -9,20 +11,30 @@ import titanicsend.model.TELaserModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
 import titanicsend.util.TEColor;
+import titanicsend.util.TEMath;
 
 import java.util.*;
 
 public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
   private final TEPanelModel sua;
   private final TEPanelModel sdc;
+  protected GradientUtils.ColorStops paletteGradient = new GradientUtils.ColorStops();
+  protected GradientUtils.ColorStops edgeGradient = new GradientUtils.ColorStops();
+  protected GradientUtils.ColorStops panelGradient = new GradientUtils.ColorStops();
 
   protected enum ColorType {
+    // These are 1-based UI indices; to get to a 0-based palette index, subtract 1
     EDGE(1),      // Primary color to use on edges
     SECONDARY(2), // Secondary color to use on edges or panels (or lasers?)
     PANEL(3);     // Primary color to use on panels
-    public final int index;
+    public final int index;  // The UI index (1-indexed)
     private ColorType(int index) {
       this.index = index;
+    }
+
+    // UI swatches are 1-indexed; internally, swatch arrays are 0-indexed
+    public int swatchIndex() {
+      return index - 1;
     }
   }
 
@@ -31,7 +43,17 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
     this.clearPixels();
     this.sua = this.model.panelsById.get("SUA");
     this.sdc = this.model.panelsById.get("SDC");
+
+    this.edgeGradient.setNumStops(2);
+    this.panelGradient.setNumStops(2);
+    updateGradients();
   }
+
+
+  /*
+   * Color methods
+   */
+
 
   protected LinkedColorParameter registerColor(String label, String path, ColorType colorType, String description) {
     LinkedColorParameter lcp = new LinkedColorParameter(label)
@@ -42,6 +64,29 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
     return lcp;
   }
 
+  // If a pattern uses the standard gradients, call this in run() to ensure
+  // palette changes are known and transitions are smooth
+  protected void updateGradients() {
+    paletteGradient.setPaletteGradient(lx.engine.palette, 0, lx.engine.palette.swatch.colors.size());
+    edgeGradient.stops[0].set(lx.engine.palette.getSwatchColor(ColorType.EDGE.swatchIndex()));
+    edgeGradient.stops[1].set(lx.engine.palette.getSwatchColor(ColorType.SECONDARY.swatchIndex()));
+    panelGradient.stops[0].set(lx.engine.palette.getSwatchColor(ColorType.PANEL.swatchIndex()));
+    panelGradient.stops[1].set(lx.engine.palette.getSwatchColor(ColorType.SECONDARY.swatchIndex()));
+  }
+
+  // Given a value in 0..1 (and wrapped back outside that range)
+  // Return a color within the edgeGradient
+  public int getEdgeGradientColor(float lerp) {
+    /* HSV2 mode wraps returned colors around the color wheel via the shortest
+     * hue distance. In other words, we usually want a gradient to go from yellow
+     * to red via orange, not via lime, green, cyan, blue, purple, red.
+     */
+    return edgeGradient.getColor(
+            TEMath.trianglef(lerp / 2), // Allow wrapping
+            GradientUtils.BlendMode.HSV2.function);
+  }
+
+  // Compare to LXLayeredComponent's clearColors(), which is declared final.
   public void clearPixels() {
     for (LXPoint point : this.model.points) {
       if (point.equals(this.model.gapPoint)) {
@@ -66,6 +111,43 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
       laser.color = colors[laser.points[0].index];
     }
   }
+
+  /*
+   *  Audio and tempo methods
+   */
+
+  /**
+   * Get the fraction into a measure, assuming a four beat measure
+   * @return 0..1 ramp of progress (fraction) into the current measure
+   */
+  public double wholeNote() {
+    return lx.engine.tempo.getBasis(Tempo.Division.WHOLE);
+  }
+  /**
+   * Get the fraction into a musical phrase, assuming 8 * 4 beat phrases
+   * @return 0..1 ramp of progress (fraction) into the current phrase
+   */
+  public double phrase() {
+    return lx.engine.tempo.getCompositeBasis() / 32 % 1.0D;
+  }
+
+  /**
+   * Get the fraction into a measure for any defined measure length
+   * @return 0..1 ramp of progress (fraction) into the current measure
+   */
+  public double measure() {
+    return (
+            lx.engine.tempo.getCompositeBasis() %
+            lx.engine.tempo.beatsPerMeasure.getValue() /
+            lx.engine.tempo.beatsPerMeasure.getValue()
+    );
+  }
+
+
+
+  /*
+     GigglePixel color sync protocol methods
+   */
 
   // Returns a set of points that GP should use to make its palette broadcasts.
   // By default, it will pick a point in the middle of SUA and SDC panels and
