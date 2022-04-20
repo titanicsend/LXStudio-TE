@@ -8,10 +8,8 @@ import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
-import titanicsend.lasercontrol.Cone;
 import titanicsend.lasercontrol.MovingTarget;
-import titanicsend.output.TESacnOutput;
-import titanicsend.util.ComparePointValues;
+import titanicsend.output.TEArtNetOutput;
 
 public class TEWholeModel extends LXModel {
   public String subdir;
@@ -149,7 +147,7 @@ public class TEWholeModel extends LXModel {
     int universeNum = Integer.parseInt(tokens[0]);
     int strandOffset = Integer.parseInt(tokens[1]);
     // ipAddress = "127.0.0.1";
-    TESacnOutput.registerSubmodel(subModel, ipAddress, universeNum, strandOffset, fwd);
+    TEArtNetOutput.registerSubmodel(subModel, ipAddress, universeNum, strandOffset, fwd);
   }
 
   private static void loadEdges(Geometry geometry) {
