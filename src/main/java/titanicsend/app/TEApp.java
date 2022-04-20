@@ -23,12 +23,11 @@ import java.io.IOException;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
-import heronarts.lx.pattern.color.GradientPattern;
 import heronarts.lx.studio.LXStudio;
 import processing.core.PApplet;
 import titanicsend.model.TEWholeModel;
 import titanicsend.output.GPOutput;
-import titanicsend.output.TESacnOutput;
+import titanicsend.output.TEArtNetOutput;
 import titanicsend.pattern.alex.*;
 import titanicsend.pattern.cesar.*;
 import titanicsend.pattern.jeff.*;
@@ -78,7 +77,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     // you cannot assume you are working with an LXStudio class or that any UI will be
     // available.
 
-    TESacnOutput.activateAll(lx, this.model.gapPoint.index);
+    TEArtNetOutput.activateAll(lx, this.model.gapPoint.index);
 
     // Register custom pattern and effect types
 
