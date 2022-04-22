@@ -27,7 +27,7 @@ import heronarts.lx.studio.LXStudio;
 import processing.core.PApplet;
 import titanicsend.model.TEWholeModel;
 import titanicsend.output.GPOutput;
-import titanicsend.output.TESacnOutput;
+import titanicsend.output.TEArtNetOutput;
 import titanicsend.pattern.alex.*;
 import titanicsend.pattern.cesar.*;
 import titanicsend.pattern.jeff.*;
@@ -78,11 +78,15 @@ public class TEApp extends PApplet implements LXPlugin  {
     // you cannot assume you are working with an LXStudio class or that any UI will be
     // available.
 
-    TESacnOutput.activateAll(lx, this.model.gapPoint.index);
+    TEArtNetOutput.activateAll(lx, this.model.gapPoint.index);
 
     // Register custom pattern and effect types
+
+    // Patterns/effects that currently conform to art direction standards
+    lx.registry.addEffect(titanicsend.effect.BasicEffect.class);
+
+    // Patterns that are in development towards meeting standards
     lx.registry.addPattern(AlternatingPattern.class);
-    lx.registry.addPattern(BasicRainbowPattern.class);
     lx.registry.addPattern(BouncingDots.class);
     lx.registry.addPattern(BrightScreen.class);
     lx.registry.addPattern(ResizeableScreen.class);
@@ -97,7 +101,16 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPattern(SimpleSolidPanelPattern.class);
     lx.registry.addPattern(PulsingTriangles.class);
     lx.registry.addPattern(HandTracker.class);
-    lx.registry.addEffect(titanicsend.effect.BasicEffect.class);
+
+    // Patterns that will not aspire to art direction standards
+
+    // Examples for teaching and on-boarding developers
+    lx.registry.addPattern(BasicRainbowPattern.class);
+    lx.registry.addPattern(BassReactive.class);
+    lx.registry.addPattern(BassReactiveEdge.class);
+    lx.registry.addPattern(TempoReactiveEdge.class);
+    lx.registry.addPattern(ArtStandards.class);
+
 
     int myGigglePixelID = 73;  // Looks like "TE"
     try {
