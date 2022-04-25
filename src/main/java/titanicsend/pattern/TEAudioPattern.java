@@ -72,4 +72,20 @@ public abstract class TEAudioPattern extends TEPattern {
         bassRatio = bassLevel / avgBass.update(bassLevel, deltaMs);
         trebleRatio = trebleLevel / avgTreble.update(trebleLevel, deltaMs);
     }
+
+    public double getBassLevel() {
+        return bassLevel;
+    }
+
+    public double getTrebleLevel() {
+        return trebleLevel;
+    }
+
+    public double getBassRatio() {
+        return bassRatio;
+    }
+
+    public double getTrebleRatio() {
+        return trebleRatio;
+    }
 }
