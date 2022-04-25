@@ -44,8 +44,7 @@ public class PixelblazePattern extends TEAudioPattern {
       return;
     }
     LX.log("Pixelblaze adding parameter for " + label);
-    CompoundParameter energy = new CompoundParameter(label, .5, 0, 1)
-            .setDescription("Adjust the " + label + " parameter"); //TODO
+    CompoundParameter energy = new CompoundParameter(label, .5, 0, 1);
     addParameter(key, energy);
     patternParameters.put(key, energy);
   }
