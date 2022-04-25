@@ -22,7 +22,7 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
   protected GradientUtils.ColorStops edgeGradient = new GradientUtils.ColorStops();
   protected GradientUtils.ColorStops panelGradient = new GradientUtils.ColorStops();
 
-  protected enum ColorType {
+  public enum ColorType {
     // These are 1-based UI indices; to get to a 0-based palette index, subtract 1
     EDGE(1),      // Primary color to use on edges
     SECONDARY(2), // Secondary color to use on edges or panels (or lasers?)
@@ -74,8 +74,12 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
     panelGradient.stops[1].set(lx.engine.palette.getSwatchColor(ColorType.SECONDARY.swatchIndex()));
   }
 
-  // Given a value in 0..1 (and wrapped back outside that range)
-  // Return a color within the edgeGradient
+  /**
+   * Given a value in 0..1 (and wrapped back outside that range)
+   * Return a color within the edgeGradient
+   * @param lerp
+   * @return
+   */
   public int getEdgeGradientColor(float lerp) {
     /* HSV2 mode wraps returned colors around the color wheel via the shortest
      * hue distance. In other words, we usually want a gradient to go from yellow
@@ -84,6 +88,31 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
     return edgeGradient.getColor(
             TEMath.trianglef(lerp / 2), // Allow wrapping
             GradientUtils.BlendMode.HSV2.function);
+  }
+
+  /**
+   * Given a value in 0..1 (and wrapped back outside that range)
+   * Return a color within the panelGradient
+   * @param lerp
+   * @return
+   */
+  public int getPanelGradientColor(float lerp) {
+    /* HSV2 mode wraps returned colors around the color wheel via the shortest
+     * hue distance. In other words, we usually want a gradient to go from yellow
+     * to red via orange, not via lime, green, cyan, blue, purple, red.
+     */
+    return panelGradient.getColor(
+            TEMath.trianglef(lerp / 2), // Allow wrapping
+            GradientUtils.BlendMode.HSV2.function);
+  }
+
+  /**
+   * Get a ColorType's color from the Swatch
+   * @param type
+   * @return
+   */
+  public int getSwatchColor(ColorType type) {
+    return lx.engine.palette.getSwatchColor(type.swatchIndex()).getColor();
   }
 
   // Compare to LXLayeredComponent's clearColors(), which is declared final.

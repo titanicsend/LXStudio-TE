@@ -20,4 +20,16 @@ public class Glue {
     b = Math.max(0, Math.min(1, b));
     return LXColor.rgb((int) (r*255), (int) (g*255), (int) (b*255));
   }
+
+  public static int rgba(float r, float g, float b, float a) {
+    r = Math.max(0, Math.min(1, r));
+    g = Math.max(0, Math.min(1, g));
+    b = Math.max(0, Math.min(1, b));
+    a = Math.max(0, Math.min(1, a));
+    return LXColor.rgba((int) (r*255), (int) (g*255), (int) (b*255), (int) (a*255));
+  }
+
+  public static int setAlpha(int color, float a) {
+    return Math.min(255, (int)(a * 255.0F)) << 24 | (color & LXColor.RGB_MASK);
+  }
 }

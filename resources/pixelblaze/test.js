@@ -4,8 +4,6 @@
   An XOR in 3D space based on the 'block reflections' pattern.
 */
 
-worldscale = 3000000
-
 export function beforeRender(delta) {
   t1 = time(.1)
   t2 = time(.1) * PI2
@@ -20,13 +18,9 @@ function xorf(v1, v2) {
 }
 
 export function render3D(index, x, y, z) {
-  x /= worldscale
-  y /= worldscale
-  z /= worldscale
+  y += measure() //blittery waterfalls!
 
-  y += time(.1) //blittery waterfalls!
-
-  m = .3 + triangle(t1) * .2
+  m = .3 + triangle(t1 + getBassLevel()) * .2
   h = sin(t2)
   h += (wave((xorf(5 * (x - .5), 5 * (y - .5))) / 50 *
       (triangle(t3) * 10 + 4 * sin(t4)) % m))

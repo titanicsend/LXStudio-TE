@@ -2,18 +2,15 @@ package titanicsend.pattern.pixelblaze;
 
 import heronarts.lx.LX;
 import heronarts.lx.model.LXPoint;
-import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
+import titanicsend.pattern.TEAudioPattern;
 import titanicsend.pattern.TEPattern;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
-public class PixelblazePatternParallel extends TEPattern {
+public class PixelblazePatternParallel extends TEAudioPattern {
   public static final int N_THREADS = 4;
   private ArrayList<Wrapper> wrappers = new ArrayList<>();
 
@@ -30,12 +27,12 @@ public class PixelblazePatternParallel extends TEPattern {
       for (int i = 0; i < model.edgePoints.size(); i += chunksize) {
         List<LXPoint> chunk = model.edgePoints.subList(i, Math.min(i + chunksize, model.edgePoints.size() - 1));
         LXPoint[] chunkPoints = new LXPoint[chunk.size()];
-        wrappers.add(Wrapper.fromResource("neon_ice", model.edgePoints.toArray(chunkPoints), colors));
+        wrappers.add(Wrapper.fromResource("neon_ice", this, model.edgePoints.toArray(chunkPoints), colors));
       }
 
       //one for every panel
       for (TEPanelModel panelModel : model.panelsById.values()) {
-        wrappers.add(Wrapper.fromResource("xorcery", panelModel.points, colors));
+        wrappers.add(Wrapper.fromResource("xorcery", this, panelModel.points, colors));
       }
 
       LX.log("parallel chunks=" + wrappers.size());
@@ -50,7 +47,8 @@ public class PixelblazePatternParallel extends TEPattern {
     if (wrappers.size() == 0)
       return;
     try {
-
+      updateGradients();
+      computeAudio(deltaMs);
       ArrayList<Future<Void>> futures = new ArrayList<>(wrappers.size());
       for (Wrapper wrapper : wrappers) {
         futures.add(es.submit((Callable<Void>) () -> {
