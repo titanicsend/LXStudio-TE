@@ -3,6 +3,7 @@ package titanicsend.model;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
 import titanicsend.app.TEVirtualColor;
+import titanicsend.util.TEMath;
 
 import java.util.*;
 
@@ -23,10 +24,7 @@ public class TEVertex extends LXVector {
   }
 
   public static double distance(LXVector v, float x, float y, float z) {
-    float dx = v.x - x;
-    float dy = v.y - y;
-    float dz = v.z - z;
-    return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    return TEMath.distance(v.x, v.y, v.z, x, y, z);
   }
 
   public String repr() {

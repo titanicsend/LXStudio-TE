@@ -3,6 +3,7 @@ package titanicsend.model;
 import java.util.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.stream.Collectors;
 
 import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
@@ -18,6 +19,7 @@ public class TEWholeModel extends LXModel {
   public HashMap<Integer, TEVertex> vertexesById;
   public HashMap<String, TEEdgeModel> edgesById;
   public HashMap<String, TEPanelModel> panelsById;
+  private final HashMap<TEPanelSection, Set<TEPanelModel>> panelsBySection;
   public HashMap<String, List<TEPanelModel>> panelsByFlavor;
   public HashMap<String, TELaserModel> lasersById;
   public List<LXPoint> edgePoints; // Points belonging to edges
@@ -59,6 +61,7 @@ public class TEWholeModel extends LXModel {
     public HashMap<Integer, TEVertex> vertexesById;
     public HashMap<String, TEEdgeModel> edgesById;
     public HashMap<String, TEPanelModel> panelsById;
+    public HashMap<TEPanelSection, Set<TEPanelModel>> panelsBySection;
     public HashMap<String, List<TEPanelModel>> panelsByFlavor;
     public HashMap<String, TELaserModel> lasersById;
     public List<TEBox> boxes;
@@ -77,6 +80,7 @@ public class TEWholeModel extends LXModel {
     this.vertexesById = geometry.vertexesById;
     this.edgesById = geometry.edgesById;
     this.panelsById = geometry.panelsById;
+    this.panelsBySection = geometry.panelsBySection;
     this.panelsByFlavor = geometry.panelsByFlavor;
     this.lasersById = geometry.lasersById;
     this.boxes = geometry.boxes;
@@ -205,6 +209,7 @@ public class TEWholeModel extends LXModel {
 
   private static void loadPanels(Geometry geometry) {
     geometry.panelsById = new HashMap<String, TEPanelModel>();
+    geometry.panelsBySection = new HashMap<>();
     geometry.panelsByFlavor = new HashMap<>();
 
     Scanner s = loadFilePrivate(geometry.subdir + "/panels.txt");
@@ -251,6 +256,11 @@ public class TEWholeModel extends LXModel {
       e2.connectedPanels.add(p);
 
       geometry.panelsById.put(id, p);
+
+      if (!geometry.panelsBySection.containsKey(p.getSection()))
+        geometry.panelsBySection.put(p.getSection(), new HashSet<>());
+      geometry.panelsBySection.get(p.getSection()).add(p);
+
       String flavor = p.flavor;
       if (!geometry.panelsByFlavor.containsKey(flavor))
         geometry.panelsByFlavor.put(flavor, new ArrayList<>());
@@ -402,4 +412,31 @@ public class TEWholeModel extends LXModel {
 
     return geometry;
   }
+
+  public Set<TEPanelModel> getPanelsBySection(TEPanelSection section) {
+    return panelsBySection.get(section);
+  }
+
+  public Set<TEPanelModel> getPanelsBySections(Collection<TEPanelSection> sections) {
+    return panelsBySection.entrySet().stream()
+            .filter(entry -> sections.contains(entry.getKey()))
+            .map(Map.Entry::getValue)
+            .flatMap(Set::stream)
+            .collect(Collectors.toSet());
+  }
+
+  public Set<TEPanelModel> getLeftPanels() {
+    return getPanelsBySections(List.of(TEPanelSection.FRONT_LEFT,
+            TEPanelSection.FRONT_LEFT_SINGLE, TEPanelSection.SIDE_LEFT));
+  }
+
+  public Set<TEPanelModel> getRightPanels() {
+    return getPanelsBySections(List.of(TEPanelSection.FRONT_RIGHT,
+            TEPanelSection.FRONT_RIGHT_SINGLE, TEPanelSection.SIDE_RIGHT));
+  }
+
+  public Set<TEPanelModel> getAllPanels() {
+    return new HashSet<>(panelsById.values());
+  }
+
 }

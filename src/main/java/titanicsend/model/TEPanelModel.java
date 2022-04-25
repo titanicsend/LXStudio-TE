@@ -149,4 +149,22 @@ public class TEPanelModel extends TEModel {
     }
     return rv;
   }
+
+  // TODO Replace this with something smarter
+  // This is a really lazy/sloppy way of doing this, though if we're not changing the model it should be fine
+  public TEPanelSection getSection() {
+    if (panelType.equals(SOLID)) {
+      return TEPanelSection.BACK;
+    }
+
+    if (centroid.x >= -1200000) {
+      return centroid.z < 0 ? TEPanelSection.SIDE_RIGHT : TEPanelSection.SIDE_LEFT;
+    }
+
+    if (centroid.y < 5000000) {
+      return centroid.z < 0 ? TEPanelSection.FRONT_RIGHT : TEPanelSection.FRONT_LEFT;
+    } else {
+      return centroid.z < 0 ? TEPanelSection.FRONT_RIGHT_SINGLE : TEPanelSection.FRONT_LEFT_SINGLE;
+    }
+  }
 }

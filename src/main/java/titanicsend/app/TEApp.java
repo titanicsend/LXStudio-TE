@@ -34,6 +34,7 @@ import titanicsend.pattern.jeff.*;
 import titanicsend.pattern.mike.*;
 import titanicsend.pattern.tmc.*;
 import titanicsend.pattern.tom.*;
+import titanicsend.pattern.yoffa.*;
 
 
 public class TEApp extends PApplet implements LXPlugin  {
@@ -83,6 +84,9 @@ public class TEApp extends PApplet implements LXPlugin  {
 
     // Patterns/effects that currently conform to art direction standards
     lx.registry.addEffect(titanicsend.effect.BasicEffect.class);
+    lx.registry.addPattern(PulseCenterPattern.class);
+    lx.registry.addPattern(PulseSidePattern.class);
+    lx.registry.addPattern(PulseDoublePattern.class);
 
     // Patterns that are in development towards meeting standards
     lx.registry.addPattern(AlternatingPattern.class);
@@ -100,6 +104,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPattern(HandTracker.class);
 
     // Patterns that will not aspire to art direction standards
+    lx.registry.addPattern(EddiePattern.class);
 
     // Examples for teaching and on-boarding developers
     lx.registry.addPattern(BasicRainbowPattern.class);

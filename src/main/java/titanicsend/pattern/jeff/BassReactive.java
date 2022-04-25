@@ -51,10 +51,7 @@ public class BassReactive extends TEAudioPattern {
 
 
     @Override
-    public void run(double deltaMs) {
-        // Grab recent audio and run analysis, updating `bassRatio`
-        computeAudio(deltaMs);
-
+    public void runTEAudioPattern(double deltaMs) {
         /* Scale the bassRatio by the Energy param and some selected constants
          * to give a good height in 0..1 controlled by the Energy param. See:
          * https://www.desmos.com/calculator/bee9cgf5mb to understand selected
