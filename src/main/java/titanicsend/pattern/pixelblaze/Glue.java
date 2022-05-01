@@ -30,6 +30,6 @@ public class Glue {
   }
 
   public static int setAlpha(int color, float a) {
-    return Math.min(255, (int)(a * 255.0F)) << 24 | (color & LXColor.RGB_MASK);
+    return Math.max(0,Math.min(255, (int)(a * 255.0F))) << 24 | (color & LXColor.RGB_MASK);
   }
 }

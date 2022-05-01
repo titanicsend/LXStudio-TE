@@ -1,8 +1,11 @@
 package titanicsend.pattern.pixelblaze;
 
 import heronarts.lx.LX;
+import heronarts.lx.model.LXPoint;
+import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.pattern.TEAudioPattern;
 
 import javax.script.ScriptException;
@@ -13,6 +16,9 @@ public class PixelblazePattern extends TEAudioPattern {
   private Wrapper wrapper;
   long lastLogMs = 0; //to prevent spamming the logs with script errors
   HashMap<String, LXParameter> patternParameters = new HashMap<>();
+
+  BooleanParameter enableEdges;
+  BooleanParameter enablePanels;
 
   /**
    * This should be overridden in subclasses to load a different source
@@ -25,13 +31,43 @@ public class PixelblazePattern extends TEAudioPattern {
 
   public PixelblazePattern(LX lx) {
     super(lx);
+    enableEdges = new BooleanParameter("Edges", true);
+    enablePanels = new BooleanParameter("Panels", true);
+
+    LXParameterListener modelPointsListener = lxParameter -> {
+      if (wrapper != null) {
+        try {
+          clearPixels();
+          wrapper.setPoints(getModelPoints());
+        } catch (Exception e) {
+          LX.log("Error updating points:" + e.getMessage());
+        }
+      }
+    };
+    enableEdges.addListener(modelPointsListener);
+    enablePanels.addListener(modelPointsListener);
+
+    addParameter("enableEdges", enableEdges);
+    addParameter("enablePanels", enablePanels);
 
     try {
-      wrapper = Wrapper.fromResource(getScriptName(), this, model.points, colors);
+      wrapper = Wrapper.fromResource(getScriptName(), this, getModelPoints(), colors);
       wrapper.load();
     } catch (Exception e) {
       LX.log("Error initializing Pixelblaze script:" + e.getMessage());
     }
+  }
+
+  private LXPoint[] getModelPoints() {
+    LXPoint[] points = new LXPoint[0];
+    if (enableEdges.getValueb() && enablePanels.getValueb()) {
+      points = model.points;
+    } else if (enableEdges.getValueb()) {
+      points = model.edgePoints.toArray(points);
+    } else if (enablePanels.getValueb()) {
+      points = model.panelPoints.toArray(points);
+    }
+    return points;
   }
 
   /**
