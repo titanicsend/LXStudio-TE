@@ -3,7 +3,8 @@ This glue file implements a bunch of Pixelblaze compatibility APIs and parts of 
  */
 var Glue = Java.type("titanicsend.pattern.pixelblaze.Glue");
 var LXColor = Java.type("heronarts.lx.color.LXColor");
-var ColorType = Java.type("titanicsend.pattern.TEPattern.ColorType")
+var ColorType = Java.type("titanicsend.pattern.TEPattern.ColorType");
+var Noise = Java.type("heronarts.lx.utils.Noise");
 var System = Java.type("java.lang.System");
 
 /* Globals available in pattern code */
@@ -18,7 +19,7 @@ var __lastControls = {};
 
 /* Math functions and constants as globals */
 ["E", "LN2", "LN10", "LOG2E", "LOG10E", "PI", "SQRT1_2", "SQRT2", "abs", "acos", "acosh", "asin", "asinh",
-"atan", "atanh", "atan2", "cbrt", "ceil", "clz32", "cos", "cosh", "exp", "expm1", "floor", "fround", "hypot",
+"atan", "atanh", "atan2", "cbrt", "ceil", "clz32", "cos", "cosh", "exp", "expm1", "floor", "fround",
 "imul", "log", "log1p", "log10", "log2", "max", "min", "pow", "round", "sign", "sin", "sinh", "sqrt",
 "tan", "tanh", "trunc"].forEach(k => global[k] = Math[k])
 
@@ -64,6 +65,10 @@ function clamp(v, min, max) {
   return Math.min(max, Math.max(min, v))
 }
 
+function hypot(x, y) {
+  return sqrt(x*x + y*y)
+}
+
 /* Color & Painting API */
 
 function hsv(h, s, v) {
@@ -88,15 +93,15 @@ function swatch(v) {
 }
 
 function getHue() {
-  return LXColor.h(__color)
+  return LXColor.h(__color)/360
 }
 
 function getSaturation() {
-  return LXColor.s(__color)
+  return LXColor.s(__color)/100
 }
 
 function getBrightness() {
-  return LXColor.b(__color)
+  return LXColor.b(__color)/100
 }
 
 function setAlpha(v) {
@@ -153,7 +158,7 @@ function glueRegisterControls() {
   for (var key in global) {
     if (typeof global[key] == "function") {
       if (key.startsWith("slider")) {
-        System.out.println("found " + key);
+        // System.out.println("found " + key);
         let label = sentenceCase(key.substring(6))
         __pattern.addSlider(key, label)
       }

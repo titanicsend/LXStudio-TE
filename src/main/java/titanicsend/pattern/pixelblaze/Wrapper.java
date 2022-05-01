@@ -1,12 +1,11 @@
 package titanicsend.pattern.pixelblaze;
 
-import javax.script.Invocable;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
+import javax.script.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 
 import heronarts.lx.LX;
 import heronarts.lx.model.LXPoint;
@@ -15,6 +14,28 @@ import titanicsend.pattern.TEAudioPattern;
 import titanicsend.pattern.TEPattern;
 
 public class Wrapper {
+
+  //NOTE these are thread-safe, if used with separate bindings
+  //https://stackoverflow.com/a/30159424/910094
+//  static final ScriptEngine engine;
+//  static final Invocable invocable;
+//  static final Compilable compilingEngine;
+//  static HashMap<String, CompiledScript> scripts = new HashMap<>();
+//  static {
+//    NashornScriptEngineFactory factory = new NashornScriptEngineFactory();
+//    engine = factory.getScriptEngine("--language=es6");
+//    invocable = (Invocable)engine;
+//    compilingEngine = (Compilable) engine;
+//  }
+//
+//  static synchronized CompiledScript compile(String pbClass) {
+//    File file = new File("resources/pixelblaze/" + pbClass + ".js");
+//    String js = Files.readString(file.toPath());
+//    lastModified = file.lastModified();
+//    js = js.replaceAll("\\bexport\\b", "");
+//    return compilingEngine.compile(js);
+//  }
+
 
   private static String getJsFromFile(String pbClass) throws IOException {
     return Files.readString(Path.of("resources/pixelblaze/" + pbClass + ".js"));
@@ -82,6 +103,20 @@ public class Wrapper {
 
     invocable.invokeFunction("glueBeforeRender", deltaMs, System.currentTimeMillis(), points, colors);
     invocable.invokeFunction("glueRender");
+  }
+
+  /**
+   * Updates the points that the pattern will operate on, reloading if necessary.
+   * @param points
+   * @throws ScriptException
+   * @throws IOException
+   * @throws NoSuchMethodException
+   */
+  public void setPoints(LXPoint[] points) throws ScriptException, IOException, NoSuchMethodException {
+    if (this.points == points)
+      return;
+    this.points = points;
+    load();
   }
 
 }
