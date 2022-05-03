@@ -44,7 +44,7 @@ public class ArtStandards extends TEAudioPattern {
         addParameter("energy", energy);
     }
 
-    public void run(double deltaMs) {
+    public void runTEAudioPattern(double deltaMs) {
         /* Inside run(), and before iterating over the LED points, we want to do
          * anything that should be done only once per frame. We're targeting about
          * 70 frames per second, so this is a good point to check in on things
@@ -74,9 +74,6 @@ public class ArtStandards extends TEAudioPattern {
         float measure = (float) measure();
 
         // Art standards: Use the sound data, and incorporate the Energy parameter.
-
-        // Update and retrieve trebleRatio
-        computeAudio(deltaMs);
 
         /* We'll sparkle when treble is high compared to recent treble levels.
          * Scale the bassRatio by the Energy param and some selected constants

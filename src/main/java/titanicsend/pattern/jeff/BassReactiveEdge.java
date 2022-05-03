@@ -51,7 +51,7 @@ public class BassReactiveEdge extends TEAudioPattern {
         addParameter("bands", bassBandCountP);
     }
 
-    public void run(double deltaMs) {
+    public void runTEAudioPattern(double deltaMs) {
         clearPixels();  // Sets all pixels to transparent for starters
 
         /* Get the average bass level of some low frequency bands.
@@ -59,9 +59,6 @@ public class BassReactiveEdge extends TEAudioPattern {
          * the user can select how many of the lowest bands to average.
          */
         bassBandCount = bassBandCountP.getValuei();
-
-        // Update and retrieve `bassLevel`
-        computeAudio(deltaMs);
 
         for (TEEdgeModel edge : model.edgesById.values()) {
             // Max width of the lit section of this edge, from 0 to 200 percent of its length

@@ -2,8 +2,6 @@ package titanicsend.model;
 
 import java.util.*;
 
-import heronarts.lx.LX;
-import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
 import titanicsend.app.TEVirtualColor;
@@ -148,5 +146,24 @@ public class TEPanelModel extends TEModel {
       rv.addAll(e.connectedPanels);
     }
     return rv;
+  }
+
+  // See enum class for section description
+  // TODO Replace this with something smarter
+  // This is a really lazy/sloppy way of doing this, though if we're not changing the model it should be fine
+  public TEPanelSection getSection() {
+    if (panelType.equals(SOLID)) {
+      return TEPanelSection.PORT;
+    }
+
+    if (centroid.x >= -1200000) {
+      return centroid.z < 0 ? TEPanelSection.FORE : TEPanelSection.AFT;
+    }
+
+    if (centroid.y < 5000000) {
+      return centroid.z < 0 ? TEPanelSection.STARBOARD_FORE : TEPanelSection.STARBOARD_AFT;
+    } else {
+      return centroid.z < 0 ? TEPanelSection.STARBOARD_FORE_SINGLE : TEPanelSection.STARBOARD_AFT_SINGLE;
+    }
   }
 }

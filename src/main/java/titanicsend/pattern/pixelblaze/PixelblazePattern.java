@@ -98,13 +98,12 @@ public class PixelblazePattern extends TEAudioPattern {
     return 0;
   }
 
-  public void run(double deltaMs) {
+  public void runTEAudioPattern(double deltaMs) {
     if (wrapper == null)
       return;
 
     try {
       updateGradients();
-      computeAudio(deltaMs);
       wrapper.reloadIfNecessary();
       wrapper.render(deltaMs);
     } catch (ScriptException | NoSuchMethodException sx) {

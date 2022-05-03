@@ -55,6 +55,16 @@ public class TEMath {
         return Math.pow(basis, 1. / scaledPow);
     }
 
+    /**
+     *  Distance between two arbitrary three-dimensional points
+     */
+    public static double distance(double x1, double y1, double z1, double x2, double y2, double z2) {
+        double dx = x1 - x2;
+        double dy = y1 - y2;
+        double dz = z1 - z2;
+        return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+
     /** Exponential moving average
      * https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average
      */

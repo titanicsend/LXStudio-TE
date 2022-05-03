@@ -51,6 +51,14 @@ public abstract class TEAudioPattern extends TEPattern {
         bassBandCount = 2;
     }
 
+    @Override
+    protected void run(double deltaMs) {
+        computeAudio(deltaMs);
+        runTEAudioPattern(deltaMs);
+    }
+
+    protected abstract void runTEAudioPattern(double deltaMs);
+
     /** Call computeAudio() in a TEAudioPattern's run() once per frame to
      * update values that analyze and process the audio stream.
      *
