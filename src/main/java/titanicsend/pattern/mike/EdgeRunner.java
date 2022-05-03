@@ -182,12 +182,11 @@ public class EdgeRunner extends TEPattern {
 
     updateVirtualColors(deltaMsec);
     if (this.mover.click()) {
-      //FIXME needs new version of LX
-//      for (int i = 0; i < mover.numLoops(); i++)
-//        for (Runner runner : this.runners) {
-//          this.mark(runner);
-//          this.move(runner);
-//        }
+      for (int i = 0; i < mover.numLoops(); i++)
+        for (Runner runner : this.runners) {
+          this.mark(runner);
+          this.move(runner);
+        }
     }
     if (this.spawner.click()) {
       while(this.runners.size() > this.numRunners.getValuei()) {
