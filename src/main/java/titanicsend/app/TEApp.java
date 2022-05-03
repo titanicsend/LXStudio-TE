@@ -32,6 +32,7 @@ import titanicsend.pattern.alex.*;
 import titanicsend.pattern.cesar.*;
 import titanicsend.pattern.jeff.*;
 import titanicsend.pattern.mike.*;
+import titanicsend.pattern.pixelblaze.*;
 import titanicsend.pattern.tmc.*;
 import titanicsend.pattern.tom.*;
 import titanicsend.pattern.yoffa.*;
@@ -98,6 +99,9 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPattern(EdgeRunner.class);
     lx.registry.addPattern(ModelDebugger.class);
     lx.registry.addPattern(ModuleEditor.class);
+    lx.registry.addPattern(PixelblazePattern.class);
+    lx.registry.addPattern(PBAudio1.class);
+    lx.registry.addPattern(PixelblazePatternParallel.class);
     lx.registry.addPattern(SimpleSolidEdgePattern.class);
     lx.registry.addPattern(SimpleSolidPanelPattern.class);
     lx.registry.addPattern(PulsingTriangles.class);

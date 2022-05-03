@@ -110,6 +110,14 @@ public class TEWholeModel extends LXModel {
            this.points.length + " pixels");
   }
 
+  public boolean isEdgePoint(int index) {
+    return index >= edgePoints.get(0).index && index <= edgePoints.get(edgePoints.size()-1).index;
+  }
+
+  public boolean isPanelPoint(int index) {
+    return index >= panelPoints.get(0).index && index <= panelPoints.get(panelPoints.size()-1).index;
+  }
+
   private static Scanner loadFilePrivate(String filename) {
     try {
       File f = new File(filename);

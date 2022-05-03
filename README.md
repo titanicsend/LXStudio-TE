@@ -3,6 +3,12 @@ Titanic's End LXStudio
 
 You may wish to get context first from the [Lighting Design Doc](https://docs.google.com/document/d/1YK9umrhOodwnRWGRzYOR1iOocrO6Cf9ZpHF7FWgBKKI/edit#).
 
+## Coordinate System
+
+![JSON File Types](assets/vehicle-axes-orientation.png)
+
+To understand the point, edge, and panel naming scheme, see the [Visual Map tab](https://docs.google.com/spreadsheets/d/1C7VPybckgH9bWGxwtgMN_Ij1T__c5qc-k7yIhG-592Y/edit#gid=877106241) of the Modules, Edges and Panels sheet.
+
 ## Learning LX and Developing Patterns
 
 TE is using the full IDE-ready distribution instead of the P4 Processing Applet version. Don't struggle - ask questions in [#Lighting on Slack](https://titanicsend.slack.com/archives/C02L0MDQB2M).
