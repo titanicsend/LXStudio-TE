@@ -12,7 +12,7 @@ import java.io.IOException;
 @LXCategory("Audio Examples")
 public class EddiePattern extends TEPattern {
 
-    private static final String IMG_PATH = "src/main/java/titanicsend/pattern/yoffa/assets/eddie.jpg";
+    private static final String IMG_PATH = "assets/Pattern/eddie.jpg";
 
     private final ImagePainter eddiePainter;
 
