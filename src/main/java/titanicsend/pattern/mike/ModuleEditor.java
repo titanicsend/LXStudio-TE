@@ -295,10 +295,9 @@ public class ModuleEditor extends TEPattern implements UIDeviceControls<ModuleEd
   @Override
   public void run(double deltaMsec) {
     if (this.mover.click()) {
-      //FIXME needs new version of LX
-//      for (int i = 0; i < mover.numLoops(); i++) {
-//        this.moveDots();
-//      }
+      for (int i = 0; i < mover.numLoops(); i++) {
+        this.moveDots();
+      }
     }
   }
 }
