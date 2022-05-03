@@ -23,8 +23,8 @@ public class EddiePattern extends TEPattern {
 
     @Override
     public void onActive() {
-        eddiePainter.paint(model.getPanelsBySection(TEPanelSection.FRONT_LEFT));
-        eddiePainter.paint(model.getPanelsBySection(TEPanelSection.FRONT_RIGHT));
+        eddiePainter.paint(model.getPanelsBySection(TEPanelSection.STARBOARD_AFT));
+        eddiePainter.paint(model.getPanelsBySection(TEPanelSection.STARBOARD_FORE));
     }
 
     @Override

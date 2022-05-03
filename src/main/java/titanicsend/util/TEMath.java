@@ -58,10 +58,10 @@ public class TEMath {
     /**
      *  Distance between two arbitrary three-dimensional points
      */
-    public static double distance(float x1, float y1, float z1, float x2, float y2, float z2) {
-        float dx = x1 - x2;
-        float dy = y1 - y2;
-        float dz = z1 - z2;
+    public static double distance(double x1, double y1, double z1, double x2, double y2, double z2) {
+        double dx = x1 - x2;
+        double dy = y1 - y2;
+        double dz = z1 - z2;
         return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 

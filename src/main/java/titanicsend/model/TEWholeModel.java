@@ -434,13 +434,13 @@ public class TEWholeModel extends LXModel {
   }
 
   public Set<TEPanelModel> getLeftPanels() {
-    return getPanelsBySections(List.of(TEPanelSection.FRONT_LEFT,
-            TEPanelSection.FRONT_LEFT_SINGLE, TEPanelSection.SIDE_LEFT));
+    return getPanelsBySections(List.of(TEPanelSection.STARBOARD_AFT,
+            TEPanelSection.STARBOARD_AFT_SINGLE, TEPanelSection.AFT));
   }
 
   public Set<TEPanelModel> getRightPanels() {
-    return getPanelsBySections(List.of(TEPanelSection.FRONT_RIGHT,
-            TEPanelSection.FRONT_RIGHT_SINGLE, TEPanelSection.SIDE_RIGHT));
+    return getPanelsBySections(List.of(TEPanelSection.STARBOARD_FORE,
+            TEPanelSection.STARBOARD_FORE_SINGLE, TEPanelSection.FORE));
   }
 
   public Set<TEPanelModel> getAllPanels() {

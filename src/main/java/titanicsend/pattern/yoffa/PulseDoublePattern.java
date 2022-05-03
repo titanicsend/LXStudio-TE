@@ -26,8 +26,8 @@ public class PulseDoublePattern extends TEAudioPattern {
     public void runTEAudioPattern(double deltaMs) {
         updateGradients();
 
-        float znLeft = calcCenterZn(TEPanelSection.FRONT_LEFT);
-        float znRight = calcCenterZn(TEPanelSection.FRONT_RIGHT);
+        float znLeft = calcCenterZn(TEPanelSection.STARBOARD_AFT);
+        float znRight = calcCenterZn(TEPanelSection.STARBOARD_FORE);
 
         panelPulser.pulsePanels(this, model.getLeftPanels(), energy.getNormalized(), 0, 0, znLeft);
         panelPulser.pulsePanels(this, model.getRightPanels(), energy.getNormalized(), 0, 0, znRight);
