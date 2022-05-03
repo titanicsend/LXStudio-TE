@@ -43,12 +43,11 @@ public class PixelblazePatternParallel extends TEAudioPattern {
     }
   }
 
-  public void run(double deltaMs) {
+  public void runTEAudioPattern(double deltaMs) {
     if (wrappers.size() == 0)
       return;
     try {
       updateGradients();
-      computeAudio(deltaMs);
       ArrayList<Future<Void>> futures = new ArrayList<>(wrappers.size());
       for (Wrapper wrapper : wrappers) {
         futures.add(es.submit((Callable<Void>) () -> {

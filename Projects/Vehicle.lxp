@@ -1,6 +1,6 @@
 {
   "version": "0.4.1-SNAPSHOT",
-  "timestamp": 1650925485900,
+  "timestamp": 1651593309323,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -882,7 +882,7 @@
                 "deviceVersion": -1
               },
               {
-                "id": 1737,
+                "id": 1767,
                 "class": "titanicsend.pattern.yoffa.PulseCenterPattern",
                 "internal": {
                   "modulationColor": 0,
@@ -897,7 +897,7 @@
                 },
                 "children": {
                   "modulation": {
-                    "id": 1738,
+                    "id": 1768,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0
@@ -914,7 +914,7 @@
                 "deviceVersion": -1
               },
               {
-                "id": 1739,
+                "id": 1769,
                 "class": "titanicsend.pattern.yoffa.PulseSidePattern",
                 "internal": {
                   "modulationColor": 0,
@@ -929,7 +929,7 @@
                 },
                 "children": {
                   "modulation": {
-                    "id": 1740,
+                    "id": 1770,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0
@@ -946,7 +946,7 @@
                 "deviceVersion": -1
               },
               {
-                "id": 1878,
+                "id": 1771,
                 "class": "titanicsend.pattern.yoffa.PulseDoublePattern",
                 "internal": {
                   "modulationColor": 0,
@@ -961,38 +961,7 @@
                 },
                 "children": {
                   "modulation": {
-                    "id": 1879,
-                    "class": "heronarts.lx.modulation.LXModulationEngine",
-                    "internal": {
-                      "modulationColor": 0
-                    },
-                    "parameters": {
-                      "label": "Modulation"
-                    },
-                    "children": {},
-                    "modulators": [],
-                    "modulations": [],
-                    "triggers": []
-                  }
-                },
-                "deviceVersion": -1
-              },
-              {
-                "id": 1906,
-                "class": "titanicsend.pattern.yoffa.EddiePattern",
-                "internal": {
-                  "modulationColor": 0,
-                  "expanded": true,
-                  "modulationExpanded": false,
-                  "autoCycleEligible": true
-                },
-                "parameters": {
-                  "label": "EddiePattern",
-                  "recall": false
-                },
-                "children": {
-                  "modulation": {
-                    "id": 1907,
+                    "id": 1772,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0
@@ -1020,7 +989,7 @@
             "parameters": {
               "label": "Combo FG",
               "arm": false,
-              "selected": true,
+              "selected": false,
               "enabled": true,
               "cue": false,
               "fader": 1.0,
