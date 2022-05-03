@@ -62,7 +62,7 @@ Either go to https://adoptium.net/installation/ or, on a Mac with Homebrew, `bre
 4. Use Maven to execute the program instead of the `java` command:
    ```shell
    mvn clean compile  # Cleaning and compiling is optional, depending on your needs
-   mvn exec:java@Main vehicle Vehicle.lxp
+   mvn exec:java@Main -Dexec.args="vehicle Vehicle.lxp"
    ```
 
    Fun fact: The "Main" target isn't defined in the POM to have arguments, but
