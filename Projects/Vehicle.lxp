@@ -625,7 +625,7 @@
             "parameters": {
               "label": "Edge FG",
               "arm": false,
-              "selected": false,
+              "selected": true,
               "enabled": true,
               "cue": false,
               "fader": 1.0,
@@ -1054,7 +1054,7 @@
               "selected": false,
               "enabled": false,
               "cue": false,
-              "fader": 0.7795275590551181,
+              "fader": 0.5000000027939677,
               "crossfadeGroup": 0,
               "blendMode": 4,
               "midiMonitor": false,
@@ -1252,6 +1252,124 @@
                 "children": {
                   "modulation": {
                     "id": 1215,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 1994,
+                "class": "titanicsend.pattern.jeff.Smoke",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false,
+                  "autoCycleEligible": true
+                },
+                "parameters": {
+                  "label": "Smoke",
+                  "recall": false,
+                  "color/brightness": 0.0,
+                  "color/saturation": 0.0,
+                  "color/hue": 0.0,
+                  "color/mode": 1,
+                  "color/index": 3,
+                  "energy": 1.0,
+                  "contrast": 1.0,
+                  "detail": 0.85,
+                  "scale": 1.0,
+                  "audioResponsiveness": 1.0
+                },
+                "children": {
+                  "modulation": {
+                    "id": 1995,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              }
+            ]
+          },
+          {
+            "id": 2049,
+            "class": "heronarts.lx.mixer.LXChannel",
+            "internal": {
+              "modulationColor": 0,
+              "controlsExpanded": true
+            },
+            "parameters": {
+              "label": "Masks",
+              "arm": false,
+              "selected": false,
+              "enabled": false,
+              "cue": false,
+              "fader": 1.0,
+              "crossfadeGroup": 0,
+              "blendMode": 1,
+              "midiMonitor": false,
+              "midiChannel": 16,
+              "viewEnabled": false,
+              "viewSelector": "",
+              "viewNormalization": 0,
+              "autoCycleEnabled": false,
+              "autoCycleMode": 0,
+              "autoCycleTimeSecs": 60.0,
+              "transitionEnabled": false,
+              "transitionTimeSecs": 5.0,
+              "transitionBlendMode": 0,
+              "focusedPattern": 0,
+              "triggerPatternCycle": false
+            },
+            "children": {},
+            "effects": [],
+            "clips": [],
+            "patternIndex": 0,
+            "patterns": [
+              {
+                "id": 2087,
+                "class": "titanicsend.pattern.jeff.EdgeSymmetry",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false,
+                  "autoCycleEligible": true
+                },
+                "parameters": {
+                  "label": "EdgeSymmetry",
+                  "recall": false,
+                  "color/brightness": 100.0,
+                  "color/saturation": 0.0,
+                  "color/hue": 0.0,
+                  "color/mode": 1,
+                  "color/index": 1,
+                  "energy": 0.3599999988824129,
+                  "width": 0.27999999932944775,
+                  "height": 0.5400000011175871,
+                  "mask": true
+                },
+                "children": {
+                  "modulation": {
+                    "id": 2088,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0
