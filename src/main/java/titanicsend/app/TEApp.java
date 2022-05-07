@@ -108,6 +108,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPattern(SimpleSolidPanelPattern.class);
     lx.registry.addPattern(PulsingTriangles.class);
     lx.registry.addPattern(HandTracker.class);
+    lx.registry.addPattern(Smoke.class);
 
     // Patterns that will not aspire to art direction standards
     lx.registry.addPattern(EddiePattern.class);
@@ -118,6 +119,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPattern(BassReactiveEdge.class);
     lx.registry.addPattern(TempoReactiveEdge.class);
     lx.registry.addPattern(ArtStandards.class);
+    lx.registry.addPattern(EdgeSymmetry.class);
 
 
     int myGigglePixelID = 73;  // Looks like "TE"

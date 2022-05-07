@@ -19,6 +19,7 @@ public abstract class TEAudioPattern extends TEPattern {
     // Fractions in 0..1 for the instantaneous frequency level this frame.
     // If we find this useful and track many more bands, a collection of ratio
     // tracker objects would make sense.
+    protected double volumeLevel;
     protected double bassLevel;
     protected double trebleLevel;
 
@@ -28,6 +29,7 @@ public abstract class TEAudioPattern extends TEPattern {
 
     // Accumulate recent frequency band measurements into an exponentially
     // weighted moving average.
+    protected TEMath.EMA avgVolume = new TEMath.EMA(0.5, .01);
     protected TEMath.EMA avgBass = new TEMath.EMA(0.2, .01);
     protected TEMath.EMA avgTreble = new TEMath.EMA(0.2, .01);
 
@@ -43,6 +45,7 @@ public abstract class TEAudioPattern extends TEPattern {
      *
      * Values depend greatly on the audio content, but 0.2 to 3 are common.
      */
+    protected double volumeRatio = .2;
     protected double bassRatio = .2;
     protected double trebleRatio = .2;
 
@@ -65,6 +68,9 @@ public abstract class TEAudioPattern extends TEPattern {
      * @param deltaMs elapsed time since last frame, as provided in run(deltaMs)
      */
     public void computeAudio(double deltaMs) {
+        // Instantaneous normalized (0..1) volume level
+        volumeLevel = eq.getNormalizedf();
+
         /* Average bass level of the bottom `bassBands` frequency bands.
          * The default lx.engine.audio.meter breaks up sound into 16 bands,
          * so a `bassBandCount` of 2 averages the bottom 12.5% of frequencies.
@@ -77,6 +83,7 @@ public abstract class TEAudioPattern extends TEPattern {
         /* Compute the ratio of the current instantaneous frequency levels to
          * their new, updated moving averages.
          */
+        volumeRatio = volumeLevel / avgVolume.update(volumeLevel, deltaMs);
         bassRatio = bassLevel / avgBass.update(bassLevel, deltaMs);
         trebleRatio = trebleLevel / avgTreble.update(trebleLevel, deltaMs);
     }
@@ -87,6 +94,10 @@ public abstract class TEAudioPattern extends TEPattern {
 
     public double getTrebleLevel() {
         return trebleLevel;
+    }
+
+    public float getVolumeRatiof() {
+        return (float) volumeRatio;
     }
 
     public double getBassRatio() {
