@@ -1,6 +1,6 @@
 {
   "version": "0.4.1-SNAPSHOT",
-  "timestamp": 1651593309323,
+  "timestamp": 1652135725470,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -962,6 +962,79 @@
                 "children": {
                   "modulation": {
                     "id": 1772,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 1916,
+                "class": "titanicsend.pattern.yoffa.shaders.basicpatterns.GridPattern",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false,
+                  "autoCycleEligible": true
+                },
+                "parameters": {
+                  "label": "GridPattern",
+                  "recall": false,
+                  "Forward Speed": 0.6000000610947609,
+                  "Sideways Speed": 0.0,
+                  "Color Change Speed": 0.0,
+                  "Alpha Waves": false,
+                  "Glowing": false
+                },
+                "children": {
+                  "modulation": {
+                    "id": 1917,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 1918,
+                "class": "titanicsend.pattern.yoffa.shaders.basicpatterns.NeonHeartPattern",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false,
+                  "autoCycleEligible": true
+                },
+                "parameters": {
+                  "label": "NeonHeartPattern",
+                  "recall": false,
+                  "Speed": -0.5,
+                  "Scale": 0.012,
+                  "Radius": 0.012,
+                  "Thickness": 0.0035,
+                  "Intensity": 1.3,
+                  "Length": 0.25
+                },
+                "children": {
+                  "modulation": {
+                    "id": 1919,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0
