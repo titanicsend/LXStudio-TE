@@ -84,11 +84,11 @@ rm -r ~/.m2
 Once it's running, go tell Slack so we can celebrate with you and maybe give you a tour.
 Or, if you prefer self-guided tours:
 
-    * Read the [LX Studio Wiki](https://github.com/heronarts/LXStudio/wiki)
-    * Play with the UI until you have a modulator controlling the parameter for a pattern, and an effect applied on top.
-       * See [this guide](https://github.com/tracyscott/RainbowStudio/blob/master/LXStudioUserGuide.md) from another memorable Burning Man art piece
-    * Define a new fixture in the UI
-    * [Optional] Save your playgorund as a new project with your name: `Playground <YourName>.lxp`. You can mess this project up and experiment broadly.
+ * Read the [LX Studio Wiki](https://github.com/heronarts/LXStudio/wiki)
+ * Play with the UI until you have a modulator controlling the parameter for a pattern, and an effect applied on top.
+    * See [this guide](https://github.com/tracyscott/RainbowStudio/blob/master/LXStudioUserGuide.md) from another memorable Burning Man art piece
+ * Define a new fixture in the UI
+ * [Optional] Save your playgorund as a new project with your name: `Playground <YourName>.lxp`. You can mess this project up and experiment broadly.
 
 ## Editing and improving the code, writing patterns
 
