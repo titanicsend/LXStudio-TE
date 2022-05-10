@@ -979,7 +979,7 @@
               },
               {
                 "id": 1916,
-                "class": "titanicsend.pattern.yoffa.shaders.basicpatterns.GridPattern",
+                "class": "titanicsend.pattern.yoffa.shaders.basicpatterns.NeonHeartPattern",
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
@@ -987,13 +987,14 @@
                   "autoCycleEligible": true
                 },
                 "parameters": {
-                  "label": "GridPattern",
+                  "label": "NeonHeartPattern",
                   "recall": false,
-                  "Forward Speed": 0.6000000610947609,
-                  "Sideways Speed": 0.0,
-                  "Color Change Speed": 0.0,
-                  "Alpha Waves": false,
-                  "Glowing": false
+                  "Speed": -0.5,
+                  "Scale": 0.012,
+                  "Radius": 0.012,
+                  "Thickness": 0.0035,
+                  "Intensity": 1.3,
+                  "Length": 0.25
                 },
                 "children": {
                   "modulation": {
@@ -1015,7 +1016,7 @@
               },
               {
                 "id": 1918,
-                "class": "titanicsend.pattern.yoffa.shaders.basicpatterns.NeonHeartPattern",
+                "class": "titanicsend.pattern.yoffa.shaders.basicpatterns.GridPattern",
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
@@ -1023,14 +1024,13 @@
                   "autoCycleEligible": true
                 },
                 "parameters": {
-                  "label": "NeonHeartPattern",
+                  "label": "GridPattern",
                   "recall": false,
-                  "Speed": -0.5,
-                  "Scale": 0.012,
-                  "Radius": 0.012,
-                  "Thickness": 0.0035,
-                  "Intensity": 1.3,
-                  "Length": 0.25
+                  "Forward Speed": 4.0,
+                  "Sideways Speed": 2.0,
+                  "Color Change Speed": 1.0,
+                  "Alpha Waves": true,
+                  "Glowing": true
                 },
                 "children": {
                   "modulation": {
