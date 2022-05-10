@@ -1,6 +1,6 @@
 {
   "version": "0.4.1-SNAPSHOT",
-  "timestamp": 1651593309323,
+  "timestamp": 1652142179302,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -962,6 +962,68 @@
                 "children": {
                   "modulation": {
                     "id": 1772,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 1916,
+                "class": "titanicsend.pattern.yoffa.media.ReactiveHeartPattern",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false,
+                  "autoCycleEligible": true
+                },
+                "parameters": {
+                  "label": "ReactiveHeartPattern",
+                  "recall": false
+                },
+                "children": {
+                  "modulation": {
+                    "id": 1917,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 1918,
+                "class": "titanicsend.pattern.yoffa.media.BasicVideoPattern",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false,
+                  "autoCycleEligible": true
+                },
+                "parameters": {
+                  "label": "BasicVideoPattern",
+                  "recall": false
+                },
+                "children": {
+                  "modulation": {
+                    "id": 1919,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0

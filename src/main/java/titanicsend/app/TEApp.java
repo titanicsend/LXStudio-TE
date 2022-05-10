@@ -36,6 +36,9 @@ import titanicsend.pattern.pixelblaze.*;
 import titanicsend.pattern.tmc.*;
 import titanicsend.pattern.tom.*;
 import titanicsend.pattern.yoffa.*;
+import titanicsend.pattern.yoffa.media.BasicVideoPattern;
+import titanicsend.pattern.yoffa.media.BasicImagePattern;
+import titanicsend.pattern.yoffa.media.ReactiveHeartPattern;
 
 
 public class TEApp extends PApplet implements LXPlugin  {
@@ -110,7 +113,9 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPattern(HandTracker.class);
 
     // Patterns that will not aspire to art direction standards
-    lx.registry.addPattern(EddiePattern.class);
+    lx.registry.addPattern(BasicImagePattern.class);
+    lx.registry.addPattern(BasicVideoPattern.class);
+    lx.registry.addPattern(ReactiveHeartPattern.class);
 
     // Examples for teaching and on-boarding developers
     lx.registry.addPattern(BasicRainbowPattern.class);

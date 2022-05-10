@@ -1,0 +1,47 @@
+package titanicsend.pattern.yoffa.media;
+
+import heronarts.lx.LX;
+import heronarts.lx.LXCategory;
+import titanicsend.model.TEPanelModel;
+import titanicsend.model.TEPanelSection;
+import titanicsend.pattern.TEPattern;
+
+import java.io.IOException;
+import java.util.List;
+
+// Example to show how we could map a video onto our panels
+// Not intended from production use
+// Video clip has NOT been confirmed as licensed for re-use
+@LXCategory("Video Examples")
+public class BasicVideoPattern extends TEPattern {
+
+    private static final String VID_PATH = "resources/pattern/sizzle.mov";
+
+    private final VideoPainter videoPainter;
+
+    public BasicVideoPattern(LX lx) throws IOException {
+        super(lx);
+        videoPainter = new VideoPainter(VID_PATH, colors);
+    }
+
+    @Override
+    public void onActive() {
+        videoPainter.startVideo();
+    }
+
+    @Override
+    public void run(double deltaMs) {
+        videoPainter.grabFrame();
+
+        videoPainter.paint(model.getPanelsBySection(TEPanelSection.STARBOARD_AFT));
+        for (TEPanelModel panel : model.getPanelsBySection(TEPanelSection.STARBOARD_FORE)) {
+            videoPainter.paint(List.of(panel));
+        }
+    }
+
+    @Override
+    public void onInactive() {
+        videoPainter.stopVideo();
+    }
+
+}

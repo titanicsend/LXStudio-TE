@@ -135,6 +135,12 @@
             <artifactId>nashorn-core</artifactId>
             <version>15.3</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>javacv-platform</artifactId>
+            <version>1.5.7</version>
+        </dependency>
     </dependencies>
 
     <build>
