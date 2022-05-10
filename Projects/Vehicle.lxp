@@ -687,6 +687,38 @@
                   }
                 },
                 "deviceVersion": -1
+              },
+              {
+                "id": 1916,
+                "class": "titanicsend.pattern.yoffa.edges.PowerGridPattern",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false,
+                  "autoCycleEligible": true
+                },
+                "parameters": {
+                  "label": "PowerGridPattern",
+                  "recall": false,
+                  "energy": 0.1
+                },
+                "children": {
+                  "modulation": {
+                    "id": 1917,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
               }
             ]
           },

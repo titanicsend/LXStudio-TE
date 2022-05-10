@@ -1,12 +1,11 @@
 package titanicsend.util;
 
 import heronarts.lx.model.LXPoint;
+import titanicsend.model.TEEdgeModel;
+import titanicsend.model.TEModel;
 import titanicsend.model.TEPanelModel;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Since we're dealing with a very awkwardly shaped object, it's often helpful to think of/treat certain areas in terms
@@ -139,11 +138,15 @@ public class Dimensions {
     public int hashCode() {
         return Objects.hash(minX, minY, minZ, maxX, maxY, maxZ, minXn, minYn, minZn, maxXn, maxYn, maxZn);
     }
-    
-    public static Dimensions fromPanels(Collection<TEPanelModel> panels) {
+
+    public static Dimensions fromModel(TEModel model) {
+        return fromModels(List.of(model));
+    }
+
+    public static Dimensions fromModels(Collection<? extends TEModel> models) {
         Set<LXPoint> points = new HashSet<>();
-        for (TEPanelModel panel : panels) {
-            points.addAll(panel.getPoints());
+        for (TEModel model : models) {
+            points.addAll(model.getPoints());
         }
         return fromPoints(points);
     }

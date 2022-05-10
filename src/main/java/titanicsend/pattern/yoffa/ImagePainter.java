@@ -24,7 +24,7 @@ public class ImagePainter {
     }
 
     public void paint(Collection<TEPanelModel> panels) {
-        Dimensions dimensions = Dimensions.fromPanels(panels);
+        Dimensions dimensions = Dimensions.fromModels(panels);
 
         for (TEPanelModel panel : panels) {
             for (LXPoint point : panel.getPoints()) {
