@@ -19,15 +19,18 @@ public abstract class FragmentShader {
         };
         double[] resolution = new double[] {canvasDimensions.getDepth(), canvasDimensions.getHeight()};
         double timeSeconds = timeMillis / 1000.;
-        double[] colorHsba = getColorForPoint(fragCoordinates, resolution, timeSeconds);
-        assert colorHsba.length == 3;
+        double[] colorRgb = getColorForPoint(fragCoordinates, resolution, timeSeconds);
+        assert colorRgb.length == 3;
         return new Color(
-                (float) TEMath.clamp(colorHsba[0], 0, 1),
-                (float) TEMath.clamp(colorHsba[1], 0, 1),
-                (float) TEMath.clamp(colorHsba[2], 0, 1),
+                (float) TEMath.clamp(colorRgb[0], 0, 1),
+                (float) TEMath.clamp(colorRgb[1], 0, 1),
+                (float) TEMath.clamp(colorRgb[2], 0, 1),
                 1f).getRGB();
     }
 
+    //similar to an actual fragment shader function
+    //inputs arrays of length 2 for x/y
+    //output should be of length 3 symbolizing RGB for the input coordinates
     protected abstract double[] getColorForPoint(double[] fragCoordinates, double[] resolution, double timeSeconds);
 
     public abstract Collection<LXParameter> getParameters();
