@@ -2,6 +2,7 @@ package titanicsend.pattern.jeff;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import heronarts.lx.blend.MultiplyBlend;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.parameter.*;
@@ -15,14 +16,17 @@ import java.util.stream.Collectors;
  *  Use symmetric edges in the model, and colors them together or
  *  produces black and white mask to multiply-blend other content.
  *  `edgesBySymmetryGroup` is Vector -> List<Edges>, where the vector
- *  has x zero'd, and catalogs them by the abs(z). Therefore, 1, 2, or 4
+ *  has x zeroed, and catalogs them by the abs(z). Therefore, 1, 2, or 4
  *  edges will be in each List, and they all have either port-starboard
- *  * or fore-aft symmetry (or both).
+ *  or fore-aft symmetry (or both).
+ *
+ *  Color is ignored if placed in a channel set to the multiply
+ *  blendMode, and the pattern outputs a white & black mask.
  */
 
 @LXCategory("Geometry Masks")
 public class EdgeSymmetry extends TEPattern {
-    public final LinkedColorParameter color =
+    public final LinkedColorParameter colorParam =
             registerColor("Color", "color", ColorType.EDGE,
                     "Primary color for edges");
 
@@ -48,9 +52,6 @@ public class EdgeSymmetry extends TEPattern {
     // Collection of edges that should be on based on parameters
     List<TEEdgeModel> litEdges;
 
-    // Holds the previous color to restore if mask mode is turned on then back off
-    int prevColor;
-
     public EdgeSymmetry(LX lx) {
         super(lx);
         addParameter("energy", energy);
@@ -67,20 +68,24 @@ public class EdgeSymmetry extends TEPattern {
          */
         edgeGroupsByZ.sort((LXVector v1, LXVector v2) -> Float.compare(v1.z, v2.z));
 
-        prevColor = color.getColor();
         selectEdges();
     }
 
     public void run(double deltaMs) {
-        if (maskMode.isOn()) {
-            setEdges(LXColor.BLACK);
-        } else {
-            clearEdges();
+        int color = colorParam.getColor();
+        if (getChannel() != null) {
+            if (getChannel().blendMode.getObject().getClass().equals(MultiplyBlend.class)) {
+                // Operate in Mask mode
+                setEdges(LXColor.BLACK);
+                color = LXColor.WHITE;
+            } else {
+                clearEdges();
+            }
         }
 
         for (TEEdgeModel edge : litEdges) {
             for (TEEdgeModel.Point point : edge.points) {
-                colors[point.index] = color.getColor();
+                colors[point.index] = color;
             }
         }
     }
@@ -112,17 +117,8 @@ public class EdgeSymmetry extends TEPattern {
     public void onParameterChanged(LXParameter parameter) {
         super.onParameterChanged(parameter);
 
-        if (Arrays.asList(energy, fracFromZCenter, height).contains(parameter)) {
+        if (Arrays.<LXParameter>asList(energy, fracFromZCenter, height).contains(parameter)) {
             selectEdges();
-        }
-
-        if (parameter.equals(maskMode)) {
-            if (maskMode.isOn()) {
-                prevColor = color.getColor();
-                color.setColor(LXColor.WHITE);
-            } else {
-                color.setColor(prevColor);
-            }
         }
     }
 }
