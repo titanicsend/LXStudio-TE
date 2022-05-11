@@ -17,8 +17,8 @@ public class PixelblazePattern extends TEAudioPattern {
   long lastLogMs = 0; //to prevent spamming the logs with script errors
   HashMap<String, LXParameter> patternParameters = new HashMap<>();
 
-  BooleanParameter enableEdges;
-  BooleanParameter enablePanels;
+  protected BooleanParameter enableEdges;
+  protected BooleanParameter enablePanels;
 
   /**
    * This should be overridden in subclasses to load a different source
@@ -29,21 +29,24 @@ public class PixelblazePattern extends TEAudioPattern {
     return "test";
   }
 
+  // Should this be done as onParameterChanged() instead?
+  protected LXParameterListener modelPointsListener = lxParameter -> {
+    if (wrapper != null) {
+      try {
+        clearPixels();
+        wrapper.setPoints(getModelPoints());
+      } catch (Exception e) {
+        LX.error("Error updating points:" + e.getMessage());
+      }
+    }
+  };
+
   public PixelblazePattern(LX lx) {
     super(lx);
     enableEdges = new BooleanParameter("Edges", true);
     enablePanels = new BooleanParameter("Panels", true);
 
-    LXParameterListener modelPointsListener = lxParameter -> {
-      if (wrapper != null) {
-        try {
-          clearPixels();
-          wrapper.setPoints(getModelPoints());
-        } catch (Exception e) {
-          LX.log("Error updating points:" + e.getMessage());
-        }
-      }
-    };
+
     enableEdges.addListener(modelPointsListener);
     enablePanels.addListener(modelPointsListener);
 
@@ -54,8 +57,15 @@ public class PixelblazePattern extends TEAudioPattern {
       wrapper = Wrapper.fromResource(getScriptName(), this, getModelPoints(), colors);
       wrapper.load();
     } catch (Exception e) {
-      LX.log("Error initializing Pixelblaze script:" + e.getMessage());
+      LX.error("Error initializing Pixelblaze script:" + e.getMessage());
     }
+  }
+
+  @Override
+  public void dispose() {
+    enableEdges.removeListener(modelPointsListener);
+    enablePanels.removeListener(modelPointsListener);
+    super.dispose();
   }
 
   private LXPoint[] getModelPoints() {

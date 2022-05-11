@@ -9,8 +9,10 @@ import titanicsend.util.TEMath;
  * data and several useful derived audio attributes, such as normalized
  * bass or treble levels.
  *
- * In the future we can implement gates, thresholds, beat detection, or
- * tempo inference.
+ * In the future we can implement gates, thresholds, or tempo inference.
+ *
+ * ToDo: Each pattern shouldn't have it's own copy of these audio things.
+ * Need static members maintaining all audio computations.
  */
 public abstract class TEAudioPattern extends TEPattern {
     // The GraphicMeter holds the analyzed frequency content for the audio input
@@ -49,9 +51,16 @@ public abstract class TEAudioPattern extends TEPattern {
     protected double bassRatio = .2;
     protected double trebleRatio = .2;
 
+    protected double bassRetriggerMs;
+    private double msSinceBassRise = 0;
+    // Whether we suspect this frame represents a steep rise in bass level
+    protected boolean bassHit = false;
+
     protected TEAudioPattern(LX lx) {
         super(lx);
         bassBandCount = 2;
+        // By default, 80% of a tempo-defined eighth note must have passed to bassHit
+        bassRetriggerMs = .8 * (lx.engine.tempo.period.getValue() / 2);
     }
 
     @Override
@@ -86,10 +95,39 @@ public abstract class TEAudioPattern extends TEPattern {
         volumeRatio = volumeLevel / avgVolume.update(volumeLevel, deltaMs);
         bassRatio = bassLevel / avgBass.update(bassLevel, deltaMs);
         trebleRatio = trebleLevel / avgTreble.update(trebleLevel, deltaMs);
+
+        bassHit = false;
+        // If bass is over 20% higher than recent average
+        // and greater than in the previous frame
+        // and enough time has elapsed since we last triggered
+        // mark the frame as a bassHit().
+        if (bassLevel > 1.2 * avgBass.getValue()
+                && bassLevel > lastBassLevel
+                && msSinceBassRise > bassRetriggerMs) {
+            bassHit = true;
+            msSinceBassRise = 0;
+        }
+        msSinceBassRise += deltaMs;
+        lastBassLevel = bassLevel;
     }
+
+    double lastBassLevel = 1;
 
     public double getBassLevel() {
         return bassLevel;
+    }
+
+    // Best attempt to detect beats and rising bass transients. Returns true if
+    // we think this frame likely is directly following an audio beat.
+    public boolean bassHit() {
+        return bassHit;
+    }
+
+    // Call when a pattern knows it should be listening to bass
+    // again even though a beat was just detected, such as a
+    // "reset beat align" feature when listening for every 4th beat
+    protected void resetBassGate() {
+        msSinceBassRise = 0;
     }
 
     public double getTrebleLevel() {
