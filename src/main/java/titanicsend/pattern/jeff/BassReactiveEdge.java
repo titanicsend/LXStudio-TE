@@ -30,7 +30,7 @@ import titanicsend.pattern.TEAudioPattern;
  *  https://github.com/ExistentialAudio/BlackHole/wiki/Multi-Output-Device
  *
  */
-@LXCategory("Audio Examples")
+@LXCategory("TE Examples")
 public class BassReactiveEdge extends TEAudioPattern {
     // Titanic's End wants all patterns to implement a parameter called "Energy",
     // which controls the amount of motion, light, movement, action, particles, etc.

@@ -29,7 +29,7 @@ import titanicsend.util.TEMath;
  *  travelling motion itself to the individual beats, not just the measure.
  */
 
-@LXCategory("Audio Examples")
+@LXCategory("TE Examples")
 public class TempoReactiveEdge extends TEPattern {
     // Titanic's End wants all patterns to implement a parameter called "Energy",
     // which controls the amount of motion, light, movement, action, particles, etc.
