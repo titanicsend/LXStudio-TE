@@ -25,7 +25,7 @@ SED	90-93	69-90	69-93	unflipped	lit
 SDA	60-93	60-65	65-93	unflipped	lit
 SDB	67-93	65-67	65-93	unflipped	lit
 SDC	67-90	67-93	90-93	unflipped	lit
-SEE	69-90	51-90	51-69	flipped	lit
+SEE	69-90	51-90	51-69	unflipped	lit
 SCA	10-100	10-11	11-100	unflipped	lit
 SCB	98-100	11-98	11-100	unflipped	lit
 SCC	98-99	98-100	99-100	unflipped	lit

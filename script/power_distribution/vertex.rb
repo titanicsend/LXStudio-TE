@@ -14,6 +14,13 @@ class Vertex
     Math.sqrt((x - other.x)**2 + (y - other.y)**2 + (z - other.z)**2)
   end
 
+  def ==(other)
+    self.id == other.id &&
+    self.x == other.x &&
+    self.y == other.y &&
+    self.z == other.z
+  end
+
   def adjacent(graph:, max_level:)
     vertices = []
     queue = [id]

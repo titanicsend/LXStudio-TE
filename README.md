@@ -7,6 +7,15 @@ You may wish to get context first from the [Lighting Design Doc](https://docs.go
 
 TE is using the full IDE-ready distribution instead of the P4 Processing Applet version. Don't struggle - ask questions in [#Lighting on Slack](https://titanicsend.slack.com/archives/C02L0MDQB2M).
 
+The tutorials in the [LX Studio Wiki](https://github.com/heronarts/LXStudio/wiki) are an effective introduction.
+
+These have been compiled by our team:
+* [Operation Modes and Art Direction Standards](https://docs.google.com/document/d/16FGnQ8jopCGwQ0qZizqILt3KYiLo0LPYkDYtnYzY7gI/edit)
+* [Using Tempo and Sound](https://docs.google.com/document/d/17iICAfbhCzPL77KbmFDL4-lN0zgBb1k6wdWnoBSPDjk/edit) 
+* [The APC40 and LX Studio](https://docs.google.com/document/d/110qgYR_4wtE0gN8K3QZdqU75Xq0W115qe7J6mcgm1So/edit)
+
+As you really get rolling, you’ll appreciate the [API docs](https://lx.studio/api/) and public portion of [the source](https://github.com/heronarts/LX/tree/master/src/main/java/heronarts/lx).
+
 ## Getting the code and running it
 
 Clone the Git repository here:

@@ -2,14 +2,14 @@ package titanicsend.output;
 
 import heronarts.lx.LX;
 import heronarts.lx.model.LXPoint;
-import heronarts.lx.output.StreamingACNDatagram;
+import heronarts.lx.output.ArtNetDatagram;
 import titanicsend.model.TEModel;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
 
-public class TESacnOutput {
+public class TEArtNetOutput {
   private static class SubModelEntry {
     TEModel subModel;
     int universeNum;
@@ -24,20 +24,20 @@ public class TESacnOutput {
   }
 
   String ipAddress;
-  static Map<String, TESacnOutput> ipMap = new HashMap<>();
+  static Map<String, TEArtNetOutput> ipMap = new HashMap<>();
   private final List<SubModelEntry> subModelEntries;
   private boolean activated;
   private HashMap<Integer,Integer> deviceLengths;
 
-  private TESacnOutput(String ipAddress) {
+  private TEArtNetOutput(String ipAddress) {
     this.ipAddress = ipAddress;
     this.subModelEntries = new ArrayList<>();
     this.activated = false;
   }
 
-  public static TESacnOutput getOrMake(String ipAddress) {
+  public static TEArtNetOutput getOrMake(String ipAddress) {
     if (!ipMap.containsKey(ipAddress)) {
-      ipMap.put(ipAddress, new TESacnOutput(ipAddress));
+      ipMap.put(ipAddress, new TEArtNetOutput(ipAddress));
     }
     return ipMap.get(ipAddress);
   }
@@ -47,7 +47,7 @@ public class TESacnOutput {
     assert deviceNum >= 1;
     //assert deviceNum <= 4;
     assert strandOffset >= 0;
-    TESacnOutput output = getOrMake(ipAddress);
+    TEArtNetOutput output = getOrMake(ipAddress);
     assert !output.activated;
     output.subModelEntries.add(new SubModelEntry(subModel, deviceNum, strandOffset, fwd));
   }
@@ -66,7 +66,8 @@ public class TESacnOutput {
   private static void registerOutput(LX lx, InetAddress addr, List<Integer> indexBuffer, int universe) {
     if (indexBuffer.size() == 0) return;
     int[] ib = indexBuffer.stream().mapToInt(i -> i).toArray();
-    StreamingACNDatagram outputDevice = new StreamingACNDatagram(lx, ib, universe);
+    //StreamingACNDatagram outputDevice = new StreamingACNDatagram(lx, ib, universe);
+    ArtNetDatagram outputDevice = new ArtNetDatagram(lx, ib, universe);
     outputDevice.setAddress(addr);
     lx.addOutput(outputDevice);
   }
@@ -90,7 +91,7 @@ public class TESacnOutput {
       throw new Error(e);
     }
 
-    StringBuilder logString = new StringBuilder("sACN " + this.ipAddress + ": ");
+    StringBuilder logString = new StringBuilder("ArtNet " + this.ipAddress + ": ");
     ArrayList<Integer> indexBuffer = new ArrayList<>();
     for (SubModelEntry subModelEntry : this.subModelEntries) {
       int numPoints = subModelEntry.subModel.points.length;

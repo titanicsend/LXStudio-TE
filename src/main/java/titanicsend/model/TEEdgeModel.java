@@ -1,10 +1,12 @@
 package titanicsend.model;
 
+import heronarts.lx.model.GridModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.model.LXModel;
 import java.util.*;
 
 public class TEEdgeModel extends TEModel {
+  public final TEEdgeModel.Point[] points;
   String teModelType = "Edge";
   public TEVertex v0, v1;
   public HashSet<TEPanelModel> connectedPanels;
@@ -17,6 +19,12 @@ public class TEEdgeModel extends TEModel {
     this.v0 = v0;
     this.v1 = v1;
     this.connectedPanels = new HashSet<TEPanelModel>();
+
+    // Allocate an array of the LXPoint subclass, TEEdgeModel.Point
+    this.points = new TEEdgeModel.Point[super.points.length];
+    // Shallow copy all existing point references into this array. This technique
+    // is seen in GridModel and to be frank, I don't fully understand why it's type safe.
+    System.arraycopy(super.points, 0, this.points, 0, super.points.length);
   }
 
   public String getId() {
@@ -40,7 +48,9 @@ public class TEEdgeModel extends TEModel {
 
     for (int i = 0; i < numPixels; i++) {
       float fraction = (float)(i) / numPixels;
-      LXPoint point = new LXPoint(
+      TEEdgeModel.Point point = new TEEdgeModel.Point(
+              i,
+              fraction,
               v0.x + dx * fraction,
               v0.y + dy * fraction,
               v0.z + dz * fraction
@@ -65,6 +75,26 @@ public class TEEdgeModel extends TEModel {
       return v0;
     } else {
       throw new Error("otherSide() called with invalid vertex");
+    }
+  }
+
+  public static class Point extends LXPoint {
+    /**
+     * `i` is the index into this edge
+     * Contrast this with `LXPoint.index` which must be globally unique
+     */
+    public final int i;
+    /**
+     * `frac` is the fractional percentage (0..1) into this edge
+     * Calling it `in` would seem canonical ("i, normalized"), but is
+     * too similar to the abbreviation for "inches"
+     */
+    public final float frac;
+
+    public Point(int i, float fraction, float x, float y, float z) {
+      super(x, y, z);
+      this.i = i;
+      this.frac = fraction;
     }
   }
 }
