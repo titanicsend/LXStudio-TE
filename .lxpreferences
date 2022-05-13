@@ -1,8 +1,8 @@
 {
   "version": "0.4.1-SNAPSHOT",
   "projectFileName": "Vehicle.lxp",
-  "windwWidth": -1,
-  "windowHeight": -1,
+  "windwWidth": 1821,
+  "windowHeight": 998,
   "uiZoom": 100,
   "focusChannelOnCue": false,
   "focusActivePattern": false,

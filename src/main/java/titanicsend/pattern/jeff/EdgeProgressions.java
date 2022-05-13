@@ -256,6 +256,9 @@ public class EdgeProgressions extends TEAudioPattern {
                 case MANUAL:
                     nextScene();
                     break;
+                default:  // should be unreachable!
+                    throw new IllegalStateException(
+                            "Mike Schiraldi would like to have a word with you");
                 }
         }
 
