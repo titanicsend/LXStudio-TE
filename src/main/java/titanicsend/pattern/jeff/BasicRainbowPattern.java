@@ -11,7 +11,7 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.SawLFO;
 import titanicsend.pattern.TEPattern;
 
-@LXCategory("Combo FG")
+@LXCategory("TE Examples")
 public class BasicRainbowPattern extends TEPattern {
 
     public final SawLFO ramp = new SawLFO(0, 1, 4500);

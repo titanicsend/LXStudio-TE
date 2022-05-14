@@ -6,24 +6,22 @@ package titanicsend.pattern.tmc;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
-import titanicsend.model.TEPanelModel;
 import titanicsend.pattern.TEPattern;
 
 /**
- * SimpleSolidPanelPattern is a trivial pattern that accepts input to
+ * SolidPanel is a trivial pattern that accepts input to
  * control the output color of just the panels in the model.
  */
 @LXCategory("Panel BG")
-public class SimpleSolidPanelPattern extends TEPattern {
+public class SolidPanel extends TEPattern {
 
   public final LinkedColorParameter color =
           new LinkedColorParameter("Color")
                   .setDescription("Panel color");
 
-  public SimpleSolidPanelPattern(LX lx) {
+  public SolidPanel(LX lx) {
     super(lx);
     addParameter("color", this.color);
     color.mode.setValue(LinkedColorParameter.Mode.PALETTE);

@@ -34,7 +34,7 @@ public class PulseDoublePattern extends TEAudioPattern {
     }
 
     private float calcCenterZn(TEPanelSection section) {
-        Dimensions dimensions = Dimensions.fromPanels(model.getPanelsBySection(section));
+        Dimensions dimensions = Dimensions.fromModels(model.getPanelsBySection(section));
         return (dimensions.getDepthNormalized() / 2) + dimensions.getMinZn();
     }
 

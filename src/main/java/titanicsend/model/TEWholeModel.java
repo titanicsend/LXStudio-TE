@@ -18,6 +18,7 @@ public class TEWholeModel extends LXModel {
   public LXPoint gapPoint;  // Used for pixels that shouldn't actually be lit
   public HashMap<Integer, TEVertex> vertexesById;
   public HashMap<String, TEEdgeModel> edgesById;
+  public HashMap<LXVector, List<TEEdgeModel>> edgesBySymmetryGroup;
   public HashMap<String, TEPanelModel> panelsById;
   private final HashMap<TEPanelSection, Set<TEPanelModel>> panelsBySection;
   public HashMap<String, List<TEPanelModel>> panelsByFlavor;
@@ -78,20 +79,23 @@ public class TEWholeModel extends LXModel {
     this.name = geometry.name;
     this.gapPoint = geometry.gapPoint;
     this.vertexesById = geometry.vertexesById;
+    this.edgePoints = new ArrayList<>();
     this.edgesById = geometry.edgesById;
+    this.edgesBySymmetryGroup = new HashMap<>();
+    buildEdgeRelations();
+
     this.panelsById = geometry.panelsById;
     this.panelsBySection = geometry.panelsBySection;
     this.panelsByFlavor = geometry.panelsByFlavor;
-    this.lasersById = geometry.lasersById;
-    this.boxes = geometry.boxes;
-    this.edgePoints = new ArrayList<>();
-    for (TEEdgeModel e : this.edgesById.values()) {
-      this.edgePoints.addAll(Arrays.asList(e.points));
-    }
+
     this.panelPoints = new ArrayList<>();
     for (TEPanelModel p : this.panelsById.values()) {
       this.panelPoints.addAll(Arrays.asList(p.points));
     }
+
+    this.lasersById = geometry.lasersById;
+    this.boxes = geometry.boxes;
+
     reindexPoints();
     this.boundaryPoints = initializeBoundaries();
     LX.log(String.format("Min X boundary: %f", boundaryPoints.minXBoundaryPoint.x));
@@ -115,7 +119,24 @@ public class TEWholeModel extends LXModel {
   }
 
   public boolean isPanelPoint(int index) {
-    return index >= panelPoints.get(0).index && index <= panelPoints.get(panelPoints.size()-1).index;
+    return index >= panelPoints.get(0).index && index <= panelPoints.get(panelPoints.size() - 1).index;
+  }
+
+  /** Builds structures that compute spacial relationships for edges,
+   *  such as edges that are mirrored fore-aft and port-starboard.
+   */
+  private void buildEdgeRelations() {
+    for (TEEdgeModel edge : this.edgesById.values()) {
+      // In decimeters to better group
+      int absY = Math.round(Math.abs(edge.center.y) / 100_000);
+      int absZ = Math.round(Math.abs(edge.center.z) / 100_000);
+      LXVector symmetryKey = new LXVector(0, absY * 100_000, absZ * 100_000);
+      List<TEEdgeModel> symmetryGroup = this.edgesBySymmetryGroup
+              .computeIfAbsent(symmetryKey, k -> new ArrayList<>());
+      symmetryGroup.add(edge);
+      edge.symmetryGroup = symmetryGroup;
+      this.edgePoints.addAll(Arrays.asList(edge.points));
+    }
   }
 
   private static Scanner loadFilePrivate(String filename) {

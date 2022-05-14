@@ -1,6 +1,5 @@
 package titanicsend.model;
 
-import heronarts.lx.model.GridModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.model.LXModel;
 import java.util.*;
@@ -10,6 +9,7 @@ public class TEEdgeModel extends TEModel {
   String teModelType = "Edge";
   public TEVertex v0, v1;
   public HashSet<TEPanelModel> connectedPanels;
+  public List<TEEdgeModel> symmetryGroup;  // List of this edge and any other that's a reflection about the XY or YZ planes
 
   // In microns, the same unit x,y,z coordinates use
   public static final int DISTANCE_BETWEEN_PIXELS = 16666; // 0.76 inches/pixel; 1.31 pix/inch
@@ -47,7 +47,7 @@ public class TEEdgeModel extends TEModel {
     float dz = v1.z - v0.z;
 
     for (int i = 0; i < numPixels; i++) {
-      float fraction = (float)(i) / numPixels;
+      float fraction = (float)(i) / (numPixels - 1);
       TEEdgeModel.Point point = new TEEdgeModel.Point(
               i,
               fraction,

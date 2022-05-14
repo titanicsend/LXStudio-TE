@@ -35,14 +35,14 @@ public abstract class BasicShaderPattern extends TEPattern {
         long timeMillis = System.currentTimeMillis() - startTime;
 
         for (TEPanelModel panel : model.getPanelsBySection(TEPanelSection.STARBOARD_FORE)) {
-            Dimensions dimensions = Dimensions.fromPanels(List.of(panel));
+            Dimensions dimensions = Dimensions.fromModels(List.of(panel));
             for (LXPoint point : panel.getPoints()) {
                 colors[point.index] = fragmentShader.getColorForPoint(point, dimensions, timeMillis);
             }
         }
 
         Set<TEPanelModel> panels = model.getPanelsBySection(TEPanelSection.STARBOARD_AFT);
-        Dimensions dimensions = Dimensions.fromPanels(panels);
+        Dimensions dimensions = Dimensions.fromModels(panels);
         for (TEPanelModel panel : panels) {
             for (LXPoint point : panel.getPoints()) {
                 colors[point.index] = fragmentShader.getColorForPoint(point, dimensions, timeMillis);
