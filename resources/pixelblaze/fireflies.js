@@ -11,8 +11,6 @@
   attribution link here!
 */
 
-sparkHue = .05       // Set the hue for each spark
-sparkSaturation = 1  // Set the saturation for each spark (0 = white)
 numSparks = 1 + floor(pixelCount / 10)  // Scale number of sparks based on # LEDs
 decay = .99          // Decay their energy/speed. Use .999 for slower
 maxSpeed = .4        // The maximum initial speed of any spark / firefly
@@ -44,10 +42,17 @@ export function beforeRender(delta) {
     
     // Heat up the pixel at this spark's X position
     pixels[floor(sparkX[i])] += sparks[i]
+    pixels[floor(sparkX[i])] = .2
   }
 }
 
 export function render(index) {
   v = pixels[index]
-  hsv(sparkHue, sparkSaturation, v * v * 10)
+  // can't seem to get this to work yet... v is either always undefined, null, or something
+  // Maybe a glue to LX.log would be helpful.
+  // v = (v > .5) ? 0 : 1
+  hsv(0.04, 1, v * v * 10)
+
+  // paint(0) // Paint edge palette color
+  // setAlpha(v * v * 10) //cut out areas that would otherwise be dark
 }

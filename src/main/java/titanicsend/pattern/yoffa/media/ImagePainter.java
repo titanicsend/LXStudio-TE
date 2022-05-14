@@ -32,7 +32,7 @@ public class ImagePainter {
     }
 
     public void paint(Collection<TEPanelModel> panels, double scaleRatio) {
-        Dimensions dimensions = Dimensions.fromPanels(panels);
+        Dimensions dimensions = Dimensions.fromModels(panels);
 
         for (TEPanelModel panel : panels) {
             for (LXPoint point : panel.getPoints()) {
