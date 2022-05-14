@@ -93,10 +93,16 @@ public class TEVirtualOverlays extends TEUIComponent {
         pg.sphere(100000);
       }
       pg.noLights();
-      pg.scale(10000, -10000);
-      pg.fill(128, 128, 128);
-      if (this.vertexLabelsVisible.getValueb())
-        pg.text(entry.getKey().toString(), 0, -20, 0);
+      if (this.vertexLabelsVisible.getValueb()) {
+        // Vertex labels are further outset past vertexSpheres by different percentages of x and z,
+        // with hand-picked values to provide ovular clearance for the rotated labels below.
+        pg.translate(v.x * .15f, 0, v.z * .02f);
+        // Squashing z (the long fore-aft dimension) before rotating text to be normal to a radial
+        pg.rotateY((float) (Math.atan2(v.x, v.z/5) + Math.PI));  // Face out
+        pg.scale(10000, -10000);
+        pg.fill(128, 128, 128);
+        pg.text(entry.getKey().toString(), 0, 0, 0);
+      }
       pg.popMatrix();
     }
     for (Map.Entry<String, TEPanelModel> entry : model.panelsById.entrySet()) {
