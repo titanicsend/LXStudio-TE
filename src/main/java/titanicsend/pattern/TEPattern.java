@@ -1,12 +1,15 @@
 package titanicsend.pattern;
 
 import heronarts.lx.LX;
+import heronarts.lx.LXLayeredComponent;
 import heronarts.lx.Tempo;
 import heronarts.lx.color.GradientUtils;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
+import heronarts.lx.model.LXView;
 import heronarts.lx.pattern.LXModelPattern;
+import heronarts.lx.pattern.LXPattern;
 import titanicsend.model.TELaserModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
@@ -26,7 +29,10 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
     // These are 1-based UI indices; to get to a 0-based palette index, subtract 1
     EDGE(1),      // Primary color to use on edges
     SECONDARY(2), // Secondary color to use on edges or panels (or lasers?)
-    PANEL(3);     // Primary color to use on panels
+    PANEL(3),     // Primary color to use on panels
+    EDGE_BG(4),   // Background color to use on edges
+    PANEL_BG(5);  // Background color to use on edges
+
     public final int index;  // The UI index (1-indexed)
     private ColorType(int index) {
       this.index = index;
@@ -125,6 +131,16 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
         colors[point.index] = TEColor.TRANSPARENT; // Transparent
       }
     }
+  }
+
+  // For patterns that only want to operate on edges
+  public void setEdges(int color) {
+    for (LXPoint point : this.model.edgePoints) {
+      colors[point.index] = color;
+    }
+  }
+  public void clearEdges() {
+    setEdges(TEColor.TRANSPARENT);
   }
 
   // Make the virtual model's solid panels and lasers get rendered to match

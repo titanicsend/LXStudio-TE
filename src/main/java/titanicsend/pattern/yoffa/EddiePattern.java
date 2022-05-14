@@ -9,7 +9,7 @@ import java.io.IOException;
 
 // This is just an example to show how we could map an image onto a set of our panels
 // Not intended from production use
-@LXCategory("Audio Examples")
+@LXCategory("TE Examples")
 public class EddiePattern extends TEPattern {
 
     private static final String IMG_PATH = "resources/pattern/eddie.jpg";

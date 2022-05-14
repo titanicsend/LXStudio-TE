@@ -28,7 +28,7 @@ import static titanicsend.util.TEMath.wave;
  *   workspace project (Select this at the top center of the UI).
  */
 
-@LXCategory("Audio Examples")
+@LXCategory("TE Examples")
 public class ArtStandards extends TEAudioPattern {
     /* Titanic's End wants all patterns to implement a parameter called
      * "Energy", which controls the amount of motion (or light, movement,
