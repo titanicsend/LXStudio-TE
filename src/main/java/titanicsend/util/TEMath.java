@@ -2,6 +2,8 @@ package titanicsend.util;
 
 import heronarts.lx.utils.LXUtils;
 
+import static java.lang.Math.floor;
+
 public class TEMath {
     /** Take a normalized position (n)
      * where 0 is 0 and n=1 is x = PI * 2
@@ -32,14 +34,14 @@ public class TEMath {
      *  x mod y behaving the same way as Math.floorMod but with doubles
      */
     public static double floorModd(double x, double y) {
-        return (x - Math.floor(x / y) * y);
+        return (x - floor(x / y) * y);
     }
 
     /**
      *  x mod y behaving the same way as Math.floorMod but with floats
      */
     public static float floorModf(float x, float y) {
-        return (float) (x - Math.floor(x / y) * y);
+        return (float) (x - floor(x / y) * y);
     }
 
     /**
@@ -63,6 +65,122 @@ public class TEMath {
         double dy = y1 - y2;
         double dz = z1 - z2;
         return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+
+    /**
+     *  Matrix dot product
+     */
+    public static double dotProduct(double[] a, double[] b) {
+        if (a.length != b.length)
+            throw new RuntimeException("Arrays must be same size");
+        double sum = 0;
+        for (int i = 0; i < a.length; i++)
+            sum += a[i] * b[i];
+        return sum;
+    }
+
+    /**
+     *  Built-in function from GLSL fragment shader language ported to Java
+     *  Performs smooth Hermite interpolation between 0 and 1
+     *
+     *  See: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/smoothstep.xhtml
+     */
+    public static double smoothstep(double edge0, double edge1, double x)
+    {
+        if (x < edge0)
+            return 0;
+
+        if (x >= edge1)
+            return 1;
+
+        // Scale/bias into [0..1] range
+        x = (x - edge0) / (edge1 - edge0);
+
+        return x * x * (3 - 2 * x);
+    }
+
+    public static double[] addArrays(double[] a, double[] b) {
+        if (a.length != b.length) {
+            throw new ArithmeticException();
+        } else {
+            double[] result = new double[a.length];
+            for (int i = 0; i < a.length; i++) {
+                result[i] = a[i] + b[i];
+            }
+            return result;
+        }
+    }
+
+    public static double[] subtractArrays(double[] a, double[] b) {
+        if (a.length != b.length) {
+            throw new ArithmeticException();
+        } else {
+            double[] result = new double[a.length];
+            for (int i = 0; i < a.length; i++) {
+                result[i] = a[i] - b[i];
+            }
+            return result;
+        }
+    }
+
+    public static double[] multiplyArray(double multiplier, double[] array) {
+        double[] result = new double[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i] * multiplier;
+        }
+        return result;
+    }
+
+    public static double[] multiplyArrays(double[] a, double[] b) {
+        if (a.length != b.length) {
+            throw new ArithmeticException();
+        } else {
+            double[] result = new double[a.length];
+            for (int i = 0; i < a.length; i++) {
+                result[i] = a[i] * b[i];
+            }
+            return result;
+        }
+    }
+
+    public static double[] divideArrays(double[] a, double[] b) {
+        if (a.length != b.length) {
+            throw new ArithmeticException();
+        } else {
+            double[] result = new double[a.length];
+            for (int i = 0; i < a.length; i++) {
+                result[i] = a[i] / b[i];
+            }
+            return result;
+        }
+    }
+
+    public static double[] addToArray(double addend, double[] array) {
+        double[] result = new double[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i] + addend;
+        }
+        return result;
+    }
+
+    public static double clamp(double value, double min, double max) {
+        return Math.max(min, Math.min(max, value));
+    }
+
+    public static double vectorLength(double[] vector) {
+        double value = 0;
+        for (double v : vector) {
+            value += v * v;
+        }
+        return Math.sqrt(value);
+    }
+
+    public static double fract(double x) {
+        return x - floor(x);
+    }
+
+    public static double vectorDistance(double[] a, double[] b) {
+        return vectorLength(subtractArrays(a, b));
     }
 
     /** Exponential moving average

@@ -36,6 +36,8 @@ import titanicsend.pattern.pixelblaze.*;
 import titanicsend.pattern.tmc.*;
 import titanicsend.pattern.tom.*;
 import titanicsend.pattern.yoffa.*;
+import titanicsend.pattern.yoffa.shaders.basicpatterns.GridPattern;
+import titanicsend.pattern.yoffa.shaders.basicpatterns.NeonHeartPattern;
 
 
 public class TEApp extends PApplet implements LXPlugin  {
@@ -110,6 +112,8 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPattern(SolidPanel.class);
     lx.registry.addPattern(PulsingTriangles.class);
     lx.registry.addPattern(HandTracker.class);
+    lx.registry.addPattern(NeonHeartPattern.class);
+    lx.registry.addPattern(GridPattern.class);
     lx.registry.addPattern(BreathingDots.class);
     lx.registry.addPattern(AlternatingDots.class);
     lx.registry.addPattern(Fireflies.class);
