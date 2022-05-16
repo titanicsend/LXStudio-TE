@@ -8,11 +8,20 @@ class Panel
     @id = id
     @vertices = vertices
     @signal_start = nil
-    #@points = calculate_points
     @strips = Array.new((max_current / JunctionBoxCircuit::MAX_CURRENT).floor) do |i|
-      PanelStrip.new(id: "id-#{i}", panel_id: id, current: JunctionBoxCircuit::MAX_CURRENT, vertices: vertices)
+      PanelStrip.new(
+        id: "id-#{i}",
+        panel: self,
+        current: JunctionBoxCircuit::MAX_CURRENT,
+        vertices: vertices,
+      )
     end
-    @strips << PanelStrip.new(id: "id-#{@strips.length-1}", panel_id: id, current: max_current - @strips.sum(&:current), vertices: vertices)
+    @strips << PanelStrip.new(
+      id: "id-#{@strips.length-1}",
+      panel: self,
+      current: max_current - @strips.sum(&:current),
+      vertices: vertices,
+    )
   end
 
   attr_accessor :id, :vertices, :strips
@@ -48,13 +57,17 @@ class Panel
 end
 
 class PanelStrip
-  def initialize(id:, panel_id:, vertices:, current:)
+  def initialize(id:, panel:, vertices:, current:)
     @id = id
-    @panel_id = panel_id
+    @panel_id = panel
     @current = current
     @vertices = vertices
   end
 
-  attr_accessor :vertices, :current, :panel_id, :id
+  def panel_id
+    panel.id
+  end
+
+  attr_accessor :vertices, :current, :panel, :id
 end
 

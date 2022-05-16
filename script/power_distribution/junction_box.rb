@@ -4,7 +4,9 @@ class JunctionBox
   def initialize(vertex:)
     @vertex = vertex
     @id = calculate_id
-    @circuits = (0..15).map { |i| JunctionBoxCircuit.new(id: "#{id}-#{i}", junction_box_id: id) }
+    @circuits = (0..15).map do |i|
+      JunctionBoxCircuit.new(id: "#{id}-#{i}", junction_box: self)
+    end
   end
 
   def calculate_id
@@ -47,14 +49,14 @@ end
 
 class JunctionBoxCircuit
   MAX_CURRENT = 15
-  def initialize(id:, junction_box_id:)
+  def initialize(id:, junction_box:)
     @id = id
-    @junction_box_id = junction_box_id
+    @junction_box = junction_box
     @panel_strips = []
     @edge_strips = []
   end
 
-  attr_accessor :panel_strips, :edge_strips, :id, :junction_box_id
+  attr_accessor :panel_strips, :edge_strips, :id, :junction_box
 
   def dup
     c = JunctionBoxCircuit.new(id: id, junction_box_id: junction_box_id)
@@ -69,5 +71,9 @@ class JunctionBoxCircuit
 
   def utilization
     current / MAX_CURRENT
+  end
+
+  def junction_box_id
+    junction_box.id
   end
 end
