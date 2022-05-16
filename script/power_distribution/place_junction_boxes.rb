@@ -8,6 +8,11 @@ require './graph'
 require './panel'
 require './junction_box'
 
+def get_assigned_box_from_circuit(junction_boxes, circuit)
+  stripped_box_id = circuit.junction_box_id.split('-')[0].to_i
+  junction_boxes[stripped_box_id]&.first
+end
+
 # Place junction boxes such that:
 #   - Each edge and panel is assigned to circuits within a single box
 #
@@ -57,18 +62,23 @@ def place_junction_boxes(graph:)
 
   panels.each do |panel|
     panel.strips.each do |strip|
-      candidates = panel_strip_assignment_candidates(strip: strip, graph: graph, junction_boxes: junction_boxes)
+      candidates = panel_strip_assignment_candidates(panel: panel, strip: strip, graph: graph, junction_boxes: junction_boxes)
       if candidates.empty?
         vertex = panel.vertices[0]
         box = JunctionBox.new(vertex: vertex)
         box.circuits[0].panel_strips << strip
         junction_boxes[vertex.id] ||= []
         junction_boxes[vertex.id] << box
+        panel.closest_junction_box = box
         next
       end
 
       circuit = candidates.min_by(&:utilization)
       circuit.panel_strips << strip
+
+      # Multiple boxes can be at one vertex. We just need the stripped ID here.
+      box = get_assigned_box_from_circuit(junction_boxes, circuit)
+      panel.closest_junction_box = box
     end
   end
 
@@ -134,7 +144,7 @@ def find_location_for_new_box(vertices:, graph:, allowed_vertices:)
   nil
 end
 
-def panel_strip_assignment_candidates(strip:, graph:, junction_boxes:)
+def panel_strip_assignment_candidates(panel:, strip:, graph:, junction_boxes:)
   candidate_circuits = []
 
   strip.vertices.each do |vertex|
@@ -185,6 +195,11 @@ def mirror_assignments(junction_boxes:, graph:)
           mirrored_strip = find_mirror_panel_strip(panel_strip: strip, transform: transform, graph: graph)
           next if mirrored_strip.nil?
           new_box.circuits[i].panel_strips << mirrored_strip
+
+          panel = graph.panels[strip.panel_id]
+          next if panel.closest_junction_box.present?
+
+          panel.closest_junction_box = box
         end
       end
       junction_boxes[mirrored_vertex.id] ||= []

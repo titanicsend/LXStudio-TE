@@ -1,5 +1,6 @@
 require 'csv'
 require './constants.rb'
+require './junction_box.rb'
 
 class Panel
   LEDS_PER_SQUARE_MICRON = 462.0 / (1_000_000**2)
@@ -22,9 +23,10 @@ class Panel
       current: max_current - @strips.sum(&:current),
       vertices: vertices,
     )
+    @closest_junction_box = nil
   end
 
-  attr_accessor :id, :vertices, :strips
+  attr_accessor :id, :vertices, :strips, :closest_junction_box
 
   def area
     side_lengths = vertices.combination(2).map do |v1, v2|
@@ -40,6 +42,22 @@ class Panel
 
   def max_current
     @max_current ||= num_leds * MAX_CURRENT_PER_LED
+  end
+
+  def centroid
+    v1 = vertices[0]
+    v2 = vertices[1]
+    v3 = vertices[2]
+
+    centroid_x = (v1.x + v2.x + v3.x) / 3
+    centroid_y = (v1.y + v2.y + v3.y) / 3
+    centroid_z = (v1.z + v2.z + v3.z) / 3
+
+    {
+      :x => centroid_x,
+      :y => centroid_y,
+      :z => centroid_z,
+    }
   end
 
   def self.load_panels(filename, vertices)
