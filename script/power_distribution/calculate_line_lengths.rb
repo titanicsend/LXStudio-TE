@@ -13,10 +13,6 @@ panels = Panel.load_panels('../../resources/vehicle/panels.txt', vertices)
 graph = Graph.new(edges: edges, vertices: vertices, panels: panels)
 boxes = place_junction_boxes(graph: graph)
 
-# These are just for one lead; we'll need this amount in red and black.
-edge_power_length_feet = 0
-panel_power_length_feet = 0
-
 def microns_to_feet(distance_in_microns)
   distance_in_microns / 304_800
 end
@@ -34,6 +30,8 @@ def straight_line_distance(point1, point2)
   microns_to_feet((vector1 - vector2).magnitude)
 end
 
+edge_lengths_count = {}
+
 edge_assignments.each do |edge_assignment|
   vertex_id, *edge_ids = edge_assignment
   vertex_id = vertex_id.to_i
@@ -44,10 +42,18 @@ edge_assignments.each do |edge_assignment|
     next if edge.nil?
 
     edge.vertices.each do |v|
-      edge_power_length_feet += min_distance_between_vertices_in_feet(graph, vertex_id, v.id)
+      edge_power_length_feet = min_distance_between_vertices_in_feet(graph, vertex_id, v.id) * (1 + LINE_OVERAGE_BUFFER_PERCENT)
+      if edge_lengths_count[edge_power_length_feet].nil?
+        edge_lengths_count[edge_power_length_feet] = 1
+      else
+        edge_lengths_count[edge_power_length_feet] += 1
+      end
     end
   end
 end
+edge_lengths_count = edge_lengths_count.sort
+
+panel_lengths_count = {}
 
 # TODO: finish calculating power lines to centroids of panels
 graph.panels.each do |_, panel|
@@ -59,12 +65,14 @@ graph.panels.each do |_, panel|
     next
   end
 
-  straight_line_distance_feet = straight_line_distance(centroid, assigned_junction_box.vertex)
-  panel_power_length_feet += panel_power_length_feet
+  panel_power_length_feet = straight_line_distance(centroid, assigned_junction_box.vertex) * (1 + LINE_OVERAGE_BUFFER_PERCENT)
+  if panel_lengths_count[panel_power_length_feet].nil?
+    panel_lengths_count[panel_power_length_feet] = 1
+  else
+    panel_lengths_count[panel_power_length_feet] += 1
+  end
 end
+panel_lengths_count = panel_lengths_count.sort
 
-# TODO: calculate ethernet runs along edges to controllers
-
-
-total_red_wire_feet = (edge_power_length_feet + panel_power_length_feet) * (1 + LINE_OVERAGE_BUFFER_PERCENT)
-total_black_wire_feet = total_red_wire_feet
+puts "edge_lengths_count: #{edge_lengths_count}"
+puts "panel_lengths_count: #{panel_lengths_count}"
