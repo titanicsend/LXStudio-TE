@@ -446,6 +446,14 @@ public class TEWholeModel extends LXModel {
     return panelsBySection.get(section);
   }
 
+  public Set<LXPoint> getPointsBySection(TEPanelSection section) {
+    return getPanelsBySection(section)
+            .stream()
+            .map(LXModel::getPoints)
+            .flatMap(List::stream)
+            .collect(Collectors.toSet());
+  }
+
   public Set<TEPanelModel> getPanelsBySections(Collection<TEPanelSection> sections) {
     return panelsBySection.entrySet().stream()
             .filter(entry -> sections.contains(entry.getKey()))
