@@ -71,6 +71,7 @@ class EdgeStrip
     @id = id
     @vertices = vertices
     @edge = edge
+    @circuit = nil
   end
 
   def num_leds
@@ -89,6 +90,6 @@ class EdgeStrip
     edge.id
   end
 
-  attr_accessor :id, :vertices, :edge
+  attr_accessor :id, :vertices, :edge, :circuit
 end
 

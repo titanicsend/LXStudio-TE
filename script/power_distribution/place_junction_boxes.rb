@@ -27,13 +27,29 @@ def place_junction_boxes(graph:)
   # Start by just assigning boxes to the audience-facing, rear (i.e. stage
   # right) quadrant of the vehicle.
   edges = graph.edges.values.select do |edge|
-    edge.vertices.all? { |v| v.x < 0 && v.z > 0 }
+    edge.vertices.all? { |v| v.x <= 0 && v.z >= 0 }
   end
 
   panels = graph.panels.values.select do |panel|
-    panel.vertices.all? { |v| v.x < 0 && v.z > 0 }
+    panel.vertices.all? { |v| v.x <= 0 && v.z >= 0 }
   end
 
+  assign(edges: edges, panels: panels, junction_boxes: junction_boxes, graph: graph)
+
+  # Now take the assignments for the quadrant and mirror them over to the other
+  # 3 quadrants. There will be some unassigned panels and edges at this point
+  # (those that cross quadrants), but we can deal with those separately.
+  mirror_assignments(junction_boxes: junction_boxes, graph: graph)
+
+  # Finally, assign everything that wasn't a mirrored version of something in the first quandrant.
+  edges = graph.edges.values.select { |edge| edge.strips.all? { |strip| strip.circuit.nil? } }
+  panels = graph.panels.values.select { |panel| panel.strips.all? { |strip| strip.circuit.nil? } }
+
+  assign(edges: edges, panels: panels, junction_boxes: junction_boxes, graph: graph)
+  junction_boxes
+end
+
+def assign(edges:, panels:, junction_boxes:, graph:)
   edges.each do |edge|
     # Find a box that can support the max current of the whole edge, or create
     # one if none exist, then assign each strip in the edge to a circuit within
@@ -57,6 +73,7 @@ def place_junction_boxes(graph:)
         .select { |c| c.current + strip.max_current <= JunctionBoxCircuit::MAX_CURRENT }
         .max_by(&:utilization)
       circuit.edge_strips << strip
+      strip.circuit = circuit
     end
   end
 
@@ -75,19 +92,9 @@ def place_junction_boxes(graph:)
 
       circuit = candidates.min_by(&:utilization)
       circuit.panel_strips << strip
-
-      # Multiple boxes can be at one vertex. We just need the stripped ID here.
-      box = get_assigned_box_from_circuit(junction_boxes, circuit)
-      panel.closest_junction_box = box
+      strip.circuit = circuit
     end
   end
-
-  # Now take the assignments for the quadrant and mirror them over to the other
-  # 3 quadrants. There will be some unassigned panels and edges at this point
-  # (those that cross quadrants), but we can deal with those separately.
-  mirror_assignments(junction_boxes: junction_boxes, graph: graph)
-
-  junction_boxes
 end
 
 def allowed_vertices(panels:)
@@ -180,26 +187,25 @@ def mirror_assignments(junction_boxes:, graph:)
   transforms.each do |transform|
     junction_boxes.values.flatten.each do |box|
       mirrored_vertex = graph.vertices.values.find do |v|
-        v.x == box.vertex.x * transform[0] && v.z == box.vertex.z * transform[1]
+        (v.x - box.vertex.x * transform[0]).abs < 100_000 && (v.y - box.vertex.y).abs < 100_000 && (v.z - box.vertex.z * transform[1]).abs < 100_000
       end
-      next if mirrored_vertex.nil?
+      next if mirrored_vertex.nil? || mirrored_vertex == box.vertex
+
       new_box = JunctionBox.new(vertex: mirrored_vertex)
-      box.circuits.each_with_index do |circuit|
+      box.circuits.each do |circuit|
         circuit.edge_strips.each_with_index do |strip, i|
           mirrored_strip = find_mirror_edge_strip(edge_strip: strip, transform: transform, graph: graph)
-          next if mirrored_strip.nil?
+          next unless mirrored_strip.circuit.nil?
           new_box.circuits[i].edge_strips << mirrored_strip
+          mirrored_strip.circuit = new_box.circuits[i]
         end
 
         circuit.panel_strips.each_with_index do |strip, i|
           mirrored_strip = find_mirror_panel_strip(panel_strip: strip, transform: transform, graph: graph)
           next if mirrored_strip.nil?
+          next unless mirrored_strip.circuit.nil?
           new_box.circuits[i].panel_strips << mirrored_strip
-
-          panel = graph.panels[strip.panel_id]
-          next if panel.closest_junction_box.present?
-
-          panel.closest_junction_box = box
+          mirrored_strip.circuit = new_box.circuits[i]
         end
       end
       junction_boxes[mirrored_vertex.id] ||= []
@@ -211,11 +217,11 @@ end
 def find_mirror_edge_strip(edge_strip:, transform:, graph:)
   mirrored_vertices = edge_strip.vertices.map do |v|
     graph.vertices.values.find do |w|
-      v.x * transform[0] == w.x && v.z * transform[1] == w.z
+      (v.x - w.x * transform[0]).abs < 100_000 && (v.y - w.y).abs < 100_000 && (v.z - w.z * transform[1]).abs < 100_000
     end
   end
+
   return nil if mirrored_vertices.any?(&:nil?)
-  pp mirrored_vertices
   edge = graph.edges[mirrored_vertices.map(&:id).sort.join('-')]
   _, _, index = edge_strip.id.split('-')
   edge.strips[index.to_i]
@@ -224,15 +230,13 @@ end
 def find_mirror_panel_strip(panel_strip:, transform:, graph:)
   mirrored_vertices = panel_strip.vertices.map do |v|
     graph.vertices.values.find do |w|
-      v.x * transform[0] == w.x && v.z * transform[1] == w.z
+      (v.x - w.x * transform[0]).abs < 100_000 && (v.y - w.y).abs < 100_000 && (v.z - w.z * transform[1]).abs < 100_000
     end
   end
-  return nil if mirrored_vertices.any?(&:nil?)
 
   panel = graph.panels.values.find do |p|
-    (p.vertices.map(&:id) & mirrored_vertices).length == 3
+    (p.vertices.map(&:id) & mirrored_vertices.map(&:id)).length == 3
   end
-  return nil if panel.nil?
 
   _, index = panel_strip.id.split('-')
   panel.strips[index.to_i]
@@ -244,9 +248,9 @@ def print_boxes(junction_boxes)
     puts "#{vertex} - #{boxes.sum(&:current)} A - #{100 * (boxes.sum(&:utilization) / boxes.size).truncate(4)}% utilized"
   end
 
-  boxes = junction_boxes.values.flatten
+  boxes = junction_boxes.values.flatten.select { |b| b.current > 0 }
   puts junction_boxes.keys.length
-  puts "#{junction_boxes.values.flatten.size} total junction boxes"
+  puts "#{boxes.size} total junction boxes"
   puts "#{boxes.sum(&:current)} Amps"
   puts "#{boxes.sum(&:utilization) / boxes.count} average utilization"
 end
@@ -264,6 +268,22 @@ boxes.values.flatten.each do |box|
     circuit.edge_strips.each do |strip|
       edge_to_box[strip.edge_id] ||= Set.new
       edge_to_box[strip.edge_id].add(box.id)
+    end
+  end
+end
+
+graph.panels.each_value do |panel|
+  panel.strips.each do |strip|
+    if strip.circuit.nil?
+      puts "#{strip.id} unassigned"
+    end
+  end
+end
+
+graph.edges.each_value do |edge|
+  edge.strips.each do |strip|
+    if strip.circuit.nil?
+      puts "#{strip.id} unassigned"
     end
   end
 end
