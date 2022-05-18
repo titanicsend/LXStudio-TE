@@ -2,6 +2,8 @@ package titanicsend.util;
 
 import heronarts.lx.utils.LXUtils;
 
+import java.util.Arrays;
+
 import static java.lang.Math.floor;
 
 public class TEMath {
@@ -165,6 +167,14 @@ public class TEMath {
 
     public static double clamp(double value, double min, double max) {
         return Math.max(min, Math.min(max, value));
+    }
+
+    public static double[] clamp(double[] array, double min, double max) {
+        return Arrays.stream(array).map(x -> clamp(x, min, max)).toArray();
+    }
+
+    public static double[] mod(double[] array, double value) {
+        return Arrays.stream(array).map(x -> x % value).toArray();
     }
 
     public static double vectorLength(double[] vector) {

@@ -6,6 +6,8 @@ import titanicsend.pattern.yoffa.effect.PulseEffect;
 import titanicsend.pattern.yoffa.effect.ShimmeringEffect;
 import titanicsend.pattern.yoffa.effect.AlternatingDotsEffect;
 import titanicsend.pattern.yoffa.effect.BreathingDotsEffect;
+import titanicsend.pattern.yoffa.effect.shaders.WaterShader;
+import titanicsend.pattern.yoffa.effect.shaders.WavyShader;
 import titanicsend.pattern.yoffa.framework.ConstructedPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
@@ -71,6 +73,50 @@ public class PatternConfig {
         @Override
         protected List<PatternEffect> getEffects() {
             return List.of(new OutrunGridShader(PatternTarget.splitPanelSections(this)));
+        }
+    }
+
+    @LXCategory("Yoffa Panel Shader")
+    public static class WaterPanels extends ConstructedPattern {
+        public WaterPanels(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> getEffects() {
+            return List.of(new WaterShader(PatternTarget.splitPanelSections(this)));
+        }
+    }
+
+    @LXCategory("Yoffa Edge Shader")
+    public static class WaterEdges extends ConstructedPattern {
+        public WaterEdges(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> getEffects() {
+            return List.of(new WaterShader(PatternTarget.allEdgesAsCanvas(this)));
+        }
+    }
+
+    @LXCategory("Yoffa Panel Shader")
+    public static class WavyPanels extends ConstructedPattern {
+        public WavyPanels(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> getEffects() {
+            return List.of(new WavyShader(PatternTarget.splitPanelSections(this)));
+        }
+    }
+
+    @LXCategory("Yoffa Edge Shader")
+    public static class WavyEdges extends ConstructedPattern {
+        public WavyEdges(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> getEffects() {
+            return List.of(new WavyShader(PatternTarget.allEdgesAsCanvas(this)));
         }
     }
 
