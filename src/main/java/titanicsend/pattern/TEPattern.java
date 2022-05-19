@@ -189,6 +189,10 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
     );
   }
 
+  public Tempo getTempo() {
+    return lx.engine.tempo;
+  }
+
 
 
   /*

@@ -39,9 +39,6 @@ import titanicsend.pattern.yoffa.*;
 import titanicsend.pattern.yoffa.media.BasicVideoPattern;
 import titanicsend.pattern.yoffa.media.BasicImagePattern;
 import titanicsend.pattern.yoffa.media.ReactiveHeartPattern;
-import titanicsend.pattern.yoffa.edges.PowerGridPattern;
-import titanicsend.pattern.yoffa.shaders.basicpatterns.GridPattern;
-import titanicsend.pattern.yoffa.shaders.basicpatterns.NeonHeartPattern;
 
 
 public class TEApp extends PApplet implements LXPlugin  {
@@ -90,9 +87,6 @@ public class TEApp extends PApplet implements LXPlugin  {
     // Register custom pattern and effect types
 
     // Patterns/effects that currently conform to art direction standards
-    lx.registry.addPattern(PulseCenterPattern.class);
-    lx.registry.addPattern(PulseSidePattern.class);
-    lx.registry.addPattern(PulseDoublePattern.class);
     lx.registry.addPattern(EdgeProgressions.class);
     lx.registry.addPattern(EdgeSymmetry.class);
     lx.registry.addPattern(Smoke.class);
@@ -116,11 +110,6 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPattern(SolidPanel.class);
     lx.registry.addPattern(PulsingTriangles.class);
     lx.registry.addPattern(HandTracker.class);
-    lx.registry.addPattern(PowerGridPattern.class);
-    lx.registry.addPattern(NeonHeartPattern.class);
-    lx.registry.addPattern(GridPattern.class);
-    lx.registry.addPattern(BreathingDots.class);
-    lx.registry.addPattern(AlternatingDots.class);
     lx.registry.addPattern(Fireflies.class);
 
     // Patterns that will not aspire to art direction standards
@@ -136,6 +125,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPattern(ArtStandards.class);
     lx.registry.addEffect(titanicsend.effect.BasicEffect.class);
 
+    lx.registry.addPatterns(PatternConfig.getPatterns());
 
 
     int myGigglePixelID = 73;  // Looks like "TE"

@@ -1,8 +1,9 @@
-package titanicsend.pattern.yoffa.shaders;
+package titanicsend.pattern.yoffa.effect.shaders;
 
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
+import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.util.TEMath;
 
 import java.util.Arrays;
@@ -14,7 +15,9 @@ import static titanicsend.util.TEMath.*;
 
 //https://www.shadertoy.com/view/wstGz4
 //Noncommercial license
-public class GridShader extends FragmentShader {
+public class OutrunGridShader extends FragmentShaderEffect {
+
+    public static final double HORIZON_Y = 0.7;
 
     private static final double DEG2RAD = PI/180.;
     private static final int SUPERSAMP = 8;
@@ -39,6 +42,10 @@ public class GridShader extends FragmentShader {
             new BooleanParameter("Glowing", true)
                     .setDescription("Toggle whether the grid should glow brightly");
 
+    public OutrunGridShader(PatternTarget target) {
+        super(target);
+    }
+
     @Override
     public Collection<LXParameter> getParameters() {
         return List.of(forwardSpeed, sidewaysSpeed, colorChangeSpeed, alphaWaves, glowing);
@@ -54,12 +61,12 @@ public class GridShader extends FragmentShader {
         double fragSize = 1. / resolution[1];
         double superSize = fragSize / SUPERSAMP;
 
-        //controls how high the horizon it
-        double horizonY = 0.2;
+        //operates on a scale of (-0.5, .5)
+        double horizonY = HORIZON_Y - 0.5;
 
         double[] fragColor;
         if (p[1] > horizonY) {
-            fragColor = new double[]{0, 0, 0, 1};
+            fragColor = new double[]{0, 0, 0, 0};
         } else {
             double intensity = 0.;
 

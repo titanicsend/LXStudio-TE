@@ -1,9 +1,9 @@
-package titanicsend.pattern.yoffa.shaders;
+package titanicsend.pattern.yoffa.effect.shaders;
 
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
+import titanicsend.pattern.yoffa.framework.PatternTarget;
 
-import java.awt.*;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -12,7 +12,7 @@ import static titanicsend.util.TEMath.*;
 
 //https://www.shadertoy.com/view/7l3GDS
 //Non-commercial license
-public class NeonHeartShader extends FragmentShader {
+public class NeonHeartShader extends FragmentShaderEffect {
 
     private static final int POINT_COUNT = 8;
 
@@ -39,6 +39,10 @@ public class NeonHeartShader extends FragmentShader {
     public final CompoundParameter length =
             new CompoundParameter("Length", 0.25, 0.01, 0.5)
                     .setDescription("Length");
+
+    public NeonHeartShader(PatternTarget target) {
+        super(target);
+    }
 
     @Override
     public Collection<LXParameter> getParameters() {
