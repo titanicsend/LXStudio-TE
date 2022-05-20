@@ -55,12 +55,10 @@ edge_lengths_count = edge_lengths_count.sort
 
 panel_lengths_count = {}
 
-# TODO: finish calculating power lines to centroids of panels
 graph.panels.each do |_, panel|
   centroid = panel.centroid
 
-  # FIXME: why are there panels without closest junction boxes?
-  assigned_junction_box = panel.closest_junction_box
+  assigned_junction_box = panel.strips.select { |strip| strip.circuit && strip.circuit.junction_box }.first.circuit.junction_box
   if assigned_junction_box.nil?
     next
   end
@@ -74,5 +72,6 @@ graph.panels.each do |_, panel|
 end
 panel_lengths_count = panel_lengths_count.sort
 
+# TODO: group up into batches of lengths to order
 puts "edge_lengths_count: #{edge_lengths_count}"
 puts "panel_lengths_count: #{panel_lengths_count}"
