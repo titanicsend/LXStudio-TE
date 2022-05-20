@@ -23,10 +23,9 @@ class Panel
       current: max_current - @strips.sum(&:current),
       vertices: vertices,
     )
-    @closest_junction_box = nil
   end
 
-  attr_accessor :id, :vertices, :strips, :closest_junction_box
+  attr_accessor :id, :vertices, :strips
 
   def area
     side_lengths = vertices.combination(2).map do |v1, v2|

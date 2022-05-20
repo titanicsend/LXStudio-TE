@@ -86,7 +86,6 @@ def assign(edges:, panels:, junction_boxes:, graph:)
         box.circuits[0].panel_strips << strip
         junction_boxes[vertex.id] ||= []
         junction_boxes[vertex.id] << box
-        panel.closest_junction_box = box
         next
       end
 
