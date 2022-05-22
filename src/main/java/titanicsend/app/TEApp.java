@@ -128,6 +128,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPatterns(PatternConfig.getPatterns());
 
 
+
     int myGigglePixelID = 73;  // Looks like "TE"
     try {
       this.gpListener = new GigglePixelListener(lx, "0.0.0.0", myGigglePixelID);
