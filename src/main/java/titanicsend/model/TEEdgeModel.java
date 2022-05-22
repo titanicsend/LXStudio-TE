@@ -47,7 +47,12 @@ public class TEEdgeModel extends TEModel {
     float dz = v1.z - v0.z;
 
     for (int i = 0; i < numPixels; i++) {
-      float fraction = (float)(i) / (numPixels - 1);
+      float fraction;
+      if (numPixels > 1) {
+        fraction = (float)(i) / (numPixels - 1);
+      } else {
+        fraction = .5f;
+      }
       TEEdgeModel.Point point = new TEEdgeModel.Point(
               i,
               fraction,
