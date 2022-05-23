@@ -10,11 +10,6 @@ require './junction_box'
 require './calculate_line_lengths'
 require './render_diagram'
 
-def get_assigned_box_from_circuit(junction_boxes, circuit)
-  stripped_box_id = circuit.junction_box_id.split('-')[0].to_i
-  junction_boxes[stripped_box_id]&.first
-end
-
 # Place junction boxes such that:
 #   - Each edge and panel is assigned to circuits within a single box
 #
@@ -147,7 +142,7 @@ def edge_assignment_candidates(edge:, graph:, junction_boxes:)
     candidate_vertices = edge.vertices
       .map { |v| v.adjacent(graph: graph, max_level: 2) }
       .flatten
-      .select { |v| graph.min_distance(v, edge.signal_in_vertex.id) < 17 * 304_800 }
+      .select { |v| graph.min_distance(v, edge.signal_in_vertex.id) < 27 * 304_800 }
 
     candidate_vertices.each do |v|
       unless junction_boxes[v].nil?
@@ -209,6 +204,7 @@ end
 
 def mirror_assignments(junction_boxes:, graph:)
   transforms = [[1, -1], [-1, 1], [-1, -1]]
+  new_junction_boxes = {}
   transforms.each do |transform|
     junction_boxes.values.flatten.each do |box|
       mirrored_vertex = graph.vertices.values.find do |v|
@@ -237,10 +233,12 @@ def mirror_assignments(junction_boxes:, graph:)
           mirrored_strip.circuit = new_box.circuits[i]
         end
       end
-      junction_boxes[mirrored_vertex.id] ||= []
-      junction_boxes[mirrored_vertex.id] << new_box
+      new_junction_boxes[mirrored_vertex.id] ||= []
+      new_junction_boxes[mirrored_vertex.id] << new_box
     end
   end
+
+  junction_boxes.merge!(new_junction_boxes)
 end
 
 def find_mirror_edge_strip(edge_strip:, transform:, graph:)
@@ -278,7 +276,7 @@ def print_boxes(junction_boxes)
     puts "#{vertex} - #{boxes.sum(&:current)} A - #{100 * (boxes.sum(&:utilization) / boxes.size).truncate(4)}% utilized"
   end
 
-  boxes = junction_boxes.values.flatten.select { |b| b.current > 0 }
+  boxes = junction_boxes.values.flatten
   puts junction_boxes.keys.length
   puts "#{boxes.size} total junction boxes"
   puts "#{boxes.sum(&:current)} Amps"
@@ -319,6 +317,8 @@ graph.edges.each_value do |edge|
   end
 end
 
-pp bucket_cable_lengths(power_cable_lengths(boxes: boxes.values.flatten, graph: graph))
-
-RenderDiagram.new(graph: graph, junction_boxes: boxes.values.flatten).render
+lengths = bucket_cable_lengths(power_cable_lengths(boxes: boxes.values.flatten, graph: graph))
+pp lengths
+total_length = lengths.sum { |k, v| k * v }
+pp total_length
+RenderDiagram.new(graph: graph, junction_boxes: boxes).render
