@@ -8,7 +8,6 @@ require './graph'
 require './panel'
 require './junction_box'
 require './calculate_line_lengths'
-require './render_diagram'
 
 # Place junction boxes such that:
 #   - Each edge and panel is assigned to circuits within a single box
@@ -25,7 +24,7 @@ def place_junction_boxes(graph:)
   # right) quadrant of the vehicle.
   edges = graph.edges.values.select do |edge|
     edge.vertices.all? { |v| v.x <= 0 && v.z >= 0 }
-  end
+  end.sort_by(&:depth)
 
   panels = graph.panels.values.select do |panel|
     panel.vertices.all? { |v| v.x <= 0 && v.z >= 0 }
@@ -39,7 +38,7 @@ def place_junction_boxes(graph:)
   mirror_assignments(junction_boxes: junction_boxes, graph: graph)
 
   # Finally, assign everything that wasn't a mirrored version of something in the first quandrant.
-  edges = graph.edges.values.select { |edge| edge.strips.all? { |strip| strip.circuit.nil? } }
+  edges = graph.edges.values.select { |edge| edge.strips.all? { |strip| strip.circuit.nil? } }.sort_by(&:depth)
   panels = graph.panels.values.select { |panel| panel.strips.all? { |strip| strip.circuit.nil? } }
 
   assign(edges: edges, panels: panels, junction_boxes: junction_boxes, graph: graph)
@@ -72,12 +71,14 @@ def assign(edges:, panels:, junction_boxes:, graph:)
     end
 
     box = candidates.max_by(&:utilization)
+    already_selected_circuits = []
     edge.strips.each do |strip|
       circuit = box.circuits
         .select { |c| c.current + strip.max_current <= JunctionBoxCircuit::MAX_CURRENT }
-        .min_by(&:utilization)
+        .max_by { |c| [already_selected_circuits.include?(circuit) ? 1 : 0, -1 * c.utilization] }
       circuit.edge_strips << strip
       strip.circuit = circuit
+      already_selected_circuits << circuit
     end
 
     try_chaining_next_edge(edge: edge)
@@ -107,7 +108,7 @@ def try_chaining_next_edge(edge:)
   return if next_edge.nil?
 
   can_chain = edge.strips.all? do |strip|
-    strip.circuit.current >= next_edge.strips.first.max_current
+    next_edge.strips.first.max_current+ strip.circuit.current <= JunctionBoxCircuit::MAX_CURRENT
   end
   return unless can_chain
 
@@ -213,19 +214,17 @@ def mirror_assignments(junction_boxes:, graph:)
       next if mirrored_vertex.nil? || mirrored_vertex == box.vertex
 
       new_box = JunctionBox.new(vertex: mirrored_vertex)
-      box.circuits.each do |circuit|
-        circuit.edge_strips.each_with_index do |strip, i|
-          # HACK: skip edges that aren't in the first quadrant
-          next unless strip.edge.vertices.all? { |v| v.x <= 0 && v.z >= 0 }
-
+      box.circuits.each_with_index do |circuit, i|
+        circuit.edge_strips.each do |strip|
           mirrored_strip = find_mirror_edge_strip(edge_strip: strip, transform: transform, graph: graph)
           next unless !mirrored_strip.nil? && mirrored_strip.circuit.nil?
 
+          puts "#{strip.id}: #{mirrored_strip.id}"
           new_box.circuits[i].edge_strips << mirrored_strip
           mirrored_strip.circuit = new_box.circuits[i]
         end
 
-        circuit.panel_strips.each_with_index do |strip, i|
+        circuit.panel_strips do |strip|
           mirrored_strip = find_mirror_panel_strip(panel_strip: strip, transform: transform, graph: graph)
           next if mirrored_strip.nil?
           next unless mirrored_strip.circuit.nil?
@@ -294,6 +293,9 @@ print_boxes(boxes)
 edge_to_box = {}
 boxes.values.flatten.each do |box|
   box.circuits.each do |circuit|
+    # if circuit.utilization > 1
+    #   puts "#{circuit.id}: #{circuit.utilization}"
+    # end
     circuit.edge_strips.each do |strip|
       edge_to_box[strip.edge_id] ||= Set.new
       edge_to_box[strip.edge_id].add(box.id)
@@ -321,4 +323,3 @@ lengths = bucket_cable_lengths(power_cable_lengths(boxes: boxes.values.flatten, 
 pp lengths
 total_length = lengths.sum { |k, v| k * v }
 pp total_length
-RenderDiagram.new(graph: graph, junction_boxes: boxes).render

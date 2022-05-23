@@ -72,6 +72,14 @@ class Edge
     (vertices - [signal_in_vertex]).first
   end
 
+  def depth
+    @depth ||= if signal_from.is_a?(Edge)
+                 signal_from.depth + 1
+               else
+                 0
+               end
+  end
+
   attr_accessor :id, :vertices, :signal_to, :signal_from, :strips
 end
 
