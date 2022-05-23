@@ -321,4 +321,4 @@ lengths = bucket_cable_lengths(power_cable_lengths(boxes: boxes.values.flatten, 
 pp lengths
 total_length = lengths.sum { |k, v| k * v }
 pp total_length
-RenderDiagram.new(graph: graph, junction_boxes: boxes).render
+RenderDiagram.new(graph: graph, junction_boxes: boxes, output: 'output/diagram.svg').render
