@@ -8,6 +8,7 @@ require './graph'
 require './panel'
 require './junction_box'
 require './calculate_line_lengths'
+require './render_diagram'
 
 def get_assigned_box_from_circuit(junction_boxes, circuit)
   stripped_box_id = circuit.junction_box_id.split('-')[0].to_i
@@ -146,7 +147,7 @@ def edge_assignment_candidates(edge:, graph:, junction_boxes:)
     candidate_vertices = edge.vertices
       .map { |v| v.adjacent(graph: graph, max_level: 2) }
       .flatten
-      .select { |v| edge.vertices.any? { |w| graph.min_distance(v, w.id) < 17 * 304_800 } }
+      .select { |v| graph.min_distance(v, edge.signal_in_vertex.id) < 17 * 304_800 }
 
     candidate_vertices.each do |v|
       unless junction_boxes[v].nil?
@@ -319,3 +320,5 @@ graph.edges.each_value do |edge|
 end
 
 pp bucket_cable_lengths(power_cable_lengths(boxes: boxes.values.flatten, graph: graph))
+
+RenderDiagram.new(graph: graph, junction_boxes: boxes.values.flatten).render

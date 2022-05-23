@@ -34,7 +34,9 @@ def power_cable_lengths(boxes:, graph:)
         cable_lengths << min_distance_between_vertices_in_feet(graph, box.vertex.id, strip.edge.signal_in_vertex.id)
       end
 
-      circuit.panel_strips.each do |strip|
+      circuit.panel_strips.each_with_index do |strip, i|
+        next if circuit.panel_strips[0...i].any? { |other| other.panel == strip.panel }
+
         cable_lengths << straight_line_distance(strip.panel.centroid, box.vertex)
       end
     end
