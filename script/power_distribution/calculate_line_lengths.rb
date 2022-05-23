@@ -3,15 +3,7 @@ require 'matrix'
 require './edge.rb'
 require './graph.rb'
 require './panel.rb'
-require './place_junction_boxes.rb'
 require './vertex.rb'
-
-edge_assignments = CSV.read('edge_assignments.tsv', col_sep: "\t")
-vertices = Vertex.load_vertices('../../resources/vehicle/vertexes.txt')
-edges = Edge.load_edges('../../resources/vehicle/edges.txt', vertices)
-panels = Panel.load_panels('../../resources/vehicle/panels.txt', vertices)
-graph = Graph.new(edges: edges, vertices: vertices, panels: panels)
-boxes = place_junction_boxes(graph: graph)
 
 def microns_to_feet(distance_in_microns)
   distance_in_microns / 304_800
@@ -30,48 +22,36 @@ def straight_line_distance(point1, point2)
   microns_to_feet((vector1 - vector2).magnitude)
 end
 
-edge_lengths_count = {}
+def power_cable_lengths(boxes:, graph:)
+  cable_lengths = []
 
-edge_assignments.each do |edge_assignment|
-  vertex_id, *edge_ids = edge_assignment
-  vertex_id = vertex_id.to_i
-  edge_ids = edge_ids.compact
+  boxes.each do |box|
+    box.circuits.each do |circuit|
+      edges = circuit.edge_strips.map(&:edge)
+      circuit.edge_strips.each do |strip|
+        next if edges.include?(strip.edge.signal_from)
 
-  edge_ids.each do |edge_id|
-    edge = edges[edge_id]
-    next if edge.nil?
+        cable_lengths << min_distance_between_vertices_in_feet(graph, box.vertex.id, strip.edge.signal_in_vertex.id)
+      end
 
-    edge.vertices.each do |v|
-      edge_power_length_feet = min_distance_between_vertices_in_feet(graph, vertex_id, v.id) * (1 + LINE_OVERAGE_BUFFER_PERCENT)
-      if edge_lengths_count[edge_power_length_feet].nil?
-        edge_lengths_count[edge_power_length_feet] = 1
-      else
-        edge_lengths_count[edge_power_length_feet] += 1
+      circuit.panel_strips.each do |strip|
+        cable_lengths << straight_line_distance(strip.panel.centroid, box.vertex)
       end
     end
   end
+
+  cable_lengths
 end
-edge_lengths_count = edge_lengths_count.sort
 
-panel_lengths_count = {}
+def bucket_cable_lengths(cable_lengths)
+  buckets = [5, 10, 15, 20, 25, 30]
 
-graph.panels.each do |_, panel|
-  centroid = panel.centroid
+  bucketed_cables = buckets.map { |i| [i, 0] }.to_h
 
-  assigned_junction_box = panel.strips.select { |strip| strip.circuit && strip.circuit.junction_box }.first.circuit.junction_box
-  if assigned_junction_box.nil?
-    next
+  cable_lengths.each do |cable|
+    bucket = buckets.find { |b| cable <= b }
+    bucketed_cables[bucket] += 1
   end
 
-  panel_power_length_feet = straight_line_distance(centroid, assigned_junction_box.vertex) * (1 + LINE_OVERAGE_BUFFER_PERCENT)
-  if panel_lengths_count[panel_power_length_feet].nil?
-    panel_lengths_count[panel_power_length_feet] = 1
-  else
-    panel_lengths_count[panel_power_length_feet] += 1
-  end
+  bucketed_cables
 end
-panel_lengths_count = panel_lengths_count.sort
-
-# TODO: group up into batches of lengths to order
-puts "edge_lengths_count: #{edge_lengths_count}"
-puts "panel_lengths_count: #{panel_lengths_count}"
