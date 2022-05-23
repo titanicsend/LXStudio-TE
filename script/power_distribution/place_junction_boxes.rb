@@ -7,6 +7,7 @@ require './edge'
 require './graph'
 require './panel'
 require './junction_box'
+require './calculate_line_lengths'
 
 def get_assigned_box_from_circuit(junction_boxes, circuit)
   stripped_box_id = circuit.junction_box_id.split('-')[0].to_i
@@ -51,6 +52,8 @@ end
 
 def assign(edges:, panels:, junction_boxes:, graph:)
   edges.each do |edge|
+    next if edge.assigned?
+
     # Find a box that can support the max current of the whole edge, or create
     # one if none exist, then assign each strip in the edge to a circuit within
     # that box.
@@ -60,7 +63,12 @@ def assign(edges:, panels:, junction_boxes:, graph:)
       junction_boxes: junction_boxes,
     )
     if candidates.empty?
-      vertex_id = find_location_for_new_box(vertices: edge.vertices.map(&:id), graph: graph, allowed_vertices: allowed_vertices(panels: panels))
+      vertex_id = find_location_for_new_box(
+        vertices: [edge.signal_in_vertex.id, edge.signal_out_vertex.id],
+        graph: graph,
+        allowed_vertices: allowed_vertices(panels: panels),
+      )
+
       vertex = graph.vertices[vertex_id]
       candidates = [JunctionBox.new(vertex: vertex)]
       junction_boxes[vertex_id] ||= []
@@ -71,10 +79,12 @@ def assign(edges:, panels:, junction_boxes:, graph:)
     edge.strips.each do |strip|
       circuit = box.circuits
         .select { |c| c.current + strip.max_current <= JunctionBoxCircuit::MAX_CURRENT }
-        .max_by(&:utilization)
+        .min_by(&:utilization)
       circuit.edge_strips << strip
       strip.circuit = circuit
     end
+
+    try_chaining_next_edge(edge: edge)
   end
 
   panels.each do |panel|
@@ -89,10 +99,25 @@ def assign(edges:, panels:, junction_boxes:, graph:)
         next
       end
 
-      circuit = candidates.min_by(&:utilization)
+      circuit = candidates.max_by(&:utilization)
       circuit.panel_strips << strip
       strip.circuit = circuit
     end
+  end
+end
+
+def try_chaining_next_edge(edge:)
+  next_edge = edge.signal_to
+  return if next_edge.nil?
+
+  can_chain = edge.strips.all? do |strip|
+    strip.circuit.current >= next_edge.strips.first.max_current
+  end
+  return unless can_chain
+
+  edge.strips.each_with_index do |strip, i|
+    next_edge.strips[i].circuit = strip.circuit
+    strip.circuit.edge_strips << next_edge.strips[i]
   end
 end
 
@@ -193,8 +218,12 @@ def mirror_assignments(junction_boxes:, graph:)
       new_box = JunctionBox.new(vertex: mirrored_vertex)
       box.circuits.each do |circuit|
         circuit.edge_strips.each_with_index do |strip, i|
+          # HACK: skip edges that aren't in the first quadrant
+          next unless strip.edge.vertices.all? { |v| v.x <= 0 && v.z >= 0 }
+
           mirrored_strip = find_mirror_edge_strip(edge_strip: strip, transform: transform, graph: graph)
-          next unless mirrored_strip.circuit.nil?
+          next unless !mirrored_strip.nil? && mirrored_strip.circuit.nil?
+
           new_box.circuits[i].edge_strips << mirrored_strip
           mirrored_strip.circuit = new_box.circuits[i]
         end
@@ -232,6 +261,7 @@ def find_mirror_panel_strip(panel_strip:, transform:, graph:)
       (v.x - w.x * transform[0]).abs < 100_000 && (v.y - w.y).abs < 100_000 && (v.z - w.z * transform[1]).abs < 100_000
     end
   end
+  return nil if mirrored_vertices.any?(&:nil?)
 
   panel = graph.panels.values.find do |p|
     (p.vertices.map(&:id) & mirrored_vertices.map(&:id)).length == 3
@@ -256,6 +286,7 @@ end
 
 vertices = Vertex.load_vertices('../../resources/vehicle/vertexes.txt')
 edges = Edge.load_edges('../../resources/vehicle/edges.txt', vertices)
+Edge.load_signal_paths(filename: '../../resources/vehicle/signal_paths.tsv', edges: edges, vertices: vertices)
 panels = Panel.load_panels('../../resources/vehicle/panels.txt', vertices)
 graph = Graph.new(edges: edges, vertices: vertices, panels: panels)
 boxes = place_junction_boxes(graph: graph)
@@ -286,3 +317,5 @@ graph.edges.each_value do |edge|
     end
   end
 end
+
+pp bucket_cable_lengths(power_cable_lengths(boxes: boxes.values.flatten, graph: graph))
