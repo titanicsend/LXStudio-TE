@@ -39,28 +39,37 @@ class Edge
     edges
   end
 
-  def self.load_edge_paths(filename, edges, vertices)
+  def self.load_signal_paths(filename:, edges:, vertices:)
     rows = CSV.read(filename, col_sep: "\t")
-    edge_paths = [[]]
-    rows.each do |row|
-      edge = edges[row[0]]
-      next if edge.nil?
-
-      signal_from = row[16]
+    rows.drop(1).each do |row|
+      id, signal_from, controller_vertex = row
+      edge = edges[id]
       if signal_from == 'Controller'
-        edge.signal_from = vertices[row[17].to_i]
+        edge.signal_from = vertices[controller_vertex.to_i]
       else
-        prev_edge = edges[row[16]]
+        prev_edge = edges[signal_from]
         edge.signal_from = prev_edge
         prev_edge.signal_to = edge
       end
-
-      edge_paths.last << edge
-      if row[18] == 'Terminates'
-        edge_paths << []
-      end
     end
-    edge_paths
+  end
+
+  def assigned?
+    strips.none? { |strip| strip.circuit.nil? }
+  end
+
+  def signal_in_vertex
+    if signal_from.is_a?(Vertex)
+      signal_from
+    elsif signal_from.is_a?(Edge)
+      (signal_from.vertices & vertices).first
+    else
+      vertices.first
+    end
+  end
+
+  def signal_out_vertex
+    (vertices - [signal_in_vertex]).first
   end
 
   attr_accessor :id, :vertices, :signal_to, :signal_from, :strips

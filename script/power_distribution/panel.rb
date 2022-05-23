@@ -76,7 +76,7 @@ end
 class PanelStrip
   def initialize(id:, panel:, vertices:, current:)
     @id = id
-    @panel_id = panel
+    @panel = panel
     @current = current
     @vertices = vertices
     @circuit = nil
