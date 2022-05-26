@@ -31,7 +31,11 @@ def power_cable_lengths(boxes:, graph:)
       circuit.edge_strips.each do |strip|
         next if edges.include?(strip.edge.signal_from)
 
-        cable_lengths << min_distance_between_vertices_in_feet(graph, box.vertex.id, strip.edge.signal_in_vertex.id)
+        length = strip.edge.vertices.map do |v|
+          min_distance_between_vertices_in_feet(graph, box.vertex.id, v.id)
+        end.min
+
+        cable_lengths << length
       end
 
       circuit.panel_strips.each_with_index do |strip, i|

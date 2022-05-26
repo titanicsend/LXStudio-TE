@@ -143,7 +143,7 @@ def edge_assignment_candidates(edge:, graph:, junction_boxes:)
     candidate_vertices = edge.vertices
       .map { |v| v.adjacent(graph: graph, max_level: 2) }
       .flatten
-      .select { |v| graph.min_distance(v, edge.signal_in_vertex.id) < 27 * 304_800 }
+      .select { |v| edge.vertices.any? { |w| graph.min_distance(v, w.id) < 17 * 304_800 } }
 
     candidate_vertices.each do |v|
       unless junction_boxes[v].nil?
