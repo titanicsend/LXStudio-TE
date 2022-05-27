@@ -8,6 +8,7 @@ require './graph'
 require './panel'
 require './junction_box'
 require './calculate_line_lengths'
+require './controller'
 
 # Place junction boxes such that:
 #   - Each edge and panel is assigned to circuits within a single box
@@ -287,8 +288,17 @@ edges = Edge.load_edges('../../resources/vehicle/edges.txt', vertices)
 Edge.load_signal_paths(filename: '../../resources/vehicle/signal_paths.tsv', edges: edges, vertices: vertices)
 panels = Panel.load_panels('../../resources/vehicle/panels.txt', vertices)
 graph = Graph.new(edges: edges, vertices: vertices, panels: panels)
+controllers = Controller.load_controllers(filename: '../../resources/vehicle/signal_paths.tsv', vertices: vertices)
 boxes = place_junction_boxes(graph: graph)
 print_boxes(boxes)
+
+Controller.assign_controllers_to_boxes(graph: graph, controllers: controllers, junction_boxes: boxes)
+
+boxes.each do |_, box_grouping|
+  box_grouping.each do |box|
+    puts "Junction box #{box.id} has #{box.controllers.length} controller(s) assigned"
+  end
+end
 
 edge_to_box = {}
 boxes.values.flatten.each do |box|

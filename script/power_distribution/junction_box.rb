@@ -7,6 +7,7 @@ class JunctionBox
     @circuits = (0..15).map do |i|
       JunctionBoxCircuit.new(id: "#{id}-#{i}", junction_box: self)
     end
+    @controllers = []
   end
 
   def calculate_id
@@ -19,6 +20,10 @@ class JunctionBox
     @@vertex_counter[vertex.id] += 1
 
     id
+  end
+
+  def decorated_id
+    "J#{@id}"
   end
 
   def current
@@ -44,7 +49,16 @@ class JunctionBox
     slots >= edge.strips.length
   end
 
-  attr_accessor :circuits, :vertex, :id
+  def assign_controller(controller)
+    if controllers.length >= MAX_CONTROLLERS_PER_JUNCTION_BOX
+      raise 'too many controllers assigned'
+    end
+
+    controller.junction_box = self
+    controllers.push(controller)
+  end
+
+  attr_accessor :controllers, :circuits, :vertex, :id
 end
 
 class JunctionBoxCircuit
