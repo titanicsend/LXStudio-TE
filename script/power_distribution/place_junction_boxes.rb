@@ -288,7 +288,7 @@ edges = Edge.load_edges('../../resources/vehicle/edges.txt', vertices)
 Edge.load_signal_paths(filename: '../../resources/vehicle/edge_signal_paths.tsv', edges: edges, vertices: vertices)
 panels = Panel.load_panels('../../resources/vehicle/panels.txt', vertices)
 graph = Graph.new(edges: edges, vertices: vertices, panels: panels)
-controllers = Controller.load_controllers(filename: '../../resources/vehicle/edge_signal_paths.tsv', vertices: vertices)
+controllers = Controller.load_controllers(edge_signal_filename: '../../resources/vehicle/edge_signal_paths.tsv', panel_signal_filename: '../../resources/vehicle/panel_signal_paths.tsv', vertices: vertices)
 boxes = place_junction_boxes(graph: graph)
 print_boxes(boxes)
 
