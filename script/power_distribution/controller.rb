@@ -16,28 +16,13 @@ class Controller
     "C#{@id}"
   end
 
-  def self.load_controllers(filename:, vertices:)
-    rows = CSV.read(filename, col_sep: "\t")
-
+  def self.load_controllers(edge_signal_filename:, panel_signal_filename:, vertices:)
     controllers = {}
-    rows.drop(1).each do |row|
-      _, signal_from, controller_vertex_id = row
-
-      if signal_from != 'Controller'
-        next
-      end
-
-      controller_vertex = vertices.find { |vertex_id, vertex| vertex_id.to_s == controller_vertex_id }[1]
-
-      # Controllers are identified with `vertex-number_at_vertex`. e.g. the second controller
-      # at vertex 100 will be 100-1.
-      controller = Controller.new(vertex: controller_vertex)
-      controllers[controller_vertex_id] = controller
-    end
+    populate_edge_controllers(filename: edge_signal_filename, controllers: controllers, vertices: vertices)
+    populate_panel_controllers(filename: panel_signal_filename, controllers: controllers, vertices: vertices)
     controllers
   end
 
-  # TODO: consider balancing to avoid uneven utilizations
   def self.assign_controllers_to_boxes(graph:, controllers:, junction_boxes:)
     num_assigned = 0
     controllers.each do |controller_vertex_id, controller|
@@ -85,6 +70,42 @@ class Controller
     @@vertex_counter[vertex.id] += 1
 
     id
+  end
+
+  def self.populate_edge_controllers(filename:, controllers:, vertices:)
+    rows = CSV.read(filename, col_sep: "\t")
+
+    rows.drop(1).each do |row|
+      _, signal_from, controller_vertex_id = row
+
+      if signal_from != 'Controller'
+        next
+      end
+
+      controller_vertex = vertices.find { |vertex_id, vertex| vertex_id.to_s == controller_vertex_id }[1]
+
+      # Controllers are identified with `vertex-number_at_vertex`. e.g. the second controller
+      # at vertex 100 will be 100-1.
+      controller = Controller.new(vertex: controller_vertex)
+      controllers[controller_vertex_id] = controller
+    end
+    controllers
+  end
+
+  def self.populate_panel_controllers(filename:, controllers:, vertices:)
+    rows = CSV.read(filename, col_sep: "\t")
+
+    rows.drop(1).each do |row|
+      _, _, _, controller_vertex_id = row
+
+      controller_vertex = vertices.find { |vertex_id, vertex| vertex_id.to_s == controller_vertex_id }[1]
+
+      # Controllers are identified with `vertex-number_at_vertex`. e.g. the second controller
+      # at vertex 100 will be 100-1.
+      controller = Controller.new(vertex: controller_vertex)
+      controllers[controller_vertex_id] = controller
+    end
+    controllers
   end
 end
 
