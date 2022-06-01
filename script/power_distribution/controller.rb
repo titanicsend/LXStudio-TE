@@ -24,35 +24,30 @@ class Controller
   end
 
   def self.assign_controllers_to_boxes(graph:, controllers:, junction_boxes:)
-    num_assigned = 0
-    controllers.each do |controller_vertex_id, controller|
-      shortest_eligible_distance_to_box_from_controller = 999999
-      nearest_eligible_box = nil
+    controllers.each do |controller_vertex_id, vertex_controllers|
+      vertex_controllers.each do |controller|
+        shortest_eligible_distance_to_box_from_controller = 999999
+        nearest_eligible_box = nil
 
-      junction_boxes.each do |_, boxes|
-        # Multiple boxes may be at each vertex depending upon nearby power needs.
-        boxes.each do |box|
-          if box.controllers.length == MAX_CONTROLLERS_PER_JUNCTION_BOX
-            next
-          end
+        junction_boxes.each do |_, boxes|
+          # Multiple boxes may be at each vertex depending upon nearby power needs.
+          boxes.each do |box|
+            if box.controllers.length == MAX_CONTROLLERS_PER_JUNCTION_BOX
+              next
+            end
 
-          min_distance = min_distance_between_vertices_in_feet(graph, controller.vertex.id, box.vertex.id)
-          if min_distance < shortest_eligible_distance_to_box_from_controller
-            shortest_eligible_distance_to_box_from_controller = min_distance
-            nearest_eligible_box = box
+            min_distance = min_distance_between_vertices_in_feet(graph, controller.vertex.id, box.vertex.id)
+            if min_distance < shortest_eligible_distance_to_box_from_controller
+              shortest_eligible_distance_to_box_from_controller = min_distance
+              nearest_eligible_box = box
 
-            # No need to calculate for other boxes; they're at the same distance.
-            # TODO: probably a good place to do a round-robin distribution among all boxes at the same vertex.
-            next
+              # No need to calculate for other boxes; they're at the same distance.
+              next
+            end
           end
         end
+        nearest_eligible_box.assign_controller(controller)
       end
-
-      nearest_eligible_box.assign_controller(controller)
-      num_assigned += 1
-    end
-    if num_assigned != controllers.length
-      raise "did not assign all controllers!"
     end
   end
 
@@ -72,6 +67,17 @@ class Controller
     id
   end
 
+  def self.assign_new_controller_at_vertex(vertex:, controllers:)
+      # Controllers are identified with `vertex-number_at_vertex`. e.g. the second controller
+      # at vertex 100 will be 100-1.
+      controller = Controller.new(vertex: vertex)
+      if controllers[vertex.id] != nil
+        controllers[vertex.id].push(controller)
+      else
+        controllers[vertex.id] = [controller]
+      end
+  end
+
   def self.populate_edge_controllers(filename:, controllers:, vertices:)
     rows = CSV.read(filename, col_sep: "\t")
 
@@ -84,10 +90,7 @@ class Controller
 
       controller_vertex = vertices.find { |vertex_id, vertex| vertex_id.to_s == controller_vertex_id }[1]
 
-      # Controllers are identified with `vertex-number_at_vertex`. e.g. the second controller
-      # at vertex 100 will be 100-1.
-      controller = Controller.new(vertex: controller_vertex)
-      controllers[controller_vertex_id] = controller
+      assign_new_controller_at_vertex(vertex: controller_vertex, controllers: controllers)
     end
     controllers
   end
@@ -100,10 +103,7 @@ class Controller
 
       controller_vertex = vertices.find { |vertex_id, vertex| vertex_id.to_s == controller_vertex_id }[1]
 
-      # Controllers are identified with `vertex-number_at_vertex`. e.g. the second controller
-      # at vertex 100 will be 100-1.
-      controller = Controller.new(vertex: controller_vertex)
-      controllers[controller_vertex_id] = controller
+      assign_new_controller_at_vertex(vertex: controller_vertex, controllers: controllers)
     end
     controllers
   end
