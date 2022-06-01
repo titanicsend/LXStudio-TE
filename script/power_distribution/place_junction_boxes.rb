@@ -329,7 +329,19 @@ graph.edges.each_value do |edge|
   end
 end
 
-lengths = bucket_cable_lengths(power_cable_lengths(boxes: boxes.values.flatten, graph: graph))
-pp lengths
-total_length = lengths.sum { |k, v| k * v }
-pp total_length
+power_cable_lengths = bucket_cable_lengths(power_cable_lengths(boxes: boxes.values.flatten, graph: graph))
+puts "Power cable lengths:"
+pp power_cable_lengths
+puts "---------"
+total_power_length = power_cable_lengths.sum { |k, v| k * v }
+puts "Total power cable lengths:"
+pp total_power_length
+puts "---------"
+ethernet_cable_lengths = bucket_cable_lengths(ethernet_cable_lengths(boxes: boxes.values.flatten, graph: graph))
+puts "Ethernet cable lengths:"
+pp ethernet_cable_lengths
+puts "---------"
+total_ethernet_length = ethernet_cable_lengths.sum { |k, v| k * v }
+puts "Total ethernet cable lengths:"
+pp total_ethernet_length
+puts "---------"
