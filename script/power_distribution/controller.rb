@@ -10,16 +10,29 @@ class Controller
     @vertex = vertex
     @id = calculate_id
     @junction_box = nil
+    @panels = []
+    # Note: only covers the "injection" edge of the signal run, not any edges chained from there.
+    @edges = []
   end
 
   def decorated_id
     "C#{@id}"
   end
 
-  def self.load_controllers(edge_signal_filename:, panel_signal_filename:, vertices:)
+  def self.load_controllers(edge_signal_filename:, panel_signal_filename:, graph:, vertices:)
     controllers = {}
-    populate_edge_controllers(filename: edge_signal_filename, controllers: controllers, vertices: vertices)
-    populate_panel_controllers(filename: panel_signal_filename, controllers: controllers, vertices: vertices)
+    populate_edge_controllers(filename: edge_signal_filename, controllers: controllers, graph: graph, vertices: vertices)
+    populate_panel_controllers(filename: panel_signal_filename, controllers: controllers, graph: graph, vertices: vertices)
+
+    total_controllers = 0
+    controllers.each do |_, assigned_controllers_at_vertex|
+      total_controllers += assigned_controllers_at_vertex.length
+    end
+
+    if total_controllers != EXPECTED_TOTAL_CONTROLLER_COUNT
+      raise "loaded #{total_controllers} controllers; expected #{EXPECTED_TOTAL_CONTROLLER_COUNT}"
+    end
+
     controllers
   end
 
@@ -51,7 +64,19 @@ class Controller
     end
   end
 
-  attr_accessor :junction_box, :vertex, :id
+  def assign_signal_to_edge(edge:)
+    if panels.length + edges.length >= MAX_CHANNELS_PER_CONTROLLER
+      raise 'assigned too many signal runs already'
+    end
+  end
+
+  def assign_signal_to_panel(panel:)
+    if panels.length + edges.length >= MAX_CHANNELS_PER_CONTROLLER
+      raise 'assigned too many signal runs already'
+    end
+  end
+
+  attr_accessor :edges, :panels, :junction_box, :vertex, :id
 
   private
 
@@ -78,7 +103,7 @@ class Controller
       end
   end
 
-  def self.populate_edge_controllers(filename:, controllers:, vertices:)
+  def self.populate_edge_controllers(filename:, controllers:, graph:, vertices:)
     rows = CSV.read(filename, col_sep: "\t")
 
     rows.drop(1).each do |row|
@@ -95,7 +120,7 @@ class Controller
     controllers
   end
 
-  def self.populate_panel_controllers(filename:, controllers:, vertices:)
+  def self.populate_panel_controllers(filename:, controllers:, graph:, vertices:)
     rows = CSV.read(filename, col_sep: "\t")
 
     rows.drop(1).each do |row|
