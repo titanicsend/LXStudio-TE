@@ -19,6 +19,10 @@ class Controller
     "C#{@id}"
   end
 
+  def signal_provided_to_fixture_count
+    edges.length + panels.length
+  end
+
   def self.load_controllers(edge_signal_filename:, panel_signal_filename:, graph:, vertices:)
     controllers = {}
     populate_edge_controllers(filename: edge_signal_filename, controllers: controllers, graph: graph, vertices: vertices)
@@ -30,7 +34,7 @@ class Controller
     end
 
     if total_controllers != EXPECTED_TOTAL_CONTROLLER_COUNT
-      raise "loaded #{total_controllers} controllers; expected #{EXPECTED_TOTAL_CONTROLLER_COUNT}"
+      puts "loaded #{total_controllers} controllers; expected #{EXPECTED_TOTAL_CONTROLLER_COUNT}"
     end
 
     controllers
@@ -65,15 +69,18 @@ class Controller
   end
 
   def assign_signal_to_edge(edge:)
-    if panels.length + edges.length >= MAX_CHANNELS_PER_CONTROLLER
+    if signal_provided_to_fixture_count >= MAX_CHANNELS_PER_CONTROLLER
       raise 'assigned too many signal runs already'
     end
+    self.edges.push(edge)
   end
 
+
   def assign_signal_to_panel(panel:)
-    if panels.length + edges.length >= MAX_CHANNELS_PER_CONTROLLER
+    if signal_provided_to_fixture_count >= MAX_CHANNELS_PER_CONTROLLER
       raise 'assigned too many signal runs already'
     end
+    self.panels.push(panel)
   end
 
   attr_accessor :edges, :panels, :junction_box, :vertex, :id
@@ -92,10 +99,17 @@ class Controller
     id
   end
 
-  def self.assign_new_controller_at_vertex(vertex:, controllers:)
+  def self.assign_new_controller_at_vertex(vertex:, edge:, panel:, controllers:)
       # Controllers are identified with `vertex-number_at_vertex`. e.g. the second controller
       # at vertex 100 will be 100-1.
       controller = Controller.new(vertex: vertex)
+      if edge != nil
+        controller.edges.push(edge)
+      end
+      if panel != nil
+        controller.panels.push(panel)
+      end
+
       if controllers[vertex.id] != nil
         controllers[vertex.id].push(controller)
       else
@@ -107,15 +121,25 @@ class Controller
     rows = CSV.read(filename, col_sep: "\t")
 
     rows.drop(1).each do |row|
-      _, signal_from, controller_vertex_id = row
+      edge_id, signal_from, controller_vertex_id = row
 
       if signal_from != 'Controller'
         next
       end
 
+      edge = graph.edges.values.flatten.find { |edge| edge.id == edge_id }
       controller_vertex = vertices.find { |vertex_id, vertex| vertex_id.to_s == controller_vertex_id }[1]
-
-      assign_new_controller_at_vertex(vertex: controller_vertex, controllers: controllers)
+      if controllers[controller_vertex.id] != nil
+        # Left to right for exhausting signal channels
+        last_controller = controllers[controller_vertex.id].last
+        if last_controller.signal_provided_to_fixture_count >= MAX_CHANNELS_PER_CONTROLLER
+          assign_new_controller_at_vertex(vertex: controller_vertex, edge: edge, panel: nil, controllers: controllers)
+        else
+          last_controller.assign_signal_to_edge(edge: edge)
+        end
+      else
+        assign_new_controller_at_vertex(vertex: controller_vertex, edge: edge, panel: nil, controllers: controllers)
+      end
     end
     controllers
   end
@@ -124,11 +148,22 @@ class Controller
     rows = CSV.read(filename, col_sep: "\t")
 
     rows.drop(1).each do |row|
-      _, _, _, controller_vertex_id = row
+      panel_id, _, _, _, controller_vertex_id = row
 
+      panel = graph.panels.values.flatten.find { |panel| panel.id == panel_id }
       controller_vertex = vertices.find { |vertex_id, vertex| vertex_id.to_s == controller_vertex_id }[1]
 
-      assign_new_controller_at_vertex(vertex: controller_vertex, controllers: controllers)
+      if controllers[controller_vertex.id] != nil
+        # Left to right for exhausting signal channels
+        last_controller = controllers[controller_vertex.id].last
+        if last_controller.signal_provided_to_fixture_count >= MAX_CHANNELS_PER_CONTROLLER
+          assign_new_controller_at_vertex(vertex: controller_vertex, edge: nil, panel: panel, controllers: controllers)
+        else
+          last_controller.assign_signal_to_panel(panel: panel)
+        end
+      else
+        assign_new_controller_at_vertex(vertex: controller_vertex, edge: nil, panel: panel, controllers: controllers)
+      end
     end
     controllers
   end

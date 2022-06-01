@@ -49,6 +49,19 @@ def power_cable_lengths(boxes:, graph:)
   cable_lengths
 end
 
+def ethernet_cable_lengths(graph:, boxes:)
+  cable_lengths = []
+
+  boxes.each do |box|
+    box.controllers.each do |controller|
+      length = min_distance_between_vertices_in_feet(graph, box.vertex.id, controller.vertex.id)
+      cable_lengths << length
+    end
+  end
+
+  cable_lengths
+end
+
 def bucket_cable_lengths(cable_lengths)
   buckets = [5, 10, 15, 20, 25, 30]
 
