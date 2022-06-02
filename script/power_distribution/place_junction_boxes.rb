@@ -357,6 +357,7 @@ graph.edges.each_value do |edge|
 end
 
 power_cable_lengths = bucket_cable_lengths(power_cable_lengths(boxes: boxes.values.flatten, graph: graph))
+power_cable_lengths.delete_if { |_, v| v == 0 }
 puts "Power cable lengths:"
 pp power_cable_lengths
 puts "---------"
@@ -365,6 +366,7 @@ puts "Total power cable lengths:"
 pp total_power_length
 puts "---------"
 ethernet_cable_lengths = bucket_cable_lengths(ethernet_cable_lengths(boxes: boxes.values.flatten, graph: graph))
+ethernet_cable_lengths.delete_if { |_, v| v == 0 }
 puts "Ethernet cable lengths:"
 pp ethernet_cable_lengths
 puts "---------"
