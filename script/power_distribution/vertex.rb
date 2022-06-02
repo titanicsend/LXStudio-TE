@@ -6,9 +6,10 @@ class Vertex
     @x = x
     @y = y
     @z = z
+    @controllers = []
   end
 
-  attr_accessor :id, :x, :y, :z
+  attr_accessor :id, :x, :y, :z, :controllers
 
   def distance(other)
     Math.sqrt((x - other.x)**2 + (y - other.y)**2 + (z - other.z)**2)

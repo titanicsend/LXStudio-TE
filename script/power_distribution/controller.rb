@@ -115,6 +115,7 @@ class Controller
       else
         controllers[vertex.id] = [controller]
       end
+      vertex.controllers.push(controller)
   end
 
   def self.populate_edge_controllers(filename:, controllers:, graph:, vertices:)
