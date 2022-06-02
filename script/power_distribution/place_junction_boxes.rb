@@ -304,6 +304,29 @@ boxes.each do |_, box_grouping|
   end
 end
 
+puts "Total assigned channels, from the vertices:"
+total_channels_from_vertices = 0
+vertices.each do |_, vertex|
+  total_channels_from_vertex = vertex.controllers.map(&:channels_assigned).sum
+  puts "  - vertex #{vertex.id} has #{total_channels_from_vertex} total assigned channel(s)"
+  total_channels_from_vertices += total_channels_from_vertex
+end
+puts "  total assigned channels: #{total_channels_from_vertices}"
+
+puts "Total assigned channels, from the controllers:"
+total_channels_from_controllers = 0
+controllers.each do |_, controller_group|
+  controller_group.each do |controller|
+    puts "  - controller #{controller.id} has #{controller.channels_assigned} assigned channel(s)"
+    total_channels_from_controllers += controller.channels_assigned
+  end
+end
+puts "  total assigned channels: #{total_channels_from_controllers}"
+
+if total_channels_from_vertices != total_channels_from_controllers
+  raise "expected total number of vertices to be the same!"
+end
+
 edge_to_box = {}
 boxes.values.flatten.each do |box|
   box.circuits.each do |circuit|
