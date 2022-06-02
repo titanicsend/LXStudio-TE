@@ -8,6 +8,7 @@ require './graph'
 require './panel'
 require './junction_box'
 require './calculate_line_lengths'
+require './controller'
 
 # Place junction boxes such that:
 #   - Each edge and panel is assigned to circuits within a single box
@@ -284,11 +285,47 @@ end
 
 vertices = Vertex.load_vertices('../../resources/vehicle/vertexes.txt')
 edges = Edge.load_edges('../../resources/vehicle/edges.txt', vertices)
-Edge.load_signal_paths(filename: '../../resources/vehicle/signal_paths.tsv', edges: edges, vertices: vertices)
+Edge.load_signal_paths(filename: '../../resources/vehicle/edge_signal_paths.tsv', edges: edges, vertices: vertices)
 panels = Panel.load_panels('../../resources/vehicle/panels.txt', vertices)
 graph = Graph.new(edges: edges, vertices: vertices, panels: panels)
+controllers = Controller.load_controllers(edge_signal_filename: '../../resources/vehicle/edge_signal_paths.tsv', panel_signal_filename: '../../resources/vehicle/panel_signal_paths.tsv', graph: graph, vertices: vertices)
 boxes = place_junction_boxes(graph: graph)
 print_boxes(boxes)
+
+Controller.assign_controllers_to_boxes(graph: graph, controllers: controllers, junction_boxes: boxes)
+
+boxes.each do |_, box_grouping|
+  box_grouping.each do |box|
+    puts "Junction box #{box.id} has #{box.controllers.length} controller(s) assigned"
+    puts "  -----"
+    box.controllers.each do |controller|
+      puts "  -- controller channels: #{controller.channels_assigned}"
+    end
+  end
+end
+
+puts "Total assigned channels, from the vertices:"
+total_channels_from_vertices = 0
+vertices.each do |_, vertex|
+  total_channels_from_vertex = vertex.controllers.map(&:channels_assigned).sum
+  puts "  - vertex #{vertex.id} has #{total_channels_from_vertex} total assigned channel(s)"
+  total_channels_from_vertices += total_channels_from_vertex
+end
+puts "  total assigned channels: #{total_channels_from_vertices}"
+
+puts "Total assigned channels, from the controllers:"
+total_channels_from_controllers = 0
+controllers.each do |_, controller_group|
+  controller_group.each do |controller|
+    puts "  - controller #{controller.id} has #{controller.channels_assigned} assigned channel(s)"
+    total_channels_from_controllers += controller.channels_assigned
+  end
+end
+puts "  total assigned channels: #{total_channels_from_controllers}"
+
+if total_channels_from_vertices != total_channels_from_controllers
+  raise "expected total number of vertices to be the same!"
+end
 
 edge_to_box = {}
 boxes.values.flatten.each do |box|
@@ -319,7 +356,21 @@ graph.edges.each_value do |edge|
   end
 end
 
-lengths = bucket_cable_lengths(power_cable_lengths(boxes: boxes.values.flatten, graph: graph))
-pp lengths
-total_length = lengths.sum { |k, v| k * v }
-pp total_length
+power_cable_lengths = bucket_cable_lengths(power_cable_lengths(boxes: boxes.values.flatten, graph: graph))
+power_cable_lengths.delete_if { |_, v| v == 0 }
+puts "Power cable lengths:"
+pp power_cable_lengths
+puts "---------"
+total_power_length = power_cable_lengths.sum { |k, v| k * v }
+puts "Total power cable lengths:"
+pp total_power_length
+puts "---------"
+ethernet_cable_lengths = bucket_cable_lengths(ethernet_cable_lengths(boxes: boxes.values.flatten, graph: graph))
+ethernet_cable_lengths.delete_if { |_, v| v == 0 }
+puts "Ethernet cable lengths:"
+pp ethernet_cable_lengths
+puts "---------"
+total_ethernet_length = ethernet_cable_lengths.sum { |k, v| k * v }
+puts "Total ethernet cable lengths:"
+pp total_ethernet_length
+puts "---------"
