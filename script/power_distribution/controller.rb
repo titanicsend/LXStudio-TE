@@ -19,7 +19,7 @@ class Controller
     "C#{@id}"
   end
 
-  def signal_provided_to_fixture_count
+  def channels_assigned
     edges.length + panels.length
   end
 
@@ -69,7 +69,7 @@ class Controller
   end
 
   def assign_signal_to_edge(edge:)
-    if signal_provided_to_fixture_count >= MAX_CHANNELS_PER_CONTROLLER
+    if channels_assigned >= MAX_CHANNELS_PER_CONTROLLER
       raise 'assigned too many signal runs already'
     end
     self.edges.push(edge)
@@ -77,7 +77,7 @@ class Controller
 
 
   def assign_signal_to_panel(panel:)
-    if signal_provided_to_fixture_count >= MAX_CHANNELS_PER_CONTROLLER
+    if channels_assigned >= MAX_CHANNELS_PER_CONTROLLER
       raise 'assigned too many signal runs already'
     end
     self.panels.push(panel)
@@ -132,7 +132,7 @@ class Controller
       if controllers[controller_vertex.id] != nil
         # Left to right for exhausting signal channels
         last_controller = controllers[controller_vertex.id].last
-        if last_controller.signal_provided_to_fixture_count >= MAX_CHANNELS_PER_CONTROLLER
+        if last_controller.channels_assigned >= MAX_CHANNELS_PER_CONTROLLER
           assign_new_controller_at_vertex(vertex: controller_vertex, edge: edge, panel: nil, controllers: controllers)
         else
           last_controller.assign_signal_to_edge(edge: edge)
@@ -156,10 +156,10 @@ class Controller
       if controllers[controller_vertex.id] != nil
         # Left to right for exhausting signal channels
         last_controller = controllers[controller_vertex.id].last
-        if last_controller.signal_provided_to_fixture_count >= MAX_CHANNELS_PER_CONTROLLER
-          assign_new_controller_at_vertex(vertex: controller_vertex, edge: nil, panel: panel, controllers: controllers)
-        else
+        if last_controller.channels_assigned < MAX_CHANNELS_PER_CONTROLLER
           last_controller.assign_signal_to_panel(panel: panel)
+        else
+          assign_new_controller_at_vertex(vertex: controller_vertex, edge: nil, panel: panel, controllers: controllers)
         end
       else
         assign_new_controller_at_vertex(vertex: controller_vertex, edge: nil, panel: panel, controllers: controllers)

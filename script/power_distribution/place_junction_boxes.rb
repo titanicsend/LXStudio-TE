@@ -297,6 +297,10 @@ Controller.assign_controllers_to_boxes(graph: graph, controllers: controllers, j
 boxes.each do |_, box_grouping|
   box_grouping.each do |box|
     puts "Junction box #{box.id} has #{box.controllers.length} controller(s) assigned"
+    puts "  -----"
+    box.controllers.each do |controller|
+      puts "  -- controller channels: #{controller.channels_assigned}"
+    end
   end
 end
 
