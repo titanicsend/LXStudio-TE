@@ -20,7 +20,7 @@ class Controller
   end
 
   def channels_assigned
-    edges.length + panels.length
+    edges.length + panels.sum(&:channels_required)
   end
 
   def self.load_controllers(edge_signal_filename:, panel_signal_filename:, graph:, vertices:)
@@ -77,7 +77,7 @@ class Controller
 
 
   def assign_signal_to_panel(panel:)
-    if channels_assigned >= MAX_CHANNELS_PER_CONTROLLER
+    if channels_assigned >= MAX_CHANNELS_PER_CONTROLLER || channels_assigned + panel.channels_required > MAX_CHANNELS_PER_CONTROLLER
       raise 'assigned too many signal runs already'
     end
     self.panels.push(panel)
@@ -149,17 +149,18 @@ class Controller
     rows = CSV.read(filename, col_sep: "\t")
 
     rows.drop(1).each do |row|
-      panel_id, _, _, _, panel_type, controller_vertex_id = row
+      panel_id, _, _, _, panel_type, channels_required, controller_vertex_id = row
 
       panel = graph.panels.values.flatten.find { |panel| panel.id == panel_id }
       panel.panel_type = panel_type
+      panel.channels_required = channels_required.to_i
 
       controller_vertex = vertices.find { |vertex_id, vertex| vertex_id.to_s == controller_vertex_id }[1]
 
       if controllers[controller_vertex.id] != nil
         # Left to right for exhausting signal channels
         last_controller = controllers[controller_vertex.id].last
-        if last_controller.channels_assigned < MAX_CHANNELS_PER_CONTROLLER
+        if last_controller.channels_assigned < MAX_CHANNELS_PER_CONTROLLER && last_controller.channels_assigned + panel.channels_required <= MAX_CHANNELS_PER_CONTROLLER
           last_controller.assign_signal_to_panel(panel: panel)
         else
           assign_new_controller_at_vertex(vertex: controller_vertex, edge: nil, panel: panel, controllers: controllers)
