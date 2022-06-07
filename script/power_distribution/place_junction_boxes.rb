@@ -39,8 +39,8 @@ def place_junction_boxes(graph:)
   mirror_assignments(junction_boxes: junction_boxes, graph: graph)
 
   # Finally, assign everything that wasn't a mirrored version of something in the first quandrant.
-  edges = graph.edges.values.select { |edge| edge.strips.all? { |strip| strip.circuit.nil? } }.sort_by(&:depth)
-  panels = graph.panels.values.select { |panel| panel.strips.all? { |strip| strip.circuit.nil? } }
+  edges = graph.edges.values.select { |edge| edge.strips.any? { |strip| strip.circuit.nil? } }.sort_by(&:depth)
+  panels = graph.panels.values.select { |panel| panel.strips.any? { |strip| strip.circuit.nil? } }
 
   assign(edges: edges, panels: panels, junction_boxes: junction_boxes, graph: graph)
   junction_boxes
@@ -74,6 +74,8 @@ def assign(edges:, panels:, junction_boxes:, graph:)
     box = candidates.max_by(&:utilization)
     already_selected_circuits = []
     edge.strips.each do |strip|
+      next unless strip.circuit.nil?
+
       circuit = box.circuits
         .select { |c| c.current + strip.max_current <= JunctionBoxCircuit::MAX_CURRENT }
         .max_by { |c| [already_selected_circuits.include?(circuit) ? 1 : 0, -1 * c.utilization] }
@@ -87,6 +89,8 @@ def assign(edges:, panels:, junction_boxes:, graph:)
 
   panels.each do |panel|
     panel.strips.each do |strip|
+      next unless strip.circuit.nil?
+
       candidates = panel_strip_assignment_candidates(panel: panel, strip: strip, graph: graph, junction_boxes: junction_boxes)
       if candidates.empty?
         vertex = panel.vertices[0]
@@ -94,6 +98,7 @@ def assign(edges:, panels:, junction_boxes:, graph:)
         box.circuits[0].panel_strips << strip
         junction_boxes[vertex.id] ||= []
         junction_boxes[vertex.id] << box
+        strip.circuit = box.circuits[0]
         next
       end
 
@@ -330,9 +335,6 @@ end
 edge_to_box = {}
 boxes.values.flatten.each do |box|
   box.circuits.each do |circuit|
-    # if circuit.utilization > 1
-    #   puts "#{circuit.id}: #{circuit.utilization}"
-    # end
     circuit.edge_strips.each do |strip|
       edge_to_box[strip.edge_id] ||= Set.new
       edge_to_box[strip.edge_id].add(box.id)
