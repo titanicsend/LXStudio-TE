@@ -109,6 +109,7 @@ Steps for setup:
          "Download JDK..."
          1. Select 17 as the Version
          2. Select "Eclipse Temarin" as the Vendor
+           - Do NOT select the "aarch64" version otherwise you'll experience pain. Pick the other one
    2. Project Settings → Project
       1. Select the Temurin 17 JDK
 3. Select "Titanic's End" in the top bar (in the dropdown to the right of the hammer) if
