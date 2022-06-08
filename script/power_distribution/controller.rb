@@ -28,15 +28,6 @@ class Controller
     populate_edge_controllers(filename: edge_signal_filename, controllers: controllers, graph: graph, vertices: vertices)
     populate_panel_controllers(filename: panel_signal_filename, controllers: controllers, graph: graph, vertices: vertices)
 
-    total_controllers = 0
-    controllers.each do |_, assigned_controllers_at_vertex|
-      total_controllers += assigned_controllers_at_vertex.length
-    end
-
-    if total_controllers != EXPECTED_TOTAL_CONTROLLER_COUNT
-      puts "loaded #{total_controllers} controllers; expected #{EXPECTED_TOTAL_CONTROLLER_COUNT}"
-    end
-
     controllers
   end
 
