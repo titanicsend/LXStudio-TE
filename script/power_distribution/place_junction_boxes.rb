@@ -309,11 +309,23 @@ boxes.each do |_, box_grouping|
   end
 end
 
+total_controllers = 0
+controllers.each do |_, assigned_controllers_at_vertex|
+  total_controllers += assigned_controllers_at_vertex.length
+end
+
+if total_controllers != EXPECTED_TOTAL_CONTROLLER_COUNT
+  puts "loaded #{total_controllers} controllers; expected #{EXPECTED_TOTAL_CONTROLLER_COUNT}"
+end
+
 puts "Total assigned channels, from the vertices:"
 total_channels_from_vertices = 0
 vertices.each do |_, vertex|
   total_channels_from_vertex = vertex.controllers.map(&:channels_assigned).sum
-  puts "  - vertex #{vertex.id} has #{total_channels_from_vertex} total assigned channel(s)"
+  if total_channels_from_vertex == 0
+    next
+  end
+  puts "  - vertex #{vertex.id} has #{vertex.controllers.count} total controllers, #{total_channels_from_vertex} total assigned channel(s)"
   total_channels_from_vertices += total_channels_from_vertex
 end
 puts "  total assigned channels: #{total_channels_from_vertices}"
