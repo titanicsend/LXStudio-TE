@@ -20,6 +20,7 @@ package titanicsend.app;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.SocketException;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
@@ -51,6 +52,8 @@ public class TEApp extends PApplet implements LXPlugin  {
 
   private GigglePixelListener gpListener;
   private GigglePixelBroadcaster gpBroadcaster;
+
+  private static int OSC_PORT = 9876;
 
   @Override
   public void settings() {
@@ -145,6 +148,19 @@ public class TEApp extends PApplet implements LXPlugin  {
       LX.log("GigglePixel broadcaster created");
     } catch (IOException e) {
       LX.log("Failed to create GigglePixel broadcaster: " + e.getMessage());
+    }
+
+    // initialize OSC listener
+    try {
+      lx.engine.osc.receiver(OSC_PORT).addListener((message) -> {
+        String address = message.getAddressPattern().toString();
+        //if (address.equals("/my/custom/path")) {
+        // process your custom messages...
+        //}
+        LX.log("[OSC] Message received: " + address);
+      });
+    } catch (SocketException sx) {
+      sx.printStackTrace();
     }
 
     GPOutput gpOutput = new GPOutput(lx, this.gpBroadcaster);
