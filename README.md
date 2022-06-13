@@ -161,3 +161,8 @@ IntelliJ to behave more like VS Code, I'd recommend:
 If Eclipse is like a warm snuggie to you, we'd appreciate you adding any SDK and
 environment configuration tips here.
 
+---
+
+## License Note
+
+Please see LICENSE.md - significant parts of this repository are not open source and we support those authors' wishes.
