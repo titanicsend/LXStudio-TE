@@ -11,6 +11,9 @@ import titanicsend.pattern.yoffa.effect.shaders.*;
 import titanicsend.pattern.yoffa.framework.ConstructedPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.yoffa.effect.shaders.OutrunGridShader;
+import titanicsend.pattern.yoffa.effect.shaders.NeonHeartShader;
+import titanicsend.pattern.yoffa.media.BasicVideoPatternEffect;
 
 import java.util.List;
 
@@ -27,7 +30,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(
                     new NeonHeartShader(PatternTarget.splitPanelSections(this)),
                     new BreathingDotsEffect(PatternTarget.splitPanelSections(this))
@@ -42,7 +45,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(
                     new OutrunGridShader(PatternTarget.splitPanelSections(this)),
                     new AlternatingDotsEffect(PatternTarget.splitPanelSections(this))
@@ -69,7 +72,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(new RainbowSwirlShader(PatternTarget.allEdgesAsCanvas(this)));
         }
     }
@@ -80,7 +83,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(new NeonBarsShader(PatternTarget.splitPanelSections(this)));
         }
     }
@@ -91,7 +94,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(new NeonBarsShader(PatternTarget.allEdgesAsCanvas(this)));
         }
     }
@@ -102,7 +105,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(new NeonCellsShader(PatternTarget.splitPanelSections(this)));
         }
     }
@@ -113,7 +116,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(new ElectricShader(PatternTarget.splitPanelSections(this)));
         }
     }
@@ -124,7 +127,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(new ElectricShader(PatternTarget.allEdgesAsCanvas(this)));
         }
     }
@@ -135,7 +138,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(new NeonHeartShader(PatternTarget.splitPanelSections(this)));
         }
     }
@@ -146,7 +149,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(new OutrunGridShader(PatternTarget.splitPanelSections(this)));
         }
     }
@@ -157,7 +160,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(new WaterShader(PatternTarget.splitPanelSections(this)));
         }
     }
@@ -168,7 +171,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(new WaterShader(PatternTarget.allEdgesAsCanvas(this)));
         }
     }
@@ -179,7 +182,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(new WavyShader(PatternTarget.splitPanelSections(this)));
         }
     }
@@ -190,7 +193,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(new NeonSnakeShader(PatternTarget.allPanelsAsCanvas(this)));
         }
     }
@@ -201,7 +204,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(new WavyShader(PatternTarget.allEdgesAsCanvas(this)));
         }
     }
@@ -212,7 +215,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(new PulseEffect(PatternTarget.allPanelsAsCanvas(this)));
         }
     }
@@ -223,7 +226,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(new PulseEffect(PatternTarget.allPanelsAsCanvas(this)).setOrigin(0, 0, 0));
         }
     }
@@ -234,7 +237,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(new AlternatingDotsEffect(PatternTarget.allPanelsAsCanvas(this)));
         }
     }
@@ -245,7 +248,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(new BreathingDotsEffect(PatternTarget.allPanelsAsCanvas(this)));
         }
     }
@@ -256,8 +259,47 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(new ShimmeringEffect(PatternTarget.allEdgesAsCanvas(this)));
+        }
+    }
+
+    @LXCategory("Video Patterns")
+    public static class BasicVideoPattern extends ConstructedPattern {
+        public BasicVideoPattern(LX lx) {
+            super(lx);
+        }
+
+        @Override
+        protected List<PatternEffect> createEffects() {
+            return List.of(new BasicVideoPatternEffect(PatternTarget.splitPanelSections(this)));
+        }
+    }
+
+    //below patterns for on the fly testing
+    @LXCategory("Video Patterns")
+    public static class FullscreenVideoA extends ConstructedPattern {
+        public FullscreenVideoA(LX lx) {
+            super(lx);
+        }
+
+        @Override
+        protected List<PatternEffect> createEffects() {
+            return List.of(new BasicVideoPatternEffect(PatternTarget.allPanelsAsCanvas(this),
+                    "resources/pattern/test_vid_a.mp4"));
+        }
+    }
+
+    @LXCategory("Video Patterns")
+    public static class FullscreenVideoB extends ConstructedPattern {
+        public FullscreenVideoB(LX lx) {
+            super(lx);
+        }
+
+        @Override
+        protected List<PatternEffect> createEffects() {
+            return List.of(new BasicVideoPatternEffect(PatternTarget.allPanelsAsCanvas(this),
+                    "resources/pattern/test_vid_b.mp4"));
         }
     }
 
