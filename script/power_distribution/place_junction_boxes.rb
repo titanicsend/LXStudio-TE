@@ -9,6 +9,7 @@ require './panel'
 require './junction_box'
 require './calculate_line_lengths'
 require './controller'
+require './outlet_bank'
 
 # Place junction boxes such that:
 #   - Each edge and panel is assigned to circuits within a single box
@@ -370,21 +371,33 @@ graph.edges.each_value do |edge|
   end
 end
 
+outlet_banks = OutletBank.load_outlet_banks(vertices: vertices)
+OutletBank.assign_junction_boxes_to_outlet_banks(graph: graph, outlet_banks: outlet_banks, junction_boxes: boxes)
+
 power_cable_lengths = bucket_cable_lengths(power_cable_lengths(boxes: boxes.values.flatten, graph: graph))
 power_cable_lengths.delete_if { |_, v| v == 0 }
-puts "Power cable lengths:"
+puts "5V Power cable lengths:"
 pp power_cable_lengths
 puts "---------"
+
 total_power_length = power_cable_lengths.sum { |k, v| k * v }
-puts "Total power cable lengths:"
+puts "Total 5V power cable lengths:"
 pp total_power_length
 puts "---------"
+
 ethernet_cable_lengths = bucket_cable_lengths(ethernet_cable_lengths(boxes: boxes.values.flatten, graph: graph))
 ethernet_cable_lengths.delete_if { |_, v| v == 0 }
 puts "Ethernet cable lengths:"
 pp ethernet_cable_lengths
 puts "---------"
+
 total_ethernet_length = ethernet_cable_lengths.sum { |k, v| k * v }
 puts "Total ethernet cable lengths:"
 pp total_ethernet_length
+puts "---------"
+
+ac_power_cable_lengths = bucket_cable_lengths(ac_power_cable_lengths(boxes: boxes.values.flatten, graph: graph))
+ac_power_cable_lengths.delete_if { |_, v| v == 0 }
+puts "AC power cable lengths:"
+pp ac_power_cable_lengths
 puts "---------"

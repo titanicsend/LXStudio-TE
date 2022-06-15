@@ -62,8 +62,21 @@ def ethernet_cable_lengths(graph:, boxes:)
   cable_lengths
 end
 
+def ac_power_cable_lengths(graph:, boxes:)
+  cable_lengths = []
+
+  boxes.each do |box|
+    length = min_distance_between_vertices_in_feet(graph, box.vertex.id, box.outlet_bank.vertex.id)
+    length += AC_POWER_WIGGLE_FEET
+
+    cable_lengths << length
+  end
+
+  cable_lengths
+end
+
 def bucket_cable_lengths(cable_lengths)
-  buckets = [5, 10, 15, 20, 25, 30]
+  buckets = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
 
   bucketed_cables = buckets.map { |i| [i, 0] }.to_h
 
