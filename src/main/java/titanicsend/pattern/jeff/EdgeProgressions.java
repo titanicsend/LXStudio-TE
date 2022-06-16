@@ -220,9 +220,11 @@ public class EdgeProgressions extends TEAudioPattern {
     @Override
     public void onActive() {
         super.onActive();
-        lx.engine.tempo.trigger();
-        // if Tempo mode...?
-        sceneSelect.setValue(scenes.size());
+
+        if (triggerMode.getEnum().equals(Mode.TEMPO)) {;
+            lx.engine.tempo.trigger();
+            sceneSelect.setValue(scenes.size());
+        }
     }
 
     @Override
