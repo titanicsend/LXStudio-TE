@@ -111,6 +111,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPattern(PulsingTriangles.class);
     lx.registry.addPattern(HandTracker.class);
     lx.registry.addPattern(Fireflies.class);
+    lx.registry.addPattern(Fire.class);
 
     // Patterns that will not aspire to art direction standards
     lx.registry.addPattern(BasicImagePattern.class);

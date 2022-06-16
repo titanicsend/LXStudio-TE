@@ -5,6 +5,9 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.effect.LXEffect;
 import heronarts.lx.model.LXPoint;
+import heronarts.lx.parameter.BoundedParameter;
+import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.transform.LXProjection;
 import heronarts.lx.transform.LXVector;
 import titanicsend.model.TEPanelModel;
@@ -14,17 +17,20 @@ import java.util.List;
 
 @LXCategory(LXCategory.TEST)
 public class Kaleidoscope extends BasicEffect {
-
-    private int numSegments = 6;
+    private final DiscreteParameter segments = new DiscreteParameter("Segments", 6, 2, 12);
+    private final CompoundParameter startAngle = new CompoundParameter("Start Angle", 0, 0, 2 * Math.PI);
 
     public Kaleidoscope(LX lx) {
+
         super(lx);
+        addParameter("segments", this.segments);
+        addParameter("startAngle", this.startAngle);
     }
 
     @Override
     protected void run(double deltaMs, double enabledAmount) {
         if (enabledAmount > 0) {
-            double segmentAngle = 2 * Math.PI / numSegments;
+            double segmentAngle = 2 * Math.PI / segments.getValue();
             for (TEPanelModel panel : this.model.panelsById.values()) {
                 if (!panel.panelType.equals(TEPanelModel.LIT)) {
                     continue;
@@ -45,6 +51,7 @@ public class Kaleidoscope extends BasicEffect {
                     double angle = Math.atan2(v.y, v.x);
                     angle -= segmentAngle * Math.floor(angle / segmentAngle);
                     angle = Math.min(angle, segmentAngle - angle);
+                    angle += startAngle.getValue();
                     double radius = Math.sqrt(v.dot(v));
                     LXVector sampleVector = new LXVector((float) Math.sin(angle), (float) Math.cos(angle), 0).mult((float) radius);
                     LXVector closest = null;
