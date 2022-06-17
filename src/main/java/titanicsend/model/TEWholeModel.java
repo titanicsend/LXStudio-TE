@@ -476,4 +476,8 @@ public class TEWholeModel extends LXModel {
     return new HashSet<>(panelsById.values());
   }
 
+  public Set<TEEdgeModel> getAllEdges() {
+    return new HashSet<>(edgesById.values());
+  }
+
 }

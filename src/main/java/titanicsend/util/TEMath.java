@@ -4,18 +4,22 @@ import heronarts.lx.utils.LXUtils;
 
 import java.util.Arrays;
 
+import static java.lang.Math.PI;
 import static java.lang.Math.floor;
 
 public class TEMath {
+
+    public static final double TAU = 2 * PI;
+
     /** Take a normalized position (n)
      * where 0 is 0 and n=1 is x = PI * 2
      * Return a 0..1 sin wave
      */
     public static double wave(double n) {
-        return (Math.sin(n * Math.PI * 2) + 1) / 2;
+        return (Math.sin(n * PI * 2) + 1) / 2;
     }
     public static float wavef(float n) {
-        return (float) ((Math.sin(n * Math.PI * 2) + 1) / 2);
+        return (float) ((Math.sin(n * PI * 2) + 1) / 2);
     }
 
     // Triangle wave starting at 0, returning 1 at .5, and 0 again at 1 and all
@@ -36,14 +40,14 @@ public class TEMath {
      *  x mod y behaving the same way as Math.floorMod but with doubles
      */
     public static double floorModd(double x, double y) {
-        return (x - floor(x / y) * y);
+        return (x - Math.floor(x / y) * y);
     }
 
     /**
      *  x mod y behaving the same way as Math.floorMod but with floats
      */
     public static float floorModf(float x, float y) {
-        return (float) (x - floor(x / y) * y);
+        return (float) (x - Math.floor(x / y) * y);
     }
 
     /**
@@ -79,6 +83,10 @@ public class TEMath {
         for (int i = 0; i < a.length; i++)
             sum += a[i] * b[i];
         return sum;
+    }
+
+    public static double step(double a, double b) {
+        return a > b ? 1 : 0;
     }
 
     /**
@@ -185,12 +193,65 @@ public class TEMath {
         return Math.sqrt(value);
     }
 
+    public static double[] vectorNormalize(double[] v) {
+        double[] result = new double[v.length];
+        double sum = 0;
+        for (double d : v) {
+            sum += d;
+            for (int i = 0; i < v.length; i++) {
+                result[i] = v[i] / sum;
+            }
+        }
+        return result;
+    }
+
     public static double fract(double x) {
-        return x - floor(x);
+        return x - Math.floor(x);
+    }
+
+    public static double[] fract(double[] x) {
+        return Arrays.stream(x).map(TEMath::fract).toArray();
+    }
+
+    public static double[] abs(double[] x) {
+        return Arrays.stream(x).map(Math::abs).toArray();
+    }
+
+    public static double[] sqrt(double[] x) {
+        return Arrays.stream(x).map(Math::sqrt).toArray();
+    }
+
+    public static double[] floor(double[] x) {
+        return Arrays.stream(x).map(Math::floor).toArray();
     }
 
     public static double vectorDistance(double[] a, double[] b) {
         return vectorLength(subtractArrays(a, b));
+    }
+
+    public static double mix(double x, double y, double a) {
+        return x * (1 - a) + y * a;
+    }
+
+    public static double[][] multiplyMatricies(double[][] m1, double[][] m2) {
+        int m1ColLength = m1[0].length; // m1 columns length
+        int m2RowLength = m2.length;    // m2 rows length
+        if(m1ColLength != m2RowLength) return null; // matrix multiplication is not possible
+        int mRRowLength = m1.length;    // m result rows length
+        int mRColLength = m2[0].length; // m result columns length
+        double[][] mResult = new double[mRRowLength][mRColLength];
+        for(int i = 0; i < mRRowLength; i++) {         // rows from m1
+            for(int j = 0; j < mRColLength; j++) {     // columns from m2
+                for(int k = 0; k < m1ColLength; k++) { // columns from m1
+                    mResult[i][j] += m1[i][k] * m2[k][j];
+                }
+            }
+        }
+        return mResult;
+    }
+
+    public static double[] multiplyVectorByMatrix(double[] vector, double[][] matrix) {
+        return multiplyMatricies(new double[][]{vector}, matrix)[0];
     }
 
     /** Exponential moving average

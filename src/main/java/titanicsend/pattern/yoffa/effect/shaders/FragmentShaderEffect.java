@@ -21,8 +21,9 @@ public abstract class FragmentShaderEffect extends PatternEffect {
     @Override
     public void run(double deltaMS) {
         //multithreading assumes setColor is doing nothing more than updating an array
+        double durationSec = getDurationSec();
         pointsToCanvas.entrySet().parallelStream().forEach(entry -> setColor(entry.getKey(),
-                getColorForPoint(entry.getKey(), entry.getValue(), getDurationSec())));
+                getColorForPoint(entry.getKey(), entry.getValue(), durationSec)));
     }
 
 

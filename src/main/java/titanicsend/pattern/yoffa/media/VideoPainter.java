@@ -4,7 +4,7 @@ import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.Java2DFrameConverter;
-import titanicsend.model.TEPanelModel;
+import titanicsend.model.TEModel;
 
 import java.util.Collection;
 
@@ -41,11 +41,11 @@ public class VideoPainter {
         }
     }
 
-    public void paint(Collection<TEPanelModel> panels) {
+    public void paint(Collection<? extends TEModel> panels) {
         paint(panels, 1);
     }
 
-    public void paint(Collection<TEPanelModel> panels, double scaleRatio) {
+    public void paint(Collection<? extends TEModel> panels, double scaleRatio) {
         if (currentFramePainter != null) {
             currentFramePainter.paint(panels, scaleRatio);
         }

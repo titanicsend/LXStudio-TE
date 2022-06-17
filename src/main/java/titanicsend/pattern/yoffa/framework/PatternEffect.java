@@ -15,7 +15,7 @@ public abstract class PatternEffect {
     protected final TEAudioPattern pattern;
     protected final Map<LXPoint, Dimensions> pointsToCanvas;
     private boolean shouldBlend;
-    private long startTime;
+    private long startTime = System.currentTimeMillis();
 
 
     public PatternEffect(PatternTarget target) {
@@ -29,6 +29,8 @@ public abstract class PatternEffect {
     }
 
     protected void onPatternActive() {}
+
+    protected void onParameterChanged(LXParameter parameter) {}
 
     public abstract void run(double deltaMs);
 
