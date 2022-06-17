@@ -6,13 +6,10 @@ import titanicsend.pattern.yoffa.effect.PulseEffect;
 import titanicsend.pattern.yoffa.effect.ShimmeringEffect;
 import titanicsend.pattern.yoffa.effect.AlternatingDotsEffect;
 import titanicsend.pattern.yoffa.effect.BreathingDotsEffect;
-import titanicsend.pattern.yoffa.effect.shaders.WaterShader;
-import titanicsend.pattern.yoffa.effect.shaders.WavyShader;
+import titanicsend.pattern.yoffa.effect.shaders.*;
 import titanicsend.pattern.yoffa.framework.ConstructedPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
-import titanicsend.pattern.yoffa.effect.shaders.OutrunGridShader;
-import titanicsend.pattern.yoffa.effect.shaders.NeonHeartShader;
 
 import java.util.List;
 
@@ -172,6 +169,17 @@ public class PatternConfig {
         @Override
         protected List<PatternEffect> getEffects() {
             return List.of(new ShimmeringEffect(PatternTarget.allEdgesAsCanvas(this)));
+        }
+    }
+
+    @LXCategory("Yoffa Edge Organic")
+    public static class RisingOrFalling extends ConstructedPattern {
+        public RisingOrFalling(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> getEffects() {
+            return List.of(new RisingOrFallingBlobs(PatternTarget.allPanelsAsCanvas(this)));
         }
     }
 

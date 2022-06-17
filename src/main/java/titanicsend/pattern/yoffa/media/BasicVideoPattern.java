@@ -15,7 +15,7 @@ import java.util.List;
 @LXCategory("Video Examples")
 public class BasicVideoPattern extends TEPattern {
 
-    private static final String VID_PATH = "resources/pattern/sizzle.mov";
+    private static final String VID_PATH = "/Users/will/Desktop/lines.mov"; //""resources/pattern/sizzle.mov";
 
     private final VideoPainter videoPainter;
 
