@@ -3,6 +3,7 @@ package titanicsend.pattern.tom;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.Tempo;
+import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.SawLFO;
@@ -71,7 +72,7 @@ public class PulsingTriangles extends TEPattern {
             LXPoint[] litSection = panelPoints[litIndex];
 
             for (int i = 0; i < entry.getValue().points.length; i++) {
-                colors[entry.getValue().points[i].index] = TRANSPARENT;
+                colors[entry.getValue().points[i].index] = LXColor.BLACK;
             }
 
             for (LXPoint point : litSection) {

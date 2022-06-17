@@ -14,8 +14,8 @@ import titanicsend.pattern.TEPattern;
 import static processing.core.PApplet.lerpColor;
 
 public class Fire extends TEPattern {
-    private float ROW_HEIGHT = 100000;
-    private float COLUMN_WIDTH = 100000;
+    private float ROW_HEIGHT = 50000;
+    private float COLUMN_WIDTH = 50000;
     private int NUM_COLUMNS;
     private int NUM_ROWS;
     private int[][] buffer;
@@ -23,6 +23,9 @@ public class Fire extends TEPattern {
 
     protected final CompoundParameter fuel = (CompoundParameter)
             new CompoundParameter("Fuel", 1);
+
+    protected final CompoundParameter colorPosition = (CompoundParameter)
+            new CompoundParameter("Color Position", 0.5);
 
     public final LinkedColorParameter fireColor =
             registerColor("Color", "fireColor", ColorType.PANEL,
@@ -37,6 +40,7 @@ public class Fire extends TEPattern {
         buffer = new int[NUM_ROWS][NUM_COLUMNS];
         startModulator(this.rate);
         addParameter("fuel", fuel);
+        addParameter("colorPosition", colorPosition);
     }
 
     public void spreadFire() {
@@ -91,12 +95,13 @@ public class Fire extends TEPattern {
 
     private int[] calculateGradient(int middle, int steps) {
         int[] gradient = new int[steps];
-        for (int i = 0; i < steps / 2; i++) {
-            gradient[i] = lerpColor(LXColor.BLACK, middle, (float) i / (steps/2), 3);
+        double pos = this.colorPosition.getValue();
+        for (int i = 0; i < steps * pos; i++) {
+            gradient[i] = lerpColor(LXColor.BLACK, middle, (float) (i / (steps * pos)), 3);
         }
 
-        for (int i = steps / 2; i < steps; i++) {
-            gradient[i] = lerpColor(middle, LXColor.WHITE, (float) (i - steps/2) / (steps/2), 3);
+        for (int i = (int) (steps * pos); i < steps; i++) {
+            gradient[i] = lerpColor(middle, LXColor.WHITE, (float) ((i - steps * pos) / steps), 3);
         }
 
         return gradient;
@@ -107,6 +112,8 @@ public class Fire extends TEPattern {
         super.onParameterChanged(parameter);
         if (parameter.getPath().equals("fireColor")) {
             this.gradient = calculateGradient(((LinkedColorParameter) parameter).calcColor(), 36);
+        } else if (parameter.getPath().equals("colorPosition")) {
+            this.gradient = calculateGradient(fireColor.calcColor(), 36);
         }
     }
 }
