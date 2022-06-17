@@ -25,14 +25,22 @@ public abstract class ConstructedPattern extends TEAudioPattern {
     protected Collection<LXParameter> getPatternParameters() {
         return effects.stream()
                 .map(PatternEffect::getParameters)
+                .filter(Objects::nonNull)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
     }
 
     @Override
     public void onActive() {
-        for (PatternEffect effect : getEffects()) {
+        for (PatternEffect effect : effects) {
             effect.onActive();
+        }
+    }
+
+    @Override
+    public void onParameterChanged(LXParameter parameter) {
+        for (PatternEffect effect : effects) {
+            effect.onParameterChanged(parameter);
         }
     }
 

@@ -3,6 +3,7 @@ package titanicsend.pattern;
 import heronarts.lx.LX;
 import heronarts.lx.LXLayeredComponent;
 import heronarts.lx.Tempo;
+import heronarts.lx.audio.GraphicMeter;
 import heronarts.lx.color.GradientUtils;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
@@ -17,6 +18,9 @@ import titanicsend.util.TEColor;
 import titanicsend.util.TEMath;
 
 import java.util.*;
+
+import static java.lang.Math.PI;
+import static java.lang.Math.sin;
 
 public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
   private final TEPanelModel sua;
@@ -177,6 +181,11 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
     return lx.engine.tempo.getCompositeBasis() / 32 % 1.0D;
   }
 
+  //Sine modulator alternative between 0 and 1 on beat
+  public double sinePhaseOnBeat() {
+    return .5 * sin(PI * lx.engine.tempo.getCompositeBasis()) + .5;
+  }
+
   /**
    * Get the fraction into a measure for any defined measure length
    * @return 0..1 ramp of progress (fraction) into the current measure
@@ -191,6 +200,10 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
 
   public Tempo getTempo() {
     return lx.engine.tempo;
+  }
+
+  public GraphicMeter getEqualizer() {
+    return lx.engine.audio.meter;
   }
 
 

@@ -6,13 +6,10 @@ import titanicsend.pattern.yoffa.effect.PulseEffect;
 import titanicsend.pattern.yoffa.effect.ShimmeringEffect;
 import titanicsend.pattern.yoffa.effect.AlternatingDotsEffect;
 import titanicsend.pattern.yoffa.effect.BreathingDotsEffect;
-import titanicsend.pattern.yoffa.effect.shaders.WaterShader;
-import titanicsend.pattern.yoffa.effect.shaders.WavyShader;
+import titanicsend.pattern.yoffa.effect.shaders.*;
 import titanicsend.pattern.yoffa.framework.ConstructedPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
-import titanicsend.pattern.yoffa.effect.shaders.OutrunGridShader;
-import titanicsend.pattern.yoffa.effect.shaders.NeonHeartShader;
 
 import java.util.List;
 
@@ -51,6 +48,83 @@ public class PatternConfig {
                             .setHorizon(OutrunGridShader.HORIZON_Y)
                             .setShouldBlend(true)
             );
+        }
+    }
+
+    @LXCategory("Yoffa Panel Shader")
+    public static class RainbowSwirlPanels extends ConstructedPattern {
+        public RainbowSwirlPanels(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> getEffects() {
+            return List.of(new RainbowSwirlShader(PatternTarget.splitPanelSections(this)));
+        }
+    }
+
+    @LXCategory("Yoffa Edge Shader")
+    public static class RainbowSwirlEdges extends ConstructedPattern {
+        public RainbowSwirlEdges(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> getEffects() {
+            return List.of(new RainbowSwirlShader(PatternTarget.allEdgesAsCanvas(this)));
+        }
+    }
+
+    @LXCategory("Yoffa Panel Shader")
+    public static class NeonBarsPanels extends ConstructedPattern {
+        public NeonBarsPanels(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> getEffects() {
+            return List.of(new NeonBarsShader(PatternTarget.splitPanelSections(this)));
+        }
+    }
+
+    @LXCategory("Yoffa Edge Shader")
+    public static class NeonBarsEdges extends ConstructedPattern {
+        public NeonBarsEdges(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> getEffects() {
+            return List.of(new NeonBarsShader(PatternTarget.allEdgesAsCanvas(this)));
+        }
+    }
+
+    @LXCategory("Yoffa Panel Shader")
+    public static class NeonCellsPanels extends ConstructedPattern {
+        public NeonCellsPanels(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> getEffects() {
+            return List.of(new NeonCellsShader(PatternTarget.splitPanelSections(this)));
+        }
+    }
+
+    @LXCategory("Yoffa Panel Shader")
+    public static class BasicElectricPanels extends ConstructedPattern {
+        public BasicElectricPanels(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> getEffects() {
+            return List.of(new ElectricShader(PatternTarget.splitPanelSections(this)));
+        }
+    }
+
+    @LXCategory("Yoffa Edge Shader")
+    public static class BasicElectricEdges extends ConstructedPattern {
+        public BasicElectricEdges(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> getEffects() {
+            return List.of(new ElectricShader(PatternTarget.allEdgesAsCanvas(this)));
         }
     }
 
@@ -106,6 +180,17 @@ public class PatternConfig {
         @Override
         protected List<PatternEffect> getEffects() {
             return List.of(new WavyShader(PatternTarget.splitPanelSections(this)));
+        }
+    }
+
+    @LXCategory("Yoffa Panel Shader")
+    public static class NeonSnake extends ConstructedPattern {
+        public NeonSnake(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> getEffects() {
+            return List.of(new NeonSnakeShader(PatternTarget.allPanelsAsCanvas(this)));
         }
     }
 
@@ -166,7 +251,7 @@ public class PatternConfig {
 
     @LXCategory("Yoffa Edge Organic")
     public static class PowerGrid extends ConstructedPattern {
-        protected PowerGrid(LX lx) {
+        public PowerGrid(LX lx) {
             super(lx);
         }
         @Override

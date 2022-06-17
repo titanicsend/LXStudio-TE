@@ -2,16 +2,20 @@ package titanicsend.pattern.yoffa.media;
 
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
+import titanicsend.model.TEModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEPanelSection;
 import titanicsend.util.Dimensions;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+
+import static java.lang.Math.abs;
 
 public class ImagePainter {
 
@@ -27,14 +31,22 @@ public class ImagePainter {
         this.colors = colors;
     }
 
+    public Color getColorForNormalizedCoordinates(double xn, double yn) {
+        xn = abs(xn) % 1;
+        yn = abs(yn) % 1;
+        int x = (int) Math.floor(image.getWidth() * xn);
+        int y = (int) Math.floor(image.getHeight() * yn);
+        return new Color(image.getRGB(x, y));
+    }
+
     public void paint(Collection<TEPanelModel> panels) {
         paint(panels, 1);
     }
 
-    public void paint(Collection<TEPanelModel> panels, double scaleRatio) {
+    public void paint(Collection<? extends TEModel> panels, double scaleRatio) {
         Dimensions dimensions = Dimensions.fromModels(panels);
 
-        for (TEPanelModel panel : panels) {
+        for (TEModel panel : panels) {
             for (LXPoint point : panel.getPoints()) {
                 // here the 'z' dimension of TE corresponds with 'x' dimension of the image based on the side that
                 //   we're painting
