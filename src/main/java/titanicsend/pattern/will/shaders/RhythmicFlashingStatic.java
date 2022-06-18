@@ -30,7 +30,6 @@ import static java.lang.Math.*;
 public class RhythmicFlashingStatic extends FragmentShaderEffect {
 
     public static double STAR_WIDTH = 9.0;
-    //    public static double STAR_COUNT = 0.4;
     public static double RESOLUTION = 4096.0;
     public static double STAR_COUNT_INT = 64.0;
 
