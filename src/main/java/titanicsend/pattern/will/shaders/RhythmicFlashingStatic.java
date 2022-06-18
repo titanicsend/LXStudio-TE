@@ -27,6 +27,8 @@ import java.util.List;
 import static titanicsend.util.TEMath.*;
 import static java.lang.Math.*;
 
+// taken from:
+// https://www.shadertoy.com/view/Xs2BRc
 public class RhythmicFlashingStatic extends FragmentShaderEffect {
 
     public static double STAR_WIDTH = 9.0;
