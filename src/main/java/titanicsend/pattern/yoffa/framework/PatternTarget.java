@@ -55,7 +55,11 @@ public class PatternTarget {
     public static PatternTarget splitPanelSections(TEAudioPattern pattern) {
         return new PatternTarget(pattern)
                 .addPanelSectionAsCanvas(TEPanelSection.STARBOARD_AFT)
-                .addPanelSectionAsIndividualCanvases(TEPanelSection.STARBOARD_FORE);
+                .addPanelSectionAsCanvas(TEPanelSection.AFT)
+                .addPanelSectionAsCanvas(TEPanelSection.STARBOARD_AFT_SINGLE)
+                .addPanelSectionAsCanvas(TEPanelSection.STARBOARD_FORE_SINGLE)
+                .addPanelSectionAsIndividualCanvases(TEPanelSection.STARBOARD_FORE)
+                .addPanelSectionAsIndividualCanvases(TEPanelSection.FORE);
     }
 
 }
