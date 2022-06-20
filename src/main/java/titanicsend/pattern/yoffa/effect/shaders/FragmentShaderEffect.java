@@ -28,11 +28,16 @@ public abstract class FragmentShaderEffect extends PatternEffect {
 
 
     private int getColorForPoint(LXPoint point, Dimensions canvasDimensions, double timeSec) {
+        boolean useZForX = canvasDimensions.getDepth() > canvasDimensions.getWidth();
+        double xCoordinate = useZForX ? point.z - canvasDimensions.getMinZ() : point.x - canvasDimensions.getMinX();
+
         double[] fragCoordinates = new double[] {
-                point.z - canvasDimensions.getMinZ(),
+                xCoordinate,
                 point.y - canvasDimensions.getMinY()
         };
-        double[] resolution = new double[] {canvasDimensions.getDepth(), canvasDimensions.getHeight()};
+
+        double widthResolution = useZForX ? canvasDimensions.getDepth() : canvasDimensions.getWidth();
+        double[] resolution = new double[] {widthResolution, canvasDimensions.getHeight()};
         double[] colorRgb = getColorForPoint(fragCoordinates, resolution, timeSec);
         //most shaders ignore alpha but optionally plumbing it through is helpful,
         // esp if we want to layer underneath it. can change black background to transparent, etc.
