@@ -824,7 +824,7 @@
                   "color/index": 1,
                   "tempoDivision": 5,
                   "triggerMode": 0,
-                  "sceneSelect": 8,
+                  "sceneSelect": 11,
                   "trigger": false,
                   "downbeat": false
                 },
