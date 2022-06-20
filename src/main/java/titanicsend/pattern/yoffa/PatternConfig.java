@@ -2,7 +2,7 @@ package titanicsend.pattern.yoffa;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import titanicsend.pattern.will.shaders.RhythmicFlashingStatic;
+import titanicsend.pattern.will.shaders.*;
 import titanicsend.pattern.yoffa.effect.PulseEffect;
 import titanicsend.pattern.yoffa.effect.ShimmeringEffect;
 import titanicsend.pattern.yoffa.effect.AlternatingDotsEffect;

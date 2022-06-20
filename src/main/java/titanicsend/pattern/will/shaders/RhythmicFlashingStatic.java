@@ -1,11 +1,13 @@
 package titanicsend.pattern.will.shaders;
 
+import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.yoffa.effect.shaders.FragmentShaderEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 
+import java.awt.*;
 import java.util.Collection;
 import java.util.List;
 
@@ -106,14 +108,15 @@ public class RhythmicFlashingStatic extends FragmentShaderEffect {
         double[] newColor = new double[]{1.0 - color[0], 1.0 - color[1], 1.0 - color[2]};
 
         // now adjust for beat position
-        double oneOnBeatAndLessNearEnd = 1.0 - this.pattern.getLX().engine.tempo.basis();
+        double oneOnBeatAndLessNearEnd = 1.0 - this.getTempo().basis();
         double randFloat = Math.random() + energy.getValue();
         newColor = multiplyArray(oneOnBeatAndLessNearEnd * randFloat, newColor);
 
         // should we color the pixel a color?
-        // TODO(will): use color palette instead of hardcoded blue
         if (colorParameter.getValueb()) {
-            newColor = multiplyArrays(new double[]{0., 0., 1}, newColor);
+            int paletteColor = this.pattern.getSwatchColor(TEPattern.ColorType.PANEL);
+            float[] c = new Color(paletteColor).getRGBColorComponents(null);
+            newColor = multiplyArrays(new double[]{c[0], c[1], c[2]}, newColor);
         }
 
         return newColor;
