@@ -272,4 +272,15 @@ public class PatternConfig {
         }
     }
 
+    @LXCategory("DREVO Shaders")
+    public static class MatrixScroller extends ConstructedPattern {
+        public MatrixScroller(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> getEffects() {
+            return List.of(new MatrixScrolling(PatternTarget.allPanelsAsCanvas(this)));
+        }
+    }
+
 }
