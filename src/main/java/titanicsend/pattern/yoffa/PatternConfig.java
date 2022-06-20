@@ -2,6 +2,7 @@ package titanicsend.pattern.yoffa;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import titanicsend.pattern.will.shaders.*;
 import titanicsend.pattern.yoffa.effect.PulseEffect;
 import titanicsend.pattern.yoffa.effect.ShimmeringEffect;
 import titanicsend.pattern.yoffa.effect.AlternatingDotsEffect;
@@ -257,6 +258,17 @@ public class PatternConfig {
         @Override
         protected List<PatternEffect> getEffects() {
             return List.of(new ShimmeringEffect(PatternTarget.allEdgesAsCanvas(this)));
+        }
+    }
+
+    @LXCategory("DREVO Shaders")
+    public static class RhythmicFlashStatic extends ConstructedPattern {
+        public RhythmicFlashStatic(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> getEffects() {
+            return List.of(new RhythmicFlashingStatic(PatternTarget.allPanelsAsCanvas(this)));
         }
     }
 

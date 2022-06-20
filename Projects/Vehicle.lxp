@@ -1,6 +1,6 @@
 {
-  "version": "0.4.1-SNAPSHOT",
-  "timestamp": 1653204243946,
+  "version": "0.4.1",
+  "timestamp": 1655517663727,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -824,7 +824,7 @@
                   "color/index": 1,
                   "tempoDivision": 5,
                   "triggerMode": 0,
-                  "sceneSelect": 35,
+                  "sceneSelect": 11,
                   "trigger": false,
                   "downbeat": false
                 },
@@ -1475,7 +1475,9 @@
         },
         "parameters": {
           "label": "LX",
-          "computerKeyboardEnabled": false
+          "computerKeyboardEnabled": false,
+          "computerKeyboardOctave": 5,
+          "computerKeyboardVelocity": 5
         },
         "children": {},
         "inputs": [],
