@@ -3,7 +3,6 @@ package titanicsend.pattern.yoffa.framework;
 import heronarts.lx.LX;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEAudioPattern;
-import titanicsend.pattern.TEPattern;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -14,7 +13,7 @@ public abstract class ConstructedPattern extends TEAudioPattern {
 
     protected ConstructedPattern(LX lx) {
         super(lx);
-        effects = getEffects();
+        effects = createEffects();
         for (LXParameter parameter : getPatternParameters()) {
             addParameter(parameter.getLabel(), parameter);
         }
@@ -44,6 +43,12 @@ public abstract class ConstructedPattern extends TEAudioPattern {
         }
     }
 
+    public void onInactive() {
+        for (PatternEffect effect : effects) {
+            effect.onPatternInactive();
+        }
+    }
+
     @Override
     protected void runTEAudioPattern(double deltaMillis) {
         clearColors();
@@ -52,6 +57,6 @@ public abstract class ConstructedPattern extends TEAudioPattern {
         }
     }
 
-    protected abstract List<PatternEffect> getEffects();
+    protected abstract List<PatternEffect> createEffects();
 
 }

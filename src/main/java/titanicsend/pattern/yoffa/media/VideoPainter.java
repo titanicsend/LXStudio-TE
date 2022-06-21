@@ -1,10 +1,12 @@
 package titanicsend.pattern.yoffa.media;
 
+import heronarts.lx.model.LXPoint;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.Java2DFrameConverter;
 import titanicsend.model.TEModel;
+import titanicsend.util.Dimensions;
 
 import java.util.Collection;
 
@@ -26,7 +28,7 @@ public class VideoPainter {
     public void grabFrame() {
         try {
             Frame frame = null;
-            frame = frameGrabber.grab();
+            frame = frameGrabber.grabImage();
 
             if (frame != null) {
                 if (frame.image != null) {
@@ -48,6 +50,12 @@ public class VideoPainter {
     public void paint(Collection<? extends TEModel> panels, double scaleRatio) {
         if (currentFramePainter != null) {
             currentFramePainter.paint(panels, scaleRatio);
+        }
+    }
+
+    public void paint(LXPoint point, Dimensions canvasDimensions) {
+        if (currentFramePainter != null) {
+            currentFramePainter.paint(point, canvasDimensions, 1);
         }
     }
 

@@ -32,6 +32,8 @@ public abstract class PatternEffect {
 
     protected void onParameterChanged(LXParameter parameter) {}
 
+    protected void onPatternInactive() {}
+
     public abstract void run(double deltaMs);
 
     public abstract Collection<LXParameter> getParameters();
