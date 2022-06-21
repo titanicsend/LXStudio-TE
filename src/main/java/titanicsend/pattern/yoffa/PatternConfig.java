@@ -61,7 +61,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(new RainbowSwirlShader(PatternTarget.splitPanelSections(this)));
         }
     }
@@ -309,7 +309,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(new RhythmicFlashingStatic(PatternTarget.allPanelsAsCanvas(this)));
         }
     }
