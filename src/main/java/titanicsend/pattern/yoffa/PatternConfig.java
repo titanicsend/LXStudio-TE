@@ -320,7 +320,7 @@ public class PatternConfig {
             super(lx);
         }
         @Override
-        protected List<PatternEffect> getEffects() {
+        protected List<PatternEffect> createEffects() {
             return List.of(new MatrixScrolling(PatternTarget.allPanelsAsCanvas(this)));
         }
     }
