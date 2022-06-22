@@ -14,6 +14,7 @@ import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.effect.shaders.OutrunGridShader;
 import titanicsend.pattern.yoffa.effect.shaders.NeonHeartShader;
 import titanicsend.pattern.yoffa.media.BasicVideoPatternEffect;
+import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 
 import java.util.List;
 
@@ -311,6 +312,21 @@ public class PatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new RhythmicFlashingStatic(PatternTarget.allPanelsAsCanvas(this)));
+        }
+    }
+
+    @LXCategory("Native Shaders")
+    public static class ShaderToyPattern extends ConstructedPattern {
+
+        private final static String shaderToyId = "4tlSzl";
+
+        public ShaderToyPattern(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> createEffects() {
+            return List.of(NativeShaderPatternEffect.fromShaderToyId(shaderToyId,
+                    PatternTarget.splitPanelSections(this)));
         }
     }
 

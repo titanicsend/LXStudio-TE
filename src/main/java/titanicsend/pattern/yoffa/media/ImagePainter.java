@@ -4,7 +4,6 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import titanicsend.model.TEModel;
 import titanicsend.model.TEPanelModel;
-import titanicsend.model.TEPanelSection;
 import titanicsend.util.Dimensions;
 
 import javax.imageio.ImageIO;
@@ -13,13 +12,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 
 import static java.lang.Math.abs;
 
 public class ImagePainter {
 
-    private final BufferedImage image;
+    private final ImageSource image;
     private final int[] colors;
 
     public ImagePainter(String imagePath, int[] colors) throws IOException {
@@ -27,7 +25,12 @@ public class ImagePainter {
     }
 
     public ImagePainter(BufferedImage bufferedImage, int[] colors) {
-        this.image = bufferedImage;
+        this.image = new BufferedImageSource(bufferedImage);
+        this.colors = colors;
+    }
+
+    public ImagePainter(int[][] image, int[] colors) {
+        this.image = new ArrayBackedImageSource(image);
         this.colors = colors;
     }
 
@@ -36,7 +39,7 @@ public class ImagePainter {
         yn = abs(yn) % 1;
         int x = (int) Math.floor(image.getWidth() * xn);
         int y = (int) Math.floor(image.getHeight() * yn);
-        return new Color(image.getRGB(x, y));
+        return new Color(image.getColor(x, y));
     }
 
     public void paint(Collection<TEPanelModel> panels) {
@@ -67,8 +70,14 @@ public class ImagePainter {
         y = y / scaleRatio + ((image.getHeight()-(image.getHeight() / scaleRatio)) / 2);
         int yi = (int) Math.min(Math.round(y), image.getHeight() - 1);
 
-        int color = (x < 0 || y < 0) ? LXColor.BLACK : image.getRGB(xi, yi);
+        int color = (x < 0 || y < 0) ? LXColor.BLACK : image.getColor(xi, yi);
         colors[point.index] = color;
+    }
+
+    public interface ImageSource {
+        int getWidth();
+        int getHeight();
+        int getColor(int x, int y);
     }
 
 }
