@@ -315,6 +315,18 @@ public class PatternConfig {
         }
     }
 
+    @LXCategory("DREVO Shaders")
+    public static class MatrixScroller extends ConstructedPattern {
+        public MatrixScroller(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> createEffects() {
+
+            return List.of(new MatrixScrolling(PatternTarget.allPanelsAsCanvas(this)));
+        }
+    }
+
     @LXCategory("Native Shaders")
     public static class ShaderToyPattern extends ConstructedPattern {
 
@@ -323,10 +335,10 @@ public class PatternConfig {
         public ShaderToyPattern(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(NativeShaderPatternEffect.fromShaderToyId(shaderToyId,
-                    PatternTarget.splitPanelSections(this)));
+            return List.of(new RhythmicFlashingStatic(PatternTarget.allPanelsAsCanvas(this)));
         }
     }
 
