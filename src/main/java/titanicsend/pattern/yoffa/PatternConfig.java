@@ -3,6 +3,7 @@ package titanicsend.pattern.yoffa;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import titanicsend.pattern.will.shaders.*;
+import titanicsend.pattern.yoffa.client.reponse.Shader;
 import titanicsend.pattern.yoffa.effect.PulseEffect;
 import titanicsend.pattern.yoffa.effect.ShimmeringEffect;
 import titanicsend.pattern.yoffa.effect.AlternatingDotsEffect;
@@ -338,7 +339,8 @@ public class PatternConfig {
 
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new RhythmicFlashingStatic(PatternTarget.allPanelsAsCanvas(this)));
+            return List.of(NativeShaderPatternEffect.fromShaderToyId(shaderToyId,
+                    PatternTarget.splitPanelSections(this)));
         }
     }
 
