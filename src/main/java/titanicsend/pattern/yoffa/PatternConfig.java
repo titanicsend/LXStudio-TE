@@ -330,17 +330,12 @@ public class PatternConfig {
 
     @LXCategory("Native Shaders")
     public static class ShaderToyPattern extends ConstructedPattern {
-
-        private final static String shaderToyId = "4tlSzl";
-
         public ShaderToyPattern(LX lx) {
             super(lx);
         }
-
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(NativeShaderPatternEffect.fromShaderToyId(shaderToyId,
-                    PatternTarget.splitPanelSections(this)));
+            return List.of(new NativeShaderPatternEffect(PatternTarget.splitPanelSections(this)));
         }
     }
 
