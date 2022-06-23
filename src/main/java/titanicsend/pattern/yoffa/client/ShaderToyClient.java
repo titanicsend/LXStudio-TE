@@ -56,7 +56,7 @@ public class ShaderToyClient {
             if (Input.Type.TEXTURE.equals(input.getType())) {
                 String textureUrl = BASE_URL + input.getSrc();
                 textureInputs.put(input.getChannelNumber(), textureUrl);
-            } else if (Input.Type.MUSIC.equals(input.getType()) || Input.Type.MIC.equals(input.getType())) {
+            } else if (input.getType() != null) {
                 audioInput = input.getChannelNumber();
             } else {
                 throw new RuntimeException("Unsupported input type!");

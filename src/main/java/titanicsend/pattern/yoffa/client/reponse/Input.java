@@ -25,7 +25,10 @@ public class Input {
     }
 
     public enum Type {
-        @SerializedName("texture") TEXTURE, @SerializedName("music") MUSIC, @SerializedName("mic") MIC
+        @SerializedName("texture") TEXTURE,
+        @SerializedName("music") MUSIC,
+        @SerializedName("musicstream") MUSIC_STREAM,
+        @SerializedName("mic") MIC
     }
 
 }
