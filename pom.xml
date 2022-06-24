@@ -78,34 +78,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jogamp.gluegen</groupId>
-            <artifactId>gluegen-rt</artifactId>
-            <version>${jogamp.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jogamp.gluegen</groupId>
-            <artifactId>gluegen-rt</artifactId>
-            <version>${jogamp.version}</version>
-            <classifier>natives-macosx-universal</classifier>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jogamp.jogl</groupId>
-            <artifactId>jogl-all</artifactId>
-            <version>${jogamp.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jogamp.jogl</groupId>
-            <artifactId>jogl-all</artifactId>
-            <version>${jogamp.version}</version>
-            <classifier>natives-macosx-universal</classifier>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.playasystems</groupId>
             <artifactId>gigglepixel</artifactId>
             <version>${gigglepixel.version}</version>
@@ -141,6 +113,19 @@
             <artifactId>javacv-platform</artifactId>
             <version>1.5.7</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.metsci.ext.org.jogamp.gluegen</groupId>
+            <artifactId>gluegen-rt-main</artifactId>
+            <version>2.4.0-rc-20200202</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.metsci.ext.org.jogamp.jogl</groupId>
+            <artifactId>jogl-all-main</artifactId>
+            <version>2.4.0-rc-20200202</version>
+        </dependency>
+
     </dependencies>
 
     <build>
