@@ -1,44 +1,23 @@
-package titanicsend.pattern.yoffa;
+package titanicsend.pattern.yoffa.config;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import titanicsend.pattern.will.shaders.*;
-import titanicsend.pattern.yoffa.client.reponse.Shader;
-import titanicsend.pattern.yoffa.effect.PulseEffect;
-import titanicsend.pattern.yoffa.effect.ShimmeringEffect;
-import titanicsend.pattern.yoffa.effect.AlternatingDotsEffect;
-import titanicsend.pattern.yoffa.effect.BreathingDotsEffect;
+import titanicsend.pattern.yoffa.effect.*;
 import titanicsend.pattern.yoffa.effect.shaders.*;
 import titanicsend.pattern.yoffa.framework.ConstructedPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.effect.shaders.OutrunGridShader;
-import titanicsend.pattern.yoffa.effect.shaders.NeonHeartShader;
 import titanicsend.pattern.yoffa.media.BasicVideoPatternEffect;
-import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class PatternConfig {
+public class OrganicPatternConfig {
 
     public static Class[] getPatterns() {
-        return PatternConfig.class.getDeclaredClasses();
-    }
-
-    @LXCategory("Yoffa Panel Combo")
-    public static class StarryHeart extends ConstructedPattern {
-        public StarryHeart(LX lx) {
-            super(lx);
-        }
-        @Override
-        protected List<PatternEffect> createEffects() {
-            return List.of(
-                    new NeonHeartShader(PatternTarget.splitPanelSections(this)),
-                    new BreathingDotsEffect(PatternTarget.splitPanelSections(this))
-                            .setShouldBlend(true)
-            );
-        }
+        return OrganicPatternConfig.class.getDeclaredClasses();
     }
 
     @LXCategory("Yoffa Panel Combo")
@@ -102,24 +81,13 @@ public class PatternConfig {
     }
 
     @LXCategory("Yoffa Panel Shader")
-    public static class NeonCellsPanels extends ConstructedPattern {
-        public NeonCellsPanels(LX lx) {
+    public static class NeonCellsLegacy extends ConstructedPattern {
+        public NeonCellsLegacy(LX lx) {
             super(lx);
         }
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NeonCellsShader(PatternTarget.splitPanelSections(this)));
-        }
-    }
-
-    @LXCategory("Yoffa Panel Shader")
-    public static class BasicElectricPanels extends ConstructedPattern {
-        public BasicElectricPanels(LX lx) {
-            super(lx);
-        }
-        @Override
-        protected List<PatternEffect> createEffects() {
-            return List.of(new ElectricShader(PatternTarget.splitPanelSections(this)));
         }
     }
 
@@ -131,17 +99,6 @@ public class PatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new ElectricShader(PatternTarget.allEdgesAsCanvas(this)));
-        }
-    }
-
-    @LXCategory("Yoffa Panel Shader")
-    public static class NeonHeart extends ConstructedPattern {
-        public NeonHeart(LX lx) {
-            super(lx);
-        }
-        @Override
-        protected List<PatternEffect> createEffects() {
-            return List.of(new NeonHeartShader(PatternTarget.splitPanelSections(this)));
         }
     }
 
@@ -325,17 +282,6 @@ public class PatternConfig {
         protected List<PatternEffect> createEffects() {
 
             return List.of(new MatrixScrolling(PatternTarget.allPanelsAsCanvas(this)));
-        }
-    }
-
-    @LXCategory("Native Shaders")
-    public static class ShaderToyPattern extends ConstructedPattern {
-        public ShaderToyPattern(LX lx) {
-            super(lx);
-        }
-        @Override
-        protected List<PatternEffect> createEffects() {
-            return List.of(new NativeShaderPatternEffect(PatternTarget.splitPanelSections(this)));
         }
     }
 

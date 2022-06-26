@@ -65,7 +65,11 @@ public class ShaderUtils {
             String errorMessage = "";
             if (size > 0) {
                 ByteBuffer byteBuffer = ByteBuffer.allocate(size);
-                gl4.glGetProgramInfoLog(id, size, intBuffer, byteBuffer);
+                if (isShaderStatus) {
+                    gl4.glGetShaderInfoLog(id, size, intBuffer, byteBuffer);
+                } else {
+                    gl4.glGetProgramInfoLog(id, size, intBuffer, byteBuffer);
+                }
                 errorMessage = new String(byteBuffer.array());
             }
             throw new RuntimeException("Error producing shader!\n" + errorMessage);

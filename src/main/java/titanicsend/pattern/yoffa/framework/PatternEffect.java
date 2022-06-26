@@ -36,7 +36,11 @@ public abstract class PatternEffect {
 
     public abstract void run(double deltaMs);
 
-    public abstract Collection<LXParameter> getParameters();
+    public abstract Collection<? extends LXParameter> getParameters();
+
+    public boolean hasParameters() {
+        return getParameters() != null && getParameters().size() > 0;
+    }
 
     public boolean shouldBlend() {
         return shouldBlend;

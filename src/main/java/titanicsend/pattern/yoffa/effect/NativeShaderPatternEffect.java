@@ -1,40 +1,50 @@
 package titanicsend.pattern.yoffa.effect;
 
 import heronarts.lx.model.LXPoint;
-import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.media.ImagePainter;
-import titanicsend.pattern.yoffa.client.ShaderToyClient;
+import titanicsend.pattern.yoffa.shader_engine.AudioInfo;
 import titanicsend.pattern.yoffa.shader_engine.FragmentShader;
 import titanicsend.pattern.yoffa.shader_engine.OffscreenShaderRenderer;
 import titanicsend.util.Dimensions;
 
-import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
+import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class NativeShaderPatternEffect extends PatternEffect {
 
-    private final BooleanParameter clipboardSwitch = new BooleanParameter("Paste Id", false)
-            .setMode(BooleanParameter.Mode.MOMENTARY);
+    protected OffscreenShaderRenderer offscreenShaderRenderer;
+    private FragmentShader fragmentShader;
+    private final List<LXParameter> parameters;
 
-    private OffscreenShaderRenderer offscreenShaderRenderer;
-
-    public NativeShaderPatternEffect(PatternTarget target) {
+    public NativeShaderPatternEffect(FragmentShader fragmentShader, PatternTarget target) {
         super(target);
+        if (fragmentShader != null) {
+            this.fragmentShader = fragmentShader;
+            this.offscreenShaderRenderer = new OffscreenShaderRenderer(fragmentShader);
+            this.parameters = fragmentShader.getParameters();
+        } else {
+            this.parameters = null;
+        }
+    }
+
+    public NativeShaderPatternEffect(String shaderFilename, PatternTarget target, String... textureFilenames) {
+        this(new FragmentShader(new File("resources/shaders/" + shaderFilename),
+                        Arrays.stream(textureFilenames)
+                                .map(x -> new File("resources/shaders/textures/" + x))
+                                .collect(Collectors.toList())),
+                target);
+
     }
 
     @Override
     public void onPatternActive() {
-        if (offscreenShaderRenderer != null) {
-            offscreenShaderRenderer.reset();
-        }
+        offscreenShaderRenderer = new OffscreenShaderRenderer(fragmentShader);
     }
 
     @Override
@@ -43,7 +53,10 @@ public class NativeShaderPatternEffect extends PatternEffect {
             return;
         }
 
-        int[][] snapshot = offscreenShaderRenderer.getFrame();
+        AudioInfo audioInfo = new AudioInfo(pattern.getTempo().basis(),
+                pattern.sinePhaseOnBeat(), pattern.getBassLevel(), pattern.getTrebleLevel(),
+                pattern.getLX().engine.audio.meter.bands);
+        int[][] snapshot = offscreenShaderRenderer.getFrame(audioInfo);
         //TODO we should really use setColor for this instead of exposing colors as this will break blending
         //ImagePainter is the last thing that hasn't been migrated to new framework
         ImagePainter imagePainter = new ImagePainter(snapshot, pattern.getColors());
@@ -54,24 +67,8 @@ public class NativeShaderPatternEffect extends PatternEffect {
 
     @Override
     public List<LXParameter> getParameters() {
-        return List.of(clipboardSwitch);
+        return parameters;
     }
 
-    @Override
-    public void onParameterChanged(LXParameter parameter) {
-        if (parameter == this.clipboardSwitch && this.clipboardSwitch.getValueb()) {
-            try {
-                Transferable clipboardValue = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
-                if (clipboardValue.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-                    String shaderId = (String) clipboardValue.getTransferData(DataFlavor.stringFlavor);
-                    FragmentShader fragmentShader = ShaderToyClient.getShader(shaderId);
-                    offscreenShaderRenderer = new OffscreenShaderRenderer(fragmentShader);
-                }
-            } catch (Exception e) {
-                //usually for this project I like to let exceptions escape and be surfaced to the user, but when they
-                //  escape in onParameterChanged methods it just hangs the parameter :/
-                System.out.println("Problem loading shader: " + e.getMessage());
-            }
-        }
-    }
+
 }

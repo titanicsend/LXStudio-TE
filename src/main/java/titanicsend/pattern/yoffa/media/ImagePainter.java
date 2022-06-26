@@ -59,7 +59,12 @@ public class ImagePainter {
     public void paint(LXPoint point, Dimensions canvasDimensions, double scaleRatio) {
         // here the 'z' dimension of TE corresponds with 'x' dimension of the image based on the side that
         //   we're painting
-        float normalizedX = (point.zn - canvasDimensions.getMinZn()) / canvasDimensions.getDepthNormalized();
+        float normalizedX;
+        if (canvasDimensions.widerOnZThanX()) {
+            normalizedX = (point.zn - canvasDimensions.getMinZn()) / canvasDimensions.getDepthNormalized();
+        } else {
+            normalizedX = (point.xn - canvasDimensions.getMinXn()) / canvasDimensions.getWidthNormalized();
+        }
         float normalizedY = (point.yn - canvasDimensions.getMinYn()) / canvasDimensions.getHeightNormalized();
 
         double x = (1 - normalizedX) * image.getWidth();

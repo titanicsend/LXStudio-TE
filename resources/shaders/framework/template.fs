@@ -10,6 +10,11 @@ uniform sampler2D iChannel1;
 uniform sampler2D iChannel2;
 uniform sampler2D iChannel3;
 
+uniform float beat;
+uniform float sinPhaseBeat;
+uniform float bassLevel;
+uniform float trebleLevel;
+
 {{%shader_body%}}
 
 void main() {
