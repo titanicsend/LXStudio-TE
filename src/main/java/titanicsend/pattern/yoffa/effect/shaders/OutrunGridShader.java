@@ -74,7 +74,7 @@ public class OutrunGridShader extends FragmentShaderEffect {
             double[] displace = new double[]{3 * sin(sidewaysSpeed.getValue() * PI * 0.1 * timeSeconds),
                     forwardSpeed.getValue() * timeSeconds, 1.5};
 
-            double fov = 90.0;
+            double fov = 82.0;
 
             for (int i = 0; i < SUPERSAMP; i++) {
                 for (int j = 0; j < SUPERSAMP; j++) {
