@@ -11,6 +11,7 @@ import java.util.*;
 
 import static heronarts.lx.utils.LXUtils.clamp;
 
+@Deprecated //we have native support for shaders now. use NativeShaderPatternEffect
 public abstract class FragmentShaderEffect extends PatternEffect {
 
     public FragmentShaderEffect(PatternTarget target) {
