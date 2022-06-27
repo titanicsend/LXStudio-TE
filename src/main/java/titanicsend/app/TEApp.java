@@ -20,9 +20,14 @@ package titanicsend.app;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.SocketException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
+import heronarts.lx.osc.LXOscListener;
 import heronarts.lx.studio.LXStudio;
 import processing.core.PApplet;
 import titanicsend.model.TEWholeModel;
@@ -47,6 +52,9 @@ public class TEApp extends PApplet implements LXPlugin  {
   private static int HEIGHT = 800;
   private static boolean FULLSCREEN = false;
   private static String resourceSubdir;
+
+  private static final int SHOWKONTROL_OSC_PORT_RX = 42069;
+  private static final int AUTOPILOT_UPDATE_FREQ_MS = 1000; //30;
 
   private GigglePixelListener gpListener;
   private GigglePixelBroadcaster gpBroadcaster;
@@ -144,6 +152,22 @@ public class TEApp extends PApplet implements LXPlugin  {
       LX.log("GigglePixel broadcaster created");
     } catch (IOException e) {
       LX.log("Failed to create GigglePixel broadcaster: " + e.getMessage());
+    }
+
+    // create our Autopilot instance, run in general engine loop to
+    // ensure performance under load
+    TEAutopilot autopilot = new TEAutopilot(lx);
+    lx.engine.addLoopTask(autopilot);
+
+    // add custom OSC listener to handle OSC messages from ShowKontrol
+    // includes a reference to Autopilot object so that it can store (threadsafe) the queue of unread OSC messages
+    LX.log("Attaching the OSC message listener to port " + Integer.toString(SHOWKONTROL_OSC_PORT_RX) + " ...");
+    try {
+        lx.engine.osc.receiver(SHOWKONTROL_OSC_PORT_RX).addListener((message) -> {
+            autopilot.onOscMessage(message);
+      });
+    } catch (SocketException sx) {
+        sx.printStackTrace();
     }
 
     GPOutput gpOutput = new GPOutput(lx, this.gpBroadcaster);
