@@ -26,7 +26,7 @@ public class OffscreenShaderRenderer {
 
     }
 
-    public int[][] getFrame() {
+    public int[][] getFrame(AudioInfo audioInfo) {
         //lazy initialize
         //if this get called too early on it will disrupt lx's gl initialization
         if (!nativeShader.isInitialized()) {
@@ -34,6 +34,7 @@ public class OffscreenShaderRenderer {
             nativeShader.init(offscreenDrawable);
         }
 
+        nativeShader.updateAudioInfo(audioInfo);
         nativeShader.display(offscreenDrawable);
         return nativeShader.getSnapshot();
     }

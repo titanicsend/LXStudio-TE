@@ -52,14 +52,28 @@ public class PatternTarget {
         return new PatternTarget(pattern).addPointsAsCanvas(pattern.getModel().panelPoints);
     }
 
-    public static PatternTarget splitPanelSections(TEAudioPattern pattern) {
+    public static PatternTarget allPanelsAsIndividual(TEAudioPattern pattern) {
+        return new PatternTarget(pattern).addModelsWithIndividualCanvases(pattern.getModel().getAllPanels());
+    }
+
+    public static PatternTarget doubleLargeCanvas(TEAudioPattern pattern) {
         return new PatternTarget(pattern)
                 .addPanelSectionAsCanvas(TEPanelSection.STARBOARD_AFT)
+                .addPanelSectionAsCanvas(TEPanelSection.STARBOARD_FORE)
                 .addPanelSectionAsCanvas(TEPanelSection.AFT)
+                .addPanelSectionAsCanvas(TEPanelSection.FORE)
+                .addPanelSectionAsCanvas(TEPanelSection.STARBOARD_AFT_SINGLE)
+                .addPanelSectionAsCanvas(TEPanelSection.STARBOARD_FORE_SINGLE);
+    }
+
+    public static PatternTarget splitPanelSections(TEAudioPattern pattern) {
+        return new PatternTarget(pattern)
+                .addPanelSectionAsCanvas(TEPanelSection.STARBOARD_FORE)
+                .addPanelSectionAsCanvas(TEPanelSection.FORE)
                 .addPanelSectionAsCanvas(TEPanelSection.STARBOARD_AFT_SINGLE)
                 .addPanelSectionAsCanvas(TEPanelSection.STARBOARD_FORE_SINGLE)
-                .addPanelSectionAsIndividualCanvases(TEPanelSection.STARBOARD_FORE)
-                .addPanelSectionAsIndividualCanvases(TEPanelSection.FORE);
+                .addPanelSectionAsIndividualCanvases(TEPanelSection.STARBOARD_AFT)
+                .addPanelSectionAsIndividualCanvases(TEPanelSection.AFT);
     }
 
 }

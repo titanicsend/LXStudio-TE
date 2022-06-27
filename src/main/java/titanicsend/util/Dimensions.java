@@ -187,4 +187,10 @@ public class Dimensions {
         }
         return new Dimensions(minX, minY, minZ, maxX, maxY, maxZ, minXn, minYn, minZn, maxXn, maxYn, maxZn);
     }
+
+    //used to understand which side is the larger face to use as a canvas
+    //would be cooler to make width depth in this class based on that but too lazy rn
+    public boolean widerOnZThanX() {
+        return getDepth() > getWidth();
+    }
 }

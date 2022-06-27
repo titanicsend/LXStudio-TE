@@ -2,7 +2,10 @@ package titanicsend.pattern;
 
 import heronarts.lx.LX;
 import heronarts.lx.audio.GraphicMeter;
+import heronarts.lx.parameter.LXParameter;
 import titanicsend.util.TEMath;
+
+import java.util.List;
 
 /**
  * Patterns should inherit from this if they wish to make use of live audio
@@ -144,5 +147,17 @@ public abstract class TEAudioPattern extends TEPattern {
 
     public double getTrebleRatio() {
         return trebleRatio;
+    }
+
+    public void removeParameters(List<? extends LXParameter> parameters) {
+        for (LXParameter parameter : parameters) {
+            removeParameter(parameter);
+        }
+    }
+
+    public void addParameters(List<? extends LXParameter> newParameters) {
+        for(LXParameter parameter : newParameters) {
+            addParameter(parameter);
+        }
     }
 }

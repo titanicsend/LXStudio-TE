@@ -36,9 +36,11 @@ import titanicsend.pattern.mike.*;
 import titanicsend.pattern.pixelblaze.*;
 import titanicsend.pattern.tmc.*;
 import titanicsend.pattern.tom.*;
-import titanicsend.pattern.yoffa.*;
+import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
+import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.media.BasicImagePattern;
 import titanicsend.pattern.yoffa.media.ReactiveHeartPattern;
+import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 
 
 public class TEApp extends PApplet implements LXPlugin  {
@@ -126,7 +128,9 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPattern(ArtStandards.class);
     lx.registry.addEffect(titanicsend.effect.BasicEffect.class);
     lx.registry.addEffect(titanicsend.effect.Kaleidoscope.class);
-    lx.registry.addPatterns(PatternConfig.getPatterns());
+    lx.registry.addPatterns(OrganicPatternConfig.getPatterns());
+    lx.registry.addPatterns(ShaderPanelsPatternConfig.getPatterns());
+    lx.registry.addPatterns(ShaderEdgesPatternConfig.getPatterns());
 
 
 
