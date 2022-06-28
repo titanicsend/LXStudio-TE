@@ -8,6 +8,7 @@ class JunctionBox
       JunctionBoxCircuit.new(id: "#{id}-#{i}", junction_box: self)
     end
     @controllers = []
+    @outlet_bank = nil
   end
 
   def calculate_id
@@ -58,7 +59,7 @@ class JunctionBox
     controllers.push(controller)
   end
 
-  attr_accessor :controllers, :circuits, :vertex, :id
+  attr_accessor :outlet_bank, :controllers, :circuits, :vertex, :id
 end
 
 class JunctionBoxCircuit
