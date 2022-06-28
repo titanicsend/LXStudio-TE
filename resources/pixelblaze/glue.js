@@ -10,8 +10,6 @@ var System = Java.type("java.lang.System");
 /* Globals available in pattern code */
 var global = this;
 var point;
-var pixelCount = 0;
-
 
 /* Internal globals used by glue */
 var __now, __points, __colors;
