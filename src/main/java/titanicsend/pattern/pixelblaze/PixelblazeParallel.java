@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
-public class PixelblazePatternParallel extends TEAudioPattern {
+public class PixelblazeParallel extends TEAudioPattern {
   public static final int N_THREADS = 4;
   private ArrayList<Wrapper> wrappers = new ArrayList<>();
 
@@ -22,7 +22,7 @@ public class PixelblazePatternParallel extends TEAudioPattern {
     }
   });
 
-  public PixelblazePatternParallel(LX lx) {
+  public PixelblazeParallel(LX lx) {
     super(lx);
 
     try {

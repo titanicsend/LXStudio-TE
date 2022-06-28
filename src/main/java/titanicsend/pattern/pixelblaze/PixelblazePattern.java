@@ -11,7 +11,7 @@ import titanicsend.pattern.TEAudioPattern;
 import javax.script.ScriptException;
 import java.util.HashMap;
 
-public class PixelblazePattern extends TEAudioPattern {
+public abstract class PixelblazePattern extends TEAudioPattern {
   public static final int RENDER_ERROR_LOG_INTERVAL_MS = 5_000;
   private Wrapper wrapper;
   long lastLogMs = 0; //to prevent spamming the logs with script errors
@@ -25,9 +25,7 @@ public class PixelblazePattern extends TEAudioPattern {
    * file in the resources/pixelblaze directory. The '.js' extension is added.
    * @return
    */
-  protected String getScriptName() {
-    return "test";
-  }
+  protected abstract String getScriptName();
 
   // Should this be done as onParameterChanged() instead?
   protected LXParameterListener modelPointsListener = lxParameter -> {
@@ -124,7 +122,7 @@ public class PixelblazePattern extends TEAudioPattern {
       }
     } catch (Exception e) {
       e.printStackTrace();
-      LX.error(e);
+//      LX.error(e); //NOTE: this will crash the pattern and make it unusable now
       return;
     }
   }
