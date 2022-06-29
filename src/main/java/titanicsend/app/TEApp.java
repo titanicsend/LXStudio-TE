@@ -31,6 +31,7 @@ import titanicsend.output.TEArtNetOutput;
 import titanicsend.pattern.alex.*;
 import titanicsend.pattern.cesar.*;
 import titanicsend.pattern.jeff.*;
+import titanicsend.pattern.jon.*;
 import titanicsend.pattern.mike.*;
 import titanicsend.pattern.pixelblaze.*;
 import titanicsend.pattern.tmc.*;
@@ -99,7 +100,10 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPattern(ResizeableScreen.class);
     lx.registry.addPattern(Bubbles.class);
     lx.registry.addPattern(Checkers.class);
+    lx.registry.addPattern(EdgeKITT.class);
     lx.registry.addPattern(EdgeRunner.class);
+    lx.registry.addPattern(FollowThatStar.class);
+    lx.registry.addPattern(Iceflow.class);
     lx.registry.addPattern(ModelDebugger.class);
     lx.registry.addPattern(ModuleEditor.class);
     lx.registry.addPattern(PixelblazePattern.class);
