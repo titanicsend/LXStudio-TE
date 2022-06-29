@@ -44,7 +44,9 @@ public class NativeShaderPatternEffect extends PatternEffect {
 
     @Override
     public void onPatternActive() {
-        offscreenShaderRenderer = new OffscreenShaderRenderer(fragmentShader);
+        if (fragmentShader != null) {
+            offscreenShaderRenderer = new OffscreenShaderRenderer(fragmentShader);
+        }
     }
 
     @Override
