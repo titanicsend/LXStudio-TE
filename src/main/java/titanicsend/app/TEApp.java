@@ -29,6 +29,7 @@ import titanicsend.model.TEWholeModel;
 import titanicsend.output.GPOutput;
 import titanicsend.output.TEArtNetOutput;
 import titanicsend.pattern.alex.*;
+import titanicsend.pattern.ben.BassLightning;
 import titanicsend.pattern.cesar.*;
 import titanicsend.pattern.jeff.*;
 import titanicsend.pattern.mike.*;
@@ -94,6 +95,7 @@ public class TEApp extends PApplet implements LXPlugin  {
 
     // Patterns that are in development towards meeting standards
     lx.registry.addPattern(AlternatingPattern.class);
+    lx.registry.addPattern(BassLightning.class);
     lx.registry.addPattern(BouncingDots.class);
     lx.registry.addPattern(BrightScreen.class);
     lx.registry.addPattern(ResizeableScreen.class);
