@@ -6,39 +6,50 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Objects;
 
 import heronarts.lx.LX;
 import heronarts.lx.model.LXPoint;
+import org.openjdk.nashorn.api.scripting.JSObject;
 import org.openjdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import titanicsend.pattern.TEAudioPattern;
-import titanicsend.pattern.TEPattern;
 
 public class Wrapper {
 
   //NOTE these are thread-safe, if used with separate bindings
   //https://stackoverflow.com/a/30159424/910094
-//  static final ScriptEngine engine;
-//  static final Invocable invocable;
-//  static final Compilable compilingEngine;
-//  static HashMap<String, CompiledScript> scripts = new HashMap<>();
-//  static {
-//    NashornScriptEngineFactory factory = new NashornScriptEngineFactory();
-//    engine = factory.getScriptEngine("--language=es6");
-//    invocable = (Invocable)engine;
-//    compilingEngine = (Compilable) engine;
-//  }
-//
-//  static synchronized CompiledScript compile(String pbClass) {
-//    File file = new File("resources/pixelblaze/" + pbClass + ".js");
-//    String js = Files.readString(file.toPath());
-//    lastModified = file.lastModified();
-//    js = js.replaceAll("\\bexport\\b", "");
-//    return compilingEngine.compile(js);
-//  }
+  static final ScriptEngine engine;
+  static final Compilable compilingEngine;
+  static HashMap<Path, CachedScript> scripts = new HashMap<>();
+  static {
+    NashornScriptEngineFactory factory = new NashornScriptEngineFactory();
+    engine = factory.getScriptEngine("--language=es6");
+    compilingEngine = (Compilable) engine;
+  }
 
+  static class CachedScript {
+    CompiledScript compiledScript;
+    long lastModified;
+    public CachedScript(CompiledScript compiledScript, long lastModified) {
+      this.compiledScript = compiledScript;
+      this.lastModified = lastModified;
+    }
+  }
 
-  private static String getJsFromFile(String pbClass) throws IOException {
-    return Files.readString(Path.of("resources/pixelblaze/" + pbClass + ".js"));
+  static synchronized CompiledScript compile(Path path) throws ScriptException, IOException {
+    CachedScript cachedScript = scripts.get(path);
+    File file = path.toFile();
+    if (cachedScript == null || cachedScript.lastModified != file.lastModified()) {
+      String js = Files.readString(file.toPath());
+      long lastModified = file.lastModified();
+      js = js.replaceAll("\\bexport\\b", "");
+      CompiledScript compiled = compilingEngine.compile(js);
+
+      cachedScript = new CachedScript(compiled, lastModified);
+      scripts.put(path, cachedScript);
+    }
+
+    return cachedScript.compiledScript;
   }
 
   public static Wrapper fromResource(String pbClass, TEAudioPattern pattern, LXPoint[] points, int[] colors) throws Exception {
@@ -50,8 +61,7 @@ public class Wrapper {
   LXPoint[] points;
   int[] colors;
   long lastModified;
-  ScriptEngine engine;
-  Invocable invocable;
+  Bindings bindings = engine.createBindings();
   String renderName;
   boolean hasError = false;
 
@@ -64,28 +74,30 @@ public class Wrapper {
 
   public void reloadIfNecessary() throws ScriptException, IOException, NoSuchMethodException {
     if (file.lastModified() != lastModified) {
-      LX.log("Reloading pattern");
+      LX.log("Reloading pattern: " + file.getName());
       load();
     }
   }
 
   public void load() throws IOException, ScriptException, NoSuchMethodException {
     try {
-      String js = Files.readString(file.toPath());
+
+      bindings = engine.createBindings();
+
+      CompiledScript glueScript = compile(Path.of("resources/pixelblaze/glue.js"));
+      CompiledScript patternScript = compile(file.toPath());
       lastModified = file.lastModified();
 
-      js = js.replaceAll("\\bexport\\b", "");
+      bindings.put("pixelCount", points.length);
+      bindings.put("__pattern", pattern);
+      bindings.put("__now", System.currentTimeMillis());
 
-      NashornScriptEngineFactory factory = new NashornScriptEngineFactory();
-      engine = factory.getScriptEngine("--language=es6");
-      invocable = (Invocable)engine;
+      glueScript.eval(bindings);
+      patternScript.eval(bindings);
+      ((JSObject)bindings.get("glueRegisterControls")).call(null);
 
-      engine.put("pixelCount", points.length);
-      engine.put("__pattern", pattern);
-      engine.put("__now", System.currentTimeMillis());
-      engine.eval(getJsFromFile("glue"));
-      engine.eval(js);
-      invocable.invokeFunction("glueRegisterControls");
+      LX.log("Pattern loaded, ready:" + file.getName());
+
       hasError = false;
     } catch (Throwable t) {
       hasError = true;
@@ -96,13 +108,17 @@ public class Wrapper {
   public void render(double deltaMs) throws ScriptException, NoSuchMethodException {
     if (hasError)
       return;
+    bindings.put("__now", System.currentTimeMillis());
+    bindings.put("__points", points);
+    bindings.put("__colors", colors);
 
-    engine.put("__now", System.currentTimeMillis());
-    engine.put("__points", points);
-    engine.put("__colors", colors);
+    JSObject glueBeforeRender = (JSObject) bindings.get("glueBeforeRender");
+    if (glueBeforeRender != null)
+      glueBeforeRender.call(null, deltaMs, System.currentTimeMillis(), points, colors);
+    JSObject glueRender = (JSObject) bindings.get("glueRender");
+    if (glueRender != null)
+      glueRender.call(null);
 
-    invocable.invokeFunction("glueBeforeRender", deltaMs, System.currentTimeMillis(), points, colors);
-    invocable.invokeFunction("glueRender");
   }
 
   /**
