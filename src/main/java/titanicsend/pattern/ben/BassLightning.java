@@ -151,16 +151,6 @@ public class BassLightning extends TEAudioPattern {
 	public final DiscreteParameter energy =
 			new DiscreteParameter("Energy", 3, 1, 11)
 					.setDescription("Amount of Bolts");
-	public final BooleanParameter onBeatParam =
-			new BooleanParameter("On Beat", false)
-					.setDescription("Trigger on each beat");
-	public final BooleanParameter trigger =
-			new BooleanParameter("Trigger", false)
-					.setMode(BooleanParameter.Mode.MOMENTARY)
-					.setDescription("Trigger a bolt of lightning");
-	public final BooleanParameter allowLoopsParam =
-			new BooleanParameter("Loops", true)
-					.setDescription("Allow bolts to loop to an edge they've already visited");
 	public final CompoundParameter fadeParam =
 			new CompoundParameter("Fade", .98, .95, .999);
 	public final CompoundParameter delayParam =
@@ -174,6 +164,19 @@ public class BassLightning extends TEAudioPattern {
 			new CompoundParameter("Vary", 50, 0, 200)
 					.setDescription("Random distance");
 
+	public final BooleanParameter onBeatParam =
+			new BooleanParameter("On Beat", false)
+					.setDescription("Trigger on each beat");
+	public final BooleanParameter onBassParam =
+			new BooleanParameter("On Bass", false)
+					.setDescription("Trigger on audio bass");
+	public final BooleanParameter trigger =
+			new BooleanParameter("Trigger", false)
+					.setMode(BooleanParameter.Mode.MOMENTARY)
+					.setDescription("Trigger a bolt of lightning manually");
+	public final BooleanParameter allowLoopsParam =
+			new BooleanParameter("Loops", true)
+					.setDescription("Allow bolts to loop to an edge they've already visited");
 
 	float[] values;
 	List<Bolt> bolts = new LinkedList<>();
@@ -182,14 +185,15 @@ public class BassLightning extends TEAudioPattern {
 	public BassLightning(LX lx) {
 		super(lx);
 		addParameter("energy", energy);
-		addParameter("onBeat", onBeatParam);
-		addParameter("trigger", trigger);
-		addParameter("loops", allowLoopsParam);
 		addParameter("fade", fadeParam);
 		addParameter("delay", delayParam);
 		addParameter("life", lifeParam);
-		addParameter("fdistance", fixedDistanceParam);
-		addParameter("rdistance", randomDistanceParam);
+		addParameter("fDistance", fixedDistanceParam);
+		addParameter("rDistance", randomDistanceParam);
+		addParameter("onBeat", onBeatParam);
+		addParameter("onBass", onBassParam);
+		addParameter("trigger", trigger);
+		addParameter("loops", allowLoopsParam);
 
 		values = new float[this.colors.length];
 	}
@@ -233,6 +237,10 @@ public class BassLightning extends TEAudioPattern {
 		synchronized (bolts) {
 
 			if (onBeatParam.getValueb() && getTempo().beat()) {
+				makeBolt();
+			}
+
+			if (onBassParam.getValueb() && bassHit) {
 				makeBolt();
 			}
 
