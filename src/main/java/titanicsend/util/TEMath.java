@@ -2,6 +2,7 @@ package titanicsend.util;
 
 import heronarts.lx.utils.LXUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static java.lang.Math.PI;
@@ -333,5 +334,65 @@ public class TEMath {
             return (float) average;
         }
 
+    }
+
+    public static long calcSum(long[] values) {
+        long sum = 0;
+        for (long v : values) {
+            sum += v;
+        }
+        return sum;
+    }
+
+    public static double calcMean(long[] values) {
+        long acc = calcSum(values);
+        return acc / values.length;
+    }
+
+    public static double calcStddev(long[] values) {
+        // first, get the mean
+        double mean = calcMean(values);
+
+        // then calc stddev
+        double std = 0.0;
+        for (long num : values) {
+            std += Math.pow(num - mean, 2);
+        }
+        return Math.sqrt(std / values.length);
+    }
+
+    public static double calcInlierMean(long[] values, double outlierZscore) {
+        assert outlierZscore > 0 :
+            "Outlier argument must be > 0, it is the absolute value of the limit of inliers";
+
+        double avg = calcMean(values);
+        double stddev = calcStddev(values);
+
+        // transform the values into zscores, and average
+        long acc = 0;
+        int n = 0;
+        for (long v : values) {
+            double z = (v - avg) / stddev;
+            if (Math.abs(z) < Math.abs(outlierZscore)) {
+                acc += v;
+                n++;
+            }
+        }
+
+        return acc / n;
+    }
+
+    /*
+        Linearly weighted recency mean.
+     */
+    public static double calcRecencyWeightedMean(ArrayList<Long> values) {
+        int n = values.size();
+        double denom = n * (n + 1) / 2.;
+        double acc = 0;
+        for (int i = n; i > 0; i--) {
+            long v = values.get(n - i);
+            acc += (i * v);
+        }
+        return acc / denom;
     }
 }

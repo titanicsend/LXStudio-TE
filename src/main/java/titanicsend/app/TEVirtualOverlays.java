@@ -5,6 +5,7 @@ import java.util.*;
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.transform.LXVector;
 import heronarts.p4lx.ui.UI;
 import processing.core.PGraphics;
@@ -38,6 +39,11 @@ public class TEVirtualOverlays extends TEUIComponent {
                   .setDescription("Toggle whether to render the back of lit panels as opaque")
                   .setValue(true);
 
+  public final BooleanParameter autopilotEnabled =
+          new BooleanParameter("Autopilot Enabled")
+                  .setDescription("Toggle to turn on VJ autopilot mode")
+                  .setValue(false);
+
   private static class POV {
     LXVector v;
     int rgb;
@@ -54,7 +60,7 @@ public class TEVirtualOverlays extends TEUIComponent {
   private final LXVector mountainNormal = new LXVector(-1, 0, 0);
   private final List<List<POV>> laserPOV;
 
-  public TEVirtualOverlays(TEWholeModel model) {
+  public TEVirtualOverlays(TEWholeModel model, TEAutopilot autopilot) {
     super();
     this.model = model;
     addParameter("vertexSpheresVisible", this.vertexSpheresVisible);
@@ -62,10 +68,21 @@ public class TEVirtualOverlays extends TEUIComponent {
     addParameter("panelLabelsVisible", this.panelLabelsVisible);
     addParameter("unknownPanelsVisible", this.unknownPanelsVisible);
     addParameter("opaqueBackPanelsVisible", this.opaqueBackPanelsVisible);
+    addParameter("autopilotEnabled", this.autopilotEnabled);
+
     this.laserPOV = new ArrayList<>();
     for (int i = 0; i < numPOVs; i++) {
       this.laserPOV.add(new ArrayList<>());
     }
+
+    // listener to toggle on the autopilot instance's enabled flag
+    LXParameterListener autopilotEnableListener = (p) -> {
+        if (autopilot.isEnabled() != this.autopilotEnabled.getValueb()) { // only toggle if different!
+            autopilot.setEnabled(this.autopilotEnabled.getValueb());
+        }
+    };
+    this.autopilotEnabled.addListener(autopilotEnableListener);
+    this.autopilotEnabled.setValue(autopilot.isEnabled());
   }
 
   // https://stackoverflow.com/questions/5666222/3d-line-plane-intersection

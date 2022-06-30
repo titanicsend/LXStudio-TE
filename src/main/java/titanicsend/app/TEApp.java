@@ -61,6 +61,8 @@ public class TEApp extends PApplet implements LXPlugin  {
   private GigglePixelListener gpListener;
   private GigglePixelBroadcaster gpBroadcaster;
 
+  private TEAutopilot autopilot;
+
   @Override
   public void settings() {
     if (FULLSCREEN) {
@@ -160,7 +162,7 @@ public class TEApp extends PApplet implements LXPlugin  {
 
     // create our Autopilot instance, run in general engine loop to
     // ensure performance under load
-    TEAutopilot autopilot = new TEAutopilot(lx);
+    autopilot = new TEAutopilot(lx);
     lx.engine.addLoopTask(autopilot);
 
     // add custom OSC listener to handle OSC messages from ShowKontrol
@@ -188,7 +190,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     // At this point, the LX Studio application UI has been built. You may now add
     // additional views and components to the Ui heirarchy.
 
-    TEVirtualOverlays visual = new TEVirtualOverlays(this.model);
+    TEVirtualOverlays visual = new TEVirtualOverlays(this.model, this.autopilot);
     lx.ui.preview.addComponent(visual);
     new TEUIControls(ui, visual, ui.leftPane.global.getContentWidth()).addToContainer(ui.leftPane.global);
 
