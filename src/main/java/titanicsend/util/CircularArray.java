@@ -24,6 +24,8 @@ public class CircularArray<T> {
     }
 
     public void add(T element) {
+        assert element != null : "Cannot add null to CircularArray!";
+
         start = (start + 1) % capacity;
         buf[start] = element;
 
@@ -34,15 +36,16 @@ public class CircularArray<T> {
 
         assert size <= capacity : "Cannot have size larger than caapcity!";
         assert (end + size) % capacity - 1 == start : "Invariant violated!";
+        //System.out.printf("start=%d, end=%d, size=%d, capacity=%d\n", start, end, size, capacity);
     }
 
     /*
         Retrieve the most recently added element.
      */
-    public T get() throws Exception {
+    public T get() throws IndexOutOfBoundsException {
         if (size == 0)
-            throw new Exception("No elements have been added to this CircularArray yet!");
-        return buf[start];
+            throw new IndexOutOfBoundsException("No elements have been added to this CircularArray yet!");
+        return get(0);
     }
 
     /*
@@ -58,8 +61,10 @@ public class CircularArray<T> {
         if (idx > 0) {
             throw new IndexOutOfBoundsException(
                     "Cannot read from index=" +Integer.toString(idx)+ ", please use integer index <= 0\n");
+        } else if (size == 0) {
+            throw new IndexOutOfBoundsException("No elements have been added to this CircularArray yet!");
         }
-        int wrappedIndex = (start + 1) % capacity;
+        int wrappedIndex = (start + idx) % capacity;
         return buf[wrappedIndex];
     }
 

@@ -23,7 +23,8 @@ public class TETimeUtils {
     }
 
     public static boolean isValidBeatPeriod(long periodMs) {
-        return bpmToMsPerBeat(MIN_BPM) < periodMs && bpmToMsPerBeat(MAX_BPM) > periodMs;
+        double periodBPM = msPerBeatToBpm(periodMs);
+        return periodBPM > MIN_BPM && periodBPM < MAX_BPM;
     }
 
     /*
@@ -79,30 +80,26 @@ public class TETimeUtils {
         return 1. / (bpm / MS_PER_MIN);
     }
 
-    public static double estBPMFromBeatEvents(CircularArray<TEBeatEvent> beatEvents, long mostRecentBeatAt) {
+    public static double estBPMFromBeatEvents(CircularArray<TEBeatEvent> beatEvents) {
         TEBeatEvent[] beats = beatEvents.getAll();
 
-        long curBeatStartAt = mostRecentBeatAt;
+        long curBeatStartAt = beats[0].getTimestamp(); // we'll change this as loop goes on
         int maxWindowSize = beatEvents.getSize();
         ArrayList<Long> diffs = new ArrayList<Long>();
 
         for (int i = 0; i < beats.length; i++) {
             TEBeatEvent be = beats[i];
 
-            // check conditions under which we'd ignore this element
-            if (be.getTimestamp() == mostRecentBeatAt)
-                continue;
             if (maxWindowSize == 0)
                 break;
 
             // compute diffs and add up
             long diffMs = curBeatStartAt - be.getTimestamp();
-            if (isValidBeatPeriod(diffMs)) {
-                // this would be a BPM < 50 or > 200, likely not real. Ignore!
+            if (!isValidBeatPeriod(diffMs))
+                // check for sane period length in ms, if not, forget this point
                 continue;
-            }
 
-            //System.out.printf("%d - %d = %d\n", curBeatStartAt, be.getTimestamp(), diffMs);
+            //System.out.printf("%d - %d = %d (BPM equiv=%f)\n", curBeatStartAt, be.getTimestamp(), diffMs, TETimeUtils.msPerBeatToBpm(diffMs));
             diffs.add(diffMs);
 
             // maintain loop invariants
@@ -112,6 +109,7 @@ public class TETimeUtils {
 
         double avgMsPerDownbeat = TEMath.calcRecencyWeightedMean(diffs);
         double estBPM = TETimeUtils.msPerBeatToBpm(avgMsPerDownbeat);
+        //System.out.printf("avgMsPerDownbeat=%f, estBPM=%f\n", avgMsPerDownbeat, estBPM);
         return estBPM;
     }
 }

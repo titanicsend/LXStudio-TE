@@ -7,19 +7,12 @@ import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.osc.OscMessage;
 import heronarts.lx.pattern.LXPattern;
 import titanicsend.app.autopilot.*;
-import titanicsend.util.CircularArray;
-import titanicsend.util.TEMath;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TEAutopilot implements LXLoopTask {
-
-    private static final int BEAT_MAX_WINDOW = 128; // max num beats to keep in history
-    private static final int BEAT_START_ESTIMATION_AT = 16; // start narrowing in BPM after this many samples
-    private static final int PHRASE_EVENT_MAX_WINDOW = 32; // max num phrase changes to keep in history
     private boolean enabled = true; // TODO(will) make false, users can enable from global UI toggle panel
     private boolean autoBpmSyncEnabled = true;  // should we try to sync BPM when ProDJlink seems off?
     private LX lx;
@@ -27,14 +20,9 @@ public class TEAutopilot implements LXLoopTask {
     private ConcurrentLinkedQueue<TEOscMessage> unprocessedOscMessages;
     private long lastOscMessageReceivedAt;
 
-    private CircularArray<TEPhraseEvent> phraseEvents; // past log of phrase changes with timestamps
-    private CircularArray<TEBeatEvent> beatEvents; // past log of beat timestamps
-
-    private TEMath.EMA tempoEMA = null;
-    private static double TEMPO_EMA_ALPHA = 0.2;
     private static double BPM_ERROR_ADJUST = 1.0; // if we detect BPM is off by more than this, adjust
 
-    private long lastOscBeatAt;
+    private TEHistorian history;
 
     public TEAutopilot(LX lx) {
         this.lx = lx;
@@ -43,22 +31,19 @@ public class TEAutopilot implements LXLoopTask {
         unprocessedOscMessages = new ConcurrentLinkedQueue<TEOscMessage>();
 
         // historical logs of events for calculations
-        phraseEvents = new CircularArray<TEPhraseEvent>(TEPhraseEvent.class, PHRASE_EVENT_MAX_WINDOW);
-        beatEvents = new CircularArray<TEBeatEvent>(TEBeatEvent.class, BEAT_MAX_WINDOW);
+        history = new TEHistorian(BPM_ERROR_ADJUST);
 
         // start any logic that begins with being enabled
         setEnabled(enabled);
     }
 
     private void initializeTempoEMA() {
-        tempoEMA = new TEMath.EMA(this.lx.engine.tempo.bpm(), TEMPO_EMA_ALPHA);
+        history.resetTempoTracking(this.lx.engine.tempo.bpm());
     }
 
     protected void onOscMessage(OscMessage msg) {
         String address = msg.getAddressPattern().toString();
         TEOscMessage oscTE = new TEOscMessage(msg);
-
-        //System.out.printf("HANDLER: OSC message received: %s\n", address);
 
         // First, let's check for global OSC messages that don't concern autopilot, or that
         // we should act on immediately
@@ -70,8 +55,10 @@ public class TEAutopilot implements LXLoopTask {
             if (TETimeUtils.isValidBPM(newTempo)) {  // lots of times the CDJ will send 0.0 for new tempo...
                 System.out.printf("Changing LX tempo to %f\n", msg.getDouble(0));
                 this.lx.engine.tempo.setBpm((float) newTempo);
-                this.beatEvents.clear();
-                initializeTempoEMA();
+
+                // clear and restart history for beats/tempo
+                history.resetBeatTracking();
+                history.resetTempoTracking(this.lx.engine.tempo.bpm());
             }
 
         } else {
@@ -80,34 +67,27 @@ public class TEAutopilot implements LXLoopTask {
         }
     }
 
-    public boolean shouldCheckForBpmDrift() {
-        return autoBpmSyncEnabled && beatEvents.getSize() >= BEAT_START_ESTIMATION_AT;
-    }
-
     public void handleBeatEvent(long beatAt) throws Exception {
-        if (tempoEMA == null)
-            initializeTempoEMA();
+        if (!history.isTrackingTempo())
+            history.resetTempoTracking(lx.engine.tempo.bpm.getValue());
 
         // log beat event
-        TEBeatEvent beat = new TEBeatEvent(beatAt);
-        beatEvents.add(beat);
+        history.logBeat(beatAt);
 
         // Why is this section here? -- CDJ/ShowKontrol/ProDJLink is NOT
         //      consistent with delivering correct tempo change messages when slider moves,
         //      but is with beat messages. If they differ, and our calculated value
         //      seems much closer than what LX has for tempo, we should adjust the tempo
-        if (shouldCheckForBpmDrift()) {
-            double estBPM = TETimeUtils.estBPMFromBeatEvents(beatEvents, beatAt);
-            if (Double.isNaN(estBPM)) return;
-            double estBPMAvg = tempoEMA.update(estBPM);
+        //
+        //  If you want to ignore this, simply turn `autoBpmSyncEnabled`=false
+        ///
+        if (autoBpmSyncEnabled && history.readyForTempoEstimation()) {
+            double estBPMAvg = history.estimateBPM();
             if (Math.abs(lx.engine.tempo.bpm() - estBPMAvg) > BPM_ERROR_ADJUST) {
-                System.out.printf("BPM est from beats: %f (avg=%f), LX BPM is: %f => overriding BPM! \n",
-                        estBPM, estBPMAvg, lx.engine.tempo.bpm());
+                System.out.printf("BPM est from beats: %f, LX BPM is: %f => overriding BPM! \n", estBPMAvg, lx.engine.tempo.bpm());
                 lx.engine.tempo.setBpm(estBPMAvg);
             }
         }
-
-        lastOscBeatAt = beatAt;
     }
 
     @Override
@@ -155,31 +135,28 @@ public class TEAutopilot implements LXLoopTask {
 
     private void changePhrase(String oscAddress, long timestamp, double deltaMs) {
         // which phrase type is this?
-        TEPhrase phrase = TEPhrase.resolvePhrase(oscAddress);
+        TEPhrase phraseType = TEPhrase.resolvePhrase(oscAddress);
 
         // do some bookkeeping on if the phrase is different from last,
         // and add to historical log of events
-        TEPhraseEvent phraseEvent = new TEPhraseEvent(timestamp, phrase, lx.engine.tempo.bpm.getValue());
-        TEPhraseEvent prevPhraseEvent = phraseEvents.get(0);
-        boolean phraseIsSame = (prevPhraseEvent != null && phrase == prevPhraseEvent.getPhraseType());
-        phraseEvents.add(phraseEvent);
-        System.out.printf("[PHRASE]: %s\n", phrase);
+        boolean phraseIsSame = history.logPhrase(timestamp, phraseType, lx.engine.tempo.bpm.getValue());
+        System.out.printf("[PHRASE]: %s\n", phraseType);
 
         // let's pick our channel to work with
         TEChannelName channelName = null;
         LXChannel channel = null;
         List<LXClip> clips = new ArrayList<LXClip>(); // clips to start
 
-        if (phrase == TEPhrase.TRO) {
+        if (phraseType == TEPhrase.TRO) {
             channelName = TEChannelName.TRO;
 
-        } else if (phrase == TEPhrase.UP) {
+        } else if (phraseType == TEPhrase.UP) {
             channelName = TEChannelName.UP;
 
-        } else if (phrase == TEPhrase.DOWN) {
+        } else if (phraseType == TEPhrase.DOWN) {
             channelName = TEChannelName.DOWN;
 
-        } else if (phrase == TEPhrase.CHORUS) {
+        } else if (phraseType == TEPhrase.CHORUS) {
             channelName = TEChannelName.CHORUS;
 
             // strobe
