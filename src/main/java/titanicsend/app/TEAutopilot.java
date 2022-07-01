@@ -16,7 +16,7 @@ public class TEAutopilot implements LXLoopTask {
     // TODO(will) make false, users can enable from global UI toggle panel
     private boolean enabled = false;
     // should we try to sync BPM when ProDJlink seems off?
-    private boolean autoBpmSyncEnabled = false;
+    private boolean autoBpmSyncEnabled = true;
 
     // our ref to global LX object
     private LX lx;
@@ -49,9 +49,6 @@ public class TEAutopilot implements LXLoopTask {
     }
 
     protected void onOscMessage(OscMessage msg) {
-        // if autopilot isn't enabled, don't bother tracking these
-        if (!isEnabled()) return;
-
         String address = msg.getAddressPattern().toString();
         TEOscMessage oscTE = new TEOscMessage(msg);
 
@@ -71,26 +68,25 @@ public class TEAutopilot implements LXLoopTask {
                 history.resetTempoTracking(this.lx.engine.tempo.bpm());
             }
 
+        } else if (!isEnabled()) {
+            // if autopilot isn't enabled, don't bother tracking these
+            return;
+
         } else {
             //System.out.printf("Adding OSC message to queue: %s\n", address);
             unprocessedOscMessages.add(oscTE);
         }
     }
 
-    public void handleBeatEvent(long beatAt) throws Exception {
+    public void onBeatEvent(long beatAt) throws Exception {
         if (!history.isTrackingTempo())
             history.resetTempoTracking(lx.engine.tempo.bpm.getValue());
 
         // log beat event
         history.logBeat(beatAt);
 
-        // Why is this section here? -- CDJ/ShowKontrol/ProDJLink is NOT
-        //      consistent with delivering correct tempo change messages when slider moves,
-        //      but is with beat messages. If they differ, and our calculated value
-        //      seems much closer than what LX has for tempo, we should adjust the tempo
-        //
-        //  If you want to ignore this, simply turn `autoBpmSyncEnabled`=false
-        ///
+        // Tempo fine adjustment due to irregularities with OSC
+        // If you want to ignore this, simply turn `autoBpmSyncEnabled`=false
         if (autoBpmSyncEnabled && history.readyForTempoEstimation()) {
             double estBPMAvg = history.estimateBPM();
             if (Math.abs(lx.engine.tempo.bpm() - estBPMAvg) > BPM_ERROR_ADJUST) {
@@ -123,13 +119,13 @@ public class TEAutopilot implements LXLoopTask {
 
                 // handle OSC message based on type
                 if (TEOscPath.isPhraseChange(address)) {
-                    changePhrase(address, oscTE.timestamp, deltaMs);
+                    onPhraseChange(address, oscTE.timestamp, deltaMs);
 
                 } else if (TEOscPath.isDownbeat(address)) {
                     // nothing to do yet
 
                 } else if (TEOscPath.isBeat(address)) {
-                    handleBeatEvent(oscTE.timestamp);
+                    onBeatEvent(oscTE.timestamp);
 
                 } else {
                     // unrecognized OSC message!
@@ -143,7 +139,7 @@ public class TEAutopilot implements LXLoopTask {
         }
     }
 
-    private void changePhrase(String oscAddress, long timestamp, double deltaMs) {
+    private void onPhraseChange(String oscAddress, long timestamp, double deltaMs) {
         // which phrase type is this?
         TEPhrase phraseType = TEPhrase.resolvePhrase(oscAddress);
 
@@ -207,5 +203,31 @@ public class TEAutopilot implements LXLoopTask {
         } else {
             System.out.println("VJ autoilot disabled!");
         }
+    }
+
+    public void setAutoBpmSyncEnabled(boolean enableSync) {
+        if (enableSync && !this.enabled) {
+            System.out.println("Cannot autosync BPM, requires: autopilot.setEnabled(true)!\n");
+            return;
+        }
+        this.autoBpmSyncEnabled = enableSync;
+    }
+
+    /*
+        Choosing next Pattern depends on:
+
+        Most importantly:
+        - current Pattern, Phrase
+        - previous Phrase(s) - if a series of them, like
+          four CHORUS's in a row
+
+        Perhaps also in future:
+        - How much time we've spent on particular Patterns, we may
+          want to level or even out how much airtime they get to
+          avoid getting overplayed
+     */
+    public void chooseNextPattern() {
+
+
     }
 }

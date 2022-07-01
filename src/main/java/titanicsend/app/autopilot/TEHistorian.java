@@ -25,17 +25,17 @@ public class TEHistorian {
         Phrase history
     */
     // past log of phrase changes with timestamps and tempo at the time
-    public CircularArray<TEPhraseEvent> phraseEvents;
+    private CircularArray<TEPhraseEvent> phraseEvents;
 
     /*
         Beat history
     */
     // past log of beat timestamps
-    public CircularArray<TEBeatEvent> beatEvents;
+    private CircularArray<TEBeatEvent> beatEvents;
     // moving average object for tempo estimates
-    public TEMath.EMA tempoEMA;
+    private TEMath.EMA tempoEMA;
     // timestamp of when we last saw an OSC beat at
-    public long lastBeatAt;
+    private long lastBeatAt;
 
     public TEHistorian() {
         resetBeatTracking();
