@@ -56,7 +56,6 @@ public class TEApp extends PApplet implements LXPlugin  {
   private static String resourceSubdir;
 
   private static final int SHOWKONTROL_OSC_PORT_RX = 42069;
-  private static final int AUTOPILOT_UPDATE_FREQ_MS = 1000; //30;
 
   private GigglePixelListener gpListener;
   private GigglePixelBroadcaster gpBroadcaster;
