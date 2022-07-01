@@ -4,27 +4,40 @@ import titanicsend.util.CircularArray;
 import titanicsend.util.TEMath;
 
 public class TEHistorian {
-    // beat related constants
-    public static final int BEAT_MAX_WINDOW = 128; // max num beats to keep in history
+    /*
+        Beat related constants
+    */
+    // max num of beat events to track in past
+    public static final int BEAT_MAX_WINDOW = 128;
+    // alpha for EMA on BPM estimates to smooth estimation
     private static double TEMPO_EMA_ALPHA = 0.2;
 
-    public static final int BEAT_START_ESTIMATION_AT = 16; // start narrowing in BPM after this many samples
+    // start checking for tempo deviations after this many beat events
+    public static final int BEAT_START_ESTIMATION_AT = 16;
 
-    // phrase related constants
-    public static final int PHRASE_EVENT_MAX_WINDOW = 32; // max num phrase changes to keep in history
+    /*
+        Phrase related constants
+    */
+    // max num phrase changes to keep in history
+    public static final int PHRASE_EVENT_MAX_WINDOW = 32;
 
-    // phrase history
-    public CircularArray<TEPhraseEvent> phraseEvents; // past log of phrase changes with timestamps
+    /*
+        Phrase history
+    */
+    // past log of phrase changes with timestamps and tempo at the time
+    public CircularArray<TEPhraseEvent> phraseEvents;
 
-    // beat history
-    public CircularArray<TEBeatEvent> beatEvents; // past log of beat timestamps
+    /*
+        Beat history
+    */
+    // past log of beat timestamps
+    public CircularArray<TEBeatEvent> beatEvents;
+    // moving average object for tempo estimates
     public TEMath.EMA tempoEMA;
+    // timestamp of when we last saw an OSC beat at
     public long lastBeatAt;
-    public double tempoErrorAdjustRange;
 
-    public TEHistorian(double tempoErrorAdjustRange) {
-        this.tempoErrorAdjustRange = tempoErrorAdjustRange;
-
+    public TEHistorian() {
         resetBeatTracking();
         resetPhraseTracking();
     }

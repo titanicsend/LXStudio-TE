@@ -13,25 +13,32 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TEAutopilot implements LXLoopTask {
-    private boolean enabled = true; // TODO(will) make false, users can enable from global UI toggle panel
-    private boolean autoBpmSyncEnabled = true;  // should we try to sync BPM when ProDJlink seems off?
+    // TODO(will) make false, users can enable from global UI toggle panel
+    private boolean enabled = true;
+    // should we try to sync BPM when ProDJlink seems off?
+    private boolean autoBpmSyncEnabled = true;
+
+    // our ref to global LX object
     private LX lx;
 
+    // OSC message related fields
     private ConcurrentLinkedQueue<TEOscMessage> unprocessedOscMessages;
     private long lastOscMessageReceivedAt;
 
-    private static double BPM_ERROR_ADJUST = 1.0; // if we detect BPM is off by more than this, adjust
+    // if we detect BPM is off by more than this, adjust
+    private static double BPM_ERROR_ADJUST = 1.0;
 
+    // our historical tracking object, keeping state about events in past
     private TEHistorian history;
 
     public TEAutopilot(LX lx) {
         this.lx = lx;
 
-        // this queue needs to be accessible from the OSC listener, which is a different thread
+        // this queue needs to be accessible from OSC listener in diff thread
         unprocessedOscMessages = new ConcurrentLinkedQueue<TEOscMessage>();
 
         // historical logs of events for calculations
-        history = new TEHistorian(BPM_ERROR_ADJUST);
+        history = new TEHistorian();
 
         // start any logic that begins with being enabled
         setEnabled(enabled);

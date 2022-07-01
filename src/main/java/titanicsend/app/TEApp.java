@@ -165,6 +165,9 @@ public class TEApp extends PApplet implements LXPlugin  {
     autopilot = new TEAutopilot(lx);
     lx.engine.addLoopTask(autopilot);
 
+    // TODO(will) go back to using built-in OSC listener for setBPM messages once:
+    // 1. Mark merges his commit for utilizing the main OSC listener
+    // 2. Mark adds protection on input checking for setBPM = 0.0 messages (https://github.com/heronarts/LX/blob/e3d0d11a7d61c73cd8dde0c877f50ea4a58a14ff/src/main/java/heronarts/lx/Tempo.java#L201)
     // add custom OSC listener to handle OSC messages from ShowKontrol
     // includes a reference to Autopilot object so that it can store (threadsafe) the queue of unread OSC messages
     LX.log("Attaching the OSC message listener to port " + Integer.toString(SHOWKONTROL_OSC_PORT_RX) + " ...");
