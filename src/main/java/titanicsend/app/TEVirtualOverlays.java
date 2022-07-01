@@ -55,7 +55,7 @@ public class TEVirtualOverlays extends TEUIComponent {
   private final LXVector mountainNormal = new LXVector(-1, 0, 0);
   private final List<List<POV>> laserPOV;
 
-  public TEVirtualOverlays(TEWholeModel model, TEAutopilot autopilot) {
+  public TEVirtualOverlays(TEWholeModel model) {
     super();
     this.model = model;
     addParameter("vertexSpheresVisible", this.vertexSpheresVisible);
