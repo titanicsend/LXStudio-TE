@@ -39,11 +39,6 @@ public class TEVirtualOverlays extends TEUIComponent {
                   .setDescription("Toggle whether to render the back of lit panels as opaque")
                   .setValue(true);
 
-  public final BooleanParameter autopilotEnabled =
-          new BooleanParameter("Autopilot Enabled")
-                  .setDescription("Toggle to turn on VJ autopilot mode")
-                  .setValue(false);
-
   private static class POV {
     LXVector v;
     int rgb;
@@ -68,21 +63,11 @@ public class TEVirtualOverlays extends TEUIComponent {
     addParameter("panelLabelsVisible", this.panelLabelsVisible);
     addParameter("unknownPanelsVisible", this.unknownPanelsVisible);
     addParameter("opaqueBackPanelsVisible", this.opaqueBackPanelsVisible);
-    addParameter("autopilotEnabled", this.autopilotEnabled);
 
     this.laserPOV = new ArrayList<>();
     for (int i = 0; i < numPOVs; i++) {
       this.laserPOV.add(new ArrayList<>());
     }
-
-    // listener to toggle on the autopilot instance's enabled flag
-    LXParameterListener autopilotEnableListener = (p) -> {
-        if (autopilot.isEnabled() != this.autopilotEnabled.getValueb()) { // only toggle if different!
-            autopilot.setEnabled(this.autopilotEnabled.getValueb());
-        }
-    };
-    this.autopilotEnabled.addListener(autopilotEnableListener);
-    this.autopilotEnabled.setValue(autopilot.isEnabled());
   }
 
   // https://stackoverflow.com/questions/5666222/3d-line-plane-intersection

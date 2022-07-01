@@ -14,9 +14,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TEAutopilot implements LXLoopTask {
     // TODO(will) make false, users can enable from global UI toggle panel
-    private boolean enabled = true;
+    private boolean enabled = false;
     // should we try to sync BPM when ProDJlink seems off?
-    private boolean autoBpmSyncEnabled = true;
+    private boolean autoBpmSyncEnabled = false;
 
     // our ref to global LX object
     private LX lx;
@@ -49,6 +49,9 @@ public class TEAutopilot implements LXLoopTask {
     }
 
     protected void onOscMessage(OscMessage msg) {
+        // if autopilot isn't enabled, don't bother tracking these
+        if (!isEnabled()) return;
+
         String address = msg.getAddressPattern().toString();
         TEOscMessage oscTE = new TEOscMessage(msg);
 

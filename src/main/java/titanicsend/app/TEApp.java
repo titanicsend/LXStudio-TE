@@ -26,9 +26,14 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import heronarts.lx.LX;
+import heronarts.lx.LXComponent;
 import heronarts.lx.LXPlugin;
+import heronarts.lx.osc.LXOscComponent;
 import heronarts.lx.osc.LXOscListener;
+import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.studio.LXStudio;
+import heronarts.p4lx.ui.component.*;
 import processing.core.PApplet;
 import titanicsend.model.TEWholeModel;
 import titanicsend.output.GPOutput;
@@ -85,12 +90,30 @@ public class TEApp extends PApplet implements LXPlugin  {
     this.surface.setTitle(this.model.name);
   }
 
+  public static class AutopilotComponent extends LXComponent implements LXOscComponent {
+      public final BooleanParameter autopilotEnabledToggle =
+              new BooleanParameter("Autopilot Enabled")
+                      .setDescription("Toggle to turn on VJ autopilot mode")
+                      .setValue(false);
+      public AutopilotComponent(LX lx) {
+          super(lx);
+          addParameter("autopilotEnabledToggle", this.autopilotEnabledToggle);
+      }
+  }
+
+  public AutopilotComponent autopilotComponent;
+
   @Override
   public void initialize(LX lx) {
     // Here is where you should register any custom components or make modifications
     // to the LX engine or hierarchy. This is also used in headless mode, so note that
     // you cannot assume you are working with an LXStudio class or that any UI will be
     // available.
+
+    // Create an instance of our global autopilot component and register it with the LX engine
+    // so that it can be saved and loaded in project files
+    this.autopilotComponent = new AutopilotComponent(lx);
+    lx.engine.registerComponent("autopilot", this.autopilotComponent);
 
     TEArtNetOutput.activateAll(lx, this.model.gapPoint.index);
 
@@ -164,6 +187,15 @@ public class TEApp extends PApplet implements LXPlugin  {
     autopilot = new TEAutopilot(lx);
     lx.engine.addLoopTask(autopilot);
 
+    // listener to toggle on the autopilot instance's enabled flag
+    LXParameterListener autopilotEnableListener = (p) -> {
+      if (autopilot.isEnabled() != this.autopilotComponent.autopilotEnabledToggle.getValueb()) { // only toggle if different!
+        autopilot.setEnabled(this.autopilotComponent.autopilotEnabledToggle.getValueb());
+      }
+    };
+    this.autopilotComponent.autopilotEnabledToggle.addListener(autopilotEnableListener);
+    //this.autopilotComponent.autopilotEnabledToggle.setValue(autopilot.isEnabled());
+
     // TODO(will) go back to using built-in OSC listener for setBPM messages once:
     // 1. Mark merges his commit for utilizing the main OSC listener
     // 2. Mark adds protection on input checking for setBPM = 0.0 messages (https://github.com/heronarts/LX/blob/e3d0d11a7d61c73cd8dde0c877f50ea4a58a14ff/src/main/java/heronarts/lx/Tempo.java#L201)
@@ -188,6 +220,15 @@ public class TEApp extends PApplet implements LXPlugin  {
     // for headless mode should go in the raw initialize method above.
   }
 
+  public static class AutopilotUIComponent extends UICollapsibleSection {
+    public AutopilotUIComponent(LXStudio.UI ui, AutopilotComponent myComponent) {
+      super(ui, 0, 0, ui.leftPane.global.getContentWidth(), 80);
+      setTitle("Autopilot: enable?");
+      new UICheckbox(0, 0, myComponent.autopilotEnabledToggle).addToContainer(this);
+//      new UIButton(0, 0, myComponent.autopilotEnabledToggle).addToContainer(this);
+    }
+  }
+
   public void onUIReady(LXStudio lx, LXStudio.UI ui) {
     // At this point, the LX Studio application UI has been built. You may now add
     // additional views and components to the Ui heirarchy.
@@ -199,6 +240,9 @@ public class TEApp extends PApplet implements LXPlugin  {
     GigglePixelUI gpui = new GigglePixelUI(ui, ui.leftPane.global.getContentWidth(),
             this.gpListener, this.gpBroadcaster);
     gpui.addToContainer(ui.leftPane.global);
+
+    // add autopilot settings UI section
+    new AutopilotUIComponent(ui, autopilotComponent).addToContainer(ui.leftPane.global);
   }
 
   @Override
