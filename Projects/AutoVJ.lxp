@@ -1,6 +1,6 @@
 {
   "version": "0.4.1",
-  "timestamp": 1656651794036,
+  "timestamp": 1656651813969,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -2886,7 +2886,7 @@
                           "exp": 0.880000002682209
                         },
                         "children": {},
-                        "basis": 0.09708333333333119
+                        "basis": 0.4033333333333289
                       }
                     ],
                     "modulations": [
@@ -3686,7 +3686,7 @@
                           "exp": 0.10000002011656761
                         },
                         "children": {},
-                        "basis": 0.2742708333333328
+                        "basis": 0.3508333333333322
                       }
                     ],
                     "modulations": [
@@ -5236,7 +5236,7 @@
         },
         "parameters": {
           "label": "Autopilot",
-          "autopilotEnabledToggle": true
+          "autopilotEnabledToggle": false
         },
         "children": {}
       }
