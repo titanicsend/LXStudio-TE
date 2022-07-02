@@ -26,13 +26,16 @@ public class AudioInfo {
         return uniformMap;
     }
 
-    //todo we can rpolly get more granular bands if we want
+    //todo we can prolly get more granular bands if we want
     public float[] getFrequencyData() {
         float[] data = new float[512];
+        float resample = 512f / frequencyData.length;
+        int pos = 0;
         for (NormalizedParameter band : frequencyData) {
-            for (int i = 0; i < 512.0 / frequencyData.length; i++) {
-                data[i] = band.getNormalizedf();
+            for (int i = 0; i < resample; i++) {
+                data[pos+i] = band.getNormalizedf();
             }
+            pos += resample;
         }
         return data;
     }

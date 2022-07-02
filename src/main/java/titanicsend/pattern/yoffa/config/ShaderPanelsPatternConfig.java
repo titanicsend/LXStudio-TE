@@ -210,10 +210,23 @@ public class ShaderPanelsPatternConfig {
     }
 
     @LXCategory("Native Shaders Panels")
+    public static class AudioTest2 extends ConstructedPattern {
+        public AudioTest2(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> createEffects() {
+            return List.of(new NativeShaderPatternEffect("audio_test2.fs",
+                    PatternTarget.allPanelsAsCanvas(this)));
+        }
+    }
+
+    @LXCategory("Native Shaders Panels")
     public static class NeonCells extends ConstructedPattern {
         public NeonCells(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("neon_cells.fs",
