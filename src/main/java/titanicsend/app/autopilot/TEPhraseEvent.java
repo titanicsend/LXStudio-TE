@@ -5,6 +5,8 @@ public class TEPhraseEvent {
     private final TEPhrase phraseType;
     private final double bpm;
 
+    private int numBeatsLong = 0; // set this after completed!
+
     public TEPhraseEvent(TEPhrase phraseType, double bpm) {
         this.startedAtMs = System.currentTimeMillis();
         this.phraseType = phraseType;
@@ -15,6 +17,14 @@ public class TEPhraseEvent {
         this.startedAtMs = startedAt;
         this.phraseType = phraseType;
         this.bpm = bpm;
+    }
+
+    public void addBeat() {
+        numBeatsLong += 1;
+    }
+
+    public void setNumBeatsLong(int n) {
+        numBeatsLong = n;
     }
 
     public double getBpm() {

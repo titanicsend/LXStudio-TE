@@ -25,13 +25,14 @@ public class TEHistorian {
         Phrase history
     */
     // past log of phrase changes with timestamps and tempo at the time
-    private CircularArray<TEPhraseEvent> phraseEvents;
+    public CircularArray<TEPhraseEvent> phraseEvents;
+    private TEPhraseEvent curPhraseEvent;
 
     /*
         Beat history
     */
     // past log of beat timestamps
-    private CircularArray<TEBeatEvent> beatEvents;
+    public CircularArray<TEBeatEvent> beatEvents;
     // moving average object for tempo estimates
     private TEMath.EMA tempoEMA;
     // timestamp of when we last saw an OSC beat at
@@ -46,19 +47,20 @@ public class TEHistorian {
         TEBeatEvent beat = new TEBeatEvent(beatAt);
         beatEvents.add(beat);
         lastBeatAt = beatAt;
+
+        if (curPhraseEvent != null)
+            //TODO(will) think about this race condition. We may see the OSC
+            // beat event before we see the phrase event. This will cause our
+            // counter for beats in a phrase to be slightly off. This might be
+            // fine, but we should know that 15 beats should round up to 16 in
+            // such cases
+            curPhraseEvent.addBeat();
     }
 
-    public boolean logPhrase(long timestamp, TEPhrase phraseType, double currentBPM) {
+    public void logPhrase(long timestamp, TEPhrase phraseType, double currentBPM) {
         TEPhraseEvent phraseEvent = new TEPhraseEvent(timestamp, phraseType, currentBPM);
-        boolean phraseIsSame = false;
-        try {
-            TEPhraseEvent prevPhraseEvent = phraseEvents.get(0);
-            phraseIsSame = (phraseType == prevPhraseEvent.getPhraseType());
-        } catch (IndexOutOfBoundsException e) {
-            // this was the first phrase, phraseIsSame=false, no action needed
-        }
         phraseEvents.add(phraseEvent);
-        return phraseIsSame;
+        curPhraseEvent = phraseEvent;
     }
 
     public double estimateBPM() {
@@ -73,6 +75,7 @@ public class TEHistorian {
 
     public void resetPhraseTracking() {
         phraseEvents = new CircularArray<TEPhraseEvent>(TEPhraseEvent.class, PHRASE_EVENT_MAX_WINDOW);
+        curPhraseEvent = null;
     }
 
     public void resetTempoTracking(double startingBpm) {

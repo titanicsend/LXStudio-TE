@@ -11,6 +11,7 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.model.LXView;
 import heronarts.lx.pattern.LXModelPattern;
 import heronarts.lx.pattern.LXPattern;
+import titanicsend.app.autopilot.TEPhrase;
 import titanicsend.model.TELaserModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
@@ -38,6 +39,7 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
     PANEL_BG(5);  // Background color to use on edges
 
     public final int index;  // The UI index (1-indexed)
+
     private ColorType(int index) {
       this.index = index;
     }

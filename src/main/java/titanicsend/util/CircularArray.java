@@ -63,6 +63,8 @@ public class CircularArray<T> {
                     "Cannot read from index=" +Integer.toString(idx)+ ", please use integer index <= 0\n");
         } else if (size == 0) {
             throw new IndexOutOfBoundsException("No elements have been added to this CircularArray yet!");
+        } else if (Math.abs(idx) >= size) {
+            throw new IndexOutOfBoundsException("Index out of range\n");
         }
         int wrappedIndex = (start + idx) % capacity;
         return buf[wrappedIndex];

@@ -5,11 +5,12 @@ import heronarts.lx.LXLoopTask;
 import heronarts.lx.clip.LXClip;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.osc.OscMessage;
-import heronarts.lx.pattern.LXPattern;
+import org.bytedeco.javacpp.indexer.Index;
 import titanicsend.app.autopilot.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TEAutopilot implements LXLoopTask {
@@ -17,6 +18,13 @@ public class TEAutopilot implements LXLoopTask {
     private boolean enabled = false;
     // should we try to sync BPM when ProDJlink seems off?
     private boolean autoBpmSyncEnabled = true;
+
+    private static double LEVEL_FULL = 1.0,
+                           LEVEL_BARELY_ON = 0.01,
+                           LEVEL_HALF = 0.5,
+                           LEVEL_OFF = 0.0;
+
+    private static float PROB_CLIPS_ON_SAME_PHRASE = 0.5f;
 
     // our ref to global LX object
     private LX lx;
@@ -31,17 +39,32 @@ public class TEAutopilot implements LXLoopTask {
     // our historical tracking object, keeping state about events in past
     private TEHistorian history;
 
+    // transition state fields
+    private LXChannel prevChannel, curChannel, nextChannel, oldNextChannel;
+    private boolean echoMode = false;
+    private TEChannelName prevChannelName, curChannelName, nextChannelName, oldNextChannelName;
+    private TEPhrase prevPhrase = null,
+                     curPhrase = null,
+                     nextPhrase = null,
+                     oldNextPhrase = null;
+
+    // FX channels
+    private LXChannel triggerChannel = null,
+                      strobesChannel = null;
+
     public TEAutopilot(LX lx) {
         this.lx = lx;
 
         // this queue needs to be accessible from OSC listener in diff thread
         unprocessedOscMessages = new ConcurrentLinkedQueue<TEOscMessage>();
 
-        // historical logs of events for calculations
-        history = new TEHistorian();
-
         // start any logic that begins with being enabled
         setEnabled(enabled);
+    }
+
+    public void resetHistory() {
+        // historical logs of events for calculations
+        history = new TEHistorian();
     }
 
     private void initializeTempoEMA() {
@@ -54,13 +77,13 @@ public class TEAutopilot implements LXLoopTask {
 
         // First, let's check for global OSC messages that don't concern autopilot, or that
         // we should act on immediately
-        // TODO(will) go back to using built-in OSC listener for setBPM messages once:
+        //TODO(will) go back to using built-in OSC listener for setBPM messages once:
         // 1. Mark merges his commit for utilizing the main OSC listener
         // 2. Mark adds protection on input checking for setBPM = 0.0 messages (https://github.com/heronarts/LX/blob/e3d0d11a7d61c73cd8dde0c877f50ea4a58a14ff/src/main/java/heronarts/lx/Tempo.java#L201)
         if (TEOscPath.isTempoChange(address)) {
             double newTempo = msg.getDouble(0);
             if (TETimeUtils.isValidBPM(newTempo)) {  // lots of times the CDJ will send 0.0 for new tempo...
-                System.out.printf("Changing LX tempo to %f\n", msg.getDouble(0));
+                System.out.printf("[OSC] Changing LX tempo to %f\n", msg.getDouble(0));
                 this.lx.engine.tempo.setBpm((float) newTempo);
 
                 // clear and restart history for beats/tempo
@@ -90,7 +113,8 @@ public class TEAutopilot implements LXLoopTask {
         if (autoBpmSyncEnabled && history.readyForTempoEstimation()) {
             double estBPMAvg = history.estimateBPM();
             if (Math.abs(lx.engine.tempo.bpm() - estBPMAvg) > BPM_ERROR_ADJUST) {
-                System.out.printf("BPM est from beats: %f, LX BPM is: %f => overriding BPM! \n", estBPMAvg, lx.engine.tempo.bpm());
+                System.out.printf("BPM est from beats: %f, LX BPM is: %f, overriding BPM --> %f!\n"
+                        , estBPMAvg, lx.engine.tempo.bpm(), estBPMAvg);
                 lx.engine.tempo.setBpm(estBPMAvg);
             }
         }
@@ -137,59 +161,125 @@ public class TEAutopilot implements LXLoopTask {
             System.out.println("ERROR - unexpected exception in Autopilot.run()");
             e.printStackTrace(System.out);
         }
+
+        // update state of transition srcChannel
+        try {
+            TEPhraseEvent curPhraseEvent = history.phraseEvents.get(0);
+            long phraseStartedAt = curPhraseEvent.getStartedAtMs();
+            //TODO(will) guess better than constant for estPhraseLengthBars
+            int estPhraseLengthBars = 16;
+            long curPhraseDurationMs = now - phraseStartedAt;
+            double estPhraseLengthMs = TETimeUtils.calcPhraseLengthMs(lx.engine.tempo.bpm(), estPhraseLengthBars);
+            double estFracCompleted = curPhraseDurationMs / estPhraseLengthMs;
+
+            // update fader value for NEXT channel
+            double dstFaderValue = estFracCompleted * estFracCompleted * LEVEL_HALF;
+            lx.engine.mixer.channels.get(nextChannel.getIndex()).fader.setValue(dstFaderValue);
+
+            // update fader value for OLD NEXT channel
+            if (echoMode) {
+                // if we need to echo out the old channel (usually when we predicted wrong)
+                // echo it out here
+                int fadeOutNumBars = 4;
+                double beatMultipler = lx.engine.tempo.basis() % 0.5;  // % 0.5; // modulo to ramp every 1/8th note
+                double numBeatsAfterPhraseEventX = curPhraseDurationMs / TETimeUtils.bpmToMsPerBeat(lx.engine.tempo.bpm());
+                double y = (-1.0 / fadeOutNumBars) * numBeatsAfterPhraseEventX + 1.0;
+                double echoFaderVal = y * beatMultipler;
+                if (echoFaderVal > 0) {
+                    //System.out.printf("Setting echo fader to %f on channel=%s\n", echoFaderVal, oldNextChannel.getCanonicalPath());
+                    lx.engine.mixer.channels.get(oldNextChannel.getIndex()).fader.setValue(echoFaderVal);
+                }
+            }
+        } catch (IndexOutOfBoundsException e) {
+            // no phrase events detected yet
+        }
+    }
+
+    private void updatePhraseState(TEPhrase newPhrase) {
+        echoMode = false;
+
+        // phrase state
+        oldNextPhrase = nextPhrase;
+        prevPhrase = curPhrase;
+        curPhrase = newPhrase;
+        nextPhrase = guessNextPhrase(newPhrase);
+    }
+
+    private void setChannelTo(LXChannel channel, double faderVal) {
+        if (channel == null) {
+            System.out.printf("[ERROR] Cannot set channel fader, channel is null\n");
+            return;
+        }
+        lx.engine.mixer.channels.get(channel.getIndex()).fader.setValue(faderVal);
     }
 
     private void onPhraseChange(String oscAddress, long timestamp, double deltaMs) {
-        // which phrase type is this?
-        TEPhrase phraseType = TEPhrase.resolvePhrase(oscAddress);
+        // detect phrase type and update state to reflect this
+        this.updatePhraseState(TEPhrase.resolvePhrase(oscAddress));
+        boolean predictedCorrectly = (oldNextPhrase == curPhrase);
+        boolean isSamePhrase = (prevPhrase == curPhrase);
+        System.out.printf("Prev: %s, Cur: %s, Next (est): %s, Old next: %s\n", prevPhrase, curPhrase, nextPhrase, oldNextPhrase);
 
-        // do some bookkeeping on if the phrase is different from last,
-        // and add to historical log of events
-        boolean phraseIsSame = history.logPhrase(timestamp, phraseType, lx.engine.tempo.bpm.getValue());
-        System.out.printf("[PHRASE]: %s\n", phraseType);
-
-        // let's pick our channel to work with
-        TEChannelName channelName = null;
-        LXChannel channel = null;
-        List<LXClip> clips = new ArrayList<LXClip>(); // clips to start
-
-        if (phraseType == TEPhrase.TRO) {
-            channelName = TEChannelName.TRO;
-
-        } else if (phraseType == TEPhrase.UP) {
-            channelName = TEChannelName.UP;
-
-        } else if (phraseType == TEPhrase.DOWN) {
-            channelName = TEChannelName.DOWN;
-
-        } else if (phraseType == TEPhrase.CHORUS) {
-            channelName = TEChannelName.CHORUS;
-
-            // strobe
-            LXClip strobeClip = TEMixerUtils.pickRandomClipFromChannel(lx, TEChannelName.STROBES);
-            clips.add(strobeClip);
-
-            // triggers
-            LXClip triggerClip = TEMixerUtils.pickRandomClipFromChannel(lx, TEChannelName.TRIGGERS);
-            clips.add(triggerClip);
+        if (isSamePhrase) {
+            // our current channel should just keep running!
+            // our next channel should be reset to 0.0
+            // past channel == current channel, so no transition down needed
+            System.out.printf("[AUTOVJ] Same phrase! no changes\n");
+            setChannelTo(curChannel, LEVEL_FULL);
+            setChannelTo(nextChannel, LEVEL_OFF);
 
         } else {
-            // same as unknown
+            // update channel name & references based on phrase change
+            prevChannelName = TEMixerUtils.getChannelNameFromPhraseType(prevPhrase);
+            curChannelName = TEMixerUtils.getChannelNameFromPhraseType(curPhrase);
+            nextChannelName = TEMixerUtils.getChannelNameFromPhraseType(nextPhrase);
+
+            prevChannel = TEMixerUtils.getChannelByName(lx, prevChannelName);
+            curChannel = TEMixerUtils.getChannelByName(lx, curChannelName);
+            nextChannel = TEMixerUtils.getChannelByName(lx, nextChannelName);
+
+            // set fader levels
+            if (predictedCorrectly) {
+                // we nailed it!
+                System.out.printf("[AUTOVJ] We predicted correctly!\n");
+                setChannelTo(curChannel, LEVEL_FULL);
+                setChannelTo(prevChannel, LEVEL_OFF);
+
+            } else {
+                // we didn't predict the phrase change correctly, turn off
+                // the channel we were trying to transition into
+                oldNextChannelName = TEMixerUtils.getChannelNameFromPhraseType(oldNextPhrase);
+                oldNextChannel = TEMixerUtils.getChannelByName(lx, oldNextChannelName);
+                echoMode = (oldNextChannel != null);
+                System.out.printf("[AUTOVJ] We didn't predict right, oldNextChannelName=%s, echoMode=%s\n", oldNextChannelName, echoMode);
+
+                setChannelTo(curChannel, LEVEL_FULL);
+                //setChannelTo(oldNextChannel, LEVEL_OFF);
+
+                // pick new Patterns
+                //TODO(will) have the pick be dependent on past patterns we've
+                // picked so that they don't get overplayed! Also constrain
+                // to be compatible (ie: on edges vs on panels, color, etc).
+                int curPatternIdx = TEMixerUtils.pickRandomPatternFromChannel(curChannel);
+                //System.out.printf("Current: picked pattern=%d for channel=%s\n", curPatternIdx, curChannelName);
+                curChannel.goPatternIndex(curPatternIdx);
+            }
+
+            int nextPatternIdx = TEMixerUtils.pickRandomPatternFromChannel(nextChannel);
+            //System.out.printf("Next: picked pattern=%d for channel=%s\n", nextPatternIdx, nextChannelName);
+            nextChannel.goPatternIndex(nextPatternIdx);
         }
 
-        // activate chosen channel for this new phrase
-        channel = (LXChannel) lx.engine.mixer.channels.get(channelName.getIndex());
-        channel.triggerPatternCycle.setValue(true);
-        LXPattern pattern = channel.getActivePattern();
-        System.out.printf("[PATTERN]: id=%d, label=%s, idx=%d, path=%s\n",
-                pattern.getId(), pattern.getCanonicalLabel(), pattern.getIndex(), pattern.getCanonicalPath());
-        TEMixerUtils.setChannelExclusivelyVisible(lx, channelName);
+        // trigger clips
+        List<LXClip> clips = collectClipsToTrigger(curPhrase, isSamePhrase); // clips to start
 
         // run clips
         for (LXClip c : clips) {
             c.start();
-            //System.out.printf("[CLIP]: %s ...\n", c.label);
         }
+
+        // add to historical log of events
+        history.logPhrase(timestamp, curPhrase, lx.engine.tempo.bpm.getValue());
     }
 
     public boolean isEnabled() {
@@ -197,9 +287,16 @@ public class TEAutopilot implements LXLoopTask {
     }
 
     public void setEnabled(boolean enabled) {
+        if (enabled == this.enabled)
+            // only enact this logic if different from
+            // current state!
+            return;
+
         this.enabled = enabled;
+
         if (this.enabled) {
             System.out.println("VJ autoilot enabled!");
+            resetHistory();  // reset TEHistorian state
         } else {
             System.out.println("VJ autoilot disabled!");
         }
@@ -213,21 +310,69 @@ public class TEAutopilot implements LXLoopTask {
         this.autoBpmSyncEnabled = enableSync;
     }
 
-    /*
-        Choosing next Pattern depends on:
+    public ArrayList<LXClip> collectClipsToTrigger(TEPhrase newPhrase, boolean isSamePhrase) {
+        ArrayList<LXClip> clips = new ArrayList<LXClip>();
+        Random rand = new Random();
 
-        Most importantly:
-        - current Pattern, Phrase
-        - previous Phrase(s) - if a series of them, like
-          four CHORUS's in a row
+        if (triggerChannel == null || strobesChannel == null) {
+            // set up FX channels
+            // do this here b/c doing it in constructor causes race condition with
+            // initializing the LX mixer!
+            triggerChannel = TEMixerUtils.getChannelByName(lx, TEChannelName.TRIGGERS);
+            strobesChannel = TEMixerUtils.getChannelByName(lx, TEChannelName.STROBES);
+        }
 
-        Perhaps also in future:
-        - How much time we've spent on particular Patterns, we may
-          want to level or even out how much airtime they get to
-          avoid getting overplayed
-     */
-    public void chooseNextPattern() {
+        if (isSamePhrase && rand.nextFloat() > PROB_CLIPS_ON_SAME_PHRASE) {
+            // if it's the same phrase repeated, let's only trigger clips
+            // certain fraction of the time
+            return clips;
+        }
 
+        if (newPhrase == TEPhrase.CHORUS) {
+            // pick 1 strobe clip
+            LXClip strobeClip = TEMixerUtils.pickRandomClipFromChannel(lx, TEChannelName.STROBES);
+            clips.add(strobeClip);
+            //TODO(will) make strobe clips cycle rate same as BPM ! will look super cool.
 
+            // pick 1 trigger clip
+            LXClip triggerClip = TEMixerUtils.pickRandomClipFromChannel(lx, TEChannelName.TRIGGERS);
+            clips.add(triggerClip);
+            //System.out.printf("Chose strobe clip: %d, triggerClip: %d\n", strobeClip.getIndex(), triggerClip.getIndex());
+        }
+
+        // set strobes channels autocycle time fast
+        double msPerDivision = TETimeUtils.bpmToMsPerBeat(lx.engine.tempo.bpm()) / 16.; // sixteeth notes
+        strobesChannel.autoCycleTimeSecs.setValue(msPerDivision);
+
+        return clips;
+    }
+
+    public TEPhrase guessNextPhrase(TEPhrase newPhrase) {
+        //TODO(will) make this smarter to count the number of beats
+        // contiguously we've been on the same phrase type. Can also
+        // use audio data -- this is just dumb first cut...
+        boolean isSame = false;
+        try {
+            TEPhraseEvent prevPhraseEvt = history.phraseEvents.get(-1);
+            isSame = (newPhrase == prevPhraseEvt.getPhraseType());
+        } catch (IndexOutOfBoundsException e) {
+            // there was no prev phrase event in history!
+        }
+
+        TEPhrase estimatedNextPhrase;
+
+        // very dumb rule-based approach for now
+        if (newPhrase == TEPhrase.TRO)
+            estimatedNextPhrase = TEPhrase.UP;
+        else if (newPhrase == TEPhrase.UP)
+            estimatedNextPhrase = TEPhrase.CHORUS;
+        else if (newPhrase == TEPhrase.DOWN)
+            estimatedNextPhrase = TEPhrase.UP;
+        else if (newPhrase == TEPhrase.CHORUS)
+            estimatedNextPhrase = TEPhrase.DOWN;
+        else
+            estimatedNextPhrase = TEPhrase.DOWN;
+
+        return estimatedNextPhrase;
     }
 }
