@@ -1,5 +1,12 @@
 package titanicsend.app.autopilot;
 
+/**
+ * Class to define and extract actions and events from
+ * OSC messages received in LX.
+ *
+ * Please keep these up to date if you change ShowKontrol
+ * automation fields!
+ */
 public class TEOscPath {
     public static final String PREFIX = "/lx";
 

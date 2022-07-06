@@ -3,6 +3,16 @@ package titanicsend.app.autopilot;
 import titanicsend.util.CircularArray;
 import titanicsend.util.TEMath;
 
+/**
+ * This is a record keeper for all things VJ autopilot.
+ *
+ * Beat, downbeat, phrase OSC messages are all tracked here, along with
+ * some releated logic for computing BPM or manipulating this historical
+ * data.
+ *
+ * TEAutopilot is the orchestrator, but TEHistorian is where the data
+ * is tracked and retrieved from.
+ */
 public class TEHistorian {
     /*
         Beat related constants

@@ -5,6 +5,9 @@ import titanicsend.util.TEMath;
 
 import java.util.ArrayList;
 
+/**
+ * Useful utility functions for TE around timing and BPM.
+ */
 public class TETimeUtils {
 
     public static final int BEATS_PER_BAR = 4;

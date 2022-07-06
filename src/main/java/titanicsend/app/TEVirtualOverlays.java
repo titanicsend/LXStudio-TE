@@ -5,7 +5,6 @@ import java.util.*;
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.BooleanParameter;
-import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.transform.LXVector;
 import heronarts.p4lx.ui.UI;
 import processing.core.PGraphics;
@@ -63,7 +62,6 @@ public class TEVirtualOverlays extends TEUIComponent {
     addParameter("panelLabelsVisible", this.panelLabelsVisible);
     addParameter("unknownPanelsVisible", this.unknownPanelsVisible);
     addParameter("opaqueBackPanelsVisible", this.opaqueBackPanelsVisible);
-
     this.laserPOV = new ArrayList<>();
     for (int i = 0; i < numPOVs; i++) {
       this.laserPOV.add(new ArrayList<>());

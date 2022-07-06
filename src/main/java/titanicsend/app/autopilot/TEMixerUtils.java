@@ -8,6 +8,10 @@ import heronarts.lx.pattern.LXPattern;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Contains useful methods for manipulating and controlling
+ * the LX mixer that are specific to TE.
+ */
 public class TEMixerUtils {
     public static void setChannelExclusivelyVisible(LX lx, TEChannelName channel) {
         List<TEChannelName> channels = TEChannelName.listChannels();

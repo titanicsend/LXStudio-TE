@@ -1,5 +1,12 @@
 package titanicsend.app.autopilot;
 
+/**
+ * Struct for holding OSC phrase events, what kind they
+ * are, and when they occurred.
+ *
+ * Useful for looking at past phrases in order to predict
+ * or plan for future ones.
+ */
 public class TEPhraseEvent {
     private final long startedAtMs;
     private final TEPhrase phraseType;

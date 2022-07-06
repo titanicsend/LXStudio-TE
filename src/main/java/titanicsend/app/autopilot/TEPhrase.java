@@ -30,8 +30,8 @@ public enum TEPhrase {
         m.put("down", DOWN);
         m.put("chorus", CHORUS);
 
-        // TODO(will) this would be nice to have, but it causes thread to freeze...no idea why...
-//        m = (ConcurrentHashMap<String, TECanonicalPhrase>) Collections.unmodifiableMap(stringToPhrase);
+        //TODO(will) this line causes thread to freeze...no idea why...
+        //m = (ConcurrentHashMap<String, TECanonicalPhrase>) Collections.unmodifiableMap(stringToPhrase);
         return m;
     }
 
