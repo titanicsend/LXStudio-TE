@@ -110,7 +110,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     // you cannot assume you are working with an LXStudio class or that any UI will be
     // available.
 
-    // Create an instance of our global autopilot component and register it with the LX engine
+    // Create autopilot component and register it with the LX engine
     // so that it can be saved and loaded in project files
     this.autopilotComponent = new AutopilotComponent(lx);
     lx.engine.registerComponent("autopilot", this.autopilotComponent);

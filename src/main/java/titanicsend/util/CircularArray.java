@@ -2,14 +2,15 @@ package titanicsend.util;
 
 import java.lang.reflect.Array;
 
+/**
+ * This class is an immutable, constant size array. As you add elements,
+ * they are appended to the end. Very simple -- there is no way to remove
+ * elements. They just get overwritten with time. Nice for small, constant
+ * time access latency and memory usage.
+ *
+ * @param <T> for the type you wish to hold in the array.
+ */
 public class CircularArray<T> {
-    /*
-            This class is a constant size array. As you add elements, they are appended to the end.
-
-            Very simple -- there is no way to remove elements. They just get overwritten with time.
-
-            Nice for small, constant time access latency and memory usage.
-     */
     private final Class<T> clazz;
     private T[] buf; // array of actual data
     private int start; // where the most recent element is held
@@ -44,25 +45,28 @@ public class CircularArray<T> {
      */
     public T get() throws IndexOutOfBoundsException {
         if (size == 0)
-            throw new IndexOutOfBoundsException("No elements have been added to this CircularArray yet!");
+            throw new IndexOutOfBoundsException(
+                    "No elements have been added to this CircularArray yet!");
         return get(0);
     }
 
     /*
-        Retrieve an arbitrary element by index. Indexing starts at 0 (most recent) and goes NEGATIVE to get
-        previously added elements!
+        Retrieve an arbitrary element by index. Indexing starts at 0 (most recent)
+        and goes NEGATIVE to get previously added elements!
 
         So as an example:
-            circArray.get(-3) -> 4th most recent element added, if it exists
+            circArray.get(-3) -> 4th most recent element added, if exists
 
         Positive integer indices have no meaning and throw an exception.
      */
     public T get(int idx) throws IndexOutOfBoundsException {
         if (idx > 0) {
             throw new IndexOutOfBoundsException(
-                    "Cannot read from index=" +Integer.toString(idx)+ ", please use integer index <= 0\n");
+                    "Cannot read from index=" +Integer.toString(idx)+
+                            ", please use integer index <= 0\n");
         } else if (size == 0) {
-            throw new IndexOutOfBoundsException("No elements have been added to this CircularArray yet!");
+            throw new IndexOutOfBoundsException(
+                    "No elements have been added to this CircularArray yet!");
         } else if (Math.abs(idx) >= size) {
             throw new IndexOutOfBoundsException("Index out of range\n");
         }
@@ -71,7 +75,7 @@ public class CircularArray<T> {
     }
 
     /*
-        If you'd like to get the entire array, but in order, you can do so with this method.
+        If you'd like to get the entire array (in order)
      */
     public T[] getAll() {
         T[] inOrderBuf = (T[]) Array.newInstance(clazz, size);
@@ -80,7 +84,7 @@ public class CircularArray<T> {
         int toAdd = size;
 
         while (toAdd > 0) {
-            assert buf[readIdx] != null : "Should never return a null element to user!";
+            assert buf[readIdx] != null : "Should never return null element!";
             inOrderBuf[writeIdx] = buf[readIdx];
             writeIdx++;
 
