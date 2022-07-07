@@ -11,6 +11,7 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.model.LXView;
 import heronarts.lx.pattern.LXModelPattern;
 import heronarts.lx.pattern.LXPattern;
+import titanicsend.app.autopilot.TEPhrase;
 import titanicsend.model.TELaserModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;

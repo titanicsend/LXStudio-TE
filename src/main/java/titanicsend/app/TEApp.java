@@ -20,11 +20,18 @@ package titanicsend.app;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.SocketException;
 
 import heronarts.lx.LX;
+import heronarts.lx.LXComponent;
 import heronarts.lx.LXPlugin;
+import heronarts.lx.osc.LXOscComponent;
+import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.studio.LXStudio;
+import heronarts.p4lx.ui.component.*;
 import processing.core.PApplet;
+import titanicsend.app.autopilot.TEUserInterface;
 import titanicsend.model.TEWholeModel;
 import titanicsend.output.GPOutput;
 import titanicsend.output.TEArtNetOutput;
@@ -42,7 +49,7 @@ import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.media.BasicImagePattern;
 import titanicsend.pattern.yoffa.media.ReactiveHeartPattern;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
-
+import titanicsend.app.autopilot.TEShowKontrol;
 
 public class TEApp extends PApplet implements LXPlugin  {
   private TEWholeModel model;
@@ -54,6 +61,8 @@ public class TEApp extends PApplet implements LXPlugin  {
 
   private GigglePixelListener gpListener;
   private GigglePixelBroadcaster gpBroadcaster;
+
+  private TEAutopilot autopilot;
 
   @Override
   public void settings() {
@@ -78,12 +87,19 @@ public class TEApp extends PApplet implements LXPlugin  {
     this.surface.setTitle(this.model.name);
   }
 
+  public TEUserInterface.AutopilotComponent autopilotComponent;
+
   @Override
   public void initialize(LX lx) {
     // Here is where you should register any custom components or make modifications
     // to the LX engine or hierarchy. This is also used in headless mode, so note that
     // you cannot assume you are working with an LXStudio class or that any UI will be
     // available.
+
+    // Create autopilot component and register it with the LX engine
+    // so that it can be saved and loaded in project files
+    this.autopilotComponent = new TEUserInterface.AutopilotComponent(lx);
+    lx.engine.registerComponent("autopilot", this.autopilotComponent);
 
     TEArtNetOutput.activateAll(lx, this.model.gapPoint.index);
 
@@ -156,6 +172,38 @@ public class TEApp extends PApplet implements LXPlugin  {
       LX.log("Failed to create GigglePixel broadcaster: " + e.getMessage());
     }
 
+    // create our Autopilot instance, run in general engine loop to
+    // ensure performance under load
+    autopilot = new TEAutopilot(lx);
+    lx.engine.addLoopTask(autopilot);
+
+    // listener to toggle on the autopilot instance's enabled flag
+    LXParameterListener autopilotEnableListener = (p) -> {
+      // only toggle if different!
+      if (autopilot.isEnabled()
+              != this.autopilotComponent.autopilotEnabledToggle.getValueb()) {
+        autopilot.setEnabled(this.autopilotComponent.autopilotEnabledToggle.getValueb());
+      }
+    };
+    this.autopilotComponent.autopilotEnabledToggle.addListener(autopilotEnableListener);
+
+    // TODO(will) go back to using built-in OSC listener for setBPM messages once:
+    // 1. Mark merges his commit for utilizing the main OSC listener
+    // 2. Mark adds protection on input checking for setBPM = 0.0 messages
+    //    (https://github.com/heronarts/LX/blob/e3d0d11a7d61c73cd8dde0c877f50ea4a58a14ff/src/main/java/heronarts/lx/Tempo.java#L201)
+
+    // add custom OSC listener to handle OSC messages from ShowKontrol
+    // includes an Autopilot ref to store (threadsafe) queue of unread OSC messages
+    LX.log("Attaching the OSC message listener to port "
+            + Integer.toString(TEShowKontrol.OSC_PORT) + " ...");
+    try {
+        lx.engine.osc.receiver(TEShowKontrol.OSC_PORT).addListener((message) -> {
+            autopilot.onOscMessage(message);
+      });
+    } catch (SocketException sx) {
+        sx.printStackTrace();
+    }
+
     GPOutput gpOutput = new GPOutput(lx, this.gpBroadcaster);
     lx.addOutput(gpOutput);
   }
@@ -177,6 +225,9 @@ public class TEApp extends PApplet implements LXPlugin  {
     GigglePixelUI gpui = new GigglePixelUI(ui, ui.leftPane.global.getContentWidth(),
             this.gpListener, this.gpBroadcaster);
     gpui.addToContainer(ui.leftPane.global);
+
+    // add autopilot settings UI section
+    new TEUserInterface.AutopilotUISection(ui, autopilotComponent).addToContainer(ui.leftPane.global);
   }
 
   @Override
