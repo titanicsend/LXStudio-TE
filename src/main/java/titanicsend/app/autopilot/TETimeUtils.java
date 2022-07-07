@@ -102,7 +102,7 @@ public class TETimeUtils {
                 // check for sane period length in ms, if not, forget this point
                 continue;
 
-            //System.out.printf("%d - %d = %d (BPM equiv=%f)\n", curBeatStartAt, be.getTimestamp(), diffMs, TETimeUtils.msPerBeatToBpm(diffMs));
+            //TE.log("%d - %d = %d (BPM equiv=%f)", curBeatStartAt, be.getTimestamp(), diffMs, TETimeUtils.msPerBeatToBpm(diffMs));
             diffs.add(diffMs);
 
             // maintain loop invariants
@@ -112,7 +112,7 @@ public class TETimeUtils {
 
         double avgMsPerDownbeat = TEMath.calcRecencyWeightedMean(diffs);
         double estBPM = TETimeUtils.msPerBeatToBpm(avgMsPerDownbeat);
-        //System.out.printf("avgMsPerDownbeat=%f, estBPM=%f\n", avgMsPerDownbeat, estBPM);
+        //TE.log("avgMsPerDownbeat=%f, estBPM=%f", avgMsPerDownbeat, estBPM);
         return estBPM;
     }
 }

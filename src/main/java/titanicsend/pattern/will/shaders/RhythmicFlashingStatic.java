@@ -64,7 +64,7 @@ public class RhythmicFlashingStatic extends FragmentShaderEffect {
 
     @Override
     protected double[] getColorForPoint(double[] fragCoordinates, double[] resolution, double timeSeconds) {
-        //        System.out.printf("coords: (%f, %f)\n", fragCoordinates[0], fragCoordinates[1]); //, fragCoordinates[2]);
+        //        TE.log("coords: (%f, %f)\n", fragCoordinates[0], fragCoordinates[1]); //, fragCoordinates[2]);
         //        vec2 projection = fragCoord.xy / vec2(1024.0,1024.0); // TEXCOORD divided by image resolution
         double[] projection = new double[]{fragCoordinates[0] / RESOLUTION, fragCoordinates[1] / RESOLUTION};
 

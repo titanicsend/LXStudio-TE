@@ -46,7 +46,7 @@ public class MatrixScrolling extends FragmentShaderEffect {
 
     @Override
     protected double[] getColorForPoint(double[] fragCoordinates, double[] resolution, double timeSeconds) {
-//        System.out.printf("Resolution: (%f, %f)", resolution[0], resolution[1]);
+//        TE.log("Resolution: (%f, %f)", resolution[0], resolution[1]);
         Random random = new Random();
 
         // randomly displace coordinates on every measure start

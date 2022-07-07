@@ -37,7 +37,7 @@ public class CircularArray<T> {
 
         assert size <= capacity : "Cannot have size larger than caapcity!";
         assert (end + size) % capacity - 1 == start : "Invariant violated!";
-        //System.out.printf("start=%d, end=%d, size=%d, capacity=%d\n", start, end, size, capacity);
+        //TE.log("start=%d, end=%d, size=%d, capacity=%d", start, end, size, capacity);
     }
 
     /*
@@ -63,12 +63,12 @@ public class CircularArray<T> {
         if (idx > 0) {
             throw new IndexOutOfBoundsException(
                     "Cannot read from index=" +Integer.toString(idx)+
-                            ", please use integer index <= 0\n");
+                            ", please use integer index <= 0");
         } else if (size == 0) {
             throw new IndexOutOfBoundsException(
                     "No elements have been added to this CircularArray yet!");
         } else if (Math.abs(idx) >= size) {
-            throw new IndexOutOfBoundsException("Index out of range\n");
+            throw new IndexOutOfBoundsException("Index out of range");
         }
         int wrappedIndex = (start + idx) % capacity;
         return buf[wrappedIndex];

@@ -48,7 +48,7 @@ public class TEMixerUtils {
         int numClips = triggersChannel.clips.size();
         int randIdx = random.nextInt(0, numClips);
         LXClip clip = triggersChannel.clips.get(randIdx);
-//        System.out.printf("From channel=%d, picked pattern %d / %d to get pattern=%d\n", channelName.getIndex(), randIdx, numClips, clip.getIndex());
+//        TE.log("From channel=%d, picked pattern %d / %d to get pattern=%d", channelName.getIndex(), randIdx, numClips, clip.getIndex());
         return clip;
     }
 
