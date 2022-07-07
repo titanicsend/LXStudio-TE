@@ -5,7 +5,6 @@ import heronarts.lx.LXLoopTask;
 import heronarts.lx.clip.LXClip;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.osc.OscMessage;
-import org.bytedeco.javacpp.indexer.Index;
 import titanicsend.app.autopilot.*;
 
 import java.util.ArrayList;
@@ -19,14 +18,16 @@ public class TEAutopilot implements LXLoopTask {
     // should we try to sync BPM when ProDJlink seems off?
     private boolean autoBpmSyncEnabled = true;
 
+    // various fader levels of importance
     private static double LEVEL_FULL = 1.0,
                            LEVEL_BARELY_ON = 0.01,
                            LEVEL_HALF = 0.5,
                            LEVEL_OFF = 0.0;
 
+    // Probability that we launch CHORUS clips upon a repeated CHORUS phrase
+    // sometimes there are like 5 CHORUS's in a row, and want to keep some variety
     private static float PROB_CLIPS_ON_SAME_PHRASE = 0.5f;
 
-    // our ref to global LX object
     private LX lx;
 
     // OSC message related fields
@@ -80,7 +81,7 @@ public class TEAutopilot implements LXLoopTask {
         //TODO(will) go back to using built-in OSC listener for setBPM messages once:
         // 1. Mark merges his commit for utilizing the main OSC listener
         // 2. Mark adds protection on input checking for setBPM = 0.0 messages (https://github.com/heronarts/LX/blob/e3d0d11a7d61c73cd8dde0c877f50ea4a58a14ff/src/main/java/heronarts/lx/Tempo.java#L201)
-        if (TEOscPath.isTempoChange(address)) {
+        if (TEOscMessage.isTempoChange(address)) {
             double newTempo = msg.getDouble(0);
             if (TETimeUtils.isValidBPM(newTempo)) {  // lots of times the CDJ will send 0.0 for new tempo...
                 System.out.printf("[OSC] Changing LX tempo to %f\n", msg.getDouble(0));
@@ -142,13 +143,13 @@ public class TEAutopilot implements LXLoopTask {
                 String address = oscTE.message.getAddressPattern().toString();
 
                 // handle OSC message based on type
-                if (TEOscPath.isPhraseChange(address)) {
+                if (TEOscMessage.isPhraseChange(address)) {
                     onPhraseChange(address, oscTE.timestamp, deltaMs);
 
-                } else if (TEOscPath.isDownbeat(address)) {
+                } else if (TEOscMessage.isDownbeat(address)) {
                     // nothing to do yet
 
-                } else if (TEOscPath.isBeat(address)) {
+                } else if (TEOscMessage.isBeat(address)) {
                     onBeatEvent(oscTE.timestamp);
 
                 } else {

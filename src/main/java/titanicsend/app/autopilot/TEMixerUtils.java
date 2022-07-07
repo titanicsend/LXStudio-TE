@@ -14,8 +14,7 @@ import java.util.Random;
  */
 public class TEMixerUtils {
     public static void setChannelExclusivelyVisible(LX lx, TEChannelName channel) {
-        List<TEChannelName> channels = TEChannelName.listChannels();
-        for (TEChannelName c : channels) {
+        for (TEChannelName c : TEChannelName.values()) {
             double faderLevel = 0.0;
             if (c == channel) {
                 faderLevel = 1.0;

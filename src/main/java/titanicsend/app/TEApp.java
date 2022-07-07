@@ -21,20 +21,17 @@ package titanicsend.app;
 import java.io.File;
 import java.io.IOException;
 import java.net.SocketException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.LXPlugin;
 import heronarts.lx.osc.LXOscComponent;
-import heronarts.lx.osc.LXOscListener;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.studio.LXStudio;
 import heronarts.p4lx.ui.component.*;
 import processing.core.PApplet;
+import titanicsend.app.autopilot.TEUserInterface;
 import titanicsend.model.TEWholeModel;
 import titanicsend.output.GPOutput;
 import titanicsend.output.TEArtNetOutput;
@@ -50,7 +47,7 @@ import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.media.BasicImagePattern;
 import titanicsend.pattern.yoffa.media.ReactiveHeartPattern;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
-
+import titanicsend.app.autopilot.TEShowKontrol;
 
 public class TEApp extends PApplet implements LXPlugin  {
   private TEWholeModel model;
@@ -59,8 +56,6 @@ public class TEApp extends PApplet implements LXPlugin  {
   private static int HEIGHT = 800;
   private static boolean FULLSCREEN = false;
   private static String resourceSubdir;
-
-  private static final int SHOWKONTROL_OSC_PORT_RX = 42069;
 
   private GigglePixelListener gpListener;
   private GigglePixelBroadcaster gpBroadcaster;
@@ -90,18 +85,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     this.surface.setTitle(this.model.name);
   }
 
-  public static class AutopilotComponent extends LXComponent implements LXOscComponent {
-      public final BooleanParameter autopilotEnabledToggle =
-              new BooleanParameter("Autopilot Enabled")
-                      .setDescription("Toggle to turn on VJ autopilot mode")
-                      .setValue(false);
-      public AutopilotComponent(LX lx) {
-          super(lx);
-          addParameter("autopilotEnabledToggle", this.autopilotEnabledToggle);
-      }
-  }
-
-  public AutopilotComponent autopilotComponent;
+  public TEUserInterface.AutopilotComponent autopilotComponent;
 
   @Override
   public void initialize(LX lx) {
@@ -112,7 +96,7 @@ public class TEApp extends PApplet implements LXPlugin  {
 
     // Create autopilot component and register it with the LX engine
     // so that it can be saved and loaded in project files
-    this.autopilotComponent = new AutopilotComponent(lx);
+    this.autopilotComponent = new TEUserInterface.AutopilotComponent(lx);
     lx.engine.registerComponent("autopilot", this.autopilotComponent);
 
     TEArtNetOutput.activateAll(lx, this.model.gapPoint.index);
@@ -203,11 +187,11 @@ public class TEApp extends PApplet implements LXPlugin  {
     //    (https://github.com/heronarts/LX/blob/e3d0d11a7d61c73cd8dde0c877f50ea4a58a14ff/src/main/java/heronarts/lx/Tempo.java#L201)
 
     // add custom OSC listener to handle OSC messages from ShowKontrol
-    // includes a Autopilot ref to store (threadsafe) queue of unread OSC messages
+    // includes an Autopilot ref to store (threadsafe) queue of unread OSC messages
     LX.log("Attaching the OSC message listener to port "
-            + Integer.toString(SHOWKONTROL_OSC_PORT_RX) + " ...");
+            + Integer.toString(TEShowKontrol.OSC_PORT) + " ...");
     try {
-        lx.engine.osc.receiver(SHOWKONTROL_OSC_PORT_RX).addListener((message) -> {
+        lx.engine.osc.receiver(TEShowKontrol.OSC_PORT).addListener((message) -> {
             autopilot.onOscMessage(message);
       });
     } catch (SocketException sx) {
@@ -224,14 +208,6 @@ public class TEApp extends PApplet implements LXPlugin  {
     // for headless mode should go in the raw initialize method above.
   }
 
-  public static class AutopilotUIComponent extends UICollapsibleSection {
-    public AutopilotUIComponent(LXStudio.UI ui, AutopilotComponent myComponent) {
-      super(ui, 0, 0, ui.leftPane.global.getContentWidth(), 80);
-      setTitle("Autopilot: enable?");
-      new UICheckbox(0, 0, myComponent.autopilotEnabledToggle).addToContainer(this);
-    }
-  }
-
   public void onUIReady(LXStudio lx, LXStudio.UI ui) {
     // At this point, the LX Studio application UI has been built. You may now add
     // additional views and components to the Ui heirarchy.
@@ -245,7 +221,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     gpui.addToContainer(ui.leftPane.global);
 
     // add autopilot settings UI section
-    new AutopilotUIComponent(ui, autopilotComponent).addToContainer(ui.leftPane.global);
+    new TEUserInterface.AutopilotUISection(ui, autopilotComponent).addToContainer(ui.leftPane.global);
   }
 
   @Override

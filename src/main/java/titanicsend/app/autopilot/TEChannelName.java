@@ -8,8 +8,6 @@ import java.util.List;
  * your .lxp file! It's the index into the mixer array to
  * select channels. So if autopilot switches channel names or
  * order, please change it here!
- *
- * ...and don't forget to add it to listChannels() !
  */
 public enum TEChannelName {
     UP(0),
@@ -27,9 +25,5 @@ public enum TEChannelName {
 
     public int getIndex() {
         return index;
-    }
-
-    public static List<TEChannelName> listChannels() {
-        return List.of(TRO, UP, DOWN, CHORUS, STROBES, TRIGGERS);
     }
 }

@@ -29,9 +29,6 @@ public enum TEPhrase {
         m.put("up", UP);
         m.put("down", DOWN);
         m.put("chorus", CHORUS);
-
-        //TODO(will) this line causes thread to freeze...no idea why...
-        //m = (ConcurrentHashMap<String, TECanonicalPhrase>) Collections.unmodifiableMap(stringToPhrase);
         return m;
     }
 
