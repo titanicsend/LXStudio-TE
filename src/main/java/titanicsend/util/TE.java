@@ -8,12 +8,10 @@ import heronarts.lx.LX;
  */
 public class TE {
     public static void log(String format, Object... arguments) {
-        String msg = String.format(format, arguments);
-        LX.log(msg);
+        LX.log(String.format(format, arguments));
     }
 
     public static void err(String format, Object... arguments) {
-        String msg = String.format(format, arguments);
-        LX.error(msg);
+        LX.error(String.format(format, arguments));
     }
 }
