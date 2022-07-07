@@ -3,6 +3,7 @@
     <option name="MAIN_CLASS_NAME" value="titanicsend.app.TEApp" />
     <module name="LXStudio-TE" />
     <option name="PROGRAM_PARAMETERS" value="vehicle Vehicle.lxp" />
+    <option name="VM_PARAMETERS" value="-ea" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
