@@ -135,9 +135,11 @@ public class TEAutopilot implements LXLoopTask {
             while (unprocessedOscMessages.size() > 0) {
                 // grab a new message off the queue
                 TEOscMessage oscTE = unprocessedOscMessages.poll();
-                if (oscTE == null)
+                if (oscTE == null) {
                     // this should never happen, since we test for size() of queue, but good to check
+                    System.out.printf("unprocessedOscMessages pulled off null value -- should never happen!");
                     continue;
+                }
 
                 // grab message & update with the most recent OscMessage received at
                 String address = oscTE.message.getAddressPattern().toString();
