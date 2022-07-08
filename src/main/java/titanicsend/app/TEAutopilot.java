@@ -6,6 +6,7 @@ import heronarts.lx.clip.LXClip;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.osc.OscMessage;
 import titanicsend.app.autopilot.*;
+import titanicsend.util.TE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +85,7 @@ public class TEAutopilot implements LXLoopTask {
         if (TEOscMessage.isTempoChange(address)) {
             double newTempo = msg.getDouble(0);
             if (TETimeUtils.isValidBPM(newTempo)) {  // lots of times the CDJ will send 0.0 for new tempo...
-                System.out.printf("[OSC] Changing LX tempo to %f\n", msg.getDouble(0));
+                TE.log("[OSC] Changing LX tempo to %f", msg.getDouble(0));
                 this.lx.engine.tempo.setBpm((float) newTempo);
 
                 // clear and restart history for beats/tempo
@@ -97,7 +98,7 @@ public class TEAutopilot implements LXLoopTask {
             return;
 
         } else {
-            //System.out.printf("Adding OSC message to queue: %s\n", address);
+            //TE.log("Adding OSC message to queue: %s", address);
             unprocessedOscMessages.add(oscTE);
         }
     }
@@ -114,7 +115,7 @@ public class TEAutopilot implements LXLoopTask {
         if (autoBpmSyncEnabled && history.readyForTempoEstimation()) {
             double estBPMAvg = history.estimateBPM();
             if (Math.abs(lx.engine.tempo.bpm() - estBPMAvg) > BPM_ERROR_ADJUST) {
-                System.out.printf("BPM est from beats: %f, LX BPM is: %f, overriding BPM --> %f!\n"
+                TE.log("BPM est from beats: %f, LX BPM is: %f, overriding BPM --> %f!"
                         , estBPMAvg, lx.engine.tempo.bpm(), estBPMAvg);
                 lx.engine.tempo.setBpm(estBPMAvg);
             }
@@ -137,7 +138,7 @@ public class TEAutopilot implements LXLoopTask {
                 TEOscMessage oscTE = unprocessedOscMessages.poll();
                 if (oscTE == null) {
                     // this should never happen, since we test for size() of queue, but good to check
-                    System.out.printf("unprocessedOscMessages pulled off null value -- should never happen!");
+                    TE.log("unprocessedOscMessages pulled off null value -- should never happen!");
                     continue;
                 }
 
@@ -156,12 +157,12 @@ public class TEAutopilot implements LXLoopTask {
 
                 } else {
                     // unrecognized OSC message!
-                    System.out.printf("Don't recognize OSC message: %s\n", address);
+                    TE.log("Don't recognize OSC message: %s", address);
                 }
             }
 
         } catch (Exception e) {
-            System.out.println("ERROR - unexpected exception in Autopilot.run()");
+            TE.err("ERROR - unexpected exception in Autopilot.run()");
             e.printStackTrace(System.out);
         }
 
@@ -189,7 +190,7 @@ public class TEAutopilot implements LXLoopTask {
                 double y = (-1.0 / fadeOutNumBars) * numBeatsAfterPhraseEventX + 1.0;
                 double echoFaderVal = y * beatMultipler;
                 if (echoFaderVal > 0) {
-                    //System.out.printf("Setting echo fader to %f on channel=%s\n", echoFaderVal, oldNextChannel.getCanonicalPath());
+                    //TE.log("Setting echo fader to %f on channel=%s", echoFaderVal, oldNextChannel.getCanonicalPath());
                     lx.engine.mixer.channels.get(oldNextChannel.getIndex()).fader.setValue(echoFaderVal);
                 }
             }
@@ -210,7 +211,7 @@ public class TEAutopilot implements LXLoopTask {
 
     private void setChannelTo(LXChannel channel, double faderVal) {
         if (channel == null) {
-            System.out.printf("[ERROR] Cannot set channel fader, channel is null\n");
+            TE.err("[ERROR] Cannot set channel fader, channel is null");
             return;
         }
         lx.engine.mixer.channels.get(channel.getIndex()).fader.setValue(faderVal);
@@ -221,13 +222,13 @@ public class TEAutopilot implements LXLoopTask {
         this.updatePhraseState(TEPhrase.resolvePhrase(oscAddress));
         boolean predictedCorrectly = (oldNextPhrase == curPhrase);
         boolean isSamePhrase = (prevPhrase == curPhrase);
-        System.out.printf("Prev: %s, Cur: %s, Next (est): %s, Old next: %s\n", prevPhrase, curPhrase, nextPhrase, oldNextPhrase);
+        TE.log("Prev: %s, Cur: %s, Next (est): %s, Old next: %s", prevPhrase, curPhrase, nextPhrase, oldNextPhrase);
 
         if (isSamePhrase) {
             // our current channel should just keep running!
             // our next channel should be reset to 0.0
             // past channel == current channel, so no transition down needed
-            System.out.printf("[AUTOVJ] Same phrase! no changes\n");
+            TE.log("[AUTOVJ] Same phrase! no changes");
             setChannelTo(curChannel, LEVEL_FULL);
             setChannelTo(nextChannel, LEVEL_OFF);
 
@@ -244,7 +245,7 @@ public class TEAutopilot implements LXLoopTask {
             // set fader levels
             if (predictedCorrectly) {
                 // we nailed it!
-                System.out.printf("[AUTOVJ] We predicted correctly!\n");
+                TE.log("[AUTOVJ] We predicted correctly!");
                 setChannelTo(curChannel, LEVEL_FULL);
                 setChannelTo(prevChannel, LEVEL_OFF);
 
@@ -254,7 +255,7 @@ public class TEAutopilot implements LXLoopTask {
                 oldNextChannelName = TEMixerUtils.getChannelNameFromPhraseType(oldNextPhrase);
                 oldNextChannel = TEMixerUtils.getChannelByName(lx, oldNextChannelName);
                 echoMode = (oldNextChannel != null);
-                System.out.printf("[AUTOVJ] We didn't predict right, oldNextChannelName=%s, echoMode=%s\n", oldNextChannelName, echoMode);
+                TE.log("[AUTOVJ] We didn't predict right, oldNextChannelName=%s, echoMode=%s", oldNextChannelName, echoMode);
 
                 setChannelTo(curChannel, LEVEL_FULL);
                 //setChannelTo(oldNextChannel, LEVEL_OFF);
@@ -264,12 +265,12 @@ public class TEAutopilot implements LXLoopTask {
                 // picked so that they don't get overplayed! Also constrain
                 // to be compatible (ie: on edges vs on panels, color, etc).
                 int curPatternIdx = TEMixerUtils.pickRandomPatternFromChannel(curChannel);
-                //System.out.printf("Current: picked pattern=%d for channel=%s\n", curPatternIdx, curChannelName);
+                //TE.log("Current: picked pattern=%d for channel=%s", curPatternIdx, curChannelName);
                 curChannel.goPatternIndex(curPatternIdx);
             }
 
             int nextPatternIdx = TEMixerUtils.pickRandomPatternFromChannel(nextChannel);
-            //System.out.printf("Next: picked pattern=%d for channel=%s\n", nextPatternIdx, nextChannelName);
+            //TE.log("Next: picked pattern=%d for channel=%s", nextPatternIdx, nextChannelName);
             nextChannel.goPatternIndex(nextPatternIdx);
         }
 
@@ -298,16 +299,16 @@ public class TEAutopilot implements LXLoopTask {
         this.enabled = enabled;
 
         if (this.enabled) {
-            System.out.println("VJ autoilot enabled!");
+            TE.log("VJ autoilot enabled!");
             resetHistory();  // reset TEHistorian state
         } else {
-            System.out.println("VJ autoilot disabled!");
+            TE.log("VJ autoilot disabled!");
         }
     }
 
     public void setAutoBpmSyncEnabled(boolean enableSync) {
         if (enableSync && !this.enabled) {
-            System.out.println("Cannot autosync BPM, requires: autopilot.setEnabled(true)!\n");
+            TE.err("Cannot autosync BPM, requires: autopilot.setEnabled(true)!");
             return;
         }
         this.autoBpmSyncEnabled = enableSync;
@@ -340,7 +341,7 @@ public class TEAutopilot implements LXLoopTask {
             // pick 1 trigger clip
             LXClip triggerClip = TEMixerUtils.pickRandomClipFromChannel(lx, TEChannelName.TRIGGERS);
             clips.add(triggerClip);
-            //System.out.printf("Chose strobe clip: %d, triggerClip: %d\n", strobeClip.getIndex(), triggerClip.getIndex());
+            //TE.log("Chose strobe clip: %d, triggerClip: %d", strobeClip.getIndex(), triggerClip.getIndex());
         }
 
         // set strobes channels autocycle time fast

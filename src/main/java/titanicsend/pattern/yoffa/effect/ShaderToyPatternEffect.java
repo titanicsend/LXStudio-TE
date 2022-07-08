@@ -6,6 +6,7 @@ import titanicsend.pattern.yoffa.client.ShaderToyClient;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.shader_engine.FragmentShader;
 import titanicsend.pattern.yoffa.shader_engine.OffscreenShaderRenderer;
+import titanicsend.util.TE;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
@@ -36,7 +37,7 @@ public class ShaderToyPatternEffect extends NativeShaderPatternEffect {
             } catch (Exception e) {
                 //usually for this project I like to let exceptions escape and be surfaced to the user, but when they
                 //  escape in onParameterChanged methods it just hangs the parameter :/
-                System.out.println("Problem loading shader: " + e.getMessage());
+                TE.log("Problem loading shader: " + e.getMessage());
             }
         }
     }
