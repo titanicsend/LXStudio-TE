@@ -1,4 +1,6 @@
-package titanicsend.app.autopilot;
+package titanicsend.app.autopilot.events;
+
+import titanicsend.app.autopilot.TEPhrase;
 
 /**
  * Struct for holding OSC phrase events, what kind they

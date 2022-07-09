@@ -6,6 +6,9 @@ import heronarts.lx.clip.LXClip;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.osc.OscMessage;
 import titanicsend.app.autopilot.*;
+import titanicsend.app.autopilot.events.TEPhraseEvent;
+import titanicsend.app.autopilot.utils.TEMixerUtils;
+import titanicsend.app.autopilot.utils.TETimeUtils;
 import titanicsend.util.TE;
 
 import java.util.ArrayList;

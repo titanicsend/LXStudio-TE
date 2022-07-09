@@ -1,5 +1,6 @@
-package titanicsend.app.autopilot;
+package titanicsend.app.autopilot.utils;
 
+import titanicsend.app.autopilot.events.TEBeatEvent;
 import titanicsend.util.CircularArray;
 import titanicsend.util.TEMath;
 

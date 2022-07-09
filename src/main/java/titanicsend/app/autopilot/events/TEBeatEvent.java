@@ -1,4 +1,4 @@
-package titanicsend.app.autopilot;
+package titanicsend.app.autopilot.events;
 
 /**
  * Struct for tracking OSC beat events. Useful for

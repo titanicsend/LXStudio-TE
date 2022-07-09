@@ -1,9 +1,11 @@
-package titanicsend.app.autopilot;
+package titanicsend.app.autopilot.utils;
 
 import heronarts.lx.LX;
 import heronarts.lx.clip.LXClip;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.pattern.LXPattern;
+import titanicsend.app.autopilot.TEChannelName;
+import titanicsend.app.autopilot.TEPhrase;
 
 import java.util.List;
 import java.util.Random;
