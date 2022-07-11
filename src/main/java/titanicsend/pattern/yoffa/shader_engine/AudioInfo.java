@@ -1,6 +1,9 @@
 package titanicsend.pattern.yoffa.shader_engine;
 
+import heronarts.lx.LX;
+import heronarts.lx.audio.GraphicMeter;
 import heronarts.lx.parameter.NormalizedParameter;
+import titanicsend.util.TEMath;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,43 +11,49 @@ import java.util.Map;
 
 public class AudioInfo {
     
-    private final Map<Uniforms.Audio, Float> uniformMap;
-    private final NormalizedParameter[] frequencyData;
+    private Map<Uniforms.Audio, Float> uniformMap;
+    GraphicMeter meter;
+    float fftResampleFactor;
+
+    public AudioInfo(GraphicMeter meter) {
+        this.meter = meter;
+        fftResampleFactor = meter.bands.length / 512f;
+    }
+
     
-    public AudioInfo(double basis, double sinPhaseBeat, double bassLevel, double trebleLevel,
-                     NormalizedParameter[] frequencyData) {
+    public void setFrameData(double basis, double sinPhaseBeat, double bassLevel, double trebleLevel) {
         uniformMap = Map.of(
             Uniforms.Audio.BEAT, (float) basis,
             Uniforms.Audio.SIN_PHASE_BEAT, (float) sinPhaseBeat,
             Uniforms.Audio.BASS_LEVEL, (float) bassLevel,
             Uniforms.Audio.TREBLE_LEVEL, (float) trebleLevel
         );
-        this.frequencyData = frequencyData;
     }
 
     public Map<Uniforms.Audio, Float> getUniformMap() {
         return uniformMap;
     }
 
-    //todo we can prolly get more granular bands if we want
-    public float[] getFrequencyData() {
-        float[] data = new float[512];
-        float resample = 512f / frequencyData.length;
-        int pos = 0;
-        for (NormalizedParameter band : frequencyData) {
-            for (int i = 0; i < resample; i++) {
-                data[pos+i] = band.getNormalizedf();
-            }
-            pos += resample;
-        }
-        return data;
+    /**
+     * Retrieve a single sample of the current frame's fft data from the engine
+     * NOTE: 512 samples can always be retrieved, regardless of how many bands
+     * the engine actually supplies.  Data will be properly distributed
+     * (but not smoothed or interpolated) across the full 512 sample range.
+     * @param index (0-511) of the sample to retrieve.
+     *
+     * @return fft sample, normalized to range 0 to 1.
+     */
+    public float getFrequencyData(int index) {
+       return meter.getBandf((int) Math.floor((float) index * fftResampleFactor));
     }
 
-    //todo placeholder for now
-    //  lx.engine.audio.meter.getSamples might be what we're looking for here
-    public float[] getWaveformData() {
-        float[] data = new float[512];
-        Arrays.fill(data, (float) .8);
-        return data;
+    /**
+     * Retrieve a single sample of the current frame's waveform data from the engine
+     * @param index (0-511) of the sample to retrieve
+     * @return waveform sample, range -1 to 1
+     */
+    public float getWaveformData(int index) {
+        return meter.getSamples()[index];
     }
+
 }
