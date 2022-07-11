@@ -7,7 +7,6 @@ import com.jogamp.opengl.util.GLBuffers;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.util.TEMath;
 
 import java.awt.*;
 import java.io.File;
@@ -66,8 +65,8 @@ public class NativeShader implements GLEventListener {
     private int[][] snapshot;
     private AudioInfo audioInfo;
 
-    private int audioTextureWidth = 512;
-    private int audioTextureHeight = 2;
+    private final int audioTextureWidth;
+    private final int audioTextureHeight;
     FloatBuffer audioTextureData;
 
 
