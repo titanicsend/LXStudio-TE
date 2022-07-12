@@ -106,25 +106,10 @@ public class TEApp extends PApplet implements LXPlugin  {
 
     TEArtNetOutput.activateAll(lx, this.model.gapPoint.index);
 
-    // Register custom pattern and effect types
-    TEPatternLibrary library = new TEPatternLibrary(lx);
-
     // Patterns/effects that currently conform to art direction standards
-    library.addPattern(
-            EdgeProgressions.class,
-            TEPatternLibrary.TEPatternCoverageType.EDGES,
-            TEPatternLibrary.TEPatternColorCategoryType.PALETTE,
-            TEPhrase.CHORUS);
-    library.addPattern(
-            EdgeSymmetry.class,
-            TEPatternLibrary.TEPatternCoverageType.EDGES,
-            TEPatternLibrary.TEPatternColorCategoryType.PALETTE,
-            TEPhrase.CHORUS);
-    library.addPattern(
-            Smoke.class,
-            TEPatternLibrary.TEPatternCoverageType.EDGES,
-            TEPatternLibrary.TEPatternColorCategoryType.PALETTE,
-            TEPhrase.CHORUS);
+    lx.registry.addPattern(EdgeProgressions.class);
+    lx.registry.addPattern(EdgeSymmetry.class);
+    lx.registry.addPattern(Smoke.class);
 
     // Patterns that are in development towards meeting standards
     lx.registry.addPattern(AlternatingPattern.class);
