@@ -32,6 +32,9 @@ public class TEAutopilot implements LXLoopTask {
     // sometimes there are like 5 CHORUS's in a row, and want to keep some variety
     private static float PROB_CLIPS_ON_SAME_PHRASE = 0.5f;
 
+    // if OSC messages are older than this, throw them out
+    private static long OSC_MSG_MAX_AGE_MS = 5 * 1000;
+
     private LX lx;
 
     // OSC message related fields
@@ -143,6 +146,10 @@ public class TEAutopilot implements LXLoopTask {
                     // this should never happen, since we test for size() of queue, but good to check
                     TE.log("unprocessedOscMessages pulled off null value -- should never happen!");
                     continue;
+
+                } else if (oscTE.timestamp <= now - OSC_MSG_MAX_AGE_MS) {
+                    // if these messages are older than this, ignore
+                    continue;
                 }
 
                 // grab message & update with the most recent OscMessage received at
@@ -212,14 +219,6 @@ public class TEAutopilot implements LXLoopTask {
         nextPhrase = guessNextPhrase(newPhrase);
     }
 
-    private void setChannelTo(LXChannel channel, double faderVal) {
-        if (channel == null) {
-            TE.err("[ERROR] Cannot set channel fader, channel is null");
-            return;
-        }
-        lx.engine.mixer.channels.get(channel.getIndex()).fader.setValue(faderVal);
-    }
-
     private void onPhraseChange(String oscAddress, long timestamp, double deltaMs) {
         // detect phrase type and update state to reflect this
         this.updatePhraseState(TEPhrase.resolvePhrase(oscAddress));
@@ -232,8 +231,9 @@ public class TEAutopilot implements LXLoopTask {
             // our next channel should be reset to 0.0
             // past channel == current channel, so no transition down needed
             TE.log("[AUTOVJ] Same phrase! no changes");
-            setChannelTo(curChannel, LEVEL_FULL);
-            setChannelTo(nextChannel, LEVEL_OFF);
+
+            TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
+            TEMixerUtils.setFaderTo(lx, nextChannelName, LEVEL_OFF);
 
         } else {
             // update channel name & references based on phrase change
@@ -249,8 +249,8 @@ public class TEAutopilot implements LXLoopTask {
             if (predictedCorrectly) {
                 // we nailed it!
                 TE.log("[AUTOVJ] We predicted correctly!");
-                setChannelTo(curChannel, LEVEL_FULL);
-                setChannelTo(prevChannel, LEVEL_OFF);
+                TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
+                TEMixerUtils.setFaderTo(lx, prevChannelName, LEVEL_OFF);
 
             } else {
                 // we didn't predict the phrase change correctly, turn off
@@ -260,8 +260,8 @@ public class TEAutopilot implements LXLoopTask {
                 echoMode = (oldNextChannel != null);
                 TE.log("[AUTOVJ] We didn't predict right, oldNextChannelName=%s, echoMode=%s", oldNextChannelName, echoMode);
 
-                setChannelTo(curChannel, LEVEL_FULL);
-                //setChannelTo(oldNextChannel, LEVEL_OFF);
+                TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
+                //TEMixerUtils.setFaderTo(lx, oldNextChannelName, LEVEL_OFF);
 
                 // pick new Patterns
                 //TODO(will) have the pick be dependent on past patterns we've

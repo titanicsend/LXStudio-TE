@@ -26,6 +26,18 @@ public class TEMixerUtils {
         }
     }
 
+    public static void setFaderTo(LX lx, TEChannelName name, double faderLevel) {
+        LXChannel channel = (LXChannel) lx.engine.mixer.channels.get(name.getIndex());
+        channel.fader.setValue(faderLevel);
+
+        // save CPU cycles by disabling OFF channels
+        if (faderLevel < 0.01) {
+            channel.enabled.setValue(false);
+        } else if (faderLevel > 0.01) {
+            channel.enabled.setValue(true);
+        }
+    }
+
     public static TEChannelName getChannelNameFromPhraseType(TEPhrase phraseType) {
         if (phraseType == TEPhrase.CHORUS)
             return TEChannelName.CHORUS;
