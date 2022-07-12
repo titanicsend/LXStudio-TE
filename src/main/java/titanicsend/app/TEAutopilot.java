@@ -9,6 +9,7 @@ import titanicsend.app.autopilot.*;
 import titanicsend.app.autopilot.events.TEPhraseEvent;
 import titanicsend.app.autopilot.utils.TEMixerUtils;
 import titanicsend.app.autopilot.utils.TETimeUtils;
+import titanicsend.pattern.tom.BouncingDots;
 import titanicsend.util.TE;
 
 import java.util.ArrayList;
@@ -144,6 +145,9 @@ public class TEAutopilot implements LXLoopTask {
                     TE.log("unprocessedOscMessages pulled off null value -- should never happen!");
                     continue;
                 }
+                //TODO(will) test for & ignore for really old OSC messages. With multiple decks it's
+                // possible to have a huge buildup of OSC messages from other deck that we don't
+                // need/want to process
 
                 // grab message & update with the most recent OscMessage received at
                 String address = oscTE.message.getAddressPattern().toString();
@@ -348,8 +352,8 @@ public class TEAutopilot implements LXLoopTask {
         }
 
         // set strobes channels autocycle time fast
-        double msPerDivision = TETimeUtils.bpmToMsPerBeat(lx.engine.tempo.bpm()) / 16.; // sixteeth notes
-        strobesChannel.autoCycleTimeSecs.setValue(msPerDivision);
+        //double msPerDivision = TETimeUtils.bpmToMsPerBeat(lx.engine.tempo.bpm()) / 16.; // sixteeth notes
+        //strobesChannel.autoCycleTimeSecs.setValue(msPerDivision);
 
         return clips;
     }

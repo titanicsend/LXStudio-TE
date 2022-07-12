@@ -31,6 +31,8 @@ import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.studio.LXStudio;
 import heronarts.p4lx.ui.component.*;
 import processing.core.PApplet;
+import titanicsend.app.autopilot.TEPatternLibrary;
+import titanicsend.app.autopilot.TEPhrase;
 import titanicsend.app.autopilot.TEUserInterface;
 import titanicsend.model.TEWholeModel;
 import titanicsend.output.GPOutput;
@@ -50,6 +52,7 @@ import titanicsend.pattern.yoffa.media.BasicImagePattern;
 import titanicsend.pattern.yoffa.media.ReactiveHeartPattern;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.app.autopilot.TEShowKontrol;
+import titanicsend.util.TE;
 
 public class TEApp extends PApplet implements LXPlugin  {
   private TEWholeModel model;
@@ -104,11 +107,24 @@ public class TEApp extends PApplet implements LXPlugin  {
     TEArtNetOutput.activateAll(lx, this.model.gapPoint.index);
 
     // Register custom pattern and effect types
+    TEPatternLibrary library = new TEPatternLibrary(lx);
 
     // Patterns/effects that currently conform to art direction standards
-    lx.registry.addPattern(EdgeProgressions.class);
-    lx.registry.addPattern(EdgeSymmetry.class);
-    lx.registry.addPattern(Smoke.class);
+    library.addPattern(
+            EdgeProgressions.class,
+            TEPatternLibrary.TEPatternCoverageType.EDGES,
+            TEPatternLibrary.TEPatternColorCategoryType.PALETTE,
+            TEPhrase.CHORUS);
+    library.addPattern(
+            EdgeSymmetry.class,
+            TEPatternLibrary.TEPatternCoverageType.EDGES,
+            TEPatternLibrary.TEPatternColorCategoryType.PALETTE,
+            TEPhrase.CHORUS);
+    library.addPattern(
+            Smoke.class,
+            TEPatternLibrary.TEPatternCoverageType.EDGES,
+            TEPatternLibrary.TEPatternColorCategoryType.PALETTE,
+            TEPhrase.CHORUS);
 
     // Patterns that are in development towards meeting standards
     lx.registry.addPattern(AlternatingPattern.class);
