@@ -15,6 +15,8 @@ import java.util.Random;
  * the LX mixer that are specific to TE.
  */
 public class TEMixerUtils {
+    public static final double FADER_LEVEL_OFF_THRESH = 0.01;
+
     public static void setChannelExclusivelyVisible(LX lx, TEChannelName channel) {
         for (TEChannelName c : TEChannelName.values()) {
             double faderLevel = 0.0;
@@ -31,9 +33,9 @@ public class TEMixerUtils {
         channel.fader.setValue(faderLevel);
 
         // save CPU cycles by disabling OFF channels
-        if (faderLevel < 0.01) {
+        if (faderLevel < FADER_LEVEL_OFF_THRESH) {
             channel.enabled.setValue(false);
-        } else if (faderLevel > 0.01) {
+        } else if (faderLevel > FADER_LEVEL_OFF_THRESH) {
             channel.enabled.setValue(true);
         }
     }
