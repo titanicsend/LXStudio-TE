@@ -279,7 +279,10 @@ end
 def print_boxes(junction_boxes)
   junction_boxes.each do |vertex, boxes|
     next if boxes.empty?
-    puts "#{vertex} - #{boxes.sum(&:current)} A - #{100 * (boxes.sum(&:utilization) / boxes.size).truncate(4)}% utilized"
+    puts "combined at vertex #{vertex} - #{boxes.sum(&:current)} A - #{100 * (boxes.sum(&:utilization) / boxes.size).truncate(4)}% utilized"
+    boxes.each do |box|
+      puts "  -- box #{box.id}, #{100 * box.utilization.truncate(4)}% utilized, needs ethernet switch? #{box.needs_ethernet_switch? ? 'yes' : 'no'}"
+    end
   end
 
   boxes = junction_boxes.values.flatten
@@ -287,6 +290,7 @@ def print_boxes(junction_boxes)
   puts "#{boxes.size} total junction boxes"
   puts "#{boxes.sum(&:current)} Amps"
   puts "#{boxes.sum(&:utilization) / boxes.count} average utilization"
+  puts "#{boxes.select { |box| box.needs_ethernet_switch? }.count} boxes need an ethernet switch"
 end
 
 vertices = Vertex.load_vertices('../../resources/vehicle/vertexes.txt')
@@ -296,9 +300,9 @@ panels = Panel.load_panels('../../resources/vehicle/panels.txt', vertices)
 graph = Graph.new(edges: edges, vertices: vertices, panels: panels)
 controllers = Controller.load_controllers(edge_signal_filename: '../../resources/vehicle/edge_signal_paths.tsv', panel_signal_filename: '../../resources/vehicle/panel_signal_paths.tsv', graph: graph, vertices: vertices)
 boxes = place_junction_boxes(graph: graph)
-print_boxes(boxes)
 
 Controller.assign_controllers_to_boxes(graph: graph, controllers: controllers, junction_boxes: boxes)
+print_boxes(boxes)
 
 boxes.each do |_, box_grouping|
   box_grouping.each do |box|
