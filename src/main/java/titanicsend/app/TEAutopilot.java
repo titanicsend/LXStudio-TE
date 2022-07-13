@@ -4,6 +4,7 @@ import heronarts.lx.LX;
 import heronarts.lx.LXLoopTask;
 import heronarts.lx.clip.LXClip;
 import heronarts.lx.mixer.LXChannel;
+import heronarts.lx.osc.OscArgument;
 import heronarts.lx.osc.OscMessage;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.autopilot.events.TEPhraseEvent;
@@ -18,10 +19,9 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TEAutopilot implements LXLoopTask {
-    // TODO(will) make false, users can enable from global UI toggle panel
     private boolean enabled = false;
     // should we try to sync BPM when ProDJlink seems off?
-    private boolean autoBpmSyncEnabled = true;
+    private boolean autoBpmSyncEnabled = false;
 
     // various fader levels of importance
     private static double LEVEL_FULL = 1.0,
@@ -78,32 +78,36 @@ public class TEAutopilot implements LXLoopTask {
     }
 
     protected void onOscMessage(OscMessage msg) {
-        String address = msg.getAddressPattern().toString();
-        TEOscMessage oscTE = new TEOscMessage(msg);
+        try {
+            String address = msg.getAddressPattern().toString();
+            TEOscMessage oscTE = new TEOscMessage(msg);
 
-        // First, let's check for global OSC messages that don't concern autopilot, or that
-        // we should act on immediately
-        //TODO(will) go back to using built-in OSC listener for setBPM messages once:
-        // 1. Mark merges his commit for utilizing the main OSC listener
-        // 2. Mark adds protection on input checking for setBPM = 0.0 messages (https://github.com/heronarts/LX/blob/e3d0d11a7d61c73cd8dde0c877f50ea4a58a14ff/src/main/java/heronarts/lx/Tempo.java#L201)
-        if (TEOscMessage.isTempoChange(address)) {
-            double newTempo = msg.getDouble(0);
-            if (TETimeUtils.isValidBPM(newTempo)) {  // lots of times the CDJ will send 0.0 for new tempo...
-                TE.log("[OSC] Changing LX tempo to %f", msg.getDouble(0));
-                this.lx.engine.tempo.setBpm((float) newTempo);
+            // First, let's check for global OSC messages that don't concern autopilot, or that
+            // we should act on immediately
+            //TODO(will) go back to using built-in OSC listener for setBPM messages once:
+            // 1. Mark merges his commit for utilizing the main OSC listener
+            // 2. Mark adds protection on input checking for setBPM = 0.0 messages (https://github.com/heronarts/LX/blob/e3d0d11a7d61c73cd8dde0c877f50ea4a58a14ff/src/main/java/heronarts/lx/Tempo.java#L201)
+            if (TEOscMessage.isTempoChange(address)) {
+                double newTempo = TEOscMessage.extractBpm(msg);
+                if (TETimeUtils.isValidBPM(newTempo)) {  // lots of times the CDJ will send 0.0 for new tempo...
+                    TE.log("[OSC] Changing LX tempo to %f", (float) newTempo);
+                    this.lx.engine.tempo.setBpm((float) newTempo);
 
-                // clear and restart history for beats/tempo
-                history.resetBeatTracking();
-                history.resetTempoTracking(this.lx.engine.tempo.bpm());
+                    // clear and restart history for beats/tempo
+                    history.resetBeatTracking();
+                    history.resetTempoTracking(this.lx.engine.tempo.bpm());
+                }
+
+            } else if (!isEnabled()) {
+                // if autopilot isn't enabled, don't bother tracking these
+                return;
+
+            } else {
+                //TE.log("Adding OSC message to queue: %s", address);
+                unprocessedOscMessages.add(oscTE);
             }
-
-        } else if (!isEnabled()) {
-            // if autopilot isn't enabled, don't bother tracking these
-            return;
-
-        } else {
-            //TE.log("Adding OSC message to queue: %s", address);
-            unprocessedOscMessages.add(oscTE);
+        } catch (Exception e) {
+            TE.log("Exception parsing OSC message (%s): %s", msg.toString(), e.toString());
         }
     }
 
