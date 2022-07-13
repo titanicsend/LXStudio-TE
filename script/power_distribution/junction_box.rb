@@ -23,6 +23,12 @@ class JunctionBox
     id
   end
 
+  # A box needs an ethernet switch if it is powering any controllers. Controllers should always
+  # be powered and signal driven from the same box.
+  def needs_ethernet_switch?
+    controllers.any?
+  end
+
   def decorated_id
     "J#{@id}"
   end
