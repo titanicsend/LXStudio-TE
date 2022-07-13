@@ -2,7 +2,6 @@ package titanicsend.app.autopilot;
 
 import heronarts.lx.LX;
 import heronarts.lx.pattern.LXPattern;
-import titanicsend.pattern.jeff.EdgeProgressions;
 
 import java.util.ArrayList;
 
@@ -11,16 +10,15 @@ public class TEPatternLibrary {
     private ArrayList<TEPatternRecord> patterns;
 
     /**
-     * For patterns we catalog, do they span panels,
-     * edges, or both?
+     * For patterns we catalog, how do they cover the cor?
      */
-    public enum TEPatternCoverageType { PANELS, EDGES, BOTH; }
+    public enum TEPatternCoverageType { PANELS, PANELS_PARTIAL, EDGES, BOTH; }
 
     /**
      * For patterns we catalog, can they conform to
      * the current palette settings? Or not?
      */
-    public enum TEPatternColorCategoryType { PALETTE, NONCONFORMING; }
+    public enum TEPatternColorCategoryType { PALETTE, WHITE, NONCONFORMING; }
 
     public class TEPatternRecord {
         public Class<? extends LXPattern> pattern;
@@ -28,7 +26,11 @@ public class TEPatternLibrary {
         public TEPatternColorCategoryType colorCategoryType;
         public TEPhrase phraseType;
 
-        public TEPatternRecord(Class<? extends LXPattern> p, TEPatternCoverageType c, TEPatternColorCategoryType cc, TEPhrase ph) {
+        public TEPatternRecord(
+                Class<? extends LXPattern> p,
+                TEPatternCoverageType c,
+                TEPatternColorCategoryType cc,
+                TEPhrase ph) {
             pattern = p;
             coverageType = c;
             colorCategoryType = cc;
@@ -41,10 +43,21 @@ public class TEPatternLibrary {
         this.patterns = new ArrayList<TEPatternRecord>();
     }
 
-    public void addPattern(Class<? extends LXPattern> p, TEPatternCoverageType c, TEPatternColorCategoryType cc, TEPhrase ph) {
+    public void addPattern(
+            Class<? extends LXPattern> p,
+            TEPatternCoverageType c,
+            TEPatternColorCategoryType cc,
+            TEPhrase ph) {
+
         TEPatternRecord rec = new TEPatternRecord(p, c, cc, ph);
         this.patterns.add(rec);
-        this.lx.registry.addPattern(p);
+        try {
+            this.lx.registry.addPattern(p);
+        } catch (IllegalStateException e) {
+            // Pattern already added to LX registry! Ignore.
+            // This allows us to add a different set of patterns
+            // from what are registered for manual VJ TE operation.
+        }
     }
 
     /**

@@ -1,8 +1,8 @@
 {
   "version": "0.4.1",
-  "projectFileName": "AutoVJ_v2.lxp",
+  "projectFileName": "Vehicle.lxp",
   "windwWidth": 1728,
-  "windowHeight": 986,
+  "windowHeight": 984,
   "uiZoom": 100,
   "focusChannelOnCue": false,
   "focusActivePattern": false,

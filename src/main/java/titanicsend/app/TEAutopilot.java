@@ -45,6 +45,9 @@ public class TEAutopilot implements LXLoopTask {
     // our historical tracking object, keeping state about events in past
     private TEHistorian history;
 
+    // our pattern library, used to filter for new patterns
+    private TEPatternLibrary library;
+
     // transition state fields
     private LXChannel prevChannel, curChannel, nextChannel, oldNextChannel;
     private boolean echoMode = false;
@@ -58,8 +61,9 @@ public class TEAutopilot implements LXLoopTask {
     private LXChannel triggerChannel = null,
                       strobesChannel = null;
 
-    public TEAutopilot(LX lx) {
+    public TEAutopilot(LX lx, TEPatternLibrary l) {
         this.lx = lx;
+        this.library = l;
 
         // this queue needs to be accessible from OSC listener in diff thread
         unprocessedOscMessages = new ConcurrentLinkedQueue<TEOscMessage>();
