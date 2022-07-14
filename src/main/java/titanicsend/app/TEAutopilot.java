@@ -247,11 +247,6 @@ public class TEAutopilot implements LXLoopTask {
         boolean isSamePhrase = (prevPhrase == curPhrase);
         TE.log("Prev: %s, Cur: %s, Next (est): %s, Old next: %s", prevPhrase, curPhrase, nextPhrase, oldNextPhrase);
 
-//        int repeatedPhraseCount = history.getRepeatedPhraseCount();
-//        if (repeatedPhraseCount > 1) {
-//            TE.log("Repeated phrase count (%s) is %d!", curPhrase.name(), repeatedPhraseCount);
-//        }
-
         if (isSamePhrase) {
             // our current channel should just keep running!
             // our next channel should be reset to 0.0
@@ -313,17 +308,6 @@ public class TEAutopilot implements LXLoopTask {
 
         // add to historical log of events
         history.logPhrase(timestamp, curPhrase, lx.engine.tempo.bpm.getValue());
-
-        // echo out phrase event history
-//        TEPhraseEvent[] allPhraseEventsInOrder = this.history.phraseEvents.getAll();
-//        for (int j = 0; j < allPhraseEventsInOrder.length; j++) {
-//            TE.log("Phrase event array (%d) = %s", j, allPhraseEventsInOrder[j].getPhraseType());
-//        }
-//
-//        int repeatedPhraseCount = history.getRepeatedPhraseCount();
-//        if (repeatedPhraseCount > 1) {
-//            TE.log("Repeated phrase count (%s) is %d!", curPhrase.name(), repeatedPhraseCount);
-//        }
     }
 
     public boolean isEnabled() {

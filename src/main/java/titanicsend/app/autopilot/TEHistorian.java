@@ -169,45 +169,4 @@ public class TEHistorian {
     public double getRepeatedPhraseLengthBars() {
         return repeatedPhraseLengthBars;
     }
-
-//    /**
-//     * Including the current phrase, get a list of repeated phrase events.
-//     *
-//     * So if current history is:
-//     *      DOWN -> UP -> CHORUS -> CHORUS -> UP -> UP -> UP
-//     *
-//     * Then should return:
-//     *      [UP, UP, UP]
-//     *
-//     * @return ArrayList<TEPhraseEvent> repeatedPhrases
-//     */
-//    private ArrayList<TEPhraseEvent> getRepeatedPhrases() {
-//        ArrayList<TEPhraseEvent> repeatedPhrases = new ArrayList<>();
-//        TEPhraseEvent[] allPhraseEventsInOrder = phraseEvents.getAll();
-//        TEPhraseEvent curPhraseEvt, nextPhraseEvt;
-//
-//        // return empty array list if none yet
-//        if (allPhraseEventsInOrder.length == 0)
-//            return repeatedPhrases;
-//
-//        curPhraseEvt = allPhraseEventsInOrder[0];
-//        repeatedPhrases.add(curPhraseEvt);
-//
-//        int i = 1;
-//        while (i < allPhraseEventsInOrder.length) {
-//            nextPhraseEvt = allPhraseEventsInOrder[i];
-//
-//            if (curPhraseEvt.getPhraseType() == nextPhraseEvt.getPhraseType()) {
-//                repeatedPhrases.add(nextPhraseEvt);
-//            } else break;
-//
-//            curPhraseEvt = nextPhraseEvt;
-//            i++;
-//        }
-//
-//        //for (TEPhraseEvent e : repeatedPhrases)
-//        //    TE.log("Phrase from list: %s", e.getPhraseType());
-//
-//        return repeatedPhrases;
-//    }
 }
