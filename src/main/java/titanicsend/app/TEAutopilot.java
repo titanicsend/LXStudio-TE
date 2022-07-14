@@ -22,9 +22,13 @@ public class TEAutopilot implements LXLoopTask {
     private boolean enabled = false;
     // should we try to sync BPM when ProDJlink seems off?
     private boolean autoBpmSyncEnabled = false;
+    // do not change LX tempo unless the newly suggested tempo
+    // differs by more than this amount
+    private double TEMPO_DIFF_THRESHOLD = 0.05;
 
     // various fader levels of importance
     private static double LEVEL_FULL = 1.0,
+                           LEVEL_ECHO = 0.75,
                            LEVEL_BARELY_ON = 0.01,
                            LEVEL_HALF = 0.5,
                            LEVEL_OFF = 0.0;
@@ -96,7 +100,8 @@ public class TEAutopilot implements LXLoopTask {
             // 2. Mark adds protection on input checking for setBPM = 0.0 messages (https://github.com/heronarts/LX/blob/e3d0d11a7d61c73cd8dde0c877f50ea4a58a14ff/src/main/java/heronarts/lx/Tempo.java#L201)
             if (TEOscMessage.isTempoChange(address)) {
                 double newTempo = TEOscMessage.extractBpm(msg);
-                if (TETimeUtils.isValidBPM(newTempo)) {  // lots of times the CDJ will send 0.0 for new tempo...
+                double tempoDiff = Math.abs(newTempo - lx.engine.tempo.bpm());
+                if (TETimeUtils.isValidBPM(newTempo) && tempoDiff > TEMPO_DIFF_THRESHOLD) {
                     TE.log("[OSC] Changing LX tempo to %f", (float) newTempo);
                     this.lx.engine.tempo.setBpm((float) newTempo);
 
@@ -184,36 +189,42 @@ public class TEAutopilot implements LXLoopTask {
             }
 
         } catch (Exception e) {
-            TE.err("ERROR - unexpected exception in Autopilot.run()");
+            TE.err("ERROR - unexpected exception in Autopilot.run(): %s", e.toString());
             e.printStackTrace(System.out);
         }
 
+        // get some useful stats about the current phrase
+        int repeatedPhraseCount = history.getRepeatedPhraseCount();
+        double repeatedPhraseLengthBars = history.getRepeatedPhraseBarProgress(lx.engine.tempo.bpm());
+        double currentPhraseLengthBars = repeatedPhraseLengthBars - history.getRepeatedPhraseLengthBars();
+
         // update state of transition srcChannel
         try {
-            TEPhraseEvent curPhraseEvent = history.phraseEvents.get(0);
-            long phraseStartedAt = curPhraseEvent.getStartedAtMs();
-            //TODO(will) guess better than constant for estPhraseLengthBars
-            int estPhraseLengthBars = 16;
-            long curPhraseDurationMs = now - phraseStartedAt;
-            double estPhraseLengthMs = TETimeUtils.calcPhraseLengthMs(lx.engine.tempo.bpm(), estPhraseLengthBars);
-            double estFracCompleted = curPhraseDurationMs / estPhraseLengthMs;
-
             // update fader value for NEXT channel
-            double dstFaderValue = estFracCompleted * estFracCompleted * LEVEL_HALF;
-            lx.engine.mixer.channels.get(nextChannel.getIndex()).fader.setValue(dstFaderValue);
+            if (nextChannelName != null) {
+                int estPhraseLengthBars = 16;
+                double estFracCompleted = currentPhraseLengthBars / estPhraseLengthBars;
+
+                // over consecutive phrases, we want to steadily approach full fader, but never get there
+                double nextChannelFaderFloorLevel = LEVEL_FULL * (1.0 - Math.pow(0.5, repeatedPhraseCount - 1)); // 0 -> .5 - > .75  -> etc
+                double nextChannelFaderCeilingLevel = LEVEL_FULL * (1.0 - Math.pow(0.5, repeatedPhraseCount));  // .5 -> .75 -> .875 -> etc
+                double range = nextChannelFaderCeilingLevel - nextChannelFaderFloorLevel;
+                double faderVal = range * estFracCompleted + nextChannelFaderFloorLevel;
+                TEMixerUtils.setFaderTo(lx, nextChannelName, faderVal);
+            }
 
             // update fader value for OLD NEXT channel
             if (echoMode) {
-                // if we need to echo out the old channel (usually when we predicted wrong)
-                // echo it out here
+                 // if we need to echo out the old channel (usually when we predicted wrong)
+                 // echo it out here
                 int fadeOutNumBars = 4;
-                double beatMultipler = lx.engine.tempo.basis() % 0.5;  // % 0.5; // modulo to ramp every 1/8th note
-                double numBeatsAfterPhraseEventX = curPhraseDurationMs / TETimeUtils.bpmToMsPerBeat(lx.engine.tempo.bpm());
-                double y = (-1.0 / fadeOutNumBars) * numBeatsAfterPhraseEventX + 1.0;
-                double echoFaderVal = y * beatMultipler;
-                if (echoFaderVal > 0) {
-                    //TE.log("Setting echo fader to %f on channel=%s", echoFaderVal, oldNextChannel.getCanonicalPath());
-                    lx.engine.mixer.channels.get(oldNextChannel.getIndex()).fader.setValue(echoFaderVal);
+                if (currentPhraseLengthBars < fadeOutNumBars) {
+                    double oldNextChannelFaderFloorLevel = 0.0;
+                    double oldNextChannelFaderCeilingLevel = LEVEL_ECHO;
+                    double range = oldNextChannelFaderCeilingLevel - oldNextChannelFaderFloorLevel;
+                    double estFracRemaining = 1.0 - (currentPhraseLengthBars / fadeOutNumBars);
+                    double faderVal = range * estFracRemaining + oldNextChannelFaderFloorLevel;
+                    TEMixerUtils.setFaderTo(lx, oldNextChannelName, faderVal);
                 }
             }
         } catch (IndexOutOfBoundsException e) {
@@ -273,7 +284,7 @@ public class TEAutopilot implements LXLoopTask {
                 TE.log("[AUTOVJ] We didn't predict right, oldNextChannelName=%s, echoMode=%s", oldNextChannelName, echoMode);
 
                 TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
-                //TEMixerUtils.setFaderTo(lx, oldNextChannelName, LEVEL_OFF);
+                TEMixerUtils.setFaderTo(lx, oldNextChannelName, LEVEL_OFF);
 
                 // pick new Patterns
                 //TODO(will) have the pick be dependent on past patterns we've
