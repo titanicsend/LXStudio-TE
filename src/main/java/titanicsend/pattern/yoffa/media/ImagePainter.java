@@ -69,14 +69,13 @@ public class ImagePainter {
 
         double x = (1 - normalizedX) * image.getWidth();
         x = x / scaleRatio + ((image.getWidth()-(image.getWidth() / scaleRatio)) / 2);
-        int xi = (int) Math.min(Math.round(x), image.getWidth() - 1);
+        int xi = (int) Math.max(0,Math.min(Math.round(x), image.getWidth() - 1));
 
         double y = (1 - normalizedY) * image.getHeight();
         y = y / scaleRatio + ((image.getHeight()-(image.getHeight() / scaleRatio)) / 2);
-        int yi = (int) Math.min(Math.round(y), image.getHeight() - 1);
+        int yi = (int) Math.max(0,Math.min(Math.round(y), image.getHeight() - 1));
 
-        int color = (x < 0 || y < 0) ? LXColor.BLACK : image.getColor(xi, yi);
-        colors[point.index] = color;
+        colors[point.index] = image.getColor(xi, yi);
     }
 
     public interface ImageSource {

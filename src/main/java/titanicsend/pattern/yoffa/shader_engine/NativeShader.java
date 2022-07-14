@@ -6,20 +6,19 @@ import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.util.GLBuffers;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
+import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.LXParameter;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.nio.*;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.jogamp.opengl.GL.*;
+import static com.jogamp.opengl.GL2GL3.GL_UNSIGNED_INT_8_8_8_8;
+import static com.jogamp.opengl.GL2GL3.GL_UNSIGNED_INT_8_8_8_8_REV;
 
 //Technically we don't need to implement GLEventListener unless we plan on rendering on screen, but let's leave it
 //  for good practice
@@ -62,7 +61,11 @@ public class NativeShader implements GLEventListener {
     private final Integer audioChannel;
     private ShaderProgram shaderProgram;
     private long startTime;
+
+    ByteBuffer backBuffer;
     private int[][] snapshot;
+    private int alphaMask;
+
     private AudioInfo audioInfo;
 
     private final int audioTextureWidth;
@@ -82,10 +85,25 @@ public class NativeShader implements GLEventListener {
         this.audioInfo = null;
         this.audioChannel = fragmentShader.getAudioInputChannel();
 
+        // gl-compatible buffer for reading offscreen surface to cpu memory
+        this.backBuffer = GLBuffers.newDirectByteBuffer(xResolution * yResolution * 4);
+        this.snapshot = new int[xResolution][yResolution];
+        this.useAlphaChannel(false);  // alpha ignored by default so nothing breaks
+
         this.audioTextureWidth = 512;
         this.audioTextureHeight = 2;
         this.audioTextureData = GLBuffers.newDirectFloatBuffer(audioTextureHeight * audioTextureWidth);
+    }
 
+    /**
+     * Determines whether alpha values returned from the fragment shader will be used.  Can safely
+     * be changed while the shader is running.
+     * @param b - true to enable the alpha channel for this shader, false to ignore it, discard
+     *          whatever the shader does, and set alpha to full opacity
+     *
+     */
+    public void useAlphaChannel(boolean b) {
+        this.alphaMask = (b) ? 0 : 0xff;
     }
 
     @Override
@@ -97,34 +115,33 @@ public class NativeShader implements GLEventListener {
 
     @Override
     public void display(GLAutoDrawable glAutoDrawable) {
+        glAutoDrawable.getContext().makeCurrent();
         GL4 gl4 = glAutoDrawable.getGL().getGL4();
-        setUpCanvas(gl4);
+        gl4.glUseProgram(shaderProgram.getProgramId());
+
         setUniforms(gl4);
+        setUpCanvas(gl4);
         saveSnapshot(gl4, xResolution, yResolution);
-        gl4.glUseProgram(0);
+
+        //gl4.glUseProgram(0);
     }
 
     private void saveSnapshot(GL4 gl4, int width, int height) {
-        //read colors directly from the buffer for perf
-        ByteBuffer buffer = GLBuffers.newDirectByteBuffer(width * height * 4);
+        backBuffer.rewind();
         gl4.glReadBuffer(GL_BACK);
-        gl4.glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+        gl4.glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, backBuffer);
 
-        //usually we'd write to a BufferedImage, but we're doing this every frame, so perf would be bad
-        //we're going to end up just using it for colors/co-ordinates, so just throw it in a 2d array
-        this.snapshot = new int[width][height];
         for (int h = 0; h < height; h++) {
+            int y = height - h - 1;  // reverse y axis
             for (int w = 0; w < width; w++) {
-                // buffer is cycling 4 bytes for rgba
-                snapshot[w][height - h - 1] = new Color((buffer.get() & 0xff), (buffer.get() & 0xff),
-                        (buffer.get() & 0xff)).getRGB();
-                buffer.get();   // consume/ignore alpha
+                snapshot[w][y] = LXColor.rgba((backBuffer.get() & 0xff), (backBuffer.get() & 0xff),
+                        (backBuffer.get() & 0xff),alphaMask | (backBuffer.get() & 0xff));
             }
         }
-    }
+   }
 
     private void setUpCanvas(GL4 gl4) {
-        gl4.glUseProgram(shaderProgram.getProgramId());
+
 
         int[] bufferHandlesB = new int[1];
         gl4.glGenBuffers(1, bufferHandlesB, 0);
@@ -138,6 +155,13 @@ public class NativeShader implements GLEventListener {
         gl4.glDrawElements(GL2.GL_TRIANGLES, INDICES.length, GL2.GL_UNSIGNED_INT, 0);
 
         gl4.glDisableVertexAttribArray(shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION));
+
+        // unbind buffers from this shader so the next one can use them
+        // TODO - or can we leave them bound, since we're using multiple contexts instead of
+        // just switching shaders.  I'm pretty sure this is less efficient, but it works given
+        // LX's architecture.
+        gl4.glBindBuffer(GL_ARRAY_BUFFER,0);
+        gl4.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
     private void setUniforms(GL4 gl4) {
