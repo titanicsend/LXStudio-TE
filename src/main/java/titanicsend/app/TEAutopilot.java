@@ -6,6 +6,7 @@ import heronarts.lx.clip.LXClip;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.osc.OscArgument;
 import heronarts.lx.osc.OscMessage;
+import heronarts.lx.pattern.LXPattern;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.autopilot.events.TEPhraseEvent;
 import titanicsend.app.autopilot.utils.TEMixerUtils;
@@ -250,7 +251,7 @@ public class TEAutopilot implements LXLoopTask {
         nextPhrase = guessNextPhrase(newPhrase);
     }
 
-    private void onPhraseChange(String oscAddress, long timestamp, double deltaMs) {
+    private void onPhraseChange(String oscAddress, long timestamp, double deltaMs) throws Exception {
         // detect phrase type and update state to reflect this
         this.updatePhraseState(TEPhrase.resolvePhrase(oscAddress));
         boolean predictedCorrectly = (oldNextPhrase == curPhrase);
@@ -298,14 +299,18 @@ public class TEAutopilot implements LXLoopTask {
                 //TODO(will) have the pick be dependent on past patterns we've
                 // picked so that they don't get overplayed! Also constrain
                 // to be compatible (ie: on edges vs on panels, color, etc).
-                int curPatternIdx = TEMixerUtils.pickRandomPatternFromChannel(curChannel);
+//                int curPatternIdx = TEMixerUtils.pickRandomPatternFromChannel(curChannel);
                 //TE.log("Current: picked pattern=%d for channel=%s", curPatternIdx, curChannelName);
-                curChannel.goPatternIndex(curPatternIdx);
+//                curChannel.goPatternIndex(curPatternIdx);
+                LXPattern curPattern = this.library.pickRandomPattern(curPhrase);
+                curChannel.goPattern(curPattern);
             }
 
-            int nextPatternIdx = TEMixerUtils.pickRandomPatternFromChannel(nextChannel);
-            //TE.log("Next: picked pattern=%d for channel=%s", nextPatternIdx, nextChannelName);
-            nextChannel.goPatternIndex(nextPatternIdx);
+//            int nextPatternIdx = TEMixerUtils.pickRandomPatternFromChannel(nextChannel);
+//            //TE.log("Next: picked pattern=%d for channel=%s", nextPatternIdx, nextChannelName);
+//            nextChannel.goPatternIndex(nextPatternIdx);
+            LXPattern nextPattern = this.library.pickRandomPattern(nextPhrase);
+            curChannel.goPattern(nextPattern);
         }
 
         // trigger clips
