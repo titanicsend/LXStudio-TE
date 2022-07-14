@@ -7,7 +7,6 @@ import com.jogamp.opengl.util.GLBuffers;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.util.TEMath;
 
 import java.awt.*;
 import java.io.File;
@@ -66,8 +65,8 @@ public class NativeShader implements GLEventListener {
     private int[][] snapshot;
     private AudioInfo audioInfo;
 
-    private int audioTextureWidth = 512;
-    private int audioTextureHeight = 2;
+    private final int audioTextureWidth;
+    private final int audioTextureHeight;
     FloatBuffer audioTextureData;
 
 
@@ -163,8 +162,7 @@ public class NativeShader implements GLEventListener {
             texture.disable(gl4);
         }
 
-        //TODO for plumbing audio frequency data through as a texture similar to shadertoy
-        // idk yet why this code doesn't work tbh
+        // Set up audio frequency data as a texture similar to shadertoy
         if (audioChannel != null) {
 
             gl4.glActiveTexture(INDEX_TO_GL_ENUM.get(0));
@@ -173,20 +171,14 @@ public class NativeShader implements GLEventListener {
             gl4.glGenTextures(1, texHandle, 0);
             gl4.glBindTexture(GL4.GL_TEXTURE_2D, texHandle[0]);
 
-            for (int h = 0; h < audioTextureHeight; h++) {
-                for (int w = 0; w < audioTextureWidth; w++) {
-
-                    // IMPORTANT:  THE ACTUAL CODE WE WANT!
-                    //float value = h == 0 ? audioInfo.getFrequencyData()[w] : audioInfo.getWaveformData()[w];
-
-                    // fake test data for waveform data
-                    float value = (h == 0) ?
-                            audioInfo.getFrequencyData()[w] :
-                            (float) (0.5f + 0.25f * TEMath.wavef(timeSeconds + 2 * (float) w / audioTextureWidth));
-                    audioTextureData.put(value);
-                }
+            // load frequency and waveform data into our texture, fft data in the first row,
+            // normalized audio waveform data in the second.
+            for (int n = 0; n < audioTextureWidth; n++) {
+                audioTextureData.put(n, audioInfo.getFrequencyData(n));
+                audioTextureData.put(n + audioTextureWidth, audioInfo.getWaveformData(n));
             }
-            audioTextureData.rewind();
+
+ //           audioTextureData.rewind();
             gl4.glTexImage2D(GL4.GL_TEXTURE_2D, 0, GL4.GL_R32F, audioTextureWidth, audioTextureHeight, 0, GL4.GL_RED, GL_FLOAT, audioTextureData);
             gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
