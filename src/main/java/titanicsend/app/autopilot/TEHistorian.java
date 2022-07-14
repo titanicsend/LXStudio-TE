@@ -4,6 +4,7 @@ import titanicsend.app.autopilot.events.TEBeatEvent;
 import titanicsend.app.autopilot.events.TEPhraseEvent;
 import titanicsend.app.autopilot.utils.TETimeUtils;
 import titanicsend.util.CircularArray;
+import titanicsend.util.TE;
 import titanicsend.util.TEMath;
 
 /**
@@ -39,7 +40,12 @@ public class TEHistorian {
     */
     // past log of phrase changes with timestamps and tempo at the time
     public CircularArray<TEPhraseEvent> phraseEvents;
-    private TEPhraseEvent curPhraseEvent;
+    public TEPhraseEvent curPhraseEvent;
+    private int repeatedPhraseCount = 1;
+    private TEPhrase curPhraseType;
+    private long repeatedPhraseStartAt;
+    private long repeatedPhraseLengthMs = 0;
+    private double repeatedPhraseLengthBars = 0.0;
 
     /*
         Beat history
@@ -73,7 +79,34 @@ public class TEHistorian {
     public void logPhrase(long timestamp, TEPhrase phraseType, double currentBPM) {
         TEPhraseEvent phraseEvent = new TEPhraseEvent(timestamp, phraseType, currentBPM);
         phraseEvents.add(phraseEvent);
+
+        if (curPhraseEvent != null && phraseEvent.getPhraseType() == curPhraseEvent.getPhraseType()) {
+            // keep track of how many consecutive times we've seen this phrase
+            repeatedPhraseCount++;
+
+            // add to counter for ms in length of phrase
+            long subPhraseLength = (timestamp - curPhraseEvent.getStartedAtMs());
+            repeatedPhraseLengthMs += subPhraseLength;
+
+            // add to counter for num bars in phrase
+            double msPerBeat =  TETimeUtils.calcMsPerBeat(phraseEvent.getBpm());
+            double subPhraseLengthBars = 0.25 / msPerBeat * subPhraseLength;
+            repeatedPhraseLengthBars += subPhraseLengthBars;
+
+            //TE.log("After this phrase (%s), repeatedPhraseCount=%d, repeatedPhraseLengthMs=%d, repeatedPhraseLengthBars=%f",
+            //        phraseEvent.getPhraseType(), repeatedPhraseCount, repeatedPhraseLengthMs, repeatedPhraseLengthBars);
+        } else {
+            // different phrase! reset state
+            repeatedPhraseCount = 1;
+            repeatedPhraseStartAt = timestamp;
+            repeatedPhraseLengthMs = 0;
+            repeatedPhraseLengthBars = 0.0;
+            //TE.log("New phrase type (%s)! Reseting counters.", phraseEvent.getPhraseType());
+        }
+
+        // update current phrase event
         curPhraseEvent = phraseEvent;
+        curPhraseType = phraseEvent.getPhraseType();
     }
 
     public double estimateBPM() {
@@ -102,4 +135,79 @@ public class TEHistorian {
     public boolean readyForTempoEstimation() {
         return beatEvents.getSize() >= BEAT_START_ESTIMATION_AT;
     }
+
+    /**
+     * Including the current phrase, how many times in a row have
+     * we hit this phrase?
+     *
+     * @return int
+     */
+    public int getRepeatedPhraseCount() {
+        return repeatedPhraseCount;
+    }
+
+    /**
+     * Over the repeated phrases we can see (starting with current phrase),
+     * how many bars did this span? Returns a fractional number of bars.
+     *
+     * This INCLUDES current time into the phrase since it started, whereas
+     * getRepeatedPhraseLengthBars() just includes completed phrases.
+     *
+     * @return double
+     */
+    public double getRepeatedPhraseBarProgress(double currentBpm) {
+        if (curPhraseEvent == null)
+            // we haven't encountered a phrase yet!
+            return 0.0;
+
+        long timeElapsedMs = (System.currentTimeMillis() - curPhraseEvent.getStartedAtMs());
+        double msPerBeat =  TETimeUtils.calcMsPerBeat(curPhraseEvent.getBpm());
+        double subPhraseLengthBars = 0.25 / msPerBeat * timeElapsedMs;
+        return repeatedPhraseLengthBars + subPhraseLengthBars;
+    }
+
+    public double getRepeatedPhraseLengthBars() {
+        return repeatedPhraseLengthBars;
+    }
+
+//    /**
+//     * Including the current phrase, get a list of repeated phrase events.
+//     *
+//     * So if current history is:
+//     *      DOWN -> UP -> CHORUS -> CHORUS -> UP -> UP -> UP
+//     *
+//     * Then should return:
+//     *      [UP, UP, UP]
+//     *
+//     * @return ArrayList<TEPhraseEvent> repeatedPhrases
+//     */
+//    private ArrayList<TEPhraseEvent> getRepeatedPhrases() {
+//        ArrayList<TEPhraseEvent> repeatedPhrases = new ArrayList<>();
+//        TEPhraseEvent[] allPhraseEventsInOrder = phraseEvents.getAll();
+//        TEPhraseEvent curPhraseEvt, nextPhraseEvt;
+//
+//        // return empty array list if none yet
+//        if (allPhraseEventsInOrder.length == 0)
+//            return repeatedPhrases;
+//
+//        curPhraseEvt = allPhraseEventsInOrder[0];
+//        repeatedPhrases.add(curPhraseEvt);
+//
+//        int i = 1;
+//        while (i < allPhraseEventsInOrder.length) {
+//            nextPhraseEvt = allPhraseEventsInOrder[i];
+//
+//            if (curPhraseEvt.getPhraseType() == nextPhraseEvt.getPhraseType()) {
+//                repeatedPhrases.add(nextPhraseEvt);
+//            } else break;
+//
+//            curPhraseEvt = nextPhraseEvt;
+//            i++;
+//        }
+//
+//        //for (TEPhraseEvent e : repeatedPhrases)
+//        //    TE.log("Phrase from list: %s", e.getPhraseType());
+//
+//        return repeatedPhrases;
+//    }
 }

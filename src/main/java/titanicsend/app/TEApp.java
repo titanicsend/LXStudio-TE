@@ -228,47 +228,51 @@ public class TEApp extends PApplet implements LXPlugin  {
     TEPhrase up = TEPhrase.UP;
 
     // CHORUS patterns
-    l.addPattern(Smoke.class, covEdges, cNonConforming, chorus);
-    l.addPattern(BassLightning.class, covEdges, cWhite, chorus);
-    l.addPattern(OrganicPatternConfig.BreathingDots.class, covPanelPartial, cNonConforming, chorus);
-    l.addPattern(Bubbles.class, covPanelPartial, cPalette, chorus);
-    l.addPattern(FollowThatStar.class, covPanelPartial, cPalette, chorus);
-    l.addPattern(PBAudio1.class, covPanels, cNonConforming, chorus);
-    l.addPattern(OrganicPatternConfig.Outrun.class, covPanelPartial, cNonConforming, chorus);
-    l.addPattern(OrganicPatternConfig.NeonCellsLegacy.class, covPanelPartial, cNonConforming, chorus);
-    l.addPattern(OrganicPatternConfig.Outrun.class, covPanelPartial, cNonConforming, chorus);
-    l.addPattern(OrganicPatternConfig.NeonBarsEdges.class, covEdges, cNonConforming, chorus);
-    l.addPattern(OrganicPatternConfig.RainbowSwirlEdges.class, covEdges, cNonConforming, chorus);
-    l.addPattern(OrganicPatternConfig.RainbowSwirlEdges.class, covEdges, cNonConforming, chorus);
+    l.addPattern(NoisePattern.class, covBoth, cPalette, chorus);
+    l.addPattern(PBXorcery.class, covPanelPartial, cPalette, chorus);
+    l.addPattern(OrganicPatternConfig.RhythmicFlashStatic.class, covPanels, cPalette, chorus);
     l.addPattern(ShaderPanelsPatternConfig.NeonBlocks.class, covPanelPartial, cNonConforming, chorus);
-    l.addPattern(ShaderPanelsPatternConfig.NeonTriangles.class, covPanelPartial, cNonConforming, chorus);
+    l.addPattern(PBAudio1.class, covPanelPartial, cPalette, chorus);
+    l.addPattern(OrganicPatternConfig.Outrun.class, covPanels, cNonConforming, chorus);
+    l.addPattern(OrganicPatternConfig.RainbowSwirlPanels.class, covPanels, cNonConforming, chorus);
+    l.addPattern(OrganicPatternConfig.MatrixScroller.class, covPanels, cNonConforming, chorus);
+    l.addPattern(FollowThatStar.class, covBoth, cPalette, chorus);
+    l.addPattern(ShaderPanelsPatternConfig.Marbling.class, covPanels, cNonConforming, chorus);
+    l.addPattern(OrganicPatternConfig.NeonCellsLegacy.class, covPanelPartial, cPalette, chorus);
+    l.addPattern(OrganicPatternConfig.RainbowSwirlEdges.class, covEdges, cNonConforming, chorus);
+    l.addPattern(ShaderPanelsPatternConfig.NeonTriangles.class, covPanels, cNonConforming, chorus);
     l.addPattern(ShaderPanelsPatternConfig.PulsingHeart.class, covPanels, cNonConforming, chorus);
     l.addPattern(OrganicPatternConfig.NeonBarsPanels.class, covPanels, cNonConforming, chorus);
+    l.addPattern(ShaderPanelsPatternConfig.AudioTest2.class, covPanels, cNonConforming, chorus);
 
     // DOWN patterns
-    l.addPattern(OrganicPatternConfig.NeonSnake.class, covPanelPartial, cNonConforming, down);
-    l.addPattern(OrganicPatternConfig.RainbowSwirlPanels.class, covPanels, cNonConforming, down);
-    l.addPattern(OrganicPatternConfig.WaterPanels.class, covPanels, cNonConforming, down);
-    l.addPattern(OrganicPatternConfig.WaterEdges.class, covEdges, cNonConforming, down);
-    l.addPattern(OrganicPatternConfig.WavyEdges.class, covEdges, cNonConforming, down);
-    l.addPattern(NoisePattern.class, covBoth, cNonConforming, down);
-    l.addPattern(ShaderPanelsPatternConfig.Galaxy.class, covPanels, cNonConforming, down);
-    l.addPattern(ShaderPanelsPatternConfig.LightBeamsPattern.class, covPanels, cNonConforming, down);
-    l.addPattern(ShaderPanelsPatternConfig.NeonRipples.class, covPanels, cNonConforming, down);
     l.addPattern(GradientPattern.class, covBoth, cPalette, down);
-    l.addPattern(ShaderPanelsPatternConfig.SynthWaves.class, covPanelPartial, cNonConforming, down);
+    l.addPattern(Smoke.class, covBoth, cPalette, down);
+    l.addPattern(OrganicPatternConfig.NeonSnake.class, covPanelPartial, cPalette, down);
+    l.addPattern(OrganicPatternConfig.RainbowSwirlPanels.class, covPanels, cPalette, down);
+    l.addPattern(OrganicPatternConfig.WaterEdges.class, covEdges, cPalette, down);
+    l.addPattern(OrganicPatternConfig.WaterPanels.class, covPanelPartial, cPalette, down);
+    l.addPattern(OrganicPatternConfig.WavyEdges.class, covEdges, cPalette, down);
+    l.addPattern(NoisePattern.class, covBoth, cPalette, down);
+    l.addPattern(ShaderPanelsPatternConfig.Galaxy.class, covPanelPartial, cPalette, down);
+    l.addPattern(ShaderPanelsPatternConfig.SynthWaves.class, covPanelPartial, cPalette, down);
+    l.addPattern(ShaderPanelsPatternConfig.LightBeamsPattern.class, covPanelPartial, cPalette, down);
+    l.addPattern(ShaderPanelsPatternConfig.NeonRipples.class, covPanels, cPalette, down);
+    l.addPattern(ShaderEdgesPatternConfig.SynthWavesEdges.class, covEdges, cPalette, down);
 
     // UP patterns
+    l.addPattern(NoisePattern.class, covPanelPartial, cNonConforming, down);
+    l.addPattern(OrganicPatternConfig.WavyEdges.class, covPanelPartial, cNonConforming, down);
     l.addPattern(PBXorcery.class, covPanelPartial, cNonConforming, up);
     l.addPattern(OrganicPatternConfig.AlternatingDots.class, covPanelPartial, cNonConforming, up);
     l.addPattern(OrganicPatternConfig.BreathingDots.class, covPanelPartial, cNonConforming, up);
+    l.addPattern(OrganicPatternConfig.NeonBarsEdges.class, covEdges, cPalette, up);
     l.addPattern(OrganicPatternConfig.BasicElectricEdges.class, covEdges, cNonConforming, up);
-    l.addPattern(OrganicPatternConfig.PowerGrid.class, covEdges, cNonConforming, up);
+    l.addPattern(OrganicPatternConfig.PowerGrid.class, covEdges, cPalette, up);
     l.addPattern(SparklePattern.class, covBoth, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.Electric.class, covPanelPartial, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.JetStream.class, covPanels, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.Marbling.class, covPanels, cNonConforming, up);
-    l.addPattern(ShaderPanelsPatternConfig.NeonHeartNative.class, covPanelPartial, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.SpaceExplosion.class, covPanels, cNonConforming, up);
 
     // misc patterns
@@ -278,6 +282,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     //lx.registry.addPattern(PulsingTriangles.class); // would make great strobe...
     //lx.registry.addPattern(Fireflies.class); // OK but kills FPS...
     //l.addPattern(ReactiveHeartPattern.class, covPanels, colorNonConforming, TEPhrase.CHORUS); // needs to not be on all panels, reactive
+    //l.addPattern(BassLightning.class, covEdges, cWhite, chorus); // would be amazing right before a drop, on sound!!
 
     return l;
   }

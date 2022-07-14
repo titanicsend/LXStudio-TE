@@ -40,6 +40,10 @@ public class TEMixerUtils {
         }
     }
 
+    public static double readFaderValue(LX lx, TEChannelName name) {
+        return lx.engine.mixer.channels.get(name.getIndex()).fader.getValue();
+    }
+
     public static TEChannelName getChannelNameFromPhraseType(TEPhrase phraseType) {
         if (phraseType == TEPhrase.CHORUS)
             return TEChannelName.CHORUS;
@@ -47,8 +51,6 @@ public class TEMixerUtils {
             return TEChannelName.UP;
         else if (phraseType == TEPhrase.DOWN)
             return TEChannelName.DOWN;
-        else if (phraseType == TEPhrase.TRO)
-            return TEChannelName.TRO;
         return null;
     }
 
