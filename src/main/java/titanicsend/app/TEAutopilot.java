@@ -4,11 +4,13 @@ import heronarts.lx.LX;
 import heronarts.lx.LXLoopTask;
 import heronarts.lx.clip.LXClip;
 import heronarts.lx.mixer.LXChannel;
+import heronarts.lx.osc.OscArgument;
 import heronarts.lx.osc.OscMessage;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.autopilot.events.TEPhraseEvent;
 import titanicsend.app.autopilot.utils.TEMixerUtils;
 import titanicsend.app.autopilot.utils.TETimeUtils;
+import titanicsend.pattern.tom.BouncingDots;
 import titanicsend.util.TE;
 
 import java.util.ArrayList;
@@ -17,10 +19,9 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TEAutopilot implements LXLoopTask {
-    // TODO(will) make false, users can enable from global UI toggle panel
     private boolean enabled = false;
     // should we try to sync BPM when ProDJlink seems off?
-    private boolean autoBpmSyncEnabled = true;
+    private boolean autoBpmSyncEnabled = false;
 
     // various fader levels of importance
     private static double LEVEL_FULL = 1.0,
@@ -31,6 +32,9 @@ public class TEAutopilot implements LXLoopTask {
     // Probability that we launch CHORUS clips upon a repeated CHORUS phrase
     // sometimes there are like 5 CHORUS's in a row, and want to keep some variety
     private static float PROB_CLIPS_ON_SAME_PHRASE = 0.5f;
+
+    // if OSC messages are older than this, throw them out
+    private static long OSC_MSG_MAX_AGE_MS = 5 * 1000;
 
     private LX lx;
 
@@ -43,6 +47,9 @@ public class TEAutopilot implements LXLoopTask {
 
     // our historical tracking object, keeping state about events in past
     private TEHistorian history;
+
+    // our pattern library, used to filter for new patterns
+    private TEPatternLibrary library;
 
     // transition state fields
     private LXChannel prevChannel, curChannel, nextChannel, oldNextChannel;
@@ -57,8 +64,9 @@ public class TEAutopilot implements LXLoopTask {
     private LXChannel triggerChannel = null,
                       strobesChannel = null;
 
-    public TEAutopilot(LX lx) {
+    public TEAutopilot(LX lx, TEPatternLibrary l) {
         this.lx = lx;
+        this.library = l;
 
         // this queue needs to be accessible from OSC listener in diff thread
         unprocessedOscMessages = new ConcurrentLinkedQueue<TEOscMessage>();
@@ -77,32 +85,36 @@ public class TEAutopilot implements LXLoopTask {
     }
 
     protected void onOscMessage(OscMessage msg) {
-        String address = msg.getAddressPattern().toString();
-        TEOscMessage oscTE = new TEOscMessage(msg);
+        try {
+            String address = msg.getAddressPattern().toString();
+            TEOscMessage oscTE = new TEOscMessage(msg);
 
-        // First, let's check for global OSC messages that don't concern autopilot, or that
-        // we should act on immediately
-        //TODO(will) go back to using built-in OSC listener for setBPM messages once:
-        // 1. Mark merges his commit for utilizing the main OSC listener
-        // 2. Mark adds protection on input checking for setBPM = 0.0 messages (https://github.com/heronarts/LX/blob/e3d0d11a7d61c73cd8dde0c877f50ea4a58a14ff/src/main/java/heronarts/lx/Tempo.java#L201)
-        if (TEOscMessage.isTempoChange(address)) {
-            double newTempo = msg.getDouble(0);
-            if (TETimeUtils.isValidBPM(newTempo)) {  // lots of times the CDJ will send 0.0 for new tempo...
-                TE.log("[OSC] Changing LX tempo to %f", msg.getDouble(0));
-                this.lx.engine.tempo.setBpm((float) newTempo);
+            // First, let's check for global OSC messages that don't concern autopilot, or that
+            // we should act on immediately
+            //TODO(will) go back to using built-in OSC listener for setBPM messages once:
+            // 1. Mark merges his commit for utilizing the main OSC listener
+            // 2. Mark adds protection on input checking for setBPM = 0.0 messages (https://github.com/heronarts/LX/blob/e3d0d11a7d61c73cd8dde0c877f50ea4a58a14ff/src/main/java/heronarts/lx/Tempo.java#L201)
+            if (TEOscMessage.isTempoChange(address)) {
+                double newTempo = TEOscMessage.extractBpm(msg);
+                if (TETimeUtils.isValidBPM(newTempo)) {  // lots of times the CDJ will send 0.0 for new tempo...
+                    TE.log("[OSC] Changing LX tempo to %f", (float) newTempo);
+                    this.lx.engine.tempo.setBpm((float) newTempo);
 
-                // clear and restart history for beats/tempo
-                history.resetBeatTracking();
-                history.resetTempoTracking(this.lx.engine.tempo.bpm());
+                    // clear and restart history for beats/tempo
+                    history.resetBeatTracking();
+                    history.resetTempoTracking(this.lx.engine.tempo.bpm());
+                }
+
+            } else if (!isEnabled()) {
+                // if autopilot isn't enabled, don't bother tracking these
+                return;
+
+            } else {
+                //TE.log("Adding OSC message to queue: %s", address);
+                unprocessedOscMessages.add(oscTE);
             }
-
-        } else if (!isEnabled()) {
-            // if autopilot isn't enabled, don't bother tracking these
-            return;
-
-        } else {
-            //TE.log("Adding OSC message to queue: %s", address);
-            unprocessedOscMessages.add(oscTE);
+        } catch (Exception e) {
+            TE.log("Exception parsing OSC message (%s): %s", msg.toString(), e.toString());
         }
     }
 
@@ -143,7 +155,14 @@ public class TEAutopilot implements LXLoopTask {
                     // this should never happen, since we test for size() of queue, but good to check
                     TE.log("unprocessedOscMessages pulled off null value -- should never happen!");
                     continue;
+
+                } else if (oscTE.timestamp <= now - OSC_MSG_MAX_AGE_MS) {
+                    // if these messages are older than this, ignore
+                    continue;
                 }
+                //TODO(will) test for & ignore for really old OSC messages. With multiple decks it's
+                // possible to have a huge buildup of OSC messages from other deck that we don't
+                // need/want to process
 
                 // grab message & update with the most recent OscMessage received at
                 String address = oscTE.message.getAddressPattern().toString();
@@ -212,14 +231,6 @@ public class TEAutopilot implements LXLoopTask {
         nextPhrase = guessNextPhrase(newPhrase);
     }
 
-    private void setChannelTo(LXChannel channel, double faderVal) {
-        if (channel == null) {
-            TE.err("[ERROR] Cannot set channel fader, channel is null");
-            return;
-        }
-        lx.engine.mixer.channels.get(channel.getIndex()).fader.setValue(faderVal);
-    }
-
     private void onPhraseChange(String oscAddress, long timestamp, double deltaMs) {
         // detect phrase type and update state to reflect this
         this.updatePhraseState(TEPhrase.resolvePhrase(oscAddress));
@@ -232,8 +243,9 @@ public class TEAutopilot implements LXLoopTask {
             // our next channel should be reset to 0.0
             // past channel == current channel, so no transition down needed
             TE.log("[AUTOVJ] Same phrase! no changes");
-            setChannelTo(curChannel, LEVEL_FULL);
-            setChannelTo(nextChannel, LEVEL_OFF);
+
+            TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
+            TEMixerUtils.setFaderTo(lx, nextChannelName, LEVEL_OFF);
 
         } else {
             // update channel name & references based on phrase change
@@ -249,8 +261,8 @@ public class TEAutopilot implements LXLoopTask {
             if (predictedCorrectly) {
                 // we nailed it!
                 TE.log("[AUTOVJ] We predicted correctly!");
-                setChannelTo(curChannel, LEVEL_FULL);
-                setChannelTo(prevChannel, LEVEL_OFF);
+                TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
+                TEMixerUtils.setFaderTo(lx, prevChannelName, LEVEL_OFF);
 
             } else {
                 // we didn't predict the phrase change correctly, turn off
@@ -260,8 +272,8 @@ public class TEAutopilot implements LXLoopTask {
                 echoMode = (oldNextChannel != null);
                 TE.log("[AUTOVJ] We didn't predict right, oldNextChannelName=%s, echoMode=%s", oldNextChannelName, echoMode);
 
-                setChannelTo(curChannel, LEVEL_FULL);
-                //setChannelTo(oldNextChannel, LEVEL_OFF);
+                TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
+                //TEMixerUtils.setFaderTo(lx, oldNextChannelName, LEVEL_OFF);
 
                 // pick new Patterns
                 //TODO(will) have the pick be dependent on past patterns we've
@@ -348,8 +360,8 @@ public class TEAutopilot implements LXLoopTask {
         }
 
         // set strobes channels autocycle time fast
-        double msPerDivision = TETimeUtils.bpmToMsPerBeat(lx.engine.tempo.bpm()) / 16.; // sixteeth notes
-        strobesChannel.autoCycleTimeSecs.setValue(msPerDivision);
+        //double msPerDivision = TETimeUtils.bpmToMsPerBeat(lx.engine.tempo.bpm()) / 16.; // sixteeth notes
+        //strobesChannel.autoCycleTimeSecs.setValue(msPerDivision);
 
         return clips;
     }
