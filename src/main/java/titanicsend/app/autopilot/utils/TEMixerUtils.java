@@ -51,6 +51,9 @@ public class TEMixerUtils {
             return TEChannelName.UP;
         else if (phraseType == TEPhrase.DOWN)
             return TEChannelName.DOWN;
+        else if (phraseType == TEPhrase.TRO)
+            // for now, maybe we'll have a special channel in future
+            return TEChannelName.DOWN;
         return null;
     }
 

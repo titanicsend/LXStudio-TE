@@ -22,6 +22,8 @@ public class TEAutopilot implements LXLoopTask {
     private boolean enabled = false;
     // should we try to sync BPM when ProDJlink seems off?
     private boolean autoBpmSyncEnabled = false;
+    // do not change LX tempo unless the newly suggested tempo
+    // differs by more than this amount
     private double TEMPO_DIFF_THRESHOLD = 0.05;
 
     // various fader levels of importance
@@ -187,7 +189,7 @@ public class TEAutopilot implements LXLoopTask {
             }
 
         } catch (Exception e) {
-            TE.err("ERROR - unexpected exception in Autopilot.run()");
+            TE.err("ERROR - unexpected exception in Autopilot.run(): %s", e.toString());
             e.printStackTrace(System.out);
         }
 
@@ -213,15 +215,15 @@ public class TEAutopilot implements LXLoopTask {
 
             // update fader value for OLD NEXT channel
             if (echoMode) {
-                // if we need to echo out the old channel (usually when we predicted wrong)
-                // echo it out here
+                 // if we need to echo out the old channel (usually when we predicted wrong)
+                 // echo it out here
                 int fadeOutNumBars = 4;
                 if (currentPhraseLengthBars < fadeOutNumBars) {
                     double oldNextChannelFaderFloorLevel = 0.0;
                     double oldNextChannelFaderCeilingLevel = LEVEL_ECHO;
                     double range = oldNextChannelFaderCeilingLevel - oldNextChannelFaderFloorLevel;
-                    double estFracCompleted = currentPhraseLengthBars / fadeOutNumBars;
-                    double faderVal = range * estFracCompleted + oldNextChannelFaderFloorLevel;
+                    double estFracRemaining = 1.0 - (currentPhraseLengthBars / fadeOutNumBars);
+                    double faderVal = range * estFracRemaining + oldNextChannelFaderFloorLevel;
                     TEMixerUtils.setFaderTo(lx, oldNextChannelName, faderVal);
                 }
             }
@@ -282,7 +284,7 @@ public class TEAutopilot implements LXLoopTask {
                 TE.log("[AUTOVJ] We didn't predict right, oldNextChannelName=%s, echoMode=%s", oldNextChannelName, echoMode);
 
                 TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
-                //TEMixerUtils.setFaderTo(lx, oldNextChannelName, LEVEL_OFF);
+                TEMixerUtils.setFaderTo(lx, oldNextChannelName, LEVEL_OFF);
 
                 // pick new Patterns
                 //TODO(will) have the pick be dependent on past patterns we've
