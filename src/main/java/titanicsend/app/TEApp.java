@@ -154,6 +154,7 @@ public class TEApp extends PApplet implements LXPlugin  {
 
     // create our library for autopilot
     TEPatternLibrary library = initializePatternLibrary(lx);
+    TE.log("AutoVJ pattern library initialized!");
 
     int myGigglePixelID = 73;  // Looks like "TE"
     try {
@@ -195,8 +196,7 @@ public class TEApp extends PApplet implements LXPlugin  {
 
     // add custom OSC listener to handle OSC messages from ShowKontrol
     // includes an Autopilot ref to store (threadsafe) queue of unread OSC messages
-    TE.log("Attaching the OSC message listener to port "
-            + Integer.toString(TEShowKontrol.OSC_PORT) + " ...");
+    TE.log("Attaching the OSC message listener to port %d...", TEShowKontrol.OSC_PORT);
     try {
         lx.engine.osc.receiver(TEShowKontrol.OSC_PORT).addListener((message) -> {
             autopilot.onOscMessage(message);

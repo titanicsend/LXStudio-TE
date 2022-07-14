@@ -1,13 +1,22 @@
 package titanicsend.app.autopilot;
 
 import heronarts.lx.LX;
+import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.pattern.LXPattern;
+import titanicsend.app.autopilot.utils.TEMixerUtils;
+import titanicsend.model.TEPanelModel;
+import titanicsend.util.TE;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TEPatternLibrary {
     private LX lx;
     private ArrayList<TEPatternRecord> patterns;
+
+    // record -> list of patterns that match (on a single channel)
+    private HashMap<TEPatternRecord, ArrayList<LXPattern>> rec2patterns = null;
 
     /**
      * For patterns we catalog, how do they cover the cor?
@@ -21,7 +30,7 @@ public class TEPatternLibrary {
     public enum TEPatternColorCategoryType { PALETTE, WHITE, NONCONFORMING; }
 
     public class TEPatternRecord {
-        public Class<? extends LXPattern> pattern;
+        public Class<? extends LXPattern> patternClass;
         public TEPatternCoverageType coverageType;
         public TEPatternColorCategoryType colorCategoryType;
         public TEPhrase phraseType;
@@ -31,10 +40,22 @@ public class TEPatternLibrary {
                 TEPatternCoverageType c,
                 TEPatternColorCategoryType cc,
                 TEPhrase ph) {
-            pattern = p;
+            patternClass = p;
             coverageType = c;
             colorCategoryType = cc;
             phraseType = ph;
+        }
+
+        public String toString() {
+            String[] parts = patternClass.toString().split(".");
+            String classNameCleaned = patternClass.toString();
+            try {
+                classNameCleaned = parts[parts.length - 1];
+            } catch (ArrayIndexOutOfBoundsException e) {
+                //TE.err("Could not write name for class = \"%s\"", classNameCleaned);
+            }
+            return String.format("<Record class=\"%s\", cov=%s, phrase=%s>",
+                    classNameCleaned, coverageType, phraseType);
         }
     }
 
@@ -68,8 +89,90 @@ public class TEPatternLibrary {
      * @param ph if non-null, return only patterns matching this phrase type
      * @return an LXPattern class that can be instantiated and loaded onto an LXChannel
      */
-    public Class<? extends LXPattern> filterPatterns(
+    public LXPattern filterPatterns(
             TEPatternCoverageType c, TEPatternColorCategoryType cc, TEPhrase ph) {
+        if (!this.isReady())
+            TE.err("Cannot filter patterns, you need to call indexPatterns() first!");
         return null; //TODO
+    }
+
+    /**
+     * Is this pattern library ready to be used? (indexPatterns() has been called)
+     *
+     * @return boolean
+     */
+    public boolean isReady() {
+        return rec2patterns != null;
+    }
+
+    /**
+     * Gets TEPatternLibrary ready for actual use
+     *
+     * Library has a list of TEPatternRecord, each of which need to be
+     * mapped to one (or more!) LXPattern objects on an LXChannel.
+     *
+     * Each TEPatternRecord should only map to LXPatterns on the same
+     * LXChannel.
+     */
+    public void indexPatterns() {
+        this.rec2patterns = new HashMap<>();
+
+        // report back some statistics on patterns indexed or not found
+        HashMap<TEPhrase, Integer> patternsPerPhrase = new HashMap<>();
+        HashMap<TEPhrase, Integer> missingPatternsPerPhrase = new HashMap<>();
+        int totalFound = 0;
+        int totalNotFound = 0;
+
+        for (TEPatternRecord r : this.patterns) {
+            TEChannelName name = TEMixerUtils.getChannelNameFromPhraseType(r.phraseType);
+            LXChannel ch = TEMixerUtils.getChannelByName(lx, name);
+            if (ch == null)
+                TE.err("[TEPatternLibrary] Could not load channel=%s, it is null", name);
+
+            int found = 0;
+            rec2patterns.put(r, new ArrayList<>());
+            for (LXPattern p : ch.getPatterns()) {
+                if (r.patternClass == p.getClass()) {
+                    rec2patterns.get(r).add(p);
+
+                    // count by phrase type
+                    if (!patternsPerPhrase.containsKey(r.phraseType))
+                        patternsPerPhrase.put(r.phraseType, 0);
+                    patternsPerPhrase.put(r.phraseType, patternsPerPhrase.get(r.phraseType) + 1);
+
+                    //TE.log("[TEPatternLibrary] Index pattern=%s to channel=%s, record=%s", p.getLabel(), name, r);
+                    found++;
+                }
+            }
+
+            if (found == 0) {
+                TE.err("No LXPattern found for %s (channel=%s). Either add to AutoVJ.lxp, or remove from TEApp::initializePatternLibrary()", r, name);
+                if (!missingPatternsPerPhrase.containsKey(r.phraseType))
+                    missingPatternsPerPhrase.put(r.phraseType, 0);
+                missingPatternsPerPhrase.put(r.phraseType, missingPatternsPerPhrase.get(r.phraseType) + 1);
+                totalNotFound++;
+            }
+
+            totalFound += found;
+        }
+
+        // print a summary of indexed patterns
+        if (totalFound > 0) {
+            TE.log("[AutoVJ] Indexed %d total patterns!", totalFound);
+            for (Map.Entry<TEPhrase, Integer> entry : patternsPerPhrase.entrySet()) {
+                TEPhrase pt = entry.getKey();
+                int count = entry.getValue();
+                TE.log("\tChannel=%s has %d indexed patterns", TEMixerUtils.getChannelNameFromPhraseType(pt), count);
+            }
+        }
+
+        if (totalNotFound > 0) {
+            TE.log("[AutoVJ] %d total MISSING patterns", totalNotFound);
+            for (Map.Entry<TEPhrase, Integer> entry : missingPatternsPerPhrase.entrySet()) {
+                TEPhrase pt = entry.getKey();
+                int count = entry.getValue();
+                TE.log("\tChannel=%s has %d missing patterns", TEMixerUtils.getChannelNameFromPhraseType(pt), count);
+            }
+        }
     }
 }
