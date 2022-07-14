@@ -14,8 +14,7 @@ public enum TEChannelName {
     DOWN(1),
     CHORUS(2),
     STROBES(3),
-    TRIGGERS(4),
-    TRO(5); // in-tro and out-tro's;
+    TRIGGERS(4);
 
     private final int index;
 
