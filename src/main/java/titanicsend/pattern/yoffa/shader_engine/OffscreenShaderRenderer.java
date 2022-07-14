@@ -16,6 +16,7 @@ public class OffscreenShaderRenderer {
         glCapabilities.setHardwareAccelerated(true);
         glCapabilities.setOnscreen(false);
         glCapabilities.setDoubleBuffered(false);
+        // set bit count for all channels to get alpha to work correctly
         glCapabilities.setAlphaBits(8);
         glCapabilities.setRedBits(8);
         glCapabilities.setBlueBits(8);
@@ -28,21 +29,19 @@ public class OffscreenShaderRenderer {
                 new DefaultGLCapabilitiesChooser(), xResolution, yResolution);
         nativeShader = new NativeShader(fragmentShader, xResolution, yResolution);
         offscreenDrawable.display();
-
     }
 
     public void useAlphaChannel(boolean b) {
         nativeShader.useAlphaChannel(b);
     }
 
-    public int[][] getFrame(AudioInfo audioInfo) {
-        //lazy initialize
-        //if this get called too early on it will disrupt lx's gl initialization
+    public void initializeNativeShader() {
         if (!nativeShader.isInitialized()) {
-            offscreenDrawable.getContext().makeCurrent();
             nativeShader.init(offscreenDrawable);
         }
+    }
 
+    public int[][] getFrame(AudioInfo audioInfo) {
         nativeShader.updateAudioInfo(audioInfo);
         nativeShader.display(offscreenDrawable);
         return nativeShader.getSnapshot();

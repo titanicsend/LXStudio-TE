@@ -21,7 +21,7 @@ import static com.jogamp.opengl.GL2GL3.GL_UNSIGNED_INT_8_8_8_8;
 import static com.jogamp.opengl.GL2GL3.GL_UNSIGNED_INT_8_8_8_8_REV;
 
 //Technically we don't need to implement GLEventListener unless we plan on rendering on screen, but let's leave it
-//  for good practice
+//for good practice
 public class NativeShader implements GLEventListener {
 
     //we need to draw an object with a vertex shader to put our fragment shader on
@@ -108,22 +108,24 @@ public class NativeShader implements GLEventListener {
 
     @Override
     public void init(GLAutoDrawable glAutoDrawable) {
-        initShaderProgram(glAutoDrawable);
+        glAutoDrawable.getContext().makeCurrent();
+        GL4 gl4 = glAutoDrawable.getGL().getGL4();
+
+        initShaderProgram(gl4);
         downloadTextureFiles(fragmentShader);
+        gl4.glUseProgram(shaderProgram.getProgramId());
+
         startTime = System.currentTimeMillis();
     }
 
     @Override
     public void display(GLAutoDrawable glAutoDrawable) {
+        // switch to this shader's gl context and render
         glAutoDrawable.getContext().makeCurrent();
         GL4 gl4 = glAutoDrawable.getGL().getGL4();
-        gl4.glUseProgram(shaderProgram.getProgramId());
-
         setUniforms(gl4);
         setUpCanvas(gl4);
         saveSnapshot(gl4, xResolution, yResolution);
-
-        //gl4.glUseProgram(0);
     }
 
     private void saveSnapshot(GL4 gl4, int width, int height) {
@@ -132,36 +134,27 @@ public class NativeShader implements GLEventListener {
         gl4.glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, backBuffer);
 
         for (int h = 0; h < height; h++) {
-            int y = height - h - 1;  // reverse y axis
             for (int w = 0; w < width; w++) {
-                snapshot[w][y] = LXColor.rgba((backBuffer.get() & 0xff), (backBuffer.get() & 0xff),
-                        (backBuffer.get() & 0xff),alphaMask | (backBuffer.get() & 0xff));
+                snapshot[w][h] = LXColor.rgba((backBuffer.get() & 0xff), (backBuffer.get() & 0xff),
+                        backBuffer.get() & 0xff,alphaMask | (backBuffer.get() & 0xff));
             }
         }
    }
 
     private void setUpCanvas(GL4 gl4) {
-
-
+        // allocate geometry buffer handles
         int[] bufferHandlesB = new int[1];
         gl4.glGenBuffers(1, bufferHandlesB, 0);
 
+        // vertices
         bindBufferData(gl4, vertexBuffer, GL_ARRAY_BUFFER, Float.BYTES);
         gl4.glVertexAttribPointer(shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION),
                 3, GL4.GL_FLOAT, false, 0, 0);
         gl4.glEnableVertexAttribArray(shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION));
 
+        // geometry built from vertices (triangles!)
         bindBufferData(gl4, indexBuffer, GL_ELEMENT_ARRAY_BUFFER, Integer.BYTES);
         gl4.glDrawElements(GL2.GL_TRIANGLES, INDICES.length, GL2.GL_UNSIGNED_INT, 0);
-
-        gl4.glDisableVertexAttribArray(shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION));
-
-        // unbind buffers from this shader so the next one can use them
-        // TODO - or can we leave them bound, since we're using multiple contexts instead of
-        // just switching shaders.  I'm pretty sure this is less efficient, but it works given
-        // LX's architecture.
-        gl4.glBindBuffer(GL_ARRAY_BUFFER,0);
-        gl4.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
     private void setUniforms(GL4 gl4) {
@@ -228,13 +221,12 @@ public class NativeShader implements GLEventListener {
         gl4.glUniform1f(location, value);
     }
 
-    private void initShaderProgram(GLAutoDrawable glAutoDrawable) {
-        glAutoDrawable.getContext().makeCurrent();
-        GL4 gl4 = glAutoDrawable.getGL().getGL4();
+    private void initShaderProgram(GL4 gl4) {
         File vertexShader = new File("resources/shaders/framework/default.vs");
         shaderProgram = new ShaderProgram();
         String shaderCode = FRAGMENT_SHADER_TEMPLATE.replace(SHADER_BODY_PLACEHOLDER, fragmentShader.getShaderBody());
         shaderProgram.init(gl4, vertexShader, shaderCode);
+        setUpCanvas(gl4);
     }
 
     private void downloadTextureFiles(FragmentShader fragmentShader) {

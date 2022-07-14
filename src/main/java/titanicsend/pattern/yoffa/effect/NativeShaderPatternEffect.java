@@ -9,6 +9,7 @@ import titanicsend.pattern.yoffa.media.ImagePainter;
 import titanicsend.pattern.yoffa.shader_engine.AudioInfo;
 import titanicsend.pattern.yoffa.shader_engine.FragmentShader;
 import titanicsend.pattern.yoffa.shader_engine.OffscreenShaderRenderer;
+import titanicsend.pattern.yoffa.shader_engine.ShaderPainter;
 import titanicsend.util.Dimensions;
 
 import java.io.File;
@@ -22,6 +23,8 @@ public class NativeShaderPatternEffect extends PatternEffect {
     protected OffscreenShaderRenderer offscreenShaderRenderer;
     private FragmentShader fragmentShader;
     private final List<LXParameter> parameters;
+
+    private ShaderPainter painter;
 
     AudioInfo audioInfo;
     boolean useShaderAlpha;
@@ -41,6 +44,7 @@ public class NativeShaderPatternEffect extends PatternEffect {
             this.parameters = fragmentShader.getParameters();
             this.audioInfo = new AudioInfo(pattern.getLX().engine.audio.meter);
             useAlphaChannel(useAlpha);
+            painter = new ShaderPainter();
         } else {
             this.parameters = null;
         }
@@ -104,6 +108,8 @@ public class NativeShaderPatternEffect extends PatternEffect {
             offscreenShaderRenderer = new OffscreenShaderRenderer(fragmentShader);
             offscreenShaderRenderer.useAlphaChannel(useShaderAlpha);
         }
+        // lazy initialization of our GL stuff, to avoid disrupting LX's GL startup
+        offscreenShaderRenderer.initializeNativeShader();
     }
 
     @Override
@@ -117,11 +123,18 @@ public class NativeShaderPatternEffect extends PatternEffect {
 
         int[][] snapshot = offscreenShaderRenderer.getFrame(audioInfo);
 
-        //TODO we should really use setColor for this instead of exposing colors as this will break blending
-        //ImagePainter is the last thing that hasn't been migrated to new framework
-        ImagePainter imagePainter = new ImagePainter(snapshot, pattern.getColors());
+        /*
+         TODO -
+         We should really use setColor for this instead of exposing colors as this will break blending
+
+         Aso, if we need more speed, we can have ImagePainter calculate the texture->vehicle
+         point mapping on the first pass, then store it in an array somewhere and use that forever
+         afterward, since we're not currently changing the target point set during a run.
+        */
+        painter.setImage(snapshot);
+        painter.setColors(pattern.getColors());
         for (Map.Entry<LXPoint, Dimensions> entry : pointsToCanvas.entrySet()) {
-            imagePainter.paint(entry.getKey(), entry.getValue(), 1);
+            painter.paint(entry.getKey(), entry.getValue());
         }
     }
 
