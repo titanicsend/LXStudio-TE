@@ -9,6 +9,7 @@ import titanicsend.util.TE;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -116,6 +117,17 @@ public class TEPatternLibrary {
         }
 
         return matchingPatterns;
+    }
+
+    public LXPattern pickRandomPattern(TEPhrase phraseType) throws Exception {
+        // filter patterns
+        ArrayList<LXPattern> matchingPatterns = this.filterPatterns(null, null, phraseType);
+
+        // randomly pick one
+        Random rand = new Random();
+        int randomIndex = rand.nextInt(matchingPatterns.size());
+
+        return matchingPatterns.get(randomIndex);
     }
 
     /**
