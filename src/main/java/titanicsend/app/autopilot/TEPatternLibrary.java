@@ -4,16 +4,17 @@ import heronarts.lx.LX;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.pattern.LXPattern;
 import titanicsend.app.autopilot.utils.TEMixerUtils;
-import titanicsend.model.TEPanelModel;
 import titanicsend.util.TE;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TEPatternLibrary {
     private LX lx;
-    private ArrayList<TEPatternRecord> patterns;
+    private ArrayList<TEPatternRecord> patternRecords;
 
     // record -> list of patterns that match (on a single channel)
     private HashMap<TEPatternRecord, ArrayList<LXPattern>> rec2patterns = null;
@@ -61,7 +62,7 @@ public class TEPatternLibrary {
 
     public TEPatternLibrary(LX lx) {
         this.lx = lx;
-        this.patterns = new ArrayList<TEPatternRecord>();
+        this.patternRecords = new ArrayList<TEPatternRecord>();
     }
 
     public void addPattern(
@@ -71,7 +72,7 @@ public class TEPatternLibrary {
             TEPhrase ph) {
 
         TEPatternRecord rec = new TEPatternRecord(p, c, cc, ph);
-        this.patterns.add(rec);
+        this.patternRecords.add(rec);
         try {
             this.lx.registry.addPattern(p);
         } catch (IllegalStateException e) {
@@ -86,14 +87,35 @@ public class TEPatternLibrary {
      *
      * @param c if non-null, return only patterns matching this coverage type
      * @param cc if non-null, return only patterns matching this color category type
-     * @param ph if non-null, return only patterns matching this phrase type
-     * @return an LXPattern class that can be instantiated and loaded onto an LXChannel
+     * @param ph if null, throw exception. we have to have a phrase type!
+     * @return ArrayList<LXPattern>
      */
-    public LXPattern filterPatterns(
-            TEPatternCoverageType c, TEPatternColorCategoryType cc, TEPhrase ph) {
+    public ArrayList<LXPattern> filterPatterns(
+            TEPatternCoverageType c, TEPatternColorCategoryType cc, TEPhrase ph) throws Exception {
+        // do some checks
         if (!this.isReady())
-            TE.err("Cannot filter patterns, you need to call indexPatterns() first!");
-        return null; //TODO
+            throw new Exception("Cannot filter patterns, you need to call indexPatterns() first!");
+        if (ph == null)
+            throw new Exception("Must specify phrase type!");
+
+        // filter records
+        Stream<TEPatternRecord> s = patternRecords.stream().filter(r -> r.phraseType == ph);
+        if (c != null)
+            s = s.filter(r -> r.coverageType == c);
+        if (cc != null)
+            s = s.filter(r -> r.colorCategoryType == cc);
+
+        ArrayList<TEPatternRecord> matchingRecords = s.collect(Collectors.toCollection(ArrayList::new));
+
+        // now for each record, pull in the corresponding pattern(s) and add to a list
+        ArrayList<LXPattern> matchingPatterns = new ArrayList<>();
+        for (TEPatternRecord r : matchingRecords) {
+            for (LXPattern p : this.rec2patterns.get(r)) {
+                matchingPatterns.add(p);
+            }
+        }
+
+        return matchingPatterns;
     }
 
     /**
@@ -123,7 +145,7 @@ public class TEPatternLibrary {
         int totalFound = 0;
         int totalNotFound = 0;
 
-        for (TEPatternRecord r : this.patterns) {
+        for (TEPatternRecord r : this.patternRecords) {
             TEChannelName name = TEMixerUtils.getChannelNameFromPhraseType(r.phraseType);
             LXChannel ch = TEMixerUtils.getChannelByName(lx, name);
             if (ch == null)
