@@ -10,7 +10,7 @@ public class OffscreenShaderRenderer {
     private final NativeShader nativeShader;
     private final GLAutoDrawable offscreenDrawable;
 
-    public OffscreenShaderRenderer(FragmentShader fragmentShader) {
+    public OffscreenShaderRenderer(FragmentShader fragmentShader,ShaderOptions shaderOptions) {
         GLProfile glProfile = GLProfile.getGL4ES3();
         GLCapabilities glCapabilities = new GLCapabilities(glProfile);
         glCapabilities.setHardwareAccelerated(true);
@@ -27,12 +27,13 @@ public class OffscreenShaderRenderer {
         //there is no way to have a normal drawable render on a panel/canvas which is not visible
         offscreenDrawable = factory.createOffscreenAutoDrawable(factory.getDefaultDevice(), glCapabilities,
                 new DefaultGLCapabilitiesChooser(), xResolution, yResolution);
-        nativeShader = new NativeShader(fragmentShader, xResolution, yResolution);
+        nativeShader = new NativeShader(fragmentShader, xResolution, yResolution,shaderOptions);
         offscreenDrawable.display();
     }
 
-    public void useAlphaChannel(boolean b) {
-        nativeShader.useAlphaChannel(b);
+    // use default shader options
+    public OffscreenShaderRenderer(FragmentShader fragmentShader) {
+        this(fragmentShader,new ShaderOptions());
     }
 
     public void initializeNativeShader() {

@@ -7,6 +7,7 @@ import titanicsend.pattern.yoffa.effect.ShaderToyPatternEffect;
 import titanicsend.pattern.yoffa.framework.ConstructedPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 
 import java.util.List;
 
@@ -243,8 +244,11 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             // create new effect and enable the use of shader alpha info
+            ShaderOptions options = new ShaderOptions();
+            options.useAlpha(true);
+
             return List.of(new NativeShaderPatternEffect("fourstar.fs",
-                    PatternTarget.allPanelsAsCanvas(this),true));
+                    PatternTarget.allPanelsAsCanvas(this),options));
         }
     }
 

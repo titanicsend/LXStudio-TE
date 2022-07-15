@@ -64,6 +64,8 @@ public class NativeShader implements GLEventListener {
 
     ByteBuffer backBuffer;
     private int[][] snapshot;
+
+    private ShaderOptions shaderOptions;
     private int alphaMask;
 
     private AudioInfo audioInfo;
@@ -73,7 +75,7 @@ public class NativeShader implements GLEventListener {
     FloatBuffer audioTextureData;
 
 
-    public NativeShader(FragmentShader fragmentShader, int xResolution, int yResolution) {
+    public NativeShader(FragmentShader fragmentShader, int xResolution, int yResolution, ShaderOptions options) {
         this.xResolution = xResolution;
         this.yResolution = yResolution;
         this.fragmentShader = fragmentShader;
@@ -88,7 +90,10 @@ public class NativeShader implements GLEventListener {
         // gl-compatible buffer for reading offscreen surface to cpu memory
         this.backBuffer = GLBuffers.newDirectByteBuffer(xResolution * yResolution * 4);
         this.snapshot = new int[xResolution][yResolution];
-        this.useAlphaChannel(false);  // alpha ignored by default so nothing breaks
+
+        // set shader options
+        this.shaderOptions = options;
+        this.setAlphaMask(shaderOptions.getAlpha());
 
         this.audioTextureWidth = 512;
         this.audioTextureHeight = 2;
@@ -102,7 +107,7 @@ public class NativeShader implements GLEventListener {
      *          whatever the shader does, and set alpha to full opacity
      *
      */
-    public void useAlphaChannel(boolean b) {
+    public void setAlphaMask(boolean b) {
         this.alphaMask = (b) ? 0 : 0xff;
     }
 
@@ -180,7 +185,7 @@ public class NativeShader implements GLEventListener {
         }
 
         // Set up audio frequency data as a texture similar to shadertoy
-        if (audioChannel != null) {
+        if (audioChannel != null && shaderOptions.getWaveData()) {
 
             gl4.glActiveTexture(INDEX_TO_GL_ENUM.get(0));
             gl4.glEnable(GL_TEXTURE_2D);
@@ -207,8 +212,10 @@ public class NativeShader implements GLEventListener {
 
         }
 
-        for (LXParameter customParameter : fragmentShader.getParameters()) {
-            bindUniformFloat(gl4, customParameter.getLabel() + Uniforms.CUSTOM_SUFFIX, customParameter.getValuef());
+        if (shaderOptions.getLXParameterUniforms()) {
+            for (LXParameter customParameter : fragmentShader.getParameters()) {
+                bindUniformFloat(gl4, customParameter.getLabel() + Uniforms.CUSTOM_SUFFIX, customParameter.getValuef());
+            }
         }
 
         for (Map.Entry<Uniforms.Audio, Float> audioEntry : audioInfo.getUniformMap().entrySet()) {

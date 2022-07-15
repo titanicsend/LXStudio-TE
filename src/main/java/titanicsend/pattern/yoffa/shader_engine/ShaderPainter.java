@@ -56,11 +56,10 @@ public class ShaderPainter {
         }
         float normalizedY = (point.yn - canvasDimensions.getMinYn()) / canvasDimensions.getHeightNormalized();
 
-        float x = (1 - normalizedX) * imageWidth();
-        int xi = (int) Math.max(0,Math.min(Math.round(x), imageWidth() - 1));
-
-        float y = normalizedY * imageHeight();
-        int yi = (int) Math.max(0,Math.min(Math.round(y), imageHeight() - 1));
+        // calculate so that if normalized x/y are always in range 0-1, x and y will be
+        // limited to between the proper image array index range, no clamping is needed
+        int xi = (int) Math.round((1f - normalizedX) * (imageWidth() - 1f));
+        int yi = (int) Math.round(normalizedY * (imageHeight() - 1f));
 
         colors[point.index] = image[xi][yi];
     }
