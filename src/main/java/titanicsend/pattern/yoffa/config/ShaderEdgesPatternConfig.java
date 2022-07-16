@@ -90,4 +90,17 @@ public class ShaderEdgesPatternConfig {
         }
     }
 
+    @LXCategory("DREVO Shaders")
+    public static class MetallicWaves extends ConstructedPattern {
+        public MetallicWaves(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> createEffects() {
+            return List.of(
+                    new NativeShaderPatternEffect("metallic_wave.fs", PatternTarget.allPanelsAsCanvas(this)),
+                    new NativeShaderPatternEffect("metallic_wave.fs", PatternTarget.allEdgesAsCanvas(this))
+            );
+        }
+    }
 }
