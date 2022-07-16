@@ -235,22 +235,4 @@ public class ShaderPanelsPatternConfig {
         }
     }
 
-    @LXCategory("Native Shaders Panels")
-    public static class FourStar extends ConstructedPattern {
-        public FourStar(LX lx) {
-            super(lx);
-        }
-
-        @Override
-        protected List<PatternEffect> createEffects() {
-            // create new effect and enable the use of shader alpha info
-            ShaderOptions options = new ShaderOptions();
-            options.useAlpha(true);
-
-            return List.of(new NativeShaderPatternEffect("fourstar.fs",
-                    PatternTarget.allPanelsAsCanvas(this),options));
-        }
-    }
-
-
 }

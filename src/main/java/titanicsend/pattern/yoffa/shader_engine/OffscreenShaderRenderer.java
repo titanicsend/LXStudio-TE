@@ -52,4 +52,6 @@ public class OffscreenShaderRenderer {
         nativeShader.reset();
     }
 
+    public NativeShader getNativeShader() { return nativeShader; }
+
 }

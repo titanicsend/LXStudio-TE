@@ -93,8 +93,8 @@ public class NativeShaderPatternEffect extends PatternEffect {
             offscreenShaderRenderer = new OffscreenShaderRenderer(fragmentShader,shaderOptions);
         }
         // lazy initialization of our GL stuff, to avoid disrupting LX's GL startup
-        // TODO - test to be sure that this is sufficiently lazy, or look for a way to tell
-        // if LX is done initializing.
+        // TODO - test to be sure that this is sufficiently lazy, or look for a way to tell if
+        // LX is done with its initialization.
         offscreenShaderRenderer.initializeNativeShader();
     }
 
@@ -119,6 +119,10 @@ public class NativeShaderPatternEffect extends PatternEffect {
             painter.paint(entry.getKey(), entry.getValue());
         }
     }
+
+    // Saves me from having to propagate all those setUniform(name,etc.) methods up the
+    // object hierarchy!  It grants you great power.  Use responsibly!
+    public NativeShader getNativeShader() { return offscreenShaderRenderer.getNativeShader(); }
 
     @Override
     public List<LXParameter> getParameters() {
