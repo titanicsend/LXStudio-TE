@@ -25,7 +25,7 @@ public class ShaderOptions {
     private boolean useLXParameters;
 
     public ShaderOptions() {
-        useAlpha(false);
+        useAlpha(true);
         useWaveData(true);
         useLXParameterUniforms(true);
     }
