@@ -6,6 +6,7 @@ import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.pattern.LXPattern;
 import titanicsend.app.autopilot.TEChannelName;
 import titanicsend.app.autopilot.TEPhrase;
+import titanicsend.util.TE;
 
 import java.util.List;
 import java.util.Random;
@@ -17,25 +18,20 @@ import java.util.Random;
 public class TEMixerUtils {
     public static final double FADER_LEVEL_OFF_THRESH = 0.01;
 
-    public static void setChannelExclusivelyVisible(LX lx, TEChannelName channel) {
-        for (TEChannelName c : TEChannelName.values()) {
-            double faderLevel = 0.0;
-            if (c == channel) {
-                faderLevel = 1.0;
-            }
-
-            lx.engine.mixer.channels.get(c.getIndex()).fader.setValue(faderLevel);
+    public static void turnDownAllChannels(LX lx) {
+        for (TEChannelName name : TEChannelName.values()) {
+            setFaderTo(lx, name, 0.0);
         }
     }
 
     public static void setFaderTo(LX lx, TEChannelName name, double faderLevel) {
         LXChannel channel = (LXChannel) lx.engine.mixer.channels.get(name.getIndex());
-        channel.fader.setValue(faderLevel);
+        lx.engine.mixer.channels.get(name.getIndex()).fader.setValue(faderLevel);
 
         // save CPU cycles by disabling OFF channels
         if (faderLevel < FADER_LEVEL_OFF_THRESH) {
             channel.enabled.setValue(false);
-        } else if (faderLevel > FADER_LEVEL_OFF_THRESH) {
+        } else if (faderLevel >= FADER_LEVEL_OFF_THRESH) {
             channel.enabled.setValue(true);
         }
     }
