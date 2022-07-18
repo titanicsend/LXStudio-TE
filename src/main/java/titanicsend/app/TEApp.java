@@ -159,18 +159,18 @@ public class TEApp extends PApplet implements LXPlugin  {
     try {
       this.gpListener = new GigglePixelListener(lx, "0.0.0.0", myGigglePixelID);
       lx.engine.addLoopTask(this.gpListener);
-      LX.log("GigglePixel listener created");
+      TE.log("GigglePixel listener created");
     } catch (IOException e) {
-      LX.log("Failed to create GigglePixel listener: " + e.getMessage());
+      TE.log("Failed to create GigglePixel listener: " + e.getMessage());
     }
 
     try {
       this.gpBroadcaster = new GigglePixelBroadcaster(
               lx, "255.255.255.255", this.model.name, myGigglePixelID);
       lx.engine.addLoopTask(this.gpBroadcaster);
-      LX.log("GigglePixel broadcaster created");
+      TE.log("GigglePixel broadcaster created");
     } catch (IOException e) {
-      LX.log("Failed to create GigglePixel broadcaster: " + e.getMessage());
+      TE.log("Failed to create GigglePixel broadcaster: " + e.getMessage());
     }
 
     // create our Autopilot instance, run in general engine loop to
@@ -195,7 +195,7 @@ public class TEApp extends PApplet implements LXPlugin  {
 
     // add custom OSC listener to handle OSC messages from ShowKontrol
     // includes an Autopilot ref to store (threadsafe) queue of unread OSC messages
-    LX.log("Attaching the OSC message listener to port "
+    TE.log("Attaching the OSC message listener to port "
             + Integer.toString(TEShowKontrol.OSC_PORT) + " ...");
     try {
         lx.engine.osc.receiver(TEShowKontrol.OSC_PORT).addListener((message) -> {
@@ -243,7 +243,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     l.addPattern(OrganicPatternConfig.RainbowSwirlEdges.class, covEdges, cNonConforming, chorus);
     l.addPattern(ShaderPanelsPatternConfig.NeonTriangles.class, covPanels, cNonConforming, chorus);
     l.addPattern(ShaderPanelsPatternConfig.PulsingHeart.class, covPanels, cNonConforming, chorus);
-    l.addPattern(ShaderPanelsPatternConfig.AudioTest2.class, covPanels, cNonConforming, chorus);
+    //l.addPattern(ShaderPanelsPatternConfig.AudioTest2.class, covPanels, cNonConforming, chorus); // only works with audio
 
     // DOWN patterns
     l.addPattern(GradientPattern.class, covBoth, cPalette, down);

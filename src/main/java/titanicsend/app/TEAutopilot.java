@@ -4,13 +4,11 @@ import heronarts.lx.LX;
 import heronarts.lx.LXLoopTask;
 import heronarts.lx.clip.LXClip;
 import heronarts.lx.mixer.LXChannel;
-import heronarts.lx.osc.OscArgument;
 import heronarts.lx.osc.OscMessage;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.autopilot.events.TEPhraseEvent;
 import titanicsend.app.autopilot.utils.TEMixerUtils;
 import titanicsend.app.autopilot.utils.TETimeUtils;
-import titanicsend.pattern.tom.BouncingDots;
 import titanicsend.util.TE;
 
 import java.util.ArrayList;
@@ -25,6 +23,11 @@ public class TEAutopilot implements LXLoopTask {
     // do not change LX tempo unless the newly suggested tempo
     // differs by more than this amount
     private double TEMPO_DIFF_THRESHOLD = 0.05;
+
+    // if we predicted the wrong next phrase, fade out the
+    // phrase we were fading in over the next number of bars
+    // sort of a "we totally meant to do that!" kind of thing
+    private final int MISPREDICTED_FADE_OUT_BARS = 2;
 
     // various fader levels of importance
     private static double LEVEL_FULL = 1.0,
@@ -82,6 +85,19 @@ public class TEAutopilot implements LXLoopTask {
     public void resetHistory() {
         // historical logs of events for calculations
         history = new TEHistorian();
+
+        // phrase state
+        prevChannelName = null;
+        curChannelName = null;
+        nextChannelName = null;
+        oldNextChannelName = null;
+
+        prevPhrase = null;
+        curPhrase = null;
+        nextPhrase = null;
+        oldNextPhrase = null;
+
+        echoMode = false;
     }
 
     private void initializeTempoEMA() {
@@ -217,12 +233,11 @@ public class TEAutopilot implements LXLoopTask {
             if (echoMode) {
                  // if we need to echo out the old channel (usually when we predicted wrong)
                  // echo it out here
-                int fadeOutNumBars = 4;
-                if (currentPhraseLengthBars < fadeOutNumBars) {
+                if (currentPhraseLengthBars < MISPREDICTED_FADE_OUT_BARS) {
                     double oldNextChannelFaderFloorLevel = 0.0;
                     double oldNextChannelFaderCeilingLevel = LEVEL_ECHO;
                     double range = oldNextChannelFaderCeilingLevel - oldNextChannelFaderFloorLevel;
-                    double estFracRemaining = 1.0 - (currentPhraseLengthBars / fadeOutNumBars);
+                    double estFracRemaining = 1.0 - (currentPhraseLengthBars / MISPREDICTED_FADE_OUT_BARS);
                     double faderVal = range * estFracRemaining + oldNextChannelFaderFloorLevel;
                     TEMixerUtils.setFaderTo(lx, oldNextChannelName, faderVal);
                 }
@@ -249,14 +264,13 @@ public class TEAutopilot implements LXLoopTask {
         boolean isSamePhrase = (prevPhrase == curPhrase);
         TE.log("Prev: %s, Cur: %s, Next (est): %s, Old next: %s", prevPhrase, curPhrase, nextPhrase, oldNextPhrase);
 
+        TEMixerUtils.turnDownAllChannels(lx);
+
         if (isSamePhrase) {
             // our current channel should just keep running!
             // our next channel should be reset to 0.0
             // past channel == current channel, so no transition down needed
             TE.log("[AUTOVJ] Same phrase! no changes");
-
-            TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
-            TEMixerUtils.setFaderTo(lx, nextChannelName, LEVEL_OFF);
 
         } else {
             // update channel name & references based on phrase change
@@ -272,8 +286,6 @@ public class TEAutopilot implements LXLoopTask {
             if (predictedCorrectly) {
                 // we nailed it!
                 TE.log("[AUTOVJ] We predicted correctly!");
-                TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
-                TEMixerUtils.setFaderTo(lx, prevChannelName, LEVEL_OFF);
 
             } else {
                 // we didn't predict the phrase change correctly, turn off
@@ -282,9 +294,6 @@ public class TEAutopilot implements LXLoopTask {
                 oldNextChannel = TEMixerUtils.getChannelByName(lx, oldNextChannelName);
                 echoMode = (oldNextChannel != null);
                 TE.log("[AUTOVJ] We didn't predict right, oldNextChannelName=%s, echoMode=%s", oldNextChannelName, echoMode);
-
-                TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
-                TEMixerUtils.setFaderTo(lx, oldNextChannelName, LEVEL_OFF);
 
                 // pick new Patterns
                 //TODO(will) have the pick be dependent on past patterns we've
@@ -299,6 +308,8 @@ public class TEAutopilot implements LXLoopTask {
             //TE.log("Next: picked pattern=%d for channel=%s", nextPatternIdx, nextChannelName);
             nextChannel.goPatternIndex(nextPatternIdx);
         }
+
+        TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
 
         // trigger clips
         List<LXClip> clips = collectClipsToTrigger(curPhrase, isSamePhrase); // clips to start
