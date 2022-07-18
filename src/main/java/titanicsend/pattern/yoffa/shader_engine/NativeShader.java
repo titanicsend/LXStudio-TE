@@ -6,23 +6,27 @@ import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.util.GLBuffers;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
+import heronarts.lx.LX;
+import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.LXParameter;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.nio.*;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.jogamp.opengl.GL.*;
+import static titanicsend.pattern.yoffa.shader_engine.GeneralUniforms.*;
+
+// ***************************************************************************
+//
+// Class to store a user-specified value for a uniform parameter
+// in the shader
 
 //Technically we don't need to implement GLEventListener unless we plan on rendering on screen, but let's leave it
-//  for good practice
+//for good practice
 public class NativeShader implements GLEventListener {
 
     //we need to draw an object with a vertex shader to put our fragment shader on
@@ -62,15 +66,26 @@ public class NativeShader implements GLEventListener {
     private final Integer audioChannel;
     private ShaderProgram shaderProgram;
     private long startTime;
+
+    ByteBuffer backBuffer;
     private int[][] snapshot;
+
+    private ShaderOptions shaderOptions;
+    private int alphaMask;
+
     private AudioInfo audioInfo;
 
     private final int audioTextureWidth;
     private final int audioTextureHeight;
     FloatBuffer audioTextureData;
 
+    // map of user created uniforms.
+    protected HashMap<String, GeneralUniforms> uniforms = null;
+    // Direct buffers for passing data arrays to the shader as uniforms
+    protected IntBuffer intBuffer;
+    protected FloatBuffer floatBuffer;
 
-    public NativeShader(FragmentShader fragmentShader, int xResolution, int yResolution) {
+    public NativeShader(FragmentShader fragmentShader, int xResolution, int yResolution, ShaderOptions options) {
         this.xResolution = xResolution;
         this.yResolution = yResolution;
         this.fragmentShader = fragmentShader;
@@ -82,74 +97,103 @@ public class NativeShader implements GLEventListener {
         this.audioInfo = null;
         this.audioChannel = fragmentShader.getAudioInputChannel();
 
+        // gl-compatible buffer for reading offscreen surface to cpu memory
+        this.backBuffer = GLBuffers.newDirectByteBuffer(xResolution * yResolution * 4);
+        this.snapshot = new int[xResolution][yResolution];
+
+        // set shader options
+        this.shaderOptions = options;
+        this.setAlphaMask(shaderOptions.getAlpha());
+
         this.audioTextureWidth = 512;
         this.audioTextureHeight = 2;
         this.audioTextureData = GLBuffers.newDirectFloatBuffer(audioTextureHeight * audioTextureWidth);
+    }
 
+    /**
+     * Determines whether alpha values returned from the fragment shader will be used.  Can safely
+     * be changed while the shader is running.
+     *
+     * @param b - true to enable the alpha channel for this shader, false to ignore it, discard
+     *          whatever the shader does, and set alpha to full opacity
+     */
+    public void setAlphaMask(boolean b) {
+        this.alphaMask = (b) ? 0 : 0xff;
     }
 
     @Override
     public void init(GLAutoDrawable glAutoDrawable) {
-        initShaderProgram(glAutoDrawable);
+        glAutoDrawable.getContext().makeCurrent();
+        GL4 gl4 = glAutoDrawable.getGL().getGL4();
+
+        initShaderProgram(gl4);
         downloadTextureFiles(fragmentShader);
+        gl4.glUseProgram(shaderProgram.getProgramId());
+
         startTime = System.currentTimeMillis();
     }
 
     @Override
     public void display(GLAutoDrawable glAutoDrawable) {
+        // switch to this shader's gl context and render
+        glAutoDrawable.getContext().makeCurrent();
         GL4 gl4 = glAutoDrawable.getGL().getGL4();
-        setUpCanvas(gl4);
         setUniforms(gl4);
+        setUpCanvas(gl4);
         saveSnapshot(gl4, xResolution, yResolution);
-        gl4.glUseProgram(0);
     }
 
     private void saveSnapshot(GL4 gl4, int width, int height) {
-        //read colors directly from the buffer for perf
-        ByteBuffer buffer = GLBuffers.newDirectByteBuffer(width * height * 4);
+        backBuffer.rewind();
         gl4.glReadBuffer(GL_BACK);
-        gl4.glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+        gl4.glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, backBuffer);
 
-        //usually we'd write to a BufferedImage, but we're doing this every frame, so perf would be bad
-        //we're going to end up just using it for colors/co-ordinates, so just throw it in a 2d array
-        this.snapshot = new int[width][height];
         for (int h = 0; h < height; h++) {
             for (int w = 0; w < width; w++) {
-                // buffer is cycling 4 bytes for rgba
-                snapshot[w][height - h - 1] = new Color((buffer.get() & 0xff), (buffer.get() & 0xff),
-                        (buffer.get() & 0xff)).getRGB();
-                buffer.get();   // consume/ignore alpha
+                snapshot[w][h] = LXColor.rgba((backBuffer.get() & 0xff), (backBuffer.get() & 0xff),
+                        backBuffer.get() & 0xff, alphaMask | (backBuffer.get() & 0xff));
             }
         }
     }
 
     private void setUpCanvas(GL4 gl4) {
-        gl4.glUseProgram(shaderProgram.getProgramId());
-
+        // allocate geometry buffer handles
         int[] bufferHandlesB = new int[1];
         gl4.glGenBuffers(1, bufferHandlesB, 0);
 
+        // vertices
         bindBufferData(gl4, vertexBuffer, GL_ARRAY_BUFFER, Float.BYTES);
         gl4.glVertexAttribPointer(shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION),
                 3, GL4.GL_FLOAT, false, 0, 0);
         gl4.glEnableVertexAttribArray(shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION));
 
+        // geometry built from vertices (triangles!)
         bindBufferData(gl4, indexBuffer, GL_ELEMENT_ARRAY_BUFFER, Integer.BYTES);
         gl4.glDrawElements(GL2.GL_TRIANGLES, INDICES.length, GL2.GL_UNSIGNED_INT, 0);
-
-        gl4.glDisableVertexAttribArray(shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION));
     }
 
     private void setUniforms(GL4 gl4) {
         float timeSeconds = ((float) (System.currentTimeMillis() - startTime)) / 1000;
-        bindUniformFloat(gl4, Uniforms.TIME_SECONDS, timeSeconds);
 
-        int resLocation = gl4.glGetUniformLocation(shaderProgram.getProgramId(), Uniforms.RESOLUTION);
-        gl4.glUniform2f(resLocation, xResolution, yResolution);
+        // set standard shadertoy-style uniforms
+        setUniform(Uniforms.TIME_SECONDS, timeSeconds);
+        setUniform(Uniforms.RESOLUTION, (float) xResolution, (float) yResolution);
+        setUniform(Uniforms.MOUSE, 0f, 0f, 0f, 0f);
 
-        //dummy values for mouse makes sure shaders that change on mouse still compile
-        int mouseLocation = gl4.glGetUniformLocation(shaderProgram.getProgramId(), Uniforms.MOUSE);
-        gl4.glUniform4f(mouseLocation, 0, 0, 0, 0);
+        // add basic audio information uniforms
+        for (Map.Entry<Uniforms.Audio, Float> audioEntry : audioInfo.getUniformMap().entrySet()) {
+            setUniform(audioEntry.getKey().getUniformName(), audioEntry.getValue());
+        }
+
+        // if enabled, add all LX parameters as uniforms
+        if (shaderOptions.getLXParameterUniforms()) {
+            for (LXParameter customParameter : fragmentShader.getParameters()) {
+                setUniform(customParameter.getLabel() + Uniforms.CUSTOM_SUFFIX, customParameter.getValuef());
+            }
+        }
+
+        // add texture channels
+        // TODO - need to expand the "setUniform()" mechanism to support textures too.
 
         for (Map.Entry<Integer, Texture> textureInput : textures.entrySet()) {
             Texture texture = textureInput.getValue();
@@ -162,8 +206,8 @@ public class NativeShader implements GLEventListener {
             texture.disable(gl4);
         }
 
-        // Set up audio frequency data as a texture similar to shadertoy
-        if (audioChannel != null) {
+        // if enabled, set audio waveform and fft data as a 512x2 texture
+        if (audioChannel != null && shaderOptions.getWaveData()) {
 
             gl4.glActiveTexture(INDEX_TO_GL_ENUM.get(0));
             gl4.glEnable(GL_TEXTURE_2D);
@@ -178,39 +222,24 @@ public class NativeShader implements GLEventListener {
                 audioTextureData.put(n + audioTextureWidth, audioInfo.getWaveformData(n));
             }
 
- //           audioTextureData.rewind();
             gl4.glTexImage2D(GL4.GL_TEXTURE_2D, 0, GL4.GL_R32F, audioTextureWidth, audioTextureHeight, 0, GL4.GL_RED, GL_FLOAT, audioTextureData);
             gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-            int channelLocation = gl4.glGetUniformLocation(shaderProgram.getProgramId(), Uniforms.CHANNEL + this.audioChannel);
-            gl4.glUniform1i(channelLocation, 0);
-
+            setUniform(Uniforms.CHANNEL + this.audioChannel, (int) 0);
         }
 
-        for (LXParameter customParameter : fragmentShader.getParameters()) {
-            bindUniformFloat(gl4, customParameter.getLabel() + Uniforms.CUSTOM_SUFFIX, customParameter.getValuef());
-        }
-
-        for (Map.Entry<Uniforms.Audio, Float> audioEntry : audioInfo.getUniformMap().entrySet()) {
-            bindUniformFloat(gl4, audioEntry.getKey().getUniformName(), audioEntry.getValue());
-        }
+        // hand the complete uniform list to OpenGL
+        updateUniforms(gl4);
     }
 
-    private void bindUniformFloat(GL4 gl4, String name, float value) {
-        int location = gl4.glGetUniformLocation(shaderProgram.getProgramId(), name);
-        gl4.glUniform1f(location, value);
-    }
-
-    private void initShaderProgram(GLAutoDrawable glAutoDrawable) {
-        glAutoDrawable.getContext().makeCurrent();
-        GL4 gl4 = glAutoDrawable.getGL().getGL4();
+    private void initShaderProgram(GL4 gl4) {
         File vertexShader = new File("resources/shaders/framework/default.vs");
         shaderProgram = new ShaderProgram();
         String shaderCode = FRAGMENT_SHADER_TEMPLATE.replace(SHADER_BODY_PLACEHOLDER, fragmentShader.getShaderBody());
         shaderProgram.init(gl4, vertexShader, shaderCode);
+        setUpCanvas(gl4);
     }
 
     private void downloadTextureFiles(FragmentShader fragmentShader) {
@@ -266,4 +295,147 @@ public class NativeShader implements GLEventListener {
         return shaderProgram != null && shaderProgram.isInitialized();
     }
 
+    /*
+     Generic shader uniform handler - based on processing.opengl.PShader (www.processing.org)
+     The idea is that this mechanism can handle our normal shadertoy-like and LX engine generated
+     uniforms, plus any other uniforms the user wants to use.  This makes it easier to do things like
+     sending the current foreground color to the shader as a vec3.
+
+     When doing this, THE PATTERN/SHADER AUTHOR IS RESPONSIBLE for seeing that the uniform names match
+     in the Java pattern code and the shader.  Otherwise... nothing ... will happen.
+
+     Sigh... most of this code consists of ten zillion overloaded methods to set uniforms of all the supported
+     types. Oh yeah, and a couple of worker methods to manage the uniform list we're building.
+     */
+
+    // worker for adding user specified uniforms to our big list'o'uniforms
+    protected void addUniform(String name, int type, Object value) {
+        if (uniforms == null) {
+            uniforms = new HashMap<>();
+        }
+        uniforms.put(name, new GeneralUniforms(type, value));
+    }
+
+    // parse uniform list and create necessary GL objects
+    // TODO  add support for generalized array types and textures.  Once that's done
+    // TODO  we can use this subsystem for *all* uniforms and eliminate some complexity.
+    protected void updateUniforms(GL4 gl4) {
+        int[] v;
+        float[] vf;
+        if (uniforms != null && 0 < uniforms.size()) {
+            for (String name : uniforms.keySet()) {
+                int loc = gl4.glGetUniformLocation(shaderProgram.getProgramId(), name);
+                ;
+                if (loc == -1) {
+                    // LX.log("No uniform \"" + name + "\"  found in shader");
+                    continue;
+                }
+                GeneralUniforms val = uniforms.get(name);
+
+                switch (val.type) {
+                    case INT1:
+                        v = ((int[]) val.value);
+                        gl4.glUniform1i(loc, v[0]);
+                        break;
+                    case INT2:
+                        v = ((int[]) val.value);
+                        gl4.glUniform2i(loc, v[0], v[1]);
+                        break;
+                    case INT3:
+                        v = ((int[]) val.value);
+                        gl4.glUniform3i(loc, v[0], v[1], v[2]);
+                        break;
+                    case INT4:
+                        v = ((int[]) val.value);
+                        gl4.glUniform4i(loc, v[0], v[1], v[2], v[3]);
+                        break;
+                    case FLOAT1:
+                        vf = ((float[]) val.value);
+                        gl4.glUniform1f(loc, vf[0]);
+                        break;
+                    case FLOAT2:
+                        vf = ((float[]) val.value);
+                        gl4.glUniform2f(loc, vf[0], vf[1]);
+                        break;
+                    case FLOAT3:
+                        vf = ((float[]) val.value);
+                        gl4.glUniform3f(loc, vf[0], vf[1], vf[2]);
+                        break;
+                    case FLOAT4:
+                        vf = ((float[]) val.value);
+                        gl4.glUniform4f(loc, vf[0], vf[1], vf[2], vf[3]);
+                        break;
+                    default:
+                        LX.log("Unsupported uniform type");
+                        break;
+                }
+            }
+            uniforms.clear();
+        }
+    }
+
+    /**
+     * setter -- single int
+     */
+    public void setUniform(String name, int x) {
+        addUniform(name, INT1, new int[]{x});
+    }
+
+    /**
+     * 2 element int array or ivec2
+     */
+    public void setUniform(String name, int x, int y) {
+        addUniform(name, INT2, new int[]{x, y});
+    }
+
+    /**
+     * 3 element int array or ivec3
+     */
+    public void setUniform(String name, int x, int y, int z) {
+        addUniform(name, INT3, new int[]{x, y, z});
+    }
+
+    /**
+     * 4 element int array or ivec4
+     */
+    public void setUniform(String name, int x, int y, int z, int w) {
+        addUniform(name, GeneralUniforms.INT4, new int[]{x, y, z, w});
+    }
+
+    /**
+     * single float
+     */
+    public void setUniform(String name, float x) {
+        addUniform(name, GeneralUniforms.FLOAT1, new float[]{x});
+    }
+
+    /**
+     * 2 element float array or vec2
+     */
+    public void setUniform(String name, float x, float y) {
+        addUniform(name, GeneralUniforms.FLOAT2, new float[]{x, y});
+    }
+
+    /**
+     * 3 element float array or vec3
+     */
+    public void setUniform(String name, float x, float y, float z) {
+        addUniform(name, GeneralUniforms.FLOAT3, new float[]{x, y, z});
+    }
+
+    /**
+     * 4 element float array or vec4
+     */
+    public void setUniform(String name, float x, float y, float z, float w) {
+        addUniform(name, GeneralUniforms.FLOAT4, new float[]{x, y, z, w});
+    }
+
+    public void setUniform(String name, boolean x) {
+        addUniform(name, INT1, new int[]{(x) ? 1 : 0});
+    }
+
+    public void setUniform(String name, boolean x, boolean y) {
+        addUniform(name, INT2,
+                new int[]{(x) ? 1 : 0, (y) ? 1 : 0});
+    }
 }
