@@ -337,7 +337,8 @@ puts "  total assigned channels: #{total_channels_from_vertices}"
 
 puts "Total assigned channels, from the controllers:"
 total_channels_from_controllers = 0
-controllers.each do |_, controller_group|
+# This sort_by is ugly, but it just sorts by ascending vertex ID.
+controllers.sort_by { |_, c| c.first.id.split('-')[0].to_i }.each do |_, controller_group|
   controller_group.each do |controller|
     puts "  - controller #{controller.id} has #{controller.channels_assigned} assigned channel(s)"
     total_channels_from_controllers += controller.channels_assigned
