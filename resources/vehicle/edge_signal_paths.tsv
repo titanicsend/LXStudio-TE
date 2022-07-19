@@ -6,11 +6,11 @@ Edge ID	Signal from	Controller vertex
 100-115	Controller	100
 101-102	99-101	
 101-121	Controller	101
-102-111	Controller	26
-102-119	Controller	26
+102-111	Controller	102
+102-119	Controller	102
 102-121	101-102	
 109-110	27-109	
-109-111	Controller	109
+109-111	Controller	111
 109-112	112-113	
 109-113	Controller	109
 11-100	11-98	
@@ -39,9 +39,9 @@ Edge ID	Signal from	Controller vertex
 126-129	Controller	129
 128-129	Controller	129
 25-110	88-110	
-25-114	Controller	88
+25-114	Controller	25
 25-27	25-110	
-25-83	Controller	88
+25-83	Controller	25
 25-84	25-88	
 25-88	84-88	
 26-100	Controller	26
@@ -59,8 +59,8 @@ Edge ID	Signal from	Controller vertex
 28-113	28-115	
 28-115	26-115	
 30-118	118-119	
-30-31	Controller	33
-30-33	Controller	33
+30-31	Controller	30
+30-33	Controller	30
 30-38	33-38	
 30-42	42-118	
 31-118	30-31	
@@ -73,7 +73,7 @@ Edge ID	Signal from	Controller vertex
 33-39	33-37	
 36-123	36-37	
 36-37	37-123	
-36-38	Controller	56
+36-38	Controller	36
 36-43	43-57	
 36-56	Controller	56
 36-57	36-56	
@@ -131,7 +131,7 @@ Edge ID	Signal from	Controller vertex
 57-58	56-58	
 57-86	Controller	86
 58-122	Controller	122
-58-96	Controller	75
+58-96	Controller	96
 60-125	60-127	
 60-127	93-127	
 60-65	60-93	
@@ -142,7 +142,7 @@ Edge ID	Signal from	Controller vertex
 67-93	Controller	93
 69-127	Controller	69
 69-70	69-82	
-69-82	Controller	92
+69-82	Controller	82
 69-90	Controller	90
 69-93	Controller	69
 70-127	69-127	
@@ -176,8 +176,8 @@ Edge ID	Signal from	Controller vertex
 83-84	25-83	
 83-85	Controller	83
 84-85	83-84	
-84-86	Controller	86
-84-88	Controller	86
+84-86	Controller	84
+84-88	Controller	84
 86-120	Controller	86
 86-88	84-86	
 88-110	Controller	88
