@@ -122,12 +122,14 @@ class Controller
       edge = graph.edges.values.flatten.find { |edge| edge.id == edge_id }
       controller_vertex = vertices.find { |vertex_id, vertex| vertex_id.to_s == controller_vertex_id }[1]
       if controllers[controller_vertex.id] != nil
-        # Left to right for exhausting signal channels
-        last_controller = controllers[controller_vertex.id].last
-        if last_controller.channels_assigned >= MAX_CHANNELS_PER_CONTROLLER
+        # Left to right for exhausting signal channels. But, we might have non-exhausted controllers due to the needs
+        # of assigning panels.
+        least_addressed_controller = controllers[controller_vertex.id].min_by(&:channels_assigned)
+
+        if least_addressed_controller.channels_assigned >= MAX_CHANNELS_PER_CONTROLLER
           assign_new_controller_at_vertex(vertex: controller_vertex, edge: edge, panel: nil, controllers: controllers)
         else
-          last_controller.assign_signal_to_edge(edge: edge)
+          least_addressed_controller.assign_signal_to_edge(edge: edge)
         end
       else
         assign_new_controller_at_vertex(vertex: controller_vertex, edge: edge, panel: nil, controllers: controllers)
@@ -149,10 +151,12 @@ class Controller
       controller_vertex = vertices.find { |vertex_id, vertex| vertex_id.to_s == controller_vertex_id }[1]
 
       if controllers[controller_vertex.id] != nil
-        # Left to right for exhausting signal channels
-        last_controller = controllers[controller_vertex.id].last
-        if last_controller.channels_assigned < MAX_CHANNELS_PER_CONTROLLER && last_controller.channels_assigned + panel.channels_required <= MAX_CHANNELS_PER_CONTROLLER
-          last_controller.assign_signal_to_panel(panel: panel)
+        # Left to right for exhausting signal channels. But, we might have non-exhausted controllers due to the needs
+        # of assigning panels.
+        least_addressed_controller = controllers[controller_vertex.id].min_by(&:channels_assigned)
+
+        if least_addressed_controller.channels_assigned < MAX_CHANNELS_PER_CONTROLLER && least_addressed_controller.channels_assigned + panel.channels_required <= MAX_CHANNELS_PER_CONTROLLER
+          least_addressed_controller.assign_signal_to_panel(panel: panel)
         else
           assign_new_controller_at_vertex(vertex: controller_vertex, edge: nil, panel: panel, controllers: controllers)
         end
