@@ -25,8 +25,8 @@ class Controller
 
   def self.load_controllers(edge_signal_filename:, panel_signal_filename:, graph:, vertices:)
     controllers = {}
-    populate_edge_controllers(filename: edge_signal_filename, controllers: controllers, graph: graph, vertices: vertices)
     populate_panel_controllers(filename: panel_signal_filename, controllers: controllers, graph: graph, vertices: vertices)
+    populate_edge_controllers(filename: edge_signal_filename, controllers: controllers, graph: graph, vertices: vertices)
 
     controllers
   end
