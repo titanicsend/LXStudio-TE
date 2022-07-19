@@ -37,16 +37,20 @@ public class OffscreenShaderRenderer {
     }
 
     public void initializeNativeShader() {
-        if (!nativeShader.isInitialized()) {
-            nativeShader.init(offscreenDrawable);
-        }
+        ;  // do nothing, for now
     }
 
     public int[][] getFrame(AudioInfo audioInfo) {
+        // initialize as late as possible to avoid stepping on LX's toes
+        if (!nativeShader.isInitialized()) {
+            nativeShader.init(offscreenDrawable);
+        }
+
         nativeShader.updateAudioInfo(audioInfo);
         nativeShader.display(offscreenDrawable);
         return nativeShader.getSnapshot();
     }
+
 
     public void reset() {
         nativeShader.reset();
