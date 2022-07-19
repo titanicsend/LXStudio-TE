@@ -142,10 +142,9 @@ class Controller
     rows = CSV.read(filename, col_sep: "\t")
 
     rows.drop(1).each do |row|
-      panel_id, _, _, _, panel_type, channels_required, controller_vertex_id = row
+      panel_id, _, _, _, _, channels_required, controller_vertex_id = row
 
       panel = graph.panels.values.flatten.find { |panel| panel.id == panel_id }
-      panel.panel_type = panel_type
       panel.channels_required = channels_required.to_i
 
       controller_vertex = vertices.find { |vertex_id, vertex| vertex_id.to_s == controller_vertex_id }[1]
