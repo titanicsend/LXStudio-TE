@@ -44,6 +44,10 @@ public class PatternTarget {
         return addModelsWithIndividualCanvases(pattern.getModel().getPanelsBySection(section));
     }
 
+    public static PatternTarget allPointsAsCanvas(TEAudioPattern pattern) {
+        return new PatternTarget(pattern).addPointsAsCanvas(pattern.getModel().getPoints());
+    }
+
     public static PatternTarget allEdgesAsCanvas(TEAudioPattern pattern) {
         return new PatternTarget(pattern).addPointsAsCanvas(pattern.getModel().edgePoints);
     }
