@@ -5,6 +5,7 @@ import heronarts.lx.LXLoopTask;
 import heronarts.lx.clip.LXClip;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.osc.OscMessage;
+import heronarts.lx.pattern.LXPattern;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.autopilot.events.TEPhraseEvent;
 import titanicsend.app.autopilot.utils.TEMixerUtils;
@@ -161,6 +162,14 @@ public class TEAutopilot implements LXLoopTask {
     @Override
     public void loop(double deltaMs) {
         long now = System.currentTimeMillis();
+
+        // check our patterns are indexed
+        // this requires that LX's mixer / channels are setup, so
+        // we do this here, as opposed to in the constructor, which is called
+        // in TEApp before LX is really finished
+        if (!this.library.isReady())
+            this.library.indexPatterns();
+
         try {
             // if autopilot isn't enabled, just ignore for now
             if (!isEnabled()) return;
@@ -257,7 +266,7 @@ public class TEAutopilot implements LXLoopTask {
         nextPhrase = guessNextPhrase(newPhrase);
     }
 
-    private void onPhraseChange(String oscAddress, long timestamp, double deltaMs) {
+    private void onPhraseChange(String oscAddress, long timestamp, double deltaMs) throws Exception {
         // detect phrase type and update state to reflect this
         this.updatePhraseState(TEPhrase.resolvePhrase(oscAddress));
         boolean predictedCorrectly = (oldNextPhrase == curPhrase);
@@ -282,10 +291,19 @@ public class TEAutopilot implements LXLoopTask {
             curChannel = TEMixerUtils.getChannelByName(lx, curChannelName);
             nextChannel = TEMixerUtils.getChannelByName(lx, nextChannelName);
 
+            LXPattern newCurPattern;
+
             // set fader levels
             if (predictedCorrectly) {
                 // we nailed it!
                 TE.log("[AUTOVJ] We predicted correctly!");
+
+                // set these to null
+                oldNextChannelName = null;
+                oldNextChannel = null;
+                echoMode = false; // TODO(will) maybe we want this true here? to echo out anyway
+
+                newCurPattern = curChannel.getActivePattern();
 
             } else {
                 // we didn't predict the phrase change correctly, turn off
@@ -295,18 +313,29 @@ public class TEAutopilot implements LXLoopTask {
                 echoMode = (oldNextChannel != null);
                 TE.log("[AUTOVJ] We didn't predict right, oldNextChannelName=%s, echoMode=%s", oldNextChannelName, echoMode);
 
-                // pick new Patterns
-                //TODO(will) have the pick be dependent on past patterns we've
-                // picked so that they don't get overplayed! Also constrain
-                // to be compatible (ie: on edges vs on panels, color, etc).
-                int curPatternIdx = TEMixerUtils.pickRandomPatternFromChannel(curChannel);
-                //TE.log("Current: picked pattern=%d for channel=%s", curPatternIdx, curChannelName);
-                curChannel.goPatternIndex(curPatternIdx);
+                // pick a new pattern for our current channel, since we didn't see this coming
+                // try to make it compatible with the one we were fading in, since we'll fade that mistaken one out
+                if (prevChannel != null) {
+                    newCurPattern = this.library.pickRandomCompatibleNextPattern(prevChannel.getActivePattern(), prevPhrase, curPhrase);
+                } else {
+                    newCurPattern = this.library.pickRandomPattern(curPhrase);
+                }
+
+                // make sure this newCurPattern is actually in our curChannel to activate!
+                TE.log("curChannel=%s indexof pattern=%s is %d", curChannelName, newCurPattern, curChannel.patterns.indexOf(newCurPattern));
+
+                // print the current active pattern, along with what we're going to change to
+                TE.log("active pattern in current channel: %s, going to change to=%s", curChannel.getActivePattern(), newCurPattern);
+                curChannel.goPattern(newCurPattern);
+
+                // make sure we actually updated the curChannel's active pattern
+                TE.log("Selected new current pattern: %s (active=%s), for channel %s", newCurPattern, newCurPattern, curChannelName);
             }
 
-            int nextPatternIdx = TEMixerUtils.pickRandomPatternFromChannel(nextChannel);
-            //TE.log("Next: picked pattern=%d for channel=%s", nextPatternIdx, nextChannelName);
-            nextChannel.goPatternIndex(nextPatternIdx);
+            // pick a pattern we'll start fading into on "nextChannel" during the new few bars
+            LXPattern newNextPattern = this.library.pickRandomCompatibleNextPattern(newCurPattern, curPhrase, nextPhrase);
+            nextChannel.goPattern(newNextPattern);
+            TE.log("Selected new next pattern: %s, for channel %s", newNextPattern, nextChannelName);
         }
 
         TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);

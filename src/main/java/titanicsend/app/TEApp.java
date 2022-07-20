@@ -265,7 +265,6 @@ public class TEApp extends PApplet implements LXPlugin  {
     l.addPattern(OrganicPatternConfig.WavyEdges.class, covPanelPartial, cNonConforming, down);
     l.addPattern(PBXorcery.class, covPanelPartial, cNonConforming, up);
     l.addPattern(OrganicPatternConfig.AlternatingDots.class, covPanelPartial, cNonConforming, up);
-    l.addPattern(OrganicPatternConfig.BreathingDots.class, covPanelPartial, cNonConforming, up);
     l.addPattern(OrganicPatternConfig.NeonBarsEdges.class, covEdges, cPalette, up);
     l.addPattern(OrganicPatternConfig.BasicElectricEdges.class, covEdges, cNonConforming, up);
     l.addPattern(OrganicPatternConfig.PowerGrid.class, covEdges, cPalette, up);
