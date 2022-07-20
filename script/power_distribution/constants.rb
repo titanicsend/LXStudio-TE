@@ -18,3 +18,5 @@ AC_POWER_OUTLET_BANK_VERTICES = [25, 26, 69, 75]
 # as wiggle room. We can always cut these cables down to length later, and
 # extra length is not the end of the world.
 AC_POWER_WIGGLE_FEET = 12
+
+MAX_CONTROLLER_DISTANCE_SIGNAL_TO_FIRST_PIXEL_FEET = 7
