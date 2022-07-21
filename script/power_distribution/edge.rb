@@ -1,5 +1,6 @@
+require './calculate_line_lengths'
 require 'csv'
-require './constants.rb'
+require './constants'
 
 class Edge
   # 60 / m LED strips
@@ -60,7 +61,9 @@ class Edge
 
   def signal_in_vertex
     if signal_from.is_a?(Vertex)
-      signal_from
+      # `signal_from` is actually the vertex of the controller. So, let's find the closest vertex
+      # on the edge to the controller.
+      vertices.min_by { |v| straight_line_distance({ :x => v.x, :y => v.y, :z => v.z }, signal_from) }
     elsif signal_from.is_a?(Edge)
       (signal_from.vertices & vertices).first
     else
