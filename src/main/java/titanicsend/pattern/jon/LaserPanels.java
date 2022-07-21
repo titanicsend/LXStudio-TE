@@ -18,8 +18,44 @@ import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 
 @LXCategory("Native Shaders Panels")
 public class LaserPanels extends TEAudioPattern {
+
+    // variable speed fake "iTime" timer class
+    // allows smooth speed changes
+    class VariableTimer {
+        int previous = 0;
+        int current = 0;
+        float time = 0.0f;
+        float scale = 1.0f;
+
+        VariableTimer() {
+            scale = 1.0f;
+            reset();
+        }
+
+        void reset() {
+            previous = current = (int) System.currentTimeMillis();
+            time = 0.0f;
+        }
+
+        void setScale(float s) {
+            scale = s;
+        }
+
+        void tick() {
+            float delta = (float) previous - current;
+            time += scale * (delta / 1000.0);
+            previous = current;
+            current = (int) System.currentTimeMillis();
+        }
+
+        float getTime() {
+            return time;
+        }
+    }
+
     NativeShaderPatternEffect effect;
     NativeShader shader;
+    VariableTimer vTime;
 
     // Controls
     // In this pattern the "energy" is how quickly the scenes can progress,
@@ -36,16 +72,16 @@ public class LaserPanels extends TEAudioPattern {
                     .setDescription("Beam Count 2");
 
     public final CompoundParameter glow =
-            new CompoundParameter("Fog", 0.25, 0, 2)
+            new CompoundParameter("Fog", 0.75, 0, 2)
                     .setDescription("Fog glow level");
 
     public final CompoundParameter hScan =
-            new CompoundParameter("hScan", 0.000, 0., 0.035)
+            new CompoundParameter("Dance", 0.000, 0., 0.035)
                     .setDescription("Horizontal Movement");
 
     public final BooleanParameter vScan =
-            new BooleanParameter("vScan", false)
-                    .setDescription("Vertical rotation");
+            new BooleanParameter("Scan", false)
+                    .setDescription("Vertical movement");
 
     public final BooleanParameter rotate =
             new BooleanParameter("Spin", false)
@@ -102,10 +138,13 @@ public class LaserPanels extends TEAudioPattern {
 
         effect = new NativeShaderPatternEffect("lazerpanels2.fs",
                 PatternTarget.allPanelsAsCanvas(this), options);
+
+        vTime = new VariableTimer();
     }
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
+        vTime.tick();
 
         // Example of sending a vec3 to a shader.
         // Get the current color and convert to
@@ -120,8 +159,8 @@ public class LaserPanels extends TEAudioPattern {
 
         shader.setUniform("color", rn, gn, bn);
 
-        shader.setUniform("beamCount1",(int) beamCount1.getValuef());
-        shader.setUniform("beamCount2",(int) beamCount2.getValuef());
+        shader.setUniform("beamCount1",beamCount1.getValuef());
+        shader.setUniform("beamCount2",beamCount2.getValuef());
 
         shader.setUniform("glow",glow.getValuef());
         shader.setUniform("hScan",hScan.getValuef());
@@ -131,9 +170,13 @@ public class LaserPanels extends TEAudioPattern {
         shader.setUniform("rotate",rev * rotate.getValuef());
 
         // calculate beats/sec for light "spin rate"
+        shader.setUniform("vTime",vTime.getTime());
+
+        // set time speed for next frame
         float beat = (float) lx.engine.tempo.bpm();
         float scale = beatScale.getValuef();
-        shader.setUniform("bpm",beat/scale);
+        vTime.setScale(beat/scale);
+
 
         // Sound reactivity - various brightness features are related to energy
         float e = energy.getValuef();
