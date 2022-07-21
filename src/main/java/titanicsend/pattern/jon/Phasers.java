@@ -2,14 +2,11 @@ package titanicsend.pattern.jon;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.Tempo;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
-import heronarts.lx.modulator.Click;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
-import heronarts.lx.parameter.ObjectParameter;
 import titanicsend.pattern.TEAudioPattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
@@ -17,7 +14,7 @@ import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 
 @LXCategory("Native Shaders Panels")
-public class LaserPanels extends TEAudioPattern {
+public class Phasers extends TEAudioPattern {
 
     // variable speed fake "iTime" timer class
     // allows smooth speed changes
@@ -115,7 +112,7 @@ public class LaserPanels extends TEAudioPattern {
             registerColor("Color", "color", ColorType.PANEL,
                     "Panel Color");
 
-    public LaserPanels(LX lx) {
+    public Phasers(LX lx) {
         super(lx);
         addParameter("beamCount1",beamCount1);
         addParameter("beamCount2",beamCount2);
@@ -136,7 +133,7 @@ public class LaserPanels extends TEAudioPattern {
         options.useAlpha(true);
         options.useLXParameterUniforms(false);
 
-        effect = new NativeShaderPatternEffect("lazerpanels2.fs",
+        effect = new NativeShaderPatternEffect("phasers.fs",
                 PatternTarget.allPanelsAsCanvas(this), options);
 
         vTime = new VariableTimer();
