@@ -12,9 +12,20 @@ import java.util.stream.Stream;
 
 public class TEPatternLibrary {
     private LX lx;
+
+    // list of all registered patterns with this pattern library
     private ArrayList<TEPatternRecord> patternRecords;
+
+    // map pattern record -> list of patterns
     private HashMap<TEPatternRecord, ArrayList<LXPattern>> rec2patterns = null;
+
+    // map a (phrase, pattern) -> pattern record
     private HashMap<PhrasePatternCompositeKey, TEPatternRecord> phrasePattern2rec = null;
+
+    // record the number of bars particular patterns have played to
+    // try to even out how many times we're picking certain patterns
+    private HashMap<LXPattern, Double> patternHistoryCounter;
+    private double numBarsTotal = 0.0;
 
     public class PhrasePatternCompositeKey {
         public Class<? extends LXPattern> pattern;
@@ -132,6 +143,7 @@ public class TEPatternLibrary {
         this.lx = lx;
         this.patternRecords = new ArrayList<TEPatternRecord>();
         this.phrasePattern2rec = new HashMap<>();
+        this.patternHistoryCounter = new HashMap<>();
     }
 
     public void addPattern(
@@ -140,6 +152,7 @@ public class TEPatternLibrary {
             TEPatternColorCategoryType cc,
             TEPhrase ph) {
 
+        //TE.log("Adding pattern: %s (phrase=%s)", p, ph);
         // add to mapping of rec -> patterns
         TEPatternRecord rec = new TEPatternRecord(p, c, cc, ph);
         this.patternRecords.add(rec);
@@ -206,7 +219,7 @@ public class TEPatternLibrary {
     public TEPatternRecord getRecFromPattern(LXPattern pat, TEPhrase phrase) {
         PhrasePatternCompositeKey key = new PhrasePatternCompositeKey(pat.getClass(), phrase);
         TEPatternRecord rec = phrasePattern2rec.get(key);
-        TE.log("Looking up record from pattern=%s, phrase=%s ... found=%s", pat, phrase, rec);
+        //TE.log("Looking up record from pattern=%s, phrase=%s ... found=%s", pat, phrase, rec);
         return rec;
     }
 
@@ -233,6 +246,7 @@ public class TEPatternLibrary {
         if (matchingRecords.size() == 0) {
             Stream<TEPatternRecord> s2 = patternRecords.stream().filter(r -> r.phraseType == newPhrase);
             matchingRecords = s2.collect(Collectors.toCollection(ArrayList::new));
+            TE.log("Did not find enough compatible patterns, filtering only by phrase now: %d found", matchingRecords.size());
         }
 
         // now for each record, pull in the corresponding pattern(s) and add to a list
@@ -284,11 +298,23 @@ public class TEPatternLibrary {
         ArrayList<LXPattern> matchingPatterns = getCompatibleNextPatterns(curPhrase, curPattern, nextPhrase);
 
         // randomly pick one
-        Random rand = new Random();
-        int randomIndex = rand.nextInt(matchingPatterns.size());
-        TE.log("Picked random compatible idx=%d from size=%d", randomIndex, matchingPatterns.size());
+        //Random rand = new Random();
+        //int randomIndex = rand.nextInt(matchingPatterns.size());
+        //TE.log("Picked random compatible idx=%d from size=%d", randomIndex, matchingPatterns.size());
 
-        return matchingPatterns.get(randomIndex);
+        // pick least played pattern
+        Collections.sort(matchingPatterns, new Comparator<LXPattern>() {
+            @Override
+            public int compare(LXPattern a, LXPattern b) {
+                double barsA = patternHistoryCounter.get(a) == null ? 0 : patternHistoryCounter.get(a);
+                double barsB = patternHistoryCounter.get(b) == null ? 0 : patternHistoryCounter.get(b);
+                return Double.compare(barsA, barsB); // ascending
+            }
+        });
+
+        LXPattern leastPlayed = matchingPatterns.get(0);
+        TE.log("Picked least played pattern: %s", leastPlayed);
+        return leastPlayed;
     }
 
     /**
@@ -360,5 +386,38 @@ public class TEPatternLibrary {
                 TE.log("\tChannel=%s has %d missing patterns", TEMixerUtils.getChannelNameFromPhraseType(pt), count);
             }
         }
+
+        // TODO(will) iterate through patterns and ensure each one has a record
+    }
+
+    /**
+     * Keep track of how long each pattern has run historically.
+     *
+     * @param LXPattern cur
+     * @param LXPattern curNext
+     * @param double barCount that both these patterns ran
+     */
+    public void logPhrase(LXPattern cur, LXPattern curNext, double barCount) {
+        numBarsTotal += barCount;
+
+        // pattern from curChannel
+        if (cur != null) {
+            if (patternHistoryCounter.containsKey(cur))
+                patternHistoryCounter.put(cur, patternHistoryCounter.get(cur) + barCount);
+            else
+                patternHistoryCounter.put(cur, barCount);
+        }
+
+        // pattern we were fading in, from the nextChannel
+        if (curNext != null) {
+            if (patternHistoryCounter.containsKey(curNext))
+                patternHistoryCounter.put(curNext, patternHistoryCounter.get(curNext) + barCount);
+            else
+                patternHistoryCounter.put(curNext, barCount);
+        }
+
+//        for (Map.Entry<LXPattern, Double> entry : patternHistoryCounter.entrySet()) {
+//            TE.log("-> counter: %s has %f bars played", entry.getKey(), entry.getValue());
+//        }
     }
 }

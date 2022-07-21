@@ -69,6 +69,7 @@ public class TEApp extends PApplet implements LXPlugin  {
   private GigglePixelBroadcaster gpBroadcaster;
 
   private TEAutopilot autopilot;
+  private TEPatternLibrary library;
 
   @Override
   public void settings() {
@@ -153,7 +154,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPatterns(ShaderEdgesPatternConfig.getPatterns());
 
     // create our library for autopilot
-    TEPatternLibrary library = initializePatternLibrary(lx);
+    this.library = initializePatternLibrary(lx);
 
     int myGigglePixelID = 73;  // Looks like "TE"
     try {
@@ -261,8 +262,8 @@ public class TEApp extends PApplet implements LXPlugin  {
     l.addPattern(ShaderEdgesPatternConfig.SynthWavesEdges.class, covEdges, cPalette, down);
 
     // UP patterns
-    l.addPattern(NoisePattern.class, covPanelPartial, cNonConforming, down);
-    l.addPattern(OrganicPatternConfig.WavyEdges.class, covPanelPartial, cNonConforming, down);
+    l.addPattern(NoisePattern.class, covPanelPartial, cNonConforming, up);
+    l.addPattern(OrganicPatternConfig.WavyEdges.class, covPanelPartial, cNonConforming, up);
     l.addPattern(PBXorcery.class, covPanelPartial, cNonConforming, up);
     l.addPattern(OrganicPatternConfig.AlternatingDots.class, covPanelPartial, cNonConforming, up);
     l.addPattern(OrganicPatternConfig.NeonBarsEdges.class, covEdges, cPalette, up);

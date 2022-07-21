@@ -273,7 +273,17 @@ public class TEAutopilot implements LXLoopTask {
         boolean isSamePhrase = (prevPhrase == curPhrase);
         TE.log("Prev: %s, Cur: %s, Next (est): %s, Old next: %s", prevPhrase, curPhrase, nextPhrase, oldNextPhrase);
 
-        TEMixerUtils.turnDownAllChannels(lx);
+        // record history for pattern library
+        // need to do this before we a) pick new patterns, and b) logPhrase() with historian
+        double numBarsInLastPhraseRun = history.getRepeatedPhraseBarProgress(lx.engine.tempo.bpm());
+        if (numBarsInLastPhraseRun > 0) {
+            LXPattern curPattern = curChannel.getActivePattern();
+            LXPattern curNextPattern = nextChannel.getActivePattern();
+            library.logPhrase(curPattern, curNextPattern, numBarsInLastPhraseRun);
+        }
+
+        // clear mixer state
+        TEMixerUtils.turnDownAllChannels(lx, true);
 
         if (isSamePhrase) {
             // our current channel should just keep running!
@@ -291,7 +301,7 @@ public class TEAutopilot implements LXLoopTask {
             curChannel = TEMixerUtils.getChannelByName(lx, curChannelName);
             nextChannel = TEMixerUtils.getChannelByName(lx, nextChannelName);
 
-            LXPattern newCurPattern;
+            LXPattern newCurPattern = curChannel.getActivePattern();
 
             // set fader levels
             if (predictedCorrectly) {
@@ -302,8 +312,6 @@ public class TEAutopilot implements LXLoopTask {
                 oldNextChannelName = null;
                 oldNextChannel = null;
                 echoMode = false; // TODO(will) maybe we want this true here? to echo out anyway
-
-                newCurPattern = curChannel.getActivePattern();
 
             } else {
                 // we didn't predict the phrase change correctly, turn off
