@@ -97,10 +97,10 @@ Edge ID	Signal from	Controller vertex
 44-47	47-50	
 44-50	37-44	
 45-122	Controller	122
-45-123	Controller	45
-45-46	Controller	45
+45-123	Controller	50
+45-46	Controller	50
 45-47	45-122	
-45-50	Controller	45
+45-50	Controller	50
 46-122	Controller	122
 46-123	36-123	
 46-56	45-46	
@@ -144,7 +144,7 @@ Edge ID	Signal from	Controller vertex
 69-70	69-82	
 69-82	Controller	69
 69-90	Controller	93
-69-93	Controller	69
+69-93	Controller	93
 70-127	69-127	
 70-81	Controller	70
 70-82	69-70	
