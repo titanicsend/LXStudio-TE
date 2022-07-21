@@ -319,10 +319,6 @@ controllers.each do |_, assigned_controllers_at_vertex|
   total_controllers += assigned_controllers_at_vertex.length
 end
 
-if total_controllers != EXPECTED_TOTAL_CONTROLLER_COUNT
-  puts "loaded #{total_controllers} controllers; expected #{EXPECTED_TOTAL_CONTROLLER_COUNT}"
-end
-
 puts "Total assigned channels, from the vertices:"
 total_channels_from_vertices = 0
 vertices.each do |_, vertex|
@@ -340,7 +336,7 @@ total_channels_from_controllers = 0
 # This sort_by is ugly, but it just sorts by ascending vertex ID.
 controllers.sort_by { |_, c| c.first.id.split('-')[0].to_i }.each do |_, controller_group|
   controller_group.each do |controller|
-    puts "  - controller #{controller.id} has #{controller.channels_assigned} assigned channel(s)"
+    puts "  - controller #{controller.id} has #{controller.channels_assigned} assigned channels: #{controller.edges.count} edge(s), #{controller.panels.count} panel(s)"
     total_channels_from_controllers += controller.channels_assigned
   end
 end
@@ -349,6 +345,8 @@ puts "  total assigned channels: #{total_channels_from_controllers}"
 if total_channels_from_vertices != total_channels_from_controllers
   raise "expected total number of vertices to be the same!"
 end
+
+puts "Total assigned controllers: #{total_controllers}"
 
 edge_to_box = {}
 boxes.values.flatten.each do |box|
