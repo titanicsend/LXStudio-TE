@@ -256,7 +256,6 @@ public class TEApp extends PApplet implements LXPlugin  {
     l.addPattern(OrganicPatternConfig.WavyEdges.class, covEdges, cPalette, down);
     l.addPattern(NoisePattern.class, covBoth, cPalette, down);
     l.addPattern(ShaderPanelsPatternConfig.Galaxy.class, covPanelPartial, cPalette, down);
-    l.addPattern(ShaderPanelsPatternConfig.SynthWaves.class, covPanelPartial, cPalette, down);
     l.addPattern(ShaderPanelsPatternConfig.LightBeamsPattern.class, covPanelPartial, cPalette, down);
     l.addPattern(ShaderPanelsPatternConfig.NeonRipples.class, covPanels, cPalette, down);
     l.addPattern(ShaderEdgesPatternConfig.SynthWavesEdges.class, covEdges, cPalette, down);
@@ -266,9 +265,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     l.addPattern(OrganicPatternConfig.WavyEdges.class, covPanelPartial, cNonConforming, up);
     l.addPattern(PBXorcery.class, covPanelPartial, cNonConforming, up);
     l.addPattern(OrganicPatternConfig.AlternatingDots.class, covPanelPartial, cNonConforming, up);
-    l.addPattern(OrganicPatternConfig.NeonBarsEdges.class, covEdges, cPalette, up);
     l.addPattern(OrganicPatternConfig.BasicElectricEdges.class, covEdges, cNonConforming, up);
-    l.addPattern(OrganicPatternConfig.PowerGrid.class, covEdges, cPalette, up);
     l.addPattern(SparklePattern.class, covBoth, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.Electric.class, covPanelPartial, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.JetStream.class, covPanels, cNonConforming, up);

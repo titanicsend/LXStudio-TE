@@ -39,7 +39,7 @@ public class TEAutopilot implements LXLoopTask {
 
     // Probability that we launch CHORUS clips upon a repeated CHORUS phrase
     // sometimes there are like 5 CHORUS's in a row, and want to keep some variety
-    private static float PROB_CLIPS_ON_SAME_PHRASE = 0.5f;
+    private static float PROB_CLIPS_ON_SAME_PHRASE = 1f;
 
     // if OSC messages are older than this, throw them out
     private static long OSC_MSG_MAX_AGE_MS = 5 * 1000;
@@ -59,7 +59,10 @@ public class TEAutopilot implements LXLoopTask {
     // our pattern library, used to filter for new patterns
     private TEPatternLibrary library;
 
-    // transition state fields
+    // "oldNext" is essentially the echo channel -- we use it
+    // to gradually fade out a pattern that may have been abruptly cut off
+    // for example, we were transitioning from UP -> CHORUS, but all of a sudden we
+    // see a DOWN, we fade out the "old next" (CHORUS) channel over 1-2 bars
     private LXChannel prevChannel, curChannel, nextChannel, oldNextChannel;
     private boolean echoMode = false;
     private TEChannelName prevChannelName, curChannelName, nextChannelName, oldNextChannelName;
@@ -67,6 +70,10 @@ public class TEAutopilot implements LXLoopTask {
                      curPhrase = null,
                      nextPhrase = null,
                      oldNextPhrase = null;
+
+    // use this to track the last set value of each of these faders
+    private double nextChannelFaderVal = 0.0,
+                   oldNextChannelFaderVal = 0.0;
 
     // FX channels
     private LXChannel triggerChannel = null,
@@ -231,11 +238,20 @@ public class TEAutopilot implements LXLoopTask {
                 double estFracCompleted = currentPhraseLengthBars / estPhraseLengthBars;
 
                 // over consecutive phrases, we want to steadily approach full fader, but never get there
-                double nextChannelFaderFloorLevel = LEVEL_FULL * (1.0 - Math.pow(0.5, repeatedPhraseCount - 1)); // 0 -> .5 - > .75  -> etc
-                double nextChannelFaderCeilingLevel = LEVEL_FULL * (1.0 - Math.pow(0.5, repeatedPhraseCount));  // .5 -> .75 -> .875 -> etc
+                //double nextChannelFaderFloorLevel = Math.min(
+                //        nextChannelFaderVal,
+                //        LEVEL_FULL * (1.0 - Math.pow(0.5, repeatedPhraseCount - 1))); // 0 -> .5 - > .75  -> etc
+                //double nextChannelFaderCeilingLevel = LEVEL_FULL * (1.0 - Math.pow(0.5, repeatedPhraseCount));  // .5 -> .75 -> .875 -> etc
+                double normalizedNumPhrases = repeatedPhraseLengthBars / estPhraseLengthBars + 1.;
+                double nextChannelFaderFloorLevel = Math.min(
+                        nextChannelFaderVal,
+                        LEVEL_FULL * (1.0 - Math.pow(0.5, normalizedNumPhrases - 1))); // 0 -> .5 - > .75  -> etc
+                double nextChannelFaderCeilingLevel = LEVEL_FULL * (1.0 - Math.pow(0.5, normalizedNumPhrases));  // .5 -> .75 -> .875 -> etc
+
                 double range = nextChannelFaderCeilingLevel - nextChannelFaderFloorLevel;
-                double faderVal = range * estFracCompleted + nextChannelFaderFloorLevel;
-                TEMixerUtils.setFaderTo(lx, nextChannelName, faderVal);
+                // can play around with the 1.5 exponent to make curve steeper!
+                nextChannelFaderVal = range * Math.pow(estFracCompleted, 1.5) + nextChannelFaderFloorLevel;
+                TEMixerUtils.setFaderTo(lx, nextChannelName, nextChannelFaderVal);
             }
 
             // update fader value for OLD NEXT channel
@@ -266,12 +282,21 @@ public class TEAutopilot implements LXLoopTask {
         nextPhrase = guessNextPhrase(newPhrase);
     }
 
+    private void startPattern(LXChannel channel, LXPattern pattern) {
+        // disable the 100ms latency restriction LX has
+        channel.transitionEnabled.setValue(false);
+
+        // trigger the pattern
+        channel.goPattern(pattern);
+        channel.goPattern(pattern); // make doubly sure no transition of 100ms happens
+    }
+
     private void onPhraseChange(String oscAddress, long timestamp, double deltaMs) throws Exception {
         // detect phrase type and update state to reflect this
         this.updatePhraseState(TEPhrase.resolvePhrase(oscAddress));
         boolean predictedCorrectly = (oldNextPhrase == curPhrase);
         boolean isSamePhrase = (prevPhrase == curPhrase);
-        TE.log("Prev: %s, Cur: %s, Next (est): %s, Old next: %s", prevPhrase, curPhrase, nextPhrase, oldNextPhrase);
+        TE.log("%s -> %s -> %s (?), (old next: %s)", prevPhrase, curPhrase, nextPhrase, oldNextPhrase);
 
         // record history for pattern library
         // need to do this before we a) pick new patterns, and b) logPhrase() with historian
@@ -296,6 +321,7 @@ public class TEAutopilot implements LXLoopTask {
             prevChannelName = TEMixerUtils.getChannelNameFromPhraseType(prevPhrase);
             curChannelName = TEMixerUtils.getChannelNameFromPhraseType(curPhrase);
             nextChannelName = TEMixerUtils.getChannelNameFromPhraseType(nextPhrase);
+            nextChannelFaderVal = 0.0;
 
             prevChannel = TEMixerUtils.getChannelByName(lx, prevChannelName);
             curChannel = TEMixerUtils.getChannelByName(lx, curChannelName);
@@ -308,10 +334,18 @@ public class TEAutopilot implements LXLoopTask {
                 // we nailed it!
                 TE.log("[AUTOVJ] We predicted correctly!");
 
-                // set these to null
-                oldNextChannelName = null;
-                oldNextChannel = null;
-                echoMode = false; // TODO(will) maybe we want this true here? to echo out anyway
+                // if this was a transition away from a CHORUS or UP or DOWN into
+                // diff phrase, we don't have strobes to cover, so let's echo
+                if (curPhrase == TEPhrase.DOWN || curPhrase == TEPhrase.UP) {
+                    echoMode = true;
+                    oldNextChannelName = TEMixerUtils.getChannelNameFromPhraseType(prevPhrase);
+                    oldNextChannel = TEMixerUtils.getChannelByName(lx, prevChannelName);;
+
+                } else {
+                    echoMode = false;
+                    oldNextChannelName = null;
+                    oldNextChannel = null;
+                }
 
             } else {
                 // we didn't predict the phrase change correctly, turn off
@@ -330,20 +364,20 @@ public class TEAutopilot implements LXLoopTask {
                 }
 
                 // make sure this newCurPattern is actually in our curChannel to activate!
-                TE.log("curChannel=%s indexof pattern=%s is %d", curChannelName, newCurPattern, curChannel.patterns.indexOf(newCurPattern));
+                //TE.log("curChannel=%s indexof pattern=%s is %d", curChannelName, newCurPattern, curChannel.patterns.indexOf(newCurPattern));
 
                 // print the current active pattern, along with what we're going to change to
-                TE.log("active pattern in current channel: %s, going to change to=%s", curChannel.getActivePattern(), newCurPattern);
-                curChannel.goPattern(newCurPattern);
+                //TE.log("active pattern in current channel: %s, going to change to=%s", curChannel.getActivePattern(), newCurPattern);
+                startPattern(curChannel, newCurPattern);
 
                 // make sure we actually updated the curChannel's active pattern
-                TE.log("Selected new current pattern: %s (active=%s), for channel %s", newCurPattern, newCurPattern, curChannelName);
+                //TE.log("Selected new current pattern: %s (active=%s), for channel %s", newCurPattern, newCurPattern, curChannelName);
             }
 
             // pick a pattern we'll start fading into on "nextChannel" during the new few bars
             LXPattern newNextPattern = this.library.pickRandomCompatibleNextPattern(newCurPattern, curPhrase, nextPhrase);
-            nextChannel.goPattern(newNextPattern);
-            TE.log("Selected new next pattern: %s, for channel %s", newNextPattern, nextChannelName);
+            startPattern(nextChannel, newNextPattern);
+            //TE.log("Selected new next pattern: %s, for channel %s", newNextPattern, nextChannelName);
         }
 
         TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
@@ -392,6 +426,8 @@ public class TEAutopilot implements LXLoopTask {
         ArrayList<LXClip> clips = new ArrayList<LXClip>();
         Random rand = new Random();
 
+        TE.log("Checking for clips to trigger...");
+
         if (triggerChannel == null || strobesChannel == null) {
             // set up FX channels
             // do this here b/c doing it in constructor causes race condition with
@@ -400,9 +436,10 @@ public class TEAutopilot implements LXLoopTask {
             strobesChannel = TEMixerUtils.getChannelByName(lx, TEChannelName.STROBES);
         }
 
-        if (isSamePhrase && rand.nextFloat() > PROB_CLIPS_ON_SAME_PHRASE) {
+        if (isSamePhrase && rand.nextFloat() <= PROB_CLIPS_ON_SAME_PHRASE) {
             // if it's the same phrase repeated, let's only trigger clips
             // certain fraction of the time
+            TE.log("Repeated phrase, triggering...");
             return clips;
         }
 
@@ -410,12 +447,12 @@ public class TEAutopilot implements LXLoopTask {
             // pick 1 strobe clip
             LXClip strobeClip = TEMixerUtils.pickRandomClipFromChannel(lx, TEChannelName.STROBES);
             clips.add(strobeClip);
-            //TODO(will) make strobe clips cycle rate same as BPM ! will look super cool.
+            strobesChannel.autoCycleTimeSecs.setValue(TETimeUtils.calcMsPerBeat(lx.engine.tempo.bpm()));
 
             // pick 1 trigger clip
             LXClip triggerClip = TEMixerUtils.pickRandomClipFromChannel(lx, TEChannelName.TRIGGERS);
             clips.add(triggerClip);
-            //TE.log("Chose strobe clip: %d, triggerClip: %d", strobeClip.getIndex(), triggerClip.getIndex());
+            TE.log("New CHORUS, chose strobe clip: %d, triggerClip: %d", strobeClip.getIndex(), triggerClip.getIndex());
         }
 
         // set strobes channels autocycle time fast
