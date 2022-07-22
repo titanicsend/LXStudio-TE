@@ -69,6 +69,7 @@ public class TEApp extends PApplet implements LXPlugin  {
   private GigglePixelBroadcaster gpBroadcaster;
 
   private TEAutopilot autopilot;
+  private TEPatternLibrary library;
 
   @Override
   public void settings() {
@@ -154,7 +155,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPatterns(ShaderEdgesPatternConfig.getPatterns());
 
     // create our library for autopilot
-    TEPatternLibrary library = initializePatternLibrary(lx);
+    this.library = initializePatternLibrary(lx);
 
     int myGigglePixelID = 73;  // Looks like "TE"
     try {
@@ -256,20 +257,16 @@ public class TEApp extends PApplet implements LXPlugin  {
     l.addPattern(OrganicPatternConfig.WavyEdges.class, covEdges, cPalette, down);
     l.addPattern(NoisePattern.class, covBoth, cPalette, down);
     l.addPattern(ShaderPanelsPatternConfig.Galaxy.class, covPanelPartial, cPalette, down);
-    l.addPattern(ShaderPanelsPatternConfig.SynthWaves.class, covPanelPartial, cPalette, down);
     l.addPattern(ShaderPanelsPatternConfig.LightBeamsPattern.class, covPanelPartial, cPalette, down);
     l.addPattern(ShaderPanelsPatternConfig.NeonRipples.class, covPanels, cPalette, down);
     l.addPattern(ShaderEdgesPatternConfig.SynthWavesEdges.class, covEdges, cPalette, down);
 
     // UP patterns
-    l.addPattern(NoisePattern.class, covPanelPartial, cNonConforming, down);
-    l.addPattern(OrganicPatternConfig.WavyEdges.class, covPanelPartial, cNonConforming, down);
+    l.addPattern(NoisePattern.class, covPanelPartial, cNonConforming, up);
+    l.addPattern(OrganicPatternConfig.WavyEdges.class, covPanelPartial, cNonConforming, up);
     l.addPattern(PBXorcery.class, covPanelPartial, cNonConforming, up);
     l.addPattern(OrganicPatternConfig.AlternatingDots.class, covPanelPartial, cNonConforming, up);
-    l.addPattern(OrganicPatternConfig.BreathingDots.class, covPanelPartial, cNonConforming, up);
-    l.addPattern(OrganicPatternConfig.NeonBarsEdges.class, covEdges, cPalette, up);
     l.addPattern(OrganicPatternConfig.BasicElectricEdges.class, covEdges, cNonConforming, up);
-    l.addPattern(OrganicPatternConfig.PowerGrid.class, covEdges, cPalette, up);
     l.addPattern(SparklePattern.class, covBoth, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.Electric.class, covPanelPartial, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.JetStream.class, covPanels, cNonConforming, up);

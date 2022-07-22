@@ -18,8 +18,11 @@ import java.util.Random;
 public class TEMixerUtils {
     public static final double FADER_LEVEL_OFF_THRESH = 0.01;
 
-    public static void turnDownAllChannels(LX lx) {
+    public static void turnDownAllChannels(LX lx, boolean onlyAffectPhraseChannels) {
         for (TEChannelName name : TEChannelName.values()) {
+            if (onlyAffectPhraseChannels && (
+                    (name == TEChannelName.STROBES) || name == TEChannelName.TRIGGERS))
+                continue;
             setFaderTo(lx, name, 0.0);
         }
     }
