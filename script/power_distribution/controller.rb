@@ -147,6 +147,10 @@ class Controller
   def self.populate_panel_controllers(filename:, controllers:, graph:, vertices:)
     rows = CSV.read(filename, col_sep: "\t")
 
+    if rows.length - 1 != graph.panels.values.flatten.length
+      raise "mismatch between signal path panel number and panels.txt panel number"
+    end
+
     rows.drop(1).each do |row|
       panel_id, _, _, _, panel_type, channels_required, controller_vertex_id = row
 
