@@ -9,7 +9,15 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
 
+import static java.lang.Math.min;
+
 public class TEArtNetOutput {
+  // Limit packets to 484 pixels per Universe; any more than that, and it takes
+  // 485 * 3 = 1455 bytes to encode the RGB values, plus 18 bytes for the UDP
+  // header, equals 1473, which exceeds the 1472-byte UDP MTU, which causes
+  // fragmentation, which our controller boxes can't handle.
+  public static final int MAX_PIXELS_PER_UNIVERSE = 484;
+
   private static class SubModelEntry {
     TEModel subModel;
     int universeNum;
@@ -63,13 +71,35 @@ public class TEArtNetOutput {
     }
   }
 
-  private static void registerOutput(LX lx, InetAddress addr, List<Integer> indexBuffer, int universe) {
-    if (indexBuffer.size() == 0) return;
-    int[] ib = indexBuffer.stream().mapToInt(i -> i).toArray();
-    //StreamingACNDatagram outputDevice = new StreamingACNDatagram(lx, ib, universe);
-    ArtNetDatagram outputDevice = new ArtNetDatagram(lx, ib, universe);
-    outputDevice.setAddress(addr);
-    lx.addOutput(outputDevice);
+  private static int registerOutput(LX lx, InetAddress addr, List<Integer> indexBuffer, int universe) {
+    int size = indexBuffer.size();
+    if (size <= 0) return universe;
+    assert universe != 0;
+    while (size > 0) {
+      int numPixels = min(size, MAX_PIXELS_PER_UNIVERSE);
+      int[] ib = indexBuffer.subList(0, numPixels).stream().mapToInt(i -> i).toArray();
+      int remaining = size - numPixels;
+      size -= numPixels;
+      ArtNetDatagram outputDevice = new ArtNetDatagram(lx, ib, universe);
+      outputDevice.setAddress(addr);
+      lx.addOutput(outputDevice);
+      if (size <= 0) indexBuffer = indexBuffer.subList(numPixels, numPixels + remaining);
+      universe++;
+      int channel = universe / 10;
+      int subChannel = universe % 10;
+      // On our controllers, Channel 1 is universes 10-12, 2 is 20-22, etc. For long outputs,
+      // we need to roll to the next available universe.
+      if (subChannel > 2) {
+        subChannel = 0;
+        channel++;
+      }
+      if (channel > 8) {
+        LX.error("Ran out of room to grow " + addr);
+        return -1;
+      }
+      universe = 10 * channel + subChannel;
+    }
+    return universe;
   }
 
   private String pixString(int numPix) {
@@ -96,7 +126,13 @@ public class TEArtNetOutput {
     for (SubModelEntry subModelEntry : this.subModelEntries) {
       int numPoints = subModelEntry.subModel.points.length;
       if (subModelEntry.universeNum > currentUniverseNum) {
-        registerOutput(lx, addr, indexBuffer, currentUniverseNum);
+        int nextUniverse = registerOutput(lx, addr, indexBuffer, currentUniverseNum);
+        if (nextUniverse < 0) return;  // Already logged the error
+        if (nextUniverse > subModelEntry.universeNum) {
+          LX.error("Rollover from previous output takes us to universe " + nextUniverse +
+                  " but that's past configured " + this.ipAddress + ":" + subModelEntry.universeNum);
+          return;
+        }
         currentUniverseNum = subModelEntry.universeNum;
         currentStrandOffset = 0;
         String deviceSummary = "#" + currentUniverseNum + " ";
