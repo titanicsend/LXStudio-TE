@@ -12,11 +12,8 @@ import java.util.*;
 import static java.lang.Math.min;
 
 public class TEArtNetOutput {
-  // Limit packets to 484 pixels per Universe; any more than that, and it takes
-  // 485 * 3 = 1455 bytes to encode the RGB values, plus 18 bytes for the UDP
-  // header, equals 1473, which exceeds the 1472-byte UDP MTU, which causes
-  // fragmentation, which our controller boxes can't handle.
-  public static final int MAX_PIXELS_PER_UNIVERSE = 484;
+  // Limit packets to 170 pixels per Universe, to stay within DMX's 512-byte limit
+  public static final int MAX_PIXELS_PER_UNIVERSE = 170;
 
   private static class SubModelEntry {
     TEModel subModel;
@@ -35,7 +32,6 @@ public class TEArtNetOutput {
   static Map<String, TEArtNetOutput> ipMap = new HashMap<>();
   private final List<SubModelEntry> subModelEntries;
   private boolean activated;
-  private HashMap<Integer,Integer> deviceLengths;
 
   private TEArtNetOutput(String ipAddress) {
     this.ipAddress = ipAddress;
@@ -75,6 +71,7 @@ public class TEArtNetOutput {
     int size = indexBuffer.size();
     if (size <= 0) return universe;
     assert universe != 0;
+    //LX.log("New output with " + size + " pixels");
     while (size > 0) {
       int numPixels = min(size, MAX_PIXELS_PER_UNIVERSE);
       int[] ib = indexBuffer.subList(0, numPixels).stream().mapToInt(i -> i).toArray();
@@ -82,8 +79,17 @@ public class TEArtNetOutput {
       size -= numPixels;
       ArtNetDatagram outputDevice = new ArtNetDatagram(lx, ib, universe);
       outputDevice.setAddress(addr);
+      /*
+      StringBuilder builder = new StringBuilder();
+      for (int i : ib) {
+        builder.append(i);
+        builder.append(" ");
+      }
+      String ibStr = builder.toString();
+      LX.log("New output at " + addr + " universe " + universe + " with " + ib.length + " pixels: " + ibStr);
+      */
       lx.addOutput(outputDevice);
-      if (size <= 0) indexBuffer = indexBuffer.subList(numPixels, numPixels + remaining);
+      if (size > 0) indexBuffer = indexBuffer.subList(numPixels, numPixels + remaining);
       universe++;
       int channel = universe / 10;
       int subChannel = universe % 10;
@@ -109,7 +115,6 @@ public class TEArtNetOutput {
 
   private void activate(LX lx, int gapPointIndex) {
     assert !this.activated;
-    this.deviceLengths = new HashMap<>();
     this.subModelEntries.sort(new SortSubModelEntries());
     int currentUniverseNum = 0;
     int currentStrandOffset = -1;
@@ -155,7 +160,6 @@ public class TEArtNetOutput {
       String smSummary = "[" + currentStrandOffset + ":" + rStr + subModelEntry.subModel.repr() + "=" + numPoints + "] ";
       logString.append(smSummary);
       currentStrandOffset += numPoints;
-      this.deviceLengths.put(currentUniverseNum, currentStrandOffset);
       for (int i = 0; i < subModelEntry.subModel.points.length; i++) {
         LXPoint point;
         if (subModelEntry.fwd) point = subModelEntry.subModel.points[i];
