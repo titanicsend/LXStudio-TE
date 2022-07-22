@@ -9,11 +9,11 @@ class Panel
     @id = id
     @vertices = vertices
     @signal_start = nil
-    @strips = Array.new((max_current / JunctionBoxCircuit::MAX_CURRENT).floor) do |i|
+    @strips = Array.new((max_current / SCALED_MAX_CURRENT_PER_CIRCUIT).floor) do |i|
       PanelStrip.new(
         id: "#{id}-#{i}",
         panel: self,
-        current: JunctionBoxCircuit::MAX_CURRENT,
+        current: SCALED_MAX_CURRENT_PER_CIRCUIT,
         vertices: vertices,
       )
     end
