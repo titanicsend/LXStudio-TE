@@ -235,4 +235,40 @@ public class ShaderPanelsPatternConfig {
         }
     }
 
+    @LXCategory("DREVO Shaders")
+    public static class SlitheringSnake extends ConstructedPattern {
+        public SlitheringSnake(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> createEffects() {
+            return List.of(new NativeShaderPatternEffect("snake_approaching.fs",
+                    PatternTarget.doubleLargeCanvas(this)));
+        }
+    }
+
+    @LXCategory("DREVO Shaders")
+    public static class PulsingPetriDish extends ConstructedPattern {
+        public PulsingPetriDish(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> createEffects() {
+            return List.of(new NativeShaderPatternEffect("pulsing_petri_dish.fs",
+                    PatternTarget.doubleLargeCanvas(this)));
+        }
+    }
+
+    @LXCategory("DREVO Shaders")
+    public static class Mondelbrot extends ConstructedPattern {
+        public Mondelbrot(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> createEffects() {
+            return List.of(new NativeShaderPatternEffect("mandelbrot.fs",
+                    PatternTarget.doubleLargeCanvas(this)));
+        }
+    }
+
 }
