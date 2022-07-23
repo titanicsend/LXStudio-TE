@@ -107,6 +107,7 @@ class Controller
         controllers[vertex.id] = [controller]
       end
       vertex.controllers.push(controller)
+      controller
   end
 
   def self.populate_edge_controllers(filename:, controllers:, graph:, vertices:)
@@ -121,25 +122,34 @@ class Controller
 
       edge = graph.edges.values.flatten.find { |edge| edge.id == edge_id }
       controller_vertex = vertices.find { |vertex_id, vertex| vertex_id.to_s == controller_vertex_id }[1]
+
+      assigned_controller = nil
       if controllers[controller_vertex.id] != nil
         # Left to right for exhausting signal channels. But, we might have non-exhausted controllers due to the needs
         # of assigning panels.
         least_addressed_controller = controllers[controller_vertex.id].min_by(&:channels_assigned)
 
         if least_addressed_controller.channels_assigned >= MAX_CHANNELS_PER_CONTROLLER
-          assign_new_controller_at_vertex(vertex: controller_vertex, edge: edge, panel: nil, controllers: controllers)
+          assigned_controller = assign_new_controller_at_vertex(vertex: controller_vertex, edge: edge, panel: nil, controllers: controllers)
         else
           least_addressed_controller.assign_signal_to_edge(edge: edge)
+          assigned_controller = least_addressed_controller
         end
       else
-        assign_new_controller_at_vertex(vertex: controller_vertex, edge: edge, panel: nil, controllers: controllers)
+        assigned_controller = assign_new_controller_at_vertex(vertex: controller_vertex, edge: edge, panel: nil, controllers: controllers)
       end
+
+      validate_controller_distance_to_first_pixel_edge(controller: assigned_controller, edge: edge, graph: graph)
     end
     controllers
   end
 
   def self.populate_panel_controllers(filename:, controllers:, graph:, vertices:)
     rows = CSV.read(filename, col_sep: "\t")
+
+    if rows.length - 1 != graph.panels.values.flatten.length
+      raise "mismatch between signal path panel number and panels.txt panel number"
+    end
 
     rows.drop(1).each do |row|
       panel_id, _, _, _, panel_type, channels_required, controller_vertex_id = row
@@ -150,6 +160,7 @@ class Controller
 
       controller_vertex = vertices.find { |vertex_id, vertex| vertex_id.to_s == controller_vertex_id }[1]
 
+      assigned_controller = nil
       if controllers[controller_vertex.id] != nil
         # Left to right for exhausting signal channels. But, we might have non-exhausted controllers due to the needs
         # of assigning panels.
@@ -157,14 +168,33 @@ class Controller
 
         if least_addressed_controller.channels_assigned < MAX_CHANNELS_PER_CONTROLLER && least_addressed_controller.channels_assigned + panel.channels_required <= MAX_CHANNELS_PER_CONTROLLER
           least_addressed_controller.assign_signal_to_panel(panel: panel)
+          assigned_controller = least_addressed_controller
         else
-          assign_new_controller_at_vertex(vertex: controller_vertex, edge: nil, panel: panel, controllers: controllers)
+          assigned_controller = assign_new_controller_at_vertex(vertex: controller_vertex, edge: nil, panel: panel, controllers: controllers)
         end
       else
-        assign_new_controller_at_vertex(vertex: controller_vertex, edge: nil, panel: panel, controllers: controllers)
+        assigned_controller = assign_new_controller_at_vertex(vertex: controller_vertex, edge: nil, panel: panel, controllers: controllers)
       end
+
+      validate_controller_distance_to_first_pixel_panel(controller: assigned_controller, panel: panel)
     end
     controllers
   end
 end
 
+def validate_controller_distance_to_first_pixel_edge(controller:, edge:, graph:)
+  min_distance_from_controller_to_signal_injection_feet = min_distance_between_vertices_in_feet(graph, controller.vertex.id, edge.signal_in_vertex.id)
+
+  if min_distance_from_controller_to_signal_injection_feet > MAX_CONTROLLER_DISTANCE_SIGNAL_TO_FIRST_PIXEL_FEET
+    puts "edge #{edge.id} is #{min_distance_from_controller_to_signal_injection_feet} feet away; vertices: #{edge.vertices.map(&:id)}; controller vertex: #{controller.vertex.id}; edge signal_in_vertex: #{edge.signal_in_vertex.id}"
+    raise "error: edge #{edge.id} is too far from controller at #{controller.vertex.id}"
+  end
+end
+
+def validate_controller_distance_to_first_pixel_panel(controller:, panel:)
+  min_distance_from_controller_to_signal_injection_feet = straight_line_distance(panel.centroid, controller.vertex)
+
+  if min_distance_from_controller_to_signal_injection_feet > MAX_CONTROLLER_DISTANCE_SIGNAL_TO_FIRST_PIXEL_FEET
+    raise "error: panel #{panel.id} is too far from controller at #{controller.vertex.id}"
+  end
+end

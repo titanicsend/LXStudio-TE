@@ -1,5 +1,6 @@
+require './calculate_line_lengths'
 require 'csv'
-require './constants.rb'
+require './constants'
 
 class Edge
   # 60 / m LED strips
@@ -41,6 +42,13 @@ class Edge
 
   def self.load_signal_paths(filename:, edges:, vertices:)
     rows = CSV.read(filename, col_sep: "\t")
+
+    # FYI: this should be `rows.length - 1`, but `edges.txt` has one more edge than
+    # `edge_signal_paths.tsv`. I think? this is due to that weird "skip me" edge
+    if rows.length != edges.length
+      raise "mismatch between signal path edge number and edges.txt edge number"
+    end
+
     rows.drop(1).each do |row|
       id, signal_from, controller_vertex = row
       edge = edges[id]
@@ -60,7 +68,9 @@ class Edge
 
   def signal_in_vertex
     if signal_from.is_a?(Vertex)
-      signal_from
+      # `signal_from` is actually the vertex of the controller. So, let's find the closest vertex
+      # on the edge to the controller.
+      vertices.min_by { |v| straight_line_distance({ :x => v.x, :y => v.y, :z => v.z }, signal_from) }
     elsif signal_from.is_a?(Edge)
       (signal_from.vertices & vertices).first
     else

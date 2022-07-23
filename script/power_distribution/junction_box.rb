@@ -50,6 +50,7 @@ class JunctionBox
   def can_fit_edge?(edge)
     current_per_strip = edge.strips.first.max_current
     slots = circuits.sum do |circuit|
+      # TODO: does this need to change to SCALED_MAX_CURRENT_PER_CIRCUIT too?
       ((JunctionBoxCircuit::MAX_CURRENT - circuit.current) / current_per_strip).floor
     end
 
