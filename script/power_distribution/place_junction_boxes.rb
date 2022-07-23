@@ -417,3 +417,71 @@ puts "---------"
 # graph.panels.each_value do |panel|
 #  puts "#{panel.id},#{panel.controller_vertex.id},#{panel.signal_start_vertex_id},#{panel.valid_signal_in_vertices.map(&:id).join('-')}"
 # end
+
+puts "--- All assignments ---"
+puts ["Strip ID", " Panel/Edge ID", " Panel/Edge vertices", " Num LEDs", " JBox",
+      "Circuit", " Current", " Controller", " Controller vertex",
+      "Signal start vertex", " Distance to first pixel", " Signal from", " Signal to"].join(", ")
+
+graph.panels.each_value do |panel|
+  panel.strips.each do |strip|
+    if strip.circuit.nil?
+      puts "#{strip.id}, unassigned"
+    else
+      controller = controllers.values.flatten.find { |c| c.panels.include? panel }
+      long_edge_vertices = panel.vertices.permutation(2)
+                       .map{ |v1,v2| [v1, v2, v1.distance(v2)] }
+                       .sort_by(&:last).last.slice(0,2)
+
+      start_vertex_distance = long_edge_vertices.map{ |v| [v, v.distance(controller.vertex)] }
+                       .sort_by(&:last).first
+      signal_start_vertex_controller_distance = microns_to_feet(start_vertex_distance.last).round(1)
+      signal_start_vertex = start_vertex_distance.first
+
+      cols = [
+        strip.id,
+        strip.panel_id,
+        panel.vertices.map(&:id).join('-'),
+        (strip.current / MAX_CURRENT_PER_LED).round(1),
+        strip.circuit.junction_box_id,
+        strip.circuit.id,
+        strip.current.round(1),
+        controller.id,
+        controller.vertex.id,
+        signal_start_vertex.id,
+        signal_start_vertex_controller_distance,
+        "n/a", "n/a"
+      ]
+      puts cols.join(', ')
+    end
+  end
+end
+
+graph.edges.each_value do |edge|
+  edge.strips.each do |strip|
+    if strip.circuit.nil?
+      puts "#{strip.id}, unassigned"
+    else
+      controller = controllers.values.flatten.find { |c| c.edges.include? edge }
+      controller = controllers.values.flatten.find { |c| c.edges.include? edge.signal_from } unless controller
+      controller = controllers.values.flatten.find { |c| c.edges.include? edge.signal_from&.signal_from } unless controller
+
+      cols = [
+        strip.id,
+        strip.edge_id,
+        strip.edge_id,
+        strip.num_leds.round(1),
+        strip.circuit.junction_box_id,
+        strip.circuit.id,
+        strip.max_current.round(1),
+        controller&.id || "(none)",
+        controller&.vertex&.id,
+        edge.signal_in_vertex.id,
+        "n/a",
+        edge.signal_from&.id, 
+        edge.signal_to&.id || "(terminates)"
+      ]
+      puts cols.join(', ')
+    end
+  end
+end
