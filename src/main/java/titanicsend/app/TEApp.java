@@ -154,6 +154,9 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPatterns(ShaderPanelsPatternConfig.getPatterns());
     lx.registry.addPatterns(ShaderEdgesPatternConfig.getPatterns());
 
+    // Test/debug patterns
+    lx.registry.addPattern(ModelDebugger.class);
+
     // create our library for autopilot
     this.library = initializePatternLibrary(lx);
 
