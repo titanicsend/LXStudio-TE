@@ -170,16 +170,17 @@ public class TEAutopilot implements LXLoopTask {
     public void loop(double deltaMs) {
         long now = System.currentTimeMillis();
 
-        // check our patterns are indexed
-        // this requires that LX's mixer / channels are setup, so
-        // we do this here, as opposed to in the constructor, which is called
-        // in TEApp before LX is really finished
-        if (!this.library.isReady())
-            this.library.indexPatterns();
-
         try {
             // if autopilot isn't enabled, just ignore for now
             if (!isEnabled()) return;
+
+            // check our patterns are indexed
+            // this requires that LX's mixer / channels are setup, so
+            // we do this here, as opposed to in the constructor, which is called
+            // in TEApp before LX is really finished
+            if (!this.library.isReady()) {
+                this.library.indexPatterns();
+            }
 
             // collect audio/FFT statistics
             // TODO(will) for when we want to act without OSC messages -- just based on pure audio
