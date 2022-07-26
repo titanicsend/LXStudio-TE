@@ -90,12 +90,10 @@ public class NativeShaderPatternEffect extends PatternEffect {
     @Override
     public void onPatternActive() {
         if (fragmentShader != null) {
-            offscreenShaderRenderer = new OffscreenShaderRenderer(fragmentShader,shaderOptions);
+            if (offscreenShaderRenderer == null) {
+                offscreenShaderRenderer = new OffscreenShaderRenderer(fragmentShader, shaderOptions);
+            }
         }
-        // lazy initialization of our GL stuff, to avoid disrupting LX's GL startup
-        // TODO - test to be sure that this is sufficiently lazy, or look for a way to tell if
-        // LX is done with its initialization.
-        offscreenShaderRenderer.initializeNativeShader();
     }
 
     @Override

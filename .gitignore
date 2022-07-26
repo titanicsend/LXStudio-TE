@@ -19,3 +19,4 @@ bin/
 target/
 classes/
 Projects/project.lxp
+resources/shaders/cache

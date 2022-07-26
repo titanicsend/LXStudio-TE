@@ -14,33 +14,38 @@ public class ShaderProgram {
     private int vertexShaderId;
     private int fragmentShaderId;
 
-    public void init(GL4 gl4, File vertexShader, String fragmentShaderCode) {
+    public void init(GL4 gl4, File vertexShader, String fragmentShaderCode, String shaderName, long ts) {
         if (initialized) {
             throw new IllegalStateException(
                     "Unable to initialize the shader program! (it was already initialized)");
         }
 
         try {
-            String vertexShaderCode = ShaderUtils.loadResource(vertexShader
-                    .getPath());
-
             programId = gl4.glCreateProgram();
-            vertexShaderId = ShaderUtils.createShader(gl4, programId,
-                    vertexShaderCode, GL4.GL_VERTEX_SHADER);
-            fragmentShaderId = ShaderUtils.createShader(gl4, programId,
-                    fragmentShaderCode, GL4.GL_FRAGMENT_SHADER);
+            boolean inCache = ShaderUtils.loadShaderFromCache(gl4,programId,shaderName,ts);
 
-            ShaderUtils.link(gl4, programId);
+            if (!inCache) {
+                String vertexShaderCode = ShaderUtils.loadResource(vertexShader
+                        .getPath());
+                vertexShaderId = ShaderUtils.createShader(gl4, programId,
+                        vertexShaderCode, GL4.GL_VERTEX_SHADER);
+                fragmentShaderId = ShaderUtils.createShader(gl4, programId,
+                        fragmentShaderCode, GL4.GL_FRAGMENT_SHADER);
 
-            shaderAttributeLocations.put(ShaderAttribute.POSITION,
-                    gl4.glGetAttribLocation(programId, ShaderAttribute.POSITION.getAttributeName()));
-            shaderAttributeLocations.put(ShaderAttribute.INDEX,
-                    gl4.glGetAttribLocation(programId, ShaderAttribute.INDEX.getAttributeName()));
+                ShaderUtils.link(gl4, programId);
 
-            initialized = true;
+                shaderAttributeLocations.put(ShaderAttribute.POSITION,
+                        gl4.glGetAttribLocation(programId, ShaderAttribute.POSITION.getAttributeName()));
+                shaderAttributeLocations.put(ShaderAttribute.INDEX,
+                        gl4.glGetAttribLocation(programId, ShaderAttribute.INDEX.getAttributeName()));
+
+                ShaderUtils.saveShaderToCache(gl4, shaderName, programId);
+            }
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        initialized = true;
     }
 
     public void dispose(GL4 gl4) {

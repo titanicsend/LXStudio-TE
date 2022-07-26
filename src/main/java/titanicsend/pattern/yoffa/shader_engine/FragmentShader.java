@@ -16,12 +16,16 @@ public class FragmentShader {
     private static final Pattern PLACEHOLDER_FINDER = Pattern.compile("\\{%(.*?)(\\[(.*?)\\])??\\}");
 
     private final String shaderBody;
+    private String shaderName;
+    private long shaderTimestamp;
     private final Map<Integer, String> channelToTexture;
     private boolean remoteTextures;
     private final Integer audioInputChannel;
     private final List<LXParameter> parameters;
 
     public FragmentShader(File shaderFile, List<File> textureFiles) {
+        shaderName = ShaderUtils.getCacheFilename(shaderFile.getName());
+        shaderTimestamp = shaderFile.lastModified();
         String shaderBody = ShaderUtils.loadResource(shaderFile.getPath());
         Map<Integer, String> channelToTexture = new HashMap<>();
         this.audioInputChannel = 0;
@@ -83,6 +87,10 @@ public class FragmentShader {
     public String getShaderBody() {
         return shaderBody;
     }
+
+    public String getShaderName() { return shaderName; }
+
+    public long getShaderTimestamp() { return shaderTimestamp; }
 
     public Map<Integer, String> getChannelToTexture() {
         return channelToTexture;

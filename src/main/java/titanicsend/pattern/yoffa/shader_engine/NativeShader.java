@@ -126,9 +126,11 @@ public class NativeShader implements GLEventListener {
         glAutoDrawable.getContext().makeCurrent();
         GL4 gl4 = glAutoDrawable.getGL().getGL4();
 
-        initShaderProgram(gl4);
-        downloadTextureFiles(fragmentShader);
-        gl4.glUseProgram(shaderProgram.getProgramId());
+        if (!isInitialized()) {
+          initShaderProgram(gl4);
+          downloadTextureFiles(fragmentShader);
+          gl4.glUseProgram(shaderProgram.getProgramId());
+        }
 
         startTime = System.currentTimeMillis();
     }
@@ -238,7 +240,8 @@ public class NativeShader implements GLEventListener {
         File vertexShader = new File("resources/shaders/framework/default.vs");
         shaderProgram = new ShaderProgram();
         String shaderCode = FRAGMENT_SHADER_TEMPLATE.replace(SHADER_BODY_PLACEHOLDER, fragmentShader.getShaderBody());
-        shaderProgram.init(gl4, vertexShader, shaderCode);
+        shaderProgram.init(gl4, vertexShader, shaderCode,
+                           fragmentShader.getShaderName(),fragmentShader.getShaderTimestamp());
         setUpCanvas(gl4);
     }
 
