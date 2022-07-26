@@ -56,10 +56,25 @@ public class TEMixerUtils {
         return null;
     }
 
-    public static LXChannel getChannelByName(LX lx, TEChannelName name) {
+    public static LXChannel getChannelByName(LX lx, TEChannelName name) throws InterruptedException {
         if (name == null)
             return null;
-        return (LXChannel) lx.engine.mixer.channels.get(name.getIndex());
+
+        // this backoff/retry loop is needed in case there's a delay in intializing
+        // the LX mixer / channels. this often happens in LX projects where there are
+        // a large number of shaders that need to be loaded
+        int numTries = 0;
+        while (numTries < 8) {
+            try {
+                return (LXChannel) lx.engine.mixer.channels.get(name.getIndex());
+            } catch (IndexOutOfBoundsException e) {
+                numTries++;
+                double waitMs = Math.pow(2.0, (double)numTries) * 1000;
+                TE.log("LX mixer wasn't ready yet, waiting %f seconds...", waitMs / 1000.);
+                Thread.sleep((long)waitMs);
+            }
+        }
+        return null;
     }
 
     public static LXClip pickRandomClipFromChannel(LX lx, TEChannelName channelName) {

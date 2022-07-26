@@ -423,7 +423,7 @@ public class TEAutopilot implements LXLoopTask {
         this.autoBpmSyncEnabled = enableSync;
     }
 
-    public ArrayList<LXClip> collectClipsToTrigger(TEPhrase newPhrase, boolean isSamePhrase) {
+    public ArrayList<LXClip> collectClipsToTrigger(TEPhrase newPhrase, boolean isSamePhrase) throws InterruptedException {
         ArrayList<LXClip> clips = new ArrayList<LXClip>();
         Random rand = new Random();
 
