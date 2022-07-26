@@ -152,7 +152,7 @@ class Controller
     end
 
     rows.drop(1).each do |row|
-      panel_id, _, _, _, panel_type, channels_required, controller_vertex_id = row
+      panel_id, _, _, _, panel_type, channels_required, controller_vertex_id, signal_start_vertex_id = row
 
       panel = graph.panels.values.flatten.find { |panel| panel.id == panel_id }
       panel.panel_type = panel_type
@@ -161,6 +161,7 @@ class Controller
       controller_vertex = vertices.find { |vertex_id, vertex| vertex_id.to_s == controller_vertex_id }[1]
 
       panel.controller_vertex = controller_vertex
+      panel.signal_start_vertex_id = signal_start_vertex_id
 
       assigned_controller = nil
       if controllers[controller_vertex.id] != nil
