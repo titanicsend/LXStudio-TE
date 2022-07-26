@@ -160,6 +160,8 @@ class Controller
 
       controller_vertex = vertices.find { |vertex_id, vertex| vertex_id.to_s == controller_vertex_id }[1]
 
+      panel.controller_vertex = controller_vertex
+
       assigned_controller = nil
       if controllers[controller_vertex.id] != nil
         # Left to right for exhausting signal channels. But, we might have non-exhausted controllers due to the needs
