@@ -326,7 +326,7 @@ public class TEPatternLibrary {
      * Each TEPatternRecord should only map to LXPatterns on the same
      * LXChannel.
      */
-    public void indexPatterns() {
+    public void indexPatterns() throws InterruptedException {
         this.rec2patterns = new HashMap<>();
 
         // report back some statistics on patterns indexed or not found
