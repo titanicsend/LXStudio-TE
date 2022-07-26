@@ -70,6 +70,7 @@ public class TEMixerUtils {
             } catch (IndexOutOfBoundsException e) {
                 numTries++;
                 double waitMs = Math.pow(2.0, (double)numTries) * 1000;
+                TE.log("LX mixer wasn't ready yet, waiting %f seconds...", waitMs / 1000.);
                 Thread.sleep((long)waitMs);
             }
         }
