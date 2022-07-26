@@ -8,16 +8,13 @@ import titanicsend.model.TEVertex;
 import java.util.*;
 
 public class PanelStriper {
-  public static final int MARGIN = 68000; // 50k microns ~= 2 inches
-  public static final int DISTANCE_BETWEEN_PIXELS = 62000; // 50k microns ~= 2 inches
+  public static final int MARGIN = 165000; // 165mm ~= 6.5 inches
+  public static final int DISTANCE_BETWEEN_PIXELS = 50000; // 50k microns ~= 2 inches
+  public static final FloorPoint gapFloorPoint = new FloorPoint(-1, -1);
 
-  public static String stripe(TEVertex v0, TEVertex v1, TEVertex v2,
-                              List<LXPoint> pointList,
-                              TEStripingInstructions stripingInstructions) {
-    TEVertex vStart;
-    TEVertex vMid;
-    TEVertex vEnd;
-
+  private static TEVertex[] getStartMidEnd(
+          TEVertex v0, TEVertex v1, TEVertex v2,
+          TEStripingInstructions stripingInstructions) {
     double distance01 = v0.distanceTo(v1);
     double distance02 = v0.distanceTo(v2);
     double distance12 = v1.distanceTo(v2);
@@ -25,6 +22,10 @@ public class PanelStriper {
     assert distance01 != distance02;
     assert distance01 != distance12;
     // distance02 and distance12 are equal at fore and aft
+
+    TEVertex vStart;
+    TEVertex vMid;
+    TEVertex vEnd;
 
     // Set vEnd to the vertex opposite the longest edge
     // Set vStart to the vertex closest to vEnd
@@ -66,14 +67,49 @@ public class PanelStriper {
       throw new Error("Math fail");
     }
 
+    if (stripingInstructions != null) {
+      if (vStart.id == stripingInstructions.startingVertex) {
+        // Great, our algorithm picked the same answer
+      } else if (vMid.id == stripingInstructions.startingVertex) {
+        TEVertex tmp = vMid;
+        vMid = vStart;
+        vStart = tmp;
+      } else {
+        LX.error("Was told to start at " + stripingInstructions.startingVertex +
+                " but that's impossible. Long side is " + vStart.id + " and " + vMid.id +
+                " ... the other side is " + vEnd.id + " but we can't use that.");
+      }
+    }
+
+    return new TEVertex[] {vStart, vMid, vEnd};
+  }
+
+  public static String stripe(TEVertex v0, TEVertex v1, TEVertex v2,
+                              List<LXPoint> pointList,
+                              TEStripingInstructions stripingInstructions,
+                              LXPoint gapPoint) {
+    TEVertex[] startMidEnd = getStartMidEnd(v0, v1, v2, stripingInstructions);
+
+    TEVertex vStart = startMidEnd[0];
+    TEVertex vMid = startMidEnd[1];
+    TEVertex vEnd = startMidEnd[2];
+
     FloorTransform floorTransform = new FloorTransform(vStart, vMid, vEnd);
 
-    List<FloorPoint> floorPoints = stripeFloor(
-            floorTransform.f0, floorTransform.f1, floorTransform.f2);
+    List<FloorPoint> floorPoints;
 
-    List<LXPoint> rv = new ArrayList<LXPoint>();
+    if (stripingInstructions == null)
+      floorPoints = oldStripeFloor(floorTransform.f0, floorTransform.f1, floorTransform.f2);
+    else
+      floorPoints = newStripeFloor(
+              floorTransform.f0, floorTransform.f1, floorTransform.f2,
+              stripingInstructions, gapFloorPoint);
+
     for (FloorPoint f : floorPoints) {
-      pointList.add(floorTransform.fly(f));
+      if (f == gapFloorPoint)
+        pointList.add(gapPoint);
+      else
+        pointList.add(floorTransform.fly(f));
     }
 
     int distanceSM = (int)vStart.distanceTo(vMid);
@@ -87,10 +123,11 @@ public class PanelStriper {
   // to lay it on the X-Z plane. Starts at fStart and finds the nearest point inside the
   // border margin, and that's where the first pixel goes, then it stripes back and forth,
   // one row at a time, until it runs out of triangle.
-  private static List<FloorPoint> stripeFloor(FloorPoint fStart, FloorPoint fMid, FloorPoint fEnd) {
+  private static List<FloorPoint> oldStripeFloor(
+          FloorPoint fStart, FloorPoint fMid, FloorPoint fEnd) {
     FloorPoint currentPoint = findStartingPoint(fEnd);
     ArrayList<FloorPoint> rv = new ArrayList<FloorPoint>();
-
+    if (1 == 1) return rv; // FIXME
     double deltaX = DISTANCE_BETWEEN_PIXELS;
     while (currentPoint.z < fEnd.z) {
       if (triangleContains(fStart, fMid, fEnd, currentPoint) &&
@@ -118,6 +155,47 @@ public class PanelStriper {
       }
 
       currentPoint = new FloorPoint(nextX, nextZ);
+    }
+
+    return rv;
+  }
+
+  private static List<FloorPoint> newStripeFloor(
+          FloorPoint fStart, FloorPoint fMid, FloorPoint fEnd,
+          TEStripingInstructions stripingInstructions, FloorPoint gapFloorPoint) {
+    FloorPoint currentPoint = findStartingPoint(fEnd);
+    ArrayList<FloorPoint> rv = new ArrayList<>();
+
+    double deltaX = DISTANCE_BETWEEN_PIXELS;
+
+    int numRows = stripingInstructions.rowLengths.length;
+    for (int i = 0; i < numRows; i++) {
+      int rowLength = stripingInstructions.rowLengths[i];
+      int beforeNudges = stripingInstructions.beforeNudges[i];
+      int gaps = stripingInstructions.gaps[i];
+
+      // For each positive beforeNudge, move back; for each negative, move forward.
+      currentPoint = new FloorPoint(currentPoint.x - deltaX * beforeNudges, currentPoint.z);
+
+      // Plot out the row
+      for (int j = 0; j < rowLength; j++) {
+        rv.add(currentPoint);
+        currentPoint = new FloorPoint(currentPoint.x + deltaX, currentPoint.z);
+      }
+
+      // We're one step too far at this point. Go back, plus an extra half step
+      // because of the changing row. Also update z.
+      currentPoint = new FloorPoint(
+              currentPoint.x - 1.5 * deltaX,
+              currentPoint.z + DISTANCE_BETWEEN_PIXELS * 0.5 * Math.sqrt(3.0));
+
+      // Add gap pixels, which don't live in our 3-D space
+      for (int j = 0; j < gaps; j++) {
+        rv.add(gapFloorPoint);
+      }
+
+      // Reverse direction
+      deltaX = -deltaX;
     }
 
     return rv;

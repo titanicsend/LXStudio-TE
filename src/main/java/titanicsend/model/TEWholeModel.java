@@ -248,17 +248,33 @@ public class TEWholeModel extends LXModel {
     return rv;
   }
 
-  private static Map<String, TEStripingInstructions> loadStripingInstructions(Geometry geometry) {
+  private static Map<String, Integer> loadPanelStartVertexes(Geometry geometry) {
+    Scanner s = loadFilePrivate(geometry.subdir + "/panel_signal_paths.tsv");
+    Map<String, Integer> rv = new HashMap<>();
+
+    String headerLine = s.nextLine();
+    assert headerLine.endsWith("Signal in vertex");
+
+    while (s.hasNextLine()) {
+      String line = s.nextLine();
+      String[] tokens = line.split("\\s+");
+      assert tokens.length == 8;
+      rv.put(tokens[0], Integer.parseInt(tokens[7]));
+    }
+    return rv;
+  }
+
+  private static Map<String, TEStripingInstructions> loadStripingInstructions(
+          Geometry geometry, Map<String, Integer> startVertexes) {
     Scanner s = loadFilePrivate(geometry.subdir + "/striping-instructions.txt");
 
     Map<String, TEStripingInstructions> rv = new HashMap<>();
     while (s.hasNextLine()) {
       String line = s.nextLine()
               .replaceAll("\s*\\(.+?\\)\s*", " ");
-      ;
       String[] tokens = line.split(" ");
       if (tokens[0].contains(".")) {
-        //LX.log("Ignoring leftover Striping IP " + tokens[0]);
+        LX.log("Ignoring leftover Striping IP " + tokens[0]);
         continue;
       }
       String id = tokens[0];
@@ -266,19 +282,30 @@ public class TEWholeModel extends LXModel {
       int rowLength = Integer.parseInt(tokens[1]);
 
       int[] universeLengths = null;
-
+      int next_index = 2;
+      if (tokens[next_index].startsWith("U")) {
+        universeLengths = Arrays.stream(tokens[next_index].substring(1).split(","))
+                .mapToInt(Integer::parseInt).toArray();
+        next_index++;
+        // FIXME: Use these
+      }
+      boolean isLeft;
+      if (tokens[next_index].equals("L")) {
+        isLeft = true;
+      } else if (tokens[next_index].equals("R")) {
+        isLeft = false;
+      } else {
+        throw new Error("Invalid left/right token " + tokens[next_index]);
+      }
+      next_index++;
       List<Integer> rowLengths = new ArrayList<>();
-      List<Integer> leftNudges = new ArrayList<>();
-      List<Integer> rightNudges = new ArrayList<>();
+      List<Integer> beforeNudges = new ArrayList<>();
       List<Integer> gaps = new ArrayList<>();
       int currentGap = 0;
       int phase = 0;
-      for (int i = 2; i < tokens.length; i++) {
+      for (int i = next_index; i < tokens.length; i++) {
         String token = tokens[i];
-        if (token.startsWith("U")) {
-          universeLengths = Arrays.stream(token.substring(1).split(","))
-                  .mapToInt(Integer::parseInt).toArray();
-        } else if (token.matches("^g+$")) {
+        if (token.matches("^g+$")) {
           currentGap += token.length();
         } else {
           String[] subTokens = token.split("\\.", -1);
@@ -288,23 +315,24 @@ public class TEWholeModel extends LXModel {
           }
           int leftNudge = calcNudge(subTokens[0]);
           int rightNudge = calcNudge(subTokens[1]);
-          leftNudges.add(leftNudge);
-          rightNudges.add(rightNudge);
-          rowLength += phase == 0 ? leftNudge : rightNudge;
+          if (isLeft == (phase == 0)) {
+            beforeNudges.add(leftNudge);
+          } else {
+            beforeNudges.add(rightNudge);
+          }
+          rowLength += leftNudge + rightNudge;
           rowLengths.add(rowLength);
           rowLength--;
-          rowLength += phase == 1 ? leftNudge : rightNudge;
           gaps.add(currentGap);
           currentGap = 0;
           phase = 1 - phase;
         }
       }
-      int startingVertex = -1;
+      int startingVertex = startVertexes.get(id);
       TEStripingInstructions tesi = new TEStripingInstructions(
               startingVertex, universeLengths,
               rowLengths.stream().mapToInt(i -> i).toArray(),
-              leftNudges.stream().mapToInt(i -> i).toArray(),
-              rightNudges.stream().mapToInt(i -> i).toArray(),
+              beforeNudges.stream().mapToInt(i -> i).toArray(),
               gaps.stream().mapToInt(i -> i).toArray());
       rv.put(id, tesi);
     }
@@ -316,8 +344,10 @@ public class TEWholeModel extends LXModel {
     geometry.panelsBySection = new HashMap<>();
     geometry.panelsByFlavor = new HashMap<>();
 
+    Map<String, Integer> startVertexes = loadPanelStartVertexes(geometry);
+
     Map<String, TEStripingInstructions> stripingInstructions
-            = loadStripingInstructions(geometry);
+            = loadStripingInstructions(geometry, startVertexes);
 
     for (String id : stripingInstructions.keySet()) {
       TEStripingInstructions tesi = stripingInstructions.get(id);
@@ -329,7 +359,7 @@ public class TEWholeModel extends LXModel {
       }
       out.append(" and row lengths ");
       for (int i : tesi.rowLengths) out.append(i).append(" ");
-      //LX.log(out.toString());
+      LX.log(out.toString());
     }
 
     Scanner s = loadFilePrivate(geometry.subdir + "/panels.txt");
@@ -363,7 +393,7 @@ public class TEWholeModel extends LXModel {
       if (lit) panelType = "lit";
 
       TEPanelModel p = TEPanelFactory.build(id, vertexes[0], vertexes[1], vertexes[2],
-              e0, e1, e2, panelType, stripingInstructions.get(id));
+              e0, e1, e2, panelType, stripingInstructions.get(id), geometry.gapPoint);
 
       if (flipStr.equals("flipped")) {
         p.offsetTriangles.flip();
@@ -519,14 +549,14 @@ public class TEWholeModel extends LXModel {
 
     childList.addAll(geometry.edgesById.values());
 
-    loadPanels(geometry);
-
-    childList.addAll(geometry.panelsById.values());
-
     geometry.gapPoint = new LXPoint();
     List<LXPoint> gapList = new ArrayList<>();
     gapList.add(geometry.gapPoint);
     childList.add(new LXModel(gapList));
+
+    loadPanels(geometry);
+
+    childList.addAll(geometry.panelsById.values());
 
     geometry.children = childList.toArray(new LXModel[0]);
 

@@ -8,18 +8,16 @@ public class TEStripingInstructions {
 
   // One per row
   public int[] rowLengths;
-  public int[] leftNudges;
-  public int[] rightNudges;
+  public int[] beforeNudges; // No need for afterNudges; they were factored into rowLengths
   public int[] gaps;
 
   public TEStripingInstructions(int startingVertex, int[] universeLengths,
-                                int[] rowLengths, int[] leftNudges, int[] rightNudges,
+                                int[] rowLengths, int[] beforeNudges,
                                 int[] gaps) {
     this.startingVertex = startingVertex;
     this.universeLengths = universeLengths;
     this.rowLengths = rowLengths;
-    this.leftNudges = leftNudges;
-    this.rightNudges = rightNudges;
+    this.beforeNudges = beforeNudges;
     this.gaps = gaps;
   }
 }
