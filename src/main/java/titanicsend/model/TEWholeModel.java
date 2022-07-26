@@ -4,6 +4,7 @@ import java.util.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
@@ -11,6 +12,7 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
 import titanicsend.lasercontrol.MovingTarget;
 import titanicsend.output.TEArtNetOutput;
+import titanicsend.util.TE;
 
 public class TEWholeModel extends LXModel {
   public String subdir;
@@ -236,10 +238,99 @@ public class TEWholeModel extends LXModel {
     s.close();
   }
 
+  private static int calcNudge(String s) {
+    int rv = 0;
+    for (char c : s.toCharArray()) {
+      if (c == '-') rv--;
+      else if (c == '+') rv++;
+      else throw new IllegalArgumentException("Bad nudge char " + c);
+    }
+    return rv;
+  }
+
+  private static Map<String, TEStripingInstructions> loadStripingInstructions(Geometry geometry) {
+    Scanner s = loadFilePrivate(geometry.subdir + "/striping-instructions.txt");
+
+    Map<String, TEStripingInstructions> rv = new HashMap<>();
+    while (s.hasNextLine()) {
+      String line = s.nextLine()
+              .replaceAll("\s*\\(.+?\\)\s*", " ");
+      ;
+      String[] tokens = line.split(" ");
+      if (tokens[0].contains(".")) {
+        //LX.log("Ignoring leftover Striping IP " + tokens[0]);
+        continue;
+      }
+      String id = tokens[0];
+      if (tokens.length < 3) continue;
+      int rowLength = Integer.parseInt(tokens[1]);
+
+      int[] universeLengths = null;
+
+      List<Integer> rowLengths = new ArrayList<>();
+      List<Integer> leftNudges = new ArrayList<>();
+      List<Integer> rightNudges = new ArrayList<>();
+      List<Integer> gaps = new ArrayList<>();
+      int currentGap = 0;
+      int phase = 0;
+      for (int i = 2; i < tokens.length; i++) {
+        String token = tokens[i];
+        if (token.startsWith("U")) {
+          universeLengths = Arrays.stream(token.substring(1).split(","))
+                  .mapToInt(Integer::parseInt).toArray();
+        } else if (token.matches("^g+$")) {
+          currentGap += token.length();
+        } else {
+          String[] subTokens = token.split("\\.", -1);
+          if (subTokens.length != 2) {
+            throw new IllegalArgumentException("Bad subtokens for [" +
+                    line + "]: " + token);
+          }
+          int leftNudge = calcNudge(subTokens[0]);
+          int rightNudge = calcNudge(subTokens[1]);
+          leftNudges.add(leftNudge);
+          rightNudges.add(rightNudge);
+          rowLength += phase == 0 ? leftNudge : rightNudge;
+          rowLengths.add(rowLength);
+          rowLength--;
+          rowLength += phase == 1 ? leftNudge : rightNudge;
+          gaps.add(currentGap);
+          currentGap = 0;
+          phase = 1 - phase;
+        }
+      }
+      int startingVertex = -1;
+      TEStripingInstructions tesi = new TEStripingInstructions(
+              startingVertex, universeLengths,
+              rowLengths.stream().mapToInt(i -> i).toArray(),
+              leftNudges.stream().mapToInt(i -> i).toArray(),
+              rightNudges.stream().mapToInt(i -> i).toArray(),
+              gaps.stream().mapToInt(i -> i).toArray());
+      rv.put(id, tesi);
+    }
+    return rv;
+  }
+
   private static void loadPanels(Geometry geometry) {
-    geometry.panelsById = new HashMap<String, TEPanelModel>();
+    geometry.panelsById = new HashMap<>();
     geometry.panelsBySection = new HashMap<>();
     geometry.panelsByFlavor = new HashMap<>();
+
+    Map<String, TEStripingInstructions> stripingInstructions
+            = loadStripingInstructions(geometry);
+
+    for (String id : stripingInstructions.keySet()) {
+      TEStripingInstructions tesi = stripingInstructions.get(id);
+      StringBuilder out = new StringBuilder("Panel " + id +
+              " has starting vertex " + tesi.startingVertex);
+      if (tesi.universeLengths != null) {
+        out.append(" and universe lengths ");
+        for (int i : tesi.universeLengths) out.append(i).append(" ");
+      }
+      out.append(" and row lengths ");
+      for (int i : tesi.rowLengths) out.append(i).append(" ");
+      //LX.log(out.toString());
+    }
 
     Scanner s = loadFilePrivate(geometry.subdir + "/panels.txt");
 
@@ -259,7 +350,7 @@ public class TEWholeModel extends LXModel {
       TEEdgeModel e1 = geometry.edgesById.get(e1Id);
       TEEdgeModel e2 = geometry.edgesById.get(e2Id);
 
-      HashSet<TEVertex> vh = new HashSet<TEVertex>();
+      HashSet<TEVertex> vh = new HashSet<>();
       vh.add(e0.v0); vh.add(e0.v1);
       vh.add(e1.v0); vh.add(e1.v1);
       vh.add(e2.v0); vh.add(e2.v1);
@@ -272,7 +363,7 @@ public class TEWholeModel extends LXModel {
       if (lit) panelType = "lit";
 
       TEPanelModel p = TEPanelFactory.build(id, vertexes[0], vertexes[1], vertexes[2],
-              e0, e1, e2, panelType);
+              e0, e1, e2, panelType, stripingInstructions.get(id));
 
       if (flipStr.equals("flipped")) {
         p.offsetTriangles.flip();
