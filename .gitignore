@@ -19,4 +19,4 @@ bin/
 target/
 classes/
 Projects/project.lxp
-resources/shaders/cache
+resources/shaders/cache/*.bin
