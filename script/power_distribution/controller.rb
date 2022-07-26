@@ -193,8 +193,7 @@ def validate_controller_distance_to_first_pixel_edge(controller:, edge:, graph:)
 end
 
 def validate_controller_distance_to_first_pixel_panel(controller:, panel:)
-  # min_distance_from_controller_to_signal_injection_feet = straight_line_distance(panel.centroid, controller.vertex)
-  min_distance_from_controller_to_signal_injection_feet = straight_line_distance({ :x => panel.signal_in_vertex.x, :y => panel.signal_in_vertex.y, :z => panel.signal_in_vertex.z }, controller.vertex)
+  min_distance_from_controller_to_signal_injection_feet = straight_line_distance(panel.centroid, controller.vertex)
 
   if min_distance_from_controller_to_signal_injection_feet > MAX_CONTROLLER_DISTANCE_SIGNAL_TO_FIRST_PIXEL_FEET
     raise "error: panel #{panel.id} is too far from controller at #{controller.vertex.id} (#{min_distance_from_controller_to_signal_injection_feet} feet)"
