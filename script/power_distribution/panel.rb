@@ -8,7 +8,6 @@ class Panel
   def initialize(id:, vertices:)
     @id = id
     @vertices = vertices
-    @controller_vertex = nil
     @signal_start = nil
     @strips = Array.new((max_current / SCALED_MAX_CURRENT_PER_CIRCUIT).floor) do |i|
       PanelStrip.new(
@@ -28,7 +27,7 @@ class Panel
     @channels_required = 1
   end
 
-  attr_accessor :id, :vertices, :strips, :panel_type, :channels_required, :controller_vertex
+  attr_accessor :id, :vertices, :strips, :panel_type, :channels_required
 
   def area
     side_lengths = vertices.combination(2).map do |v1, v2|
@@ -60,10 +59,6 @@ class Panel
       :y => centroid_y,
       :z => centroid_z,
     }
-  end
-
-  def signal_in_vertex
-    vertices.min_by { |v| straight_line_distance({ :x => v.x, :y => v.y, :z => v.z }, controller_vertex) }
   end
 
   def self.load_panels(filename, vertices)
