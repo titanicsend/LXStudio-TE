@@ -62,8 +62,15 @@ class Panel
     }
   end
 
+  # The long edge vertices SHOULD be where signal comes in. This is not 100% of the time true. (see SED)
+  def valid_signal_in_vertices
+    long_edge_vertices = vertices.permutation(2)
+      .map{ |v1,v2| [v1, v2, v1.distance(v2)] }
+      .sort_by(&:last).last.slice(0,2)
+  end
+
   def signal_in_vertex
-    vertices.min_by { |v| straight_line_distance({ :x => v.x, :y => v.y, :z => v.z }, controller_vertex) }
+    valid_signal_in_vertices.min_by { |v| straight_line_distance({ :x => v.x, :y => v.y, :z => v.z }, controller_vertex) }
   end
 
   def self.load_panels(filename, vertices)
