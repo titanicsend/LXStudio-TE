@@ -1,0 +1,70 @@
+10.7.250.2
+10.7.250.3 2:SBB
+FA 59 U500,501,500 . .- . g . -. . g .- . -. . . .- . . -. . g .- . -. . (e20) . .- . g -. . (e25) . . .- . g -. (e30) . . g .- . -. (e35) . . .- -. . (e40) . .
+FB
+FSA
+FSB
+FSC 25 . . .- . . g .- g -. . .- . .- . . g .- . . .-
+FPA
+FPB
+FPC
+AA
+AB
+ASA
+ASB
+ASC
+APA
+APB
+APC
+SFA
+SFB
+SEA
+SFC
+SFD
+SEB
+SEC
+SED
+SDA
+SDB
+SDC
+SEE 37 . g .- .- g .- +.- g .- .- g .- .- g +.- .- g .- .- g +.- .- g .- .- g .- +. g .- .-
+SCA 54 . gg ++++++++.-- .--- gg .--- .--- gg .--- .-- gg .--- g -.--- gg .--- .--- gg .--- .--- gg .--- .-- gg .---
+SCB
+SCC
+SBA 49 . . g -.- g -. -. . -. . -. g -. g .- g -. -. (500) . -. g -. . g -. g .- g -. -. g . -. g -. . g -.- . g -.
+SBB 32 . g -.- g -.-- g .-- . . . . .
+SBC
+SBD
+SBE
+SAA
+SAB
+SAC
+SAD
+SUF
+SUA
+PAA
+PAB
+PBA
+PAC
+PAD
+PBB
+PBC
+PBD
+PCA
+PCB
+PCC
+PBE
+PDA
+PDB
+PDC
+PEA
+PEB
+PEC
+PED
+PEE
+PFA
+PFB
+PFC
+PFD
+PUF
+PUA
