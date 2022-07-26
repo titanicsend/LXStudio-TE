@@ -188,8 +188,7 @@ def validate_controller_distance_to_first_pixel_edge(controller:, edge:, graph:)
   min_distance_from_controller_to_signal_injection_feet = min_distance_between_vertices_in_feet(graph, controller.vertex.id, edge.signal_in_vertex.id)
 
   if min_distance_from_controller_to_signal_injection_feet > MAX_CONTROLLER_DISTANCE_SIGNAL_TO_FIRST_PIXEL_FEET
-    puts "edge #{edge.id} is #{min_distance_from_controller_to_signal_injection_feet} feet away; vertices: #{edge.vertices.map(&:id)}; controller vertex: #{controller.vertex.id}; edge signal_in_vertex: #{edge.signal_in_vertex.id}"
-    raise "error: edge #{edge.id} is too far from controller at #{controller.vertex.id}"
+    raise "error: edge #{edge.id} is too far from controller at #{controller.vertex.id} (#{min_distance_from_controller_to_signal_injection_feet} feet)"
   end
 end
 
@@ -197,6 +196,6 @@ def validate_controller_distance_to_first_pixel_panel(controller:, panel:)
   min_distance_from_controller_to_signal_injection_feet = straight_line_distance(panel.centroid, controller.vertex)
 
   if min_distance_from_controller_to_signal_injection_feet > MAX_CONTROLLER_DISTANCE_SIGNAL_TO_FIRST_PIXEL_FEET
-    raise "error: panel #{panel.id} is too far from controller at #{controller.vertex.id}"
+    raise "error: panel #{panel.id} is too far from controller at #{controller.vertex.id} (#{min_distance_from_controller_to_signal_injection_feet} feet)"
   end
 end
