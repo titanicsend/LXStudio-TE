@@ -56,7 +56,7 @@ public class TEMixerUtils {
         return null;
     }
 
-    public static LXChannel getChannelByName(LX lx, TEChannelName name) throws InterruptedException {
+    public static LXChannel getChannelByName(LX lx, TEChannelName name) {
         if (name == null)
             return null;
 
@@ -71,7 +71,11 @@ public class TEMixerUtils {
                 numTries++;
                 double waitMs = Math.pow(2.0, (double)numTries) * 1000;
                 TE.log("LX mixer wasn't ready yet, waiting %f seconds...", waitMs / 1000.);
-                Thread.sleep((long)waitMs);
+                try {
+                    Thread.sleep((long)waitMs);
+                } catch (InterruptedException ie) {
+                    TE.err("Could not sleep waiting for mixer, %s: %s", ie, ie.getMessage());
+                }
             }
         }
         return null;
