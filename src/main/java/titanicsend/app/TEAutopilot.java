@@ -21,9 +21,6 @@ public class TEAutopilot implements LXLoopTask {
     private boolean enabled = false;
     // should we try to sync BPM when ProDJlink seems off?
     private boolean autoBpmSyncEnabled = false;
-    // do not change LX tempo unless the newly suggested tempo
-    // differs by more than this amount
-    private double TEMPO_DIFF_THRESHOLD = 0.05;
 
     // if we predicted the wrong next phrase, fade out the
     // phrase we were fading in over the next number of bars
@@ -108,33 +105,11 @@ public class TEAutopilot implements LXLoopTask {
         echoMode = false;
     }
 
-    private void initializeTempoEMA() {
-        history.resetTempoTracking(this.lx.engine.tempo.bpm());
-    }
-
     protected void onOscMessage(OscMessage msg) {
         try {
-            String address = msg.getAddressPattern().toString();
             TEOscMessage oscTE = new TEOscMessage(msg);
 
-            // First, let's check for global OSC messages that don't concern autopilot, or that
-            // we should act on immediately
-            //TODO(will) go back to using built-in OSC listener for setBPM messages once:
-            // 1. Mark merges his commit for utilizing the main OSC listener
-            // 2. Mark adds protection on input checking for setBPM = 0.0 messages (https://github.com/heronarts/LX/blob/e3d0d11a7d61c73cd8dde0c877f50ea4a58a14ff/src/main/java/heronarts/lx/Tempo.java#L201)
-            if (TEOscMessage.isTempoChange(address)) {
-                double newTempo = TEOscMessage.extractBpm(msg);
-                double tempoDiff = Math.abs(newTempo - lx.engine.tempo.bpm());
-                if (TETimeUtils.isValidBPM(newTempo) && tempoDiff > TEMPO_DIFF_THRESHOLD) {
-                    TE.log("[OSC] Changing LX tempo to %f", (float) newTempo);
-                    this.lx.engine.tempo.setBpm((float) newTempo);
-
-                    // clear and restart history for beats/tempo
-                    history.resetBeatTracking();
-                    history.resetTempoTracking(this.lx.engine.tempo.bpm());
-                }
-
-            } else if (!isEnabled()) {
+            if (!isEnabled()) {
                 // if autopilot isn't enabled, don't bother tracking these
                 return;
 
@@ -148,28 +123,12 @@ public class TEAutopilot implements LXLoopTask {
     }
 
     public void onBeatEvent(long beatAt) throws Exception {
-        if (!history.isTrackingTempo())
-            history.resetTempoTracking(lx.engine.tempo.bpm.getValue());
-
-        // log beat event
         history.logBeat(beatAt);
-
-        // Tempo fine adjustment due to irregularities with OSC
-        // If you want to ignore this, simply turn `autoBpmSyncEnabled`=false
-        if (autoBpmSyncEnabled && history.readyForTempoEstimation()) {
-            double estBPMAvg = history.estimateBPM();
-            if (Math.abs(lx.engine.tempo.bpm() - estBPMAvg) > BPM_ERROR_ADJUST) {
-                TE.log("BPM est from beats: %f, LX BPM is: %f, overriding BPM --> %f!"
-                        , estBPMAvg, lx.engine.tempo.bpm(), estBPMAvg);
-                lx.engine.tempo.setBpm(estBPMAvg);
-            }
-        }
     }
 
     @Override
     public void loop(double deltaMs) {
         long now = System.currentTimeMillis();
-
         try {
             // if autopilot isn't enabled, just ignore for now
             if (!isEnabled()) return;
@@ -208,10 +167,6 @@ public class TEAutopilot implements LXLoopTask {
                 // handle OSC message based on type
                 if (TEOscMessage.isPhraseChange(address)) {
                     onPhraseChange(address, oscTE.timestamp, deltaMs);
-
-                } else if (TEOscMessage.isDownbeat(address)) {
-                    // nothing to do yet
-
                 } else if (TEOscMessage.isBeat(address)) {
                     onBeatEvent(oscTE.timestamp);
 
@@ -293,8 +248,14 @@ public class TEAutopilot implements LXLoopTask {
     }
 
     private void onPhraseChange(String oscAddress, long timestamp, double deltaMs) throws Exception {
-        // detect phrase type and update state to reflect this
-        this.updatePhraseState(TEPhrase.resolvePhrase(oscAddress));
+        // detect phrase type
+        TEPhrase detectedPhrase = TEPhrase.resolvePhrase(oscAddress);
+        if (detectedPhrase == TEPhrase.UNKNOWN)
+            // skip if we don't understand the phrase
+            return;
+
+        // update state to reflect this
+        this.updatePhraseState(detectedPhrase);
         boolean predictedCorrectly = (oldNextPhrase == curPhrase);
         boolean isSamePhrase = (prevPhrase == curPhrase);
         TE.log("%s -> %s -> %s (?), (old next: %s)", prevPhrase, curPhrase, nextPhrase, oldNextPhrase);

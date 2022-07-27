@@ -27,6 +27,10 @@ public class TEPatternLibrary {
     private HashMap<LXPattern, Double> patternHistoryCounter;
     private double numBarsTotal = 0.0;
 
+    // the probability we pick a random pattern (amongst those filtered
+    // as compatible!) instead of picking the least played (also amongst compatible)
+    private float PROB_PICK_RANDOM_NEXT_PATTERN = 0.2f;
+
     public class PhrasePatternCompositeKey {
         public Class<? extends LXPattern> pattern;
         public TEPhrase phrase;
@@ -223,12 +227,55 @@ public class TEPatternLibrary {
         return rec;
     }
 
+    /**
+     * From a string like (from `pattern.toString()`)
+     *       PBXorcery[#31241][/lx/mixer/channel/1/pattern/16]
+     *
+     * Extract:
+     *      "PBXorcery"
+     *
+     * @param patternToString
+     * @return
+     */
+    private String pattern2Id(String patternToString) {
+        String[] parts = patternToString.split("\\[");
+        if (parts.length == 3)
+            return parts[0];
+        return "";
+    }
+
+    /**
+     * From a string like (from `patternClass.toString()`)
+     *
+     *    "class titanicsend.pattern.pixelblaze.PBXorcery"
+     * or
+     *    "class titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig$Marbling"
+     *
+     *  Extract
+     *       "PBXorcery" or "Marbling"
+     *
+     * @param classToString
+     * @return
+     */
+    private String class2Id(String classToString) {
+        //TE.log("Finding ID inside: '%s'", classToString);
+        String[] parts = classToString.split("\\.");
+        String classname = parts[parts.length - 1];
+        if (classname.contains("$")) {
+            String[] classnameParts = classname.split("\\$");
+            return classnameParts[1];
+        } else {
+            return classname;
+        }
+    }
+
     public ArrayList<LXPattern> getCompatibleNextPatterns(TEPhrase oldPhrase, LXPattern curPattern, TEPhrase newPhrase) throws Exception {
         if (!this.isReady())
             throw new Exception("Cannot filter patterns, you need to call indexPatterns() first!");
 
         // get information about what's currently playing
         TEPatternRecord rec = getRecFromPattern(curPattern, oldPhrase);
+        String curPatternId = pattern2Id(curPattern.toString());
 
         // see what's compatible
         HashSet<TEPatternCoverageType> compatibleCoverage = TEPatternCoverageType.getCompatible(rec.coverageType);
@@ -238,7 +285,8 @@ public class TEPatternLibrary {
         Stream<TEPatternRecord> s = patternRecords.stream()
                                         .filter(r -> r.phraseType == newPhrase)
                                         .filter(r -> compatibleCoverage.contains(r.coverageType))
-                                        .filter(r -> compatibleColor.contains(r.colorCategoryType));
+                                        .filter(r -> compatibleColor.contains(r.colorCategoryType))
+                                        .filter(r -> !class2Id(r.patternClass.toString()).equals(curPatternId));
         ArrayList<TEPatternRecord> matchingRecords = s.collect(Collectors.toCollection(ArrayList::new));
 
         // ensure we actually have choices, fallback to just phrase compatibility
@@ -276,6 +324,20 @@ public class TEPatternLibrary {
         return matchingPatterns.get(randomIndex);
     }
 
+    /**
+     * Given the currently playing pattern (on a channel determined by the current phrase
+     * type) as well as the next phrase, pick a compatible next pattern to start fading into
+     * on the new phrase's channel.
+     *
+     * Considerations include phrase, coloring, coverage, and play history. Of these, phrase
+     * is the most important, as not every pattern is on every channel -- we must filter there.
+     *
+     * @param curPattern
+     * @param curPhrase
+     * @param nextPhrase
+     * @return
+     * @throws Exception
+     */
     public LXPattern pickRandomCompatibleNextPattern(LXPattern curPattern, TEPhrase curPhrase, TEPhrase nextPhrase) throws Exception {
         // get coverage type and color from current pattern
         TE.log("... looking up pattern record for: pattern=%s, phrase=%s", curPattern, curPhrase);
@@ -296,25 +358,36 @@ public class TEPatternLibrary {
 
         // filter patterns
         ArrayList<LXPattern> matchingPatterns = getCompatibleNextPatterns(curPhrase, curPattern, nextPhrase);
+        if (matchingPatterns.size() == 0) {
+            // this should not happen unless we don't have a pattern on a channel...
+            throw new Exception(
+                    String.format("No compatible patterns for: pattern=%s, curPhrase=%s, nextPhrase=%s"
+                            , curPattern, curPhrase, nextPhrase));
+        }
 
-        // randomly pick one
-        //Random rand = new Random();
-        //int randomIndex = rand.nextInt(matchingPatterns.size());
-        //TE.log("Picked random compatible idx=%d from size=%d", randomIndex, matchingPatterns.size());
+        // should we pick randomly, or select by least plays?
+        Random rand = new Random();
+        int patternIndex = 0;
 
-        // pick least played pattern
-        Collections.sort(matchingPatterns, new Comparator<LXPattern>() {
-            @Override
-            public int compare(LXPattern a, LXPattern b) {
-                double barsA = patternHistoryCounter.get(a) == null ? 0 : patternHistoryCounter.get(a);
-                double barsB = patternHistoryCounter.get(b) == null ? 0 : patternHistoryCounter.get(b);
-                return Double.compare(barsA, barsB); // ascending
-            }
-        });
+        if (rand.nextFloat() <= PROB_PICK_RANDOM_NEXT_PATTERN) {
+            // pick random one
+            patternIndex = rand.nextInt(matchingPatterns.size());
 
-        LXPattern leastPlayed = matchingPatterns.get(0);
-        TE.log("Picked least played pattern: %s", leastPlayed);
-        return leastPlayed;
+        } else {
+            // pick least played pattern
+            Collections.sort(matchingPatterns, new Comparator<LXPattern>() {
+                @Override
+                public int compare(LXPattern a, LXPattern b) {
+                    double barsA = patternHistoryCounter.get(a) == null ? 0 : patternHistoryCounter.get(a);
+                    double barsB = patternHistoryCounter.get(b) == null ? 0 : patternHistoryCounter.get(b);
+                    return Double.compare(barsA, barsB); // ascending
+                }
+            });
+        }
+
+        LXPattern selectedPattern = matchingPatterns.get(patternIndex);
+        TE.log("Picked next pattern: %s", selectedPattern);
+        return selectedPattern;
     }
 
     /**

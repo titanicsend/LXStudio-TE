@@ -69,6 +69,7 @@ public class TEApp extends PApplet implements LXPlugin  {
   private GigglePixelBroadcaster gpBroadcaster;
 
   private TEAutopilot autopilot;
+  private TEOscListener oscListener;
   private TEPatternLibrary library;
 
   @Override
@@ -193,10 +194,8 @@ public class TEApp extends PApplet implements LXPlugin  {
     };
     this.autopilotComponent.autopilotEnabledToggle.addListener(autopilotEnableListener);
 
-    // TODO(will) go back to using built-in OSC listener for setBPM messages once:
-    // 1. Mark merges his commit for utilizing the main OSC listener
-    // 2. Mark adds protection on input checking for setBPM = 0.0 messages
-    //    (https://github.com/heronarts/LX/blob/e3d0d11a7d61c73cd8dde0c877f50ea4a58a14ff/src/main/java/heronarts/lx/Tempo.java#L201)
+    // create our listener for OSC messages
+    this.oscListener = new TEOscListener(lx, autopilot);
 
     // add custom OSC listener to handle OSC messages from ShowKontrol
     // includes an Autopilot ref to store (threadsafe) queue of unread OSC messages
@@ -204,7 +203,7 @@ public class TEApp extends PApplet implements LXPlugin  {
             + Integer.toString(TEShowKontrol.OSC_PORT) + " ...");
     try {
         lx.engine.osc.receiver(TEShowKontrol.OSC_PORT).addListener((message) -> {
-            autopilot.onOscMessage(message);
+          this.oscListener.onOscMessage(message);
       });
     } catch (SocketException sx) {
         sx.printStackTrace();
@@ -274,7 +273,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     l.addPattern(ShaderPanelsPatternConfig.Electric.class, covPanelPartial, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.JetStream.class, covPanels, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.Marbling.class, covPanels, cNonConforming, up);
-    l.addPattern(ShaderPanelsPatternConfig.SpaceExplosion.class, covPanels, cNonConforming, up);
+    //l.addPattern(ShaderPanelsPatternConfig.SpaceExplosion.class, covPanels, cNonConforming, up); // not visible/working?
 
     // misc patterns
     //l.addPattern(EdgeProgressions.class, covEdges, colorWhite, chorus);
