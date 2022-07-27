@@ -1,5 +1,7 @@
 package titanicsend.app.autopilot;
 
+import titanicsend.util.TE;
+
 import java.util.concurrent.ConcurrentHashMap;
 
 public enum TEPhrase {
@@ -33,11 +35,14 @@ public enum TEPhrase {
     }
 
     public static TEPhrase resolvePhrase(String showKontrolPhraseString) {
+        // ie: showKontrolPhraseString="/lx/phrase/chorus 1"
         String[] parts = showKontrolPhraseString.split("/");
-        String phrase = parts[3];
+        String phraseAndArg = parts[3];
+        String phrase = phraseAndArg.split(" ")[0];  // ie: "chorus 1"
         if (stringToPhrase.containsKey(phrase)) {
             return stringToPhrase.get(phrase);
         }
+        TE.err("Unknown phrase detected: %s", showKontrolPhraseString);
         return UNKNOWN;
     }
 }

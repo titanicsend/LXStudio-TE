@@ -23,8 +23,6 @@ public class TEHistorian {
     */
     // max num of beat events to track in past
     public static final int BEAT_MAX_WINDOW = 128;
-    // alpha for EMA on BPM estimates to smooth estimation
-    private static double TEMPO_EMA_ALPHA = 0.2;
 
     // start checking for tempo deviations after this many beat events
     public static final int BEAT_START_ESTIMATION_AT = 16;
@@ -52,8 +50,6 @@ public class TEHistorian {
     */
     // past log of beat timestamps
     public CircularArray<TEBeatEvent> beatEvents;
-    // moving average object for tempo estimates
-    private TEMath.EMA tempoEMA;
     // timestamp of when we last saw an OSC beat at
     private long lastBeatAt;
 
@@ -109,12 +105,6 @@ public class TEHistorian {
         curPhraseType = phraseEvent.getPhraseType();
     }
 
-    public double estimateBPM() {
-        double estBPM = TETimeUtils.estBPMFromBeatEvents(beatEvents);
-        double estBPMAvg = tempoEMA.update(estBPM);
-        return estBPMAvg;
-    }
-
     public void resetBeatTracking() {
         beatEvents = new CircularArray<TEBeatEvent>(TEBeatEvent.class, BEAT_MAX_WINDOW);
     }
@@ -122,18 +112,6 @@ public class TEHistorian {
     public void resetPhraseTracking() {
         phraseEvents = new CircularArray<TEPhraseEvent>(TEPhraseEvent.class, PHRASE_EVENT_MAX_WINDOW);
         curPhraseEvent = null;
-    }
-
-    public void resetTempoTracking(double startingBpm) {
-        tempoEMA = new TEMath.EMA(startingBpm, TEMPO_EMA_ALPHA);
-    }
-
-    public boolean isTrackingTempo() {
-        return tempoEMA != null;
-    }
-
-    public boolean readyForTempoEstimation() {
-        return beatEvents.getSize() >= BEAT_START_ESTIMATION_AT;
     }
 
     /**
