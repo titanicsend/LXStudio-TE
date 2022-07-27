@@ -1,7 +1,7 @@
 Panel ID	Edge1	Edge2	Edge3	Type	Channels	Controller vertex	Signal in vertex
 SUA	39-101	39-44	44-101	lit	4	101	39
 SUF	47-50	44-47	44-50	lit	3	50	44
-SDC	67-90	67-93	90-93	lit	4	93	93
+SDC	67-90	67-93	90-93	lit	4	93	90
 SCC	98-99	98-100	99-100	lit	3	99	99
 SAD	28-111	26-28	26-111	lit	1	26	26
 SFD	69-82	69-70	70-82	lit	1	70	82
