@@ -399,7 +399,7 @@ public class TEPatternLibrary {
      * Each TEPatternRecord should only map to LXPatterns on the same
      * LXChannel.
      */
-    public void indexPatterns() throws InterruptedException {
+    public void indexPatterns() {
         this.rec2patterns = new HashMap<>();
 
         // report back some statistics on patterns indexed or not found
@@ -424,6 +424,9 @@ public class TEPatternLibrary {
                     if (!patternsPerPhrase.containsKey(r.phraseType))
                         patternsPerPhrase.put(r.phraseType, 0);
                     patternsPerPhrase.put(r.phraseType, patternsPerPhrase.get(r.phraseType) + 1);
+
+                    // initialize counts to zero for plays
+                    patternHistoryCounter.put(p, 0.0);
 
                     //TE.log("[TEPatternLibrary] Index pattern=%s to channel=%s, record=%s", p.getLabel(), name, r);
                     found++;
