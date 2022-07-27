@@ -27,6 +27,8 @@ public class TEPatternLibrary {
     private HashMap<LXPattern, Double> patternHistoryCounter;
     private double numBarsTotal = 0.0;
 
+    // the probability we pick a random pattern (amongst those filtered
+    // as compatible!) instead of picking the least played (also amongst compatible)
     private float PROB_PICK_RANDOM_NEXT_PATTERN = 0.2f;
 
     public class PhrasePatternCompositeKey {
