@@ -152,13 +152,16 @@ class Controller
     end
 
     rows.drop(1).each do |row|
-      panel_id, _, _, _, panel_type, channels_required, controller_vertex_id = row
+      panel_id, _, _, _, panel_type, channels_required, controller_vertex_id, signal_start_vertex_id = row
 
       panel = graph.panels.values.flatten.find { |panel| panel.id == panel_id }
       panel.panel_type = panel_type
       panel.channels_required = channels_required.to_i
 
       controller_vertex = vertices.find { |vertex_id, vertex| vertex_id.to_s == controller_vertex_id }[1]
+
+      panel.controller_vertex = controller_vertex
+      panel.signal_start_vertex_id = signal_start_vertex_id
 
       assigned_controller = nil
       if controllers[controller_vertex.id] != nil
@@ -186,8 +189,7 @@ def validate_controller_distance_to_first_pixel_edge(controller:, edge:, graph:)
   min_distance_from_controller_to_signal_injection_feet = min_distance_between_vertices_in_feet(graph, controller.vertex.id, edge.signal_in_vertex.id)
 
   if min_distance_from_controller_to_signal_injection_feet > MAX_CONTROLLER_DISTANCE_SIGNAL_TO_FIRST_PIXEL_FEET
-    puts "edge #{edge.id} is #{min_distance_from_controller_to_signal_injection_feet} feet away; vertices: #{edge.vertices.map(&:id)}; controller vertex: #{controller.vertex.id}; edge signal_in_vertex: #{edge.signal_in_vertex.id}"
-    raise "error: edge #{edge.id} is too far from controller at #{controller.vertex.id}"
+    raise "error: edge #{edge.id} is too far from controller at #{controller.vertex.id} (#{min_distance_from_controller_to_signal_injection_feet} feet)"
   end
 end
 
@@ -195,6 +197,6 @@ def validate_controller_distance_to_first_pixel_panel(controller:, panel:)
   min_distance_from_controller_to_signal_injection_feet = straight_line_distance(panel.centroid, controller.vertex)
 
   if min_distance_from_controller_to_signal_injection_feet > MAX_CONTROLLER_DISTANCE_SIGNAL_TO_FIRST_PIXEL_FEET
-    raise "error: panel #{panel.id} is too far from controller at #{controller.vertex.id}"
+    raise "error: panel #{panel.id} is too far from controller at #{controller.vertex.id} (#{min_distance_from_controller_to_signal_injection_feet} feet)"
   end
 end

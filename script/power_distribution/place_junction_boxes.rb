@@ -404,3 +404,8 @@ ac_power_cable_lengths.delete_if { |_, v| v == 0 }
 puts "AC power cable lengths:"
 pp ac_power_cable_lengths
 puts "---------"
+
+# Uncomment me, run the script, copy-paste, split to columns to regenerate `panel_signal_paths_scratch` (first 4 columns)
+# graph.panels.each_value do |panel|
+#  puts "#{panel.id},#{panel.controller_vertex.id},#{panel.signal_start_vertex_id},#{panel.valid_signal_in_vertices.map(&:id).join('-')}"
+# end
