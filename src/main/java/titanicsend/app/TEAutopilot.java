@@ -19,8 +19,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TEAutopilot implements LXLoopTask {
     private boolean enabled = false;
-    // should we try to sync BPM when ProDJlink seems off?
-    private boolean autoBpmSyncEnabled = false;
 
     // if we predicted the wrong next phrase, fade out the
     // phrase we were fading in over the next number of bars
@@ -92,15 +90,19 @@ public class TEAutopilot implements LXLoopTask {
         history = new TEHistorian();
 
         // phrase state
+        prevPhrase = null;
+        curPhrase = TEPhrase.DOWN;
+        nextPhrase = null;
+        oldNextPhrase = null;
+
         prevChannelName = null;
-        curChannelName = null;
+        curChannelName = TEMixerUtils.getChannelNameFromPhraseType(curPhrase);
         nextChannelName = null;
         oldNextChannelName = null;
 
-        prevPhrase = null;
-        curPhrase = null;
-        nextPhrase = null;
-        oldNextPhrase = null;
+        // this call will also wait for the mixer to be initialized
+        curChannel = TEMixerUtils.getChannelByName(lx, curChannelName);
+        TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
 
         echoMode = false;
     }
@@ -376,15 +378,7 @@ public class TEAutopilot implements LXLoopTask {
         }
     }
 
-    public void setAutoBpmSyncEnabled(boolean enableSync) {
-        if (enableSync && !this.enabled) {
-            TE.err("Cannot autosync BPM, requires: autopilot.setEnabled(true)!");
-            return;
-        }
-        this.autoBpmSyncEnabled = enableSync;
-    }
-
-    public ArrayList<LXClip> collectClipsToTrigger(TEPhrase newPhrase, boolean isSamePhrase) throws InterruptedException {
+    public ArrayList<LXClip> collectClipsToTrigger(TEPhrase newPhrase, boolean isSamePhrase) {
         ArrayList<LXClip> clips = new ArrayList<LXClip>();
         Random rand = new Random();
 
