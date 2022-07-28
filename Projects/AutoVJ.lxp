@@ -1,6 +1,6 @@
 {
   "version": "0.4.1",
-  "timestamp": 1658886395919,
+  "timestamp": 1659044930660,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -71,7 +71,7 @@
                   "period": 30.0,
                   "primary/brightness": 0.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 186.0,
+                  "primary/hue": 193.0,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -1546,7 +1546,7 @@
           "scene-5": false,
           "crossfader": 0.47457627207040787,
           "crossfaderBlendMode": 1,
-          "focusedChannel": 2,
+          "focusedChannel": 5,
           "cueA": false,
           "cueB": false,
           "viewCondensed": false
@@ -1815,10 +1815,10 @@
               "autoCycleEnabled": false,
               "autoCycleMode": 0,
               "autoCycleTimeSecs": 16.0,
-              "transitionEnabled": true,
+              "transitionEnabled": false,
               "transitionTimeSecs": 0.5,
               "transitionBlendMode": 4,
-              "focusedPattern": 11,
+              "focusedPattern": 17,
               "triggerPatternCycle": false
             },
             "children": {},
@@ -1870,7 +1870,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 9,
+            "patternIndex": 17,
             "patterns": [
               {
                 "id": 9708,
@@ -2178,11 +2178,11 @@
                   "label": "NeonBarsEdges",
                   "recall": false,
                   "Energy": 10.0,
+                  "Wibble Size": 0.3,
                   "Speed": 10.0,
                   "Thickness": 0.3,
                   "Glow": 4.0,
-                  "Glow2": 9.0,
-                  "Wibble Size": 0.3
+                  "Glow2": 9.0
                 },
                 "children": {
                   "modulation": {
@@ -2214,11 +2214,11 @@
                 "parameters": {
                   "label": "BasicElectricEdges",
                   "recall": false,
-                  "Thickness": 0.25,
                   "Curve": 0.2,
                   "Energy": 0.0,
-                  "Disperse": 2.0,
-                  "Haze": 0.075
+                  "Haze": 0.075,
+                  "Thickness": 0.25,
+                  "Disperse": 2.0
                 },
                 "children": {
                   "modulation": {
@@ -2323,10 +2323,10 @@
                 "parameters": {
                   "label": "Electric",
                   "recall": false,
+                  "thickness": 5.0,
                   "dispersion": 6.310000082477927,
-                  "haze": 0.25,
                   "curve": 0.0,
-                  "thickness": 5.0
+                  "haze": 0.25
                 },
                 "children": {
                   "modulation": {
@@ -2389,11 +2389,11 @@
                 "parameters": {
                   "label": "NeonHeartNative",
                   "recall": false,
-                  "len": 0.25,
-                  "haze": 1.7,
                   "speed": 0.5,
+                  "len": 0.25,
+                  "thickness": 0.0035,
                   "scale": 0.012,
-                  "thickness": 0.0035
+                  "haze": 1.7
                 },
                 "children": {
                   "modulation": {
@@ -2457,9 +2457,9 @@
                   "label": "Marbling",
                   "recall": false,
                   "xWave": 2.5,
+                  "yWave": 1.5,
                   "tile": 2.0,
-                  "curve": 10.0,
-                  "yWave": 1.5
+                  "curve": 10.0
                 },
                 "children": {
                   "modulation": {
@@ -2511,6 +2511,75 @@
                   }
                 },
                 "deviceVersion": -1
+              },
+              {
+                "id": 32234,
+                "class": "titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig$SlitheringSnake",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false,
+                  "autoCycleEligible": true
+                },
+                "parameters": {
+                  "label": "SlitheringSnake",
+                  "recall": false
+                },
+                "children": {
+                  "modulation": {
+                    "id": 32235,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 32286,
+                "class": "titanicsend.pattern.jeff.Fireflies",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false,
+                  "autoCycleEligible": true
+                },
+                "parameters": {
+                  "label": "Fireflies",
+                  "recall": false,
+                  "enableEdges": false,
+                  "enablePanels": true,
+                  "sliderSpeed": 0.3299999926239252,
+                  "sliderDecay": 0.38000001199543476,
+                  "sliderFade": 0.3300000037997961,
+                  "sliderNumSparks": 0.23000000603497028,
+                  "sliderColor": 1.0
+                },
+                "children": {
+                  "modulation": {
+                    "id": 32287,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
               }
             ]
           },
@@ -2538,10 +2607,10 @@
               "autoCycleEnabled": false,
               "autoCycleMode": 0,
               "autoCycleTimeSecs": 60.0,
-              "transitionEnabled": true,
+              "transitionEnabled": false,
               "transitionTimeSecs": 0.1,
               "transitionBlendMode": 0,
-              "focusedPattern": 7,
+              "focusedPattern": 18,
               "triggerPatternCycle": false
             },
             "children": {},
@@ -2593,7 +2662,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 11,
+            "patternIndex": 18,
             "patterns": [
               {
                 "id": 12027,
@@ -2663,7 +2732,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.125
                       }
                     ],
                     "modulations": [
@@ -2764,7 +2833,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.03125
                       },
                       {
                         "id": 12037,
@@ -2791,7 +2860,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.03125
                       }
                     ],
                     "modulations": [
@@ -2938,7 +3007,7 @@
                           "exp": 0.19999999552965164
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.0625
                       },
                       {
                         "id": 9996,
@@ -2965,7 +3034,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.0625
                       }
                     ],
                     "modulations": [
@@ -3089,7 +3158,7 @@
                           "exp": 0.880000002682209
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.25
                       }
                     ],
                     "modulations": [
@@ -3175,11 +3244,11 @@
                 "parameters": {
                   "label": "LightBeamsPattern",
                   "recall": false,
+                  "color2": 0.15,
+                  "zoom": 3.3499999530613422,
                   "color3": 1.5,
                   "fog": 5.0,
-                  "color2": 0.15,
-                  "speed": 0.4499999899417162,
-                  "zoom": 3.3499999530613422
+                  "speed": 0.4499999899417162
                 },
                 "children": {
                   "modulation": {
@@ -3242,9 +3311,9 @@
                 "parameters": {
                   "label": "StormScanner",
                   "recall": false,
+                  "centered": false,
                   "noise": 2.0,
-                  "noise2": 2.0,
-                  "centered": false
+                  "noise2": 2.0
                 },
                 "children": {
                   "modulation": {
@@ -3276,11 +3345,11 @@
                 "parameters": {
                   "label": "NeonSnake",
                   "recall": false,
-                  "TrebleGlow": false,
                   "ySquish": 1.9199999794363976,
-                  "Dispersion": 0.6439574062332368,
                   "BeatDisperse": false,
-                  "Glow": 1.0
+                  "Glow": 1.0,
+                  "Dispersion": 0.6439574062332368,
+                  "TrebleGlow": false
                 },
                 "children": {
                   "modulation": {
@@ -3312,8 +3381,8 @@
                 "parameters": {
                   "label": "RainbowSwirlPanels",
                   "recall": false,
-                  "Bloom": 5.0,
-                  "Zoom": 0.7
+                  "Zoom": 0.7,
+                  "Bloom": 5.0
                 },
                 "children": {
                   "modulation": {
@@ -3345,10 +3414,10 @@
                 "parameters": {
                   "label": "WaterPanels",
                   "recall": false,
-                  "Inten1": 1.0,
                   "Speed": 1.0,
-                  "Inten2": 0.001,
-                  "Tiling": 1.0
+                  "Inten1": 1.0,
+                  "Tiling": 1.0,
+                  "Inten2": 0.001
                 },
                 "children": {
                   "modulation": {
@@ -3380,10 +3449,10 @@
                 "parameters": {
                   "label": "WaterEdges",
                   "recall": false,
+                  "Speed": 1.0,
                   "Inten1": 5.0,
                   "Inten2": 0.005,
-                  "Tiling": 1.0,
-                  "Speed": 1.0
+                  "Tiling": 1.0
                 },
                 "children": {
                   "modulation": {
@@ -3415,9 +3484,9 @@
                 "parameters": {
                   "label": "WavyEdges",
                   "recall": false,
+                  "Colors": 1.0,
                   "Intensity": 0.0,
-                  "Speed": 1.0,
-                  "Colors": 1.0
+                  "Speed": 1.0
                 },
                 "children": {
                   "modulation": {
@@ -3537,9 +3606,9 @@
                 "parameters": {
                   "label": "LightBeamsPattern",
                   "recall": false,
+                  "speed": 2.5,
                   "fog": 0.5,
                   "color2": 0.22,
-                  "speed": 2.5,
                   "zoom": 1.25,
                   "color3": 3.6
                 },
@@ -3573,11 +3642,11 @@
                 "parameters": {
                   "label": "NeonRipples",
                   "recall": false,
-                  "width": 0.6,
-                  "speed": 5.0,
+                  "layers": 2.0,
                   "color2": 0.5,
+                  "speed": 5.0,
                   "pixelation": 50.0,
-                  "layers": 2.0
+                  "width": 0.6
                 },
                 "children": {
                   "modulation": {
@@ -3611,9 +3680,9 @@
                   "recall": false,
                   "wat": 1.0,
                   "thickness": 1.0,
+                  "brightness": 0.004429999923333526,
                   "wavy": 1.0,
-                  "smallWave": 1.0,
-                  "brightness": 0.004429999923333526
+                  "smallWave": 1.0
                 },
                 "children": {
                   "modulation": {
@@ -3645,11 +3714,11 @@
                 "parameters": {
                   "label": "NeonRipples",
                   "recall": false,
-                  "speed": 5.0,
-                  "width": 0.6,
                   "pixelation": 50.0,
+                  "color2": 0.5,
+                  "width": 0.6,
                   "layers": 2.0,
-                  "color2": 0.5
+                  "speed": 5.0
                 },
                 "children": {
                   "modulation": {
@@ -3681,7 +3750,7 @@
             "parameters": {
               "label": "Chorus",
               "arm": false,
-              "selected": true,
+              "selected": false,
               "enabled": false,
               "cue": false,
               "fader": 0.0,
@@ -3695,10 +3764,10 @@
               "autoCycleEnabled": false,
               "autoCycleMode": 0,
               "autoCycleTimeSecs": 16.0,
-              "transitionEnabled": true,
+              "transitionEnabled": false,
               "transitionTimeSecs": 0.1,
               "transitionBlendMode": 4,
-              "focusedPattern": 0,
+              "focusedPattern": 17,
               "triggerPatternCycle": false
             },
             "children": {},
@@ -3791,7 +3860,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 13,
+            "patternIndex": 17,
             "patterns": [
               {
                 "id": 27917,
@@ -3810,7 +3879,7 @@
                   "xOffset": 0.0,
                   "yOffset": 0.0,
                   "zOffset": 0.095238097012043,
-                  "scale": 0.3400000147521496,
+                  "scale": 0.1732283464566929,
                   "minScale": 0.5,
                   "maxScale": 18.31139166382972,
                   "xScale": 1.0,
@@ -3869,7 +3938,7 @@
                           "exp": 0.11999999731779099
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.06137430000000002
                       }
                     ],
                     "modulations": [
@@ -3914,8 +3983,8 @@
                 "parameters": {
                   "label": "RhythmicFlashStatic",
                   "recall": false,
-                  "Energy": 0.36000001430511475,
-                  "Color": true
+                  "Color": true,
+                  "Energy": 0.36000001430511475
                 },
                 "children": {
                   "modulation": {
@@ -3980,11 +4049,11 @@
                 "parameters": {
                   "label": "NeonBlocks",
                   "recall": false,
-                  "speed": 0.7,
                   "glow": 0.5,
+                  "speed": 0.7,
+                  "ySpread": 1.6,
                   "numBlocks": 30.0,
-                  "hideBlocks": false,
-                  "ySpread": 1.6
+                  "hideBlocks": false
                 },
                 "children": {
                   "modulation": {
@@ -4050,11 +4119,11 @@
                 "parameters": {
                   "label": "Outrun",
                   "recall": false,
-                  "Color Change Speed": 1.0,
-                  "Sideways Speed": 2.0,
                   "Glowing": true,
-                  "Forward Speed": 4.0,
-                  "Alpha Waves": true
+                  "Alpha Waves": true,
+                  "Sideways Speed": 2.0,
+                  "Color Change Speed": 1.0,
+                  "Forward Speed": 4.0
                 },
                 "children": {
                   "modulation": {
@@ -4119,11 +4188,11 @@
                 "parameters": {
                   "label": "MatrixScroller",
                   "recall": false,
-                  "Blast radius": 200000.0,
                   "Beat reactive": false,
-                  "Block size": 0.02,
+                  "Blast radius": 200000.0,
                   "Centering": 0.5,
-                  "Speed": 1.0
+                  "Speed": 1.0,
+                  "Block size": 0.02
                 },
                 "children": {
                   "modulation": {
@@ -4155,10 +4224,10 @@
                 "parameters": {
                   "label": "Marbling",
                   "recall": false,
-                  "yWave": 1.5,
-                  "tile": 2.0,
                   "xWave": 1.0,
-                  "curve": 10.0
+                  "curve": 10.0,
+                  "yWave": 1.5,
+                  "tile": 2.0
                 },
                 "children": {
                   "modulation": {
@@ -4290,8 +4359,8 @@
                 "parameters": {
                   "label": "RainbowSwirlEdges",
                   "recall": false,
-                  "Bloom": 0.0,
-                  "Zoom": 0.7
+                  "Zoom": 0.7,
+                  "Bloom": 0.0
                 },
                 "children": {
                   "modulation": {
@@ -4323,15 +4392,166 @@
                 "parameters": {
                   "label": "NeonCellsLegacy",
                   "recall": false,
+                  "Double Layer": false,
+                  "Energy": 0.0,
                   "Glow": 0.1,
                   "Width": 0.5,
-                  "Energy": 0.0,
-                  "Double Speed": false,
-                  "Double Layer": false
+                  "Double Speed": false
                 },
                 "children": {
                   "modulation": {
                     "id": 30816,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 32236,
+                "class": "titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig$PulsingPetriDish",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false,
+                  "autoCycleEligible": true
+                },
+                "parameters": {
+                  "label": "PulsingPetriDish",
+                  "recall": false
+                },
+                "children": {
+                  "modulation": {
+                    "id": 32237,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 32256,
+                "class": "titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig$Electric",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false,
+                  "autoCycleEligible": true
+                },
+                "parameters": {
+                  "label": "Electric",
+                  "recall": false,
+                  "dispersion": 1.0,
+                  "haze": 0.075,
+                  "thickness": 5.0,
+                  "curve": 0.0
+                },
+                "children": {
+                  "modulation": {
+                    "id": 32257,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 32258,
+                "class": "titanicsend.pattern.jon.FourStar",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false,
+                  "autoCycleEligible": true
+                },
+                "parameters": {
+                  "label": "FourStar",
+                  "recall": false,
+                  "color/brightness": 0.0,
+                  "color/saturation": 0.0,
+                  "color/hue": 0.0,
+                  "color/mode": 1,
+                  "color/index": 3,
+                  "tempoDivision": 0,
+                  "energy": 0.0
+                },
+                "children": {
+                  "modulation": {
+                    "id": 32259,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 32265,
+                "class": "titanicsend.pattern.jon.Phasers",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false,
+                  "autoCycleEligible": true
+                },
+                "parameters": {
+                  "label": "Phasers",
+                  "recall": false,
+                  "color/brightness": 0.0,
+                  "color/saturation": 0.0,
+                  "color/hue": 0.0,
+                  "color/mode": 1,
+                  "color/index": 3,
+                  "beamCount1": 1.0,
+                  "beamCount2": 4.70999994315207,
+                  "glow": 0.780000027269125,
+                  "hScan": 0.0,
+                  "vScan": true,
+                  "rotate": true,
+                  "reverse": false,
+                  "yPos1": 0.0,
+                  "yPos2": 0.0,
+                  "energy": 0.15,
+                  "beatScale": 104.53000034578145
+                },
+                "children": {
+                  "modulation": {
+                    "id": 32266,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0
@@ -4372,11 +4592,11 @@
               "viewNormalization": 0,
               "autoCycleEnabled": true,
               "autoCycleMode": 0,
-              "autoCycleTimeSecs": 0.1,
+              "autoCycleTimeSecs": 476.5838469848129,
               "transitionEnabled": false,
               "transitionTimeSecs": 0.1,
               "transitionBlendMode": 1,
-              "focusedPattern": 8,
+              "focusedPattern": 5,
               "triggerPatternCycle": false
             },
             "children": {},
@@ -4653,7 +4873,7 @@
                 ]
               }
             ],
-            "patternIndex": 8,
+            "patternIndex": 1,
             "patterns": [
               {
                 "id": 12043,
@@ -4980,8 +5200,8 @@
                   "label": "StormScanner",
                   "recall": false,
                   "centered": false,
-                  "noise": 2.0,
-                  "noise2": 2.0
+                  "noise2": 2.0,
+                  "noise": 2.0
                 },
                 "children": {
                   "modulation": {
@@ -5030,7 +5250,7 @@
               "transitionEnabled": false,
               "transitionTimeSecs": 0.1,
               "transitionBlendMode": 0,
-              "focusedPattern": 6,
+              "focusedPattern": 2,
               "triggerPatternCycle": false
             },
             "children": {},
@@ -5426,7 +5646,7 @@
                 ]
               }
             ],
-            "patternIndex": 2,
+            "patternIndex": 5,
             "patterns": [
               {
                 "id": 13187,
@@ -5770,6 +5990,84 @@
                 "deviceVersion": -1
               }
             ]
+          },
+          {
+            "id": 32240,
+            "class": "heronarts.lx.mixer.LXChannel",
+            "internal": {
+              "modulationColor": 0,
+              "controlsExpanded": true
+            },
+            "parameters": {
+              "label": "FX",
+              "arm": false,
+              "selected": true,
+              "enabled": false,
+              "cue": false,
+              "fader": 1.0,
+              "crossfadeGroup": 0,
+              "blendMode": 0,
+              "midiMonitor": false,
+              "midiChannel": 16,
+              "viewEnabled": false,
+              "viewSelector": "",
+              "viewNormalization": 0,
+              "autoCycleEnabled": false,
+              "autoCycleMode": 0,
+              "autoCycleTimeSecs": 60.0,
+              "transitionEnabled": false,
+              "transitionTimeSecs": 5.0,
+              "transitionBlendMode": 0,
+              "focusedPattern": 0,
+              "triggerPatternCycle": false
+            },
+            "children": {},
+            "effects": [],
+            "clips": [],
+            "patternIndex": 0,
+            "patterns": [
+              {
+                "id": 32252,
+                "class": "titanicsend.pattern.ben.BassLightning",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false,
+                  "autoCycleEligible": true
+                },
+                "parameters": {
+                  "label": "BassLightning",
+                  "recall": false,
+                  "energy": 2,
+                  "fade": 0.9844099999014289,
+                  "delay": 162.2499986086041,
+                  "life": 1779.4899658132342,
+                  "fDistance": 18.000000715255737,
+                  "rDistance": 50.0,
+                  "onBeat": true,
+                  "onBass": false,
+                  "trigger": false,
+                  "loops": true
+                },
+                "children": {
+                  "modulation": {
+                    "id": 32253,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              }
+            ]
           }
         ]
       },
@@ -5796,7 +6094,7 @@
         "parameters": {
           "label": "Output",
           "enabled": false,
-          "brightness": 1.0,
+          "brightness": 0.0,
           "fps": 0.0,
           "gamma": 1.0,
           "gammaMode": 1
@@ -5842,7 +6140,14 @@
           "computerKeyboardVelocity": 5
         },
         "children": {},
-        "inputs": [],
+        "inputs": [
+          {
+            "name": "APC40 mkII",
+            "channel": false,
+            "control": false,
+            "sync": false
+          }
+        ],
         "surfaces": [
           {
             "name": "APC40 mkII"
@@ -5952,7 +6257,7 @@
         },
         "parameters": {
           "label": "Autopilot",
-          "autopilotEnabledToggle": true
+          "autopilotEnabledToggle": false
         },
         "children": {}
       }
