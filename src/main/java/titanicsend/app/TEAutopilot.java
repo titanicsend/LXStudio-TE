@@ -92,16 +92,17 @@ public class TEAutopilot implements LXLoopTask {
         // phrase state
         prevPhrase = null;
         curPhrase = TEPhrase.DOWN;
-        nextPhrase = null;
+        nextPhrase = TEPhrase.UP;
         oldNextPhrase = null;
 
         prevChannelName = null;
         curChannelName = TEMixerUtils.getChannelNameFromPhraseType(curPhrase);
-        nextChannelName = null;
+        nextChannelName = TEMixerUtils.getChannelNameFromPhraseType(nextPhrase);
         oldNextChannelName = null;
 
         // this call will also wait for the mixer to be initialized
         curChannel = TEMixerUtils.getChannelByName(lx, curChannelName);
+        nextChannel = TEMixerUtils.getChannelByName(lx, nextChannelName);
         TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
 
         echoMode = false;
