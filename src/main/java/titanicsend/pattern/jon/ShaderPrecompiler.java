@@ -95,6 +95,7 @@ public class ShaderPrecompiler {
                             ShaderUtils.saveShaderToCache(gl4, shaderName, programId);
 
                             gl4.glDetachShader(programId, fragmentShaderId);
+                            gl4.glDeleteShader(fragmentShaderId);
                         } catch (Exception e) {
                             TE.log("Error building shader %s",file.getName());
                             throw new RuntimeException(e);
