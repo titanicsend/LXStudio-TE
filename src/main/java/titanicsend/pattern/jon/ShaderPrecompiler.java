@@ -52,11 +52,21 @@ public class ShaderPrecompiler {
         String FRAGMENT_SHADER_TEMPLATE =
                 ShaderUtils.loadResource("resources/shaders/framework/template.fs");
 
+        String VERTEX_SHADER_TEMPLATE = ShaderUtils.loadResource("resources/shaders/framework/default.vs");
+
         // set up just enough OpenGL machinery to let us compile and link
-        GLAutoDrawable surface = ShaderUtils.createGLSurface(xResolution,yResolution);
+        GLAutoDrawable surface = ShaderUtils.createGLSurface(xResolution, yResolution);
         surface.display();
         GL4 gl4 = surface.getGL().getGL4();
         int programId = gl4.glCreateProgram();
+
+        try {
+            int vertexShaderId = ShaderUtils.createShader(gl4, programId,
+                    VERTEX_SHADER_TEMPLATE, GL4.GL_VERTEX_SHADER);
+        } catch (Exception e) {
+            TE.log("Error building vertex shader");
+            throw new RuntimeException(e);
+        }
 
         // enumerate all files in the shader directory and
         // attempt to compile them to cached .bin files.
@@ -76,6 +86,8 @@ public class ShaderPrecompiler {
                         String shaderCode = FRAGMENT_SHADER_TEMPLATE.replace(SHADER_BODY_PLACEHOLDER, shaderBody);
 
                         try {
+
+
                             int fragmentShaderId = ShaderUtils.createShader(gl4, programId,
                                     shaderCode, GL4.GL_FRAGMENT_SHADER);
                             ShaderUtils.link(gl4, programId);
@@ -84,6 +96,7 @@ public class ShaderPrecompiler {
 
                             gl4.glDetachShader(programId, fragmentShaderId);
                         } catch (Exception e) {
+                            TE.log("Error building shader %s",file.getName());
                             throw new RuntimeException(e);
                         }
                         compiledFiles++;
