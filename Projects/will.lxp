@@ -1,6 +1,6 @@
 {
   "version": "0.4.1",
-  "timestamp": 1657912507447,
+  "timestamp": 1658986342801,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -496,17 +496,17 @@
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 0,
+              "focusedPattern": 1,
               "triggerPatternCycle": false
             },
             "children": {},
             "effects": [],
             "clips": [],
-            "patternIndex": 0,
+            "patternIndex": 1,
             "patterns": [
               {
-                "id": 10513,
-                "class": "titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig$KScope",
+                "id": 10515,
+                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$MatrixScroller",
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
@@ -514,12 +514,17 @@
                   "autoCycleEligible": true
                 },
                 "parameters": {
-                  "label": "KScope",
-                  "recall": false
+                  "label": "MatrixScroller",
+                  "recall": false,
+                  "Blast radius": 200000.0,
+                  "Block size": 0.02,
+                  "Speed": 1.0,
+                  "Beat reactive": false,
+                  "Centering": 0.5
                 },
                 "children": {
                   "modulation": {
-                    "id": 10514,
+                    "id": 10516,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0
@@ -536,8 +541,8 @@
                 "deviceVersion": -1
               },
               {
-                "id": 10515,
-                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$MatrixScroller",
+                "id": 10561,
+                "class": "titanicsend.pattern.will.FallingEdges",
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
@@ -545,17 +550,12 @@
                   "autoCycleEligible": true
                 },
                 "parameters": {
-                  "label": "MatrixScroller",
-                  "recall": false,
-                  "Block size": 0.02,
-                  "Speed": 1.0,
-                  "Blast radius": 200000.0,
-                  "Beat reactive": true,
-                  "Centering": 0.5
+                  "label": "FallingEdges",
+                  "recall": false
                 },
                 "children": {
                   "modulation": {
-                    "id": 10516,
+                    "id": 10562,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0
@@ -785,9 +785,9 @@
         "centerPoint": false,
         "camera": {
           "active": false,
-          "radius": 1.304802253197905E7,
-          "theta": -1.573173398617655,
-          "phi": -0.0548147764056921,
+          "radius": 1.2826318126663927E7,
+          "theta": -1.502358749974519,
+          "phi": 0.0031244270503520966,
           "x": 303442.78125,
           "y": 5226718.33203125,
           "z": 923606.193359375
@@ -795,9 +795,9 @@
         "cue": [
           {
             "active": false,
-            "radius": 1.304802253197905E7,
-            "theta": -1.573173398617655,
-            "phi": -0.0548147764056921,
+            "radius": 1.2826318126663927E7,
+            "theta": -1.502358749974519,
+            "phi": 0.0031244270503520966,
             "x": 303442.78125,
             "y": 5226718.33203125,
             "z": 923606.193359375
