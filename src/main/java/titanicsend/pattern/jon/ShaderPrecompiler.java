@@ -60,14 +60,6 @@ public class ShaderPrecompiler {
         GL4 gl4 = surface.getGL().getGL4();
         int programId = gl4.glCreateProgram();
 
-        try {
-            int vertexShaderId = ShaderUtils.createShader(gl4, programId,
-                    VERTEX_SHADER_TEMPLATE, GL4.GL_VERTEX_SHADER);
-        } catch (Exception e) {
-            TE.log("Error building vertex shader");
-            throw new RuntimeException(e);
-        }
-
         // enumerate all files in the shader directory and
         // attempt to compile them to cached .bin files.
         File dir = new File(cachePath);
@@ -82,12 +74,13 @@ public class ShaderPrecompiler {
                     if (needsRebuild(file, shaderName)) {
                         String shaderText = ShaderUtils.loadResource(file.getPath());
                         String shaderBody = ShaderUtils.preprocessShader(shaderText, null);
-                        ;
                         String shaderCode = FRAGMENT_SHADER_TEMPLATE.replace(SHADER_BODY_PLACEHOLDER, shaderBody);
 
                         try {
+                            TE.log("Building shader %s",file.getPath());
 
-
+                            int vertexShaderId = ShaderUtils.createShader(gl4, programId,
+                                    VERTEX_SHADER_TEMPLATE, GL4.GL_VERTEX_SHADER);
                             int fragmentShaderId = ShaderUtils.createShader(gl4, programId,
                                     shaderCode, GL4.GL_FRAGMENT_SHADER);
                             ShaderUtils.link(gl4, programId);
@@ -95,7 +88,9 @@ public class ShaderPrecompiler {
                             ShaderUtils.saveShaderToCache(gl4, shaderName, programId);
 
                             gl4.glDetachShader(programId, fragmentShaderId);
+                            gl4.glDetachShader(programId, vertexShaderId);
                             gl4.glDeleteShader(fragmentShaderId);
+                            gl4.glDeleteShader(vertexShaderId);
                         } catch (Exception e) {
                             TE.log("Error building shader %s",file.getName());
                             throw new RuntimeException(e);
