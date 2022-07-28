@@ -1,6 +1,6 @@
 package titanicsend.pattern.yoffa.shader_engine;
 
-import com.jogamp.opengl.GL4;
+import com.jogamp.opengl.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,10 +9,27 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.LXParameter;
+import titanicsend.pattern.TEPattern;
 import titanicsend.util.TE;
 
 public class ShaderUtils {
+
+    private static final String FRAGMENT_SHADER_TEMPLATE =
+            ShaderUtils.loadResource("resources/shaders/framework/template.fs");
+
+    private static final String SHADER_BODY_PLACEHOLDER = "{{%shader_body%}}";
+
+    private static final Pattern PLACEHOLDER_FINDER = Pattern.compile("\\{%(.*?)(\\[(.*?)\\])??\\}");
 
     public static String loadResource(String fileName) {
         try {
@@ -20,6 +37,80 @@ public class ShaderUtils {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Creates offscreen drawable OpenGL surface at the specified resolution
+     *
+     */
+    public static GLAutoDrawable createGLSurface(int xResolution, int yResolution) {
+        GLProfile glProfile = GLProfile.getGL4ES3();
+        GLCapabilities glCapabilities = new GLCapabilities(glProfile);
+        glCapabilities.setHardwareAccelerated(true);
+        glCapabilities.setOnscreen(false);
+        glCapabilities.setDoubleBuffered(false);
+        // set bit count for all channels to get alpha to work correctly
+        glCapabilities.setAlphaBits(8);
+        glCapabilities.setRedBits(8);
+        glCapabilities.setBlueBits(8);
+        glCapabilities.setGreenBits(8);
+        GLDrawableFactory factory = GLDrawableFactory.getFactory(glProfile);
+
+        //need to specifically create an offscreen drawable
+        //there is no way to have a normal drawable render on a panel/canvas which is not visible
+        GLAutoDrawable offscreenDrawable = factory.createOffscreenAutoDrawable(factory.getDefaultDevice(), glCapabilities,
+                new DefaultGLCapabilitiesChooser(), xResolution, yResolution);
+        //offscreenDrawable.display();
+        return offscreenDrawable;
+    }
+
+    /**
+     * Returns string containing the preprocessed code of the specified shader
+     */
+    public static String getFragmentShaderCode(String shaderFile) {
+        //String shaderCode = FRAGMENT_SHADER_TEMPLATE.replace(SHADER_BODY_PLACEHOLDER, fragmentShader.getShaderBody());
+        return null;
+    }
+
+    /**
+     * Preprocess the shader, converting embedded control specifiers to proper uniforms,
+     * and optionally creating corresponding controls if the "pattern" parameter is non-null.
+     *
+     */
+    public static String preprocessShader(String shaderBody, List<LXParameter> parameters) {
+        Matcher matcher = PLACEHOLDER_FINDER.matcher(shaderBody);
+        // preallocate reasonable sized buffers to keep us out of Java's memory manager while looping
+        StringBuilder shaderCode = new StringBuilder(shaderBody.length());
+        StringBuilder finalShader = new StringBuilder(shaderBody.length()+256);
+        while (matcher.find()) {
+            try {
+                String placeholderName = matcher.group(1);
+                if (matcher.groupCount() >= 3) {
+                    String metadata = matcher.group(3);
+                    if ("bool".equals(metadata)) {
+                        finalShader.append("uniform bool " + placeholderName+Uniforms.CUSTOM_SUFFIX+";\n");
+                        if (parameters != null) {
+                            parameters.add(new BooleanParameter(placeholderName));
+                        }
+                    } else {
+                        finalShader.append("uniform float " + placeholderName+Uniforms.CUSTOM_SUFFIX+";\n");
+                        if (parameters != null) {
+                            Double[] rangeValues = Arrays.stream(metadata.split(","))
+                                    .map(Double::parseDouble)
+                                    .toArray(Double[]::new);
+                            parameters.add(new CompoundParameter(placeholderName, rangeValues[0], rangeValues[1], rangeValues[2]));
+                        }
+                    }
+                }
+                matcher.appendReplacement(shaderCode, placeholderName + Uniforms.CUSTOM_SUFFIX);
+            } catch (Exception e) {
+                throw new RuntimeException("Problem parsing placeholder: " + matcher.group(0), e);
+            }
+        }
+        matcher.appendTail(shaderCode);
+        finalShader.append(shaderCode);
+
+        return finalShader.toString();
     }
 
     public static int createShader(GL4 gl4, int programId, String shaderCode, int shaderType) throws Exception {
@@ -52,12 +143,12 @@ public class ShaderUtils {
         // compare timestamp to see if the shader has been updated.
         File shaderBin = new File(shaderName);
         if (!shaderBin.exists()) {
-            TE.log("Shader '%s' not found in cache",shaderName);
+            //TE.log("Shader '%s' not found in cache",shaderName);
             return false;
         }
 
         if (timeStamp > shaderBin.lastModified()) {
-            TE.log("Shader '%s` has been modified.",shaderName);
+            //TE.log("Shader '%s` has been modified.",shaderName);
             return false;
         }
 
@@ -77,7 +168,7 @@ public class ShaderUtils {
         // see if it worked
         int[] status = new int[1];
         gl4.glGetIntegerv(GL4.GL_LINK_STATUS,status,0);
-        TE.log("Shader '%s' loaded from cache",shaderName);
+       // TE.log("Shader '%s' loaded from cache",shaderName);
         return (status[0] != GL4.GL_FALSE);
     }
 
