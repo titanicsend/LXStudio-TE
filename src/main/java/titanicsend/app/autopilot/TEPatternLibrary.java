@@ -375,6 +375,7 @@ public class TEPatternLibrary {
 
         } else {
             // pick least played pattern
+            Collections.shuffle(matchingPatterns); // since there will be ties!
             Collections.sort(matchingPatterns, new Comparator<LXPattern>() {
                 @Override
                 public int compare(LXPattern a, LXPattern b) {
@@ -383,6 +384,11 @@ public class TEPatternLibrary {
                     return Double.compare(barsA, barsB); // ascending
                 }
             });
+
+            //LXPattern first = matchingPatterns.get(0);
+            //LXPattern last = matchingPatterns.get(matchingPatterns.size() - 1);
+            //TE.log("After sort, first item in matchingPatterns list has %f plays, and last has %f plays"
+            //        , patternHistoryCounter.get(first), patternHistoryCounter.get(last));
         }
 
         LXPattern selectedPattern = matchingPatterns.get(patternIndex);
@@ -492,8 +498,9 @@ public class TEPatternLibrary {
                 patternHistoryCounter.put(curNext, barCount);
         }
 
-//        for (Map.Entry<LXPattern, Double> entry : patternHistoryCounter.entrySet()) {
-//            TE.log("-> counter: %s has %f bars played", entry.getKey(), entry.getValue());
-//        }
+        for (Map.Entry<LXPattern, Double> entry : patternHistoryCounter.entrySet()) {
+            if (entry.getValue() > 0)
+                TE.log("-> counter: %s has %f bars played", entry.getKey(), entry.getValue());
+        }
     }
 }

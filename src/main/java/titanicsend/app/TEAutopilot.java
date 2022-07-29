@@ -405,13 +405,12 @@ public class TEAutopilot implements LXLoopTask {
             LXClip strobeClip = TEMixerUtils.pickRandomClipFromChannel(lx, TEChannelName.STROBES);
             clips.add(strobeClip);
             strobesChannel.autoCycleTimeSecs.setValue(TETimeUtils.calcMsPerBeat(lx.engine.tempo.bpm()));
+            strobesChannel.fader.setValue(1.0);
 
             // pick 1 trigger clip
             LXClip triggerClip = TEMixerUtils.pickRandomClipFromChannel(lx, TEChannelName.TRIGGERS);
             clips.add(triggerClip);
             //TE.log("Strobe clip: %d, triggerClip: %d", strobeClip.getIndex(), triggerClip.getIndex());
-
-            strobesChannel.fader.setValue(1.0);
         }
 
         return clips;
