@@ -11,7 +11,8 @@ public class TEPanelFactory {
   public static TEPanelModel build(
           String id, TEVertex v0, TEVertex v1, TEVertex v2, TEEdgeModel e0,
           TEEdgeModel e1, TEEdgeModel e2, String panelType,
-          TEStripingInstructions stripingInstructions) {
+          TEStripingInstructions stripingInstructions,
+          LXPoint gapPoint) {
     ArrayList<LXPoint> points = new ArrayList<LXPoint>();
 
     float centroidX = (v0.x + v1.x + v2.x) / 3.0F;
@@ -25,8 +26,11 @@ public class TEPanelFactory {
     if (panelType.equals(TEPanelModel.LIT)) {
       List<LXPoint> stripedPoints = new ArrayList<>();
       try {
-        flavor = PanelStriper.stripe(v0, v1, v2, stripedPoints,
-                                     stripingInstructions);
+        if (stripingInstructions == null) {
+          LX.log("Panel " + id + " has no striping instructions; will have to do it the old way.");
+        }
+        flavor = PanelStriper.stripe(id, v0, v1, v2, stripedPoints,
+                                     stripingInstructions, gapPoint);
       } catch (Throwable t) {
         LX.log("Problem striping Panel " + id);
         throw t;

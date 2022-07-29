@@ -95,7 +95,9 @@ public class ModelDebugger extends TEPattern implements UIDeviceControls<ModelDe
 
     switch (this.objectType.getEnum()) {
       case VERTEX:
-        vertexes.add(this.model.vertexesById.get(Integer.parseInt(idStr)));
+        try {
+          vertexes.add(this.model.vertexesById.get(Integer.parseInt(idStr)));
+        } catch (NumberFormatException ignored) {}
         break;
       case EDGE:
         if (getAll)
