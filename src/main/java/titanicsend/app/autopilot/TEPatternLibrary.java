@@ -498,9 +498,9 @@ public class TEPatternLibrary {
                 patternHistoryCounter.put(curNext, barCount);
         }
 
-        for (Map.Entry<LXPattern, Double> entry : patternHistoryCounter.entrySet()) {
-            if (entry.getValue() > 0)
-                TE.log("-> counter: %s has %f bars played", entry.getKey(), entry.getValue());
-        }
+//        for (Map.Entry<LXPattern, Double> entry : patternHistoryCounter.entrySet()) {
+//            if (entry.getValue() > 0)
+//                TE.log("-> counter: %s has %f bars played", entry.getKey(), entry.getValue());
+//        }
     }
 }

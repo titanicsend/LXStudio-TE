@@ -1,12 +1,9 @@
 package titanicsend.util;
 
-import heronarts.lx.utils.LXUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import static java.lang.Math.PI;
-import static java.lang.Math.floor;
 
 public class TEMath {
 
@@ -394,5 +391,27 @@ public class TEMath {
             acc += (i * v);
         }
         return acc / denom;
+    }
+
+    public enum EasingFunction {
+        LINEAR_RAMP_DOWN,
+        LINEAR_RAMP_UP;
+    }
+
+    public static double ease(EasingFunction fn, double inp, double minInput, double maxInput, double minOutput, double maxOutput) {
+        double inputRank = inp / (maxInput - minInput);
+        double outputRange = maxOutput - minOutput;
+
+        if (fn == EasingFunction.LINEAR_RAMP_UP) {
+            return minOutput + inputRank * outputRange;
+
+        } else if (fn == EasingFunction.LINEAR_RAMP_DOWN) {
+            return minOutput + outputRange * (1.0 - inputRank);
+
+        } else {
+            // default to LINEAR_RAMP_DOWN
+            TE.err("Unsupported easing func: %s", fn);
+            return minOutput + inputRank * outputRange;
+        }
     }
 }

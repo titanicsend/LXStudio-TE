@@ -252,7 +252,7 @@ public class TEApp extends PApplet implements LXPlugin  {
 
     // DOWN patterns
     l.addPattern(GradientPattern.class, covPanelPartial, cPalette, down);
-    l.addPattern(Smoke.class, covBoth, cPalette, down);
+    //l.addPattern(Smoke.class, covBoth, cPalette, down); // can't see with colorize
     l.addPattern(OrganicPatternConfig.NeonSnake.class, covPanels, cPalette, down);
     l.addPattern(OrganicPatternConfig.WaterEdges.class, covEdges, cPalette, down);
     l.addPattern(OrganicPatternConfig.WaterPanels.class, covPanelPartial, cPalette, down);

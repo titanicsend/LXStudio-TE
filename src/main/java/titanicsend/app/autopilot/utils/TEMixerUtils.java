@@ -93,10 +93,15 @@ public class TEMixerUtils {
         return clip;
     }
 
-    public static int pickRandomPatternFromChannel(LXChannel channel) {
+    public static int pickRandomPatternIndexFromChannel(LXChannel channel) {
         List<LXPattern> patterns = channel.getPatterns();
         Random random = new Random();
         int randIdx = random.nextInt(0, patterns.size());
         return randIdx;
+    }
+
+    public static LXPattern pickRandomPatternFromChannel(LXChannel channel) {
+        int randIdx = pickRandomPatternIndexFromChannel(channel);
+        return channel.getPattern(randIdx);
     }
 }

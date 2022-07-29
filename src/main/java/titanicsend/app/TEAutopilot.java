@@ -2,33 +2,36 @@ package titanicsend.app;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXLoopTask;
-import heronarts.lx.clip.LXClip;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.osc.OscMessage;
 import heronarts.lx.pattern.LXPattern;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.autopilot.events.TEPhraseEvent;
 import titanicsend.app.autopilot.utils.TEMixerUtils;
-import titanicsend.app.autopilot.utils.TETimeUtils;
 import titanicsend.util.TE;
+import titanicsend.util.TEMath;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TEAutopilot implements LXLoopTask {
     private boolean enabled = false;
 
-    // if we predicted the wrong next phrase, fade out the
-    // phrase we were fading in over the next number of bars
-    // sort of a "we totally meant to do that!" kind of thing
+    // number of bars to fade out on various occasions
     private final int MISPREDICTED_FADE_OUT_BARS = 2;
+    private final int PREV_FADE_OUT_BARS = 2;
+
+    // number of bars after a chorus to continue leaving
+    // FX channels visible
+    private final double TRIGGERS_AT_CHORUS_LENGTH_BARS = 0.75;
+    private final double STROBES_AT_CHORUS_LENGTH_BARS = 0.5;
+
 
     // various fader levels of importance
     private static double LEVEL_FULL = 1.0,
-                           LEVEL_ECHO = 0.75, // fading out old channel
-                           LEVEL_BARELY_ON = 0.01,
+                           LEVEL_MISPREDICTED_FADE_OUT = 0.75, // fading out mistaken transition
+                           LEVEL_PREV_FADE_OUT = 0.75, // fading out prev channel
+                           LEVEL_BARELY_ON = 0.03,
                            LEVEL_HALF = 0.5,
                            LEVEL_OFF = 0.0,
                            LEVEL_FADE_IN = 0.4; // fading in next channel
@@ -60,7 +63,11 @@ public class TEAutopilot implements LXLoopTask {
     // for example, we were transitioning from UP -> CHORUS, but all of a sudden we
     // see a DOWN, we fade out the "old next" (CHORUS) channel over 1-2 bars
     private LXChannel prevChannel, curChannel, nextChannel, oldNextChannel;
-    private boolean echoMode = false;
+
+    // whether or not we should be fading out various channels
+    private boolean oldNextFadeOutMode = false;
+    private boolean prevFadeOutMode = false;
+
     private TEChannelName prevChannelName, curChannelName, nextChannelName, oldNextChannelName;
     private TEPhrase prevPhrase = null,
                      curPhrase = null,
@@ -107,8 +114,10 @@ public class TEAutopilot implements LXLoopTask {
         curChannel = TEMixerUtils.getChannelByName(lx, curChannelName);
         nextChannel = TEMixerUtils.getChannelByName(lx, nextChannelName);
         TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
+        triggerChannel = TEMixerUtils.getChannelByName(lx, TEChannelName.TRIGGERS);
+        strobesChannel = TEMixerUtils.getChannelByName(lx, TEChannelName.STROBES);
 
-        echoMode = false;
+        oldNextFadeOutMode = false;
     }
 
     protected void onOscMessage(OscMessage msg) {
@@ -192,7 +201,7 @@ public class TEAutopilot implements LXLoopTask {
         double repeatedPhraseLengthBars = history.getRepeatedPhraseBarProgress(lx.engine.tempo.bpm());
         double currentPhraseLengthBars = repeatedPhraseLengthBars - history.getRepeatedPhraseLengthBars();
 
-        // update state of transition srcChannel
+        // update ongoing transitions!
         try {
             // update fader value for NEXT channel
             if (nextChannelName != null) {
@@ -213,25 +222,49 @@ public class TEAutopilot implements LXLoopTask {
             }
 
             // update fader value for OLD NEXT channel
-            if (echoMode) {
-                 // if we need to echo out the old channel (usually when we predicted wrong)
-                 // echo it out here
-                if (currentPhraseLengthBars < MISPREDICTED_FADE_OUT_BARS) {
-                    double oldNextChannelFaderFloorLevel = 0.0;
-                    double oldNextChannelFaderCeilingLevel = LEVEL_ECHO;
-                    double range = oldNextChannelFaderCeilingLevel - oldNextChannelFaderFloorLevel;
-                    double estFracRemaining = 1.0 - (currentPhraseLengthBars / MISPREDICTED_FADE_OUT_BARS);
-                    double faderVal = range * estFracRemaining + oldNextChannelFaderFloorLevel;
-                    TEMixerUtils.setFaderTo(lx, oldNextChannelName, faderVal);
-                }
+            if (oldNextFadeOutMode && currentPhraseLengthBars < MISPREDICTED_FADE_OUT_BARS) {
+                TE.log("FADE OLD NEXT: Fading out %s", oldNextChannelName);
+                double newVal = TEMath.ease(
+                        TEMath.EasingFunction.LINEAR_RAMP_DOWN,
+                        currentPhraseLengthBars, 0.0, MISPREDICTED_FADE_OUT_BARS,
+                        LEVEL_OFF, LEVEL_MISPREDICTED_FADE_OUT);
+                TEMixerUtils.setFaderTo(lx, oldNextChannelName, newVal);
             }
+
+            // update fader for prev channel
+            if (prevFadeOutMode && currentPhraseLengthBars < PREV_FADE_OUT_BARS) {
+                TE.log("FADE PREV: Fading out %s", prevChannelName);
+                double newVal = TEMath.ease(
+                        TEMath.EasingFunction.LINEAR_RAMP_DOWN,
+                        currentPhraseLengthBars, 0.0, PREV_FADE_OUT_BARS,
+                        LEVEL_OFF, LEVEL_PREV_FADE_OUT);
+                TEMixerUtils.setFaderTo(lx, prevChannelName, newVal);
+            }
+
+            // update FX channels
+            if (strobesChannel.fader.getValue() > 0.0) {
+                double newVal = TEMath.ease(
+                        TEMath.EasingFunction.LINEAR_RAMP_DOWN,
+                        currentPhraseLengthBars, 0.0, STROBES_AT_CHORUS_LENGTH_BARS,
+                        LEVEL_OFF, LEVEL_FULL);
+                TEMixerUtils.setFaderTo(lx, TEChannelName.STROBES, newVal);
+            }
+
+            if (triggerChannel.fader.getValue() > 0.0) {
+                double newVal = TEMath.ease(
+                        TEMath.EasingFunction.LINEAR_RAMP_DOWN,
+                        currentPhraseLengthBars, 0.0, TRIGGERS_AT_CHORUS_LENGTH_BARS,
+                        LEVEL_OFF, LEVEL_FULL);
+                TEMixerUtils.setFaderTo(lx, TEChannelName.TRIGGERS, newVal);
+            }
+
         } catch (IndexOutOfBoundsException e) {
             // no phrase events detected yet
         }
     }
 
     private void updatePhraseState(TEPhrase newPhrase) {
-        echoMode = false;
+        oldNextFadeOutMode = false;
 
         // phrase state
         oldNextPhrase = nextPhrase;
@@ -260,7 +293,8 @@ public class TEAutopilot implements LXLoopTask {
         this.updatePhraseState(detectedPhrase);
         boolean predictedCorrectly = (oldNextPhrase == curPhrase);
         boolean isSamePhrase = (prevPhrase == curPhrase);
-        TE.log("%s -> %s -> %s (?), (old next: %s)", prevPhrase, curPhrase, nextPhrase, oldNextPhrase);
+        TE.log("HIT: %s: [%s -> %s -> %s (?)], (old next: %s)"
+                , curPhrase, prevPhrase, curPhrase, nextPhrase, oldNextPhrase);
 
         // record history for pattern library
         // need to do this before we a) pick new patterns, and b) logPhrase() with historian
@@ -295,29 +329,20 @@ public class TEAutopilot implements LXLoopTask {
 
             // set fader levels
             if (predictedCorrectly) {
-                // we nailed it!
-                TE.log("[AUTOVJ] We predicted correctly!");
-
                 // if this was a transition away from a CHORUS or UP or DOWN into
                 // diff phrase, we don't have strobes to cover, so let's echo
-                if (curPhrase == TEPhrase.DOWN || curPhrase == TEPhrase.UP) {
-                    echoMode = true;
-                    oldNextChannelName = TEMixerUtils.getChannelNameFromPhraseType(prevPhrase);
-                    oldNextChannel = TEMixerUtils.getChannelByName(lx, prevChannelName);;
+                prevFadeOutMode = (curPhrase == TEPhrase.DOWN || curPhrase == TEPhrase.UP);
 
-                } else {
-                    echoMode = false;
-                    oldNextChannelName = null;
-                    oldNextChannel = null;
-                }
+                // we nailed it!
+                TE.log("[AUTOVJ] We predicted correctly: prevFadeOutMode=%s", prevFadeOutMode);
 
             } else {
                 // we didn't predict the phrase change correctly, turn off
                 // the channel we were trying to transition into
                 oldNextChannelName = TEMixerUtils.getChannelNameFromPhraseType(oldNextPhrase);
                 oldNextChannel = TEMixerUtils.getChannelByName(lx, oldNextChannelName);
-                echoMode = (oldNextChannel != null);
-                TE.log("[AUTOVJ] We didn't predict right, oldNextChannelName=%s, echoMode=%s", oldNextChannelName, echoMode);
+                oldNextFadeOutMode = (oldNextChannel != null);
+                TE.log("[AUTOVJ] We didn't predict right, oldNextChannelName=%s, oldNextFadeOutMode=%s", oldNextChannelName, oldNextFadeOutMode);
 
                 // pick a new pattern for our current channel, since we didn't see this coming
                 // try to make it compatible with the one we were fading in, since we'll fade that mistaken one out
@@ -346,17 +371,39 @@ public class TEAutopilot implements LXLoopTask {
 
         TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
 
-        // trigger clips
-        List<LXClip> clips = collectClipsToTrigger(curPhrase, isSamePhrase); // clips to start
-
-        // run clips
-        for (LXClip c : clips) {
-            TE.log("Starting clip: %s", c);
-            c.start();
-        }
+        // trigger FX if needed
+        this.enableFX(isSamePhrase);
 
         // add to historical log of events
         history.logPhrase(timestamp, curPhrase, lx.engine.tempo.bpm.getValue());
+    }
+
+    private void enableFX(boolean isSamePhrase) {
+        if (curPhrase != TEPhrase.CHORUS)
+            // only hit FX on chorus starts
+            return;
+
+        Random rand = new Random();
+        if (isSamePhrase && rand.nextFloat() > PROB_CLIPS_ON_SAME_PHRASE) {
+            // if it's the same phrase repeated, let's only trigger clips
+            // certain fraction of the time
+            return;
+        }
+
+        // make new active patterns
+        if (prevPhrase != curPhrase) {
+            // only play strobes if it's the first chorus phrase in a row
+            LXPattern newStrobesPattern = TEMixerUtils.pickRandomPatternFromChannel(strobesChannel);
+            startPattern(strobesChannel, newStrobesPattern);
+            TEMixerUtils.setFaderTo(lx, TEChannelName.STROBES, LEVEL_FULL);
+        }
+
+        LXPattern newTriggersPattern = TEMixerUtils.pickRandomPatternFromChannel(triggerChannel);
+        startPattern(triggerChannel, newTriggersPattern);
+
+        // turn on strobes and triggers here, main loop will
+        // turn them off after certain number of bars
+        TEMixerUtils.setFaderTo(lx, TEChannelName.TRIGGERS, LEVEL_FULL);
     }
 
     public boolean isEnabled() {
@@ -377,43 +424,6 @@ public class TEAutopilot implements LXLoopTask {
         } else {
             TE.log("VJ autoilot disabled!");
         }
-    }
-
-    public ArrayList<LXClip> collectClipsToTrigger(TEPhrase newPhrase, boolean isSamePhrase) {
-        ArrayList<LXClip> clips = new ArrayList<LXClip>();
-        Random rand = new Random();
-
-        TE.log("Checking for clips to trigger...");
-
-        if (triggerChannel == null || strobesChannel == null) {
-            // set up FX channels
-            // do this here b/c doing it in constructor causes race condition with
-            // initializing the LX mixer!
-            triggerChannel = TEMixerUtils.getChannelByName(lx, TEChannelName.TRIGGERS);
-            strobesChannel = TEMixerUtils.getChannelByName(lx, TEChannelName.STROBES);
-        }
-
-        if (isSamePhrase && rand.nextFloat() > PROB_CLIPS_ON_SAME_PHRASE) {
-            // if it's the same phrase repeated, let's only trigger clips
-            // certain fraction of the time
-            //TE.log("Repeated phrase, ignoring...");
-            return clips;
-        }
-
-        if (newPhrase == TEPhrase.CHORUS) {
-            // pick 1 strobe clip
-            LXClip strobeClip = TEMixerUtils.pickRandomClipFromChannel(lx, TEChannelName.STROBES);
-            clips.add(strobeClip);
-            strobesChannel.autoCycleTimeSecs.setValue(TETimeUtils.calcMsPerBeat(lx.engine.tempo.bpm()));
-            strobesChannel.fader.setValue(1.0);
-
-            // pick 1 trigger clip
-            LXClip triggerClip = TEMixerUtils.pickRandomClipFromChannel(lx, TEChannelName.TRIGGERS);
-            clips.add(triggerClip);
-            //TE.log("Strobe clip: %d, triggerClip: %d", strobeClip.getIndex(), triggerClip.getIndex());
-        }
-
-        return clips;
     }
 
     public TEPhrase guessNextPhrase(TEPhrase newPhrase) {
