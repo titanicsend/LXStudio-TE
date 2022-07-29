@@ -11,24 +11,9 @@ public class OffscreenShaderRenderer {
     private final GLAutoDrawable offscreenDrawable;
 
     public OffscreenShaderRenderer(FragmentShader fragmentShader,ShaderOptions shaderOptions) {
-        GLProfile glProfile = GLProfile.getGL4ES3();
-        GLCapabilities glCapabilities = new GLCapabilities(glProfile);
-        glCapabilities.setHardwareAccelerated(true);
-        glCapabilities.setOnscreen(false);
-        glCapabilities.setDoubleBuffered(false);
-        // set bit count for all channels to get alpha to work correctly
-        glCapabilities.setAlphaBits(8);
-        glCapabilities.setRedBits(8);
-        glCapabilities.setBlueBits(8);
-        glCapabilities.setGreenBits(8);
-        GLDrawableFactory factory = GLDrawableFactory.getFactory(glProfile);
-
-        //need to specifically create an offscreen drawable
-        //there is no way to have a normal drawable render on a panel/canvas which is not visible
-        offscreenDrawable = factory.createOffscreenAutoDrawable(factory.getDefaultDevice(), glCapabilities,
-                new DefaultGLCapabilitiesChooser(), xResolution, yResolution);
-        nativeShader = new NativeShader(fragmentShader, xResolution, yResolution,shaderOptions);
+        offscreenDrawable = ShaderUtils.createGLSurface(xResolution,yResolution);
         offscreenDrawable.display();
+        nativeShader = new NativeShader(fragmentShader, xResolution, yResolution,shaderOptions);
     }
 
     // use default shader options
@@ -37,8 +22,8 @@ public class OffscreenShaderRenderer {
     }
 
     public void initializeNativeShader() {
-        ;  // do nothing, for now
-    }
+       // do nothing for now.
+    };
 
     public int[][] getFrame(AudioInfo audioInfo) {
         // initialize as late as possible to avoid stepping on LX's toes
@@ -57,5 +42,8 @@ public class OffscreenShaderRenderer {
     }
 
     public NativeShader getNativeShader() { return nativeShader; }
+
+    public static int getXResolution() { return xResolution; }
+    public static int getYResolution() { return yResolution; }
 
 }
