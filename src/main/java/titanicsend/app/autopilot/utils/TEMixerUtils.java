@@ -21,7 +21,9 @@ public class TEMixerUtils {
     public static void turnDownAllChannels(LX lx, boolean onlyAffectPhraseChannels) {
         for (TEChannelName name : TEChannelName.values()) {
             if (onlyAffectPhraseChannels && (
-                    (name == TEChannelName.STROBES) || name == TEChannelName.TRIGGERS))
+                    (name == TEChannelName.STROBES)
+                            || name == TEChannelName.TRIGGERS
+                            || name == TEChannelName.FX))
                 continue;
             setFaderTo(lx, name, 0.0);
         }

@@ -27,10 +27,11 @@ public class TEAutopilot implements LXLoopTask {
 
     // various fader levels of importance
     private static double LEVEL_FULL = 1.0,
-                           LEVEL_ECHO = 0.75,
+                           LEVEL_ECHO = 0.75, // fading out old channel
                            LEVEL_BARELY_ON = 0.01,
                            LEVEL_HALF = 0.5,
-                           LEVEL_OFF = 0.0;
+                           LEVEL_OFF = 0.0,
+                           LEVEL_FADE_IN = 0.4; // fading in next channel
 
     // Probability that we launch CHORUS clips upon a repeated CHORUS phrase
     // sometimes there are like 5 CHORUS's in a row, and want to keep some variety
@@ -68,11 +69,13 @@ public class TEAutopilot implements LXLoopTask {
 
     // use this to track the last set value of each of these faders
     private double nextChannelFaderVal = 0.0,
-                   oldNextChannelFaderVal = 0.0;
+                   oldNextChannelFaderVal = 0.0,
+                   fxChannelFaderVal = 0.0;
 
     // FX channels
     private LXChannel triggerChannel = null,
-                      strobesChannel = null;
+                      strobesChannel = null,
+                      fxChannel = null;
 
     public TEAutopilot(LX lx, TEPatternLibrary l) {
         this.lx = lx;
@@ -197,15 +200,11 @@ public class TEAutopilot implements LXLoopTask {
                 double estFracCompleted = currentPhraseLengthBars / estPhraseLengthBars;
 
                 // over consecutive phrases, we want to steadily approach full fader, but never get there
-                //double nextChannelFaderFloorLevel = Math.min(
-                //        nextChannelFaderVal,
-                //        LEVEL_FULL * (1.0 - Math.pow(0.5, repeatedPhraseCount - 1))); // 0 -> .5 - > .75  -> etc
-                //double nextChannelFaderCeilingLevel = LEVEL_FULL * (1.0 - Math.pow(0.5, repeatedPhraseCount));  // .5 -> .75 -> .875 -> etc
                 double normalizedNumPhrases = repeatedPhraseLengthBars / estPhraseLengthBars + 1.;
                 double nextChannelFaderFloorLevel = Math.min(
                         nextChannelFaderVal,
-                        LEVEL_FULL * (1.0 - Math.pow(0.5, normalizedNumPhrases - 1))); // 0 -> .5 - > .75  -> etc
-                double nextChannelFaderCeilingLevel = LEVEL_FULL * (1.0 - Math.pow(0.5, normalizedNumPhrases));  // .5 -> .75 -> .875 -> etc
+                        LEVEL_FADE_IN * (1.0 - Math.pow(0.5, normalizedNumPhrases - 1))); // 0 -> .5 - > .75  -> etc
+                double nextChannelFaderCeilingLevel = LEVEL_FADE_IN * (1.0 - Math.pow(0.5, normalizedNumPhrases));  // .5 -> .75 -> .875 -> etc
 
                 double range = nextChannelFaderCeilingLevel - nextChannelFaderFloorLevel;
                 // can play around with the 1.5 exponent to make curve steeper!
@@ -352,6 +351,7 @@ public class TEAutopilot implements LXLoopTask {
 
         // run clips
         for (LXClip c : clips) {
+            TE.log("Starting clip: %s", c);
             c.start();
         }
 
@@ -393,10 +393,10 @@ public class TEAutopilot implements LXLoopTask {
             strobesChannel = TEMixerUtils.getChannelByName(lx, TEChannelName.STROBES);
         }
 
-        if (isSamePhrase && rand.nextFloat() <= PROB_CLIPS_ON_SAME_PHRASE) {
+        if (isSamePhrase && rand.nextFloat() > PROB_CLIPS_ON_SAME_PHRASE) {
             // if it's the same phrase repeated, let's only trigger clips
             // certain fraction of the time
-            TE.log("Repeated phrase, triggering...");
+            //TE.log("Repeated phrase, ignoring...");
             return clips;
         }
 
@@ -409,12 +409,10 @@ public class TEAutopilot implements LXLoopTask {
             // pick 1 trigger clip
             LXClip triggerClip = TEMixerUtils.pickRandomClipFromChannel(lx, TEChannelName.TRIGGERS);
             clips.add(triggerClip);
-            TE.log("New CHORUS, chose strobe clip: %d, triggerClip: %d", strobeClip.getIndex(), triggerClip.getIndex());
-        }
+            //TE.log("Strobe clip: %d, triggerClip: %d", strobeClip.getIndex(), triggerClip.getIndex());
 
-        // set strobes channels autocycle time fast
-        //double msPerDivision = TETimeUtils.bpmToMsPerBeat(lx.engine.tempo.bpm()) / 16.; // sixteeth notes
-        //strobesChannel.autoCycleTimeSecs.setValue(msPerDivision);
+            strobesChannel.fader.setValue(1.0);
+        }
 
         return clips;
     }

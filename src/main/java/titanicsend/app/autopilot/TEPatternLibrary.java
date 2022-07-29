@@ -340,7 +340,7 @@ public class TEPatternLibrary {
      */
     public LXPattern pickRandomCompatibleNextPattern(LXPattern curPattern, TEPhrase curPhrase, TEPhrase nextPhrase) throws Exception {
         // get coverage type and color from current pattern
-        TE.log("... looking up pattern record for: pattern=%s, phrase=%s", curPattern, curPhrase);
+        //TE.log("... looking up pattern record for: pattern=%s, phrase=%s", curPattern, curPhrase);
         PhrasePatternCompositeKey key = new PhrasePatternCompositeKey(curPattern.getClass(), curPhrase);
         TEPatternRecord curPatternRecord = this.phrasePattern2rec.get(key);
         if (curPatternRecord == null) {
@@ -348,7 +348,7 @@ public class TEPatternLibrary {
                 PhrasePatternCompositeKey k = entry.getKey();
                 TEPatternRecord r = entry.getValue();
                 if (r.phraseType == curPhrase) {
-                    TE.log("-> phrase=%s, found %s => %s", curPhrase, k, r);
+                    //TE.log("-> phrase=%s, found %s => %s", curPhrase, k, r);
                 }
             }
             throw new Exception(
@@ -386,7 +386,7 @@ public class TEPatternLibrary {
         }
 
         LXPattern selectedPattern = matchingPatterns.get(patternIndex);
-        TE.log("Picked next pattern: %s", selectedPattern);
+        //TE.log("Picked next pattern: %s", selectedPattern);
         return selectedPattern;
     }
 
