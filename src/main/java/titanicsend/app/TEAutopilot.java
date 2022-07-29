@@ -19,11 +19,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TEAutopilot implements LXLoopTask {
     private boolean enabled = false;
-    // should we try to sync BPM when ProDJlink seems off?
-    private boolean autoBpmSyncEnabled = false;
-    // do not change LX tempo unless the newly suggested tempo
-    // differs by more than this amount
-    private double TEMPO_DIFF_THRESHOLD = 0.05;
 
     // if we predicted the wrong next phrase, fade out the
     // phrase we were fading in over the next number of bars
@@ -32,10 +27,11 @@ public class TEAutopilot implements LXLoopTask {
 
     // various fader levels of importance
     private static double LEVEL_FULL = 1.0,
-                           LEVEL_ECHO = 0.75,
+                           LEVEL_ECHO = 0.75, // fading out old channel
                            LEVEL_BARELY_ON = 0.01,
                            LEVEL_HALF = 0.5,
-                           LEVEL_OFF = 0.0;
+                           LEVEL_OFF = 0.0,
+                           LEVEL_FADE_IN = 0.4; // fading in next channel
 
     // Probability that we launch CHORUS clips upon a repeated CHORUS phrase
     // sometimes there are like 5 CHORUS's in a row, and want to keep some variety
@@ -73,11 +69,13 @@ public class TEAutopilot implements LXLoopTask {
 
     // use this to track the last set value of each of these faders
     private double nextChannelFaderVal = 0.0,
-                   oldNextChannelFaderVal = 0.0;
+                   oldNextChannelFaderVal = 0.0,
+                   fxChannelFaderVal = 0.0;
 
     // FX channels
     private LXChannel triggerChannel = null,
-                      strobesChannel = null;
+                      strobesChannel = null,
+                      fxChannel = null;
 
     public TEAutopilot(LX lx, TEPatternLibrary l) {
         this.lx = lx;
@@ -95,46 +93,29 @@ public class TEAutopilot implements LXLoopTask {
         history = new TEHistorian();
 
         // phrase state
+        prevPhrase = null;
+        curPhrase = TEPhrase.DOWN;
+        nextPhrase = TEPhrase.UP;
+        oldNextPhrase = null;
+
         prevChannelName = null;
-        curChannelName = null;
-        nextChannelName = null;
+        curChannelName = TEMixerUtils.getChannelNameFromPhraseType(curPhrase);
+        nextChannelName = TEMixerUtils.getChannelNameFromPhraseType(nextPhrase);
         oldNextChannelName = null;
 
-        prevPhrase = null;
-        curPhrase = null;
-        nextPhrase = null;
-        oldNextPhrase = null;
+        // this call will also wait for the mixer to be initialized
+        curChannel = TEMixerUtils.getChannelByName(lx, curChannelName);
+        nextChannel = TEMixerUtils.getChannelByName(lx, nextChannelName);
+        TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
 
         echoMode = false;
     }
 
-    private void initializeTempoEMA() {
-        history.resetTempoTracking(this.lx.engine.tempo.bpm());
-    }
-
     protected void onOscMessage(OscMessage msg) {
         try {
-            String address = msg.getAddressPattern().toString();
             TEOscMessage oscTE = new TEOscMessage(msg);
 
-            // First, let's check for global OSC messages that don't concern autopilot, or that
-            // we should act on immediately
-            //TODO(will) go back to using built-in OSC listener for setBPM messages once:
-            // 1. Mark merges his commit for utilizing the main OSC listener
-            // 2. Mark adds protection on input checking for setBPM = 0.0 messages (https://github.com/heronarts/LX/blob/e3d0d11a7d61c73cd8dde0c877f50ea4a58a14ff/src/main/java/heronarts/lx/Tempo.java#L201)
-            if (TEOscMessage.isTempoChange(address)) {
-                double newTempo = TEOscMessage.extractBpm(msg);
-                double tempoDiff = Math.abs(newTempo - lx.engine.tempo.bpm());
-                if (TETimeUtils.isValidBPM(newTempo) && tempoDiff > TEMPO_DIFF_THRESHOLD) {
-                    TE.log("[OSC] Changing LX tempo to %f", (float) newTempo);
-                    this.lx.engine.tempo.setBpm((float) newTempo);
-
-                    // clear and restart history for beats/tempo
-                    history.resetBeatTracking();
-                    history.resetTempoTracking(this.lx.engine.tempo.bpm());
-                }
-
-            } else if (!isEnabled()) {
+            if (!isEnabled()) {
                 // if autopilot isn't enabled, don't bother tracking these
                 return;
 
@@ -148,28 +129,12 @@ public class TEAutopilot implements LXLoopTask {
     }
 
     public void onBeatEvent(long beatAt) throws Exception {
-        if (!history.isTrackingTempo())
-            history.resetTempoTracking(lx.engine.tempo.bpm.getValue());
-
-        // log beat event
         history.logBeat(beatAt);
-
-        // Tempo fine adjustment due to irregularities with OSC
-        // If you want to ignore this, simply turn `autoBpmSyncEnabled`=false
-        if (autoBpmSyncEnabled && history.readyForTempoEstimation()) {
-            double estBPMAvg = history.estimateBPM();
-            if (Math.abs(lx.engine.tempo.bpm() - estBPMAvg) > BPM_ERROR_ADJUST) {
-                TE.log("BPM est from beats: %f, LX BPM is: %f, overriding BPM --> %f!"
-                        , estBPMAvg, lx.engine.tempo.bpm(), estBPMAvg);
-                lx.engine.tempo.setBpm(estBPMAvg);
-            }
-        }
     }
 
     @Override
     public void loop(double deltaMs) {
         long now = System.currentTimeMillis();
-
         try {
             // if autopilot isn't enabled, just ignore for now
             if (!isEnabled()) return;
@@ -208,10 +173,6 @@ public class TEAutopilot implements LXLoopTask {
                 // handle OSC message based on type
                 if (TEOscMessage.isPhraseChange(address)) {
                     onPhraseChange(address, oscTE.timestamp, deltaMs);
-
-                } else if (TEOscMessage.isDownbeat(address)) {
-                    // nothing to do yet
-
                 } else if (TEOscMessage.isBeat(address)) {
                     onBeatEvent(oscTE.timestamp);
 
@@ -239,15 +200,11 @@ public class TEAutopilot implements LXLoopTask {
                 double estFracCompleted = currentPhraseLengthBars / estPhraseLengthBars;
 
                 // over consecutive phrases, we want to steadily approach full fader, but never get there
-                //double nextChannelFaderFloorLevel = Math.min(
-                //        nextChannelFaderVal,
-                //        LEVEL_FULL * (1.0 - Math.pow(0.5, repeatedPhraseCount - 1))); // 0 -> .5 - > .75  -> etc
-                //double nextChannelFaderCeilingLevel = LEVEL_FULL * (1.0 - Math.pow(0.5, repeatedPhraseCount));  // .5 -> .75 -> .875 -> etc
                 double normalizedNumPhrases = repeatedPhraseLengthBars / estPhraseLengthBars + 1.;
                 double nextChannelFaderFloorLevel = Math.min(
                         nextChannelFaderVal,
-                        LEVEL_FULL * (1.0 - Math.pow(0.5, normalizedNumPhrases - 1))); // 0 -> .5 - > .75  -> etc
-                double nextChannelFaderCeilingLevel = LEVEL_FULL * (1.0 - Math.pow(0.5, normalizedNumPhrases));  // .5 -> .75 -> .875 -> etc
+                        LEVEL_FADE_IN * (1.0 - Math.pow(0.5, normalizedNumPhrases - 1))); // 0 -> .5 - > .75  -> etc
+                double nextChannelFaderCeilingLevel = LEVEL_FADE_IN * (1.0 - Math.pow(0.5, normalizedNumPhrases));  // .5 -> .75 -> .875 -> etc
 
                 double range = nextChannelFaderCeilingLevel - nextChannelFaderFloorLevel;
                 // can play around with the 1.5 exponent to make curve steeper!
@@ -293,8 +250,14 @@ public class TEAutopilot implements LXLoopTask {
     }
 
     private void onPhraseChange(String oscAddress, long timestamp, double deltaMs) throws Exception {
-        // detect phrase type and update state to reflect this
-        this.updatePhraseState(TEPhrase.resolvePhrase(oscAddress));
+        // detect phrase type
+        TEPhrase detectedPhrase = TEPhrase.resolvePhrase(oscAddress);
+        if (detectedPhrase == TEPhrase.UNKNOWN)
+            // skip if we don't understand the phrase
+            return;
+
+        // update state to reflect this
+        this.updatePhraseState(detectedPhrase);
         boolean predictedCorrectly = (oldNextPhrase == curPhrase);
         boolean isSamePhrase = (prevPhrase == curPhrase);
         TE.log("%s -> %s -> %s (?), (old next: %s)", prevPhrase, curPhrase, nextPhrase, oldNextPhrase);
@@ -388,6 +351,7 @@ public class TEAutopilot implements LXLoopTask {
 
         // run clips
         for (LXClip c : clips) {
+            TE.log("Starting clip: %s", c);
             c.start();
         }
 
@@ -415,14 +379,6 @@ public class TEAutopilot implements LXLoopTask {
         }
     }
 
-    public void setAutoBpmSyncEnabled(boolean enableSync) {
-        if (enableSync && !this.enabled) {
-            TE.err("Cannot autosync BPM, requires: autopilot.setEnabled(true)!");
-            return;
-        }
-        this.autoBpmSyncEnabled = enableSync;
-    }
-
     public ArrayList<LXClip> collectClipsToTrigger(TEPhrase newPhrase, boolean isSamePhrase) {
         ArrayList<LXClip> clips = new ArrayList<LXClip>();
         Random rand = new Random();
@@ -437,10 +393,10 @@ public class TEAutopilot implements LXLoopTask {
             strobesChannel = TEMixerUtils.getChannelByName(lx, TEChannelName.STROBES);
         }
 
-        if (isSamePhrase && rand.nextFloat() <= PROB_CLIPS_ON_SAME_PHRASE) {
+        if (isSamePhrase && rand.nextFloat() > PROB_CLIPS_ON_SAME_PHRASE) {
             // if it's the same phrase repeated, let's only trigger clips
             // certain fraction of the time
-            TE.log("Repeated phrase, triggering...");
+            //TE.log("Repeated phrase, ignoring...");
             return clips;
         }
 
@@ -449,16 +405,13 @@ public class TEAutopilot implements LXLoopTask {
             LXClip strobeClip = TEMixerUtils.pickRandomClipFromChannel(lx, TEChannelName.STROBES);
             clips.add(strobeClip);
             strobesChannel.autoCycleTimeSecs.setValue(TETimeUtils.calcMsPerBeat(lx.engine.tempo.bpm()));
+            strobesChannel.fader.setValue(1.0);
 
             // pick 1 trigger clip
             LXClip triggerClip = TEMixerUtils.pickRandomClipFromChannel(lx, TEChannelName.TRIGGERS);
             clips.add(triggerClip);
-            TE.log("New CHORUS, chose strobe clip: %d, triggerClip: %d", strobeClip.getIndex(), triggerClip.getIndex());
+            //TE.log("Strobe clip: %d, triggerClip: %d", strobeClip.getIndex(), triggerClip.getIndex());
         }
-
-        // set strobes channels autocycle time fast
-        //double msPerDivision = TETimeUtils.bpmToMsPerBeat(lx.engine.tempo.bpm()) / 16.; // sixteeth notes
-        //strobesChannel.autoCycleTimeSecs.setValue(msPerDivision);
 
         return clips;
     }

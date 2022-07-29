@@ -2,13 +2,14 @@ package titanicsend.util;
 
 import heronarts.lx.LX;
 import heronarts.lx.model.LXPoint;
+import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEStripingInstructions;
 import titanicsend.model.TEVertex;
 
 import java.util.*;
 
 public class PanelStriper {
-  public static final int MARGIN = 165000; // 165mm ~= 6.5 inches
+  public static final int MARGIN = 86000;
   public static final int DISTANCE_BETWEEN_PIXELS = 50000; // 50k microns ~= 2 inches
   public static final FloorPoint gapFloorPoint = new FloorPoint(-1, -1);
 
@@ -23,9 +24,9 @@ public class PanelStriper {
     assert distance01 != distance12;
     // distance02 and distance12 are equal at fore and aft
 
-    TEVertex vStart;
-    TEVertex vMid;
-    TEVertex vEnd;
+    TEVertex vStart = null;
+    TEVertex vMid = null;
+    TEVertex vEnd = null;
 
     // Set vEnd to the vertex opposite the longest edge
     // Set vStart to the vertex closest to vEnd
@@ -68,23 +69,42 @@ public class PanelStriper {
     }
 
     if (stripingInstructions != null) {
-      if (vStart.id == stripingInstructions.startingVertex) {
-        // Great, our algorithm picked the same answer
-      } else if (vMid.id == stripingInstructions.startingVertex) {
-        TEVertex tmp = vMid;
-        vMid = vStart;
-        vStart = tmp;
-      } else {
-        LX.error("Was told to start at " + stripingInstructions.startingVertex +
-                " but that's impossible. Long side is " + vStart.id + " and " + vMid.id +
-                " ... the other side is " + vEnd.id + " but we can't use that.");
-      }
+      String[] tokens = stripingInstructions.startingEdgeId.split("-");
+      assert tokens.length == 2;
+      int startId = Integer.parseInt(tokens[0]);
+      int midId = Integer.parseInt(tokens[1]);
+
+      if (v0.id == startId) {
+        vStart = v0;
+        v0 = null;
+      } else if (v1.id == startId) {
+        vStart = v1;
+        v1 = null;
+      } else if (v2.id == startId) {
+        vStart = v2;
+        v2 = null;
+      } else throw new IllegalArgumentException("Nothing matches " + startId);
+
+      if (v0 != null && v0.id == midId) {
+        vMid = v0;
+        v0 = null;
+      } else if (v1 != null && v1.id == midId) {
+        vMid = v1;
+        v1 = null;
+      } else if (v2 != null && v2.id == midId) {
+        vMid = v2;
+        v2 = null;
+      } else throw new IllegalArgumentException("Nothing matches " + startId);
+
+      if (v0 == null && v1 == null) vEnd = v2;
+      if (v0 == null && v2 == null) vEnd = v1;
+      if (v1 == null && v2 == null) vEnd = v0;
     }
 
     return new TEVertex[] {vStart, vMid, vEnd};
   }
 
-  public static String stripe(TEVertex v0, TEVertex v1, TEVertex v2,
+  public static String stripe(String id, TEVertex v0, TEVertex v1, TEVertex v2,
                               List<LXPoint> pointList,
                               TEStripingInstructions stripingInstructions,
                               LXPoint gapPoint) {
@@ -106,10 +126,20 @@ public class PanelStriper {
               stripingInstructions, gapFloorPoint);
 
     for (FloorPoint f : floorPoints) {
-      if (f == gapFloorPoint)
+      if (f == gapFloorPoint) {
         pointList.add(gapPoint);
-      else
-        pointList.add(floorTransform.fly(f));
+      } else {
+        if (!triangleContains(floorTransform.f0, floorTransform.f1, floorTransform.f2, f)) {
+          LX.error(id + " contains points outside its boundaries");
+          break;
+/*        } else if (distanceToEdge(floorTransform.f0, floorTransform.f1,
+                floorTransform.f2, f) < MARGIN) {
+          LX.error(id + " contains points inside its margin");
+          break;
+*/        } else {
+          pointList.add(floorTransform.fly(f));
+        }
+      }
     }
 
     int distanceSM = (int)vStart.distanceTo(vMid);
@@ -126,8 +156,7 @@ public class PanelStriper {
   private static List<FloorPoint> oldStripeFloor(
           FloorPoint fStart, FloorPoint fMid, FloorPoint fEnd) {
     FloorPoint currentPoint = findStartingPoint(fEnd);
-    ArrayList<FloorPoint> rv = new ArrayList<FloorPoint>();
-    if (1 == 1) return rv; // FIXME
+    ArrayList<FloorPoint> rv = new ArrayList<>();
     double deltaX = DISTANCE_BETWEEN_PIXELS;
     while (currentPoint.z < fEnd.z) {
       if (triangleContains(fStart, fMid, fEnd, currentPoint) &&
@@ -165,6 +194,11 @@ public class PanelStriper {
           TEStripingInstructions stripingInstructions, FloorPoint gapFloorPoint) {
     FloorPoint currentPoint = findStartingPoint(fEnd);
     ArrayList<FloorPoint> rv = new ArrayList<>();
+
+    final double EPSILON = DISTANCE_BETWEEN_PIXELS / 10.0;
+    while(distanceToEdge(fStart, fMid, fEnd, currentPoint) < MARGIN) {
+      currentPoint = new FloorPoint(currentPoint.x + EPSILON, currentPoint.z);
+    }
 
     double deltaX = DISTANCE_BETWEEN_PIXELS;
 

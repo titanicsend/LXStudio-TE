@@ -29,7 +29,7 @@ public class TEPanelFactory {
         if (stripingInstructions == null) {
           LX.log("Panel " + id + " has no striping instructions; will have to do it the old way.");
         }
-        flavor = PanelStriper.stripe(v0, v1, v2, stripedPoints,
+        flavor = PanelStriper.stripe(id, v0, v1, v2, stripedPoints,
                                      stripingInstructions, gapPoint);
       } catch (Throwable t) {
         LX.log("Problem striping Panel " + id);

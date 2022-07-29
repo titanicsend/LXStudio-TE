@@ -19,27 +19,41 @@ public class TEOscMessage {
         this.timestamp = System.currentTimeMillis();
     }
 
-    public static final String PREFIX = "/lx";
+    // delineate between OSC that directly affects LX vs special
+    // ones meant to be processed internally by TE
+    public static final String PREFIX_LX = "/lx";
+    public static final String PREFIX_TE = "/te";
 
+    // tempo-related OSC addresses
+    // see method description for `extractBpm()` for why SLUG_STRING_TEMPO_CHANGE exists.
     public static final String SLUG_TEMPO_CHANGE = "/tempo/setBPM";
-    public static final String SLUG_DOWNBEAT = "/tempo/downbeat";
+    public static final String SLUG_STRING_TEMPO_CHANGE = "/tempo/string/setBPM";
+
+    // beat-related OSC addresses
     public static final String SLUG_BEAT = "/tempo/beat";
+
+    // phrase-related OSC addresses
     public static final String SLUG_PHRASE_CHANGE = "/phrase/";
 
     public static boolean isTempoChange(String oscAddress) {
-        return oscAddress.equals(PREFIX + SLUG_TEMPO_CHANGE);
+        return oscAddress.startsWith(PREFIX_LX + SLUG_TEMPO_CHANGE);
     }
 
-    public static boolean isDownbeat(String oscAddress) {
-        return oscAddress.equals(PREFIX + SLUG_DOWNBEAT);
+    /**
+     * See method description for `extractBpm()` for why this exists.
+     * @param oscAddress
+     * @return
+     */
+    public static boolean isStringTempoChange(String oscAddress) {
+        return oscAddress.startsWith(PREFIX_LX + SLUG_STRING_TEMPO_CHANGE);
     }
 
     public static boolean isBeat(String oscAddress) {
-        return oscAddress.equals(PREFIX + SLUG_BEAT);
+        return oscAddress.startsWith(PREFIX_LX + SLUG_BEAT);
     }
 
     public static boolean isPhraseChange(String oscAddress) {
-        return oscAddress.startsWith(PREFIX + SLUG_PHRASE_CHANGE);
+        return oscAddress.startsWith(PREFIX_TE + SLUG_PHRASE_CHANGE);
     }
 
     /**
@@ -47,7 +61,11 @@ public class TEOscMessage {
      * that are supposed to be floats. It doesn't work, and this was easier
      * than figuring out what the issue was and patching it.
      *
-     * @param OscMessage msg, string should be formatted like "/lx/tempo/setBPM 123:62.4"
+     * For whatever reason, BPM-related template values in the "EXECUTOR | BEAT CHANGE"
+     * field just don't behave like other fields! You have to format as a string. So
+     * here we are...
+     *
+     * @param OscMessage msg, string should be formatted like "/some/addr/here 123:62.4"
      * @return double which would be 123.624 in this case
      */
     public static double extractBpm(OscMessage otherMsg) {

@@ -49,6 +49,7 @@ import titanicsend.pattern.mike.*;
 import titanicsend.pattern.pixelblaze.*;
 import titanicsend.pattern.tmc.*;
 import titanicsend.pattern.tom.*;
+import titanicsend.pattern.will.CartRace;
 import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.media.BasicImagePattern;
@@ -69,6 +70,7 @@ public class TEApp extends PApplet implements LXPlugin  {
   private GigglePixelBroadcaster gpBroadcaster;
 
   private TEAutopilot autopilot;
+  private TEOscListener oscListener;
   private TEPatternLibrary library;
 
   @Override
@@ -193,10 +195,8 @@ public class TEApp extends PApplet implements LXPlugin  {
     };
     this.autopilotComponent.autopilotEnabledToggle.addListener(autopilotEnableListener);
 
-    // TODO(will) go back to using built-in OSC listener for setBPM messages once:
-    // 1. Mark merges his commit for utilizing the main OSC listener
-    // 2. Mark adds protection on input checking for setBPM = 0.0 messages
-    //    (https://github.com/heronarts/LX/blob/e3d0d11a7d61c73cd8dde0c877f50ea4a58a14ff/src/main/java/heronarts/lx/Tempo.java#L201)
+    // create our listener for OSC messages
+    this.oscListener = new TEOscListener(lx, autopilot);
 
     // add custom OSC listener to handle OSC messages from ShowKontrol
     // includes an Autopilot ref to store (threadsafe) queue of unread OSC messages
@@ -204,7 +204,7 @@ public class TEApp extends PApplet implements LXPlugin  {
             + Integer.toString(TEShowKontrol.OSC_PORT) + " ...");
     try {
         lx.engine.osc.receiver(TEShowKontrol.OSC_PORT).addListener((message) -> {
-            autopilot.onOscMessage(message);
+          this.oscListener.onOscMessage(message);
       });
     } catch (SocketException sx) {
         sx.printStackTrace();
@@ -247,22 +247,19 @@ public class TEApp extends PApplet implements LXPlugin  {
     l.addPattern(OrganicPatternConfig.NeonCellsLegacy.class, covPanelPartial, cPalette, chorus);
     l.addPattern(OrganicPatternConfig.RainbowSwirlEdges.class, covEdges, cNonConforming, chorus);
     l.addPattern(ShaderPanelsPatternConfig.NeonTriangles.class, covPanels, cNonConforming, chorus);
-    l.addPattern(ShaderPanelsPatternConfig.PulsingHeart.class, covPanels, cNonConforming, chorus);
-    //l.addPattern(ShaderPanelsPatternConfig.AudioTest2.class, covPanels, cNonConforming, chorus); // only works with audio
+    l.addPattern(OrganicPatternConfig.NeonSnake.class, covPanels, cPalette, chorus);
+    //l.addPattern(ShaderPanelsPatternConfig.PulsingHeart.class, covPanels, cNonConforming, chorus);
 
     // DOWN patterns
-    l.addPattern(GradientPattern.class, covBoth, cPalette, down);
+    l.addPattern(GradientPattern.class, covPanelPartial, cPalette, down);
     l.addPattern(Smoke.class, covBoth, cPalette, down);
-    l.addPattern(OrganicPatternConfig.NeonSnake.class, covPanelPartial, cPalette, down);
-    l.addPattern(OrganicPatternConfig.RainbowSwirlPanels.class, covPanels, cPalette, down);
+    l.addPattern(OrganicPatternConfig.NeonSnake.class, covPanels, cPalette, down);
     l.addPattern(OrganicPatternConfig.WaterEdges.class, covEdges, cPalette, down);
     l.addPattern(OrganicPatternConfig.WaterPanels.class, covPanelPartial, cPalette, down);
     l.addPattern(OrganicPatternConfig.WavyEdges.class, covEdges, cPalette, down);
     l.addPattern(NoisePattern.class, covBoth, cPalette, down);
     l.addPattern(ShaderPanelsPatternConfig.Galaxy.class, covPanelPartial, cPalette, down);
-    l.addPattern(ShaderPanelsPatternConfig.LightBeamsPattern.class, covPanelPartial, cPalette, down);
-    l.addPattern(ShaderPanelsPatternConfig.NeonRipples.class, covPanels, cPalette, down);
-    l.addPattern(ShaderEdgesPatternConfig.SynthWavesEdges.class, covEdges, cPalette, down);
+    l.addPattern(ShaderPanelsPatternConfig.StormScanner.class, covPanels, cPalette, down);
 
     // UP patterns
     l.addPattern(NoisePattern.class, covPanelPartial, cNonConforming, up);
@@ -274,7 +271,6 @@ public class TEApp extends PApplet implements LXPlugin  {
     l.addPattern(ShaderPanelsPatternConfig.Electric.class, covPanelPartial, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.JetStream.class, covPanels, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.Marbling.class, covPanels, cNonConforming, up);
-    l.addPattern(ShaderPanelsPatternConfig.SpaceExplosion.class, covPanels, cNonConforming, up);
 
     // misc patterns
     //l.addPattern(EdgeProgressions.class, covEdges, colorWhite, chorus);
@@ -297,6 +293,9 @@ public class TEApp extends PApplet implements LXPlugin  {
   public void onUIReady(LXStudio lx, LXStudio.UI ui) {
     // At this point, the LX Studio application UI has been built. You may now add
     // additional views and components to the Ui heirarchy.
+
+    // precompile binaries for any new or changed shaders
+    ShaderPrecompiler.rebuildCache();
 
     TEVirtualOverlays visual = new TEVirtualOverlays(this.model);
     lx.ui.preview.addComponent(visual);

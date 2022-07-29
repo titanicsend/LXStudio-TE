@@ -8,7 +8,8 @@ class Panel
   def initialize(id:, vertices:)
     @id = id
     @vertices = vertices
-    @signal_start = nil
+    @controller_vertex = nil
+    @signal_start_vertex_id = nil
     @strips = Array.new((max_current / SCALED_MAX_CURRENT_PER_CIRCUIT).floor) do |i|
       PanelStrip.new(
         id: "#{id}-#{i}",
@@ -27,7 +28,7 @@ class Panel
     @channels_required = 1
   end
 
-  attr_accessor :id, :vertices, :strips, :panel_type, :channels_required
+  attr_accessor :id, :vertices, :strips, :panel_type, :channels_required, :controller_vertex, :signal_start_vertex_id
 
   def area
     side_lengths = vertices.combination(2).map do |v1, v2|
@@ -59,6 +60,13 @@ class Panel
       :y => centroid_y,
       :z => centroid_z,
     }
+  end
+
+  # The long edge vertices SHOULD be where signal comes in. This is not 100% of the time true. (see SED)
+  def valid_signal_in_vertices
+    long_edge_vertices = vertices.permutation(2)
+      .map{ |v1,v2| [v1, v2, v1.distance(v2)] }
+      .sort_by(&:last).last.slice(0,2)
   end
 
   def self.load_panels(filename, vertices)

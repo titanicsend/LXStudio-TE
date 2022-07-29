@@ -4,7 +4,6 @@ import java.util.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
@@ -12,7 +11,6 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
 import titanicsend.lasercontrol.MovingTarget;
 import titanicsend.output.TEArtNetOutput;
-import titanicsend.util.TE;
 
 public class TEWholeModel extends LXModel {
   public String subdir;
@@ -248,24 +246,24 @@ public class TEWholeModel extends LXModel {
     return rv;
   }
 
-  private static Map<String, Integer> loadPanelStartVertexes(Geometry geometry) {
+  private static Map<String, String> loadPanelStartEdgeIds(Geometry geometry) {
     Scanner s = loadFilePrivate(geometry.subdir + "/panel_signal_paths.tsv");
-    Map<String, Integer> rv = new HashMap<>();
+    Map<String, String> rv = new HashMap<>();
 
     String headerLine = s.nextLine();
-    assert headerLine.endsWith("Signal in vertex");
+    assert headerLine.endsWith("Signal edge");
 
     while (s.hasNextLine()) {
       String line = s.nextLine();
       String[] tokens = line.split("\\s+");
-      assert tokens.length == 8;
-      rv.put(tokens[0], Integer.parseInt(tokens[7]));
+      assert tokens.length == 9;
+      rv.put(tokens[0], tokens[8]);
     }
     return rv;
   }
 
   private static Map<String, TEStripingInstructions> loadStripingInstructions(
-          Geometry geometry, Map<String, Integer> startVertexes) {
+          Geometry geometry, Map<String, String> startEdgeIds) {
     Scanner s = loadFilePrivate(geometry.subdir + "/striping-instructions.txt");
 
     Map<String, TEStripingInstructions> rv = new HashMap<>();
@@ -328,9 +326,10 @@ public class TEWholeModel extends LXModel {
           phase = 1 - phase;
         }
       }
-      int startingVertex = startVertexes.get(id);
+      String startingEdgeId = startEdgeIds.get(id);
+      assert startingEdgeId != null;
       TEStripingInstructions tesi = new TEStripingInstructions(
-              startingVertex, universeLengths,
+              startingEdgeId, universeLengths,
               rowLengths.stream().mapToInt(i -> i).toArray(),
               beforeNudges.stream().mapToInt(i -> i).toArray(),
               gaps.stream().mapToInt(i -> i).toArray());
@@ -344,22 +343,24 @@ public class TEWholeModel extends LXModel {
     geometry.panelsBySection = new HashMap<>();
     geometry.panelsByFlavor = new HashMap<>();
 
-    Map<String, Integer> startVertexes = loadPanelStartVertexes(geometry);
+    Map<String, String> startEdgeIds = loadPanelStartEdgeIds(geometry);
 
     Map<String, TEStripingInstructions> stripingInstructions
-            = loadStripingInstructions(geometry, startVertexes);
+            = loadStripingInstructions(geometry, startEdgeIds);
 
     for (String id : stripingInstructions.keySet()) {
       TEStripingInstructions tesi = stripingInstructions.get(id);
+      assert tesi != null;
+      assert tesi.startingEdgeId != null;
       StringBuilder out = new StringBuilder("Panel " + id +
-              " has starting vertex " + tesi.startingVertex);
+              " has starting edge " + tesi.startingEdgeId);
       if (tesi.universeLengths != null) {
         out.append(" and universe lengths ");
         for (int i : tesi.universeLengths) out.append(i).append(" ");
       }
       out.append(" and row lengths ");
       for (int i : tesi.rowLengths) out.append(i).append(" ");
-      LX.log(out.toString());
+      //LX.log(out.toString());
     }
 
     Scanner s = loadFilePrivate(geometry.subdir + "/panels.txt");
