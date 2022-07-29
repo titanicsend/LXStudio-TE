@@ -340,7 +340,7 @@ public class TEPatternLibrary {
      */
     public LXPattern pickRandomCompatibleNextPattern(LXPattern curPattern, TEPhrase curPhrase, TEPhrase nextPhrase) throws Exception {
         // get coverage type and color from current pattern
-        TE.log("... looking up pattern record for: pattern=%s, phrase=%s", curPattern, curPhrase);
+        //TE.log("... looking up pattern record for: pattern=%s, phrase=%s", curPattern, curPhrase);
         PhrasePatternCompositeKey key = new PhrasePatternCompositeKey(curPattern.getClass(), curPhrase);
         TEPatternRecord curPatternRecord = this.phrasePattern2rec.get(key);
         if (curPatternRecord == null) {
@@ -348,7 +348,7 @@ public class TEPatternLibrary {
                 PhrasePatternCompositeKey k = entry.getKey();
                 TEPatternRecord r = entry.getValue();
                 if (r.phraseType == curPhrase) {
-                    TE.log("-> phrase=%s, found %s => %s", curPhrase, k, r);
+                    //TE.log("-> phrase=%s, found %s => %s", curPhrase, k, r);
                 }
             }
             throw new Exception(
@@ -375,6 +375,7 @@ public class TEPatternLibrary {
 
         } else {
             // pick least played pattern
+            Collections.shuffle(matchingPatterns); // since there will be ties!
             Collections.sort(matchingPatterns, new Comparator<LXPattern>() {
                 @Override
                 public int compare(LXPattern a, LXPattern b) {
@@ -383,10 +384,15 @@ public class TEPatternLibrary {
                     return Double.compare(barsA, barsB); // ascending
                 }
             });
+
+            //LXPattern first = matchingPatterns.get(0);
+            //LXPattern last = matchingPatterns.get(matchingPatterns.size() - 1);
+            //TE.log("After sort, first item in matchingPatterns list has %f plays, and last has %f plays"
+            //        , patternHistoryCounter.get(first), patternHistoryCounter.get(last));
         }
 
         LXPattern selectedPattern = matchingPatterns.get(patternIndex);
-        TE.log("Picked next pattern: %s", selectedPattern);
+        //TE.log("Picked next pattern: %s", selectedPattern);
         return selectedPattern;
     }
 
@@ -492,8 +498,9 @@ public class TEPatternLibrary {
                 patternHistoryCounter.put(curNext, barCount);
         }
 
-//        for (Map.Entry<LXPattern, Double> entry : patternHistoryCounter.entrySet()) {
-//            TE.log("-> counter: %s has %f bars played", entry.getKey(), entry.getValue());
-//        }
+        for (Map.Entry<LXPattern, Double> entry : patternHistoryCounter.entrySet()) {
+            if (entry.getValue() > 0)
+                TE.log("-> counter: %s has %f bars played", entry.getKey(), entry.getValue());
+        }
     }
 }

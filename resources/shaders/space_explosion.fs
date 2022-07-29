@@ -90,4 +90,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     float c = scale*perlin*2.0;
 
     fragColor = vec4(glowRing+c, glowRing, glowRing*0.5+(c*2.0), 0);
+    // alpha, derived from brightness, for LX blending.
+    fragColor.a = max(fragColor.r,max(fragColor.g,fragColor.b));	
 }

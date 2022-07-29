@@ -49,6 +49,7 @@ import titanicsend.pattern.mike.*;
 import titanicsend.pattern.pixelblaze.*;
 import titanicsend.pattern.tmc.*;
 import titanicsend.pattern.tom.*;
+import titanicsend.pattern.will.CartRace;
 import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.media.BasicImagePattern;
@@ -250,7 +251,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     //l.addPattern(ShaderPanelsPatternConfig.PulsingHeart.class, covPanels, cNonConforming, chorus);
 
     // DOWN patterns
-    l.addPattern(GradientPattern.class, covBoth, cPalette, down);
+    l.addPattern(GradientPattern.class, covPanelPartial, cPalette, down);
     l.addPattern(Smoke.class, covBoth, cPalette, down);
     l.addPattern(OrganicPatternConfig.NeonSnake.class, covPanels, cPalette, down);
     l.addPattern(OrganicPatternConfig.WaterEdges.class, covEdges, cPalette, down);
@@ -292,6 +293,9 @@ public class TEApp extends PApplet implements LXPlugin  {
   public void onUIReady(LXStudio lx, LXStudio.UI ui) {
     // At this point, the LX Studio application UI has been built. You may now add
     // additional views and components to the Ui heirarchy.
+
+    // precompile binaries for any new or changed shaders
+    ShaderPrecompiler.rebuildCache();
 
     TEVirtualOverlays visual = new TEVirtualOverlays(this.model);
     lx.ui.preview.addComponent(visual);
