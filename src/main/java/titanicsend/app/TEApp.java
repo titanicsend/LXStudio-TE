@@ -251,7 +251,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     l.addPattern(ShaderPanelsPatternConfig.PulsingPetriDish.class, covPanels, cNonConforming, chorus);
     l.addPattern(Phasers.class, covPanelPartial, cPalette, chorus);
     l.addPattern(FourStar.class, covPanelPartial, cPalette, chorus);
-    //l.addPattern(BassLightning.class, covEdges, cPalette, chorus);
+    l.addPattern(BassLightning.class, covEdges, cPalette, chorus);
     //l.addPattern(ShaderPanelsPatternConfig.AudioTest2.class, covPanels, cNonConforming, chorus); // only works with audio
 
     // DOWN patterns
