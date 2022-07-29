@@ -49,7 +49,6 @@ import titanicsend.pattern.mike.*;
 import titanicsend.pattern.pixelblaze.*;
 import titanicsend.pattern.tmc.*;
 import titanicsend.pattern.tom.*;
-import titanicsend.pattern.will.CartRace;
 import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.media.BasicImagePattern;
