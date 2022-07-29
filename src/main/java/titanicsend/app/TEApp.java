@@ -49,6 +49,7 @@ import titanicsend.pattern.mike.*;
 import titanicsend.pattern.pixelblaze.*;
 import titanicsend.pattern.tmc.*;
 import titanicsend.pattern.tom.*;
+import titanicsend.pattern.will.CartRace;
 import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.media.BasicImagePattern;
@@ -247,10 +248,14 @@ public class TEApp extends PApplet implements LXPlugin  {
     l.addPattern(OrganicPatternConfig.RainbowSwirlEdges.class, covEdges, cNonConforming, chorus);
     l.addPattern(ShaderPanelsPatternConfig.NeonTriangles.class, covPanels, cNonConforming, chorus);
     l.addPattern(ShaderPanelsPatternConfig.PulsingHeart.class, covPanels, cNonConforming, chorus);
+    l.addPattern(ShaderPanelsPatternConfig.PulsingPetriDish.class, covPanels, cNonConforming, chorus);
+    l.addPattern(Phasers.class, covPanelPartial, cPalette, chorus);
+    l.addPattern(FourStar.class, covPanelPartial, cPalette, chorus);
+    l.addPattern(BassLightning.class, covEdges, cPalette, chorus);
     //l.addPattern(ShaderPanelsPatternConfig.AudioTest2.class, covPanels, cNonConforming, chorus); // only works with audio
 
     // DOWN patterns
-    l.addPattern(GradientPattern.class, covBoth, cPalette, down);
+    l.addPattern(GradientPattern.class, covPanelPartial, cPalette, down);
     l.addPattern(Smoke.class, covBoth, cPalette, down);
     l.addPattern(OrganicPatternConfig.NeonSnake.class, covPanelPartial, cPalette, down);
     l.addPattern(OrganicPatternConfig.RainbowSwirlPanels.class, covPanels, cPalette, down);
@@ -260,7 +265,6 @@ public class TEApp extends PApplet implements LXPlugin  {
     l.addPattern(NoisePattern.class, covBoth, cPalette, down);
     l.addPattern(ShaderPanelsPatternConfig.Galaxy.class, covPanelPartial, cPalette, down);
     l.addPattern(ShaderPanelsPatternConfig.LightBeamsPattern.class, covPanelPartial, cPalette, down);
-    l.addPattern(ShaderPanelsPatternConfig.NeonRipples.class, covPanels, cPalette, down);
     l.addPattern(ShaderEdgesPatternConfig.SynthWavesEdges.class, covEdges, cPalette, down);
 
     // UP patterns
@@ -273,6 +277,8 @@ public class TEApp extends PApplet implements LXPlugin  {
     l.addPattern(ShaderPanelsPatternConfig.Electric.class, covPanelPartial, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.JetStream.class, covPanels, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.Marbling.class, covPanels, cNonConforming, up);
+    l.addPattern(ShaderPanelsPatternConfig.SlitheringSnake.class, covPanelPartial, cPalette, up);
+    l.addPattern(Fireflies.class, covPanelPartial, cPalette, up);
     //l.addPattern(ShaderPanelsPatternConfig.SpaceExplosion.class, covPanels, cNonConforming, up); // not visible/working?
 
     // misc patterns
