@@ -237,8 +237,7 @@ public class OrganicPatternConfig {
 
     //below patterns for on the fly testing
     @LXCategory("Video Patterns")
-    public static class
-    FullscreenVideoA extends ConstructedPattern {
+    public static class FullscreenVideoA extends ConstructedPattern {
         public FullscreenVideoA(LX lx) {
             super(lx);
         }
