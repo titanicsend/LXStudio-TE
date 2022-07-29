@@ -412,10 +412,6 @@ public class TEAutopilot implements LXLoopTask {
             TE.log("New CHORUS, chose strobe clip: %d, triggerClip: %d", strobeClip.getIndex(), triggerClip.getIndex());
         }
 
-        // set strobes channels autocycle time fast
-        //double msPerDivision = TETimeUtils.bpmToMsPerBeat(lx.engine.tempo.bpm()) / 16.; // sixteeth notes
-        //strobesChannel.autoCycleTimeSecs.setValue(msPerDivision);
-
         return clips;
     }
 
