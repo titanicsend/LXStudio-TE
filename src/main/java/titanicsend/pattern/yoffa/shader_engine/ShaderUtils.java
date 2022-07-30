@@ -187,7 +187,7 @@ public class ShaderUtils {
         gl4.glGetIntegerv(GL4.GL_NUM_PROGRAM_BINARY_FORMATS,fmtCount,0);
 
         if (fmtCount[0] < 1) {
-            TE.log("Shader cache: No compatible binary shader format available.");
+            //TE.log("Shader cache: No compatible binary shader format available.");
             return;
         }
 

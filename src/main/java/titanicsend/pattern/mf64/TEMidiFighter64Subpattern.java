@@ -12,5 +12,5 @@ public abstract class TEMidiFighter64Subpattern {
 
   public abstract void noteReceived(TEMidiFighter64DriverPattern.Mapping mapping);
 
-  public abstract void run(double deltaMsec);
+  public abstract void run(double deltaMsec, int[] colors);
 }

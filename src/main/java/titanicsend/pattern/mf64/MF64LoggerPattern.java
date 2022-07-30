@@ -15,7 +15,7 @@ public class MF64LoggerPattern extends TEMidiFighter64Subpattern {
   }
 
   @Override
-  public void run(double deltaMsec) {
+  public void run(double deltaMsec, int[] colors) {
 
   }
 }

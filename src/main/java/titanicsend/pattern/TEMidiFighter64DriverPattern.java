@@ -6,6 +6,9 @@ import heronarts.lx.midi.LXMidiInput;
 import heronarts.lx.midi.LXMidiListener;
 import heronarts.lx.midi.LXMidiOutput;
 import heronarts.lx.midi.MidiNoteOn;
+import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.LXParameterListener;
+import titanicsend.pattern.mf64.MF64FlashPattern;
 import titanicsend.pattern.mf64.MF64LoggerPattern;
 import titanicsend.pattern.mf64.TEMidiFighter64Subpattern;
 
@@ -101,7 +104,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   // starts with (7,0), (7,1), ... (7,7), (6,0) ... (0, 7) of the LEFT page,
   // and then the same ordering for the RIGHT page. In other words, if you're
   // looking at the device, the buttons correspond to what you see here onscreen.
-  private static final int[] colors = {
+  private static final int[] buttonColors = {
     LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
     LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
     LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
@@ -113,7 +116,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
     LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
     LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
-    LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
+    LED_RED, LED_ORANGE, LED_YELLOW, LED_GREEN, LED_BLUE_AQUA, LED_AZURE, LED_PURPLE, LED_WHITE,
 
     LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY,
     LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY,
@@ -130,9 +133,10 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   };
 
   private final MF64LoggerPattern logger = new MF64LoggerPattern(this);
+  private final MF64FlashPattern flash = new MF64FlashPattern(this);
 
   private final TEMidiFighter64Subpattern[] patterns = {
-    logger, logger, logger, logger, logger, logger, logger, logger,
+    flash,  flash,  flash,  flash,  flash,  flash,  flash,  flash,
     logger, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
@@ -153,6 +157,11 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
 
   private LXMidiInput midiIn = null;
   private LXMidiOutput midiOut = null;
+
+  public final BooleanParameter fakePush =
+          new BooleanParameter("Push", false)
+                  .setMode(BooleanParameter.Mode.MOMENTARY)
+                  .setDescription("Simulates pushing the top-left button");
 
   // Converts a MIDI note from the MF64 into information about which
   // button was pressed
@@ -203,7 +212,16 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
 
   public TEMidiFighter64DriverPattern(LX lx) {
     super(lx);
+    addParameter("fakePush", this.fakePush);
+    this.fakePush.addListener(this.fakePushHandler);
   }
+
+  private final LXParameterListener fakePushHandler = (p) -> {
+    this.mapping.page = Mapping.Page.LEFT;
+    this.mapping.row = 7;
+    this.mapping.col = 0;
+    this.patterns[0].noteReceived(this.mapping);
+  };
 
   private void sendAllOff() {
     for (int channel = 2; channel >= 1; channel--) {
@@ -219,7 +237,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
         int row = 7 - (i / 8);
         int col = i % 8;
         int ci = row * 8 + col;
-        this.midiOut.sendNoteOn(channel, pitchFromXY[i], colors[ci]);
+        this.midiOut.sendNoteOn(channel, pitchFromXY[i], buttonColors[ci]);
       }
     }
   }
@@ -282,5 +300,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
 
   @Override
   public void run(double deltaMs) {
+    this.logger.run(deltaMs, colors);
+    this.flash.run(deltaMs, colors);
   }
 }

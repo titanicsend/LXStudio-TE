@@ -77,7 +77,7 @@ public class ShaderPrecompiler {
                         String shaderCode = FRAGMENT_SHADER_TEMPLATE.replace(SHADER_BODY_PLACEHOLDER, shaderBody);
 
                         try {
-                            TE.log("Building shader %s",file.getPath());
+                            //TE.log("Building shader %s",file.getPath());
 
                             int vertexShaderId = ShaderUtils.createShader(gl4, programId,
                                     VERTEX_SHADER_TEMPLATE, GL4.GL_VERTEX_SHADER);
