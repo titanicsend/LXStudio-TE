@@ -9,7 +9,7 @@ class Panel
     @id = id
     @vertices = vertices
     @controller_vertex = nil
-    @signal_start_vertex_id = nil
+    @signal_start_vertex
     @strips = Array.new((max_current / SCALED_MAX_CURRENT_PER_CIRCUIT).floor) do |i|
       PanelStrip.new(
         id: "#{id}-#{i}",
@@ -26,9 +26,10 @@ class Panel
     )
     @panel_type = PANEL_TYPE_LIT
     @channels_required = 1
+    @priority = nil
   end
 
-  attr_accessor :id, :vertices, :strips, :panel_type, :channels_required, :controller_vertex, :signal_start_vertex_id
+  attr_accessor :id, :vertices, :strips, :panel_type, :channels_required, :controller_vertex, :signal_start_vertex, :priority
 
   def area
     side_lengths = vertices.combination(2).map do |v1, v2|
@@ -80,6 +81,27 @@ class Panel
       panels[row[0]] = Panel.new(id: row[0], vertices: vs)
     end
     panels
+  end
+
+  # assigned_junction_box_vertices are just the vertices of the box(es) assigned to
+  # power this panel. They are not necessarily the same as the vertices of the panel;
+  # wouldn't that be nice?
+  def assigned_junction_box_vertices
+    if strips.any? { |strip| strip.circuit.nil? || strip.circuit.junction_box.nil? }
+      raise "strip not yet assigned"
+    end
+
+    junction_box_vertex_ids_set = Set.new
+    strips.each do |strip|
+      circuit = strip.circuit
+      if junction_box_vertex_ids_set.include?(circuit.junction_box.vertex.id)
+        next
+      end
+
+      junction_box_vertex_ids_set.add(circuit.junction_box.vertex.id)
+    end
+
+    junction_box_vertex_ids_set.to_a
   end
 end
 
