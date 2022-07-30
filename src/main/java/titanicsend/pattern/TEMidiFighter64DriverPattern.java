@@ -2,10 +2,7 @@ package titanicsend.pattern;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.midi.LXMidiInput;
-import heronarts.lx.midi.LXMidiListener;
-import heronarts.lx.midi.LXMidiOutput;
-import heronarts.lx.midi.MidiNoteOn;
+import heronarts.lx.midi.*;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.pattern.mf64.MF64FlashPattern;
@@ -112,16 +109,8 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
     LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
     LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
-    LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
-    LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
-    LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
-    LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
-    LED_RED, LED_ORANGE, LED_YELLOW, LED_GREEN, LED_BLUE_AQUA, LED_AZURE, LED_PURPLE, LED_WHITE,
+    LED_RED, LED_ORANGE, LED_YELLOW, LED_GREEN, LED_BLUE_AQUA, LED_AZURE, LED_MAGENTA, LED_WHITE,
 
-    LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY,
-    LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY,
-    LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY,
-    LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY,
     LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY,
     LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY,
     LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY,
@@ -136,14 +125,14 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   private final MF64FlashPattern flash = new MF64FlashPattern(this);
 
   private final TEMidiFighter64Subpattern[] patterns = {
+    logger, logger, logger, logger, logger, logger, logger, logger,
+    logger, logger, logger, logger, logger, logger, logger, logger,
+    logger, logger, logger, logger, logger, logger, logger, logger,
+    logger, logger, logger, logger, logger, logger, logger, logger,
+    logger, logger, logger, logger, logger, logger, logger, logger,
+    logger, logger, logger, logger, logger, logger, logger, logger,
+    logger, logger, logger, logger, logger, logger, logger, logger,
     flash,  flash,  flash,  flash,  flash,  flash,  flash,  flash,
-    logger, logger, logger, logger, logger, logger, logger, logger,
-    logger, logger, logger, logger, logger, logger, logger, logger,
-    logger, logger, logger, logger, logger, logger, logger, logger,
-    logger, logger, logger, logger, logger, logger, logger, logger,
-    logger, logger, logger, logger, logger, logger, logger, logger,
-    logger, logger, logger, logger, logger, logger, logger, logger,
-    logger, logger, logger, logger, logger, logger, logger, logger,
 
     logger, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
@@ -181,7 +170,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
 
     public Mapping() {}
 
-    public void map(MidiNoteOn note) {
+    public void map(MidiNote note) {
       int pitch = note.getPitch();
       int channel = note.getChannel();
       this.valid = true;
@@ -213,15 +202,13 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   public TEMidiFighter64DriverPattern(LX lx) {
     super(lx);
     addParameter("fakePush", this.fakePush);
-    this.fakePush.addListener(this.fakePushHandler);
+    this.fakePush.addListener((p) -> {
+      this.mapping.page = Mapping.Page.LEFT;
+      this.mapping.row = 7;
+      this.mapping.col = 0;
+      this.patterns[0].buttonDown(this.mapping);
+    });
   }
-
-  private final LXParameterListener fakePushHandler = (p) -> {
-    this.mapping.page = Mapping.Page.LEFT;
-    this.mapping.row = 7;
-    this.mapping.col = 0;
-    this.patterns[0].noteReceived(this.mapping);
-  };
 
   private void sendAllOff() {
     for (int channel = 2; channel >= 1; channel--) {
@@ -232,11 +219,12 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   }
 
   private void sendColors() {
+    // Channel 2 is the left page
     for (int channel = 2; channel >= 1; channel--) {
       for (int i = 0; i < 64; i++) {
         int row = 7 - (i / 8);
         int col = i % 8;
-        int ci = row * 8 + col;
+        int ci = row * 8 + col + (channel == 2 ? 0 : 64);
         this.midiOut.sendNoteOn(channel, pitchFromXY[i], buttonColors[ci]);
       }
     }
@@ -295,7 +283,16 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     int patternIndex = mapping.page == Mapping.Page.LEFT ? 0 : 64;
     patternIndex += (7 - mapping.row) * 8;
     patternIndex += mapping.col;
-    this.patterns[patternIndex].noteReceived(this.mapping);
+    this.patterns[patternIndex].buttonDown(this.mapping);
+  }
+
+  @Override
+  public void noteOffReceived(MidiNote note) {
+    this.mapping.map(note);
+    int patternIndex = mapping.page == Mapping.Page.LEFT ? 0 : 64;
+    patternIndex += (7 - mapping.row) * 8;
+    patternIndex += mapping.col;
+    this.patterns[patternIndex].buttonUp(this.mapping);
   }
 
   @Override

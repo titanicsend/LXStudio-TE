@@ -10,7 +10,8 @@ public abstract class TEMidiFighter64Subpattern {
     this.driver = driver;
   }
 
-  public abstract void noteReceived(TEMidiFighter64DriverPattern.Mapping mapping);
+  public abstract void buttonDown(TEMidiFighter64DriverPattern.Mapping mapping);
+  public abstract void buttonUp(TEMidiFighter64DriverPattern.Mapping mapping);
 
   public abstract void run(double deltaMsec, int[] colors);
 }

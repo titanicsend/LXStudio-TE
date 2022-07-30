@@ -1,6 +1,6 @@
 {
-  "version": "0.4.1",
-  "timestamp": 1659193981002,
+  "version": "0.4.2-SNAPSHOT",
+  "timestamp": 1659194921610,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -447,7 +447,7 @@
           "scene-5": false,
           "crossfader": 0.3464566929133858,
           "crossfaderBlendMode": 1,
-          "focusedChannel": 4,
+          "focusedChannel": 6,
           "focusedChannelAux": 6,
           "cueA": false,
           "cueB": false,
@@ -854,7 +854,7 @@
                   "color/index": 1,
                   "tempoDivision": 5,
                   "triggerMode": 0,
-                  "sceneSelect": 43,
+                  "sceneSelect": 16,
                   "trigger": false,
                   "downbeat": false
                 },
@@ -890,7 +890,7 @@
             "parameters": {
               "label": "Panel FG",
               "arm": false,
-              "selected": true,
+              "selected": false,
               "enabled": true,
               "cue": false,
               "aux": false,
@@ -1378,7 +1378,7 @@
             "parameters": {
               "label": "Debugging",
               "arm": false,
-              "selected": false,
+              "selected": true,
               "enabled": true,
               "cue": false,
               "aux": false,

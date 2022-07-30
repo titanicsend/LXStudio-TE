@@ -1,11 +1,11 @@
 package titanicsend.pattern.mf64;
 
-import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import titanicsend.model.TEWholeModel;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
-import titanicsend.util.TEColor;
+
+import static titanicsend.util.TEColor.TRANSPARENT;
 
 public class MF64FlashPattern extends TEMidiFighter64Subpattern {
   private static final double PERIOD_MSEC = 100.0;
@@ -19,8 +19,8 @@ public class MF64FlashPattern extends TEMidiFighter64Subpattern {
           LXColor.rgb(255,0,255),
           LXColor.rgb(255,255,255),
   };
-  private int flashColor = TEColor.TRANSPARENT;
-  private double flashCountdown = 0.0;
+  private int flashColor = TRANSPARENT;
+  private boolean flashPending = true;
   private TEWholeModel model;
 
   public MF64FlashPattern(TEMidiFighter64DriverPattern driver) {
@@ -29,10 +29,15 @@ public class MF64FlashPattern extends TEMidiFighter64Subpattern {
   }
 
   @Override
-  public void noteReceived(TEMidiFighter64DriverPattern.Mapping mapping) {
-    LX.log("note");
+  public void buttonDown(TEMidiFighter64DriverPattern.Mapping mapping) {
     this.flashColor = flashColors[mapping.col];
-    this.flashCountdown = PERIOD_MSEC;
+    this.flashPending = true;
+  }
+
+  @Override
+  public void buttonUp(TEMidiFighter64DriverPattern.Mapping mapping) {
+    this.flashColor = TRANSPARENT;
+    this.flashPending = true;
   }
 
   private void paintAll(int colors[], int color) {
@@ -46,20 +51,9 @@ public class MF64FlashPattern extends TEMidiFighter64Subpattern {
 
   @Override
   public void run(double deltaMsec, int colors[]) {
-    // If this is the first run since the note was received, paint the color
-    if (this.flashColor != TEColor.TRANSPARENT) {
+    if (this.flashPending) {
       paintAll(colors, this.flashColor);
-      this.flashColor = TEColor.TRANSPARENT;
-      return;
-    }
-
-    if (this.flashCountdown < 0.0) return;
-
-    this.flashCountdown -= deltaMsec;
-
-    // If the clock just expired, turn off the color
-    if (this.flashCountdown <= 0) {
-      paintAll(colors, TEColor.TRANSPARENT);
+      this.flashPending = false;
     }
   }
 }

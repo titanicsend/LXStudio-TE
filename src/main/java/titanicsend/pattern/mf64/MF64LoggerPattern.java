@@ -9,10 +9,13 @@ public class MF64LoggerPattern extends TEMidiFighter64Subpattern {
   }
 
   @Override
-  public void noteReceived(TEMidiFighter64DriverPattern.Mapping mapping) {
+  public void buttonDown(TEMidiFighter64DriverPattern.Mapping mapping) {
     String pageStr = mapping.page == TEMidiFighter64DriverPattern.Mapping.Page.LEFT ? "left" : "right";
     LX.log("MIDI Fighter page=" + pageStr + " row=" + mapping.row + " col=" + mapping.col);
   }
+
+  @Override
+  public void buttonUp(TEMidiFighter64DriverPattern.Mapping mapping) {}
 
   @Override
   public void run(double deltaMsec, int[] colors) {
