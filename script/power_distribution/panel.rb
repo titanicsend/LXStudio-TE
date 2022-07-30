@@ -91,17 +91,17 @@ class Panel
       raise "strip not yet assigned"
     end
 
-    junction_box_vertex_ids_set = Set.new
+    junction_box_vertex_ids_set = {}
     strips.each do |strip|
       circuit = strip.circuit
-      if junction_box_vertex_ids_set.include?(circuit.junction_box.vertex.id)
+      if junction_box_vertex_ids_set[circuit.junction_box.vertex.id]
         next
       end
 
-      junction_box_vertex_ids_set.add(circuit.junction_box.vertex.id)
+      junction_box_vertex_ids_set[circuit.junction_box.vertex.id] = circuit.junction_box.vertex
     end
 
-    junction_box_vertex_ids_set.to_a
+    junction_box_vertex_ids_set.values.to_a
   end
 end
 
