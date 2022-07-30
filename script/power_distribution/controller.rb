@@ -160,6 +160,7 @@ class Controller
         raise "invalid signal start vertex ID #{signal_start_vertex_id} for panel #{panel_id}; should be in #{valid_edge_vertex_ids}"
       end
 
+      panel.signal_start_vertex = vertices.find { |vertex_id, vertex| vertex_id.to_s == signal_start_vertex_id }[1]
       panel = graph.panels.values.flatten.find { |panel| panel.id == panel_id }
       panel.panel_type = panel_type
       panel.channels_required = channels_required.to_i

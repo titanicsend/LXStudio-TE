@@ -9,7 +9,7 @@ class Panel
     @id = id
     @vertices = vertices
     @controller_vertex = nil
-    @signal_start_vertex_id = nil
+    @signal_start_vertex
     @strips = Array.new((max_current / SCALED_MAX_CURRENT_PER_CIRCUIT).floor) do |i|
       PanelStrip.new(
         id: "#{id}-#{i}",
@@ -29,7 +29,7 @@ class Panel
     @priority = nil
   end
 
-  attr_accessor :id, :vertices, :strips, :panel_type, :channels_required, :controller_vertex, :signal_start_vertex_id, :priority
+  attr_accessor :id, :vertices, :strips, :panel_type, :channels_required, :controller_vertex, :signal_start_vertex, :priority
 
   def area
     side_lengths = vertices.combination(2).map do |v1, v2|
