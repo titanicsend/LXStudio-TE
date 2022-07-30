@@ -1,6 +1,6 @@
 {
   "version": "0.4.1",
-  "timestamp": 1655517663727,
+  "timestamp": 1659193981002,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -25,7 +25,8 @@
       "channelMultithreaded": false,
       "networkMultithreaded": false,
       "framesPerSecond": 60.0,
-      "speed": 1.0
+      "speed": 1.0,
+      "performanceMode": false
     },
     "children": {
       "palette": {
@@ -53,7 +54,7 @@
               "modulationColor": 0
             },
             "parameters": {
-              "label": "Swatch-2",
+              "label": "Miami",
               "recall": false,
               "autoCycleEligible": true
             },
@@ -69,9 +70,9 @@
                   "label": "LX",
                   "mode": 0,
                   "period": 30.0,
-                  "primary/brightness": 95.0,
-                  "primary/saturation": 92.0,
-                  "primary/hue": 191.09523010253906,
+                  "primary/brightness": 99.0,
+                  "primary/saturation": 67.0,
+                  "primary/hue": 61.0,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -88,9 +89,9 @@
                   "label": "LX",
                   "mode": 0,
                   "period": 30.0,
-                  "primary/brightness": 98.82353210449219,
-                  "primary/saturation": 6.0,
-                  "primary/hue": 255.04759216308594,
+                  "primary/brightness": 89.16670227050781,
+                  "primary/saturation": 64.0,
+                  "primary/hue": 229.0,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -107,9 +108,9 @@
                   "label": "LX",
                   "mode": 0,
                   "period": 30.0,
-                  "primary/brightness": 98.82353210449219,
-                  "primary/saturation": 48.9523811340332,
-                  "primary/hue": 256.99998474121094,
+                  "primary/brightness": 91.0,
+                  "primary/saturation": 61.0,
+                  "primary/hue": 194.0,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -126,9 +127,9 @@
                   "label": "LX",
                   "mode": 0,
                   "period": 30.0,
-                  "primary/brightness": 39.166664123535156,
-                  "primary/saturation": 97.5,
-                  "primary/hue": 285.0,
+                  "primary/brightness": 89.0,
+                  "primary/saturation": 75.0,
+                  "primary/hue": 323.0,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -145,9 +146,9 @@
                   "label": "LX",
                   "mode": 0,
                   "period": 30.0,
-                  "primary/brightness": 98.82353210449219,
-                  "primary/saturation": 100.0,
-                  "primary/hue": 248.0,
+                  "primary/brightness": 90.0,
+                  "primary/saturation": 64.0,
+                  "primary/hue": 229.0,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -447,8 +448,11 @@
           "crossfader": 0.3464566929133858,
           "crossfaderBlendMode": 1,
           "focusedChannel": 4,
+          "focusedChannelAux": 6,
           "cueA": false,
           "cueB": false,
+          "auxA": false,
+          "auxB": false,
           "viewCondensed": false
         },
         "children": {
@@ -456,7 +460,9 @@
             "id": 20,
             "class": "heronarts.lx.mixer.LXMasterBus",
             "internal": {
-              "modulationColor": 0
+              "modulationColor": 0,
+              "controlsExpandedCue": true,
+              "controlsExpandedAux": true
             },
             "parameters": {
               "label": "Master",
@@ -470,10 +476,12 @@
         },
         "channels": [
           {
-            "id": 34,
+            "id": 9185,
             "class": "heronarts.lx.mixer.LXChannel",
             "internal": {
               "modulationColor": 0,
+              "controlsExpandedCue": true,
+              "controlsExpandedAux": true,
               "controlsExpanded": true
             },
             "parameters": {
@@ -482,6 +490,7 @@
               "selected": false,
               "enabled": true,
               "cue": false,
+              "aux": false,
               "fader": 1.0,
               "crossfadeGroup": 0,
               "blendMode": 4,
@@ -510,6 +519,8 @@
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
                   "modulationExpanded": false,
                   "autoCycleEligible": true
                 },
@@ -547,6 +558,8 @@
             "class": "heronarts.lx.mixer.LXChannel",
             "internal": {
               "modulationColor": 0,
+              "controlsExpandedCue": true,
+              "controlsExpandedAux": true,
               "controlsExpanded": true
             },
             "parameters": {
@@ -555,6 +568,7 @@
               "selected": false,
               "enabled": true,
               "cue": false,
+              "aux": false,
               "fader": 1.0,
               "crossfadeGroup": 0,
               "blendMode": 4,
@@ -583,6 +597,8 @@
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
                   "modulationExpanded": false,
                   "autoCycleEligible": true
                 },
@@ -620,6 +636,8 @@
             "class": "heronarts.lx.mixer.LXChannel",
             "internal": {
               "modulationColor": 0,
+              "controlsExpandedCue": true,
+              "controlsExpandedAux": true,
               "controlsExpanded": true
             },
             "parameters": {
@@ -628,6 +646,7 @@
               "selected": false,
               "enabled": true,
               "cue": false,
+              "aux": false,
               "fader": 1.0,
               "crossfadeGroup": 0,
               "blendMode": 4,
@@ -656,6 +675,8 @@
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
                   "modulationExpanded": false,
                   "autoCycleEligible": true
                 },
@@ -694,6 +715,8 @@
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
                   "modulationExpanded": false,
                   "autoCycleEligible": true
                 },
@@ -735,6 +758,8 @@
             "class": "heronarts.lx.mixer.LXChannel",
             "internal": {
               "modulationColor": 0,
+              "controlsExpandedCue": true,
+              "controlsExpandedAux": true,
               "controlsExpanded": true
             },
             "parameters": {
@@ -743,6 +768,7 @@
               "selected": false,
               "enabled": true,
               "cue": false,
+              "aux": false,
               "fader": 1.0,
               "crossfadeGroup": 0,
               "blendMode": 1,
@@ -771,6 +797,8 @@
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
                   "modulationExpanded": false,
                   "autoCycleEligible": true
                 },
@@ -811,6 +839,8 @@
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
                   "modulationExpanded": false,
                   "autoCycleEligible": true
                 },
@@ -824,7 +854,7 @@
                   "color/index": 1,
                   "tempoDivision": 5,
                   "triggerMode": 0,
-                  "sceneSelect": 11,
+                  "sceneSelect": 43,
                   "trigger": false,
                   "downbeat": false
                 },
@@ -853,6 +883,8 @@
             "class": "heronarts.lx.mixer.LXChannel",
             "internal": {
               "modulationColor": 0,
+              "controlsExpandedCue": true,
+              "controlsExpandedAux": true,
               "controlsExpanded": true
             },
             "parameters": {
@@ -861,6 +893,7 @@
               "selected": true,
               "enabled": true,
               "cue": false,
+              "aux": false,
               "fader": 1.0,
               "crossfadeGroup": 0,
               "blendMode": 4,
@@ -889,6 +922,8 @@
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
                   "modulationExpanded": false,
                   "autoCycleEligible": true
                 },
@@ -930,6 +965,8 @@
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
                   "modulationExpanded": false,
                   "autoCycleEligible": true
                 },
@@ -966,6 +1003,8 @@
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
                   "modulationExpanded": false,
                   "autoCycleEligible": true
                 },
@@ -976,7 +1015,7 @@
                   "color/saturation": 0.0,
                   "color/hue": 0.0,
                   "color/mode": 1,
-                  "color/index": 3,
+                  "color/index": 4,
                   "tempoDivision": 5,
                   "tempoSync": false,
                   "tempoLock": true,
@@ -1006,6 +1045,8 @@
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
                   "modulationExpanded": false,
                   "autoCycleEligible": true
                 },
@@ -1046,14 +1087,17 @@
             "class": "heronarts.lx.mixer.LXChannel",
             "internal": {
               "modulationColor": 0,
+              "controlsExpandedCue": true,
+              "controlsExpandedAux": true,
               "controlsExpanded": true
             },
             "parameters": {
               "label": "Combo FG",
               "arm": false,
               "selected": false,
-              "enabled": false,
+              "enabled": true,
               "cue": false,
+              "aux": false,
               "fader": 0.7795275590551181,
               "crossfadeGroup": 0,
               "blendMode": 4,
@@ -1082,6 +1126,8 @@
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
                   "modulationExpanded": false,
                   "autoCycleEligible": true
                 },
@@ -1124,6 +1170,8 @@
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
                   "modulationExpanded": false,
                   "autoCycleEligible": true
                 },
@@ -1155,6 +1203,8 @@
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
                   "modulationExpanded": false,
                   "autoCycleEligible": true
                 },
@@ -1191,6 +1241,8 @@
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
                   "modulationExpanded": false,
                   "autoCycleEligible": true
                 },
@@ -1237,6 +1289,8 @@
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
                   "modulationExpanded": false,
                   "autoCycleEligible": true
                 },
@@ -1273,6 +1327,8 @@
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
                   "modulationExpanded": false,
                   "autoCycleEligible": true
                 },
@@ -1283,7 +1339,7 @@
                   "color/saturation": 0.0,
                   "color/hue": 0.0,
                   "color/mode": 1,
-                  "color/index": 3,
+                  "color/index": 1,
                   "energy": 1.0,
                   "contrast": 1.0,
                   "detail": 0.85,
@@ -1315,14 +1371,17 @@
             "class": "heronarts.lx.mixer.LXChannel",
             "internal": {
               "modulationColor": 0,
+              "controlsExpandedCue": true,
+              "controlsExpandedAux": true,
               "controlsExpanded": true
             },
             "parameters": {
               "label": "Debugging",
               "arm": false,
               "selected": false,
-              "enabled": false,
+              "enabled": true,
               "cue": false,
+              "aux": false,
               "fader": 1.0,
               "crossfadeGroup": 0,
               "blendMode": 4,
@@ -1351,6 +1410,8 @@
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
                   "modulationExpanded": false,
                   "autoCycleEligible": true
                 },
@@ -1382,6 +1443,8 @@
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
                   "modulationExpanded": false,
                   "autoCycleEligible": true
                 },
@@ -1392,6 +1455,40 @@
                 "children": {
                   "modulation": {
                     "id": 1309,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 9314,
+                "class": "titanicsend.pattern.TEMidiFighter64DriverPattern",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
+                  "modulationExpanded": false,
+                  "autoCycleEligible": true
+                },
+                "parameters": {
+                  "label": "TEMidiFighter64DriverPattern",
+                  "recall": false,
+                  "fakePush": false
+                },
+                "children": {
+                  "modulation": {
+                    "id": 9315,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0
@@ -1579,6 +1676,18 @@
           "transmitActive": false,
           "logInput": false,
           "logOutput": false
+        },
+        "children": {}
+      },
+      "autopilot": {
+        "id": 31,
+        "class": "titanicsend.app.autopilot.TEUserInterface$AutopilotComponent",
+        "internal": {
+          "modulationColor": 0
+        },
+        "parameters": {
+          "label": "Autopilot",
+          "autopilotEnabledToggle": false
         },
         "children": {}
       }
