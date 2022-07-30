@@ -30,14 +30,18 @@ public class TEMixerUtils {
     }
 
     public static void setFaderTo(LX lx, TEChannelName name, double faderLevel) {
-        LXChannel channel = (LXChannel) lx.engine.mixer.channels.get(name.getIndex());
-        lx.engine.mixer.channels.get(name.getIndex()).fader.setValue(faderLevel);
+        try {
+            LXChannel channel = (LXChannel) lx.engine.mixer.channels.get(name.getIndex());
+            lx.engine.mixer.channels.get(name.getIndex()).fader.setValue(faderLevel);
 
-        // save CPU cycles by disabling OFF channels
-        if (faderLevel < FADER_LEVEL_OFF_THRESH) {
-            channel.enabled.setValue(false);
-        } else if (faderLevel >= FADER_LEVEL_OFF_THRESH) {
-            channel.enabled.setValue(true);
+            // save CPU cycles by disabling OFF channels
+            if (faderLevel < FADER_LEVEL_OFF_THRESH) {
+                channel.enabled.setValue(false);
+            } else if (faderLevel >= FADER_LEVEL_OFF_THRESH) {
+                channel.enabled.setValue(true);
+            }
+        } catch (NullPointerException np) {
+            TE.err("setFaderTo(lx, %s, %f) failed!", name, faderLevel);
         }
     }
 

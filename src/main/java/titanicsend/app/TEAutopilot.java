@@ -24,7 +24,7 @@ public class TEAutopilot implements LXLoopTask {
     // number of bars after a chorus to continue leaving
     // FX channels visible
     private final double TRIGGERS_AT_CHORUS_LENGTH_BARS = 0.75;
-    private final double STROBES_AT_CHORUS_LENGTH_BARS = 0.5;
+    private final double STROBES_AT_CHORUS_LENGTH_BARS = 1.0;
 
 
     // various fader levels of importance
@@ -116,8 +116,9 @@ public class TEAutopilot implements LXLoopTask {
         TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
         triggerChannel = TEMixerUtils.getChannelByName(lx, TEChannelName.TRIGGERS);
         strobesChannel = TEMixerUtils.getChannelByName(lx, TEChannelName.STROBES);
-
+        
         oldNextFadeOutMode = false;
+        prevFadeOutMode = false;
     }
 
     protected void onOscMessage(OscMessage msg) {
@@ -223,7 +224,7 @@ public class TEAutopilot implements LXLoopTask {
 
             // update fader value for OLD NEXT channel
             if (oldNextFadeOutMode && currentPhraseLengthBars < MISPREDICTED_FADE_OUT_BARS) {
-                TE.log("FADE OLD NEXT: Fading out %s", oldNextChannelName);
+                //TE.log("FADE OLD NEXT: Fading out %s", oldNextChannelName);
                 double newVal = TEMath.ease(
                         TEMath.EasingFunction.LINEAR_RAMP_DOWN,
                         currentPhraseLengthBars, 0.0, MISPREDICTED_FADE_OUT_BARS,
@@ -233,29 +234,38 @@ public class TEAutopilot implements LXLoopTask {
 
             // update fader for prev channel
             if (prevFadeOutMode && currentPhraseLengthBars < PREV_FADE_OUT_BARS) {
-                TE.log("FADE PREV: Fading out %s", prevChannelName);
+                //TE.log("FADE PREV: Fading out %s", prevChannelName);
                 double newVal = TEMath.ease(
                         TEMath.EasingFunction.LINEAR_RAMP_DOWN,
                         currentPhraseLengthBars, 0.0, PREV_FADE_OUT_BARS,
                         LEVEL_OFF, LEVEL_PREV_FADE_OUT);
                 TEMixerUtils.setFaderTo(lx, prevChannelName, newVal);
+
+            } else if (currentPhraseLengthBars >= PREV_FADE_OUT_BARS) {
+                TEMixerUtils.setFaderTo(lx, prevChannelName, LEVEL_OFF);
             }
 
             // update FX channels
-            if (strobesChannel.fader.getValue() > 0.0) {
+            if (strobesChannel.fader.getValue() > 0.0 && currentPhraseLengthBars < STROBES_AT_CHORUS_LENGTH_BARS) {
                 double newVal = TEMath.ease(
                         TEMath.EasingFunction.LINEAR_RAMP_DOWN,
                         currentPhraseLengthBars, 0.0, STROBES_AT_CHORUS_LENGTH_BARS,
                         LEVEL_OFF, LEVEL_FULL);
                 TEMixerUtils.setFaderTo(lx, TEChannelName.STROBES, newVal);
+
+            } else if (currentPhraseLengthBars >= PREV_FADE_OUT_BARS) {
+                TEMixerUtils.setFaderTo(lx, TEChannelName.STROBES, LEVEL_OFF);
             }
 
-            if (triggerChannel.fader.getValue() > 0.0) {
+            if (triggerChannel.fader.getValue() > 0.0 && currentPhraseLengthBars < TRIGGERS_AT_CHORUS_LENGTH_BARS) {
                 double newVal = TEMath.ease(
                         TEMath.EasingFunction.LINEAR_RAMP_DOWN,
                         currentPhraseLengthBars, 0.0, TRIGGERS_AT_CHORUS_LENGTH_BARS,
                         LEVEL_OFF, LEVEL_FULL);
                 TEMixerUtils.setFaderTo(lx, TEChannelName.TRIGGERS, newVal);
+
+            } else if (currentPhraseLengthBars >= TRIGGERS_AT_CHORUS_LENGTH_BARS) {
+                TEMixerUtils.setFaderTo(lx, TEChannelName.TRIGGERS, LEVEL_OFF);
             }
 
         } catch (IndexOutOfBoundsException e) {
@@ -352,15 +362,9 @@ public class TEAutopilot implements LXLoopTask {
                     newCurPattern = this.library.pickRandomPattern(curPhrase);
                 }
 
-                // make sure this newCurPattern is actually in our curChannel to activate!
-                //TE.log("curChannel=%s indexof pattern=%s is %d", curChannelName, newCurPattern, curChannel.patterns.indexOf(newCurPattern));
-
                 // print the current active pattern, along with what we're going to change to
                 //TE.log("active pattern in current channel: %s, going to change to=%s", curChannel.getActivePattern(), newCurPattern);
                 startPattern(curChannel, newCurPattern);
-
-                // make sure we actually updated the curChannel's active pattern
-                //TE.log("Selected new current pattern: %s (active=%s), for channel %s", newCurPattern, newCurPattern, curChannelName);
             }
 
             // pick a pattern we'll start fading into on "nextChannel" during the new few bars

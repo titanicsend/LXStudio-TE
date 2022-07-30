@@ -284,9 +284,16 @@ public class TEPatternLibrary {
         // now filter based on this
         Stream<TEPatternRecord> s = patternRecords.stream()
                                         .filter(r -> r.phraseType == newPhrase)
-                                        .filter(r -> compatibleCoverage.contains(r.coverageType))
-                                        .filter(r -> compatibleColor.contains(r.colorCategoryType))
                                         .filter(r -> !class2Id(r.patternClass.toString()).equals(curPatternId));
+
+        if (newPhrase != TEPhrase.CHORUS) {
+            // compatibility on color/coverage when transitioning into a CHORUS is less important.
+            // we don't fade out from the DOWN/UP before, so we're not worried about clashing, and generally
+            // we like want this to be a bolder transition
+            s = s.filter(r -> compatibleCoverage.contains(r.coverageType))
+                 .filter(r -> compatibleColor.contains(r.colorCategoryType));
+        }
+
         ArrayList<TEPatternRecord> matchingRecords = s.collect(Collectors.toCollection(ArrayList::new));
 
         // ensure we actually have choices, fallback to just phrase compatibility
@@ -295,6 +302,12 @@ public class TEPatternLibrary {
             Stream<TEPatternRecord> s2 = patternRecords.stream().filter(r -> r.phraseType == newPhrase);
             matchingRecords = s2.collect(Collectors.toCollection(ArrayList::new));
             TE.log("Did not find enough compatible patterns, filtering only by phrase now: %d found", matchingRecords.size());
+        }
+
+        TE.log("Matches for oldPhrase=%s, oldPattern=%s, newPhrase=%s", oldPhrase, curPattern, newPhrase);
+        for (TEPatternRecord r : matchingRecords) {
+            TE.log("-> match: cls=%s, ph=%s, cov=%s, color=%s"
+                    , r.patternClass, r.phraseType, r.coverageType, r.colorCategoryType);
         }
 
         // now for each record, pull in the corresponding pattern(s) and add to a list
@@ -320,7 +333,6 @@ public class TEPatternLibrary {
         Random rand = new Random();
         int randomIndex = rand.nextInt(matchingPatterns.size());
         TE.log("Picked randomly idx=%d from size=%d", randomIndex, matchingPatterns.size());
-
         return matchingPatterns.get(randomIndex);
     }
 
@@ -344,25 +356,27 @@ public class TEPatternLibrary {
         PhrasePatternCompositeKey key = new PhrasePatternCompositeKey(curPattern.getClass(), curPhrase);
         TEPatternRecord curPatternRecord = this.phrasePattern2rec.get(key);
         if (curPatternRecord == null) {
-            for (Map.Entry<PhrasePatternCompositeKey, TEPatternRecord> entry : phrasePattern2rec.entrySet()) {
-                PhrasePatternCompositeKey k = entry.getKey();
-                TEPatternRecord r = entry.getValue();
-                if (r.phraseType == curPhrase) {
-                    //TE.log("-> phrase=%s, found %s => %s", curPhrase, k, r);
-                }
-            }
-            throw new Exception(
-                    String.format("Could not find TEPatternRecord for pattern=%s, curPhrase=%s, nextPhrase=%s"
-                            , curPattern, curPhrase, nextPhrase));
+//            for (Map.Entry<PhrasePatternCompositeKey, TEPatternRecord> entry : phrasePattern2rec.entrySet()) {
+//                PhrasePatternCompositeKey k = entry.getKey();
+//                TEPatternRecord r = entry.getValue();
+//                if (r.phraseType == curPhrase) {
+//                    //TE.log("-> phrase=%s, found %s => %s", curPhrase, k, r);
+//                }
+//            }
+            String error = String.format("Could not find TEPatternRecord for pattern=%s, curPhrase=%s, nextPhrase=%s"
+                    , curPattern, curPhrase, nextPhrase);
+            TE.err(error);
+            throw new Exception(error);
         }
 
         // filter patterns
         ArrayList<LXPattern> matchingPatterns = getCompatibleNextPatterns(curPhrase, curPattern, nextPhrase);
         if (matchingPatterns.size() == 0) {
             // this should not happen unless we don't have a pattern on a channel...
-            throw new Exception(
-                    String.format("No compatible patterns for: pattern=%s, curPhrase=%s, nextPhrase=%s"
-                            , curPattern, curPhrase, nextPhrase));
+            String error = String.format("No compatible patterns for: pattern=%s, curPhrase=%s, nextPhrase=%s"
+                    , curPattern, curPhrase, nextPhrase);
+            TE.err(error);
+            throw new Exception(error);
         }
 
         // should we pick randomly, or select by least plays?
@@ -371,6 +385,7 @@ public class TEPatternLibrary {
 
         if (rand.nextFloat() <= PROB_PICK_RANDOM_NEXT_PATTERN) {
             // pick random one
+            TE.log("pickRandomCompatibleNextPattern(): picking randomly!");
             patternIndex = rand.nextInt(matchingPatterns.size());
 
         } else {
@@ -385,14 +400,14 @@ public class TEPatternLibrary {
                 }
             });
 
-            //LXPattern first = matchingPatterns.get(0);
-            //LXPattern last = matchingPatterns.get(matchingPatterns.size() - 1);
-            //TE.log("After sort, first item in matchingPatterns list has %f plays, and last has %f plays"
-            //        , patternHistoryCounter.get(first), patternHistoryCounter.get(last));
+            LXPattern first = matchingPatterns.get(0);
+            LXPattern last = matchingPatterns.get(matchingPatterns.size() - 1);
+            TE.log("After sort, first item in matchingPatterns list has %f plays, and last has %f plays"
+                    , patternHistoryCounter.get(first), patternHistoryCounter.get(last));
         }
 
         LXPattern selectedPattern = matchingPatterns.get(patternIndex);
-        //TE.log("Picked next pattern: %s", selectedPattern);
+        TE.log("Picked next pattern for [%s]: %s (index=%d)", nextPhrase, selectedPattern, patternIndex);
         return selectedPattern;
     }
 

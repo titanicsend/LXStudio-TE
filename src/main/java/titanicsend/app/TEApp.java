@@ -232,7 +232,6 @@ public class TEApp extends PApplet implements LXPlugin  {
     // CHORUS patterns
     l.addPattern(NoisePattern.class, covBoth, cPalette, chorus);
     l.addPattern(PBXorcery.class, covPanelPartial, cPalette, chorus);
-    l.addPattern(OrganicPatternConfig.RhythmicFlashStatic.class, covPanels, cPalette, chorus);
     l.addPattern(ShaderPanelsPatternConfig.NeonBlocks.class, covPanelPartial, cNonConforming, chorus);
     l.addPattern(PBAudio1.class, covPanelPartial, cPalette, chorus);
     l.addPattern(ShaderPanelsPatternConfig.OutrunGrid.class, covPanels, cNonConforming, chorus);
@@ -244,6 +243,11 @@ public class TEApp extends PApplet implements LXPlugin  {
     l.addPattern(OrganicPatternConfig.RainbowSwirlEdges.class, covEdges, cNonConforming, chorus);
     l.addPattern(ShaderPanelsPatternConfig.NeonTriangles.class, covPanels, cNonConforming, chorus);
     l.addPattern(OrganicPatternConfig.NeonSnake.class, covPanels, cPalette, chorus);
+    l.addPattern(ShaderPanelsPatternConfig.Mondelbrot.class, covPanels, cNonConforming, chorus);
+    l.addPattern(ShaderPanelsPatternConfig.JetStream.class, covPanels, cNonConforming, chorus);
+    l.addPattern(Phasers.class, covPanels, cPalette, chorus);
+    l.addPattern(ShaderPanelsPatternConfig.PulsingPetriDish.class, covPanels, cNonConforming, chorus);
+    l.addPattern(FourStar.class, covPanelPartial, cPalette, chorus);
     //l.addPattern(ShaderPanelsPatternConfig.PulsingHeart.class, covPanels, cNonConforming, chorus);
 
     // DOWN patterns
@@ -260,13 +264,12 @@ public class TEApp extends PApplet implements LXPlugin  {
     // UP patterns
     l.addPattern(NoisePattern.class, covPanelPartial, cNonConforming, up);
     l.addPattern(OrganicPatternConfig.WavyEdges.class, covPanelPartial, cNonConforming, up);
-    l.addPattern(PBXorcery.class, covPanelPartial, cNonConforming, up);
-    l.addPattern(OrganicPatternConfig.AlternatingDots.class, covPanelPartial, cNonConforming, up);
-    l.addPattern(OrganicPatternConfig.BasicElectricEdges.class, covEdges, cNonConforming, up);
     l.addPattern(SparklePattern.class, covBoth, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.Electric.class, covPanelPartial, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.JetStream.class, covPanels, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.Marbling.class, covPanels, cNonConforming, up);
+    l.addPattern(ShaderPanelsPatternConfig.SlitheringSnake.class, covPanelPartial, cPalette, up);
+    l.addPattern(Fireflies.class, covPanelPartial, cPalette, up);
 
     // misc patterns
     //l.addPattern(EdgeProgressions.class, covEdges, colorWhite, chorus);
