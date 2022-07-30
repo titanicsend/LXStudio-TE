@@ -16,7 +16,8 @@ public class MF64FlashPattern extends TEMidiFighter64Subpattern {
           LXColor.rgb(0,255,0),
           LXColor.rgb(0,170,170),
           LXColor.rgb(0,0,255),
-          LXColor.rgb(255,0,255)
+          LXColor.rgb(255,0,255),
+          LXColor.rgb(255,255,255),
   };
   private int flashColor = TEColor.TRANSPARENT;
   private double flashCountdown = 0.0;
