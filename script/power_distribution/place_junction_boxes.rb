@@ -374,6 +374,11 @@ graph.edges.each_value do |edge|
   end
 end
 
+puts "Power boxes responsible for this panel: (by panel ID -- box vertex ID(s))"
+graph.panels.values.flatten.sort_by(&:priority).each do |panel|
+  puts "#{panel.id} -- #{panel.assigned_junction_box_vertices.map(&:id).join(', ')}"
+end
+
 outlet_banks = OutletBank.load_outlet_banks(vertices: vertices)
 OutletBank.assign_junction_boxes_to_outlet_banks(graph: graph, outlet_banks: outlet_banks, junction_boxes: boxes)
 

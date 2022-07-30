@@ -82,6 +82,27 @@ class Panel
     end
     panels
   end
+
+  # assigned_junction_box_vertices are just the vertices of the box(es) assigned to
+  # power this panel. They are not necessarily the same as the vertices of the panel;
+  # wouldn't that be nice?
+  def assigned_junction_box_vertices
+    if strips.any? { |strip| strip.circuit.nil? || strip.circuit.junction_box.nil? }
+      raise "strip not yet assigned"
+    end
+
+    junction_box_vertex_ids_set = Set.new
+    strips.each do |strip|
+      circuit = strip.circuit
+      if junction_box_vertex_ids_set.include?(circuit.junction_box.vertex.id)
+        next
+      end
+
+      junction_box_vertex_ids_set.add(circuit.junction_box.vertex.id)
+    end
+
+    junction_box_vertex_ids_set.to_a
+  end
 end
 
 class PanelStrip
