@@ -26,9 +26,10 @@ class Panel
     )
     @panel_type = PANEL_TYPE_LIT
     @channels_required = 1
+    @priority = nil
   end
 
-  attr_accessor :id, :vertices, :strips, :panel_type, :channels_required, :controller_vertex, :signal_start_vertex_id
+  attr_accessor :id, :vertices, :strips, :panel_type, :channels_required, :controller_vertex, :signal_start_vertex_id, :priority
 
   def area
     side_lengths = vertices.combination(2).map do |v1, v2|

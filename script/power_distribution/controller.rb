@@ -152,7 +152,7 @@ class Controller
     end
 
     rows.drop(1).each do |row|
-      panel_id, _, _, _, panel_type, channels_required, controller_vertex_id, signal_start_vertex_id, signal_edge = row
+      panel_id, _, _, _, panel_type, channels_required, controller_vertex_id, signal_start_vertex_id, signal_edge, priority = row
 
       # TODO: consider checking these against `panel.valid_signal_in_vertices`. (we know that will fail sometimes though)
       valid_edge_vertex_ids = signal_edge.split('-')
@@ -163,6 +163,7 @@ class Controller
       panel = graph.panels.values.flatten.find { |panel| panel.id == panel_id }
       panel.panel_type = panel_type
       panel.channels_required = channels_required.to_i
+      panel.priority = priority.to_i
 
       controller_vertex = vertices.find { |vertex_id, vertex| vertex_id.to_s == controller_vertex_id }[1]
 
