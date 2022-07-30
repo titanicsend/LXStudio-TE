@@ -199,6 +199,18 @@ public class ShaderPanelsPatternConfig {
     }
 
     @LXCategory("Native Shaders Panels")
+    public static class OutrunGrid extends ConstructedPattern {
+        public OutrunGrid(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> createEffects() {
+            return List.of(new NativeShaderPatternEffect("outrun_grid.fs",
+                    PatternTarget.doubleLargeCanvas(this)));
+        }
+    }
+
+    @LXCategory("Native Shaders Panels")
     public static class Galaxy extends ConstructedPattern {
         public Galaxy(LX lx) {
             super(lx);

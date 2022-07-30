@@ -103,17 +103,6 @@ public class OrganicPatternConfig {
     }
 
     @LXCategory("Yoffa Panel Shader")
-    public static class Outrun extends ConstructedPattern {
-        public Outrun(LX lx) {
-            super(lx);
-        }
-        @Override
-        protected List<PatternEffect> createEffects() {
-            return List.of(new OutrunGridShader(PatternTarget.splitPanelSections(this)));
-        }
-    }
-
-    @LXCategory("Yoffa Panel Shader")
     public static class WaterPanels extends ConstructedPattern {
         public WaterPanels(LX lx) {
             super(lx);

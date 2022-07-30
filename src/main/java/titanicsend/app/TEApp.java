@@ -235,7 +235,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     l.addPattern(OrganicPatternConfig.RhythmicFlashStatic.class, covPanels, cPalette, chorus);
     l.addPattern(ShaderPanelsPatternConfig.NeonBlocks.class, covPanelPartial, cNonConforming, chorus);
     l.addPattern(PBAudio1.class, covPanelPartial, cPalette, chorus);
-    l.addPattern(OrganicPatternConfig.Outrun.class, covPanels, cNonConforming, chorus);
+    l.addPattern(ShaderPanelsPatternConfig.OutrunGrid.class, covPanels, cNonConforming, chorus);
     l.addPattern(OrganicPatternConfig.RainbowSwirlPanels.class, covPanels, cNonConforming, chorus);
     l.addPattern(OrganicPatternConfig.MatrixScroller.class, covPanels, cNonConforming, chorus);
     l.addPattern(FollowThatStar.class, covBoth, cPalette, chorus);
