@@ -23,16 +23,12 @@ import java.io.IOException;
 import java.net.SocketException;
 
 import heronarts.lx.LX;
-import heronarts.lx.LXComponent;
 import heronarts.lx.LXPlugin;
-import heronarts.lx.osc.LXOscComponent;
-import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.pattern.color.GradientPattern;
 import heronarts.lx.pattern.texture.NoisePattern;
 import heronarts.lx.pattern.texture.SparklePattern;
 import heronarts.lx.studio.LXStudio;
-import heronarts.p4lx.ui.component.*;
 import processing.core.PApplet;
 import titanicsend.app.autopilot.TEPatternLibrary;
 import titanicsend.app.autopilot.TEPhrase;
@@ -40,7 +36,7 @@ import titanicsend.app.autopilot.TEUserInterface;
 import titanicsend.model.TEWholeModel;
 import titanicsend.output.GPOutput;
 import titanicsend.output.TEArtNetOutput;
-import titanicsend.pattern.alex.*;
+import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.pattern.ben.BassLightning;
 import titanicsend.pattern.cesar.*;
 import titanicsend.pattern.jeff.*;
@@ -49,7 +45,6 @@ import titanicsend.pattern.mike.*;
 import titanicsend.pattern.pixelblaze.*;
 import titanicsend.pattern.tmc.*;
 import titanicsend.pattern.tom.*;
-import titanicsend.pattern.will.CartRace;
 import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.media.BasicImagePattern;
@@ -139,6 +134,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPattern(HandTracker.class);
     lx.registry.addPattern(Fireflies.class);
     lx.registry.addPattern(Fire.class);
+    lx.registry.addPattern(TEMidiFighter64DriverPattern.class);
 
     // Patterns that will not aspire to art direction standards
     lx.registry.addPattern(BasicImagePattern.class);
@@ -201,7 +197,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     // add custom OSC listener to handle OSC messages from ShowKontrol
     // includes an Autopilot ref to store (threadsafe) queue of unread OSC messages
     TE.log("Attaching the OSC message listener to port "
-            + Integer.toString(TEShowKontrol.OSC_PORT) + " ...");
+            + TEShowKontrol.OSC_PORT + " ...");
     try {
         lx.engine.osc.receiver(TEShowKontrol.OSC_PORT).addListener((message) -> {
           this.oscListener.onOscMessage(message);
