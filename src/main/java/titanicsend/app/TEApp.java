@@ -267,14 +267,12 @@ public class TEApp extends PApplet implements LXPlugin  {
     // UP patterns
     l.addPattern(NoisePattern.class, covPanelPartial, cNonConforming, up);
     l.addPattern(OrganicPatternConfig.WavyEdges.class, covPanelPartial, cNonConforming, up);
-    l.addPattern(PBXorcery.class, covPanelPartial, cNonConforming, up);
-    l.addPattern(OrganicPatternConfig.AlternatingDots.class, covPanelPartial, cNonConforming, up);
     l.addPattern(SparklePattern.class, covBoth, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.Electric.class, covPanelPartial, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.JetStream.class, covPanels, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.Marbling.class, covPanels, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.SlitheringSnake.class, covPanelPartial, cPalette, up);
-    l.addPattern(ShaderPanelsPatternConfig.SlitheringSnake.class, covPanelPartial, cPalette, up);
+    l.addPattern(Fireflies.class, covPanelPartial, cPalette, up);
 
     // misc patterns
     //l.addPattern(EdgeProgressions.class, covEdges, colorWhite, chorus);
