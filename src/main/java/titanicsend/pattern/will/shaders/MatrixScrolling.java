@@ -1,6 +1,7 @@
 package titanicsend.pattern.will.shaders;
 
 import heronarts.lx.Tempo;
+import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXParameter;
@@ -38,10 +39,20 @@ public class MatrixScrolling extends FragmentShaderEffect {
 
     public final BooleanParameter beatReactive = new BooleanParameter("Beat reactive", true);
 
+//    public final LinkedColorParameter color = new LinkedColorParameter("Color")
+//            .setDescription("Color of blocks");
+
     public MatrixScrolling(PatternTarget target) {
         super(target);
         centering.setPolarity(LXParameter.Polarity.BIPOLAR);
         speed.setPolarity(LXParameter.Polarity.BIPOLAR);
+
+        //protected LinkedColorParameter registerColor(String label, String path, TEPattern.ColorType colorType, String description) {
+//            LinkedColorParameter lcp = new LinkedColorParameter(label)
+//                    .setDescription(description);
+//        this.addParameter(path, lcp);
+//        color.mode.setValue(LinkedColorParameter.Mode.PALETTE);
+        //color.index.setValue(colorType.index);
     }
 
     @Override

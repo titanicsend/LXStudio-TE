@@ -47,6 +47,7 @@ import titanicsend.pattern.tmc.*;
 import titanicsend.pattern.tom.*;
 import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
+import titanicsend.pattern.yoffa.effect.shaders.OutrunPaletteShader;
 import titanicsend.pattern.yoffa.media.BasicImagePattern;
 import titanicsend.pattern.yoffa.media.ReactiveHeartPattern;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
@@ -135,6 +136,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPattern(Fireflies.class);
     lx.registry.addPattern(Fire.class);
     lx.registry.addPattern(TEMidiFighter64DriverPattern.class);
+    lx.registry.addPattern(OutrunPaletteShader.class);
 
     // Patterns that will not aspire to art direction standards
     lx.registry.addPattern(BasicImagePattern.class);

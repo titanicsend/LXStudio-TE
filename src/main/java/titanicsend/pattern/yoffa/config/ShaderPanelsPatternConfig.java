@@ -2,14 +2,19 @@ package titanicsend.pattern.yoffa.config;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import heronarts.lx.color.LXColor;
+import heronarts.lx.color.LinkedColorParameter;
+import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.effect.ShaderToyPatternEffect;
 import titanicsend.pattern.yoffa.framework.ConstructedPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
+import titanicsend.util.TE;
 
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("unused")
 public class ShaderPanelsPatternConfig {
@@ -200,13 +205,32 @@ public class ShaderPanelsPatternConfig {
 
     @LXCategory("Native Shaders Panels")
     public static class OutrunGrid extends ConstructedPattern {
+
+        public final LinkedColorParameter color = new LinkedColorParameter("Color");
         public OutrunGrid(LX lx) {
             super(lx);
+            addParameter("color", color);
+            color.mode.setValue(LinkedColorParameter.Mode.PALETTE);
+            color.index.setValue(3);
         }
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("outrun_grid.fs",
                     PatternTarget.doubleLargeCanvas(this)));
+        }
+
+        @Override
+        public void onParameterChanged(LXParameter parameter) {
+            if (parameter.getPath().equals("color")) {
+                int rgb = color.calcColor();
+                TE.log("Parameter %s changed: %s (%f) (rgb=%d)", parameter.getPath(), parameter, parameter.getValue(), rgb);
+//                TE.log("r=%d, g=%d, b=%d", LXColor.red(rgb), LXColor.green(rgb), LXColor.blue(rgb));
+                TE.log("h=%f, s=%f, b=%f", LXColor.h(rgb), LXColor.s(rgb), LXColor.b(rgb));
+
+                for (Map.Entry<String, LXParameter> e : this.parameters.entrySet()) {
+                    TE.log("%s -> %s", e.getKey(), e.getValue());
+                }
+            }
         }
     }
 
