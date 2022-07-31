@@ -2,6 +2,7 @@ package titanicsend.pattern.yoffa.shader_engine;
 
 import heronarts.lx.LX;
 import heronarts.lx.audio.GraphicMeter;
+import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.NormalizedParameter;
 import titanicsend.util.TEMath;
 
@@ -15,19 +16,26 @@ public class AudioInfo {
     GraphicMeter meter;
     float fftResampleFactor;
 
+    int color;
+
     public AudioInfo(GraphicMeter meter) {
         this.meter = meter;
         fftResampleFactor = meter.bands.length / 512f;
     }
 
     
-    public void setFrameData(double basis, double sinPhaseBeat, double bassLevel, double trebleLevel) {
+    public void setFrameData(double basis, double sinPhaseBeat, double bassLevel, double trebleLevel, int col) {
         uniformMap = Map.of(
             Uniforms.Audio.BEAT, (float) basis,
             Uniforms.Audio.SIN_PHASE_BEAT, (float) sinPhaseBeat,
             Uniforms.Audio.BASS_LEVEL, (float) bassLevel,
             Uniforms.Audio.TREBLE_LEVEL, (float) trebleLevel
         );
+
+        this.color = col;
+    }
+
+    public void setFrameData(double basis, double sinPhaseBeat, double bassLevel, double trebleLevel) {
     }
 
     public Map<Uniforms.Audio, Float> getUniformMap() {

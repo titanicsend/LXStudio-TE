@@ -8,5 +8,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ){
         uv.y += 0.6 / i * cos(i * {%yWave[1.5,1,10]} * uv.x + iTime);
     }
 
-    fragColor = vec4(vec3(0.1)/abs(sin(iTime-uv.y-uv.x)),1.0);
+    //fragColor = vec4(vec3(0.1)/abs(sin(iTime-uv.y-uv.x)),1.0);
+    fragColor = vec4(iColorRGB*abs(sin(iTime-uv.y-uv.x)),1.0);
 }

@@ -44,7 +44,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
         // TODO - add a little bump with the beat.
         vec2 point = vec2(0.92 * sin(t) + 0.08 * cos(t * 6.0),
                          -0.3 + (0.65 * sin(t * 0.85) + dance * sin(t * 2.0)));
-        point = uPos - point/2f;
+        point = uPos - point/2.0;
 
         // if we're rotating, give the individual stars slightly different rates
         // by playing with the matrix scale a little
