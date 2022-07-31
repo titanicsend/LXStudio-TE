@@ -1,12 +1,15 @@
 package titanicsend.pattern.will.shaders;
 
 import heronarts.lx.Tempo;
+import heronarts.lx.color.LXColor;
+import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEPattern;
 import titanicsend.pattern.yoffa.effect.shaders.FragmentShaderEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.util.TE;
 
 import java.awt.*;
 import java.util.Collection;
@@ -106,7 +109,17 @@ public class MatrixScrolling extends FragmentShaderEffect {
         //        color.g = R / s.z;
         double[] color = new double[3];
         double R = fract(1e2 * Math.sin(p[0] * 5. + p[1]));
-        color[1] = R / s[2];
+        //color[2] = R / s[2];
+
+        int swatchRGB = this.pattern.getSwatchColor(TEPattern.ColorType.PANEL);
+        float rn = (float) (0xff & LXColor.red(swatchRGB)) / 255f;
+        float gn = (float) (0xff & LXColor.green(swatchRGB)) / 255f;
+        float bn = (float) (0xff & LXColor.blue(swatchRGB)) / 255f;
+        color[0] = R / s[2] * rn ;
+        color[1] = R / s[2] * gn ;
+        color[2] = R / s[2] * bn ;
+
+        //TE.log("green val: %f, my green: %f", R / s[2], color[1]);
 
         //        p *= j;
         p = multiplyArrays(p, j);
