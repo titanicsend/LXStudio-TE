@@ -4,112 +4,123 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
-import heronarts.lx.model.LXPoint;
-import heronarts.lx.parameter.*;
+import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEAudioPattern;
-import titanicsend.util.TEMath;
+import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
+import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.yoffa.shader_engine.NativeShader;
+import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 
 @LXCategory("Combo FG")
 public class FollowThatStar extends TEAudioPattern {
-
-    // pattern variables
-    protected float trailSize = 0.35f;
-    protected double segSpacing = 0.5f;
-    protected int segments = 5;
-    protected double timebase;  // main time accumulator
-    protected double t1;         // scratch timer
-    protected double[] xOffsets;
-    protected double[] yOffsets;
+    NativeShaderPatternEffect effect;
+    NativeShader shader;
+    VariableSpeedTimer vTime;
+    float lastTimeScale = 0;
 
     // Controls
-    public final CompoundParameter energy =
-            new CompoundParameter("Energy", .5, 0, 1)
-                    .setDescription("Stars sparkle and move");
+    // In this pattern the "energy" is how quickly the scenes can progress,
+    // IE shorter tempoDivisions
 
+    public final CompoundParameter starCount = (CompoundParameter)
+            new CompoundParameter("Stars", 5, 1, 10)
+                    .setUnits(LXParameter.Units.INTEGER)
+                    .setDescription("Number of stars");
+
+    public final CompoundParameter starSize =
+            new CompoundParameter("Size", 0.2, 0.01, 1)
+                    .setDescription("Base star size");
+
+    public final CompoundParameter glow =
+            new CompoundParameter("Glow", 100, 1, 200)
+                    .setDescription("Stellar corona");
+
+    public final BooleanParameter rotate =
+            new BooleanParameter("Spin", false)
+                    .setDescription("Rotation on/off");
+
+    public final CompoundParameter energy =
+            new CompoundParameter("Energy", .15, 0, 1)
+                    .setDescription("Oh boy...");
     protected final CompoundParameter beatScale = (CompoundParameter)
             new CompoundParameter("Speed", 60, 120, 1)
                     .setExponent(1)
                     .setUnits(LXParameter.Units.INTEGER)
-                    .setDescription("Overall movement speed");
-
+                    .setDescription("Speed relative to beat");
 
     public final LinkedColorParameter color =
             registerColor("Color", "color", ColorType.PANEL,
                     "Panel Color");
 
-
     public FollowThatStar(LX lx) {
         super(lx);
-        addParameter("beatScale", this.beatScale);
+        addParameter("starCount",starCount);
+        addParameter("starSize",starSize);
+        addParameter("glow",glow);
+        addParameter("rotate",rotate);
         addParameter("energy", energy);
+        addParameter("beatScale",beatScale);
 
-        timebase = 0;
-        xOffsets = new double[segments];
-        yOffsets = new double[segments];
+        // create new effect with alpha on and no automatic
+        // parameter uniforms
+
+        ShaderOptions options = new ShaderOptions();
+        options.useAlpha(true);
+        options.useLXParameterUniforms(false);
+
+        effect = new NativeShaderPatternEffect("followthatstar.fs",
+                PatternTarget.allPointsAsCanvas(this), options);
+
+        vTime = new VariableSpeedTimer();
     }
 
-    // Minkowski distance at fractional exponents makes the nice 4-pointed star!
-    public float minkowskiDistance(double x1, double y1, double p) {
-        return (float) (Math.pow(Math.pow(Math.abs(x1), p) + Math.pow(Math.abs(y1), p), 1.0 / p));
-    }
-
+    @Override
     public void runTEAudioPattern(double deltaMs) {
-        float saturation,brightness,alpha;
 
-        // whole system is constantly moving over time.
-        timebase = ((double) System.currentTimeMillis()) / 1000.0;
+        vTime.tick();
 
-        // pick up the current set color
+        // Example of sending a vec3 to a shader.
+        // Get the current color and convert to
+        // normalized hsb in range 0..1 for openGL
         int baseColor = this.color.calcColor();
-        float baseHue = LXColor.h(baseColor);
-        float baseSat = LXColor.s(baseColor) / 100f;
-        float baseBri = LXColor.b(baseColor) / 100f;
-        alpha = 100f;
 
-        // Sound reactivity, amount controlled by energy control setting.
-        double e = energy.getValue();
-        double beat = lx.engine.tempo.bpm() / beatScale.getValue();
-        t1 = timebase * beat;
+        float hn = LXColor.h(baseColor) / 360f;
+        float sn = LXColor.s(baseColor) / 100f;
+        float bn = LXColor.b(baseColor)/ 100f;
 
-        double phase = lx.engine.tempo.basis() * e;
-        double bass =  avgBass.getValue() * e;
+        shader.setUniform("color", hn,sn,bn);
+        shader.setUniform("stars", (float) Math.floor(starCount.getValue()));
+        shader.setUniform("starSize",starSize.getValuef());
+        shader.setUniform("glow",glow.getValuef());
+        shader.setUniform("rotate",rotate.getValuef());
 
-        double yWiggle = 0.25 * bass;
-        double sparkle = trailSize + 0.5 * bass;
+        // stars move over time, however fast time is running
+        shader.setUniform("vTime",vTime.getTime());
 
-        // precalculate distance offsets for each segment.  Bias Y movement a little so its stays a
-        // mostly on the panels and off the top edges.
-        for (int i = 0; i < segments; i++) {
-            double t = t1 - (segSpacing * (i + 1));
-            xOffsets[i] = 0.92 * Math.sin(t) + 0.05 * Math.cos(t * 6);
-            yOffsets[i] = -0.25 + (0.65 * Math.sin(t * 0.85) + yWiggle * Math.sin(t * 2));
+        // set time speed for next frame
+        float timeScale = (float) lx.engine.tempo.bpm()/beatScale.getValuef();
+        if (timeScale != lastTimeScale) {
+            vTime.setScale(timeScale);
+            lastTimeScale = timeScale;
         }
 
-        // per pixel calculations
-        for (LXPoint point : model.points) {
+        // Sound reactivity - various brightness features are related to energy
+        float e = energy.getValuef();
+        shader.setUniform("energy",e*e);
 
-            // translate and rescale normalized coords from -1 to 1
-            double x = 2 * (point.zn - 0.5);  // z axis on vehicle
-            double y = 2 * (point.yn - 0.5);
-
-            brightness = 0;
-
-            // Add the light contribution of each star to the current pixel value
-            for (int i = 0; i < segments; i++) {
-               double scale = (double) i + 1;
-               brightness += sparkle / minkowskiDistance(x - xOffsets[i],
-                                                                   y - yOffsets[i],
-                                                                   0.375) / scale;
-            }
-
-            saturation = baseSat * (float) TEMath.clamp(100f * (phase+(2.25f-brightness)),0,100);
-            brightness = baseBri * (float) TEMath.clamp(brightness * brightness * 100f,0,100);
-            colors[point.index] = LXColor.hsba(
-                    baseHue,
-                    saturation,
-                    brightness,
-                    brightness
-            );
-        }
+        // run the shader
+        effect.run(deltaMs);
     }
+
+    @Override
+    // THIS IS REQUIRED if you're not using ConstructedPattern!
+    // Initialize the NativeShaderPatternEffect and retrieve the native shader object
+    // from it when the pattern becomes active
+    public void onActive() {
+        effect.onActive();
+        shader = effect.getNativeShader();
+    }
+
 }
