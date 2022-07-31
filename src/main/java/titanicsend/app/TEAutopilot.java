@@ -23,8 +23,8 @@ public class TEAutopilot implements LXLoopTask {
 
     // number of bars after a chorus to continue leaving
     // FX channels visible
-    private final double TRIGGERS_AT_CHORUS_LENGTH_BARS = 0.75;
-    private final double STROBES_AT_CHORUS_LENGTH_BARS = 1.0;
+    private final double TRIGGERS_AT_CHORUS_LENGTH_BARS = 1.0;
+    private final double STROBES_AT_CHORUS_LENGTH_BARS = 1.25;
 
 
     // various fader levels of importance
@@ -41,7 +41,7 @@ public class TEAutopilot implements LXLoopTask {
     private static float PROB_CLIPS_ON_SAME_PHRASE = 1f;
 
     // if OSC messages are older than this, throw them out
-    private static long OSC_MSG_MAX_AGE_MS = 5 * 1000;
+    private static long OSC_MSG_MAX_AGE_MS = 2 * 1000;
 
     private LX lx;
 
@@ -150,9 +150,8 @@ public class TEAutopilot implements LXLoopTask {
             if (!isEnabled()) return;
 
             // check our patterns are indexed
-            // this requires that LX's mixer / channels are setup, so
-            // we do this here, as opposed to in the constructor, which is called
-            // in TEApp before LX is really finished
+            // allows for switches in project files since we
+            // need to do this more than once (so can't use TEApp)
             if (!this.library.isReady()) {
                 this.library.indexPatterns();
             }
@@ -173,9 +172,6 @@ public class TEAutopilot implements LXLoopTask {
                     // if these messages are older than this, ignore
                     continue;
                 }
-                //TODO(will) test for & ignore for really old OSC messages. With multiple decks it's
-                // possible to have a huge buildup of OSC messages from other deck that we don't
-                // need/want to process
 
                 // grab message & update with the most recent OscMessage received at
                 String address = oscTE.message.getAddressPattern().toString();
@@ -222,54 +218,63 @@ public class TEAutopilot implements LXLoopTask {
                 TEMixerUtils.setFaderTo(lx, nextChannelName, nextChannelFaderVal);
             }
 
-            // update fader value for OLD NEXT channel
-            if (oldNextFadeOutMode && currentPhraseLengthBars < MISPREDICTED_FADE_OUT_BARS) {
-                //TE.log("FADE OLD NEXT: Fading out %s", oldNextChannelName);
-                double newVal = TEMath.ease(
-                        TEMath.EasingFunction.LINEAR_RAMP_DOWN,
-                        currentPhraseLengthBars, 0.0, MISPREDICTED_FADE_OUT_BARS,
-                        LEVEL_OFF, LEVEL_MISPREDICTED_FADE_OUT);
-                TEMixerUtils.setFaderTo(lx, oldNextChannelName, newVal);
-            }
+            // fade out channels, if needed
+            updateFadeOutChannels(currentPhraseLengthBars);
 
-            // update fader for prev channel
-            if (prevFadeOutMode && currentPhraseLengthBars < PREV_FADE_OUT_BARS) {
-                //TE.log("FADE PREV: Fading out %s", prevChannelName);
-                double newVal = TEMath.ease(
-                        TEMath.EasingFunction.LINEAR_RAMP_DOWN,
-                        currentPhraseLengthBars, 0.0, PREV_FADE_OUT_BARS,
-                        LEVEL_OFF, LEVEL_PREV_FADE_OUT);
-                TEMixerUtils.setFaderTo(lx, prevChannelName, newVal);
-
-            } else if (currentPhraseLengthBars >= PREV_FADE_OUT_BARS) {
-                TEMixerUtils.setFaderTo(lx, prevChannelName, LEVEL_OFF);
-            }
-
-            // update FX channels
-            if (strobesChannel.fader.getValue() > 0.0 && currentPhraseLengthBars < STROBES_AT_CHORUS_LENGTH_BARS) {
-                double newVal = TEMath.ease(
-                        TEMath.EasingFunction.LINEAR_RAMP_DOWN,
-                        currentPhraseLengthBars, 0.0, STROBES_AT_CHORUS_LENGTH_BARS,
-                        LEVEL_OFF, LEVEL_FULL);
-                TEMixerUtils.setFaderTo(lx, TEChannelName.STROBES, newVal);
-
-            } else if (currentPhraseLengthBars >= PREV_FADE_OUT_BARS) {
-                TEMixerUtils.setFaderTo(lx, TEChannelName.STROBES, LEVEL_OFF);
-            }
-
-            if (triggerChannel.fader.getValue() > 0.0 && currentPhraseLengthBars < TRIGGERS_AT_CHORUS_LENGTH_BARS) {
-                double newVal = TEMath.ease(
-                        TEMath.EasingFunction.LINEAR_RAMP_DOWN,
-                        currentPhraseLengthBars, 0.0, TRIGGERS_AT_CHORUS_LENGTH_BARS,
-                        LEVEL_OFF, LEVEL_FULL);
-                TEMixerUtils.setFaderTo(lx, TEChannelName.TRIGGERS, newVal);
-
-            } else if (currentPhraseLengthBars >= TRIGGERS_AT_CHORUS_LENGTH_BARS) {
-                TEMixerUtils.setFaderTo(lx, TEChannelName.TRIGGERS, LEVEL_OFF);
-            }
+            // update FX channels, if needed
+            updateFXChannels(currentPhraseLengthBars);
 
         } catch (IndexOutOfBoundsException e) {
             // no phrase events detected yet
+        }
+    }
+
+    private void updateFadeOutChannels(double curPhraseLenBars) {
+        // update fader value for OLD NEXT channel
+        if (oldNextFadeOutMode && curPhraseLenBars < MISPREDICTED_FADE_OUT_BARS) {
+            //TE.log("FADE OLD NEXT: Fading out %s", oldNextChannelName);
+            double newVal = TEMath.ease(
+                    TEMath.EasingFunction.LINEAR_RAMP_DOWN,
+                    curPhraseLenBars, 0.0, MISPREDICTED_FADE_OUT_BARS,
+                    LEVEL_OFF, LEVEL_MISPREDICTED_FADE_OUT);
+            TEMixerUtils.setFaderTo(lx, oldNextChannelName, newVal);
+        }
+
+        // update fader for prev channel
+        if (prevFadeOutMode && curPhraseLenBars < PREV_FADE_OUT_BARS) {
+            //TE.log("FADE PREV: Fading out %s", prevChannelName);
+            double newVal = TEMath.ease(
+                    TEMath.EasingFunction.LINEAR_RAMP_DOWN,
+                    curPhraseLenBars, 0.0, PREV_FADE_OUT_BARS,
+                    LEVEL_OFF, LEVEL_PREV_FADE_OUT);
+            TEMixerUtils.setFaderTo(lx, prevChannelName, newVal);
+
+        } else if (curPhraseLenBars >= PREV_FADE_OUT_BARS) {
+            TEMixerUtils.setFaderTo(lx, prevChannelName, LEVEL_OFF);
+        }
+    }
+
+    private void updateFXChannels(double curPhraseLenBars) {
+        if (strobesChannel.fader.getValue() > 0.0 && curPhraseLenBars < STROBES_AT_CHORUS_LENGTH_BARS) {
+            double newVal = TEMath.ease(
+                    TEMath.EasingFunction.LINEAR_RAMP_DOWN,
+                    curPhraseLenBars, 0.0, STROBES_AT_CHORUS_LENGTH_BARS,
+                    LEVEL_OFF, LEVEL_FULL);
+            TEMixerUtils.setFaderTo(lx, TEChannelName.STROBES, newVal);
+
+        } else if (curPhraseLenBars >= PREV_FADE_OUT_BARS) {
+            TEMixerUtils.setFaderTo(lx, TEChannelName.STROBES, LEVEL_OFF);
+        }
+
+        if (triggerChannel.fader.getValue() > 0.0 && curPhraseLenBars < TRIGGERS_AT_CHORUS_LENGTH_BARS) {
+            double newVal = TEMath.ease(
+                    TEMath.EasingFunction.LINEAR_RAMP_DOWN,
+                    curPhraseLenBars, 0.0, TRIGGERS_AT_CHORUS_LENGTH_BARS,
+                    LEVEL_OFF, LEVEL_FULL);
+            TEMixerUtils.setFaderTo(lx, TEChannelName.TRIGGERS, newVal);
+
+        } else if (curPhraseLenBars >= TRIGGERS_AT_CHORUS_LENGTH_BARS) {
+            TEMixerUtils.setFaderTo(lx, TEChannelName.TRIGGERS, LEVEL_OFF);
         }
     }
 
@@ -363,14 +368,29 @@ public class TEAutopilot implements LXLoopTask {
                 }
 
                 // print the current active pattern, along with what we're going to change to
-                //TE.log("active pattern in current channel: %s, going to change to=%s", curChannel.getActivePattern(), newCurPattern);
+                TE.log("active pattern in current channel: %s, going to change to=%s", curChannel.getActivePattern(), newCurPattern);
                 startPattern(curChannel, newCurPattern);
             }
 
-            // pick a pattern we'll start fading into on "nextChannel" during the new few bars
-            LXPattern newNextPattern = this.library.pickRandomCompatibleNextPattern(newCurPattern, curPhrase, nextPhrase);
-            startPattern(nextChannel, newNextPattern);
-            //TE.log("Selected new next pattern: %s, for channel %s", newNextPattern, nextChannelName);
+            // imagine: UP --> DOWN --> ? (but really any misprediction)
+            // our next predicted would be UP, thus prevPhrase == nextPhrase, and so we'd be fading
+            // out of UP while also trying to fade in AND switching the pattern, giving us the worst of all worlds:
+            // we'd pick a new pattern (at full fader!) and not fade out of old one, and then likely
+            // enter into a build where we flopped between at least two UPs. very bad look. this IF clause
+            // prevents this!
+            //
+            // This could equivalently go in the:
+            //
+            //    if (predictedCorrectly) { ... }
+            //
+            // block, but I think it's clearer what's going on why here, and generalizes better if we decide to
+            // add more phrase types later!
+            if (prevPhrase != nextPhrase) {
+                // pick a pattern we'll start fading into on "nextChannel" during the new few bars
+                LXPattern newNextPattern = this.library.pickRandomCompatibleNextPattern(newCurPattern, curPhrase, nextPhrase);
+                startPattern(nextChannel, newNextPattern);
+                TE.log("Selected new next pattern: %s, for channel %s", newNextPattern, nextChannelName);
+            }
         }
 
         TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
