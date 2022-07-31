@@ -293,9 +293,6 @@ public class TEApp extends PApplet implements LXPlugin  {
     // At this point, the LX Studio application UI has been built. You may now add
     // additional views and components to the Ui heirarchy.
 
-    // precompile binaries for any new or changed shaders
-    ShaderPrecompiler.rebuildCache();
-
     TEVirtualOverlays visual = new TEVirtualOverlays(this.model);
     lx.ui.preview.addComponent(visual);
     new TEUIControls(ui, visual, ui.leftPane.global.getContentWidth()).addToContainer(ui.leftPane.global);
@@ -306,6 +303,9 @@ public class TEApp extends PApplet implements LXPlugin  {
 
     // add autopilot settings UI section
     new TEUserInterface.AutopilotUISection(ui, autopilotComponent).addToContainer(ui.leftPane.global);
+
+    // precompile binaries for any new or changed shaders
+    ShaderPrecompiler.rebuildCache();
   }
 
   @Override

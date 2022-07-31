@@ -77,7 +77,7 @@ public class ShaderPrecompiler {
                         String shaderCode = FRAGMENT_SHADER_TEMPLATE.replace(SHADER_BODY_PLACEHOLDER, shaderBody);
 
                         try {
-                            //TE.log("Building shader %s",file.getPath());
+                            //("Building shader %s",file.getPath());
 
                             int vertexShaderId = ShaderUtils.createShader(gl4, programId,
                                     VERTEX_SHADER_TEMPLATE, GL4.GL_VERTEX_SHADER);
@@ -105,6 +105,6 @@ public class ShaderPrecompiler {
         gl4.glDeleteProgram(programId);
 
         TE.log("%d shaders processed in %d ms.",totalFiles,System.currentTimeMillis() - timer);
-        TE.log("%d cache file%s updated.",compiledFiles,(compiledFiles == 1) ? "" : "s");
+        //TE.log("%d cache file%s updated.",compiledFiles,(compiledFiles == 1) ? "" : "s");
     }
 }

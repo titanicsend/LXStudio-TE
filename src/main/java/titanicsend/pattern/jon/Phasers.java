@@ -15,44 +15,9 @@ import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 
 @LXCategory("Native Shaders Panels")
 public class Phasers extends TEAudioPattern {
-
-    // variable speed fake "iTime" timer class
-    // allows smooth speed changes
-    class VariableTimer {
-        int previous = 0;
-        int current = 0;
-        float time = 0.0f;
-        float scale = 1.0f;
-
-        VariableTimer() {
-            scale = 1.0f;
-            reset();
-        }
-
-        void reset() {
-            previous = current = (int) System.currentTimeMillis();
-            time = 0.0f;
-        }
-
-        void setScale(float s) {
-            scale = s;
-        }
-
-        void tick() {
-            float delta = (float) previous - current;
-            time += scale * (delta / 1000.0);
-            previous = current;
-            current = (int) System.currentTimeMillis();
-        }
-
-        float getTime() {
-            return time;
-        }
-    }
-
     NativeShaderPatternEffect effect;
     NativeShader shader;
-    VariableTimer vTime;
+    VariableSpeedTimer vTime;
 
     // Controls
     // In this pattern the "energy" is how quickly the scenes can progress,
@@ -136,7 +101,7 @@ public class Phasers extends TEAudioPattern {
         effect = new NativeShaderPatternEffect("phasers.fs",
                 PatternTarget.allPanelsAsCanvas(this), options);
 
-        vTime = new VariableTimer();
+        vTime = new VariableSpeedTimer();
     }
 
     @Override
