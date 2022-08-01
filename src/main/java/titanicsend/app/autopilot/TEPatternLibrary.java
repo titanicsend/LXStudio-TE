@@ -336,6 +336,16 @@ public class TEPatternLibrary {
         return matchingPatterns.get(randomIndex);
     }
 
+    public TEPatternRecord pattern2record(LXPattern pattern, TEPhrase phrase) {
+        PhrasePatternCompositeKey key = new PhrasePatternCompositeKey(pattern.getClass(), phrase);
+        TEPatternRecord curPatternRecord = this.phrasePattern2rec.get(key);
+        if (curPatternRecord == null) {
+            TE.err("Cannot find record for pattern=%s, phrase=%s", pattern, phrase);
+            return null;
+        }
+        return curPatternRecord;
+    }
+
     /**
      * Given the currently playing pattern (on a channel determined by the current phrase
      * type) as well as the next phrase, pick a compatible next pattern to start fading into
@@ -353,20 +363,24 @@ public class TEPatternLibrary {
     public LXPattern pickRandomCompatibleNextPattern(LXPattern curPattern, TEPhrase curPhrase, TEPhrase nextPhrase) throws Exception {
         // get coverage type and color from current pattern
         //TE.log("... looking up pattern record for: pattern=%s, phrase=%s", curPattern, curPhrase);
-        PhrasePatternCompositeKey key = new PhrasePatternCompositeKey(curPattern.getClass(), curPhrase);
-        TEPatternRecord curPatternRecord = this.phrasePattern2rec.get(key);
+//        PhrasePatternCompositeKey key = new PhrasePatternCompositeKey(curPattern.getClass(), curPhrase);
+//        TEPatternRecord curPatternRecord = this.phrasePattern2rec.get(key);
+//        if (curPatternRecord == null) {
+////            for (Map.Entry<PhrasePatternCompositeKey, TEPatternRecord> entry : phrasePattern2rec.entrySet()) {
+////                PhrasePatternCompositeKey k = entry.getKey();
+////                TEPatternRecord r = entry.getValue();
+////                if (r.phraseType == curPhrase) {
+////                    //TE.log("-> phrase=%s, found %s => %s", curPhrase, k, r);
+////                }
+////            }
+//            String error = String.format("Could not find TEPatternRecord for pattern=%s, curPhrase=%s, nextPhrase=%s"
+//                    , curPattern, curPhrase, nextPhrase);
+//            TE.err(error);
+//            throw new Exception(error);
+//        }
+        TEPatternRecord curPatternRecord = pattern2record(curPattern, curPhrase);
         if (curPatternRecord == null) {
-//            for (Map.Entry<PhrasePatternCompositeKey, TEPatternRecord> entry : phrasePattern2rec.entrySet()) {
-//                PhrasePatternCompositeKey k = entry.getKey();
-//                TEPatternRecord r = entry.getValue();
-//                if (r.phraseType == curPhrase) {
-//                    //TE.log("-> phrase=%s, found %s => %s", curPhrase, k, r);
-//                }
-//            }
-            String error = String.format("Could not find TEPatternRecord for pattern=%s, curPhrase=%s, nextPhrase=%s"
-                    , curPattern, curPhrase, nextPhrase);
-            TE.err(error);
-            throw new Exception(error);
+            throw new Exception("pickRandomCompatibleNextPattern(): can't find any matching patterns because record is null!");
         }
 
         // filter patterns

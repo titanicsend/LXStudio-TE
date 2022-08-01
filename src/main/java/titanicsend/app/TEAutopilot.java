@@ -288,9 +288,24 @@ public class TEAutopilot implements LXLoopTask {
         nextPhrase = guessNextPhrase(newPhrase);
     }
 
-    private void startPattern(LXChannel channel, LXPattern pattern) {
+    private void startPattern(LXChannel channel, LXPattern pattern, TEPhrase phrase) {
         // disable the 100ms latency restriction LX has
         channel.transitionEnabled.setValue(false);
+
+        if (phrase != TEPhrase.UNKNOWN) {
+            // turn off all effects on channel
+            //TODO(will) turn off effects on chnanel if needed
+
+            // trigger any effects, if needed
+            TEPatternLibrary.TEPatternRecord r = this.library.pattern2record(pattern, phrase);
+            boolean isNonChorus = (phrase == TEPhrase.DOWN || phrase == TEPhrase.UP);
+            if (isNonChorus && r.colorCategoryType == TEPatternLibrary.TEPatternColorCategoryType.NONCONFORMING) {
+                //TODO(will): turn on colorizer here
+            }
+
+            // other pattern dependent effects here
+            // ...
+        }
 
         // trigger the pattern
         channel.goPattern(pattern);
@@ -369,7 +384,7 @@ public class TEAutopilot implements LXLoopTask {
 
                 // print the current active pattern, along with what we're going to change to
                 TE.log("active pattern in current channel: %s, going to change to=%s", curChannel.getActivePattern(), newCurPattern);
-                startPattern(curChannel, newCurPattern);
+                startPattern(curChannel, newCurPattern, curPhrase);
             }
 
             // imagine: UP --> DOWN --> ? (but really any misprediction)
@@ -388,7 +403,7 @@ public class TEAutopilot implements LXLoopTask {
             if (prevPhrase != nextPhrase) {
                 // pick a pattern we'll start fading into on "nextChannel" during the new few bars
                 LXPattern newNextPattern = this.library.pickRandomCompatibleNextPattern(newCurPattern, curPhrase, nextPhrase);
-                startPattern(nextChannel, newNextPattern);
+                startPattern(nextChannel, newNextPattern, nextPhrase);
                 TE.log("Selected new next pattern: %s, for channel %s", newNextPattern, nextChannelName);
             }
         }
@@ -418,12 +433,12 @@ public class TEAutopilot implements LXLoopTask {
         if (prevPhrase != curPhrase) {
             // only play strobes if it's the first chorus phrase in a row
             LXPattern newStrobesPattern = TEMixerUtils.pickRandomPatternFromChannel(strobesChannel);
-            startPattern(strobesChannel, newStrobesPattern);
+            startPattern(strobesChannel, newStrobesPattern, TEPhrase.UNKNOWN);
             TEMixerUtils.setFaderTo(lx, TEChannelName.STROBES, LEVEL_FULL);
         }
 
         LXPattern newTriggersPattern = TEMixerUtils.pickRandomPatternFromChannel(triggerChannel);
-        startPattern(triggerChannel, newTriggersPattern);
+        startPattern(triggerChannel, newTriggersPattern, TEPhrase.UNKNOWN);
 
         // turn on strobes and triggers here, main loop will
         // turn them off after certain number of bars
