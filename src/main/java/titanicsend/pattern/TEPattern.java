@@ -66,7 +66,7 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
    */
 
 
-  protected LinkedColorParameter registerColor(String label, String path, ColorType colorType, String description) {
+  public LinkedColorParameter registerColor(String label, String path, ColorType colorType, String description) {
     LinkedColorParameter lcp = new LinkedColorParameter(label)
             .setDescription(description);
     addParameter(path, lcp);

@@ -20,10 +20,6 @@ import java.util.Map;
 import static com.jogamp.opengl.GL.*;
 import static titanicsend.pattern.yoffa.shader_engine.GeneralUniforms.*;
 
-// ***************************************************************************
-//
-// Class to store a user-specified value for a uniform parameter
-// in the shader
 
 //Technically we don't need to implement GLEventListener unless we plan on rendering on screen, but let's leave it
 //for good practice
@@ -158,6 +154,8 @@ public class NativeShader implements GLEventListener {
         }
     }
 
+
+
     private void setUpCanvas(GL4 gl4) {
         // allocate geometry buffer handles
         int[] bufferHandlesB = new int[1];
@@ -174,6 +172,25 @@ public class NativeShader implements GLEventListener {
         gl4.glDrawElements(GL2.GL_TRIANGLES, INDICES.length, GL2.GL_UNSIGNED_INT, 0);
     }
 
+    private void setColorUniforms(int color) {
+        float x,y,z;
+
+        // this lets us harmlessly deal with patterns without
+        // the iColorXXX controls, because the unset uniforms
+        // will default to 0.
+        if (color == 0) return;
+
+        x = (float) (0xff & LXColor.red(color)) / 255f;
+        y = (float) (0xff & LXColor.green(color)) / 255f;
+        z = (float) (0xff & LXColor.blue(color)) / 255f;
+        setUniform("iColorRGB",x,y,z);
+
+        x = LXColor.h(color) / 360f;
+        y = LXColor.s(color) / 100f;
+        z = LXColor.b(color)/ 100f;
+        setUniform("iColorHSB",x,y,z);
+    }
+
     private void setUniforms(GL4 gl4) {
         float timeSeconds = ((float) (System.currentTimeMillis() - startTime)) / 1000;
 
@@ -186,6 +203,7 @@ public class NativeShader implements GLEventListener {
         for (Map.Entry<Uniforms.Audio, Float> audioEntry : audioInfo.getUniformMap().entrySet()) {
             setUniform(audioEntry.getKey().getUniformName(), audioEntry.getValue());
         }
+        setColorUniforms(audioInfo.color);
 
         // if enabled, add all LX parameters as uniforms
         if (shaderOptions.getLXParameterUniforms()) {

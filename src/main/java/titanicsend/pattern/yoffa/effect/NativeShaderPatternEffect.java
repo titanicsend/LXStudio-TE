@@ -1,13 +1,17 @@
 package titanicsend.pattern.yoffa.effect;
 
 import heronarts.lx.LX;
+import heronarts.lx.color.LXColor;
+import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
+import titanicsend.pattern.TEPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.media.ImagePainter;
 import titanicsend.pattern.yoffa.shader_engine.*;
 import titanicsend.util.Dimensions;
+import titanicsend.util.TE;
 
 import java.io.File;
 import java.util.Arrays;
@@ -23,7 +27,9 @@ public class NativeShaderPatternEffect extends PatternEffect {
 
     private ShaderPainter painter;
 
-    AudioInfo audioInfo;
+    LinkedColorParameter iColor = null;
+    TEPattern.ColorType colorType;
+     AudioInfo audioInfo;
     ShaderOptions shaderOptions;
 
     /**
@@ -34,6 +40,8 @@ public class NativeShaderPatternEffect extends PatternEffect {
      */
     public NativeShaderPatternEffect(FragmentShader fragmentShader, PatternTarget target, ShaderOptions options) {
         super(target);
+        this.colorType = target.colorType;
+
         if (fragmentShader != null) {
             this.fragmentShader = fragmentShader;
             this.offscreenShaderRenderer = new OffscreenShaderRenderer(fragmentShader,options);
@@ -41,6 +49,7 @@ public class NativeShaderPatternEffect extends PatternEffect {
             this.audioInfo = new AudioInfo(pattern.getLX().engine.audio.meter);
             this.shaderOptions = options;
             painter = new ShaderPainter();
+
         } else {
             this.parameters = null;
         }
@@ -92,8 +101,13 @@ public class NativeShaderPatternEffect extends PatternEffect {
         if (fragmentShader != null) {
             if (offscreenShaderRenderer == null) {
                 offscreenShaderRenderer = new OffscreenShaderRenderer(fragmentShader, shaderOptions);
+
             }
         }
+        // just to make sure we actually have a pointer to the parameter and
+        // that it's grabbing the right color
+        iColor = (LinkedColorParameter) pattern.getParameter("iColor");
+        if (iColor != null) iColor.index.setValue(colorType.index);
     }
 
     @Override
@@ -102,8 +116,11 @@ public class NativeShaderPatternEffect extends PatternEffect {
             return;
         }
 
+        int color = (iColor != null) ? iColor.calcColor() : 0;
+
         audioInfo.setFrameData(pattern.getTempo().basis(),
-                pattern.sinePhaseOnBeat(), pattern.getBassLevel(), pattern.getTrebleLevel());
+                pattern.sinePhaseOnBeat(), pattern.getBassLevel(),
+                pattern.getTrebleLevel(), color);
 
         int[][] snapshot = offscreenShaderRenderer.getFrame(audioInfo);
 

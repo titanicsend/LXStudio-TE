@@ -1,6 +1,7 @@
 package titanicsend.pattern.yoffa.framework;
 
 import heronarts.lx.LX;
+import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEAudioPattern;
 
@@ -17,6 +18,10 @@ public abstract class ConstructedPattern extends TEAudioPattern {
         for (LXParameter parameter : getPatternParameters()) {
             addParameter(parameter.getLabel(), parameter);
         }
+
+        registerColor("Color", "iColor", ColorType.PANEL,
+                "Color");
+
     }
 
 
