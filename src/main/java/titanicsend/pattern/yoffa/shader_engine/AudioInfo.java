@@ -6,6 +6,7 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.NormalizedParameter;
 import titanicsend.util.TEMath;
 
+import java.nio.FloatBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,7 @@ public class AudioInfo {
     float fftResampleFactor;
 
     int color;
+    FloatBuffer palette;
 
     public AudioInfo(GraphicMeter meter) {
         this.meter = meter;
@@ -24,7 +26,9 @@ public class AudioInfo {
     }
 
     
-    public void setFrameData(double basis, double sinPhaseBeat, double bassLevel, double trebleLevel, int col) {
+    public void setFrameData(double basis, double sinPhaseBeat,
+                             double bassLevel, double trebleLevel, int col,
+                             FloatBuffer pal) {
         uniformMap = Map.of(
             Uniforms.Audio.BEAT, (float) basis,
             Uniforms.Audio.SIN_PHASE_BEAT, (float) sinPhaseBeat,
@@ -32,6 +36,7 @@ public class AudioInfo {
             Uniforms.Audio.TREBLE_LEVEL, (float) trebleLevel
         );
 
+        this.palette = pal;
         this.color = col;
     }
 

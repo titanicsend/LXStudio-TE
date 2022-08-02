@@ -9,6 +9,7 @@ import com.jogamp.opengl.util.texture.TextureIO;
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.LXParameter;
+import titanicsend.util.TE;
 
 import java.io.File;
 import java.io.IOException;
@@ -172,8 +173,10 @@ public class NativeShader implements GLEventListener {
         gl4.glDrawElements(GL2.GL_TRIANGLES, INDICES.length, GL2.GL_UNSIGNED_INT, 0);
     }
 
-    private void setColorUniforms(int color) {
+    private void setColorUniforms(AudioInfo a) {
         float x,y,z;
+        int color = a.color;
+        FloatBuffer palette = a.palette;
 
         // this lets us harmlessly deal with patterns without
         // the iColorXXX controls, because the unset uniforms
@@ -185,10 +188,15 @@ public class NativeShader implements GLEventListener {
         z = (float) (0xff & LXColor.blue(color)) / 255f;
         setUniform("iColorRGB",x,y,z);
 
+        /*  Disabled until we actually need it
+
         x = LXColor.h(color) / 360f;
         y = LXColor.s(color) / 100f;
         z = LXColor.b(color)/ 100f;
         setUniform("iColorHSB",x,y,z);
+         */
+
+        setUniform("iPalette",palette,3);
     }
 
     private void setUniforms(GL4 gl4) {
@@ -203,7 +211,7 @@ public class NativeShader implements GLEventListener {
         for (Map.Entry<Uniforms.Audio, Float> audioEntry : audioInfo.getUniformMap().entrySet()) {
             setUniform(audioEntry.getKey().getUniformName(), audioEntry.getValue());
         }
-        setColorUniforms(audioInfo.color);
+        setColorUniforms(audioInfo);
 
         // if enabled, add all LX parameters as uniforms
         if (shaderOptions.getLXParameterUniforms()) {
@@ -338,11 +346,15 @@ public class NativeShader implements GLEventListener {
     }
 
     // parse uniform list and create necessary GL objects
-    // TODO  add support for generalized array types and textures.  Once that's done
+    // TODO  still need support for general purpose textures.  Once that's done
     // TODO  we can use this subsystem for *all* uniforms and eliminate some complexity.
+    // Note that array buffers passed in must be allocated to the exact appropriate size
+    // you want. No allocating a big buffer, then partly filling it. GL is picky about this.
     protected void updateUniforms(GL4 gl4) {
         int[] v;
         float[] vf;
+        IntBuffer vIArray;
+        FloatBuffer vFArray;
         if (uniforms != null && 0 < uniforms.size()) {
             for (String name : uniforms.keySet()) {
                 int loc = gl4.glGetUniformLocation(shaderProgram.getProgramId(), name);
@@ -385,6 +397,38 @@ public class NativeShader implements GLEventListener {
                     case FLOAT4:
                         vf = ((float[]) val.value);
                         gl4.glUniform4f(loc, vf[0], vf[1], vf[2], vf[3]);
+                        break;
+                    case INT1VEC:
+                        vIArray = ((IntBuffer) val.value);
+                        gl4.glUniform1iv(loc,vIArray.capacity(),vIArray);
+                        break;
+                    case INT2VEC:
+                        vIArray = ((IntBuffer) val.value);
+                        gl4.glUniform2iv(loc,vIArray.capacity() / 2,vIArray);
+                        break;
+                    case INT3VEC:
+                        vIArray = ((IntBuffer) val.value);
+                        gl4.glUniform3iv(loc,vIArray.capacity() / 3,vIArray);
+                        break;
+                    case INT4VEC:
+                        vIArray = ((IntBuffer) val.value);
+                        gl4.glUniform4iv(loc,vIArray.capacity() / 4,vIArray);
+                        break;
+                    case FLOAT1VEC:
+                        vFArray = ((FloatBuffer) val.value);
+                        gl4.glUniform1fv(loc,vFArray.capacity(),vFArray);
+                        break;
+                    case FLOAT2VEC:
+                        vFArray = ((FloatBuffer) val.value);
+                        gl4.glUniform2fv(loc,vFArray.capacity() / 2,vFArray);
+                        break;
+                    case FLOAT3VEC:
+                        vFArray = ((FloatBuffer) val.value);
+                        gl4.glUniform3fv(loc,vFArray.capacity() / 3,vFArray);
+                        break;
+                    case FLOAT4VEC:
+                        vFArray = ((FloatBuffer) val.value);
+                        gl4.glUniform4fv(loc,vFArray.capacity() / 4,vFArray);
                         break;
                     default:
                         LX.log("Unsupported uniform type");
@@ -458,5 +502,48 @@ public class NativeShader implements GLEventListener {
     public void setUniform(String name, boolean x, boolean y) {
         addUniform(name, INT2,
                 new int[]{(x) ? 1 : 0, (y) ? 1 : 0});
+    }
+
+    /**
+     * @param columns number of coordinates per element, max 4
+     */
+    public void setUniform(String name, IntBuffer vec, int columns) {
+        switch (columns) {
+            case 1:
+                addUniform(name, GeneralUniforms.INT1VEC, vec);
+                break;
+            case 2:
+                addUniform(name, GeneralUniforms.INT2VEC, vec);
+                break;
+            case 3:
+                addUniform(name, GeneralUniforms.INT3VEC, vec);
+                break;
+            case 4:
+                addUniform(name, GeneralUniforms.INT4VEC, vec);
+                break;
+            default:
+                TE.log("SetUniform(%s): %d coords specified, maximum 4 allowed", name, columns);
+                break;
+        }
+    }
+
+    public void setUniform(String name, FloatBuffer vec, int columns) {
+        switch (columns) {
+            case 1:
+                addUniform(name, GeneralUniforms.FLOAT1VEC, vec);
+                break;
+            case 2:
+                addUniform(name, GeneralUniforms.FLOAT2VEC, vec);
+                break;
+            case 3:
+                addUniform(name, GeneralUniforms.FLOAT3VEC, vec);
+                break;
+            case 4:
+                addUniform(name, GeneralUniforms.FLOAT4VEC, vec);
+                break;
+            default:
+                TE.log("SetUniform(%s): %d coords specified, maximum 4 allowed", name, columns);
+                break;
+        }
     }
 }
