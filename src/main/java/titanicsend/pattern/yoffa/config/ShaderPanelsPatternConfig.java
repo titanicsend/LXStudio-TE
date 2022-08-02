@@ -222,7 +222,7 @@ public class ShaderPanelsPatternConfig {
         }
     }
 
-    @LXCategory("Native Shaders Panels")
+    @LXCategory("Test")
     public static class AudioTest2 extends ConstructedPattern {
         public AudioTest2(LX lx) {
             super(lx);
@@ -230,6 +230,18 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("audio_test2.fs",
+                    PatternTarget.allPanelsAsCanvas(this)));
+        }
+    }
+
+    @LXCategory("Test")
+    public static class ShaderPaletteTest extends ConstructedPattern {
+        public ShaderPaletteTest(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> createEffects() {
+            return List.of(new NativeShaderPatternEffect("palette_test.fs",
                     PatternTarget.allPanelsAsCanvas(this)));
         }
     }

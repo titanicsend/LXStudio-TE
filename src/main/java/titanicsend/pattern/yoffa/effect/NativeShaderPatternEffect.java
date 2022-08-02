@@ -1,5 +1,6 @@
 package titanicsend.pattern.yoffa.effect;
 
+import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
@@ -14,6 +15,9 @@ import titanicsend.util.Dimensions;
 import titanicsend.util.TE;
 
 import java.io.File;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +33,7 @@ public class NativeShaderPatternEffect extends PatternEffect {
 
     LinkedColorParameter iColor = null;
     TEPattern.ColorType colorType;
+    FloatBuffer palette;
      AudioInfo audioInfo;
     ShaderOptions shaderOptions;
 
@@ -48,6 +53,11 @@ public class NativeShaderPatternEffect extends PatternEffect {
             this.parameters = fragmentShader.getParameters();
             this.audioInfo = new AudioInfo(pattern.getLX().engine.audio.meter);
             this.shaderOptions = options;
+
+            // create an 5 x 3 array that we can pass to OpenGL so we can
+            // share the entire current palette with GLSL shaders
+            this.palette = Buffers.newDirectFloatBuffer(15);
+
             painter = new ShaderPainter();
 
         } else {
@@ -110,6 +120,26 @@ public class NativeShaderPatternEffect extends PatternEffect {
         if (iColor != null) iColor.index.setValue(colorType.index);
     }
 
+    private void getCurrentPalette() {
+        int col;
+        float r,g,b;
+
+        palette.rewind();
+        for (int i = 0; i < 5; i++) {
+
+            int color = pattern.getLX().engine.palette.swatch.getColor(i).getColor();
+
+            r = (float) (0xff & LXColor.red(color)) / 255f;
+            palette.put(r);
+            g = (float) (0xff & LXColor.green(color)) / 255f;
+            palette.put(g);
+            b = (float) (0xff & LXColor.blue(color)) / 255f;
+            palette.put(b);
+        }
+        palette.rewind();
+    }
+
+
     @Override
     public void run(double deltaMs) {
         if (offscreenShaderRenderer == null) {
@@ -117,10 +147,11 @@ public class NativeShaderPatternEffect extends PatternEffect {
         }
 
         int color = (iColor != null) ? iColor.calcColor() : 0;
+        getCurrentPalette();
 
         audioInfo.setFrameData(pattern.getTempo().basis(),
                 pattern.sinePhaseOnBeat(), pattern.getBassLevel(),
-                pattern.getTrebleLevel(), color);
+                pattern.getTrebleLevel(), color, palette);
 
         int[][] snapshot = offscreenShaderRenderer.getFrame(audioInfo);
 
