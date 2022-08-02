@@ -26,7 +26,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
 	vec2 uv = fragCoord.xy / iResolution.xy - 0.5;
 	float aspect = iResolution.x / iResolution.y;
-	vec3 baseColor = uv.x > 0.0 ? vec3(0.0,0.3, 0.6) : vec3(0.6, 0.0, 0.3);
+	//vec3 baseColor = uv.x > 0.0 ? vec3(0.0,0.3, 0.6) : vec3(0.6, 0.0, 0.3);
+	vec3 baseColor = uv.x > 0.0 ? iColorRGB : vec3(iColorRGB[2], iColorRGB[0], iColorRGB[1]);
 
 	vec3 color = pulse*baseColor*0.5*(0.9-cos(uv.x*8.0));
 	uv.x *= aspect;
