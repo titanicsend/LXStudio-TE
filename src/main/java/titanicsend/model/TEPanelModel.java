@@ -30,9 +30,11 @@ public class TEPanelModel extends TEModel {
   public String id;
   public final TEVertex v0, v1, v2;
   public final TEEdgeModel e0, e1, e2;
-  public final LXVector centroid;
   public String panelType;
   public String flavor;
+  public final LXVector centroid;
+
+  int[] channelLengths;
   public List<LitPointData> litPointData;
   public OffsetTriangles offsetTriangles;
 
@@ -45,14 +47,15 @@ public class TEPanelModel extends TEModel {
 
   public TEPanelModel(String id, ArrayList<LXPoint> points, TEVertex v0, TEVertex v1, TEVertex v2,
                       TEEdgeModel e0, TEEdgeModel e1, TEEdgeModel e2, String panelType,
-                      String flavor, LXVector centroid) {
+                      String flavor, LXVector centroid, int[] channelLengths) {
     super("Panel", points);
 
     this.id = id;
 
+    this.panelType = panelType;
     this.flavor = flavor;
     this.centroid = centroid;
-    this.panelType = panelType;
+    this.channelLengths = channelLengths;
 
     switch (panelType) {
       case UNKNOWN:

@@ -87,6 +87,7 @@ public class FollowThatStar extends TEAudioPattern {
 
         // per pixel calculations
         for (LXPoint point : model.points) {
+            if (point == this.model.gapPoint) continue;
 
             // translate and rescale normalized coords from -1 to 1
             double x = 2 * (point.zn - 0.5);  // z axis on vehicle

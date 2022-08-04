@@ -124,7 +124,6 @@ public class PanelStriper {
       floorPoints = newStripeFloor(
               floorTransform.f0, floorTransform.f1, floorTransform.f2,
               stripingInstructions, gapFloorPoint);
-
     for (FloorPoint f : floorPoints) {
       if (f == gapFloorPoint) {
         pointList.add(gapPoint);
@@ -149,44 +148,9 @@ public class PanelStriper {
     return distanceSM + "-" + distanceME + "-" + distanceES;
   }
 
-  // Lays out all the pixels in a LIT panel, once it's been sent through FloorTransform
-  // to lay it on the X-Z plane. Starts at fStart and finds the nearest point inside the
-  // border margin, and that's where the first pixel goes, then it stripes back and forth,
-  // one row at a time, until it runs out of triangle.
   private static List<FloorPoint> oldStripeFloor(
           FloorPoint fStart, FloorPoint fMid, FloorPoint fEnd) {
-    FloorPoint currentPoint = findStartingPoint(fEnd);
-    ArrayList<FloorPoint> rv = new ArrayList<>();
-    double deltaX = DISTANCE_BETWEEN_PIXELS;
-    while (currentPoint.z < fEnd.z) {
-      if (triangleContains(fStart, fMid, fEnd, currentPoint) &&
-              distanceToEdge(fStart, fMid, fEnd, currentPoint) >= MARGIN
-      ) rv.add(currentPoint);
-
-      double nextX = currentPoint.x + deltaX;
-      double nextZ = currentPoint.z;
-
-      boolean nextRow = false;
-
-      while (nextX > fMid.x) {
-        nextX -= DISTANCE_BETWEEN_PIXELS / 2.0;
-        nextRow = true;
-      }
-
-      while (nextX < 0.0) {
-        nextX += DISTANCE_BETWEEN_PIXELS / 2.0;
-        nextRow = true;
-      }
-
-      if (nextRow) {
-        nextZ += DISTANCE_BETWEEN_PIXELS * 0.5 * Math.sqrt(3.0);
-        deltaX = -deltaX;
-      }
-
-      currentPoint = new FloorPoint(nextX, nextZ);
-    }
-
-    return rv;
+    return new ArrayList<>();
   }
 
   private static List<FloorPoint> newStripeFloor(
@@ -195,9 +159,12 @@ public class PanelStriper {
     FloorPoint currentPoint = findStartingPoint(fEnd);
     ArrayList<FloorPoint> rv = new ArrayList<>();
 
+    int attempts = 0;
     final double EPSILON = DISTANCE_BETWEEN_PIXELS / 10.0;
     while(distanceToEdge(fStart, fMid, fEnd, currentPoint) < MARGIN) {
       currentPoint = new FloorPoint(currentPoint.x + EPSILON, currentPoint.z);
+      // FIXME
+      if (++attempts == 100) LX.log(attempts + " attempts to find starting point");
     }
 
     double deltaX = DISTANCE_BETWEEN_PIXELS;
@@ -207,6 +174,11 @@ public class PanelStriper {
       int rowLength = stripingInstructions.rowLengths[i];
       int beforeNudges = stripingInstructions.beforeNudges[i];
       int gaps = stripingInstructions.gaps[i];
+
+      // Add gap pixels, which don't live in our 3-D space
+      for (int j = 0; j < gaps; j++) {
+        rv.add(gapFloorPoint);
+      }
 
       // For each positive beforeNudge, move back; for each negative, move forward.
       currentPoint = new FloorPoint(currentPoint.x - deltaX * beforeNudges, currentPoint.z);
@@ -222,11 +194,6 @@ public class PanelStriper {
       currentPoint = new FloorPoint(
               currentPoint.x - 1.5 * deltaX,
               currentPoint.z + DISTANCE_BETWEEN_PIXELS * 0.5 * Math.sqrt(3.0));
-
-      // Add gap pixels, which don't live in our 3-D space
-      for (int j = 0; j < gaps; j++) {
-        rv.add(gapFloorPoint);
-      }
 
       // Reverse direction
       deltaX = -deltaX;
