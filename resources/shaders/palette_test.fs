@@ -23,6 +23,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ){
     //fragColor = vec4(vec3(0.1)/abs(sin(iTime-uv.y-uv.x)),1.0);
 
     // switch between palette colors at 1hz!
-    vec3 col = iPalette[int(mod(iTime,5f))];
+    vec3 col = iPalette[int(mod(iTime,5.0))];
     fragColor = vec4(col*abs(sin(iTime-uv.y-uv.x)),1.0);
 }
