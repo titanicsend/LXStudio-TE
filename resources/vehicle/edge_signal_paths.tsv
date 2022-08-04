@@ -68,7 +68,7 @@ Edge ID	Signal from	Controller vertex	Priority
 31-121	119-121		High
 31-33	Controller	33	High
 31-39	33-39		High
-gs33-37	Controller	33	Very High
+33-37	Controller	33	Very High
 33-38	30-33		Medium
 33-39	33-37		High
 36-123	36-37		Medium
