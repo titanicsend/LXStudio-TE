@@ -25,10 +25,10 @@ public class TEPanelFactory {
 
     if (panelType.equals(TEPanelModel.LIT)) {
       List<LXPoint> stripedPoints = new ArrayList<>();
+      if (stripingInstructions == null) {
+        LX.log("Panel " + id + " has no striping instructions; won't render.");
+      }
       try {
-        if (stripingInstructions == null) {
-          LX.log("Panel " + id + " has no striping instructions; will have to do it the old way.");
-        }
         flavor = PanelStriper.stripe(id, v0, v1, v2, stripedPoints,
                                      stripingInstructions, gapPoint);
       } catch (Throwable t) {
@@ -43,6 +43,11 @@ public class TEPanelFactory {
       flavor = "unknown";
     }
 
-    return new TEPanelModel(id, points, v0, v1, v2, e0, e1, e2, panelType, flavor, centroid);
+    int[] channelLengths;
+    if (stripingInstructions == null) channelLengths = null;
+    else channelLengths = stripingInstructions.channelLengths;
+
+    return new TEPanelModel(id, points, v0, v1, v2, e0, e1, e2,
+            panelType, flavor, centroid, channelLengths);
   }
 }

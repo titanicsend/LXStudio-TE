@@ -8,7 +8,6 @@ import titanicsend.util.Dimensions;
 public abstract class TEModel extends LXModel {
   private final String teModelType;
   private final Dimensions dimensions;
-
   public TEModel(String teModelType, List<LXPoint> points) {
     super(points, teModelType);
     this.teModelType = teModelType;
@@ -18,7 +17,7 @@ public abstract class TEModel extends LXModel {
   public abstract String getId();
 
   public String repr() {
-    return teModelType + this.getId();
+    return teModelType + "_" + this.getId();
   }
 
   public Dimensions getDimensions() {

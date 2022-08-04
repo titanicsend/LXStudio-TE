@@ -3,15 +3,17 @@ package titanicsend.model;
 public class TEStripingInstructions {
   public String startingEdgeId;
 
-  // One per universe; can be null which means they're all 500
-  public int[] universeLengths;
+  public static final int DEFAULT_CHANNEL_LENGTH = 500;
+
+  // One per universe; can be null which means they're all DEFAULT_CHANNEL_LENGTH
+  public int[] channelLengths;
 
   // One per row
   public int[] rowLengths;
   public int[] beforeNudges; // No need for afterNudges; they were factored into rowLengths
   public int[] gaps;
 
-  public TEStripingInstructions(String startingEdgeId, int[] universeLengths,
+  public TEStripingInstructions(String startingEdgeId, int[] channelLengths,
                                 int[] rowLengths, int[] beforeNudges,
                                 int[] gaps) {
     assert startingEdgeId != null;
@@ -20,7 +22,7 @@ public class TEStripingInstructions {
     assert gaps != null;
 
     this.startingEdgeId = startingEdgeId;
-    this.universeLengths = universeLengths;
+    this.channelLengths = channelLengths;
     this.rowLengths = rowLengths;
     this.beforeNudges = beforeNudges;
     this.gaps = gaps;

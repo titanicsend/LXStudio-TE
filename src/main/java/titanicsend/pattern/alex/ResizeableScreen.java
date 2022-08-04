@@ -101,6 +101,7 @@ public class ResizeableScreen extends TEPattern implements UIDeviceControls<Resi
 
     private void sizeAndPaintScreen() {
         ArrayList<LXPoint> pointsList = new ArrayList<>(Arrays.asList(this.model.points));
+        pointsList.remove(this.model.gapPoint);
         this.screen = new SimpleScreen(
             pointsList,
             this.lowerYBoundParam.getValuei(),
