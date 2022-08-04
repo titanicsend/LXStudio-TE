@@ -35,7 +35,7 @@ import titanicsend.app.autopilot.TEPhrase;
 import titanicsend.app.autopilot.TEUserInterface;
 import titanicsend.model.TEWholeModel;
 import titanicsend.output.GPOutput;
-import titanicsend.output.TEArtNetOutput;
+import titanicsend.output.GrandShlomoStation;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.pattern.ben.BassLightning;
 import titanicsend.pattern.cesar.*;
@@ -105,7 +105,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     this.autopilotComponent = new TEUserInterface.AutopilotComponent(lx);
     lx.engine.registerComponent("autopilot", this.autopilotComponent);
 
-    TEArtNetOutput.activateAll(lx, this.model.gapPoint.index);
+    GrandShlomoStation.activateAll(lx, this.model.gapPoint.index);
 
     // Patterns/effects that currently conform to art direction standards
     lx.registry.addPattern(EdgeProgressions.class);

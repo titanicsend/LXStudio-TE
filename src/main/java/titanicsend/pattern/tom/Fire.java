@@ -55,7 +55,7 @@ public class Fire extends TEPattern {
         }
 
         for (LXPoint point : model.points) {
-            colors[point.index] = color(point);
+            if (point != this.model.gapPoint) colors[point.index] = color(point);
         }
     }
 

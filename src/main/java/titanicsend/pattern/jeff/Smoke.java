@@ -87,6 +87,7 @@ public class Smoke extends TEAudioPattern {
         scaleValue = smoothScale.getValuef();
 
         for (SmokePoint point : transformedPoints) {
+            if (point == null) continue;  // Skip gap pixels
             float yOut = point.y;
 
             // For all octaves except the last, build the iterated sine field
@@ -145,7 +146,10 @@ public class Smoke extends TEAudioPattern {
             // where y is in [-1..0], then slowly ease into 1 when y is in [0..1]
             float yClamped = LXUtils.clampf(thisPoint.y, -1, 1);
             thisPoint.topDesat = (yClamped < 0) ? 0 : (float) Math.sqrt(yClamped) * 100;
-            result[i] = thisPoint;
+            if (model.points[i] == this.model.gapPoint)
+                result[i] = null;
+            else
+                result[i] = thisPoint;
         }
         return result;
     }

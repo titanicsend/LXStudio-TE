@@ -10,7 +10,8 @@ import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
 import titanicsend.lasercontrol.MovingTarget;
-import titanicsend.output.TEArtNetOutput;
+import titanicsend.output.ChromatechSocket;
+import titanicsend.output.GrandShlomoStation;
 
 public class TEWholeModel extends LXModel {
   public String subdir;
@@ -95,7 +96,6 @@ public class TEWholeModel extends LXModel {
 
     this.lasersById = geometry.lasersById;
     this.boxes = geometry.boxes;
-
     reindexPoints();
     this.boundaryPoints = initializeBoundaries();
     LX.log(String.format("Min X boundary: %f", boundaryPoints.minXBoundaryPoint.x));
@@ -171,18 +171,6 @@ public class TEWholeModel extends LXModel {
     s.close();
   }
 
-  private static void registerController(TEModel subModel, String config, boolean fwd) {
-    String[] tokens = config.split("#");
-    assert tokens.length == 2;
-    String ipAddress = tokens[0];
-    tokens = tokens[1].split(":");
-    assert tokens.length == 2;
-    int universeNum = Integer.parseInt(tokens[0]);
-    int strandOffset = Integer.parseInt(tokens[1]);
-    // ipAddress = "127.0.0.1";
-    TEArtNetOutput.registerSubmodel(subModel, ipAddress, universeNum, strandOffset, fwd);
-  }
-
   private static void loadEdges(Geometry geometry) {
     geometry.edgesById = new HashMap<String, TEEdgeModel>();
     Scanner s = loadFilePrivate(geometry.subdir + "/edges.txt");
@@ -194,7 +182,7 @@ public class TEWholeModel extends LXModel {
 
       String id = tokens[0];
       String edgeKind = tokens[1];
-      String controller = tokens[2];
+      String socketCfg = tokens[2];
 
       boolean dark;
       boolean fwd = true;
@@ -208,7 +196,7 @@ public class TEWholeModel extends LXModel {
           break;
         case "dark":
           dark = true;
-          assert controller.equals("uncontrolled");
+          assert socketCfg.equals("uncontrolled");
           break;
         default:
           throw new Error("Weird edge config: " + line);
@@ -227,8 +215,26 @@ public class TEWholeModel extends LXModel {
       v0.addEdge(e);
       v1.addEdge(e);
 
-      if (!controller.equals("uncontrolled")) {
-        registerController(e, controller, fwd);
+      if (!socketCfg.equals("uncontrolled")) {
+        tokens = socketCfg.split("#");
+        String socketStr;
+        int strandOffset;
+        if (tokens.length == 1) {
+          socketStr = socketCfg;
+          strandOffset = 0;
+        } else if (tokens.length == 2) {
+          socketStr = tokens[0];
+          strandOffset = Integer.parseInt(tokens[1]);
+        } else {
+          throw new IllegalArgumentException("Bad edge config " + socketCfg);
+        }
+
+        tokens = socketStr.split(":");
+        assert tokens.length == 2;
+        String ip = tokens[0];
+        int channelNum = Integer.parseInt(tokens[1]);
+        ChromatechSocket socket = GrandShlomoStation.getOrMake(ip, channelNum);
+        socket.addEdge(e, strandOffset, fwd);
       }
 
       geometry.edgesById.put(id, e);
@@ -279,13 +285,12 @@ public class TEWholeModel extends LXModel {
       if (tokens.length < 3) continue;
       int rowLength = Integer.parseInt(tokens[1]);
 
-      int[] universeLengths = null;
+      int[] channelLengths = null;
       int next_index = 2;
-      if (tokens[next_index].startsWith("U")) {
-        universeLengths = Arrays.stream(tokens[next_index].substring(1).split(","))
+      if (tokens[next_index].startsWith("C")) {
+        channelLengths = Arrays.stream(tokens[next_index].substring(1).split(","))
                 .mapToInt(Integer::parseInt).toArray();
         next_index++;
-        // FIXME: Use these
       }
       boolean isLeft;
       if (tokens[next_index].equals("L")) {
@@ -329,13 +334,20 @@ public class TEWholeModel extends LXModel {
       String startingEdgeId = startEdgeIds.get(id);
       assert startingEdgeId != null;
       TEStripingInstructions tesi = new TEStripingInstructions(
-              startingEdgeId, universeLengths,
+              startingEdgeId, channelLengths,
               rowLengths.stream().mapToInt(i -> i).toArray(),
               beforeNudges.stream().mapToInt(i -> i).toArray(),
               gaps.stream().mapToInt(i -> i).toArray());
       rv.put(id, tesi);
     }
     return rv;
+  }
+
+  private static int getChannelLength(TEStripingInstructions tesi, int n) {
+    if (tesi.channelLengths == null)
+      return TEStripingInstructions.DEFAULT_CHANNEL_LENGTH;
+    else
+      return tesi.channelLengths[n];
   }
 
   private static void loadPanels(Geometry geometry) {
@@ -353,12 +365,7 @@ public class TEWholeModel extends LXModel {
       assert tesi != null;
       assert tesi.startingEdgeId != null;
       StringBuilder out = new StringBuilder("Panel " + id +
-              " has starting edge " + tesi.startingEdgeId);
-      if (tesi.universeLengths != null) {
-        out.append(" and universe lengths ");
-        for (int i : tesi.universeLengths) out.append(i).append(" ");
-      }
-      out.append(" and row lengths ");
+              " has starting edge " + tesi.startingEdgeId + " and row lengths ");
       for (int i : tesi.rowLengths) out.append(i).append(" ");
       //LX.log(out.toString());
     }
@@ -382,9 +389,12 @@ public class TEWholeModel extends LXModel {
       TEEdgeModel e2 = geometry.edgesById.get(e2Id);
 
       HashSet<TEVertex> vh = new HashSet<>();
-      vh.add(e0.v0); vh.add(e0.v1);
-      vh.add(e1.v0); vh.add(e1.v1);
-      vh.add(e2.v0); vh.add(e2.v1);
+      vh.add(e0.v0);
+      vh.add(e0.v1);
+      vh.add(e1.v0);
+      vh.add(e1.v1);
+      vh.add(e2.v0);
+      vh.add(e2.v1);
       TEVertex[] vertexes = vh.toArray(new TEVertex[0]);
       assert vertexes.length == 3;
 
@@ -393,8 +403,9 @@ public class TEWholeModel extends LXModel {
 
       if (lit) panelType = "lit";
 
+      TEStripingInstructions tesi = stripingInstructions.get(id);
       TEPanelModel p = TEPanelFactory.build(id, vertexes[0], vertexes[1], vertexes[2],
-              e0, e1, e2, panelType, stripingInstructions.get(id), geometry.gapPoint);
+              e0, e1, e2, panelType, tesi, geometry.gapPoint);
 
       if (flipStr.equals("flipped")) {
         p.offsetTriangles.flip();
@@ -417,8 +428,21 @@ public class TEWholeModel extends LXModel {
         geometry.panelsByFlavor.put(flavor, new ArrayList<>());
       geometry.panelsByFlavor.get(flavor).add(p);
 
-      // TODO: Do we need to support backwards-wired panels?
-      if (lit) registerController(p, outputConfig, true);
+      if (lit) {
+        tokens = outputConfig.split("#");
+        assert tokens.length == 2 : "Bad panelType: " + outputConfig;
+        String ip = tokens[0];
+        int channelNum = Integer.parseInt(tokens[1]);
+        int firstChannelPixel = 0;
+        for (int i = 0; firstChannelPixel < p.size; i++) {
+          int lastChannelPixel = firstChannelPixel + getChannelLength(tesi, i) - 1;
+          if (lastChannelPixel > p.size - 1) lastChannelPixel = p.size - 1;
+          ChromatechSocket socket = GrandShlomoStation.getOrMake(
+                  ip, channelNum + i);
+          socket.addPanel(p, firstChannelPixel, lastChannelPixel);
+          firstChannelPixel = lastChannelPixel + 1;
+        }
+      }
     }
     s.close();
 

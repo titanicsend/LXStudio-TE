@@ -1,9 +1,9 @@
-FA	89-91	89-126	91-126	unflipped	10.7.250.1#10:0
-FB	81-89	81-91	89-91	unflipped	10.7.250.1#30:0
-FSA	89-125	89-126	125-126	unflipped	lit
+FA	89-91	89-126	91-126	unflipped	lit
+FB	81-89	81-91	89-91	unflipped	lit
+FSA	89-125	89-126	125-126	unflipped	solid
 FSB	70-81	81-89	70-89	unflipped	lit
 FSC	70-81	70-82	81-82	unflipped	lit
-FPA	91-126	91-129	126-129	unflipped	lit
+FPA	91-126	91-129	126-129	unflipped	solid
 FPB	81-91	73-81	73-91	unflipped	lit
 FPC	81-92	73-81	73-92	unflipped	lit
 AA	112-113	112-124	113-124	unflipped	lit
@@ -32,7 +32,7 @@ SCC	98-99	98-100	99-100	unflipped	lit
 SBA	115-117	10-115	10-117	unflipped	lit
 SBB	100-115	10-100	10-115	unflipped	lit
 SBC	100-115	26-100	26-115	unflipped	lit
-SBD	99-100	26-99	26-100	unflipped	lit
+SBD	99-100	26-99	26-100	unflipped	10.7.250.2#1
 SBE	99-102	26-99	26-102	unflipped	lit
 SAA	113-115	113-117	115-117	unflipped	lit
 SAB	28-113	28-115	113-115	unflipped	lit
