@@ -9,6 +9,7 @@ import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.pattern.TEAudioPattern;
 
 import javax.script.ScriptException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public abstract class PixelblazePattern extends TEAudioPattern {
@@ -67,15 +68,14 @@ public abstract class PixelblazePattern extends TEAudioPattern {
   }
 
   private LXPoint[] getModelPoints() {
-    LXPoint[] points = new LXPoint[0];
-    if (enableEdges.getValueb() && enablePanels.getValueb()) {
-      points = model.points;
-    } else if (enableEdges.getValueb()) {
-      points = model.edgePoints.toArray(points);
-    } else if (enablePanels.getValueb()) {
-      points = model.panelPoints.toArray(points);
+    ArrayList<LXPoint> newPoints = new ArrayList<>(model.points.length);
+    if (enableEdges.getValueb()) {
+      newPoints.addAll(model.edgePoints);
     }
-    return points;
+    if (enablePanels.getValueb()) {
+      newPoints.addAll(model.panelPoints);
+    }
+    return newPoints.toArray(new LXPoint[0]);
   }
 
   /**
