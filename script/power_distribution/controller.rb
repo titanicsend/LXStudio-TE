@@ -117,6 +117,14 @@ class Controller
       edge_id, signal_from, controller_vertex_id = row
 
       if signal_from != 'Controller'
+        signal_from_edge = graph.edges.values.flatten.find { |edge| edge.id == signal_from }
+
+        # Probably won't get built this year, so find another signal source.
+        if signal_from_edge.build_priority == EDGE_BUILD_PRIORITY_LOW
+          raise "edge ID #{edge_id} gets signal from low-priority edge ID #{signal_from_edge.id} which probably won't be built this year"
+        end
+
+        # Still skip any where "Signal from" is not a controller.
         next
       end
 
