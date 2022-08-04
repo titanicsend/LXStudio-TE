@@ -92,7 +92,7 @@ class Edge
                end
   end
 
-  attr_accessor :id, :vertices, :signal_to, :signal_from, :strips
+  attr_accessor :id, :vertices, :signal_to, :signal_from, :strips, :build_priority
 end
 
 class EdgeStrip
@@ -119,6 +119,6 @@ class EdgeStrip
     edge.id
   end
 
-  attr_accessor :id, :vertices, :edge, :circuit, :build_priority
+  attr_accessor :id, :vertices, :edge, :circuit
 end
 
