@@ -206,7 +206,6 @@ function glueRender() {
   for (i = 0; i < __points.length; i++) {
     __color = 0;
     point = __points[i];
-    if (point == __pattern.model.gapPoint) continue;
     r(i, point.xn, point.yn, point.zn);
     __colors[point.index] = __color;
   }
