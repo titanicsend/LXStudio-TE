@@ -21,7 +21,7 @@ realistic, etc. graphics without bogging down the CPU.
 
 ## Uniforms - Data Supplied by the TE Framework
 LX passes audio and control data to your shader as uniforms.
-A uniform is the GLSL equivalent of a constant. It is set
+A uniform is effectively a constant. It is set
 at the time the shader is called, and can be read, but not changed.
 (The compiler will complain if you try.) The uniforms below
 are available to every shader running on the TE platform.
@@ -61,7 +61,9 @@ select the colors by using the following defined constants.
 
 For example to get the current primary panel color, use:
 
-	```vec3 color = iPalette[TE_PANEL];```
+```
+	vec3 color = iPalette[TE_PANEL];
+```
 
 -----
 ### Audio Uniforms
@@ -86,7 +88,7 @@ A 2D texture (2x512) containing audio data from the LX engine.
 
 The first row contains FFT data -- the frequency spectrum of the current playing music.
 The second contains a normalized version of the music's waveform,scaled to the range -1.0 to 1.0.
-See the **AudioTest2** pattern for an example of how this data might be used.
+See the **AudioTest2** pattern for an example of how this data can be used.
 
 #### iChannel1 (uniform sampler2D iChannel1;)
 #### iChannel2 (uniform sampler2D iChannel2;)
@@ -99,7 +101,6 @@ creation time.
 
 -----
 ### LX Control Uniforms
-{%thickness[5,5,10]}
 From your shader code, you can create a uniform that is automatically linked to an LX control.  When you change
 the control from the UI, the value of the uniform will change.  To do this, you need to include a specially 
 encoded control description.  For example:
@@ -139,7 +140,7 @@ the meantime, to see an example, see the **Phasers** pattern.*
 ## Adding a Shader to TE
 *TODO - need a complete example or two*
 
-- write your shader, and save it as an .fs file in the resources/shaders directory.
+- write your shader, and save it as an .fs file in the *resources/shaders directory*.
 - Follow the boilerplate code and add a uniquely names class for your shader to
  either **ShaderPanelsPatternConfig.java** or **ShaderEdgesPatternConfig.java** in
  the directory *src/main/java/titanicsend/pattern/yoffa/config/ShaderPanelsPatternConfig.java*
