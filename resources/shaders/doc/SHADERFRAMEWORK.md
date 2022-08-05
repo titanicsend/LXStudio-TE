@@ -186,8 +186,10 @@ Once you've got the pointer, to run your shader, just add a call to
 ```
 in your *runTEAudioPattern()* method. The *deltaMs* variable can be the one that's passed to *runTEAudioPattern()*.  
 
-To set custom uniforms, use *setUniform(name, data,...) in one of its myriad overloads. For example, to send a 3 
-element float vector to your shader, include the statement
+### Setting Custom Uniforms
+Now that you've created a *TEAudioPattern* with a shader object attached, and retrieved a pointer to the
+initialized shader as described above, you can use *setUniform(name, data,...) to send custom data
+to your shader. For example, to send a 3 element float vector to your shader, include the statement
 ```
     uniform vec3 myUniform;
 ```
@@ -205,10 +207,30 @@ Then, in your Java code, before you call ```shader.run()```, set the uniform wit
 In your shader, ```myUniform.xyz``` will have whatever values you passed in. 
 
 When doing this, YOU ARE RESPONSIBLE for seeing that the uniform names and data types match
-between Java and GLSL.  Otherwise... nothing ... will happen.  Also, according to the OpenGL
+between Java and GLSL.  Otherwise ...nothing... will happen.  Also, according to the OpenGL
 spec, each shader can have 1024 uniforms.  I'd try to keep it a little under that.
 
-*TODO - completely document setUniform() variants.*
+The currently available *setUniform()* variants are:
+
+```
+    setUniform(name,int);  // integer, 1 element
+    setUniform(name,int,int);  // integer, 2 elements (ivec2)
+    setUniform(name,int,int,int);  // integer, 3 elements (ivec3)
+    setUniform(name,int,int,int,int);  // integer, 4 element (ivec4)
+
+    setUniform(name,float);  // float, 1 element
+    setUniform(name,float,float);  // float, 2 elements (vec2)
+    setUniform(name,float,float,float);  // float, 3 elements (vec3)
+    setUniform(name,float,float,float,float);  // float, 4 element (vec4)
+
+    setUniform(name,int[],columnCount);    // int array, any number of rows, from 1 to 4 columns
+    setUniform(name,float[],columnCount);  // float array, any number of rows, from 1 to 4 columns    
+```
+
+Be very careful about parameter type when you use setUniform() in a situation where there's any 
+ambiguity at all.  For example, if you want to send a floating point vec3 of zeros to the shader, 
+specify ```setUniform("name",0f,0f,0f)```, or you might wind up sending an integer vector instead.
+When in doubt be specific.  Cast if necessary for clarity.
 
 ## Tips and Traps
 
