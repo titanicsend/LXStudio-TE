@@ -21,9 +21,9 @@ realistic, etc. graphics without bogging down the CPU.
 
 ## Uniforms - Data Supplied by the TE Framework
 LX passes audio and control data to your shader as uniforms.
-A uniform is effectively a constant. It is set
-at the time the shader is called, and can be read, but not changed.
-(The compiler will complain if you try.) The uniforms below
+A uniform is effectively a constant - it has the same value across 
+all GPU threads. It is set at frame rendering time, and can be read,
+but not changed. (The compiler will complain if you try.) The uniforms below
 are available to every shader running on the TE platform.
 
 -----
@@ -33,9 +33,9 @@ are available to every shader running on the TE platform.
 Time since your pattern started running, in seconds.millis
 
 #### iResolution (uniform vec2 iResolution;)
-The resolution of the "display" surface.  Note that this is just
-the off-screen surface that the framework draws on, not the resolution
-of the vehicle.
+The resolution of the "display" surface.  Note that these are the dimensions
+of the off-screen 2D frame buffer that OpenGL uses for drawing. It is only
+indirectly related to the number and layout of LEDs on the vehicle.
 
 #### iMouse (uniform vec4 iMouse;)
 All zeros at this time. Never changes. Included for compatibility with ShaderToy
@@ -45,9 +45,10 @@ shaders.
 ### Color Uniforms
 
 #### iColorRGB (uniform vec3 iColorRGB;)
-The RGB color currently selected in the UI color control for this pattern.  Colors are
-scaled to a floating point 0.0 to 1.0 range.  You do not have to multiply them back
-to 0-255, and they are automatically clamped to the proper range on output.
+The RGB color currently selected in the UI color control for this pattern.  Colors in
+shaders are scaled to a floating point 0.0 to 1.0 range.  You do not have to multiply them back
+to 0-255, and you don't have to worry about color components under- or overflowing while doing 
+calculations. They are automatically clamped to the proper range on output.
 
 #### iPalette (uniform vec3 iPalette[5];)
 An array of 5 RGB colors, containing TE's current palette. You can
@@ -63,16 +64,22 @@ For example to get the current primary panel color, use:
 
 ```
 	vec3 color = iPalette[TE_PANEL];
+	
+	// to get individual color channel values
+	float red = color.r;   // also color.x or color[0]
+	float green = color.g; // also color.y or color[1]
+	float blue = color.b;  // also color.z or color[2]
 ```
 
 -----
 ### Audio Uniforms
 
 #### beat (uniform float beat;) 
-Sawtooth wave that moves from 0 to 1 on the beat
+Sawtooth wave that moves from 0 to 1 with the beat. On the beat the value
+will be 0, then ramp up to 1 before the next beat triggers.
  
 #### sinPhaseBeat (uniform float sinPhaseBeat;)
-Sinusoidal wave that alternates between 0 and 1 on the beat.
+Sinusoidal wave that alternates between 0 and 1 with the beat.
 
 #### bassLevel (uniform float bassLevel;)
 Average level of low frequency content in the current audio signal.
@@ -116,13 +123,15 @@ current value of the control.
 You can create controls of two types:  float (as above) and boolean.  Here's an example of a boolean control:
 
 ```
-    if (!{%noGlow[bool]}) {
-        fragColor = pow(fragColor, vec4(.4545));
-    }
-```	
+if (!{%noGlow[bool]}) {
+fragColor = pow(fragColor, vec4(.4545));
+}
+```
+
 If you need to access your control uniform multiple times in a shader, you can assign it to a variable as in 
 the first example, or you can refer to it by its actual name, which is the name of the control followed by the suffix,
 _parameter.  So to access the two example controls, you would use:
+
 ```
     thickness_parameter, and 
     noGlow_parameter
@@ -138,20 +147,97 @@ and other fun things to your pattern.
 the meantime, to see an example, see the **Phasers** pattern.*
 
 ## Adding a Shader to TE
-*TODO - need a complete example or two*
+To run a shader on TE, we need to wrap it in a TEAudioPattern.  There
+are two ways of going about this.
 
-- write your shader, and save it as an .fs file in the *resources/shaders directory*.
-- Follow the boilerplate code and add a uniquely names class for your shader to
- either **ShaderPanelsPatternConfig.java** or **ShaderEdgesPatternConfig.java** in
- the directory *src/main/java/titanicsend/pattern/yoffa/config/ShaderPanelsPatternConfig.java*
+-----
+### The Easy Way
 
-*TODO - describe the DIY method too*
+- write your shader, and save it as an .fs file in the *resources/shaders* directory.
+- Follow the boilerplate code and add a uniquely named class for your shader to
+ either **ShaderPanelsPatternConfig.java** or ShaderEdgesPatternConfig.java in
+ the directory *src/main/java/titanicsend/pattern/yoffa/config/*
 
+
+### The Slightly Harder Way
+
+Somewhere, somehow, your pattern needs to have a *NativeShaderPatternEffect* object.  If you set your shader
+up through ShaderPanelsPatternConfig as described above, all this is taken care of automatically. 
+
+If you want to send arrays or other custom uniforms to your shader, you'll need to build your pattern as a
+normal *TEAudioPattern*, and create your own *NativeShaderPatternEffect*.
+
+To create a *NativeShaderPatternEffect*, use a constructor like this during your pattern's creation: 
+```
+     effect = new NativeShaderPatternEffect("fourstar.fs",
+        PatternTarget.allPanelsAsCanvas(this), options);
+```
+This creates a new shader effect given a shader file name, a target set of points, and an (optional) *ShaderOptions*
+structure. If you build your pattern this way, before you can render, you must get a pointer to the 
+*NativeShaderPatternEffect*'s *NativeShader* object. (To prevent interference with LX startup, the shader 
+isn't actually initialized until your pattern is activated.)
+
+You can get a valid pointer by implementing *OnActive()* in your pattern as follows:
+```
+    public void onActive() {
+        effect.onActive();
+        shader = effect.getNativeShader();
+    }
+```
+Once you've got the pointer, to run your shader, just add a call to
+```
+shader.run(deltaMs)
+```
+in your *runTEAudioPattern()* method. The *deltaMs* variable can be the one that's passed to *runTEAudioPattern()*.  
+
+To set custom uniforms, use setUniform() in one of its myriad overloads. (TODO -- document this.  For now, see the 
+in **NativeShader.java**)  For example, to send a 3 element float vector to your shader, include the statement
+```
+uniform vec3 myUniform;
+```
+At the top of your shader code, outside any function (It behaves like a global constant).  
+Then, in your Java code, before you call ```shader.run()```, set the uniform with
+
+```
+   float x1,y1,z1;
+   // code that calculates values for x1,y1,z1 
+   .
+   .
+   setUniform("myUniform",x1,y1,z1);
+
+```
+In your shader, ```myUniform.xyz``` will have whatever values you passed in. 
+
+When doing this, YOU ARE RESPONSIBLE for seeing that the uniform names and data types match
+between Java and GLSL.  Otherwise... nothing ... will happen.  Also, according to the OpenGL
+spec, each shader can have 1024 uniforms.  I'd try to keep it a little under that.
 
 ## Tips and Traps
-*TODO - many things to talk about here.*
+
+### Resolution
+ShaderToy is full of beautiful images.  Not all of them will look good on at lower resolution
+on a 55 foot, irregularly shaped vehicle. Fine lines might wind up pixelated, and hi-res detail
+might devolve to noise.  If you can, give yourself a way of adjusting line width and detail
+level, so your pattern can be tuned to look its best.
+
+### Performance
+As of this writing, TE's main computer will be a Mac Studio.  Performance should not be 
+a problem.  
+
+### Avoiding Version Chaos
+OpenGl implementations are tightly tied to hardware. Even though a standard
+exists, quality and completeness varies greatly among implementations. As with
+web browsers, it's possible to write code that works brilliantly on one
+platform, and does something really strange on others. 
+
+The best way to avoid trouble is to prototype and test on ShaderToy, which uses a nice
+least-common denominator subset that everybody seems to support. (The TE framework was
+designed with easy porting of ShaderToy shaders as a goal, so it is easy to cut and
+paste between the two, at least until you start using the LX specific audio and color uniforms.)
 
 ## Resources
-- [The Book of Shaders](https://thebookofshaders.com/) 
+- [The Book of Shaders](https://thebookofshaders.com/)
 - [Ronja's Tutorials - 2D SDF Basics](https://www.ronja-tutorials.com/post/034-2d-sdf-basics/)
 - [Inigo Quilez's Intro to Distance Functions](https://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm)
+- [ShaderToy](https://www.shadertoy.com)
+- [GraphToy](https://www.graphtoy.com)
