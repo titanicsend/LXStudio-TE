@@ -10,7 +10,7 @@ Edge ID	Signal from	Controller vertex	Priority
 102-119	Controller	102	High
 102-121	101-102		High
 109-110	Controller	109	Medium
-109-111	Controller	111	High
+109-111	Controller	109	High
 109-112	112-113		Medium
 109-113	Controller	109	High
 11-100	11-98		Very High
