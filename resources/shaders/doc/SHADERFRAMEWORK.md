@@ -143,8 +143,7 @@ TE shaders can also have custom uniforms of many different types, including
 arbitrary int and float arrays. This means you can send vehicle geometry data
 and other fun things to your pattern.
 
-*TODO - document this for real, but in
-the meantime, to see an example, see the **Phasers** pattern.*
+For an example of a pattern that uses custom uniforms, see **Phasers**.*
 
 ## Adding a Shader to TE
 To run a shader on TE, we need to wrap it in a TEAudioPattern.  There
@@ -153,7 +152,7 @@ are two ways of going about this.
 -----
 ### The Easy Way
 
-- write your shader, and save it as an .fs file in the *resources/shaders* directory.
+- Write your shader, and save it as an .fs file in the *resources/shaders* directory.
 - Follow the boilerplate code and add a uniquely named class for your shader to
  either **ShaderPanelsPatternConfig.java** or ShaderEdgesPatternConfig.java in
  the directory *src/main/java/titanicsend/pattern/yoffa/config/*
@@ -161,11 +160,8 @@ are two ways of going about this.
 
 ### The Slightly Harder Way
 
-Somewhere, somehow, your pattern needs to have a *NativeShaderPatternEffect* object.  If you set your shader
-up through ShaderPanelsPatternConfig as described above, all this is taken care of automatically. 
-
 If you want to send arrays or other custom uniforms to your shader, you'll need to build your pattern as a
-normal *TEAudioPattern*, and create your own *NativeShaderPatternEffect*.
+normal *TEAudioPattern*, and create your own *NativeShaderPatternEffect* to manage the shader.
 
 To create a *NativeShaderPatternEffect*, use a constructor like this during your pattern's creation: 
 ```
@@ -186,14 +182,14 @@ You can get a valid pointer by implementing *OnActive()* in your pattern as foll
 ```
 Once you've got the pointer, to run your shader, just add a call to
 ```
-shader.run(deltaMs)
+    shader.run(deltaMs)
 ```
 in your *runTEAudioPattern()* method. The *deltaMs* variable can be the one that's passed to *runTEAudioPattern()*.  
 
-To set custom uniforms, use setUniform() in one of its myriad overloads. (TODO -- document this.  For now, see the 
-in **NativeShader.java**)  For example, to send a 3 element float vector to your shader, include the statement
+To set custom uniforms, use *setUniform(name, data,...) in one of its myriad overloads. For example, to send a 3 
+element float vector to your shader, include the statement
 ```
-uniform vec3 myUniform;
+    uniform vec3 myUniform;
 ```
 At the top of your shader code, outside any function (It behaves like a global constant).  
 Then, in your Java code, before you call ```shader.run()```, set the uniform with
@@ -203,7 +199,7 @@ Then, in your Java code, before you call ```shader.run()```, set the uniform wit
    // code that calculates values for x1,y1,z1 
    .
    .
-   setUniform("myUniform",x1,y1,z1);
+   shader.setUniform("myUniform",x1,y1,z1);
 
 ```
 In your shader, ```myUniform.xyz``` will have whatever values you passed in. 
@@ -211,6 +207,8 @@ In your shader, ```myUniform.xyz``` will have whatever values you passed in.
 When doing this, YOU ARE RESPONSIBLE for seeing that the uniform names and data types match
 between Java and GLSL.  Otherwise... nothing ... will happen.  Also, according to the OpenGL
 spec, each shader can have 1024 uniforms.  I'd try to keep it a little under that.
+
+*TODO - completely document setUniform() variants.*
 
 ## Tips and Traps
 
@@ -224,16 +222,26 @@ level, so your pattern can be tuned to look its best.
 As of this writing, TE's main computer will be a Mac Studio.  Performance should not be 
 a problem.  
 
+### Alpha
+TE patterns are meant to be layerable and mixable.  Where possible, your pattern should
+calculate a reasonable alpha channel.  If you are porting a pattern, and it doesn't 
+do the right thing, you can derive alpha from overall brightness by including
+the following line of GLSL as the last line in *mainImage()*.
+```
+    // alpha, derived from brightness, for LX blending.
+    fragColor.a = max(fragColor.r,max(fragColor.g,fragColor.b));
+```
+
 ### Avoiding Version Chaos
 OpenGl implementations are tightly tied to hardware. Even though a standard
 exists, quality and completeness varies greatly among implementations. As with
 web browsers, it's possible to write code that works brilliantly on one
-platform, and does something really strange on others. 
+platform, and breaks, or does something really strange on others. 
 
 The best way to avoid trouble is to prototype and test on ShaderToy, which uses a nice
 least-common denominator subset that everybody seems to support. (The TE framework was
 designed with easy porting of ShaderToy shaders as a goal, so it is easy to cut and
-paste between the two, at least until you start using the LX specific audio and color uniforms.)
+paste between the two, at least until you start using the TE specific audio and color uniforms.)
 
 ## Resources
 - [The Book of Shaders](https://thebookofshaders.com/)
