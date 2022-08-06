@@ -227,6 +227,17 @@ The currently available *setUniform()* variants are:
     setUniform(name,float[],columnCount);  // float array, any number of rows, from 1 to 4 columns    
 ```
 
+
+### Important Notes about Uniforms:
+If you're passing int or float arrays to a shader, the arrays must be allocated as 
+direct buffers, with the nio.Buffers methods or the similar GLBuffer methods. The arrays
+should also be the size of the data they are to contain. For example, to allocate a 5x4 float array for
+use as a uniform:
+```
+        FloatBuffer buf = Buffers.newDirectFloatBuffer(5 * 4 * 4);
+        float [] myArray = buf.array();
+```
+
 Be very careful about parameter type when you use setUniform() in a situation where there's any 
 ambiguity at all.  For example, if you want to send a floating point vec3 of zeros to the shader, 
 specify ```setUniform("name",0f,0f,0f)```, or you might wind up sending an integer vector instead.
