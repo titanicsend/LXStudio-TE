@@ -337,6 +337,9 @@ total_channels_from_controllers = 0
 controllers.sort_by { |_, c| c.first.id.split('-')[0].to_i }.each do |_, controller_group|
   controller_group.each do |controller|
     puts "  - controller #{controller.id} has #{controller.channels_assigned} assigned channels: #{controller.edges.count} edge(s) (#{controller.edges.map(&:id).join(', ')}), #{controller.panels.count} panel(s) (#{controller.panels.map(&:id).join(', ')})"
+    if controller.channels_assigned <= 4
+      puts "  - --- Good candidate for 4-channel controller!"
+    end
     total_channels_from_controllers += controller.channels_assigned
   end
 end

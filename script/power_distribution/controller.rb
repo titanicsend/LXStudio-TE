@@ -114,9 +114,23 @@ class Controller
     rows = CSV.read(filename, col_sep: "\t")
 
     rows.drop(1).each do |row|
-      edge_id, signal_from, controller_vertex_id = row
+      edge_id, signal_from, controller_vertex_id, priority = row
 
+      # We're not building 205 edges in year 1. So let's reassign controller routes.
       if signal_from != 'Controller'
+        if priority == EDGE_BUILD_PRIORITY_LOW
+          # Deal with this next year, this edge is unimportant too.
+          next
+        end
+
+        signal_from_edge = graph.edges.values.flatten.find { |edge| edge.id == signal_from }
+
+        # Probably won't get built this year, so find another signal source.
+        if signal_from_edge.build_priority == EDGE_BUILD_PRIORITY_LOW
+          raise "edge ID #{edge_id} gets signal from low-priority edge ID #{signal_from_edge.id} which probably won't be built this year"
+        end
+
+        # Still skip any where "Signal from" is not a controller.
         next
       end
 
