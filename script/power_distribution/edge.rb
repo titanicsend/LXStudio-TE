@@ -13,6 +13,7 @@ class Edge
     @vertices = vertices
     @signal_to = nil
     @signal_from = nil
+    @build_priority = nil
     @strips = Array.new(STRIPS_PER_EDGE) do |i|
       EdgeStrip.new(id: "#{id}-#{i}", vertices: vertices, edge: self)
     end
@@ -50,8 +51,9 @@ class Edge
     end
 
     rows.drop(1).each do |row|
-      id, signal_from, controller_vertex = row
+      id, signal_from, controller_vertex, priority = row
       edge = edges[id]
+      edge.build_priority = priority
       if signal_from == 'Controller'
         edge.signal_from = vertices[controller_vertex.to_i]
       else
@@ -90,7 +92,7 @@ class Edge
                end
   end
 
-  attr_accessor :id, :vertices, :signal_to, :signal_from, :strips
+  attr_accessor :id, :vertices, :signal_to, :signal_from, :strips, :build_priority
 end
 
 class EdgeStrip
