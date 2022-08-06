@@ -104,7 +104,9 @@ iChannels 1 through 3 are 2D textures loaded from user specified files.  Some Sh
 require these, and it is possible for you to build your own textures and load them at pattern
 creation time.
 
-*TODO - need examples of using texture() and calculated coordinates to get texture data.*
+Use the GLSL [```texture(sampler2D textureName,vec2D coords)```](https://registry.khronos.org/OpenGL-Refpages/gl4/html/texture.xhtml) 
+function to retrieve data from these textures.
+
 
 -----
 ### LX Control Uniforms
@@ -156,7 +158,7 @@ are two ways of going about this.
 - Follow the boilerplate code and add a uniquely named class for your shader to
  either **ShaderPanelsPatternConfig.java** or ShaderEdgesPatternConfig.java in
  the directory *src/main/java/titanicsend/pattern/yoffa/config/*
-
+- That's it!  Run TE and look for your new pattern in the content list.
 
 ### The Slightly Harder Way
 
@@ -188,7 +190,7 @@ in your *runTEAudioPattern()* method. The *deltaMs* variable can be the one that
 
 ### Setting Custom Uniforms
 Now that you've created a *TEAudioPattern* with a shader object attached, and retrieved a pointer to the
-initialized shader as described above, you can use *setUniform(name, data,...) to send custom data
+initialized shader as described above, you can use setUniform(name, data,...) to send custom data
 to your shader. For example, to send a 3 element float vector to your shader, include the statement
 ```
     uniform vec3 myUniform;
@@ -246,14 +248,14 @@ When in doubt be specific.  Cast if necessary for clarity.
 ## Tips and Traps
 
 ### Resolution
-ShaderToy is full of beautiful images.  Not all of them will look good on at lower resolution
-on a 55 foot, irregularly shaped vehicle. Fine lines might wind up pixelated, and hi-res detail
-might devolve to noise.  If you can, give yourself a way of adjusting line width and detail
-level, so your pattern can be tuned to look its best.
+ShaderToy and other shader demo sites are full of beautiful images.  Not all of them will look
+good on at lower resolution on a 55 foot, irregularly shaped vehicle. Fine lines might wind up
+pixelated, and hi-res detail might devolve to noise.  If you can, give yourself a way of adjusting
+line width and detail level, so your pattern can be tuned to look its best.
 
 ### Performance
 As of this writing, TE's main computer will be a Mac Studio.  Performance should not be 
-a problem.  
+a problem. 
 
 ### Alpha
 TE patterns are meant to be layerable and mixable.  Where possible, your pattern should
@@ -266,12 +268,12 @@ the following line of GLSL as the last line in *mainImage()*.
 ```
 
 ### Avoiding Version Chaos
-OpenGl implementations are tightly tied to hardware. Even though a standard
+OpenGl implementations are tightly tied to hardware. Even though a [standard](https://registry.khronos.org/OpenGL-Refpages/gl4/)
 exists, quality and completeness varies greatly among implementations. As with
 web browsers, it's possible to write code that works brilliantly on one
 platform, and breaks, or does something really strange on others. 
 
-The best way to avoid trouble is to prototype and test on ShaderToy, which uses a nice
+The best way to avoid trouble is to prototype and test on [ShaderToy](https://www.shadertoy.com) , which uses a nice
 least-common denominator subset that everybody seems to support. (The TE framework was
 designed with easy porting of ShaderToy shaders as a goal, so it is easy to cut and
 paste between the two, at least until you start using the TE specific audio and color uniforms.)
@@ -282,3 +284,4 @@ paste between the two, at least until you start using the TE specific audio and 
 - [Inigo Quilez's Intro to Distance Functions](https://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm)
 - [ShaderToy](https://www.shadertoy.com)
 - [GraphToy](https://www.graphtoy.com)
+- [OpenGL Reference Pages](https://registry.khronos.org/OpenGL-Refpages/gl4/)
