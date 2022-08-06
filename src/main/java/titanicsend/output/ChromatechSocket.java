@@ -11,10 +11,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static java.lang.Math.min;
-
 public class ChromatechSocket implements Comparable<ChromatechSocket> {
-  public static final int MAX_PIXELS_PER_CHANNEL = 510;
+  public static final int MAX_PIXELS_PER_CHANNEL = 505;
   public static final int PIXELS_PER_UNIVERSE = 170;
 
   InetAddress ip;
@@ -33,7 +31,7 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
   @Override
   public boolean equals(Object obj) {
     ChromatechSocket that = (ChromatechSocket) obj;
-    return this.ip == that.ip && this.channelNum == that.channelNum;
+    return this.ip.equals(that.ip) && this.channelNum == that.channelNum;
   }
 
   @Override
@@ -97,20 +95,22 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
       int existingLastPixel = existingFirstPixel + edgeLink.edge.size;
       if (existingFirstPixel <= noobLastPixel &&
               existingLastPixel >= noobFirstPixel)
-        throw new IllegalArgumentException(edge.getId() + " overlaps " +
-                edgeLink.edge.getId());
+        throw new IllegalArgumentException(edge.repr() + ", running from " +
+                noobFirstPixel + "-" + noobLastPixel + ", overlaps " +
+                edgeLink.edge.repr() + ", running from " + existingFirstPixel +
+                "-" + existingLastPixel);
     }
     this.edgeLinks.add(new EdgeLink(edge, strandOffset, fwd));
   }
 
   private void registerUniverses(LX lx, List<Integer> multiUniverseIndexBuffer) {
     assert multiUniverseIndexBuffer.size() == MAX_PIXELS_PER_CHANNEL;
-    assert MAX_PIXELS_PER_CHANNEL == PIXELS_PER_UNIVERSE * 3;
 
     for (int segment = 0; segment <= 2; segment++) {
       int universe = this.channelNum * 10 + segment;
       int first = segment * PIXELS_PER_UNIVERSE;
       int lastPlusOne = first + PIXELS_PER_UNIVERSE;
+      if (segment == 2) lastPlusOne = MAX_PIXELS_PER_CHANNEL;
       int[] ib = multiUniverseIndexBuffer.subList(first, lastPlusOne)
               .stream().mapToInt(i -> i).toArray();
       ArtNetDatagram outputDevice = new ArtNetDatagram(lx, ib, universe);
@@ -150,7 +150,7 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
       for (EdgeLink edgeLink : this.edgeLinks) {
         // Add gaps until we reach this edge's spot in the strand
         int gap = 0;
-        while (edgeLink.strandOffset < multiUniverseIndexBuffer.size()) {
+        while (edgeLink.strandOffset > multiUniverseIndexBuffer.size()) {
           multiUniverseIndexBuffer.add(gapPointIndex);
           gap++;
         }

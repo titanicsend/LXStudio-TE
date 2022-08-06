@@ -216,7 +216,7 @@ public class TEWholeModel extends LXModel {
       v1.addEdge(e);
 
       if (!socketCfg.equals("uncontrolled")) {
-        tokens = socketCfg.split("#");
+        tokens = socketCfg.split(":");
         String socketStr;
         int strandOffset;
         if (tokens.length == 1) {
@@ -229,7 +229,7 @@ public class TEWholeModel extends LXModel {
           throw new IllegalArgumentException("Bad edge config " + socketCfg);
         }
 
-        tokens = socketStr.split(":");
+        tokens = socketStr.split("#");
         assert tokens.length == 2;
         String ip = tokens[0];
         int channelNum = Integer.parseInt(tokens[1]);
