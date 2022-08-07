@@ -5,10 +5,7 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.midi.*;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXParameterListener;
-import titanicsend.pattern.mf64.MF64FlashPattern;
-import titanicsend.pattern.mf64.MF64LoggerPattern;
-import titanicsend.pattern.mf64.MF64RingPattern;
-import titanicsend.pattern.mf64.TEMidiFighter64Subpattern;
+import titanicsend.pattern.mf64.*;
 
 @LXCategory("Combo FG")
 public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiListener {
@@ -126,8 +123,10 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   private final MF64FlashPattern flash = new MF64FlashPattern(this);
   private final MF64RingPattern ring = new MF64RingPattern(this);
 
+  private final MF64SpiralSquares ssquare = new MF64SpiralSquares(this);
+
   private final TEMidiFighter64Subpattern[] patterns = {
-    logger, logger, logger, logger, logger, logger, logger, logger,
+    ssquare, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
@@ -308,5 +307,6 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     this.logger.run(deltaMs, colors);
     this.flash.run(deltaMs, colors);
     this.ring.run(deltaMs,colors);
+    this.ssquare.run(deltaMs,colors);
   }
 }
