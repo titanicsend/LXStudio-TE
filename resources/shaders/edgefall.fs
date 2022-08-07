@@ -35,7 +35,7 @@ const float PI = 3.14159265359;
  // mix of fractal noises to simulate fog - borrowed from phasers.fs pattern,
  // adapted to do interesting things to line segments
 float clouds(vec2 uv) {
-  vec2 t = vec2(iTime * sign(uv.x),iTime * -0.15);
+  vec2 t = vec2(iTime,iTime * -0.15);
   float c1 = fbm(fbm(uv*3.0)*0.75+uv*3.0+t/3.0);
   float c2 = fbm(fbm(uv*2.0)*0.5+uv*7.0+t/3.0);
   float c3 = fbm(fbm(uv*10.0-t)*0.75+uv*5.0+t/6.0);
