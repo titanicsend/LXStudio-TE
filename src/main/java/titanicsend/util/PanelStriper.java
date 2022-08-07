@@ -121,7 +121,7 @@ public class PanelStriper {
     if (stripingInstructions == null)
       floorPoints = oldStripeFloor(floorTransform.f0, floorTransform.f1, floorTransform.f2);
     else
-      floorPoints = newStripeFloor(
+      floorPoints = newStripeFloor(id,
               floorTransform.f0, floorTransform.f1, floorTransform.f2,
               stripingInstructions, gapFloorPoint);
     for (FloorPoint f : floorPoints) {
@@ -153,7 +153,7 @@ public class PanelStriper {
     return new ArrayList<>();
   }
 
-  private static List<FloorPoint> newStripeFloor(
+  private static List<FloorPoint> newStripeFloor(String id,
           FloorPoint fStart, FloorPoint fMid, FloorPoint fEnd,
           TEStripingInstructions stripingInstructions, FloorPoint gapFloorPoint) {
     FloorPoint currentPoint = findStartingPoint(fEnd);
@@ -164,7 +164,10 @@ public class PanelStriper {
     while(distanceToEdge(fStart, fMid, fEnd, currentPoint) < MARGIN) {
       currentPoint = new FloorPoint(currentPoint.x + EPSILON, currentPoint.z);
       // FIXME
-      if (++attempts == 100) LX.log(attempts + " attempts to find starting point");
+      if (++attempts == 100) {
+        LX.log(attempts + " attempts to find starting point of " + id);
+        break;
+      }
     }
 
     double deltaX = DISTANCE_BETWEEN_PIXELS;
