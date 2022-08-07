@@ -51,6 +51,14 @@ public class PulsingTriangles extends TEPattern {
             registerColor("Color", "color", ColorType.PANEL,
                     "Color of the triangles");
 
+    protected final BoundedParameter numTriangles =
+            new BoundedParameter("Triangles", 1, 1, 3)
+                    .setDescription("Number of triangles to draw");
+
+    protected final CompoundParameter width =
+            new CompoundParameter("Width", 2, 1, 5)
+                    .setDescription("Width of the triangle border");
+
     public PulsingTriangles(LX lx) {
         super(lx);
         startModulator(this.phase);
@@ -58,6 +66,8 @@ public class PulsingTriangles extends TEPattern {
         addParameter("tempoSync", this.tempoSync);
         addParameter("tempoLock", this.tempoLock);
         addParameter("rate", this.rate);
+        addParameter("triangles", this.numTriangles);
+        addParameter("width", this.width);
         pointMap = buildPointMap(model.panelsById);
     }
 
@@ -68,8 +78,13 @@ public class PulsingTriangles extends TEPattern {
 
         for (Map.Entry<String, TEPanelModel> entry : model.panelsById.entrySet()) {
             LXPoint[][] panelPoints = pointMap.get(entry.getKey());
-            int litIndex = (int) (phase * (panelPoints.length - 1));
-            LXPoint[] litSection = panelPoints[litIndex];
+
+            ArrayList<LXPoint> litSection = new ArrayList<>();
+
+            for (int i = 0; i < numTriangles.getValue(); i++) {
+                int litIndex = (int) (((phase + ((1.0/numTriangles.getValue()) * i)) % 1.0) * (panelPoints.length - 1));
+                litSection.addAll(Arrays.asList(panelPoints[litIndex]));
+            }
 
             for (int i = 0; i < entry.getValue().points.length; i++) {
                 colors[entry.getValue().points[i].index] = LXColor.BLACK;
@@ -112,7 +127,7 @@ public class PulsingTriangles extends TEPattern {
 
             for (LXPoint point : panel.points) {
                 for (LXVector[] edge : edges) {
-                    if (distanceBetweenPointAndLineSegment(edge[0], edge[1], point) < 2 * PanelStriper.DISTANCE_BETWEEN_PIXELS) {
+                    if (distanceBetweenPointAndLineSegment(edge[0], edge[1], point) < width.getValue() * PanelStriper.DISTANCE_BETWEEN_PIXELS) {
                         points.get(0).add(point);
                     }
                 }
@@ -156,6 +171,8 @@ public class PulsingTriangles extends TEPattern {
         } else if (parameter.getPath().equals("tempoLock")) {
             BooleanParameter p = (BooleanParameter) parameter;
             this.phase.tempoLock.setValue(p.getValueb());
+        } else if (parameter.getPath().equals("width")) {
+            pointMap = buildPointMap(model.panelsById);
         }
     }
 }
