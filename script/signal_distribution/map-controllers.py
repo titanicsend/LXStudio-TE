@@ -49,6 +49,9 @@ for line in open(PANEL_PATHS_FILE).readlines():
   kind = tokens[4]
   channels = int(tokens[5])
   controller_vertex = int(tokens[6])
+  if channels < 1:
+    print (id + " has no channels")
+    continue
   if controller_vertex not in CONTROLLERS:
     CONTROLLERS[controller_vertex] = []
   if id in CHANNEL_LENGTHS:
@@ -89,8 +92,6 @@ for line in open(EDGE_PATHS_FILE).readlines():
   sig_from = tokens[1]
   pixels = int(tokens[4])
   EDGE_PIXELS[id] = pixels
-  if id == "42-43":
-    print("42-43 draws from %r" % sig_from)
   if sig_from == "Controller":
     controller_vertex = int(tokens[2])
     if controller_vertex not in CONTROLLERS:

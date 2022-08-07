@@ -8,6 +8,9 @@ import titanicsend.model.TEVertex;
 
 import java.util.*;
 
+import static java.lang.Math.atan2;
+import static java.lang.Math.tan;
+
 public class PanelStriper {
   public static final int MARGIN = 86000;
   public static final int DISTANCE_BETWEEN_PIXELS = 50000; // 50k microns ~= 2 inches
@@ -159,17 +162,6 @@ public class PanelStriper {
     FloorPoint currentPoint = findStartingPoint(fEnd);
     ArrayList<FloorPoint> rv = new ArrayList<>();
 
-    int attempts = 0;
-    final double EPSILON = DISTANCE_BETWEEN_PIXELS / 10.0;
-    while(distanceToEdge(fStart, fMid, fEnd, currentPoint) < MARGIN) {
-      currentPoint = new FloorPoint(currentPoint.x + EPSILON, currentPoint.z);
-      // FIXME
-      if (++attempts == 100) {
-        LX.log(attempts + " attempts to find starting point of " + id);
-        break;
-      }
-    }
-
     double deltaX = DISTANCE_BETWEEN_PIXELS;
 
     int numRows = stripingInstructions.rowLengths.length;
@@ -208,7 +200,7 @@ public class PanelStriper {
   private static double calcHeading(FloorPoint start, FloorPoint destination) {
     double dx = destination.x - start.x;
     double dz = destination.z - start.z;
-    return Math.atan2(dz, dx);
+    return atan2(dz, dx);
   }
 
   // https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
@@ -249,8 +241,9 @@ public class PanelStriper {
     assert (fEnd.x > 0);
     assert (fEnd.z > 0);
 
-    double slope = fEnd.z / fEnd.x;
-    double x = z / slope;
+    double theta = atan2(fEnd.z, fEnd.x) / 2.0;
+    double tanTheta = tan(theta);
+    double x = MARGIN / tanTheta;
     return new FloorPoint(x, z);
   }
 }
