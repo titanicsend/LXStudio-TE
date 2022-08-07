@@ -7,6 +7,7 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.pattern.mf64.MF64FlashPattern;
 import titanicsend.pattern.mf64.MF64LoggerPattern;
+import titanicsend.pattern.mf64.MF64RingPattern;
 import titanicsend.pattern.mf64.TEMidiFighter64Subpattern;
 
 @LXCategory("Combo FG")
@@ -123,9 +124,10 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
 
   private final MF64LoggerPattern logger = new MF64LoggerPattern(this);
   private final MF64FlashPattern flash = new MF64FlashPattern(this);
+  private final MF64RingPattern ring = new MF64RingPattern(this);
 
   private final TEMidiFighter64Subpattern[] patterns = {
-    logger, logger, logger, logger, logger, logger, logger, logger,
+    ring, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
@@ -206,7 +208,13 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
       this.mapping.page = Mapping.Page.LEFT;
       this.mapping.row = 7;
       this.mapping.col = 0;
-      this.patterns[0].buttonDown(this.mapping);
+
+      if (p.getValuef() != 0f) {
+        this.patterns[0].buttonDown(this.mapping);
+      }
+      else {
+        this.patterns[0].buttonUp(this.mapping);
+      }
     });
   }
 
@@ -299,5 +307,6 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   public void run(double deltaMs) {
     this.logger.run(deltaMs, colors);
     this.flash.run(deltaMs, colors);
+    this.ring.run(deltaMs,colors);
   }
 }
