@@ -208,6 +208,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
       this.mapping.page = Mapping.Page.LEFT;
       this.mapping.row = 7;
       this.mapping.col = 0;
+
       if (p.getValuef() != 0f) {
         this.patterns[0].buttonDown(this.mapping);
       }
@@ -306,5 +307,6 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   public void run(double deltaMs) {
     this.logger.run(deltaMs, colors);
     this.flash.run(deltaMs, colors);
+    this.ring.run(deltaMs,colors);
   }
 }
