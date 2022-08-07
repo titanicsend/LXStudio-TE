@@ -11,11 +11,8 @@ public class TEEdgeModel extends TEModel {
   public HashSet<TEPanelModel> connectedPanels;
   public List<TEEdgeModel> symmetryGroup;  // List of this edge and any other that's a reflection about the XY or YZ planes
 
-  // In microns, the same unit x,y,z coordinates use
-  public static final int DISTANCE_BETWEEN_PIXELS = 16666; // 0.76 inches/pixel; 1.31 pix/inch
-
-  public TEEdgeModel(TEVertex v0, TEVertex v1, boolean dark) {
-    super("Edge", makePoints(v0, v1, dark));
+  public TEEdgeModel(TEVertex v0, TEVertex v1, int numPixels, boolean dark) {
+    super("Edge", makePoints(v0, v1, numPixels, dark));
     this.v0 = v0;
     this.v1 = v1;
     this.connectedPanels = new HashSet<TEPanelModel>();
@@ -31,16 +28,10 @@ public class TEEdgeModel extends TEModel {
     return this.v0.id + "-" + this.v1.id;
   }
 
-  public TEEdgeModel(TEVertex v0, TEVertex v1) {
-    this(v0, v1, false);
-  }
-
-  private static List<LXPoint> makePoints(TEVertex v0, TEVertex v1, boolean dark) {
+  private static List<LXPoint> makePoints(TEVertex v0, TEVertex v1,
+                                          int numPixels, boolean dark) {
     List<LXPoint> points = new ArrayList<LXPoint>();
     if (dark) return points;
-
-    int numPixels = (int)(v0.distanceTo(v1) / DISTANCE_BETWEEN_PIXELS);
-    assert numPixels > 0 : "Edge " + v0.repr() + "-" + v1.repr() + " so short it has no pixels";
 
     float dx = v1.x - v0.x;
     float dy = v1.y - v0.y;

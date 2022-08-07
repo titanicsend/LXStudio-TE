@@ -171,7 +171,25 @@ public class TEWholeModel extends LXModel {
     s.close();
   }
 
+  private static Map<String, Integer> loadEdgePixelCounts(Geometry geometry) {
+    Scanner s = loadFilePrivate(geometry.subdir + "/edge_signal_paths.tsv");
+    Map<String, Integer> rv = new HashMap<>();
+
+    String headerLine = s.nextLine();
+    assert headerLine.endsWith("Pixels");
+
+    while (s.hasNextLine()) {
+      String line = s.nextLine();
+      String[] tokens = line.split("\\t");
+      assert tokens.length == 5;
+      rv.put(tokens[0], Integer.parseInt(tokens[4]));
+    }
+    return rv;
+  }
+
   private static void loadEdges(Geometry geometry) {
+    Map<String, Integer> edgePixelCounts = loadEdgePixelCounts(geometry);;
+
     geometry.edgesById = new HashMap<String, TEEdgeModel>();
     Scanner s = loadFilePrivate(geometry.subdir + "/edges.txt");
 
@@ -211,7 +229,7 @@ public class TEWholeModel extends LXModel {
       assert v0Id < v1Id;
       TEVertex v0 = geometry.vertexesById.get(v0Id);
       TEVertex v1 = geometry.vertexesById.get(v1Id);
-      TEEdgeModel e = new TEEdgeModel(v0, v1, dark);
+      TEEdgeModel e = new TEEdgeModel(v0, v1, edgePixelCounts.get(id), dark);
       v0.addEdge(e);
       v1.addEdge(e);
 
@@ -257,12 +275,12 @@ public class TEWholeModel extends LXModel {
     Map<String, String> rv = new HashMap<>();
 
     String headerLine = s.nextLine();
-    assert headerLine.endsWith("Signal edge");
+    assert headerLine.endsWith("Junction IDs");
 
     while (s.hasNextLine()) {
       String line = s.nextLine();
-      String[] tokens = line.split("\\s+");
-      assert tokens.length == 9;
+      String[] tokens = line.split("\\t");
+      assert tokens.length == 11;
       rv.put(tokens[0], tokens[8]);
     }
     return rv;
