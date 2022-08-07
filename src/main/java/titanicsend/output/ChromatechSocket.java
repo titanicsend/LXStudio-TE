@@ -92,7 +92,7 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
     int noobLastPixel = strandOffset + edge.size - 1;
     for (EdgeLink edgeLink : this.edgeLinks) {
       int existingFirstPixel = edgeLink.strandOffset;
-      int existingLastPixel = existingFirstPixel + edgeLink.edge.size;
+      int existingLastPixel = existingFirstPixel + edgeLink.edge.size - 1;
       if (existingFirstPixel <= noobLastPixel &&
               existingLastPixel >= noobFirstPixel)
         throw new IllegalArgumentException(edge.repr() + ", running from " +
@@ -104,7 +104,10 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
   }
 
   private void registerUniverses(LX lx, List<Integer> multiUniverseIndexBuffer) {
-    assert multiUniverseIndexBuffer.size() == MAX_PIXELS_PER_CHANNEL;
+    if (multiUniverseIndexBuffer.size() != MAX_PIXELS_PER_CHANNEL) {
+      throw new IllegalStateException("Got " + multiUniverseIndexBuffer.size() +
+              " pixels");
+    }
 
     for (int segment = 0; segment <= 2; segment++) {
       int universe = this.channelNum * 10 + segment;
@@ -157,8 +160,8 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
         if (gap > 0) logString.append(" [Gap=" + gap + "]");
 
         String rStr = edgeLink.fwd ? "" : "(r)";
-        logString.append(" @" + edgeLink.strandOffset + ":" + edgeLink.edge.repr() +
-                rStr + "=" + edgeLink.edge.points.length + "] ");
+        logString.append(" @" + edgeLink.strandOffset + ":[" + edgeLink.edge.repr() +
+                rStr + "=" + edgeLink.edge.points.length + "]");
 
         for (int ei = 0; ei < edgeLink.edge.points.length; ei++) {
           LXPoint point;
