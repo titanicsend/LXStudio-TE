@@ -4,8 +4,8 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import titanicsend.model.TEWholeModel;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
+import titanicsend.pattern.jon.ButtonColorMgr;
 import titanicsend.pattern.jon.VariableSpeedTimer;
-import titanicsend.util.TE;
 import titanicsend.util.TEMath;
 
 import java.util.ArrayList;
@@ -24,14 +24,20 @@ public class MF64SpiralSquares extends TEMidiFighter64Subpattern {
             LXColor.rgb(255, 0, 255),
             LXColor.rgb(255, 255, 255),
     };
-    private int flashColor = TRANSPARENT;
-    boolean active;
-    boolean stopRequest;
 
-    VariableSpeedTimer time;
-    float sinT, cosT;
+
+    ButtonColorMgr colorMap;
+
+    private int flashColor = TRANSPARENT;
+    private boolean active;
+    private boolean stopRequest;
+
+    private VariableSpeedTimer time;
+    private float sinT, cosT;
     private TEWholeModel model;
     private LXPoint[] pointArray;
+
+    private int refCount;
 
     public MF64SpiralSquares(TEMidiFighter64DriverPattern driver) {
         super(driver);
@@ -44,32 +50,26 @@ public class MF64SpiralSquares extends TEMidiFighter64Subpattern {
         pointArray = newPoints.toArray(new LXPoint[0]);
 
         time = new VariableSpeedTimer();
+        colorMap = new ButtonColorMgr();
         this.active = false;
         this.stopRequest = false;
-    }
 
-    /**
-     * Converts a value  between 0.0 and 1.0, representing a sawtooth
-     * waveform, to a position on a square wave between 0.0 to 1.0, using the
-     * specified duty cycle.
-     *
-     * @param n         value between 0.0 and 1.0
-     * @param dutyCycle - percentage of time the wave is "on", range 0.0 to 1.0
-     * @return
-     */
-    public static float square(float n, float dutyCycle) {
-        return (float) ((Math.abs((n % 1)) <= dutyCycle) ? 1.0 : 0.0);
+        refCount = 0;
     }
 
     @Override
     public void buttonDown(TEMidiFighter64DriverPattern.Mapping mapping) {
-        this.flashColor = flashColors[mapping.col];
+        this.stopRequest = false;
+        colorMap.addButton(mapping.col,flashColors[mapping.col]);
+        refCount++;
         this.active = true;
     }
 
     @Override
     public void buttonUp(TEMidiFighter64DriverPattern.Mapping mapping) {
-        this.stopRequest = true;
+        colorMap.removeButton(mapping.col);
+        refCount--;
+        if (refCount == 0) this.stopRequest = true;
     }
 
     /**
@@ -139,7 +139,7 @@ public class MF64SpiralSquares extends TEMidiFighter64Subpattern {
     public void run(double deltaMsec, int colors[]) {
         time.tick();
         if (this.active == true) {
-            paintAll(colors, this.flashColor);
+            paintAll(colors, colorMap.getBlendedColor());
         }
     }
 }
