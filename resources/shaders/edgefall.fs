@@ -40,7 +40,7 @@ float clouds(vec2 uv) {
   float c2 = fbm(fbm(uv*2.0)*0.5+uv*7.0+t/3.0);
   float c3 = fbm(fbm(uv*10.0-t)*0.75+uv*5.0+t/6.0);
   float r = mix(c1, c2, c3*c3);
-  return r*r;
+  return r*r*r;
 }
 
 // from fabrice neyret: makes interesting, pointy-ended lines
@@ -57,6 +57,15 @@ float glowline2(vec2 p, vec4 seg) {
     
     float bri = 1. - length(pd - ld*clamp( dot(pd, ld)/dot(ld, ld), 0.0, 1.0) );    
     return pow(bri,glow);
+}
+
+// draw antialiased, but not exactly glowing line segment
+float glowline3(vec2 p, vec4 seg) {
+    float r = glow / 10000.;
+    vec2 g = seg.zw - seg.xy;
+    vec2 h = p - seg.xy;
+    float d = length(h - g * clamp(dot(g, h) / dot(g,g), 0.0, 1.0));
+	return smoothstep(r, 0.5*r, d);
 }
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
