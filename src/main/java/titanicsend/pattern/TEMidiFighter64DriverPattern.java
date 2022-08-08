@@ -124,7 +124,8 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   private final MF64SpiralSquares ssquare = new MF64SpiralSquares(this);
   private final MF64RandomPanel randomPanel = new MF64RandomPanel(this);
 
-  private final TEMidiFighter64Subpattern[] patterns = {logger, logger, logger, logger, logger, logger, logger, logger,
+  private final TEMidiFighter64Subpattern[] patterns = {
+    logger, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
