@@ -4,11 +4,7 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.midi.*;
 import heronarts.lx.parameter.BooleanParameter;
-import heronarts.lx.parameter.LXParameterListener;
-import titanicsend.pattern.mf64.MF64FlashPattern;
-import titanicsend.pattern.mf64.MF64LoggerPattern;
-import titanicsend.pattern.mf64.MF64RingPattern;
-import titanicsend.pattern.mf64.TEMidiFighter64Subpattern;
+import titanicsend.pattern.mf64.*;
 
 @LXCategory("Combo FG")
 public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiListener {
@@ -65,9 +61,10 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   public static final int LED_YELLOW_HALF = 14;
   public static final int LED_YELLOW_DIM = 15;
   public static final int LED_PALE_GREEN_BLUE = 16;
-  public static final int LED_GREEN_HALF = 17; // And 18, 21, 22, 25, 26
+  public static final int LED_GREEN_HALF = 17; // And 18, 22, 25, 26
   public static final int LED_GREEN = 19; /// And 23, 27
   public static final int LED_PALE_BLUE_GREEN = 20; // And 24
+  public static final int LED_GREEN_DIM = 21;
   public static final int LED_AQUA = 28;
   public static final int LED_AQUA_HALF = 29; // And 30
   public static final int LED_AQUA_DIM = 31;
@@ -107,9 +104,9 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
     LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
     LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
-    LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
-    LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
+    LED_RED_DIM, LED_ORANGE_DIM, LED_YELLOW_DIM, LED_GREEN_DIM, LED_BLUE_AQUA_DIM, LED_AZURE_DIM, LED_MAGENTA_DIM, LED_GRAY_DIM,
     LED_RED, LED_ORANGE, LED_YELLOW, LED_GREEN, LED_BLUE_AQUA, LED_AZURE, LED_MAGENTA, LED_WHITE,
+    LED_RED_DIM, LED_ORANGE_DIM, LED_YELLOW_DIM, LED_GREEN_DIM, LED_BLUE_AQUA_DIM, LED_AZURE_DIM, LED_MAGENTA_DIM, LED_GRAY_DIM,
     LED_RED, LED_ORANGE, LED_YELLOW, LED_GREEN, LED_BLUE_AQUA, LED_AZURE, LED_MAGENTA, LED_WHITE,
 
     LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY,
@@ -125,14 +122,16 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   private final MF64LoggerPattern logger = new MF64LoggerPattern(this);
   private final MF64FlashPattern flash = new MF64FlashPattern(this);
   private final MF64RingPattern ring = new MF64RingPattern(this);
+  private final MF64SpiralSquares ssquare = new MF64SpiralSquares(this);
+  private final MF64RandomPanel randomPanel = new MF64RandomPanel(this);
 
   private final TEMidiFighter64Subpattern[] patterns = {
     logger, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
-    logger, logger, logger, logger, logger, logger, logger, logger,
-    logger, logger, logger, logger, logger, logger, logger, logger,
+    randomPanel, randomPanel, randomPanel, randomPanel, randomPanel, randomPanel, randomPanel, randomPanel,
+    ssquare, ssquare, ssquare, ssquare, ssquare, ssquare, ssquare, ssquare,
     ring,   ring, ring, ring, ring, ring, ring, ring,
     flash,  flash,  flash,  flash,  flash,  flash,  flash,  flash,
 
@@ -203,6 +202,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
 
   public TEMidiFighter64DriverPattern(LX lx) {
     super(lx);
+
     addParameter("fakePush", this.fakePush);
     this.fakePush.addListener((p) -> {
       this.mapping.page = Mapping.Page.LEFT;
@@ -308,5 +308,8 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     this.logger.run(deltaMs, colors);
     this.flash.run(deltaMs, colors);
     this.ring.run(deltaMs,colors);
+    this.ssquare.run(deltaMs,colors);
+    this.randomPanel.run(deltaMs,colors);
+
   }
 }
