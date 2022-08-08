@@ -4,7 +4,9 @@ import heronarts.lx.color.LXColor;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
+import titanicsend.pattern.jon.ButtonColorMgr;
 import titanicsend.pattern.jon.VariableSpeedTimer;
+import titanicsend.util.TEMath;
 
 import java.util.Random;
 
@@ -25,6 +27,8 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
     private int flashColor = TRANSPARENT;
     boolean active;
     boolean stopRequest;
+    private int refCount;
+    ButtonColorMgr colorMap;
 
     VariableSpeedTimer time;
     float eventStartTime;
@@ -45,18 +49,25 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
         prng = new Random(seed);
 
         time = new VariableSpeedTimer();
+        time.setTimeDirectionForward(true);
+        colorMap = new ButtonColorMgr();
         eventStartTime = -99f;
+        refCount = 0;
     }
     @Override
     public void buttonDown(TEMidiFighter64DriverPattern.Mapping mapping) {
-        this.flashColor = flashColors[mapping.col];
+        colorMap.addButton(mapping.col,flashColors[mapping.col]);
+        refCount++;
         this.active = true;
+        this.stopRequest = false;
         startNewEvent();
     }
 
     @Override
     public void buttonUp(TEMidiFighter64DriverPattern.Mapping mapping) {
-        this.stopRequest = true;
+        colorMap.removeButton(mapping.col);
+        refCount--;
+        if (refCount == 0) this.stopRequest = true;
     }
 
     void startNewEvent() {
@@ -70,18 +81,21 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
         // calculate time scale at current bpm
         time.setScale((float) (driver.getTempo().bpm() / 60.0));
 
+        // grab colors of all currently pressed buttons
+        int[] colorSet = colorMap.getAllColors();
+
+        // number of lit panels increases slightly with number of buttons pressed.
+        // TEMath.clamp's min and max indicate percentages of coverage.
+        float litProbability = (float) TEMath.clamp(0.4 + 0.3f * ((float) colorSet.length - 1)/7f,
+                0.4,0.7);
+
         // clear the decks if we're getting ready to stop
         if (stopRequest) {
             stopRequest = false;
             active = false;
-            color = TRANSPARENT;
         }
 
-        // negative time b/c VariableSpeedTimer has a bug which I'm
-        // stuck with for the moment because lots of patterns use it.
-        // this is still handy because it lets me pretend we're running at
-        // a constant 1 beat per second.  Makes the math simple.
-        float t = -time.getTime();
+        float t = time.getTime();
         elapsedTime = t - eventStartTime;
 
         if (elapsedTime > 1) {
@@ -90,10 +104,22 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
         }
 
         prng.setSeed(seed);
+        int colorIndex = 0;
+        int col;
         for (TEPanelModel panel : model.getAllPanels()) {
 
-            // light 25% of the panels, a different set on each beat.
-            int col = (prng.nextFloat() <= 0.4) ? color : TRANSPARENT;
+            boolean isLit = (prng.nextFloat() <= litProbability);
+
+            // if panel is lit, pick a color from our set
+            if (isLit) {
+                col = colorSet[colorIndex];
+                colorIndex = (colorIndex + 1) % colorSet.length;
+            }
+            else {
+                col = TRANSPARENT;
+            }
+
+            // expand lit area out from center over a short time
             float deltaT = Math.min(1.0f, 4f * elapsedTime);
 
             for (TEPanelModel.LitPointData p : panel.litPointData) {
@@ -116,7 +142,7 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
     public void run(double deltaMsec, int colors[]) {
         time.tick();
         if (this.active == true) {
-            paintAll(colors, this.flashColor);
+            paintAll(colors, colorMap.getCurrentColor());
         }
     }
 }
