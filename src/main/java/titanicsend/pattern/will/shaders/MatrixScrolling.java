@@ -111,7 +111,7 @@ public class MatrixScrolling extends FragmentShaderEffect {
         double R = fract(1e2 * Math.sin(p[0] * 5. + p[1]));
         //color[2] = R / s[2];
 
-        int swatchRGB = this.pattern.getSwatchColor(TEPattern.ColorType.PANEL);
+        int swatchRGB = this.pattern.getSwatchColor(TEPattern.ColorType.PRIMARY);
         float rn = (float) (0xff & LXColor.red(swatchRGB)) / 255f;
         float gn = (float) (0xff & LXColor.green(swatchRGB)) / 255f;
         float bn = (float) (0xff & LXColor.blue(swatchRGB)) / 255f;

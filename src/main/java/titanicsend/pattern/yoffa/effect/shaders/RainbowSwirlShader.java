@@ -44,7 +44,7 @@ public class RainbowSwirlShader extends FragmentShaderEffect {
 
         double[] color = multiplyArray(2, abs(addToArray(-.5, fract(addToArray(d, e)))));
         Color colorObj = new Color((float) color[0], (float) color[1], (float) color[2]);
-        int swatchColor = pattern.getSwatchColor(TEPattern.ColorType.PANEL);
+        int swatchColor = pattern.getSwatchColor(TEPattern.ColorType.PRIMARY);
         int finalColor = LXColor.blend(colorObj.getRGB(), swatchColor, LXColor.Blend.MULTIPLY);
         float[] finalFloat = new Color(finalColor).getColorComponents(null);
         return new double[] {finalFloat[0], finalFloat[1], finalFloat[2]};

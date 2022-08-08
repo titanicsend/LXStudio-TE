@@ -1,6 +1,6 @@
 {
   "version": "0.4.1",
-  "timestamp": 1659510498531,
+  "timestamp": 1659977190755,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -589,7 +589,7 @@
                   "color/index": 1,
                   "tempoDivision": 5,
                   "triggerMode": 2,
-                  "sceneSelect": 67,
+                  "sceneSelect": 0,
                   "trigger": false,
                   "downbeat": false
                 },
@@ -624,7 +624,7 @@
               "label": "Channel-2",
               "arm": false,
               "selected": true,
-              "enabled": false,
+              "enabled": true,
               "cue": false,
               "fader": 1.0,
               "crossfadeGroup": 0,
@@ -878,7 +878,7 @@
         },
         "parameters": {
           "label": "Snapshots",
-          "recallMixer": true,
+          "recallMixer": false,
           "recallModulation": true,
           "recallPattern": true,
           "recallEffect": true,
@@ -1039,9 +1039,9 @@
         "centerPoint": false,
         "camera": {
           "active": false,
-          "radius": 1.4353164801836198E7,
-          "theta": -14.158994536846876,
-          "phi": -0.003940125461667776,
+          "radius": 1.3203337119007148E7,
+          "theta": -26.659835670143366,
+          "phi": -0.30460789846256375,
           "x": 303442.78125,
           "y": 5226718.33203125,
           "z": 923606.193359375
@@ -1049,9 +1049,9 @@
         "cue": [
           {
             "active": false,
-            "radius": 1.4353164801836198E7,
-            "theta": -14.158994536846876,
-            "phi": -0.003940125461667776,
+            "radius": 1.3203337119007148E7,
+            "theta": -26.659835670143366,
+            "phi": -0.30460789846256375,
             "x": 303442.78125,
             "y": 5226718.33203125,
             "z": 923606.193359375

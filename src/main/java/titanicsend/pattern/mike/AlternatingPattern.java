@@ -11,7 +11,7 @@ import titanicsend.pattern.TEPattern;
 @LXCategory("Combo FG")
 public class AlternatingPattern extends TEPattern {
   public final LinkedColorParameter oddColor =
-          registerColor("Odd", "odd", TEPattern.ColorType.PANEL,
+          registerColor("Odd", "odd", TEPattern.ColorType.PRIMARY,
                   "Color of the odd pixels");
 
   public final LinkedColorParameter evenColor =

@@ -22,7 +22,7 @@ public class Bubbles extends TEPattern {
   private final List<TEPanelModel> newBubbleQueue;
 
   public final LinkedColorParameter color =
-          registerColor("Color", "color", ColorType.PANEL,
+          registerColor("Color", "color", ColorType.PRIMARY,
                   "Color of the bubbles");
 
   public Bubbles(LX lx) {

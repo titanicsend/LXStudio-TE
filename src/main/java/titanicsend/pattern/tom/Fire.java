@@ -28,7 +28,7 @@ public class Fire extends TEPattern {
             new CompoundParameter("Color Position", 0.5);
 
     public final LinkedColorParameter fireColor =
-            registerColor("Color", "fireColor", ColorType.PANEL,
+            registerColor("Color", "fireColor", ColorType.PRIMARY,
                     "Color of the fire");
     protected final Click rate = new Click(100);
 

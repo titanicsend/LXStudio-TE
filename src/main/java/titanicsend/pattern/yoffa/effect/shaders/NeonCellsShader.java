@@ -48,7 +48,7 @@ public class NeonCellsShader extends FragmentShaderEffect {
             d *= pat(uv, 3.0, 7.0, 0.25 * speedMultiplier, glow.getValue(), phase);
         }
 
-        float[] color = new Color(pattern.getSwatchColor(TEPattern.ColorType.PANEL)).getRGBColorComponents(null);
+        float[] color = new Color(pattern.getSwatchColor(TEPattern.ColorType.PRIMARY)).getRGBColorComponents(null);
         return multiplyArray(.5 / d, new double[]{color[0], color[1], color[2]});
     }
 

@@ -2,7 +2,6 @@ package titanicsend.pattern.cesar;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.CompoundParameter;
@@ -16,7 +15,7 @@ import static titanicsend.util.TEColor.TRANSPARENT;
 @LXCategory("Panel FG")
 public class HandTracker extends TEPattern {
     public final LinkedColorParameter color =
-            registerColor("Color", "color", ColorType.EDGE,
+            registerColor("Color", "color", ColorType.PRIMARY,
                     "Color of the pattern");
 
     public final CompoundParameter targetY =

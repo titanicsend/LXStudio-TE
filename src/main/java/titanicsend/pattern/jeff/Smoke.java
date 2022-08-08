@@ -24,7 +24,7 @@ import titanicsend.pattern.TEAudioPattern;
 @LXCategory("Combo FG")
 public class Smoke extends TEAudioPattern {
     public final LinkedColorParameter color =
-            registerColor("Color", "color", ColorType.PANEL,
+            registerColor("Color", "color", ColorType.PRIMARY,
                     "Primary color of the field");
 
     // Magic numbers for parameter ranges come from testing and are pattern-specific.

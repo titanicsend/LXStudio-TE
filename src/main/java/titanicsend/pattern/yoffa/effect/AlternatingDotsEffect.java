@@ -49,7 +49,7 @@ public class AlternatingDotsEffect extends PatternEffect {
     }
 
     public void run(double deltaMs) {
-        int baseColor = pattern.getSwatchColor(TEPattern.ColorType.PANEL);
+        int baseColor = pattern.getSwatchColor(TEPattern.ColorType.PRIMARY);
         double basis = getTempo().basis();
         int beatCount = getTempo().beatCount();
 
