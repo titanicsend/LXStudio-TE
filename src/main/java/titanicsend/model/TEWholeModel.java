@@ -281,7 +281,12 @@ public class TEWholeModel extends LXModel {
       String line = s.nextLine();
       String[] tokens = line.split("\\t");
       assert tokens.length == 11;
-      rv.put(tokens[0], tokens[8]);
+      String panelId = tokens[0];
+      String startingEdgeId = tokens[8];
+      if (startingEdgeId == "") {
+        throw new IllegalStateException("Panel " + panelId + " has empty starting edge ID");
+      }
+      rv.put(panelId, startingEdgeId);
     }
     return rv;
   }

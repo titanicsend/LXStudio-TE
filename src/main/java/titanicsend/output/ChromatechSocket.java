@@ -23,6 +23,10 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
   private int firstPanelPixel;
   private int lastPanelPixel;
 
+  public String repr() {
+    return this.ip + "#" + this.channelNum;
+  }
+
   @Override
   public int hashCode() {
     return ip.hashCode() * 100 + channelNum;
@@ -72,10 +76,12 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
     assert !this.activated;
 
     if (this.panel != null) {
-      throw new IllegalArgumentException("This slot already has a panel mapped");
+      throw new IllegalArgumentException(this.repr() + " already has " + this.panel.repr() + " mapped; " +
+              "can't also map " + panel.repr());
     }
     if (!this.edgeLinks.isEmpty()) {
-      throw new IllegalArgumentException("This slot already has edges mapped");
+      throw new IllegalArgumentException(this.repr() + " already has " + this.edgeLinks.get(0).edge.repr() +
+              " mapped; can't also map " + panel.repr());
     }
     this.panel = panel;
     this.firstPanelPixel = firstPanelPixel;
@@ -86,7 +92,8 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
     assert !this.activated;
 
     if (this.panel != null) {
-      throw new IllegalArgumentException("This slot already has a panel mapped");
+      throw new IllegalArgumentException(this.repr() + " already has " + this.panel.repr() + " mapped; " +
+              "can't also map " + edge.repr());
     }
     int noobFirstPixel = strandOffset;
     int noobLastPixel = strandOffset + edge.size - 1;

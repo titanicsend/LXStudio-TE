@@ -21,6 +21,10 @@ public class TEStripingInstructions {
     assert beforeNudges != null;
     assert gaps != null;
 
+    if (startingEdgeId == "") {
+      throw new IllegalArgumentException("Refusing to allow striping instructions with empty starting edge ID");
+    }
+
     this.startingEdgeId = startingEdgeId;
     this.channelLengths = channelLengths;
     this.rowLengths = rowLengths;
