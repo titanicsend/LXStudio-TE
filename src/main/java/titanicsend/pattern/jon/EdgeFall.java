@@ -6,6 +6,7 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.LXParameter;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.pattern.TEAudioPattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
@@ -36,6 +37,11 @@ public class EdgeFall extends TEAudioPattern {
 
     float[][] line_velocity;
 
+    public final CompoundParameter lineType = (CompoundParameter)
+            new CompoundParameter("Type", 0, 0, 2)
+                    .setUnits(LXParameter.Units.INTEGER)
+                    .setDescription("LineType");
+
     public final CompoundParameter glow =
             new CompoundParameter("Glow", 80, 200, 10)
                     .setDescription("Line glow level");
@@ -52,6 +58,7 @@ public class EdgeFall extends TEAudioPattern {
     // Constructor
     public EdgeFall(LX lx) {
         super(lx);
+        addParameter("lineType",lineType);
         addParameter("glow",glow);
         addParameter("energy", energy);
 
@@ -199,6 +206,9 @@ public class EdgeFall extends TEAudioPattern {
         }
 
         moveLines(saved_lines, working_lines);
+
+        // choose line drawing method
+        shader.setUniform("lineType",(int) Math.floor(lineType.getValuef()));
 
         // send line width "glow" parameter
         shader.setUniform("glow",glow.getValuef());
