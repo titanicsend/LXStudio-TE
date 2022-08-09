@@ -5,9 +5,11 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
+import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.model.TEEdgeModel;
+import titanicsend.model.TEPanelModel;
 import titanicsend.pattern.TEAudioPattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
@@ -16,7 +18,10 @@ import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 import titanicsend.util.TE;
 
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 @LXCategory("Native Shaders Panels")
 public class EdgeFall extends TEAudioPattern {
@@ -26,11 +31,11 @@ public class EdgeFall extends TEAudioPattern {
     float eventStartTime;
     float elapsedTime;
     static final float fallingCycleLength = 2.75f;
-    static final float pauseCycleLength = 2.0f;
+    static final float pauseCycleLength = 0.25f;
 
     boolean isFalling = true;
 
-    static final int LINE_COUNT = 6;
+    static final int LINE_COUNT = 32;
     FloatBuffer gl_segments;
     float[][] saved_lines;
     float[][] working_lines;
@@ -50,6 +55,10 @@ public class EdgeFall extends TEAudioPattern {
             new CompoundParameter("Energy", .15, 0, 1)
                     .setDescription("Oh boy...");
 
+    public final BooleanParameter explode =
+            new BooleanParameter("Xplode!", false)
+                    .setDescription("Yesssss!");
+
     // use iColor as the path so we get the free iColorRGB uniform in our shader
     public final LinkedColorParameter iColor =
             registerColor("Color", "iColor", ColorType.PANEL,
@@ -61,6 +70,7 @@ public class EdgeFall extends TEAudioPattern {
         addParameter("lineType",lineType);
         addParameter("glow",glow);
         addParameter("energy", energy);
+        addParameter("explode",explode);
 
         // create new effect with alpha on and no automatic
         // parameter uniforms
@@ -68,6 +78,9 @@ public class EdgeFall extends TEAudioPattern {
         ShaderOptions options = new ShaderOptions();
         options.useAlpha(true);
         options.useLXParameterUniforms(false);
+
+        effect = new NativeShaderPatternEffect("edgefall.fs",
+                PatternTarget.allPointsAsCanvas(this), options);
 
         // create an n x 4 array, so we can pass line segment descriptors
         // to GLSL shaders.
@@ -84,18 +97,18 @@ public class EdgeFall extends TEAudioPattern {
         // per-line x and y velocity components
         line_velocity = new float[LINE_COUNT][2];
 
-        effect = new NativeShaderPatternEffect("edgefall.fs",
-                PatternTarget.allPointsAsCanvas(this), options);
-
         // grab up some random edges to test
         // NOTE: To add more edges, you need to change LINE_COUNT so the
         // segment buffer will be the right size.
+        scanForHappyEdges();
+/*
         getLineFromEdge(0,"99-100");
         getLineFromEdge(1,"26-115");
         getLineFromEdge(2,"69-127");
         getLineFromEdge(3,"90-93");
         getLineFromEdge(4,"26-99");
         getLineFromEdge(5,"51-90");
+*/
 
         randomizeLineVelocities();
 
@@ -124,6 +137,34 @@ public class EdgeFall extends TEAudioPattern {
         return -0.5f + pt.yn;
     }
 
+    void scanForHappyEdges() {
+         Set<TEEdgeModel> edges = model.getAllEdges();
+         int edgeCount = 0;
+
+        for (TEEdgeModel edge : edges) {
+
+            if (edge.connectedPanels.size() > 1) {
+                for (TEPanelModel panel : edge.connectedPanels) {
+
+                    // use only starboard side panels
+                    if (panel.getId().startsWith("S")) {
+                        // don't use the upper panels
+                        if (panel.getId().startsWith("SU")) continue;
+
+                        TE.log("We like edge: %s",edge.getId());
+                        getLineFromEdge(edgeCount,edge.getId());
+                        edgeCount++;
+                        break;
+                    }
+                }
+
+            }
+
+        }
+        //TE.log("We liked %d edges today!",edgeCount);
+    }
+
+
     // given an edge id, adds a model edge's vertices to our list of line segments
     void getLineFromEdge(int index, String id) {
         LXPoint v1,v2;
@@ -132,7 +173,7 @@ public class EdgeFall extends TEAudioPattern {
 
         TEEdgeModel edge = edges.get(id);
         if (edge != null) {
-            TE.log("Found edge %s", id);
+            //TE.log("Found edge %s", id);
         }
         else {
             TE.log("Null edge %s",id);
@@ -161,8 +202,8 @@ public class EdgeFall extends TEAudioPattern {
         // mostly fall quickly in y
 
         for (int i = 0; i < LINE_COUNT; i++) {
-            line_velocity[i][0] = (float) Math.random() - 0.5f;
-            line_velocity[i][1] = (float) (4.0 * Math.random());
+            line_velocity[i][0] = (float) (8.0 * (Math.random() - 0.5));
+            line_velocity[i][1] = (float) (5.0 * (Math.random() - 0.5));
         }
     }
 
@@ -182,6 +223,7 @@ public class EdgeFall extends TEAudioPattern {
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
+        float glw;
         time.tick();
 
         // negative time b/c VariableSpeedTimer has a bug which I'm
@@ -189,12 +231,20 @@ public class EdgeFall extends TEAudioPattern {
         float t = -time.getTime();
         elapsedTime = t - eventStartTime;
 
+        if (!explode.getValueb()) isFalling = false;
+        glw = glow.getValuef();
+
         // tiny state machine for falling vs. paused states
         if (isFalling) {
             if (elapsedTime > fallingCycleLength) {
                 isFalling = false;
                 eventStartTime = t;
                 elapsedTime = 0f;
+                explode.setValue(false);
+            }
+            else  if (elapsedTime <= 0.1) {
+                // simulate short explosive burst
+                glw *= elapsedTime / 0.1f;
             }
         } else {
             if (elapsedTime > pauseCycleLength) {
@@ -203,6 +253,7 @@ public class EdgeFall extends TEAudioPattern {
                 randomizeLineVelocities();
                 elapsedTime = 0f;
             }
+
         }
 
         moveLines(saved_lines, working_lines);
@@ -211,7 +262,7 @@ public class EdgeFall extends TEAudioPattern {
         shader.setUniform("lineType",(int) Math.floor(lineType.getValuef()));
 
         // send line width "glow" parameter
-        shader.setUniform("glow",glow.getValuef());
+        shader.setUniform("glow",glw);
 
         // send line segment array data
         sendSegments(working_lines,LINE_COUNT);

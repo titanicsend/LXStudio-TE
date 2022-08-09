@@ -4,7 +4,7 @@ uniform float energy;
 uniform float glow;
 uniform int lineType;
 
-#define LINE_COUNT 6
+#define LINE_COUNT 32
 uniform vec4[LINE_COUNT] lines;
 
 const float PI = 3.14159265359;
