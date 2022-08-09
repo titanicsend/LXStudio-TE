@@ -73,7 +73,8 @@ public class PanelStriper {
 
     if (stripingInstructions != null) {
       String[] tokens = stripingInstructions.startingEdgeId.split("-");
-      assert tokens.length == 2;
+      if (tokens.length != 2)
+        throw new IllegalArgumentException("Invalid edge ID [" + stripingInstructions.startingEdgeId + "]");
       int startId = Integer.parseInt(tokens[0]);
       int midId = Integer.parseInt(tokens[1]);
 
