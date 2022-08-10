@@ -21,7 +21,7 @@ public class ButtonColorMgr {
 
         int getColor() { return LXColor.rgb(r,g,b); }
     }
-
+    int defaultColor = TRANSPARENT;
     private ArrayList<ButtonInfo> map;
 
     public ButtonColorMgr() {
@@ -29,6 +29,7 @@ public class ButtonColorMgr {
     }
 
     public void addButton(int id, int color) {
+        defaultColor = color;
         ButtonInfo bi = new ButtonInfo(id,color);
         map.add(bi);
     }
@@ -36,6 +37,7 @@ public class ButtonColorMgr {
     public void removeButton(int id) {
         for (ButtonInfo bi : map) {
             if (bi.id == id) {
+                defaultColor = getCurrentColor();
                 map.remove(bi);
                 break;
             }
@@ -49,7 +51,7 @@ public class ButtonColorMgr {
     /**
      * @return int array containing the colors associated with all currently
      * pressed buttons.  If no buttons are down, returns a single element
-     * array containing the TRANSPARENT color.
+     * array containing the color of the button that was most recently down.
      */
     public int[] getAllColors() {
         int[] result;
@@ -57,7 +59,7 @@ public class ButtonColorMgr {
 
         if (sz == 0) {
             result = new int[1];
-            result[0] = TRANSPARENT;
+            result[0] = defaultColor;
         }
         else {
             result = new int[getColorCount()];
