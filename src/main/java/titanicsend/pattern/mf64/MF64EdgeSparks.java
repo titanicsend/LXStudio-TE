@@ -109,7 +109,10 @@ public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
             cycle = 0;
         }
 
-        // "sparks" starting at the top of the frame, running down all the edges
+        // Basic approach adapted from Ben Hencke's "Fireworks Nova" pixelblaze pattern.
+        // Build a moving sawtooth, coloring the leading edge with a solid color and
+        // trailing off into random sparkles.  It winds up looking a lot like a particle
+        // system, but it's much cheaper to compute.
         for (LXPoint point : this.pointArray) {
             float v;
 
