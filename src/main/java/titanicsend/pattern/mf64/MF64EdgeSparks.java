@@ -30,6 +30,9 @@ public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
     int refCount;
     double time;
     double startTime;
+    static final float rocketSize = 0.045f;
+    static final float rocketPos = 1f - rocketSize;
+    static final float beatCount = 2f;
     private TEWholeModel model;
     private LXPoint[] pointArray;
     private ButtonColorMgr colorMap;
@@ -75,25 +78,32 @@ public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
         if (refCount == 0) this.stopRequest = true;
     }
 
+    private void clearAllPoints(int[] colors) {
+        for (LXPoint point : this.pointArray) {
+            colors[point.index] = TRANSPARENT;
+        }
+    }
+
     private void paintAll(int colors[], int color) {
         time = System.currentTimeMillis();
 
         // calculate milliseconds per beat at current bpm and build
         // a sawtooth wave that goes from 0 to 1 over that timespan
-        // here, we want the fireworks thing to complete the course of a measure,
-        // so we multiply the per-beat interval by 4.
-        float interval = 4f * (float) (1000.0 / (driver.getTempo().bpm() / 60.0));
+        float interval = beatCount * (float) (1000.0 / (driver.getTempo().bpm() / 60.0));
         float cycle = (float) (time - startTime) / interval;
 
+        // grab colors of all currently pressed buttons
         int colorIndex = 0;
-        int col = color;
+        int[] colorSet = colorMap.getAllColors();
+        int col = colorSet[colorIndex];
 
         // if we've completed a cycle see if we reset or stop
         if (cycle >= 1f) {
             if (stopRequest == true) {
                 this.active = false;
                 this.stopRequest = false;
-                col = TRANSPARENT;
+                clearAllPoints(colors);
+                return;
             }
             startTime = time;
             cycle = 0;
@@ -105,19 +115,21 @@ public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
 
             // get flipped y coord
             float y = 1f - point.yn;
+            colorIndex = (int) (8f * point.zn) % colorSet.length;
 
             // calculate y distance from our moving wave
             float wavefront = 1.0f - (cycle - y);
 
             // "rocket" at leading edge of wave
-            v = ((wavefront <= 1.0f) && (wavefront >= 0.95)) ? 1f - (1f-wavefront) / 0.05f : 0;
+            //v = ((wavefront <= 1.0f) && (wavefront >= rocketPos)) ? 1f - (1f-wavefront) / rocketSize : 0;
+            v = ((wavefront <= 1.0f) && (wavefront >= rocketPos)) ? 1f : 0;
 
             // random decaying "sparks" behind
-            float spark = ((wavefront < 0.95) && (wavefront >= 0.4)) ? wavefront : 0;
+            float spark = ((wavefront < rocketPos) && (wavefront >= 0.35)) ? wavefront : 0;
             if (spark > (3f * Math.random())) v = wavefront * wavefront * wavefront;
 
             int alpha = (int) (255f * v);
-            colors[point.index] = (col == TRANSPARENT) ? col : (col & 0x00FFFFFF) | (alpha << 24);
+            colors[point.index] = (colorSet[colorIndex] & 0x00FFFFFF) | (alpha << 24);
         }
     }
 

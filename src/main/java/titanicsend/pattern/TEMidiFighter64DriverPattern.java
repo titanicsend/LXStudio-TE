@@ -124,11 +124,10 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   private final MF64RingPattern ring = new MF64RingPattern(this);
   private final MF64SpiralSquares ssquare = new MF64SpiralSquares(this);
   private final MF64RandomPanel randomPanel = new MF64RandomPanel(this);
-
   private final MF64EdgeSparks eSparks = new MF64EdgeSparks(this);
 
   private final TEMidiFighter64Subpattern[] patterns = {
-    eSparks,   eSparks, eSparks, eSparks, eSparks, eSparks, eSparks, eSparks,
+    logger, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
@@ -150,25 +149,10 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   private LXMidiInput midiIn = null;
   private LXMidiOutput midiOut = null;
 
-  public final BooleanParameter fakePush1 =
+  public final BooleanParameter fakePush =
           new BooleanParameter("Push", false)
-                  //.setMode(BooleanParameter.Mode.MOMENTARY)
-                  .setDescription("Simulates pushing a button");
-
-  public final BooleanParameter fakePush2 =
-          new BooleanParameter("Push", false)
-                  //.setMode(BooleanParameter.Mode.MOMENTARY)
-                  .setDescription("Simulates pushing a button");
-
-  public final BooleanParameter fakePush3 =
-          new BooleanParameter("Push", false)
-                  //.setMode(BooleanParameter.Mode.MOMENTARY)
-                  .setDescription("Simulates pushing a button");
-
-  public final BooleanParameter fakePush4 =
-          new BooleanParameter("Push", false)
-                  //.setMode(BooleanParameter.Mode.MOMENTARY)
-                  .setDescription("Simulates pushing a button");
+                  .setMode(BooleanParameter.Mode.MOMENTARY)
+                  .setDescription("Simulates pushing the top-left button");
 
   // Converts a MIDI note from the MF64 into information about which
   // button was pressed
@@ -217,28 +201,22 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
 
   private final Mapping mapping = new Mapping();
 
-  void addFakeListener(String path,BooleanParameter btn,int col) {
-    addParameter(path,btn);
-    btn.addListener((p) -> {
-      this.mapping.page = Mapping.Page.LEFT;
-      this.mapping.row = 7;
-      this.mapping.col = col;
-
-      if (p.getValuef() != 0f) {
-        this.patterns[col].buttonDown(this.mapping);
-      }
-      else {
-        this.patterns[col].buttonUp(this.mapping);
-      }
-    });
-  }
-
   public TEMidiFighter64DriverPattern(LX lx) {
     super(lx);
-    addFakeListener("fake1",fakePush1,0);
-    addFakeListener("fake2",fakePush2,2);
-    addFakeListener("fake3",fakePush3,4);
-    addFakeListener("fake4",fakePush4,7);
+
+    addParameter("fakePush", this.fakePush);
+    this.fakePush.addListener((p) -> {
+      this.mapping.page = Mapping.Page.LEFT;
+      this.mapping.row = 7;
+      this.mapping.col = 0;
+
+      if (p.getValuef() != 0f) {
+        this.patterns[0].buttonDown(this.mapping);
+      }
+      else {
+        this.patterns[0].buttonUp(this.mapping);
+      }
+    });
   }
 
   private void sendAllOff() {
@@ -334,6 +312,5 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     this.ssquare.run(deltaMs,colors);
     this.randomPanel.run(deltaMs,colors);
     this.eSparks.run(deltaMs,colors);
-
   }
 }

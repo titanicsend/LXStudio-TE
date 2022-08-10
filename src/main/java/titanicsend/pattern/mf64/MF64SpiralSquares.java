@@ -139,7 +139,7 @@ public class MF64SpiralSquares extends TEMidiFighter64Subpattern {
     public void run(double deltaMsec, int colors[]) {
         time.tick();
         if (this.active == true) {
-            paintAll(colors, colorMap.getBlendedColor());
+            paintAll(colors, colorMap.getCurrentColor());
         }
     }
 }

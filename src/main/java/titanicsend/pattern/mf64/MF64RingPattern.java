@@ -81,6 +81,12 @@ public class MF64RingPattern extends TEMidiFighter64Subpattern {
         if (refCount == 0) this.stopRequest = true;
     }
 
+    private void clearAllPoints(int[] colors) {
+        for (LXPoint point : this.pointArray) {
+            colors[point.index] = TRANSPARENT;
+        }
+    }
+
     private void paintAll(int colors[], int color) {
 
         time = System.currentTimeMillis();
@@ -98,11 +104,11 @@ public class MF64RingPattern extends TEMidiFighter64Subpattern {
 
         // if we've completed a cycle see if we reset or stop
         if (ringSawtooth >= 1f) {
-
             if (stopRequest == true) {
                 this.active = false;
                 this.stopRequest = false;
-                color = TRANSPARENT;
+                clearAllPoints(colors);
+                return;
             }
             startTime = time;
             ringSawtooth = 0;
@@ -131,7 +137,7 @@ public class MF64RingPattern extends TEMidiFighter64Subpattern {
     @Override
     public void run(double deltaMsec, int colors[]) {
         if (this.active == true) {
-            paintAll(colors, colorMap.getBlendedColor());
+            paintAll(colors, colorMap.getCurrentColor());
         }
     }
 }
