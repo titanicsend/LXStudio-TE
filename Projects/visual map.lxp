@@ -1,6 +1,6 @@
 {
   "version": "0.4.1",
-  "timestamp": 1659510498531,
+  "timestamp": 1660164371471,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -510,7 +510,7 @@
               "label": "Channel-1",
               "arm": false,
               "selected": false,
-              "enabled": true,
+              "enabled": false,
               "cue": false,
               "fader": 1.0,
               "crossfadeGroup": 0,
@@ -589,7 +589,7 @@
                   "color/index": 1,
                   "tempoDivision": 5,
                   "triggerMode": 2,
-                  "sceneSelect": 67,
+                  "sceneSelect": 0,
                   "trigger": false,
                   "downbeat": false
                 },
@@ -624,7 +624,7 @@
               "label": "Channel-2",
               "arm": false,
               "selected": true,
-              "enabled": false,
+              "enabled": true,
               "cue": false,
               "fader": 1.0,
               "crossfadeGroup": 0,
@@ -640,13 +640,13 @@
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 1,
+              "focusedPattern": 2,
               "triggerPatternCycle": false
             },
             "children": {},
             "effects": [],
             "clips": [],
-            "patternIndex": 1,
+            "patternIndex": 2,
             "patterns": [
               {
                 "id": 9379,
@@ -695,6 +695,37 @@
                 "children": {
                   "modulation": {
                     "id": 9540,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 9624,
+                "class": "titanicsend.pattern.will.PowerDebugger",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false,
+                  "autoCycleEligible": true
+                },
+                "parameters": {
+                  "label": "PowerDebugger",
+                  "recall": false
+                },
+                "children": {
+                  "modulation": {
+                    "id": 9625,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0
@@ -1040,8 +1071,8 @@
         "camera": {
           "active": false,
           "radius": 1.4353164801836198E7,
-          "theta": -14.158994536846876,
-          "phi": -0.003940125461667776,
+          "theta": -14.113930613733828,
+          "phi": -0.02969088265672326,
           "x": 303442.78125,
           "y": 5226718.33203125,
           "z": 923606.193359375
@@ -1050,8 +1081,8 @@
           {
             "active": false,
             "radius": 1.4353164801836198E7,
-            "theta": -14.158994536846876,
-            "phi": -0.003940125461667776,
+            "theta": -14.113930613733828,
+            "phi": -0.02969088265672326,
             "x": 303442.78125,
             "y": 5226718.33203125,
             "z": 923606.193359375

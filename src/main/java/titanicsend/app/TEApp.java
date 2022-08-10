@@ -45,6 +45,7 @@ import titanicsend.pattern.mike.*;
 import titanicsend.pattern.pixelblaze.*;
 import titanicsend.pattern.tmc.*;
 import titanicsend.pattern.tom.*;
+import titanicsend.pattern.will.PowerDebugger;
 import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.media.BasicImagePattern;
@@ -154,6 +155,7 @@ public class TEApp extends PApplet implements LXPlugin  {
 
     // Test/debug patterns
     lx.registry.addPattern(ModelDebugger.class);
+    lx.registry.addPattern(PowerDebugger.class);
     // lx.registry.addPattern(ModuleEditor.class);
 
     // create our library for autopilot
