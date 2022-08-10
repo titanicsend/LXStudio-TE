@@ -46,6 +46,7 @@ public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
         newPoints.addAll(model.edgePoints);
         pointArray = newPoints.toArray(new LXPoint[0]);
         colorMap = new ButtonColorMgr();
+        startTime = 0;
     }
 
     /**
@@ -68,7 +69,8 @@ public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
         refCount++;
         this.active = true;
         stopRequest = false;
-        startTime = System.currentTimeMillis();
+        // uncomment to enable "glitch in place" feature.
+        //startTime += 200;
     }
 
     @Override
