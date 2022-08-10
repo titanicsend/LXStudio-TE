@@ -2,19 +2,17 @@ package titanicsend.pattern.mf64;
 
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
-import heronarts.p4lx.pattern.P4LXPattern;
 import titanicsend.model.TEWholeModel;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.pattern.jon.ButtonColorMgr;
-import titanicsend.util.TE;
+import titanicsend.pattern.jon.VariableSpeedTimer;
 import titanicsend.util.TEMath;
 
 import java.util.ArrayList;
 
-import static titanicsend.util.TEColor.BLUE;
 import static titanicsend.util.TEColor.TRANSPARENT;
 
-public class MF64RingPattern extends TEMidiFighter64Subpattern {
+public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
     private static final double PERIOD_MSEC = 100.0;
     private static final int[] flashColors = {
             LXColor.rgb(255, 0, 0),
@@ -30,23 +28,22 @@ public class MF64RingPattern extends TEMidiFighter64Subpattern {
     boolean active = false;
     boolean stopRequest = false;
     int refCount;
-    double startTime;
-
     double time;
-    float ringWidth;
+    double startTime;
+    static final float rocketSize = 0.045f;
+    static final float rocketPos = 1f - rocketSize;
+    static final float beatCount = 2f;
     private TEWholeModel model;
     private LXPoint[] pointArray;
-
     private ButtonColorMgr colorMap;
 
-    public MF64RingPattern(TEMidiFighter64DriverPattern driver) {
+    public MF64EdgeSparks(TEMidiFighter64DriverPattern driver) {
         super(driver);
         this.model = this.driver.getModel();
 
         // get safe list of all pattern points.
         ArrayList<LXPoint> newPoints = new ArrayList<>(model.points.length);
         newPoints.addAll(model.edgePoints);
-        newPoints.addAll(model.panelPoints);
         pointArray = newPoints.toArray(new LXPoint[0]);
         colorMap = new ButtonColorMgr();
     }
@@ -88,22 +85,20 @@ public class MF64RingPattern extends TEMidiFighter64Subpattern {
     }
 
     private void paintAll(int colors[], int color) {
-
         time = System.currentTimeMillis();
 
-        // calculate milliseconds per beat at current bpm
-        float interval = (float) (1000.0 / (driver.getTempo().bpm() / 60.0));
-        float ringSawtooth = (float) (time - startTime) / interval;
+        // calculate milliseconds per beat at current bpm and build
+        // a sawtooth wave that goes from 0 to 1 over that timespan
+        float interval = beatCount * (float) (1000.0 / (driver.getTempo().bpm() / 60.0));
+        float cycle = (float) (time - startTime) / interval;
 
         // grab colors of all currently pressed buttons
         int colorIndex = 0;
         int[] colorSet = colorMap.getAllColors();
-
-        // make the rings slightly thinner as we add colors
-        ringWidth = (float) TEMath.clamp(0.4f / (float) colorSet.length,0.08,0.2);
+        int col = colorSet[colorIndex];
 
         // if we've completed a cycle see if we reset or stop
-        if (ringSawtooth >= 1f) {
+        if (cycle >= 1f) {
             if (stopRequest == true) {
                 this.active = false;
                 this.stopRequest = false;
@@ -111,26 +106,33 @@ public class MF64RingPattern extends TEMidiFighter64Subpattern {
                 return;
             }
             startTime = time;
-            ringSawtooth = 0;
+            cycle = 0;
         }
 
-        // define a ring moving out from the model center at 1 cycle/beat
+        // Basic approach adapted from Ben Hencke's "Fireworks Nova" pixelblaze pattern.
+        // Build a moving sawtooth, coloring the leading edge with a solid color and
+        // trailing off into random sparkles.  It winds up looking a lot like a particle
+        // system, but it's much cheaper to compute.
         for (LXPoint point : this.pointArray) {
-            float k,offs;
-            int on,col;
+            float v;
 
-            offs = 0f;
-            col = TRANSPARENT;
-            for (int i = 0; i < colorSet.length; i++) {
-                k = (1.0f - ringSawtooth) + (point.rcn + offs);
-                on = (int) (k * square(k, ringWidth));
-                if (on > 0) {
-                    col = colorSet[i];
-                    break;
-                }
-                offs += ringWidth;
-            }
-            colors[point.index] = col;
+            // get flipped y coord
+            float y = 1f - point.yn;
+            colorIndex = (int) (8f * point.zn) % colorSet.length;
+
+            // calculate y distance from our moving wave
+            float wavefront = 1.0f - (cycle - y);
+
+            // "rocket" at leading edge of wave
+            //v = ((wavefront <= 1.0f) && (wavefront >= rocketPos)) ? 1f - (1f-wavefront) / rocketSize : 0;
+            v = ((wavefront <= 1.0f) && (wavefront >= rocketPos)) ? 1f : 0;
+
+            // random decaying "sparks" behind
+            float spark = ((wavefront < rocketPos) && (wavefront >= 0.35)) ? wavefront : 0;
+            if (spark > (3f * Math.random())) v = wavefront * wavefront * wavefront;
+
+            int alpha = (int) (255f * v);
+            colors[point.index] = (colorSet[colorIndex] & 0x00FFFFFF) | (alpha << 24);
         }
     }
 
