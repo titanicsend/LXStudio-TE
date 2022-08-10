@@ -4,6 +4,11 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.midi.*;
 import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.DiscreteParameter;
+import heronarts.lx.studio.LXStudio;
+import heronarts.lx.studio.ui.device.UIDevice;
+import heronarts.lx.studio.ui.device.UIDeviceControls;
+import heronarts.p4lx.ui.UI2dContainer;
 import titanicsend.pattern.mf64.*;
 
 @LXCategory("Combo FG")
@@ -153,6 +158,23 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
                   .setMode(BooleanParameter.Mode.MOMENTARY)
                   .setDescription("Simulates pushing the top-left button");
 
+  public final DiscreteParameter pokeChannel =
+          new DiscreteParameter("Channel", 0, 99)
+                  .setDescription("Channel number");
+
+  public final DiscreteParameter pokeVelocity =
+          new DiscreteParameter("Vel", 0, 256)
+                  .setDescription("Velocity");
+
+  public final DiscreteParameter pokePitch =
+          new DiscreteParameter("Pitch", 0, 256)
+                  .setDescription("Pitch");
+
+  public final BooleanParameter pokeButton =
+          new BooleanParameter("Poke", false)
+                  .setMode(BooleanParameter.Mode.MOMENTARY)
+                  .setDescription("Sends a MIDI note to the device");
+
   // Converts a MIDI note from the MF64 into information about which
   // button was pressed
   public static class Mapping {
@@ -174,6 +196,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     public void map(MidiNote note) {
       int pitch = note.getPitch();
       int channel = note.getChannel();
+      LX.log("Channel=" + channel + " pitch=" + pitch + " vel=" + note.getVelocity());
       this.valid = true;
       if (channel == 2) {
         this.page = Page.LEFT;
@@ -204,6 +227,12 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     super(lx);
 
     addParameter("fakePush", this.fakePush);
+
+    addParameter("pokeChannel", this.pokeChannel);
+    addParameter("pokeVelocity", this.pokeVelocity);
+    addParameter("pokePitch", this.pokePitch);
+    addParameter("poke", this.pokeButton);
+
     this.fakePush.addListener((p) -> {
       this.mapping.page = Mapping.Page.LEFT;
       this.mapping.row = 7;
@@ -216,6 +245,12 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
         this.patterns[0].buttonUp(this.mapping);
       }
     });
+
+    this.pokeButton.addListener((p) -> {
+      this.midiOut.sendNoteOn(this.pokeChannel.getValuei(), this.pokePitch.getValuei(),
+              this.pokeVelocity.getValuei());
+    });
+
   }
 
   private void sendAllOff() {
