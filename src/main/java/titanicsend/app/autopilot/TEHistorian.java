@@ -147,6 +147,11 @@ public class TEHistorian {
         return repeatedPhraseLengthBars;
     }
 
+    /**
+     * This is the timestamp of the last time we received an OSC phrase message.
+     *
+     * @return timestamp long
+     */
     public long getLastOscPhraseAt() {
         return lastOscPhraseAt;
     }

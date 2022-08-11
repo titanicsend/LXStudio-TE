@@ -75,7 +75,7 @@ public class TEOscMessage {
     }
 
     public static String makeOscPhraseChangeAddress(TEPhrase p) {
-        return PREFIX_TE + SLUG_PHRASE_CHANGE + p.toString();
+        return PREFIX_TE + SLUG_PHRASE_CHANGE + p.toString().toLowerCase();
     }
 
     /**
