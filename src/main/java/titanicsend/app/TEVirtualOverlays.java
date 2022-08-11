@@ -96,17 +96,9 @@ public class TEVirtualOverlays extends TEUIComponent {
       try {
         String[] tokens = line.split("\\t");
         assert tokens.length == 7;
-        //TE.log("Line: %s (len tokens=%d)", line, tokens.length);
 
         // parse fields
-//        String stripID = tokens[0].strip();
-//        String panelOrEdgeId = tokens[1].strip();
-//        String panelOrEdgeVertices = tokens[2].strip();
-//        double numLEDS = Double.parseDouble(tokens[3].strip());
         String jbox = tokens[4].strip();
-//        String circuit = tokens[5].strip();
-//        double current = Double.parseDouble(tokens[6].strip());
-//        boolean isEdge = panelOrEdgeId.contains("-");
         int jboxVertex = Integer.parseInt(jbox.split("-")[0]);
         int jboxIdx = Integer.parseInt(jbox.split("-")[1]);
 
