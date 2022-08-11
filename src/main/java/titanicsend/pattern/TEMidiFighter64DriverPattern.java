@@ -130,9 +130,11 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   private final MF64SpiralSquares ssquare = new MF64SpiralSquares(this);
   private final MF64RandomPanel randomPanel = new MF64RandomPanel(this);
   private final MF64EdgeSparks eSparks = new MF64EdgeSparks(this);
+  private final MF64Spinwheel spin = new MF64Spinwheel(this);
+
 
   private final TEMidiFighter64Subpattern[] patterns = {
-    logger, logger, logger, logger, logger, logger, logger, logger,
+    spin, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
     eSparks, eSparks, eSparks, eSparks, eSparks, eSparks, eSparks, eSparks,
@@ -347,5 +349,6 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     this.ssquare.run(deltaMs,colors);
     this.randomPanel.run(deltaMs,colors);
     this.eSparks.run(deltaMs,colors);
+    this.spin.run(deltaMs,colors);
   }
 }
