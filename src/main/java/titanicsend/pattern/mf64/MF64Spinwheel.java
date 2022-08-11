@@ -90,19 +90,27 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
 
     // does the spinwheel thing, returns the brightness
     // at the specified pixel.
-    float spinwheel(TEPanelModel.LitPointData lp,float t1, float t2) {
+    float spinwheel(TEPanelModel.LitPointData lp,float spin, float grow) {
+        // move coordinate origin to panel center
         float x = lp.point.z - panelCenter.z;
         float y = lp.point.y - panelCenter.y;
-        float arX = (float) (Math.atan2(y,x)+t1);
-        float arY = (float) (lp.radiusFraction+t2);
 
-        float phi = (float) (Math.floor(arY) / TEMath.TAU);
-        phi += (phi == 0f) ?.618f : 0f;
+        // can derive local azimuth geometrically, but atan2 is faster...
+        float arX = (float) (Math.atan2(y,x) * 1.25 + spin);
+        float arY = (float) (lp.radiusFraction + grow);
 
-        arX = frac(arX);
-        arY = frac(arY);
+        // control the shape of the pulse made by <grow>
+        // higher divisor == more contrast
+        float pulse = (float) (Math.floor(arY) / 6.0);
+        // keep us from flashing the whole panel to absolute black
+        pulse += (pulse == 0) ? 0.5 : 0;
 
-        float bri = (float) ((0.25/(arX*arX+arY*arY) * .19) * phi);
+        arX = Math.abs(frac(arX)) - 0.5f;
+        arY = Math.abs(frac(arY)) - 0.5f;
+
+        float bri = (float) ((0.2/(arX*arX+arY*arY) * .19) * pulse);
+
+        // clamp to range, then small gamma correction
         bri = clamp(bri*4f,0f,1f);
         return bri * bri;
     }
@@ -131,8 +139,8 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
         float t = time.getTime();
         elapsedTime = t - eventStartTime;
         float t0 = (float) frac(elapsedTime);
-        float flowerSpin = (float) (7 * Math.sin(t));
-        float flowerSize = (float) (0.25*Math.sin(t0));
+        float spin = (float) 2f * t;
+        float grow = (float) (Math.sin(t0) * 1.414);
 
         if (elapsedTime > 1) {
             // uncomment to enable auto retrigger on the beat
@@ -165,7 +173,7 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
                 // do the spinwheel thing
                 } else {
                     panelCenter = panel.centroid;
-                    int alpha = (int) (255f * spinwheel(p,flowerSpin,flowerSize));
+                    int alpha = (int) (255f * spinwheel(p,spin,grow));
                     colors[p.point.index] = (col & 0x00FFFFFF) | (alpha << 24);
                 // leave uncolored points alone
                 }
