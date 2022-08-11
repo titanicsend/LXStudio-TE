@@ -25,7 +25,7 @@ import java.util.*;
 
 import static java.lang.Math.floorMod;
 
-@LXCategory("TE Debugging")
+@LXCategory("Test")
 public class ModuleEditor extends TEPattern implements UIDeviceControls<ModuleEditor> {
   private static final double MOVE_PERIOD_MSEC = 50.0;
   protected final Click mover = new Click(MOVE_PERIOD_MSEC);
