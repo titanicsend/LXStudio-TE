@@ -36,7 +36,6 @@ public class ShaderPainter {
     public void paint(Collection<? extends TEModel> panels) {
         Dimensions dimensions = Dimensions.fromModels(panels);
 
-
         for (TEModel panel : panels) {
             for (LXPoint point : panel.getPoints()) {
                 paint(point, dimensions);
