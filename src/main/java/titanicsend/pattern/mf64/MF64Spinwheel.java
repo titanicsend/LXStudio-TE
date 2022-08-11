@@ -30,7 +30,6 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
     boolean stopRequest;
     private int refCount;
     ButtonColorMgr colorMap;
-
     VariableSpeedTimer time;
     float eventStartTime;
     float elapsedTime;
@@ -96,11 +95,11 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
         float y = lp.point.y - panelCenter.y;
 
         // can derive local azimuth geometrically, but atan2 is faster...
+        // the arX multiplier controls the number of petals.  Higher is more.
         float arX = (float) (Math.atan2(y,x) * 1.25 + spin);
         float arY = (float) (lp.radiusFraction + grow);
 
-        // control the shape of the pulse made by <grow>
-        // higher divisor == more contrast
+        // Shape the pulse made by the arY + grow term. Higher divisor == more contrast
         float pulse = (float) (Math.floor(arY) / 6.0);
         // keep us from flashing the whole panel to absolute black
         pulse += (pulse == 0) ? 0.5 : 0;
@@ -138,19 +137,18 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
 
         float t = time.getTime();
         elapsedTime = t - eventStartTime;
-        float t0 = (float) frac(elapsedTime);
-        float spin = (float) 2f * t;
+        float t0 = frac(elapsedTime);
+        float spin = 2f * t;
         float grow = (float) (Math.sin(t0) * 1.414);
-
-        if (elapsedTime > 1) {
-            // uncomment to enable auto retrigger on the beat
-           // startNewEvent();
-        }
 
         prng.setSeed(seed);
         int colorIndex = 0;
         int col;
         for (TEPanelModel panel : model.getAllPanels()) {
+
+            // exclude 4 front and back panels because x vs.z gets too weird
+            // for radial math without time-consuming adjustments
+            if (panel.getId().length() == 2) continue;
 
             boolean isLit = (prng.nextFloat() <= litProbability);
 
@@ -163,19 +161,16 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
                 col = TRANSPARENT;
             }
 
-            // expand lit area out from center over a short time
-            float deltaT = Math.min(1.0f, 4f * elapsedTime);
-
+            // now draw something on the lit panel
             for (TEPanelModel.LitPointData p : panel.litPointData) {
                 // quick out for uncolored panels
                 if (col == TRANSPARENT) {
                     colors[p.point.index] = TRANSPARENT;
-                // do the spinwheel thing
                 } else {
+                    // do the spinwheel thing
                     panelCenter = panel.centroid;
                     int alpha = (int) (255f * spinwheel(p,spin,grow));
                     colors[p.point.index] = (col & 0x00FFFFFF) | (alpha << 24);
-                // leave uncolored points alone
                 }
             }
         }
