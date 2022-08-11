@@ -32,7 +32,7 @@ public class TEMixerUtils {
     public static void setFaderTo(LX lx, TEChannelName name, double faderLevel) {
         try {
             LXChannel channel = (LXChannel) lx.engine.mixer.channels.get(name.getIndex());
-            lx.engine.mixer.channels.get(name.getIndex()).fader.setValue(faderLevel);
+            channel.fader.setValue(faderLevel);
 
             // save CPU cycles by disabling OFF channels
             if (faderLevel < FADER_LEVEL_OFF_THRESH) {

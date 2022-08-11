@@ -4,8 +4,6 @@ import titanicsend.app.autopilot.events.TEBeatEvent;
 import titanicsend.app.autopilot.events.TEPhraseEvent;
 import titanicsend.app.autopilot.utils.TETimeUtils;
 import titanicsend.util.CircularArray;
-import titanicsend.util.TE;
-import titanicsend.util.TEMath;
 
 /**
  * This is a record keeper for all things VJ autopilot.
@@ -52,6 +50,7 @@ public class TEHistorian {
     public CircularArray<TEBeatEvent> beatEvents;
     // timestamp of when we last saw an OSC beat at
     private long lastBeatAt;
+    private long lastOscPhraseAt;
 
     public TEHistorian() {
         resetBeatTracking();
@@ -146,5 +145,17 @@ public class TEHistorian {
 
     public double getRepeatedPhraseLengthBars() {
         return repeatedPhraseLengthBars;
+    }
+
+    /**
+     * This is the timestamp of the last time we received an OSC phrase message.
+     *
+     * @return timestamp long
+     */
+    public long getLastOscPhraseAt() {
+        return lastOscPhraseAt;
+    }
+    public void setLastOscPhraseAt(long ts) {
+        lastOscPhraseAt = ts;
     }
 }

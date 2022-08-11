@@ -2,12 +2,14 @@ package titanicsend.app;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXLoopTask;
+import heronarts.lx.color.LXSwatch;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.osc.OscMessage;
 import heronarts.lx.pattern.LXPattern;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.autopilot.events.TEPhraseEvent;
 import titanicsend.app.autopilot.utils.TEMixerUtils;
+import titanicsend.app.autopilot.utils.TETimeUtils;
 import titanicsend.util.TE;
 import titanicsend.util.TEMath;
 
@@ -21,10 +23,14 @@ public class TEAutopilot implements LXLoopTask {
     private final int MISPREDICTED_FADE_OUT_BARS = 2;
     private final int PREV_FADE_OUT_BARS = 2;
 
+    // when we're in oscBeatOnlyModeOn=true, this is how long
+    // we wait to change phrases
+    private final int OSC_BEAT_ONLY_PHRASE_LEN_BARS = 32;
+
     // number of bars after a chorus to continue leaving
     // FX channels visible
-    private final double TRIGGERS_AT_CHORUS_LENGTH_BARS = 1.0;
-    private final double STROBES_AT_CHORUS_LENGTH_BARS = 1.25;
+    private final double TRIGGERS_AT_CHORUS_LENGTH_BARS = 1.5; //1.0;
+    private final double STROBES_AT_CHORUS_LENGTH_BARS = 1.75; //1.25;
 
 
     // various fader levels of importance
@@ -42,6 +48,12 @@ public class TEAutopilot implements LXLoopTask {
 
     // if OSC messages are older than this, throw them out
     private static long OSC_MSG_MAX_AGE_MS = 2 * 1000;
+
+    // after a while (ie: 2 min) without receiving a phrase OSC msg,
+    // on the next downbeat chose a phrase and enter it! this is how
+    // non-rekordbox phrase mode is engaged
+    private static long OSC_PHRASE_TIMEOUT_MS = 15 * 1000; //2 * 60 * 1000;
+    private boolean oscBeatModeOnlyOn = false;
 
     private LX lx;
 
@@ -84,6 +96,12 @@ public class TEAutopilot implements LXLoopTask {
                       strobesChannel = null,
                       fxChannel = null;
 
+    /**
+     * Instantiate the autopilot with a reference to both LX and the pattern library.
+     *
+     * @param lx
+     * @param l
+     */
     public TEAutopilot(LX lx, TEPatternLibrary l) {
         this.lx = lx;
         this.library = l;
@@ -95,6 +113,9 @@ public class TEAutopilot implements LXLoopTask {
         setEnabled(enabled);
     }
 
+    /**
+     * Reset history around autopilot, channel state, phrase state, etc.
+     */
     public void resetHistory() {
         // historical logs of events for calculations
         history = new TEHistorian();
@@ -121,6 +142,13 @@ public class TEAutopilot implements LXLoopTask {
         prevFadeOutMode = false;
     }
 
+    /**
+     * This is the entrypoint for OSC messages that come externally from ShowKontrol.
+     * First they are processed by TEOscListener, but once they are deemed in scope for
+     * Autopilot, they are dispatched here.
+     *
+     * @param msg
+     */
     protected void onOscMessage(OscMessage msg) {
         try {
             TEOscMessage oscTE = new TEOscMessage(msg);
@@ -138,10 +166,101 @@ public class TEAutopilot implements LXLoopTask {
         }
     }
 
-    public void onBeatEvent(long beatAt) throws Exception {
-        history.logBeat(beatAt);
+    /**
+     * Change to a new LX palette swatch.
+     *
+     * @param pickRandom
+     *      should we pick the next swatch randomly? or just use the next one in order?
+     * @param immediate
+     *      should this change happen immediately?
+     * @param numBarsTransition
+     *      if not immediately, how many bars should we set the transition to happen over?
+     */
+    public void changePaletteSwatch(boolean pickRandom, boolean immediate, int numBarsTransition) {
+        // should we change the transition duration?
+        if (numBarsTransition > 0) {
+            double transitionDurationMs = TETimeUtils.calcPhraseLengthMs(lx.engine.tempo.bpm(), numBarsTransition);
+            lx.engine.palette.transitionTimeSecs.setValue(transitionDurationMs);
+        }
+
+        // pick a random swatch
+        if (pickRandom) {
+            Random rand = new Random();
+            int numSwatches = lx.engine.palette.swatches.size();
+            LXSwatch newSwatch = lx.engine.palette.swatches.get(rand.nextInt(0, numSwatches));
+
+            // change swatch
+            lx.engine.palette.setSwatch(newSwatch);
+
+            // if you repeat the setSwatch operation it happens immediately
+            if (immediate)
+                lx.engine.palette.setSwatch(newSwatch);
+
+        } else {
+            // otherwise, just proceed to the next one
+            lx.engine.palette.triggerSwatchCycle.setValue(true);
+            if (immediate)
+                lx.engine.palette.triggerSwatchCycle.setValue(true);
+        }
     }
 
+    /**
+     * Called when an OSC beat event comes through. Will only be triggered
+     * if autoVJ is enabled.
+     *
+     * @param msg OscMessage from ShowKontrol
+     * @throws Exception
+     */
+    public void onBeatEvent(TEOscMessage msg) throws Exception {
+        long beatAt = msg.timestamp;
+        history.logBeat(beatAt);
+
+        // if this isn't a downbeat, ignore. want to wait for the start of a
+        // bar to change modes or launch a new phrase if warranted
+        if (msg.extractBeatCount() != 0)
+            return;
+
+        // if we're seeing phrase OSC messages regularly, no need to continue either
+        if (beatAt - history.getLastOscPhraseAt() < OSC_PHRASE_TIMEOUT_MS)
+            return;
+
+        // are we currently in Osc phrase mode and need to transition?
+        if (!oscBeatModeOnlyOn) {
+            // it has been so long without a phrase that we need to enter
+            // oscBeatModeOnlyOn=true and trigger phrases ourselves!
+            this.resetHistory();
+            oscBeatModeOnlyOn = true;
+            TE.log("OSC beat-only mode activated");
+
+            // now trigger a phrase (DOWN is probably safest)
+            String syntheticOscAddr = TEOscMessage.makeOscPhraseChangeAddress(TEPhrase.DOWN);
+            onPhraseChange(syntheticOscAddr, beatAt);
+
+        } else {
+            // we've been in osc beat only mode for a while now, we just need to decide if it's
+            // time to transition to a new phrase
+
+            //TODO(will) based on audio signal, is this a likely CHORUS start?
+            // if so, can change nextPhrase
+
+            // get some useful stats about the current phrase
+            double repeatedPhraseLengthBars = history.getRepeatedPhraseBarProgress(lx.engine.tempo.bpm());
+
+            // otherwise: if it's been OSC_BEAT_ONLY_PHRASE_LEN_BARS bars, let's change
+            if (OSC_BEAT_ONLY_PHRASE_LEN_BARS - repeatedPhraseLengthBars < 1) {
+                // now trigger the next phrase
+                String syntheticOscAddr = TEOscMessage.makeOscPhraseChangeAddress(nextPhrase);
+                TE.log("OSC beat-only mode: triggering synthetic phrase=%s", syntheticOscAddr);
+                onPhraseChange(syntheticOscAddr, beatAt);
+            }
+        }
+    }
+
+    /**
+     * Main event loop for autopilot. Mostly a no-op if autopilot is disabled.
+     *
+     * @param deltaMs ms since last loop ran
+     */
     @Override
     public void loop(double deltaMs) {
         long now = System.currentTimeMillis();
@@ -178,9 +297,13 @@ public class TEAutopilot implements LXLoopTask {
 
                 // handle OSC message based on type
                 if (TEOscMessage.isPhraseChange(address)) {
-                    onPhraseChange(address, oscTE.timestamp, deltaMs);
+                    this.resetHistory();
+                    history.setLastOscPhraseAt(oscTE.timestamp);
+                    oscBeatModeOnlyOn = false;
+                    onPhraseChange(address, oscTE.timestamp);
+
                 } else if (TEOscMessage.isBeat(address)) {
-                    onBeatEvent(oscTE.timestamp);
+                    onBeatEvent(oscTE);
 
                 } else {
                     // unrecognized OSC message!
@@ -215,6 +338,7 @@ public class TEAutopilot implements LXLoopTask {
                 double range = nextChannelFaderCeilingLevel - nextChannelFaderFloorLevel;
                 // can play around with the 1.5 exponent to make curve steeper!
                 nextChannelFaderVal = range * Math.pow(estFracCompleted, 1.5) + nextChannelFaderFloorLevel;
+                //TE.log("NextChannel: Setting fader=%s to %f", nextChannelName, nextChannelFaderVal);
                 TEMixerUtils.setFaderTo(lx, nextChannelName, nextChannelFaderVal);
             }
 
@@ -229,9 +353,13 @@ public class TEAutopilot implements LXLoopTask {
         }
     }
 
+    /**
+     * Based on state set around phrase, update our faders with an eye towards the next expected phrase.
+     * @param curPhraseLenBars: num contiguous bars in the current phrase type
+     */
     private void updateFadeOutChannels(double curPhraseLenBars) {
         // update fader value for OLD NEXT channel
-        if (oldNextFadeOutMode && curPhraseLenBars < MISPREDICTED_FADE_OUT_BARS) {
+        if (oldNextChannelName != null && oldNextFadeOutMode && curPhraseLenBars < MISPREDICTED_FADE_OUT_BARS) {
             //TE.log("FADE OLD NEXT: Fading out %s", oldNextChannelName);
             double newVal = TEMath.ease(
                     TEMath.EasingFunction.LINEAR_RAMP_DOWN,
@@ -241,43 +369,69 @@ public class TEAutopilot implements LXLoopTask {
         }
 
         // update fader for prev channel
-        if (prevFadeOutMode && curPhraseLenBars < PREV_FADE_OUT_BARS) {
-            //TE.log("FADE PREV: Fading out %s", prevChannelName);
-            double newVal = TEMath.ease(
-                    TEMath.EasingFunction.LINEAR_RAMP_DOWN,
-                    curPhraseLenBars, 0.0, PREV_FADE_OUT_BARS,
-                    LEVEL_OFF, LEVEL_PREV_FADE_OUT);
-            TEMixerUtils.setFaderTo(lx, prevChannelName, newVal);
+        if (prevChannelName != null) {
+            if (prevFadeOutMode && curPhraseLenBars < PREV_FADE_OUT_BARS) {
+                //TE.log("FADE PREV: Fading out %s", prevChannelName);
+                double newVal = TEMath.ease(
+                        TEMath.EasingFunction.LINEAR_RAMP_DOWN,
+                        curPhraseLenBars, 0.0, PREV_FADE_OUT_BARS,
+                        LEVEL_OFF, LEVEL_PREV_FADE_OUT);
+                TEMixerUtils.setFaderTo(lx, prevChannelName, newVal);
 
-        } else if (curPhraseLenBars >= PREV_FADE_OUT_BARS) {
-            TEMixerUtils.setFaderTo(lx, prevChannelName, LEVEL_OFF);
+            } else if (curPhraseLenBars >= PREV_FADE_OUT_BARS) {
+                //TE.log("FADE PREV: Fading out %s", prevChannelName);
+                TEMixerUtils.setFaderTo(lx, prevChannelName, LEVEL_OFF);
+            }
         }
     }
 
+    /**
+     * Based on state set around phrase, update our FX faders with an eye towards the next expected phrase.
+     * @param curPhraseLenBars
+     */
     private void updateFXChannels(double curPhraseLenBars) {
+        // first, set strobes
+        double newStrobeChannelVal = -1;
         if (strobesChannel.fader.getValue() > 0.0 && curPhraseLenBars < STROBES_AT_CHORUS_LENGTH_BARS) {
-            double newVal = TEMath.ease(
+            newStrobeChannelVal = TEMath.ease(
                     TEMath.EasingFunction.LINEAR_RAMP_DOWN,
                     curPhraseLenBars, 0.0, STROBES_AT_CHORUS_LENGTH_BARS,
                     LEVEL_OFF, LEVEL_FULL);
-            TEMixerUtils.setFaderTo(lx, TEChannelName.STROBES, newVal);
 
         } else if (curPhraseLenBars >= PREV_FADE_OUT_BARS) {
-            TEMixerUtils.setFaderTo(lx, TEChannelName.STROBES, LEVEL_OFF);
+            newStrobeChannelVal = LEVEL_OFF;
         }
 
+        if (newStrobeChannelVal >= 0) {
+            //TE.log("Strobes: Setting fader=%s to %f", TEChannelName.STROBES, newStrobeChannelVal);
+            TEMixerUtils.setFaderTo(lx, TEChannelName.STROBES, newStrobeChannelVal);
+        }
+
+        // now set triggers
+        double newTriggerChannelVal = -1;
         if (triggerChannel.fader.getValue() > 0.0 && curPhraseLenBars < TRIGGERS_AT_CHORUS_LENGTH_BARS) {
-            double newVal = TEMath.ease(
+            newTriggerChannelVal = TEMath.ease(
                     TEMath.EasingFunction.LINEAR_RAMP_DOWN,
                     curPhraseLenBars, 0.0, TRIGGERS_AT_CHORUS_LENGTH_BARS,
                     LEVEL_OFF, LEVEL_FULL);
-            TEMixerUtils.setFaderTo(lx, TEChannelName.TRIGGERS, newVal);
 
         } else if (curPhraseLenBars >= TRIGGERS_AT_CHORUS_LENGTH_BARS) {
-            TEMixerUtils.setFaderTo(lx, TEChannelName.TRIGGERS, LEVEL_OFF);
+            newTriggerChannelVal = LEVEL_OFF;
+        }
+
+        if (newTriggerChannelVal >= 0) {
+            //TE.log("Triggers: Setting fader=%s to %f", TEChannelName.TRIGGERS, newTriggerChannelVal);
+            TEMixerUtils.setFaderTo(lx, TEChannelName.TRIGGERS, newTriggerChannelVal);
         }
     }
 
+    /**
+     * Given a new phrase, update our phrase state around current,
+     * previous, and next phrase. This is the foundation of how we fade in and out
+     * of different phrase-based channels to make transitions happen.
+     *
+     * @param newPhrase
+     */
     private void updatePhraseState(TEPhrase newPhrase) {
         oldNextFadeOutMode = false;
 
@@ -288,6 +442,12 @@ public class TEAutopilot implements LXLoopTask {
         nextPhrase = guessNextPhrase(newPhrase);
     }
 
+    /**
+     * Start an LXPattern. We want this to happen without delay.
+     *
+     * @param channel
+     * @param pattern
+     */
     private void startPattern(LXChannel channel, LXPattern pattern) {
         // disable the 100ms latency restriction LX has
         channel.transitionEnabled.setValue(false);
@@ -297,7 +457,14 @@ public class TEAutopilot implements LXLoopTask {
         channel.goPattern(pattern); // make doubly sure no transition of 100ms happens
     }
 
-    private void onPhraseChange(String oscAddress, long timestamp, double deltaMs) throws Exception {
+    /**
+     * Callback that happens when a new phrase is triggered.
+     *
+     * @param oscAddress String address that denotes what kind of phrase
+     * @param timestamp when this phrase was triggered
+     * @throws Exception
+     */
+    private void onPhraseChange(String oscAddress, long timestamp) throws Exception {
         // detect phrase type
         TEPhrase detectedPhrase = TEPhrase.resolvePhrase(oscAddress);
         if (detectedPhrase == TEPhrase.UNKNOWN)
@@ -308,8 +475,8 @@ public class TEAutopilot implements LXLoopTask {
         this.updatePhraseState(detectedPhrase);
         boolean predictedCorrectly = (oldNextPhrase == curPhrase);
         boolean isSamePhrase = (prevPhrase == curPhrase);
-        TE.log("HIT: %s: [%s -> %s -> %s (?)], (old next: %s)"
-                , curPhrase, prevPhrase, curPhrase, nextPhrase, oldNextPhrase);
+        TE.log("HIT: %s: [%s -> %s -> %s (?)], (old next: %s) oscBeatModeOnlyOn=%s"
+                , curPhrase, prevPhrase, curPhrase, nextPhrase, oldNextPhrase, oscBeatModeOnlyOn);
 
         // record history for pattern library
         // need to do this before we a) pick new patterns, and b) logPhrase() with historian
@@ -402,6 +569,11 @@ public class TEAutopilot implements LXLoopTask {
         history.logPhrase(timestamp, curPhrase, lx.engine.tempo.bpm.getValue());
     }
 
+    /**
+     * Determines whether or not to trigger FX around important sonic events.
+     *
+     * @param isSamePhrase
+     */
     private void enableFX(boolean isSamePhrase) {
         if (curPhrase != TEPhrase.CHORUS)
             // only hit FX on chorus starts
@@ -430,10 +602,20 @@ public class TEAutopilot implements LXLoopTask {
         TEMixerUtils.setFaderTo(lx, TEChannelName.TRIGGERS, LEVEL_FULL);
     }
 
+    /**
+     * Is autopilot enabled? If not, ignore OSC messages and other input.
+     *
+     * @return boolean
+     */
     public boolean isEnabled() {
         return enabled;
     }
 
+    /**
+     * Toggle enable/disable autopilot. Clears history.
+     *
+     * @param enabled
+     */
     public void setEnabled(boolean enabled) {
         if (enabled == this.enabled)
             // only enact this logic if different from
@@ -450,10 +632,15 @@ public class TEAutopilot implements LXLoopTask {
         }
     }
 
+    /**
+     * Guess the next phrase based on new current phrase and potentially
+     * older ones. This is rule-based for now.
+     *
+     * @param newPhrase
+     * @return
+     */
     public TEPhrase guessNextPhrase(TEPhrase newPhrase) {
-        //TODO(will) make this smarter to count the number of beats
-        // contiguously we've been on the same phrase type. Can also
-        // use audio data -- this is just dumb first cut...
+        //TODO(will) make this smarter
         boolean isSame = false;
         try {
             TEPhraseEvent prevPhraseEvt = history.phraseEvents.get(-1);
