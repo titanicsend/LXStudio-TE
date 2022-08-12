@@ -5,11 +5,11 @@
 // these constants are predefined and can be used by all shaders
 // to index iPalette[] when choosing a palette color:
 //
-// TE_EDGE      - Primary color to use on edges
-// TE_SECONDARY - Secondary color to use on edges or panels
-// TE_PANEL     - Primary color to use on panels
-// TE_EDGE_BG   - Background color to use on edges
-// TE_PANEL_BG  - Background color to use on edges
+// TE_BACKGROUND  - Background color
+// TE_TRANSITION  - Gradient path from TE_BACKGROUND to TE_PRIMARY
+// TE_PRIMARY     - Primary color to use on edges or panels
+// TE_SECONDARY   - Secondary color to use on edges or panels
+// TE_SECONDARY_BACKGROUND  - Background color path from TE_SECONDARY
 
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord ){

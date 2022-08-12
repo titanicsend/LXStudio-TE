@@ -57,16 +57,16 @@ calculations. They are automatically clamped to the proper range on output.
 An array of 5 RGB colors, containing TE's current palette. You can
 select the colors by using the following defined constants.
 
-- **TE_EDGE**      - Primary color to use on edges
+- **TE_PRIMARY**      - Primary color to use on edges
 - **TE_SECONDARY** - Secondary color to use on edges or panels
-- **TE_PANEL**     - Primary color to use on panels
-- **TE_EDGE_BG**   - Background color to use on edges
-- **TE_PANEL_BG**  - Background color to use on edges
+- **TE_PRIMARY**     - Primary color to use on panels
+- **TE_BACKGROUND**   - Background color to use on edges
+- **TE_SECONDARY_BACKGROUND**  - Background color to use on edges
 
 For example to get the current primary panel color, use:
 
 ```
-	vec3 color = iPalette[TE_PANEL];
+	vec3 color = iPalette[TE_PRIMARY];
 	
 	// to get individual color channel values
 	float red = color.r;   // also color.x or color[0]

@@ -15,7 +15,7 @@ public class PatternTarget {
     final Map<LXPoint, Dimensions> pointsToCanvas = new HashMap<>();
 
     TEAudioPattern pattern;
-    public TEPattern.ColorType colorType = TEPattern.ColorType.PANEL;
+    public TEPattern.ColorType colorType = TEPattern.ColorType.PRIMARY;
 
     public PatternTarget(TEAudioPattern pattern) {
         this.pattern = pattern;
@@ -51,11 +51,14 @@ public class PatternTarget {
     }
 
     public static PatternTarget allPointsAsCanvas(TEAudioPattern pattern) {
-        return new PatternTarget(pattern).addPointsAsCanvas(pattern.getModel().getPoints());
+        PatternTarget pt = new PatternTarget(pattern);
+        pt.addPointsAsCanvas(pattern.getModel().panelPoints);
+        pt.addPointsAsCanvas(pattern.getModel().edgePoints);
+        return pt;
     }
 
     public static PatternTarget allEdgesAsCanvas(TEAudioPattern pattern) {
-        return new PatternTarget(pattern,TEPattern.ColorType.EDGE).addPointsAsCanvas(pattern.getModel().edgePoints);
+        return new PatternTarget(pattern,TEPattern.ColorType.PRIMARY).addPointsAsCanvas(pattern.getModel().edgePoints);
     }
 
     public static PatternTarget allPanelsAsCanvas(TEAudioPattern pattern) {

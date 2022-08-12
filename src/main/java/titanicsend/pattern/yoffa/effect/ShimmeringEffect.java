@@ -33,7 +33,7 @@ public class ShimmeringEffect extends PatternEffect {
     @Override
     public void run(double deltaMs) {
         //todo pattern effects should infer colors, not specify
-        int baseColor = pattern.getSwatchColor(TEPattern.ColorType.EDGE);
+        int baseColor = pattern.getSwatchColor(TEPattern.ColorType.PRIMARY);
         double basis = getTempo().basis();
         int beatCount = getTempo().beatCount();
         int beatsPerMeasure = getTempo().beatsPerMeasure.getValuei();

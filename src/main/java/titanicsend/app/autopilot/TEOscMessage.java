@@ -52,8 +52,30 @@ public class TEOscMessage {
         return oscAddress.startsWith(PREFIX_LX + SLUG_BEAT);
     }
 
+    /**
+     * Beat count OSC messages are in the format of:
+     *
+     *      /lx/tempo/beat I %BEATMARKER%
+     *
+     * @return int beat num, 0-indexed
+     */
+    public int extractBeatCount() {
+        if (!TEOscMessage.isBeat(message.getAddressPattern().toString()))
+            // this isn't a beat, exit
+            return -1;
+
+        // parse just using the string representation for now
+        String[] parts = message.toString().split(" ");
+        int extractedBeatNum = Integer.parseInt(parts[1]);
+        return extractedBeatNum - 1;
+    }
+
     public static boolean isPhraseChange(String oscAddress) {
         return oscAddress.startsWith(PREFIX_TE + SLUG_PHRASE_CHANGE);
+    }
+
+    public static String makeOscPhraseChangeAddress(TEPhrase p) {
+        return PREFIX_TE + SLUG_PHRASE_CHANGE + p.toString().toLowerCase();
     }
 
     /**

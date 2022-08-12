@@ -74,7 +74,7 @@ public class Phasers extends TEAudioPattern {
 
 
     public final LinkedColorParameter color =
-            registerColor("Color", "color", ColorType.PANEL,
+            registerColor("Color", "color", ColorType.PRIMARY,
                     "Panel Color");
 
     public Phasers(LX lx) {

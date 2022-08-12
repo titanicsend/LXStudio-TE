@@ -33,7 +33,7 @@ public class BouncingDots extends TEPattern {
     });
 
     public final LinkedColorParameter color =
-            registerColor("Color", "color", ColorType.EDGE,
+            registerColor("Color", "color", ColorType.PRIMARY,
                     "Color of the dots");
 
     public BouncingDots(LX lx) {

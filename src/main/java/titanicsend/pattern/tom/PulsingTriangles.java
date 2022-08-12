@@ -48,7 +48,7 @@ public class PulsingTriangles extends TEPattern {
     });
 
     public final LinkedColorParameter color =
-            registerColor("Color", "color", ColorType.PANEL,
+            registerColor("Color", "color", ColorType.PRIMARY,
                     "Color of the triangles");
 
     public PulsingTriangles(LX lx) {

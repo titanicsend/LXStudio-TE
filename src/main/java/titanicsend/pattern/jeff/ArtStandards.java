@@ -57,7 +57,7 @@ public class ArtStandards extends TEAudioPattern {
          */
 
         // Art standard: Respect the palette
-        // We'll use the `edgeGradient` that TEPattern provides. In case the
+        // We'll use the `primaryGradient` that TEPattern provides. In case the
         // palette has changed or is transitioning, this gets the new values.
         updateGradients();
 
@@ -113,7 +113,7 @@ public class ArtStandards extends TEAudioPattern {
                  *
                  * point.rn range is 0..1, measure's range is 0..1
                  */
-                int baseColor = getEdgeGradientColor(2 * (point.rn - measure));
+                int baseColor = getPrimaryGradientColor(2 * (point.rn - measure));
 
                 // We're going to add a sparkle based on the treble in the music,
                 // so we'll break this color apart into it's hsb components.

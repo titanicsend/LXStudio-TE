@@ -1,6 +1,6 @@
 {
   "version": "0.4.1",
-  "timestamp": 1660164371471,
+  "timestamp": 1659977190755,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -510,7 +510,7 @@
               "label": "Channel-1",
               "arm": false,
               "selected": false,
-              "enabled": false,
+              "enabled": true,
               "cue": false,
               "fader": 1.0,
               "crossfadeGroup": 0,
@@ -712,7 +712,7 @@
               },
               {
                 "id": 9624,
-                "class": "titanicsend.pattern.will.PowerDebugger",
+                "class": "titanicsend.pattern.jeff.SignalDebugger",
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
@@ -720,8 +720,9 @@
                   "autoCycleEligible": true
                 },
                 "parameters": {
-                  "label": "PowerDebugger",
-                  "recall": false
+                  "label": "SignalDebugger",
+                  "recall": false,
+                  "vertexSelect": 122
                 },
                 "children": {
                   "modulation": {
@@ -909,7 +910,7 @@
         },
         "parameters": {
           "label": "Snapshots",
-          "recallMixer": true,
+          "recallMixer": false,
           "recallModulation": true,
           "recallPattern": true,
           "recallEffect": true,
@@ -1070,9 +1071,9 @@
         "centerPoint": false,
         "camera": {
           "active": false,
-          "radius": 1.4353164801836198E7,
-          "theta": -14.113930613733828,
-          "phi": -0.02969088265672326,
+          "radius": 1.1128807620685171E7,
+          "theta": -14.178307639434934,
+          "phi": 0.18919054605066776,
           "x": 303442.78125,
           "y": 5226718.33203125,
           "z": 923606.193359375
@@ -1080,9 +1081,9 @@
         "cue": [
           {
             "active": false,
-            "radius": 1.4353164801836198E7,
-            "theta": -14.113930613733828,
-            "phi": -0.02969088265672326,
+            "radius": 1.1128807620685171E7,
+            "theta": -14.178307639434934,
+            "phi": 0.18919054605066776,
             "x": 303442.78125,
             "y": 5226718.33203125,
             "z": 923606.193359375

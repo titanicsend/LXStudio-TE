@@ -38,13 +38,13 @@ Layer M Preferences (Phrase :: ROCK/POP)
     OUTRO
         OSC OUT: /te/phrase/down I 1;
     VERSE1
-        OSC OUT: /te/phrase/chorus I 1;
+        OSC OUT: /te/phrase/up I 1;
     VERSE2
         OSC OUT: /te/phrase/chorus I 1;
     VERSE3
         OSC OUT: /te/phrase/chorus I 1;
     VERSE4
-        OSC OUT: /te/phrase/chorus I 1;
+        OSC OUT: /te/phrase/up I 1;
     VERSE5
         OSC OUT: /te/phrase/chorus I 1;
     VERSE6
@@ -60,13 +60,13 @@ Layer M Preferences (Phrase :: OTHER)
     OUTRO
         OSC OUT: /te/phrase/down I 1;
     VERSE1
-        OSC OUT: /te/phrase/chorus I 1;
+        OSC OUT: /te/phrase/up I 1;
     VERSE2
         OSC OUT: /te/phrase/chorus I 1;
     VERSE3
         OSC OUT: /te/phrase/chorus I 1;
     VERSE4
-        OSC OUT: /te/phrase/chorus I 1;
+        OSC OUT: /te/phrase/up I 1;
     VERSE5
         OSC OUT: /te/phrase/chorus I 1;
     VERSE6

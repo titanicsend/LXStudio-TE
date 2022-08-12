@@ -155,8 +155,6 @@ public class NativeShader implements GLEventListener {
         }
     }
 
-
-
     private void setUpCanvas(GL4 gl4) {
         // allocate geometry buffer handles
         int[] bufferHandlesB = new int[1];
@@ -228,13 +226,16 @@ public class NativeShader implements GLEventListener {
             gl4.glActiveTexture(INDEX_TO_GL_ENUM.get(textureInput.getKey()));
             texture.enable(gl4);
             texture.bind(gl4);
-            int channelLocation = gl4.glGetUniformLocation(shaderProgram.getProgramId(), Uniforms.CHANNEL +
-                    textureInput.getKey());
+            String texName = Uniforms.CHANNEL+textureInput.getKey();
+
+            int channelLocation = gl4.glGetUniformLocation(shaderProgram.getProgramId(), texName);
             gl4.glUniform1i(channelLocation, textureInput.getKey());
+            //TE.log("Adding texture %s at location %d",texName,channelLocation);
             texture.disable(gl4);
         }
 
-        // if enabled, set audio waveform and fft data as a 512x2 texture
+        // if enabled, set audio waveform and fft data as a 512x2 texture on the specified audio
+        // channel if it's a shadertoy shader, or iChannel0 if it's a local shader.
         if (audioChannel != null && shaderOptions.getWaveData()) {
 
             gl4.glActiveTexture(INDEX_TO_GL_ENUM.get(0));
@@ -255,7 +256,8 @@ public class NativeShader implements GLEventListener {
             gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            setUniform(Uniforms.CHANNEL + this.audioChannel, (int) 0);
+            //TE.log("Adding texture iChannel%d",this.audioChannel);
+            setUniform(Uniforms.CHANNEL + this.audioChannel, this.audioChannel);
         }
 
         // hand the complete uniform list to OpenGL
@@ -275,10 +277,12 @@ public class NativeShader implements GLEventListener {
         for (Map.Entry<Integer, String> textureInput : fragmentShader.getChannelToTexture().entrySet()) {
             try {
                 if (fragmentShader.hasRemoteTextures()) {
+                    //TE.log("Remote Texture %s", textureInput.getValue());
                     URL url = new URL(textureInput.getValue());
                     textures.put(textureInput.getKey(), TextureIO.newTexture(url, false, null));
                 } else {
                     File file = new File(textureInput.getValue());
+                    //TE.log("File Texture %s", textureInput.getValue());
                     textures.put(textureInput.getKey(), TextureIO.newTexture(file, false));
                 }
             } catch (IOException e) {
@@ -522,7 +526,7 @@ public class NativeShader implements GLEventListener {
                 addUniform(name, GeneralUniforms.INT4VEC, vec);
                 break;
             default:
-                TE.log("SetUniform(%s): %d coords specified, maximum 4 allowed", name, columns);
+                //TE.log("SetUniform(%s): %d coords specified, maximum 4 allowed", name, columns);
                 break;
         }
     }
@@ -542,7 +546,7 @@ public class NativeShader implements GLEventListener {
                 addUniform(name, GeneralUniforms.FLOAT4VEC, vec);
                 break;
             default:
-                TE.log("SetUniform(%s): %d coords specified, maximum 4 allowed", name, columns);
+                //TE.log("SetUniform(%s): %d coords specified, maximum 4 allowed", name, columns);
                 break;
         }
     }

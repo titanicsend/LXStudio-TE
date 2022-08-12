@@ -31,7 +31,7 @@ public class BreathingDotsEffect extends PatternEffect {
     }
 
     public void run(double deltaMs) {
-        int baseColor = pattern.getSwatchColor(TEPattern.ColorType.PANEL);
+        int baseColor = pattern.getSwatchColor(TEPattern.ColorType.PRIMARY);
 
         List<LXPoint> availablePoints = new ArrayList<>(getAllPoints());
         for (LXPoint point : getAllPoints()) {

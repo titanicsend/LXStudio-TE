@@ -14,7 +14,7 @@ import java.util.Map;
 @LXCategory("Combo FG")
 public class BrightScreen extends TEPattern {
     public final LinkedColorParameter color =
-            registerColor("Color", "color", ColorType.PANEL,
+            registerColor("Color", "color", ColorType.PRIMARY,
                     "Color of the screen");
 
     public BrightScreen(LX lx) {

@@ -13,7 +13,7 @@
 #define time iTime*0.2
 
 mat2 makem2(in float theta){float c = cos(theta);float s = sin(theta);return mat2(c,-s,s,c);}
-float noise( in vec2 x ){return texture(iChannel0, x*.01).x;}
+float noise( in vec2 x ){return texture(iChannel1, x*.01).x;}
 
 mat2 m2 = mat2( 0.80,  0.60, -0.60,  0.80 );
 float fbm( in vec2 p )
