@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @LXCategory("Geometry Masks")
 public class EdgeSymmetry extends TEPattern {
     public final LinkedColorParameter colorParam =
-            registerColor("Color", "color", ColorType.EDGE,
+            registerColor("Color", "color", ColorType.PRIMARY,
                     "Primary color for edges");
 
     public final CompoundParameter energy =

@@ -17,11 +17,11 @@ uniform float sinPhaseBeat;
 uniform float bassLevel;
 uniform float trebleLevel;
 
-#define TE_EDGE 0
-#define TE_SECONDARY 1
-#define TE_PANEL 2
-#define TE_EDGE_BG 3
-#define TE_PANEL_BG 4
+#define TE_BACKGROUND 0
+#define TE_TRANSITION 1
+#define TE_PRIMARY 2
+#define TE_SECONDARY 3
+#define TE_SECONDARY_BACKGROUND 4
 
 {{%shader_body%}}
 

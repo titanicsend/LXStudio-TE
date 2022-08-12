@@ -24,9 +24,9 @@ var __lastControls = {};
 var PI2 = Math.PI * 2;
 
 /* Constants */
-var EDGE = ColorType.EDGE;
+var PRIMARY = ColorType.PRIMARY;
 var SECONDARY = ColorType.SECONDARY;
-var PANEL = ColorType.PANEL;
+var BACKGROUND = ColorType.BACKGROUND;
 
 /* Point / coordinate API */
 function isEdgePoint() {

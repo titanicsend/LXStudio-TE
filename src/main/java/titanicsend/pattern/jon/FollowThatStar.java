@@ -51,7 +51,7 @@ public class FollowThatStar extends TEAudioPattern {
                     .setDescription("Speed relative to beat");
 
     public final LinkedColorParameter color =
-            registerColor("Color", "color", ColorType.PANEL,
+            registerColor("Color", "color", ColorType.PRIMARY,
                     "Panel Color");
 
     public FollowThatStar(LX lx) {
