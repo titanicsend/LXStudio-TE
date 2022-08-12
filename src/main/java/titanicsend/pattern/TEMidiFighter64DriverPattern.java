@@ -5,10 +5,6 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.midi.*;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.DiscreteParameter;
-import heronarts.lx.studio.LXStudio;
-import heronarts.lx.studio.ui.device.UIDevice;
-import heronarts.lx.studio.ui.device.UIDeviceControls;
-import heronarts.p4lx.ui.UI2dContainer;
 import titanicsend.pattern.mf64.*;
 
 @LXCategory("Combo FG")
@@ -131,10 +127,10 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   private final MF64RandomPanel randomPanel = new MF64RandomPanel(this);
   private final MF64EdgeSparks eSparks = new MF64EdgeSparks(this);
   private final MF64Spinwheel spin = new MF64Spinwheel(this);
-
+  private final MF64XWave xwave = new MF64XWave(this);
 
   private final TEMidiFighter64Subpattern[] patterns = {
-    spin, logger, logger, logger, logger, logger, logger, logger,
+    xwave, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
     eSparks, eSparks, eSparks, eSparks, eSparks, eSparks, eSparks, eSparks,
@@ -350,5 +346,6 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     this.randomPanel.run(deltaMs,colors);
     this.eSparks.run(deltaMs,colors);
     this.spin.run(deltaMs,colors);
+    this.xwave.run(deltaMs,colors);
   }
 }
