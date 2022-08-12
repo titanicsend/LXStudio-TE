@@ -99,7 +99,7 @@ public class MF64XWave extends TEMidiFighter64Subpattern {
             dist = dist * dist;
 
             int alpha = (int) (255 * TEMath.clamp(dist, 0, 1));
-            col = (dist > 0.9) ? (flashColor & 0x00FFFFFF) | (alpha << 24) : TRANSPARENT;
+            col = (dist > 0.9) ? (color & 0x00FFFFFF) | (alpha << 24) : TRANSPARENT;
 
             colors[point.index] = col;
         }
@@ -112,7 +112,7 @@ public class MF64XWave extends TEMidiFighter64Subpattern {
             dist = dist * dist;
 
             int alpha = (int) (255 * TEMath.clamp(dist, 0, 1));
-            col = (dist > 0.9) ? (flashColor & 0x00FFFFFF) | (alpha << 24) : TRANSPARENT;
+            col = (dist > 0.9) ? (color& 0x00FFFFFF) | (alpha << 24) : TRANSPARENT;
 
             colors[point.index] = col;
         }
