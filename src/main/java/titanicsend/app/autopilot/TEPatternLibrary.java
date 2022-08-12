@@ -306,13 +306,13 @@ public class TEPatternLibrary {
 
         TE.log("Matches for oldPhrase=%s, oldPattern=%s, newPhrase=%s", oldPhrase, curPattern, newPhrase);
         for (TEPatternRecord r : matchingRecords) {
-            TE.log("-> match: cls=%s, ph=%s, cov=%s, color=%s"
-                    , r.patternClass, r.phraseType, r.coverageType, r.colorCategoryType);
+            //TE.log("-> match: cls=%s, ph=%s, cov=%s, color=%s"
+            //        , r.patternClass, r.phraseType, r.coverageType, r.colorCategoryType);
         }
 
         // now for each record, pull in the corresponding pattern(s) and add to a list
-        TE.log("Found %d matching patterns with: coverage=%s, color=%s, phrase=%s",
-                matchingRecords.size(), rec.coverageType, rec.colorCategoryType, newPhrase);
+        //TE.log("Found %d matching patterns with: coverage=%s, color=%s, phrase=%s",
+        //        matchingRecords.size(), rec.coverageType, rec.colorCategoryType, newPhrase);
         ArrayList<LXPattern> matchingPatterns = new ArrayList<>();
         for (TEPatternRecord r : matchingRecords) {
             for (LXPattern p : this.rec2patterns.get(r)) {

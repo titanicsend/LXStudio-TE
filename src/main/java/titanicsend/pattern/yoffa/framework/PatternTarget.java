@@ -51,7 +51,10 @@ public class PatternTarget {
     }
 
     public static PatternTarget allPointsAsCanvas(TEAudioPattern pattern) {
-        return new PatternTarget(pattern).addPointsAsCanvas(pattern.getModel().getPoints());
+        PatternTarget pt = new PatternTarget(pattern);
+        pt.addPointsAsCanvas(pattern.getModel().panelPoints);
+        pt.addPointsAsCanvas(pattern.getModel().edgePoints);
+        return pt;
     }
 
     public static PatternTarget allEdgesAsCanvas(TEAudioPattern pattern) {

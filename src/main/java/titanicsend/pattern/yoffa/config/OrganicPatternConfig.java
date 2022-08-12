@@ -43,7 +43,7 @@ public class OrganicPatternConfig {
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new RainbowSwirlShader(PatternTarget.splitPanelSections(this)));
+            return List.of(new RainbowSwirlShader(PatternTarget.doubleLargeCanvas(this)));
         }
     }
 
@@ -87,7 +87,7 @@ public class OrganicPatternConfig {
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new NeonCellsShader(PatternTarget.splitPanelSections(this)));
+            return List.of(new NeonCellsShader(PatternTarget.doubleLargeCanvas(this)));
         }
     }
 
@@ -109,7 +109,7 @@ public class OrganicPatternConfig {
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new WaterShader(PatternTarget.splitPanelSections(this)));
+            return List.of(new WaterShader(PatternTarget.allPanelsAsCanvas(this)));
         }
     }
 

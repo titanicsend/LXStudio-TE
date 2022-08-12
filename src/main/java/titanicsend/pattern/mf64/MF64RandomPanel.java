@@ -1,6 +1,7 @@
 package titanicsend.pattern.mf64;
 
 import heronarts.lx.color.LXColor;
+import heronarts.lx.model.LXPoint;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
@@ -93,6 +94,7 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
         if (stopRequest) {
             stopRequest = false;
             active = false;
+            colorSet[0] = TRANSPARENT;
         }
 
         float t = time.getTime();

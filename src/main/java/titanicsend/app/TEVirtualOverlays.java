@@ -2,20 +2,20 @@ package titanicsend.app;
 
 import java.util.*;
 
-import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.transform.LXVector;
 import heronarts.p4lx.ui.UI;
 import processing.core.PGraphics;
 import titanicsend.model.*;
+import titanicsend.util.TE;
 
 public class TEVirtualOverlays extends TEUIComponent {
   TEWholeModel model;
 
-  public final BooleanParameter vertexSpheresVisible =
-          new BooleanParameter("Vertex Spheres")
-                  .setDescription("Toggle whether vertex spheres are visible")
+  public final BooleanParameter speakersVisible =
+          new BooleanParameter("Speakers")
+                  .setDescription("Toggle whether speakers are visible")
                   .setValue(false);
 
   public final BooleanParameter vertexLabelsVisible =
@@ -38,6 +38,11 @@ public class TEVirtualOverlays extends TEUIComponent {
                   .setDescription("Toggle whether to render the back of lit panels as opaque")
                   .setValue(true);
 
+  public final BooleanParameter powerBoxesVisible =
+          new BooleanParameter("Power boxes")
+                  .setDescription("Toggle whether to show power boxes")
+                  .setValue(false);
+
   private static class POV {
     LXVector v;
     int rgb;
@@ -54,18 +59,66 @@ public class TEVirtualOverlays extends TEUIComponent {
   private final LXVector mountainNormal = new LXVector(-1, 0, 0);
   private final List<List<POV>> laserPOV;
 
+  private HashMap<TEVertex, Integer> vertex2Powerboxes;
+
   public TEVirtualOverlays(TEWholeModel model) {
     super();
     this.model = model;
-    addParameter("vertexSpheresVisible", this.vertexSpheresVisible);
+    addParameter("vertexSpheresVisible", this.speakersVisible);
     addParameter("vertexLabelsVisible", this.vertexLabelsVisible);
     addParameter("panelLabelsVisible", this.panelLabelsVisible);
     addParameter("unknownPanelsVisible", this.unknownPanelsVisible);
     addParameter("opaqueBackPanelsVisible", this.opaqueBackPanelsVisible);
+    addParameter("powerBoxesVisible", this.powerBoxesVisible);
     this.laserPOV = new ArrayList<>();
     for (int i = 0; i < numPOVs; i++) {
       this.laserPOV.add(new ArrayList<>());
     }
+    vertex2Powerboxes = loadPowerboxes();
+  }
+
+  public HashMap<TEVertex, Integer> loadPowerboxes() {
+    Scanner s = this.model.loadFile("power_assignments.tsv");
+    int i = 0;
+    HashMap<TEVertex, Integer> v2p = new HashMap<>();
+
+    while (s.hasNextLine()) {
+      String line = s.nextLine();
+
+      // skip our header
+      i++;
+      if (i == 1) {
+        TE.log("skipping header...");
+        continue;
+      }
+
+      // parse the line!
+      try {
+        String[] tokens = line.split("\\t");
+        assert tokens.length == 7;
+
+        // parse fields
+        String jbox = tokens[4].strip();
+        int jboxVertex = Integer.parseInt(jbox.split("-")[0]);
+        int jboxIdx = Integer.parseInt(jbox.split("-")[1]);
+
+        // collect vertices that are powerboxes
+        if (!v2p.containsKey(jboxVertex)) {
+          v2p.put(this.model.vertexesById.get(jboxVertex), 1);
+        }
+
+        if (jboxIdx > 0) {
+          v2p.put(this.model.vertexesById.get(jboxVertex), jboxIdx + 1);
+        }
+
+      } catch (Exception e) {
+        TE.err(e.toString());
+        e.printStackTrace();
+        TE.err(line);
+      }
+    }
+
+    return v2p;
   }
 
   // https://stackoverflow.com/questions/5666222/3d-line-plane-intersection
@@ -79,7 +132,12 @@ public class TEVirtualOverlays extends TEUIComponent {
   }
 
   @Override
-  public void onDraw(UI ui, PGraphics pg) {
+    public void onDraw(UI ui, PGraphics pg) {
+
+    // if powerboxes are on, set opaque to false
+    if (this.powerBoxesVisible.isOn())
+      this.opaqueBackPanelsVisible.setValue(false);
+
     beginDraw(ui, pg);
     pg.noStroke();
     pg.textSize(40);
@@ -88,10 +146,6 @@ public class TEVirtualOverlays extends TEUIComponent {
       pg.pushMatrix();
       pg.translate(v.x, v.y, v.z);
       pg.ambientLight(255, 255, 255);
-      if (this.vertexSpheresVisible.getValueb() && v.virtualColor != null) {
-        pg.fill(v.virtualColor.rgb, v.virtualColor.alpha);
-        pg.sphere(100000);
-      }
       pg.noLights();
       if (this.vertexLabelsVisible.getValueb()) {
         // Vertex labels are further outset past vertexSpheres by different percentages of x and z,
@@ -104,7 +158,34 @@ public class TEVirtualOverlays extends TEUIComponent {
         pg.text(entry.getKey().toString(), 0, 0, 0);
       }
       pg.popMatrix();
+
+      // should we draw a powerbox (or 2) here?
+      pg.pushMatrix();
+      pg.translate(v.x, v.y, v.z);
+      pg.ambientLight(255, 255, 255);
+      pg.noLights();
+      if (this.powerBoxesVisible.getValueb()) {
+        if (vertex2Powerboxes.containsKey(v)) {  //HashMap<TEVertex, Integer>
+          int boxCount = vertex2Powerboxes.get(v);
+          if (boxCount == 1) {
+            pg.translate(-1 * v.x * .2f, 0, -1 * v.z * .02f);
+            pg.rotateY((float) (Math.atan2(v.x, v.z/5) + Math.PI));  // Face out
+            pg.fill(255, 255, 0);
+            pg.sphere(100000);
+          } else {
+            pg.translate(-1 * v.x * .2f, 0, -1 * v.z * .02f);
+            pg.rotateY((float) (Math.atan2(v.x, v.z/5) + Math.PI));  // Face out
+            pg.fill(255, 255, 0);
+            pg.sphere(100000);
+            pg.translate(2 * 100000, 0, 0);
+            pg.fill(100, 100, 0);
+            pg.sphere(100000);
+          }
+        }
+      }
+      pg.popMatrix();
     }
+
     for (Map.Entry<String, TEPanelModel> entry : model.panelsById.entrySet()) {
       TEPanelModel p = entry.getValue();
       if (p.virtualColor != null) {
@@ -151,14 +232,18 @@ public class TEVirtualOverlays extends TEUIComponent {
       }
     }
 
-    for (TEBox box : model.boxes) {
-      pg.fill(LXColor.rgb(50, 60, 40), 255);
-      for (List<LXVector> face : box.faces) {
-        pg.beginShape();
-        for (LXVector corner : face) {
-          pg.vertex(corner.x, corner.y, corner.z);
+    // should we draw the speakers?
+    if (this.speakersVisible.getValueb()) {
+      // draw speakers as rectangular prisms
+      for (TEBox box : model.boxes) {
+        pg.fill(LXColor.rgb(50, 60, 40), 255);
+        for (List<LXVector> face : box.faces) {
+          pg.beginShape();
+          for (LXVector corner : face) {
+            pg.vertex(corner.x, corner.y, corner.z);
+          }
+          pg.endShape();
         }
-        pg.endShape();
       }
     }
 

@@ -640,13 +640,13 @@
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 1,
+              "focusedPattern": 2,
               "triggerPatternCycle": false
             },
             "children": {},
             "effects": [],
             "clips": [],
-            "patternIndex": 1,
+            "patternIndex": 2,
             "patterns": [
               {
                 "id": 9379,
@@ -695,6 +695,38 @@
                 "children": {
                   "modulation": {
                     "id": 9540,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 9624,
+                "class": "titanicsend.pattern.jeff.SignalDebugger",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false,
+                  "autoCycleEligible": true
+                },
+                "parameters": {
+                  "label": "SignalDebugger",
+                  "recall": false,
+                  "vertexSelect": 122
+                },
+                "children": {
+                  "modulation": {
+                    "id": 9625,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0
@@ -1039,9 +1071,9 @@
         "centerPoint": false,
         "camera": {
           "active": false,
-          "radius": 1.3203337119007148E7,
-          "theta": -26.659835670143366,
-          "phi": -0.30460789846256375,
+          "radius": 1.1128807620685171E7,
+          "theta": -14.178307639434934,
+          "phi": 0.18919054605066776,
           "x": 303442.78125,
           "y": 5226718.33203125,
           "z": 923606.193359375
@@ -1049,9 +1081,9 @@
         "cue": [
           {
             "active": false,
-            "radius": 1.3203337119007148E7,
-            "theta": -26.659835670143366,
-            "phi": -0.30460789846256375,
+            "radius": 1.1128807620685171E7,
+            "theta": -14.178307639434934,
+            "phi": 0.18919054605066776,
             "x": 303442.78125,
             "y": 5226718.33203125,
             "z": 923606.193359375

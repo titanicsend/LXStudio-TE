@@ -50,7 +50,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("electric.fs",
-                    PatternTarget.splitPanelSections(this)));
+                    PatternTarget.doubleLargeCanvas(this)));
         }
     }
 
@@ -74,7 +74,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("marbling.fs",
-                    PatternTarget.splitPanelSections(this)));
+                    PatternTarget.doubleLargeCanvas(this)));
         }
     }
 
@@ -182,7 +182,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("storm_scanner.fs",
-                    PatternTarget.allPanelsAsIndividual(this),"gray_noise.png"));
+                    PatternTarget.doubleLargeCanvas(this),"gray_noise.png"));
         }
     }
 
@@ -279,7 +279,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("pulsing_petri_dish.fs",
-                    PatternTarget.doubleLargeCanvas(this)));
+                    PatternTarget.allPanelsAsCanvas(this)));
         }
     }
 

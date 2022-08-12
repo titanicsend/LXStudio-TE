@@ -19,7 +19,7 @@ import titanicsend.app.TEVirtualColor;
 import titanicsend.model.TEVertex;
 import titanicsend.pattern.TEPattern;
 
-@LXCategory("TE Debugging")
+@LXCategory("Test")
 public class ModelDebugger extends TEPattern implements UIDeviceControls<ModelDebugger> {
   public enum ObjectType {
     VERTEX("Vertex"),

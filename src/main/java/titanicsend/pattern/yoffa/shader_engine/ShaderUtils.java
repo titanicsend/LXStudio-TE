@@ -140,6 +140,9 @@ public class ShaderUtils {
      */
     public static boolean loadShaderFromCache(GL4 gl4,int programID, String shaderName, long timeStamp) {
 
+        // account for shadertoy shaders pulled in via URL
+        if (shaderName == null) return false;
+
         // compare timestamp to see if the shader has been updated.
         File shaderBin = new File(shaderName);
         if (!shaderBin.exists()) {
@@ -177,6 +180,9 @@ public class ShaderUtils {
      * resources/shaders/cache
      */
     public static void saveShaderToCache(GL4 gl4, String shaderName, int programId) {
+
+        // account for shadertoy shaders pulled in via URL
+        if (shaderName == null) return;
 
         // get the size of the shader binary in bytes
         int[] len = new int[1];
