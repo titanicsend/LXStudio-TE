@@ -85,13 +85,13 @@ float nse3d(in vec3 x)
     vec3 f = fract(x);
 	f = f * f * (3.0 - 2.0 * f);
 	vec2 uv = (p.xy + vec2(37.0, 17.0) * p.z) + f.xy;
-	vec2 rg = textureLod( iChannel0, (uv+.5)/256., 0.).yx;
+	vec2 rg = textureLod( iChannel1, (uv+.5)/256., 0.).yx;
 	return mix(rg.x, rg.y, f.z);
 }
 
 float nse(vec2 p)
 {
-    return texture(iChannel0, p).x;
+    return texture(iChannel1, p).x;
 }
 
 float density2(vec2 p, float z, float t)
