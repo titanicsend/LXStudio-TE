@@ -221,8 +221,6 @@ public class NativeShader implements GLEventListener {
         // add texture channels
         // TODO - need to expand the "setUniform()" mechanism to support textures too.
 
-        // track textures loaded from file or URL so we can set our audio channel
-        // after the last one.
         for (Map.Entry<Integer, Texture> textureInput : textures.entrySet()) {
             Texture texture = textureInput.getValue();
             gl4.glActiveTexture(INDEX_TO_GL_ENUM.get(textureInput.getKey()));
@@ -236,12 +234,8 @@ public class NativeShader implements GLEventListener {
             texture.disable(gl4);
         }
 
-        // if enabled, set audio waveform and fft data as a 512x2 texture on the first
-        // available iChannel after other user supplied textures.
-        //
-        // NOTE: That if you're using all 4 pre-declared iChannels for textures
-        // and you still want to use audio, you'll have to declare "uniform sampler2D iChannel4"
-        // in your shader code.
+        // if enabled, set audio waveform and fft data as a 512x2 texture on the specified audio
+        // channel if it's a shadertoy shader, or iChannel0 if it's a local shader.
         if (audioChannel != null && shaderOptions.getWaveData()) {
 
             gl4.glActiveTexture(INDEX_TO_GL_ENUM.get(0));
