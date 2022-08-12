@@ -4,6 +4,7 @@ import titanicsend.app.autopilot.events.TEBeatEvent;
 import titanicsend.app.autopilot.events.TEPhraseEvent;
 import titanicsend.app.autopilot.utils.TETimeUtils;
 import titanicsend.util.CircularArray;
+import titanicsend.util.TE;
 
 /**
  * This is a record keeper for all things VJ autopilot.
@@ -50,7 +51,10 @@ public class TEHistorian {
     public CircularArray<TEBeatEvent> beatEvents;
     // timestamp of when we last saw an OSC beat at
     private long lastBeatAt;
+    // timestamp of when we saw OSC phrase event last at
     private long lastOscPhraseAt;
+    // timestamp of when we started the most recent palette
+    private long paletteStartedAt;
 
     public TEHistorian() {
         resetBeatTracking();
@@ -157,5 +161,13 @@ public class TEHistorian {
     }
     public void setLastOscPhraseAt(long ts) {
         lastOscPhraseAt = ts;
+    }
+
+    public void startPaletteTimer() {
+        paletteStartedAt = System.currentTimeMillis();
+    }
+
+    public long getPaletteStartedAt() {
+        return paletteStartedAt;
     }
 }

@@ -36,8 +36,6 @@ public class TEOscListener {
      * @param msg
      */
     public void onOscMessage(OscMessage msg) {
-        long now = System.currentTimeMillis();
-
         // make a copy of the message, so anything we do doesn't
         // change it before passing along to autopilot. LX's OSC
         // message parsing mutates the state of the OscMessage
