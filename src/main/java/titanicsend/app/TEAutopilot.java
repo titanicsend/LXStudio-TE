@@ -52,8 +52,12 @@ public class TEAutopilot implements LXLoopTask {
     // after a while (ie: 2 min) without receiving a phrase OSC msg,
     // on the next downbeat chose a phrase and enter it! this is how
     // non-rekordbox phrase mode is engaged
-    private static long OSC_PHRASE_TIMEOUT_MS = 15 * 1000; //2 * 60 * 1000;
+    private static long OSC_PHRASE_TIMEOUT_MS = 2 * 60 * 1000;
     private boolean oscBeatModeOnlyOn = false;
+
+    // how long in between palette changes
+    // palette changes only happen on new CHORUS phrase changes
+    private static long PALETTE_DURATION_MS = 10 * 1000;
 
     private LX lx;
 
@@ -140,6 +144,9 @@ public class TEAutopilot implements LXLoopTask {
         
         oldNextFadeOutMode = false;
         prevFadeOutMode = false;
+
+        // set palette timer
+        history.startPaletteTimer();
     }
 
     /**
@@ -297,7 +304,6 @@ public class TEAutopilot implements LXLoopTask {
 
                 // handle OSC message based on type
                 if (TEOscMessage.isPhraseChange(address)) {
-                    this.resetHistory();
                     history.setLastOscPhraseAt(oscTE.timestamp);
                     oscBeatModeOnlyOn = false;
                     onPhraseChange(address, oscTE.timestamp);
@@ -535,7 +541,7 @@ public class TEAutopilot implements LXLoopTask {
                 }
 
                 // print the current active pattern, along with what we're going to change to
-                TE.log("active pattern in current channel: %s, going to change to=%s", curChannel.getActivePattern(), newCurPattern);
+                //TE.log("active pattern in current channel: %s, going to change to=%s", curChannel.getActivePattern(), newCurPattern);
                 startPattern(curChannel, newCurPattern);
             }
 
@@ -556,7 +562,7 @@ public class TEAutopilot implements LXLoopTask {
                 // pick a pattern we'll start fading into on "nextChannel" during the new few bars
                 LXPattern newNextPattern = this.library.pickRandomCompatibleNextPattern(newCurPattern, curPhrase, nextPhrase);
                 startPattern(nextChannel, newNextPattern);
-                TE.log("Selected new next pattern: %s, for channel %s", newNextPattern, nextChannelName);
+                //TE.log("Selected new next pattern: %s, for channel %s", newNextPattern, nextChannelName);
             }
         }
 
@@ -564,6 +570,16 @@ public class TEAutopilot implements LXLoopTask {
 
         // trigger FX if needed
         this.enableFX(isSamePhrase);
+
+        // change palette if needed
+        long msSincePaletteStart = System.currentTimeMillis() - history.getPaletteStartedAt();
+        TE.log("Palette: %s, isSamePhrase: %s, msSincePaletteStart > PALETTE_DURATION_MS: %s (now=%d, msSincePaletteStart=%d, PALETTE_DURATION_MS=%d, paletteStartedAt=%d)"
+                , curPhrase, isSamePhrase, msSincePaletteStart > PALETTE_DURATION_MS
+                , System.currentTimeMillis(), msSincePaletteStart, PALETTE_DURATION_MS, history.getPaletteStartedAt());
+        if (curPhrase == TEPhrase.CHORUS && !isSamePhrase && msSincePaletteStart > PALETTE_DURATION_MS) {
+            // do it immediately and proceed to the next one
+            changePaletteSwatch(false, true, 0);
+        }
 
         // add to historical log of events
         history.logPhrase(timestamp, curPhrase, lx.engine.tempo.bpm.getValue());
