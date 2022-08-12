@@ -113,20 +113,22 @@ class Controller
   def self.populate_edge_controllers(filename:, controllers:, graph:, vertices:)
     rows = CSV.read(filename, col_sep: "\t")
 
+    built_low_pri_edges = BUILT_LOW_PRIORITY_EDGES + BUILT_LOW_PRIORITY_EDGES_STILL_IN_PV
+
     rows.drop(1).each do |row|
       edge_id, signal_from, controller_vertex_id, priority = row
 
       # We're not building 205 edges in year 1. So let's reassign controller routes.
       if signal_from != 'Controller'
-        if priority == EDGE_BUILD_PRIORITY_LOW
-          # Deal with this next year, this edge is unimportant too.
+        if priority == EDGE_BUILD_PRIORITY_LOW && !built_low_pri_edges.include?(edge_id)
+          # Deal with this next year, this edge is unimportant too and not built yet.
           next
         end
 
         signal_from_edge = graph.edges.values.flatten.find { |edge| edge.id == signal_from }
 
         # Probably won't get built this year, so find another signal source.
-        if signal_from_edge.build_priority == EDGE_BUILD_PRIORITY_LOW
+        if signal_from_edge.build_priority == EDGE_BUILD_PRIORITY_LOW && !built_low_pri_edges.include?(signal_from)
           raise "edge ID #{edge_id} gets signal from low-priority edge ID #{signal_from_edge.id} which probably won't be built this year"
         end
 
