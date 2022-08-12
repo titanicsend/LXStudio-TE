@@ -46,19 +46,19 @@ public class NativeShaderPatternEffect extends PatternEffect {
     public NativeShaderPatternEffect(FragmentShader fragmentShader, PatternTarget target, ShaderOptions options) {
         super(target);
         this.colorType = target.colorType;
+        this.audioInfo = new AudioInfo(pattern.getLX().engine.audio.meter);
+        this.shaderOptions = options;
+        painter = new ShaderPainter();
+
+        // create an 5 x 3 array that we can pass to OpenGL so we can
+        // share the entire current palette with GLSL shaders
+        this.palette = Buffers.newDirectFloatBuffer(15);
+
 
         if (fragmentShader != null) {
             this.fragmentShader = fragmentShader;
             this.offscreenShaderRenderer = new OffscreenShaderRenderer(fragmentShader,options);
             this.parameters = fragmentShader.getParameters();
-            this.audioInfo = new AudioInfo(pattern.getLX().engine.audio.meter);
-            this.shaderOptions = options;
-
-            // create an 5 x 3 array that we can pass to OpenGL so we can
-            // share the entire current palette with GLSL shaders
-            this.palette = Buffers.newDirectFloatBuffer(15);
-
-            painter = new ShaderPainter();
 
         } else {
             this.parameters = null;
@@ -124,19 +124,21 @@ public class NativeShaderPatternEffect extends PatternEffect {
         int col;
         float r,g,b;
 
-        palette.rewind();
-        for (int i = 0; i < 5; i++) {
+        if (palette != null ) {
+            palette.rewind();
+            for (int i = 0; i < 5; i++) {
 
-            int color = pattern.getLX().engine.palette.swatch.getColor(i).getColor();
+                int color = pattern.getLX().engine.palette.swatch.getColor(i).getColor();
 
-            r = (float) (0xff & LXColor.red(color)) / 255f;
-            palette.put(r);
-            g = (float) (0xff & LXColor.green(color)) / 255f;
-            palette.put(g);
-            b = (float) (0xff & LXColor.blue(color)) / 255f;
-            palette.put(b);
+                r = (float) (0xff & LXColor.red(color)) / 255f;
+                palette.put(r);
+                g = (float) (0xff & LXColor.green(color)) / 255f;
+                palette.put(g);
+                b = (float) (0xff & LXColor.blue(color)) / 255f;
+                palette.put(b);
+            }
+            palette.rewind();
         }
-        palette.rewind();
     }
 
 

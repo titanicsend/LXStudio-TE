@@ -1,6 +1,6 @@
 {
   "version": "0.4.1",
-  "timestamp": 1660168026615,
+  "timestamp": 1660179181879,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -193,7 +193,7 @@
             ]
           },
           {
-            "id": 9629,
+            "id": 9431,
             "class": "heronarts.lx.color.LXSwatch",
             "internal": {
               "modulationColor": 0
@@ -206,7 +206,7 @@
             "children": {},
             "colors": [
               {
-                "id": 9630,
+                "id": 9432,
                 "class": "heronarts.lx.color.LXDynamicColor",
                 "internal": {
                   "modulationColor": 0
@@ -225,7 +225,7 @@
                 "children": {}
               },
               {
-                "id": 9632,
+                "id": 9434,
                 "class": "heronarts.lx.color.LXDynamicColor",
                 "internal": {
                   "modulationColor": 0
@@ -246,7 +246,7 @@
             ]
           },
           {
-            "id": 9634,
+            "id": 9436,
             "class": "heronarts.lx.color.LXSwatch",
             "internal": {
               "modulationColor": 0
@@ -259,7 +259,7 @@
             "children": {},
             "colors": [
               {
-                "id": 9635,
+                "id": 9437,
                 "class": "heronarts.lx.color.LXDynamicColor",
                 "internal": {
                   "modulationColor": 0
@@ -278,7 +278,7 @@
                 "children": {}
               },
               {
-                "id": 9637,
+                "id": 9439,
                 "class": "heronarts.lx.color.LXDynamicColor",
                 "internal": {
                   "modulationColor": 0
@@ -510,7 +510,7 @@
               "label": "Channel-1",
               "arm": false,
               "selected": false,
-              "enabled": false,
+              "enabled": true,
               "cue": false,
               "fader": 1.0,
               "crossfadeGroup": 0,
@@ -535,7 +535,7 @@
             "patternIndex": 0,
             "patterns": [
               {
-                "id": 9662,
+                "id": 9348,
                 "class": "titanicsend.pattern.tmc.SolidEdge",
                 "internal": {
                   "modulationColor": 0,
@@ -554,7 +554,7 @@
                 },
                 "children": {
                   "modulation": {
-                    "id": 9663,
+                    "id": 9349,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0
@@ -571,7 +571,7 @@
                 "deviceVersion": -1
               },
               {
-                "id": 9664,
+                "id": 9364,
                 "class": "titanicsend.pattern.jeff.EdgeProgressions",
                 "internal": {
                   "modulationColor": 0,
@@ -595,7 +595,7 @@
                 },
                 "children": {
                   "modulation": {
-                    "id": 9665,
+                    "id": 9365,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0
@@ -614,7 +614,7 @@
             ]
           },
           {
-            "id": 9667,
+            "id": 9367,
             "class": "heronarts.lx.mixer.LXChannel",
             "internal": {
               "modulationColor": 0,
@@ -649,7 +649,7 @@
             "patternIndex": 2,
             "patterns": [
               {
-                "id": 9679,
+                "id": 9379,
                 "class": "titanicsend.pattern.mike.ModelDebugger",
                 "internal": {
                   "modulationColor": 0,
@@ -663,7 +663,7 @@
                 },
                 "children": {
                   "modulation": {
-                    "id": 9680,
+                    "id": 9380,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0
@@ -712,7 +712,7 @@
               },
               {
                 "id": 9624,
-                "class": "titanicsend.pattern.will.PowerDebugger",
+                "class": "titanicsend.pattern.jeff.SignalDebugger",
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
@@ -720,8 +720,9 @@
                   "autoCycleEligible": true
                 },
                 "parameters": {
-                  "label": "PowerDebugger",
-                  "recall": false
+                  "label": "SignalDebugger",
+                  "recall": false,
+                  "vertexSelect": 122
                 },
                 "children": {
                   "modulation": {
@@ -744,7 +745,7 @@
             ]
           },
           {
-            "id": 9686,
+            "id": 9412,
             "class": "heronarts.lx.mixer.LXChannel",
             "internal": {
               "modulationColor": 0,
@@ -1070,9 +1071,9 @@
         "centerPoint": false,
         "camera": {
           "active": false,
-          "radius": 1.329154480028726E7,
-          "theta": -14.10105511918664,
-          "phi": 0.31150666112080216,
+          "radius": 1.1128807620685171E7,
+          "theta": -14.178307639434934,
+          "phi": 0.18919054605066776,
           "x": 303442.78125,
           "y": 5226718.33203125,
           "z": 923606.193359375
@@ -1080,9 +1081,9 @@
         "cue": [
           {
             "active": false,
-            "radius": 1.329154480028726E7,
-            "theta": -14.10105511918664,
-            "phi": 0.31150666112080216,
+            "radius": 1.1128807620685171E7,
+            "theta": -14.178307639434934,
+            "phi": 0.18919054605066776,
             "x": 303442.78125,
             "y": 5226718.33203125,
             "z": 923606.193359375

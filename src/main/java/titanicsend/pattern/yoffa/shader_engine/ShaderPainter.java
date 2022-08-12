@@ -33,17 +33,6 @@ public class ShaderPainter {
         return image[0].length;
     }
 
-    public void paint(Collection<? extends TEModel> panels) {
-        Dimensions dimensions = Dimensions.fromModels(panels);
-
-
-        for (TEModel panel : panels) {
-            for (LXPoint point : panel.getPoints()) {
-                paint(point, dimensions);
-            }
-        }
-    }
-
     public void paint(LXPoint point, Dimensions canvasDimensions) {
         // here the 'z' dimension of TE corresponds with 'x' dimension of the image based on the side that
         // we're painting
