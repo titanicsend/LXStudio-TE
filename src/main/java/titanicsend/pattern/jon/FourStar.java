@@ -35,7 +35,7 @@ public class FourStar extends TEAudioPattern {
                     .setDescription("Oh boy...");
 
     public final LinkedColorParameter color =
-            registerColor("Color", "color", ColorType.PANEL,
+            registerColor("Color", "color", ColorType.PRIMARY,
                     "Panel Color");
 
     public FourStar(LX lx) {

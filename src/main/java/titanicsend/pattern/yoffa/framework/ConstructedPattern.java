@@ -19,7 +19,7 @@ public abstract class ConstructedPattern extends TEAudioPattern {
             addParameter(parameter.getLabel(), parameter);
         }
 
-        registerColor("Color", "iColor", ColorType.PANEL,
+        registerColor("Color", "iColor", ColorType.PRIMARY,
                 "Color");
 
     }

@@ -62,7 +62,7 @@ public class EdgeRunner extends TEPattern {
   private int moveNumber;
 
   public final LinkedColorParameter runnerColor =
-          registerColor("Runner", "runnerColor", ColorType.EDGE,
+          registerColor("Runner", "runnerColor", ColorType.PRIMARY,
                   "Color of the runner dots");
 
   public final LinkedColorParameter trailColor =
@@ -70,7 +70,7 @@ public class EdgeRunner extends TEPattern {
                   "Color of the trail they leave behind");
 
   public final LinkedColorParameter fillColor =
-          registerColor("Fill", "fillColor", ColorType.PANEL,
+          registerColor("Fill", "fillColor", ColorType.SECONDARY_BACKGROUND,
                   "Color to fill the panels with");
 
   public EdgeRunner(LX lx) {

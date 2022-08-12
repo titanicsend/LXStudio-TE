@@ -114,7 +114,7 @@ public class RhythmicFlashingStatic extends FragmentShaderEffect {
 
         // should we color the pixel a color?
         if (colorParameter.getValueb()) {
-            int paletteColor = this.pattern.getSwatchColor(TEPattern.ColorType.PANEL);
+            int paletteColor = this.pattern.getSwatchColor(TEPattern.ColorType.PRIMARY);
             float[] c = new Color(paletteColor).getRGBColorComponents(null);
             newColor = multiplyArrays(new double[]{c[0], c[1], c[2]}, newColor);
         }

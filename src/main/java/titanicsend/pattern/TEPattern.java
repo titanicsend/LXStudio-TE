@@ -1,17 +1,13 @@
 package titanicsend.pattern;
 
 import heronarts.lx.LX;
-import heronarts.lx.LXLayeredComponent;
 import heronarts.lx.Tempo;
 import heronarts.lx.audio.GraphicMeter;
 import heronarts.lx.color.GradientUtils;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
-import heronarts.lx.model.LXView;
 import heronarts.lx.pattern.LXModelPattern;
-import heronarts.lx.pattern.LXPattern;
-import titanicsend.app.autopilot.TEPhrase;
 import titanicsend.model.TELaserModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
@@ -26,17 +22,20 @@ import static java.lang.Math.sin;
 public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
   private final TEPanelModel sua;
   private final TEPanelModel sdc;
-  protected GradientUtils.ColorStops paletteGradient = new GradientUtils.ColorStops();
-  protected GradientUtils.ColorStops edgeGradient = new GradientUtils.ColorStops();
-  protected GradientUtils.ColorStops panelGradient = new GradientUtils.ColorStops();
 
+  // Whole palette gradient across all 5 stops. Usually starts and ends with black.
+  protected GradientUtils.ColorStops paletteGradient = new GradientUtils.ColorStops();
+  protected GradientUtils.ColorStops primaryGradient = new GradientUtils.ColorStops();
+  protected GradientUtils.ColorStops secondaryGradient = new GradientUtils.ColorStops();
+
+  // See https://docs.google.com/document/d/16FGnQ8jopCGwQ0qZizqILt3KYiLo0LPYkDYtnYzY7gI/edit
   public enum ColorType {
-    // These are 1-based UI indices; to get to a 0-based palette index, subtract 1
-    EDGE(1),      // Primary color to use on edges
-    SECONDARY(2), // Secondary color to use on edges or panels (or lasers?)
-    PANEL(3),     // Primary color to use on panels
-    EDGE_BG(4),   // Background color to use on edges
-    PANEL_BG(5);  // Background color to use on edges
+    // These are 1-based UI indices; to get to a 0-based palette swatch index, subtract 1
+    BACKGROUND(1), // Background color - should usually be black or transparent
+    TRANSITION(2), // Transitions a background to the primary, commonly just the background again
+    PRIMARY(3),    // Primary color of any edge or panel pattern
+    SECONDARY(4),  // Secondary color; optional, commonly set to SECONDARY_BACKGROUND or PRIMARY
+    SECONDARY_BACKGROUND(5);  // Background color if transitioning from SECONDARY. Commonly set to same color as BACKGROUND.
 
     public final int index;  // The UI index (1-indexed)
     private ColorType(int index) {
@@ -55,8 +54,8 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
     this.sua = this.model.panelsById.get("SUA");
     this.sdc = this.model.panelsById.get("SDC");
 
-    this.edgeGradient.setNumStops(2);
-    this.panelGradient.setNumStops(2);
+    this.primaryGradient.setNumStops(2);
+    this.secondaryGradient.setNumStops(2);
     updateGradients();
   }
 
@@ -79,40 +78,40 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
   // palette changes are known and transitions are smooth
   protected void updateGradients() {
     paletteGradient.setPaletteGradient(lx.engine.palette, 0, lx.engine.palette.swatch.colors.size());
-    edgeGradient.stops[0].set(lx.engine.palette.getSwatchColor(ColorType.EDGE.swatchIndex()));
-    edgeGradient.stops[1].set(lx.engine.palette.getSwatchColor(ColorType.SECONDARY.swatchIndex()));
-    panelGradient.stops[0].set(lx.engine.palette.getSwatchColor(ColorType.PANEL.swatchIndex()));
-    panelGradient.stops[1].set(lx.engine.palette.getSwatchColor(ColorType.SECONDARY.swatchIndex()));
+    primaryGradient.stops[0].set(lx.engine.palette.getSwatchColor(ColorType.BACKGROUND.swatchIndex()));
+    primaryGradient.stops[1].set(lx.engine.palette.getSwatchColor(ColorType.PRIMARY.swatchIndex()));
+    secondaryGradient.stops[0].set(lx.engine.palette.getSwatchColor(ColorType.SECONDARY_BACKGROUND.swatchIndex()));
+    secondaryGradient.stops[1].set(lx.engine.palette.getSwatchColor(ColorType.SECONDARY.swatchIndex()));
   }
 
   /**
    * Given a value in 0..1 (and wrapped back outside that range)
-   * Return a color within the edgeGradient
-   * @param lerp
-   * @return
+   * Return a color within the primaryGradient
+   * @param lerp as a frac
+   * @return LXColor
    */
-  public int getEdgeGradientColor(float lerp) {
+  public int getPrimaryGradientColor(float lerp) {
     /* HSV2 mode wraps returned colors around the color wheel via the shortest
      * hue distance. In other words, we usually want a gradient to go from yellow
      * to red via orange, not via lime, green, cyan, blue, purple, red.
      */
-    return edgeGradient.getColor(
+    return primaryGradient.getColor(
             TEMath.trianglef(lerp / 2), // Allow wrapping
             GradientUtils.BlendMode.HSV2.function);
   }
 
   /**
    * Given a value in 0..1 (and wrapped back outside that range)
-   * Return a color within the panelGradient
+   * Return a color within the secondaryGradient
    * @param lerp
    * @return
    */
-  public int getPanelGradientColor(float lerp) {
+  public int getSecondaryGradientColor(float lerp) {
     /* HSV2 mode wraps returned colors around the color wheel via the shortest
      * hue distance. In other words, we usually want a gradient to go from yellow
      * to red via orange, not via lime, green, cyan, blue, purple, red.
      */
-    return panelGradient.getColor(
+    return secondaryGradient.getColor(
             TEMath.trianglef(lerp / 2), // Allow wrapping
             GradientUtils.BlendMode.HSV2.function);
   }

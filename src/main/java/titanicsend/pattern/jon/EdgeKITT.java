@@ -32,7 +32,7 @@ public class EdgeKITT extends TEAudioPattern {
 
 
     public final LinkedColorParameter color =
-            registerColor("Color", "color", ColorType.EDGE,
+            registerColor("Color", "color", ColorType.PRIMARY,
                     "Color");
 
     public EdgeKITT(LX lx) {

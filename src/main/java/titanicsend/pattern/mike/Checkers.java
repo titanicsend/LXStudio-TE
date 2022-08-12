@@ -14,7 +14,7 @@ import java.util.*;
 public class Checkers extends TEPattern {
 
   public final LinkedColorParameter oddColor =
-          registerColor("Odd", "odd", ColorType.PANEL,
+          registerColor("Odd", "odd", ColorType.PRIMARY,
                   "Color of the odd panels");
 
   public final LinkedColorParameter evenColor =
