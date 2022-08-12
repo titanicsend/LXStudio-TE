@@ -44,9 +44,7 @@ class Edge
   def self.load_signal_paths(filename:, edges:, vertices:)
     rows = CSV.read(filename, col_sep: "\t")
 
-    # FYI: this should be `rows.length - 1`, but `edges.txt` has one more edge than
-    # `edge_signal_paths.tsv`. I think? this is due to that weird "skip me" edge
-    if rows.length != edges.length
+    if rows.length - 1 != edges.length
       raise "mismatch between signal path edge number and edges.txt edge number"
     end
 
