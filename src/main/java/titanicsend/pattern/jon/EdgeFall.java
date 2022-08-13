@@ -148,7 +148,7 @@ public class EdgeFall extends TEAudioPattern {
                         // don't use the upper panels
                         if (panel.getId().startsWith("SU")) continue;
 
-                        TE.log("We like edge: %s",edge.getId());
+                        //TE.log("We like edge: %s",edge.getId());
                         getLineFromEdge(edgeCount,edge.getId());
                         edgeCount++;
                         break;
