@@ -1,6 +1,6 @@
 {
   "version": "0.4.1",
-  "timestamp": 1660000493228,
+  "timestamp": 1660418162674,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -1986,7 +1986,7 @@
           "scene-5": false,
           "crossfader": 0.3464566929133858,
           "crossfaderBlendMode": 1,
-          "focusedChannel": 2,
+          "focusedChannel": 6,
           "cueA": false,
           "cueB": false,
           "viewCondensed": false
@@ -2165,7 +2165,7 @@
             "parameters": {
               "label": "Edge FG",
               "arm": false,
-              "selected": true,
+              "selected": false,
               "enabled": true,
               "cue": false,
               "fader": 1.0,
@@ -2364,7 +2364,7 @@
                   "color/index": 4,
                   "tempoDivision": 5,
                   "triggerMode": 0,
-                  "sceneSelect": 65,
+                  "sceneSelect": 17,
                   "trigger": false,
                   "downbeat": false
                 },
@@ -2389,7 +2389,7 @@
             ]
           },
           {
-            "id": 597,
+            "id": 13866,
             "class": "heronarts.lx.mixer.LXChannel",
             "internal": {
               "modulationColor": 0,
@@ -2424,7 +2424,7 @@
             "patternIndex": 2,
             "patterns": [
               {
-                "id": 609,
+                "id": 13878,
                 "class": "titanicsend.pattern.mike.Checkers",
                 "internal": {
                   "modulationColor": 0,
@@ -2448,7 +2448,7 @@
                 },
                 "children": {
                   "modulation": {
-                    "id": 610,
+                    "id": 13879,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0
@@ -2860,7 +2860,7 @@
             "parameters": {
               "label": "Debugging",
               "arm": false,
-              "selected": false,
+              "selected": true,
               "enabled": false,
               "cue": false,
               "fader": 1.0,
@@ -2877,7 +2877,7 @@
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 1,
+              "focusedPattern": 4,
               "triggerPatternCycle": false
             },
             "children": {},
@@ -2959,11 +2959,83 @@
                 "parameters": {
                   "label": "TEMidiFighter64DriverPattern",
                   "recall": false,
-                  "fakePush": false
+                  "fakePush": false,
+                  "pokeChannel": 0,
+                  "pokeVelocity": 0,
+                  "pokePitch": 0,
+                  "poke": false
                 },
                 "children": {
                   "modulation": {
                     "id": 9315,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 13935,
+                "class": "titanicsend.pattern.jeff.SignalDebugger",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false,
+                  "autoCycleEligible": true
+                },
+                "parameters": {
+                  "label": "SignalDebugger",
+                  "recall": false,
+                  "vertexSelect": 0,
+                  "edgeId": "",
+                  "cycleAll": 0,
+                  "showLowPri": false
+                },
+                "children": {
+                  "modulation": {
+                    "id": 13936,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 14254,
+                "class": "titanicsend.pattern.will.PowerDebugger",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false,
+                  "autoCycleEligible": true
+                },
+                "parameters": {
+                  "label": "PowerDebugger",
+                  "recall": false,
+                  "powerboxId": "",
+                  "powerboxSelect": 0
+                },
+                "children": {
+                  "modulation": {
+                    "id": 14255,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0
@@ -3114,17 +3186,17 @@
               "attack": 10.0,
               "release": 100.0,
               "slope": 4.5,
-              "band-1": 0.04581329791008437,
-              "band-2": 0.11079523963129068,
-              "band-3": 0.09896335444493376,
-              "band-4": 0.09261197598178106,
-              "band-5": 0.03636364061392072,
-              "band-6": 0.0,
+              "band-1": 0.025007039657458097,
+              "band-2": 0.07921923336742409,
+              "band-3": 0.08501303192325038,
+              "band-4": 0.11746645850411985,
+              "band-5": 0.1205560553400048,
+              "band-6": 0.005341542054217552,
               "band-7": 0.0,
-              "band-8": 0.0,
-              "band-9": 0.0,
-              "band-10": 0.0,
-              "band-11": 0.0,
+              "band-8": 0.1373634678184984,
+              "band-9": 0.10000317319719432,
+              "band-10": 0.002101895382232377,
+              "band-11": 1.5057228024062397E-4,
               "band-12": 0.0,
               "band-13": 0.0,
               "band-14": 0.0,
