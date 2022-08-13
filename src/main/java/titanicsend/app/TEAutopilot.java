@@ -13,6 +13,7 @@ import titanicsend.app.autopilot.utils.TETimeUtils;
 import titanicsend.util.TE;
 import titanicsend.util.TEMath;
 
+import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -57,7 +58,7 @@ public class TEAutopilot implements LXLoopTask {
 
     // how long in between palette changes
     // palette changes only happen on new CHORUS phrase changes
-    private static long PALETTE_DURATION_MS = 10 * 1000;
+    private static long PALETTE_DURATION_MS = 15 * 60 * 1000;
 
     private LX lx;
 
@@ -659,10 +660,12 @@ public class TEAutopilot implements LXLoopTask {
         //TODO(will) make this smarter
         boolean isSame = false;
         try {
-            TEPhraseEvent prevPhraseEvt = history.phraseEvents.get(-1);
+            TEPhraseEvent prevPhraseEvt = history.phraseEvents.get(history.phraseEvents.size() - 2);
             isSame = (newPhrase == prevPhraseEvt.getPhraseType());
         } catch (IndexOutOfBoundsException e) {
             // there was no prev phrase event in history!
+        } catch (NoSuchElementException nsee) {
+            // same, no such prev phrase event
         }
 
         TEPhrase estimatedNextPhrase;

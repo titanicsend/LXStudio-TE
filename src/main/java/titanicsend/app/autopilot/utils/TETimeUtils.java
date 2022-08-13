@@ -1,11 +1,5 @@
 package titanicsend.app.autopilot.utils;
 
-import titanicsend.app.autopilot.events.TEBeatEvent;
-import titanicsend.util.CircularArray;
-import titanicsend.util.TEMath;
-
-import java.util.ArrayList;
-
 /**
  * Useful utility functions for TE around timing and BPM.
  */
@@ -82,38 +76,5 @@ public class TETimeUtils {
 
     public static double bpmToMsPerBeat(double bpm) {
         return 1. / (bpm / MS_PER_MIN);
-    }
-
-    public static double estBPMFromBeatEvents(CircularArray<TEBeatEvent> beatEvents) {
-        TEBeatEvent[] beats = beatEvents.getAll();
-
-        long curBeatStartAt = beats[0].getTimestamp(); // we'll change this as loop goes on
-        int maxWindowSize = beatEvents.getSize();
-        ArrayList<Long> diffs = new ArrayList<Long>();
-
-        for (int i = 0; i < beats.length; i++) {
-            TEBeatEvent be = beats[i];
-
-            if (maxWindowSize == 0)
-                break;
-
-            // compute diffs and add up
-            long diffMs = curBeatStartAt - be.getTimestamp();
-            if (!isValidBeatPeriod(diffMs))
-                // check for sane period length in ms, if not, forget this point
-                continue;
-
-            //TE.log("%d - %d = %d (BPM equiv=%f)", curBeatStartAt, be.getTimestamp(), diffMs, TETimeUtils.msPerBeatToBpm(diffMs));
-            diffs.add(diffMs);
-
-            // maintain loop invariants
-            curBeatStartAt = be.getTimestamp();
-            maxWindowSize--;
-        }
-
-        double avgMsPerDownbeat = TEMath.calcRecencyWeightedMean(diffs);
-        double estBPM = TETimeUtils.msPerBeatToBpm(avgMsPerDownbeat);
-        //TE.log("avgMsPerDownbeat=%f, estBPM=%f", avgMsPerDownbeat, estBPM);
-        return estBPM;
     }
 }
