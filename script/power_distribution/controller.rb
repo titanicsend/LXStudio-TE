@@ -37,21 +37,19 @@ class Controller
         shortest_eligible_distance_to_box_from_controller = 999999
         nearest_eligible_box = nil
 
-        junction_boxes.each do |_, boxes|
-          # Multiple boxes may be at each vertex depending upon nearby power needs.
-          boxes.each do |box|
-            if box.controllers.length == MAX_CONTROLLERS_PER_JUNCTION_BOX
-              next
-            end
+        # Multiple boxes may be at each vertex depending upon nearby power needs.
+        junction_boxes.values.each do |box|
+          if box.controllers.length == MAX_CONTROLLERS_PER_JUNCTION_BOX
+            next
+          end
 
-            min_distance = min_distance_between_vertices_in_feet(graph, controller.vertex.id, box.vertex.id)
-            if min_distance < shortest_eligible_distance_to_box_from_controller
-              shortest_eligible_distance_to_box_from_controller = min_distance
-              nearest_eligible_box = box
+          min_distance = min_distance_between_vertices_in_feet(graph, controller.vertex.id, box.vertex.id)
+          if min_distance < shortest_eligible_distance_to_box_from_controller
+            shortest_eligible_distance_to_box_from_controller = min_distance
+            nearest_eligible_box = box
 
-              # No need to calculate for other boxes; they're at the same distance.
-              next
-            end
+            # No need to calculate for other boxes; they're at the same distance.
+            next
           end
         end
         nearest_eligible_box.assign_controller(controller)
@@ -91,23 +89,23 @@ class Controller
   end
 
   def self.assign_new_controller_at_vertex(vertex:, edge:, panel:, controllers:)
-      # Controllers are identified with `vertex-number_at_vertex`. e.g. the second controller
-      # at vertex 100 will be 100-1.
-      controller = Controller.new(vertex: vertex)
-      if edge != nil
-        controller.edges.push(edge)
-      end
-      if panel != nil
-        controller.panels.push(panel)
-      end
+    # Controllers are identified with `vertex-number_at_vertex`. e.g. the second controller
+    # at vertex 100 will be 100-1.
+    controller = Controller.new(vertex: vertex)
+    if edge != nil
+      controller.edges.push(edge)
+    end
+    if panel != nil
+      controller.panels.push(panel)
+    end
 
-      if controllers[vertex.id] != nil
-        controllers[vertex.id].push(controller)
-      else
-        controllers[vertex.id] = [controller]
-      end
-      vertex.controllers.push(controller)
-      controller
+    if controllers[vertex.id] != nil
+      controllers[vertex.id].push(controller)
+    else
+      controllers[vertex.id] = [controller]
+    end
+    vertex.controllers.push(controller)
+    controller
   end
 
   def self.populate_edge_controllers(filename:, controllers:, graph:, vertices:)

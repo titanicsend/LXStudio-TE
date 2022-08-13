@@ -1,9 +1,9 @@
 class JunctionBox
   @@vertex_counter = {}
 
-  def initialize(vertex:)
+  def initialize(vertex:, id: nil)
     @vertex = vertex
-    @id = calculate_id
+    @id = id || calculate_id
     @circuits = (0..15).map do |i|
       JunctionBoxCircuit.new(id: "#{id}-#{i}", junction_box: self)
     end
@@ -66,6 +66,50 @@ class JunctionBox
     controllers.push(controller)
   end
 
+  def self.load_assignments(filename:, panels:, edges:, vertices:)
+    junction_boxes = {}
+    assignments = CSV.read(filename, col_sep: "\t", headers: true)
+
+    assignments.each do |assignment|
+      box_id = assignment['Powerbox ID']
+      box = junction_boxes[box_id]
+      if box.nil?
+        vertex = vertices[box_id.split('-').first.to_i]
+        box = JunctionBox.new(vertex: vertex, id: box_id)
+        junction_boxes[box_id] = box
+      end
+
+      if assignment['Fixture ID'].include?('-')
+        type = 'Edge'
+      else
+        type = 'Panel'
+      end
+
+      case type
+      when 'Edge'
+        edge = edges[assignment['Fixture ID']]
+        pp edge.id
+        edge.strips.each do |strip|
+          circuit = box.circuits.select { |c| c.remaining_current >= strip.max_current }.max_by(&:utilization)
+          next if circuit.nil?
+          circuit.edge_strips << strip
+          strip.circuit = circuit
+        end
+      when 'Panel'
+        panel = panels[assignment['Fixture ID']]
+        pp panel.id
+        panel.strips.each do |strip|
+          circuit = box.circuits.select { |c| c.remaining_current >= strip.current }.max_by(&:utilization)
+          next if circuit.nil?
+          circuit.panel_strips << strip
+          strip.circuit = circuit
+        end
+      end
+    end
+
+    junction_boxes
+  end
+
   attr_accessor :outlet_bank, :controllers, :circuits, :vertex, :id
 end
 
@@ -89,6 +133,10 @@ class JunctionBoxCircuit
 
   def current
     panel_strips.sum(&:current) + edge_strips.sum(&:max_current)
+  end
+
+  def remaining_current
+    MAX_CURRENT - current
   end
 
   def utilization
