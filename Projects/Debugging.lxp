@@ -1,6 +1,6 @@
 {
   "version": "0.4.1",
-  "timestamp": 1659977190755,
+  "timestamp": 1660418378740,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -507,7 +507,7 @@
               "controlsExpanded": true
             },
             "parameters": {
-              "label": "Channel-1",
+              "label": "Edges",
               "arm": false,
               "selected": false,
               "enabled": true,
@@ -621,7 +621,7 @@
               "controlsExpanded": true
             },
             "parameters": {
-              "label": "Channel-2",
+              "label": "Debugging",
               "arm": false,
               "selected": true,
               "enabled": true,
@@ -640,7 +640,7 @@
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 2,
+              "focusedPattern": 3,
               "triggerPatternCycle": false
             },
             "children": {},
@@ -711,7 +711,7 @@
                 "deviceVersion": -1
               },
               {
-                "id": 9624,
+                "id": 14653,
                 "class": "titanicsend.pattern.jeff.SignalDebugger",
                 "internal": {
                   "modulationColor": 0,
@@ -722,11 +722,47 @@
                 "parameters": {
                   "label": "SignalDebugger",
                   "recall": false,
-                  "vertexSelect": 122
+                  "vertexSelect": 0,
+                  "edgeId": "",
+                  "cycleAll": 0,
+                  "showLowPri": false
                 },
                 "children": {
                   "modulation": {
-                    "id": 9625,
+                    "id": 14654,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 14655,
+                "class": "titanicsend.pattern.will.PowerDebugger",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false,
+                  "autoCycleEligible": true
+                },
+                "parameters": {
+                  "label": "PowerDebugger",
+                  "recall": false,
+                  "powerboxId": "",
+                  "powerboxSelect": 0
+                },
+                "children": {
+                  "modulation": {
+                    "id": 14656,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0

@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 public class SignalDebugger extends TEPattern implements UIDeviceControls<SignalDebugger> {
 
     public final DiscreteParameter cycleAllParameter =
-            new DiscreteParameter("Cycle All", 0, 100)
+            new DiscreteParameter("CycleAll", 0, 100)
                     .setDescription("Cycles through all signal chains sorted by controller vertex");
 
     public final DiscreteParameter vertexSelectParameter =
@@ -54,7 +54,10 @@ public class SignalDebugger extends TEPattern implements UIDeviceControls<Signal
             LXColor.hsba(300, 100, 50, 100),
             LXColor.hsba(160, 100, 50, 100),
             LXColor.hsba(30, 100, 50, 100),
-            LXColor.BLUE, LXColor.RED, LXColor.GREEN, LXColor.WHITE
+            LXColor.BLUE, LXColor.RED, LXColor.GREEN, LXColor.WHITE,
+            LXColor.hsba(80, 100, 50, 100),
+            LXColor.hsba(100, 80, 50, 100)
+
     );
 
     //pixels between marching ants
@@ -63,56 +66,68 @@ public class SignalDebugger extends TEPattern implements UIDeviceControls<Signal
 
     private final Map<Integer, List<String>> controllerVertexToPanelIds = new HashMap<>();
     private final Map<Integer, List<List<ChainedEdge>>> controllerVertexToEdgeRoutes = new HashMap<>();
-    private List<List<ChainedEdge>> allEdgeRoutes;
+    private List<Integer> allControllers;
     private List<List<ChainedEdge>> activeEdgeRoutes = List.of();
     private List<String> activePanelIds = List.of();
 
     public SignalDebugger(LX lx) {
         super(lx);
+
+        loadChains();
+        loadPanelData();
+
+        allControllers = new LinkedList<>();
+        allControllers.addAll(controllerVertexToEdgeRoutes.keySet());
+        allControllers.addAll(controllerVertexToPanelIds.keySet());
+        Collections.sort(allControllers);
+
+        cycleAllParameter.setRange(0, allControllers.size());
+
         addParameter("vertexSelect", vertexSelectParameter);
         addParameter("edgeId", edgeIdParameter);
         addParameter("cycleAll", cycleAllParameter);
         addParameter("showLowPri", showLowPriParameter);
-
-        loadChains();
-        loadPanelData();
     }
 
     public void run(double deltaMs) {
-        clearEdges();
+        clearColors();
         Iterator<Integer> colorIter = CHANNEL_COLORS.iterator();
 
-        for (int i = 0; i < activeEdgeRoutes.size(); i++) {
-            int routeColor = colorIter.next();
-            ChainedEdge prev = null;
-            for (ChainedEdge chainedEdge : activeEdgeRoutes.get(i)) {
-                boolean backwards;
-                if (prev == null) {
-                    backwards = chainedEdge.controllerVertex == chainedEdge.edge.v1.id;
-                } else {
-                    backwards = chainedEdge.edge.v1.edges.contains(prev.edge);
-                }
+        if (activeEdgeRoutes != null) {
+            for (int i = 0; i < activeEdgeRoutes.size(); i++) {
+                int routeColor = colorIter.next();
+                ChainedEdge prev = null;
+                for (ChainedEdge chainedEdge : activeEdgeRoutes.get(i)) {
+                    boolean backwards;
+                    if (prev == null) {
+                        backwards = chainedEdge.controllerVertex == chainedEdge.edge.v1.id;
+                    } else {
+                        backwards = chainedEdge.edge.v1.edges.contains(prev.edge);
+                    }
 
-                for (int j = 0; j < chainedEdge.edge.points.length; j++) {
-                    //i'm lazy...ants will march to imaginary beat
-                    double antProgress = getTempo().basis();
-                    if (backwards) {
-                        antProgress = 1 - antProgress;
+                    for (int j = 0; j < chainedEdge.edge.points.length; j++) {
+                        //i'm lazy...ants will march to imaginary beat
+                        double antProgress = getTempo().basis();
+                        if (backwards) {
+                            antProgress = 1 - antProgress;
+                        }
+                        if (j % ANT_SPACING != Math.floor(ANT_SPACING * antProgress)) {
+                            TEEdgeModel.Point point = chainedEdge.edge.points[j];
+                            colors[point.index] = routeColor;
+                        }
                     }
-                    if (j % ANT_SPACING != Math.floor(ANT_SPACING * antProgress)) {
-                        TEEdgeModel.Point point = chainedEdge.edge.points[j];
-                        colors[point.index] = routeColor;
-                    }
+                    prev = chainedEdge;
                 }
-                prev = chainedEdge;
             }
         }
 
-        for (String activePanelId : activePanelIds) {
-            int routeColor = colorIter.next();
-            List<LXPoint> activePoints = model.panelsById.get(activePanelId).getPoints();
-            for (LXPoint point : activePoints) {
-                colors[point.index] = routeColor;
+        if (activePanelIds != null) {
+            for (String activePanelId : activePanelIds) {
+                int routeColor = colorIter.next();
+                List<LXPoint> activePoints = model.panelsById.get(activePanelId).getPoints();
+                for (LXPoint point : activePoints) {
+                    colors[point.index] = routeColor;
+                }
             }
         }
     }
@@ -157,8 +172,6 @@ public class SignalDebugger extends TEPattern implements UIDeviceControls<Signal
                 }
             }
         }
-        allEdgeRoutes = controllerVertexToEdgeRoutes.values().stream().flatMap(List::stream).collect(Collectors.toList());
-        allEdgeRoutes.sort(Comparator.comparingInt(o -> o.get(0).controllerVertex));
     }
 
     private void loadPanelData() {
@@ -213,10 +226,11 @@ public class SignalDebugger extends TEPattern implements UIDeviceControls<Signal
                     }
                 }
             }
-            cycleAllParameter.setValue(0);
         } else if (parameter.equals(cycleAllParameter)) {
-            activeEdgeRoutes = List.of(allEdgeRoutes.get((int) cycleAllParameter.getValue()));
-            vertexSelectParameter.setValue(activeEdgeRoutes.get(0).get(0).controllerVertex);
+            Integer controllerVertex = allControllers.get((int) cycleAllParameter.getValue());
+            activeEdgeRoutes = controllerVertexToEdgeRoutes.get(controllerVertex);
+            activePanelIds = controllerVertexToPanelIds.get(controllerVertex);
+            vertexSelectParameter.setValue(controllerVertex);
             edgeIdParameter.setValue("");
         } else if (parameter.equals(showLowPriParameter)) {
             loadChains();

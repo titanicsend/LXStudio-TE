@@ -22,7 +22,7 @@ import titanicsend.util.TE;
 
 import java.util.*;
 
-@LXCategory("TE Debugging")
+@LXCategory("Test")
 public class PowerDebugger extends TEPattern implements UIDeviceControls<PowerDebugger> {
 
     public final StringParameter powerboxId =
@@ -231,7 +231,7 @@ public class PowerDebugger extends TEPattern implements UIDeviceControls<PowerDe
             // parse the line!
             try {
                 String[] tokens = line.split("\\t");
-                assert tokens.length == 7;
+                assert tokens.length == 8;
                 //TE.log("Line: %s (len tokens=%d)", line, tokens.length);
 
                 // parse fields

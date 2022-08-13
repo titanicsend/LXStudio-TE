@@ -95,7 +95,7 @@ public class TEVirtualOverlays extends TEUIComponent {
       // parse the line!
       try {
         String[] tokens = line.split("\\t");
-        assert tokens.length == 7;
+        assert tokens.length == 8;
 
         // parse fields
         String jbox = tokens[4].strip();
