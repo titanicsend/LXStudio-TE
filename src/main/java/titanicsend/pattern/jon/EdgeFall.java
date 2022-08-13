@@ -39,7 +39,6 @@ public class EdgeFall extends TEAudioPattern {
     FloatBuffer gl_segments;
     float[][] saved_lines;
     float[][] working_lines;
-
     float[][] line_velocity;
 
     public final CompoundParameter lineType = (CompoundParameter)
@@ -61,7 +60,7 @@ public class EdgeFall extends TEAudioPattern {
 
     // use iColor as the path so we get the free iColorRGB uniform in our shader
     public final LinkedColorParameter iColor =
-            registerColor("Color", "iColor", ColorType.PANEL,
+            registerColor("Color", "iColor", ColorType.PRIMARY,
                     "Panel Color");
 
     // Constructor
@@ -133,9 +132,7 @@ public class EdgeFall extends TEAudioPattern {
 
     // convert from normalized physical model coords
     // to aspect corrected normalized 2D GL surface coords
-    float modelToMapY(LXPoint pt) {
-        return -0.5f + pt.yn;
-    }
+    float modelToMapY(LXPoint pt) { return -0.5f + pt.yn;  }
 
     void scanForHappyEdges() {
          Set<TEEdgeModel> edges = model.getAllEdges();
@@ -157,7 +154,6 @@ public class EdgeFall extends TEAudioPattern {
                         break;
                     }
                 }
-
             }
 
         }
@@ -258,7 +254,10 @@ public class EdgeFall extends TEAudioPattern {
 
         moveLines(saved_lines, working_lines);
 
-        // choose line drawing method
+        // choose line drawing method.
+        // type 0 glows and has pointy ends
+        // type 1 glows more and is a normal line segment
+        // type 2 is a bright, well defined line with very little glow.
         shader.setUniform("lineType",(int) Math.floor(lineType.getValuef()));
 
         // send line width "glow" parameter

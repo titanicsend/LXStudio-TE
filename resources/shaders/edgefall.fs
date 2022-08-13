@@ -89,14 +89,14 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     if (lineType == 0) {
       for (i = 0; i < LINE_COUNT; i++) {
          bri = glowline1( uv, lines[i]);
-         color += fog * bri * iPalette[i % 5];
+         color += fog * bri * iColorRGB;
          alpha += bri;
       }
     }
     else if (lineType == 1) {
       for (i = 0; i < LINE_COUNT; i++) {
          bri = glowline2( uv, lines[i]);
-         color += fog * bri * iPalette[i % 5];
+         color += fog * bri * iColorRGB;
          alpha += bri;
       }
     }
@@ -104,7 +104,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
       for (i = 0; i < LINE_COUNT; i++) {
          bri = glowline3( uv, lines[i]);
          // this one gets a little extra fog contrast
-         color += fog * fog * bri * iPalette[i % 5];
+         color += fog * fog * bri * iColorRGB;
          alpha += bri;
       }
     }
