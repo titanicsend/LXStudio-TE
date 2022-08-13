@@ -24,3 +24,18 @@ MAX_CONTROLLER_DISTANCE_SIGNAL_TO_FIRST_PIXEL_FEET = 7.1
 
 # Mirror this: https://docs.google.com/spreadsheets/d/1C7VPybckgH9bWGxwtgMN_Ij1T__c5qc-k7yIhG-592Y/edit#gid=1572666054
 EDGE_BUILD_PRIORITY_LOW = 'Low'
+
+# See status here: https://docs.google.com/spreadsheets/d/1dQS0hEfm1FXL7tJPlmNtxtZmMggipbxqrDQaaxlxFmo/edit#gid=0
+# And actually, some of these are recategorized to medium/high now.
+BUILT_LOW_PRIORITY_EDGES = [
+    '25-84',
+    '25-88',
+    '27-109',
+    '27-110',
+    '52-75',
+    '58-96',
+    '73-81',
+    '73-92',
+    '84-86',
+    '88-110'
+]

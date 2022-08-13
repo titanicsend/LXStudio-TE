@@ -118,15 +118,15 @@ class Controller
 
       # We're not building 205 edges in year 1. So let's reassign controller routes.
       if signal_from != 'Controller'
-        if priority == EDGE_BUILD_PRIORITY_LOW
-          # Deal with this next year, this edge is unimportant too.
+        if priority == EDGE_BUILD_PRIORITY_LOW && !BUILT_LOW_PRIORITY_EDGES.include?(edge_id)
+          # Deal with this next year, this edge is unimportant too and not built yet.
           next
         end
 
         signal_from_edge = graph.edges.values.flatten.find { |edge| edge.id == signal_from }
 
         # Probably won't get built this year, so find another signal source.
-        if signal_from_edge.build_priority == EDGE_BUILD_PRIORITY_LOW
+        if signal_from_edge.build_priority == EDGE_BUILD_PRIORITY_LOW && !BUILT_LOW_PRIORITY_EDGES.include?(signal_from)
           raise "edge ID #{edge_id} gets signal from low-priority edge ID #{signal_from_edge.id} which probably won't be built this year"
         end
 
