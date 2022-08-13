@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 public class SignalDebugger extends TEPattern implements UIDeviceControls<SignalDebugger> {
 
     public final DiscreteParameter cycleAllParameter =
-            new DiscreteParameter("Cycle All", 0, 100)
+            new DiscreteParameter("CycleAll", 0, 100)
                     .setDescription("Cycles through all signal chains sorted by controller vertex");
 
     public final DiscreteParameter vertexSelectParameter =
@@ -226,7 +226,6 @@ public class SignalDebugger extends TEPattern implements UIDeviceControls<Signal
                     }
                 }
             }
-            cycleAllParameter.setValue(0);
         } else if (parameter.equals(cycleAllParameter)) {
             Integer controllerVertex = allControllers.get((int) cycleAllParameter.getValue());
             activeEdgeRoutes = controllerVertexToEdgeRoutes.get(controllerVertex);
