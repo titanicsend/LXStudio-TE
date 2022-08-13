@@ -3,6 +3,7 @@ precision mediump float;
 uniform float energy;
 uniform float glow;
 uniform int lineType;
+float currentGlow;
 
 #define LINE_COUNT 32
 uniform vec4[LINE_COUNT] lines;
@@ -52,7 +53,7 @@ float corona(vec2 uv) {
 float glowline1(vec2 U, vec4 seg) {
     seg.xy -= U; seg.zw -= U;
     float a = mod ( ( atan(seg.y,seg.x) - atan(seg.w,seg.z) ) / PI, 2.);  
-    return pow(min( a, 2.-a ),glow/8.);
+    return pow(min( a, 2.-a ),currentGlow/8.);
 }
 
 // normal 2D distance-from-line-segment function
@@ -61,12 +62,12 @@ float glowline2(vec2 p, vec4 seg) {
     vec2 pd = p - seg.zw;
     
     float bri = 1. - length(pd - ld*clamp( dot(pd, ld)/dot(ld, ld), 0.0, 1.0) );    
-    return pow(bri,glow);
+    return pow(bri,currentGlow);
 }
 
 // draw antialiased, but not exactly glowing line segment
 float glowline3(vec2 p, vec4 seg) {
-    float r = (200.-glow) / 10000.;
+    float r = (200.-currentGlow) / 10000.;
     vec2 g = seg.zw - seg.xy;
     vec2 h = p - seg.xy;
     float d = length(h - g * clamp(dot(g, h) / dot(g,g), 0.0, 1.0));
@@ -83,6 +84,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     float alpha = 0.0;
     float bri = 0.0;
     float fog = corona(uv);
+
+    // gentle music reactivity
+    currentGlow = glow - ((glow/2.) * energy * (bassLevel));
     
     // draw some line segments
     int segNo = 0;

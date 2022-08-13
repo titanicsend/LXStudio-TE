@@ -267,9 +267,8 @@ public class EdgeFall extends TEAudioPattern {
         sendSegments(working_lines,LINE_COUNT);
 
         // Sound reactivity - various brightness features are related to energy
-        // TODO -- does nothing yet.
         float e = energy.getValuef();
-        shader.setUniform("energy",e*e);
+        shader.setUniform("energy",e);
 
         // run the shader
         effect.run(deltaMs);
