@@ -1,10 +1,9 @@
 package titanicsend.app.autopilot;
 
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 import titanicsend.app.autopilot.events.TEBeatEvent;
 import titanicsend.app.autopilot.events.TEPhraseEvent;
 import titanicsend.app.autopilot.utils.TETimeUtils;
-import titanicsend.util.CircularArray;
-import titanicsend.util.TE;
 
 /**
  * This is a record keeper for all things VJ autopilot.
@@ -36,7 +35,7 @@ public class TEHistorian {
         Phrase history
     */
     // past log of phrase changes with timestamps and tempo at the time
-    public CircularArray<TEPhraseEvent> phraseEvents;
+    public CircularFifoQueue<TEPhraseEvent> phraseEvents;
     public TEPhraseEvent curPhraseEvent;
     private int repeatedPhraseCount = 1;
     private TEPhrase curPhraseType;
@@ -48,7 +47,7 @@ public class TEHistorian {
         Beat history
     */
     // past log of beat timestamps
-    public CircularArray<TEBeatEvent> beatEvents;
+    public CircularFifoQueue<TEBeatEvent> beatEvents;
     // timestamp of when we last saw an OSC beat at
     private long lastBeatAt;
     // timestamp of when we saw OSC phrase event last at
@@ -109,11 +108,11 @@ public class TEHistorian {
     }
 
     public void resetBeatTracking() {
-        beatEvents = new CircularArray<TEBeatEvent>(TEBeatEvent.class, BEAT_MAX_WINDOW);
+        beatEvents = new CircularFifoQueue<TEBeatEvent>(BEAT_MAX_WINDOW);
     }
 
     public void resetPhraseTracking() {
-        phraseEvents = new CircularArray<TEPhraseEvent>(TEPhraseEvent.class, PHRASE_EVENT_MAX_WINDOW);
+        phraseEvents = new CircularFifoQueue<TEPhraseEvent>(PHRASE_EVENT_MAX_WINDOW);
         curPhraseEvent = null;
     }
 

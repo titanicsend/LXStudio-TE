@@ -659,7 +659,7 @@ public class TEAutopilot implements LXLoopTask {
         //TODO(will) make this smarter
         boolean isSame = false;
         try {
-            TEPhraseEvent prevPhraseEvt = history.phraseEvents.get(-1);
+            TEPhraseEvent prevPhraseEvt = history.phraseEvents.get(history.phraseEvents.size() - 2);
             isSame = (newPhrase == prevPhraseEvt.getPhraseType());
         } catch (IndexOutOfBoundsException e) {
             // there was no prev phrase event in history!
