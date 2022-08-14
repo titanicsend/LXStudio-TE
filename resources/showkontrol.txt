@@ -72,5 +72,18 @@ Layer M Preferences (Phrase :: OTHER)
     VERSE6
         OSC OUT: /te/phrase/chorus I 1;
 
+Deck 1 Preferences (MIXER)
+    EXECUTOR | FADER POS CHANGE
+        /te/fader deck=%DECK%:value=%FADERPOS%
 
+Deck 2 Preferences (MIXER)
+    EXECUTOR | FADER POS CHANGE
+        /te/fader deck=%DECK%:value=%FADERPOS%
 
+Deck 3 Preferences (MIXER)
+    EXECUTOR | FADER POS CHANGE
+        /te/fader deck=%DECK%:value=%FADERPOS%
+
+Deck 4 Preferences (MIXER)
+    EXECUTOR | FADER POS CHANGE
+        /te/fader deck=%DECK%:value=%FADERPOS%

@@ -75,7 +75,7 @@ public class TEOscListener {
                 int deckNum = teMsg.extractDeck();
                 int faderVal = teMsg.extractFaderValue();
                 int newMasterDeckNum = this.deckGroup.updateFaderValue(deckNum, faderVal);
-                //TODO(will) send this to ShowKontrol somehow to change master deck!
+                //TODO(will, yoffa) send this to ShowKontrol to change master deck! Maybe MIDI over network
                 TE.log("Master deck => deck=%d (deck%d changed fader to %d)", newMasterDeckNum, deckNum, faderVal);
 
             } else if (TEOscMessage.isBeat(addr)) {
