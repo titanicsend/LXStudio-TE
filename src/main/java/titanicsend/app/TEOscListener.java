@@ -72,11 +72,17 @@ public class TEOscListener {
 
             } else if (TEOscMessage.isFaderChange(addr)) {
                 TEOscMessage teMsg = new TEOscMessage(msg);
-                int deckNum = teMsg.extractDeck();
-                int faderVal = teMsg.extractFaderValue();
-                int newMasterDeckNum = this.deckGroup.updateFaderValue(deckNum, faderVal);
-                //TODO(will, yoffa) send this to ShowKontrol to change master deck! Maybe MIDI over network
-                TE.log("Master deck => deck=%d (deck%d changed fader to %d)", newMasterDeckNum, deckNum, faderVal);
+                try {
+                    int deckNum = teMsg.extractDeck();
+                    int faderVal = teMsg.extractFaderValue();
+                    int newMasterDeckNum = this.deckGroup.updateFaderValue(deckNum, faderVal);
+                    //TODO(will, yoffa) send this to ShowKontrol to change master deck! Maybe MIDI over network
+                    TE.log("Master deck => deck=%d (deck%d changed fader to %d)", newMasterDeckNum, deckNum, faderVal);
+
+                } catch (Exception e) {
+                    TE.err("Error trying to parse fader change message=%s", teMsg);
+                    e.printStackTrace();
+                }
 
             } else if (TEOscMessage.isBeat(addr)) {
                 //TE.log("Got beat: %s", msg.toString());
