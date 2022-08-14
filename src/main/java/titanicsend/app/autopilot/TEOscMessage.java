@@ -37,7 +37,7 @@ public class TEOscMessage {
 
     // fader related OSC addresses
     //    ie:  /te/fader deck=4:value=103
-    public static final String SLUG_DECK_FADER_CHANGE = "/fader/";
+    public static final String SLUG_DECK_FADER_CHANGE = "/fader";
 
     public static boolean isFaderChange(String oscAddress) {
         return oscAddress.startsWith(PREFIX_TE + SLUG_DECK_FADER_CHANGE);

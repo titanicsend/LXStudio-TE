@@ -74,16 +74,16 @@ Layer M Preferences (Phrase :: OTHER)
 
 Deck 1 Preferences (MIXER)
     EXECUTOR | FADER POS CHANGE
-        /te/fader deck=%DECK%:value=%FADERPOS%
+        /te/fader S deck=%DECK%:value=%FADERPOS%
 
 Deck 2 Preferences (MIXER)
     EXECUTOR | FADER POS CHANGE
-        /te/fader deck=%DECK%:value=%FADERPOS%
+        /te/fader S deck=%DECK%:value=%FADERPOS%
 
 Deck 3 Preferences (MIXER)
     EXECUTOR | FADER POS CHANGE
-        /te/fader deck=%DECK%:value=%FADERPOS%
+        /te/fader S deck=%DECK%:value=%FADERPOS%
 
 Deck 4 Preferences (MIXER)
     EXECUTOR | FADER POS CHANGE
-        /te/fader deck=%DECK%:value=%FADERPOS%
+        /te/fader S deck=%DECK%:value=%FADERPOS%
