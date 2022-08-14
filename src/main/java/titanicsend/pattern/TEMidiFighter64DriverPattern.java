@@ -102,8 +102,8 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   // looking at the device, the buttons correspond to what you see here onscreen.
   private static final int[] buttonColors = {
     LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
-    LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
-    LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
+    LED_RED, LED_ORANGE, LED_YELLOW, LED_GREEN, LED_BLUE_AQUA, LED_AZURE, LED_MAGENTA, LED_WHITE,
+    LED_RED_DIM, LED_ORANGE_DIM, LED_YELLOW_DIM, LED_GREEN_DIM, LED_BLUE_AQUA_DIM, LED_AZURE_DIM, LED_MAGENTA_DIM, LED_GRAY_DIM,
     LED_RED, LED_ORANGE, LED_YELLOW, LED_GREEN, LED_BLUE_AQUA, LED_AZURE, LED_MAGENTA, LED_WHITE,
     LED_RED_DIM, LED_ORANGE_DIM, LED_YELLOW_DIM, LED_GREEN_DIM, LED_BLUE_AQUA_DIM, LED_AZURE_DIM, LED_MAGENTA_DIM, LED_GRAY_DIM,
     LED_RED, LED_ORANGE, LED_YELLOW, LED_GREEN, LED_BLUE_AQUA, LED_AZURE, LED_MAGENTA, LED_WHITE,
@@ -130,9 +130,9 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   private final MF64XWave xwave = new MF64XWave(this);
 
   private final TEMidiFighter64Subpattern[] patterns = {
-    xwave, logger, logger, logger, logger, logger, logger, logger,
     logger, logger, logger, logger, logger, logger, logger, logger,
-    logger, logger, logger, logger, logger, logger, logger, logger,
+    spin, spin, spin, spin, spin, spin, spin, spin,
+    xwave, xwave, xwave, xwave, xwave, xwave, xwave, xwave,
     eSparks, eSparks, eSparks, eSparks, eSparks, eSparks, eSparks, eSparks,
     randomPanel, randomPanel, randomPanel, randomPanel, randomPanel, randomPanel, randomPanel, randomPanel,
     ssquare, ssquare, ssquare, ssquare, ssquare, ssquare, ssquare, ssquare,
