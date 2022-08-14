@@ -2,6 +2,7 @@ package titanicsend.app;
 
 import heronarts.lx.LX;
 import heronarts.lx.osc.OscMessage;
+import titanicsend.app.autopilot.TEDeckGroup;
 import titanicsend.app.autopilot.TEOscMessage;
 import titanicsend.app.autopilot.utils.TETimeUtils;
 import titanicsend.util.TE;
@@ -22,6 +23,9 @@ public class TEOscListener {
     private TEAutopilot autopilot;
     private LX lx;
 
+    // a group of DJ decks, each of which has a fader value
+    private TEDeckGroup deckGroup;
+
     // do not change LX tempo unless the newly received tempo
     // differs by more than this amount from current tempo
     private double TEMPO_DIFF_THRESHOLD = 0.05;
@@ -29,6 +33,7 @@ public class TEOscListener {
     public TEOscListener(LX lx, TEAutopilot ap) {
         this.autopilot = ap;
         this.lx = lx;
+        this.deckGroup = new TEDeckGroup(TEDeckGroup.TE_DEFAULT_NUM_DECKS);
     }
 
     /**
@@ -64,6 +69,14 @@ public class TEOscListener {
                     TE.log("Setting BPM=%f (from beat)", newBpm);
                     lx.engine.tempo.setBpm(newBpm);
                 }
+
+            } else if (TEOscMessage.isFaderChange(addr)) {
+                TEOscMessage teMsg = new TEOscMessage(msg);
+                int deckNum = teMsg.extractDeck();
+                int faderVal = teMsg.extractFaderValue();
+                int newMasterDeckNum = this.deckGroup.updateFaderValue(deckNum, faderVal);
+                //TODO(will) send this to ShowKontrol somehow to change master deck!
+                TE.log("Master deck => deck=%d (deck%d changed fader to %d)", newMasterDeckNum, deckNum, faderVal);
 
             } else if (TEOscMessage.isBeat(addr)) {
                 //TE.log("Got beat: %s", msg.toString());
