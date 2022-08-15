@@ -202,6 +202,8 @@ public class TEWholeModel extends LXModel {
       String edgeKind = tokens[1];
       String socketCfg = tokens[2];
 
+      if (socketCfg.startsWith("x10")) socketCfg = "uncontrolled";
+
       boolean dark;
       boolean fwd = true;
       switch (edgeKind) {
@@ -420,6 +422,8 @@ public class TEWholeModel extends LXModel {
       vh.add(e2.v1);
       TEVertex[] vertexes = vh.toArray(new TEVertex[0]);
       assert vertexes.length == 3;
+
+      if (panelType.startsWith("x10")) panelType = "lit";
 
       boolean lit = panelType.contains(".");
       String outputConfig = panelType;
