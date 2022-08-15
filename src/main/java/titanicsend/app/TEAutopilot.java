@@ -58,7 +58,7 @@ public class TEAutopilot implements LXLoopTask {
 
     // how long in between palette changes
     // palette changes only happen on new CHORUS phrase changes
-    private static long PALETTE_DURATION_MS = 15 * 60 * 1000;
+    private static long PALETTE_DURATION_MS = 10 * 60 * 1000;
 
     private LX lx;
 
@@ -574,9 +574,9 @@ public class TEAutopilot implements LXLoopTask {
 
         // change palette if needed
         long msSincePaletteStart = System.currentTimeMillis() - history.getPaletteStartedAt();
-        TE.log("Palette: %s, isSamePhrase: %s, msSincePaletteStart > PALETTE_DURATION_MS: %s (now=%d, msSincePaletteStart=%d, PALETTE_DURATION_MS=%d, paletteStartedAt=%d)"
-                , curPhrase, isSamePhrase, msSincePaletteStart > PALETTE_DURATION_MS
-                , System.currentTimeMillis(), msSincePaletteStart, PALETTE_DURATION_MS, history.getPaletteStartedAt());
+        //TE.log("Palette: %s, isSamePhrase: %s, msSincePaletteStart > PALETTE_DURATION_MS: %s (now=%d, msSincePaletteStart=%d, PALETTE_DURATION_MS=%d, paletteStartedAt=%d)"
+        //        , curPhrase, isSamePhrase, msSincePaletteStart > PALETTE_DURATION_MS
+        //        , System.currentTimeMillis(), msSincePaletteStart, PALETTE_DURATION_MS, history.getPaletteStartedAt());
         if (curPhrase == TEPhrase.CHORUS && !isSamePhrase && msSincePaletteStart > PALETTE_DURATION_MS) {
             // do it immediately and proceed to the next one
             changePaletteSwatch(false, true, 0);

@@ -255,7 +255,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     l.addPattern(ShaderPanelsPatternConfig.PulsingPetriDish.class, covPanels, cNonConforming, chorus);
     l.addPattern(FourStar.class, covPanelPartial, cPalette, chorus);
     l.addPattern(ShaderPanelsPatternConfig.Electric.class, covPanelPartial, cPalette, chorus);
-    //l.addPattern(ShaderPanelsPatternConfig.PulsingHeart.class, covPanels, cNonConforming, chorus);
+    l.addPattern(ShaderPanelsPatternConfig.AudioTest2.class, covBoth, cNonConforming, chorus);
 
     // DOWN patterns
     l.addPattern(GradientPattern.class, covPanelPartial, cPalette, down);
@@ -273,10 +273,10 @@ public class TEApp extends PApplet implements LXPlugin  {
     l.addPattern(OrganicPatternConfig.WavyEdges.class, covPanelPartial, cNonConforming, up);
     l.addPattern(SparklePattern.class, covBoth, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.Electric.class, covPanelPartial, cNonConforming, up);
-    l.addPattern(ShaderPanelsPatternConfig.JetStream.class, covPanels, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.Marbling.class, covPanels, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.SlitheringSnake.class, covPanelPartial, cPalette, up);
     l.addPattern(Fireflies.class, covPanelPartial, cPalette, up);
+    l.addPattern(PBAudio1.class, covPanelPartial, cPalette, up);
 
     // misc patterns
     //l.addPattern(EdgeProgressions.class, covEdges, colorWhite, chorus);
