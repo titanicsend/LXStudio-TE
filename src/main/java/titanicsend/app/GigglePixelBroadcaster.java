@@ -13,7 +13,7 @@ import java.util.*;
 import static java.lang.Math.min;
 
 public class GigglePixelBroadcaster implements LXLoopTask {
-  public static final int BROADCAST_PERIOD_MSEC = 200;
+  public static final int BROADCAST_PERIOD_MSEC = 100;
 
   private final LX lx;
   private final GPBroadcaster gp;
