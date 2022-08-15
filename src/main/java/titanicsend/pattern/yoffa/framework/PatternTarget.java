@@ -28,7 +28,11 @@ public class PatternTarget {
 
     public PatternTarget addPointsAsCanvas(Collection<LXPoint> points) {
         Dimensions dimensions = Dimensions.fromPoints(points);
-        points.forEach(point -> pointsToCanvas.put(point, dimensions));
+        for (LXPoint point : points) {
+            // skip gap points
+            if ((point.x == 0f) && (point.y == 0f) && (point.z == 0f)) continue;
+            pointsToCanvas.put(point,dimensions);
+        }
         return this;
     }
 

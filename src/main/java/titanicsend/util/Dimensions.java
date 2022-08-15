@@ -169,6 +169,9 @@ public class Dimensions {
         Float maxZn = null;
         
         for (LXPoint point : points) {
+            // skip gap points
+            if ((point.x == 0f) && (point.y == 0f) && (point.z == 0f)) continue;
+
             minX = minX == null ? point.x : Math.min(point.x, minX);
             minY = minY == null ? point.y : Math.min(point.y, minY);
             minZ = minZ == null ? point.z : Math.min(point.z, minZ);
