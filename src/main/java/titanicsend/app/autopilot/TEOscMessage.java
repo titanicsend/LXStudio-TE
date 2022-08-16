@@ -37,7 +37,7 @@ public class TEOscMessage {
 
     // fader related OSC addresses
     //    ie:  /te/fader deck=4:value=103
-    public static final String SLUG_DECK_FADER_CHANGE = "/fader";
+    public static final String SLUG_DECK_FADER_CHANGE = "/mixer/fader";
 
     public static boolean isFaderChange(String oscAddress) {
         return oscAddress.startsWith(PREFIX_TE + SLUG_DECK_FADER_CHANGE);
@@ -62,32 +62,27 @@ public class TEOscMessage {
 
     /**
      * Extract the deck number:
-     *       /te/fader deck=4:value=103
+     *       /te/mixer/fader/4 31
      *
      * Would extract -> 4
      * @return int deck number
      */
     public int extractDeck() {
         String[] initialParts = message.toString().split(" ");
-        String[] valueParts = initialParts[1].toString().split(":");
-
-        String[] deckParts = valueParts[0].split("=");
-        return Integer.parseInt(deckParts[1]);
+        String[] addrParts = initialParts[0].toString().split("/");
+        return Integer.parseInt(addrParts[4]);
     }
 
     /**
      * Extract the fader number:
-     *       /te/fader deck=4:value=103
+     *       /te/mixer/fader/4 31
      *
-     * Would extract -> 103
+     * Would extract -> 31
      * @return int fader value
      */
     public int extractFaderValue() {
-        String[] initialParts = message.toString().split(" ");
-        String[] valueParts = initialParts[1].toString().split(":");
-
-        String[] faderParts = valueParts[1].split("=");
-        return Integer.parseInt(faderParts[1]);
+        String[] parts = message.toString().split(" ");
+        return Integer.parseInt(parts[1]);
     }
 
     /**

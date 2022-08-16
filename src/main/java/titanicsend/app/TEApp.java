@@ -30,9 +30,7 @@ import heronarts.lx.pattern.texture.NoisePattern;
 import heronarts.lx.pattern.texture.SparklePattern;
 import heronarts.lx.studio.LXStudio;
 import processing.core.PApplet;
-import titanicsend.app.autopilot.TEPatternLibrary;
-import titanicsend.app.autopilot.TEPhrase;
-import titanicsend.app.autopilot.TEUserInterface;
+import titanicsend.app.autopilot.*;
 import titanicsend.model.TEWholeModel;
 import titanicsend.output.GPOutput;
 import titanicsend.output.GrandShlomoStation;
@@ -51,7 +49,6 @@ import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.media.BasicImagePattern;
 import titanicsend.pattern.yoffa.media.ReactiveHeartPattern;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
-import titanicsend.app.autopilot.TEShowKontrol;
 import titanicsend.util.TE;
 
 public class TEApp extends PApplet implements LXPlugin  {
@@ -183,9 +180,12 @@ public class TEApp extends PApplet implements LXPlugin  {
       TE.log("Failed to create GigglePixel broadcaster: " + e.getMessage());
     }
 
+    // create our historian instance
+    TEHistorian history = new TEHistorian();
+
     // create our Autopilot instance, run in general engine loop to
     // ensure performance under load
-    autopilot = new TEAutopilot(lx, library);
+    autopilot = new TEAutopilot(lx, library, history);
     lx.engine.addLoopTask(autopilot);
 
     // listener to toggle on the autopilot instance's enabled flag
@@ -199,7 +199,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     this.autopilotComponent.autopilotEnabledToggle.addListener(autopilotEnableListener);
 
     // create our listener for OSC messages
-    this.oscListener = new TEOscListener(lx, autopilot);
+    this.oscListener = new TEOscListener(lx, autopilot, history);
 
     // add custom OSC listener to handle OSC messages from ShowKontrol
     // includes an Autopilot ref to store (threadsafe) queue of unread OSC messages
