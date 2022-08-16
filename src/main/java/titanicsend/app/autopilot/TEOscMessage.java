@@ -62,7 +62,7 @@ public class TEOscMessage {
 
     /**
      * Extract the deck number:
-     *       /te/fader deck=4:value=103
+     *       /te/mixer/fader/<deckNum>
      *
      * Would extract -> 4
      * @return int deck number
