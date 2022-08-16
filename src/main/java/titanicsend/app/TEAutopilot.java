@@ -2,6 +2,7 @@ package titanicsend.app;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXLoopTask;
+import heronarts.lx.Tempo;
 import heronarts.lx.color.LXSwatch;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.osc.OscMessage;
@@ -13,6 +14,8 @@ import titanicsend.app.autopilot.utils.TETimeUtils;
 import titanicsend.util.TE;
 import titanicsend.util.TEMath;
 
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -36,6 +39,13 @@ public class TEAutopilot implements LXLoopTask {
     // FX channels visible
     private final double TRIGGERS_AT_CHORUS_LENGTH_BARS = 1.5; //1.0;
     private final double STROBES_AT_CHORUS_LENGTH_BARS = 1.75; //1.25;
+
+    // how long do we think the shortest legit phrase might be?
+    private static final int MIN_NUM_BEATS_IN_PHRASE = 4;
+
+    // length of time in beats since a transition that we think will weed
+    // out erroneous phrase messages
+    private static final int MIN_NUM_BEATS_SINCE_TRANSITION_FOR_NEW_PHRASE = 2;
 
 
     // various fader levels of importance
@@ -62,7 +72,7 @@ public class TEAutopilot implements LXLoopTask {
 
     // how long in between palette changes
     // palette changes only happen on new CHORUS phrase changes
-    private static long PALETTE_DURATION_MS = 15 * 60 * 1000;
+    private static long PALETTE_DURATION_MS = 10 * 60 * 1000;
 
     private LX lx;
 
@@ -74,7 +84,7 @@ public class TEAutopilot implements LXLoopTask {
     private static double BPM_ERROR_ADJUST = 1.0;
 
     // our historical tracking object, keeping state about events in past
-    private TEHistorian history;
+    public TEHistorian history;
 
     // our pattern library, used to filter for new patterns
     private TEPatternLibrary library;
@@ -111,9 +121,10 @@ public class TEAutopilot implements LXLoopTask {
      * @param lx
      * @param l
      */
-    public TEAutopilot(LX lx, TEPatternLibrary l) {
+    public TEAutopilot(LX lx, TEPatternLibrary l, TEHistorian history) {
         this.lx = lx;
         this.library = l;
+        this.history = history;
 
         // this queue needs to be accessible from OSC listener in diff thread
         unprocessedOscMessages = new ConcurrentLinkedQueue<TEOscMessage>();
@@ -225,11 +236,12 @@ public class TEAutopilot implements LXLoopTask {
      */
     public void onBeatEvent(TEOscMessage msg) throws Exception {
         long beatAt = msg.timestamp;
-        history.logBeat(beatAt);
+        int beatCount = msg.extractBeatCount(); // 0-indexed
+        history.logBeat(beatAt, beatCount);
 
         // if this isn't a downbeat, ignore. want to wait for the start of a
         // bar to change modes or launch a new phrase if warranted
-        if (msg.extractBeatCount() != 0)
+        if (beatCount != 0)
             return;
 
         // if we're seeing phrase OSC messages regularly, no need to continue either
@@ -291,6 +303,7 @@ public class TEAutopilot implements LXLoopTask {
             // TODO(will) for when we want to act without OSC messages -- just based on pure audio
 
             // check for new OSC messages
+            String msgs = "";
             while (unprocessedOscMessages.size() > 0) {
                 // grab a new message off the queue
                 TEOscMessage oscTE = unprocessedOscMessages.poll();
@@ -307,20 +320,57 @@ public class TEAutopilot implements LXLoopTask {
                 // grab message & update with the most recent OscMessage received at
                 String address = oscTE.message.getAddressPattern().toString();
 
+                if (!oscTE.message.toString().contains("/tempo/beat"))
+                    msgs += String.format(", %s (%d ms ago)", oscTE.message.toString(), now - oscTE.timestamp);
+
                 // handle OSC message based on type
-                if (TEOscMessage.isPhraseChange(address)) {
-                    history.setLastOscPhraseAt(oscTE.timestamp);
+                if (TEOscMessage.isBeat(address)) {
+                    onBeatEvent(oscTE);
+
+                } else if (TEOscMessage.isPhraseChange(address)) {
+
+                    // let's make sure this is a valid phrase change!
+                    int msSinceLastMasterChange = history.calcMsSinceLastDeckChange();
+                    int msSinceLastDownbeat = history.calcMsSinceLastDownbeat();
+                    int msSinceLastOscPhrase = history.calcMsSinceLastOscPhraseChange();
+
+                    int msInBeat = (int)TETimeUtils.calcMsPerBeat(lx.engine.tempo.bpm());
+                    double howFarThroughMeasure = lx.engine.tempo.getBasis(Tempo.Division.WHOLE); // 0 to 1
+
+                    //TE.log("msSinceLastMasterChange=%d, msSinceLastOscPhrase=%d, msSinceLastDownbeat=%d, howFarThroughMeasure=%f",
+                    //        msSinceLastMasterChange, msSinceLastOscPhrase, msSinceLastDownbeat, howFarThroughMeasure);
+
+                    // conditions
+                    boolean isInMiddleOfMeasure = howFarThroughMeasure > 0.2 && howFarThroughMeasure < 0.8;
+                    boolean wasRecentMasterChange = msSinceLastMasterChange < msInBeat * MIN_NUM_BEATS_SINCE_TRANSITION_FOR_NEW_PHRASE;
+                    boolean wasRecentPhraseChange = msSinceLastOscPhrase < msInBeat * MIN_NUM_BEATS_IN_PHRASE;
+
+                    // weigh evidenceOfInvalidPhrase
+                    int evidenceOfInvalidPhrase = 0;
+                    if (isInMiddleOfMeasure) evidenceOfInvalidPhrase += 1;
+                    if (wasRecentMasterChange) evidenceOfInvalidPhrase += 1;
+                    if (wasRecentPhraseChange) evidenceOfInvalidPhrase += 1;
+
+                    //TE.log("isInMiddleOfMeasure=%s, wasRecentMasterChange=%s, wasRecentPhraseChange=%s, evidenceOfInvalidPhrase=%d",
+                    //        isInMiddleOfMeasure, wasRecentMasterChange, wasRecentPhraseChange, evidenceOfInvalidPhrase);
+
+                    // make decision
+                    if (evidenceOfInvalidPhrase > 1) {
+                        //TE.log("Not a real phrase event -> filtering!");
+                        continue;
+                    }
+
+                    // was valid OSC mode event
                     oscBeatModeOnlyOn = false;
                     onPhraseChange(address, oscTE.timestamp);
-
-                } else if (TEOscMessage.isBeat(address)) {
-                    onBeatEvent(oscTE);
 
                 } else {
                     // unrecognized OSC message!
                     TE.log("Don't recognize OSC message: %s", address);
                 }
             }
+            //if (!msgs.equals(""))
+            //    TE.log("OSC RECEIEVED: %s", msgs);
 
         } catch (Exception e) {
             TE.err("ERROR - unexpected exception in Autopilot.run(): %s", e.toString());
@@ -505,7 +555,7 @@ public class TEAutopilot implements LXLoopTask {
             // our current channel should just keep running!
             // our next channel should be reset to 0.0
             // past channel == current channel, so no transition down needed
-            TE.log("[AUTOVJ] Same phrase! no changes");
+            //TE.log("[AUTOVJ] Same phrase! no changes");
 
         } else {
             // update channel name & references based on phrase change
@@ -527,7 +577,7 @@ public class TEAutopilot implements LXLoopTask {
                 prevFadeOutMode = (curPhrase == TEPhrase.DOWN || curPhrase == TEPhrase.UP);
 
                 // we nailed it!
-                TE.log("[AUTOVJ] We predicted correctly: prevFadeOutMode=%s", prevFadeOutMode);
+                //TE.log("[AUTOVJ] We predicted correctly: prevFadeOutMode=%s", prevFadeOutMode);
 
             } else {
                 // we didn't predict the phrase change correctly, turn off
@@ -535,7 +585,7 @@ public class TEAutopilot implements LXLoopTask {
                 oldNextChannelName = TEMixerUtils.getChannelNameFromPhraseType(oldNextPhrase);
                 oldNextChannel = TEMixerUtils.getChannelByName(lx, oldNextChannelName);
                 oldNextFadeOutMode = (oldNextChannel != null);
-                TE.log("[AUTOVJ] We didn't predict right, oldNextChannelName=%s, oldNextFadeOutMode=%s", oldNextChannelName, oldNextFadeOutMode);
+                //TE.log("[AUTOVJ] We didn't predict right, oldNextChannelName=%s, oldNextFadeOutMode=%s", oldNextChannelName, oldNextFadeOutMode);
 
                 // pick a new pattern for our current channel, since we didn't see this coming
                 // try to make it compatible with the one we were fading in, since we'll fade that mistaken one out
@@ -576,14 +626,16 @@ public class TEAutopilot implements LXLoopTask {
         // trigger FX if needed
         this.enableFX(isSamePhrase);
 
-        // change palette if needed
+        // change palette if needed, only on CHORUS starts, for now
         long msSincePaletteStart = System.currentTimeMillis() - history.getPaletteStartedAt();
-        TE.log("Palette: %s, isSamePhrase: %s, msSincePaletteStart > PALETTE_DURATION_MS: %s (now=%d, msSincePaletteStart=%d, PALETTE_DURATION_MS=%d, paletteStartedAt=%d)"
-                , curPhrase, isSamePhrase, msSincePaletteStart > PALETTE_DURATION_MS
-                , System.currentTimeMillis(), msSincePaletteStart, PALETTE_DURATION_MS, history.getPaletteStartedAt());
+        //TE.log("Palette: %s, isSamePhrase: %s, msSincePaletteStart > PALETTE_DURATION_MS: %s (now=%d, msSincePaletteStart=%d, PALETTE_DURATION_MS=%d, paletteStartedAt=%d)"
+        //        , curPhrase, isSamePhrase, msSincePaletteStart > PALETTE_DURATION_MS
+        //        , System.currentTimeMillis(), msSincePaletteStart, PALETTE_DURATION_MS, history.getPaletteStartedAt());
         if (curPhrase == TEPhrase.CHORUS && !isSamePhrase && msSincePaletteStart > PALETTE_DURATION_MS) {
             // do it immediately and proceed to the next one
+            TE.log("Palette change!");
             changePaletteSwatch(false, true, 0);
+            history.startPaletteTimer();
 
             // notify lasers of this change
             if (SEND_PALETTE_TO_LASERS) {
