@@ -30,9 +30,7 @@ import heronarts.lx.pattern.texture.NoisePattern;
 import heronarts.lx.pattern.texture.SparklePattern;
 import heronarts.lx.studio.LXStudio;
 import processing.core.PApplet;
-import titanicsend.app.autopilot.TEPatternLibrary;
-import titanicsend.app.autopilot.TEPhrase;
-import titanicsend.app.autopilot.TEUserInterface;
+import titanicsend.app.autopilot.*;
 import titanicsend.model.TEWholeModel;
 import titanicsend.output.GPOutput;
 import titanicsend.output.GrandShlomoStation;
@@ -51,7 +49,6 @@ import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.media.BasicImagePattern;
 import titanicsend.pattern.yoffa.media.ReactiveHeartPattern;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
-import titanicsend.app.autopilot.TEShowKontrol;
 import titanicsend.util.TE;
 
 public class TEApp extends PApplet implements LXPlugin  {
@@ -185,9 +182,12 @@ public class TEApp extends PApplet implements LXPlugin  {
       TE.log("Failed to create GigglePixel broadcaster: " + e.getMessage());
     }
 
+    // create our historian instance
+    TEHistorian history = new TEHistorian();
+
     // create our Autopilot instance, run in general engine loop to
     // ensure performance under load
-    autopilot = new TEAutopilot(lx, library);
+    autopilot = new TEAutopilot(lx, library, history);
     lx.engine.addLoopTask(autopilot);
 
     // listener to toggle on the autopilot instance's enabled flag
@@ -257,7 +257,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     l.addPattern(ShaderPanelsPatternConfig.PulsingPetriDish.class, covPanels, cNonConforming, chorus);
     l.addPattern(FourStar.class, covPanelPartial, cPalette, chorus);
     l.addPattern(ShaderPanelsPatternConfig.Electric.class, covPanelPartial, cPalette, chorus);
-    //l.addPattern(ShaderPanelsPatternConfig.PulsingHeart.class, covPanels, cNonConforming, chorus);
+    l.addPattern(ShaderPanelsPatternConfig.AudioTest2.class, covBoth, cNonConforming, chorus);
 
     // DOWN patterns
     l.addPattern(GradientPattern.class, covPanelPartial, cPalette, down);
@@ -275,10 +275,10 @@ public class TEApp extends PApplet implements LXPlugin  {
     l.addPattern(OrganicPatternConfig.WavyEdges.class, covPanelPartial, cNonConforming, up);
     l.addPattern(SparklePattern.class, covBoth, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.Electric.class, covPanelPartial, cNonConforming, up);
-    l.addPattern(ShaderPanelsPatternConfig.JetStream.class, covPanels, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.Marbling.class, covPanels, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.SlitheringSnake.class, covPanelPartial, cPalette, up);
     l.addPattern(Fireflies.class, covPanelPartial, cPalette, up);
+    l.addPattern(PBAudio1.class, covPanelPartial, cPalette, up);
 
     // misc patterns
     //l.addPattern(EdgeProgressions.class, covEdges, colorWhite, chorus);

@@ -301,10 +301,10 @@ public class TEPatternLibrary {
         if (matchingRecords.size() == 0) {
             Stream<TEPatternRecord> s2 = patternRecords.stream().filter(r -> r.phraseType == newPhrase);
             matchingRecords = s2.collect(Collectors.toCollection(ArrayList::new));
-            TE.log("Did not find enough compatible patterns, filtering only by phrase now: %d found", matchingRecords.size());
+            //TE.log("Did not find enough compatible patterns, filtering only by phrase now: %d found", matchingRecords.size());
         }
 
-        TE.log("Matches for oldPhrase=%s, oldPattern=%s, newPhrase=%s", oldPhrase, curPattern, newPhrase);
+        //TE.log("Matches for oldPhrase=%s, oldPattern=%s, newPhrase=%s", oldPhrase, curPattern, newPhrase);
         for (TEPatternRecord r : matchingRecords) {
             //TE.log("-> match: cls=%s, ph=%s, cov=%s, color=%s"
             //        , r.patternClass, r.phraseType, r.coverageType, r.colorCategoryType);
@@ -385,7 +385,7 @@ public class TEPatternLibrary {
 
         if (rand.nextFloat() <= PROB_PICK_RANDOM_NEXT_PATTERN) {
             // pick random one
-            TE.log("pickRandomCompatibleNextPattern(): picking randomly!");
+            //TE.log("pickRandomCompatibleNextPattern(): picking randomly!");
             patternIndex = rand.nextInt(matchingPatterns.size());
 
         } else {
@@ -402,12 +402,12 @@ public class TEPatternLibrary {
 
             LXPattern first = matchingPatterns.get(0);
             LXPattern last = matchingPatterns.get(matchingPatterns.size() - 1);
-            TE.log("After sort, first item in matchingPatterns list has %f plays, and last has %f plays"
-                    , patternHistoryCounter.get(first), patternHistoryCounter.get(last));
+            //TE.log("After sort, first item in matchingPatterns list has %f plays, and last has %f plays"
+            //        , patternHistoryCounter.get(first), patternHistoryCounter.get(last));
         }
 
         LXPattern selectedPattern = matchingPatterns.get(patternIndex);
-        TE.log("Picked next pattern for [%s]: %s (index=%d)", nextPhrase, selectedPattern, patternIndex);
+        //TE.log("Picked next pattern for [%s]: %s (index=%d)", nextPhrase, selectedPattern, patternIndex);
         return selectedPattern;
     }
 
