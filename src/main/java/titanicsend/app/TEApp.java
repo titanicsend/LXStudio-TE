@@ -199,7 +199,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     this.autopilotComponent.autopilotEnabledToggle.addListener(autopilotEnableListener);
 
     // create our listener for OSC messages
-    this.oscListener = new TEOscListener(lx, autopilot, history);
+    this.oscListener = new TEOscListener(lx, autopilot);
 
     // add custom OSC listener to handle OSC messages from ShowKontrol
     // includes an Autopilot ref to store (threadsafe) queue of unread OSC messages

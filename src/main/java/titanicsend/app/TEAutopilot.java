@@ -622,7 +622,7 @@ public class TEAutopilot implements LXLoopTask {
         // trigger FX if needed
         this.enableFX(isSamePhrase);
 
-        // change palette if needed
+        // change palette if needed, only on CHORUS starts, for now
         long msSincePaletteStart = System.currentTimeMillis() - history.getPaletteStartedAt();
         //TE.log("Palette: %s, isSamePhrase: %s, msSincePaletteStart > PALETTE_DURATION_MS: %s (now=%d, msSincePaletteStart=%d, PALETTE_DURATION_MS=%d, paletteStartedAt=%d)"
         //        , curPhrase, isSamePhrase, msSincePaletteStart > PALETTE_DURATION_MS

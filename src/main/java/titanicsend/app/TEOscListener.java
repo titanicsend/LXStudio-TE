@@ -30,10 +30,9 @@ public class TEOscListener {
     // differs by more than this amount from current tempo
     private double TEMPO_DIFF_THRESHOLD = 0.05;
 
-    public TEOscListener(LX lx, TEAutopilot ap, TEHistorian history) {
+    public TEOscListener(LX lx, TEAutopilot ap) {
         this.autopilot = ap;
         this.lx = lx;
-        this.history = new TEHistorian();
         this.deckGroup = new TEDeckGroup(TEDeckGroup.TE_DEFAULT_NUM_DECKS);
     }
 
