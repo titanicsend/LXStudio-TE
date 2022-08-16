@@ -81,9 +81,9 @@ function rgba(r, g, b, a) {
 
 function paint(v) {
   if (__pattern.model.isEdgePoint(point.index))
-    return __color = __pattern.getEdgeGradientColor(v);
+    return __color = __pattern.getPrimaryGradientColor(v);
   else
-    return __color = __pattern.getPanelGradientColor(v);
+    return __color = __pattern.getPrimaryGradientColor(v);
 }
 
 function swatch(v) {
