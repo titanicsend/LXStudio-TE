@@ -95,6 +95,10 @@ public abstract class PixelblazePort extends TEAudioPattern {
 
 	public static double PI2 = Math.PI*2;
 
+	public double random(double v) {
+		return Math.random() * v;
+	}
+
 	public double time(double interval) {
 		return ((now / 65536.0) % interval) / interval;
 	}
