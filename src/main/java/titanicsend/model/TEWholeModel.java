@@ -284,9 +284,19 @@ public class TEWholeModel extends LXModel {
       String[] tokens = line.split("\\t");
       assert tokens.length == 11;
       String panelId = tokens[0];
+      String startVertex = tokens[7];
       String startingEdgeId = tokens[8];
       if (startingEdgeId == "") {
         throw new IllegalStateException("Panel " + panelId + " has empty starting edge ID");
+      }
+      tokens = startingEdgeId.split("-");
+      assert tokens.length == 2;
+      if (tokens[0].equals(startVertex)) {
+        // pass
+      } else if (tokens[1].equals(startVertex)) {
+        startingEdgeId = tokens[1] + "-" + tokens[0];
+      } else {
+        throw new IllegalStateException("Panel " + panelId + " has impossible signal plan");
       }
       rv.put(panelId, startingEdgeId);
     }
