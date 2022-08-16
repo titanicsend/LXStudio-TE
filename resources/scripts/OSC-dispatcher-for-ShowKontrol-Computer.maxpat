@@ -40,11 +40,54 @@
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
+					"fontsize" : 18.0,
+					"id" : "obj-24",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 254.0, 696.5, 106.0, 27.0 ],
+					"text" : "lighting-1"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-23",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 74.0, 450.5, 212.0, 20.0 ],
+					"presentation" : 1,
+					"presentation_rect" : [ 74.0, 450.5, 212.0, 20.0 ],
+					"text" : "Read IP address from Text File"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontsize" : 18.0,
+					"id" : "obj-20",
+					"linecount" : 6,
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 33.66666666666697, 137.0, 154.0, 127.0 ],
+					"presentation" : 1,
+					"presentation_linecount" : 6,
+					"presentation_rect" : [ 33.66666666666697, 137.0, 154.0, 127.0 ],
+					"text" : "this should light-up\nif you are receiving\nOSC from ShowKontrol"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-73",
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 165.66666666666697, 494.5, 150.0, 20.0 ],
+					"patching_rect" : [ 180.66666666666697, 494.5, 150.0, 20.0 ],
+					"presentation" : 1,
+					"presentation_rect" : [ 180.66666666666697, 494.5, 150.0, 20.0 ],
 					"text" : "config file: IPs"
 				}
 
@@ -67,7 +110,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 0.0, 640.0, 480.0 ],
+						"rect" : [ 59.0, 106.0, 640.0, 480.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
@@ -97,6 +140,30 @@
 						"assistshowspatchername" : 0,
 						"boxes" : [ 							{
 								"box" : 								{
+									"id" : "obj-4",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 199.0, 228.0, 31.0, 22.0 ],
+									"text" : "host"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-2",
+									"maxclass" : "button",
+									"numinlets" : 1,
+									"numoutlets" : 1,
+									"outlettype" : [ "bang" ],
+									"parameter_enable" : 0,
+									"patching_rect" : [ 197.0, 182.0, 24.0, 24.0 ]
+								}
+
+							}
+, 							{
+								"box" : 								{
 									"id" : "obj-62",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
@@ -114,8 +181,8 @@
 									"numinlets" : 3,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 50.0, 235.0, 79.0, 22.0 ],
-									"text" : "pack s host s"
+									"patching_rect" : [ 50.0, 249.0, 62.0, 22.0 ],
+									"text" : "pack s s s"
 								}
 
 							}
@@ -232,6 +299,20 @@
  ],
 						"lines" : [ 							{
 								"patchline" : 								{
+									"destination" : [ "obj-4", 0 ],
+									"source" : [ "obj-2", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-61", 1 ],
+									"source" : [ "obj-4", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
 									"destination" : [ "obj-59", 0 ],
 									"source" : [ "obj-58", 0 ]
 								}
@@ -281,7 +362,16 @@
 							}
 , 							{
 								"patchline" : 								{
+									"destination" : [ "obj-2", 0 ],
+									"order" : 0,
+									"source" : [ "obj-62", 1 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
 									"destination" : [ "obj-61", 2 ],
+									"order" : 1,
 									"source" : [ "obj-62", 1 ]
 								}
 
@@ -330,7 +420,9 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "bang" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 42.66666666666697, 450.5, 24.0, 24.0 ]
+					"patching_rect" : [ 42.66666666666697, 450.5, 24.0, 24.0 ],
+					"presentation" : 1,
+					"presentation_rect" : [ 42.66666666666697, 450.5, 24.0, 24.0 ]
 				}
 
 			}
@@ -348,39 +440,20 @@
 			}
 , 			{
 				"box" : 				{
-					"coll_data" : 					{
-						"count" : 4,
-						"data" : [ 							{
-								"key" : "lighting-1",
-								"value" : [ "10.7.0.10" ]
-							}
-, 							{
-								"key" : "lighting-2",
-								"value" : [ "10.7.0.11" ]
-							}
-, 							{
-								"key" : "lasers-3",
-								"value" : [ "10.7.0.12" ]
-							}
-, 							{
-								"key" : "projection-5",
-								"value" : [ "10.7.0.13" ]
-							}
- ]
-					}
-,
 					"id" : "obj-57",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 4,
 					"outlettype" : [ "", "", "", "" ],
-					"patching_rect" : [ 42.66666666666697, 494.5, 121.0, 22.0 ],
+					"patching_rect" : [ 42.66666666666697, 494.5, 136.0, 22.0 ],
+					"presentation" : 1,
+					"presentation_rect" : [ 42.66666666666697, 494.5, 136.0, 22.0 ],
 					"saved_object_attributes" : 					{
-						"embed" : 1,
+						"embed" : 0,
 						"precision" : 6
 					}
 ,
-					"text" : "coll TE-computers.txt"
+					"text" : "coll TE-IP-addresses.txt"
 				}
 
 			}
@@ -391,6 +464,8 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 1319.0, 616.0, 150.0, 20.0 ],
+					"presentation" : 1,
+					"presentation_rect" : [ 1319.0, 616.0, 150.0, 20.0 ],
 					"text" : "highest fader"
 				}
 
@@ -735,7 +810,9 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "bang" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 210.0, 151.0, 24.0, 24.0 ]
+					"patching_rect" : [ 180.66666666666697, 137.0, 44.0, 44.0 ],
+					"presentation" : 1,
+					"presentation_rect" : [ 180.66666666666697, 137.0, 44.0, 44.0 ]
 				}
 
 			}
@@ -746,6 +823,8 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 1419.666666666666742, 416.0, 75.0, 20.0 ],
+					"presentation" : 1,
+					"presentation_rect" : [ 1419.666666666666742, 416.0, 75.0, 20.0 ],
 					"text" : "mixer faders"
 				}
 
@@ -768,6 +847,8 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 979.0, 421.0, 32.0, 20.0 ],
+					"presentation" : 1,
+					"presentation_rect" : [ 979.0, 421.0, 32.0, 20.0 ],
 					"text" : "beat"
 				}
 
@@ -816,7 +897,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 934.0, 696.5, 105.0, 27.0 ],
-					"text" : "Projection-5"
+					"text" : "project-4"
 				}
 
 			}
@@ -840,7 +921,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 706.0, 696.5, 79.0, 27.0 ],
-					"text" : "Lasers-4"
+					"text" : "lasers-3"
 				}
 
 			}
@@ -864,7 +945,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 479.0, 696.5, 106.0, 27.0 ],
-					"text" : "Lights-2"
+					"text" : "lighting-2"
 				}
 
 			}
@@ -915,7 +996,9 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "bang" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 948.0, 314.0, 94.0, 94.0 ]
+					"patching_rect" : [ 948.0, 314.0, 94.0, 94.0 ],
+					"presentation" : 1,
+					"presentation_rect" : [ 948.0, 314.0, 94.0, 94.0 ]
 				}
 
 			}
@@ -1394,7 +1477,9 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "bang" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 1254.666666666666742, 616.0, 50.0, 22.0 ]
+					"patching_rect" : [ 1254.666666666666742, 616.0, 50.0, 22.0 ],
+					"presentation" : 1,
+					"presentation_rect" : [ 1254.666666666666742, 616.0, 50.0, 22.0 ]
 				}
 
 			}
@@ -1418,7 +1503,9 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 1389.666666666666742, 385.0, 20.0, 140.0 ]
+					"patching_rect" : [ 1389.666666666666742, 385.0, 20.0, 140.0 ],
+					"presentation" : 1,
+					"presentation_rect" : [ 1389.666666666666742, 385.0, 20.0, 140.0 ]
 				}
 
 			}
@@ -1430,7 +1517,9 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 1344.666666666666742, 385.0, 20.0, 140.0 ]
+					"patching_rect" : [ 1344.666666666666742, 385.0, 20.0, 140.0 ],
+					"presentation" : 1,
+					"presentation_rect" : [ 1344.666666666666742, 385.0, 20.0, 140.0 ]
 				}
 
 			}
@@ -1442,7 +1531,9 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 1299.666666666666742, 385.0, 20.0, 140.0 ]
+					"patching_rect" : [ 1299.666666666666742, 385.0, 20.0, 140.0 ],
+					"presentation" : 1,
+					"presentation_rect" : [ 1299.666666666666742, 385.0, 20.0, 140.0 ]
 				}
 
 			}
@@ -1454,7 +1545,9 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 1254.666666666666742, 385.0, 20.0, 140.0 ]
+					"patching_rect" : [ 1254.666666666666742, 385.0, 20.0, 140.0 ],
+					"presentation" : 1,
+					"presentation_rect" : [ 1254.666666666666742, 385.0, 20.0, 140.0 ]
 				}
 
 			}
@@ -1686,6 +1779,13 @@
 		"dependency_cache" : [ 			{
 				"name" : "OSC-route.mxo",
 				"type" : "iLaX"
+			}
+, 			{
+				"name" : "TE-IP-addresses.txt",
+				"bootpath" : "~/Documents/Dev/TE2/LXStudio-TE/resources/scripts",
+				"patcherrelativepath" : ".",
+				"type" : "TEXT",
+				"implicit" : 1
 			}
  ],
 		"autosave" : 0
