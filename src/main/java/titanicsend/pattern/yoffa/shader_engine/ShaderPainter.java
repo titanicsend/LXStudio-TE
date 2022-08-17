@@ -47,8 +47,8 @@ public class ShaderPainter {
 
         // calculate so that if normalized x/y are always in range 0-1, x and y will be
         // limited to between the proper image array index range, no clamping is needed
-        int xi = (int) Math.round((1f - normalizedX) * (imageWidth() - 1f));
-        int yi = (int) Math.round(normalizedY * (imageHeight() - 1f));
+        int xi = Math.round((1f - normalizedX) * (imageWidth() - 1f));
+        int yi = Math.round(normalizedY * (imageHeight() - 1f));
 
         colors[point.index] = image[xi][yi];
     }

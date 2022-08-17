@@ -88,10 +88,10 @@ public class FrameBrights extends TEAudioPattern {
     // choose between minLit and maxLit random segments of an edge to light
     // and prepare the data necessary to do quickly
     void lightRandomSegments(int zoneCount, int minLit, int maxLit) {
-        int nLit = Math.max(minLit,(int) Math.round(maxLit * prng.nextFloat()));
+        int nLit = Math.max(minLit, Math.round(maxLit * prng.nextFloat()));
 
         // set all segments dark
-        for (int i = 0; i < (int) zoneCount; i++) {
+        for (int i = 0; i < zoneCount; i++) {
             zoneIsLit[i] = false;
         }
 
