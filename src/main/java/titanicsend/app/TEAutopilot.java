@@ -47,7 +47,6 @@ public class TEAutopilot implements LXLoopTask {
     // out erroneous phrase messages
     private static final int MIN_NUM_BEATS_SINCE_TRANSITION_FOR_NEW_PHRASE = 2;
 
-
     // various fader levels of importance
     private static double LEVEL_FULL = 1.0,
                            LEVEL_MISPREDICTED_FADE_OUT = 0.75, // fading out mistaken transition
@@ -345,17 +344,10 @@ public class TEAutopilot implements LXLoopTask {
                     boolean wasRecentMasterChange = msSinceLastMasterChange < msInBeat * MIN_NUM_BEATS_SINCE_TRANSITION_FOR_NEW_PHRASE;
                     boolean wasRecentPhraseChange = msSinceLastOscPhrase < msInBeat * MIN_NUM_BEATS_IN_PHRASE;
 
-                    // weigh evidenceOfInvalidPhrase
-                    int evidenceOfInvalidPhrase = 0;
-                    if (isInMiddleOfMeasure) evidenceOfInvalidPhrase += 1;
-                    if (wasRecentMasterChange) evidenceOfInvalidPhrase += 1;
-                    if (wasRecentPhraseChange) evidenceOfInvalidPhrase += 1;
-
-                    //TE.log("isInMiddleOfMeasure=%s, wasRecentMasterChange=%s, wasRecentPhraseChange=%s, evidenceOfInvalidPhrase=%d",
-                    //        isInMiddleOfMeasure, wasRecentMasterChange, wasRecentPhraseChange, evidenceOfInvalidPhrase);
-
-                    // make decision
-                    if (evidenceOfInvalidPhrase > 1) {
+                    // make decision -- this is configurable. I found that a pretty zero tolerance policy was most effective
+                    if (wasRecentMasterChange || wasRecentPhraseChange) {
+                        TE.log("isInMiddleOfMeasure=%s, wasRecentMasterChange=%s, wasRecentPhraseChange=%s",
+                                isInMiddleOfMeasure, wasRecentMasterChange, wasRecentPhraseChange);
                         //TE.log("Not a real phrase event -> filtering!");
                         continue;
                     }
