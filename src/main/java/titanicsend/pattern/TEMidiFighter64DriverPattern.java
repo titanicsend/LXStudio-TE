@@ -43,8 +43,6 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
           64, 65, 66, 67,  96, 97, 98, 99
   };
 
-  public static final String DEVICE_NAME = "Midi Fighter 64";
-
   public static final int LED_OFF = 0;
   public static final int LED_GRAY_DIM = 1;
   public static final int LED_GRAY = 2;
@@ -246,8 +244,12 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     });
 
     this.pokeButton.addListener((p) -> {
-      this.midiOut.sendNoteOn(this.pokeChannel.getValuei(), this.pokePitch.getValuei(),
-              this.pokeVelocity.getValuei());
+      if (this.midiOut == null) {
+        LX.log("No MF64 attached");
+      } else {
+        this.midiOut.sendNoteOn(this.pokeChannel.getValuei(), this.pokePitch.getValuei(),
+                this.pokeVelocity.getValuei());
+      }
     });
 
   }
