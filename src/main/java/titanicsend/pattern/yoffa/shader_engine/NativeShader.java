@@ -81,9 +81,6 @@ public class NativeShader implements GLEventListener {
 
     // map of user created uniforms.
     protected HashMap<String, GeneralUniforms> uniforms = null;
-    // Direct buffers for passing data arrays to the shader as uniforms
-    protected IntBuffer intBuffer;
-    protected FloatBuffer floatBuffer;
 
     public NativeShader(FragmentShader fragmentShader, int xResolution, int yResolution, ShaderOptions options) {
         this.xResolution = xResolution;
@@ -172,7 +169,7 @@ public class NativeShader implements GLEventListener {
         vertexBuffer.rewind();
         gl4.glGenBuffers(1, geometryBufferHandles,0);
         gl4.glBindBuffer(GL_ARRAY_BUFFER, geometryBufferHandles[0]);
-        gl4.glBufferData(GL_ARRAY_BUFFER,vertexBuffer.capacity() * Float.BYTES, vertexBuffer, gl4.GL_STATIC_DRAW);
+        gl4.glBufferData(GL_ARRAY_BUFFER, (long) vertexBuffer.capacity() * Float.BYTES, vertexBuffer, GL.GL_STATIC_DRAW);
 
         gl4.glVertexAttribPointer(shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION),
                 3, GL4.GL_FLOAT, false, 0, 0);
@@ -182,7 +179,7 @@ public class NativeShader implements GLEventListener {
         indexBuffer.rewind();
         gl4.glGenBuffers(1, geometryBufferHandles,1);
         gl4.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometryBufferHandles[1]);
-        gl4.glBufferData(GL_ELEMENT_ARRAY_BUFFER,indexBuffer.capacity() * Integer.BYTES, indexBuffer, gl4.GL_STATIC_DRAW);
+        gl4.glBufferData(GL_ELEMENT_ARRAY_BUFFER, (long) indexBuffer.capacity() * Integer.BYTES, indexBuffer, GL.GL_STATIC_DRAW);
 
         gl4.glDrawElements(GL2.GL_TRIANGLES, INDICES.length, GL2.GL_UNSIGNED_INT, 0);
 
@@ -332,7 +329,7 @@ public class NativeShader implements GLEventListener {
     }
 
     public boolean isInitialized() {
-        return shaderProgram != null && shaderProgram.isInitialized();
+        return (shaderProgram != null) && (shaderProgram.isInitialized());
     }
 
     /*
@@ -369,7 +366,7 @@ public class NativeShader implements GLEventListener {
         if (uniforms != null && 0 < uniforms.size()) {
             for (String name : uniforms.keySet()) {
                 int loc = gl4.glGetUniformLocation(shaderProgram.getProgramId(), name);
-                ;
+
                 if (loc == -1) {
                     // LX.log("No uniform \"" + name + "\"  found in shader");
                     continue;
