@@ -14,10 +14,6 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class ShaderPanelsPatternConfig {
 
-    public static Class[] getPatterns() {
-        return ShaderPanelsPatternConfig.class.getDeclaredClasses();
-    }
-
     @LXCategory("Native Shaders Panels")
     public static class ShaderToyPattern extends ConstructedPattern {
         public ShaderToyPattern(LX lx) {

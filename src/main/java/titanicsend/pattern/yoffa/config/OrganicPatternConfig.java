@@ -16,10 +16,6 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class OrganicPatternConfig {
 
-    public static Class[] getPatterns() {
-        return OrganicPatternConfig.class.getDeclaredClasses();
-    }
-
     @LXCategory("Yoffa Panel Combo")
     public static class StarryOutrun extends ConstructedPattern {
         public StarryOutrun(LX lx) {
