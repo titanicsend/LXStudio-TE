@@ -19,6 +19,11 @@ class Controller
     "C#{@id}"
   end
 
+  def ip
+    id_parts = id.split('-')
+    "10.7.#{id_parts[0]}.#{id_parts[1]}"
+  end
+
   def channels_assigned
     edges.length + panels.sum(&:channels_required)
   end
@@ -82,7 +87,7 @@ class Controller
     counter = @@vertex_counter[vertex.id]
     if counter.nil?
       @@vertex_counter[vertex.id] = 0
-      counter = 0
+      counter = 1
     end
     id = "#{vertex.id}-#{counter}"
     @@vertex_counter[vertex.id] += 1
