@@ -95,7 +95,7 @@ def ac_power_cable_lengths(graph:, boxes:)
 end
 
 def bucket_cable_lengths(cable_lengths)
-  buckets = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
+  buckets = [2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
 
   bucketed_cables = buckets.map { |i| [i, 0] }.to_h
 
