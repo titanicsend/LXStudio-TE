@@ -11,11 +11,10 @@ import titanicsend.app.autopilot.*;
 import titanicsend.app.autopilot.events.TEPhraseEvent;
 import titanicsend.app.autopilot.utils.TEMixerUtils;
 import titanicsend.app.autopilot.utils.TETimeUtils;
+import titanicsend.lasercontrol.PangolinLaser;
 import titanicsend.util.TE;
 import titanicsend.util.TEMath;
 
-import java.sql.Array;
-import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -25,7 +24,7 @@ public class TEAutopilot implements LXLoopTask {
 
     // should we send OSC messages to lasers about
     // palette changes?
-    private boolean SEND_PALETTE_TO_LASERS = false;
+    private static boolean SEND_PALETTE_TO_LASERS = true;
 
     // number of bars to fade out on various occasions
     private final int MISPREDICTED_FADE_OUT_BARS = 2;
@@ -71,7 +70,7 @@ public class TEAutopilot implements LXLoopTask {
 
     // how long in between palette changes
     // palette changes only happen on new CHORUS phrase changes
-    private static long PALETTE_DURATION_MS = 10 * 60 * 1000;
+    private static long PALETTE_DURATION_MS = 10 ; //* 60 * 1000;
 
     private LX lx;
 
@@ -114,6 +113,8 @@ public class TEAutopilot implements LXLoopTask {
                       strobesChannel = null,
                       fxChannel = null;
 
+    private PangolinLaser lasers;
+
     /**
      * Instantiate the autopilot with a reference to both LX and the pattern library.
      *
@@ -127,6 +128,9 @@ public class TEAutopilot implements LXLoopTask {
 
         // this queue needs to be accessible from OSC listener in diff thread
         unprocessedOscMessages = new ConcurrentLinkedQueue<TEOscMessage>();
+
+        // load lasers connector
+        this.lasers = new PangolinLaser(lx, "resources/TE-IP-addresses.txt");
 
         // start any logic that begins with being enabled
         setEnabled(enabled);
@@ -287,6 +291,7 @@ public class TEAutopilot implements LXLoopTask {
     @Override
     public void loop(double deltaMs) {
         long now = System.currentTimeMillis();
+        //TE.log("LOOP");
         try {
             // if autopilot isn't enabled, just ignore for now
             if (!isEnabled()) return;
@@ -346,8 +351,8 @@ public class TEAutopilot implements LXLoopTask {
 
                     // make decision -- this is configurable. I found that a pretty zero tolerance policy was most effective
                     if (wasRecentMasterChange || wasRecentPhraseChange) {
-                        TE.log("isInMiddleOfMeasure=%s, wasRecentMasterChange=%s, wasRecentPhraseChange=%s",
-                                isInMiddleOfMeasure, wasRecentMasterChange, wasRecentPhraseChange);
+                        //TE.log("isInMiddleOfMeasure=%s, wasRecentMasterChange=%s, wasRecentPhraseChange=%s",
+                        //        isInMiddleOfMeasure, wasRecentMasterChange, wasRecentPhraseChange);
                         //TE.log("Not a real phrase event -> filtering!");
                         continue;
                     }
@@ -629,14 +634,12 @@ public class TEAutopilot implements LXLoopTask {
             changePaletteSwatch(false, true, 0);
             history.startPaletteTimer();
 
-            // notify lasers of this change
-            if (SEND_PALETTE_TO_LASERS) {
-                try {
-                    TEOscMessage.sendPaletteToPangolin(lx);
-                } catch (Exception e) {
-                    TE.err("Problem sending palette to Pangolin: %s", e);
-                    e.printStackTrace();
-                }
+            // notify lasers of this palette change
+            try {
+                this.lasers.sendPaletteToLasers();
+            } catch (Exception e) {
+                TE.err("Problem sending palette to Pangolin: %s", e);
+                e.printStackTrace();
             }
         }
 

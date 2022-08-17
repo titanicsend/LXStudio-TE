@@ -1,10 +1,6 @@
 package titanicsend.app.autopilot;
 
-import heronarts.lx.LX;
-import heronarts.lx.color.LXColor;
-import heronarts.lx.color.LXDynamicColor;
 import heronarts.lx.osc.OscMessage;
-import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.util.TE;
 
 /**
@@ -155,42 +151,5 @@ public class TEOscMessage {
 
         // lookup the type of phrase
         return TEPhrase.resolvePhrase(phraseTypeString);
-    }
-
-
-    /**
-     * Sends an integer value to Pangolin.
-     *
-     * @param address String
-     * @param value int
-     */
-    public static void sendOscToPangolin(LX lx, String address, int value) {
-        lx.engine.osc.transmitActive.setValue(true);
-        lx.engine.osc.transmitHost.setValue(PangolinHost.HOSTNAME);
-        lx.engine.osc.transmitPort.setValue(PangolinHost.PORT);
-        TE.log("Sending OSC to %s:%d = OSC OUT: %s %d;", PangolinHost.HOSTNAME, PangolinHost.PORT, address, value);
-        lx.engine.osc.sendMessage(address, value);
-    }
-
-    /**
-     * Call this function to send the current LX palette to Pangolin
-     * lasers via OSC.
-     *
-     * TEOscMessage is place to edit/change the address format.
-     *
-     * This method is where to change the hue calculation, or send more
-     * similar messages if desired.
-     *
-     * @param lx
-     */
-    public static void sendPaletteToPangolin(LX lx) {
-        // send hue
-        LXDynamicColor primary = lx.engine.palette.swatch.getColor(3);
-        int rgb = primary.getColor();
-        int hue = (int) (360 * LXColor.h(rgb));
-        TEOscMessage.sendOscToPangolin(lx, TEOscMessage.makePaletteHueAddress(), hue);
-
-        //TODO(someone) send band difference for secondary?
-        // ...
     }
 }

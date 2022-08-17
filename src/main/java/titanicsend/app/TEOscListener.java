@@ -1,14 +1,11 @@
 package titanicsend.app;
 
 import heronarts.lx.LX;
-import heronarts.lx.color.LXColor;
-import heronarts.lx.color.LXDynamicColor;
 import heronarts.lx.osc.OscMessage;
 import titanicsend.app.autopilot.TEDeckGroup;
 import titanicsend.app.autopilot.TEHistorian;
 import titanicsend.app.autopilot.TEOscMessage;
 import titanicsend.app.autopilot.utils.TETimeUtils;
-import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.util.TE;
 
 /**
