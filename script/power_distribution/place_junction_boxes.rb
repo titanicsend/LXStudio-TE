@@ -414,9 +414,9 @@ pp ac_power_cable_lengths
 puts "---------"
 
 # Uncomment me, run the script, copy-paste, split to columns to regenerate `panel_signal_paths_scratch` (first 4 columns)
-# graph.panels.each_value do |panel|
-#  puts "#{panel.id},#{panel.controller_vertex.id},#{panel.signal_start_vertex_id},#{panel.valid_signal_in_vertices.map(&:id).join('-')}"
-# end
+graph.panels.each_value do |panel|
+ puts "#{panel.id},#{panel.controller_vertex.id},#{panel.signal_start_vertex.id},#{panel.valid_signal_in_vertices.map(&:id).join('-')}"
+end
 
 puts "--- All assignments ---"
 puts ["Strip ID", " Panel/Edge ID", " Panel/Edge vertices", " Num LEDs", " JBox",
