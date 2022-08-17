@@ -298,7 +298,7 @@ public class NativeShader implements GLEventListener {
         buffer.rewind();
         gl4.glBindBuffer(destinationBufferConstant, bufferHandles[0]);
         gl4.glBufferData(destinationBufferConstant, (long) buffer.capacity() * bufferElementBytes,
-                buffer, gl4.GL_STATIC_DRAW);
+                buffer, GL.GL_STATIC_DRAW);
     }
 
     @Override
