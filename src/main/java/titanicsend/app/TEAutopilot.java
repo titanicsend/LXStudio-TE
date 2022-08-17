@@ -70,7 +70,7 @@ public class TEAutopilot implements LXLoopTask {
 
     // how long in between palette changes
     // palette changes only happen on new CHORUS phrase changes
-    private static long PALETTE_DURATION_MS = 10 ; //* 60 * 1000;
+    private static long PALETTE_DURATION_MS = 5 * 60 * 1000;
 
     private LX lx;
 
@@ -291,7 +291,6 @@ public class TEAutopilot implements LXLoopTask {
     @Override
     public void loop(double deltaMs) {
         long now = System.currentTimeMillis();
-        //TE.log("LOOP");
         try {
             // if autopilot isn't enabled, just ignore for now
             if (!isEnabled()) return;
