@@ -21,10 +21,10 @@ public class Fire extends TEPattern {
     private int[][] buffer;
     private int[] gradient;
 
-    protected final CompoundParameter fuel = (CompoundParameter)
+    protected final CompoundParameter fuel =
             new CompoundParameter("Fuel", 1);
 
-    protected final CompoundParameter colorPosition = (CompoundParameter)
+    protected final CompoundParameter colorPosition =
             new CompoundParameter("Color Position", 0.5);
 
     public final LinkedColorParameter fireColor =
