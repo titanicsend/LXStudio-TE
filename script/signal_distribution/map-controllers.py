@@ -145,7 +145,7 @@ fd_out = open(JEFF_FILE, "w")
 for vertex in sorted(CONTROLLERS):
   connections = CONTROLLERS[vertex]
   for channel, connection in enumerate(connections):
-    last_octet = channel / 8
+    last_octet = 1 + channel / 8
     channel = channel % 8
     if "-" in connection:
       ftype = "Edge"
