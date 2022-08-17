@@ -8,6 +8,7 @@ STRIPING_FILE = RESOURCES_DIR + "/striping-instructions.txt"
 PANEL_PATHS_FILE = RESOURCES_DIR + "/panel_signal_paths.tsv"
 EDGE_PATHS_FILE = RESOURCES_DIR + "/edge_signal_paths.tsv"
 CONTROLLERS_FILE =  RESOURCES_DIR + "/controllers.tsv"
+JEFF_FILE = RESOURCES_DIR + "/controllers-jeff.tsv"
 PANELS_FILE = RESOURCES_DIR + "/panels.txt"
 EDGES_FILE = RESOURCES_DIR + "/edges.txt"
 
@@ -139,7 +140,24 @@ for vertex in sorted(CONTROLLERS):
   print("%d\t%s" % (vertex, "\t".join(connections)), file=fd_out)
 fd_out.close()
 print ("Wrote " + CONTROLLERS_FILE)
-  
+
+fd_out = open(JEFF_FILE, "w")
+for vertex in sorted(CONTROLLERS):
+  connections = CONTROLLERS[vertex]
+  for channel, connection in enumerate(connections):
+    last_octet = channel / 8
+    channel = channel % 8
+    if "-" in connection:
+      ftype = "Edge"
+    else:
+      ftype = "Panel"
+    print("%d-%d\t%d\t%d\t%d\t%s\t%s" %
+          (vertex, last_octet, vertex, last_octet, channel, ftype, connection),
+          file=fd_out)
+    
+fd_out.close()
+print ("Wrote " + JEFF_FILE)
+
 fd_in = open(PANELS_FILE)
 outfile = PANELS_FILE + ".new"
 fd_out = open(outfile, "w")
