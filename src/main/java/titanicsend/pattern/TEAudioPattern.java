@@ -157,7 +157,7 @@ public abstract class TEAudioPattern extends TEPattern {
 
     public void addParameters(List<? extends LXParameter> newParameters) {
         for(LXParameter parameter : newParameters) {
-            addParameter(parameter);
+            addParameter(parameter.getLabel(), parameter);
         }
     }
 }
