@@ -146,7 +146,7 @@ for vertex in sorted(CONTROLLERS):
   connections = CONTROLLERS[vertex]
   for channel, connection in enumerate(connections):
     last_octet = 1 + channel / 8
-    channel = channel % 8
+    channel = 1 + channel % 8
     if "-" in connection:
       ftype = "Edge"
     else:
