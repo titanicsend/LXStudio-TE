@@ -200,6 +200,21 @@ To run on machine startup (ie: press power button and LX just starts up), you'll
 
 Restart your machine and you should see on startup, LXStudio automatically opens.
 
+## Running ShowKontrol on startup
+
+1. Enable StartShowKontrol.app to control computer 
+   1. System Preferences > Security & Privacy > Accessibility 
+   2. Under "Allow these apps to control your computer"
+      1. Click + sign
+      2. Select `startup_items/StartShowKontrol.app` 
+2. Add `startup_items/StartShowKontrol.app` to Login Items
+3. Change to automatic login
+   1. (See identical step above in "Running LXStudio on startup")
+4. Remove the password from user account
+   1. (See identical step above in "Running LXStudio on startup")
+5. Keep in Dock
+   1. (See identical step above in "Running LXStudio on startup")
+
 ## Eclipse
 
 If Eclipse is like a warm snuggie to you, we'd appreciate you adding any SDK and
