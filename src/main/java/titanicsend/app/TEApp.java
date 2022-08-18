@@ -21,6 +21,9 @@ package titanicsend.app;
 import java.io.File;
 import java.io.IOException;
 import java.net.SocketException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
@@ -87,6 +90,29 @@ public class TEApp extends PApplet implements LXPlugin  {
 
     new LXStudio(this, flags, this.model);
     this.surface.setTitle(this.model.name);
+
+    String logFileName = LOG_FILENAME_FORMAT.format(Calendar.getInstance().getTime());
+    LX.setLogFile(new File(flags.mediaPath, LX.Media.LOGS.getDirName() + File.separator + logFileName));
+  }
+
+  public void loadCLfile(LX lx) {
+    // Hack to load CLI filename in PApplet environment
+    final File finalProjectFile = projectFileName != null ? lx.getMediaFile(LX.Media.PROJECTS, projectFileName) : null;
+
+    final boolean isSchedule = (projectFileName != null) ? finalProjectFile.getName().endsWith(".lxs") : false;
+    if (isSchedule) {
+      lx.preferences.schedulerEnabled.setValue(true);
+      LX.log("Opening schedule file: " + finalProjectFile);
+      lx.scheduler.openSchedule(finalProjectFile, true);
+    } else {
+      try {
+        LX.log("Loading initial project file...");
+        lx.preferences.loadInitialProject(finalProjectFile);
+      } catch (Exception x) {
+        LX.error(x, "Exception loading initial project: " + x.getLocalizedMessage());
+      }
+      //lx.preferences.loadInitialSchedule();
+    }
   }
 
   public TEUserInterface.AutopilotComponent autopilotComponent;
@@ -218,6 +244,8 @@ public class TEApp extends PApplet implements LXPlugin  {
 
     GPOutput gpOutput = new GPOutput(lx, this.gpBroadcaster);
     lx.addOutput(gpOutput);
+    
+    loadCLfile(lx);
   }
 
   private TEPatternLibrary initializePatternLibrary(LX lx) {
@@ -324,6 +352,10 @@ public class TEApp extends PApplet implements LXPlugin  {
     // will run a draw-loop.
   }
 
+  private static final DateFormat LOG_FILENAME_FORMAT = new SimpleDateFormat("'LXStudio-TE-'yyyy.MM.dd-HH.mm.ss'.log'");
+
+  private static String projectFileName = null;
+
   /**
    * Main interface into the program. Two modes are supported, if the --headless
    * flag is supplied then a raw CLI version of LX is used. If not, then we embed
@@ -356,6 +388,7 @@ public class TEApp extends PApplet implements LXPlugin  {
         }
       } else if (args[i].endsWith(".lxp")) {
         try {
+          projectFileName = args[i];
           projectFile = new File(args[i]);
         } catch (Exception x) {
           LX.error(x, "Command-line project file path invalid: " + args[i]);
