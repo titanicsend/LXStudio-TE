@@ -177,6 +177,26 @@ advanced approach. A simple one is to just delete that whole directory:
 rm -r ~/.m2
 ```
 
+## Running LXStudio on startup
+
+To run on machine startup (ie: press power button and LX just starts up), you'll need to do three things:
+
+1. Add `TE.app` to your startup items
+   1. System Preferences > Users & Groups
+   2. Click your user
+   3. Login Items > "+" button > add TE.app 
+2. Change to automatic login
+   1. System Preferences > Users & Groups
+   2. Click "Login Options" underneath list of accounts (may need to enter your password)
+   3. Using the combo box, select your user, ie "te" or whatever
+   4. Uncheck all the boxes underneath
+3. Remove the password from your user account
+   1. System Preferences > Users & Groups
+   2. Click your user > "Change Password"
+   3. Leave new password blank 
+
+Restart your machine and you should see on startup, LXStudio automatically opens.
+
 
 ## Eclipse
 
