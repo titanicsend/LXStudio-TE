@@ -1,0 +1,8 @@
+#!/bin/bash
+
+cd ~/code/titanicsend
+java -jar \
+	target/LXStudio-TE-0.2.0-SNAPSHOT-jar-with-dependencies.jar \
+	vehicle AutoVJ.lxp > Logs/app-run-log-`date +%Y%m%d-%H%M%S`.log 2>&1
+
+# JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home mvn exec:java@Main -Dexec.args="vehicle AutoVJ.lxp"
