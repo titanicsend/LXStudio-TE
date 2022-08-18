@@ -183,20 +183,22 @@ To run on machine startup (ie: press power button and LX just starts up), you'll
 
 1. Add `TE.app` to your startup items
    1. System Preferences > Users & Groups
-   2. Click your user
+   2. Click the user to run LXStudio with
    3. Login Items > "+" button > add TE.app 
 2. Change to automatic login
    1. System Preferences > Users & Groups
-   2. Click "Login Options" underneath list of accounts (may need to enter your password)
-   3. Using the combo box, select your user, ie "te" or whatever
+   2. Click "Login Options" underneath list of accounts (may need to enter password)
+   3. Using the combo box, select desired user, ie "te" or whatever
    4. Uncheck all the boxes underneath
 3. Remove the password from your user account
    1. System Preferences > Users & Groups
-   2. Click your user > "Change Password"
-   3. Leave new password blank 
+   2. Click the user > "Change Password"
+   3. Leave new password blank
+4. Keep in Dock 
+   1. When TE.app is running, right click on it, and say "Keep in Dock"
+   2. This way, during a show, it's very easy for anyone non-technical to simply quit the program and re-run it if there is an issue
 
 Restart your machine and you should see on startup, LXStudio automatically opens.
-
 
 ## Eclipse
 
