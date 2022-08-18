@@ -21,10 +21,13 @@ package titanicsend.app;
 import java.io.File;
 import java.io.IOException;
 import java.net.SocketException;
+import java.util.Arrays;
+import java.util.function.Function;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
 import heronarts.lx.parameter.LXParameterListener;
+import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.pattern.color.GradientPattern;
 import heronarts.lx.pattern.texture.NoisePattern;
 import heronarts.lx.pattern.texture.SparklePattern;
@@ -127,6 +130,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPattern(PBAudio1.class);
     lx.registry.addPattern(PBXorcery.class);
     lx.registry.addPattern(Xorcery.class);
+    lx.registry.addPattern(XorceryDiamonds.class);
     lx.registry.addPattern(PBFireworkNova.class);
     lx.registry.addPattern(PixelblazeParallel.class);
     lx.registry.addPattern(SolidEdge.class);
@@ -149,9 +153,17 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPattern(ArtStandards.class);
     lx.registry.addEffect(titanicsend.effect.BasicEffect.class);
     lx.registry.addEffect(titanicsend.effect.Kaleidoscope.class);
-    lx.registry.addPatterns(OrganicPatternConfig.getPatterns());
-    lx.registry.addPatterns(ShaderPanelsPatternConfig.getPatterns());
-    lx.registry.addPatterns(ShaderEdgesPatternConfig.getPatterns());
+
+    @SuppressWarnings("unchecked")
+    Function<Class<?>, Class<LXPattern>[]> patternGetter =
+        (Class<?> patternConfigClass) ->
+            (Class<LXPattern>[]) Arrays.stream(patternConfigClass.getDeclaredClasses())
+            .filter(LXPattern.class::isAssignableFrom)
+            .toArray();
+
+    lx.registry.addPatterns(patternGetter.apply(OrganicPatternConfig.class));
+    lx.registry.addPatterns(patternGetter.apply(ShaderPanelsPatternConfig.class));
+    lx.registry.addPatterns(patternGetter.apply(ShaderEdgesPatternConfig.class));
 
     // Test/debug patterns
     lx.registry.addPattern(ModelDebugger.class);

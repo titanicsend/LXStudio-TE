@@ -25,7 +25,7 @@ public class BasicVideoPattern extends TEPattern {
 
     public BasicVideoPattern(LX lx) throws IOException {
         super(lx);
-        addParameter(edges);
+        addParameter(edges.getLabel(), edges);
         videoPainter = new VideoPainter(VID_PATH, colors);
     }
 
