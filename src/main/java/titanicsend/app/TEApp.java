@@ -97,21 +97,23 @@ public class TEApp extends PApplet implements LXPlugin  {
 
   public void loadCLfile(LX lx) {
     // Hack to load CLI filename in PApplet environment
-    final File finalProjectFile = projectFileName != null ? lx.getMediaFile(LX.Media.PROJECTS, projectFileName) : null;
-
-    final boolean isSchedule = (projectFileName != null) ? finalProjectFile.getName().endsWith(".lxs") : false;
-    if (isSchedule) {
-      lx.preferences.schedulerEnabled.setValue(true);
-      LX.log("Opening schedule file: " + finalProjectFile);
-      lx.scheduler.openSchedule(finalProjectFile, true);
-    } else {
-      try {
-        LX.log("Loading initial project file...");
-        lx.preferences.loadInitialProject(finalProjectFile);
-      } catch (Exception x) {
-        LX.error(x, "Exception loading initial project: " + x.getLocalizedMessage());
+    if (projectFileName != null) {
+      final File finalProjectFile =lx.getMediaFile(LX.Media.PROJECTS, projectFileName);
+    
+      if (finalProjectFile.getName().endsWith(".lxs")) {
+        lx.preferences.schedulerEnabled.setValue(true);
+        LX.log("Opening schedule file: " + finalProjectFile);
+        lx.scheduler.openSchedule(finalProjectFile, true);
+      } else {
+        try {
+          if (finalProjectFile.exists()) {
+            LX.log("Opening project file passed as argument: " + projectFileName);
+            lx.openProject(finalProjectFile);
+          }          
+        } catch (Exception x) {
+          LX.error(x, "Exception loading project: " + x.getLocalizedMessage());
+        }
       }
-      //lx.preferences.loadInitialSchedule();
     }
   }
 
