@@ -632,14 +632,6 @@ public class TEAutopilot implements LXLoopTask {
             TE.log("Palette change!");
             changePaletteSwatch(false, true, 0);
             history.startPaletteTimer();
-
-            // notify lasers of this palette change
-            try {
-                this.lasers.sendPaletteToLasers();
-            } catch (Exception e) {
-                TE.err("Problem sending palette to Pangolin: %s", e);
-                e.printStackTrace();
-            }
         }
 
         // add to historical log of events
