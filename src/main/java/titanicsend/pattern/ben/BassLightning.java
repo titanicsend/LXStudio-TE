@@ -78,10 +78,10 @@ public class BassLightning extends TEAudioPattern {
 			ArrayList<TEEdgeModel> candidateEdges;
 
 			if (allowLoopsParam.getValueb()) {
-				candidateEdges = new ArrayList<>(origin.edges);
+				candidateEdges = new ArrayList(origin.edges);
 				candidateEdges.remove(edge);
 			} else {
-				candidateEdges = new ArrayList<>(
+				candidateEdges = new ArrayList(
 						origin.edges.stream().filter(e -> !visitedEdges.contains(e.getId())).collect(Collectors.toList())
 				);
 			}

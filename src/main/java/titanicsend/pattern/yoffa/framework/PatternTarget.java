@@ -55,7 +55,7 @@ public class PatternTarget {
     }
 
     public static PatternTarget allPointsAsCanvas(TEAudioPattern pattern) {
-        ArrayList<LXPoint> points = new ArrayList<>();
+        ArrayList<LXPoint> points = new ArrayList();
         points.addAll(pattern.getModel().panelPoints);
         points.addAll(pattern.getModel().edgePoints);
 

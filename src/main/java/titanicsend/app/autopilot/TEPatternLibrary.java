@@ -101,15 +101,15 @@ public class TEPatternLibrary {
          */
         public static HashSet<TEPatternColorCategoryType> getCompatible(TEPatternColorCategoryType colorCat) {
             if (colorCat == PALETTE) {
-                return new HashSet<>(List.of(PALETTE, WHITE, NONCONFORMING));
+                return new HashSet(List.of(PALETTE, WHITE, NONCONFORMING));
             } else if (colorCat == WHITE) {
-                return  new HashSet<>(List.of(PALETTE, WHITE, NONCONFORMING));
+                return  new HashSet(List.of(PALETTE, WHITE, NONCONFORMING));
             } else if (colorCat == NONCONFORMING) {
-                return  new HashSet<>(List.of(PALETTE, WHITE));
+                return  new HashSet(List.of(PALETTE, WHITE));
             }
 
             // default to allowing everything
-            return  new HashSet<>(List.of(PALETTE, WHITE, NONCONFORMING));
+            return  new HashSet(List.of(PALETTE, WHITE, NONCONFORMING));
         }
     }
 

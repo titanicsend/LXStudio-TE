@@ -13,6 +13,10 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class ShaderEdgesPatternConfig {
 
+    public static Class[] getPatterns() {
+        return ShaderEdgesPatternConfig.class.getDeclaredClasses();
+    }
+    
     //multiple
     @LXCategory("Native Shaders Edges")
     public static class LightBeamsEdges extends ConstructedPattern {
