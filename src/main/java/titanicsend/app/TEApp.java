@@ -150,6 +150,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPattern(ArtStandards.class);
     lx.registry.addEffect(titanicsend.effect.BasicEffect.class);
     lx.registry.addEffect(titanicsend.effect.Kaleidoscope.class);
+    lx.registry.addEffect(titanicsend.effect.NoGapEffect.class);
     lx.registry.addPatterns(OrganicPatternConfig.getPatterns());
     lx.registry.addPatterns(ShaderPanelsPatternConfig.getPatterns());
     lx.registry.addPatterns(ShaderEdgesPatternConfig.getPatterns());

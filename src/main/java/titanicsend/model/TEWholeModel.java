@@ -121,6 +121,10 @@ public class TEWholeModel extends LXModel {
   public boolean isPanelPoint(int index) {
     return index >= panelPoints.get(0).index && index <= panelPoints.get(panelPoints.size() - 1).index;
   }
+  
+  public boolean isGapPoint(LXPoint p) {
+    return p.equals(this.gapPoint);
+  }
 
   /** Builds structures that compute spacial relationships for edges,
    *  such as edges that are mirrored fore-aft and port-starboard.
