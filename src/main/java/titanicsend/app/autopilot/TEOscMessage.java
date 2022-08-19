@@ -1,6 +1,10 @@
 package titanicsend.app.autopilot;
 
+import heronarts.lx.LX;
+import heronarts.lx.color.LXColor;
+import heronarts.lx.color.LXDynamicColor;
 import heronarts.lx.osc.OscMessage;
+import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.util.TE;
 
 /**
@@ -28,6 +32,7 @@ public class TEOscMessage {
     // see method description for `extractBpm()` for why SLUG_STRING_TEMPO_CHANGE exists.
     public static final String SLUG_TEMPO_CHANGE = "/tempo/setBPM";
     public static final String SLUG_STRING_TEMPO_CHANGE = "/tempo/string/setBPM";
+    public static final String SLUG_PALETTE_HUE = "/color/hue";
 
     // beat-related OSC addresses
     public static final String SLUG_BEAT = "/tempo/beat";
@@ -37,7 +42,7 @@ public class TEOscMessage {
 
     // fader related OSC addresses
     //    ie:  /te/fader deck=4:value=103
-    public static final String SLUG_DECK_FADER_CHANGE = "/fader";
+    public static final String SLUG_DECK_FADER_CHANGE = "/mixer/fader";
 
     public static boolean isFaderChange(String oscAddress) {
         return oscAddress.startsWith(PREFIX_TE + SLUG_DECK_FADER_CHANGE);
@@ -45,6 +50,10 @@ public class TEOscMessage {
 
     public static boolean isTempoChange(String oscAddress) {
         return oscAddress.startsWith(PREFIX_LX + SLUG_TEMPO_CHANGE);
+    }
+
+    public static String makePaletteHueAddress() {
+        return PREFIX_LX + SLUG_PALETTE_HUE;
     }
 
     /**
@@ -62,32 +71,27 @@ public class TEOscMessage {
 
     /**
      * Extract the deck number:
-     *       /te/fader deck=4:value=103
+     *       /te/mixer/fader/4 31
      *
      * Would extract -> 4
      * @return int deck number
      */
     public int extractDeck() {
         String[] initialParts = message.toString().split(" ");
-        String[] valueParts = initialParts[1].toString().split(":");
-
-        String[] deckParts = valueParts[0].split("=");
-        return Integer.parseInt(deckParts[1]);
+        String[] addrParts = initialParts[0].toString().split("/");
+        return Integer.parseInt(addrParts[4]);
     }
 
     /**
      * Extract the fader number:
-     *       /te/fader deck=4:value=103
+     *       /te/mixer/fader/4 31
      *
-     * Would extract -> 103
+     * Would extract -> 31
      * @return int fader value
      */
     public int extractFaderValue() {
-        String[] initialParts = message.toString().split(" ");
-        String[] valueParts = initialParts[1].toString().split(":");
-
-        String[] faderParts = valueParts[1].split("=");
-        return Integer.parseInt(faderParts[1]);
+        String[] parts = message.toString().split(" ");
+        return Integer.parseInt(parts[1]);
     }
 
     /**
@@ -151,5 +155,42 @@ public class TEOscMessage {
 
         // lookup the type of phrase
         return TEPhrase.resolvePhrase(phraseTypeString);
+    }
+
+
+    /**
+     * Sends an integer value to Pangolin.
+     *
+     * @param address String
+     * @param value int
+     */
+    public static void sendOscToPangolin(LX lx, String address, int value) {
+        lx.engine.osc.transmitActive.setValue(true);
+        lx.engine.osc.transmitHost.setValue(PangolinHost.HOSTNAME);
+        lx.engine.osc.transmitPort.setValue(PangolinHost.PORT);
+        TE.log("Sending OSC to %s:%d = OSC OUT: %s %d;", PangolinHost.HOSTNAME, PangolinHost.PORT, address, value);
+        lx.engine.osc.sendMessage(address, value);
+    }
+
+    /**
+     * Call this function to send the current LX palette to Pangolin
+     * lasers via OSC.
+     *
+     * TEOscMessage is place to edit/change the address format.
+     *
+     * This method is where to change the hue calculation, or send more
+     * similar messages if desired.
+     *
+     * @param lx
+     */
+    public static void sendPaletteToPangolin(LX lx) {
+        // send hue
+        LXDynamicColor primary = lx.engine.palette.swatch.getColor(3);
+        int rgb = primary.getColor();
+        int hue = (int) (360 * LXColor.h(rgb));
+        TEOscMessage.sendOscToPangolin(lx, TEOscMessage.makePaletteHueAddress(), hue);
+
+        //TODO(someone) send band difference for secondary?
+        // ...
     }
 }

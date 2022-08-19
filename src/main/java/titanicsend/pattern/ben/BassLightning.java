@@ -231,7 +231,7 @@ public class BassLightning extends TEAudioPattern {
 
 		this.model.vertexesById.values().forEach(v -> {
 			v.virtualColor.alpha *= .99;
-			v.virtualColor.alpha = (float) Math.max(64, v.virtualColor.alpha);
+			v.virtualColor.alpha = Math.max(64, v.virtualColor.alpha);
 		} );
 
 		synchronized (bolts) {

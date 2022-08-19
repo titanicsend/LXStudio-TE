@@ -1,13 +1,15 @@
 package titanicsend.app;
 
 import heronarts.lx.LX;
+import heronarts.lx.color.LXColor;
+import heronarts.lx.color.LXDynamicColor;
 import heronarts.lx.osc.OscMessage;
 import titanicsend.app.autopilot.TEDeckGroup;
+import titanicsend.app.autopilot.TEHistorian;
 import titanicsend.app.autopilot.TEOscMessage;
 import titanicsend.app.autopilot.utils.TETimeUtils;
+import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.util.TE;
-
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * This object will be the first line of response to ShowKontrol OSC messages.
@@ -21,6 +23,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class TEOscListener {
     private TEAutopilot autopilot;
+    private TEHistorian history;
     private LX lx;
 
     // a group of DJ decks, each of which has a fader value
@@ -56,7 +59,7 @@ public class TEOscListener {
                 float newBpm = msg.getFloat();
                 double bpmDiff = Math.abs(newBpm - lx.engine.tempo.bpm());
                 if (TETimeUtils.isValidBPM(newBpm) && bpmDiff > TEMPO_DIFF_THRESHOLD) {
-                    TE.log("Setting BPM=%f", newBpm);
+                    //TE.log("Setting BPM=%f", newBpm);
                     lx.engine.tempo.setBpm(newBpm);
                 }
 
@@ -66,18 +69,21 @@ public class TEOscListener {
                 double newBpm = TEOscMessage.extractBpm(msg);
                 double bpmDiff = Math.abs(newBpm - lx.engine.tempo.bpm());
                 if (TETimeUtils.isValidBPM(newBpm) && bpmDiff > TEMPO_DIFF_THRESHOLD) {
-                    TE.log("Setting BPM=%f (from beat)", newBpm);
+                    //TE.log("Setting BPM=%f (from beat)", newBpm);
                     lx.engine.tempo.setBpm(newBpm);
                 }
 
             } else if (TEOscMessage.isFaderChange(addr)) {
                 TEOscMessage teMsg = new TEOscMessage(msg);
                 try {
+                    int prevMasterDeck = this.deckGroup.getMasterDeck();
                     int deckNum = teMsg.extractDeck();
                     int faderVal = teMsg.extractFaderValue();
                     int newMasterDeckNum = this.deckGroup.updateFaderValue(deckNum, faderVal);
-                    //TODO(will, yoffa) send this to ShowKontrol to change master deck! Maybe MIDI over network
-                    TE.log("Master deck => deck=%d (deck%d changed fader to %d)", newMasterDeckNum, deckNum, faderVal);
+                    if (newMasterDeckNum != prevMasterDeck) {
+                        TE.log("Master deck => deck=%d (deck%d changed fader to %d)", newMasterDeckNum, deckNum, faderVal);
+                        autopilot.history.logMasterDeckChange(teMsg.timestamp, newMasterDeckNum, faderVal);
+                    }
 
                 } catch (Exception e) {
                     TE.err("Error trying to parse fader change message=%s", teMsg);

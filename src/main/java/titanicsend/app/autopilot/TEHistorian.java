@@ -2,8 +2,10 @@ package titanicsend.app.autopilot;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 import titanicsend.app.autopilot.events.TEBeatEvent;
+import titanicsend.app.autopilot.events.TEMasterChangeEvent;
 import titanicsend.app.autopilot.events.TEPhraseEvent;
 import titanicsend.app.autopilot.utils.TETimeUtils;
+import titanicsend.util.TE;
 
 /**
  * This is a record keeper for all things VJ autopilot.
@@ -31,6 +33,8 @@ public class TEHistorian {
     // max num phrase changes to keep in history
     public static final int PHRASE_EVENT_MAX_WINDOW = 32;
 
+    public static final int DECK_CHANGE_WINDOW = 16;
+
     /*
         Phrase history
     */
@@ -50,20 +54,62 @@ public class TEHistorian {
     public CircularFifoQueue<TEBeatEvent> beatEvents;
     // timestamp of when we last saw an OSC beat at
     private long lastBeatAt;
+    private long lastDownbeatAt;
+
     // timestamp of when we saw OSC phrase event last at
     private long lastOscPhraseAt;
     // timestamp of when we started the most recent palette
     private long paletteStartedAt;
 
+    public CircularFifoQueue<TEMasterChangeEvent> deckChangeEvents;
+    private long lastMasterChangeAt = System.currentTimeMillis();
+
     public TEHistorian() {
         resetBeatTracking();
         resetPhraseTracking();
+        resetDeckChangeTracking();
     }
 
-    public void logBeat(long beatAt) {
+    /**
+     * How long since the last change in master deck?
+     * @return ms
+     */
+    public int calcMsSinceLastDeckChange() {
+        return (int)(System.currentTimeMillis() - lastMasterChangeAt);
+    }
+
+    /**
+     * How long since the last downbeat? (beat where count was 0)
+     * @return ms
+     */
+    public int calcMsSinceLastDownbeat() {
+        return (int)(System.currentTimeMillis() - lastDownbeatAt);
+    }
+
+    /**
+     * How long since last OSC change phrase that we acted on?
+     * @return ms
+     */
+    public int calcMsSinceLastOscPhraseChange() {
+        return (int)(System.currentTimeMillis() - lastOscPhraseAt);
+    }
+
+    public void logMasterDeckChange(long timestamp, int deckNum, int faderVal) {
+        TEMasterChangeEvent e = new TEMasterChangeEvent(timestamp, deckNum, faderVal);
+        deckChangeEvents.add(e);
+        //TE.log("Setting lastMasterChangeAt=%d, now=%d, old=%d, diffFromold=%d",
+        //       timestamp, System.currentTimeMillis(), lastMasterChangeAt, this.calcMsSinceLastDeckChange());
+        lastMasterChangeAt = timestamp;
+    }
+
+    public void logBeat(long beatAt, int beatCount) {
         TEBeatEvent beat = new TEBeatEvent(beatAt);
         beatEvents.add(beat);
         lastBeatAt = beatAt;
+
+        // was this a downbeat?
+        if (beatCount == 0)
+            lastDownbeatAt = beatAt;
 
         if (curPhraseEvent != null)
             //TODO(will) think about this race condition. We may see the OSC
@@ -77,6 +123,7 @@ public class TEHistorian {
     public void logPhrase(long timestamp, TEPhrase phraseType, double currentBPM) {
         TEPhraseEvent phraseEvent = new TEPhraseEvent(timestamp, phraseType, currentBPM);
         phraseEvents.add(phraseEvent);
+        this.lastOscPhraseAt = timestamp;
 
         if (curPhraseEvent != null && phraseEvent.getPhraseType() == curPhraseEvent.getPhraseType()) {
             // keep track of how many consecutive times we've seen this phrase
@@ -114,6 +161,10 @@ public class TEHistorian {
     public void resetPhraseTracking() {
         phraseEvents = new CircularFifoQueue<TEPhraseEvent>(PHRASE_EVENT_MAX_WINDOW);
         curPhraseEvent = null;
+    }
+
+    public void resetDeckChangeTracking() {
+        deckChangeEvents = new CircularFifoQueue<>(DECK_CHANGE_WINDOW);
     }
 
     /**

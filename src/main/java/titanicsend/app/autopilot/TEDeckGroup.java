@@ -12,6 +12,8 @@ public class TEDeckGroup {
     private HashMap<Integer, Integer> deck2faderValue;
     private int numDecks; // actual number of decks
 
+    private int masterDeck = 1;
+
     public TEDeckGroup(int numDecks) {
         this.numDecks = numDecks;
         this.deck2faderValue = new HashMap<>();
@@ -53,6 +55,17 @@ public class TEDeckGroup {
             }
         }
 
-        return deckNumWithHighestFaderValue;
+        if (highestFaderVal == 0) {
+            // if highest value is 0, just return the
+            // previous master deck number
+            return masterDeck;
+        } else {
+            masterDeck = deckNumWithHighestFaderValue;
+            return deckNumWithHighestFaderValue;
+        }
+    }
+
+    public int getMasterDeck() {
+        return masterDeck;
     }
 }
