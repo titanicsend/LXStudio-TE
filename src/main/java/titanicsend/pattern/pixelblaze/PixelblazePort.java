@@ -95,6 +95,11 @@ public abstract class PixelblazePort extends TEAudioPattern {
 
 	public static double PI2 = Math.PI*2;
 
+
+	public double clamp(double v, double min, double max) {
+		return Math.min(max, Math.max(min, v));
+  }
+  
 	public double random(double v) {
 		return Math.random() * v;
 	}
@@ -108,6 +113,13 @@ public abstract class PixelblazePort extends TEAudioPattern {
 	}
 
 	public double triangle(double v) {
+		v = v * 2 % 2;
+		if (v < 0)
+			v += 2;
+		return v < 1 ? v : 2 - v;
+	}
+
+	public float triangle(float v) {
 		v = v * 2 % 2;
 		if (v < 0)
 			v += 2;
