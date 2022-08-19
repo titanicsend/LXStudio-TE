@@ -38,6 +38,7 @@ import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.pattern.ben.*;
 import titanicsend.pattern.cesar.*;
 import titanicsend.pattern.jeff.*;
+import titanicsend.pattern.jeff.Fireflies;
 import titanicsend.pattern.jon.*;
 import titanicsend.pattern.mike.*;
 import titanicsend.pattern.pixelblaze.*;
@@ -129,6 +130,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPattern(Xorcery.class);
     lx.registry.addPattern(XorceryDiamonds.class);
     lx.registry.addPattern(PBFireworkNova.class);
+    lx.registry.addPattern(FireworkNova.class);
     lx.registry.addPattern(PixelblazeParallel.class);
     lx.registry.addPattern(SolidEdge.class);
     lx.registry.addPattern(SolidPanel.class);
