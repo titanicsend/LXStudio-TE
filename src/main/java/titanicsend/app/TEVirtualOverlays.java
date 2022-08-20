@@ -226,7 +226,7 @@ public class TEVirtualOverlays extends TEUIComponent {
 
         pg.scale(10000, -10000);
         pg.fill(255, 0, 0);
-        pg.textAlign(pg.CENTER, pg.CENTER);
+        pg.textAlign(PGraphics.CENTER, PGraphics.CENTER);
         pg.text(entry.getKey(), 0, 0, -100000);
         pg.popMatrix();
       }

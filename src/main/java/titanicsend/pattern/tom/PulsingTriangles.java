@@ -151,6 +151,7 @@ public class PulsingTriangles extends TEPattern {
             BooleanParameter p = (BooleanParameter) parameter;
             this.phase.tempoSync.setValue(p.getValueb());
         } else if (parameter.getPath().equals("tempoDivision")) {
+            @SuppressWarnings("unchecked")
             EnumParameter<Tempo.Division> p = (EnumParameter<Tempo.Division>) parameter;
             this.phase.tempoDivision.setValue(p.getEnum());
         } else if (parameter.getPath().equals("tempoLock")) {

@@ -24,7 +24,7 @@ public class Iceflow extends TEAudioPattern {
     // In this pattern the "energy" is how quickly the scenes can progress,
     // IE shorter tempoDivisions
 
-    protected final CompoundParameter focus = (CompoundParameter)
+    protected final CompoundParameter focus =
             new CompoundParameter("Detail", 5, 4, 8)
                     .setDescription("Detail/Sharpness");
 
