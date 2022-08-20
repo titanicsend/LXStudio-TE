@@ -125,12 +125,15 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
     return lx.engine.palette.getSwatchColor(type.swatchIndex()).getColor();
   }
 
+  // During construction, make gap points show up in red
+  // TODO: Change to TEColor.TRANSPARENT for production!!
+  static public final int GAP_PIXEL_COLOR = LXColor.rgb(255, 0, 0);
+  
   // Compare to LXLayeredComponent's clearColors(), which is declared final.
   public void clearPixels() {
     for (LXPoint point : this.model.points) {
-      if (point.equals(this.model.gapPoint)) {
-        // During construction, make gap points show up in red
-        colors[this.model.gapPoint.index] = LXColor.rgb(255, 0, 0);
+      if (this.model.isGapPoint(point)) {
+        colors[this.model.gapPoint.index] = GAP_PIXEL_COLOR;
       } else {
         colors[point.index] = TEColor.TRANSPARENT; // Transparent
       }
