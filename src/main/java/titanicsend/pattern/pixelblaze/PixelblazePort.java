@@ -144,5 +144,11 @@ public abstract class PixelblazePort extends TEAudioPattern {
 		color = Glue.setAlpha(color, v);
 	}
 
+	@Override
+	public void dispose() {
+		enableEdges.removeListener(modelPointsListener);
+		enablePanels.removeListener(modelPointsListener);
+		super.dispose();
+	}
 
 }

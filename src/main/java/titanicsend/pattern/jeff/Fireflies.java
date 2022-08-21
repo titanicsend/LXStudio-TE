@@ -3,6 +3,7 @@ package titanicsend.pattern.jeff;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.pattern.pixelblaze.PixelblazePort;
 
 import static java.lang.Math.abs;
@@ -23,6 +24,12 @@ import static java.lang.Math.floor;
 @LXCategory("Test")
 public class Fireflies extends PixelblazePort {
 
+	public CompoundParameter speed = new CompoundParameter("Speed", 0.5, 0, 1);
+	public CompoundParameter decayP =  new CompoundParameter("Decay", 0.5, 0, 1);
+	public CompoundParameter fadeP = new CompoundParameter("Fade", 0.5, 0, 1);
+	public CompoundParameter numSparksP = new CompoundParameter("NumSparks", 1, 0, 1);
+	public CompoundParameter colorP = new CompoundParameter("Color", 0.5, 0, 1);
+	
 	private int numSparks;
 	private double decay = .99;          // Decay their energy/speed. Use .999 for slower
 	private double maxSpeed = .4;        // The maximum initial speed of any spark / firefly
@@ -37,32 +44,44 @@ public class Fireflies extends PixelblazePort {
 
 	public Fireflies(LX lx) {
 		super(lx);
-
-		addParameter("speed", new CompoundParameter("Speed", 0.5, 0, 1).addListener(p -> {
-			double v = p.getValue();
-			speedMultiplier = 1 + (v * v * 40 - .5);
-		}));
-
-		addParameter("decay", new CompoundParameter("Decay", 0.5, 0, 1).addListener(p -> {
-			double v = p.getValue();
-			decay = .8 + (1 - v) * .199;
-		}));
-
-		addParameter("fade", new CompoundParameter("Fade", 0.5, 0, 1).addListener(p -> {
-			double v = p.getValue();
-			fade = 0.5 + (1 - v) * .49;
-		}));
-
-		addParameter("numSparks", new CompoundParameter("NumSparks", 1, 0, 1).addListener(p -> {
-			double v = p.getValue();
-			numSparks = (int) (1 + floor(pixelCount * v / 10));
-		}));
-
-		addParameter("color", new CompoundParameter("Color", 0.5, 0, 1).addListener(p -> {
-			double v = p.getValue();
-            colorRange = v;
-		}));
+		
+		addParameter("speed", this.speed);
+		addParameter("decay", this.decayP);
+		addParameter("fade", this.fadeP);
+		addParameter("numSparks", this.numSparksP);
+		addParameter("color", this.colorP);
+		
+		this.speed.addListener(this.speedListener);
+		this.decayP.addListener(this.decayListener);
+		this.fadeP.addListener(this.fadeListener);
+		this.numSparksP.addListener(this.numSparksListener);
+		this.colorP.addListener(this.colorListener);
 	}
+	
+	private final LXParameterListener speedListener = (p) -> {
+		double v = p.getValue();
+		this.speedMultiplier = 1 + (v * v * 40 - .5);
+		};
+
+	private final LXParameterListener decayListener = (p) -> {
+		double v = p.getValue();
+		this.decay = .8 + (1 - v) * .199;
+		};
+
+	private final LXParameterListener fadeListener = (p) -> {
+		double v = p.getValue();
+		this.fade = 0.5 + (1 - v) * .49;
+		};
+
+	private final LXParameterListener numSparksListener = (p) -> {
+		double v = p.getValue();
+		this.numSparks = (int) (1 + floor(this.pixelCount * v / 10));
+		};
+
+	private final LXParameterListener colorListener = (p) -> {
+		double v = p.getValue();
+        this.colorRange = v;
+		};
 
 	@Override
 	public void setup() {
@@ -136,5 +155,15 @@ public class Fireflies extends PixelblazePort {
 				if (j < 0) j = pixelCount - 1;
 			}
 		}
+	}
+	
+	@Override
+	public void dispose() {
+		this.speed.removeListener(this.speedListener);
+		this.decayP.removeListener(this.decayListener);
+		this.fadeP.removeListener(this.fadeListener);
+		this.numSparksP.removeListener(this.numSparksListener);
+		this.colorP.removeListener(this.colorListener);
+		super.dispose();
 	}
 }
