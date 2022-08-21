@@ -179,7 +179,6 @@ public class TEAutopilot implements LXLoopTask {
     protected void onOscMessage(OscMessage msg) {
         try {
             TEOscMessage oscTE = new TEOscMessage(msg);
-
             if (!isEnabled()) {
                 // if autopilot isn't enabled, don't bother tracking these
                 return;
@@ -187,7 +186,14 @@ public class TEAutopilot implements LXLoopTask {
             } else {
                 //TE.log("Adding OSC message to queue: %s", address);
                 history.setLastOscMsgAt(oscTE.timestamp);
-                noOscModeOn = false;
+
+                // if we'd previously entered No OSC mode, let's turn that off
+                if (noOscModeOn) {
+                    noOscModeOn = false;
+                    TE.log("No OSC mode OFF! We got OSC message");
+                }
+
+                // then add message to queue to be processed on next loop()
                 unprocessedOscMessages.add(oscTE);
             }
         } catch (Exception e) {
