@@ -161,11 +161,11 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
                   .setDescription("Channel number");
 
   public final DiscreteParameter pokeVelocity =
-          new DiscreteParameter("Vel", 0, 256)
+          new DiscreteParameter("Vel", 0, 128)
                   .setDescription("Velocity");
 
   public final DiscreteParameter pokePitch =
-          new DiscreteParameter("Pitch", 0, 256)
+          new DiscreteParameter("Pitch", 0, 128)
                   .setDescription("Pitch");
 
   public final BooleanParameter pokeButton =
@@ -258,6 +258,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
 	  } else if (!this.midiOut.connected.isOn()) {
 		LX.log("MF64 connection lost.  Please reconnect physical device.");
       } else {
+        LX.log("Poke MF64 at Channel=" + this.pokeChannel.getValuei() + ", Pitch=" + this.pokePitch.getValuei() + ", Velocity=" + this.pokeVelocity.getValuei());
         this.midiOut.sendNoteOn(this.pokeChannel.getValuei(), this.pokePitch.getValuei(),
           this.pokeVelocity.getValuei());
       }
