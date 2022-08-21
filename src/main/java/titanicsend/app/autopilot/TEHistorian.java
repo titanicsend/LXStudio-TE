@@ -163,11 +163,19 @@ public class TEHistorian {
 
     public void resetBeatTracking() {
         beatEvents = new CircularFifoQueue<TEBeatEvent>(BEAT_MAX_WINDOW);
+        long now = System.currentTimeMillis();
+        lastBeatAt = now;
     }
 
     public void resetPhraseTracking() {
         phraseEvents = new CircularFifoQueue<TEPhraseEvent>(PHRASE_EVENT_MAX_WINDOW);
         curPhraseEvent = null;
+
+        // reset osc message tracking timestamps
+        long now = System.currentTimeMillis();
+        lastSynthethicPhraseAt = now;
+        lastOscPhraseAt = now;
+        lastOscMsgAt = now;
     }
 
     public void resetDeckChangeTracking() {

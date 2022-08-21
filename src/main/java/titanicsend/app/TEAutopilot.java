@@ -186,6 +186,8 @@ public class TEAutopilot implements LXLoopTask {
 
             } else {
                 //TE.log("Adding OSC message to queue: %s", address);
+                history.setLastOscMsgAt(oscTE.timestamp);
+                noOscModeOn = false;
                 unprocessedOscMessages.add(oscTE);
             }
         } catch (Exception e) {
@@ -332,12 +334,9 @@ public class TEAutopilot implements LXLoopTask {
 
                 // handle OSC message based on type
                 if (TEOscMessage.isBeat(address)) {
-                    history.setLastOscMsgAt(now);
                     onBeatEvent(oscTE);
 
                 } else if (TEOscMessage.isPhraseChange(address)) {
-                    history.setLastOscMsgAt(now);
-
                     // let's make sure this is a valid phrase change!
                     int msSinceLastMasterChange = history.calcMsSinceLastDeckChange();
                     int msSinceLastDownbeat = history.calcMsSinceLastDownbeat();
@@ -583,8 +582,8 @@ public class TEAutopilot implements LXLoopTask {
         this.updatePhraseState(detectedPhrase);
         boolean predictedCorrectly = (oldNextPhrase == curPhrase);
         boolean isSamePhrase = (prevPhrase == curPhrase);
-        TE.log("HIT: %s: [%s -> %s -> %s (?)], (old next: %s) oscBeatModeOnlyOn=%s"
-                , curPhrase, prevPhrase, curPhrase, nextPhrase, oldNextPhrase, oscBeatModeOnlyOn);
+        TE.log("HIT: %s: [%s -> %s -> %s (?)], (old next: %s) OSC beats=%s No OSC=%s"
+                , curPhrase, prevPhrase, curPhrase, nextPhrase, oldNextPhrase, oscBeatModeOnlyOn, noOscModeOn);
 
         // record history for pattern library
         // need to do this before we a) pick new patterns, and b) logPhrase() with historian
