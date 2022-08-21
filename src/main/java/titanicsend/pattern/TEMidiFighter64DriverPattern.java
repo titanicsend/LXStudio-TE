@@ -236,24 +236,28 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   }
 
   private final LXParameterListener fakepushListener = (p) -> {
-    this.mapping.page = Mapping.Page.LEFT;
-    this.mapping.row = 7;
-    this.mapping.col = 0;
+    if (this.fakePush.isOn()) {
+      this.mapping.page = Mapping.Page.LEFT;
+      this.mapping.row = 7;
+      this.mapping.col = 0;
     
-    if (p.getValuef() != 0f) {
-      this.patterns[0].buttonDown(this.mapping);
-    }
-    else {
-      this.patterns[0].buttonUp(this.mapping);
+      if (p.getValuef() != 0f) {
+        this.patterns[0].buttonDown(this.mapping);
+      }
+      else {
+        this.patterns[0].buttonUp(this.mapping);
+      }
     }
   };
 
   private final LXParameterListener pokeListener = (p) -> {
-    if (this.midiOut == null) {
-      LX.log("No MF64 attached");
-    } else {
-      this.midiOut.sendNoteOn(this.pokeChannel.getValuei(), this.pokePitch.getValuei(),
-        this.pokeVelocity.getValuei());
+    if (this.pokeButton.isOn()) {
+	  if (this.midiOut == null) {
+        LX.log("No MF64 attached");
+      } else {
+        this.midiOut.sendNoteOn(this.pokeChannel.getValuei(), this.pokePitch.getValuei(),
+          this.pokeVelocity.getValuei());
+      }
     }
   };
 
