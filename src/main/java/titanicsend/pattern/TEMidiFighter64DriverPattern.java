@@ -5,6 +5,7 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.midi.*;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.DiscreteParameter;
+import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.pattern.mf64.*;
 
 @LXCategory("Combo FG")
@@ -160,11 +161,11 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
                   .setDescription("Channel number");
 
   public final DiscreteParameter pokeVelocity =
-          new DiscreteParameter("Vel", 0, 256)
+          new DiscreteParameter("Vel", 0, 128)
                   .setDescription("Velocity");
 
   public final DiscreteParameter pokePitch =
-          new DiscreteParameter("Pitch", 0, 256)
+          new DiscreteParameter("Pitch", 0, 128)
                   .setDescription("Pitch");
 
   public final BooleanParameter pokeButton =
@@ -230,29 +231,39 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     addParameter("pokePitch", this.pokePitch);
     addParameter("poke", this.pokeButton);
 
-    this.fakePush.addListener((p) -> {
+    this.fakePush.addListener(this.fakepushListener);
+    this.pokeButton.addListener(this.pokeListener);
+  }
+
+  private final LXParameterListener fakepushListener = (p) -> {
+    if (this.fakePush.isOn()) {
       this.mapping.page = Mapping.Page.LEFT;
       this.mapping.row = 7;
       this.mapping.col = 0;
-
+    
       if (p.getValuef() != 0f) {
         this.patterns[0].buttonDown(this.mapping);
       }
       else {
         this.patterns[0].buttonUp(this.mapping);
       }
-    });
+    }
+  };
 
-    this.pokeButton.addListener((p) -> {
-      if (this.midiOut == null) {
-        LX.log("No MF64 attached");
+  private final LXParameterListener pokeListener = (p) -> {
+    if (this.pokeButton.isOn()) {
+	  if (this.midiOut == null) {
+        LX.log("No MF64 attached. Checking again...");
+        connect();
+	  } else if (!this.midiOut.connected.isOn()) {
+		LX.log("MF64 connection lost.  Please reconnect physical device.");
       } else {
+        LX.log("Poke MF64 at Channel=" + this.pokeChannel.getValuei() + ", Pitch=" + this.pokePitch.getValuei() + ", Velocity=" + this.pokeVelocity.getValuei());
         this.midiOut.sendNoteOn(this.pokeChannel.getValuei(), this.pokePitch.getValuei(),
-                this.pokeVelocity.getValuei());
+          this.pokeVelocity.getValuei());
       }
-    });
-
-  }
+    }
+  };
 
   private void sendAllOff() {
     for (int channel = 2; channel >= 1; channel--) {
@@ -276,6 +287,14 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
 
   @Override
   public void onActive() {
+    connect();
+  }
+  
+  private void connect() {
+    // Clear any previous connections, cleanly remove existing listeners
+    disconnect();
+    
+    // Search for matching devices
     for (LXMidiInput lmi : lx.engine.midi.inputs) {
       if (lmi.getName().equals(MIDI_NAME)) {
         if (this.midiIn != null) {
@@ -295,6 +314,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
         } else {
           this.midiOut = lmo;
           lmo.open();
+          lmo.connected.addListener(this.midiOutConnectedListener);
           sendColors();
         }
       }
@@ -306,20 +326,38 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
       LX.log("Couldn't find any " + MIDI_NAME + " MIDI input");
     } else if (this.midiOut == null) {
       LX.log("Couldn't find any " + MIDI_NAME + " MIDI output");
+    } else {
+      LX.log("Connected to MF64 device");
     }
   }
 
   @Override
   public void onInactive() {
+    disconnect();
+  }
+  
+  private void disconnect() {
     if (this.midiIn != null) {
       this.midiIn.removeListener(this);
     }
     if (this.midiOut != null) {
-      sendAllOff();
+      this.midiOut.connected.removeListener(this.midiOutConnectedListener);
+      if (this.midiOut.connected.isOn()) {
+        sendAllOff();
+      }
     }
     this.midiIn = null;
     this.midiOut = null;
   }
+  
+  private final LXParameterListener midiOutConnectedListener = (p) -> {
+    // Note this pattern is duplicating a lot of LXMidiSurface behavior
+    if (this.midiOut.connected.isOn()) {    	
+      // It's a reconnect.  Bring the lights back on!
+      sendColors();
+      LX.log("Reconnected to MF64 device!");
+    }
+  };
 
   @Override
   public void noteOnReceived(MidiNoteOn note) {
@@ -349,5 +387,13 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     this.eSparks.run(deltaMs,colors);
     this.spin.run(deltaMs,colors);
     this.xwave.run(deltaMs,colors);
+  }
+  
+  @Override
+  public void dispose() {
+	disconnect();
+	this.fakePush.removeListener(this.fakepushListener);
+	this.pokeButton.removeListener(this.pokeListener);
+	super.dispose();
   }
 }
