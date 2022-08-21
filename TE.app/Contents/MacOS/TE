@@ -1,6 +1,7 @@
 #!/bin/bash
 
 cd ~/code/titanicsend
+cp Projects/AutoVJ_backup.lxp Projects/AutoVJ.lxp
 java -jar \
 	target/LXStudio-TE-0.2.0-SNAPSHOT-jar-with-dependencies.jar \
 	vehicle AutoVJ.lxp > Logs/app-run-log-`date +%Y%m%d-%H%M%S`.log 2>&1
