@@ -256,7 +256,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
         LX.log("No MF64 attached. Checking again...");
         connect();
 	  } else if (!this.midiOut.connected.isOn()) {
-		LX.log("MF64 was diconnected.  Please reconnect physical device.");
+		LX.log("MF64 connection lost.  Please reconnect physical device.");
       } else {
         this.midiOut.sendNoteOn(this.pokeChannel.getValuei(), this.pokePitch.getValuei(),
           this.pokeVelocity.getValuei());
@@ -313,6 +313,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
         } else {
           this.midiOut = lmo;
           lmo.open();
+          lmo.connected.addListener(this.midiOutConnectedListener);
           sendColors();
         }
       }
@@ -339,6 +340,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
       this.midiIn.removeListener(this);
     }
     if (this.midiOut != null) {
+      this.midiOut.connected.removeListener(this.midiOutConnectedListener);
       if (this.midiOut.connected.isOn()) {
         sendAllOff();
       }
@@ -346,6 +348,15 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     this.midiIn = null;
     this.midiOut = null;
   }
+  
+  private final LXParameterListener midiOutConnectedListener = (p) -> {
+    // Note this pattern is duplicating a lot of LXMidiSurface behavior
+    if (this.midiOut.connected.isOn()) {    	
+      // It's a reconnect.  Bring the lights back on!
+      sendColors();
+      LX.log("Reconnected to MF64 device!");
+    }
+  };
 
   @Override
   public void noteOnReceived(MidiNoteOn note) {
