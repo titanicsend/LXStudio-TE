@@ -56,8 +56,15 @@ public class TEHistorian {
     private long lastBeatAt;
     private long lastDownbeatAt;
 
+    // last time we saw any OSC message
+    private long lastOscMsgAt;
+
     // timestamp of when we saw OSC phrase event last at
     private long lastOscPhraseAt;
+
+    // timestamp of when we last triggered a synthetic phrase (no OSC)
+    private long lastSynthethicPhraseAt;
+
     // timestamp of when we started the most recent palette
     private long paletteStartedAt;
 
@@ -219,5 +226,17 @@ public class TEHistorian {
 
     public long getPaletteStartedAt() {
         return paletteStartedAt;
+    }
+
+    public void setLastSynthethicPhraseAt(long timestamp) {
+        lastSynthethicPhraseAt = timestamp;
+    }
+    public long getLastSynthethicPhraseAt() { return lastSynthethicPhraseAt; }
+
+    public void setLastOscMsgAt(long timestamp) {
+        lastOscMsgAt = timestamp;
+    }
+    public long getLastOscMsgAt() {
+        return lastOscMsgAt;
     }
 }

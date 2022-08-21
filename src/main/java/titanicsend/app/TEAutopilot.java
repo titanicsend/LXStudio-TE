@@ -14,8 +14,6 @@ import titanicsend.app.autopilot.utils.TETimeUtils;
 import titanicsend.util.TE;
 import titanicsend.util.TEMath;
 
-import java.sql.Array;
-import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -31,9 +29,9 @@ public class TEAutopilot implements LXLoopTask {
     private final int MISPREDICTED_FADE_OUT_BARS = 2;
     private final int PREV_FADE_OUT_BARS = 2;
 
-    // when we're in oscBeatOnlyModeOn=true, this is how long
+    // when we're inot getting OSC phrase messages, this is how long
     // we wait to change phrases
-    private final int OSC_BEAT_ONLY_PHRASE_LEN_BARS = 32;
+    private final int SYNTHETIC_PHRASE_LEN_BARS = 32;
 
     // number of bars after a chorus to continue leaving
     // FX channels visible
@@ -67,7 +65,14 @@ public class TEAutopilot implements LXLoopTask {
     // on the next downbeat chose a phrase and enter it! this is how
     // non-rekordbox phrase mode is engaged
     private static long OSC_PHRASE_TIMEOUT_MS = 2 * 60 * 1000;
+
+    // after a while (ie: 2 min) without receiving an OSC msg,
+    // non-OSC mode is engaged
+    private static long OSC_TIMEOUT_MS = 30 * 1000;
     private boolean oscBeatModeOnlyOn = false;
+
+    // if we're not recieving OSC at all
+    private boolean noOscModeOn = false;
 
     // how long in between palette changes
     // palette changes only happen on new CHORUS phrase changes
@@ -253,11 +258,13 @@ public class TEAutopilot implements LXLoopTask {
             // oscBeatModeOnlyOn=true and trigger phrases ourselves!
             this.resetHistory();
             oscBeatModeOnlyOn = true;
+            noOscModeOn = false;
             TE.log("OSC beat-only mode activated");
 
             // now trigger a phrase (DOWN is probably safest)
             String syntheticOscAddr = TEOscMessage.makeOscPhraseChangeAddress(TEPhrase.DOWN);
             onPhraseChange(syntheticOscAddr, beatAt);
+            history.setLastSynthethicPhraseAt(beatAt);
 
         } else {
             // we've been in osc beat only mode for a while now, we just need to decide if it's
@@ -270,10 +277,11 @@ public class TEAutopilot implements LXLoopTask {
             double repeatedPhraseLengthBars = history.getRepeatedPhraseBarProgress(lx.engine.tempo.bpm());
 
             // otherwise: if it's been OSC_BEAT_ONLY_PHRASE_LEN_BARS bars, let's change
-            if (OSC_BEAT_ONLY_PHRASE_LEN_BARS - repeatedPhraseLengthBars < 1) {
+            if (SYNTHETIC_PHRASE_LEN_BARS - repeatedPhraseLengthBars < 1) {
                 // now trigger the next phrase
                 String syntheticOscAddr = TEOscMessage.makeOscPhraseChangeAddress(nextPhrase);
                 TE.log("OSC beat-only mode: triggering synthetic phrase=%s", syntheticOscAddr);
+                history.setLastSynthethicPhraseAt(beatAt);
                 onPhraseChange(syntheticOscAddr, beatAt);
             }
         }
@@ -324,9 +332,11 @@ public class TEAutopilot implements LXLoopTask {
 
                 // handle OSC message based on type
                 if (TEOscMessage.isBeat(address)) {
+                    history.setLastOscMsgAt(now);
                     onBeatEvent(oscTE);
 
                 } else if (TEOscMessage.isPhraseChange(address)) {
+                    history.setLastOscMsgAt(now);
 
                     // let's make sure this is a valid phrase change!
                     int msSinceLastMasterChange = history.calcMsSinceLastDeckChange();
@@ -367,6 +377,40 @@ public class TEAutopilot implements LXLoopTask {
         } catch (Exception e) {
             TE.err("ERROR - unexpected exception in Autopilot.run(): %s", e.toString());
             e.printStackTrace(System.out);
+        }
+
+        // should we enter into non-OSC mode?
+        try {
+            // if we're not in this mode already, let's test to make sure
+            if (!noOscModeOn && (now - history.getLastOscMsgAt() > OSC_TIMEOUT_MS)) {
+                // it has been so long without a phrase that we need to enter
+                // oscBeatModeOnlyOn=true and trigger phrases ourselves!
+                this.resetHistory();
+                noOscModeOn = true;
+                oscBeatModeOnlyOn = false;
+
+                // now trigger a phrase (DOWN is probably safest)
+                String syntheticOscAddr = TEOscMessage.makeOscPhraseChangeAddress(TEPhrase.DOWN);
+                TE.log("No OSC mode activated: triggering synthethic prhase=%s", syntheticOscAddr);
+                history.setLastSynthethicPhraseAt(now);
+                onPhraseChange(syntheticOscAddr, (long) now);
+
+            // if we are in this mode already, just check if we need to trigger another phrase
+            } else if (noOscModeOn) {
+                double msInPhrase = TETimeUtils.calcPhraseLengthMs(lx.engine.tempo.bpm(), SYNTHETIC_PHRASE_LEN_BARS);
+                if (now - history.getLastSynthethicPhraseAt() > msInPhrase) {
+                    // time to trigger a new phrase
+                    TEPhrase next = guessNextPhrase(curPhrase);
+                    String syntheticOscAddr = TEOscMessage.makeOscPhraseChangeAddress(next);
+                    history.setLastSynthethicPhraseAt(now);
+                    TE.log("No OSC mode, another phrase: triggering synthetic phrase=%s", syntheticOscAddr);
+                    onPhraseChange(syntheticOscAddr, (long) now);
+                }
+            }
+
+        } catch (Exception oscBeatOnlyException) {
+            TE.err("No OSC mode check, something went wrong: %s", oscBeatOnlyException);
+            oscBeatOnlyException.printStackTrace();
         }
 
         // get some useful stats about the current phrase
@@ -507,7 +551,18 @@ public class TEAutopilot implements LXLoopTask {
 
         // trigger the pattern
         channel.goPattern(pattern);
-        channel.goPattern(pattern); // make doubly sure no transition of 100ms happens
+
+        // if we're in a mode where we don't know the exact phrase bounaries
+        // then let's make the transition happen more slowly
+        if (noOscModeOn || oscBeatModeOnlyOn) {
+            channel.transitionEnabled.setValue(true);
+            double secInTransition = TETimeUtils.calcPhraseLengthMs(lx.engine.tempo.bpm(), 8) / 1000.0;
+            channel.transitionTimeSecs.setValue(secInTransition);
+            return;
+        }
+
+        // if not, we want this to happen immediately
+        channel.goPattern(pattern);
     }
 
     /**
