@@ -254,6 +254,8 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     if (this.pokeButton.isOn()) {
 	  if (this.midiOut == null) {
         LX.log("No MF64 attached");
+	  } else if (!this.midiOut.connected.isOn()) {
+		LX.log("MF64 was diconnected.  Please reconnect physical device.");
       } else {
         this.midiOut.sendNoteOn(this.pokeChannel.getValuei(), this.pokePitch.getValuei(),
           this.pokeVelocity.getValuei());
