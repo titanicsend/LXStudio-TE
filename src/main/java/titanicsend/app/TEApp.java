@@ -113,7 +113,9 @@ public class TEApp extends PApplet implements LXPlugin  {
           if (finalProjectFile.exists()) {
             LX.log("Opening project file passed as argument: " + projectFileName);
             lx.openProject(finalProjectFile);
-          }          
+          } else {
+        	LX.error("Project filename not found: " + projectFileName);
+          }
         } catch (Exception x) {
           LX.error(x, "Exception loading project: " + x.getLocalizedMessage());
         }
@@ -261,8 +263,6 @@ public class TEApp extends PApplet implements LXPlugin  {
 
     GPOutput gpOutput = new GPOutput(lx, this.gpBroadcaster);
     lx.addOutput(gpOutput);
-    
-    loadCLfile(lx);
   }
 
   private TEPatternLibrary initializePatternLibrary(LX lx) {
@@ -361,6 +361,8 @@ public class TEApp extends PApplet implements LXPlugin  {
 
     // precompile binaries for any new or changed shaders
     ShaderPrecompiler.rebuildCache();
+       
+    loadCLfile(lx);
   }
 
   @Override
