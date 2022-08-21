@@ -5,6 +5,7 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.midi.*;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.DiscreteParameter;
+import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.pattern.mf64.*;
 
 @LXCategory("Combo FG")
@@ -230,29 +231,31 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     addParameter("pokePitch", this.pokePitch);
     addParameter("poke", this.pokeButton);
 
-    this.fakePush.addListener((p) -> {
-      this.mapping.page = Mapping.Page.LEFT;
-      this.mapping.row = 7;
-      this.mapping.col = 0;
-
-      if (p.getValuef() != 0f) {
-        this.patterns[0].buttonDown(this.mapping);
-      }
-      else {
-        this.patterns[0].buttonUp(this.mapping);
-      }
-    });
-
-    this.pokeButton.addListener((p) -> {
-      if (this.midiOut == null) {
-        LX.log("No MF64 attached");
-      } else {
-        this.midiOut.sendNoteOn(this.pokeChannel.getValuei(), this.pokePitch.getValuei(),
-                this.pokeVelocity.getValuei());
-      }
-    });
-
+    this.fakePush.addListener(this.fakepushListener);
+    this.pokeButton.addListener(this.pokeListener);
   }
+
+  private final LXParameterListener fakepushListener = (p) -> {
+    this.mapping.page = Mapping.Page.LEFT;
+    this.mapping.row = 7;
+    this.mapping.col = 0;
+    
+    if (p.getValuef() != 0f) {
+      this.patterns[0].buttonDown(this.mapping);
+    }
+    else {
+      this.patterns[0].buttonUp(this.mapping);
+    }
+  };
+
+  private final LXParameterListener pokeListener = (p) -> {
+    if (this.midiOut == null) {
+      LX.log("No MF64 attached");
+    } else {
+      this.midiOut.sendNoteOn(this.pokeChannel.getValuei(), this.pokePitch.getValuei(),
+        this.pokeVelocity.getValuei());
+    }
+  };
 
   private void sendAllOff() {
     for (int channel = 2; channel >= 1; channel--) {
@@ -349,5 +352,12 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     this.eSparks.run(deltaMs,colors);
     this.spin.run(deltaMs,colors);
     this.xwave.run(deltaMs,colors);
+  }
+  
+  @Override
+  public void dispose() {
+	this.fakePush.removeListener(this.fakepushListener);
+	this.pokeButton.removeListener(this.pokeListener);
+	super.dispose();
   }
 }
