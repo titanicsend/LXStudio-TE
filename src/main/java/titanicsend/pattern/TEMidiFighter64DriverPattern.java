@@ -253,7 +253,8 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   private final LXParameterListener pokeListener = (p) -> {
     if (this.pokeButton.isOn()) {
 	  if (this.midiOut == null) {
-        LX.log("No MF64 attached");
+        LX.log("No MF64 attached. Checking again...");
+        connect();
 	  } else if (!this.midiOut.connected.isOn()) {
 		LX.log("MF64 was diconnected.  Please reconnect physical device.");
       } else {
@@ -285,6 +286,14 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
 
   @Override
   public void onActive() {
+    connect();
+  }
+  
+  private void connect() {
+    // Clear any previous connections, cleanly remove existing listeners
+    disconnect();
+    
+    // Search for matching devices
     for (LXMidiInput lmi : lx.engine.midi.inputs) {
       if (lmi.getName().equals(MIDI_NAME)) {
         if (this.midiIn != null) {
@@ -315,16 +324,24 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
       LX.log("Couldn't find any " + MIDI_NAME + " MIDI input");
     } else if (this.midiOut == null) {
       LX.log("Couldn't find any " + MIDI_NAME + " MIDI output");
+    } else {
+      LX.log("Connected to MF64 device");
     }
   }
 
   @Override
   public void onInactive() {
+    disconnect();
+  }
+  
+  private void disconnect() {
     if (this.midiIn != null) {
       this.midiIn.removeListener(this);
     }
     if (this.midiOut != null) {
-      sendAllOff();
+      if (this.midiOut.connected.isOn()) {
+        sendAllOff();
+      }
     }
     this.midiIn = null;
     this.midiOut = null;
@@ -362,6 +379,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   
   @Override
   public void dispose() {
+	disconnect();
 	this.fakePush.removeListener(this.fakepushListener);
 	this.pokeButton.removeListener(this.pokeListener);
 	super.dispose();
