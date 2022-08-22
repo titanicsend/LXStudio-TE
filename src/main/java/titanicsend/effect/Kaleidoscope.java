@@ -42,7 +42,12 @@ public class Kaleidoscope extends BasicEffect {
                 LXVector zAxis = new LXVector(0, 0, 1);
 
                 ArrayList<LXVector> vectors = new ArrayList<LXVector>();
+
                 projection.iterator().forEachRemaining(vectors::add);
+                if (vectors.size() < 2) {
+                	// JBelcher note: I don't know the context here, just patching last minute errors before BM
+                	continue;
+                }
                 LXVector normal = vectors.get(0).copy().cross(vectors.get(1));
                 LXVector rotationAxis = zAxis.cross(normal);
                 projection.rotate(LXVector.angleBetween(normal, zAxis), rotationAxis.x, rotationAxis.y, rotationAxis.z);
