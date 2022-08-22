@@ -2,6 +2,7 @@ package titanicsend.app.autopilot.utils;
 
 import heronarts.lx.LX;
 import heronarts.lx.clip.LXClip;
+import heronarts.lx.mixer.LXAbstractChannel;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.pattern.LXPattern;
 import titanicsend.app.autopilot.TEChannelName;
@@ -85,27 +86,5 @@ public class TEMixerUtils {
             }
         }
         return null;
-    }
-
-    public static LXClip pickRandomClipFromChannel(LX lx, TEChannelName channelName) {
-        LXChannel triggersChannel = (LXChannel) lx.engine.mixer.channels.get(channelName.getIndex());
-        Random random = new Random();
-        int numClips = triggersChannel.clips.size();
-        int randIdx = random.nextInt(0, numClips);
-        LXClip clip = triggersChannel.clips.get(randIdx);
-//        TE.log("From channel=%d, picked pattern %d / %d to get pattern=%d", channelName.getIndex(), randIdx, numClips, clip.getIndex());
-        return clip;
-    }
-
-    public static int pickRandomPatternIndexFromChannel(LXChannel channel) {
-        List<LXPattern> patterns = channel.getPatterns();
-        Random random = new Random();
-        int randIdx = random.nextInt(0, patterns.size());
-        return randIdx;
-    }
-
-    public static LXPattern pickRandomPatternFromChannel(LXChannel channel) {
-        int randIdx = pickRandomPatternIndexFromChannel(channel);
-        return channel.getPattern(randIdx);
     }
 }

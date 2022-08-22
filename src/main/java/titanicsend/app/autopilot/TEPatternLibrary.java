@@ -332,7 +332,7 @@ public class TEPatternLibrary {
         // randomly pick one
         Random rand = new Random();
         int randomIndex = rand.nextInt(matchingPatterns.size());
-        TE.log("Picked randomly idx=%d from size=%d", randomIndex, matchingPatterns.size());
+        //TE.log("Picked randomly idx=%d from size=%d", randomIndex, matchingPatterns.size());
         return matchingPatterns.get(randomIndex);
     }
 

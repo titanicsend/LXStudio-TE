@@ -368,8 +368,8 @@ public class TEAutopilot implements LXLoopTask {
 
                     // make decision -- this is configurable. I found that a pretty zero tolerance policy was most effective
                     if (wasRecentMasterChange || wasRecentPhraseChange) {
-                        TE.log("isInMiddleOfMeasure=%s, wasRecentMasterChange=%s, wasRecentPhraseChange=%s",
-                                isInMiddleOfMeasure, wasRecentMasterChange, wasRecentPhraseChange);
+                        //TE.log("isInMiddleOfMeasure=%s, wasRecentMasterChange=%s, wasRecentPhraseChange=%s",
+                        //        isInMiddleOfMeasure, wasRecentMasterChange, wasRecentPhraseChange);
                         //TE.log("Not a real phrase event -> filtering!");
                         continue;
                     }
@@ -734,17 +734,9 @@ public class TEAutopilot implements LXLoopTask {
 
         // make new active patterns
         if (prevPhrase != curPhrase) {
-            // only play strobes if it's the first chorus phrase in a row
-            LXPattern newStrobesPattern = TEMixerUtils.pickRandomPatternFromChannel(strobesChannel);
-            startPattern(strobesChannel, newStrobesPattern);
             TEMixerUtils.setFaderTo(lx, TEChannelName.STROBES, LEVEL_FULL);
         }
 
-        LXPattern newTriggersPattern = TEMixerUtils.pickRandomPatternFromChannel(triggerChannel);
-        startPattern(triggerChannel, newTriggersPattern);
-
-        // turn on strobes and triggers here, main loop will
-        // turn them off after certain number of bars
         TEMixerUtils.setFaderTo(lx, TEChannelName.TRIGGERS, LEVEL_FULL);
     }
 

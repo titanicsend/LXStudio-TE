@@ -142,7 +142,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("neon_blocks.fs",
-                    PatternTarget.splitPanelSections(this)));
+                    PatternTarget.doubleLargeCanvas(this)));
         }
     }
 
