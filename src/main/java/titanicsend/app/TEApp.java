@@ -61,6 +61,7 @@ import titanicsend.util.TE;
 
 public class TEApp extends PApplet implements LXPlugin  {
   private TEWholeModel model;
+  static public TEWholeModel wholeModel;
 
   private static int WIDTH = 1280;
   private static int HEIGHT = 800;
@@ -92,6 +93,7 @@ public class TEApp extends PApplet implements LXPlugin  {
     flags.startMultiThreaded = true;
 
     this.model = new TEWholeModel(resourceSubdir);
+    TEApp.wholeModel = this.model;
 
     new LXStudio(this, flags, this.model);
     this.surface.setTitle(this.model.name);
