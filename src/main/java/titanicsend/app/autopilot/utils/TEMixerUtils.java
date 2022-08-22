@@ -2,7 +2,6 @@ package titanicsend.app.autopilot.utils;
 
 import heronarts.lx.LX;
 import heronarts.lx.clip.LXClip;
-import heronarts.lx.mixer.LXAbstractChannel;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.pattern.LXPattern;
 import titanicsend.app.autopilot.TEChannelName;
