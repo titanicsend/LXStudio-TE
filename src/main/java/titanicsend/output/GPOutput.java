@@ -40,13 +40,22 @@ public class GPOutput extends LXOutput {
     this.broadcaster.setColors(gpColors);
 
     if (channelIndex >= channels.size()) return;
-    LXChannel channel = channels.get(channelIndex);
-    LXPattern pattern = channel.getActivePattern();
-    if (!(pattern instanceof TEPattern)) return;
-    TEPattern tePattern = (TEPattern) pattern;
-    List<LXPoint> points = tePattern.getGigglePixelPoints();
-    if (points.isEmpty()) return;
+    
+    List<LXPoint> points = null;
+    while (channelIndex < channels.size()) {
+      LXChannel channel = channels.get(channelIndex);
+      LXPattern pattern = channel.getActivePattern();
+      if (pattern instanceof TEPattern) {
+    	  // Found a reference pattern.  Any one will do, we're just using it for indexes
+    	  points = ((TEPattern) pattern).getGigglePixelPoints();
+    	  break;
+      }
+    }
 
+    // Default to palette colors if no TEPattern is running
+    if (points == null || points.isEmpty()) return;
+
+    // At this point you're discarding the palette colors
     gpColors = new ArrayList<>();
     for (LXPoint point : points) {
       gpColors.add(colors[point.index]);
