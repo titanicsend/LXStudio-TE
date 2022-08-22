@@ -362,7 +362,9 @@ public class TEApp extends PApplet implements LXPlugin  {
     // precompile binaries for any new or changed shaders
     ShaderPrecompiler.rebuildCache();
        
-    loadCLfile(lx);
+    lx.engine.addTask(() -> {
+      loadCLfile(lx);
+    });
   }
 
   @Override
