@@ -3,6 +3,9 @@ package titanicsend.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import heronarts.lx.LX;
+import heronarts.lx.utils.LXUtils;
+
 import static java.lang.Math.PI;
 
 public class TEMath {
@@ -397,21 +400,34 @@ public class TEMath {
         LINEAR_RAMP_DOWN,
         LINEAR_RAMP_UP;
     }
+    
+    static final private double EASE_WARN_FREQUENCY = 10000;
+    static private double lastEaseWarn = 0;
 
     public static double ease(EasingFunction fn, double inp, double minInput, double maxInput, double minOutput, double maxOutput) {
-        double inputRank = inp / (maxInput - minInput);
+        double inputRank = (inp - minInput) / (maxInput - minInput);
         double outputRange = maxOutput - minOutput;
 
+        double result;
         if (fn == EasingFunction.LINEAR_RAMP_UP) {
-            return minOutput + inputRank * outputRange;
+            result = minOutput + inputRank * outputRange;
 
         } else if (fn == EasingFunction.LINEAR_RAMP_DOWN) {
-            return minOutput + outputRange * (1.0 - inputRank);
+            result = minOutput + outputRange * (1.0 - inputRank);
 
         } else {
             // default to LINEAR_RAMP_DOWN
             TE.err("Unsupported easing func: %s", fn);
-            return minOutput + inputRank * outputRange;
+            result = minOutput + inputRank * outputRange;
         }
+        
+        if (result < minOutput || result > maxOutput) {
+        	if (System.currentTimeMillis() - EASE_WARN_FREQUENCY > lastEaseWarn) {
+        		LX.log("WARNING: TEMath.ease() method received illegal parameter values");
+        		lastEaseWarn = System.currentTimeMillis();
+        	}
+        	result = LXUtils.constrain(result, minOutput, maxOutput);
+        }
+        return result;
     }
 }
