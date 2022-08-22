@@ -46,6 +46,7 @@ import titanicsend.pattern.cesar.*;
 import titanicsend.pattern.jeff.*;
 import titanicsend.pattern.jeff.Fireflies;
 import titanicsend.pattern.jon.*;
+import titanicsend.pattern.look.*;
 import titanicsend.pattern.mike.*;
 import titanicsend.pattern.pixelblaze.*;
 import titanicsend.pattern.tmc.*;
@@ -156,6 +157,10 @@ public class TEApp extends PApplet implements LXPlugin  {
     lx.registry.addPattern(FrameBrights.class);
     lx.registry.addPattern(FourStar.class);
     lx.registry.addPattern(Iceflow.class);
+    lx.registry.addPattern(NeuralWaves.class);
+    lx.registry.addPattern(NeuralBeatRadial.class);
+    lx.registry.addPattern(NeuralBeatRadialXY.class);
+    lx.registry.addPattern(NeuralBeatXY.class);
     lx.registry.addPattern(Phasers.class);
     lx.registry.addPattern(PixelblazeSandbox.class);
     lx.registry.addPattern(PBAudio1.class);
