@@ -213,9 +213,16 @@ public class TEAutopilot implements LXLoopTask {
      */
     public void changePaletteSwatch(boolean pickRandom, boolean immediate, int numBarsTransition) {
         // should we change the transition duration?
-        if (numBarsTransition > 0) {
-            double transitionDurationMs = TETimeUtils.calcPhraseLengthMs(lx.engine.tempo.bpm(), numBarsTransition);
-            lx.engine.palette.transitionTimeSecs.setValue(transitionDurationMs);
+        try {
+            if (numBarsTransition > 0) {
+                double transitionDurationMs = TETimeUtils.calcPhraseLengthMs(lx.engine.tempo.bpm(), numBarsTransition);
+                lx.engine.palette.transitionTimeSecs.setValue(transitionDurationMs);
+            } else {
+                lx.engine.palette.transitionTimeSecs.setValue(0);
+            }
+        } catch (Exception e) {
+            TE.err("Error changing palette transition duration!");
+            e.printStackTrace();
         }
 
         // pick a random swatch
@@ -564,6 +571,10 @@ public class TEAutopilot implements LXLoopTask {
             double secInTransition = TETimeUtils.calcPhraseLengthMs(lx.engine.tempo.bpm(), 8) / 1000.0;
             channel.transitionTimeSecs.setValue(secInTransition);
             return;
+        } else {
+            // turn transitions back off if we're in normal phrase OSC mode!
+            channel.transitionEnabled.setValue(false);
+            channel.transitionTimeSecs.setValue(0);
         }
 
         // if not, we want this to happen immediately
