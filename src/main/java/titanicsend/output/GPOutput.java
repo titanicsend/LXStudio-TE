@@ -50,6 +50,7 @@ public class GPOutput extends LXOutput {
     	  points = ((TEPattern) pattern).getGigglePixelPoints();
     	  break;
       }
+      channelIndex++;
     }
 
     // Default to palette colors if no TEPattern is running
