@@ -297,18 +297,18 @@ public class TEApp extends PApplet implements LXPlugin  {
     l.addPattern(OrganicPatternConfig.NeonCellsLegacy.class, covPanelPartial, cPalette, chorus);
     l.addPattern(OrganicPatternConfig.RainbowSwirlEdges.class, covEdges, cNonConforming, chorus);
     l.addPattern(ShaderPanelsPatternConfig.NeonTriangles.class, covPanels, cNonConforming, chorus);
-    l.addPattern(OrganicPatternConfig.NeonSnake.class, covPanels, cPalette, chorus);
     l.addPattern(ShaderPanelsPatternConfig.Mondelbrot.class, covPanels, cNonConforming, chorus);
     l.addPattern(Phasers.class, covPanels, cPalette, chorus);
     l.addPattern(ShaderPanelsPatternConfig.PulsingPetriDish.class, covPanels, cNonConforming, chorus);
-    l.addPattern(FourStar.class, covPanelPartial, cPalette, chorus);
     l.addPattern(ShaderPanelsPatternConfig.Electric.class, covPanelPartial, cPalette, chorus);
     l.addPattern(ShaderPanelsPatternConfig.AudioTest2.class, covBoth, cNonConforming, chorus);
+    //l.addPattern(FourStar.class, covPanelPartial, cPalette, chorus); // removed at request of tergel
+    //l.addPattern(OrganicPatternConfig.NeonSnake.class, covPanels, cPalette, chorus); // removed at request of tergel
 
     // DOWN patterns
     l.addPattern(GradientPattern.class, covPanelPartial, cPalette, down);
     //l.addPattern(Smoke.class, covBoth, cPalette, down); // can't see with colorize
-    l.addPattern(OrganicPatternConfig.NeonSnake.class, covPanels, cPalette, down);
+    //l.addPattern(OrganicPatternConfig.NeonSnake.class, covPanels, cPalette, down); // removed at request of tergel
     l.addPattern(OrganicPatternConfig.WaterEdges.class, covEdges, cPalette, down);
     l.addPattern(OrganicPatternConfig.WaterPanels.class, covPanelPartial, cPalette, down);
     l.addPattern(OrganicPatternConfig.WavyEdges.class, covEdges, cPalette, down);
