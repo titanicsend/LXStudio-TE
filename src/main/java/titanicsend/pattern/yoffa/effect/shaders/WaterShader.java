@@ -18,7 +18,7 @@ public class WaterShader extends FragmentShaderEffect {
                     .setDescription("");
 
     public final CompoundParameter speed =
-            new CompoundParameter("Speed", 1, 1, 10)
+            new CompoundParameter("Speed", 0.1, 0.1, 10)
                     .setDescription("");
 
     public final CompoundParameter intensity =
@@ -36,7 +36,7 @@ public class WaterShader extends FragmentShaderEffect {
 
     @Override
     protected double[] getColorForPoint(double[] fragCoordinates, double[] resolution, double timeSeconds) {
-        double time = timeSeconds * .5+23.0;
+        double time = (timeSeconds * .5+23.0) * 0.25;
         // uv should be the 0-1 uv of texture...
         double[] uv = divideArrays(fragCoordinates, resolution);
 

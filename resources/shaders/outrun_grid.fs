@@ -57,12 +57,12 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         }
 
         // Define current fragment color
-        vec3 col = 0.5 + 0.5*cos(iTime * {%colorChangeSpeed[0,0,5]} +p.yxy+vec3(0,10,20));
+        //vec3 col = 0.5 + 0.5*cos(iTime * {%colorChangeSpeed[0,0,5]} +p.yxy+vec3(0,10,20));
         // Normalize intensity
         intensity /= float(SUPERSAMP*SUPERSAMP);
 
 
-        fragColor = vec4(intensity * col, 1.0);
+        fragColor = vec4(iPalette[TE_PRIMARY] * 3.0 * intensity, 1.0);
     }
 
     if (!{%noGlow[bool]}) {
