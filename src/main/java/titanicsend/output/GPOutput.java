@@ -77,6 +77,10 @@ public class GPOutput extends LXOutput {
        findGigglePixelPoints();
     }
 
+    if (this.broadcaster.palMode == ...) {
+      FIXME: Implement this part
+    }
+
     // If you want to come back later and allow patterns to choose their GP points,
     // loop over every channel here.  Then combine those distinct pixels with
     // the colors array to get your GP output colors

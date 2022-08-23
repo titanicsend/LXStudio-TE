@@ -21,6 +21,7 @@ public class GigglePixelBroadcaster implements LXLoopTask {
   private final String name;
   public boolean enabled;
   private List<Integer> colors;
+  public GigglePixelUI.GPPalMode palMode;
 
   public GigglePixelBroadcaster(LX lx, String destIP, String myName, int myID) throws IOException {
     this.lx = lx;
@@ -31,6 +32,7 @@ public class GigglePixelBroadcaster implements LXLoopTask {
     this.timeAccumulator = new TimeAccumulator(BROADCAST_PERIOD_MSEC);
     this.enabled = false;
     this.colors = null;
+    this.palMode = GigglePixelUI.GPPalMode.SEND_PALETTE;
   }
 
   public void setColors(List<Integer> colors) {
@@ -60,6 +62,7 @@ public class GigglePixelBroadcaster implements LXLoopTask {
       int g = (256 + LXColor.green(color)) % 256;
       int b = (256 + LXColor.blue(color)) % 256;
       int frac = min(255, 256 / numColors);
+      // TODO: Consider keeping track of the number of all-black entries and stopping after one
       entries.add(new GPColor(r,g,b,frac));
     }
     GPPalettePacket palettePacket = new GPPalettePacket(entries);
