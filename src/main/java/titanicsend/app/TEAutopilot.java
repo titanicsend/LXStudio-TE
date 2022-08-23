@@ -14,11 +14,12 @@ import titanicsend.app.autopilot.utils.TETimeUtils;
 import titanicsend.util.TE;
 import titanicsend.util.TEMath;
 
+import java.io.File;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class TEAutopilot implements LXLoopTask {
+public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
     private boolean enabled = false;
 
     // should we send OSC messages to lasers about
@@ -135,6 +136,8 @@ public class TEAutopilot implements LXLoopTask {
 
         // start any logic that begins with being enabled
         setEnabled(enabled);
+        
+        lx.addProjectListener(this);
     }
 
     /**
@@ -805,4 +808,12 @@ public class TEAutopilot implements LXLoopTask {
 
         return estimatedNextPhrase;
     }
+
+	@Override
+	public void projectChanged(File file, Change change) {		
+		if (change == Change.OPEN) {
+			LX.log("Autopilot detected project file change, resetting...");
+			resetHistory();
+		}
+	}
 }
