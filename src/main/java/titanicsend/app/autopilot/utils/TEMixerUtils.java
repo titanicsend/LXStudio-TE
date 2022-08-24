@@ -31,6 +31,10 @@ public class TEMixerUtils {
 
     public static void setFaderTo(LX lx, TEChannelName name, double faderLevel) {
         try {
+        	// Don't crash
+        	if (lx.engine.mixer.channels.size() <= name.getIndex())
+        		return;
+        	
             LXChannel channel = (LXChannel) lx.engine.mixer.channels.get(name.getIndex());
             channel.fader.setValue(faderLevel);
 
@@ -72,7 +76,14 @@ public class TEMixerUtils {
         int numTries = 0;
         while (numTries < 8) {
             try {
-                return (LXChannel) lx.engine.mixer.channels.get(name.getIndex());
+            	// JKB mod, now that autopilot loads after everything else,
+            	//  if channel index isn't there then the .lxp isn't AutoVJ and it's not going to show up...
+            	//if (lx.engine.mixer.channels.contains(name))
+            	if (lx.engine.mixer.channels.size() > name.getIndex()) {            		
+            		return (LXChannel) lx.engine.mixer.channels.get(name.getIndex());
+            	} else {
+            		return null;
+            	}
             } catch (IndexOutOfBoundsException e) {
                 numTries++;
                 double waitMs = Math.pow(2.0, (double)numTries) * 1000;

@@ -29,6 +29,7 @@ import java.util.function.Function;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
+import heronarts.lx.LX.ProjectListener.Change;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.pattern.color.GradientPattern;
@@ -59,7 +60,7 @@ import titanicsend.pattern.yoffa.media.ReactiveHeartPattern;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.util.TE;
 
-public class TEApp extends PApplet implements LXPlugin  {
+public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
   private TEWholeModel model;
   static public TEWholeModel wholeModel;
 
@@ -97,7 +98,7 @@ public class TEApp extends PApplet implements LXPlugin  {
 
     new LXStudio(this, flags, this.model);
     this.surface.setTitle(this.model.name);
-
+    
     String logFileName = LOG_FILENAME_FORMAT.format(Calendar.getInstance().getTime());
     LX.setLogFile(new File(flags.mediaPath, LX.Media.LOGS.getDirName() + File.separator + logFileName));
   }
@@ -270,6 +271,8 @@ public class TEApp extends PApplet implements LXPlugin  {
 
     GPOutput gpOutput = new GPOutput(lx, this.gpBroadcaster);
     lx.addOutput(gpOutput);
+    
+    lx.addProjectListener(this);
   }
 
   private TEPatternLibrary initializePatternLibrary(LX lx) {
@@ -441,5 +444,12 @@ public class TEApp extends PApplet implements LXPlugin  {
       PApplet.main("titanicsend.app.TEApp", args);
     }
   }
+  
+	public void projectChanged(File file, Change change) {
+		if (change == Change.TRY || change == Change.NEW) {
+			// Clear for file open
+			this.autopilotComponent.autopilotEnabledToggle.setValue(false);
+		} 
+	}
 
 }
