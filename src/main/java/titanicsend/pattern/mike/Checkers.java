@@ -55,7 +55,10 @@ public class Checkers extends TEPattern {
       TEPanelModel panel = entry.getKey();
       int panelGroup = entry.getValue();
       int rgb = panelGroup == 0 ? color0 : color1;
-      for (LXPoint point : panel.points) colors[point.index] = rgb;
+      for (LXPoint point : panel.points) {
+        if (model.isGapPoint(point)) continue;
+        colors[point.index] = rgb;
+      }
     }
     this.updateVirtualColors(deltaMs);
   }

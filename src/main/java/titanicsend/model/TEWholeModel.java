@@ -12,6 +12,7 @@ import heronarts.lx.transform.LXVector;
 import titanicsend.lasercontrol.MovingTarget;
 import titanicsend.output.ChromatechSocket;
 import titanicsend.output.GrandShlomoStation;
+import titanicsend.util.TE;
 
 public class TEWholeModel extends LXModel {
   public String subdir;
@@ -90,8 +91,15 @@ public class TEWholeModel extends LXModel {
     this.panelsByFlavor = geometry.panelsByFlavor;
 
     this.panelPoints = new ArrayList<>();
-    for (TEPanelModel p : this.panelsById.values()) {
-      this.panelPoints.addAll(Arrays.asList(p.points));
+    // filter gap points from panelPoints list
+    for (TEPanelModel panel : this.panelsById.values()) {
+      for (LXPoint pt : panel.points) {
+        if (isGapPoint(pt)) {
+          TE.log("Kicking out gap point");
+        } else {
+          this.panelPoints.add(pt);
+        }
+      }
     }
 
     this.lasersById = geometry.lasersById;

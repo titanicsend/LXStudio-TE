@@ -145,7 +145,9 @@ public abstract class BaseCPPNPattern extends TEAudioPattern {
 
         // per pixel calculations
         for (LXPoint point : model.points) {
-            colors[point.index] = pointToColor(point);
+            if (!model.isGapPoint(point)) {
+                colors[point.index] = pointToColor(point);
+            }
         }
     }
 
