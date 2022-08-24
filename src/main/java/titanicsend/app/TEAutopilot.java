@@ -179,6 +179,9 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
 
         // set palette timer
         history.startPaletteTimer();
+
+        // remap pattern objects
+        this.library.indexPatterns();
     }
 
     /**

@@ -312,8 +312,7 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
     l.addPattern(ShaderPanelsPatternConfig.PulsingPetriDish.class, covPanels, cNonConforming, chorus);
     l.addPattern(ShaderPanelsPatternConfig.Electric.class, covPanelPartial, cPalette, chorus);
     l.addPattern(ShaderPanelsPatternConfig.AudioTest2.class, covBoth, cNonConforming, chorus);
-    //l.addPattern(FourStar.class, covPanelPartial, cPalette, chorus); // removed at request of tergel
-    //l.addPattern(OrganicPatternConfig.NeonSnake.class, covPanels, cPalette, chorus); // removed at request of tergel
+    l.addPattern(EdgeRunner.class, covEdges, cPalette, chorus);
 
     // DOWN patterns
     l.addPattern(GradientPattern.class, covPanelPartial, cPalette, down);
@@ -323,8 +322,6 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
     l.addPattern(NoisePattern.class, covBoth, cPalette, down);
     l.addPattern(ShaderPanelsPatternConfig.Galaxy.class, covPanelPartial, cPalette, down);
     l.addPattern(ShaderPanelsPatternConfig.StormScanner.class, covPanels, cPalette, down);
-    //l.addPattern(Smoke.class, covBoth, cPalette, down); // can't see with colorize
-    //l.addPattern(OrganicPatternConfig.NeonSnake.class, covPanels, cPalette, down); // removed at request of tergel
 
     // UP patterns
     l.addPattern(NoisePattern.class, covPanelPartial, cNonConforming, up);
@@ -334,7 +331,6 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
     l.addPattern(ShaderPanelsPatternConfig.Marbling.class, covPanels, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.SlitheringSnake.class, covPanelPartial, cPalette, up);
     l.addPattern(PBAudio1.class, covPanelPartial, cPalette, up);
-    //l.addPattern(Fireflies.class, covPanelPartial, cPalette, up); // output is blank now?? doesn't work
 
     return l;
   }
