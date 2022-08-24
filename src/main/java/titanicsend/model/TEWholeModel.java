@@ -95,7 +95,7 @@ public class TEWholeModel extends LXModel {
     for (TEPanelModel panel : this.panelsById.values()) {
       for (LXPoint pt : panel.points) {
         if (isGapPoint(pt)) {
-          TE.log("Kicking out gap point");
+          //TE.log("Kicking out gap point");
         } else {
           this.panelPoints.add(pt);
         }

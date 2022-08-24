@@ -32,9 +32,9 @@ import heronarts.lx.LXPlugin;
 import heronarts.lx.LX.ProjectListener.Change;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.pattern.LXPattern;
-import heronarts.lx.pattern.color.GradientPattern;
-import heronarts.lx.pattern.texture.NoisePattern;
-import heronarts.lx.pattern.texture.SparklePattern;
+//import heronarts.lx.pattern.color.GradientPattern;
+//import heronarts.lx.pattern.texture.NoisePattern;
+//import heronarts.lx.pattern.texture.SparklePattern;
 import heronarts.lx.studio.LXStudio;
 import processing.core.PApplet;
 import titanicsend.app.autopilot.*;
@@ -295,7 +295,7 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
     TEPhrase up = TEPhrase.UP;
 
     // CHORUS patterns
-    l.addPattern(NoisePattern.class, covBoth, cPalette, chorus);
+    l.addPattern(TENoisePattern.class, covBoth, cPalette, chorus);
     l.addPattern(PBXorcery.class, covPanelPartial, cPalette, chorus);
     l.addPattern(ShaderPanelsPatternConfig.NeonBlocks.class, covPanelPartial, cNonConforming, chorus);
     l.addPattern(PBAudio1.class, covPanelPartial, cPalette, chorus);
@@ -316,20 +316,20 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
     //l.addPattern(OrganicPatternConfig.NeonSnake.class, covPanels, cPalette, chorus); // removed at request of tergel
 
     // DOWN patterns
-    l.addPattern(GradientPattern.class, covPanelPartial, cPalette, down);
+    l.addPattern(TEGradientPattern.class, covPanelPartial, cPalette, down);
     l.addPattern(OrganicPatternConfig.WaterEdges.class, covEdges, cPalette, down);
     l.addPattern(OrganicPatternConfig.WaterPanels.class, covPanelPartial, cPalette, down);
     l.addPattern(OrganicPatternConfig.WavyEdges.class, covEdges, cPalette, down);
-    l.addPattern(NoisePattern.class, covBoth, cPalette, down);
+    l.addPattern(TENoisePattern.class, covBoth, cPalette, down);
     l.addPattern(ShaderPanelsPatternConfig.Galaxy.class, covPanelPartial, cPalette, down);
     l.addPattern(ShaderPanelsPatternConfig.StormScanner.class, covPanels, cPalette, down);
     //l.addPattern(Smoke.class, covBoth, cPalette, down); // can't see with colorize
     //l.addPattern(OrganicPatternConfig.NeonSnake.class, covPanels, cPalette, down); // removed at request of tergel
 
     // UP patterns
-    l.addPattern(NoisePattern.class, covPanelPartial, cNonConforming, up);
+    l.addPattern(TENoisePattern.class, covPanelPartial, cNonConforming, up);
     l.addPattern(OrganicPatternConfig.WavyEdges.class, covPanelPartial, cNonConforming, up);
-    l.addPattern(SparklePattern.class, covBoth, cNonConforming, up);
+    l.addPattern(TESparklePattern.class, covBoth, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.Electric.class, covPanelPartial, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.Marbling.class, covPanels, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.SlitheringSnake.class, covPanelPartial, cPalette, up);
