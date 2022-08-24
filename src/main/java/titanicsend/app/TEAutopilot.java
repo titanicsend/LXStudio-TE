@@ -3,6 +3,7 @@ package titanicsend.app;
 import heronarts.lx.LX;
 import heronarts.lx.LXLoopTask;
 import heronarts.lx.Tempo;
+import heronarts.lx.LX.ProjectListener.Change;
 import heronarts.lx.color.LXSwatch;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.osc.OscMessage;
@@ -167,6 +168,14 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
         
         oldNextFadeOutMode = false;
         prevFadeOutMode = false;
+        
+        // If the channel indexes didn't exist, it might just be a project with too few channels.  Bail on this.
+        if (curChannel == null || nextChannel == null || triggerChannel == null || strobesChannel == null) {
+        	// Cancel autopilot
+        	TE.log("Cancelling autopilot, special channels not found.");
+        	this.enabled = false;
+        	return;
+        }
 
         // set palette timer
         history.startPaletteTimer();
@@ -502,39 +511,44 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
      * @param curPhraseLenBars
      */
     private void updateFXChannels(double curPhraseLenBars) {
+    	//Avoid crash
         // first, set strobes
-        double newStrobeChannelVal = -1;
-        if (strobesChannel.fader.getValue() > 0.0 && curPhraseLenBars < STROBES_AT_CHORUS_LENGTH_BARS) {
-            newStrobeChannelVal = TEMath.ease(
-                    TEMath.EasingFunction.LINEAR_RAMP_DOWN,
-                    curPhraseLenBars, 0.0, STROBES_AT_CHORUS_LENGTH_BARS,
-                    LEVEL_OFF, LEVEL_FULL);
-
-        } else if (curPhraseLenBars >= PREV_FADE_OUT_BARS) {
-            newStrobeChannelVal = LEVEL_OFF;
-        }
-
-        if (newStrobeChannelVal >= 0) {
-            //TE.log("Strobes: Setting fader=%s to %f", TEChannelName.STROBES, newStrobeChannelVal);
-            TEMixerUtils.setFaderTo(lx, TEChannelName.STROBES, newStrobeChannelVal);
-        }
+	    if (strobesChannel != null) {
+	        double newStrobeChannelVal = -1;
+	        if (strobesChannel.fader.getValue() > 0.0 && curPhraseLenBars < STROBES_AT_CHORUS_LENGTH_BARS) {
+	            newStrobeChannelVal = TEMath.ease(
+	                    TEMath.EasingFunction.LINEAR_RAMP_DOWN,
+	                    curPhraseLenBars, 0.0, STROBES_AT_CHORUS_LENGTH_BARS,
+	                    LEVEL_OFF, LEVEL_FULL);
+	
+	        } else if (curPhraseLenBars >= PREV_FADE_OUT_BARS) {
+	            newStrobeChannelVal = LEVEL_OFF;
+	        }
+	
+	        if (newStrobeChannelVal >= 0) {
+	            //TE.log("Strobes: Setting fader=%s to %f", TEChannelName.STROBES, newStrobeChannelVal);
+	            TEMixerUtils.setFaderTo(lx, TEChannelName.STROBES, newStrobeChannelVal);
+	        }
+	    }
 
         // now set triggers
-        double newTriggerChannelVal = -1;
-        if (triggerChannel.fader.getValue() > 0.0 && curPhraseLenBars < TRIGGERS_AT_CHORUS_LENGTH_BARS) {
-            newTriggerChannelVal = TEMath.ease(
-                    TEMath.EasingFunction.LINEAR_RAMP_DOWN,
-                    curPhraseLenBars, 0.0, TRIGGERS_AT_CHORUS_LENGTH_BARS,
-                    LEVEL_OFF, LEVEL_FULL);
-
-        } else if (curPhraseLenBars >= TRIGGERS_AT_CHORUS_LENGTH_BARS) {
-            newTriggerChannelVal = LEVEL_OFF;
-        }
-
-        if (newTriggerChannelVal >= 0) {
-            //TE.log("Triggers: Setting fader=%s to %f", TEChannelName.TRIGGERS, newTriggerChannelVal);
-            TEMixerUtils.setFaderTo(lx, TEChannelName.TRIGGERS, newTriggerChannelVal);
-        }
+	    if (triggerChannel != null) {
+	        double newTriggerChannelVal = -1;
+	        if (triggerChannel.fader.getValue() > 0.0 && curPhraseLenBars < TRIGGERS_AT_CHORUS_LENGTH_BARS) {
+	            newTriggerChannelVal = TEMath.ease(
+	                    TEMath.EasingFunction.LINEAR_RAMP_DOWN,
+	                    curPhraseLenBars, 0.0, TRIGGERS_AT_CHORUS_LENGTH_BARS,
+	                    LEVEL_OFF, LEVEL_FULL);
+	
+	        } else if (curPhraseLenBars >= TRIGGERS_AT_CHORUS_LENGTH_BARS) {
+	            newTriggerChannelVal = LEVEL_OFF;
+	        }
+	
+	        if (newTriggerChannelVal >= 0) {
+	            //TE.log("Triggers: Setting fader=%s to %f", TEChannelName.TRIGGERS, newTriggerChannelVal);
+	            TEMixerUtils.setFaderTo(lx, TEChannelName.TRIGGERS, newTriggerChannelVal);
+	        }
+	    }
     }
 
     /**
@@ -766,8 +780,18 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
         this.enabled = enabled;
 
         if (this.enabled) {
-            TE.log("VJ autoilot enabled!");
-            resetHistory();  // reset TEHistorian state
+        	TE.log("Queued autopilot to start after everything is running.");
+            
+            // Let's do this *after* everything is loaded, shall we?  (JKB mod)
+            lx.engine.addTask(() -> {
+            	// Make sure it didn't get disabled in the meantime, like by a file close!
+            	//if (this.enabled) {
+	                TE.log("VJ autoilot enabled!");
+	                resetHistory();  // reset TEHistorian state
+            	//} else {
+            	//	TE.log("Discarding queued Autopilot launch, it had been disabled when we got around to it.");
+            	//}
+              });
         } else {
             TE.log("VJ autoilot disabled!");
         }
@@ -809,11 +833,55 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
         return estimatedNextPhrase;
     }
 
+    // Keep this for possible future reworking of the autopilot startup
+    private boolean wasAutopilotEnabled = false;
+    
 	@Override
-	public void projectChanged(File file, Change change) {		
-		if (change == Change.OPEN) {
-			LX.log("Autopilot detected project file change, resetting...");
-			resetHistory();
+	public void projectChanged(File file, Change change) {
+		if (change == Change.TRY || change == Change.NEW) {
+			// About to do an openFile
+			this.wasAutopilotEnabled = this.enabled;
+			
+			// JKB note: Ok the Change.Open listener gets broadcast *after* the objects are loaded from file,
+			// so I think we'd better release the channel references here
+			releaseProjectReferences();			
+			
+			if (this.enabled) {
+				LX.log("Disabling Autopilot for file open...");
+				// Note! Current TE method only calls setEnabled(true) from the UI element
+				// The UI element doesn't listen to enabled
+				// So the UI element will get out of sync from this, 
+				//    but it's fine because it will get set by the next file open...
+				setEnabled(false);
+			}			
+		} else if (change == Change.OPEN) {
+			// This could be the first file open or a later file open.
+			LX.log("Autopilot detected completion of openProject(), defensive positions have been taken (or is first file open)...");
+		    
+			// Don't need this, it gets called by:
+			//   TEUserInterface.AutopilotComponent.autopilotEnabledToggle restoring from saved file...
+			//   ...which triggers TEApp.autopilotEnableListener
+			//   ...which calls setEnable(savedFromFile)
+			//resetHistory();
+            
+			// Don't need this either, see above note.  But in the future you might want to do this here, so leaving for reference:
+			/*
+			if (this.wasAutopilotEnabled) {
+				LX.log("Re-enabling autopilot after file open");
+				this.wasAutopilotEnabled = false;
+				setEnabled(true);
+			}
+			*/
 		}
+	}
+	
+	private void releaseProjectReferences() {
+		this.prevChannel = null;
+		this.curChannel = null;
+		this.nextChannel = null;
+		this.oldNextChannel = null;
+		this.triggerChannel = null;
+		this.strobesChannel = null;
+        this.fxChannel = null;
 	}
 }
