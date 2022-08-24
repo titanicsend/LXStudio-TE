@@ -59,10 +59,16 @@ public abstract class PixelblazePort extends TEAudioPattern {
 	private LXPoint[] getModelPoints() {
 		ArrayList<LXPoint> newPoints = new ArrayList<>(model.points.length);
 		if (enableEdges.getValueb()) {
-			newPoints.addAll(model.edgePoints);
+			for (LXPoint p : model.edgePoints) {
+				if (p == model.gapPoint) continue;
+				newPoints.add(p);
+			}
 		}
 		if (enablePanels.getValueb()) {
-			newPoints.addAll(model.panelPoints);
+			for (LXPoint p : model.panelPoints) {
+				if (p == model.gapPoint) continue;
+				newPoints.add(p);
+			}
 		}
 		return newPoints.toArray(new LXPoint[0]);
 	}
@@ -98,8 +104,8 @@ public abstract class PixelblazePort extends TEAudioPattern {
 
 	public double clamp(double v, double min, double max) {
 		return Math.min(max, Math.max(min, v));
-  }
-  
+	}
+
 	public double random(double v) {
 		return Math.random() * v;
 	}
