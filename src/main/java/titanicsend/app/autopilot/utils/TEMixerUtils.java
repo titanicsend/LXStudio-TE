@@ -32,8 +32,10 @@ public class TEMixerUtils {
     public static void setFaderTo(LX lx, TEChannelName name, double faderLevel) {
         try {
         	// Don't crash
-        	if (lx.engine.mixer.channels.size() <= name.getIndex())
-        		return;
+        	if (lx.engine.mixer.channels.size() <= name.getIndex()) {
+                TE.err("Error setting fader, mixer does't see any channels (!)");
+                return;
+            }
         	
             LXChannel channel = (LXChannel) lx.engine.mixer.channels.get(name.getIndex());
             channel.fader.setValue(faderLevel);
@@ -82,6 +84,7 @@ public class TEMixerUtils {
             	if (lx.engine.mixer.channels.size() > name.getIndex()) {            		
             		return (LXChannel) lx.engine.mixer.channels.get(name.getIndex());
             	} else {
+                    TE.err("Error in getChannelByName(%s), mixer does't see enough channels (!)", name);
             		return null;
             	}
             } catch (IndexOutOfBoundsException e) {
