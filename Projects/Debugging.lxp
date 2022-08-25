@@ -1,6 +1,6 @@
 {
   "version": "0.4.1",
-  "timestamp": 1660418378740,
+  "timestamp": 1661390171037,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -476,7 +476,7 @@
           "scene-5": false,
           "crossfader": 0.3464566929133858,
           "crossfaderBlendMode": 1,
-          "focusedChannel": 1,
+          "focusedChannel": 3,
           "cueA": false,
           "cueB": false,
           "viewCondensed": false
@@ -491,10 +491,42 @@
             "parameters": {
               "label": "Master",
               "arm": false,
-              "selected": false
+              "selected": true
             },
             "children": {},
-            "effects": [],
+            "effects": [
+              {
+                "id": 44174,
+                "class": "titanicsend.effect.NoGapEffect",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "NoGapEffect",
+                  "enabled": false,
+                  "LogSec": 60.0
+                },
+                "children": {
+                  "modulation": {
+                    "id": 44175,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              }
+            ],
             "clips": []
           }
         },
@@ -623,7 +655,7 @@
             "parameters": {
               "label": "Debugging",
               "arm": false,
-              "selected": true,
+              "selected": false,
               "enabled": true,
               "cue": false,
               "fader": 1.0,

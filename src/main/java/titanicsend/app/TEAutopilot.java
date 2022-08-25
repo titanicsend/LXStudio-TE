@@ -86,9 +86,6 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
     private ConcurrentLinkedQueue<TEOscMessage> unprocessedOscMessages;
     private long lastOscMessageReceivedAt;
 
-    // if we detect BPM is off by more than this, adjust
-    private static double BPM_ERROR_ADJUST = 1.0;
-
     // our historical tracking object, keeping state about events in past
     public TEHistorian history;
 

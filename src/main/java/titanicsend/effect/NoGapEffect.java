@@ -48,20 +48,6 @@ public class NoGapEffect extends LXModelEffect<TEWholeModel> {
       this.frameGap++;
 	}
     this.frameTotal++;
-    
-    // Log on regular interval
-    double logElapsed = (this.lx.engine.nowMillis - this.lastLogTime) / 1000;
-    if (logElapsed > this.logFrequency.getValue()) {
-      if (this.frameGap > 0 ) {
-        double percentFrames = (double)frameGap / (double)frameTotal * 100;        
-        LX.log("Warning: " + 
-          String.format("%,.1f", percentFrames) + "% of " + this.frameTotal + " frames in the last " + 
-          String.format("%,.1f", logElapsed) + " seconds contained modified gap pixels.");
-      } else {
-        LX.log("Gap pixels looking good for last " + String.format("%,.1f", logElapsed) + " seconds!");          
-      }      
-      resetCounters();
-    }
   }
   
   private void resetCounters() {

@@ -126,8 +126,7 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
   }
 
   // During construction, make gap points show up in red
-  // TODO: Change to TEColor.TRANSPARENT for production!!
-  static public final int GAP_PIXEL_COLOR = LXColor.rgb(255, 0, 0);
+  static public final int GAP_PIXEL_COLOR = TEColor.TRANSPARENT;
   
   // Compare to LXLayeredComponent's clearColors(), which is declared final.
   public void clearPixels() {
@@ -135,7 +134,7 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
       if (this.model.isGapPoint(point)) {
         colors[this.model.gapPoint.index] = GAP_PIXEL_COLOR;
       } else {
-        colors[point.index] = TEColor.TRANSPARENT; // Transparent
+        colors[point.index] = TEColor.TRANSPARENT;
       }
     }
   }
