@@ -1,6 +1,6 @@
 {
   "version": "0.4.1",
-  "timestamp": 1659997047170,
+  "timestamp": 1661390146517,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -1876,7 +1876,7 @@
           "scene-5": false,
           "crossfader": 0.47457627207040787,
           "crossfaderBlendMode": 1,
-          "focusedChannel": 1,
+          "focusedChannel": 9,
           "cueA": false,
           "cueB": false,
           "viewCondensed": false
@@ -1891,7 +1891,7 @@
             "parameters": {
               "label": "Master",
               "arm": false,
-              "selected": false
+              "selected": true
             },
             "children": {},
             "effects": [
@@ -1993,6 +1993,37 @@
                 "children": {
                   "modulation": {
                     "id": 13282,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 44091,
+                "class": "titanicsend.effect.NoGapEffect",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "NoGapEffect",
+                  "enabled": true,
+                  "LogSec": 60.0
+                },
+                "children": {
+                  "modulation": {
+                    "id": 44092,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0
@@ -2283,7 +2314,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.46019270833333326
                       },
                       {
                         "id": 11677,
@@ -2310,7 +2341,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.9203854166666665
                       }
                     ],
                     "modulations": [
@@ -2465,7 +2496,7 @@
                           "triggerOut": false
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.9203854166666665
                       },
                       {
                         "id": 9723,
@@ -2492,7 +2523,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.7300963541666666
                       }
                     ],
                     "modulations": [
@@ -2624,7 +2655,7 @@
                           "exp": 0.10000002011656761
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.46019270833333326
                       }
                     ],
                     "modulations": [
@@ -2692,7 +2723,7 @@
             "parameters": {
               "label": "Edge Nois2",
               "arm": false,
-              "selected": true,
+              "selected": false,
               "enabled": true,
               "cue": false,
               "fader": 1.0,
@@ -2952,7 +2983,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.46019270833333326
                       },
                       {
                         "id": 11815,
@@ -2979,7 +3010,7 @@
                           "exp": -0.4599999859929085
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.9203854166666665
                       }
                     ],
                     "modulations": [
@@ -3134,7 +3165,7 @@
                           "triggerOut": false
                         },
                         "children": {},
-                        "basis": 0.572166666666817
+                        "basis": 0.9203854166666665
                       },
                       {
                         "id": 11826,
@@ -3161,7 +3192,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.8930416666667043
+                        "basis": 0.7300963541666666
                       }
                     ],
                     "modulations": [
@@ -3293,7 +3324,7 @@
                           "exp": 0.11999999731779099
                         },
                         "children": {},
-                        "basis": 0.7252500000000062
+                        "basis": 0.9203854166666665
                       }
                     ],
                     "modulations": [
@@ -3664,7 +3695,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.9203854166666665
                       }
                     ],
                     "modulations": [
@@ -3765,7 +3796,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.7300963541666666
                       },
                       {
                         "id": 12037,
@@ -3792,7 +3823,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.7300963541666666
                       }
                     ],
                     "modulations": [
@@ -3939,7 +3970,7 @@
                           "exp": 0.19999999552965164
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.9203854166666665
                       },
                       {
                         "id": 9996,
@@ -3966,7 +3997,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.46019270833333326
                       }
                     ],
                     "modulations": [
@@ -4090,7 +4121,7 @@
                           "exp": 0.880000002682209
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.840770833333333
                       }
                     ],
                     "modulations": [
@@ -4196,7 +4227,7 @@
                     "exp": 0.0
                   },
                   "children": {},
-                  "basis": 0.0
+                  "basis": 0.46019270833333326
                 }
               }
             ]
@@ -4860,7 +4891,7 @@
             ]
           },
           {
-            "id": 597,
+            "id": 44004,
             "class": "heronarts.lx.mixer.LXChannel",
             "internal": {
               "modulationColor": 0,
@@ -4974,7 +5005,7 @@
                       }
                     ],
                     "path": "/enabled",
-                    "componentId": 597,
+                    "componentId": 44004,
                     "parameterPath": "enabled"
                   }
                 ]
@@ -5021,7 +5052,7 @@
                       }
                     ],
                     "path": "/enabled",
-                    "componentId": 597,
+                    "componentId": 44004,
                     "parameterPath": "enabled"
                   }
                 ]
@@ -5068,7 +5099,7 @@
                       }
                     ],
                     "path": "/enabled",
-                    "componentId": 597,
+                    "componentId": 44004,
                     "parameterPath": "enabled"
                   }
                 ]
@@ -5115,7 +5146,7 @@
                       }
                     ],
                     "path": "/enabled",
-                    "componentId": 597,
+                    "componentId": 44004,
                     "parameterPath": "enabled"
                   }
                 ]
@@ -5162,7 +5193,7 @@
                       }
                     ],
                     "path": "/enabled",
-                    "componentId": 597,
+                    "componentId": 44004,
                     "parameterPath": "enabled"
                   }
                 ]
@@ -5812,17 +5843,17 @@
               "attack": 10.0,
               "release": 100.0,
               "slope": 4.5,
-              "band-1": 0.12187886831664319,
-              "band-2": 0.15671340550524182,
-              "band-3": 0.14988933877685595,
-              "band-4": 0.11853956632985252,
-              "band-5": 0.03529210105725478,
+              "band-1": 0.0448722080041416,
+              "band-2": 0.09077733465994398,
+              "band-3": 0.0727516793272226,
+              "band-4": 0.008174014213281455,
+              "band-5": 0.0,
               "band-6": 0.0,
               "band-7": 0.0,
-              "band-8": 0.0,
-              "band-9": 0.03036681174376865,
-              "band-10": 0.0,
-              "band-11": 0.0,
+              "band-8": 0.06830722113309673,
+              "band-9": 0.13226603919312196,
+              "band-10": 0.08369061182986659,
+              "band-11": 0.035509025385796256,
               "band-12": 0.0,
               "band-13": 0.0,
               "band-14": 0.0,

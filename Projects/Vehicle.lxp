@@ -1,6 +1,6 @@
 {
   "version": "0.4.1",
-  "timestamp": 1660418162674,
+  "timestamp": 1661390119257,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -1986,7 +1986,7 @@
           "scene-5": false,
           "crossfader": 0.3464566929133858,
           "crossfaderBlendMode": 1,
-          "focusedChannel": 6,
+          "focusedChannel": 7,
           "cueA": false,
           "cueB": false,
           "viewCondensed": false
@@ -2001,10 +2001,42 @@
             "parameters": {
               "label": "Master",
               "arm": false,
-              "selected": false
+              "selected": true
             },
             "children": {},
-            "effects": [],
+            "effects": [
+              {
+                "id": 43052,
+                "class": "titanicsend.effect.NoGapEffect",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "NoGapEffect",
+                  "enabled": true,
+                  "LogSec": 300.0
+                },
+                "children": {
+                  "modulation": {
+                    "id": 43053,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              }
+            ],
             "clips": []
           }
         },
@@ -2364,7 +2396,7 @@
                   "color/index": 4,
                   "tempoDivision": 5,
                   "triggerMode": 0,
-                  "sceneSelect": 17,
+                  "sceneSelect": 5,
                   "trigger": false,
                   "downbeat": false
                 },
@@ -2465,7 +2497,7 @@
                 "deviceVersion": -1
               },
               {
-                "id": 614,
+                "id": 42993,
                 "class": "titanicsend.pattern.mike.Bubbles",
                 "internal": {
                   "modulationColor": 0,
@@ -2860,7 +2892,7 @@
             "parameters": {
               "label": "Debugging",
               "arm": false,
-              "selected": true,
+              "selected": false,
               "enabled": false,
               "cue": false,
               "fader": 1.0,
@@ -3186,18 +3218,18 @@
               "attack": 10.0,
               "release": 100.0,
               "slope": 4.5,
-              "band-1": 0.025007039657458097,
-              "band-2": 0.07921923336742409,
-              "band-3": 0.08501303192325038,
-              "band-4": 0.11746645850411985,
-              "band-5": 0.1205560553400048,
-              "band-6": 0.005341542054217552,
-              "band-7": 0.0,
-              "band-8": 0.1373634678184984,
-              "band-9": 0.10000317319719432,
-              "band-10": 0.002101895382232377,
-              "band-11": 1.5057228024062397E-4,
-              "band-12": 0.0,
+              "band-1": 0.04119293335453433,
+              "band-2": 0.07570486615285044,
+              "band-3": 0.06544885217776297,
+              "band-4": 0.021121487780129122,
+              "band-5": 0.0,
+              "band-6": 0.0,
+              "band-7": 0.005260712840353232,
+              "band-8": 0.08686224665909215,
+              "band-9": 0.1521442427460281,
+              "band-10": 0.10260739132581731,
+              "band-11": 0.05911655300712937,
+              "band-12": 0.0016824052007793355,
               "band-13": 0.0,
               "band-14": 0.0,
               "band-15": 0.0,
