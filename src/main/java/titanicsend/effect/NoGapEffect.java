@@ -16,10 +16,6 @@ public class NoGapEffect extends LXModelEffect<TEWholeModel> {
     .setDescription("Frequency of log entry in seconds")
     .setExponent(2);
   
-  private double lastLogTime = 0;
-  private int frameTotal = 0;
-  private int frameGap = 0;
-  
   public NoGapEffect(LX lx) {
     super(lx);
     addParameter("LogSec", this.logFrequency);
@@ -32,7 +28,6 @@ public class NoGapEffect extends LXModelEffect<TEWholeModel> {
     if (parent == null || !parent.equals(this.lx.engine.mixer.masterBus)) {
      LX.log("Warning: NoGap Effect is running on a channel that is not master. Gap pixels may not get filtered.");
     }
-    resetCounters();
     super.onEnable();
   }
 
@@ -45,14 +40,7 @@ public class NoGapEffect extends LXModelEffect<TEWholeModel> {
 	if (modified) {
       // Fix it
       colors[this.model.gapPoint.index] = TEPattern.GAP_PIXEL_COLOR;
-      this.frameGap++;
 	}
-    this.frameTotal++;
   }
-  
-  private void resetCounters() {
-      this.lastLogTime = this.lx.engine.nowMillis;
-      this.frameTotal = 0;
-      this.frameGap = 0;      
-  }
+
 }
