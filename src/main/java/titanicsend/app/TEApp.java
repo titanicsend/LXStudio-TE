@@ -192,7 +192,7 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
     lx.registry.addPattern(BassReactiveEdge.class);
     lx.registry.addPattern(TempoReactiveEdge.class);
     lx.registry.addPattern(ArtStandards.class);
-    lx.registry.addEffect(titanicsend.effect.BasicEffect.class);
+    lx.registry.addEffect(titanicsend.effect.EdgeSieve.class);
     lx.registry.addEffect(titanicsend.effect.Kaleidoscope.class);
     lx.registry.addEffect(titanicsend.effect.NoGapEffect.class);
 
