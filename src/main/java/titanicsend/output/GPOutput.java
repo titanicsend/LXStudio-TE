@@ -82,16 +82,15 @@ public class GPOutput extends LXOutput {
     // the colors array to get your GP output colors
 
     List<Integer> gpColors = new ArrayList<>();
-    if (this.gpPoints.isEmpty() || this.alwaysUsePalette) {
-      // Use active swatch
-      for (LXDynamicColor dc : lx.engine.palette.swatch.colors) {
-        gpColors.add(dc.getColor());
-      }
-    } else {
-      // GP points were found on the model
+    // Start with the gpPoints, unless that's disabled
+    if (!this.alwaysUsePalette) {
       for (LXPoint point : this.gpPoints) {
         gpColors.add(colors[point.index]);
       }
+    }
+    // And then append the active swatch
+    for (LXDynamicColor dc : lx.engine.palette.swatch.colors) {
+      gpColors.add(dc.getColor());
     }
     this.broadcaster.setColors(gpColors);
   }

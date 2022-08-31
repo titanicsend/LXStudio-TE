@@ -30,6 +30,7 @@ import java.util.function.Function;
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
 import heronarts.lx.LX.ProjectListener.Change;
+import heronarts.lx.midi.surface.APC40Mk2;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.pattern.color.GradientPattern;
@@ -215,6 +216,7 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
     // lx.registry.addPattern(ModuleEditor.class);
     lx.registry.addPattern(SignalDebugger.class);
 
+    lx.engine.midi.registerSurface("Network lighting-1-APC-40", APC40Mk2.class);
     // create our library for autopilot
     this.library = initializePatternLibrary(lx);
 

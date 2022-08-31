@@ -60,8 +60,14 @@ public class GigglePixelBroadcaster implements LXLoopTask {
       int g = (256 + LXColor.green(color)) % 256;
       int b = (256 + LXColor.blue(color)) % 256;
       int frac = min(255, 256 / numColors);
-      entries.add(new GPColor(r,g,b,frac));
+      // Filter out black pixels
+      if (r != 0 || g != 0 || b != 0)
+        entries.add(new GPColor(r,g,b,frac));
     }
+    // But then add two black ones at the end just for padding, in case
+    // they were all black, so we don't send an empty packet.
+    entries.add(new GPColor(0,0,0,1));
+    entries.add(new GPColor(0,0,0,1));
     GPPalettePacket palettePacket = new GPPalettePacket(entries);
     try {
       this.gp.send(palettePacket);
