@@ -1,6 +1,6 @@
 {
   "version": "0.4.1",
-  "timestamp": 1661757127510,
+  "timestamp": 1661989493968,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -476,7 +476,7 @@
           "scene-5": false,
           "crossfader": 0.39730415063521524,
           "crossfaderBlendMode": 1,
-          "focusedChannel": 4,
+          "focusedChannel": 0,
           "cueA": false,
           "cueB": false,
           "viewCondensed": false
@@ -491,7 +491,7 @@
             "parameters": {
               "label": "Master",
               "arm": false,
-              "selected": true
+              "selected": false
             },
             "children": {},
             "effects": [
@@ -541,7 +541,7 @@
             "parameters": {
               "label": "Edges",
               "arm": false,
-              "selected": false,
+              "selected": true,
               "enabled": true,
               "cue": false,
               "fader": 1.0,
@@ -655,10 +655,10 @@
                 "parameters": {
                   "label": "BasicElectricEdges",
                   "recall": false,
-                  "Energy": 0.0,
-                  "Disperse": 2.0,
                   "Curve": 0.2,
+                  "Disperse": 2.0,
                   "Haze": 0.075,
+                  "Energy": 0.0,
                   "Thickness": 0.25,
                   "iColor/brightness": 0.0,
                   "iColor/saturation": 0.0,
@@ -696,12 +696,12 @@
                 "parameters": {
                   "label": "NeonBarsEdges",
                   "recall": false,
-                  "Thickness": 0.4000000134110451,
-                  "Glow": 2.374999980442226,
                   "Wibble Size": 0.15,
-                  "Glow2": 8.550000010058284,
                   "Speed": 0.0,
                   "Energy": 0.0,
+                  "Glow2": 8.550000010058284,
+                  "Glow": 2.374999980442226,
+                  "Thickness": 0.4000000134110451,
                   "iColor/brightness": 0.0,
                   "iColor/saturation": 0.0,
                   "iColor/hue": 0.0,
@@ -776,10 +776,10 @@
                 "parameters": {
                   "label": "WaterEdges",
                   "recall": false,
-                  "Inten1": 14.499999787658453,
                   "Tiling": 2.4099999740719795,
-                  "Speed": 5.9410000169649715,
                   "Inten2": 0.0030700001548975707,
+                  "Speed": 5.9410000169649715,
+                  "Inten1": 14.499999787658453,
                   "iColor/brightness": 100.0,
                   "iColor/saturation": 99.16666412353516,
                   "iColor/hue": 84.0,
@@ -858,7 +858,7 @@
               "selected": false,
               "enabled": true,
               "cue": false,
-              "fader": 0.9000000264495611,
+              "fader": 0.3714285884052515,
               "crossfadeGroup": 0,
               "blendMode": 0,
               "midiMonitor": false,
@@ -1013,10 +1013,10 @@
                 "parameters": {
                   "label": "Marbling",
                   "recall": false,
-                  "yWave": 1.359999991953373,
-                  "tile": 8.369999881833792,
                   "xWave": 2.170000007376075,
                   "curve": 4.330000126734376,
+                  "tile": 8.369999881833792,
+                  "yWave": 1.359999991953373,
                   "iColor/brightness": 64.99999237060547,
                   "iColor/saturation": 100.0,
                   "iColor/hue": 186.0,
@@ -1053,11 +1053,11 @@
                 "parameters": {
                   "label": "NeonHeartNative",
                   "recall": false,
-                  "len": 0.25,
-                  "speed": 0.5,
-                  "thickness": 0.0035,
                   "scale": 0.012,
+                  "thickness": 0.0035,
+                  "speed": 0.5,
                   "haze": 1.7,
+                  "len": 0.25,
                   "iColor/brightness": 0.0,
                   "iColor/saturation": 0.0,
                   "iColor/hue": 0.0,
@@ -1223,13 +1223,13 @@
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 3,
+              "focusedPattern": 4,
               "triggerPatternCycle": false
             },
             "children": {},
             "effects": [],
             "clips": [],
-            "patternIndex": 3,
+            "patternIndex": 4,
             "patterns": [
               {
                 "id": 9379,
@@ -1346,6 +1346,45 @@
                 "children": {
                   "modulation": {
                     "id": 14656,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 2510903,
+                "class": "titanicsend.pattern.cesar.HandTracker",
+                "internal": {
+                  "modulationColor": 0,
+                  "expanded": true,
+                  "modulationExpanded": false,
+                  "autoCycleEligible": true
+                },
+                "parameters": {
+                  "label": "HandTracker",
+                  "recall": false,
+                  "color/brightness": 0.0,
+                  "color/saturation": 0.0,
+                  "color/hue": 0.0,
+                  "color/mode": 1,
+                  "color/index": 3,
+                  "targetZ": 80.00000044703484,
+                  "targetY": 53.99999890476466,
+                  "indexTip": "10,50"
+                },
+                "children": {
+                  "modulation": {
+                    "id": 2510904,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0

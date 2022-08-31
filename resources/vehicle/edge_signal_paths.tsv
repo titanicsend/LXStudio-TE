@@ -64,7 +64,7 @@ Edge ID	Signal from	Controller vertex	Priority	Pixels
 30-38	33-38		Medium	138
 30-42	Controller	30	Low	168
 31-118	30-31		High	121
-31-119	31-121		High	189
+31-119	Controller	119	High	189
 31-121	119-121		High	100
 31-33	Controller	33	High	109
 31-39	Controller	33	High	109
