@@ -25,7 +25,7 @@ public class OrganicPatternConfig {
         protected List<PatternEffect> createEffects() {
             return List.of(
                     new OutrunGridShader(PatternTarget.splitPanelSections(this)),
-                    new AlternatingDotsEffect(PatternTarget.splitPanelSections(this))
+                    new AlternatingDotgir sEffect(PatternTarget.splitPanelSections(this))
                             .setHorizon(OutrunGridShader.HORIZON_Y)
                             .setShouldBlend(true)
             );

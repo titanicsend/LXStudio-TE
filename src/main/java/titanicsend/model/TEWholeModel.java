@@ -641,6 +641,12 @@ public class TEWholeModel extends LXModel {
     return panelsBySection.get(section);
   }
 
+  public Set<LXPoint> getEdgePointsBySection(TEEdgeSection section) {
+    return edgePoints.stream()
+            .filter(point -> section == TEEdgeSection.PORT ? point.x > 0 : point.x < 0)
+            .collect(Collectors.toSet());
+  }
+
   public Set<LXPoint> getPointsBySection(TEPanelSection section) {
     return getPanelsBySection(section)
             .stream()
