@@ -55,6 +55,7 @@ import titanicsend.pattern.tom.*;
 import titanicsend.pattern.will.PowerDebugger;
 import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
+import titanicsend.pattern.yoffa.effect.BeaconEffect;
 import titanicsend.pattern.yoffa.media.BasicImagePattern;
 import titanicsend.pattern.yoffa.media.ReactiveHeartPattern;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
@@ -195,6 +196,7 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
     lx.registry.addEffect(titanicsend.effect.EdgeSieve.class);
     lx.registry.addEffect(titanicsend.effect.Kaleidoscope.class);
     lx.registry.addEffect(titanicsend.effect.NoGapEffect.class);
+    lx.registry.addEffect(BeaconEffect.class);
 
     @SuppressWarnings("unchecked")
     Function<Class<?>, Class<LXPattern>[]> patternGetter =

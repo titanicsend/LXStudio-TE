@@ -155,7 +155,7 @@ public class TEPanelModel extends TEModel {
   // TODO Replace this with something smarter
   // This is a really lazy/sloppy way of doing this, though if we're not changing the model it should be fine
   public TEPanelSection getSection() {
-    if (panelType.equals(SOLID)) {
+    if (centroid.x > 1200000) {
       return TEPanelSection.PORT;
     }
 
