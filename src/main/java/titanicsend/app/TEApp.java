@@ -42,7 +42,9 @@ import titanicsend.app.autopilot.*;
 import titanicsend.model.TEWholeModel;
 import titanicsend.output.GPOutput;
 import titanicsend.output.GrandShlomoStation;
+import titanicsend.pattern.TEEdgeTestPattern;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
+import titanicsend.pattern.TEPanelTestPattern;
 import titanicsend.pattern.ben.*;
 import titanicsend.pattern.cesar.*;
 import titanicsend.pattern.jeff.*;
@@ -215,6 +217,8 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
     lx.registry.addPattern(PowerDebugger.class);
     // lx.registry.addPattern(ModuleEditor.class);
     lx.registry.addPattern(SignalDebugger.class);
+    lx.registry.addPattern(TEEdgeTestPattern.class);
+    lx.registry.addPattern(TEPanelTestPattern.class);
 
     lx.engine.midi.registerSurface("Network lighting-1-APC-40", APC40Mk2.class);
     // create our library for autopilot

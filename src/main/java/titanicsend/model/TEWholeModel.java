@@ -243,7 +243,8 @@ public class TEWholeModel extends LXModel {
       assert v0Id < v1Id;
       TEVertex v0 = geometry.vertexesById.get(v0Id);
       TEVertex v1 = geometry.vertexesById.get(v1Id);
-      TEEdgeModel e = new TEEdgeModel(v0, v1, edgePixelCounts.get(id), dark);
+      String[] tags = new String[] { tokens[0] + tokens[1] };
+      TEEdgeModel e = new TEEdgeModel(v0, v1, edgePixelCounts.get(id), dark, tags);
       v0.addEdge(e);
       v1.addEdge(e);
 
@@ -521,8 +522,9 @@ public class TEWholeModel extends LXModel {
       int x = Integer.parseInt(tokens[1]);
       int y = Integer.parseInt(tokens[2]);
       int z = Integer.parseInt(tokens[3]);
+      String[] tags = new String[] { id };
 
-      TELaserModel laser = new TELaserModel(id, x, y, z);
+      TELaserModel laser = new TELaserModel(id, x, y, z, tags);
       //laser.control = new Cone(laser);
       laser.control = new MovingTarget(laser);
       geometry.lasersById.put(id, laser);
