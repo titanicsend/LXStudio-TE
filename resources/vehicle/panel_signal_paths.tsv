@@ -1,6 +1,6 @@
 Panel ID	Edge1	Edge2	Edge3	Type	Channels	Controller vertex	Signal in vertex	Signal edge	Build Priority	Responsible Power Box Junction IDs
 SUF	47-50	44-47	44-50	lit	3	50	44	44-47	1	50
-SUA	39-101	39-44	44-101	lit	3	101	39	39-44	1	99
+SUA	39-101	39-44	44-101	lit	3	101	101	101-44	1	99
 SDC	67-90	67-93	90-93	lit	3	93	90	90-67	1	69,60,93
 SCC	98-99	98-100	99-100	lit	3	99	99	99-100	1	10
 SFD	69-82	69-70	70-82	lit	1	70	82	82-69	2	69
