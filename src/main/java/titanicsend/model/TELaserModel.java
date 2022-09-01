@@ -16,8 +16,8 @@ public class TELaserModel extends TEModel {
   public String id;
   public LaserControl control;
 
-  public TELaserModel(String id, double x, double y, double z) {
-    super("Laser", makePoint(x, y, z));
+  public TELaserModel(String id, double x, double y, double z, String ... tags) {
+    super("Laser", makePoint(x, y, z), tags);
     this.id = id;
     this.origin = new LXVector(this.points[0]);
     this.color = LXColor.rgb(255,0,0);

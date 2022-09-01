@@ -11,8 +11,8 @@ public class TEEdgeModel extends TEModel {
   public HashSet<TEPanelModel> connectedPanels;
   public List<TEEdgeModel> symmetryGroup;  // List of this edge and any other that's a reflection about the XY or YZ planes
 
-  public TEEdgeModel(TEVertex v0, TEVertex v1, int numPixels, boolean dark) {
-    super("Edge", makePoints(v0, v1, numPixels, dark));
+  public TEEdgeModel(TEVertex v0, TEVertex v1, int numPixels, boolean dark, String ... tags) {
+    super("Edge", makePoints(v0, v1, numPixels, dark), tags);
     this.v0 = v0;
     this.v1 = v1;
     this.connectedPanels = new HashSet<TEPanelModel>();
@@ -26,6 +26,10 @@ public class TEEdgeModel extends TEModel {
 
   public String getId() {
     return this.v0.id + "-" + this.v1.id;
+  }
+  
+  public String getShortId() {
+	return Integer.toString(v0.id) + Integer.toString(this.v1.id);
   }
 
   private static List<LXPoint> makePoints(TEVertex v0, TEVertex v1,

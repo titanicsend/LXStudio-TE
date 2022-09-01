@@ -46,8 +46,9 @@ public class TEPanelFactory {
     int[] channelLengths;
     if (stripingInstructions == null) channelLengths = null;
     else channelLengths = stripingInstructions.channelLengths;
-
+    
+    String[] tags = new String[] { id };
     return new TEPanelModel(id, points, v0, v1, v2, e0, e1, e2,
-            panelType, flavor, centroid, channelLengths);
+            panelType, flavor, centroid, channelLengths, tags);
   }
 }
