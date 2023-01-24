@@ -244,7 +244,13 @@ public class TEWholeModel extends LXModel {
       TEVertex v0 = geometry.vertexesById.get(v0Id);
       TEVertex v1 = geometry.vertexesById.get(v1Id);
       String[] tags = new String[] { tokens[0] + tokens[1] };
-      TEEdgeModel e = new TEEdgeModel(v0, v1, edgePixelCounts.get(id), dark, tags);
+      int numPixels;
+      if (dark) {
+        numPixels = 0;
+      } else {
+        numPixels = edgePixelCounts.get(id);
+      }
+      TEEdgeModel e = new TEEdgeModel(v0, v1, numPixels, dark, tags);
       v0.addEdge(e);
       v1.addEdge(e);
 
@@ -451,7 +457,10 @@ public class TEWholeModel extends LXModel {
       boolean lit = panelType.contains(".");
       String outputConfig = panelType;
 
+      boolean gridMode = lit && outputConfig.endsWith("*");
+
       if (lit) panelType = "lit";
+      if (gridMode) panelType = "grid";
 
       TEStripingInstructions tesi = stripingInstructions.get(id);
       TEPanelModel p = TEPanelFactory.build(id, vertexes[0], vertexes[1], vertexes[2],
@@ -479,16 +488,46 @@ public class TEWholeModel extends LXModel {
       geometry.panelsByFlavor.get(flavor).add(p);
 
       if (lit) {
-        tokens = outputConfig.split("#");
-        assert tokens.length == 2 : "Bad panelType: " + outputConfig;
-        String ip = tokens[0];
-        int channelNum = Integer.parseInt(tokens[1]);
-        int firstChannelPixel = 0;
+        String ip;
+        int channelNum;
+        int firstChannelPixel;
+
+        if (gridMode) {
+          //  Set ip to the one from the config with the star removed
+          ip = outputConfig.substring(0, outputConfig.length() - 1);
+          channelNum = 1;
+          firstChannelPixel = 0;
+        } else {
+          tokens = outputConfig.split("#");
+          assert tokens.length == 2 : "Bad panelType: " + outputConfig;
+          ip = tokens[0];
+          channelNum = Integer.parseInt(tokens[1]);
+          firstChannelPixel = 0;
+        }
+
         for (int i = 0; firstChannelPixel < p.size; i++) {
-          int lastChannelPixel = firstChannelPixel + getChannelLength(tesi, i) - 1;
+          int lastChannelPixel;
+
+          if (gridMode) {
+            lastChannelPixel = firstChannelPixel + TEStripingInstructions.DEFAULT_CHANNEL_LENGTH;`
+          } else {
+            lastChannelPixel = firstChannelPixel + getChannelLength(tesi, i) - 1;
+          }
           if (lastChannelPixel > p.size - 1) lastChannelPixel = p.size - 1;
+          String finalIp;
+          int finalChannelNum = channelNum + i;
+          if (gridMode) {
+            // Assume 8 channels per controller
+            int starOctet = finalChannelNum / 8;
+            // If the IP passed in was 1.2.3.* and we're on the nth controller,
+            // set the IP to 1.2.3.n
+            finalIp = ip + starOctet;
+            finalChannelNum %= 8;
+          } else {
+            finalIp = ip;
+          }
           ChromatechSocket socket = GrandShlomoStation.getOrMake(
-                  ip, channelNum + i);
+                  finalIp, finalChannelNum);
           socket.addPanel(p, firstChannelPixel, lastChannelPixel);
           firstChannelPixel = lastChannelPixel + 1;
         }

@@ -6,6 +6,7 @@ import heronarts.lx.LX;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
 import titanicsend.util.PanelStriper;
+import titanicsend.util.GridStriper;
 
 public class TEPanelFactory {
   public static TEPanelModel build(
@@ -39,6 +40,10 @@ public class TEPanelFactory {
     } else if (panelType.equals(TEPanelModel.SOLID)) {
       flavor = "solid";
       points.add(new LXPoint(centroid));
+    } else if (panelType == "grid") {
+      panelType = TEPanelModel.LIT;
+      flavor = "grid";
+      points.addAll(GridStriper.stripe());
     } else {
       flavor = "unknown";
     }

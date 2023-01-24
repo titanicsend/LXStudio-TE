@@ -392,8 +392,6 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
   public static void main(String[] args) {
     LX.log("Initializing LX version " + LXStudio.VERSION);
     boolean headless = false;
-    boolean loadTestahedron = false;
-    boolean loadVehicle = false;
     File projectFile = null;
     for (int i = 0; i < args.length; ++i) {
       if ("--headless".equals(args[i])) {
@@ -419,20 +417,17 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
         } catch (Exception x) {
           LX.error(x, "Command-line project file path invalid: " + args[i]);
         }
-      } else if (args[i].equals("testahedron")) {
-        loadTestahedron = true;
-      } else if (args[i].equals("vehicle")) {
-        loadVehicle = true;
+      } else if (
+              args[i].equals("testahedron") ||
+              args[i].equals("vehicle") ||
+              args[i].equals("skynet")) {
+        resourceSubdir = args[i];
       } else {
         throw new IllegalArgumentException("Unknown arg: " + args[i]);
       }
     }
-    if (loadTestahedron && !loadVehicle) {
-      resourceSubdir = "testahedron";
-    } else if (loadVehicle && !loadTestahedron) {
-      resourceSubdir = "vehicle";
-    } else {
-      throw new IllegalArgumentException("You must specify either testahedron or vehicle");
+    if (resourceSubdir == null) {
+      throw new IllegalArgumentException("You must specify a resource subdir");
     }
     if (headless) {
       // We're not actually going to run this as a PApplet, but we need to explicitly
