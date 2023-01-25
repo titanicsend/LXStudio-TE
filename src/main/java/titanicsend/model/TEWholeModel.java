@@ -509,7 +509,7 @@ public class TEWholeModel extends LXModel {
           int lastChannelPixel;
 
           if (gridMode) {
-            lastChannelPixel = firstChannelPixel + TEStripingInstructions.DEFAULT_CHANNEL_LENGTH;
+            lastChannelPixel = firstChannelPixel + 100 - 1;
           } else {
             lastChannelPixel = firstChannelPixel + getChannelLength(tesi, i) - 1;
           }
@@ -517,12 +517,13 @@ public class TEWholeModel extends LXModel {
           String finalIp;
           int finalChannelNum = channelNum + i;
           if (gridMode) {
+            int zeroIndexChannelNum = finalChannelNum - 1;
             // Assume 8 channels per controller
-            int starOctet = 1 + finalChannelNum / 8;
+            int starOctet = 1 + zeroIndexChannelNum / 8;
             // If the IP passed in was 1.2.3.* and we're on the nth controller,
             // set the IP to 1.2.3.n
             finalIp = ip + starOctet;
-            finalChannelNum %= 8;
+            finalChannelNum = 1 + zeroIndexChannelNum % 8;
           } else {
             finalIp = ip;
           }
