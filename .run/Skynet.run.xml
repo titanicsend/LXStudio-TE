@@ -2,7 +2,7 @@
   <configuration default="false" name="Skynet" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="titanicsend.app.TEApp" />
     <module name="LXStudio-TE" />
-    <option name="PROGRAM_PARAMETERS" value="skynet" />
+    <option name="PROGRAM_PARAMETERS" value="skynet -f Skynet.lxp" />
     <option name="VM_PARAMETERS" value="-ea" />
     <method v="2">
       <option name="Make" enabled="true" />

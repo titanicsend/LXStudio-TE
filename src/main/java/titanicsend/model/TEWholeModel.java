@@ -509,7 +509,7 @@ public class TEWholeModel extends LXModel {
           int lastChannelPixel;
 
           if (gridMode) {
-            lastChannelPixel = firstChannelPixel + TEStripingInstructions.DEFAULT_CHANNEL_LENGTH;`
+            lastChannelPixel = firstChannelPixel + TEStripingInstructions.DEFAULT_CHANNEL_LENGTH;
           } else {
             lastChannelPixel = firstChannelPixel + getChannelLength(tesi, i) - 1;
           }

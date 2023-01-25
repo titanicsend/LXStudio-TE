@@ -391,6 +391,10 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
    */
   public static void main(String[] args) {
     LX.log("Initializing LX version " + LXStudio.VERSION);
+
+    // Hack for Ventura that doesn't actually seem to work
+    com.jogamp.opengl.GLProfile.initSingleton();
+
     boolean headless = false;
     File projectFile = null;
     for (int i = 0; i < args.length; ++i) {
