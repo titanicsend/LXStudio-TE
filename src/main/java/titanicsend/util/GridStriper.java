@@ -7,16 +7,15 @@ import java.util.List;
 
 public class GridStriper {
   public static final int MICRONS_PER_INCH = 25400;
-  public static final int MICRONS_PER_FOOT = MICRONS_PER_INCH * 12;
-  public static final int HEIGHT = 12 * MICRONS_PER_FOOT;
-  public static final int WIDTH =  12 * MICRONS_PER_FOOT;
+  public static final int NUM_STRANDS = 48;
   public static final int PIXELS_PER_STRAND = 50;
-  public static final int NUM_STRANDS = 50;
-  public static final int X_SPAN = WIDTH / (PIXELS_PER_STRAND - 1);
-  public static final int Y_SPAN = HEIGHT / (NUM_STRANDS - 1);
+  public static final int X_SPAN = 3 * MICRONS_PER_INCH;
+  public static final int Y_SPAN = 3 * MICRONS_PER_INCH;
+  public static final int WIDTH = (PIXELS_PER_STRAND - 1) * X_SPAN;
+  public static final int HEIGHT = (NUM_STRANDS - 1) * Y_SPAN;
 
   public static List<LXPoint> stripe() {
-    int y = -HEIGHT / 2;
+    int y = HEIGHT / 2;
     List<LXPoint> rv = new ArrayList<>();
 
     for (int i = 0; i < NUM_STRANDS; i++) {
@@ -29,7 +28,7 @@ public class GridStriper {
         else
           x -= X_SPAN;
       }
-      y += Y_SPAN;
+      y -= Y_SPAN;
     }
     return rv;
   }
