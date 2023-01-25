@@ -518,7 +518,7 @@ public class TEWholeModel extends LXModel {
           int finalChannelNum = channelNum + i;
           if (gridMode) {
             // Assume 8 channels per controller
-            int starOctet = finalChannelNum / 8;
+            int starOctet = 1 + finalChannelNum / 8;
             // If the IP passed in was 1.2.3.* and we're on the nth controller,
             // set the IP to 1.2.3.n
             finalIp = ip + starOctet;
