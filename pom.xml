@@ -26,9 +26,9 @@
         <!-- LX dependency versions -->
         <coremidi4j.version>1.6</coremidi4j.version>
         <gson.version>2.9.0</gson.version>
-        <jogamp.version>2.4.0-rc-20210111</jogamp.version>
+        <jogamp.version>4.0.1</jogamp.version>
         <lx.version>0.4.1</lx.version>
-        <processing.version>4.0b7</processing.version>
+        <processing.version>4.0.1</processing.version>
 
         <!-- Project dependency versions -->
         <gigglepixel.version>0.0.3</gigglepixel.version>
@@ -115,15 +115,17 @@
         </dependency>
 
         <dependency>
-            <groupId>com.metsci.ext.org.jogamp.gluegen</groupId>
-            <artifactId>gluegen-rt-main</artifactId>
-            <version>2.4.0-rc-20200202</version>
+            <groupId>org.jogamp.gluegen</groupId>
+            <artifactId>gluegen-rt</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>com.metsci.ext.org.jogamp.jogl</groupId>
-            <artifactId>jogl-all-main</artifactId>
-            <version>2.4.0-rc-20200202</version>
+            <groupId>org.jogamp.jogl</groupId>
+            <artifactId>jogl-all</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->

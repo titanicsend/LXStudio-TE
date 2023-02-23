@@ -391,6 +391,12 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
    */
   public static void main(String[] args) {
     LX.log("Initializing LX version " + LXStudio.VERSION);
+    
+    // NOTE(mcslee): Hack for macOS Ventura!!
+    // https://github.com/processing/processing4/issues/544
+    // Hopefully to be removed in a future version
+    com.jogamp.opengl.GLProfile.initSingleton();
+    
     boolean headless = false;
     boolean loadTestahedron = false;
     boolean loadVehicle = false;
