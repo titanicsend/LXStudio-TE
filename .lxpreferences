@@ -1,8 +1,10 @@
 {
-  "version": "0.4.1",
+  "version": "0.4.2-SNAPSHOT",
   "projectFileName": "AutoVJ.lxp",
-  "windwWidth": 1634,
+  "windowWidth": 1634,
   "windowHeight": 934,
+  "windowPosX": -1,
+  "windowPosY": -1,
   "uiZoom": 100,
   "focusChannelOnCue": false,
   "focusActivePattern": false,

@@ -195,7 +195,7 @@ public class BassLightning extends TEAudioPattern {
 		addParameter("trigger", trigger);
 		addParameter("loops", allowLoopsParam);
 
-		values = new float[this.colors.length];
+		values = new float[model.size];
 	}
 
 	double boltWaitMs() {
