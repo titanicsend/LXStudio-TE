@@ -455,6 +455,18 @@ public class NativeShader implements GLEventListener {
                         vFArray = ((FloatBuffer) val.value);
                         gl4.glUniform4fv(loc, vFArray.capacity() / 4, vFArray);
                         break;
+                    case MAT2:
+                        vFArray = ((FloatBuffer) val.value);
+                        gl4.glUniformMatrix2fv(loc, 1, true, vFArray);
+                        break;
+                    case MAT3:
+                        vFArray = ((FloatBuffer) val.value);
+                        gl4.glUniformMatrix3fv(loc, 1, true, vFArray);
+                        break;
+                    case MAT4:
+                        vFArray = ((FloatBuffer) val.value);
+                        gl4.glUniformMatrix4fv(loc, 1, true, vFArray);
+                        break;
                     case SAMPLER2D:
                         Texture tex = ((Texture) val.value);
                         gl4.glActiveTexture(INDEX_TO_GL_ENUM.get(textureKey));
@@ -558,6 +570,8 @@ public class NativeShader implements GLEventListener {
      * Create SAMPLER2D uniform from jogl Texture object - for dynamic textures
      * (that change every frame).   For static textures, use
      * setUniform(String name, Texture tex,boolean isStatic) instead.
+     * TODO - static/dynamic textures not yet implemented.  All textures are treated
+     * TODO - as dynamic and reloaded on every frame.
      */
     public void setUniform(String name, Texture tex) {
         addUniform(name, UniformTypes.SAMPLER2D, tex);
@@ -602,6 +616,30 @@ public class NativeShader implements GLEventListener {
                 break;
             default:
                 //TE.log("SetUniform(%s): %d coords specified, maximum 4 allowed", name, columns);
+                break;
+        }
+    }
+
+    /**
+     * Creates a uniform for a square floating point matrix, of size
+     * 2x2, 3x3 or 4x4
+     * @param name of uniform
+     * @param vec Floating point matrix data, in row major order
+     * @param sz Size of matrix (Number of rows & columns.  2,3 or 4)
+     */
+    public void setUniformMatrix(String name, FloatBuffer vec, int sz) {
+        switch (sz) {
+            case 2:
+                addUniform(name, UniformTypes.MAT2, vec);
+                break;
+            case 3:
+                addUniform(name, UniformTypes.MAT3, vec);
+                break;
+            case 4:
+                addUniform(name, UniformTypes.MAT4, vec);
+                break;
+            default:
+                //TE.log("SetUniformMatrix(%s): %d incorrect matrix size specified", name, columns);
                 break;
         }
     }
