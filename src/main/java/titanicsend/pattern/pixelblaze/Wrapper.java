@@ -52,24 +52,22 @@ public class Wrapper {
     return cachedScript.compiledScript;
   }
 
-  public static Wrapper fromResource(String pbClass, TEAudioPattern pattern, LXPoint[] points, int[] colors) throws Exception {
-    return new Wrapper(new File("resources/pixelblaze/" + pbClass + ".js"), pattern, points, colors);
+  public static Wrapper fromResource(String pbClass, TEAudioPattern pattern, LXPoint[] points) throws Exception {
+    return new Wrapper(new File("resources/pixelblaze/" + pbClass + ".js"), pattern, points);
   }
 
   File file;
   TEAudioPattern pattern;
   LXPoint[] points;
-  int[] colors;
   long lastModified;
   Bindings bindings = engine.createBindings();
   String renderName;
   boolean hasError = false;
 
-  public Wrapper(File file, TEAudioPattern pattern, LXPoint[] points, int[] colors) throws ScriptException, IOException {
+  public Wrapper(File file, TEAudioPattern pattern, LXPoint[] points) throws ScriptException, IOException {
     this.file = file;
     this.pattern = pattern;
     this.points = points;
-    this.colors = colors;
   }
 
   public void reloadIfNecessary() throws ScriptException, IOException, NoSuchMethodException {
@@ -105,7 +103,7 @@ public class Wrapper {
     }
   }
 
-  public void render(double deltaMs) throws ScriptException, NoSuchMethodException {
+  public void render(double deltaMs, int[] colors) throws ScriptException, NoSuchMethodException {
     if (hasError)
       return;
     bindings.put("__now", System.currentTimeMillis());
