@@ -1,6 +1,6 @@
 {
   "version": "0.4.1",
-  "timestamp": 1662088808872,
+  "timestamp": 1661852448969,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -2426,7 +2426,7 @@
           "scene-5": false,
           "crossfader": 0.5196850393700787,
           "crossfaderBlendMode": 1,
-          "focusedChannel": 2,
+          "focusedChannel": 6,
           "cueA": false,
           "cueB": false,
           "viewCondensed": false
@@ -2441,7 +2441,7 @@
             "parameters": {
               "label": "Master",
               "arm": false,
-              "selected": false
+              "selected": true
             },
             "children": {},
             "effects": [
@@ -2492,9 +2492,9 @@
               "label": "Up",
               "arm": false,
               "selected": false,
-              "enabled": false,
+              "enabled": true,
               "cue": false,
-              "fader": 0.0,
+              "fader": 0.40584613328349656,
               "crossfadeGroup": 0,
               "blendMode": 0,
               "midiMonitor": false,
@@ -2560,7 +2560,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 8,
+            "patternIndex": 7,
             "patterns": [
               {
                 "id": 9708,
@@ -2802,9 +2802,9 @@
                 "parameters": {
                   "label": "WavyEdges",
                   "recall": false,
-                  "Colors": 1.0,
                   "Speed": 1.0,
                   "Intensity": 0.0,
+                  "Colors": 1.0,
                   "iColor/brightness": 0.0,
                   "iColor/saturation": 0.0,
                   "iColor/hue": 0.0,
@@ -2883,10 +2883,10 @@
                 "parameters": {
                   "label": "Electric",
                   "recall": false,
-                  "haze": 0.25,
                   "dispersion": 6.310000082477927,
-                  "curve": 0.0,
                   "thickness": 5.0,
+                  "haze": 0.25,
+                  "curve": 0.0,
                   "iColor/brightness": 0.0,
                   "iColor/saturation": 0.0,
                   "iColor/hue": 0.0,
@@ -2924,8 +2924,8 @@
                   "label": "Marbling",
                   "recall": false,
                   "tile": 2.0,
-                  "curve": 10.0,
                   "xWave": 2.5,
+                  "curve": 10.0,
                   "yWave": 1.5,
                   "iColor/brightness": 0.0,
                   "iColor/saturation": 0.0,
@@ -3102,7 +3102,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 5,
+            "patternIndex": 6,
             "patterns": [
               {
                 "id": 12031,
@@ -3497,7 +3497,7 @@
                           "exp": 0.12000001966953278
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.125
                       }
                     ],
                     "modulations": [
@@ -3619,8 +3619,8 @@
                   "recall": false,
                   "Tiling": 1.0,
                   "Speed": 1.0,
-                  "Inten1": 1.0,
                   "Inten2": 0.001,
+                  "Inten1": 1.0,
                   "iColor/brightness": 0.0,
                   "iColor/saturation": 0.0,
                   "iColor/hue": 0.0,
@@ -3657,10 +3657,10 @@
                 "parameters": {
                   "label": "WaterEdges",
                   "recall": false,
-                  "Inten2": 0.005,
-                  "Inten1": 5.0,
                   "Tiling": 1.0,
                   "Speed": 1.0,
+                  "Inten2": 0.005,
+                  "Inten1": 5.0,
                   "iColor/brightness": 0.0,
                   "iColor/saturation": 0.0,
                   "iColor/hue": 0.0,
@@ -3697,9 +3697,9 @@
                 "parameters": {
                   "label": "WavyEdges",
                   "recall": false,
-                  "Colors": 1.0,
                   "Speed": 1.0,
                   "Intensity": 0.0,
+                  "Colors": 1.0,
                   "iColor/brightness": 0.0,
                   "iColor/saturation": 0.0,
                   "iColor/hue": 0.0,
@@ -3829,10 +3829,10 @@
             "parameters": {
               "label": "Chorus",
               "arm": false,
-              "selected": true,
-              "enabled": true,
+              "selected": false,
+              "enabled": false,
               "cue": false,
-              "fader": 0.7620104910411662,
+              "fader": 0.0,
               "crossfadeGroup": 0,
               "blendMode": 0,
               "midiMonitor": false,
@@ -3846,7 +3846,7 @@
               "transitionEnabled": true,
               "transitionTimeSecs": 15.737704918032788,
               "transitionBlendMode": 4,
-              "focusedPattern": 16,
+              "focusedPattern": 15,
               "triggerPatternCycle": false
             },
             "children": {},
@@ -4017,7 +4017,7 @@
                           "exp": 0.11999999731779099
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.125
                       }
                     ],
                     "modulations": [
@@ -4095,11 +4095,11 @@
                 "parameters": {
                   "label": "NeonBlocks",
                   "recall": false,
+                  "speed": 0.7,
+                  "glow": 0.5,
                   "ySpread": 1.6,
                   "hideBlocks": false,
                   "numBlocks": 30.0,
-                  "speed": 0.7,
-                  "glow": 0.5,
                   "iColor/brightness": 0.0,
                   "iColor/saturation": 0.0,
                   "iColor/hue": 0.0,
@@ -4170,8 +4170,8 @@
                 "parameters": {
                   "label": "RainbowSwirlPanels",
                   "recall": false,
-                  "Bloom": 5.0,
                   "Zoom": 0.7,
+                  "Bloom": 5.0,
                   "iColor/brightness": 0.0,
                   "iColor/saturation": 0.0,
                   "iColor/hue": 0.0,
@@ -4209,10 +4209,10 @@
                   "label": "MatrixScroller",
                   "recall": false,
                   "Centering": 0.5,
-                  "Speed": 1.0,
                   "Beat reactive": false,
-                  "Blast radius": 200000.0,
+                  "Speed": 1.0,
                   "Block size": 0.02,
+                  "Blast radius": 200000.0,
                   "iColor/brightness": 0.0,
                   "iColor/saturation": 0.0,
                   "iColor/hue": 0.0,
@@ -4250,9 +4250,9 @@
                   "label": "Marbling",
                   "recall": false,
                   "tile": 2.0,
+                  "curve": 10.0,
                   "yWave": 1.5,
                   "xWave": 1.0,
-                  "curve": 10.0,
                   "iColor/brightness": 0.0,
                   "iColor/saturation": 0.0,
                   "iColor/hue": 0.0,
@@ -4405,11 +4405,11 @@
                 "parameters": {
                   "label": "NeonCellsLegacy",
                   "recall": false,
-                  "Glow": 0.1,
                   "Width": 0.5,
-                  "Energy": 0.0,
+                  "Glow": 0.1,
                   "Double Speed": false,
                   "Double Layer": false,
+                  "Energy": 0.0,
                   "iColor/brightness": 0.0,
                   "iColor/saturation": 0.0,
                   "iColor/hue": 0.0,
@@ -4565,11 +4565,11 @@
                 "parameters": {
                   "label": "OutrunGrid",
                   "recall": false,
+                  "colorChangeSpeed": 0.0,
                   "noGlow": false,
                   "sidewaysSpeed": 0.0,
                   "noAlphaWaves": false,
                   "forwardSpeed": 4.0,
-                  "colorChangeSpeed": 0.0,
                   "iColor/brightness": 0.0,
                   "iColor/saturation": 0.0,
                   "iColor/hue": 0.0,
@@ -4606,10 +4606,10 @@
                 "parameters": {
                   "label": "Electric",
                   "recall": false,
+                  "dispersion": 7.2099998611956835,
                   "curve": 0.0,
                   "haze": 0.13975000246427954,
                   "thickness": 8.550000032410026,
-                  "dispersion": 7.2099998611956835,
                   "iColor/brightness": 0.0,
                   "iColor/saturation": 0.0,
                   "iColor/hue": 0.0,
@@ -4830,7 +4830,7 @@
             "children": {},
             "effects": [],
             "clips": [],
-            "patternIndex": 4,
+            "patternIndex": 0,
             "patterns": [
               {
                 "id": 13286,
@@ -4962,7 +4962,7 @@
                   "color/index": 1,
                   "tempoDivision": 7,
                   "triggerMode": 0,
-                  "sceneSelect": 0,
+                  "sceneSelect": 4,
                   "trigger": false,
                   "downbeat": false
                 },
@@ -5187,152 +5187,6 @@
                 "deviceVersion": -1
               }
             ]
-          },
-          {
-            "id": 42740,
-            "class": "heronarts.lx.mixer.LXChannel",
-            "internal": {
-              "modulationColor": 0,
-              "controlsExpanded": true
-            },
-            "parameters": {
-              "label": "Outline",
-              "arm": false,
-              "selected": false,
-              "enabled": true,
-              "cue": false,
-              "fader": 0.7428571619093418,
-              "crossfadeGroup": 0,
-              "blendMode": 0,
-              "midiMonitor": false,
-              "midiChannel": 16,
-              "viewEnabled": true,
-              "viewSelector": "28111,28113,30118,3033,3337,45122,45123,7082,7089,82122,89125,113117,111119,118119",
-              "viewNormalization": 0,
-              "autoCycleEnabled": false,
-              "autoCycleMode": 0,
-              "autoCycleTimeSecs": 60.0,
-              "transitionEnabled": false,
-              "transitionTimeSecs": 5.0,
-              "transitionBlendMode": 0,
-              "focusedPattern": 0,
-              "triggerPatternCycle": false
-            },
-            "children": {},
-            "effects": [],
-            "clips": [],
-            "patternIndex": 0,
-            "patterns": [
-              {
-                "id": 42764,
-                "class": "heronarts.lx.pattern.color.SolidPattern",
-                "internal": {
-                  "modulationColor": 0,
-                  "expanded": true,
-                  "modulationExpanded": false,
-                  "autoCycleEligible": true
-                },
-                "parameters": {
-                  "label": "Solid",
-                  "recall": false,
-                  "color/brightness": 100.0,
-                  "color/saturation": 92.5,
-                  "color/hue": 240.0,
-                  "color/mode": 1,
-                  "color/index": 3
-                },
-                "children": {
-                  "modulation": {
-                    "id": 42765,
-                    "class": "heronarts.lx.modulation.LXModulationEngine",
-                    "internal": {
-                      "modulationColor": 0
-                    },
-                    "parameters": {
-                      "label": "Modulation"
-                    },
-                    "children": {},
-                    "modulators": [],
-                    "modulations": [],
-                    "triggers": []
-                  }
-                },
-                "deviceVersion": -1
-              }
-            ]
-          },
-          {
-            "id": 42752,
-            "class": "heronarts.lx.mixer.LXChannel",
-            "internal": {
-              "modulationColor": 0,
-              "controlsExpanded": true
-            },
-            "parameters": {
-              "label": "Back",
-              "arm": false,
-              "selected": false,
-              "enabled": true,
-              "cue": false,
-              "fader": 1.0,
-              "crossfadeGroup": 0,
-              "blendMode": 4,
-              "midiMonitor": false,
-              "midiChannel": 16,
-              "viewEnabled": true,
-              "viewSelector": "PUA,PUF",
-              "viewNormalization": 0,
-              "autoCycleEnabled": false,
-              "autoCycleMode": 0,
-              "autoCycleTimeSecs": 60.0,
-              "transitionEnabled": false,
-              "transitionTimeSecs": 5.0,
-              "transitionBlendMode": 0,
-              "focusedPattern": 0,
-              "triggerPatternCycle": false
-            },
-            "children": {},
-            "effects": [],
-            "clips": [],
-            "patternIndex": 0,
-            "patterns": [
-              {
-                "id": 42766,
-                "class": "heronarts.lx.pattern.color.SolidPattern",
-                "internal": {
-                  "modulationColor": 0,
-                  "expanded": true,
-                  "modulationExpanded": false,
-                  "autoCycleEligible": false
-                },
-                "parameters": {
-                  "label": "Solid",
-                  "recall": false,
-                  "color/brightness": 100.0,
-                  "color/saturation": 100.0,
-                  "color/hue": 0.0,
-                  "color/mode": 1,
-                  "color/index": 3
-                },
-                "children": {
-                  "modulation": {
-                    "id": 42767,
-                    "class": "heronarts.lx.modulation.LXModulationEngine",
-                    "internal": {
-                      "modulationColor": 0
-                    },
-                    "parameters": {
-                      "label": "Modulation"
-                    },
-                    "children": {},
-                    "modulators": [],
-                    "modulations": [],
-                    "triggers": []
-                  }
-                },
-                "deviceVersion": -1
-              }
-            ]
           }
         ]
       },
@@ -5440,7 +5294,7 @@
             },
             "parameters": {
               "label": "Input",
-              "device": 1
+              "device": 0
             },
             "children": {}
           },
@@ -5467,7 +5321,7 @@
             },
             "parameters": {
               "label": "Meter",
-              "running": true,
+              "running": false,
               "trigger": false,
               "gain": 0.0,
               "range": 48.0,
@@ -5482,7 +5336,7 @@
               "band-6": 0.0,
               "band-7": 0.0,
               "band-8": 0.0,
-              "band-9": 0.0,
+              "band-9": 0.006465613920923707,
               "band-10": 0.0,
               "band-11": 0.0,
               "band-12": 0.0,
@@ -5546,22 +5400,22 @@
         "centerPoint": false,
         "camera": {
           "active": false,
-          "radius": 1.348889685827276E7,
-          "theta": -1.5305855814367533,
-          "phi": -0.06185252591967583,
-          "x": 2307136.654296875,
-          "y": 5348521.701171875,
-          "z": -1522245.02734375
+          "radius": 1.4169271940344322E7,
+          "theta": -1.5647952947765589,
+          "phi": -0.17303412221372128,
+          "x": 303442.78125,
+          "y": 5226718.33203125,
+          "z": 923606.193359375
         },
         "cue": [
           {
             "active": false,
-            "radius": 1.348889685827276E7,
-            "theta": -1.5305855814367533,
-            "phi": -0.06185252591967583,
-            "x": 2307136.654296875,
-            "y": 5348521.701171875,
-            "z": -1522245.02734375
+            "radius": 1.4169271940344322E7,
+            "theta": -1.5647952947765589,
+            "phi": -0.17303412221372128,
+            "x": 303442.78125,
+            "y": 5226718.33203125,
+            "z": 923606.193359375
           },
           {
             "active": false,
