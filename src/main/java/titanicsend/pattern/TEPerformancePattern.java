@@ -71,14 +71,24 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         }
     }
 
-    public static final double MAX_ROTATIONS_PER_SECOND = 10;
-    public static final double MAX_ROTATIONS_PER_BEAT = 5;
+    protected float maxRotationsPerSecond;
+    protected float maxRotationsPerBeat;
 
     protected VariableSpeedTimer spinTimer;
     protected TECommonControls controls;
 
+    public void setMaxRotationsPerSecond(float maxRotationsPerSecond) {
+        this.maxRotationsPerSecond = maxRotationsPerSecond;
+    }
+
+    public void setMaxRotationsPerBeat(float maxRotationsPerBeat) {
+        this.maxRotationsPerBeat = maxRotationsPerBeat;
+    }
+
     protected TEPerformancePattern(LX lx) {
         super(lx);
+        maxRotationsPerSecond = 4.0f;
+        maxRotationsPerBeat = 4.0f;
 
         spinTimer = new VariableSpeedTimer();
         controls = new TECommonControls();;
@@ -94,14 +104,15 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     /**
      * @return Returns the current rotation angle in radians, derived from the sawtooth wave provided
-     * by getTempo().basis(), the setting of the "spin" control, and the constant MAX_ROTATIONS_PER_BEAT
+     * by getTempo().basis(), the setting of the "spin" control, and a maximum of 4 complete rotations
+     * per beat. (If we need to go faster,
      */
     protected float getRotationAngleOverBeat() {
-        return (float) (TEMath.TAU * this.getTempo().basis() * (controls.spin.getValue() * MAX_ROTATIONS_PER_BEAT));
+        return (float) (TEMath.TAU * this.getTempo().basis() * (controls.spin.getValue() * maxRotationsPerBeat));
     }
 
     protected void run(double deltaMs) {
-        spinTimer.setScale(controls.spin.getValuef());
+        spinTimer.setScale(controls.spin.getValuef() * maxRotationsPerSecond);
         spinTimer.tick();
         super.run(deltaMs);
     }
