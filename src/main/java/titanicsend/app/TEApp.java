@@ -31,6 +31,7 @@ import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
 import heronarts.lx.LX.ProjectListener.Change;
 import heronarts.lx.midi.surface.APC40Mk2;
+import heronarts.lx.midi.surface.MidiFighterTwister;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.pattern.color.GradientPattern;
@@ -220,7 +221,7 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
     lx.registry.addPattern(TEEdgeTestPattern.class);
     lx.registry.addPattern(TEPanelTestPattern.class);
 
-    lx.engine.midi.registerSurface("Network lighting-1-APC-40", APC40Mk2.class);
+    lx.engine.midi.registerSurface("FoH: APC40 mkII", APC40Mk2.class);
     // create our library for autopilot
     this.library = initializePatternLibrary(lx);
 

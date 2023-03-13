@@ -10,7 +10,7 @@ import titanicsend.pattern.mf64.*;
 
 @LXCategory("Combo FG")
 public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiListener {
-  public static final String MIDI_NAME = "Network lighting-1-MF-64";
+  public static final String MIDI_NAME = "FoH: Midi Fighter 64";
 
   /* Use the Midi Fighter Utility from DJ Tech Tools to apply
    * these recommended settings to your midi controller:
