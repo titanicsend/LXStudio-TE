@@ -8,13 +8,14 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEAudioPattern;
+import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 
 @LXCategory("Native Shaders Panels")
-public class Phasers extends TEAudioPattern {
+public class Phasers extends TEPerformancePattern {
     NativeShaderPatternEffect effect;
     NativeShader shader;
     VariableSpeedTimer vTime;
@@ -72,11 +73,6 @@ public class Phasers extends TEAudioPattern {
                     .setDescription("Overall movement speed");
 
 
-
-    public final LinkedColorParameter color =
-            registerColor("Color", "color", ColorType.PRIMARY,
-                    "Panel Color");
-
     public Phasers(LX lx) {
         super(lx);
         addParameter("beamCount1",beamCount1);
@@ -108,18 +104,7 @@ public class Phasers extends TEAudioPattern {
     public void runTEAudioPattern(double deltaMs) {
         vTime.tick();
 
-        // Example of sending a vec3 to a shader.
-        // Get the current color and convert to
-        // normalized rgb in range 0..1 for openGL
-        int baseColor = this.color.calcColor();
-
-        float rn = (float) (0xff & LXColor.red(baseColor)) / 255f;
-        float gn = (float) (0xff & LXColor.green(baseColor)) / 255f;
-        float bn = (float) (0xff & LXColor.blue(baseColor)) / 255f;
-
         float rev = (reverse.getValuef() != 0) ? 1f : -1f;
-
-        shader.setUniform("color", rn, gn, bn);
 
         shader.setUniform("beamCount1",beamCount1.getValuef());
         shader.setUniform("beamCount2",beamCount2.getValuef());

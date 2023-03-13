@@ -6,13 +6,14 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEAudioPattern;
 import titanicsend.pattern.TEPattern;
+import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.util.Dimensions;
 
 import java.util.*;
 
 public abstract class PatternEffect {
 
-    protected final TEAudioPattern pattern;
+    protected final TEPerformancePattern pattern;
     protected final Map<LXPoint, Dimensions> pointsToCanvas;
     private boolean shouldBlend;
     private long startTime = System.currentTimeMillis();

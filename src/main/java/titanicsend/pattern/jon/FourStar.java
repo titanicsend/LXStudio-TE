@@ -35,10 +35,6 @@ public class FourStar extends TEPerformancePattern {
             new CompoundParameter("Energy", .5, 0, 1)
                     .setDescription("Oh boy...");
 
-    public final LinkedColorParameter color =
-            registerColor("Color", "color", ColorType.PRIMARY,
-                    "Panel Color");
-
     public FourStar(LX lx) {
         super(lx);
         addDivisionParam();
@@ -63,23 +59,12 @@ public class FourStar extends TEPerformancePattern {
     @Override
     public void runTEAudioPattern(double deltaMs) {
 
-        // Example of sending a vec3 to a shader.
-        // Get the current color and convert to
-        // normalized rgb in range 0..1 for openGL
-        int baseColor = this.color.calcColor();
-
-        float rn = (float) (0xff & LXColor.red(baseColor)) / 255f;
-        float gn = (float) (0xff & LXColor.green(baseColor)) / 255f;
-        float bn = (float) (0xff & LXColor.blue(baseColor)) / 255f;
-        shader.setUniform("color", rn, gn, bn);
-
         // Sound reactivity - various brightness features are related to energy
         float e = energy.getValuef();
         shader.setUniform("energy",e);
 
         // movement speed is beat divided by the current time division
         shader.setUniform("basis",tempoDivisionClick.getBasisf());
-        shader.setUniform("theta",getRotationAngle());
 
         // run the shader
         effect.run(deltaMs);

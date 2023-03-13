@@ -1,5 +1,4 @@
-uniform vec3 color;
-uniform float vTime;
+
 uniform float glow;
 uniform float vScan;
 uniform float hScan;
@@ -87,8 +86,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord) {
 
   // control beam movement in x and y
   float xOffset = hScan * sin(beat * 10.);
-  float yOffset = yCenter + (vScan * fract(vTime));
-  float angle = vTime * rotate;
+  float yOffset = yCenter + (vScan * fract(iTime));
+  float angle = iTime * rotate;
 
   // generate a beam for each end of the vehicle
     vec2 offset  = vec2(xPos1+xOffset, fract(-yPos1 + yOffset));
@@ -100,6 +99,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord) {
   // add fog and go
   // TODO - what do do about alpha?  We just blast the whole surface for now.
   float c = clouds(uv);
-  vec3 fog = color * c * glow;
-  fragColor = vec4(fog+(color * l * (c+(0.5*energy*beat))),1.);
+  vec3 fog = iColorRGB * c * glow;
+  fragColor = vec4(fog+(iColorRGB * l * (c+(0.5*energy*beat))),1.);
 }

@@ -77,7 +77,7 @@ public class NativeShader implements GLEventListener {
     private ShaderOptions shaderOptions;
     private int alphaMask;
 
-    private AudioInfo audioInfo;
+    private PatternControlData controlData;
 
     private final int audioTextureWidth;
     private final int audioTextureHeight;
@@ -96,7 +96,7 @@ public class NativeShader implements GLEventListener {
         this.indexBuffer.put(INDICES);
         this.textures = new HashMap<>();
         this.textureKey = 0;
-        this.audioInfo = null;
+        this.controlData = null;
         this.audioChannel = fragmentShader.getAudioInputChannel();
 
         // gl-compatible buffer for reading offscreen surface to cpu memory
@@ -136,7 +136,6 @@ public class NativeShader implements GLEventListener {
 
         startTime = System.currentTimeMillis();
     }
-
 
     // create a Texture object from audioTextureData
     private Texture createAudioTexture(GL4 gl4) {
@@ -214,45 +213,50 @@ public class NativeShader implements GLEventListener {
         gl4.glDisableVertexAttribArray(shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION));
     }
 
-    private void setColorUniforms(AudioInfo a) {
+    private void setStandardUniforms(PatternControlData a) {
+
+        // set standard shadertoy-style uniforms
+        setUniform("iTime", a.getTime());
+        setUniform("iResolution", (float) xResolution, (float) yResolution);
+        setUniform("iMouse", 0f, 0f, 0f, 0f);
+
+        // TE standard audio uniforms
+        setUniform("beat",a.getBeat());
+        setUniform("sinPhaseBeat",a.getSinePhaseOnBeat());
+        setUniform("bassLevel",a.getBassLevel());
+        setUniform("trebleLevel",a.getTrebleLevel());
+
+        // color-related uniforms
         float x, y, z;
-        int color = a.color;
-        FloatBuffer palette = a.palette;
-
-        // this lets us harmlessly deal with patterns without
-        // the iColorXXX controls, because the unset uniforms
-        // will default to 0.
-        if (color == 0) return;
-
+        int color = a.getColorControl();
         x = (float) (0xff & LXColor.red(color)) / 255f;
         y = (float) (0xff & LXColor.green(color)) / 255f;
         z = (float) (0xff & LXColor.blue(color)) / 255f;
         setUniform("iColorRGB", x, y, z);
 
-        /*  Disabled until we actually need it
-
         x = LXColor.h(color) / 360f;
         y = LXColor.s(color) / 100f;
         z = LXColor.b(color)/ 100f;
         setUniform("iColorHSB",x,y,z);
-         */
 
-        setUniform("iPalette", palette, 3);
+        setUniform("iPalette", a.getCurrentPalette(), 3);
+
+        // uniforms for common controls
+        setUniform("iSpeed",a.getSpeedControl());
+        setUniform("iScale",a.getSizeControl());
+        setUniform("iQuantity",a.getQuantityControl());
+        setUniform("iTranslate",a.getXPosControl(),a.getYPosControl());
+        setUniform("iRotationAngle",a.getRotationAngle());
+        setUniform("iBrightness",a.getBrightnessControl());
+        setUniform("iWow1",a.getWow1Control());
+        setUniform("iWow2",a.getWow2Control());
+        setUniform("iWowTrigger",a.getWowTriggerControl());
     }
 
     private void setUniforms(GL4 gl4) {
-        float timeSeconds = ((float) (System.currentTimeMillis() - startTime)) / 1000;
 
-        // set standard shadertoy-style uniforms
-        setUniform(Uniforms.TIME_SECONDS, timeSeconds);
-        setUniform(Uniforms.RESOLUTION, (float) xResolution, (float) yResolution);
-        setUniform(Uniforms.MOUSE, 0f, 0f, 0f, 0f);
-
-        // add basic audio information uniforms
-        for (Map.Entry<Uniforms.Audio, Float> audioEntry : audioInfo.getUniformMap().entrySet()) {
-            setUniform(audioEntry.getKey().getUniformName(), audioEntry.getValue());
-        }
-        setColorUniforms(audioInfo);
+        // set uniforms for standard controls and audio information
+        setStandardUniforms(controlData);
 
         // if enabled, add all LX parameters as uniforms
         if (shaderOptions.getLXParameterUniforms()) {
@@ -279,8 +283,8 @@ public class NativeShader implements GLEventListener {
             // load frequency and waveform data into our texture, fft data in the first row,
             // normalized audio waveform data in the second.
             for (int n = 0; n < audioTextureWidth; n++) {
-                audioTextureData.put(n, audioInfo.getFrequencyData(n));
-                audioTextureData.put(n + audioTextureWidth, audioInfo.getWaveformData(n));
+                audioTextureData.put(n, controlData.getFrequencyData(n));
+                audioTextureData.put(n + audioTextureWidth, controlData.getWaveformData(n));
             }
 
             gl4.glTexImage2D(GL4.GL_TEXTURE_2D, 0, GL4.GL_R32F, audioTextureWidth, audioTextureHeight, 0, GL4.GL_RED, GL_FLOAT, audioTextureData);
@@ -339,8 +343,8 @@ public class NativeShader implements GLEventListener {
         return snapshot;
     }
 
-    public void updateAudioInfo(AudioInfo audioInfo) {
-        this.audioInfo = audioInfo;
+    public void updateAudioInfo(PatternControlData audioInfo) {
+        this.controlData = audioInfo;
     }
 
     public void reset() {

@@ -4,27 +4,23 @@ import heronarts.lx.LX;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEAudioPattern;
+import titanicsend.pattern.TEPerformancePattern;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class ConstructedPattern extends TEAudioPattern {
+public abstract class ConstructedPattern extends TEPerformancePattern {
 
     private final List<PatternEffect> effects;
 
     protected ConstructedPattern(LX lx) {
-        super(lx);
+        super(lx, false);
         effects = createEffects();
         for (LXParameter parameter : getPatternParameters()) {
             addParameter(parameter.getLabel(), parameter);
         }
-
-        registerColor("Color", "iColor", ColorType.PRIMARY,
-                "Color");
-
+        registerCommonColorControl();
     }
-
-
 
     protected Collection<LXParameter> getPatternParameters() {
         return effects.stream()

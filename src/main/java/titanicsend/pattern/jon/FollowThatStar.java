@@ -8,18 +8,16 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEAudioPattern;
+import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 
 @LXCategory("Combo FG")
-public class FollowThatStar extends TEAudioPattern {
+public class FollowThatStar extends TEPerformancePattern {
     NativeShaderPatternEffect effect;
     NativeShader shader;
-    VariableSpeedTimer vTime;
-    float lastTimeScale = 0;
-
     // Controls
     // In this pattern the "energy" is how quickly the scenes can progress,
     // IE shorter tempoDivisions
@@ -37,10 +35,6 @@ public class FollowThatStar extends TEAudioPattern {
             new CompoundParameter("Glow", 100, 1, 200)
                     .setDescription("Stellar corona");
 
-    public final BooleanParameter rotate =
-            new BooleanParameter("Spin", false)
-                    .setDescription("Rotation on/off");
-
     public final CompoundParameter energy =
             new CompoundParameter("Energy", .15, 0, 1)
                     .setDescription("Oh boy...");
@@ -50,16 +44,11 @@ public class FollowThatStar extends TEAudioPattern {
                     .setUnits(LXParameter.Units.INTEGER)
                     .setDescription("Speed relative to beat");
 
-    public final LinkedColorParameter color =
-            registerColor("Color", "color", ColorType.PRIMARY,
-                    "Panel Color");
-
     public FollowThatStar(LX lx) {
         super(lx);
         addParameter("starCount",starCount);
         addParameter("starSize",starSize);
         addParameter("glow",glow);
-        addParameter("rotate",rotate);
         addParameter("energy", energy);
         addParameter("beatScale",beatScale);
 
@@ -73,29 +62,16 @@ public class FollowThatStar extends TEAudioPattern {
         effect = new NativeShaderPatternEffect("followthatstar.fs",
                 PatternTarget.allPointsAsCanvas(this), options);
 
-        vTime = new VariableSpeedTimer();
     }
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
 
-        vTime.tick();
-
-        // Example of sending a vec3 to a shader.
-        // Get the current color and convert to
-        // normalized hsb in range 0..1 for openGL
-        int baseColor = this.color.calcColor();
-
-        float hn = LXColor.h(baseColor) / 360f;
-        float sn = LXColor.s(baseColor) / 100f;
-        float bn = LXColor.b(baseColor)/ 100f;
-
-        shader.setUniform("color", hn,sn,bn);
         shader.setUniform("stars", (float) Math.floor(starCount.getValue()));
         shader.setUniform("starSize",starSize.getValuef());
         shader.setUniform("glow",glow.getValuef());
-        shader.setUniform("rotate",rotate.getValuef());
 
+/*
         // stars move over time, however fast time is running
         shader.setUniform("vTime",vTime.getTime());
 
@@ -105,6 +81,7 @@ public class FollowThatStar extends TEAudioPattern {
             vTime.setScale(timeScale);
             lastTimeScale = timeScale;
         }
+*/
 
         // Sound reactivity - various brightness features are related to energy
         float e = energy.getValuef();

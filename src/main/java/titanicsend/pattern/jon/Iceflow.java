@@ -16,7 +16,7 @@ import titanicsend.util.TEMath;
 public class Iceflow extends TEPerformancePattern {
     NativeShaderPatternEffect effect;
     NativeShader shader;
-    VariableSpeedTimer vTime;
+
     float lastTimeScale = 0;
 
     // Controls
@@ -36,10 +36,6 @@ public class Iceflow extends TEPerformancePattern {
                     .setUnits(LXParameter.Units.INTEGER)
                     .setDescription("Speed relative to beat");
 
-    //public final LinkedColorParameter color =
-            //registerColor("Color", "color", ColorType.PRIMARY,
-                    //"Panel Color");
-
     public Iceflow(LX lx) {
         super(lx);
         addParameter("focus",focus);
@@ -56,13 +52,11 @@ public class Iceflow extends TEPerformancePattern {
         effect = new NativeShaderPatternEffect("iceflow.fs",
                 PatternTarget.allPanelsAsCanvas(this), options);
 
-        vTime = new VariableSpeedTimer();
     }
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
 
-        vTime.tick();
 
         // Example of sending a vec3 to a shader.
         // Get the current color and convert to
@@ -75,6 +69,7 @@ public class Iceflow extends TEPerformancePattern {
         shader.setUniform("color", hn,sn,bn);
         shader.setUniform("focus",focus.getValuef());
 
+        /*
         // set time speed for next frame. This moves w/measure rather than beat
         float timeScale = (float) lx.engine.tempo.bpm()/beatScale.getValuef() / 4.0f;
         if (timeScale != lastTimeScale) {
@@ -84,6 +79,8 @@ public class Iceflow extends TEPerformancePattern {
 
         // movement over time, however fast time is running
         shader.setUniform("vTime",vTime.getTime());
+
+         */
 
         // Sound reactivity - various brightness features are related to energy
         float e = energy.getValuef();

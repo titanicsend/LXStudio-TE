@@ -3,8 +3,9 @@ package titanicsend.pattern.yoffa.framework;
 import heronarts.lx.model.LXPoint;
 import titanicsend.model.TEModel;
 import titanicsend.model.TEPanelSection;
-import titanicsend.pattern.TEAudioPattern;
+import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.TEPattern;
+import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.util.Dimensions;
 
 import java.util.*;
@@ -14,14 +15,14 @@ public class PatternTarget {
 
     final Map<LXPoint, Dimensions> pointsToCanvas = new HashMap<>();
 
-    TEAudioPattern pattern;
+    TEPerformancePattern pattern;
     public TEPattern.ColorType colorType = TEPattern.ColorType.PRIMARY;
 
-    public PatternTarget(TEAudioPattern pattern) {
+    public PatternTarget(TEPerformancePattern pattern) {
         this.pattern = pattern;
     }
 
-    public PatternTarget(TEAudioPattern pattern,TEPattern.ColorType ct) {
+    public PatternTarget(TEPerformancePattern pattern,TEPattern.ColorType ct) {
         this.pattern = pattern;
         this.colorType = ct;
     }
@@ -54,7 +55,7 @@ public class PatternTarget {
         return addModelsWithIndividualCanvases(pattern.getModel().getPanelsBySection(section));
     }
 
-    public static PatternTarget allPointsAsCanvas(TEAudioPattern pattern) {
+    public static PatternTarget allPointsAsCanvas(TEPerformancePattern pattern) {
         ArrayList<LXPoint> points = new ArrayList<>();
         points.addAll(pattern.getModel().panelPoints);
         points.addAll(pattern.getModel().edgePoints);
@@ -64,19 +65,19 @@ public class PatternTarget {
         return pt;
     }
 
-    public static PatternTarget allEdgesAsCanvas(TEAudioPattern pattern) {
+    public static PatternTarget allEdgesAsCanvas(TEPerformancePattern pattern) {
         return new PatternTarget(pattern,TEPattern.ColorType.PRIMARY).addPointsAsCanvas(pattern.getModel().edgePoints);
     }
 
-    public static PatternTarget allPanelsAsCanvas(TEAudioPattern pattern) {
+    public static PatternTarget allPanelsAsCanvas(TEPerformancePattern pattern) {
         return new PatternTarget(pattern).addPointsAsCanvas(pattern.getModel().panelPoints);
     }
 
-    public static PatternTarget allPanelsAsIndividual(TEAudioPattern pattern) {
+    public static PatternTarget allPanelsAsIndividual(TEPerformancePattern pattern) {
         return new PatternTarget(pattern).addModelsWithIndividualCanvases(pattern.getModel().getAllPanels());
     }
 
-    public static PatternTarget doubleLargeCanvas(TEAudioPattern pattern) {
+    public static PatternTarget doubleLargeCanvas(TEPerformancePattern pattern) {
         return new PatternTarget(pattern)
                 .addPanelSectionAsCanvas(TEPanelSection.STARBOARD_AFT)
                 .addPanelSectionAsCanvas(TEPanelSection.STARBOARD_FORE)
@@ -86,7 +87,7 @@ public class PatternTarget {
                 .addPanelSectionAsCanvas(TEPanelSection.STARBOARD_FORE_SINGLE);
     }
 
-    public static PatternTarget splitPanelSections(TEAudioPattern pattern) {
+    public static PatternTarget splitPanelSections(TEPerformancePattern pattern) {
         return new PatternTarget(pattern)
                 .addPanelSectionAsCanvas(TEPanelSection.STARBOARD_FORE)
                 .addPanelSectionAsCanvas(TEPanelSection.FORE)

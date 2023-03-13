@@ -11,6 +11,7 @@ import heronarts.lx.parameter.LXParameter;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.pattern.TEAudioPattern;
+import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
@@ -24,7 +25,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @LXCategory("Native Shaders Panels")
-public class EdgeFall extends TEAudioPattern {
+public class EdgeFall extends TEPerformancePattern {
     NativeShaderPatternEffect effect;
     NativeShader shader;
     VariableSpeedTimer time;
@@ -57,11 +58,6 @@ public class EdgeFall extends TEAudioPattern {
     public final BooleanParameter explode =
             new BooleanParameter("Xplode!", false)
                     .setDescription("Yesssss!");
-
-    // use iColor as the path so we get the free iColorRGB uniform in our shader
-    public final LinkedColorParameter iColor =
-            registerColor("Color", "iColor", ColorType.PRIMARY,
-                    "Panel Color");
 
     // Constructor
     public EdgeFall(LX lx) {

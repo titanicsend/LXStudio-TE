@@ -1,7 +1,5 @@
 // Adapted from https://www.shadertoy.com/view/MdtGWH
 
-uniform vec3 color;
-uniform float vTime;
 uniform float focus;
 uniform float energy;
 uniform float phase;
@@ -46,7 +44,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     // move the center
     float k = 0.2f + energy * bassLevel;
 
-    float s1 = sin(vTime);  float c1 = cos(vTime * 0.5);
+    float s1 = sin(iTime);  float c1 = cos(iTime * 0.5);
     vec2 pointShift = vec2(s1 + k * c1, c1 + k * s1);
     pointShift *= 0.3333;
 
@@ -58,9 +56,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     }
 
     density = clamp(density*density,0.,1.);
-    vec3 col = vec3(color.x,
-                    (1.0 - density*density) * color.y,
-                    density * color.z);
+    vec3 col = vec3(iColorHSB.x,
+                    (1.0 - density*density) * iColorHSB.y,
+                    density * iColorHSB.z);
     col = hsv2rgb(col);
 
     fragColor = vec4(col, density);
