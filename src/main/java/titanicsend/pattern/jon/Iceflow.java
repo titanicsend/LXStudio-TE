@@ -3,10 +3,9 @@ package titanicsend.pattern.jon;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.TEAudioPattern;
+import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
@@ -14,7 +13,7 @@ import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 import titanicsend.util.TEMath;
 
 @LXCategory("Other")
-public class Iceflow extends TEAudioPattern {
+public class Iceflow extends TEPerformancePattern {
     NativeShaderPatternEffect effect;
     NativeShader shader;
     VariableSpeedTimer vTime;
@@ -37,9 +36,9 @@ public class Iceflow extends TEAudioPattern {
                     .setUnits(LXParameter.Units.INTEGER)
                     .setDescription("Speed relative to beat");
 
-    public final LinkedColorParameter color =
-            registerColor("Color", "color", ColorType.PRIMARY,
-                    "Panel Color");
+    //public final LinkedColorParameter color =
+            //registerColor("Color", "color", ColorType.PRIMARY,
+                    //"Panel Color");
 
     public Iceflow(LX lx) {
         super(lx);
@@ -68,7 +67,7 @@ public class Iceflow extends TEAudioPattern {
         // Example of sending a vec3 to a shader.
         // Get the current color and convert to
         // normalized hsb in range 0..1 for openGL
-        int baseColor = this.color.calcColor();
+        int baseColor = this.controls.color.calcColor();
         float hn = LXColor.h(baseColor) / 360f;
         float sn = LXColor.s(baseColor) / 100f;
         float bn = LXColor.b(baseColor) / 100f;

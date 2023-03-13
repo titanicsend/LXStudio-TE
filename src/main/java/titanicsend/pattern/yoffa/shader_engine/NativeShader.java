@@ -10,6 +10,7 @@ import com.jogamp.opengl.util.texture.TextureIO;
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.LXParameter;
+import titanicsend.util.TE;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.net.URL;
 import java.nio.*;
 import java.util.HashMap;
 import java.util.Map;
+import Jama.Matrix;
 
 import static com.jogamp.opengl.GL.*;
 import static titanicsend.pattern.yoffa.shader_engine.UniformTypes.*;
@@ -467,6 +469,7 @@ public class NativeShader implements GLEventListener {
                         vFArray = ((FloatBuffer) val.value);
                         gl4.glUniformMatrix4fv(loc, 1, true, vFArray);
                         break;
+                    case SAMPLER2DSTATIC:
                     case SAMPLER2D:
                         Texture tex = ((Texture) val.value);
                         gl4.glActiveTexture(INDEX_TO_GL_ENUM.get(textureKey));
@@ -476,7 +479,6 @@ public class NativeShader implements GLEventListener {
                         tex.disable(gl4);
                         textureKey++;
                         break;
-                    case SAMPLER2DSTATIC:
                     default:
                         LX.log("Unsupported uniform type");
                         break;
@@ -557,13 +559,10 @@ public class NativeShader implements GLEventListener {
      * both dynamic and static textures.  If you know your texture will
      * be changed on every frame, use setUniform(String name, Texture tex)
      * instead.
+     * TODO - STATIC TEXTURES NOT YET IMPLEMENTED
      */
     public void setUniform(String name, Texture tex, boolean isStatic) {
-        if (isStatic) {
-            addUniform(name, UniformTypes.SAMPLER2DSTATIC, tex);
-        } else {
-            addUniform(name, UniformTypes.SAMPLER2D, tex);
-        }
+        addUniform(name, UniformTypes.SAMPLER2D, tex);
     }
 
     /**
@@ -621,7 +620,7 @@ public class NativeShader implements GLEventListener {
     }
 
     /**
-     * Creates a uniform for a square floating point matrix, of size
+     * Internal - Creates a uniform for a square floating point matrix, of size
      * 2x2, 3x3 or 4x4
      * @param name of uniform
      * @param vec Floating point matrix data, in row major order
@@ -642,5 +641,59 @@ public class NativeShader implements GLEventListener {
                 //TE.log("SetUniformMatrix(%s): %d incorrect matrix size specified", name, columns);
                 break;
         }
+    }
+
+    /**
+     * Sets a uniform for a square floating point matrix, of type
+     * MAT2(2x2), MAT3(3x3) or MAT4(4x4).  Input matrix must be
+     * in row major order.
+     */
+    public void setUniform(String name,float [][] matrix) {
+        // requires a square matrix of dimension 2x2,3x3 or 4x4
+        int dim = matrix.length;
+        if (dim < 2 || dim > 4) {
+          TE.log("SetUniform(%s): %d incorrect matrix size specified", name, dim);
+          return;
+        }
+
+        FloatBuffer buf = Buffers.newDirectFloatBuffer(dim);
+
+        // load matrix into buffer in row major order
+        for (int r = 0; r < dim; r++) {
+            for (int c = 0; c < dim; c++ ) {
+                buf.put(matrix[r][c]);
+            }
+        }
+
+        // and set the uniform object
+        buf.rewind();
+        setUniformMatrix(name,buf,dim);
+    }
+
+    /**
+     * Sets a uniform for a square floating point matrix, of type
+     * MAT2(2x2), MAT3(3x3) or MAT4(4x4)
+     */
+    public void setUniform(String name,Matrix matrix) {
+        // requires a square matrix of dimension 2x2,3x3 or 4x4
+        int dim = matrix.getRowDimension();
+        if (dim < 2 || dim > 4 || dim != matrix.getColumnDimension()) {
+            TE.log("SetUniform(%s): %d invalid matrix dimension specified.", name);
+            return;
+        }
+
+        // allocate buffer to send to OpenGl
+        FloatBuffer buf = Buffers.newDirectFloatBuffer(dim);
+
+        // load matrix into buffer in row major order
+        for (int r = 0; r < dim; r++) {
+            for (int c = 0; c < dim; c++ ) {
+                buf.put((float) matrix.get(r,c));
+            }
+        }
+
+        // and set the uniform object
+        buf.rewind();
+        setUniformMatrix(name,buf,dim);
     }
 }

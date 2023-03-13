@@ -3,6 +3,7 @@ precision mediump float;
 uniform vec3 color;
 uniform float energy;
 uniform float basis;  // beat scaled w/user selected time division
+uniform float theta;
 
 const float pi = 3.14159265359;
 const float two_pi = (pi * 2.0);
@@ -17,9 +18,14 @@ float rand(int seed, float ray) {
     return mod(sin(float(seed)*363.5346+ray*674.2454)*6743.4365, 1.0);
 }
 
+vec2 rotate(vec2 point, float angle) {
+  mat2 rotationMatrix = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
+  return rotationMatrix * point;
+}
+
 vec4 light(vec2 position, float pulse) {
     vec4 ret = vec4(color,1.0);
-    
+
     // small brightly lit sphere in center
     float dist = length(position);    
     ret.rgb *= (1./dist) * (0.08 * pulse); 
@@ -58,6 +64,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )  {
     // normalize and center coordinates
     vec2 position = ( gl_FragCoord.xy / iResolution.xy ) - 0.5;
     position.y *= iResolution.y/iResolution.x;
+
+    position = rotate(position,theta);
 
     // roughly circular "bounce" with beat
     float b = two_pi * basis;

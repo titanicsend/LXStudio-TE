@@ -17,6 +17,7 @@ uniform float sinPhaseBeat;
 uniform float bassLevel;
 uniform float trebleLevel;
 
+
 #define TE_BACKGROUND 0
 #define TE_TRANSITION 1
 #define TE_PRIMARY 2

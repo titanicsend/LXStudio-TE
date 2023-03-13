@@ -11,13 +11,14 @@ import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.ObjectParameter;
 import titanicsend.pattern.TEAudioPattern;
+import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 
 @LXCategory("Native Shaders Panels")
-public class FourStar extends TEAudioPattern {
+public class FourStar extends TEPerformancePattern {
     NativeShaderPatternEffect effect;
     NativeShader shader;
 
@@ -78,6 +79,7 @@ public class FourStar extends TEAudioPattern {
 
         // movement speed is beat divided by the current time division
         shader.setUniform("basis",tempoDivisionClick.getBasisf());
+        shader.setUniform("theta",getRotationAngle());
 
         // run the shader
         effect.run(deltaMs);
