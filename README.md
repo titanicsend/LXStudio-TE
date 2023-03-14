@@ -205,6 +205,38 @@ Restart your machine and you should see on startup, LXStudio automatically opens
 If Eclipse is like a warm snuggie to you, we'd appreciate you adding any SDK and
 environment configuration tips here.
 
+## Connecting remote USB-MIDI devices
+
+The car's main LX instance runs on a Mac Studio that lives on the car, connected
+to the car's LAN. The UI is controlled via a remote desktop (VNC) connection over
+a high-speed PTP wireless bridge. Since the VJ at this remote Front-of-House desk
+will want to use MIDI surfaces and controllers to perform, we needed to come up
+with a MIDI-over-WiFi solution to connect the USB MIDI devices to the box running
+LX on the car. 
+
+In 2022, we utilized OSX's arcane built-in support for RTP-MIDI. This was brittle
+and fickle to maintain.
+
+In 2023 we've changed to using a device called a BomeBox that uses a proprietary
+encapsulation protocol. To make this work:
+
+1. The Bome Network tool should be installed on the computer that runs LX. The 
+    "Multiple Named Virtual interfaces" upgrade is required.
+2. The remote BomeBox should be on the same subnet, with updated firmware
+3. Optionally, renamed the BomeBox. We changed "BomeBox" to "FoH" for "Front of House"
+4. Connect the MIDI controllers to the BomeBox USB port via a USB Hub. In the 
+    Bome Network tool, enable Remote Direct Midi for those devices.
+5. You can disable MIDI routes that aren't used, such as the DIN ports or
+    MIDI messaging between the USB devices. This likely helps performance.
+    Leave 2 routes per device: The bidirection pair LX->⃗Device, and Device->LX. 
+6. Register the correct new names in LX. The Bome Remote Direct Midi device 
+    names follow a pattern of "{BomeBoxName}: {DeviceName}", like
+    "FoH: APC40 mkII". For example, in your main app you may need to
+    `lx.engine.midi.registerSurface(name, class)` or match the name with 
+    an entry in lx.engine.midi.inputs[].getName() 
+
+[Here's a video](https://youtu.be/ulBLF_IR46I) illustrating our configuration.
+
 ---
 
 ## License Note
