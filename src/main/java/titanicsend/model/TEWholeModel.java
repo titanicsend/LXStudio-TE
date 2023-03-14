@@ -2,7 +2,10 @@ package titanicsend.model;
 
 import java.util.*;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.stream.Collectors;
 
 import heronarts.lx.LX;
@@ -243,7 +246,24 @@ public class TEWholeModel extends LXModel {
       assert v0Id < v1Id;
       TEVertex v0 = geometry.vertexesById.get(v0Id);
       TEVertex v1 = geometry.vertexesById.get(v1Id);
-      String[] tags = new String[] { tokens[0] + tokens[1] };
+      String[] tags = new String[] { tokens[0] + tokens[1], id };
+      // Adding tags based on views defined in resources/vehicle/views.properties
+      Properties views = new Properties();
+      try (InputStream is = new FileInputStream("resources/vehicle/views.properties")) {
+        views.load(is);
+      } catch (IOException e) {
+          LX.log("Error loading views: " + e.getMessage());
+      }
+  
+      for (String view : views.stringPropertyNames()) {
+        List<String> ids = Arrays.asList(views.getProperty(view).split(","));
+        if (ids.contains(id)) {
+          String[] newTags = new String[tags.length + 1]; // Resize the tags array to fit all IDs
+          System.arraycopy(tags, 0, newTags, 0, tags.length); // Copy the old tags into the new array
+          newTags[tags.length] = view;
+          tags = newTags;
+        }
+      }
       TEEdgeModel e = new TEEdgeModel(v0, v1, edgePixelCounts.get(id), dark, tags);
       v0.addEdge(e);
       v1.addEdge(e);

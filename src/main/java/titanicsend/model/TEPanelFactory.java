@@ -1,5 +1,8 @@
 package titanicsend.model;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 import heronarts.lx.LX;
@@ -46,8 +49,26 @@ public class TEPanelFactory {
     int[] channelLengths;
     if (stripingInstructions == null) channelLengths = null;
     else channelLengths = stripingInstructions.channelLengths;
-    
+
+    // Adding tags based on views defined in resources/vehicle/views.properties
+    Properties views = new Properties();
+    try (InputStream is = new FileInputStream("resources/vehicle/views.properties")) {
+      views.load(is);
+    } catch (IOException e) {
+        LX.log("Error loading views: " + e.getMessage());
+    }
+
     String[] tags = new String[] { id };
+    for (String view : views.stringPropertyNames()) {
+      List<String> ids = Arrays.asList(views.getProperty(view).split(","));
+      if (ids.contains(id)) {
+        String[] newTags = new String[tags.length + 1]; // Resize the tags array to fit all IDs
+        System.arraycopy(tags, 0, newTags, 0, tags.length); // Copy the old tags into the new array
+        newTags[tags.length] = view;
+        tags = newTags;
+      }
+    }
+    
     return new TEPanelModel(id, points, v0, v1, v2, e0, e1, e2,
             panelType, flavor, centroid, channelLengths, tags);
   }
