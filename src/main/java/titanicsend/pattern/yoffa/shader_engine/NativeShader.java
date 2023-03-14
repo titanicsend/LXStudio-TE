@@ -213,22 +213,22 @@ public class NativeShader implements GLEventListener {
         gl4.glDisableVertexAttribArray(shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION));
     }
 
-    private void setStandardUniforms(PatternControlData a) {
+    private void setStandardUniforms(PatternControlData ctl) {
 
         // set standard shadertoy-style uniforms
-        setUniform("iTime", a.getTime());
+        setUniform("iTime", ctl.getTime());
         setUniform("iResolution", (float) xResolution, (float) yResolution);
         setUniform("iMouse", 0f, 0f, 0f, 0f);
 
         // TE standard audio uniforms
-        setUniform("beat",a.getBeat());
-        setUniform("sinPhaseBeat",a.getSinePhaseOnBeat());
-        setUniform("bassLevel",a.getBassLevel());
-        setUniform("trebleLevel",a.getTrebleLevel());
+        setUniform("beat",ctl.getBeat());
+        setUniform("sinPhaseBeat",ctl.getSinePhaseOnBeat());
+        setUniform("bassLevel",ctl.getBassLevel());
+        setUniform("trebleLevel",ctl.getTrebleLevel());
 
         // color-related uniforms
         float x, y, z;
-        int color = a.getColorControl();
+        int color = ctl.getColor();
         x = (float) (0xff & LXColor.red(color)) / 255f;
         y = (float) (0xff & LXColor.green(color)) / 255f;
         z = (float) (0xff & LXColor.blue(color)) / 255f;
@@ -239,18 +239,18 @@ public class NativeShader implements GLEventListener {
         z = LXColor.b(color)/ 100f;
         setUniform("iColorHSB",x,y,z);
 
-        setUniform("iPalette", a.getCurrentPalette(), 3);
+        setUniform("iPalette", ctl.getCurrentPalette(), 3);
 
         // uniforms for common controls
-        setUniform("iSpeed",a.getSpeedControl());
-        setUniform("iScale",a.getSizeControl());
-        setUniform("iQuantity",a.getQuantityControl());
-        setUniform("iTranslate",a.getXPosControl(),a.getYPosControl());
-        setUniform("iRotationAngle",a.getRotationAngle());
-        setUniform("iBrightness",a.getBrightnessControl());
-        setUniform("iWow1",a.getWow1Control());
-        setUniform("iWow2",a.getWow2Control());
-        setUniform("iWowTrigger",a.getWowTriggerControl());
+        setUniform("iSpeed",ctl.getSpeed());
+        setUniform("iScale",ctl.getSize());
+        setUniform("iQuantity",ctl.getQuantity());
+        setUniform("iTranslate",ctl.getXPos(),ctl.getYPos());
+        setUniform("iRotationAngle",ctl.getRotationAngle());
+        setUniform("iBrightness",ctl.getBrightness());
+        setUniform("iWow1",ctl.getWow1());
+        setUniform("iWow2",ctl.getWow2());
+        setUniform("iWowTrigger",ctl.getWowTrigger());
     }
 
     private void setUniforms(GL4 gl4) {

@@ -2,7 +2,6 @@ package titanicsend.pattern.yoffa.shader_engine;
 
 import heronarts.lx.audio.GraphicMeter;
 import titanicsend.pattern.TEPerformancePattern;
-import titanicsend.util.TEMath;
 
 import java.nio.FloatBuffer;
 import java.util.Map;
@@ -11,18 +10,18 @@ public class PatternControlData {
     
     private Map<Uniforms.Audio, Float> uniformMap;
 
-    TEPerformancePattern pattern;
+    TEPerformancePattern parent;
     GraphicMeter meter;
     float fftResampleFactor;
 
     public PatternControlData(TEPerformancePattern pattern) {
-        this.pattern = pattern;
+        this.parent = pattern;
         this.meter =  pattern.getLX().engine.audio.meter;
         fftResampleFactor = meter.bands.length / 512f;
     }
 
     public float getTime() {
-        return pattern.iTime.getTime();
+        return parent.iTime.getTime();
     }
 
     /**
@@ -48,18 +47,18 @@ public class PatternControlData {
     }
 
     public float getBeat() {
-        return (float) pattern.getTempo().basis();
+        return (float) parent.getTempo().basis();
     }
     public float getSinePhaseOnBeat() {
-        return (float) pattern.sinePhaseOnBeat();
+        return (float) parent.sinePhaseOnBeat();
     }
 
     public float getBassLevel() {
-        return (float) pattern.getBassLevel();
+        return (float) parent.getBassLevel();
     }
 
     public float getTrebleLevel() {
-        return (float) pattern.getTrebleLevel();
+        return (float) parent.getTrebleLevel();
     }
 
     /**
@@ -67,7 +66,7 @@ public class PatternControlData {
      * of the "spin" control, and the constant MAX_ROTATIONS_PER_SECOND
      */
     public float getRotationAngle() {
-        return pattern.getRotationAngle();
+        return parent.getRotationAngle();
     }
 
     /**
@@ -76,55 +75,55 @@ public class PatternControlData {
      * per beat.
      */
     public float getRotationAngleOverBeat() {
-        return pattern.getRotationAngleOverBeat();
+        return parent.getRotationAngleOverBeat();
     }
 
-    public int getColorControl() {
-        return pattern.getColorControl();
+    public int getColor() {
+        return parent.getColorControl();
     }
 
-    public FloatBuffer getCurrentPalette() { return pattern.getCurrentPalette();}
+    public FloatBuffer getCurrentPalette() { return parent.getCurrentPalette();}
 
-    public float getSpeedControl() {
-        return pattern.getSpeedControl();
+    public float getSpeed() {
+        return parent.getSpeedControl();
     }
 
-    public float getXPosControl() {
-        return pattern.getXPosControl();
+    public float getXPos() {
+        return parent.getXPosControl();
     }
 
-    public float getYPosControl() {
-        return pattern.getYPosControl();
+    public float getYPos() {
+        return parent.getYPosControl();
     }
 
-    public float getSizeControl() {
-        return pattern.getSizeControl();
+    public float getSize() {
+        return parent.getSizeControl();
     }
 
-    public float getQuantityControl() { return pattern.getQuantityControl();}
+    public float getQuantity() { return parent.getQuantityControl();}
 
     /**
      *    For most uses, getRotationAngle() is recommended, but if you
      *    need direct acces to the spin control value, here it is.
      */
-    public float getSpinControl() {
-        return pattern.getSpinControl();
+    public float getSpin() {
+        return parent.getSpinControl();
     }
 
-    public float getBrightnessControl() {
-        return pattern.getBrightnessControl();
+    public float getBrightness() {
+        return parent.getBrightnessControl();
     }
 
-    public float getWow1Control() {
-        return pattern.getWow1Control();
+    public float getWow1() {
+        return parent.getWow1Control();
     }
 
-    public float getWow2Control() {
-        return pattern.getWow2Control();
+    public float getWow2() {
+        return parent.getWow2Control();
     }
 
-    public boolean getWowTriggerControl() {
-        return pattern.getWowTriggerControl();
+    public boolean getWowTrigger() {
+        return parent.getWowTriggerControl();
     }
 
 }
