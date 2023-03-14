@@ -5,6 +5,7 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEAudioPattern;
@@ -18,18 +19,8 @@ import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 public class FollowThatStar extends TEPerformancePattern {
     NativeShaderPatternEffect effect;
     NativeShader shader;
-    // Controls
-    // In this pattern the "energy" is how quickly the scenes can progress,
-    // IE shorter tempoDivisions
 
-    public final CompoundParameter starCount = (CompoundParameter)
-            new CompoundParameter("Stars", 5, 1, 10)
-                    .setUnits(LXParameter.Units.INTEGER)
-                    .setDescription("Number of stars");
-
-    public final CompoundParameter starSize =
-            new CompoundParameter("Size", 0.2, 0.01, 1)
-                    .setDescription("Base star size");
+    // Non-standard Controls
 
     public final CompoundParameter glow =
             new CompoundParameter("Glow", 100, 1, 200)
@@ -38,6 +29,7 @@ public class FollowThatStar extends TEPerformancePattern {
     public final CompoundParameter energy =
             new CompoundParameter("Energy", .15, 0, 1)
                     .setDescription("Oh boy...");
+
     protected final CompoundParameter beatScale = (CompoundParameter)
             new CompoundParameter("Speed", 60, 120, 1)
                     .setExponent(1)
@@ -46,8 +38,11 @@ public class FollowThatStar extends TEPerformancePattern {
 
     public FollowThatStar(LX lx) {
         super(lx);
-        addParameter("starCount",starCount);
-        addParameter("starSize",starSize);
+
+        // adjust settings of common controls to suit this pattern
+        controls.getControl(TEControlTag.QUANTITY).setValue(0.5);
+        controls.getControl(TEControlTag.SIZE).setValue(0.2);
+
         addParameter("glow",glow);
         addParameter("energy", energy);
         addParameter("beatScale",beatScale);
@@ -67,21 +62,12 @@ public class FollowThatStar extends TEPerformancePattern {
     @Override
     public void runTEAudioPattern(double deltaMs) {
 
-        shader.setUniform("stars", (float) Math.floor(starCount.getValue()));
-        shader.setUniform("starSize",starSize.getValuef());
+        shader.setUniform("iQuantity", 1f + (float) Math.floor(getQuantity() * 9));
+        shader.setUniform("iScale",0.01f + getSize());
         shader.setUniform("glow",glow.getValuef());
 
-/*
-        // stars move over time, however fast time is running
-        shader.setUniform("vTime",vTime.getTime());
-
-        // set time speed for next frame
-        float timeScale = (float) lx.engine.tempo.bpm()/beatScale.getValuef();
-        if (timeScale != lastTimeScale) {
-            vTime.setScale(timeScale);
-            lastTimeScale = timeScale;
-        }
-*/
+        // cycle speed is roughly synced to some multiple of the beat.
+        iTime.setScale(getSpeed() * (float) lx.engine.tempo.bpm()/beatScale.getValuef());
 
         // Sound reactivity - various brightness features are related to energy
         float e = energy.getValuef();

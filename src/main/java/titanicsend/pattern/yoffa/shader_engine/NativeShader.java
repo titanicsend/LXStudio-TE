@@ -18,6 +18,7 @@ import java.net.URL;
 import java.nio.*;
 import java.util.HashMap;
 import java.util.Map;
+
 import Jama.Matrix;
 
 import static com.jogamp.opengl.GL.*;
@@ -221,14 +222,14 @@ public class NativeShader implements GLEventListener {
         setUniform("iMouse", 0f, 0f, 0f, 0f);
 
         // TE standard audio uniforms
-        setUniform("beat",ctl.getBeat());
-        setUniform("sinPhaseBeat",ctl.getSinePhaseOnBeat());
-        setUniform("bassLevel",ctl.getBassLevel());
-        setUniform("trebleLevel",ctl.getTrebleLevel());
+        setUniform("beat", ctl.getBeat());
+        setUniform("sinPhaseBeat", ctl.getSinePhaseOnBeat());
+        setUniform("bassLevel", ctl.getBassLevel());
+        setUniform("trebleLevel", ctl.getTrebleLevel());
 
         // color-related uniforms
         float x, y, z;
-        int color = ctl.getColor();
+        int color = ctl.getCurrentColor();
         x = (float) (0xff & LXColor.red(color)) / 255f;
         y = (float) (0xff & LXColor.green(color)) / 255f;
         z = (float) (0xff & LXColor.blue(color)) / 255f;
@@ -236,21 +237,21 @@ public class NativeShader implements GLEventListener {
 
         x = LXColor.h(color) / 360f;
         y = LXColor.s(color) / 100f;
-        z = LXColor.b(color)/ 100f;
-        setUniform("iColorHSB",x,y,z);
+        z = LXColor.b(color) / 100f;
+        setUniform("iColorHSB", x, y, z);
 
         setUniform("iPalette", ctl.getCurrentPalette(), 3);
 
         // uniforms for common controls
-        setUniform("iSpeed",ctl.getSpeed());
-        setUniform("iScale",ctl.getSize());
-        setUniform("iQuantity",ctl.getQuantity());
-        setUniform("iTranslate",ctl.getXPos(),ctl.getYPos());
-        setUniform("iRotationAngle",ctl.getRotationAngle());
-        setUniform("iBrightness",ctl.getBrightness());
-        setUniform("iWow1",ctl.getWow1());
-        setUniform("iWow2",ctl.getWow2());
-        setUniform("iWowTrigger",ctl.getWowTrigger());
+        setUniform("iSpeed", ctl.getSpeed());
+        setUniform("iScale", ctl.getSize());
+        setUniform("iQuantity", ctl.getQuantity());
+        setUniform("iTranslate", ctl.getXPos(), ctl.getYPos());
+        setUniform("iRotationAngle", ctl.getRotationAngle());
+        setUniform("iBrightness", ctl.getBrightness());
+        setUniform("iWow1", ctl.getWow1());
+        setUniform("iWow2", ctl.getWow2());
+        setUniform("iWowTrigger", ctl.getWowTrigger());
     }
 
     private void setUniforms(GL4 gl4) {
@@ -373,12 +374,18 @@ public class NativeShader implements GLEventListener {
         if (uniforms == null) {
             uniforms = new HashMap<>();
         }
-        uniforms.put(name, new UniformTypes(type, value));
+        // The first instance of a uniform wins. Subsequent
+        // attempts to (re)set it are ignored.  This makes it so control uniforms
+        // can be set from user pattern code without being overridden by the automatic
+        // setter, which is called right before frame generation.
+        // TODO - we'll have to be more sophisticated about this when we start retaining textures
+        // TODO - and other large, invariant uniforms between frames.
+        if (!uniforms.containsKey(name)) {
+            uniforms.put(name, new UniformTypes(type, value));
+        }
     }
 
     // parse uniform list and create necessary GL objects
-    // TODO  still need support for general purpose textures.  Once that's done
-    // TODO  we can use this subsystem for *all* uniforms and eliminate some complexity.
     // Note that array buffers passed in must be allocated to the exact appropriate size
     // you want. No allocating a big buffer, then partly filling it. GL is picky about this.
     protected void updateUniforms(GL4 gl4) {
@@ -626,9 +633,10 @@ public class NativeShader implements GLEventListener {
     /**
      * Internal - Creates a uniform for a square floating point matrix, of size
      * 2x2, 3x3 or 4x4
+     *
      * @param name of uniform
-     * @param vec Floating point matrix data, in row major order
-     * @param sz Size of matrix (Number of rows & columns.  2,3 or 4)
+     * @param vec  Floating point matrix data, in row major order
+     * @param sz   Size of matrix (Number of rows & columns.  2,3 or 4)
      */
     public void setUniformMatrix(String name, FloatBuffer vec, int sz) {
         switch (sz) {
@@ -652,33 +660,33 @@ public class NativeShader implements GLEventListener {
      * MAT2(2x2), MAT3(3x3) or MAT4(4x4).  Input matrix must be
      * in row major order.
      */
-    public void setUniform(String name,float [][] matrix) {
+    public void setUniform(String name, float[][] matrix) {
         // requires a square matrix of dimension 2x2,3x3 or 4x4
         int dim = matrix.length;
         if (dim < 2 || dim > 4) {
-          TE.log("SetUniform(%s): %d incorrect matrix size specified", name, dim);
-          return;
+            TE.log("SetUniform(%s): %d incorrect matrix size specified", name, dim);
+            return;
         }
 
         FloatBuffer buf = Buffers.newDirectFloatBuffer(dim);
 
         // load matrix into buffer in row major order
         for (int r = 0; r < dim; r++) {
-            for (int c = 0; c < dim; c++ ) {
+            for (int c = 0; c < dim; c++) {
                 buf.put(matrix[r][c]);
             }
         }
 
         // and set the uniform object
         buf.rewind();
-        setUniformMatrix(name,buf,dim);
+        setUniformMatrix(name, buf, dim);
     }
 
     /**
      * Sets a uniform for a square floating point matrix, of type
      * MAT2(2x2), MAT3(3x3) or MAT4(4x4)
      */
-    public void setUniform(String name,Matrix matrix) {
+    public void setUniform(String name, Matrix matrix) {
         // requires a square matrix of dimension 2x2,3x3 or 4x4
         int dim = matrix.getRowDimension();
         if (dim < 2 || dim > 4 || dim != matrix.getColumnDimension()) {
@@ -691,13 +699,13 @@ public class NativeShader implements GLEventListener {
 
         // load matrix into buffer in row major order
         for (int r = 0; r < dim; r++) {
-            for (int c = 0; c < dim; c++ ) {
-                buf.put((float) matrix.get(r,c));
+            for (int c = 0; c < dim; c++) {
+                buf.put((float) matrix.get(r, c));
             }
         }
 
         // and set the uniform object
         buf.rewind();
-        setUniformMatrix(name,buf,dim);
+        setUniformMatrix(name, buf, dim);
     }
 }

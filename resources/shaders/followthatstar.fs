@@ -1,5 +1,3 @@
-uniform float stars;
-uniform float starSize;
 uniform float glow;
 uniform float energy;
 
@@ -23,7 +21,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     vec2 uPos = -0.5+(fragCoord.xy / iResolution.xy );
     
     // star size pulses with the music!
-    float pulse = (0.3 * energy * (-0.5+beat)) + 1.618 * starSize;
+    float pulse = (0.3 * energy * (-0.5+beat)) + 1.618 * iScale;
     float dance = 0.2 + (0.5 * bassLevel * energy);
     float brightness = 0.;
 
@@ -32,7 +30,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
             sin(iRotationAngle), cos(iRotationAngle));
 
     // for each star
-    for (float i = 1.; i <= stars; i++) {
+    for (float i = 1.; i <= iQuantity; i++) {
         // time offset for each star.
         float t = iTime + step*i;
 

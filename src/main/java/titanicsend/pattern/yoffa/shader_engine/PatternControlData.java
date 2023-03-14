@@ -78,52 +78,52 @@ public class PatternControlData {
         return parent.getRotationAngleOverBeat();
     }
 
-    public int getColor() {
-        return parent.getColorControl();
+    public int getCurrentColor() {
+        return parent.getCurrentColor();
     }
 
     public FloatBuffer getCurrentPalette() { return parent.getCurrentPalette();}
 
     public float getSpeed() {
-        return parent.getSpeedControl();
+        return parent.getSpeed();
     }
 
     public float getXPos() {
-        return parent.getXPosControl();
+        return parent.getXPos();
     }
 
     public float getYPos() {
-        return parent.getYPosControl();
+        return parent.getYPos();
     }
 
     public float getSize() {
-        return parent.getSizeControl();
+        return parent.getSize();
     }
 
-    public float getQuantity() { return parent.getQuantityControl();}
+    public float getQuantity() { return parent.getQuantity();}
 
     /**
      *    For most uses, getRotationAngle() is recommended, but if you
      *    need direct acces to the spin control value, here it is.
      */
     public float getSpin() {
-        return parent.getSpinControl();
+        return parent.getSpin();
     }
 
     public float getBrightness() {
-        return parent.getBrightnessControl();
+        return parent.getBrightness();
     }
 
     public float getWow1() {
-        return parent.getWow1Control();
+        return parent.getWow1();
     }
 
     public float getWow2() {
-        return parent.getWow2Control();
+        return parent.getWow2();
     }
 
     public boolean getWowTrigger() {
-        return parent.getWowTriggerControl();
+        return parent.getWowTrigger();
     }
 
 }
