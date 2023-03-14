@@ -15,7 +15,7 @@ public class TEPanelFactory {
           String id, TEVertex v0, TEVertex v1, TEVertex v2, TEEdgeModel e0,
           TEEdgeModel e1, TEEdgeModel e2, String panelType,
           TEStripingInstructions stripingInstructions,
-          LXPoint gapPoint) {
+          LXPoint gapPoint, Properties views) {
     ArrayList<LXPoint> points = new ArrayList<LXPoint>();
 
     float centroidX = (v0.x + v1.x + v2.x) / 3.0F;
@@ -51,13 +51,6 @@ public class TEPanelFactory {
     else channelLengths = stripingInstructions.channelLengths;
 
     // Adding tags based on views defined in resources/vehicle/views.properties
-    Properties views = new Properties();
-    try (InputStream is = new FileInputStream("resources/vehicle/views.properties")) {
-      views.load(is);
-    } catch (IOException e) {
-        LX.log("Error loading views: " + e.getMessage());
-    }
-
     String[] tags = new String[] { id };
     for (String view : views.stringPropertyNames()) {
       List<String> ids = Arrays.asList(views.getProperty(view).split(","));

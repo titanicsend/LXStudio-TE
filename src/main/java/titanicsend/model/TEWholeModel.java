@@ -72,6 +72,7 @@ public class TEWholeModel extends LXModel {
     public HashMap<String, TELaserModel> lasersById;
     public List<TEBox> boxes;
     public LXModel[] children;
+    public Properties views;
   }
 
   public TEWholeModel(String subdir) {
@@ -202,6 +203,15 @@ public class TEWholeModel extends LXModel {
     return rv;
   }
 
+  private static void loadViews(Geometry geometry) {
+    geometry.views = new Properties();
+    try (InputStream is = new FileInputStream("resources/vehicle/views.properties")) {
+      geometry.views.load(is);
+    } catch (IOException e) {
+        LX.log("Error loading views: " + e.getMessage());
+    }
+  }
+
   private static void loadEdges(Geometry geometry) {
     Map<String, Integer> edgePixelCounts = loadEdgePixelCounts(geometry);;
 
@@ -247,16 +257,9 @@ public class TEWholeModel extends LXModel {
       TEVertex v0 = geometry.vertexesById.get(v0Id);
       TEVertex v1 = geometry.vertexesById.get(v1Id);
       String[] tags = new String[] { tokens[0] + tokens[1], id };
-      // Adding tags based on views defined in resources/vehicle/views.properties
-      Properties views = new Properties();
-      try (InputStream is = new FileInputStream("resources/vehicle/views.properties")) {
-        views.load(is);
-      } catch (IOException e) {
-          LX.log("Error loading views: " + e.getMessage());
-      }
   
-      for (String view : views.stringPropertyNames()) {
-        List<String> ids = Arrays.asList(views.getProperty(view).split(","));
+      for (String view : geometry.views.stringPropertyNames()) {
+        List<String> ids = Arrays.asList(geometry.views.getProperty(view).split(","));
         if (ids.contains(id)) {
           String[] newTags = new String[tags.length + 1]; // Resize the tags array to fit all IDs
           System.arraycopy(tags, 0, newTags, 0, tags.length); // Copy the old tags into the new array
@@ -475,7 +478,7 @@ public class TEWholeModel extends LXModel {
 
       TEStripingInstructions tesi = stripingInstructions.get(id);
       TEPanelModel p = TEPanelFactory.build(id, vertexes[0], vertexes[1], vertexes[2],
-              e0, e1, e2, panelType, tesi, geometry.gapPoint);
+              e0, e1, e2, panelType, tesi, geometry.gapPoint, geometry.views);
 
       if (flipStr.equals("flipped")) {
         p.offsetTriangles.flip();
@@ -634,6 +637,8 @@ public class TEWholeModel extends LXModel {
     loadBoxes(geometry);
 
     loadVertexes(geometry);
+
+    loadViews(geometry);
 
     // Vertexes aren't LXPoints (and thus, not LXModels) so they're not children
 
