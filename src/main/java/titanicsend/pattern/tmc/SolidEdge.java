@@ -14,7 +14,7 @@ import titanicsend.pattern.TEPattern;
  * SimpleSolidEdgePattern is a trivial pattern that accepts input to
  * control the output color of just the edges in the model.
  */
-@LXCategory("Edge BG")
+@LXCategory("TE Examples")
 public class SolidEdge extends TEPattern {
 
   public final LinkedColorParameter color =

@@ -8,7 +8,7 @@ import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.pattern.LXPattern;
 import titanicsend.pattern.TEPattern;
 
-@LXCategory("Combo FG")
+@LXCategory("TE Examples")
 public class AlternatingPattern extends TEPattern {
   public final LinkedColorParameter oddColor =
           registerColor("Odd", "odd", TEPattern.ColorType.PRIMARY,

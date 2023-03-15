@@ -230,18 +230,6 @@ public class ShaderPanelsPatternConfig {
         }
     }
 
-    @LXCategory("Test")
-    public static class ShaderPaletteTest extends ConstructedPattern {
-        public ShaderPaletteTest(LX lx) {
-            super(lx);
-        }
-        @Override
-        protected List<PatternEffect> createEffects() {
-            return List.of(new NativeShaderPatternEffect("palette_test.fs",
-                    PatternTarget.allPanelsAsCanvas(this)));
-        }
-    }
-
     @LXCategory("Native Shaders Panels")
     public static class NeonCells extends ConstructedPattern {
         public NeonCells(LX lx) {

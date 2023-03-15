@@ -10,7 +10,7 @@ import titanicsend.pattern.TEPattern;
 
 import java.util.*;
 
-@LXCategory("Panel FG")
+@LXCategory("TE Examples")
 public class Checkers extends TEPattern {
 
   public final LinkedColorParameter oddColor =
