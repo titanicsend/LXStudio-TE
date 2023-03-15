@@ -76,7 +76,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          * @param tag
          * @param getFn
          */
-        void SetGetterFunction(TEControlTag tag, _CommonControlGetter getFn) {
+        void setGetterFunction(TEControlTag tag, _CommonControlGetter getFn) {
             controlList.get(tag).get = getFn;
         }
 
