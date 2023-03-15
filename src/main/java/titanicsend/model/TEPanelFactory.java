@@ -12,7 +12,7 @@ public class TEPanelFactory {
           String id, TEVertex v0, TEVertex v1, TEVertex v2, TEEdgeModel e0,
           TEEdgeModel e1, TEEdgeModel e2, String panelType,
           TEStripingInstructions stripingInstructions,
-          LXPoint gapPoint) {
+          LXPoint gapPoint, Properties views) {
     ArrayList<LXPoint> points = new ArrayList<LXPoint>();
 
     float centroidX = (v0.x + v1.x + v2.x) / 3.0F;
@@ -46,8 +46,19 @@ public class TEPanelFactory {
     int[] channelLengths;
     if (stripingInstructions == null) channelLengths = null;
     else channelLengths = stripingInstructions.channelLengths;
-    
+
+    // Adding tags based on views defined in resources/vehicle/views.properties
     String[] tags = new String[] { id };
+    for (String view : views.stringPropertyNames()) {
+      List<String> ids = Arrays.asList(views.getProperty(view).split(","));
+      if (ids.contains(id)) {
+        String[] newTags = new String[tags.length + 1]; // Resize the tags array to fit all IDs
+        System.arraycopy(tags, 0, newTags, 0, tags.length); // Copy the old tags into the new array
+        newTags[tags.length] = view;
+        tags = newTags;
+      }
+    }
+    
     return new TEPanelModel(id, points, v0, v1, v2, e0, e1, e2,
             panelType, flavor, centroid, channelLengths, tags);
   }
