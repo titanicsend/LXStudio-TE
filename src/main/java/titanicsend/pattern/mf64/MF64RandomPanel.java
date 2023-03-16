@@ -55,9 +55,10 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
         eventStartTime = -99f;
         refCount = 0;
     }
+
     @Override
     public void buttonDown(TEMidiFighter64DriverPattern.Mapping mapping) {
-        colorMap.addButton(mapping.col,flashColors[mapping.col]);
+        colorMap.addButton(mapping.col, flashColors[mapping.col]);
         refCount++;
         this.active = true;
         this.stopRequest = false;
@@ -73,7 +74,7 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
 
     void startNewEvent() {
         seed = System.currentTimeMillis();
-        eventStartTime = -time.getTime();
+        eventStartTime = -time.getTimef();
     }
 
     private void paintAll(int colors[], int color) {
@@ -87,8 +88,8 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
 
         // number of lit panels increases slightly with number of buttons pressed.
         // TEMath.clamp's min and max indicate percentages of coverage.
-        float litProbability = (float) TEMath.clamp(0.4 + 0.3f * ((float) colorSet.length - 1)/7f,
-                0.4,0.7);
+        float litProbability = (float) TEMath.clamp(0.4 + 0.3f * ((float) colorSet.length - 1) / 7f,
+                0.4, 0.7);
 
         // clear the decks if we're getting ready to stop
         if (stopRequest) {
@@ -97,12 +98,12 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
             colorSet[0] = TRANSPARENT;
         }
 
-        float t = time.getTime();
+        float t = time.getTimef();
         elapsedTime = t - eventStartTime;
 
         if (elapsedTime > 1) {
             // uncomment to enable auto retrigger on the beat
-           // startNewEvent();
+            // startNewEvent();
         }
 
         prng.setSeed(seed);
@@ -116,8 +117,7 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
             if (isLit) {
                 col = colorSet[colorIndex];
                 colorIndex = (colorIndex + 1) % colorSet.length;
-            }
-            else {
+            } else {
                 col = TRANSPARENT;
             }
 
@@ -128,11 +128,11 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
                 // quick out for uncolored panels
                 if (col == TRANSPARENT) {
                     colors[p.point.index] = TRANSPARENT;
-                // color an expanding radius
+                    // color an expanding radius
                 } else if (p.radiusFraction <= deltaT) {
                     int alpha = (int) (255f * deltaT);
                     colors[p.point.index] = (col & 0x00FFFFFF) | (alpha << 24);
-                // leave uncolored points alone
+                    // leave uncolored points alone
                 } else {
                     colors[p.point.index] = TRANSPARENT;
                 }

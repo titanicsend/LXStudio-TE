@@ -15,21 +15,21 @@ package titanicsend.pattern.jon;
 public class VariableSpeedTimer {
     long previous = 0;
     long current = 0;
-    float time = 0.0f;
-    float scale = 1.0f;
-    float direction = -1.0f;
+    double time = 0.0;
+    double scale = 1.0;
+    double direction = -1.0;
 
     public VariableSpeedTimer() {
-        scale = 1.0f;
+        scale = 1.0;
         reset();
     }
 
     public void reset() {
         previous = current = System.currentTimeMillis();
-        time = 0.0f;
+        time = 0.0;
     }
 
-    public void setScale(float s) {
+    public void setScale(double s) {
         scale = s;
     }
 
@@ -45,13 +45,12 @@ public class VariableSpeedTimer {
     }
 
     public void tick() {
-        float delta = (float) (current - previous);
+        double delta = (double) (current - previous);
         time += scale * delta / 1000.0;
         previous = current;
         current = System.currentTimeMillis();
     }
 
-    public float getTime() {
-        return time*direction;
-    }
+    public double getTime() { return  time*direction;  }
+    public float getTimef() { return (float) getTime(); }
 }

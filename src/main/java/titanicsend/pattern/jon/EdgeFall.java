@@ -220,7 +220,7 @@ public class EdgeFall extends TEPerformancePattern {
 
         // negative time b/c VariableSpeedTimer has a bug which I'm
         // stuck with for the moment because lots of patterns use it.
-        float t = -time.getTime();
+        float t = -time.getTimef();
         elapsedTime = t - eventStartTime;
 
         if (!explode.getValueb()) isFalling = false;

@@ -73,7 +73,7 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
 
     void startNewEvent() {
         seed = System.currentTimeMillis();
-        eventStartTime = -time.getTime();
+        eventStartTime = -time.getTimef();
     }
 
     /**
@@ -135,7 +135,7 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
             colorSet[0] = TRANSPARENT;
         }
 
-        float t = time.getTime();
+        float t = time.getTimef();
         elapsedTime = t - eventStartTime;
         float t0 = frac(elapsedTime);
         float spin = 2f * t;

@@ -217,15 +217,15 @@ public class NativeShader implements GLEventListener {
     private void setStandardUniforms(PatternControlData ctl) {
 
         // set standard shadertoy-style uniforms
-        setUniform("iTime", ctl.getTime());
+        setUniform("iTime", (float) ctl.getTime());
         setUniform("iResolution", (float) xResolution, (float) yResolution);
         setUniform("iMouse", 0f, 0f, 0f, 0f);
 
         // TE standard audio uniforms
-        setUniform("beat", ctl.getBeat());
-        setUniform("sinPhaseBeat", ctl.getSinePhaseOnBeat());
-        setUniform("bassLevel", ctl.getBassLevel());
-        setUniform("trebleLevel", ctl.getTrebleLevel());
+        setUniform("beat", (float) ctl.getBeat());
+        setUniform("sinPhaseBeat", (float) ctl.getSinePhaseOnBeat());
+        setUniform("bassLevel", (float) ctl.getBassLevel());
+        setUniform("trebleLevel", (float) ctl.getTrebleLevel());
 
         // color-related uniforms
         float x, y, z;
@@ -243,14 +243,14 @@ public class NativeShader implements GLEventListener {
         setUniform("iPalette", ctl.getCurrentPalette(), 3);
 
         // uniforms for common controls
-        setUniform("iSpeed", ctl.getSpeed());
-        setUniform("iScale", ctl.getSize());
-        setUniform("iQuantity", ctl.getQuantity());
-        setUniform("iTranslate", ctl.getXPos(), ctl.getYPos());
-        setUniform("iRotationAngle", ctl.getRotationAngle());
-        setUniform("iBrightness", ctl.getBrightness());
-        setUniform("iWow1", ctl.getWow1());
-        setUniform("iWow2", ctl.getWow2());
+        setUniform("iSpeed", (float) ctl.getSpeed());
+        setUniform("iScale", (float) ctl.getSize());
+        setUniform("iQuantity", (float) ctl.getQuantity());
+        setUniform("iTranslate", (float) ctl.getXPos(), (float) ctl.getYPos());
+        setUniform("iRotationAngle", (float) ctl.getRotationAngle());
+        setUniform("iBrightness", (float) ctl.getBrightness());
+        setUniform("iWow1", (float) ctl.getWow1());
+        setUniform("iWow2", (float) ctl.getWow2());
         setUniform("iWowTrigger", ctl.getWowTrigger());
     }
 

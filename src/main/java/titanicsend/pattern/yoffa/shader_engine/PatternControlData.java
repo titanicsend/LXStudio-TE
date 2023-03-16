@@ -20,7 +20,7 @@ public class PatternControlData {
         fftResampleFactor = meter.bands.length / 512f;
     }
 
-    public float getTime() {
+    public double getTime() {
         return parent.iTime.getTime();
     }
 
@@ -46,26 +46,27 @@ public class PatternControlData {
         return meter.getSamples()[index];
     }
 
-    public float getBeat() {
-        return (float) parent.getTempo().basis();
-    }
-    public float getSinePhaseOnBeat() {
-        return (float) parent.sinePhaseOnBeat();
+    public double getBeat() {
+        return parent.getTempo().basis();
     }
 
-    public float getBassLevel() {
-        return (float) parent.getBassLevel();
+    public double getSinePhaseOnBeat() {
+        return parent.sinePhaseOnBeat();
     }
 
-    public float getTrebleLevel() {
-        return (float) parent.getTrebleLevel();
+    public double getBassLevel() {
+        return parent.getBassLevel();
+    }
+
+    public double getTrebleLevel() {
+        return parent.getTrebleLevel();
     }
 
     /**
      * @return Returns the current rotation angle in radians, derived from a real-time LFO, the setting
      * of the "spin" control, and the constant MAX_ROTATIONS_PER_SECOND
      */
-    public float getRotationAngle() {
+    public double getRotationAngle() {
         return parent.getRotationAngle();
     }
 
@@ -74,7 +75,7 @@ public class PatternControlData {
      * by getTempo().basis(), the setting of the "spin" control, and a preset maximum rotations
      * per beat.
      */
-    public float getRotationAngleOverBeat() {
+    public double getRotationAngleOverBeat() {
         return parent.getRotationAngleOverBeat();
     }
 
@@ -84,41 +85,41 @@ public class PatternControlData {
 
     public FloatBuffer getCurrentPalette() { return parent.getCurrentPalette();}
 
-    public float getSpeed() {
+    public double getSpeed() {
         return parent.getSpeed();
     }
 
-    public float getXPos() {
+    public double getXPos() {
         return parent.getXPos();
     }
 
-    public float getYPos() {
+    public double getYPos() {
         return parent.getYPos();
     }
 
-    public float getSize() {
+    public double getSize() {
         return parent.getSize();
     }
 
-    public float getQuantity() { return parent.getQuantity();}
+    public double getQuantity() { return parent.getQuantity();}
 
     /**
      *    For most uses, getRotationAngle() is recommended, but if you
      *    need direct acces to the spin control value, here it is.
      */
-    public float getSpin() {
+    public double getSpin() {
         return parent.getSpin();
     }
 
-    public float getBrightness() {
+    public double getBrightness() {
         return parent.getBrightness();
     }
 
-    public float getWow1() {
+    public double getWow1() {
         return parent.getWow1();
     }
 
-    public float getWow2() {
+    public double getWow2() {
         return parent.getWow2();
     }
 

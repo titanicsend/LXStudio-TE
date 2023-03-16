@@ -94,6 +94,15 @@ public class Phasers extends TEPerformancePattern {
         options.useAlpha(true);
         options.useLXParameterUniforms(false);
 
+        TECommonControls._CommonControlGetter getfn = new TECommonControls._CommonControlGetter() {
+            @Override
+            public double getValue(TECommonControls.TEControl cc) {
+                return 1+Math.floor(7 *cc.getValue());
+            }
+        };
+
+        controls.setGetterFunction(TEControlTag.QUANTITY, getfn);
+
         effect = new NativeShaderPatternEffect("phasers.fs",
                 PatternTarget.allPanelsAsCanvas(this), options);
 
@@ -106,9 +115,6 @@ public class Phasers extends TEPerformancePattern {
 
         float rev = (reverse.getValuef() != 0) ? 1f : -1f;
 
-        shader.setUniform("beamCount1",beamCount1.getValuef());
-        shader.setUniform("beamCount2",beamCount2.getValuef());
-
         shader.setUniform("glow",glow.getValuef());
         shader.setUniform("hScan",hScan.getValuef());
         shader.setUniform("vScan",rev * vScan.getValuef());
@@ -117,7 +123,7 @@ public class Phasers extends TEPerformancePattern {
         shader.setUniform("rotate",rev * rotate.getValuef());
 
         // calculate beats/sec for light "spin rate"
-        shader.setUniform("vTime",vTime.getTime());
+        shader.setUniform("vTime",vTime.getTimef());
 
         // set time speed for next frame
         float beat = (float) lx.engine.tempo.bpm();
