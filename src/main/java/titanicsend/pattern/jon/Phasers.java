@@ -2,12 +2,9 @@ package titanicsend.pattern.jon;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.color.LXColor;
-import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.TEAudioPattern;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
@@ -24,16 +21,6 @@ public class Phasers extends TEPerformancePattern {
     // In this pattern the "energy" is how quickly the scenes can progress,
     // IE shorter tempoDivisions
 
-    public final CompoundParameter beamCount1 = (CompoundParameter)
-            new CompoundParameter("Beams1", 2, 1, 8)
-                    .setUnits(LXParameter.Units.INTEGER)
-                    .setDescription("Beam Count 1");
-
-    public final CompoundParameter beamCount2 = (CompoundParameter)
-            new CompoundParameter("Beams2", 2, 1, 8)
-                    .setUnits(LXParameter.Units.INTEGER)
-                    .setDescription("Beam Count 2");
-
     public final CompoundParameter glow =
             new CompoundParameter("Fog", 0.75, 0, 2)
                     .setDescription("Fog glow level");
@@ -45,14 +32,6 @@ public class Phasers extends TEPerformancePattern {
     public final BooleanParameter vScan =
             new BooleanParameter("Scan", false)
                     .setDescription("Vertical movement");
-
-    public final BooleanParameter rotate =
-            new BooleanParameter("Spin", false)
-                    .setDescription("Rotation on/off");
-
-    public final BooleanParameter reverse =
-            new BooleanParameter("Reverse", false)
-                    .setDescription("All spin backwards!");
 
     public final CompoundParameter yPos1 =
             new CompoundParameter("yPos1", 0f, -0.5, 0.5)
@@ -75,13 +54,9 @@ public class Phasers extends TEPerformancePattern {
 
     public Phasers(LX lx) {
         super(lx);
-        addParameter("beamCount1",beamCount1);
-        addParameter("beamCount2",beamCount2);
         addParameter("glow",glow);
         addParameter("hScan",hScan);
         addParameter("vScan",vScan);
-        addParameter("rotate",rotate);
-        addParameter("reverse",reverse);
         addParameter("yPos1",yPos1);
         addParameter("yPos2",yPos2);
         addParameter("energy", energy);
@@ -94,14 +69,8 @@ public class Phasers extends TEPerformancePattern {
         options.useAlpha(true);
         options.useLXParameterUniforms(false);
 
-        TECommonControls._CommonControlGetter getfn = new TECommonControls._CommonControlGetter() {
-            @Override
-            public double getValue(TECommonControls.TEControl cc) {
-                return 1+Math.floor(7 *cc.getValue());
-            }
-        };
-
-        controls.setGetterFunction(TEControlTag.QUANTITY, getfn);
+        controls.setRange(TEControlTag.QUANTITY,2,1,8);
+        controls.setUnits(TEControlTag.QUANTITY,LXParameter.Units.INTEGER);
 
         effect = new NativeShaderPatternEffect("phasers.fs",
                 PatternTarget.allPanelsAsCanvas(this), options);
@@ -113,23 +82,10 @@ public class Phasers extends TEPerformancePattern {
     public void runTEAudioPattern(double deltaMs) {
         vTime.tick();
 
-        float rev = (reverse.getValuef() != 0) ? 1f : -1f;
-
         shader.setUniform("glow",glow.getValuef());
         shader.setUniform("hScan",hScan.getValuef());
-        shader.setUniform("vScan",rev * vScan.getValuef());
         shader.setUniform("yPos1",yPos1.getValuef());
         shader.setUniform("yPos2",yPos2.getValuef());
-        shader.setUniform("rotate",rev * rotate.getValuef());
-
-        // calculate beats/sec for light "spin rate"
-        shader.setUniform("vTime",vTime.getTimef());
-
-        // set time speed for next frame
-        float beat = (float) lx.engine.tempo.bpm();
-        float scale = beatScale.getValuef();
-        vTime.setScale(beat/scale);
-
 
         // Sound reactivity - various brightness features are related to energy
         float e = energy.getValuef();

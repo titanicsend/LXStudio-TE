@@ -5,8 +5,10 @@ import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.parameter.*;
+import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon.VariableSpeedTimer;
+import titanicsend.pattern.jon._CommonControlGetter;
 
 import java.nio.FloatBuffer;
 import java.util.HashMap;
@@ -24,25 +26,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 return cc.getValue();
             }
         };
-
-        public interface _CommonControlGetter {
-            double getValue(TEControl cc);
-        }
-
-        public class TEControl {
-            TEControl(LXListenableParameter ctl, _CommonControlGetter getFn) {
-                this.control = ctl;
-                this.getFn = getFn;
-            }
-
-            LXListenableParameter control;
-            _CommonControlGetter getFn;
-
-            public double getValue() {
-                return control.getValue();
-            }
-
-        }
 
         public HashMap<TEControlTag, TEControl> controlList = new HashMap<TEControlTag, TEControl>();
 
@@ -85,6 +68,34 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          */
         public void setGetterFunction(TEControlTag tag, _CommonControlGetter getFn) {
             controlList.get(tag).getFn = getFn;
+        }
+
+        public void setRange(TEControlTag tag, double value, double v0, double v1) {
+            // copy data from previous tag
+            CompoundParameter oldControl = (CompoundParameter) getLXControl(tag);
+            CompoundParameter newControl = (CompoundParameter) new CompoundParameter(oldControl.getLabel(), value, v0, v1)
+                    .setDescription(oldControl.getDescription())
+                    .setPolarity(oldControl.getPolarity())
+                    .setExponent(oldControl.getExponent())
+                    .setUnits(oldControl.getUnits());
+
+            setControl(tag, newControl, defaultGetFn);
+            oldControl.dispose();
+        }
+
+        public void setExponent(TEControlTag tag, double exp) {
+            CompoundParameter p = (CompoundParameter) getLXControl(tag);
+            p.setExponent(exp);
+        }
+
+        public void setNormalizationCurve(TEControlTag tag, BoundedParameter.NormalizationCurve curve) {
+            CompoundParameter p = (CompoundParameter) getLXControl(tag);
+            p.setNormalizationCurve(curve);
+        }
+
+        public void setUnits(TEControlTag tag, LXParameter.Units units) {
+            CompoundParameter p = (CompoundParameter) getLXControl(tag);
+            p.setUnits(units);
         }
 
         public void registerCommonControls() {

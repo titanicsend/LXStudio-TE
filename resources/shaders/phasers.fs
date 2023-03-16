@@ -1,6 +1,5 @@
 
 uniform float glow;
-uniform float vScan;
 uniform float hScan;
 uniform float yPos1;
 uniform float yPos2;
@@ -83,7 +82,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord) {
 
   // control beam movement in x and y
   float xOffset = hScan * sin(beat * 10.);
-  float yOffset = yCenter + (vScan * fract(iTime));
+  float yOffset = yCenter + (iWow1 * fract(iTime));
 
   // generate a beam for each end of the vehicle
     vec2 offset  = vec2(xPos1+xOffset, fract(-yPos1 + yOffset));
