@@ -49,7 +49,6 @@ import titanicsend.pattern.TEPanelTestPattern;
 import titanicsend.pattern.ben.*;
 import titanicsend.pattern.cesar.*;
 import titanicsend.pattern.jeff.*;
-import titanicsend.pattern.jeff.Fireflies;
 import titanicsend.pattern.jon.*;
 import titanicsend.pattern.mike.*;
 import titanicsend.pattern.pixelblaze.*;
@@ -177,7 +176,6 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
     lx.registry.addPattern(SolidPanel.class);
     lx.registry.addPattern(PulsingTriangles.class);
     lx.registry.addPattern(HandTracker.class);
-    lx.registry.addPattern(Fireflies.class);
     lx.registry.addPattern(Fire.class);
     lx.registry.addPattern(TEMidiFighter64DriverPattern.class);
 

@@ -1,6 +1,6 @@
 {
   "version": "0.4.1",
-  "timestamp": 1661390130351,
+  "timestamp": 1679038874716,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -42,7 +42,7 @@
           "autoCycleEnabled": true,
           "autoCycleMode": 0,
           "autoCycleTimeSecs": 15.0,
-          "autoCycleCursor": 0,
+          "autoCycleCursor": 1,
           "triggerSwatchCycle": false
         },
         "children": {
@@ -53,7 +53,7 @@
               "modulationColor": 0
             },
             "parameters": {
-              "label": "Swatch-3",
+              "label": "Swatch-2",
               "recall": false,
               "autoCycleEligible": true
             },
@@ -69,9 +69,9 @@
                   "label": "LX",
                   "mode": 0,
                   "period": 30.0,
-                  "primary/brightness": 98.82353210449219,
-                  "primary/saturation": 100.0,
-                  "primary/hue": 324.0476379394531,
+                  "primary/brightness": 95.0,
+                  "primary/saturation": 92.0,
+                  "primary/hue": 191.09523010253906,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -89,8 +89,8 @@
                   "mode": 0,
                   "period": 30.0,
                   "primary/brightness": 98.82353210449219,
-                  "primary/saturation": 100.0,
-                  "primary/hue": 39.0476188659668,
+                  "primary/saturation": 6.0,
+                  "primary/hue": 255.04759216308594,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -108,8 +108,8 @@
                   "mode": 0,
                   "period": 30.0,
                   "primary/brightness": 98.82353210449219,
-                  "primary/saturation": 96.82539367675781,
-                  "primary/hue": 170.90164184570312,
+                  "primary/saturation": 48.9523811340332,
+                  "primary/hue": 256.99998474121094,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -126,9 +126,9 @@
                   "label": "LX",
                   "mode": 0,
                   "period": 30.0,
-                  "primary/brightness": 26.27450942993164,
-                  "primary/saturation": 83.58209228515625,
-                  "primary/hue": 34.28571319580078,
+                  "primary/brightness": 39.166664123535156,
+                  "primary/saturation": 97.5,
+                  "primary/hue": 285.0,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -145,9 +145,9 @@
                   "label": "LX",
                   "mode": 0,
                   "period": 30.0,
-                  "primary/brightness": 0.0,
+                  "primary/brightness": 98.82353210449219,
                   "primary/saturation": 100.0,
-                  "primary/hue": 0.0,
+                  "primary/hue": 248.0,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -638,13 +638,13 @@
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 1,
+              "focusedPattern": 0,
               "triggerPatternCycle": false
             },
             "children": {},
             "effects": [],
             "clips": [],
-            "patternIndex": 1,
+            "patternIndex": 0,
             "patterns": [
               {
                 "id": 8515,
@@ -680,44 +680,6 @@
                 "children": {
                   "modulation": {
                     "id": 8516,
-                    "class": "heronarts.lx.modulation.LXModulationEngine",
-                    "internal": {
-                      "modulationColor": 0
-                    },
-                    "parameters": {
-                      "label": "Modulation"
-                    },
-                    "children": {},
-                    "modulators": [],
-                    "modulations": [],
-                    "triggers": []
-                  }
-                },
-                "deviceVersion": -1
-              },
-              {
-                "id": 8818,
-                "class": "titanicsend.pattern.jeff.Fireflies",
-                "internal": {
-                  "modulationColor": 0,
-                  "expanded": true,
-                  "modulationExpanded": false,
-                  "autoCycleEligible": true
-                },
-                "parameters": {
-                  "label": "Fireflies",
-                  "recall": false,
-                  "enableEdges": true,
-                  "enablePanels": false,
-                  "speed": 0.5,
-                  "decay": 0.5,
-                  "fade": 0.5,
-                  "numSparks": 1.0,
-                  "color": 0.5
-                },
-                "children": {
-                  "modulation": {
-                    "id": 8819,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0
@@ -1453,7 +1415,7 @@
               "exp": 0.0
             },
             "children": {},
-            "basis": 0.03434166666666627
+            "basis": 0.0924083333333332
           }
         ],
         "modulations": [
@@ -1639,18 +1601,18 @@
               "attack": 10.0,
               "release": 100.0,
               "slope": 4.5,
-              "band-1": 0.00162912339619814,
-              "band-2": 0.06293257491695192,
-              "band-3": 0.05136649570145713,
-              "band-4": 0.05739433923703385,
+              "band-1": 0.0,
+              "band-2": 0.0,
+              "band-3": 0.0,
+              "band-4": 0.0,
               "band-5": 0.0,
               "band-6": 0.0,
               "band-7": 0.0,
-              "band-8": 0.012236681546543893,
-              "band-9": 0.10273714892576502,
-              "band-10": 0.09464819383130474,
-              "band-11": 0.07639215071918104,
-              "band-12": 0.009515313341127651,
+              "band-8": 0.0,
+              "band-9": 0.0,
+              "band-10": 0.0,
+              "band-11": 0.0,
+              "band-12": 0.0,
               "band-13": 0.0,
               "band-14": 0.0,
               "band-15": 0.0,
