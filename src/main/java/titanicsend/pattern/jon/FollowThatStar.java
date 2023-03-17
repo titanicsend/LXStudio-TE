@@ -11,6 +11,8 @@ import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 
+// TODO - NEEDS FULL CONVERSION TO COMMON CONTROLS
+
 @LXCategory("Combo FG")
 public class FollowThatStar extends TEPerformancePattern {
     NativeShaderPatternEffect effect;
@@ -39,16 +41,20 @@ public class FollowThatStar extends TEPerformancePattern {
         controls.getLXControl(TEControlTag.QUANTITY).setValue(0.5);
         controls.getLXControl(TEControlTag.SIZE).setValue(0.2);
 
-        addParameter("glow", glow);
-        addParameter("energy", energy);
-        addParameter("beatScale", beatScale);
-
         // create new effect with alpha on and no automatic
         // parameter uniforms
 
         ShaderOptions options = new ShaderOptions();
         options.useAlpha(true);
         options.useLXParameterUniforms(false);
+
+        // register common controls with the UI
+        addCommonControls();
+
+        // Add this pattern's custom controls.
+        addParameter("glow", glow);
+        addParameter("energy", energy);
+        addParameter("beatScale", beatScale);
 
         effect = new NativeShaderPatternEffect("followthatstar.fs",
                 PatternTarget.allPointsAsCanvas(this), options);
@@ -77,6 +83,7 @@ public class FollowThatStar extends TEPerformancePattern {
     // Initialize the NativeShaderPatternEffect and retrieve the native shader object
     // from it when the pattern becomes active
     public void onActive() {
+        super.onActive();
         effect.onActive();
         shader = effect.getNativeShader();
     }

@@ -12,6 +12,8 @@ import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 import titanicsend.util.TEMath;
 
+// TODO - NEEDS FULL CONVERSION TO COMMON CONTROLS
+
 @LXCategory("Other")
 public class Iceflow extends TEPerformancePattern {
     NativeShaderPatternEffect effect;
@@ -38,9 +40,6 @@ public class Iceflow extends TEPerformancePattern {
 
     public Iceflow(LX lx) {
         super(lx);
-        addParameter("focus",focus);
-        addParameter("energy", energy);
-        addParameter("beatScale",beatScale);
 
         // create new effect with alpha on and no automatic
         // parameter uniforms
@@ -48,6 +47,14 @@ public class Iceflow extends TEPerformancePattern {
         ShaderOptions options = new ShaderOptions();
         options.useAlpha(true);
         options.useLXParameterUniforms(false);
+
+        // register common controls with the UI
+        addCommonControls();
+
+        // Add this pattern's custom controls.
+        addParameter("focus",focus);
+        addParameter("energy", energy);
+        addParameter("beatScale",beatScale);
 
         effect = new NativeShaderPatternEffect("iceflow.fs",
                 PatternTarget.allPanelsAsCanvas(this), options);
@@ -97,6 +104,7 @@ public class Iceflow extends TEPerformancePattern {
     // Initialize the NativeShaderPatternEffect and retrieve the native shader object
     // from it when the pattern becomes active
     public void onActive() {
+        super.onActive();
         effect.onActive();
         shader = effect.getNativeShader();
     }

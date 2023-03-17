@@ -1,7 +1,9 @@
 uniform float energy;
+uniform float iCanvasAngle;
 
-const float halfpi = 3.1415926 / 2.;
-const float twopi = 3.1415926 * 2.;
+const float PI = 3.141592653589793;
+const float halfpi = PI / 2.;
+const float twopi = PI * 2.;
 const float xPos1 = -0.285;
 const float xPos2 = 0.315;
 const float yCenter = 0.3;
@@ -11,9 +13,29 @@ const float yCenter = 0.3;
 // accumulator for "Wow Trigger" effect
 float zapper = 0.0;
 
-// Domain repeats
+//  rotate a point around the origin by <angle> radians
+vec2 rotate(vec2 point, float angle) {
+  mat2 rotationMatrix = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
+  return rotationMatrix * point;
+}
+
+// 2D (square) Domain repeats
 vec2 repeat2D(vec2 p, vec2 size) {
 	return mod(p + size*0.5,size) - size*0.5;
+}
+
+// polar domain repeats around coordinate origin
+// (looks like pie slices on the car)
+void modPolar(inout vec2 p, float repetitions) {
+	float angle = twopi/repetitions;
+	float a = atan(p.y, p.x) + angle/2.;
+	a = mod(a,angle) - angle/2.;
+	p = vec2(cos(a), sin(a))*length(p);
+}
+
+// 2D circle distance function
+ float circle(vec2 p, float radius){
+	return radius - length(p);
 }
 
  // rand [0,1]
@@ -32,7 +54,7 @@ vec2 repeat2D(vec2 p, vec2 size) {
  	return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
  }
 
- // fractal noise
+ // fractal noise (composed of several octaves of our value noise)
  float fbm(vec2 p) {
      float a = 0.5;
      float r = 0.0;
@@ -44,29 +66,11 @@ vec2 repeat2D(vec2 p, vec2 size) {
      return r;
  }
 
- float circle(float radius, vec2 pos){
-	return radius - length(pos);
-}
-
-// polar domain repeats around vehicle center
-float modPolar(inout vec2 p, float repetitions) {
-	float angle = twopi/repetitions;
-	float a = atan(p.y, p.x) + angle/2.;
-	float r = length(p);
-	float c = floor(a/angle);
-	a = mod(a,angle) - angle/2.;
-	p = vec2(cos(a), sin(a))*r;
-	// For an odd number of repetitions, fix cell index of the cell in -x direction
-	// (cell index would be e.g. -5 and 5 in the two halves of the cell):
-	if (abs(c) >= (repetitions/2)) c = abs(c);
-	return c;
-}
-
-
-// beam emphasizing laser generator!
+// Generates "phaser" beam cone at specified position and angle,
+// emphasizing the center of the beam, and splitting it <beams> ways.
 float laser(vec2 p, vec2 offset, float angle, float beams) {
 
-   // Rotate
+   // Rotate (spin the whole beam generator)
    p += offset;
    p *= mat2(cos(angle), -sin(angle),
              sin(angle), cos(angle));
@@ -86,8 +90,7 @@ float laser(vec2 p, vec2 offset, float angle, float beams) {
 
     // add part of the original wave fn for extra glow
     // the divisor
-
-    zapper += (iWowTrigger) ? smoothstep(0.12,0.35,circle(beat/2.45,p)) : 0.0 ;
+    zapper += (iWowTrigger) ? smoothstep(0.165,0.225,circle(p, beat/2.45)) : 0.0 ;
 	return lzr+glw;
 }
 
@@ -105,16 +108,23 @@ float clouds(vec2 uv) {
 void mainImage( out vec4 fragColor, in vec2 fragCoord) {
   vec2 uv = -0.5+fragCoord/max(iResolution.x,iResolution.y);
 
-  modPolar(uv,1.0 + iWow1 * 12.0);
-  uv = repeat2D(uv,vec2(1.0-iWow1));
+  uv = rotate(uv,iCanvasAngle);
+
+  if (iWow1 > 0.0) {
+    uv.x = fract(2.0 * uv.x);
+    uv = repeat2D(uv,vec2(1.0-iWow1));
+    modPolar(uv,1.0 + iWow1 * 12.0);
+  }
+
   uv *= iScale;
 
   // noise to modulate beam brightness
   float n = 1.+(3.*noise(vec2(iTime*11.,iTime * 5.)));
 
   // control beam movement in x and y
-  float xOffset = energy * sin(beat * 10.);
-  float yOffset = yCenter; // + (scan * fract(iTime));
+  float beatSine = -1 + 2 * sinPhaseBeat;
+  float xOffset = energy * beatSine;
+  float yOffset = yCenter + energy * -beatSine;
 
   // generate a beam for each end of the vehicle
     vec2 offset  = vec2(iTranslate.x+xPos1+xOffset, fract(-iTranslate.y + yOffset));

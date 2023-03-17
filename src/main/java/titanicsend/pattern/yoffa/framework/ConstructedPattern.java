@@ -14,10 +14,14 @@ public abstract class ConstructedPattern extends TEPerformancePattern {
     protected ConstructedPattern(LX lx) {
         super(lx, false);
         effects = createEffects();
+
+        // initialize common controls
+        addCommonControls();
+
+        // add controls for any parameters found in the created effects
         for (LXParameter parameter : getPatternParameters()) {
             addParameter(parameter.getLabel(), parameter);
         }
-        registerColorControl();
     }
 
     protected Collection<LXParameter> getPatternParameters() {

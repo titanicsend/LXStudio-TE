@@ -3,8 +3,6 @@ package titanicsend.pattern.jon;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.Tempo;
-import heronarts.lx.color.LXColor;
-import heronarts.lx.color.LinkedColorParameter;
 
 import heronarts.lx.modulator.Click;
 import heronarts.lx.parameter.CompoundParameter;
@@ -16,6 +14,8 @@ import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
+
+// TODO - NEEDS FULL CONVERSION TO COMMON CONTROLS
 
 @LXCategory("Native Shaders Panels")
 public class FourStar extends TEPerformancePattern {
@@ -37,13 +37,6 @@ public class FourStar extends TEPerformancePattern {
 
     public FourStar(LX lx) {
         super(lx);
-        addDivisionParam();
-        addParameter("energy", energy);
-
-        tempoDivisionClick.tempoSync.setValue(true);
-        tempoDivisionClick.tempoDivision.setValue(tempoDivision.getValue());
-        startModulator(tempoDivisionClick);
-        tempoDivision.bang();
 
         // create new effect with alpha on and no automatic
         // parameter uniforms
@@ -51,6 +44,18 @@ public class FourStar extends TEPerformancePattern {
         ShaderOptions options = new ShaderOptions();
         options.useAlpha(true);
         options.useLXParameterUniforms(false);
+
+        // register common controls with the UI
+        addCommonControls();
+
+        // add this pattern's custom controls
+        addDivisionParam();
+        addParameter("energy", energy);
+
+        tempoDivisionClick.tempoSync.setValue(true);
+        tempoDivisionClick.tempoDivision.setValue(tempoDivision.getValue());
+        startModulator(tempoDivisionClick);
+        tempoDivision.bang();
 
         effect = new NativeShaderPatternEffect("fourstar.fs",
                 PatternTarget.allPanelsAsCanvas(this), options);
@@ -75,6 +80,7 @@ public class FourStar extends TEPerformancePattern {
     // Initialize the NativeShaderPatternEffect and retrieve the native shader object
     // from it when the pattern becomes active
     public void onActive() {
+        super.onActive();
         effect.onActive();
         shader = effect.getNativeShader();
     }

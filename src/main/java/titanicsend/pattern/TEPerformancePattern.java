@@ -54,11 +54,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
         public TECommonControls setControl(TEControlTag tag, LXListenableParameter lxp, _CommonControlGetter getFn) {
             TEControl newControl = new TEControl(lxp, getFn);
-            if (controlList.get(tag) != null) {
-                removeParameter(tag.getPath());
-            }
             controlList.put(tag, newControl);
-            addParameter(tag.getPath(), lxp);
             return this;
         }
 
@@ -105,13 +101,29 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             return this;
         }
 
-        public void registerCommonControls() {
-            for (TEControlTag tag : controlList.keySet()) {
+        /**
+         * To use the common controls, call this function from the constructor
+         * of TEPerformancePattern-derived classes after configuring the default
+         * controls for your pattern.
+         *
+         * If your pattern adds its own controls in addition to the common
+         * controls, you must call addParameter() for them after callling
+         * this function so the UI stays consistent across pattterns.
+         */
+        public void addCommonControls() {
+            registerColorControl();
+
+            // controls will be added in the order their tags appear in the
+            // TEControlTag enum
+            for (TEControlTag tag : TEControlTag.values()) {
                 addParameter(tag.getPath(), controlList.get(tag).control);
             }
         }
 
-        public void unregisterCommonControls() {
+        /**
+         * Included for consistency. We may need it later.
+         */
+        public void removeCommonControls() {
             for (TEControlTag tag : controlList.keySet()) {
                 removeParameter(tag.getPath());
             }
@@ -123,17 +135,20 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
             p = new CompoundParameter("Speed", 0.1, -1.0, 1.0)
                     .setPolarity(LXParameter.Polarity.BIPOLAR)
+                    .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
                     .setExponent(2.0)
                     .setDescription("Speed");
             setControl(TEControlTag.SPEED, p, defaultGetFn);
 
             p = new CompoundParameter("xPos", 0, -1.0, 1.0)
                     .setPolarity(LXParameter.Polarity.BIPOLAR)
+                    .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
                     .setDescription("X Position");
             setControl(TEControlTag.XPOS, p, defaultGetFn);
 
             p = new CompoundParameter("yPos", 0, -1.0, 1.0)
                     .setPolarity(LXParameter.Polarity.BIPOLAR)
+                    .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
                     .setDescription("Y Position");
             setControl(TEControlTag.YPOS, p, defaultGetFn);
 
@@ -148,6 +163,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             p = (CompoundParameter)
                     new CompoundParameter("Spin", 0, -1.0, 1.0)
                             .setPolarity(LXParameter.Polarity.BIPOLAR)
+                            .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
                             .setExponent(2)
                             .setDescription("Spin");
             setControl(TEControlTag.SPIN, p, defaultGetFn);
@@ -186,25 +202,15 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             return this;
         }
 
-        TECommonControls(boolean setupColor) {
-            // Some derived classes, notably ConstructedPattern, will crash if we
-            // don't defer registering the color control until the pattern
-            // hierarchy is fully created. TECommonControls(false) allows us
-            // to put this off in this constructor.  The derived class can
-            // then call registerColorControl() when ready.
-            if (setupColor) {
-                registerColorControl();
-            }
-
-            // Add the user replaceable controls
+        TECommonControls() {
+            // Create the user replaceable controls
+            // derived classes must call addCommonControls() in their
+            // constructor to add them to the UI.
             buildDefaultControlList();
-            //registerCommonControls();
         }
     }
+    protected double timeMultiplier;
 
-    protected double maxRotationsPerSecond;
-    protected double maxRotationsPerBeat;
-    protected double maxTimeMultiplier;
     public VariableSpeedTimer iTime;
 
     protected VariableSpeedTimer spinTimer;
@@ -214,23 +220,18 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     protected TEPerformancePattern(LX lx, boolean doColorSetup) {
         super(lx);
-        maxRotationsPerSecond = 4.0;
-        maxRotationsPerBeat = 4.0;
-        maxTimeMultiplier = 8.0;
+        timeMultiplier = 4.0;
 
         iTime = new VariableSpeedTimer();
         spinTimer = new VariableSpeedTimer();
-        controls = new TECommonControls(doColorSetup);
-        ;
+        controls = new TECommonControls();
     }
 
     protected TEPerformancePattern(LX lx) {
         this(lx, true);
     }
 
-    public void registerColorControl() {
-        this.controls.registerColorControl();
-    }
+    public void addCommonControls() { this.controls.addCommonControls(); }
 
     public FloatBuffer getCurrentPalette() {
         int col;
@@ -254,36 +255,33 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         return palette;
     }
 
-    public void setMaxRotationsPerSecond(double maxRotationsPerSecond) {
-        this.maxRotationsPerSecond = maxRotationsPerSecond;
-    }
-
-    public void setMaxRotationsPerBeat(double maxRotationsPerBeat) {
-        this.maxRotationsPerBeat = maxRotationsPerBeat;
-    }
-
-    public void setMaxTimeMultiplier(double m) {
-        this.maxTimeMultiplier = m;
+    public void setTimeMultiplier(double m) {
+        this.timeMultiplier = m;
     }
 
     /**
-     * @return Returns the current rotation angle in radians, derived from a real-time LFO, the setting
-     * of the "spin" control, and the constant MAX_ROTATIONS_PER_SECOND. If current spin rate is 0,
-     * returned angle will also be zero, to allow easy reset of patterns.
+     * @return Returns a loosely beat-linked rotation angle in radians.  Overall speed
+     * is determined by the "Speed" control, but will automatically speed up and slow down
+     * as the LX engine's beat speed changes.
+     * If current speed is zero, returned angle will also be zero, to allow easy reset of patterns.
      */
-    public double getRotationAngle() {
-        return (getSpin() != 0) ? LX.TWO_PI * (spinTimer.getTime() % 1) : 0;
+    public double getRotationAngleFromSpeed() {
+        // Loosely beat linked speed.  What this thinks it's doing is moving at one complete rotation
+        // per beat, based on the elapsed time and the engine's bpm rate.
+        // But since we're using variable time, we can speed it up and slow it down smoothly, and still
+        // have it moving more-or-less in sync with the beat.
+        return (getSpeed() != 0) ? (LX.TWO_PI*(lx.engine.tempo.bpm()/60) * iTime.getTime()) % LX.TWO_PI : 0;
     }
 
     /**
-     * @return Returns the current rotation angle in radians, derived from the sawtooth wave provided
-     * by getTempo().basis(), the setting of the "spin" control, and a preset maximum rotations
-     * per beat. If current spin rate is 0, returned angle will also be zero, to allow easy reset of patterns.
+     * @return Returns a loosely beat-linked rotation angle in radians.  Overall speed
+     * is determined by the "Spin" control, but will automatically speed up and slow down
+     * as the LX engine's beat speed changes.
+     * If current speed is zero, returned angle will also be zero, to allow easy reset of patterns.
      */
-    public double getRotationAngleOverBeat() {
-        return (getSpin() != 0) ?
-                LX.TWO_PI * this.getTempo().basis() * (controls.getValue(TEControlTag.SPIN) * maxRotationsPerBeat) :
-                0;
+    public double getRotationAngleFromSpin() {
+        // See comments in getRotationAngleFromSpeed() above.
+        return (getSpin() != 0) ? (LX.TWO_PI*(lx.engine.tempo.bpm()/60) * spinTimer.getTime()) % LX.TWO_PI : 0;
     }
 
     public int getCurrentColor() {
@@ -312,7 +310,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     /**
      * For most uses, getRotationAngle() is recommended, but if you
-     * need direct acces to the spin control value, here it is.
+     * need direct access to the spin control value, here it is.
      */
     public double getSpin() {
         return controls.getValue(TEControlTag.SPIN);
@@ -335,11 +333,11 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     }
 
     protected void run(double deltaMs) {
-
-        iTime.setScale(getSpeed() * maxTimeMultiplier);
-        iTime.tick();
-        spinTimer.setScale(getSpin() * maxRotationsPerSecond);
+        spinTimer.setScale(getSpin());
         spinTimer.tick();
+        iTime.setScale(getSpeed() * timeMultiplier);
+        iTime.tick();
+
 
         super.run(deltaMs);
     }

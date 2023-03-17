@@ -63,21 +63,18 @@ public class PatternControlData {
     }
 
     /**
-     * @return Returns the current rotation angle in radians, derived from a real-time LFO, the setting
-     * of the "spin" control, and the constant MAX_ROTATIONS_PER_SECOND
+     * @return Returns the current rotation angle in radians, derived from the lx engine's
+     * current beat rate, and the beatFactor value passed in.  (This is usually a control
+     * value.
      */
-    public double getRotationAngle() {
-        return parent.getRotationAngle();
+    public double getRotationAngleFromSpin() {
+        return parent.getRotationAngleFromSpin();
     }
 
-    /**
-     * @return Returns the current rotation angle in radians, derived from the sawtooth wave provided
-     * by getTempo().basis(), the setting of the "spin" control, and a preset maximum rotations
-     * per beat.
-     */
-    public double getRotationAngleOverBeat() {
-        return parent.getRotationAngleOverBeat();
+    public double getRotationAngleFromSpeed() {
+        return parent.getRotationAngleFromSpeed();
     }
+
 
     public int getCurrentColor() {
         return parent.getCurrentColor();

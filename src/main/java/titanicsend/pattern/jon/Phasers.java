@@ -20,22 +20,11 @@ public class Phasers extends TEPerformancePattern {
 
     // energy pulses brightness to the beat
     public final CompoundParameter energy =
-            new CompoundParameter("Energy", .15, 0, 1)
-                    .setDescription("Oh boy...");
-
-    /* not used at the moment
-    protected final CompoundParameter beatScale = (CompoundParameter)
-            new CompoundParameter("Speed", 60, 120, 1)
-                    .setExponent(1)
-                    .setUnits(LXParameter.Units.INTEGER)
-                    .setDescription("Overall movement speed");
-
-     */
+            new CompoundParameter("Energy", .1, 0, .4)
+                    .setDescription("Dance!");
 
     public Phasers(LX lx) {
         super(lx);
-
-        addParameter("energy", energy);
 
         // create new effect with alpha on and no automatic
         // parameter uniforms
@@ -52,14 +41,17 @@ public class Phasers extends TEPerformancePattern {
         controls.setRange(TEControlTag.XPOS, 0, -0.5, 0.5)
         .setRange(TEControlTag.YPOS, 0, -0.5, 0.5);
 
-        // start with a little spin
-        controls.setValue(TEControlTag.SPIN,-0.08);
-
-        // Wow1 makes the "phaser" dance to the beat a little
-        controls.setValue(TEControlTag.WOW1, 0.0);
+        // Wow1 breaks the image into slices
+        controls.setRange(TEControlTag.WOW1, 0.0,0,0.9);
 
         // Wow2 is the fog brightness
         controls.setRange(TEControlTag.WOW2, 2, 0, 4);
+
+        // After configuring all the common controls, register them with the UI
+        addCommonControls();
+
+        // Add any extra controls used by this pattern
+        addParameter("energy", energy);
 
         // Create the underlying shader pattern
         effect = new NativeShaderPatternEffect("phasers.fs",
@@ -68,25 +60,31 @@ public class Phasers extends TEPerformancePattern {
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
+
         // Sound reactivity - various brightness features are related to energy
         float e = energy.getValuef();
         shader.setUniform("energy", e * e);
 
-        // Overriding a default uniform -- setting it in user code has priority
-        shader.setUniform("iRotationAngle",(float) getRotationAngleOverBeat());
+        // Overriding a default uniform -- setting it in user code has priority.
+        //
+        // Here, iRotationAngle will be used to rotate the beam angle, and will be
+        // controlled by the speed control, rather than by the default spin control.
+        shader.setUniform("iRotationAngle",(float) getRotationAngleFromSpeed());
 
-        // movement speed is beat divided by the current time division
-        //shader.setUniform("basis",tempoDivisionClick.getBasisf());
+        // And we'll create a new, separate uniform using the spin control to rotate
+        // the entire canvas.
+        shader.setUniform("iCanvasAngle",(float) getRotationAngleFromSpin());
 
         // run the shader
         effect.run(deltaMs);
     }
 
     @Override
-    // THIS IS REQUIRED if you're not using ConstructedPattern!
+    // THIS IS REQUIRED for shader-based patterns if you're not using ConstructedPattern!
     // Initialize the NativeShaderPatternEffect and retrieve the native shader object
     // from it when the pattern becomes active
     public void onActive() {
+        super.onActive();
         effect.onActive();
         shader = effect.getNativeShader();
     }
