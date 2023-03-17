@@ -1,14 +1,20 @@
-
-uniform float glow;
-uniform float hScan;
-uniform float yPos1;
-uniform float yPos2;
 uniform float energy;
 
 const float halfpi = 3.1415926 / 2.;
+const float twopi = 3.1415926 * 2.;
 const float xPos1 = -0.285;
 const float xPos2 = 0.315;
 const float yCenter = 0.3;
+
+#define glow iWow2
+
+// accumulator for "Wow Trigger" effect
+float zapper = 0.0;
+
+// Domain repeats
+vec2 repeat2D(vec2 p, vec2 size) {
+	return mod(p + size*0.5,size) - size*0.5;
+}
 
  // rand [0,1]
  float rand(vec2 p) {
@@ -38,6 +44,25 @@ const float yCenter = 0.3;
      return r;
  }
 
+ float circle(float radius, vec2 pos){
+	return radius - length(pos);
+}
+
+// polar domain repeats around vehicle center
+float modPolar(inout vec2 p, float repetitions) {
+	float angle = twopi/repetitions;
+	float a = atan(p.y, p.x) + angle/2.;
+	float r = length(p);
+	float c = floor(a/angle);
+	a = mod(a,angle) - angle/2.;
+	p = vec2(cos(a), sin(a))*r;
+	// For an odd number of repetitions, fix cell index of the cell in -x direction
+	// (cell index would be e.g. -5 and 5 in the two halves of the cell):
+	if (abs(c) >= (repetitions/2)) c = abs(c);
+	return c;
+}
+
+
 // beam emphasizing laser generator!
 float laser(vec2 p, vec2 offset, float angle, float beams) {
 
@@ -53,13 +78,16 @@ float laser(vec2 p, vec2 offset, float angle, float beams) {
 	float wave = 0.5+0.5*sin(halfpi - theta*beams);
 
     // narrow the glow a little
-    float glw = pow(wave,40/beams );
+    float glw = pow(wave,40./beams );
 
     // narrow the actual laser beam (a lot!)
-    float lzr = glw + smoothstep(0.0035,0.,1.-glw);
+    //float lzr = glw + smoothstep(0.0035,0.,1.-glw);
+    float lzr = glw + smoothstep(.15,0.,1.-glw);
 
     // add part of the original wave fn for extra glow
     // the divisor
+
+    zapper += (iWowTrigger) ? smoothstep(0.12,0.35,circle(beat/2.45,p)) : 0.0 ;
 	return lzr+glw;
 }
 
@@ -77,23 +105,30 @@ float clouds(vec2 uv) {
 void mainImage( out vec4 fragColor, in vec2 fragCoord) {
   vec2 uv = -0.5+fragCoord/max(iResolution.x,iResolution.y);
 
+  modPolar(uv,1.0 + iWow1 * 12.0);
+  uv = repeat2D(uv,vec2(1.0-iWow1));
+  uv *= iScale;
+
   // noise to modulate beam brightness
   float n = 1.+(3.*noise(vec2(iTime*11.,iTime * 5.)));
 
   // control beam movement in x and y
-  float xOffset = hScan * sin(beat * 10.);
-  float yOffset = yCenter + (iWow1 * fract(iTime));
+  float xOffset = energy * sin(beat * 10.);
+  float yOffset = yCenter; // + (scan * fract(iTime));
 
   // generate a beam for each end of the vehicle
-    vec2 offset  = vec2(xPos1+xOffset, fract(-yPos1 + yOffset));
+    vec2 offset  = vec2(iTranslate.x+xPos1+xOffset, fract(-iTranslate.y + yOffset));
 	float l = n * laser(uv, offset, iRotationAngle, iQuantity);
 
-    offset = vec2(xPos2-xOffset, fract(-yPos2 + yOffset));
+    offset = vec2(iTranslate.x+xPos2-xOffset, fract(-iTranslate.y + yOffset));
     l += n * laser(uv, offset, iRotationAngle, iQuantity);
 
-  // add fog and go
-  // TODO - what do do about alpha?  We just blast the whole surface for now.
+  // add fog, compose final color and go
   float c = clouds(uv);
-  vec3 fog = iColorRGB * c * glow;
-  fragColor = vec4(fog+(iColorRGB * l * (c+(0.5*energy*beat))),1.);
+  vec3 col = iColorRGB * c * glow;
+  col += iColorRGB * l * (c+(0.5*energy*beat));
+  col = col + zapper;  // add iWowTrigger effect
+
+  // alpha is taken from the brightest color channel value.
+  fragColor = vec4(col,sqrt(max(col.r,max(col.g,col.b))));
 }

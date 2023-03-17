@@ -247,6 +247,7 @@ public class NativeShader implements GLEventListener {
         setUniform("iScale", (float) ctl.getSize());
         setUniform("iQuantity", (float) ctl.getQuantity());
         setUniform("iTranslate", (float) ctl.getXPos(), (float) ctl.getYPos());
+        setUniform("iSpin",(float) ctl.getSpin());
         setUniform("iRotationAngle", (float) ctl.getRotationAngle());
         setUniform("iBrightness", (float) ctl.getBrightness());
         setUniform("iWow1", (float) ctl.getWow1());

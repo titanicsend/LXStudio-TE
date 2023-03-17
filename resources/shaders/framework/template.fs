@@ -23,6 +23,7 @@ uniform float iSpeed;
 uniform float iScale;
 uniform float iQuantity;
 uniform vec2 iTranslate;
+uniform float iSpin;
 uniform float iRotationAngle;
 uniform float iBrightness;
 uniform float iWow1;

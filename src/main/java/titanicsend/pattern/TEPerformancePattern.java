@@ -17,8 +17,10 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     public class TECommonControls {
 
-        // accessible control objects for each standard control
+        // color control is accessible, in case the pattern needs something
+        // other than the current color.
         public LinkedColorParameter color;
+
 
         _CommonControlGetter defaultGetFn = new _CommonControlGetter() {
             @Override
@@ -27,7 +29,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             }
         };
 
-        public HashMap<TEControlTag, TEControl> controlList = new HashMap<TEControlTag, TEControl>();
+        private HashMap<TEControlTag, TEControl> controlList = new HashMap<TEControlTag, TEControl>();
 
         /**
          * Retrieve control object for given tag
@@ -45,18 +47,19 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          *
          * @param tag
          */
-        double getValue(TEControlTag tag) {
+        protected double getValue(TEControlTag tag) {
             TEControl ctl = controlList.get(tag);
             return ctl.getFn.getValue(ctl);
         }
 
-        public void setControl(TEControlTag tag, LXListenableParameter ctl, _CommonControlGetter getFn) {
-            TEControl newControl = new TEControl(ctl, getFn);
+        public TECommonControls setControl(TEControlTag tag, LXListenableParameter lxp, _CommonControlGetter getFn) {
+            TEControl newControl = new TEControl(lxp, getFn);
             if (controlList.get(tag) != null) {
                 removeParameter(tag.getPath());
             }
             controlList.put(tag, newControl);
-            addParameter(tag.getPath(), ctl);
+            addParameter(tag.getPath(), lxp);
+            return this;
         }
 
         /**
@@ -66,11 +69,12 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          * @param tag
          * @param getFn
          */
-        public void setGetterFunction(TEControlTag tag, _CommonControlGetter getFn) {
+        public TECommonControls setGetterFunction(TEControlTag tag, _CommonControlGetter getFn) {
             controlList.get(tag).getFn = getFn;
+            return this;
         }
 
-        public void setRange(TEControlTag tag, double value, double v0, double v1) {
+        public TECommonControls setRange(TEControlTag tag, double value, double v0, double v1) {
             // copy data from previous tag
             CompoundParameter oldControl = (CompoundParameter) getLXControl(tag);
             CompoundParameter newControl = (CompoundParameter) new CompoundParameter(oldControl.getLabel(), value, v0, v1)
@@ -80,22 +84,25 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                     .setUnits(oldControl.getUnits());
 
             setControl(tag, newControl, defaultGetFn);
-            oldControl.dispose();
+            return this;
         }
 
-        public void setExponent(TEControlTag tag, double exp) {
+        public TECommonControls setExponent(TEControlTag tag, double exp) {
             CompoundParameter p = (CompoundParameter) getLXControl(tag);
             p.setExponent(exp);
+            return this;
         }
 
-        public void setNormalizationCurve(TEControlTag tag, BoundedParameter.NormalizationCurve curve) {
+        public TECommonControls setNormalizationCurve(TEControlTag tag, BoundedParameter.NormalizationCurve curve) {
             CompoundParameter p = (CompoundParameter) getLXControl(tag);
             p.setNormalizationCurve(curve);
+            return this;
         }
 
-        public void setUnits(TEControlTag tag, LXParameter.Units units) {
+        public TECommonControls setUnits(TEControlTag tag, LXParameter.Units units) {
             CompoundParameter p = (CompoundParameter) getLXControl(tag);
             p.setUnits(units);
+            return this;
         }
 
         public void registerCommonControls() {
@@ -116,17 +123,16 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
             p = new CompoundParameter("Speed", 0.1, -1.0, 1.0)
                     .setPolarity(LXParameter.Polarity.BIPOLAR)
-                    .setExponent(3.0)
+                    .setExponent(2.0)
                     .setDescription("Speed");
             setControl(TEControlTag.SPEED, p, defaultGetFn);
 
-            p = new CompoundParameter("xPos1", 0, -1.0, 1.0)
+            p = new CompoundParameter("xPos", 0, -1.0, 1.0)
                     .setPolarity(LXParameter.Polarity.BIPOLAR)
                     .setDescription("X Position");
             setControl(TEControlTag.XPOS, p, defaultGetFn);
 
-
-            p = new CompoundParameter("yPos1", 0, -1.0, 1.0)
+            p = new CompoundParameter("yPos", 0, -1.0, 1.0)
                     .setPolarity(LXParameter.Polarity.BIPOLAR)
                     .setDescription("Y Position");
             setControl(TEControlTag.YPOS, p, defaultGetFn);
@@ -142,7 +148,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             p = (CompoundParameter)
                     new CompoundParameter("Spin", 0, -1.0, 1.0)
                             .setPolarity(LXParameter.Polarity.BIPOLAR)
-                            .setExponent(3)
+                            .setExponent(2)
                             .setDescription("Spin");
             setControl(TEControlTag.SPIN, p, defaultGetFn);
 
@@ -162,10 +168,9 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                     .setMode(BooleanParameter.Mode.MOMENTARY)
                     .setDescription("Trigger WoW effects");
             setControl(TEControlTag.WOWTRIGGER, p, defaultGetFn);
-
         }
 
-        void registerColorControl() {
+        protected void registerColorControl() {
             color = registerColor("Color", "te_color", ColorType.PRIMARY,
                     "Panel Color");
         }
@@ -176,11 +181,17 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          * @param tag
          * @param val - the value to set
          */
-        public void setValue(TEControlTag tag, double val) {
+        public TECommonControls setValue(TEControlTag tag, double val) {
             getLXControl(tag).setValue(val);
+            return this;
         }
 
         TECommonControls(boolean setupColor) {
+            // Some derived classes, notably ConstructedPattern, will crash if we
+            // don't defer registering the color control until the pattern
+            // hierarchy is fully created. TECommonControls(false) allows us
+            // to put this off in this constructor.  The derived class can
+            // then call registerColorControl() when ready.
             if (setupColor) {
                 registerColorControl();
             }
@@ -320,7 +331,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     }
 
     public boolean getWowTrigger() {
-        return controls.getValue(TEControlTag.WOWTRIGGER) > 0.5f;
+        return controls.getValue(TEControlTag.WOWTRIGGER) > 0.0;
     }
 
     protected void run(double deltaMs) {

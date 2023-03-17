@@ -15,81 +15,65 @@ import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 public class Phasers extends TEPerformancePattern {
     NativeShaderPatternEffect effect;
     NativeShader shader;
-    VariableSpeedTimer vTime;
 
-    // Controls
-    // In this pattern the "energy" is how quickly the scenes can progress,
-    // IE shorter tempoDivisions
+    // Pattern-specific controls
 
-    public final CompoundParameter glow =
-            new CompoundParameter("Fog", 0.75, 0, 2)
-                    .setDescription("Fog glow level");
-
-    public final CompoundParameter hScan =
-            new CompoundParameter("Dance", 0.000, 0., 0.035)
-                    .setDescription("Horizontal Movement");
-
-    public final BooleanParameter vScan =
-            new BooleanParameter("Scan", false)
-                    .setDescription("Vertical movement");
-
-    public final CompoundParameter yPos1 =
-            new CompoundParameter("yPos1", 0f, -0.5, 0.5)
-                    .setDescription("Beam 1 Y");
-
-    public final CompoundParameter yPos2 =
-            new CompoundParameter("yPos2", 0f, -0.5, 0.5)
-                    .setDescription("Beam 2 Y");
-
+    // energy pulses brightness to the beat
     public final CompoundParameter energy =
             new CompoundParameter("Energy", .15, 0, 1)
                     .setDescription("Oh boy...");
 
+    /* not used at the moment
     protected final CompoundParameter beatScale = (CompoundParameter)
             new CompoundParameter("Speed", 60, 120, 1)
                     .setExponent(1)
                     .setUnits(LXParameter.Units.INTEGER)
                     .setDescription("Overall movement speed");
 
+     */
 
     public Phasers(LX lx) {
         super(lx);
-        addParameter("glow",glow);
-        addParameter("hScan",hScan);
-        addParameter("vScan",vScan);
-        addParameter("yPos1",yPos1);
-        addParameter("yPos2",yPos2);
+
         addParameter("energy", energy);
-        addParameter("beatScale",beatScale);
 
         // create new effect with alpha on and no automatic
         // parameter uniforms
-
         ShaderOptions options = new ShaderOptions();
         options.useAlpha(true);
         options.useLXParameterUniforms(false);
 
-        controls.setRange(TEControlTag.QUANTITY,2,1,8);
-        controls.setUnits(TEControlTag.QUANTITY,LXParameter.Units.INTEGER);
+        // set parameters for common controls
 
+        // start with beam split 3 ways
+        controls.setRange(TEControlTag.QUANTITY, 3, 1, 8)
+        .setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
+
+        controls.setRange(TEControlTag.XPOS, 0, -0.5, 0.5)
+        .setRange(TEControlTag.YPOS, 0, -0.5, 0.5);
+
+        // start with a little spin
+        controls.setValue(TEControlTag.SPIN,-0.08);
+
+        // Wow1 makes the "phaser" dance to the beat a little
+        controls.setValue(TEControlTag.WOW1, 0.0);
+
+        // Wow2 is the fog brightness
+        controls.setRange(TEControlTag.WOW2, 2, 0, 4);
+
+        // Create the underlying shader pattern
         effect = new NativeShaderPatternEffect("phasers.fs",
                 PatternTarget.allPanelsAsCanvas(this), options);
-
-        vTime = new VariableSpeedTimer();
     }
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
-        vTime.tick();
-
-        shader.setUniform("glow",glow.getValuef());
-        shader.setUniform("hScan",hScan.getValuef());
-        shader.setUniform("yPos1",yPos1.getValuef());
-        shader.setUniform("yPos2",yPos2.getValuef());
-
         // Sound reactivity - various brightness features are related to energy
         float e = energy.getValuef();
-        shader.setUniform("energy",e*e);
+        shader.setUniform("energy", e * e);
+
+        // Overriding a default uniform -- setting it in user code has priority
+        shader.setUniform("iRotationAngle",(float) getRotationAngleOverBeat());
 
         // movement speed is beat divided by the current time division
         //shader.setUniform("basis",tempoDivisionClick.getBasisf());
