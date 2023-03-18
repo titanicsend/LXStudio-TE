@@ -181,6 +181,7 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
     lx.registry.addPattern(PixelblazeParallel.class);
     lx.registry.addPattern(SolidEdge.class);
     lx.registry.addPattern(SolidPanel.class);
+    lx.registry.addPattern(SpiralDiamonds.class);
     lx.registry.addPattern(PulsingTriangles.class);
     lx.registry.addPattern(HandTracker.class);
     lx.registry.addPattern(Fireflies.class);
