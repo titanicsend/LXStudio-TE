@@ -21,7 +21,10 @@ double getRotationAngleFromSpin()  -- rotation speed determined by spin control
 
 - If your pattern has a GLSL shader, use the uniform variables listed below to get control values.
 
-See jon/phasers.java and resources/shaders/phasers.fs for an example.
+### Examples:
+- jon/phasers.java (and resources/shaders/phasers.fs) is a Java/shader hybrid pattern that uses
+all 10 controls.
+- jon/SpiralDiamonds.java shows how to use the common controls in a pure Java pattern
 
 ## What is TEPerformancePattern:
 
