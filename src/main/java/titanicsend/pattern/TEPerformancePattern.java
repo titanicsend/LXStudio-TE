@@ -234,7 +234,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     public void addCommonControls() { this.controls.addCommonControls(); }
 
     public FloatBuffer getCurrentPalette() {
-        int col;
         float r, g, b;
 
         if (palette != null) {
