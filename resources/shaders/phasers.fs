@@ -127,10 +127,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord) {
   float yOffset = yCenter + energy * -beatSine;
 
   // generate a beam for each end of the vehicle
-    vec2 offset  = vec2(iTranslate.x+xPos1+xOffset, fract(-iTranslate.y + yOffset));
+    vec2 offset  = vec2(xPos1+xOffset, fract(yOffset));
 	float l = n * laser(uv, offset, iRotationAngle, iQuantity);
 
-    offset = vec2(iTranslate.x+xPos2-xOffset, fract(-iTranslate.y + yOffset));
+    offset = vec2(xPos2-xOffset, fract(yOffset));
     l += n * laser(uv, offset, iRotationAngle, iQuantity);
 
   // add fog, compose final color and go

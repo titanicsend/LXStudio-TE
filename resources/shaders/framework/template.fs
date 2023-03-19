@@ -45,6 +45,12 @@ uniform sampler2D iChannel3;
 {{%shader_body%}}
 
 void main() {
-    mainImage(finalColor, gl_FragCoord.xy);
+    // translate according to XPos and YPos controls
+    // can't really scale here, because 'good' scaling behavior depends a lot
+    // on what's being rendered.
+    mainImage(finalColor, iScale * gl_FragCoord.xy-(iTranslate * iResolution));
+
+    // The brightness control works as "contrast".  It sets the brightness of colors, without
+    // affecting transparency.
     finalColor.rgb *= iBrightness;
 }
