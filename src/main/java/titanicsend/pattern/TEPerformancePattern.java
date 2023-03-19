@@ -58,6 +58,12 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             return this;
         }
 
+        public TECommonControls setControl(TEControlTag tag, LXListenableParameter lxp) {
+            TEControl newControl = new TEControl(lxp, defaultGetFn);
+            controlList.put(tag, newControl);
+            return this;
+        }
+
         /**
          * Sets a new getter function (an object implementing the _CommonControlGetter
          * interface) for specified tag's control.
@@ -79,7 +85,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                     .setExponent(oldControl.getExponent())
                     .setUnits(oldControl.getUnits());
 
-            setControl(tag, newControl, defaultGetFn);
+            setControl(tag, newControl);
             return this;
         }
 
@@ -138,27 +144,27 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                     .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
                     .setExponent(2.0)
                     .setDescription("Speed");
-            setControl(TEControlTag.SPEED, p, defaultGetFn);
+            setControl(TEControlTag.SPEED, p);
 
             p = new CompoundParameter("xPos", 0, -1.0, 1.0)
                     .setPolarity(LXParameter.Polarity.BIPOLAR)
                     .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
                     .setDescription("X Position");
-            setControl(TEControlTag.XPOS, p, defaultGetFn);
+            setControl(TEControlTag.XPOS, p);
 
             p = new CompoundParameter("yPos", 0, -1.0, 1.0)
                     .setPolarity(LXParameter.Polarity.BIPOLAR)
                     .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
                     .setDescription("Y Position");
-            setControl(TEControlTag.YPOS, p, defaultGetFn);
+            setControl(TEControlTag.YPOS, p);
 
             p = new CompoundParameter("Size", 1, 0.01, 5.0)
                     .setDescription("Size");
-            setControl(TEControlTag.SIZE, p, defaultGetFn);
+            setControl(TEControlTag.SIZE, p);
 
             p = new CompoundParameter("Quantity", 0.5, 0, 1.0)
                     .setDescription("Quantity");
-            setControl(TEControlTag.QUANTITY, p, defaultGetFn);
+            setControl(TEControlTag.QUANTITY, p);
 
             p = (CompoundParameter)
                     new CompoundParameter("Spin", 0, -1.0, 1.0)
@@ -166,24 +172,24 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                             .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
                             .setExponent(2)
                             .setDescription("Spin");
-            setControl(TEControlTag.SPIN, p, defaultGetFn);
+            setControl(TEControlTag.SPIN, p);
 
             p = new CompoundParameter("Brightness", 1.0, 0.0, 1.0)
                     .setDescription("Brightness");
-            setControl(TEControlTag.BRIGHTNESS, p, defaultGetFn);
+            setControl(TEControlTag.BRIGHTNESS, p);
 
             p = new CompoundParameter("Wow1", 0, 0, 1.0)
                     .setDescription("Wow 1");
-            setControl(TEControlTag.WOW1, p, defaultGetFn);
+            setControl(TEControlTag.WOW1, p);
 
             p = new CompoundParameter("Wow2", 0, 0, 1.0)
                     .setDescription("Wow 2");
-            setControl(TEControlTag.WOW2, p, defaultGetFn);
+            setControl(TEControlTag.WOW2, p);
 
             p = new BooleanParameter("WowTrigger", false)
                     .setMode(BooleanParameter.Mode.MOMENTARY)
                     .setDescription("Trigger WoW effects");
-            setControl(TEControlTag.WOWTRIGGER, p, defaultGetFn);
+            setControl(TEControlTag.WOWTRIGGER, p);
         }
 
         protected void registerColorControl() {
