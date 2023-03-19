@@ -82,12 +82,12 @@ color control, they can be modified or even completely replaced.
 These functions can be called directly from TEPerformancePattern, and are used to override a control's 
 default getter function, or to replace the control with a completely new one.
 
-```void setControl(TEControlTag tag,LXListenableParameter lxp,_CommonControlGetter getFn)```  - installs a completely new
-control and associated "getter" function for the specified control type.
-
-```void SetGetterFunction(TEControlTag tag, _CommonControlGetter getFn```)  - lets you use a custom getter function
-for a currently installed control, if you need to scale the output or calculate its value using
-other inputs.
+- ```void setControl(TEControlTag tag,LXListenableParameter lxp)``` - installs a new control 
+using the default getter function for the specified control type.
+- ```void setControl(TEControlTag tag,LXListenableParameter lxp,_CommonControlGetter getFn)```  - installs a
+new control and a custom getter function for the specified control type.
+- ```void SetGetterFunction(TEControlTag tag, _CommonControlGetter getFn```)  - installs a custom getter function
+for the specified existing control.
 
 For example, to make a custom getter function for the speed control, first define it:
 ```_CommonControlGetter myNewGetter = new _CommonControlGetter() {
