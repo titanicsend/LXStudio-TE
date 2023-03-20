@@ -4,6 +4,7 @@ import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
+import heronarts.lx.command.LXCommand;
 import heronarts.lx.parameter.*;
 import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
@@ -211,14 +212,46 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             // derived classes must call addCommonControls() in their
             // constructor to add them to the UI.
             buildDefaultControlList();
+
         }
     }
+
+    /**
+     * Class to support incremental rotation over variable-speed time
+     */
+    private class Rotor {
+        double angle = 0;
+        double lastTime = 0;
+
+        double getAngle(double time) {
+            // handle startup and the "parked" case
+            if (lastTime == 0) {
+                lastTime = time;
+                return angle;
+            }
+
+            double et = time - lastTime;
+            angle += (LX.TWO_PI * (lx.engine.tempo.bpm() / 60) * et) % LX.TWO_PI;
+            lastTime = time;
+            return angle;
+        }
+
+        void reset() {
+            angle = 0;
+            lastTime = 0;
+        }
+    }
+
     protected double timeMultiplier;
 
     public VariableSpeedTimer iTime;
-
     protected VariableSpeedTimer spinTimer;
+    private Rotor speedRotor;
+    private Rotor spinRotor;
+
     protected TECommonControls controls;
+
+
 
     FloatBuffer palette = Buffers.newDirectFloatBuffer(15);
 
@@ -229,6 +262,9 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         iTime = new VariableSpeedTimer();
         spinTimer = new VariableSpeedTimer();
         controls = new TECommonControls();
+
+        speedRotor = new Rotor();
+        spinRotor = new Rotor();
     }
 
     protected TEPerformancePattern(LX lx) {
@@ -273,7 +309,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         // per beat, based on the elapsed time and the engine's bpm rate.
         // But since we're using variable time, we can speed it up and slow it down smoothly, and still
         // have it moving more-or-less in sync with the beat.
-        return (getSpeed() != 0) ? (LX.TWO_PI*(lx.engine.tempo.bpm()/60) * iTime.getTime()) % LX.TWO_PI : 0;
+        //return (getSpeed() != 0) ? (LX.TWO_PI*(lx.engine.tempo.bpm()/60) * iTime.getTime()) % LX.TWO_PI : 0;
+        return speedRotor.getAngle(iTime.getTime());
     }
 
     /**
@@ -284,7 +321,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
      */
     public double getRotationAngleFromSpin() {
         // See comments in getRotationAngleFromSpeed() above.
-        return (getSpin() != 0) ? (LX.TWO_PI*(lx.engine.tempo.bpm()/60) * spinTimer.getTime()) % LX.TWO_PI : 0;
+        //return (getSpin() != 0) ? (LX.TWO_PI*(lx.engine.tempo.bpm()/60) * spinTimer.getTime()) % LX.TWO_PI : 0;
+        return spinRotor.getAngle(spinTimer.getTime());
     }
 
     public int getCurrentColor() {
