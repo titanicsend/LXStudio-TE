@@ -273,7 +273,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          * Enable or disable automatic rotation, computed from engine bpm
          * and an associated timer.
          */
-        void setMovement(boolean autoSpin) {
+        void setAutospin(boolean autoSpin) {
             this.autoSpin = autoSpin;
         }
 
@@ -328,6 +328,10 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     public void setTimeMultiplier(double m) {
         this.timeMultiplier = m;
+    }
+
+    void setAutospin(boolean autoSpin) {
+        spinRotor.setAutospin(autoSpin);
     }
 
     /**
