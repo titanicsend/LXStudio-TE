@@ -38,6 +38,8 @@ public class Phasers extends TEPerformancePattern {
         controls.setRange(TEControlTag.QUANTITY, 3, 1, 8)
         .setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
 
+        controls.setRange(TEControlTag.SIZE,1,0.5,5);
+
         controls.setRange(TEControlTag.XPOS, 0, -0.5, 0.5)
         .setRange(TEControlTag.YPOS, 0, -0.5, 0.5);
 

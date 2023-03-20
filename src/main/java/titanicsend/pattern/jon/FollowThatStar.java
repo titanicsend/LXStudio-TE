@@ -67,9 +67,6 @@ public class FollowThatStar extends TEPerformancePattern {
         shader.setUniform("iScale", 0.01f + (float) getSize());
         shader.setUniform("glow", glow.getValuef());
 
-        // cycle speed is roughly synced to some multiple of the beat.
-        iTime.setScale(getSpeed() * (float) lx.engine.tempo.bpm() / beatScale.getValuef());
-
         // Sound reactivity - various brightness features are related to energy
         float e = energy.getValuef();
         shader.setUniform("energy", e * e);

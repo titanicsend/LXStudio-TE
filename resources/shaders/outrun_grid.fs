@@ -1,8 +1,15 @@
 #define PI 3.14159265359
+#define TAU PI * 2.0
 #define DEG2RAD PI/180.
 
 // Prevents flickering
 #define SUPERSAMP 8
+
+//  rotate a point around the origin by <angle> radians
+vec2 rotate(vec2 point, float angle) {
+  mat2 rotationMatrix = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
+  return rotationMatrix * point;
+}
 
 // Project camera to world plane with constant worldY (height)
 vec3 revProject(vec2 camPos, float worldY, float fov) {
@@ -15,6 +22,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     vec2 uv = fragCoord / iResolution.xy;
     vec2 p = (fragCoord.xy - iResolution.xy*.5) / iResolution.y;
+
+// uses spin control to set absolute angle
+    p *= iScale;
+    p = rotate(p,TAU * -iSpin);
 
     // Define supersample sizes
     float fragsize = 1. / iResolution.y;
@@ -31,7 +42,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         // Initialize current fragment intensity
         float intensity = 0.;
         // Define the current grid displacement
-        vec3 displace = vec3(3.*sin({%sidewaysSpeed[0,0,5]}*PI*0.1*iTime), {%forwardSpeed[4,0,10]}*iTime, 1.5);
+        vec3 displace = vec3(3.*sin({%sidewaysSpeed[0,0,5]}*PI*0.1*iTime), 6.0*iTime, 1.5);
         // Define the FOV
         float fov = 90.0;
 

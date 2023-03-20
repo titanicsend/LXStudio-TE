@@ -21,7 +21,7 @@ public class PatternControlData {
     }
 
     public double getTime() {
-        return parent.iTime.getTime();
+        return parent.getTime();
     }
 
     /**

@@ -70,10 +70,15 @@ void modPolar(inout vec2 p, float repetitions) {
 // emphasizing the center of the beam, and splitting it <beams> ways.
 float laser(vec2 p, vec2 offset, float angle, float beams) {
 
+   // scale the beam generator positions so they converge in a way
+   // that looks about right. (never mind pesky physics!)
+   offset *= 1./pow(iScale,0.25);
+
    // Rotate (spin the whole beam generator)
    p += offset;
    p *= mat2(cos(angle), -sin(angle),
              sin(angle), cos(angle));
+
 
     // get angle relative to current origin
 	float theta = atan(p.x, p.y);
@@ -82,7 +87,7 @@ float laser(vec2 p, vec2 offset, float angle, float beams) {
 	float wave = 0.5+0.5*sin(halfpi - theta*beams);
 
     // narrow the glow a little
-    float glw = pow(wave,40./beams );
+    float glw =  pow(wave,40./beams) / iScale;
 
     // narrow the actual laser beam (a lot!)
     //float lzr = glw + smoothstep(0.0035,0.,1.-glw);

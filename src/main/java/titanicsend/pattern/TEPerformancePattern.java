@@ -4,7 +4,6 @@ import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
-import heronarts.lx.command.LXCommand;
 import heronarts.lx.parameter.*;
 import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
@@ -30,15 +29,19 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             }
         };
 
-        private HashMap<TEControlTag, TEControl> controlList = new HashMap<TEControlTag, TEControl>();
+        private final HashMap<TEControlTag, TEControl> controlList = new HashMap<TEControlTag, TEControl>();
 
         /**
-         * Retrieve control object for given tag
+         * Retrieve backing LX control object for given tag
          *
          * @param tag
          */
         public LXListenableParameter getLXControl(TEControlTag tag) {
             return controlList.get(tag).control;
+        }
+
+        protected TEControl getControl(TEControlTag tag) {
+            return controlList.get(tag);
         }
 
         /**
@@ -60,7 +63,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         }
 
         public TECommonControls setControl(TEControlTag tag, LXListenableParameter lxp) {
-            return setControl(tag,lxp,defaultGetFn);
+            return setControl(tag, lxp, defaultGetFn);
         }
 
         /**
@@ -110,10 +113,10 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          * To use the common controls, call this function from the constructor
          * of TEPerformancePattern-derived classes after configuring the default
          * controls for your pattern.
-         *
+         * <p>
          * If your pattern adds its own controls in addition to the common
-         * controls, you must call addParameter() for them after callling
-         * this function so the UI stays consistent across pattterns.
+         * controls, you must call addParameter() for them after calling
+         * this function so the UI stays consistent across patterns.
          */
         public void addCommonControls() {
             registerColorControl();
@@ -199,7 +202,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         /**
          * Sets current value for a common control
          *
-         * @param tag
+         * @param tag - tag for control to set
          * @param val - the value to set
          */
         public TECommonControls setValue(TEControlTag tag, double val) {
@@ -218,22 +221,60 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     /**
      * Class to support incremental rotation over variable-speed time
+     * <p>
+     * If autospinning, the rate is tied to the engine bpm and the input time value, which is usually
+     * controlled by the variable speed timer associated with the speed or spin controls.
+     * (but anything with a seconds.millis timer  can generate rotational angles this way.)
      */
-    private class Rotor {
-        double angle = 0;
-        double lastTime = 0;
+    protected class Rotor {
+        private double angle = 0;
+        private double lastTime = 0;
+        private boolean autoSpin = true;
 
-        double getAngle(double time) {
-            // handle startup and the "parked" case
-            if (lastTime == 0) {
-                lastTime = time;
-                return angle;
+        // Internal: Called on every frame to calculate and memoize the current
+        // autospin-generated angle so that calls to getAngle() during a frame
+        // will always return the same value no matter how long the frame
+        // calculations take.
+        void updateAngle(double time, double ctlValue) {
+            // skip basically all of this on the first frame, or if the
+            // control was reset.
+            if (lastTime != 0) {
+
+                // calculate change in angle since last frame.  If autospinning,it's
+                // tied to the engine bpm and the input time value, which is usually
+                // controlled by the variable speed timer associated with the
+                // speed or spin controls.
+                //
+                // if not autospinning, then we do nothing but read the control value
+                // directly and update the elapsed time (so you can switch autoSpin
+                // on and off without causing a visible discontinuity.)
+                if (autoSpin) {
+                    double et = time - lastTime;
+                    angle += (LX.TWO_PI * (lx.engine.tempo.bpm() / 60) * et) % LX.TWO_PI;
+                } else {
+                    angle = ctlValue;
+                }
             }
-
-            double et = time - lastTime;
-            angle += (LX.TWO_PI * (lx.engine.tempo.bpm() / 60) * et) % LX.TWO_PI;
             lastTime = time;
+        }
+
+        /**
+         * @return Current rotational angle, either computed, or taken from
+         */
+        double getAngle() {
             return angle;
+        }
+
+        void setAngle(double angle) {
+            this.angle = angle;
+        }
+
+        /**
+         * Enable or disable automatic rotation, computed from engine bpm
+         * and an associated timer.
+         */
+        void setMovement(boolean autoSpin) {
+            this.autoSpin = autoSpin;
         }
 
         void reset() {
@@ -242,36 +283,27 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         }
     }
 
-    protected double timeMultiplier;
+    private double timeMultiplier;
 
-    public VariableSpeedTimer iTime;
-    protected VariableSpeedTimer spinTimer;
-    private Rotor speedRotor;
-    private Rotor spinRotor;
+    private final VariableSpeedTimer iTime = new VariableSpeedTimer();
+    private final VariableSpeedTimer spinTimer = new VariableSpeedTimer();
+    private final Rotor speedRotor = new Rotor();
+    private final Rotor spinRotor = new Rotor();
 
     protected TECommonControls controls;
 
 
-
     FloatBuffer palette = Buffers.newDirectFloatBuffer(15);
 
-    protected TEPerformancePattern(LX lx, boolean doColorSetup) {
+    protected TEPerformancePattern(LX lx) {
         super(lx);
         timeMultiplier = 4.0;
-
-        iTime = new VariableSpeedTimer();
-        spinTimer = new VariableSpeedTimer();
         controls = new TECommonControls();
-
-        speedRotor = new Rotor();
-        spinRotor = new Rotor();
     }
 
-    protected TEPerformancePattern(LX lx) {
-        this(lx, true);
+    public void addCommonControls() {
+        this.controls.addCommonControls();
     }
-
-    public void addCommonControls() { this.controls.addCommonControls(); }
 
     public FloatBuffer getCurrentPalette() {
         float r, g, b;
@@ -302,31 +334,31 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
      * @return Returns a loosely beat-linked rotation angle in radians.  Overall speed
      * is determined by the "Speed" control, but will automatically speed up and slow down
      * as the LX engine's beat speed changes.
-     * If current speed is zero, returned angle will also be zero, to allow easy reset of patterns.
      */
     public double getRotationAngleFromSpeed() {
         // Loosely beat linked speed.  What this thinks it's doing is moving at one complete rotation
         // per beat, based on the elapsed time and the engine's bpm rate.
-        // But since we're using variable time, we can speed it up and slow it down smoothly, and still
-        // have it moving more-or-less in sync with the beat.
-        //return (getSpeed() != 0) ? (LX.TWO_PI*(lx.engine.tempo.bpm()/60) * iTime.getTime()) % LX.TWO_PI : 0;
-        return speedRotor.getAngle(iTime.getTime());
+        // But since we're using variable time, we can speed it up and slow it down smoothly by adjusting
+        // the speed of time, and still have keep its speed in sync with the beat.
+        return speedRotor.getAngle();
     }
 
     /**
      * @return Returns a loosely beat-linked rotation angle in radians.  Overall speed
      * is determined by the "Spin" control, but will automatically speed up and slow down
      * as the LX engine's beat speed changes.
-     * If current speed is zero, returned angle will also be zero, to allow easy reset of patterns.
      */
     public double getRotationAngleFromSpin() {
         // See comments in getRotationAngleFromSpeed() above.
-        //return (getSpin() != 0) ? (LX.TWO_PI*(lx.engine.tempo.bpm()/60) * spinTimer.getTime()) % LX.TWO_PI : 0;
-        return spinRotor.getAngle(spinTimer.getTime());
+        return spinRotor.getAngle();
     }
 
     public int getCurrentColor() {
         return controls.color.calcColor();
+    }
+
+    public double getTime() {
+        return iTime.getTime();
     }
 
     public double getSpeed() {
@@ -374,11 +406,17 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     }
 
     protected void run(double deltaMs) {
-        spinTimer.setScale(getSpin());
+        // spin control
+        double value = getSpin();
+        spinTimer.setScale(value);
         spinTimer.tick();
-        iTime.setScale(getSpeed() * timeMultiplier);
-        iTime.tick();
+        spinRotor.updateAngle(spinTimer.getTime(), value);
 
+        // speed control
+        value = getSpeed() * timeMultiplier;
+        iTime.setScale(value);
+        iTime.tick();
+        speedRotor.updateAngle(iTime.getTime(), value);
 
         super.run(deltaMs);
     }

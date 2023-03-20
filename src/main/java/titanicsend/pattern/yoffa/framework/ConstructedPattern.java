@@ -12,7 +12,7 @@ public abstract class ConstructedPattern extends TEPerformancePattern {
     private final List<PatternEffect> effects;
 
     protected ConstructedPattern(LX lx) {
-        super(lx, false);
+        super(lx);
         effects = createEffects();
 
         // initialize common controls
@@ -34,6 +34,7 @@ public abstract class ConstructedPattern extends TEPerformancePattern {
 
     @Override
     public void onActive() {
+        super.onActive();
         for (PatternEffect effect : effects) {
             effect.onActive();
         }
@@ -41,12 +42,14 @@ public abstract class ConstructedPattern extends TEPerformancePattern {
 
     @Override
     public void onParameterChanged(LXParameter parameter) {
+        super.onParameterChanged(parameter);
         for (PatternEffect effect : effects) {
             effect.onParameterChanged(parameter);
         }
     }
 
     public void onInactive() {
+        super.onInactive();
         for (PatternEffect effect : effects) {
             effect.onPatternInactive();
         }
