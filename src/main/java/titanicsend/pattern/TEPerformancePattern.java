@@ -59,9 +59,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         }
 
         public TECommonControls setControl(TEControlTag tag, LXListenableParameter lxp) {
-            TEControl newControl = new TEControl(lxp, defaultGetFn);
-            controlList.put(tag, newControl);
-            return this;
+            return setControl(tag,lxp,defaultGetFn);
         }
 
         /**
