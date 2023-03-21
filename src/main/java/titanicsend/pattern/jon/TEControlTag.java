@@ -10,7 +10,8 @@ public enum TEControlTag {
     BRIGHTNESS,
     WOW1,
     WOW2,
-    WOWTRIGGER;
+    WOWTRIGGER,
+    ANGLE;
 
     public String getPath() {
         String path = switch (this) {
@@ -24,6 +25,7 @@ public enum TEControlTag {
             case WOW1 -> "te_wow1";
             case WOW2 -> "te_wow2";
             case WOWTRIGGER -> "te_wowtrigger";
+            case ANGLE -> "te_angle";
             default -> "";
         };
 

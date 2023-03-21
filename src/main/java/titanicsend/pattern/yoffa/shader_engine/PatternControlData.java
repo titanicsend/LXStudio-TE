@@ -63,18 +63,20 @@ public class PatternControlData {
     }
 
     /**
-     * @return Returns the current rotation angle in radians, derived from the lx engine's
-     * current beat rate, and the beatFactor value passed in.  (This is usually a control
-     * value.
+     * @return Returns the current rotation angle in radians - the sum of the
+     * current spin angle(SPIN) and the static rotation angle (ANGLE)
      */
     public double getRotationAngleFromSpin() {
         return parent.getRotationAngleFromSpin();
     }
 
+    /**
+     * @return Returns the current rotation angle in radians - the sum of the
+     * current speed-based angle (SPEED) and the static rotation angle (ANGLE)
+     */
     public double getRotationAngleFromSpeed() {
         return parent.getRotationAngleFromSpeed();
     }
-
 
     public int getCurrentColor() {
         return parent.getCurrentColor();

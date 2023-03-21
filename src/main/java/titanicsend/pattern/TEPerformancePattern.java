@@ -141,10 +141,10 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         public void buildDefaultControlList() {
             LXListenableParameter p;
 
-            p = new CompoundParameter("Speed", 0.1, -1.0, 1.0)
+            p = new CompoundParameter("Speed", 0.5, -4.0, 4.0)
                     .setPolarity(LXParameter.Polarity.BIPOLAR)
                     .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
-                    .setExponent(2.0)
+                    .setExponent(1.0)
                     .setDescription("Speed");
             setControl(TEControlTag.SPEED, p);
 
@@ -192,6 +192,13 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                     .setMode(BooleanParameter.Mode.MOMENTARY)
                     .setDescription("Trigger WoW effects");
             setControl(TEControlTag.WOWTRIGGER, p);
+
+            // in degrees for display 'cause more people think about it that way
+            // the associated getAngle() function converts to radians.
+            p = new CompoundParameter("Angle", 0, -180, 180)
+                    .setDescription("Static Rotation Angle")
+                    .setWrappable(true);
+            setControl(TEControlTag.ANGLE, p);
         }
 
         protected void registerColorControl() {
@@ -236,21 +243,26 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         // will always return the same value no matter how long the frame
         // calculations take.
         void updateAngle(double time, double ctlValue) {
-            // skip basically all of this on the first frame, or if the
-            // control was reset.
-            if (lastTime != 0) {
-
-                // calculate change in angle since last frame.  If autospinning,it's
-                // tied to the engine bpm and the input time value, which is usually
-                // controlled by the variable speed timer associated with the
-                // speed or spin controls.
+            // if speed/spin are off, we return to the angle
+            // set by the ANGLE control
+            if (ctlValue == 0) {
+                angle = getStaticRotationAngle();
+            }
+            // if this is the first frame, or if the timer was restarted,
+            // we skip calculation for a frame.  Otherwise, we need to
+            // do the incremental angle calculation...
+            else if (lastTime != 0) {
+                // calculate change in angle since last frame.  If autospinning,we
+                // get the rate from the associated beat-linked variable timer.
                 //
                 // if not autospinning, then we do nothing but read the control value
                 // directly and update the elapsed time (so you can switch autoSpin
-                // on and off without causing a visible discontinuity.)
+                // on and off without causing a visible discontinuity.)  In this
+                // case, SPIN acts as a secondary ANGLE control.  Resetting SPIN
+                // will still return you to the preset static angle.
                 if (autoSpin) {
                     double et = time - lastTime;
-                    angle += (LX.TWO_PI * (lx.engine.tempo.bpm() / 60) * et) % LX.TWO_PI;
+                    angle += (LX.TWO_PI * et) % LX.TWO_PI;
                 } else {
                     angle = ctlValue;
                 }
@@ -283,8 +295,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         }
     }
 
-    private double timeMultiplier;
-
     private final VariableSpeedTimer iTime = new VariableSpeedTimer();
     private final VariableSpeedTimer spinTimer = new VariableSpeedTimer();
     private final Rotor speedRotor = new Rotor();
@@ -297,7 +307,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     protected TEPerformancePattern(LX lx) {
         super(lx);
-        timeMultiplier = 4.0;
         controls = new TECommonControls();
     }
 
@@ -326,10 +335,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         return palette;
     }
 
-    public void setTimeMultiplier(double m) {
-        this.timeMultiplier = m;
-    }
-
     void setAutospin(boolean autoSpin) {
         spinRotor.setAutospin(autoSpin);
     }
@@ -344,7 +349,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         // per beat, based on the elapsed time and the engine's bpm rate.
         // But since we're using variable time, we can speed it up and slow it down smoothly by adjusting
         // the speed of time, and still have keep its speed in sync with the beat.
-        return speedRotor.getAngle();
+        return speedRotor.getAngle() + getStaticRotationAngle();
     }
 
     /**
@@ -354,7 +359,11 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
      */
     public double getRotationAngleFromSpin() {
         // See comments in getRotationAngleFromSpeed() above.
-        return spinRotor.getAngle();
+        return spinRotor.getAngle() + getStaticRotationAngle();
+    }
+
+    public double getStaticRotationAngle() {
+        return Math.toRadians(controls.getValue(TEControlTag.ANGLE));
     }
 
     public int getCurrentColor() {
@@ -409,15 +418,60 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         return controls.getValue(TEControlTag.WOWTRIGGER) > 0.0;
     }
 
+    /**
+     * Restarts the specified timer's elapsed time when called.
+     * The timer's rate is not changed.
+     * <p>
+     * This is useful for syncing a timer precisely to beats,
+     * measures and other external events.
+     *
+     * @param tag - the tag of the control to be retriggered.  Only
+     *            works timer-linked controls - SPEED and SPIN at
+     *            present.
+     */
+    public void retrigger(TEControlTag tag) {
+        switch (tag) {
+            case SPEED:
+                iTime.reset();
+                break;
+            case SPIN:
+                spinTimer.reset();
+                break;
+            default:
+                //TE.log("retrigger: Invalid parameter.");
+                break;
+        }
+    }
+
     protected void run(double deltaMs) {
-        // spin control
-        double value = getSpin();
+        // get the current tempo in beats per second
+        double bps = lx.engine.tempo.bpm() / 60;
+
+        // Spin control
+        double value = getSpin() * bps;
         spinTimer.setScale(value);
         spinTimer.tick();
         spinRotor.updateAngle(spinTimer.getTime(), value);
 
-        // speed control
-        value = getSpeed() * timeMultiplier;
+        // Speed control
+        // To calculate timescale for speed, we multiply the control value
+        // by the engine bpm (converted to beats/sec).  This makes the core
+        // speed clock rate 1 virtual second per beat - quarter note pace in
+        // 4/4 time signature, which is then modified by the Speed UI control.
+        //
+        // This makes tempo syncing in patterns a LOT easier, with no extra parameters,
+        // controls or efforts.  You can set speed for specific time divisions as follows:
+        // speed = 0.25 is whole notes
+        // speed = 0.5 is half notes
+        // speed = 1 is quarter notes
+        // speed = 2 is eighth notes
+        // speed = 3 is eighth note triplets
+        // speed = 4 (the default maximum) is 16th notes
+        //
+        // If you need to go faster than 16ths in a pattern, expand the range with setRange()
+        // in your constructor.  Of course, other speeds work too, and can create
+        // interesting syncopated visuals.
+        value = getSpeed() * bps;
         iTime.setScale(value);
         iTime.tick();
         speedRotor.updateAngle(iTime.getTime(), value);

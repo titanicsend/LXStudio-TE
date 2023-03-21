@@ -25,7 +25,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
 // uses spin control to set absolute angle
     p *= iScale;
-    p = rotate(p,TAU * -iSpin);
+    p = rotate(p,-iRotationAngle);
 
     // Define supersample sizes
     float fragsize = 1. / iResolution.y;

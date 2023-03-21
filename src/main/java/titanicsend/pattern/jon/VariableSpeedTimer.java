@@ -33,13 +33,6 @@ public class VariableSpeedTimer {
         scale = s;
     }
 
-    /**
-     * HACK WARNING: This is a workaround for a bug that caused time to
-     * run backwards. It made some patterns look better, so I left it in
-     * and of course, now I need forward time as well. So if you want
-     * time to run forward, call setTimeDirectionForward(true) before
-     * you call getTime().
-     */
     public void setTimeDirectionForward(boolean t) {
         direction = (t) ? 1.0f : -1.0f;
     }
