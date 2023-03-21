@@ -15,6 +15,31 @@ import java.util.HashMap;
 
 public abstract class TEPerformancePattern extends TEAudioPattern {
 
+    // Create new class for Angle control so we can override the reset
+    // behavior and have reset set the current composite rotation angle
+    // to the spin control's current setting.
+    class TECommonAngleParameter extends CompoundParameter {
+
+        public TECommonAngleParameter(String label, double value, double v0, double v1) {
+            super(label, value, v0, v1);
+        }
+
+        @Override
+        public LXParameter reset() {
+            System.out.println("Reset1");
+
+            // if not spinning, resetting angle control clears
+            // the spin angle and leaves the display rotation angle at the
+            // current static setting.
+            if (getSpin() == 0) {
+                spinRotor.setAngle(0);
+            }
+
+            return this;
+        }
+
+    }
+
     public class TECommonControls {
 
         // color control is accessible, in case the pattern needs something
@@ -29,6 +54,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             }
         };
 
+
         private final HashMap<TEControlTag, TEControl> controlList = new HashMap<TEControlTag, TEControl>();
 
         /**
@@ -40,7 +66,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             return controlList.get(tag).control;
         }
 
-        protected TEControl getControl(TEControlTag tag) {
+        public TEControl getControl(TEControlTag tag) {
             return controlList.get(tag);
         }
 
@@ -194,7 +220,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             setControl(TEControlTag.WOWTRIGGER, p);
 
             // in degrees for display 'cause more people think about it that way
-            p = new CompoundParameter("Angle", 0, -Math.PI, Math.PI)
+            p = new TECommonAngleParameter("Angle", 0, -Math.PI, Math.PI)
                     .setDescription("Static Rotation Angle")
                     .setPolarity(LXParameter.Polarity.BIPOLAR)
                     .setWrappable(true)
@@ -246,8 +272,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         // will always return the same value no matter how long the frame
         // calculations take.
         void updateAngle(double time, double ctlValue) {
-            // TODO - do we need to add anything to explicitly handle resets?
-
             // if this is the first frame, or if the timer was restarted,
             // we skip calculation for a frame.  Otherwise, do
             // the incremental angle calculation...
@@ -268,6 +292,10 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
         void setAngle(double angle) {
             this.angle = angle;
+        }
+
+        void addAngle(double offset) {
+            this.angle += offset;
         }
 
         void reset() {

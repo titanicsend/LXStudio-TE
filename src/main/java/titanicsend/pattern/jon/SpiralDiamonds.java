@@ -79,7 +79,8 @@ public class SpiralDiamonds extends TEPerformancePattern {
              x = mod(x + 0.5f * cx, cx) - 0.5f * cx;
 
              // rotate according to spin control setting
-             // we do this inline, because for the 2D case, it's just faster.
+             // we do this inline, using precomputed sin/cos
+             // because for this many pixels, we need the performance
              float outX = (cosT2 * x) - (sinT2  * y);
              y = (sinT2 * x) + (cosT2 * y);
              x = outX;
@@ -91,6 +92,7 @@ public class SpiralDiamonds extends TEPerformancePattern {
              float sx = x1 * cosT + y1 * sinT;
              float sy = y1 * cosT - x1 * sinT;
 
+             // t1, from the speed control, determines speed & direction of the spiral.
              float dx = (float) Math.abs(Math.sin(squareocity * Math.log(x * sx + y * sy) + point.azimuth - t1));
              int on = ((dx * dx * dx) < 0.15) ? 1 : 0;
 

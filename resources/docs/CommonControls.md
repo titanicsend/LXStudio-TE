@@ -56,11 +56,20 @@ Brightness	double getBrightness()	TEControlTag.BRIGHTNESS
 Wow1		double getWow1()	TEControlTag.WOW1
 Wow2		double getWow2()	TEControlTag.WOW2
 WowTrigger      boolean getWowTrigger() TEControlTag.WOWTRIGGER
+Angle           double getStaticRotationAngle() TEControlTag.ANGLE
 ```
 
 ### Default Ranges and Values
-Controls are initialized to unit ranges - either 0.0 to 1.0, or -1.0 to 1.0, with default initial values
-appropriate for the control.  (The Size control has a range of 0.0 to 5.0, and is initialized to 1.0)
+Most controls are initialized to unit ranges - either 0.0 to 1.0, or -1.0 to 1.0, with default initial values
+appropriate for the control. Exceptions are:
+
+- Speed - interacts with engine bpm.  It has a default range of -4.0 to 4.0 (16th notes at current tempo),
+and is initialized to 0.5 (synced to half notes at the current tempo.)  Speed and Spin controls both use this
+tempo syncing mechanism and are described in their own section below.
+- Size - controls zoom, has a range of 0.0 to 5.0 and is initialized to 1.0
+- Angle - static rotational angle.  The UI range is -180 to 180 degrees, all APIs use the same angles, but in radians.
+
+(The Size control has a range of 0.0 to 5.0, and is initialized to 1.0)
 
 ### Helper functions in TECommonControls
 From a TEPerformancePattern derived class, you can access the 'controls' object, which lets you
@@ -117,8 +126,42 @@ speed changes. If current speed is zero, returned angle will also be zero, to al
 is determined by the "Speed" control, but will automatically speed up and slow down as the LX engine's beat
 speed changes. If current speed is zero, returned angle will also be zero, to allow easy reset of patterns.
 
-```void setMaxTimeMultiplier(double m)``` - sets the maximum value of speed.  (the parameter m is basically the number of
-fake seconds per real second. Default is 1. Higher is faster, lower is slower.)
+```double getStaticRotationAngle()``` get the current angle set by the Angle control, in radians
+
+```void retrigger(TEControlTag tag)``` can be called to sync the speed or spin clocks to beats, measures or
+other events.  Starts the next variable clock "second" when called.
+
+### Speed and Spin:  Tempo Linked Parameters
+The common Speed and Spin controls are linked to the engine bpm, so changes in tempo will be automatically reflected
+in pattern visuals.  Both controls act as beat multipliers, so it is very easy to sync patterns to particular musical
+time divisions (see below).  In addition, if you need tighter synchronization, there is a ```retrigger()``` API 
+available that you can call from pattern code to sync to beats, measures or other events.
+
+These controls run on a variable speed internal clock. This means if your pattern bases its movement on iTime (GLSL)
+or getTime() (Java), you will get the ability to smoothly change speed and direction without visual glitches, *and*
+your pattern will be running at some multiple of the beat speed, without any additional work on your part. 
+
+The core clock speed is 1 second/beat, and Speed and Spin multiply that according to their settings. So to set
+your pattern's speed to specific time divisions, you just need to pick the multiplier:
+
+- speed = 0.25 : whole notes
+- speed = 0.5 : half notes
+- speed = 1 : quarter notes
+- speed = 2 : eighth notes
+- speed = 3 : eighth note triplets
+- speed = 4 : is 16th notes
+
+If you need to go faster than 16ths in a pattern, expand the range with setRange()
+in your constructor. Of course, non-integer speeds work too, and can create
+interesting syncopated visuals.
+
+### The Angle Control: Static Rotation Angle
+The Angle control allows you to set a fine-tuned static rotation angle for a pattern.
+
+Once you've set an angle, you can use the Spin control to spin your pattern.  When you stop spinning,
+resetting the Angle control returns you to your preset angle.  Patterns that support Spin will
+automatically support Angle.
+
 
 #### List of TE Standard Uniform Variables
 
