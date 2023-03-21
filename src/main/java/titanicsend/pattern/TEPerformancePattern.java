@@ -194,10 +194,14 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             setControl(TEControlTag.WOWTRIGGER, p);
 
             // in degrees for display 'cause more people think about it that way
-            // the associated getAngle() function converts to radians.
-            p = new CompoundParameter("Angle", 0, -180, 180)
+            p = new CompoundParameter("Angle", 0, -Math.PI, Math.PI)
                     .setDescription("Static Rotation Angle")
-                    .setWrappable(true);
+                    .setPolarity(LXParameter.Polarity.BIPOLAR)
+                    .setWrappable(true)
+                    .setFormatter((v) -> {
+                        return Double.toString(Math.toDegrees(v));
+                    });
+
             setControl(TEControlTag.ANGLE, p);
         }
 
@@ -229,43 +233,28 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     /**
      * Class to support incremental rotation over variable-speed time
      * <p>
-     * If autospinning, the rate is tied to the engine bpm and the input time value, which is usually
+     * The rate is tied to the engine bpm and the input time value, which is usually
      * controlled by the variable speed timer associated with the speed or spin controls.
-     * (but anything with a seconds.millis timer  can generate rotational angles this way.)
+     * (but anything with a seconds.millis timer can generate rotational angles this way.)
      */
     protected class Rotor {
         private double angle = 0;
         private double lastTime = 0;
-        private boolean autoSpin = true;
 
         // Internal: Called on every frame to calculate and memoize the current
-        // autospin-generated angle so that calls to getAngle() during a frame
+        // spin angle so that calls to getAngle() during a frame
         // will always return the same value no matter how long the frame
         // calculations take.
         void updateAngle(double time, double ctlValue) {
-            // if speed/spin are off, we return to the angle
-            // set by the ANGLE control
-            if (ctlValue == 0) {
-                angle = getStaticRotationAngle();
-            }
+            // TODO - do we need to add anything to explicitly handle resets?
+
             // if this is the first frame, or if the timer was restarted,
-            // we skip calculation for a frame.  Otherwise, we need to
-            // do the incremental angle calculation...
-            else if (lastTime != 0) {
-                // calculate change in angle since last frame.  If autospinning,we
-                // get the rate from the associated beat-linked variable timer.
-                //
-                // if not autospinning, then we do nothing but read the control value
-                // directly and update the elapsed time (so you can switch autoSpin
-                // on and off without causing a visible discontinuity.)  In this
-                // case, SPIN acts as a secondary ANGLE control.  Resetting SPIN
-                // will still return you to the preset static angle.
-                if (autoSpin) {
-                    double et = time - lastTime;
-                    angle += (LX.TWO_PI * et) % LX.TWO_PI;
-                } else {
-                    angle = ctlValue;
-                }
+            // we skip calculation for a frame.  Otherwise, do
+            // the incremental angle calculation...
+            if (lastTime != 0) {
+                // calculate change in angle since last frame.
+                double et = time - lastTime;
+                angle += (LX.TWO_PI * et) % LX.TWO_PI;
             }
             lastTime = time;
         }
@@ -281,14 +270,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             this.angle = angle;
         }
 
-        /**
-         * Enable or disable automatic rotation, computed from engine bpm
-         * and an associated timer.
-         */
-        void setAutospin(boolean autoSpin) {
-            this.autoSpin = autoSpin;
-        }
-
         void reset() {
             angle = 0;
             lastTime = 0;
@@ -302,8 +283,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     protected TECommonControls controls;
 
-
-    FloatBuffer palette = Buffers.newDirectFloatBuffer(15);
+    protected FloatBuffer palette = Buffers.newDirectFloatBuffer(15);
 
     protected TEPerformancePattern(LX lx) {
         super(lx);
@@ -335,35 +315,33 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         return palette;
     }
 
-    void setAutospin(boolean autoSpin) {
-        spinRotor.setAutospin(autoSpin);
-    }
-
     /**
      * @return Returns a loosely beat-linked rotation angle in radians.  Overall speed
      * is determined by the "Speed" control, but will automatically speed up and slow down
-     * as the LX engine's beat speed changes.
+     * as the LX engine's beat speed changes. The "Angle" controls sets an additional
+     * angular offset.
      */
     public double getRotationAngleFromSpeed() {
         // Loosely beat linked speed.  What this thinks it's doing is moving at one complete rotation
         // per beat, based on the elapsed time and the engine's bpm rate.
         // But since we're using variable time, we can speed it up and slow it down smoothly by adjusting
         // the speed of time, and still have keep its speed in sync with the beat.
-        return speedRotor.getAngle() + getStaticRotationAngle();
+        return speedRotor.getAngle() - getStaticRotationAngle();
     }
 
     /**
      * @return Returns a loosely beat-linked rotation angle in radians.  Overall speed
      * is determined by the "Spin" control, but will automatically speed up and slow down
-     * as the LX engine's beat speed changes.
+     * as the LX engine's beat speed changes. The "Angle" controls sets an additional
+     * angular offset.
      */
     public double getRotationAngleFromSpin() {
         // See comments in getRotationAngleFromSpeed() above.
-        return spinRotor.getAngle() + getStaticRotationAngle();
+        return spinRotor.getAngle() - getStaticRotationAngle();
     }
 
     public double getStaticRotationAngle() {
-        return Math.toRadians(controls.getValue(TEControlTag.ANGLE));
+        return controls.getValue(TEControlTag.ANGLE);
     }
 
     public int getCurrentColor() {
