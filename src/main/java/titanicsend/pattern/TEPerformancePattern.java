@@ -26,18 +26,19 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
         @Override
         public LXParameter reset() {
-            System.out.println("Reset1");
-
-            // if not spinning, resetting angle control clears
-            // the spin angle and leaves the display rotation angle at the
-            // current static setting.
+            // if not spinning, resetting angle controls
+            // resets both the static angle and the spin angle.
             if (getSpin() == 0) {
                 spinRotor.setAngle(0);
             }
 
-            return this;
+            // If spinning, reset static angle to 0, and also
+            // add a corresponding offset to spinRotor to avoid a visual glitch.
+            else {
+                spinRotor.addAngle(-this.getValue());
+            }
+            return super.reset();
         }
-
     }
 
     public class TECommonControls {
