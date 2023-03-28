@@ -3,21 +3,22 @@ package titanicsend.pattern.jon;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.Tempo;
-import heronarts.lx.color.LXColor;
-import heronarts.lx.color.LinkedColorParameter;
 
 import heronarts.lx.modulator.Click;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.ObjectParameter;
 import titanicsend.pattern.TEAudioPattern;
+import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 
+// TODO - NEEDS FULL CONVERSION TO COMMON CONTROLS
+
 @LXCategory("Native Shaders Panels")
-public class FourStar extends TEAudioPattern {
+public class FourStar extends TEPerformancePattern {
     NativeShaderPatternEffect effect;
     NativeShader shader;
 
@@ -34,19 +35,8 @@ public class FourStar extends TEAudioPattern {
             new CompoundParameter("Energy", .5, 0, 1)
                     .setDescription("Oh boy...");
 
-    public final LinkedColorParameter color =
-            registerColor("Color", "color", ColorType.PRIMARY,
-                    "Panel Color");
-
     public FourStar(LX lx) {
         super(lx);
-        addDivisionParam();
-        addParameter("energy", energy);
-
-        tempoDivisionClick.tempoSync.setValue(true);
-        tempoDivisionClick.tempoDivision.setValue(tempoDivision.getValue());
-        startModulator(tempoDivisionClick);
-        tempoDivision.bang();
 
         // create new effect with alpha on and no automatic
         // parameter uniforms
@@ -55,22 +45,24 @@ public class FourStar extends TEAudioPattern {
         options.useAlpha(true);
         options.useLXParameterUniforms(false);
 
+        // register common controls with the UI
+        addCommonControls();
+
+        // add this pattern's custom controls
+        addDivisionParam();
+        addParameter("energy", energy);
+
+        tempoDivisionClick.tempoSync.setValue(true);
+        tempoDivisionClick.tempoDivision.setValue(tempoDivision.getValue());
+        startModulator(tempoDivisionClick);
+        tempoDivision.bang();
+
         effect = new NativeShaderPatternEffect("fourstar.fs",
                 PatternTarget.allPanelsAsCanvas(this), options);
     }
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
-
-        // Example of sending a vec3 to a shader.
-        // Get the current color and convert to
-        // normalized rgb in range 0..1 for openGL
-        int baseColor = this.color.calcColor();
-
-        float rn = (float) (0xff & LXColor.red(baseColor)) / 255f;
-        float gn = (float) (0xff & LXColor.green(baseColor)) / 255f;
-        float bn = (float) (0xff & LXColor.blue(baseColor)) / 255f;
-        shader.setUniform("color", rn, gn, bn);
 
         // Sound reactivity - various brightness features are related to energy
         float e = energy.getValuef();
@@ -88,6 +80,7 @@ public class FourStar extends TEAudioPattern {
     // Initialize the NativeShaderPatternEffect and retrieve the native shader object
     // from it when the pattern becomes active
     public void onActive() {
+        super.onActive();
         effect.onActive();
         shader = effect.getNativeShader();
     }

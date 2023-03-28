@@ -105,7 +105,7 @@ public class MF64SpiralSquares extends TEMidiFighter64Subpattern {
         // at pixel time.
         cosT = (float) Math.cos(TEMath.TAU / 1000);
         sinT = (float) Math.sin(TEMath.TAU / 1000);
-        float t1 = time.getTime();
+        float t1 = time.getTimef();
 
         // a squared spiral from Pixelblaze pattern "Tunnel of Squares" at
         // https://github.com/zranger1/PixelblazePatterns/tree/master/2D_and_3D

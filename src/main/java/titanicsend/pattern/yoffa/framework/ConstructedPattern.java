@@ -1,30 +1,28 @@
 package titanicsend.pattern.yoffa.framework;
 
 import heronarts.lx.LX;
-import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.TEAudioPattern;
+import titanicsend.pattern.TEPerformancePattern;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class ConstructedPattern extends TEAudioPattern {
+public abstract class ConstructedPattern extends TEPerformancePattern {
 
     private final List<PatternEffect> effects;
 
     protected ConstructedPattern(LX lx) {
         super(lx);
         effects = createEffects();
+
+        // initialize common controls
+        addCommonControls();
+
+        // add controls for any parameters found in the created effects
         for (LXParameter parameter : getPatternParameters()) {
             addParameter(parameter.getLabel(), parameter);
         }
-
-        registerColor("Color", "iColor", ColorType.PRIMARY,
-                "Color");
-
     }
-
-
 
     protected Collection<LXParameter> getPatternParameters() {
         return effects.stream()
@@ -36,6 +34,7 @@ public abstract class ConstructedPattern extends TEAudioPattern {
 
     @Override
     public void onActive() {
+        super.onActive();
         for (PatternEffect effect : effects) {
             effect.onActive();
         }
@@ -43,12 +42,14 @@ public abstract class ConstructedPattern extends TEAudioPattern {
 
     @Override
     public void onParameterChanged(LXParameter parameter) {
+        super.onParameterChanged(parameter);
         for (PatternEffect effect : effects) {
             effect.onParameterChanged(parameter);
         }
     }
 
     public void onInactive() {
+        super.onInactive();
         for (PatternEffect effect : effects) {
             effect.onPatternInactive();
         }

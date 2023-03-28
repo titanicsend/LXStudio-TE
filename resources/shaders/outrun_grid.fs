@@ -1,8 +1,15 @@
 #define PI 3.14159265359
+#define TAU PI * 2.0
 #define DEG2RAD PI/180.
 
 // Prevents flickering
 #define SUPERSAMP 8
+
+//  rotate a point around the origin by <angle> radians
+vec2 rotate(vec2 point, float angle) {
+  mat2 rotationMatrix = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
+  return rotationMatrix * point;
+}
 
 // Project camera to world plane with constant worldY (height)
 vec3 revProject(vec2 camPos, float worldY, float fov) {
@@ -15,6 +22,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     vec2 uv = fragCoord / iResolution.xy;
     vec2 p = (fragCoord.xy - iResolution.xy*.5) / iResolution.y;
+
+// uses spin control to set absolute angle
+    p *= iScale;
+    p = rotate(p,iRotationAngle);
 
     // Define supersample sizes
     float fragsize = 1. / iResolution.y;
@@ -31,7 +42,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         // Initialize current fragment intensity
         float intensity = 0.;
         // Define the current grid displacement
-        vec3 displace = vec3(3.*sin({%sidewaysSpeed[0,0,5]}*PI*0.1*iTime), {%forwardSpeed[4,0,10]}*iTime, 1.5);
+        vec3 displace = vec3(3.*sin({%sidewaysSpeed[0,0,5]}*PI*0.1*iTime), 4.0*iTime, 1.5);
         // Define the FOV
         float fov = 90.0;
 
@@ -44,28 +55,27 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
                 // Create grid
                 vec2 grid = fract(gridPos - displace.xy) - 0.5;
                 // Make wavy pattern
-                float pattern = !{%noAlphaWaves[bool]} ? 0.7+0.6*sin(gridPos.y - 6.*iTime) : 1;
+                float pattern = !{%noAlphaWaves[bool]} ? 0.7+0.6*sin(gridPos.y - 6.0*iTime) : 1.0;
 
                 // Compute distance from grid edge
                 float dist = max(grid.x*grid.x, grid.y*grid.y);
                 // Compute grid fade distance
-                float fade = min(1.5, pow(1.2, -length(gridPos) + 15.0));
+                float fade = min(1.5, pow(1.2, -length(gridPos) + 25.0));
                 // Set brightness
                 float bright = 0.015 / (0.26 - dist);
                 intensity += fade * pattern * bright;
             }
         }
 
-        // Define current fragment color
-        //vec3 col = 0.5 + 0.5*cos(iTime * {%colorChangeSpeed[0,0,5]} +p.yxy+vec3(0,10,20));
-        // Normalize intensity
-        intensity /= float(SUPERSAMP*SUPERSAMP);
+        // Normalize and scale brightness
+        intensity = 3.0 * (intensity/float(SUPERSAMP*SUPERSAMP));
 
+        // Wow1 controls glow intensity
+        intensity =  pow(intensity,1.0 - clamp(iWow1,0.25,0.85));
 
-        fragColor = vec4(iPalette[TE_PRIMARY] * 3.0 * intensity, 1.0);
+        // calculate final color, and set reasonable alpha value from brightness
+        fragColor = vec4(iColorRGB * intensity,0.0);
+        fragColor.a = max(fragColor.r,max(fragColor.g,fragColor.b));
     }
 
-    if (!{%noGlow[bool]}) {
-        fragColor = pow(fragColor, vec4(.4545));
-    }
 }

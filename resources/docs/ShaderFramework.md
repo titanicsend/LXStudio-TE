@@ -29,11 +29,56 @@ all GPU threads. It is set at frame rendering time, and can be read,
 but not changed. (The compiler will complain if you try.) The uniforms below
 are available to every shader running on the TE platform.
 
+#### Complete List of Uniforms
+The following uniforms are available to all shaders, preset with values returned from
+the common controls where applicable.  For additional documentation see the sections
+below.
+```c
+// standard shadertoy
+uniform float iTime;       // this is actually linked to the speed control
+uniform vec2 iResolution;  // pixel resolution of the drawing surface
+uniform vec4 iMouse;       // for compatibility only. Always zero.
+
+// TE Audio
+uniform float beat;
+uniform float sinPhaseBeat;
+uniform float bassLevel;
+uniform float trebleLevel;
+
+// TE color
+uniform vec3 iPalette[5]; // the complete currently active palette
+uniform vec3 iColorRGB;   // the color currently showing in the color control
+uniform vec3 iColorHSB;   // current color in HSB format
+
+// TE common controls
+uniform float iSpeed;
+uniform float iScale;
+uniform float iQuantity;
+uniform vec2  iTranslate;
+uniform float iSpin;            // value of the "spin" control
+uniform float iRotationAngle;   // rotation angle derived from spin
+uniform float iBrightness;      // shaders use this automatically as "contrast"
+uniform float iWow1;
+uniform float iWow2;
+uniform bool  iWowTrigger;
+
+// Shadertoy audio channel + optional textures
+uniform sampler2D iChannel0;
+uniform sampler2D iChannel1;
+uniform sampler2D iChannel2;
+uniform sampler2D iChannel3;
+```
+
+## Uniforms by Functional Area
 -----
-### General Utility Uniforms
+### ShaderToy/General Utility
 
 #### iTime (uniform float iTime;)
-Time since your pattern started running, in seconds.millis
+'Time' since your pattern started running, in seconds.millis.  With the common controls,
+this rate can vary with the setting of the speed control.
+
+Since shaders frequently render movement as a function of iTime shaders, this variable speed
+time gives you smooth speed control without any additional code in the shader.
 
 #### iResolution (uniform vec2 iResolution;)
 The resolution of the "display" surface.  Note that these are the dimensions
@@ -49,9 +94,13 @@ shaders.
 
 #### iColorRGB (uniform vec3 iColorRGB;)
 The RGB color currently selected in the UI color control for this pattern.  Colors in
-shaders are scaled to a floating point 0.0 to 1.0 range.  You do not have to multiply them back
+shaders are normalized to a floating point 0.0 to 1.0 range.  You do not have to multiply them back
 to 0-255, and you don't have to worry about color components under- or overflowing while doing 
 calculations. They are automatically clamped to the proper range on output.
+
+#### iColorHSB (uniform vec3 iColorHSB;)
+The same color as in iColorRGB, but pre-converted to normalized HSB format. (All components are
+in the range 0.0 to 1.0.  It's just like a Pixelblaze!)
 
 #### iPalette (uniform vec3 iPalette[5];)
 An array of 5 RGB colors, containing TE's current palette. You can
@@ -91,7 +140,36 @@ Average level of low frequency content in the current audio signal.
 Average level of high frequency content in the current audio signal.
 
 -----
-### Texture Uniforms
+### TE Common Control Uniforms
+
+#### iSpeed (uniform float iSpeed;)
+Current value of the "Speed" common control. Most shaders will not need to use this because
+speed will be automatically controlled by the variable iTime mechanism described above.
+#### iScale (uniform float iScale;)
+Current value of the "Scale" common control.
+#### iQuantity (uniform float iQuantity;)
+Current value of the "Quantity" common control.
+#### iTranslate (uniform vec2  iTranslate;)
+(x,y) translation vector, derived from the settings of the XPos and YPos common controls.
+#### iSpin (uniform float iSpin;)
+Current value of the "Spin" common control.
+#### iRotationAngle (uniform float iRotationAngle;)
+Beat-linked rotation angle derived from the current setting of the "Spin" common control.
+#### iBrightness (uniform float iBrightness;)
+The current value of the "Brightness" common control. The shader framework uses this automatically
+as "contrast".  It reduces the brightness of colors without affecting alpha.
+#### iWow1 (uniform float iWow1;)
+Current setting of the "Wow1" common control. Wow1 controls the level of an optional "special"
+pattern-specific feature.
+#### iWow2 (uniform float iWow2;)
+Current setting of the "Wow2" common control. Wow2 controls the level of an optional "special"
+pattern-specific feature.
+#### iWowTrigger (uniform bool  iWowTrigger;)
+Current setting of the "Wow1" common control. WowTrigger is a momentary contact button that can
+trigger an (optional) pattern-specific feature.
+
+-----
+### ShaderToy Texture Uniforms
 
 #### iChannel0 (uniform sampler2D iChannel0;)
 A 2D texture (2x512) containing audio data from the LX engine.
@@ -112,17 +190,18 @@ function to retrieve data from these textures.
 
 
 -----
-### LX Control Uniforms
+### Automatic LX Control Uniforms
 
-From your shader code, you can create a uniform that is automatically linked to an LX control.  When you change
-the control from the UI, the value of the uniform will change.  To do this, you need to include a specially 
-encoded control description.  For example:
+In your shader, you can create a uniform that is automatically linked to an LX control.  When you change
+the control from the UI, the value of the uniform will change.  This is especially handy for including extra
+controls patterns built the ConstructedPattern framework.  To generate controls from your
+shader code, include the encoded control description as follows:
 
 ```
      float thickness = {%thickness[5,5,10]};
 ```
 
-Creates a control named "thickness" in your pattern's UI, with an initial value of 5, a lower limit of 5
+This creates a control named "thickness" in your pattern's UI, with an initial value of 5, a lower limit of 5
 and an upper limit of 10.  When this line of GLSL is executed, the variable "thickness" will be assigned to the
 current value of the control. 
 
@@ -251,6 +330,11 @@ The currently available *setUniform()* variants are:
 
     setUniform(name,int[],columnCount);    // int array, any number of rows, from 1 to 4 columns
     setUniform(name,float[],columnCount);  // float array, any number of rows, from 1 to 4 columns    
+    
+    setUniform(String name, float[][] matrix); // 2x2, 3x3 or 4x4 matrix
+    setUniform(String name, Matrix matrix);  // 2x2, 3x3 or 4x4 matrix from Jama.Matrix class  
+    setUniform(String name, Texture tex); // creates SAMPLER2D from jogl Texture object.  
+    
 ```
 
 

@@ -25,7 +25,7 @@ public class OffscreenShaderRenderer {
        // do nothing for now.
     };
 
-    public int[][] getFrame(AudioInfo audioInfo) {
+    public int[][] getFrame(PatternControlData audioInfo) {
         // initialize as late as possible to avoid stepping on LX's toes
         if (!nativeShader.isInitialized()) {
             nativeShader.init(offscreenDrawable);
