@@ -24,19 +24,6 @@ public class SpiralDiamonds extends TEPerformancePattern {
             new CompoundParameter("Energy", .1, 0, 1)
                     .setDescription("Ummm.... what does this button do?");
 
-    /**
-     * FFS -- Java has no real mod operator?  Why??  Are we not
-     * well into the Century of the Fruit Bat?  Isn't forcing
-     * all bytes to be signed trouble enough for one language?  What next?<p>
-     *
-     * @return The floored remainder of the division a/b. The result will have
-     * the same sign as b.
-     */
-    public static float mod(float a, float b) {
-        float result = a % b;
-        return (result < 0) ? result + b : result;
-    }
-
     public SpiralDiamonds(LX lx) {
         super(lx);
 
@@ -73,10 +60,10 @@ public class SpiralDiamonds extends TEPerformancePattern {
              x *= scaleFactor;
              y *= scaleFactor;
 
-             // repeat pattern over x axis at interval cx
-             // because!
+             // repeat pattern over x axis at interval cx to make
+             // two spirals at the default scale, one on each end of car.
              float cx = 0.3f;
-             x = mod(x + 0.5f * cx, cx) - 0.5f * cx;
+             x = TEMath.floorModf(x + 0.5f * cx, cx) - 0.5f * cx;
 
              // rotate according to spin control setting
              // we do this inline, using precomputed sin/cos
