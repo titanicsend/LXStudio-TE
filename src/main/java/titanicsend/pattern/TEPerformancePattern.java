@@ -409,8 +409,10 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         return controls.getValue(TEControlTag.SPIN);
     }
 
+    // multiply by 100 so that LXColor.hsb( ... ) and similar inputs can use it, since
+    // LX expects brightness in a range of 0-100
     public double getBrightness() {
-        return controls.getValue(TEControlTag.BRIGHTNESS);
+        return 100 * controls.getValue(TEControlTag.BRIGHTNESS);
     }
 
     public double getWow1() {
