@@ -9,6 +9,7 @@ import heronarts.lx.parameter.LXParameter;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.pattern.TEAudioPattern;
 import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.util.TE;
 import titanicsend.util.TEMath;
 
 import static titanicsend.util.TEColor.TRANSPARENT;
@@ -16,7 +17,7 @@ import static titanicsend.util.TEColor.TRANSPARENT;
 @LXCategory("Panel FG")
 public class SpiralDiamonds extends TEPerformancePattern {
 
-    private static final float cosT = (float) Math.cos(LX.TWO_PI / 1000);
+    private static final float cosT = (float) Math.cos(TEMath.TAU / 1000);
     private static final float sinT = (float) Math.sin(TEMath.TAU / 1000);
 
 
@@ -83,7 +84,15 @@ public class SpiralDiamonds extends TEPerformancePattern {
              float dx = (float) Math.abs(Math.sin(squareocity * Math.log(x * sx + y * sy) + point.azimuth - t1));
              int on = ((dx * dx * dx) < 0.15) ? 1 : 0;
 
-             colors[point.index] = color * on;
+             // now incorporate brightness control
+             int colorRGBWithBrightness = LXColor.hsb(
+                     LXColor.h(color),
+                     LXColor.s(color),
+                     this.getBrightness() * 100
+             );
+
+             // finally, set color of pixel
+             colors[point.index] = colorRGBWithBrightness * on;
          }
     }
 }
