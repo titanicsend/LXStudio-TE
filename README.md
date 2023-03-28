@@ -228,12 +228,15 @@ encapsulation protocol. To make this work:
     Bome Network tool, enable Remote Direct Midi for those devices.
 5. You can disable MIDI routes that aren't used, such as the DIN ports or
     MIDI messaging between the USB devices. This likely helps performance.
-    Leave 2 routes per device: The bidirection pair LX->⃗Device, and Device->LX. 
+    Leave 2 routes per device: The bidirection pair LX->Device, and Device->LX. 
 6. Register the correct new names in LX. The Bome Remote Direct Midi device 
     names follow a pattern of "{BomeBoxName}: {DeviceName}", like
     "FoH: APC40 mkII". For example, in your main app you may need to
     `lx.engine.midi.registerSurface(name, class)` or match the name with 
-    an entry in lx.engine.midi.inputs[].getName() 
+    an entry in `lx.engine.midi.inputs[].getName()`. If using more than one midi
+    device of the same type BoxBox will present each device with a unique name by
+    appending a number such as "FoH: Midi Fighter Twister (2)".
+    `registerSurface(name, class)` needs to be called for each of these unique names.
 
 [Here's a video](https://youtu.be/ulBLF_IR46I) illustrating our configuration.
 
