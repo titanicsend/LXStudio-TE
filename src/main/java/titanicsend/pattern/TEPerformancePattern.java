@@ -445,13 +445,12 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     }
 
     /**
-     * NOTE: This control has functional overlap with color and channel fader settings, and
-     * could potentially can confusing brightness behavior.
+     * <b>NOTE:</b> This control has functional overlap with color and channel fader settings, and
+     * could potentially cause confusing brightness behavior.
      * <p></p>
-     * It may be deprecated in the future and at present, should only be used as a final multiplier
-     * for color values as the last step in a pattern.
+     * <b>It may be deprecated or removed in the future and should not be used in patterns.</b>
      *
-     * @return The current value of the brightness control, by default in the range 0-100.
+     * @return The current value of the brightness control, by default in the range 0.0 to 1.0
      */
     public double getBrightness() {
         return controls.getValue(TEControlTag.BRIGHTNESS);
