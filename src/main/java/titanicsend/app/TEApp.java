@@ -154,6 +154,7 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
     lx.registry.addPattern(Smoke.class);
 
     // Patterns that are in development towards meeting standards
+    lx.registry.addPattern(ArcEdges.class);
     lx.registry.addPattern(BassLightning.class);
     lx.registry.addPattern(BouncingDots.class);
     lx.registry.addPattern(Bubbles.class);

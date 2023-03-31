@@ -373,10 +373,45 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         return controls.getValue(TEControlTag.ANGLE);
     }
 
+    /**
+     * @return Color derived from the current setting of the color and brightness controls
+     * <p></p>
+     * NOTE:  The design philosophy here is that palette colors (and the color control)
+     * have precedence.
+     * <p></p>
+     * Brightness modifies the current color, and is set to 1.0 (100%) by default. So
+     * if you don't move the brightness control you get *exactly* the currently
+     * selected color.
+     * <p></p>
+     * At present, the brightness control lets you dim the current color,
+     * but if you want to brighten it, you have to do that with the channel fader or
+     * the color control.
+     */
     public int getCurrentColor() {
+        int k = controls.color.calcColor();
+        float bri = (float) getBrightness();
+
+        float r = (float) (0xff & LXColor.red(k)) * bri;
+        float g = (float) (0xff & LXColor.green(k)) * bri;
+        float b = (float) (0xff & LXColor.blue(k)) * bri;
+        return LXColor.rgb((int) r,(int) g,(int) b);
+    }
+
+    /**
+     * Gets the current color as set in the color control, without adjusting
+     * for brightness.  This is used by the OpenGL renderer, which has
+     * a unified mechanism for handling brightness.
+     *
+     */
+    public int getCurrentColorControlValue() {
         return controls.color.calcColor();
     }
 
+    /**
+     *
+     * @return current variable time in seconds.millis.  Note that time
+     * can run both forward and backward, and can be negative.
+     */
     public double getTime() {
         return iTime.getTime();
     }
@@ -409,10 +444,16 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         return controls.getValue(TEControlTag.SPIN);
     }
 
-    // multiply by 100 so that LXColor.hsb( ... ) and similar inputs can use it, since
-    // LX expects brightness in a range of 0-100
+    /**
+     * <b>NOTE:</b> This control has functional overlap with color and channel fader settings, and
+     * could potentially cause confusing brightness behavior.
+     * <p></p>
+     * <b>It may be deprecated or removed in the future and should not be used in patterns.</b>
+     *
+     * @return The current value of the brightness control, by default in the range 0.0 to 1.0
+     */
     public double getBrightness() {
-        return 100 * controls.getValue(TEControlTag.BRIGHTNESS);
+        return controls.getValue(TEControlTag.BRIGHTNESS);
     }
 
     public double getWow1() {

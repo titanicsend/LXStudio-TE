@@ -82,6 +82,8 @@ public class PatternControlData {
         return parent.getCurrentColor();
     }
 
+    public int getCurrentColorControlValue() { return parent.getCurrentColorControlValue(); }
+
     public FloatBuffer getCurrentPalette() { return parent.getCurrentPalette();}
 
     public double getSpeed() {
