@@ -84,15 +84,8 @@ public class SpiralDiamonds extends TEPerformancePattern {
              float dx = (float) Math.abs(Math.sin(squareocity * Math.log(x * sx + y * sy) + point.azimuth - t1));
              int on = ((dx * dx * dx) < 0.15) ? 1 : 0;
 
-             // now incorporate brightness control
-             int colorRGBWithBrightness = LXColor.hsb(
-                     LXColor.h(color),
-                     LXColor.s(color),
-                     this.getBrightness() * 100
-             );
-
              // finally, set color of pixel
-             colors[point.index] = colorRGBWithBrightness * on;
+             colors[point.index] = color * on;
          }
     }
 }

@@ -68,8 +68,8 @@ and is initialized to 0.5 (synced to half notes at the current tempo.)  Speed an
 tempo syncing mechanism and are described in their own section below.
 - Size - controls zoom, has a range of 0.0 to 5.0 and is initialized to 1.0
 - Angle - static rotational angle.  The UI range is -180 to 180 degrees, all APIs use the same angles, but in radians.
-
-(The Size control has a range of 0.0 to 5.0, and is initialized to 1.0)
+- Brightness - controls color brightness without changing alpha. (May be removed in the future, so avoid using
+  this except to multiply color as the last step in a pattern.  This is handled automatically for shader-based patterns.)
 
 ### Helper functions in TECommonControls
 From a TEPerformancePattern derived class, you can access the 'controls' object, which lets you

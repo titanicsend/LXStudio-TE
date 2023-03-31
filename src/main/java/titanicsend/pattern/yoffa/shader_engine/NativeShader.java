@@ -229,7 +229,7 @@ public class NativeShader implements GLEventListener {
 
         // color-related uniforms
         float x, y, z;
-        int color = ctl.getCurrentColor();
+        int color = ctl.getCurrentColorControlValue();
         x = (float) (0xff & LXColor.red(color)) / 255f;
         y = (float) (0xff & LXColor.green(color)) / 255f;
         z = (float) (0xff & LXColor.blue(color)) / 255f;
@@ -249,7 +249,7 @@ public class NativeShader implements GLEventListener {
         setUniform("iTranslate", (float) ctl.getXPos(), (float) ctl.getYPos());
         setUniform("iSpin",(float) ctl.getSpin());
         setUniform("iRotationAngle", (float) ctl.getRotationAngleFromSpin());
-        setUniform("iBrightness", (float) (ctl.getBrightness() / 100));
+        setUniform("iBrightness", (float) ctl.getBrightness());
         setUniform("iWow1", (float) ctl.getWow1());
         setUniform("iWow2", (float) ctl.getWow2());
         setUniform("iWowTrigger", ctl.getWowTrigger());
