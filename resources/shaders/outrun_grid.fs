@@ -2,13 +2,24 @@
 #define TAU PI * 2.0
 #define DEG2RAD PI/180.
 
-// Prevents flickering
-#define SUPERSAMP 8
+float horizonY = 0.15;
+float fov = 90.0;
+float farClip = -16.0;
+float boltSize = 0.25;
 
 //  rotate a point around the origin by <angle> radians
 vec2 rotate(vec2 point, float angle) {
   mat2 rotationMatrix = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
   return rotationMatrix * point;
+}
+
+// polynomial smooth min/max from
+// https://iquilezles.org/articles/smin/
+// (works as max if you invert the signs of a and b.)
+// k is the level of smoothing.  k = 0.1 is a good starting place
+float smin( float a, float b, float k ) {
+    float h = max( k-abs(a-b), 0.0 )/k;
+    return min( a, b ) - h*h*k*(1.0/4.0);
 }
 
 // Project camera to world plane with constant worldY (height)
@@ -18,64 +29,62 @@ vec3 revProject(vec2 camPos, float worldY, float fov) {
     return vec3(worldX, worldY, worldZ);
 }
 
-void mainImage( out vec4 fragColor, in vec2 fragCoord )
-{
+void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     vec2 uv = fragCoord / iResolution.xy;
     vec2 p = (fragCoord.xy - iResolution.xy*.5) / iResolution.y;
 
-// uses spin control to set absolute angle
+    // scale and rotate according to current control settings
     p *= iScale;
     p = rotate(p,iRotationAngle);
 
-    // Define supersample sizes
-    float fragsize = 1. / iResolution.y;
-    float supersize = fragsize / float(SUPERSAMP);
+    // iWowTrigger puts it in boat mode!
+    horizonY += (iWowTrigger) ? 0.1 * sin(p.x * 5.0 + iTime * 3.0) : 0.0;
 
-    // Define the screenspace horizon [-0.5, 0.5]
-    float horizonY = 0.2;
+    fragColor = vec4(0.0);
 
-    // Clip above horizon (optional)
-    if (p.y > horizonY) {
-    	fragColor = vec4(vec3(0.), 1.0);
-    }
-    else {
-        // Initialize current fragment intensity
-        float intensity = 0.;
-        // Define the current grid displacement
-        vec3 displace = vec3(3.*sin({%sidewaysSpeed[0,0,5]}*PI*0.1*iTime), 4.0*iTime, 1.5);
-        // Define the FOV
-        float fov = 90.0;
+    // Define the current grid displacement
+    vec3 displace = vec3(0.0, -4.0*iTime, 1.5);
 
-        // Retrieve supersamples
-        for (int i = 0; i < SUPERSAMP; i++) {
-            for (int j = 0; j < SUPERSAMP; j++) {
-                vec2 superoffset = vec2(i,j) * supersize;
-                // Get worldspace position of grid
-                vec2 gridPos = revProject(p + superoffset - vec2(0., horizonY), displace.z, fov).xz;
-                // Create grid
-                vec2 grid = fract(gridPos - displace.xy) - 0.5;
-                // Make wavy pattern
-                float pattern = !{%noAlphaWaves[bool]} ? 0.7+0.6*sin(gridPos.y - 6.0*iTime) : 1.0;
+    // bend x axis to the beat - iWow1 controls the amplitude
+    p.x += (iWow1/6.0) * sin(iTime + p.y * 12.0);
 
-                // Compute distance from grid edge
-                float dist = max(grid.x*grid.x, grid.y*grid.y);
-                // Compute grid fade distance
-                float fade = min(1.5, pow(1.2, -length(gridPos) + 25.0));
-                // Set brightness
-                float bright = 0.015 / (0.26 - dist);
-                intensity += fade * pattern * bright;
-            }
-        }
+    // Get worldspace position of grid
+    vec3 gridPos = revProject(p - vec2(0., horizonY), displace.z, fov);
 
-        // Normalize and scale brightness
-        intensity = 3.0 * (intensity/float(SUPERSAMP*SUPERSAMP));
+    // display grid if inside z-clipping region
+    if (p.y <= horizonY && gridPos.z >= farClip)  {
 
-        // Wow1 controls glow intensity
-        intensity =  pow(intensity,1.0 - clamp(iWow1,0.25,0.85));
+        // Create grid
+        vec2 grid = fract(gridPos.xz - displace.xy) - 0.5;
 
-        // calculate final color, and set reasonable alpha value from brightness
+        // Compute distance from grid edges
+        float dist = smin(-grid.x * grid.x,-grid.y * grid.y,0.2);
+        dist = dist * dist;
+
+        // Send brightness pulses down the Y gridlines to the beat - iWow2 controls amplitude
+
+        // compute normalized distance to far clipping plane
+        float zn = gridPos.z/farClip;
+
+        // change the direction of the beat pulses depending on the direction of time
+        float beatDist = (iSpeed >= 0) ? abs((1.-zn) - beat) : abs(zn - beat);
+
+        beatDist = (beatDist <= boltSize) ? (boltSize - beatDist) / boltSize : 0.0;
+        float pattern = (grid.x * grid.x) * beatDist;
+        pattern = iWow2 * pow(pattern,1.35);
+
+        // Fade grid as we approach far clipping plane.  This gets rid of a lot
+        // of potential aliasing trouble.
+        float fade = 2.0-zn;
+
+        // vary the underlying "terrain" color a little to enhanve movement
+        float glow = (iQuantity * 1.25 - dist) + clamp(0.3*sin(8.0 * zn - iTime*6.0),-1.0,0.0);
+
+        // Calculate and scale overall brightness - iQuantity controls glow level
+        float intensity = max(glow,14.0 * fade * (dist + pattern));
+
+        // set final color and build reasonable alpha value from brightness
         fragColor = vec4(iColorRGB * intensity,0.0);
         fragColor.a = max(fragColor.r,max(fragColor.g,fragColor.b));
     }
-
 }
