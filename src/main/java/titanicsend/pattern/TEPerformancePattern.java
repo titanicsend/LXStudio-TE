@@ -171,7 +171,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             p = new CompoundParameter("Speed", 0.5, -4.0, 4.0)
                     .setPolarity(LXParameter.Polarity.BIPOLAR)
                     .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
-                    .setExponent(1.0)
+                    .setExponent(1.75)
                     .setDescription("Speed");
             setControl(TEControlTag.SPEED, p);
 
