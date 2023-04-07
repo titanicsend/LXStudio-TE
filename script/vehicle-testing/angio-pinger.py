@@ -2,7 +2,6 @@
 
 import asyncio
 import csv
-import random
 from ping3 import ping
 
 async def ping_ip(ip):
@@ -37,7 +36,7 @@ async def main():
     controllers_file = "controllers.tsv"
     ips = read_controllers(controllers_file)
     results = await check_pings(ips)
-        
+
     timed_out_ips = []
     up_to_date_ips = []
     stale_ips = []
@@ -58,17 +57,23 @@ async def main():
             else:
                 cfg_error_ips.append(ip_label)
 
+    RED=31
+    GREEN=32
+    YELLOW=33
+    MAGENTA=35
+    CYAN=36
+
     categories = [
-        ("up-to-date controllers", up_to_date_ips),
-        ("stale-firmware controllers", stale_ips),
-        ("misconfigured controllers", misconfig_ips),
-        ("reachable controllers that nonetheless couldn't be checked", cfg_error_ips),
-        ("unreachable controllers", timed_out_ips),
+        ("up-to-date controllers", up_to_date_ips, GREEN),
+        ("stale-firmware controllers", stale_ips, YELLOW),
+        ("misconfigured controllers", misconfig_ips, YELLOW),
+        ("reachable controllers that nonetheless couldn't be checked", cfg_error_ips, RED),
+        ("unreachable controllers", timed_out_ips, RED),
     ]
 
-    for category_name, ips in categories:
+    for category_name, ips, color_number in categories:
         if len(ips) > 0:
-            print(f"{len(ips)} {category_name}: {', '.join(ips)}")
+            print(f"\033[{color_number}m{len(ips)} {category_name}: {', '.join(ips)}\033[0m")
 
 if __name__ == "__main__":
     asyncio.run(main())
