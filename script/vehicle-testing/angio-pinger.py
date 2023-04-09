@@ -58,7 +58,7 @@ async def main():
         if response_time is None:
             timed_out_ips.append(ip_label)
         else:
-            reachable_ips.append(ip)
+            reachable_ips.append((ip, ip_label))
 
     grouped_results = av.check_configs(reachable_ips)
 
