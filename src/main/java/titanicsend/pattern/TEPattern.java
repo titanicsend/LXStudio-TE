@@ -50,7 +50,10 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
 
   protected TEPattern(LX lx) {
     super(lx);
-    this.clearPixels();
+	// NOTE(mcslee): in newer LX version, colors array does not exist at instantiation
+	// time. If this call was truly necessary, it will need to be refactored to happen elsewhere
+    // this.clearPixels();
+	  
     this.sua = this.model.panelsById.get("SUA");
     this.sdc = this.model.panelsById.get("SDC");
 

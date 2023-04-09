@@ -18,8 +18,10 @@ public abstract class PixelblazePattern extends TEAudioPattern {
   long lastLogMs = 0; //to prevent spamming the logs with script errors
   HashMap<String, LXParameter> patternParameters = new HashMap<>();
 
+  // JKB note: these could be retired and replaced by views
   protected BooleanParameter enableEdges;
   protected BooleanParameter enablePanels;
+  protected boolean clearNextFrame = false;
 
   /**
    * This should be overridden in subclasses to load a different source
@@ -32,7 +34,7 @@ public abstract class PixelblazePattern extends TEAudioPattern {
   protected LXParameterListener modelPointsListener = lxParameter -> {
     if (wrapper != null) {
       try {
-        clearPixels();
+        this.clearNextFrame = true;
         wrapper.setPoints(getModelPoints());
       } catch (Exception e) {
         LX.error("Error updating points:" + e.getMessage());
@@ -48,12 +50,13 @@ public abstract class PixelblazePattern extends TEAudioPattern {
 
     enableEdges.addListener(modelPointsListener);
     enablePanels.addListener(modelPointsListener);
+    this.clearNextFrame = true;
 
     addParameter("enableEdges", enableEdges);
     addParameter("enablePanels", enablePanels);
 
     try {
-      wrapper = Wrapper.fromResource(getScriptName(), this, getModelPoints(), colors);
+      wrapper = Wrapper.fromResource(getScriptName(), this, getModelPoints());
       wrapper.load();
     } catch (Exception e) {
       LX.error("Error initializing Pixelblaze script:" + e.getMessage());
@@ -107,13 +110,18 @@ public abstract class PixelblazePattern extends TEAudioPattern {
   }
 
   public void runTEAudioPattern(double deltaMs) {
+    if (this.clearNextFrame) {
+      this.clearNextFrame = false;
+      clearPixels();
+    }
+
     if (wrapper == null)
       return;
 
     try {
       updateGradients();
       wrapper.reloadIfNecessary();
-      wrapper.render(deltaMs);
+      wrapper.render(deltaMs, colors);
     } catch (ScriptException | NoSuchMethodException sx) {
       //the show must go on, and we don't want to spam the logs.
       if (System.currentTimeMillis() - lastLogMs > RENDER_ERROR_LOG_INTERVAL_MS) {

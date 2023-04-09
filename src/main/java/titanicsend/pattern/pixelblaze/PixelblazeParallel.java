@@ -33,14 +33,14 @@ public class PixelblazeParallel extends TEAudioPattern {
       for (int i = 0; i < model.edgePoints.size(); i += chunksize) {
         List<LXPoint> chunk = model.edgePoints.subList(i, Math.min(i + chunksize, model.edgePoints.size() - 1));
         LXPoint[] chunkPoints = new LXPoint[chunk.size()];
-        wrappers.add(Wrapper.fromResource("neon_ice", this, model.edgePoints.toArray(chunkPoints), colors));
+        wrappers.add(Wrapper.fromResource("neon_ice", this, model.edgePoints.toArray(chunkPoints)));
       }
 
       chunksize = (int) Math.ceil((float) model.panelPoints.size() / N_THREADS);
       for (int i = 0; i < model.panelPoints.size(); i += chunksize) {
         List<LXPoint> chunk = model.panelPoints.subList(i, Math.min(i + chunksize, model.panelPoints.size() - 1));
         LXPoint[] chunkPoints = new LXPoint[chunk.size()];
-        wrappers.add(Wrapper.fromResource("xorcery", this, model.panelPoints.toArray(chunkPoints), colors));
+        wrappers.add(Wrapper.fromResource("xorcery", this, model.panelPoints.toArray(chunkPoints)));
       }
       LX.log("parallel chunks=" + wrappers.size());
 
@@ -59,7 +59,7 @@ public class PixelblazeParallel extends TEAudioPattern {
       for (Wrapper wrapper : wrappers) {
         futures.add(es.submit((Callable<Void>) () -> {
             wrapper.reloadIfNecessary();
-            wrapper.render(deltaMs);
+            wrapper.render(deltaMs, colors);
             return null;
         }));
       }
