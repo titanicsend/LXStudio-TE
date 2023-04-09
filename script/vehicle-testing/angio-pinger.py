@@ -2,6 +2,10 @@
 
 import asyncio
 import csv
+import importlib
+import os
+
+av = importlib.import_module("angio-validator")
 from ping3 import ping
 
 async def ping_ip(ip):
@@ -28,34 +32,35 @@ def read_controllers(file_name):
                 ips.append((f"10.7.{x}.1", f"{x}"))
     return ips
 
-def check_config(ip):
-    # TODO: Actually return one of ['up-to-date', 'stale', 'misconfig', 'error']
-    return 'error'
+def find_controllers_file():
+    file_name = "controllers.tsv"
+    path = os.getcwd()
+    while True:
+        if os.path.isfile(os.path.join(path, file_name)):
+            return os.path.join(path, file_name)
+        elif os.path.isfile(os.path.join(path, "resources", "vehicle", file_name)):
+            return os.path.join(path, "resources", "vehicle", file_name)
+        elif path == os.path.dirname(path):
+            raise FileNotFoundError(f"{file_name} not found.")
+        else:
+            path = os.path.dirname(path)
+
 
 async def main():
-    controllers_file = "controllers.tsv"
+    controllers_file = find_controllers_file()
     ips = read_controllers(controllers_file)
     results = await check_pings(ips)
 
     timed_out_ips = []
-    up_to_date_ips = []
-    stale_ips = []
-    misconfig_ips = []
-    cfg_error_ips = []
+    reachable_ips = []
 
     for (ip, ip_label), response_time in results:
         if response_time is None:
             timed_out_ips.append(ip_label)
         else:
-            config_status = check_config(ip)
-            if config_status == 'up-to-date':
-                up_to_date_ips.append(ip_label)
-            elif config_status == 'stale':
-                stale_ips.append(ip_label)
-            elif config_status == 'misconfig':
-                misconfig_ips.append(ip_label)
-            else:
-                cfg_error_ips.append(ip_label)
+            reachable_ips.append(ip)
+
+    grouped_results = av.check_configs(reachable_ips)
 
     RED=31
     GREEN=32
@@ -64,10 +69,10 @@ async def main():
     CYAN=36
 
     categories = [
-        ("up-to-date controllers", up_to_date_ips, GREEN),
-        ("stale-firmware controllers", stale_ips, YELLOW),
-        ("misconfigured controllers", misconfig_ips, YELLOW),
-        ("reachable controllers that nonetheless couldn't be checked", cfg_error_ips, RED),
+        ("up-to-date controllers", grouped_results['up-to-date'], GREEN),
+        ("stale-firmware controllers", grouped_results['stale'], YELLOW),
+        ("misconfigured controllers", grouped_results['misconfig'], YELLOW),
+        ("reachable controllers that nonetheless couldn't be checked", grouped_results['error'], RED),
         ("unreachable controllers", timed_out_ips, RED),
     ]
 
