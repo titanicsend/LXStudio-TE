@@ -32,7 +32,6 @@ public abstract class PixelblazePattern extends TEAudioPattern {
   protected LXParameterListener modelPointsListener = lxParameter -> {
     if (wrapper != null) {
       try {
-        clearPixels();
         wrapper.setPoints(getModelPoints());
       } catch (Exception e) {
         LX.error("Error updating points:" + e.getMessage());
