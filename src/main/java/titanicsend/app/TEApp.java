@@ -215,7 +215,13 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
     lx.registry.addPattern(TEEdgeTestPattern.class);
     lx.registry.addPattern(TEPanelTestPattern.class);
 
+    // Midi surface names for use with BomeBox
     lx.engine.midi.registerSurface("FoH: APC40 mkII", APC40Mk2.class);
+    lx.engine.midi.registerSurface("FoH: Midi Fighter Twister", MidiFighterTwister.class);
+    lx.engine.midi.registerSurface("FoH: Midi Fighter Twister (2)", MidiFighterTwister.class);
+    lx.engine.midi.registerSurface("FoH: Midi Fighter Twister (3)", MidiFighterTwister.class);
+    lx.engine.midi.registerSurface("FoH: Midi Fighter Twister (4)", MidiFighterTwister.class);
+
     // create our library for autopilot
     this.library = initializePatternLibrary(lx);
 
