@@ -62,30 +62,6 @@ public class ShaderEdgesPatternConfig {
         }
     }
 
-    @LXCategory("Native Shaders Edges")
-    public static class SynthWavesEdges extends ConstructedPattern {
-        public SynthWavesEdges(LX lx) {
-            super(lx);
-        }
-        @Override
-        protected List<PatternEffect> createEffects() {
-            return List.of(new NativeShaderPatternEffect("synth_waves.fs",
-                    PatternTarget.allEdgesAsCanvas(this)));
-        }
-    }
-
-    @LXCategory("Native Shaders Edges")
-    public static class PulsingHeartEdges extends ConstructedPattern {
-        public PulsingHeartEdges(LX lx) {
-            super(lx);
-        }
-        @Override
-        protected List<PatternEffect> createEffects() {
-            return List.of(new NativeShaderPatternEffect("pulsing_heart.fs",
-                    PatternTarget.allEdgesAsCanvas(this)));
-        }
-    }
-
     @LXCategory("DREVO Shaders")
     public static class MetallicWaves extends ConstructedPattern {
         public MetallicWaves(LX lx) {

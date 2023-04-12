@@ -14,7 +14,7 @@ import titanicsend.pattern.TEPattern;
  * SolidPanel is a trivial pattern that accepts input to
  * control the output color of just the panels in the model.
  */
-@LXCategory("Panel BG")
+@LXCategory("TE Examples")
 public class SolidPanel extends TEPattern {
 
   public final LinkedColorParameter color =

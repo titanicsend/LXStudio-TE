@@ -13,7 +13,7 @@ import java.util.List;
 // Example to show how we could map a video onto our panels
 // Not intended from production use
 // Video clip has NOT been confirmed as licensed for re-use
-@LXCategory("Video Examples")
+@LXCategory("TE Examples")
 public class BasicVideoPattern extends TEPattern {
 
     private static final String VID_PATH = "resources/pattern/test12.mov";

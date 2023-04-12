@@ -87,17 +87,6 @@ public class OrganicPatternConfig {
         }
     }
 
-    @LXCategory("Yoffa Edge Shader")
-    public static class BasicElectricEdges extends ConstructedPattern {
-        public BasicElectricEdges(LX lx) {
-            super(lx);
-        }
-        @Override
-        protected List<PatternEffect> createEffects() {
-            return List.of(new ElectricShader(PatternTarget.allEdgesAsCanvas(this)));
-        }
-    }
-
     @LXCategory("Yoffa Panel Shader")
     public static class WaterPanels extends ConstructedPattern {
         public WaterPanels(LX lx) {
@@ -183,17 +172,6 @@ public class OrganicPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new AlternatingDotsEffect(PatternTarget.allPanelsAsCanvas(this)));
-        }
-    }
-
-    @LXCategory("Yoffa Panel Organic")
-    public static class BreathingDots extends ConstructedPattern {
-        public BreathingDots(LX lx) {
-            super(lx);
-        }
-        @Override
-        protected List<PatternEffect> createEffects() {
-            return List.of(new BreathingDotsEffect(PatternTarget.allPanelsAsCanvas(this)));
         }
     }
 
