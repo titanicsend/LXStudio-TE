@@ -18,7 +18,7 @@ async def send_request_and_get_response(ip, request):
     except Exception:
         return None
 
-def check_config(possibly_labeled_ip):
+def check_config(possibly_labeled_ip, debug=False):
     if isinstance(possibly_labeled_ip, tuple):
       ip, label = possibly_labeled_ip
     else:
@@ -26,10 +26,13 @@ def check_config(possibly_labeled_ip):
       label = possibly_labeled_ip
 
     requests = [("info", dict(version="v0.6.1")),
-                ("globals", dict(brightness=128)),
+                ("globals", dict(brightness=128, target_fps=70)),
                 ("netstate", dict(ethernet=dict(subnet="255.0.0.0", gateway="10.0.0.1"))),
-                ("leds", dict(chipset="SK9822", gamma=[[1.01,1,0],[1.1,1,0],[1.2,1,0]])),
-                #("network", 'print'),
+                ("leds", dict(chipset="SK9822", gamma=[[2.20, 0.80, 0.00],
+                                                       [2.50, 0.70, 0.00],
+                                                       [2.50, 0.60, 0.00]])),
+                ("network", dict(ethernet=dict(subnet="255.0.0.0", gateway="10.0.0.1"),
+                                 wifi=dict(ssid=""))),
                 #("artnet", 'print')
                ]
     responses = []
@@ -40,18 +43,18 @@ def check_config(possibly_labeled_ip):
         request = {"cmd": "get", "key": key}
         response = loop.run_until_complete(send_request_and_get_response(ip, str(request)))
         if expected_response == 'print':
-            print(f"{label} {key}: {repr(response)}")
+            if debug: print(f"{label} {key}: {repr(response)}")
         elif response is None:
-            print(f"{label} {key}: Failed to return response")
+            if debug: print(f"{label} {key}: Failed to return response")
             return 'error'
         else:
             try:
                 response_dict = json.loads(response)
             except JSONDecodeError as e:
-                print(f"{label} {key}: Failed to decode JSON: {response}\nError details: {e}")
+                if debug: print(f"{label} {key}: Failed to decode JSON: {response}\nError details: {e}")
                 return 'error'
             if "data" not in response_dict:
-                print(f"{label} {key}: Got data-less response: {response_dict}\n")
+                if debug: print(f"{label} {key}: Got data-less response: {response_dict}\n")
                 return 'error'
             data = response_dict["data"]
             for rk, rv in expected_response.items():
@@ -59,18 +62,18 @@ def check_config(possibly_labeled_ip):
                     if isinstance(rv, dict) and all(item in data[rk].items() for item in rv.items()): 
                         continue
                     elif key == "info" and rk == "version":
-                        print(f"{label} running version {data[rk]} instead of {rv}")
+                        if debug: print(f"{label} running version {data[rk]} instead of {rv}")
                         return 'stale'
                     else:
-                        print(f"{label} {key}: Expected {rv} in {data}")
+                        if debug: print(f"{label} {key}: Expected {rk}={rv} in {data}")
                         return 'misconfig'
 
     loop.close()
     return 'up-to-date'
 
-def check_configs(possibly_labeled_ips):
+def check_configs(possibly_labeled_ips, debug=False):
     with ThreadPoolExecutor() as executor:
-        results = [executor.submit(check_config, pip) for pip in possibly_labeled_ips]
+        results = [executor.submit(check_config, pip, debug) for pip in possibly_labeled_ips]
         grouped_results = {'up-to-date': [], 'stale': [], 'misconfig': [], 'error': []}
         for result, pip in zip(results, possibly_labeled_ips):
             if isinstance(pip, tuple):
@@ -98,7 +101,7 @@ def main(argv):
             print(f"Invalid IP address: {ip}")
             sys.exit(1)
 
-    results = check_configs(ips)
+    results = check_configs(ips, debug=True)
     for k, v in results.items():
         if not v: continue
         print(f"{k}: {' '.join(v)}")
