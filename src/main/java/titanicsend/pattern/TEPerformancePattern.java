@@ -65,7 +65,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
         public final CompoundParameter offset = (CompoundParameter)
             new CompoundParameter("Offset")
-            .setDescription("Allows user variation in single-color mode.  If Static, adjusts hue offset. If Palette, adjusts normalized position within gradient.").setNormalized(.5);
+            .setDescription("Allows user variation in single-color mode.  If Static, adjusts hue offset. If Palette, adjusts normalized position within gradient.");
 
 
         public TEColorParameter(String label) {
