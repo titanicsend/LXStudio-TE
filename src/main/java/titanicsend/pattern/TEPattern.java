@@ -23,8 +23,28 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
   private final TEPanelModel sua;
   private final TEPanelModel sdc;
 
+  // TE Gradient types
+  public enum TEGradient {
+    FULL_PALETTE("Full Palette"),
+    FOREGROUND("Foreground"),
+    PRIMARY("Primary"),
+    SECONDARY("Secondary");
+
+    public final String label;
+
+    private TEGradient(String label) {
+      this.label = label;
+    }
+
+    @Override
+    public String toString() {
+      return this.label;
+    }
+  };
+
   // Whole palette gradient across all 5 stops. Usually starts and ends with black.
   protected GradientUtils.ColorStops paletteGradient = new GradientUtils.ColorStops();
+  protected GradientUtils.ColorStops foregroundGradient = new GradientUtils.ColorStops();
   protected GradientUtils.ColorStops primaryGradient = new GradientUtils.ColorStops();
   protected GradientUtils.ColorStops secondaryGradient = new GradientUtils.ColorStops();
 
@@ -57,6 +77,7 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
     this.sua = this.model.panelsById.get("SUA");
     this.sdc = this.model.panelsById.get("SDC");
 
+    this.foregroundGradient.setNumStops(3);
     this.primaryGradient.setNumStops(2);
     this.secondaryGradient.setNumStops(2);
     updateGradients();
@@ -85,6 +106,9 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
     primaryGradient.stops[1].set(lx.engine.palette.getSwatchColor(ColorType.PRIMARY.swatchIndex()));
     secondaryGradient.stops[0].set(lx.engine.palette.getSwatchColor(ColorType.SECONDARY_BACKGROUND.swatchIndex()));
     secondaryGradient.stops[1].set(lx.engine.palette.getSwatchColor(ColorType.SECONDARY.swatchIndex()));
+    foregroundGradient.stops[0].set(lx.engine.palette.getSwatchColor(ColorType.PRIMARY.swatchIndex()));
+    foregroundGradient.stops[1].set(lx.engine.palette.getSwatchColor(ColorType.SECONDARY.swatchIndex()));
+    foregroundGradient.stops[2].set(lx.engine.palette.getSwatchColor(ColorType.PRIMARY.swatchIndex()));
   }
 
   /**

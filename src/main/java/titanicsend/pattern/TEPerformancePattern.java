@@ -2,9 +2,13 @@ package titanicsend.pattern;
 
 import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
+import heronarts.lx.color.ColorParameter;
+import heronarts.lx.color.GradientUtils;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
+import heronarts.lx.color.GradientUtils.BlendFunction;
 import heronarts.lx.parameter.*;
+import heronarts.lx.utils.LXUtils;
 import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon.VariableSpeedTimer;
@@ -15,6 +19,219 @@ import java.nio.FloatBuffer;
 import java.util.HashMap;
 
 public abstract class TEPerformancePattern extends TEAudioPattern {
+
+    public class TEColorParameter extends ColorParameter {
+
+        // SINGLE-COLOR MODE
+
+        public enum Mode {
+            PALETTE("Palette"),
+            STATIC("Static");
+
+            public final String label;
+
+            private Mode(String label) {
+                this.label = label;
+            }
+
+            @Override
+            public String toString() {
+                return this.label;
+            }
+        };
+
+        public final EnumParameter<Mode> mode =
+            new EnumParameter<Mode>("Mode", Mode.PALETTE)
+            .setDescription("Whether to use global TE palette (preferred), or a static color unique to this pattern");
+
+        // GRADIENT MODE
+
+        public final EnumParameter<TEGradient> gradient =
+            new EnumParameter<TEGradient>("Gradient", TEGradient.FULL_PALETTE)
+            .setDescription("Which TEGradient to use. Full_Pallete=entire, Foreground=Primary-Secondary, Primary=Primary-BackgroundPrimary, Secondary=Secondary-BackgroundSecondary");
+
+        // GRADIENT BLEND. Excluding RGB because it does play well with gradients.
+
+        public enum BlendMode {
+            HSV,
+            HSV2
+        }
+
+        public final EnumParameter<BlendMode> blendMode =
+            new EnumParameter<BlendMode>("BlendMode", BlendMode.HSV2)
+            .setDescription("Blend mode for the gradient");
+
+        // OFFSET
+
+        public final CompoundParameter offset = (CompoundParameter)
+            new CompoundParameter("Offset")
+            .setDescription("Allows user variation in single-color mode.  If Static, adjusts hue offset. If Palette, adjusts normalized position within gradient.").setNormalized(.5);
+
+
+        public TEColorParameter(String label) {
+          this(label, 0xff000000);
+        }
+
+        public TEColorParameter(String label, int color) {
+            super(label, color);
+
+            addSubparameter("mode", this.mode);
+            addSubparameter("gradient", this.gradient);
+            addSubparameter("blendMode", this.blendMode);
+            addSubparameter("offset", this.offset);
+        }
+
+        @Override
+        public TEColorParameter setDescription(String description) {
+            return (TEColorParameter) super.setDescription(description);
+        }
+
+        @Override
+        public LXListenableNormalizedParameter getRemoteControl() {
+          return this.offset;
+        }
+
+        public double getOffset() {
+            return this.offset.getValuef();
+        }
+
+        public final float getOffsetf() {
+            return (float) getOffset();
+        }
+
+        // SINGLE-COLOR METHODS
+
+        /**
+         * ** Single-Color patterns should use this method **
+         *
+         * Returns the real-time value of the color, which may be different from what
+         * getColor() returns if there are LFOs/etc being applied.
+         * Offset has been applied to this color.
+         */
+        public int calcColor() {
+            switch (this.mode.getEnum()) {
+            case PALETTE:
+                return getGradientColor(getOffsetf());
+            default:
+            case STATIC:
+                return LXColor.hsb(
+                    this.hue.getValue() + (getOffset() * 360.),
+                    this.saturation.getValue(),
+                    this.brightness.getValue()
+                  );
+            }
+        }
+
+        /**
+         * Returns a base color pre-modulators and pre-offset.
+         * Patterns are encouraged to use calcColor() instead.
+         */
+        @Override
+        public int getColor() {
+            switch (this.mode.getEnum()) {
+            case PALETTE:
+                return getGradientColor(0);
+            default:
+            case STATIC:
+                return super.getColor();
+            }
+        }
+
+        // GRADIENT METHODS
+
+        /**
+         * ** Gradient patterns should use this method **
+         *
+         * Given a value in 0..1 (and wrapped back outside that range)
+         * Return a color within the selected gradient.
+         * Offset is added to lerp to create a user-shiftable gradient.
+         * @param lerp as a frac
+         * @return LXColor
+         */
+        public int calcGradientColor(float lerp) {
+            return getGradientColor(lerp + getOffsetf());
+        }
+
+        /**
+         * Returns absolute position within current gradient.
+         * @param lerp
+         * @return
+         */
+        private int getGradientColor(float lerp) {
+            lerp = (float)LXUtils.wrapnf(lerp);
+
+            BlendFunction bf;
+            switch (this.blendMode.getEnum()) {
+            case HSV:
+                bf = GradientUtils.BlendMode.HSV.function;
+                break;
+            case HSV2:
+            default:
+                bf = GradientUtils.BlendMode.HSV2.function;
+            }
+
+            return getGradientStops().getColor(
+                lerp,
+                //TEMath.trianglef(lerp / 2), // Allow wrapping      ** TODO: remove this? **
+                bf);
+        }
+
+        /**
+         * Internal helper method.
+         * Returns stops for currently selected gradient.
+         */
+        private GradientUtils.ColorStops getGradientStops() {
+            switch (this.gradient.getEnum()) {
+            case FOREGROUND:
+                return foregroundGradient;
+            case PRIMARY:
+                return primaryGradient;
+            case SECONDARY:
+                return secondaryGradient;
+            case FULL_PALETTE:
+            default:
+                return paletteGradient;
+            }
+        }
+
+        @Override
+        protected void onSubparameterUpdate(LXParameter p) {
+            if (this.mode.getEnum() == Mode.PALETTE) {
+                setColor(getGradientColor(0));
+            } else {
+                super.onSubparameterUpdate(p);
+            }
+        }
+
+    }
+
+    /**
+     * ** Use TEColorParameter instead of these methods. **
+     *
+     * Suppress parent TEPattern gradient methods, force child classes
+     * to choose single color or gradient, keeping other choices
+     * runtime-adjustable.
+     */
+
+    @Override
+    public final int getPrimaryGradientColor(float lerp) {
+        LX.error("Use TEColorParameter.getGradientColor() instead");
+        return 0;
+    }
+
+    @Override
+    public final int getSecondaryGradientColor(float lerp) {
+        LX.error("Use TEColorParameter.getGradientColor() instead");
+        return 0;
+    }
+
+    // Explicitly keep this available for now
+    @Override
+    public int getSwatchColor(ColorType type) {
+        return super.getSwatchColor(type);
+    }
+
+    // ANGLE PARAMETER
 
     // Create new class for Angle control so we can override the reset
     // behavior and have reset set the current composite rotation angle
@@ -44,9 +261,9 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     public class TECommonControls {
 
-        // color control is accessible, in case the pattern needs something
+        // Color control is accessible, in case the pattern needs something
         // other than the current color.
-        public LinkedColorParameter color;
+        public TEColorParameter color;
 
 
         _CommonControlGetter defaultGetFn = new _CommonControlGetter() {
@@ -236,8 +453,9 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         }
 
         protected void registerColorControl() {
-            color = registerColor("Color", "te_color", ColorType.PRIMARY,
-                    "Panel Color");
+            color = new TEColorParameter("Color")
+                .setDescription("TE Color");
+            addParameter("te_color", color);
         }
 
         /**
@@ -440,6 +658,10 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
      */
     public int getCurrentColorControlValue() {
         return controls.color.calcColor();
+    }
+
+    public int getCurrentGradient(float lerp) {
+        return controls.color.calcGradientColor(lerp);
     }
 
     /**
