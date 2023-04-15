@@ -13,6 +13,7 @@ import heronarts.lx.model.LXPoint;
 import org.openjdk.nashorn.api.scripting.JSObject;
 import org.openjdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import titanicsend.pattern.TEAudioPattern;
+import titanicsend.pattern.TEPerformancePattern;
 
 public class Wrapper {
 
@@ -52,19 +53,19 @@ public class Wrapper {
     return cachedScript.compiledScript;
   }
 
-  public static Wrapper fromResource(String pbClass, TEAudioPattern pattern, LXPoint[] points) throws Exception {
+  public static Wrapper fromResource(String pbClass, TEPerformancePattern pattern, LXPoint[] points) throws Exception {
     return new Wrapper(new File("resources/pixelblaze/" + pbClass + ".js"), pattern, points);
   }
 
   File file;
-  TEAudioPattern pattern;
+  TEPerformancePattern pattern;
   LXPoint[] points;
   long lastModified;
   Bindings bindings = engine.createBindings();
   String renderName;
   boolean hasError = false;
 
-  public Wrapper(File file, TEAudioPattern pattern, LXPoint[] points) throws ScriptException, IOException {
+  public Wrapper(File file, TEPerformancePattern pattern, LXPoint[] points) throws ScriptException, IOException {
     this.file = file;
     this.pattern = pattern;
     this.points = points;
@@ -88,7 +89,7 @@ public class Wrapper {
 
       bindings.put("pixelCount", points.length);
       bindings.put("__pattern", pattern);
-      bindings.put("__now", System.currentTimeMillis());
+      bindings.put("__now", pattern.getTime() * 1000.0);
 
       glueScript.eval(bindings);
       patternScript.eval(bindings);
@@ -106,13 +107,13 @@ public class Wrapper {
   public void render(double deltaMs, int[] colors) throws ScriptException, NoSuchMethodException {
     if (hasError)
       return;
-    bindings.put("__now", System.currentTimeMillis());
+    bindings.put("__now", pattern.getTime() * 1000.0);
     bindings.put("__points", points);
     bindings.put("__colors", colors);
 
     JSObject glueBeforeRender = (JSObject) bindings.get("glueBeforeRender");
     if (glueBeforeRender != null)
-      glueBeforeRender.call(null, deltaMs, System.currentTimeMillis(), points, colors);
+      glueBeforeRender.call(null, deltaMs, pattern.getTime() * 1000.0, points, colors);
     JSObject glueRender = (JSObject) bindings.get("glueRender");
     if (glueRender != null)
       glueRender.call(null);

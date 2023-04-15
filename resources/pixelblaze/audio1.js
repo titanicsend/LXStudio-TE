@@ -7,6 +7,7 @@ export function sliderEnergyLevel(v) {
 }
 
 export function beforeRender(delta) {
+  energy = getWow1();
   t1 = time(.1 * 256)
 }
 

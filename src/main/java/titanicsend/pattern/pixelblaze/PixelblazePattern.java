@@ -7,12 +7,13 @@ import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.pattern.TEAudioPattern;
+import titanicsend.pattern.TEPerformancePattern;
 
 import javax.script.ScriptException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public abstract class PixelblazePattern extends TEAudioPattern {
+public abstract class PixelblazePattern extends TEPerformancePattern {
   public static final int RENDER_ERROR_LOG_INTERVAL_MS = 5_000;
   private Wrapper wrapper;
   long lastLogMs = 0; //to prevent spamming the logs with script errors
@@ -44,9 +45,11 @@ public abstract class PixelblazePattern extends TEAudioPattern {
 
   public PixelblazePattern(LX lx) {
     super(lx);
+
+    addCommonControls();
+
     enableEdges = new BooleanParameter("Edges", true);
     enablePanels = new BooleanParameter("Panels", true);
-
 
     enableEdges.addListener(modelPointsListener);
     enablePanels.addListener(modelPointsListener);

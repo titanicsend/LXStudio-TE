@@ -5,13 +5,14 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.pattern.TEAudioPattern;
+import titanicsend.pattern.TEPerformancePattern;
 
 import java.util.ArrayList;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.sin;
 
-public abstract class PixelblazePort extends TEAudioPattern {
+public abstract class PixelblazePort extends TEPerformancePattern {
 
 	public BooleanParameter enableEdges;
 	public BooleanParameter enablePanels;
@@ -20,7 +21,7 @@ public abstract class PixelblazePort extends TEAudioPattern {
 
 	//"globals"
 	public int pixelCount;
-	public long now;
+	//public long now;
 
 	//render fields
 	public LXPoint point;
@@ -28,9 +29,12 @@ public abstract class PixelblazePort extends TEAudioPattern {
 
 	public PixelblazePort(LX lx) {
 		super(lx);
+
+		configureControls();
+		addCommonControls();
+
 		enableEdges = new BooleanParameter("Edges", true);
 		enablePanels = new BooleanParameter("Panels", true);
-
 
 		enableEdges.addListener(modelPointsListener);
 		enablePanels.addListener(modelPointsListener);
@@ -45,7 +49,7 @@ public abstract class PixelblazePort extends TEAudioPattern {
 
 	private void updateLocalVars() {
 		pixelCount = modelPoints.length;
-		now = System.currentTimeMillis();
+		//now = System.currentTimeMillis();
 	}
 
 	protected LXParameterListener modelPointsListener = lxParameter -> {
@@ -73,14 +77,24 @@ public abstract class PixelblazePort extends TEAudioPattern {
 		updateLocalVars();
 		beforeRender(deltaMs);
 
+		float xOffs = (float) getXPos();
+		float yOffs = (float) -getYPos();
 		for (int i = 0; i < modelPoints.length; i++) {
 			color = 0;
 			point = modelPoints[i];
-			render3D(i, point.xn, point.yn, point.zn);
+			render3D(i, point.xn + xOffs, point.yn + yOffs, point.zn);
 			colors[point.index] = color;
 		}
 	}
 
+	/**
+	 * Called before adding common controls. Derived classes can override this to
+	 * change control ranges, response curves and other parameters if necessary.
+	 * <p></p>
+	 * If a pattern needs to add additional custom controls, it can do so by
+	 * implementing them in setup().
+	 */
+    public abstract void configureControls();
 
 	public abstract void setup();
 
@@ -105,7 +119,7 @@ public abstract class PixelblazePort extends TEAudioPattern {
 	}
 
 	public double time(double interval) {
-		return ((now / 65536.0) % interval) / interval;
+		return ((getTime() / 65.536) % interval) / interval;
 	}
 
 	public double wave(double v) {
