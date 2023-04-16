@@ -18,10 +18,6 @@ public class Audio1 extends PixelblazePort {
     private double t1;
     private double waveBase;
 
-    private CompoundParameter energyParameter;
-    private CompoundParameter scaleParameter;
-    private DiscreteParameter electricParameter;
-
     public Audio1(LX lx) {
         super(lx);
     }

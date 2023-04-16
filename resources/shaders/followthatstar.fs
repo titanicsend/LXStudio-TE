@@ -1,5 +1,3 @@
-uniform float glow;
-uniform float energy;
 
 const float step = 0.5;  // star spacing
 
@@ -21,8 +19,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     vec2 uPos = -0.5+(fragCoord.xy / iResolution.xy );
     
     // star size pulses with the music!
-    float pulse = (0.3 * energy * (-0.5+beat)) + 1.618 * iScale;
-    float dance = 0.2 + (0.5 * bassLevel * energy);
+    float pulse = (0.3 * iWow1 * (-0.5+beat)) + 1.618 * iScale;
+    float dance = 0.2 + (0.5 * bassLevel * iWow1);
     float brightness = 0.;
 
     // set up matrix for optional rotation
@@ -56,9 +54,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     // version of this pattern. (I didn't see that LX wanted alpha in a different
     // range from everything else when setting hsba colors.)
     vec3 col = vec3(iColorHSB.x,
-                    iColorHSB.y * clamp((pulse+(2.25f-brightness)),0,1),
-                    brightness = iColorHSB.z * clamp(brightness * brightness,0,1));
+                    iColorHSB.y * clamp(pulse+(2.25f-brightness),0.0,1.0),
+                    brightness = iColorHSB.z * clamp(brightness * brightness,0.0,1.0));
+
 
     col = hsv2rgb(col);
-    fragColor = vec4(col, brightness * glow);
+    fragColor = vec4(col, brightness * iWow2);
 }
