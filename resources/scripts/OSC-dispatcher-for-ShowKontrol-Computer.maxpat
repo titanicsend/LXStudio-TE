@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 179.0, 87.0, 1193.0, 828.0 ],
+		"rect" : [ 437.0, 87.0, 1193.0, 828.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 1,
 		"default_fontsize" : 12.0,
@@ -757,7 +757,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 59.0, 106.0, 955.0, 801.0 ],
+						"rect" : [ 104.0, 106.0, 955.0, 801.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
@@ -1454,8 +1454,8 @@
 					"numoutlets" : 0,
 					"patching_rect" : [ 934.0, 666.5, 167.0, 24.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 271.0, 704.5, 167.0, 24.0 ],
-					"text" : "udpsend 10.7.0.13 42069"
+					"presentation_rect" : [ 271.0, 704.5, 160.0, 24.0 ],
+					"text" : "udpsend 10.3.0.1 42069"
 				}
 
 			}
@@ -1463,13 +1463,15 @@
 				"box" : 				{
 					"fontsize" : 14.0,
 					"id" : "obj-40",
+					"linecount" : 2,
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 934.0, 696.5, 84.0, 22.0 ],
+					"patching_rect" : [ 934.0, 696.5, 84.0, 38.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 445.16666666666697, 705.5, 84.0, 22.0 ],
-					"text" : "project-4"
+					"presentation_linecount" : 2,
+					"presentation_rect" : [ 445.16666666666697, 705.5, 84.0, 38.0 ],
+					"text" : "projection-5-studio"
 				}
 
 			}
@@ -1482,8 +1484,8 @@
 					"numoutlets" : 0,
 					"patching_rect" : [ 706.0, 666.5, 167.0, 24.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 271.0, 676.5, 167.0, 24.0 ],
-					"text" : "udpsend 10.7.0.12 42069"
+					"presentation_rect" : [ 271.0, 676.5, 160.0, 24.0 ],
+					"text" : "udpsend 10.4.0.1 42069"
 				}
 
 			}
@@ -1497,7 +1499,7 @@
 					"patching_rect" : [ 706.0, 696.5, 63.0, 22.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 445.16666666666697, 676.5, 63.0, 22.0 ],
-					"text" : "lasers-3"
+					"text" : "laser-4"
 				}
 
 			}
@@ -1510,8 +1512,8 @@
 					"numoutlets" : 0,
 					"patching_rect" : [ 479.0, 666.5, 166.0, 24.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 271.0, 647.5, 166.0, 24.0 ],
-					"text" : "udpsend 10.7.0.11 42069"
+					"presentation_rect" : [ 271.0, 647.5, 160.0, 24.0 ],
+					"text" : "udpsend 10.1.2.1 42069"
 				}
 
 			}
@@ -1608,8 +1610,8 @@
 					"numoutlets" : 0,
 					"patching_rect" : [ 254.0, 666.5, 167.0, 24.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 271.16666666666697, 618.5, 167.0, 24.0 ],
-					"text" : "udpsend 10.7.0.10 42069"
+					"presentation_rect" : [ 271.16666666666697, 618.5, 160.0, 24.0 ],
+					"text" : "udpsend 10.1.1.1 42069"
 				}
 
 			}
