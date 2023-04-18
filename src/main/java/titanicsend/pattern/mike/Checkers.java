@@ -41,13 +41,13 @@ public class Checkers extends TEPerformancePattern {
 
   @Override
   protected void runTEAudioPattern(double deltaMs) {
-    int color0 = getCurrentColor();
-    int color1 = getCurrentColor2();
+    int color1 = getCurrentColor();
+    int color2 = getCurrentColor2();
 
     for (Map.Entry<TEPanelModel, Integer> entry : this.panelGroup.entrySet()) {
       TEPanelModel panel = entry.getKey();
       int panelGroup = entry.getValue();
-      int rgb = panelGroup == 0 ? color0 : color1;
+      int rgb = panelGroup == 0 ? color1 : color2;
       for (LXPoint point : panel.points) {
         if (model.isGapPoint(point)) continue;
         colors[point.index] = rgb;
