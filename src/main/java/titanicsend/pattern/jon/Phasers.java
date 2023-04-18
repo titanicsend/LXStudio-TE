@@ -35,7 +35,8 @@ public class Phasers extends TEPerformancePattern {
         controls.setRange(TEControlTag.SPEED, 0.25, -1.0, 1.0);
 
         // Spin controls spin rate
-        controls.setRange(TEControlTag.SPIN, 0.25, -1, 1);
+        controls.setRange(TEControlTag.SPIN, 0, 1, -1);
+        controls.setValue(TEControlTag.SPIN,0.25);  // give a little initial spin
 
         // Size controls beam width and dispersion
         controls.setRange(TEControlTag.SIZE, 21, 40, 2);

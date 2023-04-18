@@ -152,17 +152,15 @@ function getStaticRotationAngle() {
 }
 
 function getCurrentColor() {
-    var k = __pattern.controls.color.calcColor();
-    var bri = __pattern.getBrightness();
-
-    var r = (0xff & LXColor.red(k)) * bri;
-    var g = (0xff & LXColor.green(k)) * bri;
-    var b = (0xff & LXColor.blue(k)) * bri;
-    return rgb(r, g, b);
+   return __pattern.getCurrentColor();
 }
 
 function getTime() {
     return __pattern.getTime();
+}
+
+function getTimeMs() {
+    return __pattern.getTimeMs();
 }
 
 function getSpeed() {

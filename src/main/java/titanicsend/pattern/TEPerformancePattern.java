@@ -9,6 +9,7 @@ import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon.VariableSpeedTimer;
 import titanicsend.pattern.jon._CommonControlGetter;
+import titanicsend.util.TEColor;
 
 import java.nio.FloatBuffer;
 import java.util.HashMap;
@@ -201,6 +202,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                             .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
                             .setExponent(2)
                             .setDescription("Spin");
+
             setControl(TEControlTag.SPIN, p);
 
             p = new CompoundParameter("Brightness", 1.0, 0.0, 1.0)
@@ -388,32 +390,42 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
      * the color control.
      */
     public int getCurrentColor() {
-        int k = controls.color.calcColor();
-        float bri = (float) getBrightness();
+        return TEColor.setBrightness(controls.color.calcColor(), (float) getBrightness());
+    }
 
-        float r = (float) (0xff & LXColor.red(k)) * bri;
-        float g = (float) (0xff & LXColor.green(k)) * bri;
-        float b = (float) (0xff & LXColor.blue(k)) * bri;
-        return LXColor.rgb((int) r,(int) g,(int) b);
+    @Override
+    public int getPrimaryGradientColor(float lerp) {
+        return TEColor.setBrightness(super.getPrimaryGradientColor(lerp), (float) getBrightness());
+    }
+
+    @Override
+    public int getSecondaryGradientColor(float lerp) {
+        return TEColor.setBrightness(super.getSecondaryGradientColor(lerp), (float) getBrightness());
     }
 
     /**
      * Gets the current color as set in the color control, without adjusting
      * for brightness.  This is used by the OpenGL renderer, which has
      * a unified mechanism for handling brightness.
-     *
      */
     public int getCurrentColorControlValue() {
         return controls.color.calcColor();
     }
 
     /**
-     *
      * @return current variable time in seconds.millis.  Note that time
      * can run both forward and backward, and can be negative.
      */
     public double getTime() {
         return iTime.getTime();
+    }
+
+    public double getTimeMs() {
+        return iTime.getTimeMs();
+    }
+
+    public double getDeltaMs() {
+        return iTime.getDeltaMs();
     }
 
     public double getSpeed() {

@@ -131,6 +131,12 @@ speed changes. If current speed is zero, returned angle will also be zero, to al
 ```void retrigger(TEControlTag tag)``` can be called to sync the speed or spin clocks to beats, measures or
 other events.  Starts the next variable clock "second" when called.
 
+```int getPrimaryGradientColor(lerp)``` Returns a color interpolated from the palette's primary gradient,
+with brightness modified by the Brightness control.
+
+```int getSecondaryGradientColor(lerp``` Returns a color interpolated from the palette's secondary gradient,
+with brightness modified by the brightness control.
+
 ### Speed and Spin:  Tempo Linked Parameters
 The common Speed and Spin controls are linked to the engine bpm, so changes in tempo will be automatically reflected
 in pattern visuals.  Both controls act as beat multipliers, so it is very easy to sync patterns to particular musical

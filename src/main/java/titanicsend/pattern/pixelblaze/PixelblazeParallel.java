@@ -2,7 +2,6 @@ package titanicsend.pattern.pixelblaze;
 
 import heronarts.lx.LX;
 import heronarts.lx.model.LXPoint;
-import titanicsend.pattern.TEAudioPattern;
 import titanicsend.pattern.TEPerformancePattern;
 
 import java.util.ArrayList;

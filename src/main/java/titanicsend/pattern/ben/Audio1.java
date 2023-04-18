@@ -25,7 +25,8 @@ public class Audio1 extends PixelblazePort {
     @Override
     public void configureControls() {
         controls.setRange(TEControlTag.SIZE, 1.0, 0.2, 10.0); // "Scale" parameter
-        controls.setRange(TEControlTag.WOW1, 6, 1, 8);  // "Electric" parameter
+        controls.setValue(TEControlTag.WOW1, 0.5);                // beat reactive pulse
+        controls.setRange(TEControlTag.WOW2, 6, 1, 8);  // noise resolution
     }
 
     @Override
@@ -59,9 +60,9 @@ public class Audio1 extends PixelblazePort {
     @Override
     public void beforeRender(double deltaMs) {
         t1 = time(.1 * 256) * 256;
-        energy = getQuantity();
+        energy = getWow1();
         scale = (float) getSize();
-        electric = (int) getWow1();
+        electric = (int) getWow2();
         waveBase = (4 + measure() * 4) % 1;
     }
 }

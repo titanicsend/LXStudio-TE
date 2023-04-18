@@ -6,7 +6,6 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
-import titanicsend.pattern.TEAudioPattern;
 import titanicsend.pattern.TEPerformancePattern;
 
 import javax.script.ScriptException;

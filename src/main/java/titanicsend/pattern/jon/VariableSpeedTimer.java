@@ -17,6 +17,7 @@ public class VariableSpeedTimer {
     long current = 0;
     double time = 0.0;
     double scale = 1.0;
+    double delta = 0;
     double direction = -1.0;
 
     public VariableSpeedTimer() {
@@ -38,12 +39,14 @@ public class VariableSpeedTimer {
     }
 
     public void tick() {
-        double delta = (double) (current - previous);
-        time += scale * delta / 1000.0;
+        delta = scale * direction *  (double) (current - previous);
+        time += delta;
         previous = current;
         current = System.currentTimeMillis();
     }
 
-    public double getTime() { return  time*direction;  }
+    public double getTime() { return  time / 1000; }
     public float getTimef() { return (float) getTime(); }
+    public double getTimeMs()  { return time; }
+    public double getDeltaMs() { return delta; }
 }

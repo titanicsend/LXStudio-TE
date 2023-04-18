@@ -19,7 +19,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     vec2 uPos = -0.5+(fragCoord.xy / iResolution.xy );
     
     // star size pulses with the music!
-    float pulse = (0.3 * iWow1 * (-0.5+beat)) + 1.618 * iScale;
+    float pulse = iScale * ((iWow1 * 2.0 * (-0.5+beat)) + 1.618);
     float dance = 0.2 + (0.5 * bassLevel * iWow1);
     float brightness = 0.;
 

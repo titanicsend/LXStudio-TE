@@ -77,7 +77,7 @@ public class Xorcery extends PixelblazePort {
 		t4 = Math.sin(time(.34) * PI2);
 
 		scale = getSize();
-		breath = 0.05 + 0.3 * getWow1();
+		breath = 0.3 * getWow1();
 		modRange = 0.3 + (triangle(t1) * 0.2 * getWow2());
 		measureWave = wave(measure());
 
