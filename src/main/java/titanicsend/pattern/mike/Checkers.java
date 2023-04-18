@@ -2,29 +2,21 @@ package titanicsend.pattern.mike;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.color.LXColor;
-import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
 import titanicsend.model.TEPanelModel;
-import titanicsend.pattern.TEPattern;
+import titanicsend.pattern.TEPerformancePattern;
 
 import java.util.*;
 
 @LXCategory("TE Examples")
-public class Checkers extends TEPattern {
-
-  public final LinkedColorParameter oddColor =
-          registerColor("Odd", "odd", ColorType.PRIMARY,
-                  "Color of the odd panels");
-
-  public final LinkedColorParameter evenColor =
-          registerColor("Even", "even", ColorType.SECONDARY,
-                  "Color of the even panels");
+public class Checkers extends TEPerformancePattern {
 
   private final HashMap<TEPanelModel, Integer> panelGroup;
 
   public Checkers(LX lx) {
     super(lx);
+
+    addCommonControls();
 
     this.panelGroup = new HashMap<>();
     List<TEPanelModel> queue = new ArrayList<>(model.panelsById.values());
@@ -47,9 +39,10 @@ public class Checkers extends TEPattern {
     }
   }
 
-  public void run(double deltaMs) {
-    int color0 = this.oddColor.calcColor();
-    int color1 = this.evenColor.calcColor();
+  @Override
+  protected void runTEAudioPattern(double deltaMs) {
+    int color0 = getCurrentColor();
+    int color1 = getCurrentColor2();
 
     for (Map.Entry<TEPanelModel, Integer> entry : this.panelGroup.entrySet()) {
       TEPanelModel panel = entry.getKey();
@@ -62,4 +55,5 @@ public class Checkers extends TEPattern {
     }
     this.updateVirtualColors(deltaMs);
   }
+
 }

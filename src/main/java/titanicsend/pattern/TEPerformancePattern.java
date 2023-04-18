@@ -5,8 +5,8 @@ import heronarts.lx.LX;
 import heronarts.lx.color.ColorParameter;
 import heronarts.lx.color.GradientUtils;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.color.GradientUtils.BlendFunction;
+import heronarts.lx.color.GradientUtils.GradientFunction;
 import heronarts.lx.parameter.*;
 import heronarts.lx.utils.LXUtils;
 import titanicsend.pattern.jon.TEControl;
@@ -20,17 +20,18 @@ import java.util.HashMap;
 
 public abstract class TEPerformancePattern extends TEAudioPattern {
 
-    public class TEColorParameter extends ColorParameter {
+    public class TEColorParameter extends ColorParameter implements GradientFunction {
 
-        // SINGLE-COLOR MODE
+        // SOLID-COLOR SOURCE
 
-        public enum Mode {
-            PALETTE("Palette"),
-            STATIC("Static");
+        public enum SolidColorSource {
+            STATIC("Static"),
+            FOREGROUND("Foreground"),
+            GRADIENT("Selected Gradient");
 
             public final String label;
 
-            private Mode(String label) {
+            private SolidColorSource(String label) {
                 this.label = label;
             }
 
@@ -40,11 +41,14 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             }
         };
 
-        public final EnumParameter<Mode> mode =
-            new EnumParameter<Mode>("Mode", Mode.PALETTE)
-            .setDescription("Whether to use global TE palette (preferred), or a static color unique to this pattern");
+        public final EnumParameter<SolidColorSource> solidSource =
+            new EnumParameter<SolidColorSource>("SolidSource", SolidColorSource.FOREGROUND)
+            .setDescription("For a solid color: Whether to use global TE palette (preferred), or a static color unique to this pattern");
 
-        // GRADIENT MODE
+        public final CompoundParameter color2offset =
+            new CompoundParameter("C2Offset", 0.5);
+
+        // GRADIENT
 
         public final EnumParameter<TEGradient> gradient =
             new EnumParameter<TEGradient>("Gradient", TEGradient.FULL_PALETTE)
@@ -61,12 +65,43 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             new EnumParameter<BlendMode>("BlendMode", BlendMode.HSV2)
             .setDescription("Blend mode for the gradient");
 
-        // OFFSET
+        // OFFSET affects both Solid Colors and Gradient
 
-        public final CompoundParameter offset = (CompoundParameter)
-            new CompoundParameter("Offset")
-            .setDescription("Allows user variation in single-color mode.  If Static, adjusts hue offset. If Palette, adjusts normalized position within gradient.");
+        // This custom wrapper class allows the device UI to render a color
+        // picker on just this subparameter.
+        public class TEColorOffsetParameter extends CompoundParameter {
+            public TEColorOffsetParameter(String label) {
+                super(label);
+                setWrappable(true);
+            }
+        }
 
+        private double lastOffset = 0;
+
+        public final TEColorOffsetParameter offset = (TEColorOffsetParameter)
+            new TEColorOffsetParameter("Offset") {
+                @Override
+                public LXParameter reset() {
+                    super.reset();
+                    if (solidSource.getEnum() == SolidColorSource.STATIC) {
+                        brightness.reset(100);
+                        saturation.reset(100);
+                        hue.reset();
+                    }
+                    return this;
+                }
+            }
+            .setDescription("Allows user variation of solid color.  If Static, adjusts hue offset. If Palette, adjusts normalized position within gradient.");
+
+        private final LXParameterListener offsetListener = (p) -> {
+            double value = p.getValue();
+            // When SolidColorSource is STATIC, turning the offset pushes the
+            // hue position so the UI hue indicator stays in sync.
+            if (solidSource.getEnum() == SolidColorSource.STATIC) {
+                hue.incrementNormalized(value - lastOffset);
+            }
+            lastOffset = value;
+        };
 
         public TEColorParameter(String label) {
           this(label, 0xff000000);
@@ -75,10 +110,13 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         public TEColorParameter(String label, int color) {
             super(label, color);
 
-            addSubparameter("mode", this.mode);
+            offset.addListener(offsetListener);
+
+            addSubparameter("solidSource", this.solidSource);
             addSubparameter("gradient", this.gradient);
             addSubparameter("blendMode", this.blendMode);
             addSubparameter("offset", this.offset);
+            addSubparameter("color2offset", this.color2offset);
         }
 
         @Override
@@ -88,38 +126,65 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
         @Override
         public LXListenableNormalizedParameter getRemoteControl() {
-          return this.offset;
+            return this.offset;
         }
 
         public double getOffset() {
-            return this.offset.getValuef();
+            return this.offset.getValue();
         }
 
         public final float getOffsetf() {
             return (float) getOffset();
         }
 
-        // SINGLE-COLOR METHODS
+        // SOLID-COLOR METHODS
 
         /**
-         * ** Single-Color patterns should use this method **
+         * ** Solid-Color patterns should use this method **
          *
          * Returns the real-time value of the color, which may be different from what
          * getColor() returns if there are LFOs/etc being applied.
          * Offset has been applied to this color.
          */
         public int calcColor() {
-            switch (this.mode.getEnum()) {
-            case PALETTE:
-                return getGradientColor(getOffsetf());
+            switch (this.solidSource.getEnum()) {
+            case GRADIENT:
+                // TODO: scale brightness here
+                return _getGradientColor(getOffsetf());
+            case FOREGROUND:
+                // TODO: scale brightness here
+                return _getGradientColor(getOffsetf(), TEGradient.FOREGROUND);
             default:
             case STATIC:
                 return LXColor.hsb(
-                    this.hue.getValue() + (getOffset() * 360.),
+                    this.hue.getValue(),
                     this.saturation.getValue(),
                     this.brightness.getValue()
                   );
             }
+        }
+
+        /**
+         * Solid-Color patterns that use two colors can get
+         * the second color here.
+         * @return LXColor
+         */
+        public int calcColor2() {
+          switch (this.solidSource.getEnum()) {
+          case GRADIENT:
+              // TODO: scale brightness here
+              return _getGradientColor(getOffsetf() + color2offset.getValuef());
+          case FOREGROUND:
+              // TODO: scale brightness here
+              return _getGradientColor(getOffsetf() + color2offset.getValuef(), TEGradient.FOREGROUND);
+          default:
+          case STATIC:
+              return LXColor.hsb(
+                  this.hue.getValue() + (color2offset.getValue() * 360.),
+                  this.saturation.getValue(),
+                  this.brightness.getValue()
+                );
+          }
         }
 
         /**
@@ -128,8 +193,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          */
         @Override
         public int getColor() {
-            switch (this.mode.getEnum()) {
-            case PALETTE:
+            switch (this.solidSource.getEnum()) {
+            case FOREGROUND:
                 return getGradientColor(0);
             default:
             case STATIC:
@@ -148,8 +213,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          * @param lerp as a frac
          * @return LXColor
          */
-        public int calcGradientColor(float lerp) {
-            return getGradientColor(lerp + getOffsetf());
+        public int getGradientColor(float lerp) {
+            return _getGradientColor(lerp + getOffsetf());
         }
 
         /**
@@ -157,31 +222,34 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          * @param lerp
          * @return
          */
-        private int getGradientColor(float lerp) {
-            lerp = (float)LXUtils.wrapnf(lerp);
+        private int _getGradientColor(float lerp) {
+            return _getGradientColor(lerp, this.gradient.getEnum());
+        }
 
-            BlendFunction bf;
-            switch (this.blendMode.getEnum()) {
-            case HSV:
-                bf = GradientUtils.BlendMode.HSV.function;
-                break;
-            case HSV2:
-            default:
-                bf = GradientUtils.BlendMode.HSV2.function;
-            }
+        private int _getGradientColor(float lerp, TEGradient gradient) {
+          lerp = (float)LXUtils.wrapnf(lerp);
 
-            return getGradientStops().getColor(
-                lerp,
-                //TEMath.trianglef(lerp / 2), // Allow wrapping      ** TODO: remove this? **
-                bf);
+          BlendFunction bf;
+          switch (this.blendMode.getEnum()) {
+          case HSV:
+              bf = GradientUtils.BlendMode.HSV.function;
+              break;
+          case HSV2:
+          default:
+              bf = GradientUtils.BlendMode.HSV2.function;
+          }
+
+          return getGradientStops(gradient).getColor(
+              lerp,
+              // TEMath.trianglef(lerp / 2), // Allow wrapping      ** TODO: remove this? **
+              bf);
         }
 
         /**
-         * Internal helper method.
-         * Returns stops for currently selected gradient.
+         * Internal helper method. Maps gradient enum to ColorStops.
          */
-        private GradientUtils.ColorStops getGradientStops() {
-            switch (this.gradient.getEnum()) {
+        private GradientUtils.ColorStops getGradientStops(TEGradient gradient) {
+            switch (gradient) {
             case FOREGROUND:
                 return foregroundGradient;
             case PRIMARY:
@@ -196,20 +264,26 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
         @Override
         protected void onSubparameterUpdate(LXParameter p) {
-            if (this.mode.getEnum() == Mode.PALETTE) {
+            // TODO: some fixing up here
+            if (this.solidSource.getEnum() == SolidColorSource.FOREGROUND) {
                 setColor(getGradientColor(0));
             } else {
                 super.onSubparameterUpdate(p);
             }
         }
 
+        @Override
+        public void dispose() {
+            this.offset.removeListener(offsetListener);
+            super.dispose();
+        }
     }
 
     /**
      * ** Use TEColorParameter instead of these methods. **
      *
      * Suppress parent TEPattern gradient methods, force child classes
-     * to choose single color or gradient, keeping other choices
+     * to choose solid color or gradient, keeping other choices
      * runtime-adjustable.
      */
 
@@ -652,6 +726,22 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     }
 
     /**
+     * For patterns that consume two solid colors, use this method
+     * to retrieve the 2nd color.
+     * Returns a color offset in position from the first color.
+     * @return
+     */
+    public int getCurrentColor2() {
+        int k = controls.color.calcColor2();
+        float bri = (float) getBrightness();
+
+        float r = (float) (0xff & LXColor.red(k)) * bri;
+        float g = (float) (0xff & LXColor.green(k)) * bri;
+        float b = (float) (0xff & LXColor.blue(k)) * bri;
+        return LXColor.rgb((int) r,(int) g,(int) b);
+    }
+
+    /**
      * Gets the current color as set in the color control, without adjusting
      * for brightness.  This is used by the OpenGL renderer, which has
      * a unified mechanism for handling brightness.
@@ -661,7 +751,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     }
 
     public int getCurrentGradient(float lerp) {
-        return controls.color.calcGradientColor(lerp);
+        return controls.color.getGradientColor(lerp);
     }
 
     /**
@@ -766,6 +856,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         }
     }
 
+    @Override
     protected void run(double deltaMs) {
         // get the current tempo in beats per second
         double bps = lx.engine.tempo.bpm() / 60;
@@ -798,6 +889,9 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         iTime.setScale(value);
         iTime.tick();
         speedRotor.updateAngle(iTime.getTime(), value );
+
+        // Gradients always need to be up to date for TEColorParameter
+        updateGradients();
 
         super.run(deltaMs);
     }

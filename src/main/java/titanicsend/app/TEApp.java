@@ -49,6 +49,8 @@ import titanicsend.pattern.ben.*;
 import titanicsend.pattern.cesar.*;
 import titanicsend.pattern.jeff.*;
 import titanicsend.pattern.jon.*;
+import titanicsend.pattern.justin.TEGradientPattern;
+import titanicsend.pattern.justin.TESolidPattern;
 import titanicsend.pattern.mike.*;
 import titanicsend.pattern.pixelblaze.*;
 import titanicsend.pattern.tmc.*;
@@ -59,6 +61,7 @@ import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.effect.BeaconEffect;
 import titanicsend.pattern.yoffa.media.BasicImagePattern;
 import titanicsend.pattern.yoffa.media.ReactiveHeartPattern;
+import titanicsend.ui.UITEPerformancePattern;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.util.TE;
 
@@ -180,6 +183,8 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
     lx.registry.addPattern(HandTracker.class);
     lx.registry.addPattern(Fire.class);
     lx.registry.addPattern(TEMidiFighter64DriverPattern.class);
+    lx.registry.addPattern(TESolidPattern.class);
+    lx.registry.addPattern(TEGradientPattern.class);
 
     // Patterns that will not aspire to art direction standards
     lx.registry.addPattern(BasicImagePattern.class);
@@ -348,6 +353,8 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
     // Here is where you may modify the initial settings of the UI before it is fully
     // built. Note that this will not be called in headless mode. Anything required
     // for headless mode should go in the raw initialize method above.
+
+    ((LXStudio.Registry)lx.registry).addUIDeviceControls(UITEPerformancePattern.class);
   }
 
   public void onUIReady(LXStudio lx, LXStudio.UI ui) {
