@@ -52,7 +52,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
         public final EnumParameter<TEGradient> gradient =
             new EnumParameter<TEGradient>("Gradient", TEGradient.FULL_PALETTE)
-            .setDescription("Which TEGradient to use. Full_Pallete=entire, Foreground=Primary-Secondary, Primary=Primary-BackgroundPrimary, Secondary=Secondary-BackgroundSecondary");
+            .setDescription("Which TEGradient to use. Full_Palette=entire, Foreground=Primary-Secondary, Primary=Primary-BackgroundPrimary, Secondary=Secondary-BackgroundSecondary");
 
         // GRADIENT BLEND. Excluding RGB because it does play well with gradients.
 
