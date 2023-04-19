@@ -2,18 +2,13 @@ package titanicsend.pattern.tom;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.SinLFO;
-import heronarts.lx.parameter.CompoundParameter;
-import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.FunctionalParameter;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.model.TEEdgeModel;
-import titanicsend.pattern.TEPattern;
+import titanicsend.model.TEEdgeModel;git
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.jon.TEControlTag;
-import titanicsend.util.TE;
 
 import static titanicsend.util.TEColor.TRANSPARENT;
 
