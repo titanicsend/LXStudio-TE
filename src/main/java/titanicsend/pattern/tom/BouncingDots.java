@@ -11,43 +11,42 @@ import heronarts.lx.parameter.FunctionalParameter;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.pattern.TEPattern;
+import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.jon.TEControlTag;
+import titanicsend.util.TE;
 
 import static titanicsend.util.TEColor.TRANSPARENT;
 
 @LXCategory("Edge FG")
-public class BouncingDots extends TEPattern {
-    public final DiscreteParameter dotWidth =
-            new DiscreteParameter("Width", 5, 1, 25)
-                    .setDescription("Dot width");
-
-    protected final CompoundParameter rate = (CompoundParameter)
-            new CompoundParameter("Rate", .25, .01, 2)
-                    .setExponent(2)
-                    .setUnits(LXParameter.Units.HERTZ)
-                    .setDescription("Rate of the rotation");
+public class BouncingDots extends TEPerformancePattern {
+    final int MIN_DOT_SIZE = 1;
+    final int MAX_DOT_SIZE = 50;
+    final int DEFAULT_DOT_SIZE = 6;
 
     protected final SinLFO phase = new SinLFO(0, 1, new FunctionalParameter() {
         public double getValue() {
-            return 1000 / rate.getValue();
+            return 1000 / getSpeed();
         }
     });
 
-    public final LinkedColorParameter color =
-            registerColor("Color", "color", ColorType.PRIMARY,
-                    "Color of the dots");
-
     public BouncingDots(LX lx) {
         super(lx);
+
+        // start our sine modulator
         startModulator(this.phase);
-        addParameter("rate", this.rate);
-        addParameter("width", this.dotWidth);
+
+        // add common controls
+        controls.setRange(TEControlTag.SIZE, DEFAULT_DOT_SIZE, MIN_DOT_SIZE, MAX_DOT_SIZE)
+                .setUnits(TEControlTag.SIZE, LXParameter.Units.INTEGER);
+        addCommonControls();
     }
 
-    public void run(double deltaMs) {
+    @Override
+    protected void runTEAudioPattern(double deltaMs) {
         float phase = this.phase.getValuef();
 
-        int dotColor = this.color.calcColor();
-        int dotWidth = this.dotWidth.getValuei();
+        int dotColor = getCurrentColor();
+        int dotWidth = (int)(getSize());
         for (TEEdgeModel edge : model.edgesById.values()) {
             int target = (int) (edge.size * phase);
             int i = 0;
