@@ -6,7 +6,7 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.SinLFO;
 import heronarts.lx.parameter.FunctionalParameter;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.model.TEEdgeModel;git
+import titanicsend.model.TEEdgeModel;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.jon.TEControlTag;
 
