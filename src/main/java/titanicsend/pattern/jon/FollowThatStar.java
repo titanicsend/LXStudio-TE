@@ -25,12 +25,6 @@ public class FollowThatStar extends TEPerformancePattern {
         options.useAlpha(true);
         options.useLXParameterUniforms(false);
 
-        // adjust settings of common controls to suit this pattern
-        // controls.getLXControl(TEControlTag.QUANTITY).setValue(0.5);
-        //controls.getLXControl(TEControlTag.SIZE).setValue(0.2);
-
-        controls.setRange(TEControlTag.SPIN,0,1,-1);
-
         controls.setRange(TEControlTag.QUANTITY, 5, 1, 10)
                 .setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
 
@@ -47,6 +41,8 @@ public class FollowThatStar extends TEPerformancePattern {
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
+
+        shader.setUniform("iRotationAngle",(float) -getRotationAngleFromSpin());
 
         // run the shader
         effect.run(deltaMs);

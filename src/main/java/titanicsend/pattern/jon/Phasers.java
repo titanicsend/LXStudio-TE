@@ -35,7 +35,6 @@ public class Phasers extends TEPerformancePattern {
         controls.setRange(TEControlTag.SPEED, 0.25, -1.0, 1.0);
 
         // Spin controls spin rate
-        controls.setRange(TEControlTag.SPIN, 0, 1, -1);
         controls.setValue(TEControlTag.SPIN,0.25);  // give a little initial spin
 
         // Size controls beam width and dispersion
@@ -62,6 +61,7 @@ public class Phasers extends TEPerformancePattern {
         CompoundParameter scaleCtl = (CompoundParameter) controls.getLXControl(TEControlTag.SIZE);
         double beamWidth = 0.005 + 0.0125 * scaleCtl.getNormalized();
         shader.setUniform("beamWidth", (float) beamWidth);
+        shader.setUniform("iRotationAngle",(float) -getRotationAngleFromSpin());
 
         // run the shader
         effect.run(deltaMs);
