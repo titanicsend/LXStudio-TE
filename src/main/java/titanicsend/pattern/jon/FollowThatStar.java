@@ -11,50 +11,28 @@ import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 
-// TODO - NEEDS FULL CONVERSION TO COMMON CONTROLS
-
 @LXCategory("Combo FG")
 public class FollowThatStar extends TEPerformancePattern {
     NativeShaderPatternEffect effect;
     NativeShader shader;
 
-    // Non-standard Controls
-
-    public final CompoundParameter glow =
-            new CompoundParameter("Glow", 100, 1, 200)
-                    .setDescription("Stellar corona");
-
-    public final CompoundParameter energy =
-            new CompoundParameter("Energy", .15, 0, 1)
-                    .setDescription("Oh boy...");
-
-    protected final CompoundParameter beatScale = (CompoundParameter)
-            new CompoundParameter("BeatScale", 60, 120, 1)
-                    .setExponent(1)
-                    .setUnits(LXParameter.Units.INTEGER)
-                    .setDescription("Speed relative to beat");
-
     public FollowThatStar(LX lx) {
         super(lx);
 
-        // adjust settings of common controls to suit this pattern
-        controls.getLXControl(TEControlTag.QUANTITY).setValue(0.5);
-        controls.getLXControl(TEControlTag.SIZE).setValue(0.2);
 
-        // create new effect with alpha on and no automatic
-        // parameter uniforms
-
+        // create new effect with alpha on and no automatic uniforms
         ShaderOptions options = new ShaderOptions();
         options.useAlpha(true);
         options.useLXParameterUniforms(false);
 
-        // register common controls with the UI
-        addCommonControls();
+        controls.setRange(TEControlTag.QUANTITY, 5, 1, 10)
+                .setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
 
-        // Add this pattern's custom controls.
-        addParameter("glow", glow);
-        addParameter("energy", energy);
-        addParameter("beatScale", beatScale);
+        controls.setRange(TEControlTag.SIZE, 1.75, 1.0, 5);
+        controls.setRange(TEControlTag.WOW2, 1, 1, 4);
+
+        // register common controls with LX
+        addCommonControls();
 
         effect = new NativeShaderPatternEffect("followthatstar.fs",
                 PatternTarget.allPointsAsCanvas(this), options);
@@ -63,13 +41,7 @@ public class FollowThatStar extends TEPerformancePattern {
     @Override
     public void runTEAudioPattern(double deltaMs) {
 
-        shader.setUniform("iQuantity", 1f + (float) Math.floor(getQuantity() * 9));
-        shader.setUniform("iScale", 0.01f + (float) getSize());
-        shader.setUniform("glow", glow.getValuef());
-
-        // Sound reactivity - various brightness features are related to energy
-        float e = energy.getValuef();
-        shader.setUniform("energy", e * e);
+        shader.setUniform("iRotationAngle",(float) -getRotationAngleFromSpin());
 
         // run the shader
         effect.run(deltaMs);

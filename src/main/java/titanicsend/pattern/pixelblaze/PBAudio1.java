@@ -8,7 +8,6 @@ public class PBAudio1 extends PixelblazePattern {
 		super(lx);
 	}
 
-	@Override
 	protected String getScriptName() {
 		return "audio1";
 	}

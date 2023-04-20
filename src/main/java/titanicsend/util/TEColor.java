@@ -39,7 +39,18 @@ public class TEColor {
     }
   }
 
-
+  /**
+   * Set the brightness of a color
+   * @param color LX color integer
+   * @param brightness 0.0 to 1.0
+   * @return color at new brightness
+   */
+  public static int setBrightness(int color, float brightness) {
+    float r = (float) (0xff & LXColor.red(color)) * brightness;
+    float g = (float) (0xff & LXColor.green(color)) * brightness;
+    float b = (float) (0xff & LXColor.blue(color)) * brightness;
+    return LXColor.rgb((int) r,(int) g,(int) b);
+  }
 
   public static int reAlpha(int color, int alpha) {
     return ((alpha & 0xff) << LXColor.ALPHA_SHIFT) | (color & LXColor.RGB_MASK);

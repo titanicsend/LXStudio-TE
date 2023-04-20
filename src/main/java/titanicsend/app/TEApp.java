@@ -29,7 +29,6 @@ import java.util.function.Function;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
-import heronarts.lx.LX.ProjectListener.Change;
 import heronarts.lx.midi.surface.APC40Mk2;
 import heronarts.lx.midi.surface.MidiFighterTwister;
 import heronarts.lx.parameter.LXParameterListener;
@@ -175,6 +174,7 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
     lx.registry.addPattern(PixelblazeParallel.class);
     lx.registry.addPattern(SolidEdge.class);
     lx.registry.addPattern(SolidPanel.class);
+    lx.registry.addPattern(TESparklePattern.class);
     lx.registry.addPattern(SpiralDiamonds.class);
     lx.registry.addPattern(PulsingTriangles.class);
     lx.registry.addPattern(HandTracker.class);

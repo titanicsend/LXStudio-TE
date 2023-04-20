@@ -138,6 +138,71 @@ function getTrebleRatio() {
   return __pattern.getTrebleRatio();
 }
 
+// getter functions for the common controls
+function getRotationAngleFromSpeed() {
+    return __pattern.getRotationAngleFromSpeed();
+}
+
+function getRotationAngleFromSpin() {
+    return __pattern.getRotationAngleFromSpin();
+}
+
+function getStaticRotationAngle() {
+    return __pattern.getStaticRotationAngle();
+}
+
+function getCurrentColor() {
+   return __pattern.getCurrentColor();
+}
+
+function getTime() {
+    return __pattern.getTime();
+}
+
+function getTimeMs() {
+    return __pattern.getTimeMs();
+}
+
+function getSpeed() {
+    return __pattern.getSpeed();
+}
+
+function getXPos() {
+    return __pattern.getXPos();
+}
+
+function getYPos() {
+    return __pattern.getYPos();
+}
+
+function getSize() {
+    return __pattern.getSize();
+}
+
+function getQuantity() {
+    return __pattern.getQuantity();
+}
+
+/**
+ * As in Java, for for most uses, getRotationAngle() is recommended, but if you
+ * need direct access to the spin control value, here it is.
+ */
+function getSpin() {
+    return __pattern.getSpin();
+}
+
+function getWow1() {
+    return __pattern.getWow1();
+}
+
+function getWow2() {
+    return __pattern.getWow2();
+}
+
+function getWowTrigger() {
+    return __pattern.getWowTrigger();
+}
+
 /* Pixelblaze compatibility framework glue */
 
 function sentenceCase(text) {
@@ -202,12 +267,14 @@ function glueRender() {
   } else {
     r = render;
   }
+  var xOffs = __pattern.getXPos();
+  var yOffs = -__pattern.getYPos();
   var i;
   for (i = 0; i < __points.length; i++) {
     __color = 0;
     point = __points[i];
     if (point == __pattern.model.gapPoint) continue;
-    r(i, point.xn, point.yn, point.zn);
+    r(i, point.xn + xOffs, point.yn + yOffs, point.zn);
     __colors[point.index] = __color;
   }
 }

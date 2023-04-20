@@ -2,13 +2,13 @@ package titanicsend.pattern.pixelblaze;
 
 import heronarts.lx.LX;
 import heronarts.lx.model.LXPoint;
-import titanicsend.pattern.TEAudioPattern;
+import titanicsend.pattern.TEPerformancePattern;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
-public class PixelblazeParallel extends TEAudioPattern {
+public class PixelblazeParallel extends TEPerformancePattern {
   public static final int N_THREADS = 4;
   private ArrayList<Wrapper> wrappers = new ArrayList<>();
 
