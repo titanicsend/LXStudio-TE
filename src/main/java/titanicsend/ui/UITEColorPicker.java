@@ -118,6 +118,7 @@ public class UITEColorPicker extends UI2dComponent {
   private final LXParameterListener redrawSwatch = (p) -> {
     if (this.uiColorOverlay != null) {
       this.uiColorOverlay.swatch.redraw();
+      this.uiColorOverlay.swatchDimmer.redraw();
     }
   };
 
@@ -212,7 +213,10 @@ public class UITEColorPicker extends UI2dComponent {
   
   protected class UITEColorOverlay extends UI2dContainer {
 
+    private static final int PADDING = 12;
+
     private final UISwatch swatch;
+    private final UI2dComponent swatchDimmer;
     private final UI2dComponent color1;
     private final UI2dComponent color2;
 
@@ -246,19 +250,24 @@ public class UITEColorPicker extends UI2dComponent {
       new UILabel(xp, yp + 16, 56, "Bright").setTextAlignment(PConstants.CENTER).addToContainer(this);
 
       // Horizontal break
-      new UI2dComponent(12, 140, 280, 1) {}
+      new UI2dComponent(PADDING, 140, this.width - 2*PADDING, 1) {}
       .setBorderColor(ui.theme.getDarkBackgroundColor())
       .addToContainer(this);
 
       
       // Special for TEColorParameter
 
+      // Gray overlay for swatch when not using STATIC source
+      swatchDimmer = new UILabel(PADDING, PADDING-1, this.width - 2*PADDING, 130)
+      .setBackgroundColor(LXColor.rgba(75,75,75,200))
+      .addToContainer(this);
+
       // Solid color
       UI2dContainer.newHorizontalContainer(16, 4,
         new UILabel(58, 12, "Solid Color:").setFont(ui.theme.getControlFont()),
         new UIButton(108, 16, color.solidSource)    
       )
-      .setPosition(12, 148)
+      .setPosition(PADDING, 148)
       .addToContainer(this);
 
       // Gradient
@@ -267,7 +276,7 @@ public class UITEColorPicker extends UI2dComponent {
           new UIButton(68, 16, color.gradient),
           new UIButton(36, 16, color.blendMode)
         )
-      .setPosition(12, 171)
+      .setPosition(PADDING, 171)
       .addToContainer(this);
       
       // Offset
@@ -300,11 +309,12 @@ public class UITEColorPicker extends UI2dComponent {
       .addToContainer(this);
       
       color.solidSource.addListener((p) -> {
-        boolean isLinked = color.solidSource.getEnum() != TEColorParameter.SolidColorSource.STATIC;
-        swatch.setEnabled(!isLinked);
-        hueBox.setEnabled(!isLinked);
-        satBox.setEnabled(!isLinked);
-        brtBox.setEnabled(!isLinked);
+        boolean isStatic = color.solidSource.getEnum() == TEColorParameter.SolidColorSource.STATIC;
+        swatch.setEnabled(isStatic);
+        hueBox.setEnabled(isStatic);
+        satBox.setEnabled(isStatic);
+        brtBox.setEnabled(isStatic);
+        swatchDimmer.setVisible(!isStatic);
       }, true);
     }
     
