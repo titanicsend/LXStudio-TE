@@ -165,7 +165,7 @@ public class TEGradientPattern extends TEPerformancePattern {
           zAmount * zFunction.getCoordinate(p, zn, zOffset),
           0, 1
         );
-      colors[p.index] = getCurrentGradient(lerp);
+      colors[p.index] = getGradientColor(lerp);
     }
   }
 }

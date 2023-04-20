@@ -152,7 +152,7 @@ public abstract class PixelblazePort extends TEPerformancePattern {
     }
 
     public int paint(float v) {
-        return color = getPrimaryGradientColor(v);
+        return color = getGradientColor(v);
     }
 
     public void setAlpha(float v) {

@@ -279,26 +279,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         }
     }
 
-    /**
-     * ** Use TEColorParameter instead of these methods. **
-     *
-     * Suppress parent TEPattern gradient methods, force child classes
-     * to choose solid color or gradient, keeping other choices
-     * runtime-adjustable.
-     */
-
-    @Override
-    public final int getPrimaryGradientColor(float lerp) {
-        LX.error("Use TEColorParameter.getGradientColor() instead");
-        return 0;
-    }
-
-    @Override
-    public final int getSecondaryGradientColor(float lerp) {
-        LX.error("Use TEColorParameter.getGradientColor() instead");
-        return 0;
-    }
-
     // Explicitly keep this available for now
     @Override
     public int getSwatchColor(ColorType type) {
@@ -715,13 +695,24 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         return TEColor.setBrightness(controls.color.calcColor(), (float) getBrightness());
     }
 
+    /**
+     * ** Instead of these two methods, use getGradientColor(lerp) which defers to TEColorParameter for gradient selection. **
+     *
+     * Suppress parent TEPattern gradient methods, force child classes
+     * to choose solid color or gradient, keeping other choices
+     * runtime-adjustable.
+     * 
+     * TODO: remove these two methods from TEPattern to prevent confusion?
+     */
     @Override
     public int getPrimaryGradientColor(float lerp) {
+        LX.error("Use getGradientColor() instead");
         return TEColor.setBrightness(super.getPrimaryGradientColor(lerp), (float) getBrightness());
     }
 
     @Override
     public int getSecondaryGradientColor(float lerp) {
+        LX.error("Use getGradientColor() instead");
         return TEColor.setBrightness(super.getSecondaryGradientColor(lerp), (float) getBrightness());
     }
 
@@ -750,7 +741,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         return controls.color.calcColor();
     }
 
-    public int getCurrentGradient(float lerp) {
+    public int getGradientColor(float lerp) {
         return controls.color.getGradientColor(lerp);
     }
 
