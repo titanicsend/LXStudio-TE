@@ -266,7 +266,7 @@ public class TESparklePattern extends TEPerformancePattern {
     public void runTEAudioPattern(double deltaMs) {
         engine.run(deltaMs, model);
         int i = 0;
-        int color = getCurrentColor();
+        int color = calcColor();
         for (LXPoint p : model.points) {
             colors[p.index] =
                     LXColor.multiply(color, LXColor.gray(LXUtils.clamp(engine.outputLevels[i++], 0, 100)));

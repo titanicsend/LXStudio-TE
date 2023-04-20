@@ -41,8 +41,8 @@ public class Checkers extends TEPerformancePattern {
 
   @Override
   protected void runTEAudioPattern(double deltaMs) {
-    int color1 = getCurrentColor();
-    int color2 = getCurrentColor2();
+    int color1 = calcColor();
+    int color2 = calcColor2();
 
     for (Map.Entry<TEPanelModel, Integer> entry : this.panelGroup.entrySet()) {
       TEPanelModel panel = entry.getKey();

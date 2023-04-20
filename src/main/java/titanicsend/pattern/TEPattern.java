@@ -91,7 +91,7 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
   /*
    * Color methods
    */
-
+  @Deprecated
   public LinkedColorParameter registerColor(String label, String path, ColorType colorType, String description) {
     LinkedColorParameter lcp = new LinkedColorParameter(label)
             .setDescription(description);
@@ -122,6 +122,7 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
    * @param lerp as a frac
    * @return LXColor
    */
+  @Deprecated
   public int getPrimaryGradientColor(float lerp) {
     /* HSV2 mode wraps returned colors around the color wheel via the shortest
      * hue distance. In other words, we usually want a gradient to go from yellow
@@ -138,6 +139,7 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
    * @param lerp
    * @return
    */
+  @Deprecated
   public int getSecondaryGradientColor(float lerp) {
     /* HSV2 mode wraps returned colors around the color wheel via the shortest
      * hue distance. In other words, we usually want a gradient to go from yellow
