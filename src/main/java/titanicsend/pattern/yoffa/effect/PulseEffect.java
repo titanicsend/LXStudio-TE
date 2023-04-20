@@ -53,7 +53,7 @@ public class PulseEffect extends PatternEffect {
             double distanceFromCenter = originXn == null ? point.rn :
                     TEMath.distance(point.xn, point.yn, point.zn, originXn, originYn, originZn);
 
-            int baseColor = pattern.getPrimaryGradientColor((float) (2 * (distanceFromCenter - pattern.measure())));
+            int baseColor = pattern.getGradientColor((float) (2 * (distanceFromCenter - pattern.measure())));
 
             double hue = LXColor.h(baseColor);
             double saturation = LXColor.s(baseColor);
