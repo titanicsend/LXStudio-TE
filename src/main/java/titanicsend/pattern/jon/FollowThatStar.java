@@ -28,9 +28,8 @@ public class FollowThatStar extends TEPerformancePattern {
         controls.setRange(TEControlTag.QUANTITY, 5, 1, 10)
                 .setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
 
-        controls.setRange(TEControlTag.SIZE, 0.2, 0.01, 1);
-        controls.setRange(TEControlTag.WOW1, 0.0, 0, 1);
-        controls.setRange(TEControlTag.WOW2, 100, 1, 200);
+        controls.setRange(TEControlTag.SIZE, 1.75, 1.0, 5);
+        controls.setRange(TEControlTag.WOW2, 1, 1, 4);
 
         // register common controls with LX
         addCommonControls();

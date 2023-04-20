@@ -3,6 +3,8 @@ package titanicsend.pattern.jon;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.model.LXPoint;
+import heronarts.lx.parameter.BoundedParameter;
+import heronarts.lx.parameter.BoundedParameter.NormalizationCurve;
 import heronarts.lx.parameter.CompoundParameter;
 import titanicsend.pattern.TEPerformancePattern;
 import heronarts.lx.color.LXColor;
@@ -134,7 +136,7 @@ public class TESparklePattern extends TEPerformancePattern {
         public void run(double deltaMs, LXModel model) {
 
             // Differs from original - speed control scales all speed-related parameters
-            final double speed = getSpeed();
+            final double speed = Math.abs(getSpeed());
             final double minIntervalMs = 1000;
             final double maxIntervalMs = 1000;
 
@@ -226,8 +228,12 @@ public class TESparklePattern extends TEPerformancePattern {
     public TESparklePattern(LX lx) {
         super(lx);
 
-        // Sparkle rate
-        controls.setRange(TEControlTag.SPEED, 0.5, 0, 2);
+        // Sparkle rate - Note default is zero, but we start out
+        // with speed at 0.5 because at zero nothing sparkles
+        // and you get an all black car.  Yay!
+        controls.setRange(TEControlTag.SPEED, 0, -2, 2)
+                        .setValue(TEControlTag.SPEED,0.5);
+
 
         // Sparkle density
         controls.setRange(TEControlTag.QUANTITY, 50, 0, 100 * Engine.MAX_DENSITY)
@@ -239,11 +245,16 @@ public class TESparklePattern extends TEPerformancePattern {
         // Sharpness of sparkle curve
         controls.setRange(TEControlTag.WOW2, 0, -1, 1);
 
-        addCommonControls();
+        // Waveshape (in Size control position)
+        controls.setControl(TEControlTag.SIZE,engine.waveshape);
 
-        addParameter("waveshape", engine.waveshape);
-        addParameter("minLevel", engine.minLevel);
-        addParameter("maxLevel", engine.maxLevel);
+        // minlevel (in XPos control position)
+        controls.setControl(TEControlTag.XPOS,engine.minLevel);
+
+        // maxlevel (in YPos control position)
+        controls.setControl(TEControlTag.YPOS,engine.maxLevel);
+
+        addCommonControls();
     }
 
     @Override

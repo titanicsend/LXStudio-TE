@@ -111,6 +111,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             CompoundParameter oldControl = (CompoundParameter) getLXControl(tag);
             CompoundParameter newControl = (CompoundParameter) new CompoundParameter(oldControl.getLabel(), value, v0, v1)
                     .setDescription(oldControl.getDescription())
+                    .setNormalizationCurve(oldControl.getNormalizationCurve())
                     .setPolarity(oldControl.getPolarity())
                     .setExponent(oldControl.getExponent())
                     .setUnits(oldControl.getUnits());
@@ -267,6 +268,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
      * (but anything with a seconds.millis timer can generate rotational angles this way.)
      */
     protected class Rotor {
+        private double maxSpinRate = Math.PI;
         private double angle = 0;
         private double lastTime = 0;
 
@@ -280,8 +282,10 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             // the incremental angle calculation...
             if (lastTime != 0) {
                 // calculate change in angle since last frame.
-                double et = time - lastTime;
-                angle += (LX.TWO_PI * et) % LX.TWO_PI;
+                // Note: revised calculation restricts maximum speed while still allowing
+                // you to get to maximum speed at slower bpm.
+                double et = Math.min(maxSpinRate, maxSpinRate * (time - lastTime));
+                angle += et % LX.TWO_PI;
             }
             lastTime = time;
         }
@@ -305,6 +309,17 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             angle = 0;
             lastTime = 0;
         }
+
+        /**
+         * Sets maximum spin rate for all patterns using this rotor.  Note that a Rotor
+         * object is associated with a timer, which can be a VariableSpeedTimer.  So
+         * "seconds" may be variable in duration, and can be positive or negative.
+         * @param radiansPerSecond
+         */
+        void setMaxSpinRate(double radiansPerSecond) {
+            maxSpinRate = radiansPerSecond;
+        }
+
     }
 
     private final VariableSpeedTimer iTime = new VariableSpeedTimer();
@@ -376,6 +391,21 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     }
 
     /**
+     * Sets the maximum rotation speed used by both getRotationAngleFromSpin() and
+     * getRotationAngleFromSpeed().
+     * <p></p>
+     * The default maximum radians per second is PI, which gives one complete rotation
+     * every two beats at the current engine BPM.  Do not change this value unless you
+     * have a specific reason for doing so.  Too high a rotation speed can cause visuals
+     * to become erratic.
+     * @param radiansPerSecond
+     */
+    public void setMaxRotationSpeed(double radiansPerSecond) {
+
+    }
+
+
+    /**
      * @return Color derived from the current setting of the color and brightness controls
      * <p></p>
      * NOTE:  The design philosophy here is that palette colors (and the color control)
@@ -413,17 +443,26 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     }
 
     /**
-     * @return current variable time in seconds.millis.  Note that time
-     * can run both forward and backward, and can be negative.
+     * @return Current variable time in seconds.  Note that time
+     * can run both forward and backward, so the returned value can be negative.
      */
     public double getTime() {
         return iTime.getTime();
     }
 
+    /**
+     * @return Current variable time in milliseconds.  Note that time
+     * can run both forward and backward, so the returned value can be negative.
+     */
     public double getTimeMs() {
         return iTime.getTimeMs();
     }
 
+    /**
+     * @return current variable time in milliseconds since last call to this timer's
+     * Tick() function (normally called automatically at the start of each frame.)
+     * Note that time can run both forward and backward, so the returned value can be negative.
+     */
     public double getDeltaMs() {
         return iTime.getDeltaMs();
     }
@@ -536,7 +575,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         value = getSpeed() * bps;
         iTime.setScale(value);
         iTime.tick();
-        speedRotor.updateAngle(iTime.getTime(), value);
+        speedRotor.updateAngle(iTime.getTime(), value );
 
         super.run(deltaMs);
     }
