@@ -46,7 +46,7 @@ public class SpiralDiamonds extends TEPerformancePattern {
         float cosT2 = (float) Math.cos(t2);
         float sinT2 = (float) Math.sin(t2);
 
-        int color = getCurrentColor();
+        int color = calcColor();
         double squareocity = getQuantity();
 
          for (LXPoint point : model.panelPoints) {

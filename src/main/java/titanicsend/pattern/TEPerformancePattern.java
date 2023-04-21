@@ -691,7 +691,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
      * but if you want to brighten it, you have to do that with the channel fader or
      * the color control.
      */
-    public int getCurrentColor() {
+    public int calcColor() {
         return TEColor.setBrightness(controls.color.calcColor(), (float) getBrightness());
     }
 
@@ -704,12 +704,14 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
      * 
      * TODO: remove these two methods from TEPattern to prevent confusion?
      */
+    @Deprecated
     @Override
     public int getPrimaryGradientColor(float lerp) {
         LX.error("Use getGradientColor() instead");
         return TEColor.setBrightness(super.getPrimaryGradientColor(lerp), (float) getBrightness());
     }
 
+    @Deprecated
     @Override
     public int getSecondaryGradientColor(float lerp) {
         LX.error("Use getGradientColor() instead");
@@ -722,7 +724,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
      * Returns a color offset in position from the first color.
      * @return
      */
-    public int getCurrentColor2() {
+    public int calcColor2() {
         int k = controls.color.calcColor2();
         float bri = (float) getBrightness();
 
@@ -737,7 +739,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
      * for brightness.  This is used by the OpenGL renderer, which has
      * a unified mechanism for handling brightness.
      */
-    public int getCurrentColorControlValue() {
+    public int getColor() {
         return controls.color.calcColor();
     }
 

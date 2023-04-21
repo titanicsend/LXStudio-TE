@@ -40,7 +40,7 @@ public class BouncingDots extends TEPerformancePattern {
     protected void runTEAudioPattern(double deltaMs) {
         float phase = this.phase.getValuef();
 
-        int dotColor = getCurrentColor();
+        int dotColor = calcColor();
         int dotWidth = (int)(getSize());
         for (TEEdgeModel edge : model.edgesById.values()) {
             int target = (int) (edge.size * phase);

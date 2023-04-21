@@ -79,10 +79,10 @@ public class PatternControlData {
     }
 
     public int getCurrentColor() {
-        return parent.getCurrentColor();
+        return parent.calcColor();
     }
 
-    public int getCurrentColorControlValue() { return parent.getCurrentColorControlValue(); }
+    public int getCurrentColorControlValue() { return parent.getColor(); }
 
     public FloatBuffer getCurrentPalette() { return parent.getCurrentPalette();}
 

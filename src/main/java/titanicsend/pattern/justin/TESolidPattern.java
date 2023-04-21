@@ -16,7 +16,7 @@ public class TESolidPattern extends TEPerformancePattern {
 
   @Override
   protected void runTEAudioPattern(double deltaMs) {
-    int color1 = getCurrentColor();
+    int color1 = calcColor();
     
     for (LXPoint p : getModel().getPoints()) {
       colors[p.index] = color1;      
