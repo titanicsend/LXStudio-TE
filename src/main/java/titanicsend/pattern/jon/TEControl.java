@@ -1,7 +1,6 @@
 package titanicsend.pattern.jon;
 
-import heronarts.lx.parameter.LXListenableParameter;
-import titanicsend.pattern.TEPerformancePattern;
+import heronarts.lx.parameter.LXListenableNormalizedParameter;
 
 /**
  * A dynamically user-configurable control, for use with the TE
@@ -9,12 +8,12 @@ import titanicsend.pattern.TEPerformancePattern;
  */
 public class TEControl {
 
-    public TEControl(LXListenableParameter ctl, _CommonControlGetter getFn) {
+    public TEControl(LXListenableNormalizedParameter ctl, _CommonControlGetter getFn) {
         this.control = ctl;
         this.getFn = getFn;
     }
 
-    public LXListenableParameter control;
+    public LXListenableNormalizedParameter control;
     public _CommonControlGetter getFn;
 
     /**

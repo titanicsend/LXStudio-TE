@@ -13,6 +13,7 @@ import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon.VariableSpeedTimer;
 import titanicsend.pattern.jon._CommonControlGetter;
+import titanicsend.util.TE;
 import titanicsend.util.TEColor;
 
 import java.nio.FloatBuffer;
@@ -50,9 +51,11 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
         // GRADIENT
 
-        public final EnumParameter<TEGradient> gradient =
+        @SuppressWarnings("unchecked")
+        public final EnumParameter<TEGradient> gradient = (EnumParameter<TEGradient>)
             new EnumParameter<TEGradient>("Gradient", TEGradient.FULL_PALETTE)
-            .setDescription("Which TEGradient to use. Full_Palette=entire, Foreground=Primary-Secondary, Primary=Primary-BackgroundPrimary, Secondary=Secondary-BackgroundSecondary");
+            .setDescription("Which TEGradient to use. Full_Palette=entire, Foreground=Primary-Secondary, Primary=Primary-BackgroundPrimary, Secondary=Secondary-BackgroundSecondary")
+            .setWrappable(false);
 
         // GRADIENT BLEND. Excluding RGB because it does play well with gradients.
 
@@ -335,7 +338,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          *
          * @param tag
          */
-        public LXListenableParameter getLXControl(TEControlTag tag) {
+        public LXListenableNormalizedParameter getLXControl(TEControlTag tag) {
             return controlList.get(tag).control;
         }
 
@@ -355,13 +358,13 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             return ctl.getFn.getValue(ctl);
         }
 
-        public TECommonControls setControl(TEControlTag tag, LXListenableParameter lxp, _CommonControlGetter getFn) {
+        public TECommonControls setControl(TEControlTag tag, LXListenableNormalizedParameter lxp, _CommonControlGetter getFn) {
             TEControl newControl = new TEControl(lxp, getFn);
             controlList.put(tag, newControl);
             return this;
         }
 
-        public TECommonControls setControl(TEControlTag tag, LXListenableParameter lxp) {
+        public TECommonControls setControl(TEControlTag tag, LXListenableNormalizedParameter lxp) {
             return setControl(tag, lxp, defaultGetFn);
         }
 
@@ -379,32 +382,61 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
         public TECommonControls setRange(TEControlTag tag, double value, double v0, double v1) {
             // copy data from previous tag
-            CompoundParameter oldControl = (CompoundParameter) getLXControl(tag);
-            CompoundParameter newControl = (CompoundParameter) new CompoundParameter(oldControl.getLabel(), value, v0, v1)
-                    .setDescription(oldControl.getDescription())
-                    .setNormalizationCurve(oldControl.getNormalizationCurve())
-                    .setPolarity(oldControl.getPolarity())
+            LXListenableNormalizedParameter oldControl = getLXControl(tag);
+            LXListenableNormalizedParameter newControl;
+            if (oldControl instanceof CompoundParameter) {
+                newControl = (CompoundParameter) new CompoundParameter(oldControl.getLabel(), value, v0, v1)
+                    .setNormalizationCurve(((CompoundParameter)oldControl).getNormalizationCurve())
                     .setExponent(oldControl.getExponent())
+                    .setDescription(oldControl.getDescription())
+                    .setPolarity(oldControl.getPolarity())
                     .setUnits(oldControl.getUnits());
+            } else if (oldControl instanceof BoundedParameter) {
+                newControl  = (BoundedParameter) new BoundedParameter(oldControl.getLabel(), value, v0, v1)
+                    .setNormalizationCurve(((BoundedParameter)oldControl).getNormalizationCurve())
+                    .setExponent(oldControl.getExponent())
+                    .setDescription(oldControl.getDescription())
+                    .setPolarity(oldControl.getPolarity())
+                    .setUnits(oldControl.getUnits());
+            } else if (oldControl instanceof BooleanParameter) {
+                TE.err("Can not set range on BooleanParameter");
+                newControl  = (BooleanParameter) new BooleanParameter(oldControl.getLabel())
+                    .setMode(((BooleanParameter)oldControl).getMode())
+                    .setDescription(oldControl.getDescription())
+                    .setUnits(oldControl.getUnits());
+            } else if (oldControl instanceof DiscreteParameter) {
+                TE.err("Can not set range on DiscreteParameter");
+                newControl  = (DiscreteParameter) new DiscreteParameter(oldControl.getLabel(), ((DiscreteParameter)oldControl).getOptions())
+                    .setIncrementMode(((DiscreteParameter)oldControl).getIncrementMode())
+                    .setDescription(oldControl.getDescription())
+                    .setUnits(oldControl.getUnits());
+            } else {
+                TE.err("Unrecognized control type in TE Common Control " + tag);
+                return this;
+            }
 
             setControl(tag, newControl);
             return this;
         }
 
         public TECommonControls setExponent(TEControlTag tag, double exp) {
-            CompoundParameter p = (CompoundParameter) getLXControl(tag);
+            LXListenableNormalizedParameter p = getLXControl(tag);
             p.setExponent(exp);
             return this;
         }
 
         public TECommonControls setNormalizationCurve(TEControlTag tag, BoundedParameter.NormalizationCurve curve) {
-            CompoundParameter p = (CompoundParameter) getLXControl(tag);
-            p.setNormalizationCurve(curve);
+            LXListenableNormalizedParameter p = getLXControl(tag);
+            if (p instanceof BoundedParameter) {
+                ((BoundedParameter)p).setNormalizationCurve(curve);
+            } else {
+                TE.log("Warning: setNormalizationCurve() can not be called on parameter " + tag.toString());
+            }
             return this;
         }
 
         public TECommonControls setUnits(TEControlTag tag, LXParameter.Units units) {
-            CompoundParameter p = (CompoundParameter) getLXControl(tag);
+            LXListenableNormalizedParameter p = getLXControl(tag);
             p.setUnits(units);
             return this;
         }
@@ -438,8 +470,35 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             controlList.clear();
         }
 
+        /**
+         * Set remote controls in order they will appear on the midi surfaces
+         */
+        protected void setRemoteControls() {
+            setCustomRemoteControls(new LXListenableNormalizedParameter[] {
+                this.color.offset,
+                this.color.gradient,
+                getControl(TEControlTag.BRIGHTNESS).control,
+                getControl(TEControlTag.SPEED).control,
+
+                getControl(TEControlTag.XPOS).control,
+                getControl(TEControlTag.YPOS).control,
+                getControl(TEControlTag.QUANTITY).control,
+                getControl(TEControlTag.SIZE).control,
+
+                getControl(TEControlTag.ANGLE).control,
+                getControl(TEControlTag.SPIN).control,
+                null,  // To be PANIC, not implemented yet
+                null,  // To be PRESET, not implemented yet
+
+                getControl(TEControlTag.WOW1).control,
+                getControl(TEControlTag.WOW2).control,
+                getControl(TEControlTag.WOWTRIGGER).control,
+                null   // To be SHIFT, not implemented yet
+            });
+        }
+
         public void buildDefaultControlList() {
-            LXListenableParameter p;
+            LXListenableNormalizedParameter p;
 
             p = new CompoundParameter("Speed", 0.5, -4.0, 4.0)
                     .setPolarity(LXParameter.Polarity.BIPOLAR)
@@ -495,7 +554,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             setControl(TEControlTag.WOWTRIGGER, p);
 
             // in degrees for display 'cause more people think about it that way
-            p = new TECommonAngleParameter("Angle", 0, -Math.PI, Math.PI)
+            p = (LXListenableNormalizedParameter)new TECommonAngleParameter("Angle", 0, -Math.PI, Math.PI)
                     .setDescription("Static Rotation Angle")
                     .setPolarity(LXParameter.Polarity.BIPOLAR)
                     .setWrappable(true)
@@ -610,6 +669,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     public void addCommonControls() {
         this.controls.addCommonControls();
+        this.controls.setRemoteControls();
     }
 
     public FloatBuffer getCurrentPalette() {
