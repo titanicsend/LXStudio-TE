@@ -599,7 +599,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     private final Rotor speedRotor = new Rotor();
     private final Rotor spinRotor = new Rotor();
 
-    protected TECommonControls controls;
+    public TECommonControls controls;
 
     protected FloatBuffer palette = Buffers.newDirectFloatBuffer(15);
 
