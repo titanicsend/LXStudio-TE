@@ -42,17 +42,17 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         }
 
         public final EnumParameter<SolidColorSource> solidSource =
-                new EnumParameter<SolidColorSource>("SolidSource", SolidColorSource.FOREGROUND)
-                        .setDescription("For a solid color: Whether to use global TE palette (preferred), or a static color unique to this pattern");
+            new EnumParameter<SolidColorSource>("SolidSource", SolidColorSource.FOREGROUND)
+                .setDescription("For a solid color: Whether to use global TE palette (preferred), or a static color unique to this pattern");
 
         public final CompoundParameter color2offset =
-                new CompoundParameter("C2Offset", 0.5);
+            new CompoundParameter("C2Offset", 0.5);
 
         // GRADIENT
 
         public final EnumParameter<TEGradient> gradient =
-                new EnumParameter<TEGradient>("Gradient", TEGradient.FULL_PALETTE)
-                        .setDescription("Which TEGradient to use. Full_Palette=entire, Foreground=Primary-Secondary, Primary=Primary-BackgroundPrimary, Secondary=Secondary-BackgroundSecondary");
+            new EnumParameter<TEGradient>("Gradient", TEGradient.FULL_PALETTE)
+                .setDescription("Which TEGradient to use. Full_Palette=entire, Foreground=Primary-Secondary, Primary=Primary-BackgroundPrimary, Secondary=Secondary-BackgroundSecondary");
 
         // GRADIENT BLEND. Excluding RGB because it does play well with gradients.
 
@@ -62,8 +62,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         }
 
         public final EnumParameter<BlendMode> blendMode =
-                new EnumParameter<BlendMode>("BlendMode", BlendMode.HSV2)
-                        .setDescription("Blend mode for the gradient");
+            new EnumParameter<BlendMode>("BlendMode", BlendMode.HSV2)
+                .setDescription("Blend mode for the gradient");
 
         // OFFSET affects both Solid Colors and Gradient
 
@@ -79,19 +79,19 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         private double lastOffset = 0;
 
         public final TEColorOffsetParameter offset = (TEColorOffsetParameter)
-                new TEColorOffsetParameter("Offset") {
-                    @Override
-                    public LXParameter reset() {
-                        super.reset();
-                        if (solidSource.getEnum() == SolidColorSource.STATIC) {
-                            brightness.reset(100);
-                            saturation.reset(100);
-                            hue.reset();
-                        }
-                        return this;
+            new TEColorOffsetParameter("Offset") {
+                @Override
+                public LXParameter reset() {
+                    super.reset();
+                    if (solidSource.getEnum() == SolidColorSource.STATIC) {
+                        brightness.reset(100);
+                        saturation.reset(100);
+                        hue.reset();
                     }
+                    return this;
                 }
-                        .setDescription("Allows user variation of solid color.  If Static, adjusts hue offset. If Palette, adjusts normalized position within gradient.");
+            }
+                .setDescription("Allows user variation of solid color.  If Static, adjusts hue offset. If Palette, adjusts normalized position within gradient.");
 
         private final LXParameterListener offsetListener = (p) -> {
             double value = p.getValue();
@@ -157,9 +157,9 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 default:
                 case STATIC:
                     return LXColor.hsb(
-                            this.hue.getValue(),
-                            this.saturation.getValue(),
-                            this.brightness.getValue()
+                        this.hue.getValue(),
+                        this.saturation.getValue(),
+                        this.brightness.getValue()
                     );
             }
         }
@@ -181,9 +181,9 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 default:
                 case STATIC:
                     return LXColor.hsb(
-                            this.hue.getValue() + (color2offset.getValue() * 360.),
-                            this.saturation.getValue(),
-                            this.brightness.getValue()
+                        this.hue.getValue() + (color2offset.getValue() * 360.),
+                        this.saturation.getValue(),
+                        this.brightness.getValue()
                     );
             }
         }
@@ -243,9 +243,9 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             }
 
             return getGradientStops(gradient).getColor(
-                    lerp,
-                    // TEMath.trianglef(lerp / 2), // Allow wrapping      ** TODO: remove this? **
-                    bf);
+                lerp,
+                // TEMath.trianglef(lerp / 2), // Allow wrapping      ** TODO: remove this? **
+                bf);
         }
 
         /**
@@ -384,11 +384,11 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             // copy data from previous tag
             CompoundParameter oldControl = (CompoundParameter) getLXControl(tag);
             CompoundParameter newControl = (CompoundParameter) new CompoundParameter(oldControl.getLabel(), value, v0, v1)
-                    .setDescription(oldControl.getDescription())
-                    .setNormalizationCurve(oldControl.getNormalizationCurve())
-                    .setPolarity(oldControl.getPolarity())
-                    .setExponent(oldControl.getExponent())
-                    .setUnits(oldControl.getUnits());
+                .setDescription(oldControl.getDescription())
+                .setNormalizationCurve(oldControl.getNormalizationCurve())
+                .setPolarity(oldControl.getPolarity())
+                .setExponent(oldControl.getExponent())
+                .setUnits(oldControl.getUnits());
 
             setControl(tag, newControl);
             return this;
@@ -445,73 +445,73 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             LXListenableParameter p;
 
             p = new CompoundParameter("Speed", 0.5, -4.0, 4.0)
-                    .setPolarity(LXParameter.Polarity.BIPOLAR)
-                    .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
-                    .setExponent(1.75)
-                    .setDescription("Speed");
+                .setPolarity(LXParameter.Polarity.BIPOLAR)
+                .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
+                .setExponent(1.75)
+                .setDescription("Speed");
             setControl(TEControlTag.SPEED, p);
 
             p = new CompoundParameter("xPos", 0, -1.0, 1.0)
-                    .setPolarity(LXParameter.Polarity.BIPOLAR)
-                    .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
-                    .setDescription("X Position");
+                .setPolarity(LXParameter.Polarity.BIPOLAR)
+                .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
+                .setDescription("X Position");
             setControl(TEControlTag.XPOS, p);
 
             p = new CompoundParameter("yPos", 0, -1.0, 1.0)
-                    .setPolarity(LXParameter.Polarity.BIPOLAR)
-                    .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
-                    .setDescription("Y Position");
+                .setPolarity(LXParameter.Polarity.BIPOLAR)
+                .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
+                .setDescription("Y Position");
             setControl(TEControlTag.YPOS, p);
 
             p = new CompoundParameter("Size", 1, 0.01, 5.0)
-                    .setDescription("Size");
+                .setDescription("Size");
             setControl(TEControlTag.SIZE, p);
 
             p = new CompoundParameter("Quantity", 0.5, 0, 1.0)
-                    .setDescription("Quantity");
+                .setDescription("Quantity");
             setControl(TEControlTag.QUANTITY, p);
 
             p = (CompoundParameter)
-                    new CompoundParameter("Spin", 0, -1.0, 1.0)
-                            .setPolarity(LXParameter.Polarity.BIPOLAR)
-                            .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
-                            .setExponent(2)
-                            .setDescription("Spin");
+                new CompoundParameter("Spin", 0, -1.0, 1.0)
+                    .setPolarity(LXParameter.Polarity.BIPOLAR)
+                    .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
+                    .setExponent(2)
+                    .setDescription("Spin");
 
             setControl(TEControlTag.SPIN, p);
 
             p = new CompoundParameter("Brightness", 1.0, 0.0, 1.0)
-                    .setDescription("Brightness");
+                .setDescription("Brightness");
             setControl(TEControlTag.BRIGHTNESS, p);
 
             p = new CompoundParameter("Wow1", 0, 0, 1.0)
-                    .setDescription("Wow 1");
+                .setDescription("Wow 1");
             setControl(TEControlTag.WOW1, p);
 
             p = new CompoundParameter("Wow2", 0, 0, 1.0)
-                    .setDescription("Wow 2");
+                .setDescription("Wow 2");
             setControl(TEControlTag.WOW2, p);
 
             p = new BooleanParameter("WowTrigger", false)
-                    .setMode(BooleanParameter.Mode.MOMENTARY)
-                    .setDescription("Trigger WoW effects");
+                .setMode(BooleanParameter.Mode.MOMENTARY)
+                .setDescription("Trigger WoW effects");
             setControl(TEControlTag.WOWTRIGGER, p);
 
             // in degrees for display 'cause more people think about it that way
             p = new TECommonAngleParameter("Angle", 0, -Math.PI, Math.PI)
-                    .setDescription("Static Rotation Angle")
-                    .setPolarity(LXParameter.Polarity.BIPOLAR)
-                    .setWrappable(true)
-                    .setFormatter((v) -> {
-                        return Double.toString(Math.toDegrees(v));
-                    });
+                .setDescription("Static Rotation Angle")
+                .setPolarity(LXParameter.Polarity.BIPOLAR)
+                .setWrappable(true)
+                .setFormatter((v) -> {
+                    return Double.toString(Math.toDegrees(v));
+                });
 
             setControl(TEControlTag.ANGLE, p);
         }
 
         protected void registerColorControl() {
             color = new TEColorParameter("Color")
-                    .setDescription("TE Color");
+                .setDescription("TE Color");
             addParameter("te_color", color);
         }
 
