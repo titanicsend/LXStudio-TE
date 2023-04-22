@@ -80,10 +80,7 @@ function rgba(r, g, b, a) {
 }
 
 function paint(v) {
-  if (__pattern.model.isEdgePoint(point.index))
-    return __color = __pattern.getPrimaryGradientColor(v);
-  else
-    return __color = __pattern.getPrimaryGradientColor(v);
+  return __color = __pattern.getGradientColor(v);
 }
 
 function swatch(v) {
@@ -273,7 +270,6 @@ function glueRender() {
   for (i = 0; i < __points.length; i++) {
     __color = 0;
     point = __points[i];
-    if (point == __pattern.model.gapPoint) continue;
     r(i, point.xn + xOffs, point.yn + yOffs, point.zn);
     __colors[point.index] = __color;
   }

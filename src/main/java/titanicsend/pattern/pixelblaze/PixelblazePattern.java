@@ -121,7 +121,6 @@ public abstract class PixelblazePattern extends TEPerformancePattern {
       return;
 
     try {
-      updateGradients();
       wrapper.reloadIfNecessary();
       wrapper.render(deltaMs, colors);
     } catch (ScriptException | NoSuchMethodException sx) {
