@@ -13,24 +13,39 @@ import java.util.*;
 import static heronarts.lx.utils.LXUtils.clamp;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
-import static titanicsend.util.TEMath.multiplyVectorByMatrix;
+import static titanicsend.util.TEMath.*;
+
 
 @Deprecated //we have native support for shaders now. use NativeShaderPatternEffect
 public abstract class FragmentShaderEffect extends PatternEffect {
+    double[][] rotationMatrix;
+    int color1 = 0;
+    int color2 = 0;
+
     public FragmentShaderEffect(PatternTarget target) {
         super(target);
     }
 
-
     @Override
     public void run(double deltaMS) {
         //multithreading assumes setColor is doing nothing more than updating an array
+
+        // calculate per-frame control derived variables
         double durationSec = pattern.getTime();
+
+        color1 = pattern.calcColor();
+        color2 = pattern.calcColor2();
+
+        double angle = -pattern.getRotationAngleFromSpin();
+
+        rotationMatrix = new double[][]{
+                {cos(angle), -sin(angle)},
+                {sin(angle), cos(angle)}
+        };
 
         pointsToCanvas.entrySet().parallelStream().forEach(entry -> setColor(entry.getKey(),
                 getColorForPoint(entry.getKey(), entry.getValue(), durationSec)));
     }
-
 
     private int getColorForPoint(LXPoint point, Dimensions canvasDimensions, double timeSec) {
         boolean useZForX = canvasDimensions.getDepth() > canvasDimensions.getWidth();
@@ -52,6 +67,22 @@ public abstract class FragmentShaderEffect extends PatternEffect {
                 (float) clamp(colorRgb[1], 0, 1),
                 (float) clamp(colorRgb[2], 0, 1),
                 alpha).getRGB();
+    }
+
+    // Rotate point in 2D around specified origin, using the
+    // current precalculated matrix
+    public double[] rotate2D(double[] point, double[] origin) {
+        double[] p1 = subtractArrays(point, origin);
+        p1 = multiplyVectorByMatrix(p1, rotationMatrix);
+        return addArrays(p1, origin);
+    }
+
+    public int calcColor() {
+        return color1;
+    }
+
+    public int calcColor2() {
+        return color2;
     }
 
     /**

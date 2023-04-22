@@ -1,41 +1,34 @@
 package titanicsend.pattern.yoffa.effect.shaders;
 
-import heronarts.lx.color.LXColor;
-import heronarts.lx.parameter.BooleanParameter;
-import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
+import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 
 import java.util.Collection;
-import java.util.List;
 
 import static java.lang.Math.*;
 import static titanicsend.util.TEMath.*;
 
 //https://www.shadertoy.com/view/4lB3DG
 public class NeonSnakeShader extends FragmentShaderEffect {
-
-    public final BooleanParameter trebleGlow =
-            new BooleanParameter("TrebleGlow", false);
-
-    public final BooleanParameter beatDisperse =
-            new BooleanParameter("BeatDisperse", false);
+    double[] origin;
 
     public NeonSnakeShader(PatternTarget target) {
         super(target);
+        TEPerformancePattern.TECommonControls ctl = pattern.getControls();
 
-        pattern.controls.setRange(TEControlTag.SIZE, 0.3, 0.2, 0.9);  // dispersion/scale
-        pattern.controls.setRange(TEControlTag.QUANTITY, 1, .5, 8);   // snake bend frequency
-        pattern.controls.setRange(TEControlTag.WOW1, 1, .1, 2);   // glow
-        pattern.controls.setRange(TEControlTag.WOW2, 0, 0, .25);    // beat reactivity
+        ctl.setRange(TEControlTag.SIZE, 0.3, 0.2, 0.9);  // dispersion/scale
+        ctl.setRange(TEControlTag.WOW1, 1, .1, 2);       // glow
+        ctl.setRange(TEControlTag.WOW2, 0, 0, .25);      // beat reactivity
+
+        // this is roughly where the center of the snake winds up
+        // on the vehicle.
+        origin = new double[] {0.5, 0.25};
     }
 
     @Override
     protected double[] getColorForPoint(double[] fragCoordinates, double[] resolution, double timeSeconds) {
-
-        // Quantity controls the snake's bend frequency
-        double bend = pattern.getQuantity();
 
         // Wow1 controls the base glow level
         double glow = pattern.getWow1();
@@ -46,11 +39,16 @@ public class NeonSnakeShader extends FragmentShaderEffect {
         // normalize coordinates
         double[] uv = divideArrays(fragCoordinates, resolution);
         uv[1] -= pattern.getYPos() + 0.25;  // offset y to roughly center snake vertically
-        uv = multiplyArray(3, uv); // scale pattern properly for car
+
+        // rotate
+        uv = rotate2D(uv, origin);
+
+        // scale (fixed scale to adapt pattern to vehicle)
+        uv = multiplyArray(3, uv);
 
         // get current calculated palette color (plus alpha, which we'll fill in later)
         double[] waveColor = new double[4];
-        colorToRGBArray(pattern.calcColor(), waveColor);
+        colorToRGBArray(calcColor(), waveColor);
 
         double brightness = 0;
         for (int i = 0; i < 13; i++) {
