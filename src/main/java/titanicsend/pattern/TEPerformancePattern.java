@@ -170,7 +170,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
         /**
          * ** Solid-Color patterns should use this method **
-         * <p>
+         *
          * Returns the real-time value of the color, which may be different from what
          * getColor() returns if there are LFOs/etc being applied.
          * Offset has been applied to this color.
@@ -236,7 +236,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
         /**
          * ** Gradient patterns should use this method **
-         * <p>
+         *
          * Given a value in 0..1 (and wrapped back outside that range)
          * Return a color within the selected gradient.
          * Offset is added to lerp to create a user-shiftable gradient.
@@ -486,7 +486,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          * To use the common controls, call this function from the constructor
          * of TEPerformancePattern-derived classes after configuring the default
          * controls for your pattern.
-         * <p>
+         *
          * If your pattern adds its own controls in addition to the common
          * controls, you must call addParameter() for them after calling
          * this function so the UI stays consistent across patterns.
@@ -672,7 +672,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     /**
      * Class to support incremental rotation over variable-speed time
-     * <p>
+     *
      * The rate is tied to the engine bpm and the input time value, which is usually
      * controlled by the variable speed timer associated with the speed or spin controls.
      * (but anything with a seconds.millis timer can generate rotational angles this way.)
@@ -809,7 +809,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     /**
      * Sets the maximum rotation speed used by both getRotationAngleFromSpin() and
      * getRotationAngleFromSpeed().
-     * <p></p>
+     *
      * The default maximum radians per second is PI, which gives one complete rotation
      * every two beats at the current engine BPM.  Do not change this value unless you
      * have a specific reason for doing so.  Too high a rotation speed can cause visuals
@@ -824,14 +824,14 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     /**
      * @return Color derived from the current setting of the color and brightness controls
-     * <p></p>
+     *
      * NOTE:  The design philosophy here is that palette colors (and the color control)
      * have precedence.
-     * <p></p>
+     *
      * Brightness modifies the current color, and is set to 1.0 (100%) by default. So
      * if you don't move the brightness control you get *exactly* the currently
      * selected color.
-     * <p></p>
+     *
      * At present, the brightness control lets you dim the current color,
      * but if you want to brighten it, you have to do that with the channel fader or
      * the color control.
@@ -842,11 +842,11 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     /**
      * ** Instead of these two methods, use getGradientColor(lerp) which defers to TEColorParameter for gradient selection. **
-     * <p>
+     *
      * Suppress parent TEPattern gradient methods, force child classes
      * to choose solid color or gradient, keeping other choices
      * runtime-adjustable.
-     * <p>
+     *
      * TODO: remove these two methods from TEPattern to prevent confusion?
      */
     @Deprecated
@@ -949,7 +949,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     /**
      * <b>NOTE:</b> This control has functional overlap with color and channel fader settings, and
      * could potentially cause confusing brightness behavior.
-     * <p></p>
+     *
      * <b>It may be deprecated or removed in the future and should not be used in patterns.</b>
      *
      * @return The current value of the brightness control, by default in the range 0.0 to 1.0
@@ -973,7 +973,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     /**
      * Restarts the specified timer's elapsed time when called.
      * The timer's rate is not changed.
-     * <p>
+     *
      * This is useful for syncing a timer precisely to beats,
      * measures and other external events.
      *

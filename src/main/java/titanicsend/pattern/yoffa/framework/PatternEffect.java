@@ -4,8 +4,6 @@ import heronarts.lx.Tempo;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.TEAudioPattern;
-import titanicsend.pattern.TEPattern;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.util.Dimensions;
 
