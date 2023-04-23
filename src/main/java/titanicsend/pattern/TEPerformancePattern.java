@@ -41,7 +41,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             public String toString() {
                 return this.label;
             }
-        };
+        }
 
         private final SolidColorSource SOLID_SOURCE_DEFAULT = SolidColorSource.FOREGROUND;
 
@@ -65,8 +65,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         @SuppressWarnings("unchecked")
         public final EnumParameter<TEGradient> gradient = (EnumParameter<TEGradient>)
             new EnumParameter<TEGradient>("Gradient", TEGradient.FULL_PALETTE)
-            .setDescription("Which TEGradient to use. Full_Palette=entire, Foreground=Primary-Secondary, Primary=Primary-BackgroundPrimary, Secondary=Secondary-BackgroundSecondary")
-            .setWrappable(false);
+                .setDescription("Which TEGradient to use. Full_Palette=entire, Foreground=Primary-Secondary, Primary=Primary-BackgroundPrimary, Secondary=Secondary-BackgroundSecondary")
+                .setWrappable(false);
 
         // GRADIENT BLEND. Excluding RGB because it does play well with gradients.
 
@@ -116,7 +116,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                     return this;
                 }
             }
-            .setDescription("Allows user variation of solid color.  If Static, adjusts hue offset. If Palette, adjusts normalized position within gradient.");
+                .setDescription("Allows user variation of solid color.  If Static, adjusts hue offset. If Palette, adjusts normalized position within gradient.");
 
         private final LXParameterListener offsetListener = (p) -> {
             double value = p.getValue();
@@ -129,7 +129,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         };
 
         public TEColorParameter(String label) {
-          this(label, 0xff000000);
+            this(label, 0xff000000);
         }
 
         public TEColorParameter(String label, int color) {
@@ -177,43 +177,44 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          */
         public int calcColor() {
             switch (this.solidSource.getEnum()) {
-            case GRADIENT:
-                // TODO: scale brightness here
-                return _getGradientColor(getOffsetf());
-            case FOREGROUND:
-                // TODO: scale brightness here
-                return _getGradientColor(getOffsetf(), TEGradient.FOREGROUND);
-            default:
-            case STATIC:
-                return LXColor.hsb(
-                    this.hue.getValue(),
-                    this.saturation.getValue(),
-                    this.brightness.getValue()
-                  );
+                case GRADIENT:
+                    // TODO: scale brightness here
+                    return _getGradientColor(getOffsetf());
+                case FOREGROUND:
+                    // TODO: scale brightness here
+                    return _getGradientColor(getOffsetf(), TEGradient.FOREGROUND);
+                default:
+                case STATIC:
+                    return LXColor.hsb(
+                        this.hue.getValue(),
+                        this.saturation.getValue(),
+                        this.brightness.getValue()
+                    );
             }
         }
 
         /**
          * Solid-Color patterns that use two colors can get
          * the second color here.
+         *
          * @return LXColor
          */
         public int calcColor2() {
-          switch (this.solidSource.getEnum()) {
-          case GRADIENT:
-              // TODO: scale brightness here
-              return _getGradientColor(getOffsetf() + color2offset.getValuef());
-          case FOREGROUND:
-              // TODO: scale brightness here
-              return _getGradientColor(getOffsetf() + color2offset.getValuef(), TEGradient.FOREGROUND);
-          default:
-          case STATIC:
-              return LXColor.hsb(
-                  this.hue.getValue() + (color2offset.getValue() * 360.),
-                  this.saturation.getValue(),
-                  this.brightness.getValue()
-                );
-          }
+            switch (this.solidSource.getEnum()) {
+                case GRADIENT:
+                    // TODO: scale brightness here
+                    return _getGradientColor(getOffsetf() + color2offset.getValuef());
+                case FOREGROUND:
+                    // TODO: scale brightness here
+                    return _getGradientColor(getOffsetf() + color2offset.getValuef(), TEGradient.FOREGROUND);
+                default:
+                case STATIC:
+                    return LXColor.hsb(
+                        this.hue.getValue() + (color2offset.getValue() * 360.),
+                        this.saturation.getValue(),
+                        this.brightness.getValue()
+                    );
+            }
         }
 
         /**
@@ -223,11 +224,11 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         @Override
         public int getColor() {
             switch (this.solidSource.getEnum()) {
-            case FOREGROUND:
-                return getGradientColor(0);
-            default:
-            case STATIC:
-                return super.getColor();
+                case FOREGROUND:
+                    return getGradientColor(0);
+                default:
+                case STATIC:
+                    return super.getColor();
             }
         }
 
@@ -239,6 +240,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          * Given a value in 0..1 (and wrapped back outside that range)
          * Return a color within the selected gradient.
          * Offset is added to lerp to create a user-shiftable gradient.
+         *
          * @param lerp as a frac
          * @return LXColor
          */
@@ -248,6 +250,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
         /**
          * Returns absolute position within current gradient.
+         *
          * @param lerp
          * @return
          */
@@ -256,22 +259,22 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         }
 
         private int _getGradientColor(float lerp, TEGradient gradient) {
-          lerp = (float)LXUtils.wrapnf(lerp);
+            lerp = (float) LXUtils.wrapnf(lerp);
 
-          BlendFunction bf;
-          switch (this.blendMode.getEnum()) {
-          case HSV:
-              bf = GradientUtils.BlendMode.HSV.function;
-              break;
-          case HSV2:
-          default:
-              bf = GradientUtils.BlendMode.HSV2.function;
-          }
+            BlendFunction bf;
+            switch (this.blendMode.getEnum()) {
+                case HSV:
+                    bf = GradientUtils.BlendMode.HSV.function;
+                    break;
+                case HSV2:
+                default:
+                    bf = GradientUtils.BlendMode.HSV2.function;
+            }
 
-          return getGradientStops(gradient).getColor(
-              lerp,
-              // TEMath.trianglef(lerp / 2), // Allow wrapping      ** TODO: remove this? **
-              bf);
+            return getGradientStops(gradient).getColor(
+                lerp,
+                // TEMath.trianglef(lerp / 2), // Allow wrapping      ** TODO: remove this? **
+                bf);
         }
 
         /**
@@ -279,15 +282,15 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          */
         private GradientUtils.ColorStops getGradientStops(TEGradient gradient) {
             switch (gradient) {
-            case FOREGROUND:
-                return foregroundGradient;
-            case PRIMARY:
-                return primaryGradient;
-            case SECONDARY:
-                return secondaryGradient;
-            case FULL_PALETTE:
-            default:
-                return paletteGradient;
+                case FOREGROUND:
+                    return foregroundGradient;
+                case PRIMARY:
+                    return primaryGradient;
+                case SECONDARY:
+                    return secondaryGradient;
+                case FULL_PALETTE:
+                default:
+                    return paletteGradient;
             }
         }
 
@@ -483,7 +486,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          * To use the common controls, call this function from the constructor
          * of TEPerformancePattern-derived classes after configuring the default
          * controls for your pattern.
-         * <p>
+         *
          * If your pattern adds its own controls in addition to the common
          * controls, you must call addParameter() for them after calling
          * this function so the UI stays consistent across patterns.
@@ -541,66 +544,66 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             LXListenableNormalizedParameter p;
 
             p = new CompoundParameter("Speed", 0.5, -4.0, 4.0)
-                    .setPolarity(LXParameter.Polarity.BIPOLAR)
-                    .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
-                    .setExponent(1.75)
-                    .setDescription("Speed");
+                .setPolarity(LXParameter.Polarity.BIPOLAR)
+                .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
+                .setExponent(1.75)
+                .setDescription("Speed");
             setControl(TEControlTag.SPEED, p);
 
             p = new CompoundParameter("xPos", 0, -1.0, 1.0)
-                    .setPolarity(LXParameter.Polarity.BIPOLAR)
-                    .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
-                    .setDescription("X Position");
+                .setPolarity(LXParameter.Polarity.BIPOLAR)
+                .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
+                .setDescription("X Position");
             setControl(TEControlTag.XPOS, p);
 
             p = new CompoundParameter("yPos", 0, -1.0, 1.0)
-                    .setPolarity(LXParameter.Polarity.BIPOLAR)
-                    .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
-                    .setDescription("Y Position");
+                .setPolarity(LXParameter.Polarity.BIPOLAR)
+                .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
+                .setDescription("Y Position");
             setControl(TEControlTag.YPOS, p);
 
             p = new CompoundParameter("Size", 1, 0.01, 5.0)
-                    .setDescription("Size");
+                .setDescription("Size");
             setControl(TEControlTag.SIZE, p);
 
             p = new CompoundParameter("Quantity", 0.5, 0, 1.0)
-                    .setDescription("Quantity");
+                .setDescription("Quantity");
             setControl(TEControlTag.QUANTITY, p);
 
             p = (CompoundParameter)
-                    new CompoundParameter("Spin", 0, -1.0, 1.0)
-                            .setPolarity(LXParameter.Polarity.BIPOLAR)
-                            .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
-                            .setExponent(2)
-                            .setDescription("Spin");
+                new CompoundParameter("Spin", 0, -1.0, 1.0)
+                    .setPolarity(LXParameter.Polarity.BIPOLAR)
+                    .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
+                    .setExponent(2)
+                    .setDescription("Spin");
 
             setControl(TEControlTag.SPIN, p);
 
             p = new CompoundParameter("Brightness", 1.0, 0.0, 1.0)
-                    .setDescription("Brightness");
+                .setDescription("Brightness");
             setControl(TEControlTag.BRIGHTNESS, p);
 
             p = new CompoundParameter("Wow1", 0, 0, 1.0)
-                    .setDescription("Wow 1");
+                .setDescription("Wow 1");
             setControl(TEControlTag.WOW1, p);
 
             p = new CompoundParameter("Wow2", 0, 0, 1.0)
-                    .setDescription("Wow 2");
+                .setDescription("Wow 2");
             setControl(TEControlTag.WOW2, p);
 
             p = new BooleanParameter("WowTrigger", false)
-                    .setMode(BooleanParameter.Mode.MOMENTARY)
-                    .setDescription("Trigger WoW effects");
+                .setMode(BooleanParameter.Mode.MOMENTARY)
+                .setDescription("Trigger WoW effects");
             setControl(TEControlTag.WOWTRIGGER, p);
 
             // in degrees for display 'cause more people think about it that way
             p = (LXListenableNormalizedParameter)new TECommonAngleParameter("Angle", 0, -Math.PI, Math.PI)
-                    .setDescription("Static Rotation Angle")
-                    .setPolarity(LXParameter.Polarity.BIPOLAR)
-                    .setWrappable(true)
-                    .setFormatter((v) -> {
-                        return Double.toString(Math.toDegrees(v));
-                    });
+                .setDescription("Static Rotation Angle")
+                .setPolarity(LXParameter.Polarity.BIPOLAR)
+                .setWrappable(true)
+                .setFormatter((v) -> {
+                    return Double.toString(Math.toDegrees(v));
+                });
 
             setControl(TEControlTag.ANGLE, p);
         }
@@ -669,7 +672,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     /**
      * Class to support incremental rotation over variable-speed time
-     * <p>
+     *
      * The rate is tied to the engine bpm and the input time value, which is usually
      * controlled by the variable speed timer associated with the speed or spin controls.
      * (but anything with a seconds.millis timer can generate rotational angles this way.)
@@ -721,6 +724,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          * Sets maximum spin rate for all patterns using this rotor.  Note that a Rotor
          * object is associated with a timer, which can be a VariableSpeedTimer.  So
          * "seconds" may be variable in duration, and can be positive or negative.
+         *
          * @param radiansPerSecond
          */
         void setMaxSpinRate(double radiansPerSecond) {
@@ -741,6 +745,10 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     protected TEPerformancePattern(LX lx) {
         super(lx);
         controls = new TECommonControls();
+    }
+
+    public TECommonControls getControls() {
+        return controls;
     }
 
     public void addCommonControls() {
@@ -801,11 +809,12 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     /**
      * Sets the maximum rotation speed used by both getRotationAngleFromSpin() and
      * getRotationAngleFromSpeed().
-     * <p></p>
+     *
      * The default maximum radians per second is PI, which gives one complete rotation
      * every two beats at the current engine BPM.  Do not change this value unless you
      * have a specific reason for doing so.  Too high a rotation speed can cause visuals
      * to become erratic.
+     *
      * @param radiansPerSecond
      */
     public void setMaxRotationSpeed(double radiansPerSecond) {
@@ -815,14 +824,14 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     /**
      * @return Color derived from the current setting of the color and brightness controls
-     * <p></p>
+     *
      * NOTE:  The design philosophy here is that palette colors (and the color control)
      * have precedence.
-     * <p></p>
+     *
      * Brightness modifies the current color, and is set to 1.0 (100%) by default. So
      * if you don't move the brightness control you get *exactly* the currently
      * selected color.
-     * <p></p>
+     *
      * At present, the brightness control lets you dim the current color,
      * but if you want to brighten it, you have to do that with the channel fader or
      * the color control.
@@ -837,7 +846,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
      * Suppress parent TEPattern gradient methods, force child classes
      * to choose solid color or gradient, keeping other choices
      * runtime-adjustable.
-     * 
+     *
      * TODO: remove these two methods from TEPattern to prevent confusion?
      */
     @Deprecated
@@ -858,6 +867,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
      * For patterns that consume two solid colors, use this method
      * to retrieve the 2nd color.
      * Returns a color offset in position from the first color.
+     *
      * @return
      */
     public int calcColor2() {
@@ -867,7 +877,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         float r = (float) (0xff & LXColor.red(k)) * bri;
         float g = (float) (0xff & LXColor.green(k)) * bri;
         float b = (float) (0xff & LXColor.blue(k)) * bri;
-        return LXColor.rgb((int) r,(int) g,(int) b);
+        return LXColor.rgb((int) r, (int) g, (int) b);
     }
 
     /**
@@ -939,7 +949,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     /**
      * <b>NOTE:</b> This control has functional overlap with color and channel fader settings, and
      * could potentially cause confusing brightness behavior.
-     * <p></p>
+     *
      * <b>It may be deprecated or removed in the future and should not be used in patterns.</b>
      *
      * @return The current value of the brightness control, by default in the range 0.0 to 1.0
@@ -963,7 +973,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     /**
      * Restarts the specified timer's elapsed time when called.
      * The timer's rate is not changed.
-     * <p>
+     *
      * This is useful for syncing a timer precisely to beats,
      * measures and other external events.
      *
@@ -1017,7 +1027,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         value = getSpeed() * bps;
         iTime.setScale(value);
         iTime.tick();
-        speedRotor.updateAngle(iTime.getTime(), value );
+        speedRotor.updateAngle(iTime.getTime(), value);
 
         // Gradients always need to be up to date for TEColorParameter
         updateGradients();

@@ -4,8 +4,6 @@ import heronarts.lx.Tempo;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.TEAudioPattern;
-import titanicsend.pattern.TEPattern;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.util.Dimensions;
 
@@ -16,7 +14,6 @@ public abstract class PatternEffect {
     protected final TEPerformancePattern pattern;
     protected final Map<LXPoint, Dimensions> pointsToCanvas;
     private boolean shouldBlend;
-    private long startTime = System.currentTimeMillis();
 
 
     public PatternEffect(PatternTarget target) {
@@ -25,7 +22,6 @@ public abstract class PatternEffect {
     }
 
     public final void onActive() {
-        startTime = System.currentTimeMillis();
         onPatternActive();
     }
 
@@ -60,10 +56,6 @@ public abstract class PatternEffect {
         } else {
             colors[point.index] = color;
         }
-    }
-
-    protected double getDurationSec() {
-        return (System.currentTimeMillis() - startTime) / 1000.;
     }
 
     protected Set<LXPoint> getAllPoints() {
