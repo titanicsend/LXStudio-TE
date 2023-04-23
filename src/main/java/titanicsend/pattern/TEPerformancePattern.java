@@ -822,6 +822,20 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     }
 
 
+    /*
+     * Color safety mechanism: only calculate solid colors once per frame.
+     * Child classes are still encouraged to only call the color methods
+     * once but this will reduce impact of uncaught cases.
+     */
+    private boolean isStaleColor = true;
+    private boolean isStaleColor2 = true;
+    private boolean isStaleColorBase = true;
+    private int _getColor, _calcColor, _calcColor2;
+
+    protected void expireColors() {
+        isStaleColorBase = isStaleColor = isStaleColor2 = true;
+    }
+
     /**
      * @return Color derived from the current setting of the color and brightness controls
      *
@@ -837,7 +851,11 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
      * the color control.
      */
     public int calcColor() {
-        return TEColor.setBrightness(controls.color.calcColor(), (float) getBrightness());
+        if (isStaleColor) {
+            _calcColor = TEColor.setBrightness(controls.color.calcColor(), (float) getBrightness());
+            isStaleColor = false;
+        }
+        return _calcColor;
     }
 
     /**
@@ -871,13 +889,11 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
      * @return
      */
     public int calcColor2() {
-        int k = controls.color.calcColor2();
-        float bri = (float) getBrightness();
-
-        float r = (float) (0xff & LXColor.red(k)) * bri;
-        float g = (float) (0xff & LXColor.green(k)) * bri;
-        float b = (float) (0xff & LXColor.blue(k)) * bri;
-        return LXColor.rgb((int) r, (int) g, (int) b);
+        if (isStaleColor2) {
+            _calcColor2 = TEColor.setBrightness(controls.color.calcColor2(), (float) getBrightness());
+            isStaleColor2 = false;
+        }
+        return _calcColor2;
     }
 
     /**
@@ -886,7 +902,11 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
      * a unified mechanism for handling brightness.
      */
     public int getColor() {
-        return controls.color.calcColor();
+        if (isStaleColorBase) {
+            _getColor = controls.color.calcColor();
+            isStaleColorBase = false;
+        }
+        return _getColor;
     }
 
     public int getGradientColor(float lerp) {
@@ -1031,6 +1051,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
         // Gradients always need to be up to date for TEColorParameter
         updateGradients();
+        expireColors();
 
         super.run(deltaMs);
     }
