@@ -3,13 +3,13 @@ package titanicsend.pattern;
 import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.color.ColorParameter;
-import heronarts.lx.color.GradientUtils;
-import heronarts.lx.color.LXColor;
-import heronarts.lx.color.GradientUtils.BlendFunction;
 import heronarts.lx.color.GradientUtils.GradientFunction;
+import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.*;
 import heronarts.lx.parameter.BooleanParameter.Mode;
 import heronarts.lx.utils.LXUtils;
+import titanicsend.lx.LXGradientUtils;
+import titanicsend.lx.LXGradientUtils.BlendFunction;
 import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon.VariableSpeedTimer;
@@ -71,11 +71,12 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         // GRADIENT BLEND. Excluding RGB because it does play well with gradients.
 
         public enum BlendMode {
-            HSV,
-            HSV2
+            HSVM,
+            HSVCW,
+            HSVCCW
         }
 
-        private final BlendMode BLEND_MODE_DEFAULT = BlendMode.HSV2;
+        private final BlendMode BLEND_MODE_DEFAULT = BlendMode.HSVM;
 
         public final EnumParameter<BlendMode> blendMode =
             new EnumParameter<BlendMode>("BlendMode", BLEND_MODE_DEFAULT) {
@@ -263,24 +264,24 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
             BlendFunction bf;
             switch (this.blendMode.getEnum()) {
-                case HSV:
-                    bf = GradientUtils.BlendMode.HSV.function;
+                case HSVCCW:
+                    bf = LXGradientUtils.BlendMode.HSVCCW.function;
                     break;
-                case HSV2:
+                case HSVCW:
+                  bf = LXGradientUtils.BlendMode.HSVCW.function;
+                  break;
+                case HSVM:
                 default:
-                    bf = GradientUtils.BlendMode.HSV2.function;
+                    bf = LXGradientUtils.BlendMode.HSVM.function;
             }
 
-            return getGradientStops(gradient).getColor(
-                lerp,
-                // TEMath.trianglef(lerp / 2), // Allow wrapping      ** TODO: remove this? **
-                bf);
+            return getGradientStops(gradient).getColor(lerp, bf);
         }
 
         /**
          * Internal helper method. Maps gradient enum to ColorStops.
          */
-        private GradientUtils.ColorStops getGradientStops(TEGradient gradient) {
+        private LXGradientUtils.ColorStops getGradientStops(TEGradient gradient) {
             switch (gradient) {
                 case FOREGROUND:
                     return foregroundGradient;

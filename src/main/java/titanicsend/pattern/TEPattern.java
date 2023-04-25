@@ -3,10 +3,10 @@ package titanicsend.pattern;
 import heronarts.lx.LX;
 import heronarts.lx.Tempo;
 import heronarts.lx.audio.GraphicMeter;
-import heronarts.lx.color.GradientUtils;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.pattern.LXModelPattern;
+import titanicsend.lx.LXGradientUtils;
 import titanicsend.model.TELaserModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
@@ -41,10 +41,10 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
   };
 
   // Whole palette gradient across all 5 stops. Usually starts and ends with black.
-  protected GradientUtils.ColorStops paletteGradient = new GradientUtils.ColorStops();     // [X] [X] [X] [X] [X]  All five color entries
-  protected GradientUtils.ColorStops primaryGradient = new GradientUtils.ColorStops();     // [X] [ ] [X] [ ] [ ]  Background primary -> Primary
-  protected GradientUtils.ColorStops secondaryGradient = new GradientUtils.ColorStops();   // [ ] [ ] [ ] [X] [X]  Background secondary -> Secondary
-  protected GradientUtils.ColorStops foregroundGradient = new GradientUtils.ColorStops();  // [ ] [ ] [X] [X] [ ]  Primary -> Secondary
+  protected LXGradientUtils.ColorStops paletteGradient = new LXGradientUtils.ColorStops();     // [X] [X] [X] [X] [X]  All five color entries
+  protected LXGradientUtils.ColorStops primaryGradient = new LXGradientUtils.ColorStops();     // [X] [ ] [X] [ ] [ ]  Background primary -> Primary
+  protected LXGradientUtils.ColorStops secondaryGradient = new LXGradientUtils.ColorStops();   // [ ] [ ] [ ] [X] [X]  Background secondary -> Secondary
+  protected LXGradientUtils.ColorStops foregroundGradient = new LXGradientUtils.ColorStops();  // [ ] [ ] [X] [X] [ ]  Primary -> Secondary
 
   // See TE Art Direction Standards: https://docs.google.com/document/d/16FGnQ8jopCGwQ0qZizqILt3KYiLo0LPYkDYtnYzY7gI/edit
   public enum ColorType {
@@ -130,7 +130,7 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
      */
     return primaryGradient.getColor(
             TEMath.trianglef(lerp / 2), // Allow wrapping
-            GradientUtils.BlendMode.HSV2.function);
+            LXGradientUtils.BlendMode.HSVM.function);
   }
 
   /**
@@ -147,7 +147,7 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
      */
     return secondaryGradient.getColor(
             TEMath.trianglef(lerp / 2), // Allow wrapping
-            GradientUtils.BlendMode.HSV2.function);
+            LXGradientUtils.BlendMode.HSVM.function);
   }
 
   /**

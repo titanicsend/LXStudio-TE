@@ -221,7 +221,7 @@ public class UITEColorPicker extends UI2dComponent {
     private final UI2dComponent color2;
 
     UITEColorOverlay(UI ui) {
-      this(ui, 304, color instanceof TEColorParameter ? 60 : 8);
+      this(ui, 324, color instanceof TEColorParameter ? 60 : 8);
     }
 
     UITEColorOverlay(UI ui, float width, float extraHeight) {
@@ -265,7 +265,7 @@ public class UITEColorPicker extends UI2dComponent {
       // Solid color
       UI2dContainer.newHorizontalContainer(16, 4,
         new UILabel(58, 12, "Solid Color:").setFont(ui.theme.getControlFont()),
-        new UIButton(108, 16, color.solidSource)    
+        new UIButton(128, 16, color.solidSource)
       )
       .setPosition(PADDING, 148)
       .addToContainer(this);
@@ -274,13 +274,13 @@ public class UITEColorPicker extends UI2dComponent {
       UI2dContainer.newHorizontalContainer(16, 4,
           new UILabel(58, 12, "Gradient:").setFont(ui.theme.getControlFont()),
           new UIButton(68, 16, color.gradient),
-          new UIButton(36, 16, color.blendMode)
+          new UIButton(56, 16, color.blendMode)
         )
       .setPosition(PADDING, 171)
       .addToContainer(this);
       
       // Offset
-      new UIKnob(184, 147, color.offset).addToContainer(this);
+      new UIKnob(204, 147, color.offset).addToContainer(this);
 
       // Solid color preview
       UI2dContainer.newHorizontalContainer(16, 1,
@@ -295,7 +295,7 @@ public class UITEColorPicker extends UI2dComponent {
             .setBackgroundColor(color.calcColor2())
             .setBorderRounding(4)
         )
-        .setPosition(228, 148)
+        .setPosition(248, 148)
         .addToContainer(this);
       
       addListener(color, p -> {
@@ -305,7 +305,7 @@ public class UITEColorPicker extends UI2dComponent {
 
       // Gradient preview
       new UIPaletteGradient((LXStudio.UI)ui, color, 64, 16)
-      .setPosition(228, 171)
+      .setPosition(248, 171)
       .addToContainer(this);
       
       color.solidSource.addListener((p) -> {
