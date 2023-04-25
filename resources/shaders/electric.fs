@@ -94,8 +94,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     float size = .075;
 
     float haze = {%haze[.075,.075,.25]};
-	col += haze*d1*size*vec3 (.1, .8, 2.);
-	col += haze*d2*size*vec3 (2., .1, .8);
+	col += haze*d1*size*iColorRGB;
+	col += haze*d2*size*iColor2RGB;
 
     fragColor = vec4 (col, max(col.r,max(col.g,col.b)));
 }

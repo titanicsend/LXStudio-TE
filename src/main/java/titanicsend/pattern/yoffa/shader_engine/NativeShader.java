@@ -214,6 +214,20 @@ public class NativeShader implements GLEventListener {
         gl4.glDisableVertexAttribArray(shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION));
     }
 
+    private void setColorUniform(String rgbName,String hsvName, int color) {
+        float x, y, z;
+
+        x = (float) (0xff & LXColor.red(color)) / 255f;
+        y = (float) (0xff & LXColor.green(color)) / 255f;
+        z = (float) (0xff & LXColor.blue(color)) / 255f;
+        setUniform(rgbName, x, y, z);
+
+        x = LXColor.h(color) / 360f;
+        y = LXColor.s(color) / 100f;
+        z = LXColor.b(color) / 100f;
+        setUniform(hsvName, x, y, z);
+    }
+
     private void setStandardUniforms(PatternControlData ctl) {
 
         // set standard shadertoy-style uniforms
@@ -228,19 +242,8 @@ public class NativeShader implements GLEventListener {
         setUniform("trebleLevel", (float) ctl.getTrebleLevel());
 
         // color-related uniforms
-        float x, y, z;
-        int color = ctl.getCurrentColorControlValue();
-        x = (float) (0xff & LXColor.red(color)) / 255f;
-        y = (float) (0xff & LXColor.green(color)) / 255f;
-        z = (float) (0xff & LXColor.blue(color)) / 255f;
-        setUniform("iColorRGB", x, y, z);
-
-        x = LXColor.h(color) / 360f;
-        y = LXColor.s(color) / 100f;
-        z = LXColor.b(color) / 100f;
-        setUniform("iColorHSB", x, y, z);
-
-        setUniform("iPalette", ctl.getCurrentPalette(), 3);
+        setColorUniform("iColorRGB","iColorHSB",ctl.calcColor());
+        setColorUniform("iColor2RGB","iColor2HSB",ctl.calcColor2());
 
         // uniforms for common controls
         setUniform("iSpeed", (float) ctl.getSpeed());
