@@ -62,7 +62,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 	uv.x *= iResolution.x / iResolution.y;
     uv.y += 0.2;
     uv = rot(uv, 90.);
-    vec3 c = iPalette[TE_PRIMARY];
+    vec3 c = iColorRGB;
     vec4 b;
     if (PRESET == 0)
     	b = f(uv, .2, 0.1, 1.);

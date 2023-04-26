@@ -13,10 +13,11 @@ uniform float sinPhaseBeat;
 uniform float bassLevel;
 uniform float trebleLevel;
 
-// TE color
-uniform vec3 iPalette[5];
+// TE Colors
 uniform vec3 iColorRGB;
 uniform vec3 iColorHSB;
+uniform vec3 iColor2RGB;
+uniform vec3 iColor2HSB;
 
 // TE common controls
 uniform float iSpeed;
@@ -36,11 +37,7 @@ uniform sampler2D iChannel1;
 uniform sampler2D iChannel2;
 uniform sampler2D iChannel3;
 
-#define TE_BACKGROUND 0
-#define TE_TRANSITION 1
-#define TE_PRIMARY 2
-#define TE_SECONDARY 3
-#define TE_SECONDARY_BACKGROUND 4
+
 
 {{%shader_body%}}
 
@@ -52,5 +49,5 @@ void main() {
 
     // The brightness control works as "contrast".  It sets the brightness of colors, without
     // affecting transparency.
-    finalColor.rgb *= iBrightness;
+    // finalColor.rgb *= iBrightness;
 }

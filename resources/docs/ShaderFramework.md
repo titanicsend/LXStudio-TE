@@ -46,9 +46,10 @@ uniform float bassLevel;
 uniform float trebleLevel;
 
 // TE color
-uniform vec3 iPalette[5]; // the complete currently active palette
-uniform vec3 iColorRGB;   // the color currently showing in the color control
-uniform vec3 iColorHSB;   // current color in HSB format
+uniform vec3 iColorRGB;   // color 1 - the color returned by calcColor() 
+uniform vec3 iColorHSB;   // color 1 in the HSB colorspace
+uniform vec3 iColor2RGB;  // color 2 the color returned by calcColor2()
+uniform vec3 iColor2HSB;  // color 2 in the HSB colorspace
 
 // TE common controls
 uniform float iSpeed;
@@ -93,35 +94,20 @@ shaders.
 ### Color Uniforms
 
 #### iColorRGB (uniform vec3 iColorRGB;)
-The RGB color currently selected in the UI color control for this pattern.  Colors in
+The RGB color from the color control returned by the calcColor() function.  Colors in
 shaders are normalized to a floating point 0.0 to 1.0 range.  You do not have to multiply them back
 to 0-255, and you don't have to worry about color components under- or overflowing while doing 
 calculations. They are automatically clamped to the proper range on output.
 
 #### iColorHSB (uniform vec3 iColorHSB;)
-The same color as in iColorRGB, but pre-converted to normalized HSB format. (All components are
+The same color as iColorRGB, but pre-converted to normalized HSB format. (All components are
 in the range 0.0 to 1.0.  It's just like a Pixelblaze!)
 
-#### iPalette (uniform vec3 iPalette[5];)
-An array of 5 RGB colors, containing TE's current palette. You can
-select the colors by using the following defined constants.
+#### iColor2RGB (uniform vec3 iColorRGB;)
+The RGB color from the color control returned by the calcColor2() function, normalized as above. 
 
-- **TE_PRIMARY**      - Primary color to use on edges
-- **TE_SECONDARY** - Secondary color to use on edges or panels
-- **TE_PRIMARY**     - Primary color to use on panels
-- **TE_BACKGROUND**   - Background color to use on edges
-- **TE_SECONDARY_BACKGROUND**  - Background color to use on edges
-
-For example to get the current primary panel color, use:
-
-```
-	vec3 color = iPalette[TE_PRIMARY];
-	
-	// to get individual color channel values
-	float red = color.r;   // also color.x or color[0]
-	float green = color.g; // also color.y or color[1]
-	float blue = color.b;  // also color.z or color[2]
-```
+#### iColor2HSB (uniform vec3 iColorHSB;)
+iColor2RGB converted to HSB colorspace and normalized to the range 0.0 to 1.0.
 
 -----
 ### Audio Uniforms

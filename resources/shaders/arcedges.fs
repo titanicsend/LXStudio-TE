@@ -57,7 +57,7 @@ vec3 electrify(vec2 pos, float offset,float direction) {
         float d1 = abs(noiseMag / (offset - fbm((pos + f) * 2.55, 2. * time)));
         float d2 = abs(noiseMag / (offset - fbm((pos + f) * 1.41, time + 10.0)));
         col += vec3(d1 * iColorRGB);
-        col += vec3(d2 * iPalette[TE_SECONDARY]);
+        col += vec3(d2 * iColor2RGB);
     }
     
     return col;

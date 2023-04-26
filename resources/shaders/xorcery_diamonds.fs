@@ -1,21 +1,8 @@
 #define PI     3.14159265
 #define PI2     6.2831853
 
-vec3 primaryGradient(float v) {
-  v *= 2.0;
-  if (v < 1.0) {
-    return mix(iPalette[TE_BACKGROUND], iPalette[TE_TRANSITION], v);
-  } else {
-    return mix(iPalette[TE_TRANSITION], iPalette[TE_PRIMARY], v - 1.0);
-  }
-}
-
-vec3 secondaryGradient(float v) {
-  return mix(iPalette[TE_SECONDARY_BACKGROUND], iPalette[TE_SECONDARY], v);
-}
-
 vec3 primaryToSecondaryGradient(float v) {
-  return mix(iPalette[TE_PRIMARY], iPalette[TE_SECONDARY], v);
+  return mix(iColorRGB, iColor2RGB, v);
 }
 
 // normalized HSV to RGB

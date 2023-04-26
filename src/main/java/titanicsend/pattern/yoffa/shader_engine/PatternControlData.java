@@ -78,12 +78,14 @@ public class PatternControlData {
         return parent.getRotationAngleFromSpeed();
     }
 
-    public int getCurrentColor() {
+    public int calcColor() {
         return parent.calcColor();
     }
 
-    public int getCurrentColorControlValue() { return parent.getColor(); }
+    public int calcColor2() { return parent.calcColor2(); }
 
+    // currently unused, but not removed because we may want access to the whole
+    // palette at some point
     public FloatBuffer getCurrentPalette() { return parent.getCurrentPalette();}
 
     public double getSpeed() {
