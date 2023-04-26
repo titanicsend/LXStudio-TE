@@ -16,9 +16,15 @@ public class TELaserTask implements LXLoopTask {
 
     @Override
     public void loop(double deltaMs) {
-        LXDynamicColor primary = this.lx.engine.palette.swatch.getColor(TEPattern.ColorType.PRIMARY.index);
+        // get the swatch color
+        int primaryIndex = TEPattern.ColorType.PRIMARY.swatchIndex();
+        LXDynamicColor primary = this.lx.engine.palette.swatch.getColor(primaryIndex);
         int rgb = primary.getColor();
+
+        // convert to a 0 - 360 format for Pangolin
         int hue = (int) (360 * LXColor.h(rgb));
+
+        // send the OSC message
         TEOscMessage.sendOscToPangolin(lx, TEOscMessage.makePaletteHueAddress(), hue, false);
     }
 }
