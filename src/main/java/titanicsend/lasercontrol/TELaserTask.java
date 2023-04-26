@@ -19,6 +19,6 @@ public class TELaserTask implements LXLoopTask {
         LXDynamicColor primary = this.lx.engine.palette.swatch.getColor(TEPattern.ColorType.PRIMARY.index);
         int rgb = primary.getColor();
         int hue = (int) (360 * LXColor.h(rgb));
-        TEOscMessage.sendOscToPangolin(lx, TEOscMessage.makePaletteHueAddress(), hue);
+        TEOscMessage.sendOscToPangolin(lx, TEOscMessage.makePaletteHueAddress(), hue, false);
     }
 }
