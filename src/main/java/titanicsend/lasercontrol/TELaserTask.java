@@ -21,7 +21,7 @@ public class TELaserTask implements LXLoopTask {
         LXDynamicColor primary = this.lx.engine.palette.swatch.getColor(primaryIndex);
 
         // convert to a 0 - 360 format for Pangolin
-        int hue = (int)(primary.getHuef());
+        int hue = (int)(primary.getHue());
 
         // send the OSC message
         TEOscMessage.sendOscToPangolin(lx, TEOscMessage.makePaletteHueAddress(), hue, false);

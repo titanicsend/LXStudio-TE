@@ -168,7 +168,7 @@ public class TEOscMessage {
         lx.engine.osc.transmitActive.setValue(true);
         lx.engine.osc.transmitHost.setValue(PangolinHost.HOSTNAME);
         lx.engine.osc.transmitPort.setValue(PangolinHost.PORT);
-        if (true)
+        if (verbose)
             TE.log("Sending OSC to %s:%d = OSC OUT: %s %d;", PangolinHost.HOSTNAME, PangolinHost.PORT, address, value);
         lx.engine.osc.sendMessage(address, value);
     }
