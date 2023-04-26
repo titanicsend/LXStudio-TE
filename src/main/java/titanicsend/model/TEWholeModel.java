@@ -227,7 +227,7 @@ public class TEWholeModel extends LXModel {
       String edgeKind = tokens[1];
       String socketCfg = tokens[2];
 
-      if (socketCfg.startsWith("x10")) socketCfg = "uncontrolled";
+      if (socketCfg.startsWith("x10") || socketCfg.contains("?")) socketCfg = "uncontrolled";
 
       boolean dark;
       boolean fwd = true;
