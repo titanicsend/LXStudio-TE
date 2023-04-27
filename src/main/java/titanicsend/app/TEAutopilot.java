@@ -23,10 +23,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
     private boolean enabled = false;
 
-    // should we send OSC messages to lasers about
-    // palette changes?
-    private boolean SEND_PALETTE_TO_LASERS = false;
-
     // number of bars to fade out on various occasions
     private final int MISPREDICTED_FADE_OUT_BARS = 2;
     private final int PREV_FADE_OUT_BARS = 2;
@@ -716,16 +712,6 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
             TE.log("Palette change!");
             changePaletteSwatch(false, true, 0);
             history.startPaletteTimer();
-
-            // notify lasers of this change
-            if (SEND_PALETTE_TO_LASERS) {
-                try {
-                    TEOscMessage.sendPaletteToPangolin(lx);
-                } catch (Exception e) {
-                    TE.err("Problem sending palette to Pangolin: %s", e);
-                    e.printStackTrace();
-                }
-            }
         }
 
         // add to historical log of events

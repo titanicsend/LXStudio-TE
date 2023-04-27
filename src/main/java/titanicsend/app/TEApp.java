@@ -28,6 +28,7 @@ import java.util.Calendar;
 import java.util.function.Function;
 
 import heronarts.lx.LX;
+import heronarts.lx.LXLoopTask;
 import heronarts.lx.LXPlugin;
 import heronarts.lx.midi.surface.APC40Mk2;
 import heronarts.lx.midi.surface.MidiFighterTwister;
@@ -39,6 +40,7 @@ import heronarts.lx.pattern.texture.SparklePattern;
 import heronarts.lx.studio.LXStudio;
 import processing.core.PApplet;
 import titanicsend.app.autopilot.*;
+import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.model.TEWholeModel;
 import titanicsend.output.GPOutput;
 import titanicsend.output.GrandShlomoStation;
@@ -80,6 +82,8 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
   private TEAutopilot autopilot;
   private TEOscListener oscListener;
   private TEPatternLibrary library;
+
+  private TELaserTask laserTask;
 
   @Override
   public void settings() {
@@ -282,6 +286,10 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
     } catch (SocketException sx) {
         sx.printStackTrace();
     }
+
+    // create our loop task for outputting data to lasers
+    this.laserTask = new TELaserTask(lx);
+    lx.engine.addLoopTask(this.laserTask);
 
     GPOutput gpOutput = new GPOutput(lx, this.gpBroadcaster);
     lx.addOutput(gpOutput);
