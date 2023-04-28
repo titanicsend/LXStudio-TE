@@ -187,22 +187,6 @@ public class TEWholeModel extends LXModel {
     s.close();
   }
 
-  private static Map<String, Integer> loadEdgePixelCounts(Geometry geometry) {
-    Scanner s = loadFilePrivate(geometry.subdir + "/edge_signal_paths.tsv");
-    Map<String, Integer> rv = new HashMap<>();
-
-    String headerLine = s.nextLine();
-    assert headerLine.endsWith("Pixels");
-
-    while (s.hasNextLine()) {
-      String line = s.nextLine();
-      String[] tokens = line.split("\\t");
-      assert tokens.length == 5;
-      rv.put(tokens[0], Integer.parseInt(tokens[4]));
-    }
-    return rv;
-  }
-
   private static void loadViews(Geometry geometry) {
     geometry.views = new Properties();
     try (InputStream is = new FileInputStream("resources/vehicle/views.properties")) {
@@ -213,19 +197,18 @@ public class TEWholeModel extends LXModel {
   }
 
   private static void loadEdges(Geometry geometry) {
-    Map<String, Integer> edgePixelCounts = loadEdgePixelCounts(geometry);;
-
     geometry.edgesById = new HashMap<String, TEEdgeModel>();
     Scanner s = loadFilePrivate(geometry.subdir + "/edges.txt");
 
     while (s.hasNextLine()) {
       String line = s.nextLine();
       String[] tokens = line.split("\t");
-      assert tokens.length == 3 : "Found " + tokens.length + " tokens";
+      assert tokens.length == 4 : "Found " + tokens.length + " tokens";
 
       String id = tokens[0];
       String edgeKind = tokens[1];
-      String socketCfg = tokens[2];
+      int numPixels = Integer.parseInt(tokens[2]);
+      String socketCfg = tokens[3];
 
       if (socketCfg.startsWith("x10") || socketCfg.contains("?")) socketCfg = "uncontrolled";
 
@@ -267,7 +250,7 @@ public class TEWholeModel extends LXModel {
           tags = newTags;
         }
       }
-      TEEdgeModel e = new TEEdgeModel(v0, v1, edgePixelCounts.get(id), dark, tags);
+      TEEdgeModel e = new TEEdgeModel(v0, v1, numPixels, dark, tags);
       v0.addEdge(e);
       v1.addEdge(e);
 
@@ -308,39 +291,7 @@ public class TEWholeModel extends LXModel {
     return rv;
   }
 
-  private static Map<String, String> loadPanelStartEdgeIds(Geometry geometry) {
-    Scanner s = loadFilePrivate(geometry.subdir + "/panel_signal_paths.tsv");
-    Map<String, String> rv = new HashMap<>();
-
-    String headerLine = s.nextLine();
-    assert headerLine.endsWith("Junction IDs");
-
-    while (s.hasNextLine()) {
-      String line = s.nextLine();
-      String[] tokens = line.split("\\t");
-      assert tokens.length == 11;
-      String panelId = tokens[0];
-      String startVertex = tokens[7];
-      String startingEdgeId = tokens[8];
-      if (startingEdgeId == "") {
-        throw new IllegalStateException("Panel " + panelId + " has empty starting edge ID");
-      }
-      tokens = startingEdgeId.split("-");
-      assert tokens.length == 2;
-      if (tokens[0].equals(startVertex)) {
-        // pass
-      } else if (tokens[1].equals(startVertex)) {
-        startingEdgeId = tokens[1] + "-" + tokens[0];
-      } else {
-        throw new IllegalStateException("Panel " + panelId + " has impossible signal plan");
-      }
-      rv.put(panelId, startingEdgeId);
-    }
-    return rv;
-  }
-
-  private static Map<String, TEStripingInstructions> loadStripingInstructions(
-          Geometry geometry, Map<String, String> startEdgeIds) {
+  private static Map<String, TEStripingInstructions> loadStripingInstructions(Geometry geometry) {
     Scanner s = loadFilePrivate(geometry.subdir + "/striping-instructions.txt");
 
     Map<String, TEStripingInstructions> rv = new HashMap<>();
@@ -402,10 +353,8 @@ public class TEWholeModel extends LXModel {
           phase = 1 - phase;
         }
       }
-      String startingEdgeId = startEdgeIds.get(id);
-      assert startingEdgeId != null;
       TEStripingInstructions tesi = new TEStripingInstructions(
-              startingEdgeId, channelLengths,
+              channelLengths,
               rowLengths.stream().mapToInt(i -> i).toArray(),
               beforeNudges.stream().mapToInt(i -> i).toArray(),
               gaps.stream().mapToInt(i -> i).toArray());
@@ -426,17 +375,14 @@ public class TEWholeModel extends LXModel {
     geometry.panelsBySection = new HashMap<>();
     geometry.panelsByFlavor = new HashMap<>();
 
-    Map<String, String> startEdgeIds = loadPanelStartEdgeIds(geometry);
-
     Map<String, TEStripingInstructions> stripingInstructions
-            = loadStripingInstructions(geometry, startEdgeIds);
+            = loadStripingInstructions(geometry);
 
     for (String id : stripingInstructions.keySet()) {
       TEStripingInstructions tesi = stripingInstructions.get(id);
       assert tesi != null;
-      assert tesi.startingEdgeId != null;
       StringBuilder out = new StringBuilder("Panel " + id +
-              " has starting edge " + tesi.startingEdgeId + " and row lengths ");
+              " has row lengths ");
       for (int i : tesi.rowLengths) out.append(i).append(" ");
       //LX.log(out.toString());
     }
@@ -446,14 +392,15 @@ public class TEWholeModel extends LXModel {
     while (s.hasNextLine()) {
       String line = s.nextLine();
       String[] tokens = line.split("\t");
-      assert tokens.length == 6 : "Found " + tokens.length + " tokens";
+      assert tokens.length == 7 : "Found " + tokens.length + " tokens";
 
       String id = tokens[0];
       String e0Id = tokens[1];
       String e1Id = tokens[2];
       String e2Id = tokens[3];
-      String flipStr = tokens[4];
-      String panelType = tokens[5];
+      String startingPath = tokens[4];
+      String flipStr = tokens[5];
+      String panelType = tokens[6];
 
       TEEdgeModel e0 = geometry.edgesById.get(e0Id);
       TEEdgeModel e1 = geometry.edgesById.get(e1Id);
@@ -470,15 +417,21 @@ public class TEWholeModel extends LXModel {
       assert vertexes.length == 3;
 
       if (panelType.startsWith("x10")) panelType = "lit";
+      if (panelType.contains("?")) panelType = "lit";
 
       boolean lit = panelType.contains(".");
       String outputConfig = panelType;
 
       if (lit) panelType = "lit";
 
+      tokens = startingPath.split("->");
+      assert tokens.length == 2 : "Starting path has " + tokens.length + " tokens";
+      int startVertexId = Integer.parseInt(tokens[0]);
+      int midVertexId = Integer.parseInt(tokens[1]);
+
       TEStripingInstructions tesi = stripingInstructions.get(id);
       TEPanelModel p = TEPanelFactory.build(id, vertexes[0], vertexes[1], vertexes[2],
-              e0, e1, e2, panelType, tesi, geometry.gapPoint, geometry.views);
+          startVertexId, midVertexId, e0, e1, e2, panelType, tesi, geometry.gapPoint, geometry.views);
 
       if (flipStr.equals("flipped")) {
         p.offsetTriangles.flip();

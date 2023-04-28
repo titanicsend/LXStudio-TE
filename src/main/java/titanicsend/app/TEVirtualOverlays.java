@@ -78,9 +78,11 @@ public class TEVirtualOverlays extends TEUIComponent {
   }
 
   public HashMap<TEVertex, Integer> loadPowerboxes() {
-    Scanner s = this.model.loadFile("power_assignments.tsv");
     int i = 0;
     HashMap<TEVertex, Integer> v2p = new HashMap<>();
+
+    /* Disabling this until we work out a representation for the new power-box model
+    Scanner s = this.model.loadFile("power_assignments.tsv");
 
     while (s.hasNextLine()) {
       String line = s.nextLine();
@@ -117,7 +119,7 @@ public class TEVirtualOverlays extends TEUIComponent {
         TE.err(line);
       }
     }
-
+*/
     return v2p;
   }
 
