@@ -31,10 +31,10 @@ public class ResizeableScreen extends TEPattern implements UIDeviceControls<Resi
     // Technically, we do have doubles, but the values are in microns, so if you really need a fraction
     // of a micron, you can figure out how to do this with BoundedParameters instead.
     // Note: extra +1 is because DiscreteParameters have an _exclusive_ bound on the upper end.
-    private int roundedLowerYLimit = (int)this.model.boundaryPoints.minYBoundaryPoint.y;
-    private int roundedUpperYLimit = (int)this.model.boundaryPoints.maxYBoundaryPoint.y + 1;
-    private int roundedLowerZLimit = (int)this.model.boundaryPoints.minZBoundaryPoint.z;
-    private int roundedUpperZLimit = (int)this.model.boundaryPoints.maxZBoundaryPoint.z + 1;
+    private int roundedLowerYLimit = (int)this.modelTE.boundaryPoints.minYBoundaryPoint.y;
+    private int roundedUpperYLimit = (int)this.modelTE.boundaryPoints.maxYBoundaryPoint.y + 1;
+    private int roundedLowerZLimit = (int)this.modelTE.boundaryPoints.minZBoundaryPoint.z;
+    private int roundedUpperZLimit = (int)this.modelTE.boundaryPoints.maxZBoundaryPoint.z + 1;
 
     // The extra +1 on the ends is because DiscreteParameter bounds are exclusive at the top end.
     public final DiscreteParameter lowerYBoundParam =
@@ -101,7 +101,7 @@ public class ResizeableScreen extends TEPattern implements UIDeviceControls<Resi
 
     private void sizeAndPaintScreen() {
         ArrayList<LXPoint> pointsList = new ArrayList<>(Arrays.asList(this.model.points));
-        pointsList.remove(this.model.gapPoint);
+        pointsList.remove(this.modelTE.gapPoint);
         this.screen = new SimpleScreen(
             pointsList,
             this.lowerYBoundParam.getValuei(),

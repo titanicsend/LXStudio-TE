@@ -24,7 +24,7 @@ public class BasicRainbowPattern extends TEPattern {
     @Override
     protected void run(double deltaMs) {
         for (LXPoint p : model.points) {
-            if (p == this.model.gapPoint) continue;
+            if (p == this.modelTE.gapPoint) continue;
 
             /*
             Notice that when we iterate this way, it turns on the lasers and

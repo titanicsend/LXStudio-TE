@@ -90,7 +90,7 @@ public class ArcEdges extends TEPerformancePattern {
 
     // scan for edges with at least one connected panel
     void scanForHappyEdges() {
-         Set<TEEdgeModel> edges = model.getAllEdges();
+         Set<TEEdgeModel> edges = modelTE.getAllEdges();
          int edgeCount = 0;
 
         for (TEEdgeModel edge : edges) {
@@ -119,7 +119,7 @@ public class ArcEdges extends TEPerformancePattern {
     void getLineFromEdge(int index, String id) {
         LXPoint v1,v2;
 
-        HashMap<String,TEEdgeModel> edges = model.edgesById;
+        HashMap<String,TEEdgeModel> edges = modelTE.edgesById;
 
         TEEdgeModel edge = edges.get(id);
         if (edge != null) {

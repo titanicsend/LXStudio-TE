@@ -62,7 +62,7 @@ public class BassReactive extends TEAudioPattern {
 
         clearPixels();  // Sets all pixels to transparent for starters
 
-        for (TEEdgeModel edge : model.edgesById.values()) {
+        for (TEEdgeModel edge : modelTE.edgesById.values()) {
             for (LXPoint point : edge.points) {
                 // If the normalized Y height of this edge pixel is below the current
                 // bass level, color it red. If not, it stays transparent.

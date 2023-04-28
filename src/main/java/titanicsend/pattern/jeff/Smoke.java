@@ -146,7 +146,7 @@ public class Smoke extends TEAudioPattern {
             // where y is in [-1..0], then slowly ease into 1 when y is in [0..1]
             float yClamped = LXUtils.clampf(thisPoint.y, -1, 1);
             thisPoint.topDesat = (yClamped < 0) ? 0 : (float) Math.sqrt(yClamped) * 100;
-            if (model.points[i] == this.model.gapPoint)
+            if (model.points[i] == this.modelTE.gapPoint)
                 result[i] = null;
             else
                 result[i] = thisPoint;

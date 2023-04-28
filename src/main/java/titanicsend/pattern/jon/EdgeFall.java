@@ -131,7 +131,7 @@ public class EdgeFall extends TEPerformancePattern {
     float modelToMapY(LXPoint pt) { return -0.5f + pt.yn;  }
 
     void scanForHappyEdges() {
-         Set<TEEdgeModel> edges = model.getAllEdges();
+         Set<TEEdgeModel> edges = modelTE.getAllEdges();
          int edgeCount = 0;
 
         for (TEEdgeModel edge : edges) {
@@ -161,7 +161,7 @@ public class EdgeFall extends TEPerformancePattern {
     void getLineFromEdge(int index, String id) {
         LXPoint v1,v2;
 
-        HashMap<String,TEEdgeModel> edges = model.edgesById;
+        HashMap<String,TEEdgeModel> edges = modelTE.edgesById;
 
         TEEdgeModel edge = edges.get(id);
         if (edge != null) {

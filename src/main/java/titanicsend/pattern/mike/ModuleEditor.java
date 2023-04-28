@@ -109,7 +109,7 @@ public class ModuleEditor extends TEPattern implements UIDeviceControls<ModuleEd
     this.edgesByModNum = new HashMap<>();
     this.routesByModule = new HashMap<>();
 
-    Scanner s = this.model.loadFile("modules.txt");
+    Scanner s = this.modelTE.loadFile("modules.txt");
 
     int longestGlobalRoute = 0;
     while (s.hasNextLine()) {
@@ -153,7 +153,7 @@ public class ModuleEditor extends TEPattern implements UIDeviceControls<ModuleEd
     } catch (NumberFormatException e) {
       return null;
     }
-    return this.model.vertexesById.getOrDefault(id, null);
+    return this.modelTE.vertexesById.getOrDefault(id, null);
   }
 
   private int getRoutes(String[] tokens, List<List<Link>> routes, List<TEEdgeModel> edges) {
@@ -175,10 +175,10 @@ public class ModuleEditor extends TEPattern implements UIDeviceControls<ModuleEd
         TEEdgeModel edge;
         if (vCurr.id < vNext.id) {
           fwd = true;
-          edge = this.model.edgesById.getOrDefault(vCurr.id + "-" + vNext.id, null);
+          edge = this.modelTE.edgesById.getOrDefault(vCurr.id + "-" + vNext.id, null);
         } else {
           fwd = false;
-          edge = this.model.edgesById.getOrDefault(vNext.id + "-" + vCurr.id, null);
+          edge = this.modelTE.edgesById.getOrDefault(vNext.id + "-" + vCurr.id, null);
         }
         if (edge == null) return -1;
         edges.add(edge);
@@ -235,7 +235,7 @@ public class ModuleEditor extends TEPattern implements UIDeviceControls<ModuleEd
   public void moveDots() {
     this.clearPixels();
     if (phase % 10 < 3) {
-      for (TEEdgeModel edge : this.model.edgesById.values()) {
+      for (TEEdgeModel edge : this.modelTE.edgesById.values()) {
         for (LXPoint point : edge.points) {
           colors[point.index] = LXColor.rgb(150, 150, 150);
         }
@@ -278,7 +278,7 @@ public class ModuleEditor extends TEPattern implements UIDeviceControls<ModuleEd
       }
     }
     phase++;
-    for (TEVertex v : this.model.vertexesById.values()) {
+    for (TEVertex v : this.modelTE.vertexesById.values()) {
       int unassignedEdgeCount = 0;
       for (TEEdgeModel e : v.edges) {
         if (!this.modNumsByEdge.containsKey(e)) unassignedEdgeCount++;

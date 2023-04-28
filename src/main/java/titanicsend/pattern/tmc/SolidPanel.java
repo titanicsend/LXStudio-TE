@@ -32,7 +32,7 @@ public class SolidPanel extends TEPattern {
   @Override
   public void run(double deltaMs) {
     int color = this.color.calcColor();
-    for (LXPoint point : this.model.panelPoints) {
+    for (LXPoint point : this.modelTE.panelPoints) {
       colors[point.index] = color;
     }
   }

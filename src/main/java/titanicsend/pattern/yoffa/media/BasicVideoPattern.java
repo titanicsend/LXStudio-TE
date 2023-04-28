@@ -39,10 +39,10 @@ public class BasicVideoPattern extends TEPattern {
         videoPainter.grabFrame();
         clearColors();
         if (edges.getValueb()) {
-            videoPainter.paint(model.getAllEdges());
+            videoPainter.paint(modelTE.getAllEdges());
         } else {
-            videoPainter.paint(model.getPanelsBySection(TEPanelSection.STARBOARD_AFT));
-            for (TEPanelModel panel : model.getPanelsBySection(TEPanelSection.STARBOARD_FORE)) {
+            videoPainter.paint(modelTE.getPanelsBySection(TEPanelSection.STARBOARD_AFT));
+            for (TEPanelModel panel : modelTE.getPanelsBySection(TEPanelSection.STARBOARD_FORE)) {
                 videoPainter.paint(List.of(panel));
             }
         }

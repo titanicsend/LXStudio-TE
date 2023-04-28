@@ -34,19 +34,19 @@ public class MF64SpiralSquares extends TEMidiFighter64Subpattern {
 
     private VariableSpeedTimer time;
     private float sinT, cosT;
-    private TEWholeModel model;
+    private TEWholeModel modelTE;
     private LXPoint[] pointArray;
 
     private int refCount;
 
     public MF64SpiralSquares(TEMidiFighter64DriverPattern driver) {
         super(driver);
-        this.model = this.driver.getModel();
+        this.modelTE = this.driver.getModelTE();
 
         // get safe list of all pattern points.
-        ArrayList<LXPoint> newPoints = new ArrayList<>(model.points.length);
-        newPoints.addAll(model.edgePoints);
-        newPoints.addAll(model.panelPoints);
+        ArrayList<LXPoint> newPoints = new ArrayList<>(modelTE.points.length);
+        newPoints.addAll(modelTE.edgePoints);
+        newPoints.addAll(modelTE.panelPoints);
         pointArray = newPoints.toArray(new LXPoint[0]);
 
         time = new VariableSpeedTimer();

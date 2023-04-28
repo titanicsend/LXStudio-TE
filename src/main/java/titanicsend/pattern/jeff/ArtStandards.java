@@ -91,7 +91,7 @@ public class ArtStandards extends TEAudioPattern {
         // normalized value which is in 0..1, higher values become less frequent.
         scaledTrebleRatio *= scaledTrebleRatio;
 
-        for (TEEdgeModel edge : model.edgesById.values()) {
+        for (TEEdgeModel edge : modelTE.edgesById.values()) {
             for (LXPoint point : edge.points) {
                 /* This is the point to be careful about computation resources.
                  * Only compute things here that need to vary per-pixel. For this

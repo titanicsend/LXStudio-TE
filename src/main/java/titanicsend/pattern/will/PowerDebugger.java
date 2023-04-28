@@ -161,7 +161,7 @@ public class PowerDebugger extends TEPattern implements UIDeviceControls<PowerDe
             for (Object e : pow2edge.get(powID).toArray()) {
                 String edgeID = (String) e;
                 //TE.log("\tedge=%s", edgeID);
-                TEEdgeModel edge = this.model.edgesById.get(edgeID);
+                TEEdgeModel edge = this.modelTE.edgesById.get(edgeID);
                 for (LXPoint ep : edge.points) {
                     colors[ep.index] = LXColor.WHITE;
                 }
@@ -173,7 +173,7 @@ public class PowerDebugger extends TEPattern implements UIDeviceControls<PowerDe
             for (Object e : pow2panel.get(powID).toArray()) {
                 String panelID = (String) e;
                 //TE.log("\tpanel=%s", panelID);
-                TEPanelModel panel = this.model.panelsById.get(panelID);
+                TEPanelModel panel = this.modelTE.panelsById.get(panelID);
 
                 // should we only partially light this panel?
                 String panelJboxCompositeID = powID + "__" + panelID;
@@ -216,7 +216,7 @@ public class PowerDebugger extends TEPattern implements UIDeviceControls<PowerDe
      * and generated with algorithm to minimize power distribution length/cost.
      */
     private void load() {
-        Scanner s = this.model.loadFile("power_assignments.tsv");
+        Scanner s = this.modelTE.loadFile("power_assignments.tsv");
         int i = 0;
         while (s.hasNextLine()) {
             String line = s.nextLine();
