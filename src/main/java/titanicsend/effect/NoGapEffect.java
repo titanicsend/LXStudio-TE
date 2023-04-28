@@ -10,15 +10,9 @@ import titanicsend.pattern.TEPattern;
 
 @LXCategory("Titanics End")
 public class NoGapEffect extends LXModelEffect<TEWholeModel> {
-
-  public final CompoundParameter logFrequency = 
-    new CompoundParameter("LogSec", 60, 1, 300)
-    .setDescription("Frequency of log entry in seconds")
-    .setExponent(2);
   
   public NoGapEffect(LX lx) {
     super(lx);
-    addParameter("LogSec", this.logFrequency);
   }
   
   @Override
@@ -33,14 +27,13 @@ public class NoGapEffect extends LXModelEffect<TEWholeModel> {
 
   @Override
   protected void run(double deltaMs, double enabledAmount) {
-	// There is only one LXPoint instance for all gap pixels
-	  
-	// Is it modified?
-	boolean modified = colors[this.model.gapPoint.index] != TEPattern.GAP_PIXEL_COLOR;
-	if (modified) {
+    // There is only one LXPoint instance for all gap pixels
+
+    // Is it modified?
+    if (colors[this.model.getGapPointIndex()] != TEPattern.GAP_PIXEL_COLOR) {
       // Fix it
-      colors[this.model.gapPoint.index] = TEPattern.GAP_PIXEL_COLOR;
-	}
+      colors[this.model.getGapPointIndex()] = TEPattern.GAP_PIXEL_COLOR;
+    }
   }
 
 }

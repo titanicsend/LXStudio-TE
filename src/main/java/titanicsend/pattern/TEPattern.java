@@ -182,7 +182,7 @@ public abstract class TEPattern extends LXPattern {
   public void clearPixels() {
     for (LXPoint point : this.model.points) {
       if (this.modelTE.isGapPoint(point)) {
-        colors[this.modelTE.gapPoint.index] = GAP_PIXEL_COLOR;
+        colors[this.modelTE.getGapPointIndex()] = GAP_PIXEL_COLOR;
       } else {
         colors[point.index] = TEColor.TRANSPARENT;
       }
