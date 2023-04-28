@@ -9,7 +9,9 @@ import titanicsend.util.PanelStriper;
 
 public class TEPanelFactory {
   public static TEPanelModel build(
-          String id, TEVertex v0, TEVertex v1, TEVertex v2, TEEdgeModel e0,
+          String id, TEVertex v0, TEVertex v1, TEVertex v2,
+          int startVertexId, int midVertexId,
+          TEEdgeModel e0,
           TEEdgeModel e1, TEEdgeModel e2, String panelType,
           TEStripingInstructions stripingInstructions,
           LXPoint gapPoint, Properties views) {
@@ -29,8 +31,8 @@ public class TEPanelFactory {
         LX.log("Panel " + id + " has no striping instructions; won't render.");
       }
       try {
-        flavor = PanelStriper.stripe(id, v0, v1, v2, stripedPoints,
-                                     stripingInstructions, gapPoint);
+        flavor = PanelStriper.stripe(id, v0, v1, v2, startVertexId, midVertexId,
+                                     stripedPoints, stripingInstructions, gapPoint);
       } catch (Throwable t) {
         LX.log("Problem striping Panel " + id);
         throw t;

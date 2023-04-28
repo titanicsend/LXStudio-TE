@@ -18,6 +18,7 @@ public class PanelStriper {
 
   private static TEVertex[] getStartMidEnd(
           TEVertex v0, TEVertex v1, TEVertex v2,
+          int startVertexId, int midVertexId,
           TEStripingInstructions stripingInstructions) {
     double distance01 = v0.distanceTo(v1);
     double distance02 = v0.distanceTo(v2);
@@ -72,33 +73,27 @@ public class PanelStriper {
     }
 
     if (stripingInstructions != null) {
-      String[] tokens = stripingInstructions.startingEdgeId.split("-");
-      if (tokens.length != 2)
-        throw new IllegalArgumentException("Invalid edge ID [" + stripingInstructions.startingEdgeId + "]");
-      int startId = Integer.parseInt(tokens[0]);
-      int midId = Integer.parseInt(tokens[1]);
-
-      if (v0.id == startId) {
+      if (v0.id == startVertexId) {
         vStart = v0;
         v0 = null;
-      } else if (v1.id == startId) {
+      } else if (v1.id == startVertexId) {
         vStart = v1;
         v1 = null;
-      } else if (v2.id == startId) {
+      } else if (v2.id == startVertexId) {
         vStart = v2;
         v2 = null;
-      } else throw new IllegalArgumentException("Nothing matches " + startId);
+      } else throw new IllegalArgumentException("Nothing matches " + startVertexId);
 
-      if (v0 != null && v0.id == midId) {
+      if (v0 != null && v0.id == midVertexId) {
         vMid = v0;
         v0 = null;
-      } else if (v1 != null && v1.id == midId) {
+      } else if (v1 != null && v1.id == midVertexId) {
         vMid = v1;
         v1 = null;
-      } else if (v2 != null && v2.id == midId) {
+      } else if (v2 != null && v2.id == midVertexId) {
         vMid = v2;
         v2 = null;
-      } else throw new IllegalArgumentException("Nothing matches " + startId);
+      } else throw new IllegalArgumentException("Nothing matches " + startVertexId);
 
       if (v0 == null && v1 == null) vEnd = v2;
       if (v0 == null && v2 == null) vEnd = v1;
@@ -109,10 +104,11 @@ public class PanelStriper {
   }
 
   public static String stripe(String id, TEVertex v0, TEVertex v1, TEVertex v2,
+                              int startVertexId, int midVertexId,
                               List<LXPoint> pointList,
                               TEStripingInstructions stripingInstructions,
                               LXPoint gapPoint) {
-    TEVertex[] startMidEnd = getStartMidEnd(v0, v1, v2, stripingInstructions);
+    TEVertex[] startMidEnd = getStartMidEnd(v0, v1, v2, startVertexId, midVertexId, stripingInstructions);
 
     TEVertex vStart = startMidEnd[0];
     TEVertex vMid = startMidEnd[1];

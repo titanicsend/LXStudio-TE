@@ -95,13 +95,11 @@ mapping = {str(key): str(value) for key, value in mapping_ints.items()}
 assert len(set(mapping.keys())) == len(mapping)
 assert len(set(mapping.values())) == len(mapping)
 
-def change_file(filename, linemapper, skip_first_line):
+def change_file(filename, linemapper):
   fd = open(filename, "r")
   lines = fd.readlines()
   fd.close()
   fd = open("new-" + filename, "w")
-  if skip_first_line:
-    fd.write(lines.pop(0))
   for line in lines:
     fd.write(linemapper(line))
   fd.close()
@@ -135,24 +133,10 @@ def panels_lm(line):
   tokens[1] = map_edge(tokens[1])
   tokens[2] = map_edge(tokens[2])
   tokens[3] = map_edge(tokens[3])
-  return "\t".join(tokens)
-
-def esp_lm(line):
-  tokens = line.split("\t")
-  tokens[0] = map_edge(tokens[0])
-  tokens[1] = map_edge(tokens[1])
-  return "\t".join(tokens)
-
-def psp_lm(line):
-  tokens = line.split("\t")
-  tokens[1] = map_edge(tokens[1])
-  tokens[2] = map_edge(tokens[2])
-  tokens[3] = map_edge(tokens[3])
-  tokens[8] = map_edge(tokens[8])
+  v0, v1 = tokens[4].split("->")
+  tokens[4] = mapping[v0] + "->" + mapping[v1]
   return "\t".join(tokens)
 
 change_file("vertexes.txt", vertexes_lm, False)
 change_file("edges.txt", edges_lm, False)
 change_file("panels.txt", panels_lm, False)
-change_file("edge_signal_paths.tsv", esp_lm, True)
-change_file("panel_signal_paths.tsv", psp_lm, True)
