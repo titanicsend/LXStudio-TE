@@ -1,14 +1,11 @@
 precision mediump float;
-
-uniform float energy;
-uniform float glow;
-uniform int lineType;
 float currentGlow;
 
-#define LINE_COUNT 32
+#define LINE_COUNT 52
 uniform vec4[LINE_COUNT] lines;
 
 const float PI = 3.14159265359;
+const float pulseWidth = 0.3;
 
 // fog system borrowed from phasers.fs
  float rand(vec2 p) {
@@ -30,7 +27,7 @@ const float PI = 3.14159265359;
  float fbm(vec2 p) {
      float a = 1.0;  // 0.5;
      float r = 0.0;
-     for (int i = 0; i < 6; i++) {
+     for (int i = 0; i < 5; i++) {
          r += a*noise(p);
          a *= 0.5;
          p *= 2.0;
@@ -50,67 +47,33 @@ float corona(vec2 uv) {
 }
 
 // from fabrice neyret: makes interesting, pointy-ended lines
-float glowline1(vec2 U, vec4 seg) {
+float glowline(vec2 U, vec4 seg) {
     seg.xy -= U; seg.zw -= U;
-    float a = mod ( ( atan(seg.y,seg.x) - atan(seg.w,seg.z) ) / PI, 2.);  
-    return pow(min( a, 2.-a ),currentGlow/8.);
-}
-
-// normal 2D distance-from-line-segment function
-float glowline2(vec2 p, vec4 seg) {
-    vec2 ld = seg.xy - seg.zw;
-    vec2 pd = p - seg.zw;
-    
-    float bri = 1. - length(pd - ld*clamp( dot(pd, ld)/dot(ld, ld), 0.0, 1.0) );    
-    return pow(bri,currentGlow);
-}
-
-// draw antialiased, but not exactly glowing line segment
-float glowline3(vec2 p, vec4 seg) {
-    float r = (200.-currentGlow) / 10000.;
-    vec2 g = seg.zw - seg.xy;
-    vec2 h = p - seg.xy;
-    float d = length(h - g * clamp(dot(g, h) / dot(g,g), 0.0, 1.0));
-	return smoothstep(r, 0.5*r, d);
+    float a = mod ( ( atan(seg.y,seg.x) - atan(seg.w,seg.z) ) / PI, 2.);
+    return pow(min( a, 2.-a ),currentGlow/6.);
 }
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
-    int i;
+    // normalize coordinates
+    vec2 uv = -1. + 2. * fragCoord / iResolution.xy;
+    uv.x *= iResolution.x / iResolution.y;
+    uv *= 0.5;
 
-    // normalize coords to range -0.5 to 0.5
-    vec2 uv = fragCoord.xy / iResolution.xy - .5;
-     
+    // gentle music reactivity - traveling wave moves upward with beat
+    currentGlow = abs(beat - (0.5 + uv.y));
+    currentGlow = (currentGlow <= pulseWidth) ? (pulseWidth - currentGlow) / pulseWidth : 0.0;
+    currentGlow = iScale - (iScale * iWow1  * currentGlow);
+
+    // draw some line segments
     vec3 color = vec3(0.0);
     float alpha = 0.0;
     float bri = 0.0;
     float fog = corona(uv);
 
-    // gentle music reactivity
-    currentGlow = glow - ((glow/2.) * energy * (bassLevel));
-    
-    // draw some line segments
-    int segNo = 0;
-    if (lineType == 0) {
-      for (i = 0; i < LINE_COUNT; i++) {
-         bri = glowline1( uv, lines[i]);
-         color += fog * bri * iColorRGB;
-         alpha += bri;
-      }
-    }
-    else if (lineType == 1) {
-      for (i = 0; i < LINE_COUNT; i++) {
-         bri = glowline2( uv, lines[i]);
-         color += fog * bri * iColorRGB;
-         alpha += bri;
-      }
-    }
-    else {
-      for (i = 0; i < LINE_COUNT; i++) {
-         bri = glowline3( uv, lines[i]);
-         // this one gets a little extra fog contrast
-         color += fog * fog * bri * iColorRGB;
-         alpha += bri;
-      }
+    for (int i = 0; i < LINE_COUNT; i++) {
+       bri = glowline( uv, lines[i]);
+       color += fog * bri * mix(iColorRGB,iColor2RGB,iWow2 * fract(bri));
+       alpha += bri;
     }
 
     fragColor = vec4(color,alpha);

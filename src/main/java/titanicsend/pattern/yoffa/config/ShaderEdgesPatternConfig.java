@@ -27,18 +27,6 @@ public class ShaderEdgesPatternConfig {
     }
 
     @LXCategory("Native Shaders Edges")
-    public static class ElectricEdges extends ConstructedPattern {
-        public ElectricEdges(LX lx) {
-            super(lx);
-        }
-        @Override
-        protected List<PatternEffect> createEffects() {
-            return List.of(new NativeShaderPatternEffect("electric.fs",
-                    PatternTarget.allEdgesAsCanvas(this)));
-        }
-    }
-
-    @LXCategory("Native Shaders Edges")
     public static class NeonRipplesEdges extends ConstructedPattern {
         public NeonRipplesEdges(LX lx) {
             super(lx);
