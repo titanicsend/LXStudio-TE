@@ -3,20 +3,13 @@ package titanicsend.effect;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXParameter;
-import heronarts.lx.transform.LXProjection;
-import heronarts.lx.transform.LXVector;
 import titanicsend.model.TEEdgeModel;
-import titanicsend.model.TEPanelModel;
-import titanicsend.util.TEColor;
-
-import java.util.ArrayList;
 
 @LXCategory(LXCategory.TEXTURE)
-public class EdgeSieve extends BasicEffect {
+public class EdgeSieve extends TEEffect {
     private final DiscreteParameter gap = new DiscreteParameter("Gap", 0, 0, 11)
             .setDescription("Number of off pixels between on pixels");
     private final DiscreteParameter length = new DiscreteParameter("Length", 1, 1, 7)
@@ -39,7 +32,7 @@ public class EdgeSieve extends BasicEffect {
     @Override
     protected void run(double deltaMs, double enabledAmount) {
         if (enabledAmount > 0) {
-            for (TEEdgeModel edge : this.model.edgesById.values()) {
+            for (TEEdgeModel edge : this.modelTE.edgesById.values()) {
                 for (TEEdgeModel.Point point : edge.points) {
                     if (Math.floorMod(point.i - offset, runLength) >= length.getValuei()) {
                         colors[point.index] = LXColor.BLACK;

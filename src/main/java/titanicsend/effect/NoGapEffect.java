@@ -3,14 +3,11 @@ package titanicsend.effect;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.LXComponent;
-import heronarts.lx.effect.LXModelEffect;
-import heronarts.lx.parameter.CompoundParameter;
-import titanicsend.model.TEWholeModel;
 import titanicsend.pattern.TEPattern;
 
 @LXCategory("Titanics End")
-public class NoGapEffect extends LXModelEffect<TEWholeModel> {
-  
+public class NoGapEffect extends TEEffect {
+
   public NoGapEffect(LX lx) {
     super(lx);
   }
@@ -28,11 +25,10 @@ public class NoGapEffect extends LXModelEffect<TEWholeModel> {
   @Override
   protected void run(double deltaMs, double enabledAmount) {
     // There is only one LXPoint instance for all gap pixels
-
     // Is it modified?
-    if (colors[this.model.getGapPointIndex()] != TEPattern.GAP_PIXEL_COLOR) {
+    if (colors[this.modelTE.getGapPointIndex()] != TEPattern.GAP_PIXEL_COLOR) {
       // Fix it
-      colors[this.model.getGapPointIndex()] = TEPattern.GAP_PIXEL_COLOR;
+      colors[this.modelTE.getGapPointIndex()] = TEPattern.GAP_PIXEL_COLOR;
     }
   }
 

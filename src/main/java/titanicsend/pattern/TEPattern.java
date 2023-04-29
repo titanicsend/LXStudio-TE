@@ -79,7 +79,7 @@ public abstract class TEPattern extends LXPattern {
 	// time. If this call was truly necessary, it will need to be refactored to happen elsewhere
     // this.clearPixels();
 
-    this.modelTE = (TEWholeModel) lx.getModel(); 
+    this.modelTE = (TEWholeModel) lx.getModel();
 
     this.sua = this.modelTE.panelsById.get("SUA");
     this.sdc = this.modelTE.panelsById.get("SDC");
