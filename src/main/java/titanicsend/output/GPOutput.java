@@ -5,7 +5,6 @@ import heronarts.lx.color.LXDynamicColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.output.LXOutput;
 import titanicsend.app.GigglePixelBroadcaster;
-import titanicsend.app.TEApp;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
 import java.util.ArrayList;
@@ -14,8 +13,11 @@ import java.util.List;
 public class GPOutput extends LXOutput {
   private GigglePixelBroadcaster broadcaster;
 
+  protected final TEWholeModel modelTE;
+
   public GPOutput(LX lx, GigglePixelBroadcaster broadcaster) {
     super(lx);
+    this.modelTE = (TEWholeModel) lx.getModel();
     this.broadcaster = broadcaster;
   }
   
@@ -32,10 +34,8 @@ public class GPOutput extends LXOutput {
     // By default, it will pick a point in the middle of SUA and SDC panels and
     // a point in the middle of one of each of their edges. 
 
-    TEWholeModel model = TEApp.wholeModel;
-    
-    TEPanelModel sua = model.panelsById.get("SUA");
-    TEPanelModel sdc = model.panelsById.get("SDC");
+    TEPanelModel sua = this.modelTE.panelsById.get("SUA");
+    TEPanelModel sdc = this.modelTE.panelsById.get("SDC");
 
     if (sua != null) {
       int halfway = sua.points.length / 2;
