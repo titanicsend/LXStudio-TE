@@ -21,11 +21,11 @@ public class MF64FlashPattern extends TEMidiFighter64Subpattern {
   };
   private int flashColor = TRANSPARENT;
   private boolean flashPending = true;
-  private TEWholeModel model;
+  private TEWholeModel modelTE;
 
   public MF64FlashPattern(TEMidiFighter64DriverPattern driver) {
     super(driver);
-    this.model = this.driver.getModel();
+    this.modelTE = this.driver.getModelTE();
   }
 
   @Override
@@ -41,10 +41,10 @@ public class MF64FlashPattern extends TEMidiFighter64Subpattern {
   }
 
   private void paintAll(int colors[], int color) {
-    for (LXPoint point : this.model.panelPoints) {
+    for (LXPoint point : this.modelTE.panelPoints) {
       colors[point.index] = color;
     }
-    for (LXPoint point : this.model.edgePoints) {
+    for (LXPoint point : this.modelTE.edgePoints) {
       colors[point.index] = color;
     }
   }

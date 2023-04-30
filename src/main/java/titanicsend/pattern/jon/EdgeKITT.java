@@ -76,7 +76,7 @@ public class EdgeKITT extends TEAudioPattern {
 // From a discussion of frame buffer-less, multidimensional KITT patterns
 // on the Pixelblaze forum.
 // https://forum.electromage.com/t/kitt-without-arrays/1219
-        for (TEEdgeModel edge : model.getAllEdges()) {
+        for (TEEdgeModel edge : modelTE.getAllEdges()) {
             for (TEEdgeModel.Point point : edge.points) {
 
                 float x = 0.5f * point.frac;

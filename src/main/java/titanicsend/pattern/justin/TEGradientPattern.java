@@ -140,7 +140,11 @@ public class TEGradientPattern extends TEPerformancePattern {
         .translate(-.5f, -.5f, -.5f);
     });
 
-    for (LXPoint p : model.points) {
+    for (LXPoint p : this.model.points) {
+      if (this.modelTE.isGapPoint(p)) {
+        continue;
+      }
+
       final float xn =
         p.xn * this.transform.m11 +
         p.yn * this.transform.m12 +

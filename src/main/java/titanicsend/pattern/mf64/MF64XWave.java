@@ -31,7 +31,7 @@ public class MF64XWave extends TEMidiFighter64Subpattern {
     double time;
     double startTime;
     static final float beatCount = 2f;
-    private TEWholeModel model;
+    private TEWholeModel modelTE;
     private ButtonColorMgr colorMap;
 
     @Override
@@ -52,17 +52,17 @@ public class MF64XWave extends TEMidiFighter64Subpattern {
     }
 
     private void clearAllPoints(int[] colors) {
-        for (LXPoint point : model.panelPoints) {
+        for (LXPoint point : modelTE.panelPoints) {
             colors[point.index] = TRANSPARENT;
         }
-        for (LXPoint point : model.edgePoints) {
+        for (LXPoint point : modelTE.edgePoints) {
             colors[point.index] = TRANSPARENT;
         }
     }
 
     public MF64XWave(TEMidiFighter64DriverPattern driver) {
         super(driver);
-        this.model = this.driver.getModel();
+        this.modelTE = this.driver.getModelTE();
         colorMap = new ButtonColorMgr();
     }
 
@@ -94,7 +94,7 @@ public class MF64XWave extends TEMidiFighter64Subpattern {
         float lightWave = movement;
 
         // do one wave on the panels
-        for (LXPoint point : model.panelPoints) {
+        for (LXPoint point : modelTE.panelPoints) {
             float dist = 1f - Math.abs(point.zn - lightWave);
             dist = dist * dist;
 
@@ -107,7 +107,7 @@ public class MF64XWave extends TEMidiFighter64Subpattern {
         lightWave = 1 - movement;
 
         // and another on the edges
-        for (LXPoint point : model.edgePoints) {
+        for (LXPoint point : modelTE.edgePoints) {
             float dist = 1f - Math.abs(point.zn - lightWave);
             dist = dist * dist;
 

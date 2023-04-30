@@ -19,6 +19,10 @@ public class TESolidPattern extends TEPerformancePattern {
     int color1 = calcColor();
     
     for (LXPoint p : getModel().getPoints()) {
+      if (this.modelTE.isGapPoint(p)) {
+        continue;
+      }
+
       colors[p.index] = color1;      
     }
   }

@@ -55,7 +55,7 @@ public class Fire extends TEPattern {
         }
 
         for (LXPoint point : model.points) {
-            if (point != this.model.gapPoint) colors[point.index] = color(point);
+            if (!this.modelTE.isGapPoint(point)) colors[point.index] = color(point);
         }
     }
 
@@ -80,17 +80,17 @@ public class Fire extends TEPattern {
     }
 
     private int color(LXPoint point) {
-        int row = (int) ((point.y - model.boundaryPoints.minYBoundaryPoint.y) / ROW_HEIGHT);
-        int column = (int) ((point.z - model.boundaryPoints.minZBoundaryPoint.z) / COLUMN_WIDTH);
+        int row = (int) ((point.y - modelTE.boundaryPoints.minYBoundaryPoint.y) / ROW_HEIGHT);
+        int column = (int) ((point.z - modelTE.boundaryPoints.minZBoundaryPoint.z) / COLUMN_WIDTH);
         return gradient[buffer[row][column]];
     }
 
     private int calculateRows() {
-        return (int) ((model.boundaryPoints.maxYBoundaryPoint.y - model.boundaryPoints.minYBoundaryPoint.y) / ROW_HEIGHT) + 1;
+        return (int) ((modelTE.boundaryPoints.maxYBoundaryPoint.y - modelTE.boundaryPoints.minYBoundaryPoint.y) / ROW_HEIGHT) + 1;
     }
 
     private int calculateColumns() {
-        return (int) ((model.boundaryPoints.maxZBoundaryPoint.z - model.boundaryPoints.minZBoundaryPoint.z) / COLUMN_WIDTH) + 1;
+        return (int) ((modelTE.boundaryPoints.maxZBoundaryPoint.z - modelTE.boundaryPoints.minZBoundaryPoint.z) / COLUMN_WIDTH) + 1;
     }
 
     private int[] calculateGradient(int middle, int steps) {

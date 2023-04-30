@@ -48,17 +48,17 @@ public class PatternTarget {
     }
 
     public PatternTarget addPanelSectionAsCanvas(TEPanelSection section) {
-        return addModelsAsOneCanvas(pattern.getModel().getPanelsBySection(section));
+        return addModelsAsOneCanvas(pattern.getModelTE().getPanelsBySection(section));
     }
 
     public PatternTarget addPanelSectionAsIndividualCanvases(TEPanelSection section) {
-        return addModelsWithIndividualCanvases(pattern.getModel().getPanelsBySection(section));
+        return addModelsWithIndividualCanvases(pattern.getModelTE().getPanelsBySection(section));
     }
 
     public static PatternTarget allPointsAsCanvas(TEPerformancePattern pattern) {
         ArrayList<LXPoint> points = new ArrayList<>();
-        points.addAll(pattern.getModel().panelPoints);
-        points.addAll(pattern.getModel().edgePoints);
+        points.addAll(pattern.getModelTE().panelPoints);
+        points.addAll(pattern.getModelTE().edgePoints);
 
         PatternTarget pt = new PatternTarget(pattern);
         pt.addPointsAsCanvas(points);
@@ -66,15 +66,15 @@ public class PatternTarget {
     }
 
     public static PatternTarget allEdgesAsCanvas(TEPerformancePattern pattern) {
-        return new PatternTarget(pattern,TEPattern.ColorType.PRIMARY).addPointsAsCanvas(pattern.getModel().edgePoints);
+        return new PatternTarget(pattern,TEPattern.ColorType.PRIMARY).addPointsAsCanvas(pattern.getModelTE().edgePoints);
     }
 
     public static PatternTarget allPanelsAsCanvas(TEPerformancePattern pattern) {
-        return new PatternTarget(pattern).addPointsAsCanvas(pattern.getModel().panelPoints);
+        return new PatternTarget(pattern).addPointsAsCanvas(pattern.getModelTE().panelPoints);
     }
 
     public static PatternTarget allPanelsAsIndividual(TEPerformancePattern pattern) {
-        return new PatternTarget(pattern).addModelsWithIndividualCanvases(pattern.getModel().getAllPanels());
+        return new PatternTarget(pattern).addModelsWithIndividualCanvases(pattern.getModelTE().getAllPanels());
     }
 
     public static PatternTarget doubleLargeCanvas(TEPerformancePattern pattern) {

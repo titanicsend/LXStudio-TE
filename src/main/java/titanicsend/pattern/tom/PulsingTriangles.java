@@ -58,7 +58,7 @@ public class PulsingTriangles extends TEPattern {
         addParameter("tempoSync", this.tempoSync);
         addParameter("tempoLock", this.tempoLock);
         addParameter("rate", this.rate);
-        pointMap = buildPointMap(model.panelsById);
+        pointMap = buildPointMap(modelTE.panelsById);
     }
 
     public void run(double deltaMs) {
@@ -66,7 +66,7 @@ public class PulsingTriangles extends TEPattern {
 
         int triangleColor = this.color.calcColor();
 
-        for (Map.Entry<String, TEPanelModel> entry : model.panelsById.entrySet()) {
+        for (Map.Entry<String, TEPanelModel> entry : modelTE.panelsById.entrySet()) {
             LXPoint[][] panelPoints = pointMap.get(entry.getKey());
             int litIndex = (int) (phase * (panelPoints.length - 1));
             LXPoint[] litSection = panelPoints[litIndex];

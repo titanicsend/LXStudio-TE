@@ -19,7 +19,7 @@ public class Checkers extends TEPerformancePattern {
     addCommonControls();
 
     this.panelGroup = new HashMap<>();
-    List<TEPanelModel> queue = new ArrayList<>(model.panelsById.values());
+    List<TEPanelModel> queue = new ArrayList<>(modelTE.panelsById.values());
     while (!queue.isEmpty()) {
       TEPanelModel panel = queue.remove(0);
       if (!this.panelGroup.containsKey(panel)) {
@@ -49,7 +49,7 @@ public class Checkers extends TEPerformancePattern {
       int panelGroup = entry.getValue();
       int rgb = panelGroup == 0 ? color1 : color2;
       for (LXPoint point : panel.points) {
-        if (model.isGapPoint(point)) continue;
+        if (modelTE.isGapPoint(point)) continue;
         colors[point.index] = rgb;
       }
     }

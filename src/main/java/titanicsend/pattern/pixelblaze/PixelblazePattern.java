@@ -75,10 +75,10 @@ public abstract class PixelblazePattern extends TEPerformancePattern {
   private LXPoint[] getModelPoints() {
     ArrayList<LXPoint> newPoints = new ArrayList<>(model.points.length);
     if (enableEdges.getValueb()) {
-      newPoints.addAll(model.edgePoints);
+      newPoints.addAll(modelTE.edgePoints);
     }
     if (enablePanels.getValueb()) {
-      newPoints.addAll(model.panelPoints);
+      newPoints.addAll(modelTE.panelPoints);
     }
     return newPoints.toArray(new LXPoint[0]);
   }

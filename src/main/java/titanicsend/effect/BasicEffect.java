@@ -21,13 +21,10 @@ package titanicsend.effect;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.effect.LXEffect;
-import heronarts.lx.effect.LXModelEffect;
 import heronarts.lx.model.LXPoint;
-import titanicsend.model.TEWholeModel;
 
 @LXCategory(LXCategory.TEST)
-public class BasicEffect extends LXModelEffect<TEWholeModel> {
+public class BasicEffect extends TEEffect {
 
   public BasicEffect(LX lx) {
     super(lx);
