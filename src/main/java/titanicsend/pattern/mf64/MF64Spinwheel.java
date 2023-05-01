@@ -36,12 +36,12 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
     long seed;
     Random prng;
 
-    private TEWholeModel model;
+    private TEWholeModel modelTE;
     LXVector panelCenter;
 
     public MF64Spinwheel(TEMidiFighter64DriverPattern driver) {
         super(driver);
-        this.model = this.driver.getModel();
+        this.modelTE = this.driver.getModelTE();
 
         this.active = false;
         this.stopRequest = false;
@@ -144,7 +144,7 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
         prng.setSeed(seed);
         int colorIndex = 0;
         int col;
-        for (TEPanelModel panel : model.getAllPanels()) {
+        for (TEPanelModel panel : modelTE.getAllPanels()) {
 
             // exclude 4 front and back panels because x vs.z gets too weird
             // for radial math without time-consuming adjustments

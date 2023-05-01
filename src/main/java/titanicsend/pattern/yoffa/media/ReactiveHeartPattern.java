@@ -40,8 +40,8 @@ public class ReactiveHeartPattern extends TEAudioPattern {
         double scaledRatio = 1 + scaledTrebleRatio*2;
 
         videoPainter.grabFrame();
-        videoPainter.paint(model.getPanelsBySection(TEPanelSection.STARBOARD_AFT), scaledRatio);
-        for (TEPanelModel panel : model.getPanelsBySection(TEPanelSection.STARBOARD_FORE)) {
+        videoPainter.paint(modelTE.getPanelsBySection(TEPanelSection.STARBOARD_AFT), scaledRatio);
+        for (TEPanelModel panel : modelTE.getPanelsBySection(TEPanelSection.STARBOARD_FORE)) {
             videoPainter.paint(List.of(panel), scaledRatio);
         }
     }

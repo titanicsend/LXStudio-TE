@@ -24,13 +24,13 @@ public class BrightScreen extends TEPattern {
     public void run(double deltaMs) {
         int color = this.color.calcColor();
 
-        for (TEEdgeModel edge : model.edgesById.values()) {
+        for (TEEdgeModel edge : modelTE.edgesById.values()) {
             for (LXPoint point : edge.points) {
                 colors[point.index] = color;
             }
         }
 
-        for (TEPanelModel panel : model.panelsById.values()) {
+        for (TEPanelModel panel : modelTE.panelsById.values()) {
             for (LXPoint point : panel.points) {
                 colors[point.index] = color;
             }

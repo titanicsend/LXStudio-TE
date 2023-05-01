@@ -84,7 +84,7 @@ public class EdgeRunner extends TEPattern {
     this.spawner.fire();
     this.moveNumber = 0;
     this.panelData = new HashMap<>();
-    for (TEPanelModel panel : model.panelsById.values()) {
+    for (TEPanelModel panel : modelTE.panelsById.values()) {
       if (!panel.panelType.equals(TEPanelModel.LIT)) continue;
       int numEdgePixels = panel.e0.points.length + panel.e1.points.length + panel.e2.points.length;
       PanelData pd = new PanelData(numEdgePixels);
@@ -100,7 +100,7 @@ public class EdgeRunner extends TEPattern {
       pd.litEdgePixels = 0;
     }
 
-    for (TEVertex v : model.vertexesById.values()) {
+    for (TEVertex v : modelTE.vertexesById.values()) {
       // Initialize all vertexes to gray
       v.virtualColor = new TEVirtualColor(50, 50, 50, 255);
     }
@@ -194,8 +194,8 @@ public class EdgeRunner extends TEPattern {
       }
       if (this.runners.size() < this.numRunners.getValuei()) {
         // Spawn from Edge 37-44, if it exists, or else just whatever comes first
-        TEEdgeModel edge = model.edgesById.get("37-44");
-        if (edge == null) edge = model.edgesById.values().iterator().next();
+        TEEdgeModel edge = modelTE.edgesById.get("37-44");
+        if (edge == null) edge = modelTE.edgesById.values().iterator().next();
         this.runners.add(new Runner(edge));
       }
     }
@@ -204,7 +204,7 @@ public class EdgeRunner extends TEPattern {
     int trailColor = this.trailColor.calcColor();
     int fillColor = this.fillColor.calcColor();
 
-    for (LXPoint point : model.edgePoints) {
+    for (LXPoint point : modelTE.edgePoints) {
       int lastVisit = this.pointLastVisit.getOrDefault(point, -1);
       int color;
       if (lastVisit == -1) {
@@ -224,7 +224,7 @@ public class EdgeRunner extends TEPattern {
       }
       colors[point.index] = color;
     }
-    for (Map.Entry<String, TEPanelModel> entry : model.panelsById.entrySet()) {
+    for (Map.Entry<String, TEPanelModel> entry : modelTE.panelsById.entrySet()) {
       TEPanelModel panel = entry.getValue();
       if (panel.panelType.equals(TEPanelModel.SOLID)) {
         assert panel.points.length == 1;

@@ -58,7 +58,7 @@ public class EdgeSymmetry extends TEPattern {
         addParameter("width", fracFromZCenter);
         addParameter("height", height);
         addParameter("mask", maskMode);
-        edgeGroupsByZ = new ArrayList<>(model.edgesBySymmetryGroup.keySet());
+        edgeGroupsByZ = new ArrayList<>(modelTE.edgesBySymmetryGroup.keySet());
 
         /* Arrange from L-R (aft-fore, axis Z) for index-based sweep.
          * Accessing this by index is mostly just for learning purposes.
@@ -96,7 +96,7 @@ public class EdgeSymmetry extends TEPattern {
 
         // Select the range of symmetry groups by initial z index and groupCount
         // Allowing the range to start and end outside the real set of edges
-        int idxRange = model.edgesBySymmetryGroup.size() + groupCount;
+        int idxRange = modelTE.edgesBySymmetryGroup.size() + groupCount;
         int from = (int) (fracFromZCenter.getNormalized() * idxRange) - groupCount;
         int to =  from + groupCount;
         List<LXVector> selectedEdgeGroups =
@@ -105,7 +105,7 @@ public class EdgeSymmetry extends TEPattern {
 
         // Find all applicable edges as a list. Filter by Y coordinate (height) and
         // flatten the Hashmap's values to get a combined list of all selected edges
-        litEdges = model.edgesBySymmetryGroup.entrySet().stream()
+        litEdges = modelTE.edgesBySymmetryGroup.entrySet().stream()
                 .filter(e -> selectedEdgeGroups.contains(e.getKey()))
                 .filter(e -> e.getKey().y / model.yMax < height.getValue())
                 .map(Map.Entry::getValue)

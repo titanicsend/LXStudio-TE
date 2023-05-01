@@ -2,10 +2,6 @@ package titanicsend.effect;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.color.LXColor;
-import heronarts.lx.effect.LXEffect;
-import heronarts.lx.model.LXPoint;
-import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.transform.LXProjection;
@@ -13,10 +9,9 @@ import heronarts.lx.transform.LXVector;
 import titanicsend.model.TEPanelModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @LXCategory(LXCategory.TEST)
-public class Kaleidoscope extends BasicEffect {
+public class Kaleidoscope extends TEEffect {
     private final DiscreteParameter segments = new DiscreteParameter("Segments", 6, 2, 12);
     private final CompoundParameter startAngle = new CompoundParameter("Start Angle", 0, 0, 2 * Math.PI);
 
@@ -34,7 +29,7 @@ public class Kaleidoscope extends BasicEffect {
     protected void run(double deltaMs, double enabledAmount) {
         if (enabledAmount > 0) {
             double segmentAngle = 2 * Math.PI / segments.getValue();
-            for (TEPanelModel panel : this.model.panelsById.values()) {
+            for (TEPanelModel panel : this.modelTE.panelsById.values()) {
                 if (!panel.panelType.equals(TEPanelModel.LIT)) {
                     continue;
                 }

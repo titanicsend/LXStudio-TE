@@ -33,17 +33,17 @@ public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
     static final float rocketSize = 0.045f;
     static final float rocketPos = 1f - rocketSize;
     static final float beatCount = 2f;
-    private TEWholeModel model;
+    private TEWholeModel modelTE;
     private LXPoint[] pointArray;
     private ButtonColorMgr colorMap;
 
     public MF64EdgeSparks(TEMidiFighter64DriverPattern driver) {
         super(driver);
-        this.model = this.driver.getModel();
+        this.modelTE = this.driver.getModelTE();
 
         // get safe list of all pattern points.
-        ArrayList<LXPoint> newPoints = new ArrayList<>(model.points.length);
-        newPoints.addAll(model.edgePoints);
+        ArrayList<LXPoint> newPoints = new ArrayList<>(modelTE.points.length);
+        newPoints.addAll(modelTE.edgePoints);
         pointArray = newPoints.toArray(new LXPoint[0]);
         colorMap = new ButtonColorMgr();
         startTime = 0;

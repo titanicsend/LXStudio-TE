@@ -20,7 +20,7 @@ import titanicsend.util.TE;
 public class TEWholeModel extends LXModel {
   public String subdir;
   public String name;
-  public LXPoint gapPoint;  // Used for pixels that shouldn't actually be lit
+  private final LXPoint gapPoint;  // Used for pixels that shouldn't actually be lit
   public HashMap<Integer, TEVertex> vertexesById;
   public HashMap<String, TEEdgeModel> edgesById;
   public HashMap<LXVector, List<TEEdgeModel>> edgesBySymmetryGroup;
@@ -126,6 +126,14 @@ public class TEWholeModel extends LXModel {
            this.points.length + " pixels");
   }
 
+  /**
+   * In Gap Pixel comparisons only the point index should be used,
+   * because a LXPoint instance may be a copy of the original gap point.
+   */
+  public int getGapPointIndex() {
+    return this.gapPoint.index;
+  }
+
   public boolean isEdgePoint(int index) {
     return index >= edgePoints.get(0).index && index <= edgePoints.get(edgePoints.size()-1).index;
   }
@@ -135,7 +143,7 @@ public class TEWholeModel extends LXModel {
   }
   
   public boolean isGapPoint(LXPoint p) {
-    return p.equals(this.gapPoint);
+    return p.index == this.gapPoint.index;
   }
 
   /** Builds structures that compute spacial relationships for edges,

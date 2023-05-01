@@ -23,8 +23,8 @@ public class BasicImagePattern extends TEPattern {
 
     @Override
     public void onActive() {
-        eddiePainter.paint(model.getPanelsBySection(TEPanelSection.STARBOARD_AFT));
-        eddiePainter.paint(model.getPanelsBySection(TEPanelSection.STARBOARD_FORE));
+        eddiePainter.paint(modelTE.getPanelsBySection(TEPanelSection.STARBOARD_AFT));
+        eddiePainter.paint(modelTE.getPanelsBySection(TEPanelSection.STARBOARD_FORE));
     }
 
     @Override

@@ -4,8 +4,9 @@ import heronarts.lx.LX;
 import heronarts.lx.Tempo;
 import heronarts.lx.audio.GraphicMeter;
 import heronarts.lx.color.LinkedColorParameter;
+import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
-import heronarts.lx.pattern.LXModelPattern;
+import heronarts.lx.pattern.LXPattern;
 import titanicsend.lx.LXGradientUtils;
 import titanicsend.model.TELaserModel;
 import titanicsend.model.TEPanelModel;
@@ -18,9 +19,15 @@ import java.util.*;
 import static java.lang.Math.PI;
 import static java.lang.Math.sin;
 
-public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
+public abstract class TEPattern extends LXPattern {
   private final TEPanelModel sua;
   private final TEPanelModel sdc;
+
+  protected final TEWholeModel modelTE;
+
+  public TEWholeModel getModelTE() {
+    return this.modelTE;
+  }
 
   public enum TEGradient {
     FULL_PALETTE("Full Palette"),
@@ -71,9 +78,11 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
 	// NOTE(mcslee): in newer LX version, colors array does not exist at instantiation
 	// time. If this call was truly necessary, it will need to be refactored to happen elsewhere
     // this.clearPixels();
-	  
-    this.sua = this.model.panelsById.get("SUA");
-    this.sdc = this.model.panelsById.get("SDC");
+
+    this.modelTE = (TEWholeModel) lx.getModel();
+
+    this.sua = this.modelTE.panelsById.get("SUA");
+    this.sdc = this.modelTE.panelsById.get("SDC");
 
     this.primaryGradient.setNumStops(3);
     this.secondaryGradient.setNumStops(3);
@@ -85,6 +94,13 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
   public void onInactive() {
     clearPixels();
     super.onInactive();
+  }
+
+  @Override
+  protected void onModelChanged(LXModel model) {
+    // If the View changes, clear all pixels because some might not be used by the pattern
+    clearPixels();
+    super.onModelChanged(model);
   }
 
 
@@ -165,8 +181,8 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
   // Compare to LXLayeredComponent's clearColors(), which is declared final.
   public void clearPixels() {
     for (LXPoint point : this.model.points) {
-      if (this.model.isGapPoint(point)) {
-        colors[this.model.gapPoint.index] = GAP_PIXEL_COLOR;
+      if (this.modelTE.isGapPoint(point)) {
+        colors[this.modelTE.getGapPointIndex()] = GAP_PIXEL_COLOR;
       } else {
         colors[point.index] = TEColor.TRANSPARENT;
       }
@@ -175,7 +191,7 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
 
   // For patterns that only want to operate on edges
   public void setEdges(int color) {
-    for (LXPoint point : this.model.edgePoints) {
+    for (LXPoint point : this.modelTE.edgePoints) {
       colors[point.index] = color;
     }
   }
@@ -187,12 +203,12 @@ public abstract class TEPattern extends LXModelPattern<TEWholeModel> {
   // their LXPoint color
   // TODO: Return quickly if lasers/etc aren't being used
   public void updateVirtualColors(double deltaMsec) {
-    for (TEPanelModel panel : this.model.panelsById.values()) {
+    for (TEPanelModel panel : this.modelTE.panelsById.values()) {
       if (panel.panelType.equals(TEPanelModel.SOLID)) {
         panel.virtualColor.rgb = colors[panel.points[0].index];
       }
     }
-    for (TELaserModel laser : this.model.lasersById.values()) {
+    for (TELaserModel laser : this.modelTE.lasersById.values()) {
       laser.control.update(deltaMsec);
       laser.color = colors[laser.points[0].index];
     }

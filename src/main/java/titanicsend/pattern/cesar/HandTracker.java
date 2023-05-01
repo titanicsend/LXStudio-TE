@@ -44,9 +44,9 @@ public class HandTracker extends TEPattern {
 
         int color = this.color.calcColor();
 
-        for (TEPanelModel panel : this.model.panelsById.values()) {
+        for (TEPanelModel panel : this.modelTE.panelsById.values()) {
             for (LXPoint point : panel.points) {
-                if (this.model.isGapPoint(point)) continue;
+                if (this.modelTE.isGapPoint(point)) continue;
                 boolean isCloseToZ = Math.abs(Math.floor(point.zn * 100) - z) < 5;
                 boolean isCloseToY = Math.abs(Math.floor(point.yn * 100 * 2) - y) < 10;
                 if (isCloseToZ && isCloseToY) {
