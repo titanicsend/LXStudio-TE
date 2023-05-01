@@ -44,7 +44,7 @@ public class ArcEdges extends TEPerformancePattern {
 
         // NOTE: To add more edges, you need to change LINE_COUNT so the
         // segment buffer will be the right size.
-        CarGeometryPatternTools.getPanelConnectedEdges(model, "^S.*$", saved_lines, LINE_COUNT);
+        CarGeometryPatternTools.getPanelConnectedEdges(getModelTE(), "^S.*$", saved_lines, LINE_COUNT);
     }
 
     // store segment descriptors in our GL line segment buffer.

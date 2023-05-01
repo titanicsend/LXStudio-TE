@@ -60,7 +60,7 @@ public class EdgeFall extends TEPerformancePattern {
         // Select the edges we want to draw. NOTE: To add more edges, you need
         // to change LINE_COUNT so the segment buffer will be the right size. OpenGL
         // is very picky about this!
-        CarGeometryPatternTools.getPanelConnectedEdges(model, "^S.*$",saved_lines, LINE_COUNT);
+        CarGeometryPatternTools.getPanelConnectedEdges(getModelTE(), "^S.*$",saved_lines, LINE_COUNT);
 
         randomizeLineVelocities();
 
