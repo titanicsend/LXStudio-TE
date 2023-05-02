@@ -3,7 +3,6 @@ package titanicsend.app.autopilot;
 import heronarts.lx.LX;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.pattern.LXPattern;
-import titanicsend.app.autopilot.utils.TEMixerUtils;
 import titanicsend.util.TE;
 
 import java.util.*;
@@ -472,7 +471,7 @@ public class TEPatternLibrary {
             for (Map.Entry<TEPhrase, Integer> entry : patternsPerPhrase.entrySet()) {
                 TEPhrase pt = entry.getKey();
                 int count = entry.getValue();
-                TE.log("\tChannel=%s has %d indexed patterns", TEMixerUtils.getChannelNameFromPhraseType(pt), count);
+                TE.log("\tChannel=%s has %d indexed patterns", TEChannelName.getChannelNameFromPhraseType(pt), count);
             }
         }
 
@@ -481,7 +480,7 @@ public class TEPatternLibrary {
             for (Map.Entry<TEPhrase, Integer> entry : missingPatternsPerPhrase.entrySet()) {
                 TEPhrase pt = entry.getKey();
                 int count = entry.getValue();
-                TE.log("\tChannel=%s has %d missing patterns", TEMixerUtils.getChannelNameFromPhraseType(pt), count);
+                TE.log("\tChannel=%s has %d missing patterns", TEChannelName.getChannelNameFromPhraseType(pt), count);
             }
         }
 

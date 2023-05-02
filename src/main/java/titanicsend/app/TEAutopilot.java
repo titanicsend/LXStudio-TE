@@ -11,7 +11,6 @@ import heronarts.lx.osc.OscMessage;
 import heronarts.lx.pattern.LXPattern;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.autopilot.events.TEPhraseEvent;
-import titanicsend.app.autopilot.utils.TEMixerUtils;
 import titanicsend.app.autopilot.utils.TETimeUtils;
 import titanicsend.pattern.will.shaders.MatrixScrolling;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
