@@ -3,17 +3,13 @@ package titanicsend.app;
 import heronarts.lx.LX;
 import heronarts.lx.LXLoopTask;
 import heronarts.lx.Tempo;
-import heronarts.lx.LX.ProjectListener.Change;
 import heronarts.lx.color.LXSwatch;
 import heronarts.lx.mixer.LXChannel;
-import heronarts.lx.mixer.LXGroup;
 import heronarts.lx.osc.OscMessage;
 import heronarts.lx.pattern.LXPattern;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.autopilot.events.TEPhraseEvent;
 import titanicsend.app.autopilot.utils.TETimeUtils;
-import titanicsend.pattern.will.shaders.MatrixScrolling;
-import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.util.TE;
 import titanicsend.util.TEMath;
 
@@ -159,7 +155,6 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
         // this call will also wait for the mixer to be initialized
         curChannel = autoMixer.getChannelByName(curChannelName);
         nextChannel = autoMixer.getChannelByName(nextChannelName);
-//        TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
         autoMixer.setFaderTo(curChannelName, LEVEL_FULL);
         triggerChannel = autoMixer.getChannelByName(TEChannelName.TRIGGERS);
         strobesChannel = autoMixer.getChannelByName(TEChannelName.STROBES);
@@ -456,7 +451,6 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
                 // can play around with the 1.5 exponent to make curve steeper!
                 nextChannelFaderVal = range * Math.pow(estFracCompleted, 1.5) + nextChannelFaderFloorLevel;
                 //TE.log("NextChannel: Setting fader=%s to %f", nextChannelName, nextChannelFaderVal);
-//                TEMixerUtils.setFaderTo(lx, nextChannelName, nextChannelFaderVal);
                 autoMixer.setFaderTo(nextChannelName, nextChannelFaderVal);
             }
 
@@ -483,7 +477,6 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
                     TEMath.EasingFunction.LINEAR_RAMP_DOWN,
                     curPhraseLenBars, 0.0, MISPREDICTED_FADE_OUT_BARS,
                     LEVEL_OFF, LEVEL_MISPREDICTED_FADE_OUT);
-//            TEMixerUtils.setFaderTo(lx, oldNextChannelName, newVal);
             autoMixer.setFaderTo(oldNextChannelName, newVal);
         }
 
@@ -495,12 +488,10 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
                         TEMath.EasingFunction.LINEAR_RAMP_DOWN,
                         curPhraseLenBars, 0.0, PREV_FADE_OUT_BARS,
                         LEVEL_OFF, LEVEL_PREV_FADE_OUT);
-//                TEMixerUtils.setFaderTo(lx, prevChannelName, newVal);
                 autoMixer.setFaderTo(prevChannelName, newVal);
 
             } else if (curPhraseLenBars >= PREV_FADE_OUT_BARS) {
                 //TE.log("FADE PREV: Fading out %s", prevChannelName);
-//                TEMixerUtils.setFaderTo(lx, prevChannelName, LEVEL_OFF);
                 autoMixer.setFaderTo(prevChannelName, LEVEL_OFF);
             }
         }
@@ -527,7 +518,6 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
 	
 	        if (newStrobeChannelVal >= 0) {
 	            //TE.log("Strobes: Setting fader=%s to %f", TEChannelName.STROBES, newStrobeChannelVal);
-//	            TEMixerUtils.setFaderTo(lx, TEChannelName.STROBES, newStrobeChannelVal);
                 autoMixer.setFaderTo(TEChannelName.STROBES, newStrobeChannelVal);
 	        }
 	    }
@@ -547,7 +537,6 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
 	
 	        if (newTriggerChannelVal >= 0) {
 	            //TE.log("Triggers: Setting fader=%s to %f", TEChannelName.TRIGGERS, newTriggerChannelVal);
-//	            TEMixerUtils.setFaderTo(lx, TEChannelName.TRIGGERS, newTriggerChannelVal);
                 autoMixer.setFaderTo(TEChannelName.TRIGGERS, newTriggerChannelVal);
 	        }
 	    }
@@ -631,7 +620,6 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
         }
 
         // clear mixer state
-//        TEMixerUtils.turnDownAllChannels(lx, true);
         autoMixer.turnDownAllChannels(true);
 
         if (isSamePhrase) {
@@ -704,7 +692,6 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
             }
         }
 
-//        TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
         autoMixer.setFaderTo(curChannelName, LEVEL_FULL);
 
         // trigger FX if needed
@@ -745,11 +732,9 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
 
         // make new active patterns
         if (prevPhrase != curPhrase) {
-//            TEMixerUtils.setFaderTo(lx, TEChannelName.STROBES, LEVEL_FULL);
             autoMixer.setFaderTo(TEChannelName.STROBES, LEVEL_FULL);
         }
 
-//        TEMixerUtils.setFaderTo(lx, TEChannelName.TRIGGERS, LEVEL_FULL);
         autoMixer.setFaderTo(TEChannelName.TRIGGERS, LEVEL_FULL);
     }
 

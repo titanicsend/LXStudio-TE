@@ -429,7 +429,6 @@ public class TEPatternLibrary {
         int totalNotFound = 0;
 
         for (TEPatternRecord r : this.patternRecords) {
-//            TEChannelName name = TEMixerUtils.getChannelNameFromPhraseType(r.phraseType);
             TEChannelName name = TEChannelName.getChannelNameFromPhraseType(r.phraseType);
             LXChannel ch = autoMixer.getChannelByName(name);
             if (ch == null)
