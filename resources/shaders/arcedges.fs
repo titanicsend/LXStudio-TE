@@ -1,6 +1,8 @@
 #define LINE_COUNT 52
 uniform vec4[LINE_COUNT] lines;
 
+float sparkAmp;
+
 // Simple fbm noise system, used to generate the noise
 // field we use for electri arcs
 vec2 hash (in vec2 p) {
@@ -41,12 +43,12 @@ float fbm(vec2 pos, float tm) {
 
     aggr /= 1.0 + 0.5 + 0.25 + 0.125;
 
-    return (aggr * 0.5) + 0.5;
+    return sparkAmp * (aggr * 0.5) + 0.5;
 }
 
 // turn the noise field into electric arcs in two colors
 vec3 electrify(vec2 pos, float offset,float direction) {
-    float noiseMag = offset * iWow1;
+    float noiseMag = offset * iWow1 * sparkAmp;
     float time = direction * iTime;
     vec2 f = vec2(0.0, iTime * 0.25*direction);
 
@@ -70,6 +72,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     vec2 uv = -1. + 2. * fragCoord / iResolution.xy;
     uv.x *= iResolution.x / iResolution.y;
     uv *= 0.5;
+
+    // additional voltage when wow trigger is pressed
+    sparkAmp = (iWowTrigger) ? 2 : 1.0;
 
     vec3 finalColor = vec3(0.0);
     for (int i = 0; i < LINE_COUNT; i++) {
