@@ -19,6 +19,7 @@ import static titanicsend.util.TEMath.*;
 @Deprecated //we have native support for shaders now. use NativeShaderPatternEffect
 public abstract class FragmentShaderEffect extends PatternEffect {
     double[][] rotationMatrix;
+    double[] translationFromControls = new double[2];
     int color1 = 0;
     int color2 = 0;
 
@@ -37,6 +38,8 @@ public abstract class FragmentShaderEffect extends PatternEffect {
         color2 = pattern.calcColor2();
 
         double angle = -pattern.getRotationAngleFromSpin();
+        translationFromControls[0] = pattern.getXPos();
+        translationFromControls[1] = pattern.getYPos();
 
         rotationMatrix = new double[][]{
                 {cos(angle), -sin(angle)},
@@ -75,6 +78,10 @@ public abstract class FragmentShaderEffect extends PatternEffect {
         double[] p1 = subtractArrays(point, origin);
         p1 = multiplyVectorByMatrix(p1, rotationMatrix);
         return addArrays(p1, origin);
+    }
+
+    public double[] translate(double[] point) {
+        return addArrays(point,translationFromControls);
     }
 
     public int calcColor() {

@@ -2,6 +2,8 @@ package titanicsend.pattern.yoffa.config;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import heronarts.lx.parameter.CompoundParameter;
+import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.will.shaders.*;
 import titanicsend.pattern.yoffa.effect.*;
 import titanicsend.pattern.yoffa.effect.shaders.*;
@@ -94,6 +96,13 @@ public class OrganicPatternConfig {
         }
         @Override
         protected List<PatternEffect> createEffects() {
+
+            // set ranges for common controls
+            getControls().setRange(TEControlTag.QUANTITY, 0,1,4); // tiling
+            getControls().setRange(TEControlTag.SIZE, 1,0.5,3);     // scale
+            getControls().setRange(TEControlTag.WOW1, 5,1,20);    // iterations (intensity 1)
+            getControls().setRange(TEControlTag.WOW2, 0.005,0.001,0.01); // intensity 2
+
             return List.of(new WaterShader(PatternTarget.allPanelsAsCanvas(this)));
         }
     }
@@ -105,6 +114,13 @@ public class OrganicPatternConfig {
         }
         @Override
         protected List<PatternEffect> createEffects() {
+
+            // set ranges for common controls
+            getControls().setRange(TEControlTag.QUANTITY, 0,1,4); // tiling
+            getControls().setRange(TEControlTag.SIZE, 1,0.5,3);     // scale
+            getControls().setRange(TEControlTag.WOW1, 5,1,20);    // iterations (intensity 1)
+            getControls().setRange(TEControlTag.WOW2, 0.005,0.001,0.01); // intensity 2
+
             return List.of(new WaterShader(PatternTarget.allEdgesAsCanvas(this)));
         }
     }

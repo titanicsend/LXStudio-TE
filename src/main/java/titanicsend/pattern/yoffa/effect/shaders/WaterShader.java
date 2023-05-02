@@ -13,22 +13,8 @@ import static titanicsend.util.TEMath.*;
 //https://www.shadertoy.com/view/MdlXz8
 public class WaterShader extends FragmentShaderEffect {
 
-    public final CompoundParameter tile =
-            new CompoundParameter("Tiling", 0, 1, 4)
-                    .setDescription("");
-
-    public final CompoundParameter speed =
-            new CompoundParameter("Speed", 0.1, 0.1, 10)
-                    .setDescription("");
-
-    public final CompoundParameter intensity =
-            new CompoundParameter("Inten1", 5, 1, 20)
-                    .setDescription("Intensity");
-
-    public final CompoundParameter intensity2 =
-            new CompoundParameter("Inten2", .005, .001, .010)
-                    .setDescription("Intensity but like different though");
     private static final double TAU = 6.28318530718;
+    private static final double[] origin = new double[]{0.5, 0.25};
 
     public WaterShader(PatternTarget target) {
         super(target);
@@ -36,25 +22,30 @@ public class WaterShader extends FragmentShaderEffect {
 
     @Override
     protected double[] getColorForPoint(double[] fragCoordinates, double[] resolution, double timeSeconds) {
-        double time = (timeSeconds * .5+23.0) * 0.25;
-        // uv should be the 0-1 uv of texture...
-        double[] uv = divideArrays(fragCoordinates, resolution);
 
-        double[] p = addToArray(-250, mod(multiplyArray(tile.getValue() * TAU, uv), tile.getValue() * TAU));
+        // normalize coords to 0 to 1 range, then do the translate, scale, rotate thing.
+        double[] uv = divideArrays(fragCoordinates, resolution);
+        uv = translate(uv);
+        uv = multiplyArray(pattern.getSize(), uv);
+        uv = rotate2D(uv, origin);
+
+        double tileFactor = TAU * pattern.getQuantity();
+        double[] p = addToArray(-250, mod(multiplyArray(tileFactor, uv), TAU));
         double[] i = new double[]{p[0], p[1]};
         double c = 1.0;
-        double inten = intensity2.getValue();
+        double inten = pattern.getWow2();
+        double time = timeSeconds * 0.5;
 
-        for (int n = 0; n < intensity.getValue(); n++)
-        {
-            double t = time * (speed.getValue() - (3.5 / (n+1)));
+        for (int n = 0; n < pattern.getWow1(); n++) {
+            double t = time * (1.0 - (3.5 / (n+1)));
             i = addArrays(p, new double[]{cos(t - i[0]) + sin(t + i[1]), sin(t - i[1]) + cos(t + i[0])});
-            c += 1.0/vectorLength(new double[]{p[0] / (sin(i[0]+t)/inten),p[1] / (cos(i[1]+t)/inten)});
+            c += 1.0 / vectorLength(new double[]{p[0] / (sin(i[0] + t) / inten), p[1] / (cos(i[1] + t) / inten)});
         }
-        c /= intensity.getValue();
-        c = 1.17-pow(c, 1.4);
+        c /= pattern.getWow1();
+        c = 1.17 - pow(c, 1.4);
         double colourValue = pow(abs(c), 8.0);
         double[] colour = new double[]{colourValue, colourValue, colourValue};
+
         colour = clamp(addArrays(colour, new double[]{0.0, 0.35, 0.5}), 0.0, 1.0);
 
         return colour;
@@ -62,6 +53,6 @@ public class WaterShader extends FragmentShaderEffect {
 
     @Override
     public Collection<LXParameter> getParameters() {
-        return List.of(tile, speed, intensity, intensity2);
+        return null;
     }
 }
