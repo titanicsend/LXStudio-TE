@@ -28,11 +28,9 @@ import java.util.Calendar;
 import java.util.function.Function;
 
 import heronarts.lx.LX;
-import heronarts.lx.LXLoopTask;
 import heronarts.lx.LXPlugin;
 import heronarts.lx.midi.surface.APC40Mk2;
 import heronarts.lx.midi.surface.MidiFighterTwister;
-import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.pattern.color.GradientPattern;
 import heronarts.lx.pattern.texture.NoisePattern;
@@ -67,7 +65,7 @@ import titanicsend.ui.UITEPerformancePattern;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.util.TE;
 
-public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
+public class TEApp extends PApplet implements LXPlugin {
   private TEWholeModel model;
   static public TEWholeModel wholeModel;
 
@@ -136,19 +134,12 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
     }
   }
 
-  public TEUserInterface.AutopilotComponent autopilotComponent;
-
   @Override
   public void initialize(LX lx) {
     // Here is where you should register any custom components or make modifications
     // to the LX engine or hierarchy. This is also used in headless mode, so note that
     // you cannot assume you are working with an LXStudio class or that any UI will be
     // available.
-
-    // Create autopilot component and register it with the LX engine
-    // so that it can be saved and loaded in project files
-    this.autopilotComponent = new TEUserInterface.AutopilotComponent(lx);
-    lx.engine.registerComponent("autopilot", this.autopilotComponent);
 
     GrandShlomoStation.activateAll(lx, this.model.getGapPointIndex());
 
@@ -259,18 +250,8 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
 
     // create our Autopilot instance, run in general engine loop to
     // ensure performance under load
-    autopilot = new TEAutopilot(lx, library, history);
-    lx.engine.addLoopTask(autopilot);
-
-    // listener to toggle on the autopilot instance's enabled flag
-    LXParameterListener autopilotEnableListener = (p) -> {
-      // only toggle if different!
-      if (autopilot.isEnabled()
-              != this.autopilotComponent.autopilotEnabledToggle.getValueb()) {
-        autopilot.setEnabled(this.autopilotComponent.autopilotEnabledToggle.getValueb());
-      }
-    };
-    this.autopilotComponent.autopilotEnabledToggle.addListener(autopilotEnableListener);
+    this.autopilot = new TEAutopilot(lx, library, history);
+    lx.engine.addLoopTask(this.autopilot);
 
     // create our listener for OSC messages
     this.oscListener = new TEOscListener(lx, autopilot);
@@ -293,8 +274,7 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
 
     GPOutput gpOutput = new GPOutput(lx, this.gpBroadcaster);
     lx.addOutput(gpOutput);
-    
-    lx.addProjectListener(this);
+
   }
 
   private TEPatternLibrary initializePatternLibrary(LX lx) {
@@ -378,7 +358,7 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
     gpui.addToContainer(ui.leftPane.global);
 
     // add autopilot settings UI section
-    new TEUserInterface.AutopilotUISection(ui, autopilotComponent).addToContainer(ui.leftPane.global);
+    new TEUserInterface.AutopilotUISection(ui, this.autopilot).addToContainer(ui.leftPane.global);
 
     // precompile binaries for any new or changed shaders
     ShaderPrecompiler.rebuildCache();
@@ -470,12 +450,5 @@ public class TEApp extends PApplet implements LXPlugin, LX.ProjectListener  {
       PApplet.main("titanicsend.app.TEApp", args);
     }
   }
-  
-	public void projectChanged(File file, Change change) {
-		if (change == Change.TRY || change == Change.NEW) {
-			// Clear for file open
-			this.autopilotComponent.autopilotEnabledToggle.setValue(false);
-		} 
-	}
 
 }
