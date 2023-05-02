@@ -1,11 +1,15 @@
 package titanicsend.app;
 
 import heronarts.lx.LX;
+import heronarts.lx.LXComponent;
 import heronarts.lx.LXLoopTask;
 import heronarts.lx.Tempo;
 import heronarts.lx.color.LXSwatch;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.osc.OscMessage;
+import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.LXParameterListener;
+import heronarts.lx.parameter.BooleanParameter.Mode;
 import heronarts.lx.pattern.LXPattern;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.autopilot.events.TEPhraseEvent;
@@ -17,8 +21,16 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
-    private boolean enabled = false;
+public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectListener {
+
+    public final BooleanParameter enabled =
+        new BooleanParameter("Enabled", false)
+        .setMode(Mode.TOGGLE)
+        .setDescription("AutoVJ On/Off");
+
+    private final LXParameterListener enabledListener = (p) -> {
+      onEnabled(this.enabled.isOn());
+    };
 
     // number of bars to fade out on various occasions
     private final int MISPREDICTED_FADE_OUT_BARS = 2;
@@ -73,8 +85,6 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
     // palette changes only happen on new CHORUS phrase changes
     private static long PALETTE_DURATION_MS = 10 * 60 * 1000;
 
-    private LX lx;
-
     // OSC message related fields
     private ConcurrentLinkedQueue<TEOscMessage> unprocessedOscMessages;
     private long lastOscMessageReceivedAt;
@@ -120,24 +130,26 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
      * @param l
      */
     public TEAutopilot(LX lx, TEPatternLibrary l, TEHistorian history) {
-        this.lx = lx;
+        super(lx);
         this.library = l;
         this.history = history;
         this.autoMixer = new TEAutopilotMixer(lx, this.library);
 
+        addParameter("Enabled", this.enabled);
+        this.enabled.addListener(enabledListener);
+
         // this queue needs to be accessible from OSC listener in diff thread
         unprocessedOscMessages = new ConcurrentLinkedQueue<TEOscMessage>();
-
-        // start any logic that begins with being enabled
-        setEnabled(enabled);
 
         lx.addProjectListener(this);
     }
 
     /**
      * Reset history around autopilot, channel state, phrase state, etc.
+     *
+     * Return False if this step fails.
      */
-    public void resetHistory() {
+    public boolean resetHistory() {
         // historical logs of events for calculations
         history = new TEHistorian();
 
@@ -166,8 +178,7 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
         if (curChannel == null || nextChannel == null || triggerChannel == null || strobesChannel == null) {
         	// Cancel autopilot
         	TE.log("Cancelling autopilot, special channels not found.");
-        	this.enabled = false;
-        	return;
+        	return false;
         }
 
         // set palette timer
@@ -175,6 +186,8 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
 
         // remap pattern objects
         this.library.indexPatterns(this.autoMixer);
+
+        return true;
     }
 
     /**
@@ -185,25 +198,25 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
      * @param msg
      */
     protected void onOscMessage(OscMessage msg) {
+        if (!this.enabled.isOn()) {
+            // if autopilot isn't enabled, don't bother tracking these
+            return;
+        }
+
         try {
             TEOscMessage oscTE = new TEOscMessage(msg);
-            if (!isEnabled()) {
-                // if autopilot isn't enabled, don't bother tracking these
-                return;
 
-            } else {
-                //TE.log("Adding OSC message to queue: %s", address);
-                history.setLastOscMsgAt(oscTE.timestamp);
+            //TE.log("Adding OSC message to queue: %s", address);
+            history.setLastOscMsgAt(oscTE.timestamp);
 
-                // if we'd previously entered No OSC mode, let's turn that off
-                if (noOscModeOn) {
-                    noOscModeOn = false;
-                    TE.log("No OSC mode OFF! We got OSC message");
-                }
-
-                // then add message to queue to be processed on next loop()
-                unprocessedOscMessages.add(oscTE);
+            // if we'd previously entered No OSC mode, let's turn that off
+            if (noOscModeOn) {
+                noOscModeOn = false;
+                TE.log("No OSC mode OFF! We got OSC message");
             }
+
+            // then add message to queue to be processed on next loop()
+            unprocessedOscMessages.add(oscTE);
         } catch (Exception e) {
             TE.log("Exception parsing OSC message (%s): %s", msg.toString(), e.toString());
         }
@@ -317,16 +330,14 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
      */
     @Override
     public void loop(double deltaMs) {
-        long now = System.currentTimeMillis();
-        try {
+        if (!this.enabled.isOn()) {
             // if autopilot isn't enabled, just ignore for now
-            if (!isEnabled()) return;
+            return;
+        }
 
-            // make sure AutoVJ channels and group are setup correctly
-            boolean setupWasNeeded = this.autoMixer.ensureSetup();
-            if (setupWasNeeded)
-                this.resetHistory();
+        long now = System.currentTimeMillis();
 
+        try {
             // check for new OSC messages
             String msgs = "";
             while (unprocessedOscMessages.size() > 0) {
@@ -738,33 +749,78 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
         autoMixer.setFaderTo(TEChannelName.TRIGGERS, LEVEL_FULL);
     }
 
+    private boolean startFailed = false;
+
     /**
-     * Is autopilot enabled? If not, ignore OSC messages and other input.
+     * This will get called when the state of the Enabled parameter changes.
      *
-     * @return boolean
+     * This is the entry point to AutoVJ's running state.  External controls
+     * including UI controls should toggle the Enabled parameter to start it.
+     *
+     * @param on The new state of the Enabled parameter.
      */
-    public boolean isEnabled() {
-        return enabled;
+    protected void onEnabled(boolean on) {
+        if (on) {
+            // Attempt to start AutoVJ
+            TE.log("Attempting to start AutoVJ...");
+            try {
+                if (!startAutoVJ()) {
+                    // Failed to start.  Turn off the Enabled parameter.
+                    TE.log("...AutoVJ start failed.");
+                    this.startFailed = true;
+                    this.enabled.setValue(false);
+                } else {
+                    // Successful start!  Now loop() can check this.enabled.isOn()
+                    TE.log("...AutoVJ start success.");
+                    // In case this listener doesn't fire twice after a failed attempt, reset the flag.
+                    this.startFailed = false;
+                }
+            } catch (Exception ex) {
+                // REALLY failed to start.
+                TE.err(ex, "...AutoVJ start failed in an unexpected manner:");
+                this.startFailed = true;
+                this.enabled.setValue(false);
+            }
+        } else {
+            // Is this just turning off after a failed start attempt?  If so ignore.
+            if (this.startFailed) {
+                TE.log("...Detected AutoVJ turned off after failed start.");
+                this.startFailed = false;
+                return;
+            } else {
+              TE.log("Attempting to stop AutoVJ...");
+              // AutoVJ was running, now disable it.  Enabled parameter has already been set to False.
+              stopAutoVJ();
+            }
+        }
     }
 
     /**
-     * Toggle enable/disable autopilot. Clears history.
+     * Attempt to start.
      *
-     * @param enabled
+     * Return true if successful.
      */
-    public void setEnabled(boolean enabled) {
-        if (enabled == this.enabled)
-            // only enact this logic if different from
-            // current state!
-            return;
-
-        this.enabled = enabled;
-
-        if (this.enabled) {
-        	TE.log("Autopilot will start after the next TEAutopilot.loop() call!");
-        } else {
-            TE.log("VJ autoilot disabled!");
+    private boolean startAutoVJ() {
+        // make sure AutoVJ channels and group are set up correctly
+        boolean setupWasNeeded = this.autoMixer.ensureSetup();
+        if (setupWasNeeded) {
+            if (!resetHistory()) {
+                // Failed.
+                return false;
+            }
         }
+
+        TE.log("AutoVJ started!");
+        return true;
+    }
+
+    /**
+     * Do any Auto-VJ disable actions here.
+     */
+    private void stopAutoVJ() {
+        // No need to set the enabled parameter here, it's already off.
+
+        TE.log("AutoVJ disabled!");
     }
 
     /**
@@ -810,19 +866,15 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
 	public void projectChanged(File file, Change change) {
 		if (change == Change.TRY || change == Change.NEW) {
 			// About to do an openFile
-			this.wasAutopilotEnabled = this.enabled;
+			this.wasAutopilotEnabled = this.enabled.isOn();
 			
 			// JKB note: Ok the Change.Open listener gets broadcast *after* the objects are loaded from file,
 			// so I think we'd better release the channel references here
 			releaseProjectReferences();			
 			
-			if (this.enabled) {
+			if (this.enabled.isOn()) {
 				LX.log("Disabling Autopilot for file open...");
-				// Note! Current TE method only calls setEnabled(true) from the UI element
-				// The UI element doesn't listen to enabled
-				// So the UI element will get out of sync from this, 
-				//    but it's fine because it will get set by the next file open...
-				setEnabled(false);
+				this.enabled.setValue(false);
 			}			
 		} else if (change == Change.OPEN) {
 			// This could be the first file open or a later file open.
@@ -854,4 +906,10 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
 		this.strobesChannel = null;
         this.fxChannel = null;
 	}
+
+	  @Override
+	  public void dispose() {
+	      this.enabled.removeListener(enabledListener);
+	      super.dispose();
+	  }
 }

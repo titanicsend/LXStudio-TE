@@ -14,4 +14,8 @@ public class TE {
     public static void err(String format, Object... arguments) {
         LX.error(String.format(format, arguments));
     }
+
+    public static void err(Throwable x, String message) {
+        LX.error(x, message);
+    }
 }
