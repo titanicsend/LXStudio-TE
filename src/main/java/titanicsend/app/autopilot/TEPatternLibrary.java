@@ -420,7 +420,7 @@ public class TEPatternLibrary {
      * Each TEPatternRecord should only map to LXPatterns on the same
      * LXChannel.
      */
-    public void indexPatterns() {
+    public void indexPatterns(TEAutopilotMixer autoMixer) {
         this.rec2patterns = new HashMap<>();
 
         // report back some statistics on patterns indexed or not found
@@ -430,8 +430,9 @@ public class TEPatternLibrary {
         int totalNotFound = 0;
 
         for (TEPatternRecord r : this.patternRecords) {
-            TEChannelName name = TEMixerUtils.getChannelNameFromPhraseType(r.phraseType);
-            LXChannel ch = TEMixerUtils.getChannelByName(lx, name);
+//            TEChannelName name = TEMixerUtils.getChannelNameFromPhraseType(r.phraseType);
+            TEChannelName name = TEChannelName.getChannelNameFromPhraseType(r.phraseType);
+            LXChannel ch = autoMixer.getChannelByName(name);
             if (ch == null)
                 TE.err("[TEPatternLibrary] Could not load channel=%s, it is null", name);
 
@@ -517,5 +518,9 @@ public class TEPatternLibrary {
 //            if (entry.getValue() > 0)
 //                TE.log("-> counter: %s has %f bars played", entry.getKey(), entry.getValue());
 //        }
+    }
+
+    public HashMap<PhrasePatternCompositeKey, TEPatternRecord> getPatternMapping() {
+        return this.phrasePattern2rec;
     }
 }
