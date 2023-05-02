@@ -172,6 +172,7 @@ public class TEAutopilotMixer {
                 for (ListIterator<LXChannel> iter = group.channels.listIterator(); iter.hasNext(); ) {
                     LXChannel vjCh = iter.next();
                     for (TEChannelName name : TEChannelName.values()) {
+                        //if (verbose) TE.log("Checking channel: %s against channel name %s", vjCh.label.getString(), name.toString());
                         if (name.toString().equals(vjCh.label.getString()) && vjCh.patterns.size() >= MIN_NUM_PATTERNS_ON_AUTO_VJ_CHANNEL) {
                             vjChannelsFound++;
                             if (verbose) TE.log("Found channel: %s", name.toString());
@@ -338,6 +339,10 @@ public class TEAutopilotMixer {
                             }
                         }
                     }
+
+                    // TODO: remove this
+                    c.addPattern(new ShaderPanelsPatternConfig.Electric(lx)); // add as dummy pattern just for testing
+
                     group.addChannel(c);
                     added++;
                 }
