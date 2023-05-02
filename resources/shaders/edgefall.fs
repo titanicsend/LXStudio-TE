@@ -72,7 +72,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
 
     for (int i = 0; i < LINE_COUNT; i++) {
        bri = glowline( uv, lines[i]);
-       color += fog * bri * mix(iColorRGB,iColor2RGB,iWow2 * fract(bri));
+       color += fog * bri * mix(iColorRGB,mix(iColorRGB,iColor2RGB,fract(bri)),iWow2);
        alpha += bri;
     }
 

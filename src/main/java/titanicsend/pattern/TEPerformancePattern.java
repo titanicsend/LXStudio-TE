@@ -804,7 +804,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     }
 
     public double getStaticRotationAngle() {
-        return controls.getValue(TEControlTag.ANGLE);
+        double t = controls.getValue(TEControlTag.ANGLE);
+        return (t >= 0) ? t : t + LX.TWO_PI;
     }
 
     /**

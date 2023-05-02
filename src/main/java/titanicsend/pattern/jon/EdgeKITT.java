@@ -16,7 +16,7 @@ public class EdgeKITT extends TEPerformancePattern {
     public EdgeKITT(LX lx) {
         super(lx);
 
-        controls.setRange(TEControlTag.SIZE, 0.5, 0.01, 1);
+        controls.setRange(TEControlTag.SIZE, 0.5, 0.01, 1.5);
 
         addCommonControls();
     }

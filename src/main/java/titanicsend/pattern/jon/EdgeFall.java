@@ -8,6 +8,7 @@ import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
+
 import java.nio.FloatBuffer;
 
 @LXCategory("Combo FG")
@@ -30,7 +31,9 @@ public class EdgeFall extends TEPerformancePattern {
         super(lx);
 
         // Size controls line width/glow
-        controls.setRange(TEControlTag.SIZE, 80, 200, 10);
+        controls.setRange(TEControlTag.SIZE, 80, 200, 15);
+        controls.setExponent(TEControlTag.SIZE,0.3);
+
         // Wow1 - beat reactive pulse
         controls.setRange(TEControlTag.WOW1, 0, 0, 0.65);
         // wow2 - foreground vs gradient color mix
@@ -60,7 +63,7 @@ public class EdgeFall extends TEPerformancePattern {
         // Select the edges we want to draw. NOTE: To add more edges, you need
         // to change LINE_COUNT so the segment buffer will be the right size. OpenGL
         // is very picky about this!
-        CarGeometryPatternTools.getPanelConnectedEdges(getModelTE(), "^S.*$",saved_lines, LINE_COUNT);
+        CarGeometryPatternTools.getPanelConnectedEdges(getModelTE(), "^S.*$", saved_lines, LINE_COUNT);
 
         randomizeLineVelocities();
 
@@ -151,13 +154,11 @@ public class EdgeFall extends TEPerformancePattern {
         effect.run(deltaMs);
     }
 
-
     protected LXParameterListener wowTriggerListener = lxParameter -> {
         // when the wow trigger button is pressed...
         if (getWowTrigger()) {
             isFalling = !isFalling;
         }
-        System.out.println("HI THERE!  You pressed the button!");
     };
 
     @Override

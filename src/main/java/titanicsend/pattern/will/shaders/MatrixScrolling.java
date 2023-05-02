@@ -30,9 +30,12 @@ public class MatrixScrolling extends FragmentShaderEffect {
 
         TEPerformancePattern.TECommonControls ctl = pattern.getControls();
 
+        ctl.setRange(TEControlTag.SPEED, 0, -4.0, 4.0);
+        ctl.setValue(TEControlTag.SPEED, 0.5);
+
         ctl.setRange(TEControlTag.SIZE, 0.02, 0.05, 0.01);  // block size
-        ctl.setRange(TEControlTag.WOW1, 0.75, 0, 3);        // blast radius
-        ctl.setRange(TEControlTag.WOW2, 0.5, 0, 1);         // beat reactivity
+        ctl.setRange(TEControlTag.WOW1, 0.0, 0, 3);        // blast radius
+        ctl.setRange(TEControlTag.WOW2, 0.0, 0, 1);         // beat reactivity
     }
 
     @Override
@@ -88,15 +91,15 @@ public class MatrixScrolling extends FragmentShaderEffect {
         double b = (9. + 8. * Math.sin(i[0]));
 
         //        int tb = int(iTime * b);
-        int tb = (int) (timeSeconds * b);
+        int tb = (int) (-timeSeconds * b);
 
         //        vec3 p = vec3(9, tb, 0) + i;
-        double[] p = new double[]{i[0] + 9.0, i[1] + tb, i[2]};
+        double[] p = new double[]{i[0] + 9.0 , i[1] + tb, i[2]};
 
         // #define R fract(1e2 * sin(p.x * 5. + p.y))
         //        color.g = R / s.z;
         double[] color = new double[3];
-        double R = fract(1e2 * Math.sin(p[0] * 5. + p[1]));
+        double R = fract(100 * Math.sin(p[0] * 5. + p[1]));
 
         //color[2] = R / s[2];
         float  k = (float) (R / s[2]);
