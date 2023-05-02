@@ -231,8 +231,12 @@ public class TEAutopilotMixer {
                 // TODO: maybe remove this if JSON file loading works? otherwise might end up with
                 //       two different groups on the mixer with the name "AUTO_VJ"
                 TE.log("Creating and populating AutoVJ channel set...");
-                int groupIdx = AUTO_VJ_GROUP_MIXER_IDX;
-                group = lx.engine.mixer.addGroup(groupIdx);
+                // Create empty channels to put the AutoVJ group on the 8th fader
+                while (lx.engine.mixer.channels.size() < AUTO_VJ_GROUP_MIXER_IDX) {
+                  lx.engine.mixer.addChannel()
+                      .label.setValue("---");
+                }
+                group = lx.engine.mixer.addGroup();
                 group.label.setValue(AUTO_VJ_GROUP_NAME);
                 //group.enabled.setValue(false); // turn off initially
 
@@ -319,9 +323,8 @@ public class TEAutopilotMixer {
                  * from the .lxp, and not for non-phrase channels like STROBES or TRIGGERS
                  */
                 // create channels, add to group
-                int added = 1;
                 for (TEChannelName name : TEChannelName.values()) {
-                    LXChannel c = lx.engine.mixer.addChannel(groupIdx + added);
+                    LXChannel c = lx.engine.mixer.addChannel();
                     c.label.setValue(name.toString());
 
                     for (Map.Entry<TEPatternLibrary.PhrasePatternCompositeKey, TEPatternLibrary.TEPatternRecord> e : this.library.getPatternMapping().entrySet()) {
@@ -344,7 +347,6 @@ public class TEAutopilotMixer {
                     c.addPattern(new ShaderPanelsPatternConfig.Electric(lx)); // add as dummy pattern just for testing
 
                     group.addChannel(c);
-                    added++;
                 }
                 /**
                  * End logic that needs to be replaced.
