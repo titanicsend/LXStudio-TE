@@ -172,6 +172,8 @@ public class SignalDebugger extends TEPattern implements UIDeviceControls<Signal
                 }
             }
         }
+
+        s.close();
     }
 
     private void loadPanelData() {
@@ -204,6 +206,8 @@ public class SignalDebugger extends TEPattern implements UIDeviceControls<Signal
             controllerVertexToPanelIds.putIfAbsent(controllerVertex, new LinkedList<>());
             controllerVertexToPanelIds.get(controllerVertex).add(panelId);
         }
+
+        s.close();
     }
 
     @Override
