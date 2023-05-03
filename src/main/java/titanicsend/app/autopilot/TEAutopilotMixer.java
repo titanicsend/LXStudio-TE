@@ -239,8 +239,7 @@ public class TEAutopilotMixer {
 
             // if we didn't find the setup we need for AutoVJ to run correctly,
             // we're going to read from our template .lxp file for AutoVJ
-            // and populate the mixer accordingly with a new group that should satisfy
-            // our requirements!
+            // and populate the mixer accordingly
             LXGroup group = null;
             if (!firstScan.found) {
                 setupWasNeeded = true;
@@ -259,12 +258,14 @@ public class TEAutopilotMixer {
 
                 // Create empty channels to put the AutoVJ group on the 8th fader
                 while (lx.engine.mixer.channels.size() < AUTO_VJ_GROUP_MIXER_IDX) {
-                  lx.engine.mixer.addChannel()
-                      .label.setValue("---");
+                    LXChannel spacer = lx.engine.mixer.addChannel();
+                    spacer.label.setValue("---");
+                    spacer.enabled.setValue(false);
                 }
+
+                // create our AUTO_VJ group
                 group = lx.engine.mixer.addGroup();
                 group.label.setValue(AUTO_VJ_GROUP_NAME);
-                //group.enabled.setValue(false); // turn off initially
 
                 // read the AutoVJ JSON file
                 JsonElement rootElt = null;
@@ -279,11 +280,11 @@ public class TEAutopilotMixer {
                 }
 
                 assert rootElt != null;
-                JsonObject root = rootElt.getAsJsonObject();
-                JsonObject engineObj = root.getAsJsonObject("engine");
-                JsonObject childrenObj = engineObj.getAsJsonObject("children");
-                JsonObject mixerObj = childrenObj.getAsJsonObject("mixer");
-                JsonArray channelsArray = mixerObj.getAsJsonArray("channels");
+                JsonArray channelsArray = rootElt.getAsJsonObject()
+                        .getAsJsonObject("engine")
+                        .getAsJsonObject("children")
+                        .getAsJsonObject("mixer")
+                        .getAsJsonArray("channels");
 
                 int autoVjTemplateGroupId = -1; // JSON id assigned to node for "AUTO_VJ" LXGroup
                 for (JsonElement chan : channelsArray) {
@@ -310,37 +311,31 @@ public class TEAutopilotMixer {
                             //TE.log("AutoVJ group id: %d", autoVjTemplateGroupId);
                         }
                     } else if (groupId == autoVjTemplateGroupId) {
-                        // this is a channel within the AutoVJ template group, let's pull the classnames from here
-                        // and populate a new channel in our running app
-                        //TE.log("Found an AutoVJ channel: %s", label);
+                        // populate a new channel in our running app
                         TEChannelName channelName = TEChannelName.valueOf(label);
-
-                        // create a new channel
                         LXChannel c = lx.engine.mixer.addChannel();
                         c.label.setValue(channelName.toString());
 
                         // recursively remove "id" field from JSON (forgive me, mcslee lolol)
                         JsonElement noIdsChanElement = removeIds(chanObj);
 
-                        // load the channel into LX
+                        // load the channel into LX & add to group
                         c.load(lx, noIdsChanElement.getAsJsonObject());
-
-                        // add channel to group
                         group.addChannel(c);
                     }
                 }
 
                 // move the group to where we need it to be
+                // we ensured above there were at least 8 channels, this handles if there was more
                 int delta = group.getIndex() - AUTO_VJ_GROUP_MIXER_IDX;
                 for (int i = 0; i < delta; i++) {
                     lx.engine.mixer.moveChannel(group, -1);
                 }
 
-                // finally, record correct indices per channel since they are in the group
+                // finally, record channel name to LXChannel mapping
                 // this will allow proper look up (ie: get channel idx for phrase of type CHORUS)
                 this.channelName2channel.clear();
                 for (LXChannel c : group.channels) {
-                    TE.log("Channel: %s, key: %s, value: %d", c.toString(), c.label.getString(), c.getIndex());
                     TEChannelName channelName = TEChannelName.valueOf(c.label.getString());
                     this.channelName2channel.put(channelName, c);
                 }
