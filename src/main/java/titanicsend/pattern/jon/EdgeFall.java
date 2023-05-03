@@ -40,8 +40,6 @@ public class EdgeFall extends TEPerformancePattern {
 
         addCommonControls();
 
-        controls.getLXControl(TEControlTag.WOWTRIGGER).addListener(wowTriggerListener);
-
         effect = new NativeShaderPatternEffect("edgefall.fs",
             PatternTarget.allPointsAsCanvas(this));
 
@@ -154,12 +152,13 @@ public class EdgeFall extends TEPerformancePattern {
         effect.run(deltaMs);
     }
 
-    protected LXParameterListener wowTriggerListener = lxParameter -> {
+    @Override
+    protected void onWowTrigger(boolean on) {
         // when the wow trigger button is pressed...
-        if (getWowTrigger()) {
+        if (on) {
             isFalling = !isFalling;
         }
-    };
+    }
 
     @Override
     // THIS IS REQUIRED if you're not using ConstructedPattern!
@@ -168,13 +167,6 @@ public class EdgeFall extends TEPerformancePattern {
     public void onActive() {
         effect.onActive();
         shader = effect.getNativeShader();
-    }
-
-    @Override
-    // Make sure button listener is properly disposed of
-    public void dispose() {
-        controls.getLXControl(TEControlTag.WOWTRIGGER).removeListener(wowTriggerListener);
-        super.dispose();
     }
 
 }
