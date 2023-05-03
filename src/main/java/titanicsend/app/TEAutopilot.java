@@ -1,27 +1,36 @@
 package titanicsend.app;
 
 import heronarts.lx.LX;
+import heronarts.lx.LXComponent;
 import heronarts.lx.LXLoopTask;
 import heronarts.lx.Tempo;
-import heronarts.lx.LX.ProjectListener.Change;
 import heronarts.lx.color.LXSwatch;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.osc.OscMessage;
+import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.LXParameterListener;
+import heronarts.lx.parameter.BooleanParameter.Mode;
 import heronarts.lx.pattern.LXPattern;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.autopilot.events.TEPhraseEvent;
-import titanicsend.app.autopilot.utils.TEMixerUtils;
 import titanicsend.app.autopilot.utils.TETimeUtils;
 import titanicsend.util.TE;
 import titanicsend.util.TEMath;
 
 import java.io.File;
-import java.util.NoSuchElementException;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
-    private boolean enabled = false;
+public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectListener {
+
+    public final BooleanParameter enabled =
+        new BooleanParameter("Enabled", false)
+        .setMode(Mode.TOGGLE)
+        .setDescription("AutoVJ On/Off");
+
+    private final LXParameterListener enabledListener = (p) -> {
+      onEnabled(this.enabled.isOn());
+    };
 
     // number of bars to fade out on various occasions
     private final int MISPREDICTED_FADE_OUT_BARS = 2;
@@ -44,7 +53,7 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
     private static final int MIN_NUM_BEATS_SINCE_TRANSITION_FOR_NEW_PHRASE = 2;
 
     // various fader levels of importance
-    private static double LEVEL_FULL = 1.0,
+    private static final double LEVEL_FULL = 1.0,
                            LEVEL_MISPREDICTED_FADE_OUT = 0.75, // fading out mistaken transition
                            LEVEL_PREV_FADE_OUT = 0.75, // fading out prev channel
                            LEVEL_BARELY_ON = 0.03,
@@ -75,8 +84,6 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
     // how long in between palette changes
     // palette changes only happen on new CHORUS phrase changes
     private static long PALETTE_DURATION_MS = 10 * 60 * 1000;
-
-    private LX lx;
 
     // OSC message related fields
     private ConcurrentLinkedQueue<TEOscMessage> unprocessedOscMessages;
@@ -114,6 +121,8 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
                       strobesChannel = null,
                       fxChannel = null;
 
+    private TEAutopilotMixer autoMixer;
+
     /**
      * Instantiate the autopilot with a reference to both LX and the pattern library.
      *
@@ -121,23 +130,26 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
      * @param l
      */
     public TEAutopilot(LX lx, TEPatternLibrary l, TEHistorian history) {
-        this.lx = lx;
+        super(lx);
         this.library = l;
         this.history = history;
+        this.autoMixer = new TEAutopilotMixer(lx, this.library);
+
+        addParameter("Enabled", this.enabled);
+        this.enabled.addListener(enabledListener);
 
         // this queue needs to be accessible from OSC listener in diff thread
         unprocessedOscMessages = new ConcurrentLinkedQueue<TEOscMessage>();
 
-        // start any logic that begins with being enabled
-        setEnabled(enabled);
-        
         lx.addProjectListener(this);
     }
 
     /**
      * Reset history around autopilot, channel state, phrase state, etc.
+     *
+     * Return False if this step fails.
      */
-    public void resetHistory() {
+    public boolean resetHistory() {
         // historical logs of events for calculations
         history = new TEHistorian();
 
@@ -148,16 +160,16 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
         oldNextPhrase = null;
 
         prevChannelName = null;
-        curChannelName = TEMixerUtils.getChannelNameFromPhraseType(curPhrase);
-        nextChannelName = TEMixerUtils.getChannelNameFromPhraseType(nextPhrase);
+        curChannelName = TEChannelName.getChannelNameFromPhraseType(curPhrase);
+        nextChannelName = TEChannelName.getChannelNameFromPhraseType(nextPhrase);
         oldNextChannelName = null;
 
         // this call will also wait for the mixer to be initialized
-        curChannel = TEMixerUtils.getChannelByName(lx, curChannelName);
-        nextChannel = TEMixerUtils.getChannelByName(lx, nextChannelName);
-        TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
-        triggerChannel = TEMixerUtils.getChannelByName(lx, TEChannelName.TRIGGERS);
-        strobesChannel = TEMixerUtils.getChannelByName(lx, TEChannelName.STROBES);
+        curChannel = autoMixer.getChannelByName(curChannelName);
+        nextChannel = autoMixer.getChannelByName(nextChannelName);
+        autoMixer.setFaderTo(curChannelName, LEVEL_FULL);
+        triggerChannel = autoMixer.getChannelByName(TEChannelName.TRIGGERS);
+        strobesChannel = autoMixer.getChannelByName(TEChannelName.STROBES);
         
         oldNextFadeOutMode = false;
         prevFadeOutMode = false;
@@ -166,15 +178,16 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
         if (curChannel == null || nextChannel == null || triggerChannel == null || strobesChannel == null) {
         	// Cancel autopilot
         	TE.log("Cancelling autopilot, special channels not found.");
-        	this.enabled = false;
-        	return;
+        	return false;
         }
 
         // set palette timer
         history.startPaletteTimer();
 
         // remap pattern objects
-        this.library.indexPatterns();
+        this.library.indexPatterns(this.autoMixer);
+
+        return true;
     }
 
     /**
@@ -185,25 +198,25 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
      * @param msg
      */
     protected void onOscMessage(OscMessage msg) {
+        if (!this.enabled.isOn()) {
+            // if autopilot isn't enabled, don't bother tracking these
+            return;
+        }
+
         try {
             TEOscMessage oscTE = new TEOscMessage(msg);
-            if (!isEnabled()) {
-                // if autopilot isn't enabled, don't bother tracking these
-                return;
 
-            } else {
-                //TE.log("Adding OSC message to queue: %s", address);
-                history.setLastOscMsgAt(oscTE.timestamp);
+            //TE.log("Adding OSC message to queue: %s", address);
+            history.setLastOscMsgAt(oscTE.timestamp);
 
-                // if we'd previously entered No OSC mode, let's turn that off
-                if (noOscModeOn) {
-                    noOscModeOn = false;
-                    TE.log("No OSC mode OFF! We got OSC message");
-                }
-
-                // then add message to queue to be processed on next loop()
-                unprocessedOscMessages.add(oscTE);
+            // if we'd previously entered No OSC mode, let's turn that off
+            if (noOscModeOn) {
+                noOscModeOn = false;
+                TE.log("No OSC mode OFF! We got OSC message");
             }
+
+            // then add message to queue to be processed on next loop()
+            unprocessedOscMessages.add(oscTE);
         } catch (Exception e) {
             TE.log("Exception parsing OSC message (%s): %s", msg.toString(), e.toString());
         }
@@ -317,21 +330,14 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
      */
     @Override
     public void loop(double deltaMs) {
-        long now = System.currentTimeMillis();
-        try {
+        if (!this.enabled.isOn()) {
             // if autopilot isn't enabled, just ignore for now
-            if (!isEnabled()) return;
+            return;
+        }
 
-            // check our patterns are indexed
-            // allows for switches in project files since we
-            // need to do this more than once (so can't use TEApp)
-            if (!this.library.isReady()) {
-                this.library.indexPatterns();
-            }
+        long now = System.currentTimeMillis();
 
-            // collect audio/FFT statistics
-            // TODO(will) for when we want to act without OSC messages -- just based on pure audio
-
+        try {
             // check for new OSC messages
             String msgs = "";
             while (unprocessedOscMessages.size() > 0) {
@@ -456,7 +462,7 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
                 // can play around with the 1.5 exponent to make curve steeper!
                 nextChannelFaderVal = range * Math.pow(estFracCompleted, 1.5) + nextChannelFaderFloorLevel;
                 //TE.log("NextChannel: Setting fader=%s to %f", nextChannelName, nextChannelFaderVal);
-                TEMixerUtils.setFaderTo(lx, nextChannelName, nextChannelFaderVal);
+                autoMixer.setFaderTo(nextChannelName, nextChannelFaderVal);
             }
 
             // fade out channels, if needed
@@ -482,7 +488,7 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
                     TEMath.EasingFunction.LINEAR_RAMP_DOWN,
                     curPhraseLenBars, 0.0, MISPREDICTED_FADE_OUT_BARS,
                     LEVEL_OFF, LEVEL_MISPREDICTED_FADE_OUT);
-            TEMixerUtils.setFaderTo(lx, oldNextChannelName, newVal);
+            autoMixer.setFaderTo(oldNextChannelName, newVal);
         }
 
         // update fader for prev channel
@@ -493,11 +499,11 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
                         TEMath.EasingFunction.LINEAR_RAMP_DOWN,
                         curPhraseLenBars, 0.0, PREV_FADE_OUT_BARS,
                         LEVEL_OFF, LEVEL_PREV_FADE_OUT);
-                TEMixerUtils.setFaderTo(lx, prevChannelName, newVal);
+                autoMixer.setFaderTo(prevChannelName, newVal);
 
             } else if (curPhraseLenBars >= PREV_FADE_OUT_BARS) {
                 //TE.log("FADE PREV: Fading out %s", prevChannelName);
-                TEMixerUtils.setFaderTo(lx, prevChannelName, LEVEL_OFF);
+                autoMixer.setFaderTo(prevChannelName, LEVEL_OFF);
             }
         }
     }
@@ -523,7 +529,7 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
 	
 	        if (newStrobeChannelVal >= 0) {
 	            //TE.log("Strobes: Setting fader=%s to %f", TEChannelName.STROBES, newStrobeChannelVal);
-	            TEMixerUtils.setFaderTo(lx, TEChannelName.STROBES, newStrobeChannelVal);
+                autoMixer.setFaderTo(TEChannelName.STROBES, newStrobeChannelVal);
 	        }
 	    }
 
@@ -542,7 +548,7 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
 	
 	        if (newTriggerChannelVal >= 0) {
 	            //TE.log("Triggers: Setting fader=%s to %f", TEChannelName.TRIGGERS, newTriggerChannelVal);
-	            TEMixerUtils.setFaderTo(lx, TEChannelName.TRIGGERS, newTriggerChannelVal);
+                autoMixer.setFaderTo(TEChannelName.TRIGGERS, newTriggerChannelVal);
 	        }
 	    }
     }
@@ -625,7 +631,7 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
         }
 
         // clear mixer state
-        TEMixerUtils.turnDownAllChannels(lx, true);
+        autoMixer.turnDownAllChannels(true);
 
         if (isSamePhrase) {
             // our current channel should just keep running!
@@ -635,14 +641,14 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
 
         } else {
             // update channel name & references based on phrase change
-            prevChannelName = TEMixerUtils.getChannelNameFromPhraseType(prevPhrase);
-            curChannelName = TEMixerUtils.getChannelNameFromPhraseType(curPhrase);
-            nextChannelName = TEMixerUtils.getChannelNameFromPhraseType(nextPhrase);
+            prevChannelName = TEChannelName.getChannelNameFromPhraseType(prevPhrase);
+            curChannelName = TEChannelName.getChannelNameFromPhraseType(curPhrase);
+            nextChannelName = TEChannelName.getChannelNameFromPhraseType(nextPhrase);
             nextChannelFaderVal = 0.0;
 
-            prevChannel = TEMixerUtils.getChannelByName(lx, prevChannelName);
-            curChannel = TEMixerUtils.getChannelByName(lx, curChannelName);
-            nextChannel = TEMixerUtils.getChannelByName(lx, nextChannelName);
+            prevChannel = autoMixer.getChannelByName(prevChannelName);
+            curChannel = autoMixer.getChannelByName(curChannelName);
+            nextChannel = autoMixer.getChannelByName(nextChannelName);
 
             LXPattern newCurPattern = curChannel.getActivePattern();
 
@@ -658,8 +664,8 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
             } else {
                 // we didn't predict the phrase change correctly, turn off
                 // the channel we were trying to transition into
-                oldNextChannelName = TEMixerUtils.getChannelNameFromPhraseType(oldNextPhrase);
-                oldNextChannel = TEMixerUtils.getChannelByName(lx, oldNextChannelName);
+                oldNextChannelName = TEChannelName.getChannelNameFromPhraseType(oldNextPhrase);
+                oldNextChannel = autoMixer.getChannelByName(oldNextChannelName);
                 oldNextFadeOutMode = (oldNextChannel != null);
                 //TE.log("[AUTOVJ] We didn't predict right, oldNextChannelName=%s, oldNextFadeOutMode=%s", oldNextChannelName, oldNextFadeOutMode);
 
@@ -697,7 +703,7 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
             }
         }
 
-        TEMixerUtils.setFaderTo(lx, curChannelName, LEVEL_FULL);
+        autoMixer.setFaderTo(curChannelName, LEVEL_FULL);
 
         // trigger FX if needed
         this.enableFX(isSamePhrase);
@@ -737,50 +743,84 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
 
         // make new active patterns
         if (prevPhrase != curPhrase) {
-            TEMixerUtils.setFaderTo(lx, TEChannelName.STROBES, LEVEL_FULL);
+            autoMixer.setFaderTo(TEChannelName.STROBES, LEVEL_FULL);
         }
 
-        TEMixerUtils.setFaderTo(lx, TEChannelName.TRIGGERS, LEVEL_FULL);
+        autoMixer.setFaderTo(TEChannelName.TRIGGERS, LEVEL_FULL);
     }
 
-    /**
-     * Is autopilot enabled? If not, ignore OSC messages and other input.
-     *
-     * @return boolean
-     */
-    public boolean isEnabled() {
-        return enabled;
-    }
+    private boolean startFailed = false;
 
     /**
-     * Toggle enable/disable autopilot. Clears history.
+     * This will get called when the state of the Enabled parameter changes.
      *
-     * @param enabled
+     * This is the entry point to AutoVJ's running state.  External controls
+     * including UI controls should toggle the Enabled parameter to start it.
+     *
+     * @param on The new state of the Enabled parameter.
      */
-    public void setEnabled(boolean enabled) {
-        if (enabled == this.enabled)
-            // only enact this logic if different from
-            // current state!
-            return;
-
-        this.enabled = enabled;
-
-        if (this.enabled) {
-        	TE.log("Queued autopilot to start after everything is running.");
-            
-            // Let's do this *after* everything is loaded, shall we?  (JKB mod)
-            lx.engine.addTask(() -> {
-            	// Make sure it didn't get disabled in the meantime, like by a file close!
-            	//if (this.enabled) {
-	                TE.log("VJ autoilot enabled!");
-	                resetHistory();  // reset TEHistorian state
-            	//} else {
-            	//	TE.log("Discarding queued Autopilot launch, it had been disabled when we got around to it.");
-            	//}
-              });
+    protected void onEnabled(boolean on) {
+        if (on) {
+            // Attempt to start AutoVJ
+            TE.log("Attempting to start AutoVJ...");
+            try {
+                if (!startAutoVJ()) {
+                    // Failed to start.  Turn off the Enabled parameter.
+                    TE.log("...AutoVJ start failed.");
+                    this.startFailed = true;
+                    this.enabled.setValue(false);
+                } else {
+                    // Successful start!  Now loop() can check this.enabled.isOn()
+                    TE.log("...AutoVJ start success.");
+                    // In case this listener doesn't fire twice after a failed attempt, reset the flag.
+                    this.startFailed = false;
+                }
+            } catch (Exception ex) {
+                // REALLY failed to start.
+                TE.err(ex, "...AutoVJ start failed in an unexpected manner:");
+                this.startFailed = true;
+                this.enabled.setValue(false);
+            }
         } else {
-            TE.log("VJ autoilot disabled!");
+            // Is this just turning off after a failed start attempt?  If so ignore.
+            if (this.startFailed) {
+                TE.log("...Detected AutoVJ turned off after failed start.");
+                this.startFailed = false;
+                return;
+            } else {
+              TE.log("Attempting to stop AutoVJ...");
+              // AutoVJ was running, now disable it.  Enabled parameter has already been set to False.
+              stopAutoVJ();
+            }
         }
+    }
+
+    /**
+     * Attempt to start.
+     *
+     * Return true if successful.
+     */
+    private boolean startAutoVJ() {
+        // make sure AutoVJ channels and group are set up correctly
+        boolean setupWasNeeded = this.autoMixer.ensureSetup();
+        if (setupWasNeeded) {
+            if (!resetHistory()) {
+                // Failed.
+                return false;
+            }
+        }
+
+        TE.log("AutoVJ started!");
+        return true;
+    }
+
+    /**
+     * Do any Auto-VJ disable actions here.
+     */
+    private void stopAutoVJ() {
+        // No need to set the enabled parameter here, it's already off.
+
+        TE.log("AutoVJ disabled!");
     }
 
     /**
@@ -826,19 +866,15 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
 	public void projectChanged(File file, Change change) {
 		if (change == Change.TRY || change == Change.NEW) {
 			// About to do an openFile
-			this.wasAutopilotEnabled = this.enabled;
+			this.wasAutopilotEnabled = this.enabled.isOn();
 			
 			// JKB note: Ok the Change.Open listener gets broadcast *after* the objects are loaded from file,
 			// so I think we'd better release the channel references here
 			releaseProjectReferences();			
 			
-			if (this.enabled) {
+			if (this.enabled.isOn()) {
 				LX.log("Disabling Autopilot for file open...");
-				// Note! Current TE method only calls setEnabled(true) from the UI element
-				// The UI element doesn't listen to enabled
-				// So the UI element will get out of sync from this, 
-				//    but it's fine because it will get set by the next file open...
-				setEnabled(false);
+				this.enabled.setValue(false);
 			}			
 		} else if (change == Change.OPEN) {
 			// This could be the first file open or a later file open.
@@ -870,4 +906,10 @@ public class TEAutopilot implements LXLoopTask, LX.ProjectListener {
 		this.strobesChannel = null;
         this.fxChannel = null;
 	}
+
+	  @Override
+	  public void dispose() {
+	      this.enabled.removeListener(enabledListener);
+	      super.dispose();
+	  }
 }

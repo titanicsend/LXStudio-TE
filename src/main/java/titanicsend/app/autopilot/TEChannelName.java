@@ -14,8 +14,7 @@ public enum TEChannelName {
     DOWN(1),
     CHORUS(2),
     STROBES(3),
-    TRIGGERS(4),
-    FX(5);
+    TRIGGERS(4);
 
     private final int index;
 
@@ -25,5 +24,18 @@ public enum TEChannelName {
 
     public int getIndex() {
         return index;
+    }
+
+    public static TEChannelName getChannelNameFromPhraseType(TEPhrase phraseType) {
+        if (phraseType == TEPhrase.CHORUS)
+            return TEChannelName.CHORUS;
+        else if (phraseType == TEPhrase.UP)
+            return TEChannelName.UP;
+        else if (phraseType == TEPhrase.DOWN)
+            return TEChannelName.DOWN;
+        else if (phraseType == TEPhrase.TRO)
+            // for now, maybe we'll have a special channel in future
+            return TEChannelName.DOWN;
+        return null;
     }
 }

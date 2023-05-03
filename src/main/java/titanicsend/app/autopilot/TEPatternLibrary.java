@@ -3,7 +3,6 @@ package titanicsend.app.autopilot;
 import heronarts.lx.LX;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.pattern.LXPattern;
-import titanicsend.app.autopilot.utils.TEMixerUtils;
 import titanicsend.util.TE;
 
 import java.util.*;
@@ -420,7 +419,7 @@ public class TEPatternLibrary {
      * Each TEPatternRecord should only map to LXPatterns on the same
      * LXChannel.
      */
-    public void indexPatterns() {
+    public void indexPatterns(TEAutopilotMixer autoMixer) {
         this.rec2patterns = new HashMap<>();
 
         // report back some statistics on patterns indexed or not found
@@ -430,8 +429,8 @@ public class TEPatternLibrary {
         int totalNotFound = 0;
 
         for (TEPatternRecord r : this.patternRecords) {
-            TEChannelName name = TEMixerUtils.getChannelNameFromPhraseType(r.phraseType);
-            LXChannel ch = TEMixerUtils.getChannelByName(lx, name);
+            TEChannelName name = TEChannelName.getChannelNameFromPhraseType(r.phraseType);
+            LXChannel ch = autoMixer.getChannelByName(name);
             if (ch == null)
                 TE.err("[TEPatternLibrary] Could not load channel=%s, it is null", name);
 
@@ -471,7 +470,7 @@ public class TEPatternLibrary {
             for (Map.Entry<TEPhrase, Integer> entry : patternsPerPhrase.entrySet()) {
                 TEPhrase pt = entry.getKey();
                 int count = entry.getValue();
-                TE.log("\tChannel=%s has %d indexed patterns", TEMixerUtils.getChannelNameFromPhraseType(pt), count);
+                TE.log("\tChannel=%s has %d indexed patterns", TEChannelName.getChannelNameFromPhraseType(pt), count);
             }
         }
 
@@ -480,7 +479,7 @@ public class TEPatternLibrary {
             for (Map.Entry<TEPhrase, Integer> entry : missingPatternsPerPhrase.entrySet()) {
                 TEPhrase pt = entry.getKey();
                 int count = entry.getValue();
-                TE.log("\tChannel=%s has %d missing patterns", TEMixerUtils.getChannelNameFromPhraseType(pt), count);
+                TE.log("\tChannel=%s has %d missing patterns", TEChannelName.getChannelNameFromPhraseType(pt), count);
             }
         }
 
@@ -517,5 +516,9 @@ public class TEPatternLibrary {
 //            if (entry.getValue() > 0)
 //                TE.log("-> counter: %s has %f bars played", entry.getKey(), entry.getValue());
 //        }
+    }
+
+    public HashMap<PhrasePatternCompositeKey, TEPatternRecord> getPatternMapping() {
+        return this.phrasePattern2rec;
     }
 }
