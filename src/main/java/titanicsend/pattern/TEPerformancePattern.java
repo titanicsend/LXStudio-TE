@@ -755,6 +755,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     public void addCommonControls() {
         this.controls.addCommonControls();
         this.controls.setRemoteControls();
+
+        this.controls.getLXControl(TEControlTag.WOWTRIGGER).addListener(wowTriggerListener);
     }
 
     public FloatBuffer getCurrentPalette() {
@@ -1017,6 +1019,15 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         }
     }
 
+    private final LXParameterListener wowTriggerListener = (p) -> {
+        onWowTrigger(getWowTrigger());
+    };
+
+    /**
+     * Subclasses can override
+     */
+    protected void onWowTrigger(boolean on) {  }
+
     @Override
     protected void run(double deltaMs) {
         // get the current tempo in beats per second
@@ -1060,6 +1071,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     @Override
     public void dispose() {
+        this.controls.getLXControl(TEControlTag.WOWTRIGGER).removeListener(wowTriggerListener);
         this.controls.dispose();
         super.dispose();
     }
