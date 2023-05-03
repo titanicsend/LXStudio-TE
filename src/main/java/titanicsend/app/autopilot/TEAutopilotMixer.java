@@ -10,6 +10,7 @@ import titanicsend.util.TE;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Our wrapper around the LX engine mixer, specially for AutoVJ functionality.
@@ -20,7 +21,7 @@ public class TEAutopilotMixer {
 
     // this .lxp path contains an LXGroup named $AUTO_VJ_GROUP_NAME that we'll read
     // to populate our AutoVJ instance
-    public static final String AUTO_VJ_TEMPLATE_LXP_PATH = "Projects/AutoVJ_grouped_ids.lxp";
+    public static final String AUTO_VJ_TEMPLATE_LXP_PATH = "Projects/AUTO_VJ_TEMPLATE.lxp";
 
     // number of patterns on a channel in the AutoVJ channel group to be considered valid
     public static final int MIN_NUM_PATTERNS_ON_AUTO_VJ_CHANNEL = 1;
@@ -32,8 +33,8 @@ public class TEAutopilotMixer {
     // if we try to set the fader below this, just disable the channel to save CPU
     public static final double FADER_LEVEL_OFF_THRESH = 0.01;
 
-    // mapping from TEChannelName -> LX mixer index
-    private HashMap<TEChannelName, Integer> channel2idx;
+    // mapping from TEChannelName -> LXChannel
+    private HashMap<TEChannelName, LXChannel> channelName2channel;
 
     private LX lx;
     private TEPatternLibrary library;
@@ -44,21 +45,17 @@ public class TEAutopilotMixer {
     public TEAutopilotMixer(LX lx, TEPatternLibrary library) {
         this.lx = lx;
         this.library = library;
-
-        // this will be our mapping from channel name to mixer index
-        channel2idx = new HashMap<>();
+        channelName2channel = new HashMap<>();
     }
 
+    /**
+     * Set fader to given value based on TEChannelName.
+     * @param name
+     * @param faderLevel
+     */
     public void setFaderTo(TEChannelName name, double faderLevel) {
         try {
-            // Don't crash
-            if (lx.engine.mixer.channels.size() <= name.getIndex()) {
-                TE.err("Error setting fader, mixer does't see any channels (!)");
-                return;
-            }
-
-            int channelIdx = channel2idx.get(name);
-            LXChannel channel = (LXChannel) lx.engine.mixer.channels.get(channelIdx);
+            LXChannel channel = this.getChannelByName(name);
             channel.fader.setValue(faderLevel);
 
             // save CPU cycles by disabling OFF channels
@@ -67,56 +64,39 @@ public class TEAutopilotMixer {
             } else if (faderLevel >= FADER_LEVEL_OFF_THRESH) {
                 channel.enabled.setValue(true);
             }
-        } catch (NullPointerException np) {
+        } catch (Exception np) {
             TE.err("setFaderTo(lx, %s, %f) failed!", name, faderLevel);
         }
     }
 
+    /**
+     * Retrieve an LXChannel by the TEChannelName. Used by AutoVJ.
+     *
+     * @param name
+     * @return LXChannel corresponding.
+     */
     public LXChannel getChannelByName(TEChannelName name) {
-        if (name == null)
-            return null;
-
-        // this backoff/retry loop is needed in case there's a delay in intializing
-        // the LX mixer / channels. this often happens in LX projects where there are
-        // a large number of shaders that need to be loaded
-        int numTries = 0;
-        while (numTries < 4) {
-            try {
-            	// JKB mod, now that autopilot loads after everything else,
-            	//  if channel index isn't there then the .lxp isn't AutoVJ and it's not going to show up...
-            	//if (lx.engine.mixer.channels.contains(name))
-                int channelIdx = channel2idx.get(name);
-            	if (lx.engine.mixer.channels.size() > channelIdx) {
-            		return (LXChannel) lx.engine.mixer.channels.get(channelIdx);
-            	} else {
-                    TE.err("Error in getChannelByName(%s), mixer does't see enough channels (!)", name);
-            		return null;
-            	}
-            } catch (IndexOutOfBoundsException e) {
-                numTries++;
-                double waitMs = Math.pow(2.0, (double)numTries) * 1000;
-                TE.log("LX mixer wasn't ready yet, waiting %f seconds...", waitMs / 1000.);
-                try {
-                    Thread.sleep((long)waitMs);
-                } catch (InterruptedException ie) {
-                    TE.err("Could not sleep waiting for mixer, %s: %s", ie, ie.getMessage());
-                }
-            }
-        }
-        return null;
+        if (name == null) return null;
+        return this.channelName2channel.get(name);
     }
 
     public void turnDownAllChannels(boolean onlyAffectPhraseChannels) {
         for (TEChannelName name : TEChannelName.values()) {
             if (onlyAffectPhraseChannels && (
                     (name == TEChannelName.STROBES)
-                            || name == TEChannelName.TRIGGERS
-                            || name == TEChannelName.FX))
+                            || name == TEChannelName.TRIGGERS))
                 continue;
             this.setFaderTo(name, 0.0);
         }
     }
 
+    /**
+     * Since we can't return multiple values in Java, this is a struct
+     * for doing so.
+     *
+     * @return found = did we find a valid AutoVJ LXGroup?
+     * @return groupIdx = at which index did we find an AutoVJ (not necessarily correct) LXGroup?
+     */
     class AutoVJScanResult {
         private final boolean found;
         private final int groupIdx;
@@ -185,6 +165,12 @@ public class TEAutopilotMixer {
         return new AutoVJScanResult(found, groupIdx);
     }
 
+    /**
+     * Removes ID fields from an LX JsonObject.
+     *
+     * @param JsonObject o
+     * @return JsonObject with no ID fields
+     */
     public JsonObject stripIdsFromJsonObject(JsonObject o) {
         if (o.keySet().contains("id"))
             o.remove("id");
@@ -195,43 +181,41 @@ public class TEAutopilotMixer {
         return o;
     }
 
-    public JsonArray stripIdsFromJsonArray(JsonArray arr) {
-        JsonArray newArr = new JsonArray(arr.size());
-        for (JsonElement elt : arr) {
-            JsonObject o = stripIdsFromJsonObject(elt.getAsJsonObject());
-            newArr.add(o);
+    /**
+     * Recursively remove IDs from a JSON object. Useful when you want to
+     * load a bunch of channels and not care whether or not there are
+     * duplicates in any way.
+     *
+     * See: stripIdsFromJsonObject for the actual operation.
+     *
+     * @param JsonElement e
+     * @return an id-free JsonElement
+     */
+    public JsonElement removeIds(JsonElement e) {
+        if (e.isJsonObject()) {
+            JsonObject o = stripIdsFromJsonObject(e.getAsJsonObject());
+            JsonObject newObj = new JsonObject();
+            for (Map.Entry<String, JsonElement> entry : o.entrySet()) {
+                String key = entry.getKey();
+                JsonElement value = entry.getValue();
+                value = removeIds(value);
+                newObj.add(key, value);
+            }
+            return newObj;
+
+        } else if (e.isJsonArray()) {
+            JsonArray arr = e.getAsJsonArray();
+            JsonArray newArr = new JsonArray(arr.size());
+            for (JsonElement arrElt : arr) {
+                newArr.add(removeIds(arrElt));
+            }
+            return newArr;
+
+        } else if (e.isJsonPrimitive()) {
+            return e;
         }
-        return newArr;
-    }
 
-    public JsonObject stripIdsFromChannelJson(JsonObject channelObj) {
-        // clear top level IDs
-        channelObj = stripIdsFromJsonObject(channelObj);
-
-        // get patterns array, clear top level IDs for those too
-        JsonArray patternsArr = channelObj.getAsJsonArray("patterns");
-        patternsArr = stripIdsFromJsonArray(patternsArr);
-
-        // now need to handle modulators as well
-        JsonArray newPatternsArr = new JsonArray(patternsArr.size());
-        for (JsonElement patternElt : patternsArr) {
-            JsonObject patternObj = patternElt.getAsJsonObject();
-            JsonObject childrenObj = patternObj.getAsJsonObject("children");
-            JsonObject modulationObj = childrenObj.getAsJsonObject("modulation");
-            modulationObj = stripIdsFromJsonObject(modulationObj);
-
-            childrenObj.remove("modulation");
-            childrenObj.add("modulation", modulationObj);
-
-            patternObj.remove("children");
-            patternObj.add("children", childrenObj);
-
-            newPatternsArr.add(patternObj);
-        }
-        channelObj.remove("patterns");
-        channelObj.add("patterns", newPatternsArr);
-
-        return channelObj;
+        return e;
     }
 
     /**
@@ -243,6 +227,9 @@ public class TEAutopilotMixer {
      * Also populates:
      * - channel2idx (mapping from channel name -> index on LX mixer)
      * - autoVjGroupIndex (index of the AutoVJ group on the LX mixer)
+     *
+     * @return setupWasNeeded boolean so that we know whether we need to re-index
+     *         the TELibrarian for patterns on the AutoVJ channels
      */
     public boolean ensureSetup() {
         boolean setupWasNeeded = false; // if we had to populate the mixer with new channels
@@ -298,7 +285,6 @@ public class TEAutopilotMixer {
                 JsonObject mixerObj = childrenObj.getAsJsonObject("mixer");
                 JsonArray channelsArray = mixerObj.getAsJsonArray("channels");
 
-                int channelIdxOffset = 1; // index with which to insert new channel for group
                 int autoVjTemplateGroupId = -1; // JSON id assigned to node for "AUTO_VJ" LXGroup
                 for (JsonElement chan : channelsArray) {
                     // again, pull out sub-JSON objects we need
@@ -314,7 +300,7 @@ public class TEAutopilotMixer {
                     try {
                         groupId = Integer.parseInt(chanObj.get("group").getAsString());
                     } catch (Exception e) {
-                        // do nothing here, just didn't have a parent group
+                        // do nothing here, channel didn't have a parent group
                     }
 
                     // if we haven't found the AUTO_VJ group yet, keep going
@@ -332,31 +318,31 @@ public class TEAutopilotMixer {
                         // create a new channel
                         LXChannel c = lx.engine.mixer.addChannel();
                         c.label.setValue(channelName.toString());
-                        channelIdxOffset++;
 
-                        // strip IDs from channel object and children
-                        chanObj = stripIdsFromChannelJson(chanObj);
+                        // recursively remove "id" field from JSON (forgive me, mcslee lolol)
+                        JsonElement noIdsChanElement = removeIds(chanObj);
 
                         // load the channel into LX
-                        c.load(lx, chanObj);
+                        c.load(lx, noIdsChanElement.getAsJsonObject());
 
                         // add channel to group
                         group.addChannel(c);
                     }
                 }
 
-                // try to move the group to where we need it to be
+                // move the group to where we need it to be
                 int delta = group.getIndex() - AUTO_VJ_GROUP_MIXER_IDX;
                 for (int i = 0; i < delta; i++) {
-                    lx.engine.mixer.moveChannel(group, 1);
+                    lx.engine.mixer.moveChannel(group, -1);
                 }
 
                 // finally, record correct indices per channel since they are in the group
                 // this will allow proper look up (ie: get channel idx for phrase of type CHORUS)
-                this.channel2idx.clear();
+                this.channelName2channel.clear();
                 for (LXChannel c : group.channels) {
-                    //TE.log("Channel: %s, key: %s, value: %d", c.toString(), c.label.getString(), c.getIndex());
-                    this.channel2idx.put(TEChannelName.valueOf(c.label.getString()), c.getIndex());
+                    TE.log("Channel: %s, key: %s, value: %d", c.toString(), c.label.getString(), c.getIndex());
+                    TEChannelName channelName = TEChannelName.valueOf(c.label.getString());
+                    this.channelName2channel.put(channelName, c);
                 }
 
                 // keep a reference to our LXGroup instance
