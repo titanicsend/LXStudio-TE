@@ -2,8 +2,7 @@
 
 const float PI = 3.1415926;
 
-mat2 r2d(in float degree) {
-    float rad = radians(degree);
+mat2 r2d(in float rad) {
     float c = cos(rad);
     float s = sin(rad);
     return mat2(vec2(c, s), vec2(-s, c));
@@ -42,7 +41,7 @@ float noise(in vec2 p) {
 
 float fbm(in vec2 p) {
 
-    mat2 rot = r2d(27.5);
+    mat2 rot = r2d(0.4799655);  // 27.5 degrees
 
     float d = noise(p); p *= rot;
     d += .5 * noise(p); p *= rot;
@@ -78,7 +77,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
     vec2 uv = mapToScreen(fragCoord.xy / iResolution.xy, 2.5 * 1.0/max(0.4,iScale));
 
-    uv *= r2d(iRotationAngle * PI * 12.);
+    uv *= r2d(iRotationAngle);
     float len = length(uv);
 
     // distort UVs a bit
