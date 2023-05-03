@@ -98,6 +98,9 @@ public class OrganicPatternConfig {
         protected List<PatternEffect> createEffects() {
 
             // set ranges for common controls
+            getControls().setRange(TEControlTag.SPEED, 0,-2,2); // Speed
+            getControls().setValue(TEControlTag.SPEED, 0.5);
+
             getControls().setRange(TEControlTag.QUANTITY, 0,1,4); // tiling
             getControls().setRange(TEControlTag.SIZE, 1,0.5,3);     // scale
             getControls().setRange(TEControlTag.WOW1, 5,1,20);    // iterations (intensity 1)
@@ -116,6 +119,9 @@ public class OrganicPatternConfig {
         protected List<PatternEffect> createEffects() {
 
             // set ranges for common controls
+            getControls().setRange(TEControlTag.SPEED, 0,-4,4); // Speed
+            getControls().setValue(TEControlTag.SPEED, 0.5);
+
             getControls().setRange(TEControlTag.QUANTITY, 0,1,4); // tiling
             getControls().setRange(TEControlTag.SIZE, 1,0.5,3);     // scale
             getControls().setRange(TEControlTag.WOW1, 5,1,20);    // iterations (intensity 1)
