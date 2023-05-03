@@ -3090,7 +3090,7 @@
               },
               {
                 "id": 30203,
-                "class": "titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig$Electric",
+                "class": "titanicsend.pattern.jon.Electric",
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
@@ -4745,7 +4745,7 @@
               },
               {
                 "id": 35028,
-                "class": "titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig$Electric",
+                "class": "titanicsend.pattern.jon.Electric",
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
@@ -6155,7 +6155,7 @@
               },
               {
                 "id": 44871,
-                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$BasicElectricEdges",
+                "class": "titanicsend.pattern.jon.ElectricEdges",
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
