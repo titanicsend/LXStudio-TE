@@ -3,79 +3,45 @@ package titanicsend.pattern.jon;
 import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.color.LinkedColorParameter;
-import heronarts.lx.model.LXPoint;
-import heronarts.lx.parameter.BooleanParameter;
-import heronarts.lx.parameter.CompoundParameter;
-import heronarts.lx.parameter.LXParameter;
-import titanicsend.model.TEEdgeModel;
-import titanicsend.model.TEPanelModel;
-import titanicsend.pattern.TEAudioPattern;
+import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
-import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
-import titanicsend.util.TE;
 
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
-@LXCategory("Native Shaders Panels")
+@LXCategory("Combo FG")
 public class EdgeFall extends TEPerformancePattern {
     NativeShaderPatternEffect effect;
     NativeShader shader;
-    VariableSpeedTimer time;
-    float eventStartTime;
-    float elapsedTime;
-    static final float fallingCycleLength = 2.75f;
-    static final float pauseCycleLength = 0.25f;
-
-    boolean isFalling = true;
-
-    static final int LINE_COUNT = 32;
+    double eventStartTime;
+    double elapsedTime;
+    static final double fallingCycleLength = 2.75;
+    static final double burstDuration = 0.2;
+    boolean isFalling;
+    static final int LINE_COUNT = 52;
     FloatBuffer gl_segments;
     float[][] saved_lines;
     float[][] working_lines;
     float[][] line_velocity;
 
-    public final CompoundParameter lineType = (CompoundParameter)
-            new CompoundParameter("Type", 0, 0, 2)
-                    .setUnits(LXParameter.Units.INTEGER)
-                    .setDescription("LineType");
-
-    public final CompoundParameter glow =
-            new CompoundParameter("Glow", 80, 200, 10)
-                    .setDescription("Line glow level");
-
-    public final CompoundParameter energy =
-            new CompoundParameter("Energy", .15, 0, 1)
-                    .setDescription("Oh boy...");
-
-    public final BooleanParameter explode =
-            new BooleanParameter("Xplode!", false)
-                    .setDescription("Yesssss!");
-
     // Constructor
     public EdgeFall(LX lx) {
         super(lx);
-        addParameter("lineType",lineType);
-        addParameter("glow",glow);
-        addParameter("energy", energy);
-        addParameter("explode",explode);
 
-        // create new effect with alpha on and no automatic
-        // parameter uniforms
+        // Size controls line width/glow
+        controls.setRange(TEControlTag.SIZE, 80, 200, 15);
+        controls.setExponent(TEControlTag.SIZE,0.3);
 
-        ShaderOptions options = new ShaderOptions();
-        options.useAlpha(true);
-        options.useLXParameterUniforms(false);
+        // Wow1 - beat reactive pulse
+        controls.setRange(TEControlTag.WOW1, 0, 0, 0.65);
+        // wow2 - foreground vs gradient color mix
+
+        addCommonControls();
 
         effect = new NativeShaderPatternEffect("edgefall.fs",
-                PatternTarget.allPointsAsCanvas(this), options);
+            PatternTarget.allPointsAsCanvas(this));
 
         // create an n x 4 array, so we can pass line segment descriptors
         // to GLSL shaders.
@@ -92,115 +58,55 @@ public class EdgeFall extends TEPerformancePattern {
         // per-line x and y velocity components
         line_velocity = new float[LINE_COUNT][2];
 
-        // grab up some random edges to test
-        // NOTE: To add more edges, you need to change LINE_COUNT so the
-        // segment buffer will be the right size.
-        scanForHappyEdges();
-/*
-        getLineFromEdge(0,"99-100");
-        getLineFromEdge(1,"26-115");
-        getLineFromEdge(2,"69-127");
-        getLineFromEdge(3,"90-93");
-        getLineFromEdge(4,"26-99");
-        getLineFromEdge(5,"51-90");
-*/
+        // Select the edges we want to draw. NOTE: To add more edges, you need
+        // to change LINE_COUNT so the segment buffer will be the right size. OpenGL
+        // is very picky about this!
+        CarGeometryPatternTools.getPanelConnectedEdges(getModelTE(), "^S.*$", saved_lines, LINE_COUNT);
 
         randomizeLineVelocities();
 
-        time = new VariableSpeedTimer();
-        eventStartTime = -99f;
+        eventStartTime = -99;
+        isFalling = false;
     }
 
     // store segment descriptors in our GL line segment buffer.
-    void setUniformLine(int segNo,float x1,float y1, float x2, float y2) {
+    void setUniformLine(int segNo, float x1, float y1, float x2, float y2) {
         //TE.log("setLine %d : %.4f %.4f, %.4f %.4f",segNo,x1,y1,x2,y2);
         gl_segments.position(segNo * 4);
-        gl_segments.put(-x1); gl_segments.put(y1);
-        gl_segments.put(-x2); gl_segments.put(y2);
+        gl_segments.put(-x1);
+        gl_segments.put(y1);
+        gl_segments.put(-x2);
+        gl_segments.put(y2);
         gl_segments.rewind();
-    }
-
-    // convert from normalized physical model coords
-    // to aspect corrected normalized 2D GL surface coords
-    float modelToMapX(LXPoint pt) {
-        return -0.5f + pt.zn;
-    }
-
-    // convert from normalized physical model coords
-    // to aspect corrected normalized 2D GL surface coords
-    float modelToMapY(LXPoint pt) { return -0.5f + pt.yn;  }
-
-    void scanForHappyEdges() {
-         Set<TEEdgeModel> edges = modelTE.getAllEdges();
-         int edgeCount = 0;
-
-        for (TEEdgeModel edge : edges) {
-
-            if (edge.connectedPanels.size() > 1) {
-                for (TEPanelModel panel : edge.connectedPanels) {
-
-                    // use only starboard side panels
-                    if (panel.getId().startsWith("S")) {
-                        // don't use the upper panels
-                        if (panel.getId().startsWith("SU")) continue;
-
-                        //TE.log("We like edge: %s",edge.getId());
-                        getLineFromEdge(edgeCount,edge.getId());
-                        edgeCount++;
-                        break;
-                    }
-                }
-            }
-
-        }
-        //TE.log("We liked %d edges today!",edgeCount);
-    }
-
-
-    // given an edge id, adds a model edge's vertices to our list of line segments
-    void getLineFromEdge(int index, String id) {
-        LXPoint v1,v2;
-
-        HashMap<String,TEEdgeModel> edges = modelTE.edgesById;
-
-        TEEdgeModel edge = edges.get(id);
-        if (edge != null) {
-            //TE.log("Found edge %s", id);
-        }
-        else {
-            TE.log("Null edge %s",id);
-        }
-        v1 = edge.points[0]; v2 = edge.points[edge.points.length - 1];
-
-        // set x1,y1,x2,y2 in line array
-        saved_lines[index][0] = modelToMapX(v1);  saved_lines[index][1] = modelToMapY(v1);
-        saved_lines[index][2] = modelToMapX(v2);  saved_lines[index][3] = modelToMapY(v2);
     }
 
     // sends an array of line segments to the shader
     // should be called after all line computation is done,
     // before running the shader
-    void sendSegments(float[][] lines,int nLines) {
+    void sendSegments(float[][] lines, int nLines) {
         for (int i = 0; i < nLines; i++) {
-            setUniformLine(i,lines[i][0],lines[i][1],lines[i][2],lines[i][3]);
+            setUniformLine(i, lines[i][0], lines[i][1], lines[i][2], lines[i][3]);
         }
-        shader.setUniform("lines", gl_segments,4);
+        shader.setUniform("lines", gl_segments, 4);
     }
 
-    // set line falling speeds velocities.  This is a truly silly way to do it!
+    // generate a random value between a and b with minimum absolute value of c
+    float randomBetween(float a, float b, float c) {
+        float r = (float) (Math.random() * (b - a) + a);
+        if (Math.abs(r) < c) {
+            r = (r < 0) ? -c : c;
+        }
+        return r;
+    }
+
+    // set speed and direction of falling lines
     void randomizeLineVelocities() {
-
-        // we let the lines drift around a bit in x and
-        // mostly fall quickly in y
-
         for (int i = 0; i < LINE_COUNT; i++) {
-            line_velocity[i][0] = (float) (8.0 * (Math.random() - 0.5));
-            line_velocity[i][1] = (float) (5.0 * (Math.random() - 0.5));
+            line_velocity[i][0] = randomBetween(-8, 8, 1);
+            line_velocity[i][1] = randomBetween(-5, 5, 1);
         }
     }
 
-    // test -- something simple that moves the lines a little
-    int measureCount = 0;
     void moveLines(float[][] src, float[][] dst) {
 
         float d = (isFalling) ? (float) (-0.5 * elapsedTime / fallingCycleLength) : 0f;
@@ -215,59 +121,43 @@ public class EdgeFall extends TEPerformancePattern {
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
-        float glw;
-        time.tick();
+        float glowLevel;
 
-        // negative time b/c VariableSpeedTimer has a bug which I'm
-        // stuck with for the moment because lots of patterns use it.
-        float t = -time.getTimef();
-        elapsedTime = t - eventStartTime;
+        double t = getTime();
+        elapsedTime = Math.abs(t - eventStartTime);
 
-        if (!explode.getValueb()) isFalling = false;
-        glw = glow.getValuef();
+        glowLevel = (float) getSize();
 
-        // tiny state machine for falling vs. paused states
+        // tiny state machine for falling vs. resting states
         if (isFalling) {
-            if (elapsedTime > fallingCycleLength) {
-                isFalling = false;
-                eventStartTime = t;
-                elapsedTime = 0f;
-                explode.setValue(false);
-            }
-            else  if (elapsedTime <= 0.1) {
-                // simulate short explosive burst
-                glw *= elapsedTime / 0.1f;
+            // simulate short explosive burst (by greatly increasing line
+            // width/glow) when event is first triggered
+            if (elapsedTime < burstDuration) {
+                glowLevel *= elapsedTime / burstDuration;
             }
         } else {
-            if (elapsedTime > pauseCycleLength) {
-                isFalling = true;
-                eventStartTime = t;
-                randomizeLineVelocities();
-                elapsedTime = 0f;
-            }
-
+            eventStartTime = t;
+            randomizeLineVelocities();
+            elapsedTime = 0;
         }
 
         moveLines(saved_lines, working_lines);
 
-        // choose line drawing method.
-        // type 0 glows and has pointy ends
-        // type 1 glows more and is a normal line segment
-        // type 2 is a bright, well defined line with very little glow.
-        shader.setUniform("lineType",(int) Math.floor(lineType.getValuef()));
-
-        // send line width "glow" parameter
-        shader.setUniform("glow",glw);
+        shader.setUniform("iScale", glowLevel);
 
         // send line segment array data
-        sendSegments(working_lines,LINE_COUNT);
-
-        // Sound reactivity - various brightness features are related to energy
-        float e = energy.getValuef();
-        shader.setUniform("energy",e);
+        sendSegments(working_lines, LINE_COUNT);
 
         // run the shader
         effect.run(deltaMs);
+    }
+
+    @Override
+    protected void onWowTrigger(boolean on) {
+        // when the wow trigger button is pressed...
+        if (on) {
+            isFalling = !isFalling;
+        }
     }
 
     @Override

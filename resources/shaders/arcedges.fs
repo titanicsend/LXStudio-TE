@@ -1,6 +1,8 @@
 #define LINE_COUNT 52
 uniform vec4[LINE_COUNT] lines;
 
+float sparkAmp;
+
 // Simple fbm noise system, used to generate the noise
 // field we use for electri arcs
 vec2 hash (in vec2 p) {
@@ -23,7 +25,7 @@ float noise (in vec2 p) {
 
   vec3 h = max (.5 - vec3 (dot (a, a), dot (b, b), dot (c, c) ), .0);
 
-  vec3 n = h*h*h*h*vec3 (dot (a, hash (i + .0)),
+  vec3 n = h * h * h * h *vec3 (dot (a, hash (i + .0)),
                          dot (b, hash (i + o)),
                          dot (c, hash (i + 1.)));
 
@@ -41,24 +43,19 @@ float fbm(vec2 pos, float tm) {
 
     aggr /= 1.0 + 0.5 + 0.25 + 0.125;
 
-    return (aggr * 0.5) + 0.5;
+    return sparkAmp * (aggr * 0.5) + 0.5;
 }
 
-// NOTE: Two color shader.  Uses iColorRGB as the first color, and the
-// secondary palette color as the second color.
+// turn the noise field into electric arcs in two colors
 vec3 electrify(vec2 pos, float offset,float direction) {
-    vec3 col = vec3(0.0);
+    float noiseMag = offset * iWow1 * sparkAmp;
+    float time = direction * iTime;
     vec2 f = vec2(0.0, iTime * 0.25*direction);
-    float noiseMag = offset * iWow1;
 
-    for (int i = 0; i < 2; i++) {
-        float time = direction * iTime + float(i);
-
-        float d1 = abs(noiseMag / (offset - fbm((pos + f) * 2.55, 2. * time)));
-        float d2 = abs(noiseMag / (offset - fbm((pos + f) * 1.41, time + 10.0)));
-        col += vec3(d1 * iColorRGB);
-        col += vec3(d2 * iColor2RGB);
-    }
+    float d1 = abs(noiseMag / (offset - fbm((pos + f) * 2.55, 2. * time)));
+    float d2 = abs(noiseMag / (offset - fbm((pos + f) * 1.41, time + 10.0)));
+    vec3 col = vec3(d1 * iColorRGB);
+    col += vec3(d2 * iColor2RGB);
     
     return col;
 }
@@ -76,10 +73,13 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     uv.x *= iResolution.x / iResolution.y;
     uv *= 0.5;
 
+    // additional voltage when wow trigger is pressed
+    sparkAmp = (iWowTrigger) ? 2 : 1.0;
+
     vec3 finalColor = vec3(0.0);
     for (int i = 0; i < LINE_COUNT; i++) {
 
-      float dist = glowline2(uv,lines[i],iScale);
+      float dist = glowline2(uv,lines[i],iWow2);
 
       // add contribution of this segment's "electric arcs"
       vec3 col = electrify(uv, dist + iQuantity,(mod(i,2) == 0) ? 1. : -1.);

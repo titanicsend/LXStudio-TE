@@ -39,18 +39,6 @@ public class ShaderPanelsPatternConfig {
     }
 
     @LXCategory("Native Shaders Panels")
-    public static class Electric extends ConstructedPattern {
-        public Electric(LX lx) {
-            super(lx);
-        }
-        @Override
-        protected List<PatternEffect> createEffects() {
-            return List.of(new NativeShaderPatternEffect("electric.fs",
-                    PatternTarget.doubleLargeCanvas(this)));
-        }
-    }
-
-    @LXCategory("Native Shaders Panels")
     public static class NeonHeartNative extends ConstructedPattern {
         public NeonHeartNative(LX lx) {
             super(lx);

@@ -7,6 +7,8 @@ import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEPattern;
+import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.shaders.FragmentShaderEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.util.TE;
@@ -23,28 +25,17 @@ import static titanicsend.util.TEMath.multiplyArrays;
 
 public class MatrixScrolling extends FragmentShaderEffect {
 
-    public final CompoundParameter radius =
-            new CompoundParameter("Blast radius", 2 * 100000, 0, 6 * 100000)
-                    .setDescription("");
-
-    public final CompoundParameter centering =
-            new CompoundParameter("Centering", 0.5, 0., 1.)
-                    .setDescription("");
-
-    public final CompoundParameter blockSize =
-            new CompoundParameter("Block size", 0.02, 0.01, 0.05)
-                    .setDescription("");
-
-    public final CompoundParameter speed =
-            new CompoundParameter("Speed", 1, -2., 2)
-                    .setDescription("");
-
-    public final BooleanParameter beatReactive = new BooleanParameter("Beat reactive", true);
-
     public MatrixScrolling(PatternTarget target) {
         super(target);
-        centering.setPolarity(LXParameter.Polarity.BIPOLAR);
-        speed.setPolarity(LXParameter.Polarity.BIPOLAR);
+
+        TEPerformancePattern.TECommonControls ctl = pattern.getControls();
+
+        ctl.setRange(TEControlTag.SPEED, 0, -4.0, 4.0);
+        ctl.setValue(TEControlTag.SPEED, 0.5);
+
+        ctl.setRange(TEControlTag.SIZE, 0.02, 0.05, 0.01);  // block size
+        ctl.setRange(TEControlTag.WOW1, 0.0, 0, 3);        // blast radius
+        ctl.setRange(TEControlTag.WOW2, 0.0, 0, 1);         // beat reactivity
     }
 
     @Override
@@ -56,16 +47,16 @@ public class MatrixScrolling extends FragmentShaderEffect {
         double measureProgress = 1.0 - this.pattern.getLX().engine.tempo.getBasis(Tempo.Division.WHOLE); // 1 when we start measure, 0 when we finish
         measureProgress *= measureProgress; // steeper curve
 
-        if (radius.getValue() > 0) {
-            int offset = (int)(measureProgress * random.nextInt( (int)(radius.getValue()) ));
+        if (pattern.getWow1() > 0) {
+            int offset = (int) (measureProgress * random.nextInt((int)(100000 * pattern.getWow1())));
             fragCoordinates = addToArray(offset, fragCoordinates);
         }
 
         //        vec3 v = vec3(u, 1) / iResolution - 0.5;
         double[] v = new double[]{
-                fragCoordinates[0] / resolution[0] - centering.getValue(),
-                fragCoordinates[1] / resolution[1] - centering.getValue(),
-                1.0
+            fragCoordinates[0] / resolution[0] - 0.5 + pattern.getXPos(),
+            fragCoordinates[1] / resolution[1] - 0.5 + pattern.getYPos(),
+            1.0
         };
 
         //        vec3 s = 0.3 / abs(v);
@@ -79,15 +70,15 @@ public class MatrixScrolling extends FragmentShaderEffect {
         //        vec3 t = s.y < s.x ? v.xzz : v.zyz;
         double[] t = new double[3];
         if (s[1] < s[0]) {
-            t = new double[]{ v[0], v[2], v[2] };
+            t = new double[]{v[0], v[2], v[2]};
         } else {
-            t = new double[]{ v[2], v[1], v[2] };
+            t = new double[]{v[2], v[1], v[2]};
         }
 
         //        vec3 i = ceil(8e2 * s.z * t);
         double[] i = new double[3];
         for (int m = 0; m < 3; m++) {
-            i[m] = Math.ceil(8e2 * s[2] * t[m]) * blockSize.getValue();  //        i *= 0.1;
+            i[m] = Math.ceil(8e2 * s[2] * t[m]) * pattern.getSize();  //        i *= 0.1;
         }
 
         //        vec3 j = fract(i);
@@ -100,24 +91,25 @@ public class MatrixScrolling extends FragmentShaderEffect {
         double b = (9. + 8. * Math.sin(i[0]));
 
         //        int tb = int(iTime * b);
-        int tb = (int)(timeSeconds * speed.getValue() * b);
+        int tb = (int) (-timeSeconds * b);
 
         //        vec3 p = vec3(9, tb, 0) + i;
-        double[] p = new double[]{ i[0] + 9.0, i[1] + tb, i[2]};
+        double[] p = new double[]{i[0] + 9.0 , i[1] + tb, i[2]};
 
         // #define R fract(1e2 * sin(p.x * 5. + p.y))
         //        color.g = R / s.z;
         double[] color = new double[3];
-        double R = fract(1e2 * Math.sin(p[0] * 5. + p[1]));
-        //color[2] = R / s[2];
+        double R = fract(100 * Math.sin(p[0] * 5. + p[1]));
 
-        int swatchRGB = this.pattern.getSwatchColor(TEPattern.ColorType.PRIMARY);
-        float rn = (float) (0xff & LXColor.red(swatchRGB)) / 255f;
-        float gn = (float) (0xff & LXColor.green(swatchRGB)) / 255f;
-        float bn = (float) (0xff & LXColor.blue(swatchRGB)) / 255f;
-        color[0] = R / s[2] * rn ;
-        color[1] = R / s[2] * gn ;
-        color[2] = R / s[2] * bn ;
+        //color[2] = R / s[2];
+        float  k = (float) (R / s[2]);
+        int swatchRGB = pattern.getGradientColor(k);
+        float rn = k * (float) (0xff & LXColor.red(swatchRGB)) / 255f;
+        float gn = k * (float) (0xff & LXColor.green(swatchRGB)) / 255f;
+        float bn = k * (float) (0xff & LXColor.blue(swatchRGB)) / 255f;
+        color[0] = rn;
+        color[1] = gn;
+        color[2] = bn;
 
         //TE.log("green val: %f, my green: %f", R / s[2], color[1]);
 
@@ -130,17 +122,15 @@ public class MatrixScrolling extends FragmentShaderEffect {
         //        color *= (oneOrZero ? 1.0 : 0.0);
         color = multiplyArray(oneOrZero ? 1.0 : 0.0, color);
 
-        // apply beat
-        if (beatReactive.getValueb()) {
-            double oneOnBeatAndLessNearEnd = 1.0 - this.pattern.getLX().engine.tempo.basis();
-            color = multiplyArray(oneOnBeatAndLessNearEnd, color);
-        }
+        // apply beat reactivity, amount controlled by getWow2
+        double oneOnBeatAndLessNearEnd = 1.0 - (pattern.getWow2() * this.pattern.getLX().engine.tempo.basis());
+        color = multiplyArray(oneOnBeatAndLessNearEnd, color);
 
         return color;
     }
 
     @Override
     public Collection<LXParameter> getParameters() {
-        return List.of(radius, centering, blockSize, speed, beatReactive);
+        return null;
     }
 }
