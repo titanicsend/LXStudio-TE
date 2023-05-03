@@ -33,7 +33,11 @@ public class ShaderUtils {
 
     public static String loadResource(String fileName) {
         try {
-            return new Scanner(new File(fileName), "UTF-8").useDelimiter("\\A").next();
+            Scanner s = new Scanner(new File(fileName), "UTF-8");
+            s.useDelimiter("\\A");
+            String result = s.next();
+            s.close();
+            return result;
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
