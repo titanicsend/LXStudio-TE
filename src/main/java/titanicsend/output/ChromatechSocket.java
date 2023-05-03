@@ -5,6 +5,7 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.output.ArtNetDatagram;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
+import titanicsend.util.TE;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -97,17 +98,22 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
     }
     int noobFirstPixel = strandOffset;
     int noobLastPixel = strandOffset + edge.size - 1;
+    boolean conflict = false;
     for (EdgeLink edgeLink : this.edgeLinks) {
       int existingFirstPixel = edgeLink.strandOffset;
       int existingLastPixel = existingFirstPixel + edgeLink.edge.size - 1;
       if (existingFirstPixel <= noobLastPixel &&
-              existingLastPixel >= noobFirstPixel)
-        throw new IllegalArgumentException(edge.repr() + ", running from " +
-                noobFirstPixel + "-" + noobLastPixel + ", overlaps " +
-                edgeLink.edge.repr() + ", running from " + existingFirstPixel +
-                "-" + existingLastPixel);
+              existingLastPixel >= noobFirstPixel) {
+        conflict = true;
+        TE.err(edge.repr() + ", running from " +
+               noobFirstPixel + "-" + noobLastPixel + ", overlaps " +
+               edgeLink.edge.repr() + ", running from " + existingFirstPixel +
+               "-" + existingLastPixel);
+      }
     }
-    this.edgeLinks.add(new EdgeLink(edge, strandOffset, fwd));
+    if (!conflict) {
+      this.edgeLinks.add(new EdgeLink(edge, strandOffset, fwd));
+    }
   }
 
   private void registerUniverses(LX lx, List<Integer> multiUniverseIndexBuffer) {
