@@ -645,7 +645,7 @@
               },
               {
                 "id": 47446,
-                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$BasicElectricEdges",
+                "class": "titanicsend.pattern.jon.ElectricEdges",
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
