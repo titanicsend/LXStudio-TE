@@ -5,6 +5,7 @@ import heronarts.lx.LX;
 import heronarts.lx.mixer.LXAbstractChannel;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.mixer.LXGroup;
+import titanicsend.app.TEAutopilot;
 import titanicsend.util.TE;
 
 import java.io.FileNotFoundException;
@@ -36,14 +37,16 @@ public class TEAutopilotMixer {
     // mapping from TEChannelName -> LXChannel
     private HashMap<TEChannelName, LXChannel> channelName2channel;
 
-    private LX lx;
-    private TEPatternLibrary library;
+    private final LX lx;
+    private final TEAutopilot autopilot;
+    private final TEPatternLibrary library;
 
     // our LX mixer group
     private LXGroup autoVjGroup = null;
 
-    public TEAutopilotMixer(LX lx, TEPatternLibrary library) {
+    public TEAutopilotMixer(LX lx, TEAutopilot autopilot, TEPatternLibrary library) {
         this.lx = lx;
+        this.autopilot = autopilot;
         this.library = library;
         channelName2channel = new HashMap<>();
     }
@@ -280,6 +283,12 @@ public class TEAutopilotMixer {
                 }
 
                 assert rootElt != null;
+
+                if (this.autopilot.includePalette.isOn()) {
+                    // TODO: Import the palette swatches and current swatch from file.  Skip duplicates.
+                    TE.log("Importing color palette...");
+                }
+
                 JsonArray channelsArray = rootElt.getAsJsonObject()
                         .getAsJsonObject("engine")
                         .getAsJsonObject("children")

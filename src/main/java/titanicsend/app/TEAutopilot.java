@@ -28,6 +28,11 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
         .setMode(Mode.TOGGLE)
         .setDescription("AutoVJ On/Off");
 
+    public final BooleanParameter includePalette =
+        new BooleanParameter("Palette", false)
+        .setMode(Mode.TOGGLE)
+        .setDescription("If True, import the global palette swatches from file when AutoVJ is started");
+
     private final LXParameterListener enabledListener = (p) -> {
       onEnabled(this.enabled.isOn());
     };
@@ -133,9 +138,11 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
         super(lx);
         this.library = l;
         this.history = history;
-        this.autoMixer = new TEAutopilotMixer(lx, this.library);
+        this.autoMixer = new TEAutopilotMixer(lx, this, this.library);
 
         addParameter("Enabled", this.enabled);
+        addParameter("Palette", this.includePalette);
+
         this.enabled.addListener(enabledListener);
 
         // this queue needs to be accessible from OSC listener in diff thread
