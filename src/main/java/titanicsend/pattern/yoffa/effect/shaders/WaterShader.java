@@ -26,8 +26,13 @@ public class WaterShader extends FragmentShaderEffect {
         // normalize coords to 0 to 1 range, then do the translate, scale, rotate thing.
         double[] uv = divideArrays(fragCoordinates, resolution);
         uv = translate(uv);
-        uv = multiplyArray(pattern.getSize(), uv);
         uv = rotate2D(uv, origin);
+        double scale = pattern.getSize();
+        uv = multiplyArray(scale, uv);
+
+        // set coord system origin so we stay centered while zooming w/size control
+        uv[0] -= origin[0] * scale;
+        uv[1] -= origin[1] * scale;
 
         double tileFactor = TAU * pattern.getQuantity();
         double[] p = addToArray(-250, mod(multiplyArray(tileFactor, uv), TAU));
@@ -43,10 +48,13 @@ public class WaterShader extends FragmentShaderEffect {
         }
         c /= pattern.getWow1();
         c = 1.17 - pow(c, 1.4);
-        double colourValue = pow(abs(c), 8.0);
-        double[] colour = new double[]{colourValue, colourValue, colourValue};
 
-        colour = clamp(addArrays(colour, new double[]{0.0, 0.35, 0.5}), 0.0, 1.0);
+        double colourValue = 0.5+pow(abs(c), 8.0);
+
+        double[] colour = new double[4];
+        colorToRGBArray(calcColor(), colour);
+        colour = clamp(multiplyArray(colourValue,colour),0.0,1.0);
+        colour[3] = max(colour[0],max(colour[1],colour[2]));
 
         return colour;
     }
