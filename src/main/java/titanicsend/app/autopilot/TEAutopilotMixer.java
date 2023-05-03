@@ -192,6 +192,55 @@ public class TEAutopilotMixer {
         return new AutoVJScanResult(found, groupIdx);
     }
 
+    public JsonObject stripIdsFromJsonObject(JsonObject o) {
+        if (o.keySet().contains("id"))
+            o.remove("id");
+
+        if (o.keySet().contains("group"))
+            o.remove("group");
+
+        return o;
+    }
+
+    public JsonArray stripIdsFromJsonArray(JsonArray arr) {
+        JsonArray newArr = new JsonArray(arr.size());
+        for (JsonElement elt : arr) {
+            JsonObject o = stripIdsFromJsonObject(elt.getAsJsonObject());
+            newArr.add(o);
+        }
+        return newArr;
+    }
+
+    public JsonObject stripIdsFromChannelJson(JsonObject channelObj) {
+        // clear top level IDs
+        channelObj = stripIdsFromJsonObject(channelObj);
+
+        // get patterns array, clear top level IDs for those too
+        JsonArray patternsArr = channelObj.getAsJsonArray("patterns");
+        patternsArr = stripIdsFromJsonArray(patternsArr);
+
+        // now need to handle modulators as well
+        JsonArray newPatternsArr = new JsonArray(patternsArr.size());
+        for (JsonElement patternElt : patternsArr) {
+            JsonObject patternObj = patternElt.getAsJsonObject();
+            JsonObject childrenObj = patternObj.getAsJsonObject("children");
+            JsonObject modulationObj = childrenObj.getAsJsonObject("modulation");
+            modulationObj = stripIdsFromJsonObject(modulationObj);
+
+            childrenObj.remove("modulation");
+            childrenObj.add("modulation", modulationObj);
+
+            patternObj.remove("children");
+            patternObj.add("children", childrenObj);
+
+            newPatternsArr.add(patternObj);
+        }
+        channelObj.remove("patterns");
+        channelObj.add("patterns", newPatternsArr);
+
+        return channelObj;
+    }
+
     /**
      * Finds an LXGroup channel group that is set up for AutoVJ to use.
      *
@@ -226,11 +275,8 @@ public class TEAutopilotMixer {
 
                 // we're now ready to populate the LX mixer with the channels and
                 // group that AutoVJ needs to operate with
-
-                // create group
-                // TODO: maybe remove this if JSON file loading works? otherwise might end up with
-                //       two different groups on the mixer with the name "AUTO_VJ"
                 TE.log("Creating and populating AutoVJ channel set...");
+
                 // Create empty channels to put the AutoVJ group on the 8th fader
                 while (lx.engine.mixer.channels.size() < AUTO_VJ_GROUP_MIXER_IDX) {
                   lx.engine.mixer.addChannel()
@@ -241,118 +287,76 @@ public class TEAutopilotMixer {
                 //group.enabled.setValue(false); // turn off initially
 
                 // read the AutoVJ JSON file
-//                String autoVJpath = "Projects/AutoVJ_grouped.lxp";
-//                try {
-//                    // pull out the sub-JSON objects we need
-//                    JsonParser parser = new JsonParser();
-//                    JsonElement rootElt = parser.parse(new FileReader(autoVJpath));
-//                    JsonObject root = rootElt.getAsJsonObject();
-//                    JsonObject engineObj = root.getAsJsonObject("engine");
-//                    JsonObject childrenObj = engineObj.getAsJsonObject("children");
-//                    JsonObject mixerObj = childrenObj.getAsJsonObject("mixer");
-//                    JsonArray channelsArray = mixerObj.getAsJsonArray("channels");
-//
-//                    int autoVjGroupId = -1; // JSON id assigned to node for "AUTO_VJ" LXGroup
-//                    int channelIdxOffset = 1; // index with which to insert new channel for group
-//                    for (JsonElement chan : channelsArray) {
-//                        // again, pull out sub-JSON objects we need
-//                        JsonObject chanObj = chan.getAsJsonObject();
-//                        String classname = chanObj.get("class").getAsString();
-//                        JsonObject params = chanObj.getAsJsonObject("parameters");
-//                        String label = params.get("label").getAsString();
-//
-//                        // every channel will have a channel ID, but only internal channels
-//                        // to a group will have a group JSON ID
-//                        int channelId = Integer.parseInt(chanObj.get("id").getAsString());
-//                        int groupId = -2; // need a different default than autoVjGroupId :)
-//                        try {
-//                            groupId = Integer.parseInt(chanObj.get("group").getAsString());
-//                        } catch (Exception e) {
-//                            // do nothing here, just didn't have a parent group
-//                        }
-//
-//                        // if we haven't found the AUTO_VJ group yet, keep going
-//                        if (autoVjGroupId == -1) {
-//                            if (label.equals(AUTO_VJ_GROUP_NAME) && classname.equals("heronarts.lx.mixer.LXGroup")) {
-//                                autoVjGroupId = channelId;
-//                                TE.log("AutoVJ group id: %d", autoVjGroupId);
+                String autoVJpath = "Projects/AutoVJ_grouped_ids.lxp";
+                try {
+                    // pull out the sub-JSON objects we need
+                    JsonParser parser = new JsonParser();
+                    JsonElement rootElt = parser.parse(new FileReader(autoVJpath));
+                    JsonObject root = rootElt.getAsJsonObject();
+                    JsonObject engineObj = root.getAsJsonObject("engine");
+                    JsonObject childrenObj = engineObj.getAsJsonObject("children");
+                    JsonObject mixerObj = childrenObj.getAsJsonObject("mixer");
+                    JsonArray channelsArray = mixerObj.getAsJsonArray("channels");
 
-//                                // attempting to add the entire group object to the mixer
-//                                lx.engine.mixer.load(lx, chanObj);
-//
-//                                // now that we added it, find and validate our group
-//                                AutoVJScanResult postLoadScan = this.findAutoVJGroupIndex(false);
-//                                if (postLoadScan.found) {
-//                                    group = (LXGroup) lx.engine.mixer.channels.get(postLoadScan.groupIdx);
-//                                    TE.log("Found compatible group post load at: %d", postLoadScan.groupIdx);
-//                                    break;
-//                                }
-//                            }
-//                        }
-//                        else if (groupId == autoVjGroupId) {
-//                            // this is a channel within the AutoVJ template group, let's pull the classnames from here
-//                            // and populate a new channel in our running app
-//                            TE.log("Found an AutoVJ channel: %s", label);
-//                            TEChannelName channelName = TEChannelName.valueOf(label);
-//
-//                            // create a new channel
-//                            LXChannel c = lx.engine.mixer.addChannel(groupIdx + channelIdxOffset);
-//                            c.label.setValue(channelName.toString());
-//                            channelIdxOffset++;
-//
-//                            // add channel to group
-//                            group.addChannel(c);
-//
-//                            TE.log("Chan obj: %s, groupID: %d", chanObj, group.getId());
-//
-//                            // load the channel into LX
-//                            c.load(lx, chanObj);
-//                        }
-//                    }
-//
-//                } catch (FileNotFoundException e) {
-//                    TE.err("TEAutopilotMixer, FileNotFoundException: %s", e);
-//                } catch (IOException ioe) {
-//                    TE.err("TEAutopilotMixer, IOException: %s", ioe);
-//                }
+                    int channelIdxOffset = 1; // index with which to insert new channel for group
+                    int autoVjTemplateGroupId = -1; // JSON id assigned to node for "AUTO_VJ" LXGroup
+                    for (JsonElement chan : channelsArray) {
+                        // again, pull out sub-JSON objects we need
+                        JsonObject chanObj = chan.getAsJsonObject();
+                        String classname = chanObj.get("class").getAsString();
+                        JsonObject params = chanObj.getAsJsonObject("parameters");
+                        String label = params.get("label").getAsString();
 
-                /**
-                 * TODO: replace the logic below with the commented out logic above
-                 *
-                 * This logic is able to populate the AutoVJ channels, but not with the parameterizations
-                 * from the .lxp, and not for non-phrase channels like STROBES or TRIGGERS
-                 */
-                // create channels, add to group
-                for (TEChannelName name : TEChannelName.values()) {
-                    LXChannel c = lx.engine.mixer.addChannel();
-                    c.label.setValue(name.toString());
+                        // every channel will have a channel ID, but only internal channels
+                        // to a group will have a group JSON ID
+                        int channelId = Integer.parseInt(chanObj.get("id").getAsString());
+                        int groupId = -2; // need a different default than autoVjGroupId :)
+                        try {
+                            groupId = Integer.parseInt(chanObj.get("group").getAsString());
+                        } catch (Exception e) {
+                            // do nothing here, just didn't have a parent group
+                        }
 
-                    for (Map.Entry<TEPatternLibrary.PhrasePatternCompositeKey, TEPatternLibrary.TEPatternRecord> e : this.library.getPatternMapping().entrySet()) {
-                        TEPatternLibrary.PhrasePatternCompositeKey key = e.getKey();
-                        TEChannelName chNameFromPhrase = TEChannelName.getChannelNameFromPhraseType(key.phrase);
-                        if (name == chNameFromPhrase) {
-                            TEPatternLibrary.TEPatternRecord record = e.getValue();
-                            try {
-                                Class<? extends LXPattern> patternClass = record.patternClass;
-                                Constructor<? extends LXPattern> constructor = patternClass.getConstructor(LX.class);
-                                LXPattern myPattern = constructor.newInstance(lx);
-                                c.addPattern(myPattern);
-                            } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException err) {
-                                TE.err("Error in populating TEAutopilotMixer: %s", err);
+                        // if we haven't found the AUTO_VJ group yet, keep going
+                        if (autoVjTemplateGroupId == -1) {
+                            if (label.equals(AUTO_VJ_GROUP_NAME) && classname.equals("heronarts.lx.mixer.LXGroup")) {
+                                autoVjTemplateGroupId = channelId;
+                                //TE.log("AutoVJ group id: %d", autoVjTemplateGroupId);
                             }
+                        }
+                        else if (groupId == autoVjTemplateGroupId) {
+                            // this is a channel within the AutoVJ template group, let's pull the classnames from here
+                            // and populate a new channel in our running app
+                            //TE.log("Found an AutoVJ channel: %s", label);
+                            TEChannelName channelName = TEChannelName.valueOf(label);
+
+                            // create a new channel
+                            LXChannel c = lx.engine.mixer.addChannel();
+                            c.label.setValue(channelName.toString());
+                            channelIdxOffset++;
+
+                            // strip IDs from channel object and children
+                            chanObj = stripIdsFromChannelJson(chanObj);
+
+                            // load the channel into LX
+                            c.load(lx, chanObj);
+
+                            // add channel to group
+                            group.addChannel(c);
                         }
                     }
 
-                    // TODO: remove this
-                    c.addPattern(new ShaderPanelsPatternConfig.Electric(lx)); // add as dummy pattern just for testing
+                    // try to move the group to where we need it to be
+                    int delta = group.getIndex() - AUTO_VJ_GROUP_MIXER_IDX;
+                    for (int i = 0; i < delta; i++) {
+                        lx.engine.mixer.moveChannel(group, 1);
+                    }
 
-                    group.addChannel(c);
+                } catch (FileNotFoundException e) {
+                    TE.err("TEAutopilotMixer, FileNotFoundException: %s", e);
+                } catch (IOException ioe) {
+                    TE.err("TEAutopilotMixer, IOException: %s", ioe);
                 }
-                /**
-                 * End logic that needs to be replaced.
-                 *
-                 * The stuff below is vital, and should be kept when we switch over to JSON loading logic.
-                 */
 
                 // finally, record correct indices per channel since they are in the group
                 // this will allow proper look up (ie: get channel idx for phrase of type CHORUS)
