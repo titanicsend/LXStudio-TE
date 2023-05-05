@@ -20,8 +20,12 @@
 
 package titanicsend.model.justin;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXModelComponent;
@@ -30,6 +34,7 @@ import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXView;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.parameter.ObjectParameter;
+import titanicsend.util.TE;
 
 /**
  * Generate a set of LXViews once, then allow each channel to scroll through
@@ -52,10 +57,20 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
 
   @Override
   protected void initialize() {
-    // TODO: Load views from... file?
     this.views = new ArrayList<ViewDefinition>();    
-    this.views.add(new ViewDefinition("DJ Edge", "dj-e", LXView.Normalization.RELATIVE));
-    this.views.add(new ViewDefinition("DJ Panel", "dj-p", LXView.Normalization.RELATIVE));
+
+    // Load view definitions from file
+    Properties savedViews = new Properties();
+    try (InputStream is = new FileInputStream("resources/vehicle/viewKnobs.properties")) {
+      savedViews.load(is);
+    } catch (IOException e) {
+      TE.err(e, "Error loading views:");
+      return;
+    }
+
+    for (String label : savedViews.stringPropertyNames()) {
+      this.views.add(new ViewDefinition(label, savedViews.getProperty(label), LXView.Normalization.RELATIVE));
+    }
     
     // Create LXViews once
     for (ViewDefinition v : this.views) {

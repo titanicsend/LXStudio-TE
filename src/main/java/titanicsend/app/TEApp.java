@@ -29,7 +29,6 @@ import java.util.function.Function;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
-import heronarts.lx.midi.surface.APC40Mk2;
 import heronarts.lx.midi.surface.MidiFighterTwister;
 import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.pattern.color.GradientPattern;
@@ -39,6 +38,7 @@ import heronarts.lx.studio.LXStudio;
 import processing.core.PApplet;
 import titanicsend.app.autopilot.*;
 import titanicsend.lasercontrol.TELaserTask;
+import titanicsend.lx.APC40Mk2;
 import titanicsend.model.TEWholeModel;
 import titanicsend.model.justin.ViewCentral;
 import titanicsend.output.GPOutput;

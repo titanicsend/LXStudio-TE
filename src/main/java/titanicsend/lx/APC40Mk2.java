@@ -58,9 +58,10 @@ import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.utils.LXUtils;
+import titanicsend.model.justin.ViewCentral;
+import titanicsend.model.justin.ViewCentral.ViewPerChannel;
 
 public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirectional {
-
 
   public static final String DEVICE_NAME = "APC40 mkII";
 
@@ -639,6 +640,7 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
 
     private final LXAbstractChannel channel;
     private final LXParameterListener onCompositeModeChanged = this::onCompositeModeChanged;
+    ViewPerChannel viewPerChannel;
 
     ChannelListener(LXAbstractChannel channel) {
       this.channel = channel;
@@ -668,6 +670,15 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
           clip.loop.addListener(this);
         }
       }
+
+      // Listen to custom view parameter for channel
+      this.viewPerChannel = ViewCentral.get().get(channel);
+      if (this.viewPerChannel != null) {
+        this.viewPerChannel.view.addListener(this);
+        if (channelKnobIsView.isOn()) {
+          sendChannelKnob((int) (this.viewPerChannel.view.getNormalized() * 127));
+        }
+      }
     }
 
     public void dispose() {
@@ -694,6 +705,10 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
           clip.running.removeListener(this);
           clip.loop.removeListener(this);
         }
+      }
+      if (this.viewPerChannel != null) {
+        this.viewPerChannel.view.removeListener(this);
+        this.viewPerChannel = null;
       }
     }
 
@@ -727,6 +742,11 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
           sendNoteOn(index, CHANNEL_ARM, this.channel.arm.isOn() ? LED_ON : LED_OFF);
         }
         sendChannelClips(this.channel.getIndex(), this.channel);
+      } else if (this.viewPerChannel != null && p == this.viewPerChannel.view) {
+        if (channelKnobIsView.isOn()) {
+          sendChannelKnob((int) (this.viewPerChannel.view.getNormalized() * 127));
+        }
+        return;
       } else if (p.getParent() instanceof LXClip) {
         LXClip clip = (LXClip) p.getParent();
         sendClip(index, this.channel, clip.getIndex(), clip);
@@ -785,6 +805,11 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
       sendChannelClips(this.channel.getIndex(), this.channel);
     }
 
+    private void sendChannelKnob(int value) {
+      if (this.channel.getIndex() < CHANNEL_KNOB_NUM) {
+        sendControlChange(0, CHANNEL_KNOB + this.channel.getIndex(), value);
+      }
+    }
   }
 
   public final BooleanParameter masterFaderEnabled =
@@ -795,11 +820,16 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
     new BooleanParameter("Crossfader", true)
     .setDescription("Whether the A/B crossfader is enabled");
 
+  public final BooleanParameter channelKnobIsView =
+    new BooleanParameter("CH Knob is View", true)
+    .setDescription("Whether to control Views with the channel knobs at the top of the APC40Mk2");
+
   public APC40Mk2(LX lx, LXMidiInput input, LXMidiOutput output) {
     super(lx, input, output);
     this.deviceListener = new DeviceListener(lx);
     addSetting("masterFaderEnabled", this.masterFaderEnabled);
     addSetting("crossfaderEnabled", this.crossfaderEnabled);
+    addSetting("channelKnobIsView", this.channelKnobIsView);
   }
 
   @Override
@@ -1791,7 +1821,12 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
     }
 
     if (number >= CHANNEL_KNOB && number <= CHANNEL_KNOB_MAX) {
-      sendControlChange(cc.getChannel(), cc.getCC(), cc.getValue());
+      int channel = number - CHANNEL_KNOB;
+      if (channel < this.lx.engine.mixer.channels.size() && this.channelKnobIsView.isOn()) {
+        ViewCentral.get().get(this.lx.engine.mixer.channels.get(channel)).view.setNormalized(cc.getNormalized());
+      } else {
+        sendControlChange(cc.getChannel(), cc.getCC(), cc.getValue());
+      }
       return;
     }
 
