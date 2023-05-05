@@ -31,7 +31,7 @@ public class ViewDefinition {
 
   @Override
   public String toString() {
-    return this.viewSelector;
+    return this.label;
   }
   
   private LXModel model = null;

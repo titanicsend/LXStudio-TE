@@ -32,8 +32,10 @@ import heronarts.lx.LXModelComponent;
 import heronarts.lx.mixer.LXAbstractChannel;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXView;
+import heronarts.lx.parameter.DiscreteParameter.IncrementMode;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.parameter.ObjectParameter;
+import heronarts.lx.studio.LXStudio;
 import titanicsend.app.TEApp;
 import titanicsend.util.TE;
 
@@ -43,19 +45,53 @@ import titanicsend.util.TE;
  */
 public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewCentral.ViewPerChannel> {
 
+  static public interface ViewCentralListener {
+    abstract public void ViewCentralLoaded();
+  }
+
+  /*
+   * Static
+   */
+
+  static public final boolean ENABLED = TEApp.ENABLE_VIEW_CENTRAL;
+
   // Static central reference keeps imports looking clean
   private static ViewCentral current;
   public static ViewCentral get() {
     return current;
   }
-  
+
+  public static boolean isLoaded() {
+    return current != null;
+  }
+
+  static private final List<ViewCentralListener> listenersOnce = new ArrayList<ViewCentralListener>();
+
+  static public void listenOnce(ViewCentralListener listener) {
+    listenersOnce.add(listener);
+  }
+
+  static private void notifyListeners() {
+    for (int i = listenersOnce.size()-1; i>=0; --i) {
+      listenersOnce.remove(i).ViewCentralLoaded();
+    }
+  }
+
+  /*
+   * Non-static
+   */
+
   protected List<ViewDefinition> views;
 
   public ViewCentral(LX lx) {
     super(lx);
     current = this;
+    notifyListeners();
   }
 
+  /**
+   * Called by parent constructor before current channels are added
+   */
   @Override
   protected void initialize() {
     this.views = new ArrayList<ViewDefinition>();    
@@ -115,11 +151,15 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
 
     private LXAbstractChannel channel;
 
+    @SuppressWarnings("unchecked")
     protected ViewPerChannel(LX lx, LXAbstractChannel channel) {
       super(lx);
       this.channel = channel;
 
-      this.view = new ObjectParameter<ViewDefinition>("View", getViews());
+      this.view = (ObjectParameter<ViewDefinition>)
+        new ObjectParameter<ViewDefinition>("View", getViews())
+        .setIncrementMode(IncrementMode.RELATIVE)
+        .setWrappable(false);
       addParameter("view", this.view);      
       this.view.addListener(viewListener);
 
@@ -143,7 +183,7 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
       custom.setModel(channel.getModelView());
       allViews[1] = custom;
 
-      // 3) All other views
+      // 3) All other views from file
       int i = 2;
       for (ViewDefinition v : views) {
         allViews[i++] = v;
@@ -156,6 +196,10 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
       // JKB note: bit of a power move here.  For a less aggressive option,
       // patterns could override getModel() and call this parameter.
       this.channel.setModel(getModel());
+
+      if (this.lx instanceof LXStudio) {
+        ((LXStudio) lx).ui.setMouseoverHelpText(channel.getLabel() + ":  " + this.view.getObject().toString());
+      }
     }
 
     public LXModel getModel() {
