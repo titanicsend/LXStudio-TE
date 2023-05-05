@@ -40,6 +40,7 @@ import processing.core.PApplet;
 import titanicsend.app.autopilot.*;
 import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.model.TEWholeModel;
+import titanicsend.model.justin.ViewCentral;
 import titanicsend.output.GPOutput;
 import titanicsend.output.GrandShlomoStation;
 import titanicsend.pattern.TEEdgeTestPattern;
@@ -82,6 +83,8 @@ public class TEApp extends PApplet implements LXPlugin {
   private TEPatternLibrary library;
 
   private TELaserTask laserTask;
+  
+  private ViewCentral viewCentral;
 
   @Override
   public void settings() {
@@ -276,7 +279,9 @@ public class TEApp extends PApplet implements LXPlugin {
 
     GPOutput gpOutput = new GPOutput(lx, this.gpBroadcaster);
     lx.addOutput(gpOutput);
-
+    
+    // Add special view controller
+    this.viewCentral = new ViewCentral(lx);
   }
 
   private TEPatternLibrary initializePatternLibrary(LX lx) {
