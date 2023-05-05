@@ -58,6 +58,7 @@ import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.utils.LXUtils;
+import titanicsend.app.TEApp;
 import titanicsend.model.justin.ViewCentral;
 import titanicsend.model.justin.ViewCentral.ViewPerChannel;
 
@@ -640,7 +641,7 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
 
     private final LXAbstractChannel channel;
     private final LXParameterListener onCompositeModeChanged = this::onCompositeModeChanged;
-    ViewPerChannel viewPerChannel;
+    ViewPerChannel viewPerChannel = null;
 
     ChannelListener(LXAbstractChannel channel) {
       this.channel = channel;
@@ -672,11 +673,13 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
       }
 
       // Listen to custom view parameter for channel
-      this.viewPerChannel = ViewCentral.get().get(channel);
-      if (this.viewPerChannel != null) {
-        this.viewPerChannel.view.addListener(this);
-        if (channelKnobIsView.isOn()) {
-          sendChannelKnob((int) (this.viewPerChannel.view.getNormalized() * 127));
+      if (TEApp.ENABLE_VIEW_CENTRAL) {
+        this.viewPerChannel = ViewCentral.get().get(channel);
+        if (this.viewPerChannel != null) {
+          this.viewPerChannel.view.addListener(this);
+          if (channelKnobIsView.isOn()) {
+            sendChannelKnob((int) (this.viewPerChannel.view.getNormalized() * 127));
+          }
         }
       }
     }
@@ -1822,7 +1825,7 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
 
     if (number >= CHANNEL_KNOB && number <= CHANNEL_KNOB_MAX) {
       int channel = number - CHANNEL_KNOB;
-      if (channel < this.lx.engine.mixer.channels.size() && this.channelKnobIsView.isOn()) {
+      if (channel < this.lx.engine.mixer.channels.size() && this.channelKnobIsView.isOn() && TEApp.ENABLE_VIEW_CENTRAL) {
         ViewCentral.get().get(this.lx.engine.mixer.channels.get(channel)).view.setNormalized(cc.getNormalized());
       } else {
         sendControlChange(cc.getChannel(), cc.getCC(), cc.getValue());

@@ -34,6 +34,7 @@ import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXView;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.parameter.ObjectParameter;
+import titanicsend.app.TEApp;
 import titanicsend.util.TE;
 
 /**
@@ -59,7 +60,13 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
   protected void initialize() {
     this.views = new ArrayList<ViewDefinition>();    
 
+    // Global feature off switch
+    if (!TEApp.ENABLE_VIEW_CENTRAL) {
+      return;
+    }
+
     // Load view definitions from file
+    // TODO: Load from an ordered file type.
     Properties savedViews = new Properties();
     try (InputStream is = new FileInputStream("resources/vehicle/viewKnobs.properties")) {
       savedViews.load(is);
@@ -127,6 +134,10 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
       allViews[0] = new ViewDefinition("----", false);
       allViews[0].setModel(this.lx.getModel());
 
+      // Global feature off switch
+      if (!TEApp.ENABLE_VIEW_CENTRAL) {
+        return allViews;
+      }
       // 2) The most recent user-typed view on this channel
       ViewDefinition custom = new ViewDefinition("Custom", channel.viewSelector.getString(), channel.viewNormalization.getEnum());
       custom.setModel(channel.getModelView());

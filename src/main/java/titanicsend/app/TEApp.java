@@ -86,6 +86,9 @@ public class TEApp extends PApplet implements LXPlugin {
   
   private ViewCentral viewCentral;
 
+  // Global feature on/off switches for troubleshooting
+  public static final boolean ENABLE_VIEW_CENTRAL = true;
+
   @Override
   public void settings() {
     if (FULLSCREEN) {
