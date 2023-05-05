@@ -97,7 +97,7 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
     this.views = new ArrayList<ViewDefinition>();    
 
     // Global feature off switch
-    if (!TEApp.ENABLE_VIEW_CENTRAL) {
+    if (!ViewCentral.ENABLED) {
       return;
     }
 
@@ -175,7 +175,7 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
       allViews[0].setModel(this.lx.getModel());
 
       // Global feature off switch
-      if (!TEApp.ENABLE_VIEW_CENTRAL) {
+      if (!ViewCentral.ENABLED) {
         return allViews;
       }
       // 2) The most recent user-typed view on this channel

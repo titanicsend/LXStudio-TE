@@ -9,7 +9,6 @@ import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.parameter.*;
 import heronarts.lx.parameter.BooleanParameter.Mode;
 import heronarts.lx.utils.LXUtils;
-import titanicsend.app.TEApp;
 import titanicsend.lx.LXGradientUtils;
 import titanicsend.lx.LXGradientUtils.BlendFunction;
 import titanicsend.model.justin.LXVirtualDiscreteParameter;
@@ -597,7 +596,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         }
 
         protected LXListenableNormalizedParameter getViewRemoteControl() {
-            if (!TEApp.ENABLE_VIEW_CENTRAL) {
+            if (!ViewCentral.ENABLED) {
                 return null;
             } else {
                 return this.viewParameter;
