@@ -284,7 +284,7 @@ public class ShaderPanelsPatternConfig {
             controls.setValue(TEControlTag.WOW1,0.6);
 
             return List.of(new NativeShaderPatternEffect("turbulent_noise_lines.fs",
-                PatternTarget.allPanelsAsCanvas(this)));
+                PatternTarget.allPointsAsCanvas(this)));
         }
     }
 }
