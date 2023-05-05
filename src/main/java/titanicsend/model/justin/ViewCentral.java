@@ -20,12 +20,11 @@
 
 package titanicsend.model.justin;
 
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
+import java.util.Scanner;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXModelComponent;
@@ -37,7 +36,6 @@ import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.parameter.ObjectParameter;
 import heronarts.lx.studio.LXStudio;
 import titanicsend.app.TEApp;
-import titanicsend.util.TE;
 
 /**
  * Generate a set of LXViews once, then allow each channel to scroll through
@@ -45,15 +43,17 @@ import titanicsend.util.TE;
  */
 public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewCentral.ViewPerChannel> {
 
-  static public interface ViewCentralListener {
-    abstract public void ViewCentralLoaded();
-  }
-
   /*
    * Static
    */
 
   static public final boolean ENABLED = TEApp.ENABLE_VIEW_CENTRAL;
+
+  static public final String FILENAME_VIEWS = "views.txt";
+
+  static public interface ViewCentralListener {
+    abstract public void ViewCentralLoaded();
+  }
 
   // Static central reference keeps imports looking clean
   private static ViewCentral current;
@@ -96,25 +96,35 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
   protected void initialize() {
     this.views = new ArrayList<ViewDefinition>();    
 
-    // Global feature off switch
+    // Global off switch for feature
     if (!ViewCentral.ENABLED) {
       return;
     }
 
     // Load view definitions from file
-    // TODO: Load from an ordered file type.
-    Properties savedViews = new Properties();
-    try (InputStream is = new FileInputStream("resources/vehicle/viewKnobs.properties")) {
-      savedViews.load(is);
+    try (Scanner s = new Scanner(new File("resources/vehicle/" + FILENAME_VIEWS))) {
+      while (s.hasNextLine()) {
+        String line = s.nextLine();
+        if (line.startsWith("#")) {
+          continue;
+        }
+        String[] tokens = line.split("\t");
+        // Asserts default to off in Java...
+        if (tokens.length == 3) {
+          String label = tokens[0];
+          // Normalization: true = relative, false = absolute
+          LXView.Normalization n = Boolean.parseBoolean(tokens[1]) ? LXView.Normalization.RELATIVE : LXView.Normalization.ABSOLUTE;
+          String selector = tokens[2];
+          this.views.add(new ViewDefinition(label, selector, n));
+        } else {
+          LX.error("Invalid number of columns in " + FILENAME_VIEWS +" config file, found " + tokens.length + ": " + line);
+        }
+      }
     } catch (IOException e) {
-      TE.err(e, "Error loading views:");
+      LX.error(e, "Error loading views from file:");
       return;
     }
 
-    for (String label : savedViews.stringPropertyNames()) {
-      this.views.add(new ViewDefinition(label, savedViews.getProperty(label), LXView.Normalization.RELATIVE));
-    }
-    
     // Create LXViews once
     for (ViewDefinition v : this.views) {
       // View creation code borrowed from LXAbstractChannel.class
@@ -193,7 +203,7 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
     }
     
     protected void onViewChanged() {
-      // JKB note: bit of a power move here.  For a less aggressive option,
+      // JKB note: bit of a power move here.  For a less aggressive implementation,
       // patterns could override getModel() and call this parameter.
       this.channel.setModel(getModel());
 
