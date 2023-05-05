@@ -10,7 +10,8 @@ Outline;	true	113117;28113;28111;111119;118119;30118;3033;3337;37123;45123;45122
 Outline DJ	true	11-98,98-99,99-101,44-101,44-47,47-90,67-90,65-67
 Outline DJ;	true	11-98;98-99;99-101;44-101;44-47;47-90;67-90;65-67
 #
-# These are shortcuts to views.properties, which are tags loaded onto sets of fixtures:
+# These are shortcuts to the tags.properties file,
+# which is a list of tags and fixtures to which they should be applied:
 #
 Top	true	top
 Top Edges	true	top-e

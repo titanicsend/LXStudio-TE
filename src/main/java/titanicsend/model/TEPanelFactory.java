@@ -49,7 +49,7 @@ public class TEPanelFactory {
     if (stripingInstructions == null) channelLengths = null;
     else channelLengths = stripingInstructions.channelLengths;
 
-    // Adding tags based on views defined in resources/vehicle/views.properties
+    // Adding tags based on resources/vehicle/tags.properties
     String[] tags = new String[] { id };
     for (String view : views.stringPropertyNames()) {
       List<String> ids = Arrays.asList(views.getProperty(view).split(","));

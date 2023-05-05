@@ -197,7 +197,7 @@ public class TEWholeModel extends LXModel {
 
   private static void loadViews(Geometry geometry) {
     geometry.views = new Properties();
-    try (InputStream is = new FileInputStream("resources/vehicle/views.properties")) {
+    try (InputStream is = new FileInputStream("resources/vehicle/tags.properties")) {
       geometry.views.load(is);
     } catch (IOException e) {
         LX.log("Error loading views: " + e.getMessage());
