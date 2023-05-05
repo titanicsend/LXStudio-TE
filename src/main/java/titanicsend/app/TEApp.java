@@ -172,6 +172,7 @@ public class TEApp extends PApplet implements LXPlugin {
     lx.registry.addPattern(XorceryDiamonds.class);
     lx.registry.addPattern(PBFireworkNova.class);
     lx.registry.addPattern(PixelblazeParallel.class);
+    lx.registry.addPattern(SimplexPosterized.class);
     lx.registry.addPattern(SolidEdge.class);
     lx.registry.addPattern(SolidPanel.class);
     lx.registry.addPattern(TESparklePattern.class);

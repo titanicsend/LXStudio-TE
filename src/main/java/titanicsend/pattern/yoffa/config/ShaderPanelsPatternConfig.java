@@ -2,6 +2,7 @@ package titanicsend.pattern.yoffa.config;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.effect.ShaderToyPatternEffect;
 import titanicsend.pattern.yoffa.framework.ConstructedPattern;
@@ -267,4 +268,23 @@ public class ShaderPanelsPatternConfig {
         }
     }
 
+    @LXCategory("Noise")
+    public static class TurbulenceLines extends ConstructedPattern {
+        public TurbulenceLines(LX lx) {
+            super(lx);
+        }
+        @Override
+        protected List<PatternEffect> createEffects() {
+
+            // common controls setup
+            controls.setRange(TEControlTag.SPEED, 0,-4, 4);
+            controls.setValue(TEControlTag.SPEED,0.5);
+            controls.setRange(TEControlTag.SIZE, 1,0.4, 1.5);
+            controls.setRange(TEControlTag.QUANTITY,200,50, 600);
+            controls.setValue(TEControlTag.WOW1,0.6);
+
+            return List.of(new NativeShaderPatternEffect("turbulent_noise_lines.fs",
+                PatternTarget.allPanelsAsCanvas(this)));
+        }
+    }
 }
