@@ -34,6 +34,9 @@ import heronarts.lx.mixer.LXMixerEngine;
  * A ChannelExtension is meant to be a singleton, adding a
  * per-channel service to an LX instance.  This is similar to
  * an effect that is always available on every channel.
+ *
+ * (The ability to register a custom channel class with the
+ * engine would be a nicer way to solve this type of problem...)
  */
 public abstract class ChannelExtension<T extends LXComponent> extends LXComponent {
   
