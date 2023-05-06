@@ -1,3 +1,6 @@
+// override the default x/y offset control behavior
+#define TE_NOTRANSLATE
+
 const float PI = 3.1415926;
 const float TAU = 2.0 * PI;
 
@@ -33,14 +36,15 @@ float noise(vec2 uv) {
 float turbulenceNoise(vec2 uv) {
     float k = 4.0;
 
-    uv = rotate2D(k + 0.00001 * iTime) * uv * 3. + 0.2 * iTime;
+    //uv = rotate2D(k + 0.00001 * iTime) * uv;
     float res = 0.;
     float c = 0.5;
 
     for (int i = 0; i < 8; i++) {
+        uv -= iTranslate  * 0.2;
+        uv = rotate2D(k + 0.00001 * iTime) * k * uv;
         res += c * noise(uv);
-        c /= 2.;
-        uv = rotate2D(k + 0.00001 * iTime) * k * uv + k + iTime;
+        c *= 0.5;
     }
 
     return res;
@@ -54,17 +58,17 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     uv = uv * rotate2D(-iRotationAngle);
 
     float res = turbulenceNoise(uv);
-    uv = rotate2D(1.5 * noise(uv * 5. + 0.1 * iTime)) * uv;
+    uv = rotate2D(1.65 * noise(uv * 5. + 0.1 * iTime)) * uv;
 
     // Quantity controls the density of the lines derived from the noise field
-    float line = smoothstep(0., 1., abs(sin(iQuantity * uv.x * uv.y) + res));
+    float line = smoothstep(0., 1., abs(res + sin(TAU * res + iQuantity * uv.x)));
     line = smoothstep(0., 1., line);
 
     // Wow Trigger runs the TE special dual ring pulse generator, which draws only on
     // the wavy lines (and not on the background fog.)
     if (iWowTrigger) {
         uv /= exp(beat * PI);
-        line *= max(line,3.0 / pow(abs(2.1 - circle(uv)),0.75));
+        line *= max(1.0, 0.75 / pow(abs(2.1 - circle(uv)),0.75));
     }
 
     // Wow1 controls the mix of lines vs. noise field background

@@ -7,6 +7,9 @@
 // https://github.com/ashima/webgl-noise
 //
 
+// override the default x/y offset control behavior
+#define TE_NOTRANSLATE
+
 vec3 mod289(vec3 x) {
     return x - floor(x * (1.0 / 289.0)) * 289.0;
 }
@@ -134,13 +137,9 @@ float quantize(float n) {
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-    // Note that we override default translate behavior
-    // for this shader, since a static offset isn't very useful,
-    // we use x and y offsets to set movement direction vectors
-    vec2 uv = fragCoord+(iTranslate * iResolution);
 
     // normalize, scale, rotate
-    uv = (uv - 0.5 * iResolution.xy) / iResolution.x;
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.x;
     uv *= iScale;
     uv = uv * rotate2D(-iRotationAngle);
 
