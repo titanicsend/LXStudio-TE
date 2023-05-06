@@ -180,7 +180,7 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
 
     private ViewDefinition[] getViews() {
       // 1) Top Level, view=off
-      ViewDefinition[] allViews = new ViewDefinition[views.size() + 2];
+      ViewDefinition[] allViews = new ViewDefinition[views.size() + 1];
       allViews[0] = new ViewDefinition("----", false);
       allViews[0].setModel(this.lx.getModel());
 
@@ -188,13 +188,15 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
       if (!ViewCentral.ENABLED) {
         return allViews;
       }
+      /* JKB note: Skip this for now, leave here for possible later development
       // 2) The most recent user-typed view on this channel
       ViewDefinition custom = new ViewDefinition("Custom", channel.viewSelector.getString(), channel.viewNormalization.getEnum());
       custom.setModel(channel.getModelView());
       allViews[1] = custom;
+      */
 
       // 3) All other views from file
-      int i = 2;
+      int i = 1;
       for (ViewDefinition v : views) {
         allViews[i++] = v;
       }
