@@ -25,8 +25,8 @@ float triangleNoise(in vec2 p)
     float z = 1.5;
     float z2 = 1.5;
     float rz = 0.;
-    vec2 bp = p + 0.02 * vec2(sin(iTime * 0.3), -cos(10. + iTime * 0.35));
-    for (float i = 0.; i <= 3.; i++) {
+    vec2 bp = rotate2D(iRotationAngle) * (p + 0.02 * vec2(sin(iTime * 0.3), -cos(10. + iTime * 0.35)));
+    for (float i = 0.; i <= iQuantity; i++) {
         vec2 dg = tri2(bp * 2.) * .8;
         dg *= rotate2D(iTime * .3);
         p += dg / z2;
@@ -46,11 +46,12 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float aspect = iResolution.x / iResolution.y;
 
     vec2 p = fragCoord.xy / iResolution.xy * 2. - 1.;
+    p.x = 0.5 - abs(p.x);
     p.x *= aspect;
     p *= iScale;
 
     float noise = 0.5 + triangleNoise(0.2 * p);
-    noise = log(10.0 * pow(noise, 4.));
+    noise = log(10.0 * pow(noise, iWow1));
 
     // Wow2 controls the mix of foreground color vs. gradient
     vec3 col = noise * mix(iColorRGB, mix(iColor2RGB, iColorRGB,smoothstep(0.5,0.9, noise)), iWow2);

@@ -2,6 +2,8 @@ package titanicsend.pattern.yoffa.config;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import heronarts.lx.parameter.LXParameter;
+import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.effect.ShaderToyPatternEffect;
 import titanicsend.pattern.yoffa.framework.ConstructedPattern;
@@ -19,6 +21,7 @@ public class ShaderPanelsPatternConfig {
         public ShaderToyPattern(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new ShaderToyPatternEffect(PatternTarget.splitPanelSections(this)));
@@ -31,10 +34,11 @@ public class ShaderPanelsPatternConfig {
         public LightBeamsPattern(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("light_beams.fs",
-                    PatternTarget.allPanelsAsIndividual(this)));
+                PatternTarget.allPanelsAsIndividual(this)));
         }
     }
 
@@ -43,10 +47,11 @@ public class ShaderPanelsPatternConfig {
         public NeonHeartNative(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("neon_heart.fs",
-                    PatternTarget.allPanelsAsIndividual(this)));
+                PatternTarget.allPanelsAsIndividual(this)));
         }
     }
 
@@ -55,10 +60,11 @@ public class ShaderPanelsPatternConfig {
         public Marbling(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("marbling.fs",
-                    PatternTarget.doubleLargeCanvas(this)));
+                PatternTarget.doubleLargeCanvas(this)));
         }
     }
 
@@ -67,10 +73,11 @@ public class ShaderPanelsPatternConfig {
         public NeonRipples(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("neon_ripples.fs",
-                    PatternTarget.splitPanelSections(this)));
+                PatternTarget.splitPanelSections(this)));
         }
     }
 
@@ -79,10 +86,11 @@ public class ShaderPanelsPatternConfig {
         public NeonTriangles(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("neon_triangles.fs",
-                    PatternTarget.allPanelsAsIndividual(this)));
+                PatternTarget.allPanelsAsIndividual(this)));
         }
     }
 
@@ -91,10 +99,11 @@ public class ShaderPanelsPatternConfig {
         public SpaceExplosion(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("space_explosion.fs",
-                    PatternTarget.allPanelsAsIndividual(this)));
+                PatternTarget.allPanelsAsIndividual(this)));
         }
     }
 
@@ -103,10 +112,11 @@ public class ShaderPanelsPatternConfig {
         public SynthWaves(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("synth_waves.fs",
-                    PatternTarget.doubleLargeCanvas(this)));
+                PatternTarget.doubleLargeCanvas(this)));
         }
     }
 
@@ -115,10 +125,11 @@ public class ShaderPanelsPatternConfig {
         public PulsingHeart(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("pulsing_heart.fs",
-                    PatternTarget.allPanelsAsIndividual(this)));
+                PatternTarget.allPanelsAsIndividual(this)));
         }
     }
 
@@ -127,10 +138,11 @@ public class ShaderPanelsPatternConfig {
         public NeonBlocks(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("neon_blocks.fs",
-                    PatternTarget.doubleLargeCanvas(this)));
+                PatternTarget.doubleLargeCanvas(this)));
         }
     }
 
@@ -139,10 +151,11 @@ public class ShaderPanelsPatternConfig {
         public Warp(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("warp.fs",
-                    PatternTarget.doubleLargeCanvas(this)));
+                PatternTarget.doubleLargeCanvas(this)));
         }
     }
 
@@ -151,10 +164,11 @@ public class ShaderPanelsPatternConfig {
         public Fire(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("fire.fs",
-                    PatternTarget.splitPanelSections(this)));
+                PatternTarget.splitPanelSections(this)));
         }
     }
 
@@ -163,10 +177,11 @@ public class ShaderPanelsPatternConfig {
         public StormScanner(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("storm_scanner.fs",
-                    PatternTarget.doubleLargeCanvas(this),"gray_noise.png"));
+                PatternTarget.doubleLargeCanvas(this), "gray_noise.png"));
         }
     }
 
@@ -175,10 +190,11 @@ public class ShaderPanelsPatternConfig {
         public JetStream(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("jet_stream.fs",
-                    PatternTarget.doubleLargeCanvas(this),"color_noise.png"));
+                PatternTarget.doubleLargeCanvas(this), "color_noise.png"));
         }
     }
 
@@ -187,10 +203,11 @@ public class ShaderPanelsPatternConfig {
         public OutrunGrid(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("outrun_grid.fs",
-                    PatternTarget.doubleLargeCanvas(this)));
+                PatternTarget.doubleLargeCanvas(this)));
         }
     }
 
@@ -199,10 +216,11 @@ public class ShaderPanelsPatternConfig {
         public Galaxy(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("galaxy.fs",
-                    PatternTarget.allPanelsAsCanvas(this)));
+                PatternTarget.allPanelsAsCanvas(this)));
         }
     }
 
@@ -211,10 +229,11 @@ public class ShaderPanelsPatternConfig {
         public AudioTest2(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("audio_test2.fs",
-                    PatternTarget.allPanelsAsCanvas(this)));
+                PatternTarget.allPanelsAsCanvas(this)));
         }
     }
 
@@ -227,7 +246,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("neon_cells.fs",
-                    PatternTarget.splitPanelSections(this)));
+                PatternTarget.splitPanelSections(this)));
         }
     }
 
@@ -236,10 +255,11 @@ public class ShaderPanelsPatternConfig {
         public SlitheringSnake(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("snake_approaching.fs",
-                    PatternTarget.doubleLargeCanvas(this)));
+                PatternTarget.doubleLargeCanvas(this)));
         }
     }
 
@@ -248,10 +268,11 @@ public class ShaderPanelsPatternConfig {
         public PulsingPetriDish(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("pulsing_petri_dish.fs",
-                    PatternTarget.allPanelsAsCanvas(this)));
+                PatternTarget.allPanelsAsCanvas(this)));
         }
     }
 
@@ -260,10 +281,30 @@ public class ShaderPanelsPatternConfig {
         public Mondelbrot(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("mandelbrot.fs",
-                    PatternTarget.doubleLargeCanvas(this)));
+                PatternTarget.doubleLargeCanvas(this)));
+        }
+    }
+
+    @LXCategory("Noise")
+    public static class TriangleNoise extends ConstructedPattern {
+        public TriangleNoise(LX lx) {
+            super(lx);
+        }
+
+        @Override
+        protected List<PatternEffect> createEffects() {
+            controls.setRange(TEControlTag.SIZE, 1.15, 0.3, 2);
+            controls.setRange(TEControlTag.QUANTITY, 3, 1, 5);
+            controls.setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
+            controls.setRange(TEControlTag.SPIN, 0, -0.5,0.5 );
+            controls.setRange(TEControlTag.WOW1, 4.4, 3, 6.5);
+
+            return List.of(new NativeShaderPatternEffect("triangle_noise.fs",
+                PatternTarget.allPointsAsCanvas(this)));
         }
     }
 
