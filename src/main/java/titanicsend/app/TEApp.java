@@ -19,6 +19,8 @@
 package titanicsend.app;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.SocketException;
 import java.text.DateFormat;
@@ -26,6 +28,11 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.function.Function;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.stream.JsonWriter;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
@@ -88,6 +95,7 @@ public class TEApp extends PApplet implements LXPlugin {
 
   // Global feature on/off switches for troubleshooting
   public static final boolean ENABLE_VIEW_CENTRAL = true;
+  public static final boolean DELAY_FILE_OPEN_TO_FIRST_ENGINE_LOOP = true;
 
   @Override
   public void settings() {
@@ -116,8 +124,9 @@ public class TEApp extends PApplet implements LXPlugin {
     LX.setLogFile(new File(flags.mediaPath, LX.Media.LOGS.getDirName() + File.separator + logFileName));
   }
 
-  public void loadCLfile(LX lx) {
+  public void openDelayedFile(LX lx) {
     // Hack to load CLI filename in PApplet environment
+    // Also now used for delayed opening of recent file to improve startup time.
     if (projectFileName != null) {
       final File finalProjectFile =lx.getMediaFile(LX.Media.PROJECTS, projectFileName);
     
@@ -128,7 +137,7 @@ public class TEApp extends PApplet implements LXPlugin {
       } else {
         try {
           if (finalProjectFile.exists()) {
-            LX.log("Opening project file passed as argument: " + projectFileName);
+            LX.log("Now starting delayed open of project file: " + projectFileName);
             lx.openProject(finalProjectFile);
           } else {
         	LX.error("Project filename not found: " + projectFileName);
@@ -374,7 +383,7 @@ public class TEApp extends PApplet implements LXPlugin {
     ShaderPrecompiler.rebuildCache();
        
     lx.engine.addTask(() -> {
-      loadCLfile(lx);
+      openDelayedFile(lx);
     });
   }
 
@@ -428,6 +437,7 @@ public class TEApp extends PApplet implements LXPlugin {
         try {
           projectFileName = args[i];
           projectFile = new File(args[i]);
+          LX.log("Received command-line project file name: " + projectFileName);
         } catch (Exception x) {
           LX.error(x, "Command-line project file path invalid: " + args[i]);
         }
@@ -457,6 +467,51 @@ public class TEApp extends PApplet implements LXPlugin {
       }
       LX.headless(flags, projectFile);
     } else {
+      if (DELAY_FILE_OPEN_TO_FIRST_ENGINE_LOOP) {
+        /* JKB note: Special trickery.  To preserve the 5 second loading time, defer
+         * all file opening until the first engine run loop.  We'll check the .lxpreferences
+         * file for a recent filename, set it aside, then remove the filename from .lxpreferences.
+         * That will speed up the load, and then we'll use the after-load file open trick
+         * from last summer to open the most recent file OR command line file.
+         *
+         * This clever preferences file manipulation was suggested by mcslee over email
+         * as a solution to the CLI arg problem on... Aug 24, 2022.  Good times! 
+         */
+        File preferences = new File(".lxpreferences");
+        if (preferences.exists()) {
+          LX.log("Checking preferences for recent project file...");
+          JsonObject obj = new JsonObject();
+          boolean removedFileName = false;
+          try (FileReader fr = new FileReader(preferences)) {
+            // Load parameters and settings from file
+            obj = new Gson().fromJson(fr, JsonObject.class);
+            if (obj.has("projectFileName")) {
+              // Remember recent file name but only if CLI arg was not passed
+              if (projectFileName == null) {
+                projectFileName = obj.get("projectFileName").getAsString();
+                LX.log("Setting aside recent file name " + projectFileName + " to open on first engine loop.");
+              }
+              // Remove the recent file name from preferences so it won't load.
+              obj.remove("projectFileName");
+              removedFileName = true;
+            }
+          } catch (Exception x) {
+            LX.error("Error hack-reading .lxpreferences: " + x.getMessage());
+          }
+          if (removedFileName) {
+            LX.log("Removing file name from preferences...");
+            try (FileWriter fw = new FileWriter(preferences);
+                JsonWriter writer = new JsonWriter(fw)) {
+              writer.setIndent("  ");
+              new GsonBuilder().create().toJson(obj, writer);
+            } catch (IOException iox) {
+              LX.error(iox, "Exception hacking the .lxpreferences file: " + iox.getMessage());
+            }
+          } else {
+            LX.log("No recent project file found. Continuing with load...");
+          }
+        }
+      }
       PApplet.main("titanicsend.app.TEApp", args);
     }
   }
