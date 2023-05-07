@@ -31,9 +31,7 @@ import heronarts.lx.LXModelComponent;
 import heronarts.lx.mixer.LXAbstractChannel;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXView;
-import heronarts.lx.parameter.DiscreteParameter.IncrementMode;
 import heronarts.lx.parameter.LXParameterListener;
-import heronarts.lx.parameter.ObjectParameter;
 import heronarts.lx.studio.LXStudio;
 import titanicsend.app.TEApp;
 
@@ -153,7 +151,7 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
    */
   public class ViewPerChannel extends LXModelComponent {
 
-    public final ObjectParameter<ViewDefinition> view;
+    public final ViewParameter view;
     
     private final LXParameterListener viewListener = (p) -> {
       onViewChanged();
@@ -161,15 +159,11 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
 
     private LXAbstractChannel channel;
 
-    @SuppressWarnings("unchecked")
     protected ViewPerChannel(LX lx, LXAbstractChannel channel) {
       super(lx);
       this.channel = channel;
 
-      this.view = (ObjectParameter<ViewDefinition>)
-        new ObjectParameter<ViewDefinition>("View", getViews())
-        .setIncrementMode(IncrementMode.RELATIVE)
-        .setWrappable(false);
+      this.view = new ViewParameter("View", getViews());
       addParameter("view", this.view);      
       this.view.addListener(viewListener);
 
@@ -220,6 +214,7 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
     
     @Override
     public void dispose() {
+      this.view.removeListener(viewListener);
       this.channel = null;
       super.dispose();
     }
