@@ -48,6 +48,9 @@ public class PowerDebugger extends TEPattern implements UIDeviceControls<PowerDe
     private HashMap<String, Double> panelJboxTotalCurrent; // panel + powerbox -> total current from pow to panel
     private HashMap<String, Double> panelTotalCurrent; // panelID -> total current
 
+    // lazy load this pattern only if used
+    private boolean loaded = false;
+
 
     // powerbox -> sum of LEDs
     private HashMap<String, Double> pow2totalLEDs;
@@ -70,8 +73,6 @@ public class PowerDebugger extends TEPattern implements UIDeviceControls<PowerDe
         panelJboxTotalCurrent = new HashMap<>();
 
         powerboxIDsList = new ArrayList<>();
-
-        load();
     }
 
     /**
@@ -316,6 +317,16 @@ public class PowerDebugger extends TEPattern implements UIDeviceControls<PowerDe
         Collections.sort(powerboxIDsList);
 
         powerboxSelect.setRange(0, powerboxIDsSet.size());
+
+        this.loaded = true;
+    }
+
+    @Override
+    protected void onActive() {
+        if (!loaded) {
+            load();
+        }
+        super.onActive();
     }
 
     @Override

@@ -146,11 +146,9 @@ Either go to https://adoptium.net/installation/ or, on a Mac with Homebrew, `bre
    ```shell
    mvn clean package  # Packaging creates the JAR and cleaning is optional
    ```
-2. Execute the JAR (Note that the version number may be different — The version
-   as of this document revision is 0.2.0-SNAPSHOT — substitute the correct
-   version as necessary):
+2. Execute the JAR:
    ```shell
-   java -jar target/LXStudio-TE-0.2.0-SNAPSHOT-jar-with-dependencies.jar vehicle Vehicle.lxp
+   java -jar target/LXStudio-TE-*-jar-with-dependencies.jar vehicle Vehicle.lxp
    ```
 3. If the Temurin JDK isn't your default Java, then you can use the full path,
    for example:
@@ -160,11 +158,9 @@ Either go to https://adoptium.net/installation/ or, on a Mac with Homebrew, `bre
 4. Use Maven to execute the program instead of the `java` command:
    ```shell
    mvn clean compile  # Cleaning and compiling is optional, depending on your needs
-   mvn exec:java@Main -Dexec.args="vehicle Vehicle.lxp"
+   mvn exec:java@Main # loads default Vehicle.lxp
+   mvn exec:java@Main -Dexec.args="vehicle AutoVJ.lxp" # explicit project example
    ```
-
-   Fun fact: The "Main" target isn't defined in the POM to have arguments, but
-   it could, in which case you wouldn't need the `vehicle Vehicle.lxp` args.
 
 ### Potential issues
 

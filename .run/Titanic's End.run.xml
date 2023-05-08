@@ -1,5 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Titanic's End" type="Application" factoryName="Application">
+    <option name="ALTERNATIVE_JRE_PATH" value="temurin-17" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="titanicsend.app.TEApp" />
     <module name="LXStudio-TE" />
     <option name="PROGRAM_PARAMETERS" value="vehicle AutoVJ.lxp" />

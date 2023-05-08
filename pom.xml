@@ -200,6 +200,8 @@
                         <configuration>
                             <mainClass>titanicsend.app.TEApp</mainClass>
                             <arguments>
+                                <argument>vehicle</argument>
+                                <argument>Vehicle.lxp</argument>
                             </arguments>
                             <stopUnresponsiveDaemonThreads>true</stopUnresponsiveDaemonThreads>
                             <systemProperties>

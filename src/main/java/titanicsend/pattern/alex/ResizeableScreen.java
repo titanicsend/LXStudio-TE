@@ -92,6 +92,10 @@ public class ResizeableScreen extends TEPattern implements UIDeviceControls<Resi
     }
 
     private void paint(double deltaMs) {
+        if (colors == null) {
+            LX.log("ResizableScreen::paint() was called, but this.colors is null (probably new LX version startup), skipping.");
+            return;
+        }
         int color = this.color.calcColor();
 
         for (LXPoint point : this.screen.screenGrid) {

@@ -70,23 +70,37 @@ public class SignalDebugger extends TEPattern implements UIDeviceControls<Signal
     private List<List<ChainedEdge>> activeEdgeRoutes = List.of();
     private List<String> activePanelIds = List.of();
 
+    // lazy load this pattern only if used
+    private boolean loaded = false;
+
     public SignalDebugger(LX lx) {
         super(lx);
-
-        loadChains();
-        loadPanelData();
-
-        allControllers = new LinkedList<>();
-        allControllers.addAll(controllerVertexToEdgeRoutes.keySet());
-        allControllers.addAll(controllerVertexToPanelIds.keySet());
-        Collections.sort(allControllers);
-
-        cycleAllParameter.setRange(0, allControllers.size());
 
         addParameter("vertexSelect", vertexSelectParameter);
         addParameter("edgeId", edgeIdParameter);
         addParameter("cycleAll", cycleAllParameter);
         addParameter("showLowPri", showLowPriParameter);
+    }
+
+    private void load() {
+        loadChains();
+        loadPanelData();
+
+        allControllers = new ArrayList<>();
+        allControllers.addAll(controllerVertexToEdgeRoutes.keySet());
+        allControllers.addAll(controllerVertexToPanelIds.keySet());
+        Collections.sort(allControllers);
+
+        cycleAllParameter.setRange(0, allControllers.size());
+        this.loaded = true;
+    }
+
+    @Override
+    protected void onActive() {
+        if (!this.loaded) {
+            load();
+        }
+        super.onActive();
     }
 
     public void run(double deltaMs) {
@@ -184,7 +198,7 @@ public class SignalDebugger extends TEPattern implements UIDeviceControls<Signal
             File f = new File("resources/vehicle/panel_signal_paths.tsv");
             s = new Scanner(f);
         } catch (FileNotFoundException e) {
-            throw new Error("edge_signal_paths.tsv not found");
+            throw new Error("panel_signal_paths.tsv not found");
         }
 
         String headerLine = s.nextLine();
