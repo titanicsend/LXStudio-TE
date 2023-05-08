@@ -36,7 +36,6 @@ import com.google.gson.stream.JsonWriter;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
-import heronarts.lx.midi.surface.MidiFighterTwister;
 import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.pattern.color.GradientPattern;
 import heronarts.lx.pattern.texture.NoisePattern;
@@ -46,6 +45,7 @@ import processing.core.PApplet;
 import titanicsend.app.autopilot.*;
 import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lx.APC40Mk2;
+import titanicsend.lx.MidiFighterTwister;
 import titanicsend.model.TEWholeModel;
 import titanicsend.model.justin.ViewCentral;
 import titanicsend.output.GPOutput;

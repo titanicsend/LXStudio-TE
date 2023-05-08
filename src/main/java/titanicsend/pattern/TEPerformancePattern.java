@@ -14,6 +14,7 @@ import titanicsend.lx.LXGradientUtils.BlendFunction;
 import titanicsend.model.justin.LXVirtualDiscreteParameter;
 import titanicsend.model.justin.ViewCentral;
 import titanicsend.model.justin.ViewCentral.ViewCentralListener;
+import titanicsend.model.justin.ViewParameter;
 import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon.VariableSpeedTimer;
@@ -323,7 +324,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     }
 
     // Virtual View Parameter
-    public class LXVirtualViewParameter extends LXVirtualDiscreteParameter implements ViewCentralListener {
+    public class LXVirtualViewParameter extends LXVirtualDiscreteParameter<ViewParameter> implements ViewCentralListener {
 
         /* Two conditions are needed to link this virtual parameter to ViewCentral:
          *   1. ViewCentral instance must be loaded
@@ -366,6 +367,28 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 }
             }
         }
+
+        // Type-specific pass-through
+        public LXVirtualViewParameter setView(String label) {
+            ViewParameter p = getParameter();
+            if (p != null) {
+                p.setView(label);
+            }
+            return this;
+        }
+
+        @Override
+        public LXVirtualViewParameter reset() {
+            return setView(getDefaultView());
+        }
+    }
+
+    /**
+     * Subclasses can override to specify a preferred default view.
+     * @return Label of the view
+     */
+    public String getDefaultView() {
+      return null;
     }
 
     // ANGLE PARAMETER
@@ -402,9 +425,10 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         // other than the current color.
         public TEColorParameter color;
 
-        // Virtual parameter mapped to ViewCentral's current view for this channel
+        // Virtual parameter: it's a pass-through to ViewCentral's current view for this channel
         public final LXVirtualViewParameter viewParameter =
-            new LXVirtualViewParameter("View");
+            new LXVirtualViewParameter("View") {
+        };
 
         // Panic control courtesy of JKB's Rubix codebase
         public final BooleanParameter panic = (BooleanParameter)
@@ -726,6 +750,10 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             getControl(TEControlTag.WOW1).control.reset();
             getControl(TEControlTag.WOW2).control.reset();
             getControl(TEControlTag.WOWTRIGGER).control.reset();
+
+            if (ViewCentral.ENABLED) {
+                this.viewParameter.reset();
+            }
         }
 
         public void dispose() {

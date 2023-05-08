@@ -27,33 +27,35 @@ import heronarts.lx.parameter.LXParameterListener;
  * Similar to LXVirtualParameter, but with priority on normalized methods.
  * Allows target parameter to be set after initialization, to play nice
  * with loading from file.
+ *
+ * It IS a DiscreteParameter and it WRAPS a DiscreteParameter.
  */
-public class LXVirtualDiscreteParameter extends DiscreteParameter {
+abstract public class LXVirtualDiscreteParameter<T extends DiscreteParameter> extends DiscreteParameter {
 
-  private DiscreteParameter parameter = null;
+  private T parameter = null;
 
   public LXVirtualDiscreteParameter(String label) {
     super(label, 1);
   }
 
-  public LXVirtualDiscreteParameter(DiscreteParameter parameter) {
+  public LXVirtualDiscreteParameter(T parameter) {
     this(parameter != null ? parameter.getLabel() : null, parameter);
   }
 
-  public LXVirtualDiscreteParameter(String label, DiscreteParameter parameter) {
+  public LXVirtualDiscreteParameter(String label, T parameter) {
     super(label, 1);
     setParameter(parameter, false);
   }
 
-  public DiscreteParameter getParameter() {
+  public T getParameter() {
     return this.parameter;
   }
 
-  public LXVirtualDiscreteParameter setParameter(DiscreteParameter parameter) {
+  public LXVirtualDiscreteParameter<T> setParameter(T parameter) {
     return setParameter(parameter, true);
   }
 
-  public LXVirtualDiscreteParameter setParameter(DiscreteParameter parameter, boolean fireImmediately) {
+  public LXVirtualDiscreteParameter<T> setParameter(T parameter, boolean fireImmediately) {
     if (this.parameter != null) {
       this.parameter.removeListener(realParameterListener);
     }
