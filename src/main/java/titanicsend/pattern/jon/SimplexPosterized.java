@@ -8,17 +8,13 @@ import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 
 @LXCategory("Noise")
-public class SimplexPosterized extends TEPerformancePattern {
+public class SimplexPosterized extends DriftEnabledPattern {
 
     NativeShaderPatternEffect effect;
     NativeShader shader;
 
-    CanvasTranslator drift;
-
     public SimplexPosterized(LX lx) {
         super(lx);
-
-        drift = new CanvasTranslator(this);
 
         // common controls setup
         controls.setRange(TEControlTag.SPEED, 0, -4, 4);
@@ -36,10 +32,9 @@ public class SimplexPosterized extends TEPerformancePattern {
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
-        drift.updateTranslation(deltaMs);
 
         // calculate incremental transform based on elapsed time
-        shader.setUniform("iTranslate", (float) drift.xOffset, (float) drift.yOffset);
+        shader.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
 
         // run the shader
         effect.run(deltaMs);
