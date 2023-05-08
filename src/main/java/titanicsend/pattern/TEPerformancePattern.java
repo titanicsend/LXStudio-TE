@@ -1029,7 +1029,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     protected void onWowTrigger(boolean on) {  }
 
     @Override
-    protected void run(double deltaMs) {
+    protected void runTEAudioPattern(double deltaMs) {
         // get the current tempo in beats per second
         double bps = lx.engine.tempo.bpm() / 60;
 
@@ -1065,8 +1065,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         // Gradients always need to be up to date for TEColorParameter
         updateGradients();
         expireColors();
-
-        super.run(deltaMs);
     }
 
     @Override

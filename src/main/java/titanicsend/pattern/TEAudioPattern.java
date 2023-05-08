@@ -67,11 +67,16 @@ public abstract class TEAudioPattern extends TEPattern {
     }
 
     @Override
-    protected void run(double deltaMs) {
+    protected final void run(double deltaMs) {
         computeAudio(deltaMs);
         runTEAudioPattern(deltaMs);
     }
 
+    /**
+     * New main loop method.  Subclasses must implement.
+     *
+     * @param deltaMs Number of milliseconds elapsed since last invocation
+     */
     protected abstract void runTEAudioPattern(double deltaMs);
 
     /** Call computeAudio() in a TEAudioPattern's run() once per frame to
@@ -79,7 +84,7 @@ public abstract class TEAudioPattern extends TEPattern {
      *
      * @param deltaMs elapsed time since last frame, as provided in run(deltaMs)
      */
-    public void computeAudio(double deltaMs) {
+    private void computeAudio(double deltaMs) {
         // Instantaneous normalized (0..1) volume level
         volumeLevel = eq.getNormalizedf();
 

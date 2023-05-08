@@ -35,7 +35,8 @@ public class TurbulenceLines extends DriftEnabledPattern {
     }
 
     @Override
-    public void runTEAudioPattern(double deltaMs) {
+    protected void runTEAudioPattern(double deltaMs) {
+        super.runTEAudioPattern(deltaMs);
 
         // calculate incremental transform based on elapsed time
         shader.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());

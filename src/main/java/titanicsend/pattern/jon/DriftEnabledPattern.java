@@ -1,7 +1,6 @@
 package titanicsend.pattern.jon;
 
 import heronarts.lx.LX;
-import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.pattern.TEPerformancePattern;
 
 /**
@@ -49,8 +48,7 @@ public abstract class DriftEnabledPattern extends TEPerformancePattern {
     }
 
     @Override
-    protected void run(double deltaMs) {
-        computeAudio(deltaMs);
+    protected void runTEAudioPattern(double deltaMs) {
         updateTranslation(deltaMs);
         super.run(deltaMs);
     }
