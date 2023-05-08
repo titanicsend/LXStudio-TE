@@ -2,6 +2,7 @@ package titanicsend.pattern.yoffa.config;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.effect.ShaderToyPatternEffect;
 import titanicsend.pattern.yoffa.framework.ConstructedPattern;
@@ -19,10 +20,11 @@ public class ShaderEdgesPatternConfig {
         public LightBeamsEdges(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("light_beams.fs",
-                    PatternTarget.allEdgesAsCanvas(this)));
+                PatternTarget.allEdgesAsCanvas(this)));
         }
     }
 
@@ -31,10 +33,26 @@ public class ShaderEdgesPatternConfig {
         public NeonRipplesEdges(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
+            // set up parameters for the edge version of this...
+            controls.setRange(TEControlTag.SIZE, 2, 0.1, 6); // overall scale
+            controls.setValue(TEControlTag.SIZE, 2.25);
+
+            controls.setRange(TEControlTag.QUANTITY, 20, 1, 50);  // pixelation scale
+            controls.setValue(TEControlTag.QUANTITY, 8);
+
+            controls.setRange(TEControlTag.WOW1, 0, 0, 0.25);  // "wiggle" in rings
+            controls.setValue(TEControlTag.WOW1, 0.15);
+
+            controls.setRange(TEControlTag.WOW2, 0, 0, 3);  // radial rotation distortion
+            controls.setValue(TEControlTag.WOW2, 2.25);
+
+            controls.setValue(TEControlTag.SPIN, 0.05);
+
             return List.of(new NativeShaderPatternEffect("neon_ripples.fs",
-                    PatternTarget.allEdgesAsCanvas(this)));
+                PatternTarget.allEdgesAsCanvas(this)));
         }
     }
 
@@ -43,10 +61,11 @@ public class ShaderEdgesPatternConfig {
         public SpaceExplosionEdges(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("space_explosion.fs",
-                    PatternTarget.allEdgesAsCanvas(this)));
+                PatternTarget.allEdgesAsCanvas(this)));
         }
     }
 
@@ -55,11 +74,12 @@ public class ShaderEdgesPatternConfig {
         public MetallicWaves(LX lx) {
             super(lx);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(
-                    new NativeShaderPatternEffect("metallic_wave.fs", PatternTarget.allPanelsAsCanvas(this)),
-                    new NativeShaderPatternEffect("metallic_wave.fs", PatternTarget.allEdgesAsCanvas(this))
+                new NativeShaderPatternEffect("metallic_wave.fs", PatternTarget.allPanelsAsCanvas(this)),
+                new NativeShaderPatternEffect("metallic_wave.fs", PatternTarget.allEdgesAsCanvas(this))
             );
         }
     }

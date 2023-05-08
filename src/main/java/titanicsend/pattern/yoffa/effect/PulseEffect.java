@@ -5,6 +5,8 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.utils.LXUtils;
+import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.util.TEMath;
@@ -12,24 +14,25 @@ import titanicsend.util.TEMath;
 import java.util.Collection;
 import java.util.List;
 
+import static titanicsend.util.TEMath.clamp;
 import static titanicsend.util.TEMath.wave;
 
 public class PulseEffect extends PatternEffect {
 
-    public final CompoundParameter energy =
-            new CompoundParameter("Energy", .1, 0, 1)
-                    .setDescription("Amount of motion - Sparkles");
-
-    public Collection<LXParameter> getParameters(){
-        return List.of(energy);
+    public Collection<LXParameter> getParameters() {
+        return null;
     }
 
-    private Double originXn = null;
-    private Double originYn = null;
-    private Double originZn = null;
+    private double originXn = 0;
+    private double originYn = 0;
+    private double originZn = 0.5;
 
     public PulseEffect(PatternTarget target) {
         super(target);
+        TEPerformancePattern.TECommonControls ctl = pattern.getControls();
+
+        ctl.setRange(TEControlTag.QUANTITY, 2, 2, 10);
+
     }
 
     public PulseEffect setOrigin(double xn, double yn, double zn) {
@@ -44,32 +47,38 @@ public class PulseEffect extends PatternEffect {
     // I also expect them to diverge as they are tweaked more, so I don't hate the duplication as of now
     @Override
     public void run(double deltaMs) {
-        double scaledTrebleRatio = LXUtils.clamp(
-                (pattern.getTrebleRatio() - .5) / (1.01 - energy.getValue()) / 6 -
-                        .2 + energy.getValue() / 2,
-                0, 1);
+        double energy = pattern.getWow1();
+        double zOrigin = originZn + pattern.getXPos();
+        double yOrigin = originYn + pattern.getYPos();
+        double beat = pattern.getTempo().basis();
+        double measure = pattern.measure();
+
+        // set us up to respond to large treble events
+        double scaledTrebleRatio = clamp((pattern.getTrebleRatio() - 1) / 0.15,0,1);
+        scaledTrebleRatio *= scaledTrebleRatio;
 
         for (LXPoint point : getAllPoints()) {
-            double distanceFromCenter = originXn == null ? point.rn :
-                    TEMath.distance(point.xn, point.yn, point.zn, originXn, originYn, originZn);
+            double distanceFromCenter = TEMath.distance(point.xn, point.yn, point.zn, originXn, yOrigin, zOrigin);
 
-            int baseColor = pattern.getGradientColor((float) (2 * (distanceFromCenter - pattern.measure())));
+            int color = pattern.getGradientColor((float)
+                (pattern.getQuantity() * distanceFromCenter - measure) % 1);
 
-            double hue = LXColor.h(baseColor);
-            double saturation = LXColor.s(baseColor);
-            double brightness = LXColor.b(baseColor);
+            double hue = LXColor.h(color);
+            double saturation = LXColor.s(color);
+            double brightness = LXColor.b(color);
 
-            saturation = Math.random() < scaledTrebleRatio ? 0 : saturation;
+            double dist = 2.0 * distanceFromCenter - scaledTrebleRatio;
+            double alphaWave = wave(dist);
+            double satWave = (0.86 - dist) * scaledTrebleRatio * Math.random();
 
-            double alphaWave = wave(2 * distanceFromCenter - scaledTrebleRatio);
+            saturation = Math.max(0.0, saturation - (energy * 100 * satWave * satWave));
 
             setColor(point, LXColor.hsba(
-                    hue,
-                    saturation,
-                    brightness,
-                    alphaWave
+                hue,
+                saturation,
+                (brightness + (35 * (1.0 - (2 * distanceFromCenter - beat)))) % 100,
+                alphaWave * 255
             ));
         }
     }
-
 }
