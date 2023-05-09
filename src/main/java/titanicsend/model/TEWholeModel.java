@@ -96,14 +96,18 @@ public class TEWholeModel extends LXModel {
 
     this.panelPoints = new ArrayList<>();
     // filter gap points from panelPoints list
+    int gaps = 0;
     for (TEPanelModel panel : this.panelsById.values()) {
       for (LXPoint pt : panel.points) {
         if (isGapPoint(pt)) {
-          TE.log("Kicking out gap point");
+          gaps++;
         } else {
           this.panelPoints.add(pt);
         }
       }
+    }
+    if (gaps > 0) {
+      TE.log("Kicked out " + gaps + " gap points");
     }
 
     this.lasersById = geometry.lasersById;
@@ -197,7 +201,7 @@ public class TEWholeModel extends LXModel {
 
   private static void loadViews(Geometry geometry) {
     geometry.views = new Properties();
-    try (InputStream is = new FileInputStream("resources/vehicle/views.properties")) {
+    try (InputStream is = new FileInputStream("resources/vehicle/tags.properties")) {
       geometry.views.load(is);
     } catch (IOException e) {
         LX.log("Error loading views: " + e.getMessage());

@@ -4,6 +4,8 @@ import java.util.*;
 
 import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.LXParameter.Units;
 import heronarts.lx.transform.LXVector;
 import heronarts.p4lx.ui.UI;
 import processing.core.PGraphics;
@@ -38,6 +40,11 @@ public class TEVirtualOverlays extends TEUIComponent {
                   .setDescription("Toggle whether to render the back of lit panels as opaque")
                   .setValue(true);
 
+  public final CompoundParameter backingOpacity =
+          new CompoundParameter("Backing Opacity", 1, 0, 1)
+                  .setUnits(Units.PERCENT_NORMALIZED)
+                  .setDescription("Sets the opacity of the panel backings, when On");
+
   public final BooleanParameter powerBoxesVisible =
           new BooleanParameter("Power boxes")
                   .setDescription("Toggle whether to show power boxes")
@@ -69,6 +76,7 @@ public class TEVirtualOverlays extends TEUIComponent {
     addParameter("panelLabelsVisible", this.panelLabelsVisible);
     addParameter("unknownPanelsVisible", this.unknownPanelsVisible);
     addParameter("opaqueBackPanelsVisible", this.opaqueBackPanelsVisible);
+    addParameter("backingOpacity", this.backingOpacity);
     addParameter("powerBoxesVisible", this.powerBoxesVisible);
     this.laserPOV = new ArrayList<>();
     for (int i = 0; i < numPOVs; i++) {
@@ -140,6 +148,8 @@ public class TEVirtualOverlays extends TEUIComponent {
     if (this.powerBoxesVisible.isOn())
       this.opaqueBackPanelsVisible.setValue(false);
 
+    final int backingOpacity = (int) (this.backingOpacity.getNormalized() * 255);
+
     beginDraw(ui, pg);
     pg.noStroke();
     pg.textSize(40);
@@ -205,7 +215,7 @@ public class TEVirtualOverlays extends TEUIComponent {
 
       if (this.opaqueBackPanelsVisible.isOn() && p.panelType.equals(TEPanelModel.LIT)) {
         LXVector[] inner = p.offsetTriangles.inner;
-        pg.fill(LXColor.rgb(0,0,0), 230);
+        pg.fill(LXColor.rgb(0,0,0), backingOpacity);
         pg.beginShape();
         pg.vertex(inner[0].x, inner[0].y, inner[0].z);
         pg.vertex(inner[1].x, inner[1].y, inner[1].z);
