@@ -2,7 +2,7 @@ package titanicsend.pattern.yoffa.config;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.parameter.LXParameter;
+
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.effect.ShaderToyPatternEffect;
@@ -76,6 +76,14 @@ public class ShaderPanelsPatternConfig {
 
         @Override
         protected List<PatternEffect> createEffects() {
+            controls.setRange(TEControlTag.SPEED, 0, -4, 4); // overall scale
+            controls.setValue(TEControlTag.SPEED, 0.5);
+
+            controls.setRange(TEControlTag.SIZE, 2, 6, 0.1); // overall scale
+            controls.setRange(TEControlTag.QUANTITY,20,1,50);  // pixelation scale
+            controls.setRange(TEControlTag.WOW1,0,0,0.25);  // "wiggle" in rings
+            controls.setRange(TEControlTag.WOW2,0,0,3);  // radial rotation distortion
+
             return List.of(new NativeShaderPatternEffect("neon_ripples.fs",
                 PatternTarget.splitPanelSections(this)));
         }
@@ -325,5 +333,4 @@ public class ShaderPanelsPatternConfig {
                 PatternTarget.allPointsAsCanvas(this)));
         }
     }
-
 }
