@@ -37,7 +37,10 @@ public class ShaderEdgesPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             // set up parameters for the edge version of this...
-            controls.setRange(TEControlTag.SIZE, 2, 0.1, 6); // overall scale
+            controls.setRange(TEControlTag.SPEED, 0, -4, 4); // overall scale
+            controls.setValue(TEControlTag.SPEED, 0.5);
+
+            controls.setRange(TEControlTag.SIZE, 2, 6, 0.1); // overall scale
             controls.setValue(TEControlTag.SIZE, 2.25);
 
             controls.setRange(TEControlTag.QUANTITY, 20, 1, 50);  // pixelation scale

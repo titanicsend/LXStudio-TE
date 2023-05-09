@@ -176,17 +176,6 @@ public class OrganicPatternConfig {
     }
 
     @LXCategory("Yoffa Panel Organic")
-    public static class PulseSide extends ConstructedPattern {
-        public PulseSide(LX lx) {
-            super(lx);
-        }
-        @Override
-        protected List<PatternEffect> createEffects() {
-            return List.of(new PulseEffect(PatternTarget.allPanelsAsCanvas(this)).setOrigin(0, 0, 0));
-        }
-    }
-
-    @LXCategory("Yoffa Panel Organic")
     public static class AlternatingDots extends ConstructedPattern {
         public AlternatingDots(LX lx) {
             super(lx);

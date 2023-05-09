@@ -26,7 +26,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     float t = -iTime * 4.0;
 
     // build a wave to perturb the radius of the main circular pulse
-    float d = iWow1 * beat * sin(9. * atan(uv.x,uv.y));
+    float d = iWow1 * sin(9. * atan(uv.x,uv.y));
 
     // generate circular waves
     float s = 0.5 + 0.5 * sin(t - (d+length(uv * 2.0)) * 5.0);

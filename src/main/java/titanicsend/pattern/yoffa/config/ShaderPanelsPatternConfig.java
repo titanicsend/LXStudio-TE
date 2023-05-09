@@ -70,7 +70,10 @@ public class ShaderPanelsPatternConfig {
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            controls.setRange(TEControlTag.SIZE,2,0.1,6); // overall scale
+            controls.setRange(TEControlTag.SPEED, 0, -4, 4); // overall scale
+            controls.setValue(TEControlTag.SPEED, 0.5);
+
+            controls.setRange(TEControlTag.SIZE, 2, 6, 0.1); // overall scale
             controls.setRange(TEControlTag.QUANTITY,20,1,50);  // pixelation scale
             controls.setRange(TEControlTag.WOW1,0,0,0.25);  // "wiggle" in rings
             controls.setRange(TEControlTag.WOW2,0,0,3);  // radial rotation distortion
