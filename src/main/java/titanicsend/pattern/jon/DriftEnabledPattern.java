@@ -50,7 +50,6 @@ public abstract class DriftEnabledPattern extends TEPerformancePattern {
 
     @Override
     protected void run(double deltaMs) {
-        computeAudio(deltaMs);
         updateTranslation(deltaMs);
         super.run(deltaMs);
     }

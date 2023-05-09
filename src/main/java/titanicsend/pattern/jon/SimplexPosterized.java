@@ -31,7 +31,7 @@ public class SimplexPosterized extends DriftEnabledPattern {
     }
 
     @Override
-    public void runTEAudioPattern(double deltaMs) {
+    protected void runTEAudioPattern(double deltaMs) {
 
         // calculate incremental transform based on elapsed time
         shader.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
@@ -44,7 +44,7 @@ public class SimplexPosterized extends DriftEnabledPattern {
     // THIS IS REQUIRED if you're not using ConstructedPattern!
     // Initialize the NativeShaderPatternEffect and retrieve the native shader object
     // from it when the pattern becomes active
-    public void onActive() {
+    protected void onActive() {
         super.onActive();
         effect.onActive();
         shader = effect.getNativeShader();
