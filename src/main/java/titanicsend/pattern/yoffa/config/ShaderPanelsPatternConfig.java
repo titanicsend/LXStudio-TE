@@ -308,4 +308,22 @@ public class ShaderPanelsPatternConfig {
         }
     }
 
+    @LXCategory("Noise")
+    public static class SmokeShader extends ConstructedPattern {
+        public SmokeShader(LX lx) {
+            super(lx);
+        }
+
+        @Override
+        protected List<PatternEffect> createEffects() {
+            controls.setRange(TEControlTag.SIZE, 1, 3, .3);
+            controls.setRange(TEControlTag.QUANTITY, 7, 1, 8);
+            controls.setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
+            controls.setRange(TEControlTag.WOW2, 1.0, 0.01, 2);
+
+            return List.of(new NativeShaderPatternEffect("smoke_shader.fs",
+                PatternTarget.allPointsAsCanvas(this)));
+        }
+    }
+
 }
