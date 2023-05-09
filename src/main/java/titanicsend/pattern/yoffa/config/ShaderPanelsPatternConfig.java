@@ -3,6 +3,7 @@ package titanicsend.pattern.yoffa.config;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 
+import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.effect.ShaderToyPatternEffect;
@@ -298,25 +299,6 @@ public class ShaderPanelsPatternConfig {
     }
 
     @LXCategory("Noise")
-    public static class TriangleNoise extends ConstructedPattern {
-        public TriangleNoise(LX lx) {
-            super(lx);
-        }
-
-        @Override
-        protected List<PatternEffect> createEffects() {
-            controls.setRange(TEControlTag.SIZE, 1.15, 0.3, 2);
-            controls.setRange(TEControlTag.QUANTITY, 3, 1, 5);
-            controls.setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
-            controls.setRange(TEControlTag.SPIN, 0, -0.5,0.5 );
-            controls.setRange(TEControlTag.WOW1, 4.4, 3, 6.5);
-
-            return List.of(new NativeShaderPatternEffect("triangle_noise.fs",
-                PatternTarget.allPointsAsCanvas(this)));
-        }
-    }
-
-    @LXCategory("Noise")
     public static class SmokeShader extends ConstructedPattern {
         public SmokeShader(LX lx) {
             super(lx);
@@ -324,10 +306,14 @@ public class ShaderPanelsPatternConfig {
 
         @Override
         protected List<PatternEffect> createEffects() {
+            controls.setRange(TEControlTag.SPEED, 0, -4, 4); // overall scale
+            controls.setValue(TEControlTag.SPEED, 0.75);
+
             controls.setRange(TEControlTag.SIZE, 1, 3, .3);
             controls.setRange(TEControlTag.QUANTITY, 7, 1, 8);
             controls.setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
-            controls.setRange(TEControlTag.WOW2, 1.0, 0.01, 2);
+            controls.setRange(TEControlTag.WOW1, 0, 0, 1);
+            controls.setRange(TEControlTag.WOW2, 1.0, 0.25, 2.0);
 
             return List.of(new NativeShaderPatternEffect("smoke_shader.fs",
                 PatternTarget.allPointsAsCanvas(this)));
