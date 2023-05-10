@@ -403,6 +403,12 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         }
 
         @Override
+        public LXListenableNormalizedParameter incrementNormalized(double amount) {
+            // High resolution
+            return super.incrementNormalized(amount / 5.);
+        }
+
+        @Override
         public LXParameter reset() {
             // if not spinning, resetting angle controls
             // resets both the static angle and the spin angle.
