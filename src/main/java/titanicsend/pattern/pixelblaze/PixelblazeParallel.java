@@ -54,7 +54,6 @@ public class PixelblazeParallel extends TEPerformancePattern {
     if (wrappers.size() == 0)
       return;
     try {
-      updateGradients();
       ArrayList<Future<Void>> futures = new ArrayList<>(wrappers.size());
       for (Wrapper wrapper : wrappers) {
         futures.add(es.submit((Callable<Void>) () -> {
