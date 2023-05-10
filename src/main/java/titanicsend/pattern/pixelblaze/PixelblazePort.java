@@ -72,7 +72,6 @@ public abstract class PixelblazePort extends TEPerformancePattern {
 
 
     public void runTEAudioPattern(double deltaMs) {
-        updateGradients();
         updateLocalVars();
         beforeRender(deltaMs);
 
