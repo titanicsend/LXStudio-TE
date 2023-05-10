@@ -79,7 +79,7 @@ public abstract class TEAudioPattern extends TEPattern {
      *
      * @param deltaMs elapsed time since last frame, as provided in run(deltaMs)
      */
-    public void computeAudio(double deltaMs) {
+    protected void computeAudio(double deltaMs) {
         // Instantaneous normalized (0..1) volume level
         volumeLevel = eq.getNormalizedf();
 

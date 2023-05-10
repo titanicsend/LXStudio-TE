@@ -839,7 +839,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     }
 
     @Override
-    public void onActive() {
+    protected void onActive() {
       // Finally safe to assume a channel has been assigned
       this.controls.viewParameter.link();
       super.onActive();
