@@ -26,7 +26,7 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
-import heronarts.lx.transform.LXParameterizedMatrix;
+import heronarts.lx.transform.LXMatrix;
 import heronarts.lx.utils.LXUtils;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.jon.TEControlTag;
@@ -34,7 +34,7 @@ import titanicsend.pattern.jon.TEControlTag;
 @LXCategory(LXCategory.COLOR)
 public class TEGradientPattern extends TEPerformancePattern {
 
-  private final LXParameterizedMatrix transform = new LXParameterizedMatrix();
+  private final LXMatrix transform = new LXMatrix();
   
   private interface CoordinateFunction {
     float getCoordinate(LXPoint p, float normalized, float offset);
@@ -126,19 +126,22 @@ public class TEGradientPattern extends TEPerformancePattern {
     final CoordinateFunction yFunction = (yAmount < 0) ? yMode.invert : yMode.function;
     final CoordinateFunction zFunction = (zAmount < 0) ? zMode.invert : zMode.function;
 
-    // TODO: rotation not working
-    // TODO: size scaling not working
     double pitch = -getRotationAngleFromSpin();
     double roll = Math.toRadians(-getWow2());
-    this.transform.update(matrix -> {
-      matrix
+
+    // Build transform matrix as follows:
+    // reset matrix at start of each frame
+    // translate origin to center for rotation, then rotate
+    // scale while still translated so scaling will be centered
+    // translate coordinate system back to original position
+      transform
+        .identity()
         .translate(.5f, .5f, .5f)
         .rotateZ((float)roll)
         .rotateX((float)pitch)
         //.rotateY((float) Math.toRadians(-this.yaw.getValue()))
         .scale(size)
         .translate(-.5f, -.5f, -.5f);
-    });
 
     for (LXPoint p : this.model.points) {
       if (this.modelTE.isGapPoint(p)) {
