@@ -20,6 +20,7 @@
 
 package titanicsend.model.justin;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,7 +137,11 @@ public abstract class ChannelExtension<T extends LXComponent> extends LXComponen
   public T get(LXAbstractChannel channel) {
     return items.get(channel);
   }
-  
+
+  public Collection<T> getAll() {
+    return items.values();
+  }
+
   @Override
   public void dispose() {
     this.lx.engine.mixer.removeListener(this.mixerListener);
