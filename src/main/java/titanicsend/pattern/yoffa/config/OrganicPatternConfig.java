@@ -2,7 +2,6 @@ package titanicsend.pattern.yoffa.config;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.parameter.CompoundParameter;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.will.shaders.*;
 import titanicsend.pattern.yoffa.effect.*;
@@ -10,7 +9,6 @@ import titanicsend.pattern.yoffa.effect.shaders.*;
 import titanicsend.pattern.yoffa.framework.ConstructedPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
-import titanicsend.pattern.yoffa.effect.shaders.OutrunGridShader;
 import titanicsend.pattern.yoffa.media.BasicVideoPatternEffect;
 
 import java.util.List;
@@ -18,6 +16,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class OrganicPatternConfig {
 
+    /*  Removed from UI - see TEApp.java for details.
     @LXCategory("Yoffa Panel Combo")
     public static class StarryOutrun extends ConstructedPattern {
         public StarryOutrun(LX lx) {
@@ -33,6 +32,7 @@ public class OrganicPatternConfig {
             );
         }
     }
+   */
 
     @LXCategory("Yoffa Panel Shader")
     public static class RainbowSwirlPanels extends ConstructedPattern {

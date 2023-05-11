@@ -21,7 +21,7 @@ import titanicsend.pattern.TEAudioPattern;
  *   - Cache everything; compute everything at the highest level (least frequent)
  */
 
-@LXCategory("Combo FG")
+@LXCategory("TE Examples")
 public class Smoke extends TEAudioPattern {
     public final LinkedColorParameter color =
             registerColor("Color", "color", ColorType.PRIMARY,

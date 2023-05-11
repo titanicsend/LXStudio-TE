@@ -38,6 +38,7 @@ import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
 import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.pattern.color.GradientPattern;
+import heronarts.lx.pattern.form.PlanesPattern;
 import heronarts.lx.pattern.texture.NoisePattern;
 import heronarts.lx.pattern.texture.SparklePattern;
 import heronarts.lx.studio.LXStudio;
@@ -54,21 +55,17 @@ import titanicsend.pattern.TEEdgeTestPattern;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.pattern.TEPanelTestPattern;
 import titanicsend.pattern.ben.*;
-import titanicsend.pattern.cesar.*;
 import titanicsend.pattern.jeff.*;
 import titanicsend.pattern.jon.*;
 import titanicsend.pattern.justin.TEGradientPattern;
 import titanicsend.pattern.justin.TESolidPattern;
 import titanicsend.pattern.mike.*;
 import titanicsend.pattern.pixelblaze.*;
-import titanicsend.pattern.tmc.*;
 import titanicsend.pattern.tom.*;
 import titanicsend.pattern.will.PowerDebugger;
 import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.effect.BeaconEffect;
-import titanicsend.pattern.yoffa.media.BasicImagePattern;
-import titanicsend.pattern.yoffa.media.ReactiveHeartPattern;
 import titanicsend.ui.UITEPerformancePattern;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.util.TE;
@@ -167,7 +164,6 @@ public class TEApp extends PApplet implements LXPlugin {
     lx.registry.addPattern(ArcEdges.class);
     lx.registry.addPattern(BassLightning.class);
     lx.registry.addPattern(BouncingDots.class);
-    lx.registry.addPattern(Bubbles.class);
     lx.registry.addPattern(Checkers.class);
     lx.registry.addPattern(EdgeFall.class);
     lx.registry.addPattern(EdgeKITT.class);
@@ -188,22 +184,17 @@ public class TEApp extends PApplet implements LXPlugin {
     lx.registry.addPattern(PBFireworkNova.class);
     lx.registry.addPattern(PixelblazeParallel.class);
     lx.registry.addPattern(SimplexPosterized.class);
-    lx.registry.addPattern(SolidEdge.class);
-    lx.registry.addPattern(SolidPanel.class);
+    lx.registry.addPattern(TEMidiFighter64DriverPattern.class);
     lx.registry.addPattern(TESparklePattern.class);
     lx.registry.addPattern(TurbulenceLines.class);
     lx.registry.addPattern(TriangleNoise.class);
     lx.registry.addPattern(SpiralDiamonds.class);
     lx.registry.addPattern(PulsingTriangles.class);
-    lx.registry.addPattern(HandTracker.class);
     lx.registry.addPattern(Fire.class);
-    lx.registry.addPattern(TEMidiFighter64DriverPattern.class);
     lx.registry.addPattern(TESolidPattern.class);
     lx.registry.addPattern(TEGradientPattern.class);
 
     // Patterns that will not aspire to art direction standards
-    lx.registry.addPattern(BasicImagePattern.class);
-    lx.registry.addPattern(ReactiveHeartPattern.class);
 
     // Examples for teaching and on-boarding developers
     lx.registry.addPattern(BasicRainbowPattern.class);
@@ -212,9 +203,33 @@ public class TEApp extends PApplet implements LXPlugin {
     lx.registry.addPattern(TempoReactiveEdge.class);
     lx.registry.addPattern(ArtStandards.class);
     lx.registry.addEffect(titanicsend.effect.EdgeSieve.class);
-    lx.registry.addEffect(titanicsend.effect.Kaleidoscope.class);
     lx.registry.addEffect(titanicsend.effect.NoGapEffect.class);
     lx.registry.addEffect(BeaconEffect.class);
+
+
+    // TODO - The following patterns were removed from the UI prior to EDC 2023 to keep
+    // TODO - them from being accidentally activated during a performance.
+    // TODO - update/fix as needed!
+
+    // Nonfunctional - throws exception on load
+    // lx.registry.addPattern(ReactiveHeartPattern.class);
+    // lx.registry.addPattern(SolidPanel.class);
+    // lx.registry.addPattern(SolidEdge.class);
+    // lx.registry.addPattern(BasicImagePattern.class);
+    // lx.registry.addPattern(Bubbles.class);
+
+    // Nonfunctional - need work or additional hardware that will not be at EDC
+    // lx.registry.addPattern(HandTracker.class);
+
+    // "ShaderToyPattern" in ShaderPanelsPatternConfig.java
+
+    // Useful for test, but might turn the car black in performance
+    lx.registry.removePattern(PlanesPattern.class);  // remove pattern added automatically by LX.
+
+    // Frame Rate Killers
+    // lx.registry.addEffect(titanicsend.effect.Kaleidoscope.class);
+    // "StarryOutrun" in OrganicPatternConfig.java
+
 
     @SuppressWarnings("unchecked")
     Function<Class<?>, Class<LXPattern>[]> patternGetter =
