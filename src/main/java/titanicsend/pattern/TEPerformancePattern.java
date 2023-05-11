@@ -629,7 +629,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         }
 
         protected LXListenableNormalizedParameter getSwatchRemoteControl() {
-            if (ViewCentral.ENABLED) {
+            if (ColorCentral.ENABLED) {
                 return swatchParameter;
             } else {
                 return getControl(TEControlTag.BRIGHTNESS).control;
@@ -867,11 +867,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     private void linkChannelParameters(LX lx) {
         // Finally safe to assume a channel has been assigned
         this.controls.viewParameter.link();
-    }
-
-    @Override
-    protected void onActive() {
-      super.onActive();
     }
 
     public TECommonControls getControls() {
