@@ -6,17 +6,16 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
-import titanicsend.pattern.yoffa.effect.ShaderToyPatternEffect;
 import titanicsend.pattern.yoffa.framework.ConstructedPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
-import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 
 import java.util.List;
 
 @SuppressWarnings("unused")
 public class ShaderPanelsPatternConfig {
 
+    /* Removed from UI - see TEApp.java for details.
     @LXCategory("Native Shaders Panels")
     public static class ShaderToyPattern extends ConstructedPattern {
         public ShaderToyPattern(LX lx) {
@@ -28,6 +27,8 @@ public class ShaderPanelsPatternConfig {
             return List.of(new ShaderToyPatternEffect(PatternTarget.splitPanelSections(this)));
         }
     }
+
+    */
 
     //multiple
     @LXCategory("Native Shaders Panels")
@@ -233,7 +234,7 @@ public class ShaderPanelsPatternConfig {
         }
     }
 
-    @LXCategory("Test")
+    @LXCategory("Native Shaders Panels")
     public static class AudioTest2 extends ConstructedPattern {
         public AudioTest2(LX lx) {
             super(lx);
