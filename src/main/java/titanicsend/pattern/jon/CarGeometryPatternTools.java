@@ -26,7 +26,7 @@ public class CarGeometryPatternTools {
     // convert from normalized physical model coords
     // to aspect corrected normalized 2D GL surface coords
     protected static float modelToMapY(LXPoint pt) {
-        return -0.525f + pt.yn;
+        return -0.5f + pt.yn;
     }
 
     /**
