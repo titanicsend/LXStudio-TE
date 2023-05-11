@@ -52,6 +52,7 @@ import titanicsend.model.justin.ViewCentral;
 import titanicsend.output.GPOutput;
 import titanicsend.output.GrandShlomoStation;
 import titanicsend.pattern.TEEdgeTestPattern;
+import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.pattern.TEPanelTestPattern;
 import titanicsend.pattern.ben.*;
 import titanicsend.pattern.jeff.*;
@@ -183,6 +184,7 @@ public class TEApp extends PApplet implements LXPlugin {
     lx.registry.addPattern(PBFireworkNova.class);
     lx.registry.addPattern(PixelblazeParallel.class);
     lx.registry.addPattern(SimplexPosterized.class);
+    lx.registry.addPattern(TEMidiFighter64DriverPattern.class);
     lx.registry.addPattern(TESparklePattern.class);
     lx.registry.addPattern(TurbulenceLines.class);
     lx.registry.addPattern(TriangleNoise.class);
@@ -218,7 +220,7 @@ public class TEApp extends PApplet implements LXPlugin {
 
     // Nonfunctional - need work or additional hardware that will not be at EDC
     // lx.registry.addPattern(HandTracker.class);
-    // lx.registry.addPattern(TEMidiFighter64DriverPattern.class);
+
     // "ShaderToyPattern" in ShaderPanelsPatternConfig.java
 
     // Useful for test, but might turn the car black in performance
