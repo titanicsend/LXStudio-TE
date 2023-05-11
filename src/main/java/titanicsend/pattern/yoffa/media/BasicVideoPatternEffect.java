@@ -1,15 +1,11 @@
 package titanicsend.pattern.yoffa.media;
 
 import heronarts.lx.LXCategory;
-import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
-import titanicsend.util.Dimensions;
-
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 // Example to show how we could map a video onto our panels
 // Not intended from production use
@@ -47,10 +43,7 @@ public class BasicVideoPatternEffect extends PatternEffect {
     public void run(double deltaMs) {
         try {
             videoPainter.grabFrame();
-
-            for (Map.Entry<LXPoint, Dimensions> pointToCanvas : pointsToCanvas.entrySet()) {
-                videoPainter.paint(pointToCanvas.getKey(), pointToCanvas.getValue());
-            }
+            videoPainter.paint(getPoints());
         } catch (Exception e) {
             //fail silently so we can swap out videos live
             //when we live swap, we need to start the video again and i wasn't able to find a good way to detect this in 5min so hacky hack

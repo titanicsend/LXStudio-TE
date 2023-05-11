@@ -81,7 +81,7 @@ public class PulseEffect extends PatternEffect {
 
         double t1 = pattern.getTime();
 
-        for (LXPoint point : getAllPoints()) {
+        for (LXPoint point : getPoints()) {
             double d1 = TEMath.distance(point.xn, point.yn, point.zn, originXn, yOrigin, zOrigin);
             double dist = d1 * scale;
 

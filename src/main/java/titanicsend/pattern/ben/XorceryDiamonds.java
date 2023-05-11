@@ -6,6 +6,7 @@ import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.ConstructedPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 import java.util.List;
 
@@ -18,6 +19,6 @@ public class XorceryDiamonds extends ConstructedPattern {
 	@Override
 	protected List<PatternEffect> createEffects() {
 		return List.of(new NativeShaderPatternEffect("xorcery_diamonds.fs",
-				PatternTarget.allPanelsAsCanvas(this)));
+				new PatternTarget(this, TEShaderView.ALL_PANELS)));
 	}
 }

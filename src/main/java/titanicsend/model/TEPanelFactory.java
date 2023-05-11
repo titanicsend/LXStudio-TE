@@ -49,11 +49,14 @@ public class TEPanelFactory {
     if (stripingInstructions == null) channelLengths = null;
     else channelLengths = stripingInstructions.channelLengths;
 
+    // Tags for panel id, section
+    final String section = TEPanelModel.getSection(centroid).getTag();
+    String[] tags = new String[] { id, section };
+
     // Adding tags based on resources/vehicle/tags.properties
-    String[] tags = new String[] { id };
     for (String view : views.stringPropertyNames()) {
       List<String> ids = Arrays.asList(views.getProperty(view).split(","));
-      if (ids.contains(id)) {
+      if (ids.contains(id) || ids.contains(section)) {
         String[] newTags = new String[tags.length + 1]; // Resize the tags array to fit all IDs
         System.arraycopy(tags, 0, newTags, 0, tags.length); // Copy the old tags into the new array
         newTags[tags.length] = view;

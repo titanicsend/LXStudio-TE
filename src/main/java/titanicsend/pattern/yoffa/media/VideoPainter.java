@@ -1,28 +1,39 @@
 package titanicsend.pattern.yoffa.media;
 
 import heronarts.lx.model.LXPoint;
+import titanicsend.util.TE;
+
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.Java2DFrameConverter;
-import titanicsend.model.TEModel;
-import titanicsend.util.Dimensions;
-
-import java.util.Collection;
+import java.util.List;
 
 public class VideoPainter {
 
     private final FFmpegFrameGrabber frameGrabber;
     private final Java2DFrameConverter frameConverter;
-    private final int[] colors;
+    private int[] colors;
 
     private ImagePainter currentFramePainter;
+
+    public VideoPainter(String vidPath) {
+      this(vidPath, null);
+    }
 
     public VideoPainter(String vidPath, int[] colors) {
         this.frameGrabber = new FFmpegFrameGrabber(vidPath);
         this.frameConverter = new Java2DFrameConverter();
         this.colors = colors;
         this.currentFramePainter = null;
+    }
+
+    /**
+     * The colors[] array is no longer available to patterns at constructor time
+     * so this will need to be called from onActive()
+     */
+    public void initColors(int[] colors) {
+      this.colors = colors;
     }
 
     public void grabFrame() {
@@ -43,23 +54,39 @@ public class VideoPainter {
         }
     }
 
-    public void paint(Collection<? extends TEModel> panels) {
-        paint(panels, 1);
-    }
-
-    public void paint(Collection<? extends TEModel> panels, double scaleRatio) {
+    public void paint(List<LXPoint> points) {
         if (currentFramePainter != null) {
-            currentFramePainter.paint(panels, scaleRatio);
+            for (LXPoint point : points) {
+                currentFramePainter.paint(point);
+            }
         }
     }
 
-    public void paint(LXPoint point, Dimensions canvasDimensions) {
+    public void paint(List<LXPoint> points, double scaleRatio) {
         if (currentFramePainter != null) {
-            currentFramePainter.paint(point, canvasDimensions, 1);
+            for (LXPoint point : points) {
+                currentFramePainter.paint(point, scaleRatio);
+            }
+        }
+    }
+
+    public void paint(LXPoint point) {
+        if (currentFramePainter != null) {
+            currentFramePainter.paint(point);
+        }
+    }
+
+    public void paint(LXPoint point, double scaleRatio) {
+        if (currentFramePainter != null) {
+            currentFramePainter.paint(point, scaleRatio);
         }
     }
 
     public void startVideo() {
+        if (colors == null) {
+            TE.err("VideoPainter needs colors[] array before startVideo() is called.");
+            return;
+        }
         try {
             frameGrabber.start();
         } catch (FFmpegFrameGrabber.Exception e) {

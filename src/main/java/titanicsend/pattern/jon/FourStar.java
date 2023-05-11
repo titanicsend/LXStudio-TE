@@ -8,10 +8,10 @@ import heronarts.lx.modulator.Click;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.ObjectParameter;
-import titanicsend.pattern.TEAudioPattern;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 
@@ -58,7 +58,7 @@ public class FourStar extends TEPerformancePattern {
         tempoDivision.bang();
 
         effect = new NativeShaderPatternEffect("fourstar.fs",
-                PatternTarget.allPanelsAsCanvas(this), options);
+                new PatternTarget(this, TEShaderView.ALL_PANELS), options);
     }
 
     @Override
@@ -112,5 +112,9 @@ public class FourStar extends TEPerformancePattern {
         addParameter("tempoDivision", tempoDivision);
     }
 
+    @Override
+    public String getDefaultView() {
+        return effect.getDefaultView();
+    }
 
 }

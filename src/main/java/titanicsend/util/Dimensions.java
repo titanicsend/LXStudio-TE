@@ -1,10 +1,7 @@
 package titanicsend.util;
 
 import heronarts.lx.model.LXPoint;
-import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEModel;
-import titanicsend.model.TEPanelModel;
-
 import java.util.*;
 
 /**
@@ -15,6 +12,7 @@ import java.util.*;
  * One relevant aspect to note is that the Z param which is generally referred to as depth is representing what one
  * would think of as the width if they were looking at the car from the front.
  */
+@Deprecated  // Alternative scopes are handled by Views
 public class Dimensions {
 
     private final Float minX;

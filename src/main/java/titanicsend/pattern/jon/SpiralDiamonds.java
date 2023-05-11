@@ -2,17 +2,12 @@ package titanicsend.pattern.jon;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.model.TEEdgeModel;
-import titanicsend.pattern.TEAudioPattern;
 import titanicsend.pattern.TEPerformancePattern;
-import titanicsend.util.TE;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.util.TEMath;
-
-import static titanicsend.util.TEColor.TRANSPARENT;
 
 @LXCategory("Panel FG")
 public class SpiralDiamonds extends TEPerformancePattern {
@@ -87,5 +82,10 @@ public class SpiralDiamonds extends TEPerformancePattern {
              // finally, set color of pixel
              colors[point.index] = color * on;
          }
+    }
+
+    @Override
+    public String getDefaultView() {
+        return TEShaderView.DOUBLE_LARGE.viewLabel;
     }
 }

@@ -151,10 +151,14 @@ public class TEPanelModel extends TEModel {
     return rv;
   }
 
+  public TEPanelSection getSection() {
+    return getSection(this.centroid);
+  }
+
   // See enum class for section description
   // TODO Replace this with something smarter
   // This is a really lazy/sloppy way of doing this, though if we're not changing the model it should be fine
-  public TEPanelSection getSection() {
+  static public TEPanelSection getSection(LXVector centroid) {
     if (centroid.x > 1200000) {
       return TEPanelSection.PORT;
     }

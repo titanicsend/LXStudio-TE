@@ -7,7 +7,6 @@ import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
-import titanicsend.util.Dimensions;
 
 import java.util.Collection;
 import java.util.List;
@@ -43,8 +42,8 @@ public class ShimmeringEffect extends PatternEffect {
             direction = direction == 3 ? 0 : direction + 1;
         }
 
-        for (LXPoint point : getAllPoints()) {
-            double distanceFromTarget = getDistanceFromTarget(point, basis, pointsToCanvas.get(point));
+        for (LXPoint point : getPoints()) {
+            double distanceFromTarget = getDistanceFromTarget(point, basis);
             double alpha = 100;
             if ((distanceFromTarget > 0 && beatCount % beatsPerMeasure == 0) ||
                     (distanceFromTarget < 0 && beatCount % beatsPerMeasure == beatsPerMeasure - 1)) {
@@ -66,14 +65,16 @@ public class ShimmeringEffect extends PatternEffect {
         return List.of();
     }
 
-    private double getDistanceFromTarget(LXPoint point, double basis, Dimensions dimensions) {
+    private double getDistanceFromTarget(LXPoint point, double basis) {
         double current;
         double target;
         if (direction == 0 || direction == 2) {
-            target = (dimensions.getMaxYn() - dimensions.getMinYn()) * basis + dimensions.getMinYn();
+            // target = (dimensions.getMaxYn() - dimensions.getMinYn()) * basis + dimensions.getMinYn();
+            target = basis;
             current = point.yn;
         } else {
-            target = (dimensions.getMaxZn() - dimensions.getMinZn()) * basis + dimensions.getMinZn();
+            // target = (dimensions.getMaxZn() - dimensions.getMinZn()) * basis + dimensions.getMinZn();
+            target = basis;
             current = point.zn;
         }
         if (direction > 1) {

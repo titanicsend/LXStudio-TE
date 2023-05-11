@@ -2,15 +2,15 @@ package titanicsend.pattern.yoffa.media;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import titanicsend.model.TEPanelSection;
-import titanicsend.pattern.TEPattern;
+import heronarts.lx.model.LXPoint;
+import titanicsend.pattern.TEPerformancePattern;
 
 import java.io.IOException;
 
 // This is just an example to show how we could map an image onto a set of our panels
 // Not intended from production use
 @LXCategory("TE Examples")
-public class BasicImagePattern extends TEPattern {
+public class BasicImagePattern extends TEPerformancePattern {
 
     private static final String IMG_PATH = "resources/pattern/eddie.jpg";
 
@@ -18,19 +18,23 @@ public class BasicImagePattern extends TEPattern {
 
     public BasicImagePattern(LX lx) throws IOException {
         super(lx);
-        eddiePainter = new ImagePainter(IMG_PATH, colors);
+
+        addCommonControls();
+
+        eddiePainter = new ImagePainter(IMG_PATH);
     }
 
     @Override
     public void onActive() {
-        eddiePainter.paint(modelTE.getPanelsBySection(TEPanelSection.STARBOARD_AFT));
-        eddiePainter.paint(modelTE.getPanelsBySection(TEPanelSection.STARBOARD_FORE));
+        super.onActive();
+        eddiePainter.initColors(getColors());
     }
 
     @Override
-    public void run(double deltaMs) {
-        //do nothing
-        //this is a static pattern, so no need to keep redrawing
+    protected void runTEAudioPattern(double deltaMs) {
+        for (LXPoint p : getModel().getPoints()) {
+            eddiePainter.paint(p);
+        }
     }
 
 }

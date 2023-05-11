@@ -63,6 +63,14 @@ public abstract class ConstructedPattern extends TEPerformancePattern {
         }
     }
 
+    @Override
+    public String getDefaultView() {
+        if (this.effects.size() > 0) {
+            return this.effects.get(0).getDefaultView();
+        }
+        return super.getDefaultView();
+    }
+
     protected abstract List<PatternEffect> createEffects();
 
 }

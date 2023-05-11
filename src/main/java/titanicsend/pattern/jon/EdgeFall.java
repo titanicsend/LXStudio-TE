@@ -3,10 +3,10 @@ package titanicsend.pattern.jon;
 import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 
 import java.nio.FloatBuffer;
@@ -41,7 +41,7 @@ public class EdgeFall extends TEPerformancePattern {
         addCommonControls();
 
         effect = new NativeShaderPatternEffect("edgefall.fs",
-            PatternTarget.allPointsAsCanvas(this));
+            new PatternTarget(this, TEShaderView.ALL_POINTS));
 
         // create an n x 4 array, so we can pass line segment descriptors
         // to GLSL shaders.
@@ -169,4 +169,8 @@ public class EdgeFall extends TEPerformancePattern {
         shader = effect.getNativeShader();
     }
 
+    @Override
+    public String getDefaultView() {
+        return effect.getDefaultView();
+    }
 }

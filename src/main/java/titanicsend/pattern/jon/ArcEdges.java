@@ -6,6 +6,7 @@ import heronarts.lx.LXCategory;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 
 import java.nio.FloatBuffer;
@@ -31,7 +32,7 @@ public class ArcEdges extends TEPerformancePattern {
         addCommonControls();
 
         effect = new NativeShaderPatternEffect("arcedges.fs",
-            PatternTarget.allPointsAsCanvas(this));
+            new PatternTarget(this, TEShaderView.ALL_POINTS));
 
         // create an n x 4 array, so we can pass line segment descriptors
         // to GLSL shaders.
@@ -87,4 +88,8 @@ public class ArcEdges extends TEPerformancePattern {
         shader = effect.getNativeShader();
     }
 
+    @Override
+    public String getDefaultView() {
+        return effect.getDefaultView();
+    }
 }

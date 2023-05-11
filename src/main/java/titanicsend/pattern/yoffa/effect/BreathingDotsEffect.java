@@ -1,6 +1,5 @@
 package titanicsend.pattern.yoffa.effect;
 
-import heronarts.lx.Tempo;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.LXRangeModulator;
@@ -10,7 +9,6 @@ import titanicsend.pattern.TEPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -26,15 +24,16 @@ public class BreathingDotsEffect extends PatternEffect {
 
     public BreathingDotsEffect(PatternTarget patternTarget) {
         super(patternTarget);
-        double maxPoints = getAllPoints().size() / MAX_POINTS_DIVIDER;
+        double maxPoints = getPoints().size() / MAX_POINTS_DIVIDER;
         this.pointsPerMilli = maxPoints / DURATION_MILLIS;
     }
 
     public void run(double deltaMs) {
         int baseColor = pattern.getSwatchColor(TEPattern.ColorType.PRIMARY);
 
-        List<LXPoint> availablePoints = new ArrayList<>(getAllPoints());
-        for (LXPoint point : getAllPoints()) {
+        // List<LXPoint> availablePoints = new ArrayList<>(getPoints());
+        List<LXPoint> availablePoints = new ArrayList<>();
+        for (LXPoint point : getPoints()) {
             Double status = getBreathStatus(point);
             if (status == null) {
                 setColor(point, LXColor.BLACK);

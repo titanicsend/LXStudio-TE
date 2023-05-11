@@ -8,6 +8,7 @@ import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 import titanicsend.util.TEMath;
@@ -57,7 +58,7 @@ public class Iceflow extends TEPerformancePattern {
         addParameter("beatScale",beatScale);
 
         effect = new NativeShaderPatternEffect("iceflow.fs",
-                PatternTarget.allPanelsAsCanvas(this), options);
+                new PatternTarget(this, TEShaderView.ALL_PANELS), options);
 
     }
 
@@ -109,4 +110,8 @@ public class Iceflow extends TEPerformancePattern {
         shader = effect.getNativeShader();
     }
 
+    @Override
+    public String getDefaultView() {
+        return effect.getDefaultView();
+    }
 }

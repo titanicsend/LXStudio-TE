@@ -5,7 +5,6 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
-import titanicsend.util.Dimensions;
 
 import java.awt.*;
 import java.util.*;
@@ -46,21 +45,12 @@ public abstract class FragmentShaderEffect extends PatternEffect {
                 {sin(angle), cos(angle)}
         };
 
-        pointsToCanvas.entrySet().parallelStream().forEach(entry -> setColor(entry.getKey(),
-                getColorForPoint(entry.getKey(), entry.getValue(), durationSec)));
+        getPoints().parallelStream().forEach(p -> setColor(p, getColorForPoint(p, durationSec)));
     }
 
-    private int getColorForPoint(LXPoint point, Dimensions canvasDimensions, double timeSec) {
-        boolean useZForX = canvasDimensions.getDepth() > canvasDimensions.getWidth();
-        double xCoordinate = useZForX ? point.z - canvasDimensions.getMinZ() : point.x - canvasDimensions.getMinX();
-
-        double[] fragCoordinates = new double[]{
-                xCoordinate,
-                point.y - canvasDimensions.getMinY()
-        };
-
-        double widthResolution = useZForX ? canvasDimensions.getDepth() : canvasDimensions.getWidth();
-        double[] resolution = new double[]{widthResolution, canvasDimensions.getHeight()};
+    private int getColorForPoint(LXPoint point, double timeSec) {
+        double[] fragCoordinates = new double[] { point.zn, point.yn };
+        double[] resolution = new double[] { 1,1 };
         double[] colorRgb = getColorForPoint(fragCoordinates, resolution, timeSec);
         //most shaders ignore alpha but optionally plumbing it through is helpful,
         // esp if we want to layer underneath it. can change black background to transparent, etc.

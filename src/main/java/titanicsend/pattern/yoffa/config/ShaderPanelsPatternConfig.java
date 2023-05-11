@@ -9,6 +9,8 @@ import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.ConstructedPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
+import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 
 import java.util.List;
 
@@ -24,7 +26,7 @@ public class ShaderPanelsPatternConfig {
 
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new ShaderToyPatternEffect(PatternTarget.splitPanelSections(this)));
+            return List.of(new ShaderToyPatternEffect(new PatternTarget(this, TEShaderView.SPLIT_PANEL_SECTIONS)));
         }
     }
 
@@ -40,7 +42,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("light_beams.fs",
-                PatternTarget.allPanelsAsIndividual(this)));
+                new PatternTarget(this, TEShaderView.ALL_PANELS_INDIVIDUAL)));
         }
     }
 
@@ -53,7 +55,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("neon_heart.fs",
-                PatternTarget.allPanelsAsIndividual(this)));
+                new PatternTarget(this, TEShaderView.ALL_PANELS_INDIVIDUAL)));
         }
     }
 
@@ -66,7 +68,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("marbling.fs",
-                PatternTarget.doubleLargeCanvas(this)));
+                new PatternTarget(this, TEShaderView.DOUBLE_LARGE)));
         }
     }
 
@@ -87,7 +89,7 @@ public class ShaderPanelsPatternConfig {
             controls.setRange(TEControlTag.WOW2,0,0,3);  // radial rotation distortion
 
             return List.of(new NativeShaderPatternEffect("neon_ripples.fs",
-                PatternTarget.splitPanelSections(this)));
+                new PatternTarget(this, TEShaderView.SPLIT_PANEL_SECTIONS)));
         }
     }
 
@@ -100,7 +102,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("neon_triangles.fs",
-                PatternTarget.allPanelsAsIndividual(this)));
+                new PatternTarget(this, TEShaderView.ALL_PANELS_INDIVIDUAL)));
         }
     }
 
@@ -113,7 +115,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("space_explosion.fs",
-                PatternTarget.allPanelsAsIndividual(this)));
+                new PatternTarget(this, TEShaderView.ALL_PANELS_INDIVIDUAL)));
         }
     }
 
@@ -126,7 +128,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("synth_waves.fs",
-                PatternTarget.doubleLargeCanvas(this)));
+                new PatternTarget(this, TEShaderView.DOUBLE_LARGE)));
         }
     }
 
@@ -139,7 +141,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("pulsing_heart.fs",
-                PatternTarget.allPanelsAsIndividual(this)));
+                new PatternTarget(this, TEShaderView.ALL_PANELS_INDIVIDUAL)));
         }
     }
 
@@ -152,7 +154,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("neon_blocks.fs",
-                PatternTarget.doubleLargeCanvas(this)));
+                new PatternTarget(this, TEShaderView.DOUBLE_LARGE)));
         }
     }
 
@@ -165,7 +167,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("warp.fs",
-                PatternTarget.doubleLargeCanvas(this)));
+                new PatternTarget(this, TEShaderView.DOUBLE_LARGE)));
         }
     }
 
@@ -178,7 +180,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("fire.fs",
-                PatternTarget.splitPanelSections(this)));
+                new PatternTarget(this, TEShaderView.SPLIT_PANEL_SECTIONS)));
         }
     }
 
@@ -191,7 +193,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("storm_scanner.fs",
-                PatternTarget.doubleLargeCanvas(this), "gray_noise.png"));
+                new PatternTarget(this, TEShaderView.DOUBLE_LARGE), "gray_noise.png"));
         }
     }
 
@@ -204,7 +206,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("jet_stream.fs",
-                PatternTarget.doubleLargeCanvas(this), "color_noise.png"));
+                new PatternTarget(this, TEShaderView.DOUBLE_LARGE), "color_noise.png"));
         }
     }
 
@@ -217,7 +219,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("outrun_grid.fs",
-                PatternTarget.doubleLargeCanvas(this)));
+                new PatternTarget(this, TEShaderView.DOUBLE_LARGE)));
         }
     }
 
@@ -230,7 +232,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("galaxy.fs",
-                PatternTarget.allPanelsAsCanvas(this)));
+                new PatternTarget(this, TEShaderView.ALL_PANELS)));
         }
     }
 
@@ -243,7 +245,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("audio_test2.fs",
-                PatternTarget.allPanelsAsCanvas(this)));
+                new PatternTarget(this, TEShaderView.ALL_PANELS)));
         }
     }
 
@@ -256,7 +258,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("neon_cells.fs",
-                PatternTarget.splitPanelSections(this)));
+                new PatternTarget(this, TEShaderView.SPLIT_PANEL_SECTIONS)));
         }
     }
 
@@ -269,7 +271,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("snake_approaching.fs",
-                PatternTarget.doubleLargeCanvas(this)));
+                new PatternTarget(this, TEShaderView.DOUBLE_LARGE)));
         }
     }
 
@@ -282,7 +284,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("pulsing_petri_dish.fs",
-                PatternTarget.allPanelsAsCanvas(this)));
+                new PatternTarget(this, TEShaderView.ALL_PANELS)));
         }
     }
 
@@ -295,7 +297,7 @@ public class ShaderPanelsPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("mandelbrot.fs",
-                PatternTarget.doubleLargeCanvas(this)));
+                new PatternTarget(this, TEShaderView.DOUBLE_LARGE)));
         }
     }
 
@@ -317,7 +319,7 @@ public class ShaderPanelsPatternConfig {
             controls.setRange(TEControlTag.WOW2, 1.0, 0.25, 2.0);
 
             return List.of(new NativeShaderPatternEffect("smoke_shader.fs",
-                PatternTarget.allPointsAsCanvas(this)));
+                new PatternTarget(this, TEShaderView.ALL_POINTS)));
         }
     }
 }
