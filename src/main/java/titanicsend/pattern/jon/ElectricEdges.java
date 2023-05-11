@@ -2,12 +2,11 @@ package titanicsend.pattern.jon;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
-import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 
 @LXCategory("Native Shaders Edges")
 public class ElectricEdges extends TEPerformancePattern {
@@ -30,7 +29,7 @@ public class ElectricEdges extends TEPerformancePattern {
         addCommonControls();
 
         effect = new NativeShaderPatternEffect("electric.fs",
-                PatternTarget.allEdgesAsCanvas(this));
+                new PatternTarget(this, TEShaderView.ALL_EDGES));
     }
 
     @Override
@@ -52,4 +51,8 @@ public class ElectricEdges extends TEPerformancePattern {
         shader = effect.getNativeShader();
     }
 
+    @Override
+    public String getDefaultView() {
+        return effect.getDefaultView();
+    }
 }

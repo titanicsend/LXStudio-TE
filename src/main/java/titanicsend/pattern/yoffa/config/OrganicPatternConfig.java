@@ -9,6 +9,8 @@ import titanicsend.pattern.yoffa.effect.shaders.*;
 import titanicsend.pattern.yoffa.framework.ConstructedPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
+import titanicsend.pattern.yoffa.effect.shaders.OutrunGridShader;
 import titanicsend.pattern.yoffa.media.BasicVideoPatternEffect;
 
 import java.util.List;
@@ -25,8 +27,8 @@ public class OrganicPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(
-                    new OutrunGridShader(PatternTarget.splitPanelSections(this)),
-                    new AlternatingDotsEffect(PatternTarget.splitPanelSections(this))
+                    new OutrunGridShader(new PatternTarget(this, TEShaderView.SPLIT_PANEL_SECTIONS)),
+                    new AlternatingDotsEffect(new PatternTarget(this, TEShaderView.SPLIT_PANEL_SECTIONS))
                             .setHorizon(OutrunGridShader.HORIZON_Y)
                             .setShouldBlend(true)
             );
@@ -41,7 +43,7 @@ public class OrganicPatternConfig {
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new RainbowSwirlShader(PatternTarget.doubleLargeCanvas(this)));
+            return List.of(new RainbowSwirlShader(new PatternTarget(this, TEShaderView.DOUBLE_LARGE)));
         }
     }
 
@@ -52,7 +54,7 @@ public class OrganicPatternConfig {
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new RainbowSwirlShader(PatternTarget.allEdgesAsCanvas(this)));
+            return List.of(new RainbowSwirlShader(new PatternTarget(this, TEShaderView.ALL_EDGES)));
         }
     }
 
@@ -63,7 +65,7 @@ public class OrganicPatternConfig {
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new NeonBarsShader(PatternTarget.splitPanelSections(this)));
+            return List.of(new NeonBarsShader(new PatternTarget(this, TEShaderView.SPLIT_PANEL_SECTIONS)));
         }
     }
 
@@ -74,7 +76,7 @@ public class OrganicPatternConfig {
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new NeonBarsShader(PatternTarget.allEdgesAsCanvas(this)));
+            return List.of(new NeonBarsShader(new PatternTarget(this, TEShaderView.ALL_EDGES)));
         }
     }
 
@@ -85,7 +87,7 @@ public class OrganicPatternConfig {
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new NeonCellsShader(PatternTarget.doubleLargeCanvas(this)));
+            return List.of(new NeonCellsShader(new PatternTarget(this, TEShaderView.DOUBLE_LARGE)));
         }
     }
 
@@ -106,7 +108,7 @@ public class OrganicPatternConfig {
             getControls().setRange(TEControlTag.WOW1, 5,1,20);    // iterations (intensity 1)
             getControls().setRange(TEControlTag.WOW2, 0.005,0.001,0.01); // intensity 2
 
-            return List.of(new WaterShader(PatternTarget.allPanelsAsCanvas(this)));
+            return List.of(new WaterShader(new PatternTarget(this, TEShaderView.ALL_PANELS)));
         }
     }
 
@@ -127,7 +129,7 @@ public class OrganicPatternConfig {
             getControls().setRange(TEControlTag.WOW1, 5,1,20);    // iterations (intensity 1)
             getControls().setRange(TEControlTag.WOW2, 0.005,0.001,0.01); // intensity 2
 
-            return List.of(new WaterShader(PatternTarget.allEdgesAsCanvas(this)));
+            return List.of(new WaterShader(new PatternTarget(this, TEShaderView.ALL_EDGES)));
         }
     }
 
@@ -138,7 +140,7 @@ public class OrganicPatternConfig {
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new WavyShader(PatternTarget.splitPanelSections(this)));
+            return List.of(new WavyShader(new PatternTarget(this, TEShaderView.SPLIT_PANEL_SECTIONS)));
         }
     }
 
@@ -149,7 +151,7 @@ public class OrganicPatternConfig {
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new NeonSnakeShader(PatternTarget.allPanelsAsCanvas(this)));
+            return List.of(new NeonSnakeShader(new PatternTarget(this, TEShaderView.ALL_PANELS)));
         }
     }
 
@@ -160,7 +162,7 @@ public class OrganicPatternConfig {
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new WavyShader(PatternTarget.allEdgesAsCanvas(this)));
+            return List.of(new WavyShader(new PatternTarget(this, TEShaderView.ALL_EDGES)));
         }
     }
 
@@ -171,7 +173,7 @@ public class OrganicPatternConfig {
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new PulseEffect(PatternTarget.allPanelsAsCanvas(this)));
+            return List.of(new PulseEffect(new PatternTarget(this, TEShaderView.ALL_PANELS)));
         }
     }
 
@@ -182,7 +184,7 @@ public class OrganicPatternConfig {
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new AlternatingDotsEffect(PatternTarget.allPanelsAsCanvas(this)));
+            return List.of(new AlternatingDotsEffect(new PatternTarget(this, TEShaderView.ALL_PANELS)));
         }
     }
 
@@ -193,7 +195,7 @@ public class OrganicPatternConfig {
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new ShimmeringEffect(PatternTarget.allEdgesAsCanvas(this)));
+            return List.of(new ShimmeringEffect(new PatternTarget(this, TEShaderView.ALL_EDGES)));
         }
     }
 
@@ -205,7 +207,7 @@ public class OrganicPatternConfig {
 
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new BasicVideoPatternEffect(PatternTarget.splitPanelSections(this)));
+            return List.of(new BasicVideoPatternEffect(new PatternTarget(this, TEShaderView.SPLIT_PANEL_SECTIONS)));
         }
     }
 
@@ -218,7 +220,7 @@ public class OrganicPatternConfig {
 
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new BasicVideoPatternEffect(PatternTarget.allPanelsAsCanvas(this),
+            return List.of(new BasicVideoPatternEffect(new PatternTarget(this, TEShaderView.ALL_PANELS),
                     "resources/pattern/test_vid_a.mp4"));
         }
     }
@@ -231,7 +233,7 @@ public class OrganicPatternConfig {
 
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new BasicVideoPatternEffect(PatternTarget.allPanelsAsCanvas(this),
+            return List.of(new BasicVideoPatternEffect(new PatternTarget(this, TEShaderView.ALL_PANELS),
                     "resources/pattern/test_vid_b.mp4"));
         }
     }
@@ -243,7 +245,7 @@ public class OrganicPatternConfig {
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new RhythmicFlashingStatic(PatternTarget.allPanelsAsCanvas(this)));
+            return List.of(new RhythmicFlashingStatic(new PatternTarget(this, TEShaderView.ALL_PANELS)));
         }
     }
 
@@ -255,7 +257,7 @@ public class OrganicPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
 
-            return List.of(new MatrixScrolling(PatternTarget.allPanelsAsCanvas(this)));
+            return List.of(new MatrixScrolling(new PatternTarget(this, TEShaderView.ALL_PANELS)));
         }
     }
 

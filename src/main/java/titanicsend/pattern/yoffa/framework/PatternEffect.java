@@ -5,20 +5,18 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEPerformancePattern;
-import titanicsend.util.Dimensions;
-
 import java.util.*;
 
 public abstract class PatternEffect {
 
     protected final TEPerformancePattern pattern;
-    protected final Map<LXPoint, Dimensions> pointsToCanvas;
+    public final TEShaderView defaultView;
     private boolean shouldBlend;
 
 
     public PatternEffect(PatternTarget target) {
         this.pattern = target.pattern;
-        this.pointsToCanvas = target.pointsToCanvas;
+        this.defaultView = target.defaultView;
     }
 
     public final void onActive() {
@@ -58,12 +56,15 @@ public abstract class PatternEffect {
         }
     }
 
-    protected Set<LXPoint> getAllPoints() {
-        return pointsToCanvas.keySet();
+    protected List<LXPoint> getPoints() {
+        return this.pattern.getModel().getPoints();
     }
 
     protected Tempo getTempo() {
         return pattern.getTempo();
     }
 
+    public String getDefaultView() {
+        return this.defaultView.viewLabel;
+    }
 }

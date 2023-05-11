@@ -2,12 +2,11 @@ package titanicsend.pattern.jon;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.parameter.BoundedParameter;
-import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 
@@ -35,7 +34,7 @@ public class FollowThatStar extends TEPerformancePattern {
         addCommonControls();
 
         effect = new NativeShaderPatternEffect("followthatstar.fs",
-                PatternTarget.allPointsAsCanvas(this), options);
+                new PatternTarget(this, TEShaderView.ALL_POINTS), options);
     }
 
     @Override
@@ -57,4 +56,8 @@ public class FollowThatStar extends TEPerformancePattern {
         shader = effect.getNativeShader();
     }
 
+    @Override
+    public String getDefaultView() {
+        return effect.getDefaultView();
+    }
 }

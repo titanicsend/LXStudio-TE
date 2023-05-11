@@ -7,6 +7,7 @@ import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.ConstructedPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class ShaderEdgesPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("light_beams.fs",
-                PatternTarget.allEdgesAsCanvas(this)));
+                new PatternTarget(this, TEShaderView.ALL_EDGES)));
         }
     }
 
@@ -54,7 +55,7 @@ public class ShaderEdgesPatternConfig {
             controls.setValue(TEControlTag.SPIN, 0.05);
 
             return List.of(new NativeShaderPatternEffect("neon_ripples.fs",
-                PatternTarget.allEdgesAsCanvas(this)));
+                new PatternTarget(this, TEShaderView.ALL_EDGES)));
         }
     }
 
@@ -67,7 +68,7 @@ public class ShaderEdgesPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("space_explosion.fs",
-                PatternTarget.allEdgesAsCanvas(this)));
+                new PatternTarget(this, TEShaderView.ALL_EDGES)));
         }
     }
 
@@ -80,8 +81,8 @@ public class ShaderEdgesPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(
-                new NativeShaderPatternEffect("metallic_wave.fs", PatternTarget.allPanelsAsCanvas(this)),
-                new NativeShaderPatternEffect("metallic_wave.fs", PatternTarget.allEdgesAsCanvas(this))
+                new NativeShaderPatternEffect("metallic_wave.fs", new PatternTarget(this, TEShaderView.ALL_PANELS)),
+                new NativeShaderPatternEffect("metallic_wave.fs", new PatternTarget(this, TEShaderView.ALL_EDGES))
             );
         }
     }

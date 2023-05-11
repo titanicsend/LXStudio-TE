@@ -6,12 +6,10 @@ import titanicsend.pattern.TEPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.shader_engine.*;
-import titanicsend.util.Dimensions;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class NativeShaderPatternEffect extends PatternEffect {
@@ -99,9 +97,6 @@ public class NativeShaderPatternEffect extends PatternEffect {
         }
     }
 
-
-
-
     @Override
     public void run(double deltaMs) {
         if (offscreenShaderRenderer == null) {
@@ -116,8 +111,8 @@ public class NativeShaderPatternEffect extends PatternEffect {
         */
         painter.setImage(snapshot);
         painter.setColors(pattern.getColors());
-        for (Map.Entry<LXPoint, Dimensions> entry : pointsToCanvas.entrySet()) {
-            painter.paint(entry.getKey(), entry.getValue());
+        for (LXPoint point : getPoints()) {
+            painter.paint(point);
         }
     }
 

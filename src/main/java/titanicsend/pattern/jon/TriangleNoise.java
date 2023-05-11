@@ -5,6 +5,7 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 
 @LXCategory("Noise")
@@ -30,7 +31,7 @@ public class TriangleNoise extends DriftEnabledPattern {
         addCommonControls();
 
         effect = new NativeShaderPatternEffect("triangle_noise.fs",
-            PatternTarget.allPointsAsCanvas(this));
+            new PatternTarget(this, TEShaderView.ALL_POINTS));
     }
 
     @Override
@@ -53,4 +54,8 @@ public class TriangleNoise extends DriftEnabledPattern {
         shader = effect.getNativeShader();
     }
 
+    @Override
+    public String getDefaultView() {
+        return effect.getDefaultView();
+    }
 }

@@ -1,15 +1,8 @@
 package titanicsend.pattern.yoffa.shader_engine;
 
-import heronarts.lx.parameter.BooleanParameter;
-import heronarts.lx.parameter.CompoundParameter;
-import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.yoffa.client.reponse.Shader;
-
 import java.io.File;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class FragmentShader {
     private final String shaderBody;

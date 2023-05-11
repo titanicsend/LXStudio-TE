@@ -2,9 +2,9 @@ package titanicsend.pattern.jon;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 
 @LXCategory("Noise")
@@ -27,7 +27,7 @@ public class SimplexPosterized extends DriftEnabledPattern {
         addCommonControls();
 
         effect = new NativeShaderPatternEffect("simplex_posterized.fs",
-            PatternTarget.allPointsAsCanvas(this));
+            new PatternTarget(this, TEShaderView.ALL_POINTS));
     }
 
     @Override
@@ -50,4 +50,8 @@ public class SimplexPosterized extends DriftEnabledPattern {
         shader = effect.getNativeShader();
     }
 
+    @Override
+    public String getDefaultView() {
+        return effect.getDefaultView();
+    }
 }

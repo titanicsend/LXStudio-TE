@@ -7,16 +7,12 @@ import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
-import titanicsend.util.Dimensions;
-
 import java.util.*;
 
 @LXCategory("Panel FG")
 public class AlternatingDotsEffect extends PatternEffect {
 
-    private final List<LXPoint> points;
-    private final Dimensions dimensions;
-
+    private List<LXPoint> points;
     private static final int MAX_POINTS_DIVIDER = 25;
     private int maxPoints;
 
@@ -28,10 +24,8 @@ public class AlternatingDotsEffect extends PatternEffect {
 
     public AlternatingDotsEffect(PatternTarget target) {
         super(target);
-        this.points = new ArrayList<>(getAllPoints());
-        this.maxPoints = points.size() / MAX_POINTS_DIVIDER;
         this.minYPercent = 0;
-        this.dimensions = Dimensions.fromPoints(points);
+        refreshPoints();
     }
 
     public AlternatingDotsEffect setHorizon(double minYPercent) {
@@ -40,8 +34,15 @@ public class AlternatingDotsEffect extends PatternEffect {
         return this;
     }
 
+    // TODO: Also call this when LXPattern.modelChanged() to get the new view
+    private void refreshPoints() {
+        this.points = new ArrayList<LXPoint>(getPoints());
+        this.maxPoints = points.size() / MAX_POINTS_DIVIDER;
+    }
+
     @Override
     public void onPatternActive() {
+        refreshPoints();
         breathingPointsPrev.clear();
         breathingPointsNext.clear();
         extraShinyPoints.clear();
@@ -60,7 +61,7 @@ public class AlternatingDotsEffect extends PatternEffect {
             Collections.shuffle(points);
             for (int i = 0; breathingPointsNext.size() < maxPoints && i < points.size(); i++) {
                 LXPoint curPoint = points.get(i);
-                if ((curPoint.y - dimensions.getMinYn()) / dimensions.getHeight() < minYPercent) {
+                if (curPoint.yn < minYPercent) {
                     continue;
                 }
                 if (!breathingPointsPrev.contains(curPoint)) {
