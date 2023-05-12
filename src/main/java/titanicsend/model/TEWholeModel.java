@@ -467,18 +467,26 @@ public class TEWholeModel extends LXModel {
       geometry.panelsByFlavor.get(flavor).add(p);
 
       if (lit) {
-        tokens = outputConfig.split("#");
-        assert tokens.length == 2 : "Bad panelType: " + outputConfig;
-        String ip = tokens[0];
-        int channelNum = Integer.parseInt(tokens[1]);
+        String[] outputs = outputConfig.split("/");
         int firstChannelPixel = 0;
-        for (int i = 0; firstChannelPixel < p.size; i++) {
-          int lastChannelPixel = firstChannelPixel + getChannelLength(tesi, i) - 1;
-          if (lastChannelPixel > p.size - 1) lastChannelPixel = p.size - 1;
-          ChromatechSocket socket = GrandShlomoStation.getOrMake(
-                  ip, channelNum + i);
-          socket.addPanel(p, firstChannelPixel, lastChannelPixel);
-          firstChannelPixel = lastChannelPixel + 1;
+        for (int outputIndex = 0; firstChannelPixel < p.size; outputIndex++) {
+          if (outputs.length <= outputIndex) {
+            throw new RuntimeException("Not enough ips! May require a missing overflow ip");
+          }
+          tokens = outputs[outputIndex].split("#");
+          assert tokens.length == 2 : "Bad panelType: " + outputConfig;
+          String ip = tokens[0];
+          int channelNum = Integer.parseInt(tokens[1]);
+
+          for (int channelOffset = 0; firstChannelPixel < p.size
+                  && channelNum + channelOffset <= ChromatechSocket.CHANNELS_PER_IP; channelOffset++) {
+            int lastChannelPixel = firstChannelPixel + getChannelLength(tesi, channelOffset) - 1;
+            if (lastChannelPixel > p.size - 1) lastChannelPixel = p.size - 1;
+            ChromatechSocket socket = GrandShlomoStation.getOrMake(
+                    ip, channelNum + channelOffset);
+            socket.addPanel(p, firstChannelPixel, lastChannelPixel);
+            firstChannelPixel = lastChannelPixel + 1;
+          }
         }
       }
     }

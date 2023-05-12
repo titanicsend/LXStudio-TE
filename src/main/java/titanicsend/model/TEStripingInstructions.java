@@ -1,7 +1,7 @@
 package titanicsend.model;
 
 public class TEStripingInstructions {
-  public static final int DEFAULT_CHANNEL_LENGTH = 500;
+  public static final int DEFAULT_CHANNEL_LENGTH = 250;
 
   // One per universe; can be null which means they're all DEFAULT_CHANNEL_LENGTH
   public int[] channelLengths;
