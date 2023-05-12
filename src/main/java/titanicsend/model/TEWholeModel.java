@@ -472,7 +472,9 @@ public class TEWholeModel extends LXModel {
       if (lit) {
         String[] outputs = outputConfig.split("/");
         int firstChannelPixel = 0;
-        for (int outputIndex = 0; firstChannelPixel < p.size; outputIndex++) {
+        // keep track of which channel we're on cross-controller so we can use for striping instructions
+        int totalChannelOffset = 0;
+        for (int outputIndex = 0; firstChannelPixel < p.size; outputIndex++, totalChannelOffset++) {
           if (outputs.length <= outputIndex) {
             LX.log("Not enough ips! May require a missing overflow ip");
             continue;
@@ -483,8 +485,8 @@ public class TEWholeModel extends LXModel {
           int channelNum = Integer.parseInt(tokens[1]);
 
           for (int channelOffset = 0; firstChannelPixel < p.size
-                  && channelNum + channelOffset <= ChromatechSocket.CHANNELS_PER_IP; channelOffset++) {
-            int lastChannelPixel = firstChannelPixel + getChannelLengthForPanel(tesi, channelOffset) - 1;
+                  && channelNum + channelOffset <= ChromatechSocket.CHANNELS_PER_IP; channelOffset++, totalChannelOffset++) {
+            int lastChannelPixel = firstChannelPixel + getChannelLengthForPanel(tesi, totalChannelOffset) - 1;
             if (lastChannelPixel > p.size - 1) lastChannelPixel = p.size - 1;
             ChromatechSocket socket = GrandShlomoStation.getOrMake(ip, channelNum + channelOffset);
             socket.addPanel(p, firstChannelPixel, lastChannelPixel);
