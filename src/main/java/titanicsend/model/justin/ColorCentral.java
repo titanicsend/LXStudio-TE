@@ -29,6 +29,7 @@ import heronarts.lx.color.LXPalette;
 import heronarts.lx.color.LXSwatch;
 import heronarts.lx.mixer.LXAbstractChannel;
 import heronarts.lx.parameter.LXParameterListener;
+import heronarts.lx.studio.LXStudio;
 import titanicsend.app.TEApp;
 
 public class ColorCentral extends ChannelExtension<titanicsend.model.justin.ColorCentral.ColorPerChannel> implements LXPalette.Listener {
@@ -113,7 +114,7 @@ public class ColorCentral extends ChannelExtension<titanicsend.model.justin.Colo
   
   @Override
   protected ColorPerChannel createItem(LXAbstractChannel channel) {
-    return new ColorPerChannel(this.lx);
+    return new ColorPerChannel(this.lx, channel);
   }
 
   public LXSwatch getSwatch(SwatchDefinition swatchDefinition) {
@@ -164,8 +165,11 @@ public class ColorCentral extends ChannelExtension<titanicsend.model.justin.Colo
       onSelectedSwatchChanged();
     };
 
-    protected ColorPerChannel(LX lx) {
+    private LXAbstractChannel channel;
+
+    protected ColorPerChannel(LX lx, LXAbstractChannel channel) {
       super(lx);
+      this.channel = channel;
 
       this.selectedSwatch = new SwatchParameter("Swatch", getSwatches());
       addParameter("view", this.selectedSwatch);      
@@ -178,7 +182,9 @@ public class ColorCentral extends ChannelExtension<titanicsend.model.justin.Colo
     }
     
     protected void onSelectedSwatchChanged() {
-      
+      if (this.lx instanceof LXStudio) {
+        ((LXStudio) lx).ui.setMouseoverHelpText(channel.getLabel() + "   Swatch:  " + this.selectedSwatch.getObject());
+      }
     }
     
     @Override
