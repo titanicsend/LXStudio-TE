@@ -192,6 +192,12 @@ public class ShaderPanelsPatternConfig {
 
         @Override
         protected List<PatternEffect> createEffects() {
+            controls.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
+            controls.setValue(TEControlTag.SPEED, 0.5);
+
+            controls.setRange(TEControlTag.SIZE, 1, 3, 0.5); // overall scale
+            controls.setRange(TEControlTag.WOW1, .35, 0.1, 1);  // Contrast
+
             return List.of(new NativeShaderPatternEffect("storm_scanner.fs",
                 new PatternTarget(this, TEShaderView.DOUBLE_LARGE), "gray_noise.png"));
         }
@@ -300,6 +306,30 @@ public class ShaderPanelsPatternConfig {
                 new PatternTarget(this, TEShaderView.DOUBLE_LARGE)));
         }
     }
+
+    @LXCategory("DREVO Shaders")
+    public static class MetallicWaves extends ConstructedPattern {
+        public MetallicWaves(LX lx) {
+            super(lx);
+        }
+
+        @Override
+        protected List<PatternEffect> createEffects() {
+            // set up common controls
+            controls.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
+            controls.setValue(TEControlTag.SPEED, 0.5);
+
+            controls.setRange(TEControlTag.SIZE, 1, 6, 0.1); // overall scale
+            controls.setRange(TEControlTag.QUANTITY, 6, 1, 16);  // number of waves
+            controls.setRange(TEControlTag.WOW1, 0, 0, 0.25);  // pixelated decomposition
+
+            return List.of(
+                new NativeShaderPatternEffect("metallic_wave.fs", new PatternTarget(this, TEShaderView.ALL_POINTS))
+            );
+        }
+    }
+
+
 
     @LXCategory("Noise")
     public static class SmokeShader extends ConstructedPattern {
