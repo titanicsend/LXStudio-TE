@@ -46,7 +46,7 @@ public class ShaderEdgesPatternConfig {
             controls.setRange(TEControlTag.QUANTITY, 20, 1, 50);  // pixelation scale
             controls.setValue(TEControlTag.QUANTITY, 8);
 
-            controls.setRange(TEControlTag.WOW1, 0, 0, 0.25);  // "wiggle" in rings
+            controls.setRange(TEControlTag.WOW1, 0, 0, 0.2);  // "wiggle" in rings
             controls.setValue(TEControlTag.WOW1, 0.15);
 
             controls.setRange(TEControlTag.WOW2, 0, 0, 3);  // radial rotation distortion
@@ -69,21 +69,6 @@ public class ShaderEdgesPatternConfig {
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("space_explosion.fs",
                 new PatternTarget(this, TEShaderView.ALL_EDGES)));
-        }
-    }
-
-    @LXCategory("DREVO Shaders")
-    public static class MetallicWaves extends ConstructedPattern {
-        public MetallicWaves(LX lx) {
-            super(lx);
-        }
-
-        @Override
-        protected List<PatternEffect> createEffects() {
-            return List.of(
-                new NativeShaderPatternEffect("metallic_wave.fs", new PatternTarget(this, TEShaderView.ALL_PANELS)),
-                new NativeShaderPatternEffect("metallic_wave.fs", new PatternTarget(this, TEShaderView.ALL_EDGES))
-            );
         }
     }
 }
