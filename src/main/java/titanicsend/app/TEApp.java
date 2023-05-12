@@ -36,6 +36,8 @@ import com.google.gson.stream.JsonWriter;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
+import heronarts.lx.mixer.LXBus;
+import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.pattern.color.GradientPattern;
 import heronarts.lx.pattern.form.PlanesPattern;
@@ -73,6 +75,8 @@ import titanicsend.util.TE;
 public class TEApp extends PApplet implements LXPlugin {
   private TEWholeModel model;
   static public TEWholeModel wholeModel;
+
+  private LXStudio lx;
 
   private static int WIDTH = 1280;
   private static int HEIGHT = 800;
@@ -114,7 +118,7 @@ public class TEApp extends PApplet implements LXPlugin {
     this.model = new TEWholeModel(resourceSubdir);
     TEApp.wholeModel = this.model;
 
-    new LXStudio(this, flags, this.model);
+    this.lx = new LXStudio(this, flags, this.model);
     this.surface.setTitle(this.model.name);
     
     String logFileName = LOG_FILENAME_FORMAT.format(Calendar.getInstance().getTime());
@@ -407,6 +411,37 @@ public class TEApp extends PApplet implements LXPlugin {
   public void draw() {
     // All handled by core LX engine, do not modify, method exists only so that Processing
     // will run a draw-loop.
+  }
+
+  @Override
+  public void keyPressed(processing.event.KeyEvent keyEvent) {
+    // Keyboard shortcut for debugging: Add all patterns to current channel
+    // (Ctrl or Meta) + Alt + Shift + A
+    if ((keyEvent.isControlDown() || keyEvent.isMetaDown()) && keyEvent.isAltDown() && keyEvent.isShiftDown() && keyEvent.getKeyCode() == 65) {
+      addAllPatterns();
+    } else {
+      super.keyPressed(keyEvent);
+    }
+  }
+
+  /**
+   * Dev tool: add all patterns in registry to current channel.
+   */
+  private void addAllPatterns() {
+    LXBus channel = this.lx.engine.mixer.getFocusedChannel();
+    if (channel instanceof LXChannel) {
+      TE.log("*** Instantiating all " + this.lx.registry.patterns.size() + " patterns in registry to channel " + channel.getLabel() + " ***");
+      TE.log("Here we gOOOOOOOOOOOO....");
+      for (Class<? extends LXPattern> clazz : this.lx.registry.patterns) {
+        try {
+          ((LXChannel)channel).addPattern(this.lx.instantiatePattern(clazz));
+        } catch (Exception ex) {
+          TE.err(ex, "Broken pattern! Could not instantiate " + clazz);
+        }
+      }
+    } else {
+      TE.err("Selected channel must be a channel and not a group before adding all patterns.");
+    }
   }
 
   private static final DateFormat LOG_FILENAME_FORMAT = new SimpleDateFormat("'LXStudio-TE-'yyyy.MM.dd-HH.mm.ss'.log'");
