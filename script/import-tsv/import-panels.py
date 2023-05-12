@@ -13,8 +13,10 @@ tsv_filename = sys.argv[1]
 with open(tsv_filename, "r") as f:
     tsv_data = [line.strip().split('\t') for line in f.readlines()]
 
-# Check if TSV begins with the appropriate header
+# The first three lines of that tab are header notes, and we're not
+# going to bother asserting that they contain any particular text
 del tsv_data[0:3]
+# Check if TSV begins with the appropriate header
 assert tsv_data.pop(0) == ["Backpack ID", "Module", "Sequence in Module", "IP", "Backpack Type", "Quadrant",
                            "Going to EDC?", "Primary Fixture", "Secondary Fixture", "Additional Secondary", "",
                            "Pixel Count Primary", "Pixel Count Secondary", "Pixel Count Additional Secondary",
@@ -43,7 +45,7 @@ for row in tsv_data:
             if pixel_start == "0" or pixel_start == "1000":
                 if panel_id not in tsv_panel_to_outputs:
                     tsv_panel_to_outputs[panel_id] = []
-                output = row[0] + "#" + str(channel_number) + ":" + pixel_start
+                output = row[0] + "#" + str(channel_number)
                 if pixel_start == "0":
                     tsv_panel_to_outputs[panel_id].insert(0, output)
                 else:
