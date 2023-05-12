@@ -11,6 +11,7 @@ import heronarts.lx.parameter.BooleanParameter.Mode;
 import heronarts.lx.utils.LXUtils;
 import titanicsend.lx.LXGradientUtils;
 import titanicsend.lx.LXGradientUtils.BlendFunction;
+import titanicsend.model.justin.ColorCentral;
 import titanicsend.model.justin.LXVirtualDiscreteParameter;
 import titanicsend.model.justin.ViewCentral;
 import titanicsend.model.justin.ViewCentral.ViewCentralListener;
@@ -391,6 +392,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
       return null;
     }
 
+
     // ANGLE PARAMETER
 
     // Create new class for Angle control so we can override the reset
@@ -586,6 +588,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
             addParameter("panic", this.panic);
             addParameter("viewPerChannel", this.viewParameter);
+            addParameter("swatchPerChannel", swatchParameter);
         }
 
         /**
@@ -605,7 +608,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             setCustomRemoteControls(new LXListenableNormalizedParameter[] {
                 this.color.offset,
                 this.color.gradient,
-                getControl(TEControlTag.BRIGHTNESS).control,
+                getSwatchRemoteControl(),
                 getControl(TEControlTag.SPEED).control,
 
                 getControl(TEControlTag.XPOS).control,
@@ -625,11 +628,19 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             });
         }
 
-        protected LXListenableNormalizedParameter getViewRemoteControl() {
-            if (!ViewCentral.ENABLED) {
-                return null;
+        protected LXListenableNormalizedParameter getSwatchRemoteControl() {
+            if (ColorCentral.ENABLED) {
+                return swatchParameter;
             } else {
+                return getControl(TEControlTag.BRIGHTNESS).control;
+            }
+        }
+
+        protected LXListenableNormalizedParameter getViewRemoteControl() {
+            if (ViewCentral.ENABLED) {
                 return this.viewParameter;
+            } else {
+                return null;
             }
         }
 
@@ -757,6 +768,10 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             getControl(TEControlTag.WOW2).control.reset();
             getControl(TEControlTag.WOWTRIGGER).control.reset();
 
+            if (ColorCentral.ENABLED) {
+                swatchParameter.reset();
+            }
+
             if (ViewCentral.ENABLED) {
                 this.viewParameter.reset();
             }
@@ -842,13 +857,16 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     protected TEPerformancePattern(LX lx) {
         super(lx);
         controls = new TECommonControls();
+
+        // Patterns are created, then added to channel. Channel should be available on next engine loop.
+        lx.engine.addTask(() -> {
+            linkChannelParameters(lx);
+        });
     }
 
-    @Override
-    protected void onActive() {
-      // Finally safe to assume a channel has been assigned
-      this.controls.viewParameter.link();
-      super.onActive();
+    private void linkChannelParameters(LX lx) {
+        // Finally safe to assume a channel has been assigned
+        this.controls.viewParameter.link();
     }
 
     public TECommonControls getControls() {

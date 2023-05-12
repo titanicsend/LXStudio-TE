@@ -21,6 +21,7 @@ package titanicsend.model.justin;
 import heronarts.lx.LX;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
+import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
 
 /**
@@ -215,6 +216,15 @@ abstract public class LXVirtualDiscreteParameter<T extends DiscreteParameter> ex
       return this.parameter.getValuei();
     }
     return super.getValuei();
+  }
+
+  @Override
+  public LXParameter reset() {
+      if (this.parameter != null) {
+          this.parameter.reset();
+          return this;
+      }
+      return this;
   }
 
   @Override

@@ -48,6 +48,7 @@ import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lx.APC40Mk2;
 import titanicsend.lx.MidiFighterTwister;
 import titanicsend.model.TEWholeModel;
+import titanicsend.model.justin.ColorCentral;
 import titanicsend.model.justin.ViewCentral;
 import titanicsend.output.GPOutput;
 import titanicsend.output.GrandShlomoStation;
@@ -88,9 +89,11 @@ public class TEApp extends PApplet implements LXPlugin {
 
   private TELaserTask laserTask;
   
+  private ColorCentral colorCentral;
   private ViewCentral viewCentral;
 
   // Global feature on/off switches for troubleshooting
+  public static final boolean ENABLE_COLOR_CENTRAL = true;
   public static final boolean ENABLE_VIEW_CENTRAL = true;
   public static final boolean DELAY_FILE_OPEN_TO_FIRST_ENGINE_LOOP = true;
 
@@ -310,6 +313,9 @@ public class TEApp extends PApplet implements LXPlugin {
     GPOutput gpOutput = new GPOutput(lx, this.gpBroadcaster);
     lx.addOutput(gpOutput);
     
+    // Add special per-channel swatch control.  Do not try this at home.
+    this.colorCentral = new ColorCentral(lx);
+
     // Add special view controller
     this.viewCentral = new ViewCentral(lx);
   }

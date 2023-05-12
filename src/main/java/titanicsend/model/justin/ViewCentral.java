@@ -204,7 +204,7 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
       this.channel.setModel(getModel());
 
       if (this.lx instanceof LXStudio) {
-        ((LXStudio) lx).ui.setMouseoverHelpText(channel.getLabel() + ":  " + this.view.getObject().toString());
+        ((LXStudio) lx).ui.setMouseoverHelpText(channel.getLabel() + "   View:  " + this.view.getObject().toString());
       }
     }
 
