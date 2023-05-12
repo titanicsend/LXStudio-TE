@@ -474,7 +474,7 @@ public class TEWholeModel extends LXModel {
         int firstChannelPixel = 0;
         // keep track of which channel we're on cross-controller so we can use for striping instructions
         int totalChannelOffset = 0;
-        for (int outputIndex = 0; firstChannelPixel < p.size; outputIndex++, totalChannelOffset++) {
+        for (int outputIndex = 0; firstChannelPixel < p.size; outputIndex++) {
           if (outputs.length <= outputIndex) {
             LX.log("Not enough ips! May require a missing overflow ip");
             continue;
