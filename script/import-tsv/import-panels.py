@@ -31,6 +31,7 @@ tsv_data = [[row[3]] + row[14:22] for row in tsv_data if len(row) > 15 and row[4
 
 tsv_panel_to_outputs = {}
 for row in tsv_data:
+    assert row[2] in ("0", "1000")
     for channel_number in range(1, 5):
         channel_index = channel_number - 1
         panel_id_column = 1 + channel_index * 2
