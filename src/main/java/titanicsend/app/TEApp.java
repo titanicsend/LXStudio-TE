@@ -337,7 +337,7 @@ public class TEApp extends PApplet implements LXPlugin {
     l.addPattern(NoisePattern.class, covBoth, cPalette, chorus);
     l.addPattern(PBXorcery.class, covPanelPartial, cPalette, chorus);
     l.addPattern(ShaderPanelsPatternConfig.NeonBlocks.class, covPanelPartial, cNonConforming, chorus);
-    l.addPattern(PBAudio1.class, covPanelPartial, cPalette, chorus);
+    l.addPattern(Audio1.class, covPanelPartial, cPalette, chorus);
     l.addPattern(ShaderPanelsPatternConfig.OutrunGrid.class, covPanels, cNonConforming, chorus);
     l.addPattern(OrganicPatternConfig.RainbowSwirlPanels.class, covPanels, cNonConforming, chorus);
     l.addPattern(OrganicPatternConfig.MatrixScroller.class, covPanels, cNonConforming, chorus);
@@ -354,11 +354,14 @@ public class TEApp extends PApplet implements LXPlugin {
     l.addPattern(EdgeRunner.class, covEdges, cPalette, chorus);
 
     // DOWN patterns
-    l.addPattern(GradientPattern.class, covPanelPartial, cPalette, down);
-    l.addPattern(OrganicPatternConfig.WaterPanels.class, covPanelPartial, cPalette, down);
-    l.addPattern(OrganicPatternConfig.WavyEdges.class, covEdges, cPalette, down);
-    l.addPattern(NoisePattern.class, covBoth, cPalette, down);
     l.addPattern(ShaderPanelsPatternConfig.Galaxy.class, covPanelPartial, cPalette, down);
+    l.addPattern(TEGradientPattern.class, covPanelPartial, cPalette, down);
+    l.addPattern(OrganicPatternConfig.WaterPanels.class, covPanelPartial, cPalette, down);
+    l.addPattern(SimplexPosterized.class, covBoth, cPalette, down);
+    l.addPattern(ShaderPanelsPatternConfig.Galaxy.class, covPanelPartial, cPalette, down);
+    l.addPattern(ShaderPanelsPatternConfig.SmokeShader.class, covPanelPartial, cPalette, down);
+    l.addPattern(TriangleNoise.class, covPanels, cPalette, down);
+    l.addPattern(TurbulenceLines.class, covPanels, cPalette, down);
 
     // UP patterns
     l.addPattern(NoisePattern.class, covPanelPartial, cNonConforming, up);
