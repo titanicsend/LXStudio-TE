@@ -346,7 +346,6 @@ public class TEApp extends PApplet implements LXPlugin {
     l.addPattern(OrganicPatternConfig.NeonCellsLegacy.class, covPanelPartial, cPalette, chorus);
     l.addPattern(OrganicPatternConfig.RainbowSwirlEdges.class, covEdges, cNonConforming, chorus);
     l.addPattern(ShaderPanelsPatternConfig.NeonTriangles.class, covPanels, cNonConforming, chorus);
-    l.addPattern(ShaderPanelsPatternConfig.Mondelbrot.class, covPanels, cNonConforming, chorus);
     l.addPattern(Phasers.class, covPanels, cPalette, chorus);
     l.addPattern(ShaderPanelsPatternConfig.PulsingPetriDish.class, covPanels, cNonConforming, chorus);
     l.addPattern(Electric.class, covPanelPartial, cPalette, chorus);
@@ -364,13 +363,17 @@ public class TEApp extends PApplet implements LXPlugin {
     l.addPattern(TurbulenceLines.class, covPanels, cPalette, down);
 
     // UP patterns
-    l.addPattern(NoisePattern.class, covPanelPartial, cNonConforming, up);
-    l.addPattern(OrganicPatternConfig.WavyEdges.class, covPanelPartial, cNonConforming, up);
+    l.addPattern(ShaderPanelsPatternConfig.Marbling.class, covBoth, cPalette, up);
     l.addPattern(TESparklePattern.class, covBoth, cPalette, up);
     l.addPattern(Electric.class, covPanelPartial, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.Marbling.class, covPanels, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.SlitheringSnake.class, covPanelPartial, cPalette, up);
     l.addPattern(Audio1.class, covPanelPartial, cPalette, up);
+    l.addPattern(SimplexPosterized.class, covPanelPartial, cPalette, up);
+    l.addPattern(ShaderPanelsPatternConfig.SmokeShader.class, covPanelPartial, cPalette, up);
+    l.addPattern(TriangleNoise.class, covPanelPartial, cPalette, up);
+    l.addPattern(TurbulenceLines.class, covPanelPartial, cPalette, up);
+    l.addPattern(ShaderEdgesPatternConfig.NeonRipplesEdges.class, covPanelPartial, cPalette, up);
 
     return l;
   }
