@@ -1,56 +1,50 @@
 /*
 Copyright 2022 Meekail Zain
 
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that
+the following conditions are met:
 
-1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+1. Redistributions of source code must retain the above copyright notice, this list of conditions
+and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions
+and the following disclaimer in the documentation and/or other materials provided with the distribution.
 
-2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or
+promote products derived from this software without specific prior written permission.
 
-3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
 */
 
-#define M_PI 3.1415926535897932384626433832795
-
-
-vec2 scale(vec2 point, vec2 X_bounds, vec2 Y_bounds){
-    float nu_x = (X_bounds.y-X_bounds.x)*point.x+X_bounds.x;
-    float nu_y = (Y_bounds.y-Y_bounds.x)*point.y+Y_bounds.x;
-    return vec2(nu_x, nu_y);
+// rotate (2D) a point about the specified origin by <angle> radians
+vec2 rotate(vec2 point, vec2 origin, float angle) {
+    float c = cos(angle); float s = sin(angle);
+    mat2 rotationMatrix = mat2(c, -s, s, c);
+    return (rotationMatrix * (point + origin)) - origin;
 }
 
-float point_dist(vec2 point, vec2 trap_point){
-    return length(point-trap_point);
-}
-float line_dist(vec2 point, vec2 trap_point){
-    return abs(point.x-trap_point.x);
-}
 float circle_dist(vec2 point, vec2 trap_point, float radius){
-    return abs(length(point-trap_point)-radius);
+    return length(point-trap_point) - radius;
 }
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    // Normalized pixel coordinates (from 0 to 1)
-    vec2 uv = fragCoord/iResolution.xy;
+    // scale and center pixel coordinates to range -2 to 2
+    vec2 uv = -2.0 + (4.0 * fragCoord) / iResolution.xy;
+    vec2 ouv = uv;
 
-    vec2 X_BOUNDS = vec2(-2., 1.);
-    vec2 Y_BOUNDS = vec2(-1.5, 1.5);
+    uv = rotate(uv,vec2(0.1,0.0),-iRotationAngle);
+    uv *= iScale / 2.0;
 
-    // Center coordinate
-    uv = scale(uv, X_BOUNDS, Y_BOUNDS);
-
-    // Rescale for aspect-ratio
-    // uv.x *= iResolution.x/iResolution.y;
-
-    // vec2 trap = scale(vec2(0.5, 0.5), X_BOUNDS, Y_BOUNDS);
-    // vec2 trap = scale(iMouse.xy/iResolution.xy, X_BOUNDS, Y_BOUNDS);
-    float trap_radius = .25;
+    float trap_radius = 0.25;
     float scaled_time = iTime;
-    float trap_path_radius = 2.*cos(scaled_time)*sin(3.*scaled_time);
+    float trap_path_radius = cos(scaled_time)*sin(3.*scaled_time);
     vec2 trap = trap_path_radius*vec2(cos(scaled_time), sin(scaled_time));
 
     float d=1000.;
@@ -68,19 +62,21 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         t_y = (uv.x+uv.x)*uv.y + b;
         uv.x = t_x;
         uv.y = t_y;
-        /*
-        if(uv.x*uv.x+uv.y*uv.y>4.){
-            final_score = float(i)+1.;
-        }
-        */
         final_score = d;
     }
 
-    float c;
-    // if(d <r) c = 1.; else c = 1.-1./(1+exp());
-    // c = float(final_score)/float(max_iter+1);
-    c = 1./(1.+sqrt(final_score));
+    //
+    float c = 1.0 - sqrt(-final_score);
+    c = smoothstep(0.3,1.0,max(0.0,c));
+
+    // Wow2 controls the mix of foreground color vs. gradient
+    vec3 col = c * mix(iColorRGB, mix(iColorRGB, iColor2RGB, c),iWow2);
+    col  = max(col,iColor2RGB * 0.2);
+
+    float w = 0.05;
+    col = (abs(ouv.x) <= w) ? vec3(1,0,0) : col;
+    col = (abs(ouv.y) <= w) ? vec3(1,0,0) : col;
 
     // Output to screen
-    fragColor = vec4(iColorRGB,c);
+    fragColor = vec4(col,c);
 }
