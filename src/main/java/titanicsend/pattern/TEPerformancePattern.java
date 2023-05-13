@@ -112,7 +112,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         public final TEColorOffsetParameter offset = (TEColorOffsetParameter)
             new TEColorOffsetParameter("Offset") {
                 @Override
-                public LXParameter reset() {
+                public BoundedParameter reset() {
                     super.reset();
                     // As the main user-facing sub-parameter, reset the color picker in STATIC mode.
                     if (solidSource.getEnum() == SolidColorSource.STATIC) {
@@ -411,7 +411,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         }
 
         @Override
-        public LXParameter reset() {
+        public BoundedParameter reset() {
             // if not spinning, resetting angle controls
             // resets both the static angle and the spin angle.
             if (getSpin() == 0) {
