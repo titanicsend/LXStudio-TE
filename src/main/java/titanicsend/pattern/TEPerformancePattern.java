@@ -858,9 +858,19 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         super(lx);
         controls = new TECommonControls();
 
-        // Patterns are created, then added to channel. Channel should be available on next engine loop.
         lx.engine.addTask(() -> {
+            // Patterns are created, then added to channel. Channel should be available on next engine loop.
             linkChannelParameters(lx);
+
+            // Because LXPattern child classes can not override defaultRemoteControls and have to use
+            // customRemoteControls, that means a list of our remote controls are saved to file and
+            // then on file open the pattern is loaded and THEN LXDeviceComponent.load() restores a
+            // list of the old remote controls thinking they're user-custom.  In our case to prevent
+            // needing to recreate .lxps every time a pattern parameter is changed, we'll just refresh
+            // the remote controls AGAIN after LXDeviceComponent restored the old ones AFTER the
+            // pattern loaded from file.  This means runtime user-customized remote controls will not
+            // survive a file save/load which is much less inconvenient than this default behavior.
+            this.controls.setRemoteControls();
         });
     }
 

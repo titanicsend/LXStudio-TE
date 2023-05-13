@@ -1,5 +1,6 @@
 package titanicsend.ui;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -8,8 +9,11 @@ import heronarts.lx.parameter.BoundedFunctionalParameter;
 import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
+import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
+import heronarts.p4lx.ui.UI2dComponent;
 import heronarts.p4lx.ui.UI2dContainer.Layout;
 import heronarts.p4lx.ui.component.UIKnob;
 import heronarts.p4lx.ui.component.UISwitch;
@@ -25,13 +29,40 @@ import titanicsend.pattern.TEPerformancePattern.TEColorParameter.TEColorOffsetPa
  * 
  * Based on UIDeviceControl with components from J.Belcher's Rubix project.
  */
-public class UITEPerformancePattern implements UIDeviceControls<TEPerformancePattern> {
+public class UITEPerformancePattern implements UIDeviceControls<TEPerformancePattern>, LXParameterListener {
+
+  private UIDevice uiDevice;
+  private TEPerformancePattern device;
+  private List<UI2dComponent> controls = new ArrayList<UI2dComponent>();
 
   @Override
   public void buildDeviceControls(heronarts.lx.studio.LXStudio.UI ui, UIDevice uiDevice, TEPerformancePattern device) {
     uiDevice.setLayout(Layout.NONE);
     uiDevice.setChildSpacing(2);
 
+    this.uiDevice = uiDevice;
+    this.device = device;
+    this.device.remoteControlsChanged.addListener(this);
+
+    addControls();
+  }
+
+  @Override
+  public void onParameterChanged(LXParameter parameter) {
+    if (parameter == this.device.remoteControlsChanged) {
+      refresh();
+    }
+  }
+
+  protected void refresh() {
+    for (UI2dComponent control : this.controls) {
+      control.removeFromContainer();
+    }
+    this.controls.clear();
+    addControls();
+  }
+
+  private void addControls() {
     List<LXNormalizedParameter> params = Arrays.asList(device.getRemoteControls());
 
     int ki = 0;
@@ -44,16 +75,19 @@ public class UITEPerformancePattern implements UIDeviceControls<TEPerformancePat
       float x = (ki % 4) * (UIKnob.WIDTH + 2) + (col * ((4 * (UIKnob.WIDTH + 2) + 15) + 2));
       float y = -3 + (ki / 4) * (UIKnob.HEIGHT);
       if (param instanceof TEColorOffsetParameter) {
-        new UITEColorControl(x, y, (TEColorParameter) param.getParentParameter())
-        .addToContainer(uiDevice);      
+        this.controls.add(
+          new UITEColorControl(x, y, (TEColorParameter) param.getParentParameter())
+          .addToContainer(uiDevice));
       } else if (param instanceof BoundedParameter || param instanceof DiscreteParameter || param instanceof BoundedFunctionalParameter) {
-        new UIKnob(x, y)
-        .setParameter(param)
-        .addToContainer(uiDevice);
+        this.controls.add(
+          new UIKnob(x, y)
+          .setParameter(param)
+          .addToContainer(uiDevice));
       } else if (param instanceof BooleanParameter) {
-        new UISwitch(x, y)
-        .setParameter(param)
-        .addToContainer(uiDevice);
+        this.controls.add(
+          new UISwitch(x, y)
+          .setParameter(param)
+          .addToContainer(uiDevice));
       } else if (param == null) {
         // Leave a space
       } else {
@@ -64,5 +98,14 @@ public class UITEPerformancePattern implements UIDeviceControls<TEPerformancePat
       ++ki;
     }
     uiDevice.setContentWidth((col + 1) * (4 * (UIKnob.WIDTH + 2) + 15) - 15 - 2);
+  }
+
+  @Override
+  public void disposeDeviceControls(heronarts.lx.studio.LXStudio.UI ui, UIDevice uiDevice, TEPerformancePattern device) {
+    if (this.device != null) {
+      this.device.remoteControlsChanged.removeListener(this);
+      this.device = null;
+      this.uiDevice = null;
+    }
   }
 }
