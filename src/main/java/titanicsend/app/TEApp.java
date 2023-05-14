@@ -425,7 +425,9 @@ public class TEApp extends PApplet implements LXPlugin {
     // Keyboard shortcut for debugging: Add all patterns to current channel
     // (Ctrl or Meta) + Alt + Shift + A
     if ((keyEvent.isControlDown() || keyEvent.isMetaDown()) && keyEvent.isAltDown() && keyEvent.isShiftDown() && keyEvent.getKeyCode() == 65) {
-      addAllPatterns();
+      this.lx.engine.addTask(() -> {
+        addAllPatterns();
+      });
     } else {
       super.keyPressed(keyEvent);
     }
