@@ -27,7 +27,7 @@
         <coremidi4j.version>1.6</coremidi4j.version>
         <gson.version>2.10.1</gson.version>
         <jogamp.version>2.4.0-rc-20230123</jogamp.version>
-        <lx.version>0.4.2-SNAPSHOT</lx.version>
+        <lx.version>0.4.3-SNAPSHOT</lx.version>
         <processing.version>4.0.1</processing.version>
 
         <!-- Project dependency versions -->

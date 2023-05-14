@@ -1,7 +1,9 @@
 package titanicsend.model;
 
 public class TEStripingInstructions {
-  public static final int DEFAULT_CHANNEL_LENGTH = 500;
+
+  //Number of pixels to use when striping a panel before rolling over to the next channel
+  public static final int DEFAULT_PANEL_CHANNEL_LENGTH = 250;
 
   // One per universe; can be null which means they're all DEFAULT_CHANNEL_LENGTH
   public int[] channelLengths;

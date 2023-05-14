@@ -3,7 +3,10 @@ package titanicsend.pattern;
 import heronarts.lx.LX;
 import heronarts.lx.Tempo;
 import heronarts.lx.audio.GraphicMeter;
+import heronarts.lx.color.LXDynamicColor;
+import heronarts.lx.color.LXSwatch;
 import heronarts.lx.color.LinkedColorParameter;
+import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.pattern.LXPattern;
@@ -11,6 +14,10 @@ import titanicsend.lx.LXGradientUtils;
 import titanicsend.model.TELaserModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
+import titanicsend.model.justin.ColorCentral;
+import titanicsend.model.justin.LXVirtualDiscreteParameter;
+import titanicsend.model.justin.SwatchParameter;
+import titanicsend.model.justin.ColorCentral.ColorCentralListener;
 import titanicsend.util.TEColor;
 import titanicsend.util.TEMath;
 
@@ -73,6 +80,62 @@ public abstract class TEPattern extends LXPattern {
     }
   }
 
+  // VIRTUAL COLOR SWATCH PARAMETER
+
+  // Pass-through to color swatch selection per channel
+  public class LXVirtualSwatchParameter extends LXVirtualDiscreteParameter<SwatchParameter> implements ColorCentralListener {
+
+    public LXVirtualSwatchParameter(String label) {
+      super(label);
+
+      setIncrementMode(IncrementMode.RELATIVE);
+      setWrappable(false);
+
+      if (ColorCentral.isLoaded()) {
+        link();
+      } else {
+        listenForLoad();
+      }
+    }
+
+    public void listenForLoad() {
+      if (getParameter() == null) {
+        ColorCentral.listenOnce(this);
+      }
+    }
+
+    @Override
+    public void ColorCentralLoaded() {
+      link();
+    }
+
+    public void link() {
+      if (getParameter() == null) {
+        if (ColorCentral.isLoaded()) {
+          LXChannel channel = getChannel();
+          if (channel != null) {
+            setParameter(ColorCentral.get().get(channel).selectedSwatch);
+          }
+        }
+      }
+    }
+
+    // Type-specific pass-through
+    public LXSwatch getSwatch() {
+        SwatchParameter p = getParameter();
+        if (p != null) {
+            return ColorCentral.get().getSwatch(p.getObject());
+        }
+        return lx.engine.palette.swatch;
+    }
+  }
+
+  // Virtual Swatch parameter: pass-through to ColorCentral's current swatch for this channel
+  // Note this is a non-standard use of Palette Swatches and not recommended to do it this way,
+  // but we're doing it as a safety mechanism on this short timeline before performance.
+  public final LXVirtualSwatchParameter swatchParameter =
+      new LXVirtualSwatchParameter("Swatch");
+
   protected TEPattern(LX lx) {
     super(lx);
 	// NOTE(mcslee): in newer LX version, colors array does not exist at instantiation
@@ -84,10 +147,21 @@ public abstract class TEPattern extends LXPattern {
     this.sua = this.modelTE.panelsById.get("SUA");
     this.sdc = this.modelTE.panelsById.get("SDC");
 
+    this.paletteGradient.setNumStops(5);
     this.primaryGradient.setNumStops(3);
     this.secondaryGradient.setNumStops(3);
     this.foregroundGradient.setNumStops(3);
     updateGradients();
+
+    // Patterns are created, then added to channel. Channel should be available on next engine loop.
+    lx.engine.addTask(() -> {
+        linkChannelParameters(lx);
+    });
+  }
+
+  private void linkChannelParameters(LX lx) {
+      // Finally safe to assume a channel has been assigned
+      this.swatchParameter.link();
   }
 
   @Override
@@ -117,19 +191,31 @@ public abstract class TEPattern extends LXPattern {
     return lcp;
   }
 
+  protected LXSwatch getSwatch() {
+    return this.swatchParameter.getSwatch();
+  }
+
+  protected LXDynamicColor getSwatchColor(int index) {
+    return getSwatch().getColor(index);
+  }
+
   // If a pattern uses the standard gradients, call this in run() to ensure
   // palette changes are known and transitions are smooth
   protected void updateGradients() {
-    paletteGradient.setPaletteGradient(lx.engine.palette, 0, lx.engine.palette.swatch.colors.size());
-    primaryGradient.stops[0].set(lx.engine.palette.getSwatchColor(ColorType.PRIMARY.swatchIndex()));
-    primaryGradient.stops[1].set(lx.engine.palette.getSwatchColor(ColorType.BACKGROUND.swatchIndex()));
-    primaryGradient.stops[2].set(lx.engine.palette.getSwatchColor(ColorType.PRIMARY.swatchIndex()));
-    secondaryGradient.stops[0].set(lx.engine.palette.getSwatchColor(ColorType.SECONDARY.swatchIndex()));
-    secondaryGradient.stops[1].set(lx.engine.palette.getSwatchColor(ColorType.SECONDARY_BACKGROUND.swatchIndex()));
-    secondaryGradient.stops[2].set(lx.engine.palette.getSwatchColor(ColorType.SECONDARY.swatchIndex()));
-    foregroundGradient.stops[0].set(lx.engine.palette.getSwatchColor(ColorType.PRIMARY.swatchIndex()));
-    foregroundGradient.stops[1].set(lx.engine.palette.getSwatchColor(ColorType.SECONDARY.swatchIndex()));
-    foregroundGradient.stops[2].set(lx.engine.palette.getSwatchColor(ColorType.PRIMARY.swatchIndex()));
+    paletteGradient.stops[0].set(getSwatchColor(0));
+    paletteGradient.stops[1].set(getSwatchColor(1));
+    paletteGradient.stops[2].set(getSwatchColor(2));
+    paletteGradient.stops[3].set(getSwatchColor(3));
+    paletteGradient.stops[4].set(getSwatchColor(4));
+    primaryGradient.stops[0].set(getSwatchColor(ColorType.PRIMARY.swatchIndex()));
+    primaryGradient.stops[1].set(getSwatchColor(ColorType.BACKGROUND.swatchIndex()));
+    primaryGradient.stops[2].set(getSwatchColor(ColorType.PRIMARY.swatchIndex()));
+    secondaryGradient.stops[0].set(getSwatchColor(ColorType.SECONDARY.swatchIndex()));
+    secondaryGradient.stops[1].set(getSwatchColor(ColorType.SECONDARY_BACKGROUND.swatchIndex()));
+    secondaryGradient.stops[2].set(getSwatchColor(ColorType.SECONDARY.swatchIndex()));
+    foregroundGradient.stops[0].set(getSwatchColor(ColorType.PRIMARY.swatchIndex()));
+    foregroundGradient.stops[1].set(getSwatchColor(ColorType.SECONDARY.swatchIndex()));
+    foregroundGradient.stops[2].set(getSwatchColor(ColorType.PRIMARY.swatchIndex()));
   }
 
   /**

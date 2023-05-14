@@ -375,9 +375,9 @@ public class TEWholeModel extends LXModel {
     return rv;
   }
 
-  private static int getChannelLength(TEStripingInstructions tesi, int n) {
+  private static int getChannelLengthForPanel(TEStripingInstructions tesi, int n) {
     if (tesi.channelLengths == null)
-      return TEStripingInstructions.DEFAULT_CHANNEL_LENGTH;
+      return TEStripingInstructions.DEFAULT_PANEL_CHANNEL_LENGTH;
     else
       return tesi.channelLengths[n];
   }
@@ -466,19 +466,32 @@ public class TEWholeModel extends LXModel {
         geometry.panelsByFlavor.put(flavor, new ArrayList<>());
       geometry.panelsByFlavor.get(flavor).add(p);
 
+      // start striping at the specified channel of the IP
+      // when we run out of pixels in the channel, move on to the next channel
+      // when we run out of channels, move on to the overflow IP
       if (lit) {
-        tokens = outputConfig.split("#");
-        assert tokens.length == 2 : "Bad panelType: " + outputConfig;
-        String ip = tokens[0];
-        int channelNum = Integer.parseInt(tokens[1]);
+        String[] outputs = outputConfig.split("/");
         int firstChannelPixel = 0;
-        for (int i = 0; firstChannelPixel < p.size; i++) {
-          int lastChannelPixel = firstChannelPixel + getChannelLength(tesi, i) - 1;
-          if (lastChannelPixel > p.size - 1) lastChannelPixel = p.size - 1;
-          ChromatechSocket socket = GrandShlomoStation.getOrMake(
-                  ip, channelNum + i);
-          socket.addPanel(p, firstChannelPixel, lastChannelPixel);
-          firstChannelPixel = lastChannelPixel + 1;
+        // keep track of which channel we're on cross-controller so we can use for striping instructions
+        int totalChannelOffset = 0;
+        for (int outputIndex = 0; firstChannelPixel < p.size; outputIndex++) {
+          if (outputs.length <= outputIndex) {
+            TE.err("Not enough ips! May require a missing overflow ip");
+            break;
+          }
+          tokens = outputs[outputIndex].split("#");
+          assert tokens.length == 2 : "Bad panelType: " + outputConfig;
+          String ip = tokens[0];
+          int channelNum = Integer.parseInt(tokens[1]);
+
+          for (int channelOffset = 0; firstChannelPixel < p.size
+                  && channelNum + channelOffset <= ChromatechSocket.CHANNELS_PER_IP; channelOffset++, totalChannelOffset++) {
+            int lastChannelPixel = firstChannelPixel + getChannelLengthForPanel(tesi, totalChannelOffset) - 1;
+            if (lastChannelPixel > p.size - 1) lastChannelPixel = p.size - 1;
+            ChromatechSocket socket = GrandShlomoStation.getOrMake(ip, channelNum + channelOffset);
+            socket.addPanel(p, firstChannelPixel, lastChannelPixel);
+            firstChannelPixel = lastChannelPixel + 1;
+          }
         }
       }
     }

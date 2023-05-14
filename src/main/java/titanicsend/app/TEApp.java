@@ -36,6 +36,8 @@ import com.google.gson.stream.JsonWriter;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
+import heronarts.lx.mixer.LXBus;
+import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.pattern.color.GradientPattern;
 import heronarts.lx.pattern.form.PlanesPattern;
@@ -48,6 +50,7 @@ import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lx.APC40Mk2;
 import titanicsend.lx.MidiFighterTwister;
 import titanicsend.model.TEWholeModel;
+import titanicsend.model.justin.ColorCentral;
 import titanicsend.model.justin.ViewCentral;
 import titanicsend.output.GPOutput;
 import titanicsend.output.GrandShlomoStation;
@@ -74,6 +77,8 @@ public class TEApp extends PApplet implements LXPlugin {
   private TEWholeModel model;
   static public TEWholeModel wholeModel;
 
+  private LXStudio lx;
+
   private static int WIDTH = 1280;
   private static int HEIGHT = 800;
   private static boolean FULLSCREEN = false;
@@ -87,10 +92,11 @@ public class TEApp extends PApplet implements LXPlugin {
   private TEPatternLibrary library;
 
   private TELaserTask laserTask;
-
+  private ColorCentral colorCentral;
   private ViewCentral viewCentral;
 
   // Global feature on/off switches for troubleshooting
+  public static final boolean ENABLE_COLOR_CENTRAL = true;
   public static final boolean ENABLE_VIEW_CENTRAL = true;
   public static final boolean DELAY_FILE_OPEN_TO_FIRST_ENGINE_LOOP = true;
 
@@ -114,7 +120,7 @@ public class TEApp extends PApplet implements LXPlugin {
     this.model = new TEWholeModel(resourceSubdir);
     TEApp.wholeModel = this.model;
 
-    new LXStudio(this, flags, this.model);
+    this.lx = new LXStudio(this, flags, this.model);
     this.surface.setTitle(this.model.name);
 
     String logFileName = LOG_FILENAME_FORMAT.format(Calendar.getInstance().getTime());
@@ -183,6 +189,7 @@ public class TEApp extends PApplet implements LXPlugin {
     lx.registry.addPattern(XorceryDiamonds.class);
     lx.registry.addPattern(PBFireworkNova.class);
     lx.registry.addPattern(PixelblazeParallel.class);
+    lx.registry.addPattern(RadialSimplex.class);
     lx.registry.addPattern(SimplexPosterized.class);
     lx.registry.addPattern(TEMidiFighter64DriverPattern.class);
     lx.registry.addPattern(TESparklePattern.class);
@@ -309,6 +316,9 @@ public class TEApp extends PApplet implements LXPlugin {
 
     GPOutput gpOutput = new GPOutput(lx, this.gpBroadcaster);
     lx.addOutput(gpOutput);
+    
+    // Add special per-channel swatch control.  Do not try this at home.
+    this.colorCentral = new ColorCentral(lx);
 
     // Add special view controller
     this.viewCentral = new ViewCentral(lx);
@@ -413,6 +423,39 @@ public class TEApp extends PApplet implements LXPlugin {
   public void draw() {
     // All handled by core LX engine, do not modify, method exists only so that Processing
     // will run a draw-loop.
+  }
+
+  @Override
+  public void keyPressed(processing.event.KeyEvent keyEvent) {
+    // Keyboard shortcut for debugging: Add all patterns to current channel
+    // (Ctrl or Meta) + Alt + Shift + A
+    if ((keyEvent.isControlDown() || keyEvent.isMetaDown()) && keyEvent.isAltDown() && keyEvent.isShiftDown() && keyEvent.getKeyCode() == 65) {
+      this.lx.engine.addTask(() -> {
+        addAllPatterns();
+      });
+    } else {
+      super.keyPressed(keyEvent);
+    }
+  }
+
+  /**
+   * Dev tool: add all patterns in registry to current channel.
+   */
+  private void addAllPatterns() {
+    LXBus channel = this.lx.engine.mixer.getFocusedChannel();
+    if (channel instanceof LXChannel) {
+      TE.log("*** Instantiating all " + this.lx.registry.patterns.size() + " patterns in registry to channel " + channel.getLabel() + " ***");
+      TE.log("Here we gOOOOOOOOOOOO....");
+      for (Class<? extends LXPattern> clazz : this.lx.registry.patterns) {
+        try {
+          ((LXChannel)channel).addPattern(this.lx.instantiatePattern(clazz));
+        } catch (Exception ex) {
+          TE.err(ex, "Broken pattern! Could not instantiate " + clazz);
+        }
+      }
+    } else {
+      TE.err("Selected channel must be a channel and not a group before adding all patterns.");
+    }
   }
 
   private static final DateFormat LOG_FILENAME_FORMAT = new SimpleDateFormat("'LXStudio-TE-'yyyy.MM.dd-HH.mm.ss'.log'");
