@@ -23,6 +23,9 @@ public class ShaderEdgesPatternConfig {
 
         @Override
         protected List<PatternEffect> createEffects() {
+            controls.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
+            controls.setValue(TEControlTag.SPEED, 0.5);
+
             return List.of(new NativeShaderPatternEffect("light_beams.fs",
                 new PatternTarget(this, TEShaderView.ALL_EDGES)));
         }
