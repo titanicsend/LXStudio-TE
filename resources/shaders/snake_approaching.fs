@@ -73,15 +73,18 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     {
         b.w -= .15;
         #ifdef SNAKE
+            c = iColor2RGB * iWow1;
+            /*
     		if (b.w < 5.6 && b.w > .2)
             {
-                c = iColor2RGB;
+                //c = iColor2RGB;
 
             }
-    		else if (b.w > .02 && b.w < 5.6)
-    			c = iColor2RGB;
+    		else if (b.w > .02 && b.w < 5.6) ;
+    			//c = iColor2RGB;
             else
-                c = iColor2RGB * 0.85;
+                //c *= 0.85;
+            */
 
             // give the snake some stripes. (add quarter wave offset so the head is always
             // the darker color)

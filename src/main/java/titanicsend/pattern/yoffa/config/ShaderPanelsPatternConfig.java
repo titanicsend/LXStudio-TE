@@ -282,10 +282,10 @@ public class ShaderPanelsPatternConfig {
             controls.setRange(TEControlTag.SPEED, 0, -4, 4);
             controls.setValue(TEControlTag.SPEED, 0.5);
 
-            controls.setRange(TEControlTag.SIZE, 2, 6, 0.75); // overall scale
-            controls.setRange(TEControlTag.WOW1,0,0,0.25);  // "wiggle" in rings
-            controls.setRange(TEControlTag.WOW2,0,0,3);  // radial rotation distortion
+            controls.setRange(TEControlTag.SIZE, 2, 6, 0.35); // overall scale
 
+            controls.setRange(TEControlTag.WOW1,0.5,0,1.00);  // snake color level
+            controls.setRange(TEControlTag.WOW2,0.4,0,1.00);  // background level
 
             return List.of(new NativeShaderPatternEffect("snake_approaching.fs",
                 new PatternTarget(this, TEShaderView.DOUBLE_LARGE)));
