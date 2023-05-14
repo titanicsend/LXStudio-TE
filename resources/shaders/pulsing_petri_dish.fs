@@ -17,14 +17,16 @@ float map(vec3 p)
     vec3 q = fract(p) * 2.0 - 1.1;
 
     int tx = int(q.y);
-    float fft = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
+    float fft = 0.0;   // reads texture in original pattern
     fft *= 1.0;
 
     // Signed distance of sphere
     float s = sphere(abs(tan(q)), sphereSize);
-    float d = 0.08 * (cos(q.x * 10. * fft) * cos(q.y * 10. * fft) * tan(q.z * 10. * fft));
+
+    // unused calculations involving sampled texture
+    //float d = 0.08 * (cos(q.x * 10. * fft) * cos(q.y * 10. * fft) * tan(q.z * 10. * fft));
     //return s +wave;
-    return s + d;
+    return s;
 }
 
 
@@ -44,6 +46,11 @@ float wave(float n) {
     return 0.5 + 0.5 * sin(-QUARTER_WAVE + TAU * fract(n));
 }
 
+// build 2D rotation matrix
+mat2 rotate(float a) {
+    return mat2(cos(a), -sin(a), sin(a), cos(a));
+}
+
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
     // Normalized pixel coordinates (from 0 to 1)
@@ -52,7 +59,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     uv.x *= iResolution.x / iResolution.y;
 
     // Create ray to fire into scene
-    vec3 ray = normalize(vec3(uv, 1.5));
+    vec3 ray = normalize(vec3(uv, 1.5 * iScale));
+    ray.xy *= rotate(-iRotationAngle);
 
     // Create origin of scene
     vec3 origin = vec3(0., 0., iTime); //iTime changes z perspective, going into screen

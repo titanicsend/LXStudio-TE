@@ -62,7 +62,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 	uv.x *= iResolution.x / iResolution.y;
     uv.y += 0.2;
     uv = rot(uv, 90.);
-    vec3 c = iColorRGB;
+    uv *= iScale;
+    vec3 c = iColorRGB * iWow2;
     vec4 b;
     if (PRESET == 0)
     	b = f(uv, .2, 0.1, 1.);
@@ -74,13 +75,17 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         #ifdef SNAKE
     		if (b.w < 5.6 && b.w > .2)
             {
-                c = texture(iChannel0, b.xz, 0.).xyz - vec3(0, 0, .2);
-                c = mix(c, (texture(iChannel0, b.xy, 0.).x + .5) * vec3(.8), .75 * smoothstep(.5, 1., sin(texture(iChannel0, b.xy, 0.).x + b.w  * 40. + 13. * b.z)));
+                c = iColor2RGB;
+
             }
     		else if (b.w > .02 && b.w < 5.6)
-    			c = texture(iChannel0, (b.xw) * 2., 0.).xyz * vec3(1.2, 1.1, .1);
+    			c = iColor2RGB;
             else
-                c = texture(iChannel1, b.xz * 2., 0.).xyz + vec3(0, 0, -.2);
+                c = iColor2RGB * 0.85;
+
+            // give the snake some stripes. (add quarter wave offset so the head is always
+            // the darker color)
+            c = mix(c, (iColor2RGB.x + .5) * vec3(.8), .75 * smoothstep(.5, 1., sin(-1.570796+iColor2RGB.z + b.w  * 40. + 13. * b.z)));
     		c = pow(clamp(c, 0.0, 1.0),vec3(0.65));
             c = c * .6 + .4 * c * c * (3. - 2. * c);
     		c = mix(c, vec3(dot(c, vec3(.33))), -.5) * (1. - (b.w - 1.15) / period);
@@ -88,5 +93,5 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     		c = normalize(b.xyz);
     	#endif
     }
-    fragColor =  vec4(c, 1);
+    fragColor =  vec4(c, max(c.r,max(c.g,c.b)));
 }

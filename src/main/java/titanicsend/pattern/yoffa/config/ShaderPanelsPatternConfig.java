@@ -41,6 +41,9 @@ public class ShaderPanelsPatternConfig {
 
         @Override
         protected List<PatternEffect> createEffects() {
+            controls.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
+            controls.setValue(TEControlTag.SPEED, 0.5);
+
             return List.of(new NativeShaderPatternEffect("light_beams.fs",
                 new PatternTarget(this, TEShaderView.ALL_PANELS_INDIVIDUAL)));
         }
@@ -276,6 +279,14 @@ public class ShaderPanelsPatternConfig {
 
         @Override
         protected List<PatternEffect> createEffects() {
+            controls.setRange(TEControlTag.SPEED, 0, -4, 4);
+            controls.setValue(TEControlTag.SPEED, 0.5);
+
+            controls.setRange(TEControlTag.SIZE, 2, 6, 0.75); // overall scale
+            controls.setRange(TEControlTag.WOW1,0,0,0.25);  // "wiggle" in rings
+            controls.setRange(TEControlTag.WOW2,0,0,3);  // radial rotation distortion
+
+
             return List.of(new NativeShaderPatternEffect("snake_approaching.fs",
                 new PatternTarget(this, TEShaderView.DOUBLE_LARGE)));
         }
@@ -289,6 +300,12 @@ public class ShaderPanelsPatternConfig {
 
         @Override
         protected List<PatternEffect> createEffects() {
+            // set up common controls
+            controls.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
+            controls.setValue(TEControlTag.SPEED, 0.5);
+
+            controls.setRange(TEControlTag.SIZE, 1, 0.5,5); // overall scale
+
             return List.of(new NativeShaderPatternEffect("pulsing_petri_dish.fs",
                 new PatternTarget(this, TEShaderView.ALL_PANELS)));
         }
@@ -302,6 +319,13 @@ public class ShaderPanelsPatternConfig {
 
         @Override
         protected List<PatternEffect> createEffects() {
+            // set up common controls
+            controls.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
+            controls.setValue(TEControlTag.SPEED, 0.5);
+
+            controls.setRange(TEControlTag.SIZE, 1, 4, 0.6); // overall scale
+            controls.setRange(TEControlTag.WOW1, 0.5, 0.05, 2.5);  // contrast
+
             return List.of(new NativeShaderPatternEffect("mandelbrot.fs",
                 new PatternTarget(this, TEShaderView.DOUBLE_LARGE)));
         }
