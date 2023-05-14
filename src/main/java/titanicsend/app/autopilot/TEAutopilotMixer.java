@@ -55,6 +55,7 @@ public class TEAutopilotMixer {
      */
     public void setFaderTo(TEChannelName name, double faderLevel) {
         try {
+            //TE.log("Getting channel by name: %s", name);
             LXChannel channel = this.getChannelByName(name);
             channel.fader.setValue(faderLevel);
 
@@ -65,6 +66,7 @@ public class TEAutopilotMixer {
                 channel.enabled.setValue(true);
             }
         } catch (Exception np) {
+            TE.err(np, "failed...");
             TE.err("setFaderTo(lx, %s, %f) failed!", name, faderLevel);
         }
     }
@@ -77,6 +79,9 @@ public class TEAutopilotMixer {
      */
     public LXChannel getChannelByName(TEChannelName name) {
         if (name == null) return null;
+//        for (Map.Entry<TEChannelName, LXChannel> entry : channelName2channel.entrySet()) {
+//            TE.log("key: %s, value: %s", entry.getKey(), entry.getValue());
+//        }
         return this.channelName2channel.get(name);
     }
 

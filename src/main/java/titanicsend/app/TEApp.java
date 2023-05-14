@@ -92,7 +92,6 @@ public class TEApp extends PApplet implements LXPlugin {
   private TEPatternLibrary library;
 
   private TELaserTask laserTask;
-  
   private ColorCentral colorCentral;
   private ViewCentral viewCentral;
 
@@ -123,7 +122,7 @@ public class TEApp extends PApplet implements LXPlugin {
 
     this.lx = new LXStudio(this, flags, this.model);
     this.surface.setTitle(this.model.name);
-    
+
     String logFileName = LOG_FILENAME_FORMAT.format(Calendar.getInstance().getTime());
     LX.setLogFile(new File(flags.mediaPath, LX.Media.LOGS.getDirName() + File.separator + logFileName));
   }
@@ -133,7 +132,7 @@ public class TEApp extends PApplet implements LXPlugin {
     // Also now used for delayed opening of recent file to improve startup time.
     if (projectFileName != null) {
       final File finalProjectFile =lx.getMediaFile(LX.Media.PROJECTS, projectFileName);
-    
+
       if (finalProjectFile.getName().endsWith(".lxs")) {
         lx.preferences.schedulerEnabled.setValue(true);
         LX.log("Opening schedule file: " + finalProjectFile);
@@ -144,7 +143,7 @@ public class TEApp extends PApplet implements LXPlugin {
             LX.log("Now starting delayed open of project file: " + projectFileName);
             lx.openProject(finalProjectFile);
           } else {
-        	LX.error("Project filename not found: " + projectFileName);
+            LX.error("Project filename not found: " + projectFileName);
           }
         } catch (Exception x) {
           LX.error(x, "Exception loading project: " + x.getLocalizedMessage());
@@ -241,10 +240,10 @@ public class TEApp extends PApplet implements LXPlugin {
 
     @SuppressWarnings("unchecked")
     Function<Class<?>, Class<LXPattern>[]> patternGetter =
-        (Class<?> patternConfigClass) ->
-            (Class<LXPattern>[]) Arrays.stream(patternConfigClass.getDeclaredClasses())
-                .filter(LXPattern.class::isAssignableFrom)
-                .toArray(Class[]::new);
+            (Class<?> patternConfigClass) ->
+                    (Class<LXPattern>[]) Arrays.stream(patternConfigClass.getDeclaredClasses())
+                            .filter(LXPattern.class::isAssignableFrom)
+                            .toArray(Class[]::new);
 
     lx.registry.addPatterns(patternGetter.apply(OrganicPatternConfig.class));
     lx.registry.addPatterns(patternGetter.apply(ShaderPanelsPatternConfig.class));
@@ -304,11 +303,11 @@ public class TEApp extends PApplet implements LXPlugin {
     TE.log("Attaching the OSC message listener to port "
             + TEShowKontrol.OSC_PORT + " ...");
     try {
-        lx.engine.osc.receiver(TEShowKontrol.OSC_PORT).addListener((message) -> {
-          this.oscListener.onOscMessage(message);
+      lx.engine.osc.receiver(TEShowKontrol.OSC_PORT).addListener((message) -> {
+        this.oscListener.onOscMessage(message);
       });
     } catch (SocketException sx) {
-        sx.printStackTrace();
+      sx.printStackTrace();
     }
 
     // create our loop task for outputting data to lasers
@@ -348,7 +347,7 @@ public class TEApp extends PApplet implements LXPlugin {
     l.addPattern(NoisePattern.class, covBoth, cPalette, chorus);
     l.addPattern(PBXorcery.class, covPanelPartial, cPalette, chorus);
     l.addPattern(ShaderPanelsPatternConfig.NeonBlocks.class, covPanelPartial, cNonConforming, chorus);
-    l.addPattern(PBAudio1.class, covPanelPartial, cPalette, chorus);
+    l.addPattern(Audio1.class, covPanelPartial, cPalette, chorus);
     l.addPattern(ShaderPanelsPatternConfig.OutrunGrid.class, covPanels, cNonConforming, chorus);
     l.addPattern(OrganicPatternConfig.RainbowSwirlPanels.class, covPanels, cNonConforming, chorus);
     l.addPattern(OrganicPatternConfig.MatrixScroller.class, covPanels, cNonConforming, chorus);
@@ -357,7 +356,6 @@ public class TEApp extends PApplet implements LXPlugin {
     l.addPattern(OrganicPatternConfig.NeonCellsLegacy.class, covPanelPartial, cPalette, chorus);
     l.addPattern(OrganicPatternConfig.RainbowSwirlEdges.class, covEdges, cNonConforming, chorus);
     l.addPattern(ShaderPanelsPatternConfig.NeonTriangles.class, covPanels, cNonConforming, chorus);
-    l.addPattern(ShaderPanelsPatternConfig.Mondelbrot.class, covPanels, cNonConforming, chorus);
     l.addPattern(Phasers.class, covPanels, cPalette, chorus);
     l.addPattern(ShaderPanelsPatternConfig.PulsingPetriDish.class, covPanels, cNonConforming, chorus);
     l.addPattern(Electric.class, covPanelPartial, cPalette, chorus);
@@ -365,20 +363,27 @@ public class TEApp extends PApplet implements LXPlugin {
     l.addPattern(EdgeRunner.class, covEdges, cPalette, chorus);
 
     // DOWN patterns
-    l.addPattern(GradientPattern.class, covPanelPartial, cPalette, down);
-    l.addPattern(OrganicPatternConfig.WaterPanels.class, covPanelPartial, cPalette, down);
-    l.addPattern(OrganicPatternConfig.WavyEdges.class, covEdges, cPalette, down);
-    l.addPattern(NoisePattern.class, covBoth, cPalette, down);
     l.addPattern(ShaderPanelsPatternConfig.Galaxy.class, covPanelPartial, cPalette, down);
+    l.addPattern(TEGradientPattern.class, covPanelPartial, cPalette, down);
+    l.addPattern(OrganicPatternConfig.WaterPanels.class, covPanelPartial, cPalette, down);
+    l.addPattern(SimplexPosterized.class, covBoth, cPalette, down);
+    l.addPattern(ShaderPanelsPatternConfig.Galaxy.class, covPanelPartial, cPalette, down);
+    l.addPattern(ShaderPanelsPatternConfig.SmokeShader.class, covPanelPartial, cPalette, down);
+    l.addPattern(TriangleNoise.class, covPanels, cPalette, down);
+    l.addPattern(TurbulenceLines.class, covPanels, cPalette, down);
 
     // UP patterns
-    l.addPattern(NoisePattern.class, covPanelPartial, cNonConforming, up);
-    l.addPattern(OrganicPatternConfig.WavyEdges.class, covPanelPartial, cNonConforming, up);
-    l.addPattern(SparklePattern.class, covBoth, cNonConforming, up);
+    l.addPattern(ShaderPanelsPatternConfig.Marbling.class, covBoth, cPalette, up);
+    l.addPattern(TESparklePattern.class, covBoth, cPalette, up);
     l.addPattern(Electric.class, covPanelPartial, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.Marbling.class, covPanels, cNonConforming, up);
     l.addPattern(ShaderPanelsPatternConfig.SlitheringSnake.class, covPanelPartial, cPalette, up);
-    l.addPattern(PBAudio1.class, covPanelPartial, cPalette, up);
+    l.addPattern(Audio1.class, covPanelPartial, cPalette, up);
+    l.addPattern(SimplexPosterized.class, covPanelPartial, cPalette, up);
+    l.addPattern(ShaderPanelsPatternConfig.SmokeShader.class, covPanelPartial, cPalette, up);
+    l.addPattern(TriangleNoise.class, covPanelPartial, cPalette, up);
+    l.addPattern(TurbulenceLines.class, covPanelPartial, cPalette, up);
+    l.addPattern(ShaderEdgesPatternConfig.NeonRipplesEdges.class, covPanelPartial, cPalette, up);
 
     return l;
   }
@@ -408,7 +413,7 @@ public class TEApp extends PApplet implements LXPlugin {
 
     // precompile binaries for any new or changed shaders
     ShaderPrecompiler.rebuildCache();
-       
+
     lx.engine.addTask(() -> {
       openDelayedFile(lx);
     });
@@ -466,12 +471,12 @@ public class TEApp extends PApplet implements LXPlugin {
    */
   public static void main(String[] args) {
     LX.log("Initializing LX version " + LXStudio.VERSION);
-    
+
     // NOTE(mcslee): Hack for macOS Ventura!!
     // https://github.com/processing/processing4/issues/544
     // Hopefully to be removed in a future version
     com.jogamp.opengl.GLProfile.initSingleton();
-    
+
     boolean headless = false;
     boolean loadTestahedron = false;
     boolean loadVehicle = false;
@@ -535,7 +540,7 @@ public class TEApp extends PApplet implements LXPlugin {
          * from last summer to open the most recent file OR command line file.
          *
          * This clever preferences file manipulation was suggested by mcslee over email
-         * as a solution to the CLI arg problem on... Aug 24, 2022.  Good times! 
+         * as a solution to the CLI arg problem on... Aug 24, 2022.  Good times!
          */
         File preferences = new File(".lxpreferences");
         if (preferences.exists()) {
@@ -561,7 +566,7 @@ public class TEApp extends PApplet implements LXPlugin {
           if (removedFileName) {
             LX.log("Removing file name from preferences...");
             try (FileWriter fw = new FileWriter(preferences);
-                JsonWriter writer = new JsonWriter(fw)) {
+                 JsonWriter writer = new JsonWriter(fw)) {
               writer.setIndent("  ");
               new GsonBuilder().create().toJson(obj, writer);
             } catch (IOException iox) {
