@@ -15,7 +15,7 @@ public class TriangleNoise extends DriftEnabledPattern {
     NativeShader shader;
 
     public TriangleNoise(LX lx) {
-        super(lx);
+        super(lx, TEShaderView.ALL_POINTS);
 
         // common controls setup
         controls.setRange(TEControlTag.SPEED, 0, -4, 4); // overall scale
@@ -31,7 +31,7 @@ public class TriangleNoise extends DriftEnabledPattern {
         addCommonControls();
 
         effect = new NativeShaderPatternEffect("triangle_noise.fs",
-            new PatternTarget(this, TEShaderView.ALL_POINTS));
+            new PatternTarget(this));
     }
 
     @Override
@@ -54,8 +54,4 @@ public class TriangleNoise extends DriftEnabledPattern {
         shader = effect.getNativeShader();
     }
 
-    @Override
-    public String getDefaultView() {
-        return effect.getDefaultView();
-    }
 }

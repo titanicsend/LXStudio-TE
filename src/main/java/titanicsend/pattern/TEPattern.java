@@ -172,8 +172,12 @@ public abstract class TEPattern extends LXPattern {
 
   @Override
   protected void onModelChanged(LXModel model) {
-    // If the View changes, clear all pixels because some might not be used by the pattern
-    clearPixels();
+    // If the View changes, clear all pixels because some might not be used by the pattern.
+    // With view-per-pattern, this can now get called when pattern is inactive.
+    if (this.colors != null) {
+      // Active pattern
+      clearPixels();
+    }
     super.onModelChanged(model);
   }
 

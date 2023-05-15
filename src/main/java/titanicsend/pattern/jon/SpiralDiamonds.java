@@ -21,7 +21,7 @@ public class SpiralDiamonds extends TEPerformancePattern {
                     .setDescription("Ummm.... what does this button do?");
 
     public SpiralDiamonds(LX lx) {
-        super(lx);
+        super(lx, TEShaderView.DOUBLE_LARGE);
 
         // Quantity controls density of diamonds
         controls.setRange(TEControlTag.QUANTITY,4,1,7)
@@ -84,8 +84,4 @@ public class SpiralDiamonds extends TEPerformancePattern {
          }
     }
 
-    @Override
-    public String getDefaultView() {
-        return TEShaderView.DOUBLE_LARGE.viewLabel;
-    }
 }

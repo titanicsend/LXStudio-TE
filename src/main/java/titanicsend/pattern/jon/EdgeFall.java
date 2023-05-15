@@ -28,7 +28,7 @@ public class EdgeFall extends TEPerformancePattern {
 
     // Constructor
     public EdgeFall(LX lx) {
-        super(lx);
+        super(lx, TEShaderView.ALL_POINTS);
 
         // Size controls line width/glow
         controls.setRange(TEControlTag.SIZE, 80, 200, 15);
@@ -41,7 +41,7 @@ public class EdgeFall extends TEPerformancePattern {
         addCommonControls();
 
         effect = new NativeShaderPatternEffect("edgefall.fs",
-            new PatternTarget(this, TEShaderView.ALL_POINTS));
+            new PatternTarget(this));
 
         // create an n x 4 array, so we can pass line segment descriptors
         // to GLSL shaders.
@@ -169,8 +169,4 @@ public class EdgeFall extends TEPerformancePattern {
         shader = effect.getNativeShader();
     }
 
-    @Override
-    public String getDefaultView() {
-        return effect.getDefaultView();
-    }
 }

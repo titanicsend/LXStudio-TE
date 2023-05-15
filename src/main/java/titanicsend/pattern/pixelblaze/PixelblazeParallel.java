@@ -3,6 +3,7 @@ package titanicsend.pattern.pixelblaze;
 import heronarts.lx.LX;
 import heronarts.lx.model.LXPoint;
 import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public class PixelblazeParallel extends TEPerformancePattern {
   });
 
   public PixelblazeParallel(LX lx) {
-    super(lx);
+    super(lx, TEShaderView.ALL_POINTS);
 
     try {
 

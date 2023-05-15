@@ -3,6 +3,7 @@ package titanicsend.pattern.yoffa.media;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 import java.io.IOException;
 
@@ -17,7 +18,7 @@ public class BasicVideoPattern extends TEPerformancePattern {
     private final VideoPainter videoPainter;
 
     public BasicVideoPattern(LX lx) throws IOException {
-        super(lx);
+        super(lx, TEShaderView.ALL_POINTS);
 
         addCommonControls();
 

@@ -4,6 +4,7 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.model.LXPoint;
 import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 import java.io.IOException;
 
@@ -17,7 +18,7 @@ public class BasicImagePattern extends TEPerformancePattern {
     private final ImagePainter eddiePainter;
 
     public BasicImagePattern(LX lx) throws IOException {
-        super(lx);
+        super(lx, TEShaderView.ALL_POINTS);
 
         addCommonControls();
 

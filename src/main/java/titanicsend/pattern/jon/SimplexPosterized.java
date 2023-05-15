@@ -14,7 +14,7 @@ public class SimplexPosterized extends DriftEnabledPattern {
     NativeShader shader;
 
     public SimplexPosterized(LX lx) {
-        super(lx);
+        super(lx, TEShaderView.ALL_POINTS);
 
         // common controls setup
         controls.setRange(TEControlTag.SPEED, 0, -4, 4);
@@ -27,7 +27,7 @@ public class SimplexPosterized extends DriftEnabledPattern {
         addCommonControls();
 
         effect = new NativeShaderPatternEffect("simplex_posterized.fs",
-            new PatternTarget(this, TEShaderView.ALL_POINTS));
+            new PatternTarget(this));
     }
 
     @Override
@@ -50,8 +50,4 @@ public class SimplexPosterized extends DriftEnabledPattern {
         shader = effect.getNativeShader();
     }
 
-    @Override
-    public String getDefaultView() {
-        return effect.getDefaultView();
-    }
 }

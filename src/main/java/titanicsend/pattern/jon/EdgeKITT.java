@@ -4,6 +4,7 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.util.TEColor;
 import titanicsend.util.TEMath;
 
@@ -14,7 +15,7 @@ import static titanicsend.util.TEMath.clamp;
 public class EdgeKITT extends TEPerformancePattern {
 
     public EdgeKITT(LX lx) {
-        super(lx);
+        super(lx, TEShaderView.ALL_POINTS);
 
         controls.setRange(TEControlTag.SIZE, 0.5, 0.01, 1.5);
 

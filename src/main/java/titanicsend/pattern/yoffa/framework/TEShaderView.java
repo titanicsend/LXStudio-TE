@@ -20,4 +20,11 @@ public enum TEShaderView {
   private TEShaderView(String viewLabel) {
     this.viewLabel = viewLabel;
   }
+
+  /**
+   * Get string value to be used as key to ViewParameter
+   */
+  public String getParameterKey() {
+    return this.viewLabel;
+  }
 }

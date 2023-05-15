@@ -40,7 +40,7 @@ public class Iceflow extends TEPerformancePattern {
                     .setDescription("Speed relative to beat");
 
     public Iceflow(LX lx) {
-        super(lx);
+        super(lx, TEShaderView.ALL_PANELS);
 
         // create new effect with alpha on and no automatic
         // parameter uniforms
@@ -58,7 +58,7 @@ public class Iceflow extends TEPerformancePattern {
         addParameter("beatScale",beatScale);
 
         effect = new NativeShaderPatternEffect("iceflow.fs",
-                new PatternTarget(this, TEShaderView.ALL_PANELS), options);
+                new PatternTarget(this), options);
 
     }
 
@@ -110,8 +110,4 @@ public class Iceflow extends TEPerformancePattern {
         shader = effect.getNativeShader();
     }
 
-    @Override
-    public String getDefaultView() {
-        return effect.getDefaultView();
-    }
 }
