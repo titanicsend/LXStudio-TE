@@ -423,7 +423,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             else {
                 spinRotor.addAngle(-this.getValue());
             }
-            return (BoundedParameter) super.reset();
+            return super.reset();
         }
     }
 
