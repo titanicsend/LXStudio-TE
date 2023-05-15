@@ -33,11 +33,7 @@ public class MatrixScrolling extends FragmentShaderEffect {
 
         TEPerformancePattern.TECommonControls ctl = pattern.getControls();
 
-        ctl.setRange(TEControlTag.SPEED, 0, -1.5, 1.5); // speed
-        ctl.setExponent(TEControlTag.SPEED, 2);
-        ctl.setValue(TEControlTag.SPEED, 0.5);        
-
-        ctl.setRange(TEControlTag.SPEED, 0, -4.0, 4.0);
+        ctl.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
         ctl.setValue(TEControlTag.SPEED, 0.5);
 
         ctl.setRange(TEControlTag.SIZE, 0.02, 0.05, 0.01);  // block size

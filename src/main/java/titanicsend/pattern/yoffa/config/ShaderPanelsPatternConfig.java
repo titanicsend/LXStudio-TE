@@ -113,6 +113,10 @@ public class ShaderPanelsPatternConfig {
     public static class SpaceExplosion extends ConstructedPattern {
         public SpaceExplosion(LX lx) {
             super(lx);
+
+            controls.setRange(TEControlTag.SPEED, 0, -1.5, 1.5); // speed
+            controls.setExponent(TEControlTag.SPEED, 0.5);
+            controls.setValue(TEControlTag.SPEED, 0.5);
         }
 
         @Override

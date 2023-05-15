@@ -66,6 +66,10 @@ public class ShaderEdgesPatternConfig {
     public static class SpaceExplosionEdges extends ConstructedPattern {
         public SpaceExplosionEdges(LX lx) {
             super(lx);
+
+            controls.setRange(TEControlTag.SPEED, 0, -1.5, 1.5); // speed
+            controls.setExponent(TEControlTag.SPEED, 0.5);
+            controls.setValue(TEControlTag.SPEED, 0.5);
         }
 
         @Override
