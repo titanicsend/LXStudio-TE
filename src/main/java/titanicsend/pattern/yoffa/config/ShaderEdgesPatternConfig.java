@@ -68,7 +68,7 @@ public class ShaderEdgesPatternConfig {
             super(lx);
 
             controls.setRange(TEControlTag.SPEED, 0, -1.5, 1.5); // speed
-            controls.setExponent(TEControlTag.SPEED, 0.5);
+            controls.setExponent(TEControlTag.SPEED, 2.0);
             controls.setValue(TEControlTag.SPEED, 0.5);
         }
 
