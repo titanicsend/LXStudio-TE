@@ -15,11 +15,15 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 #define M_PI 3.1415926535897932384626433832795
 
+// build 2D rotation matrix
+mat2 rotate(float a) {
+    return mat2(cos(a), -sin(a), sin(a), cos(a));
+}
 
 vec2 scale(vec2 point, vec2 X_bounds, vec2 Y_bounds){
     float nu_x = (X_bounds.y-X_bounds.x)*point.x+X_bounds.x;
     float nu_y = (Y_bounds.y-Y_bounds.x)*point.y+Y_bounds.x;
-    return vec2(nu_x, nu_y);
+    return iScale * vec2(nu_x, nu_y);
 }
 
 float point_dist(vec2 point, vec2 trap_point){
@@ -36,6 +40,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     // Normalized pixel coordinates (from 0 to 1)
     vec2 uv = fragCoord/iResolution.xy;
+    uv -= 0.5;
+    uv *= rotate(-iRotationAngle);
+    uv += 0.5;
 
     vec2 X_BOUNDS = vec2(-2., 1.);
     vec2 Y_BOUNDS = vec2(-1.5, 1.5);
@@ -58,7 +65,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     float a = uv.x;
     float b = uv.y;
 
-    int max_iter = 50;
+    int max_iter = 30;
     float final_score = 0.;
     for(int i = 0; i < max_iter; i++){
         d = min(d, circle_dist(uv,trap, trap_radius));
@@ -68,7 +75,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         t_y = (uv.x+uv.x)*uv.y + b;
         uv.x = t_x;
         uv.y = t_y;
-        /*
+    /*
         if(uv.x*uv.x+uv.y*uv.y>4.){
             final_score = float(i)+1.;
         }
@@ -79,8 +86,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     float c;
     // if(d <r) c = 1.; else c = 1.-1./(1+exp());
     // c = float(final_score)/float(max_iter+1);
-    c = 1./(1.+sqrt(final_score));
+    c = 1./(1.+pow(final_score,iWow1));
 
     // Output to screen
-    fragColor = vec4(iColorRGB,c);
+    vec3 col = iColorRGB * c;
+    fragColor = vec4(col,max(col.r,max(col.g,col.b)));
 }
