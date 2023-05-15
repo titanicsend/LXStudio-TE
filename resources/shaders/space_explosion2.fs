@@ -6,6 +6,8 @@
  * Contact: github.com/BenWheatley
  */
 
+uniform bool triggerMode;
+
 // constants
 const int MIN_OCTAVE = 3;
 const int MAX_OCTAVE = 8;
@@ -85,7 +87,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
 
     float perlin = perlinNoise(perlinTheta, r, -iTime);
 
-    float timeMod = mod(iTime, 1.5);
+    float timeMod = 1.0-beat; //mod(iTime, 1.5);
     float scale = 2.0*(timeMod-r);
     float glowRing = cos(pow(1.0-scale, 0.1));
     glowRing -= 0.5;
