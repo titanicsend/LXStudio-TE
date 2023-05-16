@@ -616,7 +616,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             }
 
             addParameter("panic", this.panic);
-            addParameter("viewPerChannel", this.viewParameter);
             addParameter("viewPerPattern", viewPerPattern);
             addParameter("swatchPerChannel", swatchParameter);
         }
@@ -900,7 +899,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         this.viewPerPattern.setDefault(getDefaultView(), true);
 
         lx.engine.addTask(() -> {
-            if (this.colors == null) {
+            if (this.controls.color == null) {
                 // Instantiation failed. Turn off now to avoid fatal call to null variables.
                 return;
             }
