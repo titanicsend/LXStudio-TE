@@ -17,8 +17,7 @@ public class SpaceExplosion2 extends TEPerformancePattern {
     NativeShader shader;
     double eventStartTime;
     double elapsedTime;
-    static final double fallingCycleLength = 2.75;
-    static final double burstDuration = 0.2;
+    static final double eventDuration = 1.00;  // explosion lasts 1 variable speed second
     boolean inExplosion;
     boolean triggerMode;
 
@@ -51,11 +50,8 @@ public class SpaceExplosion2 extends TEPerformancePattern {
         // we trigger explosions on start of beat and hold the trigger
         // through the whole beat.
         if (inExplosion) {
-            // simulate short explosive burst (by greatly increasing line
-            // width/glow) when event is first triggered
-            if (elapsedTime < burstDuration) {
-                // do interesting stuff
-            }
+            // do something
+
         } else {
             eventStartTime = t;
             elapsedTime = 0;
@@ -74,7 +70,19 @@ public class SpaceExplosion2 extends TEPerformancePattern {
     protected void onWowTrigger(boolean on) {
         // when the wow trigger button is pressed...
         if (on) {
-            inExplosion = !inExplosion;
+            // in all cases, when the button is pressed, reset the "Speed" timer
+            // so an explosion will start immediately
+            retrigger(TEControlTag.SPEED);
+
+            // if we're in one-shot trigger mode, set up to fire off a single
+            // explosion.
+            if (triggerMode == true) {
+
+            }
+            // otherwise, explode at the current beat rate as long as the button's down.
+            else {
+
+            }
         }
     }
 
@@ -89,6 +97,5 @@ public class SpaceExplosion2 extends TEPerformancePattern {
 
     @Override
     public String getDefaultView() {
-        return effect.getDefaultView();
-    }
+        return effect.getDefaultView() {;    }
 }
