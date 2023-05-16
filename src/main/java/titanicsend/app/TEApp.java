@@ -415,8 +415,10 @@ public class TEApp extends PApplet implements LXPlugin {
             this.gpListener, this.gpBroadcaster);
     gpui.addToContainer(ui.leftPane.global);
 
-    // add autopilot settings UI section
+    // Add UI section for autopilot
     new TEUserInterface.AutopilotUISection(ui, this.autopilot).addToContainer(ui.leftPane.global);
+    // Add UI section for all other general settings
+    new TEUserInterface.TEUISection(ui, laserTask).addToContainer(ui.leftPane.global);
 
     // precompile binaries for any new or changed shaders
     ShaderPrecompiler.rebuildCache();
