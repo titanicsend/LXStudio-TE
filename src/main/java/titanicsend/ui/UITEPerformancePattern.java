@@ -20,6 +20,7 @@ import heronarts.p4lx.ui.component.UISwitch;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.TEPerformancePattern.TEColorParameter;
 import titanicsend.pattern.TEPerformancePattern.TEColorParameter.TEColorOffsetParameter;
+import titanicsend.pattern.jon.TEControlTag;
 
 /**
  * Device UI for TEPerformancePattern
@@ -63,7 +64,10 @@ public class UITEPerformancePattern implements UIDeviceControls<TEPerformancePat
   }
 
   private void addControls() {
-    List<LXNormalizedParameter> params = Arrays.asList(device.getRemoteControls());
+    List<LXNormalizedParameter> params = new ArrayList<LXNormalizedParameter>(Arrays.asList(device.getRemoteControls()));
+
+    // For design mode, append Brightness.  Useful for AutoVJ especially.
+    params.add(device.getControls().getControl(TEControlTag.BRIGHTNESS).control);
 
     int ki = 0;
     int col = 0;
