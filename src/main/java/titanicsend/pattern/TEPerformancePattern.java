@@ -9,6 +9,7 @@ import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.parameter.*;
 import heronarts.lx.parameter.BooleanParameter.Mode;
+import heronarts.lx.studio.LXStudio;
 import heronarts.lx.utils.LXUtils;
 import titanicsend.lx.LXGradientUtils;
 import titanicsend.lx.LXGradientUtils.BlendFunction;
@@ -420,6 +421,9 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         this.model = viewPerPattern.getModel();
         onModelChanged(this.model);
         // TEPattern calls clearPixels() after onModelChanged()
+        if (this.lx instanceof LXStudio) {
+          ((LXStudio) lx).ui.setMouseoverHelpText("View:  " + viewPerPattern.getObject().toString());
+        }
     };
 
     // ANGLE PARAMETER
