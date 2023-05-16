@@ -1,22 +1,45 @@
 package titanicsend.pattern.jon;
 
-import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import heronarts.lx.parameter.EnumParameter;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 
-import java.nio.FloatBuffer;
-
 @LXCategory("Combo FG")
 public class SpaceExplosion2 extends TEPerformancePattern {
+
+    public enum TriggerMode {
+        NORMAL("Explosion on beat"),
+        ONESHOT("One Shot Trigger");
+
+        private final String label;
+
+        private TriggerMode(String label) {
+            this.label = label;
+        }
+
+        @Override
+        public String toString() {
+            return this.label;
+        }
+    }
+
+    public final EnumParameter<TriggerMode> triggerCtl =
+        (EnumParameter<TriggerMode>) new EnumParameter<TriggerMode>("Mode", TriggerMode.NORMAL)
+            .setDescription("Trigger Mode")
+            .setWrappable(false);
+
+
     NativeShaderPatternEffect effect;
     NativeShader shader;
     double eventStartTime;
     double elapsedTime;
+
+    double lastBasis;
     static final double eventDuration = 1.00;  // explosion lasts 1 variable speed second
     boolean inExplosion;
     boolean triggerMode;
@@ -29,12 +52,16 @@ public class SpaceExplosion2 extends TEPerformancePattern {
         controls.setExponent(TEControlTag.SPEED, 2.0);
         controls.setValue(TEControlTag.SPEED, 0.5);
 
+        // trigger Mode (in Wow1 control position)
+        controls.setControl(TEControlTag.WOW1,triggerCtl);
+
         addCommonControls();
 
         effect = new NativeShaderPatternEffect("space_explosion2.fs",
             new PatternTarget(this, TEShaderView.ALL_POINTS));
 
         eventStartTime = -99;
+        lastBasis = 0;
         inExplosion = false;
         triggerMode = false;
     }
@@ -42,9 +69,21 @@ public class SpaceExplosion2 extends TEPerformancePattern {
     @Override
     public void runTEAudioPattern(double deltaMs) {
 
+        TriggerMode mode = triggerCtl.getEnum();
+        boolean trigger = getWowTrigger();
+        boolean isBeat = false;
+
         double t = getTime();
         elapsedTime = Math.abs(t - eventStartTime);
-        boolean trigger = getWowTrigger();
+
+        // determine if we've started a beat. We use this rather than engine.tempo.beat()
+        // to give us a dependable single trigger, with some flexibility in timing
+        // even if we're running slow and miss the exact moment of basis == 0.
+        double basis = lx.engine.tempo.basis();
+        if (basis <= lastBasis) {
+           isBeat = true;
+        }
+        lastBasis = basis;
 
         // state machine to control triggered explosion
         // we trigger explosions on start of beat and hold the trigger
@@ -97,5 +136,6 @@ public class SpaceExplosion2 extends TEPerformancePattern {
 
     @Override
     public String getDefaultView() {
-        return effect.getDefaultView() {;    }
+        return effect.getDefaultView();
+    }
 }
