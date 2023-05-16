@@ -56,6 +56,10 @@ public class ModelDebugger extends TEPattern implements UIDeviceControls<ModelDe
 
   public ModelDebugger(LX lx) {
     super(lx);
+
+    addParameter("objectType", this.objectType);
+    addParameter("pointIndex", this.pointIndex);
+    addParameter("objectId", this.objectId);
   }
 
   @Override
