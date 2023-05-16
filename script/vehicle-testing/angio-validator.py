@@ -25,8 +25,8 @@ def check_config(possibly_labeled_ip, debug=False):
       ip = possibly_labeled_ip
       label = possibly_labeled_ip
 
-    requests = [("info", dict(version="v0.6.1")),
-                ("globals", dict(brightness=128, target_fps=70)),
+    requests = [("info", dict(version="v0.8.0")),
+                ("globals", dict(brightness=190, target_fps=100)),
                 ("netstate", dict(ethernet=dict(subnet="255.0.0.0", gateway="10.0.0.1"))),
                 ("leds", dict(chipset="SK9822", gamma=[[2.20, 0.80, 0.00],
                                                        [2.50, 0.70, 0.00],
