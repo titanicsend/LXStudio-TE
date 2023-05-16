@@ -14,7 +14,7 @@ public class ElectricEdges extends TEPerformancePattern {
     NativeShader shader;
 
     public ElectricEdges(LX lx) {
-        super(lx);
+        super(lx, TEShaderView.ALL_EDGES);
 
         // Set control range -- this uses the same shader as the electric panel
         // pattern, but it is parameterized *very* differently.
@@ -29,7 +29,7 @@ public class ElectricEdges extends TEPerformancePattern {
         addCommonControls();
 
         effect = new NativeShaderPatternEffect("electric.fs",
-                new PatternTarget(this, TEShaderView.ALL_EDGES));
+                new PatternTarget(this));
     }
 
     @Override
@@ -51,8 +51,4 @@ public class ElectricEdges extends TEPerformancePattern {
         shader = effect.getNativeShader();
     }
 
-    @Override
-    public String getDefaultView() {
-        return effect.getDefaultView();
-    }
 }

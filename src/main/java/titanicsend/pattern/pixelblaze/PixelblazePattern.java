@@ -7,6 +7,7 @@ import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 import javax.script.ScriptException;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public abstract class PixelblazePattern extends TEPerformancePattern {
   };
 
   public PixelblazePattern(LX lx) {
-    super(lx);
+    super(lx, TEShaderView.ALL_POINTS);
 
     addCommonControls();
 

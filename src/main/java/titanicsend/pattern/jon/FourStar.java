@@ -36,7 +36,7 @@ public class FourStar extends TEPerformancePattern {
                     .setDescription("Oh boy...");
 
     public FourStar(LX lx) {
-        super(lx);
+        super(lx, TEShaderView.ALL_PANELS);
 
         // create new effect with alpha on and no automatic
         // parameter uniforms
@@ -58,7 +58,7 @@ public class FourStar extends TEPerformancePattern {
         tempoDivision.bang();
 
         effect = new NativeShaderPatternEffect("fourstar.fs",
-                new PatternTarget(this, TEShaderView.ALL_PANELS), options);
+                new PatternTarget(this), options);
     }
 
     @Override
@@ -110,11 +110,6 @@ public class FourStar extends TEPerformancePattern {
         tempoDivision.setWrappable(false);
 
         addParameter("tempoDivision", tempoDivision);
-    }
-
-    @Override
-    public String getDefaultView() {
-        return effect.getDefaultView();
     }
 
 }

@@ -18,7 +18,7 @@ public class ShaderEdgesPatternConfig {
     @LXCategory("Native Shaders Edges")
     public static class LightBeamsEdges extends ConstructedPattern {
         public LightBeamsEdges(LX lx) {
-            super(lx);
+            super(lx, TEShaderView.ALL_EDGES);
         }
 
         @Override
@@ -27,14 +27,14 @@ public class ShaderEdgesPatternConfig {
             controls.setValue(TEControlTag.SPEED, 0.5);
 
             return List.of(new NativeShaderPatternEffect("light_beams.fs",
-                new PatternTarget(this, TEShaderView.ALL_EDGES)));
+                new PatternTarget(this)));
         }
     }
 
     @LXCategory("Native Shaders Edges")
     public static class NeonRipplesEdges extends ConstructedPattern {
         public NeonRipplesEdges(LX lx) {
-            super(lx);
+            super(lx, TEShaderView.ALL_EDGES);
         }
 
         @Override
@@ -58,15 +58,14 @@ public class ShaderEdgesPatternConfig {
             controls.setValue(TEControlTag.SPIN, 0.05);
 
             return List.of(new NativeShaderPatternEffect("neon_ripples.fs",
-                new PatternTarget(this, TEShaderView.ALL_EDGES)));
+                new PatternTarget(this)));
         }
     }
 
     @LXCategory("Native Shaders Edges")
     public static class SpaceExplosionEdges extends ConstructedPattern {
         public SpaceExplosionEdges(LX lx) {
-            super(lx);
-
+            super(lx, TEShaderView.ALL_EDGES);
         }
 
         @Override
@@ -76,7 +75,7 @@ public class ShaderEdgesPatternConfig {
             controls.setValue(TEControlTag.SPEED, 0.5);
 
             return List.of(new NativeShaderPatternEffect("space_explosion.fs",
-                new PatternTarget(this, TEShaderView.ALL_EDGES)));
+                new PatternTarget(this)));
         }
     }
 }

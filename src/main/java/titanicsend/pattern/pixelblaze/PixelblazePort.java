@@ -5,6 +5,7 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 import java.util.ArrayList;
 
@@ -27,7 +28,7 @@ public abstract class PixelblazePort extends TEPerformancePattern {
     public int color;
 
     public PixelblazePort(LX lx) {
-        super(lx);
+        super(lx, TEShaderView.ALL_POINTS);
 
         configureControls();
         addCommonControls();

@@ -1,8 +1,8 @@
 package titanicsend.pattern.jon;
 
 import heronarts.lx.LX;
-import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 /**
  * Class for patterns that need controllable continuous, unbounded
@@ -25,8 +25,8 @@ public abstract class DriftEnabledPattern extends TEPerformancePattern {
     private double xOffset = 0;
     private double yOffset = 0;
 
-    protected DriftEnabledPattern(LX lx) {
-        super(lx);
+    protected DriftEnabledPattern(LX lx, TEShaderView defaultView) {
+        super(lx, defaultView);
     }
 
     void updateTranslation(double deltaMs) {
