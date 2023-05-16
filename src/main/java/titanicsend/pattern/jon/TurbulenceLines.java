@@ -14,7 +14,7 @@ public class TurbulenceLines extends DriftEnabledPattern {
     NativeShader shader;
 
     public TurbulenceLines(LX lx) {
-        super(lx);
+        super(lx, TEShaderView.ALL_POINTS);
 
         // common controls setup
         controls.setRange(TEControlTag.SPEED, 0, -4, 4);
@@ -31,7 +31,7 @@ public class TurbulenceLines extends DriftEnabledPattern {
         addCommonControls();
 
         effect = new NativeShaderPatternEffect("turbulent_noise_lines.fs",
-            new PatternTarget(this, TEShaderView.ALL_POINTS));
+            new PatternTarget(this));
 
     }
 
@@ -55,8 +55,4 @@ public class TurbulenceLines extends DriftEnabledPattern {
         shader = effect.getNativeShader();
     }
 
-    @Override
-    public String getDefaultView() {
-        return effect.getDefaultView();
-    }
 }

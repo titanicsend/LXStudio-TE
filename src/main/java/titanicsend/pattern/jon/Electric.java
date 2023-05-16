@@ -16,7 +16,7 @@ public class Electric extends TEPerformancePattern {
     NativeShader shader;
 
     public Electric(LX lx) {
-        super(lx);
+        super(lx, TEShaderView.DOUBLE_LARGE);
 
         controls.setRange(TEControlTag.SPEED, 0.6, -1, 1);
         controls.setRange(TEControlTag.WOW1, 0, 0, 2.6);
@@ -27,7 +27,7 @@ public class Electric extends TEPerformancePattern {
         addCommonControls();
 
         effect = new NativeShaderPatternEffect("electric.fs",
-                new PatternTarget(this, TEShaderView.DOUBLE_LARGE));
+                new PatternTarget(this));
     }
 
     @Override
@@ -49,8 +49,4 @@ public class Electric extends TEPerformancePattern {
         shader = effect.getNativeShader();
     }
 
-    @Override
-    public String getDefaultView() {
-        return effect.getDefaultView();
-    }
 }

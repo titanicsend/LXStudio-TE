@@ -39,62 +39,62 @@ public class OrganicPatternConfig {
     @LXCategory("Yoffa Panel Shader")
     public static class RainbowSwirlPanels extends ConstructedPattern {
         public RainbowSwirlPanels(LX lx) {
-            super(lx);
+            super(lx, TEShaderView.DOUBLE_LARGE);
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new RainbowSwirlShader(new PatternTarget(this, TEShaderView.DOUBLE_LARGE)));
+            return List.of(new RainbowSwirlShader(new PatternTarget(this)));
         }
     }
 
     @LXCategory("Yoffa Edge Shader")
     public static class RainbowSwirlEdges extends ConstructedPattern {
         public RainbowSwirlEdges(LX lx) {
-            super(lx);
+            super(lx, TEShaderView.ALL_EDGES);
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new RainbowSwirlShader(new PatternTarget(this, TEShaderView.ALL_EDGES)));
+            return List.of(new RainbowSwirlShader(new PatternTarget(this)));
         }
     }
 
     @LXCategory("Yoffa Panel Shader")
     public static class NeonBarsPanels extends ConstructedPattern {
         public NeonBarsPanels(LX lx) {
-            super(lx);
+            super(lx, TEShaderView.SPLIT_PANEL_SECTIONS);
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new NeonBarsShader(new PatternTarget(this, TEShaderView.SPLIT_PANEL_SECTIONS)));
+            return List.of(new NeonBarsShader(new PatternTarget(this)));
         }
     }
 
     @LXCategory("Yoffa Edge Shader")
     public static class NeonBarsEdges extends ConstructedPattern {
         public NeonBarsEdges(LX lx) {
-            super(lx);
+            super(lx, TEShaderView.ALL_EDGES);
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new NeonBarsShader(new PatternTarget(this, TEShaderView.ALL_EDGES)));
+            return List.of(new NeonBarsShader(new PatternTarget(this)));
         }
     }
 
     @LXCategory("Yoffa Panel Shader")
     public static class NeonCellsLegacy extends ConstructedPattern {
         public NeonCellsLegacy(LX lx) {
-            super(lx);
+            super(lx, TEShaderView.DOUBLE_LARGE);
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new NeonCellsShader(new PatternTarget(this, TEShaderView.DOUBLE_LARGE)));
+            return List.of(new NeonCellsShader(new PatternTarget(this)));
         }
     }
 
     @LXCategory("Yoffa Panel Shader")
     public static class WaterPanels extends ConstructedPattern {
         public WaterPanels(LX lx) {
-            super(lx);
+            super(lx, TEShaderView.ALL_PANELS);
         }
         @Override
         protected List<PatternEffect> createEffects() {
@@ -108,14 +108,14 @@ public class OrganicPatternConfig {
             getControls().setRange(TEControlTag.WOW1, 5,1,20);    // iterations (intensity 1)
             getControls().setRange(TEControlTag.WOW2, 0.005,0.001,0.01); // intensity 2
 
-            return List.of(new WaterShader(new PatternTarget(this, TEShaderView.ALL_PANELS)));
+            return List.of(new WaterShader(new PatternTarget(this)));
         }
     }
 
     @LXCategory("Yoffa Edge Shader")
     public static class WaterEdges extends ConstructedPattern {
         public WaterEdges(LX lx) {
-            super(lx);
+            super(lx, TEShaderView.ALL_EDGES);
         }
         @Override
         protected List<PatternEffect> createEffects() {
@@ -129,85 +129,85 @@ public class OrganicPatternConfig {
             getControls().setRange(TEControlTag.WOW1, 5,1,20);    // iterations (intensity 1)
             getControls().setRange(TEControlTag.WOW2, 0.005,0.001,0.01); // intensity 2
 
-            return List.of(new WaterShader(new PatternTarget(this, TEShaderView.ALL_EDGES)));
+            return List.of(new WaterShader(new PatternTarget(this)));
         }
     }
 
     @LXCategory("Yoffa Panel Shader")
     public static class WavyPanels extends ConstructedPattern {
         public WavyPanels(LX lx) {
-            super(lx);
+            super(lx, TEShaderView.SPLIT_PANEL_SECTIONS);
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new WavyShader(new PatternTarget(this, TEShaderView.SPLIT_PANEL_SECTIONS)));
+            return List.of(new WavyShader(new PatternTarget(this)));
         }
     }
 
     @LXCategory("Yoffa Panel Shader")
     public static class NeonSnake extends ConstructedPattern {
         public NeonSnake(LX lx) {
-            super(lx);
+            super(lx, TEShaderView.ALL_PANELS);
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new NeonSnakeShader(new PatternTarget(this, TEShaderView.ALL_PANELS)));
+            return List.of(new NeonSnakeShader(new PatternTarget(this)));
         }
     }
 
     @LXCategory("Yoffa Edge Shader")
     public static class WavyEdges extends ConstructedPattern {
         public WavyEdges(LX lx) {
-            super(lx);
+            super(lx, TEShaderView.ALL_EDGES);
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new WavyShader(new PatternTarget(this, TEShaderView.ALL_EDGES)));
+            return List.of(new WavyShader(new PatternTarget(this)));
         }
     }
 
     @LXCategory("Yoffa Panel Organic")
     public static class PulseCenter extends ConstructedPattern {
         public PulseCenter(LX lx) {
-            super(lx);
+            super(lx, TEShaderView.ALL_PANELS);
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new PulseEffect(new PatternTarget(this, TEShaderView.ALL_PANELS)));
+            return List.of(new PulseEffect(new PatternTarget(this)));
         }
     }
 
     @LXCategory("Yoffa Panel Organic")
     public static class AlternatingDots extends ConstructedPattern {
         public AlternatingDots(LX lx) {
-            super(lx);
+            super(lx, TEShaderView.ALL_PANELS);
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new AlternatingDotsEffect(new PatternTarget(this, TEShaderView.ALL_PANELS)));
+            return List.of(new AlternatingDotsEffect(new PatternTarget(this)));
         }
     }
 
     @LXCategory("Yoffa Edge Organic")
     public static class PowerGrid extends ConstructedPattern {
         public PowerGrid(LX lx) {
-            super(lx);
+            super(lx, TEShaderView.ALL_EDGES);
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new ShimmeringEffect(new PatternTarget(this, TEShaderView.ALL_EDGES)));
+            return List.of(new ShimmeringEffect(new PatternTarget(this)));
         }
     }
 
     @LXCategory("Video Patterns")
     public static class BasicVideoPattern extends ConstructedPattern {
         public BasicVideoPattern(LX lx) {
-            super(lx);
+            super(lx, TEShaderView.SPLIT_PANEL_SECTIONS);
         }
 
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new BasicVideoPatternEffect(new PatternTarget(this, TEShaderView.SPLIT_PANEL_SECTIONS)));
+            return List.of(new BasicVideoPatternEffect(new PatternTarget(this)));
         }
     }
 
@@ -215,12 +215,12 @@ public class OrganicPatternConfig {
     @LXCategory("Video Patterns")
     public static class FullscreenVideoA extends ConstructedPattern {
         public FullscreenVideoA(LX lx) {
-            super(lx);
+            super(lx, TEShaderView.ALL_PANELS);
         }
 
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new BasicVideoPatternEffect(new PatternTarget(this, TEShaderView.ALL_PANELS),
+            return List.of(new BasicVideoPatternEffect(new PatternTarget(this),
                     "resources/pattern/test_vid_a.mp4"));
         }
     }
@@ -228,12 +228,12 @@ public class OrganicPatternConfig {
     @LXCategory("Video Patterns")
     public static class FullscreenVideoB extends ConstructedPattern {
         public FullscreenVideoB(LX lx) {
-            super(lx);
+            super(lx, TEShaderView.ALL_PANELS);
         }
 
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new BasicVideoPatternEffect(new PatternTarget(this, TEShaderView.ALL_PANELS),
+            return List.of(new BasicVideoPatternEffect(new PatternTarget(this),
                     "resources/pattern/test_vid_b.mp4"));
         }
     }
@@ -241,23 +241,23 @@ public class OrganicPatternConfig {
     @LXCategory("DREVO Shaders")
     public static class RhythmicFlashStatic extends ConstructedPattern {
         public RhythmicFlashStatic(LX lx) {
-            super(lx);
+            super(lx, TEShaderView.ALL_PANELS);
         }
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new RhythmicFlashingStatic(new PatternTarget(this, TEShaderView.ALL_PANELS)));
+            return List.of(new RhythmicFlashingStatic(new PatternTarget(this)));
         }
     }
 
     @LXCategory("DREVO Shaders")
     public static class MatrixScroller extends ConstructedPattern {
         public MatrixScroller(LX lx) {
-            super(lx);
+            super(lx, TEShaderView.ALL_PANELS);
         }
         @Override
         protected List<PatternEffect> createEffects() {
 
-            return List.of(new MatrixScrolling(new PatternTarget(this, TEShaderView.ALL_PANELS)));
+            return List.of(new MatrixScrolling(new PatternTarget(this)));
         }
     }
 

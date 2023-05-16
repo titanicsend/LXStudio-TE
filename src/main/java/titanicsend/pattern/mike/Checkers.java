@@ -5,6 +5,7 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.model.LXPoint;
 import titanicsend.model.TEPanelModel;
 import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 import java.util.*;
 
@@ -14,7 +15,7 @@ public class Checkers extends TEPerformancePattern {
   private final HashMap<TEPanelModel, Integer> panelGroup;
 
   public Checkers(LX lx) {
-    super(lx);
+    super(lx, TEShaderView.ALL_POINTS);
 
     addCommonControls();
 

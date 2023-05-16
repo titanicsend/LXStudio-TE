@@ -23,6 +23,7 @@ package titanicsend.model.justin;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -32,8 +33,12 @@ import heronarts.lx.mixer.LXAbstractChannel;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXView;
 import heronarts.lx.parameter.LXParameterListener;
+import heronarts.lx.parameter.ObjectParameter;
+import heronarts.lx.parameter.DiscreteParameter.IncrementMode;
 import heronarts.lx.studio.LXStudio;
 import titanicsend.app.TEApp;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
+import titanicsend.util.TE;
 
 /**
  * Generate a set of LXViews once, then allow each channel to scroll through
@@ -145,6 +150,135 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
     super.dispose();
   }
 
+  /*
+   * View-Per-Pattern (or per-anything)
+   *
+   * 10th hour change, therefore not fully deleting the per-channel linkage.
+   */
+
+  public ViewParameter createParameter() {
+    return new ViewParameter("View");
+  }
+
+  private ViewDefinition[] getViews() {
+    // 1) Top Level, view=off
+    ViewDefinition[] allViews = new ViewDefinition[views.size() + 1];
+    allViews[0] = new ViewDefinition("----", false);
+    allViews[0].setModel(this.lx.getModel());
+
+    // Global feature off switch
+    if (!ViewCentral.ENABLED) {
+      return allViews;
+    }
+    /* JKB note: Skip this for now, leave here for possible later development
+    // 2) The most recent user-typed view on this channel
+    ViewDefinition custom = new ViewDefinition("Custom", channel.viewSelector.getString(), channel.viewNormalization.getEnum());
+    custom.setModel(channel.getModelView());
+    allViews[1] = custom;
+     */
+
+    // 3) All other views from file
+    int i = 1;
+    for (ViewDefinition v : views) {
+      allViews[i++] = v;
+    }
+
+    return allViews;
+  }
+
+  public class ViewParameter extends ObjectParameter<ViewDefinition> {
+
+    String defaultView = null;
+
+    public ViewParameter(String label) {
+      this(label, getViews());
+    }
+
+    public ViewParameter(String label, ViewDefinition[] objects) {
+      super(label, objects);
+      setIncrementMode(IncrementMode.RELATIVE);
+      setWrappable(false);
+    }
+
+    public LXModel getModel() {
+      return getObject().getModel();
+    }
+
+    /**
+     * Set to view with the matching label.
+     *
+     * If parameter is null, sets to default / no view
+     * If label is not found, does nothing
+     */
+    public ViewParameter setView(String label) {
+      return setView(label, false);
+    }
+
+    public ViewParameter setView(String label, boolean defaultOnNotFound) {
+      ViewDefinition view = null;
+      if (!TE.isEmpty(label)) {
+        view = Arrays.stream(getObjects())
+            .filter(v -> label.equals(v.label))
+            .findFirst()
+            .orElse(null);
+      }
+      if (view != null) {
+        setValue(view);
+      } else {
+        setValue(0);
+      }
+      return this;
+    }
+
+    public ViewParameter setDefault(String label) {
+      this.defaultView = label;
+      return this;
+    }
+
+    @Override
+    public ViewParameter reset() {
+      if (this.defaultView != null) {
+        return setView(this.defaultView);
+      }
+      return (ViewParameter)super.reset();
+    }
+
+    public ViewParameter reset(String label) {
+      setDefault(label);
+      return reset();
+    }
+
+    /*
+     * TE-specific
+     */
+
+    public ViewParameter setView(TEShaderView shaderView) {
+      return setView(shaderView, false);
+    }
+
+    public ViewParameter setView(TEShaderView shaderView, boolean defaultOnNotFound) {
+      return setView(shaderView.getParameterKey(), defaultOnNotFound);
+    }
+
+    /**
+     * Sets the default value and resets immediately if second parameter is true
+     */
+    public ViewParameter setDefault(TEShaderView shaderView, boolean applyImmediately) {
+      if (shaderView != null) {
+        this.defaultView = shaderView.getParameterKey();
+      } else {
+        this.defaultView = null;
+      }
+      if (applyImmediately) {
+        return reset();
+      }
+      return this;
+    }
+
+    // Dev note: reset(TEShaderView shaderView) would better match LXListenableParameter.reset(double),
+    // but that creates an ambiguous method call in the case of reset(null).
+  }
+
   /**
    * One of these will be created per LX channel.
    * A list of all instances is maintained by the ViewCentral class.
@@ -152,7 +286,7 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
   public class ViewPerChannel extends LXModelComponent {
 
     public final ViewParameter view;
-    
+
     private final LXParameterListener viewListener = (p) -> {
       onViewChanged();
     };
@@ -163,7 +297,7 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
       super(lx);
       this.channel = channel;
 
-      this.view = new ViewParameter("View", getViews());
+      this.view = createParameter();
       addParameter("view", this.view);      
       this.view.addListener(viewListener);
 
@@ -172,32 +306,6 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
       // TODO: register for channel.onModelChanged(), check to see if it was us or a manual view change
     }
 
-    private ViewDefinition[] getViews() {
-      // 1) Top Level, view=off
-      ViewDefinition[] allViews = new ViewDefinition[views.size() + 1];
-      allViews[0] = new ViewDefinition("----", false);
-      allViews[0].setModel(this.lx.getModel());
-
-      // Global feature off switch
-      if (!ViewCentral.ENABLED) {
-        return allViews;
-      }
-      /* JKB note: Skip this for now, leave here for possible later development
-      // 2) The most recent user-typed view on this channel
-      ViewDefinition custom = new ViewDefinition("Custom", channel.viewSelector.getString(), channel.viewNormalization.getEnum());
-      custom.setModel(channel.getModelView());
-      allViews[1] = custom;
-      */
-
-      // 3) All other views from file
-      int i = 1;
-      for (ViewDefinition v : views) {
-        allViews[i++] = v;
-      }
-
-      return allViews;      
-    }
-    
     protected void onViewChanged() {
       // JKB note: bit of a power move here.  For a less aggressive implementation,
       // patterns could override getModel() and call this parameter.
@@ -211,7 +319,7 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
     public LXModel getModel() {
       return this.view.getObject().getModel();
     }
-    
+
     @Override
     public void dispose() {
       this.view.removeListener(viewListener);

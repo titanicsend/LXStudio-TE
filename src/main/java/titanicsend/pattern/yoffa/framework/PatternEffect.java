@@ -10,13 +10,11 @@ import java.util.*;
 public abstract class PatternEffect {
 
     protected final TEPerformancePattern pattern;
-    public final TEShaderView defaultView;
     private boolean shouldBlend;
 
 
     public PatternEffect(PatternTarget target) {
         this.pattern = target.pattern;
-        this.defaultView = target.defaultView;
     }
 
     public final void onActive() {
@@ -64,7 +62,4 @@ public abstract class PatternEffect {
         return pattern.getTempo();
     }
 
-    public String getDefaultView() {
-        return this.defaultView.viewLabel;
-    }
 }

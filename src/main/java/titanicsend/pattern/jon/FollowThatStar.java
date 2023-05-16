@@ -16,7 +16,7 @@ public class FollowThatStar extends TEPerformancePattern {
     NativeShader shader;
 
     public FollowThatStar(LX lx) {
-        super(lx);
+        super(lx, TEShaderView.ALL_POINTS);
 
 
         // create new effect with alpha on and no automatic uniforms
@@ -34,7 +34,7 @@ public class FollowThatStar extends TEPerformancePattern {
         addCommonControls();
 
         effect = new NativeShaderPatternEffect("followthatstar.fs",
-                new PatternTarget(this, TEShaderView.ALL_POINTS), options);
+                new PatternTarget(this), options);
     }
 
     @Override
@@ -56,8 +56,4 @@ public class FollowThatStar extends TEPerformancePattern {
         shader = effect.getNativeShader();
     }
 
-    @Override
-    public String getDefaultView() {
-        return effect.getDefaultView();
-    }
 }
