@@ -9,6 +9,7 @@ import heronarts.lx.parameter.LXParameter;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.jon.TEControlTag;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 import static titanicsend.util.TEColor.TRANSPARENT;
 
@@ -25,7 +26,7 @@ public class BouncingDots extends TEPerformancePattern {
     });
 
     public BouncingDots(LX lx) {
-        super(lx);
+        super(lx, TEShaderView.ALL_POINTS);
 
         // start our sine modulator
         startModulator(this.phase);

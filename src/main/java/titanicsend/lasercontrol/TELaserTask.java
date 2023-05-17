@@ -12,7 +12,7 @@ import titanicsend.pattern.TEPattern;
 public class TELaserTask extends LXComponent implements LXLoopTask {
 
     public final BooleanParameter enabled =
-        new BooleanParameter("Enabled", true)
+        new BooleanParameter("Lasers", true)
         .setMode(Mode.TOGGLE);
 
     public TELaserTask(LX lx) {

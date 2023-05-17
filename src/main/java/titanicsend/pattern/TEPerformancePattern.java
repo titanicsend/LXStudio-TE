@@ -6,8 +6,10 @@ import heronarts.lx.color.ColorParameter;
 import heronarts.lx.color.GradientUtils.GradientFunction;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.mixer.LXChannel;
+import heronarts.lx.model.LXModel;
 import heronarts.lx.parameter.*;
 import heronarts.lx.parameter.BooleanParameter.Mode;
+import heronarts.lx.studio.LXStudio;
 import heronarts.lx.utils.LXUtils;
 import titanicsend.lx.LXGradientUtils;
 import titanicsend.lx.LXGradientUtils.BlendFunction;
@@ -15,11 +17,12 @@ import titanicsend.model.justin.ColorCentral;
 import titanicsend.model.justin.LXVirtualDiscreteParameter;
 import titanicsend.model.justin.ViewCentral;
 import titanicsend.model.justin.ViewCentral.ViewCentralListener;
-import titanicsend.model.justin.ViewParameter;
+import titanicsend.model.justin.ViewCentral.ViewParameter;
 import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon.VariableSpeedTimer;
 import titanicsend.pattern.jon._CommonControlGetter;
+import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.util.TE;
 import titanicsend.util.TEColor;
 
@@ -324,7 +327,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         return super.getSwatchColor(type);
     }
 
-    // Virtual View Parameter
+    // VIEW-PER-CHANNEL  *We have switch to per-pattern. Not deleting this code for sake of easy field edits.
+
     public class LXVirtualViewParameter extends LXVirtualDiscreteParameter<ViewParameter> implements ViewCentralListener {
 
         /* Two conditions are needed to link this virtual parameter to ViewCentral:
@@ -332,7 +336,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          *   2. This pattern needs to be added to a channel.
          *      (during file load, happens after pattern is loaded)
          *      (LXPattern.setChannel() and LXPattern.setParent() are final, so
-         *       to make life easier we're linking this after onActive().)
+         *       to make life easier we're linking this on first engine loop.)
          */
         public LXVirtualViewParameter(String label) {
             super(label);
@@ -380,18 +384,47 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
         @Override
         public LXVirtualViewParameter reset() {
-            return setView(getDefaultView());
+            TEShaderView patternDefaultView = getDefaultView();
+            if (patternDefaultView != null) {
+              return setView(getDefaultView().getParameterKey());
+            }
+            return (LXVirtualViewParameter)super.reset();
         }
     }
 
+    private TEShaderView defaultView = null;
+
     /**
      * Subclasses can override to specify a preferred default view.
-     * @return Label of the view
+     * Alternatively, just pass a default to TEPerformancePattern's constructor.
+     * 
+     * Warning for overrides: 
+     *   Called from this constructor prior to child class constructors.
      */
-    public String getDefaultView() {
-      return null;
+    public TEShaderView getDefaultView() {
+        return defaultView;
     }
 
+    // VIEW PER PATTERN
+
+    // Hide LXModelComponent.model, redirect to view-per-pattern
+    protected LXModel model;
+
+    @Override
+    public LXModel getModel() {
+        return this.model;
+    }
+
+    public ViewParameter viewPerPattern;
+
+    private LXParameterListener viewPerPatternListener = (p) -> {
+        this.model = viewPerPattern.getModel();
+        onModelChanged(this.model);
+        // TEPattern calls clearPixels() after onModelChanged()
+        if (this.lx instanceof LXStudio) {
+          ((LXStudio) lx).ui.setMouseoverHelpText("View:  " + viewPerPattern.getObject().toString());
+        }
+    };
 
     // ANGLE PARAMETER
 
@@ -587,7 +620,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             }
 
             addParameter("panic", this.panic);
-            addParameter("viewPerChannel", this.viewParameter);
+            addParameter("viewPerPattern", viewPerPattern);
             addParameter("swatchPerChannel", swatchParameter);
         }
 
@@ -638,7 +671,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
         protected LXListenableNormalizedParameter getViewRemoteControl() {
             if (ViewCentral.ENABLED) {
-                return this.viewParameter;
+                return viewPerPattern;
             } else {
                 return null;
             }
@@ -773,7 +806,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             }
 
             if (ViewCentral.ENABLED) {
-                this.viewParameter.reset();
+                viewPerPattern.reset();
             }
         }
 
@@ -855,10 +888,26 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     protected FloatBuffer palette = Buffers.newDirectFloatBuffer(15);
 
     protected TEPerformancePattern(LX lx) {
+        this(lx, null);
+    }
+
+    protected TEPerformancePattern(LX lx, TEShaderView defaultView) {
         super(lx);
         controls = new TECommonControls();
 
+        this.defaultView = defaultView;
+
+        this.model = super.model;   // That's right!
+        this.viewPerPattern = ViewCentral.get().createParameter();
+        this.viewPerPattern.addListener(viewPerPatternListener);
+        this.viewPerPattern.setDefault(getDefaultView(), true);
+
         lx.engine.addTask(() -> {
+            if (this.controls.color == null) {
+                // Instantiation failed. Turn off now to avoid fatal call to null variables.
+                return;
+            }
+
             // Patterns are created, then added to channel. Channel should be available on next engine loop.
             linkChannelParameters(lx);
 
@@ -1202,6 +1251,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     @Override
     public void dispose() {
+        this.viewPerPattern.removeListener(viewPerPatternListener);
         this.controls.getLXControl(TEControlTag.WOWTRIGGER).removeListener(wowTriggerListener);
         this.controls.dispose();
         super.dispose();

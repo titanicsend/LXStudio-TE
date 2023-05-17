@@ -17,7 +17,7 @@ public class Phasers extends TEPerformancePattern {
     NativeShader shader;
 
     public Phasers(LX lx) {
-        super(lx);
+        super(lx, TEShaderView.ALL_PANELS);
 
         // create new effect with alpha on and no automatic
         // parameter uniforms
@@ -51,7 +51,7 @@ public class Phasers extends TEPerformancePattern {
 
         // Create the underlying shader pattern
         effect = new NativeShaderPatternEffect("phasers.fs",
-                new PatternTarget(this, TEShaderView.ALL_PANELS), options);
+                new PatternTarget(this), options);
     }
 
     @Override
@@ -77,8 +77,4 @@ public class Phasers extends TEPerformancePattern {
         shader = effect.getNativeShader();
     }
 
-    @Override
-    public String getDefaultView() {
-        return effect.getDefaultView();
-    }
 }

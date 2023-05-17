@@ -13,12 +13,12 @@ import java.util.List;
 @LXCategory("Native Shaders Panels")
 public class XorceryDiamonds extends ConstructedPattern {
 	public XorceryDiamonds(LX lx) {
-		super(lx);
+		super(lx, TEShaderView.ALL_PANELS);
 	}
 
 	@Override
 	protected List<PatternEffect> createEffects() {
 		return List.of(new NativeShaderPatternEffect("xorcery_diamonds.fs",
-				new PatternTarget(this, TEShaderView.ALL_PANELS)));
+				new PatternTarget(this)));
 	}
 }

@@ -11,8 +11,9 @@ public abstract class ConstructedPattern extends TEPerformancePattern {
 
     private final List<PatternEffect> effects;
 
-    protected ConstructedPattern(LX lx) {
-        super(lx);
+    protected ConstructedPattern(LX lx, TEShaderView defaultView) {
+        super(lx, defaultView);
+
         effects = createEffects();
 
         // initialize common controls
@@ -61,14 +62,6 @@ public abstract class ConstructedPattern extends TEPerformancePattern {
         for (PatternEffect effect : effects) {
             effect.run(deltaMillis);
         }
-    }
-
-    @Override
-    public String getDefaultView() {
-        if (this.effects.size() > 0) {
-            return this.effects.get(0).getDefaultView();
-        }
-        return super.getDefaultView();
     }
 
     protected abstract List<PatternEffect> createEffects();

@@ -21,7 +21,7 @@ public class ArcEdges extends TEPerformancePattern {
 
     // Constructor
     public ArcEdges(LX lx) {
-        super(lx);
+        super(lx, TEShaderView.ALL_POINTS);
 
         controls.setRange(TEControlTag.SIZE, 1, 5, 0.1);              // scale
         controls.setRange(TEControlTag.QUANTITY, 0.675, 0.72, 0.35);  // noise field position
@@ -32,7 +32,7 @@ public class ArcEdges extends TEPerformancePattern {
         addCommonControls();
 
         effect = new NativeShaderPatternEffect("arcedges.fs",
-            new PatternTarget(this, TEShaderView.ALL_POINTS));
+            new PatternTarget(this));
 
         // create an n x 4 array, so we can pass line segment descriptors
         // to GLSL shaders.
@@ -88,8 +88,4 @@ public class ArcEdges extends TEPerformancePattern {
         shader = effect.getNativeShader();
     }
 
-    @Override
-    public String getDefaultView() {
-        return effect.getDefaultView();
-    }
 }

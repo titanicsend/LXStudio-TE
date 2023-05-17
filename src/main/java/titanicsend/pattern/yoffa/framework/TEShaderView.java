@@ -9,7 +9,7 @@ public enum TEShaderView {
   ALL_EDGES("Edges"),
   ALL_PANELS("Panels"),
   ALL_PANELS_INDIVIDUAL("Panels;"),
-  DOUBLE_LARGE("Double Large"),
+  DOUBLE_LARGE("Panel Sections"),
   SPLIT_PANEL_SECTIONS("Panel Sections");  // The original used individual panels in Aft and Starboard Aft sections. Could add a view for this variation if desired.
 
   /**
@@ -19,5 +19,12 @@ public enum TEShaderView {
 
   private TEShaderView(String viewLabel) {
     this.viewLabel = viewLabel;
+  }
+
+  /**
+   * Get string value to be used as key to ViewParameter
+   */
+  public String getParameterKey() {
+    return this.viewLabel;
   }
 }
