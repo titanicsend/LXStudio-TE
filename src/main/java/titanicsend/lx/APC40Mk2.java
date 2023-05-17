@@ -60,6 +60,7 @@ import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.utils.LXUtils;
 import titanicsend.model.justin.ViewCentral;
 import titanicsend.model.justin.ViewCentral.ViewPerChannel;
+import titanicsend.util.TE;
 
 public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirectional {
 
@@ -1753,6 +1754,10 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
 
   @Override
   public void noteOnReceived(MidiNoteOn note) {
+    if (note.getPitch() == 89) {
+      TE.log("GOt 'em");
+    }
+    TE.log("Recieved note: %s", note);
     noteReceived(note, true);
   }
 
