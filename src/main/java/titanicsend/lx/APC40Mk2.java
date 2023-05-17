@@ -24,6 +24,7 @@
 package titanicsend.lx;
 
 import java.util.*;
+import java.util.function.Function;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXDeviceComponent;
@@ -202,6 +203,15 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
 
   private boolean isAux = false;
 
+  // User-defined illuminated buttons
+  private boolean isPan = false;
+  private boolean isSends = false;
+  private boolean isUser = false;
+
+  public static Function<Void, Boolean> panCallback = null;
+  public static Function<Void, Boolean> sendsCallback = null;
+  public static Function<Void, Boolean> userCallback = null;
+
   private final APC40Mk2Colors apc40Mk2Colors = new APC40Mk2Colors();
 
   private final Map<LXAbstractChannel, ChannelListener> channelListeners = new HashMap<LXAbstractChannel, ChannelListener>();
@@ -259,6 +269,12 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
     return null;
   }
 
+  private void sendUserDefinedLights() {
+    sendNoteOn(0, PAN, this.isPan ? LED_ON : LED_OFF);
+    sendNoteOn(0, SENDS, this.isSends ? LED_ON : LED_OFF);
+    sendNoteOn(0, USER, this.isUser ? LED_ON : LED_OFF);
+  }
+
   private void sendPerformanceLights() {
     boolean performanceMode = this.lx.engine.performanceMode.isOn();
     sendNoteOn(0, PLAY, performanceMode && !this.isAux ? LED_ON : LED_OFF);
@@ -280,6 +296,7 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
     this.isAux = isAux;
     this.deviceListener.focusedDevice.setAux(isAux);
     this.lx.engine.performanceMode.setValue(true);
+    sendUserDefinedLights();
     sendPerformanceLights();
     sendCueLights();
     sendChannelFocus();
@@ -888,6 +905,7 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
       resetPaletteVars();
     }
 
+    sendUserDefinedLights();
     sendPerformanceLights();
 
     for (int i = 0; i < DEVICE_KNOB_NUM; ++i) {
@@ -1518,7 +1536,24 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
           }
         }
         return;
-
+      case PAN:
+          if (panCallback != null) {
+            this.isPan = panCallback.apply(null);
+            sendNoteOn(0, PAN, this.isPan ? LED_ON : LED_OFF);
+          }
+          return;
+      case SENDS:
+          if (sendsCallback != null) {
+            this.isSends = sendsCallback.apply(null);
+            sendNoteOn(0, SENDS, this.isSends ? LED_ON : LED_OFF);
+          }
+          return;
+      case USER:
+          if (userCallback != null) {
+            this.isUser = userCallback.apply(null);
+            sendNoteOn(0, USER, this.isUser ? LED_ON : LED_OFF);
+          }
+          return;
       }
 
       if (pitch >= SCENE_LAUNCH && pitch <= SCENE_LAUNCH_MAX) {

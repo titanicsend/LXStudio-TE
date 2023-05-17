@@ -264,6 +264,11 @@ public class TEApp extends PApplet implements LXPlugin {
     lx.engine.midi.registerSurface("FoH: Midi Fighter Twister (3)", MidiFighterTwister.class);
     lx.engine.midi.registerSurface("FoH: Midi Fighter Twister (4)", MidiFighterTwister.class);
 
+    APC40Mk2.userCallback = v -> {
+      this.autopilot.enabled.toggle();
+      return this.autopilot.enabled.getValueb();
+    };
+
     // create our library for autopilot
     this.library = initializePatternLibrary(lx);
 
