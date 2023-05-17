@@ -19,27 +19,46 @@ async def check_pings(ips):
     results = await asyncio.gather(*(ping_ip(ip) for ip in ips))
     return results
 
-def read_controllers(file_name):
-    ips = []
-    with open(file_name) as tsv_file:
+def read_controllers(config_dir):
+    outputs = []
+    with open(config_dir + '/edges.txt') as tsv_file:
         tsv_reader = csv.reader(tsv_file, delimiter="\t")
         for row in tsv_reader:
-            x = int(row[0])
-            if len(row) > 9:
-                ips.append((f"10.7.{x}.1", f"{x}-1"))
-                ips.append((f"10.7.{x}.2", f"{x}-2"))
-            else:
-                ips.append((f"10.7.{x}.1", f"{x}"))
-    return ips
+            output = row[3]
+            outputs.append(output)
+    with open(config_dir + '/panels.txt') as tsv_file:
+        tsv_reader = csv.reader(tsv_file, delimiter="\t")
+        for row in tsv_reader:
+            output_list = row[6]
+            outputs.extend(output_list.split('/'))
+    ips = set()
+    for output in outputs:
+        if '?' in output:
+            continue
+        disabled = False
+        if output.startswith('x'):
+            disabled = True
+            output = output[1:]
+        ip = output.split('#')[0]
+        octets = ip.split('.')
+        assert len(octets) == 4
+        ten, seven, module, n = octets
+        assert ten == '10'
+        assert seven == '7'
+        label = module + '-' + n
+        if disabled:
+            label += "-disabled"
+        ips.add((ip, label))
+    return sorted(list(ips))
 
-def find_controllers_file():
-    file_name = "controllers.tsv"
+def find_config_dir():
+    file_name = "edges.txt"
     path = os.getcwd()
     while True:
         if os.path.isfile(os.path.join(path, file_name)):
-            return os.path.join(path, file_name)
+            return path
         elif os.path.isfile(os.path.join(path, "resources", "vehicle", file_name)):
-            return os.path.join(path, "resources", "vehicle", file_name)
+            return os.path.join(path, "resources", "vehicle")
         elif path == os.path.dirname(path):
             raise FileNotFoundError(f"{file_name} not found.")
         else:
@@ -47,15 +66,15 @@ def find_controllers_file():
 
 
 async def main():
-    controllers_file = find_controllers_file()
-    ips = read_controllers(controllers_file)
+    config_dir = find_config_dir()
+    ips = read_controllers(config_dir)
     results = await check_pings(ips)
 
     timed_out_ips = []
     reachable_ips = []
 
     for (ip, ip_label), response_time in results:
-        if response_time is None:
+        if response_time in (None, False):
             timed_out_ips.append(ip_label)
         else:
             reachable_ips.append((ip, ip_label))

@@ -4,6 +4,7 @@ import heronarts.lx.studio.LXStudio;
 import heronarts.p4lx.ui.component.UICollapsibleSection;
 import heronarts.p4lx.ui.component.UISwitch;
 import titanicsend.app.TEAutopilot;
+import titanicsend.lasercontrol.TELaserTask;
 
 /**
  * LX Studio boilerplate around adding UI components to
@@ -20,4 +21,15 @@ public class TEUserInterface {
                 .addToContainer(this);
         }
     }
+
+    // Use this for other random UI buttons we want to add
+    public static class TEUISection extends UICollapsibleSection {
+      public TEUISection(LXStudio.UI ui, TELaserTask laser) {
+          super(ui, 0, 0, ui.leftPane.global.getContentWidth(), 80);
+          setTitle("TE General Controls");
+          new UISwitch(0, 4)
+              .setParameter(laser.enabled)
+              .addToContainer(this);
+      }
+  }
 }
