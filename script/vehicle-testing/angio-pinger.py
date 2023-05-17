@@ -35,10 +35,20 @@ def read_controllers(config_dir):
     for output in outputs:
         if '?' in output:
             continue
+        disabled = False
         if output.startswith('x'):
+            disabled = True
             output = output[1:]
         ip = output.split('#')[0]
-        ips.add((ip, ip))  # TODO: Label with backpack names
+        octets = ip.split('.')
+        assert len(octets) == 4
+        ten, seven, module, n = octets
+        assert ten == '10'
+        assert seven == '7'
+        label = module + '-' + n
+        if disabled:
+            label += "-disabled"
+        ips.add((ip, label))
     return sorted(list(ips))
 
 def find_config_dir():
@@ -64,7 +74,7 @@ async def main():
     reachable_ips = []
 
     for (ip, ip_label), response_time in results:
-        if response_time is None:
+        if response_time in (None, False):
             timed_out_ips.append(ip_label)
         else:
             reachable_ips.append((ip, ip_label))
