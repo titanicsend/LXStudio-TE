@@ -20,5 +20,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float vertical = smoothstep(1.0 - barHeight, 1.0 - barHeight,uv.y);
     
     // Output to screen
-    fragColor = vec4(BAR_COLOR * horizontal * vertical, 1.0);
+    vec3 col = BAR_COLOR * horizontal * vertical;
+    fragColor = vec4(col, max(col.r, max(col.g, col.b)));
 }

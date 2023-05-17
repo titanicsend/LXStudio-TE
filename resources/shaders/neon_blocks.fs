@@ -55,5 +55,5 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 	}
 
 	color -= rand(uv)*0.04;
-	fragColor = vec4(color, 1.0);
+	fragColor = vec4(color, max(color.r, max(color.g, color.b)));
 }

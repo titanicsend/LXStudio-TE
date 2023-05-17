@@ -47,5 +47,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
             c += fractal(p);
         }
     }
-    fragColor = vec4(c/(aa*aa*0.35),1.);
+    c = c/(aa*aa*0.35);
+    fragColor = vec4(c,max(c.r, max(c.g, c.b)));
 }
