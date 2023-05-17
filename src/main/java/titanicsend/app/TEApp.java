@@ -49,6 +49,7 @@ import titanicsend.app.autopilot.*;
 import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lx.APC40Mk2;
 import titanicsend.lx.MidiFighterTwister;
+import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.model.TEWholeModel;
 import titanicsend.model.justin.ColorCentral;
 import titanicsend.model.justin.ViewCentral;
@@ -264,11 +265,6 @@ public class TEApp extends PApplet implements LXPlugin {
     lx.engine.midi.registerSurface("FoH: Midi Fighter Twister (3)", MidiFighterTwister.class);
     lx.engine.midi.registerSurface("FoH: Midi Fighter Twister (4)", MidiFighterTwister.class);
 
-    APC40Mk2.userCallback = v -> {
-      this.autopilot.enabled.toggle();
-      return this.autopilot.enabled.getValueb();
-    };
-
     // create our library for autopilot
     this.library = initializePatternLibrary(lx);
 
@@ -299,6 +295,7 @@ public class TEApp extends PApplet implements LXPlugin {
     // ensure performance under load
     this.autopilot = new TEAutopilot(lx, library, history);
     lx.engine.addLoopTask(this.autopilot);
+    APC40Mk2.setUserButton(UserButton.USER, this.autopilot.enabled);
 
     // create our listener for OSC messages
     this.oscListener = new TEOscListener(lx, autopilot);

@@ -24,6 +24,7 @@
 package titanicsend.lx;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.Function;
 
 import heronarts.lx.LX;
@@ -61,6 +62,7 @@ import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.utils.LXUtils;
 import titanicsend.model.justin.ViewCentral;
 import titanicsend.model.justin.ViewCentral.ViewPerChannel;
+import titanicsend.util.TE;
 
 public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirectional {
 
@@ -204,13 +206,42 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
   private boolean isAux = false;
 
   // User-defined illuminated buttons
-  private boolean isPan = false;
-  private boolean isSends = false;
-  private boolean isUser = false;
+//  private boolean isPan = false;
+//  private boolean isSends = false;
+//  private boolean isUser = false;
 
-  public static Function<Void, Boolean> panCallback = null;
-  public static Function<Void, Boolean> sendsCallback = null;
-  public static Function<Void, Boolean> userCallback = null;
+  static public enum UserButton {
+    PAN(APC40Mk2.PAN),
+    SENDS(APC40Mk2.SENDS),
+    USER(APC40Mk2.USER);
+
+    public final int note;
+
+    private UserButton(int note) {
+      this.note = note;
+    }
+  }
+
+  // Bi-directional map, late night version
+  static private final Map<UserButton, BooleanParameter> userButtons = new HashMap<UserButton, BooleanParameter>();
+  static private final Map<BooleanParameter, UserButton> userButtonsRev = new HashMap<BooleanParameter, UserButton>();
+  static public void setUserButton(UserButton button, BooleanParameter parameter) {
+    // Keeping this simple for now, we'll just set the button before midi surface instance is created.
+    // In the future we should notify about changes so surfaces can unregister old parameter.
+    if (parameter != null) {
+      userButtons.put(button, parameter);
+      userButtonsRev.put(parameter, button);
+    } else {
+      if (userButtons.containsKey(button)) {
+        userButtonsRev.remove(userButtons.get(button));
+        userButtons.remove(button);
+      }
+    }
+  }
+
+//  public static Function<Void, Boolean> panCallback = null;
+//  public static Function<Void, Boolean> sendsCallback = null;
+//  public static Function<Void, Boolean> userCallback = null;
 
   private final APC40Mk2Colors apc40Mk2Colors = new APC40Mk2Colors();
 
@@ -270,9 +301,9 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
   }
 
   private void sendUserDefinedLights() {
-    sendNoteOn(0, PAN, this.isPan ? LED_ON : LED_OFF);
-    sendNoteOn(0, SENDS, this.isSends ? LED_ON : LED_OFF);
-    sendNoteOn(0, USER, this.isUser ? LED_ON : LED_OFF);
+//    sendNoteOn(0, PAN, this.isPan ? LED_ON : LED_OFF);
+//    sendNoteOn(0, SENDS, this.isSends ? LED_ON : LED_OFF); 
+//    sendNoteOn(0, USER, this.isUser ? LED_ON : LED_OFF);
   }
 
   private void sendPerformanceLights() {
@@ -1301,6 +1332,26 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
     this.lx.engine.mixer.auxA.addListener(this.auxAListener, true);
     this.lx.engine.mixer.auxB.addListener(this.auxBListener, true);
     this.lx.engine.tempo.enabled.addListener(this.tempoListener, true);
+
+    // User buttons
+    // Simple for now, assumes non-changing parameters
+
+    for(Entry<UserButton, BooleanParameter> entrySet : userButtons.entrySet()) {
+      registerUserButton(entrySet.getValue());
+    }
+  }
+
+  private final LXParameterListener userButtonListener = (p) -> {
+    UserButton button = userButtonsRev.get((BooleanParameter)p);
+    sendNoteOn(0, button.note, ((BooleanParameter)p).isOn() ? LED_ON : LED_OFF);
+  };
+
+  private void registerUserButton(BooleanParameter parameter) {
+    parameter.addListener(userButtonListener, true);
+  }
+
+  private void unregisterUserButton(BooleanParameter parameter) {
+    parameter.addListener(userButtonListener);
   }
 
   private void unregister() {
@@ -1323,6 +1374,11 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
     this.lx.engine.mixer.auxA.removeListener(this.auxAListener);
     this.lx.engine.mixer.auxB.removeListener(this.auxBListener);
     this.lx.engine.tempo.enabled.removeListener(this.tempoListener);
+
+    // User buttons.  Improve later:
+    for(Entry<UserButton, BooleanParameter> entrySet : userButtons.entrySet()) {
+      unregisterUserButton(entrySet.getValue());
+    }
 
     clearChannelGrid();
   }
@@ -1536,24 +1592,21 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
           }
         }
         return;
-      case PAN:
-          if (panCallback != null) {
-            this.isPan = panCallback.apply(null);
-            sendNoteOn(0, PAN, this.isPan ? LED_ON : LED_OFF);
+      }
+
+      for (UserButton userButton : UserButton.values()) {
+        if (pitch == userButton.note) {
+          TE.log("    APC40 user button pushed");
+          // A user button was pushed.  Do we have custom mappings in this project?
+          if (userButtons.containsKey(userButton)) {
+            TE.log("    ...toggling " + userButtons.get(userButton).getCanonicalPath());
+            userButtons.get(userButton).toggle();
+            return;
           }
+          // It was a user button with no associated parameters
+          TE.err("    ...not associated parameter");
           return;
-      case SENDS:
-          if (sendsCallback != null) {
-            this.isSends = sendsCallback.apply(null);
-            sendNoteOn(0, SENDS, this.isSends ? LED_ON : LED_OFF);
-          }
-          return;
-      case USER:
-          if (userCallback != null) {
-            this.isUser = userCallback.apply(null);
-            sendNoteOn(0, USER, this.isUser ? LED_ON : LED_OFF);
-          }
-          return;
+        }
       }
 
       if (pitch >= SCENE_LAUNCH && pitch <= SCENE_LAUNCH_MAX) {
