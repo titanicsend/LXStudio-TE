@@ -36,6 +36,7 @@ def check_config(possibly_labeled_ip, debug=False):
                 ("network", dict(ethernet=dict(subnet="255.0.0.0", gateway="10.0.0.1"),
                                  wifi=dict(ssid=""))),
                 ("power", dict(external=power_array)),
+                ("state:power", 'power'),
                 #("artnet", 'print')
                ]
     responses = []
@@ -43,10 +44,16 @@ def check_config(possibly_labeled_ip, debug=False):
     asyncio.set_event_loop(loop)
     
     for key, expected_response in requests:
-        request = {"cmd": "get", "key": key}
+        if expected_response == 'print' and not debug:
+            continue
+        if ":" in key:
+            cmd, key = key.split(":")
+        else:
+            cmd = "get"
+        request = {"cmd": cmd, "key": key}
         response = loop.run_until_complete(send_request_and_get_response(ip, str(request)))
         if expected_response == 'print':
-            if debug: print(f"{label} {key}: {repr(response)}")
+            print(f"{label} {key}: {repr(response)}")
         elif response is None:
             if debug: print(f"{label} {key}: Failed to return response")
             return 'error'
@@ -60,6 +67,29 @@ def check_config(possibly_labeled_ip, debug=False):
                 if debug: print(f"{label} {key}: Got data-less response: {response_dict}\n")
                 return 'error'
             data = response_dict["data"]
+            if expected_response == "power":
+              temp = response_dict["data"]["external"][0]["temp"] * 9 / 5 + 32
+              if debug:
+                  print("%s %d°F" % (ip, temp))
+              if temp > 115:
+                  print(label + " is HOT")
+              for index in range(4):
+                d = response_dict["data"]["external"][index]
+                channel = index + 1
+                volts = d["voltage"]
+                amps = d["current"]/1000
+                label = "  #%d" % channel
+                if debug:
+                    print("%s %.2fV %.2fA" % (label, volts, amps))
+                if volts < 4.8:
+                    print(label + " has low voltage")
+                if volts > 5.3:
+                    print(label + " has high voltage")
+                if amps > 9.0:
+                    print(label + " drawing high current")
+                if temp > 115:
+                    print(label + " is HOT")
+              continue
             for rk, rv in expected_response.items():
                 if rk not in data or data[rk] != rv:
                     if isinstance(rv, dict) and all(item in data[rk].items() for item in rv.items()): 
@@ -70,7 +100,6 @@ def check_config(possibly_labeled_ip, debug=False):
                     else:
                         if debug: print(f"{label} {key}: Expected {rk}={rv} in {data}")
                         return 'misconfig'
-
     loop.close()
     return 'up-to-date'
 
