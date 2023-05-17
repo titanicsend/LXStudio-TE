@@ -1752,7 +1752,9 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
   }
 
   @Override
-  public void noteOnReceived(MidiNoteOn note) { noteReceived(note, true); }
+  public void noteOnReceived(MidiNoteOn note) {
+    noteReceived(note, true);
+  }
 
   @Override
   public void noteOffReceived(MidiNote note) {
