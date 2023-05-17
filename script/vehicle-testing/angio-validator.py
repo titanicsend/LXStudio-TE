@@ -18,6 +18,35 @@ async def send_request_and_get_response(ip, request):
     except Exception:
         return None
 
+expected_config = [
+                ("globals", dict(brightness=190, target_fps=100)),
+                ("leds", dict(chipset="SK9822", color_order='BGR',
+                              length=500, speed=2000000,
+                              gamma=[[2.20, 0.80, 0.00],
+                                   [2.50, 0.70, 0.00],
+                                   [2.50, 0.60, 0.00]])),
+                ("network", dict(ethernet=dict(subnet="255.0.0.0", gateway="10.0.0.1"),
+                                 wifi=dict(ssid=""))),
+]
+
+def set_config(ip):
+    print("Attempting to configure " + ip)
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    for key, data in expected_config:
+        request = {"cmd": "get", "key": key}
+        request_str = str(request)
+        response = loop.run_until_complete(send_request_and_get_response(ip, request_str))
+        request = {"cmd": "set", "key": key, "data": data}
+        request_str = json.dumps(request)
+        response = loop.run_until_complete(send_request_and_get_response(ip, request_str))
+        response_dict = json.loads(response)
+        if response_dict["result"] != True:
+            print("While attempting to configure %s via \n\n%s\n\ngot:\n\n%r\n" % 
+                   (key, request_str, response_dict))
+            break
+    loop.close()
+
 def check_config(possibly_labeled_ip, debug=False):
     if isinstance(possibly_labeled_ip, tuple):
       ip, label = possibly_labeled_ip
@@ -27,14 +56,8 @@ def check_config(possibly_labeled_ip, debug=False):
 
     power_array = [{'enabled': True}, {'enabled': True}, {'enabled': True}, {'enabled': True}]
 
-    requests = [("info", dict(version="v0.8.0")),
-                ("globals", dict(brightness=190, target_fps=100)),
+    requests = [("info", dict(version="v0.8.0"))] + expected_config + [
                 ("netstate", dict(ethernet=dict(subnet="255.0.0.0", gateway="10.0.0.1"))),
-                ("leds", dict(chipset="SK9822", gamma=[[2.20, 0.80, 0.00],
-                                                       [2.50, 0.70, 0.00],
-                                                       [2.50, 0.60, 0.00]])),
-                ("network", dict(ethernet=dict(subnet="255.0.0.0", gateway="10.0.0.1"),
-                                 wifi=dict(ssid=""))),
                 ("power", dict(external=power_array)),
                 ("state:power", 'power'),
                 #("artnet", 'print')
@@ -71,7 +94,7 @@ def check_config(possibly_labeled_ip, debug=False):
               temp = response_dict["data"]["external"][0]["temp"] * 9 / 5 + 32
               if debug:
                   print("%s %d°F" % (ip, temp))
-              if temp > 115:
+              if temp > 130:
                   print(label + " is HOT")
               for index in range(4):
                 d = response_dict["data"]["external"][index]
@@ -85,10 +108,8 @@ def check_config(possibly_labeled_ip, debug=False):
                     print(label + " has low voltage")
                 if volts > 5.3:
                     print(label + " has high voltage")
-                if amps > 9.0:
+                if amps > 11.0:
                     print(label + " drawing high current")
-                if temp > 115:
-                    print(label + " is HOT")
               continue
             for rk, rv in expected_response.items():
                 if rk not in data or data[rk] != rv:
@@ -117,10 +138,15 @@ def check_configs(possibly_labeled_ips, debug=False):
 
 def main(argv):
     ips = argv[1:]
+    setting = False
 
     if not ips:
         print("Need one or more IPs")
         sys.exit(1)
+
+    if ips[0] == '-s':
+        setting = True
+        ips.pop(0)
 
     if len(ips) != len(set(ips)):
         print("There were some dupes in there")
@@ -132,6 +158,10 @@ def main(argv):
         except ValueError:
             print(f"Invalid IP address: {ip}")
             sys.exit(1)
+
+    if setting:
+        for ip in ips:
+            set_config(ip)  
 
     results = check_configs(ips, debug=True)
     for k, v in results.items():
