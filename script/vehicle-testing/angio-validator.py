@@ -101,23 +101,23 @@ def check_config(possibly_labeled_ip, debug=False):
             if expected_response == "power":
               temp = response_dict["data"]["external"][0]["temp"] * 9 / 5 + 32
               if debug:
-                  print("%s %d°F" % (ip, temp))
+                  print("%s %s %d°F" % (ip, label, temp))
               if temp > 130:
-                  print(label + " is HOT")
+                  print(label + " is HOT: %d°F" % (label, temp))
               for index in range(4):
                 d = response_dict["data"]["external"][index]
                 channel = index + 1
                 volts = d["voltage"]
                 amps = d["current"]/1000
-                label = "  #%d" % channel
+                sublabel = label + " #%d" % channel
                 if debug:
-                    print("%s %.2fV %.2fA" % (label, volts, amps))
+                    print("%s %.2fV %.2fA" % (sublabel, volts, amps))
                 if volts < 4.8:
-                    print(label + " has low voltage")
+                    print("%s has low voltage: %.2fV" % (sublabel, volts))
                 if volts > 5.3:
-                    print(label + " has high voltage")
+                    print("%s has high voltage: %.2fV" % (sublabel, volts))
                 if amps > 11.0:
-                    print(label + " drawing high current")
+                    print("%s drawing high current: %.2fA" % (sublabel, amps))
               continue
             if expected_response == "net":
               if data["wifi"]["ssid"] != "":
