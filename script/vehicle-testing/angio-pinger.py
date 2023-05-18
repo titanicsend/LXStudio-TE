@@ -5,6 +5,8 @@ import csv
 import importlib
 import os
 
+from time import sleep
+
 av = importlib.import_module("angio-validator")
 from ping3 import ping
 
@@ -48,7 +50,8 @@ def read_controllers(config_dir):
         label = module + '-' + n
         if disabled:
             label += "-disabled"
-        ips.add((ip, label))
+        else:
+            ips.add((ip, label))
     return sorted(list(ips))
 
 def find_config_dir():
@@ -67,13 +70,25 @@ def find_config_dir():
 
 async def main():
     config_dir = find_config_dir()
-    ips = read_controllers(config_dir)
-    results = await check_pings(ips)
+    ip_queue = read_controllers(config_dir)
+    final_results = []
+    for i in range(3):
+      if len(ip_queue) > 0:
+        sleep(1)
+      results = await check_pings(ip_queue)
+      ip_queue = []
+      for tup, response_time in results:
+        ip, ip_label = tup
+        if i < 2 and response_time in (None, False):
+          print(f"{ip_label} was unreachable; will try again")
+          ip_queue.append(tup)
+        else:
+          final_results.append((tup, response_time))
 
     timed_out_ips = []
     reachable_ips = []
 
-    for (ip, ip_label), response_time in results:
+    for (ip, ip_label), response_time in final_results:
         if response_time in (None, False):
             timed_out_ips.append(ip_label)
         else:
