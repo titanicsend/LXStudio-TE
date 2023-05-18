@@ -70,6 +70,8 @@ import titanicsend.pattern.will.PowerDebugger;
 import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.effect.BeaconEffect;
+import titanicsend.pattern.yoffa.media.BasicImagePattern;
+import titanicsend.pattern.yoffa.text.TextStencilEffect;
 import titanicsend.ui.UITEPerformancePattern;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.util.TE;
@@ -212,7 +214,9 @@ public class TEApp extends PApplet implements LXPlugin {
     lx.registry.addPattern(ArtStandards.class);
     lx.registry.addEffect(titanicsend.effect.EdgeSieve.class);
     lx.registry.addEffect(titanicsend.effect.NoGapEffect.class);
+    lx.registry.addEffect(TextStencilEffect.class);
     lx.registry.addEffect(BeaconEffect.class);
+    lx.registry.addPattern(BasicImagePattern.class);
 
 
     // TODO - The following patterns were removed from the UI prior to EDC 2023 to keep

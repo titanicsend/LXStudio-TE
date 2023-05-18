@@ -2,6 +2,7 @@ package titanicsend.pattern.yoffa.media;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
@@ -33,8 +34,9 @@ public class BasicImagePattern extends TEPerformancePattern {
 
     @Override
     protected void runTEAudioPattern(double deltaMs) {
+        LXModel model = getModel();
         for (LXPoint p : getModel().getPoints()) {
-            eddiePainter.paint(p);
+            eddiePainter.paint(p, this.getSize());
         }
     }
 

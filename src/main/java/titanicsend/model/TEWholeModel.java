@@ -682,6 +682,59 @@ public class TEWholeModel extends LXModel {
     return new HashSet<>(panelsById.values());
   }
 
+  public class WritablePanel {
+    final String id;
+    int priority;
+    int index;
+    TEPanelSection section;
+
+    public WritablePanel(String id, int priority, int index, TEPanelSection section) {
+      this.id = id;
+      this.priority = priority;
+      this.index = index;
+      this.section = section;
+    }
+  }
+
+  private final List<WritablePanel> writablePanels = List.of(
+          new WritablePanel("SCC", 0, 4, TEPanelSection.STARBOARD_FORE),
+          new WritablePanel("SDC", 1, 9, TEPanelSection.STARBOARD_AFT),
+          new WritablePanel("SBD", 2, 3, TEPanelSection.STARBOARD_FORE),
+          new WritablePanel("SED", 3, 10, TEPanelSection.STARBOARD_AFT),
+          new WritablePanel("SBC", 4, 2, TEPanelSection.STARBOARD_FORE),
+          new WritablePanel("SEC", 5, 11, TEPanelSection.STARBOARD_AFT),
+          new WritablePanel("SAC", 6, 1, TEPanelSection.STARBOARD_FORE),
+          new WritablePanel("SFC", 7, 12, TEPanelSection.STARBOARD_AFT),
+          new WritablePanel("SAB", 8, 0, TEPanelSection.STARBOARD_FORE),
+          new WritablePanel("SFB", 9, 13, TEPanelSection.STARBOARD_AFT),
+          new WritablePanel("SAA", 10, 5, TEPanelSection.STARBOARD_FORE),
+          new WritablePanel("SFA", 11, 17, TEPanelSection.STARBOARD_AFT),
+          new WritablePanel("SBA", 12, 6, TEPanelSection.STARBOARD_FORE),
+          new WritablePanel("SEA", 13, 16, TEPanelSection.STARBOARD_AFT),
+          new WritablePanel("SCB", 14, 8, TEPanelSection.STARBOARD_FORE),
+          new WritablePanel("SDB", 15, 14, TEPanelSection.STARBOARD_AFT),
+          new WritablePanel("SCA", 16, 7, TEPanelSection.STARBOARD_FORE),
+          new WritablePanel("SDA", 17, 15, TEPanelSection.STARBOARD_AFT)
+  );
+
+  public List<TEPanelModel> getPanelsForWriting(int numPanels) {
+    return getPanelsForWriting(numPanels, writablePanels.subList(0, numPanels));
+  }
+
+  public List<TEPanelModel> getPanelsForWriting(int numPanels, TEPanelSection section) {
+    return getPanelsForWriting(numPanels, writablePanels.stream()
+            .filter(wp -> wp.section == section)
+            .collect(Collectors.toList()));
+  }
+
+  private List<TEPanelModel> getPanelsForWriting(int numPanels, List<WritablePanel> writablePanels) {
+    numPanels = Math.min(numPanels, writablePanels.size());
+    return writablePanels.stream().sorted(Comparator.comparingInt(wp -> wp.index))
+            .map(wp -> panelsById.get(wp.id))
+            .limit(numPanels)
+            .collect(Collectors.toList());
+  }
+
   public Set<TEEdgeModel> getAllEdges() {
     return new HashSet<>(edgesById.values());
   }

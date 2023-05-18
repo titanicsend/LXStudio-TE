@@ -1,5 +1,6 @@
 package titanicsend.pattern.yoffa.media;
 
+import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 
 import javax.imageio.ImageIO;
@@ -63,7 +64,13 @@ public class ImagePainter {
         y = y / scaleRatio + ((image.getHeight()-(image.getHeight() / scaleRatio)) / 2);
         int yi = (int) Math.max(0,Math.min(Math.round(y), image.getHeight() - 1));
 
-        colors[point.index] = image.getColor(xi, yi);
+        int color = image.getColor(xi, yi);
+        if (color != 0) {
+            colors[point.index] = image.getColor(xi, yi);
+        } else {
+            colors[point.index] = LXColor.RED;
+        }
+
     }
 
     public interface ImageSource {
