@@ -271,6 +271,7 @@ public class TEAutopilotMixer {
                 // create our AUTO_VJ group
                 group = lx.engine.mixer.addGroup();
                 group.label.setValue(AUTO_VJ_GROUP_NAME);
+                group.fader.setValue(0); // initialize to lowest value
 
                 // read the AutoVJ JSON file
                 JsonElement rootElt = null;
