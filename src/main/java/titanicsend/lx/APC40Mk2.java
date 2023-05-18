@@ -205,11 +205,6 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
 
   private boolean isAux = false;
 
-  // User-defined illuminated buttons
-//  private boolean isPan = false;
-//  private boolean isSends = false;
-//  private boolean isUser = false;
-
   static public enum UserButton {
     PAN(APC40Mk2.PAN),
     SENDS(APC40Mk2.SENDS),
@@ -238,10 +233,6 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
       }
     }
   }
-
-//  public static Function<Void, Boolean> panCallback = null;
-//  public static Function<Void, Boolean> sendsCallback = null;
-//  public static Function<Void, Boolean> userCallback = null;
 
   private final APC40Mk2Colors apc40Mk2Colors = new APC40Mk2Colors();
 
@@ -1596,15 +1587,12 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
 
       for (UserButton userButton : UserButton.values()) {
         if (pitch == userButton.note) {
-          TE.log("    APC40 user button pushed");
           // A user button was pushed.  Do we have custom mappings in this project?
           if (userButtons.containsKey(userButton)) {
-            TE.log("    ...toggling " + userButtons.get(userButton).getCanonicalPath());
             userButtons.get(userButton).toggle();
             return;
           }
           // It was a user button with no associated parameters
-          TE.err("    ...not associated parameter");
           return;
         }
       }
