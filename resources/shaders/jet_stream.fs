@@ -366,5 +366,5 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     col = mix(col, arccol, clamp(arcv, 0.0, 1.0));
     col = pow(col, vec3(1.0, 0.8, 0.5) * 1.5) * 1.5;
     col = pow(col, vec3(1.0 / 2.2));
-	fragColor = vec4(col, 1.0);
+	fragColor = vec4(col, max(col.r, max(col.g, col.b)));
 }

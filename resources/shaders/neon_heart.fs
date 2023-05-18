@@ -158,5 +158,5 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ){
     col = pow(col, vec3(0.4545));
 
     //Output to screen
-    fragColor = vec4(col,1.0);
+    fragColor = vec4(col, max(col.r, max(col.g, col.b)));
 }

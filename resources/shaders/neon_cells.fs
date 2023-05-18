@@ -21,5 +21,5 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     	d *= pat(uv, 3.0, 7.0, 0.25 * speedMultiplier, glow);		// layer2
 
     vec3 col = vec3(0.5,1.1,0.4)*0.5/d;
-    fragColor = vec4(col,1.0);
+    fragColor = vec4(col, max(col.r, max(col.g, col.b)));
 }
