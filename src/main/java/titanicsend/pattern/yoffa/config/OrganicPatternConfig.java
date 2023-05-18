@@ -10,7 +10,6 @@ import titanicsend.pattern.yoffa.framework.ConstructedPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-import titanicsend.pattern.yoffa.effect.shaders.OutrunGridShader;
 import titanicsend.pattern.yoffa.media.BasicVideoPatternEffect;
 
 import java.util.List;
@@ -196,6 +195,17 @@ public class OrganicPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new ShimmeringEffect(new PatternTarget(this)));
+        }
+    }
+
+    @LXCategory("Yoffa Panel Organic")
+    public static class BreathingDots extends ConstructedPattern {
+        public BreathingDots(LX lx) {
+            super(lx, TEShaderView.ALL_PANELS);
+        }
+        @Override
+        protected List<PatternEffect> createEffects() {
+            return List.of(new BreathingDotsEffect(new PatternTarget(this)));
         }
     }
 
