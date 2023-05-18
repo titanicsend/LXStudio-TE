@@ -25,18 +25,21 @@ expected_config = [
                               gamma=[[2.20, 0.80, 0.00],
                                    [2.50, 0.70, 0.00],
                                    [2.50, 0.60, 0.00]])),
-                ("network", dict(ethernet=dict(subnet="255.0.0.0", gateway="10.0.0.1"),
-                                 wifi=dict(ssid=""))),
+                ("network", dict(wifi=dict(ssid=""))),
 ]
 
 def set_config(ip):
     print("Attempting to configure " + ip)
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    for key, data in expected_config:
+    for key, new_data in expected_config:
         request = {"cmd": "get", "key": key}
         request_str = str(request)
         response = loop.run_until_complete(send_request_and_get_response(ip, request_str))
+        data = json.loads(response)["data"]
+        #print("Old: %r" % data)
+        data.update(new_data)
+        #print("New: %r" % data)
         request = {"cmd": "set", "key": key, "data": data}
         request_str = json.dumps(request)
         response = loop.run_until_complete(send_request_and_get_response(ip, request_str))
