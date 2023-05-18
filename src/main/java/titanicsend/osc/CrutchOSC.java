@@ -399,7 +399,6 @@ public class CrutchOSC extends LXComponent implements LXOscComponent {  //, LXOs
 
   @Override
   public void dispose() {
-    TE.log("closing CrutchOSC");
     lx.engine.mixer.focusedChannel.removeListener(this);
     lx.engine.mixer.focusedChannelAux.removeListener(this);
     if (this.channel != null) {

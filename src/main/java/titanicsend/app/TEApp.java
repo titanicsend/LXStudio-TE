@@ -487,6 +487,12 @@ public class TEApp extends PApplet implements LXPlugin {
     }
   }
 
+  @Override
+  public void dispose() {
+    this.crutchOSC.dispose();
+    super.dispose();
+  }
+
   private static final DateFormat LOG_FILENAME_FORMAT = new SimpleDateFormat("'LXStudio-TE-'yyyy.MM.dd-HH.mm.ss'.log'");
 
   private static String projectFileName = null;
