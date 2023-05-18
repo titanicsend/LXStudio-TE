@@ -5,6 +5,7 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEPattern;
+import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import java.util.*;
@@ -12,10 +13,13 @@ import java.util.*;
 @LXCategory("Panel FG")
 public class AlternatingDotsEffect extends PatternEffect {
 
-    private List<LXPoint> points;
-    private static final int MAX_POINTS_DIVIDER = 25;
-    private int maxPoints;
+    //TODO make pattern respect the angle/spin common params when horizon is applied
+    public static final double OUTRUN_HORIZON_Y = 0.6;
+    private static final int MAX_POINTS_DIVIDER = 51;
 
+    private List<LXPoint> points;
+
+    private int maxPoints;
     private double minYPercent;
     private Set<LXPoint> breathingPointsPrev = new HashSet<>();
     private Set<LXPoint> breathingPointsNext = new HashSet<>();
@@ -30,14 +34,19 @@ public class AlternatingDotsEffect extends PatternEffect {
 
     public AlternatingDotsEffect setHorizon(double minYPercent) {
         this.minYPercent = minYPercent;
-        this.maxPoints = (int) (minYPercent * points.size() / MAX_POINTS_DIVIDER);
+        refreshPoints();
         return this;
     }
 
-    // TODO: Also call this when LXPattern.modelChanged() to get the new view
     private void refreshPoints() {
-        this.points = new ArrayList<LXPoint>(getPoints());
-        this.maxPoints = points.size() / MAX_POINTS_DIVIDER;
+        this.points = new ArrayList<>();
+        for (LXPoint point : getPoints()) {
+            if(point.yn >= minYPercent) {
+                this.points.add(point);
+            }
+        }
+
+        this.maxPoints = (int) (this.points.size() / (MAX_POINTS_DIVIDER - 50 * pattern.getQuantity()));
     }
 
     @Override
@@ -61,9 +70,6 @@ public class AlternatingDotsEffect extends PatternEffect {
             Collections.shuffle(points);
             for (int i = 0; breathingPointsNext.size() < maxPoints && i < points.size(); i++) {
                 LXPoint curPoint = points.get(i);
-                if (curPoint.yn < minYPercent) {
-                    continue;
-                }
                 if (!breathingPointsPrev.contains(curPoint)) {
                     breathingPointsNext.add(curPoint);
                     if (extraShinyPoints.size() < maxPoints / 2) {
@@ -87,14 +93,20 @@ public class AlternatingDotsEffect extends PatternEffect {
                 alpha = 0;
             }
             double brightness = extraShinyPoints.contains(point) ? 100 : 50;
+            brightness *= breathStatus;
+            brightness *= pattern.getBrightness();
             setColor(point, LXColor.hsba(
                     LXColor.h(baseColor),
                     LXColor.s(baseColor),
-                    brightness * breathStatus,
+                    brightness,
                     alpha
             ));
         }
+    }
 
+    @Override
+    public void onParameterChanged(LXParameter parameter) {
+        refreshPoints();
     }
 
     @Override

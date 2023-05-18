@@ -19,7 +19,7 @@ public class HandTracker extends TEPattern {
                     "Color of the pattern");
 
     public final CompoundParameter targetY =
-            new CompoundParameter("Target height", 5, 0, 100)
+            new CompoundParameter("Target height", 5, 0, 200)
                     .setDescription("Target height from ground");
 
     public final CompoundParameter targetZ =
@@ -44,19 +44,18 @@ public class HandTracker extends TEPattern {
 
         int color = this.color.calcColor();
 
-        for (TEPanelModel panel : this.modelTE.panelsById.values()) {
-            for (LXPoint point : panel.points) {
-                if (this.modelTE.isGapPoint(point)) continue;
-                boolean isCloseToZ = Math.abs(Math.floor(point.zn * 100) - z) < 5;
-                boolean isCloseToY = Math.abs(Math.floor(point.yn * 100 * 2) - y) < 10;
-                if (isCloseToZ && isCloseToY) {
-                    colors[point.index] = color;
-                } else {
-                    colors[point.index] = TRANSPARENT;
-                }
+        for (LXPoint point : this.modelTE.points) {
+            if (this.modelTE.isGapPoint(point)) continue;
+            boolean isCloseToZ = Math.abs(Math.floor(point.zn * 100) - z) < 5;
+            boolean isCloseToY = Math.abs(Math.floor(point.yn * 100 * 2) - y) < 10;
+            if (isCloseToZ && isCloseToY) {
+                colors[point.index] = color;
+            } else {
+                colors[point.index] = TRANSPARENT;
             }
         }
     }
+
 
     @Override
     public void onParameterChanged(LXParameter p) {
