@@ -5,12 +5,12 @@ import heronarts.lx.LXCategory;
 
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.jon.TEControlTag;
+import titanicsend.pattern.yoffa.effect.AlternatingDotsEffect;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.ConstructedPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 
 import java.util.List;
 
@@ -229,6 +229,22 @@ public class ShaderPanelsPatternConfig {
         protected List<PatternEffect> createEffects() {
             return List.of(new NativeShaderPatternEffect("outrun_grid.fs",
                 new PatternTarget(this)));
+        }
+    }
+
+    @LXCategory("Yoffa Panel Combo")
+    public static class StarryOutrun extends ConstructedPattern {
+        public StarryOutrun(LX lx) {
+            super(lx, TEShaderView.DOUBLE_LARGE);
+        }
+
+        @Override
+        protected List<PatternEffect> createEffects() {
+            return List.of(
+                    new NativeShaderPatternEffect("outrun_grid.fs", new PatternTarget(this)),
+                    new AlternatingDotsEffect(new PatternTarget(this))
+                    .setHorizon(AlternatingDotsEffect.OUTRUN_HORIZON_Y)
+                    .setShouldBlend(true));
         }
     }
 

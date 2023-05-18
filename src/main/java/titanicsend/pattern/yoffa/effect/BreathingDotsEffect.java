@@ -6,6 +6,7 @@ import heronarts.lx.modulator.LXRangeModulator;
 import heronarts.lx.modulator.TriangleLFO;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEPattern;
+import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 
@@ -17,21 +18,19 @@ public class BreathingDotsEffect extends PatternEffect {
     private final Random random = new Random();
 
     private static final int DURATION_MILLIS = 2000;
-    private static final double MAX_POINTS_DIVIDER = 25;
-    private final double pointsPerMilli;
-    private final Map<LXPoint, LXRangeModulator> breathingPoints = new HashMap<>();
+    private static final double MAX_POINTS_DIVIDER = 51;
+    private final Map<LXPoint, Long> breathingPoints = new HashMap<>();
     private final Set<LXPoint> extraShinyPoints = new HashSet<>();
 
     public BreathingDotsEffect(PatternTarget patternTarget) {
         super(patternTarget);
-        double maxPoints = getPoints().size() / MAX_POINTS_DIVIDER;
-        this.pointsPerMilli = maxPoints / DURATION_MILLIS;
     }
 
     public void run(double deltaMs) {
-        int baseColor = pattern.getSwatchColor(TEPattern.ColorType.PRIMARY);
+        int baseColor = pattern.calcColor();
+        double maxPoints = getPoints().size() / (MAX_POINTS_DIVIDER - 50 * pattern.getQuantity());
+        double pointsPerMilli = maxPoints / DURATION_MILLIS;
 
-        // List<LXPoint> availablePoints = new ArrayList<>(getPoints());
         List<LXPoint> availablePoints = new ArrayList<>();
         for (LXPoint point : getPoints()) {
             Double status = getBreathStatus(point);
@@ -43,14 +42,16 @@ public class BreathingDotsEffect extends PatternEffect {
                 setColor(point, LXColor.hsba(
                         LXColor.h(baseColor),
                         LXColor.s(baseColor) * status,
-                        brightness * status,
+                        brightness * status * pattern.getBrightness(),
                         100
                 ));
             }
         }
 
         for (int i = 0; i < pointsPerMilli * deltaMs; i++) {
-            startBreathing(availablePoints.get(random.nextInt(availablePoints.size())));
+            if (availablePoints.size() > 0) {
+                startBreathing(availablePoints.get(random.nextInt(availablePoints.size())));
+            }
         }
     }
 
@@ -60,27 +61,26 @@ public class BreathingDotsEffect extends PatternEffect {
     }
 
     private void startBreathing(LXPoint point) {
-        LXRangeModulator phase = new TriangleLFO(0, 1, DURATION_MILLIS);
-        phase.setLooping(false);
-        pattern.startModulator(phase);
-        breathingPoints.put(point, phase);
+        breathingPoints.put(point, System.currentTimeMillis());
         if (random.nextBoolean()) {
             extraShinyPoints.add(point);
         }
     }
 
     private Double getBreathStatus(LXPoint point) {
-        LXRangeModulator phase = breathingPoints.get(point);
-        if (phase == null) {
+        long currentTimestamp = System.currentTimeMillis();
+        Long startTimestamp = breathingPoints.get(point);
+        if (startTimestamp == null) {
             return null;
         }
-        if (phase.finished()) {
+        if (currentTimestamp - startTimestamp > DURATION_MILLIS) {
             breathingPoints.remove(point);
             extraShinyPoints.remove(point);
-            pattern.removeModulator(phase);
             return null;
         }
-        double curValue = phase.getValue();
+
+        double midpoint = startTimestamp + (double) DURATION_MILLIS / 2;
+        double curValue = Math.abs(currentTimestamp - midpoint) / ((double) DURATION_MILLIS / 2);
         return curValue > .5 ? 2 * (1 - curValue) : 2 * curValue;
     }
 
