@@ -93,46 +93,36 @@ public class TextStencilEffect extends TEEffect implements UIDeviceControls<Text
         }
 
         Set<TEPanelModel> writtenPanels = new HashSet<>();
+        String text = textParameter.getString();
         switch (viewParameter.getEnum()) {
             case MODEL_SINGLE -> {
                 List<TEPanelModel> panels = new LinkedList<>();
                 panels.addAll(this.modelTE.getPanelsBySection(TEPanelSection.STARBOARD_FORE));
                 panels.addAll(this.modelTE.getPanelsBySection(TEPanelSection.STARBOARD_AFT));
-                writeToModels(textParameter.getString(), panels);
+                writeToModels(text, panels);
                 writtenPanels.addAll(panels);
             }
             case MODEL_DOUBLE -> {
-                writeToModels(textParameter.getString(), this.modelTE.getPanelsBySection(TEPanelSection.STARBOARD_FORE));
-                writeToModels(textParameter.getString(), this.modelTE.getPanelsBySection(TEPanelSection.STARBOARD_AFT), true);
+                writeToModels(text, this.modelTE.getPanelsBySection(TEPanelSection.STARBOARD_FORE));
+                writeToModels(text, this.modelTE.getPanelsBySection(TEPanelSection.STARBOARD_AFT), true);
                 writtenPanels.addAll(this.modelTE.getPanelsBySection(TEPanelSection.STARBOARD_FORE));
                 writtenPanels.addAll(this.modelTE.getPanelsBySection(TEPanelSection.STARBOARD_AFT));
             }
             case PANELS_SINGLE -> {
-                List<TEPanelModel> writablePanels = this.modelTE.getPanelsForWriting(this.textParameter.getString().length());
-                for (int i = 0; i < this.textParameter.getString().length() && i < writablePanels.size(); i++) {
-                    writeToModels(String.valueOf(this.textParameter.getString().charAt(i)),
-                            List.of(writablePanels.get(i)));
-                    writtenPanels.add(writablePanels.get(i));
+                if (text.contains(" ")) {
+                    String[] words = text.split("\s");
+                    int maxPanelsPerSide = modelTE.getMaxPanelsForWriting() / 2;
+                    if (words.length == 2 && words[0].length() < maxPanelsPerSide && words[1].length() < maxPanelsPerSide) {
+                        writeCharacterPanels(words[0], TEPanelSection.STARBOARD_FORE, writtenPanels);
+                        writeCharacterPanels(words[1], TEPanelSection.STARBOARD_AFT, writtenPanels);
+                        break;
+                    }
                 }
+                writeCharacterPanels(text, writtenPanels);
             }
             case PANELS_DOUBLE -> {
-                List<TEPanelModel> writablePanelsFore = this.modelTE.getPanelsForWriting(
-                        this.textParameter.getString().length(), TEPanelSection.STARBOARD_FORE);
-
-                for (int i = 0; i < this.textParameter.getString().length() && i < writablePanelsFore.size(); i++) {
-                    writeToModels(String.valueOf(this.textParameter.getString().charAt(i)),
-                            List.of(writablePanelsFore.get(i)));
-                    writtenPanels.add(writablePanelsFore.get(i));
-                }
-
-                List<TEPanelModel> writablePanelsAft = this.modelTE.getPanelsForWriting(
-                        this.textParameter.getString().length(), TEPanelSection.STARBOARD_AFT);
-
-                for (int i = 0; i < this.textParameter.getString().length() && i < writablePanelsAft.size(); i++) {
-                    writeToModels(String.valueOf(this.textParameter.getString().charAt(i)),
-                            List.of(writablePanelsAft.get(i)));
-                    writtenPanels.add(writablePanelsAft.get(i));
-                }
+                writeCharacterPanels(text, TEPanelSection.STARBOARD_FORE, writtenPanels);
+                writeCharacterPanels(text, TEPanelSection.STARBOARD_AFT, writtenPanels);
             }
         }
 
@@ -151,13 +141,33 @@ public class TextStencilEffect extends TEEffect implements UIDeviceControls<Text
     }
 
     private void writeToModels(String text, Collection<? extends TEModel> models) {
-        textPainter.stencil(models, text, getCurrentFontName(),
-                sizeParameter.getValue(), xPosParameter.getValue(), yPosParameter.getValue(), angleParameter.getValue());
+        writeToModels(text, models, false);
     }
 
     private void writeToModels(String text, Collection<? extends TEModel> models, boolean invert) {
+        double xPos = xPosParameter.getValue();
+        double angle = angleParameter.getValue();
+        if (invert) {
+            xPos = -xPos;
+            angle = -angle;
+        }
         textPainter.stencil(models, text, getCurrentFontName(),
-                sizeParameter.getValue(), -xPosParameter.getValue(), yPosParameter.getValue(), -angleParameter.getValue());
+                sizeParameter.getValue(), xPos, yPosParameter.getValue(), angle);
+    }
+
+    private void writeCharacterPanels(String text, Set<TEPanelModel> writtenPanels) {
+        writeCharacterPanels(text, null, writtenPanels);
+    }
+
+    private void writeCharacterPanels(String text, TEPanelSection section, Set<TEPanelModel> writtenPanels) {
+        List<TEPanelModel> writablePanels = this.modelTE.getPanelsForWriting(
+                text.length(), section);
+
+        for (int i = 0; i < text.length() && i < writablePanels.size(); i++) {
+            writeToModels(String.valueOf(text.charAt(i)),
+                    List.of(writablePanels.get(i)));
+            writtenPanels.add(writablePanels.get(i));
+        }
     }
 
     UILabel fontLabel;

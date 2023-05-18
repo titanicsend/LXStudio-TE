@@ -721,7 +721,14 @@ public class TEWholeModel extends LXModel {
     return getPanelsForWriting(numPanels, writablePanels.subList(0, numPanels));
   }
 
+  public int getMaxPanelsForWriting() {
+    return writablePanels.size();
+  }
+
   public List<TEPanelModel> getPanelsForWriting(int numPanels, TEPanelSection section) {
+    if (section == null) {
+      return getPanelsForWriting(numPanels);
+    }
     return getPanelsForWriting(numPanels, writablePanels.stream()
             .filter(wp -> wp.section == section)
             .collect(Collectors.toList()));
