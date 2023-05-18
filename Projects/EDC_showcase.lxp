@@ -1,6 +1,6 @@
 {
   "version": "0.4.4-SNAPSHOT",
-  "timestamp": 1684399301974,
+  "timestamp": 1684404335852,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -46,7 +46,7 @@
           "autoCycleEnabled": false,
           "autoCycleMode": 0,
           "autoCycleTimeSecs": 1800.0,
-          "autoCycleCursor": 2,
+          "autoCycleCursor": 1,
           "triggerSwatchCycle": false,
           "expandedPerformance": true
         },
@@ -59,7 +59,7 @@
               "modulationControlsExpanded": true
             },
             "parameters": {
-              "label": "IceOlate",
+              "label": "YelOrn",
               "recall": false,
               "autoCycleEligible": true
             },
@@ -116,12 +116,12 @@
                   "label": "LX",
                   "mode": 1,
                   "period": 16.0,
-                  "primary/brightness": 91.00000020116568,
-                  "primary/saturation": 61.00000087171793,
-                  "primary/hue": 192.58998466096818,
-                  "secondary/brightness": 58.33328628540039,
-                  "secondary/saturation": 70.83333587646484,
-                  "secondary/hue": 195.0
+                  "primary/brightness": 96.0,
+                  "primary/saturation": 74.0,
+                  "primary/hue": 40.0,
+                  "secondary/brightness": 100.0,
+                  "secondary/saturation": 77.5,
+                  "secondary/hue": 33.0
                 },
                 "children": {}
               },
@@ -2688,7 +2688,7 @@
         },
         "parameters": {
           "label": "Audio",
-          "enabled": true,
+          "enabled": false,
           "mode": 0,
           "expandedPerformance": true
         },
@@ -2731,7 +2731,7 @@
             },
             "parameters": {
               "label": "Meter",
-              "running": true,
+              "running": false,
               "trigger": false,
               "gain": 0.0,
               "range": 48.0,
@@ -2768,10 +2768,10 @@
         },
         "parameters": {
           "label": "Mixer",
-          "crossfader": 0.6377952755905512,
+          "crossfader": 0.5,
           "crossfaderBlendMode": 1,
           "focusedChannel": 1,
-          "focusedChannelAux": 6,
+          "focusedChannelAux": 5,
           "cueA": false,
           "cueB": false,
           "auxA": false,
@@ -2889,7 +2889,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.30289999999997974
+                        "basis": 0.49326666666655683
                       }
                     ],
                     "modulations": [
@@ -2913,7 +2913,7 @@
                           "label": "LX",
                           "enabled": true,
                           "polarity": 0,
-                          "range": -0.25999997183680534
+                          "range": -0.019999999552965164
                         },
                         "children": {}
                       }
@@ -2944,7 +2944,7 @@
               "fader": 0.0,
               "arm": false,
               "selected": false,
-              "enabled": false,
+              "enabled": true,
               "cue": false,
               "aux": false,
               "crossfadeGroup": 0,
@@ -2963,13 +2963,13 @@
               "transitionEnabled": true,
               "transitionTimeSecs": 0.05,
               "transitionBlendMode": 4,
-              "focusedPattern": 2,
+              "focusedPattern": 13,
               "triggerPatternCycle": false
             },
             "children": {},
             "effects": [],
             "clips": [],
-            "patternIndex": 2,
+            "patternIndex": 13,
             "patterns": [
               {
                 "id": 44459,
@@ -3395,10 +3395,10 @@
                   "panic": false,
                   "viewPerPattern": 4,
                   "swatchPerChannel": 0,
-                  "xWave": 1.0,
+                  "yWave": 1.5,
                   "curve": 10.0,
                   "tile": 2.0,
-                  "yWave": 1.5
+                  "xWave": 1.0
                 },
                 "children": {
                   "modulation": {
@@ -3474,7 +3474,7 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 3,
+                  "viewPerPattern": 0,
                   "swatchPerChannel": 0
                 },
                 "children": {
@@ -3553,11 +3553,11 @@
                   "panic": false,
                   "viewPerPattern": 0,
                   "swatchPerChannel": 0,
-                  "Glow": 0.1,
-                  "Double Speed": false,
+                  "Width": 0.5,
                   "Energy": 0.0,
+                  "Glow": 0.1,
                   "Double Layer": false,
-                  "Width": 0.5
+                  "Double Speed": false
                 },
                 "children": {
                   "modulation": {
@@ -4093,9 +4093,9 @@
               "compositeDampingTimeSecs": 0.1,
               "autoCycleEnabled": false,
               "autoCycleMode": 0,
-              "autoCycleTimeSecs": 60.0,
+              "autoCycleTimeSecs": 0.1,
               "transitionEnabled": false,
-              "transitionTimeSecs": 5.0,
+              "transitionTimeSecs": 0.05,
               "transitionBlendMode": 0,
               "focusedPattern": 0,
               "triggerPatternCycle": false
@@ -4200,83 +4200,6 @@
                 "children": {
                   "modulation": {
                     "id": 44770,
-                    "class": "heronarts.lx.modulation.LXModulationEngine",
-                    "internal": {
-                      "modulationColor": 0,
-                      "modulationControlsExpanded": true
-                    },
-                    "parameters": {
-                      "label": "Modulation"
-                    },
-                    "children": {},
-                    "modulators": [],
-                    "modulations": [],
-                    "triggers": []
-                  }
-                },
-                "deviceVersion": -1,
-                "remoteControls": [
-                  "/te_color/offset",
-                  "/te_color/gradient",
-                  "/swatchPerChannel",
-                  "/te_speed",
-                  "/te_xpos",
-                  "/te_ypos",
-                  "/te_quantity",
-                  "/te_size",
-                  "/te_angle",
-                  "/te_spin",
-                  "/panic",
-                  "/viewPerPattern",
-                  "/te_wow1",
-                  "/te_wow2",
-                  "/te_wowtrigger",
-                  null
-                ]
-              },
-              {
-                "id": 44880,
-                "class": "titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig$NeonRipplesEdges",
-                "internal": {
-                  "modulationColor": 0,
-                  "modulationControlsExpanded": true,
-                  "expanded": true,
-                  "expandedCue": true,
-                  "expandedAux": true,
-                  "modulationExpanded": false
-                },
-                "parameters": {
-                  "label": "NeonRipplesEdges",
-                  "enabled": true,
-                  "recall": false,
-                  "compositeMode": 0,
-                  "compositeLevel": 1.0,
-                  "te_color/brightness": 100.0,
-                  "te_color/saturation": 100.0,
-                  "te_color/hue": 0.0,
-                  "te_color/solidSource": 1,
-                  "te_color/gradient": 0,
-                  "te_color/blendMode": 0,
-                  "te_color/offset": 0.0,
-                  "te_color/color2offset": 0.5,
-                  "te_speed": 0.5,
-                  "te_xpos": 0.0,
-                  "te_ypos": 0.0,
-                  "te_size": 2.25,
-                  "te_quantity": 8.0,
-                  "te_spin": 0.05,
-                  "te_brightness": 1.0,
-                  "te_wow1": 0.04800000227987764,
-                  "te_wow2": 2.25,
-                  "te_wowtrigger": false,
-                  "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 2,
-                  "swatchPerChannel": 0
-                },
-                "children": {
-                  "modulation": {
-                    "id": 44881,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,
@@ -4466,83 +4389,6 @@
                 ]
               },
               {
-                "id": 46209,
-                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$RhythmicFlashStatic",
-                "internal": {
-                  "modulationColor": 0,
-                  "modulationControlsExpanded": true,
-                  "expanded": true,
-                  "expandedCue": true,
-                  "expandedAux": true,
-                  "modulationExpanded": false
-                },
-                "parameters": {
-                  "label": "RhythmicFlashStatic",
-                  "enabled": true,
-                  "recall": false,
-                  "compositeMode": 0,
-                  "compositeLevel": 1.0,
-                  "te_color/brightness": 100.0,
-                  "te_color/saturation": 100.0,
-                  "te_color/hue": 0.0,
-                  "te_color/solidSource": 1,
-                  "te_color/gradient": 0,
-                  "te_color/blendMode": 0,
-                  "te_color/offset": 0.0,
-                  "te_color/color2offset": 0.5,
-                  "te_speed": 0.5,
-                  "te_xpos": 0.0,
-                  "te_ypos": 0.0,
-                  "te_size": 1.0,
-                  "te_quantity": 0.5,
-                  "te_spin": 0.0,
-                  "te_brightness": 1.0,
-                  "te_wow1": 0.5,
-                  "te_wow2": 0.0,
-                  "te_wowtrigger": false,
-                  "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 4,
-                  "swatchPerChannel": 0
-                },
-                "children": {
-                  "modulation": {
-                    "id": 46210,
-                    "class": "heronarts.lx.modulation.LXModulationEngine",
-                    "internal": {
-                      "modulationColor": 0,
-                      "modulationControlsExpanded": true
-                    },
-                    "parameters": {
-                      "label": "Modulation"
-                    },
-                    "children": {},
-                    "modulators": [],
-                    "modulations": [],
-                    "triggers": []
-                  }
-                },
-                "deviceVersion": -1,
-                "remoteControls": [
-                  "/te_color/offset",
-                  "/te_color/gradient",
-                  "/swatchPerChannel",
-                  "/te_speed",
-                  "/te_xpos",
-                  "/te_ypos",
-                  "/te_quantity",
-                  "/te_size",
-                  "/te_angle",
-                  "/te_spin",
-                  "/panic",
-                  "/viewPerPattern",
-                  "/te_wow1",
-                  "/te_wow2",
-                  "/te_wowtrigger",
-                  null
-                ]
-              },
-              {
                 "id": 46220,
                 "class": "titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig$SpaceExplosionEdges",
                 "internal": {
@@ -4567,14 +4413,14 @@
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0,
                   "te_color/color2offset": 0.5,
-                  "te_speed": 0.5,
+                  "te_speed": -0.06532003440641487,
                   "te_xpos": 0.0,
                   "te_ypos": 0.0,
                   "te_size": 1.0,
                   "te_quantity": 0.5,
-                  "te_spin": 0.0,
+                  "te_spin": 0.8463999621629719,
                   "te_brightness": 1.0,
-                  "te_wow1": 0.0,
+                  "te_wow1": 0.6299999859184027,
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
@@ -4644,7 +4490,7 @@
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.009999999776482582,
                   "te_color/color2offset": 0.5,
-                  "te_speed": 3.4882321487052756,
+                  "te_speed": 0.07715327146315332,
                   "te_xpos": 1.0,
                   "te_ypos": 0.2199999950826168,
                   "te_size": 1.0,
@@ -4729,17 +4575,17 @@
               "compositeDampingTimeSecs": 0.1,
               "autoCycleEnabled": false,
               "autoCycleMode": 0,
-              "autoCycleTimeSecs": 60.0,
+              "autoCycleTimeSecs": 0.1,
               "transitionEnabled": false,
-              "transitionTimeSecs": 5.0,
+              "transitionTimeSecs": 0.05,
               "transitionBlendMode": 0,
-              "focusedPattern": 0,
+              "focusedPattern": 3,
               "triggerPatternCycle": false
             },
             "children": {},
             "effects": [],
             "clips": [],
-            "patternIndex": 0,
+            "patternIndex": 3,
             "patterns": [
               {
                 "id": 44809,
@@ -4801,9 +4647,9 @@
                   "color/hue": 0.0,
                   "color/mode": 0,
                   "color/index": 1,
-                  "tempoDivision": 7,
+                  "tempoDivision": 6,
                   "triggerMode": 0,
-                  "sceneSelect": 15,
+                  "sceneSelect": 14,
                   "trigger": false,
                   "downbeat": false
                 },
@@ -5013,10 +4859,10 @@
             },
             "parameters": {
               "label": "LIGHTNING",
-              "fader": 1.0,
+              "fader": 0.007874015748031496,
               "arm": false,
               "selected": false,
-              "enabled": false,
+              "enabled": true,
               "cue": false,
               "aux": false,
               "crossfadeGroup": 0,
@@ -5031,9 +4877,9 @@
               "compositeDampingTimeSecs": 0.1,
               "autoCycleEnabled": false,
               "autoCycleMode": 0,
-              "autoCycleTimeSecs": 60.0,
+              "autoCycleTimeSecs": 0.1,
               "transitionEnabled": false,
-              "transitionTimeSecs": 5.0,
+              "transitionTimeSecs": 0.05,
               "transitionBlendMode": 0,
               "focusedPattern": 0,
               "triggerPatternCycle": false
@@ -5105,10 +4951,10 @@
             },
             "parameters": {
               "label": "Outline",
-              "fader": 0.7428571619093418,
+              "fader": 1.0,
               "arm": false,
               "selected": false,
-              "enabled": false,
+              "enabled": true,
               "cue": false,
               "aux": false,
               "crossfadeGroup": 0,
@@ -5123,9 +4969,9 @@
               "compositeDampingTimeSecs": 0.1,
               "autoCycleEnabled": false,
               "autoCycleMode": 0,
-              "autoCycleTimeSecs": 60.0,
+              "autoCycleTimeSecs": 0.1,
               "transitionEnabled": false,
-              "transitionTimeSecs": 5.0,
+              "transitionTimeSecs": 0.05,
               "transitionBlendMode": 0,
               "focusedPattern": 0,
               "triggerPatternCycle": false
@@ -5192,10 +5038,10 @@
             },
             "parameters": {
               "label": "Back",
-              "fader": 1.0,
+              "fader": 0.6017997783542736,
               "arm": false,
               "selected": false,
-              "enabled": false,
+              "enabled": true,
               "cue": false,
               "aux": false,
               "crossfadeGroup": 0,
@@ -5265,50 +5111,6 @@
                 "deviceVersion": -1
               }
             ]
-          },
-          {
-            "id": 45544,
-            "class": "heronarts.lx.mixer.LXChannel",
-            "internal": {
-              "modulationColor": 0,
-              "modulationControlsExpanded": true,
-              "controlsExpandedCue": true,
-              "controlsExpandedAux": true,
-              "controlsExpanded": true,
-              "viewPatternLabel": false
-            },
-            "parameters": {
-              "label": "Channel-7",
-              "fader": 0.0,
-              "arm": false,
-              "selected": false,
-              "enabled": false,
-              "cue": false,
-              "aux": false,
-              "crossfadeGroup": 0,
-              "blendMode": 0,
-              "midiMonitor": false,
-              "midiChannel": 16,
-              "viewEnabled": false,
-              "viewSelector": "",
-              "viewNormalization": 0,
-              "compositeMode": 0,
-              "compositeDampingEnabled": true,
-              "compositeDampingTimeSecs": 0.1,
-              "autoCycleEnabled": false,
-              "autoCycleMode": 0,
-              "autoCycleTimeSecs": 60.0,
-              "transitionEnabled": false,
-              "transitionTimeSecs": 5.0,
-              "transitionBlendMode": 0,
-              "focusedPattern": 0,
-              "triggerPatternCycle": false
-            },
-            "children": {},
-            "effects": [],
-            "clips": [],
-            "patternIndex": -1,
-            "patterns": []
           }
         ]
       },
@@ -5388,6 +5190,12 @@
         "children": {},
         "inputs": [
           {
+            "name": "FoH: APC40 mkII",
+            "channel": false,
+            "control": true,
+            "sync": false
+          },
+          {
             "name": "APC40 mkII",
             "channel": false,
             "control": true,
@@ -5395,6 +5203,14 @@
           }
         ],
         "surfaces": [
+          {
+            "name": "FoH: APC40 mkII",
+            "settings": {
+              "masterFaderEnabled": true,
+              "crossfaderEnabled": true,
+              "channelKnobIsView": true
+            }
+          },
           {
             "name": "APC40 mkII",
             "settings": {
