@@ -61,6 +61,7 @@ import titanicsend.pattern.TEEdgeTestPattern;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.pattern.TEPanelTestPattern;
 import titanicsend.pattern.ben.*;
+import titanicsend.pattern.cesar.HandTracker;
 import titanicsend.pattern.jeff.*;
 import titanicsend.pattern.jon.*;
 import titanicsend.pattern.justin.TEGradientPattern;
@@ -229,7 +230,7 @@ public class TEApp extends PApplet implements LXPlugin {
     // lx.registry.addPattern(Bubbles.class);
 
     // Nonfunctional - need work or additional hardware that will not be at EDC
-    // lx.registry.addPattern(HandTracker.class);
+    lx.registry.addPattern(HandTracker.class);
 
     // "ShaderToyPattern" in ShaderPanelsPatternConfig.java
 
