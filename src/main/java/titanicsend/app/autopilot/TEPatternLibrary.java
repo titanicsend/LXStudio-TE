@@ -454,7 +454,7 @@ public class TEPatternLibrary {
             }
 
             if (found == 0) {
-                TE.err("No LXPattern found for %s (channel=%s). Either add to AutoVJ.lxp, or remove from TEApp::initializePatternLibrary()", r, name);
+                TE.err("No LXPattern found for %s (channel=%s). Either add to AUTO_VJ_TEMPLATE.lxp, or remove from TEApp::initializePatternLibrary()", r, name);
                 if (!missingPatternsPerPhrase.containsKey(r.phraseType))
                     missingPatternsPerPhrase.put(r.phraseType, 0);
                 missingPatternsPerPhrase.put(r.phraseType, missingPatternsPerPhrase.get(r.phraseType) + 1);
