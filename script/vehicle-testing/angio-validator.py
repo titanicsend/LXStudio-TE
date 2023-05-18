@@ -25,7 +25,7 @@ expected_config = [
                               gamma=[[2.20, 0.80, 0.00],
                                    [2.50, 0.70, 0.00],
                                    [2.50, 0.60, 0.00]])),
-                ("network", dict(wifi=dict(ssid=""))),
+                ("network", "net"),
 ]
 
 def set_config(ip):
@@ -38,7 +38,12 @@ def set_config(ip):
         response = loop.run_until_complete(send_request_and_get_response(ip, request_str))
         data = json.loads(response)["data"]
         #print("Old: %r" % data)
-        data.update(new_data)
+        if new_data == "net":
+          data['wifi'] = dict(ssid='')
+          data['ethernet']['subnet'] = '255.0.0.0'
+          data['ethernet']['gateway'] = '10.0.0.1'
+        else:
+          data.update(new_data)
         #print("New: %r" % data)
         request = {"cmd": "set", "key": key, "data": data}
         request_str = json.dumps(request)
@@ -114,7 +119,18 @@ def check_config(possibly_labeled_ip, debug=False):
                 if amps > 11.0:
                     print(label + " drawing high current")
               continue
-            for rk, rv in expected_response.items():
+            if expected_response == "net":
+              if data["wifi"]["ssid"] != "":
+                if debug: print(f"{label} has WIFI turned on")
+                return 'misconfig'
+              if data["ethernet"]["subnet"] != "255.0.0.0":
+                if debug: print(f"{label} has bad subnet")
+                return 'misconfig'
+              if data["ethernet"]["gateway"] != "10.0.0.1":
+                if debug: print(f"{label} has bad gateway")
+                return 'misconfig'
+            else:
+              for rk, rv in expected_response.items():
                 if rk not in data or data[rk] != rv:
                     if isinstance(rv, dict) and all(item in data[rk].items() for item in rv.items()): 
                         continue
