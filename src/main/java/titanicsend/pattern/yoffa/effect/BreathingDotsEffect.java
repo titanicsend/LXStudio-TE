@@ -27,7 +27,7 @@ public class BreathingDotsEffect extends PatternEffect {
     }
 
     public void run(double deltaMs) {
-        int baseColor = pattern.getSwatchColor(TEPattern.ColorType.PRIMARY);
+        int baseColor = pattern.calcColor();
         double maxPoints = getPoints().size() / (MAX_POINTS_DIVIDER - 50 * pattern.getQuantity());
         double pointsPerMilli = maxPoints / DURATION_MILLIS;
 
@@ -42,7 +42,7 @@ public class BreathingDotsEffect extends PatternEffect {
                 setColor(point, LXColor.hsba(
                         LXColor.h(baseColor),
                         LXColor.s(baseColor) * status,
-                        brightness * status,
+                        brightness * status * pattern.getBrightness(),
                         100
                 ));
             }

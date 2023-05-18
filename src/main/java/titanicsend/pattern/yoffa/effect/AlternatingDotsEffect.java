@@ -13,6 +13,7 @@ import java.util.*;
 @LXCategory("Panel FG")
 public class AlternatingDotsEffect extends PatternEffect {
 
+    //TODO make pattern respect the angle/spin common params when horizon is applied
     public static final double OUTRUN_HORIZON_Y = 0.6;
     private static final int MAX_POINTS_DIVIDER = 51;
 
@@ -92,10 +93,12 @@ public class AlternatingDotsEffect extends PatternEffect {
                 alpha = 0;
             }
             double brightness = extraShinyPoints.contains(point) ? 100 : 50;
+            brightness *= breathStatus;
+            brightness *= pattern.getBrightness();
             setColor(point, LXColor.hsba(
                     LXColor.h(baseColor),
                     LXColor.s(baseColor),
-                    brightness * breathStatus,
+                    brightness,
                     alpha
             ));
         }
