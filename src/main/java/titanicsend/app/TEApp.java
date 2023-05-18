@@ -53,6 +53,8 @@ import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.model.TEWholeModel;
 import titanicsend.model.justin.ColorCentral;
 import titanicsend.model.justin.ViewCentral;
+import titanicsend.modulator.justin.MultiplierModulator;
+import titanicsend.modulator.justin.UIMultiplierModulator;
 import titanicsend.output.GPOutput;
 import titanicsend.output.GrandShlomoStation;
 import titanicsend.pattern.TEEdgeTestPattern;
@@ -264,6 +266,12 @@ public class TEApp extends PApplet implements LXPlugin {
     lx.engine.midi.registerSurface("FoH: Midi Fighter Twister (2)", MidiFighterTwister.class);
     lx.engine.midi.registerSurface("FoH: Midi Fighter Twister (3)", MidiFighterTwister.class);
     lx.engine.midi.registerSurface("FoH: Midi Fighter Twister (4)", MidiFighterTwister.class);
+
+    // Custom modulator type
+    lx.registry.addModulator(MultiplierModulator.class);
+    if (lx instanceof LXStudio) {
+      ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIMultiplierModulator.class);
+    }
 
     // create our library for autopilot
     this.library = initializePatternLibrary(lx);

@@ -1,6 +1,6 @@
 {
-  "version": "0.4.3-SNAPSHOT",
-  "timestamp": 1684298780718,
+  "version": "0.4.4-SNAPSHOT",
+  "timestamp": 1684396708736,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -2768,7 +2768,7 @@
         },
         "parameters": {
           "label": "Mixer",
-          "crossfader": 0.6377952755905512,
+          "crossfader": 0.3543307086614173,
           "crossfaderBlendMode": 1,
           "focusedChannel": 7,
           "focusedChannelAux": 6,
@@ -2889,7 +2889,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.788733333331038
+                        "basis": 0.22949999999980264
                       }
                     ],
                     "modulations": [
@@ -2913,7 +2913,7 @@
                           "label": "LX",
                           "enabled": true,
                           "polarity": 0,
-                          "range": -0.25999997183680534
+                          "range": 0.0
                         },
                         "children": {}
                       }
@@ -2944,7 +2944,7 @@
               "fader": 1.0,
               "arm": false,
               "selected": false,
-              "enabled": false,
+              "enabled": true,
               "cue": false,
               "aux": false,
               "crossfadeGroup": 0,
@@ -2963,13 +2963,13 @@
               "transitionEnabled": true,
               "transitionTimeSecs": 0.05,
               "transitionBlendMode": 4,
-              "focusedPattern": 2,
+              "focusedPattern": 3,
               "triggerPatternCycle": false
             },
             "children": {},
             "effects": [],
             "clips": [],
-            "patternIndex": 2,
+            "patternIndex": 3,
             "patterns": [
               {
                 "id": 44470,
@@ -3396,9 +3396,9 @@
                   "viewPerPattern": 5,
                   "swatchPerChannel": 0,
                   "curve": 10.0,
-                  "yWave": 1.5,
+                  "tile": 2.0,
                   "xWave": 1.0,
-                  "tile": 2.0
+                  "yWave": 1.5
                 },
                 "children": {
                   "modulation": {
@@ -3553,10 +3553,10 @@
                   "panic": false,
                   "viewPerPattern": 0,
                   "swatchPerChannel": 0,
-                  "Double Speed": false,
-                  "Glow": 0.1,
                   "Double Layer": false,
+                  "Glow": 0.1,
                   "Energy": 0.0,
+                  "Double Speed": false,
                   "Width": 0.5
                 },
                 "children": {
@@ -4075,7 +4075,7 @@
             },
             "parameters": {
               "label": "EDGES",
-              "fader": 1.0,
+              "fader": 0.0,
               "arm": false,
               "selected": false,
               "enabled": true,
@@ -4480,7 +4480,7 @@
             },
             "parameters": {
               "label": "MULTIPLIERS",
-              "fader": 1.0,
+              "fader": 0.0,
               "arm": false,
               "selected": false,
               "enabled": false,
@@ -4782,7 +4782,7 @@
             },
             "parameters": {
               "label": "LIGHTNING",
-              "fader": 1.0,
+              "fader": 0.0,
               "arm": false,
               "selected": false,
               "enabled": false,
@@ -4874,7 +4874,7 @@
             },
             "parameters": {
               "label": "Outline",
-              "fader": 0.7428571619093418,
+              "fader": 0.0,
               "arm": false,
               "selected": false,
               "enabled": true,
@@ -4961,7 +4961,7 @@
             },
             "parameters": {
               "label": "Back",
-              "fader": 1.0,
+              "fader": 0.0,
               "arm": false,
               "selected": false,
               "enabled": true,
@@ -5092,8 +5092,52 @@
           "label": "Modulation"
         },
         "children": {},
-        "modulators": [],
-        "modulations": [],
+        "modulators": [
+          {
+            "id": 46201,
+            "class": "titanicsend.modulator.justin.MultiplierModulator",
+            "internal": {
+              "modulationColor": 0,
+              "modulationControlsExpanded": true
+            },
+            "parameters": {
+              "label": "Multiplier",
+              "running": true,
+              "trigger": false,
+              "inputA": 0.16535433070866143,
+              "inputB": 0.25000001676380634,
+              "output": 0.04133858544913333
+            },
+            "children": {}
+          }
+        ],
+        "modulations": [
+          {
+            "source": {
+              "componentId": 46201,
+              "parameterPath": "output",
+              "path": "/modulation/modulator/1/output"
+            },
+            "target": {
+              "componentId": 44757,
+              "parameterPath": "range",
+              "path": "/mixer/master/effect/2/modulation/modulation/1/range"
+            },
+            "id": 46202,
+            "class": "heronarts.lx.modulation.LXCompoundModulation",
+            "internal": {
+              "modulationColor": 0,
+              "modulationControlsExpanded": true
+            },
+            "parameters": {
+              "label": "LX",
+              "enabled": true,
+              "polarity": 0,
+              "range": -0.6874999953433871
+            },
+            "children": {}
+          }
+        ],
         "triggers": []
       },
       "output": {
@@ -5157,6 +5201,12 @@
         "children": {},
         "inputs": [
           {
+            "name": "FoH: APC40 mkII",
+            "channel": false,
+            "control": true,
+            "sync": false
+          },
+          {
             "name": "APC40 mkII",
             "channel": false,
             "control": true,
@@ -5165,6 +5215,14 @@
         ],
         "surfaces": [
           {
+            "name": "FoH: APC40 mkII",
+            "settings": {
+              "masterFaderEnabled": true,
+              "crossfaderEnabled": true,
+              "channelKnobIsView": true
+            }
+          },
+          {
             "name": "APC40 mkII",
             "settings": {
               "masterFaderEnabled": true,
@@ -5172,7 +5230,16 @@
             }
           }
         ],
-        "mapping": []
+        "mapping": [
+          {
+            "channel": 0,
+            "type": "CONTROL_CHANGE",
+            "path": "/lx/modulation/modulator/1/inputA",
+            "componentId": 46201,
+            "parameterPath": "inputA",
+            "cc": 55
+          }
+        ]
       },
       "osc": {
         "id": 30,
@@ -5201,7 +5268,9 @@
       "audioExpanded": true,
       "paletteExpanded": true,
       "cameraExpanded": true,
-      "modulatorExpanded": {},
+      "modulatorExpanded": {
+        "46201": true
+      },
       "preview": {
         "mode": 0,
         "animation": false,
