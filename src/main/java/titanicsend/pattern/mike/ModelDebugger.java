@@ -44,7 +44,7 @@ public class ModelDebugger extends TEPattern implements UIDeviceControls<ModelDe
                   .setDescription("Which type of object to light up");
 
   public final DiscreteParameter pointIndex =
-          new DiscreteParameter("Index", -1, 1000)
+          new DiscreteParameter("Index", -1, 2000)
                   .setDescription("Pixel within the selected object to light up (-1 for all)");
 
   public final StringParameter objectId =
