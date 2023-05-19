@@ -72,22 +72,34 @@ public class CrutchOSC extends LXComponent implements LXOscComponent {  //, LXOs
 
   @Override
   public void onParameterChanged(LXParameter parameter) {
-    if (parameter == lx.engine.mixer.focusedChannel) {
-      onFocusedChannel();
-    } else if (parameter == lx.engine.mixer.focusedChannelAux) {
-      onFocusedChannelAux();
+    try {
+      if (parameter == lx.engine.mixer.focusedChannel) {
+        onFocusedChannel();
+      } else if (parameter == lx.engine.mixer.focusedChannelAux) {
+        onFocusedChannelAux();
+      }
+    } catch (Exception ex) {
+      TE.err(ex, "CrutchOSC ");
     }
   }
 
   private LXParameterListener focusedPatternListener = (p) -> {
-    if (this.channel != null && p == this.channel.focusedPattern) {
-      onFocusedPattern(this.channel.getFocusedPattern(), false);
+    try {
+      if (this.channel != null && p == this.channel.focusedPattern) {
+        onFocusedPattern(this.channel.getFocusedPattern(), false);
+      }
+    } catch (Exception ex) {
+      TE.err(ex, "CrutchOSC focusedPatternListener");
     }
   };
 
   private LXParameterListener focusedPatternAuxListener = (p) -> {
-    if (this.channelAux != null && p == this.channelAux.focusedPattern) {
-      onFocusedPattern(this.channelAux.getFocusedPattern(), true);
+    try {
+      if (this.channelAux != null && p == this.channelAux.focusedPattern) {
+        onFocusedPattern(this.channelAux.getFocusedPattern(), true);
+      }
+    } catch (Exception ex) {
+      TE.err(ex, "CrutchOSC ");
     }
   };
 
@@ -237,8 +249,12 @@ public class CrutchOSC extends LXComponent implements LXOscComponent {  //, LXOs
     }
 
     private LXParameterListener remoteControlsChangedListener = (p) -> {
-      unregisterParameters();
-      registerParameters();
+      try {
+        unregisterParameters();
+        registerParameters();
+      } catch (Exception ex) {
+        TE.err(ex, "CrutchOSC ");
+      }
     };
 
     public void registerPattern(LXPattern pattern) {
@@ -292,8 +308,12 @@ public class CrutchOSC extends LXComponent implements LXOscComponent {  //, LXOs
 
     @Override
     public void onParameterChanged(LXParameter parameter) {
-      int i = params.indexOf(parameter);
-      parameterValueChanged((LXListenableNormalizedParameter)parameter, i, this.isAux);
+      try {
+        int i = params.indexOf(parameter);
+        parameterValueChanged((LXListenableNormalizedParameter)parameter, i, this.isAux);
+      } catch (Exception ex) {
+        TE.err(ex, "CrutchOSC ");
+      }
     }
 
     public void setValue(int index, float normalized) {
@@ -345,41 +365,46 @@ public class CrutchOSC extends LXComponent implements LXOscComponent {  //, LXOs
   @Override
   //public void oscMessage(OscMessage message) {
   public boolean handleOscMessage(OscMessage message, String[] parts, int index) {
-    String path = parts[index];
-
-    if (path.equals("osc-query")) {
-      oscQuery();
-      return true;
-    }
-
-    String address = message.getAddressPattern().toString();
-    String piString = parts[parts.length-2];
-    LX.log(piString);
     try {
-      int pi = Integer.parseInt(piString);
+      String path = parts[index];
 
-      if (address.startsWith(PATH_PRIMARY)) {
-        LXBus fc = this.lx.engine.mixer.getFocusedChannel();
-        if (fc != null && fc instanceof LXChannel) {
-          LXPattern fp = ((LXChannel)fc).getFocusedPattern();
-          if (fp != null) {
-            this.patternListener.setValue(pi, message.getFloat());
-            return true;
+      if (path.equals("osc-query")) {
+        oscQuery();
+        return true;
+      }
+
+      String address = message.getAddressPattern().toString();
+      String piString = parts[parts.length-2];
+      LX.log(piString);
+      try {
+        int pi = Integer.parseInt(piString);
+
+        if (address.startsWith(PATH_PRIMARY)) {
+          LXBus fc = this.lx.engine.mixer.getFocusedChannel();
+          if (fc != null && fc instanceof LXChannel) {
+            LXPattern fp = ((LXChannel)fc).getFocusedPattern();
+            if (fp != null) {
+              this.patternListener.setValue(pi, message.getFloat());
+              return true;
+            }
+          }
+          return true;
+        } else if (address.startsWith(PATH_AUX)) {
+          LXBus fc = this.lx.engine.mixer.getFocusedChannelAux();
+          if (fc != null && fc instanceof LXChannel) {
+            LXPattern fp = ((LXChannel)fc).getFocusedPattern();
+            if (fp != null) {
+              this.patternListenerAux.setValue(pi, message.getFloat());
+            }
           }
         }
         return true;
-      } else if (address.startsWith(PATH_AUX)) {
-        LXBus fc = this.lx.engine.mixer.getFocusedChannelAux();
-        if (fc != null && fc instanceof LXChannel) {
-          LXPattern fp = ((LXChannel)fc).getFocusedPattern();
-          if (fp != null) {
-            this.patternListenerAux.setValue(pi, message.getFloat());
-          }
-        }
+      } catch (Exception ex) {
+        TE.err(ex, "Invalid OSC message for CrutchOSC");
       }
-      return true;
+
     } catch (Exception ex) {
-      TE.err(ex, "Invalid OSC message for CrutchOSC");
+      TE.err(ex, "CrutchOSC ");
     }
 
     return super.handleOscMessage(message, parts, index);
