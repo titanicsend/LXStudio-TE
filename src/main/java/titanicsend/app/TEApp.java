@@ -121,7 +121,7 @@ public class TEApp extends PApplet implements LXPlugin {
   public void setup() {
     LXStudio.Flags flags = new LXStudio.Flags(this);
     flags.resizable = true;
-    flags.useGLPointCloud = true;
+    flags.useGLPointCloud = false;
     flags.startMultiThreaded = true;
 
     this.model = new TEWholeModel(resourceSubdir);
