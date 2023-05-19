@@ -55,6 +55,7 @@ import titanicsend.model.justin.ColorCentral;
 import titanicsend.model.justin.ViewCentral;
 import titanicsend.modulator.justin.MultiplierModulator;
 import titanicsend.modulator.justin.UIMultiplierModulator;
+import titanicsend.osc.CrutchOSC;
 import titanicsend.output.GPOutput;
 import titanicsend.output.GrandShlomoStation;
 import titanicsend.pattern.TEEdgeTestPattern;
@@ -98,9 +99,11 @@ public class TEApp extends PApplet implements LXPlugin {
   private TELaserTask laserTask;
   private ColorCentral colorCentral;
   private ViewCentral viewCentral;
+  private CrutchOSC crutchOSC;
 
   // Global feature on/off switches for troubleshooting
   public static final boolean ENABLE_COLOR_CENTRAL = true;
+  static public final boolean ENABLE_TOUCHOSC_IPADS = true;
   public static final boolean ENABLE_VIEW_CENTRAL = true;
   public static final boolean DELAY_FILE_OPEN_TO_FIRST_ENGINE_LOOP = true;
 
@@ -316,7 +319,9 @@ public class TEApp extends PApplet implements LXPlugin {
     try {
       lx.engine.osc.receiver(TEShowKontrol.OSC_PORT).addListener((message) -> {
         this.oscListener.onOscMessage(message);
+        lx.engine.osc.receiveActive.setValue(true);
       });
+      lx.engine.osc.receiveActive.setValue(true);
     } catch (SocketException sx) {
       sx.printStackTrace();
     }
@@ -333,6 +338,10 @@ public class TEApp extends PApplet implements LXPlugin {
 
     // Add special view controller
     this.viewCentral = new ViewCentral(lx);
+
+    // CrutchOSC is an LXOscEngine supplement for TouchOSC clients
+    this.crutchOSC = new CrutchOSC(lx);
+    
   }
 
   private TEPatternLibrary initializePatternLibrary(LX lx) {
@@ -476,6 +485,12 @@ public class TEApp extends PApplet implements LXPlugin {
     } else {
       TE.err("Selected channel must be a channel and not a group before adding all patterns.");
     }
+  }
+
+  @Override
+  public void dispose() {
+    this.crutchOSC.dispose();
+    super.dispose();
   }
 
   private static final DateFormat LOG_FILENAME_FORMAT = new SimpleDateFormat("'LXStudio-TE-'yyyy.MM.dd-HH.mm.ss'.log'");
