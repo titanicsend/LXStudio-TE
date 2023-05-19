@@ -4,25 +4,28 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
+import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.StringParameter;
 import titanicsend.model.TEPanelModel;
+import titanicsend.model.TEVertex;
 import titanicsend.pattern.TEPattern;
+import titanicsend.util.TEMath;
 
 import static titanicsend.util.TEColor.TRANSPARENT;
 
 @LXCategory("Panel FG")
 public class HandTracker extends TEPattern {
+    public final BooleanParameter circle =
+            new BooleanParameter("Circle", false)
+                    .setDescription("Square or circle");
     public final CompoundParameter junk1 =
             new CompoundParameter("Junk1", 0, 0, 100)
                     .setDescription("Placeholder 1");
     public final CompoundParameter junk2 =
             new CompoundParameter("Junk2", 0, 0, 100)
                     .setDescription("Placeholder 2");
-    public final CompoundParameter junk3 =
-            new CompoundParameter("Junk3", 0, 0, 100)
-                    .setDescription("Placeholder 3");
     public final CompoundParameter targetY =
             new CompoundParameter("Altitude", 25.5, 0, 100)
                     .setDescription("Target height from ground");
@@ -30,11 +33,11 @@ public class HandTracker extends TEPattern {
             new CompoundParameter("Azimuth", 61, -100, 100)
                     .setDescription("Target position left and right");
     public final CompoundParameter targetH =
-            new CompoundParameter("Height", 4.2, 1, 100)
+            new CompoundParameter("Height", 4.2, 0.25, 100)
                     .setDescription("Target height");
 
     public final CompoundParameter targetW =
-            new CompoundParameter("Width", 5, 1, 100)
+            new CompoundParameter("Width", 5, 0.25, 100)
                     .setDescription("Target width");
 
     public final LinkedColorParameter color =
@@ -47,12 +50,12 @@ public class HandTracker extends TEPattern {
 
     public HandTracker(LX lx) {
         super(lx);
+        addParameter("circle", this.circle);
 
         // Three placeholders just to put all four real controls
         // on the same MIDI knob row
         addParameter("junk1", this.junk1);
         addParameter("junk2", this.junk2);
-        addParameter("junk3", this.junk3);
 
         addParameter("Altitude", this.targetY);
         addParameter("Azimuth", this.targetZ);
@@ -70,14 +73,24 @@ public class HandTracker extends TEPattern {
 
         float zMax = this.modelTE.boundaryPoints.maxZBoundaryPoint.z;
         float yMax = this.modelTE.boundaryPoints.maxYBoundaryPoint.y;
+        boolean doCircle = this.circle.isOn();
 
         for (LXPoint point : this.modelTE.points) {
             if (this.modelTE.isGapPoint(point)) continue;
             float zPercent = 100.0f * point.z / zMax;
             float yPercent = 100.0f * point.y / yMax;
-            boolean isCloseToZ = Math.abs(Math.floor(zPercent) - z) < targetW.getValue();
-            boolean isCloseToY = Math.abs(Math.floor(yPercent) - y) < targetH.getValue();
-            if (isCloseToZ && isCloseToY) {
+            float dy = yPercent - y;
+            float dz = zPercent - z;
+            boolean opaque;
+            if (doCircle) {
+                double distance = Math.sqrt(dy * dy + dz * dz);
+                opaque = distance < targetH.getValue();
+            } else {
+                boolean isCloseToZ = Math.abs(dz) < targetW.getValue();
+                boolean isCloseToY = Math.abs(dy) < targetH.getValue();
+                opaque = isCloseToZ && isCloseToY;
+            }
+            if (opaque) {
                 colors[point.index] = color;
             } else {
                 colors[point.index] = TRANSPARENT;
