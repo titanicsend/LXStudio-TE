@@ -83,6 +83,7 @@ public class HandTracker extends TEPattern {
             float dz = zPercent - z;
             boolean opaque;
             if (doCircle) {
+                dz *= 0.85; // Make ellipse into circle
                 double distance = Math.sqrt(dy * dy + dz * dz);
                 opaque = distance < targetH.getValue();
             } else {
