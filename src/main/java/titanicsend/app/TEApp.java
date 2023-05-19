@@ -46,6 +46,7 @@ import heronarts.lx.pattern.texture.SparklePattern;
 import heronarts.lx.studio.LXStudio;
 import processing.core.PApplet;
 import titanicsend.app.autopilot.*;
+import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lx.APC40Mk2;
 import titanicsend.lx.MidiFighterTwister;
@@ -156,6 +157,15 @@ public class TEApp extends PApplet implements LXPlugin {
           LX.error(x, "Exception loading project: " + x.getLocalizedMessage());
         }
       }
+    }
+  }
+
+  public void setOscDestinationForIpads() {
+    try {
+      lx.engine.osc.transmitHost.setValue(PangolinHost.HOSTNAME);
+      lx.engine.osc.transmitPort.setValue(PangolinHost.PORT);
+    } catch (Exception ex) {
+      TE.err(ex, "Failed to set destination OSC address to ShowKontrol IP for iPads relay");
     }
   }
 
@@ -444,7 +454,10 @@ public class TEApp extends PApplet implements LXPlugin {
     ShaderPrecompiler.rebuildCache();
 
     lx.engine.addTask(() -> {
+      setOscDestinationForIpads();
       openDelayedFile(lx);
+      // Replace old saved destination IPs from project files
+      setOscDestinationForIpads();
     });
   }
 
