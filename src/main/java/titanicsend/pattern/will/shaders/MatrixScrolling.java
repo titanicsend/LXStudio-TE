@@ -17,6 +17,7 @@ import java.awt.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+import java.util.SplittableRandom;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.sin;
@@ -25,31 +26,36 @@ import static titanicsend.util.TEMath.multiplyArrays;
 
 public class MatrixScrolling extends FragmentShaderEffect {
 
+    SplittableRandom random;
+
     public MatrixScrolling(PatternTarget target) {
         super(target);
 
         TEPerformancePattern.TECommonControls ctl = pattern.getControls();
 
-        ctl.setRange(TEControlTag.SPEED, 0, -4.0, 4.0);
+        ctl.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
         ctl.setValue(TEControlTag.SPEED, 0.5);
 
         ctl.setRange(TEControlTag.SIZE, 0.02, 0.05, 0.01);  // block size
-        ctl.setRange(TEControlTag.WOW1, 0.0, 0, 3);        // blast radius
+        ctl.setRange(TEControlTag.WOW1, 0.0, 0, 1);         // blast radius
         ctl.setRange(TEControlTag.WOW2, 0.0, 0, 1);         // beat reactivity
+
+        // about twice as fast as the java.util.Random class
+        random = new SplittableRandom();
     }
 
     @Override
     protected double[] getColorForPoint(double[] fragCoordinates, double[] resolution, double timeSeconds) {
-//        TE.log("Resolution: (%f, %f)", resolution[0], resolution[1]);
-        Random random = new Random();
 
-        // randomly displace coordinates on every measure start
-        double measureProgress = 1.0 - this.pattern.getLX().engine.tempo.getBasis(Tempo.Division.WHOLE); // 1 when we start measure, 0 when we finish
-        measureProgress *= measureProgress; // steeper curve
-
+        // randomly displace coordinate on every measure start
         if (pattern.getWow1() > 0) {
-            int offset = (int) (measureProgress * random.nextInt((int)(100000 * pattern.getWow1())));
-            fragCoordinates = addToArray(offset, fragCoordinates);
+            double measureProgress = 1.0 - this.pattern.getLX().engine.tempo.getBasis(Tempo.Division.WHOLE); // 1 when we start measure, 0 when we finish
+            measureProgress *= measureProgress * measureProgress;
+
+            double k = 0.0005 + pattern.getWow1();
+
+            fragCoordinates[0] += measureProgress * random.nextDouble(k);
+            fragCoordinates[1] += measureProgress * random.nextDouble(k);
         }
 
         //        vec3 v = vec3(u, 1) / iResolution - 0.5;

@@ -112,7 +112,11 @@ public class ShaderPanelsPatternConfig {
     @LXCategory("Native Shaders Panels")
     public static class SpaceExplosion extends ConstructedPattern {
         public SpaceExplosion(LX lx) {
-            super(lx, TEShaderView.ALL_PANELS_INDIVIDUAL);
+            super(lx, TEShaderView.ALL_PANELS);
+
+            controls.setRange(TEControlTag.SPEED, 0, -1.5, 1.5); // speed
+            controls.setExponent(TEControlTag.SPEED, 2.0);
+            controls.setValue(TEControlTag.SPEED, 0.5);
         }
 
         @Override

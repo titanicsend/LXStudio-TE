@@ -13,12 +13,18 @@ const float PI = 3.14159265359;
 const float centerToCorner = sqrt((0.5*0.5) + (0.5*0.5));
 const float tangentScale = PI / (2.0*centerToCorner);
 const float thetaToPerlinScale = 2.0 / PI;
+const float TAU = PI * 2.0;
+const float QUARTER_WAVE = PI / 2.0;
+
+float wave(float n) {
+    return 0.5 + 0.5 * sin(-QUARTER_WAVE + TAU * fract(n));
+}
 
 float cosineInterpolate(float a, float b, float x) {
-	float ft = x * PI;
-	float f = (1.0 - cos(ft)) * 0.5;
+    float ft = x * PI;
+    float f = (1.0 - cos(ft)) * 0.5;
 
-	return a*(1.0-f) + b*f;
+    return a*(1.0-f) + b*f;
 }
 
 float seededRandom(float seed) {
@@ -37,16 +43,16 @@ float perlinNoise(float perlinTheta, float r, float time) {
         float sf = pow(2.0, float(octave));
         float sf8 = sf*64.0; // I can't remember where this variable name came from
 
-		float new_theta = sf*perlinTheta;
+        float new_theta = sf*perlinTheta;
         float new_r = sf*r + time; // Add current time to this to get an animated effect
 
         float new_theta_floor = floor(new_theta);
-		float new_r_floor = floor(new_r);
-		float fraction_r = new_r - new_r_floor;
-		float fraction_theta = new_theta - new_theta_floor;
+        float new_r_floor = floor(new_r);
+        float fraction_r = new_r - new_r_floor;
+        float fraction_theta = new_theta - new_theta_floor;
 
         float t1 = seededRandom( new_theta_floor	+	sf8 *  new_r_floor      );
-		float t2 = seededRandom( new_theta_floor	+	sf8 * (new_r_floor+1.0) );
+        float t2 = seededRandom( new_theta_floor	+	sf8 * (new_r_floor+1.0) );
 
         new_theta_floor += 1.0;
         float maxVal = sf*2.0;
@@ -55,10 +61,10 @@ float perlinNoise(float perlinTheta, float r, float time) {
         }
 
         float t3 = seededRandom( new_theta_floor	+	sf8 *  new_r_floor      );
-		float t4 = seededRandom( new_theta_floor	+	sf8 * (new_r_floor+1.0) );
+        float t4 = seededRandom( new_theta_floor	+	sf8 * (new_r_floor+1.0) );
 
-		float i1 = cosineInterpolate(t1, t2, fraction_r);
-		float i2 = cosineInterpolate(t3, t4, fraction_r);
+        float i1 = cosineInterpolate(t1, t2, fraction_r);
+        float i2 = cosineInterpolate(t3, t4, fraction_r);
 
         sum += cosineInterpolate(i1, i2, fraction_theta)/sf;
     }
@@ -73,13 +79,13 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     float dy = 0.5 - uv.y;
     dy *= iResolution.y / iResolution.x;
 
-    float perlinTheta = (PI+atan(dy, -dx))/PI;
+    float perlinTheta = (-iRotationAngle + PI+atan(dy, -dx))/PI;
     float r = sqrt((dx*dx) + (dy*dy));
     r = centerToCorner - r;
 
-    float perlin = perlinNoise(perlinTheta, r, iTime);
+    float perlin = perlinNoise(perlinTheta, r, -iTime);
 
-    float timeMod = mod(-iTime, 1.5);
+    float timeMod = mod(iTime, 1.5);
     float scale = 2.0*(timeMod-r);
     float glowRing = cos(pow(1.0-scale, 0.1));
     glowRing -= 0.5;
@@ -87,9 +93,11 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     if (scale>1.0) {
         scale = 0.0;
     }
-    float c = scale*perlin*2.0;
 
-    fragColor = vec4(glowRing+c, glowRing, glowRing*0.5+(c*2.0), 0);
-    // alpha, derived from brightness, for LX blending.
-    fragColor.a = max(fragColor.r,max(fragColor.g,fragColor.b));	
+    // calculate and gamma correct brightness
+    float c = glowRing + (scale*perlin*2.0);
+
+    // Wow2 controls the mix of foreground color vs. gradient
+    vec3 col = c * mix(iColorRGB, mix(iColorRGB, iColor2RGB, wave(c * 2.0)), iWow2);
+    fragColor = vec4(col, max(col.r,max(col.g,col.b)));
 }
