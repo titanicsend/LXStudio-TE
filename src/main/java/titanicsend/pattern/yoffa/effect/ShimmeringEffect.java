@@ -36,7 +36,6 @@ public class ShimmeringEffect extends PatternEffect {
         (EnumParameter<Mode>) new EnumParameter<Mode>("Mode", Mode.FOREGROUND)
             .setDescription("Color Mode")
             .setWrappable(false);
-    private int direction;
     private int lastBeat;
 
     public ShimmeringEffect(PatternTarget target) {
@@ -53,7 +52,6 @@ public class ShimmeringEffect extends PatternEffect {
     @Override
     public void onPatternActive() {
         lastBeat = 0;
-        direction = 0;
     }
 
     @Override
@@ -71,7 +69,6 @@ public class ShimmeringEffect extends PatternEffect {
 
         if (beatCount > lastBeat && beatCount % beatsPerMeasure == 0) {
             lastBeat = getTempo().beatCount();
-            direction = direction == 3 ? 0 : direction + 1;
         }
 
         for (LXPoint point : getPoints()) {
@@ -101,15 +98,9 @@ public class ShimmeringEffect extends PatternEffect {
     private double getDistanceFromTarget(LXPoint point, double basis) {
         double current;
         double target;
-        if (direction == 0 || direction == 2) {
-            // target = (dimensions.getMaxYn() - dimensions.getMinYn()) * basis + dimensions.getMinYn();
-            target = basis;
-            current = point.yn;
-        } else {
-            // target = (dimensions.getMaxZn() - dimensions.getMinZn()) * basis + dimensions.getMinZn();
-            target = basis;
-            current = point.zn;
-        }
+        int direction = (int) (Math.abs(pattern.getStaticRotationAngle()) / (.5 * Math.PI));
+        target = basis;
+        current = direction == 0 || direction == 2 ? point.yn : point.zn;
         if (direction > 1) {
             current = 1 - current;
         }
