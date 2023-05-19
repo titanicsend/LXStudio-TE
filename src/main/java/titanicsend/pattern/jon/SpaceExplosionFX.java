@@ -52,7 +52,7 @@ public class SpaceExplosionFX extends TEPerformancePattern {
         addCommonControls();
 
         effect = new NativeShaderPatternEffect("space_explosionfx.fs",
-            new PatternTarget(this, TEShaderView.ALL_POINTS));
+            new PatternTarget(this));
 
         eventStartTime = 0;
         lastBasis = 0;
@@ -138,12 +138,8 @@ public class SpaceExplosionFX extends TEPerformancePattern {
     // Initialize the NativeShaderPatternEffect and retrieve the native shader object
     // from it when the pattern becomes active
     public void onActive() {
+        super.onActive();
         effect.onActive();
         shader = effect.getNativeShader();
-    }
-
-    @Override
-    public String getDefaultView() {
-        return effect.getDefaultView();
     }
 }
