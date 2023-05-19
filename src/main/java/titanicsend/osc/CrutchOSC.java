@@ -76,16 +76,9 @@ public class CrutchOSC extends LXComponent implements LXOscComponent {  //, LXOs
       onFocusedChannel();
     } else if (parameter == lx.engine.mixer.focusedChannelAux) {
       onFocusedChannelAux();
-    } /*else {
-      if (this.channel != null && parameter == this.channel.focusedPattern) {
-        onFocusedPattern(this.channel.getFocusedPattern(), false);
-      }
-      if (this.channelAux != null && parameter == this.channelAux.focusedPattern) {
-        onFocusedPattern(this.channel.getFocusedPattern(), true);
-      }
-    }*/
+    }
   }
-  
+
   private LXParameterListener focusedPatternListener = (p) -> {
     if (this.channel != null && p == this.channel.focusedPattern) {
       onFocusedPattern(this.channel.getFocusedPattern(), false);
@@ -114,7 +107,7 @@ public class CrutchOSC extends LXComponent implements LXOscComponent {  //, LXOs
       registerChannel(this.channel, false);
     }
   }
-  
+
 
   private void onFocusedChannelAux() {
     if (this.channelAux != null) {
@@ -329,7 +322,7 @@ public class CrutchOSC extends LXComponent implements LXOscComponent {  //, LXOs
 
   private void registerPattern(LXPattern pattern, boolean isAux) {
     if (isAux) {
-    this.patternListenerAux.registerPattern(pattern);
+      this.patternListenerAux.registerPattern(pattern);
     } else {
       this.patternListener.registerPattern(pattern);      
     }
