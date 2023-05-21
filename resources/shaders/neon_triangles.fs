@@ -7,7 +7,7 @@
 #define REPEAT 2.0
 #define BLOOM_DEPTH 16.0;
 #define BLOOM_IT 128
-#define ANG 7.5
+#define ANG 0.0
 
 float seed;
 
@@ -31,6 +31,18 @@ vec3 rotVec(vec3 p, vec3 r)
     p.xy *= rot(r.z);
     return p;
 }
+
+// vector v indicates axes to rotate - e.g. (0.,1.,0.) rotates Y axis, (1.,1.,0) rotates X and Y, etc.
+mat3 buildRotationMatrix3D(vec3 v, float angle) {
+float c = cos(angle); float s = sin(angle);
+
+  return mat3(c + (1.0 - c) * v.x * v.x, (1.0 - c) * v.x * v.y - s * v.z, (1.0 - c) * v.x * v.z + s * v.y,
+    (1.0 - c) * v.x * v.y + s * v.z, c + (1.0 - c) * v.y * v.y, (1.0 - c) * v.y * v.z - s * v.x,
+    (1.0 - c) * v.x * v.z - s * v.y, (1.0 - c) * v.y * v.z + s * v.x, c + (1.0 - c) * v.z * v.z
+  );
+}
+
+
 
 vec3 makeRay(vec2 origin)
 {
@@ -122,16 +134,19 @@ vec3 getBloom(vec3 pos, vec3 dir)
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
+    mat3 viewMat = buildRotationMatrix3D(vec3(0.,0.,1.),-iRotationAngle);
+
     seed = iTime + iResolution.y * fragCoord.x / iResolution.x + fragCoord.y / iResolution.y;
     vec3 pos = vec3(0, 0, iTime * 2.0);
-    vec3 dir = makeRay(fragCoord);
-    dir = rotVec(dir, vec3(0, 0, -(pos.z / REPEAT * ANG * PI / 180.0)));
+    vec3 dir = makeRay(fragCoord) * viewMat;
 
     float res = rayMarch(pos, dir);
     vec3 col = getBloom(pos, dir);
 
     if (res < MAX_DIST)
         col = vec3(1);
+
+    col *= mix(iColorRGB,col,iWow2);
 
     fragColor = vec4(col, max(col.r, max(col.g, col.b)));
 }
