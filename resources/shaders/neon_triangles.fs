@@ -147,6 +147,5 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         col = vec3(1);
 
     col *= mix(iColorRGB,col,iWow2);
-
-    fragColor = vec4(col, max(col.r, max(col.g, col.b)));
+    fragColor = vec4(col, 1.);
 }

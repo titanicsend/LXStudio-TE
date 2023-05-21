@@ -35,7 +35,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     float m = smoothstep(s, s - 0.05, length(gv)) + s * 2.0;
 
     vec3 col = mix(iColor2RGB,iColorRGB,s) * min(1.1,(m - (m * 0.44 * s)));
-    fragColor = vec4(col, max(col.r,max(col.g,col.b)));
+    fragColor = vec4(col, 1.);
 }
 
 
