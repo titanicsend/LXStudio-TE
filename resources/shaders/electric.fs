@@ -16,7 +16,7 @@ vec2 hash(in vec2 p) {
     p = vec2(dot(p, vec2(127.1, 311.7)),
              dot(p, vec2(269.5, 183.3)));
 
-    return -1. + (1.0 + 5.0 * iQuantity) * fract(sin(p) * 43758.5453123);
+    return -1. + (1.0 + 25.0 * iWow2) * fract(sin(p) * 43758.5453123);
 }
 
 float noise(in vec2 p) {
@@ -89,10 +89,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float d1 = abs(uv.x * thickness / (uv.x + fbm(uv + 1.25 * iTime)));
     float d2 = abs(uv.y * thickness / (uv.y + fbm(uv - 1.5 * iTime)));
 
-    float size = 0.1 + iQuantity / 2.0;
+    float size = 0.1 + iWow2 / 2.0;
 
-    vec3 col = clamp(iWow2 * d1 * size,0.,1.2) * iColorRGB;
-    col += clamp(iWow2 * d2 * size,0.,1.2) * iColor2RGB;
+    vec3 col = clamp(iQuantity * d1 * size,0.,1.2) * iColorRGB;
+    col += clamp(iQuantity * d2 * size,0.,1.2) * iColor2RGB;
 
     fragColor = vec4(col, max(col.r, max(col.g, col.b)));
 }
