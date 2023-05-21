@@ -65,5 +65,5 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     rz *= sin(p.x * .5 + time * 4.) * 10.0;
     vec3 col = (iColorRGB) / sqrt(abs(.1 - rz));
     col = pow(col,vec3(2. * iWow1));
-    fragColor = vec4(col, max(col.r, max(col.g, col.b)));
+    fragColor = vec4(col, 1.);
 }

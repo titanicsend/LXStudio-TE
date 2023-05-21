@@ -74,5 +74,5 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // Wow2 controls foreground vs gradient color mix.
     vec3 fc = fog * mix(iColorRGB, mix(iColorRGB, iColor2RGB, wave(fog * 3.0)), iWow2);
 
-    fragColor = vec4(fc, max(fc.r, max(fc.g, fc.b)));
+    fragColor = vec4(fc, 1.);
 }

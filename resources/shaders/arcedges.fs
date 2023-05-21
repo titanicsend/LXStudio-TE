@@ -90,7 +90,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
       finalColor += col * col * col;
 	}
     
-    fragColor = vec4(finalColor, max(finalColor.r,max(finalColor.g,finalColor.b)));
+    fragColor = vec4(finalColor, 1.);
 }
 
 

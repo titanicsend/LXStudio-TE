@@ -2,6 +2,8 @@ package titanicsend.pattern.yoffa.shader_engine;
 
 import heronarts.lx.model.LXPoint;
 
+import java.awt.*;
+
 // just a super lightweight version of ImagePainter that we can instantiate
 // outside the frame handler.   TODO - This also gives us a place to experiment with
 // caching the calculated texture coordinates instead of recalculating them every
@@ -35,6 +37,10 @@ public class ShaderPainter {
         int xi = Math.round((1f - point.zn) * (imageWidth() - 1f));
         int yi = Math.round(point.yn * (imageHeight() - 1f));
 
-        colors[point.index] = image[xi][yi];
+        Color color = new Color(image[xi][yi]);
+        if (color.getRed() == 0 && color.getGreen() == 0 && color.getBlue() == 0) {
+            color = new Color(0, 0, 0, 0);
+        }
+        colors[point.index] = color.getRGB();
     }
 }

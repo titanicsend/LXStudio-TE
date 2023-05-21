@@ -91,7 +91,4 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )  {
         + light(position - offset + vec2(-0.09, -0.2),sinPhaseBeat);
      
 	fragColor = clamp(fragColor,0.,1.);
-
-    // alpha, derived from brightness, for LX blending.
-    fragColor.a = max(fragColor.r,max(fragColor.g,fragColor.b));
 }

@@ -107,5 +107,5 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     //vec3 finalColor = mix(hsv2rgb(c1), hsv2rgb(c2), iWow2) + starcolor;
     vec3 finalColor = hsv2rgb(c1) + hsv2rgb(c2) + starcolor;
 
-    fragColor = vec4(finalColor, max(finalColor.x, max(finalColor.y, finalColor.z)));
+    fragColor = vec4(finalColor, 1.);
 }

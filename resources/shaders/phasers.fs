@@ -119,5 +119,5 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord) {
   vec3 col = iColorRGB * ((8.0 * l * c) + (c * iWow2) + zapper);
 
   // alpha is taken from the brightest color channel value.
-  fragColor = vec4(col,sqrt(max(col.r,max(col.g,col.b))));
+  fragColor = vec4(col, 1.);
 }

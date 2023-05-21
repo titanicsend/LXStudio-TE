@@ -90,5 +90,5 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
     // Output to screen
     vec3 col = iColorRGB * c;
-    fragColor = vec4(col,max(col.r,max(col.g,col.b)));
+    fragColor = vec4(col, 1.);
 }

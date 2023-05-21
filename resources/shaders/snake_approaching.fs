@@ -96,5 +96,5 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     		c = normalize(b.xyz);
     	#endif
     }
-    fragColor =  vec4(c, max(c.r,max(c.g,c.b)));
+    fragColor =  vec4(c, 1.);
 }
