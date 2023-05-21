@@ -21,6 +21,7 @@ import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.TEPerformancePattern.TEColorParameter;
 import titanicsend.pattern.TEPerformancePattern.TEColorParameter.TEColorOffsetParameter;
 import titanicsend.pattern.jon.TEControlTag;
+import titanicsend.util.TE;
 
 /**
  * Device UI for TEPerformancePattern
@@ -56,11 +57,15 @@ public class UITEPerformancePattern implements UIDeviceControls<TEPerformancePat
   }
 
   protected void refresh() {
-    for (UI2dComponent control : this.controls) {
-      control.removeFromContainer();
+    try {
+      for (UI2dComponent control : this.controls) {
+        control.removeFromContainer();
+      }
+      this.controls.clear();
+      addControls();
+    } catch (Exception e) {
+      TE.err("Error: %s", e);
     }
-    this.controls.clear();
-    addControls();
   }
 
   private void addControls() {

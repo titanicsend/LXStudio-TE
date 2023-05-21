@@ -113,14 +113,14 @@ public class ShaderPanelsPatternConfig {
     public static class SpaceExplosion extends ConstructedPattern {
         public SpaceExplosion(LX lx) {
             super(lx, TEShaderView.ALL_PANELS);
-
-            controls.setRange(TEControlTag.SPEED, 0, -1.5, 1.5); // speed
-            controls.setExponent(TEControlTag.SPEED, 2.0);
-            controls.setValue(TEControlTag.SPEED, 0.5);
         }
 
         @Override
         protected List<PatternEffect> createEffects() {
+            controls.setRange(TEControlTag.SPEED, 0, -1.5, 1.5); // speed
+            controls.setExponent(TEControlTag.SPEED, 2.0);
+            controls.setValue(TEControlTag.SPEED, 0.5);
+
             return List.of(new NativeShaderPatternEffect("space_explosion.fs",
                 new PatternTarget(this)));
         }
