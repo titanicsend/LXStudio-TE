@@ -710,6 +710,8 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
         }
       }
 
+      
+      /*
       // Listen to custom view parameter for channel
       if (ViewCentral.ENABLED) {
         this.viewPerChannel = ViewCentral.get().get(channel);
@@ -720,6 +722,7 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
           }
         }
       }
+      */
     }
 
     public void dispose() {
@@ -1900,10 +1903,18 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
 
     if (number >= CHANNEL_KNOB && number <= CHANNEL_KNOB_MAX) {
       int channel = number - CHANNEL_KNOB;
-      if (channel < this.lx.engine.mixer.channels.size() && this.channelKnobIsView.isOn() && ViewCentral.ENABLED) {
-        ViewCentral.get().get(this.lx.engine.mixer.channels.get(channel)).view.setNormalized(cc.getNormalized());
-      } else {
-        sendControlChange(cc.getChannel(), cc.getCC(), cc.getValue());
+      if (channel < this.lx.engine.mixer.channels.size()) {
+        LXBus bus = this.lx.engine.mixer.channels.get(channel);
+        if (bus instanceof LXChannel && bus.fader.getValue() == 0) {
+          int numPatterns = ((LXChannel)bus).patterns.size();
+          if (numPatterns > 0) {
+            double normalized = cc.getNormalized();
+            // Set active pattern
+            ((LXChannel)bus).goPatternIndex((int)(normalized * (numPatterns-1))); 
+            // Alternative for focused pattern
+            // ((LXChannel)bus).focusedPattern.setNormalized(normalized);  
+          }
+        }
       }
       return;
     }
