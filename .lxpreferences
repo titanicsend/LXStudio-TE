@@ -1,8 +1,8 @@
 {
   "version": "0.4.4-SNAPSHOT",
   "projectFileName": "EDC_showcase.lxp",
-  "windowWidth": 1920,
-  "windowHeight": 995,
+  "windowWidth": -1,
+  "windowHeight": -1,
   "windowPosX": -1,
   "windowPosY": -1,
   "uiZoom": 100,
