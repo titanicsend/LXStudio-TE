@@ -39,13 +39,12 @@ import heronarts.lx.LXPlugin;
 import heronarts.lx.mixer.LXBus;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.pattern.LXPattern;
-import heronarts.lx.pattern.color.GradientPattern;
 import heronarts.lx.pattern.form.PlanesPattern;
 import heronarts.lx.pattern.texture.NoisePattern;
-import heronarts.lx.pattern.texture.SparklePattern;
 import heronarts.lx.studio.LXStudio;
 import processing.core.PApplet;
 import titanicsend.app.autopilot.*;
+import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lx.APC40Mk2;
 import titanicsend.lx.MidiFighterTwister;
@@ -121,7 +120,7 @@ public class TEApp extends PApplet implements LXPlugin {
   public void setup() {
     LXStudio.Flags flags = new LXStudio.Flags(this);
     flags.resizable = true;
-    flags.useGLPointCloud = true;
+    flags.useGLPointCloud = false;
     flags.startMultiThreaded = true;
 
     this.model = new TEWholeModel(resourceSubdir);
@@ -156,6 +155,15 @@ public class TEApp extends PApplet implements LXPlugin {
           LX.error(x, "Exception loading project: " + x.getLocalizedMessage());
         }
       }
+    }
+  }
+
+  public void setOscDestinationForIpads() {
+    try {
+      lx.engine.osc.transmitHost.setValue(PangolinHost.HOSTNAME);
+      lx.engine.osc.transmitPort.setValue(PangolinHost.PORT);
+    } catch (Exception ex) {
+      TE.err(ex, "Failed to set destination OSC address to ShowKontrol IP for iPads relay");
     }
   }
 
@@ -198,6 +206,7 @@ public class TEApp extends PApplet implements LXPlugin {
     lx.registry.addPattern(PixelblazeParallel.class);
     lx.registry.addPattern(RadialSimplex.class);
     lx.registry.addPattern(SimplexPosterized.class);
+    lx.registry.addPattern(SpaceExplosionFX.class);
     lx.registry.addPattern(TEMidiFighter64DriverPattern.class);
     lx.registry.addPattern(TESparklePattern.class);
     lx.registry.addPattern(TurbulenceLines.class);
@@ -444,7 +453,10 @@ public class TEApp extends PApplet implements LXPlugin {
     ShaderPrecompiler.rebuildCache();
 
     lx.engine.addTask(() -> {
+      setOscDestinationForIpads();
       openDelayedFile(lx);
+      // Replace old saved destination IPs from project files
+      setOscDestinationForIpads();
     });
   }
 

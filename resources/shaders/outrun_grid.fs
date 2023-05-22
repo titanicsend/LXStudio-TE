@@ -90,7 +90,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
         float intensity = max(glow,14.0 * fade * (dist + pattern));
 
         // set final color and build reasonable alpha value from brightness
-        fragColor = vec4(iColorRGB * intensity,0.0);
-        fragColor.a = max(fragColor.r,max(fragColor.g,fragColor.b));
+        fragColor = vec4(iColorRGB * intensity, 1.0);
     }
 }
