@@ -10,15 +10,10 @@ public class OffscreenShaderRenderer {
     private final NativeShader nativeShader;
     private final GLAutoDrawable offscreenDrawable;
 
-    public OffscreenShaderRenderer(FragmentShader fragmentShader,ShaderOptions shaderOptions) {
+    public OffscreenShaderRenderer(FragmentShader fragmentShader) {
         offscreenDrawable = ShaderUtils.createGLSurface(xResolution,yResolution);
         offscreenDrawable.display();
-        nativeShader = new NativeShader(fragmentShader, xResolution, yResolution,shaderOptions);
-    }
-
-    // use default shader options
-    public OffscreenShaderRenderer(FragmentShader fragmentShader) {
-        this(fragmentShader,new ShaderOptions());
+        nativeShader = new NativeShader(fragmentShader, xResolution, yResolution);
     }
 
     public void initializeNativeShader() {

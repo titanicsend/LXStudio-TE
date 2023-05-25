@@ -9,7 +9,6 @@ import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
-import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 
 @LXCategory("Native Shaders Panels")
 public class Phasers extends TEPerformancePattern {
@@ -18,12 +17,6 @@ public class Phasers extends TEPerformancePattern {
 
     public Phasers(LX lx) {
         super(lx, TEShaderView.ALL_PANELS);
-
-        // create new effect with alpha on and no automatic
-        // parameter uniforms
-        ShaderOptions options = new ShaderOptions();
-        options.useAlpha(true);
-        options.useLXParameterUniforms(false);
 
         // set parameters for common controls
 
@@ -50,8 +43,7 @@ public class Phasers extends TEPerformancePattern {
         addCommonControls();
 
         // Create the underlying shader pattern
-        effect = new NativeShaderPatternEffect("phasers.fs",
-                new PatternTarget(this), options);
+        effect = new NativeShaderPatternEffect("phasers.fs", new PatternTarget(this));
     }
 
     @Override

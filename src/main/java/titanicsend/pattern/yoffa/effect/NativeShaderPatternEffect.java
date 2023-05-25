@@ -22,24 +22,21 @@ public class NativeShaderPatternEffect extends PatternEffect {
 
     TEPattern.ColorType colorType;
      PatternControlData controlData;
-    ShaderOptions shaderOptions;
 
     /**
      * Creates new native shader effect with the specified shader options.
      * @param fragmentShader
      * @param target
-     * @param options - ShaderOptions object
      */
-    public NativeShaderPatternEffect(FragmentShader fragmentShader, PatternTarget target, ShaderOptions options) {
+    public NativeShaderPatternEffect(FragmentShader fragmentShader, PatternTarget target) {
         super(target);
         this.colorType = target.colorType;
         this.controlData = new PatternControlData(pattern);
-        this.shaderOptions = options;
         painter = new ShaderPainter();
 
         if (fragmentShader != null) {
             this.fragmentShader = fragmentShader;
-            this.offscreenShaderRenderer = new OffscreenShaderRenderer(fragmentShader,options);
+            this.offscreenShaderRenderer = new OffscreenShaderRenderer(fragmentShader);
             this.parameters = fragmentShader.getParameters();
 
         } else {
@@ -48,50 +45,27 @@ public class NativeShaderPatternEffect extends PatternEffect {
     }
 
     /**
-     * Creates new native shader effect with default options - shader alpha will be ignored,
-     * audio data and LX parameters will be provided as uniforms to the shader.
-     * @param fragmentShader
-     * @param target
-     */
-    public NativeShaderPatternEffect(FragmentShader fragmentShader, PatternTarget target) {
-        // alpha disabled in this version to preserve backward compatibility
-        this(fragmentShader,target,new ShaderOptions());
-    }
-
-    /**
      * Creates new native shader effect with additional texture support, using
      * the specified shader options.
      * @param shaderFilename
      * @param target
-     * @param options - ShaderOptions object
+
      * @param textureFilenames
      */
-    public NativeShaderPatternEffect(String shaderFilename, PatternTarget target, ShaderOptions options, String... textureFilenames) {
+    public NativeShaderPatternEffect(String shaderFilename, PatternTarget target, String... textureFilenames) {
         this(new FragmentShader(new File("resources/shaders/" + shaderFilename),
                         Arrays.stream(textureFilenames)
                                 .map(x -> new File("resources/shaders/textures/" + x))
                                 .collect(Collectors.toList())),
-                target,options);
+                target);
 
-    }
-
-    /**
-     * Creates new native shader effect with additional texture support, using
-     * the default options - shader alpha will be ignored, audio data and LX parameters
-     * will be provided as uniforms to the shader.
-     * @param shaderFilename
-     * @param target
-     * @param textureFilenames
-     */
-    public NativeShaderPatternEffect(String shaderFilename, PatternTarget target, String... textureFilenames) {
-        this(shaderFilename,target,new ShaderOptions(), textureFilenames);
     }
 
     @Override
     public void onPatternActive() {
         if (fragmentShader != null) {
             if (offscreenShaderRenderer == null) {
-                offscreenShaderRenderer = new OffscreenShaderRenderer(fragmentShader, shaderOptions);
+                offscreenShaderRenderer = new OffscreenShaderRenderer(fragmentShader);
 
             }
         }
