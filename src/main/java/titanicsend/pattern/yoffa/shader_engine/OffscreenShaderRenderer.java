@@ -2,6 +2,8 @@ package titanicsend.pattern.yoffa.shader_engine;
 
 import com.jogamp.opengl.*;
 
+import java.nio.ByteBuffer;
+
 public class OffscreenShaderRenderer {
 
     private final static int xResolution = 640;
@@ -14,23 +16,17 @@ public class OffscreenShaderRenderer {
         offscreenDrawable = ShaderUtils.createGLSurface(xResolution,yResolution);
         offscreenDrawable.display();
         nativeShader = new NativeShader(fragmentShader, xResolution, yResolution);
+        nativeShader.init(offscreenDrawable);
     }
 
     public void initializeNativeShader() {
-       // do nothing for now.
     };
 
-    public int[][] getFrame(PatternControlData audioInfo) {
-        // initialize as late as possible to avoid stepping on LX's toes
-        if (!nativeShader.isInitialized()) {
-            nativeShader.init(offscreenDrawable);
-        }
-
-        nativeShader.updateAudioInfo(audioInfo);
+    public ByteBuffer getFrame(PatternControlData ctlInfo) {
+        nativeShader.updateControlInfo(ctlInfo);
         nativeShader.display(offscreenDrawable);
         return nativeShader.getSnapshot();
     }
-
 
     public void reset() {
         nativeShader.reset();

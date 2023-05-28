@@ -5,7 +5,6 @@ import com.jogamp.opengl.*;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.util.GLBuffers;
 import com.jogamp.opengl.util.texture.Texture;
-import com.jogamp.opengl.util.texture.TextureData;
 import com.jogamp.opengl.util.texture.TextureIO;
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
@@ -24,36 +23,27 @@ import Jama.Matrix;
 import static com.jogamp.opengl.GL.*;
 import static titanicsend.pattern.yoffa.shader_engine.UniformTypes.*;
 
-
-//Technically we don't need to implement GLEventListener unless we plan on rendering on screen, but let's leave it
-//for good practice
+// Technically we don't need to implement GLEventListener unless we plan on rendering on screen, but let's leave it
+// for good practice.
 public class NativeShader implements GLEventListener {
 
     //we need to draw an object with a vertex shader to put our fragment shader on
     //literally just create a rectangle that takes up the whole screen to paint on
-    //TODO currently we're only able to run one OpenGL pattern at a time. We need to split this into multiple
-    //  rectangles so we can display multiple patterns in the frame.
     private static final float[] VERTICES = {
-            1.0f, 1.0f, 0.0f,
-            1.0f, -1.0f, 0.0f,
-            -1.0f, -1.0f, 0.0f,
-            -1.0f, 1.0f, 0.0f
+        1.0f, 1.0f, 0.0f,
+        1.0f, -1.0f, 0.0f,
+        -1.0f, -1.0f, 0.0f,
+        -1.0f, 1.0f, 0.0f
     };
 
     //we are drawing with triangles, so we need two to make our rectangle
     private static final int[] INDICES = {
-            0, 1, 2,
-            2, 0, 3
+        0, 1, 2,
+        2, 0, 3
     };
 
-    private static final Map<Integer, Integer> INDEX_TO_GL_ENUM = Map.of(
-            0, GL_TEXTURE0,
-            1, GL_TEXTURE1,
-            2, GL_TEXTURE2,
-            3, GL_TEXTURE3); //stupid
-
     private static final String FRAGMENT_SHADER_TEMPLATE =
-            ShaderUtils.loadResource("resources/shaders/framework/template.fs");
+        ShaderUtils.loadResource("resources/shaders/framework/template.fs");
     private static final String SHADER_BODY_PLACEHOLDER = "{{%shader_body%}}";
 
     private final FragmentShader fragmentShader;
@@ -63,19 +53,13 @@ public class NativeShader implements GLEventListener {
     private final FloatBuffer vertexBuffer;
     private final IntBuffer indexBuffer;
     int[] geometryBufferHandles = new int[2];
-
+    int[] audioTextureHandle = new int[1];
     private final Map<Integer, Texture> textures;
-    int[] textureBufferHandle = new int[1];
     private int textureKey;
-    boolean needAudioCleanup;
     private final Integer audioChannel;
     private ShaderProgram shaderProgram;
-    private long startTime;
-
     ByteBuffer backBuffer;
     private int[][] snapshot;
-
-    private int alphaMask;
 
     private PatternControlData controlData;
 
@@ -95,7 +79,7 @@ public class NativeShader implements GLEventListener {
         this.vertexBuffer.put(VERTICES);
         this.indexBuffer.put(INDICES);
         this.textures = new HashMap<>();
-        this.textureKey = 0;
+        this.textureKey = 1;  // textureKey 0 reserved for audio texture.
         this.controlData = null;
         this.audioChannel = fragmentShader.getAudioInputChannel();
 
@@ -106,17 +90,6 @@ public class NativeShader implements GLEventListener {
         this.audioTextureWidth = 512;
         this.audioTextureHeight = 2;
         this.audioTextureData = GLBuffers.newDirectFloatBuffer(audioTextureHeight * audioTextureWidth);
-    }
-
-    /**
-     * Determines whether alpha values returned from the fragment shader will be used.  Can safely
-     * be changed while the shader is running.
-     *
-     * @param b - true to enable the alpha channel for this shader, false to ignore it, discard
-     *          whatever the shader does, and set alpha to full opacity
-     */
-    public void setAlphaMask(boolean b) {
-        this.alphaMask = (b) ? 0 : 0xff;
     }
 
     @Override
@@ -130,34 +103,13 @@ public class NativeShader implements GLEventListener {
             gl4.glUseProgram(shaderProgram.getProgramId());
         }
 
-        startTime = System.currentTimeMillis();
     }
 
-    // create a Texture object from audioTextureData
-    private Texture createAudioTexture(GL4 gl4) {
-        TextureData td = new TextureData(GLProfile.getGL4ES3(),
-                GL4.GL_RGBA32F,
-                audioTextureWidth,
-                audioTextureHeight,
-                0,
-                GL4.GL_RED,
-                GL4.GL_FLOAT,
-                false, false, false,
-                audioTextureData, null);
-
-        Texture tex = new Texture(gl4, td);
-        tex.setTexParameteri(gl4, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        tex.setTexParameteri(gl4, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        tex.setTexParameteri(gl4, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        tex.setTexParameteri(gl4, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-        return tex;
-    }
-
-
+    // needs to be called to release native resources when we dispose
+    // this pattern.
     public void cleanupGLHandles(GL4 gl4) {
         gl4.glDeleteBuffers(2, geometryBufferHandles, 0);
-        if (needAudioCleanup) gl4.glDeleteTextures(1, textureBufferHandle, 0);
+        gl4.glDeleteTextures(1, audioTextureHandle, 0);
     }
 
     @Override
@@ -165,51 +117,79 @@ public class NativeShader implements GLEventListener {
         // switch to this shader's gl context and render
         glAutoDrawable.getContext().makeCurrent();
         GL4 gl4 = glAutoDrawable.getGL().getGL4();
+        textureKey = 0;
         setUniforms(gl4);
         setUpCanvas(gl4);
-        cleanupGLHandles(gl4);
         saveSnapshot(gl4, xResolution, yResolution);
     }
 
     private void saveSnapshot(GL4 gl4, int width, int height) {
         backBuffer.rewind();
         gl4.glReadBuffer(GL_BACK);
-        gl4.glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, backBuffer);
 
+        // using BGRA byte order lets us read int values from the buffer and pass them
+        // directly to LX as colors, without any additional work on the Java side.
+        gl4.glReadPixels(0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, backBuffer);
+
+        /*
         for (int h = 0; h < height; h++) {
             for (int w = 0; w < width; w++) {
-                snapshot[w][h] = LXColor.rgba((backBuffer.get() & 0xff), (backBuffer.get() & 0xff),
-                        backBuffer.get() & 0xff, alphaMask | (backBuffer.get() & 0xff));
+                snapshot[w][h] = backBuffer.getInt();
             }
         }
+        */
     }
 
-    private void setUpCanvas(GL4 gl4) {
-        // Configure geometry buffers
-        // TODO - needs post year-1 refactor for better GL context & handle management
+    /**
+     * Preallocate GPU memory objects at initialization time
+     *
+     * @param gl4 - this pattern's GL context
+     */
+    private void allocateShaderBuffers(GL4 gl4) {
+        // Allocate geometry buffer handles
+        gl4.glGenBuffers(2, IntBuffer.wrap(geometryBufferHandles));
 
         // vertices
         vertexBuffer.rewind();
-        gl4.glGenBuffers(1, geometryBufferHandles, 0);
         gl4.glBindBuffer(GL_ARRAY_BUFFER, geometryBufferHandles[0]);
         gl4.glBufferData(GL_ARRAY_BUFFER, (long) vertexBuffer.capacity() * Float.BYTES, vertexBuffer, GL.GL_STATIC_DRAW);
 
-        gl4.glVertexAttribPointer(shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION),
-                3, GL4.GL_FLOAT, false, 0, 0);
-        gl4.glEnableVertexAttribArray(shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION));
-
         // geometry built from vertices (triangles!)
         indexBuffer.rewind();
-        gl4.glGenBuffers(1, geometryBufferHandles, 1);
         gl4.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometryBufferHandles[1]);
         gl4.glBufferData(GL_ELEMENT_ARRAY_BUFFER, (long) indexBuffer.capacity() * Integer.BYTES, indexBuffer, GL.GL_STATIC_DRAW);
 
+        // Audio texture object - on id GL_TEXTURE0
+        gl4.glActiveTexture(GL_TEXTURE0);
+        gl4.glEnable(GL_TEXTURE_2D);
+        gl4.glGenTextures(1, audioTextureHandle, 0);
+        gl4.glBindTexture(GL4.GL_TEXTURE_2D, audioTextureHandle[0]);
+
+        gl4.glTexImage2D(GL4.GL_TEXTURE_2D, 0, GL4.GL_R32F, audioTextureWidth, audioTextureHeight, 0, GL4.GL_RED, GL_FLOAT, audioTextureData);
+        gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    }
+
+    /**
+     * Set up geometry at frame generation time
+     *
+     * @param gl4 - this pattern's GL context
+     */
+    private void setUpCanvas(GL4 gl4) {
+        gl4.glBindBuffer(GL_ARRAY_BUFFER, geometryBufferHandles[0]);
+        gl4.glVertexAttribPointer(shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION),
+            3, GL4.GL_FLOAT, false, 0, 0);
+        gl4.glEnableVertexAttribArray(shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION));
+
+        gl4.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometryBufferHandles[1]);
         gl4.glDrawElements(GL2.GL_TRIANGLES, INDICES.length, GL2.GL_UNSIGNED_INT, 0);
 
         gl4.glDisableVertexAttribArray(shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION));
     }
 
-    private void setColorUniform(String rgbName,String hsvName, int color) {
+    private void setColorUniform(String rgbName, String hsvName, int color) {
         float x, y, z;
 
         x = (float) (0xff & LXColor.red(color)) / 255f;
@@ -237,15 +217,15 @@ public class NativeShader implements GLEventListener {
         setUniform("trebleLevel", (float) ctl.getTrebleLevel());
 
         // color-related uniforms
-        setColorUniform("iColorRGB","iColorHSB",ctl.calcColor());
-        setColorUniform("iColor2RGB","iColor2HSB",ctl.calcColor2());
+        setColorUniform("iColorRGB", "iColorHSB", ctl.calcColor());
+        setColorUniform("iColor2RGB", "iColor2HSB", ctl.calcColor2());
 
         // uniforms for common controls
         setUniform("iSpeed", (float) ctl.getSpeed());
         setUniform("iScale", (float) ctl.getSize());
         setUniform("iQuantity", (float) ctl.getQuantity());
         setUniform("iTranslate", (float) ctl.getXPos(), (float) ctl.getYPos());
-        setUniform("iSpin",(float) ctl.getSpin());
+        setUniform("iSpin", (float) ctl.getSpin());
         setUniform("iRotationAngle", (float) ctl.getRotationAngleFromSpin());
         setUniform("iBrightness", (float) ctl.getBrightness());
         setUniform("iWow1", (float) ctl.getWow1());
@@ -260,23 +240,22 @@ public class NativeShader implements GLEventListener {
 
         // Add all preprocessed LX parameters from the shader code as uniforms
         for (LXParameter customParameter : fragmentShader.getParameters()) {
-           setUniform(customParameter.getLabel() + Uniforms.CUSTOM_SUFFIX, customParameter.getValuef());
+            setUniform(customParameter.getLabel() + Uniforms.CUSTOM_SUFFIX, customParameter.getValuef());
         }
 
-        // add texture channels
-        textureKey = 0;
-        for (Map.Entry<Integer, Texture> textureInput : textures.entrySet()) {
-            setUniform(Uniforms.CHANNEL + textureInput.getKey(), textureInput.getValue(), true);
-        }
-
-        // if enabled, set audio waveform and fft data as a 512x2 texture on the specified audio
+        // Set audio waveform and fft data as a 512x2 texture on the specified audio
         // channel if it's a shadertoy shader, or iChannel0 if it's a local shader.
-        needAudioCleanup = false;
+        //
+        // NOTE:  For improved performance the audio texture uniform, which must be
+        // copied from the engine on every frame, bypasses the normal setUniform() mechanism.
+        //
+        // By Imperial Decree, the audio texture will heretofore always use the first texture
+        // object slot, TextureId(GL_TEXTURE0).  Other texture uniforms will be automatically
+        // assigned sequential ids starting with GL_TEXTURE1.
+        //
         if (audioChannel != null) {
-            gl4.glActiveTexture(INDEX_TO_GL_ENUM.get(0));
-            gl4.glEnable(GL_TEXTURE_2D);
-            gl4.glGenTextures(1, textureBufferHandle, 0);
-            gl4.glBindTexture(GL4.GL_TEXTURE_2D, textureBufferHandle[0]);
+            gl4.glActiveTexture(GL_TEXTURE0);
+            gl4.glBindTexture(GL4.GL_TEXTURE_2D, audioTextureHandle[0]);
 
             // load frequency and waveform data into our texture, fft data in the first row,
             // normalized audio waveform data in the second.
@@ -286,13 +265,14 @@ public class NativeShader implements GLEventListener {
             }
 
             gl4.glTexImage2D(GL4.GL_TEXTURE_2D, 0, GL4.GL_R32F, audioTextureWidth, audioTextureHeight, 0, GL4.GL_RED, GL_FLOAT, audioTextureData);
-            gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
             //TE.log("Adding texture iChannel%d",this.audioChannel);
             setUniform(Uniforms.CHANNEL + this.audioChannel, this.audioChannel);
-            needAudioCleanup = true;
+        }
+
+        // add shadertoy texture channels
+        for (Map.Entry<Integer, Texture> textureInput : textures.entrySet()) {
+            setUniform(Uniforms.CHANNEL + textureInput.getKey(), textureInput.getValue(), true);
         }
 
         // hand the complete uniform list to OpenGL
@@ -304,8 +284,9 @@ public class NativeShader implements GLEventListener {
         shaderProgram = new ShaderProgram();
         String shaderCode = FRAGMENT_SHADER_TEMPLATE.replace(SHADER_BODY_PLACEHOLDER, fragmentShader.getShaderBody());
         shaderProgram.init(gl4, vertexShader, shaderCode,
-                fragmentShader.getShaderName(), fragmentShader.getShaderTimestamp());
-        setUpCanvas(gl4);
+            fragmentShader.getShaderName());
+
+        allocateShaderBuffers(gl4);
     }
 
     private void downloadTextureFiles(FragmentShader fragmentShader) {
@@ -329,24 +310,25 @@ public class NativeShader implements GLEventListener {
     @Override
     public void dispose(GLAutoDrawable glAutoDrawable) {
         GL4 gl4 = glAutoDrawable.getGL().getGL4();
+        cleanupGLHandles(gl4);
         shaderProgram.dispose(gl4);
     }
 
     @Override
     public void reshape(GLAutoDrawable glAutoDrawable, int x, int y, int width, int height) {
-        //do nothing
+        // do nothing
     }
 
-    public int[][] getSnapshot() {
-        return snapshot;
+    public ByteBuffer getSnapshot() {
+        return backBuffer;
     }
 
-    public void updateAudioInfo(PatternControlData audioInfo) {
-        this.controlData = audioInfo;
+    public void updateControlInfo(PatternControlData ctlData) {
+        this.controlData = ctlData;
     }
 
     public void reset() {
-        startTime = System.currentTimeMillis();
+        // do nothing
     }
 
     public boolean isInitialized() {
@@ -480,7 +462,7 @@ public class NativeShader implements GLEventListener {
                     case SAMPLER2DSTATIC:
                     case SAMPLER2D:
                         Texture tex = ((Texture) val.value);
-                        gl4.glActiveTexture(INDEX_TO_GL_ENUM.get(textureKey));
+                        gl4.glActiveTexture(GL_TEXTURE0 + textureKey);
                         tex.enable(gl4);
                         tex.bind(gl4);
                         gl4.glUniform1i(loc, textureKey);
@@ -558,7 +540,7 @@ public class NativeShader implements GLEventListener {
 
     public void setUniform(String name, boolean x, boolean y) {
         addUniform(name, INT2,
-                new int[]{(x) ? 1 : 0, (y) ? 1 : 0});
+            new int[]{(x) ? 1 : 0, (y) ? 1 : 0});
     }
 
 

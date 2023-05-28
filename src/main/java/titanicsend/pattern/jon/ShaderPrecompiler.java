@@ -2,13 +2,7 @@ package titanicsend.pattern.jon;
 
 import com.jogamp.opengl.*;
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
 
-import heronarts.lx.parameter.BooleanParameter;
-import heronarts.lx.parameter.CompoundParameter;
-import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.yoffa.shader_engine.*;
 import titanicsend.util.TE;
 
@@ -20,25 +14,11 @@ public class ShaderPrecompiler {
     private final static int xResolution = OffscreenShaderRenderer.getXResolution();
     private final static int yResolution = OffscreenShaderRenderer.getYResolution();
 
-    private final static String cachePath = "resources/shaders";
+    private final static String SHADER_PATH = "resources/shaders";
 
     private static final String SHADER_BODY_PLACEHOLDER = "{{%shader_body%}}";
 
-    public static boolean needsRebuild(File shaderFile,String cacheName) {
-
-        // if there's no cache file, we need to make one
-        File shaderBin = new File(cacheName);
-        if (!shaderBin.exists()) return true;
-
-        // if the shader (.fs) file has been changed, we need to refresh the cache
-        long timeStamp = shaderFile.lastModified();
-        if (timeStamp > shaderBin.lastModified()) return true;
-
-        // otherwise, this file is good to go!
-        return false;
-    }
-
-    /**
+     /**
      * Create and save binary versions of any shaders that need it.
      *
      */
@@ -62,22 +42,21 @@ public class ShaderPrecompiler {
 
         // enumerate all files in the shader directory and
         // attempt to compile them to cached .bin files.
-        File dir = new File(cachePath);
+        File dir = new File(SHADER_PATH);
         File[] directoryListing = dir.listFiles();
         if (directoryListing != null) {
             for (File file: directoryListing) {
                 if (file.getName().endsWith(".fs")) {
                     totalFiles++;
 
-                    String shaderName = ShaderUtils.getCacheFilename(file.getName());
-
-                    if (needsRebuild(file, shaderName)) {
+                    if (ShaderUtils.needsRecompile(file.getName())) {
+                        String shaderName = ShaderUtils.getCacheFilename(file.getName());
                         String shaderText = ShaderUtils.loadResource(file.getPath());
                         String shaderBody = ShaderUtils.preprocessShader(shaderText, null);
                         String shaderCode = FRAGMENT_SHADER_TEMPLATE.replace(SHADER_BODY_PLACEHOLDER, shaderBody);
 
                         try {
-                            //("Building shader %s",file.getPath());
+                            //TE.err("Building shader %s",file.getPath());
 
                             int vertexShaderId = ShaderUtils.createShader(gl4, programId,
                                     VERTEX_SHADER_TEMPLATE, GL4.GL_VERTEX_SHADER);

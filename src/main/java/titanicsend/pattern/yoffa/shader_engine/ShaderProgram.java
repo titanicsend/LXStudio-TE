@@ -14,7 +14,7 @@ public class ShaderProgram {
     private int vertexShaderId;
     private int fragmentShaderId;
 
-    public void init(GL4 gl4, File vertexShader, String fragmentShaderCode, String shaderName, long ts) {
+    public void init(GL4 gl4, File vertexShader, String fragmentShaderCode, String shaderName) {
         if (initialized) {
             throw new IllegalStateException(
                     "Unable to initialize the shader program! (it was already initialized)");
@@ -22,7 +22,7 @@ public class ShaderProgram {
 
         try {
             programId = gl4.glCreateProgram();
-            boolean inCache = ShaderUtils.loadShaderFromCache(gl4,programId,shaderName,ts);
+            boolean inCache = ShaderUtils.loadShaderFromCache(gl4,programId,shaderName);
 
             if (!inCache) {
                 String vertexShaderCode = ShaderUtils.loadResource(vertexShader
@@ -36,8 +36,10 @@ public class ShaderProgram {
 
                 shaderAttributeLocations.put(ShaderAttribute.POSITION,
                         gl4.glGetAttribLocation(programId, ShaderAttribute.POSITION.getAttributeName()));
-                shaderAttributeLocations.put(ShaderAttribute.INDEX,
-                        gl4.glGetAttribLocation(programId, ShaderAttribute.INDEX.getAttributeName()));
+
+                // TODO - uncomment if we make the geometry complex enough that we need the index attribute.
+                //shaderAttributeLocations.put(ShaderAttribute.INDEX,
+                        //gl4.glGetAttribLocation(programId, ShaderAttribute.INDEX.getAttributeName()));
 
                 ShaderUtils.saveShaderToCache(gl4, shaderName, programId);
             }

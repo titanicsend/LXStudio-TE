@@ -9,7 +9,6 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -19,13 +18,17 @@ import java.util.regex.Pattern;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.TEPattern;
 import titanicsend.util.TE;
 
 public class ShaderUtils {
 
+    // paths to various shader resources
+    private static final String SHADER_PATH = "resources/shaders/";
+    private static final String FRAMEWORK_PATH = SHADER_PATH+"framework/";
+    private static final String CACHE_PATH = SHADER_PATH+"cache/";
+
     private static final String FRAGMENT_SHADER_TEMPLATE =
-            ShaderUtils.loadResource("resources/shaders/framework/template.fs");
+            ShaderUtils.loadResource(FRAMEWORK_PATH+"template.fs");
 
     private static final String SHADER_BODY_PLACEHOLDER = "{{%shader_body%}}";
 
@@ -134,34 +137,85 @@ public class ShaderUtils {
      * corresponding cache file.
      */
     public static String getCacheFilename(String shaderName) {
-        String[] parts = shaderName.split("\\.");
-        return String.format("resources/shaders/cache/%s.bin",parts[0]);
+        // strip the incoming path down to just the filename, and build
+        // the cache file path from there.
+        String shaderFile = shaderName.substring(shaderName.lastIndexOf('/')+1);
+        String[] parts = shaderFile.split("\\.");
+
+        return String.format(CACHE_PATH+"%s.bin",parts[0]);
+    }
+
+    static boolean isNewerThan(File f1, File f2) {
+        // if either of the files doesn't exist, clearly *something* has been modified
+        // in this case returning true will result in either a recompile or an exception,
+        // depending on which file is missing.
+        if (!f1.exists()) {
+            return true;
+        }
+        if (!f2.exists()) {
+            return true;
+        }
+        // return true if file1 is newer than file2
+        if (f1.lastModified() > f2.lastModified()) {
+            return true;
+        }
+        return false;
+    }
+
+    static boolean isNewerThan(String file1, String file2) {
+        File f1 = new File(file1);
+        File f2 = new File(file2);
+
+        return isNewerThan(f1, f2);
+    }
+
+    /**
+     * True if we need to recompile this shader because either the framework
+     * or the shader code have been modified since last compile, false otherwise
+     * @param shaderFile path to the shader's glsl file
+     * @return true if recompile needed, false otherwise
+     */
+    public static boolean needsRecompile(String shaderFile) {
+        String cacheFile = ShaderUtils.getCacheFilename(shaderFile);
+
+        if (isNewerThan(FRAMEWORK_PATH+"default.vs",cacheFile)) {
+            TE.log("Vertex shader framework has been modified.");
+            return true;
+        }
+
+        if (isNewerThan(FRAMEWORK_PATH+"template.fs",cacheFile)) {
+            TE.err("Fragment shader framework been modified.");
+            return true;
+        }
+
+        if (isNewerThan(SHADER_PATH+shaderFile,cacheFile)) {
+            TE.log("Shader '%s` has been modified.",shaderFile);
+            return true;
+        }
+
+        // if here, no recompile needed.
+        return false;
     }
 
     /**
      * Attempts to read the named shader from resources/shaders/cache.  Returns
      * a ByteBuffer full of shader binary if successful, null otherwise.
      */
-    public static boolean loadShaderFromCache(GL4 gl4,int programID, String shaderName, long timeStamp) {
+    public static boolean loadShaderFromCache(GL4 gl4,int programID, String shaderName) {
 
         // account for shadertoy shaders pulled in via URL
         if (shaderName == null) return false;
 
-        // compare timestamp to see if the shader has been updated.
-        File shaderBin = new File(shaderName);
-        if (!shaderBin.exists()) {
-            //TE.log("Shader '%s' not found in cache",shaderName);
-            return false;
-        }
-
-        if (timeStamp > shaderBin.lastModified()) {
-            //TE.log("Shader '%s` has been modified.",shaderName);
+        // see if the shader or the framework have changed since last recompile
+        if (needsRecompile(shaderName)) {
             return false;
         }
 
         // attempt to read shader binary from cache file
+        String cacheFile = getCacheFilename(shaderName);
+
         try {
-            byte [] outBuf = Files.readAllBytes(Path.of( shaderName));
+            byte [] outBuf = Files.readAllBytes(Path.of( cacheFile));
             ByteBuffer shader = ByteBuffer.wrap(outBuf);
 
             // attach binary to our shader program
@@ -172,7 +226,7 @@ public class ShaderUtils {
             return false;
         }
         
-        // see if it worked
+        // make sure we were able to create a valid shader program
         int[] status = new int[1];
         gl4.glGetIntegerv(GL4.GL_LINK_STATUS,status,0);
        // TE.log("Shader '%s' loaded from cache",shaderName);
