@@ -42,8 +42,6 @@ public class NativeShader implements GLEventListener {
         2, 0, 3
     };
 
-    private static final String FRAGMENT_SHADER_TEMPLATE =
-        ShaderUtils.loadResource("resources/shaders/framework/template.fs");
     private static final String SHADER_BODY_PLACEHOLDER = "{{%shader_body%}}";
 
     private final FragmentShader fragmentShader;
@@ -102,6 +100,8 @@ public class NativeShader implements GLEventListener {
             downloadTextureFiles(fragmentShader);
             gl4.glUseProgram(shaderProgram.getProgramId());
         }
+
+
 
     }
 
@@ -280,11 +280,8 @@ public class NativeShader implements GLEventListener {
     }
 
     private void initShaderProgram(GL4 gl4) {
-        File vertexShader = new File("resources/shaders/framework/default.vs");
         shaderProgram = new ShaderProgram();
-        String shaderCode = FRAGMENT_SHADER_TEMPLATE.replace(SHADER_BODY_PLACEHOLDER, fragmentShader.getShaderBody());
-        shaderProgram.init(gl4, vertexShader, shaderCode,
-            fragmentShader.getShaderName());
+        shaderProgram.init(gl4, fragmentShader.getShaderName());
 
         allocateShaderBuffers(gl4);
     }

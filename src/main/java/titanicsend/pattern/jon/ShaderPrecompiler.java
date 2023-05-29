@@ -29,11 +29,6 @@ public class ShaderPrecompiler {
 
         TE.log("Refreshing shader cache...");
 
-        String FRAGMENT_SHADER_TEMPLATE =
-                ShaderUtils.loadResource("resources/shaders/framework/template.fs");
-
-        String VERTEX_SHADER_TEMPLATE = ShaderUtils.loadResource("resources/shaders/framework/default.vs");
-
         // set up just enough OpenGL machinery to let us compile and link
         GLAutoDrawable surface = ShaderUtils.createGLSurface(xResolution, yResolution);
         surface.display();
@@ -50,30 +45,7 @@ public class ShaderPrecompiler {
                     totalFiles++;
 
                     if (ShaderUtils.needsRecompile(file.getName())) {
-                        String shaderName = ShaderUtils.getCacheFilename(file.getName());
-                        String shaderText = ShaderUtils.loadResource(file.getPath());
-                        String shaderBody = ShaderUtils.preprocessShader(shaderText, null);
-                        String shaderCode = FRAGMENT_SHADER_TEMPLATE.replace(SHADER_BODY_PLACEHOLDER, shaderBody);
-
-                        try {
-                            //TE.err("Building shader %s",file.getPath());
-
-                            int vertexShaderId = ShaderUtils.createShader(gl4, programId,
-                                    VERTEX_SHADER_TEMPLATE, GL4.GL_VERTEX_SHADER);
-                            int fragmentShaderId = ShaderUtils.createShader(gl4, programId,
-                                    shaderCode, GL4.GL_FRAGMENT_SHADER);
-                            ShaderUtils.link(gl4, programId);
-
-                            ShaderUtils.saveShaderToCache(gl4, shaderName, programId);
-
-                            gl4.glDetachShader(programId, fragmentShaderId);
-                            gl4.glDetachShader(programId, vertexShaderId);
-                            gl4.glDeleteShader(fragmentShaderId);
-                            gl4.glDeleteShader(vertexShaderId);
-                        } catch (Exception e) {
-                            TE.log("Error building shader %s",file.getName());
-                            throw new RuntimeException(e);
-                        }
+                        ShaderUtils.buildShader(gl4, programId, file.getName(),true);
                         compiledFiles++;
                     }
                 }
@@ -84,6 +56,6 @@ public class ShaderPrecompiler {
         gl4.glDeleteProgram(programId);
 
         TE.log("%d shaders processed in %d ms.",totalFiles,System.currentTimeMillis() - timer);
-        //TE.log("%d cache file%s updated.",compiledFiles,(compiledFiles == 1) ? "" : "s");
+        TE.log("%d cache file%s updated.",compiledFiles,(compiledFiles == 1) ? "" : "s");
     }
 }

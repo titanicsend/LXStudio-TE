@@ -14,7 +14,7 @@ public class ShaderProgram {
     private int vertexShaderId;
     private int fragmentShaderId;
 
-    public void init(GL4 gl4, File vertexShader, String fragmentShaderCode, String shaderName) {
+    public void init(GL4 gl4, String shaderName) {
         if (initialized) {
             throw new IllegalStateException(
                     "Unable to initialize the shader program! (it was already initialized)");
@@ -25,24 +25,15 @@ public class ShaderProgram {
             boolean inCache = ShaderUtils.loadShaderFromCache(gl4,programId,shaderName);
 
             if (!inCache) {
-                String vertexShaderCode = ShaderUtils.loadResource(vertexShader
-                        .getPath());
-                vertexShaderId = ShaderUtils.createShader(gl4, programId,
-                        vertexShaderCode, GL4.GL_VERTEX_SHADER);
-                fragmentShaderId = ShaderUtils.createShader(gl4, programId,
-                        fragmentShaderCode, GL4.GL_FRAGMENT_SHADER);
-
-                ShaderUtils.link(gl4, programId);
-
-                shaderAttributeLocations.put(ShaderAttribute.POSITION,
-                        gl4.glGetAttribLocation(programId, ShaderAttribute.POSITION.getAttributeName()));
-
-                // TODO - uncomment if we make the geometry complex enough that we need the index attribute.
-                //shaderAttributeLocations.put(ShaderAttribute.INDEX,
-                        //gl4.glGetAttribLocation(programId, ShaderAttribute.INDEX.getAttributeName()));
-
-                ShaderUtils.saveShaderToCache(gl4, shaderName, programId);
+                ShaderUtils.buildShader(gl4, programId, shaderName,false);
             }
+
+            shaderAttributeLocations.put(ShaderAttribute.POSITION,
+                gl4.glGetAttribLocation(programId, ShaderAttribute.POSITION.getAttributeName()));
+
+            // Uncomment when we make the geometry complex enough that we need the index attribute.
+            // shaderAttributeLocations.put(ShaderAttribute.INDEX,
+            // gl4.glGetAttribLocation(programId, ShaderAttribute.INDEX.getAttributeName()));
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -52,6 +43,7 @@ public class ShaderProgram {
 
     public void dispose(GL4 gl4) {
         initialized = false;
+        // free native shader resources
         gl4.glDetachShader(programId, vertexShaderId);
         gl4.glDetachShader(programId, fragmentShaderId);
         gl4.glDeleteProgram(programId);
