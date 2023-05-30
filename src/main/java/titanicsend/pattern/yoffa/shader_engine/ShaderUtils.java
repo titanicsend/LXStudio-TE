@@ -4,9 +4,11 @@ import com.jogamp.opengl.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -15,6 +17,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.jogamp.opengl.util.GLBuffers;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
@@ -23,10 +26,11 @@ import titanicsend.util.TE;
 public class ShaderUtils {
 
     // paths to various shader resources
-    private static final String SHADER_PATH = "resources/shaders/";
-    private static final String FRAMEWORK_PATH = SHADER_PATH + "framework/";
-    private static final String CACHE_PATH = SHADER_PATH + "cache/";
+    public static final String SHADER_PATH = "resources/shaders/";
+    public static final String FRAMEWORK_PATH = SHADER_PATH + "framework/";
+    public static final String CACHE_PATH = SHADER_PATH + "cache/";
 
+    // Strings for internal use by the preprocessor
     private static final String SHADER_BODY_PLACEHOLDER = "{{%shader_body%}}";
 
     private static final Pattern PLACEHOLDER_FINDER = Pattern.compile("\\{%(.*?)(\\[(.*?)\\])??\\}");
@@ -59,20 +63,8 @@ public class ShaderUtils {
         glCapabilities.setGreenBits(8);
         GLDrawableFactory factory = GLDrawableFactory.getFactory(glProfile);
 
-        //need to specifically create an offscreen drawable
-        //there is no way to have a normal drawable render on a panel/canvas which is not visible
-        GLAutoDrawable offscreenDrawable = factory.createOffscreenAutoDrawable(factory.getDefaultDevice(), glCapabilities,
+        return factory.createOffscreenAutoDrawable(factory.getDefaultDevice(), glCapabilities,
             new DefaultGLCapabilitiesChooser(), xResolution, yResolution);
-        //offscreenDrawable.display();
-        return offscreenDrawable;
-    }
-
-    /**
-     * Returns string containing the preprocessed code of the specified shader
-     */
-    public static String getFragmentShaderCode(String shaderFile) {
-        //String shaderCode = FRAGMENT_SHADER_TEMPLATE.replace(SHADER_BODY_PLACEHOLDER, fragmentShader.getShaderBody());
-        return null;
     }
 
     public static String getVertexShaderTemplate() {
@@ -220,7 +212,6 @@ public class ShaderUtils {
 
         try {
             byte[] outBuf = Files.readAllBytes(Path.of(cacheFile));
-            System.out.println(cacheFile);
             ByteBuffer shader = ByteBuffer.wrap(outBuf);
 
             // get available binary formats for shader storage
@@ -234,15 +225,12 @@ public class ShaderUtils {
             // attach binary to our shader program
             gl4.glProgramBinary(programId, formatList[0], shader, outBuf.length);
         } catch (IOException e) {
-            TE.log("I/O Exception reading shader '%s'.", shaderName);
+            TE.log("I/O Exception loading shader '%s'.", shaderName);
             return false;
         }
 
-        // make sure we were able to create a valid shader program
-        int[] status = new int[1];
-        gl4.glGetIntegerv(GL4.GL_LINK_STATUS, status, 0);
-
-        return (status[0] != GL4.GL_FALSE);
+        //TE.log("Loaded from cache: '%s'", shaderName);
+        return true;
     }
 
     /**
@@ -271,32 +259,28 @@ public class ShaderUtils {
         int[] formatList = new int[fmtCount[0]];
         gl4.glGetIntegerv(GL4.GL_PROGRAM_BINARY_FORMATS, formatList, 0);
 
-        // now we can get the shader binary
-        ByteBuffer bin = ByteBuffer.allocate(len[0]);
-        int[] outLen = new int[1];
-        gl4.glGetProgramBinary(programId, len[0], outLen, 0,formatList, 0, bin);
+        // get the binary from OpenGL and store it in our buffer
+        ByteBuffer shader = GLBuffers.newDirectByteBuffer(len[0]);
+        gl4.glGetProgramBinary(programId, len[0], len, 0, formatList, 0, shader);
 
-        // and at long last, save it to a file!
-        try {
-            Files.write(Path.of(ShaderUtils.getCacheFilename(shaderName)), bin.array());
+        // save the shader binary to the cache file
+        try (FileChannel fileChannel = new FileOutputStream(ShaderUtils.getCacheFilename(shaderName)).getChannel()) {
+            fileChannel.write(shader);
         } catch (IOException e) {
-            TE.log("I/O exception writing shader '%s", shaderName);
+            e.printStackTrace();
         }
     }
 
     /**
      * Preprocess, compile and link vertex shader template, fragment shader template and
      * pattern shader code into a binary object, attach it to the specified
-     * OpenGL programId, and save it to the shader cache, optionally removing the shader
-     * from the programId and releasing all its resources so we can use this in the
-     * startup-time precompiler too.
+     * OpenGL programId, and save it to the shader cache.
      *
      * @param gl4                an active OpenGL context
      * @param programId          id to which the shader binary will be attached
      * @param shaderName         filename (without path) of fragment shader
-     * @param deleteAfterCompile true to release the shader binary's resources, false to keep them.
      */
-    public static void buildShader(GL4 gl4, int programId, String shaderName, boolean deleteAfterCompile) {
+    public static void buildShader(GL4 gl4, int programId, String shaderName) {
         String cacheName = getCacheFilename(shaderName);
         String shaderText = loadResource(SHADER_PATH+shaderName);
         String shaderBody = preprocessShader(shaderText, null);
@@ -309,16 +293,16 @@ public class ShaderUtils {
             int fragmentShaderId = createShader(gl4, programId, shaderCode, GL4.GL_FRAGMENT_SHADER);
             link(gl4, programId);
 
-            saveShaderToCache(gl4, cacheName, programId);
+            // free native resources after link
+            gl4.glDetachShader(programId, fragmentShaderId);
+            gl4.glDetachShader(programId, vertexShaderId);
+            gl4.glDeleteShader(fragmentShaderId);
+            gl4.glDeleteShader(vertexShaderId);
 
-            if (deleteAfterCompile) {
-                gl4.glDetachShader(programId, fragmentShaderId);
-                gl4.glDetachShader(programId, vertexShaderId);
-                gl4.glDeleteShader(fragmentShaderId);
-                gl4.glDeleteShader(vertexShaderId);
-            }
+            // and save the complete program object to file
+            saveShaderToCache(gl4, cacheName, programId);
         } catch (Exception e) {
-            TE.log("Error building shader %s", shaderName);
+            TE.err("Error building shader %s", shaderName);
             throw new RuntimeException(e);
         }
     }
@@ -329,14 +313,6 @@ public class ShaderUtils {
 
         gl4.glValidateProgram(programId);
         validateStatus(gl4, programId, GL4.GL_VALIDATE_STATUS);
-    }
-
-    private static void validateShaderCompileStatus(GL4 gl4, int shaderId) {
-        validateStatus(gl4, shaderId, GL4.GL_COMPILE_STATUS);
-    }
-
-    private static void validateProgramStatus(GL4 gl4, int programId, int statusConstant) {
-        validateStatus(gl4, programId, statusConstant);
     }
 
     private static void validateStatus(GL4 gl4, int id, int statusConstant) {

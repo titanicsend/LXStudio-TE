@@ -16,6 +16,9 @@ public class OffscreenShaderRenderer {
         offscreenDrawable = ShaderUtils.createGLSurface(xResolution,yResolution);
         offscreenDrawable.display();
         nativeShader = new NativeShader(fragmentShader, xResolution, yResolution);
+
+        // load shaders at creation time to make switching instant for
+        // the rest of the run.
         nativeShader.init(offscreenDrawable);
     }
 

@@ -42,8 +42,6 @@ public class NativeShader implements GLEventListener {
         2, 0, 3
     };
 
-    private static final String SHADER_BODY_PLACEHOLDER = "{{%shader_body%}}";
-
     private final FragmentShader fragmentShader;
     private final int xResolution;
     private final int yResolution;
@@ -57,7 +55,6 @@ public class NativeShader implements GLEventListener {
     private final Integer audioChannel;
     private ShaderProgram shaderProgram;
     ByteBuffer backBuffer;
-    private int[][] snapshot;
 
     private PatternControlData controlData;
 
@@ -83,7 +80,6 @@ public class NativeShader implements GLEventListener {
 
         // gl-compatible buffer for reading offscreen surface to cpu memory
         this.backBuffer = GLBuffers.newDirectByteBuffer(xResolution * yResolution * 4);
-        this.snapshot = new int[xResolution][yResolution];
 
         this.audioTextureWidth = 512;
         this.audioTextureHeight = 2;
@@ -100,9 +96,6 @@ public class NativeShader implements GLEventListener {
             downloadTextureFiles(fragmentShader);
             gl4.glUseProgram(shaderProgram.getProgramId());
         }
-
-
-
     }
 
     // needs to be called to release native resources when we dispose
@@ -114,12 +107,16 @@ public class NativeShader implements GLEventListener {
 
     @Override
     public void display(GLAutoDrawable glAutoDrawable) {
-        // switch to this shader's gl context and render
+        // switch to this shader's gl context
         glAutoDrawable.getContext().makeCurrent();
         GL4 gl4 = glAutoDrawable.getGL().getGL4();
-        textureKey = 0;
+
+        // set textureKey to first available texture object location
+        // (1 because location 0 is reserved for the TE audio data texture)
+        textureKey = 1;
         setUniforms(gl4);
-        setUpCanvas(gl4);
+
+        render(gl4);
         saveSnapshot(gl4, xResolution, yResolution);
     }
 
@@ -130,14 +127,6 @@ public class NativeShader implements GLEventListener {
         // using BGRA byte order lets us read int values from the buffer and pass them
         // directly to LX as colors, without any additional work on the Java side.
         gl4.glReadPixels(0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, backBuffer);
-
-        /*
-        for (int h = 0; h < height; h++) {
-            for (int w = 0; w < width; w++) {
-                snapshot[w][h] = backBuffer.getInt();
-            }
-        }
-        */
     }
 
     /**
@@ -177,16 +166,19 @@ public class NativeShader implements GLEventListener {
      *
      * @param gl4 - this pattern's GL context
      */
-    private void setUpCanvas(GL4 gl4) {
-        gl4.glBindBuffer(GL_ARRAY_BUFFER, geometryBufferHandles[0]);
-        gl4.glVertexAttribPointer(shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION),
-            3, GL4.GL_FLOAT, false, 0, 0);
-        gl4.glEnableVertexAttribArray(shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION));
+    private void render(GL4 gl4) {
+        // set up geometry
+        int position = shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION);
 
+        gl4.glBindBuffer(GL_ARRAY_BUFFER, geometryBufferHandles[0]);
+        gl4.glVertexAttribPointer(position,3, GL4.GL_FLOAT, false, 0, 0);
+        gl4.glEnableVertexAttribArray(position);
         gl4.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometryBufferHandles[1]);
+
+        // render a frame
         gl4.glDrawElements(GL2.GL_TRIANGLES, INDICES.length, GL2.GL_UNSIGNED_INT, 0);
 
-        gl4.glDisableVertexAttribArray(shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION));
+        gl4.glDisableVertexAttribArray(position);
     }
 
     private void setColorUniform(String rgbName, String hsvName, int color) {
