@@ -287,7 +287,7 @@ public class ShaderUtils {
         String shaderCode = getFragmentShaderTemplate().replace(SHADER_BODY_PLACEHOLDER, shaderBody);
 
         try {
-            TE.err("Building shader %s",shaderName);
+            //TE.err("Building shader %s",shaderName);
 
             int vertexShaderId = createShader(gl4, programId, getVertexShaderTemplate(), GL4.GL_VERTEX_SHADER);
             int fragmentShaderId = createShader(gl4, programId, shaderCode, GL4.GL_FRAGMENT_SHADER);
