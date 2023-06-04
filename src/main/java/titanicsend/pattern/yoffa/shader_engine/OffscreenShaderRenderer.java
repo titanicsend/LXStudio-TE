@@ -13,13 +13,20 @@ public class OffscreenShaderRenderer {
     private GLAutoDrawable offscreenDrawable;
 
     public OffscreenShaderRenderer(FragmentShader fragmentShader) {
-        offscreenDrawable = ShaderUtils.createGLSurface(xResolution,yResolution);
-        offscreenDrawable.display();
         nativeShader = new NativeShader(fragmentShader, xResolution, yResolution);
+
+        // save the currently active GL context in case we're on a thread
+        // that's trying to draw something on the UI
+        GLContext prevContext = GLContext.getCurrent();
 
         // load shaders at creation time to make switching instant for
         // the rest of the run.
+        offscreenDrawable = ShaderUtils.createGLSurface(xResolution,yResolution);
+        offscreenDrawable.display();
         nativeShader.init(offscreenDrawable);
+
+        // restore previous context
+        if (prevContext != null) prevContext.makeCurrent();
     }
 
     public void initializeNativeShader() {
@@ -27,7 +34,6 @@ public class OffscreenShaderRenderer {
 
     public ByteBuffer getFrame(PatternControlData ctlInfo) {
         nativeShader.updateControlInfo(ctlInfo);
-        nativeShader.updateAudioInfo(audioInfo);
         nativeShader.display(offscreenDrawable);
         return nativeShader.getSnapshot();
     }
