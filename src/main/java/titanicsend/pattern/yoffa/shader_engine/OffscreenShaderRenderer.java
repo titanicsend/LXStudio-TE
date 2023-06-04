@@ -7,12 +7,10 @@ public class OffscreenShaderRenderer {
     private final static int xResolution = 640;
     private final static int yResolution = 480;
 
-    private final NativeShader nativeShader;
-    private final GLAutoDrawable offscreenDrawable;
+    private NativeShader nativeShader;
+    private GLAutoDrawable offscreenDrawable;
 
     public OffscreenShaderRenderer(FragmentShader fragmentShader,ShaderOptions shaderOptions) {
-        offscreenDrawable = ShaderUtils.createGLSurface(xResolution,yResolution);
-        offscreenDrawable.display();
         nativeShader = new NativeShader(fragmentShader, xResolution, yResolution,shaderOptions);
     }
 
@@ -28,6 +26,8 @@ public class OffscreenShaderRenderer {
     public int[][] getFrame(PatternControlData audioInfo) {
         // initialize as late as possible to avoid stepping on LX's toes
         if (!nativeShader.isInitialized()) {
+            offscreenDrawable = ShaderUtils.createGLSurface(xResolution,yResolution);
+            offscreenDrawable.display();
             nativeShader.init(offscreenDrawable);
         }
 
