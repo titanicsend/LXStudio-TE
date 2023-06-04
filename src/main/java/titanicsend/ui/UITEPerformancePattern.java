@@ -57,15 +57,15 @@ public class UITEPerformancePattern implements UIDeviceControls<TEPerformancePat
   }
 
   protected void refresh() {
-    try {
-      for (UI2dComponent control : this.controls) {
-        control.removeFromContainer();
+    for (UI2dComponent control : this.controls) {
+      try {
+      control.removeFromContainer();
+      } catch (Exception ex) {
+        TE.log("Warning in UITEPerformancePattern: error removing control from container: " + ex.toString());
       }
-      this.controls.clear();
-      addControls();
-    } catch (Exception e) {
-      TE.err("Error: %s", e);
     }
+    this.controls.clear();
+    addControls();
   }
 
   private void addControls() {
