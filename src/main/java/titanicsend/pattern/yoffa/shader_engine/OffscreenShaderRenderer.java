@@ -9,8 +9,8 @@ public class OffscreenShaderRenderer {
     private final static int xResolution = 640;
     private final static int yResolution = 480;
 
-    private final NativeShader nativeShader;
-    private final GLAutoDrawable offscreenDrawable;
+    private NativeShader nativeShader;
+    private GLAutoDrawable offscreenDrawable;
 
     public OffscreenShaderRenderer(FragmentShader fragmentShader) {
         offscreenDrawable = ShaderUtils.createGLSurface(xResolution,yResolution);
@@ -27,6 +27,7 @@ public class OffscreenShaderRenderer {
 
     public ByteBuffer getFrame(PatternControlData ctlInfo) {
         nativeShader.updateControlInfo(ctlInfo);
+        nativeShader.updateAudioInfo(audioInfo);
         nativeShader.display(offscreenDrawable);
         return nativeShader.getSnapshot();
     }
