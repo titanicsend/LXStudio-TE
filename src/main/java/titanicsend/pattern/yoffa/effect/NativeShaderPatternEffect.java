@@ -2,44 +2,38 @@ package titanicsend.pattern.yoffa.effect;
 
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.TEPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.shader_engine.*;
 
 import java.io.File;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class NativeShaderPatternEffect extends PatternEffect {
 
-    protected OffscreenShaderRenderer offscreenShaderRenderer;
+    protected OffscreenShaderRenderer renderer;
     private FragmentShader fragmentShader;
     private final List<LXParameter> parameters;
 
-    private ShaderPainter painter;
-
-    TEPattern.ColorType colorType;
-     PatternControlData controlData;
-    ShaderOptions shaderOptions;
+    PatternControlData controlData;
 
     /**
-     * Creates new native shader effect with the specified shader options.
+     * Creates new native shader effect
+     *
      * @param fragmentShader
      * @param target
-     * @param options - ShaderOptions object
      */
-    public NativeShaderPatternEffect(FragmentShader fragmentShader, PatternTarget target, ShaderOptions options) {
+    public NativeShaderPatternEffect(FragmentShader fragmentShader, PatternTarget target) {
         super(target);
-        this.colorType = target.colorType;
+
         this.controlData = new PatternControlData(pattern);
-        this.shaderOptions = options;
-        painter = new ShaderPainter();
 
         if (fragmentShader != null) {
             this.fragmentShader = fragmentShader;
-            this.offscreenShaderRenderer = new OffscreenShaderRenderer(fragmentShader,options);
+            this.renderer = new OffscreenShaderRenderer(fragmentShader);
             this.parameters = fragmentShader.getParameters();
 
         } else {
@@ -48,77 +42,75 @@ public class NativeShaderPatternEffect extends PatternEffect {
     }
 
     /**
-     * Creates new native shader effect with default options - shader alpha will be ignored,
-     * audio data and LX parameters will be provided as uniforms to the shader.
-     * @param fragmentShader
-     * @param target
-     */
-    public NativeShaderPatternEffect(FragmentShader fragmentShader, PatternTarget target) {
-        // alpha disabled in this version to preserve backward compatibility
-        this(fragmentShader,target,new ShaderOptions());
-    }
-
-    /**
-     * Creates new native shader effect with additional texture support, using
-     * the specified shader options.
-     * @param shaderFilename
-     * @param target
-     * @param options - ShaderOptions object
-     * @param textureFilenames
-     */
-    public NativeShaderPatternEffect(String shaderFilename, PatternTarget target, ShaderOptions options, String... textureFilenames) {
-        this(new FragmentShader(new File("resources/shaders/" + shaderFilename),
-                        Arrays.stream(textureFilenames)
-                                .map(x -> new File("resources/shaders/textures/" + x))
-                                .collect(Collectors.toList())),
-                target,options);
-
-    }
-
-    /**
-     * Creates new native shader effect with additional texture support, using
-     * the default options - shader alpha will be ignored, audio data and LX parameters
-     * will be provided as uniforms to the shader.
+     * Creates new native shader effect with additional texture support
+     *
      * @param shaderFilename
      * @param target
      * @param textureFilenames
      */
     public NativeShaderPatternEffect(String shaderFilename, PatternTarget target, String... textureFilenames) {
-        this(shaderFilename,target,new ShaderOptions(), textureFilenames);
+        this(new FragmentShader(new File("resources/shaders/" + shaderFilename),
+                Arrays.stream(textureFilenames)
+                    .map(x -> new File("resources/shaders/textures/" + x))
+                    .collect(Collectors.toList())),
+            target);
+
     }
 
     @Override
     public void onPatternActive() {
         if (fragmentShader != null) {
-            if (offscreenShaderRenderer == null) {
-                offscreenShaderRenderer = new OffscreenShaderRenderer(fragmentShader, shaderOptions);
-
+            if (renderer == null) {
+                renderer = new OffscreenShaderRenderer(fragmentShader);
             }
+        }
+    }
+
+    /**
+     * Called after a frame has been generated, this function samples the OpenGL backbuffer to set color at the
+     * specified points.
+     *
+     * @param points list of points to paint
+     * @param image backbuffer containing image for this frame
+     * @param xSize x resolution of image
+     * @param ySize y resolution of image
+     */
+    public void paint(List<LXPoint> points, ByteBuffer image, int xSize, int ySize) {
+        int xMax = xSize - 1;
+        int yMax = ySize - 1;
+        int colors[] = pattern.getColors();
+
+        for (LXPoint point : points) {
+            // the 'z' dimension of TE corresponds with 'x' dimension of the image based on the side that
+            // we're painting.
+            // TODO - we need to fix the z vs x thing so images look good on the ends of the car.  I have
+            // TODO - a plan!
+
+            // use normalized point coordinates to calculate x/y coordinates and then the
+            // proper index in the image buffer.
+            int xi = Math.round((1f - point.zn) * xMax);
+            int yi = Math.round(point.yn * yMax);
+            int index = 4 * ((yi * xSize) + xi);
+
+            colors[point.index] = image.getInt(index);
         }
     }
 
     @Override
     public void run(double deltaMs) {
-        if (offscreenShaderRenderer == null) {
+        if (renderer == null) {
             return;
         }
 
-        int[][] snapshot = offscreenShaderRenderer.getFrame(controlData);
-
-        /*
-         TODO - We should really use setColor for this instead of exposing colors as this will break blending
-         TODO - pass the images to be blended into a shader as textures and do blending in hardware!
-        */
-        painter.setImage(snapshot);
-        painter.setColors(pattern.getColors());
-        for (LXPoint point : getPoints()) {
-            painter.paint(point);
-        }
+        ByteBuffer image = renderer.getFrame(controlData);
+        paint(getPoints(), image, renderer.getXResolution(), renderer.getYResolution());
     }
 
     // Saves me from having to propagate all those setUniform(name,etc.) methods up the
-    // object hierarchy!  It grants you great power.  Use responsibly!
-    public NativeShader getNativeShader() { return offscreenShaderRenderer.getNativeShader(); }
+    // object hierarchy!  It grants great power.  Use responsibly!
+    public NativeShader getNativeShader() {
+        return renderer.getNativeShader();
+    }
 
     @Override
     public List<LXParameter> getParameters() {

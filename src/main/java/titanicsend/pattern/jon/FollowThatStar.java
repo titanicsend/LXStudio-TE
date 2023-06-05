@@ -8,7 +8,6 @@ import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
-import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 
 @LXCategory("Combo FG")
 public class FollowThatStar extends TEPerformancePattern {
@@ -17,12 +16,6 @@ public class FollowThatStar extends TEPerformancePattern {
 
     public FollowThatStar(LX lx) {
         super(lx, TEShaderView.ALL_POINTS);
-
-
-        // create new effect with alpha on and no automatic uniforms
-        ShaderOptions options = new ShaderOptions();
-        options.useAlpha(true);
-        options.useLXParameterUniforms(false);
 
         controls.setRange(TEControlTag.QUANTITY, 5, 1, 10)
                 .setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
@@ -33,8 +26,7 @@ public class FollowThatStar extends TEPerformancePattern {
         // register common controls with LX
         addCommonControls();
 
-        effect = new NativeShaderPatternEffect("followthatstar.fs",
-                new PatternTarget(this), options);
+        effect = new NativeShaderPatternEffect("followthatstar.fs", new PatternTarget(this));
     }
 
     @Override

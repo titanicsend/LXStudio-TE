@@ -2,6 +2,8 @@ package titanicsend.pattern.yoffa.shader_engine;
 
 import com.jogamp.opengl.*;
 
+import java.nio.ByteBuffer;
+
 public class OffscreenShaderRenderer {
 
     private final static int xResolution = 640;
@@ -10,32 +12,31 @@ public class OffscreenShaderRenderer {
     private NativeShader nativeShader;
     private GLAutoDrawable offscreenDrawable;
 
-    public OffscreenShaderRenderer(FragmentShader fragmentShader,ShaderOptions shaderOptions) {
-        nativeShader = new NativeShader(fragmentShader, xResolution, yResolution,shaderOptions);
-    }
-
-    // use default shader options
     public OffscreenShaderRenderer(FragmentShader fragmentShader) {
-        this(fragmentShader,new ShaderOptions());
+        nativeShader = new NativeShader(fragmentShader, xResolution, yResolution);
+
+        // save the currently active GL context in case we're on a thread
+        // that's trying to draw something on the UI
+        GLContext prevContext = GLContext.getCurrent();
+
+        // load shaders at creation time to make switching instant for
+        // the rest of the run.
+        offscreenDrawable = ShaderUtils.createGLSurface(xResolution,yResolution);
+        offscreenDrawable.display();
+        nativeShader.init(offscreenDrawable);
+
+        // restore previous context
+        if (prevContext != null) prevContext.makeCurrent();
     }
 
     public void initializeNativeShader() {
-       // do nothing for now.
     };
 
-    public int[][] getFrame(PatternControlData audioInfo) {
-        // initialize as late as possible to avoid stepping on LX's toes
-        if (!nativeShader.isInitialized()) {
-            offscreenDrawable = ShaderUtils.createGLSurface(xResolution,yResolution);
-            offscreenDrawable.display();
-            nativeShader.init(offscreenDrawable);
-        }
-
-        nativeShader.updateAudioInfo(audioInfo);
+    public ByteBuffer getFrame(PatternControlData ctlInfo) {
+        nativeShader.updateControlInfo(ctlInfo);
         nativeShader.display(offscreenDrawable);
         return nativeShader.getSnapshot();
     }
-
 
     public void reset() {
         nativeShader.reset();
