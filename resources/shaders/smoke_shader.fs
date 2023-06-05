@@ -49,6 +49,5 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     uv.y = pow(clamp(uv.y + 0.15, 0.0, 1.0), iWow2);
     col.y -= mix(0.0, uv.y, satGradient);
 
-    // use our output brightness as alpha
-    fragColor = vec4(hsv2rgb(col), uv.y);
+    fragColor = vec4(uv.y * hsv2rgb(col), 1.0);
 }
