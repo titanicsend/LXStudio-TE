@@ -13,7 +13,6 @@ import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
-import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 
 // TODO - NEEDS FULL CONVERSION TO COMMON CONTROLS
 
@@ -38,13 +37,6 @@ public class FourStar extends TEPerformancePattern {
     public FourStar(LX lx) {
         super(lx, TEShaderView.ALL_PANELS);
 
-        // create new effect with alpha on and no automatic
-        // parameter uniforms
-
-        ShaderOptions options = new ShaderOptions();
-        options.useAlpha(true);
-        options.useLXParameterUniforms(false);
-
         // register common controls with the UI
         addCommonControls();
 
@@ -57,8 +49,7 @@ public class FourStar extends TEPerformancePattern {
         startModulator(tempoDivisionClick);
         tempoDivision.bang();
 
-        effect = new NativeShaderPatternEffect("fourstar.fs",
-                new PatternTarget(this), options);
+        effect = new NativeShaderPatternEffect("fourstar.fs", new PatternTarget(this));
     }
 
     @Override

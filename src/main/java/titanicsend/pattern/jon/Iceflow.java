@@ -10,7 +10,6 @@ import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
-import titanicsend.pattern.yoffa.shader_engine.ShaderOptions;
 import titanicsend.util.TEMath;
 
 // TODO - NEEDS FULL CONVERSION TO COMMON CONTROLS
@@ -42,13 +41,6 @@ public class Iceflow extends TEPerformancePattern {
     public Iceflow(LX lx) {
         super(lx, TEShaderView.ALL_PANELS);
 
-        // create new effect with alpha on and no automatic
-        // parameter uniforms
-
-        ShaderOptions options = new ShaderOptions();
-        options.useAlpha(true);
-        options.useLXParameterUniforms(false);
-
         // register common controls with the UI
         addCommonControls();
 
@@ -57,9 +49,7 @@ public class Iceflow extends TEPerformancePattern {
         addParameter("energy", energy);
         addParameter("beatScale",beatScale);
 
-        effect = new NativeShaderPatternEffect("iceflow.fs",
-                new PatternTarget(this), options);
-
+        effect = new NativeShaderPatternEffect("iceflow.fs",  new PatternTarget(this));
     }
 
     @Override

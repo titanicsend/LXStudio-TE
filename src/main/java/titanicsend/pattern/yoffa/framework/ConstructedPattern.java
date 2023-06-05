@@ -58,7 +58,7 @@ public abstract class ConstructedPattern extends TEPerformancePattern {
 
     @Override
     protected void runTEAudioPattern(double deltaMillis) {
-        clearColors();
+        //clearColors();
         for (PatternEffect effect : effects) {
             effect.run(deltaMillis);
         }

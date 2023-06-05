@@ -32,7 +32,7 @@ public class ShaderToyPatternEffect extends NativeShaderPatternEffect {
                 if (clipboardValue.isDataFlavorSupported(DataFlavor.stringFlavor)) {
                     String shaderId = (String) clipboardValue.getTransferData(DataFlavor.stringFlavor);
                     FragmentShader fragmentShader = ShaderToyClient.getShader(shaderId);
-                    offscreenShaderRenderer = new OffscreenShaderRenderer(fragmentShader);
+                    renderer = new OffscreenShaderRenderer(fragmentShader);
                 }
             } catch (Exception e) {
                 //usually for this project I like to let exceptions escape and be surfaced to the user, but when they

@@ -154,7 +154,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float gradient = mix(noise,mod((noise * levels),2.0),iWow1);
 
     // Wow2 controls the mix of foreground color vs. gradient
-    vec3 col = mix(iColorRGB, mix(iColorRGB, iColor2RGB,gradient), iWow2);
+    vec3 col = noise * mix(iColorRGB, mix(iColorRGB, iColor2RGB,gradient), iWow2);
 
-    fragColor = vec4(col, noise);
+    fragColor = vec4(col, 1.0);
 }

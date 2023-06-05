@@ -46,4 +46,7 @@ void main() {
     #else
     mainImage(finalColor, gl_FragCoord.xy);
     #endif
+
+    // force black pixels to full transparency, otherwise use shader provided alpha
+    finalColor.a = ((finalColor.r + finalColor.g + finalColor.b) == 0.0) ? 0.0 : finalColor.a;
 }
