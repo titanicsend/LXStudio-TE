@@ -28,7 +28,7 @@ float noise(float x, float s) {
 vec2 rotate(vec2 point, vec2 origin, float angle) {
     float c = cos(angle); float s = sin(angle);
     mat2 rotationMatrix = mat2(c, -s, s, c);
-    return origin + rotationMatrix * (point - origin);
+    return origin + iScale * (rotationMatrix * (point - origin));
 }
 
 void mainImage(out vec4 fragColor, in vec2 coord) {
@@ -36,9 +36,7 @@ void mainImage(out vec4 fragColor, in vec2 coord) {
     coord = coord / iResolution.xy;
     vec2 origin =  vec2(0.5);
     coord = rotate(coord,origin, iRotationAngle);
-    coord += iTranslate;
-    coord *= iScale;
-
+    coord -= iTranslate / 8.0;
 
     // get cell id based on scaled x coordinate
     float id = round(coord.x * iResolution.x);
