@@ -508,7 +508,6 @@ public class TEApp extends PApplet implements LXPlugin {
           TE.err(ex, "Failure adding pattern to channel! ");
         }
       }
-
     } else {
       TE.err("Selected channel must be a channel and not a group before adding all patterns.");
     }
