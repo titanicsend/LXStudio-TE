@@ -25,8 +25,10 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.function.Function;
 
 import com.google.gson.Gson;
@@ -60,6 +62,7 @@ import titanicsend.output.GrandShlomoStation;
 import titanicsend.pattern.TEEdgeTestPattern;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.pattern.TEPanelTestPattern;
+import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.ben.*;
 import titanicsend.pattern.cesar.HandTracker;
 import titanicsend.pattern.jeff.*;
@@ -487,13 +490,25 @@ public class TEApp extends PApplet implements LXPlugin {
     if (channel instanceof LXChannel) {
       TE.log("*** Instantiating all " + this.lx.registry.patterns.size() + " patterns in registry to channel " + channel.getLabel() + " ***");
       TE.log("Here we gOOOOOOOOOOOO....");
+      List<LXPattern> patterns = new ArrayList<LXPattern>();
       for (Class<? extends LXPattern> clazz : this.lx.registry.patterns) {
         try {
-          ((LXChannel)channel).addPattern(this.lx.instantiatePattern(clazz));
+          if (TEPerformancePattern.class.isAssignableFrom(clazz)) {
+            patterns.add(this.lx.instantiatePattern(clazz));
+          }
         } catch (Exception ex) {
           TE.err(ex, "Broken pattern! Could not instantiate " + clazz);
         }
       }
+      patterns.sort((p1, p2) -> p1.getLabel().compareTo(p2.getLabel()));
+      for (LXPattern pattern : patterns) {
+        try {
+          ((LXChannel)channel).addPattern(pattern);
+        } catch (Exception ex) {
+          TE.err(ex, "Failure adding pattern to channel! ");
+        }
+      }
+
     } else {
       TE.err("Selected channel must be a channel and not a group before adding all patterns.");
     }
