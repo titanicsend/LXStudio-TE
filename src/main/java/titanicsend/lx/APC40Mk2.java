@@ -1345,7 +1345,7 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
   }
 
   private void unregisterUserButton(BooleanParameter parameter) {
-    parameter.addListener(userButtonListener);
+    parameter.removeListener(userButtonListener);
   }
 
   private void unregister() {
