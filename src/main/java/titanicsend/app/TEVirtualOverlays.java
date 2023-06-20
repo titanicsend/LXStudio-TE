@@ -46,10 +46,12 @@ public class TEVirtualOverlays extends TEUIComponent {
   private static class POV {
     LXVector v;
     int rgb;
+    float thickness;
 
-    POV(LXVector v, int rgb) {
+    POV(LXVector v, int rgb, float thickness) {
       this.v = v;
       this.rgb = rgb;
+      this.thickness = thickness;
     }
   }
   private static final int numPOVs = 10;
@@ -252,6 +254,7 @@ public class TEVirtualOverlays extends TEUIComponent {
     for (List<POV> povs : this.laserPOV) {
       for (POV p : povs) {
         pg.pushMatrix();
+        pg.strokeWeight(p.thickness);
         pg.stroke(p.rgb, 0xA0);
         pg.translate(p.v.x, p.v.y, p.v.z);
         pg.sphere(10000);
@@ -290,18 +293,21 @@ public class TEVirtualOverlays extends TEUIComponent {
         laserSpot = mountainSpot;
       }
 
+      pg.strokeWeight(laser.thickness);
       pg.stroke(laser.color, 0xA0);
       pg.line(laser.origin.x, laser.origin.y, laser.origin.z, laserSpot.x, laserSpot.y, laserSpot.z);
       pg.pushMatrix();
       pg.stroke(laser.color);
       pg.translate(laserSpot.x, laserSpot.y, laserSpot.z);
-      newPOV.add(new POV(laserSpot, laser.color));
+      newPOV.add(new POV(laserSpot, laser.color, laser.thickness));
       pg.sphere(10000);
       pg.popMatrix();
     }
 
     this.laserPOV.remove(0);
     this.laserPOV.add(newPOV);
+
+    pg.strokeWeight(4);  // default
 
     endDraw(ui, pg);
   }

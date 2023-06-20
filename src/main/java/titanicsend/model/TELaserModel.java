@@ -15,12 +15,14 @@ public class TELaserModel extends TEModel {
   public int color;
   public String id;
   public LaserControl control;
+  public int thickness;
 
-  public TELaserModel(String id, double x, double y, double z, String ... tags) {
-    super("Laser", makePoint(x, y, z), tags);
+  public TELaserModel(String id, double x, double y, double z, int thickness) {
+    super("Laser", makePoint(x, y, z));
     this.id = id;
     this.origin = new LXVector(this.points[0]);
     this.color = LXColor.rgb(255,0,0);
+    this.thickness = thickness;
   }
 
   public String getId() {

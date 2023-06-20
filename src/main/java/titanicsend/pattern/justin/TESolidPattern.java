@@ -25,6 +25,9 @@ public class TESolidPattern extends TEPerformancePattern {
 
       colors[p.index] = color1;      
     }
+
+    // Draw lasers in the GUI with the new colors
+    this.updateVirtualColors(deltaMs);
   }
 
 }

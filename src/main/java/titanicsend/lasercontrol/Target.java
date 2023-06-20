@@ -8,8 +8,13 @@ public class Target extends LaserControl {
 
   public Target(TELaserModel laser) {
     super(laser);
-    this.bullseye = new LXVector(-15e6F, 0, 0);
-    if (laser.id.startsWith("HP")) this.bullseye.y = 10e6F;
+    if (laser.id.startsWith("B")) {
+      this.bullseye = new LXVector(-5e6F, 10e6F, 0);
+    } else if (laser.id.startsWith("HP")) {
+      this.bullseye = new LXVector(-15e6F, 10e6F, 0);
+    } else {
+      this.bullseye = new LXVector(-15e6F, 0, 0);
+    }
     this.update(0);
   }
 
