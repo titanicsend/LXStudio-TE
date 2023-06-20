@@ -9,16 +9,19 @@ public class MovingTarget extends Target {
   public static final float RADIUS = 1e6F;  // 1 meter
   private float theta = 0.0F;
   private LXVector center;
+  public boolean flat = false;
 
-  public MovingTarget(TELaserModel laser) {
+  public MovingTarget(TELaserModel laser, boolean flat) {
     super(laser);
     this.center = this.bullseye;
+    this.flat = flat;
   }
 
   public void update(double deltaMsec) {
     if (this.center == null) return;  // Happens when super constructor calls .update()
     this.theta += (deltaMsec * RADIANS_PER_MSEC) % (2.0 * Math.PI);
     float x = RADIUS * (float)Math.sin(theta);
+    if (this.flat) x = 0;
     float z = RADIUS * (float)Math.cos(theta);
     this.bullseye = new LXVector(x, 0, z).add(this.center);
     super.update(deltaMsec);

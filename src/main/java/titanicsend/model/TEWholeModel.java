@@ -12,6 +12,7 @@ import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
+import titanicsend.lasercontrol.LaserControl;
 import titanicsend.lasercontrol.MovingTarget;
 import titanicsend.output.ChromatechSocket;
 import titanicsend.output.GrandShlomoStation;
@@ -499,6 +500,7 @@ public class TEWholeModel extends LXModel {
 
     while (s.hasNextLine()) {
       String line = s.nextLine();
+      if (line.startsWith("#")) continue;
       String[] tokens = line.split("\t");
       assert tokens.length == 4 : "Found " + tokens.length + " tokens";
 
@@ -506,11 +508,20 @@ public class TEWholeModel extends LXModel {
       int x = Integer.parseInt(tokens[1]);
       int y = Integer.parseInt(tokens[2]);
       int z = Integer.parseInt(tokens[3]);
-      String[] tags = new String[] { id };
 
-      TELaserModel laser = new TELaserModel(id, x, y, z, tags);
+      int thickness;
+      boolean flat;
+      if (id.startsWith("B")) {
+        thickness = 7;  // beacon
+        flat = true;
+      } else {
+        thickness = 1;  // laser
+        flat = false;
+      }
+
+      TELaserModel laser = new TELaserModel(id, x, y, z, thickness);
       //laser.control = new Cone(laser);
-      laser.control = new MovingTarget(laser);
+      laser.control = new MovingTarget(laser, flat);
       geometry.lasersById.put(id, laser);
     }
   }
