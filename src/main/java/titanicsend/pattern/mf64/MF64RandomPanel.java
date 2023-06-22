@@ -50,7 +50,7 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
         prng = new Random(seed);
 
         time = new VariableSpeedTimer();
-        time.setTimeDirectionForward(true);
+        //time.setTimeDirectionForward(true);
         colorMap = new ButtonColorMgr();
         eventStartTime = -99f;
         refCount = 0;

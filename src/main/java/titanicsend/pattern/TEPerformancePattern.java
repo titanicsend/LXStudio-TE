@@ -840,7 +840,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 // Note: revised calculation restricts maximum speed while still allowing
                 // you to get to maximum speed at slower bpm.
                 double et = Math.min(maxSpinRate, maxSpinRate * (time - lastTime));
-                angle += et % LX.TWO_PI;
+                angle -= et % LX.TWO_PI;
             }
             lastTime = time;
         }
