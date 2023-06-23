@@ -31,7 +31,7 @@ def read_controllers(config_dir):
     with open(config_dir + '/panels.txt') as tsv_file:
         tsv_reader = csv.reader(tsv_file, delimiter="\t")
         for row in tsv_reader:
-            output_list = row[6]
+            output_list = row[7]
             outputs.extend(output_list.split('/'))
     ips = set()
     for output in outputs:

@@ -404,15 +404,16 @@ public class TEWholeModel extends LXModel {
     while (s.hasNextLine()) {
       String line = s.nextLine();
       String[] tokens = line.split("\t");
-      assert tokens.length == 7 : "Found " + tokens.length + " tokens";
+      assert tokens.length == 8 : "Found " + tokens.length + " tokens";
 
       String id = tokens[0];
-      String e0Id = tokens[1];
-      String e1Id = tokens[2];
-      String e2Id = tokens[3];
-      String startingPath = tokens[4];
-      String flipStr = tokens[5];
-      String panelType = tokens[6];
+      int declaredNumPixels = Integer.parseInt(tokens[1]);
+      String e0Id = tokens[2];
+      String e1Id = tokens[3];
+      String e2Id = tokens[4];
+      String startingPath = tokens[5];
+      String flipStr = tokens[6];
+      String panelType = tokens[7];
 
       TEEdgeModel e0 = geometry.edgesById.get(e0Id);
       TEEdgeModel e1 = geometry.edgesById.get(e1Id);
@@ -444,7 +445,10 @@ public class TEWholeModel extends LXModel {
       TEStripingInstructions tesi = stripingInstructions.get(id);
       TEPanelModel p = TEPanelFactory.build(id, vertexes[0], vertexes[1], vertexes[2],
           startVertexId, midVertexId, e0, e1, e2, panelType, tesi, geometry.gapPoint, geometry.views);
-
+      if (p.points.length != declaredNumPixels) {
+        TE.err("Panel " + id + " was declared to have " + declaredNumPixels +
+                "px but it actually has " + p.points.length);
+      }
       if (flipStr.equals("flipped")) {
         p.offsetTriangles.flip();
       } else if (!flipStr.equals("unflipped")) {
