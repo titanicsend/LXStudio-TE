@@ -10,7 +10,7 @@ RGB_PER_UNIVERSE = 170
 DMX_PER_UNIVERSE = RGB_PER_UNIVERSE * 3
 SPACING = 10
 FRAMERATE = 10
-MAX_CHANNEL_LEN = 250
+FLOOD_LEN = 500
 
 UNIVERSES = [10, 11, 12,
              20, 21, 22,
@@ -125,7 +125,7 @@ if __name__ == "__main__":
   for ip in ips:
     if mode in (None, 'flood'):
       for channel in [1, 2, 3, 4]:
-        set_channel(ip, channel, [(CHANNEL_COLORS[channel], MAX_CHANNEL_LEN)])
+        set_channel(ip, channel, [(CHANNEL_COLORS[channel], FLOOD_LEN)])
     else:
       channel_info = edges_and_panels[ip]
       for channel_minus_1, fixtures in enumerate(channel_info):
