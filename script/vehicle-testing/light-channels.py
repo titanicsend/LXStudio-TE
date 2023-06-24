@@ -24,6 +24,13 @@ ARTNET_YELLOW= (255, 255,   0)
 ARTNET_PINK  = (255,   0, 255)
 ARTNET_WHITE = (255, 255, 255)
 
+CHANNEL_COLORS={
+  1: ARTNET_RED,
+  2: ARTNET_GREEN,
+  3: ARTNET_BLUE,
+  4: ARTNET_YELLOW,
+}
+
 assigned_colors = dict()
 
 # Turn [(ARTNET_RED, 3), ARTNET_BLUE(10)] into 3 reds and 10 blues, with all RGB values
@@ -81,28 +88,57 @@ def animate(anim_frame):
   else:
     sleep(remaining_time)
 
+def usage():
+  sys.stderr.write("Need to pass a list of IPs or one of 'flood', 'active', 'random'\n")
+  sys.stderr.write("  flood:  Light up all channels on all configured IPs\n")
+  sys.stderr.write("  active: Light up all channels configured with an active fixture\n")
+  sys.stderr.write("  random: Like active, but use random per-fixture colors\n")
+  sys.exit(1)
 
 if __name__ == "__main__":
   ips = set()
-  if len(sys.argv) == 2 and sys.argv[1] == 'all':
-    ips = get_all_backpack_ips()
-    print("Lighting: " + ' '.join(sorted(ips)))
-  else:
-    for ip in sys.argv[1:]:
-      assert ip != 'all'
-      if ip in ips:
-        raise ValueError(f"You said {ip} twice")
-      ips.add(ip)
+  edges_and_panels = None
+  mode = None
 
-  if not ips:
-    sys.stderr.write("You need to specify some IPs, or 'all'\n")
-    sys.exit(1)
+  for arg in sys.argv[1:]:
+    if '-' in arg:
+      module, num = arg.split('-')
+      arg = "10.7." + module + "." + num
+    if '.' in arg:
+      if mode is not None: usage()
+      octets = arg.split('.')
+      if len(octets) != 4: usage()
+      ips.add(arg)
+    else:
+      if mode is not None: usage()
+      if ips: usage()
+      if arg in ('flood', 'active', 'random'):
+        edges_and_panels = load_edges_and_panels()
+        ips = edges_and_panels.keys()
+      else:
+        usage()
+
+  if not ips: usage()
+
+  print("Lighting: " + ' '.join(sorted(ips)))
 
   for ip in ips:
-    set_channel(ip, 1, [(ARTNET_RED,    MAX_CHANNEL_LEN)])
-    set_channel(ip, 2, [(ARTNET_GREEN,  MAX_CHANNEL_LEN)])
-    set_channel(ip, 3, [(ARTNET_BLUE,   MAX_CHANNEL_LEN)])
-    set_channel(ip, 4, [(ARTNET_YELLOW, MAX_CHANNEL_LEN)])
+    if mode in (None, 'flood'):
+      for channel in [1, 2, 3, 4]:
+        set_channel(ip, channel, [(CHANNEL_COLORS[channel], MAX_CHANNEL_LEN)])
+    else:
+      channel_info = edges_and_panels[ip]
+      for channel_minus_1, fixtures in enumerate(channel_info):
+        channel_pixels = []
+        for fixture in fixtures:
+          num_fixture_pixels = fixture[1]
+          if mode == "random":
+            color = random.choice(CHANNEL_COLORS)
+          else:
+            assert mode == "active"
+            color = CHANNEL_COLORS[channel_minus_1+1]
+          channel_pixels.extend(color * num_fixture_pixels)
+        set_channel(ip, channel, channel_pixels.extend)
 
   anim_frame = 0
   while True:
