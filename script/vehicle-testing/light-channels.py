@@ -22,6 +22,7 @@ ARTNET_GREEN = (  0, 255,   0)
 ARTNET_BLUE  = (  0,   0, 255)
 ARTNET_YELLOW= (255, 255,   0)
 ARTNET_PINK  = (255,   0, 255)
+ARTNET_CYAN  = (  0, 255, 255)
 ARTNET_WHITE = (255, 255, 255)
 
 CHANNEL_COLORS={
@@ -30,6 +31,9 @@ CHANNEL_COLORS={
   3: ARTNET_BLUE,
   4: ARTNET_YELLOW,
 }
+
+RANDOM_EDGE_COLORS = [ARTNET_RED, ARTNET_GREEN, ARTNET_BLUE]
+RANDOM_PANEL_COLORS = [ARTNET_YELLOW, ARTNET_CYAN, ARTNET_WHITE]
 
 assigned_colors = dict()
 
@@ -131,9 +135,12 @@ if __name__ == "__main__":
       for channel_minus_1, fixtures in enumerate(channel_info):
         channel_pixels = []
         for fixture in fixtures:
-          num_fixture_pixels = fixture[1]
+          fixture_id, num_fixture_pixels = fixture
           if mode == "random":
-            color = random.choice(CHANNEL_COLORS)
+            if '-' in fixture_id:
+              color = random.choice(RANDOM_EDGE_COLORS)
+            else:
+              color = random.choice(RANDOM_PANEL_COLORS)
           else:
             assert mode == "active"
             color = CHANNEL_COLORS[channel_minus_1+1]
