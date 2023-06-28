@@ -1,17 +1,14 @@
 #! /usr/bin/env python
 
-import csv
 import importlib
-import math
 import sys
 
-PIXELS_PER_PANEL_CHANNEL = 250
+from tecfg import *
 
 BAD_CHANNELS = [
   ('10.7.?.?', 4),
 ]
 
-ap = importlib.import_module("angio-pinger")
 av = importlib.import_module("angio-validator")
 
 if len(sys.argv) == 1:
@@ -19,8 +16,6 @@ if len(sys.argv) == 1:
 else:
   assert len(sys.argv) == 2
   module = int(sys.argv[1])
-
-config_dir = ap.find_config_dir()
 
 backpacks_by_ip = dict()
 class Backpack:
@@ -40,63 +35,28 @@ class Backpack:
 
   def add_subpanel(self, channel, subpanel_id):
     if self.channels[channel-1] is not None:
-      raise ValueError(f"{self.ip} #{channel} assigned to both {self.channels[channel-1]}"
-                       f" and {subpanel_id}")
+      raise ValueError(f"{self.ip} #{channel} assigned to both "
+          f"{self.channels[channel-1]} and {subpanel_id}")
     self.channels[channel-1] = subpanel_id
+
 
 def find_or_make_backpack(ip):
   if ip not in backpacks_by_ip:
     backpacks_by_ip[ip] = Backpack(ip)
   return backpacks_by_ip[ip]
 
-with open(config_dir + '/edges.txt') as tsv_file:
-  for row in csv.reader(tsv_file, delimiter="\t"):
-    edge_id, _, _, output = row
-    ip, chaninfo = output.split("#")
-    if '?' in ip:
-      continue
-    if ip.startswith('x'):
-      ip = ip[1:]
-      edge_id += "(disabled)"
-    channel_str = chaninfo.split(":")[0]
-    channel = int(channel_str)
-    backpack = find_or_make_backpack(ip)
-    backpack.add_edge(channel, edge_id)
-  
-with open(config_dir + '/panels.txt') as tsv_file:
-  for row in csv.reader(tsv_file, delimiter="\t"):
-    panel_id, num_pixels_str, _, _, _, _, _, outputs_str = row
-    num_pixels = int(num_pixels_str)
-    num_channels = math.ceil(num_pixels/PIXELS_PER_PANEL_CHANNEL)    
-    if '?' in outputs_str:
-      continue
-    outputs = list(outputs_str.split("/"))
-    ip = None
-    channel = 5
-    last_channel = None
-    for i in range(num_channels):
-      if channel > 4:
-        ip, channel_str = outputs.pop(0).split("#")
-        tokens = channel_str.split("-")
-        channel = int(tokens[0])
-        if len(tokens) == 1:
-          last_channel = 4
-        elif len(tokens) == 2:
-          last_channel = int(tokens[1])
-        else:
-          raise ValueError("Couldn't parse " + channel_str)
-        if ip.startswith("x"):
-          ip = ip[1:]
-          panel_id += "(disabled)"
-      backpack = find_or_make_backpack(ip)
-      subpanel_id = f"{panel_id}_{i * PIXELS_PER_PANEL_CHANNEL}"
-      backpack.add_subpanel(channel, subpanel_id)
-      channel += 1
-      if channel > last_channel:
-        channel = 5 # Hack to force channel > 4 on next loop
-    if outputs != []:
-      raise ValueError(panel_id + " is configured with more outputs "
-                       "than necessary")
+
+for ip, edge_lists in load_edges().items():
+  backpack = find_or_make_backpack(ip)
+  for channel_minus_1, edge_list in enumerate(edge_lists):
+    for edge_id in edge_list:
+      backpack.add_edge(channel_minus_1 + 1, edge_id)
+
+for ip, subpanel_ids in load_panels().items():
+  backpack = find_or_make_backpack(ip)
+  for channel_minus_1, subpanel_id in enumerate(subpanel_ids):
+    if subpanel_id is not None:
+      backpack.add_subpanel(channel_minus_1 + 1, subpanel_id)
 
 def colorize(s, color_code):
   return "\033[%dm%s\033[0m" % (color_code, s)
@@ -119,9 +79,13 @@ def WHITE(s): # Bright/bold white
 def GRAY(s):
   return colorize(s, 90)
 
+#currentses = av.get_currentses(backpacks_by_ip.keys())
+min_current = 0 # FIXME
+
 for ip in sorted(backpacks_by_ip):
   if module is not None and not ip.startswith(f"10.7.{module}."):
     continue
+  #currents = currentses[ip]
   backpack = backpacks_by_ip[ip]
   octets = ip.split(".")
   ip = (GRAY(octets[0] + "." + octets[1] + ".") + YELLOW(octets[2]) +
@@ -129,11 +93,31 @@ for ip in sorted(backpacks_by_ip):
   print(ip)
   for i in range(4):
     label = backpack.channels[i]
+    amps = 0 # currents[i]
+    amp_str = '%.2fA' % amps
+    if amps is None:
+      current = "unreachable"
+    elif amps < min_current:
+      current = "low"
+    else:
+      current = "normal"
 
     if label == "BAD":
       label = RED(label)
+      if current == "low":
+        amp_str = GRAY(amp_str)
+      else:
+        amp_str = RED(amp_str)
     elif label is None:
       label = GREEN("Free")
+      if current == "low":
+        amp_str = GRAY(amp_str)
+      else:
+        amp_str = RED(amp_str)
     else:
+      if current == "normal":
+        amp_str = GRAY(amp_str)
+      else:
+        amp_str = RED(amp_str)
       label = WHITE(label)
     print(f"  {i+1}: {label}")

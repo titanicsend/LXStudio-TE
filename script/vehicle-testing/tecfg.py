@@ -24,8 +24,7 @@ def load_edges():
   rv = dict()
   with open(config_dir + '/edges.txt') as tsv_file:
     for row in csv.reader(tsv_file, delimiter="\t"):
-      edge_id, _, num_pixels_str, output = row
-      num_pixels = int(num_pixels_str)
+      edge_id, _, _, output = row
       ip, chaninfo = output.split("#")
       if '?' in ip:
         continue
@@ -36,8 +35,9 @@ def load_edges():
         rv[ip] = [[], [], [], []]
       channel_str = chaninfo.split(":")[0]
       channel = int(channel_str)
-      rv[ip][channel-1].append((edge_id, num_pixels))
+      rv[ip][channel-1].append(edge_id)
   return rv
+
 
 def load_panels():
   config_dir = find_config_dir()
@@ -69,37 +69,44 @@ def load_panels():
             panel_id += "(disabled)"
         subpanel_id = f"{panel_id}_{i * PIXELS_PER_PANEL_CHANNEL}"
         if ip not in rv:
-          rv[ip] = [[], [], [], []]
-        assert rv[ip][channel-1] == []
-        if num_pixels > PIXELS_PER_PANEL_CHANNEL:
-          num_subpanel_pixels = PIXELS_PER_PANEL_CHANNEL
-        else:
-          num_subpanel_pixels = num_pixels
-        num_pixels -= num_subpanel_pixels
-        rv[ip][channel-1] = (subpanel_id, num_subpanel_pixels)
+          rv[ip] = [None, None, None, None]
+        assert rv[ip][channel-1] is None
+        rv[ip][channel-1] = subpanel_id
         channel += 1
         if channel > last_channel:
           channel = 5 # Hack to force channel > 4 on next loop
-      if num_pixels != 0:
-        raise ValueError(panel_id + " somehow had " + num_pixels + " pixels left")
       if outputs != []:
         raise ValueError(panel_id + " is configured with more outputs "
                          "than necessary")
   return rv
 
 
-def load_edges_and_panels():
+def load_striping_instructions():
+  config_dir = find_config_dir()
+  rv = dict()
+  with open(config_dir + '/striping-instructions.txt') as fd:
+    for line in fd.readlines():
+      line = line.strip()
+      tokens_with_comments = line.split(" ")
+      tokens = []
+      commenting = False
+      for token in tokens_with_comments:
+        if commenting:
+          if token[-1] == ")":
+            commenting = False
+          continue
+        elif token[0] == "(":
+          commenting = token[-1] != ")"
+        else:
+          tokens.append(token)
+      panel_id = tokens.pop(0)
+      assert panel_id not in rv
+      if not tokens: continue
+      rv[panel_id] = tokens
+  return rv
+
+
+def get_all_backpack_ips():
   edge_d = load_edges()
   panel_d = load_panels()
-  rv = dict()
-  for ip, channel_info in edge_d.items():
-    rv[ip] = channel_info
-  for ip, channel_info in panel_d.items():
-    if ip not in rv:
-      rv[ip] = [[], [], [], []]
-    for channel_minus_1, subpanel_info in enumerate(channel_info):
-      if rv[ip][channel_minus_1]:
-        raise ValueError(f"{ip} #{channel_minus_1+1} is both"
-            f" {rv[ip][channel_minus_1][0]} and {subpanel_info[0]}")
-      rv[ip][channel_minus_1] = subpanel_info
-  return rv
+  return set(edge_d).union(set(panel_d))
