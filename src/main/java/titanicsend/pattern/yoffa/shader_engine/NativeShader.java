@@ -88,7 +88,8 @@ public class NativeShader implements GLEventListener {
 
     @Override
     public void init(GLAutoDrawable glAutoDrawable) {
-        glAutoDrawable.getContext().makeCurrent();
+        GLContext context = glAutoDrawable.getContext();
+        context.makeCurrent();
         GL4 gl4 = glAutoDrawable.getGL().getGL4();
 
         if (!isInitialized()) {
@@ -96,6 +97,7 @@ public class NativeShader implements GLEventListener {
             downloadTextureFiles(fragmentShader);
             gl4.glUseProgram(shaderProgram.getProgramId());
         }
+        context.release();
     }
 
     // needs to be called to release native resources when we dispose
