@@ -11,12 +11,6 @@ BAD_CHANNELS = [
 
 av = importlib.import_module("angio-validator")
 
-if len(sys.argv) == 1:
-  module = None
-else:
-  assert len(sys.argv) == 2
-  module = int(sys.argv[1])
-
 backpacks_by_ip = dict()
 class Backpack:
   def __init__(self, ip):
@@ -45,18 +39,18 @@ def find_or_make_backpack(ip):
     backpacks_by_ip[ip] = Backpack(ip)
   return backpacks_by_ip[ip]
 
+def init_backpacks():
+  for ip, edge_lists in load_edges().items():
+    backpack = find_or_make_backpack(ip)
+    for channel_minus_1, edge_list in enumerate(edge_lists):
+      for edge_id in edge_list:
+        backpack.add_edge(channel_minus_1 + 1, edge_id)
 
-for ip, edge_lists in load_edges().items():
-  backpack = find_or_make_backpack(ip)
-  for channel_minus_1, edge_list in enumerate(edge_lists):
-    for edge_id in edge_list:
-      backpack.add_edge(channel_minus_1 + 1, edge_id)
-
-for ip, subpanel_ids in load_panels().items():
-  backpack = find_or_make_backpack(ip)
-  for channel_minus_1, subpanel_id in enumerate(subpanel_ids):
-    if subpanel_id is not None:
-      backpack.add_subpanel(channel_minus_1 + 1, subpanel_id)
+  for ip, subpanel_ids in load_panels().items():
+    backpack = find_or_make_backpack(ip)
+    for channel_minus_1, subpanel_id in enumerate(subpanel_ids):
+      if subpanel_id is not None:
+        backpack.add_subpanel(channel_minus_1 + 1, subpanel_id)
 
 def colorize(s, color_code):
   return "\033[%dm%s\033[0m" % (color_code, s)
@@ -79,45 +73,30 @@ def WHITE(s): # Bright/bold white
 def GRAY(s):
   return colorize(s, 90)
 
-#currentses = av.get_currentses(backpacks_by_ip.keys())
-min_current = 0 # FIXME
 
-for ip in sorted(backpacks_by_ip):
-  if module is not None and not ip.startswith(f"10.7.{module}."):
-    continue
-  #currents = currentses[ip]
-  backpack = backpacks_by_ip[ip]
-  octets = ip.split(".")
-  ip = (GRAY(octets[0] + "." + octets[1] + ".") + YELLOW(octets[2]) +
-        GRAY(".") + CYAN(octets[3]) + GRAY(":"))
-  print(ip)
-  for i in range(4):
-    label = backpack.channels[i]
-    amps = 0 # currents[i]
-    amp_str = '%.2fA' % amps
-    if amps is None:
-      current = "unreachable"
-    elif amps < min_current:
-      current = "low"
-    else:
-      current = "normal"
+if __name__ == "__main__":
+  if len(sys.argv) == 1:
+    module = None
+  else:
+    assert len(sys.argv) == 2
+    module = int(sys.argv[1])
 
-    if label == "BAD":
-      label = RED(label)
-      if current == "low":
-        amp_str = GRAY(amp_str)
+  init_backpacks()
+
+  for ip in sorted(backpacks_by_ip):
+    if module is not None and not ip.startswith(f"10.7.{module}."):
+      continue
+    backpack = backpacks_by_ip[ip]
+    octets = ip.split(".")
+    ip = (GRAY(octets[0] + "." + octets[1] + ".") + YELLOW(octets[2]) +
+          GRAY(".") + CYAN(octets[3]) + GRAY(":"))
+    print(ip)
+    for i in range(4):
+      label = backpack.channels[i]
+      if label == "BAD":
+        label = RED(label)
+      elif label is None:
+        label = GREEN("Free")
       else:
-        amp_str = RED(amp_str)
-    elif label is None:
-      label = GREEN("Free")
-      if current == "low":
-        amp_str = GRAY(amp_str)
-      else:
-        amp_str = RED(amp_str)
-    else:
-      if current == "normal":
-        amp_str = GRAY(amp_str)
-      else:
-        amp_str = RED(amp_str)
-      label = WHITE(label)
-    print(f"  {i+1}: {label}")
+        label = WHITE(label)
+      print(f"  {i+1}: {label}")

@@ -55,6 +55,25 @@ def set_config(ip):
             break
     loop.close()
 
+def get_currents(ip):
+  loop = asyncio.new_event_loop()
+  response = loop.run_until_complete(
+               send_request_and_get_response(ip, str(dict(cmd="state", key="power")))
+             )
+  if response is None:
+    return None
+  try:
+    response_dict = json.loads(response)
+  except JSONDecodeError as e:
+    print(f"Failed to decode JSON: {response}\nError details: {e}")
+    return None
+  
+  ext = response_dict["data"]["external"]
+  rv = []
+  for d in ext:
+    rv.append(d['current']/1000)
+  return rv
+
 def check_config(possibly_labeled_ip, debug=False):
     if isinstance(possibly_labeled_ip, tuple):
       ip, label = possibly_labeled_ip
@@ -64,7 +83,7 @@ def check_config(possibly_labeled_ip, debug=False):
 
     power_array = [{'enabled': True}, {'enabled': True}, {'enabled': True}, {'enabled': True}]
 
-    requests = [("info", dict(version="v0.8.0"))] + expected_config + [
+    requests = [("info", dict(version="v0.9.2"))] + expected_config + [
                 ("netstate", dict(ethernet=dict(subnet="255.0.0.0", gateway="10.0.0.1"))),
                 ("power", dict(external=power_array)),
                 ("state:power", 'power'),
