@@ -362,6 +362,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         arclight += exp(abs(arcz - tunRef.p.z) * -0.3) * fract(sin(arcseed) * 198721.6231) * arcint;
     }
     vec3 arccol = vec3(0.9, 0.7, 0.7);
+    // TODO: respect color palette
     col += arclight * arccol * 0.5;
     col = mix(col, arccol, clamp(arcv, 0.0, 1.0));
     col = pow(col, vec3(1.0, 0.8, 0.5) * 1.5) * 1.5;

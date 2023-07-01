@@ -27,6 +27,7 @@ public class Fire extends TEPattern {
     protected final CompoundParameter colorPosition =
             new CompoundParameter("Color Position", 0.5);
 
+    // TODO: inherit color instead of custom color param
     public final LinkedColorParameter fireColor =
             registerColor("Color", "fireColor", ColorType.PRIMARY,
                     "Color of the fire");

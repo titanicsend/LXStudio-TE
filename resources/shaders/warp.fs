@@ -13,6 +13,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 		p.z = fract(p.z);
 		for (int i=0; i < 10; i++)	p = abs(p * 2.04) / dot(p, p) - .9;
 		v += pow(dot(p, p), .7) * .06;
+		// TODO: respect color palette
 		col +=  vec3(v * 0.2+.4, 12.-s*2., .1 + v * 1.) * v * 0.00003;
 		s += .025;
 	}

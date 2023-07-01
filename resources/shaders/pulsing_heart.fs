@@ -28,6 +28,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
     col += c * 2.0;
     col += pulse;
+    // TODO: respect color palette
     col = vec3(col.r, col.g * (uv.x + 0.5), col.b * (uv.y + 0.5));
     // Output to screen
     fragColor = vec4(col, 1.);

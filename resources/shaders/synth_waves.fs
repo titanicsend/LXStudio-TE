@@ -54,6 +54,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         m += mi;
 
         if(mi > 0.){
+            // TODO: respect color palette
         	col = hue(i/COUNT).rgb;
         }
     }

@@ -18,6 +18,7 @@ export function render3D(index, x, y, z) {
   z -= 0.5
   //get pixel distance from center
   r = sqrt(x*x + y*y + z*z) * scale
+  // TODO: respect color palette
   //make colors
   h = r * 3
   //blast wave - a triangle's peak moving based on the center
