@@ -63,14 +63,15 @@ def check_currents(ip):
   return rv    
   
 if ip_wanted is not None and ip_wanted not in cr.backpacks_by_ip:
-  print(f"{ip_wanted} is not mapped to anything; pretending it's full")
-  cr.backpacks_by_ip[ip_wanted] = cr.Backpack(ip_wanted) 
+  raise ValueError(f"{ip_wanted} is not mapped to anything; pretending it's a panel backpack")
+  cr.backpacks_by_ip[ip_wanted] = cr.Backpack(ip_wanted)
 
 for ip in sorted(cr.backpacks_by_ip):
   if ip_wanted is not None and not ip == ip_wanted:
     continue
   backpack = cr.backpacks_by_ip[ip]
-  
+  is_edge_backpack = backpack.num_pixels is not None
+
   currents = check_currents(ip)
 
   if currents is None:
@@ -82,12 +83,23 @@ for ip in sorted(cr.backpacks_by_ip):
       if amps >= AMP_THRESHOLD:
         print(cr.RED(f"{ip}#{channel} is drawing {amp_str} "
                      f"when it should be dark"))
-      cross_powered = False
+      cross_powered_count = 0
       for other_channel in [1,2,3,4]:
         if other_channel == channel: continue
         amps = currents[other_channel][channel-1]
         if amps >= AMP_THRESHOLD:
-          print(cr.RED(f"{ip}#{channel} is drawing power when #{other_channel} is on"))
+          cross_powered_count += 1
+          if not is_edge_backpack:
+            print(cr.RED(f"{ip}#{channel} is drawing power when #{other_channel} is on"))
+      if is_edge_backpack:
+        if backpack.channels[channel-1] is None:
+          if cross_powered_count != 0:
+            print(cr.RED(f"{ip}#{channel} draws power from {cross_powered_count} channels "
+                         "even though it's supposed to be unused"))
+        else:
+          if cross_powered_count != 3:
+            print(cr.RED(f"{ip}#{channel} draws power from {cross_powered_count} channels "
+                         "instead of the expected 3"))
       amps = currents[channel][channel-1]
       amp_str = '%0.2fA' % amps
       should_be_on = backpack.channels[channel-1] not in (None, "BAD")

@@ -9,6 +9,8 @@ BAD_CHANNELS = [
   ('10.7.?.?', 4),
 ]
 
+MAX_PIXELS_PER_EDGE_CHAIN = 500
+
 av = importlib.import_module("angio-validator")
 
 backpacks_by_ip = dict()
@@ -16,11 +18,22 @@ class Backpack:
   def __init__(self, ip):
     self.ip = ip
     self.channels = [None, None, None, None]
+    self.type = None
     for bad_ip, bad_channel in BAD_CHANNELS:
       if bad_ip == ip:
         self.channels[bad_channel-1] = "BAD"
 
-  def add_edge(self, channel, edge_id):
+  def add_edge(self, channel, edge_id, num_pixels):
+    if self.type is None:
+      self.type = "edge"
+      self.num_pixels = 0
+    if self.type != "edge":
+      raise ValueError(ip + " is configured with both edges and panels")
+    for other_channel in [1,2,3,4]:
+      if other_channel == channel: continue
+      if self.channels[other_channel-1] is not None:
+        raise ValueError(ip + " has edges configured on multiple channels")
+    self.num_pixels += num_pixels
     if self.channels[channel-1] is None:
       self.channels[channel-1] = edge_id
     else:
@@ -28,6 +41,11 @@ class Backpack:
       self.channels[channel-1] += ", " + edge_id 
 
   def add_subpanel(self, channel, subpanel_id):
+    if self.type is None:
+      self.type = "panel"
+      self.num_pixels = None
+    if self.type != "panel":
+      raise ValueError(ip + " is configured with both edges and panels")
     if self.channels[channel-1] is not None:
       raise ValueError(f"{self.ip} #{channel} assigned to both "
           f"{self.channels[channel-1]} and {subpanel_id}")
@@ -43,8 +61,8 @@ def init_backpacks():
   for ip, edge_lists in load_edges().items():
     backpack = find_or_make_backpack(ip)
     for channel_minus_1, edge_list in enumerate(edge_lists):
-      for edge_id in edge_list:
-        backpack.add_edge(channel_minus_1 + 1, edge_id)
+      for (edge_id, num_pixels) in edge_list:
+        backpack.add_edge(channel_minus_1 + 1, edge_id, num_pixels)
 
   for ip, subpanel_ids in load_panels().items():
     backpack = find_or_make_backpack(ip)
@@ -95,8 +113,18 @@ if __name__ == "__main__":
       label = backpack.channels[i]
       if label == "BAD":
         label = RED(label)
-      elif label is None:
-        label = GREEN("Free")
-      else:
+      elif label is not None:
         label = WHITE(label)
+        if backpack.num_pixels is not None:
+          num_remaining_pixels = MAX_PIXELS_PER_EDGE_CHAIN - backpack.num_pixels
+          if num_remaining_pixels < 0:
+            label += RED(f" ({-num_remaining_pixels}px too long)")
+          elif num_remaining_pixels > 0:
+            label += " (" + GREEN(str(num_remaining_pixels)) + "px left)"
+          else:
+            label += " (Exactly full)"
+      elif backpack.type == "edge":
+        label = GRAY("Unavailable")
+      else:
+        label = GREEN("Free")
       print(f"  {i+1}: {label}")

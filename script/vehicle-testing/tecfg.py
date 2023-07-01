@@ -24,7 +24,8 @@ def load_edges():
   rv = dict()
   with open(config_dir + '/edges.txt') as tsv_file:
     for row in csv.reader(tsv_file, delimiter="\t"):
-      edge_id, _, _, output = row
+      edge_id, _, num_pixels_str, output = row
+      num_pixels = int(num_pixels_str)
       ip, chaninfo = output.split("#")
       if '?' in ip:
         continue
@@ -35,7 +36,7 @@ def load_edges():
         rv[ip] = [[], [], [], []]
       channel_str = chaninfo.split(":")[0]
       channel = int(channel_str)
-      rv[ip][channel-1].append(edge_id)
+      rv[ip][channel-1].append((edge_id, num_pixels))
   return rv
 
 
@@ -104,9 +105,3 @@ def load_striping_instructions():
       if not tokens: continue
       rv[panel_id] = tokens
   return rv
-
-
-def get_all_backpack_ips():
-  edge_d = load_edges()
-  panel_d = load_panels()
-  return set(edge_d).union(set(panel_d))
