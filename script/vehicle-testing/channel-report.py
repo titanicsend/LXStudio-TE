@@ -61,12 +61,18 @@ def init_backpacks():
   for ip, edge_lists in load_edges().items():
     backpack = find_or_make_backpack(ip)
     for channel_minus_1, edge_list in enumerate(edge_lists):
-      for (edge_id, num_pixels) in edge_list:
+      for (offset, edge_id, num_pixels) in edge_list:
         backpack.add_edge(channel_minus_1 + 1, edge_id, num_pixels)
 
   for ip, subpanel_ids in load_panels().items():
     backpack = find_or_make_backpack(ip)
-    for channel_minus_1, subpanel_id in enumerate(subpanel_ids):
+    for channel_minus_1, subpanel_tuples in enumerate(subpanel_ids):
+      if subpanel_tuples is None:
+        subpanel_id = None
+      else:
+        assert len(subpanel_tuples) == 1
+        subpanel_tuple = subpanel_tuples[0]
+        offset, subpanel_id, num_pixels = subpanel_tuple
       if subpanel_id is not None:
         backpack.add_subpanel(channel_minus_1 + 1, subpanel_id)
 

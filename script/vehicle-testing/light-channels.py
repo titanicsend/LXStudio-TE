@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 
+import random
 import sys
 
 from time import time, sleep
@@ -8,7 +9,7 @@ from tecfg import *
 
 RGB_PER_UNIVERSE = 170
 DMX_PER_UNIVERSE = RGB_PER_UNIVERSE * 3
-SPACING = 10
+SPACING = 5
 FRAMERATE = 10
 FLOOD_LEN = 500
 
@@ -39,9 +40,9 @@ assigned_colors = dict()
 
 # Turn [(ARTNET_RED, 3), ARTNET_BLUE(10)] into 3 reds and 10 blues, with all RGB values
 # catenated together into a simple list of ints
-def flatten_colors(colors):
+def flatten_colors(color_pairs):
   rv = []
-  for color, count in colors:
+  for color, count in color_pairs:
     rv.extend(color * count)
   return rv
 
@@ -117,35 +118,52 @@ if __name__ == "__main__":
       if mode is not None: usage()
       if ips: usage()
       if arg in ('flood', 'active', 'random'):
-        edges_and_panels = load_edges_and_panels()
-        ips = edges_and_panels.keys()
+        edges_by_ip = load_edges()
+        panels_by_ip = load_panels()
+        ips = set(edges_by_ip).union(set(panels_by_ip))
+        mode = arg
       else:
+        print(f"Bad arg: {arg}")
         usage()
 
   if not ips: usage()
 
   print("Lighting: " + ' '.join(sorted(ips)))
 
-  for ip in ips:
+  for ip in sorted(ips):
     if mode in (None, 'flood'):
       for channel in [1, 2, 3, 4]:
         set_channel(ip, channel, [(CHANNEL_COLORS[channel], FLOOD_LEN)])
     else:
-      channel_info = edges_and_panels[ip]
+      if ip in edges_by_ip:
+        channel_info = edges_by_ip[ip]
+        is_edge = True
+      else:
+        channel_info = panels_by_ip[ip]
+        is_edge = False
       for channel_minus_1, fixtures in enumerate(channel_info):
-        channel_pixels = []
+        if fixtures is None or len(fixtures) == 0:
+          continue
+        channel_pairs = []
+        cursor = 0
         for fixture in fixtures:
-          fixture_id, num_fixture_pixels = fixture
+          offset, fixture_id, num_fixture_pixels = fixture
           if mode == "random":
-            if '-' in fixture_id:
+            if is_edge:
               color = random.choice(RANDOM_EDGE_COLORS)
             else:
               color = random.choice(RANDOM_PANEL_COLORS)
           else:
             assert mode == "active"
             color = CHANNEL_COLORS[channel_minus_1+1]
-          channel_pixels.extend(color * num_fixture_pixels)
-        set_channel(ip, channel, channel_pixels.extend)
+          blank_space = offset - cursor
+          assert blank_space >= 0
+          if blank_space > 0:
+            channel_pairs.append((ARTNET_PINK, blank_space))
+            cursor = offset
+          channel_pairs.append((color, num_fixture_pixels))
+          cursor += num_fixture_pixels
+        set_channel(ip, channel_minus_1 + 1, channel_pairs)
 
   anim_frame = 0
   while True:

@@ -21,6 +21,7 @@ FULL=255
 RED    = [FULL,0,0]
 GREEN  = [0,FULL,0]
 BLUE   = [0,0,FULL]
+YELLOW = [FULL,FULL,0]
 PINK   = [FULL,0,FULL]
 WHITE  = [FULL,FULL,FULL]
 
@@ -35,7 +36,7 @@ def pop_n(l, n):
     rv.append(l.pop(0))
   return rv
 
-def draw(ip, dots, anim_frame):
+def draw(ip, dots, yellow_start, yellow_end, anim_frame):
   dots = dots.copy()
   row_len = int(dots.pop(0))
   if dots[0].startswith('C'):
@@ -100,6 +101,13 @@ def draw(ip, dots, anim_frame):
     row_len -= 1
     horiz_offset += 0.5
 
+  # Overwrite DMX values with yellow for the specified range, if any
+  if yellow_start is not None:
+    while yellow_start <= yellow_end:
+      for component in range(3):
+        full_dmx[yellow_start*3+component] = YELLOW[component]
+      yellow_start += 1
+
   next_index = 0
   for channel in [1,2,3,4,5,6,7,8]:
     if channel_lengths:
@@ -129,8 +137,19 @@ def file_timestamp(filename):
 
 
 def main():
+  if len(sys.argv) == 4:
+    yellow_str = sys.argv.pop(-1)
+    if '-' not in yellow_str:
+      yellow_str += "-" + yellow_str
+    yellow_start_str, yellow_end_str = yellow_str.split("-")
+    yellow_start = int(yellow_start_str)
+    yellow_end   = int(yellow_end_str)
+  else:
+    yellow_start = None
+    yellow_end = None
+
   if len(sys.argv) != 3:
-    sys.stderr.write("Need an IP and panel_id\n")
+    sys.stderr.write("Need an IP and panel_id, and optionally a range of offsets to mark in yellow\n")
     sys.exit(1)
 
   _, ip, panel_id = sys.argv
@@ -147,13 +166,7 @@ def main():
       striping_instructions = load_striping_instructions()
       current_time = datetime.now().strftime("%H:%M")
       print("Loaded datafile at " + current_time)
-    draw(ip, striping_instructions[panel_id.upper()], anim_frame) 
-    #if select.select([sys.stdin,],[],[],0.0)[0]:
-    #  sys.stdin.readline()
-    #  anim_frame += 1
-    #  print("Frame %d" % anim_frame)
-    #else:
-    #  sleep(DELAY)
+    draw(ip, striping_instructions[panel_id.upper()], yellow_start, yellow_end, anim_frame) 
     anim_frame += 1
     sleep(DELAY)
 
