@@ -382,6 +382,72 @@ public class TEWholeModel extends LXModel {
       return tesi.channelLengths[n];
   }
 
+  private static void setPanelOutputs(TEPanelModel p, TEStripingInstructions tesi,
+                                      String outputConfig) {
+    String[] outputs = outputConfig.split("/");
+
+    // The index into the panel that maps to the current channel's pixel 0
+    int firstChannelPixel = 0;
+
+    // How many channels into the panel we currently are
+    int channelsIntoPanel = 0;
+
+    // If the panel has a group of outputs joined by slashes, this keeps track of
+    // which one we're currently on.
+    int outputIndex;
+
+    // Loop until every pixel in the panel has been mapped to an output channel.
+    for (outputIndex = 0; firstChannelPixel < p.size; outputIndex++) {
+      if (outputs.length <= outputIndex) {
+        TE.err("Ran out of configured channels before assigning all pixels in " + p.id);
+        return;
+      }
+      String[] tokens = outputs[outputIndex].split("#");
+      assert tokens.length == 2 : "Bad panel output config: " + outputConfig;
+      String ip = tokens[0];
+      tokens = tokens[1].split("-");
+      int firstChannel = Integer.parseInt(tokens[0]);
+      int lastChannel;
+      if (tokens.length == 1) {
+        lastChannel = ChromatechSocket.CHANNELS_PER_IP;
+      } else {
+        assert tokens.length == 2;
+        lastChannel = Integer.parseInt(tokens[1]);
+      }
+
+      // How many channels into the current output we are. For instance, if the config is
+      // 10.7.x.x#3, and we're assigning to channel 3, this is 0. When we're assigning to
+      // channel 4, it becomes 1.
+      int channelsIntoOutput;
+
+      for (channelsIntoOutput = 0;
+           // Keep going on the current controller as long as there remain panel pixels not assigned to outputs...
+           firstChannelPixel < p.size &&
+           // ...and channels available to assign them to
+           firstChannel + channelsIntoOutput <= lastChannel;
+           // Increment both of these when we progress to the next channel
+           channelsIntoOutput++, channelsIntoPanel++) {
+
+        // The index into the panel that maps to the current channel's final pixel; this is more
+        // complicated than it seems because some channels have 251 pixels. The striping instructions
+        // keep track of that.
+        int lastChannelPixel = firstChannelPixel + getChannelLengthForPanel(tesi, channelsIntoPanel) - 1;
+
+        // If the channel has room for more pixels than the panel has available, use the latter.
+        if (lastChannelPixel > p.size - 1) lastChannelPixel = p.size - 1;
+
+        // Create a socket to a particular controller channel
+        ChromatechSocket socket = GrandShlomoStation.getOrMake(ip, firstChannel + channelsIntoOutput);
+
+        // And assign these pixels of the panel to it
+        socket.addPanel(p, firstChannelPixel, lastChannelPixel);
+
+        // The next channel will begin where we left off.
+        firstChannelPixel = lastChannelPixel + 1;
+      }
+    }
+  }
+
   private static void loadPanels(Geometry geometry) {
     geometry.panelsById = new HashMap<>();
     geometry.panelsBySection = new HashMap<>();
@@ -404,15 +470,16 @@ public class TEWholeModel extends LXModel {
     while (s.hasNextLine()) {
       String line = s.nextLine();
       String[] tokens = line.split("\t");
-      assert tokens.length == 7 : "Found " + tokens.length + " tokens";
+      assert tokens.length == 8 : "Found " + tokens.length + " tokens";
 
       String id = tokens[0];
-      String e0Id = tokens[1];
-      String e1Id = tokens[2];
-      String e2Id = tokens[3];
-      String startingPath = tokens[4];
-      String flipStr = tokens[5];
-      String panelType = tokens[6];
+      int declaredNumPixels = Integer.parseInt(tokens[1]);
+      String e0Id = tokens[2];
+      String e1Id = tokens[3];
+      String e2Id = tokens[4];
+      String startingPath = tokens[5];
+      String flipStr = tokens[6];
+      String panelType = tokens[7];
 
       TEEdgeModel e0 = geometry.edgesById.get(e0Id);
       TEEdgeModel e1 = geometry.edgesById.get(e1Id);
@@ -444,7 +511,10 @@ public class TEWholeModel extends LXModel {
       TEStripingInstructions tesi = stripingInstructions.get(id);
       TEPanelModel p = TEPanelFactory.build(id, vertexes[0], vertexes[1], vertexes[2],
           startVertexId, midVertexId, e0, e1, e2, panelType, tesi, geometry.gapPoint, geometry.views);
-
+      if (p.points.length != declaredNumPixels) {
+        TE.err("Panel " + id + " was declared to have " + declaredNumPixels +
+                "px but it actually has " + p.points.length);
+      }
       if (flipStr.equals("flipped")) {
         p.offsetTriangles.flip();
       } else if (!flipStr.equals("unflipped")) {
@@ -466,34 +536,7 @@ public class TEWholeModel extends LXModel {
         geometry.panelsByFlavor.put(flavor, new ArrayList<>());
       geometry.panelsByFlavor.get(flavor).add(p);
 
-      // start striping at the specified channel of the IP
-      // when we run out of pixels in the channel, move on to the next channel
-      // when we run out of channels, move on to the overflow IP
-      if (lit) {
-        String[] outputs = outputConfig.split("/");
-        int firstChannelPixel = 0;
-        // keep track of which channel we're on cross-controller so we can use for striping instructions
-        int totalChannelOffset = 0;
-        for (int outputIndex = 0; firstChannelPixel < p.size; outputIndex++) {
-          if (outputs.length <= outputIndex) {
-            TE.err("Not enough ips! May require a missing overflow ip");
-            break;
-          }
-          tokens = outputs[outputIndex].split("#");
-          assert tokens.length == 2 : "Bad panelType: " + outputConfig;
-          String ip = tokens[0];
-          int channelNum = Integer.parseInt(tokens[1]);
-
-          for (int channelOffset = 0; firstChannelPixel < p.size
-                  && channelNum + channelOffset <= ChromatechSocket.CHANNELS_PER_IP; channelOffset++, totalChannelOffset++) {
-            int lastChannelPixel = firstChannelPixel + getChannelLengthForPanel(tesi, totalChannelOffset) - 1;
-            if (lastChannelPixel > p.size - 1) lastChannelPixel = p.size - 1;
-            ChromatechSocket socket = GrandShlomoStation.getOrMake(ip, channelNum + channelOffset);
-            socket.addPanel(p, firstChannelPixel, lastChannelPixel);
-            firstChannelPixel = lastChannelPixel + 1;
-          }
-        }
-      }
+      if (lit) setPanelOutputs(p, tesi, outputConfig);
     }
     s.close();
 

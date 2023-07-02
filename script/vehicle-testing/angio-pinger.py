@@ -6,6 +6,7 @@ import importlib
 import os
 
 from time import sleep
+from tecfg import *
 
 av = importlib.import_module("angio-validator")
 from ping3 import ping
@@ -31,7 +32,7 @@ def read_controllers(config_dir):
     with open(config_dir + '/panels.txt') as tsv_file:
         tsv_reader = csv.reader(tsv_file, delimiter="\t")
         for row in tsv_reader:
-            output_list = row[6]
+            output_list = row[7]
             outputs.extend(output_list.split('/'))
     ips = set()
     for output in outputs:
@@ -53,20 +54,6 @@ def read_controllers(config_dir):
         else:
             ips.add((ip, label))
     return sorted(list(ips))
-
-def find_config_dir():
-    file_name = "edges.txt"
-    path = os.getcwd()
-    while True:
-        if os.path.isfile(os.path.join(path, file_name)):
-            return path
-        elif os.path.isfile(os.path.join(path, "resources", "vehicle", file_name)):
-            return os.path.join(path, "resources", "vehicle")
-        elif path == os.path.dirname(path):
-            raise FileNotFoundError(f"{file_name} not found.")
-        else:
-            path = os.path.dirname(path)
-
 
 async def main():
     config_dir = find_config_dir()
