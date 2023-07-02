@@ -130,6 +130,7 @@ if __name__ == "__main__":
 
   print("Lighting: " + ' '.join(sorted(ips)))
 
+  random_color_by_fixture = dict()
   for ip in sorted(ips):
     if mode in (None, 'flood'):
       for channel in [1, 2, 3, 4]:
@@ -149,10 +150,13 @@ if __name__ == "__main__":
         for fixture in fixtures:
           offset, fixture_id, num_fixture_pixels = fixture
           if mode == "random":
-            if is_edge:
-              color = random.choice(RANDOM_EDGE_COLORS)
-            else:
-              color = random.choice(RANDOM_PANEL_COLORS)
+            fixture_key = fixture_id.split("_")[0]
+            if fixture_key not in random_color_by_fixture:
+              if is_edge:
+                random_color_by_fixture[fixture_key] = random.choice(RANDOM_EDGE_COLORS)
+              else:
+                random_color_by_fixture[fixture_key] = random.choice(RANDOM_PANEL_COLORS)
+            color = random_color_by_fixture[fixture_key]
           else:
             assert mode == "active"
             color = CHANNEL_COLORS[channel_minus_1+1]
