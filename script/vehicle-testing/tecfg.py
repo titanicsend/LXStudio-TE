@@ -24,7 +24,8 @@ def load_edges():
   rv = dict()
   with open(config_dir + '/edges.txt') as tsv_file:
     for row in csv.reader(tsv_file, delimiter="\t"):
-      edge_id, _, _, output = row
+      edge_id, _, num_pixels_str, output = row
+      num_pixels = int(num_pixels_str)
       ip, chaninfo = output.split("#")
       if '?' in ip:
         continue
@@ -33,9 +34,16 @@ def load_edges():
         edge_id += "(disabled)"
       if ip not in rv:
         rv[ip] = [[], [], [], []]
-      channel_str = chaninfo.split(":")[0]
+      chaninfo_tokens = chaninfo.split(":")
+      channel_str = chaninfo_tokens[0]
       channel = int(channel_str)
-      rv[ip][channel-1].append(edge_id)
+      if len(chaninfo_tokens) == 2:
+        offset_str = chaninfo_tokens[1]
+        offset = int(offset_str)
+      else:
+        offset = 0
+      rv[ip][channel-1].append((offset, edge_id, num_pixels))
+      rv[ip][channel-1].sort()
   return rv
 
 
@@ -44,9 +52,9 @@ def load_panels():
   rv = dict()
   with open(config_dir + '/panels.txt') as tsv_file:
     for row in csv.reader(tsv_file, delimiter="\t"):
-      panel_id, num_pixels_str, _, _, _, _, _, outputs_str = row
-      num_pixels = int(num_pixels_str)
-      num_channels = math.ceil(num_pixels/PIXELS_PER_PANEL_CHANNEL)
+      panel_id, num_panel_pixels_str, _, _, _, _, _, outputs_str = row
+      num_panel_pixels = int(num_panel_pixels_str)
+      num_channels = math.ceil(num_panel_pixels/PIXELS_PER_PANEL_CHANNEL)
       if '?' in outputs_str:
         continue
       outputs = list(outputs_str.split("/"))
@@ -71,7 +79,9 @@ def load_panels():
         if ip not in rv:
           rv[ip] = [None, None, None, None]
         assert rv[ip][channel-1] is None
-        rv[ip][channel-1] = subpanel_id
+        num_subpanel_pixels = min(num_panel_pixels, PIXELS_PER_PANEL_CHANNEL)
+        num_panel_pixels -= num_subpanel_pixels
+        rv[ip][channel-1] = [(0, subpanel_id, num_subpanel_pixels)]
         channel += 1
         if channel > last_channel:
           channel = 5 # Hack to force channel > 4 on next loop
@@ -104,9 +114,3 @@ def load_striping_instructions():
       if not tokens: continue
       rv[panel_id] = tokens
   return rv
-
-
-def get_all_backpack_ips():
-  edge_d = load_edges()
-  panel_d = load_panels()
-  return set(edge_d).union(set(panel_d))

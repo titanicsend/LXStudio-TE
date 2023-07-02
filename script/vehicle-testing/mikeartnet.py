@@ -24,14 +24,14 @@ def make_packet(universe, dmx):
   packet += bytes([0])
   return packet
 
-def send_packet(ip, universe, dmx):
+def send_packet(ip, universe, dmx, silent=False):
   packet = make_packet(universe, dmx)
   sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
   try:
     sock.sendto(packet, (ip, 6454))
     return True
   except OSError:
-    print("Couldn't send to " + ip)
+    if not silent: print("Couldn't send to " + ip)
     return False
   finally:
     sock.close()

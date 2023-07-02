@@ -9,24 +9,31 @@ BAD_CHANNELS = [
   ('10.7.?.?', 4),
 ]
 
-av = importlib.import_module("angio-validator")
+MAX_PIXELS_PER_EDGE_CHAIN = 500
 
-if len(sys.argv) == 1:
-  module = None
-else:
-  assert len(sys.argv) == 2
-  module = int(sys.argv[1])
+av = importlib.import_module("angio-validator")
 
 backpacks_by_ip = dict()
 class Backpack:
   def __init__(self, ip):
     self.ip = ip
     self.channels = [None, None, None, None]
+    self.type = None
     for bad_ip, bad_channel in BAD_CHANNELS:
       if bad_ip == ip:
         self.channels[bad_channel-1] = "BAD"
 
-  def add_edge(self, channel, edge_id):
+  def add_edge(self, channel, edge_id, num_pixels):
+    if self.type is None:
+      self.type = "edge"
+      self.num_pixels = 0
+    if self.type != "edge":
+      raise ValueError(ip + " is configured with both edges and panels")
+    for other_channel in [1,2,3,4]:
+      if other_channel == channel: continue
+      if self.channels[other_channel-1] is not None:
+        raise ValueError(ip + " has edges configured on multiple channels")
+    self.num_pixels += num_pixels
     if self.channels[channel-1] is None:
       self.channels[channel-1] = edge_id
     else:
@@ -34,6 +41,11 @@ class Backpack:
       self.channels[channel-1] += ", " + edge_id 
 
   def add_subpanel(self, channel, subpanel_id):
+    if self.type is None:
+      self.type = "panel"
+      self.num_pixels = None
+    if self.type != "panel":
+      raise ValueError(ip + " is configured with both edges and panels")
     if self.channels[channel-1] is not None:
       raise ValueError(f"{self.ip} #{channel} assigned to both "
           f"{self.channels[channel-1]} and {subpanel_id}")
@@ -45,18 +57,24 @@ def find_or_make_backpack(ip):
     backpacks_by_ip[ip] = Backpack(ip)
   return backpacks_by_ip[ip]
 
+def init_backpacks():
+  for ip, edge_lists in load_edges().items():
+    backpack = find_or_make_backpack(ip)
+    for channel_minus_1, edge_list in enumerate(edge_lists):
+      for (offset, edge_id, num_pixels) in edge_list:
+        backpack.add_edge(channel_minus_1 + 1, edge_id, num_pixels)
 
-for ip, edge_lists in load_edges().items():
-  backpack = find_or_make_backpack(ip)
-  for channel_minus_1, edge_list in enumerate(edge_lists):
-    for edge_id in edge_list:
-      backpack.add_edge(channel_minus_1 + 1, edge_id)
-
-for ip, subpanel_ids in load_panels().items():
-  backpack = find_or_make_backpack(ip)
-  for channel_minus_1, subpanel_id in enumerate(subpanel_ids):
-    if subpanel_id is not None:
-      backpack.add_subpanel(channel_minus_1 + 1, subpanel_id)
+  for ip, subpanel_ids in load_panels().items():
+    backpack = find_or_make_backpack(ip)
+    for channel_minus_1, subpanel_tuples in enumerate(subpanel_ids):
+      if subpanel_tuples is None:
+        subpanel_id = None
+      else:
+        assert len(subpanel_tuples) == 1
+        subpanel_tuple = subpanel_tuples[0]
+        offset, subpanel_id, num_pixels = subpanel_tuple
+      if subpanel_id is not None:
+        backpack.add_subpanel(channel_minus_1 + 1, subpanel_id)
 
 def colorize(s, color_code):
   return "\033[%dm%s\033[0m" % (color_code, s)
@@ -79,45 +97,40 @@ def WHITE(s): # Bright/bold white
 def GRAY(s):
   return colorize(s, 90)
 
-#currentses = av.get_currentses(backpacks_by_ip.keys())
-min_current = 0 # FIXME
 
-for ip in sorted(backpacks_by_ip):
-  if module is not None and not ip.startswith(f"10.7.{module}."):
-    continue
-  #currents = currentses[ip]
-  backpack = backpacks_by_ip[ip]
-  octets = ip.split(".")
-  ip = (GRAY(octets[0] + "." + octets[1] + ".") + YELLOW(octets[2]) +
-        GRAY(".") + CYAN(octets[3]) + GRAY(":"))
-  print(ip)
-  for i in range(4):
-    label = backpack.channels[i]
-    amps = 0 # currents[i]
-    amp_str = '%.2fA' % amps
-    if amps is None:
-      current = "unreachable"
-    elif amps < min_current:
-      current = "low"
-    else:
-      current = "normal"
+if __name__ == "__main__":
+  if len(sys.argv) == 1:
+    module = None
+  else:
+    assert len(sys.argv) == 2
+    module = int(sys.argv[1])
 
-    if label == "BAD":
-      label = RED(label)
-      if current == "low":
-        amp_str = GRAY(amp_str)
+  init_backpacks()
+
+  for ip in sorted(backpacks_by_ip):
+    if module is not None and not ip.startswith(f"10.7.{module}."):
+      continue
+    backpack = backpacks_by_ip[ip]
+    octets = ip.split(".")
+    ip = (GRAY(octets[0] + "." + octets[1] + ".") + YELLOW(octets[2]) +
+          GRAY(".") + CYAN(octets[3]) + GRAY(":"))
+    print(ip)
+    for i in range(4):
+      label = backpack.channels[i]
+      if label == "BAD":
+        label = RED(label)
+      elif label is not None:
+        label = WHITE(label)
+        if backpack.num_pixels is not None:
+          num_remaining_pixels = MAX_PIXELS_PER_EDGE_CHAIN - backpack.num_pixels
+          if num_remaining_pixels < 0:
+            label += RED(f" ({-num_remaining_pixels}px too long)")
+          elif num_remaining_pixels > 0:
+            label += " (" + GREEN(str(num_remaining_pixels)) + "px left)"
+          else:
+            label += " (Exactly full)"
+      elif backpack.type == "edge":
+        label = GRAY("Unavailable")
       else:
-        amp_str = RED(amp_str)
-    elif label is None:
-      label = GREEN("Free")
-      if current == "low":
-        amp_str = GRAY(amp_str)
-      else:
-        amp_str = RED(amp_str)
-    else:
-      if current == "normal":
-        amp_str = GRAY(amp_str)
-      else:
-        amp_str = RED(amp_str)
-      label = WHITE(label)
-    print(f"  {i+1}: {label}")
+        label = GREEN("Free")
+      print(f"  {i+1}: {label}")
