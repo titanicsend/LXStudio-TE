@@ -10,7 +10,7 @@
 //Turbulent fbm (aka ridged) is used for better effect.
 //define centered to see the rotation better.
 
-#define time iTime * 0.2
+float time = iTime * -0.2;
 
 vec2 rotate(vec2 point, float angle) {
     mat2 rotationMatrix = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
