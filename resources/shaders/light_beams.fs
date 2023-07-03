@@ -62,7 +62,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     float FOV = iScale;
     vec3 ray = normalize(vec3(uv, FOV));
-    vec3 origin = vec3(-iTime, 0.0, 0.0);
+    vec3 origin = vec3(iTime, 0.0, 0.0);
 
     float t = trace(origin, ray);
 

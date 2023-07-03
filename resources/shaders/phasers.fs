@@ -95,7 +95,7 @@ float laser(vec2 p, vec2 offset, float angle, float beams) {
  // 2 layers + 3rd used to mix from https://www.shadertoy.com/view/7tBSR1
  // makes a nice, smooth fog.
 float clouds(vec2 uv) {
-  vec2 t = vec2(iTime*0.5,iTime);
+  vec2 t = vec2(-iTime*0.5,-iTime);
   float c1 = fbm(fbm(uv*3.0)*0.75+uv*3.0+t/3.0);
   float c2 = fbm(fbm(uv*2.0)*0.5+uv*7.0+t/3.0);
   float c3 = fbm(fbm(uv*10.0-t)*0.75+uv*5.0+t/6.0);

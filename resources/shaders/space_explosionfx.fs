@@ -83,9 +83,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     float r = sqrt((dx*dx) + (dy*dy));
     r = centerToCorner - r;
 
-    float perlin = perlinNoise(perlinTheta, r, -iTime);
+    float perlin = perlinNoise(perlinTheta, r, iTime);
 
-    float timeMod = mod(iTime, 1.0);
+    float timeMod = mod(-iTime, 1.0);
     float run = (iWowTrigger == true) ? 2.0 : 0.0;
     float scale = run * (timeMod-r);
     float glowRing = cos(pow(1.0-scale, 0.1));

@@ -971,7 +971,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         // per beat, based on the elapsed time and the engine's bpm rate.
         // But since we're using variable time, we can speed it up and slow it down smoothly by adjusting
         // the speed of time, and still have keep its speed in sync with the beat.
-        return speedRotor.getAngle() - getStaticRotationAngle();
+        return -(speedRotor.getAngle() - getStaticRotationAngle());
     }
 
     /**

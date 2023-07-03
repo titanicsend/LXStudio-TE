@@ -28,6 +28,8 @@ public class BreathingDotsEffect extends PatternEffect {
 
     public void run(double deltaMs) {
         int baseColor = pattern.calcColor();
+        double et = pattern.getDeltaMs();
+
         double maxPoints = getPoints().size() / (MAX_POINTS_DIVIDER - 50 * pattern.getQuantity());
         double pointsPerMilli = maxPoints / DURATION_MILLIS;
 
@@ -48,7 +50,7 @@ public class BreathingDotsEffect extends PatternEffect {
             }
         }
 
-        for (int i = 0; i < pointsPerMilli * deltaMs; i++) {
+        for (int i = 0; i < pointsPerMilli * et; i++) {
             if (availablePoints.size() > 0) {
                 startBreathing(availablePoints.get(random.nextInt(availablePoints.size())));
             }
@@ -61,14 +63,14 @@ public class BreathingDotsEffect extends PatternEffect {
     }
 
     private void startBreathing(LXPoint point) {
-        breathingPoints.put(point, System.currentTimeMillis());
+        breathingPoints.put(point, (long) pattern.getTimeMs());
         if (random.nextBoolean()) {
             extraShinyPoints.add(point);
         }
     }
 
     private Double getBreathStatus(LXPoint point) {
-        long currentTimestamp = System.currentTimeMillis();
+        long currentTimestamp = (long) pattern.getTimeMs();
         Long startTimestamp = breathingPoints.get(point);
         if (startTimestamp == null) {
             return null;
