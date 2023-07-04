@@ -17,6 +17,9 @@ import static titanicsend.util.TEColor.TRANSPARENT;
 //TODO make this properly wrap around the 3d model
 @LXCategory("Utility Patterns")
 public class TargetPixelStamper extends TEPattern {
+    public static final int MSEC_PER_COLOR = 1000;
+
+    double totalMsec;
 
     public final CompoundParameter xParam =
             new CompoundParameter("X", 61, -100, 100)
@@ -33,7 +36,15 @@ public class TargetPixelStamper extends TEPattern {
     public final BooleanParameter stamp = new BooleanParameter("Stamp").setMode(BooleanParameter.Mode.MOMENTARY);
     public final BooleanParameter clear = new BooleanParameter("Clear").setMode(BooleanParameter.Mode.MOMENTARY);
 
-    private final int[] COLOR_LIST = {LXColor.GREEN, LXColor.BLUE, LXColor.RED, LXColor.WHITE};
+    // A special value in savedStamps that means this pixel shouldn't be a static
+    // color, but rather an animated bullseye that keeps changing color
+    public static final int ANIMATED_BULLSEYE = 123;
+
+    // The concentric colors for a saved target
+    private final int[] ACTIVE_TARGET_COLORS = {LXColor.BLACK, LXColor.WHITE, LXColor.GREEN};
+
+    // The concentric colors for a saved target
+    private final int[] SAVED_TARGET_COLORS = {LXColor.BLACK, LXColor.WHITE, LXColor.RED};
 
     private Map<LXPoint, Integer> currentBullseye;
     private final Map<LXPoint, Integer> savedStamps = new HashMap<>();
@@ -45,21 +56,36 @@ public class TargetPixelStamper extends TEPattern {
         addParameter("Size", this.size);
         addParameter("Stamp", this.stamp);
         addParameter("Clear", this.clear);
+        this.totalMsec = 0.0;
     }
 
     @Override
     public void run(double deltaMs) {
-        showSavedStamps();
-        showCurrentTarget();
+        this.totalMsec += deltaMs;
+        int phase = (int)(this.totalMsec / MSEC_PER_COLOR) % 4;
+        int bullseyeColor;
+        if (phase == 0) {
+            bullseyeColor = LXColor.RED;
+        } else if (phase == 1) {
+            bullseyeColor = LXColor.GREEN;
+        } else if (phase == 2) {
+            bullseyeColor = LXColor.BLUE;
+        } else {
+            bullseyeColor = LXColor.WHITE;
+        }
+        showSavedStamps(bullseyeColor);
+        showCurrentTarget(bullseyeColor);
     }
 
-    private void showSavedStamps() {
+    private void showSavedStamps(int bullseyeColor) {
         for (LXPoint point : savedStamps.keySet()) {
-            colors[point.index] = savedStamps.get(point);
+            int color = savedStamps.get(point);
+            if (color == ANIMATED_BULLSEYE) color = bullseyeColor;
+            colors[point.index] = color;
         }
     }
 
-    private void showCurrentTarget() {
+    private void showCurrentTarget(int bullseyeColor) {
         float y = this.yParam.getValuef();
         float z = -this.xParam.getValuef();
 
@@ -84,17 +110,17 @@ public class TargetPixelStamper extends TEPattern {
             if (!savedStamps.containsKey(point)){
                 colors[point.index] = TRANSPARENT;
             }
-            for (int i = COLOR_LIST.length - 1; i >= 0; i--) {
-                if (distance < size.getValue() * i) {
-                    colors[point.index] = COLOR_LIST[i];
-                    bullseye.put(point, COLOR_LIST[i]);
+            for (int i = SAVED_TARGET_COLORS.length - 1; i >= 0; i--) {
+                if (distance < size.getValue() * (i+1)) {
+                    colors[point.index] = ACTIVE_TARGET_COLORS[i];
+                    bullseye.put(point, SAVED_TARGET_COLORS[i]);
                 }
             }
         }
         if (targetPoint != null) {
-            colors[targetPoint.index] = COLOR_LIST[0];
+            colors[targetPoint.index] = bullseyeColor;
         }
-        bullseye.put(targetPoint, COLOR_LIST[0]);
+        bullseye.put(targetPoint, ANIMATED_BULLSEYE);
         this.currentBullseye = bullseye;
     }
 
