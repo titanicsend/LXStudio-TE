@@ -5,6 +5,7 @@ import java.util.*;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
 import titanicsend.app.TEVirtualColor;
+import titanicsend.effect.PanelAdjustEffect;
 import titanicsend.util.OffsetTriangles;
 
 public class TEPanelModel extends TEModel {
@@ -37,6 +38,8 @@ public class TEPanelModel extends TEModel {
   int[] channelLengths;
   public List<LitPointData> litPointData;
   public OffsetTriangles offsetTriangles;
+
+  private Adjustment currentAdjustment = new Adjustment();
 
   // Set to non-null and the virtual display will shade the panel's triangle
   public TEVirtualColor virtualColor;
@@ -173,4 +176,41 @@ public class TEPanelModel extends TEModel {
       return centroid.z < 0 ? TEPanelSection.STARBOARD_FORE_SINGLE : TEPanelSection.STARBOARD_AFT_SINGLE;
     }
   }
+
+  public void setAdjustment(Adjustment newAdjustment) {
+    if (newAdjustment == null) {
+      newAdjustment = new Adjustment();
+    }
+    float xAdjust = newAdjustment.x - currentAdjustment.x;
+    float yAdjust = newAdjustment.y - currentAdjustment.y;
+    float zAdjust = newAdjustment.z - currentAdjustment.z;
+    for (LXPoint point : points) {
+      point.set(
+              point.x + xAdjust,
+              point.y + yAdjust,
+              point.z + zAdjust
+              );
+    }
+    currentAdjustment = newAdjustment.copy();
+  }
+
+  public void clearAdjustment() {
+    setAdjustment(null);
+  }
+
+  public static class Adjustment {
+    public float x = 0;
+    public float y = 0;
+    public float z = 0;
+
+    public Adjustment copy() {
+      Adjustment adjustment = new Adjustment();
+      adjustment.x = x;
+      adjustment.y = y;
+      adjustment.z = z;
+      return adjustment;
+    }
+
+  }
+
 }
