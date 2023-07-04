@@ -15,7 +15,7 @@ public class NoGapEffect extends TEEffect {
 
   public NoGapEffect(LX lx) {
     super(lx);
-    addParameter("Show", showGapPixels);
+    addParameter("Show Gaps", showGapPixels);
   }
   
   @Override
@@ -23,7 +23,7 @@ public class NoGapEffect extends TEEffect {
     // Friendly reminder this will be most effective on master channel
     LXComponent parent = this.getParent();
     if (parent == null || !parent.equals(this.lx.engine.mixer.masterBus)) {
-     LX.log("Warning: NoGap Effect is running on a channel that is not master. Gap pixels may not get filtered.");
+     LX.warning("NoGap Effect is running on a channel that is not master. Gap pixels may not get filtered.");
     }
     super.onEnable();
   }
