@@ -15,7 +15,7 @@ public class NoGapEffect extends TEEffect {
 
   public NoGapEffect(LX lx) {
     super(lx);
-    addParameter("Show Gaps", showGapPixels);
+    addParameter("Show", showGapPixels);
   }
   
   @Override
