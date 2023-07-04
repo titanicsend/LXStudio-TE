@@ -3,13 +3,19 @@ package titanicsend.effect;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.LXComponent;
+import heronarts.lx.color.LXColor;
+import heronarts.lx.parameter.BooleanParameter;
 import titanicsend.pattern.TEPattern;
 
 @LXCategory("Titanics End")
 public class NoGapEffect extends TEEffect {
 
+  public final BooleanParameter showGapPixels = new BooleanParameter("Show Gaps")
+                  .setDescription("Colors gap pixels red so they are visible");
+
   public NoGapEffect(LX lx) {
     super(lx);
+    addParameter("Show Gaps", showGapPixels);
   }
   
   @Override
@@ -25,11 +31,7 @@ public class NoGapEffect extends TEEffect {
   @Override
   protected void run(double deltaMs, double enabledAmount) {
     // There is only one LXPoint instance for all gap pixels
-    // Is it modified?
-    if (colors[this.modelTE.getGapPointIndex()] != TEPattern.GAP_PIXEL_COLOR) {
-      // Fix it
-      colors[this.modelTE.getGapPointIndex()] = TEPattern.GAP_PIXEL_COLOR;
-    }
+    colors[this.modelTE.getGapPointIndex()] = showGapPixels.isOn() ? LXColor.RED : TEPattern.GAP_PIXEL_COLOR;
   }
 
 }
