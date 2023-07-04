@@ -72,6 +72,7 @@ import titanicsend.pattern.justin.TESolidPattern;
 import titanicsend.pattern.mike.*;
 import titanicsend.pattern.pixelblaze.*;
 import titanicsend.pattern.tom.*;
+import titanicsend.pattern.util.TargetPixelStamper;
 import titanicsend.pattern.will.PowerDebugger;
 import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
@@ -246,6 +247,7 @@ public class TEApp extends PApplet implements LXPlugin {
 
     // Nonfunctional - need work or additional hardware that will not be at EDC
     lx.registry.addPattern(HandTracker.class);
+    lx.registry.addPattern(TargetPixelStamper.class);
 
     // "ShaderToyPattern" in ShaderPanelsPatternConfig.java
 
