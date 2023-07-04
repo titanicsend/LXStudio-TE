@@ -10,8 +10,8 @@ import titanicsend.pattern.TEPattern;
 @LXCategory("Titanics End")
 public class NoGapEffect extends TEEffect {
 
-  public final BooleanParameter showGapPixels = new BooleanParameter("Flash Gaps")
-                  .setDescription("Blinks gap pixels red so they are visible");
+  public final BooleanParameter showGapPixels = new BooleanParameter("Show Gaps")
+                  .setDescription("Colors gap pixels red so they are visible");
 
   public NoGapEffect(LX lx) {
     super(lx);
