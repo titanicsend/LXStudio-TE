@@ -36,6 +36,7 @@ import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.pattern.form.PlanesPattern;
 import heronarts.lx.pattern.texture.NoisePattern;
+import heronarts.lx.structure.StripFixture;
 import titanicsend.app.GigglePixelBroadcaster;
 import titanicsend.app.GigglePixelListener;
 import titanicsend.app.GigglePixelUI;
@@ -44,6 +45,11 @@ import titanicsend.app.TEOscListener;
 import titanicsend.app.TEUIControls;
 import titanicsend.app.TEVirtualOverlays;
 import titanicsend.app.autopilot.*;
+import titanicsend.dmx.DmxEngine;
+import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
+import titanicsend.dmx.pattern.BeaconDirectPattern;
+import titanicsend.dmx.pattern.DjLightsDirectPattern;
+import titanicsend.dmx.pattern.DjLightsEasyPattern;
 import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lx.APC40Mk2;
@@ -104,6 +110,7 @@ public class TEApp extends LXStudio {
     private TEOscListener oscListener;
     private TEPatternLibrary library;
 
+    private final DmxEngine dmxEngine;
     private final TELaserTask laserTask;
     private final ColorCentral colorCentral;
     private final ViewCentral viewCentral;
@@ -122,6 +129,7 @@ public class TEApp extends LXStudio {
 
 //      lx.ui.preview.addComponent(visual);
 //      new TEUIControls(ui, visual, ui.leftPane.global.getContentWidth()).addToContainer(ui.leftPane.global);
+      this.dmxEngine = new DmxEngine(lx);
 
       // create our loop task for outputting data to lasers
       this.laserTask = new TELaserTask(lx);
@@ -201,7 +209,12 @@ public class TEApp extends LXStudio {
       lx.registry.addEffect(titanicsend.effect.PanelAdjustEffect.class);
       lx.registry.addEffect(BeaconEffect.class);
 
-
+      // DMX patterns
+      lx.registry.addPattern(BeaconDirectPattern.class);
+      lx.registry.addPattern(DjLightsEasyPattern.class);
+      lx.registry.addPattern(DjLightsDirectPattern.class);
+      lx.registry.addPattern(ExampleDmxTEPerformancePattern.class);
+ 
       // TODO - The following patterns were removed from the UI prior to EDC 2023 to keep
       // TODO - them from being accidentally activated during a performance.
       // TODO - update/fix as needed!
@@ -466,6 +479,7 @@ public class TEApp extends LXStudio {
       this.lx.removeListener(this);
       this.lx.removeProjectListener(this);
 
+      this.dmxEngine.dispose();
       this.colorCentral.dispose();
       this.crutchOSC.dispose();
       this.viewCentral.dispose();
@@ -606,7 +620,13 @@ public class TEApp extends LXStudio {
         TEWholeModel model = new TEWholeModel(resourceSubdir);
         TEApp.wholeModel = model;
 
-        TEApp lx = new TEApp(flags, model);
+        TEApp lx = new TEApp(flags);
+        StripFixture sf = new StripFixture(lx);
+        sf.numPoints.setValue(100);
+        sf.spacing.setValue(50000);
+        lx.structure.addFixture(sf);
+        lx.structure.setStaticModel(model);
+        flags.immutableModel = true;
 
         // Schedule a task to load the initial project file at launch
         final File finalProjectFile = projectFile;
