@@ -39,6 +39,8 @@ public class TargetPixelStamper extends TEPattern {
     // A special value in savedStamps that means this pixel shouldn't be a static
     // color, but rather an animated bullseye that keeps changing color
     public static final int ANIMATED_BULLSEYE = 123;
+    private final int[] ANIMATED_BULLSEYE_COLORS = {
+            LXColor.RED, LXColor.GREEN, LXColor.BLUE, LXColor.WHITE};
 
     // The concentric colors for a saved target
     private final int[] ACTIVE_TARGET_COLORS = {LXColor.BLACK, LXColor.WHITE, LXColor.GREEN};
@@ -63,16 +65,7 @@ public class TargetPixelStamper extends TEPattern {
     public void run(double deltaMs) {
         this.totalMsec += deltaMs;
         int phase = (int)(this.totalMsec / MSEC_PER_COLOR) % 4;
-        int bullseyeColor;
-        if (phase == 0) {
-            bullseyeColor = LXColor.RED;
-        } else if (phase == 1) {
-            bullseyeColor = LXColor.GREEN;
-        } else if (phase == 2) {
-            bullseyeColor = LXColor.BLUE;
-        } else {
-            bullseyeColor = LXColor.WHITE;
-        }
+        int bullseyeColor = ANIMATED_BULLSEYE_COLORS[phase];
         showSavedStamps(bullseyeColor);
         showCurrentTarget(bullseyeColor);
     }
