@@ -534,6 +534,8 @@ public class TEApp extends PApplet implements LXPlugin {
    * @param args Command-line arguments
    */
   public static void main(String[] args) {
+    LX.LOG_WARNINGS = true;
+
     LX.log("Initializing LX version " + LXStudio.VERSION);
 
     // NOTE(mcslee): Hack for macOS Ventura!!
