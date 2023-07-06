@@ -5,7 +5,7 @@
 //Inspired by JoshP's Simplicity shader: https://www.shadertoy.com/view/lslGWr
 
 #define PI 3.1415926535897932384626433832795
-float TIME = -iTime;
+float TIME = iTime;
 
 // TE Library routines
 
@@ -59,10 +59,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     uvs *= iScale;  // scale canvas
 
     // calculate movement paths for both parallax layers
-    vec3 basePath = vec3(sin(TIME / 16.), sin(TIME / 12.), sin(TIME / 128.));
+    vec3 basePath = -vec3(sin(TIME / 16.), sin(TIME / 12.), sin(TIME / 128.));
 
     vec3 p = vec3(uvs / 4., 0) + vec3(1., -1.3, 0.);
-    p += .2 * basePath;
+    p += 0.2 * basePath;
 
     vec3 p2 = vec3(uvs / (4. + sin(TIME * 0.11) * 0.2 + 0.2 + sin(TIME * 0.15) * 0.3 + 0.4), 1.5) + vec3(2., -1.3, -1.);
     p2 += 0.265 * basePath;
