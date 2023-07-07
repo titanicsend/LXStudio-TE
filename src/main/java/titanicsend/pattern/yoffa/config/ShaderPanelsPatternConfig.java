@@ -90,7 +90,7 @@ public class ShaderPanelsPatternConfig {
 
         @Override
         protected List<PatternEffect> createEffects() {
-            controls.setRange(TEControlTag.SPEED, 0, -4, 4); // overall scale
+            controls.setRange(TEControlTag.SPEED, 0, -4, 4);
             controls.setValue(TEControlTag.SPEED, 0.5);
 
             controls.setRange(TEControlTag.SIZE, 2, 6, 0.1); // overall scale
@@ -111,6 +111,11 @@ public class ShaderPanelsPatternConfig {
 
         @Override
         protected List<PatternEffect> createEffects() {
+            controls.setRange(TEControlTag.SIZE, 1, 0.2, 10); // overall scale
+            controls.setRange(TEControlTag.SPEED, 0, -4, 4);
+            controls.setValue(TEControlTag.SPEED, 0.5);
+            controls.setRange(TEControlTag.QUANTITY,1,2,0.1);  // triangle density
+
             return List.of(new NativeShaderPatternEffect("neon_triangles.fs",
                 new PatternTarget(this)));
         }
