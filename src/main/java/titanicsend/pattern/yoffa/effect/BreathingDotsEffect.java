@@ -23,7 +23,10 @@ public class BreathingDotsEffect extends PatternEffect {
     private final Set<LXPoint> extraShinyPoints = new HashSet<>();
 
     public BreathingDotsEffect(PatternTarget patternTarget) {
+
         super(patternTarget);
+        // restrict time to forward only - it simplifies breathing calculations.
+        pattern.allowBidirectionalTime(false);
     }
 
     public void run(double deltaMs) {
@@ -90,6 +93,7 @@ public class BreathingDotsEffect extends PatternEffect {
     public void onPatternActive() {
         breathingPoints.clear();
         extraShinyPoints.clear();
+        pattern.retrigger(TEControlTag.SPEED);
     }
 
 }

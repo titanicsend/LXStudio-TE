@@ -16,6 +16,7 @@ public class VariableSpeedTimer {
     double time = 0.0;
     double scale = 1.0;
     double delta = 0;
+    boolean biDirectional = true;
 
     public VariableSpeedTimer() {
         scale = 1.0;
@@ -28,7 +29,11 @@ public class VariableSpeedTimer {
     }
 
     public void setScale(double s) {
-        scale = s;
+        scale = (biDirectional) ? s : Math.abs(s);
+    }
+
+    public void allowBidirectionalTime(boolean val) {
+        biDirectional = val;
     }
 
     public void tick() {

@@ -216,14 +216,6 @@ public class OrganicPatternConfig {
 
     @LXCategory("Yoffa Panel Organic")
     public static class BreathingDots extends ConstructedPattern {
-
-        public static _CommonControlGetter absGetFn = new _CommonControlGetter() {
-            @Override
-            public double getValue(TEControl cc) {
-                return Math.abs(cc.getValue());
-            }
-        };
-
         public BreathingDots(LX lx) {
             super(lx, TEShaderView.ALL_PANELS);
         }
@@ -233,7 +225,6 @@ public class OrganicPatternConfig {
             // set ranges for common controls
             getControls().setRange(TEControlTag.SPEED, 0, -2, 2); // Speed
             getControls().setValue(TEControlTag.SPEED, 0.5);
-            getControls().setGetterFunction(TEControlTag.SPEED, absGetFn);
 
             return List.of(new BreathingDotsEffect(new PatternTarget(this)));
         }

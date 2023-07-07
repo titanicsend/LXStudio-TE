@@ -1114,6 +1114,17 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     }
 
     /**
+     * Controls whether time is allowed to run both forward and backward,
+     * according to the sign of the current scale value.  Bidirectional
+     * time is allowed (true) by default.
+     * @param val true for bidirectional time, false for forward-moving time only,
+     * regardless of time scale setting.
+     */
+    public void allowBidirectionalTime(boolean val) {
+        iTime.allowBidirectionalTime(val);
+    }
+
+    /**
      * @return current variable time in milliseconds since last call to this timer's
      * Tick() function (normally called automatically at the start of each frame.)
      * Note that time can run both forward and backward, so the returned value can be negative.
