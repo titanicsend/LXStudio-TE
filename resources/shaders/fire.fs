@@ -63,15 +63,12 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     // colored fire retrofit.  Convert calculated fire color to HSV then
     // take the hue of the current palette foreground color, and slightly
     // resaturate because colored fire looks better with a little less white
-    color = rgb2hsv(color);
-    color.x = iColorHSB.x;
-    color.y += r.y * r.y;
+    vec3 c2 = rgb2hsv(color);
+    c2.x = iColorHSB.x;
+    c2.y += r.y * r.y;
+    c2 = hsv2rgb(c2);
 
-    // set brightness and alpha for correct blending, then convert back
-    // to rgb for output.
-    float alpha = color.z;
-    color.z = 1.0;
-    color = hsv2rgb(color);
-
-    fragColor = vec4(color, alpha);
+    // use Wow2 control to blend w/original fire-colored fire for
+    // very nice tinted flame effects.
+    fragColor = vec4(mix(c2,color,iWow2), 1.0);
 }
