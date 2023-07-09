@@ -51,8 +51,8 @@ def draw(ip, dots, yellow_start, yellow_end, anim_frame):
   horiz_offset = 0.0 # The number of columns between the start pixel of this
                      # row and the first row. It can be negative and/or end in .5
   for row in dots:
-    if row == 'g':
-      full_dmx.extend(RED)
+    if all(c == 'g' for c in row):
+      full_dmx.extend(RED * len(row))
       continue
 
     left, right = row.split('.')
@@ -137,16 +137,24 @@ def file_timestamp(filename):
 
 
 def main():
-  if len(sys.argv) == 4:
-    yellow_str = sys.argv.pop(-1)
-    if '-' not in yellow_str:
-      yellow_str += "-" + yellow_str
-    yellow_start_str, yellow_end_str = yellow_str.split("-")
-    yellow_start = int(yellow_start_str)
-    yellow_end   = int(yellow_end_str)
-  else:
-    yellow_start = None
-    yellow_end = None
+  yellow_start = None
+  yellow_end = None
+  framerate = 1 # Number of DELAY periods to go between incrementing the white stripes
+
+  while len(sys.argv) > 3:
+    arg = sys.argv.pop(-1)
+    if arg.lower().startswith("y"):
+      yellow_str = arg[1:]
+      if '-' not in yellow_str:
+        yellow_str += "-" + yellow_str
+      yellow_start_str, yellow_end_str = yellow_str.split("-")
+      yellow_start = int(yellow_start_str)
+      yellow_end   = int(yellow_end_str)
+    elif arg.lower().startswith("f"):
+      framerate_str = arg[1:]
+      framerate = int(framerate_str)
+    else:
+      raise ValueError("Unknown arg: " + arg)
 
   if len(sys.argv) != 3:
     sys.stderr.write("Need an IP and panel_id, and optionally a range of offsets to mark in yellow\n")
@@ -159,6 +167,7 @@ def main():
   last_load = 0
 
   anim_frame = 0
+  subframe = 0
   while True:
     datafile_timestamp = file_timestamp(datafile)
     if datafile_timestamp > last_load:
@@ -167,7 +176,10 @@ def main():
       current_time = datetime.now().strftime("%H:%M")
       print("Loaded datafile at " + current_time)
     draw(ip, striping_instructions[panel_id.upper()], yellow_start, yellow_end, anim_frame) 
-    anim_frame += 1
+    subframe += 1
+    if framerate > 0 and subframe >= framerate:
+      subframe = 0
+      anim_frame += 1
     sleep(DELAY)
 
 

@@ -76,7 +76,7 @@ def render(data):
       rv += color * count
     else:
       rv += f"({color}x{count})"
-  rv += "\033[0m" # Reset to white
+    rv += "\033[0m" # Reset to white
   return rv
 
 while True:
