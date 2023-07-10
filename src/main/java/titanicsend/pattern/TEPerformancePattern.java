@@ -840,7 +840,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 // Note: revised calculation restricts maximum speed while still allowing
                 // you to get to maximum speed at slower bpm.
                 double et = Math.min(maxSpinRate, maxSpinRate * (time - lastTime));
-                angle += et % LX.TWO_PI;
+                angle -= et % LX.TWO_PI;
             }
             lastTime = time;
         }
@@ -971,7 +971,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         // per beat, based on the elapsed time and the engine's bpm rate.
         // But since we're using variable time, we can speed it up and slow it down smoothly by adjusting
         // the speed of time, and still have keep its speed in sync with the beat.
-        return speedRotor.getAngle() - getStaticRotationAngle();
+        return -(speedRotor.getAngle() - getStaticRotationAngle());
     }
 
     /**
@@ -1111,6 +1111,17 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
      */
     public double getTimeMs() {
         return iTime.getTimeMs();
+    }
+
+    /**
+     * Controls whether time is allowed to run both forward and backward,
+     * according to the sign of the current scale value.  Bidirectional
+     * time is allowed (true) by default.
+     * @param val true for bidirectional time, false for forward-moving time only,
+     * regardless of time scale setting.
+     */
+    public void allowBidirectionalTime(boolean val) {
+        iTime.allowBidirectionalTime(val);
     }
 
     /**

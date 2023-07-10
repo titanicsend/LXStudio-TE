@@ -33,7 +33,7 @@ public class EdgeKITT extends TEPerformancePattern {
     public void runTEAudioPattern(double deltaMs) {
 
         // generate 0..1 ramp (sawtooth) from speed timer
-        double t1 =  (-getTimeMs() % 4000) / 4000;
+        double t1 =  (getTimeMs() % 4000) / 4000;
 
         // Size control sets the KITT tail length
         double tailPct = getSize();

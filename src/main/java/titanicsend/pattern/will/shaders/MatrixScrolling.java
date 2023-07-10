@@ -97,7 +97,7 @@ public class MatrixScrolling extends FragmentShaderEffect {
         double b = (9. + 8. * Math.sin(i[0]));
 
         //        int tb = int(iTime * b);
-        int tb = (int) (-timeSeconds * b);
+        int tb = (int) (timeSeconds * b);
 
         //        vec3 p = vec3(9, tb, 0) + i;
         double[] p = new double[]{i[0] + 9.0 , i[1] + tb, i[2]};

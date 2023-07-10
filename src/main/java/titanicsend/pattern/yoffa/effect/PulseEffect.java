@@ -91,7 +91,7 @@ public class PulseEffect extends PatternEffect {
                 energy * 40 * (1.0 - beatWave);
 
             // straightforward radial gradient, with color posterization
-            double index = posterize(Math.abs(t1 + dist) % 1, levels);
+            double index = posterize(Math.abs(t1 - dist) % 1, levels);
             int color = pattern.getGradientColor((float) index);
 
             double hue = LXColor.h(color);

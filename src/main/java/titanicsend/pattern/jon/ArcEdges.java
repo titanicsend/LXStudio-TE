@@ -24,7 +24,7 @@ public class ArcEdges extends TEPerformancePattern {
         super(lx, TEShaderView.ALL_POINTS);
 
         controls.setRange(TEControlTag.SIZE, 1, 5, 0.1);              // scale
-        controls.setRange(TEControlTag.QUANTITY, 0.675, 0.72, 0.35);  // noise field position
+        controls.setRange(TEControlTag.QUANTITY, 0.6, 0.72, 0.35);  // noise field position
         controls.setRange(TEControlTag.WOW1, 0.025, 0.001, 0.08);     // noise magnitude
         controls.setRange(TEControlTag.WOW2, 0.008, 0.0005, 0.03);    // edge "line width"
 
