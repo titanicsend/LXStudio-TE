@@ -85,5 +85,9 @@ void main() {
     // to disable this feature.
     #ifndef TE_NOALPHAFIX
     finalColor = _blendFix(finalColor);
+    #else
+    // Old EDC blending - force black pixels to full transparency, otherwise
+    //use shader provided alpha
+    finalColor.a = ((finalColor.r + finalColor.g + finalColor.b) == 0.0) ? 0.0 : finalColor.a;
     #endif
 }
