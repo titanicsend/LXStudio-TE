@@ -49,16 +49,29 @@ public abstract class FragmentShaderEffect extends PatternEffect {
     }
 
     private int getColorForPoint(LXPoint point, double timeSec) {
+        float alpha;
         double[] fragCoordinates = new double[] { point.zn, point.yn };
         double[] resolution = new double[] { 1,1 };
         double[] colorRgb = getColorForPoint(fragCoordinates, resolution, timeSec);
-        //most shaders ignore alpha but optionally plumbing it through is helpful,
-        // esp if we want to layer underneath it. can change black background to transparent, etc.
-        for (int i = 0; i < 3; i++) {
+
+        for (int i = 0; i < colorRgb.length; i++) {
             colorRgb[i] = clamp(colorRgb[i], 0, 1);
         }
-        float alpha = colorRgb.length > 3 ? (float) colorRgb[3] :
-                (float) Math.max(colorRgb[0], Math.max(colorRgb[1], colorRgb[2]));
+
+        if (colorRgb.length > 3) {
+            // if we're given an alpha value, use it
+            alpha = (float) colorRgb[3];
+        }
+        else {
+            // otherwise, set things up to use alpha as brightness for best possible
+            // blending.  First, calculate alpha, based on the brightest color component.
+            alpha = (float) Math.max(colorRgb[0],Math.max(colorRgb[1],colorRgb[2]));
+            // set color to its brightest possible level.
+            colorRgb[0] /= alpha;
+            colorRgb[1] /= alpha;
+            colorRgb[2] /= alpha;
+        }
+
         return new Color(
                 (float) colorRgb[0],
                 (float) colorRgb[1],

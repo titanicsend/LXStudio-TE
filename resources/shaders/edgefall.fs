@@ -76,5 +76,5 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
        alpha += bri;
     }
 
-    fragColor = vec4(color,alpha);
+    fragColor = vec4(color,1.0);
 }

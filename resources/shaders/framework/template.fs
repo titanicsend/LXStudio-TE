@@ -39,6 +39,18 @@ uniform sampler2D iChannel3;
 
 {{%shader_body%}}
 
+vec4 _blendFix(vec4 col) {
+// if alpha is exactly 1.0, it has probably been forced there, so
+// we will fix it to assure proper blending.
+    if (col.a == 1.0) {
+        col.rgb = clamp(col.rgb,0.0, 1.0);
+
+        col.a = max(col.r,max(col.g, col.b)); // alpha derived from brightness
+        col.rgb = col.rgb / col.a; // rgb set to brightest possible value of that color
+    }
+    return col;
+}
+
 void main() {
     // translate according to XPos and YPos controls unless explicitly overriden
     #ifndef TE_NOTRANSLATE
@@ -47,6 +59,10 @@ void main() {
     mainImage(finalColor, gl_FragCoord.xy);
     #endif
 
-    // force black pixels to full transparency, otherwise use shader provided alpha
-    finalColor.a = ((finalColor.r + finalColor.g + finalColor.b) == 0.0) ? 0.0 : finalColor.a;
+    // Post-processing: Make sure we've got optimal color and alpha values for brightness
+    // and blending. define TE_NOALPHAFIX in your shader code if you need
+    // to disable this feature.
+    #ifndef TE_NOALPHAFIX
+    finalColor = _blendFix(finalColor);
+    #endif
 }

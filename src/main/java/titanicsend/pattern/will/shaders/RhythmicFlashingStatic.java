@@ -22,7 +22,7 @@ public class RhythmicFlashingStatic extends FragmentShaderEffect {
 
     public RhythmicFlashingStatic(PatternTarget target) {
         super(target);
-        outColor = new double[4];
+        outColor = new double[3];
 
         // set reasonable initial control values
         pattern.getControls().setValue(TEControlTag.WOW1,0.5);   // beat reactive pulse
