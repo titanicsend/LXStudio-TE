@@ -4,12 +4,13 @@
 #define PI 3.141592
 #define MAX_DIST 32.0
 #define MAX_STEPS 128
-#define REPEAT 2.0
-#define BLOOM_DEPTH 16.0;
+#define BLOOM_DEPTH 16.0
 #define BLOOM_IT 128
 #define ANG 0.0
 
+float REPEAT = (2.0 * iQuantity);
 float seed;
+vec3 triColor;
 
 float rand()
 {
@@ -42,8 +43,6 @@ float c = cos(angle); float s = sin(angle);
   );
 }
 
-
-
 vec3 makeRay(vec2 origin)
 {
     vec2 res;
@@ -74,32 +73,27 @@ float getDist(vec3 origin)
     vec3 b = dirByAng(120.0 + ang, 1.0);
     vec3 c = dirByAng(240.0 + ang, 1.0);
 
-    float cap1 = capsule(a, b, 0.01, origin);
-    float cap2 = capsule(b, c, 0.01, origin);
-    float cap3 = capsule(c, a, 0.01, origin);
+    float radius = 0.01 * iScale;
+    float cap1 = capsule(a, b, radius, origin);
+    float cap2 = capsule(b, c, radius, origin);
+    float cap3 = capsule(c, a, radius, origin);
     return min(cap1, min(cap2, cap3));
 }
 
-vec3 getNormal(vec3 p)
+vec3 getCol(float z)
 {
-    float d = getDist(p);
-    vec2 e = vec2(EPSILON, 0);
-
-    vec3 n = d - vec3(
-        getDist(p-e.xyy),
-        getDist(p-e.yxy),
-        getDist(p-e.yyx));
-
-    return normalize(n);
+float fac = (cos(z / REPEAT * PI) + 1.0) * 0.5;
+return mix(iColorRGB,mix(iColorRGB,iColor2RGB,iWow2),fac);
 }
 
 float rayMarch(vec3 origin, vec3 direct)
 {
+    vec3 tmp;
     float res = 0.0;
 
     for (int i = 0; i < MAX_STEPS; i++)
     {
-        vec3 tmp = origin + direct * res;
+        tmp = origin + direct * res;
         float d = getDist(tmp);
         res += d;
 
@@ -107,13 +101,8 @@ float rayMarch(vec3 origin, vec3 direct)
         	break;
     }
 
+    triColor = getCol(tmp.z);
     return res;
-}
-
-vec3 getCol(float z)
-{
-    float fac = (cos(z / REPEAT * PI) + 1.0) * 0.5;
-    return mix(vec3(1, 0.1, 0.25), vec3(0.25, 0.1, 1), fac);
 }
 
 vec3 getBloom(vec3 pos, vec3 dir)
@@ -123,9 +112,11 @@ vec3 getBloom(vec3 pos, vec3 dir)
 
     for (int i = 0; i < BLOOM_IT; i++)
     {
-        float fac = (float(i) + rand()) / float(BLOOM_IT);
+        float fac = float(i)  / float(BLOOM_IT);
         vec3 p = mix(pos, end, fac);
-        float d = getDist(p);
+
+        // adjust distance to control triangle overdrive
+        float d = 0.2 + 2.0 * getDist(p);
         res += getCol(p.z) / d / float(BLOOM_IT);
     }
 
@@ -137,15 +128,15 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     mat3 viewMat = buildRotationMatrix3D(vec3(0.,0.,1.),-iRotationAngle);
 
     seed = iTime + iResolution.y * fragCoord.x / iResolution.x + fragCoord.y / iResolution.y;
-    vec3 pos = vec3(0, 0, iTime * 2.0);
+    vec3 pos = vec3(0, 0, iTime * REPEAT);
     vec3 dir = makeRay(fragCoord) * viewMat;
 
     float res = rayMarch(pos, dir);
     vec3 col = getBloom(pos, dir);
 
-    if (res < MAX_DIST)
-        col = vec3(1);
+    if (res <= MAX_DIST) {
+        col = (1.0 - res / MAX_DIST) * triColor;
+    }
 
-    col *= mix(iColorRGB,col,iWow2);
     fragColor = vec4(col, 1.);
 }

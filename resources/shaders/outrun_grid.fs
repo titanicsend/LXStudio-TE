@@ -49,7 +49,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     horizonY += (iWow1 > 0.5) ? (0.2*(iWow1 - 0.5)) * sin(p.x * 5.0 + iTime * 3.0) : 0.0;
 
     // Define the current grid displacement
-    vec3 displace = vec3(0.0, -4.0 * (1.0 / gridScale) *iTime, 1.5);
+    vec3 displace = vec3(0.0, -4.0 * (1.0 / gridScale) * -iTime, 1.5);
 
     // bend x axis to the beat - iWow1 controls the amplitude of the curves
     p.x += min(0.5,iWow1)/6.0 * sin(iTime + p.y * 12.0);

@@ -2,7 +2,10 @@ package titanicsend.pattern.yoffa.config;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import heronarts.lx.parameter.LXListenableParameter;
+import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
+import titanicsend.pattern.jon._CommonControlGetter;
 import titanicsend.pattern.will.shaders.*;
 import titanicsend.pattern.yoffa.effect.*;
 import titanicsend.pattern.yoffa.effect.shaders.*;
@@ -40,6 +43,7 @@ public class OrganicPatternConfig {
         public RainbowSwirlPanels(LX lx) {
             super(lx, TEShaderView.DOUBLE_LARGE);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new RainbowSwirlShader(new PatternTarget(this)));
@@ -51,6 +55,7 @@ public class OrganicPatternConfig {
         public RainbowSwirlEdges(LX lx) {
             super(lx, TEShaderView.ALL_EDGES);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new RainbowSwirlShader(new PatternTarget(this)));
@@ -62,6 +67,7 @@ public class OrganicPatternConfig {
         public NeonBarsPanels(LX lx) {
             super(lx, TEShaderView.SPLIT_PANEL_SECTIONS);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NeonBarsShader(new PatternTarget(this)));
@@ -73,6 +79,7 @@ public class OrganicPatternConfig {
         public NeonBarsEdges(LX lx) {
             super(lx, TEShaderView.ALL_EDGES);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NeonBarsShader(new PatternTarget(this)));
@@ -84,6 +91,7 @@ public class OrganicPatternConfig {
         public NeonCellsLegacy(LX lx) {
             super(lx, TEShaderView.DOUBLE_LARGE);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NeonCellsShader(new PatternTarget(this)));
@@ -95,17 +103,18 @@ public class OrganicPatternConfig {
         public WaterPanels(LX lx) {
             super(lx, TEShaderView.ALL_PANELS);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
 
             // set ranges for common controls
-            getControls().setRange(TEControlTag.SPEED, 0,-2,2); // Speed
+            getControls().setRange(TEControlTag.SPEED, 0, -2, 2); // Speed
             getControls().setValue(TEControlTag.SPEED, 0.5);
 
-            getControls().setRange(TEControlTag.QUANTITY, 0,1,4); // tiling
-            getControls().setRange(TEControlTag.SIZE, 1,0.5,3);     // scale
-            getControls().setRange(TEControlTag.WOW1, 5,1,20);    // iterations (intensity 1)
-            getControls().setRange(TEControlTag.WOW2, 0.005,0.001,0.01); // intensity 2
+            getControls().setRange(TEControlTag.QUANTITY, 0, 1, 4); // tiling
+            getControls().setRange(TEControlTag.SIZE, 1, 0.5, 3);     // scale
+            getControls().setRange(TEControlTag.WOW1, 5, 1, 20);    // iterations (intensity 1)
+            getControls().setRange(TEControlTag.WOW2, 0.005, 0.001, 0.01); // intensity 2
 
             return List.of(new WaterShader(new PatternTarget(this)));
         }
@@ -116,17 +125,18 @@ public class OrganicPatternConfig {
         public WaterEdges(LX lx) {
             super(lx, TEShaderView.ALL_EDGES);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
 
             // set ranges for common controls
-            getControls().setRange(TEControlTag.SPEED, 0,-4,4); // Speed
+            getControls().setRange(TEControlTag.SPEED, 0, -4, 4); // Speed
             getControls().setValue(TEControlTag.SPEED, 0.5);
 
-            getControls().setRange(TEControlTag.QUANTITY, 0,1,4); // tiling
-            getControls().setRange(TEControlTag.SIZE, 1,0.5,3);     // scale
-            getControls().setRange(TEControlTag.WOW1, 5,1,20);    // iterations (intensity 1)
-            getControls().setRange(TEControlTag.WOW2, 0.005,0.001,0.01); // intensity 2
+            getControls().setRange(TEControlTag.QUANTITY, 0, 1, 4); // tiling
+            getControls().setRange(TEControlTag.SIZE, 1, 0.5, 3);     // scale
+            getControls().setRange(TEControlTag.WOW1, 5, 1, 20);    // iterations (intensity 1)
+            getControls().setRange(TEControlTag.WOW2, 0.005, 0.001, 0.01); // intensity 2
 
             return List.of(new WaterShader(new PatternTarget(this)));
         }
@@ -137,6 +147,7 @@ public class OrganicPatternConfig {
         public WavyPanels(LX lx) {
             super(lx, TEShaderView.SPLIT_PANEL_SECTIONS);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new WavyShader(new PatternTarget(this)));
@@ -148,6 +159,7 @@ public class OrganicPatternConfig {
         public NeonSnake(LX lx) {
             super(lx, TEShaderView.ALL_PANELS);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new NeonSnakeShader(new PatternTarget(this)));
@@ -159,6 +171,7 @@ public class OrganicPatternConfig {
         public WavyEdges(LX lx) {
             super(lx, TEShaderView.ALL_EDGES);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new WavyShader(new PatternTarget(this)));
@@ -170,6 +183,7 @@ public class OrganicPatternConfig {
         public PulseCenter(LX lx) {
             super(lx, TEShaderView.ALL_PANELS);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new PulseEffect(new PatternTarget(this)));
@@ -181,6 +195,7 @@ public class OrganicPatternConfig {
         public AlternatingDots(LX lx) {
             super(lx, TEShaderView.ALL_PANELS);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new AlternatingDotsEffect(new PatternTarget(this)));
@@ -192,6 +207,7 @@ public class OrganicPatternConfig {
         public PowerGrid(LX lx) {
             super(lx, TEShaderView.ALL_EDGES);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new ShimmeringEffect(new PatternTarget(this)));
@@ -203,8 +219,13 @@ public class OrganicPatternConfig {
         public BreathingDots(LX lx) {
             super(lx, TEShaderView.ALL_PANELS);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
+            // set ranges for common controls
+            getControls().setRange(TEControlTag.SPEED, 0, -2, 2); // Speed
+            getControls().setValue(TEControlTag.SPEED, 0.5);
+
             return List.of(new BreathingDotsEffect(new PatternTarget(this)));
         }
     }
@@ -231,7 +252,7 @@ public class OrganicPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new BasicVideoPatternEffect(new PatternTarget(this),
-                    "resources/pattern/test_vid_a.mp4"));
+                "resources/pattern/test_vid_a.mp4"));
         }
     }
 
@@ -244,7 +265,7 @@ public class OrganicPatternConfig {
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new BasicVideoPatternEffect(new PatternTarget(this),
-                    "resources/pattern/test_vid_b.mp4"));
+                "resources/pattern/test_vid_b.mp4"));
         }
     }
 
@@ -253,6 +274,7 @@ public class OrganicPatternConfig {
         public RhythmicFlashStatic(LX lx) {
             super(lx, TEShaderView.ALL_PANELS);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
             return List.of(new RhythmicFlashingStatic(new PatternTarget(this)));
@@ -264,6 +286,7 @@ public class OrganicPatternConfig {
         public MatrixScroller(LX lx) {
             super(lx, TEShaderView.ALL_PANELS);
         }
+
         @Override
         protected List<PatternEffect> createEffects() {
 

@@ -33,6 +33,7 @@ public class FollowThatStar extends TEPerformancePattern {
     public void runTEAudioPattern(double deltaMs) {
 
         shader.setUniform("iRotationAngle",(float) -getRotationAngleFromSpin());
+        shader.setUniform("iTime",(float) -getTime());
 
         // run the shader
         effect.run(deltaMs);

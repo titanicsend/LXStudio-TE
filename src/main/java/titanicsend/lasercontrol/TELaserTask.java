@@ -23,7 +23,7 @@ public class TELaserTask extends LXComponent implements LXLoopTask {
 
     @Override
     public void loop(double deltaMs) {
-        if (this.enabled.isOn()) {
+        if (this.enabled.isOn() && this.lx.engine.output.enabled.isOn()) {
             // get the swatch color
             int primaryIndex = TEPattern.ColorType.PRIMARY.swatchIndex();
             LXDynamicColor primary = this.lx.engine.palette.swatch.getColor(primaryIndex);

@@ -35,7 +35,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     //uv.y += iScale - 1.0;
 
     // motion of the field is modulated by audio level
-    float phase = (iTime * 0.5) + iWow1 * bassLevel;
+    float phase = (-iTime * 0.5) + iWow1 * bassLevel;
 
     for (float i = 1.0; i < floor(iQuantity); i++) {
         vec2 frequency = uv * i * i;

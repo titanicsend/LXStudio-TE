@@ -86,8 +86,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     uv = polar2cart(uv);
 
     float thickness = 3.0 + iScale;
-    float d1 = abs(uv.x * thickness / (uv.x + fbm(uv + 1.25 * iTime)));
-    float d2 = abs(uv.y * thickness / (uv.y + fbm(uv - 1.5 * iTime)));
+    float d1 = abs(uv.x * thickness / (uv.x + fbm(uv + 1.25 * -iTime)));
+    float d2 = abs(uv.y * thickness / (uv.y + fbm(uv - 1.5 * -iTime)));
 
     float size = 0.1 + iWow2 / 2.0;
 

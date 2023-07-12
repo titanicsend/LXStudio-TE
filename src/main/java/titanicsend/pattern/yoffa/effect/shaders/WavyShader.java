@@ -31,6 +31,7 @@ public class WavyShader extends FragmentShaderEffect {
     protected double[] getColorForPoint(double[] fragCoordinates, double[] resolution, double timeSeconds) {
         fragCoordinates = divideArrays(fragCoordinates, resolution);
         double[] a = addToArray(-.5, fragCoordinates);
+        timeSeconds = -timeSeconds;
 
         double scale = 10 * pattern.getSize();
         double z = atan2(-a[1], -a[0]) * 3;

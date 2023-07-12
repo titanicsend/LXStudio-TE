@@ -5,6 +5,7 @@
 //Inspired by JoshP's Simplicity shader: https://www.shadertoy.com/view/lslGWr
 
 #define PI 3.1415926535897932384626433832795
+float TIME = iTime;
 
 // TE Library routines
 
@@ -28,7 +29,7 @@ vec2 rotate(vec2 point, float angle) {
 
 // http://www.fractalforums.com/new-theories-and-research/very-simple-formula-for-fractal-patterns/
 float field(in vec3 p, float s, int nIter) {
-    float strength = 11. + .03 * log(1.e-6 + fract(sin(iTime) * 4373.11));
+    float strength = 11. + .03 * log(1.e-6 + fract(sin(TIME) * 4373.11));
     float accum = s;
     float prev = 0.;
     float tw = 0.;
@@ -58,12 +59,12 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     uvs *= iScale;  // scale canvas
 
     // calculate movement paths for both parallax layers
-    vec3 basePath = vec3(sin(iTime / 16.), sin(iTime / 12.), sin(iTime / 128.));
+    vec3 basePath = -vec3(sin(TIME / 16.), sin(TIME / 12.), sin(TIME / 128.));
 
     vec3 p = vec3(uvs / 4., 0) + vec3(1., -1.3, 0.);
-    p += .2 * basePath;
+    p += 0.2 * basePath;
 
-    vec3 p2 = vec3(uvs / (4. + sin(iTime * 0.11) * 0.2 + 0.2 + sin(iTime * 0.15) * 0.3 + 0.4), 1.5) + vec3(2., -1.3, -1.);
+    vec3 p2 = vec3(uvs / (4. + sin(TIME * 0.11) * 0.2 + 0.2 + sin(TIME * 0.15) * 0.3 + 0.4), 1.5) + vec3(2., -1.3, -1.);
     p2 += 0.265 * basePath;
 
     // Sample the audio FFT results. (NOTE: TE currently supplies a 16 band fft)
@@ -79,13 +80,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     // vary color by field density and frequency content
     vec3 c1 = iColorHSB;
-    float k = sin(iTime / 4.0);          // color movement for hubble mode
+    float k = sin(TIME / 4.0);          // color movement for hubble mode
     c1.x = mix(c1.x, t + k, iWow2);      // hue (+ hubble mode on Wow 2 control)
     c1.y -= (t * freqs[2] * freqs[2]);   // saturation (at basically vocal freqencies)
     c1.z *= t + (t * iWow1 * freqs[0]);  // brightness modulated by low frequency content
 
     vec3 c2 = iColor2HSB;
-    k = sin(PI + iTime / 4.0);           // color movement for hubble mode
+    k = sin(PI + TIME / 4.0);           // color movement for hubble mode
     c2.x = mix(c2.x, t2 + k, iWow2);     // hue (+ hubble mode)
     c2.y -= (t2 * freqs[3] * freqs[3]);  // saturation (on high frequency content)
     c2.z *= t2 + (t2 * iWow1 * beat);    // brightness modulated by LX beat

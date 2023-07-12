@@ -148,7 +148,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     uv.x = atan(uv.x, uv.y) + iRotationAngle;
     uv.y = dist;
 
-    float k = iTime * -0.5;
+    float k = iTime * 0.5;
 
     // Wow1 selects output mode by changing how we parameterize the
     // 3D noise field.
