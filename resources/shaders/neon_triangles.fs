@@ -116,8 +116,8 @@ vec3 getBloom(vec3 pos, vec3 dir)
         float fac = (float(i) + rand())  / float(BLOOM_IT);
         vec3 p = mix(pos, end, fac);
 
-        // adjust distance to control triangle overdrive
-        float d = 0.08 + getDist(p);
+        // adjust distance to control triangle glow curve
+        float d = getDist(p);  d = 0.05 + d * d;
         res += getCol(p.z) / d / float(BLOOM_IT);
     }
 
