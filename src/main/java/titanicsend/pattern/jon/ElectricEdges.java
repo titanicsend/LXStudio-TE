@@ -16,6 +16,9 @@ public class ElectricEdges extends TEPerformancePattern {
     public ElectricEdges(LX lx) {
         super(lx, TEShaderView.ALL_EDGES);
 
+        markUnusedControl(TEControlTag.BRIGHTNESS);
+        markUnusedControl(TEControlTag.WOWTRIGGER);
+
         // Set control range -- this uses the same shader as the electric panel
         // pattern, but it is parameterized *very* differently.
         controls.setRange(TEControlTag.SIZE, 0.05, 0.005, 0.4);    // noise scale

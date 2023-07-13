@@ -37,6 +37,11 @@ public class ShaderPanelsPatternConfig {
     public static class LightBeamsPattern extends ConstructedPattern {
         public LightBeamsPattern(LX lx) {
             super(lx, TEShaderView.ALL_PANELS_INDIVIDUAL);
+
+            markUnusedControl(TEControlTag.QUANTITY);
+            markUnusedControl(TEControlTag.BRIGHTNESS);
+            markUnusedControl(TEControlTag.WOW1);
+            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
@@ -53,6 +58,13 @@ public class ShaderPanelsPatternConfig {
     public static class NeonHeartNative extends ConstructedPattern {
         public NeonHeartNative(LX lx) {
             super(lx, TEShaderView.ALL_PANELS_INDIVIDUAL);
+
+            markUnusedControl(TEControlTag.SIZE);
+            markUnusedControl(TEControlTag.QUANTITY);
+            markUnusedControl(TEControlTag.BRIGHTNESS);
+            markUnusedControl(TEControlTag.WOW1);
+            markUnusedControl(TEControlTag.WOW2);
+            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
@@ -66,6 +78,9 @@ public class ShaderPanelsPatternConfig {
     public static class Marbling extends ConstructedPattern {
         public Marbling(LX lx) {
             super(lx, TEShaderView.DOUBLE_LARGE);
+
+            markUnusedControl(TEControlTag.BRIGHTNESS);
+            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
@@ -86,6 +101,9 @@ public class ShaderPanelsPatternConfig {
     public static class NeonRipples extends ConstructedPattern {
         public NeonRipples(LX lx) {
             super(lx, TEShaderView.SPLIT_PANEL_SECTIONS);
+
+            markUnusedControl(TEControlTag.BRIGHTNESS);
+            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
@@ -107,6 +125,10 @@ public class ShaderPanelsPatternConfig {
     public static class NeonTriangles extends ConstructedPattern {
         public NeonTriangles(LX lx) {
             super(lx, TEShaderView.ALL_PANELS_INDIVIDUAL);
+
+            markUnusedControl(TEControlTag.BRIGHTNESS);
+            markUnusedControl(TEControlTag.WOW1);
+            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
@@ -125,6 +147,12 @@ public class ShaderPanelsPatternConfig {
     public static class SpaceExplosion extends ConstructedPattern {
         public SpaceExplosion(LX lx) {
             super(lx, TEShaderView.ALL_PANELS);
+
+            markUnusedControl(TEControlTag.SIZE);
+            markUnusedControl(TEControlTag.QUANTITY);
+            markUnusedControl(TEControlTag.BRIGHTNESS);
+            markUnusedControl(TEControlTag.WOW1);
+            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
@@ -142,6 +170,13 @@ public class ShaderPanelsPatternConfig {
     public static class SynthWaves extends ConstructedPattern {
         public SynthWaves(LX lx) {
             super(lx, TEShaderView.DOUBLE_LARGE);
+
+            markUnusedControl(TEControlTag.SIZE);
+            markUnusedControl(TEControlTag.QUANTITY);
+            markUnusedControl(TEControlTag.BRIGHTNESS);
+            markUnusedControl(TEControlTag.WOW1);
+            markUnusedControl(TEControlTag.WOW2);
+            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
@@ -155,6 +190,13 @@ public class ShaderPanelsPatternConfig {
     public static class PulsingHeart extends ConstructedPattern {
         public PulsingHeart(LX lx) {
             super(lx, TEShaderView.ALL_PANELS_INDIVIDUAL);
+
+            markUnusedControl(TEControlTag.SIZE);
+            markUnusedControl(TEControlTag.QUANTITY);
+            markUnusedControl(TEControlTag.BRIGHTNESS);
+            markUnusedControl(TEControlTag.WOW1);
+            markUnusedControl(TEControlTag.WOW2);
+            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
@@ -168,6 +210,13 @@ public class ShaderPanelsPatternConfig {
     public static class NeonBlocks extends ConstructedPattern {
         public NeonBlocks(LX lx) {
             super(lx, TEShaderView.DOUBLE_LARGE);
+
+            markUnusedControl(TEControlTag.SIZE);
+            markUnusedControl(TEControlTag.QUANTITY);
+            markUnusedControl(TEControlTag.BRIGHTNESS);
+            markUnusedControl(TEControlTag.WOW1);
+            markUnusedControl(TEControlTag.WOW2);
+            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
@@ -181,6 +230,13 @@ public class ShaderPanelsPatternConfig {
     public static class Warp extends ConstructedPattern {
         public Warp(LX lx) {
             super(lx, TEShaderView.DOUBLE_LARGE);
+
+            markUnusedControl(TEControlTag.SIZE);
+            markUnusedControl(TEControlTag.QUANTITY);
+            markUnusedControl(TEControlTag.BRIGHTNESS);
+            markUnusedControl(TEControlTag.WOW1);
+            markUnusedControl(TEControlTag.WOW2);
+            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
@@ -194,6 +250,12 @@ public class ShaderPanelsPatternConfig {
     public static class Fire extends ConstructedPattern {
         public Fire(LX lx) {
             super(lx, TEShaderView.SPLIT_PANEL_SECTIONS);
+
+            markUnusedControl(TEControlTag.SIZE);
+            markUnusedControl(TEControlTag.QUANTITY);
+            markUnusedControl(TEControlTag.BRIGHTNESS);
+            markUnusedControl(TEControlTag.WOW1);
+            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
@@ -207,6 +269,10 @@ public class ShaderPanelsPatternConfig {
     public static class StormScanner extends ConstructedPattern {
         public StormScanner(LX lx) {
             super(lx, TEShaderView.DOUBLE_LARGE);
+
+            markUnusedControl(TEControlTag.QUANTITY);
+            markUnusedControl(TEControlTag.BRIGHTNESS);
+            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
@@ -226,6 +292,13 @@ public class ShaderPanelsPatternConfig {
     public static class JetStream extends ConstructedPattern {
         public JetStream(LX lx) {
             super(lx, TEShaderView.DOUBLE_LARGE);
+
+            markUnusedControl(TEControlTag.SIZE);
+            markUnusedControl(TEControlTag.QUANTITY);
+            markUnusedControl(TEControlTag.BRIGHTNESS);
+            markUnusedControl(TEControlTag.WOW1);
+            markUnusedControl(TEControlTag.WOW2);
+            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
@@ -239,6 +312,8 @@ public class ShaderPanelsPatternConfig {
     public static class OutrunGrid extends ConstructedPattern {
         public OutrunGrid(LX lx) {
             super(lx, TEShaderView.DOUBLE_LARGE);
+
+            markUnusedControl(TEControlTag.BRIGHTNESS);
         }
 
         @Override
@@ -268,6 +343,9 @@ public class ShaderPanelsPatternConfig {
     public static class Galaxy extends ConstructedPattern {
         public Galaxy(LX lx) {
             super(lx, TEShaderView.ALL_PANELS);
+
+            markUnusedControl(TEControlTag.BRIGHTNESS);
+            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
@@ -281,6 +359,8 @@ public class ShaderPanelsPatternConfig {
     public static class AudioTest2 extends ConstructedPattern {
         public AudioTest2(LX lx) {
             super(lx, TEShaderView.ALL_PANELS);
+
+            markUnusedControl(TEControlTag.BRIGHTNESS);
         }
 
         @Override
@@ -294,6 +374,13 @@ public class ShaderPanelsPatternConfig {
     public static class NeonCells extends ConstructedPattern {
         public NeonCells(LX lx) {
             super(lx, TEShaderView.SPLIT_PANEL_SECTIONS);
+
+            markUnusedControl(TEControlTag.SIZE);
+            markUnusedControl(TEControlTag.QUANTITY);
+            markUnusedControl(TEControlTag.BRIGHTNESS);
+            markUnusedControl(TEControlTag.WOW1);
+            markUnusedControl(TEControlTag.WOW2);
+            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
@@ -307,6 +394,10 @@ public class ShaderPanelsPatternConfig {
     public static class SlitheringSnake extends ConstructedPattern {
         public SlitheringSnake(LX lx) {
             super(lx, TEShaderView.DOUBLE_LARGE);
+
+            markUnusedControl(TEControlTag.QUANTITY);
+            markUnusedControl(TEControlTag.BRIGHTNESS);
+            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
@@ -328,6 +419,11 @@ public class ShaderPanelsPatternConfig {
     public static class PulsingPetriDish extends ConstructedPattern {
         public PulsingPetriDish(LX lx) {
             super(lx, TEShaderView.ALL_PANELS);
+
+            markUnusedControl(TEControlTag.QUANTITY);
+            markUnusedControl(TEControlTag.BRIGHTNESS);
+            markUnusedControl(TEControlTag.WOW1);
+            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
@@ -347,6 +443,11 @@ public class ShaderPanelsPatternConfig {
     public static class Mondelbrot extends ConstructedPattern {
         public Mondelbrot(LX lx) {
             super(lx, TEShaderView.DOUBLE_LARGE);
+
+            markUnusedControl(TEControlTag.QUANTITY);
+            markUnusedControl(TEControlTag.BRIGHTNESS);
+            markUnusedControl(TEControlTag.WOW2);
+            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
@@ -367,6 +468,10 @@ public class ShaderPanelsPatternConfig {
     public static class MetallicWaves extends ConstructedPattern {
         public MetallicWaves(LX lx) {
             super(lx, TEShaderView.ALL_POINTS);
+
+            markUnusedControl(TEControlTag.SIZE);
+            markUnusedControl(TEControlTag.BRIGHTNESS);
+            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
@@ -391,6 +496,9 @@ public class ShaderPanelsPatternConfig {
     public static class SmokeShader extends ConstructedPattern {
         public SmokeShader(LX lx) {
             super(lx, TEShaderView.ALL_POINTS);
+
+            markUnusedControl(TEControlTag.BRIGHTNESS);
+            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override

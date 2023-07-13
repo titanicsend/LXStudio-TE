@@ -17,6 +17,9 @@ public class FollowThatStar extends TEPerformancePattern {
     public FollowThatStar(LX lx) {
         super(lx, TEShaderView.ALL_POINTS);
 
+        markUnusedControl(TEControlTag.BRIGHTNESS);
+        markUnusedControl(TEControlTag.WOWTRIGGER);
+
         controls.setRange(TEControlTag.QUANTITY, 5, 1, 10)
                 .setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
 

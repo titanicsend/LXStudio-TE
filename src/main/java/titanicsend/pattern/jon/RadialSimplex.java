@@ -41,6 +41,9 @@ public class RadialSimplex extends TEPerformancePattern {
     public RadialSimplex(LX lx) {
         super(lx, TEShaderView.ALL_POINTS);
 
+        markUnusedControl(TEControlTag.BRIGHTNESS);
+        markUnusedControl(TEControlTag.WOWTRIGGER);
+
         // common controls setup
         controls.setRange(TEControlTag.SPEED, 0, -4, 4);
         controls.setValue(TEControlTag.SPEED, 0.25);

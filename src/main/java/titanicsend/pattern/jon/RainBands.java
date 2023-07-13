@@ -17,6 +17,9 @@ public class RainBands extends DriftEnabledPattern {
     public RainBands(LX lx) {
         super(lx, TEShaderView.ALL_POINTS);
 
+        markUnusedControl(TEControlTag.BRIGHTNESS);
+        markUnusedControl(TEControlTag.WOWTRIGGER);
+
         controls.setRange(TEControlTag.SPEED, 0, -4, 4);
         controls.setValue(TEControlTag.SPEED, 0.5);
 

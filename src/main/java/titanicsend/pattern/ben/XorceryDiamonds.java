@@ -2,6 +2,7 @@ package titanicsend.pattern.ben;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.ConstructedPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
@@ -14,6 +15,13 @@ import java.util.List;
 public class XorceryDiamonds extends ConstructedPattern {
 	public XorceryDiamonds(LX lx) {
 		super(lx, TEShaderView.ALL_PANELS);
+
+        markUnusedControl(TEControlTag.SIZE);
+        markUnusedControl(TEControlTag.QUANTITY);
+        markUnusedControl(TEControlTag.BRIGHTNESS);
+        markUnusedControl(TEControlTag.WOW1);
+        markUnusedControl(TEControlTag.WOW2);
+        markUnusedControl(TEControlTag.WOWTRIGGER);
 	}
 
 	@Override
