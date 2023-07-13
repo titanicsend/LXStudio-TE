@@ -13,8 +13,8 @@ import java.util.List;
 
 @LXCategory("Native Shaders Panels")
 public class XorceryDiamonds extends ConstructedPattern {
-	public XorceryDiamonds(LX lx) {
-		super(lx, TEShaderView.ALL_PANELS);
+    public XorceryDiamonds(LX lx) {
+        super(lx, TEShaderView.ALL_PANELS);
 
         markUnusedControl(TEControlTag.SIZE);
         markUnusedControl(TEControlTag.QUANTITY);
@@ -22,11 +22,11 @@ public class XorceryDiamonds extends ConstructedPattern {
         markUnusedControl(TEControlTag.WOW1);
         markUnusedControl(TEControlTag.WOW2);
         markUnusedControl(TEControlTag.WOWTRIGGER);
-	}
+    }
 
-	@Override
-	protected List<PatternEffect> createEffects() {
-		return List.of(new NativeShaderPatternEffect("xorcery_diamonds.fs",
-				new PatternTarget(this)));
-	}
+    @Override
+    protected List<PatternEffect> createEffects() {
+        return List.of(new NativeShaderPatternEffect("xorcery_diamonds.fs",
+                new PatternTarget(this)));
+    }
 }
