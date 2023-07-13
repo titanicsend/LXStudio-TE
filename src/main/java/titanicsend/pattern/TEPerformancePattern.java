@@ -978,6 +978,24 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         this.controls.getLXControl(TEControlTag.WOWTRIGGER).addListener(wowTriggerListener);
     }
 
+    public void markUnusedControl(TEControlTag tag) {
+        String label = switch(tag) {
+            case SIZE -> "Size";
+            case SPIN -> "Spin";
+            case SPEED -> "Speed";
+            case WOW1 -> "Wow1";
+            case WOW2 -> "Wow2";
+            case XPOS -> "xPos";
+            case YPOS -> "yPos";
+            case ANGLE -> "Angle";
+            case QUANTITY -> "Quantity";
+            case BRIGHTNESS -> "Brightness";
+            case WOWTRIGGER -> "WowTrigger";
+        };
+
+        controls.setLabel(tag, "[X] "+label);
+    }
+
     public FloatBuffer getCurrentPalette() {
         float r, g, b;
 
