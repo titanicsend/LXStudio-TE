@@ -147,15 +147,15 @@ Either go to https://adoptium.net/installation/ or, on a Mac with Homebrew, `bre
    mvn clean package  # Packaging creates the JAR and cleaning is optional
    ```
 2. Execute the JAR (Note that the version number may be different — The version
-   as of this document revision is 0.2.0-SNAPSHOT — substitute the correct
+   as of this document revision is 0.2.1-SNAPSHOT — substitute the correct
    version as necessary):
    ```shell
-   java -jar target/LXStudio-TE-0.2.0-SNAPSHOT-jar-with-dependencies.jar vehicle Vehicle.lxp
+   java -jar target/LXStudio-TE-0.2.1-SNAPSHOT-jar-with-dependencies.jar vehicle Vehicle.lxp
    ```
 3. If the Temurin JDK isn't your default Java, then you can use the full path,
    for example:
    ```shell
-   /Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java -jar target/LXStudio-TE-0.2.0-SNAPSHOT-jar-with-dependencies.jar vehicle Vehicle.lxp
+   /Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java -jar target/LXStudio-TE-0.2.1-SNAPSHOT-jar-with-dependencies.jar vehicle Vehicle.lxp
    ```
 4. Use Maven to execute the program instead of the `java` command:
    ```shell

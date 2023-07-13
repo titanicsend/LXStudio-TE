@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+
+import heronarts.glx.ui.UI2dContainer.Layout;
+import heronarts.glx.ui.component.UITextBox;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.BooleanParameter;
@@ -13,8 +16,6 @@ import heronarts.lx.parameter.StringParameter;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
-import heronarts.p4lx.ui.UI2dContainer;
-import heronarts.p4lx.ui.component.UITextBox;
 import titanicsend.model.TEPanelModel;
 
 import java.io.FileNotFoundException;
@@ -145,7 +146,7 @@ public class PanelAdjustEffect extends TEEffect implements UIDeviceControls<Pane
 
     @Override
     public void buildDeviceControls(LXStudio.UI ui, UIDevice uiDevice, PanelAdjustEffect effect) {
-        uiDevice.setLayout(UI2dContainer.Layout.VERTICAL_GRID);
+        uiDevice.setLayout(Layout.VERTICAL_GRID);
         uiDevice.setChildSpacing(6);
         uiDevice.setContentWidth(COL_WIDTH);
 

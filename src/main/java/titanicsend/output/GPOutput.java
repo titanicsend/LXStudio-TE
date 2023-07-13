@@ -4,6 +4,7 @@ import heronarts.lx.LX;
 import heronarts.lx.color.LXDynamicColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.output.LXOutput;
+import heronarts.lx.studio.TEApp;
 import titanicsend.app.GigglePixelBroadcaster;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
@@ -17,7 +18,7 @@ public class GPOutput extends LXOutput {
 
   public GPOutput(LX lx, GigglePixelBroadcaster broadcaster) {
     super(lx);
-    this.modelTE = (TEWholeModel) lx.getModel();
+    this.modelTE = TEApp.wholeModel;
     this.broadcaster = broadcaster;
   }
   
@@ -70,7 +71,7 @@ public class GPOutput extends LXOutput {
   }
 
   @Override
-  protected void onSend(int[] colors, byte[][] glut, double brightness) {
+  protected void onSend(int[] colors, GammaTable glut, double brightness) {
     // Look for standard GP points on the model.
     // Take out the surrounding IF if you want to refresh from the model every frame
     if (!this.initialized) {

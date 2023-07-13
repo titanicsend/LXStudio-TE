@@ -21,8 +21,8 @@ package titanicsend.modulator.justin;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.modulation.UIModulator;
 import heronarts.lx.studio.ui.modulation.UIModulatorControls;
-import heronarts.p4lx.ui.UI2dContainer;
-import heronarts.p4lx.ui.component.UIKnob;
+import heronarts.glx.ui.UI2dContainer;
+import heronarts.glx.ui.component.UIKnob;
 
 public class UIMultiplierModulator implements UIModulatorControls<MultiplierModulator> {
 

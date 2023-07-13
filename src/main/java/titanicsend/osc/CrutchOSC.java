@@ -38,10 +38,10 @@ import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameter.Polarity;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.pattern.LXPattern;
-import titanicsend.app.TEApp;
+import heronarts.lx.studio.TEApp;
 import titanicsend.util.TE;
 
-public class CrutchOSC extends LXComponent implements LXOscComponent {  //, LXOscListener
+public class CrutchOSC extends LXComponent implements LXOscComponent {
 
   static public final boolean ENABLED = TEApp.ENABLE_TOUCHOSC_IPADS;
 
@@ -53,9 +53,6 @@ public class CrutchOSC extends LXComponent implements LXOscComponent {  //, LXOs
 
   public CrutchOSC(LX lx) {
     super(lx);
-
-    //lx.engine.osc.addListener(this);
-    super.setParent(lx.engine);
 
     // Listen and fire immediately
     lx.engine.mixer.focusedChannel.addListener(this, true);

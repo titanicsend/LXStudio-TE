@@ -13,10 +13,10 @@ import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
-import heronarts.p4lx.ui.UI2dComponent;
-import heronarts.p4lx.ui.UI2dContainer.Layout;
-import heronarts.p4lx.ui.component.UIKnob;
-import heronarts.p4lx.ui.component.UISwitch;
+import heronarts.glx.ui.UI2dComponent;
+import heronarts.glx.ui.UI2dContainer.Layout;
+import heronarts.glx.ui.component.UIKnob;
+import heronarts.glx.ui.component.UISwitch;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.TEPerformancePattern.TEColorParameter;
 import titanicsend.pattern.TEPerformancePattern.TEColorParameter.TEColorOffsetParameter;
@@ -59,7 +59,7 @@ public class UITEPerformancePattern implements UIDeviceControls<TEPerformancePat
   protected void refresh() {
     for (UI2dComponent control : this.controls) {
       try {
-      control.removeFromContainer();
+        control.removeFromContainer();
       } catch (Exception ex) {
         TE.log("Warning in UITEPerformancePattern: error removing control from container: " + ex.toString());
       }
