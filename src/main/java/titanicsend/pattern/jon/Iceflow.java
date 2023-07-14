@@ -43,10 +43,10 @@ public class Iceflow extends TEPerformancePattern {
 
         markUnusedControl(TEControlTag.SIZE);
         markUnusedControl(TEControlTag.QUANTITY);
-        markUnusedControl(TEControlTag.BRIGHTNESS);
         markUnusedControl(TEControlTag.WOW1);
         markUnusedControl(TEControlTag.WOW2);
         markUnusedControl(TEControlTag.WOWTRIGGER);
+
 
         // register common controls with the UI
         addCommonControls();

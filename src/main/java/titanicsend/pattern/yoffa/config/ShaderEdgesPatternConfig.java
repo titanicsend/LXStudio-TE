@@ -21,7 +21,6 @@ public class ShaderEdgesPatternConfig {
             super(lx, TEShaderView.ALL_EDGES);
 
             markUnusedControl(TEControlTag.QUANTITY);
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOW1);
             markUnusedControl(TEControlTag.WOWTRIGGER);
         }
@@ -41,7 +40,6 @@ public class ShaderEdgesPatternConfig {
         public NeonRipplesEdges(LX lx) {
             super(lx, TEShaderView.ALL_EDGES);
 
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
@@ -77,7 +75,6 @@ public class ShaderEdgesPatternConfig {
 
             markUnusedControl(TEControlTag.SIZE);
             markUnusedControl(TEControlTag.QUANTITY);
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOW1);
             markUnusedControl(TEControlTag.WOWTRIGGER);
         }

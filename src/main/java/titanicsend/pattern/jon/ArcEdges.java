@@ -24,7 +24,7 @@ public class ArcEdges extends TEPerformancePattern {
         super(lx, TEShaderView.ALL_POINTS);
 
         markUnusedControl(TEControlTag.SIZE);
-        markUnusedControl(TEControlTag.BRIGHTNESS);
+
 
         controls.setRange(TEControlTag.SIZE, 1, 5, 0.1);              // scale
         controls.setRange(TEControlTag.QUANTITY, 0.6, 0.72, 0.35);  // noise field position

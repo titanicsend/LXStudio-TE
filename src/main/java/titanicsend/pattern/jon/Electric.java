@@ -16,8 +16,8 @@ public class Electric extends TEPerformancePattern {
     public Electric(LX lx) {
         super(lx, TEShaderView.DOUBLE_LARGE);
 
-        markUnusedControl(TEControlTag.BRIGHTNESS);
         markUnusedControl(TEControlTag.WOWTRIGGER);
+
 
         controls.setRange(TEControlTag.SPEED, 0.6, -1, 1);
         controls.setRange(TEControlTag.WOW1, 0, 0, 2.6);

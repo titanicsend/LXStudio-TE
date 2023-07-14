@@ -17,8 +17,8 @@ public class TriangleNoise extends DriftEnabledPattern {
     public TriangleNoise(LX lx) {
         super(lx, TEShaderView.ALL_POINTS);
 
-        markUnusedControl(TEControlTag.BRIGHTNESS);
         markUnusedControl(TEControlTag.WOWTRIGGER);
+
 
         // common controls setup
         controls.setRange(TEControlTag.SPEED, 0, -4, 4); // overall scale

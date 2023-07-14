@@ -39,7 +39,6 @@ public class ShaderPanelsPatternConfig {
             super(lx, TEShaderView.ALL_PANELS_INDIVIDUAL);
 
             markUnusedControl(TEControlTag.QUANTITY);
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOW1);
             markUnusedControl(TEControlTag.WOWTRIGGER);
         }
@@ -61,7 +60,6 @@ public class ShaderPanelsPatternConfig {
 
             markUnusedControl(TEControlTag.SIZE);
             markUnusedControl(TEControlTag.QUANTITY);
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOW1);
             markUnusedControl(TEControlTag.WOW2);
             markUnusedControl(TEControlTag.WOWTRIGGER);
@@ -79,8 +77,8 @@ public class ShaderPanelsPatternConfig {
         public Marbling(LX lx) {
             super(lx, TEShaderView.DOUBLE_LARGE);
 
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOWTRIGGER);
+
         }
 
         @Override
@@ -102,8 +100,8 @@ public class ShaderPanelsPatternConfig {
         public NeonRipples(LX lx) {
             super(lx, TEShaderView.SPLIT_PANEL_SECTIONS);
 
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOWTRIGGER);
+
         }
 
         @Override
@@ -126,9 +124,9 @@ public class ShaderPanelsPatternConfig {
         public NeonTriangles(LX lx) {
             super(lx, TEShaderView.ALL_PANELS_INDIVIDUAL);
 
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOW1);
             markUnusedControl(TEControlTag.WOWTRIGGER);
+
         }
 
         @Override
@@ -150,9 +148,9 @@ public class ShaderPanelsPatternConfig {
 
             markUnusedControl(TEControlTag.SIZE);
             markUnusedControl(TEControlTag.QUANTITY);
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOW1);
             markUnusedControl(TEControlTag.WOWTRIGGER);
+
         }
 
         @Override
@@ -173,10 +171,10 @@ public class ShaderPanelsPatternConfig {
 
             markUnusedControl(TEControlTag.SIZE);
             markUnusedControl(TEControlTag.QUANTITY);
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOW1);
             markUnusedControl(TEControlTag.WOW2);
             markUnusedControl(TEControlTag.WOWTRIGGER);
+
         }
 
         @Override
@@ -193,10 +191,10 @@ public class ShaderPanelsPatternConfig {
 
             markUnusedControl(TEControlTag.SIZE);
             markUnusedControl(TEControlTag.QUANTITY);
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOW1);
             markUnusedControl(TEControlTag.WOW2);
             markUnusedControl(TEControlTag.WOWTRIGGER);
+
         }
 
         @Override
@@ -213,10 +211,10 @@ public class ShaderPanelsPatternConfig {
 
             markUnusedControl(TEControlTag.SIZE);
             markUnusedControl(TEControlTag.QUANTITY);
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOW1);
             markUnusedControl(TEControlTag.WOW2);
             markUnusedControl(TEControlTag.WOWTRIGGER);
+
         }
 
         @Override
@@ -233,7 +231,6 @@ public class ShaderPanelsPatternConfig {
 
             markUnusedControl(TEControlTag.SIZE);
             markUnusedControl(TEControlTag.QUANTITY);
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOW1);
             markUnusedControl(TEControlTag.WOW2);
             markUnusedControl(TEControlTag.WOWTRIGGER);
@@ -253,7 +250,6 @@ public class ShaderPanelsPatternConfig {
 
             markUnusedControl(TEControlTag.SIZE);
             markUnusedControl(TEControlTag.QUANTITY);
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOW1);
             markUnusedControl(TEControlTag.WOWTRIGGER);
         }
@@ -271,7 +267,6 @@ public class ShaderPanelsPatternConfig {
             super(lx, TEShaderView.DOUBLE_LARGE);
 
             markUnusedControl(TEControlTag.QUANTITY);
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
@@ -295,7 +290,6 @@ public class ShaderPanelsPatternConfig {
 
             markUnusedControl(TEControlTag.SIZE);
             markUnusedControl(TEControlTag.QUANTITY);
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOW1);
             markUnusedControl(TEControlTag.WOW2);
             markUnusedControl(TEControlTag.WOWTRIGGER);
@@ -344,7 +338,6 @@ public class ShaderPanelsPatternConfig {
         public Galaxy(LX lx) {
             super(lx, TEShaderView.ALL_PANELS);
 
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
@@ -377,7 +370,6 @@ public class ShaderPanelsPatternConfig {
 
             markUnusedControl(TEControlTag.SIZE);
             markUnusedControl(TEControlTag.QUANTITY);
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOW1);
             markUnusedControl(TEControlTag.WOW2);
             markUnusedControl(TEControlTag.WOWTRIGGER);
@@ -396,7 +388,6 @@ public class ShaderPanelsPatternConfig {
             super(lx, TEShaderView.DOUBLE_LARGE);
 
             markUnusedControl(TEControlTag.QUANTITY);
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
@@ -421,7 +412,6 @@ public class ShaderPanelsPatternConfig {
             super(lx, TEShaderView.ALL_PANELS);
 
             markUnusedControl(TEControlTag.QUANTITY);
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOW1);
             markUnusedControl(TEControlTag.WOWTRIGGER);
         }
@@ -445,7 +435,6 @@ public class ShaderPanelsPatternConfig {
             super(lx, TEShaderView.DOUBLE_LARGE);
 
             markUnusedControl(TEControlTag.QUANTITY);
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOW2);
             markUnusedControl(TEControlTag.WOWTRIGGER);
         }
@@ -470,7 +459,6 @@ public class ShaderPanelsPatternConfig {
             super(lx, TEShaderView.ALL_POINTS);
 
             markUnusedControl(TEControlTag.SIZE);
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
@@ -497,7 +485,6 @@ public class ShaderPanelsPatternConfig {
         public SmokeShader(LX lx) {
             super(lx, TEShaderView.ALL_POINTS);
 
-            markUnusedControl(TEControlTag.BRIGHTNESS);
             markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 

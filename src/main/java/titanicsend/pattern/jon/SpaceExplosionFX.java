@@ -47,8 +47,8 @@ public class SpaceExplosionFX extends TEPerformancePattern {
 
         markUnusedControl(TEControlTag.SIZE);
         markUnusedControl(TEControlTag.QUANTITY);
-        markUnusedControl(TEControlTag.BRIGHTNESS);
         markUnusedControl(TEControlTag.WOW1);
+
 
         controls.setRange(TEControlTag.SPEED, 0, -2, 2); // speed
         controls.setExponent(TEControlTag.SPEED, 2.0);
