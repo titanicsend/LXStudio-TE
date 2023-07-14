@@ -13,21 +13,13 @@ TE_COLOR_UNIFORMS = [
     "iColor2HSB",
 ]
 
+# Mark only these params if they're unused
 TE_CONTROLS_EXPLICIT = [
     "iScale",
     "iQuantity",
-    "iBrightness",
     "iWow1",
     "iWow2",
     "iWowTrigger",
-]
-
-TE_CONTROLS_IMPLICIT = [
-    # iSpeed is handled by the system - time is modulated before being passed in as a uniform
-    "iSpeed",
-    "iRotationAngle",
-    "iSpin",
-    "iTranslate",
 ]
 
 TE_CONTROL_TAGS = {
@@ -42,28 +34,6 @@ TE_CONTROL_TAGS = {
     "iSpin": ("SPIN", "Spin"),
     #"iTranslate": (["XPOS", "YPOS"], ["xPos", "yPos"]),
 }
-
-STANDARD_SHADERTOY_UNIFORMS = [
-    "iTime",
-    "iResolution",
-    "iMouse",
-]
-
-# not required
-TE_AUDIO_UNIFORMS = [
-    "beat",
-    "sinPhaseBeat",
-    "bassLevel",
-    "trebleLevel",
-]
-
-TE_CHANNEL_UNIFORMS = [
-    "iChannel0",
-    "iChannel1",
-    "iChannel2",
-    "iChannel3",
-]
-
 
 PROJECT_ROOT = os.path.join(os.path.dirname(__file__), "../..")
 SHADER_DIR = os.path.join(PROJECT_ROOT, "resources/shaders")
@@ -151,20 +121,6 @@ for s in read_shaders():
 
     te_color_uniforms = are_uniforms_present(s['source'], TE_COLOR_UNIFORMS)
     te_controls_explicit = are_uniforms_present(s['source'], TE_CONTROLS_EXPLICIT)
-    te_controls_implicit = are_uniforms_present(s['source'], TE_CONTROLS_IMPLICIT)
-    standard_shadertoy_uniforms = are_uniforms_present(s['source'], STANDARD_SHADERTOY_UNIFORMS)
-    te_audio_uniforms = are_uniforms_present(s['source'], TE_AUDIO_UNIFORMS)
-    te_channel_uniforms = are_uniforms_present(s['source'], TE_CHANNEL_UNIFORMS)
-
-    # print(f"\tmissing te_color_uniforms: {te_color_uniforms}")
-    # print(f"\tmissing te_controls_explicit: {te_controls_explicit}")
-    # print(f"\tmissing te_controls_implicit: {te_controls_implicit}")
-    # print(f"\tmissing standard_shadertoy_uniforms: {standard_shadertoy_uniforms}")
-    # print(f"\tmissing te_channel_uniforms: {te_channel_uniforms}")
-    # print(f"\tmissing te_audio_uniforms: {te_audio_uniforms}")
-
-    # if len(te_color_uniforms) > 3:
-        # print("\t\tISSUE FOUND: no color uniforms used")
 
     relabeling_code = ""
     for missing_explicit_control in te_controls_explicit:
