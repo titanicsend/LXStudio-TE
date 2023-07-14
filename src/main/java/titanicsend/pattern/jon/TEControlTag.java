@@ -31,4 +31,29 @@ public enum TEControlTag {
 
         return path;
     }
+
+    public String getLabel() {
+        return switch(this) {
+            case SIZE -> "Size";
+            case SPIN -> "Spin";
+            case SPEED -> "Speed";
+            case WOW1 -> "Wow1";
+            case WOW2 -> "Wow2";
+            case XPOS -> "xPos";
+            case YPOS -> "yPos";
+            case ANGLE -> "Angle";
+            case QUANTITY -> "Quantity";
+            case BRIGHTNESS -> "Brightness";
+            case WOWTRIGGER -> "WowTrigger";
+        };
+    }
+
+    public String getLabel(boolean unused) {
+        String prefix = "";
+        if (unused) {
+            prefix = "[x] ";
+        }
+        String label = getLabel();
+        return prefix + label;
+    }
 }

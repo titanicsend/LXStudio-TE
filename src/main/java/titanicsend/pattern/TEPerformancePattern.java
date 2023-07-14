@@ -492,6 +492,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
 
         private final HashMap<TEControlTag, TEControl> controlList = new HashMap<TEControlTag, TEControl>();
+        private final HashMap<TEControlTag, Boolean> unusedControls = new HashMap<TEControlTag, Boolean>();
 
         /**
          * Retrieve backing LX control object for given tag
@@ -540,58 +541,17 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             return this;
         }
 
-        public TECommonControls setRange(TEControlTag tag, double value, double v0, double v1) {
-            // copy data from previous tag
-            LXListenableNormalizedParameter oldControl = getLXControl(tag);
+        public static LXListenableNormalizedParameter updateParam(LXListenableNormalizedParameter oldControl, String label, double value, double v0, double v1) {
             LXListenableNormalizedParameter newControl;
             if (oldControl instanceof CompoundParameter) {
-                newControl = (CompoundParameter) new CompoundParameter(oldControl.getLabel(), value, v0, v1)
-                    .setNormalizationCurve(((CompoundParameter)oldControl).getNormalizationCurve())
-                    .setExponent(oldControl.getExponent())
-                    .setDescription(oldControl.getDescription())
-                    .setPolarity(oldControl.getPolarity())
-                    .setUnits(oldControl.getUnits());
-            } else if (oldControl instanceof BoundedParameter) {
-                newControl  = (BoundedParameter) new BoundedParameter(oldControl.getLabel(), value, v0, v1)
-                    .setNormalizationCurve(((BoundedParameter)oldControl).getNormalizationCurve())
-                    .setExponent(oldControl.getExponent())
-                    .setDescription(oldControl.getDescription())
-                    .setPolarity(oldControl.getPolarity())
-                    .setUnits(oldControl.getUnits());
-            } else if (oldControl instanceof BooleanParameter) {
-                TE.err("Can not set range on BooleanParameter");
-                newControl  = (BooleanParameter) new BooleanParameter(oldControl.getLabel())
-                    .setMode(((BooleanParameter)oldControl).getMode())
-                    .setDescription(oldControl.getDescription())
-                    .setUnits(oldControl.getUnits());
-            } else if (oldControl instanceof DiscreteParameter) {
-                TE.err("Can not set range on DiscreteParameter");
-                newControl  = (DiscreteParameter) new DiscreteParameter(oldControl.getLabel(), ((DiscreteParameter)oldControl).getOptions())
-                    .setIncrementMode(((DiscreteParameter)oldControl).getIncrementMode())
-                    .setDescription(oldControl.getDescription())
-                    .setUnits(oldControl.getUnits());
-            } else {
-                TE.err("Unrecognized control type in TE Common Control " + tag);
-                return this;
-            }
-
-            setControl(tag, newControl);
-            return this;
-        }
-
-        public TECommonControls setLabel(TEControlTag tag, String newLabel) {
-            // copy data from previous tag
-            LXListenableNormalizedParameter oldControl = getLXControl(tag);
-            LXListenableNormalizedParameter newControl;
-            if (oldControl instanceof CompoundParameter) {
-                newControl = (CompoundParameter) new CompoundParameter(newLabel, oldControl.getValue(), ((CompoundParameter) oldControl).range.v0, ((CompoundParameter) oldControl).range.v0)
+                newControl = (CompoundParameter) new CompoundParameter(label, value, v0, v1)
                         .setNormalizationCurve(((CompoundParameter)oldControl).getNormalizationCurve())
                         .setExponent(oldControl.getExponent())
                         .setDescription(oldControl.getDescription())
                         .setPolarity(oldControl.getPolarity())
                         .setUnits(oldControl.getUnits());
             } else if (oldControl instanceof BoundedParameter) {
-                newControl  = (BoundedParameter) new BoundedParameter(newLabel, oldControl.getValue(), ((CompoundParameter) oldControl).range.v0, ((CompoundParameter) oldControl).range.v0)
+                newControl  = (BoundedParameter) new BoundedParameter(label, value, v0, v1)
                         .setNormalizationCurve(((BoundedParameter)oldControl).getNormalizationCurve())
                         .setExponent(oldControl.getExponent())
                         .setDescription(oldControl.getDescription())
@@ -599,23 +559,47 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                         .setUnits(oldControl.getUnits());
             } else if (oldControl instanceof BooleanParameter) {
                 TE.err("Can not set range on BooleanParameter");
-                newControl  = (BooleanParameter) new BooleanParameter(newLabel)
+                newControl  = (BooleanParameter) new BooleanParameter(label)
                         .setMode(((BooleanParameter)oldControl).getMode())
                         .setDescription(oldControl.getDescription())
                         .setUnits(oldControl.getUnits());
             } else if (oldControl instanceof DiscreteParameter) {
                 TE.err("Can not set range on DiscreteParameter");
-                newControl  = (DiscreteParameter) new DiscreteParameter(newLabel, ((DiscreteParameter)oldControl).getOptions())
+                newControl  = (DiscreteParameter) new DiscreteParameter(label, ((DiscreteParameter)oldControl).getOptions())
                         .setIncrementMode(((DiscreteParameter)oldControl).getIncrementMode())
                         .setDescription(oldControl.getDescription())
                         .setUnits(oldControl.getUnits());
             } else {
-                TE.err("Unrecognized control type in TE Common Control " + tag);
-                return this;
+                TE.err("Unrecognized control type in TE Common Control " + oldControl.getClass().getName());
+                return oldControl;
             }
+            return newControl;
+        }
 
+        public LXListenableNormalizedParameter setRange(TEControlTag tag, double value, double v0, double v1) {
+            LXListenableNormalizedParameter oldControl = getLXControl(tag);
+            LXListenableNormalizedParameter newControl = updateParam(oldControl, oldControl.getLabel(), value, v0, v1);
             setControl(tag, newControl);
-            return this;
+            return newControl;
+        }
+
+        public LXListenableNormalizedParameter setLabel(TEControlTag tag, String newLabel) {
+            LXListenableNormalizedParameter oldControl = getLXControl(tag);
+            double value = 0d;
+            double v0 = 0d;
+            double v1 = 0d;
+            if (oldControl instanceof CompoundParameter) {
+                value = oldControl.getValue();
+                v0 = ((CompoundParameter) oldControl).range.v0;
+                v1 = ((CompoundParameter) oldControl).range.v1;
+            } else if (oldControl instanceof BoundedParameter) {
+                value = ((BoundedParameter) oldControl).getValue();
+                v0 = ((BoundedParameter) oldControl).range.v0;
+                v1 = ((BoundedParameter) oldControl).range.v1;
+            }
+            LXListenableNormalizedParameter newControl = updateParam(oldControl, newLabel, value, v0, v1);
+            setControl(tag, newControl);
+            return newControl;
         }
 
         public TECommonControls setExponent(TEControlTag tag, double exp) {
@@ -655,12 +639,25 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             // controls will be added in the order their tags appear in the
             // TEControlTag enum
             for (TEControlTag tag : TEControlTag.values()) {
-                addParameter(tag.getPath(), controlList.get(tag).control);
+                TEControl ctl = controlList.get(tag);
+                Boolean unused = unusedControls.get(tag);
+
+                LXListenableNormalizedParameter param = ctl.control;
+                // TODO: I haven't used java that much lately and i forget the rules about primitive unboxing -
+                //       can I safely do "if (!unused)" for a variable that might be null or false?
+                if (unused != null && unused.booleanValue() == true) {
+                    param = setLabel(tag, "[x] " + ctl.control.getLabel());
+                }
+                addParameter(tag.getPath(), param);
             }
 
             addParameter("panic", this.panic);
             addParameter("viewPerPattern", viewPerPattern);
             addParameter("swatchPerChannel", swatchParameter);
+        }
+
+        public void markUnused(TEControlTag tag) {
+            unusedControls.put(tag, true);
         }
 
         /**
@@ -978,22 +975,9 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         this.controls.getLXControl(TEControlTag.WOWTRIGGER).addListener(wowTriggerListener);
     }
 
+    // TODO(look): find/replace this and just use 'controls.markUnused()' everywhere
     public void markUnusedControl(TEControlTag tag) {
-        String label = switch(tag) {
-            case SIZE -> "Size";
-            case SPIN -> "Spin";
-            case SPEED -> "Speed";
-            case WOW1 -> "Wow1";
-            case WOW2 -> "Wow2";
-            case XPOS -> "xPos";
-            case YPOS -> "yPos";
-            case ANGLE -> "Angle";
-            case QUANTITY -> "Quantity";
-            case BRIGHTNESS -> "Brightness";
-            case WOWTRIGGER -> "WowTrigger";
-        };
-
-        controls.setLabel(tag, "[X] "+label);
+        controls.markUnused(tag);
     }
 
     public FloatBuffer getCurrentPalette() {
