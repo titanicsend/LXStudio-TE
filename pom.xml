@@ -193,7 +193,7 @@
 
                 <executions>
                     <execution>
-                        <id>ExecMain</id>
+                        <id>Main</id>
                         <goals>
                             <goal>exec</goal>
                         </goals>
