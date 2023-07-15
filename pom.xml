@@ -193,20 +193,6 @@
 
                 <executions>
                     <execution>
-                        <id>Main</id>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>heronarts.lx.studio.TEApp</mainClass>
-                            <arguments>
-                            </arguments>
-                            <stopUnresponsiveDaemonThreads>true</stopUnresponsiveDaemonThreads>
-                            <systemProperties>
-                            </systemProperties>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>ExecMain</id>
                         <goals>
                             <goal>exec</goal>
