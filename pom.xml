@@ -170,7 +170,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>titanicsend.app.TEApp</mainClass>
+                            <mainClass>heronarts.lx.studio.TEApp</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -198,12 +198,28 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>titanicsend.app.TEApp</mainClass>
+                            <mainClass>heronarts.lx.studio.TEApp</mainClass>
                             <arguments>
                             </arguments>
                             <stopUnresponsiveDaemonThreads>true</stopUnresponsiveDaemonThreads>
                             <systemProperties>
                             </systemProperties>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>ExecMain</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-XstartOnFirstThread</argument>
+                                <argument>-Djava.awt.headless=true</argument>
+                                <argument>-jar</argument>
+                                <argument>target/LXStudio-TE-${project.version}-jar-with-dependencies.jar</argument>
+                                <argument>vehicle</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>
