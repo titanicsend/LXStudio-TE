@@ -491,7 +491,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         };
 
 
-        private final HashMap<TEControlTag, TEControl> controlList = new HashMap<TEControlTag, TEControl>();
+        private final HashMap<TEControlTag, TEControl> controlList = new HashMap<>();
 
         /**
          * Retrieve backing LX control object for given tag
@@ -653,7 +653,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 getControl(TEControlTag.SPIN).control,
                 this.panic,
                 getViewRemoteControl(),
-
+                getControl(TEControlTag.EXPLODE).control,
                 getControl(TEControlTag.WOW1).control,
                 getControl(TEControlTag.WOW2).control,
                 getControl(TEControlTag.WOWTRIGGER).control,
@@ -719,6 +719,10 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             p = new CompoundParameter("Brightness", 1.0, 0.0, 1.0)
                 .setDescription("Brightness");
             setControl(TEControlTag.BRIGHTNESS, p);
+
+            p = new CompoundParameter("Explode", 0, 0, 1.0)
+                .setDescription("Randomize the pixels to a certain radius on beat");
+            setControl(TEControlTag.EXPLODE, p);
 
             p = new CompoundParameter("Wow1", 0, 0, 1.0)
                 .setDescription("Wow 1");
@@ -797,6 +801,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             getControl(TEControlTag.ANGLE).control.reset();
             getControl(TEControlTag.SPIN).control.reset();
 
+            getControl(TEControlTag.EXPLODE).control.reset();
             getControl(TEControlTag.WOW1).control.reset();
             getControl(TEControlTag.WOW2).control.reset();
             getControl(TEControlTag.WOWTRIGGER).control.reset();
@@ -1183,6 +1188,10 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     public boolean getWowTrigger() {
         return controls.getValue(TEControlTag.WOWTRIGGER) > 0.0;
+    }
+
+    public double getExplode() {
+        return controls.getValue(TEControlTag.EXPLODE);
     }
 
     /**

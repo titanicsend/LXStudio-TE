@@ -1,5 +1,7 @@
 package titanicsend.pattern.yoffa.effect;
 
+import heronarts.lx.LX;
+import heronarts.lx.Tempo;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
@@ -10,10 +12,12 @@ import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
+import java.util.SplittableRandom;
 import java.util.stream.Collectors;
 
 public class NativeShaderPatternEffect extends PatternEffect {
 
+    private SplittableRandom random;
     protected OffscreenShaderRenderer renderer;
     private FragmentShader fragmentShader;
     private final List<LXParameter> parameters;
@@ -28,6 +32,7 @@ public class NativeShaderPatternEffect extends PatternEffect {
      */
     public NativeShaderPatternEffect(FragmentShader fragmentShader, PatternTarget target) {
         super(target);
+        random = new SplittableRandom();
 
         this.controlData = new PatternControlData(pattern);
 
@@ -78,9 +83,22 @@ public class NativeShaderPatternEffect extends PatternEffect {
     public void paint(List<LXPoint> points, ByteBuffer image, int xSize, int ySize) {
         int xMax = xSize - 1;
         int yMax = ySize - 1;
-        int colors[] = pattern.getColors();
-
+        int[] colors = pattern.getColors();
         for (LXPoint point : points) {
+            float zn = point.zn;
+            float yn = point.yn;
+            if (pattern.getExplode() > 0) {
+                double measureProgress = 1.0 - this.pattern.getLX().engine.tempo.getBasis(Tempo.Division.WHOLE); // 1 when we start measure, 0 when we finish
+                measureProgress *= measureProgress * measureProgress;
+
+                double k = 0.0005 + pattern.getExplode();
+
+                zn += measureProgress * random.nextDouble(k);
+                zn = Math.max(0, Math.min(1, zn));
+                yn += measureProgress * random.nextDouble(k);
+                yn = Math.max(0, Math.min(1, yn));
+            }
+
             // the 'z' dimension of TE corresponds with 'x' dimension of the image based on the side that
             // we're painting.
             // TODO - we need to fix the z vs x thing so images look good on the ends of the car.  I have
@@ -88,8 +106,9 @@ public class NativeShaderPatternEffect extends PatternEffect {
 
             // use normalized point coordinates to calculate x/y coordinates and then the
             // proper index in the image buffer.
-            int xi = Math.round((1f - point.zn) * xMax);
-            int yi = Math.round(point.yn * yMax);
+            int xi = Math.round(zn * xMax);
+            int yi = Math.round(yn * yMax);
+
             int index = 4 * ((yi * xSize) + xi);
 
             colors[point.index] = image.getInt(index);

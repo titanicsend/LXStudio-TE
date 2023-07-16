@@ -1,5 +1,6 @@
 package titanicsend.pattern.will.shaders;
 
+import heronarts.lx.LX;
 import heronarts.lx.Tempo;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
