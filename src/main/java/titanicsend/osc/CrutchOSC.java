@@ -161,9 +161,13 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
     }
   }
 
-  private void parameterInstanceChanged(LXListenableNormalizedParameter parameter, int position, boolean isAux) {
+  private boolean canSend() {
     // Copied if from LXComponent: These checks are necessary for bootstrapping, before the OSC engine is spun up
-    if ((this.lx != null) && (this.lx.engine != null) && (this.lx.engine.osc != null) && (this.lx.engine.output.enabled.isOn())) {
+    return (this.lx != null) && (this.lx.engine != null) && (this.lx.engine.osc != null) && (this.lx.engine.output.enabled.isOn());
+  }
+
+  private void parameterInstanceChanged(LXListenableNormalizedParameter parameter, int position, boolean isAux) {
+    if (canSend()) {
       String address = getCrutchOSCaddress(position, isAux);
       lx.engine.osc.sendMessage(address + "/label", getLabel(parameter));
       lx.engine.osc.sendMessage(address + "/type", getType(parameter));
@@ -174,17 +178,14 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
   }
 
   private void parameterValueChanged(LXListenableNormalizedParameter parameter, int position, boolean isAux) {
-    // Copied if from LXComponent: These checks are necessary for bootstrapping, before the OSC engine is spun up
-    if ((this.lx != null) && (this.lx.engine != null) && (this.lx.engine.osc != null) && (this.lx.engine.output.enabled.isOn())) {
+    if (canSend()) {
       sendParameterValue(parameter, getCrutchOSCaddress(position, isAux));
     }
   }
 
   private void sendParameterValue(LXListenableNormalizedParameter parameter, String address) {
-    if (this.lx.engine.output.enabled.isOn()) {
-      lx.engine.osc.sendMessage(address + "/normalized", getValueNormalized(parameter));
-      lx.engine.osc.sendMessage(address + "/displayValue", getValueString(parameter));
-    }
+    lx.engine.osc.sendMessage(address + "/normalized", getValueNormalized(parameter));
+    lx.engine.osc.sendMessage(address + "/displayValue", getValueString(parameter));
   }
 
   protected String getLabel(LXListenableNormalizedParameter parameter) {
@@ -218,23 +219,19 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
   }
 
   protected void sendSizeMixer() {
-    // Copied if from LXComponent: These checks are necessary for bootstrapping, before the OSC engine is spun up
-    if ((this.lx != null) && (this.lx.engine != null) && (this.lx.engine.osc != null)) {
+    if (canSend()) {
       sendSize(this.lx.engine.mixer.getOscAddress(), this.lx.engine.mixer.channels.size());
     }
   }
 
   protected void sendSizePalette() {
-    // Copied if from LXComponent: These checks are necessary for bootstrapping, before the OSC engine is spun up
-    if ((this.lx != null) && (this.lx.engine != null) && (this.lx.engine.osc != null)) {
+    if (canSend()) {
       sendSize(this.lx.engine.palette.getOscAddress() + "/swatches", this.lx.engine.palette.swatches.size());
     }
   }
 
   protected void sendSize(String address, int size) {
-    if (this.lx.engine.output.enabled.isOn() ) {
-      lx.engine.osc.sendMessage(address + "/count", size);
-    }
+    lx.engine.osc.sendMessage(address + "/count", size);
   }
 
   // This method copied from GLX's UIParameterControl:
