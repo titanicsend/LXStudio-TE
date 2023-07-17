@@ -420,7 +420,6 @@ public class TEApp extends LXStudio {
       ui.preview.addComponent(new UILasers(lx, this.virtualOverlays));
       ui.previewAux.addComponent(new UILasers(lx, this.virtualOverlays));
 
-      // ******* TODO: Fix this to work with Chromatik *******
       // precompile binaries for any new or changed shaders
       ShaderPrecompiler.rebuildCache();
 
