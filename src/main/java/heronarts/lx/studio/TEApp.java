@@ -422,7 +422,7 @@ public class TEApp extends LXStudio {
 
       // ******* TODO: Fix this to work with Chromatik *******
       // precompile binaries for any new or changed shaders
- //     ShaderPrecompiler.rebuildCache();
+      ShaderPrecompiler.rebuildCache();
 
       lx.engine.addTask(() -> {
         setOscDestinationForIpads();

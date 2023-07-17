@@ -57,7 +57,7 @@ public class ShaderPrecompiler {
         gl4.glDeleteProgram(programId);
         surface.getContext().release();
 
-        prevContext.makeCurrent();
+        if (prevContext != null) prevContext.makeCurrent();
 
         TE.log("%d shaders processed in %d ms.", totalFiles, System.currentTimeMillis() - timer);
         //TE.log("%d cache file%s updated.", compiledFiles, (compiledFiles == 1) ? "" : "s");
