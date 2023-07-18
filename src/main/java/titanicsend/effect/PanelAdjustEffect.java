@@ -26,7 +26,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-@LXCategory("Utility Patterns")
+@LXCategory("Utility")
 public class PanelAdjustEffect extends TEEffect implements UIDeviceControls<PanelAdjustEffect> {
 
     private static final String RESOURCES_PATH = "./resources/vehicle/";
