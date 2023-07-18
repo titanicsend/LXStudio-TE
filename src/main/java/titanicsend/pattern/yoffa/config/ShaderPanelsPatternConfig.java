@@ -62,6 +62,21 @@ public class ShaderPanelsPatternConfig {
         }
     }
 
+    @LXCategory("Utility")
+    public static class PixelScanner extends ConstructedPattern {
+        public PixelScanner(LX lx) {
+            super(lx, TEShaderView.ALL_POINTS);
+        }
+
+        @Override
+        protected List<PatternEffect> createEffects() {
+            controls.setRange(TEControlTag.QUANTITY,5,1,10);
+
+            return List.of(new NativeShaderPatternEffect("pixel_scanner.fs",
+                new PatternTarget(this)));
+        }
+    }
+
     @LXCategory("Native Shaders Panels")
     public static class Marbling extends ConstructedPattern {
         public Marbling(LX lx) {
