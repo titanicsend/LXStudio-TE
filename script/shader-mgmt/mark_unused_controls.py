@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import glob
+import json
 import os
 import re
 import sys
@@ -38,6 +39,7 @@ TE_CONTROL_TAGS = {
 PROJECT_ROOT = os.path.join(os.path.dirname(__file__), "../..")
 SHADER_DIR = os.path.join(PROJECT_ROOT, "resources/shaders")
 PATTERN_DIR = os.path.join(PROJECT_ROOT, "src/main/java/titanicsend/pattern")
+MISSING_CONTROLS_FILE = os.path.join(PROJECT_ROOT, "resources/pattern/missingControls.json")
 
 if not os.path.isdir(PATTERN_DIR):
     raise Exception(f"dir doesnt exist: {PATTERN_DIR}")
@@ -113,7 +115,7 @@ def java_set_label(control_uniform):
     control_tag = TE_CONTROL_TAGS[control_uniform]
     return f'\n        markUnusedControl(TEControlTag.{control_tag[0]});'
 
-
+payloads = []
 for s in read_shaders():
     patterns = find_shader_refs(s['name'])
 
@@ -122,51 +124,72 @@ for s in read_shaders():
     te_color_uniforms = are_uniforms_present(s['source'], TE_COLOR_UNIFORMS)
     te_controls_explicit = are_uniforms_present(s['source'], TE_CONTROLS_EXPLICIT)
 
-    relabeling_code = ""
+    uses_palette = True
+    if len(te_color_uniforms) == 4:
+        uses_palette = False
+
+
+    missing_control_tags = []
+
+    # relabeling_code = ""
     for missing_explicit_control in te_controls_explicit:
+        missing_control_tags.append(TE_CONTROL_TAGS[missing_explicit_control][0])
         # print(f"\t\tISSUE FOUND: TE control missing: {missing_explicit_control}")
-        set_label_call = java_set_label(missing_explicit_control)
-        print(f"\t\t\t{set_label_call}")
-        relabeling_code += set_label_call
+        # set_label_call = java_set_label(missing_explicit_control)
+        # print(f"\t\t\t{set_label_call}")
+        # relabeling_code += set_label_call
 
-    if relabeling_code:
-        print("\trelabeling code found")
-        for p in patterns:
-            # re-read the source, because we might edit the same java source file multiple times
-            # if it contains multiple pattern classes (and we re-write it once per pattern class)
-            with open(p['path'], 'r') as infile:
-                pattern_source = infile.read()
+    shader_payload = {
+        'shader_name': s['name'],
+        'pattern_classes': [p['classname'] for p in patterns],
+        'uses_palette': uses_palette,
+        'missing_control_tags': missing_control_tags
+    }
+    print(shader_payload)
+    payloads.append(shader_payload)
 
-            search_string = "public "+p['classname']+ "\(.*{"
-            print(f"\tclassname = {p['classname']} / search_string = {search_string}")
-            constructor = re.search(search_string, pattern_source)
-            if not constructor:
-                raise Exception(f"constructor not found with search string: {search_string}")
+with open(MISSING_CONTROLS_FILE, 'w') as outfile:
+    outfile.write(json.dumps(payloads, indent="  "))
 
-            opening_brace_pos = constructor.end()
-
-            closing_brace_pos = pattern_source.find("}", opening_brace_pos)
-            if closing_brace_pos < 1:
-                raise Exception("closing brace not found")
-            print('================')
-            constructor_lines = pattern_source[opening_brace_pos:closing_brace_pos].split('\n')
-            print('\n----\n'.join(constructor_lines))
-
-            new_constructor_lines = []
-            for idx, line in enumerate(constructor_lines):
-                if 'super(' in line:
-                    print(f"super found: idx={idx} -- {line}")
-                    new_constructor_lines.append(line)
-                    # append the relabeling code right after the call to super - it's okay if there are duplicates
-                    # from before, they'll be dropped in this for loop
-                    new_constructor_lines.append(relabeling_code)
-                    continue
-                elif 'markUnusedControl(TEControlTag' in line:
-                    continue
-                new_constructor_lines.append(line)
-
-            new_source = pattern_source[:opening_brace_pos] + '\n'.join(new_constructor_lines) + pattern_source[closing_brace_pos:]
-            with open(p['path'], 'w') as outfile:
-                outfile.write(new_source)
-            print(f"wrote {p['path']}")
+print(f'wrote {MISSING_CONTROLS_FILE}')
+    # if relabeling_code:
+    #     print("\trelabeling code found")
+    #     for p in patterns:
+    #         # re-read the source, because we might edit the same java source file multiple times
+    #         # if it contains multiple pattern classes (and we re-write it once per pattern class)
+    #         with open(p['path'], 'r') as infile:
+    #             pattern_source = infile.read()
+    #
+    #         search_string = "public "+p['classname']+ "\(.*{"
+    #         print(f"\tclassname = {p['classname']} / search_string = {search_string}")
+    #         constructor = re.search(search_string, pattern_source)
+    #         if not constructor:
+    #             raise Exception(f"constructor not found with search string: {search_string}")
+    #
+    #         opening_brace_pos = constructor.end()
+    #
+    #         closing_brace_pos = pattern_source.find("}", opening_brace_pos)
+    #         if closing_brace_pos < 1:
+    #             raise Exception("closing brace not found")
+    #         print('================')
+    #         constructor_lines = pattern_source[opening_brace_pos:closing_brace_pos].split('\n')
+    #         print('\n----\n'.join(constructor_lines))
+    #
+    #         new_constructor_lines = []
+    #         for idx, line in enumerate(constructor_lines):
+    #             if 'super(' in line:
+    #                 print(f"super found: idx={idx} -- {line}")
+    #                 new_constructor_lines.append(line)
+    #                 # append the relabeling code right after the call to super - it's okay if there are duplicates
+    #                 # from before, they'll be dropped in this for loop
+    #                 new_constructor_lines.append(relabeling_code)
+    #                 continue
+    #             elif 'markUnusedControl(TEControlTag' in line:
+    #                 continue
+    #             new_constructor_lines.append(line)
+    #
+    #         new_source = pattern_source[:opening_brace_pos] + '\n'.join(new_constructor_lines) + pattern_source[closing_brace_pos:]
+    #         with open(p['path'], 'w') as outfile:
+    #             outfile.write(new_source)
+    #         print(f"wrote {p['path']}")
 

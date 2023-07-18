@@ -1,5 +1,7 @@
 package titanicsend.pattern;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.color.ColorParameter;
@@ -26,8 +28,16 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.util.TE;
 import titanicsend.util.TEColor;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import static heronarts.glx.GLXUtils.loadFile;
 
 public abstract class TEPerformancePattern extends TEAudioPattern {
 
@@ -460,6 +470,21 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         }
     }
 
+    public static final class MissingControls {
+        private final String shader_name;
+        private final Boolean uses_palette;
+        private final List<TEControlTag> missing_control_tags;
+        private final List<String> pattern_classes;
+
+        // Gson will override fields using reflection, if defined in json
+        public MissingControls() {
+            shader_name = "";
+            uses_palette = true;
+            missing_control_tags = new ArrayList<>();
+            pattern_classes = new ArrayList<>();
+        }
+    }
+
     public class TECommonControls {
 
         // Color control is accessible, in case the pattern needs something
@@ -624,6 +649,15 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             return this;
         }
 
+        protected BufferedReader loadFile(String filename) {
+            try {
+                File f = new File(filename);
+                return new BufferedReader(new FileReader(f));
+            } catch (FileNotFoundException e) {
+                throw new Error(filename + " not found below " + System.getProperty("user.dir"));
+            }
+        }
+
         /**
          * To use the common controls, call this function from the constructor
          * of TEPerformancePattern-derived classes after configuring the default
@@ -633,8 +667,25 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          * controls, you must call addParameter() for them after calling
          * this function so the UI stays consistent across patterns.
          */
-        public void addCommonControls() {
-            registerColorControl();
+        public void addCommonControls(TEPerformancePattern pat) {
+            Gson gson = new Gson();
+            JsonReader reader = new JsonReader(loadFile("resources/pattern/missingControls.json"));
+            MissingControls[] missingControls = gson.fromJson(reader, MissingControls[].class);
+            MissingControls controlsForCurrPattern = null;
+            for (MissingControls mc : missingControls) {
+                if(mc.pattern_classes.contains(pat.getClass().getName())) {
+                    controlsForCurrPattern = mc;
+                    break;
+                }
+            }
+            for (TEControlTag tag : controlsForCurrPattern.missing_control_tags) {
+                markUnusedControl(tag);
+            }
+            String colorPrefix = "";
+            if (controlsForCurrPattern != null && !controlsForCurrPattern.uses_palette) {
+                colorPrefix = "[x] ";
+            }
+            registerColorControl(colorPrefix);
 
             // controls will be added in the order their tags appear in the
             // TEControlTag enum
@@ -643,8 +694,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 Boolean unused = unusedControls.get(tag);
 
                 LXListenableNormalizedParameter param = ctl.control;
-                // TODO: I haven't used java that much lately and i forget the rules about primitive unboxing -
-                //       can I safely do "if (!unused)" for a variable that might be null or false?
                 if (unused != null && unused.booleanValue() == true) {
                     param = setLabel(tag, "[x] " + ctl.control.getLabel());
                 }
@@ -781,8 +830,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             setControl(TEControlTag.ANGLE, p);
         }
 
-        protected void registerColorControl() {
-            color = new TEColorParameter("Color")
+        protected void registerColorControl(String prefix) {
+            color = new TEColorParameter(prefix+"Color")
                 .setDescription("TE Color");
             addParameter("te_color", color);
         }
@@ -969,7 +1018,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     }
 
     public void addCommonControls() {
-        this.controls.addCommonControls();
+        this.controls.addCommonControls(this);
         this.controls.setRemoteControls();
 
         this.controls.getLXControl(TEControlTag.WOWTRIGGER).addListener(wowTriggerListener);
