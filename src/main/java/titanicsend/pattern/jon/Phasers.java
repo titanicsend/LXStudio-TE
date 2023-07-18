@@ -24,7 +24,7 @@ public class Phasers extends TEPerformancePattern {
 
         // start with beam split 5 ways and spinning slowly
         controls.setRange(TEControlTag.QUANTITY, 5, 1, 8)
-                .setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
+                .setUnits(LXParameter.Units.INTEGER);
 
         // Speed controls background movement speed and direction
         controls.setRange(TEControlTag.SPEED, 0.25, -1.0, 1.0);

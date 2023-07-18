@@ -37,8 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static heronarts.glx.GLXUtils.loadFile;
-
 public abstract class TEPerformancePattern extends TEAudioPattern {
 
     public class TEColorParameter extends ColorParameter implements GradientFunction {

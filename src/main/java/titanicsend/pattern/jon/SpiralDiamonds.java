@@ -25,7 +25,7 @@ public class SpiralDiamonds extends TEPerformancePattern {
 
         // Quantity controls density of diamonds
         controls.setRange(TEControlTag.QUANTITY,4,1,7)
-                .setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
+                .setUnits(LXParameter.Units.INTEGER);
 
         addCommonControls();
         addParameter("energy", energy);
