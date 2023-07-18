@@ -47,13 +47,4 @@ public enum TEControlTag {
             case WOWTRIGGER -> "WowTrigger";
         };
     }
-
-    public String getLabel(boolean unused) {
-        String prefix = "";
-        if (unused) {
-            prefix = "[x] ";
-        }
-        String label = getLabel();
-        return prefix + label;
-    }
 }

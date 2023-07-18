@@ -581,13 +581,11 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                         .setPolarity(oldControl.getPolarity())
                         .setUnits(oldControl.getUnits());
             } else if (oldControl instanceof BooleanParameter) {
-                TE.err("Can not set range on BooleanParameter");
                 newControl  = (BooleanParameter) new BooleanParameter(label)
                         .setMode(((BooleanParameter)oldControl).getMode())
                         .setDescription(oldControl.getDescription())
                         .setUnits(oldControl.getUnits());
             } else if (oldControl instanceof DiscreteParameter) {
-                TE.err("Can not set range on DiscreteParameter");
                 newControl  = (DiscreteParameter) new DiscreteParameter(label, ((DiscreteParameter)oldControl).getOptions())
                         .setIncrementMode(((DiscreteParameter)oldControl).getIncrementMode())
                         .setDescription(oldControl.getDescription())
@@ -666,32 +664,51 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          * this function so the UI stays consistent across patterns.
          */
         public void addCommonControls(TEPerformancePattern pat) {
+            // get the current classname
+            String currClassname = "";
+            String packageAndClassname = pat.getClass().getName();
+            if (packageAndClassname.contains("$")) {
+                String[] parts = packageAndClassname.split("\\$");
+                currClassname = parts[parts.length - 1];
+            } else {
+                String[] parts = packageAndClassname.split("\\.");
+                currClassname = parts[parts.length - 1];
+            }
+
+            // load the missing controls file
             Gson gson = new Gson();
             JsonReader reader = new JsonReader(loadFile("resources/pattern/missingControls.json"));
             MissingControls[] missingControls = gson.fromJson(reader, MissingControls[].class);
             MissingControls controlsForCurrPattern = null;
             for (MissingControls mc : missingControls) {
-                if(mc.pattern_classes.contains(pat.getClass().getName())) {
+                if(mc.pattern_classes.contains(currClassname)) {
                     controlsForCurrPattern = mc;
                     break;
                 }
             }
-            for (TEControlTag tag : controlsForCurrPattern.missing_control_tags) {
-                markUnusedControl(tag);
-            }
+
             String colorPrefix = "";
             if (controlsForCurrPattern != null && !controlsForCurrPattern.uses_palette) {
                 colorPrefix = "[x] ";
             }
             registerColorControl(colorPrefix);
 
+            // Mark a boolean flag on each of the TEControlTags which is unused.
+            // This will be used to set an '[x]' prefix on the labels, and can be used
+            // programmatically for TouchOSC to see if any parameters with a TEControlTag are unused.
+            if (controlsForCurrPattern != null) {
+                for (TEControlTag tag : controlsForCurrPattern.missing_control_tags) {
+                    markUnusedControl(tag);
+                }
+            }
+
             // controls will be added in the order their tags appear in the
             // TEControlTag enum
             for (TEControlTag tag : TEControlTag.values()) {
                 TEControl ctl = controlList.get(tag);
-                Boolean unused = unusedControls.get(tag);
-
                 LXListenableNormalizedParameter param = ctl.control;
+
+                Boolean unused = unusedControls.get(tag);
                 if (unused != null && unused.booleanValue() == true) {
                     param = setLabel(tag, "[x] " + ctl.control.getLabel());
                 }
