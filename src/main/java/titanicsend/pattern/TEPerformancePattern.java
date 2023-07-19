@@ -495,7 +495,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
 
         private final HashMap<TEControlTag, TEControl> controlList = new HashMap<TEControlTag, TEControl>();
-        public final Set<LXParameter> unusedParams = new HashSet<>();
+        public final Set<LXNormalizedParameter> unusedParams = new HashSet<>();
 
         /**
          * Retrieve backing LX control object for given tag
@@ -644,9 +644,9 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             }
             TEColorParameter colorParam = registerColorControl(colorPrefix);
             if (missingControls != null && !missingControls.uses_palette) {
-                markUnused(colorParam);
                 markUnused(colorParam.offset);
                 markUnused(colorParam.gradient);
+                markUnused(swatchParameter);
             }
 
             // controls will be added in the order their tags appear in the
@@ -665,7 +665,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             addParameter("swatchPerChannel", swatchParameter);
         }
 
-        public void markUnused(LXParameter param) {
+        public void markUnused(LXNormalizedParameter param) {
             unusedParams.add(param);
         }
 

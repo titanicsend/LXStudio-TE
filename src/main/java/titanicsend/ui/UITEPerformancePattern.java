@@ -121,7 +121,7 @@ public class UITEPerformancePattern implements UIDeviceControls<TEPerformancePat
     }
   }
 
-  private boolean isUnusedControl(LXParameter p) {
+  private boolean isUnusedControl(LXNormalizedParameter p) {
     return this.device.getControls().unusedParams.contains(p);
   }
 
