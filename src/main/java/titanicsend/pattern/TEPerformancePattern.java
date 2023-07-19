@@ -995,11 +995,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         this.controls.getLXControl(TEControlTag.WOWTRIGGER).addListener(wowTriggerListener);
     }
 
-    // TODO(look): find/replace this and just use 'controls.markUnused()' everywhere
-    public void markUnusedControl(TEControlTag tag) {
-        controls.markUnused(tag);
-    }
-
     public FloatBuffer getCurrentPalette() {
         float r, g, b;
 
