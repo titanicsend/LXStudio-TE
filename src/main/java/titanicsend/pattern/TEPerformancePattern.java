@@ -1,7 +1,5 @@
 package titanicsend.pattern;
 
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
 import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.color.ColorParameter;
@@ -29,10 +27,6 @@ import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
 import titanicsend.util.TEColor;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.nio.FloatBuffer;
 import java.util.*;
 
@@ -501,7 +495,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
 
         private final HashMap<TEControlTag, TEControl> controlList = new HashMap<TEControlTag, TEControl>();
-        private final Set<TEControlTag> unusedControls = new HashSet<>();
+        public final Set<LXParameter> unusedParams = new HashSet<>();
 
         /**
          * Retrieve backing LX control object for given tag
@@ -642,33 +636,35 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          */
         public void addCommonControls(TEPerformancePattern pat) {
             // load the missing controls file
-            MissingControlsManager.MissingControls controlsForCurrPattern = getMissingControlsManager().findMissingControls(pat.getClass());
+            MissingControlsManager.MissingControls missingControls = getMissingControlsManager().findMissingControls(pat.getClass());
 
             String colorPrefix = "";
-            if (controlsForCurrPattern != null && !controlsForCurrPattern.uses_palette) {
+            if (missingControls != null && !missingControls.uses_palette) {
                 colorPrefix = "[x] ";
             }
-            registerColorControl(colorPrefix);
+            LXParameter colorParam = registerColorControl(colorPrefix);
+            if (missingControls != null && !missingControls.uses_palette) {
+                markUnused(colorParam);
+            }
 
             // Mark a boolean flag on each of the TEControlTags which is unused.
             // This will be used to set an '[x]' prefix on the labels, and can be used
             // programmatically for TouchOSC to see if any parameters with a TEControlTag are unused.
-            if (controlsForCurrPattern != null) {
-                for (TEControlTag tag : controlsForCurrPattern.missing_control_tags) {
-                    markUnused(tag);
+            if (missingControls != null) {
+                for (TEControlTag tag : missingControls.missing_control_tags) {
+
                 }
             }
 
             // controls will be added in the order their tags appear in the
             // TEControlTag enum
             for (TEControlTag tag : TEControlTag.values()) {
-                TEControl ctl = controlList.get(tag);
-                LXListenableNormalizedParameter param = ctl.control;
-
-                if (unusedControls.contains(tag)) {
-                    param = setLabel(tag, "[x] " + ctl.control.getLabel());
+                LXListenableNormalizedParameter param = controlList.get(tag).control;
+                if (unusedParams.contains(param)) {
+                    param = setLabel(tag, "[x] " + param.getLabel());
                 }
                 addParameter(tag.getPath(), param);
+                markUnused(param);
             }
 
             addParameter("panic", this.panic);
@@ -676,8 +672,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             addParameter("swatchPerChannel", swatchParameter);
         }
 
-        public void markUnused(TEControlTag tag) {
-            unusedControls.add(tag);
+        public void markUnused(LXParameter param) {
+            unusedParams.add(param);
         }
 
         /**
@@ -801,10 +797,11 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             setControl(TEControlTag.ANGLE, p);
         }
 
-        protected void registerColorControl(String prefix) {
+        protected TEColorParameter registerColorControl(String prefix) {
             color = new TEColorParameter(prefix+"Color")
                 .setDescription("TE Color");
             addParameter("te_color", color);
+            return color;
         }
 
         /**
