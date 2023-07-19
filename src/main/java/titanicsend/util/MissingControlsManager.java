@@ -42,14 +42,18 @@ public class MissingControlsManager {
     }
 
     private MissingControlsManager(){
-        Gson gson = new Gson();
-        JsonReader reader = new JsonReader(loadFile("resources/pattern/missingControls.json"));
-        MissingControls[] missingControls = gson.fromJson(reader, MissingControls[].class);
+        try {
+            Gson gson = new Gson();
+            JsonReader reader = new JsonReader(loadFile("resources/pattern/missingControls.json"));
+            MissingControls[] missingControls = gson.fromJson(reader, MissingControls[].class);
 
-        for (MissingControls mc : missingControls) {
-            for (String patternClass : mc.pattern_classes) {
-                classToMissingControls.put(patternClass, mc);
+            for (MissingControls mc : missingControls) {
+                for (String patternClass : mc.pattern_classes) {
+                    classToMissingControls.put(patternClass, mc);
+                }
             }
+        } catch (Exception e) {
+            TE.err(e, "Error reading missingControls.json");
         }
     }
 
