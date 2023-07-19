@@ -25,6 +25,7 @@ import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon.VariableSpeedTimer;
 import titanicsend.pattern.jon._CommonControlGetter;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
+import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
 import titanicsend.util.TEColor;
 
@@ -33,9 +34,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+
+import static titanicsend.util.MissingControlsManager.getMissingControlsManager;
 
 public abstract class TEPerformancePattern extends TEAudioPattern {
 
@@ -468,21 +469,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         }
     }
 
-    public static final class MissingControls {
-        private final String shader_name;
-        private final Boolean uses_palette;
-        private final List<TEControlTag> missing_control_tags;
-        private final List<String> pattern_classes;
-
-        // Gson will override fields using reflection, if defined in json
-        public MissingControls() {
-            shader_name = "";
-            uses_palette = true;
-            missing_control_tags = new ArrayList<>();
-            pattern_classes = new ArrayList<>();
-        }
-    }
-
     public class TECommonControls {
 
         // Color control is accessible, in case the pattern needs something
@@ -515,7 +501,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
 
         private final HashMap<TEControlTag, TEControl> controlList = new HashMap<TEControlTag, TEControl>();
-        private final HashMap<TEControlTag, Boolean> unusedControls = new HashMap<TEControlTag, Boolean>();
+        private final Set<TEControlTag> unusedControls = new HashSet<>();
 
         /**
          * Retrieve backing LX control object for given tag
@@ -645,15 +631,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             return this;
         }
 
-        protected BufferedReader loadFile(String filename) {
-            try {
-                File f = new File(filename);
-                return new BufferedReader(new FileReader(f));
-            } catch (FileNotFoundException e) {
-                throw new Error(filename + " not found below " + System.getProperty("user.dir"));
-            }
-        }
-
         /**
          * To use the common controls, call this function from the constructor
          * of TEPerformancePattern-derived classes after configuring the default
@@ -664,28 +641,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          * this function so the UI stays consistent across patterns.
          */
         public void addCommonControls(TEPerformancePattern pat) {
-            // get the current classname
-            String currClassname = "";
-            String packageAndClassname = pat.getClass().getName();
-            if (packageAndClassname.contains("$")) {
-                String[] parts = packageAndClassname.split("\\$");
-                currClassname = parts[parts.length - 1];
-            } else {
-                String[] parts = packageAndClassname.split("\\.");
-                currClassname = parts[parts.length - 1];
-            }
-
             // load the missing controls file
-            Gson gson = new Gson();
-            JsonReader reader = new JsonReader(loadFile("resources/pattern/missingControls.json"));
-            MissingControls[] missingControls = gson.fromJson(reader, MissingControls[].class);
-            MissingControls controlsForCurrPattern = null;
-            for (MissingControls mc : missingControls) {
-                if(mc.pattern_classes.contains(currClassname)) {
-                    controlsForCurrPattern = mc;
-                    break;
-                }
-            }
+            MissingControlsManager.MissingControls controlsForCurrPattern = getMissingControlsManager().findMissingControls(pat.getClass());
 
             String colorPrefix = "";
             if (controlsForCurrPattern != null && !controlsForCurrPattern.uses_palette) {
@@ -708,8 +665,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 TEControl ctl = controlList.get(tag);
                 LXListenableNormalizedParameter param = ctl.control;
 
-                Boolean unused = unusedControls.get(tag);
-                if (unused != null && unused.booleanValue() == true) {
+                if (unusedControls.contains(tag)) {
                     param = setLabel(tag, "[x] " + ctl.control.getLabel());
                 }
                 addParameter(tag.getPath(), param);
@@ -721,7 +677,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         }
 
         public void markUnused(TEControlTag tag) {
-            unusedControls.put(tag, true);
+            unusedControls.add(tag);
         }
 
         /**
