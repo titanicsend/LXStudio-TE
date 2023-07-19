@@ -10,6 +10,7 @@ import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class NativeShaderPatternEffect extends PatternEffect {
@@ -81,14 +82,13 @@ public class NativeShaderPatternEffect extends PatternEffect {
         int colors[] = pattern.getColors();
 
         for (LXPoint point : points) {
-            // the 'z' dimension of TE corresponds with 'x' dimension of the image based on the side that
-            // we're painting.
-            // TODO - we need to fix the z vs x thing so images look good on the ends of the car.  I have
-            // TODO - a plan!
+            // the 'z' dimension of TE corresponds with 'x' dimension of the image on the front and back of the car
+            // x is x on the sides
+            float w = pattern.getModelTE().isSidePoint(point) ? point.xn : point.zn;
 
             // use normalized point coordinates to calculate x/y coordinates and then the
             // proper index in the image buffer.
-            int xi = Math.round((1f - point.zn) * xMax);
+            int xi = Math.round((1f - w) * xMax);
             int yi = Math.round(point.yn * yMax);
             int index = 4 * ((yi * xSize) + xi);
 
