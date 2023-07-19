@@ -16,9 +16,6 @@ public class SimplexPosterized extends DriftEnabledPattern {
     public SimplexPosterized(LX lx) {
         super(lx, TEShaderView.ALL_POINTS);
 
-        markUnusedControl(TEControlTag.WOWTRIGGER);
-
-
         // common controls setup
         controls.setRange(TEControlTag.SPEED, 0, -4, 4);
         controls.setValue(TEControlTag.SPEED, 0.5);

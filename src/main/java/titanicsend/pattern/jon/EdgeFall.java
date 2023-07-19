@@ -30,10 +30,6 @@ public class EdgeFall extends TEPerformancePattern {
     public EdgeFall(LX lx) {
         super(lx, TEShaderView.ALL_POINTS);
 
-        markUnusedControl(TEControlTag.QUANTITY);
-        markUnusedControl(TEControlTag.WOWTRIGGER);
-
-
         // Size controls line width/glow
         controls.setRange(TEControlTag.SIZE, 80, 200, 15);
         controls.setExponent(TEControlTag.SIZE,0.3);

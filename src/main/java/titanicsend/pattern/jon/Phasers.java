@@ -18,8 +18,6 @@ public class Phasers extends TEPerformancePattern {
     public Phasers(LX lx) {
         super(lx, TEShaderView.ALL_PANELS);
 
-        markUnusedControl(TEControlTag.BRIGHTNESS);
-
         // set parameters for common controls
 
         // start with beam split 5 ways and spinning slowly

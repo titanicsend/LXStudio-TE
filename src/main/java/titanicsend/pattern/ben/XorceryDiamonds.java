@@ -15,13 +15,6 @@ import java.util.List;
 public class XorceryDiamonds extends ConstructedPattern {
     public XorceryDiamonds(LX lx) {
         super(lx, TEShaderView.ALL_PANELS);
-
-        markUnusedControl(TEControlTag.SIZE);
-        markUnusedControl(TEControlTag.QUANTITY);
-        markUnusedControl(TEControlTag.WOW1);
-        markUnusedControl(TEControlTag.WOW2);
-        markUnusedControl(TEControlTag.WOWTRIGGER);
-
     }
 
     @Override

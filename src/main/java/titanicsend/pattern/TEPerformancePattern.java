@@ -655,7 +655,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             // programmatically for TouchOSC to see if any parameters with a TEControlTag are unused.
             if (controlsForCurrPattern != null) {
                 for (TEControlTag tag : controlsForCurrPattern.missing_control_tags) {
-                    markUnusedControl(tag);
+                    markUnused(tag);
                 }
             }
 

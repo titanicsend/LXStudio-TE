@@ -16,8 +16,6 @@ public class TurbulenceLines extends DriftEnabledPattern {
     public TurbulenceLines(LX lx) {
         super(lx, TEShaderView.ALL_POINTS);
 
-        markUnusedControl(TEControlTag.BRIGHTNESS);
-
         // common controls setup
         controls.setRange(TEControlTag.SPEED, 0, -4, 4);
         controls.setValue(TEControlTag.SPEED, 0.5);

@@ -19,10 +19,6 @@ public class ShaderEdgesPatternConfig {
     public static class LightBeamsEdges extends ConstructedPattern {
         public LightBeamsEdges(LX lx) {
             super(lx, TEShaderView.ALL_EDGES);
-
-            markUnusedControl(TEControlTag.QUANTITY);
-            markUnusedControl(TEControlTag.WOW1);
-            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
@@ -39,8 +35,6 @@ public class ShaderEdgesPatternConfig {
     public static class NeonRipplesEdges extends ConstructedPattern {
         public NeonRipplesEdges(LX lx) {
             super(lx, TEShaderView.ALL_EDGES);
-
-            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
@@ -72,11 +66,6 @@ public class ShaderEdgesPatternConfig {
     public static class SpaceExplosionEdges extends ConstructedPattern {
         public SpaceExplosionEdges(LX lx) {
             super(lx, TEShaderView.ALL_EDGES);
-
-            markUnusedControl(TEControlTag.SIZE);
-            markUnusedControl(TEControlTag.QUANTITY);
-            markUnusedControl(TEControlTag.WOW1);
-            markUnusedControl(TEControlTag.WOWTRIGGER);
         }
 
         @Override
