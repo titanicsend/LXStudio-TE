@@ -568,28 +568,28 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             LXListenableNormalizedParameter newControl;
             if (oldControl instanceof CompoundParameter) {
                 newControl = (CompoundParameter) new CompoundParameter(label, value, v0, v1)
-                        .setNormalizationCurve(((CompoundParameter)oldControl).getNormalizationCurve())
-                        .setExponent(oldControl.getExponent())
-                        .setDescription(oldControl.getDescription())
-                        .setPolarity(oldControl.getPolarity())
-                        .setUnits(oldControl.getUnits());
+                    .setNormalizationCurve(((CompoundParameter)oldControl).getNormalizationCurve())
+                    .setExponent(oldControl.getExponent())
+                    .setDescription(oldControl.getDescription())
+                    .setPolarity(oldControl.getPolarity())
+                    .setUnits(oldControl.getUnits());
             } else if (oldControl instanceof BoundedParameter) {
                 newControl  = (BoundedParameter) new BoundedParameter(label, value, v0, v1)
-                        .setNormalizationCurve(((BoundedParameter)oldControl).getNormalizationCurve())
-                        .setExponent(oldControl.getExponent())
-                        .setDescription(oldControl.getDescription())
-                        .setPolarity(oldControl.getPolarity())
-                        .setUnits(oldControl.getUnits());
+                    .setNormalizationCurve(((BoundedParameter)oldControl).getNormalizationCurve())
+                    .setExponent(oldControl.getExponent())
+                    .setDescription(oldControl.getDescription())
+                    .setPolarity(oldControl.getPolarity())
+                    .setUnits(oldControl.getUnits());
             } else if (oldControl instanceof BooleanParameter) {
                 newControl  = (BooleanParameter) new BooleanParameter(label)
-                        .setMode(((BooleanParameter)oldControl).getMode())
-                        .setDescription(oldControl.getDescription())
-                        .setUnits(oldControl.getUnits());
+                    .setMode(((BooleanParameter)oldControl).getMode())
+                    .setDescription(oldControl.getDescription())
+                    .setUnits(oldControl.getUnits());
             } else if (oldControl instanceof DiscreteParameter) {
                 newControl  = (DiscreteParameter) new DiscreteParameter(label, ((DiscreteParameter)oldControl).getOptions())
-                        .setIncrementMode(((DiscreteParameter)oldControl).getIncrementMode())
-                        .setDescription(oldControl.getDescription())
-                        .setUnits(oldControl.getUnits());
+                    .setIncrementMode(((DiscreteParameter)oldControl).getIncrementMode())
+                    .setDescription(oldControl.getDescription())
+                    .setUnits(oldControl.getUnits());
             } else {
                 TE.err("Unrecognized control type in TE Common Control " + oldControl.getClass().getName());
                 return oldControl;
