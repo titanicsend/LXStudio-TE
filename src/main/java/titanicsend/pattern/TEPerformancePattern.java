@@ -642,29 +642,22 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             if (missingControls != null && !missingControls.uses_palette) {
                 colorPrefix = "[x] ";
             }
-            LXParameter colorParam = registerColorControl(colorPrefix);
+            TEColorParameter colorParam = registerColorControl(colorPrefix);
             if (missingControls != null && !missingControls.uses_palette) {
                 markUnused(colorParam);
-            }
-
-            // Mark a boolean flag on each of the TEControlTags which is unused.
-            // This will be used to set an '[x]' prefix on the labels, and can be used
-            // programmatically for TouchOSC to see if any parameters with a TEControlTag are unused.
-            if (missingControls != null) {
-                for (TEControlTag tag : missingControls.missing_control_tags) {
-
-                }
+                markUnused(colorParam.offset);
+                markUnused(colorParam.gradient);
             }
 
             // controls will be added in the order their tags appear in the
             // TEControlTag enum
             for (TEControlTag tag : TEControlTag.values()) {
                 LXListenableNormalizedParameter param = controlList.get(tag).control;
-                if (unusedParams.contains(param)) {
+                if (missingControls != null && missingControls.missing_control_tags.contains(tag)) {
                     param = setLabel(tag, "[x] " + param.getLabel());
+                    markUnused(param);
                 }
                 addParameter(tag.getPath(), param);
-                markUnused(param);
             }
 
             addParameter("panic", this.panic);
