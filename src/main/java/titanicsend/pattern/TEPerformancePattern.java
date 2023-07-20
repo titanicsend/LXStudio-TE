@@ -643,18 +643,17 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 colorPrefix = "[x] ";
             }
             TEColorParameter colorParam = registerColorControl(colorPrefix);
-            if (missingControls != null && !missingControls.uses_palette) {
-                markUnused(colorParam.offset);
-                markUnused(colorParam.gradient);
-                markUnused(swatchParameter);
-            }
+//            if (missingControls != null && !missingControls.uses_palette) {
+//                markUnused(colorParam.offset);
+//                markUnused(colorParam.gradient);
+//                markUnused(swatchParameter);
+//            }
 
             // controls will be added in the order their tags appear in the
             // TEControlTag enum
             for (TEControlTag tag : TEControlTag.values()) {
                 LXListenableNormalizedParameter param = controlList.get(tag).control;
                 if (missingControls != null && missingControls.missing_control_tags.contains(tag)) {
-                    param = setLabel(tag, "[x] " + param.getLabel());
                     markUnused(param);
                 }
                 addParameter(tag.getPath(), param);
