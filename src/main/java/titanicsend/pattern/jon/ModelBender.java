@@ -10,6 +10,12 @@ public class ModelBender {
     protected ArrayList<Float> modelZ;
     protected float endXMax;
 
+    /**
+     * Get a list of points on the ends of the car
+     *
+     * @param model
+     * @return list of points
+     */
     protected ArrayList<LXPoint> getEndPoints(TEWholeModel model) {
         ArrayList<LXPoint> endPoints = new ArrayList<LXPoint>();
 
@@ -26,8 +32,10 @@ public class ModelBender {
 
     public void adjustEndGeometry(TEWholeModel model) {
 
-        // save all z coordinates so we can restore the
-        // model after views are created
+        // save the model's original z coordinates so we can restore them
+        // after all views are created.  endXMax is the largest x coordinate at
+        // the boundary of side and end (more-or-less).  We use it as the
+        // starting x for our taper.
         modelZ = new ArrayList<Float>();
         endXMax = 0;
         for (LXPoint p : model.getPoints()) {
@@ -36,41 +44,34 @@ public class ModelBender {
             modelZ.add(p.z);
         }
 
-
-        // now get the points that are at the end of the model
+        // set z bounds for our modified model
         model.zMax += endXMax;
         model.zMin -= endXMax;
         model.zRange = model.zMax - model.zMin;
-        System.out.println("zMax = " + model.zMax + ", zMin = " + model.zMin + ", endXMax = " + endXMax + ", zRange = " + model.zRange);
 
+        // adjust the z coordinates of the end points to taper them
+        // with decreasing x. This gives the model a slightly pointy
+        // nose and makes texture mapping easier and better looking.
         ArrayList<LXPoint> endPoints = getEndPoints(model);
         for (LXPoint p : endPoints) {
+            // kick out gap points or they'll break normalization.
             if (model.isGapPoint(p)) continue;
 
             double zOffset = endXMax - Math.abs(p.x);
             p.z += (p.z >= 0) ? zOffset : -zOffset;
             p.zn = (p.z - model.zMin) / model.zRange;
-            if (Math.abs(p.zn) > 1) {
-                System.out.println("ERROR: point " + p.index + " has zn = " + p.zn);
-                System.out.println("   x,y,z = " + p.x + " " + p.y + " " + p.z);
-            }
         }
-
-
     }
 
     public void restoreModel(TEWholeModel model) {
+        // restore the model's original
         int i = 0;
         for (LXPoint p : model.getPoints()) {
             p.z = modelZ.get(i++);
         }
+        // restore the model's original z bounds
         model.zMax -= endXMax;
         model.zMin += endXMax;
-
         model.zRange = model.zMax - model.zMin;
-
-        //model.normalizePoints();
     }
-
-
 }

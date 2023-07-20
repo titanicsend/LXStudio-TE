@@ -130,6 +130,7 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
       return;
     }
 
+    // adjust model geometry for easy texture mapping in views
     ModelBender mb = new ModelBender();
     mb.adjustEndGeometry((TEWholeModel) this.lx.getModel());
 
@@ -144,6 +145,8 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
         v.setModel(this.lx.getModel());
       }
     }
+
+    // restore original model geometry
     mb.restoreModel((TEWholeModel) this.lx.getModel());
   }
 
