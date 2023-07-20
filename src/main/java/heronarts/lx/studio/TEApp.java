@@ -451,7 +451,12 @@ public class TEApp extends LXStudio {
       if (this.lx instanceof LXStudio) {
         LXStudio.UI ui = ((LXStudio)this.lx).ui;
         ui.preview.pointCloud.pointSize.setValue(80000);
-        // TODO: Position camera
+        ui.preview.camera.theta.setValue(270);
+        ui.preview.camera.phi.setValue(-6);
+        ui.preview.camera.radius.setValue(17000000);
+        ui.previewAux.camera.theta.setValue(270);
+        ui.previewAux.camera.phi.setValue(-6);
+        ui.previewAux.camera.radius.setValue(17000000);
       }
     }
 
