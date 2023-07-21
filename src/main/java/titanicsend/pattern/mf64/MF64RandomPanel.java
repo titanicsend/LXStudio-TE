@@ -1,11 +1,7 @@
 package titanicsend.pattern.mf64;
 
-import heronarts.lx.color.LXColor;
-import heronarts.lx.model.LXPoint;
 import titanicsend.model.TEPanelModel;
-import titanicsend.model.TEWholeModel;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
-import titanicsend.pattern.jon.ButtonColorMgr;
 import titanicsend.pattern.jon.VariableSpeedTimer;
 import titanicsend.util.TEMath;
 
@@ -14,22 +10,9 @@ import java.util.Random;
 import static titanicsend.util.TEColor.TRANSPARENT;
 
 public class MF64RandomPanel extends TEMidiFighter64Subpattern {
-    private static final double PERIOD_MSEC = 100.0;
-    private static final int[] flashColors = {
-            LXColor.rgb(255, 0, 0),
-            LXColor.rgb(255, 170, 0),
-            LXColor.rgb(255, 255, 0),
-            LXColor.rgb(0, 255, 0),
-            LXColor.rgb(0, 170, 170),
-            LXColor.rgb(0, 0, 255),
-            LXColor.rgb(255, 0, 255),
-            LXColor.rgb(255, 255, 255),
-    };
-    private int flashColor = TRANSPARENT;
     boolean active;
     boolean stopRequest;
     private int refCount;
-    ButtonColorMgr colorMap;
 
     VariableSpeedTimer time;
     float eventStartTime;
@@ -37,11 +20,8 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
     long seed;
     Random prng;
 
-    private TEWholeModel modelTE;
-
     public MF64RandomPanel(TEMidiFighter64DriverPattern driver) {
         super(driver);
-        this.modelTE = this.driver.getModelTE();
 
         this.active = false;
         this.stopRequest = false;
@@ -50,15 +30,13 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
         prng = new Random(seed);
 
         time = new VariableSpeedTimer();
-        //time.setTimeDirectionForward(true);
-        colorMap = new ButtonColorMgr();
         eventStartTime = -99f;
         refCount = 0;
     }
 
     @Override
     public void buttonDown(TEMidiFighter64DriverPattern.Mapping mapping) {
-        colorMap.addButton(mapping.col, flashColors[mapping.col]);
+        buttons.addButton(mapping.col, overlayColors[mapping.col]);
         refCount++;
         this.active = true;
         this.stopRequest = false;
@@ -67,7 +45,7 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
 
     @Override
     public void buttonUp(TEMidiFighter64DriverPattern.Mapping mapping) {
-        colorMap.removeButton(mapping.col);
+        buttons.removeButton(mapping.col);
         refCount--;
         if (refCount == 0) this.stopRequest = true;
     }
@@ -77,14 +55,14 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
         eventStartTime = -time.getTimef();
     }
 
-    private void paintAll(int colors[], int color) {
+    private void paintAll(int[] colors, int color) {
         time.tick();
 
         // calculate time scale at current bpm
         time.setScale((float) (driver.getTempo().bpm() / 60.0));
 
         // grab colors of all currently pressed buttons
-        int[] colorSet = colorMap.getAllColors();
+        int[] colorSet = buttons.getAllColors();
 
         // number of lit panels increases slightly with number of buttons pressed.
         // TEMath.clamp's min and max indicate percentages of coverage.
@@ -101,10 +79,11 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
         float t = time.getTimef();
         elapsedTime = t - eventStartTime;
 
+        /*  uncomment block to enable auto retrigger on the beat
         if (elapsedTime > 1) {
-            // uncomment to enable auto retrigger on the beat
-            // startNewEvent();
+            startNewEvent();
         }
+        */
 
         prng.setSeed(seed);
         int colorIndex = 0;
@@ -141,10 +120,10 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
     }
 
     @Override
-    public void run(double deltaMsec, int colors[]) {
+    public void run(double deltaMsec, int[] colors) {
         time.tick();
-        if (this.active == true) {
-            paintAll(colors, colorMap.getCurrentColor());
+        if (this.active) {
+            paintAll(colors, buttons.getCurrentColor());
         }
     }
 }

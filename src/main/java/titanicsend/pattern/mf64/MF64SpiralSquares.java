@@ -1,56 +1,22 @@
 package titanicsend.pattern.mf64;
 
-import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
-import titanicsend.model.TEWholeModel;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
-import titanicsend.pattern.jon.ButtonColorMgr;
 import titanicsend.pattern.jon.VariableSpeedTimer;
 import titanicsend.util.TEMath;
-
-import java.util.ArrayList;
 
 import static titanicsend.util.TEColor.TRANSPARENT;
 
 public class MF64SpiralSquares extends TEMidiFighter64Subpattern {
-    private static final double PERIOD_MSEC = 100.0;
-    private static final int[] flashColors = {
-            LXColor.rgb(255, 0, 0),
-            LXColor.rgb(255, 170, 0),
-            LXColor.rgb(255, 255, 0),
-            LXColor.rgb(0, 255, 0),
-            LXColor.rgb(0, 170, 170),
-            LXColor.rgb(0, 0, 255),
-            LXColor.rgb(255, 0, 255),
-            LXColor.rgb(255, 255, 255),
-    };
-
-
-    ButtonColorMgr colorMap;
-
-    private int flashColor = TRANSPARENT;
     private boolean active;
     private boolean stopRequest;
-
     private VariableSpeedTimer time;
-    private float sinT, cosT;
-    private TEWholeModel modelTE;
-    private LXPoint[] pointArray;
-
     private int refCount;
 
     public MF64SpiralSquares(TEMidiFighter64DriverPattern driver) {
         super(driver);
-        this.modelTE = this.driver.getModelTE();
-
-        // get safe list of all pattern points.
-        ArrayList<LXPoint> newPoints = new ArrayList<>(modelTE.points.length);
-        newPoints.addAll(modelTE.edgePoints);
-        newPoints.addAll(modelTE.panelPoints);
-        pointArray = newPoints.toArray(new LXPoint[0]);
 
         time = new VariableSpeedTimer();
-        colorMap = new ButtonColorMgr();
         this.active = false;
         this.stopRequest = false;
 
@@ -60,19 +26,19 @@ public class MF64SpiralSquares extends TEMidiFighter64Subpattern {
     @Override
     public void buttonDown(TEMidiFighter64DriverPattern.Mapping mapping) {
         this.stopRequest = false;
-        colorMap.addButton(mapping.col,flashColors[mapping.col]);
+        buttons.addButton(mapping.col, overlayColors[mapping.col]);
         refCount++;
         this.active = true;
     }
 
     @Override
     public void buttonUp(TEMidiFighter64DriverPattern.Mapping mapping) {
-        colorMap.removeButton(mapping.col);
+        buttons.removeButton(mapping.col);
         refCount--;
         if (refCount == 0) this.stopRequest = true;
     }
 
-    private void paintAll(int colors[], int color) {
+    private void paintAll(int[] colors, int color) {
 
         // clear the decks if we're getting ready to stop
         if (stopRequest) {
@@ -87,13 +53,13 @@ public class MF64SpiralSquares extends TEMidiFighter64Subpattern {
         // rotation rate is one per second. We sneakily control speed
         // by controlling the speed of time, so we can avoid trig operations
         // at pixel time.
-        cosT = (float) Math.cos(TEMath.TAU / 1000);
-        sinT = (float) Math.sin(TEMath.TAU / 1000);
+        float cosT = (float) Math.cos(TEMath.TAU / 1000);
+        float sinT = (float) Math.sin(TEMath.TAU / 1000);
         float t1 = time.getTimef();
 
         // a squared spiral from Pixelblaze pattern "Tunnel of Squares" at
         // https://github.com/zranger1/PixelblazePatterns/tree/master/2D_and_3D
-        for (LXPoint point : this.pointArray) {
+        for (LXPoint point : modelTE.getPoints()) {
 
             // move normalized coord origin to model center
             float x = point.zn - 0.5f;
@@ -119,10 +85,10 @@ public class MF64SpiralSquares extends TEMidiFighter64Subpattern {
     }
 
     @Override
-    public void run(double deltaMsec, int colors[]) {
+    public void run(double deltaMsec, int[] colors) {
         time.tick();
-        if (this.active == true) {
-            paintAll(colors, colorMap.getCurrentColor());
+        if (this.active) {
+            paintAll(colors, buttons.getCurrentColor());
         }
     }
 }

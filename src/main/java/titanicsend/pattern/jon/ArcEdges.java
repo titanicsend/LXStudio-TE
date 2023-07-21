@@ -16,6 +16,7 @@ public class ArcEdges extends TEPerformancePattern {
     NativeShaderPatternEffect effect;
     NativeShader shader;
     static final int LINE_COUNT = 52;
+    boolean updateGeometry;
     FloatBuffer gl_segments;
     float[][] saved_lines;
 
@@ -71,8 +72,13 @@ public class ArcEdges extends TEPerformancePattern {
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
-        // send line segment array data
-        sendSegments(saved_lines, LINE_COUNT);
+        // update line segment geometry
+        // shader uniforms associated with a context stay resident
+        // on the GPU,so we only need to set them when something changes.
+        if (updateGeometry) {
+            sendSegments(saved_lines, LINE_COUNT);
+            updateGeometry = false;
+        }
 
         // run the shader
         effect.run(deltaMs);
@@ -85,7 +91,7 @@ public class ArcEdges extends TEPerformancePattern {
     public void onActive() {
         super.onActive();
         effect.onActive();
+        updateGeometry = true;
         shader = effect.getNativeShader();
     }
-
 }

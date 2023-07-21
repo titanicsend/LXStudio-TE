@@ -160,6 +160,12 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
           new DiscreteParameter("Channel", 0, 99)
                   .setDescription("Channel number");
 
+  // Row shift for testing on midi controllers w/fewer than 8 rows
+  // of buttons.
+  public final DiscreteParameter rowShift =
+      new DiscreteParameter("RowShift", 0, 8)
+          .setDescription("RowOffset");
+
   public final DiscreteParameter pokeVelocity =
           new DiscreteParameter("Vel", 0, 128)
                   .setDescription("Velocity");
@@ -230,6 +236,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     addParameter("pokeVelocity", this.pokeVelocity);
     addParameter("pokePitch", this.pokePitch);
     addParameter("poke", this.pokeButton);
+    addParameter("rowShift",this.rowShift);
 
     this.fakePush.addListener(this.fakepushListener);
     this.pokeButton.addListener(this.pokeListener);
@@ -271,6 +278,21 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
         this.midiOut.sendNoteOn(channel, pitchFromXY[i], LED_OFF);
       }
     }
+  }
+
+  /**
+   * Given the location (row,column,page) of a button, and a color,
+   * in LX packed color format, set the color of the button (sets the
+   * nearest available color the button can produce. YMMV)
+   *
+   *
+   * @param row
+   * @param column
+   * @param page
+   * @param color
+   */
+  protected void setButtonRGB(int row, int column, int page, int color) {
+     // do the thing we did in Pixelblaze code
   }
 
   private void sendColors() {
@@ -362,6 +384,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   @Override
   public void noteOnReceived(MidiNoteOn note) {
     this.mapping.map(note);
+    mapping.row = (rowShift.getValuei() + mapping.row) % 8;
     int patternIndex = mapping.page == Mapping.Page.LEFT ? 0 : 64;
     patternIndex += (7 - mapping.row) * 8;
     patternIndex += mapping.col;
@@ -371,6 +394,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   @Override
   public void noteOffReceived(MidiNote note) {
     this.mapping.map(note);
+    mapping.row = (rowShift.getValuei() + mapping.row) % 8;
     int patternIndex = mapping.page == Mapping.Page.LEFT ? 0 : 64;
     patternIndex += (7 - mapping.row) * 8;
     patternIndex += mapping.col;

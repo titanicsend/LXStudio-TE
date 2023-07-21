@@ -1,11 +1,8 @@
 package titanicsend.pattern.mf64;
 
-import heronarts.lx.color.LXColor;
 import heronarts.lx.transform.LXVector;
 import titanicsend.model.TEPanelModel;
-import titanicsend.model.TEWholeModel;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
-import titanicsend.pattern.jon.ButtonColorMgr;
 import titanicsend.pattern.jon.VariableSpeedTimer;
 import titanicsend.util.TEMath;
 
@@ -14,35 +11,19 @@ import java.util.Random;
 import static titanicsend.util.TEColor.TRANSPARENT;
 
 public class MF64Spinwheel extends TEMidiFighter64Subpattern {
-    private static final double PERIOD_MSEC = 100.0;
-    private static final int[] flashColors = {
-            LXColor.rgb(255, 0, 0),
-            LXColor.rgb(255, 170, 0),
-            LXColor.rgb(255, 255, 0),
-            LXColor.rgb(0, 255, 0),
-            LXColor.rgb(0, 170, 170),
-            LXColor.rgb(0, 0, 255),
-            LXColor.rgb(255, 0, 255),
-            LXColor.rgb(255, 255, 255),
-    };
-    private int flashColor = TRANSPARENT;
     boolean active;
     boolean stopRequest;
     private int refCount;
-    ButtonColorMgr colorMap;
     VariableSpeedTimer time;
     float eventStartTime;
     float elapsedTime;
     long seed;
     Random prng;
 
-    private TEWholeModel modelTE;
     LXVector panelCenter;
 
     public MF64Spinwheel(TEMidiFighter64DriverPattern driver) {
         super(driver);
-        this.modelTE = this.driver.getModelTE();
-
         this.active = false;
         this.stopRequest = false;
 
@@ -50,14 +31,12 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
         prng = new Random(seed);
 
         time = new VariableSpeedTimer();
-        //time.setTimeDirectionForward(true);
-        colorMap = new ButtonColorMgr();
         eventStartTime = -99f;
         refCount = 0;
     }
     @Override
     public void buttonDown(TEMidiFighter64DriverPattern.Mapping mapping) {
-        colorMap.addButton(mapping.col,flashColors[mapping.col]);
+        buttons.addButton(mapping.col,overlayColors[mapping.col]);
         refCount++;
         this.active = true;
         this.stopRequest = false;
@@ -66,7 +45,7 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
 
     @Override
     public void buttonUp(TEMidiFighter64DriverPattern.Mapping mapping) {
-        colorMap.removeButton(mapping.col);
+        buttons.removeButton(mapping.col);
         refCount--;
         if (refCount == 0) this.stopRequest = true;
     }
@@ -76,10 +55,7 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
         eventStartTime = -time.getTimef();
     }
 
-    /**
-     * Again, wtf doesn't Java have one of these?
-     */
-    float frac(float n) {
+     float fract(float n) {
         return (float) (n - Math.floor(n));
     }
 
@@ -104,8 +80,8 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
         // keep us from flashing the whole panel to absolute black
         pulse += (pulse == 0) ? 0.5 : 0;
 
-        arX = Math.abs(frac(arX)) - 0.5f;
-        arY = Math.abs(frac(arY)) - 0.5f;
+        arX = Math.abs(fract(arX)) - 0.5f;
+        arY = Math.abs(fract(arY)) - 0.5f;
 
         float bri = (float) ((0.2/(arX*arX+arY*arY) * .19) * pulse);
 
@@ -114,14 +90,14 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
         return bri * bri;
     }
 
-    private void paintAll(int colors[], int color) {
+    private void paintAll(int[] colors, int color) {
         time.tick();
 
         // calculate time scale at current bpm
         time.setScale((float) (driver.getTempo().bpm() / 60.0));
 
         // grab colors of all currently pressed buttons
-        int[] colorSet = colorMap.getAllColors();
+        int[] colorSet = buttons.getAllColors();
 
         // number of lit panels increases slightly with number of buttons pressed.
         // TEMath.clamp's min and max indicate percentages of coverage.
@@ -137,7 +113,7 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
 
         float t = time.getTimef();
         elapsedTime = t - eventStartTime;
-        float t0 = frac(elapsedTime);
+        float t0 = fract(elapsedTime);
         float spin = 2f * t;
         float grow = (float) (Math.sin(t0) * 1.414);
 
@@ -146,8 +122,8 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
         int col;
         for (TEPanelModel panel : modelTE.getAllPanels()) {
 
-            // exclude 4 front and back panels because x vs.z gets too weird
-            // for radial math without time-consuming adjustments
+            // exclude the 4 flat-on-z front and back panels because x vs.z
+            // gets too weird for radial math without time-consuming adjustments
             if (panel.getId().length() == 2) continue;
 
             boolean isLit = (prng.nextFloat() <= litProbability);
@@ -177,10 +153,10 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
     }
 
     @Override
-    public void run(double deltaMsec, int colors[]) {
+    public void run(double deltaMsec, int[] colors) {
         time.tick();
-        if (this.active == true) {
-            paintAll(colors, colorMap.getCurrentColor());
+        if (this.active) {
+            paintAll(colors, buttons.getCurrentColor());
         }
     }
 }
