@@ -1,4 +1,4 @@
-package titanicsend.pattern.jon;
+package titanicsend.pattern.mf64;
 
 
 import heronarts.lx.color.LXColor;
@@ -22,7 +22,7 @@ public class ButtonColorMgr {
         int getColor() { return LXColor.rgb(r,g,b); }
     }
     int defaultColor = TRANSPARENT;
-    private ArrayList<ButtonInfo> map;
+    private final ArrayList<ButtonInfo> map;
 
     public ButtonColorMgr() {
         map = new ArrayList<ButtonInfo>(8);
@@ -93,7 +93,6 @@ public class ButtonColorMgr {
 
         return LXColor.rgb(r,g,b);
     }
-
 
     /**
      * @return Color from most recently pressed (and currently down) button

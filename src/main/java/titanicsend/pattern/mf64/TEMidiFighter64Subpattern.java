@@ -3,7 +3,6 @@ package titanicsend.pattern.mf64;
 import heronarts.lx.color.LXColor;
 import titanicsend.model.TEWholeModel;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
-import titanicsend.pattern.jon.ButtonColorMgr;
 
 public abstract class TEMidiFighter64Subpattern {
   protected final TEMidiFighter64DriverPattern driver;

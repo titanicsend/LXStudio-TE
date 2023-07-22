@@ -1,0 +1,183 @@
+package titanicsend.pattern.mf64;
+
+import heronarts.lx.transform.LXVector;
+import titanicsend.model.TEPanelModel;
+import titanicsend.pattern.TEMidiFighter64DriverPattern;
+import titanicsend.pattern.jon.VariableSpeedTimer;
+import titanicsend.util.TEMath;
+
+import java.util.Random;
+
+import static titanicsend.util.TEColor.TRANSPARENT;
+
+public class MF64Hearts extends TEMidiFighter64Subpattern {
+    boolean active;
+    boolean stopRequest;
+    private int refCount;
+    VariableSpeedTimer time;
+    float eventStartTime;
+    float elapsedTime;
+    long seed;
+    Random prng;
+
+    double heartSize;
+
+    LXVector panelCenter;
+
+    public MF64Hearts(TEMidiFighter64DriverPattern driver) {
+        super(driver);
+        this.active = false;
+        this.stopRequest = false;
+
+        seed = System.currentTimeMillis();
+        prng = new Random(seed);
+
+        time = new VariableSpeedTimer();
+        eventStartTime = -99f;
+        refCount = 0;
+    }
+    @Override
+    public void buttonDown(TEMidiFighter64DriverPattern.Mapping mapping) {
+        buttons.addButton(mapping.col,overlayColors[mapping.col]);
+        refCount++;
+        this.active = true;
+        this.stopRequest = false;
+        startNewEvent();
+    }
+
+    @Override
+    public void buttonUp(TEMidiFighter64DriverPattern.Mapping mapping) {
+        buttons.removeButton(mapping.col);
+        refCount--;
+        if (refCount == 0) this.stopRequest = true;
+    }
+
+    void startNewEvent() {
+        seed = System.currentTimeMillis();
+        eventStartTime = -time.getTimef();
+    }
+
+     float fract(float n) {
+        return (float) (n - Math.floor(n));
+    }
+
+    float clamp(float value, float min, float max) {
+        return Math.max(min, Math.min(max, value));
+    }
+
+    // heart sdf ported from:
+    // https://github.com/zranger1/PixelblazePatterns/blob/master/2D_and_3D/heartbeat-SDF-2D.js
+    // has a little extra curvature to look nice on LED displays.
+    protected double heart2(TEPanelModel.LitPointData lp,double radius) {
+        // move coordinate origin to panel center
+        double x = lp.point.z - panelCenter.z;
+        double y = lp.point.y - panelCenter.y;
+
+        // correct aspect ratio
+        x = x / radius * 0.75;
+
+        // signed distance from 1/2 heart, mirrored about x axis
+        y = -y / radius + 0.5 - Math.sqrt(Math.abs(x));
+        radius = Math.hypot(x,y);
+
+        // invert and return distance
+        return 1-radius;
+    }
+
+    // does the spinwheel thing, returns the brightness
+    // at the specified pixel.
+    float spinwheel(TEPanelModel.LitPointData lp,float spin, float grow) {
+        // move coordinate origin to panel center
+        float x = lp.point.z - panelCenter.z;
+        float y = lp.point.y - panelCenter.y;
+
+        // can derive local azimuth geometrically, but atan2 is faster...
+        // the arX multiplier controls the number of petals.  Higher is more.
+        float arX = (float) (Math.atan2(y,x) * 1.25 + spin);
+        float arY = (float) (lp.radiusFraction + grow);
+
+        // Shape the pulse made by the arY + grow term. Higher divisor == more contrast
+        float pulse = (float) (Math.floor(arY) / 6.0);
+        // keep us from flashing the whole panel to absolute black
+        pulse += (pulse == 0) ? 0.5 : 0;
+
+        arX = Math.abs(fract(arX)) - 0.5f;
+        arY = Math.abs(fract(arY)) - 0.5f;
+
+        float bri = (float) ((0.2/(arX*arX+arY*arY) * .19) * pulse);
+
+        // clamp to range, then small gamma correction
+        bri = clamp(bri*4f,0f,1f);
+        return bri * bri;
+    }
+
+    private void paintAll(int[] colors, int color) {
+        time.tick();
+
+        // calculate time scale at current bpm
+        time.setScale((float) (driver.getTempo().bpm() / 60.0));
+
+        // grab colors of all currently pressed buttons
+        int[] colorSet = buttons.getAllColors();
+
+        // number of lit panels increases slightly with number of buttons pressed.
+        // TEMath.clamp's min and max indicate percentages of coverage.
+        float litProbability = (float) TEMath.clamp(0.4 + 0.3f * ((float) colorSet.length - 1)/7f,
+                0.4,0.7);
+
+        // clear the decks if we're getting ready to stop
+        if (stopRequest) {
+            stopRequest = false;
+            active = false;
+            colorSet[0] = TRANSPARENT;
+        }
+
+        float t = time.getTimef();
+        elapsedTime = t - eventStartTime;
+        float t0 = fract(elapsedTime);
+        float spin = 2f * t;
+        float grow = (float) (Math.sin(t0) * 1.414);
+
+        prng.setSeed(seed);
+        int colorIndex = 0;
+        int col;
+        for (TEPanelModel panel : modelTE.getAllPanels()) {
+
+            // exclude the 4 flat-on-z front and back panels because x vs.z
+            // gets weird without time-consuming adjustments.
+            if (panel.getId().length() == 2) continue;
+
+            boolean isLit = (prng.nextFloat() <= litProbability);
+
+            // if panel is lit, pick a color from our set
+            if (isLit) {
+                col = colorSet[colorIndex];
+                colorIndex = (colorIndex + 1) % colorSet.length;
+            }
+            else {
+                col = TRANSPARENT;
+            }
+
+            // now draw something on the lit panel
+            for (TEPanelModel.LitPointData p : panel.litPointData) {
+                // quick out for uncolored panels
+                if (col == TRANSPARENT) {
+                    colors[p.point.index] = TRANSPARENT;
+                } else {
+                    // do the spinwheel thing
+                    panelCenter = panel.centroid;
+                    int alpha = (int) (255f * spinwheel(p,spin,grow));
+                    colors[p.point.index] = (col & 0x00FFFFFF) | (alpha << 24);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void run(double deltaMsec, int[] colors) {
+        time.tick();
+        if (this.active) {
+            paintAll(colors, buttons.getCurrentColor());
+        }
+    }
+}
