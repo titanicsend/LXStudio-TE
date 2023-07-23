@@ -90,7 +90,8 @@ abstract public class LXVirtualDiscreteParameter<T extends DiscreteParameter> ex
   }
 
   protected void onRealParameterDisposed() {
-    setParameter(null);
+    this.parameter.removeListener(realParameterListener);
+    this.parameter = null;
   }
 
   @Override
