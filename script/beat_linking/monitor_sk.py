@@ -9,8 +9,13 @@ MEMORY_GB_LIMIT = 15
 def is_process_sk(process):
     """
     Returns True if this is the SK process, False otherwise
+
+    Should be two processes:
+        ['ShowKontrol', 'ShowKontrolRemoteServer']
     """
-    return "rekordbox" in p.name().lower()
+    process_name = p.name().lower()
+#     print(f"Is {process_name} like 'showkontrol' ? {'showkontrol' in p.name().lower()}")
+    return "showkontrol" in process_name
 
 def is_process_taking_too_much_memory(process):
     """
@@ -24,28 +29,37 @@ def is_process_taking_too_much_memory(process):
     """
     try:
         gb_using = p.memory_info().rss / (1024.0 ** 3)
-        return gb_using > MEMORY_GB_LIMIT
+        print(f"Process '{p.name()} (pid={p.pid})' is using ~{gb_using} GB of memory")
+        return True
+#         return gb_using > MEMORY_GB_LIMIT
     except psutil.AccessDenied:
         return False
 
 def kill_process(process):
     # TODO: need to kill a process given a PID
-    pass
+    print("Killing process")
 
 def restart_sk():
     # TODO: need to run the application for SK to boot it up
     # need this to be a separate process that isn't dependent on
     # this script, ideally
-    pass
+    print("Restarting SK...")
 
 while True:
     pids = psutil.pids()
+    print(f"Found {len(pids)} pids")
     for i, pid in enumerate(pids):
-        p = psutil.Process(pid)
-        if is_process_sk(p):
-            should_kill = is_process_taking_too_much_memory(p)
-            if should_kill:
-                kill_process(process)
-                restart_sk()
+        try:
+            p = psutil.Process(pid)
+            if is_process_sk(p):
+                should_kill = is_process_taking_too_much_memory(p)
+                if should_kill:
+                    kill_process(p)
+                    restart_sk()
+        except psutil.NoSuchProcess:
+            continue
 
     time.sleep(POLLING_WAIT_TIME_SECS)
+
+print([psutil.Process(pid).name() for pid in psutil.pids() if "showkontrol" in psutil.Process(pid).name().lower()])
+#top -l 1 | grep -i "showkontrol" | awk '{print "NAME="$2 " MEM="$9 "\tRPRVT="$10}'
