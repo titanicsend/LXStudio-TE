@@ -4,41 +4,49 @@ import heronarts.lx.model.LXPoint;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 
 import static titanicsend.util.TEColor.TRANSPARENT;
+import static titanicsend.util.TEColor.reAlpha;
 
 public class MF64FlashPattern extends TEMidiFighter64Subpattern {
-  private int overlayColor = TRANSPARENT;
-  private boolean flashPending = true;
+  private boolean active;
+  private int refCount;
 
   public MF64FlashPattern(TEMidiFighter64DriverPattern driver) {
     super(driver);
+    active = false;
+    refCount = 0;
   }
 
   @Override
   public void buttonDown(TEMidiFighter64DriverPattern.Mapping mapping) {
-    this.overlayColor = overlayColors[mapping.col];
-    this.flashPending = true;
+    buttons.addButton(mapping.col, overlayColors[mapping.col]);
+    refCount++;
+    this.active = true;
   }
 
   @Override
   public void buttonUp(TEMidiFighter64DriverPattern.Mapping mapping) {
-    this.overlayColor = TRANSPARENT;
-    this.flashPending = true;
+    buttons.removeButton(mapping.col);
+    refCount--;
+    if (refCount == 0) this.active = false;
   }
 
-  private void paintAll(int[] colors, int color) {
-    for (LXPoint point : this.modelTE.panelPoints) {
-      colors[point.index] = color;
-    }
-    for (LXPoint point : this.modelTE.edgePoints) {
-      colors[point.index] = color;
+  private void paintAll(int color) {
+    // for flash, we're going to reduce alpha just slightly to
+    // 1 - keep the car from ever going 100% white and
+    // 2 - make it possible for other patterns to draw over the flash
+    // while the button is held down, which gives them the ability
+    // to roughly control the background color.
+    color = reAlpha(color, 240);
+
+    for (LXPoint point : this.modelTE.getPoints()) {
+      setColor(point.index, color);
     }
   }
 
   @Override
-  public void run(double deltaMsec, int[] colors) {
-    if (this.flashPending) {
-      paintAll(colors, this.overlayColor);
-      this.flashPending = false;
+  public void run(double deltaMsec) {
+    if (active) {
+      paintAll(buttons.getCurrentColor());
     }
   }
 }

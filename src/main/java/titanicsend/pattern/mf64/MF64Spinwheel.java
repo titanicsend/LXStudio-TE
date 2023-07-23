@@ -90,7 +90,7 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
         return bri * bri;
     }
 
-    private void paintAll(int[] colors, int color) {
+    private void paintAll(int color) {
         time.tick();
 
         // calculate time scale at current bpm
@@ -141,22 +141,22 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
             for (TEPanelModel.LitPointData p : panel.litPointData) {
                 // quick out for uncolored panels
                 if (col == TRANSPARENT) {
-                    colors[p.point.index] = TRANSPARENT;
+                    setColor(p.point.index,TRANSPARENT);
                 } else {
                     // do the spinwheel thing
                     panelCenter = panel.centroid;
                     int alpha = (int) (255f * spinwheel(p,spin,grow));
-                    colors[p.point.index] = (col & 0x00FFFFFF) | (alpha << 24);
+                    setColor(p.point.index, (col & 0x00FFFFFF) | (alpha << 24));
                 }
             }
         }
     }
 
     @Override
-    public void run(double deltaMsec, int[] colors) {
+    public void run(double deltaMsec) {
         time.tick();
         if (this.active) {
-            paintAll(colors, buttons.getCurrentColor());
+            paintAll(buttons.getCurrentColor());
         }
     }
 }

@@ -1,6 +1,5 @@
 package titanicsend.pattern.mf64;
 
-import heronarts.lx.transform.LXVector;
 import titanicsend.model.TEPanelModel;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.pattern.jon.VariableSpeedTimer;
@@ -16,13 +15,12 @@ public class MF64Hearts extends TEMidiFighter64Subpattern {
     private int refCount;
     VariableSpeedTimer time;
     float eventStartTime;
-    float elapsedTime;
+    double elapsedTime;
     long seed;
     Random prng;
 
     double heartSize;
-
-    LXVector panelCenter;
+    double yCenter;
 
     public MF64Hearts(TEMidiFighter64DriverPattern driver) {
         super(driver);
@@ -31,6 +29,7 @@ public class MF64Hearts extends TEMidiFighter64Subpattern {
 
         seed = System.currentTimeMillis();
         prng = new Random(seed);
+        heartSize = 0.35;
 
         time = new VariableSpeedTimer();
         eventStartTime = -99f;
@@ -52,66 +51,31 @@ public class MF64Hearts extends TEMidiFighter64Subpattern {
         if (refCount == 0) this.stopRequest = true;
     }
 
-    void startNewEvent() {
+    private void startNewEvent() {
         seed = System.currentTimeMillis();
         eventStartTime = -time.getTimef();
     }
 
-     float fract(float n) {
-        return (float) (n - Math.floor(n));
-    }
-
-    float clamp(float value, float min, float max) {
-        return Math.max(min, Math.min(max, value));
+     private double fract(double n) {
+        return (n - Math.floor(n));
     }
 
     // heart sdf ported from:
     // https://github.com/zranger1/PixelblazePatterns/blob/master/2D_and_3D/heartbeat-SDF-2D.js
-    // has a little extra curvature to look nice on LED displays.
-    protected double heart2(TEPanelModel.LitPointData lp,double radius) {
-        // move coordinate origin to panel center
-        double x = lp.point.z - panelCenter.z;
-        double y = lp.point.y - panelCenter.y;
-
-        // correct aspect ratio
-        x = x / radius * 0.75;
+    // heart plus a little extra curvature to look nice on LED displays.
+    private double heart(double x, double y,double radius) {
+        // tweak aspect ratio a little for triangular panels
+        x = x / radius * 1.25;
 
         // signed distance from 1/2 heart, mirrored about x axis
-        y = -y / radius + 0.5 - Math.sqrt(Math.abs(x));
+        y = y / radius + this.yCenter - Math.sqrt(Math.abs(x));
         radius = Math.hypot(x,y);
 
-        // invert and return distance
+        // invert sdf result and return distance
         return 1-radius;
     }
 
-    // does the spinwheel thing, returns the brightness
-    // at the specified pixel.
-    float spinwheel(TEPanelModel.LitPointData lp,float spin, float grow) {
-        // move coordinate origin to panel center
-        float x = lp.point.z - panelCenter.z;
-        float y = lp.point.y - panelCenter.y;
-
-        // can derive local azimuth geometrically, but atan2 is faster...
-        // the arX multiplier controls the number of petals.  Higher is more.
-        float arX = (float) (Math.atan2(y,x) * 1.25 + spin);
-        float arY = (float) (lp.radiusFraction + grow);
-
-        // Shape the pulse made by the arY + grow term. Higher divisor == more contrast
-        float pulse = (float) (Math.floor(arY) / 6.0);
-        // keep us from flashing the whole panel to absolute black
-        pulse += (pulse == 0) ? 0.5 : 0;
-
-        arX = Math.abs(fract(arX)) - 0.5f;
-        arY = Math.abs(fract(arY)) - 0.5f;
-
-        float bri = (float) ((0.2/(arX*arX+arY*arY) * .19) * pulse);
-
-        // clamp to range, then small gamma correction
-        bri = clamp(bri*4f,0f,1f);
-        return bri * bri;
-    }
-
-    private void paintAll(int[] colors, int color) {
+    private void paintAll(int color) {
         time.tick();
 
         // calculate time scale at current bpm
@@ -132,11 +96,10 @@ public class MF64Hearts extends TEMidiFighter64Subpattern {
             colorSet[0] = TRANSPARENT;
         }
 
-        float t = time.getTimef();
+        double t = time.getTime();
         elapsedTime = t - eventStartTime;
-        float t0 = fract(elapsedTime);
-        float spin = 2f * t;
-        float grow = (float) (Math.sin(t0) * 1.414);
+        double t0 = fract(elapsedTime);
+        heartSize = 0.35 + 0.05 * Math.sin(t0);
 
         prng.setSeed(seed);
         int colorIndex = 0;
@@ -153,6 +116,7 @@ public class MF64Hearts extends TEMidiFighter64Subpattern {
             if (isLit) {
                 col = colorSet[colorIndex];
                 colorIndex = (colorIndex + 1) % colorSet.length;
+                yCenter = Math.min(0.4, panel.yRange / panel.zRange);
             }
             else {
                 col = TRANSPARENT;
@@ -162,22 +126,29 @@ public class MF64Hearts extends TEMidiFighter64Subpattern {
             for (TEPanelModel.LitPointData p : panel.litPointData) {
                 // quick out for uncolored panels
                 if (col == TRANSPARENT) {
-                    colors[p.point.index] = TRANSPARENT;
+                    setColor(p.point.index, TRANSPARENT);
                 } else {
-                    // do the spinwheel thing
-                    panelCenter = panel.centroid;
-                    int alpha = (int) (255f * spinwheel(p,spin,grow));
-                    colors[p.point.index] = (col & 0x00FFFFFF) | (alpha << 24);
+                    // generate roughly centered and normalized (relative to panel)
+                    // coordinates
+                    double x = (p.point.z - panel.centroid.z) / panel.zRange;
+                    double y = (p.point.y - panel.centroid.y) / panel.yRange;
+
+                    // heart sdf returns inverse distance from repeating figure.
+                    // 1.0 at center, decreasing as you move out. We use this
+                    // to calculate brightness, applied here as alpha
+                    double d = heart(x,y,heartSize)/heartSize;
+                    int alpha = (int) (255 * d);
+                    setColor(p.point.index, (col & 0x00FFFFFF) | (alpha << 24));
                 }
             }
         }
     }
 
     @Override
-    public void run(double deltaMsec, int[] colors) {
+    public void run(double deltaMsec) {
         time.tick();
         if (this.active) {
-            paintAll(colors, buttons.getCurrentColor());
+            paintAll(buttons.getCurrentColor());
         }
     }
 }

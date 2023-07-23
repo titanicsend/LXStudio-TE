@@ -30,21 +30,18 @@ public class MF64XWave extends TEMidiFighter64Subpattern {
         if (refCount == 0) this.stopRequest = true;
     }
 
-    private void clearAllPoints(int[] colors) {
-        for (LXPoint point : modelTE.panelPoints) {
-            colors[point.index] = TRANSPARENT;
-        }
-        for (LXPoint point : modelTE.edgePoints) {
-            colors[point.index] = TRANSPARENT;
-        }
-    }
+    private void clearAllPoints() {
+        for (LXPoint point : modelTE.getPoints()) {
+            setColor(point.index, TRANSPARENT);
+         }
+     }
 
     public MF64XWave(TEMidiFighter64DriverPattern driver) {
         super(driver);
         buttons = new ButtonColorMgr();
     }
 
-    private void paintAll(int[] colors, int color) {
+    private void paintAll(int color) {
         int col;
 
         // calculate milliseconds per beat at current bpm and build
@@ -62,7 +59,7 @@ public class MF64XWave extends TEMidiFighter64Subpattern {
             if (stopRequest) {
                 this.active = false;
                 this.stopRequest = false;
-                clearAllPoints(colors);
+                clearAllPoints();
                 return;
             }
             startTime = time;
@@ -78,7 +75,7 @@ public class MF64XWave extends TEMidiFighter64Subpattern {
             int alpha = (int) (255 * TEMath.clamp(dist, 0, 1));
             col = (dist > 0.9) ? (color & 0x00FFFFFF) | (alpha << 24) : TRANSPARENT;
 
-            colors[point.index] = col;
+            setColor(point.index, col);
         }
 
         lightWave = 1 - movement;
@@ -91,14 +88,14 @@ public class MF64XWave extends TEMidiFighter64Subpattern {
             int alpha = (int) (255 * TEMath.clamp(dist, 0, 1));
             col = (dist > 0.9) ? (color & 0x00FFFFFF) | (alpha << 24) : TRANSPARENT;
 
-            colors[point.index] = col;
+            setColor(point.index, col);
         }
     }
 
     @Override
-    public void run(double deltaMsec, int[] colors) {
+    public void run(double deltaMsec) {
         if (this.active) {
-            paintAll(colors, buttons.getCurrentColor());
+            paintAll(buttons.getCurrentColor());
         }
     }
 }

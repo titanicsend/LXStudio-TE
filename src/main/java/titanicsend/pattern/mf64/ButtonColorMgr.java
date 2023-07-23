@@ -19,7 +19,7 @@ public class ButtonColorMgr {
             this.b = 0xFF & LXColor.blue(color);
         }
 
-        int getColor() { return LXColor.rgb(r,g,b); }
+        int getColor() { return LXColor.rgba(r,g,b,255); }
     }
     int defaultColor = TRANSPARENT;
     private final ArrayList<ButtonInfo> map;

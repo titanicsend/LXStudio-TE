@@ -38,7 +38,7 @@ public class MF64SpiralSquares extends TEMidiFighter64Subpattern {
         if (refCount == 0) this.stopRequest = true;
     }
 
-    private void paintAll(int[] colors, int color) {
+    private void paintAll(int color) {
 
         // clear the decks if we're getting ready to stop
         if (stopRequest) {
@@ -80,15 +80,15 @@ public class MF64SpiralSquares extends TEMidiFighter64Subpattern {
             float dx = (float) Math.abs(Math.sin(4.0 * Math.log(x * sx + y * sy) + point.azimuth - t1));
             int on = ((dx * dx * dx) < 0.15) ? 1 : 0;
 
-            colors[point.index] = color * on;
+            setColor(point.index, color * on);
         }
     }
 
     @Override
-    public void run(double deltaMsec, int[] colors) {
+    public void run(double deltaMsec) {
         time.tick();
         if (this.active) {
-            paintAll(colors, buttons.getCurrentColor());
+            paintAll(buttons.getCurrentColor());
         }
     }
 }

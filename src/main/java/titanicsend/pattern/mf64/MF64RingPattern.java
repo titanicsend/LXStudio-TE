@@ -48,14 +48,13 @@ public class MF64RingPattern extends TEMidiFighter64Subpattern {
         if (refCount == 0) this.stopRequest = true;
     }
 
-    private void clearAllPoints(int[] colors) {
+    private void clearAllPoints() {
         for (LXPoint point : modelTE.getPoints()) {
-            colors[point.index] = TRANSPARENT;
+            setColor(point.index, TRANSPARENT);
         }
     }
 
-    private void paintAll(int[] colors, int color) {
-
+    private void paintAll(int color) {
         time = System.currentTimeMillis();
 
         // calculate milliseconds per beat at current bpm
@@ -73,7 +72,7 @@ public class MF64RingPattern extends TEMidiFighter64Subpattern {
             if (stopRequest) {
                 this.active = false;
                 this.stopRequest = false;
-                clearAllPoints(colors);
+                clearAllPoints();
                 return;
             }
             startTime = time;
@@ -96,14 +95,14 @@ public class MF64RingPattern extends TEMidiFighter64Subpattern {
                 }
                 offs += ringWidth;
             }
-            colors[point.index] = col;
+            setColor(point.index, col);
         }
     }
 
     @Override
-    public void run(double deltaMsec, int[] colors) {
+    public void run(double deltaMsec) {
         if (this.active) {
-            paintAll(colors, buttons.getCurrentColor());
+            paintAll(buttons.getCurrentColor());
         }
     }
 }

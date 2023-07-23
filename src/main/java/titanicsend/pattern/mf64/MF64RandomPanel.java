@@ -55,7 +55,7 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
         eventStartTime = -time.getTimef();
     }
 
-    private void paintAll(int[] colors, int color) {
+    private void paintAll(int color) {
         time.tick();
 
         // calculate time scale at current bpm
@@ -106,24 +106,24 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
             for (TEPanelModel.LitPointData p : panel.litPointData) {
                 // quick out for uncolored panels
                 if (col == TRANSPARENT) {
-                    colors[p.point.index] = TRANSPARENT;
+                    setColor(p.point.index, TRANSPARENT);
                     // color an expanding radius
                 } else if (p.radiusFraction <= deltaT) {
                     int alpha = (int) (255f * deltaT);
-                    colors[p.point.index] = (col & 0x00FFFFFF) | (alpha << 24);
+                    setColor(p.point.index, (col & 0x00FFFFFF) | (alpha << 24));
                     // leave uncolored points alone
                 } else {
-                    colors[p.point.index] = TRANSPARENT;
+                    setColor(p.point.index, TRANSPARENT);
                 }
             }
         }
     }
 
     @Override
-    public void run(double deltaMsec, int[] colors) {
+    public void run(double deltaMsec) {
         time.tick();
         if (this.active) {
-            paintAll(colors, buttons.getCurrentColor());
+            paintAll(buttons.getCurrentColor());
         }
     }
 }

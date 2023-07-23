@@ -127,9 +127,14 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   private final MF64EdgeSparks eSparks = new MF64EdgeSparks(this);
   private final MF64Spinwheel spin = new MF64Spinwheel(this);
   private final MF64XWave xwave = new MF64XWave(this);
+  private final MF64Hearts heart = new MF64Hearts(this);
 
-  private final TEMidiFighter64Subpattern[] patterns = {
-    logger, logger, logger, logger, logger, logger, logger, logger,
+  private final TEMidiFighter64Subpattern[] patternList = {
+      logger,flash,ring,ssquare,randomPanel,eSparks,spin,xwave,heart
+  };
+
+  private final TEMidiFighter64Subpattern[] buttonAssignments = {
+    heart, heart, heart, heart, heart, heart, heart, heart,
     spin, spin, spin, spin, spin, spin, spin, spin,
     xwave, xwave, xwave, xwave, xwave, xwave, xwave, xwave,
     eSparks, eSparks, eSparks, eSparks, eSparks, eSparks, eSparks, eSparks,
@@ -249,10 +254,10 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
       this.mapping.col = 0;
     
       if (p.getValuef() != 0f) {
-        this.patterns[0].buttonDown(this.mapping);
+        this.buttonAssignments[0].buttonDown(this.mapping);
       }
       else {
-        this.patterns[0].buttonUp(this.mapping);
+        this.buttonAssignments[0].buttonUp(this.mapping);
       }
     }
   };
@@ -308,9 +313,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   }
 
   @Override
-  public void onActive() {
-    connect();
-  }
+  public void onActive() { connect(); }
   
   private void connect() {
     // Clear any previous connections, cleanly remove existing listeners
@@ -388,7 +391,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     int patternIndex = mapping.page == Mapping.Page.LEFT ? 0 : 64;
     patternIndex += (7 - mapping.row) * 8;
     patternIndex += mapping.col;
-    this.patterns[patternIndex].buttonDown(this.mapping);
+    this.buttonAssignments[patternIndex].buttonDown(this.mapping);
   }
 
   @Override
@@ -398,19 +401,15 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     int patternIndex = mapping.page == Mapping.Page.LEFT ? 0 : 64;
     patternIndex += (7 - mapping.row) * 8;
     patternIndex += mapping.col;
-    this.patterns[patternIndex].buttonUp(this.mapping);
+    this.buttonAssignments[patternIndex].buttonUp(this.mapping);
   }
 
   @Override
   public void run(double deltaMs) {
-    this.logger.run(deltaMs, colors);
-    this.flash.run(deltaMs, colors);
-    this.ring.run(deltaMs,colors);
-    this.ssquare.run(deltaMs,colors);
-    this.randomPanel.run(deltaMs,colors);
-    this.eSparks.run(deltaMs,colors);
-    this.spin.run(deltaMs,colors);
-    this.xwave.run(deltaMs,colors);
+    clearPixels();
+    for (int i = 0; i < patternList.length; i++) {
+      patternList[i].run(deltaMs);
+    }
   }
   
   @Override

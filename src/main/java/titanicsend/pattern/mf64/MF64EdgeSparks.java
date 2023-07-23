@@ -36,13 +36,13 @@ public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
         if (refCount == 0) this.stopRequest = true;
     }
 
-    private void clearAllPoints(int[] colors) {
+    private void clearAllPoints() {
         for (LXPoint point : modelTE.edgePoints) {
-            colors[point.index] = TRANSPARENT;
+            setColor(point.index,TRANSPARENT);
         }
     }
 
-    private void paintAll(int[] colors, int color) {
+    private void paintAll(int color) {
         time = System.currentTimeMillis();
 
         // calculate milliseconds per beat at current bpm and build
@@ -58,7 +58,7 @@ public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
             if (stopRequest) {
                 this.active = false;
                 this.stopRequest = false;
-                clearAllPoints(colors);
+                clearAllPoints();
                 return;
             }
             startTime = time;
@@ -88,14 +88,14 @@ public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
             if (spark > (3f * Math.random())) v = wavefront * wavefront * wavefront;
 
             int alpha = (int) (255f * v);
-            colors[point.index] = (colorSet[colorIndex] & 0x00FFFFFF) | (alpha << 24);
+            setColor(point.index,(colorSet[colorIndex] & 0x00FFFFFF) | (alpha << 24));
         }
     }
 
     @Override
-    public void run(double deltaMsec, int[] colors) {
+    public void run(double deltaMsec) {
         if (this.active) {
-            paintAll(colors, buttons.getCurrentColor());
+            paintAll(buttons.getCurrentColor());
         }
     }
 }
