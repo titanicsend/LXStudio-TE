@@ -35,7 +35,7 @@ public class UITEPerformancePattern implements UIDeviceControls<TEPerformancePat
 
   private UIDevice uiDevice;
   private TEPerformancePattern device;
-  private List<UI2dComponent> controls = new ArrayList<UI2dComponent>();
+  private final List<UI2dComponent> controls = new ArrayList<UI2dComponent>();
 
   @Override
   public void buildDeviceControls(heronarts.lx.studio.LXStudio.UI ui, UIDevice uiDevice, TEPerformancePattern device) {
@@ -57,15 +57,20 @@ public class UITEPerformancePattern implements UIDeviceControls<TEPerformancePat
   }
 
   protected void refresh() {
+    clearControls();
+    addControls();
+  }
+
+  private void clearControls() {
     for (UI2dComponent control : this.controls) {
       try {
         control.removeFromContainer();
+        control.dispose();
       } catch (Exception ex) {
         TE.log("Warning in UITEPerformancePattern: error removing control from container: " + ex.toString());
       }
     }
     this.controls.clear();
-    addControls();
   }
 
   private void addControls() {
@@ -112,6 +117,7 @@ public class UITEPerformancePattern implements UIDeviceControls<TEPerformancePat
   @Override
   public void disposeDeviceControls(heronarts.lx.studio.LXStudio.UI ui, UIDevice uiDevice, TEPerformancePattern device) {
     if (this.device != null) {
+      clearControls();
       this.device.remoteControlsChanged.removeListener(this);
       this.device = null;
       this.uiDevice = null;
