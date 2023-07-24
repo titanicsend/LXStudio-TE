@@ -9,7 +9,6 @@ import static titanicsend.util.TEColor.TRANSPARENT;
 public class MF64XWave extends TEMidiFighter64Subpattern {
     boolean active = false;
     boolean stopRequest = false;
-    int refCount;
     double time;
     double startTime;
     static final float beatCount = 2f;
@@ -17,7 +16,6 @@ public class MF64XWave extends TEMidiFighter64Subpattern {
     @Override
     public void buttonDown(TEMidiFighter64DriverPattern.Mapping mapping) {
         buttons.addButton(mapping.col, overlayColors[mapping.col]);
-        refCount++;
         this.active = true;
         stopRequest = false;
         startTime = System.currentTimeMillis();
@@ -25,16 +23,8 @@ public class MF64XWave extends TEMidiFighter64Subpattern {
 
     @Override
     public void buttonUp(TEMidiFighter64DriverPattern.Mapping mapping) {
-        buttons.removeButton(mapping.col);
-        refCount--;
-        if (refCount == 0) this.stopRequest = true;
+        if (buttons.removeButton(mapping.col) == 0) this.stopRequest = true;
     }
-
-    private void clearAllPoints() {
-        for (LXPoint point : modelTE.getPoints()) {
-            setColor(point.index, TRANSPARENT);
-         }
-     }
 
     public MF64XWave(TEMidiFighter64DriverPattern driver) {
         super(driver);
@@ -59,7 +49,6 @@ public class MF64XWave extends TEMidiFighter64Subpattern {
             if (stopRequest) {
                 this.active = false;
                 this.stopRequest = false;
-                clearAllPoints();
                 return;
             }
             startTime = time;

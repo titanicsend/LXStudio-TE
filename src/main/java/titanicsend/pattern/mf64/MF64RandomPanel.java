@@ -12,8 +12,6 @@ import static titanicsend.util.TEColor.TRANSPARENT;
 public class MF64RandomPanel extends TEMidiFighter64Subpattern {
     boolean active;
     boolean stopRequest;
-    private int refCount;
-
     VariableSpeedTimer time;
     float eventStartTime;
     float elapsedTime;
@@ -31,13 +29,11 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
 
         time = new VariableSpeedTimer();
         eventStartTime = -99f;
-        refCount = 0;
     }
 
     @Override
     public void buttonDown(TEMidiFighter64DriverPattern.Mapping mapping) {
         buttons.addButton(mapping.col, overlayColors[mapping.col]);
-        refCount++;
         this.active = true;
         this.stopRequest = false;
         startNewEvent();
@@ -45,9 +41,7 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
 
     @Override
     public void buttonUp(TEMidiFighter64DriverPattern.Mapping mapping) {
-        buttons.removeButton(mapping.col);
-        refCount--;
-        if (refCount == 0) this.stopRequest = true;
+        if (buttons.removeButton(mapping.col) == 0) this.stopRequest = true;
     }
 
     void startNewEvent() {
@@ -67,7 +61,7 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
         // number of lit panels increases slightly with number of buttons pressed.
         // TEMath.clamp's min and max indicate percentages of coverage.
         float litProbability = (float) TEMath.clamp(0.4 + 0.3f * ((float) colorSet.length - 1) / 7f,
-                0.4, 0.7);
+            0.4, 0.7);
 
         // clear the decks if we're getting ready to stop
         if (stopRequest) {
@@ -104,16 +98,9 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
             float deltaT = Math.min(1.0f, 4f * elapsedTime);
 
             for (TEPanelModel.LitPointData p : panel.litPointData) {
-                // quick out for uncolored panels
-                if (col == TRANSPARENT) {
-                    setColor(p.point.index, TRANSPARENT);
-                    // color an expanding radius
-                } else if (p.radiusFraction <= deltaT) {
+                if (col != TRANSPARENT && p.radiusFraction <= deltaT) {
                     int alpha = (int) (255f * deltaT);
                     setColor(p.point.index, (col & 0x00FFFFFF) | (alpha << 24));
-                    // leave uncolored points alone
-                } else {
-                    setColor(p.point.index, TRANSPARENT);
                 }
             }
         }

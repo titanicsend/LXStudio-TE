@@ -11,7 +11,6 @@ public class MF64SpiralSquares extends TEMidiFighter64Subpattern {
     private boolean active;
     private boolean stopRequest;
     private VariableSpeedTimer time;
-    private int refCount;
 
     public MF64SpiralSquares(TEMidiFighter64DriverPattern driver) {
         super(driver);
@@ -19,23 +18,18 @@ public class MF64SpiralSquares extends TEMidiFighter64Subpattern {
         time = new VariableSpeedTimer();
         this.active = false;
         this.stopRequest = false;
-
-        refCount = 0;
     }
 
     @Override
     public void buttonDown(TEMidiFighter64DriverPattern.Mapping mapping) {
         this.stopRequest = false;
         buttons.addButton(mapping.col, overlayColors[mapping.col]);
-        refCount++;
         this.active = true;
     }
 
     @Override
     public void buttonUp(TEMidiFighter64DriverPattern.Mapping mapping) {
-        buttons.removeButton(mapping.col);
-        refCount--;
-        if (refCount == 0) this.stopRequest = true;
+        if (buttons.removeButton(mapping.col) == 0) this.stopRequest = true;
     }
 
     private void paintAll(int color) {
@@ -78,9 +72,8 @@ public class MF64SpiralSquares extends TEMidiFighter64Subpattern {
             float sy = y1 * cosT - x1 * sinT;
 
             float dx = (float) Math.abs(Math.sin(4.0 * Math.log(x * sx + y * sy) + point.azimuth - t1));
-            int on = ((dx * dx * dx) < 0.15) ? 1 : 0;
-
-            setColor(point.index, color * on);
+            boolean on = ((dx * dx * dx) < 0.15);
+            if (on) setColor(point.index, color);
         }
     }
 

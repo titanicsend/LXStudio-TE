@@ -9,9 +9,7 @@ import static titanicsend.util.TEColor.TRANSPARENT;
 public class MF64RingPattern extends TEMidiFighter64Subpattern {
     boolean active = false;
     boolean stopRequest = false;
-    int refCount;
     double startTime;
-
     double time;
     float ringWidth;
 
@@ -34,8 +32,7 @@ public class MF64RingPattern extends TEMidiFighter64Subpattern {
 
     @Override
     public void buttonDown(TEMidiFighter64DriverPattern.Mapping mapping) {
-        buttons.addButton(mapping.col,overlayColors[mapping.col]);
-        refCount++;
+        buttons.addButton(mapping.col, overlayColors[mapping.col]);
         this.active = true;
         stopRequest = false;
         startTime = System.currentTimeMillis();
@@ -43,15 +40,7 @@ public class MF64RingPattern extends TEMidiFighter64Subpattern {
 
     @Override
     public void buttonUp(TEMidiFighter64DriverPattern.Mapping mapping) {
-        buttons.removeButton(mapping.col);
-        refCount--;
-        if (refCount == 0) this.stopRequest = true;
-    }
-
-    private void clearAllPoints() {
-        for (LXPoint point : modelTE.getPoints()) {
-            setColor(point.index, TRANSPARENT);
-        }
+        if (buttons.removeButton(mapping.col) == 0) this.stopRequest = true;
     }
 
     private void paintAll(int color) {
@@ -65,14 +54,13 @@ public class MF64RingPattern extends TEMidiFighter64Subpattern {
         int[] colorSet = buttons.getAllColors();
 
         // make the rings slightly thinner as we add colors
-        ringWidth = (float) TEMath.clamp(0.4f / (float) colorSet.length,0.08,0.2);
+        ringWidth = (float) TEMath.clamp(0.4f / (float) colorSet.length, 0.08, 0.2);
 
         // if we've completed a cycle see if we reset or stop
         if (ringSawtooth >= 1f) {
             if (stopRequest) {
                 this.active = false;
                 this.stopRequest = false;
-                clearAllPoints();
                 return;
             }
             startTime = time;
@@ -81,8 +69,8 @@ public class MF64RingPattern extends TEMidiFighter64Subpattern {
 
         // define a ring moving out from the model center at 1 cycle/beat
         for (LXPoint point : modelTE.getPoints()) {
-            float k,offs;
-            int on,col;
+            float k, offs;
+            int on, col;
 
             offs = 0f;
             col = TRANSPARENT;
@@ -90,12 +78,11 @@ public class MF64RingPattern extends TEMidiFighter64Subpattern {
                 k = (1.0f - ringSawtooth) + (point.rcn + offs);
                 on = (int) (k * square(k, ringWidth));
                 if (on > 0) {
-                    col = colorSet[i];
+                    setColor(point.index,colorSet[i]);
                     break;
                 }
                 offs += ringWidth;
             }
-            setColor(point.index, col);
         }
     }
 

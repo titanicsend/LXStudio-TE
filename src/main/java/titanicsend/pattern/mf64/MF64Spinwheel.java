@@ -13,7 +13,6 @@ import static titanicsend.util.TEColor.TRANSPARENT;
 public class MF64Spinwheel extends TEMidiFighter64Subpattern {
     boolean active;
     boolean stopRequest;
-    private int refCount;
     VariableSpeedTimer time;
     float eventStartTime;
     float elapsedTime;
@@ -32,12 +31,11 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
 
         time = new VariableSpeedTimer();
         eventStartTime = -99f;
-        refCount = 0;
     }
+
     @Override
     public void buttonDown(TEMidiFighter64DriverPattern.Mapping mapping) {
-        buttons.addButton(mapping.col,overlayColors[mapping.col]);
-        refCount++;
+        buttons.addButton(mapping.col, overlayColors[mapping.col]);
         this.active = true;
         this.stopRequest = false;
         startNewEvent();
@@ -45,9 +43,7 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
 
     @Override
     public void buttonUp(TEMidiFighter64DriverPattern.Mapping mapping) {
-        buttons.removeButton(mapping.col);
-        refCount--;
-        if (refCount == 0) this.stopRequest = true;
+        if (buttons.removeButton(mapping.col) == 0) this.stopRequest = true;
     }
 
     void startNewEvent() {
@@ -55,7 +51,7 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
         eventStartTime = -time.getTimef();
     }
 
-     float fract(float n) {
+    float fract(float n) {
         return (float) (n - Math.floor(n));
     }
 
@@ -65,14 +61,14 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
 
     // does the spinwheel thing, returns the brightness
     // at the specified pixel.
-    float spinwheel(TEPanelModel.LitPointData lp,float spin, float grow) {
+    float spinwheel(TEPanelModel.LitPointData lp, float spin, float grow) {
         // move coordinate origin to panel center
         float x = lp.point.z - panelCenter.z;
         float y = lp.point.y - panelCenter.y;
 
         // can derive local azimuth geometrically, but atan2 is faster...
         // the arX multiplier controls the number of petals.  Higher is more.
-        float arX = (float) (Math.atan2(y,x) * 1.25 + spin);
+        float arX = (float) (Math.atan2(y, x) * 1.25 + spin);
         float arY = (float) (lp.radiusFraction + grow);
 
         // Shape the pulse made by the arY + grow term. Higher divisor == more contrast
@@ -83,10 +79,10 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
         arX = Math.abs(fract(arX)) - 0.5f;
         arY = Math.abs(fract(arY)) - 0.5f;
 
-        float bri = (float) ((0.2/(arX*arX+arY*arY) * .19) * pulse);
+        float bri = (float) ((0.2 / (arX * arX + arY * arY) * .19) * pulse);
 
         // clamp to range, then small gamma correction
-        bri = clamp(bri*4f,0f,1f);
+        bri = clamp(bri * 4f, 0f, 1f);
         return bri * bri;
     }
 
@@ -101,8 +97,8 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
 
         // number of lit panels increases slightly with number of buttons pressed.
         // TEMath.clamp's min and max indicate percentages of coverage.
-        float litProbability = (float) TEMath.clamp(0.4 + 0.3f * ((float) colorSet.length - 1)/7f,
-                0.4,0.7);
+        float litProbability = (float) TEMath.clamp(0.4 + 0.3f * ((float) colorSet.length - 1) / 7f,
+            0.4, 0.7);
 
         // clear the decks if we're getting ready to stop
         if (stopRequest) {
@@ -132,20 +128,17 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
             if (isLit) {
                 col = colorSet[colorIndex];
                 colorIndex = (colorIndex + 1) % colorSet.length;
-            }
-            else {
+            } else {
                 col = TRANSPARENT;
             }
 
             // now draw something on the lit panel
             for (TEPanelModel.LitPointData p : panel.litPointData) {
                 // quick out for uncolored panels
-                if (col == TRANSPARENT) {
-                    setColor(p.point.index,TRANSPARENT);
-                } else {
+                if (col != TRANSPARENT) {
                     // do the spinwheel thing
                     panelCenter = panel.centroid;
-                    int alpha = (int) (255f * spinwheel(p,spin,grow));
+                    int alpha = (int) (255f * spinwheel(p, spin, grow));
                     setColor(p.point.index, (col & 0x00FFFFFF) | (alpha << 24));
                 }
             }

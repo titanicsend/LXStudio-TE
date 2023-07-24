@@ -2,12 +2,12 @@ package titanicsend.pattern.mf64;
 
 import heronarts.lx.model.LXPoint;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
+
 import static titanicsend.util.TEColor.TRANSPARENT;
 
 public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
     boolean active = false;
     boolean stopRequest = false;
-    int refCount;
     double time;
     double startTime;
     static final float rocketSize = 0.045f;
@@ -21,8 +21,7 @@ public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
 
     @Override
     public void buttonDown(TEMidiFighter64DriverPattern.Mapping mapping) {
-        buttons.addButton(mapping.col,overlayColors[mapping.col]);
-        refCount++;
+        buttons.addButton(mapping.col, overlayColors[mapping.col]);
         this.active = true;
         stopRequest = false;
         // uncomment to enable "glitch in place" feature.
@@ -31,15 +30,7 @@ public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
 
     @Override
     public void buttonUp(TEMidiFighter64DriverPattern.Mapping mapping) {
-        buttons.removeButton(mapping.col);
-        refCount--;
-        if (refCount == 0) this.stopRequest = true;
-    }
-
-    private void clearAllPoints() {
-        for (LXPoint point : modelTE.edgePoints) {
-            setColor(point.index,TRANSPARENT);
-        }
+        if (buttons.removeButton(mapping.col) == 0) this.stopRequest = true;
     }
 
     private void paintAll(int color) {
@@ -58,7 +49,6 @@ public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
             if (stopRequest) {
                 this.active = false;
                 this.stopRequest = false;
-                clearAllPoints();
                 return;
             }
             startTime = time;
@@ -88,7 +78,7 @@ public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
             if (spark > (3f * Math.random())) v = wavefront * wavefront * wavefront;
 
             int alpha = (int) (255f * v);
-            setColor(point.index,(colorSet[colorIndex] & 0x00FFFFFF) | (alpha << 24));
+            setColor(point.index, (colorSet[colorIndex] & 0x00FFFFFF) | (alpha << 24));
         }
     }
 

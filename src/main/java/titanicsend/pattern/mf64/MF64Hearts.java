@@ -12,7 +12,6 @@ import static titanicsend.util.TEColor.TRANSPARENT;
 public class MF64Hearts extends TEMidiFighter64Subpattern {
     boolean active;
     boolean stopRequest;
-    private int refCount;
     VariableSpeedTimer time;
     float eventStartTime;
     double elapsedTime;
@@ -33,12 +32,11 @@ public class MF64Hearts extends TEMidiFighter64Subpattern {
 
         time = new VariableSpeedTimer();
         eventStartTime = -99f;
-        refCount = 0;
     }
+
     @Override
     public void buttonDown(TEMidiFighter64DriverPattern.Mapping mapping) {
-        buttons.addButton(mapping.col,overlayColors[mapping.col]);
-        refCount++;
+        buttons.addButton(mapping.col, overlayColors[mapping.col]);
         this.active = true;
         this.stopRequest = false;
         startNewEvent();
@@ -46,9 +44,7 @@ public class MF64Hearts extends TEMidiFighter64Subpattern {
 
     @Override
     public void buttonUp(TEMidiFighter64DriverPattern.Mapping mapping) {
-        buttons.removeButton(mapping.col);
-        refCount--;
-        if (refCount == 0) this.stopRequest = true;
+        if (buttons.removeButton(mapping.col) == 0) this.stopRequest = true;
     }
 
     private void startNewEvent() {
@@ -56,23 +52,23 @@ public class MF64Hearts extends TEMidiFighter64Subpattern {
         eventStartTime = -time.getTimef();
     }
 
-     private double fract(double n) {
+    private double fract(double n) {
         return (n - Math.floor(n));
     }
 
     // heart sdf ported from:
     // https://github.com/zranger1/PixelblazePatterns/blob/master/2D_and_3D/heartbeat-SDF-2D.js
     // heart plus a little extra curvature to look nice on LED displays.
-    private double heart(double x, double y,double radius) {
+    private double heart(double x, double y, double radius) {
         // tweak aspect ratio a little for triangular panels
         x = x / radius * 1.25;
 
         // signed distance from 1/2 heart, mirrored about x axis
         y = y / radius + this.yCenter - Math.sqrt(Math.abs(x));
-        radius = Math.hypot(x,y);
+        radius = Math.hypot(x, y);
 
         // invert sdf result and return distance
-        return 1-radius;
+        return 1 - radius;
     }
 
     private void paintAll(int color) {
@@ -86,8 +82,8 @@ public class MF64Hearts extends TEMidiFighter64Subpattern {
 
         // number of lit panels increases slightly with number of buttons pressed.
         // TEMath.clamp's min and max indicate percentages of coverage.
-        float litProbability = (float) TEMath.clamp(0.4 + 0.3f * ((float) colorSet.length - 1)/7f,
-                0.4,0.7);
+        float litProbability = (float) TEMath.clamp(0.4 + 0.3f * ((float) colorSet.length - 1) / 7f,
+            0.4, 0.7);
 
         // clear the decks if we're getting ready to stop
         if (stopRequest) {
@@ -117,17 +113,14 @@ public class MF64Hearts extends TEMidiFighter64Subpattern {
                 col = colorSet[colorIndex];
                 colorIndex = (colorIndex + 1) % colorSet.length;
                 yCenter = Math.min(0.4, panel.yRange / panel.zRange);
-            }
-            else {
+            } else {
                 col = TRANSPARENT;
             }
 
             // now draw something on the lit panel
             for (TEPanelModel.LitPointData p : panel.litPointData) {
                 // quick out for uncolored panels
-                if (col == TRANSPARENT) {
-                    setColor(p.point.index, TRANSPARENT);
-                } else {
+                if (col != TRANSPARENT) {
                     // generate roughly centered and normalized (relative to panel)
                     // coordinates
                     double x = (p.point.z - panel.centroid.z) / panel.zRange;
@@ -136,7 +129,7 @@ public class MF64Hearts extends TEMidiFighter64Subpattern {
                     // heart sdf returns inverse distance from repeating figure.
                     // 1.0 at center, decreasing as you move out. We use this
                     // to calculate brightness, applied here as alpha
-                    double d = heart(x,y,heartSize)/heartSize;
+                    double d = heart(x, y, heartSize) / heartSize;
                     int alpha = (int) (255 * d);
                     setColor(p.point.index, (col & 0x00FFFFFF) | (alpha << 24));
                 }

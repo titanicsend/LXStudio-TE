@@ -21,27 +21,52 @@ public class ButtonColorMgr {
 
         int getColor() { return LXColor.rgba(r,g,b,255); }
     }
-    int defaultColor = TRANSPARENT;
+    private int refCount;
+    private int defaultColor = TRANSPARENT;
     private final ArrayList<ButtonInfo> map;
 
     public ButtonColorMgr() {
         map = new ArrayList<ButtonInfo>(8);
+        refCount = 0;
     }
 
-    public void addButton(int id, int color) {
+    public int getRefCount() {
+        return refCount;
+    }
+
+    public void reset() {
+        map.clear();
+        refCount = 0;
+    }
+
+    /**
+     * Adds button to the list of currently "down" buttons
+     * @param id button ID
+     * @param color color associated with button
+     * @return number of buttons currently pressed
+     */
+    public int addButton(int id, int color) {
         defaultColor = color;
         ButtonInfo bi = new ButtonInfo(id,color);
         map.add(bi);
+        return refCount++;
     }
 
-    public void removeButton(int id) {
+    /**
+     * Remove button from list of currently active buttons
+     * @param id button ID
+     * @return number of buttons currently pressed
+     */
+    public int removeButton(int id) {
         for (ButtonInfo bi : map) {
             if (bi.id == id) {
                 defaultColor = getCurrentColor();
                 map.remove(bi);
+                refCount--;
                 break;
             }
         }
+        return refCount;
     }
 
     public int getColorCount() {
