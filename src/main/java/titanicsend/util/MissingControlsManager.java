@@ -34,7 +34,7 @@ public class MissingControlsManager {
 
     private static MissingControlsManager instance;
 
-    public static synchronized MissingControlsManager getMissingControlsManager() {
+    public static synchronized MissingControlsManager get() {
         if (instance == null) {
             instance = new MissingControlsManager();
         }
