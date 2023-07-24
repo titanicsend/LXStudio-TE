@@ -7,28 +7,21 @@ import titanicsend.pattern.TEMidiFighter64DriverPattern;
 public abstract class TEMidiFighter64Subpattern {
     protected final TEMidiFighter64DriverPattern driver;
     protected TEWholeModel modelTE;
-    protected static final int[] overlayColors = {
-        LXColor.rgb(255, 0, 0),
-        LXColor.rgb(255, 170, 0),
-        LXColor.rgb(255, 255, 0),
-        LXColor.rgb(0, 255, 0),
-        LXColor.rgb(0, 170, 170),
-        LXColor.rgb(0, 0, 255),
-        LXColor.rgb(255, 0, 255),
-        LXColor.rgb(255, 255, 255),
-    };
+
+    // array to hold the current color for each button
+    protected int[] overlayColors;
 
     protected ButtonColorMgr buttons;
 
     protected TEMidiFighter64Subpattern(TEMidiFighter64DriverPattern driver) {
         this.driver = driver;
         this.modelTE = this.driver.getModelTE();
-
         this.buttons = new ButtonColorMgr();
+        this.overlayColors = this.driver.overlayColors;
     }
 
-    // set color at index with controlled "blending". Note that this isn't "accurate"
-    // blending.  It has three goals:
+    // set pixel color at index with controlled "blending". Note that this isn't
+    // "accurate" blending.  It has three goals:
     // 1 - make sure that *something* happens when the user presses controls in
     // multiple rows or columns
     // 2 - make sure that there's nothing the user can do to make the car look really
@@ -46,5 +39,7 @@ public abstract class TEMidiFighter64Subpattern {
 
     public abstract void buttonUp(TEMidiFighter64DriverPattern.Mapping mapping);
 
-    public abstract void run(double deltaMsec);
+    public void run(double deltaMsec) {
+
+    };
 }
