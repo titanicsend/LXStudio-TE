@@ -28,9 +28,9 @@ import titanicsend.util.TE;
 import titanicsend.util.TEColor;
 
 import java.nio.FloatBuffer;
-import java.util.*;
-
-import static titanicsend.util.MissingControlsManager.getMissingControlsManager;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class TEPerformancePattern extends TEAudioPattern {
 
@@ -636,7 +636,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          */
         public void addCommonControls(TEPerformancePattern pat) {
             // load the missing controls file
-            MissingControlsManager.MissingControls missingControls = getMissingControlsManager().findMissingControls(pat.getClass());
+            MissingControlsManager.MissingControls missingControls = MissingControlsManager.get().findMissingControls(pat.getClass());
 
             String colorPrefix = "";
             if (missingControls != null && !missingControls.uses_palette) {
