@@ -106,7 +106,6 @@ public class TEApp extends PApplet implements LXPlugin {
 
   // Global feature on/off switches for troubleshooting
   public static final boolean ENABLE_COLOR_CENTRAL = true;
-  static public final boolean ENABLE_TOUCHOSC_IPADS = true;
   public static final boolean ENABLE_VIEW_CENTRAL = true;
   public static final boolean DELAY_FILE_OPEN_TO_FIRST_ENGINE_LOOP = true;
 
@@ -356,7 +355,7 @@ public class TEApp extends PApplet implements LXPlugin {
     this.viewCentral = new ViewCentral(lx);
 
     // CrutchOSC is an LXOscEngine supplement for TouchOSC clients
-    this.crutchOSC = new CrutchOSC(lx);
+    lx.engine.registerComponent("focus", this.crutchOSC = new CrutchOSC(lx));
     
   }
 
