@@ -276,8 +276,8 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
         addParameter("pokePitch", this.pokePitch);
         addParameter("poke", this.pokeButton);
         addParameter("colorMode", this.colorMode);
-        addParameter("rowShift1", this.rowShift1);
-        addParameter("rowShift2", this.rowShift2);
+        //addParameter("rowShift1", this.rowShift1);
+        //addParameter("rowShift2", this.rowShift2);
 
         this.fakePush.addListener(this.fakepushListener);
         this.pokeButton.addListener(this.pokeListener);
