@@ -3,14 +3,12 @@ package titanicsend.pattern;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.color.LXDynamicColor;
 import heronarts.lx.midi.*;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.pattern.mf64.*;
 
-import static titanicsend.util.TEMath.fract;
 
 @LXCategory("Combo FG")
 public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiListener {
@@ -153,8 +151,10 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     private final MF64XWave xwave = new MF64XWave(this);
     private final MF64Hearts heart = new MF64Hearts(this);
 
+    // NOTE: for blending to work as designed, flash (and other patterns which make
+    // useful backgrounds) should be last in this list
     private final TEMidiFighter64Subpattern[] patternList = {
-        logger, flash, ring, ssquare, randomPanel, eSparks, spin, xwave, heart
+        logger, ring, ssquare, randomPanel, eSparks, spin, xwave, heart, flash
     };
 
     private final TEMidiFighter64Subpattern[] buttonAssignments = {
@@ -191,9 +191,12 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
 
     // Row shift for testing on midi controllers w/fewer than 8 rows
     // of buttons.
-    public final DiscreteParameter rowShift =
-        new DiscreteParameter("RowShift", 0, 8)
-            .setDescription("RowOffset");
+    public final DiscreteParameter rowShift1 =
+        new DiscreteParameter("Row1", 0, 8)
+            .setDescription("Row1 Offset");
+    public final DiscreteParameter rowShift2 =
+        new DiscreteParameter("Row2", 0, 8)
+            .setDescription("Row2 Offset");
 
     public final DiscreteParameter pokeVelocity =
         new DiscreteParameter("Vel", 0, 128)
@@ -202,7 +205,6 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     public final DiscreteParameter pokePitch =
         new DiscreteParameter("Pitch", 0, 128)
             .setDescription("Pitch");
-
     public final BooleanParameter pokeButton =
         new BooleanParameter("Poke", false)
             .setMode(BooleanParameter.Mode.MOMENTARY)
@@ -274,7 +276,8 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
         addParameter("pokePitch", this.pokePitch);
         addParameter("poke", this.pokeButton);
         addParameter("colorMode", this.colorMode);
-        addParameter("rowShift", this.rowShift);
+        addParameter("rowShift1", this.rowShift1);
+        addParameter("rowShift2", this.rowShift2);
 
         this.fakePush.addListener(this.fakepushListener);
         this.pokeButton.addListener(this.pokeListener);
@@ -368,13 +371,13 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
         // color 0 is always a bright desaturated version of the primary,
         // color 7 is always white.
         // For the rest, we generate a palette of complimentary colors
-        // by rotating the hue by the golden ratio conjugate. This creates
+        // by rotating the hue by 1/2 the golden ratio conjugate. This creates
         // contrasting colors that are still in harmony with the primary.
         overlayColors[0] = LXColor.hsb(h * 360f, 100, b);
         overlayColors[7] = defaultOverlayColors[7];
 
         for (int i = 1; i < overlayColors.length - 1; i++) {
-            h = (h + 0.61803f) % 1f;
+            h = (h + 0.309015f) % 1f;
             overlayColors[i] = LXColor.hsb(h * 360f,s,b);
         }
         lastColor = color;
@@ -466,10 +469,28 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
         }
     };
 
+    // convenience function for testing on controllers
+    // with fewer buttons than the MF64
+    protected int testRowMangler(int row) {
+        switch(row) {
+            case 1:
+                row = (row + rowShift1.getValuei()) % 8;
+                break;
+            case 2:
+                row = (mapping.row + rowShift2.getValuei()) % 8;
+                break;
+            default:
+                break;
+        }
+        return row;
+    }
+
     @Override
     public void noteOnReceived(MidiNoteOn note) {
         this.mapping.map(note);
-        mapping.row = (rowShift.getValuei() + mapping.row) % 8;
+        mapping.row = mapping.row % 8;
+        //mapping.row = testRowMangler(mapping.row % 8);
+
         int patternIndex = mapping.page == Mapping.Page.LEFT ? 0 : 64;
         patternIndex += (7 - mapping.row) * 8;
         patternIndex += mapping.col;
@@ -479,7 +500,8 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     @Override
     public void noteOffReceived(MidiNote note) {
         this.mapping.map(note);
-        mapping.row = (rowShift.getValuei() + mapping.row) % 8;
+        mapping.row = mapping.row % 8;
+        //mapping.row = testRowMangler(mapping.row % 8);
         int patternIndex = mapping.page == Mapping.Page.LEFT ? 0 : 64;
         patternIndex += (7 - mapping.row) * 8;
         patternIndex += mapping.col;

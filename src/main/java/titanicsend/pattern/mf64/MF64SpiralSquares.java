@@ -5,12 +5,10 @@ import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.pattern.jon.VariableSpeedTimer;
 import titanicsend.util.TEMath;
 
-import static titanicsend.util.TEColor.TRANSPARENT;
-
 public class MF64SpiralSquares extends TEMidiFighter64Subpattern {
     private boolean active;
     private boolean stopRequest;
-    private VariableSpeedTimer time;
+    private final VariableSpeedTimer time;
 
     public MF64SpiralSquares(TEMidiFighter64DriverPattern driver) {
         super(driver);
@@ -38,11 +36,13 @@ public class MF64SpiralSquares extends TEMidiFighter64Subpattern {
         if (stopRequest) {
             stopRequest = false;
             active = false;
-            color = TRANSPARENT;
         }
 
         // calculate time scale at current bpm
         time.setScale(4f * (float) (driver.getTempo().bpm() / 60.0));
+
+        // grab colors of all currently pressed buttons
+        int[] colorSet = buttons.getAllColors();
 
         // rotation rate is one per second. We sneakily control speed
         // by controlling the speed of time, so we can avoid trig operations
@@ -50,6 +50,7 @@ public class MF64SpiralSquares extends TEMidiFighter64Subpattern {
         float cosT = (float) Math.cos(TEMath.TAU / 1000);
         float sinT = (float) Math.sin(TEMath.TAU / 1000);
         float t1 = time.getTimef();
+        float t2 = t1 / 8;
 
         // a squared spiral from Pixelblaze pattern "Tunnel of Squares" at
         // https://github.com/zranger1/PixelblazePatterns/tree/master/2D_and_3D
@@ -61,7 +62,7 @@ public class MF64SpiralSquares extends TEMidiFighter64Subpattern {
 
             // repeat pattern over x axis at interval cx to make
             // two spirals, one on each end of car.
-            float cx = 0.3f;  // two spirals, one on each end of car
+            float cx = 0.3f;
             x = TEMath.floorModf(x + 0.5f * cx, cx) - 0.5f * cx;
 
             // set up our square spiral
@@ -73,7 +74,12 @@ public class MF64SpiralSquares extends TEMidiFighter64Subpattern {
 
             float dx = (float) Math.abs(Math.sin(4.0 * Math.log(x * sx + y * sy) + point.azimuth - t1));
             boolean on = ((dx * dx * dx) < 0.15);
-            if (on) setColor(point.index, color);
+            if (on) {
+                float azimuth = (float) Math.atan2(y, x);
+                azimuth = (float) (t2 + ((azimuth > 0) ? azimuth : azimuth + TEMath.TAU) / TEMath.TAU);
+                int colorIndex = (int) (colorSet.length * azimuth % colorSet.length);
+                blendColor(point.index, colorSet[colorIndex]);
+            }
         }
     }
 

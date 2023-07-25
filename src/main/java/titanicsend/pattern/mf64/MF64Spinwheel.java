@@ -118,29 +118,23 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
         int col;
         for (TEPanelModel panel : modelTE.getAllPanels()) {
 
+            boolean isLit = (prng.nextFloat() <= litProbability);
+            if (!isLit) continue;
+
             // exclude the 4 flat-on-z front and back panels because x vs.z
             // gets too weird for radial math without time-consuming adjustments
             if (panel.getId().length() == 2) continue;
 
-            boolean isLit = (prng.nextFloat() <= litProbability);
+            // pick a color from our set
+            col = colorSet[colorIndex];
+            colorIndex = (colorIndex + 1) % colorSet.length;
 
-            // if panel is lit, pick a color from our set
-            if (isLit) {
-                col = colorSet[colorIndex];
-                colorIndex = (colorIndex + 1) % colorSet.length;
-            } else {
-                col = TRANSPARENT;
-            }
-
-            // now draw something on the lit panel
+            // now draw something on the panel
             for (TEPanelModel.LitPointData p : panel.litPointData) {
-                // quick out for uncolored panels
-                if (col != TRANSPARENT) {
-                    // do the spinwheel thing
-                    panelCenter = panel.centroid;
-                    int alpha = (int) (255f * spinwheel(p, spin, grow));
-                    setColor(p.point.index, (col & 0x00FFFFFF) | (alpha << 24));
-                }
+                // do the spinwheel thing
+                panelCenter = panel.centroid;
+                int alpha = (int) (255f * spinwheel(p, spin, grow));
+                blendColor(p.point.index, (col & 0x00FFFFFF) | (alpha << 24));
             }
         }
     }

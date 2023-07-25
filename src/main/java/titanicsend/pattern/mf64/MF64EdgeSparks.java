@@ -3,7 +3,7 @@ package titanicsend.pattern.mf64;
 import heronarts.lx.model.LXPoint;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 
-import static titanicsend.util.TEColor.TRANSPARENT;
+import static titanicsend.util.TEColor.setBrightness;
 
 public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
     boolean active = false;
@@ -77,8 +77,10 @@ public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
             float spark = ((wavefront < rocketPos) && (wavefront >= 0.35)) ? wavefront : 0;
             if (spark > (3f * Math.random())) v = wavefront * wavefront * wavefront;
 
-            int alpha = (int) (255f * v);
-            setColor(point.index, (colorSet[colorIndex] & 0x00FFFFFF) | (alpha << 24));
+            if (v > 0) {
+                color = setBrightness(colorSet[colorIndex], v);
+                setColor(point.index, color);
+            }
         }
     }
 

@@ -2,7 +2,6 @@ package titanicsend.pattern.mf64;
 
 import heronarts.lx.model.LXPoint;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
-import static titanicsend.util.TEColor.reAlpha;
 
 public class MF64FlashPattern extends TEMidiFighter64Subpattern {
     private boolean active;
@@ -24,15 +23,10 @@ public class MF64FlashPattern extends TEMidiFighter64Subpattern {
     }
 
     private void paintAll(int color) {
-        // for flash, we're going to reduce alpha just slightly to
-        // 1 - keep the car from ever going 100% white and
-        // 2 - make it possible for other patterns to draw over the flash
-        // while the button is held down, which gives them the ability
-        // to roughly control the background color.
-        color = reAlpha(color, 240);
-
+        // flash uses setColorAsBackground which only paints previously transparent pixels
+        // so that it will automatically work as a background for other patterns
         for (LXPoint point : this.modelTE.getPoints()) {
-            setColor(point.index, color);
+            setColorAsBackground(point.index, color);
         }
     }
 

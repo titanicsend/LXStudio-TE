@@ -4,8 +4,6 @@ import heronarts.lx.model.LXPoint;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.util.TEMath;
 
-import static titanicsend.util.TEColor.TRANSPARENT;
-
 public class MF64XWave extends TEMidiFighter64Subpattern {
     boolean active = false;
     boolean stopRequest = false;
@@ -32,7 +30,6 @@ public class MF64XWave extends TEMidiFighter64Subpattern {
     }
 
     private void paintAll(int color) {
-        int col;
 
         // calculate milliseconds per beat at current bpm and build
         // a sawtooth wave that goes from 0 to 1 over that timespan
@@ -61,10 +58,10 @@ public class MF64XWave extends TEMidiFighter64Subpattern {
             float dist = 1f - Math.abs(point.zn - lightWave);
             dist = dist * dist;
 
-            int alpha = (int) (255 * TEMath.clamp(dist, 0, 1));
-            col = (dist > 0.9) ? (color & 0x00FFFFFF) | (alpha << 24) : TRANSPARENT;
-
-            setColor(point.index, col);
+            if (dist > 0.9) {
+                int alpha = (int) (255 * TEMath.clamp(dist, 0, 1));
+                blendColor(point.index,(color & 0x00FFFFFF) | (alpha << 24));
+            }
         }
 
         lightWave = 1 - movement;
@@ -74,10 +71,10 @@ public class MF64XWave extends TEMidiFighter64Subpattern {
             float dist = 1f - Math.abs(point.zn - lightWave);
             dist = dist * dist;
 
-            int alpha = (int) (255 * TEMath.clamp(dist, 0, 1));
-            col = (dist > 0.9) ? (color & 0x00FFFFFF) | (alpha << 24) : TRANSPARENT;
-
-            setColor(point.index, col);
+            if (dist > 0.9) {
+                int alpha = (int) (255 * TEMath.clamp(dist, 0, 1));
+                blendColor(point.index,(color & 0x00FFFFFF) | (alpha << 24));
+            }
         }
     }
 

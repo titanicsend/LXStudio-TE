@@ -4,8 +4,6 @@ import heronarts.lx.model.LXPoint;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.util.TEMath;
 
-import static titanicsend.util.TEColor.TRANSPARENT;
-
 public class MF64RingPattern extends TEMidiFighter64Subpattern {
     boolean active = false;
     boolean stopRequest = false;
@@ -70,15 +68,13 @@ public class MF64RingPattern extends TEMidiFighter64Subpattern {
         // define a ring moving out from the model center at 1 cycle/beat
         for (LXPoint point : modelTE.getPoints()) {
             float k, offs;
-            int on, col;
 
             offs = 0f;
-            col = TRANSPARENT;
             for (int i = 0; i < colorSet.length; i++) {
                 k = (1.0f - ringSawtooth) + (point.rcn + offs);
-                on = (int) (k * square(k, ringWidth));
+                int on = (int) (k * square(k, ringWidth));
                 if (on > 0) {
-                    setColor(point.index,colorSet[i]);
+                    blendColor(point.index,colorSet[i]);
                     break;
                 }
                 offs += ringWidth;

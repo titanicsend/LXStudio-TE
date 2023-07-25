@@ -14,12 +14,8 @@ public class MF64Hearts extends TEMidiFighter64Subpattern {
     boolean stopRequest;
     VariableSpeedTimer time;
     float eventStartTime;
-    double elapsedTime;
     long seed;
     Random prng;
-
-    double heartSize;
-    double yCenter;
 
     public MF64Hearts(TEMidiFighter64DriverPattern driver) {
         super(driver);
@@ -28,8 +24,6 @@ public class MF64Hearts extends TEMidiFighter64Subpattern {
 
         seed = System.currentTimeMillis();
         prng = new Random(seed);
-        heartSize = 0.35;
-
         time = new VariableSpeedTimer();
         eventStartTime = -99f;
     }
@@ -64,7 +58,7 @@ public class MF64Hearts extends TEMidiFighter64Subpattern {
         x = x / radius * 1.25;
 
         // signed distance from 1/2 heart, mirrored about x axis
-        y = y / radius + this.yCenter - Math.sqrt(Math.abs(x));
+        y = y / radius + 0.4 - Math.sqrt(Math.abs(x));
         radius = Math.hypot(x, y);
 
         // invert sdf result and return distance
@@ -92,47 +86,50 @@ public class MF64Hearts extends TEMidiFighter64Subpattern {
             colorSet[0] = TRANSPARENT;
         }
 
-        double t = time.getTime();
-        elapsedTime = t - eventStartTime;
-        double t0 = fract(elapsedTime);
-        heartSize = 0.35 + 0.05 * Math.sin(t0);
-
         prng.setSeed(seed);
         int colorIndex = 0;
         int col;
         for (TEPanelModel panel : modelTE.getAllPanels()) {
 
+            // see if we're going to draw on this panel or leave it dark
+            boolean isLit = (prng.nextFloat() <= litProbability);
+            if (!isLit) continue;
+
+
             // exclude the 4 flat-on-z front and back panels because x vs.z
             // gets weird without time-consuming adjustments.
             if (panel.getId().length() == 2) continue;
 
-            boolean isLit = (prng.nextFloat() <= litProbability);
+            // set up animation timing
+            double t = time.getTime();
+            double elapsedTime = t - eventStartTime;
+            double t0 = fract(elapsedTime);
+            double sinT = Math.sin(t0);
+            double heartSize = 0.35 + 0.075 * sinT;
+            double brightness = 260 + 44 * sinT;
 
-            // if panel is lit, pick a color from our set
-            if (isLit) {
-                col = colorSet[colorIndex];
-                colorIndex = (colorIndex + 1) % colorSet.length;
-                yCenter = Math.min(0.4, panel.yRange / panel.zRange);
-            } else {
-                col = TRANSPARENT;
-            }
+            // pick a color from our set
+            col = colorSet[colorIndex];
+            colorIndex = (colorIndex + 1) % colorSet.length;
+            double shortAxis = Math.min(panel.xRange, panel.zRange);
+            double xAspect = panel.xRange / shortAxis;
+            double yAspect = panel.yRange / shortAxis;
 
-            // now draw something on the lit panel
+            // now draw something
             for (TEPanelModel.LitPointData p : panel.litPointData) {
-                // quick out for uncolored panels
-                if (col != TRANSPARENT) {
-                    // generate roughly centered and normalized (relative to panel)
-                    // coordinates
-                    double x = (p.point.z - panel.centroid.z) / panel.zRange;
-                    double y = (p.point.y - panel.centroid.y) / panel.yRange;
+                // generate roughly centered and normalized (relative to panel)
+                // coordinates
 
-                    // heart sdf returns inverse distance from repeating figure.
-                    // 1.0 at center, decreasing as you move out. We use this
-                    // to calculate brightness, applied here as alpha
-                    double d = heart(x, y, heartSize) / heartSize;
-                    int alpha = (int) (255 * d);
-                    setColor(p.point.index, (col & 0x00FFFFFF) | (alpha << 24));
-                }
+                double x = xAspect * (p.point.z - panel.centroid.z) / panel.zRange;
+                double y = yAspect * (p.point.y - panel.centroid.y) / panel.yRange;
+
+                // heart sdf returns inverse distance from repeating figure.
+                // 1.0 at center, decreasing as you move out. We use this
+                // to calculate brightness.
+                double d = Math.abs(TEMath.fract(heart(x, y, heartSize) / heartSize));
+                // invert and bump brightness curve just a bit
+                int alpha = (int) Math.min(255, brightness * (1.0 - (d * d)));
+                blendColor(p.point.index, (col & 0x00FFFFFF) | (alpha << 24));
             }
         }
     }

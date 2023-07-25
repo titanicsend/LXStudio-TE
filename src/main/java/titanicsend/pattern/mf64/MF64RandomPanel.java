@@ -81,26 +81,17 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
 
         prng.setSeed(seed);
         int colorIndex = 0;
-        int col;
         for (TEPanelModel panel : modelTE.getAllPanels()) {
-
             boolean isLit = (prng.nextFloat() <= litProbability);
+            if (!isLit) continue;
 
-            // if panel is lit, pick a color from our set
-            if (isLit) {
-                col = colorSet[colorIndex];
-                colorIndex = (colorIndex + 1) % colorSet.length;
-            } else {
-                col = TRANSPARENT;
-            }
-
-            // expand lit area out from center over a short time
-            float deltaT = Math.min(1.0f, 4f * elapsedTime);
+            // get the next color from our set
+            int col = colorSet[colorIndex];
+            colorIndex = (colorIndex + 1) % colorSet.length;
 
             for (TEPanelModel.LitPointData p : panel.litPointData) {
-                if (col != TRANSPARENT && p.radiusFraction <= deltaT) {
-                    int alpha = (int) (255f * deltaT);
-                    setColor(p.point.index, (col & 0x00FFFFFF) | (alpha << 24));
+                if (p.radiusFraction <= 1.0) {
+                     blendColor(p.point.index, col | 0xFF000000);
                 }
             }
         }
