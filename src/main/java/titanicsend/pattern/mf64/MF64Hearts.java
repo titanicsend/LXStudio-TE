@@ -60,6 +60,9 @@ public class MF64Hearts extends TEMidiFighter64Subpattern {
             active = false;
         }
 
+        // grab colors of all currently pressed buttons
+        int[] colorSet = buttons.getAllColors();
+
         prng.setSeed(seed);
 
         // set up animation timing
@@ -82,8 +85,9 @@ public class MF64Hearts extends TEMidiFighter64Subpattern {
             // NOTE: at this point, d can have values outside the range 0..1.
             // We deliberately use the overflow to repeat the heart pattern at
             // various scales.
+            int colorIndex = (int) Math.floor(Math.abs(d) * colorSet.length) % colorSet.length;
             int alpha = (int) (255 * d);
-            blendColor(point.index, (color & 0x00FFFFFF) | (alpha << 24));
+            blendColor(point.index, (colorSet[colorIndex] & 0x00FFFFFF) | (alpha << 24));
         }
     }
 
