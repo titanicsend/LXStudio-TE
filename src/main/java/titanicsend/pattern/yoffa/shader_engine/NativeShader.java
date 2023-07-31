@@ -210,6 +210,11 @@ public class NativeShader implements GLEventListener {
         setUniform("bassLevel", (float) ctl.getBassLevel());
         setUniform("trebleLevel", (float) ctl.getTrebleLevel());
 
+        // added by @look
+        setUniform("bassRatio", (float) ctl.getBassRatio());
+        setUniform("trebleRatio", (float) ctl.getTrebleRatio());
+        setUniform("volumeRatio", ctl.getVolumeRatiof());
+
         // color-related uniforms
         setColorUniform("iColorRGB", "iColorHSB", ctl.calcColor());
         setColorUniform("iColor2RGB", "iColor2HSB", ctl.calcColor2());
