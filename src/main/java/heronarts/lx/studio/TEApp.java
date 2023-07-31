@@ -72,6 +72,7 @@ import titanicsend.pattern.cesar.HandTracker;
 import titanicsend.pattern.jeff.*;
 import titanicsend.pattern.jon.*;
 import titanicsend.pattern.justin.*;
+import titanicsend.pattern.look.*;
 import titanicsend.pattern.mike.*;
 import titanicsend.pattern.pixelblaze.*;
 import titanicsend.pattern.tom.*;
@@ -201,6 +202,8 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(TEGradientPattern.class);
 
       // Patterns that will not aspire to art direction standards
+      lx.registry.addPattern(TriangleCross.class);
+      lx.registry.addPattern(TriangleCrossAudio.class);
 
       // Examples for teaching and on-boarding developers
       lx.registry.addPattern(BasicRainbowPattern.class);
