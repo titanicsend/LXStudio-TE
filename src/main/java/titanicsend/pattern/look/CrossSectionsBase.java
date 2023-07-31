@@ -9,6 +9,7 @@ import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.transform.LXVector;
 import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 import static heronarts.lx.color.LXColor.add;
@@ -74,22 +75,6 @@ public abstract class CrossSectionsBase extends TEPerformancePattern {
         } else if (p == zr) {
             z.setPeriod(10000 - 9000 * p.getValuef());
         }
-    }
-
-
-    protected void updateXYZVals() {
-        // LFO vals
-        xv = x.getValuef();
-        yv = y.getValuef();
-        zv = z.getValuef();
-        // levels
-        xlv = 100 * xl.getValuef();
-        ylv = 100 * yl.getValuef();
-        zlv = 100 * zl.getValuef();
-        // widths
-        xwv = 100f / (xw.getValuef());
-        ywv = 100f / (yw.getValuef());
-        zwv = 100f / (zw.getValuef());
     }
 
     public abstract void runTEAudioPattern(double deltaMs);

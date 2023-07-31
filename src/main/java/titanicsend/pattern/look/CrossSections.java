@@ -9,6 +9,7 @@ import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.transform.LXVector;
 import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 import static heronarts.lx.color.LXColor.add;
@@ -20,37 +21,79 @@ public class CrossSections extends CrossSectionsBase {
 
     public CrossSections(LX lx) {
         super(lx);
+
+        // unused: quantity
+        // unused: spin
+        controls.setRange(TEControlTag.SIZE, 0.3, 0.05, 0.75);
+
+        addCommonControls();
         addParams();
+    }
+
+    protected void updateXYZVals() {
+        // LFO vals
+        xv = x.getValuef();
+        yv = y.getValuef();
+        zv = z.getValuef();
+        // levels
+        xlv = 100 * xl.getValuef();
+        ylv = 100 * yl.getValuef();
+        zlv = 100 * zl.getValuef();
+//        // widths
+        xwv = 100f / (xw.getValuef());
+        ywv = 100f / (yw.getValuef());
+        zwv = 100f / (zw.getValuef());
+//        xwv = (float) getSize();
+//        ywv = (float) getSize();
+//        zwv = (float) getSize();
     }
 
     public void runTEAudioPattern(double deltaMs) {
         clearPixels();  // Sets all pixels to transparent for starters
         updateXYZVals();
 
-        // TODO: this requires common controls to add a gradient param - but this prevents addParams() from adding anything to the UI.
-        //        int baseColor = getGradientColor(1.0f); // TODO(look): is 1.0 the right 'lerp' value?
-        //        float hue = LXColor.h(baseColor);
-        //        System.out.println(String.format("hue = %f", hue));
-
-        float hue = LXColor.h(LXColor.BLUE);
         for (LXPoint p : model.points) {
             int c = 0;
             c = add(c, LXColor.hsb(
-                    hue + p.x / (10 * ranges.x) + p.y / (3 * ranges.y),
-                    clamp(140 - 110.0f * Math.abs(p.y - maxs.y) / ranges.y, 0, 100),
-                    max(0, xlv - xwv * Math.abs(p.x - xv) / ranges.x)
+                    xHue(),
+                    xSat(p),
+                    max(0, xlv - xwv * Math.abs(p.x - xv) / ranges.x) * getBrightness()
             ));
             c = add(c, LXColor.hsb(
-                    hue + 80 + p.y / (10 * ranges.y),
-                    clamp(140 - 110.0f * Math.abs(p.x - maxs.x) / ranges.x, 0, 100),
-                    max(0, ylv - ywv * Math.abs(p.y - yv) / ranges.y)
+                    yHue(),
+                    ySat(p),
+                    max(0, ylv - ywv * Math.abs(p.y - yv) / ranges.y) * getBrightness()
             ));
             c = add(c, LXColor.hsb(
-                    hue + 160 + p.z / (10 * ranges.z) + p.y / (2 * ranges.y),
-                    clamp(140 - 110.0f * Math.abs(p.z - maxs.z) / ranges.z, 0, 100),
-                    max(0, zlv - zwv * Math.abs(p.z - zv) / ranges.z)
+                    zHue(),
+                    zSat(p),
+                    max(0, zlv - zwv * Math.abs(p.z - zv) / ranges.z) * getBrightness()
             ));
             colors[p.index] = c;
         }
+    }
+
+    protected float xHue () {
+        return LXColor.h(calcColor()); // + p.x / (10 * ranges.x) + p.y / (3 * ranges.y);
+    }
+
+    protected float xSat(LXPoint p) {
+        return clamp(140 - 110.0f * Math.abs(p.y - maxs.y) / ranges.y, 0, 100);
+    }
+
+    protected float yHue () {
+        return LXColor.h(calcColor()); // + 80 + p.y / (10 * ranges.y),
+    }
+
+    protected float ySat(LXPoint p) {
+        return clamp(140 - 110.0f * Math.abs(p.x - maxs.x) / ranges.x, 0, 100);
+    }
+
+    protected float zHue () {
+        return LXColor.h(calcColor2()); // + 160 + p.z / (10 * ranges.z) + p.y / (2 * ranges.y),
+    }
+
+    protected float zSat(LXPoint p) {
+        return clamp(140 - 110.0f * Math.abs(p.z - maxs.z) / ranges.z, 0, 100);
     }
 }

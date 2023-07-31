@@ -11,7 +11,7 @@ import static java.lang.Math.max;
 import static titanicsend.util.TEMath.clamp;
 
 @LXCategory("Look Java Patterns")
-public class CrossSectionsAudio extends CrossSectionsBase {
+public class CrossSectionsAudio extends CrossSections {
 
     protected GraphicMeter meter;
     protected float fftResampleFactor;
@@ -87,22 +87,22 @@ public class CrossSectionsAudio extends CrossSectionsBase {
 //            adjustedYwv = ywv * bands[binZ];
 
             c = add(c, LXColor.hsb(
-                    hue + p.x / (10 * ranges.x) + p.y / (3 * ranges.y),
-                    clamp(140 - 110.0f * Math.abs(p.y - maxs.y) / ranges.y, 0, 100),
-//                    max(0, xlv - xwv * Math.abs(p.x - xv) / ranges.x)
+                    xHue(),
+                    xSat(p),
                     max(0, xlv - xwv * Math.abs(p.x - (xv * bands[binY])) / ranges.x)
+//                    max(0, xlv - xwv * Math.abs(p.x - xv) / ranges.x)
             ));
             c = add(c, LXColor.hsb(
-                    hue + 80 + p.y / (10 * ranges.y), //LXColor.h(LXColor.RED),
-                    clamp(140 - 110.0f * Math.abs(p.x - maxs.x) / ranges.x, 0, 100),
+                    yHue(),
+                    ySat(p),
                     max(0, ylv - ywv * Math.abs(p.y - (yv * bands[binZ])) / ranges.y)
 //                    max(0, ylv - ywv * Math.abs(p.y - (yv * (1 + waveform[binZ]))) / ranges.y)
             ));
             c = add(c, LXColor.hsb(
-                    hue + 160 + p.z / (10 * ranges.z) + p.y / (2 * ranges.y), //LXColor.h(LXColor.GREEN),
-                    clamp(140 - 110.0f * Math.abs(p.z - maxs.z) / ranges.z, 0, 100),
-//                    max(0, zlv - zwv * Math.abs(p.z - zv) / ranges.z)
+                    zHue(),
+                    zSat(p),
                     max(0, zlv - zwv * Math.abs(p.z - (zv * bands[binX])) / ranges.z)
+//                    max(0, zlv - zwv * Math.abs(p.z - zv) / ranges.z)
             ));
             colors[p.index] = c;
         }

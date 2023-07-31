@@ -21,8 +21,6 @@ public class CrossSectionsAudioStratified extends CrossSectionsAudio {
         updateXYZVals();
         loadAudioTexture();
 
-        float hue = LXColor.h(LXColor.BLUE);
-
         for (LXPoint p : model.points) {
             int c = 0;
 
@@ -37,22 +35,22 @@ public class CrossSectionsAudioStratified extends CrossSectionsAudio {
             int binZ = (int) Math.floor(normZ * (nBins - 1));
 
             c = add(c, LXColor.hsb(
-                    hue + p.x / (10 * ranges.x) + p.y / (3 * ranges.y),
-                    clamp(140 - 110.0f * Math.abs(p.y - maxs.y) / ranges.y, 0, 100),
-//                    max(0, xlv - xwv * Math.abs(p.x - xv) / ranges.x)
+                    xHue(),
+                    xSat(p),
                     max(0, xlv - xwv * Math.abs(p.x - (xv * bands[binY])) / ranges.x)
+//                    max(0, xlv - xwv * Math.abs(p.x - xv) / ranges.x)
             ));
             c = add(c, LXColor.hsb(
-                    hue + 80 + p.y / (10 * ranges.y), //LXColor.h(LXColor.RED),
-                    clamp(140 - 110.0f * Math.abs(p.x - maxs.x) / ranges.x, 0, 100),
+                    yHue(),
+                    ySat(p),
                     max(0, ylv - ywv * Math.abs(p.y - (yv * bands[170+binZ])) / ranges.y)
 //                    max(0, ylv - ywv * Math.abs(p.y - (yv * (1 + waveform[binZ]))) / ranges.y)
             ));
             c = add(c, LXColor.hsb(
-                    hue + 160 + p.z / (10 * ranges.z) + p.y / (2 * ranges.y), //LXColor.h(LXColor.GREEN),
-                    clamp(140 - 110.0f * Math.abs(p.z - maxs.z) / ranges.z, 0, 100),
-//                    max(0, zlv - zwv * Math.abs(p.z - zv) / ranges.z)
+                    zHue(),
+                    zSat(p),
                     max(0, zlv - zwv * Math.abs(p.z - (zv * bands[240+binX])) / ranges.z)
+//                    max(0, zlv - zwv * Math.abs(p.z - zv) / ranges.z)
             ));
             colors[p.index] = c;
         }
