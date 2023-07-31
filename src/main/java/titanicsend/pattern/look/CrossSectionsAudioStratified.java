@@ -37,20 +37,18 @@ public class CrossSectionsAudioStratified extends CrossSectionsAudio {
             c = add(c, LXColor.hsb(
                     xHue(),
                     xSat(p),
-                    max(0, xlv - xwv * Math.abs(p.x - (xv * bands[binY])) / ranges.x)
-//                    max(0, xlv - xwv * Math.abs(p.x - xv) / ranges.x)
+                    xBrightness(p, xv * bands[binY])
             ));
             c = add(c, LXColor.hsb(
                     yHue(),
                     ySat(p),
-                    max(0, ylv - ywv * Math.abs(p.y - (yv * bands[170+binZ])) / ranges.y)
+                    yBrightness(p, yv * bands[170+binZ])
 //                    max(0, ylv - ywv * Math.abs(p.y - (yv * (1 + waveform[binZ]))) / ranges.y)
             ));
             c = add(c, LXColor.hsb(
                     zHue(),
                     zSat(p),
-                    max(0, zlv - zwv * Math.abs(p.z - (zv * bands[240+binX])) / ranges.z)
-//                    max(0, zlv - zwv * Math.abs(p.z - zv) / ranges.z)
+                    zBrightness(p, zv * bands[240+binX])
             ));
             colors[p.index] = c;
         }
