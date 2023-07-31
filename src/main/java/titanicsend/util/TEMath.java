@@ -178,6 +178,10 @@ public class TEMath {
         return Math.max(min, Math.min(max, value));
     }
 
+    public static float clamp(float value, float min, float max) {
+        return Math.max(min, Math.min(max, value));
+    }
+
     public static double[] clamp(double[] array, double min, double max) {
         return Arrays.stream(array).map(x -> clamp(x, min, max)).toArray();
     }
