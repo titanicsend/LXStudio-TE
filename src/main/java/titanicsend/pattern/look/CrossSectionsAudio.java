@@ -25,7 +25,7 @@ public class CrossSectionsAudio extends CrossSections {
         this.meter = this.getLX().engine.audio.meter;
         fftResampleFactor = meter.bands.length / 512f;
 
-        addParams();
+//        addParams();
     }
 
     /**
