@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.heronarts</groupId>
+  <artifactId>glx</artifactId>
+  <versioning>
+    <versions>
+      <version>0.4.5-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20230728160533</lastUpdated>
+  </versioning>
+</metadata>
