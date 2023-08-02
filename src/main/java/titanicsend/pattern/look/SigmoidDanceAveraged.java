@@ -36,8 +36,6 @@ public class SigmoidDanceAveraged extends TEPerformancePattern {
     private TEMath.EMA emaLo = new TEMath.EMA(0., .01);
     private TEMath.EMA emaHi = new TEMath.EMA(0., .01);
 
-
-
     @Override
     public void runTEAudioPattern(double deltaMs) {
         int fullNBands = eq.getNumBands();
@@ -65,17 +63,17 @@ public class SigmoidDanceAveraged extends TEPerformancePattern {
         float runningAvgLo = emaLo.getValuef();
         float runningAvgHi = emaHi.getValuef();
 
-        System.out.printf("fullNBands = %s, halfNBands = %s\n", fullNBands, halfNBands);
-        System.out.printf("curLo = %s, curHi = %s\n", curLo, curHi);
-        System.out.printf("runningAvgLo = %s, runningAvgHi = %s\n", runningAvgLo, runningAvgHi);
+//        System.out.printf("fullNBands = %s, halfNBands = %s\n", fullNBands, halfNBands);
+//        System.out.printf("curLo = %s, curHi = %s\n", curLo, curHi);
+//        System.out.printf("runningAvgLo = %s, runningAvgHi = %s\n", runningAvgLo, runningAvgHi);
 
         float normLo = curLo / (maxLo - minLo);
         float normHi = curHi / (maxHi - minHi);
-        System.out.printf("normLo = %s, normHi = %s\n", normLo, normHi);
+//        System.out.printf("normLo = %s, normHi = %s\n", normLo, normHi);
 
         float scaledLo = normLo * 2 - 1;
         float scaledHi = normHi * 2 - 1;
-        System.out.printf("scaledLo = %s, scaledHi = %s\n", scaledLo, scaledHi);
+//        System.out.printf("scaledLo = %s, scaledHi = %s\n", scaledLo, scaledHi);
 
 //        shader.setUniform("iWow1", avgLo);
 //        shader.setUniform("iWow2", avgHi);

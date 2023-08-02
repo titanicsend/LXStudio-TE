@@ -46,5 +46,4 @@ public class SigmoidDance extends TEPerformancePattern {
         effect.onActive();
         shader = effect.getNativeShader();
     }
-
 }

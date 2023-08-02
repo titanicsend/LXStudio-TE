@@ -1,6 +1,6 @@
 {
   "version": "0.4.4-SNAPSHOT",
-  "timestamp": 1690766610536,
+  "timestamp": 1690934455180,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -2702,7 +2702,7 @@
             },
             "parameters": {
               "label": "Input",
-              "device": 1
+              "device": 4
             },
             "children": {}
           },
@@ -2737,23 +2737,23 @@
               "range": 48.0,
               "attack": 10.0,
               "release": 100.0,
-              "slope": 4.5,
+              "slope": 12.0,
               "band-1": 0.0,
-              "band-2": 0.02194164006678001,
-              "band-3": 0.11713029859796598,
-              "band-4": 0.22471451041925217,
-              "band-5": 0.21165252441529814,
-              "band-6": 0.18633959602783323,
-              "band-7": 0.17662676802766963,
-              "band-8": 0.24384043033716152,
-              "band-9": 0.22251336956019074,
-              "band-10": 0.20097068612217273,
-              "band-11": 0.005217707469009625,
-              "band-12": 0.0,
-              "band-13": 0.0,
-              "band-14": 0.0,
-              "band-15": 0.0,
-              "band-16": 0.0
+              "band-2": 0.14835296679786136,
+              "band-3": 0.30604590430901546,
+              "band-4": 0.4670238457933915,
+              "band-5": 0.5986324699146544,
+              "band-6": 0.7836760962765424,
+              "band-7": 0.8088661622358999,
+              "band-8": 0.9127215180635894,
+              "band-9": 0.8665334080645142,
+              "band-10": 1.0,
+              "band-11": 1.0,
+              "band-12": 1.0,
+              "band-13": 1.0,
+              "band-14": 1.0,
+              "band-15": 0.9467365725452872,
+              "band-16": 0.8721270350865605
             },
             "children": {}
           }
@@ -4498,11 +4498,11 @@
                   "panic": false,
                   "viewPerPattern": 0,
                   "swatchPerChannel": 0,
+                  "Energy": 0.0,
+                  "Glow": 0.1,
                   "Double Layer": false,
                   "Width": 0.5,
-                  "Glow": 0.1,
-                  "Double Speed": false,
-                  "Energy": 0.0
+                  "Double Speed": false
                 },
                 "children": {
                   "modulation": {
@@ -6440,12 +6440,12 @@
                   "panic": false,
                   "viewPerPattern": 2,
                   "swatchPerChannel": 0,
+                  "Thickness": 0.3,
                   "Energy": 0.0,
-                  "Speed": 0.0,
                   "Wibble Size": 0.15,
                   "Glow": 1.5,
-                  "Glow2": 9.0,
-                  "Thickness": 0.3
+                  "Speed": 0.0,
+                  "Glow2": 9.0
                 },
                 "children": {
                   "modulation": {
@@ -7293,8 +7293,8 @@
                   "panic": false,
                   "viewPerPattern": 6,
                   "swatchPerChannel": 0,
-                  "noise": 2.0,
-                  "noise2": 2.0
+                  "noise2": 2.0,
+                  "noise": 2.0
                 },
                 "children": {
                   "modulation": {
@@ -8500,11 +8500,11 @@
                   "panic": false,
                   "viewPerPattern": 0,
                   "swatchPerChannel": 0,
+                  "Width": 0.5,
                   "Energy": 0.0,
                   "Double Speed": false,
                   "Double Layer": false,
-                  "Glow": 0.1,
-                  "Width": 0.5
+                  "Glow": 0.1
                 },
                 "children": {
                   "modulation": {
@@ -10443,11 +10443,11 @@
                   "viewPerPattern": 2,
                   "swatchPerChannel": 0,
                   "Wibble Size": 0.15,
-                  "Thickness": 0.3,
-                  "Energy": 0.0,
-                  "Glow2": 9.0,
+                  "Glow": 1.5,
                   "Speed": 0.0,
-                  "Glow": 1.5
+                  "Glow2": 9.0,
+                  "Thickness": 0.3,
+                  "Energy": 0.0
                 },
                 "children": {
                   "modulation": {
@@ -11295,8 +11295,8 @@
                   "panic": false,
                   "viewPerPattern": 6,
                   "swatchPerChannel": 0,
-                  "noise": 2.0,
-                  "noise2": 2.0
+                  "noise2": 2.0,
+                  "noise": 2.0
                 },
                 "children": {
                   "modulation": {
@@ -11682,10 +11682,10 @@
                   "panic": false,
                   "viewPerPattern": 6,
                   "swatchPerChannel": 0,
-                  "numBlocks": 30.0,
                   "glow": 0.5,
-                  "hideBlocks": false,
                   "speed": 0.7,
+                  "hideBlocks": false,
+                  "numBlocks": 30.0,
                   "ySpread": 1.6
                 },
                 "children": {
@@ -12502,11 +12502,11 @@
                   "panic": false,
                   "viewPerPattern": 0,
                   "swatchPerChannel": 0,
-                  "Double Speed": false,
-                  "Glow": 0.1,
-                  "Energy": 0.0,
                   "Width": 0.5,
-                  "Double Layer": false
+                  "Energy": 0.0,
+                  "Glow": 0.1,
+                  "Double Layer": false,
+                  "Double Speed": false
                 },
                 "children": {
                   "modulation": {
@@ -14444,12 +14444,12 @@
                   "panic": false,
                   "viewPerPattern": 2,
                   "swatchPerChannel": 0,
-                  "Thickness": 0.3,
-                  "Speed": 0.0,
                   "Glow2": 9.0,
+                  "Glow": 1.5,
                   "Wibble Size": 0.15,
                   "Energy": 0.0,
-                  "Glow": 1.5
+                  "Thickness": 0.3,
+                  "Speed": 0.0
                 },
                 "children": {
                   "modulation": {
@@ -15684,10 +15684,10 @@
                   "panic": false,
                   "viewPerPattern": 6,
                   "swatchPerChannel": 0,
-                  "hideBlocks": false,
-                  "numBlocks": 30.0,
-                  "speed": 0.7,
                   "glow": 0.5,
+                  "hideBlocks": false,
+                  "speed": 0.7,
+                  "numBlocks": 30.0,
                   "ySpread": 1.6
                 },
                 "children": {
