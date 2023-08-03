@@ -14,12 +14,16 @@
 #define POINT_COUNT 8
 
 vec2 points[POINT_COUNT];
-float speed = -{%speed[0.5,0.1,2.5]};
-float len = {%len[.25,.01,.5]};
-float scale = {%scale[.012,.006,.024]};
+float scale = 0.012;
 float intensity = 3-{%haze[1.7,0,2]};
 float thickness = {%thickness[0.0035,0.001,0.01]};
 float radius = 0.012;
+
+//  rotate a point around the origin by <angle> radians
+vec2 rotate(vec2 point, float angle) {
+    mat2 rotationMatrix = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
+    return rotationMatrix * point;
+}
 
 //https://www.shadertoy.com/view/MlKcDD
 //Signed distance to a quadratic bezier
@@ -95,7 +99,7 @@ float getGlow(float dist, float radius, float intensity){
 // Changes in here
 float getSegment(float t, vec2 pos, float offset){
 	for(int i = 0; i < POINT_COUNT; i++){
-        points[i] = getHeartPosition(offset + float(i)*len + fract(speed * t) * 6.28);
+        points[i] = getHeartPosition(offset + float(i)*iQuantity + fract(t) * 6.28);
     }
 
     vec2 c = (points[0] + points[1]) / 2.0;
@@ -127,8 +131,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ){
     vec2 pos = centre - uv;
     pos.y /= widthHeightRatio;
     //Shift upwards to centre heart
-    pos.y += 0.03;
+    //pos.y += 0.03;
 
+    pos = rotate(pos, iRotationAngle) * iScale;
     float t = iTime;
 
     //Get first segment
@@ -140,7 +145,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ){
     //White core
     //col += 10.0*vec3(smoothstep(0.006, 0.003, dist));
     //Pink glow
-    col += glow * vec3(1.0,0.05,0.3);
+    col += glow * iColorRGB;
 
     //Get second segment
     dist = getSegment(t, pos, 3.4);
@@ -149,7 +154,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ){
     //White core
     //col += 10.0*vec3(smoothstep(0.006, 0.003, dist));
     //Blue glow
-    col += glow * vec3(0.1,0.4,1.0);
+    col += glow * iColorRGB;
 
     //Tone mapping
     col = 1.0 - exp(-col);
