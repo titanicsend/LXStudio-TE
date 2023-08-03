@@ -3,6 +3,7 @@ package titanicsend.pattern.look;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
@@ -14,12 +15,12 @@ public class TriangleCrossAudio extends TEPerformancePattern {
     NativeShader shader;
 
     public TriangleCrossAudio(LX lx) {
-        super(lx, TEShaderView.DOUBLE_LARGE);
+        super(lx, TEShaderView.ALL_POINTS);
 
-//        controls.setRange(TEControlTag.SPEED, 0.6, -1, 1);
-//        controls.setRange(TEControlTag.WOW1, 0, 0, 2.6);
-//        controls.setRange(TEControlTag.QUANTITY, 0.2, 0.075, 0.3);
-//        controls.setValue(TEControlTag.SPIN,0.125);
+        controls.setValue(TEControlTag.SIZE, 0.46);
+        controls.setValue(TEControlTag.WOW1, 0.11);
+        controls.setValue(TEControlTag.XPOS, 0.08);
+        controls.setValue(TEControlTag.YPOS, -0.04);
 
         // register common controls with LX
         addCommonControls();
