@@ -3,6 +3,7 @@ package titanicsend.pattern.look;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
@@ -15,14 +16,10 @@ public class SigmoidDanceAveraged extends TEPerformancePattern {
     NativeShader shader;
 
     public SigmoidDanceAveraged(LX lx) {
-        super(lx, TEShaderView.DOUBLE_LARGE);
+        super(lx, TEShaderView.ALL_POINTS);
 
-//        controls.setRange(TEControlTag.SPEED, 0.6, -1, 1);
-//        controls.setRange(TEControlTag.WOW1, 0, 0, 2.6);
-//        controls.setRange(TEControlTag.QUANTITY, 0.2, 0.075, 0.3);
-//        controls.setValue(TEControlTag.SPIN,0.125);
+        controls.setRange(TEControlTag.QUANTITY, 2.0, 0.0, 4.0);
 
-        // register common controls with LX
         addCommonControls();
 
         effect = new NativeShaderPatternEffect("sigmoid_dance.fs",
@@ -75,14 +72,13 @@ public class SigmoidDanceAveraged extends TEPerformancePattern {
         float scaledHi = normHi * 2 - 1;
 //        System.out.printf("scaledLo = %s, scaledHi = %s\n", scaledLo, scaledHi);
 
-//        shader.setUniform("iWow1", avgLo);
-//        shader.setUniform("iWow2", avgHi);
-//        shader.setUniform("iWow1", normLo);
-//        shader.setUniform("iWow2", normHi);
-        shader.setUniform("iWow1", scaledLo);
-        shader.setUniform("iWow2", scaledHi);
+//        shader.setUniform("iScaledLo", avgLo);
+//        shader.setUniform("iScaledHi", avgHi);
+//        shader.setUniform("iScaledLo", normLo);
+//        shader.setUniform("iScaledHi", normHi);
+        shader.setUniform("iScaledLo", Math.abs(scaledLo)+0.05f);
+        shader.setUniform("iScaledHi", Math.abs(scaledHi)+0.05f);
 
-        // run the shader
         effect.run(deltaMs);
     }
 

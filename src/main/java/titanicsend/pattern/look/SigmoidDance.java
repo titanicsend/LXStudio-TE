@@ -2,7 +2,9 @@ package titanicsend.pattern.look;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import heronarts.lx.parameter.CompoundParameter;
 import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
@@ -16,10 +18,7 @@ public class SigmoidDance extends TEPerformancePattern {
     public SigmoidDance(LX lx) {
         super(lx, TEShaderView.DOUBLE_LARGE);
 
-//        controls.setRange(TEControlTag.SPEED, 0.6, -1, 1);
-//        controls.setRange(TEControlTag.WOW1, 0, 0, 2.6);
-//        controls.setRange(TEControlTag.QUANTITY, 0.2, 0.075, 0.3);
-//        controls.setValue(TEControlTag.SPIN,0.125);
+        controls.setRange(TEControlTag.QUANTITY, 2.0, 0.0, 4.0);
 
         // register common controls with LX
         addCommonControls();
@@ -30,10 +29,8 @@ public class SigmoidDance extends TEPerformancePattern {
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
-
-        //shader.setUniform("iRotationAngle",(float) -getRotationAngleFromSpin());
-
-        // run the shader
+        shader.setUniform("iScaledLo", (float) getWow1());
+        shader.setUniform("iScaledHi", (float) getWow2());
         effect.run(deltaMs);
     }
 

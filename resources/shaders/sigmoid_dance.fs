@@ -12,15 +12,10 @@
 // uniform vec2 iResolution;
 // uniform vec2 iMouse;
 // uniform float iTime;
-
-
+uniform float iScaledLo;
+uniform float iScaledHi;
 
 const float PI = 3.14159265359;
-
-float plot(vec2 st, float pct){
-  return  smoothstep( pct-0.02, pct, st.y) -
-          smoothstep( pct, pct+0.02, st.y);
-}
 
 float logisticSigmoid (float x, float a){
   // n.b.: this Logistic Sigmoid has been normalized.
@@ -60,48 +55,56 @@ vec2 rotate(vec2 st, float a) {
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 st = fragCoord.xy/iResolution.xy;
 
-    st = rotate(st, iSpin * iTime);
-
+    st = rotate(st, iRotationAngle);
     st = st * 2. * iScale - iScale;
-
     st -= iTranslate;
 
-    // st.x *= 2.;
-    // st *= 4.;
-    // st = fract(st);
-
     vec3 color = vec3(0.);
-    // color.r = 1. - smoothstep(0., .01, abs(st.x));
-    // color.g = 1. - smoothstep(0., .01, abs(st.y));
-
-    // float norm_x = iMouse.x/iResolution.x;
-    // float norm_y = iMouse.y/iResolution.y;
 
     float norm_x = iWow1;
     float norm_y = iWow2;
 
-    // norm_x = 0.5;
-    // norm_y = 0.787;
+    float horizOffset = 0.6;
+    float vertOffset = 0.3;
 
-    float s1 = vertS(st, norm_x, norm_y);
-    // float pct = vertS(st, 0.5, 0.787);
-    color += s1 * iColorRGB;
+    if (iQuantity <= 1.0) {
+        float s1 = vertS(st, norm_x, norm_y);
+        color += s1 * iColorRGB;
+    } else if (iQuantity <= 2.0) {
+        vec2 st1 = abs(st + vec2(horizOffset, 0.0));
+        float a0 = vertS(st1, norm_x, norm_y);
+        float a1 = vertS(st1, norm_x*0.8, norm_y*0.8);
+        float a2 = vertS(st1, norm_x*0.6, norm_y*0.6);
 
-    if (iWow1 > 0.0) {
-        vec2 st2 = st * 2.;
-        st2.x *= 2.;
-        st2 = fract(st2);
-        float s2 = vertS(st2, norm_x, norm_y);
+        //color += (a0 + a1 + a2) * iColorRGB;
+        color += min(a0, min(a1, a2)) * iColorRGB;
+        //color += max(a0, max(a1, a2)) * iColor2RGB;
 
-        color += min(s1, s2) * iColor2RGB;
-        // color += max(s1, s2) * iColor2RGB;
-        // color += s1 * s2 * iColor2RGB;
-        // color += s2 * iColor2RGB;
+        vec2 st2 = abs(st + vec2(-horizOffset, 0.0));
+        float a3 = vertS(st2, norm_x, norm_y);
+        float a4 = vertS(st2, norm_x*0.8, norm_y*0.8);
+        float a5 = vertS(st2, norm_x*0.6, norm_y*0.6);
+
+        //color += (a3 + a4 + a5) * iColorRGB;
+        color += min(a3, min(a4, a5)) * iColorRGB;
+        //color += max(a3, max(a4, a5)) * iColor2RGB;
+    } else {
+        vec2 st01 = abs(st + vec2(horizOffset, vertOffset));
+        vec2 st02 = abs(st + vec2(horizOffset, -vertOffset));
+        vec2 st03 = abs(st + vec2(-horizOffset, vertOffset));
+        vec2 st04 = abs(st + vec2(-horizOffset, -vertOffset));
+        float a0 = vertS(st01, norm_x, norm_y);
+        float a1 = vertS(st02, norm_x, norm_y);
+        float a2 = vertS(st03, norm_x, norm_y);
+        float a3 = vertS(st04, norm_x, norm_y);
+
+        //color += (a0 + a1) * iColorRGB;
+        color += max(a0, a1) * iColorRGB;
+        //color += max(a0, a1) * iColor2RGB;
+
+        //color += (a2 + a3) * iColorRGB;
+        color += max(a2, a3) * iColorRGB;
+        //color += max(a2, a3) * iColor2RGB;
     }
-
-
-    // float pct = plot(st,l);
-    // color = (1.0-pct)*color+pct*vec3(0.0,1.0,0.0);
-
     fragColor = vec4(color,1.0);
 }

@@ -63,69 +63,35 @@ vec2 rotate(vec2 st, float a) {
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 st = fragCoord.xy/iResolution.xy;
 
-    st = rotate(st, iSpin * iTime);
-
+    st = rotate(st, iRotationAngle);
     st = st * 2. * iScale - iScale;
-
     st -= iTranslate;
 
-    // The audio texture size is 512x2
-    // mapping to screen depends on iScale and iQuantity - here
-    // we use iQuantity to figure out which texture pixels are relevant
-    float index = mod(st.x * TEXTURE_SIZE * 2.0 * iQuantity, TEXTURE_SIZE);
+    float index = mod(st.x * TEXTURE_SIZE * 2.0, TEXTURE_SIZE);
     // The second row of is normalized waveform data
     // we'll just draw this over the spectrum analyzer.  Sound data
     // coming from LX is in the range -1 to 1, so we scale it and move it down
     // a bit so we can see it better.
     float wave = (0.5 * (1.0+texelFetch(iChannel0, ivec2(index, 1), 0).x)) - 0.25;
+
     // subdivide fft data into bins determined by iQuantity
     float p = floor(index / pixPerBin);
     float tx = halfBin+pixPerBin * p;
-    float dist = abs(halfBin - mod(index, pixPerBin)) / halfBin;
-    // since we're using dist to calculate desatuation for a specular
-    // reflection effect, we'll modulate it with beat, to change
-    // apparent shininess and give it some extra bounce.
-    dist = dist - (beat * beat);
     // get frequency data pixel from texture
     float freq  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
 
-    // float norm_x = iMouse.x/iResolution.x;
-    // float norm_y = iMouse.y/iResolution.y;
-    //float norm_x = beat;
-    //float norm_y = bassLevel;
-
-    //float norm_x = iVolumeRatio;
-    //float norm_y = iBassRatio;
+    // float dist = abs(halfBin - mod(index, pixPerBin)) / halfBin;
+    // // since we're using dist to calculate desatuation for a specular
+    // // reflection effect, we'll modulate it with beat, to change
+    // // apparent shininess and give it some extra bounce.
+    // dist = dist - (beat * beat);
 
     float norm_x = wave;
     float norm_y = freq;
 
-    //float norm_x = iWow1;
-    //float norm_y = iWow2;
-
     vec3 color = vec3(0.);
-    // color.r = 1. - smoothstep(0., .01, abs(st.x));
-    // color.g = 1. - smoothstep(0., .01, abs(st.y));
-
     float s1 = vertS(st, norm_x, norm_y);
-    // float pct = vertS(st, 0.5, 0.787);
     color += s1 * iColorRGB;
-
-    if (iWow1 > 0.0) {
-        vec2 st2 = st * 2.;
-        st2.x *= 2.;
-        st2 = fract(st2);
-        float s2 = vertS(st2, norm_x, norm_y);
-
-        color += min(s1, s2) * iColor2RGB;
-        // color += max(s1, s2) * iColor2RGB;
-        // color += s1 * s2 * iColor2RGB;
-        // color += s2 * iColor2RGB;
-    }
-
-
-    // float pct = plot(st,l);
-    // color = (1.0-pct)*color+pct*vec3(0.0,1.0,0.0);
 
     fragColor = vec4(color,1.0);
 }
