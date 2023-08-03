@@ -61,8 +61,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     vec3 color = vec3(0.);
 
-    float norm_x = iWow1;
-    float norm_y = iWow2;
+    float norm_x = iScaledLo;
+    float norm_y = iScaledHi;
 
     float horizOffset = 0.6;
     float vertOffset = 0.3;
