@@ -1094,7 +1094,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     }
 
     public int getGradientColor(float lerp) {
-        return controls.color.getGradientColor(lerp);
+        return TEColor.setBrightness(controls.color.getGradientColor(lerp),(float) getBrightness());
     }
 
     /**
