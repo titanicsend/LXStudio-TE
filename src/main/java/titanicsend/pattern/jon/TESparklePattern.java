@@ -212,7 +212,7 @@ public class TESparklePattern extends TEPerformancePattern {
 
                         // Add the sparkle's brightness level to all output pixels
                         // Note that we cap the number of active pixels to the size of the
-                        // index buffer to allow the running engine thread to finish successfully
+                        // index buffer to allow the running frame to finish successfully
                         // on view changes that greatly reduce the number of active pixels
                         int maxActive = Math.min(sparkle.activePixels, sparkle.indexBuffer.length);
                         for (int c = 0; c < maxActive; ++c) {
