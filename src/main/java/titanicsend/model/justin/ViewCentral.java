@@ -34,9 +34,8 @@ import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXView;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.parameter.ObjectParameter;
-import heronarts.lx.parameter.DiscreteParameter.IncrementMode;
 import heronarts.lx.studio.LXStudio;
-import titanicsend.app.TEApp;
+import heronarts.lx.studio.TEApp;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.util.TE;
 
@@ -186,7 +185,7 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
     return allViews;
   }
 
-  public class ViewParameter extends ObjectParameter<ViewDefinition> {
+  public class ViewParameter extends ObjectParameter<ViewDefinition> implements DisposableParameter {
 
     String defaultView = null;
 
@@ -277,6 +276,30 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
 
     // Dev note: reset(TEShaderView shaderView) would better match LXListenableParameter.reset(double),
     // but that creates an ambiguous method call in the case of reset(null).
+
+    private final List<DisposeListener> disposeListeners = new ArrayList<DisposeListener>();
+
+    public void listenDispose(DisposeListener listener) {
+      disposeListeners.add(listener);
+    }
+
+    public void unlistenDispose(DisposeListener listener) {
+      if (!disposeListeners.remove(listener)) {
+        LX.warning("Tried to remove unregistered DisposeListener");
+      }
+    }
+
+    private void notifyDisposing() {
+      for (int i = disposeListeners.size()-1; i>=0; --i) {
+        disposeListeners.remove(i).disposing(this);
+      }
+    }
+
+    @Override
+    public void dispose() {
+      notifyDisposing();
+      super.dispose();
+    }
   }
 
   /**

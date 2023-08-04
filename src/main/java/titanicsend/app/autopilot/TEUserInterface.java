@@ -1,8 +1,8 @@
 package titanicsend.app.autopilot;
 
+import heronarts.glx.ui.component.UICollapsibleSection;
+import heronarts.glx.ui.component.UISwitch;
 import heronarts.lx.studio.LXStudio;
-import heronarts.p4lx.ui.component.UICollapsibleSection;
-import heronarts.p4lx.ui.component.UISwitch;
 import titanicsend.app.TEAutopilot;
 import titanicsend.lasercontrol.TELaserTask;
 
