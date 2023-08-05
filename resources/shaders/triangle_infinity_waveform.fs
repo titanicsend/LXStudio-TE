@@ -60,6 +60,9 @@ float noise(in float x, in float ts) {
   return y;
 }
 
+float freqNum = {%freqNum[8.,2.,64.]};
+float freqDenom = {%freqDenom[8.,2.,64.]};
+
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // normalize coordinates
     vec2 uv = fragCoord.xy / iResolution.xy;
@@ -102,7 +105,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         float paletteIdx = length(uv0) + i*2. * iTime*.1;
         vec3 col = hsb2rgb(mixPalette(iColorHSB, iColor2HSB, paletteIdx));
 
-        d = sin(d*8. + iTime*0.5)/8.;
+        d = sin(d*64. + iTime*0.5)/64.;
         d -= noise(i*d*8., iTime*0.1);
         d = abs(d);
 
