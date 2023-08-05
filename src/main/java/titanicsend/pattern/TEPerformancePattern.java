@@ -29,6 +29,7 @@ import titanicsend.util.TEColor;
 
 import java.nio.FloatBuffer;
 import java.util.HashMap;
+import java.util.List;
 
 public abstract class TEPerformancePattern extends TEAudioPattern {
 
@@ -646,7 +647,25 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          * Set remote controls in order they will appear on the midi surfaces
          */
         protected void setRemoteControls() {
-            setCustomRemoteControls(new LXListenableNormalizedParameter[] {
+            setCustomRemoteControls(buildStandardRemoteControls());
+        }
+
+        // hack: make this public so it's callable from ConstructedPattern
+        public void setRemoteControls(List<LXListenableNormalizedParameter> extraParams) {
+            LXListenableNormalizedParameter[] standardParams = buildStandardRemoteControls();
+            LXListenableNormalizedParameter[] allParams = new LXListenableNormalizedParameter[standardParams.length + extraParams.size()];
+            for (int i = 0; i < standardParams.length; i++) {
+                allParams[i] = standardParams[i];
+            }
+            for (int j = 0; j < extraParams.size(); j++) {
+                allParams[standardParams.length + j] = extraParams.get(j);
+            }
+            System.out.printf("standardParams: %s, extraParams: %s\n", standardParams.length, extraParams.size());
+            setCustomRemoteControls(allParams);
+        }
+
+        protected LXListenableNormalizedParameter[] buildStandardRemoteControls() {
+            return new LXListenableNormalizedParameter[] {
                 this.color.offset,
                 this.color.gradient,
                 getSwatchRemoteControl(),
@@ -666,7 +685,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 getControl(TEControlTag.WOW2).control,
                 getControl(TEControlTag.WOWTRIGGER).control,
                 null   // To be SHIFT, not implemented yet
-            });
+            };
         }
 
         protected LXListenableNormalizedParameter getSwatchRemoteControl() {

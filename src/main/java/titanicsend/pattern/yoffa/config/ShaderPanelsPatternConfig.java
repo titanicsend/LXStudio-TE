@@ -3,6 +3,7 @@ package titanicsend.pattern.yoffa.config;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 
+import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.AlternatingDotsEffect;
@@ -13,6 +14,7 @@ import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("unused")
 public class ShaderPanelsPatternConfig {
@@ -183,6 +185,11 @@ public class ShaderPanelsPatternConfig {
     public static class NeonBlocks extends ConstructedPattern {
         public NeonBlocks(LX lx) {
             super(lx, TEShaderView.DOUBLE_LARGE);
+
+            System.out.println("NeonBlocks ----- \n");
+            for (Map.Entry<String, LXParameter> e : this.parameters.entrySet()) {
+                System.out.printf("- %s : %s\n", e.getKey(), e.getValue());
+            }
         }
 
         @Override
@@ -194,8 +201,13 @@ public class ShaderPanelsPatternConfig {
 
     @LXCategory("Native Shaders Panels")
     public static class Warp extends ConstructedPattern {
+        public final DiscreteParameter energy =
+                new DiscreteParameter("Energy", 3, 1, 11)
+                        .setDescription("Amount of Bolts");
         public Warp(LX lx) {
             super(lx, TEShaderView.DOUBLE_LARGE);
+            // adding parameter after super-constructor calls addCommonControls()
+            addParameter("energy", energy);
         }
 
         @Override
