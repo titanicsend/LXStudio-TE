@@ -27,8 +27,8 @@ public class TriangleInfinityLevels extends TriangleInfinity {
     public void runTEAudioPattern(double deltaMs) {
         float iScaledLo = levelsTracker.sample(0, deltaMs);
         float iScaledHi = levelsTracker.sample(1, deltaMs);
-        shader.setUniform("iQuantity", 1.0f + 5.0f * Math.abs(iScaledLo));
-        shader.setUniform("iWow1", 0.5f + Math.abs(iScaledLo));
+        shader.setUniform("iQuantity", 1.0f + 4.0f * Math.abs(iScaledHi));
+//        shader.setUniform("iWow1", 0.7f + 0.3f * Math.abs(iScaledLo));
 
         // run the shader
         effect.run(deltaMs);

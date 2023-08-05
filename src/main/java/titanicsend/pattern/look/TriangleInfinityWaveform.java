@@ -22,8 +22,10 @@ public class TriangleInfinityWaveform extends TEPerformancePattern {
         controls.setRange(TEControlTag.QUANTITY, 3.0, 1.0, 9.0);
         // Distortion/offset scaling the space between layers
         controls.setRange(TEControlTag.WOW1, 0.9, 0.5, 2.0);
-        // "Neon-Ness" (how crisp the lines are)
-        controls.setRange(TEControlTag.WOW2, 2.5, 1.0, 3.0);
+//        // "Neon-Ness" (how crisp the lines are)
+//        controls.setRange(TEControlTag.WOW2, 1.2, 1.0, 3.0);
+        // Wave Multiplier
+        controls.setRange(TEControlTag.WOW2, 0.1, 0.0, 1.0);
 
         // register common controls with LX
         addCommonControls();

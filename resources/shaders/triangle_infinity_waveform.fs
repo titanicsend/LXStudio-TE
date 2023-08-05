@@ -8,6 +8,11 @@
 // #iUniform float iWow1 = 0.9 in {0.5, 2.0}
 // #iUniform float iRotationAngle = 0.0 in {0.0, 6.28}
 
+#define TEXTURE_SIZE 512.0
+#define CHANNEL_COUNT 16.0
+#define pixPerBin (TEXTURE_SIZE / CHANNEL_COUNT)
+#define halfBin (pixPerBin / 2.0)
+
 const float PI = 3.141592653589793;
 const float HALF_PI = 1.5707963267948966;
 const float TWO_PI = 6.28318530718;
@@ -82,6 +87,19 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     vec3 c1hsb = rgb2hsb(iColorRGB);
     vec3 c2hsb = rgb2hsb(iColor2RGB);
+
+    float index = mod(uv.x * TEXTURE_SIZE * 2.0, TEXTURE_SIZE);
+    // The second row of is normalized waveform data
+    // we'll just draw this over the spectrum analyzer.  Sound data
+    // coming from LX is in the range -1 to 1, so we scale it and move it down
+    // a bit so we can see it better.
+    float wave = (0.5 * (1.0+texelFetch(iChannel0, ivec2(index, 1), 0).x)) - 0.25;
+
+    // subdivide fft data into bins determined by iQuantity
+    float p = floor(index / pixPerBin);
+    float tx = halfBin+pixPerBin * p;
+    // get frequency data pixel from texture
+    float freq  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
     
     for (float i = 0.0; i < iQuantity; i++) {
         uv = fract(uv * iWow1) - 0.5;
@@ -94,7 +112,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         // uv.y += 0.02 * noise(i, iTime*0.02);
 
         float d = 1.;
-        d *= sdEquilateralTriangle(uv, 0.9);
+        d *= sdEquilateralTriangle(uv, 0.9) + iWow2*wave;
         d *= exp(-sdEquilateralTriangle(uv0, 0.9));
         d += 0.3*noise(i*d, iTime*0.1);
 
@@ -105,7 +123,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         d -= noise(i*d*8., iTime*0.1);
         d = abs(d);
 
-        d = pow(0.01 / d, iWow2);
+        d = pow(0.01 / d, 1.5);
 
         finalColor += col * d;
 
