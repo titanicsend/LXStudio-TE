@@ -10,30 +10,26 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 
 @LXCategory("Look Shader Patterns")
-public class TriangleInfinity extends TEPerformancePattern {
-    NativeShaderPatternEffect effect;
-    NativeShader shader;
+public class TriangleInfinityLevels extends TriangleInfinity {
+    AudioLevelsTracker levelsTracker;
 
-    public TriangleInfinity(LX lx) {
-        super(lx, TEShaderView.ALL_POINTS);
+    public TriangleInfinityLevels(LX lx) {
+        super(lx);
 
-        controls.setRange(TEControlTag.SPEED, 0.25, 0.05, 2.0);
-        // number of "layers" of triangles to apply
-        controls.setRange(TEControlTag.QUANTITY, 3.0, 1.0, 9.0);
-        // Distortion/offset scaling the space between layers
-        controls.setRange(TEControlTag.WOW1, 0.9, 0.5, 2.0);
-        // "Neon-Ness" (how crisp the lines are)
-        controls.setRange(TEControlTag.WOW2, 2.5, 1.0, 3.0);
-
-        // register common controls with LX
-        addCommonControls();
-
-        effect = new NativeShaderPatternEffect("triangle_infinity.fs",
-                new PatternTarget(this));
+        int fullNBands = eq.getNumBands();
+        int halfNBands = fullNBands / 2;
+        levelsTracker = new AudioLevelsTracker(eq);
+        levelsTracker.addBandRange(0, halfNBands);
+        levelsTracker.addBandRange(halfNBands, fullNBands - halfNBands);
     }
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
+        float iScaledLo = levelsTracker.sample(0, deltaMs);
+        float iScaledHi = levelsTracker.sample(1, deltaMs);
+        shader.setUniform("iQuantity", 1.0f + 5.0f * Math.abs(iScaledLo));
+        shader.setUniform("iWow1", 0.5f + Math.abs(iScaledLo));
+
         // run the shader
         effect.run(deltaMs);
     }

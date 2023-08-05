@@ -10,11 +10,11 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 
 @LXCategory("Look Shader Patterns")
-public class TriangleInfinity extends TEPerformancePattern {
+public class TriangleInfinityWaveform extends TEPerformancePattern {
     NativeShaderPatternEffect effect;
     NativeShader shader;
 
-    public TriangleInfinity(LX lx) {
+    public TriangleInfinityWaveform(LX lx) {
         super(lx, TEShaderView.ALL_POINTS);
 
         controls.setRange(TEControlTag.SPEED, 0.25, 0.05, 2.0);
@@ -28,7 +28,7 @@ public class TriangleInfinity extends TEPerformancePattern {
         // register common controls with LX
         addCommonControls();
 
-        effect = new NativeShaderPatternEffect("triangle_infinity.fs",
+        effect = new NativeShaderPatternEffect("triangle_infinity_waveform.fs",
                 new PatternTarget(this));
     }
 
