@@ -23,24 +23,10 @@ vec2 rotate(vec2 point, float angle) {
     return rotationMatrix * point;
 }
 
-vec3 mixPalette( vec3 c1, vec3 c2, float t )
+vec3 mixPalette( vec3 c1, vec3 c2, float t)
 {
     float mixFactor = 0.5 + sin(t);
     return mix(c1, c2, mixFactor);
-}
-vec3 rgb2hsb( in vec3 c ){
-    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-    vec4 p = mix(vec4(c.bg, K.wz),
-                 vec4(c.gb, K.xy),
-                 step(c.b, c.g));
-    vec4 q = mix(vec4(p.xyw, c.r),
-                 vec4(c.r, p.yzx),
-                 step(p.x, c.r));
-    float d = q.x - min(q.w, q.y);
-    float e = 1.0e-10;
-    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)),
-                d / (q.x + e),
-                q.x);
 }
 vec3 hsb2rgb( in vec3 c ){
     vec3 rgb = clamp(abs(mod(c.x*6.0+vec3(0.0,4.0,2.0),
@@ -83,10 +69,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     uv *= 1.0/iScale;
     
     vec2 uv0 = uv;
-    vec3 finalColor = vec3(0.0);
-
-    vec3 c1hsb = rgb2hsb(iColorRGB);
-    vec3 c2hsb = rgb2hsb(iColor2RGB);
 
     float index = mod(uv.x * TEXTURE_SIZE * 2.0, TEXTURE_SIZE);
     // The second row of is normalized waveform data
@@ -101,6 +83,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // get frequency data pixel from texture
     float freq  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
     
+    vec3 finalColor = vec3(0.0);
     for (float i = 0.0; i < iQuantity; i++) {
         uv = fract(uv * iWow1) - 0.5;
 
@@ -117,7 +100,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         d += 0.3*noise(i*d, iTime*0.1);
 
         float paletteIdx = length(uv0) + i*2. * iTime*.1;
-        vec3 col = hsb2rgb(mixPalette(c1hsb, c2hsb, paletteIdx));
+        vec3 col = hsb2rgb(mixPalette(iColorHSB, iColor2HSB, paletteIdx));
 
         d = sin(d*8. + iTime*0.5)/8.;
         d -= noise(i*d*8., iTime*0.1);
