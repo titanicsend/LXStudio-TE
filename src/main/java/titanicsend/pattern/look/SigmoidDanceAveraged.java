@@ -20,8 +20,6 @@ public class SigmoidDanceAveraged extends TEPerformancePattern {
     NativeShaderPatternEffect effect;
     NativeShader shader;
 
-    AudioLevelsTracker levelsTracker;
-
     public SigmoidDanceAveraged(LX lx) {
         super(lx, TEShaderView.ALL_POINTS);
 
@@ -31,22 +29,13 @@ public class SigmoidDanceAveraged extends TEPerformancePattern {
 
         effect = new NativeShaderPatternEffect("sigmoid_dance.fs",
                 new PatternTarget(this));
-
-        int fullNBands = eq.getNumBands();
-        int halfNBands = fullNBands / 2;
-        System.out.printf("fullNBands = %s, halfNBands = %s\n", fullNBands, halfNBands);
-
-        levelsTracker = new AudioLevelsTracker(eq);
-        levelsTracker.addBandRange(0, halfNBands);
-        levelsTracker.addBandRange(halfNBands, fullNBands - halfNBands);
     }
 
 
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
-        float iScaledLo = levelsTracker.sample(0, deltaMs);
-        float iScaledHi = levelsTracker.sample(1, deltaMs);
+
         shader.setUniform("iScaledLo", iScaledLo);
         shader.setUniform("iScaledHi", iScaledHi);
 
