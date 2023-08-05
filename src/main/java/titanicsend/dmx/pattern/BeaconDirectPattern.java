@@ -76,7 +76,6 @@ public class BeaconDirectPattern extends BeaconPattern implements UIDeviceContro
     double prism2rotate = this.prism2rotation.getNormalized();
     double focus = this.focus.getNormalized();
     int shutter = this.shutter.getDmxValue();
-    System.out.println("Shutter: " + shutter);
     double dimmer = this.dimmer.getNormalized();
     double frost1 = this.frost1.getNormalized();
     double frost2 = this.frost2.getNormalized();
