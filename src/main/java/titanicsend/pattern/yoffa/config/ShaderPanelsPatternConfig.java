@@ -4,6 +4,7 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 
 import heronarts.lx.parameter.DiscreteParameter;
+import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.AlternatingDotsEffect;
@@ -208,6 +209,14 @@ public class ShaderPanelsPatternConfig {
             super(lx, TEShaderView.DOUBLE_LARGE);
             // adding parameter after super-constructor calls addCommonControls()
             addParameter("energy", energy);
+
+            LXListenableNormalizedParameter[] standardParams = this.controls.buildStandardRemoteControls();
+            LXListenableNormalizedParameter[] allParams = new LXListenableNormalizedParameter[standardParams.length + 1];
+            for (int i = 0; i < standardParams.length; i++) {
+                allParams[i] = standardParams[i];
+            }
+            allParams[standardParams.length] = energy;
+            setCustomRemoteControls(allParams);
         }
 
         @Override
