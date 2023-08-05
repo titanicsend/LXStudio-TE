@@ -133,7 +133,6 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
       ArtNetDatagram outputDevice = new ArtNetDatagram(lx, ib, universe);
       outputDevice.setAddress(this.ip);
       outputDevice.setSequenceEnabled(true);
-      outputDevice.enabled.setValue(false);
       lx.addOutput(outputDevice);
     }
   }
