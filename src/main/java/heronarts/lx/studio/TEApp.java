@@ -36,7 +36,6 @@ import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.pattern.form.PlanesPattern;
 import heronarts.lx.pattern.texture.NoisePattern;
-import heronarts.lx.structure.StripFixture;
 import titanicsend.app.GigglePixelBroadcaster;
 import titanicsend.app.GigglePixelListener;
 import titanicsend.app.GigglePixelUI;
@@ -211,8 +210,8 @@ public class TEApp extends LXStudio {
 
       // DMX patterns
       lx.registry.addPattern(BeaconDirectPattern.class);
-      lx.registry.addPattern(DjLightsEasyPattern.class);
       lx.registry.addPattern(DjLightsDirectPattern.class);
+      lx.registry.addPattern(DjLightsEasyPattern.class);
       lx.registry.addPattern(ExampleDmxTEPerformancePattern.class);
  
       // TODO - The following patterns were removed from the UI prior to EDC 2023 to keep
@@ -620,13 +619,7 @@ public class TEApp extends LXStudio {
         TEWholeModel model = new TEWholeModel(resourceSubdir);
         TEApp.wholeModel = model;
 
-        TEApp lx = new TEApp(flags);
-        StripFixture sf = new StripFixture(lx);
-        sf.numPoints.setValue(100);
-        sf.spacing.setValue(50000);
-        lx.structure.addFixture(sf);
-        lx.structure.setStaticModel(model);
-        flags.immutableModel = true;
+        TEApp lx = new TEApp(flags, model);
 
         // Schedule a task to load the initial project file at launch
         final File finalProjectFile = projectFile;
