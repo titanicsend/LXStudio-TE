@@ -19,7 +19,7 @@ public class TriangleInfinity extends TEPerformancePattern {
 
         controls.setRange(TEControlTag.SPEED, 0.25, 0.05, 2.0);
         // number of "layers" of triangles to apply
-        controls.setRange(TEControlTag.QUANTITY, 3.0, 1.0, 9.0);
+        controls.setRange(TEControlTag.QUANTITY, 8.0, 4.0, 32.0);
         // Distortion/offset scaling the space between layers
         controls.setRange(TEControlTag.WOW1, 0.9, 0.5, 2.0);
         // "Neon-Ness" (how crisp the lines are)

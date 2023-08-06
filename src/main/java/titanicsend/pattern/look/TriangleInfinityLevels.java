@@ -11,24 +11,15 @@ import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 
 @LXCategory("Look Shader Patterns")
 public class TriangleInfinityLevels extends TriangleInfinity {
-    AudioLevelsTracker levelsTracker;
 
     public TriangleInfinityLevels(LX lx) {
         super(lx);
-
-        int fullNBands = eq.getNumBands();
-        int halfNBands = fullNBands / 2;
-        levelsTracker = new AudioLevelsTracker(eq);
-        levelsTracker.addBandRange(0, halfNBands);
-        levelsTracker.addBandRange(halfNBands, fullNBands - halfNBands);
     }
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
-        float iScaledLo = levelsTracker.sample(0, deltaMs);
-        float iScaledHi = levelsTracker.sample(1, deltaMs);
-        shader.setUniform("iQuantity", 1.0f + 4.0f * Math.abs(iScaledHi));
-//        shader.setUniform("iWow1", 0.7f + 0.3f * Math.abs(iScaledLo));
+//        shader.setUniform("iQuantity", 3.0f + 2.0f * (float) bassRatio);
+        shader.setUniform("iWow1", 0.7f + 0.3f * (float) trebleLevel);
 
         // run the shader
         effect.run(deltaMs);
