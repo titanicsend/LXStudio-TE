@@ -3,8 +3,6 @@ package titanicsend.pattern.jon;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.model.LXPoint;
-import heronarts.lx.parameter.BoundedParameter;
-import heronarts.lx.parameter.BoundedParameter.NormalizationCurve;
 import heronarts.lx.parameter.CompoundParameter;
 import titanicsend.pattern.TEPerformancePattern;
 import heronarts.lx.color.LXColor;
@@ -119,7 +117,6 @@ public class TESparklePattern extends TEPerformancePattern {
 
             // Set a cap on the maximum number of sparkle generators
             this.numSparkles = LXUtils.min(model.size, MAX_SPARKLES);
-
             // There can be up to MAX_DENSITY times the size of the model sparkle destinations,
             // so each generator will address up to that many pixels
             this.maxPixelsPerSparkle = (int) Math.ceil(MAX_DENSITY * model.size / this.numSparkles);
@@ -214,7 +211,11 @@ public class TESparklePattern extends TEPerformancePattern {
                         double sparkleAdd = maxSparkleDelta * g;
 
                         // Add the sparkle's brightness level to all output pixels
-                        for (int c = 0; c < sparkle.activePixels; ++c) {
+                        // Note that we cap the number of active pixels to the size of the
+                        // index buffer to allow the running frame to finish successfully
+                        // on view changes that greatly reduce the number of active pixels
+                        int maxActive = Math.min(sparkle.activePixels, sparkle.indexBuffer.length);
+                        for (int c = 0; c < maxActive; ++c) {
                             this.outputLevels[sparkle.indexBuffer[c]] += sparkleAdd;
                         }
                     }

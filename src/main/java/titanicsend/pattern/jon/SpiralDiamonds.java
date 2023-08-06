@@ -44,7 +44,7 @@ public class SpiralDiamonds extends TEPerformancePattern {
         int color = calcColor();
         double squareocity = getQuantity();
 
-         for (LXPoint point : modelTE.panelPoints) {
+         for (LXPoint point : getModel().getPoints()) {
              // move normalized coord origin to model center
              float x = point.zn - 0.5f + (float) getXPos();
              float y = point.yn - 0.25f + (float) getYPos();
