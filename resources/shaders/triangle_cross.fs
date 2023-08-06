@@ -57,7 +57,7 @@ float nest_xcross(float prev_pct, in vec2 st, float xsize, float ysize, float ou
     return pct;
 }
 
-float noise(in float x, in float ts) {
+float noise1d(in float x, in float ts) {
   float amplitude = 0.2 * pow(x, 3.);
   float frequency = 2.;
   float y = sin(x * frequency);
@@ -77,14 +77,10 @@ vec2 random2(vec2 st){
     return -1.0 + 2.0*fract(sin(st)*43758.5453123);
 }
 
-// Gradient Noise by Inigo Quilez - iq/2013
-// https://www.shadertoy.com/view/XdXGW8
 float noise(vec2 st) {
     vec2 i = floor(st);
     vec2 f = fract(st);
-
     vec2 u = f*f*(3.0-2.0*f);
-
     return mix( mix( dot( random2(i + vec2(0.0,0.0) ), f - vec2(0.0,0.0) ),
                      dot( random2(i + vec2(1.0,0.0) ), f - vec2(1.0,0.0) ), u.x),
                 mix( dot( random2(i + vec2(0.0,1.0) ), f - vec2(0.0,1.0) ),
@@ -94,51 +90,49 @@ float noise(vec2 st) {
 void mainImage(out vec4 fragColor, in vec2 fragCoord){
     vec2 st = fragCoord.xy/iResolution.xy;
     st.x *= iResolution.x/iResolution.y;
-    st = st - vec2(0.5);
 
+    st = st - vec2(0.5);
     st = rotate(st, iRotationAngle) / iScale;
     st -= iTranslate;
+
+    vec3 color = vec3(0.0);
+    float pct = 0.;
 
     float xsize = 0.1;
     float ysize = 0.15;
     float outer = 1.2 + 0.2 * sin(iTime);
     float inner = 1.1 + 0.3 * cos(iTime);
     float yoffset = 0.7;
-
-    vec3 color = vec3(0.0);
-    float pct = 0.;
-
     st += vec2(0.5, yoffset);
     for (int i = 0; i < int(iQuantity); i++) {
         pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 1.0 + 1.5*float(i), 0.5);
     }
-//    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 1.0, 0.5);
-//    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 2.5, 0.5);
-//    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 5.0, 0.5);
-//    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 7.5, 0.5);
-//    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 9.0, 0.5);
-//    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 10.5, 0.5);
-//    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 12.0, 0.5);
-//    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 13.5, 0.5);
-//    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 15.0, 0.5);
     st -= vec2(0.5, yoffset);
 
+    // original triangle shape
+    float f = shape(st, 3);
+
+    // setup radial noise
     float a = atan(st.y,st.x);
-    float m = abs(mod(a+iTime*2.,3.14*2.)-3.14)/3.6;
+    float m = abs(mod(a+iTime*2.,PI*2.)-PI)/3.6;
     m += noise(st+iTime*0.1)*.5;
     // a *= 1.+abs(atan(iTime*0.2))*.1;
     // a *= 1.+noise(st+iTime*0.1)*0.1;
 
-    // original triangle shape
-    float f = shape(st, 3);
-    // adding radial noise
+    // adding radial noise to triangle distance function
     f += sin(a*50.)*noise(st+iTime*.2)*.1;
     f += (sin(a*20.)*.1*pow(m,2.));
 
-    float triangle_dist = f / (iWow2 + 0.01);
-    float r = iWow1;
+    // scaling factor on triangle distance field
+    float triangle_scale = 1.0;
+    triangle_scale = iWow2;
+    float triangle_dist = f / triangle_scale;
 
-    float tri_inner_mask = r + noise(0.35, 3.*iTime);
+    // innermost step function we apply to triangle distance field
+    float r = 0.3;
+    r = iWow1;
+    float tri_inner_mask = r + noise1d(0.35, 3.*iTime);
+
     float tri_inner_margin = 0.04;
     float tri_inner_start = tri_inner_mask + tri_inner_margin;
     float tri_inner_thickness = 0.1;
