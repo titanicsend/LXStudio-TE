@@ -109,15 +109,18 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
     float pct = 0.;
 
     st += vec2(0.5, yoffset);
-    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 1.0, 0.5);
-    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 2.5, 0.5);
-    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 5.0, 0.5);
-    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 7.5, 0.5);
-    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 9.0, 0.5);
-    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 10.5, 0.5);
-    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 12.0, 0.5);
-    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 13.5, 0.5);
-    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 15.0, 0.5);
+    for (int i = 0; i < int(iQuantity); i++) {
+        pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 1.0 + 1.5*float(i), 0.5);
+    }
+//    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 1.0, 0.5);
+//    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 2.5, 0.5);
+//    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 5.0, 0.5);
+//    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 7.5, 0.5);
+//    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 9.0, 0.5);
+//    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 10.5, 0.5);
+//    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 12.0, 0.5);
+//    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 13.5, 0.5);
+//    pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 15.0, 0.5);
     st -= vec2(0.5, yoffset);
 
     float a = atan(st.y,st.x);
