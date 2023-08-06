@@ -2,50 +2,31 @@ package titanicsend.pattern.look;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
+import titanicsend.pattern.yoffa.framework.ConstructedPattern;
+import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-import titanicsend.pattern.yoffa.shader_engine.NativeShader;
+
+import java.util.List;
 
 @LXCategory("Look Shader Patterns")
-public class TriangleCross extends TEPerformancePattern {
-    NativeShaderPatternEffect effect;
-    NativeShader shader;
+public class TriangleCross extends ConstructedPattern {
 
     public TriangleCross(LX lx) {
-        super(lx, TEShaderView.DOUBLE_LARGE);
-
-//        controls.setRange(TEControlTag.SPEED, 0.6, -1, 1);
-//        controls.setRange(TEControlTag.WOW1, 0, 0, 2.6);
-//        controls.setRange(TEControlTag.QUANTITY, 0.2, 0.075, 0.3);
-//        controls.setValue(TEControlTag.SPIN,0.125);
-
-        // register common controls with LX
-        addCommonControls();
-
-        effect = new NativeShaderPatternEffect("triangle_cross.fs",
-                new PatternTarget(this));
+        super(lx, TEShaderView.ALL_POINTS);
     }
 
     @Override
-    public void runTEAudioPattern(double deltaMs) {
+    protected List<PatternEffect> createEffects() {
+        controls.setRange(TEControlTag.SIZE, 0.46, 0.3, 1.2);
+        controls.setRange(TEControlTag.WOW1, 0.5, 0.3, 1.0);
+        controls.setRange(TEControlTag.WOW2, 1.1, 0.9, 1.2);
+        controls.setRange(TEControlTag.XPOS, 0.08, -0.5, 0.5);
+        controls.setRange(TEControlTag.YPOS, -0.04, -0.5, 0.5);
 
-        //shader.setUniform("iRotationAngle",(float) -getRotationAngleFromSpin());
-
-        // run the shader
-        effect.run(deltaMs);
+        return List.of(new NativeShaderPatternEffect("triangle_cross.fs",
+                new PatternTarget(this)));
     }
-
-    @Override
-    // THIS IS REQUIRED if you're not using ConstructedPattern!
-    // Initialize the NativeShaderPatternEffect and retrieve the native shader object
-    // from it when the pattern becomes active
-    public void onActive() {
-        super.onActive();
-        effect.onActive();
-        shader = effect.getNativeShader();
-    }
-
 }
