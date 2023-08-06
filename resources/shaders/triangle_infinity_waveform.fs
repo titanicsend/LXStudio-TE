@@ -60,16 +60,17 @@ float noise(in float x, in float ts) {
   return y;
 }
 
-float freqNum = {%freqNum[8.,2.,64.]};
-float freqDenom = {%freqDenom[8.,2.,64.]};
+float numIters = 1.0 + 4.0 * volumeRatio;
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+float size = iScale;
+    size += 0.1 * bassRatio;
     // normalize coordinates
     vec2 uv = fragCoord.xy / iResolution.xy;
     uv -= 0.5;
     uv = rotate(uv, iRotationAngle);
     uv.x *= iResolution.x/iResolution.y;
-    uv *= 1.0/iScale;
+    uv *= 1.0/size;
     
     vec2 uv0 = uv;
 
@@ -87,7 +88,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float freq  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
     
     vec3 finalColor = vec3(0.0);
-    for (float i = 0.0; i < iQuantity; i++) {
+    for (float i = 0.0; i < numIters; i++) {
         uv = fract(uv * iWow1) - 0.5;
 
         uv.y *= -1.;
@@ -105,7 +106,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         float paletteIdx = length(uv0) + i*2. * iTime*.1;
         vec3 col = hsb2rgb(mixPalette(iColorHSB, iColor2HSB, paletteIdx));
 
-        d = sin(d*64. + iTime*0.5)/64.;
+        d = sin(d*iQuantity + iTime*iSpeed)/iQuantity;
         d -= noise(i*d*8., iTime*0.1);
         d = abs(d);
 
