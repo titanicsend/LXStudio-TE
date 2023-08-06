@@ -203,7 +203,7 @@ public class TEApp extends LXStudio {
 
       // Patterns that will not aspire to art direction standards
       lx.registry.addPattern(TriangleCross.class);
-      lx.registry.addPattern(TriangleCrossAudio.class);
+      lx.registry.addPattern(TriangleCrossWaveform.class);
 
       // Examples for teaching and on-boarding developers
       lx.registry.addPattern(BasicRainbowPattern.class);
