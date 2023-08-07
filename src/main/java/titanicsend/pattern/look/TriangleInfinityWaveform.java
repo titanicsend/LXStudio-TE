@@ -20,22 +20,15 @@ public class TriangleInfinityWaveform extends ConstructedPattern {
     }
 
     @Override
-    public void runTEAudioPattern(double deltaMs) {
-        // set uniforms if necessary
-        super.runTEAudioPattern(deltaMs);
-    }
-
-    @Override
     protected List<PatternEffect> createEffects() {
+        controls.setRange(TEControlTag.SIZE, 1.35, 0.2, 2.0);
         controls.setRange(TEControlTag.SPEED, 0.25, 0.05, 2.0);
-        // number of "layers" of triangles to apply
-        controls.setRange(TEControlTag.QUANTITY, 3.0, 1.0, 9.0);
+//        controls.setRange(TEControlTag.QUANTITY, 8.0, 1.0, 24.0);
+        controls.setRange(TEControlTag.QUANTITY, 6.0, 2.0, 12.0);
         // Distortion/offset scaling the space between layers
-        controls.setRange(TEControlTag.WOW1, 0.9, 0.5, 2.0);
-//        // "Neon-Ness" (how crisp the lines are)
-//        controls.setRange(TEControlTag.WOW2, 1.2, 1.0, 3.0);
+        controls.setRange(TEControlTag.WOW1, 0.5, 0.0, 2.0);
         // Wave Multiplier
-        controls.setRange(TEControlTag.WOW2, 0.1, 0.0, 1.0);
+        controls.setRange(TEControlTag.WOW2, 0.06, 0.0, 0.5);
 
         return List.of(new NativeShaderPatternEffect("triangle_infinity_waveform.fs",
                 new PatternTarget(this)));

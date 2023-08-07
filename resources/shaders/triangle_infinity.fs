@@ -69,12 +69,17 @@ float noise(in float x, in float ts) {
   return y;
 }
 
-float numIters = 2.0 + 3.0 * volumeRatio;
+float numIters = iQuantity;
+//float waveFreq = 8.0 + 4.0 * volumeRatio;
+float waveFreq = 8.0 + iWow1 * 8.0 * volumeRatio;
+
 //float numIters = 6.0;
+//float numIters = 2.0 + 3.0 * volumeRatio;
+//float waveFreq = iQuantity;
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float size = iScale;
-    size += 0.05 * bassRatio;
+    size += iWow1 * 0.1 * bassRatio;
 
     // normalize coordinates
     vec2 uv = fragCoord.xy / iResolution.xy;
@@ -82,13 +87,19 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     uv = rotate(uv, iRotationAngle);
     uv.x *= iResolution.x/iResolution.y;
     uv *= 1.0/size;
-    
+
+    float fractFactor = 0.86;
+    //fractFactor = iWow1;
+    //fractFactor = 0.7 + 0.3 * trebleLevel;
+    fractFactor = 0.7 + iWow1 * 0.9 * trebleLevel;
+
     vec2 uv0 = uv;
     vec3 finalColor = vec3(0.0);
     for (float i = 0.0; i < numIters; i++) {
         uv = fract(uv * iWow1) - 0.5;
 
-        //uv.y *= -1.;
+        uv.y *= -1.;
+
         // uv0.y *= -1.;
         // uv.y *= -1. * i;
         // uv.y += 0.2;
@@ -100,28 +111,21 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         d *= exp(-sdEquilateralTriangle(uv0, 0.9));
         d += 0.3*noise(i*d, iTime*0.1);
 
-        //float paletteIdx = length(uv0) + i*2. * iTime*.1;
-        //vec3 col = hsb2rgb(mixPalette(iColorHSB, iColor2HSB, paletteIdx));
-
-        //vec3 col = int(i) % 2 == 0 ? iColorHSB : iColor2HSB;
         vec3 col = int(i) % 2 == 0 ? iColorRGB : iColor2RGB;
 
-        d = sin(d*iQuantity + iTime*iSpeed)/iQuantity;
+        d = sin(d*waveFreq + iTime)/waveFreq;
         d -= noise(i*d*8., iTime*0.1);
         d = abs(d);
 
-        d = pow(0.01 / d, iWow2);
-
+        float neonDampening = 1.5;
+        neonDampening = iWow2;
+        d = pow(0.01 / d, neonDampening);
         finalColor += col * d;
 
         // uv.y -= 0.2 * i;
         // uv.y /= -1. * i;
     }
-    //vec3 finalColorHSB = rgb2hsb(finalColor);
-    //finalColor = rgb2hsb(vec3(finalColorHSB.x, finalColorHSB.y, clamp(finalColorHSB.z, -1.0, 1.0)));
-    //finalColor = rgb2hsb(vec3(finalColorHSB.x, finalColorHSB.y, finalColorHSB.z));
 
     finalColor *= 0.9;
-    
     fragColor = vec4(finalColor,1.0);
 }

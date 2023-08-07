@@ -60,11 +60,16 @@ float noise(in float x, in float ts) {
   return y;
 }
 
-float numIters = 1.0 + 4.0 * volumeRatio;
+float numIters = iQuantity;
+float waveFreq = 8.0 + iWow1 * 4.0 * volumeRatio;
+//float numIters = 1.0 + 4.0 * volumeRatio;
+//float waveFreq = iQuantity;
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 float size = iScale;
-    size += 0.1 * bassRatio;
+    //size += 0.1 * bassRatio;
+    size += iWow1 * 0.2 * bassRatio;
+
     // normalize coordinates
     vec2 uv = fragCoord.xy / iResolution.xy;
     uv -= 0.5;
@@ -72,8 +77,6 @@ float size = iScale;
     uv.x *= iResolution.x/iResolution.y;
     uv *= 1.0/size;
     
-    vec2 uv0 = uv;
-
     float index = mod(uv.x * TEXTURE_SIZE * 2.0, TEXTURE_SIZE);
     // The second row of is normalized waveform data
     // we'll just draw this over the spectrum analyzer.  Sound data
@@ -86,10 +89,15 @@ float size = iScale;
     float tx = halfBin+pixPerBin * p;
     // get frequency data pixel from texture
     float freq  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
+
+    float fractFactor = 0.86;
+    fractFactor = 0.7 + iWow1 * 0.9 * trebleLevel;
+    //fractFactor = iWow1;
     
+    vec2 uv0 = uv;
     vec3 finalColor = vec3(0.0);
     for (float i = 0.0; i < numIters; i++) {
-        uv = fract(uv * iWow1) - 0.5;
+        uv = fract(uv * fractFactor) - 0.5;
 
         uv.y *= -1.;
         // uv0.y *= -1.;
@@ -103,15 +111,20 @@ float size = iScale;
         d *= exp(-sdEquilateralTriangle(uv0, 0.9));
         d += 0.3*noise(i*d, iTime*0.1);
 
-        float paletteIdx = length(uv0) + i*2. * iTime*.1;
-        vec3 col = hsb2rgb(mixPalette(iColorHSB, iColor2HSB, paletteIdx));
+        vec3 col = int(i) % 2 == 0 ? iColorRGB : iColor2RGB;
 
-        d = sin(d*iQuantity + iTime*iSpeed)/iQuantity;
+        d = sin(d*waveFreq + iTime)/waveFreq;
         d -= noise(i*d*8., iTime*0.1);
         d = abs(d);
 
-        d = pow(0.01 / d, 1.5);
+        float neonDampening = 1.5;
+        d = pow(0.01 / d, neonDampening);
 
+        // make the brightness of the last layer proportional to how much volume exceeds the threshold,
+        // to reduce flickering
+        if (int(i) == int(numIters-1)){
+            col *= fract(numIters);
+        }
         finalColor += col * d;
 
         // uv.y -= 0.2 * i;
