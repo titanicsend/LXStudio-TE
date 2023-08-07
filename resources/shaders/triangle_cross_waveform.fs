@@ -103,10 +103,14 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
     vec3 color = vec3(0.0);
     float pct = 0.;
 
-    float xsize = 0.1;
-    float ysize = 0.15;
-    float outer = 1.2 + 0.2 * sin(iTime);
-    float inner = 1.1 + 0.3 * cos(iTime);
+    float xsize = 0.1 + iWow1 * 0.5 * trebleLevel;
+    float ysize = 0.25 - iWow1 * 0.2 * trebleLevel;
+    float outer = 1.2 + iWow1 * 1.5 * bassLevel;
+    float inner = 1.1 + iWow1 * 2.0 * bassLevel;
+    //float xsize = 0.1;
+    //float ysize = 0.15;
+    //float outer = 1.2 + 0.2 * sin(iTime);
+    //float inner = 1.1 + 0.3 * cos(iTime);
     float yoffset = 0.7;
     st += vec2(0.5, yoffset);
     for (int i = 0; i < int(iQuantity); i++) {
@@ -152,7 +156,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
     //r = iWow1;
     float tri_inner_mask = r + noise1d(0.35, 3.*iTime);
 
-    float tri_inner_margin = 0.04;
+    float tri_inner_margin = 0.04;// - 0.04 * volumeRatio;
     float tri_inner_start = tri_inner_mask + tri_inner_margin;
     float tri_inner_thickness = 0.1;
 
