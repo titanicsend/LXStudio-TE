@@ -21,14 +21,12 @@ public class TriangleInfinityWaveform extends ConstructedPattern {
 
     @Override
     protected List<PatternEffect> createEffects() {
+        controls.setValue(TEControlTag.YPOS, -0.17);
         controls.setRange(TEControlTag.SIZE, 1.35, 0.2, 2.0);
         controls.setRange(TEControlTag.SPEED, 0.25, 0.05, 2.0);
-//        controls.setRange(TEControlTag.QUANTITY, 8.0, 1.0, 24.0);
         controls.setRange(TEControlTag.QUANTITY, 6.0, 2.0, 12.0);
-        // Distortion/offset scaling the space between layers
-        controls.setRange(TEControlTag.WOW1, 0.5, 0.0, 2.0);
-        // Wave Multiplier
-        controls.setRange(TEControlTag.WOW2, 0.06, 0.0, 0.5);
+        controls.setRange(TEControlTag.WOW1, 0.09, 0.0, 0.5);
+        controls.setRange(TEControlTag.WOW2, 0.04, 0.0, 0.5);
 
         return List.of(new NativeShaderPatternEffect("triangle_infinity_waveform.fs",
                 new PatternTarget(this)));
