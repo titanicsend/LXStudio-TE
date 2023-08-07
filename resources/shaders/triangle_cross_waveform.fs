@@ -102,6 +102,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
 
     vec3 color = vec3(0.0);
     float pct = 0.;
+    float pct2 = 0.;
 
     float xsize = 0.1 + iWow1 * 0.5 * trebleLevel;
     float ysize = 0.25 - iWow1 * 0.2 * trebleLevel;
@@ -114,7 +115,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
     float yoffset = 0.7;
     st += vec2(0.5, yoffset);
     for (int i = 0; i < int(iQuantity); i++) {
-        pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 1.0 + 1.5*float(i), 0.5);
+        if (i % 2 == 0) {
+            pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 1.0 + 1.5*float(i), 0.5);
+        } else {
+            pct2 = nest_xcross(pct2, st, xsize, ysize, outer, inner, 0.5, 1.0 + 1.5*float(i), 0.5);
+        }
     }
     st -= vec2(0.5, yoffset);
 
@@ -153,6 +158,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
     // innermost step function we apply to triangle distance field
     float r = 0.15;
     r += iWow2 * wave;
+    r += iWow1 * 0.2 * volumeRatio;
     //r = iWow1;
     float tri_inner_mask = r + noise1d(0.35, 3.*iTime);
 
@@ -172,6 +178,12 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
     pct += 0.4*step(tri_outer_start, triangle_dist) - step(tri_outer_start+tri_outer_thickness, triangle_dist);
     pct += step(tri_outer_start+2.*tri_outer_thickness, triangle_dist) - step(tri_outer_start+3.*tri_outer_thickness, triangle_dist);
 
-    color += pct * iColorRGB;
+    if (pct2 == 0. || distance(iColor2RGB, vec3(0.)) < 0.1) {
+        color += pct * iColorRGB;
+    } else {
+        pct2 += pct;
+        color += pct2 * iColor2RGB;
+    }
+    //color += pct * iColorRGB;
     fragColor = vec4(color,1.0);
 }
