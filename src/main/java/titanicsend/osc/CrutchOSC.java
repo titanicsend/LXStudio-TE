@@ -163,7 +163,7 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
 
   private boolean canSend() {
     // Copied if from LXComponent: These checks are necessary for bootstrapping, before the OSC engine is spun up
-    return (this.lx != null) && (this.lx.engine != null) && (this.lx.engine.osc != null);
+    return (this.lx != null) && (this.lx.engine != null) && (this.lx.engine.osc != null) && (this.lx.engine.output.enabled.isOn());
   }
 
   private void parameterInstanceChanged(LXListenableNormalizedParameter parameter, int position, boolean isAux) {
