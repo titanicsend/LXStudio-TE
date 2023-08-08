@@ -71,7 +71,8 @@ float noise(in float x, in float ts) {
 
 float numIters = iQuantity;
 //float waveFreq = 8.0 + 4.0 * volumeRatio;
-float waveFreq = 8.0 + iWow1 * 8.0 * volumeRatio;
+//float waveFreq = 8.0 + iWow1 * 8.0 * volumeRatio;
+float waveFreq = 8.0 + iWow1 * 2.0 * volumeRatio;
 
 //float numIters = 6.0;
 //float numIters = 2.0 + 3.0 * volumeRatio;
@@ -96,7 +97,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv0 = uv;
     vec3 finalColor = vec3(0.0);
     for (float i = 0.0; i < numIters; i++) {
-        uv = fract(uv * iWow1) - 0.5;
+        uv = fract(uv * fractFactor) - 0.5;
 
         uv.y *= -1.;
 
