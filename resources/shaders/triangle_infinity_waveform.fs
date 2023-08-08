@@ -72,6 +72,7 @@ float size = iScale;
 
     // normalize coordinates
     vec2 uv = fragCoord.xy / iResolution.xy;
+    uv -= vec2(0., {%defaultYOffset[-0.17,-0.5,0.5]});
     uv -= 0.5;
     uv = rotate(uv, iRotationAngle);
     uv.x *= iResolution.x/iResolution.y;
@@ -131,7 +132,7 @@ float size = iScale;
         // uv.y /= -1. * i;
     }
 
-    // finalColor *= 0.6;
-    
+    finalColor *= {%brightnessDampening[.9,.1,1.0]};
+
     fragColor = vec4(finalColor,1.0);
 }

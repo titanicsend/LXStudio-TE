@@ -20,7 +20,7 @@ public class TriangleInfinityLevels extends TEPerformancePattern {
 
     public TriangleInfinityLevels(LX lx) {
         super(lx, TEShaderView.ALL_POINTS);
-        controls.setValue(TEControlTag.YPOS, -0.14);
+//        controls.setValue(TEControlTag.YPOS, -0.14);
         controls.setRange(TEControlTag.SIZE, 1.20, 0.00, 3.0);
         controls.setRange(TEControlTag.SPEED, 0.01, 0.00, 0.5);
         controls.setRange(TEControlTag.QUANTITY, 8.0, 2.0, 12.0);
@@ -28,11 +28,14 @@ public class TriangleInfinityLevels extends TEPerformancePattern {
         controls.setRange(TEControlTag.WOW2, 1.1, 1.0, 3.0);
         controls.setValue(TEControlTag.BRIGHTNESS, 0.5);
 
+        addCommonControls();
+
         effect = new NativeShaderPatternEffect("triangle_infinity.fs", new PatternTarget(this));
     }
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
+        shader.setUniform("brightnessDampening", 0.5f);
         // run the shader
         effect.run(deltaMs);
     }

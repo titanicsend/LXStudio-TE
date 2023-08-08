@@ -21,18 +21,21 @@ public class TriangleInfinityWaveform extends TEPerformancePattern {
     public TriangleInfinityWaveform(LX lx) {
         super(lx, TEShaderView.ALL_POINTS);
 
-        controls.setValue(TEControlTag.YPOS, -0.17);
+//        controls.setValue(TEControlTag.YPOS, -0.17);
         controls.setRange(TEControlTag.SIZE, 1.35, 0.2, 2.0);
         controls.setRange(TEControlTag.SPEED, 0.01, 0.00, 0.5);
         controls.setRange(TEControlTag.QUANTITY, 6.0, 2.0, 12.0);
         controls.setRange(TEControlTag.WOW1, 0.09, 0.0, 0.5);
         controls.setRange(TEControlTag.WOW2, 0.04, 0.0, 0.5);
 
+        addCommonControls();
+
         effect = new NativeShaderPatternEffect("triangle_infinity_waveform.fs", new PatternTarget(this));
     }
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
+        shader.setUniform("brightnessDampening", 0.5f);
         // run the shader
         effect.run(deltaMs);
     }
