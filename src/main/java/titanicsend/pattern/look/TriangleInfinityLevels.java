@@ -14,13 +14,12 @@ import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 import java.util.List;
 
 @LXCategory("Look Shader Patterns")
-public class TriangleInfinityLevels extends ConstructedPattern {
+public class TriangleInfinityLevels extends TEPerformancePattern {
+    NativeShaderPatternEffect effect;
+    NativeShader shader;
+
     public TriangleInfinityLevels(LX lx) {
         super(lx, TEShaderView.ALL_POINTS);
-    }
-
-    @Override
-    protected List<PatternEffect> createEffects() {
         controls.setValue(TEControlTag.YPOS, -0.14);
         controls.setRange(TEControlTag.SIZE, 1.20, 0.00, 3.0);
         controls.setRange(TEControlTag.SPEED, 0.01, 0.00, 0.5);
@@ -29,7 +28,22 @@ public class TriangleInfinityLevels extends ConstructedPattern {
         controls.setRange(TEControlTag.WOW2, 1.1, 1.0, 3.0);
         controls.setValue(TEControlTag.BRIGHTNESS, 0.5);
 
-        return List.of(new NativeShaderPatternEffect("triangle_infinity.fs",
-                new PatternTarget(this)));
+        effect = new NativeShaderPatternEffect("triangle_infinity.fs", new PatternTarget(this));
+    }
+
+    @Override
+    public void runTEAudioPattern(double deltaMs) {
+        // run the shader
+        effect.run(deltaMs);
+    }
+
+    @Override
+    // THIS IS REQUIRED if you're not using ConstructedPattern!
+    // Initialize the NativeShaderPatternEffect and retrieve the native shader object
+    // from it when the pattern becomes active
+    public void onActive() {
+        super.onActive();
+        effect.onActive();
+        shader = effect.getNativeShader();
     }
 }
