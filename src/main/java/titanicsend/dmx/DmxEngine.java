@@ -31,6 +31,7 @@ import heronarts.lx.blend.AddBlend;
 import heronarts.lx.blend.LXBlend;
 import heronarts.lx.mixer.LXAbstractChannel;
 import heronarts.lx.mixer.LXChannel;
+import heronarts.lx.mixer.LXGroup;
 import heronarts.lx.mixer.LXMasterBus;
 import heronarts.lx.mixer.LXMixerEngine;
 import heronarts.lx.output.LXOutput;
@@ -211,9 +212,9 @@ public class DmxEngine implements LXLoopTask {
 
   private final DoubleBuffer buffer;
 
-  private final HashMap<LXBuffer, DmxModelBuffer> bufferLookup = new HashMap<LXBuffer, DmxModelBuffer>();
-
-  private final HashMap<LXAbstractChannel, List<LXBuffer>> channelBuffers = new HashMap<LXAbstractChannel, List<LXBuffer>>();
+  private final HashMap<LXAbstractChannel, List<LXBuffer>> lxBuffersByChannel = new HashMap<LXAbstractChannel, List<LXBuffer>>();
+  private final HashMap<LXBuffer, DmxModelBuffer> dmxBufferByLXBuffer = new HashMap<LXBuffer, DmxModelBuffer>();
+  private final HashMap<LXGroup, DmxModelBuffer> dmxBufferByGroup = new HashMap<LXGroup, DmxModelBuffer>();
 
   private final AddBlend addBlend;
 
@@ -263,8 +264,8 @@ public class DmxEngine implements LXLoopTask {
    */
 
   public DmxModelBuffer getDmxModelBuffer(LXBuffer buffer, LXAbstractChannel channel) {
-    if (bufferLookup.containsKey(buffer)) {
-      return bufferLookup.get(buffer);
+    if (dmxBufferByLXBuffer.containsKey(buffer)) {
+      return dmxBufferByLXBuffer.get(buffer);
     } else {
       return createBufferDmx(buffer, channel);
     }
@@ -272,29 +273,45 @@ public class DmxEngine implements LXLoopTask {
 
   private DmxModelBuffer createBufferDmx(LXBuffer buffer, LXAbstractChannel channel) {
     DmxModelBuffer bufferDmx = new DmxModelBuffer(this.lx, this.dmxWholeModel);
-    this.bufferLookup.put(buffer, bufferDmx);
+    this.dmxBufferByLXBuffer.put(buffer, bufferDmx);
 
-    List<LXBuffer> chBuffers = this.channelBuffers.get(channel);
+    List<LXBuffer> chBuffers = this.lxBuffersByChannel.get(channel);
     if (chBuffers == null) {
       chBuffers = new ArrayList<LXBuffer>();
-      this.channelBuffers.put(channel, chBuffers);
+      this.lxBuffersByChannel.put(channel, chBuffers);
     }
     chBuffers.add(buffer);
 
     return bufferDmx;
   }
 
+  private DmxModelBuffer getDmxModelBufferByGroup(LXGroup group) {
+    if (this.dmxBufferByGroup.containsKey(group)) {
+      return this.dmxBufferByGroup.get(group);
+    } else {
+      DmxModelBuffer bufferDmx = new DmxModelBuffer(this.lx, this.dmxWholeModel);
+      this.dmxBufferByGroup.put(group, bufferDmx);
+      return bufferDmx;
+    }
+  }
+
   /**
    * Monitor LX mixer for channels removed, release references to expiring buffers
    */
   protected void removeChannel(LXAbstractChannel channel) {
-    List<LXBuffer> chBuffers = this.channelBuffers.remove(channel);
+    List<LXBuffer> chBuffers = this.lxBuffersByChannel.remove(channel);
     if (chBuffers != null) {
       for (LXBuffer buffer : chBuffers) {
-        DmxModelBuffer dmxBuffer = this.bufferLookup.remove(buffer);
+        DmxModelBuffer dmxBuffer = this.dmxBufferByLXBuffer.remove(buffer);
         if (dmxBuffer != null) {
           dmxBuffer.dispose();
         }
+      }
+    }
+    if (channel instanceof LXGroup) {
+      DmxModelBuffer groupBuffer = this.dmxBufferByGroup.remove((LXGroup)channel);
+      if (groupBuffer != null) {
+        groupBuffer.dispose();
       }
     }
   }
@@ -308,7 +325,7 @@ public class DmxEngine implements LXLoopTask {
     // LXLoopTasks are run before the mixer.
 
     // Initialize buffers.
-    for (DmxModelBuffer buffer : this.bufferLookup.values()) {
+    for (DmxModelBuffer buffer : this.dmxBufferByLXBuffer.values()) {
       buffer.resetModified();
     }
   }
@@ -401,7 +418,7 @@ public class DmxEngine implements LXLoopTask {
       boolean isSubChannel = channel.getGroup() != null;
 
       // Blend into the output buffer
-      if (!isSubChannel) {
+      if (!isSubChannel && hasDmxBuffer(channel)) {
         BlendStack blendStack = null;
 
         // Which output group is this channel mapped to
@@ -517,12 +534,20 @@ public class DmxEngine implements LXLoopTask {
     sendDmx();
   }
 
+  private boolean hasDmxBuffer(LXAbstractChannel channel) {
+    return this.lxBuffersByChannel.containsKey(channel);
+  }
+
   private DmxBuffer[] getDmxBuffersByChannel(LXAbstractChannel channel) {
-    return this.bufferLookup.get(this.channelBuffers.get(channel).get(0)).getArray();
+    if (channel instanceof LXGroup) {
+      return getDmxModelBufferByGroup((LXGroup)channel).getArray();
+    } else {
+      return this.dmxBufferByLXBuffer.get(this.lxBuffersByChannel.get(channel).get(0)).getArray();
+    }
   }
 
   private DmxBuffer[] getRenderBuffersByChannel(LXAbstractChannel channel) {
-    return this.bufferLookup.get(this.channelBuffers.get(channel).get(1)).getArray();
+    return this.dmxBufferByLXBuffer.get(this.lxBuffersByChannel.get(channel).get(1)).getArray();
   }
 
   private void scaleBrightness(DmxBuffer[] fullBuffer, double brightness) {
@@ -607,10 +632,14 @@ public class DmxEngine implements LXLoopTask {
   }
 
   public void dispose() {
-    for (DmxModelBuffer value : this.bufferLookup.values()) {
+    for (DmxModelBuffer value : this.dmxBufferByLXBuffer.values()) {
       value.dispose();
     }
-    this.bufferLookup.clear();
+    for (DmxModelBuffer value : this.dmxBufferByGroup.values()) {
+      value.dispose();
+    }
+    this.dmxBufferByLXBuffer.clear();
+    this.dmxBufferByGroup.clear();
     this.lx.engine.mixer.removeListener(this.mixerListener);
     current = null;
   }
