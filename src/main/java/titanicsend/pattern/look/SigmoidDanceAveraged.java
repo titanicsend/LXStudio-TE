@@ -39,7 +39,7 @@ public class SigmoidDanceAveraged extends TEPerformancePattern {
         double bassRatio = getBassRatio();
         double trebleRatio = getTrebleRatio();
 
-        System.out.printf("%s, %s, %s, %s, %s\n", volumeRatio, bassLevel, trebleLevel, bassRatio, trebleRatio);
+//        System.out.printf("%s, %s, %s, %s, %s\n", volumeRatio, bassLevel, trebleLevel, bassRatio, trebleRatio);
 
         shader.setUniform("iScaledLo", (float) bassLevel);
         shader.setUniform("iScaledHi", (float) trebleLevel);
