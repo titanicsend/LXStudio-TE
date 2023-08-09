@@ -78,6 +78,7 @@ import titanicsend.ui.UIBackings;
 import titanicsend.ui.UILasers;
 import titanicsend.ui.UITEPerformancePattern;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
+import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
 
 public class TEApp extends LXStudio {
@@ -129,6 +130,9 @@ public class TEApp extends LXStudio {
 
       // Add special per-channel swatch control. *Post-EDC note: this will get revised.
       this.colorCentral = new ColorCentral(lx);
+
+      // Load metadata about unused controls per-pattern into a singleton that patterns will reference later
+      MissingControlsManager.get();
 
       // Add special view controller
       this.viewCentral = new ViewCentral(lx);
