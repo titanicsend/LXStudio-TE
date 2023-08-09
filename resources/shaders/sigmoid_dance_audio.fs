@@ -86,8 +86,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // // apparent shininess and give it some extra bounce.
     // dist = dist - (beat * beat);
 
-    float norm_x = wave;
-    float norm_y = freq;
+    float norm_x = pow(wave, 1. / iWow2);
+    float norm_y = pow(freq, 1. / iWow1);
 
     vec3 color = vec3(0.);
     float s1 = vertS(st, norm_x, norm_y);

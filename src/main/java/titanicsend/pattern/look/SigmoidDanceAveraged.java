@@ -24,6 +24,7 @@ public class SigmoidDanceAveraged extends TEPerformancePattern {
         super(lx, TEShaderView.ALL_POINTS);
 
         controls.setRange(TEControlTag.QUANTITY, 2.0, 0.0, 4.0);
+        controls.setRange(TEControlTag.WOW1, 0.5, 0.0, 1.0);
 
         addCommonControls();
 
@@ -41,8 +42,8 @@ public class SigmoidDanceAveraged extends TEPerformancePattern {
 
 //        System.out.printf("%s, %s, %s, %s, %s\n", volumeRatio, bassLevel, trebleLevel, bassRatio, trebleRatio);
 
-        shader.setUniform("iScaledLo", (float) bassLevel);
-        shader.setUniform("iScaledHi", (float) trebleLevel);
+        shader.setUniform("iScaledLo", Math.abs((float) getWow1() * (float) bassLevel + 0.05f));
+        shader.setUniform("iScaledHi", Math.abs((float) getWow1() * (float) trebleLevel + 0.05f));
 
         effect.run(deltaMs);
     }

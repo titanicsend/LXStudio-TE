@@ -3,6 +3,7 @@ package titanicsend.pattern.look;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
@@ -16,6 +17,8 @@ public class SigmoidDanceAudio extends TEPerformancePattern {
     public SigmoidDanceAudio(LX lx) {
         super(lx, TEShaderView.DOUBLE_LARGE);
 
+        controls.setRange(TEControlTag.WOW1, 1.0, 0.0, 4.0);
+        controls.setRange(TEControlTag.WOW2, 1.0, 0.0, 4.0);
 //        controls.setRange(TEControlTag.SPEED, 0.6, -1, 1);
 //        controls.setRange(TEControlTag.WOW1, 0, 0, 2.6);
 //        controls.setRange(TEControlTag.QUANTITY, 0.2, 0.075, 0.3);
