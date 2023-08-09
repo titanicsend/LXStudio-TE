@@ -26,10 +26,6 @@
 
 package titanicsend.ui;
 
-import processing.core.PConstants;
-import processing.core.PGraphics;
-import processing.event.KeyEvent;
-import processing.event.MouseEvent;
 import titanicsend.pattern.TEPerformancePattern.TEColorParameter;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.command.LXCommand;
@@ -37,17 +33,21 @@ import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.pattern.UIGradientPattern.UIPaletteGradient;
 import heronarts.lx.utils.LXUtils;
-import heronarts.p4lx.ui.UI;
-import heronarts.p4lx.ui.UI2dComponent;
-import heronarts.p4lx.ui.UI2dContainer;
-import heronarts.p4lx.ui.UIFocus;
-import heronarts.p4lx.ui.UITimerTask;
-import heronarts.p4lx.ui.component.UIButton;
-import heronarts.p4lx.ui.component.UIDoubleBox;
-import heronarts.p4lx.ui.component.UIKnob;
-import heronarts.p4lx.ui.component.UILabel;
-import heronarts.p4lx.ui.component.UIParameterControl;
-import heronarts.p4lx.ui.component.UISlider;
+import heronarts.glx.event.KeyEvent;
+import heronarts.glx.event.MouseEvent;
+import heronarts.glx.ui.UI;
+import heronarts.glx.ui.UI2dComponent;
+import heronarts.glx.ui.UI2dContainer;
+import heronarts.glx.ui.UIColor;
+import heronarts.glx.ui.UIFocus;
+import heronarts.glx.ui.UITimerTask;
+import heronarts.glx.ui.component.UIButton;
+import heronarts.glx.ui.component.UIDoubleBox;
+import heronarts.glx.ui.component.UIKnob;
+import heronarts.glx.ui.component.UILabel;
+import heronarts.glx.ui.component.UIParameterControl;
+import heronarts.glx.ui.component.UISlider;
+import heronarts.glx.ui.vg.VGraphics;
 
 public class UITEColorPicker extends UI2dComponent {
 
@@ -66,7 +66,7 @@ public class UITEColorPicker extends UI2dComponent {
 
   private boolean enabled = true;
 
-  private int drawColor = 0xff000000;
+  private int drawColor = LXColor.BLACK;
 
   private boolean deviceMode = false;
 
@@ -145,19 +145,35 @@ public class UITEColorPicker extends UI2dComponent {
   }
 
   @Override
-  public void onDraw(UI ui, PGraphics pg) {
-    pg.stroke(ui.theme.getControlBorderColor());
-    pg.fill(this.drawColor);
+  public void drawBorder(UI ui, VGraphics vg) {
     if (this.deviceMode) {
-      pg.rect(UIKnob.KNOB_MARGIN, 0, UIKnob.KNOB_SIZE, UIKnob.KNOB_SIZE);
-      UIParameterControl.drawParameterLabel(ui, pg, this, (this.color != null) ? this.color.getLabel() : "-");
+      vg.beginPath();
+      vg.strokeColor(ui.theme.controlBorderColor);
+      vg.rect(UIKnob.KNOB_MARGIN + .5f, .5f, UIKnob.KNOB_SIZE - 1, UIKnob.KNOB_SIZE - 1);
+      vg.stroke();
     } else {
-      pg.rect(0, 0, this.width, this.height);
+      super.drawBorder(ui, vg);
+    }
+  }
+
+  @Override
+  public void onDraw(UI ui, VGraphics vg) {
+    vg.beginPath();
+    vg.fillColor(this.drawColor);
+    if (this.deviceMode) {
+      vg.rect(UIKnob.KNOB_MARGIN, 0, UIKnob.KNOB_SIZE, UIKnob.KNOB_SIZE);
+    } else {
+      vgRoundedRect(vg, .5f, .5f, this.width-1, this.height-1);
+    }
+    vg.fill();
+
+    if (this.deviceMode) {
+      UIParameterControl.drawParameterLabel(ui, vg, this, this.color != null ? this.color.getLabel() : "-");
     }
   }
 
   protected void hideOverlay() {
-    getUI().hideContextOverlay();
+    getUI().clearContextOverlay(this.uiColorOverlay);
   }
 
   private void showOverlay() {
@@ -188,7 +204,7 @@ public class UITEColorPicker extends UI2dComponent {
   @Override
   public void onMousePressed(MouseEvent mouseEvent, float mx, float my) {
     if (this.enabled) {
-      consumeMousePress();
+      mouseEvent.consume();
       showOverlay();
     }
     super.onMousePressed(mouseEvent, mx, my);
@@ -197,12 +213,12 @@ public class UITEColorPicker extends UI2dComponent {
   @Override
   public void onKeyPressed(KeyEvent keyEvent, char keyChar, int keyCode) {
     if (this.enabled) {
-      if (keyCode == java.awt.event.KeyEvent.VK_ENTER || keyCode == java.awt.event.KeyEvent.VK_SPACE) {
-        consumeKeyEvent();
+      if (keyEvent.isEnter() || (keyCode == KeyEvent.VK_SPACE)) {
+        keyEvent.consume();
         showOverlay();
-      } else if (keyCode == java.awt.event.KeyEvent.VK_ESCAPE) {
+      } else if (keyCode == KeyEvent.VK_ESCAPE) {
         if ((this.uiColorOverlay != null) && (this.uiColorOverlay.isVisible())) {
-          consumeKeyEvent();
+          keyEvent.consume();
           hideOverlay();
         }
       }
@@ -210,10 +226,21 @@ public class UITEColorPicker extends UI2dComponent {
     super.onKeyPressed(keyEvent, keyChar, keyCode);
   }
 
-  
+  @Override
+  public void dispose() {
+    if (this.color != null) {
+      this.color.removeListener(this.redrawSwatch);
+    }
+    if (this.uiColorOverlay != null) {
+      getUI().clearContextOverlay(this.uiColorOverlay);
+      this.uiColorOverlay.dispose();
+    }
+    super.dispose();
+  }
+
   protected class UITEColorOverlay extends UI2dContainer {
 
-    private static final int PADDING = 12;
+    private static final int PADDING = 8;
 
     private final UISwatch swatch;
     private final UI2dComponent swatchDimmer;
@@ -227,8 +254,8 @@ public class UITEColorPicker extends UI2dComponent {
     UITEColorOverlay(UI ui, float width, float extraHeight) {
       super(0, 0, width, UISwatch.HEIGHT + extraHeight);
 
-      setBackgroundColor(UI.get().theme.getDeviceBackgroundColor());
-      setBorderColor(UI.get().theme.getControlBorderColor());
+      setBackgroundColor(ui.theme.deviceBackgroundColor);
+      setBorderColor(ui.theme.controlBorderColor);
       setBorderRounding(6);
 
       this.swatch = new UISwatch();
@@ -237,28 +264,28 @@ public class UITEColorPicker extends UI2dComponent {
       float xp = this.swatch.getX() + this.swatch.getWidth();
       float yp = 16;
       final UIDoubleBox hueBox = (UIDoubleBox) new UIDoubleBox(xp, yp, 56, color.hue).addToContainer(this);
-      new UILabel(xp, yp + 16, 56, "Hue").setTextAlignment(PConstants.CENTER).addToContainer(this);
+      new UILabel(xp, yp + 16, 56, "Hue").setTextAlignment(VGraphics.Align.CENTER).addToContainer(this);
 
       yp += 40;
 
       final UIDoubleBox satBox = (UIDoubleBox) new UIDoubleBox(xp, yp, 56, color.saturation).addToContainer(this);
-      new UILabel(xp, yp + 16, 56, "Sat").setTextAlignment(PConstants.CENTER).addToContainer(this);
+      new UILabel(xp, yp + 16, 56, "Sat").setTextAlignment(VGraphics.Align.CENTER).addToContainer(this);
 
       yp += 40;
 
       final UIDoubleBox brtBox = (UIDoubleBox) new UIDoubleBox(xp, yp, 56, color.brightness).addToContainer(this);
-      new UILabel(xp, yp + 16, 56, "Bright").setTextAlignment(PConstants.CENTER).addToContainer(this);
+      new UILabel(xp, yp + 16, 56, "Bright").setTextAlignment(VGraphics.Align.CENTER).addToContainer(this);
 
       // Horizontal break
       new UI2dComponent(PADDING, 140, this.width - 2*PADDING, 1) {}
-      .setBorderColor(ui.theme.getDarkBackgroundColor())
+      .setBorderColor(ui.theme.controlBorderColor)
       .addToContainer(this);
 
-      
+
       // Special for TEColorParameter
 
       // Gray overlay for swatch when not using STATIC source
-      swatchDimmer = new UILabel(PADDING, PADDING-1, this.width - 2*PADDING, 130)
+      swatchDimmer = new UILabel(PADDING, PADDING, this.width - 2*PADDING, 135)
       .setBackgroundColor(LXColor.rgba(75,75,75,200))
       .addToContainer(this);
 
@@ -272,32 +299,32 @@ public class UITEColorPicker extends UI2dComponent {
 
       // Gradient
       UI2dContainer.newHorizontalContainer(16, 4,
-          new UILabel(58, 12, "Gradient:").setFont(ui.theme.getControlFont()),
-          new UIButton(68, 16, color.gradient),
-          new UIButton(56, 16, color.blendMode)
-        )
+        new UILabel(58, 12, "Gradient:").setFont(ui.theme.getControlFont()),
+        new UIButton(68, 16, color.gradient),
+        new UIButton(56, 16, color.blendMode)
+      )
       .setPosition(PADDING, 171)
       .addToContainer(this);
-      
+
       // Offset
       new UIKnob(204, 147, color.offset).addToContainer(this);
 
       // Solid color preview
       UI2dContainer.newHorizontalContainer(16, 1,
           color1 = new UI2dComponent(0, 0, 16, 16) {}
-            .setBorderColor(ui.theme.getControlBorderColor())
-            .setBackgroundColor(color.calcColor())
-            .setBorderRounding(4),
-          new UISlider(UISlider.Direction.HORIZONTAL, 30, 16, color.color2offset)
-            .setShowLabel(false),
-          color2 = new UI2dComponent(0, 0, 16, 16) {}
-            .setBorderColor(ui.theme.getControlBorderColor())
-            .setBackgroundColor(color.calcColor2())
-            .setBorderRounding(4)
-        )
-        .setPosition(248, 148)
-        .addToContainer(this);
-      
+      .setBorderColor(ui.theme.controlBorderColor)
+      .setBackgroundColor(color.calcColor())
+      .setBorderRounding(4),
+      new UISlider(UISlider.Direction.HORIZONTAL, 30, 16, color.color2offset)
+      .setShowLabel(false),
+      color2 = new UI2dComponent(0, 0, 16, 16) {}
+      .setBorderColor(ui.theme.controlBorderColor)
+      .setBackgroundColor(color.calcColor2())
+      .setBorderRounding(4)
+          )
+      .setPosition(248, 148)
+      .addToContainer(this);
+
       addListener(color, p -> {
         color1.setBackgroundColor(color.calcColor());
         color2.setBackgroundColor(color.calcColor2());        
@@ -307,7 +334,7 @@ public class UITEColorPicker extends UI2dComponent {
       new UIPaletteGradient((LXStudio.UI)ui, color, 64, 16)
       .setPosition(248, 171)
       .addToContainer(this);
-      
+
       color.solidSource.addListener((p) -> {
         boolean isStatic = color.solidSource.getEnum() == TEColorParameter.SolidColorSource.STATIC;
         swatch.setEnabled(isStatic);
@@ -317,10 +344,10 @@ public class UITEColorPicker extends UI2dComponent {
         swatchDimmer.setVisible(!isStatic);
       }, true);
     }
-    
+
     private class UISwatch extends UI2dComponent implements UIFocus {
 
-      private static final float PADDING = 8;
+      private static final float PADDING = 12;
 
       private static final float GRID_X = PADDING;
       private static final float GRID_Y = PADDING;
@@ -349,56 +376,62 @@ public class UITEColorPicker extends UI2dComponent {
       }
 
       @Override
-      public void onDraw(UI ui, PGraphics pg) {
+      public void onDraw(UI ui, VGraphics vg) {
+        final int xStops = 6;
+        final int yStops = 40;
+        final float xStep = GRID_WIDTH / xStops;
+        final float yStep = GRID_HEIGHT / yStops;
 
         float hue = color.hue.getBaseValuef();
         float saturation = color.saturation.getBaseValuef();
         float brightness = color.brightness.getBaseValuef();
 
         // Main color grid
-        for (int x = 0; x < GRID_WIDTH; ++x) {
-          for (int y = 0; y < GRID_HEIGHT; ++y) {
-            pg.stroke(LXColor.hsb(
-              360 * (x / GRID_WIDTH),
-              100 * (1 - y / GRID_HEIGHT),
-              brightness
-            ));
-            pg.point(GRID_X + x, GRID_Y + y);
+        for (int y = 0; y < yStops; ++y) {
+          for (int x = 0; x < xStops; ++x) {
+            vg.fillLinearGradient(GRID_X + x * xStep, 0, GRID_X + (x+1) * xStep, 0,
+                LXColor.hsb(x * 360 / xStops, 100f - y * 100f / yStops, brightness),
+                LXColor.hsb((x+1) * 360 / xStops, 100f - y * 100f / yStops, brightness));
+            vg.beginPath();
+            vg.rect(GRID_X + x * xStep - .5f, GRID_Y + y * yStep - .5f, xStep + 1, yStep + 1);
+            vg.fill();
           }
         }
 
         // Brightness slider
-        for (int y = 0; y < BRIGHT_SLIDER_HEIGHT; ++y) {
-          pg.stroke(LXColor.hsb(hue, saturation, 100 - 100 * (y / BRIGHT_SLIDER_HEIGHT)));
-          pg.line(BRIGHT_SLIDER_X, BRIGHT_SLIDER_Y + y, BRIGHT_SLIDER_X + BRIGHT_SLIDER_WIDTH - 1, BRIGHT_SLIDER_Y + y);
-        }
+        vg.fillLinearGradient(BRIGHT_SLIDER_X, BRIGHT_SLIDER_Y, BRIGHT_SLIDER_X, BRIGHT_SLIDER_HEIGHT,
+            LXColor.hsb(hue, saturation, 100),
+            LXColor.hsb(hue, saturation, 0)
+            );
+        vg.beginPath();
+        vg.rect(BRIGHT_SLIDER_X, BRIGHT_SLIDER_Y - .5f, BRIGHT_SLIDER_WIDTH, BRIGHT_SLIDER_HEIGHT + 1);
+        vg.fill();
 
         // Color square
-        pg.noFill();
-        pg.stroke(brightness < 50 ? 0xffffffff : 0xff000000);
-        pg.ellipseMode(PConstants.CORNER);
-        pg.ellipse(
-          GRID_X + hue / 360 * GRID_WIDTH,
-          GRID_Y + (1 - saturation / 100) * GRID_HEIGHT,
-          4,
-          4
-        );
+        vg.beginPath();
+        vg.strokeColor(brightness < 50 ? UIColor.WHITE : UIColor.BLACK);
+        vg.ellipse(
+            GRID_X + hue / 360 * GRID_WIDTH,
+            GRID_Y + (1 - saturation / 100) * GRID_HEIGHT,
+            4,
+            4
+            );
+        vg.stroke();
 
         // Brightness triangle
-        pg.fill(0xffcccccc);
-        pg.noStroke();
-
-        pg.beginShape(PConstants.TRIANGLES);
+        vg.beginPath();
+        vg.fillColor(ui.theme.controlTextColor);
         float xp = BRIGHT_SLIDER_X;
         float yp = BRIGHT_SLIDER_Y + (1 - brightness / 100) * BRIGHT_SLIDER_HEIGHT;
-        pg.vertex(xp, yp);
-        pg.vertex(xp - 6, yp - 4);
-        pg.vertex(xp - 6, yp + 4);
-
-        pg.vertex(xp + BRIGHT_SLIDER_WIDTH, yp);
-        pg.vertex(xp + BRIGHT_SLIDER_WIDTH + 6, yp + 4);
-        pg.vertex(xp + BRIGHT_SLIDER_WIDTH + 6, yp - 4);
-
+        vg.moveTo(xp, yp);
+        vg.lineTo(xp - 6, yp - 4);
+        vg.lineTo(xp - 6, yp + 4);
+        vg.closePath();
+        vg.moveTo(xp + BRIGHT_SLIDER_WIDTH, yp);
+        vg.lineTo(xp + BRIGHT_SLIDER_WIDTH + 6, yp + 4);
+        vg.lineTo(xp + BRIGHT_SLIDER_WIDTH + 6, yp - 4);
+        vg.closePath();
+        vg.fill();
       }
 
       private boolean draggingBrightness = false;
@@ -458,22 +491,22 @@ public class UITEColorPicker extends UI2dComponent {
         }
         float inc = keyEvent.isShiftDown() ? 10 : 2;
         if (keyCode == java.awt.event.KeyEvent.VK_UP) {
-          consumeKeyEvent();
+          keyEvent.consume();
           getLX().command.perform(new LXCommand.Parameter.SetValue(color.saturation,
             LXUtils.clampf(color.saturation.getBaseValuef() + inc, 0, 100)
           ));
         } else if (keyCode == java.awt.event.KeyEvent.VK_DOWN) {
-          consumeKeyEvent();
+          keyEvent.consume();
           getLX().command.perform(new LXCommand.Parameter.SetValue(color.saturation,
             LXUtils.clampf(color.saturation.getBaseValuef() - inc, 0, 100)
           ));
         } else if (keyCode == java.awt.event.KeyEvent.VK_LEFT) {
-          consumeKeyEvent();
+          keyEvent.consume();
           getLX().command.perform(new LXCommand.Parameter.SetValue(color.hue,
             LXUtils.clampf(color.hue.getBaseValuef() - 3*inc, 0, 360)
           ));
         } else if (keyCode == java.awt.event.KeyEvent.VK_RIGHT) {
-          consumeKeyEvent();
+          keyEvent.consume();
           getLX().command.perform(new LXCommand.Parameter.SetValue(color.hue,
             LXUtils.clampf(color.hue.getBaseValuef() + 3*inc, 0, 360)
           ));
@@ -481,6 +514,5 @@ public class UITEColorPicker extends UI2dComponent {
       }
 
     }
-    
   }
 }

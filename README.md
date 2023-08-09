@@ -12,6 +12,17 @@ We use [LX Studio](https://lx.studio/) to control the light show, and this READM
     This doc sets out the project vision and has so much more information: <a href="https://docs.google.com/document/d/1YK9umrhOodwnRWGRzYOR1iOocrO6Cf9ZpHF7FWgBKKI/edit#">Lighting Design Doc</a>
 </details>
 
+## JDK Installation
+
+Either go to https://adoptium.net/installation/ or, on a Mac with Homebrew:
+```sh
+brew tap homebrew/cask-versions
+brew install --cask temurin17
+
+# verify your installation by running:
+/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java --version
+```
+
 ## Getting started
 
 > These are geared toward running LX Studio on a Macbook with `git` already installed. If you need help with anything, ask in the Slack #lighting-software channel!
@@ -35,12 +46,11 @@ Steps for setup:
    1. Platform Settings → SDKs
       1. Either add the installed Temurin 17 JDK
       2. Or, if that JDK is not installed, you can click the '+' and then select
-         "Download JDK..."
-         1. Select 17 as the Version
-         2. Select "Eclipse Temarin" as the Vendor
-           - Do NOT select the "aarch64" version otherwise you'll experience pain. Pick the other one
-           
-         ![The highlighted one](assets/IDE%20Setup/Install%20temurin17.png)
+         "Add JDK..."
+         1. Navigate to `/Library/Java/JavaVirtualMachines/temurin-17.jdk`
+         2. Select `temurin-17.jdk`
+        ![Add JDK](assets/IDE%20Setup/AddJDK.png)
+        ![Select Temurin 17](assets/IDE%20Setup/SelectTemurin17.png)
 
    2. Project Settings → Project
       1. Select the Temurin 17 JDK
@@ -136,31 +146,27 @@ IntelliJ to behave more like VS Code, I'd recommend:
 
 If you just need to execute LX to run a show without editing anything, you can do that:
 
-0. Install Temurin JDK
-
-Either go to https://adoptium.net/installation/ or, on a Mac with Homebrew, `brew install temurin17`
-
-(If you'll be using an IDE, it'll do this for you; skip to the Editing section.)
+0. Install Temurin JDK (see JDK installation above).
 
 1. Build into a runnable JAR:
    ```shell
    mvn clean package  # Packaging creates the JAR and cleaning is optional
    ```
 2. Execute the JAR (Note that the version number may be different — The version
-   as of this document revision is 0.2.0-SNAPSHOT — substitute the correct
+   as of this document revision is 0.2.1-SNAPSHOT — substitute the correct
    version as necessary):
    ```shell
-   java -jar target/LXStudio-TE-0.2.0-SNAPSHOT-jar-with-dependencies.jar vehicle Vehicle.lxp
+   java -jar target/LXStudio-TE-0.2.1-SNAPSHOT-jar-with-dependencies.jar vehicle Vehicle.lxp
    ```
 3. If the Temurin JDK isn't your default Java, then you can use the full path,
    for example:
    ```shell
-   /Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java -jar target/LXStudio-TE-0.2.0-SNAPSHOT-jar-with-dependencies.jar vehicle Vehicle.lxp
+   /Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java -jar target/LXStudio-TE-0.2.1-SNAPSHOT-jar-with-dependencies.jar vehicle Vehicle.lxp
    ```
 4. Use Maven to execute the program instead of the `java` command:
    ```shell
    mvn clean compile  # Cleaning and compiling is optional, depending on your needs
-   mvn exec:java@Main -Dexec.args="vehicle Vehicle.lxp"
+   mvn exec:exec@Main -Dexec.args="vehicle Vehicle.lxp"
    ```
 
    Fun fact: The "Main" target isn't defined in the POM to have arguments, but

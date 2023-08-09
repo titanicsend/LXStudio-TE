@@ -1,6 +1,7 @@
 package titanicsend.pattern.mf64;
 
 import heronarts.lx.model.LXPoint;
+//import titanicsend.model.TEWholeModel;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.util.TEMath;
 

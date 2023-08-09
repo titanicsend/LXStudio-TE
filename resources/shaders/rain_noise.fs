@@ -44,7 +44,7 @@ void mainImage(out vec4 fragColor, in vec2 coord) {
     float ypos = coord.y * iWow1;
 
     // speed variance between cells
-    float time = iTime / -16.;
+    float time = iTime / 16.;
     ypos += (time + noise(time * .2 + hash(vec2(id, 0.0)), id) * SQRT2) * 2.;
 
     // length variance
@@ -68,6 +68,6 @@ void mainImage(out vec4 fragColor, in vec2 coord) {
         bri = length(vec2(xdist,ydist));
     }
     // iWow2 controls the foreground/gradient mix
-    vec3 col = bri * mix(iColorRGB,mix(iColorRGB,iColor2RGB,mod(id,4.) / 4.),iWow2);
-    fragColor = vec4(col,1.0);
+    vec3 col = mix(iColorRGB,mix(iColorRGB,iColor2RGB,mod(id,4.) / 4.),iWow2);
+    fragColor = vec4(col,bri);
 }

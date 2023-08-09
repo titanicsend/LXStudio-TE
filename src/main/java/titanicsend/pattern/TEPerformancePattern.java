@@ -14,6 +14,7 @@ import heronarts.lx.utils.LXUtils;
 import titanicsend.lx.LXGradientUtils;
 import titanicsend.lx.LXGradientUtils.BlendFunction;
 import titanicsend.model.justin.ColorCentral;
+import titanicsend.model.justin.DisposableParameter.DisposeListener;
 import titanicsend.model.justin.LXVirtualDiscreteParameter;
 import titanicsend.model.justin.ViewCentral;
 import titanicsend.model.justin.ViewCentral.ViewCentralListener;
@@ -423,6 +424,13 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         // TEPattern calls clearPixels() after onModelChanged()
         if (this.lx instanceof LXStudio) {
           ((LXStudio) lx).ui.setMouseoverHelpText("View:  " + viewPerPattern.getObject().toString());
+        }
+    };
+
+    private DisposeListener viewPerPatternDisposing = (p) -> {
+        if (p == this.viewPerPattern) {
+            this.viewPerPattern.removeListener(viewPerPatternListener);
+            this.viewPerPattern = null;
         }
     };
 
@@ -900,6 +908,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         this.model = super.model;   // That's right!
         this.viewPerPattern = ViewCentral.get().createParameter();
         this.viewPerPattern.addListener(viewPerPatternListener);
+        this.viewPerPattern.listenDispose(viewPerPatternDisposing);
         this.viewPerPattern.setDefault(getDefaultView(), true);
 
         lx.engine.addTask(() -> {
@@ -1094,7 +1103,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     }
 
     public int getGradientColor(float lerp) {
-        return controls.color.getGradientColor(lerp);
+        return TEColor.setBrightness(controls.color.getGradientColor(lerp),(float) getBrightness());
     }
 
     /**
@@ -1262,7 +1271,10 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     @Override
     public void dispose() {
-        this.viewPerPattern.removeListener(viewPerPatternListener);
+        if (this.viewPerPattern != null) {
+            this.viewPerPattern.removeListener(viewPerPatternListener);
+            this.viewPerPattern.unlistenDispose(viewPerPatternDisposing);
+        }
         this.controls.getLXControl(TEControlTag.WOWTRIGGER).removeListener(wowTriggerListener);
         this.controls.dispose();
         super.dispose();
