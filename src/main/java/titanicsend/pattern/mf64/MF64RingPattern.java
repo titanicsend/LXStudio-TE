@@ -2,7 +2,6 @@ package titanicsend.pattern.mf64;
 
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
-import heronarts.p4lx.pattern.P4LXPattern;
 import titanicsend.model.TEWholeModel;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.pattern.jon.ButtonColorMgr;

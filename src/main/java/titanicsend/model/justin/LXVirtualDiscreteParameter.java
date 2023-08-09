@@ -23,6 +23,7 @@ import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
+import titanicsend.model.justin.DisposableParameter.DisposeListener;
 
 /**
  * Similar to LXVirtualParameter, but with priority on normalized methods.
@@ -59,10 +60,16 @@ abstract public class LXVirtualDiscreteParameter<T extends DiscreteParameter> ex
   public LXVirtualDiscreteParameter<T> setParameter(T parameter, boolean fireImmediately) {
     if (this.parameter != null) {
       this.parameter.removeListener(realParameterListener);
+      if (this.parameter instanceof DisposableParameter) {
+        ((DisposableParameter) this.parameter).unlistenDispose(disposeParameterListener);
+      }
     }
     this.parameter = parameter;
     if (this.parameter != null) {
       this.parameter.addListener(realParameterListener);
+      if (this.parameter instanceof DisposableParameter) {
+        ((DisposableParameter) this.parameter).listenDispose(disposeParameterListener);
+      }
     }
     if (fireImmediately) {
       onRealParameterChanged();
@@ -74,8 +81,17 @@ abstract public class LXVirtualDiscreteParameter<T extends DiscreteParameter> ex
     onRealParameterChanged();
   };
 
+  private final DisposeListener disposeParameterListener = (p) -> {
+    onRealParameterDisposed();
+  };
+
   protected void onRealParameterChanged() {
     bang();
+  }
+
+  protected void onRealParameterDisposed() {
+    this.parameter.removeListener(realParameterListener);
+    this.parameter = null;
   }
 
   @Override
@@ -231,6 +247,9 @@ abstract public class LXVirtualDiscreteParameter<T extends DiscreteParameter> ex
   public void dispose() {
     if (this.parameter != null) {
       this.parameter.removeListener(this.realParameterListener);
+      if (this.parameter instanceof DisposableParameter) {
+        ((DisposableParameter) this.parameter).unlistenDispose(disposeParameterListener);
+      }
       this.parameter = null;
     }
     super.dispose();

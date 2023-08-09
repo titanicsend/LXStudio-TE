@@ -57,7 +57,25 @@ public class ShaderPanelsPatternConfig {
 
         @Override
         protected List<PatternEffect> createEffects() {
+            controls.setRange(TEControlTag.QUANTITY,.25,.01,.5);  // segment length
+
+
             return List.of(new NativeShaderPatternEffect("neon_heart.fs",
+                new PatternTarget(this)));
+        }
+    }
+
+    @LXCategory("Utility")
+    public static class PixelScanner extends ConstructedPattern {
+        public PixelScanner(LX lx) {
+            super(lx, TEShaderView.ALL_POINTS);
+        }
+
+        @Override
+        protected List<PatternEffect> createEffects() {
+            controls.setRange(TEControlTag.QUANTITY,5,1,10);
+
+            return List.of(new NativeShaderPatternEffect("pixel_scanner.fs",
                 new PatternTarget(this)));
         }
     }
@@ -159,6 +177,8 @@ public class ShaderPanelsPatternConfig {
 
         @Override
         protected List<PatternEffect> createEffects() {
+            controls.setRange(TEControlTag.SIZE, 1, 2.5, 0.4); // overall scale
+
             return List.of(new NativeShaderPatternEffect("pulsing_heart.fs",
                 new PatternTarget(this)));
         }
@@ -298,6 +318,8 @@ public class ShaderPanelsPatternConfig {
 
         @Override
         protected List<PatternEffect> createEffects() {
+            controls.setRange(TEControlTag.SIZE, 1, 2, 0.25); // overall scale
+
             return List.of(new NativeShaderPatternEffect("neon_cells.fs",
                 new PatternTarget(this)));
         }

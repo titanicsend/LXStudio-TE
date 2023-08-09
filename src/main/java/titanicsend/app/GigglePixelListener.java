@@ -2,7 +2,7 @@ package titanicsend.app;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXLoopTask;
-import heronarts.p4lx.ui.component.UITextBox;
+import heronarts.glx.ui.component.UITextBox;
 import playasystems.gigglepixel.*;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LXSwatch;

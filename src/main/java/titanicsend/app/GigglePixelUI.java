@@ -1,12 +1,12 @@
 package titanicsend.app;
 
+import heronarts.glx.ui.component.UICollapsibleSection;
+import heronarts.glx.ui.component.UIDropMenu;
+import heronarts.glx.ui.component.UILabel;
+import heronarts.glx.ui.component.UITextBox;
+import heronarts.glx.ui.UI2dContainer;
 import heronarts.lx.parameter.*;
 import heronarts.lx.studio.LXStudio;
-import heronarts.p4lx.ui.UI2dContainer;
-import heronarts.p4lx.ui.component.UICollapsibleSection;
-import heronarts.p4lx.ui.component.UIDropMenu;
-import heronarts.p4lx.ui.component.UILabel;
-import heronarts.p4lx.ui.component.UITextBox;
 
 public class GigglePixelUI extends UICollapsibleSection {
   public enum GPMode {
