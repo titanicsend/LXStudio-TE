@@ -70,13 +70,8 @@ float noise(in float x, in float ts) {
 }
 
 float numIters = iQuantity;
-//float waveFreq = 8.0 + 4.0 * volumeRatio;
-//float waveFreq = 8.0 + iWow1 * 8.0 * volumeRatio;
 float waveFreq = 8.0 + iWow1 * 2.0 * volumeRatio;
-
-//float numIters = 6.0;
-//float numIters = 2.0 + 3.0 * volumeRatio;
-//float waveFreq = iQuantity;
+const float defaultYOffset = -0.17;
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float size = iScale;
@@ -85,32 +80,25 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // normalize coordinates
     vec2 uv = fragCoord.xy / iResolution.xy;
     uv -= 0.5;
-    uv -= vec2(0., {%defaultYOffset[-0.17,-0.5,0.5]});
+    uv -= vec2(0., defaultYOffset);
     uv = rotate(uv, iRotationAngle);
     uv.x *= iResolution.x/iResolution.y;
     uv *= 1.0/size;
 
     float fractFactor = 0.86;
-    //fractFactor = iWow1;
-    //fractFactor = 0.7 + 0.3 * trebleLevel;
     fractFactor = 0.7 + iWow1 * 0.9 * trebleLevel;
 
     vec2 uv0 = uv;
     vec3 finalColor = vec3(0.0);
+    float outerTriangleDF = exp(-sdEquilateralTriangle(uv0, 0.9));
     for (float i = 0.0; i < numIters; i++) {
         uv = fract(uv * fractFactor) - 0.5;
 
         uv.y *= -1.;
 
-        // uv0.y *= -1.;
-        // uv.y *= -1. * i;
-        // uv.y += 0.2;
-        // uv.y += 0.02 * abs(sin(noise(i, iTime*0.02)));
-        // uv.y += 0.02 * noise(i, iTime*0.02);
-
         float d = 1.;
         d *= sdEquilateralTriangle(uv, 0.9);
-        d *= exp(-sdEquilateralTriangle(uv0, 0.9));
+        d *= outerTriangleDF;
         d += 0.3*noise(i*d, iTime*0.1);
 
         vec3 col = int(i) % 2 == 0 ? iColorRGB : iColor2RGB;
@@ -123,9 +111,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         neonDampening = iWow2;
         d = pow(0.01 / d, neonDampening);
         finalColor += col * d;
-
-        // uv.y -= 0.2 * i;
-        // uv.y /= -1. * i;
     }
 
     finalColor *= {%brightnessDampening[.9,.1,1.0]};

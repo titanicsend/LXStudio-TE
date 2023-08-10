@@ -62,54 +62,43 @@ float noise(in float x, in float ts) {
 
 float numIters = iQuantity;
 float waveFreq = 8.0 + iWow1 * 4.0 * volumeRatio;
-//float numIters = 1.0 + 4.0 * volumeRatio;
-//float waveFreq = iQuantity;
+const float defaultYOffset = -0.17;
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 float size = iScale;
-    //size += 0.1 * bassRatio;
     size += iWow1 * 0.2 * bassRatio;
 
     // normalize coordinates
     vec2 uv = fragCoord.xy / iResolution.xy;
-    uv -= vec2(0., {%defaultYOffset[-0.17,-0.5,0.5]});
+    uv -= vec2(0., defaultYOffset);
     uv -= 0.5;
     uv = rotate(uv, iRotationAngle);
     uv.x *= iResolution.x/iResolution.y;
     uv *= 1.0/size;
     
     float index = mod(uv.x * TEXTURE_SIZE * 2.0, TEXTURE_SIZE);
-    // The second row of is normalized waveform data
-    // we'll just draw this over the spectrum analyzer.  Sound data
-    // coming from LX is in the range -1 to 1, so we scale it and move it down
-    // a bit so we can see it better.
     float wave = (0.5 * (1.0+texelFetch(iChannel0, ivec2(index, 1), 0).x)) - 0.25;
 
-    // subdivide fft data into bins determined by iQuantity
-    float p = floor(index / pixPerBin);
-    float tx = halfBin+pixPerBin * p;
-    // get frequency data pixel from texture
-    float freq  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
+    //// subdivide fft data into bins determined by iQuantity
+    //float p = floor(index / pixPerBin);
+    //float tx = halfBin+pixPerBin * p;
+    //// get frequency data pixel from texture
+    //float freq  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
 
     float fractFactor = 0.86;
     fractFactor = 0.7 + iWow1 * 0.9 * trebleLevel;
-    //fractFactor = iWow1;
-    
+
     vec2 uv0 = uv;
     vec3 finalColor = vec3(0.0);
+    float outerTriangleDF = exp(-sdEquilateralTriangle(uv0, 0.9));
     for (float i = 0.0; i < numIters; i++) {
         uv = fract(uv * fractFactor) - 0.5;
 
         uv.y *= -1.;
-        // uv0.y *= -1.;
-        // uv.y *= -1. * i;
-        // uv.y += 0.2;
-        // uv.y += 0.02 * abs(sin(noise(i, iTime*0.02)));
-        // uv.y += 0.02 * noise(i, iTime*0.02);
 
         float d = 1.;
         d *= sdEquilateralTriangle(uv, 0.9) + iWow2*wave;
-        d *= exp(-sdEquilateralTriangle(uv0, 0.9));
+        d *= outerTriangleDF;
         d += 0.3*noise(i*d, iTime*0.1);
 
         vec3 col = int(i) % 2 == 0 ? iColorRGB : iColor2RGB;
@@ -127,12 +116,8 @@ float size = iScale;
             col *= fract(numIters);
         }
         finalColor += col * d;
-
-        // uv.y -= 0.2 * i;
-        // uv.y /= -1. * i;
     }
 
     finalColor *= {%brightnessDampening[.9,.1,1.0]};
-
     fragColor = vec4(finalColor,1.0);
 }
