@@ -23,20 +23,6 @@ vec2 rotate(vec2 point, float angle) {
     return rotationMatrix * point;
 }
 
-vec3 mixPalette( vec3 c1, vec3 c2, float t)
-{
-    float mixFactor = 0.5 + sin(t);
-    return mix(c1, c2, mixFactor);
-}
-vec3 hsb2rgb( in vec3 c ){
-    vec3 rgb = clamp(abs(mod(c.x*6.0+vec3(0.0,4.0,2.0),
-                             6.0)-3.0)-1.0,
-                     0.0,
-                     1.0 );
-    rgb = rgb*rgb*(3.0-2.0*rgb);
-    return c.z * mix(vec3(1.0), rgb, c.y);
-}
-
 float sdEquilateralTriangle( in vec2 p, in float r ) {
     const float k = sqrt(3.0);
     p.x = abs(p.x) - r;
@@ -46,19 +32,19 @@ float sdEquilateralTriangle( in vec2 p, in float r ) {
     return -length(p)*sign(p.y);
 }
 
-float noise(in float x, in float ts) {
-  float amplitude = 0.2 * pow(x, 3.);
-  float frequency = 2.;
-  float y = sin(x * frequency);
-  // float t = 0.01*(-iTime*130.0);
-  float t = 0.01*(-ts*130.0);
-  y += sin(x*frequency*2.1 + t)*4.5;
-  y += sin(x*frequency*1.72 + t*1.121)*4.0;
-  y += sin(x*frequency*2.221 + t*0.437)*5.0;
-  y += sin(x*frequency*3.1122+ t*4.269)*2.5;
-  y *= amplitude*0.06;
-  return y;
-}
+//float noise(in float x, in float ts) {
+//  float amplitude = 0.2 * pow(x, 3.);
+//  float frequency = 2.;
+//  float y = sin(x * frequency);
+//  // float t = 0.01*(-iTime*130.0);
+//  float t = 0.01*(-ts*130.0);
+//  y += sin(x*frequency*2.1 + t)*4.5;
+//  y += sin(x*frequency*1.72 + t*1.121)*4.0;
+//  y += sin(x*frequency*2.221 + t*0.437)*5.0;
+//  y += sin(x*frequency*3.1122+ t*4.269)*2.5;
+//  y *= amplitude*0.06;
+//  return y;
+//}
 
 float numIters = iQuantity;
 float waveFreq = 8.0 + iWow1 * 4.0 * volumeRatio;
@@ -99,22 +85,22 @@ float size = iScale;
         float d = 1.;
         d *= sdEquilateralTriangle(uv, 0.9) + iWow2*wave;
         d *= outerTriangleDF;
-        d += 0.3*noise(i*d, iTime*0.1);
-
-        vec3 col = int(i) % 2 == 0 ? iColorRGB : iColor2RGB;
+        //d += 0.3*noise(i*d, iTime*0.1);
 
         d = sin(d*waveFreq + iTime)/waveFreq;
-        d -= noise(i*d*8., iTime*0.1);
+        //d -= noise(i*d*8., iTime*0.1);
         d = abs(d);
 
         float neonDampening = 1.5;
         d = pow(0.01 / d, neonDampening);
 
-        // make the brightness of the last layer proportional to how much volume exceeds the threshold,
-        // to reduce flickering
-        if (int(i) == int(numIters-1)){
-            col *= fract(numIters);
-        }
+        //// make the brightness of the last layer proportional to how much volume exceeds the threshold,
+        //// to reduce flickering
+        //if (int(i) == int(numIters-1)){
+        //    col *= fract(numIters);
+        //}
+
+        vec3 col = int(i) % 2 == 0 ? iColorRGB : iColor2RGB;
         finalColor += col * d;
     }
 
