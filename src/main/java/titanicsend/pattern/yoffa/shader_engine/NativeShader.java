@@ -202,7 +202,7 @@ public class NativeShader implements GLEventListener {
         // set standard shadertoy-style uniforms
         setUniform("iTime", (float) ctl.getTime());
         setUniform("iResolution", (float) xResolution, (float) yResolution);
-        setUniform("iMouse", 0f, 0f, 0f, 0f);
+        // setUniform("iMouse", 0f, 0f, 0f, 0f);
 
         // TE standard audio uniforms
         setUniform("beat", (float) ctl.getBeat());
