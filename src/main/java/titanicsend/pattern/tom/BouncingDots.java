@@ -33,7 +33,7 @@ public class BouncingDots extends TEPerformancePattern {
 
         // add common controls
         controls.setRange(TEControlTag.SIZE, DEFAULT_DOT_SIZE, MIN_DOT_SIZE, MAX_DOT_SIZE)
-                .setUnits(LXParameter.Units.INTEGER);
+                .setUnits(TEControlTag.SIZE, LXParameter.Units.INTEGER);
         addCommonControls();
     }
 

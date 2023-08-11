@@ -233,12 +233,12 @@ public class TESparklePattern extends TEPerformancePattern {
         // with speed at 0.5 because at zero nothing sparkles
         // and you get an all black car.  Yay!
         controls.setRange(TEControlTag.SPEED, 0, -2, 2)
-                        .setValue(0.5);
+                        .setValue(TEControlTag.SPEED, 0.5);
 
 
         // Sparkle density
         controls.setRange(TEControlTag.QUANTITY, 50, 0, 100 * Engine.MAX_DENSITY)
-                .setExponent(2);
+                .setExponent(TEControlTag.QUANTITY,2);
 
         // Base brightness level
         controls.setRange(TEControlTag.WOW1, 0, 0, 100);
