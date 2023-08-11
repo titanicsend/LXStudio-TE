@@ -160,7 +160,16 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
            this.vertexesById.size() + " vertexes, " +
            this.edgesById.size() + " edges, " +
            this.panelsById.size() + " panels, " +
-           this.points.length + " pixels");
+           this.points.length + " pixels, " +
+           this.beacons.size() + " beacons, " +
+           this.djLights.size() + " DJ lights");
+
+    if (this.beacons.size() == 0) {
+      LX.warning("No active beacons were found in config file.");
+    }
+    if (this.djLights.size() == 0) {
+      LX.warning("No active DJ lights were found in config file");
+    }
   }
 
   /**
