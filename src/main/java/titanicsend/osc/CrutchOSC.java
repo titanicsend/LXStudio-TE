@@ -52,8 +52,18 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
   public static final int PATH_PRIMARY_LENGTH = PATH_PRIMARY.length();
   public static final int PATH_AUX_LENGTH = PATH_AUX.length();
 
+  private static CrutchOSC current;
+  public static CrutchOSC get() {
+    return current;
+  }
+
+  public final BooleanParameter transmitActive =
+    new BooleanParameter("OSC to iPads", true)
+    .setDescription("CrutchOSC output");
+
   public CrutchOSC(LX lx) {
     super(lx);
+    current = this;
 
     // Listen and fire immediately
     lx.engine.mixer.focusedChannel.addListener(this, true);
@@ -162,8 +172,8 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
   }
 
   private boolean canSend() {
-    // Copied if from LXComponent: These checks are necessary for bootstrapping, before the OSC engine is spun up
-    return (this.lx != null) && (this.lx.engine != null) && (this.lx.engine.osc != null) && (this.lx.engine.output.enabled.isOn());
+    // Copied from LXComponent: These checks are necessary for bootstrapping, before the OSC engine is spun up
+    return this.transmitActive.isOn() && (this.lx != null) && (this.lx.engine != null) && (this.lx.engine.osc != null) && (this.lx.engine.output.enabled.isOn());
   }
 
   private void parameterInstanceChanged(LXListenableNormalizedParameter parameter, int position, boolean isAux) {

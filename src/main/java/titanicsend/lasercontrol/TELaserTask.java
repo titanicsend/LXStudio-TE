@@ -11,12 +11,20 @@ import titanicsend.pattern.TEPattern;
 
 public class TELaserTask extends LXComponent implements LXLoopTask {
 
+    public static final boolean DEFAULT_ENABLE_IN_PRODUCTION = false;
+
+    private static TELaserTask current;
+    public static TELaserTask get() {
+      return current;
+    }
+
     public final BooleanParameter enabled =
-        new BooleanParameter("Lasers", false)
+        new BooleanParameter("Lasers", DEFAULT_ENABLE_IN_PRODUCTION)
         .setMode(Mode.TOGGLE);
 
     public TELaserTask(LX lx) {
         super(lx);
+        current = this;
 
         addParameter("enabled", this.enabled);
     }

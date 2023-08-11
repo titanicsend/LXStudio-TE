@@ -10,12 +10,13 @@ import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXParameterListener;
+import titanicsend.midi.MidiNames;
 import titanicsend.pattern.mf64.*;
 
 
 @LXCategory("Combo FG")
 public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiListener {
-    public static final String MIDI_NAME = "FoH: Midi Fighter 64";
+    public static final String MIDI_NAME = MidiNames.BOMEBOX_MF64;
 
     /* Use the Midi Fighter Utility from DJ Tech Tools to apply
      * these recommended settings to your midi controller:
