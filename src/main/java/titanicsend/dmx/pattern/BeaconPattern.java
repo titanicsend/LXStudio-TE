@@ -80,20 +80,20 @@ abstract public class BeaconPattern extends DmxPattern {
         new DmxDiscreteParameterOption("Gobo 6", 72),
         new DmxDiscreteParameterOption("Gobo 7", 82),
         new DmxDiscreteParameterOption("Gobo 8", 92),
-        new DmxDiscreteParameterOption("Gobo 1", 102),
-        new DmxDiscreteParameterOption("Gobo 2", 113),
-        new DmxDiscreteParameterOption("Gobo 3", 124),
-        new DmxDiscreteParameterOption("Gobo 4", 135),
-        new DmxDiscreteParameterOption("Gobo 5", 146),
-        new DmxDiscreteParameterOption("Gobo 6", 157),
-        new DmxDiscreteParameterOption("Gobo 7", 168),
-        new DmxDiscreteParameterOption("Gobo 8", 179),
+        new DmxDiscreteParameterOption("Gobo 1 Shake", 102),
+        new DmxDiscreteParameterOption("Gobo 2 Shake", 113),
+        new DmxDiscreteParameterOption("Gobo 3 Shake", 124),
+        new DmxDiscreteParameterOption("Gobo 4 Shake", 135),
+        new DmxDiscreteParameterOption("Gobo 5 Shake", 146),
+        new DmxDiscreteParameterOption("Gobo 6 Shake", 157),
+        new DmxDiscreteParameterOption("Gobo 7 Shake", 168),
+        new DmxDiscreteParameterOption("Gobo 8 Shake", 179),
         new DmxDiscreteParameterOption("Scroll CW fast-slow", 190, 221),
         new DmxDiscreteParameterOption("Idle", 222),
         new DmxDiscreteParameterOption("Scroll CCW slow-fast", 224, 255)
       });
   // Could use parameter options if they worked with Compound type
-  DmxCompoundParameter gobo1rotation = new DmxCompoundParameter("Gobo1 Rotation", 0, 0, 255)
+  DmxCompoundParameter gobo1rotation = new DmxCompoundParameter("G1 Rotation", 0, 0, 255)
       .setNumBytes(2);
   // "Fixed Gobo"
   DmxDiscreteParameter gobo2 = new DmxDiscreteParameter("Gobo2",
@@ -145,7 +145,7 @@ abstract public class BeaconPattern extends DmxPattern {
         new DmxDiscreteParameterOption("4 Facet Linear", 151),
         new DmxDiscreteParameterOption("8 + 4", 201)
       });
-  DmxCompoundParameter prism1rotation = new DmxCompoundParameter("Prism1 Rotation",
+  DmxCompoundParameter prism1rotation = new DmxCompoundParameter("P1 Rotation",
     new DmxDiscreteParameterOption[]     
       { new DmxDiscreteParameterOption("Indexing", 0, 127),
         new DmxDiscreteParameterOption("CW rotate fast-slow", 128, 189),
@@ -153,7 +153,7 @@ abstract public class BeaconPattern extends DmxPattern {
         new DmxDiscreteParameterOption("CCW rotate slow-fast", 194, 255),
       })
     .setNumBytes(2);
-  DmxCompoundParameter prism2rotation = new DmxCompoundParameter("Prism2 Rotation",
+  DmxCompoundParameter prism2rotation = new DmxCompoundParameter("P2 Rotation",
     new DmxDiscreteParameterOption[]     
       { new DmxDiscreteParameterOption("Indexing", 0, 127),
         new DmxDiscreteParameterOption("CW rotate fast-slow", 128, 189),

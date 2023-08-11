@@ -47,6 +47,7 @@ import titanicsend.app.autopilot.*;
 import titanicsend.dmx.DmxEngine;
 import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
 import titanicsend.dmx.pattern.BeaconDirectPattern;
+import titanicsend.dmx.pattern.BeaconEasyPattern;
 import titanicsend.dmx.pattern.DjLightsDirectPattern;
 import titanicsend.dmx.pattern.DjLightsEasyPattern;
 import titanicsend.lasercontrol.PangolinHost;
@@ -214,6 +215,7 @@ public class TEApp extends LXStudio {
 
       // DMX patterns
       lx.registry.addPattern(BeaconDirectPattern.class);
+      lx.registry.addPattern(BeaconEasyPattern.class);
       lx.registry.addPattern(DjLightsDirectPattern.class);
       lx.registry.addPattern(DjLightsEasyPattern.class);
       lx.registry.addPattern(ExampleDmxTEPerformancePattern.class);
