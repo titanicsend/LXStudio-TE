@@ -208,6 +208,18 @@
                             </arguments>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>MarkUnusedControls</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>python3</executable>
+                            <arguments>
+                                <argument>script/shader-mgmt/mark_unused_controls.py</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
