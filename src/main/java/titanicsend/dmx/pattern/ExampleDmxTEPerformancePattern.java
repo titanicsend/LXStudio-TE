@@ -28,7 +28,7 @@ import titanicsend.pattern.jon.TEControlTag;
 /**
  * Example TEPerformancePattern that uses DMX lights.
  */
-@LXCategory("DMX")
+@LXCategory("Test")
 public class ExampleDmxTEPerformancePattern extends TEPerformancePattern {
 
   public ExampleDmxTEPerformancePattern(LX lx) {

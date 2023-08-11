@@ -30,7 +30,7 @@ import titanicsend.ui.UIUtils;
 /**
  * Simple beacon pattern allowing direct control of parameters.
  */
-@LXCategory("DMX")
+@LXCategory("Test")
 public class BeaconDirectPattern extends BeaconPattern implements UIDeviceControls<BeaconDirectPattern> {
 
   public BeaconDirectPattern(LX lx) {
