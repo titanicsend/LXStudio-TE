@@ -188,6 +188,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(FrameBrights.class);
       lx.registry.addPattern(FourStar.class);
       lx.registry.addPattern(Iceflow.class);
+      lx.registry.addPattern(Kaleidosonic.class);
       lx.registry.addPattern(Phasers.class);
       lx.registry.addPattern(PixelblazeSandbox.class);
       lx.registry.addPattern(PBAudio1.class);
