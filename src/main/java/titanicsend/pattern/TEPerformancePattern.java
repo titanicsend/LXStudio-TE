@@ -732,35 +732,35 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         public void buildDefaultControlList() {
             LXListenableNormalizedParameter p;
 
-            p = new CompoundParameter("Speed", 0.5, -4.0, 4.0)
+            p = new CompoundParameter(TEControlTag.SPEED.getLabel(), 0.5, -4.0, 4.0)
                 .setPolarity(LXParameter.Polarity.BIPOLAR)
                 .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
                 .setExponent(1.75)
                 .setDescription("Speed");
             setControl(TEControlTag.SPEED, p);
 
-            p = new CompoundParameter("xPos", 0, -1.0, 1.0)
+            p = new CompoundParameter(TEControlTag.XPOS.getLabel(), 0, -1.0, 1.0)
                 .setPolarity(LXParameter.Polarity.BIPOLAR)
                 .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
                 .setDescription("X Position");
             setControl(TEControlTag.XPOS, p);
 
-            p = new CompoundParameter("yPos", 0, -1.0, 1.0)
+            p = new CompoundParameter(TEControlTag.YPOS.getLabel(), 0, -1.0, 1.0)
                 .setPolarity(LXParameter.Polarity.BIPOLAR)
                 .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
                 .setDescription("Y Position");
             setControl(TEControlTag.YPOS, p);
 
-            p = new CompoundParameter("Size", 1, 0.01, 5.0)
+            p = new CompoundParameter(TEControlTag.SIZE.getLabel(), 1, 0.01, 5.0)
                 .setDescription("Size");
             setControl(TEControlTag.SIZE, p);
 
-            p = new CompoundParameter("Quantity", 0.5, 0, 1.0)
+            p = new CompoundParameter(TEControlTag.QUANTITY.getLabel(), 0.5, 0, 1.0)
                 .setDescription("Quantity");
             setControl(TEControlTag.QUANTITY, p);
 
             p = (CompoundParameter)
-                new CompoundParameter("Spin", 0, -1.0, 1.0)
+                new CompoundParameter(TEControlTag.SPIN.getLabel(), 0, -1.0, 1.0)
                     .setPolarity(LXParameter.Polarity.BIPOLAR)
                     .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
                     .setExponent(2)
@@ -768,25 +768,25 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
             setControl(TEControlTag.SPIN, p);
 
-            p = new CompoundParameter("Brightness", 1.0, 0.0, 1.0)
+            p = new CompoundParameter(TEControlTag.BRIGHTNESS.getLabel(), 1.0, 0.0, 1.0)
                 .setDescription("Brightness");
             setControl(TEControlTag.BRIGHTNESS, p);
 
-            p = new CompoundParameter("Wow1", 0, 0, 1.0)
+            p = new CompoundParameter(TEControlTag.WOW1.getLabel(), 0, 0, 1.0)
                 .setDescription("Wow 1");
             setControl(TEControlTag.WOW1, p);
 
-            p = new CompoundParameter("Wow2", 0, 0, 1.0)
+            p = new CompoundParameter(TEControlTag.WOW2.getLabel(), 0, 0, 1.0)
                 .setDescription("Wow 2");
             setControl(TEControlTag.WOW2, p);
 
-            p = new BooleanParameter("WowTrigger", false)
+            p = new BooleanParameter(TEControlTag.WOWTRIGGER.getLabel(), false)
                 .setMode(BooleanParameter.Mode.MOMENTARY)
                 .setDescription("Trigger WoW effects");
             setControl(TEControlTag.WOWTRIGGER, p);
 
             // in degrees for display 'cause more people think about it that way
-            p = (LXListenableNormalizedParameter)new TECommonAngleParameter("Angle", 0, -Math.PI, Math.PI)
+            p = (LXListenableNormalizedParameter)new TECommonAngleParameter(TEControlTag.ANGLE.getLabel(), 0, -Math.PI, Math.PI)
                 .setDescription("Static Rotation Angle")
                 .setPolarity(LXParameter.Polarity.BIPOLAR)
                 .setWrappable(true)
