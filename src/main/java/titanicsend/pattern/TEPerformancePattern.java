@@ -552,7 +552,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             return this;
         }
 
-        public static LXListenableNormalizedParameter updateParam(LXListenableNormalizedParameter oldControl, String label, double value, double v0, double v1) {
+        private static LXListenableNormalizedParameter updateParam(LXListenableNormalizedParameter oldControl, String label, double value, double v0, double v1) {
             LXListenableNormalizedParameter newControl;
             if (oldControl instanceof CompoundParameter) {
                 newControl = (CompoundParameter) new CompoundParameter(label, value, v0, v1)
@@ -585,14 +585,14 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             return newControl;
         }
 
-        public LXListenableNormalizedParameter setRange(TEControlTag tag, double value, double v0, double v1) {
+        public TECommonControls setRange(TEControlTag tag, double value, double v0, double v1) {
             LXListenableNormalizedParameter oldControl = getLXControl(tag);
             LXListenableNormalizedParameter newControl = updateParam(oldControl, oldControl.getLabel(), value, v0, v1);
             setControl(tag, newControl);
-            return newControl;
+            return this;
         }
 
-        public LXListenableNormalizedParameter setLabel(TEControlTag tag, String newLabel) {
+        public TECommonControls setLabel(TEControlTag tag, String newLabel) {
             LXListenableNormalizedParameter oldControl = getLXControl(tag);
             double value = 0d;
             double v0 = 0d;
@@ -608,7 +608,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             }
             LXListenableNormalizedParameter newControl = updateParam(oldControl, newLabel, value, v0, v1);
             setControl(tag, newControl);
-            return newControl;
+            return this;
         }
 
         public TECommonControls setExponent(TEControlTag tag, double exp) {
