@@ -15,13 +15,13 @@ import titanicsend.dmx.parameter.DmxDiscreteParameterOption;
 import titanicsend.ui.UIUtils;
 
 /**
- * An easy-to use beacon pattern.
+ * A basic beacon pattern with access to all the standard controls,
+ * with the extra DMX fluff removed.
  * 
- * Provides manual controls without the distracting scroll options.
  * Always sets shutter to Open.
  */
 @LXCategory("DMX")
-public class BeaconEasyPattern extends BeaconPattern implements UIDeviceControls<BeaconEasyPattern>{
+public class BeaconEverythingPattern extends BeaconPattern implements UIDeviceControls<BeaconEverythingPattern>{
 
   // Color Wheel (without the scroll options)
   DmxDiscreteParameter colorWheelFixed = (DmxDiscreteParameter)
@@ -94,7 +94,7 @@ public class BeaconEasyPattern extends BeaconPattern implements UIDeviceControls
   BooleanParameter isStrobe = new BooleanParameter("Strobe!", false)
       .setMode(Mode.MOMENTARY);
 
-  public BeaconEasyPattern(LX lx) {
+  public BeaconEverythingPattern(LX lx) {
     super(lx);
 
     addParameter("pan", this.pan);
@@ -160,7 +160,7 @@ public class BeaconEasyPattern extends BeaconPattern implements UIDeviceControls
   }
 
   @Override
-  public void buildDeviceControls(UI ui, UIDevice uiDevice, BeaconEasyPattern device) {
+  public void buildDeviceControls(UI ui, UIDevice uiDevice, BeaconEverythingPattern device) {
     UIUtils.buildMftStyleDeviceControls(ui, uiDevice, device);
   }
 
