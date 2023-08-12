@@ -1,123 +1,94 @@
-//  Ok... here's what we do with the legendary Unicorn Vomit shader!
-//  Add some sound reactivity and mirror it in radial sections about the origin and...
-//  Kaleidoscope!
-
-// short term moving average volume from TEAudioPattern
 uniform float avgVolume;
 
-const float PI = 3.141592653589793;
-const float halfpi = PI / 2.;
-const float TAU = PI * 2.;
+const float PI = 3.14159265359;
 
-// gives particle movement a little acceleration over time due to "gravity".
-// physics it ain't.
-const vec2 gravity = vec2(0.3, -.3);
-
-// random number between 0 and 1
-float rand(vec2 co) {
-    return fract(sin(dot(co.xy, vec2(12.9898, 78.233)))*43758.5453);
+//  Hash function from Dave Hoskin's Hash without Sine
+// https://www.shadertoy.com/view/4djSRW
+vec4 hash42(vec2 p) {
+    vec4 p4 = fract(vec4(p.xyxy) * vec4(.1031, .1030, .0973, .1099));
+    p4 += dot(p4, p4.wzxy+33.33);
+    return fract((p4.xxyz+p4.yzzw)*p4.zywx);
 }
 
-// random number in specified range
-float rand(float from, float to, vec2 co) {
-    return from + rand(co)*(to - from);
+vec3 hsv2rgb(vec3 c) {
+    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }
 
-// particles fade out over time
-float getParticleAlpha(float particle_time, float threshold, float period) {
-    return 0.35 * ((particle_time > threshold) ? 1.0 - (particle_time - threshold)/(period - threshold) : 1.0);
+// Density field generator. This emperically derived mystery
+// distance function makes a field of clean, nicely formed discrete
+// color "blobs" that look good when kaleidoscoped.
+// Set the number of kaleidoscope slices to 1 to see the raw field
+// output.
+float field2( vec2 p, vec2 center, float r ) {
+    float d = length( p - center ) / r;
+    d = min(1.0/exp(d * d),0.995) ;
+    return d * d * d;
 }
 
-// cotton candy colors, to reflect what the unicorn ate.  We're still unicorn vomit at heart!
-vec4 getParticleColor(float i, float index) {
-    return vec4(rand(vec2(i*index, 2.0)), rand(vec2(i*index, 1.5)), rand(vec2(i*index, 1.2)), 1.0);
+// smooth radial reflections.
+vec2 Kaleidoscope(vec2 uv, float reflections) {
+    float angle = PI / reflections;
+    float r = length(uv*.5);
+
+    // very convieniently, we can handle rotation in here too
+    float a = -iRotationAngle + atan(uv.y, uv.x) / angle;
+
+    a = mix(fract(a), 1.0 - fract(a), mod(floor(a), 2.0)) * angle;
+    return vec2(cos(a), sin(a)) * r;
 }
 
-// create a number of radial reflections around the specified origin
-vec2 Kaleidoscope( vec2 uv, float n, float bias ) {
-    float angle = PI / n;
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 aspect = iResolution.xy / min(iResolution.x, iResolution.y);
+    vec2 uv = (fragCoord.xy * 2.0 - iResolution.xy) / min(iResolution.x, iResolution.y);
 
-    float r = length( uv*.5 );
-    float a = atan( uv.y, uv.x ) / angle;
-    a -= iRotationAngle;
+    // generate radial reflections about the origin
+    // (and add a little extra coordinate distortion first)
+    uv += iWow2 * 0.05 * sin(length(uv) * 24.0);
+    uv = Kaleidoscope(uv, iQuantity);
 
-    a = mix( fract( a ), 1.0 - fract( a ), mod( floor( a ), 2.0 ) ) * angle;
-    return vec2( cos( a ), sin( a ) ) * r;
-}
+    float bandLevel = texture(iChannel0, vec2(uv.x, 0)).r/avgVolume;
+    uv *= iScale + 0.2 * bandLevel;
 
+    vec3 final_color = vec3(0.0);
 
-float counter = 0.0;
-void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
+    // iterate to generate a density field based on a sample
+    // of random coordinates around the current pixel.
+    float final_density = 0.0;
+    for (int i = 0; i < 128; i++) {
+        // handy noise vector which we'll use for position and color
+        // accumulation
+        vec4 noise  = hash42(vec2(float(i) + 0.5, 0.5));
+        vec2 pos = noise.xy;
 
-    // normalize our coordinates
-    vec2 coord = gl_FragCoord.xy / max(iResolution.x, iResolution.y);
+        // "velocity" moves the field based on what's actually going on in the music
+        // at the current "real" pixel location
+        vec2 velocity = 2.0 + (0.15 * abs(pos) * bandLevel);
 
-    // then reflect them into the kaleidoscope
-    coord = Kaleidoscope(vec2(-0.5, -0.25) + coord, 7., iTime );
+        pos += iTime * velocity * 0.2;
+        pos = mix(fract(pos), fract(pos), mod(floor(pos), 2.0));
 
-    // read the audio values for the current pixel
-    float freq = texture(iChannel0, vec2(coord.x,0)).r;
-    float wave = texture(iChannel1, vec2(coord.x,0)).r;
-    float volume = (avgVolume > 0.0) ? avgVolume : 0.512 + 0.5 * sin(20. * iTime);
+        // normalize pos to display aspect ratio even though it's fake because
+        // it looks better!
+        pos = (pos * 2.0 - 1.0) * aspect;
 
-    fragColor = vec4(0.);
+        // "intensity" is the audio level at the current random sample position
+        float intensity = texture(iChannel0, vec2(pos.y, 0)).r/avgVolume;
 
-    // create a number of particles
-    for (float i = 1.; i < 20.; i++) {
+        // generate blob radius based on audio level at fake position
+        // iWow1 controls reaction intensity (which is the size of the random field
+        // blob at the current location.)
+        float radius = (1.0 + iWow1) * intensity * clamp(noise.w, 0.3, 0.8);
+        radius = clamp(radius, 0.1*abs(pos.x), iWow1);
 
-        // generate cell index and lifetime for this particle
-        float period = rand(1.0, 2.0, vec2(i, 0.));
-        float t = iTime / 2. - period*rand(vec2(i, 1.));
-
-        float particle_time = mod(t, period * 1.414);
-        float index = ceil(t/period);
-
-        //vec2 speed = vec2(rand(0.35, .75, vec2(index*i, 3.)), rand(.21, .76, vec2(index*i, 4.)));
-
-        // speed is based on to be the difference between eq level at the current frequency and average volume
-        // plus a little randomization
-        // TODO - we may need to subdivide this into bass and treble bands to keep the ranges sane.
-        vec2 speed = abs(avgVolume - freq)/avgVolume + vec2(rand(0.05, .25, vec2(index*i, 3.)), rand(.014, .26, vec2(index*i, 4.)));
-        vec2 pos = particle_time*speed + gravity*particle_time*particle_time;
-
-        float threshold = .7*period;
-
-        float alpha = getParticleAlpha(particle_time, threshold, period);
-        vec4 particle_color = getParticleColor(i, index);
-
-        float angle_speed = 3.1415; // rand(-1.0,0.0, vec2(index*i, 5.0));
-        float angle = atan(pos.y - coord.y, pos.x - coord.x) + angle_speed*iTime;
-
-        //float radius = rand(.09, .05, vec2(index*i, 2.));
-        float radius = abs(wave) / 100.;
-
-        float dist_1 = sin(angle)*radius;
-        float dist_2 = -1.0 * radius + sin(angle)*radius;
-        float dist_3 = 0.002 + sin(angle)*radius;
-
-        // draw particles in three discrete size groups
-        counter++;
-        float particleSize = mod(counter, 3.0);
-
-        if (particleSize == 0.0) {
-            fragColor += alpha * ((1.0 - smoothstep(dist_1, dist_1 + .25, distance(coord, pos))) +
-            (1.0 - smoothstep(0.01, 0.02, distance(coord, pos))) +
-            (1.0 - smoothstep(radius * 0.1, radius * 0.9, distance(coord, pos)))) * particle_color;
-        }
-
-        else if (particleSize  == 1.0) {
-            fragColor += alpha * ((1.0 - smoothstep(dist_2, dist_2 + .05, distance(coord, pos))) +
-            (1.0 - smoothstep(0.01, 0.02, distance(coord, pos))) +
-            (1.0 - smoothstep(radius * 0.1, radius * 0.11, distance(coord, pos)))) * particle_color;
-        }
-
-        else if (particleSize == 2.0) {
-            fragColor += alpha * ((1.0 - smoothstep(dist_3, dist_3 + .105, distance(coord, pos))) +
-            (1.0 - smoothstep(0.01, 0.102, distance(coord, pos))) +
-            (1.0 - smoothstep(radius * 0.1, radius * 0.9, distance(coord, pos)))) * particle_color;
-        }
-
-        if (counter > 100.0) counter = 0.0;
+        // accumulate field density
+        float density = field2(uv, pos, radius);
+        final_density += density;
+        final_color += density * noise.xyz;
     }
-}
 
+    // gamma correct density and apply color
+    final_density = pow(clamp(final_density - 0.1, 0.0, 1.0), 2.2);
+    fragColor = vec4( final_color *  final_density, 1.0);
+}
