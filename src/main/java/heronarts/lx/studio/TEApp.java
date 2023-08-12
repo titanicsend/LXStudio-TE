@@ -416,16 +416,16 @@ public class TEApp extends LXStudio {
 
       new TEUIControls(ui, this.virtualOverlays, ui.leftPane.model.getContentWidth()).addToContainer(ui.leftPane.model, 0);
 
-      // Global pane
-
-      new GigglePixelUI(ui, ui.leftPane.global.getContentWidth(),
-          this.gpListener, this.gpBroadcaster).addToContainer(ui.leftPane.global);
-
-      // Add UI section for autopilot
-      new TEUserInterface.AutopilotUISection(ui, this.autopilot).addToContainer(ui.leftPane.global);
+      new GigglePixelUI(ui, ui.leftPane.model.getContentWidth(),
+          this.gpListener, this.gpBroadcaster).addToContainer(ui.leftPane.model, 1);
 
       // Add UI section for all other general settings
-      new TEUserInterface.TEUISection(ui, laserTask).addToContainer(ui.leftPane.global);
+      new TEUserInterface.TEUISection(ui, laserTask).addToContainer(ui.leftPane.model, 2);
+
+      // Global pane
+
+      // Add UI section for autopilot
+      new TEUserInterface.AutopilotUISection(ui, this.autopilot).addToContainer(ui.leftPane.global, 0);
 
       applyTECameraPosition();
 
