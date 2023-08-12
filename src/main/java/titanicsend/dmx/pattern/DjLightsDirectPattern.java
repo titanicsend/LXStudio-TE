@@ -12,7 +12,7 @@ import titanicsend.ui.UIUtils;
 /**
  * Simple DJ lights pattern allowing direct control of parameters.
  */
-@LXCategory("DMX")
+@LXCategory("Test")
 public class DjLightsDirectPattern extends DjLightsPattern implements UIDeviceControls<DjLightsDirectPattern> {
 
   public DjLightsDirectPattern(LX lx) {
