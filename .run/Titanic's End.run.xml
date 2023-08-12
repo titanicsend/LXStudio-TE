@@ -5,7 +5,7 @@
     <option name="MAIN_CLASS_NAME" value="heronarts.lx.studio.TEApp" />
     <module name="LXStudio-TE" />
     <option name="PROGRAM_PARAMETERS" value="vehicle" />
-    <option name="VM_PARAMETERS" value="-ea -XstartOnFirstThread -Djava.awt.headless=true" />
+    <option name="VM_PARAMETERS" value="-ea -XstartOnFirstThread -Djava.awt.headless=true " />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
