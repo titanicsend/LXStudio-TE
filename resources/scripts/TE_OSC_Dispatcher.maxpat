@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 109.0, 87.0, 1313.0, 701.0 ],
+		"rect" : [ 113.0, 88.0, 1311.0, 795.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 1,
 		"default_fontsize" : 12.0,
@@ -39,6 +39,20 @@
 		"subpatcher_template" : "",
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
+				"box" : 				{
+					"fontsize" : 14.0,
+					"id" : "obj-79",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 922.5, 453.0, 135.0, 22.0 ],
+					"presentation" : 1,
+					"presentation_rect" : [ 625.0, 69.0, 154.0, 22.0 ],
+					"text" : "iPad static IPs"
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-58",
 					"maxclass" : "button",
@@ -111,21 +125,20 @@
 					"patching_rect" : [ 889.0, 519.0, 158.0, 22.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 492.5, 453.0, 158.0, 22.0 ],
-					"text" : "udpsend 10.100.0.227 3131"
+					"text" : "udpsend 10.100.0.200 3131"
 				}
 
 			}
 , 			{
 				"box" : 				{
 					"id" : "obj-52",
-					"linecount" : 3,
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 819.5, 427.5, 100.0, 49.0 ],
+					"patching_rect" : [ 892.5, 483.500001668930054, 158.0, 22.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 501.5, 413.0, 158.0, 22.0 ],
-					"text" : "udpsend 10.100.0.143 3131"
+					"text" : "udpsend 10.100.0.100 3131"
 				}
 
 			}
@@ -2705,7 +2718,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-52", 0 ],
-					"order" : 1,
+					"order" : 0,
 					"source" : [ "obj-61", 1 ]
 				}
 
@@ -2713,7 +2726,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-55", 0 ],
-					"order" : 0,
+					"order" : 1,
 					"source" : [ "obj-61", 1 ]
 				}
 
