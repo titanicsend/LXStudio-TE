@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>AMApplicationBuild</key>
-	<string>520</string>
+	<string>521.1</string>
 	<key>AMApplicationVersion</key>
 	<string>2.10</string>
 	<key>AMDocumentVersion</key>
@@ -59,10 +59,8 @@
 				<key>ActionParameters</key>
 				<dict>
 					<key>COMMAND_STRING</key>
-					<string>cd /Users/te/src/code/LXStudio-TE
-java -jar \
-	target/LXStudio-TE-0.2.0-SNAPSHOT-jar-with-dependencies.jar \
-	vehicle EDC_showcase.lxp &gt; Logs/app-run-log-`date +%Y%m%d-%H%M%S`.log 2&gt;&amp;1</string>
+					<string>cd /Users/te/src/code/LXStudio-TE;
+java -XstartOnFirstThread -Djava.awt.headless=true -jar target/LXStudio-TE-0.2.2-SNAPSHOT-jar-with-dependencies.jar vehicle Projects/BM_2023.lxp;</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>
@@ -87,7 +85,7 @@ java -jar \
 				<key>Class Name</key>
 				<string>RunShellScriptAction</string>
 				<key>InputUUID</key>
-				<string>B574B2D2-016B-49D5-ACD3-1986DF499D88</string>
+				<string>1DF23427-73D1-4828-B8DD-B0584C5C3643</string>
 				<key>Keywords</key>
 				<array>
 					<string>Shell</string>
@@ -97,9 +95,9 @@ java -jar \
 					<string>Unix</string>
 				</array>
 				<key>OutputUUID</key>
-				<string>E5F0DA78-D0FE-4458-B29E-A25F424AA294</string>
+				<string>F60044DA-CAAA-4BBF-A8FB-F011B1604C9D</string>
 				<key>UUID</key>
-				<string>B7E4D64D-F491-4BDF-B392-D52A5F212E9D</string>
+				<string>39097DD8-2E0B-4399-800E-BCD338EAA30C</string>
 				<key>UnlocalizedApplications</key>
 				<array>
 					<string>Automator</string>
@@ -172,6 +170,8 @@ java -jar \
 						<string>4</string>
 					</dict>
 				</dict>
+				<key>conversionLabel</key>
+				<integer>0</integer>
 				<key>isViewVisible</key>
 				<integer>1</integer>
 				<key>location</key>
