@@ -6,13 +6,6 @@
 // #iUniform float iWow1 = 0.0 in {0.0, 1.0}
 // #iUniform vec2 iTranslate = vec2(0.0, 0.0)
 
-// #ifdef GL_ES
-// precision mediump float;
-// #endif
-// uniform vec2 iResolution;
-// uniform vec2 iMouse;
-// uniform float iTime;
-
 #define TEXTURE_SIZE 512.0
 #define CHANNEL_COUNT 16.0
 #define pixPerBin (TEXTURE_SIZE / CHANNEL_COUNT)
@@ -26,8 +19,6 @@ float plot(vec2 st, float pct){
 }
 
 float logisticSigmoid (float x, float a){
-  // n.b.: this Logistic Sigmoid has been normalized.
-
   float epsilon = 0.0001;
   float min_param_a = 0.0 + epsilon;
   float max_param_a = 1.0 - epsilon;
@@ -50,8 +41,6 @@ float horizS(vec2 st, float w, float a) {
 float vertS(vec2 st, float w, float a) {
   float l = logisticSigmoid(abs(st.x), a);
   float r = logisticSigmoid(abs(st.x)-w, a);
-  // return st.y < r ? 1.0 : 0.0;
-  // return st.y > l ? 1.0 : 0.0;
   return abs(st.y) < l && abs(st.y) > r ? 1.0 : 0.0;
 }
 
@@ -63,28 +52,15 @@ vec2 rotate(vec2 st, float a) {
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 st = fragCoord.xy/iResolution.xy;
 
-    st = rotate(st, iRotationAngle);
-    st = st * 2. * iScale - iScale;
+    st -= 0.5;
+    st = rotate(st, iRotationAngle) / iScale;
     st -= iTranslate;
 
     float index = mod(st.x * TEXTURE_SIZE * 2.0, TEXTURE_SIZE);
-    // The second row of is normalized waveform data
-    // we'll just draw this over the spectrum analyzer.  Sound data
-    // coming from LX is in the range -1 to 1, so we scale it and move it down
-    // a bit so we can see it better.
     float wave = (0.5 * (1.0+texelFetch(iChannel0, ivec2(index, 1), 0).x)) - 0.25;
-
-    // subdivide fft data into bins determined by iQuantity
     float p = floor(index / pixPerBin);
     float tx = halfBin+pixPerBin * p;
-    // get frequency data pixel from texture
     float freq  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
-
-    // float dist = abs(halfBin - mod(index, pixPerBin)) / halfBin;
-    // // since we're using dist to calculate desatuation for a specular
-    // // reflection effect, we'll modulate it with beat, to change
-    // // apparent shininess and give it some extra bounce.
-    // dist = dist - (beat * beat);
 
     float norm_x = pow(wave, 1. / iWow2);
     float norm_y = pow(freq, 1. / iWow1);

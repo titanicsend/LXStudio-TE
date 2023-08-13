@@ -6,20 +6,12 @@
 // #iUniform float iWow1 = 0.0 in {0.0, 1.0}
 // #iUniform vec2 iTranslate = vec2(0.0, 0.0)
 
-// #ifdef GL_ES
-// precision mediump float;
-// #endif
-// uniform vec2 iResolution;
-// uniform vec2 iMouse;
-// uniform float iTime;
 uniform float iScaledLo;
 uniform float iScaledHi;
 
 const float PI = 3.14159265359;
 
 float logisticSigmoid (float x, float a){
-  // n.b.: this Logistic Sigmoid has been normalized.
-
   float epsilon = 0.0001;
   float min_param_a = 0.0 + epsilon;
   float max_param_a = 1.0 - epsilon;
@@ -42,8 +34,6 @@ float horizS(vec2 st, float w, float a) {
 float vertS(vec2 st, float w, float a) {
   float l = logisticSigmoid(abs(st.x), a);
   float r = logisticSigmoid(abs(st.x)-w, a);
-  // return st.y < r ? 1.0 : 0.0;
-  // return st.y > l ? 1.0 : 0.0;
   return abs(st.y) < l && abs(st.y) > r ? 1.0 : 0.0;
 }
 
@@ -55,8 +45,8 @@ vec2 rotate(vec2 st, float a) {
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 st = fragCoord.xy/iResolution.xy;
 
-    st = rotate(st, iRotationAngle);
-    st = st * 2. * iScale - iScale;
+    st -= 0.5;
+    st = rotate(st, iRotationAngle) / iScale;
     st -= iTranslate;
 
     vec3 color = vec3(0.);

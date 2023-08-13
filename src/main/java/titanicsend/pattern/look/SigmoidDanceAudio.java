@@ -15,27 +15,17 @@ public class SigmoidDanceAudio extends TEPerformancePattern {
     NativeShader shader;
 
     public SigmoidDanceAudio(LX lx) {
-        super(lx, TEShaderView.DOUBLE_LARGE);
+        super(lx, TEShaderView.ALL_POINTS);
 
         controls.setRange(TEControlTag.WOW1, 1.0, 0.0, 4.0);
         controls.setRange(TEControlTag.WOW2, 1.0, 0.0, 4.0);
-//        controls.setRange(TEControlTag.SPEED, 0.6, -1, 1);
-//        controls.setRange(TEControlTag.WOW1, 0, 0, 2.6);
-//        controls.setRange(TEControlTag.QUANTITY, 0.2, 0.075, 0.3);
-//        controls.setValue(TEControlTag.SPIN,0.125);
-
-        // register common controls with LX
         addCommonControls();
 
-        effect = new NativeShaderPatternEffect("sigmoid_dance_audio.fs",
-                new PatternTarget(this));
+        effect = new NativeShaderPatternEffect("sigmoid_dance_audio.fs", new PatternTarget(this));
     }
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
-
-        //shader.setUniform("iRotationAngle",(float) -getRotationAngleFromSpin());
-
         // run the shader
         effect.run(deltaMs);
     }

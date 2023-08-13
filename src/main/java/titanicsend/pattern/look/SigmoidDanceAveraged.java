@@ -28,19 +28,16 @@ public class SigmoidDanceAveraged extends TEPerformancePattern {
 
         addCommonControls();
 
-        effect = new NativeShaderPatternEffect("sigmoid_dance.fs",
-                new PatternTarget(this));
+        effect = new NativeShaderPatternEffect("sigmoid_dance.fs", new PatternTarget(this));
     }
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
-        float volumeRatio = getVolumeRatiof();
         double bassLevel = getBassLevel();
         double trebleLevel = getTrebleLevel();
-        double bassRatio = getBassRatio();
-        double trebleRatio = getTrebleRatio();
-
-//        System.out.printf("%s, %s, %s, %s, %s\n", volumeRatio, bassLevel, trebleLevel, bassRatio, trebleRatio);
+//        float volumeRatio = getVolumeRatiof();
+//        double bassRatio = getBassRatio();
+//        double trebleRatio = getTrebleRatio();
 
         shader.setUniform("iScaledLo", Math.abs((float) getWow1() * (float) bassLevel + 0.05f));
         shader.setUniform("iScaledHi", Math.abs((float) getWow1() * (float) trebleLevel + 0.05f));

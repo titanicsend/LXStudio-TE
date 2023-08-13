@@ -16,15 +16,14 @@ public class SigmoidDance extends TEPerformancePattern {
     NativeShader shader;
 
     public SigmoidDance(LX lx) {
-        super(lx, TEShaderView.DOUBLE_LARGE);
+        super(lx, TEShaderView.ALL_POINTS);
 
         controls.setRange(TEControlTag.QUANTITY, 2.0, 0.0, 4.0);
 
         // register common controls with LX
         addCommonControls();
 
-        effect = new NativeShaderPatternEffect("sigmoid_dance.fs",
-                new PatternTarget(this));
+        effect = new NativeShaderPatternEffect("sigmoid_dance.fs", new PatternTarget(this));
     }
 
     @Override
