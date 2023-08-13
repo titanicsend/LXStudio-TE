@@ -27,14 +27,13 @@ float field2(vec2 p, vec2 center, float r) {
     return d * d * d;
 }
 
-// smooth radial reflections, plus rotation!
+// smooth radial reflections
 vec2 Kaleidoscope(vec2 uv, float reflections) {
     float angle = PI / reflections;
     float r = length(uv*.5);
 
     float a = atan(uv.y, uv.x) / angle;
     a = mix(fract(a), 1.0 - fract(a), mod(floor(a), 2.0)) * angle;
-    a -= iRotationAngle;
     return vec2(cos(a), sin(a)) * r;
 }
 
