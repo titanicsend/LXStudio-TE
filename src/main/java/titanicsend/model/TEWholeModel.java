@@ -12,12 +12,19 @@ import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
+import heronarts.lx.utils.LXUtils;
+import titanicsend.dmx.model.AdjStealthModel;
+import titanicsend.dmx.model.BeaconModel;
+import titanicsend.dmx.model.ChauvetSpot160Model;
+import titanicsend.dmx.model.DmxModel;
+import titanicsend.dmx.model.DmxWholeModel;
+import titanicsend.dmx.model.DmxModel.DmxCommonConfig;
 import titanicsend.lasercontrol.MovingTarget;
 import titanicsend.output.ChromatechSocket;
 import titanicsend.output.GrandShlomoStation;
 import titanicsend.util.TE;
 
-public class TEWholeModel extends LXModel {
+public class TEWholeModel extends LXModel implements DmxWholeModel {
   public String subdir;
   public String name;
   private final LXPoint gapPoint;  // Used for pixels that shouldn't actually be lit
@@ -32,6 +39,25 @@ public class TEWholeModel extends LXModel {
   public List<LXPoint> panelPoints; // Points belonging to panels
   public List<TEBox> boxes;
   public Boundaries boundaryPoints;
+
+  static public final String RESOURCE_NAME_BEACONS = "/beacons.txt";
+  static public final String RESOURCE_NAME_DJLIGHTS = "/djLights.txt";
+
+  // Beacons
+  private final List<DmxModel> mutableBeacons = new ArrayList<DmxModel>();
+  public final List<DmxModel> beacons = Collections.unmodifiableList(this.mutableBeacons);
+  private final HashMap<String, DmxModel> beaconsById = new HashMap<String, DmxModel>();
+
+  // DJ Lights
+  private final List<DmxModel> mutableDjLights = new ArrayList<DmxModel>();
+  public final List<DmxModel> djLights = Collections.unmodifiableList(this.mutableDjLights);
+  private final HashMap<String, DmxModel> djLightsById = new HashMap<String, DmxModel>();
+
+  // All DMX models
+  private int sizeDmx = 0;
+  private int nextDmxIndex = 0;
+  private final List<DmxModel> mutableDmxModels = new ArrayList<DmxModel>();
+  public final List<DmxModel> dmxModels = Collections.unmodifiableList(this.mutableDmxModels);
 
   // Boundaries are the points at the boundaries of our 3-dimensional grid. We retain
   // the `LXPoint` for convenience, but only the respective coordinate of each bound
@@ -70,6 +96,8 @@ public class TEWholeModel extends LXModel {
     public HashMap<TEPanelSection, Set<TEPanelModel>> panelsBySection;
     public HashMap<String, List<TEPanelModel>> panelsByFlavor;
     public HashMap<String, TELaserModel> lasersById;
+    public List<DmxModel> beacons;
+    public List<DmxModel> djLights;
     public List<TEBox> boxes;
     public LXModel[] children;
     public Properties views;
@@ -112,6 +140,11 @@ public class TEWholeModel extends LXModel {
 
     this.lasersById = geometry.lasersById;
     this.boxes = geometry.boxes;
+
+    addBeacons(geometry.beacons);
+
+    addDjLights(geometry.djLights);
+
     reindexPoints();
     this.boundaryPoints = initializeBoundaries();
     LX.log(String.format("Min X boundary: %f", boundaryPoints.minXBoundaryPoint.x));
@@ -127,7 +160,16 @@ public class TEWholeModel extends LXModel {
            this.vertexesById.size() + " vertexes, " +
            this.edgesById.size() + " edges, " +
            this.panelsById.size() + " panels, " +
-           this.points.length + " pixels");
+           this.points.length + " pixels, " +
+           this.beacons.size() + " beacons, " +
+           this.djLights.size() + " DJ lights");
+
+    if (this.beacons.size() == 0) {
+      LX.warning("No active beacons were found in config file.");
+    }
+    if (this.djLights.size() == 0) {
+      LX.warning("No active DJ lights were found in config file");
+    }
   }
 
   /**
@@ -575,6 +617,80 @@ public class TEWholeModel extends LXModel {
     }
   }
 
+  private static void loadBeacons(Geometry geometry) {
+    geometry.beacons = new ArrayList<DmxModel>();
+
+    try (Scanner s = loadFilePrivate(geometry.subdir + RESOURCE_NAME_BEACONS)) {
+      while (s.hasNextLine()) {
+        String line = s.nextLine();
+        if (line.startsWith("#") || LXUtils.isEmpty(line)) {
+          continue;
+        }
+        String[] tokens = line.split("\t");
+        assert tokens.length == 13 : "Found " + tokens.length + " tokens";
+
+        DmxCommonConfig config = new DmxCommonConfig();
+        config.id = tokens[0];
+        config.x = Integer.parseInt(tokens[1]);
+        config.y = Integer.parseInt(tokens[2]);
+        config.z = Integer.parseInt(tokens[3]);
+        config.yaw = Double.parseDouble(tokens[4]);
+        config.pitch = Double.parseDouble(tokens[5]);
+        config.roll = Double.parseDouble(tokens[6]);
+        config.host = tokens[7];
+        config.sequenceEnabled = Boolean.parseBoolean(tokens[8]);
+        config.fps = Float.parseFloat(tokens[9]);
+        config.universe = Integer.parseInt(tokens[10]);
+        config.channel = Integer.parseInt(tokens[11]);
+        float tiltLimit = Float.parseFloat(tokens[12]);
+        String[] tags = new String[] { config.id };
+
+        BeaconModel beacon = new BeaconModel(config, tiltLimit, tags);
+        geometry.beacons.add(beacon);
+      }
+    } catch (Throwable e) {
+      LX.error(e, "Error loading Beacons from resource: " + e.getMessage());
+    }
+  }
+
+  private static void loadDjLights(Geometry geometry) {
+    geometry.djLights = new ArrayList<DmxModel>();
+
+    try (Scanner s = loadFilePrivate(geometry.subdir + RESOURCE_NAME_DJLIGHTS)) {
+      while (s.hasNextLine()) {
+        String line = s.nextLine();
+        if (line.startsWith("#") || LXUtils.isEmpty(line)) {
+          continue;
+        }
+        String[] tokens = line.split("\t");
+        assert tokens.length == 12 : "Found " + tokens.length + " tokens";
+
+        DmxCommonConfig config = new DmxCommonConfig();
+        config.id = tokens[0];
+        config.x = Integer.parseInt(tokens[1]);
+        config.y = Integer.parseInt(tokens[2]);
+        config.z = Integer.parseInt(tokens[3]);
+        config.yaw = Double.parseDouble(tokens[4]);
+        config.pitch = Double.parseDouble(tokens[5]);
+        config.roll = Double.parseDouble(tokens[6]);
+        config.host = tokens[7];
+        config.sequenceEnabled = Boolean.parseBoolean(tokens[8]);
+        config.fps = Float.parseFloat(tokens[9]);
+        config.universe = Integer.parseInt(tokens[10]);
+        config.channel = Integer.parseInt(tokens[11]);
+        String[] tags = new String[] { config.id };
+
+        // Chauvet light for JKB testing
+        // ChauvetSpot160Model m = new ChauvetSpot160Model(config, tags);
+        AdjStealthModel m = new AdjStealthModel(config, tags);
+
+        geometry.djLights.add(m);
+      }
+    } catch (Throwable e) {
+      LX.error(e, "Error loading DJ Lights from resource: " + e.getMessage());
+    }
+  }
+
   private static void loadBoxes(Geometry geometry) {
     geometry.boxes = new ArrayList<>();
 
@@ -667,6 +783,10 @@ public class TEWholeModel extends LXModel {
 
     childList.addAll(geometry.lasersById.values());
 
+    loadBeacons(geometry);
+    
+    loadDjLights(geometry);
+
     loadEdges(geometry);
 
     childList.addAll(geometry.edgesById.values());
@@ -727,6 +847,64 @@ public class TEWholeModel extends LXModel {
 
   public Set<TEEdgeModel> getAllEdges() {
     return new HashSet<>(edgesById.values());
+  }
+
+  // Beacons
+
+  public void addBeacons(List<DmxModel> beacons) {
+    this.mutableBeacons.addAll(beacons);
+    for (DmxModel beacon : beacons) {
+      this.beaconsById.put(beacon.id, beacon);
+    }
+
+    addDmxModels(beacons);
+  }
+
+  public DmxModel getBeacon(String id) {
+    return this.beaconsById.get(id);
+  }
+
+  // DJ Lights
+
+  public void addDjLights(List<DmxModel> djLights) {
+    this.mutableDjLights.addAll(djLights);
+    for (DmxModel djLight : djLights) {
+      this.djLightsById.put(djLight.id, djLight);
+    }
+
+    addDmxModels(djLights);
+  }
+
+  public DmxModel getDjLight(String id) {
+    return this.djLightsById.get(id);
+  }
+
+  // All DMX Models
+
+  protected void addDmxModels(List<DmxModel> models) {
+    for (DmxModel model : models) {
+      if (!this.mutableDmxModels.contains(model)) {
+        model.index = this.nextDmxIndex++;
+        this.mutableDmxModels.add(model);
+      } else {
+        TE.err("Can not add dmx model twice.");
+      }
+    }
+    updateSizeDmx();
+  }
+  
+  protected final void updateSizeDmx() {
+    this.sizeDmx = this.mutableDmxModels.size();
+  }
+
+  @Override
+  public int sizeDmx() {
+    return this.sizeDmx;
+  }
+
+  @Override
+  public List<DmxModel> getDmxModels() {
+    return this.dmxModels;
   }
 
 }

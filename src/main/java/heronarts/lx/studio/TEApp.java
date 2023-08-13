@@ -44,6 +44,12 @@ import titanicsend.app.TEOscListener;
 import titanicsend.app.TEUIControls;
 import titanicsend.app.TEVirtualOverlays;
 import titanicsend.app.autopilot.*;
+import titanicsend.dmx.DmxEngine;
+import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
+import titanicsend.dmx.pattern.BeaconDirectPattern;
+import titanicsend.dmx.pattern.BeaconEverythingPattern;
+import titanicsend.dmx.pattern.DjLightsDirectPattern;
+import titanicsend.dmx.pattern.DjLightsEasyPattern;
 import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lx.APC40Mk2;
@@ -79,6 +85,7 @@ import titanicsend.ui.UIBackings;
 import titanicsend.ui.UILasers;
 import titanicsend.ui.UITEPerformancePattern;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
+import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
 
 public class TEApp extends LXStudio {
@@ -105,6 +112,7 @@ public class TEApp extends LXStudio {
     private TEOscListener oscListener;
     private TEPatternLibrary library;
 
+    private final DmxEngine dmxEngine;
     private final TELaserTask laserTask;
     private final ColorCentral colorCentral;
     private final ViewCentral viewCentral;
@@ -123,6 +131,7 @@ public class TEApp extends LXStudio {
 
 //      lx.ui.preview.addComponent(visual);
 //      new TEUIControls(ui, visual, ui.leftPane.global.getContentWidth()).addToContainer(ui.leftPane.global);
+      this.dmxEngine = new DmxEngine(lx);
 
       // create our loop task for outputting data to lasers
       this.laserTask = new TELaserTask(lx);
@@ -130,6 +139,9 @@ public class TEApp extends LXStudio {
 
       // Add special per-channel swatch control. *Post-EDC note: this will get revised.
       this.colorCentral = new ColorCentral(lx);
+
+      // Load metadata about unused controls per-pattern into a singleton that patterns will reference later
+      MissingControlsManager.get();
 
       // Add special view controller
       this.viewCentral = new ViewCentral(lx);
@@ -205,7 +217,13 @@ public class TEApp extends LXStudio {
       lx.registry.addEffect(titanicsend.effect.PanelAdjustEffect.class);
       lx.registry.addEffect(BeaconEffect.class);
 
-
+      // DMX patterns
+      lx.registry.addPattern(BeaconDirectPattern.class);
+      lx.registry.addPattern(BeaconEverythingPattern.class);
+      lx.registry.addPattern(DjLightsDirectPattern.class);
+      lx.registry.addPattern(DjLightsEasyPattern.class);
+      lx.registry.addPattern(ExampleDmxTEPerformancePattern.class);
+ 
       // TODO - The following patterns were removed from the UI prior to EDC 2023 to keep
       // TODO - them from being accidentally activated during a performance.
       // TODO - update/fix as needed!
@@ -404,16 +422,16 @@ public class TEApp extends LXStudio {
 
       new TEUIControls(ui, this.virtualOverlays, ui.leftPane.model.getContentWidth()).addToContainer(ui.leftPane.model, 0);
 
-      // Global pane
-
-      new GigglePixelUI(ui, ui.leftPane.global.getContentWidth(),
-          this.gpListener, this.gpBroadcaster).addToContainer(ui.leftPane.global);
-
-      // Add UI section for autopilot
-      new TEUserInterface.AutopilotUISection(ui, this.autopilot).addToContainer(ui.leftPane.global);
+      new GigglePixelUI(ui, ui.leftPane.model.getContentWidth(),
+          this.gpListener, this.gpBroadcaster).addToContainer(ui.leftPane.model, 1);
 
       // Add UI section for all other general settings
-      new TEUserInterface.TEUISection(ui, laserTask).addToContainer(ui.leftPane.global);
+      new TEUserInterface.TEUISection(ui, laserTask).addToContainer(ui.leftPane.model, 2);
+
+      // Global pane
+
+      // Add UI section for autopilot
+      new TEUserInterface.AutopilotUISection(ui, this.autopilot).addToContainer(ui.leftPane.global, 0);
 
       applyTECameraPosition();
 
@@ -470,6 +488,7 @@ public class TEApp extends LXStudio {
       this.lx.removeListener(this);
       this.lx.removeProjectListener(this);
 
+      this.dmxEngine.dispose();
       this.colorCentral.dispose();
       this.crutchOSC.dispose();
       this.viewCentral.dispose();
