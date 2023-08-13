@@ -22,6 +22,7 @@ import titanicsend.dmx.model.DmxModel.DmxCommonConfig;
 import titanicsend.lasercontrol.MovingTarget;
 import titanicsend.output.ChromatechSocket;
 import titanicsend.output.GrandShlomoStation;
+import titanicsend.pattern.TEPattern;
 import titanicsend.util.TE;
 
 public class TEWholeModel extends LXModel implements DmxWholeModel {
@@ -33,6 +34,7 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
   public HashMap<LXVector, List<TEEdgeModel>> edgesBySymmetryGroup;
   public HashMap<String, TEPanelModel> panelsById;
   private final HashMap<TEPanelSection, Set<TEPanelModel>> panelsBySection;
+  private final HashMap<TEPanelSection, Set<Integer>> pointIndexesBySection;
   public HashMap<String, List<TEPanelModel>> panelsByFlavor;
   public HashMap<String, TELaserModel> lasersById;
   public List<LXPoint> edgePoints; // Points belonging to edges
@@ -94,6 +96,7 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
     public HashMap<String, TEEdgeModel> edgesById;
     public HashMap<String, TEPanelModel> panelsById;
     public HashMap<TEPanelSection, Set<TEPanelModel>> panelsBySection;
+    public HashMap<TEPanelSection, Set<Integer>> pointIndexesBySection;
     public HashMap<String, List<TEPanelModel>> panelsByFlavor;
     public HashMap<String, TELaserModel> lasersById;
     public List<DmxModel> beacons;
@@ -120,6 +123,7 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
 
     this.panelsById = geometry.panelsById;
     this.panelsBySection = geometry.panelsBySection;
+    this.pointIndexesBySection = geometry.pointIndexesBySection;
     this.panelsByFlavor = geometry.panelsByFlavor;
 
     this.panelPoints = new ArrayList<>();
@@ -493,6 +497,7 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
   private static void loadPanels(Geometry geometry) {
     geometry.panelsById = new HashMap<>();
     geometry.panelsBySection = new HashMap<>();
+    geometry.pointIndexesBySection = new HashMap<>();
     geometry.panelsByFlavor = new HashMap<>();
 
     Map<String, TEStripingInstructions> stripingInstructions
@@ -572,6 +577,12 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
       if (!geometry.panelsBySection.containsKey(p.getSection()))
         geometry.panelsBySection.put(p.getSection(), new HashSet<>());
       geometry.panelsBySection.get(p.getSection()).add(p);
+
+      if (!geometry.pointIndexesBySection.containsKey(p.getSection()))
+        geometry.pointIndexesBySection.put(p.getSection(), new HashSet<>());
+      for (LXPoint point : p.getPoints()) {
+        geometry.pointIndexesBySection.get(p.getSection()).add(point.index);
+      }
 
       String flavor = p.flavor;
       if (!geometry.panelsByFlavor.containsKey(flavor))
@@ -809,6 +820,10 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
     return panelsBySection.get(section);
   }
 
+  public Set<Integer> getPointIndexesBySection(TEPanelSection section) {
+    return pointIndexesBySection.get(section);
+  }
+
   public Set<LXPoint> getEdgePointsBySection(TEEdgeSection section) {
     return edgePoints.stream()
             .filter(point -> section == TEEdgeSection.PORT ? point.x > 0 : point.x < 0)
@@ -821,6 +836,11 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
             .map(LXModel::getPoints)
             .flatMap(List::stream)
             .collect(Collectors.toSet());
+  }
+
+  public boolean isSidePoint(LXPoint point) {
+    return pointIndexesBySection.get(TEPanelSection.AFT).contains(point.index) ||
+            pointIndexesBySection.get(TEPanelSection.FORE).contains(point.index);
   }
 
   public Set<TEPanelModel> getPanelsBySections(Collection<TEPanelSection> sections) {
