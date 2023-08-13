@@ -3121,7 +3121,7 @@
             "patterns": [
               {
                 "id": 79827,
-                "class": "titanicsend.pattern.look.TriangleCross",
+                "class": "titanicsend.pattern.look.TriangleCrossAudioLevels",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
@@ -3246,7 +3246,7 @@
             "patterns": [
               {
                 "id": 75493,
-                "class": "titanicsend.pattern.look.TriangleCross",
+                "class": "titanicsend.pattern.look.TriangleCrossAudioLevels",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
@@ -3325,7 +3325,7 @@
               },
               {
                 "id": 77660,
-                "class": "titanicsend.pattern.look.TriangleCrossWaveform",
+                "class": "titanicsend.pattern.look.TriangleCrossAudioWaveform",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,

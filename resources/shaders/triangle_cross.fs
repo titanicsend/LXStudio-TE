@@ -103,8 +103,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
     float ysize = 0.25 - iWow1 * 0.2 * trebleLevel;
     float outer = 1.2 + iWow1 * 1.5 * bassLevel;
     float inner = 1.1 + iWow1 * 2.0 * bassLevel;
-    //float outer = 1.2 + 0.2 * sin(iTime);
-    //float inner = 1.1 + 0.3 * cos(iTime);
+
     float yoffset = 0.7;
     st += vec2(0.5, yoffset);
     for (int i = 0; i < int(iQuantity); i++) {
@@ -123,8 +122,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
     float a = atan(st.y,st.x);
     float m = abs(mod(a+iTime*2.,PI*2.)-PI)/3.6;
     m += noise(st+iTime*0.1)*.5;
-    // a *= 1.+abs(atan(iTime*0.2))*.1;
-    // a *= 1.+noise(st+iTime*0.1)*0.1;
 
     // adding radial noise to triangle distance function
     f += sin(a*50.)*noise(st+iTime*.2)*.1;
@@ -137,7 +134,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
 
     // innermost step function we apply to triangle distance field
     float r = 0.3 + iWow1 * 0.2 * volumeRatio;
-    //r = iWow1;
     float tri_inner_mask = r + noise1d(0.35, 3.*iTime);
 
     float tri_inner_margin = 0.04;
