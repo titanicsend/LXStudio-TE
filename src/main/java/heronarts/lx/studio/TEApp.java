@@ -191,8 +191,8 @@ public class TEApp extends LXStudio {
 
       // Patterns that will not aspire to art direction standards
       lx.registry.addPattern(SigmoidDance.class);
-      lx.registry.addPattern(SigmoidDanceAudio.class);
-      lx.registry.addPattern(SigmoidDanceAveraged.class);
+      lx.registry.addPattern(SigmoidDanceAudioWaveform.class);
+      lx.registry.addPattern(SigmoidDanceAudioLevels.class);
 
       // Examples for teaching and on-boarding developers
       lx.registry.addPattern(BasicRainbowPattern.class);

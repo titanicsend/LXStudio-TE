@@ -3245,7 +3245,7 @@
               },
               {
                 "id": 64614,
-                "class": "titanicsend.pattern.look.SigmoidDanceAveraged",
+                "class": "titanicsend.pattern.look.SigmoidDanceAudioLevels",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,

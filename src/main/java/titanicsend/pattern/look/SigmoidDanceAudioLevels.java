@@ -2,29 +2,24 @@ package titanicsend.pattern.look;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.audio.GraphicMeter;
-import org.opencv.core.Mat;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
-import titanicsend.util.TEMath;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @LXCategory("Look Shader Patterns")
-public class SigmoidDanceAveraged extends TEPerformancePattern {
+public class SigmoidDanceAudioLevels extends TEPerformancePattern {
     NativeShaderPatternEffect effect;
     NativeShader shader;
 
-    public SigmoidDanceAveraged(LX lx) {
+    public SigmoidDanceAudioLevels(LX lx) {
         super(lx, TEShaderView.ALL_POINTS);
 
-        controls.setRange(TEControlTag.QUANTITY, 2.0, 0.0, 4.0);
+        controls.setRange(TEControlTag.QUANTITY, 4.0, 0.0, 4.0);
         controls.setRange(TEControlTag.WOW1, 0.5, 0.0, 1.0);
+        controls.setRange(TEControlTag.SIZE, 0.6, 0.0, 2.0);
 
         addCommonControls();
 

@@ -18,7 +18,8 @@ public class SigmoidDance extends TEPerformancePattern {
     public SigmoidDance(LX lx) {
         super(lx, TEShaderView.ALL_POINTS);
 
-        controls.setRange(TEControlTag.QUANTITY, 2.0, 0.0, 4.0);
+        controls.setRange(TEControlTag.QUANTITY, 4.0, 0.0, 4.0);
+        controls.setRange(TEControlTag.SIZE, 0.6, 0.0, 2.0);
 
         // register common controls with LX
         addCommonControls();

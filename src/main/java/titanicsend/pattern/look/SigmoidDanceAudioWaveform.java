@@ -10,11 +10,11 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 
 @LXCategory("Look Shader Patterns")
-public class SigmoidDanceAudio extends TEPerformancePattern {
+public class SigmoidDanceAudioWaveform extends TEPerformancePattern {
     NativeShaderPatternEffect effect;
     NativeShader shader;
 
-    public SigmoidDanceAudio(LX lx) {
+    public SigmoidDanceAudioWaveform(LX lx) {
         super(lx, TEShaderView.ALL_POINTS);
 
         controls.setRange(TEControlTag.WOW1, 1.0, 0.0, 4.0);
