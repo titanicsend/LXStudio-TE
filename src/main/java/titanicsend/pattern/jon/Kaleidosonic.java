@@ -16,8 +16,10 @@ public class Kaleidosonic extends TEPerformancePattern {
     public Kaleidosonic(LX lx) {
         super(lx, TEShaderView.DOUBLE_LARGE);
 
-        controls.setRange(TEControlTag.WOW1, 0.125, 0, 0.25);
-        controls.setRange(TEControlTag.QUANTITY, 7, 1, 13);
+        controls.setRange(TEControlTag.WOW1, 0.125, 0, 0.25);   // bass response
+        controls.setRange(TEControlTag.WOW2, 1., 1, 3);    // overall audio level adjustment
+        controls.setRange(TEControlTag.QUANTITY, 7, 1, 13);  // number of kaleidoscope slices
+        controls.setValue(TEControlTag.SPIN, 0.125);
 
         // register common controls with LX
         addCommonControls();

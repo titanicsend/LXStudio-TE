@@ -40,16 +40,20 @@ vec2 Kaleidoscope(vec2 uv, float reflections) {
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    // save the original aspect ratio for later use, and normalize coords
     vec2 aspect = iResolution.xy / min(iResolution.x, iResolution.y);
     vec2 uv = (fragCoord.xy * 2.0 - iResolution.xy) / min(iResolution.x, iResolution.y);
 
     // generate radial reflections about the origin
-    // (and add a little extra coordinate distortion first)
-    uv += iWow2 * 0.05 * sin(length(uv) * 24.0);
     uv = Kaleidoscope(uv, iQuantity);
 
-    float bandLevel = texture(iChannel0, vec2(uv.x, 0)).r/avgVolume;
-    uv *= iScale + 0.2 * bandLevel;
+    // ratio of level at current pixel's eq band to EMA volume from engine
+    // Wow2 acts as an overall level adjustment
+    float bandLevel = iWow2 * texture(iChannel0, vec2(uv.x, 0)).r/avgVolume;
+
+    // modulate overall scale by level just a little for more movement.
+    // (too much looks jittery)
+    uv *= iScale + 0.1 * bandLevel;
 
     vec3 final_color = vec3(0.0);
 
@@ -73,13 +77,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         // it looks better!
         pos = (pos * 2.0 - 1.0) * aspect;
 
-        // "intensity" is the audio level at the current random sample position
-        float intensity = texture(iChannel0, vec2(pos.y, 0)).r/avgVolume;
+        // "intensity" is the audio eq level at the current random sample position
+        float intensity = iWow2 * texture(iChannel0, vec2(pos.y, 0)).r/avgVolume;
 
         // generate blob radius based on audio level at fake position
-        // iWow1 controls reaction intensity (which is the size of the random field
-        // blob at the current location.)
-        float radius = (1.0 + iWow1) * intensity * clamp(noise.w, 0.3, 0.8);
+        // (the size of the field blob at the current location.)
+        // Wow1 limits the max size for rough reactivity control.
+        float radius = (1.0 + iWow1) * intensity * clamp(noise.w, 0.1*abs(pos.x), max(trebleLevel,bassLevel));
         radius = clamp(radius, 0.1*abs(pos.x), iWow1);
 
         // accumulate field density
@@ -89,6 +93,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     }
 
     // gamma correct density and apply color
-    final_density = pow(clamp(final_density - 0.1, 0.0, 1.0), 2.2);
+    // (color selection tweaked to look like the 1940's version of "Fantasia"
+    // b/c I thought that'd be more fun. apologies to the palette.)
+    final_density = pow(clamp(final_density - 0.1, 0.0, 1.0), 2.);
     fragColor = vec4( final_color *  final_density, 1.0);
 }
