@@ -1,6 +1,6 @@
 {
-  "version": "0.4.5-SNAPSHOT",
-  "timestamp": 1691941020091,
+  "version": "0.4.2.TE.6-SNAPSHOT",
+  "timestamp": 1691961936873,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -2879,14 +2879,14 @@
               "band-1": 0.0,
               "band-2": 0.0,
               "band-3": 0.0,
-              "band-4": 0.05635383028134944,
-              "band-5": 0.10154969987460793,
-              "band-6": 0.17701905642861782,
-              "band-7": 0.23894983231639622,
-              "band-8": 0.2986994972931081,
-              "band-9": 0.3231580940326534,
-              "band-10": 0.1987388346875817,
-              "band-11": 0.08798194323987885,
+              "band-4": 0.0,
+              "band-5": 0.0,
+              "band-6": 0.0,
+              "band-7": 0.0,
+              "band-8": 0.0,
+              "band-9": 0.0,
+              "band-10": 0.0,
+              "band-11": 0.0,
               "band-12": 0.0,
               "band-13": 0.0,
               "band-14": 0.0,
@@ -3097,8 +3097,12 @@
               "aux": false,
               "crossfadeGroup": 0,
               "blendMode": 0,
-              "midiMonitor": false,
-              "midiChannel": 16,
+              "midiFilter/enabled": false,
+              "midiFilter/channel": 16,
+              "midiFilter/minNote": 0,
+              "midiFilter/noteRange": 128,
+              "midiFilter/minVelocity": 1,
+              "midiFilter/velocityRange": 127,
               "viewEnabled": false,
               "viewSelector": "Edge",
               "viewNormalization": 0,
@@ -3196,7 +3200,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51374,
@@ -3275,7 +3280,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51429,
@@ -3354,7 +3360,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51396,
@@ -3433,7 +3440,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51407,
@@ -3512,7 +3520,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51551,
@@ -3591,7 +3600,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51418,
@@ -3670,7 +3680,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51440,
@@ -3749,7 +3760,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51562,
@@ -3828,7 +3840,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51451,
@@ -3870,11 +3883,11 @@
                   "panic": false,
                   "viewPerPattern": 0,
                   "swatchPerChannel": 0,
-                  "Double Layer": false,
                   "Double Speed": false,
-                  "Energy": 0.0,
+                  "Width": 0.5,
+                  "Double Layer": false,
                   "Glow": 0.1,
-                  "Width": 0.5
+                  "Energy": 0.0
                 },
                 "children": {
                   "modulation": {
@@ -3912,7 +3925,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51462,
@@ -3993,7 +4007,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51495,
@@ -4072,7 +4087,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51473,
@@ -4151,7 +4167,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51573,
@@ -4230,7 +4247,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51484,
@@ -4309,7 +4327,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51506,
@@ -4388,7 +4407,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51517,
@@ -4467,7 +4487,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51584,
@@ -4548,7 +4569,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51528,
@@ -4627,7 +4649,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51540,
@@ -4706,7 +4729,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51596,
@@ -4788,7 +4812,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51684,
@@ -4867,7 +4892,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51618,
@@ -4948,7 +4974,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51629,
@@ -5029,7 +5056,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51640,
@@ -5108,7 +5136,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51673,
@@ -5187,7 +5216,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51662,
@@ -5266,7 +5296,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51695,
@@ -5345,7 +5376,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51706,
@@ -5424,7 +5456,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51717,
@@ -5504,7 +5537,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51740,
@@ -5583,7 +5617,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51751,
@@ -5662,7 +5697,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51762,
@@ -5741,7 +5777,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51773,
@@ -5820,7 +5857,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51828,
@@ -5862,12 +5900,12 @@
                   "panic": false,
                   "viewPerPattern": 2,
                   "swatchPerChannel": 0,
-                  "Speed": 0.0,
-                  "Glow2": 9.0,
-                  "Glow": 1.5,
                   "Wibble Size": 0.15,
+                  "Glow2": 9.0,
                   "Energy": 0.0,
-                  "Thickness": 0.3
+                  "Thickness": 0.3,
+                  "Speed": 0.0,
+                  "Glow": 1.5
                 },
                 "children": {
                   "modulation": {
@@ -5905,7 +5943,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51806,
@@ -5984,7 +6023,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51784,
@@ -6063,7 +6103,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51817,
@@ -6142,7 +6183,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51795,
@@ -6221,7 +6263,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51850,
@@ -6300,7 +6343,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51861,
@@ -6379,7 +6423,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51872,
@@ -6458,7 +6503,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51883,
@@ -6537,7 +6583,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51894,
@@ -6616,7 +6663,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51971,
@@ -6695,7 +6743,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51916,
@@ -6737,8 +6786,8 @@
                   "panic": false,
                   "viewPerPattern": 6,
                   "swatchPerChannel": 0,
-                  "noise2": 2.0,
-                  "noise": 2.0
+                  "noise": 2.0,
+                  "noise2": 2.0
                 },
                 "children": {
                   "modulation": {
@@ -6776,7 +6825,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51960,
@@ -6855,7 +6905,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51982,
@@ -6934,7 +6985,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51927,
@@ -7013,7 +7065,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 52004,
@@ -7092,7 +7145,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 51949,
@@ -7134,11 +7188,11 @@
                   "panic": false,
                   "viewPerPattern": 6,
                   "swatchPerChannel": 0,
-                  "numBlocks": 30.0,
+                  "speed": 0.7,
                   "hideBlocks": false,
-                  "ySpread": 1.6,
+                  "numBlocks": 30.0,
                   "glow": 0.5,
-                  "speed": 0.7
+                  "ySpread": 1.6
                 },
                 "children": {
                   "modulation": {
@@ -7176,7 +7230,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 60558,
@@ -7209,10 +7264,10 @@
                   "te_ypos": 0.0,
                   "te_size": 1.0,
                   "te_quantity": 7.0,
-                  "te_spin": 0.1980089406802803,
+                  "te_spin": 0.0,
                   "te_brightness": 1.0,
-                  "te_wow1": 0.125,
-                  "te_wow2": 1.5028571020811796,
+                  "te_wow1": 0.04,
+                  "te_wow2": 1.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
@@ -7255,7 +7310,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               }
             ]
           },
@@ -7281,8 +7337,12 @@
               "aux": false,
               "crossfadeGroup": 0,
               "blendMode": 0,
-              "midiMonitor": false,
-              "midiChannel": 16,
+              "midiFilter/enabled": false,
+              "midiFilter/channel": 16,
+              "midiFilter/minNote": 0,
+              "midiFilter/noteRange": 128,
+              "midiFilter/minVelocity": 1,
+              "midiFilter/velocityRange": 127,
               "viewEnabled": true,
               "viewSelector": "outline,dj",
               "viewNormalization": 0,
@@ -7380,7 +7440,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               }
             ]
           }
