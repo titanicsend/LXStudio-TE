@@ -202,8 +202,8 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(TEGradientPattern.class);
 
       // Patterns that will not aspire to art direction standards
-      lx.registry.addPattern(TriangleCross.class);
-      lx.registry.addPattern(TriangleCrossWaveform.class);
+      lx.registry.addPattern(TriangleCrossAudioLevels.class);
+      lx.registry.addPattern(TriangleCrossAudioWaveform.class);
 
       // Examples for teaching and on-boarding developers
       lx.registry.addPattern(BasicRainbowPattern.class);
