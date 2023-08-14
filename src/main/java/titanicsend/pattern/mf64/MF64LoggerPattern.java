@@ -18,7 +18,5 @@ public class MF64LoggerPattern extends TEMidiFighter64Subpattern {
   public void buttonUp(TEMidiFighter64DriverPattern.Mapping mapping) {}
 
   @Override
-  public void run(double deltaMsec, int[] colors) {
-
-  }
+  public void run(double deltaMs) {}
 }
