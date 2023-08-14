@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import heronarts.lx.LX;
 import heronarts.lx.parameter.ObjectParameter;
 
-public class SwatchParameter extends ObjectParameter<SwatchDefinition> {
+public class SwatchParameter extends ObjectParameter<SwatchDefinition> implements DisposableParameter {
 
   public interface Listener {
     public void swatchesChanged(SwatchParameter parameter);
@@ -61,5 +62,29 @@ public class SwatchParameter extends ObjectParameter<SwatchDefinition> {
     for (Listener listener : this.listeners) {
       listener.swatchesChanged(this);
     }
+  }
+
+  private final List<DisposeListener> disposeListeners = new ArrayList<DisposeListener>();
+
+  public void listenDispose(DisposeListener listener) {
+    disposeListeners.add(listener);
+  }
+
+  public void unlistenDispose(DisposeListener listener) {
+    if (!disposeListeners.remove(listener)) {
+      LX.warning("Tried to remove unregistered DisposeListener");
+    }
+  }
+
+  private void notifyDisposing() {
+    for (int i = disposeListeners.size()-1; i>=0; --i) {
+      disposeListeners.remove(i).disposing(this);
+    }
+  }
+
+  @Override
+  public void dispose() {
+    notifyDisposing();
+    super.dispose();
   }
 }

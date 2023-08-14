@@ -1,0 +1,222 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.heronarts</groupId>
+    <artifactId>glxstudio</artifactId>
+    <version>0.4.2.TE.6-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+                        
+        <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
+        <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+        <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
+        <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+        
+        <lwjgl.version>3.3.1</lwjgl.version>
+        <lwjgl.natives>natives-macos-arm64</lwjgl.natives>
+        
+    </properties>
+    
+    <profiles>
+		<profile>
+			<id>lwjgl-natives-macos-x86_64</id>
+			<properties>
+				<lwjgl.natives>natives-macos</lwjgl.natives>
+			</properties>
+		</profile>
+		<profile>
+			<id>lwjgl-natives-macos-aarch64</id>
+			<properties>
+				<lwjgl.natives>natives-macos-arm64</lwjgl.natives>
+			</properties>
+		</profile>
+		<profile>
+			<id>lwjgl-natives-windows-amd64</id>
+			<activation>
+				<os>
+					<family>windows</family>
+					<arch>amd64</arch>
+				</os>
+			</activation>
+			<properties>
+				<lwjgl.natives>natives-windows</lwjgl.natives>
+			</properties>
+		</profile>
+		<profile>
+			<id>lwjgl-natives-linux-aarch64</id>
+			<properties>
+				<lwjgl.natives>natives-linux-arm64</lwjgl.natives>
+			</properties>
+		</profile>
+	</profiles>
+    
+    <dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.lwjgl</groupId>
+				<artifactId>lwjgl-bom</artifactId>
+				<version>${lwjgl.version}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
+    <dependencies>
+		<dependency>
+            <groupId>com.heronarts</groupId>
+            <artifactId>lx</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+		<dependency>
+            <groupId>com.heronarts</groupId>
+            <artifactId>glx</artifactId>
+            <version>${project.version}</version>
+        </dependency>    
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl</artifactId>
+			<classifier>${lwjgl.natives}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-bgfx</artifactId>
+			<classifier>${lwjgl.natives}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-glfw</artifactId>
+			<classifier>${lwjgl.natives}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-nanovg</artifactId>
+			<classifier>${lwjgl.natives}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-stb</artifactId>
+			<classifier>${lwjgl.natives}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-tinyfd</artifactId>
+			<classifier>${lwjgl.natives}</classifier>
+		</dependency>
+		<dependency>
+		    <groupId>org.openjdk.nashorn</groupId>
+		    <artifactId>nashorn-core</artifactId>
+		    <version>15.4</version>
+		</dependency>
+		<dependency>
+		    <!-- argh, this old version seems to be needed for the openjdk nashorn build! -->
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-simple</artifactId>
+		    <version>1.7.36</version>
+		</dependency>
+  	</dependencies>
+  	
+  	 <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-Xlint</arg>
+                        <arg>-Xpkginfo:always</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            
+        	<plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-assembly-plugin</artifactId>
+	            <version>${maven-assembly-plugin.version}</version>
+	
+	            <configuration>
+	                <descriptorRefs>
+	                    <descriptorRef>jar-with-dependencies</descriptorRef>
+	                </descriptorRefs>
+	                <archive>
+				        <manifest>
+				          	<mainClass>heronarts.lx.studio.Chromatik</mainClass>
+				        </manifest>
+			      	</archive>
+	            </configuration>
+	            
+	            <executions>
+	                <execution>
+	                    <id>make-assembly</id>
+	                    <phase>package</phase>
+	                    <goals>
+	                        <goal>single</goal>
+	                    </goals>
+	                </execution>
+	            </executions>
+        	</plugin>
+        	
+        	<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                        <classifier>sources</classifier>
+                            <includes>
+                                <include>LICENSE</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
+				<configuration>
+					<release>17</release>
+					<bottom>LX library by Mark C. Slee. &#169; 2012-2022</bottom>
+	                <stylesheetfile>build/stylesheet.css</stylesheetfile>
+	                <doctitle>Chromatik API Specification (${project.version})</doctitle>
+	                <doclint>all,-missing</doclint>
+	                <header>Chromatik (${project.version})</header>
+	                <overview>${basedir}/src/main/java/overview.html</overview>
+	                <windowtitle>LX Studio API</windowtitle>
+	                <includeDependencySources>true</includeDependencySources>
+					<dependencySourceIncludes>
+                		<!-- include ONLY dependencies I control -->
+                		<dependencySourceInclude>com.heronarts:*</dependencySourceInclude>
+              		</dependencySourceIncludes>
+	                <offlineLinks>
+            			<offlineLink>
+                			<url>https://javadoc.io/doc/com.google.code.gson/gson/2.8.6/com.google.gson/</url>
+                			<location>../../build/gson</location>
+            			</offlineLink>
+        			</offlineLinks>
+        			<javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+				</configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+		</plugins>
+	</build>
+</project>

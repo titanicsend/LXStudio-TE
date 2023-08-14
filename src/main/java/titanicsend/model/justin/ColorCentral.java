@@ -30,7 +30,7 @@ import heronarts.lx.color.LXSwatch;
 import heronarts.lx.mixer.LXAbstractChannel;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.studio.LXStudio;
-import titanicsend.app.TEApp;
+import heronarts.lx.studio.TEApp;
 
 public class ColorCentral extends ChannelExtension<titanicsend.model.justin.ColorCentral.ColorPerChannel> implements LXPalette.Listener {
 

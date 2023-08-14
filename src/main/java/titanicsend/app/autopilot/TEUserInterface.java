@@ -1,8 +1,8 @@
 package titanicsend.app.autopilot;
 
+import heronarts.glx.ui.component.UICollapsibleSection;
+import heronarts.glx.ui.component.UISwitch;
 import heronarts.lx.studio.LXStudio;
-import heronarts.p4lx.ui.component.UICollapsibleSection;
-import heronarts.p4lx.ui.component.UISwitch;
 import titanicsend.app.TEAutopilot;
 import titanicsend.lasercontrol.TELaserTask;
 
@@ -14,7 +14,7 @@ public class TEUserInterface {
 
     public static class AutopilotUISection extends UICollapsibleSection {
         public AutopilotUISection(LXStudio.UI ui, TEAutopilot component) {
-            super(ui, 0, 0, ui.leftPane.global.getContentWidth(), 80);
+            super(ui, 0, 0, ui.leftPane.global.getContentWidth(), 70);
             setTitle("Autopilot");
             new UISwitch(0, 4)
                 .setParameter(component.enabled)
@@ -25,8 +25,8 @@ public class TEUserInterface {
     // Use this for other random UI buttons we want to add
     public static class TEUISection extends UICollapsibleSection {
       public TEUISection(LXStudio.UI ui, TELaserTask laser) {
-          super(ui, 0, 0, ui.leftPane.global.getContentWidth(), 80);
-          setTitle("TE General Controls");
+          super(ui, 0, 0, ui.leftPane.global.getContentWidth(), 70);
+          setTitle("TE Other Outputs");
           new UISwitch(0, 4)
               .setParameter(laser.enabled)
               .addToContainer(this);
