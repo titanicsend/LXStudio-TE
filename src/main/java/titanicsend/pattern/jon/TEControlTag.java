@@ -47,6 +47,7 @@ public enum TEControlTag {
             case QUANTITY -> "Quantity";
             case BRIGHTNESS -> "Brightness";
             case WOWTRIGGER -> "WowTrigger";
+            case EXPLODE -> "Explode";
         };
     }
 }
