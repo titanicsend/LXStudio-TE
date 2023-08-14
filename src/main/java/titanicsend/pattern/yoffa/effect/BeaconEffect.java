@@ -19,7 +19,7 @@ import java.util.*;
 public class BeaconEffect extends LXModelEffect<TEWholeModel> {
 
     public final CompoundParameter brightness =
-            new CompoundParameter("Brightness", 100, 0, 100);
+        new CompoundParameter("Brightness", 100, 0, 100);
 
     public BeaconEffect(LX lx) {
         super(lx);
@@ -27,28 +27,33 @@ public class BeaconEffect extends LXModelEffect<TEWholeModel> {
     }
 
     public void run(double deltaMs, double enabledAmount) {
+        // light all port side edges and panels in a highly visible color
         for (LXPoint point : model.getEdgePointsBySection(TEEdgeSection.PORT)) {
             int baseColor = lx.engine.palette.getSwatchColor(TEPattern.ColorType.PRIMARY.swatchIndex()).getColor();
 
             setColor(point, LXColor.hsba(
-                    LXColor.h(baseColor),
-                    LXColor.s(baseColor),
-                    brightness.getValue(),
-                    100
+                LXColor.h(baseColor),
+                LXColor.s(baseColor),
+                brightness.getValue(),
+                100
             ));
         }
 
-        for (TEPanelModel panel : model.getPanelsBySection(TEPanelSection.PORT)) {
-            for (LXPoint point : panel.getPoints()) {
-                int baseColor = LXColor.BLUE;
+        Set<LXPoint> points = new HashSet<>();
+        points.addAll(model.getPointsBySection(TEPanelSection.PORT_AFT));
+        points.addAll(model.getPointsBySection(TEPanelSection.PORT_AFT_SINGLE));
+        points.addAll(model.getPointsBySection(TEPanelSection.PORT_FORE));
+        points.addAll(model.getPointsBySection(TEPanelSection.PORT_FORE_SINGLE));
 
-                setColor(point, LXColor.hsba(
-                        LXColor.h(baseColor),
-                        LXColor.s(baseColor),
-                        brightness.getValue(),
-                        100
-                ));
-            }
+        for (LXPoint point : points) {
+            int baseColor = LXColor.BLUE;
+
+            setColor(point, LXColor.hsba(
+                LXColor.h(baseColor),
+                LXColor.s(baseColor),
+                brightness.getValue(),
+                100
+            ));
         }
     }
 

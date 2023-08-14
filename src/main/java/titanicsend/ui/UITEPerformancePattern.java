@@ -79,6 +79,9 @@ public class UITEPerformancePattern implements UIDeviceControls<TEPerformancePat
     // For design mode, append Brightness.  Useful for AutoVJ especially.
     params.add(device.getControls().getControl(TEControlTag.BRIGHTNESS).control);
 
+    // For the UI, replace unused controls with null
+    hideUnusedControls(params);
+
     int ki = 0;
     int col = 0;
     for (LXNormalizedParameter param : params) {
@@ -112,6 +115,19 @@ public class UITEPerformancePattern implements UIDeviceControls<TEPerformancePat
       ++ki;
     }
     uiDevice.setContentWidth((col + 1) * (4 * (UIKnob.WIDTH + 2) + 15) - 15 - 2);
+  }
+
+  private void hideUnusedControls(List<LXNormalizedParameter> params) {
+    for (int i=0; i < params.size(); i++) {
+      LXNormalizedParameter p = params.get(i);
+      if (p != null && isUnusedControl(p)) {
+        params.set(i, null);
+      }
+    }
+  }
+
+  private boolean isUnusedControl(LXNormalizedParameter p) {
+    return this.device.getControls().unusedParams.contains(p);
   }
 
   @Override

@@ -9,7 +9,8 @@ import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
-import heronarts.lx.pattern.LXPattern;
+import heronarts.lx.studio.TEApp;
+import titanicsend.dmx.pattern.DmxPattern;
 import titanicsend.lx.LXGradientUtils;
 import titanicsend.model.TELaserModel;
 import titanicsend.model.TEPanelModel;
@@ -26,7 +27,7 @@ import java.util.*;
 import static java.lang.Math.PI;
 import static java.lang.Math.sin;
 
-public abstract class TEPattern extends LXPattern {
+public abstract class TEPattern extends DmxPattern {
   private final TEPanelModel sua;
   private final TEPanelModel sdc;
 
@@ -142,7 +143,7 @@ public abstract class TEPattern extends LXPattern {
 	// time. If this call was truly necessary, it will need to be refactored to happen elsewhere
     // this.clearPixels();
 
-    this.modelTE = (TEWholeModel) lx.getModel();
+    this.modelTE = TEApp.wholeModel;
 
     this.sua = this.modelTE.panelsById.get("SUA");
     this.sdc = this.modelTE.panelsById.get("SDC");
