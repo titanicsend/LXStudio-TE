@@ -66,10 +66,6 @@ public abstract class FragmentShaderEffect extends PatternEffect {
             // otherwise, set things up to use alpha as brightness for best possible
             // blending.  First, calculate alpha, based on the brightest color component.
             alpha = (float) Math.max(colorRgb[0],Math.max(colorRgb[1],colorRgb[2]));
-
-            // if fully transparent, we're done
-            if (alpha <= 0f) return 0;
-
             // set color to its brightest possible level.
             colorRgb[0] /= alpha;
             colorRgb[1] /= alpha;
