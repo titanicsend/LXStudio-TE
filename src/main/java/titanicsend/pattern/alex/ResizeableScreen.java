@@ -2,17 +2,16 @@ package titanicsend.pattern.alex;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.studio.LXStudio;
-import heronarts.p4lx.ui.component.UIButton;
+import heronarts.glx.ui.component.UIButton;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
-import heronarts.p4lx.ui.UI2dContainer;
+import heronarts.glx.ui.UI2dContainer;
 
 import titanicsend.pattern.TEPattern;
 import titanicsend.util.SimpleScreen;

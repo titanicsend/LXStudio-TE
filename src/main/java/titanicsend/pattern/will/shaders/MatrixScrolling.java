@@ -29,6 +29,8 @@ public class MatrixScrolling extends FragmentShaderEffect {
 
     SplittableRandom random;
 
+    double[] origin;
+
     public MatrixScrolling(PatternTarget target) {
         super(target);
 
@@ -41,12 +43,17 @@ public class MatrixScrolling extends FragmentShaderEffect {
         ctl.setRange(TEControlTag.WOW1, 0.0, 0, 1);         // blast radius
         ctl.setRange(TEControlTag.WOW2, 0.0, 0, 1);         // beat reactivity
 
+        origin = new double[] {0.5, 0.5};
+
         // about twice as fast as the java.util.Random class
         random = new SplittableRandom();
     }
 
     @Override
     protected double[] getColorForPoint(double[] fragCoordinates, double[] resolution, double timeSeconds) {
+
+        // rotate
+        fragCoordinates = rotate2D(fragCoordinates, origin);
 
         // randomly displace coordinate on every measure start
         if (pattern.getWow1() > 0) {
@@ -127,7 +134,9 @@ public class MatrixScrolling extends FragmentShaderEffect {
         boolean oneOrZero = R > 0.5 && j[0] < 0.6 && j[1] < 0.8;
 
         //        color *= (oneOrZero ? 1.0 : 0.0);
-        color = multiplyArray(oneOrZero ? 1.0 : 0.0, color);
+        // slight bump to brightness b/c original calculation came out too dark
+        // after switch to view normalized coordinates
+        color = multiplyArray(oneOrZero ? 1.25 : 0.0, color);
 
         // apply beat reactivity, amount controlled by getWow2
         double oneOnBeatAndLessNearEnd = 1.0 - (pattern.getWow2() * this.pattern.getLX().engine.tempo.basis());

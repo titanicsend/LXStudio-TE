@@ -52,7 +52,10 @@ public class NeonBarsShader extends FragmentShaderEffect {
         double wibblespeed = speed.getValue();
         double glowclamp = 1.0;
         double extraglow = glow2.getValue();
-        double[] col = hsv2rgb(new double[]{timeSeconds * 0.025, 0.5, 0.5});
+
+        double[] col = new double[3];
+        colorToRGBArray(pattern.calcColor(),col);
+
         col = SSTLines(uv, col, nlines, grad, thickness, wibblesize, wibblespeed, glowintensity, glowclamp, extraglow, timeSeconds);
 
         // vignette

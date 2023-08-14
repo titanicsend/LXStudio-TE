@@ -11,15 +11,14 @@ import heronarts.lx.parameter.StringParameter;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
-import heronarts.p4lx.ui.UI2dContainer;
-import heronarts.p4lx.ui.component.UITextBox;
+import heronarts.glx.ui.UI2dContainer;
+import heronarts.glx.ui.component.UITextBox;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.pattern.TEPattern;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 /**
