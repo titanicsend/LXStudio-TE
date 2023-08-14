@@ -6,10 +6,7 @@
 // #iUniform float iWow1 = 0.0 in {0.0, 1.0}
 // #iUniform vec2 iTranslate = vec2(0.0, 0.0)
 
-#define TEXTURE_SIZE 512.0
-#define CHANNEL_COUNT 16.0
-#define pixPerBin (TEXTURE_SIZE / CHANNEL_COUNT)
-#define halfBin (pixPerBin / 2.0)
+uniform float avgVolume;
 
 const float PI = 3.14159265359;
 
@@ -49,12 +46,16 @@ vec2 rotate(vec2 st, float a) {
     return st + .5;
 }
 
+#define TEXTURE_SIZE 512.0
+#define CHANNEL_COUNT 16.0
+#define pixPerBin (TEXTURE_SIZE / CHANNEL_COUNT)
+#define halfBin (pixPerBin / 2.0)
+
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 st = fragCoord.xy/iResolution.xy;
 
-    st -= 0.5;
     st = rotate(st, iRotationAngle) / iScale;
-    st -= iTranslate;
+    st -= 0.5 / iScale;
 
     float index = mod(st.x * TEXTURE_SIZE * 2.0, TEXTURE_SIZE);
     float wave = (0.5 * (1.0+texelFetch(iChannel0, ivec2(index, 1), 0).x)) - 0.25;
@@ -64,6 +65,15 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     float norm_x = pow(wave, 1. / iWow2);
     float norm_y = pow(freq, 1. / iWow1);
+
+    //float norm_x = (wave / avgVolume);
+    //float norm_y = (freq / avgVolume);
+    //float norm_y = (wave / avgVolume);
+
+    if (iWowTrigger) {
+        norm_x *= norm_x;
+        norm_y *= norm_y;
+    }
 
     vec3 color = vec3(0.);
     float s1 = vertS(st, norm_x, norm_y);

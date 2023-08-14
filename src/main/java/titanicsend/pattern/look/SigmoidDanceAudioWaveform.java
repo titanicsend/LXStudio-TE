@@ -17,16 +17,18 @@ public class SigmoidDanceAudioWaveform extends TEPerformancePattern {
     public SigmoidDanceAudioWaveform(LX lx) {
         super(lx, TEShaderView.ALL_POINTS);
 
-        controls.setRange(TEControlTag.WOW1, 1.0, 0.0, 4.0);
+        controls.setValue(TEControlTag.YPOS, -0.04);
+        controls.setValue(TEControlTag.SIZE, 0.5);
+        controls.setRange(TEControlTag.WOW1, 4.0, 0.0, 8.0);
         controls.setRange(TEControlTag.WOW2, 1.0, 0.0, 4.0);
         addCommonControls();
 
-        effect = new NativeShaderPatternEffect("sigmoid_dance_audio.fs", new PatternTarget(this));
+        effect = new NativeShaderPatternEffect("sigmoid_dance_audio_waveform.fs", new PatternTarget(this));
     }
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
-        // run the shader
+        shader.setUniform("avgVolume", avgVolume.getValuef());
         effect.run(deltaMs);
     }
 
