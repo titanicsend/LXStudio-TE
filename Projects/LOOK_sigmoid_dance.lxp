@@ -1,6 +1,6 @@
 {
-  "version": "0.4.5-SNAPSHOT",
-  "timestamp": 1691276357225,
+  "version": "0.4.2.TE.6-SNAPSHOT",
+  "timestamp": 1692052369916,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -2873,25 +2873,25 @@
               "trigger": false,
               "gain": 0.0,
               "range": 48.0,
-              "attack": 5.999999865889549,
-              "release": 81.9263344228511,
-              "slope": 7.950000090524554,
-              "band-1": 0.0,
-              "band-2": 0.0,
-              "band-3": 0.0,
-              "band-4": 0.0,
-              "band-5": 0.0,
-              "band-6": 0.0,
-              "band-7": 0.0,
-              "band-8": 0.0,
-              "band-9": 0.0,
-              "band-10": 0.0,
-              "band-11": 0.0,
-              "band-12": 0.0,
-              "band-13": 0.0,
-              "band-14": 0.0,
-              "band-15": 0.0,
-              "band-16": 0.0
+              "attack": 16.94531247485429,
+              "release": 310.67559837849205,
+              "slope": 4.710351462956169,
+              "band-1": 0.3750403608138958,
+              "band-2": 0.4400613648853814,
+              "band-3": 0.4585059434622841,
+              "band-4": 0.48031567654155916,
+              "band-5": 0.46633459470661276,
+              "band-6": 0.45551050658921755,
+              "band-7": 0.5019563329021872,
+              "band-8": 0.5866333821601308,
+              "band-9": 0.5103540644710669,
+              "band-10": 0.5156512456766222,
+              "band-11": 0.4976489380739545,
+              "band-12": 0.4457093333898857,
+              "band-13": 0.3865254283432181,
+              "band-14": 0.35513782934238813,
+              "band-15": 0.3382336183831711,
+              "band-16": 0.09499781934259854
             },
             "children": {}
           }
@@ -2909,7 +2909,7 @@
           "label": "Mixer",
           "crossfader": 0.7952755905511811,
           "crossfaderBlendMode": 1,
-          "focusedChannel": 4,
+          "focusedChannel": 0,
           "focusedChannelAux": 4,
           "cueA": false,
           "cueB": false,
@@ -3091,14 +3091,18 @@
               "label": "TWO",
               "fader": 1.0,
               "arm": false,
-              "selected": false,
+              "selected": true,
               "enabled": true,
               "cue": false,
               "aux": false,
               "crossfadeGroup": 0,
               "blendMode": 0,
-              "midiMonitor": false,
-              "midiChannel": 16,
+              "midiFilter/enabled": false,
+              "midiFilter/channel": 16,
+              "midiFilter/minNote": 0,
+              "midiFilter/noteRange": 128,
+              "midiFilter/minVelocity": 1,
+              "midiFilter/velocityRange": 127,
               "viewEnabled": false,
               "viewSelector": "Edge",
               "viewNormalization": 0,
@@ -3117,8 +3121,89 @@
             "children": {},
             "effects": [],
             "clips": [],
-            "patternIndex": -1,
-            "patterns": []
+            "patternIndex": 0,
+            "patterns": [
+              {
+                "id": 66196,
+                "class": "titanicsend.pattern.look.SigmoidDanceAudioLevels",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true,
+                  "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "SigmoidDanceAudioLevels",
+                  "enabled": true,
+                  "recall": false,
+                  "compositeMode": 0,
+                  "compositeLevel": 1.0,
+                  "te_color/brightness": 100.0,
+                  "te_color/saturation": 100.0,
+                  "te_color/hue": 0.0,
+                  "te_color/solidSource": 1,
+                  "te_color/gradient": 0,
+                  "te_color/blendMode": 0,
+                  "te_color/offset": 0.0,
+                  "te_color/color2offset": 0.5,
+                  "te_speed": 0.5,
+                  "te_xpos": 0.0,
+                  "te_ypos": 0.0,
+                  "te_size": 0.36234375148778786,
+                  "te_quantity": 4.0,
+                  "te_spin": 0.0,
+                  "te_brightness": 1.0,
+                  "te_wow1": 1.5,
+                  "te_wow2": 0.2,
+                  "te_wowtrigger": false,
+                  "te_angle": 0.0,
+                  "panic": false,
+                  "viewPerPattern": 0,
+                  "swatchPerChannel": 10
+                },
+                "children": {
+                  "modulation": {
+                    "id": 66197,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1,
+                "remoteControls": [
+                  "/te_color/offset",
+                  "/te_color/gradient",
+                  "/swatchPerChannel",
+                  "/te_speed",
+                  "/te_xpos",
+                  "/te_ypos",
+                  "/te_quantity",
+                  "/te_size",
+                  "/te_angle",
+                  "/te_spin",
+                  "/panic",
+                  "/viewPerPattern",
+                  "/te_wow1",
+                  "/te_wow2",
+                  "/te_wowtrigger",
+                  null
+                ],
+                "effects": []
+              }
+            ]
           },
           {
             "id": 54327,
@@ -3142,8 +3227,12 @@
               "aux": false,
               "crossfadeGroup": 0,
               "blendMode": 0,
-              "midiMonitor": false,
-              "midiChannel": 16,
+              "midiFilter/enabled": false,
+              "midiFilter/channel": 16,
+              "midiFilter/minNote": 0,
+              "midiFilter/noteRange": 128,
+              "midiFilter/minVelocity": 1,
+              "midiFilter/velocityRange": 127,
               "viewEnabled": false,
               "viewSelector": "Edge",
               "viewNormalization": 0,
@@ -3156,17 +3245,17 @@
               "transitionEnabled": true,
               "transitionTimeSecs": 0.05,
               "transitionBlendMode": 4,
-              "focusedPattern": 1,
+              "focusedPattern": 0,
               "triggerPatternCycle": false
             },
             "children": {},
             "effects": [],
             "clips": [],
-            "patternIndex": 1,
+            "patternIndex": 0,
             "patterns": [
               {
-                "id": 62440,
-                "class": "titanicsend.pattern.look.SigmoidDance",
+                "id": 66218,
+                "class": "titanicsend.pattern.look.SigmoidDanceAudioWaveform",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
@@ -3177,7 +3266,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "SigmoidDance",
+                  "label": "SigmoidDanceAudioWaveform",
                   "enabled": true,
                   "recall": false,
                   "compositeMode": 0,
@@ -3193,90 +3282,11 @@
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
                   "te_ypos": 0.0,
-                  "te_size": 1.0,
+                  "te_size": 0.01,
                   "te_quantity": 1.0,
                   "te_spin": 0.0,
                   "te_brightness": 1.0,
-                  "te_wow1": 0.0,
-                  "te_wow2": 0.0,
-                  "te_wowtrigger": false,
-                  "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 5,
-                  "swatchPerChannel": 0
-                },
-                "children": {
-                  "modulation": {
-                    "id": 62441,
-                    "class": "heronarts.lx.modulation.LXModulationEngine",
-                    "internal": {
-                      "modulationColor": 0,
-                      "modulationControlsExpanded": true,
-                      "modulationsExpanded": true
-                    },
-                    "parameters": {
-                      "label": "Modulation"
-                    },
-                    "children": {},
-                    "modulators": [],
-                    "modulations": [],
-                    "triggers": []
-                  }
-                },
-                "deviceVersion": -1,
-                "remoteControls": [
-                  "/te_color/offset",
-                  "/te_color/gradient",
-                  "/swatchPerChannel",
-                  "/te_speed",
-                  "/te_xpos",
-                  "/te_ypos",
-                  "/te_quantity",
-                  "/te_size",
-                  "/te_angle",
-                  "/te_spin",
-                  "/panic",
-                  "/viewPerPattern",
-                  "/te_wow1",
-                  "/te_wow2",
-                  "/te_wowtrigger",
-                  null
-                ]
-              },
-              {
-                "id": 64614,
-                "class": "titanicsend.pattern.look.SigmoidDanceAudioLevels",
-                "internal": {
-                  "modulationColor": 0,
-                  "modulationControlsExpanded": true,
-                  "modulationsExpanded": true,
-                  "expanded": true,
-                  "expandedCue": true,
-                  "expandedAux": true,
-                  "modulationExpanded": false
-                },
-                "parameters": {
-                  "label": "SigmoidDanceAveraged",
-                  "enabled": true,
-                  "recall": false,
-                  "compositeMode": 0,
-                  "compositeLevel": 1.0,
-                  "te_color/brightness": 100.0,
-                  "te_color/saturation": 100.0,
-                  "te_color/hue": 0.0,
-                  "te_color/solidSource": 1,
-                  "te_color/gradient": 0,
-                  "te_color/blendMode": 0,
-                  "te_color/offset": 0.0,
-                  "te_color/color2offset": 0.5,
-                  "te_speed": 0.5,
-                  "te_xpos": 0.0,
-                  "te_ypos": 0.0,
-                  "te_size": 1.0,
-                  "te_quantity": 1.7199999615550041,
-                  "te_spin": -0.07839999649524687,
-                  "te_brightness": 1.0,
-                  "te_wow1": 0.0,
+                  "te_wow1": 4.224843735806644,
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
@@ -3286,7 +3296,7 @@
                 },
                 "children": {
                   "modulation": {
-                    "id": 64615,
+                    "id": 66219,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,
@@ -3320,7 +3330,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               }
             ]
           },
@@ -3346,8 +3357,12 @@
               "aux": false,
               "crossfadeGroup": 0,
               "blendMode": 0,
-              "midiMonitor": false,
-              "midiChannel": 16,
+              "midiFilter/enabled": false,
+              "midiFilter/channel": 16,
+              "midiFilter/minNote": 0,
+              "midiFilter/noteRange": 128,
+              "midiFilter/minVelocity": 1,
+              "midiFilter/velocityRange": 127,
               "viewEnabled": false,
               "viewSelector": "",
               "viewNormalization": 0,
@@ -3415,7 +3430,8 @@
                     "triggers": []
                   }
                 },
-                "deviceVersion": -1
+                "deviceVersion": -1,
+                "effects": []
               },
               {
                 "id": 49336,
@@ -3464,7 +3480,8 @@
                     "triggers": []
                   }
                 },
-                "deviceVersion": -1
+                "deviceVersion": -1,
+                "effects": []
               },
               {
                 "id": 49347,
@@ -3518,7 +3535,8 @@
                     "triggers": []
                   }
                 },
-                "deviceVersion": -1
+                "deviceVersion": -1,
+                "effects": []
               },
               {
                 "id": 49361,
@@ -3597,7 +3615,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 50373,
@@ -3637,7 +3656,8 @@
                     "triggers": []
                   }
                 },
-                "deviceVersion": -1
+                "deviceVersion": -1,
+                "effects": []
               }
             ]
           },
@@ -3663,8 +3683,12 @@
               "aux": false,
               "crossfadeGroup": 0,
               "blendMode": 0,
-              "midiMonitor": false,
-              "midiChannel": 16,
+              "midiFilter/enabled": false,
+              "midiFilter/channel": 16,
+              "midiFilter/minNote": 0,
+              "midiFilter/noteRange": 128,
+              "midiFilter/minVelocity": 1,
+              "midiFilter/velocityRange": 127,
               "viewEnabled": true,
               "viewSelector": "outline,dj",
               "viewNormalization": 0,
@@ -3762,7 +3786,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               }
             ]
           },
@@ -3782,14 +3807,18 @@
               "label": "SIX",
               "fader": 1.0,
               "arm": false,
-              "selected": true,
+              "selected": false,
               "enabled": false,
               "cue": false,
               "aux": false,
               "crossfadeGroup": 0,
               "blendMode": 0,
-              "midiMonitor": false,
-              "midiChannel": 16,
+              "midiFilter/enabled": false,
+              "midiFilter/channel": 16,
+              "midiFilter/minNote": 0,
+              "midiFilter/noteRange": 128,
+              "midiFilter/minVelocity": 1,
+              "midiFilter/velocityRange": 127,
               "viewEnabled": false,
               "viewSelector": "Edge",
               "viewNormalization": 0,
@@ -3833,8 +3862,12 @@
               "aux": false,
               "crossfadeGroup": 0,
               "blendMode": 0,
-              "midiMonitor": false,
-              "midiChannel": 16,
+              "midiFilter/enabled": false,
+              "midiFilter/channel": 16,
+              "midiFilter/minNote": 0,
+              "midiFilter/noteRange": 128,
+              "midiFilter/minVelocity": 1,
+              "midiFilter/velocityRange": 127,
               "viewEnabled": false,
               "viewSelector": "Edge",
               "viewNormalization": 0,
@@ -3932,7 +3965,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55593,
@@ -4011,7 +4045,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55604,
@@ -4090,7 +4125,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55615,
@@ -4169,7 +4205,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55626,
@@ -4248,7 +4285,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55637,
@@ -4327,7 +4365,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55648,
@@ -4406,7 +4445,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55659,
@@ -4485,7 +4525,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55670,
@@ -4564,7 +4605,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55681,
@@ -4606,11 +4648,11 @@
                   "panic": false,
                   "viewPerPattern": 0,
                   "swatchPerChannel": 0,
+                  "Double Layer": false,
                   "Width": 0.5,
                   "Double Speed": false,
-                  "Energy": 0.0,
                   "Glow": 0.1,
-                  "Double Layer": false
+                  "Energy": 0.0
                 },
                 "children": {
                   "modulation": {
@@ -4648,7 +4690,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55692,
@@ -4729,7 +4772,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55703,
@@ -4808,7 +4852,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55714,
@@ -4887,7 +4932,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55725,
@@ -4966,7 +5012,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55736,
@@ -5045,7 +5092,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55747,
@@ -5124,7 +5172,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55758,
@@ -5203,7 +5252,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55769,
@@ -5284,7 +5334,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55781,
@@ -5363,7 +5414,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55793,
@@ -5442,7 +5494,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55804,
@@ -5524,7 +5577,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55815,
@@ -5603,7 +5657,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55826,
@@ -5684,7 +5739,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55837,
@@ -5765,7 +5821,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55848,
@@ -5844,7 +5901,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55859,
@@ -5923,7 +5981,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55870,
@@ -6002,7 +6061,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55881,
@@ -6081,7 +6141,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55892,
@@ -6160,7 +6221,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55903,
@@ -6240,7 +6302,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55914,
@@ -6319,7 +6382,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55925,
@@ -6398,7 +6462,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55936,
@@ -6477,7 +6542,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55947,
@@ -6556,7 +6622,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55958,
@@ -6598,11 +6665,11 @@
                   "panic": false,
                   "viewPerPattern": 2,
                   "swatchPerChannel": 0,
-                  "Glow2": 9.0,
-                  "Glow": 1.5,
-                  "Energy": 0.0,
-                  "Thickness": 0.3,
                   "Wibble Size": 0.15,
+                  "Energy": 0.0,
+                  "Glow": 1.5,
+                  "Glow2": 9.0,
+                  "Thickness": 0.3,
                   "Speed": 0.0
                 },
                 "children": {
@@ -6641,7 +6708,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55969,
@@ -6720,7 +6788,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55980,
@@ -6799,7 +6868,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 55991,
@@ -6878,7 +6948,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56002,
@@ -6957,7 +7028,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56013,
@@ -7036,7 +7108,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56024,
@@ -7115,7 +7188,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56035,
@@ -7194,7 +7268,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56046,
@@ -7273,7 +7348,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56057,
@@ -7352,7 +7428,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56068,
@@ -7431,7 +7508,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56079,
@@ -7473,8 +7551,8 @@
                   "panic": false,
                   "viewPerPattern": 6,
                   "swatchPerChannel": 0,
-                  "noise2": 2.0,
-                  "noise": 2.0
+                  "noise": 2.0,
+                  "noise2": 2.0
                 },
                 "children": {
                   "modulation": {
@@ -7512,7 +7590,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56090,
@@ -7591,7 +7670,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56101,
@@ -7670,7 +7750,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56112,
@@ -7749,7 +7830,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56123,
@@ -7828,7 +7910,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56134,
@@ -7912,7 +7995,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               }
             ]
           },
@@ -7938,8 +8022,12 @@
               "aux": false,
               "crossfadeGroup": 0,
               "blendMode": 0,
-              "midiMonitor": false,
-              "midiChannel": 16,
+              "midiFilter/enabled": false,
+              "midiFilter/channel": 16,
+              "midiFilter/minNote": 0,
+              "midiFilter/noteRange": 128,
+              "midiFilter/minVelocity": 1,
+              "midiFilter/velocityRange": 127,
               "viewEnabled": false,
               "viewSelector": "Edge",
               "viewNormalization": 0,
@@ -8037,7 +8125,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56174,
@@ -8116,7 +8205,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56185,
@@ -8195,7 +8285,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56196,
@@ -8274,7 +8365,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56207,
@@ -8353,7 +8445,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56218,
@@ -8432,7 +8525,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56229,
@@ -8511,7 +8605,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56240,
@@ -8590,7 +8685,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56251,
@@ -8669,7 +8765,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56262,
@@ -8711,11 +8808,11 @@
                   "panic": false,
                   "viewPerPattern": 0,
                   "swatchPerChannel": 0,
-                  "Double Speed": false,
                   "Double Layer": false,
-                  "Energy": 0.0,
+                  "Width": 0.5,
+                  "Double Speed": false,
                   "Glow": 0.1,
-                  "Width": 0.5
+                  "Energy": 0.0
                 },
                 "children": {
                   "modulation": {
@@ -8753,7 +8850,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56273,
@@ -8834,7 +8932,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56284,
@@ -8913,7 +9012,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56295,
@@ -8992,7 +9092,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56306,
@@ -9071,7 +9172,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56317,
@@ -9150,7 +9252,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56328,
@@ -9229,7 +9332,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56339,
@@ -9308,7 +9412,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56350,
@@ -9389,7 +9494,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56362,
@@ -9468,7 +9574,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56374,
@@ -9547,7 +9654,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56385,
@@ -9629,7 +9737,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56396,
@@ -9708,7 +9817,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56407,
@@ -9789,7 +9899,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56418,
@@ -9870,7 +9981,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56429,
@@ -9949,7 +10061,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56440,
@@ -10028,7 +10141,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56451,
@@ -10107,7 +10221,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56462,
@@ -10186,7 +10301,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56473,
@@ -10265,7 +10381,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56484,
@@ -10345,7 +10462,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56495,
@@ -10424,7 +10542,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56506,
@@ -10503,7 +10622,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56517,
@@ -10582,7 +10702,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56528,
@@ -10661,7 +10782,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56539,
@@ -10703,12 +10825,12 @@
                   "panic": false,
                   "viewPerPattern": 2,
                   "swatchPerChannel": 0,
-                  "Glow": 1.5,
                   "Energy": 0.0,
-                  "Thickness": 0.3,
-                  "Speed": 0.0,
+                  "Wibble Size": 0.15,
                   "Glow2": 9.0,
-                  "Wibble Size": 0.15
+                  "Speed": 0.0,
+                  "Glow": 1.5,
+                  "Thickness": 0.3
                 },
                 "children": {
                   "modulation": {
@@ -10746,7 +10868,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56550,
@@ -10825,7 +10948,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56561,
@@ -10904,7 +11028,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56572,
@@ -10983,7 +11108,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56583,
@@ -11062,7 +11188,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56594,
@@ -11141,7 +11268,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56605,
@@ -11220,7 +11348,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56616,
@@ -11299,7 +11428,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56627,
@@ -11378,7 +11508,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56638,
@@ -11457,7 +11588,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56649,
@@ -11536,7 +11668,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56660,
@@ -11617,7 +11750,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56671,
@@ -11696,7 +11830,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56682,
@@ -11775,7 +11910,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56693,
@@ -11854,7 +11990,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56704,
@@ -11933,7 +12070,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               },
               {
                 "id": 56715,
@@ -11975,11 +12113,11 @@
                   "panic": false,
                   "viewPerPattern": 6,
                   "swatchPerChannel": 0,
-                  "hideBlocks": false,
-                  "glow": 0.5,
-                  "speed": 0.7,
                   "ySpread": 1.6,
-                  "numBlocks": 30.0
+                  "speed": 0.7,
+                  "numBlocks": 30.0,
+                  "hideBlocks": false,
+                  "glow": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -12017,7 +12155,8 @@
                   "/te_wow2",
                   "/te_wowtrigger",
                   null
-                ]
+                ],
+                "effects": []
               }
             ]
           }
@@ -12215,7 +12354,7 @@
         "children": {}
       },
       "focus": {
-        "id": 35,
+        "id": 37,
         "class": "titanicsend.osc.CrutchOSC",
         "internal": {
           "modulationColor": 0,
@@ -12254,9 +12393,9 @@
         "cue": [
           {
             "active": false,
-            "radius": 1.5706921236590596E7,
-            "theta": 0.0,
-            "phi": -0.06824546679854393,
+            "radius": 1.7E7,
+            "theta": 272.9558474123478,
+            "phi": -9.95337734092027,
             "x": 2307136.654296875,
             "y": 5348521.701171875,
             "z": -1522245.02734375

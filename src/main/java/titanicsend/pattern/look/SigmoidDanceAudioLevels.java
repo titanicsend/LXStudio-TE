@@ -18,25 +18,18 @@ public class SigmoidDanceAudioLevels extends TEPerformancePattern {
         super(lx, TEShaderView.ALL_POINTS);
 
         controls.setRange(TEControlTag.QUANTITY, 4.0, 0.0, 4.0);
-        controls.setRange(TEControlTag.WOW1, 0.5, 0.0, 1.0);
-        controls.setRange(TEControlTag.SIZE, 0.6, 0.0, 2.0);
+        controls.setRange(TEControlTag.WOW1, 1.5, 0.0, 2.0);
+        controls.setRange(TEControlTag.WOW2, 0.2, 0.0, 2.0);
+        controls.setRange(TEControlTag.SIZE, 0.55, 0.0, 2.0);
 
         addCommonControls();
 
-        effect = new NativeShaderPatternEffect("sigmoid_dance.fs", new PatternTarget(this));
+        effect = new NativeShaderPatternEffect("sigmoid_dance_audio_levels.fs", new PatternTarget(this));
     }
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
-        double bassLevel = getBassLevel();
-        double trebleLevel = getTrebleLevel();
-//        float volumeRatio = getVolumeRatiof();
-//        double bassRatio = getBassRatio();
-//        double trebleRatio = getTrebleRatio();
-
-        shader.setUniform("iScaledLo", Math.abs((float) getWow1() * (float) bassLevel + 0.05f));
-        shader.setUniform("iScaledHi", Math.abs((float) getWow1() * (float) trebleLevel + 0.05f));
-
+        shader.setUniform("avgVolume", avgVolume.getValuef());
         effect.run(deltaMs);
     }
 

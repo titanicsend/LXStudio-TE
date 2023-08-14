@@ -6,6 +6,7 @@
 // #iUniform float iWow1 = 0.0 in {0.0, 1.0}
 // #iUniform vec2 iTranslate = vec2(0.0, 0.0)
 
+uniform float avgVolume;
 uniform float iScaledLo;
 uniform float iScaledHi;
 
@@ -42,17 +43,38 @@ vec2 rotate(vec2 st, float a) {
     return st + .5;
 }
 
+#define TEXTURE_SIZE 512.0
+#define CHANNEL_COUNT 16.0
+#define pixPerBin (TEXTURE_SIZE / CHANNEL_COUNT)
+#define halfBin (pixPerBin / 2.0)
+
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 st = fragCoord.xy/iResolution.xy;
 
-    st -= 0.5;
     st = rotate(st, iRotationAngle) / iScale;
-    st -= iTranslate;
+    st -= 0.5 / iScale;
 
     vec3 color = vec3(0.);
+    bool isColor2Black = distance(iColor2RGB, vec3(0.)) < 0.1;
 
-    float norm_x = iScaledLo;
-    float norm_y = iScaledHi;
+    float norm_y = 0.05 + bassLevel * iWow1;
+    float norm_x = 0.05 + trebleLevel * iWow1;
+    //float norm_x = iScaledLo;
+    //float norm_y = iScaledHi;
+
+    float index = mod(st.x * TEXTURE_SIZE * 2.0, TEXTURE_SIZE);
+    float wave = (0.5 * (1.0+texelFetch(iChannel0, ivec2(index, 1), 0).x)) - 0.25;
+    float p = floor(index / pixPerBin);
+    float tx = halfBin+pixPerBin * p;
+    float freq  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
+
+    norm_x += iWow2 * wave;
+    norm_y += iWow2 * freq;
+
+    if (iWowTrigger) {
+        norm_x *= norm_x;
+        norm_y *+ norm_y;
+    }
 
     float horizOffset = 0.6;
     float vertOffset = 0.3;
@@ -60,24 +82,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     if (iQuantity <= 1.0) {
         float s1 = vertS(st, norm_x, norm_y);
         color += s1 * iColorRGB;
-    } else if (iQuantity <= 2.0) {
-        vec2 st1 = abs(st + vec2(horizOffset, 0.0));
-        float a0 = vertS(st1, norm_x, norm_y);
-        float a1 = vertS(st1, norm_x*0.8, norm_y*0.8);
-        float a2 = vertS(st1, norm_x*0.6, norm_y*0.6);
-
-        //color += (a0 + a1 + a2) * iColorRGB;
-        color += min(a0, min(a1, a2)) * iColorRGB;
-        //color += max(a0, max(a1, a2)) * iColor2RGB;
-
-        vec2 st2 = abs(st + vec2(-horizOffset, 0.0));
-        float a3 = vertS(st2, norm_x, norm_y);
-        float a4 = vertS(st2, norm_x*0.8, norm_y*0.8);
-        float a5 = vertS(st2, norm_x*0.6, norm_y*0.6);
-
-        //color += (a3 + a4 + a5) * iColorRGB;
-        color += min(a3, min(a4, a5)) * iColorRGB;
-        //color += max(a3, max(a4, a5)) * iColor2RGB;
     } else {
         vec2 st01 = abs(st + vec2(horizOffset, vertOffset));
         vec2 st02 = abs(st + vec2(horizOffset, -vertOffset));
@@ -87,14 +91,17 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         float a1 = vertS(st02, norm_x, norm_y);
         float a2 = vertS(st03, norm_x, norm_y);
         float a3 = vertS(st04, norm_x, norm_y);
+        //color += max(a0, a1) * iColorRGB;
+        //color += max(a2, a3) * iColorRGB;
 
-        //color += (a0 + a1) * iColorRGB;
-        color += max(a0, a1) * iColorRGB;
-        //color += max(a0, a1) * iColor2RGB;
-
-        //color += (a2 + a3) * iColorRGB;
-        color += max(a2, a3) * iColorRGB;
-        //color += max(a2, a3) * iColor2RGB;
+        float pct = a0 + a1 + a2 + a3;
+        if (pct > 0.) {
+            if (pct > 1. && !isColor2Black) {
+                color += iColor2RGB;
+            } else {
+                color += iColorRGB;
+            }
+        }
     }
     fragColor = vec4(color,1.0);
 }
