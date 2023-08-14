@@ -1,6 +1,5 @@
 package titanicsend.pattern.yoffa.effect;
 
-import heronarts.lx.LX;
 import heronarts.lx.Tempo;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
@@ -17,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class NativeShaderPatternEffect extends PatternEffect {
 
-    private SplittableRandom random;
+    private final SplittableRandom random;
     protected OffscreenShaderRenderer renderer;
     private FragmentShader fragmentShader;
     private final List<LXParameter> parameters;
@@ -81,31 +80,38 @@ public class NativeShaderPatternEffect extends PatternEffect {
      * @param ySize y resolution of image
      */
     public void paint(List<LXPoint> points, ByteBuffer image, int xSize, int ySize) {
+        double k = 0;
         int xMax = xSize - 1;
         int yMax = ySize - 1;
         int[] colors = pattern.getColors();
+        boolean exploding = pattern.getExplode() > 0;
+
+        // calculate per-frame "explosion" parameters
+        if (exploding) {
+            double measureProgress = 1.0 - this.pattern.getLX().engine.tempo.getBasis(Tempo.Division.WHOLE); // 1 when we start measure, 0 when we finish
+            measureProgress *= measureProgress * measureProgress;
+            k = 0.00035 + pattern.getExplode() * measureProgress;
+        }
+
         for (LXPoint point : points) {
-            float zn = point.zn;
+            float zn = (1f - point.zn);
             float yn = point.yn;
-            if (pattern.getExplode() > 0) {
-                double measureProgress = 1.0 - this.pattern.getLX().engine.tempo.getBasis(Tempo.Division.WHOLE); // 1 when we start measure, 0 when we finish
-                measureProgress *= measureProgress * measureProgress;
 
-                double k = 0.0005 + pattern.getExplode();
-
-                zn += measureProgress * random.nextDouble(k);
+            if (exploding) {
+                // displace each pixel randomly in chessboard directions.
+                // this is slightly less random than calling nextDouble()) per coordinate
+                // but it saves us an expensive per-pixel calculation and given the
+                // number of pixels we're sampling, looks pretty much the same.
+                float displacement = (float) (k * (-0.5 + random.nextDouble()));
+                zn += displacement;
                 zn = Math.max(0, Math.min(1, zn));
-                yn += measureProgress * random.nextDouble(k);
+                yn += displacement;
                 yn = Math.max(0, Math.min(1, yn));
             }
 
-            // the 'z' dimension of TE corresponds with 'x' dimension of the image based on the side that
-            // we're painting.
-            // TODO - we need to fix the z vs x thing so images look good on the ends of the car.  I have
-            // TODO - a plan!
-
             // use normalized point coordinates to calculate x/y coordinates and then the
-            // proper index in the image buffer.
+            // proper index in the image buffer.  the 'z' dimension of TE corresponds
+            // with 'x' dimension of the image based on the side that we're painting.
             int xi = Math.round(zn * xMax);
             int yi = Math.round(yn * yMax);
 
@@ -122,7 +128,7 @@ public class NativeShaderPatternEffect extends PatternEffect {
         }
 
         ByteBuffer image = renderer.getFrame(controlData);
-        paint(getPoints(), image, renderer.getXResolution(), renderer.getYResolution());
+        paint(getPoints(), image, OffscreenShaderRenderer.getXResolution(), OffscreenShaderRenderer.getYResolution());
     }
 
     // Saves me from having to propagate all those setUniform(name,etc.) methods up the
