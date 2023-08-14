@@ -706,11 +706,12 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 getControl(TEControlTag.SPIN).control,
                 this.panic,
                 getViewRemoteControl(),
-                getControl(TEControlTag.EXPLODE).control,
+
                 getControl(TEControlTag.WOW1).control,
                 getControl(TEControlTag.WOW2).control,
                 getControl(TEControlTag.WOWTRIGGER).control,
-                null   // To be SHIFT, not implemented yet
+                getControl(TEControlTag.EXPLODE).control
+                // To be SHIFT, not implemented yet
             });
         }
 
@@ -773,10 +774,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 .setDescription("Brightness");
             setControl(TEControlTag.BRIGHTNESS, p);
 
-            p = new CompoundParameter("Explode", 0, 0, 1.0)
-                .setDescription("Randomize the pixels to a certain radius on beat");
-            setControl(TEControlTag.EXPLODE, p);
-
             p = new CompoundParameter(TEControlTag.WOW1.getLabel(), 0, 0, 1.0)
                 .setDescription("Wow 1");
             setControl(TEControlTag.WOW1, p);
@@ -789,6 +786,10 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 .setMode(BooleanParameter.Mode.MOMENTARY)
                 .setDescription("Trigger WoW effects");
             setControl(TEControlTag.WOWTRIGGER, p);
+
+            p = new CompoundParameter("Explode", 0, 0, 1.0)
+                .setDescription("Randomize the pixels to a certain radius on beat");
+            setControl(TEControlTag.EXPLODE, p);
 
             // in degrees for display 'cause more people think about it that way
             p = (LXListenableNormalizedParameter)new TECommonAngleParameter(TEControlTag.ANGLE.getLabel(), 0, -Math.PI, Math.PI)
