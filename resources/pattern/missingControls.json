@@ -284,8 +284,7 @@
     ],
     "uses_palette": true,
     "missing_control_tags": [
-      "QUANTITY",
-      "WOWTRIGGER"
+      "QUANTITY"
     ]
   },
   {
