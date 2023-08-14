@@ -2,8 +2,11 @@ package titanicsend.pattern;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import heronarts.lx.blend.LXBlend;
+import heronarts.lx.blend.NormalBlend;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.midi.*;
+import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXParameterListener;
@@ -266,6 +269,10 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
 
     private final Mapping mapping = new Mapping();
 
+    // Channel properties to save while running and restore after
+    private LXBlend priorBlend = null;
+    private boolean priorMidiFilter = false;
+
     public TEMidiFighter64DriverPattern(LX lx) {
         super(lx);
 
@@ -397,6 +404,21 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
 
     @Override
     public void onActive() {
+        this.priorBlend = null;
+        LXChannel channel = this.getChannel();
+        if (channel != null) {
+          // Set channel blend to Normal
+          for (LXBlend blend : channel.blendMode.getObjects()) {
+            if (blend instanceof NormalBlend) {
+              this.priorBlend = channel.blendMode.getObject();
+              channel.blendMode.setValue(blend);
+              break;
+            }
+          }
+          // Turn on MIDI input to channel
+          this.priorMidiFilter = channel.midiFilter.enabled.getValueb();
+          channel.midiFilter.enabled.setValue(true);
+        }
         connect();
     }
 
@@ -444,6 +466,13 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     @Override
     public void onInactive() {
         disconnect();
+        LXChannel channel = getChannel();
+        if (this.priorBlend != null & channel != null) {
+            // Restore channel blend selection
+            channel.blendMode.setValue(this.priorBlend);
+            // Turn off channel midi input
+            channel.midiFilter.enabled.setValue(this.priorMidiFilter);
+        }
     }
 
     private void disconnect() {
