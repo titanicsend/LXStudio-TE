@@ -334,8 +334,7 @@
     ],
     "uses_palette": true,
     "missing_control_tags": [
-      "QUANTITY",
-      "WOWTRIGGER"
+      "QUANTITY"
     ]
   },
   {
@@ -499,7 +498,6 @@
     ],
     "uses_palette": true,
     "missing_control_tags": [
-      "WOW1",
       "WOWTRIGGER"
     ]
   },

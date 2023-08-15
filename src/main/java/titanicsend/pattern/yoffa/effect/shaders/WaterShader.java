@@ -51,10 +51,9 @@ public class WaterShader extends FragmentShaderEffect {
 
         double colourValue = 0.5+pow(abs(c), 8.0);
 
-        double[] colour = new double[4];
+        double[] colour = new double[3];
         colorToRGBArray(calcColor(), colour);
         colour = clamp(multiplyArray(colourValue,colour),0.0,1.0);
-        colour[3] = max(colour[0],max(colour[1],colour[2]));
 
         return colour;
     }

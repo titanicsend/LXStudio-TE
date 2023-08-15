@@ -8,9 +8,10 @@
 #define BLOOM_IT 128
 #define ANG 0.0
 
-float REPEAT = (2.0 * iQuantity);
+float REPEAT;
 float seed;
 vec3 triColor;
+float radius;
 
 float rand()
 {
@@ -110,21 +111,24 @@ vec3 getBloom(vec3 pos, vec3 dir)
     vec3 res = vec3(0);
     vec3 end = pos + dir * BLOOM_DEPTH;
 
-    for (int i = 0; i < BLOOM_IT; i++)
+    for (int i = 1; i <= BLOOM_IT; i++)
     {
-        float fac = float(i)  / float(BLOOM_IT);
+        float fac = (float(i) + rand())  / float(BLOOM_IT);
         vec3 p = mix(pos, end, fac);
 
-        // adjust distance to control triangle overdrive
-        float d = 0.2 + 2.0 * getDist(p);
+        // adjust distance to control triangle glow curve
+        float d = getDist(p);  d = 0.05 + d * d;
         res += getCol(p.z) / d / float(BLOOM_IT);
     }
 
-    return res;
+    return res * 0.25 * iWow1;
 }
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
+    radius = 0.01 * iScale;
+    REPEAT = 2.0 * iQuantity;
+
     mat3 viewMat = buildRotationMatrix3D(vec3(0.,0.,1.),-iRotationAngle);
 
     seed = iTime + iResolution.y * fragCoord.x / iResolution.x + fragCoord.y / iResolution.y;
@@ -135,7 +139,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec3 col = getBloom(pos, dir);
 
     if (res <= MAX_DIST) {
-        col = (1.0 - res / MAX_DIST) * triColor;
+        col = triColor * max(1.0,iWow1);
     }
 
     fragColor = vec4(col, 1.);
