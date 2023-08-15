@@ -41,8 +41,8 @@ public abstract class FragmentShaderEffect extends PatternEffect {
         translationFromControls[1] = pattern.getYPos();
 
         rotationMatrix = new double[][]{
-                {cos(angle), -sin(angle)},
-                {sin(angle), cos(angle)}
+            {cos(angle), -sin(angle)},
+            {sin(angle), cos(angle)}
         };
 
         getPoints().parallelStream().forEach(p -> setColor(p, getColorForPoint(p, durationSec)));
@@ -66,6 +66,10 @@ public abstract class FragmentShaderEffect extends PatternEffect {
             // otherwise, set things up to use alpha as brightness for best possible
             // blending.  First, calculate alpha, based on the brightest color component.
             alpha = (float) Math.max(colorRgb[0],Math.max(colorRgb[1],colorRgb[2]));
+
+            // if fully transparent, we're done
+            if (alpha <= 0f) return 0;
+
             // set color to its brightest possible level.
             colorRgb[0] /= alpha;
             colorRgb[1] /= alpha;
@@ -73,10 +77,10 @@ public abstract class FragmentShaderEffect extends PatternEffect {
         }
 
         return new Color(
-                (float) colorRgb[0],
-                (float) colorRgb[1],
-                (float) colorRgb[2],
-                alpha).getRGB();
+            (float) colorRgb[0],
+            (float) colorRgb[1],
+            (float) colorRgb[2],
+            alpha).getRGB();
     }
 
     // Rotate point in 2D around specified origin, using the
