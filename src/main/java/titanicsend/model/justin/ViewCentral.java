@@ -36,6 +36,8 @@ import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.parameter.ObjectParameter;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.TEApp;
+import titanicsend.model.TEWholeModel;
+import titanicsend.pattern.jon.ModelBender;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.util.TE;
 
@@ -127,16 +129,24 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
       return;
     }
 
+    // adjust model geometry for easy texture mapping in views
+    ModelBender mb = new ModelBender();
+    mb.adjustEndGeometry((TEWholeModel) this.lx.getModel());
+
     // Create LXViews once
     for (ViewDefinition v : this.views) {
       // View creation code borrowed from LXAbstractChannel.class
       if (v.viewEnabled && (v.viewSelector != null) && !v.viewSelector.isEmpty()) {
         v.setModel(LXView.create(this.lx.getModel(), v.viewSelector, v.viewNormalization));
+
       } else {
         LX.warning("View Definition is not a filter.");
         v.setModel(this.lx.getModel());
       }
     }
+
+    // restore original model geometry
+    mb.restoreModel((TEWholeModel) this.lx.getModel());
   }
 
   @Override
