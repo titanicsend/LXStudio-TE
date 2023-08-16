@@ -1,0 +1,23 @@
+{
+  "version": "0.4.2.TE.6-SNAPSHOT",
+  "projectFileName": "BM_2023.lxp",
+  "windowWidth": -1,
+  "windowHeight": -1,
+  "windowPosX": -1,
+  "windowPosY": -1,
+  "uiZoom": 100,
+  "focusChannelOnCue": true,
+  "focusActivePattern": true,
+  "sendCueToOutput": false,
+  "showHelpBar": true,
+  "schedulerEnabled": false,
+  "showCpuLoad": false,
+  "registry": {
+    "plugins": [
+      {
+        "class": "heronarts.lx.studio.TEApp$Plugin",
+        "enabled": true
+      }
+    ]
+  }
+}
