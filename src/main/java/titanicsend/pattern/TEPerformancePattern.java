@@ -662,14 +662,17 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             // TEControlTag enum
             for (TEControlTag tag : TEControlTag.values()) {
                 LXListenableNormalizedParameter param = controlList.get(tag).control;
-                if (missingControls != null && missingControls.missing_control_tags.contains(tag)) {
-                    markUnused(param);
+                if (missingControls != null) {
+                    if (missingControls.missing_control_tags.contains(tag)){
+                        markUnused(param);
+                    }
                 }
+
                 // disable explode control if the pattern isn't a shader
                 // (takes advantage of the fact that all shaders have a missingControls file entry,
                 // even if they're not missing any controls.)
                 // TODO - reminder to implement "explode" as an effect so all patterns can use it.
-                else if (missingControls == null && param.getLabel().equals(TEControlTag.EXPLODE.getLabel())) {
+                else if (param.getLabel().equals(TEControlTag.EXPLODE.getLabel())) {
                     markUnused(param);
                 }
 
