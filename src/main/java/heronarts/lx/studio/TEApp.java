@@ -47,9 +47,12 @@ import titanicsend.app.autopilot.*;
 import titanicsend.app.dev.DevSwitch;
 import titanicsend.app.dev.UIDevSwitch;
 import titanicsend.dmx.DmxEngine;
+import titanicsend.dmx.effect.BeaconStrobeEffect;
 import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
 import titanicsend.dmx.pattern.BeaconDirectPattern;
+import titanicsend.dmx.pattern.BeaconEasyPattern;
 import titanicsend.dmx.pattern.BeaconEverythingPattern;
+import titanicsend.dmx.pattern.BeaconStraightUpPattern;
 import titanicsend.dmx.pattern.DjLightsDirectPattern;
 import titanicsend.dmx.pattern.DjLightsEasyPattern;
 import titanicsend.lasercontrol.PangolinHost;
@@ -227,11 +230,16 @@ public class TEApp extends LXStudio {
 
       // DMX patterns
       lx.registry.addPattern(BeaconDirectPattern.class);
+      lx.registry.addPattern(BeaconEasyPattern.class);
       lx.registry.addPattern(BeaconEverythingPattern.class);
+      lx.registry.addPattern(BeaconStraightUpPattern.class);
       lx.registry.addPattern(DjLightsDirectPattern.class);
       lx.registry.addPattern(DjLightsEasyPattern.class);
       lx.registry.addPattern(ExampleDmxTEPerformancePattern.class);
- 
+
+      // DMX effects
+      lx.registry.addEffect(BeaconStrobeEffect.class);
+
       // TODO - The following patterns were removed from the UI prior to EDC 2023 to keep
       // TODO - them from being accidentally activated during a performance.
       // TODO - update/fix as needed!

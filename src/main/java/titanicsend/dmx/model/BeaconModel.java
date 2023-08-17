@@ -44,6 +44,10 @@ public class BeaconModel extends DmxModel {
   
   static public final int SHUTTER_OPEN = 32;
 
+  static public final double DIMMER_NORMALIZED_0 = 0;
+  static public final double DIMMER_NORMALIZED_50 = 0.5;
+  static public final double DIMMER_NORMALIZED_100 = 1;
+
   static public final int CONTROL_NORMAL = 0;
 
   public BeaconModel(DmxCommonConfig config, float tiltLimit, String ... tags) {

@@ -45,7 +45,8 @@ public class BeaconEverythingPattern extends BeaconPattern implements UIDeviceCo
           new DmxDiscreteParameterOption("CTO", 114),
           new DmxDiscreteParameterOption("Medium Blue", 121)
         })
-      .setWrappable(true);
+      .setWrappable(true)
+      .setDescription("Color Wheel");
   // Gobo1 (without the scroll options)
   DmxDiscreteParameter gobo1Fixed = (DmxDiscreteParameter)
       new DmxDiscreteParameter("Gobo1",
