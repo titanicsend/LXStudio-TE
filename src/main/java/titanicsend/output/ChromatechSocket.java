@@ -25,6 +25,8 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
   private int firstPanelPixel;
   private int lastPanelPixel;
 
+  private static final List<ArtNetDatagram> datagrams = new ArrayList<ArtNetDatagram>();
+
   public String repr() {
     return this.ip + "#" + this.channelNum;
   }
@@ -134,6 +136,7 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
       outputDevice.setAddress(this.ip);
       outputDevice.setSequenceEnabled(true);
       lx.addOutput(outputDevice);
+      datagrams.add(outputDevice);
     }
   }
 
@@ -193,5 +196,14 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
     }
     LX.log(logString.toString());
     this.registerUniverses(lx, multiUniverseIndexBuffer);
+  }
+
+  /**
+   * Set enabled state on every ArtNet datagram destined for pixel LEDs.  Used by DevSwitch.
+   */
+  public static void setEnabled(boolean enabled) {
+    for (ArtNetDatagram datagram : datagrams) {
+      datagram.enabled.setValue(enabled);
+    }
   }
 }

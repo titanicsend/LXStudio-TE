@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXBuffer;
@@ -36,6 +37,7 @@ import heronarts.lx.mixer.LXMasterBus;
 import heronarts.lx.mixer.LXMixerEngine;
 import heronarts.lx.output.LXOutput;
 import heronarts.lx.studio.TEApp;
+import titanicsend.app.dev.DevSwitch;
 import titanicsend.dmx.model.DmxModel;
 import titanicsend.dmx.model.DmxWholeModel;
 import titanicsend.dmx.parameter.DmxParameter;
@@ -609,6 +611,9 @@ public class DmxEngine implements LXLoopTask {
         output = createOutput(m);
         dmxOutputs.put(m, output);
         m.outputChanged = false;
+
+        // Sigh. Shortcut. Almost out of time.
+        DevSwitch.current.applyDmxOutputsEnabled();
       } else {
         output = dmxOutputs.get(m);
       }
@@ -629,6 +634,14 @@ public class DmxEngine implements LXLoopTask {
   private DmxOutput createOutput(DmxModel m) {
     DmxOutput o = new DmxOutput(this.lx, m.getDmxOutputDefinition());
     return o;
+  }
+
+  public void setOutputsEnabledByType(Class<? extends DmxModel> modelType, boolean enabled) {
+    for (Entry<DmxModel, DmxOutput> entry : this.dmxOutputs.entrySet()) {
+      if (modelType.isInstance(entry.getKey())) {
+        entry.getValue().enabled.setValue(enabled);
+      }
+    }
   }
 
   public void dispose() {

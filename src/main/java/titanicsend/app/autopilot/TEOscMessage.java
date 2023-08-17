@@ -157,6 +157,11 @@ public class TEOscMessage {
         return TEPhrase.resolvePhrase(phraseTypeString);
     }
 
+    public static void applyTEOscOutputSettings(LX lx) {
+      lx.engine.osc.transmitActive.setValue(true);
+      lx.engine.osc.transmitHost.setValue(PangolinHost.HOSTNAME);
+      lx.engine.osc.transmitPort.setValue(PangolinHost.PORT);
+    }
 
     /**
      * Sends an integer value to Pangolin.
@@ -165,9 +170,6 @@ public class TEOscMessage {
      * @param value int
      */
     public static void sendOscToPangolin(LX lx, String address, int value, boolean verbose) {
-        lx.engine.osc.transmitActive.setValue(true);
-        lx.engine.osc.transmitHost.setValue(PangolinHost.HOSTNAME);
-        lx.engine.osc.transmitPort.setValue(PangolinHost.PORT);
         if (verbose)
             TE.log("Sending OSC to %s:%d = OSC OUT: %s %d;", PangolinHost.HOSTNAME, PangolinHost.PORT, address, value);
         lx.engine.osc.sendMessage(address, value);
