@@ -448,7 +448,7 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
             if (isInt) {
               this.patternListenerAux.setValue(pi, message.getFloat());
             } else {
-              this.patternListener.setValue(piString, message.getFloat());
+              this.patternListenerAux.setValue(piString, message.getFloat());
             }
           }
         }
