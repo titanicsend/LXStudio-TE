@@ -441,17 +441,15 @@ public class DmxEngine implements LXLoopTask {
 
         if (blendStack != null && channel.enabled.isOn()) {
           double alpha = channel.fader.getValue();
-          if (alpha > 0) {
-            double transitionProgress = channel instanceof LXChannel ? ((LXChannel)channel).getTransitionProgress() : 0;
-            if (transitionProgress > 0) {
-              // TODO: Blend the two buffers together *before* blending into the blendstack.
-              // Assuming primary (blendBuffer) was used first
-              blendStack.blend(channel.blendMode.getObject(), getDmxBuffersByChannel(channel), alpha, dmxWholeModel); 
-              // Secondary (renderBuffer) is second in the list
-              blendStack.blend(channel.blendMode.getObject(), getRenderBuffersByChannel(channel), alpha, dmxWholeModel); 
-            } else {
-              blendStack.blend(channel.blendMode.getObject(), getDmxBuffersByChannel(channel), alpha, dmxWholeModel); 
-            }            
+          double transitionProgress = channel instanceof LXChannel ? ((LXChannel)channel).getTransitionProgress() : 0;
+          if (transitionProgress > 0) {
+            // TODO: Blend the two buffers together *before* blending into the blendstack.
+            // Assuming primary (blendBuffer) was used first
+            blendStack.blend(channel.blendMode.getObject(), getDmxBuffersByChannel(channel), alpha, dmxWholeModel);
+            // Secondary (renderBuffer) is second in the list
+            blendStack.blend(channel.blendMode.getObject(), getRenderBuffersByChannel(channel), alpha, dmxWholeModel);
+          } else {
+            blendStack.blend(channel.blendMode.getObject(), getDmxBuffersByChannel(channel), alpha, dmxWholeModel);
           }
         }
       }
