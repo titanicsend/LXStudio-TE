@@ -52,8 +52,18 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
   public static final int PATH_PRIMARY_LENGTH = PATH_PRIMARY.length();
   public static final int PATH_AUX_LENGTH = PATH_AUX.length();
 
+  private static CrutchOSC current;
+  public static CrutchOSC get() {
+    return current;
+  }
+
+  public final BooleanParameter transmitActive =
+    new BooleanParameter("OSC to iPads", true)
+    .setDescription("CrutchOSC output");
+
   public CrutchOSC(LX lx) {
     super(lx);
+    current = this;
 
     // Listen and fire immediately
     lx.engine.mixer.focusedChannel.addListener(this, true);
@@ -162,8 +172,8 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
   }
 
   private boolean canSend() {
-    // Copied if from LXComponent: These checks are necessary for bootstrapping, before the OSC engine is spun up
-    return (this.lx != null) && (this.lx.engine != null) && (this.lx.engine.osc != null) && (this.lx.engine.output.enabled.isOn());
+    // Copied from LXComponent: These checks are necessary for bootstrapping, before the OSC engine is spun up
+    return this.transmitActive.isOn() && (this.lx != null) && (this.lx.engine != null) && (this.lx.engine.osc != null) && (this.lx.engine.osc.transmitActive.isOn());
   }
 
   private void parameterInstanceChanged(LXListenableNormalizedParameter parameter, int position, boolean isAux) {
@@ -344,6 +354,15 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
       }
     }
 
+    public void setValue(String path, float value) {
+      if (this.pattern != null) {
+        LXParameter param = this.pattern.getParameter(path);
+        if (param != null) {
+          param.setValue(value);
+        }
+      }
+    }
+
     public void sendAll() {
       int p;
       for (p = 0; p < this.params.size(); p++) {
@@ -401,14 +420,22 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
     String address = message.getAddressPattern().toString();
     String piString = parts[parts.length-2];
     try {
-      int pi = Integer.parseInt(piString) - 1;
+      boolean isInt = piString.matches("\\d+");
+      int pi = -1;
+      if (isInt) {
+        pi = Integer.parseInt(piString) - 1;
+      }
 
       if (address.startsWith(PATH_PRIMARY)) {
         LXBus fc = this.lx.engine.mixer.getFocusedChannel();
         if (fc != null && fc instanceof LXChannel) {
           LXPattern fp = ((LXChannel)fc).getFocusedPattern();
           if (fp != null) {
-            this.patternListener.setValue(pi, message.getFloat());
+            if (isInt) {
+              this.patternListener.setValue(pi, message.getFloat());
+            } else {
+              this.patternListener.setValue(piString, message.getFloat());
+            }
             return true;
           }
         }
@@ -418,7 +445,11 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
         if (fc != null && fc instanceof LXChannel) {
           LXPattern fp = ((LXChannel)fc).getFocusedPattern();
           if (fp != null) {
-            this.patternListenerAux.setValue(pi, message.getFloat());
+            if (isInt) {
+              this.patternListenerAux.setValue(pi, message.getFloat());
+            } else {
+              this.patternListenerAux.setValue(piString, message.getFloat());
+            }
           }
         }
       }

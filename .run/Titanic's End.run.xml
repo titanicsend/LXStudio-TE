@@ -1,11 +1,11 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Titanic's End" type="Application" factoryName="Application">
-    <option name="ALTERNATIVE_JRE_PATH" value="temurin-17" />
+    <option name="ALTERNATIVE_JRE_PATH" value="temurin-17.0.8" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="heronarts.lx.studio.TEApp" />
     <module name="LXStudio-TE" />
     <option name="PROGRAM_PARAMETERS" value="vehicle" />
-    <option name="VM_PARAMETERS" value="-ea -XstartOnFirstThread -Djava.awt.headless=true" />
+    <option name="VM_PARAMETERS" value="-ea -XstartOnFirstThread -Djava.awt.headless=true " />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

@@ -1,6 +1,13 @@
 precision mediump float;
 float currentGlow;
 
+/*
+  This comment is here to make sure the missing controls script
+  iWowTrigger
+  picks up iWowTrigger, which this pattern actually does support.
+  TODO - add real preprocessor syntax for declaring weird controls.
+*/
+
 #define LINE_COUNT 52
 uniform vec4[LINE_COUNT] lines;
 
@@ -76,5 +83,5 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
        alpha += bri;
     }
 
-    fragColor = vec4(color,alpha);
+    fragColor = vec4(color,1.0);
 }

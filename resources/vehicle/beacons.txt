@@ -1,0 +1,5 @@
+# ID	X	Y	Z	Yaw	Pitch	Roll	IP	SequenceEnabled	fps	Universe	Channel(0-based, fixture may be 1-based)	TiltLimit
+B1	0	7000000	7000000	0	0	0	10.6.1.101	false	30	0	0	45
+#B2	0	7000000	7000000	0	0	0	10.6.1.102	false	30	0	30	45
+#B3	0	7000000	7000000	0	0	0	10.6.1.103	false	30	0	60	45
+#BJKB	0	7000000	7000000	0	0	0	10.1.1.58	false	30	0	0	45

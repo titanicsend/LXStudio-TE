@@ -1,0 +1,550 @@
+[
+  {
+    "shader_name": "testshader.fs",
+    "pattern_classes": [],
+    "uses_palette": false,
+    "missing_control_tags": [
+      "SIZE",
+      "QUANTITY",
+      "WOW1",
+      "WOW2",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "smoke_shader.fs",
+    "pattern_classes": [
+      "SmokeShader"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "triangle_infinity_waveform.fs",
+    "pattern_classes": [
+      "TriangleInfinityWaveform"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "circuitry.fs",
+    "pattern_classes": [],
+    "uses_palette": false,
+    "missing_control_tags": [
+      "SIZE",
+      "QUANTITY",
+      "WOW1",
+      "WOW2",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "arcedges.fs",
+    "pattern_classes": [
+      "ArcEdges"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "SIZE"
+    ]
+  },
+  {
+    "shader_name": "triangle_infinity_radial_waveform.fs",
+    "pattern_classes": [
+      "TriangleInfinityRadialWaveform"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "space_explosion.fs",
+    "pattern_classes": [
+      "SpaceExplosionEdges",
+      "SpaceExplosion"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "SIZE",
+      "QUANTITY",
+      "WOW1",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "triangle_cross.fs",
+    "pattern_classes": [
+      "TriangleCrossAudioLevels"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "simplex_posterized.fs",
+    "pattern_classes": [
+      "SimplexPosterized"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "space_explosionfx.fs",
+    "pattern_classes": [
+      "SpaceExplosionFX"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "SIZE",
+      "QUANTITY",
+      "WOW1"
+    ]
+  },
+  {
+    "shader_name": "neon_heart.fs",
+    "pattern_classes": [
+      "NeonHeartNative"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "WOW1",
+      "WOW2",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "rain_noise.fs",
+    "pattern_classes": [
+      "RainBands"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "xorcery_diamonds.fs",
+    "pattern_classes": [
+      "XorceryDiamonds"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "SIZE",
+      "QUANTITY",
+      "WOW1",
+      "WOW2",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "audio_test.fs",
+    "pattern_classes": [],
+    "uses_palette": false,
+    "missing_control_tags": [
+      "SIZE",
+      "QUANTITY",
+      "WOW1",
+      "WOW2",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "marbling.fs",
+    "pattern_classes": [
+      "Marbling"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "mandelbrot.fs",
+    "pattern_classes": [
+      "Mondelbrot"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "QUANTITY",
+      "WOW2",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "audio_test2.fs",
+    "pattern_classes": [
+      "AudioTest2"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": []
+  },
+  {
+    "shader_name": "turbulent_noise_lines.fs",
+    "pattern_classes": [
+      "TurbulenceLines"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": []
+  },
+  {
+    "shader_name": "pulsing_heart.fs",
+    "pattern_classes": [
+      "PulsingHeart"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "QUANTITY",
+      "WOW1",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "combustable_veronoi.fs",
+    "pattern_classes": [],
+    "uses_palette": false,
+    "missing_control_tags": [
+      "SIZE",
+      "QUANTITY",
+      "WOW1",
+      "WOW2",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "outrun_grid.fs",
+    "pattern_classes": [
+      "OutrunGrid"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": []
+  },
+  {
+    "shader_name": "phasers.fs",
+    "pattern_classes": [
+      "Phasers"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": []
+  },
+  {
+    "shader_name": "warp.fs",
+    "pattern_classes": [
+      "Warp"
+    ],
+    "uses_palette": false,
+    "missing_control_tags": [
+      "SIZE",
+      "QUANTITY",
+      "WOW1",
+      "WOW2",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "pulsing_petri_dish.fs",
+    "pattern_classes": [
+      "PulsingPetriDish"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "QUANTITY",
+      "WOW1",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "triangle_cross_waveform.fs",
+    "pattern_classes": [
+      "TriangleCrossAudioWaveform"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "radial_simplex.fs",
+    "pattern_classes": [
+      "RadialSimplex"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "pixel_scanner.fs",
+    "pattern_classes": [
+      "PixelScanner"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "SIZE",
+      "WOW1",
+      "WOW2",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "galaxy.fs",
+    "pattern_classes": [
+      "Galaxy"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "fire.fs",
+    "pattern_classes": [
+      "Fire"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "SIZE",
+      "QUANTITY",
+      "WOW1",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "sigmoid_dance_audio_waveform.fs",
+    "pattern_classes": [
+      "SigmoidDanceAudioWaveform"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "QUANTITY"
+    ]
+  },
+  {
+    "shader_name": "edgefall.fs",
+    "pattern_classes": [
+      "EdgeFall"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "QUANTITY"
+    ]
+  },
+  {
+    "shader_name": "electric.fs",
+    "pattern_classes": [
+      "Electric",
+      "ElectricEdges"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "spectrum_analyzer1.fs",
+    "pattern_classes": [],
+    "uses_palette": false,
+    "missing_control_tags": [
+      "SIZE",
+      "QUANTITY",
+      "WOW1",
+      "WOW2",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "iceflow.fs",
+    "pattern_classes": [
+      "Iceflow"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "SIZE",
+      "QUANTITY",
+      "WOW1",
+      "WOW2",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "fourstar.fs",
+    "pattern_classes": [
+      "FourStar"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "SIZE",
+      "QUANTITY",
+      "WOW1",
+      "WOW2",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "synth_waves.fs",
+    "pattern_classes": [
+      "SynthWaves"
+    ],
+    "uses_palette": false,
+    "missing_control_tags": [
+      "SIZE",
+      "QUANTITY",
+      "WOW1",
+      "WOW2",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "metallic_wave.fs",
+    "pattern_classes": [
+      "MetallicWaves"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "SIZE",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "triangle_noise.fs",
+    "pattern_classes": [
+      "TriangleNoise"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "snake_approaching.fs",
+    "pattern_classes": [
+      "SlitheringSnake"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "QUANTITY",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "neon_blocks.fs",
+    "pattern_classes": [
+      "NeonBlocks"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "SIZE",
+      "QUANTITY",
+      "WOW1",
+      "WOW2",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "triangle_infinity.fs",
+    "pattern_classes": [
+      "TriangleInfinityLevels"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "neon_ripples.fs",
+    "pattern_classes": [
+      "NeonRipplesEdges",
+      "NeonRipples"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "jet_stream.fs",
+    "pattern_classes": [
+      "JetStream"
+    ],
+    "uses_palette": false,
+    "missing_control_tags": [
+      "SIZE",
+      "QUANTITY",
+      "WOW1",
+      "WOW2",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "sigmoid_dance_audio_levels.fs",
+    "pattern_classes": [
+      "SigmoidDanceAudioLevels"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": []
+  },
+  {
+    "shader_name": "neon_triangles.fs",
+    "pattern_classes": [
+      "NeonTriangles"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "storm_scanner.fs",
+    "pattern_classes": [
+      "StormScanner"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "QUANTITY",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "followthatstar.fs",
+    "pattern_classes": [
+      "FollowThatStar"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "neon_cells.fs",
+    "pattern_classes": [
+      "NeonCells"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "QUANTITY",
+      "WOW1",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "light_beams.fs",
+    "pattern_classes": [
+      "LightBeamsEdges",
+      "LightBeamsPattern"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "QUANTITY",
+      "WOW1",
+      "WOWTRIGGER"
+    ]
+  }
+]
