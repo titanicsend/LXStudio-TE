@@ -1,9 +1,33 @@
 package titanicsend.pattern.pixelblaze;
 
 import heronarts.lx.color.LXColor;
+import java.util.Random;
+import java.util.SplittableRandom;
 
 public class Glue {
 
+  // Math
+  public static float fract(float x) {
+    return (float) (x - Math.floor(x));
+  }
+  public static float mod(float x, float y) {
+    return (float) (x - Math.floor(x / y) * y);
+  }
+  public static float square(float n,float dutyCycle) {
+    return (float) ((Math.abs(fract(n)) <= dutyCycle) ? 1.0 : 0.0);
+  }
+  public static float smoothstep(float edge0, float edge1, float x) {
+    x = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
+    return x * x * (3 - 2 * x);
+  }
+
+  public static float prng(float v) {
+    return fract(Math.sin(v * 12.9898) * 43758.5453);
+  }
+
+  public static float mix(float x, float y, float a) { return x * (1 - a) + y * a; }
+
+  // color, painting, drawing
   public static int hsv(float h, float s, float v) {
     h = h % 1f;
     if (h < 1)

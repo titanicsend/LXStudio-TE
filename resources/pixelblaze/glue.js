@@ -6,6 +6,7 @@ var LXColor = Java.type("heronarts.lx.color.LXColor");
 var ColorType = Java.type("titanicsend.pattern.TEPattern.ColorType");
 var Noise = Java.type("heronarts.lx.utils.Noise");
 var System = Java.type("java.lang.System");
+var TEMath = Java.type("titanicsend.util.TEMath");
 
 /* Globals available in pattern code */
 var global = this;
@@ -33,42 +34,128 @@ function isEdgePoint() {
   return __pattern.model.isEdgePoint(point.index)
 }
 
-/* Pixelblaze compatibility API */
+//
+// Math functions
+//
 function random(v) {
   return Math.random() * v
-}
-
-function array(n) {
-  var a = new Array(n);
-  for (var i = 0; i < n; i++) a[i] = 0.0;
-  return a;
-}
-
-function time(interval) {
-  return ((__now / 65536) % interval) / interval
-}
-
-function wave(v) {
-  return (sin(v*PI*2) + 1)/2
-}
-
-function triangle(v) {
-  v = v * 2 % 2;
-  if (v < 0)
-    v += 2
-  return v < 1 ? v : 2 - v
 }
 
 function clamp(v, min, max) {
   return Math.min(max, Math.max(min, v))
 }
 
+function frac(float v) {
+    return Glue.fract(v);
+}
+
 function hypot(x, y) {
   return sqrt(x*x + y*y)
 }
 
-/* Color & Painting API */
+function mix(float x, float y, float a) {
+  return Glue.mix(x, y, a);
+}
 
+function mod(float x, float y) {
+    return Glue.mod(x, y);
+}
+
+function prng(v) { /* TODO: Implement */ }
+
+function prngSeed(v) { /* TODO: Implement */ }
+
+function smoothstep(float edge0, float edge1, float x) {
+  return Glue.smoothstep(edge0, edge1, x);
+}
+
+function trunc(v) {  /* TODO: Implement */ }
+
+//
+// Array functions
+//
+function array(n) {
+  var a = new Array(n);
+  for (var i = 0; i < n; i++) a[i] = 0.0;
+  return a;
+}
+//Iterate over an array and call fn(value, index, array) for each element.
+function arrayForEach(a, fn) { a.forEach(fn) }
+
+//Return the length/size of an array. Note that the a.length form is not a function call.
+function arrayLength(a) { return a.length }
+
+// Iterate over the src array and call fn(value, index, array) for each element.
+// Return values are then stored in dest. The dest array may be smaller than src,
+// in which case extra results are calculated and then discarded.
+function arrayMapTo(src, dest, fn) { src.mapTo(dest, fn) }
+
+//Modify an array in place by calling fn(value, index, array) for each element and storing the return values.
+function arrayMutate(a, fn) { a.mutate(fn) }
+
+// Returns a value by calling fn(accumulator, value, index, array) (the reducer)
+// for each element of the array, resulting in a single value (the accumulator).
+// The accumulator parameter is seeded with initialValue and updated with the return value
+// from each call to fn.Examples:
+function arrayReduce(a, fn, initialValue) {return 0 /* TODO:  a.reduce(fn, initialValue) */ }
+
+// Replace the elements of an array with any number of arguments, starting at index 0.
+// The argument list must fit into the array. If the array is larger than the arguments,
+// the remaining array elements are unchanged.
+function arrayReplace(a, ...) { /* TODO : a.replace(...)  */ }
+
+//Replace some elements of an array with any number of arguments, starting at offset.
+//The argument list must fit into the array at the given offset. The other array elements are unchanged.
+function arrayReplaceAt(a, offset, ...) { /* TODO : a.replace(offset, ...) */ }
+
+//Sort an array of numbers in ascending order.
+function arraySort(a) { /* TODO : a.sort()  */ }
+
+// Sort an array using fn(v1, v2) to compare element values. The compare function should
+// return a negative number if v1 is less than v2. The order of equal elements is
+// not guaranteed to be preserved.
+function arraySortBy(a, fn) { /* TODO : a.sortBy(fn) */ }
+
+//Returns the sum of all elements in an array. Tip: this can be used to
+// calculate an average: average=arraySum(a) / arrayLength(a)
+function arraySum(a) { /* TODO: Implement */ }
+
+//
+// Waveform functions
+//
+function bezierQuadratic(t, p0, p1, p2) { /* TODO: Implement */ }
+
+function bezierCubic(t, p0, p1, p2) { /* TODO: Implement */ }
+
+function perlin(x, y, z, seed) { /* TODO: Implement */ }
+
+function perlinFbm(x, y, z, lacunarity, gain, octaves) { /* TODO: Implement */ }
+
+function perlinRidge(x, y, z, lacunarity, gain, offset, octaves) { /* TODO: Implement */ }
+
+function perlinTurbulence(x, y, z, lacunarity, gain, octaves) { /* TODO: Implement */ }
+
+function setPerlinWrap(x, y, z) { /* TODO: Implement */ }
+
+function square(n,dutyCycle) {
+  return Glue.square(n,dutyCycle)
+}
+
+function time(interval) {
+  return ((__now / 65536) % interval) / interval
+}
+
+function triangle(v) {
+  return TEMath.trianglef(v)
+}
+
+function wave(v) {
+  return TEMath.wavef(v)
+}
+
+//
+// Color and Painting functions
+//
 function hsv(h, s, v) {
   return __color = Glue.hsv(h, s, v);
 }
@@ -103,8 +190,9 @@ function setAlpha(v) {
   __color = Glue.setAlpha(__color, v);
 }
 
-/* Sound reactive API */
-
+//
+// TE-specific sound reactivity functions
+//
 function isBeat() {
   return __pattern.getLX().engine.tempo.beat();
 }
@@ -135,7 +223,9 @@ function getTrebleRatio() {
   return __pattern.getTrebleRatio();
 }
 
-// getter functions for the common controls
+//
+// TE-specific getter functions for the common controls
+//
 function getRotationAngleFromSpeed() {
     return __pattern.getRotationAngleFromSpeed();
 }
