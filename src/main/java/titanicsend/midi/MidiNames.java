@@ -2,7 +2,7 @@ package titanicsend.midi;
 
 public class MidiNames {
 
-  public static final String BOMEBOX = "FoH: ";
+  public static final String BOMEBOX = "FoH-Bomebox: ";
   public static final String APC40MK2 = heronarts.lx.midi.surface.APC40Mk2.DEVICE_NAME;
 
   public static final String BOMEBOX_APC40MK2 = BOMEBOX + APC40MK2;
