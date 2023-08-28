@@ -18,29 +18,19 @@
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
         
         <lwjgl.version>3.3.1</lwjgl.version>
+        <lwjgl.natives>natives-macos-arm64</lwjgl.natives>
+        
     </properties>
     
     <profiles>
 		<profile>
 			<id>lwjgl-natives-macos-x86_64</id>
-			<activation>
-				<os>
-					<family>mac</family>
-					<arch>x86_64</arch>
-				</os>
-			</activation>
 			<properties>
 				<lwjgl.natives>natives-macos</lwjgl.natives>
 			</properties>
 		</profile>
 		<profile>
 			<id>lwjgl-natives-macos-aarch64</id>
-			<activation>
-				<os>
-					<family>mac</family>
-					<arch>aarch64</arch>
-				</os>
-			</activation>
 			<properties>
 				<lwjgl.natives>natives-macos-arm64</lwjgl.natives>
 			</properties>
