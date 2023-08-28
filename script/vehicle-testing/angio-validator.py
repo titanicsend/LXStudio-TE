@@ -81,6 +81,14 @@ ip_remapping = {
 
   '10.7.99.84':  '10.7.19.112',
 
+  '10.7.99.62':  '10.7.12.120',
+  '10.7.99.133':  '10.7.19.123',
+
+  '10.7.99.98':  '10.7.6.21',
+  '10.7.99.165':  '10.7.21.230',
+#  '10.7.99.':  '10.7.',
+#  '10.7.99.':  '10.7.',
+#  '10.7.99.':  '10.7.',
 #  '10.7.99.':  '10.7.',
 }
 
@@ -198,25 +206,25 @@ def check_config(possibly_labeled_ip, debug=False):
                 return 'error'
             data = response_dict["data"]
             if expected_response == "power":
-              temp = response_dict["data"]["external"][0]["temp"] * 9 / 5 + 32
-              if debug:
-                  print("%s %s %d°F" % (ip, label, temp))
-              if temp > 130:
-                  print(label + " is HOT: %d°F" % (label, temp))
-              for index in range(4):
-                d = response_dict["data"]["external"][index]
-                channel = index + 1
-                volts = d["voltage"]
-                amps = d["current"]/1000
-                sublabel = label + " #%d" % channel
-                if debug:
-                    print("%s %.2fV %.2fA" % (sublabel, volts, amps))
-                if volts < 4.8:
-                    print("%s has low voltage: %.2fV" % (sublabel, volts))
-                if volts > 5.3:
-                    print("%s has high voltage: %.2fV" % (sublabel, volts))
-                if amps > 11.0:
-                    print("%s drawing high current: %.2fA" % (sublabel, amps))
+#               temp = response_dict["data"]["external"][0]["temp"] * 9 / 5 + 32
+#               if debug:
+#                   print("%s %s %d°F" % (ip, label, temp))
+#               if temp > 130:
+#                   print(label + " is HOT: %d°F" % (label, temp))
+#               for index in range(4):
+#                 d = response_dict["data"]["external"][index]
+#                 channel = index + 1
+#                 volts = d["voltage"]
+#                 amps = d["current"]/1000
+#                 sublabel = label + " #%d" % channel
+#                 if debug:
+#                     print("%s %.2fV %.2fA" % (sublabel, volts, amps))
+#                 if volts < 4.8:
+#                     print("%s has low voltage: %.2fV" % (sublabel, volts))
+#                 if volts > 5.3:
+#                     print("%s has high voltage: %.2fV" % (sublabel, volts))
+#                 if amps > 11.0:
+#                     print("%s drawing high current: %.2fA" % (sublabel, amps))
               continue
             if expected_response == "net":
               if data["wifi"]["ssid"] != "":
