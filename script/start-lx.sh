@@ -12,4 +12,13 @@ else
   LXP=Projects/driving.lxp
 fi
 
-java -XstartOnFirstThread -Djava.awt.headless=true -jar target/LXStudio-TE-0.2.2-SNAPSHOT-jar-with-dependencies.jar vehicle ${LXP?} 
+# then start Chromatik
+# we are assuming that the parent process has already set the correct
+# working directory, ie:
+#     cd /Users/te/src/code/LXStudio-TE;
+# as should be in the automator app
+java \
+  -XstartOnFirstThread \
+  -Djava.awt.headless=true \
+  -jar target/LXStudio-TE-0.2.2-SNAPSHOT-jar-with-dependencies.jar \
+  vehicle ${LXP?};
