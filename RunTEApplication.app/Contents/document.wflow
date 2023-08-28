@@ -60,7 +60,8 @@
 				<dict>
 					<key>COMMAND_STRING</key>
 					<string>cd /Users/te/src/code/LXStudio-TE;
-java -XstartOnFirstThread -Djava.awt.headless=true -jar target/LXStudio-TE-0.2.2-SNAPSHOT-jar-with-dependencies.jar vehicle Projects/BM_2023.lxp;</string>
+#java -XstartOnFirstThread -Djava.awt.headless=true -jar target/LXStudio-TE-0.2.2-SNAPSHOT-jar-with-dependencies.jar vehicle Projects/BM_2023.lxp;
+bash script/start-lx.sh</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>
@@ -170,8 +171,6 @@ java -XstartOnFirstThread -Djava.awt.headless=true -jar target/LXStudio-TE-0.2.2
 						<string>4</string>
 					</dict>
 				</dict>
-				<key>conversionLabel</key>
-				<integer>0</integer>
 				<key>isViewVisible</key>
 				<integer>1</integer>
 				<key>location</key>
