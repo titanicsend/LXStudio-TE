@@ -9,6 +9,28 @@ import websockets
 from concurrent.futures import ThreadPoolExecutor
 from json.decoder import JSONDecodeError
 
+ip_remapping = {
+  '10.7.99.92': '10.7.6.123',
+  '10.7.99.88': '10.7.6.114',
+  '10.7.99.54': '10.7.6.113',
+ '10.7.99.137': '10.7.6.125',
+ '10.7.99.140': '10.7.6.112',
+ '10.7.99.136': '10.7.6.111',
+  '10.7.99.57': '10.7.6.124',
+  '10.7.99.59': '10.7.6.122',
+ '10.7.99.142': '10.7.6.121',
+ '10.7.99.143': '10.7.6.110',
+  '10.7.99.90': '10.7.6.120',
+  '10.7.99.80': '10.7.20.211',
+
+
+  '10.7.99.138': '10.7.15.110',
+  '10.7.99.144': '10.7.15.111',
+  '10.7.99.61':  '10.7.4.110',
+  '10.7.99.131': '10.7.4.111',
+  '10.7.99.86':  '10.7.4.120',
+}
+
 async def send_request_and_get_response(ip, request):
     try:
         async with websockets.connect(f'ws://{ip}:81/websocket', timeout=5) as websocket:
@@ -40,6 +62,11 @@ def set_config(ip):
         #print("Old: %r" % data)
         if new_data == "net":
           data['wifi'] = dict(ssid='')
+          if ip.startswith("10.7.99."):
+            assert ip == data['ethernet']['ip']
+            new_ip = ip_remapping[ip]
+            print("Remapping to " + new_ip)
+            data['ethernet']['ip'] = new_ip
           data['ethernet']['subnet'] = '255.0.0.0'
           data['ethernet']['gateway'] = '10.0.0.1'
         else:
