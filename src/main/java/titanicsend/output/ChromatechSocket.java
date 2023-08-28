@@ -13,7 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class ChromatechSocket implements Comparable<ChromatechSocket> {
-  public static final int MAX_PIXELS_PER_CHANNEL = 505;
+  public static final int MAX_PIXELS_PER_CHANNEL = 510;
   public static final int PIXELS_PER_UNIVERSE = 170;
   public static final int CHANNELS_PER_IP = 4;
 
