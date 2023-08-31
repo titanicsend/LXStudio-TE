@@ -62,6 +62,18 @@ public class PatternControlData {
         return parent.getTrebleLevel();
     }
 
+    public double getBassRatio() {
+        return parent.getBassRatio();
+    }
+
+    public double getTrebleRatio() {
+        return parent.getTrebleRatio();
+    }
+
+    public float getVolumeRatiof() {
+        return parent.getVolumeRatiof();
+    }
+
     /**
      * @return Returns the current rotation angle in radians - the sum of the
      * current spin angle(SPIN) and the static rotation angle (ANGLE)

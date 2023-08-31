@@ -10,8 +10,9 @@ from tecfg import *
 RGB_PER_UNIVERSE = 170
 DMX_PER_UNIVERSE = RGB_PER_UNIVERSE * 3
 SPACING = 5
-FRAMERATE = 10
-FLOOD_LEN = 500
+FRAMERATE =5 
+FLOOD_LEN = 510
+SOLID_IP = '10.7.19.121x'
 
 UNIVERSES = [10, 11, 12,
              20, 21, 22,
@@ -75,7 +76,8 @@ def animate(anim_frame):
       offset = (universe % 10) * DMX_PER_UNIVERSE
       if channel in assigned_colors[ip]:
         dmx = assigned_colors[ip][channel][offset:offset+DMX_PER_UNIVERSE]
-        blacken(dmx, anim_frame)
+        if ip != SOLID_IP:
+          blacken(dmx, anim_frame)
         padding = RGB_PER_UNIVERSE - len(dmx) // 3
         assert padding >= 0
         dmx.extend(ARTNET_PINK * padding)

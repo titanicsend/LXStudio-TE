@@ -16,16 +16,14 @@ import static titanicsend.util.TEMath.*;
 public class RhythmicFlashingStatic extends FragmentShaderEffect {
 
     public static double STAR_WIDTH = 9.0;
-    public static double RESOLUTION = 4096.0;
+    public static double RESOLUTION = 0.2;
     public static double STAR_COUNT_INT = 64.0;
-    private double[] outColor;
 
     public RhythmicFlashingStatic(PatternTarget target) {
         super(target);
-        outColor = new double[4];
 
         // set reasonable initial control values
-        pattern.getControls().setValue(TEControlTag.WOW1,0.5);   // beat reactive pulse
+        pattern.getControls().setValue(TEControlTag.WOW1, 0.75);   // beat reactive pulse
     }
 
     private double cell(double[] c) {
@@ -39,7 +37,7 @@ public class RhythmicFlashingStatic extends FragmentShaderEffect {
         double cy = newC[1];
         double firstTerm = STAR_WIDTH - vectorLength(uv);
         double trigTerm = fract(sin(cx + cy * 50.0) * 1000.0);
-        return firstTerm * step(trigTerm, min(0.9995, 1.0-pattern.getQuantity()));
+        return firstTerm * step(trigTerm, min(0.9995, 1.0 - pattern.getQuantity()));
     }
 
     @Override
@@ -51,7 +49,7 @@ public class RhythmicFlashingStatic extends FragmentShaderEffect {
         double projY = pow(projection[1], 0.5);
 
         //        float time = -0.4 * iTime; //reverse or forward speed
-        double time = -0.005 * timeSeconds;
+        double time = 0.05 * timeSeconds;
 
         //            vec2 coord = vec2(projY, projX) * 256.; // *512 :: star count, adjust star-count and scale for scaling along Y axis
         double[] coord = new double[]{projX * STAR_COUNT_INT, projY * STAR_COUNT_INT};
@@ -74,15 +72,16 @@ public class RhythmicFlashingStatic extends FragmentShaderEffect {
         // get a color from the current gradient
         int paletteColor = this.pattern.getGradientColor((float) color);
 
-        // calculate beat reactive brightness
-        double brightness = color * (1.0 - (this.getTempo().basis() * pattern.getWow1()));
+        // calculate and scale beat reactive brightness
+        double brightness = (1.0 - color) * (1.0 - (random() * this.getTempo().basis() * pattern.getWow1()));
+        brightness = clamp(8 * brightness * brightness, 0, 1);
 
         // set final output color and alpha
         float[] newColor = new Color(paletteColor).getRGBColorComponents(null);
+        double[] outColor = new double[3];
         outColor[0] = newColor[0] * brightness;
         outColor[1] = newColor[1] * brightness;
         outColor[2] = newColor[2] * brightness;
-        outColor[3] = 1.0; //max(newColor[0], max(newColor[1], newColor[2]));
 
         return outColor;
     }

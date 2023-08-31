@@ -22,6 +22,16 @@
     ]
   },
   {
+    "shader_name": "triangle_infinity_waveform.fs",
+    "pattern_classes": [
+      "TriangleInfinityWaveform"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "WOWTRIGGER"
+    ]
+  },
+  {
     "shader_name": "circuitry.fs",
     "pattern_classes": [],
     "uses_palette": false,
@@ -44,6 +54,16 @@
     ]
   },
   {
+    "shader_name": "triangle_infinity_radial_waveform.fs",
+    "pattern_classes": [
+      "TriangleInfinityRadialWaveform"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "WOWTRIGGER"
+    ]
+  },
+  {
     "shader_name": "space_explosion.fs",
     "pattern_classes": [
       "SpaceExplosionEdges",
@@ -54,6 +74,16 @@
       "SIZE",
       "QUANTITY",
       "WOW1",
+      "WOWTRIGGER"
+    ]
+  },
+  {
+    "shader_name": "triangle_cross.fs",
+    "pattern_classes": [
+      "TriangleCrossAudioLevels"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
       "WOWTRIGGER"
     ]
   },
@@ -232,6 +262,16 @@
     ]
   },
   {
+    "shader_name": "triangle_cross_waveform.fs",
+    "pattern_classes": [
+      "TriangleCrossAudioWaveform"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "WOWTRIGGER"
+    ]
+  },
+  {
     "shader_name": "radial_simplex.fs",
     "pattern_classes": [
       "RadialSimplex"
@@ -278,14 +318,23 @@
     ]
   },
   {
+    "shader_name": "sigmoid_dance_audio_waveform.fs",
+    "pattern_classes": [
+      "SigmoidDanceAudioWaveform"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "QUANTITY"
+    ]
+  },
+  {
     "shader_name": "edgefall.fs",
     "pattern_classes": [
       "EdgeFall"
     ],
     "uses_palette": true,
     "missing_control_tags": [
-      "QUANTITY",
-      "WOWTRIGGER"
+      "QUANTITY"
     ]
   },
   {
@@ -400,6 +449,16 @@
     ]
   },
   {
+    "shader_name": "triangle_infinity.fs",
+    "pattern_classes": [
+      "TriangleInfinityLevels"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": [
+      "WOWTRIGGER"
+    ]
+  },
+  {
     "shader_name": "neon_ripples.fs",
     "pattern_classes": [
       "NeonRipplesEdges",
@@ -425,13 +484,20 @@
     ]
   },
   {
+    "shader_name": "sigmoid_dance_audio_levels.fs",
+    "pattern_classes": [
+      "SigmoidDanceAudioLevels"
+    ],
+    "uses_palette": true,
+    "missing_control_tags": []
+  },
+  {
     "shader_name": "neon_triangles.fs",
     "pattern_classes": [
       "NeonTriangles"
     ],
     "uses_palette": true,
     "missing_control_tags": [
-      "WOW1",
       "WOWTRIGGER"
     ]
   },

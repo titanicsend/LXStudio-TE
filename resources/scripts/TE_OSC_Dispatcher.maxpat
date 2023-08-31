@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 113.0, 88.0, 1311.0, 795.0 ],
+		"rect" : [ 93.0, 87.0, 1059.0, 565.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 1,
 		"default_fontsize" : 12.0,
@@ -125,7 +125,7 @@
 					"patching_rect" : [ 889.0, 519.0, 158.0, 22.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 492.5, 453.0, 158.0, 22.0 ],
-					"text" : "udpsend 10.100.0.200 3131"
+					"text" : "udpsend 10.100.0.202 3131"
 				}
 
 			}
@@ -138,7 +138,7 @@
 					"patching_rect" : [ 892.5, 483.500001668930054, 158.0, 22.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 501.5, 413.0, 158.0, 22.0 ],
-					"text" : "udpsend 10.100.0.100 3131"
+					"text" : "udpsend 10.100.0.201 3131"
 				}
 
 			}

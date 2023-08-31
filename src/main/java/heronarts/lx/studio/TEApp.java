@@ -44,16 +44,22 @@ import titanicsend.app.TEOscListener;
 import titanicsend.app.TEUIControls;
 import titanicsend.app.TEVirtualOverlays;
 import titanicsend.app.autopilot.*;
+import titanicsend.app.dev.DevSwitch;
+import titanicsend.app.dev.UIDevSwitch;
 import titanicsend.dmx.DmxEngine;
+import titanicsend.dmx.effect.BeaconStrobeEffect;
 import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
 import titanicsend.dmx.pattern.BeaconDirectPattern;
+import titanicsend.dmx.pattern.BeaconEasyPattern;
 import titanicsend.dmx.pattern.BeaconEverythingPattern;
+import titanicsend.dmx.pattern.BeaconStraightUpPattern;
 import titanicsend.dmx.pattern.DjLightsDirectPattern;
 import titanicsend.dmx.pattern.DjLightsEasyPattern;
 import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lx.APC40Mk2;
 import titanicsend.lx.MidiFighterTwister;
+import titanicsend.midi.MidiNames;
 import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.model.TEWholeModel;
 import titanicsend.model.justin.ColorCentral;
@@ -117,6 +123,7 @@ public class TEApp extends LXStudio {
     private final ColorCentral colorCentral;
     private final ViewCentral viewCentral;
     private final CrutchOSC crutchOSC;
+    private DevSwitch devSwitch;
 
     private LX lx;
 
@@ -203,8 +210,15 @@ public class TEApp extends LXStudio {
 
       // Patterns that will not aspire to art direction standards
       lx.registry.addPattern(CrossSections.class);
-      lx.registry.addPattern(CrossSectionsStratifiedAudio.class);
-      lx.registry.addPattern(CrossSectionsFullBandAudio.class);
+      lx.registry.addPattern(CrossSectionsAudio.class);
+      lx.registry.addPattern(CrossSectionsAudioStratified.class);
+      lx.registry.addPattern(SigmoidDanceAudioWaveform.class);
+      lx.registry.addPattern(SigmoidDanceAudioLevels.class);
+      lx.registry.addPattern(TriangleCrossAudioLevels.class);
+      lx.registry.addPattern(TriangleCrossAudioWaveform.class);
+      lx.registry.addPattern(TriangleInfinityLevels.class);
+      lx.registry.addPattern(TriangleInfinityWaveform.class);
+      lx.registry.addPattern(TriangleInfinityRadialWaveform.class);
 
       // Examples for teaching and on-boarding developers
       lx.registry.addPattern(BasicRainbowPattern.class);
@@ -219,11 +233,16 @@ public class TEApp extends LXStudio {
 
       // DMX patterns
       lx.registry.addPattern(BeaconDirectPattern.class);
+      lx.registry.addPattern(BeaconEasyPattern.class);
       lx.registry.addPattern(BeaconEverythingPattern.class);
+      lx.registry.addPattern(BeaconStraightUpPattern.class);
       lx.registry.addPattern(DjLightsDirectPattern.class);
       lx.registry.addPattern(DjLightsEasyPattern.class);
       lx.registry.addPattern(ExampleDmxTEPerformancePattern.class);
- 
+
+      // DMX effects
+      lx.registry.addEffect(BeaconStrobeEffect.class);
+
       // TODO - The following patterns were removed from the UI prior to EDC 2023 to keep
       // TODO - them from being accidentally activated during a performance.
       // TODO - update/fix as needed!
@@ -268,11 +287,11 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(TEPanelTestPattern.class);
 
       // Midi surface names for use with BomeBox
-      lx.engine.midi.registerSurface("FoH: APC40 mkII", APC40Mk2.class);
-      lx.engine.midi.registerSurface("FoH: Midi Fighter Twister", MidiFighterTwister.class);
-      lx.engine.midi.registerSurface("FoH: Midi Fighter Twister (2)", MidiFighterTwister.class);
-      lx.engine.midi.registerSurface("FoH: Midi Fighter Twister (3)", MidiFighterTwister.class);
-      lx.engine.midi.registerSurface("FoH: Midi Fighter Twister (4)", MidiFighterTwister.class);
+      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_APC40MK2, APC40Mk2.class);
+      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1, MidiFighterTwister.class);
+      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER2, MidiFighterTwister.class);
+      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER3, MidiFighterTwister.class);
+      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER4, MidiFighterTwister.class);
 
       // Custom modulator type
       lx.registry.addModulator(MultiplierModulator.class);
@@ -331,6 +350,12 @@ public class TEApp extends LXStudio {
 
       GPOutput gpOutput = new GPOutput(lx, this.gpBroadcaster);
       lx.addOutput(gpOutput);
+
+      TEOscMessage.applyTEOscOutputSettings(lx);
+
+      // Developer/Production Switch
+      // Must be after everything else has initialized.
+      this.devSwitch = new DevSwitch(lx);
     }
 
     private TEPatternLibrary initializePatternLibrary(LX lx) {
@@ -420,13 +445,14 @@ public class TEApp extends LXStudio {
 
       // Model pane
 
-      new TEUIControls(ui, this.virtualOverlays, ui.leftPane.model.getContentWidth()).addToContainer(ui.leftPane.model, 0);
+      new UIDevSwitch(ui, this.devSwitch, ui.leftPane.model.getContentWidth())
+      .addToContainer(ui.leftPane.model, 0);
 
-      new GigglePixelUI(ui, ui.leftPane.model.getContentWidth(),
-          this.gpListener, this.gpBroadcaster).addToContainer(ui.leftPane.model, 1);
+      new GigglePixelUI(ui, ui.leftPane.model.getContentWidth(), this.gpListener, this.gpBroadcaster)
+      .addToContainer(ui.leftPane.model, 1);
 
-      // Add UI section for all other general settings
-      new TEUserInterface.TEUISection(ui, laserTask).addToContainer(ui.leftPane.model, 2);
+      new TEUIControls(ui, this.virtualOverlays, ui.leftPane.model.getContentWidth())
+      .addToContainer(ui.leftPane.model, 2);
 
       // Global pane
 
@@ -488,6 +514,7 @@ public class TEApp extends LXStudio {
       this.lx.removeListener(this);
       this.lx.removeProjectListener(this);
 
+      this.devSwitch.dispose();
       this.dmxEngine.dispose();
       this.colorCentral.dispose();
       this.crutchOSC.dispose();

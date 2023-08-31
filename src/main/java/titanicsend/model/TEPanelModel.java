@@ -161,19 +161,32 @@ public class TEPanelModel extends TEModel {
   // See enum class for section description
   // TODO Replace this with something smarter
   // This is a really lazy/sloppy way of doing this, though if we're not changing the model it should be fine
+  static int k = 0;
   static public TEPanelSection getSection(LXVector centroid) {
-    if (centroid.x > 1200000) {
-      return TEPanelSection.PORT;
+    boolean fore = centroid.z < 0;
+
+    // is it an end panel?
+    if (Math.abs(centroid.x) < 1200000) {
+      return fore ? TEPanelSection.FORE : TEPanelSection.AFT;
     }
 
-    if (centroid.x >= -1200000) {
-      return centroid.z < 0 ? TEPanelSection.FORE : TEPanelSection.AFT;
-    }
+    boolean portSide = centroid.x > 0;
 
+    // is it high or low on the car?
     if (centroid.y < 5000000) {
-      return centroid.z < 0 ? TEPanelSection.STARBOARD_FORE : TEPanelSection.STARBOARD_AFT;
+      // lower section
+      if (portSide) {
+        return fore ? TEPanelSection.PORT_FORE : TEPanelSection.PORT_AFT;
+      } else {
+        return fore ? TEPanelSection.STARBOARD_FORE : TEPanelSection.STARBOARD_AFT;
+      }
     } else {
-      return centroid.z < 0 ? TEPanelSection.STARBOARD_FORE_SINGLE : TEPanelSection.STARBOARD_AFT_SINGLE;
+      // upper section
+      if (portSide) {
+        return fore ? TEPanelSection.PORT_FORE_SINGLE : TEPanelSection.PORT_AFT_SINGLE;
+      } else {
+        return fore ? TEPanelSection.STARBOARD_FORE_SINGLE : TEPanelSection.STARBOARD_AFT_SINGLE;
+      }
     }
   }
 

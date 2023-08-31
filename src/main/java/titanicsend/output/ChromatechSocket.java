@@ -13,7 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class ChromatechSocket implements Comparable<ChromatechSocket> {
-  public static final int MAX_PIXELS_PER_CHANNEL = 505;
+  public static final int MAX_PIXELS_PER_CHANNEL = 510;
   public static final int PIXELS_PER_UNIVERSE = 170;
   public static final int CHANNELS_PER_IP = 4;
 
@@ -24,6 +24,8 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
   private TEPanelModel panel;
   private int firstPanelPixel;
   private int lastPanelPixel;
+
+  private static final List<ArtNetDatagram> datagrams = new ArrayList<ArtNetDatagram>();
 
   public String repr() {
     return this.ip + "#" + this.channelNum;
@@ -134,6 +136,7 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
       outputDevice.setAddress(this.ip);
       outputDevice.setSequenceEnabled(true);
       lx.addOutput(outputDevice);
+      datagrams.add(outputDevice);
     }
   }
 
@@ -193,5 +196,14 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
     }
     LX.log(logString.toString());
     this.registerUniverses(lx, multiUniverseIndexBuffer);
+  }
+
+  /**
+   * Set enabled state on every ArtNet datagram destined for pixel LEDs.  Used by DevSwitch.
+   */
+  public static void setEnabled(boolean enabled) {
+    for (ArtNetDatagram datagram : datagrams) {
+      datagram.enabled.setValue(enabled);
+    }
   }
 }

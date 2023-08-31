@@ -163,7 +163,10 @@ public class TargetPixelStamper extends TEPattern {
         Set<LXPoint> points = new HashSet<>();
         switch (side) {
             case PORT -> {
-                points.addAll(modelTE.getPointsBySection(TEPanelSection.PORT));
+                points.addAll(modelTE.getPointsBySection(TEPanelSection.PORT_AFT));
+                points.addAll(modelTE.getPointsBySection(TEPanelSection.PORT_AFT_SINGLE));
+                points.addAll(modelTE.getPointsBySection(TEPanelSection.PORT_FORE));
+                points.addAll(modelTE.getPointsBySection(TEPanelSection.PORT_FORE_SINGLE));
             }
             case FORE -> {
                 points.addAll(modelTE.getPointsBySection(TEPanelSection.FORE));

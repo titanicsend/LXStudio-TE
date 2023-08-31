@@ -505,6 +505,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         private final HashMap<TEControlTag, TEControl> controlList = new HashMap<TEControlTag, TEControl>();
         public final Set<LXNormalizedParameter> unusedParams = new HashSet<>();
 
+
         /**
          * Retrieve backing LX control object for given tag
          *
@@ -661,9 +662,20 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             // TEControlTag enum
             for (TEControlTag tag : TEControlTag.values()) {
                 LXListenableNormalizedParameter param = controlList.get(tag).control;
-                if (missingControls != null && missingControls.missing_control_tags.contains(tag)) {
+                if (missingControls != null) {
+                    if (missingControls.missing_control_tags.contains(tag)){
+                        markUnused(param);
+                    }
+                }
+
+                // disable explode control if the pattern isn't a shader
+                // (takes advantage of the fact that all shaders have a missingControls file entry,
+                // even if they're not missing any controls.)
+                // TODO - reminder to implement "explode" as an effect so all patterns can use it.
+                else if (param.getLabel().equals(TEControlTag.EXPLODE.getLabel())) {
                     markUnused(param);
                 }
+
                 addParameter(tag.getPath(), param);
             }
 
@@ -709,7 +721,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 getControl(TEControlTag.WOW1).control,
                 getControl(TEControlTag.WOW2).control,
                 getControl(TEControlTag.WOWTRIGGER).control,
-                null   // To be SHIFT, not implemented yet
+                getControl(TEControlTag.EXPLODE).control
+                // To be SHIFT, not implemented yet
             });
         }
 
@@ -785,6 +798,10 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 .setDescription("Trigger WoW effects");
             setControl(TEControlTag.WOWTRIGGER, p);
 
+            p = new CompoundParameter("Explode", 0, 0, 1.0)
+                .setDescription("Randomize the pixels to a certain radius on beat");
+            setControl(TEControlTag.EXPLODE, p);
+
             // in degrees for display 'cause more people think about it that way
             p = (LXListenableNormalizedParameter)new TECommonAngleParameter(TEControlTag.ANGLE.getLabel(), 0, -Math.PI, Math.PI)
                 .setDescription("Static Rotation Angle")
@@ -850,6 +867,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             getControl(TEControlTag.ANGLE).control.reset();
             getControl(TEControlTag.SPIN).control.reset();
 
+            getControl(TEControlTag.EXPLODE).control.reset();
             getControl(TEControlTag.WOW1).control.reset();
             getControl(TEControlTag.WOW2).control.reset();
             getControl(TEControlTag.WOWTRIGGER).control.reset();
@@ -1237,6 +1255,10 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     public boolean getWowTrigger() {
         return controls.getValue(TEControlTag.WOWTRIGGER) > 0.0;
+    }
+
+    public double getExplode() {
+        return controls.getValue(TEControlTag.EXPLODE);
     }
 
     /**
