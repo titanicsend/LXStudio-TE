@@ -89,12 +89,14 @@ import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.effect.BeaconEffect;
 import titanicsend.ui.UIBackings;
 import titanicsend.ui.UILasers;
+import titanicsend.ui.UIModelLabels;
 import titanicsend.ui.UITEPerformancePattern;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
 
-public class TEApp extends LXStudio {
+public class
+TEApp extends LXStudio {
 
   static public TEWholeModel wholeModel;
 
@@ -464,6 +466,9 @@ public class TEApp extends LXStudio {
 
       ui.preview.addComponent(new UILasers(lx, this.virtualOverlays));
       ui.previewAux.addComponent(new UILasers(lx, this.virtualOverlays));
+
+      ui.preview.addComponent(new UIModelLabels(lx, this.virtualOverlays));
+      //ui.previewAux.addComponent(new UIModelLabels(lx, this.virtualOverlays));
 
       // precompile binaries for any new or changed shaders
       ShaderPrecompiler.rebuildCache();
