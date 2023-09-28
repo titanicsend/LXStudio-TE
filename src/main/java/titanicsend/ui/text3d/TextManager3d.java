@@ -1,7 +1,7 @@
 package titanicsend.ui.text3d;
 
 /*
- TrueType font rendering for Chromatik's 3D window
+ TrueType font renderer for Chromatik's 3D model indow
  2023 ZRanger1
 
  Font loader adapted for BGFX from:
@@ -12,8 +12,6 @@ package titanicsend.ui.text3d;
 */
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,11 +38,8 @@ public class TextManager3d {
     // the default multiplier of 10000 yields a world font height of
     // 34000mm
     private float font3dScale = 10000f;
-    private int fontColor = LXColor.WHITE;
-
-    public TextManager3d(GLX glx, int size) {
-        this(glx, new java.awt.Font(MONOSPACED, PLAIN, size));
-    }
+    private int fontForeground = LXColor.WHITE;
+    private int fontBackground = LXColor.BLACK;
 
     /**
      * Initialize a TextManager3d object with a truetype font from an input stream.
@@ -72,12 +67,18 @@ public class TextManager3d {
         renderer = initializeFont(glx, font);
     }
 
+    /**
+     *  Initialize TextManager3d with default font
+    */
+    public TextManager3d(GLX glx, int size) {
+        this(glx, new java.awt.Font(MONOSPACED, PLAIN, size));
+    }
+
     public Label labelMaker(String text, Vector3f pos, Vector3f rot) {
-        Label l = new Label(text, pos, rot, fontColor);
+        Label l = new Label(text, pos, rot, fontForeground,fontBackground);
         renderer.buildRenderBuffers(this,l);
         return l;
     }
-
 
     // create the actual font texture atlas
     private TextRenderer3d initializeFont(GLX glx, java.awt.Font font) {
@@ -126,36 +127,26 @@ public class TextManager3d {
             x += charWidth;
         }
 
-        // if rendering on OpenGL, flip image to move origin to bottom left
-        // (We don't currently have a way to test this, but may eventually need
-        // it for Linux support, so here it is!. Doing it here means we don't
-        // have to flip every character at frame time.)
-        if (glx.isOpenGL()) {
-            AffineTransform transform = AffineTransform.getScaleInstance(1f, -1f);
-            transform.translate(0, -image.getHeight());
-            AffineTransformOp operation = new AffineTransformOp(transform,
-                AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-            image = operation.filter(image, null);
-        }
-
-        // move image data into a ByteBuffer in ARGB order
+        // get a copy of the full RGBA image data and use it to create
+        // a compact alpha channel-only texture for use by the renderer.
         int width = image.getWidth();
         int height = image.getHeight();
 
         int[] pixels = new int[width * height];
         image.getRGB(0, 0, width, height, pixels, 0, width);
 
-        ByteBuffer buffer = MemoryUtil.memAlloc(width * height * 4);
+        ByteBuffer buffer = MemoryUtil.memAlloc(width * height);
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 int pixel = pixels[i * width + j];
-                buffer.putInt(LXColor.toABGR(pixel));
+                buffer.put((byte) (0xFF & LXColor.alpha(pixel)));
             }
         }
+
         // prepare buffer for use by graphics subsystem
         buffer.flip();
 
-        // go ye, and create a TextRenderer3d from our new font image ByteBuffer
+        // go forth and create a TextRenderer3d from our new font image buffer!
         return new TextRenderer3d(glx, buffer, width, height);
     }
 
@@ -236,7 +227,16 @@ public class TextManager3d {
      * @param color packed LX color
      */
     public void setFontColor(int color) {
-        fontColor = color;
+        fontForeground = color;
+    }
+
+    /**
+     * Sets the font background color for all new labels.  Does not retroactively change f
+     * existing labels.
+     * @param color packed LX color
+     */
+    public void setFontBackground(int color) {
+        fontBackground = color;
     }
 
     public void draw(View view, List<Label> labels) {

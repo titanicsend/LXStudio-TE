@@ -1,10 +1,8 @@
 package titanicsend.ui.text3d;
 
-import heronarts.lx.color.LXColor;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
-
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
@@ -15,17 +13,18 @@ public class Label {
     public Matrix4f modelMatrix = new Matrix4f();
     public FloatBuffer modelMatrixBuf;
     int vertexCount;
-    //int indexCount;
     public ByteBuffer vertexBuffer = null;
     public short vbh;
     String text;
     int color;
+    int background;
 
-    public Label(String text, Vector3f pos, Vector3f rot, int color) {
+    public Label(String text, Vector3f pos, Vector3f rot, int color, int background) {
         this.text = text;
         this.position = pos;
         this.rotation = rot;
         this.color = color;
+        this.background = background;
 
         // we use all 6 vertices (two triangles) here to save setting up an index buffer
         this.vertexCount = this.text.length() * 6;
@@ -36,7 +35,7 @@ public class Label {
     }
 
     public Label(String text, Vector3f pos, Vector3f rot) {
-        this(text, pos, rot, 0xffff0000);
+        this(text, pos, rot, 0xffffffff,0);
     }
 
     public void dispose() {

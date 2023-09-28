@@ -7,24 +7,15 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
-import com.jogamp.opengl.GL4;
-import heronarts.glx.shader.UniformFill;
-import heronarts.glx.ui.UI;
-import heronarts.lx.color.LXColor;
 import org.lwjgl.bgfx.BGFX;
 import org.lwjgl.bgfx.BGFXVertexLayout;
 import org.lwjgl.system.MemoryUtil;
-
 import heronarts.glx.GLX;
-import heronarts.glx.GLXUtils;
 import heronarts.glx.View;
 import titanicsend.util.TE;
 
 public class TextRenderer3d {
-    private GLX glx;
     private ByteBuffer fontTexture;
     private short textureHandle;
     private BGFXVertexLayout vertexLayout;
@@ -32,25 +23,27 @@ public class TextRenderer3d {
     private short uniformTexture;
 
     private short uniformColor;
+    private short uniformBackground;
     private FloatBuffer colorBuffer;
+    private FloatBuffer backgroundBuffer;
     private ByteBuffer vsCode;
     private ByteBuffer fsCode;
     public float atlasWidth;
     public float atlasHeight;
 
     public TextRenderer3d(GLX glx, ByteBuffer buffer, int width, int height) {
-        this.glx = glx;
         this.atlasWidth = width;
         this.atlasHeight = height;
 
         // create a font atlas texture from the supplied buffer
         this.fontTexture = buffer;
-        this.textureHandle = bgfx_create_texture_2d(width, height, false, 1, BGFX_TEXTURE_FORMAT_RGBA8,
+        this.textureHandle = bgfx_create_texture_2d(width, height, false, 1, BGFX_TEXTURE_FORMAT_R8,
             BGFX_SAMPLER_NONE,
             bgfx_make_ref(this.fontTexture));
 
-        // allocate memory for font color uniform
+        // allocate memory for font foreground and background color uniforms
         colorBuffer = MemoryUtil.memAllocFloat(4);
+        backgroundBuffer = MemoryUtil.memAllocFloat(4);
 
         // Vertex buffer layout: 3 position + 2 texture coordinates per character,
         // plus 4 byte vertex color information in ARGB format.
@@ -61,18 +54,19 @@ public class TextRenderer3d {
         bgfx_vertex_layout_add(this.vertexLayout, BGFX_ATTRIB_TEXCOORD0, 2,
             BGFX_ATTRIB_TYPE_FLOAT, true, false);
         bgfx_vertex_layout_add(this.vertexLayout, BGFX_ATTRIB_COLOR0,
-            4, BGFX_ATTRIB_TYPE_UINT8,false,false);
+            4, BGFX_ATTRIB_TYPE_UINT8, false, false);
         bgfx_vertex_layout_end(this.vertexLayout);
 
         // load and configure our custom texture shaders.
         try {
-            this.vsCode = loadCustomBGFXShader(glx, "vs_view2d");
-            this.fsCode = loadCustomBGFXShader(glx, "fs_view2d");
+            this.vsCode = loadCustomBGFXShader(glx, "vs_font3d");
+            this.fsCode = loadCustomBGFXShader(glx, "fs_font3d");
             this.program = bgfx_create_program(
                 bgfx_create_shader(bgfx_make_ref(this.vsCode)),
                 bgfx_create_shader(bgfx_make_ref(this.fsCode)), true);
 
             this.uniformColor = bgfx_create_uniform("u_color", 2, 1);
+            this.uniformBackground = bgfx_create_uniform("u_background", 2, 1);
             this.uniformTexture = bgfx_create_uniform("s_texFont",
                 BGFX_UNIFORM_TYPE_SAMPLER, 1);
 
@@ -83,26 +77,24 @@ public class TextRenderer3d {
 
     public ByteBuffer loadCustomBGFXShader(GLX glx, String name) throws IOException {
 
-        // get the proper shader path for the current renderer
+        // get the shader path for the current renderer
+        // we support dx11, opengl, and metal
+        // TODO - add Vulkan if/when Chromatik adds support
         String path = "resources/shaders/bgfx/";
         switch (glx.getRenderer()) {
-            case 2:
-                path = path + "dx9/";
-                break;
             case 3:
             case 4:
                 path = path + "dx11/";
                 break;
-            case 5:
-            case 7:
-            case 8:
-            default:
-                throw new IOException("No shaders supported for " + org.lwjgl.bgfx.BGFX.bgfx_get_renderer_name(glx.getRenderer()) + " renderer");
             case 6:
                 path = path + "metal/";
                 break;
             case 9:
                 path = path + "glsl/";
+                break;
+            default:
+                throw new IOException("No shaders supported for " + bgfx_get_renderer_name(glx.getRenderer()) + " renderer");
+
         }
 
         try {
@@ -169,8 +161,8 @@ public class TextRenderer3d {
             l.vertexBuffer.putFloat(drawX + glyphWidth);
             l.vertexBuffer.putFloat(drawY);
             l.vertexBuffer.putFloat(drawZ);
-            l.vertexBuffer.putFloat((float) (g.x + g.width) / atlasWidth);
-            l.vertexBuffer.putFloat((float) (g.y + g.height) / atlasHeight);
+            l.vertexBuffer.putFloat((g.x + g.width) / atlasWidth);
+            l.vertexBuffer.putFloat((g.y + g.height) / atlasHeight);
             l.vertexBuffer.putInt(l.color);
 
             // vertex 3
@@ -193,8 +185,8 @@ public class TextRenderer3d {
             l.vertexBuffer.putFloat(drawX + glyphWidth);
             l.vertexBuffer.putFloat(drawY);
             l.vertexBuffer.putFloat(drawZ);
-            l.vertexBuffer.putFloat((float) (g.x + g.width) / atlasWidth);
-            l.vertexBuffer.putFloat((float) (g.y + g.height) / atlasHeight);
+            l.vertexBuffer.putFloat((g.x + g.width) / atlasWidth);
+            l.vertexBuffer.putFloat((g.y + g.height) / atlasHeight);
             l.vertexBuffer.putInt(l.color);
 
             // vertex 2
@@ -202,7 +194,7 @@ public class TextRenderer3d {
             l.vertexBuffer.putFloat(drawY + glyphHeight);
             l.vertexBuffer.putFloat(drawZ);
             l.vertexBuffer.putFloat((g.x + g.width) / atlasWidth);
-            l.vertexBuffer.putFloat( g.y / atlasHeight);
+            l.vertexBuffer.putFloat(g.y / atlasHeight);
             l.vertexBuffer.putInt(l.color);
 
             drawX += glyphWidth;
@@ -213,18 +205,20 @@ public class TextRenderer3d {
     }
 
     // convert color to float array and place in uniform buffer
-    public void setFontColor(int color) {
-        colorBuffer.put(0, (float)(color >>> 16 & 0xFF) / 255.0F);
-        colorBuffer.put(1, (float)(color >>> 8 & 0xFF) / 255.0F);
-        colorBuffer.put(2, (float)(color & 0xFF) / 255.0F);
-        colorBuffer.put(3, (float)(color >>> 24 & 0xFF) / 255.0F);
+    public void setColorUniform(int color,FloatBuffer buffer) {
+        buffer.put(0, (float) (color >>> 16 & 0xFF) / 255.0F);
+        buffer.put(1, (float) (color >>> 8 & 0xFF) / 255.0F);
+        buffer.put(2, (float) (color & 0xFF) / 255.0F);
+        buffer.put(3, (float) (color >>> 24 & 0xFF) / 255.0F);
     }
 
     public void draw(View view, Label l) {
         l.modelMatrix.get(l.modelMatrixBuf);
         bgfx_set_transform(l.modelMatrixBuf);
-        setFontColor(l.color);
+        setColorUniform(l.color,colorBuffer);
+        setColorUniform(l.background,backgroundBuffer);
         BGFX.bgfx_set_uniform(uniformColor, colorBuffer, 1);
+        BGFX.bgfx_set_uniform(uniformBackground, backgroundBuffer, 1);
         bgfx_set_texture(0, this.uniformTexture, textureHandle, BGFX_SAMPLER_NONE);
         final long state =
             BGFX_STATE_WRITE_RGB |
@@ -243,9 +237,11 @@ public class TextRenderer3d {
         MemoryUtil.memFree(this.vsCode);
         MemoryUtil.memFree(this.fsCode);
         MemoryUtil.memFree(colorBuffer);
+        MemoryUtil.memFree(backgroundBuffer);
         this.vertexLayout.free();
         bgfx_destroy_uniform(this.uniformTexture);
         bgfx_destroy_uniform(this.uniformColor);
+        bgfx_destroy_uniform(this.uniformBackground);
         bgfx_destroy_program(this.program);
     }
 }
