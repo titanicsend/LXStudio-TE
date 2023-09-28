@@ -27,9 +27,12 @@ public class TEUIControls extends UICollapsibleSection {
     final float controlWidth = getContentWidth() - this.controlX;
 
     controlRow(ui, controlWidth, visual.opaqueBackPanelsVisible);
-    controlRow(ui, controlWidth, visual.backingOpacity);
+    //controlRow(ui, controlWidth, visual.backingOpacity);
     controlRow(ui, controlWidth, visual.lasersVisible);
     controlRow(ui, controlWidth, visual.laserBoxSize);
+    controlRow(ui, controlWidth, visual.panelLabelsVisible);
+    controlRow(ui, controlWidth, visual.vertexLabelsVisible);
+    controlRow(ui, controlWidth, visual.powerBoxesVisible);
 
     setContentHeight(Math.max(0, y - 4));
   }

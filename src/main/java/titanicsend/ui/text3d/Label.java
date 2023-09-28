@@ -11,7 +11,7 @@ import java.nio.FloatBuffer;
 // Information needed to render a single 3d text label
 public class Label {
     public Vector3f position;
-    public Vector3f rotation;;
+    public Vector3f rotation;
     public Matrix4f modelMatrix = new Matrix4f();
     public FloatBuffer modelMatrixBuf;
     int vertexCount;
@@ -25,7 +25,7 @@ public class Label {
         this.text = text;
         this.position = pos;
         this.rotation = rot;
-        this.color = LXColor.toABGR(color);
+        this.color = color;
 
         // we use all 6 vertices (two triangles) here to save setting up an index buffer
         this.vertexCount = this.text.length() * 6;

@@ -95,8 +95,7 @@ import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
 
-public class
-TEApp extends LXStudio {
+public class TEApp extends LXStudio {
 
   static public TEWholeModel wholeModel;
 
@@ -468,6 +467,7 @@ TEApp extends LXStudio {
       ui.previewAux.addComponent(new UILasers(lx, this.virtualOverlays));
 
       ui.preview.addComponent(new UIModelLabels(lx, this.virtualOverlays));
+      // Do we need model labels in the secondary view?  Uncomment if so.
       //ui.previewAux.addComponent(new UIModelLabels(lx, this.virtualOverlays));
 
       // precompile binaries for any new or changed shaders

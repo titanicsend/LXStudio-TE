@@ -19,12 +19,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import heronarts.glx.GLX;
 import heronarts.glx.View;
-import heronarts.glx.ui.UI;
 import heronarts.lx.color.LXColor;
+import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
 
 import static java.awt.Font.MONOSPACED;
@@ -35,6 +36,11 @@ public class TextManager3d {
     private final Map<Character, GlyphInfo> glyphs;
     private final TextRenderer3d renderer;
     private int fontHeight;
+    // multiplier to generate final font size in world space units
+    // the default multiplier of 10000 yields a world font height of
+    // 34000mm
+    private float font3dScale = 10000f;
+    private int fontColor = LXColor.WHITE;
 
     public TextManager3d(GLX glx, int size) {
         this(glx, new java.awt.Font(MONOSPACED, PLAIN, size));
@@ -66,9 +72,12 @@ public class TextManager3d {
         renderer = initializeFont(glx, font);
     }
 
-    public void addLabel(Label l) {
-        renderer.addLabel(this,l);
+    public Label labelMaker(String text, Vector3f pos, Vector3f rot) {
+        Label l = new Label(text, pos, rot, fontColor);
+        renderer.buildRenderBuffers(this,l);
+        return l;
     }
+
 
     // create the actual font texture atlas
     private TextRenderer3d initializeFont(GLX glx, java.awt.Font font) {
@@ -190,7 +199,7 @@ public class TextManager3d {
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             GlyphInfo g = glyphs.get(c);
-            lineWidth += g.width;
+            lineWidth += (int) g.width;
         }
         // just to make sure we don't get any negative width control characters...
         return Math.max(0, lineWidth);
@@ -204,8 +213,36 @@ public class TextManager3d {
         return glyphs.get(c);
     }
 
-    public void draw(UI ui, View view) {
-        renderer.draw(ui, view);
+
+    public float getFontScale() {
+        return font3dScale;
+    }
+
+    /** sets the font scale multiplier.  Default is 10000, which yields a font
+     *  that, when rendered in 3D, appears to be somewhere between 10 and 16 points.
+     *  (on the TE model, it looks like it'd be a bit over a foot high.)
+     *  Does not retroactively change the size of existing labels, so to change
+     *  font size as you add labels, you'll need to call this before creating them.
+     *
+     *  @param scale - multiplier
+     */
+    public void setFontScale(float scale) {
+        font3dScale = scale;
+    }
+
+    /**
+     * Sets the font color for all new labels.  Does not retroactively change the color of
+     * existing labels.
+     * @param color packed LX color
+     */
+    public void setFontColor(int color) {
+        fontColor = color;
+    }
+
+    public void draw(View view, List<Label> labels) {
+        for (Label l : labels) {
+            renderer.draw(view, l);
+        }
     }
 
     public void dispose() {
