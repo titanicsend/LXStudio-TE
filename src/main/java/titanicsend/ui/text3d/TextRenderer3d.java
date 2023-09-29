@@ -17,17 +17,16 @@ import titanicsend.util.TE;
 
 public class TextRenderer3d {
     private ByteBuffer fontTexture;
-    private short textureHandle;
-    private BGFXVertexLayout vertexLayout;
-    private short program;
-    private short uniformTexture;
-
-    private short uniformColor;
-    private short uniformBackground;
     private FloatBuffer colorBuffer;
     private FloatBuffer backgroundBuffer;
-    private ByteBuffer vsCode;
-    private ByteBuffer fsCode;
+    private final short textureHandle;
+    private final BGFXVertexLayout vertexLayout;
+    private final short program;
+    private final short uniformTexture;
+    private final short uniformColor;
+    private final short uniformBackground;
+    private final ByteBuffer vsCode;
+    private final ByteBuffer fsCode;
     public float atlasWidth;
     public float atlasHeight;
 
@@ -93,8 +92,7 @@ public class TextRenderer3d {
                 path = path + "glsl/";
                 break;
             default:
-                throw new IOException("No shaders supported for " + bgfx_get_renderer_name(glx.getRenderer()) + " renderer");
-
+                throw new IOException("Custom shaders are not supported on " + bgfx_get_renderer_name(glx.getRenderer()));
         }
 
         try {
@@ -119,7 +117,7 @@ public class TextRenderer3d {
         int lineWidth = t.getWidth(l.text);
 
         float drawX = t.getFontScale() * -lineWidth / 2f;
-        float drawY = t.getFontScale() * -t.getHeight() / 2f;
+        float drawY = t.getFontScale() * -t.getHeight(l.text) / 2f;
         float drawZ = 0;
 
         // at this point, we set up vertex buffers at initialization so we won't need this.
@@ -224,6 +222,7 @@ public class TextRenderer3d {
             BGFX_STATE_WRITE_RGB |
                 BGFX_STATE_WRITE_A |
                 BGFX_STATE_WRITE_Z |
+                BGFX_STATE_BLEND_ALPHA |
                 BGFX_STATE_DEPTH_TEST_LESS;
 
         bgfx_set_state(state, 0);

@@ -59,8 +59,9 @@ public class UIModelLabels extends UI3dComponent {
     Vector3f rotation = new Vector3f(0, 0, 0);
 
     // create labels for panels
-    textManager.setFontScale(12000);
+    textManager.setFontScale(15000);
     textManager.setFontColor(LXColor.WHITE);
+    textManager.setFontBackground(LXColor.rgba(0,0,0,255));  // opaque black
     for (TEPanelModel p : TEApp.wholeModel.panelsById.values()) {
       getPanelCoordinates(p, position, rotation);
       panelLabels.add(textManager.labelMaker(p.getId(), position, rotation));
@@ -69,7 +70,7 @@ public class UIModelLabels extends UI3dComponent {
     // create labels for vertices
     textManager.setFontScale(20000);
     textManager.setFontColor(LXColor.GREEN);
-    //textManager.setFontBackground(LXColor.rgba(0,64,64,255));
+    textManager.setFontBackground(LXColor.rgba(0,64,64,200));
     for (TEVertex v : TEApp.wholeModel.vertexesById.values()) {
       getVertexCoordinates(v, position, rotation);
       vertexLabels.add(textManager.labelMaker(String.valueOf(v.id), position, rotation));
@@ -87,11 +88,13 @@ public class UIModelLabels extends UI3dComponent {
     outPosition.set(inCenter);
     outRotation.set(0,0,0);
 
-    // if it's on the end of the car, displace z outward and build the
-    // texture box in x and y, with offset z-ward.  Also flip
-    // fore/aft labels 180 degrees as needed.
+    // if the label is on the end of the car, displace z outward and build the
+    // texture box in x and y, with offset z-ward.  On the lowest fore/aft panels,
+    // which are highly angled, increase the offset to bump the labels outward a
+    // little extra. Also flip fore/aft labels by 180 degrees as needed to keep
+    // text oriented correctly.
     if (Math.abs(outPosition.x) < 1200000) {
-      outPosition.z += ((outPosition.z > 0) ? 1 : -1) * offset;
+      outPosition.z += ((outPosition.z > 0) ? 1 : -1) * offset * ((outPosition.y < 1000000f) ? 1.5f : 1);
       outRotation.y += (outPosition.z > 0) ? (float) Math.PI : 0;
 
     }
@@ -105,12 +108,12 @@ public class UIModelLabels extends UI3dComponent {
 
   public void getPanelCoordinates(TEPanelModel panel, Vector3f position, Vector3f rotation) {
     Vector3f panelCenter = new Vector3f(panel.centroid.x, panel.centroid.y, panel.centroid.z);
-    getLabelCoordinates(panelCenter, position, rotation, 150000);
+    getLabelCoordinates(panelCenter, position, rotation, 200000);
   }
 
   public void getVertexCoordinates(TEVertex vertex, Vector3f position, Vector3f rotation) {
     Vector3f panelCenter = new Vector3f(vertex.x, vertex.y, vertex.z);
-    getLabelCoordinates(panelCenter, position, rotation, 200000);
+    getLabelCoordinates(panelCenter, position, rotation, 210000);
   }
 
   @Override

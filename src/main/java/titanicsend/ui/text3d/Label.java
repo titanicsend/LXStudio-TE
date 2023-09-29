@@ -39,6 +39,7 @@ public class Label {
     }
 
     public void dispose() {
+        MemoryUtil.memFree(this.modelMatrixBuf);
         MemoryUtil.memFree(this.vertexBuffer);
     }
 

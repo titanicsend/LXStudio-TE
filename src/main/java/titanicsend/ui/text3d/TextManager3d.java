@@ -33,7 +33,7 @@ import static java.awt.Font.TRUETYPE_FONT;
 public class TextManager3d {
     private final Map<Character, GlyphInfo> glyphs;
     private final TextRenderer3d renderer;
-    private int fontHeight;
+
     // multiplier to generate final font size in world space units
     // the default multiplier of 10000 yields a world font height of
     // 34000mm
@@ -96,8 +96,6 @@ public class TextManager3d {
             imageWidth += ch.getWidth();
             imageHeight = Math.max(imageHeight, ch.getHeight());
         }
-
-        fontHeight = imageHeight;
 
         // create an image for our output glyph set
         BufferedImage image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
@@ -196,8 +194,14 @@ public class TextManager3d {
         return Math.max(0, lineWidth);
     }
 
-    public int getHeight() {
-        return fontHeight;
+    public int getHeight(String text) {
+        int lineHeight = 0;
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            GlyphInfo g = glyphs.get(c);
+            lineHeight = Math.max(lineHeight,(int) g.height);
+        }
+        return lineHeight;
     }
 
     public GlyphInfo getGlyph(char c) {
