@@ -69,7 +69,7 @@ public class UIModelLabels extends UI3dComponent {
     // create labels for vertices
     textManager.setFontScale(20000);
     textManager.setFontColor(LXColor.GREEN);
-    textManager.setFontBackground(LXColor.rgba(0,64,64,255));
+    //textManager.setFontBackground(LXColor.rgba(0,64,64,255));
     for (TEVertex v : TEApp.wholeModel.vertexesById.values()) {
       getVertexCoordinates(v, position, rotation);
       vertexLabels.add(textManager.labelMaker(String.valueOf(v.id), position, rotation));
