@@ -8,6 +8,7 @@ import java.nio.FloatBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import heronarts.lx.color.LXColor;
 import org.lwjgl.bgfx.BGFX;
 import org.lwjgl.bgfx.BGFXVertexLayout;
 import org.lwjgl.system.MemoryUtil;
@@ -30,12 +31,12 @@ public class TextRenderer3d {
     public float atlasWidth;
     public float atlasHeight;
 
-    public TextRenderer3d(GLX glx, ByteBuffer buffer, int width, int height) {
+    public TextRenderer3d(GLX glx, int[] pixels, int width, int height) {
         this.atlasWidth = width;
         this.atlasHeight = height;
 
         // create a font atlas texture from the supplied buffer
-        this.fontTexture = buffer;
+        this.fontTexture = rgbImageToAlphaTexture(width,height,pixels);
         this.textureHandle = bgfx_create_texture_2d(width, height, false, 1, BGFX_TEXTURE_FORMAT_R8,
             BGFX_SAMPLER_NONE,
             bgfx_make_ref(this.fontTexture));
@@ -72,6 +73,18 @@ public class TextRenderer3d {
         } catch (IOException iox) {
             throw new RuntimeException(iox);
         }
+    }
+
+    ByteBuffer rgbImageToAlphaTexture(int width,int height,int pixels[]) {
+        ByteBuffer buffer = MemoryUtil.memAlloc(width * height);
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                int pixel = pixels[i * width + j];
+                buffer.put((byte) (0xFF & LXColor.alpha(pixel)));
+            }
+        }
+        buffer.flip();
+        return buffer;
     }
 
     public ByteBuffer loadCustomBGFXShader(GLX glx, String name) throws IOException {

@@ -4,7 +4,7 @@ package titanicsend.ui.text3d;
  TrueType font renderer for Chromatik's 3D model indow
  2023 ZRanger1
 
- Font loader adapted for BGFX from:
+ AWT TrueType font loader adapted for BGFX from:
     SilverTiger OpenGL font tutorial
     https://github.com/SilverTiger/lwjgl3-tutorial/wiki/Fonts
     Copyright © 2015-2017, Heiko Brumme
@@ -15,7 +15,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,6 @@ import heronarts.glx.GLX;
 import heronarts.glx.View;
 import heronarts.lx.color.LXColor;
 import org.joml.Vector3f;
-import org.lwjgl.system.MemoryUtil;
 
 import static java.awt.Font.MONOSPACED;
 import static java.awt.Font.PLAIN;
@@ -133,19 +131,8 @@ public class TextManager3d {
         int[] pixels = new int[width * height];
         image.getRGB(0, 0, width, height, pixels, 0, width);
 
-        ByteBuffer buffer = MemoryUtil.memAlloc(width * height);
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                int pixel = pixels[i * width + j];
-                buffer.put((byte) (0xFF & LXColor.alpha(pixel)));
-            }
-        }
-
-        // prepare buffer for use by graphics subsystem
-        buffer.flip();
-
         // go forth and create a TextRenderer3d from our new font image buffer!
-        return new TextRenderer3d(glx, buffer, width, height);
+        return new TextRenderer3d(glx, pixels, width, height);
     }
 
     private BufferedImage createCharImage(java.awt.Font font, char c) {

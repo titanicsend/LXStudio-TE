@@ -128,6 +128,13 @@ public class UIModelLabels extends UI3dComponent {
 
   @Override
   public void dispose() {
+    // free native and GPU resources
     super.dispose();
+    for (Label l : panelLabels) {
+      l.dispose();
+    }
+    for (Label l : vertexLabels) {
+      l.dispose();
+    }
   }
 }
