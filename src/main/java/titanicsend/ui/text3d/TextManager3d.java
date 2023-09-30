@@ -1,212 +1,51 @@
 package titanicsend.ui.text3d;
 
-/*
- TrueType font renderer for Chromatik's 3D model indow
- 2023 ZRanger1
-
- AWT TrueType font loader adapted for BGFX from:
-    SilverTiger OpenGL font tutorial
-    https://github.com/SilverTiger/lwjgl3-tutorial/wiki/Fonts
-    Copyright © 2015-2017, Heiko Brumme
-    MIT License
-*/
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import heronarts.glx.GLX;
 import heronarts.glx.View;
 import heronarts.lx.color.LXColor;
 import org.joml.Vector3f;
 
-import static java.awt.Font.MONOSPACED;
-import static java.awt.Font.PLAIN;
-import static java.awt.Font.TRUETYPE_FONT;
-
 public class TextManager3d {
-    private final Map<Character, GlyphInfo> glyphs;
     private final TextRenderer3d renderer;
 
     // multiplier to generate final font size in world space units
-    // the default multiplier of 10000 yields a world font height of
-    // 34000mm
+
     private float font3dScale = 10000f;
     private int fontForeground = LXColor.WHITE;
     private int fontBackground = LXColor.BLACK;
 
     /**
-     * Initialize a TextManager3d object with a truetype font from an input stream.
-     * TODO - only a single font can currently be associated with a text manager
+     * Initialize a TextManager3d object with a font atlas file path
+     * TODO - only a single font can currently be associated with a text manager/renderer
      * TODO - Are we ever going to need more than this?
      *
-     * @param glx currently active GLX object
-     * @param in   input stream to truetype font file
-     * @param size Font size
-     * @throws FontFormatException if the font file doesn't contain the required
-     *                             font tables
-     * @throws IOException         if the font file can't be read
+     * @param glx      currently active GLX object
+     * @param fontPath relative (from project root) path to .font3d file
      */
-    public TextManager3d(GLX glx, InputStream in, int size) throws FontFormatException, IOException {
-        this(glx, java.awt.Font.createFont(TRUETYPE_FONT, in).deriveFont(PLAIN, size));
-    }
-
-    /**
-     * Initialize TextManager3d with an existing awt font object
-     * @param glx currently active GLX object
-     * @param font awt font object
-     */
-    public TextManager3d(GLX glx, java.awt.Font font) {
-        glyphs = new HashMap<>();
-        renderer = initializeFont(glx, font);
-    }
-
-    /**
-     *  Initialize TextManager3d with default font
-    */
-    public TextManager3d(GLX glx, int size) {
-        this(glx, new java.awt.Font(MONOSPACED, PLAIN, size));
+    public TextManager3d(GLX glx, String fontPath) {
+        renderer = new TextRenderer3d(glx, fontPath);
     }
 
     public Label labelMaker(String text, Vector3f pos, Vector3f rot) {
-        Label l = new Label(text, pos, rot, fontForeground,fontBackground);
-        renderer.buildRenderBuffers(this,l);
+        Label l = new Label(text, pos, rot, fontForeground, fontBackground);
+        renderer.buildRenderBuffers(this, l);
         return l;
     }
-
-    // create the actual font texture atlas
-    private TextRenderer3d initializeFont(GLX glx, java.awt.Font font) {
-        int imageWidth = 0;
-        int imageHeight = 0;
-
-        // make a pass through the font to determine overall width and height
-        for (int i = 32; i < 256; i++) {
-            char c = (char) i;
-            BufferedImage ch = createCharImage(font, c);
-            if (ch == null) {
-                // character not in this font...
-                continue;
-            }
-            imageWidth += ch.getWidth();
-            imageHeight = Math.max(imageHeight, ch.getHeight());
-        }
-
-        // create an image for our output glyph set
-        BufferedImage image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = image.createGraphics();
-
-        float x = 0;
-
-        // Generate glyphs for standard printable characters, starting with SPACE
-        // (0-31 are control codes, so we skip them.)
-        for (int i = 32; i < 256; i++) {
-            char c = (char) i;
-            BufferedImage charImage = createCharImage(font, c);
-            if (charImage == null) {
-                // character not in this font...
-                continue;
-            }
-
-            float charWidth  = charImage.getWidth();
-            float charHeight = charImage.getHeight();
-
-            // draw character to atlas image
-            g.drawImage(charImage, (int) x, 0, null);
-
-            // Store character info size and texture index info
-            GlyphInfo ch = new GlyphInfo(charWidth, charHeight, x, 0); //image.getHeight() - charHeight);
-            glyphs.put(c, ch);
-            x += charWidth;
-        }
-
-        // get a copy of the full RGBA image data and use it to create
-        // a compact alpha channel-only texture for use by the renderer.
-        int width = image.getWidth();
-        int height = image.getHeight();
-
-        int[] pixels = new int[width * height];
-        image.getRGB(0, 0, width, height, pixels, 0, width);
-
-        // go forth and create a TextRenderer3d from our new font image buffer!
-        return new TextRenderer3d(glx, pixels, width, height);
-    }
-
-    private BufferedImage createCharImage(java.awt.Font font, char c) {
-        // Create a small temporary image so we can get font metrics for this character
-        BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = image.createGraphics();
-
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.setFont(font);
-        FontMetrics metrics = g.getFontMetrics();
-        g.dispose();
-
-        int charWidth = metrics.charWidth(c);
-        int charHeight = metrics.getHeight();
-
-        // This should actually never happen...
-        if (charWidth == 0) {
-            return null;
-        }
-
-        // Create actual glyph image for this character
-        image = new BufferedImage(charWidth, charHeight, BufferedImage.TYPE_INT_ARGB);
-        g = image.createGraphics();
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.setFont(font);
-        g.setPaint(java.awt.Color.WHITE);
-        g.drawString(String.valueOf(c), 0, metrics.getAscent());
-        g.dispose();
-        return image;
-    }
-
-    /**
-     * Gets the width of the specified text.
-     *
-     * @param text A text string
-     * @return The width of the specified text in pixels
-     */
-    public int getWidth(String text) {
-        int lineWidth = 0;
-        for (int i = 0; i < text.length(); i++) {
-            char c = text.charAt(i);
-            GlyphInfo g = glyphs.get(c);
-            lineWidth += (int) g.width;
-        }
-        // just to make sure we don't get any negative width control characters...
-        return Math.max(0, lineWidth);
-    }
-
-    public int getHeight(String text) {
-        int lineHeight = 0;
-        for (int i = 0; i < text.length(); i++) {
-            char c = text.charAt(i);
-            GlyphInfo g = glyphs.get(c);
-            lineHeight = Math.max(lineHeight,(int) g.height);
-        }
-        return lineHeight;
-    }
-
-    public GlyphInfo getGlyph(char c) {
-        return glyphs.get(c);
-    }
-
 
     public float getFontScale() {
         return font3dScale;
     }
 
-    /** sets the font scale multiplier.  Default is 10000, which yields a font
-     *  that, when rendered in 3D, appears to be somewhere between 10 and 16 points.
-     *  (on the TE model, it looks like it'd be a bit over a foot high.)
-     *  Does not retroactively change the size of existing labels, so to change
-     *  font size as you add labels, you'll need to call this before creating them.
+    /**
+     * sets the font scale multiplier.  Default is 10000, which yields a font
+     * that, when rendered in 3D, appears to be somewhere between 10 and 16 points.
+     * (on the TE model, it looks like it'd be a bit over a foot high.)
+     * Does not retroactively change the size of existing labels, so to change
+     * font size as you add labels, you'll need to call this before creating them.
      *
-     *  @param scale - multiplier
+     * @param scale - multiplier
      */
     public void setFontScale(float scale) {
         font3dScale = scale;
@@ -215,6 +54,7 @@ public class TextManager3d {
     /**
      * Sets the font color for all new labels.  Does not retroactively change the color of
      * existing labels.
+     *
      * @param color packed LX color
      */
     public void setFontColor(int color) {
@@ -224,6 +64,7 @@ public class TextManager3d {
     /**
      * Sets the font background color for all new labels.  Does not retroactively change f
      * existing labels.
+     *
      * @param color packed LX color
      */
     public void setFontBackground(int color) {

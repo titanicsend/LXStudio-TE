@@ -1,14 +1,16 @@
 package titanicsend.ui.text3d;
 
 import static org.lwjgl.bgfx.BGFX.*;
-
+import java.io.DataInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
-import heronarts.lx.color.LXColor;
 import org.lwjgl.bgfx.BGFX;
 import org.lwjgl.bgfx.BGFXVertexLayout;
 import org.lwjgl.system.MemoryUtil;
@@ -17,9 +19,9 @@ import heronarts.glx.View;
 import titanicsend.util.TE;
 
 public class TextRenderer3d {
-    private ByteBuffer fontTexture;
-    private FloatBuffer colorBuffer;
-    private FloatBuffer backgroundBuffer;
+    private final ByteBuffer fontTexture;
+    private final FloatBuffer colorBuffer;
+    private final FloatBuffer backgroundBuffer;
     private final short textureHandle;
     private final BGFXVertexLayout vertexLayout;
     private final short program;
@@ -30,14 +32,15 @@ public class TextRenderer3d {
     private final ByteBuffer fsCode;
     public float atlasWidth;
     public float atlasHeight;
+    private final Map<Character, GlyphInfo> glyphs;
 
-    public TextRenderer3d(GLX glx, int[] pixels, int width, int height) {
-        this.atlasWidth = width;
-        this.atlasHeight = height;
+    public TextRenderer3d(GLX glx, String fontPath) {
 
         // create a font atlas texture from the supplied buffer
-        this.fontTexture = rgbImageToAlphaTexture(width,height,pixels);
-        this.textureHandle = bgfx_create_texture_2d(width, height, false, 1, BGFX_TEXTURE_FORMAT_R8,
+        glyphs = new HashMap<>();
+        fontTexture = readFontAtlas(fontPath, glyphs);
+
+        this.textureHandle = bgfx_create_texture_2d((int) atlasWidth, (int) atlasHeight, false, 1, BGFX_TEXTURE_FORMAT_R8,
             BGFX_SAMPLER_NONE,
             bgfx_make_ref(this.fontTexture));
 
@@ -75,16 +78,35 @@ public class TextRenderer3d {
         }
     }
 
-    ByteBuffer rgbImageToAlphaTexture(int width,int height,int pixels[]) {
-        ByteBuffer buffer = MemoryUtil.memAlloc(width * height);
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                int pixel = pixels[i * width + j];
-                buffer.put((byte) (0xFF & LXColor.alpha(pixel)));
+    // Reads the font atlas data file, builds the glyph map and returns a ByteBuffer
+    // containing the font atlas texture data.
+    public ByteBuffer readFontAtlas(String path, Map<Character, GlyphInfo> glyphs) {
+        try {
+            DataInputStream inStream = new DataInputStream(new FileInputStream(path));
+            int glyphCount = inStream.readInt();
+            atlasWidth = (float) inStream.readInt();
+            atlasHeight = (float) inStream.readInt();
+
+            // read glyph info and build glyph map
+            for (int i = 0; i < glyphCount; i++) {
+                int charWidth = inStream.readInt();
+                int charHeight = inStream.readInt();
+                int x = inStream.readInt();
+                int y = inStream.readInt();
+                char c = (char) (i + 32);
+                GlyphInfo g = new GlyphInfo(charWidth, charHeight, x, y);
+                glyphs.put(c, g);
             }
+            // read image alpha texture data
+            int imageSize = (int) (atlasWidth * atlasHeight);
+            byte[] imageData = new byte[imageSize];
+            inStream.read(imageData, 0, imageSize);
+            inStream.close();
+            return MemoryUtil.memAlloc(imageSize).put(imageData).flip();
+        } catch (Exception e) {
+            TE.err("TextRenderer3d: Error reading font atlas: " + e.getMessage());
         }
-        buffer.flip();
-        return buffer;
+        return null;
     }
 
     public ByteBuffer loadCustomBGFXShader(GLX glx, String name) throws IOException {
@@ -127,10 +149,10 @@ public class TextRenderer3d {
 
     public void buildRenderBuffers(TextManager3d t, Label l) {
 
-        int lineWidth = t.getWidth(l.text);
+        int lineWidth = getWidth(l.text);
 
         float drawX = t.getFontScale() * -lineWidth / 2f;
-        float drawY = t.getFontScale() * -t.getHeight(l.text) / 2f;
+        float drawY = t.getFontScale() * -getHeight(l.text) / 2f;
         float drawZ = 0;
 
         // at this point, we set up vertex buffers at initialization so we won't need this.
@@ -147,8 +169,7 @@ public class TextRenderer3d {
         // string centered at origin (0,0,0).  Then translate and rotate
         // to the correct position at frame generation time.
         for (int i = 0; i < l.text.length(); i++) {
-            char ch = l.text.charAt(i);
-            GlyphInfo g = t.getGlyph(ch);
+            GlyphInfo g = glyphs.get(l.text.charAt(i));
             float glyphHeight = g.height * t.getFontScale();
             float glyphWidth = g.width * t.getFontScale();
 
@@ -216,18 +237,46 @@ public class TextRenderer3d {
     }
 
     // convert color to float array and place in uniform buffer
-    public void setColorUniform(int color,FloatBuffer buffer) {
+    public void setColorUniform(int color, FloatBuffer buffer) {
         buffer.put(0, (float) (color >>> 16 & 0xFF) / 255.0F);
         buffer.put(1, (float) (color >>> 8 & 0xFF) / 255.0F);
         buffer.put(2, (float) (color & 0xFF) / 255.0F);
         buffer.put(3, (float) (color >>> 24 & 0xFF) / 255.0F);
     }
 
+    /**
+     * Gets the width of the specified text.
+     *
+     * @param text A text string
+     * @return The width of the specified text in pixels
+     */
+    public int getWidth(String text) {
+        int lineWidth = 0;
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            GlyphInfo g = glyphs.get(c);
+            lineWidth += (int) g.width;
+        }
+        // just to make sure we don't get any negative width control characters...
+        return Math.max(0, lineWidth);
+    }
+
+    public int getHeight(String text) {
+        int lineHeight = 0;
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            GlyphInfo g = glyphs.get(c);
+            lineHeight = Math.max(lineHeight, (int) g.height);
+        }
+        return lineHeight;
+    }
+
+
     public void draw(View view, Label l) {
         l.modelMatrix.get(l.modelMatrixBuf);
         bgfx_set_transform(l.modelMatrixBuf);
-        setColorUniform(l.color,colorBuffer);
-        setColorUniform(l.background,backgroundBuffer);
+        setColorUniform(l.color, colorBuffer);
+        setColorUniform(l.background, backgroundBuffer);
         BGFX.bgfx_set_uniform(uniformColor, colorBuffer, 1);
         BGFX.bgfx_set_uniform(uniformBackground, backgroundBuffer, 1);
         bgfx_set_texture(0, this.uniformTexture, textureHandle, BGFX_SAMPLER_NONE);
