@@ -181,6 +181,7 @@ public class FontMaker {
         }
 
         System.out.println("FontMaker: All done!");
+        exit(0);
     }
 
 
