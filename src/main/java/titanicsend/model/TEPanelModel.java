@@ -5,11 +5,10 @@ import java.util.*;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
 import titanicsend.app.TEVirtualColor;
-import titanicsend.effect.PanelAdjustEffect;
 import titanicsend.util.OffsetTriangles;
 
 public class TEPanelModel extends TEModel {
-  public static final float PANEL_BACKING_DISTANCE = 50000;  // About two inches
+  public static final float PANEL_BACKING_DISTANCE = 90000;  // About four inches
 
   // Useful data for points inside LIT panels
   public static class LitPointData {
@@ -90,6 +89,7 @@ public class TEPanelModel extends TEModel {
         // Display solid panels as semi-transparent black, recolorable by patterns
         this.virtualColor = new TEVirtualColor(0, 0, 0, 200);
         this.litPointData = null;
+
         break;
       default:
         throw new Error("Unknown panel type: " + this.panelType);
@@ -161,7 +161,6 @@ public class TEPanelModel extends TEModel {
   // See enum class for section description
   // TODO Replace this with something smarter
   // This is a really lazy/sloppy way of doing this, though if we're not changing the model it should be fine
-  static int k = 0;
   static public TEPanelSection getSection(LXVector centroid) {
     boolean fore = centroid.z < 0;
 
