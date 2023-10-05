@@ -7,23 +7,21 @@ import com.sun.jna.platform.mac.CoreFoundation;
 import com.sun.jna.platform.mac.CoreFoundation.*;
 import com.sun.jna.platform.win32.User32;
 
-public class WindowTitleGetter {
-    private static final String appName = "Chromatik";
-
+public class WindowTitleCheck {
     public interface CoreGraphics extends Library {
         CoreGraphics INSTANCE = Native.load("CoreGraphics", CoreGraphics.class);
 
         CoreFoundation.CFArrayRef CGWindowListCopyWindowInfo(int option, int relativeToWindow);
     }
 
-    public static boolean instanceRunningWin32() {
+    public static boolean instanceRunningWin32(String appTitle) {
         char[] buffer = new char[1024];
         boolean result = true;
         result = User32.INSTANCE.EnumWindows((hwnd, pointer) -> {
             User32.INSTANCE.GetWindowText(hwnd, buffer, buffer.length);
             String title = Native.toString(buffer);
             if (!title.isEmpty()) {
-                if  (title.startsWith(appName)) {
+                if  (title.startsWith(appTitle)) {
                     // found it. stop enumeration
                     return false;
                 }
@@ -34,7 +32,7 @@ public class WindowTitleGetter {
         return !result;
     }
 
-    public static boolean instanceRunningMac() {
+    public static boolean instanceRunningMac(String appTitle) {
         boolean result = false;
         CoreFoundation.CFArrayRef windowInfo = CoreGraphics.INSTANCE.CGWindowListCopyWindowInfo(0, 0);
         CFStringRef kCGWindowName = CFStringRef.createCFString("kCGWindowName");
@@ -49,7 +47,7 @@ public class WindowTitleGetter {
             ptr = windowRef.getValue(kCGWindowName);
             String windowName = ptr == null ? "" : new CFStringRef(ptr).stringValue();
 
-            if (windowName.startsWith(appName)) {
+            if (windowName.startsWith(appTitle)) {
                 result = true;
                 break;
             }
@@ -74,12 +72,12 @@ public class WindowTitleGetter {
         }
     }
 
-    public static boolean isChromatikRunning() {
+    public static boolean isRunning(String appTitle) {
         if (getOS().equals("win")) {
-            return instanceRunningWin32();
+            return instanceRunningWin32(appTitle);
         }
         else if (getOS().equals("mac")) {
-            return instanceRunningMac();
+            return instanceRunningMac(appTitle);
         }
         else {
             // TODO - add Linux support

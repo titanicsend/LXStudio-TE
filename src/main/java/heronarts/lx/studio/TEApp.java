@@ -95,7 +95,7 @@ import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
 
-import static heronarts.lx.studio.WindowTitleGetter.isChromatikRunning;
+
 
 
 public class TEApp extends LXStudio {
@@ -601,12 +601,9 @@ public class TEApp extends LXStudio {
         System.getProperty("os.arch")
         );
 
-    if (isChromatikRunning()) {
-      System.out.println("YES,YES,YES, YESSSSSSS!!! It is RUNNING!!!  A LOT!");
+    if (WindowTitleCheck.isRunning("Chromatik")) {
+      TE.err("Chromatik is already running.");
       System.exit(-1);
-    }
-    else {
-      System.out.println("SADLY, WE MUST INFORM YOU THAT YOUR APPLICATION IS NOT ALREADY RUNNING!");
     }
 
     LX.LOG_WARNINGS = true;
