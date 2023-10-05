@@ -95,6 +95,9 @@ import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
 
+import static heronarts.lx.studio.WindowTitleGetter.isChromatikRunning;
+
+
 public class TEApp extends LXStudio {
 
   static public TEWholeModel wholeModel;
@@ -598,6 +601,14 @@ public class TEApp extends LXStudio {
         System.getProperty("os.arch")
         );
 
+    if (isChromatikRunning()) {
+      System.out.println("YES,YES,YES, YESSSSSSS!!! It is RUNNING!!!  A LOT!");
+      System.exit(-1);
+    }
+    else {
+      System.out.println("SADLY, WE MUST INFORM YOU THAT YOUR APPLICATION IS NOT ALREADY RUNNING!");
+    }
+
     LX.LOG_WARNINGS = true;
 
     Flags flags = new Flags();
@@ -614,6 +625,8 @@ public class TEApp extends LXStudio {
       logs.mkdir();
     }
     setLogFile(new File(LX.Media.LOGS.getDirName(), logFileName));
+
+    //
 
     boolean headless = false;
     boolean loadTestahedron = false;
