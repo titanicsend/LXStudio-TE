@@ -15,7 +15,7 @@ The contents of:
     /src/main/java/titanicsend
     /test
 
-are hereby licensed under the terms of the MIT license, with the following exceptions: The contents of the following directories have complex or indeterminate licensing, and should not be considered open-source software:
+are hereby licensed under the terms of the [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) license, with the following exceptions: The contents of the following directories have complex or indeterminate licensing, and should not be considered open-source software:
 
     /resources/pixelblaze
     /src/main/java/titanicsend/pattern/pixelblaze
