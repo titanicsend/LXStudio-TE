@@ -542,12 +542,22 @@ public class DmxEngine implements LXLoopTask {
     if (channel instanceof LXGroup) {
       return getDmxModelBufferByGroup((LXGroup)channel).getArray();
     } else {
-      return this.dmxBufferByLXBuffer.get(this.lxBuffersByChannel.get(channel).get(0)).getArray();
+      DmxModelBuffer dmxBuffer = this.dmxBufferByLXBuffer.get(getLXBufferByChannelAndIndex(channel, 0));
+      return dmxBuffer != null ? dmxBuffer.getArray() : new DmxBuffer[]{};
     }
   }
 
   private DmxBuffer[] getRenderBuffersByChannel(LXAbstractChannel channel) {
-    return this.dmxBufferByLXBuffer.get(this.lxBuffersByChannel.get(channel).get(1)).getArray();
+    DmxModelBuffer dmxBuffer = this.dmxBufferByLXBuffer.get(getLXBufferByChannelAndIndex(channel, 1));
+    return dmxBuffer != null ? dmxBuffer.getArray() : new DmxBuffer[]{};
+  }
+
+  private LXBuffer getLXBufferByChannelAndIndex(LXAbstractChannel channel, int index) {
+    List<LXBuffer> buffers = this.lxBuffersByChannel.get(channel);
+    if (index >= buffers.size()) {
+      return null;
+    }
+    return buffers.get(index);
   }
 
   private void scaleBrightness(DmxBuffer[] fullBuffer, double brightness) {

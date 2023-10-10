@@ -41,7 +41,8 @@ public class DmxBlend {
    * @param model A model which indicates the set of points to blend
    */
   public void blend(DmxBuffer[] dst, DmxBuffer[] src, double alpha, DmxBuffer[] output, DmxWholeModel model) {
-    for (int i = 0; i < dst.length; i++) {
+    int minLength = Math.min(dst.length, Math.min(src.length, output.length));
+    for (int i = 0; i < minLength; i++) {
       DmxBuffer d = dst[i];
       DmxBuffer s = src[i];
       DmxBuffer o = output[i];
