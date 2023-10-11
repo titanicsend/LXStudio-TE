@@ -44,7 +44,9 @@ import titanicsend.app.TEOscListener;
 import titanicsend.app.TEUIControls;
 import titanicsend.app.TEVirtualOverlays;
 import titanicsend.app.autopilot.*;
+import titanicsend.app.dev.ArtNetInput;
 import titanicsend.app.dev.DevSwitch;
+import titanicsend.app.dev.UIArtNetInput;
 import titanicsend.app.dev.UIDevSwitch;
 import titanicsend.dmx.DmxEngine;
 import titanicsend.dmx.effect.BeaconStrobeEffect;
@@ -125,6 +127,7 @@ public class TEApp extends LXStudio {
     private final ViewCentral viewCentral;
     private final CrutchOSC crutchOSC;
     private DevSwitch devSwitch;
+    private ArtNetInput artNetInput;
 
     private LX lx;
 
@@ -354,6 +357,10 @@ public class TEApp extends LXStudio {
       // Developer/Production Switch
       // Must be after everything else has initialized.
       this.devSwitch = new DevSwitch(lx);
+
+      //lx.engine.dmx.artNetReceivePort.setValue(6454f); // default
+      //lx.engine.dmx.artNetReceiveActive.setValue(true);
+      this.artNetInput = new ArtNetInput(lx);
     }
 
     private TEPatternLibrary initializePatternLibrary(LX lx) {
@@ -445,6 +452,9 @@ public class TEApp extends LXStudio {
 
       new UIDevSwitch(ui, this.devSwitch, ui.leftPane.model.getContentWidth())
       .addToContainer(ui.leftPane.model, 0);
+
+      new UIArtNetInput(ui, this.artNetInput, ui.leftPane.model.getContentWidth())
+              .addToContainer(ui.leftPane.model, 0);
 
       new GigglePixelUI(ui, ui.leftPane.model.getContentWidth(), this.gpListener, this.gpBroadcaster)
       .addToContainer(ui.leftPane.model, 1);
