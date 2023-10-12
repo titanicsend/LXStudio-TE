@@ -653,11 +653,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 colorPrefix = "[x] ";
             }
             TEColorParameter colorParam = registerColorControl(colorPrefix);
-            if (!TEApp.ENABLE_COLOR_CENTRAL) {
-                markUnused(colorParam.offset);
-                markUnused(colorParam.gradient);
-                markUnused(swatchParameter);
-            }
 
             // controls will be added in the order their tags appear in the
             // TEControlTag enum
