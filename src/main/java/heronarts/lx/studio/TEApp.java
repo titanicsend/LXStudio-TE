@@ -64,6 +64,7 @@ import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.model.TEWholeModel;
 import titanicsend.model.justin.ColorCentral;
 import titanicsend.model.justin.ViewCentral;
+import titanicsend.modulator.dmx.Dmx16bitModulator;
 import titanicsend.modulator.dmx.DmxColorModulator;
 import titanicsend.modulator.dmx.DmxDualRangeModulator;
 import titanicsend.modulator.justin.MultiplierModulator;
@@ -93,6 +94,7 @@ import titanicsend.ui.UIBackings;
 import titanicsend.ui.UILasers;
 import titanicsend.ui.UIModelLabels;
 import titanicsend.ui.UITEPerformancePattern;
+import titanicsend.ui.modulator.UIDmx16bitModulator;
 import titanicsend.ui.modulator.UIDmxColorModulator;
 import titanicsend.ui.modulator.UIDmxDualRangeModulator;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
@@ -296,10 +298,12 @@ public class TEApp extends LXStudio {
       lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER4, MidiFighterTwister.class);
 
       // Custom modulators
+      lx.registry.addModulator(Dmx16bitModulator.class);
       lx.registry.addModulator(DmxColorModulator.class);
       lx.registry.addModulator(DmxDualRangeModulator.class);
       lx.registry.addModulator(MultiplierModulator.class);
       if (lx instanceof LXStudio) {
+        ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmx16bitModulator.class);
         ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmxColorModulator.class);
         ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmxDualRangeModulator.class);
         ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIMultiplierModulator.class);
