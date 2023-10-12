@@ -10,6 +10,7 @@ import heronarts.lx.model.LXModel;
 import heronarts.lx.parameter.*;
 import heronarts.lx.parameter.BooleanParameter.Mode;
 import heronarts.lx.studio.LXStudio;
+import heronarts.lx.studio.TEApp;
 import heronarts.lx.utils.LXUtils;
 import titanicsend.lx.LXGradientUtils;
 import titanicsend.lx.LXGradientUtils.BlendFunction;
@@ -652,11 +653,11 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 colorPrefix = "[x] ";
             }
             TEColorParameter colorParam = registerColorControl(colorPrefix);
-//            if (missingControls != null && !missingControls.uses_palette) {
-//                markUnused(colorParam.offset);
-//                markUnused(colorParam.gradient);
-//                markUnused(swatchParameter);
-//            }
+            if (!TEApp.ENABLE_COLOR_CENTRAL) {
+                markUnused(colorParam.offset);
+                markUnused(colorParam.gradient);
+                markUnused(swatchParameter);
+            }
 
             // controls will be added in the order their tags appear in the
             // TEControlTag enum
@@ -703,8 +704,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          */
         protected void setRemoteControls() {
             setCustomRemoteControls(new LXListenableNormalizedParameter[] {
-                this.color.offset,
-                this.color.gradient,
+                TEApp.ENABLE_COLOR_CENTRAL ? this.color.offset : null,
+                TEApp.ENABLE_COLOR_CENTRAL ? this.color.gradient : null,
                 getSwatchRemoteControl(),
                 getControl(TEControlTag.SPEED).control,
 
