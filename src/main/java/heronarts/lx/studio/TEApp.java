@@ -64,6 +64,7 @@ import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.model.TEWholeModel;
 import titanicsend.model.justin.ColorCentral;
 import titanicsend.model.justin.ViewCentral;
+import titanicsend.modulator.dmx.DmxDualRangeModulator;
 import titanicsend.modulator.justin.MultiplierModulator;
 import titanicsend.modulator.justin.UIMultiplierModulator;
 import titanicsend.osc.CrutchOSC;
@@ -91,6 +92,7 @@ import titanicsend.ui.UIBackings;
 import titanicsend.ui.UILasers;
 import titanicsend.ui.UIModelLabels;
 import titanicsend.ui.UITEPerformancePattern;
+import titanicsend.ui.modulator.UIDmxDualRangeModulator;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
@@ -291,9 +293,11 @@ public class TEApp extends LXStudio {
       lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER3, MidiFighterTwister.class);
       lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER4, MidiFighterTwister.class);
 
-      // Custom modulator type
+      // Custom modulators
+      lx.registry.addModulator(DmxDualRangeModulator.class);
       lx.registry.addModulator(MultiplierModulator.class);
       if (lx instanceof LXStudio) {
+        ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmxDualRangeModulator.class);
         ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIMultiplierModulator.class);
       }
 
