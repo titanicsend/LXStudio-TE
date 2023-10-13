@@ -36,13 +36,7 @@ import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.pattern.form.PlanesPattern;
 import heronarts.lx.pattern.texture.NoisePattern;
-import titanicsend.app.GigglePixelBroadcaster;
-import titanicsend.app.GigglePixelListener;
-import titanicsend.app.GigglePixelUI;
-import titanicsend.app.TEAutopilot;
-import titanicsend.app.TEOscListener;
-import titanicsend.app.TEUIControls;
-import titanicsend.app.TEVirtualOverlays;
+import titanicsend.app.*;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.dev.DevSwitch;
 import titanicsend.app.dev.UIDevSwitch;
@@ -55,6 +49,7 @@ import titanicsend.dmx.pattern.BeaconEverythingPattern;
 import titanicsend.dmx.pattern.BeaconStraightUpPattern;
 import titanicsend.dmx.pattern.DjLightsDirectPattern;
 import titanicsend.dmx.pattern.DjLightsEasyPattern;
+import titanicsend.effect.GlobalPatternControl;
 import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lx.APC40Mk2;
@@ -142,6 +137,10 @@ public class TEApp extends LXStudio {
 
       // Saved options for UI overlays
       lx.engine.registerComponent("virtualOverlays", this.virtualOverlays = new TEVirtualOverlays(lx));
+
+      // set up global control values object so all patterns can potentially be controlled
+      // by a single external input (e.g. DMX controller )
+       lx.engine.registerComponent("globalPatternControls", new TEGlobalPatternControls(lx));
 
 //      lx.ui.preview.addComponent(visual);
 //      new TEUIControls(ui, visual, ui.leftPane.global.getContentWidth()).addToContainer(ui.leftPane.global);
@@ -234,6 +233,7 @@ public class TEApp extends LXStudio {
       lx.registry.addEffect(titanicsend.effect.NoGapEffect.class);
       lx.registry.addEffect(titanicsend.effect.PanelAdjustEffect.class);
       lx.registry.addEffect(BeaconEffect.class);
+      lx.registry.addEffect(GlobalPatternControl.class);
 
       // DMX patterns
       lx.registry.addPattern(BeaconDirectPattern.class);
