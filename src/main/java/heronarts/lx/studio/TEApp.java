@@ -36,13 +36,7 @@ import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.pattern.form.PlanesPattern;
 import heronarts.lx.pattern.texture.NoisePattern;
-import titanicsend.app.GigglePixelBroadcaster;
-import titanicsend.app.GigglePixelListener;
-import titanicsend.app.GigglePixelUI;
-import titanicsend.app.TEAutopilot;
-import titanicsend.app.TEOscListener;
-import titanicsend.app.TEUIControls;
-import titanicsend.app.TEVirtualOverlays;
+import titanicsend.app.*;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.dev.DevSwitch;
 import titanicsend.app.dev.UIDevSwitch;
@@ -55,6 +49,7 @@ import titanicsend.dmx.pattern.BeaconEverythingPattern;
 import titanicsend.dmx.pattern.BeaconStraightUpPattern;
 import titanicsend.dmx.pattern.DjLightsDirectPattern;
 import titanicsend.dmx.pattern.DjLightsEasyPattern;
+import titanicsend.effect.GlobalPatternControl;
 import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lx.APC40Mk2;
@@ -64,6 +59,9 @@ import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.model.TEWholeModel;
 import titanicsend.model.justin.ColorCentral;
 import titanicsend.model.justin.ViewCentral;
+import titanicsend.modulator.dmx.Dmx16bitModulator;
+import titanicsend.modulator.dmx.DmxColorModulator;
+import titanicsend.modulator.dmx.DmxDualRangeModulator;
 import titanicsend.modulator.justin.MultiplierModulator;
 import titanicsend.modulator.justin.UIMultiplierModulator;
 import titanicsend.osc.CrutchOSC;
@@ -91,6 +89,9 @@ import titanicsend.ui.UIBackings;
 import titanicsend.ui.UILasers;
 import titanicsend.ui.UIModelLabels;
 import titanicsend.ui.UITEPerformancePattern;
+import titanicsend.ui.modulator.UIDmx16bitModulator;
+import titanicsend.ui.modulator.UIDmxColorModulator;
+import titanicsend.ui.modulator.UIDmxDualRangeModulator;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
@@ -136,6 +137,10 @@ public class TEApp extends LXStudio {
 
       // Saved options for UI overlays
       lx.engine.registerComponent("virtualOverlays", this.virtualOverlays = new TEVirtualOverlays(lx));
+
+      // set up global control values object so all patterns can potentially be controlled
+      // by a single external input (e.g. DMX controller )
+       lx.engine.registerComponent("globalPatternControls", new TEGlobalPatternControls(lx));
 
 //      lx.ui.preview.addComponent(visual);
 //      new TEUIControls(ui, visual, ui.leftPane.global.getContentWidth()).addToContainer(ui.leftPane.global);
@@ -228,6 +233,7 @@ public class TEApp extends LXStudio {
       lx.registry.addEffect(titanicsend.effect.NoGapEffect.class);
       lx.registry.addEffect(titanicsend.effect.PanelAdjustEffect.class);
       lx.registry.addEffect(BeaconEffect.class);
+      lx.registry.addEffect(GlobalPatternControl.class);
 
       // DMX patterns
       lx.registry.addPattern(BeaconDirectPattern.class);
@@ -291,9 +297,15 @@ public class TEApp extends LXStudio {
       lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER3, MidiFighterTwister.class);
       lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER4, MidiFighterTwister.class);
 
-      // Custom modulator type
+      // Custom modulators
+      lx.registry.addModulator(Dmx16bitModulator.class);
+      lx.registry.addModulator(DmxColorModulator.class);
+      lx.registry.addModulator(DmxDualRangeModulator.class);
       lx.registry.addModulator(MultiplierModulator.class);
       if (lx instanceof LXStudio) {
+        ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmx16bitModulator.class);
+        ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmxColorModulator.class);
+        ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmxDualRangeModulator.class);
         ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIMultiplierModulator.class);
       }
 
