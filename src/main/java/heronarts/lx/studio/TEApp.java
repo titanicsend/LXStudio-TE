@@ -57,7 +57,6 @@ import titanicsend.lx.MidiFighterTwister;
 import titanicsend.midi.MidiNames;
 import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.model.TEWholeModel;
-import titanicsend.model.justin.ColorCentral;
 import titanicsend.model.justin.ViewCentral;
 import titanicsend.modulator.dmx.Dmx16bitModulator;
 import titanicsend.modulator.dmx.DmxColorModulator;
@@ -105,7 +104,6 @@ public class TEApp extends LXStudio {
   private static String resourceSubdir;
 
   // Global feature on/off switches for troubleshooting
-  public static final boolean ENABLE_COLOR_CENTRAL = false;
   public static final boolean ENABLE_VIEW_CENTRAL = true;
 
   @LXPlugin.Name("Titanic's End")
@@ -122,7 +120,6 @@ public class TEApp extends LXStudio {
 
     private final DmxEngine dmxEngine;
     private final TELaserTask laserTask;
-    private final ColorCentral colorCentral;
     private final ViewCentral viewCentral;
     private final CrutchOSC crutchOSC;
     private DevSwitch devSwitch;
@@ -149,9 +146,6 @@ public class TEApp extends LXStudio {
       // create our loop task for outputting data to lasers
       this.laserTask = new TELaserTask(lx);
       lx.engine.addLoopTask(this.laserTask);
-
-      // Add special per-channel swatch control. *Post-EDC note: this will get revised.
-      this.colorCentral = new ColorCentral(lx);
 
       // Load metadata about unused controls per-pattern into a singleton that patterns will reference later
       MissingControlsManager.get();
@@ -530,7 +524,6 @@ public class TEApp extends LXStudio {
 
       this.devSwitch.dispose();
       this.dmxEngine.dispose();
-      this.colorCentral.dispose();
       this.crutchOSC.dispose();
       this.viewCentral.dispose();
     }

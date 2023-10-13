@@ -14,7 +14,6 @@ import heronarts.lx.utils.LXUtils;
 import titanicsend.app.TEGlobalPatternControls;
 import titanicsend.lx.LXGradientUtils;
 import titanicsend.lx.LXGradientUtils.BlendFunction;
-import titanicsend.model.justin.ColorCentral;
 import titanicsend.model.justin.DisposableParameter.DisposeListener;
 import titanicsend.model.justin.LXVirtualDiscreteParameter;
 import titanicsend.model.justin.ViewCentral;
@@ -677,7 +676,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
             addParameter("panic", this.panic);
             addParameter("viewPerPattern", viewPerPattern);
-            addParameter("swatchPerChannel", swatchParameter);
         }
 
         public void markUnused(LXNormalizedParameter param) {
@@ -701,7 +699,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             setCustomRemoteControls(new LXListenableNormalizedParameter[] {
                 this.color.offset,
                 this.color.gradient,
-                getSwatchRemoteControl(),
+                getControl(TEControlTag.BRIGHTNESS).control,
                 getControl(TEControlTag.SPEED).control,
 
                 getControl(TEControlTag.XPOS).control,
@@ -720,14 +718,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 getControl(TEControlTag.EXPLODE).control
                 // To be SHIFT, not implemented yet
             });
-        }
-
-        protected LXListenableNormalizedParameter getSwatchRemoteControl() {
-            if (ColorCentral.ENABLED) {
-                return swatchParameter;
-            } else {
-                return getControl(TEControlTag.BRIGHTNESS).control;
-            }
         }
 
         protected LXListenableNormalizedParameter getViewRemoteControl() {
@@ -867,10 +857,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             getControl(TEControlTag.WOW1).control.reset();
             getControl(TEControlTag.WOW2).control.reset();
             getControl(TEControlTag.WOWTRIGGER).control.reset();
-
-            if (ColorCentral.ENABLED) {
-                swatchParameter.reset();
-            }
 
             if (ViewCentral.ENABLED) {
                 viewPerPattern.reset();
