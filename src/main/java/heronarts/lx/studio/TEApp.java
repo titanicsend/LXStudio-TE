@@ -105,7 +105,7 @@ public class TEApp extends LXStudio {
   private static String resourceSubdir;
 
   // Global feature on/off switches for troubleshooting
-  public static final boolean ENABLE_COLOR_CENTRAL = true;
+  public static final boolean ENABLE_COLOR_CENTRAL = false;
   public static final boolean ENABLE_VIEW_CENTRAL = true;
 
   @LXPlugin.Name("Titanic's End")
