@@ -11,6 +11,7 @@ import heronarts.lx.parameter.*;
 import heronarts.lx.parameter.BooleanParameter.Mode;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.utils.LXUtils;
+import titanicsend.app.TEGlobalPatternControls;
 import titanicsend.lx.LXGradientUtils;
 import titanicsend.lx.LXGradientUtils.BlendFunction;
 import titanicsend.model.justin.ColorCentral;
@@ -958,6 +959,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     protected FloatBuffer palette = Buffers.newDirectFloatBuffer(15);
 
+    protected TEGlobalPatternControls globalControls;
+
     protected TEPerformancePattern(LX lx) {
         this(lx, null);
     }
@@ -973,6 +976,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         this.viewPerPattern.addListener(viewPerPatternListener);
         this.viewPerPattern.listenDispose(viewPerPatternDisposing);
         this.viewPerPattern.setDefault(getDefaultView(), true);
+
+        this.globalControls = (TEGlobalPatternControls) lx.engine.getChild("globalPatternControls");
 
         lx.engine.addTask(() -> {
             if (this.controls.color == null) {
@@ -1206,7 +1211,13 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     }
 
     public double getSpeed() {
-        return controls.getValue(TEControlTag.SPEED);
+        BoundedParameter speedControl = (BoundedParameter) controls.getControl(TEControlTag.SPEED).control;
+        double spd = speedControl.getValue();
+        if (globalControls.useGlobalSpeed.isOn()) {
+            double g = globalControls.globalSpeed.getValue();
+            spd = g * ((spd >= 0) ? speedControl.range.max : speedControl.range.min);
+        }
+        return spd;
     }
 
     public double getXPos() {
