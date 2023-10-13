@@ -15,7 +15,6 @@ import heronarts.lx.parameter.CompoundParameter;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.pattern.jon.VariableSpeedTimer;
-import titanicsend.util.TEMath;
 
 import java.util.*;
 
@@ -27,7 +26,8 @@ public class TERandomStrobe extends TEEffect {
         public Set<TEEdgeModel> edges;
     }
 
-    private final ArrayList<PanelsWithEdges> panelsWithEdges = new ArrayList<>();
+    private final ArrayList<PanelsWithEdges> starboard = new ArrayList<>();
+    private final ArrayList<PanelsWithEdges> port = new ArrayList<>();
     private final VariableSpeedTimer time;
     private double eventStartTime;
 
@@ -39,7 +39,7 @@ public class TERandomStrobe extends TEEffect {
             .setDescription("Frequency of strobe effect in Hz");
 
     public final CompoundParameter density =
-        new CompoundParameter("Density", 8, 1, 26)
+        new CompoundParameter("Density", 8, 1, 22)
             .setDescription("Number of triangles to strobe");
 
     public final CompoundParameter dutyCycle =
@@ -73,31 +73,52 @@ public class TERandomStrobe extends TEEffect {
         buildPanelsAndEdgeList();
     }
 
-    private PanelsWithEdges findPanelEntry(TEPanelModel p) {
-        for (PanelsWithEdges pwe : panelsWithEdges) {
+    private PanelsWithEdges findPanelEntry(TEPanelModel p, ArrayList<PanelsWithEdges> list) {
+        for (PanelsWithEdges pwe : list) {
             if (pwe.panel == p) return pwe;
         }
         return null;
     }
 
-    // Ick! exhaustive search for edges connected to each panel
-    // TODO - Add connectedEdges to panel model. It'll be handy.
+    // Ick! Exhaustive search for edges connected to each panel
+    // TODO - consider adding a connectedEdges list to TEPanelModel
     //
-    // TODO - This is all the panels/edges on the car, which means
-    // TODO - it's technically possible to have all the random strobes on
-    // TODO - one side, leaving the other dark. Can we make use of symmetry
-    // TODO - to avoid this, and speed up frame calculation?
+    // We keep lists for each side of the car so we can light both
+    // sides in a balanced way, and there's no chance that rng will
+    // cause one side to be completely dark.
     public void buildPanelsAndEdgeList() {
-        for (TEEdgeModel edge : modelTE.getAllEdges()) {
-            for (TEPanelModel panel : edge.connectedPanels) {
-                PanelsWithEdges pwe = findPanelEntry(panel);
-                if (pwe == null) {
-                    pwe = new PanelsWithEdges();
-                    pwe.panel = panel;
-                    pwe.edges = new HashSet<>();
-                    panelsWithEdges.add(pwe);
+        for (TEPanelModel panel : modelTE.getAllPanels()) {
+            boolean isStarboard = (panel.centroid.x > 0);
+
+            PanelsWithEdges pwe = findPanelEntry(panel, isStarboard ? starboard : port);
+            if (pwe == null) {
+                pwe = new PanelsWithEdges();
+                pwe.panel = panel;
+                pwe.edges = new HashSet<>();
+                if (isStarboard) {
+                    starboard.add(pwe);
+                } else {
+                    port.add(pwe);
                 }
-                pwe.edges.add(edge);
+            }
+            for (TEEdgeModel edge : modelTE.getAllEdges()) {
+                if (edge.connectedPanels.contains(panel)) {
+                    pwe.edges.add(edge);
+                }
+            }
+        }
+    }
+
+    private void lightPanelPoints(PanelsWithEdges pwe, int col) {
+        for (TEPanelModel.LitPointData p : pwe.panel.litPointData) {
+            this.colors[p.point.index] = col;
+        }
+    }
+
+    private void lightEdgePoints(PanelsWithEdges pwe, int col) {
+        for (TEEdgeModel e : pwe.edges) {
+            for (TEEdgeModel.Point p : e.points) {
+                this.colors[p.index] = col;
             }
         }
     }
@@ -113,27 +134,28 @@ public class TERandomStrobe extends TEEffect {
 
             // if we're not currently in a flash event start a new one
             if (et >= 1.0) {
-                Collections.shuffle(panelsWithEdges);
+                Collections.shuffle(starboard);
+                Collections.shuffle(port);
                 eventStartTime = time.getTime();
             }
 
             if (et <= dutyCycle.getValue()) {
                 // TODO - get a real color
-                int col = (white.isOn()) ? LXColor.WHITE : lx.engine.palette.getSwatchColor(PRIMARY_COLOR_INDEX).getColor();;
+                int col = (white.isOn()) ? LXColor.WHITE :
+                    lx.engine.palette.getSwatchColor(PRIMARY_COLOR_INDEX).getColor();
 
                 for (int i = 0; i < density.getValue(); i++) {
-                    PanelsWithEdges pwe = panelsWithEdges.get(i);
+                    PanelsWithEdges starboardTriangle = starboard.get(i);
+                    PanelsWithEdges portTriangle = port.get(i);
+
                     if (panelsLit.isOn()) {
-                        for (TEPanelModel.LitPointData p : pwe.panel.litPointData) {
-                            this.colors[p.point.index] = col;
-                        }
+                        lightPanelPoints(starboardTriangle, col);
+                        lightPanelPoints(portTriangle, col);
+
                     }
                     if (edgesLit.isOn()) {
-                        for (TEEdgeModel e : pwe.edges) {
-                            for (TEEdgeModel.Point p : e.points) {
-                                this.colors[p.index] = col;
-                            }
-                        }
+                        lightEdgePoints(starboardTriangle, col);
+                        lightEdgePoints(portTriangle, col);
                     }
                 }
             }
