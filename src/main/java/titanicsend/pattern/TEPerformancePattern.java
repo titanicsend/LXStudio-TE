@@ -658,7 +658,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             // TEControlTag enum
             for (TEControlTag tag : TEControlTag.values()) {
                 LXListenableNormalizedParameter param = controlList.get(tag).control;
-
                 if (missingControls != null) {
                     if (missingControls.missing_control_tags.contains(tag)){
                         markUnused(param);
