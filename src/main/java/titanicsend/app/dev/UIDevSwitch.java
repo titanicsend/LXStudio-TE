@@ -28,7 +28,7 @@ public class UIDevSwitch extends UICollapsibleSection implements UIControls {
 
   public UIDevSwitch(UI ui, DevSwitch devSwitch, float w) {
     super(ui, 0, 0, w, 0);
-    this.setTitle("DEV SWITCH");
+    this.setTitle("CONTROL PANEL");
     this.setLayout(Layout.VERTICAL, VERTICAL_SPACING);
 
     this.controlWidth = getContentWidth() -  (PADDING * 2) - LABEL_WIDTH ;
