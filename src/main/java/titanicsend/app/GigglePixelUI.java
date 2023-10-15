@@ -34,12 +34,17 @@ public class GigglePixelUI extends UICollapsibleSection {
                        GigglePixelListener listener,
                        GigglePixelBroadcaster broadcaster) {
     super(ui, 0, 0, width, 16);
+
+    width = getContentWidth();
     setTitle("GigglePixel");
     setLayout(UI2dContainer.Layout.VERTICAL);
+
     UIDropMenu dropmenu = new UIDropMenu(0, 0, width, 16, gpMode);
     dropmenu.addToContainer(this);
-    UILabel label = new UILabel(0, 0, width, 16, "Peers:");
+    UILabel label = new UILabel(0, 0, width, 12, "Peers:");
+    label.setBottomMargin(4);
     label.addToContainer(this);
+
     listener.peersTextbox = new UITextBox(0, 0, width, 16);
     listener.peersTextbox.addToContainer(this);
 
