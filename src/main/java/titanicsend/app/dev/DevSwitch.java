@@ -468,6 +468,12 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     for (LXMidiSurface surface : this.lx.engine.midi.surfaces) {
       if (isTESurface(surface)) {
         surface.enabled.setValue(enabled);
+
+        if (surface instanceof titanicsend.lx.APC40Mk2) {
+          ((titanicsend.lx.APC40Mk2)surface).performanceLock.setValue(true);
+        } else if (surface instanceof heronarts.lx.midi.surface.APC40Mk2) {
+          ((heronarts.lx.midi.surface.APC40Mk2)surface).performanceLock.setValue(true);
+        }
       }
     }
 
