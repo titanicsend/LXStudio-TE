@@ -89,6 +89,7 @@ import titanicsend.ui.UIBackings;
 import titanicsend.ui.UILasers;
 import titanicsend.ui.UIModelLabels;
 import titanicsend.ui.UITEPerformancePattern;
+import titanicsend.ui.effect.UIRandomStrobeEffect;
 import titanicsend.ui.modulator.UIDmx16bitModulator;
 import titanicsend.ui.modulator.UIDmxColorModulator;
 import titanicsend.ui.modulator.UIDmxDualRangeModulator;
@@ -298,7 +299,13 @@ public class TEApp extends LXStudio {
       lx.registry.addModulator(DmxColorModulator.class);
       lx.registry.addModulator(DmxDualRangeModulator.class);
       lx.registry.addModulator(MultiplierModulator.class);
+
+      // Custom UI components
       if (lx instanceof LXStudio) {
+        // UI: Effects
+        ((LXStudio.Registry)lx.registry).addUIDeviceControls(UIRandomStrobeEffect.class);
+
+        // UI: Modulators
         ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmx16bitModulator.class);
         ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmxColorModulator.class);
         ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmxDualRangeModulator.class);
