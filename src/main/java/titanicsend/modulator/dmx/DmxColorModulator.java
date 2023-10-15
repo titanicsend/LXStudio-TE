@@ -7,9 +7,11 @@ package titanicsend.modulator.dmx;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.ColorParameter;
 import heronarts.lx.color.LXColor;
+import heronarts.lx.color.LXDynamicColor;
 import heronarts.lx.dmx.DmxModulator;
 import heronarts.lx.dmx.LXDmxEngine;
 import heronarts.lx.modulator.LXModulator;
+import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.EnumParameter;
 
 /**
@@ -51,6 +53,10 @@ public class DmxColorModulator extends DmxModulator {
     new EnumParameter<ColorPosition>("Color Position", ColorPosition.NONE)
     .setDescription("Destination color position (1-based) in the global palette current swatch");
 
+  public final BooleanParameter fixed =
+    new BooleanParameter("Fixed", true)
+    .setDescription("When applying DMX color to the palette, also set the target color mode to Fixed");
+
   public final ColorParameter color = new ColorParameter("Color", LXColor.BLACK);
 
   public DmxColorModulator() {
@@ -88,6 +94,9 @@ public class DmxColorModulator extends DmxModulator {
         this.lx.engine.palette.swatch.addColor().primary.setColor(LXColor.BLACK);
       }
       this.lx.engine.palette.swatch.getColor(colorPosition.index).primary.setColor(color);
+      if (this.fixed.isOn()) {
+        this.lx.engine.palette.swatch.getColor(colorPosition.index).mode.setValue(LXDynamicColor.Mode.FIXED);
+      }
     }
 
     return LXColor.luminosity(color) / 100.;

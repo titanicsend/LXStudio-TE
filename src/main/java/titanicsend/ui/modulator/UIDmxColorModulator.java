@@ -2,6 +2,7 @@ package titanicsend.ui.modulator;
 
 import heronarts.glx.ui.UI2dComponent;
 import heronarts.glx.ui.UI2dContainer;
+import heronarts.glx.ui.component.UIButton;
 import heronarts.glx.ui.component.UIDropMenu;
 import heronarts.glx.ui.component.UIIntegerBox;
 import heronarts.glx.ui.component.UILabel;
@@ -32,7 +33,11 @@ public class UIDmxColorModulator implements UIModulatorControls<DmxColorModulato
     UI2dContainer.newVerticalContainer(70, 2)
     .addChildren(
         new UILabel(70, 16, "Palette Color").setTextAlignment(Align.LEFT, Align.MIDDLE),
-        new UIDropMenu(56, 16, modulator.colorPosition).setX(6)
+        new UIDropMenu(56, 16, modulator.colorPosition).setX(6),
+        new UIButton(56, 16, modulator.fixed)
+          .setActiveLabel("Fixed")
+          .setInactiveLabel("Same")
+          .setX(6)
         )
     .setX(128)
     .addToContainer(uiModulator);
