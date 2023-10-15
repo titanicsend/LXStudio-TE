@@ -413,14 +413,17 @@ public class DmxEngine implements LXLoopTask {
     boolean blendRight = rightBusActive || this.lx.engine.mixer.cueB.isOn();
     boolean leftExists = false, rightExists = false;
     for (LXAbstractChannel channel : this.lx.engine.mixer.channels) {
-      long blendStart = System.nanoTime();
+      // If channel has never been run there is nothing to blend.
+      if (!hasDmxBuffer(channel)) {
+        continue;
+      }
 
       // Is this a group sub-channel? Those don't blend, they are already composited
       // into their group
       boolean isSubChannel = channel.getGroup() != null;
 
       // Blend into the output buffer
-      if (!isSubChannel && hasDmxBuffer(channel)) {
+      if (!isSubChannel) {
         BlendStack blendStack = null;
 
         // Which output group is this channel mapped to
@@ -467,8 +470,6 @@ public class DmxEngine implements LXLoopTask {
         auxBusActive = true;
         this.blendStackAux.blend(this.addBlend, getDmxBuffersByChannel(channel), 1, dmxWholeModel);
       }
-
-      ((LXAbstractChannel.Profiler) channel.profiler).blendNanos = System.nanoTime() - blendStart;
     }
 
     // Check if the crossfade group buses are cued
@@ -490,7 +491,6 @@ public class DmxEngine implements LXLoopTask {
         auxBusActive = true;
       }
     }
-
     DmxEngine.debug("runDmxMixer 5", render.main);
 
     // Step 4: now we have three output buses that need mixing... the left/right crossfade
