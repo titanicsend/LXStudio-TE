@@ -62,6 +62,7 @@ import titanicsend.model.justin.ViewCentral;
 import titanicsend.modulator.dmx.Dmx16bitModulator;
 import titanicsend.modulator.dmx.DmxColorModulator;
 import titanicsend.modulator.dmx.DmxDualRangeModulator;
+import titanicsend.modulator.dmx.DmxRangeModulator;
 import titanicsend.modulator.justin.MultiplierModulator;
 import titanicsend.modulator.justin.UIMultiplierModulator;
 import titanicsend.osc.CrutchOSC;
@@ -93,6 +94,7 @@ import titanicsend.ui.effect.UIRandomStrobeEffect;
 import titanicsend.ui.modulator.UIDmx16bitModulator;
 import titanicsend.ui.modulator.UIDmxColorModulator;
 import titanicsend.ui.modulator.UIDmxDualRangeModulator;
+import titanicsend.ui.modulator.UIDmxRangeModulator;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
@@ -298,6 +300,7 @@ public class TEApp extends LXStudio {
       lx.registry.addModulator(Dmx16bitModulator.class);
       lx.registry.addModulator(DmxColorModulator.class);
       lx.registry.addModulator(DmxDualRangeModulator.class);
+      lx.registry.addModulator(DmxRangeModulator.class);
       lx.registry.addModulator(MultiplierModulator.class);
 
       // Custom UI components
@@ -309,6 +312,7 @@ public class TEApp extends LXStudio {
         ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmx16bitModulator.class);
         ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmxColorModulator.class);
         ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmxDualRangeModulator.class);
+        ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmxRangeModulator.class);
         ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIMultiplierModulator.class);
       }
 
