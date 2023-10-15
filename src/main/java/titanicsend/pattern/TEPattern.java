@@ -15,10 +15,8 @@ import titanicsend.lx.LXGradientUtils;
 import titanicsend.model.TELaserModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
-import titanicsend.model.justin.ColorCentral;
 import titanicsend.model.justin.LXVirtualDiscreteParameter;
 import titanicsend.model.justin.SwatchParameter;
-import titanicsend.model.justin.ColorCentral.ColorCentralListener;
 import titanicsend.util.TEColor;
 import titanicsend.util.TEMath;
 
@@ -81,62 +79,6 @@ public abstract class TEPattern extends DmxPattern {
     }
   }
 
-  // VIRTUAL COLOR SWATCH PARAMETER
-
-  // Pass-through to color swatch selection per channel
-  public class LXVirtualSwatchParameter extends LXVirtualDiscreteParameter<SwatchParameter> implements ColorCentralListener {
-
-    public LXVirtualSwatchParameter(String label) {
-      super(label);
-
-      setIncrementMode(IncrementMode.RELATIVE);
-      setWrappable(false);
-
-      if (ColorCentral.isLoaded()) {
-        link();
-      } else {
-        listenForLoad();
-      }
-    }
-
-    public void listenForLoad() {
-      if (getParameter() == null) {
-        ColorCentral.listenOnce(this);
-      }
-    }
-
-    @Override
-    public void ColorCentralLoaded() {
-      link();
-    }
-
-    public void link() {
-      if (getParameter() == null) {
-        if (ColorCentral.isLoaded()) {
-          LXChannel channel = getChannel();
-          if (channel != null) {
-            setParameter(ColorCentral.get().get(channel).selectedSwatch);
-          }
-        }
-      }
-    }
-
-    // Type-specific pass-through
-    public LXSwatch getSwatch() {
-        SwatchParameter p = getParameter();
-        if (p != null) {
-            return ColorCentral.get().getSwatch(p.getObject());
-        }
-        return lx.engine.palette.swatch;
-    }
-  }
-
-  // Virtual Swatch parameter: pass-through to ColorCentral's current swatch for this channel
-  // Note this is a non-standard use of Palette Swatches and not recommended to do it this way,
-  // but we're doing it as a safety mechanism on this short timeline before performance.
-  public final LXVirtualSwatchParameter swatchParameter =
-      new LXVirtualSwatchParameter("Swatch");
-
   protected TEPattern(LX lx) {
     super(lx);
 	// NOTE(mcslee): in newer LX version, colors array does not exist at instantiation
@@ -153,16 +95,6 @@ public abstract class TEPattern extends DmxPattern {
     this.secondaryGradient.setNumStops(3);
     this.foregroundGradient.setNumStops(3);
     updateGradients();
-
-    // Patterns are created, then added to channel. Channel should be available on next engine loop.
-    lx.engine.addTask(() -> {
-        linkChannelParameters(lx);
-    });
-  }
-
-  private void linkChannelParameters(LX lx) {
-      // Finally safe to assume a channel has been assigned
-      this.swatchParameter.link();
   }
 
   @Override
@@ -197,7 +129,7 @@ public abstract class TEPattern extends DmxPattern {
   }
 
   protected LXSwatch getSwatch() {
-    return this.swatchParameter.getSwatch();
+    return this.lx.engine.palette.swatch;
   }
 
   protected LXDynamicColor getSwatchColor(int index) {
