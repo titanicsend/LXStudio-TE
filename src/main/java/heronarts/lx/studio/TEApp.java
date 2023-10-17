@@ -198,6 +198,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(PBFireworkNova.class);
       lx.registry.addPattern(PixelblazeParallel.class);
       lx.registry.addPattern(RadialSimplex.class);
+      lx.registry.addPattern(RainBands.class);
       lx.registry.addPattern(SimplexPosterized.class);
       lx.registry.addPattern(SpaceExplosionFX.class);
       lx.registry.addPattern(TEMidiFighter64DriverPattern.class);
