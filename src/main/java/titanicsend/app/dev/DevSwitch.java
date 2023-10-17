@@ -191,6 +191,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     addDetailParameter(this.lx.engine.osc.transmitActive, "OSC Output");
     addDetailParameter(TELaserTask.get().enabled, INDENT + "OSC to lasers");
     addDetailParameter(CrutchOSC.get().transmitActive, INDENT + "OSC to iPads");
+    addDetailParameter(this.lx.engine.dmx.artNetReceiveActive, "ArtNet Input");
     addDetailParameter(this.lx.engine.audio.enabled, "Audio Input");
     addDetailParameter(this.midiSurfaces);
     addDetailParameter(this.lx.engine.tempo.enabled, "Tempo Enabled");
@@ -343,6 +344,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
         !this.lx.engine.osc.transmitActive.isOn() &&
         !CrutchOSC.get().transmitActive.isOn() &&
         !TELaserTask.get().enabled.isOn() &&
+        this.lx.engine.dmx.artNetReceiveActive.isOn() &&
         this.lx.engine.audio.enabled.isOn() &&
         this.midiSurfaces.isOn() &&
         this.lx.engine.tempo.enabled.isOn() &&
@@ -358,6 +360,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
         this.lx.engine.osc.transmitActive.isOn() &&
         CrutchOSC.get().transmitActive.isOn() &&
         TELaserTask.get().enabled.isOn() == TELaserTask.DEFAULT_ENABLE_IN_PRODUCTION &&
+        this.lx.engine.dmx.artNetReceiveActive.isOn() &&
         this.lx.engine.audio.enabled.isOn() &&
         this.midiSurfaces.isOn() &&
         this.lx.engine.tempo.enabled.isOn() &&
@@ -386,6 +389,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     this.lx.engine.osc.transmitActive.setValue(false);
     CrutchOSC.get().transmitActive.setValue(false);
     TELaserTask.get().enabled.setValue(false);
+    this.lx.engine.dmx.artNetReceiveActive.setValue(true);
     this.lx.engine.audio.enabled.setValue(true);
     if (!this.midiSurfaces.getValueb()) {
       this.midiSurfaces.setValue(true);
@@ -407,12 +411,13 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
 
     this.lx.engine.output.enabled.setValue(true);    
     this.engineLEDs.setValue(true);
-    this.engineBeacons.setValue(true);
-    this.engineDJlights.setValue(true);
+    this.engineBeacons.setValue(false);
+    this.engineDJlights.setValue(false);
     this.lx.engine.osc.receiveActive.setValue(true);
     this.lx.engine.osc.transmitActive.setValue(true);
     CrutchOSC.get().transmitActive.setValue(true);
     TELaserTask.get().enabled.setValue(TELaserTask.DEFAULT_ENABLE_IN_PRODUCTION);
+    this.lx.engine.dmx.artNetReceiveActive.setValue(true);
     this.lx.engine.audio.enabled.setValue(true);
     if (!this.midiSurfaces.getValueb()) {
       this.midiSurfaces.setValue(true);
@@ -468,6 +473,12 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     for (LXMidiSurface surface : this.lx.engine.midi.surfaces) {
       if (isTESurface(surface)) {
         surface.enabled.setValue(enabled);
+
+        if (surface instanceof titanicsend.lx.APC40Mk2) {
+          ((titanicsend.lx.APC40Mk2)surface).performanceLock.setValue(true);
+        } else if (surface instanceof heronarts.lx.midi.surface.APC40Mk2) {
+          ((heronarts.lx.midi.surface.APC40Mk2)surface).performanceLock.setValue(true);
+        }
       }
     }
 
