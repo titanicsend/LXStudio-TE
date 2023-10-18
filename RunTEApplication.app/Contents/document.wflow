@@ -59,8 +59,7 @@
 				<key>ActionParameters</key>
 				<dict>
 					<key>COMMAND_STRING</key>
-					<string>cd /Users/te/src/code/LXStudio-TE;
-#java -XstartOnFirstThread -Djava.awt.headless=true -jar target/LXStudio-TE-0.2.2-SNAPSHOT-jar-with-dependencies.jar vehicle Projects/BM_2023.lxp;
+					<string>cd /Users/te/src/code/LXStudio-TE
 bash script/start-lx.sh</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
