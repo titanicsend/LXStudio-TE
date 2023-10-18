@@ -2,18 +2,16 @@ uniform float avgVolume;
 
 const float PI = 3.14159265359;
 
-//  Hash function from Dave Hoskin's Hash without Sine
-// https://www.shadertoy.com/view/4djSRW
-vec4 hash42(vec2 p) {
-    vec4 p4 = fract(vec4(p.xyxy) * vec4(.1031, .1030, .0973, .1099));
-    p4 += dot(p4, p4.wzxy+33.33);
-    return fract((p4.xxyz+p4.yzzw)*p4.zywx);
-}
-
 vec3 hsv2rgb(vec3 c) {
     vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
     vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
     return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
+//  rotate a point around the origin by <angle> radians
+vec2 rotate(vec2 point, float angle) {
+    mat2 rotationMatrix = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
+    return rotationMatrix * point;
 }
 
 // Density field generator. This emperically derived mystery
@@ -42,11 +40,16 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 aspect = iResolution.xy / min(iResolution.x, iResolution.y);
     vec2 uv = (fragCoord.xy * 2.0 - iResolution.xy) / min(iResolution.x, iResolution.y);
 
+    // rotate according to current control settings
+    uv = rotate(uv,iRotationAngle);
+
     // generate radial reflections about the origin
     uv = Kaleidoscope(uv, iQuantity);
 
     // ratio of level at current pixel's eq band to EMA volume from engine
-    // Wow2 acts as an overall level adjustment
+    // Wow2 acts as an overall level adjustment.  Note that normalizing
+    // the volume this way means that the kaleidoscope will always be
+    // doing *something*, even when there's no audio.
     float bandLevel = iWow2 * texture(iChannel0, vec2(uv.x, 0)).r/avgVolume;
     float loudestHalf = max(trebleLevel, bassLevel) / avgVolume;
 
@@ -61,9 +64,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float final_density = 0.0;
     for (int i = 0; i < 128; i++) {
         // handy noise vector which we'll use for position and color
-        // accumulation
-        vec4 noise  = hash42(vec2(float(i) + 0.5, 0.5));
-        vec2 pos = noise.xy;
+        // accumulation. (Switched to the latest fashionable noise
+        // source - precomputed noise texture - it's faster and doesn't have
+        // the problems with numerical precision that the old hash function did.)
+        vec4 noise  = texture( iChannel1, vec2( float( i ) + 0.5, 0.5 ) / 256.0 );
+        vec2 pos = texture( iChannel1, vec2( float( i ) + 0.5, 64.5 ) / 256.0 ).xy;
 
         // "velocity" moves the field based on what's actually going on in the music
         // at the current "real" pixel location
@@ -77,14 +82,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         pos = (pos * 2.0 - 1.0) * aspect;
 
         // "intensity" is the audio eq level at the current random sample position
-        float intensity = iWow2 * texture(iChannel0, vec2(pos.y, 0)).r/avgVolume;
+        float intensity = iWow2 *  texture(iChannel0, vec2(pos.y, 0)).r/avgVolume;
 
         // generate blob radius based on audio level at fake position
         // (the size of the field blob at the current location.)
         // Wow1 limits the max size for rough reactivity control.
-        //float radius =  intensity * clamp(noise.w, 0.1*abs(pos.x), loudestHalf);
         float radius =  loudestHalf / intensity;
-        radius = iWow1 + clamp(radius, 0.15*abs(pos.x), iWow1 * 3.);
+        radius = iWow1 + clamp(radius, 0.125 * abs(pos.x), iWow1 * 3.);
 
         // accumulate field density
         float density = field2(uv, pos, radius);
@@ -93,8 +97,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     }
 
     // gamma correct density and apply color
-    // (color selection tweaked to look like the 1940's version of "Fantasia"
-    // b/c I thought that'd be more fun. apologies to the palette.)
-    final_density = pow(clamp(final_density - 0.1, 0.0, 1.0), 2.);
-    fragColor = vec4(final_color *  final_density, 1.0);
+    final_density = pow(clamp(final_density - 0.1, 0.0, 1.0), 2.25);
+    final_color = mix(iColorRGB,iColor2RGB,fract(final_color));
+    fragColor = vec4(final_color,final_density);
 }
