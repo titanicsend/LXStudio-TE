@@ -34,6 +34,7 @@ import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXView;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.parameter.ObjectParameter;
+import heronarts.lx.structure.view.LXViewDefinition;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.TEApp;
 import titanicsend.model.TEWholeModel;
@@ -138,7 +139,7 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
       // View creation code borrowed from LXAbstractChannel.class
       if (v.viewEnabled && (v.viewSelector != null) && !v.viewSelector.isEmpty()) {
         v.setModel(LXView.create(this.lx.getModel(), v.viewSelector, v.viewNormalization));
-
+        addGlobalView(v);
       } else {
         LX.warning("View Definition is not a filter.");
         v.setModel(this.lx.getModel());
@@ -147,6 +148,13 @@ public class ViewCentral extends ChannelExtension<titanicsend.model.justin.ViewC
 
     // restore original model geometry
     mb.restoreModel((TEWholeModel) this.lx.getModel());
+  }
+
+  private void addGlobalView(ViewDefinition viewDefinition) {
+    LXViewDefinition view = this.lx.structure.views.addView();
+    view.label.setValue(viewDefinition.label);
+    view.selector.setValue(viewDefinition.viewSelector);
+    view.normalization.setValue(viewDefinition.viewNormalization);
   }
 
   @Override
