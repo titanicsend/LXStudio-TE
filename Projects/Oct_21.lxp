@@ -3458,7 +3458,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! ArcEdges",
+                  "label": "+ ArcEdges",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -3542,7 +3542,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "ArcEdges",
+                  "label": "- ArcEdges",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -3626,7 +3626,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! Electric",
+                  "label": "+ Electric",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -3710,7 +3710,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "Electric",
+                  "label": "- Electric",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -3794,7 +3794,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! Kaleidosonic",
+                  "label": "+ Kaleidosonic",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -3878,7 +3878,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "Kaleidosonic",
+                  "label": "- Kaleidosonic",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -3962,7 +3962,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! LightBeams",
+                  "label": "+ LightBeams",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -4046,7 +4046,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "LightBeams",
+                  "label": "- LightBeams",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -4130,7 +4130,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! MatrixScroller",
+                  "label": "+ MatrixScroller",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -4214,7 +4214,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "MatrixScroller",
+                  "label": "- MatrixScroller",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -4298,7 +4298,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! MetallicWaves",
+                  "label": "+ MetallicWaves",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -4382,7 +4382,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "MetallicWaves",
+                  "label": "- MetallicWaves",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -4466,7 +4466,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! NeonBlocks",
+                  "label": "+ NeonBlocks",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -4555,7 +4555,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "NeonBlocks",
+                  "label": "- NeonBlocks",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -4644,7 +4644,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! NeonCells",
+                  "label": "+ NeonCells",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -4730,7 +4730,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "NeonCells",
+                  "label": "- NeonCells",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -4816,7 +4816,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! NeonTriangles",
+                  "label": "+ NeonTriangles",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -4900,7 +4900,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "NeonTriangles",
+                  "label": "- NeonTriangles",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -4984,7 +4984,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! Phasers",
+                  "label": "+ Phasers",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -5068,7 +5068,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "Phasers",
+                  "label": "- Phasers",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -5152,7 +5152,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! PulsingPetriDish",
+                  "label": "+ PulsingPetriDish",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -5236,7 +5236,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "PulsingPetriDish",
+                  "label": "- PulsingPetriDish",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -5320,7 +5320,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! OutrunGrid",
+                  "label": "+ OutrunGrid",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -5404,7 +5404,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "OutrunGrid",
+                  "label": "- OutrunGrid",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -5488,7 +5488,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! RadialSimplex",
+                  "label": "+ RadialSimplex",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -5572,7 +5572,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "RadialSimplex",
+                  "label": "- RadialSimplex",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -5656,7 +5656,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! RainBands",
+                  "label": "+ RainBands",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -5740,7 +5740,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "RainBands",
+                  "label": "- RainBands",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -5824,7 +5824,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! RhythmicFlashStatic",
+                  "label": "+ RhythmicFlashStatic",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -5908,7 +5908,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "RhythmicFlashStatic",
+                  "label": "- RhythmicFlashStatic",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -5992,7 +5992,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! SigmoidDanceAudioLevels",
+                  "label": "+ SigmoidDanceAudioLevels",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -6076,7 +6076,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "SigmoidDanceAudioLevels",
+                  "label": "- SigmoidDanceAudioLevels",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -6160,7 +6160,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! SigmoidDanceAudioWaveform",
+                  "label": "+ SigmoidDanceAudioWaveform",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -6244,7 +6244,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "SigmoidDanceAudioWaveform",
+                  "label": "- SigmoidDanceAudioWaveform",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -6328,7 +6328,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! SimplexPosterized",
+                  "label": "+ SimplexPosterized",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -6412,7 +6412,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "SimplexPosterized",
+                  "label": "- SimplexPosterized",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -6496,7 +6496,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! SpiralDiamonds",
+                  "label": "+ SpiralDiamonds",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -6581,7 +6581,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "SpiralDiamonds",
+                  "label": "- SpiralDiamonds",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -6666,7 +6666,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! StormScanner",
+                  "label": "+ StormScanner",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -6752,7 +6752,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "StormScanner",
+                  "label": "- StormScanner",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -6838,7 +6838,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! TriangleCrossAudioWaveform",
+                  "label": "+ TriangleCrossAudioWaveform",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -6922,7 +6922,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "TriangleCrossAudioWaveform",
+                  "label": "- TriangleCrossAudioWaveform",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -7006,7 +7006,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! TriangleInfinityRadialWaveform",
+                  "label": "+ TriangleInfinityRadialWaveform",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -7090,7 +7090,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "TriangleInfinityRadialWaveform",
+                  "label": "- TriangleInfinityRadialWaveform",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -7174,7 +7174,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! TriangleNoise",
+                  "label": "+ TriangleNoise",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -7258,7 +7258,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "TriangleNoise",
+                  "label": "- TriangleNoise",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -7342,7 +7342,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! TurbulenceLines",
+                  "label": "+ TurbulenceLines",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -7426,7 +7426,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "TurbulenceLines",
+                  "label": "- TurbulenceLines",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -7510,7 +7510,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "! XorceryDiamonds",
+                  "label": "+ XorceryDiamonds",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -7594,7 +7594,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "XorceryDiamonds",
+                  "label": "- XorceryDiamonds",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
