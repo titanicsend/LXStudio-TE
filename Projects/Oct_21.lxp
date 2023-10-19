@@ -5992,7 +5992,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "+ SigmoidDanceAudioLevels",
+                  "label": "+ SigmoidDanceLevels",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -6076,7 +6076,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "- SigmoidDanceAudioLevels",
+                  "label": "- SigmoidDanceLevels",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -6160,7 +6160,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "+ SigmoidDanceAudioWaveform",
+                  "label": "+ SigmoidDanceWaveform",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -6244,7 +6244,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "- SigmoidDanceAudioWaveform",
+                  "label": "- SigmoidDanceWaveform",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -6838,7 +6838,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "+ TriangleCrossAudioWaveform",
+                  "label": "+ TriangleCrossWaveform",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -6922,7 +6922,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "- TriangleCrossAudioWaveform",
+                  "label": "- TriangleCrossWaveform",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -9162,7 +9162,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "SigmoidDanceAudioLevels",
+                  "label": "SigmoidDanceLevels",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -9246,7 +9246,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "SigmoidDanceAudioWaveform",
+                  "label": "SigmoidDanceWaveform",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -9585,7 +9585,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "TriangleCrossAudioWaveform",
+                  "label": "TriangleCrossWaveform",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -12034,7 +12034,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "SigmoidDanceAudioLevels",
+                  "label": "SigmoidDanceLevels",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -12118,7 +12118,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "SigmoidDanceAudioWaveform",
+                  "label": "SigmoidDanceWaveform",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
@@ -12457,7 +12457,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "TriangleCrossAudioWaveform",
+                  "label": "TriangleCrossWaveform",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
