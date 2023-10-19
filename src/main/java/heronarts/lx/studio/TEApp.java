@@ -60,6 +60,7 @@ import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.model.TEWholeModel;
 import titanicsend.model.justin.ViewCentral;
 import titanicsend.modulator.dmx.Dmx16bitModulator;
+import titanicsend.modulator.dmx.DmxGridModulator;
 import titanicsend.modulator.dmx.DmxColorModulator;
 import titanicsend.modulator.dmx.DmxDualRangeModulator;
 import titanicsend.modulator.dmx.DmxRangeModulator;
@@ -92,6 +93,7 @@ import titanicsend.ui.UIModelLabels;
 import titanicsend.ui.UITEPerformancePattern;
 import titanicsend.ui.effect.UIRandomStrobeEffect;
 import titanicsend.ui.modulator.UIDmx16bitModulator;
+import titanicsend.ui.modulator.UIDmxGridModulator;
 import titanicsend.ui.modulator.UIDmxColorModulator;
 import titanicsend.ui.modulator.UIDmxDualRangeModulator;
 import titanicsend.ui.modulator.UIDmxRangeModulator;
@@ -248,6 +250,9 @@ public class TEApp extends LXStudio {
       // DMX effects
       lx.registry.addEffect(BeaconStrobeEffect.class);
 
+      // Patterns for DMX input
+      lx.registry.addPattern(DmxGridPattern.class);
+
       // TODO - The following patterns were removed from the UI prior to EDC 2023 to keep
       // TODO - them from being accidentally activated during a performance.
       // TODO - update/fix as needed!
@@ -300,6 +305,7 @@ public class TEApp extends LXStudio {
 
       // Custom modulators
       lx.registry.addModulator(Dmx16bitModulator.class);
+      lx.registry.addModulator(DmxGridModulator.class);
       lx.registry.addModulator(DmxColorModulator.class);
       lx.registry.addModulator(DmxDualRangeModulator.class);
       lx.registry.addModulator(DmxRangeModulator.class);
@@ -312,6 +318,7 @@ public class TEApp extends LXStudio {
 
         // UI: Modulators
         ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmx16bitModulator.class);
+        ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmxGridModulator.class);
         ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmxColorModulator.class);
         ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmxDualRangeModulator.class);
         ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmxRangeModulator.class);
