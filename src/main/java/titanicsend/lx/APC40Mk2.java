@@ -676,7 +676,6 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
 
     private final LXAbstractChannel channel;
     private final LXParameterListener onCompositeModeChanged = this::onCompositeModeChanged;
-    ViewPerChannel viewPerChannel = null;
 
     ChannelListener(LXAbstractChannel channel) {
       this.channel = channel;
@@ -706,20 +705,6 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
           clip.loop.addListener(this);
         }
       }
-
-      
-      /*
-      // Listen to custom view parameter for channel
-      if (ViewCentral.ENABLED) {
-        this.viewPerChannel = ViewCentral.get().get(channel);
-        if (this.viewPerChannel != null) {
-          this.viewPerChannel.view.addListener(this);
-          if (channelKnobIsView.isOn()) {
-            sendChannelKnob((int) (this.viewPerChannel.view.getNormalized() * 127));
-          }
-        }
-      }
-      */
     }
 
     public void dispose() {
@@ -746,10 +731,6 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
           clip.running.removeListener(this);
           clip.loop.removeListener(this);
         }
-      }
-      if (this.viewPerChannel != null) {
-        this.viewPerChannel.view.removeListener(this);
-        this.viewPerChannel = null;
       }
     }
 
@@ -783,11 +764,6 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
           sendNoteOn(index, CHANNEL_ARM, this.channel.arm.isOn() ? LED_ON : LED_OFF);
         }
         sendChannelClips(this.channel.getIndex(), this.channel);
-      } else if (this.viewPerChannel != null && p == this.viewPerChannel.view) {
-        if (channelKnobIsView.isOn()) {
-          sendChannelKnob((int) (this.viewPerChannel.view.getNormalized() * 127));
-        }
-        return;
       } else if (p.getParent() instanceof LXClip) {
         LXClip clip = (LXClip) p.getParent();
         sendClip(index, this.channel, clip.getIndex(), clip);
@@ -865,16 +841,11 @@ public class APC40Mk2 extends LXMidiSurface implements LXMidiSurface.Bidirection
       new BooleanParameter("Performance Lock", false)
       .setDescription("Keep surface in Performance mode regardless of Design/Perform toggle");
 
-  public final BooleanParameter channelKnobIsView =
-    new BooleanParameter("CH Knob is View", true)
-    .setDescription("Whether to control Views with the channel knobs at the top of the APC40Mk2");
-
   public APC40Mk2(LX lx, LXMidiInput input, LXMidiOutput output) {
     super(lx, input, output);
     this.deviceListener = new DeviceListener(lx);
     addSetting("masterFaderEnabled", this.masterFaderEnabled);
     addSetting("crossfaderEnabled", this.crossfaderEnabled);
-    addSetting("channelKnobIsView", this.channelKnobIsView);
     addSetting("performanceLock", this.performanceLock);
   }
 
