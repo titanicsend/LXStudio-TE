@@ -259,11 +259,13 @@ public class ShaderPanelsPatternConfig {
     @LXCategory("Native Shaders Panels")
     public static class OutrunGrid extends ConstructedPattern {
         public OutrunGrid(LX lx) {
-            super(lx, TEShaderView.DOUBLE_LARGE);
+            super(lx, TEShaderView.ALL_POINTS);
         }
 
         @Override
         protected List<PatternEffect> createEffects() {
+            controls.setRange(TEControlTag.YPOS, -.35, -1.0, 1.0);
+            
             return List.of(new NativeShaderPatternEffect("outrun_grid.fs",
                 new PatternTarget(this)));
         }
