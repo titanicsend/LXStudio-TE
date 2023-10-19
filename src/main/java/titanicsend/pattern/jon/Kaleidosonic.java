@@ -14,7 +14,7 @@ public class Kaleidosonic extends TEPerformancePattern {
     NativeShader shader;
 
     public Kaleidosonic(LX lx) {
-        super(lx, TEShaderView.DOUBLE_LARGE);
+        super(lx, TEShaderView.ALL_POINTS);
 
         controls.setRange(TEControlTag.WOW1, 0.04, 0, 0.08);  // bass response
         controls.setRange(TEControlTag.WOW2, 0.5, 0.2, 3);    // overall audio level adjustment
