@@ -333,10 +333,12 @@ public class TEAutopilotMixer {
 
                 // move the group to where we need it to be
                 // we ensured above there were at least 8 channels, this handles if there was more
+                /* JKB note 10/19/23: Site team wants AutoVJ on the last channel, commenting this out for now.
                 int delta = group.getIndex() - AUTO_VJ_GROUP_MIXER_IDX;
                 for (int i = 0; i < delta; i++) {
                     lx.engine.mixer.moveChannel(group, -1);
                 }
+                */
 
                 // finally, record channel name to LXChannel mapping
                 // this will allow proper look up (ie: get channel idx for phrase of type CHORUS)
