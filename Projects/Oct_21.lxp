@@ -1,6 +1,6 @@
 {
   "version": "0.4.2.TE.7-SNAPSHOT",
-  "timestamp": 1697838296538,
+  "timestamp": 1697838698281,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -2818,9 +2818,9 @@
         },
         "parameters": {
           "label": "Tempo",
-          "clockSource": 0,
-          "period": 521.0,
-          "bpm": 115.16314779270634,
+          "clockSource": 2,
+          "period": 530.0,
+          "bpm": 113.20754716981132,
           "tap": false,
           "nudgeUp": false,
           "nudgeDown": false,
@@ -3107,8 +3107,8 @@
           "label": "Mixer",
           "crossfader": 0.4645669291338583,
           "crossfaderBlendMode": 1,
-          "focusedChannel": 0,
-          "focusedChannelAux": 3,
+          "focusedChannel": 7,
+          "focusedChannelAux": 6,
           "cueA": false,
           "cueB": false,
           "auxA": false,
@@ -3130,7 +3130,7 @@
               "label": "Master",
               "fader": 1.0,
               "arm": false,
-              "selected": false,
+              "selected": true,
               "previewMode": 0
             },
             "children": {},
@@ -3331,7 +3331,7 @@
               "label": "1",
               "fader": 0.0,
               "arm": false,
-              "selected": true,
+              "selected": false,
               "enabled": true,
               "cue": true,
               "aux": false,
@@ -4497,11 +4497,11 @@
                   "te_angle": 0.03804269667673088,
                   "panic": false,
                   "viewPerPattern": 0,
-                  "glow": 0.5,
-                  "hideBlocks": false,
-                  "ySpread": 1.6,
+                  "numBlocks": 30.0,
                   "speed": 0.7,
-                  "numBlocks": 30.0
+                  "glow": 0.5,
+                  "ySpread": 1.6,
+                  "hideBlocks": false
                 },
                 "children": {
                   "modulation": {
@@ -4586,11 +4586,11 @@
                   "te_angle": 0.0,
                   "panic": false,
                   "viewPerPattern": 0,
-                  "numBlocks": 30.0,
-                  "hideBlocks": false,
-                  "glow": 0.5,
                   "speed": 0.7,
-                  "ySpread": 1.6
+                  "numBlocks": 30.0,
+                  "glow": 0.5,
+                  "ySpread": 1.6,
+                  "hideBlocks": false
                 },
                 "children": {
                   "modulation": {
@@ -4675,8 +4675,8 @@
                   "te_angle": 0.0,
                   "panic": false,
                   "viewPerPattern": 0,
-                  "glow": 0.2,
-                  "width": 0.5
+                  "width": 0.5,
+                  "glow": 0.2
                 },
                 "children": {
                   "modulation": {
@@ -8429,12 +8429,12 @@
                   "te_angle": 0.0,
                   "panic": false,
                   "viewPerPattern": 2,
-                  "Speed": 0.0,
+                  "Energy": 0.0,
                   "Glow": 1.5,
                   "Glow2": 9.0,
+                  "Speed": 0.0,
                   "Wibble Size": 0.15,
-                  "Thickness": 0.3,
-                  "Energy": 0.0
+                  "Thickness": 0.3
                 },
                 "children": {
                   "modulation": {
@@ -8519,8 +8519,8 @@
                   "te_angle": 0.0,
                   "panic": false,
                   "viewPerPattern": 0,
-                  "width": 0.5,
-                  "glow": 0.2
+                  "glow": 0.2,
+                  "width": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -9530,8 +9530,8 @@
                   "te_angle": 0.0,
                   "panic": false,
                   "viewPerPattern": 0,
-                  "noise2": 2.0,
-                  "noise": 2.0
+                  "noise": 2.0,
+                  "noise2": 2.0
                 },
                 "children": {
                   "modulation": {
@@ -10375,7 +10375,7 @@
                   "color/index": 3,
                   "tempoDivision": 5,
                   "triggerMode": 0,
-                  "sceneSelect": 6,
+                  "sceneSelect": 25,
                   "trigger": false,
                   "downbeat": false
                 },
@@ -11304,9 +11304,9 @@
                   "Glow2": 9.0,
                   "Glow": 1.5,
                   "Energy": 0.0,
-                  "Wibble Size": 0.15,
                   "Thickness": 0.3,
-                  "Speed": 0.0
+                  "Speed": 0.0,
+                  "Wibble Size": 0.15
                 },
                 "children": {
                   "modulation": {
@@ -13542,6 +13542,103 @@
                 "effects": []
               }
             ]
+          },
+          {
+            "id": 93430,
+            "class": "heronarts.lx.mixer.LXChannel",
+            "internal": {
+              "modulationColor": 0,
+              "modulationControlsExpanded": true,
+              "modulationsExpanded": true,
+              "controlsExpandedCue": true,
+              "controlsExpandedAux": true,
+              "controlsExpanded": true,
+              "viewPatternLabel": false
+            },
+            "parameters": {
+              "label": "DMX Grid",
+              "fader": 1.0,
+              "arm": false,
+              "selected": false,
+              "enabled": true,
+              "cue": false,
+              "aux": false,
+              "crossfadeGroup": 0,
+              "blendMode": 0,
+              "midiFilter/enabled": false,
+              "midiFilter/channel": 16,
+              "midiFilter/minNote": 0,
+              "midiFilter/noteRange": 128,
+              "midiFilter/minVelocity": 1,
+              "midiFilter/velocityRange": 127,
+              "view": 0,
+              "compositeMode": 0,
+              "compositeDampingEnabled": true,
+              "compositeDampingTimeSecs": 0.1,
+              "autoCycleEnabled": false,
+              "autoCycleMode": 0,
+              "autoCycleTimeSecs": 60.0,
+              "transitionEnabled": false,
+              "transitionTimeSecs": 5.0,
+              "transitionBlendMode": 0,
+              "focusedPattern": 0,
+              "triggerPatternCycle": false
+            },
+            "children": {},
+            "effects": [],
+            "clips": [],
+            "patternIndex": 0,
+            "patterns": [
+              {
+                "id": 93449,
+                "class": "titanicsend.pattern.justin.DmxGridPattern",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true,
+                  "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "DMX Grid",
+                  "view": 0,
+                  "viewPriority": 0,
+                  "enabled": true,
+                  "recall": false,
+                  "compositeMode": 0,
+                  "compositeLevel": 1.0,
+                  "hasCustomCycleTime": false,
+                  "customCycleTimeSecs": 60.0,
+                  "color/brightness": 100.0,
+                  "color/saturation": 0.0,
+                  "color/hue": 0.0,
+                  "color/mode": 0,
+                  "color/index": 1
+                },
+                "children": {
+                  "modulation": {
+                    "id": 93450,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1,
+                "effects": []
+              }
+            ]
           }
         ]
       },
@@ -13683,6 +13780,31 @@
             "children": {}
           },
           {
+            "id": 93429,
+            "class": "titanicsend.modulator.dmx.DmxGridModulator",
+            "internal": {
+              "modulationColor": 0,
+              "modulationControlsExpanded": true,
+              "modulationsExpanded": true
+            },
+            "parameters": {
+              "label": "DMX Grid",
+              "running": true,
+              "trigger": false,
+              "midiFilter/enabled": true,
+              "midiFilter/channel": 16,
+              "midiFilter/minNote": 0,
+              "midiFilter/noteRange": 128,
+              "midiFilter/minVelocity": 1,
+              "midiFilter/velocityRange": 127,
+              "universe": 0,
+              "channel": 12,
+              "rows": 20,
+              "columns": 40
+            },
+            "children": {}
+          },
+          {
             "id": 68570,
             "class": "heronarts.lx.modulator.VariableLFO",
             "internal": {
@@ -13715,7 +13837,7 @@
               "exp": 1.0
             },
             "children": {},
-            "basis": 0.1955374280230302
+            "basis": 0.125
           },
           {
             "id": 78340,
@@ -13750,7 +13872,7 @@
               "exp": 1.0
             },
             "children": {},
-            "basis": 0.7821497120921208
+            "basis": 0.5
           },
           {
             "id": 78341,
@@ -13785,7 +13907,7 @@
               "exp": 0.25859374599531293
             },
             "children": {},
-            "basis": 0.5642994241842416
+            "basis": 0.0
           }
         ],
         "modulations": [
@@ -13894,7 +14016,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 45930,
@@ -13919,7 +14041,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 45930,
@@ -13944,7 +14066,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 45511,
@@ -13969,7 +14091,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 45511,
@@ -13994,7 +14116,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 45851,
@@ -14019,7 +14141,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 45851,
@@ -14044,7 +14166,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 45851,
@@ -14069,7 +14191,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 45891,
@@ -14094,7 +14216,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 45891,
@@ -14119,7 +14241,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 45891,
@@ -14144,7 +14266,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 45680,
@@ -14169,7 +14291,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 45693,
@@ -14194,7 +14316,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 45693,
@@ -14219,7 +14341,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 45693,
@@ -14244,7 +14366,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 45917,
@@ -14269,7 +14391,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 45917,
@@ -14294,7 +14416,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 45930,
@@ -14319,7 +14441,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 45956,
@@ -14344,7 +14466,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 45956,
@@ -14369,7 +14491,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 45956,
@@ -14394,7 +14516,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 45982,
@@ -14419,7 +14541,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 45982,
@@ -14444,7 +14566,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 45982,
@@ -14469,7 +14591,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 45719,
@@ -14494,7 +14616,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 45719,
@@ -14519,7 +14641,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 45719,
@@ -14544,7 +14666,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 45969,
@@ -14569,7 +14691,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 45969,
@@ -14594,7 +14716,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 45969,
@@ -14619,7 +14741,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 45969,
@@ -14644,7 +14766,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 46192,
@@ -14669,7 +14791,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 46192,
@@ -14694,7 +14816,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 46192,
@@ -14719,7 +14841,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 46192,
@@ -14744,7 +14866,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 46192,
@@ -14769,7 +14891,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 87238,
@@ -14794,7 +14916,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 87056,
@@ -14819,7 +14941,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 87056,
@@ -14844,7 +14966,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 87056,
@@ -14869,7 +14991,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 87056,
@@ -14894,7 +15016,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 87251,
@@ -14919,7 +15041,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 87251,
@@ -14944,7 +15066,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 45732,
@@ -14969,7 +15091,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 54171,
@@ -14994,7 +15116,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 54184,
@@ -15019,7 +15141,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 46205,
@@ -15044,7 +15166,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 46205,
@@ -15069,7 +15191,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 46205,
@@ -15094,7 +15216,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 46205,
@@ -15119,7 +15241,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 87290,
@@ -15144,7 +15266,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 87290,
@@ -15169,7 +15291,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 46179,
@@ -15194,7 +15316,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 46179,
@@ -15219,7 +15341,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 46179,
@@ -15244,7 +15366,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 87303,
@@ -15269,7 +15391,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 46021,
@@ -15294,7 +15416,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 46021,
@@ -15319,7 +15441,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 87316,
@@ -15344,7 +15466,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 54210,
@@ -15369,7 +15491,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 54223,
@@ -15394,7 +15516,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 54223,
@@ -15419,7 +15541,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 46218,
@@ -15444,7 +15566,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 46218,
@@ -15469,7 +15591,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 46218,
@@ -15494,7 +15616,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 46218,
@@ -15519,7 +15641,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 87355,
@@ -15544,7 +15666,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 46231,
@@ -15569,7 +15691,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 46231,
@@ -15594,7 +15716,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 46231,
@@ -15619,7 +15741,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 46231,
@@ -15644,7 +15766,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 46231,
@@ -15669,7 +15791,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 87368,
@@ -15694,7 +15816,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 87368,
@@ -15719,7 +15841,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 87368,
@@ -15744,7 +15866,7 @@
           {
             "source": {
               "id": 68570,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 46060,
@@ -15769,7 +15891,7 @@
           {
             "source": {
               "id": 78341,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 46060,
@@ -15794,7 +15916,7 @@
           {
             "source": {
               "id": 78340,
-              "path": "/modulation/modulator/7"
+              "path": "/modulation/modulator/8"
             },
             "target": {
               "componentId": 45956,
@@ -15938,7 +16060,7 @@
         },
         "parameters": {
           "label": "Output",
-          "enabled": true,
+          "enabled": false,
           "brightness": 1.0,
           "fps": 0.0,
           "gamma": 1.0,
@@ -16075,7 +16197,7 @@
           "receiveActive": true,
           "transmitHost": "10.1.3.1",
           "transmitPort": 7890,
-          "transmitActive": true,
+          "transmitActive": false,
           "logInput": false,
           "logOutput": false
         },
@@ -16146,8 +16268,8 @@
         "camera": {
           "active": false,
           "radius": 1.7E7,
-          "theta": 269.8970392718911,
-          "phi": -5.897039271891117,
+          "theta": 270.0,
+          "phi": -6.0,
           "x": 2255849.2623291016,
           "y": 5053059.60546875,
           "z": 207717.87439727783
