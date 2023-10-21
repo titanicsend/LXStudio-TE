@@ -699,7 +699,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             setCustomRemoteControls(new LXListenableNormalizedParameter[] {
                 this.color.offset,
                 this.color.gradient,
-                getControl(TEControlTag.BRIGHTNESS).control,
+                null, //getControl(TEControlTag.BRIGHTNESS).control,
                 getControl(TEControlTag.SPEED).control,
 
                 getControl(TEControlTag.XPOS).control,
