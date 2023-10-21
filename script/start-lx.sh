@@ -61,5 +61,6 @@ fi
 java \
   -XstartOnFirstThread \
   -Djava.awt.headless=true \
+  -Xmx2048m \
   -jar $JAR_FILE \
   vehicle ${LXP?};
