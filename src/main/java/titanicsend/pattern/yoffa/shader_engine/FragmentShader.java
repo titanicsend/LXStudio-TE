@@ -7,15 +7,13 @@ import java.util.*;
 public class FragmentShader {
     private final String shaderBody;
     private String shaderName;
-    private long shaderTimestamp;
     private final Map<Integer, String> channelToTexture;
-    private boolean remoteTextures;
+    private boolean hasTextures;
     private final Integer audioInputChannel;
     private final List<LXParameter> parameters;
 
     public FragmentShader(File shaderFile, List<File> textureFiles) {
         shaderName = shaderFile.getName();
-        shaderTimestamp = shaderFile.lastModified();
         String shaderBody = ShaderUtils.loadResource(shaderFile.getPath());
         Map<Integer, String> channelToTexture = new HashMap<>();
         this.audioInputChannel = 0;
@@ -24,17 +22,17 @@ public class FragmentShader {
             channelToTexture.put(i+1, textureFiles.get(i).getPath());
         }
         this.parameters = new ArrayList<>();
-        this.shaderBody = ShaderUtils.preprocessShader(shaderBody,this.parameters);;
+        this.shaderBody = ShaderUtils.preprocessShader(shaderBody,this.parameters);
         this.channelToTexture = channelToTexture;
-        this.remoteTextures = false;
+        this.hasTextures = false;
     }
 
     public FragmentShader(String shaderBody, Map<Integer, String> channelToTexture, Integer audioInputChannel) {
         this.parameters = new ArrayList<>();
-        this.shaderBody = ShaderUtils.preprocessShader(shaderBody,this.parameters);;
+        this.shaderBody = ShaderUtils.preprocessShader(shaderBody,this.parameters);
         this.channelToTexture = channelToTexture;
         this.audioInputChannel = audioInputChannel;
-        this.remoteTextures = true;
+        this.hasTextures = true;
     }
 
     public String getShaderBody() {
@@ -47,8 +45,8 @@ public class FragmentShader {
         return channelToTexture;
     }
 
-    public boolean hasRemoteTextures() {
-        return remoteTextures;
+    public boolean hasTextures() {
+        return hasTextures;
     }
 
     public Integer getAudioInputChannel() {

@@ -288,7 +288,7 @@ public class NativeShader implements GLEventListener {
     private void downloadTextureFiles(FragmentShader fragmentShader) {
         for (Map.Entry<Integer, String> textureInput : fragmentShader.getChannelToTexture().entrySet()) {
             try {
-                if (fragmentShader.hasRemoteTextures()) {
+                if (fragmentShader.hasTextures()) {
                     //TE.log("Remote Texture %s", textureInput.getValue());
                     URL url = new URL(textureInput.getValue());
                     textures.put(textureInput.getKey(), TextureIO.newTexture(url, false, null));
