@@ -75,6 +75,7 @@ import titanicsend.pattern.TEPanelTestPattern;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.ben.*;
 import titanicsend.pattern.cesar.HandTracker;
+import titanicsend.pattern.glengine.ShaderPatternClassFactory;
 import titanicsend.pattern.jeff.*;
 import titanicsend.pattern.jon.*;
 import titanicsend.pattern.justin.*;
@@ -252,6 +253,10 @@ public class TEApp extends LXStudio {
 
       // Patterns for DMX input
       lx.registry.addPattern(DmxGridPattern.class);
+
+      // wacky test thing
+      ShaderPatternClassFactory spf = new ShaderPatternClassFactory();
+      lx.registry.addPattern((Class<? extends LXPattern>) spf.make("AutoFire","fire.fs"));
 
       // TODO - The following patterns were removed from the UI prior to EDC 2023 to keep
       // TODO - them from being accidentally activated during a performance.

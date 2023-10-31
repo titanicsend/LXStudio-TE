@@ -21,16 +21,8 @@ public class OffscreenShaderRenderer {
         // that's trying to draw something on the UI
         GLContext prevContext = GLContext.getCurrent();
 
-
-        // how many contexts can one man have, before he has too many contexts?
-        for (int i = 0; i < 1000; i++) {
-            if (0 == i % 100) {
-                System.out.println("Contexts created " + i);
-            }
-            offscreenDrawable = ShaderUtils.createGLSurface(xResolution, yResolution);
-            offscreenDrawable.display();
-        }
-
+        offscreenDrawable = ShaderUtils.createGLSurface(xResolution, yResolution);
+        offscreenDrawable.display();
         nativeShader.init(offscreenDrawable);
 
         // restore previous context
