@@ -256,7 +256,7 @@ public class TEApp extends LXStudio {
 
       // wacky test thing
       ShaderPatternClassFactory spf = new ShaderPatternClassFactory();
-      lx.registry.addPattern((Class<? extends LXPattern>) spf.make("AutoFire","fire.fs"));
+      spf.registerShaders(lx);
 
       // TODO - The following patterns were removed from the UI prior to EDC 2023 to keep
       // TODO - them from being accidentally activated during a performance.

@@ -13,7 +13,6 @@ import titanicsend.util.TE;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -94,7 +93,7 @@ public class NativeShader implements GLEventListener {
 
         if (!isInitialized()) {
             initShaderProgram(gl4);
-            downloadTextureFiles(fragmentShader);
+            loadTextureFiles(fragmentShader);
             gl4.glUseProgram(shaderProgram.getProgramId());
         }
         context.release();
@@ -173,7 +172,7 @@ public class NativeShader implements GLEventListener {
         int position = shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION);
 
         gl4.glBindBuffer(GL_ARRAY_BUFFER, geometryBufferHandles[0]);
-        gl4.glVertexAttribPointer(position,3, GL4.GL_FLOAT, false, 0, 0);
+        gl4.glVertexAttribPointer(position, 3, GL4.GL_FLOAT, false, 0, 0);
         gl4.glEnableVertexAttribArray(position);
         gl4.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometryBufferHandles[1]);
 
@@ -285,18 +284,12 @@ public class NativeShader implements GLEventListener {
         allocateShaderBuffers(gl4);
     }
 
-    private void downloadTextureFiles(FragmentShader fragmentShader) {
+    private void loadTextureFiles(FragmentShader fragmentShader) {
         for (Map.Entry<Integer, String> textureInput : fragmentShader.getChannelToTexture().entrySet()) {
             try {
-                if (fragmentShader.hasTextures()) {
-                    //TE.log("Remote Texture %s", textureInput.getValue());
-                    URL url = new URL(textureInput.getValue());
-                    textures.put(textureInput.getKey(), TextureIO.newTexture(url, false, null));
-                } else {
-                    File file = new File(textureInput.getValue());
-                    //TE.log("File Texture %s", textureInput.getValue());
-                    textures.put(textureInput.getKey(), TextureIO.newTexture(file, false));
-                }
+                File file = new File(textureInput.getValue());
+                //TE.log("File Texture %s", textureInput.getValue());
+                textures.put(textureInput.getKey(), TextureIO.newTexture(file, false));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

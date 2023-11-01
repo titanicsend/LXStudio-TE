@@ -29,21 +29,21 @@ public abstract class DriftEnabledPattern extends TEPerformancePattern {
         super(lx, defaultView);
     }
 
-    void updateTranslation(double deltaMs) {
+    private void updateTranslation(double deltaMs) {
         // calculate change in position since last frame.
         xOffset += getXPos() * deltaMs / 1000.;
         yOffset += getYPos() * deltaMs / 1000.;
     }
 
-    double getXPosition() {
+    protected double getXPosition() {
         return xOffset;
     }
 
-    double getYPosition() {
+    protected double getYPosition() {
         return yOffset;
     }
 
-    void resetPosition() {
+    protected void resetPosition() {
         xOffset = 0;
         yOffset = 0;
     }

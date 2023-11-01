@@ -41,7 +41,7 @@ uniform sampler2D iChannel1;
 uniform sampler2D iChannel2;
 uniform sampler2D iChannel3;
 
-#line 0
+#line 1
 {{%shader_body%}}
 
 vec4 _blendFix(vec4 col) {

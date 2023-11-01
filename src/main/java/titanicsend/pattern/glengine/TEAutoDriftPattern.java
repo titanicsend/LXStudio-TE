@@ -2,7 +2,7 @@ package titanicsend.pattern.glengine;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.jon.DriftEnabledPattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
@@ -11,15 +11,15 @@ import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 import java.util.List;
 
 @LXCategory("Native Shaders")
-public class TEAutoShaderPattern extends TEPerformancePattern {
+public class TEAutoDriftPattern extends DriftEnabledPattern {
     NativeShaderPatternEffect effect;
     NativeShader shader;
 
-    protected TEAutoShaderPattern(LX lx) {
+    protected TEAutoDriftPattern(LX lx) {
         this(lx, null);
     }
 
-    protected TEAutoShaderPattern(LX lx, TEShaderView defaultView) {
+    protected TEAutoDriftPattern(LX lx, TEShaderView defaultView) {
         super(lx, defaultView);
 
         // create shader effect
@@ -40,6 +40,9 @@ public class TEAutoShaderPattern extends TEPerformancePattern {
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
+        // calculate incremental transform based on elapsed time
+        shader.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
+
         // run the shader
         effect.run(deltaMs);
     }
@@ -56,6 +59,6 @@ public class TEAutoShaderPattern extends TEPerformancePattern {
 
     @Override
     public void dispose() {
-        // do nothing for now.
+       // do nothing for now.
     }
 }

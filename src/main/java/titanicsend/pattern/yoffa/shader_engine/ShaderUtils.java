@@ -31,13 +31,13 @@ public class ShaderUtils {
     public static final String CACHE_PATH = SHADER_PATH + "cache/";
 
     // Strings for internal use by the preprocessor
-    private static final String SHADER_BODY_PLACEHOLDER = "{{%shader_body%}}";
+    public static final String SHADER_BODY_PLACEHOLDER = "{{%shader_body%}}";
 
     private static final Pattern PLACEHOLDER_FINDER = Pattern.compile("\\{%(.*?)(\\[(.*?)\\])??\\}");
 
-    public static String loadResource(String fileName) {
+    public static String loadResource(File file) {
         try {
-            Scanner s = new Scanner(new File(fileName), "UTF-8");
+            Scanner s = new Scanner(file, "UTF-8");
             s.useDelimiter("\\A");
             String result = s.next();
             s.close();
@@ -45,6 +45,10 @@ public class ShaderUtils {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static String loadResource(String fileName) {
+        return loadResource(new File(fileName));
     }
 
     /**
