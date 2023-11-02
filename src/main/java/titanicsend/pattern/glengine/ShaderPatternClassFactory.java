@@ -7,6 +7,7 @@ import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.NamingStrategy;
 import net.bytebuddy.description.annotation.AnnotationDescription;
 import net.bytebuddy.description.type.TypeDescription;
+import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.implementation.FixedValue;
 import net.bytebuddy.matcher.ElementMatchers;
 import titanicsend.pattern.TEPerformancePattern;
@@ -34,7 +35,8 @@ public class ShaderPatternClassFactory {
                 break; // there can be only one.
             }
         }
-        return className;
+        // prepend package name so the class loader will be happy
+        return  "titanicsend.pattern.glengine." + className;
     }
 
     public String getLXCategory(List<ShaderConfiguration> config) {
@@ -147,7 +149,7 @@ public class ShaderPatternClassFactory {
                 .method(ElementMatchers.named("getShaderFile"))
                 .intercept(FixedValue.value(shaderFile))
                 .make()
-                .load(TEPerformancePattern.class.getClassLoader())
+                .load(ClassLoader.getSystemClassLoader(), ClassLoadingStrategy.Default.INJECTION)
 
                 .getLoaded();
         } else {
@@ -164,7 +166,7 @@ public class ShaderPatternClassFactory {
                 .intercept(FixedValue.value(shaderFile))
                 .make()
                 //.load(getClass().getClassLoader())
-                .load(TEPerformancePattern.class.getClassLoader())
+                .load(ClassLoader.getSystemClassLoader(), ClassLoadingStrategy.Default.INJECTION)
                 .getLoaded();
         }
     }
