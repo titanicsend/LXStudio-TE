@@ -9,6 +9,7 @@ import net.bytebuddy.description.annotation.AnnotationDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.implementation.FixedValue;
 import net.bytebuddy.matcher.ElementMatchers;
+import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
 import titanicsend.util.TE;
 
@@ -112,7 +113,7 @@ public class ShaderPatternClassFactory {
             String className = getShaderClassName(file, config);
             if (!classExists(className)) {
                 // create the class
-                //TE.log("Creating pattern class: " + className + " for shader " + shaderFile);
+                TE.log("Creating pattern class: " + className + " for shader " + shaderFile);
                 try {
                     Class<?> clazz = new ShaderPatternClassFactory().make(className,
                         getLXCategory(config), shaderFile, isDriftPattern(config));
@@ -146,7 +147,8 @@ public class ShaderPatternClassFactory {
                 .method(ElementMatchers.named("getShaderFile"))
                 .intercept(FixedValue.value(shaderFile))
                 .make()
-                .load(getClass().getClassLoader())
+                .load(TEPerformancePattern.class.getClassLoader())
+
                 .getLoaded();
         } else {
             return new ByteBuddy()
@@ -161,7 +163,8 @@ public class ShaderPatternClassFactory {
                 .method(ElementMatchers.named("getShaderFile"))
                 .intercept(FixedValue.value(shaderFile))
                 .make()
-                .load(getClass().getClassLoader())
+                //.load(getClass().getClassLoader())
+                .load(TEPerformancePattern.class.getClassLoader())
                 .getLoaded();
         }
     }

@@ -148,8 +148,9 @@ public class GLPreprocessor {
         ShaderConfiguration control = new ShaderConfiguration();
         control.operation = ShaderConfigOperation.SET_LX_CATEGORY;
 
-        // token 1 is the desired LXCategory
-        control.name = stringCleanup(line[1]);
+        // since spaces are permissible in category names, we need to merge line's elements
+        // from index 1 to the end back into a single string
+        control.name = stringCleanup(String.join(" ", Arrays.copyOfRange(line, 1, line.length)));
         parameters.add(control);
     }
 
