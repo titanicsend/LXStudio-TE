@@ -27,7 +27,7 @@ public class OffscreenShaderRenderer {
 
         // restore previous context
         if (prevContext != null) prevContext.makeCurrent();
-    };
+    }
 
     public ByteBuffer getFrame(PatternControlData ctlInfo) {
         if (!nativeShader.isInitialized()) {

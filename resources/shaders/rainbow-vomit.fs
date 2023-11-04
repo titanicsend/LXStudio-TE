@@ -1,9 +1,6 @@
 //  Someday, it will be a sensibile particle fireworks pattern, but today
 //  it's Unicorn Vomit!
 
-#pragma name("UnicornVomit")
-#pragma LXCategory "Awful Vomit"
-
 const vec2 gravity = vec2(0.3, -.43);
 
 float rand(vec2 co) {

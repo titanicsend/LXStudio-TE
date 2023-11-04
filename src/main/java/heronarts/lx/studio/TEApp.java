@@ -76,6 +76,7 @@ import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.ben.*;
 import titanicsend.pattern.cesar.HandTracker;
 import titanicsend.pattern.glengine.ShaderPatternClassFactory;
+import titanicsend.pattern.glengine.ShaderPrecompiler;
 import titanicsend.pattern.jeff.*;
 import titanicsend.pattern.jon.*;
 import titanicsend.pattern.justin.*;

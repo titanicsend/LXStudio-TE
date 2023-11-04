@@ -30,17 +30,21 @@ public class GLPreprocessor {
             lineCount++;
             if (line.startsWith("#include")) {
                 foundInclude = true;
-                String filename = getFileName(line.substring("#include ".length(), line.length()));
+                try {
+                    String filename = getFileName(line.substring("#include ".length(), line.length()));
 
-                BufferedReader fileReader = new BufferedReader(new FileReader(filename));
-                String fileLine;
+                    BufferedReader fileReader = new BufferedReader(new FileReader(filename));
+                    String fileLine;
 
-                // restart line counter for include file
-                output.append("#line 1 \n");
-                while ((fileLine = fileReader.readLine()) != null) {
-                    output.append(fileLine).append("\n");
+                    // restart line counter for include file
+                    output.append("#line 1 \n");
+                    while ((fileLine = fileReader.readLine()) != null) {
+                        output.append(fileLine).append("\n");
+                    }
+                    fileReader.close();
+                } catch (Exception e) {
+                    throw new IOException("Line " + lineCount + " : " + line + "\n" + e.getMessage());
                 }
-                fileReader.close();
 
                 // reset line counter to main file count
                 output.append("#line ").append(lineCount + 1).append("\n");
@@ -124,7 +128,7 @@ public class GLPreprocessor {
         // valid channels are 1-9.  Channel 0 is reserved for audio input.
         control.textureChannel = Integer.parseInt(line[0].substring(line[0].length() - 1));
         if (control.textureChannel == 0) {
-            throw new IllegalArgumentException("iChannel0 is reserved for audio input.");
+            throw new IllegalArgumentException("iChannel0 is reserved for system audio. Use channels 1-9 for textures.");
         }
 
         // token 1 is the texture file name.
@@ -192,45 +196,49 @@ public class GLPreprocessor {
         Matcher matcher = pattern.matcher(input);
 
         while (matcher.find()) {
-            // tokenize the line, dividing first by whitespace and parentheses
-            // then by commas
-            String[] tokens = matcher.group().split("\\s|\\(|\\)");
-            // discard empty tokens
-            tokens = Arrays.stream(tokens).filter(s -> !s.isEmpty()).toArray(String[]::new);
-            // discard the #pragma token
-            tokens = Arrays.copyOfRange(tokens, 1, tokens.length);
+            try {
+                // tokenize the line, dividing first by whitespace and parentheses
+                // then by commas
+                String[] tokens = matcher.group().split("\\s|\\(|\\)");
+                // discard empty tokens
+                tokens = Arrays.stream(tokens).filter(s -> !s.isEmpty()).toArray(String[]::new);
+                // discard the #pragma token
+                tokens = Arrays.copyOfRange(tokens, 1, tokens.length);
 
-            // Common controls configuration
-            String pragma = tokens[0].toLowerCase();
-            if (pragma.startsWith("tecontrol.")) {
-                parseControl(tokens, parameters);
-            }
-            // Texture channel definition
-            else if (pragma.startsWith("ichannel")) {
-                parseTextures(tokens, parameters);
-            }
-            // name of class/pattern in UI
-            else if (pragma.equals("name")) {
-                parseClassName(tokens, parameters);
-            }
-            // set LXCategory for pattern
-            else if (pragma.equals("lxcategory")) {
-                parseLXCategory(tokens, parameters);
-            }
-            // auto keyword forces use of automatic class generation system
-            else if (pragma.equals("auto")) {
-                ShaderConfiguration p = new ShaderConfiguration();
-                p.operation = ShaderConfigOperation.AUTO;
-                parameters.add(p);
+                // Common controls configuration
+                String pragma = tokens[0].toLowerCase();
+                if (pragma.startsWith("tecontrol.")) {
+                    parseControl(tokens, parameters);
+                }
+                // Texture channel definition
+                else if (pragma.startsWith("ichannel")) {
+                    parseTextures(tokens, parameters);
+                }
+                // name of class/pattern in UI
+                else if (pragma.equals("name")) {
+                    parseClassName(tokens, parameters);
+                }
+                // set LXCategory for pattern
+                else if (pragma.equals("lxcategory")) {
+                    parseLXCategory(tokens, parameters);
+                }
+                // auto keyword forces use of automatic class generation system
+                else if (pragma.equals("auto")) {
+                    ShaderConfiguration p = new ShaderConfiguration();
+                    p.operation = ShaderConfigOperation.AUTO;
+                    parameters.add(p);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Error in " + matcher.group() + "\n" + e.getMessage());
             }
         }
     }
 
-    public static String getVertexShaderTemplate() throws IOException {
+    public static String getVertexShaderTemplate() {
         return ShaderUtils.loadResource(ShaderUtils.FRAMEWORK_PATH + "default.vs");
     }
 
-    public static String getFragmentShaderTemplate() throws IOException {
+    public static String getFragmentShaderTemplate() {
         return ShaderUtils.loadResource(ShaderUtils.FRAMEWORK_PATH + "template.fs");
     }
 
@@ -240,8 +248,12 @@ public class GLPreprocessor {
      * Note that this preprocessor doesn't support the old method of adding
      * extra controls.  TODO - should we add this as an option?
      */
-    public String preprocessShader(File shaderFile, List<ShaderConfiguration> parameters) throws IOException {
+    public String preprocessShader(File shaderFile, List<ShaderConfiguration> parameters) throws Exception {
         String shaderBody = ShaderUtils.loadResource(shaderFile);
+        return preprocessShader(shaderBody, parameters);
+
+    }
+    public String preprocessShader(String shaderBody, List<ShaderConfiguration> parameters) throws Exception {
         lineCount = 0;
         try {
             int depth = 0;
@@ -258,7 +270,7 @@ public class GLPreprocessor {
 
             parsePragmas(shaderBody, parameters);
         } catch (Exception e) {
-            throw new RuntimeException("Shader Preprocessor Error in " + shaderFile.getName() + ": " + e.getMessage());
+            throw new Exception("Shader Preprocessor Error. " + e.getMessage());
         }
 
         // in drift mode shaders, x/y translate controls set movement direction and speed rather than

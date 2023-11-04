@@ -23,7 +23,7 @@ realistic, etc. graphics without bogging down the CPU.
 
 ## Uniforms - Data Supplied by the TE Framework
 
-LX passes audio and control data to your shader as uniforms.
+Chromatik passes audio and control data to your shader as uniforms.
 A uniform is effectively a constant - it has the same value across 
 all GPU threads. It is set at frame rendering time, and can be read,
 but not changed. (The compiler will complain if you try.) The uniforms below
@@ -79,7 +79,8 @@ uniform sampler2D iChannel3;
 this rate can vary with the setting of the speed control.
 
 Since shaders frequently render movement as a function of iTime shaders, this variable speed
-time gives you smooth speed control without any additional code in the shader.
+time gives you smooth speed control without any additional code in the shader.  Importantly,
+time can run both forwards and backwards, so be sure your pattern's math works in both directions.
 
 #### iResolution (uniform vec2 iResolution;)
 The resolution of the "display" surface.  Note that these are the dimensions
@@ -88,7 +89,7 @@ indirectly related to the number and layout of LEDs on the vehicle.
 
 #### iMouse (uniform vec4 iMouse;)
 All zeros at this time. Never changes. Included for compatibility with ShaderToy
-shaders. 
+shaders.  There's no reason to use this in shader code.
 
 -----
 ### Color Uniforms
@@ -221,17 +222,80 @@ For an example, see [Phasers](https://github.com/titanicsend/LXStudio-TE/blob/ma
 ## Adding a Shader to TE
 
 To run a shader on TE, we need to wrap it in a TEAudioPattern.  There
-are two ways of going about this.
+are ~~two~~ three ways of going about this.
 
------
-### The Easy Way
+### Easiest:  Automatic Shader Wrapping
+For the 2023/2024 season, we've introduced a way to add shaders to TE without writing any Java code at all. 
+With this method you can set up the shader's controls directly from shader code, and even live-edit the shader
+with any text editor while it's running on the vehicle. This is the easiest way to get started with shaders on TE.
+
+To use this method:
+- Write your shader in any text editor.
+- Include the line ```#pragma auto``` in your shader code, and save it as an .fs file in the
+*resources/shaders* directory.  Be sure the file name is unique, and is a valid Java class name.
+(No spaces, no special characters.)
+- The next time you start the TE App, your shader will be available in the pattern browser panel, under
+the 'Auto Shaders' category. (You can use additional #pragmas, described below, to change the name and category, as well as 
+set up UI controls for your shader.)
+
+To live edit a shader, first add it to an active channel so you can see what it's doing.  Then make your changes to the .fs
+file and save it.  To see your changes on the car, delete the shader from the active channel list, and re-add it
+from the pattern browser panel.
+
+#### Preprocessor Directives for Automatic Shader Wrapping
+
+```glsl
+    // basic #include support (handles nested includes, up to 9 levels)
+#include "resources/shaders/library/file.fs"
+//...or...
+#include <library/file.fs>// prefixes with default resource path
+
+// Use the automatic wrapper for ths shader. Recommended, but only required if you
+// use no other configuration pragmas. 
+#pragma auto 
+
+// set the name of the pattern's java class (and the pattern name in the UI) If not specified
+// the name of the shader file (not including .fs) will be used.  If the specified class exists
+// a new class will not be created for the shader.)
+#pragma Name("ReallyCoolPattern");        // must be unique, and a valid java class name
+
+// Set the shader's pattern browser category
+#pragma LXCategory("Best Shaders Ever!)
+
+// Configure common controls at setup time.  The control names and
+// configuration functions are as described in the common controls documentation. 
+#pragma TEControl.SPEED.Value(1.0)       // setValue()
+#pragma TEControl.QUANTITY.Range(1,0,5)     // setRange() 
+#pragma TEControl.WOW1.Label("Timmy")   // setLabel()
+#pragma TeControl.SCALE.Exponent(2.25)   // setExponent()
+#pragma TeControl.QUANTITY.NormalizationCurve(REVERSE,NORMAL,BIAS_CENTER,BIAS_OUTER)  // setNormalizationCurve()
+#pragma TEControl.SPEED.Disable	         // markUnused() - hide the control in the UI
+
+// specify up to 9 textures
+#pragma iChannel1 "shaders/resources/textures/test.png"
+//  ... or  ...
+#pragma iChannel1 <textures/test.png>	
+
+// choose how the pattern interacts with x/y translation controls
+#pragma TEControl.TranslateMode(DRIFT,NORMAL)
+
+```
+
+
+
+###  Easy: Shader Code + Java ConstructedPattern
+
+This method requires minor, boilerplate Java coding, and allows you to customize controls for your
+shader without building a full TEPerformancePattern.  It is used by most of our first and second year
+shaders.  It's not as simple as the automatic method above, but does have a slight advantage in load time.
 
 - Write your shader, and save it as an .fs file in the *resources/shaders* directory.
 - Follow the boilerplate code and add a uniquely named class for your shader to
  either [ShaderPanelsPatternConfig.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/yoffa/config/ShaderPanelsPatternConfig.java)
 - or [ShaderEdgesPatternConfig.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/yoffa/config/ShaderEdgesPatternConfig.java) in
  the directory *src/main/java/titanicsend/pattern/yoffa/config/*
-- That's it!  Run TE and look for your new pattern in the content list.
+
+- Run TE and look for your new pattern in the content list.
 
 Here's an example of code to add a new shader effect to *ShaderPanelsPatternConfig*.
 ```
@@ -248,10 +312,10 @@ Here's an example of code to add a new shader effect to *ShaderPanelsPatternConf
     }
 ```
 
-### The Slightly Harder Way
+### Slightly Harder: Shader + Java + custom Uniforms
 
-If you want to send arrays or other custom uniforms to your shader, you'll need to build your pattern as a
-normal *TEAudioPattern*, and create your own *NativeShaderPatternEffect* to manage the shader.
+If you want to send arrays, car geometry or other custom uniforms to your shader, you'll need to derive your
+pattern from the *TEPerformancePattern*, class and create your own *NativeShaderPatternEffect* to manage the shader.
 
 To create a *NativeShaderPatternEffect*, use a constructor like this during your pattern's creation: 
 ```

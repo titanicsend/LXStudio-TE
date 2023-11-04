@@ -10,7 +10,6 @@ import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.implementation.FixedValue;
 import net.bytebuddy.matcher.ElementMatchers;
-import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
 import titanicsend.util.TE;
 
@@ -36,7 +35,7 @@ public class ShaderPatternClassFactory {
             }
         }
         // prepend package name so the class loader will be happy
-        return  "titanicsend.pattern.glengine." + className;
+        return "titanicsend.pattern.glengine." + className;
     }
 
     public String getLXCategory(List<ShaderConfiguration> config) {
@@ -101,7 +100,8 @@ public class ShaderPatternClassFactory {
             try {
                 glp.preprocessShader(file, config);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                TE.err("Error scanning shader " + file.getName() + "\n" + e.getMessage());
+                continue;
             }
 
             // if the shader has no embedded configuration at all, we have to assume
@@ -115,15 +115,15 @@ public class ShaderPatternClassFactory {
             String className = getShaderClassName(file, config);
             if (!classExists(className)) {
                 // create the class
-                TE.log("Creating pattern class: " + className + " for shader " + shaderFile);
+                TE.log("Creating Shader class: " + className + " for " + shaderFile);
                 try {
                     Class<?> clazz = new ShaderPatternClassFactory().make(className,
                         getLXCategory(config), shaderFile, isDriftPattern(config));
                     lx.registry.addPattern((Class<? extends LXPattern>) clazz);
                     //TE.log("Registered shader class: " + className);
                 } catch (Exception e) {
-                    TE.log("Error.  Class " + className + " could not be registered.");
-                    throw new RuntimeException(e);
+                    TE.err("Error. Shader class " + className + " could not be registered." +
+                        "\n" + e.getMessage());
                 }
             }
         }

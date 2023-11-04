@@ -1,4 +1,4 @@
-package titanicsend.pattern.jon;
+package titanicsend.pattern.glengine;
 
 import com.jogamp.opengl.*;
 

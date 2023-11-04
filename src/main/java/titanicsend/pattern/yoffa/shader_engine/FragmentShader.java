@@ -6,12 +6,10 @@ import titanicsend.pattern.glengine.ShaderConfigOperation;
 import titanicsend.pattern.glengine.ShaderConfiguration;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 public class FragmentShader {
-    private String shaderBody;
-    private String shaderName;
+    private final String shaderName;
     private final Map<Integer, String> channelToTexture;
     private final boolean hasTextures;
     private final Integer audioInputChannel;
@@ -19,14 +17,16 @@ public class FragmentShader {
     private final List<ShaderConfiguration> shaderConfig = new ArrayList<>();
 
     public FragmentShader(File shaderFile, List<File> textureFiles) {
+        String shaderBody;
         this.audioInputChannel = 0;
         this.channelToTexture = new HashMap<>();
 
         // try the new way
         GLPreprocessor glp = new GLPreprocessor();
         shaderName = shaderFile.getName();
+
         try {
-            shaderBody = glp.preprocessShader(shaderFile,shaderConfig);
+            shaderBody = glp.preprocessShader(shaderFile, shaderConfig);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -42,7 +42,7 @@ public class FragmentShader {
                 // at 1 since audio will be texture 0
                 channelToTexture.put(i + 1, textureFiles.get(i).getPath());
             }
-            shaderBody = ShaderUtils.preprocessShader(shaderBody, this.parameters);
+            ShaderUtils.legacyPreprocessor(shaderBody, this.parameters);
         }
         // otherwise, see if there are any texture declarations in the shader
         // code and if so, use those.
@@ -56,14 +56,9 @@ public class FragmentShader {
         this.hasTextures = (!channelToTexture.isEmpty());
     }
 
-    public FragmentShader(String shaderBody, Map<Integer, String> channelToTexture, Integer audioInputChannel) {
-        this.shaderBody = ShaderUtils.preprocessShader(shaderBody,this.parameters);
-        this.channelToTexture = channelToTexture;
-        this.audioInputChannel = audioInputChannel;
-        this.hasTextures = true;
+    public String getShaderName() {
+        return shaderName;
     }
-
-    public String getShaderName() { return shaderName; }
 
     public Map<Integer, String> getChannelToTexture() {
         return channelToTexture;
