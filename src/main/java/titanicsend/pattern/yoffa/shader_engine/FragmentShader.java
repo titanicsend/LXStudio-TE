@@ -2,7 +2,7 @@ package titanicsend.pattern.yoffa.shader_engine;
 
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.glengine.GLPreprocessor;
-import titanicsend.pattern.glengine.ShaderConfigOperation;
+import titanicsend.pattern.glengine.ShaderConfigOpcode;
 import titanicsend.pattern.glengine.ShaderConfiguration;
 
 import java.io.File;
@@ -48,8 +48,8 @@ public class FragmentShader {
         // code and if so, use those.
         else {
             for (ShaderConfiguration config : shaderConfig) {
-                if (config.operation == ShaderConfigOperation.SET_TEXTURE) {
-                    channelToTexture.put(config.textureChannel, config.textureFileName);
+                if (config.opcode == ShaderConfigOpcode.SET_TEXTURE) {
+                    channelToTexture.put(config.textureChannel, config.name);
                 }
             }
         }

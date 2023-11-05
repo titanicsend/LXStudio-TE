@@ -1,6 +1,6 @@
 package titanicsend.pattern.glengine;
 
-public enum ShaderConfigOperation {
+public enum ShaderConfigOpcode {
     AUTO,
     SET_VALUE,
     SET_RANGE,

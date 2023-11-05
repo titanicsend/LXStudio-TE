@@ -14,13 +14,13 @@ import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
 import titanicsend.util.TE;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-// NOTE: Compiling this class may generate an unchecked cast warning.
-// It can be safely ignored.  An object is an object is an object when
-// you're creating new derived classes at runtime.
+// NOTE: Compiling this class may generate an unchecked cast warning or
+// other annotation related warnings. These can be safely ignored.  This
+// dynamic class generation lives by the principle that an object is an
+// object is an object.
 public class ShaderPatternClassFactory {
 
     public String getShaderClassName(File shaderFile, List<ShaderConfiguration> config) {
@@ -29,7 +29,7 @@ public class ShaderPatternClassFactory {
 
         // see if a name was specified in the config options
         for (ShaderConfiguration c : config) {
-            if (c.operation == ShaderConfigOperation.SET_CLASS_NAME) {
+            if (c.opcode == ShaderConfigOpcode.SET_CLASS_NAME) {
                 className = c.name;
                 break; // there can be only one.
             }
@@ -39,12 +39,12 @@ public class ShaderPatternClassFactory {
     }
 
     public String getLXCategory(List<ShaderConfiguration> config) {
-        // if not otherwise specified, we'll use "Auto Shader" as the category
+        // if not otherwise specified, default to "Auto Shader" as the LXCategory
         String category = "Auto Shader";
 
         // see if an LXCategory was specified in the config options
         for (ShaderConfiguration c : config) {
-            if (c.operation == ShaderConfigOperation.SET_LX_CATEGORY) {
+            if (c.opcode == ShaderConfigOpcode.SET_LX_CATEGORY) {
                 category = c.name;
                 break;
             }
@@ -54,7 +54,7 @@ public class ShaderPatternClassFactory {
 
     public boolean isDriftPattern(List<ShaderConfiguration> config) {
         for (ShaderConfiguration c : config) {
-            if (c.operation == ShaderConfigOperation.SET_TRANSLATE_MODE_DRIFT) {
+            if (c.opcode == ShaderConfigOpcode.SET_TRANSLATE_MODE_DRIFT) {
                 return true;
             }
         }
@@ -70,22 +70,19 @@ public class ShaderPatternClassFactory {
         }
     }
 
-    // function to iterate through .fs files in the shaders directory and create a class for each
-    // one. The class will be named after the shader file, and will extend TEAutoShaderPattern.
-    // The class will override the getShaderFile() method to return the shader file name.
-
+    /**
+    // Iterate through .fs files in the shaders directory and create a class for each
+    // shader that has any configuration pragmas in its code. The new class will
+    // be named after the shader file by default, and will extend TEAutoShaderPattern or
+    // TEAutoDriftPattern depending on configuration options.
+    */
     @SuppressWarnings("unchecked")
     public void registerShaders(LX lx) {
         String dir = ShaderUtils.SHADER_PATH;
         GLPreprocessor glp = new GLPreprocessor();
 
         // get a list of all shaders in resource path
-        File[] files = new File(dir).listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith(".fs");
-            }
-        });
+        File[] files = new File(dir).listFiles((dir1, name) -> name.endsWith(".fs"));
         if (files == null) {
             //TE.log("No shaders found in " + dir);
             return;

@@ -1292,13 +1292,15 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     }
 
     /**
-     * To be called from the constructor of automatically configured shader patterns
+     * To be called from the constructor of automatically configured shader patterns prior
+     * to calling addCommonControls(). Calls common control functions based on a list of
+     * opcodes and parameters extracted from shader code by our GLSL preparser.
      *
-     * @param shaderConfig list of shader configuration data from the glsl code
+     * @param shaderConfig list of configuration operations from the shader
      */
     protected void configureCommonControls(List<ShaderConfiguration> shaderConfig) {
         for (ShaderConfiguration config : shaderConfig) {
-            switch (config.operation) {
+            switch (config.opcode) {
                 case SET_VALUE:
                     controls.setValue(config.parameterId, config.value);
                     break;
@@ -1309,7 +1311,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                     controls.setLabel(config.parameterId, config.name);
                     break;
                 case SET_EXPONENT:
-                    controls.setExponent(config.parameterId, config.exponent);
+                    controls.setExponent(config.parameterId, config.value);
                     break;
                 case SET_NORMALIZATION_CURVE:
                     controls.setNormalizationCurve(config.parameterId, config.normalizationCurve);

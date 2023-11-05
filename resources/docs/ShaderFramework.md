@@ -281,8 +281,6 @@ from the pattern browser panel.
 
 ```
 
-
-
 ###  Easy: Shader Code + Java ConstructedPattern
 
 This method requires minor, boilerplate Java coding, and allows you to customize controls for your

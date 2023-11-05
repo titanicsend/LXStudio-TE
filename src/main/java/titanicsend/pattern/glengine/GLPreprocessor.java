@@ -58,17 +58,17 @@ public class GLPreprocessor {
 
     // Converts strings from control definition #pragmas to shader configuration
     // opcode values
-    public static ShaderConfigOperation opcodeFromString(String str) {
+    public static ShaderConfigOpcode opcodeFromString(String str) {
         return switch (str) {
-            case "auto" -> ShaderConfigOperation.AUTO;
-            case "Value" -> ShaderConfigOperation.SET_VALUE;
-            case "Range" -> ShaderConfigOperation.SET_RANGE;
-            case "Label" -> ShaderConfigOperation.SET_LABEL;
-            case "Exponent" -> ShaderConfigOperation.SET_EXPONENT;
-            case "NormalizationCurve" -> ShaderConfigOperation.SET_NORMALIZATION_CURVE;
-            case "Disable" -> ShaderConfigOperation.DISABLE;
-            case "NORMAL" -> ShaderConfigOperation.SET_TRANSLATE_MODE_NORMAL;
-            case "DRIFT" -> ShaderConfigOperation.SET_TRANSLATE_MODE_DRIFT;
+            case "auto" -> ShaderConfigOpcode.AUTO;
+            case "Value" -> ShaderConfigOpcode.SET_VALUE;
+            case "Range" -> ShaderConfigOpcode.SET_RANGE;
+            case "Label" -> ShaderConfigOpcode.SET_LABEL;
+            case "Exponent" -> ShaderConfigOpcode.SET_EXPONENT;
+            case "NormalizationCurve" -> ShaderConfigOpcode.SET_NORMALIZATION_CURVE;
+            case "Disable" -> ShaderConfigOpcode.DISABLE;
+            case "NORMAL" -> ShaderConfigOpcode.SET_TRANSLATE_MODE_NORMAL;
+            case "DRIFT" -> ShaderConfigOpcode.SET_TRANSLATE_MODE_DRIFT;
             default -> throw new IllegalArgumentException("Unknown configuration operation: " + str);
         };
     }
@@ -87,18 +87,18 @@ public class GLPreprocessor {
         if (tokens[1].equals("TranslateMode")) {
             // NOTE: This affects pattern subclassing, so must be handled separately
             // from (and prior to) "normal" control configurations during initialization.
-            control.operation = opcodeFromString(line[1]);
-            isDriftModeShader = (control.operation == ShaderConfigOperation.SET_TRANSLATE_MODE_DRIFT);
+            control.opcode = opcodeFromString(line[1]);
+            isDriftModeShader = (control.opcode == ShaderConfigOpcode.SET_TRANSLATE_MODE_DRIFT);
         } else {
             control.parameterId = TEControlTag.valueOf(tokens[1].toUpperCase());
             control.name = control.parameterId.getLabel();
             // the third token is the operation to be performed on the specified control
 
-            control.operation = opcodeFromString(tokens[2]);
+            control.opcode = opcodeFromString(tokens[2]);
 
             // now we need to parse the rest of the tokens, which will depend on the operation
-            switch (control.operation) {
-                case SET_VALUE -> control.value = Double.parseDouble(line[1]);
+            switch (control.opcode) {
+                case SET_VALUE, SET_EXPONENT -> control.value = Double.parseDouble(line[1]);
                 case SET_RANGE -> {
                     // tokenize line[1] by commas to get setRange() parameters
                     String[] range = line[1].split(",");
@@ -110,7 +110,6 @@ public class GLPreprocessor {
                     control.v2 = Double.parseDouble(range[2]);
                 }
                 case SET_LABEL -> control.name = stringCleanup(line[1]);
-                case SET_EXPONENT -> control.exponent = Double.parseDouble(line[1]);
                 case SET_NORMALIZATION_CURVE -> control.normalizationCurve =
                     BoundedParameter.NormalizationCurve.valueOf(line[1].toUpperCase());
             }
@@ -122,7 +121,7 @@ public class GLPreprocessor {
     // configuration parameters
     public void parseTextures(String[] line, List<ShaderConfiguration> parameters) {
         ShaderConfiguration control = new ShaderConfiguration();
-        control.operation = ShaderConfigOperation.SET_TEXTURE;
+        control.opcode = ShaderConfigOpcode.SET_TEXTURE;
 
         // the last character of token 0 is the integer channel identifier
         // valid channels are 1-9.  Channel 0 is reserved for audio input.
@@ -132,25 +131,22 @@ public class GLPreprocessor {
         }
 
         // token 1 is the texture file name.
-        control.textureFileName = getFileName(line[1]);
-
+        control.name = getFileName(line[1]);
         parameters.add(control);
-
     }
 
     public void parseClassName(String[] line, List<ShaderConfiguration> parameters) {
         ShaderConfiguration control = new ShaderConfiguration();
-        control.operation = ShaderConfigOperation.SET_CLASS_NAME;
+        control.opcode = ShaderConfigOpcode.SET_CLASS_NAME;
 
-        // token 1 is the desired class name (and pattern
-        // name in the UI.)
+        // token 1 is the desired class name and default pattern name
         control.name = stringCleanup(line[1]);
         parameters.add(control);
     }
 
     public void parseLXCategory(String[] line, List<ShaderConfiguration> parameters) {
         ShaderConfiguration control = new ShaderConfiguration();
-        control.operation = ShaderConfigOperation.SET_LX_CATEGORY;
+        control.opcode = ShaderConfigOpcode.SET_LX_CATEGORY;
 
         // since spaces are permissible in category names, we need to merge line's elements
         // from index 1 to the end back into a single string
@@ -225,7 +221,7 @@ public class GLPreprocessor {
                 // auto keyword forces use of automatic class generation system
                 else if (pragma.equals("auto")) {
                     ShaderConfiguration p = new ShaderConfiguration();
-                    p.operation = ShaderConfigOperation.AUTO;
+                    p.opcode = ShaderConfigOpcode.AUTO;
                     parameters.add(p);
                 }
             } catch (Exception e) {
@@ -279,7 +275,7 @@ public class GLPreprocessor {
             shaderBody = "#define TE_NOTRANSLATE\n" + shaderBody;
         }
 
-        // combine the fragment shader code with the template
+        // combine the fragment shader code with the framework template
         shaderBody = getFragmentShaderTemplate().replace(ShaderUtils.SHADER_BODY_PLACEHOLDER, shaderBody);
         return shaderBody;
     }
