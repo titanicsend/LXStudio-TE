@@ -5,13 +5,11 @@ import com.jogamp.opengl.*;
 import java.nio.ByteBuffer;
 
 public class OffscreenShaderRenderer {
-
     private final static int xResolution = 640;
     private final static int yResolution = 480;
 
     private NativeShader nativeShader;
     private GLAutoDrawable offscreenDrawable = null;
-
     public OffscreenShaderRenderer(FragmentShader fragmentShader) {
         nativeShader = new NativeShader(fragmentShader, xResolution, yResolution);
     }

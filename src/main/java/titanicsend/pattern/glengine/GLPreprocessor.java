@@ -1,8 +1,12 @@
 package titanicsend.pattern.glengine;
 
+import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.BoundedParameter;
+import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
+import titanicsend.pattern.yoffa.shader_engine.Uniforms;
 
 import java.io.*;
 import java.util.Arrays;
@@ -238,6 +242,54 @@ public class GLPreprocessor {
         return ShaderUtils.loadResource(ShaderUtils.FRAMEWORK_PATH + "template.fs");
     }
 
+    public void addLXParameter(List<ShaderConfiguration> parameters, LXParameter p) {
+        ShaderConfiguration control = new ShaderConfiguration();
+        control.opcode = ShaderConfigOpcode.ADD_LX_PARAMETER;
+        control.lxParameter = p;
+        parameters.add(control);
+    }
+
+
+    /**
+     * Preprocess the shader, converting embedded control specifiers to proper uniforms,
+     * and optionally creating corresponding controls if the "pattern" parameter is non-null.
+     */
+    public String legacyPreprocessor(String shaderBody, List<ShaderConfiguration> parameters) {
+        Matcher matcher = ShaderUtils.PLACEHOLDER_FINDER.matcher(shaderBody);
+
+        StringBuilder shaderCode = new StringBuilder(shaderBody.length());
+        StringBuilder finalShader = new StringBuilder(shaderBody.length() + 512);
+        while (matcher.find()) {
+            try {
+                String placeholderName = matcher.group(1);
+                if (matcher.groupCount() >= 3) {
+                    String metadata = matcher.group(3);
+                    if ("bool".equals(metadata)) {
+                        finalShader.append("uniform bool ").append(placeholderName).append(Uniforms.CUSTOM_SUFFIX).append(";\n");
+                        if (parameters != null) {
+                            addLXParameter(parameters,new BooleanParameter(placeholderName));
+                        }
+                    } else {
+                        finalShader.append("uniform float ").append(placeholderName).append(Uniforms.CUSTOM_SUFFIX).append(";\n");
+                        if (parameters != null) {
+                            Double[] rangeValues = Arrays.stream(metadata.split(","))
+                                .map(Double::parseDouble)
+                                .toArray(Double[]::new);
+                            addLXParameter(parameters,new CompoundParameter(placeholderName, rangeValues[0], rangeValues[1], rangeValues[2]));
+                        }
+                    }
+                }
+                matcher.appendReplacement(shaderCode, placeholderName + Uniforms.CUSTOM_SUFFIX);
+            } catch (Exception e) {
+                throw new RuntimeException("Problem parsing placeholder: " + matcher.group(0), e);
+            }
+        }
+        matcher.appendTail(shaderCode);
+        finalShader.append(shaderCode);
+
+        return finalShader.toString();
+    }
+
     /**
      * Preprocess the shader, expanding #includes and handling our TE-specific control
      * and texture configuration #pragmas.
@@ -263,6 +315,7 @@ public class GLPreprocessor {
                     break;
                 }
             }
+            shaderBody = legacyPreprocessor(shaderBody, parameters);
 
             parsePragmas(shaderBody, parameters);
         } catch (Exception e) {

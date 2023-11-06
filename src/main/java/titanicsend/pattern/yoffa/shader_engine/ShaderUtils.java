@@ -12,16 +12,10 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.jogamp.opengl.util.GLBuffers;
-import heronarts.lx.parameter.BooleanParameter;
-import heronarts.lx.parameter.CompoundParameter;
-import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.glengine.GLPreprocessor;
 import titanicsend.pattern.glengine.ShaderConfiguration;
 import titanicsend.util.TE;
@@ -35,8 +29,7 @@ public class ShaderUtils {
 
     // Strings for internal use by the preprocessor
     public static final String SHADER_BODY_PLACEHOLDER = "{{%shader_body%}}";
-
-    private static final Pattern PLACEHOLDER_FINDER = Pattern.compile("\\{%(.*?)(\\[(.*?)\\])??\\}");
+    public static final Pattern PLACEHOLDER_FINDER = Pattern.compile("\\{%(.*?)(\\[(.*?)\\])??\\}");
 
     public static String loadResource(File file) {
         try {
@@ -82,45 +75,7 @@ public class ShaderUtils {
         return loadResource(FRAMEWORK_PATH + "template.fs");
     }
 
-    /**
-     * Preprocess the shader, converting embedded control specifiers to proper uniforms,
-     * and optionally creating corresponding controls if the "pattern" parameter is non-null.
-     */
-    public static String legacyPreprocessor(String shaderBody, List<LXParameter> parameters) {
-        Matcher matcher = PLACEHOLDER_FINDER.matcher(shaderBody);
-        // preallocate reasonable sized buffers to keep us out of Java's memory manager while looping
-        StringBuilder shaderCode = new StringBuilder(shaderBody.length());
-        StringBuilder finalShader = new StringBuilder(shaderBody.length() + 256);
-        while (matcher.find()) {
-            try {
-                String placeholderName = matcher.group(1);
-                if (matcher.groupCount() >= 3) {
-                    String metadata = matcher.group(3);
-                    if ("bool".equals(metadata)) {
-                        finalShader.append("uniform bool ").append(placeholderName).append(Uniforms.CUSTOM_SUFFIX).append(";\n");
-                        if (parameters != null) {
-                            parameters.add(new BooleanParameter(placeholderName));
-                        }
-                    } else {
-                        finalShader.append("uniform float ").append(placeholderName).append(Uniforms.CUSTOM_SUFFIX).append(";\n");
-                        if (parameters != null) {
-                            Double[] rangeValues = Arrays.stream(metadata.split(","))
-                                .map(Double::parseDouble)
-                                .toArray(Double[]::new);
-                            parameters.add(new CompoundParameter(placeholderName, rangeValues[0], rangeValues[1], rangeValues[2]));
-                        }
-                    }
-                }
-                matcher.appendReplacement(shaderCode, placeholderName + Uniforms.CUSTOM_SUFFIX);
-            } catch (Exception e) {
-                throw new RuntimeException("Problem parsing placeholder: " + matcher.group(0), e);
-            }
-        }
-        matcher.appendTail(shaderCode);
-        finalShader.append(shaderCode);
 
-        return finalShader.toString();
-    }
 
     public static int createShader(GL4 gl4, int programId, String shaderCode, int shaderType) throws Exception {
         int shaderId = gl4.glCreateShader(shaderType);
@@ -301,16 +256,6 @@ public class ShaderUtils {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            if (config.isEmpty()) {
-                // if the shader doesn't have any directives for the new preprocessor,
-                // set it up the old way.  (This way, the old preprocessor can still benefit
-                // from the new preprocessor's #include support)
-                // NOTE that you can't mix old and new style texture declarations.  The
-                // new preprocessor will take precedence.
-
-                shaderBody = legacyPreprocessor(shaderBody, null);
-            }
-
 
             int vertexShaderId = createShader(gl4, programId, getVertexShaderTemplate(), GL4.GL_VERTEX_SHADER);
             int fragmentShaderId = createShader(gl4, programId, shaderBody, GL4.GL_FRAGMENT_SHADER);

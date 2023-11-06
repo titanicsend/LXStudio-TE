@@ -16,12 +16,10 @@ import java.util.SplittableRandom;
 import java.util.stream.Collectors;
 
 public class NativeShaderPatternEffect extends PatternEffect {
-
     private final SplittableRandom random;
     protected OffscreenShaderRenderer renderer;
     private FragmentShader fragmentShader;
     private final List<LXParameter> parameters;
-
     private final PatternControlData controlData;
 
     /**

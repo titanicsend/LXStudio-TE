@@ -4,7 +4,7 @@ package titanicsend.pattern.yoffa.shader_engine;
  * List of supported shader uniform types.  This is the list that Processing 4 uses,
  * which is pretty much the list of things that you'd want to pass to a shader.
  */
-class UniformTypes {
+public class UniformTypes {
         static final int INT1      = 0;
         static final int INT2      = 1;
         static final int INT3      = 2;
