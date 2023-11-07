@@ -244,7 +244,7 @@ public class GLPreprocessor {
         control.lxParameter = p;
         parameters.add(control);
     }
-    
+
     /**
      * Convert legacy (pre-TECommonControls) embedded control specifiers to uniforms,
      * and create corresponding LX parameters for them.

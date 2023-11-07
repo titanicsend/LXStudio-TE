@@ -51,7 +51,7 @@ public class FragmentShader {
             for (ShaderConfiguration config : shaderConfig) {
                 switch (config.opcode) {
                     case SET_TEXTURE:
-                        channelToTexture.put(config.textureChannel, config.name);
+                        channelToTexture.put(config.textureChannel, new File(config.name).getPath());
                         break;
                     case ADD_LX_PARAMETER:
                         parameters.add(config.lxParameter);

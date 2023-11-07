@@ -61,6 +61,13 @@ public class ShaderPatternClassFactory {
         return false;
     }
 
+    public boolean hasConfigData(List<ShaderConfiguration> config) {
+        for (ShaderConfiguration c : config) {
+            if (c.opcode != ShaderConfigOpcode.ADD_LX_PARAMETER) return true;
+        }
+        return false;
+    }
+
     public boolean classExists(String className) {
         try {
             Class.forName(className);
@@ -103,7 +110,7 @@ public class ShaderPatternClassFactory {
 
             // if the shader has no embedded configuration at all, we have to assume
             // that it's set up the "normal" way.  Skip it.
-            if (config.isEmpty()) {
+            if (hasConfigData(config) == false) {
                 //TE.log("Shader " + shaderFile + " has no configuration data.  Skipping.");
                 continue;
             }
