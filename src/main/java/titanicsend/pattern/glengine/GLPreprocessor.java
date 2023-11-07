@@ -234,10 +234,6 @@ public class GLPreprocessor {
         }
     }
 
-    public static String getVertexShaderTemplate() {
-        return ShaderUtils.loadResource(ShaderUtils.FRAMEWORK_PATH + "default.vs");
-    }
-
     public static String getFragmentShaderTemplate() {
         return ShaderUtils.loadResource(ShaderUtils.FRAMEWORK_PATH + "template.fs");
     }
@@ -248,11 +244,10 @@ public class GLPreprocessor {
         control.lxParameter = p;
         parameters.add(control);
     }
-
-
+    
     /**
-     * Preprocess the shader, converting embedded control specifiers to proper uniforms,
-     * and optionally creating corresponding controls if the "pattern" parameter is non-null.
+     * Convert legacy (pre-TECommonControls) embedded control specifiers to uniforms,
+     * and create corresponding LX parameters for them.
      */
     public String legacyPreprocessor(String shaderBody, List<ShaderConfiguration> parameters) {
         Matcher matcher = ShaderUtils.PLACEHOLDER_FINDER.matcher(shaderBody);
@@ -266,17 +261,13 @@ public class GLPreprocessor {
                     String metadata = matcher.group(3);
                     if ("bool".equals(metadata)) {
                         finalShader.append("uniform bool ").append(placeholderName).append(Uniforms.CUSTOM_SUFFIX).append(";\n");
-                        if (parameters != null) {
-                            addLXParameter(parameters,new BooleanParameter(placeholderName));
-                        }
+                        addLXParameter(parameters, new BooleanParameter(placeholderName));
                     } else {
                         finalShader.append("uniform float ").append(placeholderName).append(Uniforms.CUSTOM_SUFFIX).append(";\n");
-                        if (parameters != null) {
-                            Double[] rangeValues = Arrays.stream(metadata.split(","))
-                                .map(Double::parseDouble)
-                                .toArray(Double[]::new);
-                            addLXParameter(parameters,new CompoundParameter(placeholderName, rangeValues[0], rangeValues[1], rangeValues[2]));
-                        }
+                        Double[] rangeValues = Arrays.stream(metadata.split(","))
+                            .map(Double::parseDouble)
+                            .toArray(Double[]::new);
+                        addLXParameter(parameters, new CompoundParameter(placeholderName, rangeValues[0], rangeValues[1], rangeValues[2]));
                     }
                 }
                 matcher.appendReplacement(shaderCode, placeholderName + Uniforms.CUSTOM_SUFFIX);
@@ -301,6 +292,7 @@ public class GLPreprocessor {
         return preprocessShader(shaderBody, parameters);
 
     }
+
     public String preprocessShader(String shaderBody, List<ShaderConfiguration> parameters) throws Exception {
         lineCount = 0;
         try {

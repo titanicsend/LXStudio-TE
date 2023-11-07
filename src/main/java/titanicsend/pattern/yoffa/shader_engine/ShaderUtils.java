@@ -71,12 +71,6 @@ public class ShaderUtils {
         return loadResource(FRAMEWORK_PATH + "default.vs");
     }
 
-    public static String getFragmentShaderTemplate() {
-        return loadResource(FRAMEWORK_PATH + "template.fs");
-    }
-
-
-
     public static int createShader(GL4 gl4, int programId, String shaderCode, int shaderType) throws Exception {
         int shaderId = gl4.glCreateShader(shaderType);
         if (shaderId == 0) {
