@@ -5,20 +5,12 @@ import heronarts.lx.LX;
 import heronarts.lx.color.ColorParameter;
 import heronarts.lx.color.GradientUtils.GradientFunction;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.mixer.LXChannel;
-import heronarts.lx.model.LXModel;
 import heronarts.lx.parameter.*;
 import heronarts.lx.parameter.BooleanParameter.Mode;
-import heronarts.lx.studio.LXStudio;
 import heronarts.lx.utils.LXUtils;
 import titanicsend.app.TEGlobalPatternControls;
 import titanicsend.lx.LXGradientUtils;
 import titanicsend.lx.LXGradientUtils.BlendFunction;
-import titanicsend.model.justin.DisposableParameter.DisposeListener;
-import titanicsend.model.justin.LXVirtualDiscreteParameter;
-import titanicsend.model.justin.ViewCentral;
-import titanicsend.model.justin.ViewCentral.ViewCentralListener;
-import titanicsend.model.justin.ViewCentral.ViewParameter;
 import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon.VariableSpeedTimer;
@@ -331,71 +323,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         return super.getSwatchColor(type);
     }
 
-    // VIEW-PER-CHANNEL  *We have switch to per-pattern. Not deleting this code for sake of easy field edits.
-
-    public class LXVirtualViewParameter extends LXVirtualDiscreteParameter<ViewParameter> implements ViewCentralListener {
-
-        /* Two conditions are needed to link this virtual parameter to ViewCentral:
-         *   1. ViewCentral instance must be loaded
-         *   2. This pattern needs to be added to a channel.
-         *      (during file load, happens after pattern is loaded)
-         *      (LXPattern.setChannel() and LXPattern.setParent() are final, so
-         *       to make life easier we're linking this on first engine loop.)
-         */
-        public LXVirtualViewParameter(String label) {
-            super(label);
-
-            setIncrementMode(IncrementMode.RELATIVE);
-            setWrappable(false);
-
-            if (ViewCentral.isLoaded()) {
-                link();
-            } else {
-                listenForLoad();
-            }
-        }
-
-        public void listenForLoad() {
-            if (getParameter() == null) {
-                ViewCentral.listenOnce(this);
-            }
-        }
-
-        @Override
-        public void ViewCentralLoaded() {
-            link();
-        }
-
-        public void link() {
-            if (getParameter() == null) {
-                if (ViewCentral.isLoaded()) {
-                    LXChannel channel = getChannel();
-                    if (channel != null) {
-                        setParameter(ViewCentral.get().get(channel).view);
-                    }
-                }
-            }
-        }
-
-        // Type-specific pass-through
-        public LXVirtualViewParameter setView(String label) {
-            ViewParameter p = getParameter();
-            if (p != null) {
-                p.setView(label);
-            }
-            return this;
-        }
-
-        @Override
-        public LXVirtualViewParameter reset() {
-            TEShaderView patternDefaultView = getDefaultView();
-            if (patternDefaultView != null) {
-              return setView(getDefaultView().getParameterKey());
-            }
-            return (LXVirtualViewParameter)super.reset();
-        }
-    }
-
     private TEShaderView defaultView = null;
 
     /**
@@ -408,34 +335,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     public TEShaderView getDefaultView() {
         return defaultView;
     }
-
-    // VIEW PER PATTERN
-
-    // Hide LXModelComponent.model, redirect to view-per-pattern
-    protected LXModel model;
-
-    @Override
-    public LXModel getModel() {
-        return this.model;
-    }
-
-    public ViewParameter viewPerPattern;
-
-    private LXParameterListener viewPerPatternListener = (p) -> {
-        this.model = viewPerPattern.getModel();
-        onModelChanged(this.model);
-        // TEPattern calls clearPixels() after onModelChanged()
-        if (this.lx instanceof LXStudio) {
-          ((LXStudio) lx).ui.setMouseoverHelpText("View:  " + viewPerPattern.getObject().toString());
-        }
-    };
-
-    private DisposeListener viewPerPatternDisposing = (p) -> {
-        if (p == this.viewPerPattern) {
-            this.viewPerPattern.removeListener(viewPerPatternListener);
-            this.viewPerPattern = null;
-        }
-    };
 
     // ANGLE PARAMETER
 
@@ -476,11 +375,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         // Color control is accessible, in case the pattern needs something
         // other than the current color.
         public TEColorParameter color;
-
-        // Virtual parameter: it's a pass-through to ViewCentral's current view for this channel
-        public final LXVirtualViewParameter viewParameter =
-            new LXVirtualViewParameter("View") {
-        };
 
         // Panic control courtesy of JKB's Rubix codebase
         public final BooleanParameter panic = (BooleanParameter)
@@ -675,7 +569,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             }
 
             addParameter("panic", this.panic);
-            addParameter("viewPerPattern", viewPerPattern);
         }
 
         public void markUnused(LXNormalizedParameter param) {
@@ -710,22 +603,17 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 getControl(TEControlTag.ANGLE).control,
                 getControl(TEControlTag.SPIN).control,
                 this.panic,
-                getViewRemoteControl(),
+                null,
 
                 getControl(TEControlTag.WOW1).control,
                 getControl(TEControlTag.WOW2).control,
                 getControl(TEControlTag.WOWTRIGGER).control,
-                getControl(TEControlTag.EXPLODE).control
+                getControl(TEControlTag.EXPLODE).control,
                 // To be SHIFT, not implemented yet
-            });
-        }
 
-        protected LXListenableNormalizedParameter getViewRemoteControl() {
-            if (ViewCentral.ENABLED) {
-                return viewPerPattern;
-            } else {
-                return null;
-            }
+                // For UI usage, LXDeviceComponent.view
+                view
+            });
         }
 
         public void buildDefaultControlList() {
@@ -857,10 +745,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             getControl(TEControlTag.WOW1).control.reset();
             getControl(TEControlTag.WOW2).control.reset();
             getControl(TEControlTag.WOWTRIGGER).control.reset();
-
-            if (ViewCentral.ENABLED) {
-                viewPerPattern.reset();
-            }
         }
 
         public void dispose() {
@@ -952,12 +836,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
         this.defaultView = defaultView;
 
-        this.model = super.model;   // That's right!
-        this.viewPerPattern = ViewCentral.get().createParameter();
-        this.viewPerPattern.addListener(viewPerPatternListener);
-        this.viewPerPattern.listenDispose(viewPerPatternDisposing);
-        this.viewPerPattern.setDefault(getDefaultView(), true);
-
         this.globalControls = (TEGlobalPatternControls) lx.engine.getChild("globalPatternControls");
 
         lx.engine.addTask(() -> {
@@ -965,9 +843,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 // Instantiation failed. Turn off now to avoid fatal call to null variables.
                 return;
             }
-
-            // Patterns are created, then added to channel. Channel should be available on next engine loop.
-            linkChannelParameters(lx);
 
             // Because LXPattern child classes can not override defaultRemoteControls and have to use
             // customRemoteControls, that means a list of our remote controls are saved to file and
@@ -979,11 +854,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             // survive a file save/load which is much less inconvenient than this default behavior.
             this.controls.setRemoteControls();
         });
-    }
-
-    private void linkChannelParameters(LX lx) {
-        // Finally safe to assume a channel has been assigned
-        this.controls.viewParameter.link();
     }
 
     public TECommonControls getControls() {
@@ -1330,10 +1200,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     @Override
     public void dispose() {
-        if (this.viewPerPattern != null) {
-            this.viewPerPattern.removeListener(viewPerPatternListener);
-            this.viewPerPattern.unlistenDispose(viewPerPatternDisposing);
-        }
         this.controls.getLXControl(TEControlTag.WOWTRIGGER).removeListener(wowTriggerListener);
         this.controls.dispose();
         super.dispose();

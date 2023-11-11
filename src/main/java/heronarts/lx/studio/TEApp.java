@@ -58,7 +58,6 @@ import titanicsend.lx.MidiFighterTwister;
 import titanicsend.midi.MidiNames;
 import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.model.TEWholeModel;
-import titanicsend.model.justin.ViewCentral;
 import titanicsend.modulator.dmx.Dmx16bitModulator;
 import titanicsend.modulator.dmx.DmxGridModulator;
 import titanicsend.modulator.dmx.DmxColorModulator;
@@ -109,9 +108,6 @@ public class TEApp extends LXStudio {
   private static int WINDOW_HEIGHT = 800;
   private static String resourceSubdir;
 
-  // Global feature on/off switches for troubleshooting
-  public static final boolean ENABLE_VIEW_CENTRAL = true;
-
   @LXPlugin.Name("Titanic's End")
   public static class Plugin implements LXStudio.Plugin, LX.Listener, LX.ProjectListener {
 
@@ -126,7 +122,6 @@ public class TEApp extends LXStudio {
 
     private final DmxEngine dmxEngine;
     private final TELaserTask laserTask;
-    private final ViewCentral viewCentral;
     private final CrutchOSC crutchOSC;
     private DevSwitch devSwitch;
 
@@ -155,9 +150,6 @@ public class TEApp extends LXStudio {
 
       // Load metadata about unused controls per-pattern into a singleton that patterns will reference later
       MissingControlsManager.get();
-
-      // Add special view controller
-      this.viewCentral = new ViewCentral(lx);
 
       // CrutchOSC is an LXOscEngine supplement for TouchOSC clients
       lx.engine.registerComponent("focus", this.crutchOSC = new CrutchOSC(lx));
@@ -547,7 +539,6 @@ public class TEApp extends LXStudio {
       this.devSwitch.dispose();
       this.dmxEngine.dispose();
       this.crutchOSC.dispose();
-      this.viewCentral.dispose();
     }
   }
 
@@ -686,6 +677,7 @@ public class TEApp extends LXStudio {
         TEApp.wholeModel = model;
 
         TEApp lx = new TEApp(flags, model);
+        model.loadViews(lx);
 
         // Schedule a task to load the initial project file at launch
         final File finalProjectFile = projectFile;

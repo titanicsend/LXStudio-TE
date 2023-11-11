@@ -11,17 +11,20 @@ import java.util.stream.Collectors;
 import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
+import heronarts.lx.model.LXView;
+import heronarts.lx.structure.view.LXViewDefinition;
 import heronarts.lx.transform.LXVector;
 import heronarts.lx.utils.LXUtils;
 import titanicsend.dmx.model.AdjStealthModel;
 import titanicsend.dmx.model.BeaconModel;
-import titanicsend.dmx.model.ChauvetSpot160Model;
 import titanicsend.dmx.model.DmxModel;
 import titanicsend.dmx.model.DmxWholeModel;
 import titanicsend.dmx.model.DmxModel.DmxCommonConfig;
 import titanicsend.lasercontrol.MovingTarget;
+import titanicsend.model.justin.ViewDefinition;
 import titanicsend.output.ChromatechSocket;
 import titanicsend.output.GrandShlomoStation;
+import titanicsend.pattern.jon.ModelBender;
 import titanicsend.util.TE;
 
 public class TEWholeModel extends LXModel implements DmxWholeModel {
@@ -42,6 +45,7 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
 
   static public final String RESOURCE_NAME_BEACONS = "/beacons.txt";
   static public final String RESOURCE_NAME_DJLIGHTS = "/djLights.txt";
+  static public final String RESOURCE_NAME_VIEWS = "views.txt";
 
   // Beacons
   private final List<DmxModel> mutableBeacons = new ArrayList<DmxModel>();
@@ -100,7 +104,7 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
     public List<DmxModel> djLights;
     public List<TEBox> boxes;
     public LXModel[] children;
-    public Properties views;
+    public Properties tags;
   }
 
   public TEWholeModel(String subdir) {
@@ -241,12 +245,12 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
     s.close();
   }
 
-  private static void loadViews(Geometry geometry) {
-    geometry.views = new Properties();
+  private static void loadTags(Geometry geometry) {
+    geometry.tags = new Properties();
     try (InputStream is = new FileInputStream("resources/vehicle/tags.properties")) {
-      geometry.views.load(is);
+      geometry.tags.load(is);
     } catch (IOException e) {
-        LX.log("Error loading views: " + e.getMessage());
+        LX.log("Error loading tags: " + e.getMessage());
     }
   }
 
@@ -295,8 +299,8 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
       TEVertex v1 = geometry.vertexesById.get(v1Id);
       String[] tags = new String[] { tokens[0] + tokens[1], id };
   
-      for (String view : geometry.views.stringPropertyNames()) {
-        List<String> ids = Arrays.asList(geometry.views.getProperty(view).split(","));
+      for (String view : geometry.tags.stringPropertyNames()) {
+        List<String> ids = Arrays.asList(geometry.tags.getProperty(view).split(","));
         if (ids.contains(id)) {
           String[] newTags = new String[tags.length + 1]; // Resize the tags array to fit all IDs
           System.arraycopy(tags, 0, newTags, 0, tags.length); // Copy the old tags into the new array
@@ -552,7 +556,7 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
 
       TEStripingInstructions tesi = stripingInstructions.get(id);
       TEPanelModel p = TEPanelFactory.build(id, vertexes[0], vertexes[1], vertexes[2],
-          startVertexId, midVertexId, e0, e1, e2, panelType, tesi, geometry.gapPoint, geometry.views);
+          startVertexId, midVertexId, e0, e1, e2, panelType, tesi, geometry.gapPoint, geometry.tags);
       if (p.points.length != declaredNumPixels) {
         TE.err("Panel " + id + " was declared to have " + declaredNumPixels +
                 "px but it actually has " + p.points.length);
@@ -775,7 +779,7 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
 
     loadVertexes(geometry);
 
-    loadViews(geometry);
+    loadTags(geometry);
 
     // Vertexes aren't LXPoints (and thus, not LXModels) so they're not children
 
@@ -907,4 +911,54 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
     return this.dmxModels;
   }
 
+  public void loadViews(LX lx) {
+    List<ViewDefinition> views = new ArrayList<ViewDefinition>();
+
+    // Load view definitions from file
+    try (Scanner s = new Scanner(new File("resources/vehicle/" + RESOURCE_NAME_VIEWS))) {
+      while (s.hasNextLine()) {
+        String line = s.nextLine();
+        if (line.startsWith("#")) {
+          continue;
+        }
+        String[] tokens = line.split("\t");
+        // Asserts default to off in Java...
+        if (tokens.length == 3) {
+          String label = tokens[0];
+          // Normalization: true = relative, false = absolute
+          LXView.Normalization n = Boolean.parseBoolean(tokens[1]) ? LXView.Normalization.RELATIVE : LXView.Normalization.ABSOLUTE;
+          String selector = tokens[2];
+          views.add(new ViewDefinition(label, selector, n));
+        } else {
+          LX.error("Invalid number of columns in " + RESOURCE_NAME_VIEWS +" config file, found " + tokens.length + ": " + line);
+        }
+      }
+    } catch (IOException e) {
+      LX.error(e, "Error loading views from file:");
+      return;
+    }
+
+    // adjust model geometry for easy texture mapping in views
+    ModelBender mb = new ModelBender();
+    mb.adjustEndGeometry(this);
+
+    // Create LXViews once
+    for (ViewDefinition v : views) {
+      if (v.viewEnabled && (v.viewSelector != null) && !v.viewSelector.isEmpty()) {
+        addGlobalView(lx, v);
+      } else {
+        LX.warning("View Definition is not a filter.");
+      }
+    }
+
+    // restore original model geometry
+    mb.restoreModel(this);
+  }
+
+  private void addGlobalView(LX lx, ViewDefinition viewDefinition) {
+    LXViewDefinition view = lx.structure.views.addView();
+    view.label.setValue(viewDefinition.label);
+    view.selector.setValue(viewDefinition.viewSelector);
+    view.normalization.setValue(viewDefinition.viewNormalization);
+  }
 }
