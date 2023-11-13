@@ -1,10 +1,7 @@
+#pragma name "Circuitry"
 
-vec3 hsv2rgb(vec3 c)
-{
-    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
-}
+#include <include/constants.fs>
+#include <include/colorspace.fs>
 
 mat2 rot(float a) {
     float s=sin(a), c=cos(a);
@@ -12,7 +9,7 @@ mat2 rot(float a) {
 }
 
 vec3 fractal(vec2 p) {    
-    p.x += 0.3333 * sin(iTime*.4);
+    p.x += 0.3333 * sin(beat*TWO_PI);
        
     float ot1 = 1000., ot2=ot1, it=0.;
     
@@ -34,10 +31,14 @@ vec3 fractal(vec2 p) {
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     vec2 uv = fragCoord.xy/iResolution.xy-.5;
-    uv.x*=iResolution.x/iResolution.y;
-    
-    float aa=2.;
-    
+    uv.x *= iResolution.x/iResolution.y;
+
+    // draw the fractal, antialiased by supersampling
+    // we don't need tons of this on the car
+    // but a little makes it much smoother looking
+    float aa=1.;
+
+    // distance between samples
     vec2 sc=1./iResolution.xy/aa;
     
     vec3 c=vec3(0.);
