@@ -18,7 +18,9 @@ public class Rotor {
     // spin angle so that calls to getAngle() during a frame
     // will always return the same value no matter how long the frame
     // calculations take.
-    void updateAngle(double time, double ctlValue) {
+    // TODO(look): instead of 'public', if we want this to be internal to TEPerformancePattern, all the TEPerfPattern
+    //             stuff could go in a package and this method could be package-protected
+    public void updateAngle(double time, double ctlValue) {
         // if this is the first frame, or if the timer was restarted,
         // we skip calculation for a frame.  Otherwise, do
         // the incremental angle calculation...
@@ -35,19 +37,19 @@ public class Rotor {
     /**
      * @return Current rotational angle, either computed, or taken from
      */
-    double getAngle() {
+    public double getAngle() {
         return angle;
     }
 
-    void setAngle(double angle) {
+    public void setAngle(double angle) {
         this.angle = angle;
     }
 
-    void addAngle(double offset) {
+    public void addAngle(double offset) {
         this.angle += offset;
     }
 
-    void reset() {
+    public void reset() {
         angle = 0;
         lastTime = 0;
     }
@@ -59,7 +61,7 @@ public class Rotor {
      *
      * @param radiansPerSecond
      */
-    void setMaxSpinRate(double radiansPerSecond) {
+    public void setMaxSpinRate(double radiansPerSecond) {
         maxSpinRate = radiansPerSecond;
     }
 }
