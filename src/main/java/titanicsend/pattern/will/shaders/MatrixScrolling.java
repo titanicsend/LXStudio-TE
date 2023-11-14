@@ -7,6 +7,7 @@ import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXParameter;
+import titanicsend.pattern.TECommonControls;
 import titanicsend.pattern.TEPattern;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.jon.TEControlTag;
@@ -34,7 +35,7 @@ public class MatrixScrolling extends FragmentShaderEffect {
     public MatrixScrolling(PatternTarget target) {
         super(target);
 
-        TEPerformancePattern.TECommonControls ctl = pattern.getControls();
+        TECommonControls ctl = pattern.getControls();
 
         ctl.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
         ctl.setValue(TEControlTag.SPEED, 0.5);

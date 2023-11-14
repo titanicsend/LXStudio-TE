@@ -1,6 +1,7 @@
 package titanicsend.pattern.yoffa.effect.shaders;
 
 import heronarts.lx.parameter.LXParameter;
+import titanicsend.pattern.TECommonControls;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
@@ -16,7 +17,7 @@ public class NeonSnakeShader extends FragmentShaderEffect {
 
     public NeonSnakeShader(PatternTarget target) {
         super(target);
-        TEPerformancePattern.TECommonControls ctl = pattern.getControls();
+        TECommonControls ctl = pattern.getControls();
 
         ctl.setRange(TEControlTag.SIZE, 0.3, 0.2, 0.9);  // dispersion/scale
         ctl.setRange(TEControlTag.WOW1, 1, .1, 2);       // glow
