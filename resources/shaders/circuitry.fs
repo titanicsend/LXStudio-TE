@@ -43,7 +43,8 @@ float fractal(vec2 p) {
             minIteration = i;
         }
         // using minimum of manhattan and euclidean distance over all iterations
-        // gives bright glow to areas of concentration.  If you zoom out a bit // you can really see that it's a "normal" fractal. (Zoom in and it
+        // gives bright glow to areas of concentration.  If you zoom out a bit
+        // you can really see that it's a "normal" fractal. (Zoom in and it
         // just looks like rectangles.)
         minDist = min(minDist,length(p));
     }
