@@ -76,16 +76,18 @@ uniform sampler2D iChannel3;
 
 #### iTime (uniform float iTime;)
 'Time' since your pattern started running, in seconds.millis.  With the common controls,
-this rate can vary with the setting of the speed control.
+the rate at which time passes will vary with the setting of the speed control.
 
-Since shaders frequently render movement as a function of iTime shaders, this variable speed
-time gives you smooth speed control without any additional code in the shader.  Importantly,
+Since shaders often use iTime to render animation as a function of time, this
+variable speed timer gives you smooth speed control without any additional code in the shader.  Importantly,
 time can run both forwards and backwards, so be sure your pattern's math works in both directions.
 
 #### iResolution (uniform vec2 iResolution;)
-The resolution of the "display" surface.  Note that these are the dimensions
-of the off-screen 2D frame buffer that OpenGL uses for drawing. It is only
-indirectly related to the number and layout of LEDs on the vehicle.
+The resolution of the "display" surface, used in shaders to normalize incoming pixel coordinates.
+Note that these are the dimensions of the off-screen 2D frame buffer that OpenGL uses for drawing and
+are only indirectly related to the number and layout of LEDs on the vehicle.  Tools to aid in mapping
+between the frame buffer and car geometry are available in the TE
+framework's [CarGeometryPatternTools](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/CarGeometryPatternTools.java) class.
 
 #### iMouse (uniform vec4 iMouse;)
 All zeros at this time. Never changes. Included for compatibility with ShaderToy
@@ -178,6 +180,10 @@ function to retrieve data from these textures.
 
 -----
 ### Automatic LX Control Uniforms
+*(Note: This is a legacy feature. It's still supported, but is not recommended
+for use in new shaders.  Any controls you create this way will not be visible in the UI.  In the future, we may update or repurpose this feature.
+For now, the best way to create controls from shader code is to use the automatic shader wrapping method
+described below.)*
 
 In your shader, you can create a uniform that is automatically linked to an LX control.  When you change
 the control from the UI, the value of the uniform will change.  This is especially handy for including extra
@@ -222,11 +228,11 @@ For an example, see [Phasers](https://github.com/titanicsend/LXStudio-TE/blob/ma
 ## Adding a Shader to TE
 
 To run a shader on TE, we need to wrap it in a TEAudioPattern.  There
-are ~~two~~ three ways of going about this.
+are three ways of going about this.
 
 ### Easiest:  Automatic Shader Wrapping
 For the 2023/2024 season, we've introduced a way to add shaders to TE without writing any Java code at all. 
-With this method you can set up the shader's controls directly from shader code, and even live-edit the shader
+With this method you can set up controls directly from shader code, and even live-edit the shader
 with any text editor while it's running on the vehicle. This is the easiest way to get started with shaders on TE.
 
 To use this method:
@@ -260,23 +266,32 @@ from the pattern browser panel.
 #pragma Name("ReallyCoolPattern");        // must be unique, and a valid java class name
 
 // Set the shader's pattern browser category
-#pragma LXCategory("Best Shaders Ever!)
+#pragma LXCategory("Best Shaders Ever!")
 
 // Configure common controls at setup time.  The control names and
 // configuration functions are as described in the common controls documentation. 
 #pragma TEControl.SPEED.Value(1.0)       // setValue()
 #pragma TEControl.QUANTITY.Range(1,0,5)     // setRange() 
 #pragma TEControl.WOW1.Label("Timmy")   // setLabel()
-#pragma TeControl.SCALE.Exponent(2.25)   // setExponent()
-#pragma TeControl.QUANTITY.NormalizationCurve(REVERSE,NORMAL,BIAS_CENTER,BIAS_OUTER)  // setNormalizationCurve()
-#pragma TEControl.SPEED.Disable	         // markUnused() - hide the control in the UI
+#pragma TEControl.SIZE.Exponent(2.25)   // setExponent()
+
+// Set the shape of the control's normalization curve to optimize
+// "feel" and responsiveness. Possible values are: REVERSE,NORMAL,BIAS_CENTER,BIAS_OUTER
+#pragma TEControl.QUANTITY.NormalizationCurve(REVERSE)  // setNormalizationCurve()
+
+// Hide the control in the Chromatik UI
+#pragma TEControl.SPEED.Disable	
 
 // specify up to 9 textures
-#pragma iChannel1 "shaders/resources/textures/test.png"
+#pragma iChannel1 "resources/shaders/textures/test.png"
 //  ... or  ...
 #pragma iChannel1 <textures/test.png>	
 
-// choose how the pattern interacts with x/y translation controls
+// Choose how the pattern interacts with x/y translation controls
+// Possible values are: DRIFT, NORMAL
+// If this pragma is not specified, the default mode is NORMAL, which
+// is what you want unless you're deliberately creating a drift-aware pattern.
+// (See the section on drift enabled patterns below for more information.)
 #pragma TEControl.TranslateMode(DRIFT,NORMAL)
 
 ```
@@ -402,6 +417,52 @@ ambiguity at all.  For example, if you want to send a floating point vec3 of zer
 specify ```setUniform("name",0f,0f,0f)```, or you might wind up sending an integer vector instead.
 When in doubt be specific.  Cast if necessary for clarity.
 
+## Advanced Pattern Building
+### Using Car Geometry
+You can access the car's geometry - edges and triangles - from a shader to create patterns that uniquely fit
+Titanic's End. The
+[CarGeometryPatternTools](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/CarGeometryPatternTools.java)
+class provides basic tools to extract features from the car's geometry and pass them to your shader as uniforms.  Building
+patterns this way requires the combined Java/Shader approach described above.  Below are two examples, both of which
+would be computationally impractical in Java alone.
+
+**ArcEdges** lights the car's edges and nearby panel areas, and creates a series of glowing "electrical arcs" between them.
+
+[ArcEdges.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/ArcEdges.java)
+[arcedges.fs](https://github.com/titanicsend/LXStudio-TE/blob/main/resources/shaders/arcedges.fs)
+
+**Edgefall** illustrates a way of animating car geometry.  It lights edges, and "explodes" them outward
+when the WowTrigger button is pressed.
+[EdgeFall.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/EdgeFall.java)
+[edgefall.fs](https://github.com/titanicsend/LXStudio-TE/blob/main/resources/shaders/edgefall.fs)
+
+### Drift Enabled Patterns
+Some pattern types, for example noise, clouds and starfields, look best with continuous, unbounded, "drifting"
+x/y movement.  To create a pattern that moves this way, derive it from the ```DriftEnabledPattern``` 
+class instead of ```TEPerformancePattern```.   This overrides the default translation behavior so that
+instead of an absolute x/y offset, the XPos/YPos controls set a 'drift' direction and speed.
+
+The pattern's position will then smoothly change over time at a rate controlled by XPos/YPos. The maximum
+movment rate is based on the real-time clock, independent of the speed control setting.
+
+Note that patterns must be "drift-aware" - they must know that the offset controls now control drift
+and that the current position is available in Java from the getXPosition() and getYPosition()
+functions.  
+
+GLSL shaders using this class should define #TE_NOTRANSLATE in their code to disable the default control
+behavior in the shader engine.
+
+A couple of DriftEnabledPattern examples are:
+#### RainBands
+[RainBands.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/RainBands.java) 
+[RainBands.fs](https://github.com/titanicsend/LXStudio-TE/blob/main/resources/shaders/rain_noise.fs)
+
+and 
+#### TriangleNoise
+[TriangleNoise.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/TriangleNoise.java) 
+[TriangleNoise.fs](https://github.com/titanicsend/LXStudio-TE/blob/main/resources/shaders/triangle_noise.fs)
+
+
 ## Tips and Traps
 
 ### Resolution
@@ -412,7 +473,7 @@ line width and detail level, so your pattern can be tuned to look its best.
 
 ### Performance
 As of this writing, TE's main computer will be a Mac Studio.  Within the bounds of reason, performance shouldn't be 
-a problem.  
+a problem. 
 
 ### Alpha
 TE patterns are meant to be layerable and mixable.  Where possible, your pattern should

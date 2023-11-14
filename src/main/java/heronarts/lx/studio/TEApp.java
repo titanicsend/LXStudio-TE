@@ -255,7 +255,7 @@ public class TEApp extends LXStudio {
       // Patterns for DMX input
       lx.registry.addPattern(DmxGridPattern.class);
 
-      // wacky test thing
+      // Automatic shader pattern wrapper
       ShaderPatternClassFactory spf = new ShaderPatternClassFactory();
       spf.registerShaders(lx);
 

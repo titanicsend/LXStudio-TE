@@ -78,11 +78,12 @@ public class ShaderPatternClassFactory {
     }
 
     /**
-    // Iterate through .fs files in the shaders directory and create a class for each
-    // shader that has any configuration pragmas in its code. The new class will
-    // be named after the shader file by default, and will extend TEAutoShaderPattern or
-    // TEAutoDriftPattern depending on configuration options.
-    */
+     * Iterate through .fs files in the shaders directory and create a class for each
+     * shader that has any configuration pragmas in its code. The new class will
+     * be named after the shader file by default, and will extend TEAutoShaderPattern or
+     * TEAutoDriftPattern depending on configuration options.  See comments in the code
+     * for the make() method below for details.
+     */
     @SuppressWarnings("unchecked")
     public void registerShaders(LX lx) {
         String dir = ShaderUtils.SHADER_PATH;
@@ -133,8 +134,38 @@ public class ShaderPatternClassFactory {
         }
     }
 
-    // Create a new shader pattern class, derived from either TEAutoShaderPattern or
-    // TEAutoDriftPattern.
+    /*
+     Here, we create a new shader pattern class, derived from either TEAutoShaderPattern or
+     TEAutoDriftPattern.  How it works:
+
+     We use ByteBuddy (www.bytebuddy.net) to dynamically create and annotate a new class.
+     The ByteBuddy code below is roughly equivalent to the following Java code:
+
+      public class NewShaderPattern extends TEAutoShaderPattern {
+          @LXCategory("My Category")
+          public String getShaderFile() {
+              return "my_shader.fs";
+          }
+      }
+
+     The new class is named after the shader file, or given the name specified in the shader code, and
+     it is placed in the titanicsend.pattern.glengine package. (This makes Chromatik happy, because
+     at project load time, it uses a class loader that wants to find the class in a package for
+     which it has a valid .jar file.)
+
+     The "Auto" pattern classes have a method called getShaderFile() that returns the name of the
+     shader file to be used.  We override that method to return the name of the shader file we want
+     to use in the new class.
+
+     ByteBuddy's ElementMatcher is used to find the correct method to override and we use its
+     FixedValue class to implement the new method that returns the shader file name
+     string to load at pattern initialization time.
+
+     ByteBuddy's AnnotationDescription is used to add the LXCategory annotation to the new class so
+     we can specify where we want to live in the UI.
+
+     Finally, the class is created and loaded into the JVM, ready to register with Chromatik.  Whew!
+    */
     public Class<?> make(String className, String category, String shaderFile, boolean isDriftPattern) {
         AnnotationDescription lxcategory = AnnotationDescription.Builder.ofType(LXCategory.class)
             .define("value", category)
@@ -154,7 +185,6 @@ public class ShaderPatternClassFactory {
                 .intercept(FixedValue.value(shaderFile))
                 .make()
                 .load(ClassLoader.getSystemClassLoader(), ClassLoadingStrategy.Default.INJECTION)
-
                 .getLoaded();
         } else {
             return new ByteBuddy()
@@ -169,7 +199,6 @@ public class ShaderPatternClassFactory {
                 .method(ElementMatchers.named("getShaderFile"))
                 .intercept(FixedValue.value(shaderFile))
                 .make()
-                //.load(getClass().getClassLoader())
                 .load(ClassLoader.getSystemClassLoader(), ClassLoadingStrategy.Default.INJECTION)
                 .getLoaded();
         }
