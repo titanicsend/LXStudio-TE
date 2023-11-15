@@ -23,7 +23,7 @@ realistic, etc. graphics without bogging down the CPU.
 
 ## Uniforms - Data Supplied by the TE Framework
 
-LX passes audio and control data to your shader as uniforms.
+Chromatik passes audio and control data to your shader as uniforms.
 A uniform is effectively a constant - it has the same value across 
 all GPU threads. It is set at frame rendering time, and can be read,
 but not changed. (The compiler will complain if you try.) The uniforms below
@@ -76,19 +76,22 @@ uniform sampler2D iChannel3;
 
 #### iTime (uniform float iTime;)
 'Time' since your pattern started running, in seconds.millis.  With the common controls,
-this rate can vary with the setting of the speed control.
+the rate at which time passes will vary with the setting of the speed control.
 
-Since shaders frequently render movement as a function of iTime shaders, this variable speed
-time gives you smooth speed control without any additional code in the shader.
+Since shaders often use iTime to render animation as a function of time, this
+variable speed timer gives you smooth speed control without any additional code in the shader.  Importantly,
+time can run both forwards and backwards, so be sure your pattern's math works in both directions.
 
 #### iResolution (uniform vec2 iResolution;)
-The resolution of the "display" surface.  Note that these are the dimensions
-of the off-screen 2D frame buffer that OpenGL uses for drawing. It is only
-indirectly related to the number and layout of LEDs on the vehicle.
+The resolution of the "display" surface, used in shaders to normalize incoming pixel coordinates.
+Note that these are the dimensions of the off-screen 2D frame buffer that OpenGL uses for drawing and
+are only indirectly related to the number and layout of LEDs on the vehicle.  Tools to aid in mapping
+between the frame buffer and car geometry are available in the TE
+framework's [CarGeometryPatternTools](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/CarGeometryPatternTools.java) class.
 
 #### iMouse (uniform vec4 iMouse;)
 All zeros at this time. Never changes. Included for compatibility with ShaderToy
-shaders. 
+shaders.  There's no reason to use this in shader code.
 
 -----
 ### Color Uniforms
@@ -177,6 +180,10 @@ function to retrieve data from these textures.
 
 -----
 ### Automatic LX Control Uniforms
+*(Note: This is a legacy feature. It's still supported, but is not recommended
+for use in new shaders.  Any controls you create this way will not be visible in the UI.  In the future, we may update or repurpose this feature.
+For now, the best way to create controls from shader code is to use the automatic shader wrapping method
+described below.)*
 
 In your shader, you can create a uniform that is automatically linked to an LX control.  When you change
 the control from the UI, the value of the uniform will change.  This is especially handy for including extra
@@ -221,17 +228,87 @@ For an example, see [Phasers](https://github.com/titanicsend/LXStudio-TE/blob/ma
 ## Adding a Shader to TE
 
 To run a shader on TE, we need to wrap it in a TEAudioPattern.  There
-are two ways of going about this.
+are three ways of going about this.
 
------
-### The Easy Way
+### Easiest:  Automatic Shader Wrapping
+For the 2023/2024 season, we've introduced a way to add shaders to TE without writing any Java code at all. 
+With this method you can set up controls directly from shader code, and even live-edit the shader
+with any text editor while it's running on the vehicle. This is the easiest way to get started with shaders on TE.
+
+To use this method:
+- Write your shader in any text editor.
+- Include the line ```#pragma auto``` in your shader code, and save it as an .fs file in the
+*resources/shaders* directory.  Be sure the file name is unique, and is a valid Java class name.
+(No spaces, no special characters.)
+- The next time you start the TE App, your shader will be available in the pattern browser panel, under
+the 'Auto Shaders' category. (You can use additional #pragmas, described below, to change the name and category, as well as 
+set up UI controls for your shader.)
+
+To live edit a shader, first add it to an active channel so you can see what it's doing.  Then make your changes to the .fs
+file and save it.  To see your changes on the car, delete the shader from the active channel list, and re-add it
+from the pattern browser panel.
+
+#### Preprocessor Directives for Automatic Shader Wrapping
+
+```glsl
+    // basic #include support (handles nested includes, up to 9 levels)
+#include "resources/shaders/library/file.fs"
+//...or...
+#include <library/file.fs>// prefixes with default resource path
+
+// Use the automatic wrapper for ths shader. Recommended, but only required if you
+// use no other configuration pragmas. 
+#pragma auto 
+
+// set the name of the pattern's java class (and the pattern name in the UI) If not specified
+// the name of the shader file (not including .fs) will be used.  If the specified class exists
+// a new class will not be created for the shader.)
+#pragma Name("ReallyCoolPattern");        // must be unique, and a valid java class name
+
+// Set the shader's pattern browser category
+#pragma LXCategory("Best Shaders Ever!")
+
+// Configure common controls at setup time.  The control names and
+// configuration functions are as described in the common controls documentation. 
+#pragma TEControl.SPEED.Value(1.0)       // setValue()
+#pragma TEControl.QUANTITY.Range(1,0,5)     // setRange() 
+#pragma TEControl.WOW1.Label("Timmy")   // setLabel()
+#pragma TEControl.SIZE.Exponent(2.25)   // setExponent()
+
+// Set the shape of the control's normalization curve to optimize
+// "feel" and responsiveness. Possible values are: REVERSE,NORMAL,BIAS_CENTER,BIAS_OUTER
+#pragma TEControl.QUANTITY.NormalizationCurve(REVERSE)  // setNormalizationCurve()
+
+// Hide the control in the Chromatik UI
+#pragma TEControl.SPEED.Disable	
+
+// specify up to 9 textures
+#pragma iChannel1 "resources/shaders/textures/test.png"
+//  ... or  ...
+#pragma iChannel1 <textures/test.png>	
+
+// Choose how the pattern interacts with x/y translation controls
+// Possible values are: DRIFT, NORMAL
+// If this pragma is not specified, the default mode is NORMAL, which
+// is what you want unless you're deliberately creating a drift-aware pattern.
+// (See the section on drift enabled patterns below for more information.)
+#pragma TEControl.TranslateMode(DRIFT,NORMAL)
+
+```
+
+###  Easy: Shader Code + Java ConstructedPattern
+
+This method requires minor, boilerplate Java coding, and allows you to customize controls for your
+shader without building a full TEPerformancePattern.  It is used by most of our first and second year
+shaders.  It's not as simple as the automatic method above, but does have a slight advantage in load time.
 
 - Write your shader, and save it as an .fs file in the *resources/shaders* directory.
 - Follow the boilerplate code and add a uniquely named class for your shader to
  either [ShaderPanelsPatternConfig.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/yoffa/config/ShaderPanelsPatternConfig.java)
 - or [ShaderEdgesPatternConfig.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/yoffa/config/ShaderEdgesPatternConfig.java) in
  the directory *src/main/java/titanicsend/pattern/yoffa/config/*
-- That's it!  Run TE and look for your new pattern in the content list.
+
+- Run TE and look for your new pattern in the content list.
 
 Here's an example of code to add a new shader effect to *ShaderPanelsPatternConfig*.
 ```
@@ -248,10 +325,10 @@ Here's an example of code to add a new shader effect to *ShaderPanelsPatternConf
     }
 ```
 
-### The Slightly Harder Way
+### Slightly Harder: Shader + Java + custom Uniforms
 
-If you want to send arrays or other custom uniforms to your shader, you'll need to build your pattern as a
-normal *TEAudioPattern*, and create your own *NativeShaderPatternEffect* to manage the shader.
+If you want to send arrays, car geometry or other custom uniforms to your shader, you'll need to derive your
+pattern from the *TEPerformancePattern*, class and create your own *NativeShaderPatternEffect* to manage the shader.
 
 To create a *NativeShaderPatternEffect*, use a constructor like this during your pattern's creation: 
 ```
@@ -340,6 +417,52 @@ ambiguity at all.  For example, if you want to send a floating point vec3 of zer
 specify ```setUniform("name",0f,0f,0f)```, or you might wind up sending an integer vector instead.
 When in doubt be specific.  Cast if necessary for clarity.
 
+## Advanced Pattern Building
+### Using Car Geometry
+You can access the car's geometry - edges and triangles - from a shader to create patterns that uniquely fit
+Titanic's End. The
+[CarGeometryPatternTools](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/CarGeometryPatternTools.java)
+class provides basic tools to extract features from the car's geometry and pass them to your shader as uniforms.  Building
+patterns this way requires the combined Java/Shader approach described above.  Below are two examples, both of which
+would be computationally impractical in Java alone.
+
+**ArcEdges** lights the car's edges and nearby panel areas, and creates a series of glowing "electrical arcs" between them.
+
+[ArcEdges.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/ArcEdges.java)
+[arcedges.fs](https://github.com/titanicsend/LXStudio-TE/blob/main/resources/shaders/arcedges.fs)
+
+**Edgefall** illustrates a way of animating car geometry.  It lights edges, and "explodes" them outward
+when the WowTrigger button is pressed.
+[EdgeFall.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/EdgeFall.java)
+[edgefall.fs](https://github.com/titanicsend/LXStudio-TE/blob/main/resources/shaders/edgefall.fs)
+
+### Drift Enabled Patterns
+Some pattern types, for example noise, clouds and starfields, look best with continuous, unbounded, "drifting"
+x/y movement.  To create a pattern that moves this way, derive it from the ```DriftEnabledPattern``` 
+class instead of ```TEPerformancePattern```.   This overrides the default translation behavior so that
+instead of an absolute x/y offset, the XPos/YPos controls set a 'drift' direction and speed.
+
+The pattern's position will then smoothly change over time at a rate controlled by XPos/YPos. The maximum
+movment rate is based on the real-time clock, independent of the speed control setting.
+
+Note that patterns must be "drift-aware" - they must know that the offset controls now control drift
+and that the current position is available in Java from the getXPosition() and getYPosition()
+functions.  
+
+GLSL shaders using this class should define #TE_NOTRANSLATE in their code to disable the default control
+behavior in the shader engine.
+
+A couple of DriftEnabledPattern examples are:
+#### RainBands
+[RainBands.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/RainBands.java) 
+[RainBands.fs](https://github.com/titanicsend/LXStudio-TE/blob/main/resources/shaders/rain_noise.fs)
+
+and 
+#### TriangleNoise
+[TriangleNoise.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/TriangleNoise.java) 
+[TriangleNoise.fs](https://github.com/titanicsend/LXStudio-TE/blob/main/resources/shaders/triangle_noise.fs)
+
+
 ## Tips and Traps
 
 ### Resolution
@@ -350,7 +473,7 @@ line width and detail level, so your pattern can be tuned to look its best.
 
 ### Performance
 As of this writing, TE's main computer will be a Mac Studio.  Within the bounds of reason, performance shouldn't be 
-a problem.  
+a problem. 
 
 ### Alpha
 TE patterns are meant to be layerable and mixable.  Where possible, your pattern should

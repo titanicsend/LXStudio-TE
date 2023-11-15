@@ -12,7 +12,6 @@ public abstract class PatternEffect {
     protected final TEPerformancePattern pattern;
     private boolean shouldBlend;
 
-
     public PatternEffect(PatternTarget target) {
         this.pattern = target.pattern;
     }

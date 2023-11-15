@@ -1,58 +1,78 @@
 package titanicsend.pattern.yoffa.shader_engine;
 
 import heronarts.lx.parameter.LXParameter;
+import titanicsend.pattern.glengine.GLPreprocessor;
+import titanicsend.pattern.glengine.ShaderConfigOpcode;
+import titanicsend.pattern.glengine.ShaderConfiguration;
+
 import java.io.File;
 import java.util.*;
 
+/**
+ * Everything that needs to be stored for later compilation
+ * and use when we read a shader file. Doesn't allocate or
+ * use any native OpenGL resources.
+ * - the expanded, preprocessed source code
+ * - the list of texture files and channels to be used by the shader
+ * - control configuration and other parameter data
+ */
 public class FragmentShader {
-    private final String shaderBody;
-    private String shaderName;
-    private long shaderTimestamp;
+    private final String shaderName;
     private final Map<Integer, String> channelToTexture;
-    private boolean remoteTextures;
-    private final Integer audioInputChannel;
-    private final List<LXParameter> parameters;
+    private final List<LXParameter> parameters = new ArrayList<>();
+    private final List<ShaderConfiguration> shaderConfig = new ArrayList<>();
 
     public FragmentShader(File shaderFile, List<File> textureFiles) {
+        String shaderBody;
+        this.channelToTexture = new HashMap<>();
+
+        // try the new way
+        GLPreprocessor glp = new GLPreprocessor();
         shaderName = shaderFile.getName();
-        shaderTimestamp = shaderFile.lastModified();
-        String shaderBody = ShaderUtils.loadResource(shaderFile.getPath());
-        Map<Integer, String> channelToTexture = new HashMap<>();
-        this.audioInputChannel = 0;
-        for (int i = 0; i < textureFiles.size(); i++) {
-            //start at 1 since audio will be texture 0
-            channelToTexture.put(i+1, textureFiles.get(i).getPath());
+
+        try {
+            shaderBody = glp.preprocessShader(shaderFile, shaderConfig);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        this.parameters = new ArrayList<>();
-        this.shaderBody = ShaderUtils.preprocessShader(shaderBody,this.parameters);;
-        this.channelToTexture = channelToTexture;
-        this.remoteTextures = false;
+
+        // if the shader doesn't have any directives for the new preprocessor,
+        // we just need to add any textures specified in the constructor.
+        if (shaderConfig.isEmpty()) {
+            for (int i = 0; i < textureFiles.size(); i++) {
+                // automatically assign textures to iChannels, starting
+                // at 1 since audio will be texture 0
+                channelToTexture.put(i + 1, textureFiles.get(i).getPath());
+            }
+        }
+        // otherwise, see if there are any texture declarations or extra parameters
+        // in the shader code and if so, use those.
+        else {
+            for (ShaderConfiguration config : shaderConfig) {
+                switch (config.opcode) {
+                    case SET_TEXTURE:
+                        channelToTexture.put(config.textureChannel, new File(config.name).getPath());
+                        break;
+                    case ADD_LX_PARAMETER:
+                        parameters.add(config.lxParameter);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
     }
 
-    public FragmentShader(String shaderBody, Map<Integer, String> channelToTexture, Integer audioInputChannel) {
-        this.parameters = new ArrayList<>();
-        this.shaderBody = ShaderUtils.preprocessShader(shaderBody,this.parameters);;
-        this.channelToTexture = channelToTexture;
-        this.audioInputChannel = audioInputChannel;
-        this.remoteTextures = true;
+    public String getShaderName() {
+        return shaderName;
     }
-
-    public String getShaderBody() {
-        return shaderBody;
-    }
-
-    public String getShaderName() { return shaderName; }
 
     public Map<Integer, String> getChannelToTexture() {
         return channelToTexture;
     }
 
-    public boolean hasRemoteTextures() {
-        return remoteTextures;
-    }
-
-    public Integer getAudioInputChannel() {
-        return audioInputChannel;
+    public List<ShaderConfiguration> getShaderConfig() {
+        return shaderConfig;
     }
 
     public List<LXParameter> getParameters() {

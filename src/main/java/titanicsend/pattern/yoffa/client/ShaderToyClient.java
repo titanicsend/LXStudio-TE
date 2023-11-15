@@ -1,5 +1,10 @@
 package titanicsend.pattern.yoffa.client;
 
+/*
+* Saving this code for possible future implementation of
+* ShaderToy import.
+
+
 import com.google.gson.*;
 import titanicsend.pattern.yoffa.client.reponse.Input;
 import titanicsend.pattern.yoffa.client.reponse.ShaderInfo;
@@ -67,3 +72,5 @@ public class ShaderToyClient {
     }
 
 }
+
+ */

@@ -5,13 +5,11 @@ import com.jogamp.opengl.*;
 import java.nio.ByteBuffer;
 
 public class OffscreenShaderRenderer {
-
     private final static int xResolution = 640;
     private final static int yResolution = 480;
 
     private NativeShader nativeShader;
     private GLAutoDrawable offscreenDrawable = null;
-
     public OffscreenShaderRenderer(FragmentShader fragmentShader) {
         nativeShader = new NativeShader(fragmentShader, xResolution, yResolution);
     }
@@ -21,13 +19,13 @@ public class OffscreenShaderRenderer {
         // that's trying to draw something on the UI
         GLContext prevContext = GLContext.getCurrent();
 
-        offscreenDrawable = ShaderUtils.createGLSurface(xResolution,yResolution);
+        offscreenDrawable = ShaderUtils.createGLSurface(xResolution, yResolution);
         offscreenDrawable.display();
         nativeShader.init(offscreenDrawable);
 
         // restore previous context
         if (prevContext != null) prevContext.makeCurrent();
-    };
+    }
 
     public ByteBuffer getFrame(PatternControlData ctlInfo) {
         if (!nativeShader.isInitialized()) {

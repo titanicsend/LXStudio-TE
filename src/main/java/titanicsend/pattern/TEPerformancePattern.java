@@ -11,6 +11,7 @@ import heronarts.lx.utils.LXUtils;
 import titanicsend.app.TEGlobalPatternControls;
 import titanicsend.lx.LXGradientUtils;
 import titanicsend.lx.LXGradientUtils.BlendFunction;
+import titanicsend.pattern.glengine.ShaderConfiguration;
 import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon.VariableSpeedTimer;
@@ -23,6 +24,7 @@ import titanicsend.util.TEColor;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public abstract class TEPerformancePattern extends TEAudioPattern {
@@ -60,7 +62,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                     return this;
                 }
             }
-            .setDescription("For a solid color: Whether to use global TE palette (preferred), or a static color unique to this pattern");
+                .setDescription("For a solid color: Whether to use global TE palette (preferred), or a static color unique to this pattern");
 
         public final CompoundParameter color2offset =
             new CompoundParameter("C2Offset", 0.5);
@@ -93,7 +95,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                     return this;
                 }
             }
-            .setDescription("Blend mode for the gradient");
+                .setDescription("Blend mode for the gradient");
 
         // OFFSET affects both Solid Colors and Gradient
 
@@ -176,7 +178,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
         /**
          * ** Solid-Color patterns should use this method **
-         *
+         * <p>
          * Returns the real-time value of the color, which may be different from what
          * getColor() returns if there are LFOs/etc being applied.
          * Offset has been applied to this color.
@@ -242,7 +244,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
         /**
          * ** Gradient patterns should use this method **
-         *
+         * <p>
          * Given a value in 0..1 (and wrapped back outside that range)
          * Return a color within the selected gradient.
          * Offset is added to lerp to create a user-shiftable gradient.
@@ -273,8 +275,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                     bf = LXGradientUtils.BlendMode.HSVCCW.function;
                     break;
                 case HSVCW:
-                  bf = LXGradientUtils.BlendMode.HSVCW.function;
-                  break;
+                    bf = LXGradientUtils.BlendMode.HSVCW.function;
+                    break;
                 case HSVM:
                 default:
                     bf = LXGradientUtils.BlendMode.HSVM.function;
@@ -328,9 +330,9 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     /**
      * Subclasses can override to specify a preferred default view.
      * Alternatively, just pass a default to TEPerformancePattern's constructor.
-     * 
-     * Warning for overrides: 
-     *   Called from this constructor prior to child class constructors.
+     * <p>
+     * Warning for overrides:
+     * Called from this constructor prior to child class constructors.
      */
     public TEShaderView getDefaultView() {
         return defaultView;
@@ -379,12 +381,12 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         // Panic control courtesy of JKB's Rubix codebase
         public final BooleanParameter panic = (BooleanParameter)
             new BooleanParameter("PANIC", false)
-            .setDescription("Panic! Moves parameters into a visible range")
-            .setMode(Mode.MOMENTARY);
+                .setDescription("Panic! Moves parameters into a visible range")
+                .setMode(Mode.MOMENTARY);
 
         private final LXParameterListener panicListener = (p) -> {
-            if (((BooleanParameter)p).getValueb()) {
-              onPanic();
+            if (((BooleanParameter) p).getValueb()) {
+                onPanic();
             }
         };
 
@@ -451,26 +453,26 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             LXListenableNormalizedParameter newControl;
             if (oldControl instanceof CompoundParameter) {
                 newControl = (CompoundParameter) new CompoundParameter(label, value, v0, v1)
-                    .setNormalizationCurve(((CompoundParameter)oldControl).getNormalizationCurve())
+                    .setNormalizationCurve(((CompoundParameter) oldControl).getNormalizationCurve())
                     .setExponent(oldControl.getExponent())
                     .setDescription(oldControl.getDescription())
                     .setPolarity(oldControl.getPolarity())
                     .setUnits(oldControl.getUnits());
             } else if (oldControl instanceof BoundedParameter) {
-                newControl  = (BoundedParameter) new BoundedParameter(label, value, v0, v1)
-                    .setNormalizationCurve(((BoundedParameter)oldControl).getNormalizationCurve())
+                newControl = (BoundedParameter) new BoundedParameter(label, value, v0, v1)
+                    .setNormalizationCurve(((BoundedParameter) oldControl).getNormalizationCurve())
                     .setExponent(oldControl.getExponent())
                     .setDescription(oldControl.getDescription())
                     .setPolarity(oldControl.getPolarity())
                     .setUnits(oldControl.getUnits());
             } else if (oldControl instanceof BooleanParameter) {
-                newControl  = (BooleanParameter) new BooleanParameter(label)
-                    .setMode(((BooleanParameter)oldControl).getMode())
+                newControl = (BooleanParameter) new BooleanParameter(label)
+                    .setMode(((BooleanParameter) oldControl).getMode())
                     .setDescription(oldControl.getDescription())
                     .setUnits(oldControl.getUnits());
             } else if (oldControl instanceof DiscreteParameter) {
-                newControl  = (DiscreteParameter) new DiscreteParameter(label, ((DiscreteParameter)oldControl).getOptions())
-                    .setIncrementMode(((DiscreteParameter)oldControl).getIncrementMode())
+                newControl = (DiscreteParameter) new DiscreteParameter(label, ((DiscreteParameter) oldControl).getOptions())
+                    .setIncrementMode(((DiscreteParameter) oldControl).getIncrementMode())
                     .setDescription(oldControl.getDescription())
                     .setUnits(oldControl.getUnits());
             } else {
@@ -515,7 +517,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         public TECommonControls setNormalizationCurve(TEControlTag tag, BoundedParameter.NormalizationCurve curve) {
             LXListenableNormalizedParameter p = getLXControl(tag);
             if (p instanceof BoundedParameter) {
-                ((BoundedParameter)p).setNormalizationCurve(curve);
+                ((BoundedParameter) p).setNormalizationCurve(curve);
             } else {
                 TE.log("Warning: setNormalizationCurve() can not be called on parameter " + tag.toString());
             }
@@ -532,7 +534,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          * To use the common controls, call this function from the constructor
          * of TEPerformancePattern-derived classes after configuring the default
          * controls for your pattern.
-         *
+         * <p>
          * If your pattern adds its own controls in addition to the common
          * controls, you must call addParameter() for them after calling
          * this function so the UI stays consistent across patterns.
@@ -552,7 +554,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             for (TEControlTag tag : TEControlTag.values()) {
                 LXListenableNormalizedParameter param = controlList.get(tag).control;
                 if (missingControls != null) {
-                    if (missingControls.missing_control_tags.contains(tag)){
+                    if (missingControls.missing_control_tags.contains(tag)) {
                         markUnused(param);
                     }
                 }
@@ -589,7 +591,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
          * Set remote controls in order they will appear on the midi surfaces
          */
         protected void setRemoteControls() {
-            setCustomRemoteControls(new LXListenableNormalizedParameter[] {
+            setCustomRemoteControls(new LXListenableNormalizedParameter[]{
                 this.color.offset,
                 this.color.gradient,
                 null, //getControl(TEControlTag.BRIGHTNESS).control,
@@ -677,7 +679,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             setControl(TEControlTag.EXPLODE, p);
 
             // in degrees for display 'cause more people think about it that way
-            p = (LXListenableNormalizedParameter)new TECommonAngleParameter(TEControlTag.ANGLE.getLabel(), 0, -Math.PI, Math.PI)
+            p = (LXListenableNormalizedParameter) new TECommonAngleParameter(TEControlTag.ANGLE.getLabel(), 0, -Math.PI, Math.PI)
                 .setDescription("Static Rotation Angle")
                 .setPolarity(LXParameter.Polarity.BIPOLAR)
                 .setWrappable(true)
@@ -689,7 +691,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         }
 
         protected TEColorParameter registerColorControl(String prefix) {
-            color = new TEColorParameter(prefix+"Color")
+            color = new TEColorParameter(prefix + "Color")
                 .setDescription("TE Color");
             addParameter("te_color", color);
             return color;
@@ -748,13 +750,13 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         }
 
         public void dispose() {
-          panic.removeListener(panicListener);
+            panic.removeListener(panicListener);
         }
     }
 
     /**
      * Class to support incremental rotation over variable-speed time
-     *
+     * <p>
      * The rate is tied to the engine bpm and the input time value, which is usually
      * controlled by the variable speed timer associated with the speed or spin controls.
      * (but anything with a seconds.millis timer can generate rotational angles this way.)
@@ -921,7 +923,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     /**
      * Sets the maximum rotation speed used by both getRotationAngleFromSpin() and
      * getRotationAngleFromSpeed().
-     *
+     * <p>
      * The default maximum radians per second is PI, which gives one complete rotation
      * every two beats at the current engine BPM.  Do not change this value unless you
      * have a specific reason for doing so.  Too high a rotation speed can cause visuals
@@ -950,14 +952,14 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     /**
      * @return Color derived from the current setting of the color and brightness controls
-     *
+     * <p>
      * NOTE:  The design philosophy here is that palette colors (and the color control)
      * have precedence.
-     *
+     * <p>
      * Brightness modifies the current color, and is set to 1.0 (100%) by default. So
      * if you don't move the brightness control you get *exactly* the currently
      * selected color.
-     *
+     * <p>
      * At present, the brightness control lets you dim the current color,
      * but if you want to brighten it, you have to do that with the channel fader or
      * the color control.
@@ -972,11 +974,11 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     /**
      * ** Instead of these two methods, use getGradientColor(lerp) which defers to TEColorParameter for gradient selection. **
-     *
+     * <p>
      * Suppress parent TEPattern gradient methods, force child classes
      * to choose solid color or gradient, keeping other choices
      * runtime-adjustable.
-     *
+     * <p>
      * TODO: remove these two methods from TEPattern to prevent confusion?
      */
     @Deprecated
@@ -1022,7 +1024,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     }
 
     public int getGradientColor(float lerp) {
-        return TEColor.setBrightness(controls.color.getGradientColor(lerp),(float) getBrightness());
+        return TEColor.setBrightness(controls.color.getGradientColor(lerp), (float) getBrightness());
     }
 
     /**
@@ -1045,8 +1047,9 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
      * Controls whether time is allowed to run both forward and backward,
      * according to the sign of the current scale value.  Bidirectional
      * time is allowed (true) by default.
+     *
      * @param val true for bidirectional time, false for forward-moving time only,
-     * regardless of time scale setting.
+     *            regardless of time scale setting.
      */
     public void allowBidirectionalTime(boolean val) {
         iTime.allowBidirectionalTime(val);
@@ -1126,7 +1129,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     /**
      * Restarts the specified timer's elapsed time when called.
      * The timer's rate is not changed.
-     *
+     * <p>
      * This is useful for syncing a timer precisely to beats,
      * measures and other external events.
      *
@@ -1155,7 +1158,43 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     /**
      * Subclasses can override
      */
-    protected void onWowTrigger(boolean on) {  }
+    protected void onWowTrigger(boolean on) {
+    }
+
+    /**
+     * To be called from the constructor of automatically configured shader patterns prior
+     * to calling addCommonControls(). Calls common control functions based on a list of
+     * opcodes and parameters extracted from shader code by our GLSL preparser.
+     *
+     * @param shaderConfig list of configuration operations from the shader
+     */
+    protected void configureCommonControls(List<ShaderConfiguration> shaderConfig) {
+        for (ShaderConfiguration config : shaderConfig) {
+            switch (config.opcode) {
+                case SET_VALUE:
+                    controls.setValue(config.parameterId, config.value);
+                    break;
+                case SET_RANGE:
+                    controls.setRange(config.parameterId, config.value, config.v1, config.v2);
+                    break;
+                case SET_LABEL:
+                    controls.setLabel(config.parameterId, config.name);
+                    break;
+                case SET_EXPONENT:
+                    controls.setExponent(config.parameterId, config.value);
+                    break;
+                case SET_NORMALIZATION_CURVE:
+                    controls.setNormalizationCurve(config.parameterId, config.normalizationCurve);
+                    break;
+                case DISABLE:
+                    controls.markUnused(controls.getLXControl(config.parameterId));
+                    break;
+                default:
+                    // do nothing
+                    break;
+            }
+        }
+    }
 
     @Override
     protected void run(double deltaMs) {

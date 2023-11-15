@@ -1,5 +1,9 @@
 package titanicsend.pattern.yoffa.effect;
 
+/*
+* Saving this code for possible future implementation of
+* ShaderToy import.
+
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.yoffa.client.ShaderToyClient;
@@ -47,3 +51,5 @@ public class ShaderToyPatternEffect extends NativeShaderPatternEffect {
         return List.of(clipboardSwitch);
     }
 }
+
+ */

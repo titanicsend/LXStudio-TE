@@ -11,16 +11,13 @@ import java.nio.IntBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.jogamp.opengl.util.GLBuffers;
-import heronarts.lx.parameter.BooleanParameter;
-import heronarts.lx.parameter.CompoundParameter;
-import heronarts.lx.parameter.LXParameter;
+import titanicsend.pattern.glengine.GLPreprocessor;
+import titanicsend.pattern.glengine.ShaderConfiguration;
 import titanicsend.util.TE;
 
 public class ShaderUtils {
@@ -31,13 +28,12 @@ public class ShaderUtils {
     public static final String CACHE_PATH = SHADER_PATH + "cache/";
 
     // Strings for internal use by the preprocessor
-    private static final String SHADER_BODY_PLACEHOLDER = "{{%shader_body%}}";
+    public static final String SHADER_BODY_PLACEHOLDER = "{{%shader_body%}}";
+    public static final Pattern PLACEHOLDER_FINDER = Pattern.compile("\\{%(.*?)(\\[(.*?)\\])??\\}");
 
-    private static final Pattern PLACEHOLDER_FINDER = Pattern.compile("\\{%(.*?)(\\[(.*?)\\])??\\}");
-
-    public static String loadResource(String fileName) {
+    public static String loadResource(File file) {
         try {
-            Scanner s = new Scanner(new File(fileName), "UTF-8");
+            Scanner s = new Scanner(file, "UTF-8");
             s.useDelimiter("\\A");
             String result = s.next();
             s.close();
@@ -45,6 +41,10 @@ public class ShaderUtils {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static String loadResource(String fileName) {
+        return loadResource(new File(fileName));
     }
 
     /**
@@ -69,50 +69,6 @@ public class ShaderUtils {
 
     public static String getVertexShaderTemplate() {
         return loadResource(FRAMEWORK_PATH + "default.vs");
-    }
-
-    public static String getFragmentShaderTemplate() {
-        return loadResource(FRAMEWORK_PATH + "template.fs");
-    }
-
-    /**
-     * Preprocess the shader, converting embedded control specifiers to proper uniforms,
-     * and optionally creating corresponding controls if the "pattern" parameter is non-null.
-     */
-    public static String preprocessShader(String shaderBody, List<LXParameter> parameters) {
-        Matcher matcher = PLACEHOLDER_FINDER.matcher(shaderBody);
-        // preallocate reasonable sized buffers to keep us out of Java's memory manager while looping
-        StringBuilder shaderCode = new StringBuilder(shaderBody.length());
-        StringBuilder finalShader = new StringBuilder(shaderBody.length() + 256);
-        while (matcher.find()) {
-            try {
-                String placeholderName = matcher.group(1);
-                if (matcher.groupCount() >= 3) {
-                    String metadata = matcher.group(3);
-                    if ("bool".equals(metadata)) {
-                        finalShader.append("uniform bool " + placeholderName + Uniforms.CUSTOM_SUFFIX + ";\n");
-                        if (parameters != null) {
-                            parameters.add(new BooleanParameter(placeholderName));
-                        }
-                    } else {
-                        finalShader.append("uniform float " + placeholderName + Uniforms.CUSTOM_SUFFIX + ";\n");
-                        if (parameters != null) {
-                            Double[] rangeValues = Arrays.stream(metadata.split(","))
-                                .map(Double::parseDouble)
-                                .toArray(Double[]::new);
-                            parameters.add(new CompoundParameter(placeholderName, rangeValues[0], rangeValues[1], rangeValues[2]));
-                        }
-                    }
-                }
-                matcher.appendReplacement(shaderCode, placeholderName + Uniforms.CUSTOM_SUFFIX);
-            } catch (Exception e) {
-                throw new RuntimeException("Problem parsing placeholder: " + matcher.group(0), e);
-            }
-        }
-        matcher.appendTail(shaderCode);
-        finalShader.append(shaderCode);
-
-        return finalShader.toString();
     }
 
     public static int createShader(GL4 gl4, int programId, String shaderCode, int shaderType) throws Exception {
@@ -276,21 +232,27 @@ public class ShaderUtils {
      * pattern shader code into a binary object, attach it to the specified
      * OpenGL programId, and save it to the shader cache.
      *
-     * @param gl4                an active OpenGL context
-     * @param programId          id to which the shader binary will be attached
-     * @param shaderName         filename (without path) of fragment shader
+     * @param gl4        an active OpenGL context
+     * @param programId  id to which the shader binary will be attached
+     * @param shaderName filename (without path) of fragment shader
      */
     public static void buildShader(GL4 gl4, int programId, String shaderName) {
+        ArrayList<ShaderConfiguration> config = new ArrayList<>();
         String cacheName = getCacheFilename(shaderName);
-        String shaderText = loadResource(SHADER_PATH+shaderName);
-        String shaderBody = preprocessShader(shaderText, null);
-        String shaderCode = getFragmentShaderTemplate().replace(SHADER_BODY_PLACEHOLDER, shaderBody);
+        String shaderText = loadResource(SHADER_PATH + shaderName);
 
+        String shaderBody;
         try {
-            //TE.err("Building shader %s",shaderName);
+            GLPreprocessor glp = new GLPreprocessor();
+            // try the new way
+            try {
+                shaderBody = glp.preprocessShader(shaderText, config);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
 
             int vertexShaderId = createShader(gl4, programId, getVertexShaderTemplate(), GL4.GL_VERTEX_SHADER);
-            int fragmentShaderId = createShader(gl4, programId, shaderCode, GL4.GL_FRAGMENT_SHADER);
+            int fragmentShaderId = createShader(gl4, programId, shaderBody, GL4.GL_FRAGMENT_SHADER);
             link(gl4, programId);
 
             // free native resources after link
@@ -302,12 +264,11 @@ public class ShaderUtils {
             // and save the complete program object to file
             saveShaderToCache(gl4, cacheName, programId);
         } catch (Exception e) {
-            TE.err("Error building shader %s", shaderName);
-            throw new RuntimeException(e);
+            TE.err("Error building shader " + shaderName + "\n" + e.getMessage());
         }
     }
 
-    public static void link(GL4 gl4, int programId) throws Exception {
+    public static void link(GL4 gl4, int programId) {
         gl4.glLinkProgram(programId);
         validateStatus(gl4, programId, GL4.GL_LINK_STATUS);
 

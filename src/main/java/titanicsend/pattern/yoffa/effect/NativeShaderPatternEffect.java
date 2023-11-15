@@ -3,6 +3,7 @@ package titanicsend.pattern.yoffa.effect;
 import heronarts.lx.Tempo;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
+import titanicsend.pattern.glengine.ShaderConfiguration;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.shader_engine.*;
@@ -15,19 +16,15 @@ import java.util.SplittableRandom;
 import java.util.stream.Collectors;
 
 public class NativeShaderPatternEffect extends PatternEffect {
-
     private final SplittableRandom random;
     protected OffscreenShaderRenderer renderer;
     private FragmentShader fragmentShader;
     private final List<LXParameter> parameters;
-
-    PatternControlData controlData;
+    private final PatternControlData controlData;
 
     /**
      * Creates new native shader effect
      *
-     * @param fragmentShader
-     * @param target
      */
     public NativeShaderPatternEffect(FragmentShader fragmentShader, PatternTarget target) {
         super(target);
@@ -48,9 +45,8 @@ public class NativeShaderPatternEffect extends PatternEffect {
     /**
      * Creates new native shader effect with additional texture support
      *
-     * @param shaderFilename
-     * @param target
-     * @param textureFilenames
+     * @param shaderFilename shader to use
+     * @param target  render target
      */
     public NativeShaderPatternEffect(String shaderFilename, PatternTarget target, String... textureFilenames) {
         this(new FragmentShader(new File("resources/shaders/" + shaderFilename),
@@ -58,7 +54,6 @@ public class NativeShaderPatternEffect extends PatternEffect {
                     .map(x -> new File("resources/shaders/textures/" + x))
                     .collect(Collectors.toList())),
             target);
-
     }
 
     @Override
@@ -126,9 +121,12 @@ public class NativeShaderPatternEffect extends PatternEffect {
         if (renderer == null) {
             return;
         }
-
         ByteBuffer image = renderer.getFrame(controlData);
         paint(getPoints(), image, OffscreenShaderRenderer.getXResolution(), OffscreenShaderRenderer.getYResolution());
+    }
+
+    public List<ShaderConfiguration> getShaderConfig() {
+        return fragmentShader.getShaderConfig();
     }
 
     // Saves me from having to propagate all those setUniform(name,etc.) methods up the
