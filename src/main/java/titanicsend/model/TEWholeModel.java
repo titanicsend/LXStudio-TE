@@ -21,7 +21,6 @@ import titanicsend.dmx.model.DmxModel;
 import titanicsend.dmx.model.DmxWholeModel;
 import titanicsend.dmx.model.DmxModel.DmxCommonConfig;
 import titanicsend.lasercontrol.MovingTarget;
-import titanicsend.model.justin.ViewDefinition;
 import titanicsend.output.ChromatechSocket;
 import titanicsend.output.GrandShlomoStation;
 import titanicsend.pattern.jon.ModelBender;

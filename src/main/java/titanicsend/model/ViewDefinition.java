@@ -1,4 +1,4 @@
-package titanicsend.model.justin;
+package titanicsend.model;
 
 import heronarts.lx.model.LXView;
 
