@@ -1,46 +1,79 @@
+// A kali-style iterative fractal
+//   (https://www.fractalforums.com/new-theories-and-research/very-simple-formula-for-fractal-patterns/)
+// that tries to do for rectangles what @andrewlook's shaders did for triangles.
+// The "artistic intention" is to sorta depict what's going on in all the circuitry inside Titanic's End
+//
+// Wow2 controls audio reactivity
+#pragma name "Circuitry"
+#pragma TEControl.SIZE.Range(1.0,5.0,0.1)
+#pragma TEControl.QUANTITY.Range(4.0,3.0,6.0)
+#pragma TEControl.WOW2.Value(0.6)
+#pragma TEControl.WOW1.Disable
+#pragma TEControl.WOWTRIGGER.Disable
 
-vec3 hsv2rgb(vec3 c)
-{
-    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
-}
+#include <include/constants.fs>
+#include <include/colorspace.fs>
 
 mat2 rot(float a) {
     float s=sin(a), c=cos(a);
     return mat2(c,s,-s,c);
 }
 
-vec3 fractal(vec2 p) {    
-    p.x += 0.3333 * sin(iTime*.4);
-       
-    float ot1 = 1000., ot2=ot1, it=0.;
-    
-    for (float i = 0.; i < 4.; i++) {
-        p=abs(p);
-        p=p/clamp(p.x*p.y,0.15,5.)-vec2(1.5,1.);
-        float m = abs(p.x+sin(iTime));
-        if (m<ot1) {
-            ot1=m+step(fract(iTime*1.+float(i)*.05),.15*abs(p.y));
-            it=i;
+float minIteration;
+float bandLevel;
+
+float fractal(vec2 p) {
+    // Rock! (oscillate on x a little with the beat.)
+    p.x += bandLevel;
+
+    float dist = 999., minDist = dist;
+    minIteration=0.;
+
+    for (float i = 0.; i < iQuantity; i++) {
+        p = abs(p);
+        // adjust viewing region in x and y to get the most "interesting"
+        // part.
+        p = p/clamp(p.x*p.y,0.15,5.) - vec2(1.525,1.5);
+
+        // animated manhattan distance gives size changing rectangular
+        // features
+        float m = abs(p.x+sin(iTime * 2.));
+        if (m < dist) {
+            dist = m + smoothstep(0.1,abs(p.y), fract(beat+i*.5));
+            minIteration = i;
         }
-        ot2=min(ot2,length(p));
+        // using minimum of manhattan and euclidean distance over all iterations
+        // gives bright glow to areas of concentration.  If you zoom out a bit
+        // you can really see that it's a "normal" fractal. (Zoom in and it
+        // just looks like rectangles.)
+        minDist = min(minDist,length(p));
     }
-    
-    ot1=exp(-30.*ot1);
-    ot2=exp(-130.*ot2);
-    return hsv2rgb(vec3(it*0.13+.5,.7,1.))*sqrt(ot1+ot2);
+
+    // scale the fractal results to smaller (hand tuned) values to use
+    // when calculating color
+    return exp(-20.*dist)+exp(-10.*minDist);
 }
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
-    vec2 uv = fragCoord.xy/iResolution.xy-.5;
-    uv.x*=iResolution.x/iResolution.y;
-    
-    float aa=2.;
-    
+    // normalize, center, correct aspect ratio
+    vec2 uv = fragCoord.xy/iResolution.xy - 0.5;
+    uv.x *= iResolution.x/iResolution.y;
+    uv *= iScale + 0.05 * (-0.5+sinPhaseBeat);
+    uv *= rot(iRotationAngle);
+
+    // Generate an easy-to-track audio reactive value
+    // n.b.  this is kind of underbaked, so feel free to improve it!
+    bandLevel = iWow2 * (-0.5 + max(trebleLevel, bassLevel) / (trebleLevel+bassLevel));
+
+    // draw the fractal, antialiased by supersampling
+    // we don't need tons of this on the car
+    // but a little makes it much smoother looking
+    float aa=1.;
+
+    // distance between samples.
     vec2 sc=1./iResolution.xy/aa;
-    
-    vec3 c=vec3(0.);
+
+    float c = 0.0;
     for (float i=-aa; i < aa; i++) {
         for (float j =- aa; j < aa; j++) {
             vec2 p = uv + vec2(i,j) * sc;
@@ -48,5 +81,5 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
         }
     }
     c = c/(aa*aa*0.35);
-    fragColor = vec4(c, 1.);
+    fragColor = vec4(c * vec3(mix(iColorRGB, iColor2RGB, mod(minIteration,2.0))), c);
 }

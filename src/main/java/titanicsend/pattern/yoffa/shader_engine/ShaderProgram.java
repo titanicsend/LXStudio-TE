@@ -11,7 +11,6 @@ public class ShaderProgram {
     private boolean initialized = false;
     private int programId;
 
-
     public void init(GL4 gl4, String shaderName) {
         if (initialized) {
             throw new IllegalStateException(

@@ -1,4 +1,4 @@
-package titanicsend.pattern.jon;
+package titanicsend.pattern.glengine;
 
 import com.jogamp.opengl.*;
 
@@ -36,19 +36,24 @@ public class ShaderPrecompiler {
         GL4 gl4 = surface.getGL().getGL4();
         int programId = gl4.glCreateProgram();
 
-        // enumerate all files in the shader directory and
-        // attempt to compile them to cached .bin files.
-        File dir = new File(ShaderUtils.SHADER_PATH);
-        File[] directoryListing = dir.listFiles();
-        if (directoryListing != null) {
-            for (File file : directoryListing) {
-                if (file.getName().endsWith(".fs")) {
-                    totalFiles++;
+        // Get a list of all shaders in resource path
+        // and try to compile them to .bin files in the
+        // cache directory. (NB: This directory listing
+        // method is significantly faster than the old one.)
+        File[] shaderFiles =
+            new File(ShaderUtils.SHADER_PATH).listFiles((dir, name) -> name.endsWith(".fs"));
+        if (shaderFiles == null) {
+            //TE.log("No shaders found in " + dir);
+            return;
+        }
 
-                    if (ShaderUtils.needsRecompile(file.getName())) {
-                        ShaderUtils.buildShader(gl4, programId, file.getName());
-                        compiledFiles++;
-                    }
+        for (File file : shaderFiles) {
+            if (file.getName().endsWith(".fs")) {
+                totalFiles++;
+
+                if (ShaderUtils.needsRecompile(file.getName())) {
+                    ShaderUtils.buildShader(gl4, programId, file.getName());
+                    compiledFiles++;
                 }
             }
         }
