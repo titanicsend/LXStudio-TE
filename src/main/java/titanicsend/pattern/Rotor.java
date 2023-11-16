@@ -1,91 +1,66 @@
 package titanicsend.pattern;
 
-import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
-import heronarts.lx.color.ColorParameter;
-import heronarts.lx.color.GradientUtils.GradientFunction;
-import heronarts.lx.color.LXColor;
-import heronarts.lx.parameter.*;
-import heronarts.lx.parameter.BooleanParameter.Mode;
-import heronarts.lx.utils.LXUtils;
-import titanicsend.app.TEGlobalPatternControls;
-import titanicsend.lx.LXGradientUtils;
-import titanicsend.lx.LXGradientUtils.BlendFunction;
-import titanicsend.pattern.glengine.ShaderConfiguration;
-import titanicsend.pattern.jon.TEControl;
-import titanicsend.pattern.jon.TEControlTag;
-import titanicsend.pattern.jon.VariableSpeedTimer;
-import titanicsend.pattern.jon._CommonControlGetter;
-import titanicsend.pattern.yoffa.framework.TEShaderView;
-import titanicsend.util.MissingControlsManager;
-import titanicsend.util.TE;
-import titanicsend.util.TEColor;
 
-import java.nio.FloatBuffer;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+/**
+ * Class to support incremental rotation over variable-speed time
+ * <p>
+ * The rate is tied to the engine bpm and the input time value, which is usually
+ * controlled by the variable speed timer associated with the speed or spin controls.
+ * (but anything with a seconds.millis timer can generate rotational angles this way.)
+ */
+protected class Rotor {
+    private double maxSpinRate = Math.PI;
+    private double angle = 0;
+    private double lastTime = 0;
+
+    // Internal: Called on every frame to calculate and memoize the current
+    // spin angle so that calls to getAngle() during a frame
+    // will always return the same value no matter how long the frame
+    // calculations take.
+    void updateAngle(double time, double ctlValue) {
+        // if this is the first frame, or if the timer was restarted,
+        // we skip calculation for a frame.  Otherwise, do
+        // the incremental angle calculation...
+        if (lastTime != 0) {
+            // calculate change in angle since last frame.
+            // Note: revised calculation restricts maximum speed while still allowing
+            // you to get to maximum speed at slower bpm.
+            double et = Math.min(maxSpinRate, maxSpinRate * (time - lastTime));
+            angle -= et % LX.TWO_PI;
+        }
+        lastTime = time;
+    }
 
     /**
-     * Class to support incremental rotation over variable-speed time
-     * <p>
-     * The rate is tied to the engine bpm and the input time value, which is usually
-     * controlled by the variable speed timer associated with the speed or spin controls.
-     * (but anything with a seconds.millis timer can generate rotational angles this way.)
+     * @return Current rotational angle, either computed, or taken from
      */
-    protected class Rotor {
-        private double maxSpinRate = Math.PI;
-        private double angle = 0;
-        private double lastTime = 0;
+    double getAngle() {
+                    return angle;
+                                 }
 
-        // Internal: Called on every frame to calculate and memoize the current
-        // spin angle so that calls to getAngle() during a frame
-        // will always return the same value no matter how long the frame
-        // calculations take.
-        void updateAngle(double time, double ctlValue) {
-            // if this is the first frame, or if the timer was restarted,
-            // we skip calculation for a frame.  Otherwise, do
-            // the incremental angle calculation...
-            if (lastTime != 0) {
-                // calculate change in angle since last frame.
-                // Note: revised calculation restricts maximum speed while still allowing
-                // you to get to maximum speed at slower bpm.
-                double et = Math.min(maxSpinRate, maxSpinRate * (time - lastTime));
-                angle -= et % LX.TWO_PI;
-            }
-            lastTime = time;
-        }
+    void setAngle(double angle) {
+                              this.angle = angle;
+                                                 }
 
-        /**
-         * @return Current rotational angle, either computed, or taken from
-         */
-        double getAngle() {
-            return angle;
-        }
+    void addAngle(double offset) {
+                               this.angle += offset;
+                                                    }
 
-        void setAngle(double angle) {
-            this.angle = angle;
-        }
-
-        void addAngle(double offset) {
-            this.angle += offset;
-        }
-
-        void reset() {
-            angle = 0;
-            lastTime = 0;
-        }
-
-        /**
-         * Sets maximum spin rate for all patterns using this rotor.  Note that a Rotor
-         * object is associated with a timer, which can be a VariableSpeedTimer.  So
-         * "seconds" may be variable in duration, and can be positive or negative.
-         *
-         * @param radiansPerSecond
-         */
-        void setMaxSpinRate(double radiansPerSecond) {
-            maxSpinRate = radiansPerSecond;
-        }
-
+    void reset() {
+        angle = 0;
+        lastTime = 0;
     }
+
+    /**
+     * Sets maximum spin rate for all patterns using this rotor.  Note that a Rotor
+     * object is associated with a timer, which can be a VariableSpeedTimer.  So
+     * "seconds" may be variable in duration, and can be positive or negative.
+     *
+     * @param radiansPerSecond
+     */
+    void setMaxSpinRate(double radiansPerSecond) {
+                                               maxSpinRate = radiansPerSecond;
+                                                                              }
+
+}
