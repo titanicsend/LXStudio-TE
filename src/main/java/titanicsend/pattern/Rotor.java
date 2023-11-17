@@ -36,16 +36,16 @@ protected class Rotor {
      * @return Current rotational angle, either computed, or taken from
      */
     double getAngle() {
-                    return angle;
-                                 }
+        return angle;
+    }
 
     void setAngle(double angle) {
-                              this.angle = angle;
-                                                 }
+        this.angle = angle;
+    }
 
     void addAngle(double offset) {
-                               this.angle += offset;
-                                                    }
+        this.angle += offset;
+    }
 
     void reset() {
         angle = 0;
@@ -60,7 +60,7 @@ protected class Rotor {
      * @param radiansPerSecond
      */
     void setMaxSpinRate(double radiansPerSecond) {
-                                               maxSpinRate = radiansPerSecond;
-                                                                              }
+        maxSpinRate = radiansPerSecond;
+    }
 
 }

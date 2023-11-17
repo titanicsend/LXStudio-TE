@@ -21,39 +21,39 @@ public class TEColorParameter extends ColorParameter implements GradientFunction
         public final String label;
 
         private SolidColorSource(String label) {
-                                             this.label = label;
-                                                                }
+            this.label = label;
+        }
 
         @Override
         public String toString() {
-                               return this.label;
-                                                 }
+            return this.label;
+        }
     }
 
     private final SolidColorSource SOLID_SOURCE_DEFAULT = SolidColorSource.FOREGROUND;
 
     public final EnumParameter<SolidColorSource> solidSource =
-        new EnumParameter<SolidColorSource>("SolidSource", SOLID_SOURCE_DEFAULT) {
-            @Override
-            public LXParameter reset() {
-                // JKB: Don't worry about this, just avoiding a minor bug
-                // in EnumParameter. It'll be fixed soon.
-                setValue(SOLID_SOURCE_DEFAULT);
-                return this;
+            new EnumParameter<SolidColorSource>("SolidSource", SOLID_SOURCE_DEFAULT) {
+                @Override
+                public LXParameter reset() {
+                    // JKB: Don't worry about this, just avoiding a minor bug
+                    // in EnumParameter. It'll be fixed soon.
+                    setValue(SOLID_SOURCE_DEFAULT);
+                    return this;
+                }
             }
-        }
-            .setDescription("For a solid color: Whether to use global TE palette (preferred), or a static color unique to this pattern");
+                    .setDescription("For a solid color: Whether to use global TE palette (preferred), or a static color unique to this pattern");
 
     public final CompoundParameter color2offset =
-        new CompoundParameter("C2Offset", 0.5);
+            new CompoundParameter("C2Offset", 0.5);
 
     // GRADIENT
 
     @SuppressWarnings("unchecked")
     public final EnumParameter<TEGradient> gradient = (EnumParameter<TEGradient>)
-        new EnumParameter<TEGradient>("Gradient", TEGradient.FULL_PALETTE)
-            .setDescription("Which TEGradient to use. Full_Palette=entire, Foreground=Primary-Secondary, Primary=Primary-BackgroundPrimary, Secondary=Secondary-BackgroundSecondary")
-            .setWrappable(false);
+            new EnumParameter<TEGradient>("Gradient", TEGradient.FULL_PALETTE)
+                    .setDescription("Which TEGradient to use. Full_Palette=entire, Foreground=Primary-Secondary, Primary=Primary-BackgroundPrimary, Secondary=Secondary-BackgroundSecondary")
+                    .setWrappable(false);
 
     // GRADIENT BLEND. Excluding RGB because it does play well with gradients.
 
@@ -66,16 +66,16 @@ public class TEColorParameter extends ColorParameter implements GradientFunction
     private final BlendMode BLEND_MODE_DEFAULT = BlendMode.HSVM;
 
     public final EnumParameter<BlendMode> blendMode =
-        new EnumParameter<BlendMode>("BlendMode", BLEND_MODE_DEFAULT) {
-            @Override
-            public LXParameter reset() {
-                // JKB: Don't worry about this, just avoiding a minor bug
-                // in EnumParameter. It'll be fixed soon.
-                setValue(BLEND_MODE_DEFAULT);
-                return this;
+            new EnumParameter<BlendMode>("BlendMode", BLEND_MODE_DEFAULT) {
+                @Override
+                public LXParameter reset() {
+                    // JKB: Don't worry about this, just avoiding a minor bug
+                    // in EnumParameter. It'll be fixed soon.
+                    setValue(BLEND_MODE_DEFAULT);
+                    return this;
+                }
             }
-        }
-            .setDescription("Blend mode for the gradient");
+                    .setDescription("Blend mode for the gradient");
 
     // OFFSET affects both Solid Colors and Gradient
 
@@ -91,20 +91,20 @@ public class TEColorParameter extends ColorParameter implements GradientFunction
     private double lastOffset = 0;
 
     public final TEColorOffsetParameter offset = (TEColorOffsetParameter)
-        new TEColorOffsetParameter("Offset") {
-            @Override
-            public BoundedParameter reset() {
-                super.reset();
-                // As the main user-facing sub-parameter, reset the color picker in STATIC mode.
-                if (solidSource.getEnum() == SolidColorSource.STATIC) {
-                    brightness.reset();
-                    saturation.reset();
-                    hue.reset();
+            new TEColorOffsetParameter("Offset") {
+                @Override
+                public BoundedParameter reset() {
+                    super.reset();
+                    // As the main user-facing sub-parameter, reset the color picker in STATIC mode.
+                    if (solidSource.getEnum() == SolidColorSource.STATIC) {
+                        brightness.reset();
+                        saturation.reset();
+                        hue.reset();
+                    }
+                    return this;
                 }
-                return this;
             }
-        }
-            .setDescription("Allows user variation of solid color.  If Static, adjusts hue offset. If Palette, adjusts normalized position within gradient.");
+                    .setDescription("Allows user variation of solid color.  If Static, adjusts hue offset. If Palette, adjusts normalized position within gradient.");
 
     private final LXParameterListener offsetListener = (p) -> {
         double value = p.getValue();
@@ -117,8 +117,8 @@ public class TEColorParameter extends ColorParameter implements GradientFunction
     };
 
     public TEColorParameter(String label) {
-                                        this(label, 0xff000000);
-                                                                 }
+        this(label, 0xff000000);
+    }
 
     public TEColorParameter(String label, int color) {
         super(label, color);
@@ -143,16 +143,16 @@ public class TEColorParameter extends ColorParameter implements GradientFunction
 
     @Override
     public LXListenableNormalizedParameter getRemoteControl() {
-                                                            return this.offset;
-                                                                               }
+        return this.offset;
+    }
 
     public double getOffset() {
-                            return this.offset.getValue();
-                                                          }
+        return this.offset.getValue();
+    }
 
     public final float getOffsetf() {
-                                  return (float) getOffset();
-                                                             }
+        return (float) getOffset();
+    }
 
     // SOLID-COLOR METHODS
 
@@ -174,9 +174,9 @@ public class TEColorParameter extends ColorParameter implements GradientFunction
             default:
             case STATIC:
                 return LXColor.hsb(
-                    this.hue.getValue(),
-                    this.saturation.getValue(),
-                    this.brightness.getValue()
+                        this.hue.getValue(),
+                        this.saturation.getValue(),
+                        this.brightness.getValue()
                 );
         }
     }
@@ -198,9 +198,9 @@ public class TEColorParameter extends ColorParameter implements GradientFunction
             default:
             case STATIC:
                 return LXColor.hsb(
-                    this.hue.getValue() + (color2offset.getValue() * 360.),
-                    this.saturation.getValue(),
-                    this.brightness.getValue()
+                        this.hue.getValue() + (color2offset.getValue() * 360.),
+                        this.saturation.getValue(),
+                        this.brightness.getValue()
                 );
         }
     }
@@ -233,8 +233,8 @@ public class TEColorParameter extends ColorParameter implements GradientFunction
      * @return LXColor
      */
     public int getGradientColor(float lerp) {
-                                          return _getGradientColor(lerp + getOffsetf());
-                                                                                         }
+        return _getGradientColor(lerp + getOffsetf());
+    }
 
     /**
      * Returns absolute position within current gradient.
@@ -243,8 +243,8 @@ public class TEColorParameter extends ColorParameter implements GradientFunction
      * @return
      */
     private int _getGradientColor(float lerp) {
-                                            return _getGradientColor(lerp, this.gradient.getEnum());
-                                                                                                    }
+        return _getGradientColor(lerp, this.gradient.getEnum());
+    }
 
     private int _getGradientColor(float lerp, TEGradient gradient) {
         lerp = (float) LXUtils.wrapnf(lerp);

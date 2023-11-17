@@ -11,8 +11,8 @@ import heronarts.lx.parameter.LXListenableNormalizedParameter;
 class TECommonAngleParameter extends CompoundParameter {
 
     public TECommonAngleParameter(String label, double value, double v0, double v1) {
-                                                                                  super(label, value, v0, v1);
-                                                                                                              }
+        super(label, value, v0, v1);
+    }
 
     @Override
     public LXListenableNormalizedParameter incrementNormalized(double amount) {
