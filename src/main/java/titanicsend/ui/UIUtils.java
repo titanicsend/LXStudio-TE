@@ -12,8 +12,7 @@ import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
 import heronarts.lx.studio.LXStudio.UI;
 import heronarts.lx.studio.ui.device.UIDevice;
-import titanicsend.pattern.TEPerformancePattern.TEColorParameter;
-import titanicsend.pattern.TEPerformancePattern.TEColorParameter.TEColorOffsetParameter;
+import titanicsend.pattern.TEColorParameter;
 
 public class UIUtils {
 
@@ -30,7 +29,7 @@ public class UIUtils {
       }          
       float x = (ki % 4) * (UIKnob.WIDTH + 2) + (col * ((4 * (UIKnob.WIDTH + 2) + 15) + 2));
       float y = -3 + (ki / 4) * (UIKnob.HEIGHT);
-      if (param instanceof TEColorOffsetParameter) {
+      if (param instanceof TEColorParameter.TEColorOffsetParameter) {
         new UITEColorControl(x, y, (TEColorParameter) param.getParentParameter())
         .addToContainer(uiDevice);
       } else if (param instanceof LinkedColorParameter) {

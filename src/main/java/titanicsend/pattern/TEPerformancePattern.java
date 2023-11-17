@@ -2,6 +2,7 @@ package titanicsend.pattern;
 
 import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
+import heronarts.lx.LXComponent;
 import heronarts.lx.color.ColorParameter;
 import heronarts.lx.color.GradientUtils.GradientFunction;
 import heronarts.lx.color.LXColor;
@@ -18,6 +19,7 @@ import titanicsend.pattern.jon.VariableSpeedTimer;
 import titanicsend.pattern.jon._CommonControlGetter;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.util.MissingControlsManager;
+import titanicsend.util.Rotor;
 import titanicsend.util.TE;
 import titanicsend.util.TEColor;
 
@@ -51,7 +53,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     private final VariableSpeedTimer iTime = new VariableSpeedTimer();
     private final VariableSpeedTimer spinTimer = new VariableSpeedTimer();
     private final Rotor speedRotor = new Rotor();
-    private final Rotor spinRotor = new Rotor();
+    final Rotor spinRotor = new Rotor();
 
     protected TECommonControls controls;
 
@@ -65,7 +67,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     protected TEPerformancePattern(LX lx, TEShaderView defaultView) {
         super(lx);
-        controls = new TECommonControls();
+        controls = new TECommonControls(this);
 
         this.defaultView = defaultView;
 
@@ -98,6 +100,17 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         this.controls.setRemoteControls();
 
         this.controls.getLXControl(TEControlTag.WOWTRIGGER).addListener(wowTriggerListener);
+    }
+
+    // package-protected passthrough so TECommonControls can add parameters
+    LXComponent addParam(String path, LXParameter parameter) {
+        addParameter(path, parameter);
+        return this;
+    }
+
+    LXComponent removeParam(String path) {
+        removeParameter(path);
+        return this;
     }
 
     public FloatBuffer getCurrentPalette() {

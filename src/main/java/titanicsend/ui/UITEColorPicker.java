@@ -26,7 +26,6 @@
 
 package titanicsend.ui;
 
-import titanicsend.pattern.TEPerformancePattern.TEColorParameter;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.command.LXCommand;
 import heronarts.lx.parameter.LXParameterListener;
@@ -48,6 +47,7 @@ import heronarts.glx.ui.component.UILabel;
 import heronarts.glx.ui.component.UIParameterControl;
 import heronarts.glx.ui.component.UISlider;
 import heronarts.glx.ui.vg.VGraphics;
+import titanicsend.pattern.TEColorParameter;
 
 public class UITEColorPicker extends UI2dComponent {
 

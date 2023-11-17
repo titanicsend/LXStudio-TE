@@ -1,4 +1,4 @@
-package titanicsend.pattern;
+package titanicsend.util;
 
 import heronarts.lx.LX;
 
@@ -9,7 +9,7 @@ import heronarts.lx.LX;
  * controlled by the variable speed timer associated with the speed or spin controls.
  * (but anything with a seconds.millis timer can generate rotational angles this way.)
  */
-protected class Rotor {
+public class Rotor {
     private double maxSpinRate = Math.PI;
     private double angle = 0;
     private double lastTime = 0;
@@ -18,7 +18,9 @@ protected class Rotor {
     // spin angle so that calls to getAngle() during a frame
     // will always return the same value no matter how long the frame
     // calculations take.
-    void updateAngle(double time, double ctlValue) {
+    // TODO(look): instead of 'public', if we want this to be internal to TEPerformancePattern, all the TEPerfPattern
+    //             stuff could go in a package and this method could be package-protected
+    public void updateAngle(double time, double ctlValue) {
         // if this is the first frame, or if the timer was restarted,
         // we skip calculation for a frame.  Otherwise, do
         // the incremental angle calculation...
@@ -35,19 +37,19 @@ protected class Rotor {
     /**
      * @return Current rotational angle, either computed, or taken from
      */
-    double getAngle() {
+    public double getAngle() {
         return angle;
     }
 
-    void setAngle(double angle) {
+    public void setAngle(double angle) {
         this.angle = angle;
     }
 
-    void addAngle(double offset) {
+    public void addAngle(double offset) {
         this.angle += offset;
     }
 
-    void reset() {
+    public void reset() {
         angle = 0;
         lastTime = 0;
     }
@@ -59,8 +61,7 @@ protected class Rotor {
      *
      * @param radiansPerSecond
      */
-    void setMaxSpinRate(double radiansPerSecond) {
+    public void setMaxSpinRate(double radiansPerSecond) {
         maxSpinRate = radiansPerSecond;
     }
-
 }

@@ -1,15 +1,13 @@
 package titanicsend.pattern;
 
 import heronarts.lx.color.ColorParameter;
-import heronarts.lx.color.GradientUtils.GradientFunction;
+import heronarts.lx.color.GradientUtils;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.*;
 import heronarts.lx.utils.LXUtils;
 import titanicsend.lx.LXGradientUtils;
-import titanicsend.lx.LXGradientUtils.BlendFunction;
 
-
-public class TEColorParameter extends ColorParameter implements GradientFunction {
+public class TEColorParameter extends ColorParameter implements GradientUtils.GradientFunction {
 
     // SOLID-COLOR SOURCE
 
@@ -50,8 +48,8 @@ public class TEColorParameter extends ColorParameter implements GradientFunction
     // GRADIENT
 
     @SuppressWarnings("unchecked")
-    public final EnumParameter<TEGradient> gradient = (EnumParameter<TEGradient>)
-            new EnumParameter<TEGradient>("Gradient", TEGradient.FULL_PALETTE)
+    public final EnumParameter<TEPattern.TEGradient> gradient = (EnumParameter<TEPattern.TEGradient>)
+            new EnumParameter<TEPattern.TEGradient>("Gradient", TEPattern.TEGradient.FULL_PALETTE)
                     .setDescription("Which TEGradient to use. Full_Palette=entire, Foreground=Primary-Secondary, Primary=Primary-BackgroundPrimary, Secondary=Secondary-BackgroundSecondary")
                     .setWrappable(false);
 
@@ -116,12 +114,15 @@ public class TEColorParameter extends ColorParameter implements GradientFunction
         lastOffset = value;
     };
 
-    public TEColorParameter(String label) {
-        this(label, 0xff000000);
+    private final TEPattern parentPattern;
+
+    public TEColorParameter(TEPattern parentPattern, String label) {
+        this(parentPattern, label, 0xff000000);
     }
 
-    public TEColorParameter(String label, int color) {
+    public TEColorParameter(TEPattern parentPattern, String label, int color) {
         super(label, color);
+        this.parentPattern = parentPattern;
 
         // Modify defaults of sat/bright
         this.saturation.reset(100);
@@ -170,7 +171,7 @@ public class TEColorParameter extends ColorParameter implements GradientFunction
                 return _getGradientColor(getOffsetf());
             case FOREGROUND:
                 // TODO: scale brightness here
-                return _getGradientColor(getOffsetf(), TEGradient.FOREGROUND);
+                return _getGradientColor(getOffsetf(), TEPattern.TEGradient.FOREGROUND);
             default:
             case STATIC:
                 return LXColor.hsb(
@@ -194,7 +195,7 @@ public class TEColorParameter extends ColorParameter implements GradientFunction
                 return _getGradientColor(getOffsetf() + color2offset.getValuef());
             case FOREGROUND:
                 // TODO: scale brightness here
-                return _getGradientColor(getOffsetf() + color2offset.getValuef(), TEGradient.FOREGROUND);
+                return _getGradientColor(getOffsetf() + color2offset.getValuef(), TEPattern.TEGradient.FOREGROUND);
             default:
             case STATIC:
                 return LXColor.hsb(
@@ -246,10 +247,10 @@ public class TEColorParameter extends ColorParameter implements GradientFunction
         return _getGradientColor(lerp, this.gradient.getEnum());
     }
 
-    private int _getGradientColor(float lerp, TEGradient gradient) {
+    private int _getGradientColor(float lerp, TEPattern.TEGradient gradient) {
         lerp = (float) LXUtils.wrapnf(lerp);
 
-        BlendFunction bf;
+        LXGradientUtils.BlendFunction bf;
         switch (this.blendMode.getEnum()) {
             case HSVCCW:
                 bf = LXGradientUtils.BlendMode.HSVCCW.function;
@@ -268,17 +269,17 @@ public class TEColorParameter extends ColorParameter implements GradientFunction
     /**
      * Internal helper method. Maps gradient enum to ColorStops.
      */
-    private LXGradientUtils.ColorStops getGradientStops(TEGradient gradient) {
+    private LXGradientUtils.ColorStops getGradientStops(TEPattern.TEGradient gradient) {
         switch (gradient) {
             case FOREGROUND:
-                return foregroundGradient;
+                return this.parentPattern.foregroundGradient;
             case PRIMARY:
-                return primaryGradient;
+                return this.parentPattern.primaryGradient;
             case SECONDARY:
-                return secondaryGradient;
+                return this.parentPattern.secondaryGradient;
             case FULL_PALETTE:
             default:
-                return paletteGradient;
+                return this.parentPattern.paletteGradient;
         }
     }
 

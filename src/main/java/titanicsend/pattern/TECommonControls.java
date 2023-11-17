@@ -1,7 +1,6 @@
 package titanicsend.pattern;
 
 import heronarts.lx.parameter.*;
-import heronarts.lx.parameter.BooleanParameter.Mode;
 import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon._CommonControlGetter;
@@ -22,7 +21,7 @@ public class TECommonControls {
     public final BooleanParameter panic = (BooleanParameter)
             new BooleanParameter("PANIC", false)
                     .setDescription("Panic! Moves parameters into a visible range")
-                    .setMode(Mode.MOMENTARY);
+                    .setMode(BooleanParameter.Mode.MOMENTARY);
 
     private final LXParameterListener panicListener = (p) -> {
         if (((BooleanParameter) p).getValueb()) {
@@ -207,10 +206,10 @@ public class TECommonControls {
                 markUnused(param);
             }
 
-            addParameter(tag.getPath(), param);
+            this.pattern.addParam(tag.getPath(), param);
         }
 
-        addParameter("panic", this.panic);
+        this.pattern.addParam("panic", this.panic);
     }
 
     public void markUnused(LXNormalizedParameter param) {
@@ -222,7 +221,7 @@ public class TECommonControls {
      */
     public void removeCommonControls() {
         for (TEControlTag tag : controlList.keySet()) {
-            removeParameter(tag.getPath());
+            this.pattern.removeParam(tag.getPath());
         }
         controlList.clear();
     }
@@ -231,7 +230,7 @@ public class TECommonControls {
      * Set remote controls in order they will appear on the midi surfaces
      */
     protected void setRemoteControls() {
-        setCustomRemoteControls(new LXListenableNormalizedParameter[]{
+        this.pattern.setCustomRemoteControls(new LXListenableNormalizedParameter[]{
                 this.color.offset,
                 this.color.gradient,
                 null, //getControl(TEControlTag.BRIGHTNESS).control,
@@ -254,7 +253,7 @@ public class TECommonControls {
                 // To be SHIFT, not implemented yet
 
                 // For UI usage, LXDeviceComponent.view
-                view
+                this.pattern.view
         });
     }
 
@@ -319,7 +318,7 @@ public class TECommonControls {
         setControl(TEControlTag.EXPLODE, p);
 
         // in degrees for display 'cause more people think about it that way
-        p = (LXListenableNormalizedParameter) new TECommonAngleParameter(TEControlTag.ANGLE.getLabel(), 0, -Math.PI, Math.PI)
+        p = (LXListenableNormalizedParameter) new TECommonAngleParameter(this.pattern, this.pattern.spinRotor, TEControlTag.ANGLE.getLabel(), 0, -Math.PI, Math.PI)
                 .setDescription("Static Rotation Angle")
                 .setPolarity(LXParameter.Polarity.BIPOLAR)
                 .setWrappable(true)
@@ -331,9 +330,10 @@ public class TECommonControls {
     }
 
     protected TEColorParameter registerColorControl(String prefix) {
-        color = new TEColorParameter(prefix + "Color")
+        color = new TEColorParameter(this.pattern, prefix + "Color")
                 .setDescription("TE Color");
-        addParameter("te_color", color);
+        // "addParameter(java.lang.String, heronarts.lx.parameter.LXParameter)' has protected access in 'heronarts.lx.LXComponent'"
+        this.pattern.addParam("te_color", color);
         return color;
     }
 
@@ -348,7 +348,11 @@ public class TECommonControls {
         return this;
     }
 
-    TECommonControls() {
+    private final TEPerformancePattern pattern;
+
+    TECommonControls(TEPerformancePattern pat) {
+        this.pattern = pat;
+
         // Create the user replaceable controls
         // derived classes must call addCommonControls() in their
         // constructor to add them to the UI.
