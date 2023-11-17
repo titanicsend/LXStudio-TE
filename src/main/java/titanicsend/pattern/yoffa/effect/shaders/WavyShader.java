@@ -1,13 +1,11 @@
 package titanicsend.pattern.yoffa.effect.shaders;
 
-import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.TECommonControls;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 
 import java.util.Collection;
-import java.util.List;
 
 import static java.lang.Math.*;
 import static titanicsend.util.TEMath.*;
@@ -18,7 +16,7 @@ public class WavyShader extends FragmentShaderEffect {
     public WavyShader(PatternTarget target) {
         super(target);
 
-        TEPerformancePattern.TECommonControls ctl = pattern.getControls();
+        TECommonControls ctl = pattern.getControls();
 
         ctl.setRange(TEControlTag.SPEED, 0, -5, 5);
         ctl.setValue(TEControlTag.SPEED, 0.5);

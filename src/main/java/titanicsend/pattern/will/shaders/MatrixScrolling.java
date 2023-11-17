@@ -1,29 +1,17 @@
 package titanicsend.pattern.will.shaders;
 
-import heronarts.lx.LX;
 import heronarts.lx.Tempo;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.color.LinkedColorParameter;
-import heronarts.lx.parameter.CompoundParameter;
-import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.TEPattern;
-import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.TECommonControls;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.shaders.FragmentShaderEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
-import titanicsend.util.TE;
 
-import java.awt.*;
 import java.util.Collection;
-import java.util.List;
-import java.util.Random;
 import java.util.SplittableRandom;
 
-import static java.lang.Math.pow;
-import static java.lang.Math.sin;
 import static titanicsend.util.TEMath.*;
-import static titanicsend.util.TEMath.multiplyArrays;
 
 public class MatrixScrolling extends FragmentShaderEffect {
 
@@ -34,7 +22,7 @@ public class MatrixScrolling extends FragmentShaderEffect {
     public MatrixScrolling(PatternTarget target) {
         super(target);
 
-        TEPerformancePattern.TECommonControls ctl = pattern.getControls();
+        TECommonControls ctl = pattern.getControls();
 
         ctl.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
         ctl.setValue(TEControlTag.SPEED, 0.5);

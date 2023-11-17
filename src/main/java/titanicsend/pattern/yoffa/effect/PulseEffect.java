@@ -3,7 +3,7 @@ package titanicsend.pattern.yoffa.effect;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.TECommonControls;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
@@ -25,7 +25,7 @@ public class PulseEffect extends PatternEffect {
 
     public PulseEffect(PatternTarget target) {
         super(target);
-        TEPerformancePattern.TECommonControls ctl = pattern.getControls();
+        TECommonControls ctl = pattern.getControls();
 
         ctl.setRange(TEControlTag.SPEED, 0, -2, 2);
         ctl.setValue(TEControlTag.SPEED, 0.25);

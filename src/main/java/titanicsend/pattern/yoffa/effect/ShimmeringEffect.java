@@ -4,7 +4,7 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.TECommonControls;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
@@ -41,7 +41,7 @@ public class ShimmeringEffect extends PatternEffect {
     public ShimmeringEffect(PatternTarget target) {
         super(target);
 
-        TEPerformancePattern.TECommonControls ctl = pattern.getControls();
+        TECommonControls ctl = pattern.getControls();
         ctl.setRange(TEControlTag.SIZE, 0.1, 0.01, 1.0);  // pulse length
         ctl.setRange(TEControlTag.WOW2, 0.5, 0, 1.0);  //background brightness
 
