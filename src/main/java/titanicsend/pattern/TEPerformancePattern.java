@@ -28,10 +28,10 @@ import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
 import titanicsend.util.TEColor;
 
+import java.lang.reflect.Array;
 import java.nio.FloatBuffer;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 public abstract class TEPerformancePattern extends TEAudioPattern {
 
@@ -684,6 +684,44 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             addParameter("swatchPerChannel", swatchParameter);
         }
 
+        public void addCommonControls(TEPerformancePatternOptions options) {
+            String colorPrefix = "";
+            if (!options.usesColorPalette()) {
+                colorPrefix = "[x] ";
+            }
+
+            TEColorParameter colorParam = registerColorControl(colorPrefix);
+//            if (missingControls != null && !missingControls.uses_palette) {
+//                markUnused(colorParam.offset);
+//                markUnused(colorParam.gradient);
+//                markUnused(swatchParameter);
+//            }
+
+            // controls will be added in the order their tags appear in the
+            // TEControlTag enum
+            for (TEControlTag tag : TEControlTag.values()) {
+                LXListenableNormalizedParameter param = controlList.get(tag).control;
+
+                if (options.isTagNotUsed(tag)){
+                    markUnused(param);
+                }
+
+                // disable explode control if the pattern isn't a shader
+                // (takes advantage of the fact that all shaders have a missingControls file entry,
+                // even if they're not missing any controls.)
+                // TODO - reminder to implement "explode" as an effect so all patterns can use it.
+                else if (param.getLabel().equals(TEControlTag.EXPLODE.getLabel())) {
+                    markUnused(param);
+                }
+
+                addParameter(tag.getPath(), param);
+            }
+
+            addParameter("panic", this.panic);
+            addParameter("viewPerPattern", viewPerPattern);
+            addParameter("swatchPerChannel", swatchParameter);
+        }
+
         public void markUnused(LXNormalizedParameter param) {
             unusedParams.add(param);
         }
@@ -887,6 +925,61 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     }
 
     /**
+     * Represents options for a performance pattern, containing information such as
+     * the shader name, the usage of a color palette, and unused control tags.
+     *
+     * This class provides a fluent interface for setting pattern options.
+     * When initialized, the pattern sets up its own options, allowing customization
+     * of the pattern behavior. These options can be passed downstream
+     * to customize pattern behavior further.
+     */
+    protected class TEPerformancePatternOptions {
+        private String shaderName;
+        private boolean usesPalette;
+        private ArrayList<TEControlTag> missingControlTags;
+
+        public TEPerformancePatternOptions() {
+            missingControlTags = new ArrayList<>();
+        }
+
+        // Fluent builder method to set the shader name
+        public TEPerformancePatternOptions withShaderName(String shaderName) {
+            this.shaderName = shaderName;
+            return this;
+        }
+
+        // Fluent builder method to set the shader name
+        public TEPerformancePatternOptions withColorPallete() {
+            this.usesPalette = true;
+            return this;
+        }
+
+        public TEPerformancePatternOptions noColorPallete() {
+            this.usesPalette = false;
+            return this;
+        }
+
+        // Fluent builder method to add unused parameters
+        public TEPerformancePatternOptions withUnusedParam(TEControlTag param) {
+            missingControlTags.add(param);
+            return this;
+        }
+
+        // Getter methods for accessing options (if needed)
+        public String getShaderName() {
+            return shaderName;
+        }
+
+        public boolean isTagNotUsed(TEControlTag tag) {
+            return missingControlTags.contains(tag);
+        }
+
+        public boolean usesColorPalette() {
+            return usesPalette;
+        }
+    }
+
+    /**
      * Class to support incremental rotation over variable-speed time
      *
      * The rate is tied to the engine bpm and the input time value, which is usually
@@ -1006,6 +1099,13 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     public void addCommonControls() {
         this.controls.addCommonControls(this);
+        this.controls.setRemoteControls();
+
+        this.controls.getLXControl(TEControlTag.WOWTRIGGER).addListener(wowTriggerListener);
+    }
+
+    public void addCommonControls(TEPerformancePatternOptions options) {
+        this.controls.addCommonControls(options);
         this.controls.setRemoteControls();
 
         this.controls.getLXControl(TEControlTag.WOWTRIGGER).addListener(wowTriggerListener);

@@ -5,7 +5,9 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.model.LXPoint;
 import titanicsend.model.TEPanelModel;
 import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
+import titanicsend.util.TE;
 
 import java.util.*;
 
@@ -17,7 +19,10 @@ public class Checkers extends TEPerformancePattern {
   public Checkers(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
 
-    addCommonControls();
+    TEPerformancePatternOptions options = new TEPerformancePatternOptions();
+    options.withUnusedParam(TEControlTag.SPIN)
+            .noColorPallete();
+    addCommonControls(options);
 
     this.panelGroup = new HashMap<>();
     List<TEPanelModel> queue = new ArrayList<>(modelTE.panelsById.values());
