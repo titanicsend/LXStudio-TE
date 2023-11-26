@@ -23,9 +23,13 @@ public class SpiralDiamonds extends TEPerformancePattern {
     public SpiralDiamonds(LX lx) {
         super(lx, TEShaderView.DOUBLE_LARGE);
 
+        controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
+        controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
+        controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
         // Quantity controls density of diamonds
         controls.setRange(TEControlTag.QUANTITY,4,1,7)
                 .setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
+
 
         addCommonControls();
         addParameter("energy", energy);

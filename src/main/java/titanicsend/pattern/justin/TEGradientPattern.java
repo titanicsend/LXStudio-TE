@@ -95,7 +95,9 @@ public class TEGradientPattern extends TEPerformancePattern {
     this.controls.setRange(TEControlTag.WOW2, 0, 0, 360);
     
     ((LXListenableNormalizedParameter)controls.getLXControl(TEControlTag.WOW2)).setWrappable(true);
-    
+
+    controls.markUnused(controls.getLXControl(TEControlTag.SPEED));
+    controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
     addCommonControls();
   }
   

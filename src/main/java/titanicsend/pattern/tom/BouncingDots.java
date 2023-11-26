@@ -34,6 +34,16 @@ public class BouncingDots extends TEPerformancePattern {
         // add common controls
         controls.setRange(TEControlTag.SIZE, DEFAULT_DOT_SIZE, MIN_DOT_SIZE, MAX_DOT_SIZE)
                 .setUnits(TEControlTag.SIZE, LXParameter.Units.INTEGER);
+
+        controls.markUnused(controls.getLXControl(TEControlTag.XPOS));
+        controls.markUnused(controls.getLXControl(TEControlTag.YPOS));
+        controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
+        controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
+        controls.markUnused(controls.getLXControl(TEControlTag.EXPLODE));
+        controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
+        controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
+        controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
+        controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
         addCommonControls();
     }
 
