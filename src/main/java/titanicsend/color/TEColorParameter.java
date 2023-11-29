@@ -7,7 +7,6 @@ import heronarts.lx.parameter.*;
 import heronarts.lx.utils.LXUtils;
 import titanicsend.lx.LXGradientUtils;
 import titanicsend.pattern.TEPattern;
-import titanicsend.pattern.TEPattern.TEGradient;
 
 public class TEColorParameter extends ColorParameter implements GradientUtils.GradientFunction {
 
@@ -50,8 +49,8 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
     // GRADIENT
 
     @SuppressWarnings("unchecked")
-    public final EnumParameter<TEPattern.TEGradient> gradient = (EnumParameter<TEPattern.TEGradient>)
-            new EnumParameter<TEPattern.TEGradient>("Gradient", TEPattern.TEGradient.FULL_PALETTE)
+    public final EnumParameter<TEGradient> gradient = (EnumParameter<TEGradient>)
+            new EnumParameter<TEGradient>("Gradient", TEGradient.FULL_PALETTE)
                     .setDescription("Which TEGradient to use. Full_Palette=entire, Foreground=Primary-Secondary, Primary=Primary-BackgroundPrimary, Secondary=Secondary-BackgroundSecondary")
                     .setWrappable(false);
 
@@ -173,7 +172,7 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
                 return _getGradientColor(getOffsetf());
             case FOREGROUND:
                 // TODO: scale brightness here
-                return _getGradientColor(getOffsetf(), TEPattern.TEGradient.FOREGROUND);
+                return _getGradientColor(getOffsetf(), TEGradient.FOREGROUND);
             default:
             case STATIC:
                 return LXColor.hsb(
@@ -197,7 +196,7 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
                 return _getGradientColor(getOffsetf() + color2offset.getValuef());
             case FOREGROUND:
                 // TODO: scale brightness here
-                return _getGradientColor(getOffsetf() + color2offset.getValuef(), TEPattern.TEGradient.FOREGROUND);
+                return _getGradientColor(getOffsetf() + color2offset.getValuef(), TEGradient.FOREGROUND);
             default:
             case STATIC:
                 return LXColor.hsb(
@@ -249,7 +248,7 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
         return _getGradientColor(lerp, this.gradient.getEnum());
     }
 
-    private int _getGradientColor(float lerp, TEPattern.TEGradient gradient) {
+    private int _getGradientColor(float lerp, TEGradient gradient) {
         lerp = (float) LXUtils.wrapnf(lerp);
 
         LXGradientUtils.BlendFunction bf;
@@ -271,7 +270,7 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
     /**
      * Internal helper method. Maps gradient enum to ColorStops.
      */
-    private LXGradientUtils.ColorStops getGradientStops(TEPattern.TEGradient gradient) {
+    private LXGradientUtils.ColorStops getGradientStops(TEGradient gradient) {
         switch (gradient) {
             case FOREGROUND:
                 return this.parentPattern.foregroundGradient;

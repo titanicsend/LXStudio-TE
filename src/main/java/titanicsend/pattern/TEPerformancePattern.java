@@ -10,6 +10,7 @@ import heronarts.lx.parameter.*;
 import heronarts.lx.parameter.BooleanParameter.Mode;
 import heronarts.lx.utils.LXUtils;
 import titanicsend.app.TEGlobalPatternControls;
+import titanicsend.color.TEColorType;
 import titanicsend.lx.LXGradientUtils;
 import titanicsend.lx.LXGradientUtils.BlendFunction;
 import titanicsend.pattern.glengine.ShaderConfiguration;
@@ -33,7 +34,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     // Explicitly keep this available for now
     @Override
-    public int getSwatchColor(ColorType type) {
+    public int getSwatchColor(TEColorType type) {
         return super.getSwatchColor(type);
     }
 
@@ -214,29 +215,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             isStaleColor = false;
         }
         return _calcColor;
-    }
-
-    /**
-     * ** Instead of these two methods, use getGradientColor(lerp) which defers to TEColorParameter for gradient selection. **
-     * <p>
-     * Suppress parent TEPattern gradient methods, force child classes
-     * to choose solid color or gradient, keeping other choices
-     * runtime-adjustable.
-     * <p>
-     * TODO: remove these two methods from TEPattern to prevent confusion?
-     */
-    @Deprecated
-    @Override
-    public int getPrimaryGradientColor(float lerp) {
-        LX.error("Use getGradientColor() instead");
-        return TEColor.setBrightness(super.getPrimaryGradientColor(lerp), (float) getBrightness());
-    }
-
-    @Deprecated
-    @Override
-    public int getSecondaryGradientColor(float lerp) {
-        LX.error("Use getGradientColor() instead");
-        return TEColor.setBrightness(super.getSecondaryGradientColor(lerp), (float) getBrightness());
     }
 
     /**

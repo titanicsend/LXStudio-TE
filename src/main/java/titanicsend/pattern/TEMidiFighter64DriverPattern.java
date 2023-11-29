@@ -10,6 +10,7 @@ import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXParameterListener;
+import titanicsend.color.TEColorType;
 import titanicsend.midi.MidiNames;
 import titanicsend.pattern.mf64.*;
 
@@ -366,7 +367,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
 
     // compute a new color set based on the current palette primary
     protected void setComputedColors() {
-        int color = getSwatchColor(ColorType.PRIMARY.swatchIndex()).getColor();
+        int color = getSwatchColor(TEColorType.PRIMARY.swatchIndex()).getColor();
         if (color == lastColor) return;
 
         float h = LXColor.h(color) / 360f;

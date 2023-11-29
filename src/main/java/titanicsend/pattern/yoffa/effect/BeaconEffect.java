@@ -6,6 +6,7 @@ import heronarts.lx.effect.LXModelEffect;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
+import titanicsend.color.TEColorType;
 import titanicsend.model.TEEdgeSection;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEPanelSection;
@@ -29,7 +30,7 @@ public class BeaconEffect extends LXModelEffect<TEWholeModel> {
     public void run(double deltaMs, double enabledAmount) {
         // light all port side edges and panels in a highly visible color
         for (LXPoint point : model.getEdgePointsBySection(TEEdgeSection.PORT)) {
-            int baseColor = lx.engine.palette.getSwatchColor(TEPattern.ColorType.PRIMARY.swatchIndex()).getColor();
+            int baseColor = lx.engine.palette.getSwatchColor(TEColorType.PRIMARY.swatchIndex()).getColor();
 
             setColor(point, LXColor.hsba(
                 LXColor.h(baseColor),

@@ -7,6 +7,7 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.parameter.*;
 import heronarts.lx.transform.LXVector;
+import titanicsend.color.TEColorType;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.pattern.TEPattern;
 import java.util.*;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 @LXCategory("Geometry Masks")
 public class EdgeSymmetry extends TEPattern {
     public final LinkedColorParameter colorParam =
-            registerColor("Color", "color", ColorType.PRIMARY,
+            registerColor("Color", "color", TEColorType.PRIMARY,
                     "Primary color for edges");
 
     public final CompoundParameter energy =

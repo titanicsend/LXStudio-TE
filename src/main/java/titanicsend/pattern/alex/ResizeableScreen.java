@@ -12,7 +12,7 @@ import heronarts.glx.ui.component.UIButton;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
 import heronarts.glx.ui.UI2dContainer;
-
+import titanicsend.color.TEColorType;
 import titanicsend.pattern.TEPattern;
 import titanicsend.util.SimpleScreen;
 
@@ -54,7 +54,7 @@ public class ResizeableScreen extends TEPattern implements UIDeviceControls<Resi
                     .setValue(false);
 
     public final LinkedColorParameter color =
-            registerColor("Color", "color", ColorType.PRIMARY,
+            registerColor("Color", "color", TEColorType.PRIMARY,
                     "Color of the screen");
 
     private void toggleDoubleSided() {

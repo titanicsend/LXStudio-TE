@@ -4,6 +4,7 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
+import titanicsend.color.TEColorType;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.pattern.TEPattern;
@@ -14,7 +15,7 @@ import java.util.Map;
 @LXCategory("Combo FG")
 public class BrightScreen extends TEPattern {
     public final LinkedColorParameter color =
-            registerColor("Color", "color", ColorType.PRIMARY,
+            registerColor("Color", "color", TEColorType.PRIMARY,
                     "Color of the screen");
 
     public BrightScreen(LX lx) {

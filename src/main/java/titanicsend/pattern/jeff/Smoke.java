@@ -8,6 +8,7 @@ import heronarts.lx.modulator.DampedParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.transform.LXVector;
 import heronarts.lx.utils.LXUtils;
+import titanicsend.color.TEColorType;
 import titanicsend.pattern.TEAudioPattern;
 
 /* Smoke
@@ -24,7 +25,7 @@ import titanicsend.pattern.TEAudioPattern;
 @LXCategory("TE Examples")
 public class Smoke extends TEAudioPattern {
     public final LinkedColorParameter color =
-            registerColor("Color", "color", ColorType.PRIMARY,
+            registerColor("Color", "color", TEColorType.PRIMARY,
                     "Primary color of the field");
 
     // Magic numbers for parameter ranges come from testing and are pattern-specific.

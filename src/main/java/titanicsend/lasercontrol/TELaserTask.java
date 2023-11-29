@@ -7,6 +7,7 @@ import heronarts.lx.color.LXDynamicColor;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.BooleanParameter.Mode;
 import titanicsend.app.autopilot.TEOscMessage;
+import titanicsend.color.TEColorType;
 import titanicsend.pattern.TEPattern;
 
 public class TELaserTask extends LXComponent implements LXLoopTask {
@@ -33,7 +34,7 @@ public class TELaserTask extends LXComponent implements LXLoopTask {
     public void loop(double deltaMs) {
         if (this.enabled.isOn() && this.lx.engine.output.enabled.isOn()) {
             // get the swatch color
-            int primaryIndex = TEPattern.ColorType.PRIMARY.swatchIndex();
+            int primaryIndex = TEColorType.PRIMARY.swatchIndex();
             LXDynamicColor primary = this.lx.engine.palette.swatch.getColor(primaryIndex);
 
             // convert to a 0 - 360 format for Pangolin

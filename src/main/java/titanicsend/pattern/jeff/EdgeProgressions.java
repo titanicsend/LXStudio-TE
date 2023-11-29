@@ -10,6 +10,7 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.modulator.Click;
 import heronarts.lx.parameter.*;
+import titanicsend.color.TEColorType;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.pattern.TEAudioPattern;
 
@@ -39,7 +40,7 @@ import java.util.*;
 @LXCategory("Geometry Masks")
 public class EdgeProgressions extends TEAudioPattern {
     public final LinkedColorParameter colorParam =
-            registerColor("Color", "color", ColorType.PRIMARY,
+            registerColor("Color", "color", TEColorType.PRIMARY,
                     "Primary color for edges, when not in auto-mask mode");
 
     // In this pattern the "energy" is how quickly the scenes can progress,
