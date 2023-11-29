@@ -1,13 +1,13 @@
 /**
  * Copyright 2020- Mark C. Slee, Heron Arts LLC
- *
+ * <p>
  * This file is part of the LX Studio software library. By using
  * LX, you agree to the terms of the LX Studio Software License
  * and Distribution Agreement, available at: http://lx.studio/license
- *
+ * <p>
  * Please note that the LX license is not open-source. The license
  * allows for free, non-commercial use.
- *
+ * <p>
  * HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR
  * OTHERWISE, AND SPECIFICALLY DISCLAIMS ANY WARRANTY OF
  * MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR
@@ -18,6 +18,13 @@
 
 package heronarts.lx.studio;
 
+import heronarts.lx.LX;
+import heronarts.lx.LXPlugin;
+import heronarts.lx.mixer.LXBus;
+import heronarts.lx.mixer.LXChannel;
+import heronarts.lx.pattern.LXPattern;
+import heronarts.lx.pattern.form.PlanesPattern;
+import heronarts.lx.pattern.texture.NoisePattern;
 import java.io.File;
 import java.io.IOException;
 import java.net.SocketException;
@@ -28,40 +35,44 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.function.Function;
-
-import heronarts.lx.LX;
-import heronarts.lx.LXPlugin;
-import heronarts.lx.mixer.LXBus;
-import heronarts.lx.mixer.LXChannel;
-import heronarts.lx.pattern.LXPattern;
-import heronarts.lx.pattern.form.PlanesPattern;
-import heronarts.lx.pattern.texture.NoisePattern;
-import titanicsend.app.*;
-import titanicsend.app.autopilot.*;
+import titanicsend.app.GigglePixelBroadcaster;
+import titanicsend.app.GigglePixelListener;
+import titanicsend.app.GigglePixelUI;
+import titanicsend.app.TEAutopilot;
+import titanicsend.app.TEGlobalPatternControls;
+import titanicsend.app.TEOscListener;
+import titanicsend.app.TEUIControls;
+import titanicsend.app.TEVirtualOverlays;
+import titanicsend.app.autopilot.TEHistorian;
+import titanicsend.app.autopilot.TEOscMessage;
+import titanicsend.app.autopilot.TEPatternLibrary;
+import titanicsend.app.autopilot.TEPhrase;
+import titanicsend.app.autopilot.TEShowKontrol;
+import titanicsend.app.autopilot.TEUserInterface;
 import titanicsend.app.dev.DevSwitch;
 import titanicsend.app.dev.UIDevSwitch;
 import titanicsend.dmx.DmxEngine;
 import titanicsend.dmx.effect.BeaconStrobeEffect;
-import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
 import titanicsend.dmx.pattern.BeaconDirectPattern;
 import titanicsend.dmx.pattern.BeaconEasyPattern;
 import titanicsend.dmx.pattern.BeaconEverythingPattern;
 import titanicsend.dmx.pattern.BeaconStraightUpPattern;
 import titanicsend.dmx.pattern.DjLightsDirectPattern;
 import titanicsend.dmx.pattern.DjLightsEasyPattern;
+import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
 import titanicsend.effect.GlobalPatternControl;
 import titanicsend.effect.RandomStrobeEffect;
 import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lx.APC40Mk2;
+import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.lx.MidiFighterTwister;
 import titanicsend.midi.MidiNames;
-import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.model.TEWholeModel;
 import titanicsend.modulator.dmx.Dmx16bitModulator;
-import titanicsend.modulator.dmx.DmxGridModulator;
 import titanicsend.modulator.dmx.DmxColorModulator;
 import titanicsend.modulator.dmx.DmxDualRangeModulator;
+import titanicsend.modulator.dmx.DmxGridModulator;
 import titanicsend.modulator.dmx.DmxRangeModulator;
 import titanicsend.modulator.justin.MultiplierModulator;
 import titanicsend.modulator.justin.UIMultiplierModulator;
@@ -72,21 +83,67 @@ import titanicsend.pattern.TEEdgeTestPattern;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.pattern.TEPanelTestPattern;
 import titanicsend.pattern.TEPerformancePattern;
-import titanicsend.pattern.ben.*;
+import titanicsend.pattern.ben.Audio1;
+import titanicsend.pattern.ben.BassLightning;
+import titanicsend.pattern.ben.Xorcery;
+import titanicsend.pattern.ben.XorceryDiamonds;
 import titanicsend.pattern.cesar.HandTracker;
 import titanicsend.pattern.glengine.ShaderPatternClassFactory;
 import titanicsend.pattern.glengine.ShaderPrecompiler;
-import titanicsend.pattern.jeff.*;
-import titanicsend.pattern.jon.*;
-import titanicsend.pattern.justin.*;
-import titanicsend.pattern.look.*;
-import titanicsend.pattern.mike.*;
-import titanicsend.pattern.pixelblaze.*;
-import titanicsend.pattern.tom.*;
+import titanicsend.pattern.jeff.ArtStandards;
+import titanicsend.pattern.jeff.BasicRainbowPattern;
+import titanicsend.pattern.jeff.BassReactive;
+import titanicsend.pattern.jeff.BassReactiveEdge;
+import titanicsend.pattern.jeff.EdgeProgressions;
+import titanicsend.pattern.jeff.EdgeSymmetry;
+import titanicsend.pattern.jeff.SignalDebugger;
+import titanicsend.pattern.jeff.Smoke;
+import titanicsend.pattern.jeff.TempoReactiveEdge;
+import titanicsend.pattern.jon.ArcEdges;
+import titanicsend.pattern.jon.EdgeFall;
+import titanicsend.pattern.jon.EdgeKITT;
+import titanicsend.pattern.jon.Electric;
+import titanicsend.pattern.jon.ElectricEdges;
+import titanicsend.pattern.jon.FollowThatStar;
+import titanicsend.pattern.jon.FourStar;
+import titanicsend.pattern.jon.FrameBrights;
+import titanicsend.pattern.jon.Iceflow;
+import titanicsend.pattern.jon.Kaleidosonic;
+import titanicsend.pattern.jon.Phasers;
+import titanicsend.pattern.jon.RadialSimplex;
+import titanicsend.pattern.jon.RainBands;
+import titanicsend.pattern.jon.SimplexPosterized;
+import titanicsend.pattern.jon.SpaceExplosionFX;
+import titanicsend.pattern.jon.SpiralDiamonds;
+import titanicsend.pattern.jon.TESparklePattern;
+import titanicsend.pattern.jon.TriangleNoise;
+import titanicsend.pattern.jon.TurbulenceLines;
+import titanicsend.pattern.justin.DmxGridPattern;
+import titanicsend.pattern.justin.TEGradientPattern;
+import titanicsend.pattern.justin.TESolidPattern;
+import titanicsend.pattern.look.SigmoidDanceAudioLevels;
+import titanicsend.pattern.look.SigmoidDanceAudioWaveform;
+import titanicsend.pattern.look.TriangleCrossAudioLevels;
+import titanicsend.pattern.look.TriangleCrossAudioWaveform;
+import titanicsend.pattern.look.TriangleInfinityLevels;
+import titanicsend.pattern.look.TriangleInfinityRadialWaveform;
+import titanicsend.pattern.look.TriangleInfinityWaveform;
+import titanicsend.pattern.mike.Checkers;
+import titanicsend.pattern.mike.EdgeRunner;
+import titanicsend.pattern.mike.ModelDebugger;
+import titanicsend.pattern.pixelblaze.PBAudio1;
+import titanicsend.pattern.pixelblaze.PBFireworkNova;
+import titanicsend.pattern.pixelblaze.PBXorcery;
+import titanicsend.pattern.pixelblaze.PixelblazeParallel;
+import titanicsend.pattern.pixelblaze.PixelblazeSandbox;
+import titanicsend.pattern.tom.BouncingDots;
+import titanicsend.pattern.tom.Fire;
+import titanicsend.pattern.tom.PulsingTriangles;
 import titanicsend.pattern.util.TargetPixelStamper;
 import titanicsend.pattern.will.PowerDebugger;
 import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
+import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.pattern.yoffa.effect.BeaconEffect;
 import titanicsend.ui.UIBackings;
 import titanicsend.ui.UILasers;
@@ -94,20 +151,20 @@ import titanicsend.ui.UIModelLabels;
 import titanicsend.ui.UITEPerformancePattern;
 import titanicsend.ui.effect.UIRandomStrobeEffect;
 import titanicsend.ui.modulator.UIDmx16bitModulator;
-import titanicsend.ui.modulator.UIDmxGridModulator;
 import titanicsend.ui.modulator.UIDmxColorModulator;
 import titanicsend.ui.modulator.UIDmxDualRangeModulator;
+import titanicsend.ui.modulator.UIDmxGridModulator;
 import titanicsend.ui.modulator.UIDmxRangeModulator;
-import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
+
 
 public class TEApp extends LXStudio {
 
   static public TEWholeModel wholeModel;
 
-  private static int WINDOW_WIDTH = 1280;
-  private static int WINDOW_HEIGHT = 800;
+  private static final int WINDOW_WIDTH = 1280;
+  private static final int WINDOW_HEIGHT = 800;
   private static String resourceSubdir;
 
   @LXPlugin.Name("Titanic's End")
@@ -127,7 +184,7 @@ public class TEApp extends LXStudio {
     private final CrutchOSC crutchOSC;
     private DevSwitch devSwitch;
 
-    private LX lx;
+    private final LX lx;
 
     public Plugin(LX lx) {
       log("TEApp.Plugin(LX)");
@@ -136,11 +193,12 @@ public class TEApp extends LXStudio {
       lx.addProjectListener(this);
 
       // Saved options for UI overlays
-      lx.engine.registerComponent("virtualOverlays", this.virtualOverlays = new TEVirtualOverlays(lx));
+      lx.engine.registerComponent("virtualOverlays",
+          this.virtualOverlays = new TEVirtualOverlays(lx));
 
       // set up global control values object so all patterns can potentially be controlled
       // by a single external input (e.g. DMX controller )
-       lx.engine.registerComponent("globalPatternControls", new TEGlobalPatternControls(lx));
+      lx.engine.registerComponent("globalPatternControls", new TEGlobalPatternControls(lx));
 
 //      lx.ui.preview.addComponent(visual);
 //      new TEUIControls(ui, visual, ui.leftPane.global.getContentWidth()).addToContainer(ui.leftPane.global);
@@ -277,10 +335,10 @@ public class TEApp extends LXStudio {
 
       @SuppressWarnings("unchecked")
       Function<Class<?>, Class<LXPattern>[]> patternGetter =
-      (Class<?> patternConfigClass) ->
-      (Class<LXPattern>[]) Arrays.stream(patternConfigClass.getDeclaredClasses())
-      .filter(LXPattern.class::isAssignableFrom)
-      .toArray(Class[]::new);
+          (Class<?> patternConfigClass) ->
+              (Class<LXPattern>[]) Arrays.stream(patternConfigClass.getDeclaredClasses())
+                  .filter(LXPattern.class::isAssignableFrom)
+                  .toArray(Class[]::new);
 
       lx.registry.addPatterns(patternGetter.apply(OrganicPatternConfig.class));
       lx.registry.addPatterns(patternGetter.apply(ShaderPanelsPatternConfig.class));
@@ -296,10 +354,14 @@ public class TEApp extends LXStudio {
 
       // Midi surface names for use with BomeBox
       lx.engine.midi.registerSurface(MidiNames.BOMEBOX_APC40MK2, APC40Mk2.class);
-      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1, MidiFighterTwister.class);
-      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER2, MidiFighterTwister.class);
-      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER3, MidiFighterTwister.class);
-      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER4, MidiFighterTwister.class);
+      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1,
+          MidiFighterTwister.class);
+      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER2,
+          MidiFighterTwister.class);
+      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER3,
+          MidiFighterTwister.class);
+      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER4,
+          MidiFighterTwister.class);
 
       // Custom modulators
       lx.registry.addModulator(Dmx16bitModulator.class);
@@ -312,15 +374,15 @@ public class TEApp extends LXStudio {
       // Custom UI components
       if (lx instanceof LXStudio) {
         // UI: Effects
-        ((LXStudio.Registry)lx.registry).addUIDeviceControls(UIRandomStrobeEffect.class);
+        ((LXStudio.Registry) lx.registry).addUIDeviceControls(UIRandomStrobeEffect.class);
 
         // UI: Modulators
-        ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmx16bitModulator.class);
-        ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmxGridModulator.class);
-        ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmxColorModulator.class);
-        ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmxDualRangeModulator.class);
-        ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIDmxRangeModulator.class);
-        ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIMultiplierModulator.class);
+        ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmx16bitModulator.class);
+        ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmxGridModulator.class);
+        ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmxColorModulator.class);
+        ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmxDualRangeModulator.class);
+        ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmxRangeModulator.class);
+        ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIMultiplierModulator.class);
       }
 
       // create our library for autopilot
@@ -388,14 +450,20 @@ public class TEApp extends LXStudio {
       TEPatternLibrary l = new TEPatternLibrary(lx);
 
       // aliases to reduce line count below...
-      TEPatternLibrary.TEPatternCoverageType covEdges = TEPatternLibrary.TEPatternCoverageType.EDGES;
-      TEPatternLibrary.TEPatternCoverageType covPanels = TEPatternLibrary.TEPatternCoverageType.PANELS;
-      TEPatternLibrary.TEPatternCoverageType covPanelPartial = TEPatternLibrary.TEPatternCoverageType.PANELS_PARTIAL;
+      TEPatternLibrary.TEPatternCoverageType covEdges =
+          TEPatternLibrary.TEPatternCoverageType.EDGES;
+      TEPatternLibrary.TEPatternCoverageType covPanels =
+          TEPatternLibrary.TEPatternCoverageType.PANELS;
+      TEPatternLibrary.TEPatternCoverageType covPanelPartial =
+          TEPatternLibrary.TEPatternCoverageType.PANELS_PARTIAL;
       TEPatternLibrary.TEPatternCoverageType covBoth = TEPatternLibrary.TEPatternCoverageType.BOTH;
 
-      TEPatternLibrary.TEPatternColorCategoryType cPalette = TEPatternLibrary.TEPatternColorCategoryType.PALETTE;
-      TEPatternLibrary.TEPatternColorCategoryType cWhite = TEPatternLibrary.TEPatternColorCategoryType.WHITE;
-      TEPatternLibrary.TEPatternColorCategoryType cNonConforming = TEPatternLibrary.TEPatternColorCategoryType.NONCONFORMING;
+      TEPatternLibrary.TEPatternColorCategoryType cPalette =
+          TEPatternLibrary.TEPatternColorCategoryType.PALETTE;
+      TEPatternLibrary.TEPatternColorCategoryType cWhite =
+          TEPatternLibrary.TEPatternColorCategoryType.WHITE;
+      TEPatternLibrary.TEPatternColorCategoryType cNonConforming =
+          TEPatternLibrary.TEPatternColorCategoryType.NONCONFORMING;
 
       TEPhrase chorus = TEPhrase.CHORUS;
       TEPhrase down = TEPhrase.DOWN;
@@ -404,22 +472,27 @@ public class TEApp extends LXStudio {
       // CHORUS patterns
       l.addPattern(NoisePattern.class, covBoth, cPalette, chorus);
       l.addPattern(PBXorcery.class, covPanelPartial, cPalette, chorus);
-      l.addPattern(ShaderPanelsPatternConfig.NeonBlocks.class, covPanelPartial, cNonConforming, chorus);
+      l.addPattern(ShaderPanelsPatternConfig.NeonBlocks.class, covPanelPartial, cNonConforming,
+          chorus);
       l.addPattern(Audio1.class, covPanelPartial, cPalette, chorus);
       l.addPattern(ShaderPanelsPatternConfig.OutrunGrid.class, covPanels, cNonConforming, chorus);
       l.addPattern(OrganicPatternConfig.MatrixScroller.class, covPanels, cNonConforming, chorus);
       l.addPattern(FollowThatStar.class, covBoth, cPalette, chorus);
       l.addPattern(ShaderPanelsPatternConfig.Marbling.class, covPanels, cNonConforming, chorus);
       l.addPattern(OrganicPatternConfig.NeonCellsLegacy.class, covPanelPartial, cPalette, chorus);
-      l.addPattern(ShaderPanelsPatternConfig.NeonTriangles.class, covPanels, cNonConforming, chorus);
+      l.addPattern(ShaderPanelsPatternConfig.NeonTriangles.class, covPanels, cNonConforming,
+          chorus);
       l.addPattern(Phasers.class, covPanels, cPalette, chorus);
-      l.addPattern(ShaderPanelsPatternConfig.PulsingPetriDish.class, covPanels, cNonConforming, chorus);
+      l.addPattern(ShaderPanelsPatternConfig.PulsingPetriDish.class, covPanels, cNonConforming,
+          chorus);
       l.addPattern(Electric.class, covPanelPartial, cPalette, chorus);
       l.addPattern(ShaderPanelsPatternConfig.AudioTest2.class, covBoth, cNonConforming, chorus);
       l.addPattern(EdgeRunner.class, covEdges, cPalette, chorus);
       l.addPattern(ShaderPanelsPatternConfig.AudioTest2.class, covPanelPartial, cPalette, chorus);
-      l.addPattern(ShaderPanelsPatternConfig.MetallicWaves.class, covPanelPartial, cPalette, chorus);
-      l.addPattern(ShaderEdgesPatternConfig.NeonRipplesEdges.class, covPanelPartial, cPalette, chorus);
+      l.addPattern(ShaderPanelsPatternConfig.MetallicWaves.class, covPanelPartial, cPalette,
+          chorus);
+      l.addPattern(ShaderEdgesPatternConfig.NeonRipplesEdges.class, covPanelPartial, cPalette,
+          chorus);
       l.addPattern(OrganicPatternConfig.WaterEdges.class, covPanelPartial, cPalette, chorus);
       l.addPattern(OrganicPatternConfig.PulseCenter.class, covPanelPartial, cPalette, chorus);
       l.addPattern(OrganicPatternConfig.WavyPanels.class, covPanelPartial, cPalette, chorus);
@@ -459,7 +532,7 @@ public class TEApp extends LXStudio {
       // for headless mode should go in the raw initialize method above.
       log("TEApp.Plugin.initializeUI()");
 
-      ((LXStudio.Registry)lx.registry).addUIDeviceControls(UITEPerformancePattern.class);
+      ((LXStudio.Registry) lx.registry).addUIDeviceControls(UITEPerformancePattern.class);
     }
 
     public void onUIReady(LXStudio lx, LXStudio.UI ui) {
@@ -470,18 +543,20 @@ public class TEApp extends LXStudio {
       // Model pane
 
       new UIDevSwitch(ui, this.devSwitch, ui.leftPane.model.getContentWidth())
-      .addToContainer(ui.leftPane.model, 0);
+          .addToContainer(ui.leftPane.model, 0);
 
-      new GigglePixelUI(ui, ui.leftPane.model.getContentWidth(), this.gpListener, this.gpBroadcaster)
-      .addToContainer(ui.leftPane.model, 1);
+      new GigglePixelUI(ui, ui.leftPane.model.getContentWidth(), this.gpListener,
+          this.gpBroadcaster)
+          .addToContainer(ui.leftPane.model, 1);
 
       new TEUIControls(ui, this.virtualOverlays, ui.leftPane.model.getContentWidth())
-      .addToContainer(ui.leftPane.model, 2);
+          .addToContainer(ui.leftPane.model, 2);
 
       // Global pane
 
       // Add UI section for autopilot
-      new TEUserInterface.AutopilotUISection(ui, this.autopilot).addToContainer(ui.leftPane.global, 0);
+      new TEUserInterface.AutopilotUISection(ui, this.autopilot).addToContainer(ui.leftPane.global,
+          0);
 
       applyTECameraPosition();
 
@@ -525,7 +600,7 @@ public class TEApp extends LXStudio {
 
     public void applyTECameraPosition() {
       if (this.lx instanceof LXStudio) {
-        LXStudio.UI ui = ((LXStudio)this.lx).ui;
+        LXStudio.UI ui = ((LXStudio) this.lx).ui;
         ui.preview.pointCloud.pointSize.setValue(80000);
         ui.preview.camera.theta.setValue(270);
         ui.preview.camera.phi.setValue(-6);
@@ -568,7 +643,8 @@ public class TEApp extends LXStudio {
   private void addAllPatterns() {
     LXBus channel = this.engine.mixer.getFocusedChannel();
     if (channel instanceof LXChannel) {
-      TE.log("*** Instantiating all " + this.registry.patterns.size() + " patterns in registry to channel " + channel.getLabel() + " ***");
+      TE.log("*** Instantiating all " + this.registry.patterns.size() +
+          " patterns in registry to channel " + channel.getLabel() + " ***");
       TE.log("Here we gOOOOOOOOOOOO....");
       List<LXPattern> patterns = new ArrayList<LXPattern>();
       for (Class<? extends LXPattern> clazz : this.registry.patterns) {
@@ -583,7 +659,7 @@ public class TEApp extends LXStudio {
       patterns.sort((p1, p2) -> p1.getLabel().compareTo(p2.getLabel()));
       for (LXPattern pattern : patterns) {
         try {
-          ((LXChannel)channel).addPattern(pattern);
+          ((LXChannel) channel).addPattern(pattern);
         } catch (Exception ex) {
           TE.err(ex, "Failure adding pattern to channel! ");
         }
@@ -601,7 +677,8 @@ public class TEApp extends LXStudio {
     super(flags);
   }
 
-  private static final DateFormat LOG_FILENAME_FORMAT = new SimpleDateFormat("'LXStudio-TE-'yyyy.MM.dd-HH.mm.ss'.log'");
+  private static final DateFormat LOG_FILENAME_FORMAT =
+      new SimpleDateFormat("'LXStudio-TE-'yyyy.MM.dd-HH.mm.ss'.log'");
 
   private static String projectFileName = null;
 
@@ -620,7 +697,7 @@ public class TEApp extends LXStudio {
         System.getProperty("os.name") + " " +
         System.getProperty("os.version") + " " +
         System.getProperty("os.arch")
-        );
+    );
 
     LX.LOG_WARNINGS = true;
 
@@ -687,7 +764,8 @@ public class TEApp extends LXStudio {
 
         // Schedule a task to load the initial project file at launch
         final File finalProjectFile = projectFile;
-        final boolean isSchedule = (projectFile != null) ? projectFile.getName().endsWith(".lxs") : false;
+        final boolean isSchedule =
+            projectFile != null && projectFile.getName().endsWith(".lxs");
         lx.engine.addTask(() -> {
           if (isSchedule) {
             lx.preferences.schedulerEnabled.setValue(true);
