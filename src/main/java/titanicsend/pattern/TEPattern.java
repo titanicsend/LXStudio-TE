@@ -22,7 +22,7 @@ import java.util.*;
 import static java.lang.Math.PI;
 import static java.lang.Math.sin;
 
-public abstract class TEPattern extends DmxPattern implements TEGradientSource {
+public abstract class TEPattern extends DmxPattern {
   private final TEPanelModel sua;
   private final TEPanelModel sdc;
 
@@ -31,6 +31,9 @@ public abstract class TEPattern extends DmxPattern implements TEGradientSource {
   public TEWholeModel getModelTE() {
     return this.modelTE;
   }
+
+  // TODO(JKB): we could have one of these, instead of one per pattern.
+  protected final TEGradientSource gradientSource = new TEGradientSource();
 
   protected TEPattern(LX lx) {
     super(lx);
@@ -89,7 +92,7 @@ public abstract class TEPattern extends DmxPattern implements TEGradientSource {
      * hue distance. In other words, we usually want a gradient to go from yellow
      * to red via orange, not via lime, green, cyan, blue, purple, red.
      */
-    return primaryGradient.getColor(
+    return this.gradientSource.primaryGradient.getColor(
             TEMath.trianglef(lerp / 2), // Allow wrapping
             LXGradientUtils.BlendMode.HSVM.function);
   }
@@ -107,7 +110,7 @@ public abstract class TEPattern extends DmxPattern implements TEGradientSource {
    * Refresh gradients from the global palette
    */
   protected void updateGradients() {
-    updateGradients(this.lx.engine.palette.swatch);
+    this.gradientSource.updateGradients(this.lx.engine.palette.swatch);
   }
 
   // During construction, make gap points show up in red

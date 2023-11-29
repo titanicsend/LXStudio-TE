@@ -11,7 +11,6 @@ import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.utils.LXUtils;
 import titanicsend.lx.LXGradientUtils;
-import titanicsend.pattern.TEPattern;
 
 public class TEColorParameter extends ColorParameter implements GradientUtils.GradientFunction {
 
@@ -119,15 +118,15 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
         lastOffset = value;
     };
 
-    private final TEPattern parentPattern;
+    private final TEGradientSource gradientSource;
 
-    public TEColorParameter(TEPattern parentPattern, String label) {
-        this(parentPattern, label, 0xff000000);
+    public TEColorParameter(TEGradientSource gradientSource, String label) {
+        this(gradientSource, label, 0xff000000);
     }
 
-    public TEColorParameter(TEPattern parentPattern, String label, int color) {
+    public TEColorParameter(TEGradientSource gradientSource, String label, int color) {
         super(label, color);
-        this.parentPattern = parentPattern;
+        this.gradientSource = gradientSource;
 
         // Modify defaults of sat/bright
         this.saturation.reset(100);
@@ -277,14 +276,14 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
     private LXGradientUtils.ColorStops getGradientStops(TEGradient gradient) {
         switch (gradient) {
             case FOREGROUND:
-                return this.parentPattern.foregroundGradient;
+                return this.gradientSource.foregroundGradient;
             case PRIMARY:
-                return this.parentPattern.primaryGradient;
+                return this.gradientSource.primaryGradient;
             case SECONDARY:
-                return this.parentPattern.secondaryGradient;
+                return this.gradientSource.secondaryGradient;
             case FULL_PALETTE:
             default:
-                return this.parentPattern.paletteGradient;
+                return this.gradientSource.paletteGradient;
         }
     }
 

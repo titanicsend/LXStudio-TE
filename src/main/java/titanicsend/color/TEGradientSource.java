@@ -3,7 +3,7 @@ package titanicsend.color;
 import heronarts.lx.color.LXSwatch;
 import titanicsend.lx.LXGradientUtils;
 
-public interface TEGradientSource {
+public class TEGradientSource {
 
   private static LXGradientUtils.ColorStops initColorStops(int numStops) {
     LXGradientUtils.ColorStops colorStops = new LXGradientUtils.ColorStops();
@@ -19,7 +19,7 @@ public interface TEGradientSource {
 
   // If a pattern uses the standard gradients, call this in run() to ensure
   // palette changes are known and transitions are smooth
-  public default void updateGradients(LXSwatch swatch) {
+  public TEGradientSource updateGradients(LXSwatch swatch) {
     paletteGradient.stops[0].set(swatch.getColor(0));
     paletteGradient.stops[1].set(swatch.getColor(1));
     paletteGradient.stops[2].set(swatch.getColor(2));
@@ -34,5 +34,6 @@ public interface TEGradientSource {
     foregroundGradient.stops[0].set(swatch.getColor(TEColorType.PRIMARY.swatchIndex()));
     foregroundGradient.stops[1].set(swatch.getColor(TEColorType.SECONDARY.swatchIndex()));
     foregroundGradient.stops[2].set(swatch.getColor(TEColorType.PRIMARY.swatchIndex()));
+    return this;
   }
 }

@@ -361,7 +361,7 @@ public class TECommonControls {
     }
 
     protected TEColorParameter registerColorControl(String prefix) {
-        color = new TEColorParameter(this.pattern, prefix + "Color")
+        color = new TEColorParameter(this.pattern.gradientSource, prefix + "Color")
                 .setDescription("TE Color");
         // "addParameter(java.lang.String, heronarts.lx.parameter.LXParameter)' has protected access in 'heronarts.lx.LXComponent'"
         this.pattern.addParam("te_color", color);
