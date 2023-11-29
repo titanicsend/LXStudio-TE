@@ -4,7 +4,7 @@ import heronarts.lx.LX;
 
 /**
  * Class to support incremental rotation over variable-speed time
- * <p>
+ *
  * The rate is tied to the engine bpm and the input time value, which is usually
  * controlled by the variable speed timer associated with the speed or spin controls.
  * (but anything with a seconds.millis timer can generate rotational angles this way.)
@@ -18,8 +18,6 @@ public class Rotor {
     // spin angle so that calls to getAngle() during a frame
     // will always return the same value no matter how long the frame
     // calculations take.
-    // TODO(look): instead of 'public', if we want this to be internal to TEPerformancePattern, all the TEPerfPattern
-    //             stuff could go in a package and this method could be package-protected
     public void updateAngle(double time, double ctlValue) {
         // if this is the first frame, or if the timer was restarted,
         // we skip calculation for a frame.  Otherwise, do
