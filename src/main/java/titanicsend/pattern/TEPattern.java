@@ -4,7 +4,6 @@ import heronarts.lx.LX;
 import heronarts.lx.Tempo;
 import heronarts.lx.audio.GraphicMeter;
 import heronarts.lx.color.LinkedColorParameter;
-import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.studio.TEApp;

@@ -3,32 +3,20 @@ package titanicsend.pattern;
 import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
-import heronarts.lx.color.ColorParameter;
-import heronarts.lx.color.GradientUtils.GradientFunction;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.parameter.*;
-import heronarts.lx.parameter.BooleanParameter.Mode;
-import heronarts.lx.utils.LXUtils;
+import heronarts.lx.parameter.BoundedParameter;
+import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.app.TEGlobalPatternControls;
-import titanicsend.color.TEColorType;
-import titanicsend.lx.LXGradientUtils;
-import titanicsend.lx.LXGradientUtils.BlendFunction;
 import titanicsend.pattern.glengine.ShaderConfiguration;
-import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon.VariableSpeedTimer;
-import titanicsend.pattern.jon._CommonControlGetter;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-import titanicsend.util.MissingControlsManager;
 import titanicsend.util.Rotor;
-import titanicsend.util.TE;
 import titanicsend.util.TEColor;
 
 import java.nio.FloatBuffer;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public abstract class TEPerformancePattern extends TEAudioPattern {
 

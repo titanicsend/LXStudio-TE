@@ -1,6 +1,5 @@
 package titanicsend.pattern;
 
-import heronarts.lx.parameter.*;
 import titanicsend.color.TEColorParameter;
 import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
@@ -11,6 +10,15 @@ import titanicsend.util.TE;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+
+import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.BoundedParameter;
+import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.DiscreteParameter;
+import heronarts.lx.parameter.LXListenableNormalizedParameter;
+import heronarts.lx.parameter.LXNormalizedParameter;
+import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.parameter.LXParameterListener;
 
 public class TECommonControls {
 
