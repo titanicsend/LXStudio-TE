@@ -32,7 +32,7 @@ import java.util.Set;
 
 public abstract class TEPerformancePattern extends TEAudioPattern {
 
-    private TEShaderView defaultView = null;
+    private final TEShaderView defaultView;
 
     /**
      * Subclasses can override to specify a preferred default view.
@@ -45,16 +45,17 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         return defaultView;
     }
 
+    // TODO(JKB): Move these 4 to TECommonControls?
     private final VariableSpeedTimer iTime = new VariableSpeedTimer();
     private final VariableSpeedTimer spinTimer = new VariableSpeedTimer();
     private final Rotor speedRotor = new Rotor();
     final Rotor spinRotor = new Rotor();
 
-    protected TECommonControls controls;
+    protected final TECommonControls controls;
 
-    protected FloatBuffer palette = Buffers.newDirectFloatBuffer(15);
+    protected final FloatBuffer palette = Buffers.newDirectFloatBuffer(15);
 
-    protected TEGlobalPatternControls globalControls;
+    protected final TEGlobalPatternControls globalControls;
 
     protected TEPerformancePattern(LX lx) {
         this(lx, null);
