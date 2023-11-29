@@ -22,6 +22,12 @@
         <exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
         <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
+        <checkstyle-maven-plugin.version>3.3.1</checkstyle-maven-plugin.version>
+        <checkstyle.version>9.3</checkstyle.version>
+        <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
+        <!-- TODO: uncomment if/when we want to exclude certain files from checkstyle.
+                   Details: https://maven.apache.org/plugins/maven-checkstyle-plugin/examples/suppressions-filter.html -->
+        <!-- <checkstyle.suppressions.location>config/checkstyle/suppressions.xml</checkstyle.suppressions.location>-->
 
         <!-- LX dependency versions -->
         <coremidi4j.version>1.6</coremidi4j.version>
@@ -164,6 +170,30 @@
                     </compilerArgs>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${checkstyle-maven-plugin.version}</version>
+                <configuration>
+                    <consoleOutput>true</consoleOutput>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${checkstyle.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -230,4 +260,23 @@
             </plugin>
         </plugins>
     </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${checkstyle-maven-plugin.version}</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>checkstyle</report>
+                        </reports>
+                        <configuration>
+                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                        </configuration>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>
