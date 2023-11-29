@@ -32,12 +32,6 @@ import java.util.Set;
 
 public abstract class TEPerformancePattern extends TEAudioPattern {
 
-    // Explicitly keep this available for now
-    @Override
-    public int getSwatchColor(TEColorType type) {
-        return super.getSwatchColor(type);
-    }
-
     private TEShaderView defaultView = null;
 
     /**
