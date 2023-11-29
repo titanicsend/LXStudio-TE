@@ -37,7 +37,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     /**
      * Subclasses can override to specify a preferred default view.
      * Alternatively, just pass a default to TEPerformancePattern's constructor.
-     * <p>
+     *
      * Warning for overrides:
      * Called from this constructor prior to child class constructors.
      */
@@ -175,7 +175,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     }
 
-
     /*
      * Color safety mechanism: only calculate solid colors once per frame.
      * Child classes are still encouraged to only call the color methods
@@ -192,14 +191,14 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     /**
      * @return Color derived from the current setting of the color and brightness controls
-     * <p>
+     *
      * NOTE:  The design philosophy here is that palette colors (and the color control)
      * have precedence.
-     * <p>
+     *
      * Brightness modifies the current color, and is set to 1.0 (100%) by default. So
      * if you don't move the brightness control you get *exactly* the currently
      * selected color.
-     * <p>
+     *
      * At present, the brightness control lets you dim the current color,
      * but if you want to brighten it, you have to do that with the channel fader or
      * the color control.
@@ -375,8 +374,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     /**
      * Subclasses can override
      */
-    protected void onWowTrigger(boolean on) {
-    }
+    protected void onWowTrigger(boolean on) { }
 
     /**
      * To be called from the constructor of automatically configured shader patterns prior

@@ -26,9 +26,9 @@ public class TECommonControls {
 
     // Panic control courtesy of JKB's Rubix codebase
     public final BooleanParameter panic = (BooleanParameter)
-            new BooleanParameter("PANIC", false)
-                    .setDescription("Panic! Moves parameters into a visible range")
-                    .setMode(BooleanParameter.Mode.MOMENTARY);
+        new BooleanParameter("PANIC", false)
+        .setDescription("Panic! Moves parameters into a visible range")
+        .setMode(BooleanParameter.Mode.MOMENTARY);
 
     private final LXParameterListener panicListener = (p) -> {
         if (((BooleanParameter) p).getValueb()) {
@@ -51,71 +51,70 @@ public class TECommonControls {
         LXListenableNormalizedParameter p;
 
         p = new CompoundParameter(TEControlTag.SPEED.getLabel(), 0.5, -4.0, 4.0)
-                .setPolarity(LXParameter.Polarity.BIPOLAR)
-                .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
-                .setExponent(1.75)
-                .setDescription("Speed");
+            .setPolarity(LXParameter.Polarity.BIPOLAR)
+            .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
+            .setExponent(1.75)
+            .setDescription("Speed");
         setControl(TEControlTag.SPEED, p);
 
         p = new CompoundParameter(TEControlTag.XPOS.getLabel(), 0, -1.0, 1.0)
-                .setPolarity(LXParameter.Polarity.BIPOLAR)
-                .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
-                .setDescription("X Position");
+            .setPolarity(LXParameter.Polarity.BIPOLAR)
+            .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
+            .setDescription("X Position");
         setControl(TEControlTag.XPOS, p);
 
         p = new CompoundParameter(TEControlTag.YPOS.getLabel(), 0, -1.0, 1.0)
-                .setPolarity(LXParameter.Polarity.BIPOLAR)
-                .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
-                .setDescription("Y Position");
+            .setPolarity(LXParameter.Polarity.BIPOLAR)
+            .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
+            .setDescription("Y Position");
         setControl(TEControlTag.YPOS, p);
 
         p = new CompoundParameter(TEControlTag.SIZE.getLabel(), 1, 0.01, 5.0)
-                .setDescription("Size");
+            .setDescription("Size");
         setControl(TEControlTag.SIZE, p);
 
         p = new CompoundParameter(TEControlTag.QUANTITY.getLabel(), 0.5, 0, 1.0)
-                .setDescription("Quantity");
+            .setDescription("Quantity");
         setControl(TEControlTag.QUANTITY, p);
 
-        p = (CompoundParameter)
-                new CompoundParameter(TEControlTag.SPIN.getLabel(), 0, -1.0, 1.0)
-                        .setPolarity(LXParameter.Polarity.BIPOLAR)
-                        .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
-                        .setExponent(2)
-                        .setDescription("Spin");
+        p = (CompoundParameter) new CompoundParameter(TEControlTag.SPIN.getLabel(), 0, -1.0, 1.0)
+            .setPolarity(LXParameter.Polarity.BIPOLAR)
+            .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
+            .setExponent(2)
+            .setDescription("Spin");
 
         setControl(TEControlTag.SPIN, p);
 
         p = new CompoundParameter(TEControlTag.BRIGHTNESS.getLabel(), 1.0, 0.0, 1.0)
-                .setDescription("Brightness");
+            .setDescription("Brightness");
         setControl(TEControlTag.BRIGHTNESS, p);
 
         p = new CompoundParameter(TEControlTag.WOW1.getLabel(), 0, 0, 1.0)
-                .setDescription("Wow 1");
+            .setDescription("Wow 1");
         setControl(TEControlTag.WOW1, p);
 
         p = new CompoundParameter(TEControlTag.WOW2.getLabel(), 0, 0, 1.0)
-                .setDescription("Wow 2");
+            .setDescription("Wow 2");
         setControl(TEControlTag.WOW2, p);
 
         p = new BooleanParameter(TEControlTag.WOWTRIGGER.getLabel(), false)
-                .setMode(BooleanParameter.Mode.MOMENTARY)
-                .setDescription("Trigger WoW effects");
+            .setMode(BooleanParameter.Mode.MOMENTARY)
+            .setDescription("Trigger WoW effects");
         setControl(TEControlTag.WOWTRIGGER, p);
 
         p = new CompoundParameter("Explode", 0, 0, 1.0)
-                .setDescription("Randomize the pixels to a certain radius on beat");
+            .setDescription("Randomize the pixels to a certain radius on beat");
         setControl(TEControlTag.EXPLODE, p);
 
         // in degrees for display 'cause more people think about it that way
-        p = (LXListenableNormalizedParameter) new TECommonAngleParameter(this.pattern, this.pattern.spinRotor, TEControlTag.ANGLE.getLabel(), 0, -Math.PI, Math.PI)
-                .setDescription("Static Rotation Angle")
-                .setPolarity(LXParameter.Polarity.BIPOLAR)
-                .setWrappable(true)
-                .setFormatter((v) -> {
-                    return Double.toString(Math.toDegrees(v));
-                });
-
+        p = (LXListenableNormalizedParameter)
+            new TECommonAngleParameter(this.pattern, this.pattern.spinRotor, TEControlTag.ANGLE.getLabel(), 0, -Math.PI, Math.PI)
+            .setDescription("Static Rotation Angle")
+            .setPolarity(LXParameter.Polarity.BIPOLAR)
+            .setWrappable(true)
+            .setFormatter((v) -> {
+                return Double.toString(Math.toDegrees(v));
+            });
         setControl(TEControlTag.ANGLE, p);
     }
 
@@ -236,28 +235,28 @@ public class TECommonControls {
         LXListenableNormalizedParameter newControl;
         if (oldControl instanceof CompoundParameter) {
             newControl = (CompoundParameter) new CompoundParameter(label, value, v0, v1)
-                    .setNormalizationCurve(((CompoundParameter) oldControl).getNormalizationCurve())
-                    .setExponent(oldControl.getExponent())
-                    .setDescription(oldControl.getDescription())
-                    .setPolarity(oldControl.getPolarity())
-                    .setUnits(oldControl.getUnits());
+                .setNormalizationCurve(((CompoundParameter) oldControl).getNormalizationCurve())
+                .setExponent(oldControl.getExponent())
+                .setDescription(oldControl.getDescription())
+                .setPolarity(oldControl.getPolarity())
+                .setUnits(oldControl.getUnits());
         } else if (oldControl instanceof BoundedParameter) {
             newControl = (BoundedParameter) new BoundedParameter(label, value, v0, v1)
-                    .setNormalizationCurve(((BoundedParameter) oldControl).getNormalizationCurve())
-                    .setExponent(oldControl.getExponent())
-                    .setDescription(oldControl.getDescription())
-                    .setPolarity(oldControl.getPolarity())
-                    .setUnits(oldControl.getUnits());
+                .setNormalizationCurve(((BoundedParameter) oldControl).getNormalizationCurve())
+                .setExponent(oldControl.getExponent())
+                .setDescription(oldControl.getDescription())
+                .setPolarity(oldControl.getPolarity())
+                .setUnits(oldControl.getUnits());
         } else if (oldControl instanceof BooleanParameter) {
             newControl = (BooleanParameter) new BooleanParameter(label)
-                    .setMode(((BooleanParameter) oldControl).getMode())
-                    .setDescription(oldControl.getDescription())
-                    .setUnits(oldControl.getUnits());
+                .setMode(((BooleanParameter) oldControl).getMode())
+                .setDescription(oldControl.getDescription())
+                .setUnits(oldControl.getUnits());
         } else if (oldControl instanceof DiscreteParameter) {
             newControl = (DiscreteParameter) new DiscreteParameter(label, ((DiscreteParameter) oldControl).getOptions())
-                    .setIncrementMode(((DiscreteParameter) oldControl).getIncrementMode())
-                    .setDescription(oldControl.getDescription())
-                    .setUnits(oldControl.getUnits());
+                .setIncrementMode(((DiscreteParameter) oldControl).getIncrementMode())
+                .setDescription(oldControl.getDescription())
+                .setUnits(oldControl.getUnits());
         } else {
             TE.err("Unrecognized control type in TE Common Control " + oldControl.getClass().getName());
             return oldControl;
@@ -327,29 +326,29 @@ public class TECommonControls {
      */
     protected void setRemoteControls() {
         this.pattern.setCustomRemoteControls(new LXListenableNormalizedParameter[]{
-                this.color.offset,
-                this.color.gradient,
-                null, //getControl(TEControlTag.BRIGHTNESS).control,
-                getControl(TEControlTag.SPEED).control,
+            this.color.offset,
+            this.color.gradient,
+            null, //getControl(TEControlTag.BRIGHTNESS).control,
+            getControl(TEControlTag.SPEED).control,
 
-                getControl(TEControlTag.XPOS).control,
-                getControl(TEControlTag.YPOS).control,
-                getControl(TEControlTag.QUANTITY).control,
-                getControl(TEControlTag.SIZE).control,
+            getControl(TEControlTag.XPOS).control,
+            getControl(TEControlTag.YPOS).control,
+            getControl(TEControlTag.QUANTITY).control,
+            getControl(TEControlTag.SIZE).control,
 
-                getControl(TEControlTag.ANGLE).control,
-                getControl(TEControlTag.SPIN).control,
-                this.panic,
-                null,
+            getControl(TEControlTag.ANGLE).control,
+            getControl(TEControlTag.SPIN).control,
+            this.panic,
+            null,
 
-                getControl(TEControlTag.WOW1).control,
-                getControl(TEControlTag.WOW2).control,
-                getControl(TEControlTag.WOWTRIGGER).control,
-                getControl(TEControlTag.EXPLODE).control,
-                // To be SHIFT, not implemented yet
+            getControl(TEControlTag.WOW1).control,
+            getControl(TEControlTag.WOW2).control,
+            getControl(TEControlTag.WOWTRIGGER).control,
+            getControl(TEControlTag.EXPLODE).control,
+            // To be SHIFT, not implemented yet
 
-                // For UI usage, LXDeviceComponent.view
-                this.pattern.view
+            // For UI usage, LXDeviceComponent.view
+            this.pattern.view
         });
     }
 
