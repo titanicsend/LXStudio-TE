@@ -8,6 +8,7 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.StringParameter;
+import titanicsend.color.TEColorType;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEVertex;
 import titanicsend.pattern.TEPattern;
@@ -41,7 +42,7 @@ public class HandTracker extends TEPattern {
                     .setDescription("Target width");
 
     public final LinkedColorParameter color =
-            registerColor("Color", "color", ColorType.PRIMARY,
+            registerColor("Color", "color", TEColorType.PRIMARY,
                     "Color of the pattern");
 
     public final StringParameter indexTip =

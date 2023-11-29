@@ -7,6 +7,7 @@ import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
+import titanicsend.color.TEColorType;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.pattern.TEAudioPattern;
 import titanicsend.util.TE;
@@ -64,7 +65,7 @@ public class FrameBrights extends TEAudioPattern {
                     .setDescription("New light segments NOW!");
 
     public final LinkedColorParameter color =
-            registerColor("Color", "color", ColorType.PRIMARY,
+            registerColor("Color", "color", TEColorType.PRIMARY,
                     "Color");
 
     public FrameBrights(LX lx) {

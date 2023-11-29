@@ -1,4 +1,4 @@
-package titanicsend.pattern;
+package titanicsend.util;
 
 public class TimeAccumulator {
   private double accumulatedMsec;

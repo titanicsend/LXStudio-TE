@@ -6,6 +6,7 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
+import titanicsend.color.TEColorType;
 import titanicsend.model.*;
 import titanicsend.pattern.TEPattern;
 
@@ -22,7 +23,7 @@ public class Bubbles extends TEPattern {
   private final List<TEPanelModel> newBubbleQueue;
 
   public final LinkedColorParameter color =
-          registerColor("Color", "color", ColorType.PRIMARY,
+          registerColor("Color", "color", TEColorType.PRIMARY,
                   "Color of the bubbles");
 
   public Bubbles(LX lx) {

@@ -6,16 +6,17 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.pattern.LXPattern;
+import titanicsend.color.TEColorType;
 import titanicsend.pattern.TEPattern;
 
 @LXCategory("TE Examples")
 public class AlternatingPattern extends TEPattern {
   public final LinkedColorParameter oddColor =
-          registerColor("Odd", "odd", TEPattern.ColorType.PRIMARY,
+          registerColor("Odd", "odd", TEColorType.PRIMARY,
                   "Color of the odd pixels");
 
   public final LinkedColorParameter evenColor =
-          registerColor("Even", "even", TEPattern.ColorType.SECONDARY,
+          registerColor("Even", "even", TEColorType.SECONDARY,
                   "Color of the even pixels");
 
   public final DiscreteParameter stripeLength =

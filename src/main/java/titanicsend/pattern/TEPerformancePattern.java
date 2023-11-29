@@ -2,45 +2,30 @@ package titanicsend.pattern;
 
 import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
-import heronarts.lx.color.ColorParameter;
-import heronarts.lx.color.GradientUtils.GradientFunction;
+import heronarts.lx.LXComponent;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.parameter.*;
-import heronarts.lx.parameter.BooleanParameter.Mode;
-import heronarts.lx.utils.LXUtils;
+import heronarts.lx.parameter.BoundedParameter;
+import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.app.TEGlobalPatternControls;
-import titanicsend.lx.LXGradientUtils;
-import titanicsend.lx.LXGradientUtils.BlendFunction;
 import titanicsend.pattern.glengine.ShaderConfiguration;
-import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon.VariableSpeedTimer;
-import titanicsend.pattern.jon._CommonControlGetter;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-import titanicsend.util.MissingControlsManager;
-import titanicsend.util.TE;
+import titanicsend.util.Rotor;
 import titanicsend.util.TEColor;
 
 import java.nio.FloatBuffer;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public abstract class TEPerformancePattern extends TEAudioPattern {
 
-    // Explicitly keep this available for now
-    @Override
-    public int getSwatchColor(ColorType type) {
-        return super.getSwatchColor(type);
-    }
-
-    private TEShaderView defaultView = null;
+    private final TEShaderView defaultView;
 
     /**
      * Subclasses can override to specify a preferred default view.
      * Alternatively, just pass a default to TEPerformancePattern's constructor.
-     * <p>
+     *
      * Warning for overrides:
      * Called from this constructor prior to child class constructors.
      */
@@ -48,16 +33,17 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         return defaultView;
     }
 
+    // TODO(JKB): Move these 4 to TECommonControls?
     private final VariableSpeedTimer iTime = new VariableSpeedTimer();
     private final VariableSpeedTimer spinTimer = new VariableSpeedTimer();
     private final Rotor speedRotor = new Rotor();
-    private final Rotor spinRotor = new Rotor();
+    final Rotor spinRotor = new Rotor();
 
-    protected TECommonControls controls;
+    protected final TECommonControls controls;
 
-    protected FloatBuffer palette = Buffers.newDirectFloatBuffer(15);
+    protected final FloatBuffer palette = Buffers.newDirectFloatBuffer(15);
 
-    protected TEGlobalPatternControls globalControls;
+    protected final TEGlobalPatternControls globalControls;
 
     protected TEPerformancePattern(LX lx) {
         this(lx, null);
@@ -65,7 +51,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     protected TEPerformancePattern(LX lx, TEShaderView defaultView) {
         super(lx);
-        controls = new TECommonControls();
+        controls = new TECommonControls(this);
 
         this.defaultView = defaultView;
 
@@ -98,6 +84,17 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         this.controls.setRemoteControls();
 
         this.controls.getLXControl(TEControlTag.WOWTRIGGER).addListener(wowTriggerListener);
+    }
+
+    // package-protected passthrough so TECommonControls can add parameters
+    LXComponent addParam(String path, LXParameter parameter) {
+        addParameter(path, parameter);
+        return this;
+    }
+
+    LXComponent removeParam(String path) {
+        removeParameter(path);
+        return this;
     }
 
     public FloatBuffer getCurrentPalette() {
@@ -166,7 +163,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     }
 
-
     /*
      * Color safety mechanism: only calculate solid colors once per frame.
      * Child classes are still encouraged to only call the color methods
@@ -183,14 +179,14 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     /**
      * @return Color derived from the current setting of the color and brightness controls
-     * <p>
+     *
      * NOTE:  The design philosophy here is that palette colors (and the color control)
      * have precedence.
-     * <p>
+     *
      * Brightness modifies the current color, and is set to 1.0 (100%) by default. So
      * if you don't move the brightness control you get *exactly* the currently
      * selected color.
-     * <p>
+     *
      * At present, the brightness control lets you dim the current color,
      * but if you want to brighten it, you have to do that with the channel fader or
      * the color control.
@@ -201,29 +197,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             isStaleColor = false;
         }
         return _calcColor;
-    }
-
-    /**
-     * ** Instead of these two methods, use getGradientColor(lerp) which defers to TEColorParameter for gradient selection. **
-     * <p>
-     * Suppress parent TEPattern gradient methods, force child classes
-     * to choose solid color or gradient, keeping other choices
-     * runtime-adjustable.
-     * <p>
-     * TODO: remove these two methods from TEPattern to prevent confusion?
-     */
-    @Deprecated
-    @Override
-    public int getPrimaryGradientColor(float lerp) {
-        LX.error("Use getGradientColor() instead");
-        return TEColor.setBrightness(super.getPrimaryGradientColor(lerp), (float) getBrightness());
-    }
-
-    @Deprecated
-    @Override
-    public int getSecondaryGradientColor(float lerp) {
-        LX.error("Use getGradientColor() instead");
-        return TEColor.setBrightness(super.getSecondaryGradientColor(lerp), (float) getBrightness());
     }
 
     /**
@@ -389,8 +362,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     /**
      * Subclasses can override
      */
-    protected void onWowTrigger(boolean on) {
-    }
+    protected void onWowTrigger(boolean on) { }
 
     /**
      * To be called from the constructor of automatically configured shader patterns prior

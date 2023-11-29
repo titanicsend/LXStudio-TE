@@ -4,6 +4,7 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
+import titanicsend.color.TEColorType;
 import titanicsend.pattern.TEPattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
@@ -59,7 +60,7 @@ public class AlternatingDotsEffect extends PatternEffect {
     }
 
     public void run(double deltaMs) {
-        int baseColor = pattern.getSwatchColor(TEPattern.ColorType.PRIMARY);
+        int baseColor = pattern.getSwatchColor(TEColorType.PRIMARY);
         double basis = getTempo().basis();
         int beatCount = getTempo().beatCount();
 

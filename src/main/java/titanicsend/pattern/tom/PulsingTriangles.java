@@ -9,6 +9,7 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.SawLFO;
 import heronarts.lx.parameter.*;
 import heronarts.lx.transform.LXVector;
+import titanicsend.color.TEColorType;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEVertex;
 import titanicsend.pattern.TEPattern;
@@ -48,7 +49,7 @@ public class PulsingTriangles extends TEPattern {
     });
 
     public final LinkedColorParameter color =
-            registerColor("Color", "color", ColorType.PRIMARY,
+            registerColor("Color", "color", TEColorType.PRIMARY,
                     "Color of the triangles");
 
     public PulsingTriangles(LX lx) {

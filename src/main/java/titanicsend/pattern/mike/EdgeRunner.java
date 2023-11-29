@@ -11,6 +11,7 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.Click;
 import heronarts.lx.parameter.DiscreteParameter;
 import titanicsend.app.TEVirtualColor;
+import titanicsend.color.TEColorType;
 import titanicsend.model.*;
 import titanicsend.pattern.TEPattern;
 import titanicsend.util.TEColor;
@@ -62,15 +63,15 @@ public class EdgeRunner extends TEPattern {
   private int moveNumber;
 
   public final LinkedColorParameter runnerColor =
-          registerColor("Runner", "runnerColor", ColorType.PRIMARY,
+          registerColor("Runner", "runnerColor", TEColorType.PRIMARY,
                   "Color of the runner dots");
 
   public final LinkedColorParameter trailColor =
-          registerColor("Trail", "trailColor", ColorType.SECONDARY,
+          registerColor("Trail", "trailColor", TEColorType.SECONDARY,
                   "Color of the trail they leave behind");
 
   public final LinkedColorParameter fillColor =
-          registerColor("Fill", "fillColor", ColorType.SECONDARY_BACKGROUND,
+          registerColor("Fill", "fillColor", TEColorType.SECONDARY_BACKGROUND,
                   "Color to fill the panels with");
 
   public EdgeRunner(LX lx) {

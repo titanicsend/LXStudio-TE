@@ -4,7 +4,7 @@ import heronarts.lx.LX;
 import heronarts.lx.LXLoopTask;
 import heronarts.lx.color.LXColor;
 import playasystems.gigglepixel.*;
-import titanicsend.pattern.TimeAccumulator;
+import titanicsend.util.TimeAccumulator;
 
 import java.io.IOException;
 import java.net.InetAddress;

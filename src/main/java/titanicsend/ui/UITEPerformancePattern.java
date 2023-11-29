@@ -17,9 +17,8 @@ import heronarts.glx.ui.UI2dComponent;
 import heronarts.glx.ui.UI2dContainer.Layout;
 import heronarts.glx.ui.component.UIKnob;
 import heronarts.glx.ui.component.UISwitch;
+import titanicsend.color.TEColorParameter;
 import titanicsend.pattern.TEPerformancePattern;
-import titanicsend.pattern.TEPerformancePattern.TEColorParameter;
-import titanicsend.pattern.TEPerformancePattern.TEColorParameter.TEColorOffsetParameter;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.util.TE;
 
@@ -91,7 +90,7 @@ public class UITEPerformancePattern implements UIDeviceControls<TEPerformancePat
       }          
       float x = (ki % 4) * (UIKnob.WIDTH + 2) + (col * ((4 * (UIKnob.WIDTH + 2) + 15) + 2));
       float y = -3 + (ki / 4) * (UIKnob.HEIGHT);
-      if (param instanceof TEColorOffsetParameter) {
+      if (param instanceof TEColorParameter.TEColorOffsetParameter) {
         this.controls.add(
           new UITEColorControl(x, y, (TEColorParameter) param.getParentParameter())
           .addToContainer(uiDevice));

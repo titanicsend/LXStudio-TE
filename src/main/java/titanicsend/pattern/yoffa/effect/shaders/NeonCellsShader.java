@@ -3,6 +3,7 @@ package titanicsend.pattern.yoffa.effect.shaders;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
+import titanicsend.color.TEColorType;
 import titanicsend.pattern.TEPattern;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 
@@ -48,7 +49,7 @@ public class NeonCellsShader extends FragmentShaderEffect {
             d *= pat(uv, 3.0, 7.0, 0.25 * speedMultiplier, glow.getValue(), phase);
         }
 
-        float[] color = new Color(pattern.getSwatchColor(TEPattern.ColorType.PRIMARY)).getRGBColorComponents(null);
+        float[] color = new Color(pattern.getSwatchColor(TEColorType.PRIMARY)).getRGBColorComponents(null);
         return multiplyArray(.5 / d, new double[]{color[0], color[1], color[2]});
     }
 

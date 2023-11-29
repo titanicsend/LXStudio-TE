@@ -26,13 +26,13 @@
 
 package titanicsend.ui;
 
-import titanicsend.pattern.TEPerformancePattern.TEColorParameter;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.command.LXCommand;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.pattern.UIGradientPattern.UIPaletteGradient;
 import heronarts.lx.utils.LXUtils;
+import titanicsend.color.TEColorParameter;
 import heronarts.glx.event.KeyEvent;
 import heronarts.glx.event.MouseEvent;
 import heronarts.glx.ui.UI;

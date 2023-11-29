@@ -24,7 +24,7 @@ package titanicsend.ui;
 
 import heronarts.glx.ui.UIFocus;
 import heronarts.glx.ui.component.UIKnob;
-import titanicsend.pattern.TEPerformancePattern.TEColorParameter;
+import titanicsend.color.TEColorParameter;
 
 public class UITEColorControl extends UITEColorPicker implements UIFocus {
 

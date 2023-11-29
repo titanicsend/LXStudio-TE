@@ -3,20 +3,17 @@ package titanicsend.pattern;
 import heronarts.lx.LX;
 import heronarts.lx.Tempo;
 import heronarts.lx.audio.GraphicMeter;
-import heronarts.lx.color.LXDynamicColor;
-import heronarts.lx.color.LXSwatch;
 import heronarts.lx.color.LinkedColorParameter;
-import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.studio.TEApp;
+import titanicsend.color.TEColorType;
+import titanicsend.color.TEGradientSource;
 import titanicsend.dmx.pattern.DmxPattern;
 import titanicsend.lx.LXGradientUtils;
 import titanicsend.model.TELaserModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
-import titanicsend.model.justin.LXVirtualDiscreteParameter;
-import titanicsend.model.justin.SwatchParameter;
 import titanicsend.util.TEColor;
 import titanicsend.util.TEMath;
 
@@ -35,49 +32,8 @@ public abstract class TEPattern extends DmxPattern {
     return this.modelTE;
   }
 
-  public enum TEGradient {
-    FULL_PALETTE("Full Palette"),
-    PRIMARY("Primary"),
-    SECONDARY("Secondary"),
-    FOREGROUND("Foreground");
-
-    public final String label;
-
-    private TEGradient(String label) {
-      this.label = label;
-    }
-
-    @Override
-    public String toString() {
-      return this.label;
-    }
-  };
-
-  // Whole palette gradient across all 5 stops. Usually starts and ends with black.
-  protected LXGradientUtils.ColorStops paletteGradient = new LXGradientUtils.ColorStops();     // [X] [X] [X] [X] [X]  All five color entries
-  protected LXGradientUtils.ColorStops primaryGradient = new LXGradientUtils.ColorStops();     // [X] [ ] [X] [ ] [ ]  Background primary -> Primary
-  protected LXGradientUtils.ColorStops secondaryGradient = new LXGradientUtils.ColorStops();   // [ ] [ ] [ ] [X] [X]  Background secondary -> Secondary
-  protected LXGradientUtils.ColorStops foregroundGradient = new LXGradientUtils.ColorStops();  // [ ] [ ] [X] [X] [ ]  Primary -> Secondary
-
-  // See TE Art Direction Standards: https://docs.google.com/document/d/16FGnQ8jopCGwQ0qZizqILt3KYiLo0LPYkDYtnYzY7gI/edit
-  public enum ColorType {
-    // These are 1-based UI indices; to get to a 0-based palette swatch index, subtract 1
-    BACKGROUND(1), // Background color - should usually be black or transparent
-    TRANSITION(2), // Transitions a background to the primary, commonly just the background again
-    PRIMARY(3),    // Primary color of any edge or panel pattern
-    SECONDARY(4),  // Secondary color; optional, commonly set to SECONDARY_BACKGROUND or PRIMARY
-    SECONDARY_BACKGROUND(5);  // Background color if transitioning from SECONDARY. Commonly set to same color as BACKGROUND.
-
-    public final int index;  // The UI index (1-indexed)
-    private ColorType(int index) {
-      this.index = index;
-    }
-
-    // UI swatches are 1-indexed; internally, swatch arrays are 0-indexed
-    public int swatchIndex() {
-      return index - 1;
-    }
-  }
+  // TODO(JKB): we could have one of these, instead of one per pattern.
+  protected final TEGradientSource gradientSource = new TEGradientSource();
 
   protected TEPattern(LX lx) {
     super(lx);
@@ -90,10 +46,6 @@ public abstract class TEPattern extends DmxPattern {
     this.sua = this.modelTE.panelsById.get("SUA");
     this.sdc = this.modelTE.panelsById.get("SDC");
 
-    this.paletteGradient.setNumStops(5);
-    this.primaryGradient.setNumStops(3);
-    this.secondaryGradient.setNumStops(3);
-    this.foregroundGradient.setNumStops(3);
     updateGradients();
   }
 
@@ -119,40 +71,13 @@ public abstract class TEPattern extends DmxPattern {
    * Color methods
    */
   @Deprecated
-  public LinkedColorParameter registerColor(String label, String path, ColorType colorType, String description) {
+  public LinkedColorParameter registerColor(String label, String path, TEColorType colorType, String description) {
     LinkedColorParameter lcp = new LinkedColorParameter(label)
             .setDescription(description);
     addParameter(path, lcp);
     lcp.mode.setValue(LinkedColorParameter.Mode.PALETTE);
     lcp.index.setValue(colorType.index);
     return lcp;
-  }
-
-  protected LXSwatch getSwatch() {
-    return this.lx.engine.palette.swatch;
-  }
-
-  protected LXDynamicColor getSwatchColor(int index) {
-    return getSwatch().getColor(index);
-  }
-
-  // If a pattern uses the standard gradients, call this in run() to ensure
-  // palette changes are known and transitions are smooth
-  protected void updateGradients() {
-    paletteGradient.stops[0].set(getSwatchColor(0));
-    paletteGradient.stops[1].set(getSwatchColor(1));
-    paletteGradient.stops[2].set(getSwatchColor(2));
-    paletteGradient.stops[3].set(getSwatchColor(3));
-    paletteGradient.stops[4].set(getSwatchColor(4));
-    primaryGradient.stops[0].set(getSwatchColor(ColorType.PRIMARY.swatchIndex()));
-    primaryGradient.stops[1].set(getSwatchColor(ColorType.BACKGROUND.swatchIndex()));
-    primaryGradient.stops[2].set(getSwatchColor(ColorType.PRIMARY.swatchIndex()));
-    secondaryGradient.stops[0].set(getSwatchColor(ColorType.SECONDARY.swatchIndex()));
-    secondaryGradient.stops[1].set(getSwatchColor(ColorType.SECONDARY_BACKGROUND.swatchIndex()));
-    secondaryGradient.stops[2].set(getSwatchColor(ColorType.SECONDARY.swatchIndex()));
-    foregroundGradient.stops[0].set(getSwatchColor(ColorType.PRIMARY.swatchIndex()));
-    foregroundGradient.stops[1].set(getSwatchColor(ColorType.SECONDARY.swatchIndex()));
-    foregroundGradient.stops[2].set(getSwatchColor(ColorType.PRIMARY.swatchIndex()));
   }
 
   /**
@@ -167,24 +92,7 @@ public abstract class TEPattern extends DmxPattern {
      * hue distance. In other words, we usually want a gradient to go from yellow
      * to red via orange, not via lime, green, cyan, blue, purple, red.
      */
-    return primaryGradient.getColor(
-            TEMath.trianglef(lerp / 2), // Allow wrapping
-            LXGradientUtils.BlendMode.HSVM.function);
-  }
-
-  /**
-   * Given a value in 0..1 (and wrapped back outside that range)
-   * Return a color within the secondaryGradient
-   * @param lerp
-   * @return
-   */
-  @Deprecated
-  public int getSecondaryGradientColor(float lerp) {
-    /* HSV2 mode wraps returned colors around the color wheel via the shortest
-     * hue distance. In other words, we usually want a gradient to go from yellow
-     * to red via orange, not via lime, green, cyan, blue, purple, red.
-     */
-    return secondaryGradient.getColor(
+    return this.gradientSource.primaryGradient.getColor(
             TEMath.trianglef(lerp / 2), // Allow wrapping
             LXGradientUtils.BlendMode.HSVM.function);
   }
@@ -194,8 +102,15 @@ public abstract class TEPattern extends DmxPattern {
    * @param type
    * @return
    */
-  public int getSwatchColor(ColorType type) {
+  public int getSwatchColor(TEColorType type) {
     return lx.engine.palette.getSwatchColor(type.swatchIndex()).getColor();
+  }
+
+  /**
+   * Refresh gradients from the global palette
+   */
+  protected void updateGradients() {
+    this.gradientSource.updateGradients(this.lx.engine.palette.swatch);
   }
 
   // During construction, make gap points show up in red

@@ -9,6 +9,7 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
+import titanicsend.color.TEColorType;
 import titanicsend.pattern.TEPattern;
 
 import static processing.core.PApplet.lerpColor;
@@ -28,7 +29,7 @@ public class Fire extends TEPattern {
             new CompoundParameter("Color Position", 0.5);
 
     public final LinkedColorParameter fireColor =
-            registerColor("Color", "fireColor", ColorType.PRIMARY,
+            registerColor("Color", "fireColor", TEColorType.PRIMARY,
                     "Color of the fire");
     protected final Click rate = new Click(100);
 
