@@ -10,12 +10,12 @@ import titanicsend.util.Rotor;
 // to the spin control's current setting.
 class TECommonAngleParameter extends CompoundParameter {
 
-    private final TEPerformancePattern parentPattern;
+    private final TEPerformancePattern pattern;
     private final Rotor spinRotor;
 
-    public TECommonAngleParameter(TEPerformancePattern parentPattern, Rotor rotor, String label, double value, double v0, double v1) {
+    public TECommonAngleParameter(TEPerformancePattern pattern, Rotor rotor, String label, double value, double v0, double v1) {
         super(label, value, v0, v1);
-        this.parentPattern = parentPattern;
+        this.pattern = pattern;
         this.spinRotor = rotor;
     }
 
@@ -29,7 +29,7 @@ class TECommonAngleParameter extends CompoundParameter {
     public BoundedParameter reset() {
         // if not spinning, resetting angle controls
         // resets both the static angle and the spin angle.
-        if (parentPattern.getSpin() == 0) {
+        if (pattern.getSpin() == 0) {
             this.spinRotor.setAngle(0);
         }
 
