@@ -1,4 +1,4 @@
-package titanicsend.pattern;
+package titanicsend.color;
 
 import heronarts.lx.color.ColorParameter;
 import heronarts.lx.color.GradientUtils;
@@ -6,6 +6,8 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.*;
 import heronarts.lx.utils.LXUtils;
 import titanicsend.lx.LXGradientUtils;
+import titanicsend.pattern.TEPattern;
+import titanicsend.pattern.TEPattern.TEGradient;
 
 public class TEColorParameter extends ColorParameter implements GradientUtils.GradientFunction {
 

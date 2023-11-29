@@ -12,7 +12,7 @@ import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
 import heronarts.lx.studio.LXStudio.UI;
 import heronarts.lx.studio.ui.device.UIDevice;
-import titanicsend.pattern.TEColorParameter;
+import titanicsend.color.TEColorParameter;
 
 public class UIUtils {
 

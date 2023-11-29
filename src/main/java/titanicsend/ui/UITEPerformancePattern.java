@@ -17,7 +17,7 @@ import heronarts.glx.ui.UI2dComponent;
 import heronarts.glx.ui.UI2dContainer.Layout;
 import heronarts.glx.ui.component.UIKnob;
 import heronarts.glx.ui.component.UISwitch;
-import titanicsend.pattern.TEColorParameter;
+import titanicsend.color.TEColorParameter;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.util.TE;

@@ -1,6 +1,7 @@
 package titanicsend.pattern;
 
 import heronarts.lx.parameter.*;
+import titanicsend.color.TEColorParameter;
 import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon._CommonControlGetter;

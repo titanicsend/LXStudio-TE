@@ -32,6 +32,7 @@ import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.pattern.UIGradientPattern.UIPaletteGradient;
 import heronarts.lx.utils.LXUtils;
+import titanicsend.color.TEColorParameter;
 import heronarts.glx.event.KeyEvent;
 import heronarts.glx.event.MouseEvent;
 import heronarts.glx.ui.UI;
@@ -47,7 +48,6 @@ import heronarts.glx.ui.component.UILabel;
 import heronarts.glx.ui.component.UIParameterControl;
 import heronarts.glx.ui.component.UISlider;
 import heronarts.glx.ui.vg.VGraphics;
-import titanicsend.pattern.TEColorParameter;
 
 public class UITEColorPicker extends UI2dComponent {
 
