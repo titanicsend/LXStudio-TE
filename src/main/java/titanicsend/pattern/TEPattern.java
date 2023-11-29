@@ -3,21 +3,18 @@ package titanicsend.pattern;
 import heronarts.lx.LX;
 import heronarts.lx.Tempo;
 import heronarts.lx.audio.GraphicMeter;
-import heronarts.lx.color.LXDynamicColor;
-import heronarts.lx.color.LXSwatch;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.studio.TEApp;
 import titanicsend.color.TEColorType;
+import titanicsend.color.TEGradientSource;
 import titanicsend.dmx.pattern.DmxPattern;
 import titanicsend.lx.LXGradientUtils;
 import titanicsend.model.TELaserModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
-import titanicsend.model.justin.LXVirtualDiscreteParameter;
-import titanicsend.model.justin.SwatchParameter;
 import titanicsend.util.TEColor;
 import titanicsend.util.TEMath;
 
@@ -26,7 +23,7 @@ import java.util.*;
 import static java.lang.Math.PI;
 import static java.lang.Math.sin;
 
-public abstract class TEPattern extends DmxPattern {
+public abstract class TEPattern extends DmxPattern implements TEGradientSource {
   private final TEPanelModel sua;
   private final TEPanelModel sdc;
 
@@ -35,12 +32,6 @@ public abstract class TEPattern extends DmxPattern {
   public TEWholeModel getModelTE() {
     return this.modelTE;
   }
-
-  // Whole palette gradient across all 5 stops. Usually starts and ends with black.
-  public LXGradientUtils.ColorStops paletteGradient = new LXGradientUtils.ColorStops();     // [X] [X] [X] [X] [X]  All five color entries
-  public LXGradientUtils.ColorStops primaryGradient = new LXGradientUtils.ColorStops();     // [X] [ ] [X] [ ] [ ]  Background primary -> Primary
-  public LXGradientUtils.ColorStops secondaryGradient = new LXGradientUtils.ColorStops();   // [ ] [ ] [ ] [X] [X]  Background secondary -> Secondary
-  public LXGradientUtils.ColorStops foregroundGradient = new LXGradientUtils.ColorStops();  // [ ] [ ] [X] [X] [ ]  Primary -> Secondary
 
   protected TEPattern(LX lx) {
     super(lx);
@@ -53,10 +44,6 @@ public abstract class TEPattern extends DmxPattern {
     this.sua = this.modelTE.panelsById.get("SUA");
     this.sdc = this.modelTE.panelsById.get("SDC");
 
-    this.paletteGradient.setNumStops(5);
-    this.primaryGradient.setNumStops(3);
-    this.secondaryGradient.setNumStops(3);
-    this.foregroundGradient.setNumStops(3);
     updateGradients();
   }
 
@@ -91,33 +78,6 @@ public abstract class TEPattern extends DmxPattern {
     return lcp;
   }
 
-  protected LXSwatch getSwatch() {
-    return this.lx.engine.palette.swatch;
-  }
-
-  protected LXDynamicColor getSwatchColor(int index) {
-    return getSwatch().getColor(index);
-  }
-
-  // If a pattern uses the standard gradients, call this in run() to ensure
-  // palette changes are known and transitions are smooth
-  protected void updateGradients() {
-    paletteGradient.stops[0].set(getSwatchColor(0));
-    paletteGradient.stops[1].set(getSwatchColor(1));
-    paletteGradient.stops[2].set(getSwatchColor(2));
-    paletteGradient.stops[3].set(getSwatchColor(3));
-    paletteGradient.stops[4].set(getSwatchColor(4));
-    primaryGradient.stops[0].set(getSwatchColor(TEColorType.PRIMARY.swatchIndex()));
-    primaryGradient.stops[1].set(getSwatchColor(TEColorType.BACKGROUND.swatchIndex()));
-    primaryGradient.stops[2].set(getSwatchColor(TEColorType.PRIMARY.swatchIndex()));
-    secondaryGradient.stops[0].set(getSwatchColor(TEColorType.SECONDARY.swatchIndex()));
-    secondaryGradient.stops[1].set(getSwatchColor(TEColorType.SECONDARY_BACKGROUND.swatchIndex()));
-    secondaryGradient.stops[2].set(getSwatchColor(TEColorType.SECONDARY.swatchIndex()));
-    foregroundGradient.stops[0].set(getSwatchColor(TEColorType.PRIMARY.swatchIndex()));
-    foregroundGradient.stops[1].set(getSwatchColor(TEColorType.SECONDARY.swatchIndex()));
-    foregroundGradient.stops[2].set(getSwatchColor(TEColorType.PRIMARY.swatchIndex()));
-  }
-
   /**
    * Given a value in 0..1 (and wrapped back outside that range)
    * Return a color within the primaryGradient
@@ -142,6 +102,13 @@ public abstract class TEPattern extends DmxPattern {
    */
   public int getSwatchColor(TEColorType type) {
     return lx.engine.palette.getSwatchColor(type.swatchIndex()).getColor();
+  }
+
+  /**
+   * Refresh gradients from the global palette
+   */
+  protected void updateGradients() {
+    updateGradients(this.lx.engine.palette.swatch);
   }
 
   // During construction, make gap points show up in red

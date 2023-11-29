@@ -367,7 +367,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
 
     // compute a new color set based on the current palette primary
     protected void setComputedColors() {
-        int color = getSwatchColor(TEColorType.PRIMARY.swatchIndex()).getColor();
+        int color = getSwatchColor(TEColorType.PRIMARY);
         if (color == lastColor) return;
 
         float h = LXColor.h(color) / 360f;
