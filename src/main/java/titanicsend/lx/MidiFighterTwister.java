@@ -12,9 +12,10 @@
  * WITH RESPECT TO THE SOFTWARE.
  *
  * @author Mark C. Slee <mark@heronarts.com>
- *     <p>JKB: This file is part of the LX Studio library. Including this code in the TE repo is a
- *     temporary measure to add experimental features to the surface.
+ * <p>JKB: This file is part of the LX Studio library. Including this code in the TE repo is a
+ * temporary measure to add experimental features to the surface.
  */
+
 package titanicsend.lx;
 
 import heronarts.lx.LX;
@@ -169,7 +170,7 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
 
     private final String label;
 
-    private KnobClickMode(String label) {
+    KnobClickMode(String label) {
       this.label = label;
     }
 
@@ -185,7 +186,7 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
 
     private final String label;
 
-    private FocusMode(String label) {
+    FocusMode(String label) {
       this.label = label;
     }
 
@@ -278,7 +279,7 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
     private static final int PART_SIZE_BYTES = 24;
 
     @SuppressWarnings("unused")
-    private boolean versionOK =
+    private final boolean versionOK =
         true; // TODO: Confirm compatible firmware version (>2016) before sending sysex commands
 
     private boolean initialized = false;
@@ -562,14 +563,13 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
     // Helper for debugging
     @SuppressWarnings("unused")
     private String bytesToString(byte[] bytes) {
-      String s = new String();
+      String s = "";
       for (int i = 0; i < bytes.length; i++) {
         s = s.concat(String.format("%02X ", bytes[i]));
       }
       return s;
     }
   }
-  ;
 
   private final Config userConfig = new Config();
   private final Config lxConfig = new Config();
@@ -616,9 +616,8 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
           enc.setDetent(false);
         }
       }
-      lxConfig
-          .sendModified(); // Unfortunately config changes require a reboot to restart the display.
-                           // This adds a lag.
+      // Unfortunately config changes require a reboot to restart the display. This adds a lag.
+      lxConfig.sendModified();
 
       // Midi commands
       for (int i = 0; i < this.knobs.length; ++i) {
@@ -689,9 +688,8 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
          enc.setDetent(false);
         ++e;
       } */
-      lxConfig
-          .sendModified(); // Unfortunately config changes require a reboot to restart the display.
-                           // This adds a lag.
+      // Unfortunately config changes require a reboot to restart the display. This adds a lag.
+      lxConfig.sendModified();
 
       int i = 0;
       if (this.device != null) {
@@ -841,7 +839,7 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
       }
     }
 
-    private double[] tempValues = new double[DEVICE_KNOB_NUM];
+    private final double[] tempValues = new double[DEVICE_KNOB_NUM];
 
     private void onSwitch(int index, boolean isPressed) {
       if (this.knobs[index] != null) {

@@ -1,16 +1,17 @@
 package titanicsend.model;
 
 import heronarts.lx.model.LXPoint;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 public class TEEdgeModel extends TEModel {
   public final TEEdgeModel.Point[] points;
   String teModelType = "Edge";
   public TEVertex v0, v1;
   public HashSet<TEPanelModel> connectedPanels;
-  public List<TEEdgeModel>
-      symmetryGroup; // List of this edge and any other that's a reflection about the XY or YZ
-                     // planes
+  // List of this edge and any other that's a reflection about the XY or YZ planes
+  public List<TEEdgeModel> symmetryGroup;
 
   public TEEdgeModel(TEVertex v0, TEVertex v1, int numPixels, boolean dark, String... tags) {
     super("Edge", makePoints(v0, v1, numPixels, dark), tags);
@@ -30,12 +31,14 @@ public class TEEdgeModel extends TEModel {
   }
 
   public String getShortId() {
-    return Integer.toString(v0.id) + Integer.toString(this.v1.id);
+    return Integer.toString(v0.id) + this.v1.id;
   }
 
   private static List<LXPoint> makePoints(TEVertex v0, TEVertex v1, int numPixels, boolean dark) {
     List<LXPoint> points = new ArrayList<LXPoint>();
-    if (dark) return points;
+    if (dark) {
+      return points;
+    }
 
     float dx = v1.x - v0.x;
     float dy = v1.y - v0.y;

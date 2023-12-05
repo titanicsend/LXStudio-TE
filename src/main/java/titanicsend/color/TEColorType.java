@@ -8,13 +8,12 @@ public enum TEColorType {
   TRANSITION(2), // Transitions a background to the primary, commonly just the background again
   PRIMARY(3), // Primary color of any edge or panel pattern
   SECONDARY(4), // Secondary color; optional, commonly set to SECONDARY_BACKGROUND or PRIMARY
-  SECONDARY_BACKGROUND(
-      5); // Background color if transitioning from SECONDARY. Commonly set to same color as
-          // BACKGROUND.
+  // Background color if transitioning from SECONDARY. Commonly set to same color as BACKGROUND.
+  SECONDARY_BACKGROUND(5);
 
   public final int index; // The UI index (1-indexed)
 
-  private TEColorType(int index) {
+  TEColorType(int index) {
     this.index = index;
   }
 

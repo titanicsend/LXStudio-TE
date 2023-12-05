@@ -1,6 +1,5 @@
 package titanicsend.app.autopilot;
 
-
 /**
  * Enum for names of channels. Each enum is a string mapping to an index. This index MUST MATCH the
  * index in your .lxp file! It's the index into the mixer array to select channels. So if autopilot

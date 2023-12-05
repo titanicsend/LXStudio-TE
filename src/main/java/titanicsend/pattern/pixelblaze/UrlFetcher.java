@@ -1,6 +1,5 @@
 package titanicsend.pattern.pixelblaze;
 
-
 import java.io.*;
 import java.net.*;
 
