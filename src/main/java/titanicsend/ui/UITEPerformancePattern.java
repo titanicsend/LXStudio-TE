@@ -1,9 +1,9 @@
 package titanicsend.ui;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import heronarts.glx.ui.UI2dComponent;
+import heronarts.glx.ui.UI2dContainer.Layout;
+import heronarts.glx.ui.component.UIKnob;
+import heronarts.glx.ui.component.UISwitch;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.BoundedFunctionalParameter;
 import heronarts.lx.parameter.BoundedParameter;
@@ -13,10 +13,9 @@ import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
-import heronarts.glx.ui.UI2dComponent;
-import heronarts.glx.ui.UI2dContainer.Layout;
-import heronarts.glx.ui.component.UIKnob;
-import heronarts.glx.ui.component.UISwitch;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import titanicsend.color.TEColorParameter;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.jon.TEControlTag;
@@ -24,20 +23,22 @@ import titanicsend.util.TE;
 
 /**
  * Device UI for TEPerformancePattern
- * 
- * Adds special UI control for TEColorParameter. 
- * Parameters are arranged in columns of 4 to line up with the MidiFighterTwister.
- * 
- * Based on UIDeviceControl with components from J.Belcher's Rubix project.
+ *
+ * <p>Adds special UI control for TEColorParameter. Parameters are arranged in columns of 4 to line
+ * up with the MidiFighterTwister.
+ *
+ * <p>Based on UIDeviceControl with components from J.Belcher's Rubix project.
  */
-public class UITEPerformancePattern implements UIDeviceControls<TEPerformancePattern>, LXParameterListener {
+public class UITEPerformancePattern
+    implements UIDeviceControls<TEPerformancePattern>, LXParameterListener {
 
   private UIDevice uiDevice;
   private TEPerformancePattern device;
   private final List<UI2dComponent> controls = new ArrayList<UI2dComponent>();
 
   @Override
-  public void buildDeviceControls(heronarts.lx.studio.LXStudio.UI ui, UIDevice uiDevice, TEPerformancePattern device) {
+  public void buildDeviceControls(
+      heronarts.lx.studio.LXStudio.UI ui, UIDevice uiDevice, TEPerformancePattern device) {
     uiDevice.setLayout(Layout.NONE);
     uiDevice.setChildSpacing(2);
 
@@ -66,14 +67,17 @@ public class UITEPerformancePattern implements UIDeviceControls<TEPerformancePat
         control.removeFromContainer();
         control.dispose();
       } catch (Exception ex) {
-        TE.log("Warning in UITEPerformancePattern: error removing control from container: " + ex.toString());
+        TE.log(
+            "Warning in UITEPerformancePattern: error removing control from container: "
+                + ex.toString());
       }
     }
     this.controls.clear();
   }
 
   private void addControls() {
-    List<LXNormalizedParameter> params = new ArrayList<LXNormalizedParameter>(Arrays.asList(device.getRemoteControls()));
+    List<LXNormalizedParameter> params =
+        new ArrayList<LXNormalizedParameter>(Arrays.asList(device.getRemoteControls()));
 
     // For design mode, append Brightness.  Useful for AutoVJ especially.
     params.add(device.getControls().getControl(TEControlTag.BRIGHTNESS).control);
@@ -87,28 +91,26 @@ public class UITEPerformancePattern implements UIDeviceControls<TEPerformancePat
       if (ki == 16) {
         ki = 0;
         col++;
-      }          
+      }
       float x = (ki % 4) * (UIKnob.WIDTH + 2) + (col * ((4 * (UIKnob.WIDTH + 2) + 15) + 2));
       float y = -3 + (ki / 4) * (UIKnob.HEIGHT);
       if (param instanceof TEColorParameter.TEColorOffsetParameter) {
         this.controls.add(
-          new UITEColorControl(x, y, (TEColorParameter) param.getParentParameter())
-          .addToContainer(uiDevice));
-      } else if (param instanceof BoundedParameter || param instanceof DiscreteParameter || param instanceof BoundedFunctionalParameter) {
-        this.controls.add(
-          new UIKnob(x, y)
-          .setParameter(param)
-          .addToContainer(uiDevice));
+            new UITEColorControl(x, y, (TEColorParameter) param.getParentParameter())
+                .addToContainer(uiDevice));
+      } else if (param instanceof BoundedParameter
+          || param instanceof DiscreteParameter
+          || param instanceof BoundedFunctionalParameter) {
+        this.controls.add(new UIKnob(x, y).setParameter(param).addToContainer(uiDevice));
       } else if (param instanceof BooleanParameter) {
-        this.controls.add(
-          new UISwitch(x, y)
-          .setParameter(param)
-          .addToContainer(uiDevice));
+        this.controls.add(new UISwitch(x, y).setParameter(param).addToContainer(uiDevice));
       } else if (param == null) {
         // Leave a space
       } else {
-        // Hey developer: probably added a type in isEligibleControlParameter() that wasn't handled down here.
-        throw new RuntimeException("Cannot generate control, unsupported pattern parameter type: " + param.getClass());
+        // Hey developer: probably added a type in isEligibleControlParameter() that wasn't handled
+        // down here.
+        throw new RuntimeException(
+            "Cannot generate control, unsupported pattern parameter type: " + param.getClass());
       }
 
       ++ki;
@@ -117,7 +119,7 @@ public class UITEPerformancePattern implements UIDeviceControls<TEPerformancePat
   }
 
   private void hideUnusedControls(List<LXNormalizedParameter> params) {
-    for (int i=0; i < params.size(); i++) {
+    for (int i = 0; i < params.size(); i++) {
       LXNormalizedParameter p = params.get(i);
       if (p != null && isUnusedControl(p)) {
         params.set(i, null);
@@ -130,7 +132,8 @@ public class UITEPerformancePattern implements UIDeviceControls<TEPerformancePat
   }
 
   @Override
-  public void disposeDeviceControls(heronarts.lx.studio.LXStudio.UI ui, UIDevice uiDevice, TEPerformancePattern device) {
+  public void disposeDeviceControls(
+      heronarts.lx.studio.LXStudio.UI ui, UIDevice uiDevice, TEPerformancePattern device) {
     if (this.device != null) {
       clearControls();
       this.device.remoteControlsChanged.removeListener(this);

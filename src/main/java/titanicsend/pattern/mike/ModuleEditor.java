@@ -1,5 +1,12 @@
 package titanicsend.pattern.mike;
 
+import static java.lang.Math.floorMod;
+
+import heronarts.glx.ui.UI2dComponent;
+import heronarts.glx.ui.UI2dContainer;
+import heronarts.glx.ui.component.UIButton;
+import heronarts.glx.ui.component.UIParameterControl;
+import heronarts.glx.ui.component.UITextBox;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
@@ -11,19 +18,11 @@ import heronarts.lx.parameter.StringParameter;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
-import heronarts.glx.ui.UI2dComponent;
-import heronarts.glx.ui.UI2dContainer;
-import heronarts.glx.ui.component.UIButton;
-import heronarts.glx.ui.component.UIParameterControl;
-import heronarts.glx.ui.component.UITextBox;
+import java.util.*;
 import titanicsend.app.TEVirtualColor;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEVertex;
 import titanicsend.pattern.TEPattern;
-
-import java.util.*;
-
-import static java.lang.Math.floorMod;
 
 @LXCategory("Test")
 public class ModuleEditor extends TEPattern implements UIDeviceControls<ModuleEditor> {
@@ -46,12 +45,10 @@ public class ModuleEditor extends TEPattern implements UIDeviceControls<ModuleEd
   private Map<Integer, List<List<Link>>> routesByModule;
 
   public final DiscreteParameter moduleNumber =
-          new DiscreteParameter("Mod #", 1, 99)
-                  .setDescription("Module ID");
+      new DiscreteParameter("Mod #", 1, 99).setDescription("Module ID");
 
   public final StringParameter moduleParts =
-          new StringParameter("Parts")
-                  .setDescription("Vertex/Edges in this module");
+      new StringParameter("Parts").setDescription("Vertex/Edges in this module");
 
   private UI2dComponent partsErr;
   private UI2dComponent dupeErr;
@@ -77,22 +74,20 @@ public class ModuleEditor extends TEPattern implements UIDeviceControls<ModuleEd
     UIParameterControl loadSwitch;
 
     uiDevice.addChildren(
-            controlLabel(ui, "Mod #"),
-            newIntegerBox(moduleNumber),
-            controlLabel(ui, "Parts"),
-            tbModParts = new UITextBox(0, 0, COL_WIDTH * 2, 16).setParameter(moduleParts),
-            this.partsErr = controlLabel(ui, "Bad parts"),
-            this.dupeErr = controlLabel(ui, "Dupe"),
-            new UIButton(0, 0, COL_WIDTH, 20) {
-              @Override
-              public void onToggle(boolean on) {
-                if (on) {
-                  load();
-                }
-              }
+        controlLabel(ui, "Mod #"),
+        newIntegerBox(moduleNumber),
+        controlLabel(ui, "Parts"),
+        tbModParts = new UITextBox(0, 0, COL_WIDTH * 2, 16).setParameter(moduleParts),
+        this.partsErr = controlLabel(ui, "Bad parts"),
+        this.dupeErr = controlLabel(ui, "Dupe"),
+        new UIButton(0, 0, COL_WIDTH, 20) {
+          @Override
+          public void onToggle(boolean on) {
+            if (on) {
+              load();
             }
-                    .setLabel("Load").setMomentary(true)
-    );
+          }
+        }.setLabel("Load").setMomentary(true));
 
     tbModParts.setEmptyValueAllowed(true);
     this.partsErr.setVisible(false);
@@ -259,7 +254,7 @@ public class ModuleEditor extends TEPattern implements UIDeviceControls<ModuleEd
             points = l.toArray(new LXPoint[0]);
           }
           for (LXPoint point : points) {
-            //int sat = ((i++ % 10) == (phase % 10)) ? 0 : 100;
+            // int sat = ((i++ % 10) == (phase % 10)) ? 0 : 100;
             int sat = 100;
             int MIN_BRI = 20;
             int bri = MIN_BRI + (100 - MIN_BRI) * (400 - j) / (400 - MIN_BRI);

@@ -1,32 +1,21 @@
 /**
  * Copyright 2021- Justin Belcher, Mark C. Slee, Heron Arts LLC
  *
- * This file is part of the LX Studio software library. By using
- * LX, you agree to the terms of the LX Studio Software License
- * and Distribution Agreement, available at: http://lx.studio/license
+ * <p>This file is part of the LX Studio software library. By using LX, you agree to the terms of
+ * the LX Studio Software License and Distribution Agreement, available at: http://lx.studio/license
  *
- * Please note that the LX license is not open-source. The license
- * allows for free, non-commercial use.
+ * <p>Please note that the LX license is not open-source. The license allows for free,
+ * non-commercial use.
  *
- * HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR
- * OTHERWISE, AND SPECIFICALLY DISCLAIMS ANY WARRANTY OF
- * MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR
- * PURPOSE, WITH RESPECT TO THE SOFTWARE.
+ * <p>HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, AND SPECIFICALLY
+ * DISCLAIMS ANY WARRANTY OF MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR PURPOSE,
+ * WITH RESPECT TO THE SOFTWARE.
  *
  * @author Mark C. Slee <mark@heronarts.com>
- *
- *
- * JKB: This file is part of the LX Studio library.  Including
- * this code in the TE repo is a temporary measure to add
- * experimental features to the surface.
+ *     <p>JKB: This file is part of the LX Studio library. Including this code in the TE repo is a
+ *     temporary measure to add experimental features to the surface.
  */
-
 package titanicsend.lx;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXDeviceComponent;
@@ -42,13 +31,17 @@ import heronarts.lx.midi.surface.LXMidiSurface;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.DiscreteParameter;
+import heronarts.lx.parameter.DiscreteParameter.IncrementMode;
+import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameter.Polarity;
 import heronarts.lx.parameter.LXParameterListener;
-import heronarts.lx.parameter.DiscreteParameter.IncrementMode;
-import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.utils.LXUtils;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.Bidirectional {
 
@@ -203,21 +196,20 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
   }
 
   public final EnumParameter<KnobClickMode> knobClickMode =
-    new EnumParameter<KnobClickMode>("Knob Click", KnobClickMode.RESET)
-    .setDescription("How to edit parameters when a knob is pressed");
-
+      new EnumParameter<KnobClickMode>("Knob Click", KnobClickMode.RESET)
+          .setDescription("How to edit parameters when a knob is pressed");
 
   public final EnumParameter<FocusMode> focusMode =
-    new EnumParameter<FocusMode>("Focus Buttons", FocusMode.DEVICE)
-    .setDescription("How to change focus on bottom side button press");
+      new EnumParameter<FocusMode>("Focus Buttons", FocusMode.DEVICE)
+          .setDescription("How to change focus on bottom side button press");
 
   public final DiscreteParameter currentBank =
-    new DiscreteParameter("Bank", BANK1, BANK1, BANK4 + 1)
-    .setDescription("Which bank is selected on the MFT");
+      new DiscreteParameter("Bank", BANK1, BANK1, BANK4 + 1)
+          .setDescription("Which bank is selected on the MFT");
 
   public final BooleanParameter isAux =
-    new BooleanParameter("Aux", false)
-    .setDescription("Whether this MFT controls the primary or aux channel");
+      new BooleanParameter("Aux", false)
+          .setDescription("Whether this MFT controls the primary or aux channel");
 
   // SYSEX Definitions
 
@@ -225,7 +217,7 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
   public static final byte MIDI_MFR_ID_0 = 0x00;
   public static final byte MIDI_MFR_ID_1 = 0x01;
   public static final byte MIDI_MFR_ID_2 = 0x79;
-  //public static final byte MANUFACTURER_ID = 0x0179;
+  // public static final byte MANUFACTURER_ID = 0x0179;
 
   // DJTT SysEx Commands
   public static final byte SYSEX_COMMAND_PUSH_CONF = 0x01;
@@ -238,22 +230,22 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
   public static final int CFG_COUNT_GLOBAL = 12;
 
   // DJTT Config Values
-  public static final byte CFG_FALSE = (byte)0x00;
-  public static final byte CFG_TRUE = (byte)0x01;
+  public static final byte CFG_FALSE = (byte) 0x00;
+  public static final byte CFG_TRUE = (byte) 0x01;
 
-  public static final byte CFG_GLOBAL_SSACTION_CCHOLD = (byte)0x00;
-  public static final byte CFG_GLOBAL_SSACTION_CCTOGGLE = (byte)0x01;
-  public static final byte CFG_GLOBAL_SSACTION_NOTEHOLD = (byte)0x02;
-  public static final byte CFG_GLOBAL_SSACTION_NOTETOGGLE = (byte)0x03;
-  public static final byte CFG_GLOBAL_SSACTION_SHIFTPAGE1 = (byte)0x04;
-  public static final byte CFG_GLOBAL_SSACTION_SHIFTPAGE2 = (byte)0x05;
-  public static final byte CFG_GLOBAL_SSACTION_BANKUP = (byte)0x06;
-  public static final byte CFG_GLOBAL_SSACTION_BANKDOWN = (byte)0x07;
-  public static final byte CFG_GLOBAL_SSACTION_BANK1 = (byte)0x08;
-  public static final byte CFG_GLOBAL_SSACTION_BANK2 = (byte)0x09;
-  public static final byte CFG_GLOBAL_SSACTION_BANK3 = (byte)0x0a;
-  public static final byte CFG_GLOBAL_SSACTION_BANK4 = (byte)0x0b;
-  public static final byte CFG_GLOBAL_SSACTION_CYCLE_BANK = (byte)0x0c;
+  public static final byte CFG_GLOBAL_SSACTION_CCHOLD = (byte) 0x00;
+  public static final byte CFG_GLOBAL_SSACTION_CCTOGGLE = (byte) 0x01;
+  public static final byte CFG_GLOBAL_SSACTION_NOTEHOLD = (byte) 0x02;
+  public static final byte CFG_GLOBAL_SSACTION_NOTETOGGLE = (byte) 0x03;
+  public static final byte CFG_GLOBAL_SSACTION_SHIFTPAGE1 = (byte) 0x04;
+  public static final byte CFG_GLOBAL_SSACTION_SHIFTPAGE2 = (byte) 0x05;
+  public static final byte CFG_GLOBAL_SSACTION_BANKUP = (byte) 0x06;
+  public static final byte CFG_GLOBAL_SSACTION_BANKDOWN = (byte) 0x07;
+  public static final byte CFG_GLOBAL_SSACTION_BANK1 = (byte) 0x08;
+  public static final byte CFG_GLOBAL_SSACTION_BANK2 = (byte) 0x09;
+  public static final byte CFG_GLOBAL_SSACTION_BANK3 = (byte) 0x0a;
+  public static final byte CFG_GLOBAL_SSACTION_BANK4 = (byte) 0x0b;
+  public static final byte CFG_GLOBAL_SSACTION_CYCLE_BANK = (byte) 0x0c;
 
   public static final byte CFG_ENC_CONTROLTYPE_ENCODER = 0x00;
   public static final byte CFG_ENC_CONTROLTYPE_SWITCH = 0x01;
@@ -286,7 +278,8 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
     private static final int PART_SIZE_BYTES = 24;
 
     @SuppressWarnings("unused")
-    private boolean versionOK = true;       // TODO: Confirm compatible firmware version (>2016) before sending sysex commands
+    private boolean versionOK =
+        true; // TODO: Confirm compatible firmware version (>2016) before sending sysex commands
 
     private boolean initialized = false;
     private final Map<Byte, Byte> global = new LinkedHashMap<Byte, Byte>();
@@ -321,8 +314,7 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
       private boolean isModified = false;
 
       // Keep list of all settings
-      private final Map<String, Setting> settings =
-        new LinkedHashMap<String, Setting>();
+      private final Map<String, Setting> settings = new LinkedHashMap<String, Setting>();
 
       private final Setting has_detent;
 
@@ -334,7 +326,7 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
 
       private Encoder(int encoderIndex) {
         this.encoderIndex = encoderIndex;
-        this.sysexTag = (byte)(encoderIndex+1);
+        this.sysexTag = (byte) (encoderIndex + 1);
 
         this.has_detent = addSetting("has_detent", 10);
         addSetting("movement", 11);
@@ -385,30 +377,31 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
           int total = (bytesRemaining + PART_SIZE_BYTES - 1) / PART_SIZE_BYTES;
           int iConfig = 0;
 
-          for (int part=1; part<=total; part++) {
+          for (int part = 1; part <= total; part++) {
             // Size, in bytes, of current part
             int size = bytesRemaining > PART_SIZE_BYTES ? PART_SIZE_BYTES : bytesRemaining;
             bytesRemaining -= PART_SIZE_BYTES;
 
-            byte[] payload = new byte[size+11];
-            payload[0] = (byte)0xf0;                    // Start sysex
+            byte[] payload = new byte[size + 11];
+            payload[0] = (byte) 0xf0; // Start sysex
             payload[1] = MIDI_MFR_ID_0;
             payload[2] = MIDI_MFR_ID_1;
             payload[3] = MIDI_MFR_ID_2;
-            payload[4] = SYSEX_COMMAND_BULK_XFER;       // Command = bulk transfer
-            payload[5] = 0x00;                          // 0x00 = push to MFT, 0x01 = pull from MFT
-            payload[6] = sysexTag;                      // Encoder identifier
-            payload[7] = (byte)part;                    // Part 'part' of 'total'
-            payload[8] = (byte)total;
-            payload[9] = (byte)size;                    // 24 bytes maximum size
-            payload[payload.length-1] = (byte)0xf7;     // End sysex
+            payload[4] = SYSEX_COMMAND_BULK_XFER; // Command = bulk transfer
+            payload[5] = 0x00; // 0x00 = push to MFT, 0x01 = pull from MFT
+            payload[6] = sysexTag; // Encoder identifier
+            payload[7] = (byte) part; // Part 'part' of 'total'
+            payload[8] = (byte) total;
+            payload[9] = (byte) size; // 24 bytes maximum size
+            payload[payload.length - 1] = (byte) 0xf7; // End sysex
 
             // Copy the data into the payload
-            for (int idx=10; idx < size+10; idx++) {
+            for (int idx = 10; idx < size + 10; idx++) {
               payload[idx] = configData.get(iConfig++);
             }
 
-            // LXMidiEngine.log("MFT Encoder sysex(" + this.encoderIndex + "): " + bytesToString(payload));
+            // LXMidiEngine.log("MFT Encoder sysex(" + this.encoderIndex + "): " +
+            // bytesToString(payload));
             output.sendSysex(payload);
           }
         }
@@ -424,25 +417,25 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
       private void pull() {
         // Send Pull command for this encoder only
         byte[] payload = new byte[8];
-        payload[0] = (byte)0xf0;                    // Start sysex
+        payload[0] = (byte) 0xf0; // Start sysex
         payload[1] = MIDI_MFR_ID_0;
         payload[2] = MIDI_MFR_ID_1;
         payload[3] = MIDI_MFR_ID_2;
-        payload[4] = SYSEX_COMMAND_BULK_XFER;       // Command = bulk transfer
-        payload[5] = (byte)0x01;                    // 0x00 = push to MFT, 0x01 = pull from MFT
-        payload[6] = sysexTag;                      // Encoder identifier
-        payload[7] = (byte)0xf7;                    // End sysex
+        payload[4] = SYSEX_COMMAND_BULK_XFER; // Command = bulk transfer
+        payload[5] = (byte) 0x01; // 0x00 = push to MFT, 0x01 = pull from MFT
+        payload[6] = sysexTag; // Encoder identifier
+        payload[7] = (byte) 0xf7; // End sysex
 
-        // LXMidiEngine.log("MFT Encoder sysex(" + this.encoderIndex + "): " + bytesToString(payload));
+        // LXMidiEngine.log("MFT Encoder sysex(" + this.encoderIndex + "): " +
+        // bytesToString(payload));
         output.sendSysex(payload);
 
         // TODO: Process response
       }
-
     }
 
     private Config() {
-      for (int i=0; i<DEVICE_KNOB_NUM; i++) {
+      for (int i = 0; i < DEVICE_KNOB_NUM; i++) {
         this.encoders[i] = new Encoder(i);
       }
     }
@@ -454,7 +447,8 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
       // TODO: Check firmware version for compatibility,
       // only send sysex if year > 2016
 
-      //this.initialized = true;  // Only uncomment after it's working. Don't want to push a blank config!
+      // this.initialized = true;  // Only uncomment after it's working. Don't want to push a blank
+      // config!
     }
 
     private void sendAll() {
@@ -493,8 +487,8 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
         return;
       }
 
-      byte[] sysex = new byte[this.global.size()*2 + 6];
-      sysex[0] = (byte)0xf0;
+      byte[] sysex = new byte[this.global.size() * 2 + 6];
+      sysex[0] = (byte) 0xf0;
       sysex[1] = MIDI_MFR_ID_0;
       sysex[2] = MIDI_MFR_ID_1;
       sysex[3] = MIDI_MFR_ID_2;
@@ -504,7 +498,7 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
         sysex[iSys++] = g.getKey();
         sysex[iSys++] = g.getValue();
       }
-      sysex[iSys] = (byte)0xf7;
+      sysex[iSys] = (byte) 0xf7;
 
       // LXMidiEngine.log("MFT System sysex:      " + bytesToString(sysex));
       output.sendSysex(sysex);
@@ -513,52 +507,53 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
     private void initializeLXDefaults() {
 
       this.global.clear();
-      this.global.put((byte)0, (byte)4);                            // System MIDI channel
-      this.global.put((byte)1, (byte)1);                            // Bank Side Buttons
-      this.global.put((byte)2, CFG_GLOBAL_SSACTION_CCTOGGLE);       // Left Button 1 Function
-      this.global.put((byte)3, CFG_GLOBAL_SSACTION_BANKDOWN);       // Left Button 2 Function
-      this.global.put((byte)4, CFG_GLOBAL_SSACTION_CCTOGGLE);       // Left Button 3 Function
-      this.global.put((byte)5, CFG_GLOBAL_SSACTION_CCTOGGLE);       // Right Button 1 Function
-      this.global.put((byte)6, CFG_GLOBAL_SSACTION_BANKUP);         // Right Button 2 Function
-      this.global.put((byte)7, CFG_GLOBAL_SSACTION_CCTOGGLE);       // Right Button 3 Function
-      this.global.put((byte)8, (byte)63);                           // Super Knob Start Point
-      this.global.put((byte)9, (byte)127);                          // Super Knob End Point
-      this.global.put((byte)10, (byte)0);                           // 0a
-      this.global.put((byte)11, (byte)0);                           // 0b CFG_ENC_MOVEMENTTYPE_DIRECT_HIGHRESOLUTION?
-      this.global.put((byte)12, (byte)0);                           // 0c CFG_ENC_SWACTION_CCHOLD?
-      this.global.put((byte)13, (byte)2);                           // 0d
-      this.global.put((byte)14, (byte)0);                           // 0e
-      this.global.put((byte)15, (byte)0);                           // 0f
-      this.global.put((byte)16, (byte)1);                           // 10
-      this.global.put((byte)17, (byte)0);                           // 11
-      this.global.put((byte)18, CFG_ENC_MIDITYPE_SENDRELENC);       // 12
-      this.global.put((byte)19, (byte)51);                          // 13
-      this.global.put((byte)20, (byte)1);                           // 14
-      this.global.put((byte)21, (byte)63);                          // 15
-      this.global.put((byte)22, CFG_ENC_INDICATORTYPE_BLENDEDBAR);  // 16
-      this.global.put((byte)23, (byte)0);                           // 17
-      this.global.put((byte)24, (byte)0);                           // 18
+      this.global.put((byte) 0, (byte) 4); // System MIDI channel
+      this.global.put((byte) 1, (byte) 1); // Bank Side Buttons
+      this.global.put((byte) 2, CFG_GLOBAL_SSACTION_CCTOGGLE); // Left Button 1 Function
+      this.global.put((byte) 3, CFG_GLOBAL_SSACTION_BANKDOWN); // Left Button 2 Function
+      this.global.put((byte) 4, CFG_GLOBAL_SSACTION_CCTOGGLE); // Left Button 3 Function
+      this.global.put((byte) 5, CFG_GLOBAL_SSACTION_CCTOGGLE); // Right Button 1 Function
+      this.global.put((byte) 6, CFG_GLOBAL_SSACTION_BANKUP); // Right Button 2 Function
+      this.global.put((byte) 7, CFG_GLOBAL_SSACTION_CCTOGGLE); // Right Button 3 Function
+      this.global.put((byte) 8, (byte) 63); // Super Knob Start Point
+      this.global.put((byte) 9, (byte) 127); // Super Knob End Point
+      this.global.put((byte) 10, (byte) 0); // 0a
+      this.global.put((byte) 11, (byte) 0); // 0b CFG_ENC_MOVEMENTTYPE_DIRECT_HIGHRESOLUTION?
+      this.global.put((byte) 12, (byte) 0); // 0c CFG_ENC_SWACTION_CCHOLD?
+      this.global.put((byte) 13, (byte) 2); // 0d
+      this.global.put((byte) 14, (byte) 0); // 0e
+      this.global.put((byte) 15, (byte) 0); // 0f
+      this.global.put((byte) 16, (byte) 1); // 10
+      this.global.put((byte) 17, (byte) 0); // 11
+      this.global.put((byte) 18, CFG_ENC_MIDITYPE_SENDRELENC); // 12
+      this.global.put((byte) 19, (byte) 51); // 13
+      this.global.put((byte) 20, (byte) 1); // 14
+      this.global.put((byte) 21, (byte) 63); // 15
+      this.global.put((byte) 22, CFG_ENC_INDICATORTYPE_BLENDEDBAR); // 16
+      this.global.put((byte) 23, (byte) 0); // 17
+      this.global.put((byte) 24, (byte) 0); // 18
       // Yes this gap matches the Midi Fighter Utility sysex
-      this.global.put((byte)31, (byte)127);                         // 1f  RGB LED Brightness
-      this.global.put((byte)32, (byte)127);                         // 20  Indicator Global Brightness
+      this.global.put((byte) 31, (byte) 127); // 1f  RGB LED Brightness
+      this.global.put((byte) 32, (byte) 127); // 20  Indicator Global Brightness
 
       for (int i = 0; i < this.encoders.length; ++i) {
         Encoder enc = this.encoders[i];
         enc.setDetent(false);
         enc.set("movement", CFG_ENC_MOVEMENTTYPE_DIRECT_HIGHRESOLUTION);
         enc.set("switch_action_type", CFG_ENC_SWACTION_CCHOLD);
-        enc.set("switch_midi_channel", (byte)2);
-        enc.set("switch_midi_number", (byte)enc.encoderIndex);
-        enc.set("switch_midi_type", (byte)0);             // Appears no longer in use
-        enc.set("encoder_midi_channel", (byte)1);
-        enc.set("encoder_midi_number", (byte)enc.encoderIndex);
-        enc.set("encoder_midi_type", CFG_ENC_MIDITYPE_SENDRELENC);        // Important! must be relative type
-        enc.set("active_color", (byte)51);                               // MFT default 51
-        enc.set("inactive_color", (byte)1);                              // MFT default 1
-        enc.set("detent_color", (byte)63);                               // MFT default 63
+        enc.set("switch_midi_channel", (byte) 2);
+        enc.set("switch_midi_number", (byte) enc.encoderIndex);
+        enc.set("switch_midi_type", (byte) 0); // Appears no longer in use
+        enc.set("encoder_midi_channel", (byte) 1);
+        enc.set("encoder_midi_number", (byte) enc.encoderIndex);
+        enc.set(
+            "encoder_midi_type", CFG_ENC_MIDITYPE_SENDRELENC); // Important! must be relative type
+        enc.set("active_color", (byte) 51); // MFT default 51
+        enc.set("inactive_color", (byte) 1); // MFT default 1
+        enc.set("detent_color", (byte) 63); // MFT default 63
         enc.set("indicator_display_type", CFG_ENC_INDICATORTYPE_BLENDEDBAR);
         enc.set("is_super_knob", CFG_FALSE);
-        enc.set("encoder_shift_midi_channel", (byte)0);
+        enc.set("encoder_shift_midi_channel", (byte) 0);
       }
 
       this.initialized = true;
@@ -568,13 +563,13 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
     @SuppressWarnings("unused")
     private String bytesToString(byte[] bytes) {
       String s = new String();
-      for (int i=0; i<bytes.length; i++) {
+      for (int i = 0; i < bytes.length; i++) {
         s = s.concat(String.format("%02X ", bytes[i]));
       }
       return s;
     }
-
-  };
+  }
+  ;
 
   private final Config userConfig = new Config();
   private final Config lxConfig = new Config();
@@ -588,7 +583,7 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
     private LXDeviceComponent device = null;
 
     private final LXListenableNormalizedParameter[] knobs =
-      new LXListenableNormalizedParameter[DEVICE_KNOB_NUM];
+        new LXListenableNormalizedParameter[DEVICE_KNOB_NUM];
     private final int[] knobTicks = new int[DEVICE_KNOB_NUM];
     private final int[] knobIncrementSize = new int[DEVICE_KNOB_NUM];
 
@@ -621,29 +616,36 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
           enc.setDetent(false);
         }
       }
-      lxConfig.sendModified();  // Unfortunately config changes require a reboot to restart the display.  This adds a lag.
+      // Unfortunately config changes require a reboot to restart the display. This adds a lag.
+      lxConfig.sendModified();
 
       // Midi commands
       for (int i = 0; i < this.knobs.length; ++i) {
         LXListenableNormalizedParameter parameter = this.knobs[i];
         if (parameter != null) {
           sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, RGB_ANIMATION_NONE);
-          sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_ANIMATION_NONE);
-          sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_BRIGHTNESS_MAX);
-          double normalized = (parameter instanceof CompoundParameter) ?
-            ((CompoundParameter) parameter).getBaseNormalized() :
-            parameter.getNormalized();
+          sendControlChange(
+              CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_ANIMATION_NONE);
+          sendControlChange(
+              CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_BRIGHTNESS_MAX);
+          double normalized =
+              (parameter instanceof CompoundParameter)
+                  ? ((CompoundParameter) parameter).getBaseNormalized()
+                  : parameter.getNormalized();
           sendControlChange(CHANNEL_ROTARY_ENCODER, DEVICE_KNOB + i, (int) (normalized * 127));
           sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, RGB_BRIGHTNESS_MAX);
-          sendControlChange(CHANNEL_SWITCH_AND_COLOR, DEVICE_KNOB + i, isAux ? RGB_AUX : RGB_PRIMARY);
+          sendControlChange(
+              CHANNEL_SWITCH_AND_COLOR, DEVICE_KNOB + i, isAux ? RGB_AUX : RGB_PRIMARY);
         } else {
           sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, RGB_ANIMATION_NONE);
-          sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_ANIMATION_NONE);
-          sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_BRIGHTNESS_25);
+          sendControlChange(
+              CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_ANIMATION_NONE);
+          sendControlChange(
+              CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_BRIGHTNESS_25);
           if (i <= lxConfig.encoders.length && lxConfig.encoders[i].has_detent.value == CFG_TRUE) {
-            sendControlChange(CHANNEL_ROTARY_ENCODER, DEVICE_KNOB+i, 63);
+            sendControlChange(CHANNEL_ROTARY_ENCODER, DEVICE_KNOB + i, 63);
           } else {
-            sendControlChange(CHANNEL_ROTARY_ENCODER, DEVICE_KNOB+i, 0);
+            sendControlChange(CHANNEL_ROTARY_ENCODER, DEVICE_KNOB + i, 0);
           }
           sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, RGB_BRIGHTNESS_OFF);
         }
@@ -686,7 +688,8 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
          enc.setDetent(false);
         ++e;
       } */
-      lxConfig.sendModified();  // Unfortunately config changes require a reboot to restart the display.  This adds a lag.
+      // Unfortunately config changes require a reboot to restart the display. This adds a lag.
+      lxConfig.sendModified();
 
       int i = 0;
       if (this.device != null) {
@@ -699,50 +702,68 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
           this.knobs[i] = parameter;
           this.knobTicks[i] = 0;
           if (parameter != null) {
-            // We will track an absolute knob value for Normalized DiscreteParameters even though MFT sends relative CCs.
-            if (parameter instanceof DiscreteParameter && ((DiscreteParameter)parameter).getIncrementMode() == IncrementMode.NORMALIZED) {
+            // We will track an absolute knob value for Normalized DiscreteParameters even though
+            // MFT sends relative CCs.
+            if (parameter instanceof DiscreteParameter
+                && ((DiscreteParameter) parameter).getIncrementMode() == IncrementMode.NORMALIZED) {
               this.knobTicks[i] = (int) (parameter.getNormalized() * 127);
-              this.knobIncrementSize[i] = LXUtils.max(1, 127/((DiscreteParameter)parameter).getRange());
+              this.knobIncrementSize[i] =
+                  LXUtils.max(1, 127 / ((DiscreteParameter) parameter).getRange());
             }
             if (!uniqueParameters.contains(parameter)) {
               parameter.addListener(this);
               uniqueParameters.add(parameter);
             }
-            sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_ANIMATION_NONE);
-            sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_BRIGHTNESS_MAX);
-            double normalized = (parameter instanceof CompoundParameter) ?
-              ((CompoundParameter) parameter).getBaseNormalized() :
-              parameter.getNormalized();
+            sendControlChange(
+                CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_ANIMATION_NONE);
+            sendControlChange(
+                CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_BRIGHTNESS_MAX);
+            double normalized =
+                (parameter instanceof CompoundParameter)
+                    ? ((CompoundParameter) parameter).getBaseNormalized()
+                    : parameter.getNormalized();
             sendControlChange(CHANNEL_ROTARY_ENCODER, DEVICE_KNOB + i, (int) (normalized * 127));
-            sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, RGB_BRIGHTNESS_MAX);
-            if (parameter instanceof CompoundParameter && ((CompoundParameter)parameter).modulations.size()>0) {
-              sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, RGB_PULSE_EVERY_2_BEATS);
+            sendControlChange(
+                CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, RGB_BRIGHTNESS_MAX);
+            if (parameter instanceof CompoundParameter
+                && ((CompoundParameter) parameter).modulations.size() > 0) {
+              sendControlChange(
+                  CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, RGB_PULSE_EVERY_2_BEATS);
             } else {
-              sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, RGB_ANIMATION_NONE);
+              sendControlChange(
+                  CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, RGB_ANIMATION_NONE);
             }
           } else {
-            sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, RGB_ANIMATION_NONE);
-            sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_ANIMATION_NONE);
-            sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_BRIGHTNESS_25);
-            if (i <= lxConfig.encoders.length && lxConfig.encoders[i].has_detent.value == CFG_TRUE) {
-              sendControlChange(CHANNEL_ROTARY_ENCODER, DEVICE_KNOB+i, 63);
+            sendControlChange(
+                CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, RGB_ANIMATION_NONE);
+            sendControlChange(
+                CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_ANIMATION_NONE);
+            sendControlChange(
+                CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_BRIGHTNESS_25);
+            if (i <= lxConfig.encoders.length
+                && lxConfig.encoders[i].has_detent.value == CFG_TRUE) {
+              sendControlChange(CHANNEL_ROTARY_ENCODER, DEVICE_KNOB + i, 63);
             } else {
-              sendControlChange(CHANNEL_ROTARY_ENCODER, DEVICE_KNOB+i, 0);
+              sendControlChange(CHANNEL_ROTARY_ENCODER, DEVICE_KNOB + i, 0);
             }
-            sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, RGB_BRIGHTNESS_OFF);
+            sendControlChange(
+                CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, RGB_BRIGHTNESS_OFF);
           }
-          sendControlChange(CHANNEL_SWITCH_AND_COLOR, DEVICE_KNOB + i, isAux ? RGB_AUX : RGB_PRIMARY);
+          sendControlChange(
+              CHANNEL_SWITCH_AND_COLOR, DEVICE_KNOB + i, isAux ? RGB_AUX : RGB_PRIMARY);
           ++i;
         }
       }
       while (i < this.knobs.length) {
         sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, RGB_ANIMATION_NONE);
-        sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_ANIMATION_NONE);
-        sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_BRIGHTNESS_25);
+        sendControlChange(
+            CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_ANIMATION_NONE);
+        sendControlChange(
+            CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_BRIGHTNESS_25);
         if (i <= lxConfig.encoders.length && lxConfig.encoders[i].has_detent.value == CFG_TRUE) {
-          sendControlChange(CHANNEL_ROTARY_ENCODER, DEVICE_KNOB+i, 63);
+          sendControlChange(CHANNEL_ROTARY_ENCODER, DEVICE_KNOB + i, 63);
         } else {
-          sendControlChange(CHANNEL_ROTARY_ENCODER, DEVICE_KNOB+i, 0);
+          sendControlChange(CHANNEL_ROTARY_ENCODER, DEVICE_KNOB + i, 0);
         }
         sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, RGB_BRIGHTNESS_OFF);
         ++i;
@@ -758,12 +779,14 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
       }
       for (int i = 0; i < this.knobs.length; ++i) {
         if (parameter == this.knobs[i]) {
-          double normalized = (parameter instanceof CompoundParameter) ?
-            ((CompoundParameter) parameter).getBaseNormalized() :
-            this.knobs[i].getNormalized();
+          double normalized =
+              (parameter instanceof CompoundParameter)
+                  ? ((CompoundParameter) parameter).getBaseNormalized()
+                  : this.knobs[i].getNormalized();
           // Normalized DiscreteParameters need artificial tracking of absolute knob location.
           // Keep local tracking in sync with changes from other source.
-          if (parameter instanceof DiscreteParameter && ((DiscreteParameter)parameter).getIncrementMode() == IncrementMode.NORMALIZED) {
+          if (parameter instanceof DiscreteParameter
+              && ((DiscreteParameter) parameter).getIncrementMode() == IncrementMode.NORMALIZED) {
             this.knobTicks[i] = (int) (normalized * 127);
           }
           sendControlChange(CHANNEL_ROTARY_ENCODER, DEVICE_KNOB + i, (int) (normalized * 127));
@@ -771,17 +794,19 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
       }
     }
 
-    private final static double KNOB_INCREMENT_AMOUNT = 1/127.;
+    private static final double KNOB_INCREMENT_AMOUNT = 1 / 127.;
 
     private void onKnobIncrement(int index, boolean isUp) {
       LXListenableNormalizedParameter knob = this.knobs[index];
       if (knob != null) {
         if (knob instanceof DiscreteParameter) {
-          if (((DiscreteParameter)knob).getIncrementMode() == IncrementMode.NORMALIZED) {
+          if (((DiscreteParameter) knob).getIncrementMode() == IncrementMode.NORMALIZED) {
             int value = this.knobTicks[index] + (isUp ? 1 : -1);
             if (knob.isWrappable()) {
-              // Make the length of the wrap space the same as the length between other values on this parameter
-              if (value < 0-this.knobIncrementSize[index] || value > 127+this.knobIncrementSize[index]) {
+              // Make the length of the wrap space the same as the length between other values on
+              // this parameter
+              if (value < 0 - this.knobIncrementSize[index]
+                  || value > 127 + this.knobIncrementSize[index]) {
                 value = value < 0 ? 127 : 0;
               }
               this.knobTicks[index] = value;
@@ -790,7 +815,7 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
               value = LXUtils.constrain(value, 0, 127);
               this.knobTicks[index] = value;
             }
-            knob.setNormalized(value/127.);
+            knob.setNormalized(value / 127.);
           } else {
             // IncrementMode == RELATIVE
             // Move after a set number of ticks in the same direction
@@ -802,9 +827,9 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
             if (this.knobTicks[index] == KNOB_TICKS_PER_DISCRETE_INCREMENT * (isUp ? 1 : -1)) {
               this.knobTicks[index] = 0;
               if (isUp) {
-                ((DiscreteParameter)knob).increment();
+                ((DiscreteParameter) knob).increment();
               } else {
-                ((DiscreteParameter)knob).decrement();
+                ((DiscreteParameter) knob).decrement();
               }
             }
           }
@@ -821,7 +846,7 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
         LXListenableNormalizedParameter p = this.knobs[index];
         if (p instanceof BooleanParameter) {
           // Toggle or momentary press boolean as appropriate
-          BooleanParameter bp = (BooleanParameter)p;
+          BooleanParameter bp = (BooleanParameter) p;
           if (bp.getMode() == BooleanParameter.Mode.MOMENTARY) {
             bp.setValue(isPressed);
           } else {
@@ -833,22 +858,23 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
           // Set other parameter types to default value on click
           if (isPressed) {
             switch (knobClickMode.getEnum()) {
-            case RESET:
-              p.reset();
-              break;
-            case TEMPORARY:
-              this.tempValues[index] = (p instanceof CompoundParameter) ?
-                ((CompoundParameter) p).getBaseNormalized() :
-                p.getNormalized();
-              break;
+              case RESET:
+                p.reset();
+                break;
+              case TEMPORARY:
+                this.tempValues[index] =
+                    (p instanceof CompoundParameter)
+                        ? ((CompoundParameter) p).getBaseNormalized()
+                        : p.getNormalized();
+                break;
             }
           } else {
             switch (knobClickMode.getEnum()) {
-            case RESET:
-              break;
-            case TEMPORARY:
-              p.setNormalized(this.tempValues[index]);
-              break;
+              case RESET:
+                break;
+              case TEMPORARY:
+                p.setNormalized(this.tempValues[index]);
+                break;
             }
           }
         }
@@ -893,7 +919,6 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
     private void dispose() {
       this.focusedDevice.dispose();
     }
-
   }
 
   public MidiFighterTwister(LX lx, LXMidiInput input, LXMidiOutput output) {
@@ -963,10 +988,12 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
 
     for (int i = 0; i < DEVICE_KNOB_NUM; ++i) {
       sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, RGB_ANIMATION_NONE);
-      sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_ANIMATION_NONE);
-      sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_BRIGHTNESS_MAX);
+      sendControlChange(
+          CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_ANIMATION_NONE);
+      sendControlChange(
+          CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, INDICATOR_BRIGHTNESS_MAX);
       // Set indicator (dial) to lowest level
-      sendControlChange(CHANNEL_ROTARY_ENCODER, DEVICE_KNOB+i, 0);
+      sendControlChange(CHANNEL_ROTARY_ENCODER, DEVICE_KNOB + i, 0);
       sendControlChange(CHANNEL_ANIMATIONS_AND_BRIGHTNESS, DEVICE_KNOB + i, RGB_BRIGHTNESS_OFF);
     }
   }
@@ -982,7 +1009,7 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
 
   @SuppressWarnings("unused")
   private void restoreConfig() {
-    //this.userConfig.sendAll();  // Uncomment after pull is working
+    // this.userConfig.sendAll();  // Uncomment after pull is working
   }
 
   @Override
@@ -1005,16 +1032,25 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
       case CHANNEL_ROTARY_ENCODER:
         if (number >= DEVICE_KNOB && number <= DEVICE_KNOB_MAX) {
           int iKnob = number - DEVICE_KNOB;
-          if (value == KNOB_INCREMENT || value == KNOB_INCREMENT_FAST || value == KNOB_INCREMENT_VERYFAST) {
+          if (value == KNOB_INCREMENT
+              || value == KNOB_INCREMENT_FAST
+              || value == KNOB_INCREMENT_VERYFAST) {
             this.deviceListener.onKnobIncrement(iKnob, true);
-          } else if (value == KNOB_DECREMENT || value == KNOB_DECREMENT_FAST || value == KNOB_DECREMENT_VERYFAST) {
+          } else if (value == KNOB_DECREMENT
+              || value == KNOB_DECREMENT_FAST
+              || value == KNOB_DECREMENT_VERYFAST) {
             this.deviceListener.onKnobIncrement(iKnob, false);
           } else {
             // Knob sent value outside of expected range for relative values.  Possible causes:
             //   1. Knob is configured to send absolute values.
             //   2. Knob was rotated during config sysex / reboot.
             //   3. Knob internals are dusty.
-            LXMidiEngine.error("Received value " + value + " on MFT encoder " + number + ". Confirm Encoder MIDI Type is ENC 3FH/41H and controller is clean.");
+            LXMidiEngine.error(
+                "Received value "
+                    + value
+                    + " on MFT encoder "
+                    + number
+                    + ". Confirm Encoder MIDI Type is ENC 3FH/41H and controller is clean.");
             // Assume the direction is correct, keep behavior smooth even on dusty controllers.
             if (value > KNOB_INCREMENT_VERYFAST) {
               this.deviceListener.onKnobIncrement(iKnob, true);
@@ -1028,9 +1064,9 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
         break;
       case CHANNEL_SWITCH_AND_COLOR:
         if (number >= DEVICE_KNOB && number <= DEVICE_KNOB_MAX) {
-            this.deviceListener.onSwitch(number - DEVICE_KNOB, cc.getNormalized() > 0);
-            return;
-          }
+          this.deviceListener.onSwitch(number - DEVICE_KNOB, cc.getNormalized() > 0);
+          return;
+        }
         LXMidiEngine.error("MFT Unknown Switch: " + number);
         break;
       case CHANNEL_SYSTEM:
@@ -1095,12 +1131,18 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
             }
             return;
           default:
-            LXMidiEngine.error("Unrecognized midi number " + number + " on system channel from MFT. Check your configuration with Midifighter Utility.");
+            LXMidiEngine.error(
+                "Unrecognized midi number "
+                    + number
+                    + " on system channel from MFT. Check your configuration with Midifighter Utility.");
             return;
         }
       default:
-          LXMidiEngine.error("Unrecognized midi channel " + channel + " from MFT. Check your configuration with Midifighter Utility.");
-          break;
+        LXMidiEngine.error(
+            "Unrecognized midi channel "
+                + channel
+                + " from MFT. Check your configuration with Midifighter Utility.");
+        break;
     }
   }
 
@@ -1132,5 +1174,4 @@ public class MidiFighterTwister extends LXMidiSurface implements LXMidiSurface.B
     this.deviceListener.dispose();
     super.dispose();
   }
-
 }

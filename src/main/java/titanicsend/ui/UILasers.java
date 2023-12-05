@@ -1,21 +1,18 @@
 /**
  * Copyright 2023- Mark C. Slee, Heron Arts LLC
  *
- * This file is part of the LX Studio software library. By using
- * LX, you agree to the terms of the LX Studio Software License
- * and Distribution Agreement, available at: http://lx.studio/license
+ * <p>This file is part of the LX Studio software library. By using LX, you agree to the terms of
+ * the LX Studio Software License and Distribution Agreement, available at: http://lx.studio/license
  *
- * Please note that the LX license is not open-source. The license
- * allows for free, non-commercial use.
+ * <p>Please note that the LX license is not open-source. The license allows for free,
+ * non-commercial use.
  *
- * HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR
- * OTHERWISE, AND SPECIFICALLY DISCLAIMS ANY WARRANTY OF
- * MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR
- * PURPOSE, WITH RESPECT TO THE SOFTWARE.
+ * <p>HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, AND SPECIFICALLY
+ * DISCLAIMS ANY WARRANTY OF MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR PURPOSE,
+ * WITH RESPECT TO THE SOFTWARE.
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.ui;
 
 import static org.lwjgl.bgfx.BGFX.BGFX_STATE_ALPHA_REF;
@@ -26,19 +23,17 @@ import static org.lwjgl.bgfx.BGFX.BGFX_STATE_WRITE_RGB;
 import static org.lwjgl.bgfx.BGFX.BGFX_STATE_WRITE_Z;
 import static org.lwjgl.bgfx.BGFX.bgfx_set_transform;
 
-import java.nio.FloatBuffer;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import org.joml.Matrix4f;
-import org.lwjgl.system.MemoryUtil;
-
 import heronarts.glx.GLX;
 import heronarts.glx.VertexBuffer;
 import heronarts.glx.View;
 import heronarts.glx.ui.UI;
 import heronarts.glx.ui.UI3dComponent;
 import heronarts.lx.studio.TEApp;
+import java.nio.FloatBuffer;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import org.joml.Matrix4f;
+import org.lwjgl.system.MemoryUtil;
 import titanicsend.app.TEVirtualOverlays;
 import titanicsend.model.TELaserModel;
 import titanicsend.model.TEWholeModel;
@@ -74,19 +69,19 @@ public class UILasers extends UI3dComponent {
     }
 
     final long state =
-        BGFX_STATE_PT_TRISTRIP |
-        BGFX_STATE_WRITE_RGB |
-        BGFX_STATE_WRITE_Z |
-        BGFX_STATE_BLEND_ALPHA |
-        BGFX_STATE_ALPHA_REF(32) |
-        BGFX_STATE_DEPTH_TEST_LESS;
+        BGFX_STATE_PT_TRISTRIP
+            | BGFX_STATE_WRITE_RGB
+            | BGFX_STATE_WRITE_Z
+            | BGFX_STATE_BLEND_ALPHA
+            | BGFX_STATE_ALPHA_REF(32)
+            | BGFX_STATE_DEPTH_TEST_LESS;
 
     for (TELaserModel laser : models) {
 
       this.modelMatrix
-      .identity()
-      .translate(laser.origin.x, laser.origin.y, laser.origin.z)
-      .scale(this.virtualOverlays.laserBoxSize.getValuef());
+          .identity()
+          .translate(laser.origin.x, laser.origin.y, laser.origin.z)
+          .scale(this.virtualOverlays.laserBoxSize.getValuef());
 
       bgfx_set_transform(this.modelMatrix.get(this.modelMatrixBuf));
 

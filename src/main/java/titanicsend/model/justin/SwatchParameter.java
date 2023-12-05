@@ -1,13 +1,13 @@
 package titanicsend.model.justin;
 
+import heronarts.lx.LX;
+import heronarts.lx.parameter.ObjectParameter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import heronarts.lx.LX;
-import heronarts.lx.parameter.ObjectParameter;
-
-public class SwatchParameter extends ObjectParameter<SwatchDefinition> implements DisposableParameter {
+public class SwatchParameter extends ObjectParameter<SwatchDefinition>
+    implements DisposableParameter {
 
   public interface Listener {
     public void swatchesChanged(SwatchParameter parameter);
@@ -38,7 +38,8 @@ public class SwatchParameter extends ObjectParameter<SwatchDefinition> implement
   public SwatchParameter addListener(Listener listener) {
     Objects.requireNonNull(listener);
     if (this.listeners.contains(listener)) {
-      throw new IllegalStateException("Cannot add duplicate SelectedSwatchParameter.Listener: " + listener);
+      throw new IllegalStateException(
+          "Cannot add duplicate SelectedSwatchParameter.Listener: " + listener);
     }
     this.listeners.add(listener);
     return this;
@@ -52,7 +53,8 @@ public class SwatchParameter extends ObjectParameter<SwatchDefinition> implement
    */
   public SwatchParameter removeListener(Listener listener) {
     if (!this.listeners.contains(listener)) {
-      throw new IllegalStateException("May not remove non-registered SelectedSwatchParameter.Listener: " + listener);
+      throw new IllegalStateException(
+          "May not remove non-registered SelectedSwatchParameter.Listener: " + listener);
     }
     this.listeners.add(listener);
     return this;
@@ -77,7 +79,7 @@ public class SwatchParameter extends ObjectParameter<SwatchDefinition> implement
   }
 
   private void notifyDisposing() {
-    for (int i = disposeListeners.size()-1; i>=0; --i) {
+    for (int i = disposeListeners.size() - 1; i >= 0; --i) {
       disposeListeners.remove(i).disposing(this);
     }
   }

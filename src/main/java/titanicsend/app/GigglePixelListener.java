@@ -1,17 +1,16 @@
 package titanicsend.app;
 
+import heronarts.glx.ui.component.UITextBox;
 import heronarts.lx.LX;
 import heronarts.lx.LXLoopTask;
-import heronarts.glx.ui.component.UITextBox;
-import playasystems.gigglepixel.*;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LXSwatch;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.*;
 import java.util.stream.Collectors;
+import playasystems.gigglepixel.*;
 
 public class GigglePixelListener implements LXLoopTask {
   private final LX lx;
@@ -39,14 +38,15 @@ public class GigglePixelListener implements LXLoopTask {
       return;
     }
 
-    if (this.gp == null) try {
-      this.gp = new GPListener(this.listenAddr);
-      this.peersSeen = new HashSet<>();
-    } catch (SocketException e) {
-      LX.log("Failed to create GigglePixel listener: " + e.getMessage());
-      this.peeking = false;
-      return;
-    }
+    if (this.gp == null)
+      try {
+        this.gp = new GPListener(this.listenAddr);
+        this.peersSeen = new HashSet<>();
+      } catch (SocketException e) {
+        LX.log("Failed to create GigglePixel listener: " + e.getMessage());
+        this.peeking = false;
+        return;
+      }
 
     GPPacket packet;
 
@@ -83,13 +83,13 @@ public class GigglePixelListener implements LXLoopTask {
         LX.log("Got empty palette packet");
         return;
       } else if (numColors > 5) {
-        numColors = 5;  // TODO: Be smarter when getting big palette packets
+        numColors = 5; // TODO: Be smarter when getting big palette packets
       }
       LXSwatch swatch = lx.engine.palette.swatch;
-      while(swatch.colors.size() > numColors) {
+      while (swatch.colors.size() > numColors) {
         swatch.removeColor();
       }
-      while(swatch.colors.size() < numColors) {
+      while (swatch.colors.size() < numColors) {
         swatch.addColor();
       }
       for (int i = 0; i < numColors; i++) {

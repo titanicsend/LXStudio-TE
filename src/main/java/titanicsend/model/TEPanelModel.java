@@ -1,19 +1,18 @@
 package titanicsend.model;
 
-import java.util.*;
-
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
+import java.util.*;
 import titanicsend.app.TEVirtualColor;
 import titanicsend.util.OffsetTriangles;
 
 public class TEPanelModel extends TEModel {
-  public static final float PANEL_BACKING_DISTANCE = 90000;  // About four inches
+  public static final float PANEL_BACKING_DISTANCE = 90000; // About four inches
 
   // Useful data for points inside LIT panels
   public static class LitPointData {
     public LXPoint point;
-    public double radius;         // Distance from the centroid
+    public double radius; // Distance from the centroid
     public double radiusFraction; // ...expressed as a fraction <= 1.0
 
     LitPointData(LXPoint point, double radius, double radiusFraction) {
@@ -23,9 +22,9 @@ public class TEPanelModel extends TEModel {
     }
   }
 
-  public final static String UNKNOWN = "unknown";
-  public final static String SOLID = "solid";
-  public final static String LIT = "lit";
+  public static final String UNKNOWN = "unknown";
+  public static final String SOLID = "solid";
+  public static final String LIT = "lit";
 
   public String id;
   public final TEVertex v0, v1, v2;
@@ -47,9 +46,20 @@ public class TEPanelModel extends TEModel {
     return this.id;
   }
 
-  public TEPanelModel(String id, ArrayList<LXPoint> points, TEVertex v0, TEVertex v1, TEVertex v2,
-                      TEEdgeModel e0, TEEdgeModel e1, TEEdgeModel e2, String panelType,
-                      String flavor, LXVector centroid, int[] channelLengths, String ... tags) {
+  public TEPanelModel(
+      String id,
+      ArrayList<LXPoint> points,
+      TEVertex v0,
+      TEVertex v1,
+      TEVertex v2,
+      TEEdgeModel e0,
+      TEEdgeModel e1,
+      TEEdgeModel e2,
+      String panelType,
+      String flavor,
+      LXVector centroid,
+      int[] channelLengths,
+      String... tags) {
     super("Panel", points, tags);
 
     this.id = id;
@@ -67,7 +77,7 @@ public class TEPanelModel extends TEModel {
         break;
       case LIT:
         // Display lit panels as semi-transparent gold
-        //this.virtualColor = new TEVirtualColor(255, 255, 0, 200);
+        // this.virtualColor = new TEVirtualColor(255, 255, 0, 200);
 
         // Don't display lit panels
         this.virtualColor = null;
@@ -128,8 +138,8 @@ public class TEPanelModel extends TEModel {
 
   // Checks if two panels touch along an edge (not just at a vertex)
   public boolean touches(TEPanelModel other) {
-    for (TEEdgeModel eThis : new TEEdgeModel[]{this.e0, this.e1, this.e2}) {
-      for (TEEdgeModel eOther : new TEEdgeModel[]{other.e0, other.e1, other.e2}) {
+    for (TEEdgeModel eThis : new TEEdgeModel[] {this.e0, this.e1, this.e2}) {
+      for (TEEdgeModel eOther : new TEEdgeModel[] {other.e0, other.e1, other.e2}) {
         if (eThis == eOther) return true;
       }
     }
@@ -148,7 +158,7 @@ public class TEPanelModel extends TEModel {
   // Returns set of panels that touch along an edge (not just at a vertex)
   public Set<TEPanelModel> neighbors() {
     HashSet<TEPanelModel> rv = new HashSet<>();
-    for (TEEdgeModel e : new TEEdgeModel[]{this.e0, this.e1, this.e2}) {
+    for (TEEdgeModel e : new TEEdgeModel[] {this.e0, this.e1, this.e2}) {
       rv.addAll(e.connectedPanels);
     }
     return rv;
@@ -160,8 +170,9 @@ public class TEPanelModel extends TEModel {
 
   // See enum class for section description
   // TODO Replace this with something smarter
-  // This is a really lazy/sloppy way of doing this, though if we're not changing the model it should be fine
-  static public TEPanelSection getSection(LXVector centroid) {
+  // This is a really lazy/sloppy way of doing this, though if we're not changing the model it
+  // should be fine
+  public static TEPanelSection getSection(LXVector centroid) {
     boolean fore = centroid.z < 0;
 
     // is it an end panel?
@@ -197,11 +208,7 @@ public class TEPanelModel extends TEModel {
     float yAdjust = newAdjustment.y - currentAdjustment.y;
     float zAdjust = newAdjustment.z - currentAdjustment.z;
     for (LXPoint point : points) {
-      point.set(
-              point.x + xAdjust,
-              point.y + yAdjust,
-              point.z + zAdjust
-              );
+      point.set(point.x + xAdjust, point.y + yAdjust, point.z + zAdjust);
     }
     currentAdjustment = newAdjustment.copy();
   }
@@ -222,7 +229,5 @@ public class TEPanelModel extends TEModel {
       adjustment.z = z;
       return adjustment;
     }
-
   }
-
 }

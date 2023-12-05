@@ -1,28 +1,20 @@
 /**
  * Licensing Notes (JKB)
  *
- * The expected permanent home for this concept and its derivatives is the LX Studio
- * software library or a LX Studio / Chromatik extension distributed by JKB.
+ * <p>The expected permanent home for this concept and its derivatives is the LX Studio software
+ * library or a LX Studio / Chromatik extension distributed by JKB.
  *
- * Due to time constraints, doing a first release of this code in either
- * of the above code bases would add too much delay to be usable
- * for the immediate TE events.
+ * <p>Due to time constraints, doing a first release of this code in either of the above code bases
+ * would add too much delay to be usable for the immediate TE events.
  *
- * It is acknowledged that by releasing the code here, the TE code base may
- * continue to use this original version in perpetuity.
- * It is also the stated intent that the long-term license for this code
- * and its derivatives will be the LX Studio Software License and
- * Distribution Agreement (http://lx.studio/license), or another license
- * as determined by the author. 
+ * <p>It is acknowledged that by releasing the code here, the TE code base may continue to use this
+ * original version in perpetuity. It is also the stated intent that the long-term license for this
+ * code and its derivatives will be the LX Studio Software License and Distribution Agreement
+ * (http://lx.studio/license), or another license as determined by the author.
  *
  * @author Justin Belcher <jkbelcher@gmail.com>
  */
-
 package titanicsend.osc;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
@@ -43,23 +35,29 @@ import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameter.Polarity;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.pattern.LXPattern;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEngine.Listener, LXPalette.Listener {
+public class CrutchOSC extends LXComponent
+    implements LXOscComponent, LXMixerEngine.Listener, LXPalette.Listener {
 
   public static final String OSC_PATH = "focus";
-  public static final String PATH_PRIMARY = "/lx/" + OSC_PATH + "/channel/pattern/focused/parameter/";
-  public static final String PATH_AUX = "/lx/" + OSC_PATH + "/channelAux/pattern/focused/parameter/";
+  public static final String PATH_PRIMARY =
+      "/lx/" + OSC_PATH + "/channel/pattern/focused/parameter/";
+  public static final String PATH_AUX =
+      "/lx/" + OSC_PATH + "/channelAux/pattern/focused/parameter/";
   public static final int PATH_PRIMARY_LENGTH = PATH_PRIMARY.length();
   public static final int PATH_AUX_LENGTH = PATH_AUX.length();
 
   private static CrutchOSC current;
+
   public static CrutchOSC get() {
     return current;
   }
 
   public final BooleanParameter transmitActive =
-    new BooleanParameter("OSC to iPads", true)
-    .setDescription("CrutchOSC output");
+      new BooleanParameter("OSC to iPads", true).setDescription("CrutchOSC output");
 
   public CrutchOSC(LX lx) {
     super(lx);
@@ -76,9 +74,9 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
 
   protected String getCrutchOSCaddress(int position, boolean isAux) {
     if (isAux) {
-      return PATH_AUX + (position+1);
+      return PATH_AUX + (position + 1);
     } else {
-      return PATH_PRIMARY + (position+1);
+      return PATH_PRIMARY + (position + 1);
     }
   }
 
@@ -91,17 +89,19 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
     }
   }
 
-  private LXParameterListener focusedPatternListener = (p) -> {
-    if (this.channel != null && p == this.channel.focusedPattern) {
-      onFocusedPattern(this.channel.getFocusedPattern(), false);
-    }
-  };
+  private LXParameterListener focusedPatternListener =
+      (p) -> {
+        if (this.channel != null && p == this.channel.focusedPattern) {
+          onFocusedPattern(this.channel.getFocusedPattern(), false);
+        }
+      };
 
-  private LXParameterListener focusedPatternAuxListener = (p) -> {
-    if (this.channelAux != null && p == this.channelAux.focusedPattern) {
-      onFocusedPattern(this.channelAux.getFocusedPattern(), true);
-    }
-  };
+  private LXParameterListener focusedPatternAuxListener =
+      (p) -> {
+        if (this.channelAux != null && p == this.channelAux.focusedPattern) {
+          onFocusedPattern(this.channelAux.getFocusedPattern(), true);
+        }
+      };
 
   private LXChannel channel;
   private LXChannel channelAux;
@@ -115,11 +115,10 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
     this.channel = null;
     LXBus focusedBus = this.lx.engine.mixer.getFocusedChannel();
     if (focusedBus instanceof LXChannel) {
-      this.channel = (LXChannel)focusedBus;
+      this.channel = (LXChannel) focusedBus;
       registerChannel(this.channel, false);
     }
   }
-
 
   private void onFocusedChannelAux() {
     if (this.channelAux != null) {
@@ -128,7 +127,7 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
     this.channelAux = null;
     LXBus focusedBus = this.lx.engine.mixer.getFocusedChannelAux();
     if (focusedBus instanceof LXChannel) {
-      this.channelAux = (LXChannel)focusedBus;
+      this.channelAux = (LXChannel) focusedBus;
       registerChannel(this.channelAux, true);
     }
   }
@@ -149,11 +148,11 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
     if (isAux) {
       channel.focusedPattern.addListener(focusedPatternAuxListener);
       this.patternAux = pattern;
-      registerPattern(this.patternAux, isAux);  // ok to pass null
+      registerPattern(this.patternAux, isAux); // ok to pass null
     } else {
       channel.focusedPattern.addListener(focusedPatternListener);
       this.pattern = pattern;
-      registerPattern(this.pattern, isAux);  // ok to pass null
+      registerPattern(this.pattern, isAux); // ok to pass null
     }
   }
 
@@ -172,11 +171,17 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
   }
 
   private boolean canSend() {
-    // Copied from LXComponent: These checks are necessary for bootstrapping, before the OSC engine is spun up
-    return this.transmitActive.isOn() && (this.lx != null) && (this.lx.engine != null) && (this.lx.engine.osc != null) && (this.lx.engine.osc.transmitActive.isOn());
+    // Copied from LXComponent: These checks are necessary for bootstrapping, before the OSC engine
+    // is spun up
+    return this.transmitActive.isOn()
+        && (this.lx != null)
+        && (this.lx.engine != null)
+        && (this.lx.engine.osc != null)
+        && (this.lx.engine.osc.transmitActive.isOn());
   }
 
-  private void parameterInstanceChanged(LXListenableNormalizedParameter parameter, int position, boolean isAux) {
+  private void parameterInstanceChanged(
+      LXListenableNormalizedParameter parameter, int position, boolean isAux) {
     if (canSend()) {
       String address = getCrutchOSCaddress(position, isAux);
       lx.engine.osc.sendMessage(address + "/label", getLabel(parameter));
@@ -187,7 +192,8 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
     }
   }
 
-  private void parameterValueChanged(LXListenableNormalizedParameter parameter, int position, boolean isAux) {
+  private void parameterValueChanged(
+      LXListenableNormalizedParameter parameter, int position, boolean isAux) {
     if (canSend()) {
       sendParameterValue(parameter, getCrutchOSCaddress(position, isAux));
     }
@@ -236,7 +242,9 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
 
   protected void sendSizePalette() {
     if (canSend()) {
-      sendSize(this.lx.engine.palette.getOscAddress() + "/swatches", this.lx.engine.palette.swatches.size());
+      sendSize(
+          this.lx.engine.palette.getOscAddress() + "/swatches",
+          this.lx.engine.palette.swatches.size());
     }
   }
 
@@ -267,16 +275,18 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
 
     private LXPattern pattern;
 
-    private final List<LXListenableNormalizedParameter> params = new ArrayList<LXListenableNormalizedParameter>();
+    private final List<LXListenableNormalizedParameter> params =
+        new ArrayList<LXListenableNormalizedParameter>();
 
     public PatternParameterListener(boolean isAux) {
       this.isAux = isAux;
     }
 
-    private LXParameterListener remoteControlsChangedListener = (p) -> {
-      unregisterParameters();
-      registerParameters();
-    };
+    private LXParameterListener remoteControlsChangedListener =
+        (p) -> {
+          unregisterParameters();
+          registerParameters();
+        };
 
     public void registerPattern(LXPattern pattern) {
       if (this.pattern != null) {
@@ -345,7 +355,7 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
     @Override
     public void onParameterChanged(LXParameter parameter) {
       int i = params.indexOf(parameter);
-      parameterValueChanged((LXListenableNormalizedParameter)parameter, i, this.isAux);
+      parameterValueChanged((LXListenableNormalizedParameter) parameter, i, this.isAux);
     }
 
     public void setValue(int index, float normalized) {
@@ -418,7 +428,7 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
     }
 
     String address = message.getAddressPattern().toString();
-    String piString = parts[parts.length-2];
+    String piString = parts[parts.length - 2];
     try {
       boolean isInt = piString.matches("\\d+");
       int pi = -1;
@@ -429,7 +439,7 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
       if (address.startsWith(PATH_PRIMARY)) {
         LXBus fc = this.lx.engine.mixer.getFocusedChannel();
         if (fc != null && fc instanceof LXChannel) {
-          LXPattern fp = ((LXChannel)fc).getFocusedPattern();
+          LXPattern fp = ((LXChannel) fc).getFocusedPattern();
           if (fp != null) {
             if (isInt) {
               this.patternListener.setValue(pi, message.getFloat());
@@ -443,7 +453,7 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
       } else if (address.startsWith(PATH_AUX)) {
         LXBus fc = this.lx.engine.mixer.getFocusedChannelAux();
         if (fc != null && fc instanceof LXChannel) {
-          LXPattern fp = ((LXChannel)fc).getFocusedPattern();
+          LXPattern fp = ((LXChannel) fc).getFocusedPattern();
           if (fp != null) {
             if (isInt) {
               this.patternListenerAux.setValue(pi, message.getFloat());
@@ -482,7 +492,7 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
   }
 
   @Override
-  public void channelMoved(LXMixerEngine mixer, LXAbstractChannel channel) { }
+  public void channelMoved(LXMixerEngine mixer, LXAbstractChannel channel) {}
 
   // LXPalette.Listener methods
 
@@ -497,7 +507,7 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
   }
 
   @Override
-  public void swatchMoved(LXPalette palette, LXSwatch swatch) { }
+  public void swatchMoved(LXPalette palette, LXSwatch swatch) {}
 
   @Override
   public void dispose() {
@@ -518,5 +528,4 @@ public class CrutchOSC extends LXComponent implements LXOscComponent, LXMixerEng
     this.patternListenerAux.dispose();
     super.dispose();
   }
-
 }

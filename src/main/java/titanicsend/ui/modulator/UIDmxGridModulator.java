@@ -22,31 +22,26 @@ public class UIDmxGridModulator implements UIModulatorControls<DmxGridModulator>
     uiModulator.setContentHeight(HEIGHT);
 
     UI2dContainer.newVerticalContainer(100, 2)
-    .addChildren(
-      row(ui, "Universe", modulator.universe),
-      row(ui, "Channel", modulator.channel)
-      )
-    .addToContainer(uiModulator);
+        .addChildren(row(ui, "Universe", modulator.universe), row(ui, "Channel", modulator.channel))
+        .addToContainer(uiModulator);
 
     UI2dContainer.newVerticalContainer(100, 2)
-    .addChildren(
-      row(ui, "Rows", modulator.rows),
-      row(ui, "Columns", modulator.columns)
-      )
-    .setX(110)
-    .addToContainer(uiModulator);
+        .addChildren(row(ui, "Rows", modulator.rows), row(ui, "Columns", modulator.columns))
+        .setX(110)
+        .addToContainer(uiModulator);
   }
 
   private UI2dContainer row(UI ui, String label, DiscreteParameter parameter) {
     return row(ui, label, LABEL_WIDTH, new UIIntegerBox(PARAM_WIDTH, 16, parameter));
   }
-  
+
   private UI2dContainer row(UI ui, String label, int labelWidth, UI2dComponent component) {
-    return UI2dContainer.newHorizontalContainer(16, 4,
-      new UILabel(labelWidth, 16, label)
-        .setTextAlignment(VGraphics.Align.LEFT, VGraphics.Align.MIDDLE)
-        .setFont(ui.theme.getControlFont()),
-      component
-      );
+    return UI2dContainer.newHorizontalContainer(
+        16,
+        4,
+        new UILabel(labelWidth, 16, label)
+            .setTextAlignment(VGraphics.Align.LEFT, VGraphics.Align.MIDDLE)
+            .setFont(ui.theme.getControlFont()),
+        component);
   }
 }

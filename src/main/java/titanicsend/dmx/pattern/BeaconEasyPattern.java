@@ -13,35 +13,38 @@ import titanicsend.dmx.parameter.DmxDiscreteParameterOption;
 import titanicsend.ui.UIUtils;
 
 @LXCategory("DMX")
-public class BeaconEasyPattern extends BeaconPattern implements UIDeviceControls<BeaconEasyPattern> {
+public class BeaconEasyPattern extends BeaconPattern
+    implements UIDeviceControls<BeaconEasyPattern> {
 
   // Color Wheel (without the scroll options)
-  DmxDiscreteParameter colorWheelFixed = (DmxDiscreteParameter)
-      new DmxDiscreteParameter("ClrWheel",
-      new DmxDiscreteParameterOption[] 
-        { new DmxDiscreteParameterOption("Open", 0),
-          new DmxDiscreteParameterOption("Red", 16),
-          new DmxDiscreteParameterOption("Green", 23),
-          new DmxDiscreteParameterOption("Yellow", 30),
-          new DmxDiscreteParameterOption("Purple", 37),
-          new DmxDiscreteParameterOption("Light Green", 44),
-          new DmxDiscreteParameterOption("Orange", 51),
-          new DmxDiscreteParameterOption("Magenta", 58),
-          new DmxDiscreteParameterOption("Cyan", 65),
-          new DmxDiscreteParameterOption("Open", 72),
-          new DmxDiscreteParameterOption("Deep Red", 79),
-          new DmxDiscreteParameterOption("Dark Amber", 86),
-          new DmxDiscreteParameterOption("Pink", 93),
-          new DmxDiscreteParameterOption("UV", 100),
-          new DmxDiscreteParameterOption("CTB", 107),
-          new DmxDiscreteParameterOption("CTO", 114),
-          new DmxDiscreteParameterOption("Medium Blue", 121)
-        })
-      .setWrappable(true)
-      .setDescription("Color Wheel");
+  DmxDiscreteParameter colorWheelFixed =
+      (DmxDiscreteParameter)
+          new DmxDiscreteParameter(
+                  "ClrWheel",
+                  new DmxDiscreteParameterOption[] {
+                    new DmxDiscreteParameterOption("Open", 0),
+                    new DmxDiscreteParameterOption("Red", 16),
+                    new DmxDiscreteParameterOption("Green", 23),
+                    new DmxDiscreteParameterOption("Yellow", 30),
+                    new DmxDiscreteParameterOption("Purple", 37),
+                    new DmxDiscreteParameterOption("Light Green", 44),
+                    new DmxDiscreteParameterOption("Orange", 51),
+                    new DmxDiscreteParameterOption("Magenta", 58),
+                    new DmxDiscreteParameterOption("Cyan", 65),
+                    new DmxDiscreteParameterOption("Open", 72),
+                    new DmxDiscreteParameterOption("Deep Red", 79),
+                    new DmxDiscreteParameterOption("Dark Amber", 86),
+                    new DmxDiscreteParameterOption("Pink", 93),
+                    new DmxDiscreteParameterOption("UV", 100),
+                    new DmxDiscreteParameterOption("CTB", 107),
+                    new DmxDiscreteParameterOption("CTO", 114),
+                    new DmxDiscreteParameterOption("Medium Blue", 121)
+                  })
+              .setWrappable(true)
+              .setDescription("Color Wheel");
 
-  CompoundParameter ptSpdLinear = new CompoundParameter("ptSpd", 0, 225, 0)
-      .setDescription("Pan/Tilt Speed, slow->fast");
+  CompoundParameter ptSpdLinear =
+      new CompoundParameter("ptSpd", 0, 225, 0).setDescription("Pan/Tilt Speed, slow->fast");
 
   public BeaconEasyPattern(LX lx) {
     super(lx);
@@ -57,10 +60,10 @@ public class BeaconEasyPattern extends BeaconPattern implements UIDeviceControls
 
     double pan = this.pan.getNormalized();
     double tilt = this.tilt.getNormalized();
-    int ptSpd = (int)this.ptSpdLinear.getValue();
+    int ptSpd = (int) this.ptSpdLinear.getValue();
     int colorWheel = this.colorWheelFixed.getDmxValue();
 
-    for (DmxModel d : this.modelTE.beacons) {      
+    for (DmxModel d : this.modelTE.beacons) {
       setDmxNormalized(d, BeaconModel.INDEX_PAN, pan);
       setDmxNormalized(d, BeaconModel.INDEX_TILT, tilt);
       setDmxValue(d, BeaconModel.INDEX_PT_SPEED, ptSpd);

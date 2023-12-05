@@ -1,15 +1,13 @@
 package titanicsend.util;
 
-import heronarts.lx.LX;
-import heronarts.lx.model.LXPoint;
-import titanicsend.model.TEEdgeModel;
-import titanicsend.model.TEStripingInstructions;
-import titanicsend.model.TEVertex;
-
-import java.util.*;
-
 import static java.lang.Math.atan2;
 import static java.lang.Math.tan;
+
+import heronarts.lx.LX;
+import heronarts.lx.model.LXPoint;
+import java.util.*;
+import titanicsend.model.TEStripingInstructions;
+import titanicsend.model.TEVertex;
 
 public class PanelStriper {
   public static final int MARGIN = 86000;
@@ -17,9 +15,12 @@ public class PanelStriper {
   public static final FloorPoint gapFloorPoint = new FloorPoint(-1, -1);
 
   private static TEVertex[] getStartMidEnd(
-          TEVertex v0, TEVertex v1, TEVertex v2,
-          int startVertexId, int midVertexId,
-          TEStripingInstructions stripingInstructions) {
+      TEVertex v0,
+      TEVertex v1,
+      TEVertex v2,
+      int startVertexId,
+      int midVertexId,
+      TEStripingInstructions stripingInstructions) {
     double distance01 = v0.distanceTo(v1);
     double distance02 = v0.distanceTo(v2);
     double distance12 = v1.distanceTo(v2);
@@ -103,12 +104,18 @@ public class PanelStriper {
     return new TEVertex[] {vStart, vMid, vEnd};
   }
 
-  public static String stripe(String id, TEVertex v0, TEVertex v1, TEVertex v2,
-                              int startVertexId, int midVertexId,
-                              List<LXPoint> pointList,
-                              TEStripingInstructions stripingInstructions,
-                              LXPoint gapPoint) {
-    TEVertex[] startMidEnd = getStartMidEnd(v0, v1, v2, startVertexId, midVertexId, stripingInstructions);
+  public static String stripe(
+      String id,
+      TEVertex v0,
+      TEVertex v1,
+      TEVertex v2,
+      int startVertexId,
+      int midVertexId,
+      List<LXPoint> pointList,
+      TEStripingInstructions stripingInstructions,
+      LXPoint gapPoint) {
+    TEVertex[] startMidEnd =
+        getStartMidEnd(v0, v1, v2, startVertexId, midVertexId, stripingInstructions);
 
     TEVertex vStart = startMidEnd[0];
     TEVertex vMid = startMidEnd[1];
@@ -121,9 +128,14 @@ public class PanelStriper {
     if (stripingInstructions == null)
       floorPoints = oldStripeFloor(floorTransform.f0, floorTransform.f1, floorTransform.f2);
     else
-      floorPoints = newStripeFloor(id,
-              floorTransform.f0, floorTransform.f1, floorTransform.f2,
-              stripingInstructions, gapFloorPoint);
+      floorPoints =
+          newStripeFloor(
+              id,
+              floorTransform.f0,
+              floorTransform.f1,
+              floorTransform.f2,
+              stripingInstructions,
+              gapFloorPoint);
     for (FloorPoint f : floorPoints) {
       if (f == gapFloorPoint) {
         pointList.add(gapPoint);
@@ -131,31 +143,35 @@ public class PanelStriper {
         if (!triangleContains(floorTransform.f0, floorTransform.f1, floorTransform.f2, f)) {
           LX.error(id + " contains points outside its boundaries");
           break;
-/*        } else if (distanceToEdge(floorTransform.f0, floorTransform.f1,
-                floorTransform.f2, f) < MARGIN) {
-          LX.error(id + " contains points inside its margin");
-          break;
-*/        } else {
+          /*        } else if (distanceToEdge(floorTransform.f0, floorTransform.f1,
+                          floorTransform.f2, f) < MARGIN) {
+                    LX.error(id + " contains points inside its margin");
+                    break;
+          */ } else {
           pointList.add(floorTransform.fly(f));
         }
       }
     }
 
-    int distanceSM = (int)vStart.distanceTo(vMid);
-    int distanceME = (int)vMid.distanceTo(vEnd);
-    int distanceES = (int)vEnd.distanceTo(vStart);
+    int distanceSM = (int) vStart.distanceTo(vMid);
+    int distanceME = (int) vMid.distanceTo(vEnd);
+    int distanceES = (int) vEnd.distanceTo(vStart);
 
     return distanceSM + "-" + distanceME + "-" + distanceES;
   }
 
   private static List<FloorPoint> oldStripeFloor(
-          FloorPoint fStart, FloorPoint fMid, FloorPoint fEnd) {
+      FloorPoint fStart, FloorPoint fMid, FloorPoint fEnd) {
     return new ArrayList<>();
   }
 
-  private static List<FloorPoint> newStripeFloor(String id,
-          FloorPoint fStart, FloorPoint fMid, FloorPoint fEnd,
-          TEStripingInstructions stripingInstructions, FloorPoint gapFloorPoint) {
+  private static List<FloorPoint> newStripeFloor(
+      String id,
+      FloorPoint fStart,
+      FloorPoint fMid,
+      FloorPoint fEnd,
+      TEStripingInstructions stripingInstructions,
+      FloorPoint gapFloorPoint) {
     FloorPoint currentPoint = findStartingPoint(fEnd);
     ArrayList<FloorPoint> rv = new ArrayList<>();
 
@@ -183,7 +199,8 @@ public class PanelStriper {
 
       // We're one step too far at this point. Go back, plus an extra half step
       // because of the changing row. Also update z.
-      currentPoint = new FloorPoint(
+      currentPoint =
+          new FloorPoint(
               currentPoint.x - 1.5 * deltaX,
               currentPoint.z + DISTANCE_BETWEEN_PIXELS * 0.5 * Math.sqrt(3.0));
 
@@ -211,7 +228,8 @@ public class PanelStriper {
     return (f0.x - f2.x) * (f1.z - f2.z) - (f1.x - f2.x) * (f0.z - f2.z);
   }
 
-  private static boolean triangleContains(FloorPoint f0, FloorPoint f1, FloorPoint f2, FloorPoint f) {
+  private static boolean triangleContains(
+      FloorPoint f0, FloorPoint f1, FloorPoint f2, FloorPoint f) {
     double d1, d2, d3;
     boolean has_neg, has_pos;
 
