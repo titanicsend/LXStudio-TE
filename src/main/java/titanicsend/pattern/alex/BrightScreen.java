@@ -9,14 +9,10 @@ import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.pattern.TEPattern;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @LXCategory("Combo FG")
 public class BrightScreen extends TEPattern {
     public final LinkedColorParameter color =
-            registerColor("Color", "color", TEColorType.PRIMARY,
-                    "Color of the screen");
+            registerColor("Color", "color", TEColorType.PRIMARY, "Color of the screen");
 
     public BrightScreen(LX lx) {
         super(lx);

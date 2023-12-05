@@ -5,12 +5,11 @@ import heronarts.lx.LX;
 import heronarts.lx.mixer.LXAbstractChannel;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.mixer.LXGroup;
-import titanicsend.util.TE;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
+import titanicsend.util.TE;
 
 /**
  * Our wrapper around the LX engine mixer, specially for AutoVJ functionality.
@@ -55,7 +54,7 @@ public class TEAutopilotMixer {
      */
     public void setFaderTo(TEChannelName name, double faderLevel) {
         try {
-            //TE.log("Getting channel by name: %s", name);
+            // TE.log("Getting channel by name: %s", name);
             LXChannel channel = this.getChannelByName(name);
             channel.fader.setValue(faderLevel);
 
@@ -79,17 +78,15 @@ public class TEAutopilotMixer {
      */
     public LXChannel getChannelByName(TEChannelName name) {
         if (name == null) return null;
-//        for (Map.Entry<TEChannelName, LXChannel> entry : channelName2channel.entrySet()) {
-//            TE.log("key: %s, value: %s", entry.getKey(), entry.getValue());
-//        }
+        //        for (Map.Entry<TEChannelName, LXChannel> entry : channelName2channel.entrySet()) {
+        //            TE.log("key: %s, value: %s", entry.getKey(), entry.getValue());
+        //        }
         return this.channelName2channel.get(name);
     }
 
     public void turnDownAllChannels(boolean onlyAffectPhraseChannels) {
         for (TEChannelName name : TEChannelName.values()) {
-            if (onlyAffectPhraseChannels && (
-                    (name == TEChannelName.STROBES)
-                            || name == TEChannelName.TRIGGERS))
+            if (onlyAffectPhraseChannels && ((name == TEChannelName.STROBES) || name == TEChannelName.TRIGGERS))
                 continue;
             this.setFaderTo(name, 0.0);
         }
@@ -125,8 +122,8 @@ public class TEAutopilotMixer {
      * @return AutoVJScanResult with both found and groupIdx set
      */
     public AutoVJScanResult findAutoVJGroupIndex(boolean verbose) {
-        boolean found = false;  // if we find group named properly AND has proper channels
-        int groupIdx = -1;  // if a group is named "AUTO_VJ", record index here. otherwise -1
+        boolean found = false; // if we find group named properly AND has proper channels
+        int groupIdx = -1; // if a group is named "AUTO_VJ", record index here. otherwise -1
         if (verbose) TE.log("In findAutoVJGroupIndex()");
 
         // iterate through each channel, looking for ones that are groups named properly
@@ -136,8 +133,9 @@ public class TEAutopilotMixer {
                 LXGroup group = (LXGroup) ch;
                 groupIdx = ch.getIndex();
                 if (verbose)
-                    TE.log("Found group named correctly at: %d, num channels: %d, required: %d"
-                            , groupIdx, group.channels.size(), TEChannelName.values().length);
+                    TE.log(
+                            "Found group named correctly at: %d, num channels: %d, required: %d",
+                            groupIdx, group.channels.size(), TEChannelName.values().length);
 
                 if (group.channels.size() < TEChannelName.values().length)
                     // if this group doesn't have enough channels, it's not a valid AutoVJ group
@@ -150,8 +148,10 @@ public class TEAutopilotMixer {
                 int vjChannelsFound = 0;
                 for (LXChannel vjCh : group.channels) {
                     for (TEChannelName name : TEChannelName.values()) {
-                        //if (verbose) TE.log("Checking channel: %s against channel name %s", vjCh.label.getString(), name.toString());
-                        if (name.toString().equals(vjCh.label.getString()) && vjCh.patterns.size() >= MIN_NUM_PATTERNS_ON_AUTO_VJ_CHANNEL) {
+                        // if (verbose) TE.log("Checking channel: %s against channel name %s", vjCh.label.getString(),
+                        // name.toString());
+                        if (name.toString().equals(vjCh.label.getString())
+                                && vjCh.patterns.size() >= MIN_NUM_PATTERNS_ON_AUTO_VJ_CHANNEL) {
                             vjChannelsFound++;
                             if (verbose) TE.log("Found channel: %s", name.toString());
                             break;
@@ -177,11 +177,9 @@ public class TEAutopilotMixer {
      * @return JsonObject with no ID fields
      */
     public JsonObject stripIdsFromJsonObject(JsonObject o) {
-        if (o.keySet().contains("id"))
-            o.remove("id");
+        if (o.keySet().contains("id")) o.remove("id");
 
-        if (o.keySet().contains("group"))
-            o.remove("group");
+        if (o.keySet().contains("group")) o.remove("group");
 
         return o;
     }
@@ -314,7 +312,7 @@ public class TEAutopilotMixer {
                     if (autoVjTemplateGroupId == -1) {
                         if (label.equals(AUTO_VJ_GROUP_NAME) && classname.equals("heronarts.lx.mixer.LXGroup")) {
                             autoVjTemplateGroupId = channelId;
-                            //TE.log("AutoVJ group id: %d", autoVjTemplateGroupId);
+                            // TE.log("AutoVJ group id: %d", autoVjTemplateGroupId);
                         }
                     } else if (groupId == autoVjTemplateGroupId) {
                         // populate a new channel in our running app

@@ -5,13 +5,9 @@ import heronarts.lx.LXCategory;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
-import titanicsend.pattern.yoffa.framework.ConstructedPattern;
-import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
-
-import java.util.List;
 
 @LXCategory("Look Shader Patterns")
 public class TriangleInfinityRadialWaveform extends TEPerformancePattern {
@@ -23,7 +19,7 @@ public class TriangleInfinityRadialWaveform extends TEPerformancePattern {
         controls.setValue(TEControlTag.YPOS, -0.14);
         controls.setRange(TEControlTag.SIZE, 1.14, 0.2, 2.0); // also: 0.4
         controls.setRange(TEControlTag.SPEED, 0.03, 0.00, 0.5);
-//        controls.setRange(TEControlTag.QUANTITY, 8.0, 1.0, 24.0);
+        //        controls.setRange(TEControlTag.QUANTITY, 8.0, 1.0, 24.0);
         controls.setRange(TEControlTag.QUANTITY, 6.0, 2.0, 12.0);
         controls.setRange(TEControlTag.WOW1, 0.11, 0.0, 0.5);
         controls.setRange(TEControlTag.WOW2, 0.03, 0.0, 0.5);

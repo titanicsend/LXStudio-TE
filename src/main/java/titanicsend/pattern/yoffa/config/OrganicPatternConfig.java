@@ -2,10 +2,8 @@ package titanicsend.pattern.yoffa.config;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.parameter.LXListenableParameter;
-import titanicsend.pattern.jon.TEControl;
+import java.util.List;
 import titanicsend.pattern.jon.TEControlTag;
-import titanicsend.pattern.jon._CommonControlGetter;
 import titanicsend.pattern.will.shaders.*;
 import titanicsend.pattern.yoffa.effect.*;
 import titanicsend.pattern.yoffa.effect.shaders.*;
@@ -15,28 +13,26 @@ import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.media.BasicVideoPatternEffect;
 
-import java.util.List;
-
 @SuppressWarnings("unused")
 public class OrganicPatternConfig {
 
     /*  Removed from UI - see TEApp.java for details.
-    @LXCategory("Yoffa Panel Combo")
-    public static class StarryOutrun extends ConstructedPattern {
-        public StarryOutrun(LX lx) {
-            super(lx);
-        }
-        @Override
-        protected List<PatternEffect> createEffects() {
-            return List.of(
-                    new OutrunGridShader(new PatternTarget(this, TEShaderView.SPLIT_PANEL_SECTIONS)),
-                    new AlternatingDotsEffect(new PatternTarget(this, TEShaderView.SPLIT_PANEL_SECTIONS))
-                            .setHorizon(OutrunGridShader.HORIZON_Y)
-                            .setShouldBlend(true)
-            );
-        }
-    }
-   */
+     @LXCategory("Yoffa Panel Combo")
+     public static class StarryOutrun extends ConstructedPattern {
+         public StarryOutrun(LX lx) {
+             super(lx);
+         }
+         @Override
+         protected List<PatternEffect> createEffects() {
+             return List.of(
+                     new OutrunGridShader(new PatternTarget(this, TEShaderView.SPLIT_PANEL_SECTIONS)),
+                     new AlternatingDotsEffect(new PatternTarget(this, TEShaderView.SPLIT_PANEL_SECTIONS))
+                             .setHorizon(OutrunGridShader.HORIZON_Y)
+                             .setShouldBlend(true)
+             );
+         }
+     }
+    */
 
     @LXCategory("Yoffa Panel Shader")
     public static class RainbowSwirlPanels extends ConstructedPattern {
@@ -112,8 +108,8 @@ public class OrganicPatternConfig {
             getControls().setValue(TEControlTag.SPEED, 0.5);
 
             getControls().setRange(TEControlTag.QUANTITY, 0, 1, 4); // tiling
-            getControls().setRange(TEControlTag.SIZE, 1, 0.5, 3);     // scale
-            getControls().setRange(TEControlTag.WOW1, 5, 1, 20);    // iterations (intensity 1)
+            getControls().setRange(TEControlTag.SIZE, 1, 0.5, 3); // scale
+            getControls().setRange(TEControlTag.WOW1, 5, 1, 20); // iterations (intensity 1)
             getControls().setRange(TEControlTag.WOW2, 0.005, 0.001, 0.01); // intensity 2
 
             return List.of(new WaterShader(new PatternTarget(this)));
@@ -134,8 +130,8 @@ public class OrganicPatternConfig {
             getControls().setValue(TEControlTag.SPEED, 0.5);
 
             getControls().setRange(TEControlTag.QUANTITY, 0, 1, 4); // tiling
-            getControls().setRange(TEControlTag.SIZE, 1, 0.5, 3);     // scale
-            getControls().setRange(TEControlTag.WOW1, 5, 1, 20);    // iterations (intensity 1)
+            getControls().setRange(TEControlTag.SIZE, 1, 0.5, 3); // scale
+            getControls().setRange(TEControlTag.WOW1, 5, 1, 20); // iterations (intensity 1)
             getControls().setRange(TEControlTag.WOW2, 0.005, 0.001, 0.01); // intensity 2
 
             return List.of(new WaterShader(new PatternTarget(this)));
@@ -242,7 +238,7 @@ public class OrganicPatternConfig {
         }
     }
 
-    //below patterns for on the fly testing
+    // below patterns for on the fly testing
     @LXCategory("Video Patterns")
     public static class FullscreenVideoA extends ConstructedPattern {
         public FullscreenVideoA(LX lx) {
@@ -251,8 +247,7 @@ public class OrganicPatternConfig {
 
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new BasicVideoPatternEffect(new PatternTarget(this),
-                "resources/pattern/test_vid_a.mp4"));
+            return List.of(new BasicVideoPatternEffect(new PatternTarget(this), "resources/pattern/test_vid_a.mp4"));
         }
     }
 
@@ -264,8 +259,7 @@ public class OrganicPatternConfig {
 
         @Override
         protected List<PatternEffect> createEffects() {
-            return List.of(new BasicVideoPatternEffect(new PatternTarget(this),
-                "resources/pattern/test_vid_b.mp4"));
+            return List.of(new BasicVideoPatternEffect(new PatternTarget(this), "resources/pattern/test_vid_b.mp4"));
         }
     }
 
@@ -293,5 +287,4 @@ public class OrganicPatternConfig {
             return List.of(new MatrixScrolling(new PatternTarget(this)));
         }
     }
-
 }

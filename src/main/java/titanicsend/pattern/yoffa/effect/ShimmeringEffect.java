@@ -4,18 +4,16 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.LXParameter;
+import java.util.Collection;
+import java.util.List;
 import titanicsend.pattern.TECommonControls;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.util.TEColor;
 
-import java.util.Collection;
-import java.util.List;
-
 @LXCategory("Edge FG")
 public class ShimmeringEffect extends PatternEffect {
-
 
     public enum Mode {
         FOREGROUND("Foreground color"),
@@ -32,8 +30,7 @@ public class ShimmeringEffect extends PatternEffect {
         }
     }
 
-    public final EnumParameter<Mode> mode =
-        (EnumParameter<Mode>) new EnumParameter<Mode>("Mode", Mode.FOREGROUND)
+    public final EnumParameter<Mode> mode = (EnumParameter<Mode>) new EnumParameter<Mode>("Mode", Mode.FOREGROUND)
             .setDescription("Color Mode")
             .setWrappable(false);
     private int lastBeat;
@@ -42,11 +39,11 @@ public class ShimmeringEffect extends PatternEffect {
         super(target);
 
         TECommonControls ctl = pattern.getControls();
-        ctl.setRange(TEControlTag.SIZE, 0.1, 0.01, 1.0);  // pulse length
-        ctl.setRange(TEControlTag.WOW2, 0.5, 0, 1.0);  //background brightness
+        ctl.setRange(TEControlTag.SIZE, 0.1, 0.01, 1.0); // pulse length
+        ctl.setRange(TEControlTag.WOW2, 0.5, 0, 1.0); // background brightness
 
         // color mode (in Wow1 control position)
-        ctl.setControl(TEControlTag.WOW1,mode);
+        ctl.setControl(TEControlTag.WOW1, mode);
     }
 
     @Override
@@ -76,16 +73,17 @@ public class ShimmeringEffect extends PatternEffect {
             if (useGradient) baseColor = pattern.getGradientColor((float) distanceFromTarget);
 
             int alpha = 255;
-            if ((distanceFromTarget > 0 && beatCount % beatsPerMeasure == 0) ||
-                    (distanceFromTarget < 0 && beatCount % beatsPerMeasure == beatsPerMeasure - 1)) {
+            if ((distanceFromTarget > 0 && beatCount % beatsPerMeasure == 0)
+                    || (distanceFromTarget < 0 && beatCount % beatsPerMeasure == beatsPerMeasure - 1)) {
                 alpha = 0;
             }
 
-            double brightness = Math.abs(distanceFromTarget) > pulseLength ? bgBrightness :
-                0.5 + 0.5 * (1 - (Math.abs(distanceFromTarget) / pulseLength));
+            double brightness = Math.abs(distanceFromTarget) > pulseLength
+                    ? bgBrightness
+                    : 0.5 + 0.5 * (1 - (Math.abs(distanceFromTarget) / pulseLength));
 
-            int color = TEColor.setBrightness(baseColor,(float) (brightness * sysBri));
-            color = TEColor.reAlpha(color,alpha);
+            int color = TEColor.setBrightness(baseColor, (float) (brightness * sysBri));
+            color = TEColor.reAlpha(color, alpha);
             setColor(point, color);
         }
     }
@@ -106,5 +104,4 @@ public class ShimmeringEffect extends PatternEffect {
         }
         return current - target;
     }
-
 }

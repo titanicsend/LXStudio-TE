@@ -36,10 +36,10 @@ public abstract class TEMidiFighter64Subpattern {
     }
 
     /**
-      Set pixel color at index with controlled "blending". Note that is fast
-      rather than accurate blending. It simply takes the color with the highest
-      alpha value.
-    */
+     * Set pixel color at index with controlled "blending". Note that is fast
+     * rather than accurate blending. It simply takes the color with the highest
+     * alpha value.
+     */
     protected void blendColor(int index, int color) {
         // the simple way:  highest alpha wins!
         int a1 = (0xff000000 & color) >>> 24;
@@ -48,9 +48,9 @@ public abstract class TEMidiFighter64Subpattern {
     }
 
     /**
-     Set pixel color only if underlying color hasn't previously been set (or has been
-     deliberately cleared). This is used to let patterns like "flash" work as a colored
-     backdrop for more complex patterns
+     * Set pixel color only if underlying color hasn't previously been set (or has been
+     * deliberately cleared). This is used to let patterns like "flash" work as a colored
+     * backdrop for more complex patterns
      */
     protected void setColorAsBackground(int index, int color) {
         if (driver.getColors()[index] == 0) {

@@ -26,17 +26,13 @@ public class Iceflow extends TEPerformancePattern {
     // IE shorter tempoDivisions
 
     protected final CompoundParameter focus =
-            new CompoundParameter("Detail", 5, 4, 8)
-                    .setDescription("Detail/Sharpness");
+            new CompoundParameter("Detail", 5, 4, 8).setDescription("Detail/Sharpness");
 
-    public final CompoundParameter energy =
-            new CompoundParameter("Energy", .225, 0, 1)
-                    .setDescription("Oh boy...");
-    protected final CompoundParameter beatScale = (CompoundParameter)
-            new CompoundParameter("Speed", 60, 100, 10)
-                    .setExponent(1)
-                    .setUnits(LXParameter.Units.INTEGER)
-                    .setDescription("Speed relative to beat");
+    public final CompoundParameter energy = new CompoundParameter("Energy", .225, 0, 1).setDescription("Oh boy...");
+    protected final CompoundParameter beatScale = (CompoundParameter) new CompoundParameter("Speed", 60, 100, 10)
+            .setExponent(1)
+            .setUnits(LXParameter.Units.INTEGER)
+            .setDescription("Speed relative to beat");
 
     public Iceflow(LX lx) {
         super(lx, TEShaderView.ALL_PANELS);
@@ -45,16 +41,15 @@ public class Iceflow extends TEPerformancePattern {
         addCommonControls();
 
         // Add this pattern's custom controls.
-        addParameter("focus",focus);
+        addParameter("focus", focus);
         addParameter("energy", energy);
-        addParameter("beatScale",beatScale);
+        addParameter("beatScale", beatScale);
 
-        effect = new NativeShaderPatternEffect("iceflow.fs",  new PatternTarget(this));
+        effect = new NativeShaderPatternEffect("iceflow.fs", new PatternTarget(this));
     }
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
-
 
         // Example of sending a vec3 to a shader.
         // Get the current color and convert to
@@ -64,8 +59,8 @@ public class Iceflow extends TEPerformancePattern {
         float sn = LXColor.s(baseColor) / 100f;
         float bn = LXColor.b(baseColor) / 100f;
 
-        shader.setUniform("color", hn,sn,bn);
-        shader.setUniform("focus",focus.getValuef());
+        shader.setUniform("color", hn, sn, bn);
+        shader.setUniform("focus", focus.getValuef());
 
         /*
         // set time speed for next frame. This moves w/measure rather than beat
@@ -83,8 +78,8 @@ public class Iceflow extends TEPerformancePattern {
         // Sound reactivity - various brightness features are related to energy
         float e = energy.getValuef();
         float phase = 0.05f * TEMath.wavef((float) (measure() * 2)) * e;
-        shader.setUniform("phase",phase);
-        shader.setUniform("energy",e*e);
+        shader.setUniform("phase", phase);
+        shader.setUniform("energy", e * e);
 
         // run the shader
         effect.run(deltaMs);
@@ -99,5 +94,4 @@ public class Iceflow extends TEPerformancePattern {
         effect.onActive();
         shader = effect.getNativeShader();
     }
-
 }

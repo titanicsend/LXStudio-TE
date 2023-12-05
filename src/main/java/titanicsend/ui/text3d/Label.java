@@ -1,10 +1,10 @@
 package titanicsend.ui.text3d;
 
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 
 // Information needed to render a single 3d text label
 public class Label {
@@ -31,16 +31,18 @@ public class Label {
 
         this.modelMatrixBuf = MemoryUtil.memAllocFloat(16);
         this.modelMatrix.get(this.modelMatrixBuf);
-        this.modelMatrix.identity().translate(position.x, position.y, position.z).setRotationXYZ(rotation.x, rotation.y, rotation.z);
+        this.modelMatrix
+                .identity()
+                .translate(position.x, position.y, position.z)
+                .setRotationXYZ(rotation.x, rotation.y, rotation.z);
     }
 
     public Label(String text, Vector3f pos, Vector3f rot) {
-        this(text, pos, rot, 0xffffffff,0);
+        this(text, pos, rot, 0xffffffff, 0);
     }
 
     public void dispose() {
         MemoryUtil.memFree(this.modelMatrixBuf);
         MemoryUtil.memFree(this.vertexBuffer);
     }
-
 }

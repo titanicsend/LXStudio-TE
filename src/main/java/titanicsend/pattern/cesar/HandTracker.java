@@ -1,5 +1,7 @@
 package titanicsend.pattern.cesar;
 
+import static titanicsend.util.TEColor.TRANSPARENT;
+
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LinkedColorParameter;
@@ -9,45 +11,28 @@ import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.StringParameter;
 import titanicsend.color.TEColorType;
-import titanicsend.model.TEPanelModel;
-import titanicsend.model.TEVertex;
 import titanicsend.pattern.TEPattern;
-import titanicsend.util.TEMath;
-
-import static titanicsend.util.TEColor.TRANSPARENT;
 
 @LXCategory("Panel FG")
 public class HandTracker extends TEPattern {
-    public final BooleanParameter circle =
-            new BooleanParameter("Circle", false)
-                    .setDescription("Square or circle");
-    public final CompoundParameter junk1 =
-            new CompoundParameter("Junk1", 0, 0, 100)
-                    .setDescription("Placeholder 1");
-    public final CompoundParameter junk2 =
-            new CompoundParameter("Junk2", 0, 0, 100)
-                    .setDescription("Placeholder 2");
+    public final BooleanParameter circle = new BooleanParameter("Circle", false).setDescription("Square or circle");
+    public final CompoundParameter junk1 = new CompoundParameter("Junk1", 0, 0, 100).setDescription("Placeholder 1");
+    public final CompoundParameter junk2 = new CompoundParameter("Junk2", 0, 0, 100).setDescription("Placeholder 2");
     public final CompoundParameter targetY =
-            new CompoundParameter("Altitude", 25.5, 0, 100)
-                    .setDescription("Target height from ground");
+            new CompoundParameter("Altitude", 25.5, 0, 100).setDescription("Target height from ground");
     public final CompoundParameter targetZ =
-            new CompoundParameter("Azimuth", 61, -100, 100)
-                    .setDescription("Target position left and right");
+            new CompoundParameter("Azimuth", 61, -100, 100).setDescription("Target position left and right");
     public final CompoundParameter targetH =
-            new CompoundParameter("Height", 4.2, 0.25, 100)
-                    .setDescription("Target height");
+            new CompoundParameter("Height", 4.2, 0.25, 100).setDescription("Target height");
 
     public final CompoundParameter targetW =
-            new CompoundParameter("Width", 5, 0.25, 100)
-                    .setDescription("Target width");
+            new CompoundParameter("Width", 5, 0.25, 100).setDescription("Target width");
 
     public final LinkedColorParameter color =
-            registerColor("Color", "color", TEColorType.PRIMARY,
-                    "Color of the pattern");
+            registerColor("Color", "color", TEColorType.PRIMARY, "Color of the pattern");
 
-    public final StringParameter indexTip =
-            new StringParameter("Index Tip", "10,50")
-                    .setDescription("Following a finger tip (X, Z) 0-100 like '(10,50)'");
+    public final StringParameter indexTip = new StringParameter("Index Tip", "10,50")
+            .setDescription("Following a finger tip (X, Z) 0-100 like '(10,50)'");
 
     public HandTracker(LX lx) {
         super(lx);
@@ -99,7 +84,6 @@ public class HandTracker extends TEPattern {
             }
         }
     }
-
 
     @Override
     public void onParameterChanged(LXParameter p) {

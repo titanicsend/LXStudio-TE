@@ -10,13 +10,13 @@ import titanicsend.model.TEEdgeModel;
 
 @LXCategory(LXCategory.TEXTURE)
 public class EdgeSieve extends TEEffect {
-    private final DiscreteParameter gap = new DiscreteParameter("Gap", 0, 0, 11)
-            .setDescription("Number of off pixels between on pixels");
-    private final DiscreteParameter length = new DiscreteParameter("Length", 1, 1, 7)
-            .setDescription("Number of on pixels between gaps");
+    private final DiscreteParameter gap =
+            new DiscreteParameter("Gap", 0, 0, 11).setDescription("Number of off pixels between on pixels");
+    private final DiscreteParameter length =
+            new DiscreteParameter("Length", 1, 1, 7).setDescription("Number of on pixels between gaps");
 
-    private final CompoundParameter offsetFrac = new CompoundParameter("Offset", 0, 0, 1)
-            .setDescription("Phase offset, in fraction of overall length");
+    private final CompoundParameter offsetFrac =
+            new CompoundParameter("Offset", 0, 0, 1).setDescription("Phase offset, in fraction of overall length");
 
     protected int runLength;
     protected int offset;

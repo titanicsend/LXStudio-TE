@@ -1,12 +1,10 @@
 package titanicsend.pattern.yoffa.shader_engine;
 
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.glengine.GLPreprocessor;
-import titanicsend.pattern.glengine.ShaderConfigOpcode;
-import titanicsend.pattern.glengine.ShaderConfiguration;
-
 import java.io.File;
 import java.util.*;
+import titanicsend.pattern.glengine.GLPreprocessor;
+import titanicsend.pattern.glengine.ShaderConfiguration;
 
 /**
  * Everything that needs to be stored for later compilation

@@ -1,17 +1,16 @@
 package titanicsend.pattern.yoffa.effect.shaders;
 
+import static java.lang.Math.*;
+import static java.lang.Math.abs;
+import static titanicsend.util.TEMath.*;
+
 import heronarts.lx.parameter.LXParameter;
+import java.util.Collection;
 import titanicsend.pattern.TECommonControls;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 
-import java.util.Collection;
-
-import static java.lang.Math.abs;
-import static java.lang.Math.*;
-import static titanicsend.util.TEMath.*;
-
-//https://www.shadertoy.com/view/4lB3DG
+// https://www.shadertoy.com/view/4lB3DG
 public class NeonSnakeShader extends FragmentShaderEffect {
     double[] origin;
 
@@ -19,9 +18,9 @@ public class NeonSnakeShader extends FragmentShaderEffect {
         super(target);
         TECommonControls ctl = pattern.getControls();
 
-        ctl.setRange(TEControlTag.SIZE, 0.3, 0.2, 0.9);  // dispersion/scale
-        ctl.setRange(TEControlTag.WOW1, 1, .1, 2);       // glow
-        ctl.setRange(TEControlTag.WOW2, 0, 0, .25);      // beat reactivity
+        ctl.setRange(TEControlTag.SIZE, 0.3, 0.2, 0.9); // dispersion/scale
+        ctl.setRange(TEControlTag.WOW1, 1, .1, 2); // glow
+        ctl.setRange(TEControlTag.WOW2, 0, 0, .25); // beat reactivity
 
         // this is roughly where the center of the snake winds up
         // on the vehicle.
@@ -35,11 +34,12 @@ public class NeonSnakeShader extends FragmentShaderEffect {
         double glow = pattern.getWow1();
 
         // Wow2 makes the snake expand and contract a little with the beat
-        double dispersion = pattern.getSize() + pattern.getWow2() * sin(PI * pattern.getTempo().basis());
+        double dispersion = pattern.getSize()
+                + pattern.getWow2() * sin(PI * pattern.getTempo().basis());
 
         // normalize coordinates
         double[] uv = divideArrays(fragCoordinates, resolution);
-        uv[1] -= pattern.getYPos() + 0.25;  // offset y to roughly center snake vertically
+        uv[1] -= pattern.getYPos() + 0.25; // offset y to roughly center snake vertically
 
         // rotate
         uv = rotate2D(uv, origin);
@@ -63,7 +63,6 @@ public class NeonSnakeShader extends FragmentShaderEffect {
         waveColor[3] = brightness * brightness;
         return waveColor;
     }
-
 
     @Override
     public Collection<LXParameter> getParameters() {

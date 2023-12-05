@@ -1,12 +1,11 @@
 package titanicsend.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import static java.lang.Math.PI;
 
 import heronarts.lx.LX;
 import heronarts.lx.utils.LXUtils;
-
-import static java.lang.Math.PI;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class TEMath {
 
@@ -19,6 +18,7 @@ public class TEMath {
     public static double wave(double n) {
         return (Math.sin(n * PI * 2) + 1) / 2;
     }
+
     public static float wavef(float n) {
         return (float) ((Math.sin(n * PI * 2) + 1) / 2);
     }
@@ -31,6 +31,7 @@ public class TEMath {
         if (n < 0) n += 2;
         return n < 1 ? n : 2 - n;
     }
+
     public static float trianglef(float n) {
         n = floorModf(n * 2, 2);
         if (n < 0) n += 2;
@@ -78,11 +79,9 @@ public class TEMath {
      *  Matrix dot product
      */
     public static double dotProduct(double[] a, double[] b) {
-        if (a.length != b.length)
-            throw new RuntimeException("Arrays must be same size");
+        if (a.length != b.length) throw new RuntimeException("Arrays must be same size");
         double sum = 0;
-        for (int i = 0; i < a.length; i++)
-            sum += a[i] * b[i];
+        for (int i = 0; i < a.length; i++) sum += a[i] * b[i];
         return sum;
     }
 
@@ -96,13 +95,10 @@ public class TEMath {
      *
      *  See: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/smoothstep.xhtml
      */
-    public static double smoothstep(double edge0, double edge1, double x)
-    {
-        if (x < edge0)
-            return 0;
+    public static double smoothstep(double edge0, double edge1, double x) {
+        if (x < edge0) return 0;
 
-        if (x >= edge1)
-            return 1;
+        if (x >= edge1) return 1;
 
         // Scale/bias into [0..1] range
         x = (x - edge0) / (edge1 - edge0);
@@ -236,14 +232,14 @@ public class TEMath {
 
     public static double[][] multiplyMatricies(double[][] m1, double[][] m2) {
         int m1ColLength = m1[0].length; // m1 columns length
-        int m2RowLength = m2.length;    // m2 rows length
-        if(m1ColLength != m2RowLength) return null; // matrix multiplication is not possible
-        int mRRowLength = m1.length;    // m result rows length
+        int m2RowLength = m2.length; // m2 rows length
+        if (m1ColLength != m2RowLength) return null; // matrix multiplication is not possible
+        int mRRowLength = m1.length; // m result rows length
         int mRColLength = m2[0].length; // m result columns length
         double[][] mResult = new double[mRRowLength][mRColLength];
-        for(int i = 0; i < mRRowLength; i++) {         // rows from m1
-            for(int j = 0; j < mRColLength; j++) {     // columns from m2
-                for(int k = 0; k < m1ColLength; k++) { // columns from m1
+        for (int i = 0; i < mRRowLength; i++) { // rows from m1
+            for (int j = 0; j < mRColLength; j++) { // columns from m2
+                for (int k = 0; k < m1ColLength; k++) { // columns from m1
                     mResult[i][j] += m1[i][k] * m2[k][j];
                 }
             }
@@ -252,7 +248,7 @@ public class TEMath {
     }
 
     public static double[] multiplyVectorByMatrix(double[] vector, double[][] matrix) {
-        return multiplyMatricies(new double[][]{vector}, matrix)[0];
+        return multiplyMatricies(new double[][] {vector}, matrix)[0];
     }
 
     /** Exponential moving average
@@ -333,7 +329,6 @@ public class TEMath {
         public float getValuef() {
             return (float) average;
         }
-
     }
 
     public static long calcSum(long[] values) {
@@ -362,8 +357,7 @@ public class TEMath {
     }
 
     public static double calcInlierMean(long[] values, double outlierZscore) {
-        assert outlierZscore > 0 :
-            "Outlier argument must be > 0, it is the absolute value of the limit of inliers";
+        assert outlierZscore > 0 : "Outlier argument must be > 0, it is the absolute value of the limit of inliers";
 
         double avg = calcMean(values);
         double stddev = calcStddev(values);
@@ -383,8 +377,8 @@ public class TEMath {
     }
 
     /*
-        Linearly weighted recency mean.
-     */
+       Linearly weighted recency mean.
+    */
     public static double calcRecencyWeightedMean(ArrayList<Long> values) {
         int n = values.size();
         double denom = n * (n + 1) / 2.;
@@ -400,11 +394,12 @@ public class TEMath {
         LINEAR_RAMP_DOWN,
         LINEAR_RAMP_UP;
     }
-    
-    static final private double EASE_WARN_FREQUENCY = 10000;
-    static private double lastEaseWarn = 0;
 
-    public static double ease(EasingFunction fn, double inp, double minInput, double maxInput, double minOutput, double maxOutput) {
+    private static final double EASE_WARN_FREQUENCY = 10000;
+    private static double lastEaseWarn = 0;
+
+    public static double ease(
+            EasingFunction fn, double inp, double minInput, double maxInput, double minOutput, double maxOutput) {
         double inputRank = (inp - minInput) / (maxInput - minInput);
         double outputRange = maxOutput - minOutput;
 
@@ -420,13 +415,13 @@ public class TEMath {
             TE.err("Unsupported easing func: %s", fn);
             result = minOutput + inputRank * outputRange;
         }
-        
+
         if (result < minOutput || result > maxOutput) {
-        	if (System.currentTimeMillis() - EASE_WARN_FREQUENCY > lastEaseWarn) {
-        		LX.log("WARNING: TEMath.ease() method received illegal parameter values");
-        		lastEaseWarn = System.currentTimeMillis();
-        	}
-        	result = LXUtils.constrain(result, minOutput, maxOutput);
+            if (System.currentTimeMillis() - EASE_WARN_FREQUENCY > lastEaseWarn) {
+                LX.log("WARNING: TEMath.ease() method received illegal parameter values");
+                lastEaseWarn = System.currentTimeMillis();
+            }
+            result = LXUtils.constrain(result, minOutput, maxOutput);
         }
         return result;
     }

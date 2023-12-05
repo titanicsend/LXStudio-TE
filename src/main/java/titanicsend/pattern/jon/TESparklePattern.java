@@ -2,14 +2,14 @@ package titanicsend.pattern.jon;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.model.LXPoint;
-import heronarts.lx.parameter.CompoundParameter;
-import titanicsend.pattern.TEPerformancePattern;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXModel;
+import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.LXWaveshape;
+import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.ObjectParameter;
 import heronarts.lx.utils.LXUtils;
+import titanicsend.pattern.TEPerformancePattern;
 
 /**
  * Copyright 2020- Mark C. Slee, Heron Arts LLC
@@ -31,14 +31,13 @@ import heronarts.lx.utils.LXUtils;
  * This version:
  * adapted for use with Titanic's End live performance controls - 2023
  */
-
 @LXCategory(LXCategory.TEXTURE)
 public class TESparklePattern extends TEPerformancePattern {
 
     public class Engine {
 
-        protected final static int MAX_SPARKLES = 1024;
-        protected final static double MAX_DENSITY = 4;
+        protected static final int MAX_SPARKLES = 1024;
+        protected static final double MAX_DENSITY = 4;
 
         private class Sparkle {
 
@@ -79,12 +78,8 @@ public class TESparklePattern extends TEPerformancePattern {
             }
         }
 
-        public final ObjectParameter<LXWaveshape> waveshape = new ObjectParameter<>("Wave", new LXWaveshape[]{
-                LXWaveshape.TRI,
-                LXWaveshape.SIN,
-                LXWaveshape.UP,
-                LXWaveshape.DOWN,
-                LXWaveshape.SQUARE,
+        public final ObjectParameter<LXWaveshape> waveshape = new ObjectParameter<>("Wave", new LXWaveshape[] {
+            LXWaveshape.TRI, LXWaveshape.SIN, LXWaveshape.UP, LXWaveshape.DOWN, LXWaveshape.SQUARE,
         });
 
         private final Sparkle[] sparkles = new Sparkle[MAX_SPARKLES];
@@ -97,15 +92,13 @@ public class TESparklePattern extends TEPerformancePattern {
         private int numSparkles;
         private int maxPixelsPerSparkle;
 
-        public final CompoundParameter minLevel = (CompoundParameter)
-                new CompoundParameter("Min", 75, 0, 100)
-                        .setUnits(CompoundParameter.Units.PERCENT)
-                        .setDescription("Minimum brightness level, as a percentage of the maximum");
+        public final CompoundParameter minLevel = (CompoundParameter) new CompoundParameter("Min", 75, 0, 100)
+                .setUnits(CompoundParameter.Units.PERCENT)
+                .setDescription("Minimum brightness level, as a percentage of the maximum");
 
-        public final CompoundParameter maxLevel = (CompoundParameter)
-                new CompoundParameter("Max", 100, 0, 100)
-                        .setUnits(CompoundParameter.Units.PERCENT)
-                        .setDescription("Peak sparkle brightness level");
+        public final CompoundParameter maxLevel = (CompoundParameter) new CompoundParameter("Max", 100, 0, 100)
+                .setUnits(CompoundParameter.Units.PERCENT)
+                .setDescription("Peak sparkle brightness level");
 
         public Engine(LXModel model) {
             setModel(model);
@@ -166,7 +159,10 @@ public class TESparklePattern extends TEPerformancePattern {
             // Run all the sparkles
             for (int i = 0; i < this.numSparkles; ++i) {
                 final Sparkle sparkle = this.sparkles[i];
-                double sparkleInterval = LXUtils.lerp(maxIntervalMs, minIntervalMs, LXUtils.constrain(speed + variation * (sparkle.randomVar - .5), 0, 1));
+                double sparkleInterval = LXUtils.lerp(
+                        maxIntervalMs,
+                        minIntervalMs,
+                        LXUtils.constrain(speed + variation * (sparkle.randomVar - .5), 0, 1));
                 sparkle.basis += (Math.abs(getDeltaMs())) / sparkleInterval;
 
                 // Check if the sparkle has looped
@@ -232,13 +228,11 @@ public class TESparklePattern extends TEPerformancePattern {
         // Sparkle rate - Note default is zero, but we start out
         // with speed at 0.5 because at zero nothing sparkles
         // and you get an all black car.  Yay!
-        controls.setRange(TEControlTag.SPEED, 0, -2, 2)
-                        .setValue(TEControlTag.SPEED, 0.5);
-
+        controls.setRange(TEControlTag.SPEED, 0, -2, 2).setValue(TEControlTag.SPEED, 0.5);
 
         // Sparkle density
         controls.setRange(TEControlTag.QUANTITY, 50, 0, 100 * Engine.MAX_DENSITY)
-                .setExponent(TEControlTag.QUANTITY,2);
+                .setExponent(TEControlTag.QUANTITY, 2);
 
         // Base brightness level
         controls.setRange(TEControlTag.WOW1, 0, 0, 100);
@@ -247,13 +241,13 @@ public class TESparklePattern extends TEPerformancePattern {
         controls.setRange(TEControlTag.WOW2, 0, -1, 1);
 
         // Waveshape (in Size control position)
-        controls.setControl(TEControlTag.SIZE,engine.waveshape);
+        controls.setControl(TEControlTag.SIZE, engine.waveshape);
 
         // minlevel (in XPos control position)
-        controls.setControl(TEControlTag.XPOS,engine.minLevel);
+        controls.setControl(TEControlTag.XPOS, engine.minLevel);
 
         // maxlevel (in YPos control position)
-        controls.setControl(TEControlTag.YPOS,engine.maxLevel);
+        controls.setControl(TEControlTag.YPOS, engine.maxLevel);
 
         addCommonControls();
     }
@@ -269,8 +263,7 @@ public class TESparklePattern extends TEPerformancePattern {
         int i = 0;
         int color = calcColor();
         for (LXPoint p : model.points) {
-            colors[p.index] =
-                    LXColor.multiply(color, LXColor.gray(LXUtils.clamp(engine.outputLevels[i++], 0, 100)));
+            colors[p.index] = LXColor.multiply(color, LXColor.gray(LXUtils.clamp(engine.outputLevels[i++], 0, 100)));
         }
     }
 }

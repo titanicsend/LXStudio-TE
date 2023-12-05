@@ -8,28 +8,25 @@ import heronarts.lx.color.LXSwatch;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.osc.OscMessage;
 import heronarts.lx.parameter.BooleanParameter;
-import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.parameter.BooleanParameter.Mode;
+import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.pattern.LXPattern;
+import java.io.File;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.autopilot.events.TEPhraseEvent;
 import titanicsend.app.autopilot.utils.TETimeUtils;
 import titanicsend.util.TE;
 import titanicsend.util.TEMath;
 
-import java.io.File;
-import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectListener {
 
     public final BooleanParameter enabled =
-        new BooleanParameter("Enabled", false)
-        .setMode(Mode.TOGGLE)
-        .setDescription("AutoVJ On/Off");
+            new BooleanParameter("Enabled", false).setMode(Mode.TOGGLE).setDescription("AutoVJ On/Off");
 
     private final LXParameterListener enabledListener = (p) -> {
-      onEnabled(this.enabled.isOn());
+        onEnabled(this.enabled.isOn());
     };
 
     // number of bars to fade out on various occasions
@@ -42,8 +39,8 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
 
     // number of bars after a chorus to continue leaving
     // FX channels visible
-    private final double TRIGGERS_AT_CHORUS_LENGTH_BARS = 1.5; //1.0;
-    private final double STROBES_AT_CHORUS_LENGTH_BARS = 1.75; //1.25;
+    private final double TRIGGERS_AT_CHORUS_LENGTH_BARS = 1.5; // 1.0;
+    private final double STROBES_AT_CHORUS_LENGTH_BARS = 1.75; // 1.25;
 
     // how long do we think the shortest legit phrase might be?
     private static final int MIN_NUM_BEATS_IN_PHRASE = 4;
@@ -54,12 +51,12 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
 
     // various fader levels of importance
     private static final double LEVEL_FULL = 1.0,
-                           LEVEL_MISPREDICTED_FADE_OUT = 0.75, // fading out mistaken transition
-                           LEVEL_PREV_FADE_OUT = 0.75, // fading out prev channel
-                           LEVEL_BARELY_ON = 0.03,
-                           LEVEL_HALF = 0.5,
-                           LEVEL_OFF = 0.0,
-                           LEVEL_FADE_IN = 0.4; // fading in next channel
+            LEVEL_MISPREDICTED_FADE_OUT = 0.75, // fading out mistaken transition
+            LEVEL_PREV_FADE_OUT = 0.75, // fading out prev channel
+            LEVEL_BARELY_ON = 0.03,
+            LEVEL_HALF = 0.5,
+            LEVEL_OFF = 0.0,
+            LEVEL_FADE_IN = 0.4; // fading in next channel
 
     // Probability that we launch CHORUS clips upon a repeated CHORUS phrase
     // sometimes there are like 5 CHORUS's in a row, and want to keep some variety
@@ -106,20 +103,13 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
     private boolean prevFadeOutMode = false;
 
     private TEChannelName prevChannelName, curChannelName, nextChannelName, oldNextChannelName;
-    private TEPhrase prevPhrase = null,
-                     curPhrase = null,
-                     nextPhrase = null,
-                     oldNextPhrase = null;
+    private TEPhrase prevPhrase = null, curPhrase = null, nextPhrase = null, oldNextPhrase = null;
 
     // use this to track the last set value of each of these faders
-    private double nextChannelFaderVal = 0.0,
-                   oldNextChannelFaderVal = 0.0,
-                   fxChannelFaderVal = 0.0;
+    private double nextChannelFaderVal = 0.0, oldNextChannelFaderVal = 0.0, fxChannelFaderVal = 0.0;
 
     // FX channels
-    private LXChannel triggerChannel = null,
-                      strobesChannel = null,
-                      fxChannel = null;
+    private LXChannel triggerChannel = null, strobesChannel = null, fxChannel = null;
 
     private TEAutopilotMixer autoMixer;
 
@@ -170,15 +160,15 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
         autoMixer.setFaderTo(curChannelName, LEVEL_FULL);
         triggerChannel = autoMixer.getChannelByName(TEChannelName.TRIGGERS);
         strobesChannel = autoMixer.getChannelByName(TEChannelName.STROBES);
-        
+
         oldNextFadeOutMode = false;
         prevFadeOutMode = false;
-        
+
         // If the channel indexes didn't exist, it might just be a project with too few channels.  Bail on this.
         if (curChannel == null || nextChannel == null || triggerChannel == null || strobesChannel == null) {
-        	// Cancel autopilot
-        	TE.log("Cancelling autopilot, special channels not found.");
-        	return false;
+            // Cancel autopilot
+            TE.log("Cancelling autopilot, special channels not found.");
+            return false;
         }
 
         // set palette timer
@@ -206,7 +196,7 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
         try {
             TEOscMessage oscTE = new TEOscMessage(msg);
 
-            //TE.log("Adding OSC message to queue: %s", address);
+            // TE.log("Adding OSC message to queue: %s", address);
             history.setLastOscMsgAt(oscTE.timestamp);
 
             // if we'd previously entered No OSC mode, let's turn that off
@@ -256,14 +246,12 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
             lx.engine.palette.setSwatch(newSwatch);
 
             // if you repeat the setSwatch operation it happens immediately
-            if (immediate)
-                lx.engine.palette.setSwatch(newSwatch);
+            if (immediate) lx.engine.palette.setSwatch(newSwatch);
 
         } else {
             // otherwise, just proceed to the next one
             lx.engine.palette.triggerSwatchCycle.setValue(true);
-            if (immediate)
-                lx.engine.palette.triggerSwatchCycle.setValue(true);
+            if (immediate) lx.engine.palette.triggerSwatchCycle.setValue(true);
         }
     }
 
@@ -281,12 +269,10 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
 
         // if this isn't a downbeat, ignore. want to wait for the start of a
         // bar to change modes or launch a new phrase if warranted
-        if (beatCount != 0)
-            return;
+        if (beatCount != 0) return;
 
         // if we're seeing phrase OSC messages regularly, no need to continue either
-        if (beatAt - history.getLastOscPhraseAt() < OSC_PHRASE_TIMEOUT_MS)
-            return;
+        if (beatAt - history.getLastOscPhraseAt() < OSC_PHRASE_TIMEOUT_MS) return;
 
         // are we currently in Osc phrase mode and need to transition?
         if (!oscBeatModeOnlyOn) {
@@ -306,7 +292,7 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
             // we've been in osc beat only mode for a while now, we just need to decide if it's
             // time to transition to a new phrase
 
-            //TODO(will) based on audio signal, is this a likely CHORUS start?
+            // TODO(will) based on audio signal, is this a likely CHORUS start?
             // if so, can change nextPhrase
 
             // get some useful stats about the current phrase
@@ -369,22 +355,25 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
                     int msSinceLastDownbeat = history.calcMsSinceLastDownbeat();
                     int msSinceLastOscPhrase = history.calcMsSinceLastOscPhraseChange();
 
-                    int msInBeat = (int)TETimeUtils.calcMsPerBeat(lx.engine.tempo.bpm());
+                    int msInBeat = (int) TETimeUtils.calcMsPerBeat(lx.engine.tempo.bpm());
                     double howFarThroughMeasure = lx.engine.tempo.getBasis(Tempo.Division.WHOLE); // 0 to 1
 
-                    //TE.log("msSinceLastMasterChange=%d, msSinceLastOscPhrase=%d, msSinceLastDownbeat=%d, howFarThroughMeasure=%f",
+                    // TE.log("msSinceLastMasterChange=%d, msSinceLastOscPhrase=%d, msSinceLastDownbeat=%d,
+                    // howFarThroughMeasure=%f",
                     //        msSinceLastMasterChange, msSinceLastOscPhrase, msSinceLastDownbeat, howFarThroughMeasure);
 
                     // conditions
                     boolean isInMiddleOfMeasure = howFarThroughMeasure > 0.2 && howFarThroughMeasure < 0.8;
-                    boolean wasRecentMasterChange = msSinceLastMasterChange < msInBeat * MIN_NUM_BEATS_SINCE_TRANSITION_FOR_NEW_PHRASE;
+                    boolean wasRecentMasterChange =
+                            msSinceLastMasterChange < msInBeat * MIN_NUM_BEATS_SINCE_TRANSITION_FOR_NEW_PHRASE;
                     boolean wasRecentPhraseChange = msSinceLastOscPhrase < msInBeat * MIN_NUM_BEATS_IN_PHRASE;
 
-                    // make decision -- this is configurable. I found that a pretty zero tolerance policy was most effective
+                    // make decision -- this is configurable. I found that a pretty zero tolerance policy was most
+                    // effective
                     if (wasRecentMasterChange || wasRecentPhraseChange) {
-                        //TE.log("isInMiddleOfMeasure=%s, wasRecentMasterChange=%s, wasRecentPhraseChange=%s",
+                        // TE.log("isInMiddleOfMeasure=%s, wasRecentMasterChange=%s, wasRecentPhraseChange=%s",
                         //        isInMiddleOfMeasure, wasRecentMasterChange, wasRecentPhraseChange);
-                        //TE.log("Not a real phrase event -> filtering!");
+                        // TE.log("Not a real phrase event -> filtering!");
                         continue;
                     }
 
@@ -397,7 +386,7 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
                     TE.log("Don't recognize OSC message: %s", address);
                 }
             }
-            //if (!msgs.equals(""))
+            // if (!msgs.equals(""))
             //    TE.log("OSC RECEIEVED: %s", msgs);
 
         } catch (Exception e) {
@@ -421,7 +410,7 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
                 history.setLastSynthethicPhraseAt(now);
                 onPhraseChange(syntheticOscAddr, (long) now);
 
-            // if we are in this mode already, just check if we need to trigger another phrase
+                // if we are in this mode already, just check if we need to trigger another phrase
             } else if (noOscModeOn) {
                 double msInPhrase = TETimeUtils.calcPhraseLengthMs(lx.engine.tempo.bpm(), SYNTHETIC_PHRASE_LEN_BARS);
                 if (now - history.getLastSynthethicPhraseAt() > msInPhrase) {
@@ -456,12 +445,13 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
                 double nextChannelFaderFloorLevel = Math.min(
                         nextChannelFaderVal,
                         LEVEL_FADE_IN * (1.0 - Math.pow(0.5, normalizedNumPhrases - 1))); // 0 -> .5 - > .75  -> etc
-                double nextChannelFaderCeilingLevel = LEVEL_FADE_IN * (1.0 - Math.pow(0.5, normalizedNumPhrases));  // .5 -> .75 -> .875 -> etc
+                double nextChannelFaderCeilingLevel =
+                        LEVEL_FADE_IN * (1.0 - Math.pow(0.5, normalizedNumPhrases)); // .5 -> .75 -> .875 -> etc
 
                 double range = nextChannelFaderCeilingLevel - nextChannelFaderFloorLevel;
                 // can play around with the 1.5 exponent to make curve steeper!
                 nextChannelFaderVal = range * Math.pow(estFracCompleted, 1.5) + nextChannelFaderFloorLevel;
-                //TE.log("NextChannel: Setting fader=%s to %f", nextChannelName, nextChannelFaderVal);
+                // TE.log("NextChannel: Setting fader=%s to %f", nextChannelName, nextChannelFaderVal);
                 autoMixer.setFaderTo(nextChannelName, nextChannelFaderVal);
             }
 
@@ -483,26 +473,32 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
     private void updateFadeOutChannels(double curPhraseLenBars) {
         // update fader value for OLD NEXT channel
         if (oldNextChannelName != null && oldNextFadeOutMode && curPhraseLenBars < MISPREDICTED_FADE_OUT_BARS) {
-            //TE.log("FADE OLD NEXT: Fading out %s", oldNextChannelName);
+            // TE.log("FADE OLD NEXT: Fading out %s", oldNextChannelName);
             double newVal = TEMath.ease(
                     TEMath.EasingFunction.LINEAR_RAMP_DOWN,
-                    curPhraseLenBars, 0.0, MISPREDICTED_FADE_OUT_BARS,
-                    LEVEL_OFF, LEVEL_MISPREDICTED_FADE_OUT);
+                    curPhraseLenBars,
+                    0.0,
+                    MISPREDICTED_FADE_OUT_BARS,
+                    LEVEL_OFF,
+                    LEVEL_MISPREDICTED_FADE_OUT);
             autoMixer.setFaderTo(oldNextChannelName, newVal);
         }
 
         // update fader for prev channel
         if (prevChannelName != null) {
             if (prevFadeOutMode && curPhraseLenBars < PREV_FADE_OUT_BARS) {
-                //TE.log("FADE PREV: Fading out %s", prevChannelName);
+                // TE.log("FADE PREV: Fading out %s", prevChannelName);
                 double newVal = TEMath.ease(
                         TEMath.EasingFunction.LINEAR_RAMP_DOWN,
-                        curPhraseLenBars, 0.0, PREV_FADE_OUT_BARS,
-                        LEVEL_OFF, LEVEL_PREV_FADE_OUT);
+                        curPhraseLenBars,
+                        0.0,
+                        PREV_FADE_OUT_BARS,
+                        LEVEL_OFF,
+                        LEVEL_PREV_FADE_OUT);
                 autoMixer.setFaderTo(prevChannelName, newVal);
 
             } else if (curPhraseLenBars >= PREV_FADE_OUT_BARS) {
-                //TE.log("FADE PREV: Fading out %s", prevChannelName);
+                // TE.log("FADE PREV: Fading out %s", prevChannelName);
                 autoMixer.setFaderTo(prevChannelName, LEVEL_OFF);
             }
         }
@@ -513,44 +509,50 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
      * @param curPhraseLenBars
      */
     private void updateFXChannels(double curPhraseLenBars) {
-    	//Avoid crash
+        // Avoid crash
         // first, set strobes
-	    if (strobesChannel != null) {
-	        double newStrobeChannelVal = -1;
-	        if (strobesChannel.fader.getValue() > 0.0 && curPhraseLenBars < STROBES_AT_CHORUS_LENGTH_BARS) {
-	            newStrobeChannelVal = TEMath.ease(
-	                    TEMath.EasingFunction.LINEAR_RAMP_DOWN,
-	                    curPhraseLenBars, 0.0, STROBES_AT_CHORUS_LENGTH_BARS,
-	                    LEVEL_OFF, LEVEL_FULL);
-	
-	        } else if (curPhraseLenBars >= PREV_FADE_OUT_BARS) {
-	            newStrobeChannelVal = LEVEL_OFF;
-	        }
-	
-	        if (newStrobeChannelVal >= 0) {
-	            //TE.log("Strobes: Setting fader=%s to %f", TEChannelName.STROBES, newStrobeChannelVal);
+        if (strobesChannel != null) {
+            double newStrobeChannelVal = -1;
+            if (strobesChannel.fader.getValue() > 0.0 && curPhraseLenBars < STROBES_AT_CHORUS_LENGTH_BARS) {
+                newStrobeChannelVal = TEMath.ease(
+                        TEMath.EasingFunction.LINEAR_RAMP_DOWN,
+                        curPhraseLenBars,
+                        0.0,
+                        STROBES_AT_CHORUS_LENGTH_BARS,
+                        LEVEL_OFF,
+                        LEVEL_FULL);
+
+            } else if (curPhraseLenBars >= PREV_FADE_OUT_BARS) {
+                newStrobeChannelVal = LEVEL_OFF;
+            }
+
+            if (newStrobeChannelVal >= 0) {
+                // TE.log("Strobes: Setting fader=%s to %f", TEChannelName.STROBES, newStrobeChannelVal);
                 autoMixer.setFaderTo(TEChannelName.STROBES, newStrobeChannelVal);
-	        }
-	    }
+            }
+        }
 
         // now set triggers
-	    if (triggerChannel != null) {
-	        double newTriggerChannelVal = -1;
-	        if (triggerChannel.fader.getValue() > 0.0 && curPhraseLenBars < TRIGGERS_AT_CHORUS_LENGTH_BARS) {
-	            newTriggerChannelVal = TEMath.ease(
-	                    TEMath.EasingFunction.LINEAR_RAMP_DOWN,
-	                    curPhraseLenBars, 0.0, TRIGGERS_AT_CHORUS_LENGTH_BARS,
-	                    LEVEL_OFF, LEVEL_FULL);
-	
-	        } else if (curPhraseLenBars >= TRIGGERS_AT_CHORUS_LENGTH_BARS) {
-	            newTriggerChannelVal = LEVEL_OFF;
-	        }
-	
-	        if (newTriggerChannelVal >= 0) {
-	            //TE.log("Triggers: Setting fader=%s to %f", TEChannelName.TRIGGERS, newTriggerChannelVal);
+        if (triggerChannel != null) {
+            double newTriggerChannelVal = -1;
+            if (triggerChannel.fader.getValue() > 0.0 && curPhraseLenBars < TRIGGERS_AT_CHORUS_LENGTH_BARS) {
+                newTriggerChannelVal = TEMath.ease(
+                        TEMath.EasingFunction.LINEAR_RAMP_DOWN,
+                        curPhraseLenBars,
+                        0.0,
+                        TRIGGERS_AT_CHORUS_LENGTH_BARS,
+                        LEVEL_OFF,
+                        LEVEL_FULL);
+
+            } else if (curPhraseLenBars >= TRIGGERS_AT_CHORUS_LENGTH_BARS) {
+                newTriggerChannelVal = LEVEL_OFF;
+            }
+
+            if (newTriggerChannelVal >= 0) {
+                // TE.log("Triggers: Setting fader=%s to %f", TEChannelName.TRIGGERS, newTriggerChannelVal);
                 autoMixer.setFaderTo(TEChannelName.TRIGGERS, newTriggerChannelVal);
-	        }
-	    }
+            }
+        }
     }
 
     /**
@@ -618,8 +620,9 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
         this.updatePhraseState(detectedPhrase);
         boolean predictedCorrectly = (oldNextPhrase == curPhrase);
         boolean isSamePhrase = (prevPhrase == curPhrase);
-        TE.log("HIT: %s: [%s -> %s -> %s (?)], (old next: %s) OSC beats=%s No OSC=%s"
-                , curPhrase, prevPhrase, curPhrase, nextPhrase, oldNextPhrase, oscBeatModeOnlyOn, noOscModeOn);
+        TE.log(
+                "HIT: %s: [%s -> %s -> %s (?)], (old next: %s) OSC beats=%s No OSC=%s",
+                curPhrase, prevPhrase, curPhrase, nextPhrase, oldNextPhrase, oscBeatModeOnlyOn, noOscModeOn);
 
         // record history for pattern library
         // need to do this before we a) pick new patterns, and b) logPhrase() with historian
@@ -637,7 +640,7 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
             // our current channel should just keep running!
             // our next channel should be reset to 0.0
             // past channel == current channel, so no transition down needed
-            //TE.log("[AUTOVJ] Same phrase! no changes");
+            // TE.log("[AUTOVJ] Same phrase! no changes");
 
         } else {
             // update channel name & references based on phrase change
@@ -659,7 +662,7 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
                 prevFadeOutMode = (curPhrase == TEPhrase.DOWN || curPhrase == TEPhrase.UP);
 
                 // we nailed it!
-                //TE.log("[AUTOVJ] We predicted correctly: prevFadeOutMode=%s", prevFadeOutMode);
+                // TE.log("[AUTOVJ] We predicted correctly: prevFadeOutMode=%s", prevFadeOutMode);
 
             } else {
                 // we didn't predict the phrase change correctly, turn off
@@ -667,18 +670,21 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
                 oldNextChannelName = TEChannelName.getChannelNameFromPhraseType(oldNextPhrase);
                 oldNextChannel = autoMixer.getChannelByName(oldNextChannelName);
                 oldNextFadeOutMode = (oldNextChannel != null);
-                //TE.log("[AUTOVJ] We didn't predict right, oldNextChannelName=%s, oldNextFadeOutMode=%s", oldNextChannelName, oldNextFadeOutMode);
+                // TE.log("[AUTOVJ] We didn't predict right, oldNextChannelName=%s, oldNextFadeOutMode=%s",
+                // oldNextChannelName, oldNextFadeOutMode);
 
                 // pick a new pattern for our current channel, since we didn't see this coming
                 // try to make it compatible with the one we were fading in, since we'll fade that mistaken one out
                 if (prevChannel != null) {
-                    newCurPattern = this.library.pickRandomCompatibleNextPattern(prevChannel.getActivePattern(), prevPhrase, curPhrase);
+                    newCurPattern = this.library.pickRandomCompatibleNextPattern(
+                            prevChannel.getActivePattern(), prevPhrase, curPhrase);
                 } else {
                     newCurPattern = this.library.pickRandomPattern(curPhrase);
                 }
 
                 // print the current active pattern, along with what we're going to change to
-                //TE.log("active pattern in current channel: %s, going to change to=%s", curChannel.getActivePattern(), newCurPattern);
+                // TE.log("active pattern in current channel: %s, going to change to=%s", curChannel.getActivePattern(),
+                // newCurPattern);
                 startPattern(curChannel, newCurPattern);
             }
 
@@ -697,9 +703,10 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
             // add more phrase types later!
             if (prevPhrase != nextPhrase) {
                 // pick a pattern we'll start fading into on "nextChannel" during the new few bars
-                LXPattern newNextPattern = this.library.pickRandomCompatibleNextPattern(newCurPattern, curPhrase, nextPhrase);
+                LXPattern newNextPattern =
+                        this.library.pickRandomCompatibleNextPattern(newCurPattern, curPhrase, nextPhrase);
                 startPattern(nextChannel, newNextPattern);
-                //TE.log("Selected new next pattern: %s, for channel %s", newNextPattern, nextChannelName);
+                // TE.log("Selected new next pattern: %s, for channel %s", newNextPattern, nextChannelName);
             }
         }
 
@@ -710,9 +717,11 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
 
         // change palette if needed, only on CHORUS starts, for now
         long msSincePaletteStart = System.currentTimeMillis() - history.getPaletteStartedAt();
-        //TE.log("Palette: %s, isSamePhrase: %s, msSincePaletteStart > PALETTE_DURATION_MS: %s (now=%d, msSincePaletteStart=%d, PALETTE_DURATION_MS=%d, paletteStartedAt=%d)"
+        // TE.log("Palette: %s, isSamePhrase: %s, msSincePaletteStart > PALETTE_DURATION_MS: %s (now=%d,
+        // msSincePaletteStart=%d, PALETTE_DURATION_MS=%d, paletteStartedAt=%d)"
         //        , curPhrase, isSamePhrase, msSincePaletteStart > PALETTE_DURATION_MS
-        //        , System.currentTimeMillis(), msSincePaletteStart, PALETTE_DURATION_MS, history.getPaletteStartedAt());
+        //        , System.currentTimeMillis(), msSincePaletteStart, PALETTE_DURATION_MS,
+        // history.getPaletteStartedAt());
         if (curPhrase == TEPhrase.CHORUS && !isSamePhrase && msSincePaletteStart > PALETTE_DURATION_MS) {
             // do it immediately and proceed to the next one
             TE.log("Palette change!");
@@ -788,9 +797,9 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
                 this.startFailed = false;
                 return;
             } else {
-              TE.log("Attempting to stop AutoVJ...");
-              // AutoVJ was running, now disable it.  Enabled parameter has already been set to False.
-              stopAutoVJ();
+                TE.log("Attempting to stop AutoVJ...");
+                // AutoVJ was running, now disable it.  Enabled parameter has already been set to False.
+                stopAutoVJ();
             }
         }
     }
@@ -831,7 +840,7 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
      * @return
      */
     public TEPhrase guessNextPhrase(TEPhrase newPhrase) {
-        //TODO(will) make this smarter
+        // TODO(will) make this smarter
         boolean isSame = false;
         try {
             TEPhraseEvent prevPhraseEvt = history.phraseEvents.get(history.phraseEvents.size() - 2);
@@ -845,71 +854,68 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
         TEPhrase estimatedNextPhrase;
 
         // very dumb rule-based approach for now
-        if (newPhrase == TEPhrase.TRO)
-            estimatedNextPhrase = TEPhrase.UP;
-        else if (newPhrase == TEPhrase.UP)
-            estimatedNextPhrase = TEPhrase.CHORUS;
-        else if (newPhrase == TEPhrase.DOWN)
-            estimatedNextPhrase = TEPhrase.UP;
-        else if (newPhrase == TEPhrase.CHORUS)
-            estimatedNextPhrase = TEPhrase.DOWN;
-        else
-            estimatedNextPhrase = TEPhrase.DOWN;
+        if (newPhrase == TEPhrase.TRO) estimatedNextPhrase = TEPhrase.UP;
+        else if (newPhrase == TEPhrase.UP) estimatedNextPhrase = TEPhrase.CHORUS;
+        else if (newPhrase == TEPhrase.DOWN) estimatedNextPhrase = TEPhrase.UP;
+        else if (newPhrase == TEPhrase.CHORUS) estimatedNextPhrase = TEPhrase.DOWN;
+        else estimatedNextPhrase = TEPhrase.DOWN;
 
         return estimatedNextPhrase;
     }
 
     // Keep this for possible future reworking of the autopilot startup
     private boolean wasAutopilotEnabled = false;
-    
-	@Override
-	public void projectChanged(File file, Change change) {
-		if (change == Change.TRY || change == Change.NEW) {
-			// About to do an openFile
-			this.wasAutopilotEnabled = this.enabled.isOn();
-			
-			// JKB note: Ok the Change.Open listener gets broadcast *after* the objects are loaded from file,
-			// so I think we'd better release the channel references here
-			releaseProjectReferences();			
-			
-			if (this.enabled.isOn()) {
-				LX.log("Disabling Autopilot for file open...");
-				this.enabled.setValue(false);
-			}			
-		} else if (change == Change.OPEN) {
-			// This could be the first file open or a later file open.
-			LX.log("Autopilot detected completion of openProject(), defensive positions have been taken (or is first file open)...");
-		    
-			// Don't need this, it gets called by:
-			//   TEUserInterface.AutopilotComponent.autopilotEnabledToggle restoring from saved file...
-			//   ...which triggers TEApp.autopilotEnableListener
-			//   ...which calls setEnable(savedFromFile)
-			//resetHistory();
-            
-			// Don't need this either, see above note.  But in the future you might want to do this here, so leaving for reference:
-			/*
-			if (this.wasAutopilotEnabled) {
-				LX.log("Re-enabling autopilot after file open");
-				this.wasAutopilotEnabled = false;
-				setEnabled(true);
-			}
-			*/
-		}
-	}
-	
-	private void releaseProjectReferences() {
-		this.prevChannel = null;
-		this.curChannel = null;
-		this.nextChannel = null;
-		this.oldNextChannel = null;
-		this.triggerChannel = null;
-		this.strobesChannel = null;
-        this.fxChannel = null;
-	}
 
-	  @Override
-	  public void dispose() {
-	      this.enabled.removeListener(enabledListener);
-	      super.dispose();
-	  }
+    @Override
+    public void projectChanged(File file, Change change) {
+        if (change == Change.TRY || change == Change.NEW) {
+            // About to do an openFile
+            this.wasAutopilotEnabled = this.enabled.isOn();
+
+            // JKB note: Ok the Change.Open listener gets broadcast *after* the objects are loaded from file,
+            // so I think we'd better release the channel references here
+            releaseProjectReferences();
+
+            if (this.enabled.isOn()) {
+                LX.log("Disabling Autopilot for file open...");
+                this.enabled.setValue(false);
+            }
+        } else if (change == Change.OPEN) {
+            // This could be the first file open or a later file open.
+            LX.log(
+                    "Autopilot detected completion of openProject(), defensive positions have been taken (or is first file open)...");
+
+            // Don't need this, it gets called by:
+            //   TEUserInterface.AutopilotComponent.autopilotEnabledToggle restoring from saved file...
+            //   ...which triggers TEApp.autopilotEnableListener
+            //   ...which calls setEnable(savedFromFile)
+            // resetHistory();
+
+            // Don't need this either, see above note.  But in the future you might want to do this here, so leaving for
+            // reference:
+            /*
+            if (this.wasAutopilotEnabled) {
+            	LX.log("Re-enabling autopilot after file open");
+            	this.wasAutopilotEnabled = false;
+            	setEnabled(true);
+            }
+            */
+        }
+    }
+
+    private void releaseProjectReferences() {
+        this.prevChannel = null;
+        this.curChannel = null;
+        this.nextChannel = null;
+        this.oldNextChannel = null;
+        this.triggerChannel = null;
+        this.strobesChannel = null;
+        this.fxChannel = null;
+    }
+
+    @Override
+    public void dispose() {
+        this.enabled.removeListener(enabledListener);
+        super.dispose();
+    }
 }

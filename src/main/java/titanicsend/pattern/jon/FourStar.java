@@ -3,7 +3,6 @@ package titanicsend.pattern.jon;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.Tempo;
-
 import heronarts.lx.modulator.Click;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
@@ -27,12 +26,9 @@ public class FourStar extends TEPerformancePattern {
     Tempo.Division[] divisions;
     public ObjectParameter<Tempo.Division> tempoDivision;
 
-    public final Click tempoDivisionClick =
-            new Click("Tempo Division", lx.engine.tempo.period);
+    public final Click tempoDivisionClick = new Click("Tempo Division", lx.engine.tempo.period);
 
-    public final CompoundParameter energy =
-            new CompoundParameter("Energy", .5, 0, 1)
-                    .setDescription("Oh boy...");
+    public final CompoundParameter energy = new CompoundParameter("Energy", .5, 0, 1).setDescription("Oh boy...");
 
     public FourStar(LX lx) {
         super(lx, TEShaderView.ALL_PANELS);
@@ -57,10 +53,10 @@ public class FourStar extends TEPerformancePattern {
 
         // Sound reactivity - various brightness features are related to energy
         float e = energy.getValuef();
-        shader.setUniform("energy",e);
+        shader.setUniform("energy", e);
 
         // movement speed is beat divided by the current time division
-        shader.setUniform("basis",tempoDivisionClick.getBasisf());
+        shader.setUniform("basis", tempoDivisionClick.getBasisf());
 
         // run the shader
         effect.run(deltaMs);
@@ -85,22 +81,20 @@ public class FourStar extends TEPerformancePattern {
     }
 
     private void addDivisionParam() {
-        divisions = new Tempo.Division[]{
-                Tempo.Division.EIGHT,
-                Tempo.Division.FOUR,
-                Tempo.Division.DOUBLE,
-                Tempo.Division.WHOLE,
-                Tempo.Division.HALF,
-                Tempo.Division.QUARTER,
-                Tempo.Division.EIGHTH,
-                Tempo.Division.SIXTEENTH
+        divisions = new Tempo.Division[] {
+            Tempo.Division.EIGHT,
+            Tempo.Division.FOUR,
+            Tempo.Division.DOUBLE,
+            Tempo.Division.WHOLE,
+            Tempo.Division.HALF,
+            Tempo.Division.QUARTER,
+            Tempo.Division.EIGHTH,
+            Tempo.Division.SIXTEENTH
         };
 
-        tempoDivision = new ObjectParameter<>("Division", divisions, divisions[5])
-                .setDescription("Tempo division");
+        tempoDivision = new ObjectParameter<>("Division", divisions, divisions[5]).setDescription("Tempo division");
         tempoDivision.setWrappable(false);
 
         addParameter("tempoDivision", tempoDivision);
     }
-
 }

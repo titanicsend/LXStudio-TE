@@ -30,9 +30,7 @@ public class TurbulenceLines extends DriftEnabledPattern {
         // register common controls with LX
         addCommonControls();
 
-        effect = new NativeShaderPatternEffect("turbulent_noise_lines.fs",
-            new PatternTarget(this));
-
+        effect = new NativeShaderPatternEffect("turbulent_noise_lines.fs", new PatternTarget(this));
     }
 
     @Override
@@ -54,5 +52,4 @@ public class TurbulenceLines extends DriftEnabledPattern {
         effect.onActive();
         shader = effect.getNativeShader();
     }
-
 }

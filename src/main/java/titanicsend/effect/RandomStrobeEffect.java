@@ -33,10 +33,9 @@ import heronarts.lx.parameter.FunctionalParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.ObjectParameter;
 import heronarts.lx.utils.LXUtils;
+import java.util.ArrayList;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
-
-import java.util.ArrayList;
 
 @LXCategory("Titanics End")
 public class RandomStrobeEffect extends TEEffect {
@@ -66,52 +65,40 @@ public class RandomStrobeEffect extends TEEffect {
     private final ArrayList<PanelElement> panelElements = new ArrayList<>();
     private final ArrayList<EdgeElement> edgeElements = new ArrayList<>();
 
-    public final ObjectParameter<LXWaveshape> waveshape =
-        new ObjectParameter<LXWaveshape>("Waveshape", new LXWaveshape[]{
-            LXWaveshape.SIN,
-            LXWaveshape.TRI,
-            LXWaveshape.SQUARE,
-            LXWaveshape.UP,
-            LXWaveshape.DOWN
-        });
+    public final ObjectParameter<LXWaveshape> waveshape = new ObjectParameter<LXWaveshape>(
+            "Waveshape",
+            new LXWaveshape[] {LXWaveshape.SIN, LXWaveshape.TRI, LXWaveshape.SQUARE, LXWaveshape.UP, LXWaveshape.DOWN});
 
-    public final BoundedParameter maxFrequency =
-        new BoundedParameter("Max Freq", 6, 1, 30)
+    public final BoundedParameter maxFrequency = new BoundedParameter("Max Freq", 6, 1, 30)
             .setDescription("Maximum strobing frequency")
             .setUnits(LXParameter.Units.HERTZ);
 
-    public final BoundedParameter minFrequency =
-        new BoundedParameter("Min Freq", .5, .1, 1)
+    public final BoundedParameter minFrequency = new BoundedParameter("Min Freq", .5, .1, 1)
             .setDescription("Minimium strobing frequency")
             .setUnits(LXParameter.Units.HERTZ);
 
-    public final CompoundParameter speed =
-        new CompoundParameter("Speed", 0)
+    public final CompoundParameter speed = new CompoundParameter("Speed", 0)
             .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
             .setExponent(2)
             .setDescription("Speed of the strobe effect");
 
-    public final CompoundParameter depth =
-        new CompoundParameter("Depth", 0.75)
+    public final CompoundParameter depth = new CompoundParameter("Depth", 0.75)
             .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
             .setDescription("Depth of the strobe effect");
 
-    public final CompoundParameter bias =
-        new CompoundParameter("Bias", 0.5, -1, 1)
+    public final CompoundParameter bias = new CompoundParameter("Bias", 0.5, -1, 1)
             .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
             .setPolarity(CompoundParameter.Polarity.BIPOLAR)
             .setDescription("Bias of the strobe effect");
 
     public final BooleanParameter tempoSync =
-        new BooleanParameter("Sync", false)
-            .setDescription("Whether to sync the tempo to a clock division");
+            new BooleanParameter("Sync", false).setDescription("Whether to sync the tempo to a clock division");
 
-    public final EnumParameter<Tempo.Division> tempoDivision =
-        new EnumParameter<Tempo.Division>("Division", Tempo.Division.QUARTER)
+    public final EnumParameter<Tempo.Division> tempoDivision = new EnumParameter<Tempo.Division>(
+                    "Division", Tempo.Division.QUARTER)
             .setDescription("Which tempo division to use when in sync mode");
 
-    public final BoundedParameter tempoPhaseOffset =
-        new BoundedParameter("Phase Offset", 0)
+    public final BoundedParameter tempoPhaseOffset = new BoundedParameter("Phase Offset", 0)
             .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
             .setDescription("Shifts the phase of the strobe LFO relative to tempo");
 

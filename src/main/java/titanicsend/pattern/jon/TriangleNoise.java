@@ -30,8 +30,7 @@ public class TriangleNoise extends DriftEnabledPattern {
         // register common controls with LX
         addCommonControls();
 
-        effect = new NativeShaderPatternEffect("triangle_noise.fs",
-            new PatternTarget(this));
+        effect = new NativeShaderPatternEffect("triangle_noise.fs", new PatternTarget(this));
     }
 
     @Override
@@ -53,5 +52,4 @@ public class TriangleNoise extends DriftEnabledPattern {
         effect.onActive();
         shader = effect.getNativeShader();
     }
-
 }

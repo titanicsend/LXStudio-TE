@@ -1,9 +1,7 @@
 package titanicsend.pattern.glengine;
 
 import com.jogamp.opengl.*;
-
 import java.io.File;
-
 import titanicsend.pattern.yoffa.shader_engine.*;
 import titanicsend.util.TE;
 
@@ -12,8 +10,8 @@ import titanicsend.util.TE;
  * uncached shaders.
  */
 public class ShaderPrecompiler {
-    private final static int xResolution = OffscreenShaderRenderer.getXResolution();
-    private final static int yResolution = OffscreenShaderRenderer.getYResolution();
+    private static final int xResolution = OffscreenShaderRenderer.getXResolution();
+    private static final int yResolution = OffscreenShaderRenderer.getYResolution();
 
     /**
      * Create and save binary versions of any shaders that need it.
@@ -40,10 +38,9 @@ public class ShaderPrecompiler {
         // and try to compile them to .bin files in the
         // cache directory. (NB: This directory listing
         // method is significantly faster than the old one.)
-        File[] shaderFiles =
-            new File(ShaderUtils.SHADER_PATH).listFiles((dir, name) -> name.endsWith(".fs"));
+        File[] shaderFiles = new File(ShaderUtils.SHADER_PATH).listFiles((dir, name) -> name.endsWith(".fs"));
         if (shaderFiles == null) {
-            //TE.log("No shaders found in " + dir);
+            // TE.log("No shaders found in " + dir);
             return;
         }
 
@@ -65,6 +62,6 @@ public class ShaderPrecompiler {
         if (prevContext != null) prevContext.makeCurrent();
 
         TE.log("%d shaders processed in %d ms.", totalFiles, System.currentTimeMillis() - timer);
-        //TE.log("%d cache file%s updated.", compiledFiles, (compiledFiles == 1) ? "" : "s");
+        // TE.log("%d cache file%s updated.", compiledFiles, (compiledFiles == 1) ? "" : "s");
     }
 }

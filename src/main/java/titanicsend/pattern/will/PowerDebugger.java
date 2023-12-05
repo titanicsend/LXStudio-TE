@@ -1,5 +1,10 @@
 package titanicsend.pattern.will;
 
+import heronarts.glx.ui.UI2dComponent;
+import heronarts.glx.ui.UI2dContainer;
+import heronarts.glx.ui.component.UIButton;
+import heronarts.glx.ui.component.UIKnob;
+import heronarts.glx.ui.component.UITextBox;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
@@ -10,28 +15,19 @@ import heronarts.lx.parameter.StringParameter;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
-import heronarts.glx.ui.UI2dComponent;
-import heronarts.glx.ui.UI2dContainer;
-import heronarts.glx.ui.component.UIButton;
-import heronarts.glx.ui.component.UIKnob;
-import heronarts.glx.ui.component.UITextBox;
+import java.util.*;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.pattern.TEPattern;
 import titanicsend.util.TE;
 
-import java.util.*;
-
 @LXCategory("Test")
 public class PowerDebugger extends TEPattern implements UIDeviceControls<PowerDebugger> {
 
-    public final StringParameter powerboxId =
-            new StringParameter("Powerbox ID")
-                    .setDescription("ID of the powerbox");
+    public final StringParameter powerboxId = new StringParameter("Powerbox ID").setDescription("ID of the powerbox");
 
     public final DiscreteParameter powerboxSelect =
-            new DiscreteParameter("Powerbox select", 0, 1)
-                    .setDescription("Manual powerbox selection");
+            new DiscreteParameter("Powerbox select", 0, 1).setDescription("Manual powerbox selection");
 
     private UI2dComponent errLabel;
 
@@ -47,7 +43,6 @@ public class PowerDebugger extends TEPattern implements UIDeviceControls<PowerDe
     private HashMap<String, Double> pow2totalCurrent; // powerbox -> total current
     private HashMap<String, Double> panelJboxTotalCurrent; // panel + powerbox -> total current from pow to panel
     private HashMap<String, Double> panelTotalCurrent; // panelID -> total current
-
 
     // powerbox -> sum of LEDs
     private HashMap<String, Double> pow2totalLEDs;
@@ -92,10 +87,8 @@ public class PowerDebugger extends TEPattern implements UIDeviceControls<PowerDe
         uiDevice.addChildren(
                 controlLabel(ui, "Enter Powerbox ID").setWidth(COL_WIDTH * 3),
                 tb = new UITextBox(0, 0, COL_WIDTH * 3, 16).setParameter(powerboxId),
-
                 controlLabel(ui, "Select Powerbox ID").setWidth(COL_WIDTH * 3),
                 new UIKnob(0, 0, powerboxSelect).setWidth(COL_WIDTH * 3),
-
                 controlLabel(ui, "Reload \"power_assignments.tsv\"").setWidth(COL_WIDTH * 3),
                 new UIButton(0, 0, COL_WIDTH * 4, 20) {
                     @Override
@@ -105,10 +98,7 @@ public class PowerDebugger extends TEPattern implements UIDeviceControls<PowerDe
                         }
                     }
                 }.setLabel("-> reload").setMomentary(true),
-
-                this.errLabel = controlLabel(ui, "Bad ID")
-                        .setWidth(COL_WIDTH * 4)
-        );
+                this.errLabel = controlLabel(ui, "Bad ID").setWidth(COL_WIDTH * 4));
 
         this.errLabel.setVisible(false);
         this.powerboxId.addListener(this::repaint);
@@ -152,15 +142,15 @@ public class PowerDebugger extends TEPattern implements UIDeviceControls<PowerDe
 
         // clear edges & report back to user
         clearEdgesAndPanels();
-        TE.log("Powerbox[%s]: edges=%d, panels=%d, current=%f LEDs=%f"
-                , powID, numEdges, numPanels
-                , totalCurrentFromPowerbox, pow2totalLEDs.get(powID));
+        TE.log(
+                "Powerbox[%s]: edges=%d, panels=%d, current=%f LEDs=%f",
+                powID, numEdges, numPanels, totalCurrentFromPowerbox, pow2totalLEDs.get(powID));
 
         if (numEdges > 0) {
-            //TE.log("Edges:");
+            // TE.log("Edges:");
             for (Object e : pow2edge.get(powID).toArray()) {
                 String edgeID = (String) e;
-                //TE.log("\tedge=%s", edgeID);
+                // TE.log("\tedge=%s", edgeID);
                 TEEdgeModel edge = this.modelTE.edgesById.get(edgeID);
                 for (LXPoint ep : edge.points) {
                     colors[ep.index] = LXColor.WHITE;
@@ -169,17 +159,16 @@ public class PowerDebugger extends TEPattern implements UIDeviceControls<PowerDe
         }
 
         if (numPanels > 0) {
-            //TE.log("Panels:");
+            // TE.log("Panels:");
             for (Object e : pow2panel.get(powID).toArray()) {
                 String panelID = (String) e;
-                //TE.log("\tpanel=%s", panelID);
+                // TE.log("\tpanel=%s", panelID);
                 TEPanelModel panel = this.modelTE.panelsById.get(panelID);
 
                 // should we only partially light this panel?
                 String panelJboxCompositeID = powID + "__" + panelID;
                 double currentFromJboxForPanel = panelJboxTotalCurrent.get(panelJboxCompositeID);
-                double percOfPanelCurrentFromPowerbox =
-                    currentFromJboxForPanel / panelTotalCurrent.get(panelID);
+                double percOfPanelCurrentFromPowerbox = currentFromJboxForPanel / panelTotalCurrent.get(panelID);
                 int lastPointIdx = (int) (percOfPanelCurrentFromPowerbox * panel.points.length);
 
                 // iterate through panel points, only lighting if enough
@@ -187,8 +176,7 @@ public class PowerDebugger extends TEPattern implements UIDeviceControls<PowerDe
                 int i = 0;
                 for (LXPoint pp : panel.points) {
                     colors[pp.index] = LXColor.WHITE;
-                    if (i == lastPointIdx)
-                        break;
+                    if (i == lastPointIdx) break;
                     i++;
                 }
             }
@@ -224,7 +212,7 @@ public class PowerDebugger extends TEPattern implements UIDeviceControls<PowerDe
             // skip our header
             i++;
             if (i == 1) {
-                //TE.log("skipping header...");
+                // TE.log("skipping header...");
                 continue;
             }
 
@@ -232,12 +220,12 @@ public class PowerDebugger extends TEPattern implements UIDeviceControls<PowerDe
             try {
                 String[] tokens = line.split("\\t");
                 assert tokens.length == 8;
-                //TE.log("Line: %s (len tokens=%d)", line, tokens.length);
+                // TE.log("Line: %s (len tokens=%d)", line, tokens.length);
 
                 // parse fields
-                //String stripID = tokens[0].strip();
+                // String stripID = tokens[0].strip();
                 String panelOrEdgeId = tokens[1].strip();
-                //String panelOrEdgeVertices = tokens[2].strip();
+                // String panelOrEdgeVertices = tokens[2].strip();
                 double numLEDs = Double.parseDouble(tokens[3].strip());
                 String jbox = tokens[4].strip();
                 // String circuit = tokens[5].strip();
@@ -276,29 +264,22 @@ public class PowerDebugger extends TEPattern implements UIDeviceControls<PowerDe
                         panelJboxTotalCurrent.put(panelJboxCompositeID, current);
                     else
                         panelJboxTotalCurrent.put(
-                                panelJboxCompositeID,
-                                panelJboxTotalCurrent.get(panelJboxCompositeID) + current);
+                                panelJboxCompositeID, panelJboxTotalCurrent.get(panelJboxCompositeID) + current);
                 }
 
                 // update our current counter per powerbox
-                if (!pow2totalCurrent.containsKey(jbox))
-                    pow2totalCurrent.put(jbox, current);
-                else
-                    pow2totalCurrent.put(jbox, pow2totalCurrent.get(jbox) + current);
+                if (!pow2totalCurrent.containsKey(jbox)) pow2totalCurrent.put(jbox, current);
+                else pow2totalCurrent.put(jbox, pow2totalCurrent.get(jbox) + current);
 
                 // update counter current per panel
                 if (!isEdge) {
-                    if (!panelTotalCurrent.containsKey(panelOrEdgeId))
-                        panelTotalCurrent.put(panelOrEdgeId, current);
-                    else
-                        panelTotalCurrent.put(panelOrEdgeId, panelTotalCurrent.get(panelOrEdgeId) + current);
+                    if (!panelTotalCurrent.containsKey(panelOrEdgeId)) panelTotalCurrent.put(panelOrEdgeId, current);
+                    else panelTotalCurrent.put(panelOrEdgeId, panelTotalCurrent.get(panelOrEdgeId) + current);
                 }
 
                 // update our LED count
-                if (!pow2totalLEDs.containsKey(jbox))
-                    pow2totalLEDs.put(jbox, numLEDs);
-                else
-                    pow2totalLEDs.put(jbox, pow2totalLEDs.get(jbox) + numLEDs);
+                if (!pow2totalLEDs.containsKey(jbox)) pow2totalLEDs.put(jbox, numLEDs);
+                else pow2totalLEDs.put(jbox, pow2totalLEDs.get(jbox) + numLEDs);
 
             } catch (Exception e) {
                 TE.err(e.toString());
@@ -311,7 +292,7 @@ public class PowerDebugger extends TEPattern implements UIDeviceControls<PowerDe
         // add powerbox IDs to list & set range
         powerboxIDsList.clear();
         for (Object o : powerboxIDsSet.toArray()) {
-            powerboxIDsList.add((String)o);
+            powerboxIDsList.add((String) o);
         }
         Collections.sort(powerboxIDsList);
 
@@ -319,9 +300,7 @@ public class PowerDebugger extends TEPattern implements UIDeviceControls<PowerDe
     }
 
     @Override
-    protected void run(double v) {
-
-    }
+    protected void run(double v) {}
 
     @Override
     public void disposeDeviceControls(LXStudio.UI ui, UIDevice uiDevice, PowerDebugger powerDebugger) {

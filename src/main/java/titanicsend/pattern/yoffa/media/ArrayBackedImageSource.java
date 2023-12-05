@@ -22,5 +22,4 @@ public class ArrayBackedImageSource implements ImagePainter.ImageSource {
     public int getColor(int x, int y) {
         return image[x][y];
     }
-
 }

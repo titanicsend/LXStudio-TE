@@ -8,7 +8,7 @@ public enum TEPanelSection {
     FORE("Fore", "fore"),
     // All panels on the back face of the cart (stage right)
     AFT("Aft", "aft"),
-     // The section of consecutive panels on the front half of the starboard (stage) side of the cart
+    // The section of consecutive panels on the front half of the starboard (stage) side of the cart
     // Does not include the single panel
     STARBOARD_FORE("Starboard Fore", "starboard-fore"),
     // The one standalone panel on the front (stage left) half of the starboard (stage) side of the cart
@@ -25,9 +25,8 @@ public enum TEPanelSection {
     PORT_AFT("Port Aft", "port-aft"),
     PORT_AFT_SINGLE("Port Aft Single", "port-aft-single");
 
-
-    public final String label;    // For enum.toString() calls such as by a parameter
-    public final String tag;      // For views.  Lower case is most convenient.
+    public final String label; // For enum.toString() calls such as by a parameter
+    public final String tag; // For views.  Lower case is most convenient.
 
     private TEPanelSection(String label, String tag) {
         this.label = label;

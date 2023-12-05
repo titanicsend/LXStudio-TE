@@ -14,7 +14,6 @@ import titanicsend.color.TEColorType;
 import titanicsend.midi.MidiNames;
 import titanicsend.pattern.mf64.*;
 
-
 @LXCategory("Combo FG")
 public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiListener {
     public static final String MIDI_NAME = MidiNames.BOMEBOX_MF64;
@@ -69,7 +68,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     public static final int LED_YELLOW_DIM = 15;
     public static final int LED_PALE_GREEN_BLUE = 16;
     public static final int LED_GREEN_HALF = 17; // And 18, 22, 25, 26
-    public static final int LED_GREEN = 19; /// And 23, 27
+    public static final int LED_GREEN = 19; // / And 23, 27
     public static final int LED_PALE_BLUE_GREEN = 20; // And 24
     public static final int LED_GREEN_DIM = 21;
     public static final int LED_AQUA = 28;
@@ -109,13 +108,15 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     private static final int[] buttonColors = {
         LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA, LED_AQUA,
         LED_RED, LED_ORANGE, LED_YELLOW, LED_GREEN, LED_BLUE_AQUA, LED_AZURE, LED_MAGENTA, LED_WHITE,
-        LED_RED_DIM, LED_ORANGE_DIM, LED_YELLOW_DIM, LED_GREEN_DIM, LED_BLUE_AQUA_DIM, LED_AZURE_DIM, LED_MAGENTA_DIM, LED_GRAY_DIM,
+        LED_RED_DIM, LED_ORANGE_DIM, LED_YELLOW_DIM, LED_GREEN_DIM, LED_BLUE_AQUA_DIM, LED_AZURE_DIM, LED_MAGENTA_DIM,
+                LED_GRAY_DIM,
         LED_RED, LED_ORANGE, LED_YELLOW, LED_GREEN, LED_BLUE_AQUA, LED_AZURE, LED_MAGENTA, LED_WHITE,
-        LED_RED_DIM, LED_ORANGE_DIM, LED_YELLOW_DIM, LED_GREEN_DIM, LED_BLUE_AQUA_DIM, LED_AZURE_DIM, LED_MAGENTA_DIM, LED_GRAY_DIM,
+        LED_RED_DIM, LED_ORANGE_DIM, LED_YELLOW_DIM, LED_GREEN_DIM, LED_BLUE_AQUA_DIM, LED_AZURE_DIM, LED_MAGENTA_DIM,
+                LED_GRAY_DIM,
         LED_RED, LED_ORANGE, LED_YELLOW, LED_GREEN, LED_BLUE_AQUA, LED_AZURE, LED_MAGENTA, LED_WHITE,
-        LED_RED_DIM, LED_ORANGE_DIM, LED_YELLOW_DIM, LED_GREEN_DIM, LED_BLUE_AQUA_DIM, LED_AZURE_DIM, LED_MAGENTA_DIM, LED_GRAY_DIM,
+        LED_RED_DIM, LED_ORANGE_DIM, LED_YELLOW_DIM, LED_GREEN_DIM, LED_BLUE_AQUA_DIM, LED_AZURE_DIM, LED_MAGENTA_DIM,
+                LED_GRAY_DIM,
         LED_RED, LED_ORANGE, LED_YELLOW, LED_GREEN, LED_BLUE_AQUA, LED_AZURE, LED_MAGENTA, LED_WHITE,
-
         LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY,
         LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY,
         LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY,
@@ -125,7 +126,6 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
         LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY,
         LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY, LED_GRAY,
     };
-
 
     // default color set for the buttons.  Bright
     // primary colors, which are easy to see, but
@@ -171,7 +171,6 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
         ssquare, ssquare, ssquare, ssquare, ssquare, ssquare, ssquare, ssquare,
         ring, ring, ring, ring, ring, ring, ring, ring,
         flash, flash, flash, flash, flash, flash, flash, flash,
-
         logger, logger, logger, logger, logger, logger, logger, logger,
         logger, logger, logger, logger, logger, logger, logger, logger,
         logger, logger, logger, logger, logger, logger, logger, logger,
@@ -185,38 +184,26 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     private LXMidiInput midiIn = null;
     private LXMidiOutput midiOut = null;
 
-    public final BooleanParameter fakePush =
-        new BooleanParameter("Push", false)
+    public final BooleanParameter fakePush = new BooleanParameter("Push", false)
             .setMode(BooleanParameter.Mode.MOMENTARY)
             .setDescription("Simulates pushing the top-left button");
 
     public final DiscreteParameter pokeChannel =
-        new DiscreteParameter("Channel", 0, 99)
-            .setDescription("Channel number");
+            new DiscreteParameter("Channel", 0, 99).setDescription("Channel number");
 
     // Row shift for testing on midi controllers w/fewer than 8 rows
     // of buttons.
-    public final DiscreteParameter rowShift1 =
-        new DiscreteParameter("Row1", 0, 8)
-            .setDescription("Row1 Offset");
-    public final DiscreteParameter rowShift2 =
-        new DiscreteParameter("Row2", 0, 8)
-            .setDescription("Row2 Offset");
+    public final DiscreteParameter rowShift1 = new DiscreteParameter("Row1", 0, 8).setDescription("Row1 Offset");
+    public final DiscreteParameter rowShift2 = new DiscreteParameter("Row2", 0, 8).setDescription("Row2 Offset");
 
-    public final DiscreteParameter pokeVelocity =
-        new DiscreteParameter("Vel", 0, 128)
-            .setDescription("Velocity");
+    public final DiscreteParameter pokeVelocity = new DiscreteParameter("Vel", 0, 128).setDescription("Velocity");
 
-    public final DiscreteParameter pokePitch =
-        new DiscreteParameter("Pitch", 0, 128)
-            .setDescription("Pitch");
-    public final BooleanParameter pokeButton =
-        new BooleanParameter("Poke", false)
+    public final DiscreteParameter pokePitch = new DiscreteParameter("Pitch", 0, 128).setDescription("Pitch");
+    public final BooleanParameter pokeButton = new BooleanParameter("Poke", false)
             .setMode(BooleanParameter.Mode.MOMENTARY)
             .setDescription("Sends a MIDI note to the device");
 
-    public final BooleanParameter colorMode =
-        new BooleanParameter("Palette", true)
+    public final BooleanParameter colorMode = new BooleanParameter("Palette", true)
             .setMode(BooleanParameter.Mode.TOGGLE)
             .setDescription("Use default or palette-based overlay colors");
 
@@ -229,7 +216,8 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
 
         // The MF64 has left and right virtual button pages.
         public enum Page {
-            LEFT, RIGHT;
+            LEFT,
+            RIGHT;
         }
 
         public Page page;
@@ -238,8 +226,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
         // 0 is the left column, 7 the right
         public int col;
 
-        public Mapping() {
-        }
+        public Mapping() {}
 
         public void map(MidiNote note) {
             int pitch = note.getPitch();
@@ -285,8 +272,8 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
         addParameter("pokePitch", this.pokePitch);
         addParameter("poke", this.pokeButton);
         addParameter("colorMode", this.colorMode);
-        //addParameter("rowShift1", this.rowShift1);
-        //addParameter("rowShift2", this.rowShift2);
+        // addParameter("rowShift1", this.rowShift1);
+        // addParameter("rowShift2", this.rowShift2);
 
         this.fakePush.addListener(this.fakepushListener);
         this.pokeButton.addListener(this.pokeListener);
@@ -317,9 +304,10 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
             } else if (!this.midiOut.connected.isOn()) {
                 LX.log("MF64 connection lost.  Please reconnect physical device.");
             } else {
-                LX.log("Poke MF64 at Channel=" + this.pokeChannel.getValuei() + ", Pitch=" + this.pokePitch.getValuei() + ", Velocity=" + this.pokeVelocity.getValuei());
-                this.midiOut.sendNoteOn(this.pokeChannel.getValuei(), this.pokePitch.getValuei(),
-                    this.pokeVelocity.getValuei());
+                LX.log("Poke MF64 at Channel=" + this.pokeChannel.getValuei() + ", Pitch=" + this.pokePitch.getValuei()
+                        + ", Velocity=" + this.pokeVelocity.getValuei());
+                this.midiOut.sendNoteOn(
+                        this.pokeChannel.getValuei(), this.pokePitch.getValuei(), this.pokeVelocity.getValuei());
             }
         }
     };
@@ -387,7 +375,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
 
         for (int i = 1; i < overlayColors.length - 1; i++) {
             h = (h + 0.309015f) % 1f;
-            overlayColors[i] = LXColor.hsb(h * 360f,s,b);
+            overlayColors[i] = LXColor.hsb(h * 360f, s, b);
         }
         lastColor = color;
     }
@@ -409,17 +397,17 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
         this.priorBlend = null;
         LXChannel channel = this.getChannel();
         if (channel != null) {
-          // Set channel blend to Normal
-          for (LXBlend blend : channel.blendMode.getObjects()) {
-            if (blend instanceof NormalBlend) {
-              this.priorBlend = channel.blendMode.getObject();
-              channel.blendMode.setValue(blend);
-              break;
+            // Set channel blend to Normal
+            for (LXBlend blend : channel.blendMode.getObjects()) {
+                if (blend instanceof NormalBlend) {
+                    this.priorBlend = channel.blendMode.getObject();
+                    channel.blendMode.setValue(blend);
+                    break;
+                }
             }
-          }
-          // Turn on MIDI input to channel
-          this.priorMidiFilter = channel.midiFilter.enabled.getValueb();
-          channel.midiFilter.enabled.setValue(true);
+            // Turn on MIDI input to channel
+            this.priorMidiFilter = channel.midiFilter.enabled.getValueb();
+            channel.midiFilter.enabled.setValue(true);
         }
         connect();
     }
@@ -503,7 +491,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     // convenience function for testing on controllers
     // with fewer buttons than the MF64
     protected int testRowMangler(int row) {
-        switch(row) {
+        switch (row) {
             case 1:
                 row = (row + rowShift1.getValuei()) % 8;
                 break;
@@ -520,7 +508,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     public void noteOnReceived(MidiNoteOn note) {
         this.mapping.map(note);
         mapping.row = mapping.row % 8;
-        //mapping.row = testRowMangler(mapping.row % 8);
+        // mapping.row = testRowMangler(mapping.row % 8);
 
         int patternIndex = mapping.page == Mapping.Page.LEFT ? 0 : 64;
         patternIndex += (7 - mapping.row) * 8;
@@ -532,7 +520,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     public void noteOffReceived(MidiNote note) {
         this.mapping.map(note);
         mapping.row = mapping.row % 8;
-        //mapping.row = testRowMangler(mapping.row % 8);
+        // mapping.row = testRowMangler(mapping.row % 8);
         int patternIndex = mapping.page == Mapping.Page.LEFT ? 0 : 64;
         patternIndex += (7 - mapping.row) * 8;
         patternIndex += mapping.col;

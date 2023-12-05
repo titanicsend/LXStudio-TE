@@ -9,13 +9,10 @@ import titanicsend.app.TEGlobalPatternControls;
 public class GlobalPatternControl extends TEEffect {
 
     public final BooleanParameter speedEnable =
-        new BooleanParameter("Enable", false)
-            .setDescription("Use speed from global controller");
+            new BooleanParameter("Enable", false).setDescription("Use speed from global controller");
 
     public final CompoundParameter speed =
-        new CompoundParameter("Speed", .25)
-            .setExponent(2)
-            .setDescription("Speed for all running patterns");
+            new CompoundParameter("Speed", .25).setExponent(2).setDescription("Speed for all running patterns");
 
     public TEGlobalPatternControls globalControls;
 

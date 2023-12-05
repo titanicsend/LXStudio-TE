@@ -24,5 +24,4 @@ public class BufferedImageSource implements ImagePainter.ImageSource {
     public int getColor(int x, int y) {
         return image.getRGB(x, y);
     }
-
 }

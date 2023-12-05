@@ -34,8 +34,7 @@ public class TempoReactiveEdge extends TEPattern {
     // Titanic's End wants all patterns to implement a parameter called "Energy",
     // which controls the amount of motion, light, movement, action, particles, etc.
     public final CompoundParameter energy =
-            new CompoundParameter("Energy", .1, 0, 1)
-                    .setDescription("Pulse width and beat tween movement suddenness");
+            new CompoundParameter("Energy", .1, 0, 1).setDescription("Pulse width and beat tween movement suddenness");
 
     public TempoReactiveEdge(LX lx) {
         super(lx);
@@ -43,7 +42,7 @@ public class TempoReactiveEdge extends TEPattern {
     }
 
     public void run(double deltaMs) {
-        clearPixels();  // Sets all pixels to transparent for starters
+        clearPixels(); // Sets all pixels to transparent for starters
 
         // 0..1 ramp (sawtooth) of current position within a 4-beat measure.
         double measure = wholeNote();
@@ -89,8 +88,7 @@ public class TempoReactiveEdge extends TEPattern {
 
             for (TEEdgeModel.Point point : edge.points) {
                 // point.frac is the 0..1 fractional percentage this point is into its edge
-                if (point.frac >= pulseTailFrac && point.frac < pulseHeadFrac)
-                    colors[point.index] = LXColor.WHITE;
+                if (point.frac >= pulseTailFrac && point.frac < pulseHeadFrac) colors[point.index] = LXColor.WHITE;
             }
         }
     }

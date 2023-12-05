@@ -1,7 +1,5 @@
 package titanicsend.app.autopilot;
 
-import java.util.List;
-
 /**
  * Enum for names of channels. Each enum is a string
  * mapping to an index. This index MUST MATCH the index in
@@ -27,12 +25,9 @@ public enum TEChannelName {
     }
 
     public static TEChannelName getChannelNameFromPhraseType(TEPhrase phraseType) {
-        if (phraseType == TEPhrase.CHORUS)
-            return TEChannelName.CHORUS;
-        else if (phraseType == TEPhrase.UP)
-            return TEChannelName.UP;
-        else if (phraseType == TEPhrase.DOWN)
-            return TEChannelName.DOWN;
+        if (phraseType == TEPhrase.CHORUS) return TEChannelName.CHORUS;
+        else if (phraseType == TEPhrase.UP) return TEChannelName.UP;
+        else if (phraseType == TEPhrase.DOWN) return TEChannelName.DOWN;
         else if (phraseType == TEPhrase.TRO)
             // for now, maybe we'll have a special channel in future
             return TEChannelName.DOWN;

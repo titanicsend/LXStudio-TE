@@ -19,19 +19,18 @@ public class Electric extends TEPerformancePattern {
         controls.setRange(TEControlTag.SPEED, 0.6, -1, 1);
         controls.setRange(TEControlTag.WOW1, 0, 0, 2.6);
         controls.setRange(TEControlTag.QUANTITY, 0.2, 0.075, 0.3);
-        controls.setValue(TEControlTag.SPIN,0.125);
+        controls.setValue(TEControlTag.SPIN, 0.125);
 
         // register common controls with LX
         addCommonControls();
 
-        effect = new NativeShaderPatternEffect("electric.fs",
-                new PatternTarget(this));
+        effect = new NativeShaderPatternEffect("electric.fs", new PatternTarget(this));
     }
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
 
-        //shader.setUniform("iRotationAngle",(float) -getRotationAngleFromSpin());
+        // shader.setUniform("iRotationAngle",(float) -getRotationAngleFromSpin());
 
         // run the shader
         effect.run(deltaMs);
@@ -46,5 +45,4 @@ public class Electric extends TEPerformancePattern {
         effect.onActive();
         shader = effect.getNativeShader();
     }
-
 }

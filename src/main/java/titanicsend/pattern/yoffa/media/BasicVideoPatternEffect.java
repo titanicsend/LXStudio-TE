@@ -2,10 +2,10 @@ package titanicsend.pattern.yoffa.media;
 
 import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.yoffa.framework.PatternEffect;
-import titanicsend.pattern.yoffa.framework.PatternTarget;
 import java.util.Collection;
 import java.util.List;
+import titanicsend.pattern.yoffa.framework.PatternEffect;
+import titanicsend.pattern.yoffa.framework.PatternTarget;
 
 // Example to show how we could map a video onto our panels
 // Not intended from production use
@@ -23,7 +23,6 @@ public class BasicVideoPatternEffect extends PatternEffect {
         this.vidPath = DEFAULT_VID_PATH;
     }
 
-
     public BasicVideoPatternEffect(PatternTarget target, String vidPath) {
         super(target);
         this.vidPath = vidPath;
@@ -35,7 +34,7 @@ public class BasicVideoPatternEffect extends PatternEffect {
             videoPainter = new VideoPainter(vidPath, pattern.getColors());
             videoPainter.startVideo();
         } catch (Exception e) {
-            //fail silently so we can swap out videos live
+            // fail silently so we can swap out videos live
         }
     }
 
@@ -45,12 +44,13 @@ public class BasicVideoPatternEffect extends PatternEffect {
             videoPainter.grabFrame();
             videoPainter.paint(getPoints());
         } catch (Exception e) {
-            //fail silently so we can swap out videos live
-            //when we live swap, we need to start the video again and i wasn't able to find a good way to detect this in 5min so hacky hack
+            // fail silently so we can swap out videos live
+            // when we live swap, we need to start the video again and i wasn't able to find a good way to detect this
+            // in 5min so hacky hack
             try {
                 videoPainter.startVideo();
             } catch (Exception e2) {
-                //fail silent
+                // fail silent
             }
         }
     }
@@ -62,7 +62,7 @@ public class BasicVideoPatternEffect extends PatternEffect {
                 videoPainter.stopVideo();
             }
         } catch (Exception e) {
-            //fail silently so we can swap out videos live
+            // fail silently so we can swap out videos live
         }
     }
 
@@ -70,5 +70,4 @@ public class BasicVideoPatternEffect extends PatternEffect {
     public Collection<LXParameter> getParameters() {
         return List.of();
     }
-
 }

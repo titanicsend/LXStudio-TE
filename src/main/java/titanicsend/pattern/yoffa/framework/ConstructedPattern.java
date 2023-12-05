@@ -2,10 +2,9 @@ package titanicsend.pattern.yoffa.framework;
 
 import heronarts.lx.LX;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.TEPerformancePattern;
-
 import java.util.*;
 import java.util.stream.Collectors;
+import titanicsend.pattern.TEPerformancePattern;
 
 public abstract class ConstructedPattern extends TEPerformancePattern {
 
@@ -58,12 +57,11 @@ public abstract class ConstructedPattern extends TEPerformancePattern {
 
     @Override
     protected void runTEAudioPattern(double deltaMillis) {
-        //clearColors();
+        // clearColors();
         for (PatternEffect effect : effects) {
             effect.run(deltaMillis);
         }
     }
 
     protected abstract List<PatternEffect> createEffects();
-
 }

@@ -15,7 +15,6 @@
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.effect;
 
 import heronarts.lx.LX;
@@ -26,16 +25,16 @@ import heronarts.lx.model.LXPoint;
 @LXCategory(LXCategory.TEST)
 public class BasicEffect extends TEEffect {
 
-  public BasicEffect(LX lx) {
-    super(lx);
-  }
-
-  @Override
-  protected void run(double deltaMs, double enabledAmount) {
-    if (enabledAmount > 0) {
-      for (LXPoint p : this.model.points) {
-        colors[p.index] = LXColor.hsb(0, 0, enabledAmount * 100);
-      }
+    public BasicEffect(LX lx) {
+        super(lx);
     }
-  }
+
+    @Override
+    protected void run(double deltaMs, double enabledAmount) {
+        if (enabledAmount > 0) {
+            for (LXPoint p : this.model.points) {
+                colors[p.index] = LXColor.hsb(0, 0, enabledAmount * 100);
+            }
+        }
+    }
 }

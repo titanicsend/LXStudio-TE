@@ -14,5 +14,4 @@ public class ShaderInfo {
     public List<Input> getInputs() {
         return inputs;
     }
-
 }

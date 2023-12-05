@@ -1,7 +1,6 @@
 /**
  * @author Travis Cline <travis.cline@gmail.com>
  */
-
 package titanicsend.pattern.tmc;
 
 import heronarts.lx.LX;
@@ -17,23 +16,21 @@ import titanicsend.pattern.TEPattern;
 @LXCategory("TE Examples")
 public class SolidPanel extends TEPattern {
 
-  public final LinkedColorParameter color =
-          new LinkedColorParameter("Color")
-                  .setDescription("Panel color");
+    public final LinkedColorParameter color = new LinkedColorParameter("Color").setDescription("Panel color");
 
-  public SolidPanel(LX lx) {
-    super(lx);
-    addParameter("color", this.color);
-    color.mode.setValue(LinkedColorParameter.Mode.PALETTE);
-    color.index.setValue(5);
-    clearPixels();
-  }
-
-  @Override
-  public void run(double deltaMs) {
-    int color = this.color.calcColor();
-    for (LXPoint point : this.modelTE.panelPoints) {
-      colors[point.index] = color;
+    public SolidPanel(LX lx) {
+        super(lx);
+        addParameter("color", this.color);
+        color.mode.setValue(LinkedColorParameter.Mode.PALETTE);
+        color.index.setValue(5);
+        clearPixels();
     }
-  }
+
+    @Override
+    public void run(double deltaMs) {
+        int color = this.color.calcColor();
+        for (LXPoint point : this.modelTE.panelPoints) {
+            colors[point.index] = color;
+        }
+    }
 }

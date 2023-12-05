@@ -2,10 +2,9 @@ package titanicsend.pattern.yoffa.media;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import java.io.IOException;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-
-import java.io.IOException;
 
 // Example to show how we could map a video onto our panels
 // Not intended from production use
@@ -44,5 +43,4 @@ public class BasicVideoPattern extends TEPerformancePattern {
     public void onInactive() {
         videoPainter.stopVideo();
     }
-
 }

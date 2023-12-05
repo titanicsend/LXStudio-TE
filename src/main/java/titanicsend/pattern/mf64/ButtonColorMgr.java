@@ -1,16 +1,14 @@
 package titanicsend.pattern.mf64;
 
+import static titanicsend.util.TEColor.TRANSPARENT;
 
 import heronarts.lx.color.LXColor;
-
 import java.util.ArrayList;
-
-import static titanicsend.util.TEColor.TRANSPARENT;
 
 public class ButtonColorMgr {
     private class ButtonInfo {
         int id;
-        int r,g,b;
+        int r, g, b;
 
         ButtonInfo(int id, int color) {
             this.id = id;
@@ -19,8 +17,11 @@ public class ButtonColorMgr {
             this.b = 0xFF & LXColor.blue(color);
         }
 
-        int getColor() { return LXColor.rgba(r,g,b,255); }
+        int getColor() {
+            return LXColor.rgba(r, g, b, 255);
+        }
     }
+
     private int refCount;
     private int defaultColor = TRANSPARENT;
     private final ArrayList<ButtonInfo> map;
@@ -47,7 +48,7 @@ public class ButtonColorMgr {
      */
     public int addButton(int id, int color) {
         defaultColor = color;
-        ButtonInfo bi = new ButtonInfo(id,color);
+        ButtonInfo bi = new ButtonInfo(id, color);
         map.add(bi);
         return refCount++;
     }
@@ -85,8 +86,7 @@ public class ButtonColorMgr {
         if (sz == 0) {
             result = new int[1];
             result[0] = defaultColor;
-        }
-        else {
+        } else {
             result = new int[getColorCount()];
             for (int i = 0; i < sz; i++) {
                 result[i] = map.get(i).getColor();
@@ -98,25 +98,29 @@ public class ButtonColorMgr {
     /**
      * @return Interpolated blend of the colors of all currently pressed buttons
      */
-     public int getBlendedColor() {
+    public int getBlendedColor() {
         int sz = map.size();
         if (sz < 1) return TRANSPARENT;
 
         int index = 0;
         ButtonInfo bi = map.get(index++);
-        int r = bi.r; int g = bi.g; int b = bi.b;
+        int r = bi.r;
+        int g = bi.g;
+        int b = bi.b;
 
         // blend colors by progressive interpolation.
         // Who knows what color you'll wind up with?
         while (index < sz) {
             bi = map.get(index++);
-            r = r  + bi.r;
-            g = g  + bi.g;
-            b = b  + bi.b;
+            r = r + bi.r;
+            g = g + bi.g;
+            b = b + bi.b;
         }
-        r = Math.min(r/sz,255); g = Math.min(g/sz,255); b = Math.min(b/sz,255);
+        r = Math.min(r / sz, 255);
+        g = Math.min(g / sz, 255);
+        b = Math.min(b / sz, 255);
 
-        return LXColor.rgb(r,g,b);
+        return LXColor.rgb(r, g, b);
     }
 
     /**
@@ -125,6 +129,6 @@ public class ButtonColorMgr {
     public int getCurrentColor() {
         int sz = map.size();
         if (sz < 1) return TRANSPARENT;
-        return map.get(sz-1).getColor();
+        return map.get(sz - 1).getColor();
     }
 }

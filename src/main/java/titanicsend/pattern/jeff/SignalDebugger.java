@@ -1,5 +1,7 @@
 package titanicsend.pattern.jeff;
 
+import heronarts.glx.ui.UI2dContainer;
+import heronarts.glx.ui.component.UITextBox;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
@@ -11,55 +13,49 @@ import heronarts.lx.parameter.StringParameter;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
-import heronarts.glx.ui.UI2dContainer;
-import heronarts.glx.ui.component.UITextBox;
-import titanicsend.model.TEEdgeModel;
-import titanicsend.pattern.TEPattern;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
-
+import titanicsend.model.TEEdgeModel;
+import titanicsend.pattern.TEPattern;
 
 /**
  *  Visualize signal paths
  *
  */
 
-//TODO currently only displaying edge info
+// TODO currently only displaying edge info
 
-//TODO if there are multiple controllers at a single vertex, we are not differentiating as this info is not yet
+// TODO if there are multiple controllers at a single vertex, we are not differentiating as this info is not yet
 //  available in the tsv. Need to import from the spreadsheet.
 @LXCategory("Test")
 public class SignalDebugger extends TEPattern implements UIDeviceControls<SignalDebugger> {
 
-    public final DiscreteParameter cycleAllParameter =
-            new DiscreteParameter("CycleAll", 0, 100)
-                    .setDescription("Cycles through all signal chains sorted by controller vertex");
+    public final DiscreteParameter cycleAllParameter = new DiscreteParameter("CycleAll", 0, 100)
+            .setDescription("Cycles through all signal chains sorted by controller vertex");
 
-    public final DiscreteParameter vertexSelectParameter =
-            new DiscreteParameter("Controller Vertex", 0, 150)
-                    .setDescription("Show all signal routes stemming from the controller at the designated vertex id");
+    public final DiscreteParameter vertexSelectParameter = new DiscreteParameter("Controller Vertex", 0, 150)
+            .setDescription("Show all signal routes stemming from the controller at the designated vertex id");
 
     public final BooleanParameter showLowPriParameter =
-            new BooleanParameter("LowPri", false)
-                    .setDescription("Display low priority (year 2) edges and panels");
+            new BooleanParameter("LowPri", false).setDescription("Display low priority (year 2) edges and panels");
 
-    public final StringParameter edgeIdParameter = new StringParameter("EdgeId")
-            .setDescription("Show signal route that edge of designated id belongs to");
+    public final StringParameter edgeIdParameter =
+            new StringParameter("EdgeId").setDescription("Show signal route that edge of designated id belongs to");
 
     private static final List<Integer> CHANNEL_COLORS = List.of(
             LXColor.hsba(175, 100, 50, 100),
             LXColor.hsba(300, 100, 50, 100),
             LXColor.hsba(160, 100, 50, 100),
             LXColor.hsba(30, 100, 50, 100),
-            LXColor.BLUE, LXColor.RED, LXColor.GREEN, LXColor.WHITE,
+            LXColor.BLUE,
+            LXColor.RED,
+            LXColor.GREEN,
+            LXColor.WHITE,
             LXColor.hsba(80, 100, 50, 100),
-            LXColor.hsba(100, 80, 50, 100)
+            LXColor.hsba(100, 80, 50, 100));
 
-    );
-
-    //pixels between marching ants
+    // pixels between marching ants
     private static final int ANT_SPACING = 10;
     private static final int LOWEST_PANEL_PRIORITY = 12;
 
@@ -105,7 +101,7 @@ public class SignalDebugger extends TEPattern implements UIDeviceControls<Signal
                     }
 
                     for (int j = 0; j < chainedEdge.edge.points.length; j++) {
-                        //i'm lazy...ants will march to imaginary beat
+                        // i'm lazy...ants will march to imaginary beat
                         double antProgress = getTempo().basis();
                         if (backwards) {
                             antProgress = 1 - antProgress;
@@ -123,7 +119,8 @@ public class SignalDebugger extends TEPattern implements UIDeviceControls<Signal
         if (activePanelIds != null) {
             for (String activePanelId : activePanelIds) {
                 int routeColor = colorIter.next();
-                List<LXPoint> activePoints = modelTE.panelsById.get(activePanelId).getPoints();
+                List<LXPoint> activePoints =
+                        modelTE.panelsById.get(activePanelId).getPoints();
                 for (LXPoint point : activePoints) {
                     colors[point.index] = routeColor;
                 }
@@ -154,7 +151,7 @@ public class SignalDebugger extends TEPattern implements UIDeviceControls<Signal
             if (!showLowPriParameter.getValueb() && tokens[3].equals("Low")) {
                 continue;
             }
-            ChainedEdge chainedEdge = new ChainedEdge(tokens[0], tokens[1], tokens[2], tokens[3] );
+            ChainedEdge chainedEdge = new ChainedEdge(tokens[0], tokens[1], tokens[2], tokens[3]);
             edgesById.put(chainedEdge.edge.getId(), chainedEdge);
             edgeSignalTo.put(chainedEdge.signalFrom, chainedEdge.edge.getId());
         }
@@ -255,15 +252,20 @@ public class SignalDebugger extends TEPattern implements UIDeviceControls<Signal
                 tb = new UITextBox(0, 0, COL_WIDTH, 16),
                 controlLabel(ui, "EdgeId"),
                 newKnob(cycleAllParameter),
-                newButton(showLowPriParameter)
-        );
+                newButton(showLowPriParameter));
         tb.setParameter(edgeIdParameter);
         tb.setEmptyValueAllowed(true);
     }
 
     private class ChainedEdge {
         public TEEdgeModel edge;
-        public enum Priority { HIGH, MEDIUM, LOW }
+
+        public enum Priority {
+            HIGH,
+            MEDIUM,
+            LOW
+        }
+
         public Priority priority;
         public int controllerVertex;
         public String signalFrom;

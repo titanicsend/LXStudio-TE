@@ -74,7 +74,7 @@ public class MF64RingPattern extends TEMidiFighter64Subpattern {
                 k = (1.0f - ringSawtooth) + (point.rcn + offs);
                 int on = (int) (k * square(k, ringWidth));
                 if (on > 0) {
-                    blendColor(point.index,colorSet[i]);
+                    blendColor(point.index, colorSet[i]);
                     break;
                 }
                 offs += ringWidth;

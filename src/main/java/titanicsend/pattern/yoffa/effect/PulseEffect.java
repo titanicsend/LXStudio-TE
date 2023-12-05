@@ -3,13 +3,12 @@ package titanicsend.pattern.yoffa.effect;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
+import java.util.Collection;
 import titanicsend.pattern.TECommonControls;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.util.TEMath;
-
-import java.util.Collection;
 
 public class PulseEffect extends PatternEffect {
 
@@ -87,8 +86,7 @@ public class PulseEffect extends PatternEffect {
 
             // dark sparkles - moving beat wave controlled by Wow1
             double beatWave = Math.abs(d1 - beat);
-            beatWave = (beatWave > pulseWidth) ? 0 :
-                energy * 40 * (1.0 - beatWave);
+            beatWave = (beatWave > pulseWidth) ? 0 : energy * 40 * (1.0 - beatWave);
 
             // straightforward radial gradient, with color posterization
             double index = posterize(Math.abs(t1 - dist) % 1, levels);
@@ -98,11 +96,7 @@ public class PulseEffect extends PatternEffect {
             double saturation = TEMath.clamp(LXColor.s(color) - beatWave, 0, 100);
             double brightness = masterBri * TEMath.clamp(LXColor.b(color) - beatPulse, 0, 100);
 
-            setColor(point, LXColor.hsb(
-                hue,
-                saturation,
-                brightness
-            ));
+            setColor(point, LXColor.hsb(hue, saturation, brightness));
         }
     }
 }

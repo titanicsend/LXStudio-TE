@@ -3,13 +3,12 @@ package titanicsend.pattern.jon;
 import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import java.nio.FloatBuffer;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
-
-import java.nio.FloatBuffer;
 
 @LXCategory("Combo FG")
 public class ArcEdges extends TEPerformancePattern {
@@ -24,16 +23,15 @@ public class ArcEdges extends TEPerformancePattern {
     public ArcEdges(LX lx) {
         super(lx, TEShaderView.ALL_POINTS);
 
-        controls.setRange(TEControlTag.SIZE, 1, 5, 0.1);              // scale
-        controls.setRange(TEControlTag.QUANTITY, 0.6, 0.72, 0.35);  // noise field position
-        controls.setRange(TEControlTag.WOW1, 0.025, 0.001, 0.08);     // noise magnitude
-        controls.setRange(TEControlTag.WOW2, 0.008, 0.0005, 0.03);    // edge "line width"
+        controls.setRange(TEControlTag.SIZE, 1, 5, 0.1); // scale
+        controls.setRange(TEControlTag.QUANTITY, 0.6, 0.72, 0.35); // noise field position
+        controls.setRange(TEControlTag.WOW1, 0.025, 0.001, 0.08); // noise magnitude
+        controls.setRange(TEControlTag.WOW2, 0.008, 0.0005, 0.03); // edge "line width"
 
         // register common controls with the UI
         addCommonControls();
 
-        effect = new NativeShaderPatternEffect("arcedges.fs",
-            new PatternTarget(this));
+        effect = new NativeShaderPatternEffect("arcedges.fs", new PatternTarget(this));
 
         // create an n x 4 array, so we can pass line segment descriptors
         // to GLSL shaders.
@@ -51,7 +49,7 @@ public class ArcEdges extends TEPerformancePattern {
 
     // store segment descriptors in our GL line segment buffer.
     void setUniformLine(int segNo, float x1, float y1, float x2, float y2) {
-        //TE.log("setLine %d : %.4f %.4f, %.4f %.4f",segNo,x1,y1,x2,y2);
+        // TE.log("setLine %d : %.4f %.4f, %.4f %.4f",segNo,x1,y1,x2,y2);
         gl_segments.position(segNo * 4);
         gl_segments.put(-x1);
         gl_segments.put(y1);

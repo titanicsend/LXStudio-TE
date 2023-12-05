@@ -8,7 +8,6 @@ import heronarts.lx.parameter.CompoundParameter;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.pattern.TEAudioPattern;
 
-
 /**
  * One of our pattern standards is that the pattern should be audio-reactive,
  * even without accurate tempo data present from an external clock or
@@ -33,22 +32,18 @@ import titanicsend.pattern.TEAudioPattern;
  * If you find it too jumpy, try lengthening the release parameter on the audio
  * GraphicMeter.
  */
-
 @LXCategory("TE Examples")
 public class BassReactive extends TEAudioPattern {
     // Titanic's End wants all patterns to implement a parameter called "Energy",
     // which controls the amount of motion, light, movement, action, particles, etc.
     // We'll use it here to scale the bass meter
     public final CompoundParameter energy =
-            new CompoundParameter("Energy", .1, 0, 1)
-                    .setDescription("Amount of motion for various modes");
-
+            new CompoundParameter("Energy", .1, 0, 1).setDescription("Amount of motion for various modes");
 
     public BassReactive(LX lx) {
         super(lx);
         addParameter("energy", energy);
     }
-
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
@@ -60,7 +55,7 @@ public class BassReactive extends TEAudioPattern {
          */
         double bassHeightNormalized = (bassRatio - .5) / (1.01 - energy.getNormalized()) / 3 - .2;
 
-        clearPixels();  // Sets all pixels to transparent for starters
+        clearPixels(); // Sets all pixels to transparent for starters
 
         for (TEEdgeModel edge : modelTE.edgesById.values()) {
             for (LXPoint point : edge.points) {

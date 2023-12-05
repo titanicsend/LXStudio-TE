@@ -1,5 +1,7 @@
 package titanicsend.pattern.jon;
 
+import static titanicsend.util.TEMath.clamp;
+
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import titanicsend.model.TEEdgeModel;
@@ -7,8 +9,6 @@ import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.util.TEColor;
 import titanicsend.util.TEMath;
-
-import static titanicsend.util.TEMath.clamp;
 
 // All LED platforms, no matter how large, must have KITT!
 @LXCategory("Edge FG")
@@ -33,7 +33,7 @@ public class EdgeKITT extends TEPerformancePattern {
     public void runTEAudioPattern(double deltaMs) {
 
         // generate 0..1 ramp (sawtooth) from speed timer
-        double t1 =  (getTimeMs() % 4000) / 4000;
+        double t1 = (getTimeMs() % 4000) / 4000;
 
         // Size control sets the KITT tail length
         double tailPct = getSize();
@@ -43,9 +43,9 @@ public class EdgeKITT extends TEPerformancePattern {
 
         int baseColor = calcColor();
 
-// From a discussion of frame buffer-less, multidimensional KITT patterns
-// on the Pixelblaze forum.
-// https://forum.electromage.com/t/kitt-without-arrays/1219
+        // From a discussion of frame buffer-less, multidimensional KITT patterns
+        // on the Pixelblaze forum.
+        // https://forum.electromage.com/t/kitt-without-arrays/1219
         for (TEEdgeModel edge : modelTE.getAllEdges()) {
             for (TEEdgeModel.Point point : edge.points) {
 
@@ -59,10 +59,10 @@ public class EdgeKITT extends TEPerformancePattern {
 
                 // gamma correct both waves before combining to keep the brightness gradient smooth where
                 // they overlap
-                double bri = clamp((w1 * w1) + (w2 * w2),0,1);
+                double bri = clamp((w1 * w1) + (w2 * w2), 0, 1);
 
-                bri = bri * 255;  // scale for LX output
-                colors[point.index] = TEColor.reAlpha(baseColor,(int) bri);
+                bri = bri * 255; // scale for LX output
+                colors[point.index] = TEColor.reAlpha(baseColor, (int) bri);
             }
         }
     }

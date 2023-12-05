@@ -1,36 +1,29 @@
 package titanicsend.pattern.yoffa.effect.shaders;
 
-import heronarts.lx.parameter.BooleanParameter;
-import heronarts.lx.parameter.CompoundParameter;
-import heronarts.lx.parameter.LXParameter;
-import titanicsend.color.TEColorType;
-import titanicsend.pattern.TEPattern;
-import titanicsend.pattern.yoffa.framework.PatternTarget;
-
-import java.awt.*;
-import java.util.Collection;
-import java.util.List;
-
 import static java.lang.Math.*;
 import static titanicsend.util.TEMath.*;
 
-//https://www.shadertoy.com/view/3sc3Df
+import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.LXParameter;
+import java.awt.*;
+import java.util.Collection;
+import java.util.List;
+import titanicsend.color.TEColorType;
+import titanicsend.pattern.yoffa.framework.PatternTarget;
+
+// https://www.shadertoy.com/view/3sc3Df
 public class NeonCellsShader extends FragmentShaderEffect {
 
-    private final CompoundParameter energy =
-            new CompoundParameter("Energy", 0, 0, 1);
+    private final CompoundParameter energy = new CompoundParameter("Energy", 0, 0, 1);
 
-    private final BooleanParameter doubleLayer =
-            new BooleanParameter("Double Layer", false);
+    private final BooleanParameter doubleLayer = new BooleanParameter("Double Layer", false);
 
-    private final BooleanParameter doubleSpeed =
-            new BooleanParameter("Double Speed", false);
+    private final BooleanParameter doubleSpeed = new BooleanParameter("Double Speed", false);
 
-    private final CompoundParameter glow =
-            new CompoundParameter("Glow", 0.1, 0.1, .5);
+    private final CompoundParameter glow = new CompoundParameter("Glow", 0.1, 0.1, .5);
 
-    private final CompoundParameter width =
-            new CompoundParameter("Width", .5, .5, 1.5);
+    private final CompoundParameter width = new CompoundParameter("Width", .5, .5, 1.5);
 
     public NeonCellsShader(PatternTarget target) {
         super(target);
@@ -38,8 +31,7 @@ public class NeonCellsShader extends FragmentShaderEffect {
 
     @Override
     protected double[] getColorForPoint(double[] fragCoordinates, double[] resolution, double timeSeconds) {
-        double[] uv = multiplyArray(1 / resolution[1],
-                subtractArrays(fragCoordinates, multiplyArray(.5, resolution)));
+        double[] uv = multiplyArray(1 / resolution[1], subtractArrays(fragCoordinates, multiplyArray(.5, resolution)));
 
         double phase = PI * pattern.getTempo().getCompositeBasis();
         double speedMultiplier = doubleSpeed.getValueb() ? 2 : 1;
@@ -50,7 +42,7 @@ public class NeonCellsShader extends FragmentShaderEffect {
         }
 
         float[] color = new Color(pattern.getSwatchColor(TEColorType.PRIMARY)).getRGBColorComponents(null);
-        return multiplyArray(.5 / d, new double[]{color[0], color[1], color[2]});
+        return multiplyArray(.5 / d, new double[] {color[0], color[1], color[2]});
     }
 
     private double pat(double[] uv, double p, double q, double speed, double glow, double phase) {

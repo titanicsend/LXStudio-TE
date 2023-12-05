@@ -3,6 +3,9 @@ package titanicsend.pattern.glengine;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.pattern.LXPattern;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.NamingStrategy;
 import net.bytebuddy.description.annotation.AnnotationDescription;
@@ -13,10 +16,6 @@ import net.bytebuddy.matcher.ElementMatchers;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
 import titanicsend.util.TE;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 // NOTE: Compiling this class may generate an unchecked cast warning or
 // other annotation related warnings. These can be safely ignored.  This
 // dynamic class generation lives by the principle that an object is an
@@ -25,7 +24,8 @@ public class ShaderPatternClassFactory {
 
     public String getShaderClassName(File shaderFile, List<ShaderConfiguration> config) {
         // if not otherwise specified, we'll use the shader's name as the class name
-        String className = shaderFile.getName().substring(0, shaderFile.getName().length() - 3);
+        String className =
+                shaderFile.getName().substring(0, shaderFile.getName().length() - 3);
 
         // see if a name was specified in the config options
         for (ShaderConfiguration c : config) {
@@ -92,7 +92,7 @@ public class ShaderPatternClassFactory {
         // get a list of all shaders in resource path
         File[] files = new File(dir).listFiles((dir1, name) -> name.endsWith(".fs"));
         if (files == null) {
-            //TE.log("No shaders found in " + dir);
+            // TE.log("No shaders found in " + dir);
             return;
         }
 
@@ -112,7 +112,7 @@ public class ShaderPatternClassFactory {
             // if the shader has no embedded configuration at all, we have to assume
             // that it's set up the "normal" way.  Skip it.
             if (hasConfigData(config) == false) {
-                //TE.log("Shader " + shaderFile + " has no configuration data.  Skipping.");
+                // TE.log("Shader " + shaderFile + " has no configuration data.  Skipping.");
                 continue;
             }
 
@@ -122,13 +122,12 @@ public class ShaderPatternClassFactory {
                 // create the class
                 TE.log("Creating Shader class: " + className + " for " + shaderFile);
                 try {
-                    Class<?> clazz = new ShaderPatternClassFactory().make(className,
-                        getLXCategory(config), shaderFile, isDriftPattern(config));
+                    Class<?> clazz = new ShaderPatternClassFactory()
+                            .make(className, getLXCategory(config), shaderFile, isDriftPattern(config));
                     lx.registry.addPattern((Class<? extends LXPattern>) clazz);
-                    //TE.log("Registered shader class: " + className);
+                    // TE.log("Registered shader class: " + className);
                 } catch (Exception e) {
-                    TE.err("Error. Shader class " + className + " could not be registered." +
-                        "\n" + e.getMessage());
+                    TE.err("Error. Shader class " + className + " could not be registered." + "\n" + e.getMessage());
                 }
             }
         }
@@ -168,39 +167,39 @@ public class ShaderPatternClassFactory {
     */
     public Class<?> make(String className, String category, String shaderFile, boolean isDriftPattern) {
         AnnotationDescription lxcategory = AnnotationDescription.Builder.ofType(LXCategory.class)
-            .define("value", category)
-            .build();
+                .define("value", category)
+                .build();
 
         if (isDriftPattern) {
             return new ByteBuddy()
-                .with(new NamingStrategy.AbstractBase() {
-                    @Override
-                    protected String name(TypeDescription superClass) {
-                        return className;
-                    }
-                })
-                .subclass(TEAutoDriftPattern.class)
-                .annotateType(lxcategory)
-                .method(ElementMatchers.named("getShaderFile"))
-                .intercept(FixedValue.value(shaderFile))
-                .make()
-                .load(ClassLoader.getSystemClassLoader(), ClassLoadingStrategy.Default.INJECTION)
-                .getLoaded();
+                    .with(new NamingStrategy.AbstractBase() {
+                        @Override
+                        protected String name(TypeDescription superClass) {
+                            return className;
+                        }
+                    })
+                    .subclass(TEAutoDriftPattern.class)
+                    .annotateType(lxcategory)
+                    .method(ElementMatchers.named("getShaderFile"))
+                    .intercept(FixedValue.value(shaderFile))
+                    .make()
+                    .load(ClassLoader.getSystemClassLoader(), ClassLoadingStrategy.Default.INJECTION)
+                    .getLoaded();
         } else {
             return new ByteBuddy()
-                .with(new NamingStrategy.AbstractBase() {
-                    @Override
-                    protected String name(TypeDescription superClass) {
-                        return className;
-                    }
-                })
-                .subclass(TEAutoShaderPattern.class)
-                .annotateType(lxcategory)
-                .method(ElementMatchers.named("getShaderFile"))
-                .intercept(FixedValue.value(shaderFile))
-                .make()
-                .load(ClassLoader.getSystemClassLoader(), ClassLoadingStrategy.Default.INJECTION)
-                .getLoaded();
+                    .with(new NamingStrategy.AbstractBase() {
+                        @Override
+                        protected String name(TypeDescription superClass) {
+                            return className;
+                        }
+                    })
+                    .subclass(TEAutoShaderPattern.class)
+                    .annotateType(lxcategory)
+                    .method(ElementMatchers.named("getShaderFile"))
+                    .intercept(FixedValue.value(shaderFile))
+                    .make()
+                    .load(ClassLoader.getSystemClassLoader(), ClassLoadingStrategy.Default.INJECTION)
+                    .getLoaded();
         }
     }
 }

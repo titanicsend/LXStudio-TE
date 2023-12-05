@@ -41,5 +41,4 @@ public class SigmoidDanceAudioWaveform extends TEPerformancePattern {
         effect.onActive();
         shader = effect.getNativeShader();
     }
-
 }

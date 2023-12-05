@@ -15,17 +15,9 @@
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.ui;
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.List;
-
-import heronarts.lx.transform.LXVector;
-import org.joml.Matrix4f;
-import org.lwjgl.system.MemoryUtil;
+import static org.lwjgl.bgfx.BGFX.*;
 
 import heronarts.glx.DynamicVertexBuffer;
 import heronarts.glx.GLX;
@@ -36,10 +28,15 @@ import heronarts.glx.ui.UI;
 import heronarts.glx.ui.UI3dComponent;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.studio.TEApp;
+import heronarts.lx.transform.LXVector;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.List;
+import org.joml.Matrix4f;
+import org.lwjgl.system.MemoryUtil;
 import titanicsend.app.TEVirtualOverlays;
 import titanicsend.model.TEPanelModel;
-
-import static org.lwjgl.bgfx.BGFX.*;
 
 public class UIBackings extends UI3dComponent {
 
@@ -101,8 +98,8 @@ public class UIBackings extends UI3dComponent {
         colorData.rewind();
 
         // TODO: fix variable opacity - may require a (BGFX) shader
-        final int panelColor = LXColor.toABGR(LXColor.rgba(0, 0, 0,
-            (int) this.virtualOverlays.backingOpacity.getNormalized() * 255));
+        final int panelColor =
+                LXColor.toABGR(LXColor.rgba(0, 0, 0, (int) this.virtualOverlays.backingOpacity.getNormalized() * 255));
         for (int i = 0; i < numModels; i++) {
             colorData.putInt(panelColor);
             colorData.putInt(panelColor);
@@ -111,8 +108,7 @@ public class UIBackings extends UI3dComponent {
         colorData.rewind();
         this.colorBuffer.update();
 
-        final long state =
-            BGFX_STATE_PT_TRISTRIP
+        final long state = BGFX_STATE_PT_TRISTRIP
                 | BGFX_STATE_WRITE_RGB
                 | BGFX_STATE_WRITE_A
                 | BGFX_STATE_WRITE_Z
@@ -121,7 +117,8 @@ public class UIBackings extends UI3dComponent {
         int vertexIndex = 0;
         for (PanelBuffer b : panels) {
             bgfx_set_transform(this.modelMatrix.get(this.modelMatrixBuf));
-            bgfx_set_dynamic_vertex_buffer(1, this.colorBuffer.getHandle(), vertexIndex++ * VERTICES_PER_PANEL, VERTICES_PER_PANEL);
+            bgfx_set_dynamic_vertex_buffer(
+                    1, this.colorBuffer.getHandle(), vertexIndex++ * VERTICES_PER_PANEL, VERTICES_PER_PANEL);
             ui.lx.program.vertexFill.submit(view, state, b);
         }
     }

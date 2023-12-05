@@ -15,7 +15,6 @@
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.dmx.parameter;
 
 import heronarts.lx.parameter.LXListenableParameter;
@@ -24,45 +23,50 @@ import heronarts.lx.parameter.LXParameterListener;
 
 public interface DmxParameter extends LXNormalizedParameter {
 
-  public enum DmxBlendMode {
-    LERP,
-    JUMP_START,
-    JUMP_END    
-  }
-  public DmxBlendMode getBlendMode();
+    public enum DmxBlendMode {
+        LERP,
+        JUMP_START,
+        JUMP_END
+    }
 
-  public double getMin();
-  public double getMax();
-  public double getRangeD();
+    public DmxBlendMode getBlendMode();
 
-  /**
-   * Get value at a given alpha level.  Only some DMX parameters (such as dimmer) will scale for alpha.
-   */
-  public double getDmxValue(double alpha);
-  public DmxParameter setDmxValue(double value);
-  public DmxParameterLimiter getLimiter();
-  /**
-   * Get DMX value after limiter has been applied
-   */
-  public double getDmxValueLimited();  
-  /**
-   * Get DMX value after limiter has been applied, for given alpha level.
-   */
-  public double getValueLimited(double alpha);
+    public double getMin();
 
-  public DmxParameter copy();
+    public double getMax();
 
-  /**
-   * Get number of output bytes for this parameter.  Most DMX parameters are 1 (8 bit) or 2 bytes (16 bit)
-   */
-  public int getNumBytes();
-  /**
-   * For now, have each parameter write its (limited) output value to the output array.
-   * Later will remove this power from parameters.
-   */
-  public void writeBytes(byte[] output, int offset);
+    public double getRangeD();
 
-  public LXListenableParameter addListener(LXParameterListener listener);
-  public LXListenableParameter removeListener(LXParameterListener listener);
+    /**
+     * Get value at a given alpha level.  Only some DMX parameters (such as dimmer) will scale for alpha.
+     */
+    public double getDmxValue(double alpha);
 
+    public DmxParameter setDmxValue(double value);
+
+    public DmxParameterLimiter getLimiter();
+    /**
+     * Get DMX value after limiter has been applied
+     */
+    public double getDmxValueLimited();
+    /**
+     * Get DMX value after limiter has been applied, for given alpha level.
+     */
+    public double getValueLimited(double alpha);
+
+    public DmxParameter copy();
+
+    /**
+     * Get number of output bytes for this parameter.  Most DMX parameters are 1 (8 bit) or 2 bytes (16 bit)
+     */
+    public int getNumBytes();
+    /**
+     * For now, have each parameter write its (limited) output value to the output array.
+     * Later will remove this power from parameters.
+     */
+    public void writeBytes(byte[] output, int offset);
+
+    public LXListenableParameter addListener(LXParameterListener listener);
+
+    public LXListenableParameter removeListener(LXParameterListener listener);
 }

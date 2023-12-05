@@ -10,15 +10,14 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.modulator.Click;
 import heronarts.lx.parameter.*;
-import titanicsend.color.TEColorType;
-import titanicsend.model.TEEdgeModel;
-import titanicsend.pattern.TEAudioPattern;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
+import titanicsend.color.TEColorType;
+import titanicsend.model.TEEdgeModel;
+import titanicsend.pattern.TEAudioPattern;
 
 /**
  *  Loads a JSON file of scenes. A scene is a set of edges to light.
@@ -36,12 +35,10 @@ import java.util.*;
  *  The resulting edges can be palette linked; when used in a channel with
  *  a Multiply blendMode, it automatically produces a B&W mask.
  * */
-
 @LXCategory("Geometry Masks")
 public class EdgeProgressions extends TEAudioPattern {
     public final LinkedColorParameter colorParam =
-            registerColor("Color", "color", TEColorType.PRIMARY,
-                    "Primary color for edges, when not in auto-mask mode");
+            registerColor("Color", "color", TEColorType.PRIMARY, "Primary color for edges, when not in auto-mask mode");
 
     // In this pattern the "energy" is how quickly the scenes can progress,
     // IE shorter tempoDivisions
@@ -49,31 +46,29 @@ public class EdgeProgressions extends TEAudioPattern {
     public ObjectParameter<Tempo.Division> tempoDivision;
 
     // Click modulator to trigger scene advance in tempo mode
-    public final Click tempoDivisionClick =
-            new Click("Tempo Division", lx.engine.tempo.period);
+    public final Click tempoDivisionClick = new Click("Tempo Division", lx.engine.tempo.period);
 
     // Manual mode can have the trigger parameter linked to MIDI or a beatDetect
-    public enum Mode { TEMPO, BASS, MANUAL }
+    public enum Mode {
+        TEMPO,
+        BASS,
+        MANUAL
+    }
 
-    public final EnumParameter<Mode> triggerMode =
-            new EnumParameter<>("Mode", Mode.TEMPO)
-                    .setDescription("What advances the scene. Manual can also be MIDI or BeatMod.");
+    public final EnumParameter<Mode> triggerMode = new EnumParameter<>("Mode", Mode.TEMPO)
+            .setDescription("What advances the scene. Manual can also be MIDI or BeatMod.");
 
     public final DiscreteParameter sceneSelect =
-            new DiscreteParameter("Scene", 0, 1)
-                    .setDescription("Manual scene selection");
+            new DiscreteParameter("Scene", 0, 1).setDescription("Manual scene selection");
 
     // Can link this to beatModulator or Midi notes
-    public final BooleanParameter trigger =
-            new BooleanParameter("Trigger")
-                    .setDescription("Manual advance. Can be MIDI or beatMod mapped.")
-                    .setMode(BooleanParameter.Mode.MOMENTARY);
+    public final BooleanParameter trigger = new BooleanParameter("Trigger")
+            .setDescription("Manual advance. Can be MIDI or beatMod mapped.")
+            .setMode(BooleanParameter.Mode.MOMENTARY);
 
-    public final BooleanParameter downbeat =
-            new BooleanParameter("Beat1")
-                    .setDescription("Reset sequence to a downbeat (multiple of 16)")
-                    .setMode(BooleanParameter.Mode.MOMENTARY);
-
+    public final BooleanParameter downbeat = new BooleanParameter("Beat1")
+            .setDescription("Reset sequence to a downbeat (multiple of 16)")
+            .setMode(BooleanParameter.Mode.MOMENTARY);
 
     // Collection of edges that should be on based on current state
     protected Set<TEEdgeModel> litEdges = new HashSet<>();
@@ -89,9 +84,7 @@ public class EdgeProgressions extends TEAudioPattern {
 
     // Map of name->Set<edges> loaded from a JSON file that contains all
     // defined scenes.
-    protected HashMap<String, Set<TEEdgeModel>> edgeSets
-            = new LinkedHashMap<>();
-
+    protected HashMap<String, Set<TEEdgeModel>> edgeSets = new LinkedHashMap<>();
 
     public EdgeProgressions(LX lx) {
         super(lx);
@@ -114,15 +107,15 @@ public class EdgeProgressions extends TEAudioPattern {
     }
 
     private void addDivisionParam() {
-        divisions = new Tempo.Division[]{
-                Tempo.Division.EIGHT,
-                Tempo.Division.FOUR,
-                Tempo.Division.DOUBLE,
-                Tempo.Division.WHOLE,
-                Tempo.Division.HALF,
-                Tempo.Division.QUARTER,
-                Tempo.Division.EIGHTH,
-                Tempo.Division.SIXTEENTH
+        divisions = new Tempo.Division[] {
+            Tempo.Division.EIGHT,
+            Tempo.Division.FOUR,
+            Tempo.Division.DOUBLE,
+            Tempo.Division.WHOLE,
+            Tempo.Division.HALF,
+            Tempo.Division.QUARTER,
+            Tempo.Division.EIGHTH,
+            Tempo.Division.SIXTEENTH
         };
 
         tempoDivision = new ObjectParameter<>("Energy", divisions, divisions[5])
@@ -222,7 +215,8 @@ public class EdgeProgressions extends TEAudioPattern {
     public void onActive() {
         super.onActive();
 
-        if (triggerMode.getEnum().equals(Mode.TEMPO)) {;
+        if (triggerMode.getEnum().equals(Mode.TEMPO)) {
+            ;
             lx.engine.tempo.trigger();
             sceneSelect.setValue(scenes.size());
         }
@@ -235,7 +229,7 @@ public class EdgeProgressions extends TEAudioPattern {
         if (parameter.equals(tempoDivision)) {
             tempoDivisionClick.tempoDivision.setValue(tempoDivision.getObject());
             // Allow the beat detect to only trigger as fast as the tempo division
-            bassRetriggerMs =  15./16 * lx.engine.tempo.period.getValue() / tempoDivision.getObject().multiplier;
+            bassRetriggerMs = 15. / 16 * lx.engine.tempo.period.getValue() / tempoDivision.getObject().multiplier;
         }
 
         if (parameter.equals(sceneSelect)) {
@@ -259,10 +253,9 @@ public class EdgeProgressions extends TEAudioPattern {
                 case MANUAL:
                     nextScene();
                     break;
-                default:  // should be unreachable!
-                    throw new IllegalStateException(
-                            "Mike Schiraldi would like to have a word with you");
-                }
+                default: // should be unreachable!
+                    throw new IllegalStateException("Mike Schiraldi would like to have a word with you");
+            }
         }
 
         // Jump to the next multiple of 16
@@ -270,7 +263,7 @@ public class EdgeProgressions extends TEAudioPattern {
             int sceneGroupCount = scenes.size() / SCENE_GROUP_SIZE + 1;
             // Scene 0 is all-off "empty"; so index 1, 17, 33, etc. begin nice scene groups
             int sIdx = sceneSelect.getValuei();
-            sIdx = (((sIdx-1) / SCENE_GROUP_SIZE) + 1) % sceneGroupCount * SCENE_GROUP_SIZE + 1;
+            sIdx = (((sIdx - 1) / SCENE_GROUP_SIZE) + 1) % sceneGroupCount * SCENE_GROUP_SIZE + 1;
             sceneSelect.setValue(sIdx);
 
             setEdges();

@@ -1,8 +1,7 @@
 package titanicsend.app.autopilot;
 
-import titanicsend.util.TE;
-
 import java.util.concurrent.ConcurrentHashMap;
+import titanicsend.util.TE;
 
 public enum TEPhrase {
     TRO("tro"),
@@ -21,9 +20,9 @@ public enum TEPhrase {
 
     private static ConcurrentHashMap<String, TEPhrase> initializeMap() {
         /*
-            Static map initialization:
-            https://stackoverflow.com/a/509016
-         */
+           Static map initialization:
+           https://stackoverflow.com/a/509016
+        */
         ConcurrentHashMap<String, TEPhrase> m = new ConcurrentHashMap<String, TEPhrase>();
 
         // ADD ALL PHRASES HERE
@@ -38,7 +37,7 @@ public enum TEPhrase {
         // ie: showKontrolPhraseString="/lx/phrase/chorus 1"
         String[] parts = showKontrolPhraseString.split("/");
         String phraseAndArg = parts[3];
-        String phrase = phraseAndArg.split(" ")[0];  // ie: "chorus 1"
+        String phrase = phraseAndArg.split(" ")[0]; // ie: "chorus 1"
         if (stringToPhrase.containsKey(phrase)) {
             return stringToPhrase.get(phrase);
         }

@@ -1,5 +1,9 @@
 package titanicsend.pattern.yoffa.shader_engine;
 
+import static com.jogamp.opengl.GL.*;
+import static titanicsend.pattern.yoffa.shader_engine.UniformTypes.*;
+
+import Jama.Matrix;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.GL4;
@@ -9,33 +13,23 @@ import com.jogamp.opengl.util.texture.TextureIO;
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.util.TE;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.*;
 import java.util.HashMap;
 import java.util.Map;
-
-import Jama.Matrix;
-
-import static com.jogamp.opengl.GL.*;
-import static titanicsend.pattern.yoffa.shader_engine.UniformTypes.*;
+import titanicsend.util.TE;
 
 // Technically we don't need to implement GLEventListener unless we plan on rendering on screen,
 // but let's leave it for good practice.
 public class NativeShader implements GLEventListener {
 
-    //we need to draw an object with a vertex shader to put our fragment shader on
-    //literally just create a rectangle that takes up the whole screen to paint on
-    private static final float[] VERTICES = {
-        1.0f, 1.0f, 0.0f,
-        1.0f, -1.0f, 0.0f,
-        -1.0f, -1.0f, 0.0f,
-        -1.0f, 1.0f, 0.0f
+    // we need to draw an object with a vertex shader to put our fragment shader on
+    // literally just create a rectangle that takes up the whole screen to paint on
+    private static final float[] VERTICES = {1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f, -1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 0.0f
     };
 
-    //we are drawing with triangles, so we need two to make our rectangle
+    // we are drawing with triangles, so we need two to make our rectangle
     private static final int[] INDICES = {
         0, 1, 2,
         2, 0, 3
@@ -70,7 +64,7 @@ public class NativeShader implements GLEventListener {
         this.vertexBuffer.put(VERTICES);
         this.indexBuffer.put(INDICES);
         this.textures = new HashMap<>();
-        this.textureKey = 1;  // textureKey 0 reserved for audio texture.
+        this.textureKey = 1; // textureKey 0 reserved for audio texture.
         this.controlData = null;
 
         // gl-compatible buffer for reading offscreen surface to cpu memory
@@ -138,12 +132,14 @@ public class NativeShader implements GLEventListener {
         // vertices
         vertexBuffer.rewind();
         gl4.glBindBuffer(GL_ARRAY_BUFFER, geometryBufferHandles[0]);
-        gl4.glBufferData(GL_ARRAY_BUFFER, (long) vertexBuffer.capacity() * Float.BYTES, vertexBuffer, GL.GL_STATIC_DRAW);
+        gl4.glBufferData(
+                GL_ARRAY_BUFFER, (long) vertexBuffer.capacity() * Float.BYTES, vertexBuffer, GL.GL_STATIC_DRAW);
 
         // geometry built from vertices (triangles!)
         indexBuffer.rewind();
         gl4.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometryBufferHandles[1]);
-        gl4.glBufferData(GL_ELEMENT_ARRAY_BUFFER, (long) indexBuffer.capacity() * Integer.BYTES, indexBuffer, GL.GL_STATIC_DRAW);
+        gl4.glBufferData(
+                GL_ELEMENT_ARRAY_BUFFER, (long) indexBuffer.capacity() * Integer.BYTES, indexBuffer, GL.GL_STATIC_DRAW);
 
         // Audio texture object - on id GL_TEXTURE0
         gl4.glActiveTexture(GL_TEXTURE0);
@@ -151,7 +147,16 @@ public class NativeShader implements GLEventListener {
         gl4.glGenTextures(1, audioTextureHandle, 0);
         gl4.glBindTexture(GL4.GL_TEXTURE_2D, audioTextureHandle[0]);
 
-        gl4.glTexImage2D(GL4.GL_TEXTURE_2D, 0, GL4.GL_R32F, audioTextureWidth, audioTextureHeight, 0, GL4.GL_RED, GL_FLOAT, audioTextureData);
+        gl4.glTexImage2D(
+                GL4.GL_TEXTURE_2D,
+                0,
+                GL4.GL_R32F,
+                audioTextureWidth,
+                audioTextureHeight,
+                0,
+                GL4.GL_RED,
+                GL_FLOAT,
+                audioTextureData);
         gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -257,7 +262,16 @@ public class NativeShader implements GLEventListener {
             audioTextureData.put(n + audioTextureWidth, controlData.getWaveformData(n));
         }
 
-        gl4.glTexImage2D(GL4.GL_TEXTURE_2D, 0, GL4.GL_R32F, audioTextureWidth, audioTextureHeight, 0, GL4.GL_RED, GL_FLOAT, audioTextureData);
+        gl4.glTexImage2D(
+                GL4.GL_TEXTURE_2D,
+                0,
+                GL4.GL_R32F,
+                audioTextureWidth,
+                audioTextureHeight,
+                0,
+                GL4.GL_RED,
+                GL_FLOAT,
+                audioTextureData);
         setUniform(Uniforms.AUDIO_CHANNEL, 0);
 
         // add shadertoy texture channels
@@ -277,10 +291,11 @@ public class NativeShader implements GLEventListener {
     }
 
     private void loadTextureFiles(FragmentShader fragmentShader) {
-        for (Map.Entry<Integer, String> textureInput : fragmentShader.getChannelToTexture().entrySet()) {
+        for (Map.Entry<Integer, String> textureInput :
+                fragmentShader.getChannelToTexture().entrySet()) {
             try {
                 File file = new File(textureInput.getValue());
-                //TE.log("File Texture %s", textureInput.getValue());
+                // TE.log("File Texture %s", textureInput.getValue());
                 textures.put(textureInput.getKey(), TextureIO.newTexture(file, false));
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -317,17 +332,17 @@ public class NativeShader implements GLEventListener {
     }
 
     /*
-     Generic shader uniform handler - based on processing.opengl.PShader (www.processing.org)
-     The idea is that this mechanism can handle our normal shadertoy-like and LX engine generated
-     uniforms, plus any other uniforms the user wants to use.  This makes it easier to do things like
-     sending the current foreground color to the shader as a vec3.
+    Generic shader uniform handler - based on processing.opengl.PShader (www.processing.org)
+    The idea is that this mechanism can handle our normal shadertoy-like and LX engine generated
+    uniforms, plus any other uniforms the user wants to use.  This makes it easier to do things like
+    sending the current foreground color to the shader as a vec3.
 
-     When doing this, THE PATTERN/SHADER AUTHOR IS RESPONSIBLE for seeing that the uniform names match
-     in the Java pattern code and the shader.  Otherwise... nothing ... will happen.
+    When doing this, THE PATTERN/SHADER AUTHOR IS RESPONSIBLE for seeing that the uniform names match
+    in the Java pattern code and the shader.  Otherwise... nothing ... will happen.
 
-     Sigh... most of this code consists of ten zillion overloaded methods to set uniforms of all the supported
-     types. Oh yeah, and a couple of worker methods to manage the uniform list we're building.
-     */
+    Sigh... most of this code consists of ten zillion overloaded methods to set uniforms of all the supported
+    types. Oh yeah, and a couple of worker methods to manage the uniform list we're building.
+    */
 
     // worker for adding user specified uniforms to our big list'o'uniforms
     protected void addUniform(String name, int type, Object value) {
@@ -463,67 +478,65 @@ public class NativeShader implements GLEventListener {
      * setter -- single int
      */
     public void setUniform(String name, int x) {
-        addUniform(name, INT1, new int[]{x});
+        addUniform(name, INT1, new int[] {x});
     }
 
     /**
      * 2 element int array or ivec2
      */
     public void setUniform(String name, int x, int y) {
-        addUniform(name, INT2, new int[]{x, y});
+        addUniform(name, INT2, new int[] {x, y});
     }
 
     /**
      * 3 element int array or ivec3
      */
     public void setUniform(String name, int x, int y, int z) {
-        addUniform(name, INT3, new int[]{x, y, z});
+        addUniform(name, INT3, new int[] {x, y, z});
     }
 
     /**
      * 4 element int array or ivec4
      */
     public void setUniform(String name, int x, int y, int z, int w) {
-        addUniform(name, UniformTypes.INT4, new int[]{x, y, z, w});
+        addUniform(name, UniformTypes.INT4, new int[] {x, y, z, w});
     }
 
     /**
      * single float
      */
     public void setUniform(String name, float x) {
-        addUniform(name, UniformTypes.FLOAT1, new float[]{x});
+        addUniform(name, UniformTypes.FLOAT1, new float[] {x});
     }
 
     /**
      * 2 element float array or vec2
      */
     public void setUniform(String name, float x, float y) {
-        addUniform(name, UniformTypes.FLOAT2, new float[]{x, y});
+        addUniform(name, UniformTypes.FLOAT2, new float[] {x, y});
     }
 
     /**
      * 3 element float array or vec3
      */
     public void setUniform(String name, float x, float y, float z) {
-        addUniform(name, UniformTypes.FLOAT3, new float[]{x, y, z});
+        addUniform(name, UniformTypes.FLOAT3, new float[] {x, y, z});
     }
 
     /**
      * 4 element float array or vec4
      */
     public void setUniform(String name, float x, float y, float z, float w) {
-        addUniform(name, UniformTypes.FLOAT4, new float[]{x, y, z, w});
+        addUniform(name, UniformTypes.FLOAT4, new float[] {x, y, z, w});
     }
 
     public void setUniform(String name, boolean x) {
-        addUniform(name, INT1, new int[]{(x) ? 1 : 0});
+        addUniform(name, INT1, new int[] {(x) ? 1 : 0});
     }
 
     public void setUniform(String name, boolean x, boolean y) {
-        addUniform(name, INT2,
-            new int[]{(x) ? 1 : 0, (y) ? 1 : 0});
+        addUniform(name, INT2, new int[] {(x) ? 1 : 0, (y) ? 1 : 0});
     }
-
 
     /**
      * Create SAMPLER2D uniform from jogl Texture object - this prototype supports
@@ -565,7 +578,7 @@ public class NativeShader implements GLEventListener {
                 addUniform(name, UniformTypes.INT4VEC, vec);
                 break;
             default:
-                //TE.log("SetUniform(%s): %d coords specified, maximum 4 allowed", name, columns);
+                // TE.log("SetUniform(%s): %d coords specified, maximum 4 allowed", name, columns);
                 break;
         }
     }
@@ -585,7 +598,7 @@ public class NativeShader implements GLEventListener {
                 addUniform(name, UniformTypes.FLOAT4VEC, vec);
                 break;
             default:
-                //TE.log("SetUniform(%s): %d coords specified, maximum 4 allowed", name, columns);
+                // TE.log("SetUniform(%s): %d coords specified, maximum 4 allowed", name, columns);
                 break;
         }
     }
@@ -610,7 +623,7 @@ public class NativeShader implements GLEventListener {
                 addUniform(name, UniformTypes.MAT4, vec);
                 break;
             default:
-                //TE.log("SetUniformMatrix(%s): %d incorrect matrix size specified", name, columns);
+                // TE.log("SetUniformMatrix(%s): %d incorrect matrix size specified", name, columns);
                 break;
         }
     }

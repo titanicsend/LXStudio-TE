@@ -1,16 +1,15 @@
 package titanicsend.pattern.pixelblaze;
 
+import static java.lang.Math.PI;
+import static java.lang.Math.sin;
+
 import heronarts.lx.LX;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXParameterListener;
+import java.util.ArrayList;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-
-import java.util.ArrayList;
-
-import static java.lang.Math.PI;
-import static java.lang.Math.sin;
 
 public abstract class PixelblazePort extends TEPerformancePattern {
 
@@ -19,11 +18,11 @@ public abstract class PixelblazePort extends TEPerformancePattern {
 
     public LXPoint[] modelPoints = new LXPoint[0];
 
-    //"globals"
+    // "globals"
     public int pixelCount;
-    //public long now;
+    // public long now;
 
-    //render fields
+    // render fields
     public LXPoint point;
     public int color;
 
@@ -49,7 +48,7 @@ public abstract class PixelblazePort extends TEPerformancePattern {
 
     private void updateLocalVars() {
         pixelCount = modelPoints.length;
-        //now = System.currentTimeMillis();
+        // now = System.currentTimeMillis();
     }
 
     protected LXParameterListener modelPointsListener = lxParameter -> {
@@ -58,7 +57,6 @@ public abstract class PixelblazePort extends TEPerformancePattern {
         updateLocalVars();
         onPointsUpdated();
     };
-
 
     private LXPoint[] getModelPoints() {
         ArrayList<LXPoint> newPoints = new ArrayList<>(model.points.length);
@@ -70,7 +68,6 @@ public abstract class PixelblazePort extends TEPerformancePattern {
         }
         return newPoints.toArray(new LXPoint[0]);
     }
-
 
     public void runTEAudioPattern(double deltaMs) {
         updateLocalVars();
@@ -103,11 +100,9 @@ public abstract class PixelblazePort extends TEPerformancePattern {
 
     public abstract void beforeRender(double deltaMs);
 
-
-    //compat api
+    // compat api
 
     public static double PI2 = Math.PI * 2;
-
 
     public double clamp(double v, double min, double max) {
         return Math.min(max, Math.max(min, v));
@@ -127,15 +122,13 @@ public abstract class PixelblazePort extends TEPerformancePattern {
 
     public double triangle(double v) {
         v = v * 2 % 2;
-        if (v < 0)
-            v += 2;
+        if (v < 0) v += 2;
         return v < 1 ? v : 2 - v;
     }
 
     public float triangle(float v) {
         v = v * 2 % 2;
-        if (v < 0)
-            v += 2;
+        if (v < 0) v += 2;
         return v < 1 ? v : 2 - v;
     }
 
@@ -165,5 +158,4 @@ public abstract class PixelblazePort extends TEPerformancePattern {
         enablePanels.removeListener(modelPointsListener);
         super.dispose();
     }
-
 }

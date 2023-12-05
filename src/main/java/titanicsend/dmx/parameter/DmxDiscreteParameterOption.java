@@ -15,37 +15,35 @@
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.dmx.parameter;
 
 /**
  * A value for a DMX parameter, can be a single value or a range
  */
 public class DmxDiscreteParameterOption {
-  public final String label;
-  public final int min;
-  public final int max;
-  public final int range;
+    public final String label;
+    public final int min;
+    public final int max;
+    public final int range;
 
-  public DmxDiscreteParameterOption(String label, int value) {
-    this(label, value, value);
-  }
-
-  public DmxDiscreteParameterOption(String label, int min, int max) {
-    this.label = label;
-    if (min <= max) {
-      this.min = min;
-      this.max = max;
-    } else {
-      this.min = max;
-      this.max = min;        
+    public DmxDiscreteParameterOption(String label, int value) {
+        this(label, value, value);
     }
-    this.range = max - min;
-  }
 
-  @Override
-  public String toString() {
-    return label;    
-  }
+    public DmxDiscreteParameterOption(String label, int min, int max) {
+        this.label = label;
+        if (min <= max) {
+            this.min = min;
+            this.max = max;
+        } else {
+            this.min = max;
+            this.max = min;
+        }
+        this.range = max - min;
+    }
 
+    @Override
+    public String toString() {
+        return label;
+    }
 }

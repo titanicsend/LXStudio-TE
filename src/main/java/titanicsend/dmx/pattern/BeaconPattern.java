@@ -15,7 +15,6 @@
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.dmx.pattern;
 
 import heronarts.lx.LX;
@@ -26,23 +25,22 @@ import titanicsend.dmx.parameter.DmxDiscreteParameter;
 import titanicsend.dmx.parameter.DmxDiscreteParameterOption;
 import titanicsend.model.TEWholeModel;
 
-abstract public class BeaconPattern extends DmxPattern {
+public abstract class BeaconPattern extends DmxPattern {
 
-  protected final TEWholeModel modelTE;
+    protected final TEWholeModel modelTE;
 
-  // Don't mind this code duplication with the model class.
-  // It's just a coincidence.
+    // Don't mind this code duplication with the model class.
+    // It's just a coincidence.
 
-  DmxCompoundParameter pan = new DmxCompoundParameter("Pan")
-    .setNumBytes(2);
-  DmxCompoundParameter tilt = new DmxCompoundParameter("Tilt", BeaconModel.TILT_MIN, BeaconModel.TILT_MIN, BeaconModel.TILT_MAX)
-    .setNumBytes(2);
-  DmxCompoundParameter cyan = new DmxCompoundParameter("Cyan", 0, 0, 100);
-  DmxCompoundParameter magenta = new DmxCompoundParameter("Magenta", 0, 0, 100);
-  DmxCompoundParameter yellow = new DmxCompoundParameter("Yellow", 0, 0, 100);
-  DmxDiscreteParameter colorWheel = new DmxDiscreteParameter("ClrWheel",
-    new DmxDiscreteParameterOption[] 
-      { new DmxDiscreteParameterOption("Open", 0),
+    DmxCompoundParameter pan = new DmxCompoundParameter("Pan").setNumBytes(2);
+    DmxCompoundParameter tilt = new DmxCompoundParameter(
+                    "Tilt", BeaconModel.TILT_MIN, BeaconModel.TILT_MIN, BeaconModel.TILT_MAX)
+            .setNumBytes(2);
+    DmxCompoundParameter cyan = new DmxCompoundParameter("Cyan", 0, 0, 100);
+    DmxCompoundParameter magenta = new DmxCompoundParameter("Magenta", 0, 0, 100);
+    DmxCompoundParameter yellow = new DmxCompoundParameter("Yellow", 0, 0, 100);
+    DmxDiscreteParameter colorWheel = new DmxDiscreteParameter("ClrWheel", new DmxDiscreteParameterOption[] {
+        new DmxDiscreteParameterOption("Open", 0),
         new DmxDiscreteParameterOption("Red", 16),
         new DmxDiscreteParameterOption("Green", 23),
         new DmxDiscreteParameterOption("Yellow", 30),
@@ -66,11 +64,10 @@ abstract public class BeaconPattern extends DmxPattern {
         new DmxDiscreteParameterOption("Random Medium", 240),
         new DmxDiscreteParameterOption("Random Slow", 245),
         new DmxDiscreteParameterOption("Open", 250)
-      });
-  // "Rotating Gobo"
-  DmxDiscreteParameter gobo1 = new DmxDiscreteParameter("Gobo1",
-    new DmxDiscreteParameterOption[] 
-      { new DmxDiscreteParameterOption("Open", 0),
+    });
+    // "Rotating Gobo"
+    DmxDiscreteParameter gobo1 = new DmxDiscreteParameter("Gobo1", new DmxDiscreteParameterOption[] {
+        new DmxDiscreteParameterOption("Open", 0),
         new DmxDiscreteParameterOption("Spot Open", 11),
         new DmxDiscreteParameterOption("Gobo 1", 22),
         new DmxDiscreteParameterOption("Gobo 2", 32),
@@ -91,14 +88,12 @@ abstract public class BeaconPattern extends DmxPattern {
         new DmxDiscreteParameterOption("Scroll CW fast-slow", 190, 221),
         new DmxDiscreteParameterOption("Idle", 222),
         new DmxDiscreteParameterOption("Scroll CCW slow-fast", 224, 255)
-      });
-  // Could use parameter options if they worked with Compound type
-  DmxCompoundParameter gobo1rotation = new DmxCompoundParameter("G1 Rotation", 0, 0, 255)
-      .setNumBytes(2);
-  // "Fixed Gobo"
-  DmxDiscreteParameter gobo2 = new DmxDiscreteParameter("Gobo2",
-    new DmxDiscreteParameterOption[] 
-      { new DmxDiscreteParameterOption("Open", 0),
+    });
+    // Could use parameter options if they worked with Compound type
+    DmxCompoundParameter gobo1rotation = new DmxCompoundParameter("G1 Rotation", 0, 0, 255).setNumBytes(2);
+    // "Fixed Gobo"
+    DmxDiscreteParameter gobo2 = new DmxDiscreteParameter("Gobo2", new DmxDiscreteParameterOption[] {
+        new DmxDiscreteParameterOption("Open", 0),
         new DmxDiscreteParameterOption("Gobo 1", 5),
         new DmxDiscreteParameterOption("Gobo 2", 10),
         new DmxDiscreteParameterOption("Gobo 3", 15),
@@ -136,61 +131,54 @@ abstract public class BeaconPattern extends DmxPattern {
         new DmxDiscreteParameterOption("Scroll CW fast-slow", 190, 221),
         new DmxDiscreteParameterOption("Idle", 222),
         new DmxDiscreteParameterOption("Scroll CCW slow-fast", 224, 255)
-      });
-  DmxDiscreteParameter prism1 = new DmxDiscreteParameter("Prism1",
-    new DmxDiscreteParameterOption[] 
-      { new DmxDiscreteParameterOption("Open", 0),
+    });
+    DmxDiscreteParameter prism1 = new DmxDiscreteParameter("Prism1", new DmxDiscreteParameterOption[] {
+        new DmxDiscreteParameterOption("Open", 0),
         new DmxDiscreteParameterOption("Beam Expander", 51),
         new DmxDiscreteParameterOption("8 Facet", 101),
         new DmxDiscreteParameterOption("4 Facet Linear", 151),
         new DmxDiscreteParameterOption("8 + 4", 201)
-      });
-  DmxCompoundParameter prism1rotation = new DmxCompoundParameter("P1 Rotation",
-    new DmxDiscreteParameterOption[]     
-      { new DmxDiscreteParameterOption("Indexing", 0, 127),
-        new DmxDiscreteParameterOption("CW rotate fast-slow", 128, 189),
-        new DmxDiscreteParameterOption("No rotate", 190, 193),
-        new DmxDiscreteParameterOption("CCW rotate slow-fast", 194, 255),
-      })
-    .setNumBytes(2);
-  DmxCompoundParameter prism2rotation = new DmxCompoundParameter("P2 Rotation",
-    new DmxDiscreteParameterOption[]     
-      { new DmxDiscreteParameterOption("Indexing", 0, 127),
-        new DmxDiscreteParameterOption("CW rotate fast-slow", 128, 189),
-        new DmxDiscreteParameterOption("No rotate", 190, 193),
-        new DmxDiscreteParameterOption("CCW rotate slow-fast", 194, 255),
-      })
-    .setNumBytes(2);
-  DmxCompoundParameter focus = new DmxCompoundParameter("Focus", 0, 0, 255)
-    .setNumBytes(2);
-  DmxDiscreteParameter shutter = new DmxDiscreteParameter("Shutter",
-    new DmxDiscreteParameterOption[] 
-      { new DmxDiscreteParameterOption("Closed", 0),
+    });
+    DmxCompoundParameter prism1rotation = new DmxCompoundParameter("P1 Rotation", new DmxDiscreteParameterOption[] {
+                new DmxDiscreteParameterOption("Indexing", 0, 127),
+                new DmxDiscreteParameterOption("CW rotate fast-slow", 128, 189),
+                new DmxDiscreteParameterOption("No rotate", 190, 193),
+                new DmxDiscreteParameterOption("CCW rotate slow-fast", 194, 255),
+            })
+            .setNumBytes(2);
+    DmxCompoundParameter prism2rotation = new DmxCompoundParameter("P2 Rotation", new DmxDiscreteParameterOption[] {
+                new DmxDiscreteParameterOption("Indexing", 0, 127),
+                new DmxDiscreteParameterOption("CW rotate fast-slow", 128, 189),
+                new DmxDiscreteParameterOption("No rotate", 190, 193),
+                new DmxDiscreteParameterOption("CCW rotate slow-fast", 194, 255),
+            })
+            .setNumBytes(2);
+    DmxCompoundParameter focus = new DmxCompoundParameter("Focus", 0, 0, 255).setNumBytes(2);
+    DmxDiscreteParameter shutter = new DmxDiscreteParameter("Shutter", new DmxDiscreteParameterOption[] {
+        new DmxDiscreteParameterOption("Closed", 0),
         new DmxDiscreteParameterOption("Open", 32),
         new DmxDiscreteParameterOption("Strobe slow-fast", 64, 95),
         new DmxDiscreteParameterOption("Open", 96, 127),
-        new DmxDiscreteParameterOption("Pulse in sequences", 128, 159),  // is range?
+        new DmxDiscreteParameterOption("Pulse in sequences", 128, 159), // is range?
         new DmxDiscreteParameterOption("Open", 160),
         new DmxDiscreteParameterOption("Random slow-fast", 192),
         new DmxDiscreteParameterOption("Open", 224)
-      });
-  // It would be fine for a pattern to set dimmer to max and let the faders do the rest
-  DmxCompoundParameter dimmer = new DmxCompoundParameter("Dimmer", 0, 0, 100)
-      .setNumBytes(2)
-      .setScaleToAlpha(true);   // Faders applied to this parameter
-  DmxCompoundParameter frost1 = new DmxCompoundParameter("Frost1", 0, 0, 100);
-  DmxCompoundParameter frost2 = new DmxCompoundParameter("Frost2", 0, 0, 100);
-  DmxDiscreteParameter ptSpeed = (DmxDiscreteParameter)
-    new DmxDiscreteParameter("ptSpd",
-    new DmxDiscreteParameterOption[]     
-        { new DmxDiscreteParameterOption("Fast-Slow", 0, 225),
-          new DmxDiscreteParameterOption("Blackout by movement", 226),
-          new DmxDiscreteParameterOption("Blackout by all wheel change", 236)
-          })
-      .setDescription("Pan/Tilt Speed");
-  DmxDiscreteParameter control = new DmxDiscreteParameter("Control",
-    new DmxDiscreteParameterOption[] 
-      { new DmxDiscreteParameterOption("Normal", 0),
+    });
+    // It would be fine for a pattern to set dimmer to max and let the faders do the rest
+    DmxCompoundParameter dimmer = new DmxCompoundParameter("Dimmer", 0, 0, 100)
+            .setNumBytes(2)
+            .setScaleToAlpha(true); // Faders applied to this parameter
+    DmxCompoundParameter frost1 = new DmxCompoundParameter("Frost1", 0, 0, 100);
+    DmxCompoundParameter frost2 = new DmxCompoundParameter("Frost2", 0, 0, 100);
+    DmxDiscreteParameter ptSpeed =
+            (DmxDiscreteParameter) new DmxDiscreteParameter("ptSpd", new DmxDiscreteParameterOption[] {
+                        new DmxDiscreteParameterOption("Fast-Slow", 0, 225),
+                        new DmxDiscreteParameterOption("Blackout by movement", 226),
+                        new DmxDiscreteParameterOption("Blackout by all wheel change", 236)
+                    })
+                    .setDescription("Pan/Tilt Speed");
+    DmxDiscreteParameter control = new DmxDiscreteParameter("Control", new DmxDiscreteParameterOption[] {
+        new DmxDiscreteParameterOption("Normal", 0),
         new DmxDiscreteParameterOption("Idle", 20),
         new DmxDiscreteParameterOption("Lamp on", 40),
         new DmxDiscreteParameterOption("Lamp off", 50),
@@ -230,11 +218,10 @@ abstract public class BeaconPattern extends DmxPattern {
         new DmxDiscreteParameterOption("Display OFF", 250),
         new DmxDiscreteParameterOption("Display ON", 252),
         new DmxDiscreteParameterOption("Idle", 254)
-      });
+    });
 
-  public BeaconPattern(LX lx) {
-    super(lx);
-    this.modelTE = TEApp.wholeModel;
-  }
-
+    public BeaconPattern(LX lx) {
+        super(lx);
+        this.modelTE = TEApp.wholeModel;
+    }
 }

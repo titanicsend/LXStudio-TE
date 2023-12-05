@@ -1,7 +1,8 @@
 package titanicsend.pattern.yoffa.shader_engine;
 
 public enum ShaderAttribute {
-    POSITION("inPosition"), INDEX("inIndex");
+    POSITION("inPosition"),
+    INDEX("inIndex");
 
     private final String attributeName;
 

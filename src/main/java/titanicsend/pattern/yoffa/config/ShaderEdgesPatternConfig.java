@@ -2,6 +2,7 @@ package titanicsend.pattern.yoffa.config;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import java.util.List;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.ConstructedPattern;
@@ -9,12 +10,10 @@ import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
-import java.util.List;
-
 @SuppressWarnings("unused")
 public class ShaderEdgesPatternConfig {
 
-    //multiple
+    // multiple
     @LXCategory("Native Shaders Edges")
     public static class LightBeamsEdges extends ConstructedPattern {
         public LightBeamsEdges(LX lx) {
@@ -26,8 +25,7 @@ public class ShaderEdgesPatternConfig {
             controls.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
             controls.setValue(TEControlTag.SPEED, 0.5);
 
-            return List.of(new NativeShaderPatternEffect("light_beams.fs",
-                new PatternTarget(this)));
+            return List.of(new NativeShaderPatternEffect("light_beams.fs", new PatternTarget(this)));
         }
     }
 
@@ -46,19 +44,18 @@ public class ShaderEdgesPatternConfig {
             controls.setRange(TEControlTag.SIZE, 2, 6, 0.1); // overall scale
             controls.setValue(TEControlTag.SIZE, 2.25);
 
-            controls.setRange(TEControlTag.QUANTITY, 20, 1, 50);  // pixelation scale
+            controls.setRange(TEControlTag.QUANTITY, 20, 1, 50); // pixelation scale
             controls.setValue(TEControlTag.QUANTITY, 8);
 
-            controls.setRange(TEControlTag.WOW1, 0, 0, 0.2);  // "wiggle" in rings
+            controls.setRange(TEControlTag.WOW1, 0, 0, 0.2); // "wiggle" in rings
             controls.setValue(TEControlTag.WOW1, 0.15);
 
-            controls.setRange(TEControlTag.WOW2, 0, 0, 3);  // radial rotation distortion
+            controls.setRange(TEControlTag.WOW2, 0, 0, 3); // radial rotation distortion
             controls.setValue(TEControlTag.WOW2, 2.25);
 
             controls.setValue(TEControlTag.SPIN, 0.05);
 
-            return List.of(new NativeShaderPatternEffect("neon_ripples.fs",
-                new PatternTarget(this)));
+            return List.of(new NativeShaderPatternEffect("neon_ripples.fs", new PatternTarget(this)));
         }
     }
 
@@ -74,8 +71,7 @@ public class ShaderEdgesPatternConfig {
             controls.setExponent(TEControlTag.SPEED, 2.0);
             controls.setValue(TEControlTag.SPEED, 0.5);
 
-            return List.of(new NativeShaderPatternEffect("space_explosion.fs",
-                new PatternTarget(this)));
+            return List.of(new NativeShaderPatternEffect("space_explosion.fs", new PatternTarget(this)));
         }
     }
 }

@@ -3,10 +3,9 @@ package titanicsend.pattern.yoffa.media;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.utils.LXUtils;
+import java.io.IOException;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-
-import java.io.IOException;
 
 // Example to show how we could map a video onto our panels
 // Scales up with sound reactivity
@@ -35,11 +34,8 @@ public class ReactiveHeartPattern extends TEPerformancePattern {
 
     @Override
     protected void runTEAudioPattern(double deltaMs) {
-        double scaledTrebleRatio = LXUtils.clamp(
-                (getTrebleRatio() - .5) / (1.01 - .7) / 6 -
-                        .2 + .7 / 2,
-                0, 1);
-        double scaledRatio = 1 + scaledTrebleRatio*2;
+        double scaledTrebleRatio = LXUtils.clamp((getTrebleRatio() - .5) / (1.01 - .7) / 6 - .2 + .7 / 2, 0, 1);
+        double scaledRatio = 1 + scaledTrebleRatio * 2;
 
         videoPainter.grabFrame();
         videoPainter.paint(getModel().getPoints(), scaledRatio);
@@ -49,5 +45,4 @@ public class ReactiveHeartPattern extends TEPerformancePattern {
     public void onInactive() {
         videoPainter.stopVideo();
     }
-
 }

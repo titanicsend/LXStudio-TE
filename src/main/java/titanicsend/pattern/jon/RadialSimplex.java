@@ -32,11 +32,9 @@ public class RadialSimplex extends TEPerformancePattern {
         }
     }
 
-    public final EnumParameter<RadialSimplex.NoiseMode> noiseMode =
-        new EnumParameter<RadialSimplex.NoiseMode>("Mode", RadialSimplex.NoiseMode.CLOUDS)
+    public final EnumParameter<RadialSimplex.NoiseMode> noiseMode = new EnumParameter<RadialSimplex.NoiseMode>(
+                    "Mode", RadialSimplex.NoiseMode.CLOUDS)
             .setDescription("Radial Noise Mode");
-
-
 
     public RadialSimplex(LX lx) {
         super(lx, TEShaderView.ALL_POINTS);
@@ -46,23 +44,22 @@ public class RadialSimplex extends TEPerformancePattern {
         controls.setValue(TEControlTag.SPEED, 0.25);
 
         controls.setRange(TEControlTag.SIZE, 5, 9, 2);
-        controls.setRange(TEControlTag.QUANTITY, 1,2.5 , .6);
+        controls.setRange(TEControlTag.QUANTITY, 1, 2.5, .6);
 
         // noiseMode (in Wow1 control position)
-        controls.setControl(TEControlTag.WOW1,noiseMode);
+        controls.setControl(TEControlTag.WOW1, noiseMode);
 
         // register common controls with LX
         addCommonControls();
 
-        effect = new NativeShaderPatternEffect("radial_simplex.fs",
-            new PatternTarget(this));
+        effect = new NativeShaderPatternEffect("radial_simplex.fs", new PatternTarget(this));
     }
 
     @Override
     protected void runTEAudioPattern(double deltaMs) {
 
         RadialSimplex.NoiseMode mode = noiseMode.getEnum();
-        shader.setUniform("iWow1",(float) mode.ordinal());
+        shader.setUniform("iWow1", (float) mode.ordinal());
 
         // run the shader
         effect.run(deltaMs);
@@ -77,5 +74,4 @@ public class RadialSimplex extends TEPerformancePattern {
         effect.onActive();
         shader = effect.getNativeShader();
     }
-
 }

@@ -3,11 +3,10 @@ package titanicsend.app.autopilot;
 import heronarts.lx.LX;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.pattern.LXPattern;
-import titanicsend.util.TE;
-
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import titanicsend.util.TE;
 
 public class TEPatternLibrary {
     private LX lx;
@@ -33,6 +32,7 @@ public class TEPatternLibrary {
     public class PhrasePatternCompositeKey {
         public Class<? extends LXPattern> pattern;
         public TEPhrase phrase;
+
         public PhrasePatternCompositeKey(Class<? extends LXPattern> p, TEPhrase ph) {
             pattern = p;
             phrase = ph;
@@ -60,7 +60,10 @@ public class TEPatternLibrary {
      * For patterns we catalog, how do they cover the cor?
      */
     public enum TEPatternCoverageType {
-        PANELS, PANELS_PARTIAL, EDGES, BOTH;
+        PANELS,
+        PANELS_PARTIAL,
+        EDGES,
+        BOTH;
 
         /**
          * Adjusts which types of patterns (with respect to car coverage)
@@ -89,7 +92,9 @@ public class TEPatternLibrary {
      * the current palette settings? Or not?
      */
     public enum TEPatternColorCategoryType {
-        PALETTE, WHITE, NONCONFORMING;
+        PALETTE,
+        WHITE,
+        NONCONFORMING;
 
         /**
          * Adjusts which types of patterns (with respect to color type)
@@ -102,13 +107,13 @@ public class TEPatternLibrary {
             if (colorCat == PALETTE) {
                 return new HashSet<>(List.of(PALETTE, WHITE, NONCONFORMING));
             } else if (colorCat == WHITE) {
-                return  new HashSet<>(List.of(PALETTE, WHITE, NONCONFORMING));
+                return new HashSet<>(List.of(PALETTE, WHITE, NONCONFORMING));
             } else if (colorCat == NONCONFORMING) {
-                return  new HashSet<>(List.of(PALETTE, WHITE));
+                return new HashSet<>(List.of(PALETTE, WHITE));
             }
 
             // default to allowing everything
-            return  new HashSet<>(List.of(PALETTE, WHITE, NONCONFORMING));
+            return new HashSet<>(List.of(PALETTE, WHITE, NONCONFORMING));
         }
     }
 
@@ -119,10 +124,7 @@ public class TEPatternLibrary {
         public TEPhrase phraseType;
 
         public TEPatternRecord(
-                Class<? extends LXPattern> p,
-                TEPatternCoverageType c,
-                TEPatternColorCategoryType cc,
-                TEPhrase ph) {
+                Class<? extends LXPattern> p, TEPatternCoverageType c, TEPatternColorCategoryType cc, TEPhrase ph) {
             patternClass = p;
             coverageType = c;
             colorCategoryType = cc;
@@ -135,10 +137,10 @@ public class TEPatternLibrary {
             try {
                 classNameCleaned = parts[parts.length - 1];
             } catch (ArrayIndexOutOfBoundsException e) {
-                //TE.err("Could not write name for class = \"%s\"", classNameCleaned);
+                // TE.err("Could not write name for class = \"%s\"", classNameCleaned);
             }
-            return String.format("<Record class=\"%s\", cov=%s, phrase=%s>",
-                    classNameCleaned, coverageType, phraseType);
+            return String.format(
+                    "<Record class=\"%s\", cov=%s, phrase=%s>", classNameCleaned, coverageType, phraseType);
         }
     }
 
@@ -150,12 +152,9 @@ public class TEPatternLibrary {
     }
 
     public void addPattern(
-            Class<? extends LXPattern> p,
-            TEPatternCoverageType c,
-            TEPatternColorCategoryType cc,
-            TEPhrase ph) {
+            Class<? extends LXPattern> p, TEPatternCoverageType c, TEPatternColorCategoryType cc, TEPhrase ph) {
 
-        //TE.log("Adding pattern: %s (phrase=%s)", p, ph);
+        // TE.log("Adding pattern: %s (phrase=%s)", p, ph);
         // add to mapping of rec -> patterns
         TEPatternRecord rec = new TEPatternRecord(p, c, cc, ph);
         this.patternRecords.add(rec);
@@ -180,7 +179,7 @@ public class TEPatternLibrary {
      * @return boolean
      */
     public boolean isReady() {
-         return rec2patterns != null;
+        return rec2patterns != null;
     }
 
     /**
@@ -191,20 +190,16 @@ public class TEPatternLibrary {
      * @param ph if non-null, return only patterns matching this phrase type
      * @return an LXPattern class that can be instantiated and loaded onto an LXChannel
      */
-    public ArrayList<LXPattern> filterPatterns(
-            TEPatternCoverageType c, TEPatternColorCategoryType cc, TEPhrase ph) throws Exception {
+    public ArrayList<LXPattern> filterPatterns(TEPatternCoverageType c, TEPatternColorCategoryType cc, TEPhrase ph)
+            throws Exception {
         // do some checks
-        if (!this.isReady())
-            throw new Exception("Cannot filter patterns, you need to call indexPatterns() first!");
-        if (ph == null)
-            throw new Exception("Must specify phrase type!");
+        if (!this.isReady()) throw new Exception("Cannot filter patterns, you need to call indexPatterns() first!");
+        if (ph == null) throw new Exception("Must specify phrase type!");
 
         // filter records
         Stream<TEPatternRecord> s = patternRecords.stream().filter(r -> r.phraseType == ph);
-        if (c != null)
-            s = s.filter(r -> r.coverageType == c);
-        if (cc != null)
-            s = s.filter(r -> r.colorCategoryType == cc);
+        if (c != null) s = s.filter(r -> r.coverageType == c);
+        if (cc != null) s = s.filter(r -> r.colorCategoryType == cc);
 
         ArrayList<TEPatternRecord> matchingRecords = s.collect(Collectors.toCollection(ArrayList::new));
 
@@ -222,7 +217,7 @@ public class TEPatternLibrary {
     public TEPatternRecord getRecFromPattern(LXPattern pat, TEPhrase phrase) {
         PhrasePatternCompositeKey key = new PhrasePatternCompositeKey(pat.getClass(), phrase);
         TEPatternRecord rec = phrasePattern2rec.get(key);
-        //TE.log("Looking up record from pattern=%s, phrase=%s ... found=%s", pat, phrase, rec);
+        // TE.log("Looking up record from pattern=%s, phrase=%s ... found=%s", pat, phrase, rec);
         return rec;
     }
 
@@ -238,8 +233,7 @@ public class TEPatternLibrary {
      */
     private String pattern2Id(String patternToString) {
         String[] parts = patternToString.split("\\[");
-        if (parts.length == 3)
-            return parts[0];
+        if (parts.length == 3) return parts[0];
         return "";
     }
 
@@ -257,7 +251,7 @@ public class TEPatternLibrary {
      * @return
      */
     private String class2Id(String classToString) {
-        //TE.log("Finding ID inside: '%s'", classToString);
+        // TE.log("Finding ID inside: '%s'", classToString);
         String[] parts = classToString.split("\\.");
         String classname = parts[parts.length - 1];
         if (classname.contains("$")) {
@@ -268,9 +262,9 @@ public class TEPatternLibrary {
         }
     }
 
-    public ArrayList<LXPattern> getCompatibleNextPatterns(TEPhrase oldPhrase, LXPattern curPattern, TEPhrase newPhrase) throws Exception {
-        if (!this.isReady())
-            throw new Exception("Cannot filter patterns, you need to call indexPatterns() first!");
+    public ArrayList<LXPattern> getCompatibleNextPatterns(TEPhrase oldPhrase, LXPattern curPattern, TEPhrase newPhrase)
+            throws Exception {
+        if (!this.isReady()) throw new Exception("Cannot filter patterns, you need to call indexPatterns() first!");
 
         // get information about what's currently playing
         TEPatternRecord rec = getRecFromPattern(curPattern, oldPhrase);
@@ -278,19 +272,20 @@ public class TEPatternLibrary {
 
         // see what's compatible
         HashSet<TEPatternCoverageType> compatibleCoverage = TEPatternCoverageType.getCompatible(rec.coverageType);
-        HashSet<TEPatternColorCategoryType> compatibleColor = TEPatternColorCategoryType.getCompatible(rec.colorCategoryType);
+        HashSet<TEPatternColorCategoryType> compatibleColor =
+                TEPatternColorCategoryType.getCompatible(rec.colorCategoryType);
 
         // now filter based on this
         Stream<TEPatternRecord> s = patternRecords.stream()
-                                        .filter(r -> r.phraseType == newPhrase)
-                                        .filter(r -> !class2Id(r.patternClass.toString()).equals(curPatternId));
+                .filter(r -> r.phraseType == newPhrase)
+                .filter(r -> !class2Id(r.patternClass.toString()).equals(curPatternId));
 
         if (newPhrase != TEPhrase.CHORUS) {
             // compatibility on color/coverage when transitioning into a CHORUS is less important.
             // we don't fade out from the DOWN/UP before, so we're not worried about clashing, and generally
             // we like want this to be a bolder transition
             s = s.filter(r -> compatibleCoverage.contains(r.coverageType))
-                 .filter(r -> compatibleColor.contains(r.colorCategoryType));
+                    .filter(r -> compatibleColor.contains(r.colorCategoryType));
         }
 
         ArrayList<TEPatternRecord> matchingRecords = s.collect(Collectors.toCollection(ArrayList::new));
@@ -300,17 +295,18 @@ public class TEPatternLibrary {
         if (matchingRecords.size() == 0) {
             Stream<TEPatternRecord> s2 = patternRecords.stream().filter(r -> r.phraseType == newPhrase);
             matchingRecords = s2.collect(Collectors.toCollection(ArrayList::new));
-            //TE.log("Did not find enough compatible patterns, filtering only by phrase now: %d found", matchingRecords.size());
+            // TE.log("Did not find enough compatible patterns, filtering only by phrase now: %d found",
+            // matchingRecords.size());
         }
 
-        //TE.log("Matches for oldPhrase=%s, oldPattern=%s, newPhrase=%s", oldPhrase, curPattern, newPhrase);
+        // TE.log("Matches for oldPhrase=%s, oldPattern=%s, newPhrase=%s", oldPhrase, curPattern, newPhrase);
         for (TEPatternRecord r : matchingRecords) {
-            //TE.log("-> match: cls=%s, ph=%s, cov=%s, color=%s"
+            // TE.log("-> match: cls=%s, ph=%s, cov=%s, color=%s"
             //        , r.patternClass, r.phraseType, r.coverageType, r.colorCategoryType);
         }
 
         // now for each record, pull in the corresponding pattern(s) and add to a list
-        //TE.log("Found %d matching patterns with: coverage=%s, color=%s, phrase=%s",
+        // TE.log("Found %d matching patterns with: coverage=%s, color=%s, phrase=%s",
         //        matchingRecords.size(), rec.coverageType, rec.colorCategoryType, newPhrase);
         ArrayList<LXPattern> matchingPatterns = new ArrayList<>();
         for (TEPatternRecord r : matchingRecords) {
@@ -331,7 +327,7 @@ public class TEPatternLibrary {
         // randomly pick one
         Random rand = new Random();
         int randomIndex = rand.nextInt(matchingPatterns.size());
-        //TE.log("Picked randomly idx=%d from size=%d", randomIndex, matchingPatterns.size());
+        // TE.log("Picked randomly idx=%d from size=%d", randomIndex, matchingPatterns.size());
         return matchingPatterns.get(randomIndex);
     }
 
@@ -349,21 +345,24 @@ public class TEPatternLibrary {
      * @return
      * @throws Exception
      */
-    public LXPattern pickRandomCompatibleNextPattern(LXPattern curPattern, TEPhrase curPhrase, TEPhrase nextPhrase) throws Exception {
+    public LXPattern pickRandomCompatibleNextPattern(LXPattern curPattern, TEPhrase curPhrase, TEPhrase nextPhrase)
+            throws Exception {
         // get coverage type and color from current pattern
-        //TE.log("... looking up pattern record for: pattern=%s, phrase=%s", curPattern, curPhrase);
+        // TE.log("... looking up pattern record for: pattern=%s, phrase=%s", curPattern, curPhrase);
         PhrasePatternCompositeKey key = new PhrasePatternCompositeKey(curPattern.getClass(), curPhrase);
         TEPatternRecord curPatternRecord = this.phrasePattern2rec.get(key);
         if (curPatternRecord == null) {
-//            for (Map.Entry<PhrasePatternCompositeKey, TEPatternRecord> entry : phrasePattern2rec.entrySet()) {
-//                PhrasePatternCompositeKey k = entry.getKey();
-//                TEPatternRecord r = entry.getValue();
-//                if (r.phraseType == curPhrase) {
-//                    //TE.log("-> phrase=%s, found %s => %s", curPhrase, k, r);
-//                }
-//            }
-            String error = String.format("Could not find TEPatternRecord for pattern=%s, curPhrase=%s, nextPhrase=%s"
-                    , curPattern, curPhrase, nextPhrase);
+            //            for (Map.Entry<PhrasePatternCompositeKey, TEPatternRecord> entry :
+            // phrasePattern2rec.entrySet()) {
+            //                PhrasePatternCompositeKey k = entry.getKey();
+            //                TEPatternRecord r = entry.getValue();
+            //                if (r.phraseType == curPhrase) {
+            //                    //TE.log("-> phrase=%s, found %s => %s", curPhrase, k, r);
+            //                }
+            //            }
+            String error = String.format(
+                    "Could not find TEPatternRecord for pattern=%s, curPhrase=%s, nextPhrase=%s",
+                    curPattern, curPhrase, nextPhrase);
             TE.err(error);
             throw new Exception(error);
         }
@@ -372,8 +371,9 @@ public class TEPatternLibrary {
         ArrayList<LXPattern> matchingPatterns = getCompatibleNextPatterns(curPhrase, curPattern, nextPhrase);
         if (matchingPatterns.size() == 0) {
             // this should not happen unless we don't have a pattern on a channel...
-            String error = String.format("No compatible patterns for: pattern=%s, curPhrase=%s, nextPhrase=%s"
-                    , curPattern, curPhrase, nextPhrase);
+            String error = String.format(
+                    "No compatible patterns for: pattern=%s, curPhrase=%s, nextPhrase=%s",
+                    curPattern, curPhrase, nextPhrase);
             TE.err(error);
             throw new Exception(error);
         }
@@ -384,7 +384,7 @@ public class TEPatternLibrary {
 
         if (rand.nextFloat() <= PROB_PICK_RANDOM_NEXT_PATTERN) {
             // pick random one
-            //TE.log("pickRandomCompatibleNextPattern(): picking randomly!");
+            // TE.log("pickRandomCompatibleNextPattern(): picking randomly!");
             patternIndex = rand.nextInt(matchingPatterns.size());
 
         } else {
@@ -401,12 +401,12 @@ public class TEPatternLibrary {
 
             LXPattern first = matchingPatterns.get(0);
             LXPattern last = matchingPatterns.get(matchingPatterns.size() - 1);
-            //TE.log("After sort, first item in matchingPatterns list has %f plays, and last has %f plays"
+            // TE.log("After sort, first item in matchingPatterns list has %f plays, and last has %f plays"
             //        , patternHistoryCounter.get(first), patternHistoryCounter.get(last));
         }
 
         LXPattern selectedPattern = matchingPatterns.get(patternIndex);
-        //TE.log("Picked next pattern for [%s]: %s (index=%d)", nextPhrase, selectedPattern, patternIndex);
+        // TE.log("Picked next pattern for [%s]: %s (index=%d)", nextPhrase, selectedPattern, patternIndex);
         return selectedPattern;
     }
 
@@ -431,8 +431,7 @@ public class TEPatternLibrary {
         for (TEPatternRecord r : this.patternRecords) {
             TEChannelName name = TEChannelName.getChannelNameFromPhraseType(r.phraseType);
             LXChannel ch = autoMixer.getChannelByName(name);
-            if (ch == null)
-                TE.err("[TEPatternLibrary] Could not load channel=%s, it is null", name);
+            if (ch == null) TE.err("[TEPatternLibrary] Could not load channel=%s, it is null", name);
 
             int found = 0;
             rec2patterns.put(r, new ArrayList<>());
@@ -441,22 +440,22 @@ public class TEPatternLibrary {
                     rec2patterns.get(r).add(p);
 
                     // count by phrase type
-                    if (!patternsPerPhrase.containsKey(r.phraseType))
-                        patternsPerPhrase.put(r.phraseType, 0);
+                    if (!patternsPerPhrase.containsKey(r.phraseType)) patternsPerPhrase.put(r.phraseType, 0);
                     patternsPerPhrase.put(r.phraseType, patternsPerPhrase.get(r.phraseType) + 1);
 
                     // initialize counts to zero for plays
                     patternHistoryCounter.put(p, 0.0);
 
-                    //TE.log("[TEPatternLibrary] Index pattern=%s to channel=%s, record=%s", p.getLabel(), name, r);
+                    // TE.log("[TEPatternLibrary] Index pattern=%s to channel=%s, record=%s", p.getLabel(), name, r);
                     found++;
                 }
             }
 
             if (found == 0) {
-                TE.err("No LXPattern found for %s (channel=%s). Either add to AUTO_VJ_TEMPLATE.lxp, or remove from TEApp::initializePatternLibrary()", r, name);
-                if (!missingPatternsPerPhrase.containsKey(r.phraseType))
-                    missingPatternsPerPhrase.put(r.phraseType, 0);
+                TE.err(
+                        "No LXPattern found for %s (channel=%s). Either add to AUTO_VJ_TEMPLATE.lxp, or remove from TEApp::initializePatternLibrary()",
+                        r, name);
+                if (!missingPatternsPerPhrase.containsKey(r.phraseType)) missingPatternsPerPhrase.put(r.phraseType, 0);
                 missingPatternsPerPhrase.put(r.phraseType, missingPatternsPerPhrase.get(r.phraseType) + 1);
                 totalNotFound++;
             }
@@ -500,22 +499,20 @@ public class TEPatternLibrary {
         if (cur != null) {
             if (patternHistoryCounter.containsKey(cur))
                 patternHistoryCounter.put(cur, patternHistoryCounter.get(cur) + barCount);
-            else
-                patternHistoryCounter.put(cur, barCount);
+            else patternHistoryCounter.put(cur, barCount);
         }
 
         // pattern we were fading in, from the nextChannel
         if (curNext != null) {
             if (patternHistoryCounter.containsKey(curNext))
                 patternHistoryCounter.put(curNext, patternHistoryCounter.get(curNext) + barCount);
-            else
-                patternHistoryCounter.put(curNext, barCount);
+            else patternHistoryCounter.put(curNext, barCount);
         }
 
-//        for (Map.Entry<LXPattern, Double> entry : patternHistoryCounter.entrySet()) {
-//            if (entry.getValue() > 0)
-//                TE.log("-> counter: %s has %f bars played", entry.getKey(), entry.getValue());
-//        }
+        //        for (Map.Entry<LXPattern, Double> entry : patternHistoryCounter.entrySet()) {
+        //            if (entry.getValue() > 0)
+        //                TE.log("-> counter: %s has %f bars played", entry.getKey(), entry.getValue());
+        //        }
     }
 
     public HashMap<PhrasePatternCompositeKey, TEPatternRecord> getPatternMapping() {

@@ -4,17 +4,15 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
+import java.util.*;
 import titanicsend.color.TEColorType;
-import titanicsend.pattern.TEPattern;
-import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
-import java.util.*;
 
 @LXCategory("Panel FG")
 public class AlternatingDotsEffect extends PatternEffect {
 
-    //TODO make pattern respect the angle/spin common params when horizon is applied
+    // TODO make pattern respect the angle/spin common params when horizon is applied
     public static final double OUTRUN_HORIZON_Y = 0.6;
     private static final int MAX_POINTS_DIVIDER = 51;
 
@@ -42,7 +40,7 @@ public class AlternatingDotsEffect extends PatternEffect {
     private void refreshPoints() {
         this.points = new ArrayList<>();
         for (LXPoint point : getPoints()) {
-            if(point.yn >= minYPercent) {
+            if (point.yn >= minYPercent) {
                 this.points.add(point);
             }
         }
@@ -96,12 +94,7 @@ public class AlternatingDotsEffect extends PatternEffect {
             double brightness = extraShinyPoints.contains(point) ? 100 : 50;
             brightness *= breathStatus;
             brightness *= pattern.getBrightness();
-            setColor(point, LXColor.hsba(
-                    LXColor.h(baseColor),
-                    LXColor.s(baseColor),
-                    brightness,
-                    alpha
-            ));
+            setColor(point, LXColor.hsba(LXColor.h(baseColor), LXColor.s(baseColor), brightness, alpha));
         }
     }
 

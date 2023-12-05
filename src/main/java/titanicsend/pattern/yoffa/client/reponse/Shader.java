@@ -1,7 +1,6 @@
 package titanicsend.pattern.yoffa.client.reponse;
 
 import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 
 public class Shader {
@@ -12,5 +11,4 @@ public class Shader {
     public List<ShaderInfo> getShaderInfos() {
         return shaderInfos;
     }
-
 }

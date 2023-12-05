@@ -1,8 +1,6 @@
 package titanicsend.app.autopilot;
 
 import heronarts.lx.LX;
-import heronarts.lx.color.LXColor;
-import heronarts.lx.color.LXDynamicColor;
 import heronarts.lx.osc.OscMessage;
 import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.util.TE;
@@ -158,9 +156,9 @@ public class TEOscMessage {
     }
 
     public static void applyTEOscOutputSettings(LX lx) {
-      lx.engine.osc.transmitActive.setValue(true);
-      lx.engine.osc.transmitHost.setValue(PangolinHost.HOSTNAME);
-      lx.engine.osc.transmitPort.setValue(PangolinHost.PORT);
+        lx.engine.osc.transmitActive.setValue(true);
+        lx.engine.osc.transmitHost.setValue(PangolinHost.HOSTNAME);
+        lx.engine.osc.transmitPort.setValue(PangolinHost.PORT);
     }
 
     /**

@@ -7,11 +7,11 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.parameter.*;
 import heronarts.lx.transform.LXVector;
+import java.util.*;
+import java.util.stream.Collectors;
 import titanicsend.color.TEColorType;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.pattern.TEPattern;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  *  Use symmetric edges in the model, and colors them together or
@@ -24,28 +24,22 @@ import java.util.stream.Collectors;
  *  Color is ignored if placed in a channel set to the multiply
  *  blendMode, and the pattern outputs a white & black mask.
  */
-
 @LXCategory("Geometry Masks")
 public class EdgeSymmetry extends TEPattern {
     public final LinkedColorParameter colorParam =
-            registerColor("Color", "color", TEColorType.PRIMARY,
-                    "Primary color for edges");
+            registerColor("Color", "color", TEColorType.PRIMARY, "Primary color for edges");
 
     public final CompoundParameter energy =
-            new CompoundParameter("Energy", .31, 0, 1)
-                    .setDescription("Number of adjacent edges to select");
+            new CompoundParameter("Energy", .31, 0, 1).setDescription("Number of adjacent edges to select");
 
     public final CompoundParameter fracFromZCenter =
-            new CompoundParameter("CtrDist", .25, 0, 1)
-                    .setDescription("Select edges by distance index from center");
+            new CompoundParameter("CtrDist", .25, 0, 1).setDescription("Select edges by distance index from center");
 
     public final CompoundParameter height =
-            new CompoundParameter("Height", .59, 0, 1)
-                    .setDescription("Edges must be lower than this");
+            new CompoundParameter("Height", .59, 0, 1).setDescription("Edges must be lower than this");
 
     public final BooleanParameter maskMode =
-            new BooleanParameter("Mask", false)
-                    .setDescription("B&W - set channel to Multiply other edge content");
+            new BooleanParameter("Mask", false).setDescription("B&W - set channel to Multiply other edge content");
 
     // This stores edgesBySymmetryGroup keys sorted by their distance from the center.
     protected List<LXVector> edgeGroupsByZ;
@@ -99,10 +93,9 @@ public class EdgeSymmetry extends TEPattern {
         // Allowing the range to start and end outside the real set of edges
         int idxRange = modelTE.edgesBySymmetryGroup.size() + groupCount;
         int from = (int) (fracFromZCenter.getNormalized() * idxRange) - groupCount;
-        int to =  from + groupCount;
+        int to = from + groupCount;
         List<LXVector> selectedEdgeGroups =
-                edgeGroupsByZ.subList(Math.max(from, 0),
-                                      Math.min(to, edgeGroupsByZ.size()));
+                edgeGroupsByZ.subList(Math.max(from, 0), Math.min(to, edgeGroupsByZ.size()));
 
         // Find all applicable edges as a list. Filter by Y coordinate (height) and
         // flatten the Hashmap's values to get a combined list of all selected edges

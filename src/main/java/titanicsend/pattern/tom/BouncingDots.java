@@ -1,5 +1,7 @@
 package titanicsend.pattern.tom;
 
+import static titanicsend.util.TEColor.TRANSPARENT;
+
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.model.LXPoint;
@@ -10,8 +12,6 @@ import titanicsend.model.TEEdgeModel;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-
-import static titanicsend.util.TEColor.TRANSPARENT;
 
 @LXCategory("Edge FG")
 public class BouncingDots extends TEPerformancePattern {
@@ -42,7 +42,7 @@ public class BouncingDots extends TEPerformancePattern {
         float phase = this.phase.getValuef();
 
         int dotColor = calcColor();
-        int dotWidth = (int)(getSize());
+        int dotWidth = (int) (getSize());
         for (TEEdgeModel edge : modelTE.edgesById.values()) {
             int target = (int) (edge.size * phase);
             int i = 0;

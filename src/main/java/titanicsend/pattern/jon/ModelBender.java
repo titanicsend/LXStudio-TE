@@ -1,10 +1,9 @@
 package titanicsend.pattern.jon;
 
 import heronarts.lx.model.LXPoint;
+import java.util.ArrayList;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
-
-import java.util.ArrayList;
 
 public class ModelBender {
     protected ArrayList<Float> modelZ;

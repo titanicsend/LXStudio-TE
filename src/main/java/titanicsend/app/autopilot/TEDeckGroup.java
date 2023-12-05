@@ -1,9 +1,8 @@
 package titanicsend.app.autopilot;
 
-import titanicsend.util.TE;
-
 import java.util.HashMap;
 import java.util.Map;
+import titanicsend.util.TE;
 
 public class TEDeckGroup {
     public static int TE_DEFAULT_NUM_DECKS = 4;

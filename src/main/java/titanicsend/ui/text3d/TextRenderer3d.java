@@ -1,6 +1,9 @@
 package titanicsend.ui.text3d;
 
 import static org.lwjgl.bgfx.BGFX.*;
+
+import heronarts.glx.GLX;
+import heronarts.glx.View;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,12 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.lwjgl.bgfx.BGFX;
 import org.lwjgl.bgfx.BGFXVertexLayout;
 import org.lwjgl.system.MemoryUtil;
-import heronarts.glx.GLX;
-import heronarts.glx.View;
 import titanicsend.util.TE;
 
 public class TextRenderer3d {
@@ -40,9 +40,14 @@ public class TextRenderer3d {
         glyphs = new HashMap<>();
         fontTexture = readFontAtlas(fontPath, glyphs);
 
-        this.textureHandle = bgfx_create_texture_2d((int) atlasWidth, (int) atlasHeight, false, 1, BGFX_TEXTURE_FORMAT_R8,
-            BGFX_SAMPLER_NONE,
-            bgfx_make_ref(this.fontTexture));
+        this.textureHandle = bgfx_create_texture_2d(
+                (int) atlasWidth,
+                (int) atlasHeight,
+                false,
+                1,
+                BGFX_TEXTURE_FORMAT_R8,
+                BGFX_SAMPLER_NONE,
+                bgfx_make_ref(this.fontTexture));
 
         // allocate memory for font foreground and background color uniforms
         colorBuffer = MemoryUtil.memAllocFloat(4);
@@ -52,12 +57,9 @@ public class TextRenderer3d {
         // plus 4 byte vertex color information in ARGB format.
         this.vertexLayout = BGFXVertexLayout.calloc();
         bgfx_vertex_layout_begin(this.vertexLayout, glx.getRenderer());
-        bgfx_vertex_layout_add(this.vertexLayout, BGFX_ATTRIB_POSITION, 3,
-            BGFX_ATTRIB_TYPE_FLOAT, false, false);
-        bgfx_vertex_layout_add(this.vertexLayout, BGFX_ATTRIB_TEXCOORD0, 2,
-            BGFX_ATTRIB_TYPE_FLOAT, true, false);
-        bgfx_vertex_layout_add(this.vertexLayout, BGFX_ATTRIB_COLOR0,
-            4, BGFX_ATTRIB_TYPE_UINT8, false, false);
+        bgfx_vertex_layout_add(this.vertexLayout, BGFX_ATTRIB_POSITION, 3, BGFX_ATTRIB_TYPE_FLOAT, false, false);
+        bgfx_vertex_layout_add(this.vertexLayout, BGFX_ATTRIB_TEXCOORD0, 2, BGFX_ATTRIB_TYPE_FLOAT, true, false);
+        bgfx_vertex_layout_add(this.vertexLayout, BGFX_ATTRIB_COLOR0, 4, BGFX_ATTRIB_TYPE_UINT8, false, false);
         bgfx_vertex_layout_end(this.vertexLayout);
 
         // load and configure our custom texture shaders.
@@ -65,13 +67,13 @@ public class TextRenderer3d {
             this.vsCode = loadCustomBGFXShader(glx, "vs_font3d");
             this.fsCode = loadCustomBGFXShader(glx, "fs_font3d");
             this.program = bgfx_create_program(
-                bgfx_create_shader(bgfx_make_ref(this.vsCode)),
-                bgfx_create_shader(bgfx_make_ref(this.fsCode)), true);
+                    bgfx_create_shader(bgfx_make_ref(this.vsCode)),
+                    bgfx_create_shader(bgfx_make_ref(this.fsCode)),
+                    true);
 
             this.uniformColor = bgfx_create_uniform("u_color", 2, 1);
             this.uniformBackground = bgfx_create_uniform("u_background", 2, 1);
-            this.uniformTexture = bgfx_create_uniform("s_texFont",
-                BGFX_UNIFORM_TYPE_SAMPLER, 1);
+            this.uniformTexture = bgfx_create_uniform("s_texFont", BGFX_UNIFORM_TYPE_SAMPLER, 1);
 
         } catch (IOException iox) {
             throw new RuntimeException(iox);
@@ -127,7 +129,8 @@ public class TextRenderer3d {
                 path = path + "glsl/";
                 break;
             default:
-                throw new IOException("Custom shaders are not supported on " + bgfx_get_renderer_name(glx.getRenderer()));
+                throw new IOException(
+                        "Custom shaders are not supported on " + bgfx_get_renderer_name(glx.getRenderer()));
         }
 
         try {
@@ -145,7 +148,6 @@ public class TextRenderer3d {
             return null;
         }
     }
-
 
     public void buildRenderBuffers(TextManager3d t, Label l) {
 
@@ -271,7 +273,6 @@ public class TextRenderer3d {
         return lineHeight;
     }
 
-
     public void draw(View view, Label l) {
         l.modelMatrix.get(l.modelMatrixBuf);
         bgfx_set_transform(l.modelMatrixBuf);
@@ -280,12 +281,11 @@ public class TextRenderer3d {
         BGFX.bgfx_set_uniform(uniformColor, colorBuffer, 1);
         BGFX.bgfx_set_uniform(uniformBackground, backgroundBuffer, 1);
         bgfx_set_texture(0, this.uniformTexture, textureHandle, BGFX_SAMPLER_NONE);
-        final long state =
-            BGFX_STATE_WRITE_RGB |
-                BGFX_STATE_WRITE_A |
-                BGFX_STATE_WRITE_Z |
-                BGFX_STATE_BLEND_ALPHA |
-                BGFX_STATE_DEPTH_TEST_LESS;
+        final long state = BGFX_STATE_WRITE_RGB
+                | BGFX_STATE_WRITE_A
+                | BGFX_STATE_WRITE_Z
+                | BGFX_STATE_BLEND_ALPHA
+                | BGFX_STATE_DEPTH_TEST_LESS;
 
         bgfx_set_state(state, 0);
         bgfx_set_vertex_buffer(0, l.vbh, 0, l.vertexCount);

@@ -2,14 +2,13 @@ package titanicsend.pattern.look;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import java.util.List;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.ConstructedPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-
-import java.util.List;
 
 @LXCategory("Look Shader Patterns")
 public class TriangleCrossAudioWaveform extends ConstructedPattern {
@@ -26,7 +25,6 @@ public class TriangleCrossAudioWaveform extends ConstructedPattern {
         controls.setRange(TEControlTag.WOW1, 0.3, 0.0, 1.0);
         controls.setRange(TEControlTag.WOW2, 0.11, 0.0, 1.0);
 
-        return List.of(new NativeShaderPatternEffect("triangle_cross_waveform.fs",
-                new PatternTarget(this)));
+        return List.of(new NativeShaderPatternEffect("triangle_cross_waveform.fs", new PatternTarget(this)));
     }
 }

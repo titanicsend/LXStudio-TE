@@ -1,10 +1,9 @@
 package titanicsend.pattern.mf64;
 
 import heronarts.lx.model.LXPoint;
+import java.util.Random;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.util.TEMath;
-
-import java.util.Random;
 
 public class MF64Hearts extends TEMidiFighter64Subpattern {
     boolean active;

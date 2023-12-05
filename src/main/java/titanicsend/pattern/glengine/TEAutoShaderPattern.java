@@ -2,13 +2,12 @@ package titanicsend.pattern.glengine;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import java.util.List;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
-
-import java.util.List;
 
 @LXCategory("Native Shaders")
 public class TEAutoShaderPattern extends TEPerformancePattern {

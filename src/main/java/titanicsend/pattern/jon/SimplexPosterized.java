@@ -26,8 +26,7 @@ public class SimplexPosterized extends DriftEnabledPattern {
         // register common controls with LX
         addCommonControls();
 
-        effect = new NativeShaderPatternEffect("simplex_posterized.fs",
-            new PatternTarget(this));
+        effect = new NativeShaderPatternEffect("simplex_posterized.fs", new PatternTarget(this));
     }
 
     @Override
@@ -49,5 +48,4 @@ public class SimplexPosterized extends DriftEnabledPattern {
         effect.onActive();
         shader = effect.getNativeShader();
     }
-
 }

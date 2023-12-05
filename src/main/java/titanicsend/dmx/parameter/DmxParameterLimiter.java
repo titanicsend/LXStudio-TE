@@ -15,7 +15,6 @@
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.dmx.parameter;
 
 import heronarts.lx.utils.LXUtils;
@@ -26,115 +25,115 @@ import heronarts.lx.utils.LXUtils;
  */
 public class DmxParameterLimiter {
 
-  static public final double NO_LIMIT = -99999;
+    public static final double NO_LIMIT = -99999;
 
-  static public enum LimitType {
-    CLIP("Clip"),
-    ZOOM("Zoom");
+    public static enum LimitType {
+        CLIP("Clip"),
+        ZOOM("Zoom");
 
-    public final String label;
+        public final String label;
 
-    private LimitType(String label) {
-      this.label = label;
-    }
-  }
-
-  private LimitType limitType;
-
-  DmxParameter parameter;
-
-  private double min = NO_LIMIT;
-  private double max = NO_LIMIT;
-  private double range = 1;
-  private boolean hasLimit = false;
-
-  public DmxParameterLimiter(DmxParameter parameter) {
-    this(parameter, NO_LIMIT, NO_LIMIT);
-  }
-
-  public DmxParameterLimiter(DmxParameter parameter, double min, double max) {
-    this(parameter, min, max, LimitType.CLIP);
-  }
-
-  public DmxParameterLimiter(DmxParameter parameter, double min, double max, LimitType limitType) {
-    this.parameter = parameter;
-    this.limitType = limitType;
-    setLimits(min, max);
-  }
-
-  public DmxParameterLimiter setLimits(double min, double max) {
-    this.min = validateLimit(min);
-    this.max = validateLimit(max);
-    if (this.min != NO_LIMIT) {
-      this.hasLimit = true;
-      if (this.max != NO_LIMIT) {
-        if (this.min > this.max) {
-          double tmp = this.min;
-          this.min = this.max;
-          this.max = tmp;
+        private LimitType(String label) {
+            this.label = label;
         }
-        this.range = this.max - this.min;
-      } else {
-        this.range = this.parameter.getMax() - this.min;
-      }
-    } else {
-      if (this.max != NO_LIMIT) {
-        this.hasLimit = true;
-        this.range = this.max - this.parameter.getMin();
-      } else {
-        this.hasLimit = false;
-      }
     }
-    return this;
-  }
 
-  public double getMin() {
-    return this.min;
-  }
+    private LimitType limitType;
 
-  public double getMax() {
-    return this.max;
-  }
+    DmxParameter parameter;
 
-  protected double validateLimit(double limit) {
-    if (limit == NO_LIMIT) {
-      return limit;
+    private double min = NO_LIMIT;
+    private double max = NO_LIMIT;
+    private double range = 1;
+    private boolean hasLimit = false;
+
+    public DmxParameterLimiter(DmxParameter parameter) {
+        this(parameter, NO_LIMIT, NO_LIMIT);
     }
-    return LXUtils.constrain(limit, this.parameter.getMin(), this.parameter.getMax());
-  }
 
-  public DmxParameterLimiter setLimitType(LimitType limitType) {
-    this.limitType = limitType;
-    return this;
-  }
+    public DmxParameterLimiter(DmxParameter parameter, double min, double max) {
+        this(parameter, min, max, LimitType.CLIP);
+    }
 
-  public LimitType getLimitType() {
-    return this.limitType;
-  }
+    public DmxParameterLimiter(DmxParameter parameter, double min, double max, LimitType limitType) {
+        this.parameter = parameter;
+        this.limitType = limitType;
+        setLimits(min, max);
+    }
 
-  public void clearLimit() {
-    this.min = NO_LIMIT;
-    this.max = NO_LIMIT;
-    this.hasLimit = false;
-  }
-
-  public double limit(double value) {
-    if (this.hasLimit) {
-      switch (this.limitType) {
-      case ZOOM:
-        value = ((value - this.parameter.getMin()) / this.parameter.getRangeD() * range) + (this.min != NO_LIMIT ? this.min : this.parameter.getMin());
-        break;
-      case CLIP:
+    public DmxParameterLimiter setLimits(double min, double max) {
+        this.min = validateLimit(min);
+        this.max = validateLimit(max);
         if (this.min != NO_LIMIT) {
-          value = LXUtils.max(value, min);      
+            this.hasLimit = true;
+            if (this.max != NO_LIMIT) {
+                if (this.min > this.max) {
+                    double tmp = this.min;
+                    this.min = this.max;
+                    this.max = tmp;
+                }
+                this.range = this.max - this.min;
+            } else {
+                this.range = this.parameter.getMax() - this.min;
+            }
+        } else {
+            if (this.max != NO_LIMIT) {
+                this.hasLimit = true;
+                this.range = this.max - this.parameter.getMin();
+            } else {
+                this.hasLimit = false;
+            }
         }
-        if (this.max != NO_LIMIT) {
-          value = LXUtils.min(value, max);
-        }
-        break;
-      }
+        return this;
     }
-    return value;
-  }
 
+    public double getMin() {
+        return this.min;
+    }
+
+    public double getMax() {
+        return this.max;
+    }
+
+    protected double validateLimit(double limit) {
+        if (limit == NO_LIMIT) {
+            return limit;
+        }
+        return LXUtils.constrain(limit, this.parameter.getMin(), this.parameter.getMax());
+    }
+
+    public DmxParameterLimiter setLimitType(LimitType limitType) {
+        this.limitType = limitType;
+        return this;
+    }
+
+    public LimitType getLimitType() {
+        return this.limitType;
+    }
+
+    public void clearLimit() {
+        this.min = NO_LIMIT;
+        this.max = NO_LIMIT;
+        this.hasLimit = false;
+    }
+
+    public double limit(double value) {
+        if (this.hasLimit) {
+            switch (this.limitType) {
+                case ZOOM:
+                    value = ((value - this.parameter.getMin()) / this.parameter.getRangeD() * range)
+                            + (this.min != NO_LIMIT ? this.min : this.parameter.getMin());
+                    break;
+                case CLIP:
+                    if (this.min != NO_LIMIT) {
+                        value = LXUtils.max(value, min);
+                    }
+                    if (this.max != NO_LIMIT) {
+                        value = LXUtils.min(value, max);
+                    }
+                    break;
+            }
+        }
+        return value;
+    }
 }

@@ -2,13 +2,12 @@ package titanicsend.pattern.glengine;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import java.util.List;
 import titanicsend.pattern.jon.DriftEnabledPattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
-
-import java.util.List;
 
 @LXCategory("Native Shaders")
 public class TEAutoDriftPattern extends DriftEnabledPattern {
@@ -59,6 +58,6 @@ public class TEAutoDriftPattern extends DriftEnabledPattern {
 
     @Override
     public void dispose() {
-       // do nothing for now.
+        // do nothing for now.
     }
 }

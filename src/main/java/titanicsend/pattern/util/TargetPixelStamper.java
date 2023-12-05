@@ -1,5 +1,7 @@
 package titanicsend.pattern.util;
 
+import static titanicsend.util.TEColor.TRANSPARENT;
+
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
@@ -8,12 +10,9 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.LXParameter;
+import java.util.*;
 import titanicsend.model.TEPanelSection;
 import titanicsend.pattern.TEPattern;
-
-import java.util.*;
-
-import static titanicsend.util.TEColor.TRANSPARENT;
 
 @LXCategory("Utility")
 public class TargetPixelStamper extends TEPattern {
@@ -22,23 +21,20 @@ public class TargetPixelStamper extends TEPattern {
     double totalMsec;
 
     public final CompoundParameter xParam =
-            new CompoundParameter("X", 61, -100, 100)
-                    .setDescription("Target position left and right");
+            new CompoundParameter("X", 61, -100, 100).setDescription("Target position left and right");
 
     public final CompoundParameter yParam =
-            new CompoundParameter("Y", 25.5, 0, 100)
-                    .setDescription("Target height from ground");
+            new CompoundParameter("Y", 25.5, 0, 100).setDescription("Target height from ground");
 
-    public final CompoundParameter size =
-            new CompoundParameter("Size", 1, 0.1, 4)
-                    .setDescription("Target size");
+    public final CompoundParameter size = new CompoundParameter("Size", 1, 0.1, 4).setDescription("Target size");
 
-    public final EnumParameter<Side> side =
-            new EnumParameter<>("Side", Side.STARBOARD)
-                    .setDescription("Side of model");
+    public final EnumParameter<Side> side = new EnumParameter<>("Side", Side.STARBOARD).setDescription("Side of model");
 
     public enum Side {
-        STARBOARD, FORE, PORT, AFT
+        STARBOARD,
+        FORE,
+        PORT,
+        AFT
     }
 
     public final BooleanParameter stamp = new BooleanParameter("Stamp").setMode(BooleanParameter.Mode.MOMENTARY);
@@ -47,8 +43,7 @@ public class TargetPixelStamper extends TEPattern {
     // A special value in savedStamps that means this pixel shouldn't be a static
     // color, but rather an animated bullseye that keeps changing color
     public static final int ANIMATED_BULLSEYE = 123;
-    private final int[] ANIMATED_BULLSEYE_COLORS = {
-            LXColor.RED, LXColor.GREEN, LXColor.BLUE, LXColor.WHITE};
+    private final int[] ANIMATED_BULLSEYE_COLORS = {LXColor.RED, LXColor.GREEN, LXColor.BLUE, LXColor.WHITE};
 
     // The concentric colors for a saved target
     private final int[] ACTIVE_TARGET_COLORS = {LXColor.BLACK, LXColor.WHITE, LXColor.GREEN};
@@ -73,7 +68,7 @@ public class TargetPixelStamper extends TEPattern {
     @Override
     public void run(double deltaMs) {
         this.totalMsec += deltaMs;
-        int phase = (int)(this.totalMsec / MSEC_PER_COLOR) % 4;
+        int phase = (int) (this.totalMsec / MSEC_PER_COLOR) % 4;
         int bullseyeColor = ANIMATED_BULLSEYE_COLORS[phase];
         showSavedStamps(bullseyeColor);
         showCurrentTarget(bullseyeColor);
@@ -132,11 +127,11 @@ public class TargetPixelStamper extends TEPattern {
                 closestDistance = distance;
                 targetPoint = point;
             }
-            if (!savedStamps.containsKey(point)){
+            if (!savedStamps.containsKey(point)) {
                 colors[point.index] = TRANSPARENT;
             }
             for (int i = SAVED_TARGET_COLORS.length - 1; i >= 0; i--) {
-                if (distance < size.getValue() * (i+1)) {
+                if (distance < size.getValue() * (i + 1)) {
                     colors[point.index] = ACTIVE_TARGET_COLORS[i];
                     bullseye.put(point, SAVED_TARGET_COLORS[i]);
                 }

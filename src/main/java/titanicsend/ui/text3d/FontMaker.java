@@ -1,13 +1,13 @@
 package titanicsend.ui.text3d;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.Map;
-import heronarts.lx.color.LXColor;
 import static java.awt.Font.PLAIN;
 import static java.awt.Font.TRUETYPE_FONT;
 import static java.lang.System.exit;
+
+import heronarts.lx.color.LXColor;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
 
 /**
  * FontMaker - Texture Atlas Creation Tool
@@ -26,7 +26,7 @@ import static java.lang.System.exit;
 public class FontMaker {
     static final int firstChar = 32;
     static final int lastChar = 255;
-//
+    //
 
     FileInputStream inStream;
     DataOutputStream outStream;
@@ -183,6 +183,4 @@ public class FontMaker {
         System.out.println("FontMaker: All done!");
         exit(0);
     }
-
-
 }

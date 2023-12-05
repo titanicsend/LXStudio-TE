@@ -2,9 +2,7 @@ package titanicsend.util;
 
 import heronarts.lx.LX;
 import heronarts.lx.model.LXPoint;
-
 import java.util.ArrayList;
-import java.util.Comparator;
 
 // A SimpleScreen is a two-dimensional approximation of a monitor or TV screen against
 // the side of Titanic's End.
@@ -15,12 +13,12 @@ public class SimpleScreen {
     public ArrayList<LXPoint> screenGrid;
 
     private void buildScreenGrid(
-        ArrayList<LXPoint> pointsList,
-        int yLowerBound,
-        int yUpperBound,
-        int zLowerBound,
-        int zUpperBound,
-        boolean doubleSided) {
+            ArrayList<LXPoint> pointsList,
+            int yLowerBound,
+            int yUpperBound,
+            int zLowerBound,
+            int zUpperBound,
+            boolean doubleSided) {
         LX.log("Inside SimpleScreen.buildScreenGrid");
         LX.log(String.format("  Lower Y: %d", yLowerBound));
         LX.log(String.format("  Upper Y: %d", yUpperBound));
@@ -30,9 +28,8 @@ public class SimpleScreen {
         ArrayList<LXPoint> screenGrid = new ArrayList<LXPoint>();
 
         for (LXPoint point : pointsList) {
-            if (
-                (point.z <= zUpperBound && point.z >= zLowerBound) &&
-                (point.y <= yUpperBound && point.y >= yLowerBound)) {
+            if ((point.z <= zUpperBound && point.z >= zLowerBound)
+                    && (point.y <= yUpperBound && point.y >= yLowerBound)) {
                 if (doubleSided) {
                     screenGrid.add(point);
                 } else if (point.x >= 0) {
@@ -44,12 +41,12 @@ public class SimpleScreen {
     }
 
     public SimpleScreen(
-        ArrayList<LXPoint> pointsList,
-        int yLowerBound,
-        int yUpperBound,
-        int zLowerBound,
-        int zUpperBound,
-        boolean doubleSided) {
+            ArrayList<LXPoint> pointsList,
+            int yLowerBound,
+            int yUpperBound,
+            int zLowerBound,
+            int zUpperBound,
+            boolean doubleSided) {
         buildScreenGrid(pointsList, yLowerBound, yUpperBound, zLowerBound, zUpperBound, doubleSided);
     }
 }

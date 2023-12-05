@@ -5,13 +5,9 @@ import heronarts.lx.LXCategory;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
-import titanicsend.pattern.yoffa.framework.ConstructedPattern;
-import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
-
-import java.util.List;
 
 @LXCategory("Look Shader Patterns")
 public class TriangleInfinityWaveform extends TEPerformancePattern {
@@ -21,7 +17,7 @@ public class TriangleInfinityWaveform extends TEPerformancePattern {
     public TriangleInfinityWaveform(LX lx) {
         super(lx, TEShaderView.ALL_POINTS);
 
-//        controls.setValue(TEControlTag.YPOS, -0.17);
+        //        controls.setValue(TEControlTag.YPOS, -0.17);
         controls.setRange(TEControlTag.SIZE, 1.35, 0.2, 2.0);
         controls.setRange(TEControlTag.SPEED, 0.01, 0.00, 0.5);
         controls.setRange(TEControlTag.QUANTITY, 6.0, 2.0, 12.0);

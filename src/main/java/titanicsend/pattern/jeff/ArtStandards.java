@@ -1,5 +1,7 @@
 package titanicsend.pattern.jeff;
 
+import static titanicsend.util.TEMath.wave;
+
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
@@ -8,8 +10,6 @@ import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.utils.LXUtils;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.pattern.TEAudioPattern;
-
-import static titanicsend.util.TEMath.wave;
 
 /**
  * This edge pattern aims to apply all our art standards as documented:
@@ -27,7 +27,6 @@ import static titanicsend.util.TEMath.wave;
  *   It is preloaded and intended to be used from within the Audio Examples
  *   workspace project (Select this at the top center of the UI).
  */
-
 @LXCategory("TE Examples")
 public class ArtStandards extends TEAudioPattern {
     /* Titanic's End wants all patterns to implement a parameter called
@@ -36,8 +35,7 @@ public class ArtStandards extends TEAudioPattern {
      * of sparkles.
      */
     public final CompoundParameter energy =
-            new CompoundParameter("Energy", .1, 0, 1)
-                    .setDescription("Amount of motion - Sparkles");
+            new CompoundParameter("Energy", .1, 0, 1).setDescription("Amount of motion - Sparkles");
 
     public ArtStandards(LX lx) {
         super(lx);
@@ -61,8 +59,6 @@ public class ArtStandards extends TEAudioPattern {
         // palette has changed or is transitioning, this gets the new values.
         updateGradients();
 
-
-
         /* Art standard: Use the tempo
          * `measure` is a 0..1 normalized ramp (fraction) into the current
          * measure. Sometimes a sync'd modulator is all you need, but in this
@@ -83,9 +79,7 @@ public class ArtStandards extends TEAudioPattern {
          * individual fiddling to get the range correct.
          */
         double scaledTrebleRatio = LXUtils.clamp(
-                (trebleRatio - .5) / (1.01 - energy.getNormalized()) / 6 -
-                                    .2 + energy.getNormalized() / 2,
-                0, 1);
+                (trebleRatio - .5) / (1.01 - energy.getNormalized()) / 6 - .2 + energy.getNormalized() / 2, 0, 1);
 
         // Aesthetic choice to make lots of sparkles rare; by squaring this
         // normalized value which is in 0..1, higher values become less frequent.
@@ -138,12 +132,7 @@ public class ArtStandards extends TEAudioPattern {
                  * any underlying color through. Notice how this mixes well with
                  * the "Edge BG" channel.
                  */
-                colors[point.index] = LXColor.hsba(
-                        hue,
-                        saturation,
-                        brightness,
-                        alphaWave
-                    );
+                colors[point.index] = LXColor.hsba(hue, saturation, brightness, alphaWave);
 
                 /* If we had instead used the wave as a brightness scale,
                  * the VJ would have to fade this pattern down to blend with

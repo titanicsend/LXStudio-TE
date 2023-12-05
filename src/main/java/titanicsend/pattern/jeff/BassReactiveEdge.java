@@ -35,15 +35,12 @@ public class BassReactiveEdge extends TEAudioPattern {
     // Titanic's End wants all patterns to implement a parameter called "Energy",
     // which controls the amount of motion, light, movement, action, particles, etc.
     public final CompoundParameter energy =
-            new CompoundParameter("Energy", .1, 0, 1)
-                    .setDescription("Amount of motion for various modes");
+            new CompoundParameter("Energy", .1, 0, 1).setDescription("Amount of motion for various modes");
 
     // Build on BassReactive by allowing the VJ to select the upper bin of
     // the frequency bins being averaged.
     public final DiscreteParameter bassBandCountP =
-            new DiscreteParameter("Bands", 2, 1, eq.numBands/2)
-                    .setDescription("Number of low eq bands monitored");
-
+            new DiscreteParameter("Bands", 2, 1, eq.numBands / 2).setDescription("Number of low eq bands monitored");
 
     public BassReactiveEdge(LX lx) {
         super(lx);
@@ -52,7 +49,7 @@ public class BassReactiveEdge extends TEAudioPattern {
     }
 
     public void runTEAudioPattern(double deltaMs) {
-        clearPixels();  // Sets all pixels to transparent for starters
+        clearPixels(); // Sets all pixels to transparent for starters
 
         /* Get the average bass level of some low frequency bands.
          * The default lx.engine.audio.meter breaks up sound into 16 bands,
@@ -75,10 +72,8 @@ public class BassReactiveEdge extends TEAudioPattern {
             for (TEEdgeModel.Point point : edge.points) {
                 // Only color the pixels between the low and high fraction.
                 // Red is used for brevity. For real show patterns use LinkedColorParameters.
-                if (point.frac >= lowFrac && point.frac < highFrac)
-                    colors[point.index] = LXColor.RED;
+                if (point.frac >= lowFrac && point.frac < highFrac) colors[point.index] = LXColor.RED;
             }
         }
     }
-
 }

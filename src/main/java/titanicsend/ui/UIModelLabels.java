@@ -17,7 +17,6 @@
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.ui;
 
 import heronarts.glx.*;
@@ -25,15 +24,14 @@ import heronarts.glx.ui.UI;
 import heronarts.glx.ui.UI3dComponent;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.studio.TEApp;
+import java.util.ArrayList;
+import java.util.List;
 import org.joml.Vector3f;
 import titanicsend.app.TEVirtualOverlays;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEVertex;
 import titanicsend.ui.text3d.Label;
 import titanicsend.ui.text3d.TextManager3d;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class UIModelLabels extends UI3dComponent {
     private final TEVirtualOverlays virtualOverlays;
@@ -55,7 +53,7 @@ public class UIModelLabels extends UI3dComponent {
         // create labels for panels
         textManager.setFontScale(15000);
         textManager.setFontColor(LXColor.WHITE);
-        textManager.setFontBackground(LXColor.rgba(0, 0, 0, 255));  // opaque black
+        textManager.setFontBackground(LXColor.rgba(0, 0, 0, 255)); // opaque black
         for (TEPanelModel p : TEApp.wholeModel.panelsById.values()) {
             getPanelCoordinates(p, position, rotation);
             panelLabels.add(textManager.labelMaker(p.getId(), position, rotation));

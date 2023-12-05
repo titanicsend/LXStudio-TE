@@ -1,7 +1,6 @@
 package titanicsend.pattern.yoffa.shader_engine;
 
 import com.jogamp.opengl.GL4;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,20 +12,20 @@ public class ShaderProgram {
 
     public void init(GL4 gl4, String shaderName) {
         if (initialized) {
-            throw new IllegalStateException(
-                    "Unable to initialize the shader program! (it was already initialized)");
+            throw new IllegalStateException("Unable to initialize the shader program! (it was already initialized)");
         }
 
         try {
             programId = gl4.glCreateProgram();
-            boolean inCache = ShaderUtils.loadShaderFromCache(gl4,programId,shaderName);
+            boolean inCache = ShaderUtils.loadShaderFromCache(gl4, programId, shaderName);
 
             if (!inCache) {
                 ShaderUtils.buildShader(gl4, programId, shaderName);
             }
 
-            shaderAttributeLocations.put(ShaderAttribute.POSITION,
-                gl4.glGetAttribLocation(programId, ShaderAttribute.POSITION.getAttributeName()));
+            shaderAttributeLocations.put(
+                    ShaderAttribute.POSITION,
+                    gl4.glGetAttribLocation(programId, ShaderAttribute.POSITION.getAttributeName()));
 
             // NOTE: Uncomment when we make the geometry complex enough that we need the index attribute.
             // shaderAttributeLocations.put(ShaderAttribute.INDEX,
@@ -46,8 +45,7 @@ public class ShaderProgram {
 
     public int getProgramId() {
         if (!initialized) {
-            throw new IllegalStateException(
-                    "Unable to get the program id! The shader program was not initialized!");
+            throw new IllegalStateException("Unable to get the program id! The shader program was not initialized!");
         }
         return programId;
     }
@@ -63,5 +61,4 @@ public class ShaderProgram {
     public boolean isInitialized() {
         return initialized;
     }
-
 }

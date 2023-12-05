@@ -60,7 +60,7 @@ public class MF64XWave extends TEMidiFighter64Subpattern {
 
             if (dist > 0.9) {
                 int alpha = (int) (255 * TEMath.clamp(dist, 0, 1));
-                blendColor(point.index,(color & 0x00FFFFFF) | (alpha << 24));
+                blendColor(point.index, (color & 0x00FFFFFF) | (alpha << 24));
             }
         }
 
@@ -73,7 +73,7 @@ public class MF64XWave extends TEMidiFighter64Subpattern {
 
             if (dist > 0.9) {
                 int alpha = (int) (255 * TEMath.clamp(dist, 0, 1));
-                blendColor(point.index,(color & 0x00FFFFFF) | (alpha << 24));
+                blendColor(point.index, (color & 0x00FFFFFF) | (alpha << 24));
             }
         }
     }

@@ -1,15 +1,14 @@
 package titanicsend.pattern.jon;
 
 import heronarts.lx.model.LXPoint;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
 import titanicsend.util.TE;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.HashMap;
-import java.util.Set;
 
 /**
  * Tools for converting car model geometry for use in patterns, particularly
@@ -19,7 +18,7 @@ public class CarGeometryPatternTools {
     // convert from normalized physical model coords
     // to aspect corrected normalized 2D GL surface coords
     protected static float modelToMapX(LXPoint pt) {
-        //correct for aspect ratio of render target
+        // correct for aspect ratio of render target
         return 1.33333f * ((-0.5f + pt.zn));
     }
 
@@ -50,7 +49,7 @@ public class CarGeometryPatternTools {
                 for (TEPanelModel panel : edge.connectedPanels) {
                     Matcher matcher = edgePattern.matcher(panel.getId());
                     if (matcher.matches()) {
-                        //TE.log("Found edge w/panel(s): %s",edge.getId());
+                        // TE.log("Found edge w/panel(s): %s",edge.getId());
                         getLineFromEdge(model, lines, edgeCount, edge.getId());
                         edgeCount++;
                         break;
@@ -82,5 +81,3 @@ public class CarGeometryPatternTools {
         }
     }
 }
-
-

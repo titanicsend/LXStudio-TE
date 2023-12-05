@@ -4,15 +4,14 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.jon.TEControlTag;
-import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
-import titanicsend.pattern.yoffa.shader_engine.Uniforms;
-
 import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import titanicsend.pattern.jon.TEControlTag;
+import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
+import titanicsend.pattern.yoffa.shader_engine.Uniforms;
 
 public class GLPreprocessor {
 
@@ -115,7 +114,7 @@ public class GLPreprocessor {
                 }
                 case SET_LABEL -> control.name = stringCleanup(line[1]);
                 case SET_NORMALIZATION_CURVE -> control.normalizationCurve =
-                    BoundedParameter.NormalizationCurve.valueOf(line[1].toUpperCase());
+                        BoundedParameter.NormalizationCurve.valueOf(line[1].toUpperCase());
             }
         }
         parameters.add(control);
@@ -131,7 +130,8 @@ public class GLPreprocessor {
         // valid channels are 1-9.  Channel 0 is reserved for audio input.
         control.textureChannel = Integer.parseInt(line[0].substring(line[0].length() - 1));
         if (control.textureChannel == 0) {
-            throw new IllegalArgumentException("iChannel0 is reserved for system audio. Use channels 1-9 for textures.");
+            throw new IllegalArgumentException(
+                    "iChannel0 is reserved for system audio. Use channels 1-9 for textures.");
         }
 
         // token 1 is the texture file name.
@@ -260,14 +260,24 @@ public class GLPreprocessor {
                 if (matcher.groupCount() >= 3) {
                     String metadata = matcher.group(3);
                     if ("bool".equals(metadata)) {
-                        finalShader.append("uniform bool ").append(placeholderName).append(Uniforms.CUSTOM_SUFFIX).append(";\n");
+                        finalShader
+                                .append("uniform bool ")
+                                .append(placeholderName)
+                                .append(Uniforms.CUSTOM_SUFFIX)
+                                .append(";\n");
                         addLXParameter(parameters, new BooleanParameter(placeholderName));
                     } else {
-                        finalShader.append("uniform float ").append(placeholderName).append(Uniforms.CUSTOM_SUFFIX).append(";\n");
+                        finalShader
+                                .append("uniform float ")
+                                .append(placeholderName)
+                                .append(Uniforms.CUSTOM_SUFFIX)
+                                .append(";\n");
                         Double[] rangeValues = Arrays.stream(metadata.split(","))
-                            .map(Double::parseDouble)
-                            .toArray(Double[]::new);
-                        addLXParameter(parameters, new CompoundParameter(placeholderName, rangeValues[0], rangeValues[1], rangeValues[2]));
+                                .map(Double::parseDouble)
+                                .toArray(Double[]::new);
+                        addLXParameter(
+                                parameters,
+                                new CompoundParameter(placeholderName, rangeValues[0], rangeValues[1], rangeValues[2]));
                     }
                 }
                 matcher.appendReplacement(shaderCode, placeholderName + Uniforms.CUSTOM_SUFFIX);
@@ -290,7 +300,6 @@ public class GLPreprocessor {
     public String preprocessShader(File shaderFile, List<ShaderConfiguration> parameters) throws Exception {
         String shaderBody = ShaderUtils.loadResource(shaderFile);
         return preprocessShader(shaderBody, parameters);
-
     }
 
     public String preprocessShader(String shaderBody, List<ShaderConfiguration> parameters) throws Exception {
@@ -324,5 +333,4 @@ public class GLPreprocessor {
         shaderBody = getFragmentShaderTemplate().replace(ShaderUtils.SHADER_BODY_PLACEHOLDER, shaderBody);
         return shaderBody;
     }
-
 }

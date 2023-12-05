@@ -1,13 +1,12 @@
 package titanicsend.pattern.yoffa.shader_engine;
 
 import heronarts.lx.audio.GraphicMeter;
-import titanicsend.pattern.TEPerformancePattern;
-
 import java.nio.FloatBuffer;
 import java.util.Map;
+import titanicsend.pattern.TEPerformancePattern;
 
 public class PatternControlData {
-    
+
     private Map<Uniforms.Audio, Float> uniformMap;
 
     TEPerformancePattern parent;
@@ -16,7 +15,7 @@ public class PatternControlData {
 
     public PatternControlData(TEPerformancePattern pattern) {
         this.parent = pattern;
-        this.meter =  pattern.getLX().engine.audio.meter;
+        this.meter = pattern.getLX().engine.audio.meter;
         fftResampleFactor = meter.bands.length / 512f;
     }
 
@@ -34,7 +33,7 @@ public class PatternControlData {
      * @return fft sample, normalized to range 0 to 1.
      */
     public float getFrequencyData(int index) {
-       return meter.getBandf((int) Math.floor((float) index * fftResampleFactor));
+        return meter.getBandf((int) Math.floor((float) index * fftResampleFactor));
     }
 
     /**
@@ -94,11 +93,15 @@ public class PatternControlData {
         return parent.calcColor();
     }
 
-    public int calcColor2() { return parent.calcColor2(); }
+    public int calcColor2() {
+        return parent.calcColor2();
+    }
 
     // currently unused, but not removed because we may want access to the whole
     // palette at some point
-    public FloatBuffer getCurrentPalette() { return parent.getCurrentPalette();}
+    public FloatBuffer getCurrentPalette() {
+        return parent.getCurrentPalette();
+    }
 
     public double getSpeed() {
         return parent.getSpeed();
@@ -116,7 +119,9 @@ public class PatternControlData {
         return parent.getSize();
     }
 
-    public double getQuantity() { return parent.getQuantity();}
+    public double getQuantity() {
+        return parent.getQuantity();
+    }
 
     /**
      *    For most uses, getRotationAngle() is recommended, but if you
@@ -141,5 +146,4 @@ public class PatternControlData {
     public boolean getWowTrigger() {
         return parent.getWowTrigger();
     }
-
 }

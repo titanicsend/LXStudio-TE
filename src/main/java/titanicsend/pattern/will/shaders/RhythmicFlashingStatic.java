@@ -1,15 +1,14 @@
 package titanicsend.pattern.will.shaders;
 
+import static java.lang.Math.*;
+import static titanicsend.util.TEMath.*;
+
 import heronarts.lx.parameter.LXParameter;
+import java.awt.*;
+import java.util.Collection;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.shaders.FragmentShaderEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
-
-import java.awt.*;
-import java.util.Collection;
-
-import static java.lang.Math.*;
-import static titanicsend.util.TEMath.*;
 
 // taken from:
 // https://www.shadertoy.com/view/Xs2BRc
@@ -23,7 +22,7 @@ public class RhythmicFlashingStatic extends FragmentShaderEffect {
         super(target);
 
         // set reasonable initial control values
-        pattern.getControls().setValue(TEControlTag.WOW1, 0.75);   // beat reactive pulse
+        pattern.getControls().setValue(TEControlTag.WOW1, 0.75); // beat reactive pulse
     }
 
     private double cell(double[] c) {
@@ -32,7 +31,8 @@ public class RhythmicFlashingStatic extends FragmentShaderEffect {
         //        c -= uv;
         double[] newC = subtractArrays(c, uv);
 
-        //        return (3.0 - length(uv)) * step(fract( sin(c.x + c.y*50.0) *1000.0), 0.04); // 3.0 :: star width and fade strength, 0.04 :: star count
+        //        return (3.0 - length(uv)) * step(fract( sin(c.x + c.y*50.0) *1000.0), 0.04); // 3.0 :: star width and
+        // fade strength, 0.04 :: star count
         double cx = newC[0];
         double cy = newC[1];
         double firstTerm = STAR_WIDTH - vectorLength(uv);
@@ -43,7 +43,7 @@ public class RhythmicFlashingStatic extends FragmentShaderEffect {
     @Override
     protected double[] getColorForPoint(double[] fragCoordinates, double[] resolution, double timeSeconds) {
 
-        double[] projection = new double[]{fragCoordinates[0] / RESOLUTION, fragCoordinates[1] / RESOLUTION};
+        double[] projection = new double[] {fragCoordinates[0] / RESOLUTION, fragCoordinates[1] / RESOLUTION};
 
         double projX = fract(projection[0]) / 4.0;
         double projY = pow(projection[1], 0.5);
@@ -51,11 +51,13 @@ public class RhythmicFlashingStatic extends FragmentShaderEffect {
         //        float time = -0.4 * iTime; //reverse or forward speed
         double time = 0.05 * timeSeconds;
 
-        //            vec2 coord = vec2(projY, projX) * 256.; // *512 :: star count, adjust star-count and scale for scaling along Y axis
-        double[] coord = new double[]{projX * STAR_COUNT_INT, projY * STAR_COUNT_INT};
+        //            vec2 coord = vec2(projY, projX) * 256.; // *512 :: star count, adjust star-count and scale for
+        // scaling along Y axis
+        double[] coord = new double[] {projX * STAR_COUNT_INT, projY * STAR_COUNT_INT};
 
-        //            vec2 delta = vec2(time * 16.0, 0); // time*7.0 :: speed2 of stars, adjust both^^ speeds for length of stars
-        double[] delta = new double[]{time, 0};
+        //            vec2 delta = vec2(time * 16.0, 0); // time*7.0 :: speed2 of stars, adjust both^^ speeds for length
+        // of stars
+        double[] delta = new double[] {time, 0};
 
         //            float c = Cell(coord -= delta);
         double[] diff = subtractArrays(coord, delta);

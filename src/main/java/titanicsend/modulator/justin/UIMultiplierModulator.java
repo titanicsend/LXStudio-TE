@@ -15,24 +15,22 @@
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.modulator.justin;
 
+import heronarts.glx.ui.UI2dContainer;
+import heronarts.glx.ui.component.UIKnob;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.modulation.UIModulator;
 import heronarts.lx.studio.ui.modulation.UIModulatorControls;
-import heronarts.glx.ui.UI2dContainer;
-import heronarts.glx.ui.component.UIKnob;
 
 public class UIMultiplierModulator implements UIModulatorControls<MultiplierModulator> {
 
-  public void buildModulatorControls(LXStudio.UI ui, UIModulator uiModulator, MultiplierModulator modulator) {
-    uiModulator.setContentHeight(UIKnob.HEIGHT + 4);
-    uiModulator.setLayout(UI2dContainer.Layout.HORIZONTAL);
-    uiModulator.setChildSpacing(2);
-    new UIKnob(modulator.inputA).setY(4).addToContainer(uiModulator);
-    new UIKnob(modulator.inputB).setY(4).addToContainer(uiModulator);
-    new UIKnob(modulator.output).setEditable(false).setY(4).addToContainer(uiModulator);
-  }
-
+    public void buildModulatorControls(LXStudio.UI ui, UIModulator uiModulator, MultiplierModulator modulator) {
+        uiModulator.setContentHeight(UIKnob.HEIGHT + 4);
+        uiModulator.setLayout(UI2dContainer.Layout.HORIZONTAL);
+        uiModulator.setChildSpacing(2);
+        new UIKnob(modulator.inputA).setY(4).addToContainer(uiModulator);
+        new UIKnob(modulator.inputB).setY(4).addToContainer(uiModulator);
+        new UIKnob(modulator.output).setEditable(false).setY(4).addToContainer(uiModulator);
+    }
 }

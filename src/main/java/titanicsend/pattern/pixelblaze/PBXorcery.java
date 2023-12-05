@@ -6,12 +6,12 @@ import heronarts.lx.LXCategory;
 @LXCategory("Combo FG")
 public class PBXorcery extends PixelblazePattern {
 
-	public PBXorcery(LX lx) {
-		super(lx);
-	}
+    public PBXorcery(LX lx) {
+        super(lx);
+    }
 
-	@Override
-	protected String getScriptName() {
-		return "xorcery";
-	}
+    @Override
+    protected String getScriptName() {
+        return "xorcery";
+    }
 }

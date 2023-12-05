@@ -1,10 +1,9 @@
 package titanicsend.ui.text3d;
 
-import java.util.List;
-
 import heronarts.glx.GLX;
 import heronarts.glx.View;
 import heronarts.lx.color.LXColor;
+import java.util.List;
 import org.joml.Vector3f;
 
 public class TextManager3d {
@@ -81,5 +80,3 @@ public class TextManager3d {
         renderer.dispose();
     }
 }
-
-

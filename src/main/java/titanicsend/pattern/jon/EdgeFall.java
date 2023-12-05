@@ -3,13 +3,12 @@ package titanicsend.pattern.jon;
 import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import java.nio.FloatBuffer;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.pattern.yoffa.shader_engine.NativeShader;
-
-import java.nio.FloatBuffer;
 
 @LXCategory("Combo FG")
 public class EdgeFall extends TEPerformancePattern {
@@ -32,7 +31,7 @@ public class EdgeFall extends TEPerformancePattern {
 
         // Size controls line width/glow
         controls.setRange(TEControlTag.SIZE, 80, 200, 15);
-        controls.setExponent(TEControlTag.SIZE,0.3);
+        controls.setExponent(TEControlTag.SIZE, 0.3);
 
         // Wow1 - beat reactive pulse
         controls.setRange(TEControlTag.WOW1, 0, 0, 0.65);
@@ -40,8 +39,7 @@ public class EdgeFall extends TEPerformancePattern {
 
         addCommonControls();
 
-        effect = new NativeShaderPatternEffect("edgefall.fs",
-            new PatternTarget(this));
+        effect = new NativeShaderPatternEffect("edgefall.fs", new PatternTarget(this));
 
         // create an n x 4 array, so we can pass line segment descriptors
         // to GLSL shaders.
@@ -71,7 +69,7 @@ public class EdgeFall extends TEPerformancePattern {
 
     // store segment descriptors in our GL line segment buffer.
     void setUniformLine(int segNo, float x1, float y1, float x2, float y2) {
-        //TE.log("setLine %d : %.4f %.4f, %.4f %.4f",segNo,x1,y1,x2,y2);
+        // TE.log("setLine %d : %.4f %.4f, %.4f %.4f",segNo,x1,y1,x2,y2);
         gl_segments.position(segNo * 4);
         gl_segments.put(-x1);
         gl_segments.put(y1);
@@ -168,5 +166,4 @@ public class EdgeFall extends TEPerformancePattern {
         effect.onActive();
         shader = effect.getNativeShader();
     }
-
 }

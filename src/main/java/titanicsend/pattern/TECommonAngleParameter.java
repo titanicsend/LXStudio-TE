@@ -13,7 +13,8 @@ class TECommonAngleParameter extends CompoundParameter {
     private final TEPerformancePattern pattern;
     private final Rotor spinRotor;
 
-    public TECommonAngleParameter(TEPerformancePattern pattern, Rotor rotor, String label, double value, double v0, double v1) {
+    public TECommonAngleParameter(
+            TEPerformancePattern pattern, Rotor rotor, String label, double value, double v0, double v1) {
         super(label, value, v0, v1);
         this.pattern = pattern;
         this.spinRotor = rotor;
@@ -41,4 +42,3 @@ class TECommonAngleParameter extends CompoundParameter {
         return super.reset();
     }
 }
-

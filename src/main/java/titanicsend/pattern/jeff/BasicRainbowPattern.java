@@ -1,7 +1,6 @@
 /**
  * @author Jeff Vyduna <j@ngnr.org>
  */
-
 package titanicsend.pattern.jeff;
 
 import heronarts.lx.LX;
@@ -44,13 +43,10 @@ public class BasicRainbowPattern extends TEPattern {
 
             colors[p.index] = LXColor.hsb(
                     // Hue is a 360 degree wheel, so the 0..1 hueFrac is multiplied by 360
-                    360 * hueFrac,
-                    100,
-                    100);
+                    360 * hueFrac, 100, 100);
         }
 
         // Apply colors to the lasers and solid color panels
         this.updateVirtualColors(deltaMs);
     }
-
 }

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-
 import heronarts.glx.ui.UI2dContainer.Layout;
 import heronarts.glx.ui.component.UITextBox;
 import heronarts.lx.LX;
@@ -16,8 +15,6 @@ import heronarts.lx.parameter.StringParameter;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
-import titanicsend.model.TEPanelModel;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -26,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import titanicsend.model.TEPanelModel;
 
 @LXCategory("Utility")
 public class PanelAdjustEffect extends TEEffect implements UIDeviceControls<PanelAdjustEffect> {
@@ -57,8 +55,8 @@ public class PanelAdjustEffect extends TEEffect implements UIDeviceControls<Pane
 
         try {
             Type type = new TypeToken<Map<String, TEPanelModel.Adjustment>>() {}.getType();
-            PANEL_ID_TO_ADJUSTMENT.putAll(serializer.fromJson(
-                    Files.readString(Path.of(RESOURCES_PATH + "panel_adjustments.txt")), type));
+            PANEL_ID_TO_ADJUSTMENT.putAll(
+                    serializer.fromJson(Files.readString(Path.of(RESOURCES_PATH + "panel_adjustments.txt")), type));
         } catch (IOException e) {
             LX.warning("Could not find saved adjustments file");
         }
@@ -80,7 +78,7 @@ public class PanelAdjustEffect extends TEEffect implements UIDeviceControls<Pane
 
     @Override
     protected void run(double v, double v1) {
-        //do nothing; the good stuff is onEnable/disable
+        // do nothing; the good stuff is onEnable/disable
     }
 
     @Override
@@ -159,8 +157,7 @@ public class PanelAdjustEffect extends TEEffect implements UIDeviceControls<Pane
                 newKnob(zAdjust),
                 newButton(resetPanelButton).setMomentary(true),
                 newButton(resetAllButton).setMomentary(true),
-                newButton(saveButton).setMomentary(true)
-        );
+                newButton(saveButton).setMomentary(true));
         tb.setParameter(panelIdParameter);
         tb.setEmptyValueAllowed(true);
     }
@@ -171,8 +168,8 @@ public class PanelAdjustEffect extends TEEffect implements UIDeviceControls<Pane
         zAdjust.setValue(0);
     }
 
-    //Let's not save the exact state of the controls
-    //Otherwise, when it loads the project file, it will set the controls back to the state when saved
+    // Let's not save the exact state of the controls
+    // Otherwise, when it loads the project file, it will set the controls back to the state when saved
     // which will then impact the actual adjustments
     @Override
     public void save(LX lx, JsonObject object) {
@@ -180,5 +177,4 @@ public class PanelAdjustEffect extends TEEffect implements UIDeviceControls<Pane
         resetAdjustParams();
         super.save(lx, object);
     }
-
 }

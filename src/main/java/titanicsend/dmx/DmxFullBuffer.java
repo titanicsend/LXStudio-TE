@@ -15,7 +15,6 @@
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.dmx;
 
 import titanicsend.dmx.model.DmxModel;
@@ -24,29 +23,29 @@ import titanicsend.dmx.model.DmxWholeModel;
 /**
  * DMX version of LXBuffer
  */
-abstract public class DmxFullBuffer {
-  abstract public DmxBuffer[] getArray();
+public abstract class DmxFullBuffer {
+    public abstract DmxBuffer[] getArray();
 
-  static public DmxBuffer[] createFullBuffer(DmxWholeModel dmxWholeModel) {
-    DmxBuffer[] b = new DmxBuffer[dmxWholeModel.sizeDmx()];
+    public static DmxBuffer[] createFullBuffer(DmxWholeModel dmxWholeModel) {
+        DmxBuffer[] b = new DmxBuffer[dmxWholeModel.sizeDmx()];
 
-    int i = 0;
-    for (DmxModel dmxModel : dmxWholeModel.getDmxModels()) {
-      b[i++] = dmxModel.createBuffer();
+        int i = 0;
+        for (DmxModel dmxModel : dmxWholeModel.getDmxModels()) {
+            b[i++] = dmxModel.createBuffer();
+        }
+
+        return b;
     }
 
-    return b;
-  }
-
-  static public void copyFullBuffer(DmxBuffer[] src, DmxBuffer[] dst) {
-    for (int i = 0; i < src.length; i++) {
-      DmxBuffer s = src[i];
-      DmxBuffer d = dst[i];
-      for (int j = 0; j < s.array.length; j++) {
-        d.array[j].setValue(s.array[j].getValue());
-      }
-      d.isActive = s.isActive;
-      d.isModified = s.isModified;
+    public static void copyFullBuffer(DmxBuffer[] src, DmxBuffer[] dst) {
+        for (int i = 0; i < src.length; i++) {
+            DmxBuffer s = src[i];
+            DmxBuffer d = dst[i];
+            for (int j = 0; j < s.array.length; j++) {
+                d.array[j].setValue(s.array[j].getValue());
+            }
+            d.isActive = s.isActive;
+            d.isModified = s.isModified;
+        }
     }
-  }
 }

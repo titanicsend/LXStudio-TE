@@ -1,6 +1,5 @@
 package titanicsend.util;
 
-import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
 
 // Construct from a triangle and a distance and you'll get two more triangles,

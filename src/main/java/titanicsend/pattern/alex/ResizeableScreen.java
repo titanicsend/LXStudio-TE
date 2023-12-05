@@ -1,5 +1,7 @@
 package titanicsend.pattern.alex;
 
+import heronarts.glx.ui.UI2dContainer;
+import heronarts.glx.ui.component.UIButton;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LinkedColorParameter;
@@ -8,16 +10,13 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.studio.LXStudio;
-import heronarts.glx.ui.component.UIButton;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
-import heronarts.glx.ui.UI2dContainer;
+import java.util.*;
+import java.util.ArrayList;
 import titanicsend.color.TEColorType;
 import titanicsend.pattern.TEPattern;
 import titanicsend.util.SimpleScreen;
-
-import java.util.ArrayList;
-import java.util.*;
 
 @LXCategory("Combo FG")
 // A ResizeableScreen is a dynamically-resized rectangular screen that maps pixels without an area
@@ -30,37 +29,35 @@ public class ResizeableScreen extends TEPattern implements UIDeviceControls<Resi
     // Technically, we do have doubles, but the values are in microns, so if you really need a fraction
     // of a micron, you can figure out how to do this with BoundedParameters instead.
     // Note: extra +1 is because DiscreteParameters have an _exclusive_ bound on the upper end.
-    private int roundedLowerYLimit = (int)this.modelTE.boundaryPoints.minYBoundaryPoint.y;
-    private int roundedUpperYLimit = (int)this.modelTE.boundaryPoints.maxYBoundaryPoint.y + 1;
-    private int roundedLowerZLimit = (int)this.modelTE.boundaryPoints.minZBoundaryPoint.z;
-    private int roundedUpperZLimit = (int)this.modelTE.boundaryPoints.maxZBoundaryPoint.z + 1;
+    private int roundedLowerYLimit = (int) this.modelTE.boundaryPoints.minYBoundaryPoint.y;
+    private int roundedUpperYLimit = (int) this.modelTE.boundaryPoints.maxYBoundaryPoint.y + 1;
+    private int roundedLowerZLimit = (int) this.modelTE.boundaryPoints.minZBoundaryPoint.z;
+    private int roundedUpperZLimit = (int) this.modelTE.boundaryPoints.maxZBoundaryPoint.z + 1;
 
     // The extra +1 on the ends is because DiscreteParameter bounds are exclusive at the top end.
-    public final DiscreteParameter lowerYBoundParam =
-            new DiscreteParameter("Lower Y Bound", this.roundedLowerYLimit / 2, this.roundedLowerYLimit, this.roundedUpperYLimit)
-                    .setDescription("Lower boundary for the Y coordinate of the screen");
-    public final DiscreteParameter upperYBoundParam =
-            new DiscreteParameter("Upper Y Bound", this.roundedUpperYLimit / 2, this.roundedLowerYLimit, this.roundedUpperYLimit)
-                    .setDescription("Upper boundary for the Y coordinate of the screen");
-    public final DiscreteParameter lowerZBoundParam =
-            new DiscreteParameter("Lower Z Bound", this.roundedLowerZLimit / 2, this.roundedLowerZLimit, this.roundedUpperZLimit)
-                    .setDescription("Lower boundary for the Z coordinate of the screen");
-    public final DiscreteParameter upperZBoundParam =
-            new DiscreteParameter("Upper Z Bound", this.roundedUpperZLimit / 2, this.roundedLowerZLimit, this.roundedUpperZLimit)
-                    .setDescription("Upper boundary for the Z coordinate of the screen");
-    public BooleanParameter doubleSidedParam =
-            new BooleanParameter("Double Sided?")
-                    .setDescription("Toggle whether screen is drawn on both sides of the car or not (Default false)")
-                    .setValue(false);
+    public final DiscreteParameter lowerYBoundParam = new DiscreteParameter(
+                    "Lower Y Bound", this.roundedLowerYLimit / 2, this.roundedLowerYLimit, this.roundedUpperYLimit)
+            .setDescription("Lower boundary for the Y coordinate of the screen");
+    public final DiscreteParameter upperYBoundParam = new DiscreteParameter(
+                    "Upper Y Bound", this.roundedUpperYLimit / 2, this.roundedLowerYLimit, this.roundedUpperYLimit)
+            .setDescription("Upper boundary for the Y coordinate of the screen");
+    public final DiscreteParameter lowerZBoundParam = new DiscreteParameter(
+                    "Lower Z Bound", this.roundedLowerZLimit / 2, this.roundedLowerZLimit, this.roundedUpperZLimit)
+            .setDescription("Lower boundary for the Z coordinate of the screen");
+    public final DiscreteParameter upperZBoundParam = new DiscreteParameter(
+                    "Upper Z Bound", this.roundedUpperZLimit / 2, this.roundedLowerZLimit, this.roundedUpperZLimit)
+            .setDescription("Upper boundary for the Z coordinate of the screen");
+    public BooleanParameter doubleSidedParam = new BooleanParameter("Double Sided?")
+            .setDescription("Toggle whether screen is drawn on both sides of the car or not (Default false)")
+            .setValue(false);
 
     public final LinkedColorParameter color =
-            registerColor("Color", "color", TEColorType.PRIMARY,
-                    "Color of the screen");
+            registerColor("Color", "color", TEColorType.PRIMARY, "Color of the screen");
 
     private void toggleDoubleSided() {
         this.doubleSidedParam.setValue(!this.doubleSidedParam.getValueb());
     }
-    
+
     @Override
     public void buildDeviceControls(LXStudio.UI ui, UIDevice uiDevice, ResizeableScreen pattern) {
         uiDevice.setLayout(UI2dContainer.Layout.VERTICAL);
@@ -68,21 +65,20 @@ public class ResizeableScreen extends TEPattern implements UIDeviceControls<Resi
         uiDevice.setContentWidth(3 * COL_WIDTH);
 
         uiDevice.addChildren(
-            controlLabel(ui, "Lower Y Bound"),
-            newIntegerBox(this.lowerYBoundParam),
-            controlLabel(ui, "Upper Y Bound"),
-            newIntegerBox(this.upperYBoundParam),
-            controlLabel(ui, "Lower Z Bound"),
-            newIntegerBox(this.lowerZBoundParam), 
-            controlLabel(ui, "Upper Z Bound"),
-            newIntegerBox(this.upperZBoundParam),
-            new UIButton(0, 0, 2 * COL_WIDTH, 20) {
-                @Override
-                public void onToggle(boolean unused) {
-                    toggleDoubleSided();
-                }
-            }
-            .setLabel("Double Sided?"));
+                controlLabel(ui, "Lower Y Bound"),
+                newIntegerBox(this.lowerYBoundParam),
+                controlLabel(ui, "Upper Y Bound"),
+                newIntegerBox(this.upperYBoundParam),
+                controlLabel(ui, "Lower Z Bound"),
+                newIntegerBox(this.lowerZBoundParam),
+                controlLabel(ui, "Upper Z Bound"),
+                newIntegerBox(this.upperZBoundParam),
+                new UIButton(0, 0, 2 * COL_WIDTH, 20) {
+                    @Override
+                    public void onToggle(boolean unused) {
+                        toggleDoubleSided();
+                    }
+                }.setLabel("Double Sided?"));
         this.lowerYBoundParam.addListener(this::repaint);
         this.upperYBoundParam.addListener(this::repaint);
         this.lowerZBoundParam.addListener(this::repaint);
@@ -100,18 +96,18 @@ public class ResizeableScreen extends TEPattern implements UIDeviceControls<Resi
 
     private void sizeAndPaintScreen() {
         ArrayList<LXPoint> pointsList = new ArrayList<>(Arrays.asList(this.model.points));
-        for (int p = pointsList.size()-1; p >= 0; --p) {
+        for (int p = pointsList.size() - 1; p >= 0; --p) {
             if (this.modelTE.isGapPoint(pointsList.get(p))) {
-                 pointsList.remove(p);
+                pointsList.remove(p);
             }
         }
         this.screen = new SimpleScreen(
-            pointsList,
-            this.lowerYBoundParam.getValuei(),
-            this.upperYBoundParam.getValuei(),
-            this.lowerZBoundParam.getValuei(),
-            this.upperZBoundParam.getValuei(),
-            this.doubleSidedParam.getValueb());
+                pointsList,
+                this.lowerYBoundParam.getValuei(),
+                this.upperYBoundParam.getValuei(),
+                this.lowerZBoundParam.getValuei(),
+                this.upperZBoundParam.getValuei(),
+                this.doubleSidedParam.getValueb());
         LX.log(String.format("%d points in screen:", this.screen.screenGrid.size()));
 
         this.paint(0);

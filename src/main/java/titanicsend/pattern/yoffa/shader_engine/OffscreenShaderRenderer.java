@@ -1,15 +1,15 @@
 package titanicsend.pattern.yoffa.shader_engine;
 
 import com.jogamp.opengl.*;
-
 import java.nio.ByteBuffer;
 
 public class OffscreenShaderRenderer {
-    private final static int xResolution = 640;
-    private final static int yResolution = 480;
+    private static final int xResolution = 640;
+    private static final int yResolution = 480;
 
     private NativeShader nativeShader;
     private GLAutoDrawable offscreenDrawable = null;
+
     public OffscreenShaderRenderer(FragmentShader fragmentShader) {
         nativeShader = new NativeShader(fragmentShader, xResolution, yResolution);
     }
@@ -41,9 +41,15 @@ public class OffscreenShaderRenderer {
         nativeShader.reset();
     }
 
-    public NativeShader getNativeShader() { return nativeShader; }
+    public NativeShader getNativeShader() {
+        return nativeShader;
+    }
 
-    public static int getXResolution() { return xResolution; }
-    public static int getYResolution() { return yResolution; }
+    public static int getXResolution() {
+        return xResolution;
+    }
 
+    public static int getYResolution() {
+        return yResolution;
+    }
 }

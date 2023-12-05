@@ -6,9 +6,8 @@ import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.transform.LXProjection;
 import heronarts.lx.transform.LXVector;
-import titanicsend.model.TEPanelModel;
-
 import java.util.ArrayList;
+import titanicsend.model.TEPanelModel;
 
 @LXCategory(LXCategory.TEST)
 public class Kaleidoscope extends TEEffect {
@@ -24,7 +23,7 @@ public class Kaleidoscope extends TEEffect {
 
     private final double LOG_FREQUENCY = 60000;
     private double lastLogTime = 0;
-    
+
     @Override
     protected void run(double deltaMs, double enabledAmount) {
         if (enabledAmount > 0) {
@@ -43,12 +42,13 @@ public class Kaleidoscope extends TEEffect {
 
                 projection.iterator().forEachRemaining(vectors::add);
                 if (vectors.size() < 2) {
-                	// JBelcher note: I don't know the context here, just patching last minute errors before BM
-                	if (this.lx.engine.nowMillis > lastLogTime + LOG_FREQUENCY) {
-                		LX.log("Warning! Kaleidoscope effect is trying to reference index 1 in a single-item array of vectors");
-                		this.lastLogTime = this.lx.engine.nowMillis;
-                	}
-                	continue;
+                    // JBelcher note: I don't know the context here, just patching last minute errors before BM
+                    if (this.lx.engine.nowMillis > lastLogTime + LOG_FREQUENCY) {
+                        LX.log(
+                                "Warning! Kaleidoscope effect is trying to reference index 1 in a single-item array of vectors");
+                        this.lastLogTime = this.lx.engine.nowMillis;
+                    }
+                    continue;
                 }
                 LXVector normal = vectors.get(0).copy().cross(vectors.get(1));
                 LXVector rotationAxis = zAxis.cross(normal);
@@ -60,7 +60,8 @@ public class Kaleidoscope extends TEEffect {
                     angle = Math.min(angle, segmentAngle - angle);
                     angle += startAngle.getValue();
                     double radius = Math.sqrt(v.dot(v));
-                    LXVector sampleVector = new LXVector((float) Math.sin(angle), (float) Math.cos(angle), 0).mult((float) radius);
+                    LXVector sampleVector =
+                            new LXVector((float) Math.sin(angle), (float) Math.cos(angle), 0).mult((float) radius);
                     LXVector closest = null;
                     double minDistance = Double.MAX_VALUE;
                     for (LXVector w : projection) {

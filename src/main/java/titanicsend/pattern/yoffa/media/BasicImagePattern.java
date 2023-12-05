@@ -3,10 +3,9 @@ package titanicsend.pattern.yoffa.media;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.model.LXPoint;
+import java.io.IOException;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-
-import java.io.IOException;
 
 // This is just an example to show how we could map an image onto a set of our panels
 // Not intended from production use
@@ -37,5 +36,4 @@ public class BasicImagePattern extends TEPerformancePattern {
             eddiePainter.paint(p);
         }
     }
-
 }

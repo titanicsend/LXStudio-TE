@@ -1,7 +1,6 @@
 package titanicsend.pattern.yoffa.framework;
 
 import titanicsend.pattern.TEPerformancePattern;
-import titanicsend.pattern.TEPattern;
 
 public class PatternTarget {
     TEPerformancePattern pattern;

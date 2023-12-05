@@ -6,11 +6,10 @@ import titanicsend.model.TEWholeModel;
 
 public abstract class BeaconEffect extends DmxEffect {
 
-  protected final TEWholeModel modelTE;
+    protected final TEWholeModel modelTE;
 
-  public BeaconEffect(LX lx) {
-    super(lx);
-    this.modelTE = TEApp.wholeModel;
-  }
-
+    public BeaconEffect(LX lx) {
+        super(lx);
+        this.modelTE = TEApp.wholeModel;
+    }
 }

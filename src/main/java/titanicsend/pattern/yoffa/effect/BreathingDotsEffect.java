@@ -2,16 +2,12 @@ package titanicsend.pattern.yoffa.effect;
 
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
-import heronarts.lx.modulator.LXRangeModulator;
-import heronarts.lx.modulator.TriangleLFO;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.TEPattern;
+import java.util.*;
+import java.util.List;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
-
-import java.util.*;
-import java.util.List;
 
 public class BreathingDotsEffect extends PatternEffect {
 
@@ -44,12 +40,13 @@ public class BreathingDotsEffect extends PatternEffect {
                 availablePoints.add(point);
             } else {
                 double brightness = extraShinyPoints.contains(point) ? 100 : 50;
-                setColor(point, LXColor.hsba(
-                        LXColor.h(baseColor),
-                        LXColor.s(baseColor) * status,
-                        brightness * status * pattern.getBrightness(),
-                        100
-                ));
+                setColor(
+                        point,
+                        LXColor.hsba(
+                                LXColor.h(baseColor),
+                                LXColor.s(baseColor) * status,
+                                brightness * status * pattern.getBrightness(),
+                                100));
             }
         }
 
@@ -95,5 +92,4 @@ public class BreathingDotsEffect extends PatternEffect {
         extraShinyPoints.clear();
         pattern.retrigger(TEControlTag.SPEED);
     }
-
 }

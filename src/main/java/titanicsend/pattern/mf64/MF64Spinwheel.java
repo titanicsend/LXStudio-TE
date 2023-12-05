@@ -1,14 +1,13 @@
 package titanicsend.pattern.mf64;
 
+import static titanicsend.util.TEColor.TRANSPARENT;
+
 import heronarts.lx.transform.LXVector;
+import java.util.Random;
 import titanicsend.model.TEPanelModel;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.pattern.jon.VariableSpeedTimer;
 import titanicsend.util.TEMath;
-
-import java.util.Random;
-
-import static titanicsend.util.TEColor.TRANSPARENT;
 
 public class MF64Spinwheel extends TEMidiFighter64Subpattern {
     boolean active;
@@ -97,8 +96,7 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
 
         // number of lit panels increases slightly with number of buttons pressed.
         // TEMath.clamp's min and max indicate percentages of coverage.
-        float litProbability = (float) TEMath.clamp(0.4 + 0.3f * ((float) colorSet.length - 1) / 7f,
-            0.4, 0.7);
+        float litProbability = (float) TEMath.clamp(0.4 + 0.3f * ((float) colorSet.length - 1) / 7f, 0.4, 0.7);
 
         // clear the decks if we're getting ready to stop
         if (stopRequest) {

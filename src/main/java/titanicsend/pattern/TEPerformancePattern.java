@@ -7,6 +7,8 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
+import java.nio.FloatBuffer;
+import java.util.List;
 import titanicsend.app.TEGlobalPatternControls;
 import titanicsend.pattern.glengine.ShaderConfiguration;
 import titanicsend.pattern.jon.TEControlTag;
@@ -14,9 +16,6 @@ import titanicsend.pattern.jon.VariableSpeedTimer;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.util.Rotor;
 import titanicsend.util.TEColor;
-
-import java.nio.FloatBuffer;
-import java.util.List;
 
 public abstract class TEPerformancePattern extends TEAudioPattern {
 
@@ -159,9 +158,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
      *
      * @param radiansPerSecond
      */
-    public void setMaxRotationSpeed(double radiansPerSecond) {
-
-    }
+    public void setMaxRotationSpeed(double radiansPerSecond) {}
 
     /*
      * Color safety mechanism: only calculate solid colors once per frame.
@@ -350,7 +347,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                 spinTimer.reset();
                 break;
             default:
-                //TE.log("retrigger: Invalid parameter.");
+                // TE.log("retrigger: Invalid parameter.");
                 break;
         }
     }
@@ -362,7 +359,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     /**
      * Subclasses can override
      */
-    protected void onWowTrigger(boolean on) { }
+    protected void onWowTrigger(boolean on) {}
 
     /**
      * To be called from the constructor of automatically configured shader patterns prior

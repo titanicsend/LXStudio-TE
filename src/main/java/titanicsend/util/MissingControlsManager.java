@@ -2,9 +2,6 @@ package titanicsend.util;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
-import titanicsend.pattern.TEPerformancePattern;
-import titanicsend.pattern.jon.TEControlTag;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import titanicsend.pattern.jon.TEControlTag;
 
 public class MissingControlsManager {
     public static final class MissingControls {
@@ -41,7 +39,7 @@ public class MissingControlsManager {
         return instance;
     }
 
-    private MissingControlsManager(){
+    private MissingControlsManager() {
         try {
             Gson gson = new Gson();
             JsonReader reader = new JsonReader(loadFile("resources/pattern/missingControls.json"));

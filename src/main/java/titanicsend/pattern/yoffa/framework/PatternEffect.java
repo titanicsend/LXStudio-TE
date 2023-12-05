@@ -4,8 +4,8 @@ import heronarts.lx.Tempo;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.TEPerformancePattern;
 import java.util.*;
+import titanicsend.pattern.TEPerformancePattern;
 
 public abstract class PatternEffect {
 
@@ -43,7 +43,7 @@ public abstract class PatternEffect {
         return this;
     }
 
-    //must be thread safe
+    // must be thread safe
     protected void setColor(LXPoint point, int color) {
         int[] colors = pattern.getColors();
         if (shouldBlend()) {
@@ -60,5 +60,4 @@ public abstract class PatternEffect {
     protected Tempo getTempo() {
         return pattern.getTempo();
     }
-
 }

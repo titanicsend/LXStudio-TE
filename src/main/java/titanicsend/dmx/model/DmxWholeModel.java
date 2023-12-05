@@ -15,7 +15,6 @@
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.dmx.model;
 
 import java.util.List;
@@ -25,11 +24,10 @@ import java.util.List;
  */
 public interface DmxWholeModel {
 
-  /**
-   * Total number of DMX fixtures in the model
-   */
-  public int sizeDmx();
+    /**
+     * Total number of DMX fixtures in the model
+     */
+    public int sizeDmx();
 
-  public List<DmxModel> getDmxModels();
-
+    public List<DmxModel> getDmxModels();
 }

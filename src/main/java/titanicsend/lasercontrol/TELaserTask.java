@@ -8,20 +8,19 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.BooleanParameter.Mode;
 import titanicsend.app.autopilot.TEOscMessage;
 import titanicsend.color.TEColorType;
-import titanicsend.pattern.TEPattern;
 
 public class TELaserTask extends LXComponent implements LXLoopTask {
 
     public static final boolean DEFAULT_ENABLE_IN_PRODUCTION = false;
 
     private static TELaserTask current;
+
     public static TELaserTask get() {
-      return current;
+        return current;
     }
 
     public final BooleanParameter enabled =
-        new BooleanParameter("Lasers", DEFAULT_ENABLE_IN_PRODUCTION)
-        .setMode(Mode.TOGGLE);
+            new BooleanParameter("Lasers", DEFAULT_ENABLE_IN_PRODUCTION).setMode(Mode.TOGGLE);
 
     public TELaserTask(LX lx) {
         super(lx);

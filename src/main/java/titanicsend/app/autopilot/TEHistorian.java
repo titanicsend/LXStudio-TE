@@ -5,7 +5,6 @@ import titanicsend.app.autopilot.events.TEBeatEvent;
 import titanicsend.app.autopilot.events.TEMasterChangeEvent;
 import titanicsend.app.autopilot.events.TEPhraseEvent;
 import titanicsend.app.autopilot.utils.TETimeUtils;
-import titanicsend.util.TE;
 
 /**
  * This is a record keeper for all things VJ autopilot.
@@ -82,7 +81,7 @@ public class TEHistorian {
      * @return ms
      */
     public int calcMsSinceLastDeckChange() {
-        return (int)(System.currentTimeMillis() - lastMasterChangeAt);
+        return (int) (System.currentTimeMillis() - lastMasterChangeAt);
     }
 
     /**
@@ -90,7 +89,7 @@ public class TEHistorian {
      * @return ms
      */
     public int calcMsSinceLastDownbeat() {
-        return (int)(System.currentTimeMillis() - lastDownbeatAt);
+        return (int) (System.currentTimeMillis() - lastDownbeatAt);
     }
 
     /**
@@ -98,13 +97,13 @@ public class TEHistorian {
      * @return ms
      */
     public int calcMsSinceLastOscPhraseChange() {
-        return (int)(System.currentTimeMillis() - lastOscPhraseAt);
+        return (int) (System.currentTimeMillis() - lastOscPhraseAt);
     }
 
     public void logMasterDeckChange(long timestamp, int deckNum, int faderVal) {
         TEMasterChangeEvent e = new TEMasterChangeEvent(timestamp, deckNum, faderVal);
         deckChangeEvents.add(e);
-        //TE.log("Setting lastMasterChangeAt=%d, now=%d, old=%d, diffFromold=%d",
+        // TE.log("Setting lastMasterChangeAt=%d, now=%d, old=%d, diffFromold=%d",
         //       timestamp, System.currentTimeMillis(), lastMasterChangeAt, this.calcMsSinceLastDeckChange());
         lastMasterChangeAt = timestamp;
     }
@@ -115,11 +114,10 @@ public class TEHistorian {
         lastBeatAt = beatAt;
 
         // was this a downbeat?
-        if (beatCount == 0)
-            lastDownbeatAt = beatAt;
+        if (beatCount == 0) lastDownbeatAt = beatAt;
 
         if (curPhraseEvent != null)
-            //TODO(will) think about this race condition. We may see the OSC
+            // TODO(will) think about this race condition. We may see the OSC
             // beat event before we see the phrase event. This will cause our
             // counter for beats in a phrase to be slightly off. This might be
             // fine, but we should know that 15 beats should round up to 16 in
@@ -141,19 +139,21 @@ public class TEHistorian {
             repeatedPhraseLengthMs += subPhraseLength;
 
             // add to counter for num bars in phrase
-            double msPerBeat =  TETimeUtils.calcMsPerBeat(phraseEvent.getBpm());
+            double msPerBeat = TETimeUtils.calcMsPerBeat(phraseEvent.getBpm());
             double subPhraseLengthBars = 0.25 / msPerBeat * subPhraseLength;
             repeatedPhraseLengthBars += subPhraseLengthBars;
 
-            //TE.log("After this phrase (%s), repeatedPhraseCount=%d, repeatedPhraseLengthMs=%d, repeatedPhraseLengthBars=%f",
-            //        phraseEvent.getPhraseType(), repeatedPhraseCount, repeatedPhraseLengthMs, repeatedPhraseLengthBars);
+            // TE.log("After this phrase (%s), repeatedPhraseCount=%d, repeatedPhraseLengthMs=%d,
+            // repeatedPhraseLengthBars=%f",
+            //        phraseEvent.getPhraseType(), repeatedPhraseCount, repeatedPhraseLengthMs,
+            // repeatedPhraseLengthBars);
         } else {
             // different phrase! reset state
             repeatedPhraseCount = 1;
             repeatedPhraseStartAt = timestamp;
             repeatedPhraseLengthMs = 0;
             repeatedPhraseLengthBars = 0.0;
-            //TE.log("New phrase type (%s)! Reseting counters.", phraseEvent.getPhraseType());
+            // TE.log("New phrase type (%s)! Reseting counters.", phraseEvent.getPhraseType());
         }
 
         // update current phrase event
@@ -207,7 +207,7 @@ public class TEHistorian {
             return 0.0;
 
         long timeElapsedMs = (System.currentTimeMillis() - curPhraseEvent.getStartedAtMs());
-        double msPerBeat =  TETimeUtils.calcMsPerBeat(curPhraseEvent.getBpm());
+        double msPerBeat = TETimeUtils.calcMsPerBeat(curPhraseEvent.getBpm());
         double subPhraseLengthBars = 0.25 / msPerBeat * timeElapsedMs;
         return repeatedPhraseLengthBars + subPhraseLengthBars;
     }
@@ -224,6 +224,7 @@ public class TEHistorian {
     public long getLastOscPhraseAt() {
         return lastOscPhraseAt;
     }
+
     public void setLastOscPhraseAt(long ts) {
         lastOscPhraseAt = ts;
     }
@@ -239,11 +240,15 @@ public class TEHistorian {
     public void setLastSynthethicPhraseAt(long timestamp) {
         lastSynthethicPhraseAt = timestamp;
     }
-    public long getLastSynthethicPhraseAt() { return lastSynthethicPhraseAt; }
+
+    public long getLastSynthethicPhraseAt() {
+        return lastSynthethicPhraseAt;
+    }
 
     public void setLastOscMsgAt(long timestamp) {
         lastOscMsgAt = timestamp;
     }
+
     public long getLastOscMsgAt() {
         return lastOscMsgAt;
     }

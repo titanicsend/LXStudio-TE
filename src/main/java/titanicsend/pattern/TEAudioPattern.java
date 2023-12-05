@@ -3,9 +3,8 @@ package titanicsend.pattern;
 import heronarts.lx.LX;
 import heronarts.lx.audio.GraphicMeter;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.util.TEMath;
-
 import java.util.List;
+import titanicsend.util.TEMath;
 
 /**
  * Patterns should inherit from this if they wish to make use of live audio
@@ -104,9 +103,7 @@ public abstract class TEAudioPattern extends TEPattern {
         // and greater than in the previous frame
         // and enough time has elapsed since we last triggered
         // mark the frame as a bassHit().
-        if (bassLevel > 1.2 * avgBass.getValue()
-                && bassLevel > lastBassLevel
-                && msSinceBassRise > bassRetriggerMs) {
+        if (bassLevel > 1.2 * avgBass.getValue() && bassLevel > lastBassLevel && msSinceBassRise > bassRetriggerMs) {
             bassHit = true;
             msSinceBassRise = 0;
         }
@@ -156,7 +153,7 @@ public abstract class TEAudioPattern extends TEPattern {
     }
 
     public void addParameters(List<? extends LXParameter> newParameters) {
-        for(LXParameter parameter : newParameters) {
+        for (LXParameter parameter : newParameters) {
             addParameter(parameter.getLabel(), parameter);
         }
     }

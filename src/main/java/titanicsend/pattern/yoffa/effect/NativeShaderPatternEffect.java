@@ -3,17 +3,16 @@ package titanicsend.pattern.yoffa.effect;
 import heronarts.lx.Tempo;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.glengine.ShaderConfiguration;
-import titanicsend.pattern.yoffa.framework.PatternEffect;
-import titanicsend.pattern.yoffa.framework.PatternTarget;
-import titanicsend.pattern.yoffa.shader_engine.*;
-
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.SplittableRandom;
 import java.util.stream.Collectors;
+import titanicsend.pattern.glengine.ShaderConfiguration;
+import titanicsend.pattern.yoffa.framework.PatternEffect;
+import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.yoffa.shader_engine.*;
 
 public class NativeShaderPatternEffect extends PatternEffect {
     private final SplittableRandom random;
@@ -49,11 +48,13 @@ public class NativeShaderPatternEffect extends PatternEffect {
      * @param target  render target
      */
     public NativeShaderPatternEffect(String shaderFilename, PatternTarget target, String... textureFilenames) {
-        this(new FragmentShader(new File("resources/shaders/" + shaderFilename),
-                Arrays.stream(textureFilenames)
-                    .map(x -> new File("resources/shaders/textures/" + x))
-                    .collect(Collectors.toList())),
-            target);
+        this(
+                new FragmentShader(
+                        new File("resources/shaders/" + shaderFilename),
+                        Arrays.stream(textureFilenames)
+                                .map(x -> new File("resources/shaders/textures/" + x))
+                                .collect(Collectors.toList())),
+                target);
     }
 
     @Override
@@ -83,7 +84,12 @@ public class NativeShaderPatternEffect extends PatternEffect {
 
         // calculate per-frame "explosion" parameters
         if (exploding) {
-            double measureProgress = 1.0 - this.pattern.getLX().engine.tempo.getBasis(Tempo.Division.WHOLE); // 1 when we start measure, 0 when we finish
+            double measureProgress = 1.0
+                    - this.pattern
+                            .getLX()
+                            .engine
+                            .tempo
+                            .getBasis(Tempo.Division.WHOLE); // 1 when we start measure, 0 when we finish
             measureProgress *= measureProgress * measureProgress;
             k = 0.00035 + pattern.getExplode() * measureProgress;
         }

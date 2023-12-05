@@ -26,8 +26,8 @@ public class TETimeUtils {
     }
 
     /*
-        Given our BPM, how many milliseconds are there in a beat?
-     */
+       Given our BPM, how many milliseconds are there in a beat?
+    */
     public static double calcMsPerBeat(double bpm) {
         double minPerSecond = 1. / 60.;
         double secPerMs = 1. / 1000.;
@@ -36,16 +36,16 @@ public class TETimeUtils {
     }
 
     /*
-        Given a number of bars and a BPM, calculate how many milliseconds long this phrase will be.
-     */
+       Given a number of bars and a BPM, calculate how many milliseconds long this phrase will be.
+    */
     public static double calcPhraseLengthMs(double bpm, int numBars) {
         return calcMsPerBeat(bpm) * BEATS_PER_BAR * numBars;
     }
 
     /*
-        Given when a phrase started and the current time (now) in milliseconds, use the BPM to calculate the
-        fraction of the way to the end of a number of bars we are.
-     */
+       Given when a phrase started and the current time (now) in milliseconds, use the BPM to calculate the
+       fraction of the way to the end of a number of bars we are.
+    */
     public static float calcProgressToFutureBar(long phraseStartMs, long nowMs, double bpm, int phraseLengthInBars) {
         double phraseLengthEstimatedMs = calcPhraseLengthMs(bpm, phraseLengthInBars);
         float fractionCompleted = (float) ((nowMs - phraseStartMs) / phraseLengthEstimatedMs);
@@ -53,21 +53,21 @@ public class TETimeUtils {
     }
 
     /*
-        This is dumb now, but in time if we want to manually tweak latency, we can do this in one place here.
+       This is dumb now, but in time if we want to manually tweak latency, we can do this in one place here.
 
-        The reason for this is in the case we clear out OSC messages at
-            t=100
+       The reason for this is in the case we clear out OSC messages at
+           t=100
 
-         and the last time we sampled was
-            t=90
+        and the last time we sampled was
+           t=90
 
-         then we likely introduce the least error by guessing the event took place at
-            t=95
+        then we likely introduce the least error by guessing the event took place at
+           t=95
 
-         but this is the central place to adjust this if we can do better.
-     */
+        but this is the central place to adjust this if we can do better.
+    */
     public static long calcEstimatedEventStartTimeMs(double samplingIntervalMs) {
-        return (long) (System.currentTimeMillis() - samplingIntervalMs/2.0);
+        return (long) (System.currentTimeMillis() - samplingIntervalMs / 2.0);
     }
 
     public static double msPerBeatToBpm(double msPerBeat) {

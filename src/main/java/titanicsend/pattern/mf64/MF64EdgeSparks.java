@@ -1,9 +1,9 @@
 package titanicsend.pattern.mf64;
 
+import static titanicsend.util.TEColor.setBrightness;
+
 import heronarts.lx.model.LXPoint;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
-
-import static titanicsend.util.TEColor.setBrightness;
 
 public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
     boolean active = false;
@@ -25,7 +25,7 @@ public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
         this.active = true;
         stopRequest = false;
         // uncomment to enable "glitch in place" feature.
-        //startTime += 200;
+        // startTime += 200;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
             float wavefront = 1.0f - (cycle - y);
 
             // "rocket" at leading edge of wave
-            //v = ((wavefront <= 1.0f) && (wavefront >= rocketPos)) ? 1f - (1f-wavefront) / rocketSize : 0;
+            // v = ((wavefront <= 1.0f) && (wavefront >= rocketPos)) ? 1f - (1f-wavefront) / rocketSize : 0;
             v = ((wavefront <= 1.0f) && (wavefront >= rocketPos)) ? 1f : 0;
 
             // random decaying "sparks" behind

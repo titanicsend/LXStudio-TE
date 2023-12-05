@@ -1,7 +1,7 @@
 package titanicsend.pattern.yoffa.shader_engine;
 
 import com.jogamp.opengl.*;
-
+import com.jogamp.opengl.util.GLBuffers;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -14,8 +14,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Pattern;
-
-import com.jogamp.opengl.util.GLBuffers;
 import titanicsend.pattern.glengine.GLPreprocessor;
 import titanicsend.pattern.glengine.ShaderConfiguration;
 import titanicsend.util.TE;
@@ -63,8 +61,12 @@ public class ShaderUtils {
         glCapabilities.setGreenBits(8);
         GLDrawableFactory factory = GLDrawableFactory.getFactory(glProfile);
 
-        return factory.createOffscreenAutoDrawable(factory.getDefaultDevice(), glCapabilities,
-            new DefaultGLCapabilitiesChooser(), xResolution, yResolution);
+        return factory.createOffscreenAutoDrawable(
+                factory.getDefaultDevice(),
+                glCapabilities,
+                new DefaultGLCapabilitiesChooser(),
+                xResolution,
+                yResolution);
     }
 
     public static String getVertexShaderTemplate() {
@@ -76,7 +78,7 @@ public class ShaderUtils {
         if (shaderId == 0) {
             throw new Exception("Error creating shader. Shader id is zero.");
         }
-        gl4.glShaderSource(shaderId, 1, new String[]{shaderCode}, null);
+        gl4.glShaderSource(shaderId, 1, new String[] {shaderCode}, null);
         gl4.glCompileShader(shaderId);
         validateStatus(gl4, shaderId, GL4.GL_COMPILE_STATUS);
         gl4.glAttachShader(programId, shaderId);
@@ -131,17 +133,17 @@ public class ShaderUtils {
         String cacheFile = ShaderUtils.getCacheFilename(shaderFile);
 
         if (isNewerThan(FRAMEWORK_PATH + "default.vs", cacheFile)) {
-            //TE.log("Vertex shader framework has been modified.");
+            // TE.log("Vertex shader framework has been modified.");
             return true;
         }
 
         if (isNewerThan(FRAMEWORK_PATH + "template.fs", cacheFile)) {
-            //TE.err("Fragment shader framework been modified.");
+            // TE.err("Fragment shader framework been modified.");
             return true;
         }
 
         if (isNewerThan(SHADER_PATH + shaderFile, cacheFile)) {
-            //TE.log("Shader '%s` has been modified.",shaderFile);
+            // TE.log("Shader '%s` has been modified.",shaderFile);
             return true;
         }
 
@@ -185,7 +187,7 @@ public class ShaderUtils {
             return false;
         }
 
-        //TE.log("Loaded from cache: '%s'", shaderName);
+        // TE.log("Loaded from cache: '%s'", shaderName);
         return true;
     }
 
@@ -207,7 +209,7 @@ public class ShaderUtils {
         gl4.glGetIntegerv(GL4.GL_NUM_PROGRAM_BINARY_FORMATS, fmtCount, 0);
 
         if (fmtCount[0] < 1) {
-            //TE.log("Shader cache: No compatible binary shader format available.");
+            // TE.log("Shader cache: No compatible binary shader format available.");
             return;
         }
 

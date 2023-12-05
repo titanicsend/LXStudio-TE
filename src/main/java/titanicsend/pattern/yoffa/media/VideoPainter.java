@@ -1,13 +1,12 @@
 package titanicsend.pattern.yoffa.media;
 
 import heronarts.lx.model.LXPoint;
-import titanicsend.util.TE;
-
+import java.util.List;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.Java2DFrameConverter;
-import java.util.List;
+import titanicsend.util.TE;
 
 public class VideoPainter {
 
@@ -18,7 +17,7 @@ public class VideoPainter {
     private ImagePainter currentFramePainter;
 
     public VideoPainter(String vidPath) {
-      this(vidPath, null);
+        this(vidPath, null);
     }
 
     public VideoPainter(String vidPath, int[] colors) {
@@ -33,7 +32,7 @@ public class VideoPainter {
      * so this will need to be called from onActive()
      */
     public void initColors(int[] colors) {
-      this.colors = colors;
+        this.colors = colors;
     }
 
     public void grabFrame() {
@@ -46,7 +45,7 @@ public class VideoPainter {
                     currentFramePainter = new ImagePainter(frameConverter.convert(frame), colors);
                 }
             } else {
-                //loop by default
+                // loop by default
                 restartVideo();
             }
         } catch (FrameGrabber.Exception e) {
@@ -109,5 +108,4 @@ public class VideoPainter {
             throw new RuntimeException(e);
         }
     }
-
 }

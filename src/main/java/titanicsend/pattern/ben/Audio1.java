@@ -2,10 +2,7 @@ package titanicsend.pattern.ben;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.parameter.CompoundParameter;
-import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.utils.Noise;
-import titanicsend.model.TEEdgeModel;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.pixelblaze.PixelblazePort;
 
@@ -25,19 +22,15 @@ public class Audio1 extends PixelblazePort {
     @Override
     public void configureControls() {
         controls.setRange(TEControlTag.SIZE, 1.0, 0.2, 10.0); // "Scale" parameter
-        controls.setValue(TEControlTag.WOW1, 0.5);                // beat reactive pulse
-        controls.setRange(TEControlTag.WOW2, 6, 1, 8);  // noise resolution
+        controls.setValue(TEControlTag.WOW1, 0.5); // beat reactive pulse
+        controls.setRange(TEControlTag.WOW2, 6, 1, 8); // noise resolution
     }
 
     @Override
-    public void setup() {
-
-    }
+    public void setup() {}
 
     @Override
-    public void onPointsUpdated() {
-
-    }
+    public void onPointsUpdated() {}
 
     @Override
     public void render3D(int index, float x, float y, float z) {
@@ -49,9 +42,16 @@ public class Audio1 extends PixelblazePort {
         float gain = (float) (.7 + beat / 4);
         float ridgeOffset = (float) (.78 + beat / 20);
 
-        float a = -1 + 4 * Noise.stb_perlin_ridge_noise3(
-                (float) ((x - .5f) * .2f * scale + t1), (y - .5f) * scale, (z - .5f) * scale,
-                lacunarity, gain, ridgeOffset, electric);
+        float a = -1
+                + 4
+                        * Noise.stb_perlin_ridge_noise3(
+                                (float) ((x - .5f) * .2f * scale + t1),
+                                (y - .5f) * scale,
+                                (z - .5f) * scale,
+                                lacunarity,
+                                gain,
+                                ridgeOffset,
+                                electric);
 
         paint(f + a);
         setAlpha(a);
