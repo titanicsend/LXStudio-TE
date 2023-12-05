@@ -23,7 +23,7 @@ changed_java_files=$(git diff --cached --name-only --diff-filter=ACMR | grep ".*
 if [[ -n "$changed_java_files" ]]
 then
     echo "Reformatting Java files: $changed_java_files"
-    if ! java -jar "$JAR_FILE" --replace $changed_java_files
+    if ! java -jar "$JAR_FILE" --dry-run --set-exit-if-changed $changed_java_files
     then
         echo "An error occurred, aborting commit!" >&2
         exit 1
