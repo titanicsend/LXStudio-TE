@@ -234,17 +234,10 @@
                 <artifactId>spotless-maven-plugin</artifactId>
                 <version>${spotless.version}</version>
                 <configuration>
-                    <!-- define a language-specific format -->
                     <java>
-                        <!-- no need to specify files, inferred automatically, but you can if you want -->
-
-                        <!-- apply a specific flavor of google-java-format and reflow long strings -->
-                        <googleJavaFormat>
-                            <version>1.8</version>
-                            <style>AOSP</style>
-                            <reflowLongStrings>true</reflowLongStrings>
-                            <formatJavadoc>false</formatJavadoc>
-                        </googleJavaFormat>
+                        <palantirJavaFormat>
+                            <style>PALANTIR</style>
+                        </palantirJavaFormat>
                     </java>
                 </configuration>
             </plugin>
