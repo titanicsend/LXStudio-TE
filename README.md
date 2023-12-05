@@ -64,6 +64,30 @@ Steps for setup:
 
 6. Assuming things work okay, a UI for LX Studio will pop up: Great! Now, you can play with the buttons.
 
+### Code Style
+
+These are the steps to use [google-java-format](https://github.com/google/google-java-format) automatically
+and ensure that each commit gets formatted before being submitted.
+
+1. Setup git pre-commit hook to run the `google-java-format` CLI tool on changed files
+
+```sh
+cp pre-commit ./git/hooks/pre-commit
+```
+
+NOTE: you can run the CLI tool to see what it'll output using the `format.sh` script:
+
+```sh
+./format.sh -h
+
+# to reformat one file
+./format.sh src/main/java/titanicsend/MyFile.java
+
+# to bulk-reformat the whole codebase
+./format.sh $(find ./src -type f -iname "*.java")
+```
+
+2. Install the IDE plugin for [IntelliJ](https://github.com/google/google-java-format#intellij-android-studio-and-other-jetbrains-ides) or [Eclipse](https://github.com/google/google-java-format#eclipse)
 
 ### Potential issues
 
