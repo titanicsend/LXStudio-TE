@@ -1,8 +1,5 @@
 package titanicsend.pattern.justin;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import heronarts.lx.LX;
 import heronarts.lx.LXComponentName;
 import heronarts.lx.color.LXColor;
@@ -12,11 +9,13 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.LXModulator;
 import heronarts.lx.studio.TEApp;
 import heronarts.lx.transform.LXVector;
+import java.util.HashMap;
+import java.util.Map;
 import titanicsend.modulator.dmx.DmxGridModulator;
 import titanicsend.pattern.TEPattern;
 
 /**
- * Simple DMX Grid Pattern.  Uses the first instance of a grid modulator, to be expanded later.
+ * Simple DMX Grid Pattern. Uses the first instance of a grid modulator, to be expanded later.
  *
  * @author Justin K. Belcher
  */
@@ -55,17 +54,15 @@ public class DmxGridPattern extends TEPattern {
     }
   }
 
-  /**
-   * Calculate the normalized average x,y,z for an LXModel
-   */
+  /** Calculate the normalized average x,y,z for an LXModel */
   private LXVector getLocation(LXModel model) {
     LXVector vector = locations.get(model);
     if (vector == null) {
-      vector = new LXVector(
-          (model.average.x - TEApp.wholeModel.xMin) / TEApp.wholeModel.xRange,
-          (model.average.y - TEApp.wholeModel.yMin) / TEApp.wholeModel.yRange,
-          (model.average.z - TEApp.wholeModel.zMin) / TEApp.wholeModel.zRange
-          );
+      vector =
+          new LXVector(
+              (model.average.x - TEApp.wholeModel.xMin) / TEApp.wholeModel.xRange,
+              (model.average.y - TEApp.wholeModel.yMin) / TEApp.wholeModel.yRange,
+              (model.average.z - TEApp.wholeModel.zMin) / TEApp.wholeModel.zRange);
       this.locations.put(model, vector);
     }
     return vector;
@@ -81,7 +78,7 @@ public class DmxGridPattern extends TEPattern {
     // Simple for now, return the first instance of the modulator.
     for (LXModulator m : this.lx.engine.modulation.modulators) {
       if (m instanceof DmxGridModulator) {
-        return (DmxGridModulator)m;
+        return (DmxGridModulator) m;
       }
     }
     return null;
@@ -92,7 +89,7 @@ public class DmxGridPattern extends TEPattern {
     float r = (float) (0xff & LXColor.red(color)) * brightness;
     float g = (float) (0xff & LXColor.green(color)) * brightness;
     float b = (float) (0xff & LXColor.blue(color)) * brightness;
-    return LXColor.rgb((int) r,(int) g,(int) b);
+    return LXColor.rgb((int) r, (int) g, (int) b);
   }
 
   @Override

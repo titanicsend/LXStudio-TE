@@ -3,11 +3,10 @@ package titanicsend.pattern.mike;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.model.LXPoint;
+import java.util.*;
 import titanicsend.model.TEPanelModel;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-
-import java.util.*;
 
 @LXCategory("TE Examples")
 public class Checkers extends TEPerformancePattern {
@@ -31,9 +30,9 @@ public class Checkers extends TEPerformancePattern {
         this.panelGroup.put(panel, group);
       }
       int thisPanelGroup = this.panelGroup.get(panel);
-      int newColor = 1 - thisPanelGroup;  // Invert this panel's group
+      int newColor = 1 - thisPanelGroup; // Invert this panel's group
       for (TEPanelModel neighbor : panel.neighbors()) {
-        if (this.panelGroup.containsKey(neighbor)) continue;  // Already grouped
+        if (this.panelGroup.containsKey(neighbor)) continue; // Already grouped
         this.panelGroup.put(neighbor, newColor);
         queue.add(0, neighbor);
       }
@@ -56,5 +55,4 @@ public class Checkers extends TEPerformancePattern {
     }
     this.updateVirtualColors(deltaMs);
   }
-
 }

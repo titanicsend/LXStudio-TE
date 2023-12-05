@@ -1,28 +1,25 @@
 package titanicsend.pattern.mike;
 
-import java.util.*;
+import static titanicsend.util.TEColor.TRANSPARENT;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
-
 import heronarts.lx.modulator.Click;
 import heronarts.lx.parameter.DiscreteParameter;
+import java.util.*;
 import titanicsend.app.TEVirtualColor;
 import titanicsend.color.TEColorType;
 import titanicsend.model.*;
 import titanicsend.pattern.TEPattern;
 import titanicsend.util.TEColor;
 
-import static titanicsend.util.TEColor.TRANSPARENT;
-
 @LXCategory("Combo FG")
 public class EdgeRunner extends TEPattern {
   public final DiscreteParameter numRunners =
-          new DiscreteParameter("Runners", 10, 0, 50)
-                  .setDescription("Number of concurrent runners");
+      new DiscreteParameter("Runners", 10, 0, 50).setDescription("Number of concurrent runners");
 
   private static final double MOVE_PERIOD_MSEC = 1.0;
   private static final double MOVES_PER_RESET = 10000;
@@ -63,16 +60,15 @@ public class EdgeRunner extends TEPattern {
   private int moveNumber;
 
   public final LinkedColorParameter runnerColor =
-          registerColor("Runner", "runnerColor", TEColorType.PRIMARY,
-                  "Color of the runner dots");
+      registerColor("Runner", "runnerColor", TEColorType.PRIMARY, "Color of the runner dots");
 
   public final LinkedColorParameter trailColor =
-          registerColor("Trail", "trailColor", TEColorType.SECONDARY,
-                  "Color of the trail they leave behind");
+      registerColor(
+          "Trail", "trailColor", TEColorType.SECONDARY, "Color of the trail they leave behind");
 
   public final LinkedColorParameter fillColor =
-          registerColor("Fill", "fillColor", TEColorType.SECONDARY_BACKGROUND,
-                  "Color to fill the panels with");
+      registerColor(
+          "Fill", "fillColor", TEColorType.SECONDARY_BACKGROUND, "Color to fill the panels with");
 
   public EdgeRunner(LX lx) {
     super(lx);
@@ -190,7 +186,7 @@ public class EdgeRunner extends TEPattern {
         }
     }
     if (this.spawner.click()) {
-      while(this.runners.size() > this.numRunners.getValuei()) {
+      while (this.runners.size() > this.numRunners.getValuei()) {
         this.runners.remove(0);
       }
       if (this.runners.size() < this.numRunners.getValuei()) {

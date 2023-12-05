@@ -2,37 +2,26 @@
  * This file is mainly a copy Heron Art's P4LX UIColorPicker:
  * https://github.com/heronarts/P4LX/blob/master/src/main/java/heronarts/p4lx/ui/component/UIColorPicker.java
  * ...Additional controls were added at the bottom for TE.
- * 
- * This file could be simplified in the future with a few changes
- * to the restrictions in UIColorPicker.
- * 
- * 
- * Copyright 2017- Mark C. Slee, Heron Arts LLC
  *
- * This file is part of the LX Studio software library. By using
- * LX, you agree to the terms of the LX Studio Software License
- * and Distribution Agreement, available at: http://lx.studio/license
+ * <p>This file could be simplified in the future with a few changes to the restrictions in
+ * UIColorPicker.
  *
- * Please note that the LX license is not open-source. The license
- * allows for free, non-commercial use.
+ * <p>Copyright 2017- Mark C. Slee, Heron Arts LLC
  *
- * HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR
- * OTHERWISE, AND SPECIFICALLY DISCLAIMS ANY WARRANTY OF
- * MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR
- * PURPOSE, WITH RESPECT TO THE SOFTWARE.
+ * <p>This file is part of the LX Studio software library. By using LX, you agree to the terms of
+ * the LX Studio Software License and Distribution Agreement, available at: http://lx.studio/license
+ *
+ * <p>Please note that the LX license is not open-source. The license allows for free,
+ * non-commercial use.
+ *
+ * <p>HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, AND SPECIFICALLY
+ * DISCLAIMS ANY WARRANTY OF MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR PURPOSE,
+ * WITH RESPECT TO THE SOFTWARE.
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.ui;
 
-import heronarts.lx.color.LXColor;
-import heronarts.lx.command.LXCommand;
-import heronarts.lx.parameter.LXParameterListener;
-import heronarts.lx.studio.LXStudio;
-import heronarts.lx.studio.ui.pattern.UIGradientPattern.UIPaletteGradient;
-import heronarts.lx.utils.LXUtils;
-import titanicsend.color.TEColorParameter;
 import heronarts.glx.event.KeyEvent;
 import heronarts.glx.event.MouseEvent;
 import heronarts.glx.ui.UI;
@@ -48,6 +37,13 @@ import heronarts.glx.ui.component.UILabel;
 import heronarts.glx.ui.component.UIParameterControl;
 import heronarts.glx.ui.component.UISlider;
 import heronarts.glx.ui.vg.VGraphics;
+import heronarts.lx.color.LXColor;
+import heronarts.lx.command.LXCommand;
+import heronarts.lx.parameter.LXParameterListener;
+import heronarts.lx.studio.LXStudio;
+import heronarts.lx.studio.ui.pattern.UIGradientPattern.UIPaletteGradient;
+import heronarts.lx.utils.LXUtils;
+import titanicsend.color.TEColorParameter;
 
 public class UITEColorPicker extends UI2dComponent {
 
@@ -82,19 +78,21 @@ public class UITEColorPicker extends UI2dComponent {
     this(x, y, w, h, color, false);
   }
 
-  protected UITEColorPicker(float x, float y, float w, float h, TEColorParameter color, boolean isDynamic) {
+  protected UITEColorPicker(
+      float x, float y, float w, float h, TEColorParameter color, boolean isDynamic) {
     super(x, y, w, h);
     setColor(color);
 
     // Redraw with color in real-time, if modulated
     if (!isDynamic) {
       setDescription(UIParameterControl.getDescription(color));
-      addLoopTask(new UITimerTask(30, UITimerTask.Mode.FPS) {
-        @Override
-        protected void run() {
-          setDrawColor(color.calcColor());
-        }
-      });
+      addLoopTask(
+          new UITimerTask(30, UITimerTask.Mode.FPS) {
+            @Override
+            protected void run() {
+              setDrawColor(color.calcColor());
+            }
+          });
     }
   }
 
@@ -115,12 +113,13 @@ public class UITEColorPicker extends UI2dComponent {
     return this;
   }
 
-  private final LXParameterListener redrawSwatch = (p) -> {
-    if (this.uiColorOverlay != null) {
-      this.uiColorOverlay.swatch.redraw();
-      this.uiColorOverlay.swatchDimmer.redraw();
-    }
-  };
+  private final LXParameterListener redrawSwatch =
+      (p) -> {
+        if (this.uiColorOverlay != null) {
+          this.uiColorOverlay.swatch.redraw();
+          this.uiColorOverlay.swatchDimmer.redraw();
+        }
+      };
 
   protected UITEColorOverlay buildColorOverlay(UI ui) {
     return new UITEColorOverlay(ui);
@@ -163,12 +162,13 @@ public class UITEColorPicker extends UI2dComponent {
     if (this.deviceMode) {
       vg.rect(UIKnob.KNOB_MARGIN, 0, UIKnob.KNOB_SIZE, UIKnob.KNOB_SIZE);
     } else {
-      vgRoundedRect(vg, .5f, .5f, this.width-1, this.height-1);
+      vgRoundedRect(vg, .5f, .5f, this.width - 1, this.height - 1);
     }
     vg.fill();
 
     if (this.deviceMode) {
-      UIParameterControl.drawParameterLabel(ui, vg, this, this.color != null ? this.color.getLabel() : "-");
+      UIParameterControl.drawParameterLabel(
+          ui, vg, this, this.color != null ? this.color.getLabel() : "-");
     }
   }
 
@@ -184,18 +184,23 @@ public class UITEColorPicker extends UI2dComponent {
     }
 
     switch (this.corner) {
-    case BOTTOM_LEFT:
-      this.uiColorOverlay.setPosition(this, overlap - this.uiColorOverlay.getWidth(), this.height - overlap);
-      break;
-    case BOTTOM_RIGHT:
-      this.uiColorOverlay.setPosition(this, this.width - overlap, this.height - overlap);
-      break;
-    case TOP_LEFT:
-      this.uiColorOverlay.setPosition(this, overlap - this.uiColorOverlay.getWidth(), overlap - this.uiColorOverlay.getHeight());
-      break;
-    case TOP_RIGHT:
-      this.uiColorOverlay.setPosition(this, this.width - overlap, overlap - this.uiColorOverlay.getHeight());
-      break;
+      case BOTTOM_LEFT:
+        this.uiColorOverlay.setPosition(
+            this, overlap - this.uiColorOverlay.getWidth(), this.height - overlap);
+        break;
+      case BOTTOM_RIGHT:
+        this.uiColorOverlay.setPosition(this, this.width - overlap, this.height - overlap);
+        break;
+      case TOP_LEFT:
+        this.uiColorOverlay.setPosition(
+            this,
+            overlap - this.uiColorOverlay.getWidth(),
+            overlap - this.uiColorOverlay.getHeight());
+        break;
+      case TOP_RIGHT:
+        this.uiColorOverlay.setPosition(
+            this, this.width - overlap, overlap - this.uiColorOverlay.getHeight());
+        break;
     }
 
     getUI().showContextOverlay(this.uiColorOverlay);
@@ -263,86 +268,103 @@ public class UITEColorPicker extends UI2dComponent {
 
       float xp = this.swatch.getX() + this.swatch.getWidth();
       float yp = 16;
-      final UIDoubleBox hueBox = (UIDoubleBox) new UIDoubleBox(xp, yp, 56, color.hue).addToContainer(this);
-      new UILabel(xp, yp + 16, 56, "Hue").setTextAlignment(VGraphics.Align.CENTER).addToContainer(this);
+      final UIDoubleBox hueBox =
+          (UIDoubleBox) new UIDoubleBox(xp, yp, 56, color.hue).addToContainer(this);
+      new UILabel(xp, yp + 16, 56, "Hue")
+          .setTextAlignment(VGraphics.Align.CENTER)
+          .addToContainer(this);
 
       yp += 40;
 
-      final UIDoubleBox satBox = (UIDoubleBox) new UIDoubleBox(xp, yp, 56, color.saturation).addToContainer(this);
-      new UILabel(xp, yp + 16, 56, "Sat").setTextAlignment(VGraphics.Align.CENTER).addToContainer(this);
+      final UIDoubleBox satBox =
+          (UIDoubleBox) new UIDoubleBox(xp, yp, 56, color.saturation).addToContainer(this);
+      new UILabel(xp, yp + 16, 56, "Sat")
+          .setTextAlignment(VGraphics.Align.CENTER)
+          .addToContainer(this);
 
       yp += 40;
 
-      final UIDoubleBox brtBox = (UIDoubleBox) new UIDoubleBox(xp, yp, 56, color.brightness).addToContainer(this);
-      new UILabel(xp, yp + 16, 56, "Bright").setTextAlignment(VGraphics.Align.CENTER).addToContainer(this);
+      final UIDoubleBox brtBox =
+          (UIDoubleBox) new UIDoubleBox(xp, yp, 56, color.brightness).addToContainer(this);
+      new UILabel(xp, yp + 16, 56, "Bright")
+          .setTextAlignment(VGraphics.Align.CENTER)
+          .addToContainer(this);
 
       // Horizontal break
-      new UI2dComponent(PADDING, 140, this.width - 2*PADDING, 1) {}
-      .setBorderColor(ui.theme.controlBorderColor)
-      .addToContainer(this);
-
+      new UI2dComponent(PADDING, 140, this.width - 2 * PADDING, 1) {}.setBorderColor(
+              ui.theme.controlBorderColor)
+          .addToContainer(this);
 
       // Special for TEColorParameter
 
       // Gray overlay for swatch when not using STATIC source
-      swatchDimmer = new UILabel(PADDING, PADDING, this.width - 2*PADDING, 135)
-      .setBackgroundColor(LXColor.rgba(75,75,75,200))
-      .addToContainer(this);
+      swatchDimmer =
+          new UILabel(PADDING, PADDING, this.width - 2 * PADDING, 135)
+              .setBackgroundColor(LXColor.rgba(75, 75, 75, 200))
+              .addToContainer(this);
 
       // Solid color
-      UI2dContainer.newHorizontalContainer(16, 4,
-        new UILabel(58, 12, "Solid Color:").setFont(ui.theme.getControlFont()),
-        new UIButton(128, 16, color.solidSource)
-      )
-      .setPosition(PADDING, 148)
-      .addToContainer(this);
+      UI2dContainer.newHorizontalContainer(
+              16,
+              4,
+              new UILabel(58, 12, "Solid Color:").setFont(ui.theme.getControlFont()),
+              new UIButton(128, 16, color.solidSource))
+          .setPosition(PADDING, 148)
+          .addToContainer(this);
 
       // Gradient
-      UI2dContainer.newHorizontalContainer(16, 4,
-        new UILabel(58, 12, "Gradient:").setFont(ui.theme.getControlFont()),
-        new UIButton(68, 16, color.gradient),
-        new UIButton(56, 16, color.blendMode)
-      )
-      .setPosition(PADDING, 171)
-      .addToContainer(this);
+      UI2dContainer.newHorizontalContainer(
+              16,
+              4,
+              new UILabel(58, 12, "Gradient:").setFont(ui.theme.getControlFont()),
+              new UIButton(68, 16, color.gradient),
+              new UIButton(56, 16, color.blendMode))
+          .setPosition(PADDING, 171)
+          .addToContainer(this);
 
       // Offset
       new UIKnob(204, 147, color.offset).addToContainer(this);
 
       // Solid color preview
-      UI2dContainer.newHorizontalContainer(16, 1,
-          color1 = new UI2dComponent(0, 0, 16, 16) {}
-      .setBorderColor(ui.theme.controlBorderColor)
-      .setBackgroundColor(color.calcColor())
-      .setBorderRounding(4),
-      new UISlider(UISlider.Direction.HORIZONTAL, 30, 16, color.color2offset)
-      .setShowLabel(false),
-      color2 = new UI2dComponent(0, 0, 16, 16) {}
-      .setBorderColor(ui.theme.controlBorderColor)
-      .setBackgroundColor(color.calcColor2())
-      .setBorderRounding(4)
-          )
-      .setPosition(248, 148)
-      .addToContainer(this);
+      UI2dContainer.newHorizontalContainer(
+              16,
+              1,
+              color1 =
+                  new UI2dComponent(0, 0, 16, 16) {}.setBorderColor(ui.theme.controlBorderColor)
+                      .setBackgroundColor(color.calcColor())
+                      .setBorderRounding(4),
+              new UISlider(UISlider.Direction.HORIZONTAL, 30, 16, color.color2offset)
+                  .setShowLabel(false),
+              color2 =
+                  new UI2dComponent(0, 0, 16, 16) {}.setBorderColor(ui.theme.controlBorderColor)
+                      .setBackgroundColor(color.calcColor2())
+                      .setBorderRounding(4))
+          .setPosition(248, 148)
+          .addToContainer(this);
 
-      addListener(color, p -> {
-        color1.setBackgroundColor(color.calcColor());
-        color2.setBackgroundColor(color.calcColor2());        
-      });
+      addListener(
+          color,
+          p -> {
+            color1.setBackgroundColor(color.calcColor());
+            color2.setBackgroundColor(color.calcColor2());
+          });
 
       // Gradient preview
-      new UIPaletteGradient((LXStudio.UI)ui, color, 64, 16)
-      .setPosition(248, 171)
-      .addToContainer(this);
+      new UIPaletteGradient((LXStudio.UI) ui, color, 64, 16)
+          .setPosition(248, 171)
+          .addToContainer(this);
 
-      color.solidSource.addListener((p) -> {
-        boolean isStatic = color.solidSource.getEnum() == TEColorParameter.SolidColorSource.STATIC;
-        swatch.setEnabled(isStatic);
-        hueBox.setEnabled(isStatic);
-        satBox.setEnabled(isStatic);
-        brtBox.setEnabled(isStatic);
-        swatchDimmer.setVisible(!isStatic);
-      }, true);
+      color.solidSource.addListener(
+          (p) -> {
+            boolean isStatic =
+                color.solidSource.getEnum() == TEColorParameter.SolidColorSource.STATIC;
+            swatch.setEnabled(isStatic);
+            hueBox.setEnabled(isStatic);
+            satBox.setEnabled(isStatic);
+            brtBox.setEnabled(isStatic);
+            swatchDimmer.setVisible(!isStatic);
+          },
+          true);
     }
 
     private class UISwatch extends UI2dComponent implements UIFocus {
@@ -360,14 +382,17 @@ public class UITEColorPicker extends UI2dComponent {
       private static final float BRIGHT_SLIDER_WIDTH = 16;
       private static final float BRIGHT_SLIDER_HEIGHT = GRID_HEIGHT;
 
-      private static final float WIDTH = BRIGHT_SLIDER_X + BRIGHT_SLIDER_WIDTH + 2*PADDING;
-      private static final float HEIGHT = GRID_HEIGHT + 2*PADDING;
+      private static final float WIDTH = BRIGHT_SLIDER_X + BRIGHT_SLIDER_WIDTH + 2 * PADDING;
+      private static final float HEIGHT = GRID_HEIGHT + 2 * PADDING;
 
       private boolean enabled = true;
 
       public UISwatch() {
         super(4, 4, WIDTH, HEIGHT);
-        color.addListener((p) -> { redraw(); });
+        color.addListener(
+            (p) -> {
+              redraw();
+            });
         setFocusCorners(false);
       }
 
@@ -389,9 +414,13 @@ public class UITEColorPicker extends UI2dComponent {
         // Main color grid
         for (int y = 0; y < yStops; ++y) {
           for (int x = 0; x < xStops; ++x) {
-            vg.fillLinearGradient(GRID_X + x * xStep, 0, GRID_X + (x+1) * xStep, 0,
+            vg.fillLinearGradient(
+                GRID_X + x * xStep,
+                0,
+                GRID_X + (x + 1) * xStep,
+                0,
                 LXColor.hsb(x * 360 / xStops, 100f - y * 100f / yStops, brightness),
-                LXColor.hsb((x+1) * 360 / xStops, 100f - y * 100f / yStops, brightness));
+                LXColor.hsb((x + 1) * 360 / xStops, 100f - y * 100f / yStops, brightness));
             vg.beginPath();
             vg.rect(GRID_X + x * xStep - .5f, GRID_Y + y * yStep - .5f, xStep + 1, yStep + 1);
             vg.fill();
@@ -399,23 +428,23 @@ public class UITEColorPicker extends UI2dComponent {
         }
 
         // Brightness slider
-        vg.fillLinearGradient(BRIGHT_SLIDER_X, BRIGHT_SLIDER_Y, BRIGHT_SLIDER_X, BRIGHT_SLIDER_HEIGHT,
+        vg.fillLinearGradient(
+            BRIGHT_SLIDER_X,
+            BRIGHT_SLIDER_Y,
+            BRIGHT_SLIDER_X,
+            BRIGHT_SLIDER_HEIGHT,
             LXColor.hsb(hue, saturation, 100),
-            LXColor.hsb(hue, saturation, 0)
-            );
+            LXColor.hsb(hue, saturation, 0));
         vg.beginPath();
-        vg.rect(BRIGHT_SLIDER_X, BRIGHT_SLIDER_Y - .5f, BRIGHT_SLIDER_WIDTH, BRIGHT_SLIDER_HEIGHT + 1);
+        vg.rect(
+            BRIGHT_SLIDER_X, BRIGHT_SLIDER_Y - .5f, BRIGHT_SLIDER_WIDTH, BRIGHT_SLIDER_HEIGHT + 1);
         vg.fill();
 
         // Color square
         vg.beginPath();
         vg.strokeColor(brightness < 50 ? UIColor.WHITE : UIColor.BLACK);
         vg.ellipse(
-            GRID_X + hue / 360 * GRID_WIDTH,
-            GRID_Y + (1 - saturation / 100) * GRID_HEIGHT,
-            4,
-            4
-            );
+            GRID_X + hue / 360 * GRID_WIDTH, GRID_Y + (1 - saturation / 100) * GRID_HEIGHT, 4, 4);
         vg.stroke();
 
         // Brightness triangle
@@ -447,7 +476,8 @@ public class UITEColorPicker extends UI2dComponent {
         this.setBrightness = null;
         this.setColor = null;
         if (this.draggingBrightness = (mx > GRID_X + GRID_WIDTH)) {
-          this.setBrightness = new LXCommand.Parameter.SetValue(color.brightness, color.brightness.getBaseValue());
+          this.setBrightness =
+              new LXCommand.Parameter.SetValue(color.brightness, color.brightness.getBaseValue());
         } else {
           this.setColor = new LXCommand.Parameter.SetColor(color);
           setHueSaturation(mx, my);
@@ -492,27 +522,36 @@ public class UITEColorPicker extends UI2dComponent {
         float inc = keyEvent.isShiftDown() ? 10 : 2;
         if (keyCode == java.awt.event.KeyEvent.VK_UP) {
           keyEvent.consume();
-          getLX().command.perform(new LXCommand.Parameter.SetValue(color.saturation,
-            LXUtils.clampf(color.saturation.getBaseValuef() + inc, 0, 100)
-          ));
+          getLX()
+              .command
+              .perform(
+                  new LXCommand.Parameter.SetValue(
+                      color.saturation,
+                      LXUtils.clampf(color.saturation.getBaseValuef() + inc, 0, 100)));
         } else if (keyCode == java.awt.event.KeyEvent.VK_DOWN) {
           keyEvent.consume();
-          getLX().command.perform(new LXCommand.Parameter.SetValue(color.saturation,
-            LXUtils.clampf(color.saturation.getBaseValuef() - inc, 0, 100)
-          ));
+          getLX()
+              .command
+              .perform(
+                  new LXCommand.Parameter.SetValue(
+                      color.saturation,
+                      LXUtils.clampf(color.saturation.getBaseValuef() - inc, 0, 100)));
         } else if (keyCode == java.awt.event.KeyEvent.VK_LEFT) {
           keyEvent.consume();
-          getLX().command.perform(new LXCommand.Parameter.SetValue(color.hue,
-            LXUtils.clampf(color.hue.getBaseValuef() - 3*inc, 0, 360)
-          ));
+          getLX()
+              .command
+              .perform(
+                  new LXCommand.Parameter.SetValue(
+                      color.hue, LXUtils.clampf(color.hue.getBaseValuef() - 3 * inc, 0, 360)));
         } else if (keyCode == java.awt.event.KeyEvent.VK_RIGHT) {
           keyEvent.consume();
-          getLX().command.perform(new LXCommand.Parameter.SetValue(color.hue,
-            LXUtils.clampf(color.hue.getBaseValuef() + 3*inc, 0, 360)
-          ));
+          getLX()
+              .command
+              .perform(
+                  new LXCommand.Parameter.SetValue(
+                      color.hue, LXUtils.clampf(color.hue.getBaseValuef() + 3 * inc, 0, 360)));
         }
       }
-
     }
   }
 }

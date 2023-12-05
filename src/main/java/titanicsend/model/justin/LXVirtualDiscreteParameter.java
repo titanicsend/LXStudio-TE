@@ -1,21 +1,18 @@
 /**
  * Copyright 2023- Justin K. Belcher, Mark C. Slee, Heron Arts LLC
  *
- * This file is part of the LX Studio software library. By using
- * LX, you agree to the terms of the LX Studio Software License
- * and Distribution Agreement, available at: http://lx.studio/license
+ * <p>This file is part of the LX Studio software library. By using LX, you agree to the terms of
+ * the LX Studio Software License and Distribution Agreement, available at: http://lx.studio/license
  *
- * Please note that the LX license is not open-source. The license
- * allows for free, non-commercial use.
+ * <p>Please note that the LX license is not open-source. The license allows for free,
+ * non-commercial use.
  *
- * HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR
- * OTHERWISE, AND SPECIFICALLY DISCLAIMS ANY WARRANTY OF
- * MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR
- * PURPOSE, WITH RESPECT TO THE SOFTWARE.
+ * <p>HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, AND SPECIFICALLY
+ * DISCLAIMS ANY WARRANTY OF MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR PURPOSE,
+ * WITH RESPECT TO THE SOFTWARE.
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.model.justin;
 
 import heronarts.lx.LX;
@@ -26,13 +23,13 @@ import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.model.justin.DisposableParameter.DisposeListener;
 
 /**
- * Similar to LXVirtualParameter, but with priority on normalized methods.
- * Allows target parameter to be set after initialization, to play nice
- * with loading from file.
+ * Similar to LXVirtualParameter, but with priority on normalized methods. Allows target parameter
+ * to be set after initialization, to play nice with loading from file.
  *
- * It IS a DiscreteParameter and it WRAPS a DiscreteParameter.
+ * <p>It IS a DiscreteParameter and it WRAPS a DiscreteParameter.
  */
-abstract public class LXVirtualDiscreteParameter<T extends DiscreteParameter> extends DiscreteParameter {
+public abstract class LXVirtualDiscreteParameter<T extends DiscreteParameter>
+    extends DiscreteParameter {
 
   private T parameter = null;
 
@@ -77,13 +74,15 @@ abstract public class LXVirtualDiscreteParameter<T extends DiscreteParameter> ex
     return this;
   }
 
-  private final LXParameterListener realParameterListener = (p) -> {
-    onRealParameterChanged();
-  };
+  private final LXParameterListener realParameterListener =
+      (p) -> {
+        onRealParameterChanged();
+      };
 
-  private final DisposeListener disposeParameterListener = (p) -> {
-    onRealParameterDisposed();
-  };
+  private final DisposeListener disposeParameterListener =
+      (p) -> {
+        onRealParameterDisposed();
+      };
 
   protected void onRealParameterChanged() {
     bang();
@@ -141,7 +140,9 @@ abstract public class LXVirtualDiscreteParameter<T extends DiscreteParameter> ex
 
   @Override
   public DiscreteParameter setMappable(boolean mappable) {
-    LX.error("Can not call setMappable() on LXVirtualDiscreteParameter, call on target parameter instead.");
+    LX.error(
+        "Can not call setMappable() on LXVirtualDiscreteParameter, call on target parameter"
+            + " instead.");
     return this;
   }
 
@@ -236,11 +237,11 @@ abstract public class LXVirtualDiscreteParameter<T extends DiscreteParameter> ex
 
   @Override
   public LXParameter reset() {
-      if (this.parameter != null) {
-          this.parameter.reset();
-          return this;
-      }
+    if (this.parameter != null) {
+      this.parameter.reset();
       return this;
+    }
+    return this;
   }
 
   @Override
@@ -254,5 +255,4 @@ abstract public class LXVirtualDiscreteParameter<T extends DiscreteParameter> ex
     }
     super.dispose();
   }
-
 }

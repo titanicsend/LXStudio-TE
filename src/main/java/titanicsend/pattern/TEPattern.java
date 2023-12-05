@@ -1,5 +1,8 @@
 package titanicsend.pattern;
 
+import static java.lang.Math.PI;
+import static java.lang.Math.sin;
+
 import heronarts.lx.LX;
 import heronarts.lx.Tempo;
 import heronarts.lx.audio.GraphicMeter;
@@ -7,6 +10,7 @@ import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.studio.TEApp;
+import java.util.*;
 import titanicsend.color.TEColorType;
 import titanicsend.color.TEGradientSource;
 import titanicsend.dmx.pattern.DmxPattern;
@@ -16,11 +20,6 @@ import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
 import titanicsend.util.TEColor;
 import titanicsend.util.TEMath;
-
-import java.util.*;
-
-import static java.lang.Math.PI;
-import static java.lang.Math.sin;
 
 public abstract class TEPattern extends DmxPattern {
   private final TEPanelModel sua;
@@ -37,8 +36,8 @@ public abstract class TEPattern extends DmxPattern {
 
   protected TEPattern(LX lx) {
     super(lx);
-	// NOTE(mcslee): in newer LX version, colors array does not exist at instantiation
-	// time. If this call was truly necessary, it will need to be refactored to happen elsewhere
+    // NOTE(mcslee): in newer LX version, colors array does not exist at instantiation
+    // time. If this call was truly necessary, it will need to be refactored to happen elsewhere
     // this.clearPixels();
 
     this.modelTE = TEApp.wholeModel;
@@ -66,14 +65,13 @@ public abstract class TEPattern extends DmxPattern {
     super.onModelChanged(model);
   }
 
-
   /*
    * Color methods
    */
   @Deprecated
-  public LinkedColorParameter registerColor(String label, String path, TEColorType colorType, String description) {
-    LinkedColorParameter lcp = new LinkedColorParameter(label)
-            .setDescription(description);
+  public LinkedColorParameter registerColor(
+      String label, String path, TEColorType colorType, String description) {
+    LinkedColorParameter lcp = new LinkedColorParameter(label).setDescription(description);
     addParameter(path, lcp);
     lcp.mode.setValue(LinkedColorParameter.Mode.PALETTE);
     lcp.index.setValue(colorType.index);
@@ -81,8 +79,9 @@ public abstract class TEPattern extends DmxPattern {
   }
 
   /**
-   * Given a value in 0..1 (and wrapped back outside that range)
-   * Return a color within the primaryGradient
+   * Given a value in 0..1 (and wrapped back outside that range) Return a color within the
+   * primaryGradient
+   *
    * @param lerp as a frac
    * @return LXColor
    */
@@ -93,12 +92,13 @@ public abstract class TEPattern extends DmxPattern {
      * to red via orange, not via lime, green, cyan, blue, purple, red.
      */
     return this.gradientSource.primaryGradient.getColor(
-            TEMath.trianglef(lerp / 2), // Allow wrapping
-            LXGradientUtils.BlendMode.HSVM.function);
+        TEMath.trianglef(lerp / 2), // Allow wrapping
+        LXGradientUtils.BlendMode.HSVM.function);
   }
 
   /**
    * Get a ColorType's color from the Swatch
+   *
    * @param type
    * @return
    */
@@ -106,16 +106,14 @@ public abstract class TEPattern extends DmxPattern {
     return lx.engine.palette.getSwatchColor(type.swatchIndex()).getColor();
   }
 
-  /**
-   * Refresh gradients from the global palette
-   */
+  /** Refresh gradients from the global palette */
   protected void updateGradients() {
     this.gradientSource.updateGradients(this.lx.engine.palette.swatch);
   }
 
   // During construction, make gap points show up in red
-  static public final int GAP_PIXEL_COLOR = TEColor.TRANSPARENT;
-  
+  public static final int GAP_PIXEL_COLOR = TEColor.TRANSPARENT;
+
   // Compare to LXLayeredComponent's clearColors(), which is declared final.
   public void clearPixels() {
     for (LXPoint point : this.model.points) {
@@ -133,6 +131,7 @@ public abstract class TEPattern extends DmxPattern {
       colors[point.index] = color;
     }
   }
+
   public void clearEdges() {
     setEdges(TEColor.TRANSPARENT);
   }
@@ -158,6 +157,7 @@ public abstract class TEPattern extends DmxPattern {
 
   /**
    * Get the fraction into a measure, assuming a four beat measure
+   *
    * @return 0..1 ramp of progress (fraction) into the current measure
    */
   public double wholeNote() {
@@ -165,27 +165,27 @@ public abstract class TEPattern extends DmxPattern {
   }
   /**
    * Get the fraction into a musical phrase, assuming 8 * 4 beat phrases
+   *
    * @return 0..1 ramp of progress (fraction) into the current phrase
    */
   public double phrase() {
     return lx.engine.tempo.getCompositeBasis() / 32 % 1.0D;
   }
 
-  //Sine modulator alternative between 0 and 1 on beat
+  // Sine modulator alternative between 0 and 1 on beat
   public double sinePhaseOnBeat() {
     return .5 * sin(PI * lx.engine.tempo.getCompositeBasis()) + .5;
   }
 
   /**
    * Get the fraction into a measure for any defined measure length
+   *
    * @return 0..1 ramp of progress (fraction) into the current measure
    */
   public double measure() {
-    return (
-            lx.engine.tempo.getCompositeBasis() %
-            lx.engine.tempo.beatsPerMeasure.getValue() /
-            lx.engine.tempo.beatsPerMeasure.getValue()
-    );
+    return (lx.engine.tempo.getCompositeBasis()
+        % lx.engine.tempo.beatsPerMeasure.getValue()
+        / lx.engine.tempo.beatsPerMeasure.getValue());
   }
 
   public Tempo getTempo() {
@@ -196,11 +196,9 @@ public abstract class TEPattern extends DmxPattern {
     return lx.engine.audio.meter;
   }
 
-
-
   /*
-     GigglePixel color sync protocol methods
-   */
+    GigglePixel color sync protocol methods
+  */
 
   // Returns a set of points that GP should use to make its palette broadcasts.
   // By default, it will pick a point in the middle of SUA and SDC panels and

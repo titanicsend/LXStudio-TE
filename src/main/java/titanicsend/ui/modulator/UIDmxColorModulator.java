@@ -23,24 +23,22 @@ public class UIDmxColorModulator implements UIModulatorControls<DmxColorModulato
     uiModulator.setContentHeight(HEIGHT);
 
     UI2dContainer.newVerticalContainer(100, 2)
-    .addChildren(
-        row("Universe", new UIIntegerBox(PARAM_WIDTH, 16, modulator.universe)),
-        row("Channel", new UIIntegerBox(PARAM_WIDTH, 16, modulator.channel)),
-        row("Byte Order", new UIDropMenu(PARAM_WIDTH, modulator.byteOrder))
-        )
-    .addToContainer(uiModulator);
+        .addChildren(
+            row("Universe", new UIIntegerBox(PARAM_WIDTH, 16, modulator.universe)),
+            row("Channel", new UIIntegerBox(PARAM_WIDTH, 16, modulator.channel)),
+            row("Byte Order", new UIDropMenu(PARAM_WIDTH, modulator.byteOrder)))
+        .addToContainer(uiModulator);
 
     UI2dContainer.newVerticalContainer(70, 2)
-    .addChildren(
-        new UILabel(70, 16, "Palette Color").setTextAlignment(Align.LEFT, Align.MIDDLE),
-        new UIDropMenu(56, 16, modulator.colorPosition).setX(6),
-        new UIButton(56, 16, modulator.fixed)
-          .setActiveLabel("Fixed")
-          .setInactiveLabel("Same")
-          .setX(6)
-        )
-    .setX(128)
-    .addToContainer(uiModulator);
+        .addChildren(
+            new UILabel(70, 16, "Palette Color").setTextAlignment(Align.LEFT, Align.MIDDLE),
+            new UIDropMenu(56, 16, modulator.colorPosition).setX(6),
+            new UIButton(56, 16, modulator.fixed)
+                .setActiveLabel("Fixed")
+                .setInactiveLabel("Same")
+                .setX(6))
+        .setX(128)
+        .addToContainer(uiModulator);
   }
 
   private UI2dContainer row(String label, UI2dComponent component) {
@@ -48,8 +46,7 @@ public class UIDmxColorModulator implements UIModulatorControls<DmxColorModulato
   }
 
   private UI2dContainer row(String label, int labelWidth, UI2dComponent component) {
-    return UI2dContainer.newHorizontalContainer(16, 4,
-        new UILabel(labelWidth, 12, label),
-        component);
+    return UI2dContainer.newHorizontalContainer(
+        16, 4, new UILabel(labelWidth, 12, label), component);
   }
 }
