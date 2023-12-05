@@ -12,10 +12,9 @@
  * WITH RESPECT TO THE SOFTWARE.
  *
  * @author Mark C. Slee <mark@heronarts.com>
- * <p>JKB: This file is part of the LX Studio library. Including this code in the TE repo is a
- * temporary measure to add experimental features to the surface.
+ *     <p>JKB: This file is part of the LX Studio library. Including this code in the TE repo is a
+ *     temporary measure to add experimental features to the surface.
  */
-
 package titanicsend.lx;
 
 import heronarts.lx.LX;

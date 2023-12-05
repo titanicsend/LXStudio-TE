@@ -14,18 +14,14 @@ public enum TEShaderView {
   // Could add a view for this variation if desired.
   SPLIT_PANEL_SECTIONS("Panel Sections");
 
-  /**
-   * This view's label in resources/vehicle/views.txt
-   */
+  /** This view's label in resources/vehicle/views.txt */
   public final String viewLabel;
 
   TEShaderView(String viewLabel) {
     this.viewLabel = viewLabel;
   }
 
-  /**
-   * Get string value to be used as key to ViewParameter
-   */
+  /** Get string value to be used as key to ViewParameter */
   public String getParameterKey() {
     return this.viewLabel;
   }
