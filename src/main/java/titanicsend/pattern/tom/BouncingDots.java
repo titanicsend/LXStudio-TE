@@ -46,7 +46,7 @@ public class BouncingDots extends TEPerformancePattern {
   protected void runTEAudioPattern(double deltaMs) {
     float phase = this.phase.getValuef();
 
-    int dotColor = calcColor();
+    int dotCol = calcColor();
     int dotWidth = (int) (getSize());
     for (TEEdgeModel edge : modelTE.edgesById.values()) {
       int target = (int) (edge.size * phase);
@@ -57,7 +57,7 @@ public class BouncingDots extends TEPerformancePattern {
         if (i <= tooLow || i > noHigherThan) {
           colors[point.index] = TRANSPARENT;
         } else {
-          colors[point.index] = dotColor;
+          colors[point.index] = dotCol;
         }
         i++;
       }
