@@ -108,6 +108,21 @@ public class TESparklePattern extends TEPerformancePattern {
 
     public Engine(LXModel model) {
       setModel(model);
+      // Sharpness of sparkle curve
+      controls.setRange(TEControlTag.WOW2, 0, -1, 1);
+
+      // Waveshape (in Size control position)
+      controls.setControl(TEControlTag.SIZE, engine.waveshape);
+
+      // minlevel (in XPos control position)
+      controls.setControl(TEControlTag.XPOS, engine.minLevel);
+
+      // maxlevel (in YPos control position)
+      controls.setControl(TEControlTag.YPOS, engine.maxLevel);
+
+      controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
+      controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
+      addCommonControls();
     }
 
     public void setModel(LXModel model) {
