@@ -34,10 +34,20 @@ public class ExampleDmxTEPerformancePattern extends TEPerformancePattern {
   public ExampleDmxTEPerformancePattern(LX lx) {
     super(lx);
 
+    // set up the controls used for this pattern.
     this.controls.setRange(TEControlTag.SIZE, 0, 0, 1);
     this.controls.setRange(TEControlTag.XPOS, 0, 0, 360);
     this.controls.getControl(TEControlTag.XPOS).control.setWrappable(true);
     this.controls.setRange(TEControlTag.YPOS, 0, -130, 114);
+
+    // Mark all unused controls for this pattern.
+    controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
+    controls.markUnused(controls.getLXControl(TEControlTag.BRIGHTNESS));
+    controls.markUnused(controls.getLXControl(TEControlTag.EXPLODE));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
+    controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
 
     addCommonControls();
   }
