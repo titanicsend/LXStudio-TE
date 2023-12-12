@@ -119,8 +119,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
   /**
    * @return Returns a loosely beat-linked rotation angle in radians. Overall speed is determined by
-   * the "Speed" control, but will automatically speed up and slow down as the LX engine's beat
-   * speed changes. The "Angle" controls sets an additional angular offset.
+   *     the "Speed" control, but will automatically speed up and slow down as the LX engine's beat
+   *     speed changes. The "Angle" controls sets an additional angular offset.
    */
   public double getRotationAngleFromSpeed() {
     // Loosely beat linked speed.  What this thinks it's doing is moving at one complete rotation
@@ -133,8 +133,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
   /**
    * @return Returns a loosely beat-linked rotation angle in radians. Overall speed is determined by
-   * the "Spin" control, but will automatically speed up and slow down as the LX engine's beat
-   * speed changes. The "Angle" controls sets an additional angular offset.
+   *     the "Spin" control, but will automatically speed up and slow down as the LX engine's beat
+   *     speed changes. The "Angle" controls sets an additional angular offset.
    */
   public double getRotationAngleFromSpin() {
     // See comments in getRotationAngleFromSpeed() above.
@@ -156,8 +156,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
    *
    * @param radiansPerSecond
    */
-  public void setMaxRotationSpeed(double radiansPerSecond) {
-  }
+  public void setMaxRotationSpeed(double radiansPerSecond) {}
 
   /*
    * Color safety mechanism: only calculate solid colors once per frame.
@@ -175,12 +174,12 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
   /**
    * @return Color derived from the current setting of the color and brightness controls
-   * <p>NOTE: The design philosophy here is that palette colors (and the color control) have
-   * precedence.
-   * <p>Brightness modifies the current color, and is set to 1.0 (100%) by default. So if you
-   * don't move the brightness control you get *exactly* the currently selected color.
-   * <p>At present, the brightness control lets you dim the current color, but if you want to
-   * brighten it, you have to do that with the channel fader or the color control.
+   *     <p>NOTE: The design philosophy here is that palette colors (and the color control) have
+   *     precedence.
+   *     <p>Brightness modifies the current color, and is set to 1.0 (100%) by default. So if you
+   *     don't move the brightness control you get *exactly* the currently selected color.
+   *     <p>At present, the brightness control lets you dim the current color, but if you want to
+   *     brighten it, you have to do that with the channel fader or the color control.
    */
   public int calcColor() {
     if (isStaleColor) {
@@ -222,7 +221,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
   /**
    * @return Current variable time in seconds. Note that time can run both forward and backward, so
-   * the returned value can be negative.
+   *     the returned value can be negative.
    */
   public double getTime() {
     return iTime.getTime();
@@ -230,7 +229,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
   /**
    * @return Current variable time in milliseconds. Note that time can run both forward and
-   * backward, so the returned value can be negative.
+   *     backward, so the returned value can be negative.
    */
   public double getTimeMs() {
     return iTime.getTimeMs();
@@ -241,7 +240,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
    * current scale value. Bidirectional time is allowed (true) by default.
    *
    * @param val true for bidirectional time, false for forward-moving time only, regardless of time
-   *            scale setting.
+   *     scale setting.
    */
   public void allowBidirectionalTime(boolean val) {
     iTime.allowBidirectionalTime(val);
@@ -249,8 +248,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
   /**
    * @return current variable time in milliseconds since last call to this timer's Tick() function
-   * (normally called automatically at the start of each frame.) Note that time can run both
-   * forward and backward, so the returned value can be negative.
+   *     (normally called automatically at the start of each frame.) Note that time can run both
+   *     forward and backward, so the returned value can be negative.
    */
   public double getDeltaMs() {
     return iTime.getDeltaMs();
@@ -325,7 +324,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
    * <p>This is useful for syncing a timer precisely to beats, measures and other external events.
    *
    * @param tag - the tag of the control to be retriggered. Only works timer-linked controls - SPEED
-   *            and SPIN at present.
+   *     and SPIN at present.
    */
   public void retrigger(TEControlTag tag) {
     switch (tag) {
@@ -346,12 +345,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         onWowTrigger(getWowTrigger());
       };
 
-
-  /**
-   * Subclasses can override
-   */
-  protected void onWowTrigger(boolean on) {
-  }
+  /** Subclasses can override */
+  protected void onWowTrigger(boolean on) {}
 
   /**
    * To be called from the constructor of automatically configured shader patterns prior to calling
@@ -367,7 +362,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
           controls.setValue(config.parameterId, config.value);
           break;
         case SET_RANGE:
-          controls.setRange(    config.parameterId, config.value, config.v1, config.v2);
+          controls.setRange(config.parameterId, config.value, config.v1, config.v2);
           break;
         case SET_LABEL:
           controls.setLabel(config.parameterId, config.name);
