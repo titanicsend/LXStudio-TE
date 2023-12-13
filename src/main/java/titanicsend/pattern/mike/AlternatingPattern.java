@@ -2,26 +2,22 @@ package titanicsend.pattern.mike;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.parameter.DiscreteParameter;
-import heronarts.lx.pattern.LXPattern;
 import titanicsend.color.TEColorType;
 import titanicsend.pattern.TEPattern;
 
 @LXCategory("TE Examples")
 public class AlternatingPattern extends TEPattern {
   public final LinkedColorParameter oddColor =
-          registerColor("Odd", "odd", TEColorType.PRIMARY,
-                  "Color of the odd pixels");
+      registerColor("Odd", "odd", TEColorType.PRIMARY, "Color of the odd pixels");
 
   public final LinkedColorParameter evenColor =
-          registerColor("Even", "even", TEColorType.SECONDARY,
-                  "Color of the even pixels");
+      registerColor("Even", "even", TEColorType.SECONDARY, "Color of the even pixels");
 
   public final DiscreteParameter stripeLength =
-          new DiscreteParameter("Length", 1, 10)
-                  .setDescription("Number of pixels to go before switching colors");
+      new DiscreteParameter("Length", 1, 10)
+          .setDescription("Number of pixels to go before switching colors");
 
   public AlternatingPattern(LX lx) {
     super(lx);

@@ -5,11 +5,11 @@ import heronarts.lx.color.LXDynamicColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.output.LXOutput;
 import heronarts.lx.studio.TEApp;
+import java.util.ArrayList;
+import java.util.List;
 import titanicsend.app.GigglePixelBroadcaster;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
-import java.util.ArrayList;
-import java.util.List;
 
 public class GPOutput extends LXOutput {
   private GigglePixelBroadcaster broadcaster;
@@ -21,19 +21,19 @@ public class GPOutput extends LXOutput {
     this.modelTE = TEApp.wholeModel;
     this.broadcaster = broadcaster;
   }
-  
+
   private boolean initialized = false;
   private boolean alwaysUsePalette = false;
   private ArrayList<LXPoint> gpPoints = new ArrayList<LXPoint>();
-  
+
   private void findGigglePixelPoints() {
     /*
-      GigglePixel color sync protocol methods
-     */
+     GigglePixel color sync protocol methods
+    */
 
     // Finds a set of points that GP should use to make its palette broadcasts.
     // By default, it will pick a point in the middle of SUA and SDC panels and
-    // a point in the middle of one of each of their edges. 
+    // a point in the middle of one of each of their edges.
 
     TEPanelModel sua = this.modelTE.panelsById.get("SUA");
     TEPanelModel sdc = this.modelTE.panelsById.get("SDC");
@@ -53,21 +53,21 @@ public class GPOutput extends LXOutput {
       halfway = sdc.e0.points.length / 2;
       if (halfway < sdc.e0.points.length) gpPoints.add(sdc.e0.points[halfway]);
     }
-    
+
     if (gpPoints.size() > 0) {
       this.initialized = true;
     }
   }
-  
+
   // Handy public method for changing the GP points, if you like!
   public void setGigglePixelPoints(ArrayList<LXPoint> points) {
-	this.gpPoints = new ArrayList<LXPoint>(points);
-	this.initialized = true;
+    this.gpPoints = new ArrayList<LXPoint>(points);
+    this.initialized = true;
   }
-  
+
   // Handy public method for toggling GP pixel source
   public void usePalette(boolean alwaysUsePalette) {
-	this.alwaysUsePalette = alwaysUsePalette;
+    this.alwaysUsePalette = alwaysUsePalette;
   }
 
   @Override
@@ -75,7 +75,7 @@ public class GPOutput extends LXOutput {
     // Look for standard GP points on the model.
     // Take out the surrounding IF if you want to refresh from the model every frame
     if (!this.initialized) {
-       findGigglePixelPoints();
+      findGigglePixelPoints();
     }
 
     // If you want to come back later and allow patterns to choose their GP points,

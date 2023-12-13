@@ -4,31 +4,34 @@ import com.google.gson.annotations.SerializedName;
 
 public class Input {
 
-    private String src;
+  private String src;
 
-    @SerializedName("ctype")
-    private Type type;
+  @SerializedName("ctype")
+  private Type type;
 
-    @SerializedName("channel")
-    private int channelNumber;
+  @SerializedName("channel")
+  private int channelNumber;
 
-    public String getSrc() {
-        return src;
-    }
+  public String getSrc() {
+    return src;
+  }
 
-    public Type getType() {
-        return type;
-    }
+  public Type getType() {
+    return type;
+  }
 
-    public int getChannelNumber() {
-        return channelNumber;
-    }
+  public int getChannelNumber() {
+    return channelNumber;
+  }
 
-    public enum Type {
-        @SerializedName("texture") TEXTURE,
-        @SerializedName("music") MUSIC,
-        @SerializedName("musicstream") MUSIC_STREAM,
-        @SerializedName("mic") MIC
-    }
-
+  public enum Type {
+    @SerializedName("texture")
+    TEXTURE,
+    @SerializedName("music")
+    MUSIC,
+    @SerializedName("musicstream")
+    MUSIC_STREAM,
+    @SerializedName("mic")
+    MIC
+  }
 }

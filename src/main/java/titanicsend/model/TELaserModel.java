@@ -4,10 +4,9 @@ import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
-import titanicsend.lasercontrol.LaserControl;
-
 import java.util.ArrayList;
 import java.util.List;
+import titanicsend.lasercontrol.LaserControl;
 
 public class TELaserModel extends TEModel {
   public LXVector origin;
@@ -16,18 +15,20 @@ public class TELaserModel extends TEModel {
   public String id;
   public LaserControl control;
 
-  public TELaserModel(String id, double x, double y, double z, String ... tags) {
+  public TELaserModel(String id, double x, double y, double z, String... tags) {
     super("Laser", makePoint(x, y, z), tags);
     this.id = id;
     this.origin = new LXVector(this.points[0]);
-    this.color = LXColor.rgb(255,0,0);
+    this.color = LXColor.rgb(255, 0, 0);
   }
 
   public String getId() {
     return this.id;
   }
 
-  public LXVector getDirection() { return this.direction; }
+  public LXVector getDirection() {
+    return this.direction;
+  }
 
   public void setDirection(LXVector direction) {
     if (this.id.startsWith("HP") && direction.y < 0) {

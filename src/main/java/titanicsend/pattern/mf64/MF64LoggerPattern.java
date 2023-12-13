@@ -10,7 +10,8 @@ public class MF64LoggerPattern extends TEMidiFighter64Subpattern {
 
   @Override
   public void buttonDown(TEMidiFighter64DriverPattern.Mapping mapping) {
-    String pageStr = mapping.page == TEMidiFighter64DriverPattern.Mapping.Page.LEFT ? "left" : "right";
+    String pageStr =
+        mapping.page == TEMidiFighter64DriverPattern.Mapping.Page.LEFT ? "left" : "right";
     LX.log("MIDI Fighter page=" + pageStr + " row=" + mapping.row + " col=" + mapping.col);
   }
 

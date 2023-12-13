@@ -1,7 +1,4 @@
-/**
- * License notes: Expecting to contribute these DMX modulators back to LX upstream
- */
-
+/** License notes: Expecting to contribute these DMX modulators back to LX upstream */
 package titanicsend.modulator.dmx;
 
 import heronarts.lx.LXCategory;
@@ -22,12 +19,10 @@ import heronarts.lx.parameter.LXParameter;
 public class DmxGridModulator extends DmxModulator {
 
   public final DiscreteParameter rows =
-    new DiscreteParameter("Rows", 1, 100)
-    .setDescription("Number of rows in the grid");
+      new DiscreteParameter("Rows", 1, 100).setDescription("Number of rows in the grid");
 
   public final DiscreteParameter columns =
-    new DiscreteParameter("Columns", 1, 100)
-    .setDescription("Number of columns in the grid");
+      new DiscreteParameter("Columns", 1, 100).setDescription("Number of columns in the grid");
 
   private int[][] values;
 
@@ -75,7 +70,7 @@ public class DmxGridModulator extends DmxModulator {
     final int columns = this.columns.getValuei();
 
     int r = 0, c = 0, sum = 0;
-    final int resolution = rows * columns;    
+    final int resolution = rows * columns;
     for (int i = 0; i < resolution; i++) {
       this.values[r][c] = dmxGetValuei(universe, channel);
       sum += this.values[r][c];
@@ -96,7 +91,7 @@ public class DmxGridModulator extends DmxModulator {
       }
     }
 
-    return sum / (double)resolution / 255.;
+    return sum / (double) resolution / 255.;
   }
 
   private int dmxGetValuei(int universe, int channel) {
@@ -106,5 +101,4 @@ public class DmxGridModulator extends DmxModulator {
   public int getValue(int row, int column) {
     return this.values[row][column];
   }
-
 }

@@ -1,34 +1,31 @@
 /**
  * Copyright 2023- Justin Belcher, Mark C. Slee, Heron Arts LLC
  *
- * This file is part of the LX Studio software library. By using
- * LX, you agree to the terms of the LX Studio Software License
- * and Distribution Agreement, available at: http://lx.studio/license
+ * <p>This file is part of the LX Studio software library. By using LX, you agree to the terms of
+ * the LX Studio Software License and Distribution Agreement, available at: http://lx.studio/license
  *
- * Please note that the LX license is not open-source. The license
- * allows for free, non-commercial use.
+ * <p>Please note that the LX license is not open-source. The license allows for free,
+ * non-commercial use.
  *
- * HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR
- * OTHERWISE, AND SPECIFICALLY DISCLAIMS ANY WARRANTY OF
- * MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR
- * PURPOSE, WITH RESPECT TO THE SOFTWARE.
+ * <p>HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, AND SPECIFICALLY
+ * DISCLAIMS ANY WARRANTY OF MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR PURPOSE,
+ * WITH RESPECT TO THE SOFTWARE.
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.dmx.parameter;
 
 import heronarts.lx.utils.LXUtils;
 
 /**
- * User limits on DMX parameter values, more restrictive than the possible fixture values.
- * Can be used as a safety limit on tilt range, for example.
+ * User limits on DMX parameter values, more restrictive than the possible fixture values. Can be
+ * used as a safety limit on tilt range, for example.
  */
 public class DmxParameterLimiter {
 
-  static public final double NO_LIMIT = -99999;
+  public static final double NO_LIMIT = -99999;
 
-  static public enum LimitType {
+  public static enum LimitType {
     CLIP("Clip"),
     ZOOM("Zoom");
 
@@ -121,20 +118,21 @@ public class DmxParameterLimiter {
   public double limit(double value) {
     if (this.hasLimit) {
       switch (this.limitType) {
-      case ZOOM:
-        value = ((value - this.parameter.getMin()) / this.parameter.getRangeD() * range) + (this.min != NO_LIMIT ? this.min : this.parameter.getMin());
-        break;
-      case CLIP:
-        if (this.min != NO_LIMIT) {
-          value = LXUtils.max(value, min);      
-        }
-        if (this.max != NO_LIMIT) {
-          value = LXUtils.min(value, max);
-        }
-        break;
+        case ZOOM:
+          value =
+              ((value - this.parameter.getMin()) / this.parameter.getRangeD() * range)
+                  + (this.min != NO_LIMIT ? this.min : this.parameter.getMin());
+          break;
+        case CLIP:
+          if (this.min != NO_LIMIT) {
+            value = LXUtils.max(value, min);
+          }
+          if (this.max != NO_LIMIT) {
+            value = LXUtils.min(value, max);
+          }
+          break;
       }
     }
     return value;
   }
-
 }

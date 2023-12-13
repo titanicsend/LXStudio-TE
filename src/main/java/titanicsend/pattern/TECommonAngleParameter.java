@@ -10,35 +10,35 @@ import titanicsend.util.Rotor;
 // to the spin control's current setting.
 class TECommonAngleParameter extends CompoundParameter {
 
-    private final TEPerformancePattern pattern;
-    private final Rotor spinRotor;
+  private final TEPerformancePattern pattern;
+  private final Rotor spinRotor;
 
-    public TECommonAngleParameter(TEPerformancePattern pattern, Rotor rotor, String label, double value, double v0, double v1) {
-        super(label, value, v0, v1);
-        this.pattern = pattern;
-        this.spinRotor = rotor;
+  public TECommonAngleParameter(
+      TEPerformancePattern pattern, Rotor rotor, String label, double value, double v0, double v1) {
+    super(label, value, v0, v1);
+    this.pattern = pattern;
+    this.spinRotor = rotor;
+  }
+
+  @Override
+  public LXListenableNormalizedParameter incrementNormalized(double amount) {
+    // High resolution
+    return super.incrementNormalized(amount / 5.);
+  }
+
+  @Override
+  public BoundedParameter reset() {
+    // if not spinning, resetting angle controls
+    // resets both the static angle and the spin angle.
+    if (pattern.getSpin() == 0) {
+      this.spinRotor.setAngle(0);
     }
 
-    @Override
-    public LXListenableNormalizedParameter incrementNormalized(double amount) {
-        // High resolution
-        return super.incrementNormalized(amount / 5.);
+    // If spinning, reset static angle to 0, and also
+    // add a corresponding offset to spinRotor to avoid a visual glitch.
+    else {
+      this.spinRotor.addAngle(-this.getValue());
     }
-
-    @Override
-    public BoundedParameter reset() {
-        // if not spinning, resetting angle controls
-        // resets both the static angle and the spin angle.
-        if (pattern.getSpin() == 0) {
-            this.spinRotor.setAngle(0);
-        }
-
-        // If spinning, reset static angle to 0, and also
-        // add a corresponding offset to spinRotor to avoid a visual glitch.
-        else {
-            this.spinRotor.addAngle(-this.getValue());
-        }
-        return super.reset();
-    }
+    return super.reset();
+  }
 }
-
