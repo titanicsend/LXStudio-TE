@@ -5,6 +5,7 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.model.LXPoint;
 import titanicsend.model.TEPanelModel;
 import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 import java.util.*;
@@ -17,6 +18,18 @@ public class Checkers extends TEPerformancePattern {
   public Checkers(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
 
+    // Mark all unused controls for this pattern.
+    controls.markUnused(controls.getLXControl(TEControlTag.SPEED));
+    controls.markUnused(controls.getLXControl(TEControlTag.XPOS));
+    controls.markUnused(controls.getLXControl(TEControlTag.YPOS));
+    controls.markUnused(controls.getLXControl(TEControlTag.SIZE));
+    controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
+    controls.markUnused(controls.getLXControl(TEControlTag.EXPLODE));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
+    controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
     addCommonControls();
 
     this.panelGroup = new HashMap<>();

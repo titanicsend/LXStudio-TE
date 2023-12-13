@@ -255,6 +255,8 @@ public class TESparklePattern extends TEPerformancePattern {
         // maxlevel (in YPos control position)
         controls.setControl(TEControlTag.YPOS,engine.maxLevel);
 
+        controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
+        controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
         addCommonControls();
     }
 
