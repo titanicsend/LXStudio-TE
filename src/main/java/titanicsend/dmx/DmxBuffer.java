@@ -1,31 +1,27 @@
 /**
  * Copyright 2023- Justin Belcher, Mark C. Slee, Heron Arts LLC
  *
- * This file is part of the LX Studio software library. By using
- * LX, you agree to the terms of the LX Studio Software License
- * and Distribution Agreement, available at: http://lx.studio/license
+ * <p>This file is part of the LX Studio software library. By using LX, you agree to the terms of
+ * the LX Studio Software License and Distribution Agreement, available at: http://lx.studio/license
  *
- * Please note that the LX license is not open-source. The license
- * allows for free, non-commercial use.
+ * <p>Please note that the LX license is not open-source. The license allows for free,
+ * non-commercial use.
  *
- * HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR
- * OTHERWISE, AND SPECIFICALLY DISCLAIMS ANY WARRANTY OF
- * MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR
- * PURPOSE, WITH RESPECT TO THE SOFTWARE.
+ * <p>HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, AND SPECIFICALLY
+ * DISCLAIMS ANY WARRANTY OF MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR PURPOSE,
+ * WITH RESPECT TO THE SOFTWARE.
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.dmx;
 
 import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.dmx.parameter.DmxParameter;
 
 /**
- * Similar to ModelBuffer.
- * Eventually might be merged with LXBuffer/ModelBuffer.
- * 
- * DmxBuffer is one fixture, DmxModelBuffer is all the fixtures
+ * Similar to ModelBuffer. Eventually might be merged with LXBuffer/ModelBuffer.
+ *
+ * <p>DmxBuffer is one fixture, DmxModelBuffer is all the fixtures
  */
 public class DmxBuffer {
 
@@ -39,10 +35,11 @@ public class DmxBuffer {
   public boolean isActive = false;
   public boolean isModified = false;
 
-  private LXParameterListener parameterListener = (p) -> {
-    isActive = true;
-    isModified = true;
-  };
+  private LXParameterListener parameterListener =
+      (p) -> {
+        isActive = true;
+        isModified = true;
+      };
 
   public DmxBuffer(DmxParameter[] parameters) {
     this.array = parameters;

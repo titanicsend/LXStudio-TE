@@ -1,7 +1,4 @@
-/**
- * License notes: Expecting to contribute these DMX modulators back to LX upstream
- */
-
+/** License notes: Expecting to contribute these DMX modulators back to LX upstream */
 package titanicsend.modulator.dmx;
 
 import heronarts.lx.LXCategory;
@@ -22,16 +19,14 @@ import heronarts.lx.parameter.LXParameter;
 public class DmxRangeModulator extends DmxModulator {
 
   public final DiscreteParameter min =
-    new DiscreteParameter("Min", 0, 256)
-    .setDescription("Minimum input value for range");
+      new DiscreteParameter("Min", 0, 256).setDescription("Minimum input value for range");
 
   public final DiscreteParameter max =
-    new DiscreteParameter("Max", 255, 0, 256)
-    .setDescription("Maximum input value for range");
+      new DiscreteParameter("Max", 255, 0, 256).setDescription("Maximum input value for range");
 
   public final BooleanParameter active =
-    new BooleanParameter("Active", false)
-    .setDescription("Active: TRUE when DMX value is within the range [min, max], inclusive");
+      new BooleanParameter("Active", false)
+          .setDescription("Active: TRUE when DMX value is within the range [min, max], inclusive");
 
   public DmxRangeModulator() {
     this("DMX Range");
@@ -72,10 +67,7 @@ public class DmxRangeModulator extends DmxModulator {
     final int min = this.min.getValuei();
     final int max = this.max.getValuei();
 
-    final int dmx = getDmxValuei(
-        this.universe.getValuei(),
-        this.channel.getValuei()
-        );
+    final int dmx = getDmxValuei(this.universe.getValuei(), this.channel.getValuei());
 
     if (dmx >= min && dmx <= max) {
       this.active.setValue(true);

@@ -10,41 +10,43 @@ import titanicsend.model.TEEdgeModel;
 
 @LXCategory(LXCategory.TEXTURE)
 public class EdgeSieve extends TEEffect {
-    private final DiscreteParameter gap = new DiscreteParameter("Gap", 0, 0, 11)
-            .setDescription("Number of off pixels between on pixels");
-    private final DiscreteParameter length = new DiscreteParameter("Length", 1, 1, 7)
-            .setDescription("Number of on pixels between gaps");
+  private final DiscreteParameter gap =
+      new DiscreteParameter("Gap", 0, 0, 11)
+          .setDescription("Number of off pixels between on pixels");
+  private final DiscreteParameter length =
+      new DiscreteParameter("Length", 1, 1, 7).setDescription("Number of on pixels between gaps");
 
-    private final CompoundParameter offsetFrac = new CompoundParameter("Offset", 0, 0, 1)
-            .setDescription("Phase offset, in fraction of overall length");
+  private final CompoundParameter offsetFrac =
+      new CompoundParameter("Offset", 0, 0, 1)
+          .setDescription("Phase offset, in fraction of overall length");
 
-    protected int runLength;
-    protected int offset;
+  protected int runLength;
+  protected int offset;
 
-    public EdgeSieve(LX lx) {
-        super(lx);
-        addParameter("gap", this.gap);
-        addParameter("length", this.length);
-        addParameter("offset", this.offsetFrac);
-        gap.bang();
-    }
+  public EdgeSieve(LX lx) {
+    super(lx);
+    addParameter("gap", this.gap);
+    addParameter("length", this.length);
+    addParameter("offset", this.offsetFrac);
+    gap.bang();
+  }
 
-    @Override
-    protected void run(double deltaMs, double enabledAmount) {
-        if (enabledAmount > 0) {
-            for (TEEdgeModel edge : this.modelTE.edgesById.values()) {
-                for (TEEdgeModel.Point point : edge.points) {
-                    if (Math.floorMod(point.i - offset, runLength) >= length.getValuei()) {
-                        colors[point.index] = LXColor.BLACK;
-                    }
-                }
-            }
+  @Override
+  protected void run(double deltaMs, double enabledAmount) {
+    if (enabledAmount > 0) {
+      for (TEEdgeModel edge : this.modelTE.edgesById.values()) {
+        for (TEEdgeModel.Point point : edge.points) {
+          if (Math.floorMod(point.i - offset, runLength) >= length.getValuei()) {
+            colors[point.index] = LXColor.BLACK;
+          }
         }
+      }
     }
+  }
 
-    public void onParameterChanged(LXParameter parameter) {
-        super.onParameterChanged(parameter);
-        runLength = gap.getValuei() + length.getValuei();
-        offset = (int) (offsetFrac.getNormalized() * runLength);
-    }
+  public void onParameterChanged(LXParameter parameter) {
+    super.onParameterChanged(parameter);
+    runLength = gap.getValuei() + length.getValuei();
+    offset = (int) (offsetFrac.getNormalized() * runLength);
+  }
 }

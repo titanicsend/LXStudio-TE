@@ -2,10 +2,9 @@ package titanicsend.model;
 
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
+import java.util.*;
 import titanicsend.app.TEVirtualColor;
 import titanicsend.util.TEMath;
-
-import java.util.*;
 
 public class TEVertex extends LXVector {
   public static HashMap<Integer, TEVertex> vertexesById;

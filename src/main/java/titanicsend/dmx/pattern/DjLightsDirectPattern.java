@@ -9,17 +9,16 @@ import titanicsend.dmx.model.AdjStealthModel;
 import titanicsend.dmx.model.DmxModel;
 import titanicsend.ui.UIUtils;
 
-/**
- * Simple DJ lights pattern allowing direct control of parameters.
- */
+/** Simple DJ lights pattern allowing direct control of parameters. */
 @LXCategory("Test")
-public class DjLightsDirectPattern extends DjLightsPattern implements UIDeviceControls<DjLightsDirectPattern> {
+public class DjLightsDirectPattern extends DjLightsPattern
+    implements UIDeviceControls<DjLightsDirectPattern> {
 
   public DjLightsDirectPattern(LX lx) {
     super(lx);
 
     addParameter("pan", this.pan);
-    addParameter("tilt", this.tilt);   
+    addParameter("tilt", this.tilt);
     addParameter("red", this.red);
     addParameter("green", this.green);
     addParameter("blue", this.blue);
@@ -37,7 +36,7 @@ public class DjLightsDirectPattern extends DjLightsPattern implements UIDeviceCo
   @Override
   protected void run(double deltaMs) {
     double pan = this.pan.getNormalized();
-    double tilt = this.tilt.getNormalized();   
+    double tilt = this.tilt.getNormalized();
     double red = this.red.getNormalized();
     double green = this.green.getNormalized();
     double blue = this.blue.getNormalized();

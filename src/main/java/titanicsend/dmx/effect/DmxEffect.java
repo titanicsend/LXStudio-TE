@@ -15,7 +15,7 @@ public abstract class DmxEffect extends LXEffect {
   // Comparable to int[] colors array.
   // TODO: shield this from rogue subclass reassignment
   // TODO: consider switching to 2D array instead
-  protected DmxModelBuffer dmx = null;  
+  protected DmxModelBuffer dmx = null;
 
   public DmxEffect(LX lx) {
     super(lx);
@@ -26,10 +26,9 @@ public abstract class DmxEffect extends LXEffect {
   }
 
   /**
-   * Intercept the buffer assignment, called by channel.
-   * Store the matching DmxModelBuffer after
-   * obtaining it from the singleton DmxEngine which is tracking
-   * 1:1 instances of LXBuffer and DmxBuffer[] aka DmxModelBuffer
+   * Intercept the buffer assignment, called by channel. Store the matching DmxModelBuffer after
+   * obtaining it from the singleton DmxEngine which is tracking 1:1 instances of LXBuffer and
+   * DmxBuffer[] aka DmxModelBuffer
    */
   @Override
   public LXLayeredComponent setBuffer(LXBuffer buffer) {
@@ -37,9 +36,7 @@ public abstract class DmxEffect extends LXEffect {
     return super.setBuffer(buffer);
   }
 
-  /**
-   * Convenience method for patterns to set a value for a DMX fixture into the current buffer.
-   */
+  /** Convenience method for patterns to set a value for a DMX fixture into the current buffer. */
   public double setDmxValue(DmxModel dmxModel, String field, double value) {
     int fieldIndex = dmxModel.getFieldIndex(field);
     if (fieldIndex == DmxModel.FIELD_NOT_FOUND) {
@@ -77,7 +74,8 @@ public abstract class DmxEffect extends LXEffect {
   }
 
   /**
-   * Convenience method for patterns to set a normalized value for a DMX fixture into the current buffer.
+   * Convenience method for patterns to set a normalized value for a DMX fixture into the current
+   * buffer.
    */
   public double setDmxNormalized(DmxModel dmxModel, String field, double value) {
     int fieldIndex = dmxModel.getFieldIndex(field);
@@ -90,12 +88,12 @@ public abstract class DmxEffect extends LXEffect {
   }
 
   /**
-   * Convenience method for patterns to set a normalized value for a DMX fixture into the current buffer.
-   * Similar to: colors[point.index] = value
+   * Convenience method for patterns to set a normalized value for a DMX fixture into the current
+   * buffer. Similar to: colors[point.index] = value
    */
   public double setDmxNormalized(DmxModel dmxModel, int fieldIndex, double value) {
     // TODO: add friendly safety checking
-    DmxParameter parameter = this.dmx.get(dmxModel.index).get(fieldIndex);    
+    DmxParameter parameter = this.dmx.get(dmxModel.index).get(fieldIndex);
     parameter.setNormalized(value);
     return parameter.getNormalized();
   }

@@ -1,25 +1,25 @@
 package titanicsend.pattern.pixelblaze;
 
-import javax.script.*;
+import heronarts.lx.LX;
+import heronarts.lx.model.LXPoint;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
-
-import heronarts.lx.LX;
-import heronarts.lx.model.LXPoint;
+import javax.script.*;
 import org.openjdk.nashorn.api.scripting.JSObject;
 import org.openjdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import titanicsend.pattern.TEPerformancePattern;
 
 public class Wrapper {
 
-  //NOTE these are thread-safe, if used with separate bindings
-  //https://stackoverflow.com/a/30159424/910094
+  // NOTE these are thread-safe, if used with separate bindings
+  // https://stackoverflow.com/a/30159424/910094
   static final ScriptEngine engine;
   static final Compilable compilingEngine;
   static HashMap<Path, CachedScript> scripts = new HashMap<>();
+
   static {
     NashornScriptEngineFactory factory = new NashornScriptEngineFactory();
     engine = factory.getScriptEngine("--language=es6");
@@ -29,6 +29,7 @@ public class Wrapper {
   static class CachedScript {
     CompiledScript compiledScript;
     long lastModified;
+
     public CachedScript(CompiledScript compiledScript, long lastModified) {
       this.compiledScript = compiledScript;
       this.lastModified = lastModified;
@@ -51,7 +52,8 @@ public class Wrapper {
     return cachedScript.compiledScript;
   }
 
-  public static Wrapper fromResource(String pbClass, TEPerformancePattern pattern, LXPoint[] points) throws Exception {
+  public static Wrapper fromResource(String pbClass, TEPerformancePattern pattern, LXPoint[] points)
+      throws Exception {
     return new Wrapper(new File("resources/pixelblaze/" + pbClass + ".js"), pattern, points);
   }
 
@@ -63,7 +65,8 @@ public class Wrapper {
   String renderName;
   boolean hasError = false;
 
-  public Wrapper(File file, TEPerformancePattern pattern, LXPoint[] points) throws ScriptException, IOException {
+  public Wrapper(File file, TEPerformancePattern pattern, LXPoint[] points)
+      throws ScriptException, IOException {
     this.file = file;
     this.pattern = pattern;
     this.points = points;
@@ -91,7 +94,7 @@ public class Wrapper {
 
       glueScript.eval(bindings);
       patternScript.eval(bindings);
-      ((JSObject)bindings.get("glueRegisterControls")).call(null);
+      ((JSObject) bindings.get("glueRegisterControls")).call(null);
 
       LX.log("Pattern loaded, ready:" + file.getName());
 
@@ -103,8 +106,7 @@ public class Wrapper {
   }
 
   public void render(double deltaMs, int[] colors) throws ScriptException, NoSuchMethodException {
-    if (hasError)
-      return;
+    if (hasError) return;
     bindings.put("__now", pattern.getTimeMs());
     bindings.put("__points", points);
     bindings.put("__colors", colors);
@@ -113,23 +115,21 @@ public class Wrapper {
     if (glueBeforeRender != null)
       glueBeforeRender.call(null, deltaMs, pattern.getTimeMs(), points, colors);
     JSObject glueRender = (JSObject) bindings.get("glueRender");
-    if (glueRender != null)
-      glueRender.call(null);
-
+    if (glueRender != null) glueRender.call(null);
   }
 
   /**
    * Updates the points that the pattern will operate on, reloading if necessary.
+   *
    * @param points
    * @throws ScriptException
    * @throws IOException
    * @throws NoSuchMethodException
    */
-  public void setPoints(LXPoint[] points) throws ScriptException, IOException, NoSuchMethodException {
-    if (this.points == points)
-      return;
+  public void setPoints(LXPoint[] points)
+      throws ScriptException, IOException, NoSuchMethodException {
+    if (this.points == points) return;
     this.points = points;
     load();
   }
-
 }

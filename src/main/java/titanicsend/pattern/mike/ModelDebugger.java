@@ -1,7 +1,8 @@
 package titanicsend.pattern.mike;
 
-import java.util.*;
-
+import heronarts.glx.ui.UI2dComponent;
+import heronarts.glx.ui.UI2dContainer;
+import heronarts.glx.ui.component.UITextBox;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
@@ -11,9 +12,7 @@ import heronarts.lx.parameter.*;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
-import heronarts.glx.ui.UI2dComponent;
-import heronarts.glx.ui.UI2dContainer;
-import heronarts.glx.ui.component.UITextBox;
+import java.util.*;
 import titanicsend.app.TEVirtualColor;
 import titanicsend.model.TEVertex;
 import titanicsend.pattern.TEPattern;
@@ -39,16 +38,15 @@ public class ModelDebugger extends TEPattern implements UIDeviceControls<ModelDe
   }
 
   public final EnumParameter<ObjectType> objectType =
-          new EnumParameter<ObjectType>("Object Type", ObjectType.PANEL)
-                  .setDescription("Which type of object to light up");
+      new EnumParameter<ObjectType>("Object Type", ObjectType.PANEL)
+          .setDescription("Which type of object to light up");
 
   public final DiscreteParameter pointIndex =
-          new DiscreteParameter("Index", -1, 2000)
-                  .setDescription("Pixel within the selected object to light up (-1 for all)");
+      new DiscreteParameter("Index", -1, 2000)
+          .setDescription("Pixel within the selected object to light up (-1 for all)");
 
   public final StringParameter objectId =
-          new StringParameter("ID")
-                  .setDescription("ID of the object to light up (blank for all)");
+      new StringParameter("ID").setDescription("ID of the object to light up (blank for all)");
 
   private UI2dComponent idErrLabel;
   private UI2dComponent pointErrLabel;
@@ -70,14 +68,13 @@ public class ModelDebugger extends TEPattern implements UIDeviceControls<ModelDe
     UITextBox tb;
 
     uiDevice.addChildren(
-            newDropMenu(objectType),
-            controlLabel(ui, "ID"),
-            tb = new UITextBox(0, 0, COL_WIDTH, 16).setParameter(objectId),
-            controlLabel(ui, "Point"),
-            newIntegerBox(pointIndex),
-            this.idErrLabel = controlLabel(ui, "Bad ID"),
-            this.pointErrLabel = controlLabel(ui, "Bad point")
-    );
+        newDropMenu(objectType),
+        controlLabel(ui, "ID"),
+        tb = new UITextBox(0, 0, COL_WIDTH, 16).setParameter(objectId),
+        controlLabel(ui, "Point"),
+        newIntegerBox(pointIndex),
+        this.idErrLabel = controlLabel(ui, "Bad ID"),
+        this.pointErrLabel = controlLabel(ui, "Bad point"));
 
     tb.setEmptyValueAllowed(true);
 
@@ -100,29 +97,26 @@ public class ModelDebugger extends TEPattern implements UIDeviceControls<ModelDe
       case VERTEX:
         try {
           vertexes.add(this.modelTE.vertexesById.get(Integer.parseInt(idStr)));
-        } catch (NumberFormatException ignored) {}
+        } catch (NumberFormatException ignored) {
+        }
         break;
       case EDGE:
-        if (getAll)
-          subModels.addAll(this.modelTE.edgesById.values());
+        if (getAll) subModels.addAll(this.modelTE.edgesById.values());
         else if (this.modelTE.edgesById.containsKey(idStr))
           subModels.add(this.modelTE.edgesById.get(idStr));
-        else
-          this.idErrLabel.setVisible(true);
+        else this.idErrLabel.setVisible(true);
         break;
       case PANEL:
-        if (getAll)
-          subModels.addAll(this.modelTE.panelsById.values());
+        if (getAll) subModels.addAll(this.modelTE.panelsById.values());
         else if (this.modelTE.panelsById.containsKey(idStr))
           subModels.add(this.modelTE.panelsById.get(idStr));
-        else
-          this.idErrLabel.setVisible(true);
+        else this.idErrLabel.setVisible(true);
         break;
       case LASER:
         // TODO: Implement
         break;
       default:
-          throw new Error("huh?");
+        throw new Error("huh?");
     }
 
     // If no submodels, don't print error about invalid points.
@@ -147,11 +141,10 @@ public class ModelDebugger extends TEPattern implements UIDeviceControls<ModelDe
   }
 
   public void clearVertexes() {
-    for(TEVertex vertex : this.modelTE.vertexesById.values()) {
+    for (TEVertex vertex : this.modelTE.vertexesById.values()) {
       vertex.virtualColor = new TEVirtualColor(255, 255, 255, 255);
     }
   }
 
-  public void run(double deltaMs) {
-  }
+  public void run(double deltaMs) {}
 }

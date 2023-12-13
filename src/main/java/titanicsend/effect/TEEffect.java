@@ -13,5 +13,4 @@ public abstract class TEEffect extends LXEffect {
 
     this.modelTE = (TEWholeModel) lx.getModel();
   }
-
 }

@@ -1,21 +1,18 @@
 /**
  * Copyright 2023- Justin Belcher, Mark C. Slee, Heron Arts LLC
  *
- * This file is part of the LX Studio software library. By using
- * LX, you agree to the terms of the LX Studio Software License
- * and Distribution Agreement, available at: http://lx.studio/license
+ * <p>This file is part of the LX Studio software library. By using LX, you agree to the terms of
+ * the LX Studio Software License and Distribution Agreement, available at: http://lx.studio/license
  *
- * Please note that the LX license is not open-source. The license
- * allows for free, non-commercial use.
+ * <p>Please note that the LX license is not open-source. The license allows for free,
+ * non-commercial use.
  *
- * HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR
- * OTHERWISE, AND SPECIFICALLY DISCLAIMS ANY WARRANTY OF
- * MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR
- * PURPOSE, WITH RESPECT TO THE SOFTWARE.
+ * <p>HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, AND SPECIFICALLY
+ * DISCLAIMS ANY WARRANTY OF MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR PURPOSE,
+ * WITH RESPECT TO THE SOFTWARE.
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.dmx.parameter;
 
 import heronarts.lx.LX;
@@ -78,19 +75,16 @@ public class DmxCompoundParameter extends CompoundParameter implements DmxParame
     return this.numBytes;
   }
 
-  /**
-   * Write bytes for this parameter into the output array.
-   * Value should be restricted by limiter
-   */
+  /** Write bytes for this parameter into the output array. Value should be restricted by limiter */
   @Override
   public final void writeBytes(byte[] output, int offset) {
     double normalized = (getDmxValueLimited() - getMin()) / getRangeD();
-    if (this.numBytes == 1) {      
-      output[offset] = (byte)(normalized * 255);
+    if (this.numBytes == 1) {
+      output[offset] = (byte) (normalized * 255);
     } else if (this.numBytes == 2) {
-      int i = (int)(normalized * 65535);
+      int i = (int) (normalized * 65535);
       output[offset] = (byte) ((i >> 8) & 0xff);
-      output[offset+1] = (byte) ((i >> 0) & 0xff);
+      output[offset + 1] = (byte) ((i >> 0) & 0xff);
     } else {
       LX.error(new Exception("Invalid number of bytes for DmxCompoundParameter"));
     }
@@ -125,7 +119,7 @@ public class DmxCompoundParameter extends CompoundParameter implements DmxParame
   public double getDmxValue(double alpha) {
     return super.getValue() * (this.scaleToAlpha ? alpha : 1);
   }
-  
+
   public DmxParameter setDmxValue(double value) {
     setValue(value);
     return this;
@@ -139,21 +133,19 @@ public class DmxCompoundParameter extends CompoundParameter implements DmxParame
     return this.range.max;
   }
 
-  /**
-   * Returns the parameter range as a double
-   */
+  /** Returns the parameter range as a double */
   public double getRangeD() {
     return this.getRange();
   }
 
   @Override
   public DmxCompoundParameter copy() {
-    DmxCompoundParameter copy = new DmxCompoundParameter(this.getLabel(), this.getValue(), this.range.v0, this.range.v1);
+    DmxCompoundParameter copy =
+        new DmxCompoundParameter(this.getLabel(), this.getValue(), this.range.v0, this.range.v1);
     copy.limiter.setLimitType(this.limiter.getLimitType());
     copy.limiter.setLimits(this.limiter.getMin(), this.limiter.getMax());
     copy.setNumBytes(numBytes);
     copy.setScaleToAlpha(this.scaleToAlpha);
     return copy;
   }
-
 }

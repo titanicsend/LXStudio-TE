@@ -12,10 +12,14 @@ public class TEGradientSource {
   }
 
   // Whole palette gradient across all 5 stops. Usually starts and ends with black.
-  public LXGradientUtils.ColorStops paletteGradient = initColorStops(5);     // [X] [X] [X] [X] [X]  All five color entries
-  public LXGradientUtils.ColorStops primaryGradient = initColorStops(3);     // [X] [ ] [X] [ ] [ ]  Background primary -> Primary
-  public LXGradientUtils.ColorStops secondaryGradient = initColorStops(3);   // [ ] [ ] [ ] [X] [X]  Background secondary -> Secondary
-  public LXGradientUtils.ColorStops foregroundGradient = initColorStops(3);  // [ ] [ ] [X] [X] [ ]  Primary -> Secondary
+  public LXGradientUtils.ColorStops paletteGradient =
+      initColorStops(5); // [X] [X] [X] [X] [X]  All five color entries
+  public LXGradientUtils.ColorStops primaryGradient =
+      initColorStops(3); // [X] [ ] [X] [ ] [ ]  Background primary -> Primary
+  public LXGradientUtils.ColorStops secondaryGradient =
+      initColorStops(3); // [ ] [ ] [ ] [X] [X]  Background secondary -> Secondary
+  public LXGradientUtils.ColorStops foregroundGradient =
+      initColorStops(3); // [ ] [ ] [X] [X] [ ]  Primary -> Secondary
 
   // If a pattern uses the standard gradients, call this in run() to ensure
   // palette changes are known and transitions are smooth

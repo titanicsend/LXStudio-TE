@@ -1,7 +1,4 @@
-/**
- * License notes: Expecting to contribute these DMX modulators back to LX upstream
- */
-
+/** License notes: Expecting to contribute these DMX modulators back to LX upstream */
 package titanicsend.modulator.dmx;
 
 import heronarts.lx.LXCategory;
@@ -46,16 +43,18 @@ public class DmxColorModulator extends DmxModulator {
     }
   }
 
-  public final EnumParameter<LXDmxEngine.ByteOrder> byteOrder = 
-    new EnumParameter<LXDmxEngine.ByteOrder>("Byte Order", LXDmxEngine.ByteOrder.RGB);
+  public final EnumParameter<LXDmxEngine.ByteOrder> byteOrder =
+      new EnumParameter<LXDmxEngine.ByteOrder>("Byte Order", LXDmxEngine.ByteOrder.RGB);
 
-  public final EnumParameter<ColorPosition> colorPosition = 
-    new EnumParameter<ColorPosition>("Color Position", ColorPosition.NONE)
-    .setDescription("Destination color position (1-based) in the global palette current swatch");
+  public final EnumParameter<ColorPosition> colorPosition =
+      new EnumParameter<ColorPosition>("Color Position", ColorPosition.NONE)
+          .setDescription(
+              "Destination color position (1-based) in the global palette current swatch");
 
   public final BooleanParameter fixed =
-    new BooleanParameter("Fixed", true)
-    .setDescription("When applying DMX color to the palette, also set the target color mode to Fixed");
+      new BooleanParameter("Fixed", true)
+          .setDescription(
+              "When applying DMX color to the palette, also set the target color mode to Fixed");
 
   public final ColorParameter color = new ColorParameter("Color", LXColor.BLACK);
 
@@ -79,10 +78,8 @@ public class DmxColorModulator extends DmxModulator {
   protected double computeValue(double deltaMs) {
     LXDmxEngine.ByteOrder byteOrder = this.byteOrder.getEnum();
 
-    int color = this.lx.engine.dmx.getColor(
-        this.universe.getValuei(),
-        this.channel.getValuei(),
-        byteOrder);
+    int color =
+        this.lx.engine.dmx.getColor(this.universe.getValuei(), this.channel.getValuei(), byteOrder);
 
     // Store color locally for preview
     this.color.setColor(color);
@@ -95,11 +92,16 @@ public class DmxColorModulator extends DmxModulator {
       }
       this.lx.engine.palette.swatch.getColor(colorPosition.index).primary.setColor(color);
       if (this.fixed.isOn()) {
-        this.lx.engine.palette.swatch.getColor(colorPosition.index).mode.setValue(LXDynamicColor.Mode.FIXED);
+        this.lx
+            .engine
+            .palette
+            .swatch
+            .getColor(colorPosition.index)
+            .mode
+            .setValue(LXDynamicColor.Mode.FIXED);
       }
     }
 
     return LXColor.luminosity(color) / 100.;
   }
-
 }

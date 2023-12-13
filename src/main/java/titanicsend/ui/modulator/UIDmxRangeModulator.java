@@ -9,7 +9,7 @@ import heronarts.lx.studio.ui.modulation.UIModulator;
 import heronarts.lx.studio.ui.modulation.UIModulatorControls;
 import titanicsend.modulator.dmx.DmxRangeModulator;
 
-public class UIDmxRangeModulator implements UIModulatorControls<DmxRangeModulator>  {
+public class UIDmxRangeModulator implements UIModulatorControls<DmxRangeModulator> {
 
   private static final int HEIGHT = 50;
   private static final int COL_WIDTH = 42;
@@ -19,21 +19,26 @@ public class UIDmxRangeModulator implements UIModulatorControls<DmxRangeModulato
     uiModulator.setContentHeight(HEIGHT);
 
     uiModulator.addChildren(
-      new UIIntegerBox(0, 2, COL_WIDTH, 16).setParameter(modulator.universe),
-      controlLabel(ui, "Univ", COL_WIDTH).setPosition(0, 21).setTextAlignment(VGraphics.Align.CENTER),
-
-      new UIIntegerBox(46, 2, COL_WIDTH, 16).setParameter(modulator.channel),
-      controlLabel(ui, "Chan", COL_WIDTH).setPosition(46, 21).setTextAlignment(VGraphics.Align.CENTER),
-
-      new UIIntegerBox(96, 2, COL_WIDTH, 16).setParameter(modulator.min),
-      controlLabel(ui, "Min", COL_WIDTH).setPosition(96, 21).setTextAlignment(VGraphics.Align.CENTER),
-
-      new UIIntegerBox(142, 2, COL_WIDTH, 16).setParameter(modulator.max),
-      controlLabel(ui, "Max", COL_WIDTH).setPosition(142, 21).setTextAlignment(VGraphics.Align.CENTER),
-
-      new UIIndicator(ui, 12, 12, modulator.active).setTriggerable(true).setPosition(uiModulator.getContentWidth() - 12, 2),
-      UIMeter.newVerticalMeter(ui, modulator, 12, 32).setPosition(uiModulator.getContentWidth() - 12, 16)
-      );
+        new UIIntegerBox(0, 2, COL_WIDTH, 16).setParameter(modulator.universe),
+        controlLabel(ui, "Univ", COL_WIDTH)
+            .setPosition(0, 21)
+            .setTextAlignment(VGraphics.Align.CENTER),
+        new UIIntegerBox(46, 2, COL_WIDTH, 16).setParameter(modulator.channel),
+        controlLabel(ui, "Chan", COL_WIDTH)
+            .setPosition(46, 21)
+            .setTextAlignment(VGraphics.Align.CENTER),
+        new UIIntegerBox(96, 2, COL_WIDTH, 16).setParameter(modulator.min),
+        controlLabel(ui, "Min", COL_WIDTH)
+            .setPosition(96, 21)
+            .setTextAlignment(VGraphics.Align.CENTER),
+        new UIIntegerBox(142, 2, COL_WIDTH, 16).setParameter(modulator.max),
+        controlLabel(ui, "Max", COL_WIDTH)
+            .setPosition(142, 21)
+            .setTextAlignment(VGraphics.Align.CENTER),
+        new UIIndicator(ui, 12, 12, modulator.active)
+            .setTriggerable(true)
+            .setPosition(uiModulator.getContentWidth() - 12, 2),
+        UIMeter.newVerticalMeter(ui, modulator, 12, 32)
+            .setPosition(uiModulator.getContentWidth() - 12, 16));
   }
-
 }
