@@ -25,6 +25,7 @@ Want a personal intro to the project and codebase? Contact current team lead [An
 ## JDK Installation
 
 Either go to https://adoptium.net/installation/ or, on a Mac with Homebrew:
+
 ```sh
 brew tap homebrew/cask-versions
 brew install --cask temurin17
@@ -42,6 +43,7 @@ free one available. You can download it here:
 https://www.jetbrains.com/idea/
 
 Steps for setup:
+
 1. Clone the git repo you're looking at:
    ```
    git clone https://github.com/titanicsend/LXStudio-TE.git
@@ -53,18 +55,18 @@ Steps for setup:
 3. File → Project Structure (or ⌘-;)
    ![Project Structure](assets/IDE%20Setup/Project%20Structure.png)
 
-   1. Platform Settings → SDKs
-      1. Either add the installed Temurin 17 JDK
-      2. Or, if that JDK is not installed, you can click the '+' and then select
-         "Add JDK..."
-         1. Navigate to `/Library/Java/JavaVirtualMachines/temurin-17.jdk`
-         2. Select `temurin-17.jdk`
-        ![Add JDK](assets/IDE%20Setup/AddJDK.png)
-        ![Select Temurin 17](assets/IDE%20Setup/SelectTemurin17.png)
+    1. Platform Settings → SDKs
+        1. Either add the installed Temurin 17 JDK
+        2. Or, if that JDK is not installed, you can click the '+' and then select
+           "Add JDK..."
+            1. Navigate to `/Library/Java/JavaVirtualMachines/temurin-17.jdk`
+            2. Select `temurin-17.jdk`
+               ![Add JDK](assets/IDE%20Setup/AddJDK.png)
+               ![Select Temurin 17](assets/IDE%20Setup/SelectTemurin17.png)
 
-   2. Project Settings → Project
-      1. Select the Temurin 17 JDK
-      ![Project SDK](assets/IDE%20Setup/Select%20Project.png)
+    2. Project Settings → Project
+        1. Select the Temurin 17 JDK
+           ![Project SDK](assets/IDE%20Setup/Select%20Project.png)
 
 4. Select "Titanic's End" in the top bar (in the dropdown to the right of the hammer) if
    you want to use the vehicle model, or "Testahedron" if you want the testahedron model.
@@ -74,12 +76,32 @@ Steps for setup:
 
 6. Assuming things work okay, a UI for Chromatik will pop up: Great! Now, you can play with the buttons.
 
+### Code Style
+
+These are the steps to use [google-java-format](https://github.com/google/google-java-format) automatically
+and ensure that each commit gets formatted before being submitted.
+
+1. Setup git pre-commit hook to run the `google-java-format` CLI tool on changed files
+
+```sh
+cp pre-commit ./git/hooks/pre-commit
+```
+
+Now commits will fail if there's a style violation, since this runs `mvn spotless:check`.
+
+YOu can manually apply formatting fixes using `mvn spotless:apply`.
+
+2. (Optional) Install the IDE plugin
+   for [IntelliJ](https://github.com/google/google-java-format#intellij-android-studio-and-other-jetbrains-ides)
+    1. After plugin install, go to `Settings > Tools > Actions on Save` and enable `Reformat Code`
+       and `Optimize Imports`.
+3. (Optional) Or install the IDE plugin for [Eclipse](https://github.com/google/google-java-format#eclipse).
 
 ### Potential issues
 
 - `Maven resources compiler: Failed to copy [...]/target/generated-test-sources/test-annotations/Icon
   ' to '[...]/target/test-classes/Icon`
-  - Go to the top of your TE repo and run `find . -name Icon\? -delete`
+    - Go to the top of your TE repo and run `find . -name Icon\? -delete`
 
 ## Digging in
 
@@ -89,31 +111,38 @@ So you've got the app up and running. You see some patterns in the code. How do 
 
 ![JSON File Types](assets/vehicle-axes-orientation.png)
 
-To understand the point, edge, and panel naming scheme, see the [Visual Map tab](https://docs.google.com/spreadsheets/d/1C7VPybckgH9bWGxwtgMN_Ij1T__c5qc-k7yIhG-592Y/edit#gid=877106241) of the Modules, Edges and Panels sheet.
+To understand the point, edge, and panel naming scheme, see
+the [Visual Map tab](https://docs.google.com/spreadsheets/d/1C7VPybckgH9bWGxwtgMN_Ij1T__c5qc-k7yIhG-592Y/edit#gid=877106241)
+of the Modules, Edges and Panels sheet.
 
 ### Learning Chromatik and Developing Patterns
 
-TE is using the full IDE-ready distribution instead of the P4 Processing Applet version. Don't struggle - ask questions in [#lighting-software on Slack](https://titanicsend.slack.com/archives/C02L0MDQB2M).
+TE is using the full IDE-ready distribution instead of the P4 Processing Applet version. Don't struggle - ask questions
+in [#lighting-software on Slack](https://titanicsend.slack.com/archives/C02L0MDQB2M).
 
 The tutorials in the [LX Studio Wiki](https://github.com/heronarts/LXStudio/wiki) are an effective introduction.
 
 These have been compiled by our team:
+
 * [Operation Modes and Art Direction Standards](https://docs.google.com/document/d/16FGnQ8jopCGwQ0qZizqILt3KYiLo0LPYkDYtnYzY7gI/edit)
-* [Using Tempo and Sound](https://docs.google.com/document/d/17iICAfbhCzPL77KbmFDL4-lN0zgBb1k6wdWnoBSPDjk/edit) 
+* [Using Tempo and Sound](https://docs.google.com/document/d/17iICAfbhCzPL77KbmFDL4-lN0zgBb1k6wdWnoBSPDjk/edit)
 * [The APC40 and LX Studio](https://docs.google.com/document/d/110qgYR_4wtE0gN8K3QZdqU75Xq0W115qe7J6mcgm1So/edit)
 
-As you really get rolling, you’ll appreciate the [API docs](https://lx.studio/api/) and public portion of [the source](https://github.com/heronarts/LX/tree/master/src/main/java/heronarts/lx).
+As you really get rolling, you’ll appreciate the [API docs](https://lx.studio/api/) and public portion
+of [the source](https://github.com/heronarts/LX/tree/master/src/main/java/heronarts/lx).
 
 ## Celebrating the installation
 
 Once it's running, go tell Slack so we can celebrate with you and maybe give you a tour.
 Or, if you prefer self-guided tours:
 
- * Read the [LX Studio Wiki](https://github.com/heronarts/LXStudio/wiki)
- * Play with the UI until you have a modulator controlling the parameter for a pattern, and an effect applied on top.
-    * See [this guide](https://github.com/tracyscott/RainbowStudio/blob/master/LXStudioUserGuide.md) from another memorable Burning Man art piece
- * Define a new fixture in the UI
- * [Optional] Save your playground as a new project with your name: `Playground <YourName>.lxp`. You can mess this project up and experiment broadly.
+* Read the [LX Studio Wiki](https://github.com/heronarts/LXStudio/wiki)
+* Play with the UI until you have a modulator controlling the parameter for a pattern, and an effect applied on top.
+    * See [this guide](https://github.com/tracyscott/RainbowStudio/blob/master/LXStudioUserGuide.md) from another
+      memorable Burning Man art piece
+* Define a new fixture in the UI
+* [Optional] Save your playground as a new project with your name: `Playground <YourName>.lxp`. You can mess this
+  project up and experiment broadly.
 
 ## Tips and tricks
 
@@ -202,17 +231,18 @@ To run on machine startup (ie: press power button and Chromatik just starts up),
    2. Click the user to run Chromatik with
    3. Login Items > "+" button > add TE.app 
 2. Change to automatic login
-   1. System Preferences > Users & Groups
-   2. Click "Login Options" underneath list of accounts (may need to enter password)
-   3. Using the combo box, select desired user, ie "te" or whatever
-   4. Uncheck all the boxes underneath
+    1. System Preferences > Users & Groups
+    2. Click "Login Options" underneath list of accounts (may need to enter password)
+    3. Using the combo box, select desired user, ie "te" or whatever
+    4. Uncheck all the boxes underneath
 3. Remove the password from your user account
-   1. System Preferences > Users & Groups
-   2. Click the user > "Change Password"
-   3. Leave new password blank
-4. Keep in Dock 
-   1. When TE.app is running, right click on it, and say "Keep in Dock"
-   2. This way, during a show, it's very easy for anyone non-technical to simply quit the program and re-run it if there is an issue
+    1. System Preferences > Users & Groups
+    2. Click the user > "Change Password"
+    3. Leave new password blank
+4. Keep in Dock
+    1. When TE.app is running, right click on it, and say "Keep in Dock"
+    2. This way, during a show, it's very easy for anyone non-technical to simply quit the program and re-run it if
+       there is an issue
 
 Restart your machine and you should see Chromatik open automatically on startup.
 
@@ -240,8 +270,8 @@ encapsulation protocol. To make this work:
     "Multiple Named Virtual interfaces" upgrade is required.
 2. The remote BomeBox should be on the same subnet, with updated firmware
 3. Optionally, renamed the BomeBox. We changed "BomeBox" to "FoH" for "Front of House"
-4. Connect the MIDI controllers to the BomeBox USB port via a USB Hub. In the 
-    Bome Network tool, enable Remote Direct Midi for those devices.
+4. Connect the MIDI controllers to the BomeBox USB port via a USB Hub. In the
+   Bome Network tool, enable Remote Direct Midi for those devices.
 5. You can disable MIDI routes that aren't used, such as the DIN ports or
     MIDI messaging between the USB devices. This likely helps performance.
     Leave 2 routes per device: The bidirection pair Chromatik->Device, and Device->Chromatik. 

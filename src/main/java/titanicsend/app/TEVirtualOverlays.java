@@ -10,69 +10,69 @@ import heronarts.lx.parameter.LXParameter.Units;
 public class TEVirtualOverlays extends LXComponent {
 
   public final BooleanParameter speakersVisible =
-          new BooleanParameter("Speakers")
-                  .setDescription("Toggle whether speakers are visible")
-                  .setValue(false);
+      new BooleanParameter("Speakers")
+          .setDescription("Toggle whether speakers are visible")
+          .setValue(false);
 
   public final BooleanParameter vertexLabelsVisible =
-          new BooleanParameter("Vertex Labels")
-                  .setDescription("Toggle whether vertex labels are visible")
-                  .setValue(false);
+      new BooleanParameter("Vertex Labels")
+          .setDescription("Toggle whether vertex labels are visible")
+          .setValue(false);
 
   public final BooleanParameter panelLabelsVisible =
-          new BooleanParameter("Panel Labels")
-                  .setDescription("Toggle whether panel labels are visible")
-                  .setValue(false);
+      new BooleanParameter("Panel Labels")
+          .setDescription("Toggle whether panel labels are visible")
+          .setValue(false);
 
   public final BooleanParameter unknownPanelsVisible =
-          new BooleanParameter("Unk Panels")
-                  .setDescription("Toggle whether unknown panels are visible")
-                  .setValue(true);
+      new BooleanParameter("Unk Panels")
+          .setDescription("Toggle whether unknown panels are visible")
+          .setValue(true);
 
   public final BooleanParameter opaqueBackPanelsVisible =
-          new BooleanParameter("Backings")
-                  .setDescription("Toggle whether to render the back of lit panels as opaque")
-                  .setValue(true);
+      new BooleanParameter("Backings")
+          .setDescription("Toggle whether to render the back of lit panels as opaque")
+          .setValue(true);
 
   public final CompoundParameter backingOpacity =
-          new CompoundParameter("Backing Opacity", 1, 0, 1)
-                  .setUnits(Units.PERCENT_NORMALIZED)
-                  .setDescription("Sets the opacity of the panel backings, when On");
+      new CompoundParameter("Backing Opacity", 1, 0, 1)
+          .setUnits(Units.PERCENT_NORMALIZED)
+          .setDescription("Sets the opacity of the panel backings, when On");
 
   public final BooleanParameter powerBoxesVisible =
-          new BooleanParameter("Power boxes")
-                  .setDescription("Toggle whether to show power boxes")
-                  .setValue(false);
+      new BooleanParameter("Power boxes")
+          .setDescription("Toggle whether to show power boxes")
+          .setValue(false);
 
   public final BooleanParameter lasersVisible =
       new BooleanParameter("Lasers Visible")
-              .setDescription("Toggle whether lasers are visible")
-              .setValue(false);
+          .setDescription("Toggle whether lasers are visible")
+          .setValue(false);
 
   public final BoundedParameter laserBoxSize =
       new BoundedParameter("Laser Box Size", 400000, 100000, 755000)
-      .setDescription("Size of sound objects");
+          .setDescription("Size of sound objects");
 
-/* SAVED FOR MIGRATION TO CHROMATIK
+  /* SAVED FOR MIGRATION TO CHROMATIK
 
-  private static class POV {
-    LXVector v;
-    int rgb;
+    private static class POV {
+      LXVector v;
+      int rgb;
 
-    POV(LXVector v, int rgb) {
-      this.v = v;
-      this.rgb = rgb;
+      POV(LXVector v, int rgb) {
+        this.v = v;
+        this.rgb = rgb;
+      }
     }
-  }
-  private static final int numPOVs = 10;
+    private static final int numPOVs = 10;
 
-  private final LXVector groundNormal = new LXVector(0,1,0);
-  private final LXVector groundMountainPoint = new LXVector(-20e6F, 0, 0);
-  private final LXVector mountainNormal = new LXVector(-1, 0, 0);
-  private final List<List<POV>> laserPOV;
+    private final LXVector groundNormal = new LXVector(0,1,0);
+    private final LXVector groundMountainPoint = new LXVector(-20e6F, 0, 0);
+    private final LXVector mountainNormal = new LXVector(-1, 0, 0);
+    private final List<List<POV>> laserPOV;
 
-  private HashMap<TEVertex, Integer> vertex2Powerboxes;
-*/
+    private HashMap<TEVertex, Integer> vertex2Powerboxes;
+  */
 
   public TEVirtualOverlays(LX lx) {
     super(lx);
@@ -87,7 +87,7 @@ public class TEVirtualOverlays extends LXComponent {
     addParameter("lasersVisible", this.lasersVisible);
   }
 
-/* SAVED FOR MIGRATION TO CHROMATIK
+  /* SAVED FOR MIGRATION TO CHROMATIK
 
     this.laserPOV = new ArrayList<>();
     for (int i = 0; i < numPOVs; i++) {

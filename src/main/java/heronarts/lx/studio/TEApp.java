@@ -1,23 +1,27 @@
 /**
  * Copyright 2020- Mark C. Slee, Heron Arts LLC
  *
- * This file is part of the LX Studio software library. By using
- * LX, you agree to the terms of the LX Studio Software License
- * and Distribution Agreement, available at: http://lx.studio/license
+ * <p>This file is part of the LX Studio software library. By using LX, you agree to the terms of
+ * the LX Studio Software License and Distribution Agreement, available at: http://lx.studio/license
  *
- * Please note that the LX license is not open-source. The license
- * allows for free, non-commercial use.
+ * <p>Please note that the LX license is not open-source. The license allows for free,
+ * non-commercial use.
  *
- * HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR
- * OTHERWISE, AND SPECIFICALLY DISCLAIMS ANY WARRANTY OF
- * MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR
- * PURPOSE, WITH RESPECT TO THE SOFTWARE.
+ * <p>HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, AND SPECIFICALLY
+ * DISCLAIMS ANY WARRANTY OF MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR PURPOSE,
+ * WITH RESPECT TO THE SOFTWARE.
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package heronarts.lx.studio;
 
+import heronarts.lx.LX;
+import heronarts.lx.LXPlugin;
+import heronarts.lx.mixer.LXBus;
+import heronarts.lx.mixer.LXChannel;
+import heronarts.lx.pattern.LXPattern;
+import heronarts.lx.pattern.form.PlanesPattern;
+import heronarts.lx.pattern.texture.NoisePattern;
 import java.io.File;
 import java.io.IOException;
 import java.net.SocketException;
@@ -28,42 +32,33 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.function.Function;
-
-import heronarts.lx.LX;
-import heronarts.lx.LXPlugin;
-import heronarts.lx.mixer.LXBus;
-import heronarts.lx.mixer.LXChannel;
-import heronarts.lx.pattern.LXPattern;
-import heronarts.lx.pattern.form.PlanesPattern;
-import heronarts.lx.pattern.texture.NoisePattern;
-import titanicsend.app.GigglePixelBroadcaster;
-import titanicsend.app.GigglePixelListener;
-import titanicsend.app.GigglePixelUI;
-import titanicsend.app.TEAutopilot;
-import titanicsend.app.TEOscListener;
-import titanicsend.app.TEUIControls;
-import titanicsend.app.TEVirtualOverlays;
+import titanicsend.app.*;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.dev.DevSwitch;
 import titanicsend.app.dev.UIDevSwitch;
 import titanicsend.dmx.DmxEngine;
 import titanicsend.dmx.effect.BeaconStrobeEffect;
-import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
 import titanicsend.dmx.pattern.BeaconDirectPattern;
 import titanicsend.dmx.pattern.BeaconEasyPattern;
 import titanicsend.dmx.pattern.BeaconEverythingPattern;
 import titanicsend.dmx.pattern.BeaconStraightUpPattern;
 import titanicsend.dmx.pattern.DjLightsDirectPattern;
 import titanicsend.dmx.pattern.DjLightsEasyPattern;
+import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
+import titanicsend.effect.GlobalPatternControl;
+import titanicsend.effect.RandomStrobeEffect;
 import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lx.APC40Mk2;
+import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.lx.MidiFighterTwister;
 import titanicsend.midi.MidiNames;
-import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.model.TEWholeModel;
-import titanicsend.model.justin.ColorCentral;
-import titanicsend.model.justin.ViewCentral;
+import titanicsend.modulator.dmx.Dmx16bitModulator;
+import titanicsend.modulator.dmx.DmxColorModulator;
+import titanicsend.modulator.dmx.DmxDualRangeModulator;
+import titanicsend.modulator.dmx.DmxGridModulator;
+import titanicsend.modulator.dmx.DmxRangeModulator;
 import titanicsend.modulator.justin.MultiplierModulator;
 import titanicsend.modulator.justin.UIMultiplierModulator;
 import titanicsend.osc.CrutchOSC;
@@ -75,6 +70,8 @@ import titanicsend.pattern.TEPanelTestPattern;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.ben.*;
 import titanicsend.pattern.cesar.HandTracker;
+import titanicsend.pattern.glengine.ShaderPatternClassFactory;
+import titanicsend.pattern.glengine.ShaderPrecompiler;
 import titanicsend.pattern.jeff.*;
 import titanicsend.pattern.jon.*;
 import titanicsend.pattern.justin.*;
@@ -86,26 +83,28 @@ import titanicsend.pattern.util.TargetPixelStamper;
 import titanicsend.pattern.will.PowerDebugger;
 import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
+import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.pattern.yoffa.effect.BeaconEffect;
 import titanicsend.ui.UIBackings;
 import titanicsend.ui.UILasers;
 import titanicsend.ui.UIModelLabels;
 import titanicsend.ui.UITEPerformancePattern;
-import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
+import titanicsend.ui.effect.UIRandomStrobeEffect;
+import titanicsend.ui.modulator.UIDmx16bitModulator;
+import titanicsend.ui.modulator.UIDmxColorModulator;
+import titanicsend.ui.modulator.UIDmxDualRangeModulator;
+import titanicsend.ui.modulator.UIDmxGridModulator;
+import titanicsend.ui.modulator.UIDmxRangeModulator;
 import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
 
 public class TEApp extends LXStudio {
 
-  static public TEWholeModel wholeModel;
+  public static TEWholeModel wholeModel;
 
   private static int WINDOW_WIDTH = 1280;
   private static int WINDOW_HEIGHT = 800;
   private static String resourceSubdir;
-
-  // Global feature on/off switches for troubleshooting
-  public static final boolean ENABLE_COLOR_CENTRAL = true;
-  public static final boolean ENABLE_VIEW_CENTRAL = true;
 
   @LXPlugin.Name("Titanic's End")
   public static class Plugin implements LXStudio.Plugin, LX.Listener, LX.ProjectListener {
@@ -121,8 +120,6 @@ public class TEApp extends LXStudio {
 
     private final DmxEngine dmxEngine;
     private final TELaserTask laserTask;
-    private final ColorCentral colorCentral;
-    private final ViewCentral viewCentral;
     private final CrutchOSC crutchOSC;
     private DevSwitch devSwitch;
 
@@ -135,24 +132,25 @@ public class TEApp extends LXStudio {
       lx.addProjectListener(this);
 
       // Saved options for UI overlays
-      lx.engine.registerComponent("virtualOverlays", this.virtualOverlays = new TEVirtualOverlays(lx));
+      lx.engine.registerComponent(
+          "virtualOverlays", this.virtualOverlays = new TEVirtualOverlays(lx));
 
-//      lx.ui.preview.addComponent(visual);
-//      new TEUIControls(ui, visual, ui.leftPane.global.getContentWidth()).addToContainer(ui.leftPane.global);
+      // set up global control values object so all patterns can potentially be controlled
+      // by a single external input (e.g. DMX controller )
+      lx.engine.registerComponent("globalPatternControls", new TEGlobalPatternControls(lx));
+
+      //      lx.ui.preview.addComponent(visual);
+      //      new TEUIControls(ui, visual,
+      // ui.leftPane.global.getContentWidth()).addToContainer(ui.leftPane.global);
       this.dmxEngine = new DmxEngine(lx);
 
       // create our loop task for outputting data to lasers
       this.laserTask = new TELaserTask(lx);
       lx.engine.addLoopTask(this.laserTask);
 
-      // Add special per-channel swatch control. *Post-EDC note: this will get revised.
-      this.colorCentral = new ColorCentral(lx);
-
-      // Load metadata about unused controls per-pattern into a singleton that patterns will reference later
+      // Load metadata about unused controls per-pattern into a singleton that patterns will
+      // reference later
       MissingControlsManager.get();
-
-      // Add special view controller
-      this.viewCentral = new ViewCentral(lx);
 
       // CrutchOSC is an LXOscEngine supplement for TouchOSC clients
       lx.engine.registerComponent("focus", this.crutchOSC = new CrutchOSC(lx));
@@ -187,6 +185,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(FrameBrights.class);
       lx.registry.addPattern(FourStar.class);
       lx.registry.addPattern(Iceflow.class);
+      lx.registry.addPattern(Kaleidosonic.class);
       lx.registry.addPattern(Phasers.class);
       lx.registry.addPattern(PixelblazeSandbox.class);
       lx.registry.addPattern(PBAudio1.class);
@@ -197,6 +196,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(PBFireworkNova.class);
       lx.registry.addPattern(PixelblazeParallel.class);
       lx.registry.addPattern(RadialSimplex.class);
+      lx.registry.addPattern(RainBands.class);
       lx.registry.addPattern(SimplexPosterized.class);
       lx.registry.addPattern(SpaceExplosionFX.class);
       lx.registry.addPattern(TEMidiFighter64DriverPattern.class);
@@ -228,6 +228,8 @@ public class TEApp extends LXStudio {
       lx.registry.addEffect(titanicsend.effect.NoGapEffect.class);
       lx.registry.addEffect(titanicsend.effect.PanelAdjustEffect.class);
       lx.registry.addEffect(BeaconEffect.class);
+      lx.registry.addEffect(GlobalPatternControl.class);
+      lx.registry.addEffect(RandomStrobeEffect.class);
 
       // DMX patterns
       lx.registry.addPattern(BeaconDirectPattern.class);
@@ -240,6 +242,13 @@ public class TEApp extends LXStudio {
 
       // DMX effects
       lx.registry.addEffect(BeaconStrobeEffect.class);
+
+      // Patterns for DMX input
+      lx.registry.addPattern(DmxGridPattern.class);
+
+      // Automatic shader pattern wrapper
+      ShaderPatternClassFactory spf = new ShaderPatternClassFactory();
+      spf.registerShaders(lx);
 
       // TODO - The following patterns were removed from the UI prior to EDC 2023 to keep
       // TODO - them from being accidentally activated during a performance.
@@ -259,7 +268,7 @@ public class TEApp extends LXStudio {
       // "ShaderToyPattern" in ShaderPanelsPatternConfig.java
 
       // Useful for test, but might turn the car black in performance
-      lx.registry.removePattern(PlanesPattern.class);  // remove pattern added automatically by LX.
+      lx.registry.removePattern(PlanesPattern.class); // remove pattern added automatically by LX.
 
       // Frame Rate Killers
       // lx.registry.addEffect(titanicsend.effect.Kaleidoscope.class);
@@ -267,10 +276,11 @@ public class TEApp extends LXStudio {
 
       @SuppressWarnings("unchecked")
       Function<Class<?>, Class<LXPattern>[]> patternGetter =
-      (Class<?> patternConfigClass) ->
-      (Class<LXPattern>[]) Arrays.stream(patternConfigClass.getDeclaredClasses())
-      .filter(LXPattern.class::isAssignableFrom)
-      .toArray(Class[]::new);
+          (Class<?> patternConfigClass) ->
+              (Class<LXPattern>[])
+                  Arrays.stream(patternConfigClass.getDeclaredClasses())
+                      .filter(LXPattern.class::isAssignableFrom)
+                      .toArray(Class[]::new);
 
       lx.registry.addPatterns(patternGetter.apply(OrganicPatternConfig.class));
       lx.registry.addPatterns(patternGetter.apply(ShaderPanelsPatternConfig.class));
@@ -286,21 +296,41 @@ public class TEApp extends LXStudio {
 
       // Midi surface names for use with BomeBox
       lx.engine.midi.registerSurface(MidiNames.BOMEBOX_APC40MK2, APC40Mk2.class);
-      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1, MidiFighterTwister.class);
-      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER2, MidiFighterTwister.class);
-      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER3, MidiFighterTwister.class);
-      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER4, MidiFighterTwister.class);
+      lx.engine.midi.registerSurface(
+          MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1, MidiFighterTwister.class);
+      lx.engine.midi.registerSurface(
+          MidiNames.BOMEBOX_MIDIFIGHTERTWISTER2, MidiFighterTwister.class);
+      lx.engine.midi.registerSurface(
+          MidiNames.BOMEBOX_MIDIFIGHTERTWISTER3, MidiFighterTwister.class);
+      lx.engine.midi.registerSurface(
+          MidiNames.BOMEBOX_MIDIFIGHTERTWISTER4, MidiFighterTwister.class);
 
-      // Custom modulator type
+      // Custom modulators
+      lx.registry.addModulator(Dmx16bitModulator.class);
+      lx.registry.addModulator(DmxGridModulator.class);
+      lx.registry.addModulator(DmxColorModulator.class);
+      lx.registry.addModulator(DmxDualRangeModulator.class);
+      lx.registry.addModulator(DmxRangeModulator.class);
       lx.registry.addModulator(MultiplierModulator.class);
+
+      // Custom UI components
       if (lx instanceof LXStudio) {
-        ((LXStudio.Registry)lx.registry).addUIModulatorControls(UIMultiplierModulator.class);
+        // UI: Effects
+        ((LXStudio.Registry) lx.registry).addUIDeviceControls(UIRandomStrobeEffect.class);
+
+        // UI: Modulators
+        ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmx16bitModulator.class);
+        ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmxGridModulator.class);
+        ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmxColorModulator.class);
+        ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmxDualRangeModulator.class);
+        ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmxRangeModulator.class);
+        ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIMultiplierModulator.class);
       }
 
       // create our library for autopilot
       this.library = initializePatternLibrary(lx);
 
-      int myGigglePixelID = 73;  // Looks like "TE"
+      int myGigglePixelID = 73; // Looks like "TE"
       try {
         this.gpListener = new GigglePixelListener(lx, "0.0.0.0", myGigglePixelID);
         lx.engine.addLoopTask(this.gpListener);
@@ -312,8 +342,8 @@ public class TEApp extends LXStudio {
       // This should of course be in the config, but we leave for the playa in like a week
       String destIP = "192.168.42.255";
       try {
-        this.gpBroadcaster = new GigglePixelBroadcaster(
-            lx, destIP, wholeModel.name, myGigglePixelID);
+        this.gpBroadcaster =
+            new GigglePixelBroadcaster(lx, destIP, wholeModel.name, myGigglePixelID);
         lx.engine.addLoopTask(this.gpBroadcaster);
         TE.log("GigglePixel broadcaster created");
       } catch (IOException e) {
@@ -334,13 +364,16 @@ public class TEApp extends LXStudio {
 
       // add custom OSC listener to handle OSC messages from ShowKontrol
       // includes an Autopilot ref to store (threadsafe) queue of unread OSC messages
-      TE.log("Attaching the OSC message listener to port "
-          + TEShowKontrol.OSC_PORT + " ...");
+      TE.log("Attaching the OSC message listener to port " + TEShowKontrol.OSC_PORT + " ...");
       try {
-        lx.engine.osc.receiver(TEShowKontrol.OSC_PORT).addListener((message) -> {
-          this.oscListener.onOscMessage(message);
-          lx.engine.osc.receiveActive.setValue(true);
-        });
+        lx.engine
+            .osc
+            .receiver(TEShowKontrol.OSC_PORT)
+            .addListener(
+                (message) -> {
+                  this.oscListener.onOscMessage(message);
+                  lx.engine.osc.receiveActive.setValue(true);
+                });
         lx.engine.osc.receiveActive.setValue(true);
       } catch (SocketException sx) {
         sx.printStackTrace();
@@ -362,14 +395,20 @@ public class TEApp extends LXStudio {
       TEPatternLibrary l = new TEPatternLibrary(lx);
 
       // aliases to reduce line count below...
-      TEPatternLibrary.TEPatternCoverageType covEdges = TEPatternLibrary.TEPatternCoverageType.EDGES;
-      TEPatternLibrary.TEPatternCoverageType covPanels = TEPatternLibrary.TEPatternCoverageType.PANELS;
-      TEPatternLibrary.TEPatternCoverageType covPanelPartial = TEPatternLibrary.TEPatternCoverageType.PANELS_PARTIAL;
+      TEPatternLibrary.TEPatternCoverageType covEdges =
+          TEPatternLibrary.TEPatternCoverageType.EDGES;
+      TEPatternLibrary.TEPatternCoverageType covPanels =
+          TEPatternLibrary.TEPatternCoverageType.PANELS;
+      TEPatternLibrary.TEPatternCoverageType covPanelPartial =
+          TEPatternLibrary.TEPatternCoverageType.PANELS_PARTIAL;
       TEPatternLibrary.TEPatternCoverageType covBoth = TEPatternLibrary.TEPatternCoverageType.BOTH;
 
-      TEPatternLibrary.TEPatternColorCategoryType cPalette = TEPatternLibrary.TEPatternColorCategoryType.PALETTE;
-      TEPatternLibrary.TEPatternColorCategoryType cWhite = TEPatternLibrary.TEPatternColorCategoryType.WHITE;
-      TEPatternLibrary.TEPatternColorCategoryType cNonConforming = TEPatternLibrary.TEPatternColorCategoryType.NONCONFORMING;
+      TEPatternLibrary.TEPatternColorCategoryType cPalette =
+          TEPatternLibrary.TEPatternColorCategoryType.PALETTE;
+      TEPatternLibrary.TEPatternColorCategoryType cWhite =
+          TEPatternLibrary.TEPatternColorCategoryType.WHITE;
+      TEPatternLibrary.TEPatternColorCategoryType cNonConforming =
+          TEPatternLibrary.TEPatternColorCategoryType.NONCONFORMING;
 
       TEPhrase chorus = TEPhrase.CHORUS;
       TEPhrase down = TEPhrase.DOWN;
@@ -378,22 +417,27 @@ public class TEApp extends LXStudio {
       // CHORUS patterns
       l.addPattern(NoisePattern.class, covBoth, cPalette, chorus);
       l.addPattern(PBXorcery.class, covPanelPartial, cPalette, chorus);
-      l.addPattern(ShaderPanelsPatternConfig.NeonBlocks.class, covPanelPartial, cNonConforming, chorus);
+      l.addPattern(
+          ShaderPanelsPatternConfig.NeonBlocks.class, covPanelPartial, cNonConforming, chorus);
       l.addPattern(Audio1.class, covPanelPartial, cPalette, chorus);
       l.addPattern(ShaderPanelsPatternConfig.OutrunGrid.class, covPanels, cNonConforming, chorus);
       l.addPattern(OrganicPatternConfig.MatrixScroller.class, covPanels, cNonConforming, chorus);
       l.addPattern(FollowThatStar.class, covBoth, cPalette, chorus);
       l.addPattern(ShaderPanelsPatternConfig.Marbling.class, covPanels, cNonConforming, chorus);
       l.addPattern(OrganicPatternConfig.NeonCellsLegacy.class, covPanelPartial, cPalette, chorus);
-      l.addPattern(ShaderPanelsPatternConfig.NeonTriangles.class, covPanels, cNonConforming, chorus);
+      l.addPattern(
+          ShaderPanelsPatternConfig.NeonTriangles.class, covPanels, cNonConforming, chorus);
       l.addPattern(Phasers.class, covPanels, cPalette, chorus);
-      l.addPattern(ShaderPanelsPatternConfig.PulsingPetriDish.class, covPanels, cNonConforming, chorus);
+      l.addPattern(
+          ShaderPanelsPatternConfig.PulsingPetriDish.class, covPanels, cNonConforming, chorus);
       l.addPattern(Electric.class, covPanelPartial, cPalette, chorus);
       l.addPattern(ShaderPanelsPatternConfig.AudioTest2.class, covBoth, cNonConforming, chorus);
       l.addPattern(EdgeRunner.class, covEdges, cPalette, chorus);
       l.addPattern(ShaderPanelsPatternConfig.AudioTest2.class, covPanelPartial, cPalette, chorus);
-      l.addPattern(ShaderPanelsPatternConfig.MetallicWaves.class, covPanelPartial, cPalette, chorus);
-      l.addPattern(ShaderEdgesPatternConfig.NeonRipplesEdges.class, covPanelPartial, cPalette, chorus);
+      l.addPattern(
+          ShaderPanelsPatternConfig.MetallicWaves.class, covPanelPartial, cPalette, chorus);
+      l.addPattern(
+          ShaderEdgesPatternConfig.NeonRipplesEdges.class, covPanelPartial, cPalette, chorus);
       l.addPattern(OrganicPatternConfig.WaterEdges.class, covPanelPartial, cPalette, chorus);
       l.addPattern(OrganicPatternConfig.PulseCenter.class, covPanelPartial, cPalette, chorus);
       l.addPattern(OrganicPatternConfig.WavyPanels.class, covPanelPartial, cPalette, chorus);
@@ -433,7 +477,7 @@ public class TEApp extends LXStudio {
       // for headless mode should go in the raw initialize method above.
       log("TEApp.Plugin.initializeUI()");
 
-      ((LXStudio.Registry)lx.registry).addUIDeviceControls(UITEPerformancePattern.class);
+      ((LXStudio.Registry) lx.registry).addUIDeviceControls(UITEPerformancePattern.class);
     }
 
     public void onUIReady(LXStudio lx, LXStudio.UI ui) {
@@ -444,18 +488,20 @@ public class TEApp extends LXStudio {
       // Model pane
 
       new UIDevSwitch(ui, this.devSwitch, ui.leftPane.model.getContentWidth())
-      .addToContainer(ui.leftPane.model, 0);
+          .addToContainer(ui.leftPane.model, 0);
 
-      new GigglePixelUI(ui, ui.leftPane.model.getContentWidth(), this.gpListener, this.gpBroadcaster)
-      .addToContainer(ui.leftPane.model, 1);
+      new GigglePixelUI(
+              ui, ui.leftPane.model.getContentWidth(), this.gpListener, this.gpBroadcaster)
+          .addToContainer(ui.leftPane.model, 1);
 
       new TEUIControls(ui, this.virtualOverlays, ui.leftPane.model.getContentWidth())
-      .addToContainer(ui.leftPane.model, 2);
+          .addToContainer(ui.leftPane.model, 2);
 
       // Global pane
 
       // Add UI section for autopilot
-      new TEUserInterface.AutopilotUISection(ui, this.autopilot).addToContainer(ui.leftPane.global, 0);
+      new TEUserInterface.AutopilotUISection(ui, this.autopilot)
+          .addToContainer(ui.leftPane.global, 0);
 
       applyTECameraPosition();
 
@@ -468,17 +514,18 @@ public class TEApp extends LXStudio {
 
       ui.preview.addComponent(new UIModelLabels(lx, this.virtualOverlays));
       // Do we need model labels in the secondary view?  Uncomment if so.
-      //ui.previewAux.addComponent(new UIModelLabels(lx, this.virtualOverlays));
+      // ui.previewAux.addComponent(new UIModelLabels(lx, this.virtualOverlays));
 
       // precompile binaries for any new or changed shaders
       ShaderPrecompiler.rebuildCache();
 
-      lx.engine.addTask(() -> {
-        setOscDestinationForIpads();
-        //openDelayedFile(lx);
-        // Replace old saved destination IPs from project files
-        //setOscDestinationForIpads();
-      });
+      lx.engine.addTask(
+          () -> {
+            setOscDestinationForIpads();
+            // openDelayedFile(lx);
+            // Replace old saved destination IPs from project files
+            // setOscDestinationForIpads();
+          });
     }
 
     public void setOscDestinationForIpads() {
@@ -499,7 +546,7 @@ public class TEApp extends LXStudio {
 
     public void applyTECameraPosition() {
       if (this.lx instanceof LXStudio) {
-        LXStudio.UI ui = ((LXStudio)this.lx).ui;
+        LXStudio.UI ui = ((LXStudio) this.lx).ui;
         ui.preview.pointCloud.pointSize.setValue(80000);
         ui.preview.camera.theta.setValue(270);
         ui.preview.camera.phi.setValue(-6);
@@ -518,9 +565,7 @@ public class TEApp extends LXStudio {
 
       this.devSwitch.dispose();
       this.dmxEngine.dispose();
-      this.colorCentral.dispose();
       this.crutchOSC.dispose();
-      this.viewCentral.dispose();
     }
   }
 
@@ -538,13 +583,16 @@ public class TEApp extends LXStudio {
     }
   }*/
 
-  /**
-   * Dev tool: add all patterns in registry to current channel.
-   */
+  /** Dev tool: add all patterns in registry to current channel. */
   private void addAllPatterns() {
     LXBus channel = this.engine.mixer.getFocusedChannel();
     if (channel instanceof LXChannel) {
-      TE.log("*** Instantiating all " + this.registry.patterns.size() + " patterns in registry to channel " + channel.getLabel() + " ***");
+      TE.log(
+          "*** Instantiating all "
+              + this.registry.patterns.size()
+              + " patterns in registry to channel "
+              + channel.getLabel()
+              + " ***");
       TE.log("Here we gOOOOOOOOOOOO....");
       List<LXPattern> patterns = new ArrayList<LXPattern>();
       for (Class<? extends LXPattern> clazz : this.registry.patterns) {
@@ -559,7 +607,7 @@ public class TEApp extends LXStudio {
       patterns.sort((p1, p2) -> p1.getLabel().compareTo(p2.getLabel()));
       for (LXPattern pattern : patterns) {
         try {
-          ((LXChannel)channel).addPattern(pattern);
+          ((LXChannel) channel).addPattern(pattern);
         } catch (Exception ex) {
           TE.err(ex, "Failure adding pattern to channel! ");
         }
@@ -577,26 +625,31 @@ public class TEApp extends LXStudio {
     super(flags);
   }
 
-  private static final DateFormat LOG_FILENAME_FORMAT = new SimpleDateFormat("'LXStudio-TE-'yyyy.MM.dd-HH.mm.ss'.log'");
+  private static final DateFormat LOG_FILENAME_FORMAT =
+      new SimpleDateFormat("'LXStudio-TE-'yyyy.MM.dd-HH.mm.ss'.log'");
 
   private static String projectFileName = null;
 
   /**
-   * Main interface into the program. Two modes are supported, if the --headless
-   * flag is supplied then a raw CLI version of LX is used. If not, then we embed
-   * in a Processing 4 applet and run as such.
+   * Main interface into the program. Two modes are supported, if the --headless flag is supplied
+   * then a raw CLI version of LX is used. If not, then we embed in a Processing 4 applet and run as
+   * such.
    *
    * @param args Command-line arguments
    */
   public static void main(String[] args) {
     LX.log("Initializing LX version " + LXStudio.VERSION);
-    LX.log("Running java " +
-        System.getProperty("java.version") + " " +
-        System.getProperty("java.vendor") + " " +
-        System.getProperty("os.name") + " " +
-        System.getProperty("os.version") + " " +
-        System.getProperty("os.arch")
-        );
+    LX.log(
+        "Running java "
+            + System.getProperty("java.version")
+            + " "
+            + System.getProperty("java.vendor")
+            + " "
+            + System.getProperty("os.name")
+            + " "
+            + System.getProperty("os.version")
+            + " "
+            + System.getProperty("os.arch"));
 
     LX.LOG_WARNINGS = true;
 
@@ -606,7 +659,7 @@ public class TEApp extends LXStudio {
     flags.windowHeight = WINDOW_HEIGHT;
     flags.zeroconf = false;
     flags.classpathPlugins.add("heronarts.lx.studio.TEApp$Plugin");
-    //flags.useOpenGL = true;
+    // flags.useOpenGL = true;
 
     String logFileName = LOG_FILENAME_FORMAT.format(Calendar.getInstance().getTime());
     File logs = new File(LX.Media.LOGS.getDirName());
@@ -659,27 +712,30 @@ public class TEApp extends LXStudio {
         TEApp.wholeModel = model;
 
         TEApp lx = new TEApp(flags, model);
+        model.loadViews(lx);
 
         // Schedule a task to load the initial project file at launch
         final File finalProjectFile = projectFile;
-        final boolean isSchedule = (projectFile != null) ? projectFile.getName().endsWith(".lxs") : false;
-        lx.engine.addTask(() -> {
-          if (isSchedule) {
-            lx.preferences.schedulerEnabled.setValue(true);
-            LX.log("Opening schedule file: " + finalProjectFile);
-            lx.scheduler.openSchedule(finalProjectFile, true);
-          } else {
-            try {
-              lx.preferences.loadInitialProject(finalProjectFile);
-            } catch (Exception x) {
-              error(x, "Exception loading initial project: " + x.getLocalizedMessage());
-            }
-            lx.preferences.loadInitialSchedule();
-          }
-          if (flags.forceOutput) {
-            lx.engine.output.enabled.setValue(true);
-          }
-        });
+        final boolean isSchedule =
+            (projectFile != null) ? projectFile.getName().endsWith(".lxs") : false;
+        lx.engine.addTask(
+            () -> {
+              if (isSchedule) {
+                lx.preferences.schedulerEnabled.setValue(true);
+                LX.log("Opening schedule file: " + finalProjectFile);
+                lx.scheduler.openSchedule(finalProjectFile, true);
+              } else {
+                try {
+                  lx.preferences.loadInitialProject(finalProjectFile);
+                } catch (Exception x) {
+                  error(x, "Exception loading initial project: " + x.getLocalizedMessage());
+                }
+                lx.preferences.loadInitialSchedule();
+              }
+              if (flags.forceOutput) {
+                lx.engine.output.enabled.setValue(true);
+              }
+            });
 
         lx.run();
       } catch (Exception x) {

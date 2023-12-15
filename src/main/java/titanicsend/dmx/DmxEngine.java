@@ -1,29 +1,19 @@
 /**
  * Copyright 2023- Justin Belcher, Mark C. Slee, Heron Arts LLC
  *
- * This file is part of the LX Studio software library. By using
- * LX, you agree to the terms of the LX Studio Software License
- * and Distribution Agreement, available at: http://lx.studio/license
+ * <p>This file is part of the LX Studio software library. By using LX, you agree to the terms of
+ * the LX Studio Software License and Distribution Agreement, available at: http://lx.studio/license
  *
- * Please note that the LX license is not open-source. The license
- * allows for free, non-commercial use.
+ * <p>Please note that the LX license is not open-source. The license allows for free,
+ * non-commercial use.
  *
- * HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR
- * OTHERWISE, AND SPECIFICALLY DISCLAIMS ANY WARRANTY OF
- * MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR
- * PURPOSE, WITH RESPECT TO THE SOFTWARE.
+ * <p>HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, AND SPECIFICALLY
+ * DISCLAIMS ANY WARRANTY OF MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR PURPOSE,
+ * WITH RESPECT TO THE SOFTWARE.
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.dmx;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXBuffer;
@@ -37,24 +27,30 @@ import heronarts.lx.mixer.LXMasterBus;
 import heronarts.lx.mixer.LXMixerEngine;
 import heronarts.lx.output.LXOutput;
 import heronarts.lx.studio.TEApp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import titanicsend.app.dev.DevSwitch;
 import titanicsend.dmx.model.DmxModel;
 import titanicsend.dmx.model.DmxWholeModel;
 import titanicsend.dmx.parameter.DmxParameter;
 
 /**
- * DmxEngine manages the dmx buffers and mixes the dmx frames.
- * Much of the heavy lifting here is a modified copy of LXMixerEngine.
+ * DmxEngine manages the dmx buffers and mixes the dmx frames. Much of the heavy lifting here is a
+ * modified copy of LXMixerEngine.
  *
- * Roles:
- *  - Maintains a reference of one DmxModelBuffer per LXBuffer for consumption by patterns/effects.
- *  - Acts as a DmxMixer
+ * <p>Roles: - Maintains a reference of one DmxModelBuffer per LXBuffer for consumption by
+ * patterns/effects. - Acts as a DmxMixer
  */
 public class DmxEngine implements LXLoopTask {
 
   private static final boolean ENABLE_DEBUG = false;
 
   private static DmxEngine current;
+
   public static DmxEngine get() {
     return current;
   }
@@ -69,7 +65,7 @@ public class DmxEngine implements LXLoopTask {
 
   public class MixerListener implements heronarts.lx.mixer.LXMixerEngine.Listener {
     @Override
-    public void channelAdded(LXMixerEngine mixer, LXAbstractChannel channel) { }
+    public void channelAdded(LXMixerEngine mixer, LXAbstractChannel channel) {}
 
     @Override
     public void channelRemoved(LXMixerEngine mixer, LXAbstractChannel channel) {
@@ -77,7 +73,7 @@ public class DmxEngine implements LXLoopTask {
     }
 
     @Override
-    public void channelMoved(LXMixerEngine mixer, LXAbstractChannel channel) { }    
+    public void channelMoved(LXMixerEngine mixer, LXAbstractChannel channel) {}
   }
 
   private final MixerListener mixerListener = new MixerListener();
@@ -96,7 +92,7 @@ public class DmxEngine implements LXLoopTask {
     @Override
     protected void onSend(int[] colors, GammaTable glut, double brightness) {
       runDmxMixer();
-    }    
+    }
   }
 
   private final OutputTrigger outputTrigger;
@@ -120,7 +116,7 @@ public class DmxEngine implements LXLoopTask {
 
     public void setModel(DmxWholeModel model) {
       if (model instanceof DmxWholeModel) {
-        DmxWholeModel dmxWholeModel = (DmxWholeModel)model;
+        DmxWholeModel dmxWholeModel = (DmxWholeModel) model;
 
         this.model = dmxWholeModel;
         if (this.main == null) {
@@ -214,9 +210,12 @@ public class DmxEngine implements LXLoopTask {
 
   private final DoubleBuffer buffer;
 
-  private final HashMap<LXAbstractChannel, List<LXBuffer>> lxBuffersByChannel = new HashMap<LXAbstractChannel, List<LXBuffer>>();
-  private final HashMap<LXBuffer, DmxModelBuffer> dmxBufferByLXBuffer = new HashMap<LXBuffer, DmxModelBuffer>();
-  private final HashMap<LXGroup, DmxModelBuffer> dmxBufferByGroup = new HashMap<LXGroup, DmxModelBuffer>();
+  private final HashMap<LXAbstractChannel, List<LXBuffer>> lxBuffersByChannel =
+      new HashMap<LXAbstractChannel, List<LXBuffer>>();
+  private final HashMap<LXBuffer, DmxModelBuffer> dmxBufferByLXBuffer =
+      new HashMap<LXBuffer, DmxModelBuffer>();
+  private final HashMap<LXGroup, DmxModelBuffer> dmxBufferByGroup =
+      new HashMap<LXGroup, DmxModelBuffer>();
 
   private final AddBlend addBlend;
 
@@ -297,9 +296,7 @@ public class DmxEngine implements LXLoopTask {
     }
   }
 
-  /**
-   * Monitor LX mixer for channels removed, release references to expiring buffers
-   */
+  /** Monitor LX mixer for channels removed, release references to expiring buffers */
   protected void removeChannel(LXAbstractChannel channel) {
     List<LXBuffer> chBuffers = this.lxBuffersByChannel.remove(channel);
     if (chBuffers != null) {
@@ -311,7 +308,7 @@ public class DmxEngine implements LXLoopTask {
       }
     }
     if (channel instanceof LXGroup) {
-      DmxModelBuffer groupBuffer = this.dmxBufferByGroup.remove((LXGroup)channel);
+      DmxModelBuffer groupBuffer = this.dmxBufferByGroup.remove((LXGroup) channel);
       if (groupBuffer != null) {
         groupBuffer.dispose();
       }
@@ -336,9 +333,7 @@ public class DmxEngine implements LXLoopTask {
    * DMX Mixer
    */
 
-  /**
-   * Copied from LXEngine, modified for DMX
-   */
+  /** Copied from LXEngine, modified for DMX */
   private class BlendStack {
 
     private DmxBuffer[] destination;
@@ -394,8 +389,10 @@ public class DmxEngine implements LXLoopTask {
     this.blendStackMain.initialize(this.backgroundBlack.getArray(), render.getMain());
     this.blendStackCue.initialize(this.backgroundBlack.getArray(), render.getCue());
     this.blendStackAux.initialize(this.backgroundBlack.getArray(), render.getAux());
-    this.blendStackLeft.initialize(this.backgroundBlack.getArray(), this.blendBufferLeft.getArray());
-    this.blendStackRight.initialize(this.backgroundBlack.getArray(), this.blendBufferRight.getArray());
+    this.blendStackLeft.initialize(
+        this.backgroundBlack.getArray(), this.blendBufferLeft.getArray());
+    this.blendStackRight.initialize(
+        this.backgroundBlack.getArray(), this.blendBufferRight.getArray());
 
     DmxEngine.debug("runDmxMixer 2 initialized to black", render.main);
 
@@ -413,43 +410,59 @@ public class DmxEngine implements LXLoopTask {
     boolean blendRight = rightBusActive || this.lx.engine.mixer.cueB.isOn();
     boolean leftExists = false, rightExists = false;
     for (LXAbstractChannel channel : this.lx.engine.mixer.channels) {
-      long blendStart = System.nanoTime();
+      // If channel has never been run there is nothing to blend.
+      if (!hasDmxBuffer(channel)) {
+        continue;
+      }
 
       // Is this a group sub-channel? Those don't blend, they are already composited
       // into their group
       boolean isSubChannel = channel.getGroup() != null;
 
       // Blend into the output buffer
-      if (!isSubChannel && hasDmxBuffer(channel)) {
+      if (!isSubChannel) {
         BlendStack blendStack = null;
 
         // Which output group is this channel mapped to
         switch (channel.crossfadeGroup.getEnum()) {
-        case A:
-          leftExists = true;
-          blendStack = blendLeft ? this.blendStackLeft : null;
-          break;
-        case B:
-          rightExists = true;
-          blendStack = blendRight ? this.blendStackRight : null;
-          break;
-        default:
-        case BYPASS:
-          blendStack = blendStackMain;
-          break;
+          case A:
+            leftExists = true;
+            blendStack = blendLeft ? this.blendStackLeft : null;
+            break;
+          case B:
+            rightExists = true;
+            blendStack = blendRight ? this.blendStackRight : null;
+            break;
+          default:
+          case BYPASS:
+            blendStack = blendStackMain;
+            break;
         }
 
         if (blendStack != null && channel.enabled.isOn()) {
           double alpha = channel.fader.getValue();
-          double transitionProgress = channel instanceof LXChannel ? ((LXChannel)channel).getTransitionProgress() : 0;
+          double transitionProgress =
+              channel instanceof LXChannel ? ((LXChannel) channel).getTransitionProgress() : 0;
           if (transitionProgress > 0) {
             // TODO: Blend the two buffers together *before* blending into the blendstack.
             // Assuming primary (blendBuffer) was used first
-            blendStack.blend(channel.blendMode.getObject(), getDmxBuffersByChannel(channel), alpha, dmxWholeModel);
+            blendStack.blend(
+                channel.blendMode.getObject(),
+                getDmxBuffersByChannel(channel),
+                alpha,
+                dmxWholeModel);
             // Secondary (renderBuffer) is second in the list
-            blendStack.blend(channel.blendMode.getObject(), getRenderBuffersByChannel(channel), alpha, dmxWholeModel);
+            blendStack.blend(
+                channel.blendMode.getObject(),
+                getRenderBuffersByChannel(channel),
+                alpha,
+                dmxWholeModel);
           } else {
-            blendStack.blend(channel.blendMode.getObject(), getDmxBuffersByChannel(channel), alpha, dmxWholeModel);
+            blendStack.blend(
+                channel.blendMode.getObject(),
+                getDmxBuffersByChannel(channel),
+                alpha,
+                dmxWholeModel);
           }
         }
       }
@@ -467,8 +480,6 @@ public class DmxEngine implements LXLoopTask {
         auxBusActive = true;
         this.blendStackAux.blend(this.addBlend, getDmxBuffersByChannel(channel), 1, dmxWholeModel);
       }
-
-      ((LXAbstractChannel.Profiler) channel.profiler).blendNanos = System.nanoTime() - blendStart;
     }
 
     // Check if the crossfade group buses are cued
@@ -490,7 +501,6 @@ public class DmxEngine implements LXLoopTask {
         auxBusActive = true;
       }
     }
-
     DmxEngine.debug("runDmxMixer 5", render.main);
 
     // Step 4: now we have three output buses that need mixing... the left/right crossfade
@@ -507,10 +517,15 @@ public class DmxEngine implements LXLoopTask {
       this.blendStackMain.blend(this.addBlend, blendStackLeft, 1., dmxWholeModel);
     } else if (leftContent) {
       // Add the left group to the main buffer
-      this.blendStackMain.blend(this.addBlend, this.blendStackLeft, Math.min(1, 2. * (1-crossfadeValue)), dmxWholeModel);
+      this.blendStackMain.blend(
+          this.addBlend,
+          this.blendStackLeft,
+          Math.min(1, 2. * (1 - crossfadeValue)),
+          dmxWholeModel);
     } else if (rightContent) {
       // Add the right group to the main buffer
-      this.blendStackMain.blend(this.addBlend, this.blendStackRight, Math.min(1, 2. * crossfadeValue), dmxWholeModel);
+      this.blendStackMain.blend(
+          this.addBlend, this.blendStackRight, Math.min(1, 2. * crossfadeValue), dmxWholeModel);
     }
     DmxEngine.debug("runDmxMixer 6", render.main);
 
@@ -540,7 +555,7 @@ public class DmxEngine implements LXLoopTask {
 
   private DmxBuffer[] getDmxBuffersByChannel(LXAbstractChannel channel) {
     if (channel instanceof LXGroup) {
-      return getDmxModelBufferByGroup((LXGroup)channel).getArray();
+      return getDmxModelBufferByGroup((LXGroup) channel).getArray();
     } else {
       return this.dmxBufferByLXBuffer.get(this.lxBuffersByChannel.get(channel).get(0)).getArray();
     }
@@ -558,9 +573,7 @@ public class DmxEngine implements LXLoopTask {
     }
   }
 
-  /**
-   * Send DMX outputs
-   */
+  /** Send DMX outputs */
   private void sendDmx() {
     // Step 5: our cue and render frames are ready! Let's get them output
     boolean isNetworkMultithreaded = this.lx.engine.isNetworkMultithreaded.isOn();
@@ -577,7 +590,8 @@ public class DmxEngine implements LXLoopTask {
       Frame sendFrame = isDoubleBuffering ? this.buffer.copy : this.buffer.render;
       DmxEngine.debug("sendDmx 1", sendFrame.main);
 
-      DmxBuffer[] sendColors = (this.lx.flags.sendCueToOutput && sendFrame.cueOn) ? sendFrame.cue : sendFrame.main;
+      DmxBuffer[] sendColors =
+          (this.lx.flags.sendCueToOutput && sendFrame.cueOn) ? sendFrame.cue : sendFrame.main;
       DmxEngine.debug("sendDmx 2", sendColors);
 
       // Scale for master brightness
@@ -675,8 +689,11 @@ public class DmxEngine implements LXLoopTask {
       for (int i = 0; i < output.length; i++) {
         outputUnsigned[i] = output[i] & 0xFF;
       }
-      System.out.println(location + " ".repeat(38-location.length()) + Arrays.toString(outputUnsigned) + (dmx.isActive ? "" : " NOT ACTIVE"));
+      System.out.println(
+          location
+              + " ".repeat(38 - location.length())
+              + Arrays.toString(outputUnsigned)
+              + (dmx.isActive ? "" : " NOT ACTIVE"));
     }
-     
   }
 }

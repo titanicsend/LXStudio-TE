@@ -3,7 +3,7 @@ This glue file implements a bunch of Pixelblaze compatibility APIs and parts of 
  */
 var Glue = Java.type("titanicsend.pattern.pixelblaze.Glue");
 var LXColor = Java.type("heronarts.lx.color.LXColor");
-var ColorType = Java.type("titanicsend.pattern.TEPattern.ColorType");
+var ColorType = Java.type("titanicsend.color.TEColorType");
 var Noise = Java.type("heronarts.lx.utils.Noise");
 var System = Java.type("java.lang.System");
 

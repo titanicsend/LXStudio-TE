@@ -3,14 +3,13 @@ package titanicsend.output;
 import heronarts.lx.LX;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.output.ArtNetDatagram;
-import titanicsend.model.TEEdgeModel;
-import titanicsend.model.TEPanelModel;
-import titanicsend.util.TE;
-
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import titanicsend.model.TEEdgeModel;
+import titanicsend.model.TEPanelModel;
+import titanicsend.util.TE;
 
 public class ChromatechSocket implements Comparable<ChromatechSocket> {
   public static final int MAX_PIXELS_PER_CHANNEL = 510;
@@ -69,6 +68,7 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
     TEEdgeModel edge;
     int strandOffset;
     boolean fwd;
+
     private EdgeLink(TEEdgeModel edge, int strandOffset, boolean fwd) {
       this.edge = edge;
       this.strandOffset = strandOffset;
@@ -80,12 +80,21 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
     assert !this.activated;
 
     if (this.panel != null) {
-      throw new IllegalArgumentException(this.repr() + " already has " + this.panel.repr() + " mapped; " +
-              "can't also map " + panel.repr());
+      throw new IllegalArgumentException(
+          this.repr()
+              + " already has "
+              + this.panel.repr()
+              + " mapped; "
+              + "can't also map "
+              + panel.repr());
     }
     if (!this.edgeLinks.isEmpty()) {
-      throw new IllegalArgumentException(this.repr() + " already has " + this.edgeLinks.get(0).edge.repr() +
-              " mapped; can't also map " + panel.repr());
+      throw new IllegalArgumentException(
+          this.repr()
+              + " already has "
+              + this.edgeLinks.get(0).edge.repr()
+              + " mapped; can't also map "
+              + panel.repr());
     }
     this.panel = panel;
     this.firstPanelPixel = firstPanelPixel;
@@ -96,8 +105,13 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
     assert !this.activated;
 
     if (this.panel != null) {
-      throw new IllegalArgumentException(this.repr() + " already has " + this.panel.repr() + " mapped; " +
-              "can't also map " + edge.repr());
+      throw new IllegalArgumentException(
+          this.repr()
+              + " already has "
+              + this.panel.repr()
+              + " mapped; "
+              + "can't also map "
+              + edge.repr());
     }
     int noobFirstPixel = strandOffset;
     int noobLastPixel = strandOffset + edge.size - 1;
@@ -105,13 +119,20 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
     for (EdgeLink edgeLink : this.edgeLinks) {
       int existingFirstPixel = edgeLink.strandOffset;
       int existingLastPixel = existingFirstPixel + edgeLink.edge.size - 1;
-      if (existingFirstPixel <= noobLastPixel &&
-              existingLastPixel >= noobFirstPixel) {
+      if (existingFirstPixel <= noobLastPixel && existingLastPixel >= noobFirstPixel) {
         conflict = true;
-        TE.err(edge.repr() + ", running from " +
-               noobFirstPixel + "-" + noobLastPixel + ", overlaps " +
-               edgeLink.edge.repr() + ", running from " + existingFirstPixel +
-               "-" + existingLastPixel);
+        TE.err(
+            edge.repr()
+                + ", running from "
+                + noobFirstPixel
+                + "-"
+                + noobLastPixel
+                + ", overlaps "
+                + edgeLink.edge.repr()
+                + ", running from "
+                + existingFirstPixel
+                + "-"
+                + existingLastPixel);
       }
     }
     if (!conflict) {
@@ -121,8 +142,7 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
 
   private void registerUniverses(LX lx, List<Integer> multiUniverseIndexBuffer) {
     if (multiUniverseIndexBuffer.size() != MAX_PIXELS_PER_CHANNEL) {
-      throw new IllegalStateException("Got " + multiUniverseIndexBuffer.size() +
-              " pixels");
+      throw new IllegalStateException("Got " + multiUniverseIndexBuffer.size() + " pixels");
     }
 
     for (int segment = 0; segment <= 2; segment++) {
@@ -130,8 +150,8 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
       int first = segment * PIXELS_PER_UNIVERSE;
       int lastPlusOne = first + PIXELS_PER_UNIVERSE;
       if (segment == 2) lastPlusOne = MAX_PIXELS_PER_CHANNEL;
-      int[] ib = multiUniverseIndexBuffer.subList(first, lastPlusOne)
-              .stream().mapToInt(i -> i).toArray();
+      int[] ib =
+          multiUniverseIndexBuffer.subList(first, lastPlusOne).stream().mapToInt(i -> i).toArray();
       ArtNetDatagram outputDevice = new ArtNetDatagram(lx, ib, universe);
       outputDevice.setAddress(this.ip);
       outputDevice.setSequenceEnabled(true);
@@ -150,8 +170,8 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
     assert !this.activated;
     this.activated = true;
 
-    StringBuilder logString = new StringBuilder(
-            "ArtNet " + this.ip.getHostAddress() + "#" + this.channelNum);
+    StringBuilder logString =
+        new StringBuilder("ArtNet " + this.ip.getHostAddress() + "#" + this.channelNum);
     boolean isPanel = this.panel != null;
     boolean isEdgeLinks = !this.edgeLinks.isEmpty();
     List<Integer> multiUniverseIndexBuffer = new ArrayList<>();
@@ -159,8 +179,8 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
       int i;
       int numPixels = this.lastPanelPixel - this.firstPanelPixel + 1;
       assert numPixels <= MAX_PIXELS_PER_CHANNEL;
-      logString.append(" " + this.panel.repr() + "[" + this.firstPanelPixel + "-" +
-              this.lastPanelPixel + "]");
+      logString.append(
+          " " + this.panel.repr() + "[" + this.firstPanelPixel + "-" + this.lastPanelPixel + "]");
       for (i = 0; i < numPixels; i++) {
         LXPoint point = this.panel.points[this.firstPanelPixel + i];
         multiUniverseIndexBuffer.add(point.index);
@@ -178,8 +198,15 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
         if (gap > 0) logString.append(" [Gap=" + gap + "]");
 
         String rStr = edgeLink.fwd ? "" : "(r)";
-        logString.append(" @" + edgeLink.strandOffset + ":[" + edgeLink.edge.repr() +
-                rStr + "=" + edgeLink.edge.points.length + "]");
+        logString.append(
+            " @"
+                + edgeLink.strandOffset
+                + ":["
+                + edgeLink.edge.repr()
+                + rStr
+                + "="
+                + edgeLink.edge.points.length
+                + "]");
 
         for (int ei = 0; ei < edgeLink.edge.points.length; ei++) {
           LXPoint point;
@@ -198,9 +225,7 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
     this.registerUniverses(lx, multiUniverseIndexBuffer);
   }
 
-  /**
-   * Set enabled state on every ArtNet datagram destined for pixel LEDs.  Used by DevSwitch.
-   */
+  /** Set enabled state on every ArtNet datagram destined for pixel LEDs. Used by DevSwitch. */
   public static void setEnabled(boolean enabled) {
     for (ArtNetDatagram datagram : datagrams) {
       datagram.enabled.setValue(enabled);

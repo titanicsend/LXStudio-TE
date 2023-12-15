@@ -24,9 +24,8 @@ public class Circumcenter {
     double beta = 0.5 * (-scalar1020 * scalar1010 + scalar1010 * scalar2020) / det;
 
     return new LXPoint(
-            p0.x + alpha * dx10 + beta * dx20,
-            p0.y + alpha * dy10 + beta * dy20,
-            p0.z + alpha * dz10 + beta * dz20
-    );
+        p0.x + alpha * dx10 + beta * dx20,
+        p0.y + alpha * dy10 + beta * dy20,
+        p0.z + alpha * dz10 + beta * dz20);
   }
 }

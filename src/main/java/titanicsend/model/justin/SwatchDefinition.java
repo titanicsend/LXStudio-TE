@@ -14,5 +14,4 @@ public class SwatchDefinition {
   public String toString() {
     return this.label;
   }
-
 }

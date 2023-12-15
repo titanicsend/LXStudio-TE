@@ -1,46 +1,42 @@
 /**
  * Copyright 2023- Justin Belcher, Mark C. Slee, Heron Arts LLC
  *
- * This file is part of the LX Studio software library. By using
- * LX, you agree to the terms of the LX Studio Software License
- * and Distribution Agreement, available at: http://lx.studio/license
+ * <p>This file is part of the LX Studio software library. By using LX, you agree to the terms of
+ * the LX Studio Software License and Distribution Agreement, available at: http://lx.studio/license
  *
- * Please note that the LX license is not open-source. The license
- * allows for free, non-commercial use.
+ * <p>Please note that the LX license is not open-source. The license allows for free,
+ * non-commercial use.
  *
- * HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR
- * OTHERWISE, AND SPECIFICALLY DISCLAIMS ANY WARRANTY OF
- * MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR
- * PURPOSE, WITH RESPECT TO THE SOFTWARE.
+ * <p>HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, AND SPECIFICALLY
+ * DISCLAIMS ANY WARRANTY OF MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR PURPOSE,
+ * WITH RESPECT TO THE SOFTWARE.
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.dmx.parameter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import heronarts.lx.LX;
 import heronarts.lx.parameter.ObjectParameter;
+import java.util.ArrayList;
+import java.util.List;
 
-public class DmxDiscreteParameter extends ObjectParameter<DmxDiscreteParameterOption> implements DmxParameter {
+public class DmxDiscreteParameter extends ObjectParameter<DmxDiscreteParameterOption>
+    implements DmxParameter {
 
   // Initial options. Save for making copies.
   private final DmxDiscreteParameterOption[] constructorObjects;
   // All the possible DMX values
   private final int[] internalValues;
-  
+
   private DmxBlendMode dmxBlendMode = DmxBlendMode.LERP;
 
   private final DmxParameterLimiter limiter;
-  
+
   private boolean scaleToAlpha = false;
 
-  /**
-   * Extract options list into individual values
-   */
-  static private DmxDiscreteParameterOption[] getVerboseDmxOptions(DmxDiscreteParameterOption[] objects) {
+  /** Extract options list into individual values */
+  private static DmxDiscreteParameterOption[] getVerboseDmxOptions(
+      DmxDiscreteParameterOption[] objects) {
     List<DmxDiscreteParameterOption> result = new ArrayList<DmxDiscreteParameterOption>();
     for (DmxDiscreteParameterOption o : objects) {
       for (int v = o.min; v <= o.max; v++) {
@@ -49,18 +45,19 @@ public class DmxDiscreteParameter extends ObjectParameter<DmxDiscreteParameterOp
     }
     // TODO: fix toArray:
     DmxDiscreteParameterOption[] r = new DmxDiscreteParameterOption[result.size()];
-    int i=0;
+    int i = 0;
     for (DmxDiscreteParameterOption item : result) {
       r[i++] = item;
     }
     return r;
   }
-  
+
   public DmxDiscreteParameter(String label, DmxDiscreteParameterOption[] objects) {
     super(label, getVerboseDmxOptions(objects));
     this.constructorObjects = objects;
     this.internalValues = extractIntValues();
-    this.limiter = new DmxParameterLimiter(this);;
+    this.limiter = new DmxParameterLimiter(this);
+    ;
     this.setWrappable(false);
   }
 
@@ -100,10 +97,10 @@ public class DmxDiscreteParameter extends ObjectParameter<DmxDiscreteParameterOp
   @Override
   public void writeBytes(byte[] output, int offset) {
     double value = getDmxValueLimited();
-    if (this.numBytes == 1) {      
-      output[offset] = (byte)value;
+    if (this.numBytes == 1) {
+      output[offset] = (byte) value;
     } else if (this.numBytes == 2) {
-      output[offset] = (byte)value;
+      output[offset] = (byte) value;
       // TODO: the second byte!
     } else {
       LX.error(new Exception("Invalid number of bytes for DmxDiscreteParameter"));
@@ -144,7 +141,7 @@ public class DmxDiscreteParameter extends ObjectParameter<DmxDiscreteParameterOp
   @Override
   public double getDmxValue(double alpha) {
     return getDmxValue() * (this.scaleToAlpha ? alpha : 1);
-    //return super.getValue() * (this.scaleToAlpha ? alpha : 1);
+    // return super.getValue() * (this.scaleToAlpha ? alpha : 1);
   }
 
   public double getMin() {
@@ -154,15 +151,15 @@ public class DmxDiscreteParameter extends ObjectParameter<DmxDiscreteParameterOp
   public double getMax() {
     return this.getMaxValue();
   }
-  
+
   public int getDmxValue() {
     return this.internalValues[this.getValuei()];
-    //DmxDiscreteParameterOption current = this.getObject();
-    //return current.min;
+    // DmxDiscreteParameterOption current = this.getObject();
+    // return current.min;
   }
-  
+
   public DmxParameter setDmxValue(double value) {
-    return setDmxValue((int)value);
+    return setDmxValue((int) value);
   }
 
   public DmxDiscreteParameter setDmxValue(int dmxValue) {
@@ -175,16 +172,12 @@ public class DmxDiscreteParameter extends ObjectParameter<DmxDiscreteParameterOp
     return this;
   }
 
-  /**
-   * Returns the parameter range as a double
-   */
+  /** Returns the parameter range as a double */
   public double getRangeD() {
     return this.getRange();
   }
 
-  /**
-   * For now a convenient way to create mirror parameters for buffers.
-   */
+  /** For now a convenient way to create mirror parameters for buffers. */
   @Override
   public DmxDiscreteParameter copy() {
     DmxDiscreteParameter copy = new DmxDiscreteParameter(this.getLabel(), this.constructorObjects);
@@ -193,5 +186,4 @@ public class DmxDiscreteParameter extends ObjectParameter<DmxDiscreteParameterOp
     copy.setScaleToAlpha(this.scaleToAlpha);
     return copy;
   }
-
 }

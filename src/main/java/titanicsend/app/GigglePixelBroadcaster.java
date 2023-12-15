@@ -1,16 +1,15 @@
 package titanicsend.app;
 
+import static java.lang.Math.min;
+
 import heronarts.lx.LX;
 import heronarts.lx.LXLoopTask;
 import heronarts.lx.color.LXColor;
-import playasystems.gigglepixel.*;
-import titanicsend.pattern.TimeAccumulator;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.*;
-
-import static java.lang.Math.min;
+import playasystems.gigglepixel.*;
+import titanicsend.util.TimeAccumulator;
 
 public class GigglePixelBroadcaster implements LXLoopTask {
   public static final int BROADCAST_PERIOD_MSEC = 100;
@@ -61,13 +60,12 @@ public class GigglePixelBroadcaster implements LXLoopTask {
       int b = (256 + LXColor.blue(color)) % 256;
       int frac = min(255, 256 / numColors);
       // Filter out black pixels
-      if (r != 0 || g != 0 || b != 0)
-        entries.add(new GPColor(r,g,b,frac));
+      if (r != 0 || g != 0 || b != 0) entries.add(new GPColor(r, g, b, frac));
     }
     // But then add two black ones at the end just for padding, in case
     // they were all black, so we don't send an empty packet.
-    entries.add(new GPColor(0,0,0,1));
-    entries.add(new GPColor(0,0,0,1));
+    entries.add(new GPColor(0, 0, 0, 1));
+    entries.add(new GPColor(0, 0, 0, 1));
     GPPalettePacket palettePacket = new GPPalettePacket(entries);
     try {
       this.gp.send(palettePacket);

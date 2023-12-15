@@ -1,20 +1,26 @@
 package titanicsend.model;
 
-import java.util.*;
-
 import heronarts.lx.LX;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
+import java.util.*;
 import titanicsend.util.PanelStriper;
 
 public class TEPanelFactory {
   public static TEPanelModel build(
-          String id, TEVertex v0, TEVertex v1, TEVertex v2,
-          int startVertexId, int midVertexId,
-          TEEdgeModel e0,
-          TEEdgeModel e1, TEEdgeModel e2, String panelType,
-          TEStripingInstructions stripingInstructions,
-          LXPoint gapPoint, Properties views) {
+      String id,
+      TEVertex v0,
+      TEVertex v1,
+      TEVertex v2,
+      int startVertexId,
+      int midVertexId,
+      TEEdgeModel e0,
+      TEEdgeModel e1,
+      TEEdgeModel e2,
+      String panelType,
+      TEStripingInstructions stripingInstructions,
+      LXPoint gapPoint,
+      Properties views) {
     ArrayList<LXPoint> points = new ArrayList<LXPoint>();
 
     float centroidX = (v0.x + v1.x + v2.x) / 3.0F;
@@ -31,8 +37,17 @@ public class TEPanelFactory {
         LX.log("Panel " + id + " has no striping instructions; won't render.");
       }
       try {
-        flavor = PanelStriper.stripe(id, v0, v1, v2, startVertexId, midVertexId,
-                                     stripedPoints, stripingInstructions, gapPoint);
+        flavor =
+            PanelStriper.stripe(
+                id,
+                v0,
+                v1,
+                v2,
+                startVertexId,
+                midVertexId,
+                stripedPoints,
+                stripingInstructions,
+                gapPoint);
       } catch (Throwable t) {
         LX.log("Problem striping Panel " + id);
         throw t;
@@ -51,7 +66,7 @@ public class TEPanelFactory {
 
     // Tags for panel id, section
     final String section = TEPanelModel.getSection(centroid).getTag();
-    String[] tags = new String[] { id, section };
+    String[] tags = new String[] {id, section};
 
     // Adding tags based on resources/vehicle/tags.properties
     for (String view : views.stringPropertyNames()) {
@@ -63,8 +78,8 @@ public class TEPanelFactory {
         tags = newTags;
       }
     }
-    
-    return new TEPanelModel(id, points, v0, v1, v2, e0, e1, e2,
-            panelType, flavor, centroid, channelLengths, tags);
+
+    return new TEPanelModel(
+        id, points, v0, v1, v2, e0, e1, e2, panelType, flavor, centroid, channelLengths, tags);
   }
 }

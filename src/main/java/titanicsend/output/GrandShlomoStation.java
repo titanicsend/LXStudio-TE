@@ -1,7 +1,6 @@
 package titanicsend.output;
 
 import heronarts.lx.LX;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;

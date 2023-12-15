@@ -1,18 +1,9 @@
 package titanicsend.app.dev;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
-
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.LXSerializable;
@@ -20,25 +11,31 @@ import heronarts.lx.Tempo.ClockSource;
 import heronarts.lx.midi.LXMidiInput;
 import heronarts.lx.midi.surface.LXMidiSurface;
 import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.BooleanParameter.Mode;
+import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
-import heronarts.lx.parameter.BooleanParameter.Mode;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import titanicsend.app.autopilot.TEOscMessage;
 import titanicsend.dmx.DmxEngine;
-import titanicsend.dmx.model.BeaconModel;
 import titanicsend.dmx.model.AdjStealthModel;
+import titanicsend.dmx.model.BeaconModel;
 import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.midi.MidiNames;
 import titanicsend.osc.CrutchOSC;
 import titanicsend.output.ChromatechSocket;
 import titanicsend.util.TE;
-import heronarts.lx.parameter.LXListenableNormalizedParameter;
 
 /**
- * Central control for switching between developer and 
- * production environments.
- * 
+ * Central control for switching between developer and production environments.
+ *
  * @author Justin Belcher
  */
 public class DevSwitch extends LXComponent implements LXSerializable, LX.ProjectListener {
@@ -79,22 +76,23 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
   // If made visible, be sure to clear the beforeFileOpenState
   public final BooleanParameter lock =
       new BooleanParameter("Lock", true)
-      .setMode(Mode.TOGGLE)   
-      .setDescription("When TRUE, if switch is set before a file is opened, switch will be re-applied after file open operation completes.");
+          .setMode(Mode.TOGGLE)
+          .setDescription(
+              "When TRUE, if switch is set before a file is opened, switch will be re-applied after file open operation completes.");
 
   public final BooleanParameter isDev =
       new BooleanParameter("Developer", false)
-      .setMode(Mode.TOGGLE)   
-      .setDescription("Developer mode: disable outputs");
+          .setMode(Mode.TOGGLE)
+          .setDescription("Developer mode: disable outputs");
 
   public final BooleanParameter isProduction =
       new BooleanParameter("Production", false)
-      .setMode(Mode.TOGGLE)   
-      .setDescription("Production mode: enable outputs, midi controllers, etc");
+          .setMode(Mode.TOGGLE)
+          .setDescription("Production mode: enable outputs, midi controllers, etc");
 
   /*
    * Application-specific controls (Detail Parameters)
-   * 
+   *
    * These are parameters that don't exist elsewhere (ie don't need to duplicate lx.engine.output.enabled)
    */
 
@@ -104,22 +102,22 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
 
   public final BooleanParameter engineLEDs =
       new BooleanParameter(INDENT + "LEDs", true)
-      .setMode(Mode.TOGGLE)   
-      .setDescription("Output to LEDs ie all panel+edge pixels (requires LIVE to be enabled)");
+          .setMode(Mode.TOGGLE)
+          .setDescription("Output to LEDs ie all panel+edge pixels (requires LIVE to be enabled)");
 
   // Beacons
 
   public final BooleanParameter engineBeacons =
       new BooleanParameter(INDENT + "Beacons", true)
-      .setMode(Mode.TOGGLE)   
-      .setDescription("Beacons output");
+          .setMode(Mode.TOGGLE)
+          .setDescription("Beacons output");
 
   // DJ Lights
 
   public final BooleanParameter engineDJlights =
       new BooleanParameter(INDENT + "DJ lights", true)
-      .setMode(Mode.TOGGLE)   
-      .setDescription("DJ Lights output");
+          .setMode(Mode.TOGGLE)
+          .setDescription("DJ Lights output");
 
   // OSC engine input (exists)
 
@@ -135,8 +133,8 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
 
   public final BooleanParameter midiSurfaces =
       new BooleanParameter("Midi Surfaces", false)
-      .setMode(Mode.TOGGLE)   
-      .setDescription("Enable all the standard midi surfaces");
+          .setMode(Mode.TOGGLE)
+          .setDescription("Enable all the standard midi surfaces");
 
   // Tempo enabled (exists)
 
@@ -144,21 +142,24 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
 
   public final BooleanParameter tempoSourceOSC =
       new BooleanParameter("Tempo is OSC", false)
-      .setMode(Mode.TOGGLE)   
-      .setDescription("Tempo clockSource is OSC");
+          .setMode(Mode.TOGGLE)
+          .setDescription("Tempo clockSource is OSC");
 
+  private final LXParameterListener detailParameterListener =
+      (p) -> {
+        onDetailParameterChanged(p);
+      };
 
-  private final LXParameterListener detailParameterListener = (p) -> {
-    onDetailParameterChanged(p);
-  };
-
-  private final LXParameterListener tempoSourceListener = (p) -> {
-    onTempoSourceChanged(p);
-  };
+  private final LXParameterListener tempoSourceListener =
+      (p) -> {
+        onTempoSourceChanged(p);
+      };
 
   // All parameters that are visible in the UI
-  private final List<LXNormalizedParameter> mutableVisibleParameters = new ArrayList<LXNormalizedParameter>();
-  public final List<LXNormalizedParameter> visibleParameters = Collections.unmodifiableList(this.mutableVisibleParameters);
+  private final List<LXNormalizedParameter> mutableVisibleParameters =
+      new ArrayList<LXNormalizedParameter>();
+  public final List<LXNormalizedParameter> visibleParameters =
+      Collections.unmodifiableList(this.mutableVisibleParameters);
 
   // All detail parameters that affect the state
   final List<DetailParameter> detailParameters = new ArrayList<DetailParameter>();
@@ -191,6 +192,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     addDetailParameter(this.lx.engine.osc.transmitActive, "OSC Output");
     addDetailParameter(TELaserTask.get().enabled, INDENT + "OSC to lasers");
     addDetailParameter(CrutchOSC.get().transmitActive, INDENT + "OSC to iPads");
+    addDetailParameter(this.lx.engine.dmx.artNetReceiveActive, "ArtNet Input");
     addDetailParameter(this.lx.engine.audio.enabled, "Audio Input");
     addDetailParameter(this.midiSurfaces);
     addDetailParameter(this.lx.engine.tempo.enabled, "Tempo Enabled");
@@ -268,58 +270,54 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     }
   }
 
-  /**
-   * Set Dev/Production UI indicators switches based on current detail parameters
-   */
+  /** Set Dev/Production UI indicators switches based on current detail parameters */
   private void refreshState() {
     this.interalChange = true;
 
     this.state = getState();
 
     switch (this.state) {
-    case DEVELOPER:
-      this.isDev.setValue(true);
-      this.isProduction.setValue(false);
-      break;
-    case PRODUCTION:
-      this.isProduction.setValue(true);
-      this.isDev.setValue(false);
-      break;
-    case DEFAULT:
-    default:
-      this.isDev.setValue(false);
-      this.isProduction.setValue(false);
-      break;
+      case DEVELOPER:
+        this.isDev.setValue(true);
+        this.isProduction.setValue(false);
+        break;
+      case PRODUCTION:
+        this.isProduction.setValue(true);
+        this.isDev.setValue(false);
+        break;
+      case DEFAULT:
+      default:
+        this.isDev.setValue(false);
+        this.isProduction.setValue(false);
+        break;
     }
 
     this.interalChange = false;
   }
 
-  /**
-   * Go to a new state.
-   */
+  /** Go to a new state. */
   private void setState(State state) {
     this.interalChange = true;
 
     this.state = state;
 
     switch (this.state) {
-    case DEVELOPER:
-      this.isDev.setValue(true);
-      this.isProduction.setValue(false);
-      setStateDev();
-      break;
-    case PRODUCTION:
-      this.isProduction.setValue(true);
-      this.isDev.setValue(false);
-      setStateProduction();
-      break;
-    case DEFAULT:
-    default:
-      this.isDev.setValue(false);
-      this.isProduction.setValue(false);
-      setStateDefault();
-      break;
+      case DEVELOPER:
+        this.isDev.setValue(true);
+        this.isProduction.setValue(false);
+        setStateDev();
+        break;
+      case PRODUCTION:
+        this.isProduction.setValue(true);
+        this.isDev.setValue(false);
+        setStateProduction();
+        break;
+      case DEFAULT:
+      default:
+        this.isDev.setValue(false);
+        this.isProduction.setValue(false);
+        setStateDefault();
+        break;
     }
 
     this.interalChange = false;
@@ -331,38 +329,37 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
 
   /**
    * Project-specific implementation: Query
-   * 
-   * Interpret the state from the detail parameters.
+   *
+   * <p>Interpret the state from the detail parameters.
    */
   protected State getState() {
-    if (!this.lx.engine.output.enabled.isOn() &&
-        !this.engineLEDs.isOn() &&
-        !this.engineBeacons.isOn() &&
-        !this.engineDJlights.isOn() &&
-        this.lx.engine.osc.receiveActive.isOn() &&
-        !this.lx.engine.osc.transmitActive.isOn() &&
-        !CrutchOSC.get().transmitActive.isOn() &&
-        !TELaserTask.get().enabled.isOn() &&
-        this.lx.engine.audio.enabled.isOn() &&
-        this.midiSurfaces.isOn() &&
-        this.lx.engine.tempo.enabled.isOn() &&
-        this.lx.engine.tempo.clockSource.getEnum() == ClockSource.INTERNAL
-        ) {
+    if (!this.lx.engine.output.enabled.isOn()
+        && !this.engineLEDs.isOn()
+        && !this.engineBeacons.isOn()
+        && !this.engineDJlights.isOn()
+        && this.lx.engine.osc.receiveActive.isOn()
+        && !this.lx.engine.osc.transmitActive.isOn()
+        && !CrutchOSC.get().transmitActive.isOn()
+        && !TELaserTask.get().enabled.isOn()
+        && this.lx.engine.dmx.artNetReceiveActive.isOn()
+        && this.lx.engine.audio.enabled.isOn()
+        && this.midiSurfaces.isOn()
+        && this.lx.engine.tempo.enabled.isOn()
+        && this.lx.engine.tempo.clockSource.getEnum() == ClockSource.INTERNAL) {
       return State.DEVELOPER;
-    } else if (
-        this.lx.engine.output.enabled.isOn() &&
-        this.engineLEDs.isOn() &&
-        this.engineBeacons.isOn() &&
-        this.engineDJlights.isOn() &&
-        this.lx.engine.osc.receiveActive.isOn() &&
-        this.lx.engine.osc.transmitActive.isOn() &&
-        CrutchOSC.get().transmitActive.isOn() &&
-        TELaserTask.get().enabled.isOn() == TELaserTask.DEFAULT_ENABLE_IN_PRODUCTION &&
-        this.lx.engine.audio.enabled.isOn() &&
-        this.midiSurfaces.isOn() &&
-        this.lx.engine.tempo.enabled.isOn() &&
-        this.lx.engine.tempo.clockSource.getEnum() == ClockSource.OSC
-        ) {
+    } else if (this.lx.engine.output.enabled.isOn()
+        && this.engineLEDs.isOn()
+        && this.engineBeacons.isOn()
+        && this.engineDJlights.isOn()
+        && this.lx.engine.osc.receiveActive.isOn()
+        && this.lx.engine.osc.transmitActive.isOn()
+        && CrutchOSC.get().transmitActive.isOn()
+        && TELaserTask.get().enabled.isOn() == TELaserTask.DEFAULT_ENABLE_IN_PRODUCTION
+        && this.lx.engine.dmx.artNetReceiveActive.isOn()
+        && this.lx.engine.audio.enabled.isOn()
+        && this.midiSurfaces.isOn()
+        && this.lx.engine.tempo.enabled.isOn()
+        && this.lx.engine.tempo.clockSource.getEnum() == ClockSource.OSC) {
       return State.PRODUCTION;
     }
 
@@ -371,8 +368,8 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
 
   /**
    * Project-specific implementation.
-   * 
-   * Start "Developer" state
+   *
+   * <p>Start "Developer" state
    */
   protected void setStateDev() {
     TE.log("DevSwitch setting state to DEVELOPER...");
@@ -386,6 +383,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     this.lx.engine.osc.transmitActive.setValue(false);
     CrutchOSC.get().transmitActive.setValue(false);
     TELaserTask.get().enabled.setValue(false);
+    this.lx.engine.dmx.artNetReceiveActive.setValue(true);
     this.lx.engine.audio.enabled.setValue(true);
     if (!this.midiSurfaces.getValueb()) {
       this.midiSurfaces.setValue(true);
@@ -399,20 +397,21 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
 
   /**
    * Project-specific implementation.
-   * 
-   * Start "Production" state
+   *
+   * <p>Start "Production" state
    */
   protected void setStateProduction() {
     TE.log("DevSwitch setting state to PRODUCTION...");
 
-    this.lx.engine.output.enabled.setValue(true);    
+    this.lx.engine.output.enabled.setValue(true);
     this.engineLEDs.setValue(true);
-    this.engineBeacons.setValue(true);
-    this.engineDJlights.setValue(true);
+    this.engineBeacons.setValue(false);
+    this.engineDJlights.setValue(false);
     this.lx.engine.osc.receiveActive.setValue(true);
     this.lx.engine.osc.transmitActive.setValue(true);
     CrutchOSC.get().transmitActive.setValue(true);
     TELaserTask.get().enabled.setValue(TELaserTask.DEFAULT_ENABLE_IN_PRODUCTION);
+    this.lx.engine.dmx.artNetReceiveActive.setValue(true);
     this.lx.engine.audio.enabled.setValue(true);
     if (!this.midiSurfaces.getValueb()) {
       this.midiSurfaces.setValue(true);
@@ -429,8 +428,8 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
 
   /**
    * Project-specific implementation.
-   * 
-   * Start "Default" state.
+   *
+   * <p>Start "Default" state.
    */
   protected void setStateDefault() {
     TE.log("DevSwitch setting state to DEFAULT...");
@@ -454,48 +453,45 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     DmxEngine.get().setOutputsEnabledByType(AdjStealthModel.class, isOn);
   }
 
-  /**
-   * this.midiSurfaces changed
-   */
+  /** this.midiSurfaces changed */
   private void onMidiSurfacesChanged(boolean isOn) {
     setMidiSurfacesEnabled(isOn);
   }
 
-  /**
-   * Enable all TE-relevant surfaces
-   */
+  /** Enable all TE-relevant surfaces */
   private void setMidiSurfacesEnabled(boolean enabled) {
     for (LXMidiSurface surface : this.lx.engine.midi.surfaces) {
       if (isTESurface(surface)) {
         surface.enabled.setValue(enabled);
+
+        if (surface instanceof titanicsend.lx.APC40Mk2) {
+          ((titanicsend.lx.APC40Mk2) surface).performanceLock.setValue(true);
+        } else if (surface instanceof heronarts.lx.midi.surface.APC40Mk2) {
+          ((heronarts.lx.midi.surface.APC40Mk2) surface).performanceLock.setValue(true);
+        }
       }
     }
 
     for (LXMidiInput lmi : lx.engine.midi.inputs) {
-      if (lmi.getName().equals(MidiNames.MF64) ||
-          lmi.getName().equals(MidiNames.BOMEBOX_MF64)) {
+      if (lmi.getName().equals(MidiNames.MF64) || lmi.getName().equals(MidiNames.BOMEBOX_MF64)) {
         // MF64
         lmi.channelEnabled.setValue(enabled);
-      } else if (
-          lmi.getName().equals(MidiNames.APC40MK2) ||
-          lmi.getName().equals(MidiNames.BOMEBOX_APC40MK2)) {
+      } else if (lmi.getName().equals(MidiNames.APC40MK2)
+          || lmi.getName().equals(MidiNames.BOMEBOX_APC40MK2)) {
         // APC40mk2
         lmi.controlEnabled.setValue(enabled);
       }
     }
   }
 
-  /**
-   * Returns TRUE for normal surfaces that should be enabled for TE production
-   */
+  /** Returns TRUE for normal surfaces that should be enabled for TE production */
   private boolean isTESurface(LXMidiSurface surface) {
-    return
-        surface instanceof titanicsend.lx.APC40Mk2 ||
-        surface instanceof titanicsend.lx.MidiFighterTwister ||
-        surface instanceof heronarts.lx.midi.surface.APC40Mk2 ||
-        surface instanceof heronarts.lx.midi.surface.MidiFighterTwister ||
-        surface instanceof heronarts.lx.midi.surface.DJM900nxs2 ||
-        surface instanceof heronarts.lx.midi.surface.DJMV10;
+    return surface instanceof titanicsend.lx.APC40Mk2
+        || surface instanceof titanicsend.lx.MidiFighterTwister
+        || surface instanceof heronarts.lx.midi.surface.APC40Mk2
+        || surface instanceof heronarts.lx.midi.surface.MidiFighterTwister
+        || surface instanceof heronarts.lx.midi.surface.DJM900nxs2
+        || surface instanceof heronarts.lx.midi.surface.DJMV10;
   }
 
   /*
@@ -504,9 +500,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
 
   private boolean internalTempoSourceChange = false;
 
-  /**
-   * this.tempoSourceOSC changed
-   */
+  /** this.tempoSourceOSC changed */
   private void onTempoSourceOSCChanged(boolean isOn) {
     if (!this.internalTempoSourceChange) {
       this.internalTempoSourceChange = true;
@@ -515,9 +509,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     }
   }
 
-  /**
-   * lx.engine.tempo.clockSource changed
-   */
+  /** lx.engine.tempo.clockSource changed */
   private void onTempoSourceChanged(LXParameter p) {
     if (!this.internalTempoSourceChange) {
       this.internalTempoSourceChange = true;
@@ -536,7 +528,9 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     if (change == Change.TRY || change == Change.NEW) {
       // About to do an Open File
       this.stateBeforeFileOpen = this.state;
-      TE.log("DevSwitch detected potential file change, remembering state " + this.stateBeforeFileOpen);
+      TE.log(
+          "DevSwitch detected potential file change, remembering state "
+              + this.stateBeforeFileOpen);
     } else if (change == Change.OPEN) {
       // Completion of project file open
       if (this.lock.isOn()) {

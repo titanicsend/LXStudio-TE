@@ -38,7 +38,11 @@ public class TEUIControls extends UICollapsibleSection {
   private void controlRow(LXStudio.UI ui, float controlWidth, LXParameter p) {
     UI2dComponent control = null;
     if (p instanceof BooleanParameter) {
-      control = new UIButton(controlX, y, controlWidth, 16).setParameter((BooleanParameter) p).setActiveLabel("On").setInactiveLabel("Off");
+      control =
+          new UIButton(controlX, y, controlWidth, 16)
+              .setParameter((BooleanParameter) p)
+              .setActiveLabel("On")
+              .setInactiveLabel("Off");
     } else if (p instanceof BoundedParameter) {
       control = new UIDoubleBox(controlX, y, controlWidth, 16).setParameter((BoundedParameter) p);
     } else if (p instanceof DiscreteParameter) {
@@ -46,14 +50,13 @@ public class TEUIControls extends UICollapsibleSection {
     }
     if (control != null) {
       new UILabel(0, y, getContentWidth() - control.getWidth() - 4, 16)
-      .setLabel(p.getLabel())
-      .setPadding(0, 4)
-      .setFont(ui.theme.getControlFont())
-      .setTextAlignment(Align.LEFT, Align.MIDDLE)
-      .addToContainer(this);
+          .setLabel(p.getLabel())
+          .setPadding(0, 4)
+          .setFont(ui.theme.getControlFont())
+          .setTextAlignment(Align.LEFT, Align.MIDDLE)
+          .addToContainer(this);
       control.addToContainer(this);
       y += rowHeight;
     }
   }
-
 }
