@@ -4,15 +4,14 @@ import java.util.List;
 
 public class ShaderInfo {
 
-    private String code;
-    private List<Input> inputs;
+  private String code;
+  private List<Input> inputs;
 
-    public String getCode() {
-        return code;
-    }
+  public String getCode() {
+    return code;
+  }
 
-    public List<Input> getInputs() {
-        return inputs;
-    }
-
+  public List<Input> getInputs() {
+    return inputs;
+  }
 }

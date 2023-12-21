@@ -1,30 +1,27 @@
 package titanicsend.pattern.mike;
 
-import java.util.*;
+import static java.util.Collections.shuffle;
+import static titanicsend.util.TEColor.TRANSPARENT;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
+import java.util.*;
 import titanicsend.color.TEColorType;
 import titanicsend.model.*;
 import titanicsend.pattern.TEPattern;
 
-
-import static java.util.Collections.shuffle;
-import static titanicsend.util.TEColor.TRANSPARENT;
-
 @LXCategory("Panel FG")
 public class Bubbles extends TEPattern {
-  private static final double BUBBLE_LIFETIME_MSEC = 300.0;  // Grow bubble at a rate such that it lives this long
-  private static final double BUBBLE_THICKNESS = 0.025;  // Expressed as a fraction of the panel
+  private static final double BUBBLE_LIFETIME_MSEC =
+      300.0; // Grow bubble at a rate such that it lives this long
+  private static final double BUBBLE_THICKNESS = 0.025; // Expressed as a fraction of the panel
   private static final int NUM_BUBBLES = 5;
-  private final HashMap<TEPanelModel, Double> bubbleFraction;  // -1 if no bubble; else, 0.0-1.1
+  private final HashMap<TEPanelModel, Double> bubbleFraction; // -1 if no bubble; else, 0.0-1.1
   private final List<TEPanelModel> newBubbleQueue;
 
   public final LinkedColorParameter color =
-          registerColor("Color", "color", TEColorType.PRIMARY,
-                  "Color of the bubbles");
+      registerColor("Color", "color", TEColorType.PRIMARY, "Color of the bubbles");
 
   public Bubbles(LX lx) {
     super(lx);
@@ -72,7 +69,7 @@ public class Bubbles extends TEPattern {
         if (newValue < 1.0) {
           this.bubbleFraction.put(panel, newValue);
         } else {
-          this.bubbleFraction.put(panel, -1.0);  // *pop!*
+          this.bubbleFraction.put(panel, -1.0); // *pop!*
           newBubble();
         }
       }

@@ -1,21 +1,18 @@
 /**
  * Copyright 2023- Justin Belcher, Mark C. Slee, Heron Arts LLC
  *
- * This file is part of the LX Studio software library. By using
- * LX, you agree to the terms of the LX Studio Software License
- * and Distribution Agreement, available at: http://lx.studio/license
+ * <p>This file is part of the LX Studio software library. By using LX, you agree to the terms of
+ * the LX Studio Software License and Distribution Agreement, available at: http://lx.studio/license
  *
- * Please note that the LX license is not open-source. The license
- * allows for free, non-commercial use.
+ * <p>Please note that the LX license is not open-source. The license allows for free,
+ * non-commercial use.
  *
- * HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR
- * OTHERWISE, AND SPECIFICALLY DISCLAIMS ANY WARRANTY OF
- * MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR
- * PURPOSE, WITH RESPECT TO THE SOFTWARE.
+ * <p>HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, AND SPECIFICALLY
+ * DISCLAIMS ANY WARRANTY OF MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR PURPOSE,
+ * WITH RESPECT TO THE SOFTWARE.
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.dmx.pattern;
 
 import heronarts.lx.LX;
@@ -27,11 +24,10 @@ import titanicsend.dmx.model.BeaconModel;
 import titanicsend.dmx.model.DmxModel;
 import titanicsend.ui.UIUtils;
 
-/**
- * Simple beacon pattern allowing direct control of parameters.
- */
+/** Simple beacon pattern allowing direct control of parameters. */
 @LXCategory("Test")
-public class BeaconDirectPattern extends BeaconPattern implements UIDeviceControls<BeaconDirectPattern> {
+public class BeaconDirectPattern extends BeaconPattern
+    implements UIDeviceControls<BeaconDirectPattern> {
 
   public BeaconDirectPattern(LX lx) {
     super(lx);
@@ -54,7 +50,7 @@ public class BeaconDirectPattern extends BeaconPattern implements UIDeviceContro
     addParameter("Frost1", this.frost1);
     addParameter("Frost2", this.frost2);
     addParameter("ptSpd", this.ptSpeed);
-    addParameter("Control", this.control);  // Use caution!
+    addParameter("Control", this.control); // Use caution!
   }
 
   @Override
@@ -82,7 +78,7 @@ public class BeaconDirectPattern extends BeaconPattern implements UIDeviceContro
     int ptSpd = this.ptSpeed.getDmxValue();
     int control = this.control.getDmxValue();
 
-    for (DmxModel d : this.modelTE.beacons) {      
+    for (DmxModel d : this.modelTE.beacons) {
       setDmxNormalized(d, BeaconModel.INDEX_PAN, pan);
       setDmxNormalized(d, BeaconModel.INDEX_TILT, tilt);
       setDmxNormalized(d, BeaconModel.INDEX_CYAN, cyan);

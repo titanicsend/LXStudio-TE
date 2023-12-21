@@ -12,5 +12,4 @@ public abstract class BeaconEffect extends DmxEffect {
     super(lx);
     this.modelTE = TEApp.wholeModel;
   }
-
 }

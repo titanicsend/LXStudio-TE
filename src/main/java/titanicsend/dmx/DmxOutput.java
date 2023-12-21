@@ -1,31 +1,28 @@
 /**
  * Copyright 2023- Justin Belcher, Mark C. Slee, Heron Arts LLC
  *
- * This file is part of the LX Studio software library. By using
- * LX, you agree to the terms of the LX Studio Software License
- * and Distribution Agreement, available at: http://lx.studio/license
+ * <p>This file is part of the LX Studio software library. By using LX, you agree to the terms of
+ * the LX Studio Software License and Distribution Agreement, available at: http://lx.studio/license
  *
- * Please note that the LX license is not open-source. The license
- * allows for free, non-commercial use.
+ * <p>Please note that the LX license is not open-source. The license allows for free,
+ * non-commercial use.
  *
- * HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR
- * OTHERWISE, AND SPECIFICALLY DISCLAIMS ANY WARRANTY OF
- * MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR
- * PURPOSE, WITH RESPECT TO THE SOFTWARE.
+ * <p>HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, AND SPECIFICALLY
+ * DISCLAIMS ANY WARRANTY OF MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR PURPOSE,
+ * WITH RESPECT TO THE SOFTWARE.
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.dmx;
 
 import heronarts.lx.LX;
 import heronarts.lx.output.ArtNetDatagram;
 import heronarts.lx.output.IndexBuffer;
+import heronarts.lx.output.IndexBuffer.Segment;
 import heronarts.lx.output.LXBufferOutput.ByteEncoder;
 import heronarts.lx.output.LXOutput;
 import heronarts.lx.output.LXOutput.GammaTable.Curve;
 import heronarts.lx.parameter.LXParameter;
-import heronarts.lx.output.IndexBuffer.Segment;
 import titanicsend.dmx.model.DmxModel.DmxOutputDefinition;
 import titanicsend.dmx.parameter.DmxParameter;
 
@@ -45,8 +42,8 @@ public class DmxOutput extends LXOutput {
     }
 
     /**
-     * Write actual DMX output to the byte[] array.
-     * Because we claimed a single-length index buffer, this will get called once.
+     * Write actual DMX output to the byte[] array. Because we claimed a single-length index buffer,
+     * this will get called once.
      */
     @Override
     public void writeBytes(int argb, Curve gamma, byte[] output, int offset) {
@@ -64,7 +61,7 @@ public class DmxOutput extends LXOutput {
     super(lx);
     this.definition = definition;
     this.byteEncoder = new DmxByteEncoder();
-    int[] indices = { 0 };
+    int[] indices = {0};
     Segment segment = new Segment(indices, this.byteEncoder, this.definition.channel);
 
     this.dg = new ArtNetDatagram(this.lx, new IndexBuffer(segment), definition.universe);
@@ -76,18 +73,16 @@ public class DmxOutput extends LXOutput {
     this.dg.setGammaDelegate(lx.engine.output);
   }
 
-  /**
-   * Call before send() to pass the DMX values to the output
-   */
+  /** Call before send() to pass the DMX values to the output */
   public void setDmxData(DmxBuffer dmx) {
     this.dmx = dmx;
   }
 
-  private final int[] dummyColors = { 0 };
+  private final int[] dummyColors = {0};
 
   /**
-   * Entry point for sending DMX output.  
-   * Internally a custom ByteEncoder will write the staged DMX data.
+   * Entry point for sending DMX output. Internally a custom ByteEncoder will write the staged DMX
+   * data.
    */
   @Override
   public LXOutput send(int[] colors) {

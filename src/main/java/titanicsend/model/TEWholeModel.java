@@ -1,13 +1,5 @@
 package titanicsend.model;
 
-import java.util.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.stream.Collectors;
-
 import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
@@ -15,11 +7,18 @@ import heronarts.lx.model.LXView;
 import heronarts.lx.structure.view.LXViewDefinition;
 import heronarts.lx.transform.LXVector;
 import heronarts.lx.utils.LXUtils;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.stream.Collectors;
 import titanicsend.dmx.model.AdjStealthModel;
 import titanicsend.dmx.model.BeaconModel;
 import titanicsend.dmx.model.DmxModel;
-import titanicsend.dmx.model.DmxWholeModel;
 import titanicsend.dmx.model.DmxModel.DmxCommonConfig;
+import titanicsend.dmx.model.DmxWholeModel;
 import titanicsend.lasercontrol.MovingTarget;
 import titanicsend.output.ChromatechSocket;
 import titanicsend.output.GrandShlomoStation;
@@ -29,7 +28,7 @@ import titanicsend.util.TE;
 public class TEWholeModel extends LXModel implements DmxWholeModel {
   public String subdir;
   public String name;
-  private final LXPoint gapPoint;  // Used for pixels that shouldn't actually be lit
+  private final LXPoint gapPoint; // Used for pixels that shouldn't actually be lit
   public HashMap<Integer, TEVertex> vertexesById;
   public HashMap<String, TEEdgeModel> edgesById;
   public HashMap<LXVector, List<TEEdgeModel>> edgesBySymmetryGroup;
@@ -42,9 +41,9 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
   public List<TEBox> boxes;
   public Boundaries boundaryPoints;
 
-  static public final String RESOURCE_NAME_BEACONS = "/beacons.txt";
-  static public final String RESOURCE_NAME_DJLIGHTS = "/djLights.txt";
-  static public final String RESOURCE_NAME_VIEWS = "views.txt";
+  public static final String RESOURCE_NAME_BEACONS = "/beacons.txt";
+  public static final String RESOURCE_NAME_DJLIGHTS = "/djLights.txt";
+  public static final String RESOURCE_NAME_VIEWS = "views.txt";
 
   // Beacons
   private final List<DmxModel> mutableBeacons = new ArrayList<DmxModel>();
@@ -74,12 +73,12 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
     public final LXPoint maxZBoundaryPoint;
 
     public Boundaries(
-      LXPoint minXBoundaryPoint,
-      LXPoint maxXBoundaryPoint,
-      LXPoint minYBoundaryPoint,
-      LXPoint maxYBoundaryPoint,
-      LXPoint minZBoundaryPoint,
-      LXPoint maxZBoundaryPoint) {
+        LXPoint minXBoundaryPoint,
+        LXPoint maxXBoundaryPoint,
+        LXPoint minYBoundaryPoint,
+        LXPoint maxYBoundaryPoint,
+        LXPoint minZBoundaryPoint,
+        LXPoint maxZBoundaryPoint) {
       this.minXBoundaryPoint = minXBoundaryPoint;
       this.maxXBoundaryPoint = maxXBoundaryPoint;
       this.minYBoundaryPoint = minYBoundaryPoint;
@@ -159,13 +158,21 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
     LX.log(String.format("Min Z boundary: %f", boundaryPoints.minZBoundaryPoint.z));
     LX.log(String.format("Max Z boundary: %f", boundaryPoints.maxZBoundaryPoint.z));
 
-    LX.log(this.name + " loaded. " +
-           this.vertexesById.size() + " vertexes, " +
-           this.edgesById.size() + " edges, " +
-           this.panelsById.size() + " panels, " +
-           this.points.length + " pixels, " +
-           this.beacons.size() + " beacons, " +
-           this.djLights.size() + " DJ lights");
+    LX.log(
+        this.name
+            + " loaded. "
+            + this.vertexesById.size()
+            + " vertexes, "
+            + this.edgesById.size()
+            + " edges, "
+            + this.panelsById.size()
+            + " panels, "
+            + this.points.length
+            + " pixels, "
+            + this.beacons.size()
+            + " beacons, "
+            + this.djLights.size()
+            + " DJ lights");
 
     if (this.beacons.size() == 0) {
       LX.warning("No active beacons were found in config file.");
@@ -176,27 +183,29 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
   }
 
   /**
-   * In Gap Pixel comparisons only the point index should be used,
-   * because a LXPoint instance may be a copy of the original gap point.
+   * In Gap Pixel comparisons only the point index should be used, because a LXPoint instance may be
+   * a copy of the original gap point.
    */
   public int getGapPointIndex() {
     return this.gapPoint.index;
   }
 
   public boolean isEdgePoint(int index) {
-    return index >= edgePoints.get(0).index && index <= edgePoints.get(edgePoints.size()-1).index;
+    return index >= edgePoints.get(0).index && index <= edgePoints.get(edgePoints.size() - 1).index;
   }
 
   public boolean isPanelPoint(int index) {
-    return index >= panelPoints.get(0).index && index <= panelPoints.get(panelPoints.size() - 1).index;
+    return index >= panelPoints.get(0).index
+        && index <= panelPoints.get(panelPoints.size() - 1).index;
   }
-  
+
   public boolean isGapPoint(LXPoint p) {
     return p.index == this.gapPoint.index;
   }
 
-  /** Builds structures that compute spacial relationships for edges,
-   *  such as edges that are mirrored fore-aft and port-starboard.
+  /**
+   * Builds structures that compute spacial relationships for edges, such as edges that are mirrored
+   * fore-aft and port-starboard.
    */
   private void buildEdgeRelations() {
     for (TEEdgeModel edge : this.edgesById.values()) {
@@ -204,8 +213,8 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
       int absY = Math.round(Math.abs(edge.center.y) / 100_000);
       int absZ = Math.round(Math.abs(edge.center.z) / 100_000);
       LXVector symmetryKey = new LXVector(0, absY * 100_000, absZ * 100_000);
-      List<TEEdgeModel> symmetryGroup = this.edgesBySymmetryGroup
-              .computeIfAbsent(symmetryKey, k -> new ArrayList<>());
+      List<TEEdgeModel> symmetryGroup =
+          this.edgesBySymmetryGroup.computeIfAbsent(symmetryKey, k -> new ArrayList<>());
       symmetryGroup.add(edge);
       edge.symmetryGroup = symmetryGroup;
       this.edgePoints.addAll(Arrays.asList(edge.points));
@@ -249,7 +258,7 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
     try (InputStream is = new FileInputStream("resources/vehicle/tags.properties")) {
       geometry.tags.load(is);
     } catch (IOException e) {
-        LX.log("Error loading tags: " + e.getMessage());
+      LX.log("Error loading tags: " + e.getMessage());
     }
   }
 
@@ -296,13 +305,14 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
       assert v0Id < v1Id;
       TEVertex v0 = geometry.vertexesById.get(v0Id);
       TEVertex v1 = geometry.vertexesById.get(v1Id);
-      String[] tags = new String[] { tokens[0] + tokens[1], id };
-  
+      String[] tags = new String[] {tokens[0] + tokens[1], id};
+
       for (String view : geometry.tags.stringPropertyNames()) {
         List<String> ids = Arrays.asList(geometry.tags.getProperty(view).split(","));
         if (ids.contains(id)) {
           String[] newTags = new String[tags.length + 1]; // Resize the tags array to fit all IDs
-          System.arraycopy(tags, 0, newTags, 0, tags.length); // Copy the old tags into the new array
+          System.arraycopy(
+              tags, 0, newTags, 0, tags.length); // Copy the old tags into the new array
           newTags[tags.length] = view;
           tags = newTags;
         }
@@ -353,8 +363,7 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
 
     Map<String, TEStripingInstructions> rv = new HashMap<>();
     while (s.hasNextLine()) {
-      String line = s.nextLine()
-              .replaceAll("\s*\\(.+?\\)\s*", " ");
+      String line = s.nextLine().replaceAll("\s*\\(.+?\\)\s*", " ");
       String[] tokens = line.split(" ");
       if (tokens[0].contains(".")) {
         LX.log("Ignoring leftover Striping IP " + tokens[0]);
@@ -367,8 +376,10 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
       int[] channelLengths = null;
       int next_index = 2;
       if (tokens[next_index].startsWith("C")) {
-        channelLengths = Arrays.stream(tokens[next_index].substring(1).split(","))
-                .mapToInt(Integer::parseInt).toArray();
+        channelLengths =
+            Arrays.stream(tokens[next_index].substring(1).split(","))
+                .mapToInt(Integer::parseInt)
+                .toArray();
         next_index++;
       }
       boolean isLeft;
@@ -392,8 +403,7 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
         } else {
           String[] subTokens = token.split("\\.", -1);
           if (subTokens.length != 2) {
-            throw new IllegalArgumentException("Bad subtokens for [" +
-                    line + "]: " + token);
+            throw new IllegalArgumentException("Bad subtokens for [" + line + "]: " + token);
           }
           int leftNudge = calcNudge(subTokens[0]);
           int rightNudge = calcNudge(subTokens[1]);
@@ -410,7 +420,8 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
           phase = 1 - phase;
         }
       }
-      TEStripingInstructions tesi = new TEStripingInstructions(
+      TEStripingInstructions tesi =
+          new TEStripingInstructions(
               channelLengths,
               rowLengths.stream().mapToInt(i -> i).toArray(),
               beforeNudges.stream().mapToInt(i -> i).toArray(),
@@ -421,14 +432,12 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
   }
 
   private static int getChannelLengthForPanel(TEStripingInstructions tesi, int n) {
-    if (tesi.channelLengths == null)
-      return TEStripingInstructions.DEFAULT_PANEL_CHANNEL_LENGTH;
-    else
-      return tesi.channelLengths[n];
+    if (tesi.channelLengths == null) return TEStripingInstructions.DEFAULT_PANEL_CHANNEL_LENGTH;
+    else return tesi.channelLengths[n];
   }
 
-  private static void setPanelOutputs(TEPanelModel p, TEStripingInstructions tesi,
-                                      String outputConfig) {
+  private static void setPanelOutputs(
+      TEPanelModel p, TEStripingInstructions tesi, String outputConfig) {
     String[] outputs = outputConfig.split("/");
 
     // The index into the panel that maps to the current channel's pixel 0
@@ -466,23 +475,28 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
       int channelsIntoOutput;
 
       for (channelsIntoOutput = 0;
-           // Keep going on the current controller as long as there remain panel pixels not assigned to outputs...
-           firstChannelPixel < p.size &&
-           // ...and channels available to assign them to
-           firstChannel + channelsIntoOutput <= lastChannel;
-           // Increment both of these when we progress to the next channel
-           channelsIntoOutput++, channelsIntoPanel++) {
+          // Keep going on the current controller as long as there remain panel pixels not assigned
+          // to outputs...
+          firstChannelPixel < p.size
+              &&
+              // ...and channels available to assign them to
+              firstChannel + channelsIntoOutput <= lastChannel;
+          // Increment both of these when we progress to the next channel
+          channelsIntoOutput++, channelsIntoPanel++) {
 
         // The index into the panel that maps to the current channel's final pixel; this is more
-        // complicated than it seems because some channels have 251 pixels. The striping instructions
+        // complicated than it seems because some channels have 251 pixels. The striping
+        // instructions
         // keep track of that.
-        int lastChannelPixel = firstChannelPixel + getChannelLengthForPanel(tesi, channelsIntoPanel) - 1;
+        int lastChannelPixel =
+            firstChannelPixel + getChannelLengthForPanel(tesi, channelsIntoPanel) - 1;
 
         // If the channel has room for more pixels than the panel has available, use the latter.
         if (lastChannelPixel > p.size - 1) lastChannelPixel = p.size - 1;
 
         // Create a socket to a particular controller channel
-        ChromatechSocket socket = GrandShlomoStation.getOrMake(ip, firstChannel + channelsIntoOutput);
+        ChromatechSocket socket =
+            GrandShlomoStation.getOrMake(ip, firstChannel + channelsIntoOutput);
 
         // And assign these pixels of the panel to it
         socket.addPanel(p, firstChannelPixel, lastChannelPixel);
@@ -498,16 +512,14 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
     geometry.panelsBySection = new HashMap<>();
     geometry.panelsByFlavor = new HashMap<>();
 
-    Map<String, TEStripingInstructions> stripingInstructions
-            = loadStripingInstructions(geometry);
+    Map<String, TEStripingInstructions> stripingInstructions = loadStripingInstructions(geometry);
 
     for (String id : stripingInstructions.keySet()) {
       TEStripingInstructions tesi = stripingInstructions.get(id);
       assert tesi != null;
-      StringBuilder out = new StringBuilder("Panel " + id +
-              " has row lengths ");
+      StringBuilder out = new StringBuilder("Panel " + id + " has row lengths ");
       for (int i : tesi.rowLengths) out.append(i).append(" ");
-      //LX.log(out.toString());
+      // LX.log(out.toString());
     }
 
     Scanner s = loadFilePrivate(geometry.subdir + "/panels.txt");
@@ -554,11 +566,29 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
       int midVertexId = Integer.parseInt(tokens[1]);
 
       TEStripingInstructions tesi = stripingInstructions.get(id);
-      TEPanelModel p = TEPanelFactory.build(id, vertexes[0], vertexes[1], vertexes[2],
-          startVertexId, midVertexId, e0, e1, e2, panelType, tesi, geometry.gapPoint, geometry.tags);
+      TEPanelModel p =
+          TEPanelFactory.build(
+              id,
+              vertexes[0],
+              vertexes[1],
+              vertexes[2],
+              startVertexId,
+              midVertexId,
+              e0,
+              e1,
+              e2,
+              panelType,
+              tesi,
+              geometry.gapPoint,
+              geometry.tags);
       if (p.points.length != declaredNumPixels) {
-        TE.err("Panel " + id + " was declared to have " + declaredNumPixels +
-                "px but it actually has " + p.points.length);
+        TE.err(
+            "Panel "
+                + id
+                + " was declared to have "
+                + declaredNumPixels
+                + "px but it actually has "
+                + p.points.length);
       }
       if (flipStr.equals("flipped")) {
         p.offsetTriangles.flip();
@@ -611,10 +641,10 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
       int x = Integer.parseInt(tokens[1]);
       int y = Integer.parseInt(tokens[2]);
       int z = Integer.parseInt(tokens[3]);
-      String[] tags = new String[] { id };
+      String[] tags = new String[] {id};
 
       TELaserModel laser = new TELaserModel(id, x, y, z, tags);
-      //laser.control = new Cone(laser);
+      // laser.control = new Cone(laser);
       laser.control = new MovingTarget(laser);
       geometry.lasersById.put(id, laser);
     }
@@ -646,7 +676,7 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
         config.universe = Integer.parseInt(tokens[10]);
         config.channel = Integer.parseInt(tokens[11]);
         float tiltLimit = Float.parseFloat(tokens[12]);
-        String[] tags = new String[] { config.id };
+        String[] tags = new String[] {config.id};
 
         BeaconModel beacon = new BeaconModel(config, tiltLimit, tags);
         geometry.beacons.add(beacon);
@@ -681,7 +711,7 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
         config.fps = Float.parseFloat(tokens[9]);
         config.universe = Integer.parseInt(tokens[10]);
         config.channel = Integer.parseInt(tokens[11]);
-        String[] tags = new String[] { config.id };
+        String[] tags = new String[] {config.id};
 
         // Chauvet light for JKB testing
         // ChauvetSpot160Model m = new ChauvetSpot160Model(config, tags);
@@ -710,7 +740,7 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
       int y = Integer.parseInt(tokens[1]);
       int z = Integer.parseInt(tokens[2]);
 
-      vectors.add(new LXVector(x,y,z));
+      vectors.add(new LXVector(x, y, z));
 
       if (vectors.size() == 8) {
         geometry.boxes.add(new TEBox(vectors));
@@ -759,12 +789,12 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
     LXPoint minZValuePoint = pointsList.stream().min(Comparator.comparing(p -> p.z)).get();
     LXPoint maxZValuePoint = pointsList.stream().max(Comparator.comparing(p -> p.z)).get();
     return new Boundaries(
-      minXValuePoint,
-      maxXValuePoint,
-      minYValuePoint,
-      maxYValuePoint,
-      minZValuePoint,
-      maxZValuePoint);
+        minXValuePoint,
+        maxXValuePoint,
+        minYValuePoint,
+        maxYValuePoint,
+        minZValuePoint,
+        maxZValuePoint);
   }
 
   private static Geometry loadGeometry(String subdir) {
@@ -787,7 +817,7 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
     childList.addAll(geometry.lasersById.values());
 
     loadBeacons(geometry);
-    
+
     loadDjLights(geometry);
 
     loadEdges(geometry);
@@ -814,34 +844,37 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
 
   public Set<LXPoint> getEdgePointsBySection(TEEdgeSection section) {
     return edgePoints.stream()
-            .filter(point -> section == TEEdgeSection.PORT ? point.x > 0 : point.x < 0)
-            .collect(Collectors.toSet());
+        .filter(point -> section == TEEdgeSection.PORT ? point.x > 0 : point.x < 0)
+        .collect(Collectors.toSet());
   }
 
   public Set<LXPoint> getPointsBySection(TEPanelSection section) {
-    return getPanelsBySection(section)
-            .stream()
-            .map(LXModel::getPoints)
-            .flatMap(List::stream)
-            .collect(Collectors.toSet());
+    return getPanelsBySection(section).stream()
+        .map(LXModel::getPoints)
+        .flatMap(List::stream)
+        .collect(Collectors.toSet());
   }
 
   public Set<TEPanelModel> getPanelsBySections(Collection<TEPanelSection> sections) {
     return panelsBySection.entrySet().stream()
-            .filter(entry -> sections.contains(entry.getKey()))
-            .map(Map.Entry::getValue)
-            .flatMap(Set::stream)
-            .collect(Collectors.toSet());
+        .filter(entry -> sections.contains(entry.getKey()))
+        .map(Map.Entry::getValue)
+        .flatMap(Set::stream)
+        .collect(Collectors.toSet());
   }
 
   public Set<TEPanelModel> getLeftPanels() {
-    return getPanelsBySections(List.of(TEPanelSection.STARBOARD_AFT,
-            TEPanelSection.STARBOARD_AFT_SINGLE, TEPanelSection.AFT));
+    return getPanelsBySections(
+        List.of(
+            TEPanelSection.STARBOARD_AFT, TEPanelSection.STARBOARD_AFT_SINGLE, TEPanelSection.AFT));
   }
 
   public Set<TEPanelModel> getRightPanels() {
-    return getPanelsBySections(List.of(TEPanelSection.STARBOARD_FORE,
-            TEPanelSection.STARBOARD_FORE_SINGLE, TEPanelSection.FORE));
+    return getPanelsBySections(
+        List.of(
+            TEPanelSection.STARBOARD_FORE,
+            TEPanelSection.STARBOARD_FORE_SINGLE,
+            TEPanelSection.FORE));
   }
 
   public Set<TEPanelModel> getAllPanels() {
@@ -895,7 +928,7 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
     }
     updateSizeDmx();
   }
-  
+
   protected final void updateSizeDmx() {
     this.sizeDmx = this.mutableDmxModels.size();
   }
@@ -925,11 +958,20 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
         if (tokens.length == 3) {
           String label = tokens[0];
           // Normalization: true = relative, false = absolute
-          LXView.Normalization n = Boolean.parseBoolean(tokens[1]) ? LXView.Normalization.RELATIVE : LXView.Normalization.ABSOLUTE;
+          LXView.Normalization n =
+              Boolean.parseBoolean(tokens[1])
+                  ? LXView.Normalization.RELATIVE
+                  : LXView.Normalization.ABSOLUTE;
           String selector = tokens[2];
           views.add(new ViewDefinition(label, selector, n));
         } else {
-          LX.error("Invalid number of columns in " + RESOURCE_NAME_VIEWS +" config file, found " + tokens.length + ": " + line);
+          LX.error(
+              "Invalid number of columns in "
+                  + RESOURCE_NAME_VIEWS
+                  + " config file, found "
+                  + tokens.length
+                  + ": "
+                  + line);
         }
       }
     } catch (IOException e) {

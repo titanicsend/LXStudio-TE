@@ -1,10 +1,10 @@
 package titanicsend.app;
 
+import heronarts.glx.ui.UI2dContainer;
 import heronarts.glx.ui.component.UICollapsibleSection;
 import heronarts.glx.ui.component.UIDropMenu;
 import heronarts.glx.ui.component.UILabel;
 import heronarts.glx.ui.component.UITextBox;
-import heronarts.glx.ui.UI2dContainer;
 import heronarts.lx.parameter.*;
 import heronarts.lx.studio.LXStudio;
 
@@ -27,12 +27,14 @@ public class GigglePixelUI extends UICollapsibleSection {
   }
 
   public final EnumParameter<GPMode> gpMode =
-          new EnumParameter<>("GP Mode", GPMode.OFF)
-                  .setDescription("Should GigglePixel listen, broadcast, or neither?");
+      new EnumParameter<>("GP Mode", GPMode.OFF)
+          .setDescription("Should GigglePixel listen, broadcast, or neither?");
 
-  public GigglePixelUI(final LXStudio.UI ui, float width,
-                       GigglePixelListener listener,
-                       GigglePixelBroadcaster broadcaster) {
+  public GigglePixelUI(
+      final LXStudio.UI ui,
+      float width,
+      GigglePixelListener listener,
+      GigglePixelBroadcaster broadcaster) {
     super(ui, 0, 0, width, 16);
 
     width = getContentWidth();
@@ -48,32 +50,33 @@ public class GigglePixelUI extends UICollapsibleSection {
     listener.peersTextbox = new UITextBox(0, 0, width, 16);
     listener.peersTextbox.addToContainer(this);
 
-    final LXParameterListener update = (p) -> {
-      switch(gpMode.getEnum()) {
-      case OFF:
-        listener.peeking = false;
-        listener.subscribing = false;
-        broadcaster.enabled = false;
-        break;
-      case PEEK:
-        listener.peeking = true;
-        listener.subscribing = false;
-        broadcaster.enabled = false;
-        break;
-      case SUBSCRIBE:
-        listener.peeking = true;
-        listener.subscribing = true;
-        broadcaster.enabled = false;
-        break;
-      case BROADCAST:
-        listener.peeking = false;
-        listener.subscribing = false;
-        broadcaster.enabled = true;
-        break;
-      default:
-        throw new Error("Internal Error");
-      }
-    };
+    final LXParameterListener update =
+        (p) -> {
+          switch (gpMode.getEnum()) {
+            case OFF:
+              listener.peeking = false;
+              listener.subscribing = false;
+              broadcaster.enabled = false;
+              break;
+            case PEEK:
+              listener.peeking = true;
+              listener.subscribing = false;
+              broadcaster.enabled = false;
+              break;
+            case SUBSCRIBE:
+              listener.peeking = true;
+              listener.subscribing = true;
+              broadcaster.enabled = false;
+              break;
+            case BROADCAST:
+              listener.peeking = false;
+              listener.subscribing = false;
+              broadcaster.enabled = true;
+              break;
+            default:
+              throw new Error("Internal Error");
+          }
+        };
     gpMode.addListener(update);
     update.onParameterChanged(null);
   }

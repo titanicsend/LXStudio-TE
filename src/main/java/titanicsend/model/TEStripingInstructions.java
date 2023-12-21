@@ -2,7 +2,7 @@ package titanicsend.model;
 
 public class TEStripingInstructions {
 
-  //Number of pixels to use when striping a panel before rolling over to the next channel
+  // Number of pixels to use when striping a panel before rolling over to the next channel
   public static final int DEFAULT_PANEL_CHANNEL_LENGTH = 250;
 
   // One per universe; can be null which means they're all DEFAULT_CHANNEL_LENGTH
@@ -13,9 +13,8 @@ public class TEStripingInstructions {
   public int[] beforeNudges; // No need for afterNudges; they were factored into rowLengths
   public int[] gaps;
 
-  public TEStripingInstructions(int[] channelLengths,
-                                int[] rowLengths, int[] beforeNudges,
-                                int[] gaps) {
+  public TEStripingInstructions(
+      int[] channelLengths, int[] rowLengths, int[] beforeNudges, int[] gaps) {
     assert rowLengths != null;
     assert beforeNudges != null;
     assert gaps != null;

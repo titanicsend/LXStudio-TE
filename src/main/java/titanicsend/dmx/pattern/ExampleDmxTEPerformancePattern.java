@@ -1,21 +1,18 @@
 /**
  * Copyright 2023- Justin Belcher, Mark C. Slee, Heron Arts LLC
  *
- * This file is part of the LX Studio software library. By using
- * LX, you agree to the terms of the LX Studio Software License
- * and Distribution Agreement, available at: http://lx.studio/license
+ * <p>This file is part of the LX Studio software library. By using LX, you agree to the terms of
+ * the LX Studio Software License and Distribution Agreement, available at: http://lx.studio/license
  *
- * Please note that the LX license is not open-source. The license
- * allows for free, non-commercial use.
+ * <p>Please note that the LX license is not open-source. The license allows for free,
+ * non-commercial use.
  *
- * HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR
- * OTHERWISE, AND SPECIFICALLY DISCLAIMS ANY WARRANTY OF
- * MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR
- * PURPOSE, WITH RESPECT TO THE SOFTWARE.
+ * <p>HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, AND SPECIFICALLY
+ * DISCLAIMS ANY WARRANTY OF MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR PURPOSE,
+ * WITH RESPECT TO THE SOFTWARE.
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.dmx.pattern;
 
 import heronarts.lx.LX;
@@ -25,19 +22,27 @@ import titanicsend.dmx.model.DmxModel;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.jon.TEControlTag;
 
-/**
- * Example TEPerformancePattern that uses DMX lights.
- */
+/** Example TEPerformancePattern that uses DMX lights. */
 @LXCategory("Test")
 public class ExampleDmxTEPerformancePattern extends TEPerformancePattern {
 
   public ExampleDmxTEPerformancePattern(LX lx) {
     super(lx);
 
+    // set up the controls used for this pattern.
     this.controls.setRange(TEControlTag.SIZE, 0, 0, 1);
     this.controls.setRange(TEControlTag.XPOS, 0, 0, 360);
     this.controls.getControl(TEControlTag.XPOS).control.setWrappable(true);
     this.controls.setRange(TEControlTag.YPOS, 0, -130, 114);
+
+    // Mark all unused controls for this pattern.
+    controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
+    controls.markUnused(controls.getLXControl(TEControlTag.BRIGHTNESS));
+    controls.markUnused(controls.getLXControl(TEControlTag.EXPLODE));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
+    controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
 
     addCommonControls();
   }
@@ -59,7 +64,7 @@ public class ExampleDmxTEPerformancePattern extends TEPerformancePattern {
         setDmxNormalized(d, ChauvetSpot160Model.INDEX_PT_SPEED, ptSpeed);
         setDmxNormalized(d, ChauvetSpot160Model.INDEX_COLOR_WHEEL, colorWheel);
         setDmxNormalized(d, ChauvetSpot160Model.INDEX_GOBO, gobo);
-        setDmxNormalized(d, ChauvetSpot160Model.INDEX_DIMMER, dimmer); 
+        setDmxNormalized(d, ChauvetSpot160Model.INDEX_DIMMER, dimmer);
         setDmxValue(d, ChauvetSpot160Model.INDEX_SHUTTER, shutter);
         setDmxValue(d, ChauvetSpot160Model.INDEX_CONTROL, 0);
         setDmxValue(d, ChauvetSpot160Model.INDEX_MOVEMENT_MACROS, 0);
@@ -70,5 +75,4 @@ public class ExampleDmxTEPerformancePattern extends TEPerformancePattern {
   protected double getNormalized(TEControlTag tag) {
     return this.controls.getControl(tag).control.getNormalized();
   }
-
 }

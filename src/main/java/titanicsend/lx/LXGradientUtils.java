@@ -1,26 +1,20 @@
 /**
  * Copyright 2016- Mark C. Slee, Heron Arts LLC
  *
- * This file is part of the LX Studio software library. By using
- * LX, you agree to the terms of the LX Studio Software License
- * and Distribution Agreement, available at: http://lx.studio/license
+ * <p>This file is part of the LX Studio software library. By using LX, you agree to the terms of
+ * the LX Studio Software License and Distribution Agreement, available at: http://lx.studio/license
  *
- * Please note that the LX license is not open-source. The license
- * allows for free, non-commercial use.
+ * <p>Please note that the LX license is not open-source. The license allows for free,
+ * non-commercial use.
  *
- * HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR
- * OTHERWISE, AND SPECIFICALLY DISCLAIMS ANY WARRANTY OF
- * MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR
- * PURPOSE, WITH RESPECT TO THE SOFTWARE.
+ * <p>HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, AND SPECIFICALLY
+ * DISCLAIMS ANY WARRANTY OF MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR PURPOSE,
+ * WITH RESPECT TO THE SOFTWARE.
  *
  * @author Mark C. Slee <mark@heronarts.com>
- * 
- * 
- * JKB: This file is part of the LX Studio library.  Including
- * this code in the TE repo is a temporary measure to provide
- * early access to upcoming features/improvements.
+ *     <p>JKB: This file is part of the LX Studio library. Including this code in the TE repo is a
+ *     temporary measure to provide early access to upcoming features/improvements.
  */
-
 package titanicsend.lx;
 
 import heronarts.lx.color.ColorParameter;
@@ -35,15 +29,13 @@ public class LXGradientUtils {
 
   public static class GrayTable {
 
-    private final static int SIZE = 256;
+    private static final int SIZE = 256;
 
     private final LXNormalizedParameter invert;
     private double previousValue = -1;
     private boolean dirty = true;
 
-    /**
-     * Lookup table of gray values
-     */
+    /** Lookup table of gray values */
     public final int[] lut;
 
     public GrayTable(LXNormalizedParameter invert) {
@@ -67,7 +59,7 @@ public class LXGradientUtils {
           this.lut[i] = 0xff000000 | (b << 16) | (b << 8) | b;
         }
         for (int i = SIZE; i < this.lut.length; ++i) {
-          this.lut[i] = this.lut[SIZE-1];
+          this.lut[i] = this.lut[SIZE - 1];
         }
         this.dirty = false;
       }
@@ -100,7 +92,8 @@ public class LXGradientUtils {
       set(color, hueOffset, 0, 0);
     }
 
-    public void set(ColorParameter color, float hueOffset, float saturationOffset, float brightnessOffset) {
+    public void set(
+        ColorParameter color, float hueOffset, float saturationOffset, float brightnessOffset) {
       this.hue = color.hue.getValuef() + hueOffset;
       this.saturation = LXUtils.clampf(color.saturation.getValuef() + saturationOffset, 0, 100);
       this.brightness = LXUtils.clampf(color.brightness.getValuef() + brightnessOffset, 0, 100);
@@ -119,7 +112,8 @@ public class LXGradientUtils {
       setRGB(LXColor.hsb(this.hue, this.saturation, this.brightness));
     }
 
-    public void set(LXDynamicColor color, float hueOffset, float saturationOffset, float brightnessOffset) {
+    public void set(
+        LXDynamicColor color, float hueOffset, float saturationOffset, float brightnessOffset) {
       int c = color.getColor();
       this.hue = color.getHuef() + hueOffset;
       this.saturation = LXUtils.clampf(LXColor.s(c) + saturationOffset, 0, 100);
@@ -179,20 +173,20 @@ public class LXGradientUtils {
     public void setNumStops(int numStops) {
       this.numStops = numStops;
       if (this.numStops > 0) {
-        this.stops[numStops].set(this.stops[numStops-1]);
+        this.stops[numStops].set(this.stops[numStops - 1]);
       }
     }
 
     public int getColor(float lerp, BlendFunction blendFunction) {
       lerp *= (this.numStops - 1);
       int stop = (int) Math.floor(lerp);
-      return blendFunction.blend(this.stops[stop], this.stops[stop+1], lerp - stop);
+      return blendFunction.blend(this.stops[stop], this.stops[stop + 1], lerp - stop);
     }
   }
 
   /**
-   * Hue interpolation modes. Since the hues form a color wheel, there are various
-   * strategies for moving from hue1 to hue2.
+   * Hue interpolation modes. Since the hues form a color wheel, there are various strategies for
+   * moving from hue1 to hue2.
    */
   public interface HueInterpolation {
 
@@ -207,62 +201,65 @@ public class LXGradientUtils {
     public float lerp(float hue1, float hue2, float lerp);
 
     /**
-     * HSV path always stays within the color wheel of raw values, never crossing
-     * the 360-degree boundary
+     * HSV path always stays within the color wheel of raw values, never crossing the 360-degree
+     * boundary
      */
-    public static final HueInterpolation HSV = (hue1, hue2, lerp) -> {
-      return LXUtils.lerpf(hue1, hue2, lerp);
-    };
+    public static final HueInterpolation HSV =
+        (hue1, hue2, lerp) -> {
+          return LXUtils.lerpf(hue1, hue2, lerp);
+        };
 
     /**
-     * HSVM takes the minimum path from hue1 to hue2, wrapping around the
-     * 360-degree boundary if it makes for a shorter path
+     * HSVM takes the minimum path from hue1 to hue2, wrapping around the 360-degree boundary if it
+     * makes for a shorter path
      */
-    public static final HueInterpolation HSVM = (hue1, hue2, lerp) -> {
-      if (hue2 - hue1 > 180) {
-        hue1 += 360f;
-      } else if (hue1 - hue2 > 180) {
-        hue2 += 360f;
-      }
-      return LXUtils.lerpf(hue1, hue2, lerp);
-    };
+    public static final HueInterpolation HSVM =
+        (hue1, hue2, lerp) -> {
+          if (hue2 - hue1 > 180) {
+            hue1 += 360f;
+          } else if (hue1 - hue2 > 180) {
+            hue2 += 360f;
+          }
+          return LXUtils.lerpf(hue1, hue2, lerp);
+        };
 
     /**
-     * HSVCW takes a clockwise path always, even if it means a longer interpolation
-     * from hue1 to hue2, e.g. [350->340] will go [350->360],[0->340]
+     * HSVCW takes a clockwise path always, even if it means a longer interpolation from hue1 to
+     * hue2, e.g. [350->340] will go [350->360],[0->340]
      */
-    public static final HueInterpolation HSVCW = (hue1, hue2, lerp) -> {
-      if (hue2 < hue1) {
-        hue2 += 360f;
-      }
-      return LXUtils.lerpf(hue1, hue2, lerp);
-    };
+    public static final HueInterpolation HSVCW =
+        (hue1, hue2, lerp) -> {
+          if (hue2 < hue1) {
+            hue2 += 360f;
+          }
+          return LXUtils.lerpf(hue1, hue2, lerp);
+        };
 
     /**
-     * HSVCCW takes a counter-clockwise path always, even if it means a longer interpolation
-     * from hue1 to hue2, e.g. [340->350] will go [340->0],[360->350]
+     * HSVCCW takes a counter-clockwise path always, even if it means a longer interpolation from
+     * hue1 to hue2, e.g. [340->350] will go [340->0],[360->350]
      */
-    public static final HueInterpolation HSVCCW = (hue1, hue2, lerp) -> {
-      if (hue1 < hue2) {
-        hue1 += 360f;
-      }
-      return LXUtils.lerpf(hue1, hue2, lerp);
-    };
+    public static final HueInterpolation HSVCCW =
+        (hue1, hue2, lerp) -> {
+          if (hue1 < hue2) {
+            hue1 += 360f;
+          }
+          return LXUtils.lerpf(hue1, hue2, lerp);
+        };
   }
 
-  /**
-   * A blend function interpolates between two colors
-   */
+  /** A blend function interpolates between two colors */
   public interface BlendFunction {
 
     public int blend(ColorStop c1, ColorStop c2, float lerp);
 
-    public static final BlendFunction RGB = (c1, c2, lerp) -> {
-      int r = LXUtils.lerpi(c1.r, c2.r, lerp);
-      int g = LXUtils.lerpi(c1.g, c2.g, lerp);
-      int b = LXUtils.lerpi(c1.b, c2.b, lerp);
-      return LXColor.rgba(r, g, b, 255);
-    };
+    public static final BlendFunction RGB =
+        (c1, c2, lerp) -> {
+          int r = LXUtils.lerpi(c1.r, c2.r, lerp);
+          int g = LXUtils.lerpi(c1.g, c2.g, lerp);
+          int b = LXUtils.lerpi(c1.b, c2.b, lerp);
+          return LXColor.rgba(r, g, b, 255);
+        };
 
     static BlendFunction _HSV(HueInterpolation hueLerp) {
       return (c1, c2, lerp) -> {
@@ -278,10 +275,9 @@ public class LXGradientUtils {
           sat2 = sat1;
         }
         return LXColor.hsb(
-          hueLerp.lerp(hue1, hue2, lerp),
-          LXUtils.lerpf(sat1, sat2, lerp),
-          LXUtils.lerpf(c1.brightness, c2.brightness, lerp)
-        );
+            hueLerp.lerp(hue1, hue2, lerp),
+            LXUtils.lerpf(sat1, sat2, lerp),
+            LXUtils.lerpf(c1.brightness, c2.brightness, lerp));
       };
     }
 
@@ -292,7 +288,6 @@ public class LXGradientUtils {
   }
 
   public enum BlendMode {
-
     RGB("RGB", null, BlendFunction.RGB),
     HSV("HSV", HueInterpolation.HSV, BlendFunction.HSV),
     HSVM("HSV-Min", HueInterpolation.HSVM, BlendFunction.HSVM),
@@ -314,5 +309,4 @@ public class LXGradientUtils {
       return this.label;
     }
   };
-
 }

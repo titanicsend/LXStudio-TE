@@ -1,7 +1,6 @@
 package titanicsend.model;
 
 import heronarts.lx.transform.LXVector;
-
 import java.util.*;
 
 public class TEBox {

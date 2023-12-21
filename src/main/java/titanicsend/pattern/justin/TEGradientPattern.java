@@ -1,24 +1,21 @@
 /**
  * This pattern is derived directly from the LX GradientPattern:
  * https://github.com/heronarts/LX/blob/master/src/main/java/heronarts/lx/pattern/color/GradientPattern.java
- * 
- * Copyright 2016- Mark C. Slee, Heron Arts LLC
  *
- * This file is part of the LX Studio software library. By using
- * LX, you agree to the terms of the LX Studio Software License
- * and Distribution Agreement, available at: http://lx.studio/license
+ * <p>Copyright 2016- Mark C. Slee, Heron Arts LLC
  *
- * Please note that the LX license is not open-source. The license
- * allows for free, non-commercial use.
+ * <p>This file is part of the LX Studio software library. By using LX, you agree to the terms of
+ * the LX Studio Software License and Distribution Agreement, available at: http://lx.studio/license
  *
- * HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR
- * OTHERWISE, AND SPECIFICALLY DISCLAIMS ANY WARRANTY OF
- * MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR
- * PURPOSE, WITH RESPECT TO THE SOFTWARE.
+ * <p>Please note that the LX license is not open-source. The license allows for free,
+ * non-commercial use.
+ *
+ * <p>HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, AND SPECIFICALLY
+ * DISCLAIMS ANY WARRANTY OF MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR PURPOSE,
+ * WITH RESPECT TO THE SOFTWARE.
  *
  * @author Mark C. Slee <mark@heronarts.com>
  */
-
 package titanicsend.pattern.justin;
 
 import heronarts.lx.LX;
@@ -35,24 +32,29 @@ import titanicsend.pattern.jon.TEControlTag;
 public class TEGradientPattern extends TEPerformancePattern {
 
   private final LXMatrix transform = new LXMatrix();
-  
+
   private interface CoordinateFunction {
     float getCoordinate(LXPoint p, float normalized, float offset);
   }
 
   public static enum CoordinateMode {
+    NORMAL(
+        "Normal",
+        (p, normalized, offset) -> {
+          return normalized - offset;
+        }),
 
-    NORMAL("Normal", (p, normalized, offset) ->  {
-      return normalized - offset;
-    }),
+    CENTER(
+        "Center",
+        (p, normalized, offset) -> {
+          return 2 * Math.abs(normalized - (.5f + offset * .5f));
+        }),
 
-    CENTER("Center", (p, normalized, offset) -> {
-      return 2 * Math.abs(normalized - (.5f + offset * .5f));
-    }),
-
-    RADIAL("Radial", (p, normalized, offset) -> {
-      return p.rcn - offset;
-    });
+    RADIAL(
+        "Radial",
+        (p, normalized, offset) -> {
+          return p.rcn - offset;
+        });
 
     public final String name;
     public final CoordinateFunction function;
@@ -61,7 +63,10 @@ public class TEGradientPattern extends TEPerformancePattern {
     private CoordinateMode(String name, CoordinateFunction function) {
       this.name = name;
       this.function = function;
-      this.invert = (p, normalized, offset) -> { return function.getCoordinate(p, normalized, offset) - 1; };
+      this.invert =
+          (p, normalized, offset) -> {
+            return function.getCoordinate(p, normalized, offset) - 1;
+          };
     }
 
     @Override
@@ -69,40 +74,40 @@ public class TEGradientPattern extends TEPerformancePattern {
       return this.name;
     }
   }
-  
+
   public final EnumParameter<CoordinateMode> xMode =
-    new EnumParameter<CoordinateMode>("X Mode", CoordinateMode.NORMAL)
-    .setDescription("Which coordinate mode the X-dimension uses");
+      new EnumParameter<CoordinateMode>("X Mode", CoordinateMode.NORMAL)
+          .setDescription("Which coordinate mode the X-dimension uses");
 
   public final EnumParameter<CoordinateMode> yMode =
-    new EnumParameter<CoordinateMode>("Y Mode", CoordinateMode.NORMAL)
-    .setDescription("Which coordinate mode the Y-dimension uses");
+      new EnumParameter<CoordinateMode>("Y Mode", CoordinateMode.NORMAL)
+          .setDescription("Which coordinate mode the Y-dimension uses");
 
   public final EnumParameter<CoordinateMode> zMode =
-    new EnumParameter<CoordinateMode>("Z Mode", CoordinateMode.NORMAL)
-    .setDescription("Which coordinate mode the Z-dimension uses");
-
-
+      new EnumParameter<CoordinateMode>("Z Mode", CoordinateMode.NORMAL)
+          .setDescription("Which coordinate mode the Z-dimension uses");
 
   public TEGradientPattern(LX lx) {
     super(lx);
-    
+
     // Lock in the ranges in case the defaults change upstream
     this.controls.setRange(TEControlTag.SIZE, 1, 0.1, 5);
     this.controls.setRange(TEControlTag.XPOS, 0, -1, 1);
     this.controls.setRange(TEControlTag.YPOS, 0, -1, 1);
     this.controls.setRange(TEControlTag.WOW1, 0, -1, 1);
     this.controls.setRange(TEControlTag.WOW2, 0, 0, 360);
-    
-    ((LXListenableNormalizedParameter)controls.getLXControl(TEControlTag.WOW2)).setWrappable(true);
-    
+
+    ((LXListenableNormalizedParameter) controls.getLXControl(TEControlTag.WOW2)).setWrappable(true);
+
+    controls.markUnused(controls.getLXControl(TEControlTag.SPEED));
+    controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
     addCommonControls();
   }
-  
+
   @Override
   protected void runTEAudioPattern(double deltaMs) {
     float size = (float) getSize();
-    
+
     float xAmount = (float) getWow1();
     float yAmount = (float) getYPos();
     float zAmount = (float) getXPos();
@@ -114,9 +119,9 @@ public class TEGradientPattern extends TEPerformancePattern {
       zAmount /= total;
     }
 
-    final float xOffset = 0;  // this.xOffset.getValuef();
-    final float yOffset = 0;  // this.yOffset.getValuef();
-    final float zOffset = 0;  // this.zOffset.getValuef();
+    final float xOffset = 0; // this.xOffset.getValuef();
+    final float yOffset = 0; // this.yOffset.getValuef();
+    final float zOffset = 0; // this.zOffset.getValuef();
 
     final CoordinateMode xMode = this.xMode.getEnum();
     final CoordinateMode yMode = this.yMode.getEnum();
@@ -134,12 +139,12 @@ public class TEGradientPattern extends TEPerformancePattern {
     // translate origin to center for rotation, then rotate
     // scale while still translated so scaling will be centered
     // translate coordinate system back to original position
-      transform
+    transform
         .identity()
         .translate(.5f, .5f, .5f)
-        .rotateZ((float)roll)
-        .rotateX((float)pitch)
-        //.rotateY((float) Math.toRadians(-this.yaw.getValue()))
+        .rotateZ((float) roll)
+        .rotateX((float) pitch)
+        // .rotateY((float) Math.toRadians(-this.yaw.getValue()))
         .scale(size)
         .translate(-.5f, -.5f, -.5f);
 
@@ -149,29 +154,30 @@ public class TEGradientPattern extends TEPerformancePattern {
       }
 
       final float xn =
-        p.xn * this.transform.m11 +
-        p.yn * this.transform.m12 +
-        p.zn * this.transform.m13 +
-        this.transform.m14;
+          p.xn * this.transform.m11
+              + p.yn * this.transform.m12
+              + p.zn * this.transform.m13
+              + this.transform.m14;
 
       final float yn =
-        p.xn * this.transform.m21 +
-        p.yn * this.transform.m22 +
-        p.zn * this.transform.m23 +
-        this.transform.m24;
+          p.xn * this.transform.m21
+              + p.yn * this.transform.m22
+              + p.zn * this.transform.m23
+              + this.transform.m24;
 
       final float zn =
-        p.xn * this.transform.m31 +
-        p.yn * this.transform.m32 +
-        p.zn * this.transform.m33 +
-        this.transform.m34;
+          p.xn * this.transform.m31
+              + p.yn * this.transform.m32
+              + p.zn * this.transform.m33
+              + this.transform.m34;
 
-      float lerp = LXUtils.clampf(
-          xAmount * xFunction.getCoordinate(p, xn, xOffset) +
-          yAmount * yFunction.getCoordinate(p, yn, yOffset) +
-          zAmount * zFunction.getCoordinate(p, zn, zOffset),
-          0, 1
-        );
+      float lerp =
+          LXUtils.clampf(
+              xAmount * xFunction.getCoordinate(p, xn, xOffset)
+                  + yAmount * yFunction.getCoordinate(p, yn, yOffset)
+                  + zAmount * zFunction.getCoordinate(p, zn, zOffset),
+              0,
+              1);
       colors[p.index] = getGradientColor(lerp);
     }
   }

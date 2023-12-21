@@ -1,145 +1,149 @@
 package titanicsend.pattern.yoffa.shader_engine;
 
 import heronarts.lx.audio.GraphicMeter;
-import titanicsend.pattern.TEPerformancePattern;
-
 import java.nio.FloatBuffer;
 import java.util.Map;
+import titanicsend.pattern.TEPerformancePattern;
 
 public class PatternControlData {
-    
-    private Map<Uniforms.Audio, Float> uniformMap;
 
-    TEPerformancePattern parent;
-    GraphicMeter meter;
-    float fftResampleFactor;
+  private Map<Uniforms.Audio, Float> uniformMap;
 
-    public PatternControlData(TEPerformancePattern pattern) {
-        this.parent = pattern;
-        this.meter =  pattern.getLX().engine.audio.meter;
-        fftResampleFactor = meter.bands.length / 512f;
-    }
+  TEPerformancePattern parent;
+  GraphicMeter meter;
+  float fftResampleFactor;
 
-    public double getTime() {
-        return parent.getTime();
-    }
+  public PatternControlData(TEPerformancePattern pattern) {
+    this.parent = pattern;
+    this.meter = pattern.getLX().engine.audio.meter;
+    fftResampleFactor = meter.bands.length / 512f;
+  }
 
-    /**
-     * Retrieve a single sample of the current frame's fft data from the engine
-     * NOTE: 512 samples can always be retrieved, regardless of how many bands
-     * the engine actually supplies.  Data will be properly distributed
-     * (but not smoothed or interpolated) across the full 512 sample range.
-     * @param index (0-511) of the sample to retrieve.
-     *
-     * @return fft sample, normalized to range 0 to 1.
-     */
-    public float getFrequencyData(int index) {
-       return meter.getBandf((int) Math.floor((float) index * fftResampleFactor));
-    }
+  public double getTime() {
+    return parent.getTime();
+  }
 
-    /**
-     * Retrieve a single sample of the current frame's waveform data from the engine
-     * @param index (0-511) of the sample to retrieve
-     * @return waveform sample, range -1 to 1
-     */
-    public float getWaveformData(int index) {
-        return meter.getSamples()[index];
-    }
+  /**
+   * Retrieve a single sample of the current frame's fft data from the engine NOTE: 512 samples can
+   * always be retrieved, regardless of how many bands the engine actually supplies. Data will be
+   * properly distributed (but not smoothed or interpolated) across the full 512 sample range.
+   *
+   * @param index (0-511) of the sample to retrieve.
+   * @return fft sample, normalized to range 0 to 1.
+   */
+  public float getFrequencyData(int index) {
+    return meter.getBandf((int) Math.floor((float) index * fftResampleFactor));
+  }
 
-    public double getBeat() {
-        return parent.getTempo().basis();
-    }
+  /**
+   * Retrieve a single sample of the current frame's waveform data from the engine
+   *
+   * @param index (0-511) of the sample to retrieve
+   * @return waveform sample, range -1 to 1
+   */
+  public float getWaveformData(int index) {
+    return meter.getSamples()[index];
+  }
 
-    public double getSinePhaseOnBeat() {
-        return parent.sinePhaseOnBeat();
-    }
+  public double getBeat() {
+    return parent.getTempo().basis();
+  }
 
-    public double getBassLevel() {
-        return parent.getBassLevel();
-    }
+  public double getSinePhaseOnBeat() {
+    return parent.sinePhaseOnBeat();
+  }
 
-    public double getTrebleLevel() {
-        return parent.getTrebleLevel();
-    }
+  public double getBassLevel() {
+    return parent.getBassLevel();
+  }
 
-    public double getBassRatio() {
-        return parent.getBassRatio();
-    }
+  public double getTrebleLevel() {
+    return parent.getTrebleLevel();
+  }
 
-    public double getTrebleRatio() {
-        return parent.getTrebleRatio();
-    }
+  public double getBassRatio() {
+    return parent.getBassRatio();
+  }
 
-    public float getVolumeRatiof() {
-        return parent.getVolumeRatiof();
-    }
+  public double getTrebleRatio() {
+    return parent.getTrebleRatio();
+  }
 
-    /**
-     * @return Returns the current rotation angle in radians - the sum of the
-     * current spin angle(SPIN) and the static rotation angle (ANGLE)
-     */
-    public double getRotationAngleFromSpin() {
-        return parent.getRotationAngleFromSpin();
-    }
+  public float getVolumeRatiof() {
+    return parent.getVolumeRatiof();
+  }
 
-    /**
-     * @return Returns the current rotation angle in radians - the sum of the
-     * current speed-based angle (SPEED) and the static rotation angle (ANGLE)
-     */
-    public double getRotationAngleFromSpeed() {
-        return parent.getRotationAngleFromSpeed();
-    }
+  /**
+   * @return Returns the current rotation angle in radians - the sum of the current spin angle(SPIN)
+   *     and the static rotation angle (ANGLE)
+   */
+  public double getRotationAngleFromSpin() {
+    return parent.getRotationAngleFromSpin();
+  }
 
-    public int calcColor() {
-        return parent.calcColor();
-    }
+  /**
+   * @return Returns the current rotation angle in radians - the sum of the current speed-based
+   *     angle (SPEED) and the static rotation angle (ANGLE)
+   */
+  public double getRotationAngleFromSpeed() {
+    return parent.getRotationAngleFromSpeed();
+  }
 
-    public int calcColor2() { return parent.calcColor2(); }
+  public int calcColor() {
+    return parent.calcColor();
+  }
 
-    // currently unused, but not removed because we may want access to the whole
-    // palette at some point
-    public FloatBuffer getCurrentPalette() { return parent.getCurrentPalette();}
+  public int calcColor2() {
+    return parent.calcColor2();
+  }
 
-    public double getSpeed() {
-        return parent.getSpeed();
-    }
+  // currently unused, but not removed because we may want access to the whole
+  // palette at some point
+  public FloatBuffer getCurrentPalette() {
+    return parent.getCurrentPalette();
+  }
 
-    public double getXPos() {
-        return parent.getXPos();
-    }
+  public double getSpeed() {
+    return parent.getSpeed();
+  }
 
-    public double getYPos() {
-        return parent.getYPos();
-    }
+  public double getXPos() {
+    return parent.getXPos();
+  }
 
-    public double getSize() {
-        return parent.getSize();
-    }
+  public double getYPos() {
+    return parent.getYPos();
+  }
 
-    public double getQuantity() { return parent.getQuantity();}
+  public double getSize() {
+    return parent.getSize();
+  }
 
-    /**
-     *    For most uses, getRotationAngle() is recommended, but if you
-     *    need direct acces to the spin control value, here it is.
-     */
-    public double getSpin() {
-        return parent.getSpin();
-    }
+  public double getQuantity() {
+    return parent.getQuantity();
+  }
 
-    public double getBrightness() {
-        return parent.getBrightness();
-    }
+  /**
+   * For most uses, getRotationAngle() is recommended, but if you need direct acces to the spin
+   * control value, here it is.
+   */
+  public double getSpin() {
+    return parent.getSpin();
+  }
 
-    public double getWow1() {
-        return parent.getWow1();
-    }
+  public double getBrightness() {
+    return parent.getBrightness();
+  }
 
-    public double getWow2() {
-        return parent.getWow2();
-    }
+  public double getWow1() {
+    return parent.getWow1();
+  }
 
-    public boolean getWowTrigger() {
-        return parent.getWowTrigger();
-    }
+  public double getWow2() {
+    return parent.getWow2();
+  }
 
+  public boolean getWowTrigger() {
+    return parent.getWowTrigger();
+  }
 }
