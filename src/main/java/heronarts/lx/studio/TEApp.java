@@ -70,6 +70,7 @@ import titanicsend.pattern.TEPanelTestPattern;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.ben.*;
 import titanicsend.pattern.cesar.HandTracker;
+import titanicsend.pattern.glengine.GLEngine;
 import titanicsend.pattern.glengine.ShaderPatternClassFactory;
 import titanicsend.pattern.glengine.ShaderPrecompiler;
 import titanicsend.pattern.jeff.*;
@@ -119,6 +120,8 @@ public class TEApp extends LXStudio {
     private TEPatternLibrary library;
 
     private final DmxEngine dmxEngine;
+
+    private final GLEngine glEngine;
     private final TELaserTask laserTask;
     private final CrutchOSC crutchOSC;
     private DevSwitch devSwitch;
@@ -143,6 +146,8 @@ public class TEApp extends LXStudio {
       //      new TEUIControls(ui, visual,
       // ui.leftPane.global.getContentWidth()).addToContainer(ui.leftPane.global);
       this.dmxEngine = new DmxEngine(lx);
+
+      this.glEngine = new GLEngine(lx);
 
       // create our loop task for outputting data to lasers
       this.laserTask = new TELaserTask(lx);

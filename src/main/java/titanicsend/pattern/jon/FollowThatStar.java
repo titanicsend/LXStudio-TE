@@ -4,15 +4,13 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEPerformancePattern;
-import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
-import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.glengine.GLShader;
+import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 
 @LXCategory("Combo FG")
-public class FollowThatStar extends TEPerformancePattern {
-  NativeShaderPatternEffect effect;
-  NativeShader shader;
+public class FollowThatStar extends GLShaderPattern {
+  GLShader shader;
 
   public FollowThatStar(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
@@ -27,9 +25,20 @@ public class FollowThatStar extends TEPerformancePattern {
     // register common controls with LX
     addCommonControls();
 
-    effect = new NativeShaderPatternEffect("followthatstar.fs", new PatternTarget(this));
+    shader = new GLShader(lx, "followthatstar.fs", this);
+    addShader(shader, setup);
   }
 
+  ShaderSetup setup =
+    new ShaderSetup() {
+    @Override
+    public void setUniforms(GLShader s) {
+      s.setUniform("iQuantity", (float)  getQuantity());
+      s.setUniform("iSize", (float) getSize());
+      s.setUniform("iWow2", (float) getWow2());
+    }
+  };
+  
   @Override
   public void runTEAudioPattern(double deltaMs) {
 
@@ -37,7 +46,7 @@ public class FollowThatStar extends TEPerformancePattern {
     shader.setUniform("iTime", (float) -getTime());
 
     // run the shader
-    effect.run(deltaMs);
+    shader.run(deltaMs);
   }
 
   @Override
@@ -46,7 +55,12 @@ public class FollowThatStar extends TEPerformancePattern {
   // from it when the pattern becomes active
   public void onActive() {
     super.onActive();
-    effect.onActive();
-    shader = effect.getNativeShader();
+    shader.onActive();
+  }
+
+  @Override
+  public void onInactive() {
+    super.onInactive();
+    shader.onInactive();
   }
 }

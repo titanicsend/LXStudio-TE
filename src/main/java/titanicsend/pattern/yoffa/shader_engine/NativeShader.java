@@ -109,6 +109,7 @@ public class NativeShader implements GLEventListener {
     // set textureKey to first available texture object location
     // (1 because location 0 is reserved for the TE audio data texture)
     textureKey = 1;
+
     setUniforms(gl4);
 
     render(gl4);
