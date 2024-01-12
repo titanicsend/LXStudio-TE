@@ -1,21 +1,23 @@
 package titanicsend.pattern.glengine;
 
 import heronarts.lx.LX;
+import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 import java.util.ArrayList;
 
 public class GLShaderPattern extends TEPerformancePattern {
 
-  public interface ShaderSetup {
+  public interface GLShaderFrameSetup {
    void setUniforms(GLShader shader);
   }
   protected class ShaderInfo {
     protected GLShader shader;
-    protected ShaderSetup setUniforms;
+    protected GLShaderFrameSetup setUniforms;
 
-    public ShaderInfo(GLShader shader, ShaderSetup setUniforms) {
+    public ShaderInfo(GLShader shader, GLShaderFrameSetup setUniforms) {
       this.shader = shader;
       this.setUniforms = setUniforms;
     }
@@ -32,7 +34,7 @@ public class GLShaderPattern extends TEPerformancePattern {
     super(lx, view);
   }
 
-  public void addShader(GLShader shader, ShaderSetup setup) {
+  public void addShader(GLShader shader, GLShaderFrameSetup setup) {
     shaderInfo.add(new ShaderInfo(shader, setup));
   }
 
@@ -61,4 +63,6 @@ public class GLShaderPattern extends TEPerformancePattern {
       s.shader.onInactive();
     }
   }
+
+
 }

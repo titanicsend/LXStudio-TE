@@ -1,16 +1,22 @@
 package titanicsend.pattern.jon;
 
+import com.jogamp.opengl.util.GLBuffers;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.LXParameter;
+import java.nio.ByteBuffer;
+
+import titanicsend.pattern.glengine.GLEngine;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 @LXCategory("Combo FG")
-public class FollowThatStar extends GLShaderPattern {
+public class MultipassDemo extends GLShaderPattern {
+  ByteBuffer buffer;
+  GLShader shader;
 
-  public FollowThatStar(LX lx) {
+  public MultipassDemo(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
 
     controls
@@ -23,8 +29,13 @@ public class FollowThatStar extends GLShaderPattern {
     // register common controls with LX
     addCommonControls();
 
+    buffer = GLBuffers.newDirectByteBuffer(GLEngine.getWidth() * GLEngine.getHeight() * 4);
+
+    // add the shader and its frame-time setup function
+    shader = new GLShader(lx, "followthatstar.fs", this);
+
     addShader(
-        new GLShader(lx, "followthatstar.fs", this),
+        shader,
         new GLShaderFrameSetup() {
           @Override
           public void setUniforms(GLShader s) {
@@ -33,6 +44,18 @@ public class FollowThatStar extends GLShaderPattern {
             s.setUniform("iWow2", (float) getWow2());
           }
         });
+
+    shader = new GLShader(lx, "multipass1.fs", this,"gray_noise.png");
+
+    addShader(
+      shader,
+      new GLShaderFrameSetup() {
+        @Override
+        public void setUniforms(GLShader s) {
+          shader.setRenderBuffer();
+        }
+      });
+
   }
 
   @Override
