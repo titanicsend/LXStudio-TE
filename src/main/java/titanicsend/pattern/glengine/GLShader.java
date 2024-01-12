@@ -1,7 +1,6 @@
 package titanicsend.pattern.glengine;
 
 import static com.jogamp.opengl.GL.*;
-import static com.jogamp.opengl.GL2ES2.GL_DEBUG_OUTPUT;
 import static titanicsend.pattern.yoffa.shader_engine.UniformTypes.*;
 
 import Jama.Matrix;
@@ -217,7 +216,6 @@ public class GLShader {
   }
 
   public void setRenderBuffer() {
-  ;
   }
 
   /**

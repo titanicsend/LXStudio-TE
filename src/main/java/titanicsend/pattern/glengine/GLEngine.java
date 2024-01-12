@@ -34,7 +34,7 @@ public class GLEngine extends LXComponent implements LXLoopTask {
 
   boolean isRunning = false;
 
-  // Opengl
+  // Data and utility methods for the GL canvas/context.
   private GLAutoDrawable canvas = null;
 
   public GLAutoDrawable getCanvas() {
@@ -49,18 +49,36 @@ public class GLEngine extends LXComponent implements LXLoopTask {
     return ySize;
   }
 
-  // n.b. - these methods give java patterns the ability to use the audio texture
-  // too, should they want it.
-  public FloatBuffer getAudioTextureBuffer() {
-    return audioTextureData;
-  }
+  // Utility methods to give java patterns access to the audio texture
+  // should they want it.
+  public FloatBuffer getAudioTextureBuffer() { return audioTextureData; }
 
-  public static int getAudioTextureWidth() {
-    return audioTextureWidth;
-  }
+  public static int getAudioTextureWidth() { return audioTextureWidth; }
 
   public static int getAudioTextureHeight() {
     return audioTextureHeight;
+  }
+
+  /**
+   * Retrieve a single sample of the current frame's fft data from the engine NOTE: 512 samples can
+   * always be retrieved, regardless of how many bands the engine actually supplies. Data will be
+   * properly distributed (but not smoothed or interpolated) across the full 512 sample range.
+   *
+   * @param index (0-511) of the sample to retrieve.
+   * @return fft sample, normalized to range 0 to 1.
+   */
+  private float getFrequencyData(int index) {
+    return meter.getBandf((int) Math.floor((float) index * fftResampleFactor));
+  }
+
+  /**
+   * Retrieve a single sample of the current frame's waveform data from the engine
+   *
+   * @param index (0-511) of the sample to retrieve
+   * @return waveform sample, range -1 to 1
+   */
+  private float getWaveformData(int index) {
+    return meter.getSamples()[index];
   }
 
   public GLEngine(LX lx) {
@@ -126,6 +144,9 @@ public class GLEngine extends LXComponent implements LXLoopTask {
       GL4 gl4 = canvas.getGL().getGL4();
       canvas.getContext().makeCurrent();
 
+      gl4.glActiveTexture(GL_TEXTURE0);
+      gl4.glBindTexture(GL_TEXTURE_2D, audioTextureHandle[0]);
+
       gl4.glTexImage2D(
         GL4.GL_TEXTURE_2D,
         0,
@@ -139,25 +160,5 @@ public class GLEngine extends LXComponent implements LXLoopTask {
     }
   }
 
-  /**
-   * Retrieve a single sample of the current frame's fft data from the engine NOTE: 512 samples can
-   * always be retrieved, regardless of how many bands the engine actually supplies. Data will be
-   * properly distributed (but not smoothed or interpolated) across the full 512 sample range.
-   *
-   * @param index (0-511) of the sample to retrieve.
-   * @return fft sample, normalized to range 0 to 1.
-   */
-  public float getFrequencyData(int index) {
-    return meter.getBandf((int) Math.floor((float) index * fftResampleFactor));
-  }
 
-  /**
-   * Retrieve a single sample of the current frame's waveform data from the engine
-   *
-   * @param index (0-511) of the sample to retrieve
-   * @return waveform sample, range -1 to 1
-   */
-  public float getWaveformData(int index) {
-    return meter.getSamples()[index];
-  }
 }
