@@ -28,9 +28,8 @@ import titanicsend.pattern.yoffa.shader_engine.*;
 import titanicsend.util.TE;
 
 /**
- * Everything to run a complete shader program with geometry, textures, uniforms, vertex
- * and fragment shaders.
- *
+ * Everything to run a complete shader program with geometry, textures, uniforms, vertex and
+ * fragment shaders.
  */
 public class GLShader {
 
@@ -49,7 +48,7 @@ public class GLShader {
     2, 0, 3
   };
 
-  // frequently used OpenGL objects
+  // local copies of frequently used OpenGL objects
   private GLEngine glEngine = null;
   private GLAutoDrawable canvas = null;
   private GL4 gl4 = null;
@@ -58,31 +57,45 @@ public class GLShader {
   private int xResolution;
   private int yResolution;
 
+  private ShaderProgram shaderProgram;
+
   private List<LXParameter> parameters;
 
   private TEPerformancePattern pattern;
+  private PatternControlData controlData;
 
+  // geometry buffers
   private FloatBuffer vertexBuffer;
   private IntBuffer indexBuffer;
   int[] geometryBufferHandles = new int[2];
-  int[] backbufferHandle = new int[1];
+
+  // texture buffers
   private Map<Integer, Texture> textures;
   private int textureKey;
-  private ShaderProgram shaderProgram;
-  ByteBuffer backBuffer = null;
-  private PatternControlData controlData;
+  ByteBuffer backBuffer;
+  int[] backbufferHandle = new int[1];
 
   // map of user created uniforms.
   protected HashMap<String, UniformTypes> uniforms = null;
 
-  /** Creates new native shader effect */
-  public GLShader(LX lx, FragmentShader fragmentShader, TEPerformancePattern pattern) {
+  /**
+   * Create new native shader effect
+   *
+   * @param lx LX instance
+   * @param fragmentShader fragment shader object shader to use
+   * @param frameBuf native (GL compatible) ByteBuffer to store render results for use in shaders
+   *     that need to read the previous frame. If null, a buffer will be automatically allocated.
+   * @param pattern Pattern associated w/this shader *
+   */
+  public GLShader(
+      LX lx, FragmentShader fragmentShader, ByteBuffer frameBuf, TEPerformancePattern pattern) {
     this.pattern = pattern;
     this.controlData = new PatternControlData(pattern);
+    this.backBuffer = frameBuf;
 
     if (glEngine == null) {
       this.glEngine = (GLEngine) lx.engine.getChild(GLEngine.PATH);
-      //TE.log("Shader: Retrieved GLEngine object from LX");
+      // TE.log("Shader: Retrieved GLEngine object from LX");
     }
 
     if (fragmentShader != null) {
@@ -95,22 +108,71 @@ public class GLShader {
   }
 
   /**
+   * Create new native shader effect with default backbuffer
+   *
+   * @param lx LX instance
+   * @param fragmentShader fragment shader object shader to use
+   * @param pattern Pattern associated w/this shader *
+   */
+  public GLShader(LX lx, FragmentShader fragmentShader, TEPerformancePattern pattern) {
+    this(lx, fragmentShader, null, pattern);
+  }
+
+  /**
+   * Creates new native shader effect with additional texture support
+   *
+   * @param lx LX instance
+   * @param shaderFilename shader to use
+   * @param frameBuf native (GL compatible) ByteBuffer to store render results for use in shaders
+   *     that need to read the previous frame. If null, a buffer will be automatically allocated. *
+   * @param pattern Pattern associated w/this shader
+   * @param textureFilenames (optional) texture files to load
+   */
+  public GLShader(
+      LX lx,
+      String shaderFilename,
+      TEPerformancePattern pattern,
+      ByteBuffer frameBuf,
+      String... textureFilenames) {
+    this(
+        lx,
+        new FragmentShader(
+            new File("resources/shaders/" + shaderFilename),
+            Arrays.stream(textureFilenames)
+                .map(x -> new File("resources/shaders/textures/" + x))
+                .collect(Collectors.toList())),
+        frameBuf,
+        pattern);
+  }
+
+  /**
    * Creates new native shader effect with additional texture support
    *
    * @param lx LX instance
    * @param shaderFilename shader to use
    * @param pattern Pattern associated w/this shader
+   * @param textureFilenames (optional) texture files to load
    */
   public GLShader(
-    LX lx, String shaderFilename, TEPerformancePattern pattern, String... textureFilenames) {
-    this(
-      lx,
-      new FragmentShader(
-        new File("resources/shaders/" + shaderFilename),
-        Arrays.stream(textureFilenames)
-          .map(x -> new File("resources/shaders/textures/" + x))
-          .collect(Collectors.toList())),
-      pattern);
+      LX lx, String shaderFilename, TEPerformancePattern pattern, String... textureFilenames) {
+    this(lx, shaderFilename, pattern, null, textureFilenames);
+  }
+
+  /**
+   * Create appropriately sized gl-compatible buffer for reading offscreen surface to cpu memory.
+   * This is the preferred way to allocate the backbuffer if your pattern runs multiple shaders
+   * which need to share the same buffer.
+   * @return ByteBuffer
+   */
+  public static ByteBuffer allocateBackBuffer() {
+    return GLBuffers.newDirectByteBuffer(GLEngine.getWidth() * GLEngine.getHeight() * 4);
+  }
+
+  /**
+   Activate this shader for rendering in the current context
+   */
+  public void useProgram() {
+    gl4.glUseProgram(shaderProgram.getProgramId());
   }
 
   public void createShaderProgram(FragmentShader fragmentShader, int xResolution, int yResolution) {
@@ -124,8 +186,8 @@ public class GLShader {
     this.textures = new HashMap<>();
     this.textureKey = 2; // textureKey 0-1 reserved.
 
-    // gl-compatible buffer for reading offscreen surface to cpu memory
-    this.backBuffer = GLBuffers.newDirectByteBuffer(xResolution * yResolution * 4);
+    // allocate default buffer for reading offscreen surface to cpu memory
+    if (this.backBuffer == null) this.backBuffer = allocateBackBuffer();
   }
 
   public void init() {
@@ -142,7 +204,7 @@ public class GLShader {
     canvas.getContext().makeCurrent();
 
     // uncomment to enable debug output
-    //context.getGL().getGL4().glEnable(GL_DEBUG_OUTPUT);
+    // context.getGL().getGL4().glEnable(GL_DEBUG_OUTPUT);
 
     // complete the initialization of the shader program if necessary,
     // then activate it.
@@ -177,11 +239,11 @@ public class GLShader {
   }
 
   /**
-   * Called at pattern initialization time to allocate and configure GPU buffers
-   * that are common to all patterns.
+   * Called at pattern initialization time to allocate and configure GPU buffers that are common to
+   * all patterns.
    */
   private void allocateShaderBuffers() {
-    // Allocate geometry buffer handles
+    // storage for geometry buffer handles
     gl4.glGenBuffers(2, IntBuffer.wrap(geometryBufferHandles));
 
     // vertices
@@ -212,15 +274,25 @@ public class GLShader {
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    // copy the current backbuffer contents into the new texture
+    // TODO - do we really have to do this?
+    gl4.glTexImage2D(
+      GL4.GL_TEXTURE_2D,
+      0,
+      GL4.GL_RGBA,
+      xResolution,
+      yResolution,
+      0,
+      GL4.GL_BGRA,
+      GL_UNSIGNED_BYTE,
+      backBuffer);
+
+
     gl4.glBindTexture(GL_TEXTURE_2D, 0);
   }
 
-  public void setRenderBuffer() {
-  }
-
-  /**
-   * Set up geometry at frame generation time
-   */
+  /** Set up geometry at frame generation time */
   private void render() {
     // set uniforms
     setUniforms();
@@ -321,15 +393,15 @@ public class GLShader {
     gl4.glBindTexture(GL4.GL_TEXTURE_2D, backbufferHandle[0]);
 
     gl4.glTexImage2D(
-      GL4.GL_TEXTURE_2D,
-      0,
-      GL4.GL_RGBA,
-      xResolution,
-      yResolution,
-      0,
-      GL4.GL_BGRA,
-      GL_UNSIGNED_BYTE,
-      backBuffer);
+        GL4.GL_TEXTURE_2D,
+        0,
+        GL4.GL_RGBA,
+        xResolution,
+        yResolution,
+        0,
+        GL4.GL_BGRA,
+        GL_UNSIGNED_BYTE,
+        backBuffer);
 
     setUniform("iBackbuffer", 1);
 
@@ -388,7 +460,6 @@ public class GLShader {
   public void onInactive() {
     System.out.println("GLShader.onInactive");
   }
-
 
   public ByteBuffer getFrame(PatternControlData ctlInfo) {
     updateControlInfo(ctlInfo);

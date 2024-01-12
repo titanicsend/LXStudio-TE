@@ -24,7 +24,7 @@ public class FollowThatStar extends GLShaderPattern {
     addCommonControls();
 
     addShader(
-        new GLShader(lx, "audio_test2.fs", this),
+        new GLShader(lx, "followthatstar.fs", this),
         new GLShaderFrameSetup() {
           @Override
           public void setUniforms(GLShader s) {

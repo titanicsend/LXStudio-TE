@@ -42,6 +42,7 @@ public class GLShaderPattern extends TEPerformancePattern {
   public void runTEAudioPattern(double deltaMs) {
 
     for (ShaderInfo s : shaderInfo) {
+      s.shader.useProgram();
       s.setUniforms.setUniforms(s.shader);
       s.shader.run(deltaMs);
     }

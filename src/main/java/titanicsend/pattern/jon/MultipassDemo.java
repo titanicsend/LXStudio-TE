@@ -29,10 +29,10 @@ public class MultipassDemo extends GLShaderPattern {
     // register common controls with LX
     addCommonControls();
 
-    buffer = GLBuffers.newDirectByteBuffer(GLEngine.getWidth() * GLEngine.getHeight() * 4);
+    buffer = GLShader.allocateBackBuffer();
 
     // add the shader and its frame-time setup function
-    shader = new GLShader(lx, "followthatstar.fs", this);
+    shader = new GLShader(lx, "followthatstar.fs", this,buffer);
 
     addShader(
         shader,
@@ -42,17 +42,18 @@ public class MultipassDemo extends GLShaderPattern {
             s.setUniform("iQuantity", (float) getQuantity());
             s.setUniform("iSize", (float) getSize());
             s.setUniform("iWow2", (float) getWow2());
+            //System.out.println(String.format("#%06X", (0xFFFFFF & buffer.getInt(0))));
           }
         });
 
-    shader = new GLShader(lx, "multipass1.fs", this,"gray_noise.png");
+    shader = new GLShader(lx, "multipass1.fs", this, buffer,"gray_noise.png");
 
     addShader(
       shader,
       new GLShaderFrameSetup() {
         @Override
         public void setUniforms(GLShader s) {
-          shader.setRenderBuffer();
+          //System.out.println(String.format("#%06X", (0xFFFFFF & buffer.getInt(1))));
         }
       });
 
