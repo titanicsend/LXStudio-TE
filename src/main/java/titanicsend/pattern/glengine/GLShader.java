@@ -66,16 +66,12 @@ public class GLShader {
   private FloatBuffer vertexBuffer;
   private IntBuffer indexBuffer;
   int[] geometryBufferHandles = new int[2];
-  int[] audioTextureHandle = new int[1];
   int[] backbufferHandle = new int[1];
   private Map<Integer, Texture> textures;
   private int textureKey;
   private ShaderProgram shaderProgram;
   ByteBuffer backBuffer = null;
   private PatternControlData controlData;
-  private int audioTextureWidth;
-  private int audioTextureHeight;
-  private FloatBuffer audioTextureData;
 
   // map of user created uniforms.
   protected HashMap<String, UniformTypes> uniforms = null;
@@ -116,7 +112,6 @@ public class GLShader {
           .map(x -> new File("resources/shaders/textures/" + x))
           .collect(Collectors.toList())),
       pattern);
-
   }
 
   public void createShaderProgram(FragmentShader fragmentShader, int xResolution, int yResolution) {
@@ -128,14 +123,10 @@ public class GLShader {
     this.vertexBuffer.put(VERTICES);
     this.indexBuffer.put(INDICES);
     this.textures = new HashMap<>();
-    this.textureKey = 2; // textureKey 0 reserved for audio texture.
+    this.textureKey = 2; // textureKey 0-1 reserved.
 
     // gl-compatible buffer for reading offscreen surface to cpu memory
     this.backBuffer = GLBuffers.newDirectByteBuffer(xResolution * yResolution * 4);
-
-    this.audioTextureWidth = glEngine.getAudioTextureWidth();
-    this.audioTextureHeight = glEngine.getAudioTextureHeight();
-    this.audioTextureData = glEngine.getAudioTextureBuffer();
   }
 
   public void init() {
@@ -168,7 +159,6 @@ public class GLShader {
   public void cleanupGLHandles(GL4 gl4) {
     gl4.glDeleteBuffers(2, geometryBufferHandles, 0);
     gl4.glDeleteTextures(1, backbufferHandle, 0);
-    gl4.glDeleteTextures(1, audioTextureHandle, 0);
   }
 
   public void display() {
@@ -185,7 +175,6 @@ public class GLShader {
     // using BGRA byte order lets us read int values from the buffer and pass them
     // directly to LX as colors, without any additional work on the Java side.
     gl4.glReadPixels(0, 0, xResolution, yResolution, GL_BGRA, GL_UNSIGNED_BYTE, backBuffer);
-
   }
 
   /**
@@ -205,7 +194,7 @@ public class GLShader {
         vertexBuffer,
         GL.GL_STATIC_DRAW);
 
-    // geometry built from vertices (triangles!)
+    // geometry (triangles built from vertices)
     indexBuffer.rewind();
     gl4.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometryBufferHandles[1]);
     gl4.glBufferData(
@@ -214,19 +203,8 @@ public class GLShader {
         indexBuffer,
         GL.GL_STATIC_DRAW);
 
-    // Audio texture object - we're just creating the texture object here.
-    // The actual texture data will be loaded in the setUniforms() method.
-    gl4.glEnable(GL_TEXTURE_2D);
-    gl4.glGenTextures(1, audioTextureHandle, 0);
-    gl4.glBindTexture(GL4.GL_TEXTURE_2D, audioTextureHandle[0]);
-
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    gl4.glBindTexture(GL_TEXTURE_2D, 0);
-
     // backbuffer texture object
+    gl4.glActiveTexture(GL_TEXTURE1);
     gl4.glEnable(GL_TEXTURE_2D);
     gl4.glGenTextures(1, backbufferHandle, 0);
     gl4.glBindTexture(GL4.GL_TEXTURE_2D, backbufferHandle[0]);
@@ -313,10 +291,10 @@ public class GLShader {
 
   private void setUniforms() {
 
-    // set textureKey to first available texture object location
+    // set textureKey to first available texture object location.
     // (2 because location 0 is reserved for the TE audio data texture
     //  and location 1 is reserved for a backbuffer containing the
-    // previous rendered frame.
+    // previous rendered frame.)
     textureKey = 2;
 
     // set uniforms for standard controls and audio information
@@ -329,41 +307,17 @@ public class GLShader {
 
     // Set audio waveform and fft data as a 512x2 texture on the specified audio
     // channel if it's a shadertoy shader, or iChannel0 if it's a local shader.
-    //
-    // NOTE:  For improved performance the audio texture uniform, which must be
-    // copied from the engine on every frame, bypasses the normal setUniform() mechanism.
-    //
-    // By Imperial Decree, the audio texture will heretofore always use the first texture
-    // object slot, TextureId(GL_TEXTURE0), and the backbuffer texture will use GL_TEXTURE1.
-    // Other texture uniforms will be automatically assigned sequential ids starting with
-    // GL_TEXTURE2.
-    //
-    gl4.glActiveTexture(GL_TEXTURE0);
-    gl4.glEnable(GL_TEXTURE_2D);
-    gl4.glBindTexture(GL4.GL_TEXTURE_2D, audioTextureHandle[0]);
 
-    // load frequency and waveform data into our texture, fft data in the first row,
-    // normalized audio waveform data in the second.
-    for (int n = 0; n < audioTextureWidth; n++) {
-      audioTextureData.put(n, controlData.getFrequencyData(n));
-      audioTextureData.put(n + audioTextureWidth, controlData.getWaveformData(n));
-    }
-
-    gl4.glTexImage2D(
-        GL4.GL_TEXTURE_2D,
-        0,
-        GL4.GL_R32F,
-        audioTextureWidth,
-        audioTextureHeight,
-        0,
-        GL4.GL_RED,
-        GL_FLOAT,
-        audioTextureData);
-
+    // By Imperial Decree, the audio texture will heretofore always use texture unit
+    // GL_TEXTURE0 and the backbuffer texture will use GL_TEXTURE1. Other textures
+    // will be automatically bound to sequential ids starting with GL_TEXTURE2.
+    //
+    // The audio texture can be used by all patterns, and stays bound to texture
+    // unit 0 throughout the Chromatik run. All we have to do to use it is add the uniform.
     setUniform(Uniforms.AUDIO_CHANNEL, 0);
 
-    // backbuffer texture
-    //backBuffer.rewind();
+    // Update backbuffer texture data. This buffer contains the result of the
+    // previous render pass.  It is always bound to texture unit 1.
     gl4.glActiveTexture(GL_TEXTURE1);
     gl4.glEnable(GL_TEXTURE_2D);
     gl4.glBindTexture(GL4.GL_TEXTURE_2D, backbufferHandle[0]);

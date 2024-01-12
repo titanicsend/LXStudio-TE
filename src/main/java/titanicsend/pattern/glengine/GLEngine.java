@@ -8,7 +8,6 @@ import heronarts.lx.LXComponent;
 import heronarts.lx.LXLoopTask;
 import heronarts.lx.audio.GraphicMeter;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
-import titanicsend.util.TE;
 
 import java.nio.FloatBuffer;
 
@@ -29,10 +28,13 @@ public class GLEngine extends LXComponent implements LXLoopTask {
   FloatBuffer audioTextureData;
   int[] audioTextureHandle = new int[1];
 
-  // audio data parameters
+  // audio data source & parameters
   GraphicMeter meter;
   float fftResampleFactor;
 
+  boolean isRunning = false;
+
+  // Opengl
   private GLAutoDrawable canvas = null;
 
   public GLAutoDrawable getCanvas() {
@@ -47,17 +49,17 @@ public class GLEngine extends LXComponent implements LXLoopTask {
     return ySize;
   }
 
+  // n.b. - these methods give java patterns the ability to use the audio texture
+  // too, should they want it.
   public FloatBuffer getAudioTextureBuffer() {
     return audioTextureData;
   }
 
-  public int[] getAudioTextureHandle() { return audioTextureHandle; }
-
-  public int getAudioTextureWidth() {
+  public static int getAudioTextureWidth() {
     return audioTextureWidth;
   }
 
-  public int getAudioTextureHeight() {
+  public static int getAudioTextureHeight() {
     return audioTextureHeight;
   }
 
@@ -70,63 +72,70 @@ public class GLEngine extends LXComponent implements LXLoopTask {
     lx.engine.addLoopTask(this);
 
     // set up audio fft and waveform handling
+    // TODO - strongly consider expanding the number of FFT bands.
+    // TODO - LX defaults to 16, but more bands would let us do more
+    // TODO - interesting audio analysis.
     this.meter = lx.engine.audio.meter;
     fftResampleFactor = meter.bands.length / 512f;
   }
 
   public void loop(double deltaMs) {
-    // TEST-TEST-TEST
-    // Create an offscreen drawable and context on the engine thread.
-    // TODO - get rid of the default FBO and let the pattern init code specify render buffers
-    //
-    // TODO - fix ConstructedPattern so we can use it w/all TE pattern classes w/o the
-    // additional overhead it currently adds.  The gateway to this problem is the doodad
-    // in TEApp that scans all the classes in a file looking for things to register.
-    // We do need to be sure it works with the java FragmentShaderEffect patterns
-    // (and should also add a once-per-frame function to those patterns).
-    //
-    // We can run everything on a single context assuming that all loop tasks
-    // and patterns run sequentially on the engine thread.
-    //
-    // On memory: If the number
-    // of contexts is the limiting factor, simply keeping all these shader programs
-    // around shouldn't be a problem even on a 16gb Mac.  Otherwise...
-    // TODO - figure out how to allocate and free all GL resources on pattern activate/deactivate.
-    // TODO - save shader binary in GLShader so we don't have to hit the disk every time.
-    // TODO - determine what happens to existing native resources on project load.
-    //
+
+    // Things to be done once, on first frame
     if (canvas == null) {
+      // create and initialize offscreen drawable for gl rendering
       canvas = ShaderUtils.createGLSurface(xSize, ySize);
       canvas.display();
-      TE.log("GLEngine: Created main offscreen drawable & context");
 
+      // set up buffer for audio texture data
       this.audioTextureData =
           GLBuffers.newDirectFloatBuffer(audioTextureHeight * audioTextureWidth);
 
-      // Audio texture object - we're just creating the texture object and
-      // binding it to texture unit 0 here.
-      // For now, data is loaded by patterns.
-      // TODO - this data should be loaded as part of the GL Engine loop task.
+      // build audio texture - we're just creating the texture object and
+      // binding it to texture unit 0 here. Texture data will be
+      // loaded in the per-frame tasks section below.
       GL4 gl4 = canvas.getGL().getGL4();
+      canvas.getContext().makeCurrent();
+
+      gl4.glActiveTexture(GL_TEXTURE0);
       gl4.glEnable(GL_TEXTURE_2D);
       gl4.glGenTextures(1, audioTextureHandle, 0);
       gl4.glBindTexture(GL4.GL_TEXTURE_2D, audioTextureHandle[0]);
 
+      // TODO - would GL_LINEAR filtering look more interesting here?
       gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
       gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
       gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
       gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-      gl4.glActiveTexture(GL_TEXTURE0);
-      gl4.glEnable(GL_TEXTURE_2D);
-      gl4.glBindTexture(GL4.GL_TEXTURE_2D, audioTextureHandle[0]);
+      isRunning = true;
     }
 
-    // load frequency and waveform data into our texture, fft data in the first row,
-    // normalized audio waveform data in the second.
-    for (int n = 0; n < audioTextureWidth; n++) {
-      audioTextureData.put(n, getFrequencyData(n));
-      audioTextureData.put(n + audioTextureWidth, getWaveformData(n));
+    // Things to be done on every frame, after initial setup
+    if (isRunning) {
+      // load frequency and waveform data into our texture buffer, fft data
+      // in the first row, normalized audio waveform data in the second.
+      for (int n = 0; n < audioTextureWidth; n++) {
+        audioTextureData.put(n, getFrequencyData(n));
+        audioTextureData.put(n + audioTextureWidth, getWaveformData(n));
+      }
+
+      // update gl texture object with new audio data and bind it to texture unit 0
+      // once done, every shader pattern will have access to the audio data texture
+      // with minimal per-pattern work.
+      GL4 gl4 = canvas.getGL().getGL4();
+      canvas.getContext().makeCurrent();
+
+      gl4.glTexImage2D(
+        GL4.GL_TEXTURE_2D,
+        0,
+        GL4.GL_R32F,
+        audioTextureWidth,
+        audioTextureHeight,
+        0,
+        GL4.GL_RED,
+        GL_FLOAT,
+        audioTextureData);
     }
   }
 
@@ -151,5 +160,4 @@ public class GLEngine extends LXComponent implements LXLoopTask {
   public float getWaveformData(int index) {
     return meter.getSamples()[index];
   }
-
 }
