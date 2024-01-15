@@ -1,0 +1,27 @@
+{
+  /* Titanic's End Fixture File */
+  label: "panelRow",
+  tags: [ "row" ],
+
+  /* Hide from fixture list */
+  isVisible: false,
+
+  parameters: {
+    "row": { type: "int", default: 0, min: 0, description: "0-based row index, used for Y position" },
+    "offset": { type: "int", default: 0, min: -200, description: "X-Offset in pointSpacing relative to default of 1/2 per row" },
+    "numPoints": { type: "int", min: 1, default: 1 },
+    /* pointSpacing = 50mm */
+    "pointSpacing": { type: "float", default: "1.9685039" },
+    /* rowSpacing = pointSpacing * 0.5 * sqrt(3) */
+    "rowSpacing": { type: "float", default: "1.7047743848" }
+  },
+
+  components: [
+    { type: "strip",
+      numPoints: "$numPoints",
+      spacing: "$pointSpacing",
+      x: "($offset+(($row-1)/2))*$pointSpacing",
+      y: "($row-1)*$rowSpacing"
+    }
+  ]
+}
