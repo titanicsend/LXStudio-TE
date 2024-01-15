@@ -2,11 +2,9 @@ package titanicsend.pattern.jon;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import titanicsend.pattern.TEPerformancePattern;
-import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
-import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.glengine.GLShader;
+import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 
 /*
  * SpaceExplosionFX Control Behavior
@@ -29,12 +27,8 @@ import titanicsend.pattern.yoffa.shader_engine.NativeShader;
  */
 
 @LXCategory("Combo FG")
-public class SpaceExplosionFX extends TEPerformancePattern {
-
-  NativeShaderPatternEffect effect;
-  NativeShader shader;
+public class SpaceExplosionFX extends GLShaderPattern {
   double eventStartTime;
-  double elapsedTime;
   double lastBasis;
   boolean running;
 
@@ -51,7 +45,7 @@ public class SpaceExplosionFX extends TEPerformancePattern {
 
     addCommonControls();
 
-    effect = new NativeShaderPatternEffect("space_explosionfx.fs", new PatternTarget(this));
+    addShader("space_explosionfx.fs", setup);
 
     eventStartTime = 0;
     lastBasis = 0;
@@ -72,68 +66,57 @@ public class SpaceExplosionFX extends TEPerformancePattern {
     return isBeat;
   }
 
-  @Override
-  public void runTEAudioPattern(double deltaMs) {
-    // state of explosion visual
-    boolean explode = false;
+  // Work to be done per frame
+  GLShaderFrameSetup setup =
+      new GLShaderFrameSetup() {
+        @Override
+        public void OnFrame(GLShader s) {
+          // state of explosion visual
+          boolean explode = false;
 
-    // If the WowTrigger button is pressed and we're not
-    // already exploding, start the explosions.
-    if (getWowTrigger()) {
-      if (!running) {
-        // reset the pattern's clock to sync to button press
-        retrigger(TEControlTag.SPEED);
-        eventStartTime = 0; // current time, since we just reset the clock
+          // If the WowTrigger button is pressed and we're not
+          // already exploding, start the explosions.
+          if (getWowTrigger()) {
+            if (!running) {
+              // reset the pattern's clock to sync to button press
+              retrigger(TEControlTag.SPEED);
+              eventStartTime = 0; // current time, since we just reset the clock
 
-        // start explosion state machine and turn on visuals
-        running = true;
-        explode = true;
-      }
-    }
-
-    // if explosions are running, check event duration to see if we
-    // need to retrigger, or just keep showing the explosion visual
-    if (running) {
-      if (Math.abs(getTime() - eventStartTime) > eventDuration) {
-
-        if (getWowTrigger()) {
-          // wait for a beat to start before retriggering
-          if (getBeatState()) {
-            // reset the pattern's clock to sync to this beat, and start
-            // another explosion
-            retrigger(TEControlTag.SPEED);
-            eventStartTime = 0;
-            explode = true;
+              // start explosion state machine and turn on visuals
+              running = true;
+              explode = true;
+            }
           }
-        } else {
-          // button is up, and explosion complete.
-          // return to idle state
-          running = false;
+
+          // if explosions are running, check event duration to see if we
+          // need to retrigger, or just keep showing the explosion visual
+          if (running) {
+            if (Math.abs(getTime() - eventStartTime) > eventDuration) {
+
+              if (getWowTrigger()) {
+                // wait for a beat to start before retriggering
+                if (getBeatState()) {
+                  // reset the pattern's clock to sync to this beat, and start
+                  // another explosion
+                  retrigger(TEControlTag.SPEED);
+                  eventStartTime = 0;
+                  explode = true;
+                }
+              } else {
+                // button is up, and explosion complete.
+                // return to idle state
+                running = false;
+              }
+            } else {
+              // continue current explosion
+              explode = true;
+            }
+          }
+
+          // Use iWowTrigger to control display of the explosion visuals.
+          // Send our visual flag, rather than the simple button value from the
+          // control, to the shader.
+          s.setUniform("iWowTrigger", explode);
         }
-      } else {
-        // continue current explosion
-        explode = true;
-      }
-    }
-
-    // Use iWowTrigger to control display of the explosion visuals.
-    // Send our visual flag, rather than the simple button value from the
-    // control, to the shader.
-    shader.setUniform("iWowTrigger", explode);
-
-    // run the shader
-    effect.run(deltaMs);
-  }
-
-  @Override
-  protected void onWowTrigger(boolean on) {}
-
-  @Override
-  // THIS IS REQUIRED if you're not using ConstructedPattern!
-  // Initialize the NativeShaderPatternEffect and retrieve the native shader object
-  // from it when the pattern becomes active
-  public void onActive() {
-    effect.onActive();
-    shader = effect.getNativeShader();
-  }
+      };
 }

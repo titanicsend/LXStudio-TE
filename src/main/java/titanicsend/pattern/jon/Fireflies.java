@@ -3,7 +3,6 @@ package titanicsend.pattern.jon;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.LXParameter;
-import java.nio.ByteBuffer;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
@@ -25,19 +24,14 @@ public class Fireflies extends GLShaderPattern {
     addCommonControls();
 
     addShader(
-        new GLShader(lx, "fireflies.fs", this),
+        "fireflies.fs",
         new GLShaderFrameSetup() {
           @Override
-          public void setUniforms(GLShader s) {
+          public void OnFrame(GLShader s) {
             s.setUniform("iQuantity", (float) getQuantity());
             s.setUniform("iSize", (float) getSize());
             s.setUniform("iWow2", (float) getWow2());
           }
         });
-  }
-
-  @Override
-  public void runTEAudioPattern(double deltaMs) {
-    super.runTEAudioPattern(deltaMs);
   }
 }

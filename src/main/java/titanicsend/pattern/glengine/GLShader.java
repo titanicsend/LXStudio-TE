@@ -453,12 +453,13 @@ public class GLShader {
   }
 
   public void onActive() {
-    System.out.println("GLShader.onActive");
     init();
   }
 
   public void onInactive() {
-    System.out.println("GLShader.onInactive");
+    // TODO - anything we can temporarily release here?
+    // for the moment, we're leaving the shader program intact
+    // so it is very fast to reactivate.
   }
 
   public ByteBuffer getFrame(PatternControlData ctlInfo) {

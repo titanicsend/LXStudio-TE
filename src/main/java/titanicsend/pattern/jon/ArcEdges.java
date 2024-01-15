@@ -4,18 +4,16 @@ import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import java.nio.FloatBuffer;
-import titanicsend.pattern.TEPerformancePattern;
-import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
-import titanicsend.pattern.yoffa.framework.PatternTarget;
+
+import titanicsend.pattern.glengine.GLShader;
+import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-import titanicsend.pattern.yoffa.shader_engine.NativeShader;
+
 
 @LXCategory("Combo FG")
-public class ArcEdges extends TEPerformancePattern {
-  NativeShaderPatternEffect effect;
-  NativeShader shader;
+public class ArcEdges extends GLShaderPattern {
   static final int LINE_COUNT = 52;
-  boolean updateGeometry;
+  boolean updateGeometry = true;
   FloatBuffer gl_segments;
   float[][] saved_lines;
 
@@ -32,8 +30,6 @@ public class ArcEdges extends TEPerformancePattern {
     // register common controls with the UI
     addCommonControls();
 
-    effect = new NativeShaderPatternEffect("arcedges.fs", new PatternTarget(this));
-
     // create an n x 4 array, so we can pass line segment descriptors
     // to GLSL shaders.
     // NOTE: This buffer needs to be *exactly* large enough to contain
@@ -46,6 +42,21 @@ public class ArcEdges extends TEPerformancePattern {
     // NOTE: To add more edges, you need to change LINE_COUNT so the
     // segment buffer will be the right size.
     CarGeometryPatternTools.getPanelConnectedEdges(getModelTE(), "^S.*$", saved_lines, LINE_COUNT);
+
+    // add the OpenGL shader and its frame-time setup function
+    addShader("arcedges.fs",
+      new GLShaderFrameSetup() {
+        @Override
+        public void OnFrame(GLShader s) {
+          // Here, we update line segment geometry
+          // Shader uniforms associated with a context stay resident
+          // on the GPU,so we only need to set them when something changes.
+          if (updateGeometry) {
+            sendSegments(s, saved_lines, LINE_COUNT);
+            updateGeometry = false;
+          }
+        }
+      });
   }
 
   // store segment descriptors in our GL line segment buffer.
@@ -62,35 +73,10 @@ public class ArcEdges extends TEPerformancePattern {
   // sends an array of line segments to the shader
   // should be called after all line computation is done,
   // before running the shader
-  void sendSegments(float[][] lines, int nLines) {
+  void sendSegments(GLShader s, float[][] lines, int nLines) {
     for (int i = 0; i < nLines; i++) {
       setUniformLine(i, lines[i][0], lines[i][1], lines[i][2], lines[i][3]);
     }
-    shader.setUniform("lines", gl_segments, 4);
-  }
-
-  @Override
-  public void runTEAudioPattern(double deltaMs) {
-    // update line segment geometry
-    // shader uniforms associated with a context stay resident
-    // on the GPU,so we only need to set them when something changes.
-    if (updateGeometry) {
-      sendSegments(saved_lines, LINE_COUNT);
-      updateGeometry = false;
-    }
-
-    // run the shader
-    effect.run(deltaMs);
-  }
-
-  @Override
-  // THIS IS REQUIRED if you're not using ConstructedPattern!
-  // Initialize the NativeShaderPatternEffect and retrieve the native shader object
-  // from it when the pattern becomes active
-  public void onActive() {
-    super.onActive();
-    effect.onActive();
-    updateGeometry = true;
-    shader = effect.getNativeShader();
+    s.setUniform("lines", gl_segments, 4);
   }
 }

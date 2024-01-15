@@ -2,21 +2,17 @@ package titanicsend.pattern.ben;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import java.util.List;
-import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
-import titanicsend.pattern.yoffa.framework.ConstructedPattern;
-import titanicsend.pattern.yoffa.framework.PatternEffect;
-import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.glengine.ConstructedShaderPattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 @LXCategory("Native Shaders Panels")
-public class XorceryDiamonds extends ConstructedPattern {
+public class XorceryDiamonds extends ConstructedShaderPattern {
   public XorceryDiamonds(LX lx) {
     super(lx, TEShaderView.ALL_PANELS);
   }
 
   @Override
-  protected List<PatternEffect> createEffects() {
-    return List.of(new NativeShaderPatternEffect("xorcery_diamonds.fs", new PatternTarget(this)));
+  protected void createShader() {
+    addShader("xorcery_diamonds.fs");
   }
 }

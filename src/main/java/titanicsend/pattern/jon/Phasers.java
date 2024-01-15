@@ -4,16 +4,25 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.TEPerformancePattern;
-import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
-import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.glengine.GLShader;
+import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 
 @LXCategory("Native Shaders Panels")
-public class Phasers extends TEPerformancePattern {
-  NativeShaderPatternEffect effect;
-  NativeShader shader;
+public class Phasers extends GLShaderPattern {
+
+  // Work to be done per frame
+  GLShaderFrameSetup shaderSetup =
+      new GLShaderFrameSetup() {
+        @Override
+        public void OnFrame(GLShader s) {
+          // use the size control to control both the laser's beam size and surrounding glow
+          CompoundParameter scaleCtl = (CompoundParameter) controls.getLXControl(TEControlTag.SIZE);
+          double beamWidth = 0.005 + 0.0125 * scaleCtl.getNormalized();
+          s.setUniform("beamWidth", (float) beamWidth);
+          s.setUniform("iRotationAngle", (float) -getRotationAngleFromSpin());
+        }
+      };
 
   public Phasers(LX lx) {
     super(lx, TEShaderView.ALL_PANELS);
@@ -44,29 +53,6 @@ public class Phasers extends TEPerformancePattern {
     addCommonControls();
 
     // Create the underlying shader pattern
-    effect = new NativeShaderPatternEffect("phasers.fs", new PatternTarget(this));
-  }
-
-  @Override
-  public void runTEAudioPattern(double deltaMs) {
-
-    // use the size control to control both the laser's beam size and surrounding glow
-    CompoundParameter scaleCtl = (CompoundParameter) controls.getLXControl(TEControlTag.SIZE);
-    double beamWidth = 0.005 + 0.0125 * scaleCtl.getNormalized();
-    shader.setUniform("beamWidth", (float) beamWidth);
-    shader.setUniform("iRotationAngle", (float) -getRotationAngleFromSpin());
-
-    // run the shader
-    effect.run(deltaMs);
-  }
-
-  @Override
-  // THIS IS REQUIRED for shader-based patterns if you're not using ConstructedPattern!
-  // Initialize the NativeShaderPatternEffect and retrieve the native shader object
-  // from it when the pattern becomes active
-  public void onActive() {
-    super.onActive();
-    effect.onActive();
-    shader = effect.getNativeShader();
+    addShader("phasers.fs", shaderSetup);
   }
 }
