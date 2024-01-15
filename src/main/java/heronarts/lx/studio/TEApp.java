@@ -118,7 +118,7 @@ public class TEApp extends LXStudio {
     private TEOscListener oscListener;
     private TEPatternLibrary library;
 
-    private final DmxEngine dmxEngine;
+    private DmxEngine dmxEngine;
     private final TELaserTask laserTask;
     private final CrutchOSC crutchOSC;
     private DevSwitch devSwitch;
@@ -142,7 +142,9 @@ public class TEApp extends LXStudio {
       //      lx.ui.preview.addComponent(visual);
       //      new TEUIControls(ui, visual,
       // ui.leftPane.global.getContentWidth()).addToContainer(ui.leftPane.global);
-      this.dmxEngine = new DmxEngine(lx);
+      if (isStaticModel()) {
+        this.dmxEngine = new DmxEngine(lx);
+      }
 
       // create our loop task for outputting data to lasers
       this.laserTask = new TELaserTask(lx);
@@ -164,7 +166,9 @@ public class TEApp extends LXStudio {
 
       log("TEApp.Plugin.initialize()");
 
-      GrandShlomoStation.activateAll(lx, wholeModel.getGapPointIndex());
+      if (isStaticModel()) {
+        GrandShlomoStation.activateAll(lx, wholeModel.getGapPointIndex());
+      }
 
       // Patterns/effects that currently conform to art direction standards
       lx.registry.addPattern(EdgeProgressions.class);
@@ -343,7 +347,7 @@ public class TEApp extends LXStudio {
       String destIP = "192.168.42.255";
       try {
         this.gpBroadcaster =
-            new GigglePixelBroadcaster(lx, destIP, wholeModel.name, myGigglePixelID);
+            new GigglePixelBroadcaster(lx, destIP, isStaticModel() ? wholeModel.name : "TEApp", myGigglePixelID);
         lx.engine.addLoopTask(this.gpBroadcaster);
         TE.log("GigglePixel broadcaster created");
       } catch (IOException e) {
@@ -503,7 +507,9 @@ public class TEApp extends LXStudio {
       new TEUserInterface.AutopilotUISection(ui, this.autopilot)
           .addToContainer(ui.leftPane.global, 0);
 
-      applyTECameraPosition();
+      if (isStaticModel()) {
+        applyTECameraPosition();
+      }
 
       // 3D components
       ui.preview.addComponent(new UIBackings(lx, this.virtualOverlays));
@@ -625,6 +631,10 @@ public class TEApp extends LXStudio {
     super(flags);
   }
 
+  public static boolean isStaticModel() {
+	return TEApp.wholeModel != null;
+  }
+
   private static final DateFormat LOG_FILENAME_FORMAT =
       new SimpleDateFormat("'LXStudio-TE-'yyyy.MM.dd-HH.mm.ss'.log'");
 
@@ -671,6 +681,7 @@ public class TEApp extends LXStudio {
     boolean headless = false;
     boolean loadTestahedron = false;
     boolean loadVehicle = true;
+    boolean staticModel = true;
     File projectFile = null;
     for (int i = 0; i < args.length; ++i) {
       final String arg = args[i];
@@ -690,6 +701,8 @@ public class TEApp extends LXStudio {
       } else if (arg.equals("vehicle")) {
         loadTestahedron = false;
         loadVehicle = true;
+      } else if (arg.equals("dynamic")) {
+        staticModel = false;
       } else {
         error("Unrecognized CLI argument, ignoring: " + arg);
       }
@@ -708,11 +721,15 @@ public class TEApp extends LXStudio {
       headless(flags, projectFile);
     } else {
       try {
-        TEWholeModel model = new TEWholeModel(resourceSubdir);
-        TEApp.wholeModel = model;
-
-        TEApp lx = new TEApp(flags, model);
-        model.loadViews(lx);
+        TEApp lx;
+        if (staticModel) {
+	      TEWholeModel model = new TEWholeModel(resourceSubdir);
+	      TEApp.wholeModel = model;
+	      lx = new TEApp(flags, model);
+	      model.loadViews(lx);
+        } else {
+          lx = new TEApp(flags);
+        }
 
         // Schedule a task to load the initial project file at launch
         final File finalProjectFile = projectFile;
