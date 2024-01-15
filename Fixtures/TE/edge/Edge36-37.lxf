@@ -1,0 +1,61 @@
+{
+  /* Titanic's End Fixture File */
+  label: "Edge 36-37",
+  tags: [ "edge36_37", "edge", "m6" ],
+
+  parameters: {
+    "points": { default: 77, type: "int", min: 1, label: "Points", description: "Number of points in the edge" },
+    "host": { default: "10.7.6.122", type: "string", label: "Host", description: "Controller IP address or hostname" },    
+    "output": { default: 1, type: "int", min: 1, max: 4, label: "Output", description: "Controller output 1-4" },
+    "ledOffset": { default: 429, type: "int", min: 0, label: "LED Offset", description: "0-based starting position, in pixels, of this edge within the controller output" },
+    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Whether ArtNet sequence packets are enabled" },
+    "reverse": { default: false, type: "boolean", label: "Reverse", description: "Reverse the output direction" },
+    
+    "xOffset": { default: 5.064399999999999, type: "float", label: "X offset", description: "Location offset of edge from starting vertex" },
+  
+    # Debug tools
+    "onCar": { default: true, type: "boolean", label: "On Car", description: "True = Locate panel to its position on the car, False = Locate to origin" },
+
+    # Option to disable output, such as when outputs are configured in a parent fixture
+    "hasOutput": { default: true, type: "boolean", label: "Has Output", description: "Whether built-in output is enabled" }
+  },
+  
+  transforms: [
+    /* Transpose starting corner to Vertex0 */
+    { x: "10.9014", enabled: "$onCar" },
+    { y: "286.4806", enabled: "$onCar" },
+    { z: "30.0000", enabled: "$onCar" },
+
+    /* Rotate to in line with Vertex0 and Vertex1 */
+    { yaw: "90.0000", enabled: "$onCar" },
+    { roll: "0.0000", enabled: "$onCar" },
+
+    /* X offset from starting vertex */
+    { x: "$xOffset" }    
+  ],
+
+  meta: {
+    "edgeId": "36-37",
+    "v0": "36",
+    "v1": "37",
+    "module": "6"
+  },
+
+  components: [
+    { type: "strip", 
+      numPoints: "$points",
+      spacing: "0.6562",
+      reverse: "$reverse"
+    }
+  ],
+  
+  outputs: [
+    { enabled: "$hasOutput",
+      host: "$host",
+      universe: "$output*10+(($ledOffset*3)/512)",
+      channel: "($ledOffset*3)%512",
+      protocol: "artnet", 
+      sequenceEnabled: "$artnetSequence"
+    }
+  ]
+}
