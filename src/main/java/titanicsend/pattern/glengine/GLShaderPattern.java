@@ -69,11 +69,23 @@ public class GLShaderPattern extends TEPerformancePattern {
   @Override
   public void runTEAudioPattern(double deltaMs) {
     this.deltaMs = deltaMs;
-    for (ShaderInfo s : shaderInfo) {
+
+    int n = shaderInfo.size() - 1;
+
+    // run the chain of shaders, except for the last one,
+    // copying the output of each to the next shader's input texture
+    for (int i = 0; i < n; i++) {
+      ShaderInfo s = shaderInfo.get(i);
       s.shader.useProgram();
       s.setup.OnFrame(s.shader);
-      s.shader.run(deltaMs);
+      s.shader.run();
     }
+
+    // run the last shader and copy its results to the lx point buffer
+    ShaderInfo s = shaderInfo.get(n);
+    s.shader.useProgram();
+    s.setup.OnFrame(s.shader);
+    s.shader.runAndPaint();
   }
 
   @Override

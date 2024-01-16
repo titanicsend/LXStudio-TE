@@ -74,10 +74,10 @@ public class GLShader {
   protected HashMap<String, UniformTypes> uniforms = null;
 
   // list of LX control parameters from the shader code
-  private List<LXParameter> parameters;
+  private final List<LXParameter> parameters;
 
   // pattern control data
-  private TEPerformancePattern pattern;
+  private final TEPerformancePattern pattern;
   private PatternControlData controlData;
 
   // Welcome to the Land of 1000 Constructors!
@@ -166,15 +166,14 @@ public class GLShader {
    * Create appropriately sized gl-compatible buffer for reading offscreen surface to cpu memory.
    * This is the preferred way to allocate the backbuffer if your pattern runs multiple shaders
    * which need to share the same buffer.
+   *
    * @return ByteBuffer
    */
   public static ByteBuffer allocateBackBuffer() {
     return GLBuffers.newDirectByteBuffer(GLEngine.getWidth() * GLEngine.getHeight() * 4);
   }
 
-  /**
-   Activate this shader for rendering in the current context
-   */
+  /** Activate this shader for rendering in the current context */
   public void useProgram() {
     gl4.glUseProgram(shaderProgram.getProgramId());
   }
@@ -289,16 +288,15 @@ public class GLShader {
     // copy the current backbuffer contents into the new texture
     // TODO - do we really have to do this?
     gl4.glTexImage2D(
-      GL4.GL_TEXTURE_2D,
-      0,
-      GL4.GL_RGBA,
-      xResolution,
-      yResolution,
-      0,
-      GL4.GL_BGRA,
-      GL_UNSIGNED_BYTE,
-      backBuffer);
-
+        GL4.GL_TEXTURE_2D,
+        0,
+        GL4.GL_RGBA,
+        xResolution,
+        yResolution,
+        0,
+        GL4.GL_BGRA,
+        GL_UNSIGNED_BYTE,
+        backBuffer);
 
     gl4.glBindTexture(GL_TEXTURE_2D, 0);
   }
@@ -449,10 +447,6 @@ public class GLShader {
     return backBuffer;
   }
 
-  public void updateControlInfo(PatternControlData ctlData) {
-    this.controlData = ctlData;
-  }
-
   public boolean isInitialized() {
     return (shaderProgram != null) && (shaderProgram.isInitialized());
   }
@@ -467,10 +461,8 @@ public class GLShader {
     // so it is very fast to reactivate.
   }
 
-  public ByteBuffer getFrame(PatternControlData ctlInfo) {
-    updateControlInfo(ctlInfo);
+  public ByteBuffer getFrame() {
     display();
-
     return getSnapshot();
   }
 
@@ -504,8 +496,16 @@ public class GLShader {
     }
   }
 
-  public void run(double deltaMs) {
-    ByteBuffer image = getFrame(controlData);
+  // run the shader, copying the output to iBackbuffer
+  // of the next shader in the chain.
+  public void run() {
+    getFrame();
+  }
+
+  // run the shader and use the output to set actual pixel colors
+  // (saving iBackbuffer for the next frame, of course)
+  public void runAndPaint() {
+    ByteBuffer image = getFrame();
     paint(this.pattern.getModel().getPoints(), image, GLEngine.getWidth(), GLEngine.getHeight());
   }
 
