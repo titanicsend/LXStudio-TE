@@ -219,14 +219,18 @@ public class GLShader {
     gl4.glUseProgram(shaderProgram.getProgramId());
   }
 
-  // Should be called to release native resources when we unload
-  // this pattern.
-  // TODO - Currently called by the pattern's dispose() method,
-  // TODO - but it'd be better to call at pattern unload time.
-  // TODO - is there a way to get notification of project/pattern unload?
-  public void cleanupGLHandles(GL4 gl4) {
-    gl4.glDeleteBuffers(2, geometryBufferHandles, 0);
-    gl4.glDeleteTextures(1, backbufferHandle, 0);
+  // Releases native resources allocated by this shader.
+  // Should be called by the pattern's dispose() function
+  // when the pattern is unloaded. (Not when just
+  // deactivated.)
+  public void dispose() {
+    // if we've been fully initialized, we need to release all
+    // OpenGL resources we've allocated.
+    if (gl4 != null) {
+      gl4.glDeleteBuffers(2, geometryBufferHandles, 0);
+      gl4.glDeleteTextures(1, backbufferHandle, 0);
+      shaderProgram.dispose(gl4);
+    }
   }
 
   public void display() {
@@ -439,12 +443,6 @@ public class GLShader {
         throw new RuntimeException(e);
       }
     }
-  }
-
-  public void dispose(GLAutoDrawable glAutoDrawable) {
-    GL4 gl4 = glAutoDrawable.getGL().getGL4();
-    cleanupGLHandles(gl4);
-    shaderProgram.dispose(gl4);
   }
 
   public ByteBuffer getSnapshot() {

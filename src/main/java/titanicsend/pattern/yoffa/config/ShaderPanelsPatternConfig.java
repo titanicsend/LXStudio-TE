@@ -37,7 +37,7 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
       controls.setValue(TEControlTag.SPEED, 0.5);
 
-      addShader("fireflies.fs");
+      addShader("light_beams.fs");
     }
   }
 

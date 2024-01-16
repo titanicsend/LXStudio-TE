@@ -91,4 +91,13 @@ public class GLShaderPattern extends TEPerformancePattern {
       s.shader.onInactive();
     }
   }
+
+  @Override
+  public void dispose() {
+    super.dispose();
+    for (ShaderInfo s : shaderInfo) {
+      s.shader.dispose();
+    }
+  }
+
 }
