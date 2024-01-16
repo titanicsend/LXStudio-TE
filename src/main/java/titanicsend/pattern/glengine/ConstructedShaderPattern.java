@@ -26,9 +26,9 @@ public abstract class ConstructedShaderPattern extends GLShaderPattern {
   }
 
   /**
-     Derived classes must implement the add addShader() method to
+     Derived classes must implement createShader() to
      add one or more OpenGL shaders to the pattern.  For example,
-     to add a single shader, which at frame generation time, does a little
+     to add a single shader, which at frame generation time, does some
      calculation and sets custom uniforms:
 
        protected void createShader() {
@@ -38,8 +38,7 @@ public abstract class ConstructedShaderPattern extends GLShaderPattern {
          controls.setRange(TEControlTag.SIZE, 1.75, 1.0, 5);
 
         // add the shader and its frame-time setup function
-        addShader(
-            new GLShader(lx, "fireflies.fs", this),
+        addShader("fireflies.fs",
             new GLShaderFrameSetup() {
             @Override
             public void OnFrame(GLShader s) {

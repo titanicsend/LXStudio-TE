@@ -6,6 +6,11 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 import java.util.ArrayList;
 
+/**
+ * Wrapper class for OpenGL shaders. Simplifies handling of
+ * context and native memory management, and provides a
+ * convenient interface for adding shaders to a pattern.
+ */
 public class GLShaderPattern extends TEPerformancePattern {
   public interface GLShaderFrameSetup {
     default void OnFrame(GLShader shader) {}

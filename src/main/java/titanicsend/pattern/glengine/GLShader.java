@@ -41,8 +41,8 @@ public class GLShader {
     -1.0f, 1.0f, 0.0f
   };
 
-  // Vertex index list for default geometry. we are drawing with triangles,
-  // so we need two to make our rectangle
+  // Vertex index list for default geometry. Since we're drawing
+  // with triangles, we need two to make our rectangle!
   private static final int[] INDICES = {
     0, 1, 2,
     2, 0, 3
@@ -59,11 +59,6 @@ public class GLShader {
 
   private ShaderProgram shaderProgram;
 
-  private List<LXParameter> parameters;
-
-  private TEPerformancePattern pattern;
-  private PatternControlData controlData;
-
   // geometry buffers
   private FloatBuffer vertexBuffer;
   private IntBuffer indexBuffer;
@@ -78,14 +73,23 @@ public class GLShader {
   // map of user created uniforms.
   protected HashMap<String, UniformTypes> uniforms = null;
 
+  // list of LX control parameters from the shader code
+  private List<LXParameter> parameters;
+
+  // pattern control data
+  private TEPerformancePattern pattern;
+  private PatternControlData controlData;
+
+  // Welcome to the Land of 1000 Constructors!
+
   /**
-   * Create new native shader effect
+   * Create new OpenGL shader effect
    *
    * @param lx LX instance
    * @param fragmentShader fragment shader object shader to use
    * @param frameBuf native (GL compatible) ByteBuffer to store render results for use in shaders
    *     that need to read the previous frame. If null, a buffer will be automatically allocated.
-   * @param pattern Pattern associated w/this shader *
+   * @param pattern Pattern associated w/this shader
    */
   public GLShader(
       LX lx, FragmentShader fragmentShader, ByteBuffer frameBuf, TEPerformancePattern pattern) {
@@ -112,7 +116,7 @@ public class GLShader {
    *
    * @param lx LX instance
    * @param fragmentShader fragment shader object shader to use
-   * @param pattern Pattern associated w/this shader *
+   * @param pattern Pattern associated w/this shader
    */
   public GLShader(LX lx, FragmentShader fragmentShader, TEPerformancePattern pattern) {
     this(lx, fragmentShader, null, pattern);
@@ -215,8 +219,11 @@ public class GLShader {
     gl4.glUseProgram(shaderProgram.getProgramId());
   }
 
-  // needs to be called to release native resources when we dispose
+  // Should be called to release native resources when we unload
   // this pattern.
+  // TODO - Currently called by the pattern's dispose() method,
+  // TODO - but it'd be better to call at pattern unload time.
+  // TODO - is there a way to get notification of project/pattern unload?
   public void cleanupGLHandles(GL4 gl4) {
     gl4.glDeleteBuffers(2, geometryBufferHandles, 0);
     gl4.glDeleteTextures(1, backbufferHandle, 0);
