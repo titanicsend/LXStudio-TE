@@ -17,8 +17,9 @@ public class Fireflies extends GLShaderPattern {
         .setRange(TEControlTag.QUANTITY, 20, 1, 32)
         .setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
 
-    controls.setRange(TEControlTag.SIZE, 1.75, 1.0, 5);
-    controls.setRange(TEControlTag.WOW2, 1, 1, 4);
+    controls.setRange(TEControlTag.SIZE, 0.9,1, 0.25);
+    controls.setRange(TEControlTag.WOW1, 0.36,1, 0.1)
+      .setExponent(TEControlTag.WOW1, 2);
 
     // register common controls with LX
     addCommonControls();

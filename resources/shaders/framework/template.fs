@@ -92,9 +92,9 @@ void main() {
 
     // Post-processing: Make sure we've got optimal color and alpha values for brightness
     // and blending. define TE_NOALPHAFIX in your shader code if you need
-    // the 2023 pre-EDC blending behavior. Define TE_NOPOST if you
+    // the 2023 pre-EDC blending behavior. Define TE_NOPOSTPROCESSING if you
     // want the unmodified shader output.
-    #ifndef TE_NOPOST
+    #ifndef TE_NOPOSTPROCESSING
     #ifndef TE_NOALPHAFIX
     finalColor = _blendFix(finalColor);
     #else
