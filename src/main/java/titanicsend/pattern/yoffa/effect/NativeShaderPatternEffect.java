@@ -14,6 +14,7 @@ import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.shader_engine.*;
 
+@Deprecated // use GLShaderPattern instead
 public class NativeShaderPatternEffect extends PatternEffect {
   private final SplittableRandom random;
   protected OffscreenShaderRenderer renderer;

@@ -2,14 +2,8 @@ package titanicsend.pattern.yoffa.config;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import java.util.List;
-
 import titanicsend.pattern.glengine.ConstructedShaderPattern;
 import titanicsend.pattern.jon.TEControlTag;
-import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
-import titanicsend.pattern.yoffa.framework.ConstructedPattern;
-import titanicsend.pattern.yoffa.framework.PatternEffect;
-import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 @SuppressWarnings("unused")

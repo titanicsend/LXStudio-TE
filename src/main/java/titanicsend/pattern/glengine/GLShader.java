@@ -62,13 +62,13 @@ public class GLShader {
   // geometry buffers
   private FloatBuffer vertexBuffer;
   private IntBuffer indexBuffer;
-  int[] geometryBufferHandles = new int[2];
+  private final int[] geometryBufferHandles = new int[2];
 
   // texture buffers
   private Map<Integer, Texture> textures;
   private int textureKey;
-  ByteBuffer backBuffer;
-  int[] backbufferHandle = new int[1];
+  private ByteBuffer backBuffer;
+  private final int[] backbufferHandle = new int[1];
 
   // map of user created uniforms.
   protected HashMap<String, UniformTypes> uniforms = null;
@@ -78,7 +78,7 @@ public class GLShader {
 
   // pattern control data
   private final TEPerformancePattern pattern;
-  private PatternControlData controlData;
+  private final PatternControlData controlData;
 
   // Welcome to the Land of 1000 Constructors!
 
@@ -178,6 +178,7 @@ public class GLShader {
     gl4.glUseProgram(shaderProgram.getProgramId());
   }
 
+  // initialization that can be done before the OpenGL context is available
   public void createShaderProgram(FragmentShader fragmentShader, int xResolution, int yResolution) {
     this.xResolution = xResolution;
     this.yResolution = yResolution;
@@ -193,6 +194,8 @@ public class GLShader {
     if (this.backBuffer == null) this.backBuffer = allocateBackBuffer();
   }
 
+  // Shader initialization that requires the OpenGL context
+  // Normally called each time the pattern is activated.
   public void init() {
     // The LX engine thread should have been initialized by now, so
     // we can safely retrieve our OpenGL canvas and context from the
@@ -206,16 +209,15 @@ public class GLShader {
     // let's make sure.
     canvas.getContext().makeCurrent();
 
-    // uncomment to enable debug output
+    // uncomment to enable OpenGL debug output
     // context.getGL().getGL4().glEnable(GL_DEBUG_OUTPUT);
 
-    // complete the initialization of the shader program if necessary,
+    // complete the initialization of the shader program if necessary.
     // then activate it.
     if (!isInitialized()) {
       initShaderProgram(gl4);
       loadTextureFiles(fragmentShader);
     }
-    gl4.glUseProgram(shaderProgram.getProgramId());
   }
 
   // Releases native resources allocated by this shader.
@@ -284,19 +286,6 @@ public class GLShader {
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    // copy the current backbuffer contents into the new texture
-    // TODO - do we really have to do this?
-    gl4.glTexImage2D(
-        GL4.GL_TEXTURE_2D,
-        0,
-        GL4.GL_RGBA,
-        xResolution,
-        yResolution,
-        0,
-        GL4.GL_BGRA,
-        GL_UNSIGNED_BYTE,
-        backBuffer);
 
     gl4.glBindTexture(GL_TEXTURE_2D, 0);
   }

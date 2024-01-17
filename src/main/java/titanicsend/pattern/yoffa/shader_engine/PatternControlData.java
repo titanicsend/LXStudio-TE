@@ -2,14 +2,15 @@ package titanicsend.pattern.yoffa.shader_engine;
 
 import heronarts.lx.audio.GraphicMeter;
 import java.nio.FloatBuffer;
-import java.util.Map;
 import titanicsend.pattern.TEPerformancePattern;
 
 public class PatternControlData {
 
-  private Map<Uniforms.Audio, Float> uniformMap;
-
   TEPerformancePattern parent;
+
+  // TODO - Legacy audio processing code preserved for compatibility
+  // TODO - with old shaders.  This should be removed at some point.
+  // TODO - The new (GLShaderPattern, etc.) system doesn't use it.
   GraphicMeter meter;
   float fftResampleFactor;
 
@@ -124,7 +125,7 @@ public class PatternControlData {
   }
 
   /**
-   * For most uses, getRotationAngle() is recommended, but if you need direct acces to the spin
+   * For most uses, getRotationAngle() is recommended, but if you need direct access to the spin
    * control value, here it is.
    */
   public double getSpin() {
