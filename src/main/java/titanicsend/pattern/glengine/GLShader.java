@@ -11,16 +11,14 @@ import com.jogamp.opengl.util.GLBuffers;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import heronarts.lx.LX;
+import heronarts.lx.Tempo;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import titanicsend.pattern.TEPerformancePattern;
@@ -80,6 +78,10 @@ public class GLShader {
   private final TEPerformancePattern pattern;
   private final PatternControlData controlData;
 
+  // for explode effect
+  // TODO - figure out how to do global explode effect
+  private final SplittableRandom random;
+
   // Welcome to the Land of 1000 Constructors!
 
   /**
@@ -93,9 +95,11 @@ public class GLShader {
    */
   public GLShader(
       LX lx, FragmentShader fragmentShader, ByteBuffer frameBuf, TEPerformancePattern pattern) {
+    this.random = new SplittableRandom();
     this.pattern = pattern;
     this.controlData = new PatternControlData(pattern);
     this.backBuffer = frameBuf;
+
 
     if (glEngine == null) {
       this.glEngine = (GLEngine) lx.engine.getChild(GLEngine.PATH);
@@ -461,27 +465,69 @@ public class GLShader {
    *
    * @param points list of points to paint
    * @param image backbuffer containing image for this frame
-   * @param xSize x resolution of image
-   * @param ySize y resolution of image
    */
-  public void paint(List<LXPoint> points, ByteBuffer image, int xSize, int ySize) {
-    int xMax = xSize - 1;
-    int yMax = ySize - 1;
+  public void paint(List<LXPoint> points, ByteBuffer image) {
+    int xMax = xResolution - 1;
+    int yMax = yResolution - 1;
     int[] colors = pattern.getColors();
+    boolean exploding = pattern.getExplode() > 0;
 
-    for (LXPoint point : points) {
-      float zn = (1f - point.zn);
-      float yn = point.yn;
+    // Test to see if we're exploding once per frame, and use a "fast"
+    // painter branch if not.
+    // TODO - either move explode effect to the GLSL framework or figure
+    // TODO - out how to build a global explode effect that works for
+    // TODO - both java and shader patterns.
+    if (!exploding) {
+      for (LXPoint point : points) {
+        float zn = (1f - point.zn);
+        float yn = point.yn;
 
-      // use normalized point coordinates to calculate x/y coordinates and then the
-      // proper index in the image buffer.  the 'z' dimension of TE corresponds
-      // with 'x' dimension of the image based on the side that we're painting.
-      int xi = Math.round(zn * xMax);
-      int yi = Math.round(yn * yMax);
+        // use normalized point coordinates to calculate x/y coordinates and then the
+        // proper index in the image buffer.  the 'z' dimension of TE corresponds
+        // with 'x' dimension of the image based on the side that we're painting.
+        int xi = Math.round(zn * xMax);
+        int yi = Math.round(yn * yMax);
 
-      int index = 4 * ((yi * xSize) + xi);
+        int index = 4 * ((yi * xResolution) + xi);
 
-      colors[point.index] = image.getInt(index);
+        colors[point.index] = image.getInt(index);
+      }
+    }
+    else {
+      // calculate per-frame "explosion" parameters based on current
+      // position in measure
+      double measureProgress =
+          1.0
+              - this.pattern
+                  .getLX()
+                  .engine
+                  .tempo
+                  .getBasis(Tempo.Division.WHOLE); // 1 when we start measure, 0 when we finish
+      measureProgress *= measureProgress * measureProgress;
+      double k = 0.00035 + pattern.getExplode() * measureProgress;
+
+      // paint, moving coordinates according to explosion parameters
+      for (LXPoint point : points) {
+        float zn = (1f - point.zn);
+        float yn = point.yn;
+
+        // To "explode", we displace each pixel randomly in chessboard directions.
+        // this is slightly less random than calling nextDouble()) per coordinate
+        // but it saves us an expensive per-pixel calculation and given the
+        // number of pixels we're sampling, looks pretty much the same.
+        float displacement = (float) (k * (-0.5 + random.nextDouble()));
+        zn += displacement;
+        zn = Math.max(0, Math.min(1, zn));
+        yn += displacement;
+        yn = Math.max(0, Math.min(1, yn));
+
+        int xi = Math.round(zn * xMax);
+        int yi = Math.round(yn * yMax);
+
+        int index = 4 * ((yi * xResolution) + xi);
+
+        colors[point.index] = image.getInt(index);
+      }
     }
   }
 
@@ -495,7 +541,7 @@ public class GLShader {
   // (saving iBackbuffer for the next frame, of course)
   public void runAndPaint() {
     ByteBuffer image = getFrame();
-    paint(this.pattern.getModel().getPoints(), image, GLEngine.getWidth(), GLEngine.getHeight());
+    paint(this.pattern.getModel().getPoints(), image);
   }
 
   public List<ShaderConfiguration> getShaderConfig() {
