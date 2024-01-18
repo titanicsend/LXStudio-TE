@@ -4,38 +4,43 @@
 
 It's a small program that runs on a GPU, takes the coordinates of a single pixel
 as a parameter, and answers one question:  
-What color should this pixel be?
+**_What color should this pixel be?_**
 
 OpenGL Shaders are written in a C-like language called GLSL. If you've programmed
-in C, C++, Java, Javascript, etc., you'll find it mostly familiar. 
+in C, C++, Java, Javascript, etc., you'll find it mostly familiar.
 
-If you're new to shaders, there's a resources section at the bottom of this file. 
-And I can't recommend [The Book of Shaders](https://thebookofshaders.com) enough. It is really excellent!
+If you're new to shaders, there's a resources section at the bottom of this document.
+And for a gentle, thorough introduction, I can't recommend [The Book of Shaders](https://thebookofshaders.com) enough.
+It is really excellent!
 
 ## Why write patterns this way?
 
 Short answer: Speed. It gives you a lot more freedom and flexibility to design great
 looking patterns.
 
-While GPUs can vary greatly in capability, they will all run your shader in parallel,
-on many cores at the same time.  This means you can make much more interesting, organic-looking,
-realistic, etc. graphics without bogging down the CPU. 
+While GPUs vary greatly in capability, they will all run your shader in parallel,
+on many cores at the same time. This means you can make much more interesting, organic-looking,
+realistic, etc. graphics without bogging down the CPU.
 
 ## Uniforms - Data Supplied by the TE Framework
+Patterns on Titanic's End are highly interactive. Each show is unique, with visuals
+generated in real time in response to audio, directed by a VJ running the controls.
+To make this possible, the TE framework provides your pattern with a *lot* of data. For
+shaders, this data is passed in as *uniforms*.
 
-Chromatik passes audio and control data to your shader as uniforms.
-A uniform is effectively a constant - it has the same value across 
-all GPU threads. It is set at frame rendering time, and can be read,
-but not changed. (The compiler will complain if you try.) The uniforms below
-are available to every shader running on the TE platform.
+A uniform is effectively a read-only constant. It is set at frame rendering time,
+before the shader is run, and can be accessed by your shader code. The uniforms described 
+below are available to every shader running on the TE platform.
 
 #### Complete List of Uniforms
+
 The following uniforms are available to all shaders, preset with values returned from
-the common controls where applicable.  For additional documentation see the sections
-below.
+the common controls where applicable. For detailed descriptions see the [Uniforms by Functional Area](#uniforms-by-functional-area)
+section below.
+
 ```c
 // standard shadertoy
-uniform float iTime;       // this is actually linked to the speed control
+uniform float iTime;       // variable speed time, linked to the speed control
 uniform vec2 iResolution;  // pixel resolution of the drawing surface
 uniform vec4 iMouse;       // for compatibility only. Always zero.
 
@@ -45,6 +50,10 @@ uniform float sinPhaseBeat;
 uniform float bassLevel;
 uniform float trebleLevel;
 
+uniform float volumeRatio;  // ratio of current volume to recent average volume
+uniform float bassRatio;
+uniform float trebleRatio;
+
 // TE color
 uniform vec3 iColorRGB;   // color 1 - the color returned by calcColor() 
 uniform vec3 iColorHSB;   // color 1 in the HSB colorspace
@@ -52,7 +61,7 @@ uniform vec3 iColor2RGB;  // color 2 the color returned by calcColor2()
 uniform vec3 iColor2HSB;  // color 2 in the HSB colorspace
 
 // TE common controls
-uniform float iSpeed;
+uniform float iSpeed;     // speed control setting. Most shaders use iTime instead.
 uniform float iScale;
 uniform float iQuantity;
 uniform vec2  iTranslate;
@@ -61,106 +70,163 @@ uniform float iRotationAngle;   // rotation angle derived from spin
 uniform float iBrightness;      // shaders use this automatically as "contrast"
 uniform float iWow1;
 uniform float iWow2;
-uniform bool  iWowTrigger;
+uniform bool  iWowTrigger;      // true if the WowTrigger button is pressed
 
 // Shadertoy audio channel + optional textures
-uniform sampler2D iChannel0;
-uniform sampler2D iChannel1;
-uniform sampler2D iChannel2;
-uniform sampler2D iChannel3;
+uniform sampler2D iChannel0;   // 512x2 texture containing audio data. Always available
+uniform sampler2D iChannel1;   // first optional texture  
+uniform sampler2D iChannel2;   // second optional texture
+uniform sampler2D iChannel3;   
+
+// contents of the previously rendered frame
+uniform sampler2D iBackbuffer;  
+
 ```
 
 ## Uniforms by Functional Area
 -----
+
 ### ShaderToy/General Utility
 
 #### iTime (uniform float iTime;)
-'Time' since your pattern started running, in seconds.millis.  With the common controls,
+
+'Time' since your pattern started running, in seconds.millis. With the common controls,
 the rate at which time passes will vary with the setting of the speed control.
 
 Since shaders often use iTime to render animation as a function of time, this
-variable speed timer gives you smooth speed control without any additional code in the shader.  Importantly,
+variable speed timer gives you smooth speed control without any additional code in the shader. Importantly,
 time can run both forwards and backwards, so be sure your pattern's math works in both directions.
 
 #### iResolution (uniform vec2 iResolution;)
+
 The resolution of the "display" surface, used in shaders to normalize incoming pixel coordinates.
 Note that these are the dimensions of the off-screen 2D frame buffer that OpenGL uses for drawing and
-are only indirectly related to the number and layout of LEDs on the vehicle.  Tools to aid in mapping
+are only indirectly related to the number and layout of LEDs on the vehicle. Tools to aid in mapping
 between the frame buffer and car geometry are available in the TE
-framework's [CarGeometryPatternTools](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/CarGeometryPatternTools.java) class.
+framework's [CarGeometryPatternTools](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/CarGeometryPatternTools.java)
+class.
 
 #### iMouse (uniform vec4 iMouse;)
+
 All zeros at this time. Never changes. Included for compatibility with ShaderToy
-shaders.  There's no reason to use this in shader code.
+shaders. There's no reason to ever use this in shader code.
 
 -----
+
 ### Color Uniforms
 
 #### iColorRGB (uniform vec3 iColorRGB;)
-The RGB color from the color control returned by the calcColor() function.  Colors in
-shaders are normalized to a floating point 0.0 to 1.0 range.  You do not have to multiply them back
-to 0-255, and you don't have to worry about color components under- or overflowing while doing 
+
+The RGB color from the color control returned by the calcColor() function. Colors in
+shaders are normalized to a floating point 0.0 to 1.0 range. You do not have to multiply them back
+to 0-255, and you don't have to worry about color components under- or overflowing while doing
 calculations. They are automatically clamped to the proper range on output.
 
 #### iColorHSB (uniform vec3 iColorHSB;)
+
 The same color as iColorRGB, but pre-converted to normalized HSB format. (All components are
-in the range 0.0 to 1.0.  It's just like a Pixelblaze!)
+in the range 0.0 to 1.0. It's just like a Pixelblaze!)
 
 #### iColor2RGB (uniform vec3 iColorRGB;)
-The RGB color from the color control returned by the calcColor2() function, normalized as above. 
+
+The RGB color from the color control returned by the calcColor2() function, normalized as above.
 
 #### iColor2HSB (uniform vec3 iColorHSB;)
+
 iColor2RGB converted to HSB colorspace and normalized to the range 0.0 to 1.0.
 
 -----
+
 ### Audio Uniforms
 
-#### beat (uniform float beat;) 
+#### beat (uniform float beat;)
+
 Sawtooth wave that moves from 0 to 1 with the beat. On the beat the value
 will be 0, then ramp up to 1 before the next beat triggers.
- 
+
 #### sinPhaseBeat (uniform float sinPhaseBeat;)
+
 Sinusoidal wave that alternates between 0 and 1 with the beat.
 
 #### bassLevel (uniform float bassLevel;)
+
 Average level of low frequency content in the current audio signal.
 
 #### trebleLevel (uniform float trebleLevel;)
+
 Average level of high frequency content in the current audio signal.
 
+#### volumeRatio (uniform float volumeRatio)
+Ratio of the current volume to the recent average volume. This is useful for
+auto-scaling effects to the current volume level. For example:
+
+- .01 = 1% of recent average
+-  1 = Exactly the recent average
+-  5 = 5 times higher than the recent average 
+
+Values may vary greatly, depending on the audio content.
+
+#### bassRatio (uniform float bassRatio)
+Ratio of the current bass frequency content to the recent average.
+
+#### trebleRatio (uniform float trebleRatio)
+Ratio of the current treble frequency content to the recent average.
+
 -----
+
 ### TE Common Control Uniforms
 
 #### iSpeed (uniform float iSpeed;)
+
 Current value of the "Speed" common control. Most shaders will not need to use this because
 speed will be automatically controlled by the variable iTime mechanism described above.
+
 #### iScale (uniform float iScale;)
+
 Current value of the "Scale" common control.
+
 #### iQuantity (uniform float iQuantity;)
+
 Current value of the "Quantity" common control.
+
 #### iTranslate (uniform vec2  iTranslate;)
+
 (x,y) translation vector, derived from the settings of the XPos and YPos common controls.
+
 #### iSpin (uniform float iSpin;)
+
 Current value of the "Spin" common control.
+
 #### iRotationAngle (uniform float iRotationAngle;)
+
 Beat-linked rotation angle derived from the current setting of the "Spin" common control.
+
 #### iBrightness (uniform float iBrightness;)
+
 The current value of the "Brightness" common control. The shader framework uses this automatically
-as "contrast".  It reduces the brightness of colors without affecting alpha.
+as "contrast". It reduces the brightness of colors without affecting alpha.
+
 #### iWow1 (uniform float iWow1;)
+
 Current setting of the "Wow1" common control. Wow1 controls the level of an optional "special"
 pattern-specific feature.
+
 #### iWow2 (uniform float iWow2;)
+
 Current setting of the "Wow2" common control. Wow2 controls the level of an optional "special"
 pattern-specific feature.
+
 #### iWowTrigger (uniform bool  iWowTrigger;)
+
 Current setting of the "Wow1" common control. WowTrigger is a momentary contact button that can
 trigger an (optional) pattern-specific feature.
 
 -----
+
 ### ShaderToy Texture Uniforms
 
 #### iChannel0 (uniform sampler2D iChannel0;)
+
 A 2D texture (2x512) containing audio data from the LX engine.
 
 The first row contains FFT data -- the frequency spectrum of the current playing music.
@@ -168,26 +234,37 @@ The second contains a normalized version of the music's waveform,scaled to the r
 See the **AudioTest2** pattern for an example of how this data can be used.
 
 #### iChannel1 (uniform sampler2D iChannel1;)
+
 #### iChannel2 (uniform sampler2D iChannel2;)
+
 #### iChannel3 (uniform sampler2D iChannel3;)
-iChannels 1 through 3 are 2D textures loaded from user specified files.  Some ShaderToy shaders
+
+iChannels 1 through 3 are 2D textures loaded from user specified files. Some ShaderToy shaders
 require these, and it is possible for you to build your own textures and load them at pattern
 creation time.
 
-Use the GLSL [```texture(sampler2D textureName,vec2D coords)```](https://registry.khronos.org/OpenGL-Refpages/gl4/html/texture.xhtml) 
-function to retrieve data from these textures.
+### iBackbuffer (uniform sampler2D iBackbuffer;)
 
+The contents of the previously rendered frame. This is useful for creating feedback effects
+like trails, echoes, etc. See the **MultipassDemo** pattern for an example.
+
+Use the
+GLSL [```texture(sampler2D textureName,vec2D coords)```](https://registry.khronos.org/OpenGL-Refpages/gl4/html/texture.xhtml)
+function with normalized coordinates to retrieve data from these textures.
 
 -----
+
 ### Automatic LX Control Uniforms
+
 *(Note: This is a legacy feature. It's still supported, but is not recommended
-for use in new shaders.  Any controls you create this way will not be visible in the UI.  In the future, we may update or repurpose this feature.
+for use in new shaders. Any controls you create this way will not be visible in the UI. In the future, we may update or
+repurpose this feature.
 For now, the best way to create controls from shader code is to use the automatic shader wrapping method
 described below.)*
 
-In your shader, you can create a uniform that is automatically linked to an LX control.  When you change
-the control from the UI, the value of the uniform will change.  This is especially handy for including extra
-controls patterns built the ConstructedPattern framework.  To generate controls from your
+In your shader, you can create a uniform that is automatically linked to an LX control. When you change
+the control from the UI, the value of the uniform will change. This is especially handy for including extra
+controls patterns built the ConstructedPattern framework. To generate controls from your
 shader code, include the encoded control description as follows:
 
 ```
@@ -195,10 +272,10 @@ shader code, include the encoded control description as follows:
 ```
 
 This creates a control named "thickness" in your pattern's UI, with an initial value of 5, a lower limit of 5
-and an upper limit of 10.  When this line of GLSL is executed, the variable "thickness" will be assigned to the
-current value of the control. 
+and an upper limit of 10. When this line of GLSL is executed, the variable "thickness" will be assigned to the
+current value of the control.
 
-You can create controls of two types:  float (as above) and boolean.  Here's an example of a boolean control:
+You can create controls of two types:  float (as above) and boolean. Here's an example of a boolean control:
 
 ```
    if (!{%noGlow[bool]}) {
@@ -206,9 +283,9 @@ You can create controls of two types:  float (as above) and boolean.  Here's an 
    }
 ```
 
-If you need to access your control uniform multiple times in a shader, you can assign it to a variable as in 
+If you need to access your control uniform multiple times in a shader, you can assign it to a variable as in
 the first example, or you can refer to it by its actual name, which is the name of the control followed by the suffix,
-_parameter.  So to access the two example controls, you would use:
+_parameter. So to access the two example controls, you would use:
 
 ```
     thickness_parameter, and 
@@ -216,36 +293,46 @@ _parameter.  So to access the two example controls, you would use:
 ```
 
 -----
+
 ### Other Custom Uniforms
 
 TE shaders can also have custom uniforms of many different types, including
 arbitrary int and float arrays. This means you can send vehicle geometry data
 and other fun things to your pattern.
 
-Instructions on how to build a pattern with custom uniforms are below, in the **Adding a Shader to TE** section.
-For an example, see [Phasers](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/Phasers.java).
+Instructions on how to build a pattern with custom uniforms are below, in the
+[## Adding a Shader to TE](#adding-a-shader-to-te) section.
+For an example,
+see [Phasers](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/Phasers.java).
 
 ## Adding a Shader to TE
 
-To run a shader on TE, we need to wrap it in a TEAudioPattern.  There
-are three ways of going about this.
+There are three ways to add a shader to TE. The easiest is to use the automatic shader wrapping
+feature described below. The other two methods require a little Java coding, but give you more
+control over the shader's behavior. If you're porting a shader from ShaderToy, the easiest way
+is to use the automatic shader wrapping feature. For more complex shaders, requiring custom uniforms
+and/or frame-time calculations in Java, you'll need to use one of the other methods.
 
 ### Easiest:  Automatic Shader Wrapping
-For the 2023/2024 season, we've introduced a way to add shaders to TE without writing any Java code at all. 
+
+For the 2023/2024 season, we've introduced a way to add shaders to TE without writing any Java code at all.
 With this method you can set up controls directly from shader code, and even live-edit the shader
 with any text editor while it's running on the vehicle. This is the easiest way to get started with shaders on TE.
 
 To use this method:
+
 - Write your shader in any text editor.
 - Include the line ```#pragma auto``` in your shader code, and save it as an .fs file in the
-*resources/shaders* directory.  Be sure the file name is unique, and is a valid Java class name.
-(No spaces, no special characters.)
+  *resources/shaders* directory. Be sure the file name is unique, and is a valid Java class name.
+  (No spaces, no special characters.)
 - The next time you start the TE App, your shader will be available in the pattern browser panel, under
-the 'Auto Shaders' category. (You can use additional #pragmas, described below, to change the name and category, as well as 
-set up UI controls for your shader.)
+  the 'Auto Shaders' category. (You can use additional #pragmas, described below, to change the name and category, as
+  well as
+  set up UI controls for your shader.)
 
-To live edit a shader, first add it to an active channel so you can see what it's doing.  Then make your changes to the .fs
-file and save it.  To see your changes on the car, delete the shader from the active channel list, and re-add it
+To live edit a shader, first add it to an active channel so you can see what it's doing. Then make your changes to the
+.fs
+file and save it. To see your changes on the car, delete the shader from the active channel list, and re-add it
 from the pattern browser panel.
 
 #### Preprocessor Directives for Automatic Shader Wrapping
@@ -296,89 +383,142 @@ from the pattern browser panel.
 
 ```
 
-###  Easy: Shader Code + Java ConstructedPattern
+### Easy: Shader Code + Java ConstructedShaderPattern
 
-This method requires minor, boilerplate Java coding, and allows you to customize controls for your
-shader without building a full TEPerformancePattern.  It is used by most of our first and second year
-shaders.  It's not as simple as the automatic method above, but does have a slight advantage in load time.
+If you have more complex control setup needs, need to send custom uniforms to your shader
+or use data generated in Java at frame time, this is the way to go.  (It also has a
+slight advantage in initial load time over the automatic shader wrapping method, although this
+only affects application startup.)
+
+It requires a small amount Java coding, and allows you to customize the behavior of your shader without building a full
+GLShaderPattern implementation. Most of our shaders are built this way. To use this method:
 
 - Write your shader, and save it as an .fs file in the *resources/shaders* directory.
 - Follow the boilerplate code and add a uniquely named class for your shader to
- either [ShaderPanelsPatternConfig.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/yoffa/config/ShaderPanelsPatternConfig.java)
-- or [ShaderEdgesPatternConfig.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/yoffa/config/ShaderEdgesPatternConfig.java) in
- the directory *src/main/java/titanicsend/pattern/yoffa/config/*
+  either [ShaderPanelsPatternConfig.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/yoffa/config/ShaderPanelsPatternConfig.java)
+-
+or [ShaderEdgesPatternConfig.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/yoffa/config/ShaderEdgesPatternConfig.java)
+in
+the directory *src/main/java/titanicsend/pattern/yoffa/config/*
 
 - Run TE and look for your new pattern in the content list.
 
-Here's an example of code to add a new shader effect to *ShaderPanelsPatternConfig*.
+Here's an example of code to add a shader effect to *ShaderPanelsPatternConfig*. This
+sets parameters for the common controls, and adds a shader with an associated texture
+(on iChannel1) to the "Native Shaders Panels" category.
+
 ```
-    @LXCategory("Native Shaders Panels")
-    public static class MyShaderClass extends ConstructedPattern {
-        public MyShaderClass(LX lx) {
-            super(lx);
-        }
-        @Override
-        protected List<PatternEffect> createEffects() {
-            return List.of(new NativeShaderPatternEffect("my_shader.fs",
-                    PatternTarget.allPanelsAsCanvas(this)));
-        }
+  @LXCategory("Native Shaders Panels")
+  public static class StormScanner extends ConstructedShaderPattern {
+    public StormScanner(LX lx) {
+      super(lx, TEShaderView.DOUBLE_LARGE);
     }
-```
 
-### Slightly Harder: Shader + Java + custom Uniforms
+    @Override
+    protected void createShader() {
+      controls.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
+      controls.setValue(TEControlTag.SPEED, 0.5);
 
-If you want to send arrays, car geometry or other custom uniforms to your shader, you'll need to derive your
-pattern from the *TEPerformancePattern*, class and create your own *NativeShaderPatternEffect* to manage the shader.
+      controls.setRange(TEControlTag.SIZE, 1, 3, 0.5); // overall scale
+      controls.setRange(TEControlTag.WOW1, .35, 0.1, 1); // Contrast
 
-To create a *NativeShaderPatternEffect*, use a constructor like this during your pattern's creation: 
-```
-     effect = new NativeShaderPatternEffect("fourstar.fs",
-        PatternTarget.allPanelsAsCanvas(this), options);
-```
-This creates a new shader effect given a shader file name, a target set of points, and an (optional) *ShaderOptions*
-structure. If you build your pattern this way, before you can render, you must get a pointer to the 
-*NativeShaderPatternEffect*'s *NativeShader* object. (To prevent interference with LX startup, the shader 
-isn't actually initialized until your pattern is activated.)
-
-You can get a valid pointer by implementing *OnActive()* in your pattern as follows:
-```
-    public void onActive() {
-        effect.onActive();
-        shader = effect.getNativeShader();
+      addShader("storm_scanner.fs", "gray_noise.png");
     }
+  }
 ```
-Once you've got the pointer, to run your shader, just add a call to
+
+### Slightly Harder: GLShaderPattern
+
+If you need to:
+
+- Create a custom pattern class that does more than just run a shader
+- Create a pattern that uses custom uniforms
+- Create a pattern that uses car geometry
+- Create a multipass pattern that uses more than one shader per frame
+
+This is the way to go. All the previously described methods of creating shader
+patterns are built on top of this class. It's a little more work, but gives you
+the most control and flexibility. To use this method:
+
+Create a class that extends GLShaderPattern, call the super constructor, configure
+your controls, and add your shader(s). That's it.
+
+Here's a complete example of a pattern class that uses a shaderwith custom uniforms. (The "Fireflies" pattern
+shown here is included in the TE library so you can run Chromatik and see it in action. You can find additional
+examples in the project's pattern directory.)
+
 ```
-    shader.run(deltaMs)
-```
-in your *runTEAudioPattern()* method. The *deltaMs* variable can be the one that's passed to *runTEAudioPattern()*.  
+@LXCategory("Combo FG")
+public class Fireflies extends GLShaderPattern {
+
+  public Fireflies(LX lx) {
+    super(lx, TEShaderView.ALL_POINTS);
+
+    controls
+        .setRange(TEControlTag.QUANTITY, 20, 1, 32)
+        .setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
+
+    controls.setRange(TEControlTag.SIZE, 0.9,1, 0.25);
+    controls.setRange(TEControlTag.WOW1, 0.36,1, 0.1)
+      .setExponent(TEControlTag.WOW1, 2);
+
+    // register common controls with LX
+    addCommonControls();
+
+    addShader(
+        "fireflies.fs",
+        new GLShaderFrameSetup() {
+          @Override
+          public void OnFrame(GLShader s) {
+            s.setUniform("iQuantity", (float) getQuantity());
+            s.setUniform("iSize", (float) getSize());
+            s.setUniform("iWow2", (float) getWow2());
+          }
+        });
+  }
+}
+``` 
 
 ### Setting Custom Uniforms
-Now that you've created a *TEAudioPattern* with a shader object attached, and retrieved a pointer to the
-initialized shader as described above, you can use *setUniform(name, data,...)* to send custom data
-to your shader. For example, to send a 3 element float vector to your shader, first declare the uniform by
+
+Notice the OnFrame() method in the example above. This is where you set custom uniforms
+for your shader. The GLShaderFrameSetup interface is a functional interface, so you can
+use a lambda expression instead of a full class if you prefer. The OnFrame() method is
+called once per frame, before the shader is run. It is passed a pointer to the shader
+object, so you can call any of the shader's methods from within OnFrame().
+
+To set uniforms, use the shader's *setUniform()* method as shown in the example. This method
+is overloaded to handle many different types of data. See the section below on *setUniform()*
+for details.
+
+If you're sending a custom uniform to your shader note that you must declare it in the shader.
+For example, to send a 3 element float vector to your shader, first declare the uniform by
 including the statement
+
 ```
     uniform vec3 myUniform;
 ```
+
 at the top of your shader code, outside any function (It behaves like a global constant).  
-Then, in your Java code, before you call ```shader.run()```, set the uniform with
+Then, in your OnFrame() method, set the uniform with
 
 ```
    float x1,y1,z1;
    // code that calculates values for x1,y1,z1 
    .
    .
-   shader.setUniform("myUniform",x1,y1,z1);
+   s.setUniform("myUniform",x1,y1,z1);
 
 ```
-Now, when your run your code, ```myUniform.xyz``` in your shader will have whatever values you passed in from Java. 
+
+Now, when your run your code, ```myUniform.xyz``` in your shader will have access to the values
+you passed in from Java.
 
 When doing this, YOU ARE RESPONSIBLE for seeing that the uniform names and data types match
-between Java and GLSL.  Otherwise ...nothing... will happen.  Also, according to the OpenGL
-spec, each shader can have 1024 uniforms.  I'd try to keep it a little under that.
+between Java and GLSL. Otherwise ...nothing... will happen. Also, according to the OpenGL
+spec, each shader can have 1024 uniforms. I'd try to keep it a little under that.
 
-The currently available *setUniform()* variants are:
+You can use *setUniform()* to send the following data types to your shader:
 
 ```
     setUniform(name,int);  // integer, 1 element
@@ -400,46 +540,52 @@ The currently available *setUniform()* variants are:
     
 ```
 
-
 ### Important Notes about Uniforms:
-If you're passing int or float arrays to a shader, the arrays must be allocated as 
+
+If you're passing int or float arrays to a shader, the arrays must be allocated as
 direct buffers, with the nio.Buffers methods or the similar GLBuffer methods. The arrays
 should also be the size of the data they are to contain. For example, to allocate a 5x4 float array for
 use as a uniform:
+
 ```
         // size is 5 rows * 4 columns * 4 bytes per item.
         FloatBuffer buf = Buffers.newDirectFloatBuffer(5 * 4 * 4);
         float [] myArray = buf.array();
 ```
 
-Be very careful about parameter type when you use setUniform() in a situation where there's any 
-ambiguity at all.  For example, if you want to send a floating point vec3 of zeros to the shader, 
+Be very careful about parameter type when you use setUniform() in a situation where there's any
+ambiguity at all. For example, if you want to send a floating point vec3 of zeros to the shader,
 specify ```setUniform("name",0f,0f,0f)```, or you might wind up sending an integer vector instead.
-When in doubt be specific.  Cast if necessary for clarity.
+When in doubt be specific. Cast if necessary for clarity.
 
 ## Advanced Pattern Building
+
 ### Using Car Geometry
+
 You can access the car's geometry - edges and triangles - from a shader to create patterns that uniquely fit
 Titanic's End. The
 [CarGeometryPatternTools](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/CarGeometryPatternTools.java)
-class provides basic tools to extract features from the car's geometry and pass them to your shader as uniforms.  Building
-patterns this way requires the combined Java/Shader approach described above.  Below are two examples, both of which
+class provides basic tools to extract features from the car's geometry and pass them to your shader as uniforms.
+Building
+patterns this way requires the combined Java/Shader approach described above. Below are two examples, both of which
 would be computationally impractical in Java alone.
 
-**ArcEdges** lights the car's edges and nearby panel areas, and creates a series of glowing "electrical arcs" between them.
+**ArcEdges** lights the car's edges and nearby panel areas, and creates a series of glowing "electrical arcs" between
+them.
 
 [ArcEdges.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/ArcEdges.java)
 [arcedges.fs](https://github.com/titanicsend/LXStudio-TE/blob/main/resources/shaders/arcedges.fs)
 
-**Edgefall** illustrates a way of animating car geometry.  It lights edges, and "explodes" them outward
+**Edgefall** illustrates a way of animating car geometry. It lights edges, and "explodes" them outward
 when the WowTrigger button is pressed.
 [EdgeFall.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/EdgeFall.java)
 [edgefall.fs](https://github.com/titanicsend/LXStudio-TE/blob/main/resources/shaders/edgefall.fs)
 
 ### Drift Enabled Patterns
+
 Some pattern types, for example noise, clouds and starfields, look best with continuous, unbounded, "drifting"
-x/y movement.  To create a pattern that moves this way, derive it from the ```DriftEnabledPattern``` 
-class instead of ```TEPerformancePattern```.   This overrides the default translation behavior so that
+x/y movement. To create a pattern that moves this way, derive it from the ```DriftEnabledPattern```
+class instead of ```GLShaderPattern```. This overrides the default translation behavior so that
 instead of an absolute x/y offset, the XPos/YPos controls set a 'drift' direction and speed.
 
 The pattern's position will then smoothly change over time at a rate controlled by XPos/YPos. The maximum
@@ -447,59 +593,140 @@ movment rate is based on the real-time clock, independent of the speed control s
 
 Note that patterns must be "drift-aware" - they must know that the offset controls now control drift
 and that the current position is available in Java from the getXPosition() and getYPosition()
-functions.  
+functions.
 
 GLSL shaders using this class should define #TE_NOTRANSLATE in their code to disable the default control
 behavior in the shader engine.
 
 A couple of DriftEnabledPattern examples are:
+
 #### RainBands
-[RainBands.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/RainBands.java) 
+
+[RainBands.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/RainBands.java)
 [RainBands.fs](https://github.com/titanicsend/LXStudio-TE/blob/main/resources/shaders/rain_noise.fs)
 
-and 
+and
+
 #### TriangleNoise
-[TriangleNoise.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/TriangleNoise.java) 
+
+[TriangleNoise.java](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/TriangleNoise.java)
 [TriangleNoise.fs](https://github.com/titanicsend/LXStudio-TE/blob/main/resources/shaders/triangle_noise.fs)
 
+### Multipass Rendering
+
+Some patterns require more than one shader to render a frame. A pattern might, for
+example, implement sharpening or blurring effects by processing each frame generated
+frame through a convolution filter. Or it might get an image from a video stream, and
+then want to perform color processing on the resulting image.
+
+To support this, the TE framework allows you to add multiple shaders to a pattern. Each
+shader is run in sequence, and the output of the previous shader is passed to the next
+shader as a texture. The last shader in the sequence is the one that actually draws
+the frame.
+
+To create a multipass pattern, derive your pattern class from ```GLShaderPattern```  
+and configure your controls as described above. Then,before adding any shaders, you must
+create shared backing store for the intermediate results. The ```GLShader``` class provides
+a function for doing this:
+
+    // allocate a backbuffer for all the shaders to share
+    Bytebuffer buffer = GLShader.allocateBackBuffer();
+
+Once you've allocated the buffer, you can add shaders to your pattern using multiple calls
+to addShader(). For example to create a pattern with two shaders:
+
+    // add the first shader, passing in the shared backbuffer
+    shader = new GLShader(lx, "fire.fs", this,buffer);
+    addShader(shader);
+
+    // add the second shader, which applies a simple edge detection filter to the
+    // output of the first shader
+    shader = new GLShader(lx, "multipass1.fs", this, buffer);
+    addShader(shader );
+
+To add more shaders, just keep calling addShader(), remembering to pass in the shared
+backbuffer. The last shader in the sequence will set the final output color.
+
+One important note: The shader rendering system performs can adjusts the color and contrast
+of output for best appearance on the car. In a multipass pattern, it's possible that this
+adjustment might change values passed between shaders in an unexpected way.
+
+If you're seeing strange results in a multipass shader, you can disable the post processing on 
+individual shaders by defining ```#TE_NOPOSTPROCESSING``` in the shader code.
+
+### Preprocessor Directives for Output Control
+
+#### Rationale 
+The TE shader system was originally built to be compatible with ShaderToy shaders. In general
+ShaderToy does not use the alpha channel when drawing to the screen, so many of our original 
+shaders did not set alpha properly. This created some problems when blending multiple channels
+and caused some patterns to display at less than full brightness.
+
+The current shader engine has the ability to optimize shader behavior by substituting brightness
+for alpha in certain circumstances. This works well for most shaders, but can cause problems
+in rare circumstances.  
+
+The following preprocessor directives are available to control this behavior:
+
+#### #define TE_NOALPHAFIX
+The TE_NOALPHAFIX directive causes the renderer to use the "old", pre-EDC 2023 alpha
+handling behavior. This behavior maximizes brightness at the expense of detailed
+transparency by forcing black pixels to full transparency, and otherwise
+use shader provided alpha which, at that time was generally clamped to 1.0.
+
+#### #define TE_ALPHATHRESHOLD (value in the range 0.0 to 1.0)
+When using the default alpha handling behavior, the TE_ALPHATHRESHOLD directive
+allows you to set a brightness threshold above which colors will be fully opaque
+(alpha == 1.0).  This gives you precise control over the tradeoff between brightness
+and transparency.
+
+#### #define TE_NOPOSTPROCESSING
+The TE_NOPOSTPROCESSING directive disables all automatic color and alpha adjustment
+of shader output. This is useful in multipass patterns where the output of one shader
+is passed to another as data, and the precise values must be preserved.
 
 ## Tips and Traps
 
 ### Resolution
-ShaderToy and other shader demo sites are full of [beautiful things](https://www.shadertoy.com/view/Xl2XRW).  Not all of them will look
-good on at lower resolution on a 55 foot, irregularly shaped vehicle. Fine lines might wind up
-pixelated, and hi-res detail might devolve to noise.  If you can, give yourself a way of adjusting
-line width and detail level, so your pattern can be tuned to look its best.
+
+ShaderToy and other shader demo sites are full of [beautiful things](https://www.shadertoy.com/view/Xl2XRW). Not all of
+them will look good on at lower resolution on a 55 foot, irregularly shaped vehicle.
+
+Fine lines might wind up broken and pixelated, and hi-res detail might devolve to noisy static.
+If possible, give yourself a way of adjusting line width and detail level, so your pattern can be
+tuned to look its best.
 
 ### Performance
-As of this writing, TE's main computer will be a Mac Studio.  Within the bounds of reason, performance shouldn't be 
-a problem. 
+
+As of this writing, TE's main computer will be a Mac Studio. Within the bounds of reason, performance shouldn't be
+a problem.
 
 ### Alpha
-TE patterns are meant to be layerable and mixable.  Where possible, your pattern should
-calculate a reasonable alpha channel.  If you are porting a pattern, and it doesn't 
-do the right thing, you can derive alpha from overall brightness by including
-the following line of GLSL as the last line in *mainImage()*.
-```
-    // alpha, derived from brightness, for LX blending.
-    fragColor.a = max(fragColor.r,max(fragColor.g,fragColor.b));
-```
+
+TE patterns are meant to be layerable and mixable. Where possible, your pattern should
+calculate a reasonable alpha channel. If you are porting a pattern, and it doesn't
+do the right thing, you can either set the color to it's highest possible brightness
+and use alpha to control the brightness level, or set alpha to 1.0 and let the framework
+do it for you.
 
 ### Avoiding Version Chaos
-OpenGl implementations are tightly tied to hardware. Even though a [standard](https://registry.khronos.org/OpenGL-Refpages/gl4/)
+
+OpenGl implementations are tightly tied to hardware. Even though
+a [standard](https://registry.khronos.org/OpenGL-Refpages/gl4/)
 exists, quality and completeness varies greatly among implementations. As with
 web browsers, it's possible to write code that works brilliantly on one
-platform, and breaks, or does something really strange on others. 
+platform, and breaks, or does something really strange on others.
 
-The best way to avoid trouble is to prototype and test on [ShaderToy](https://www.shadertoy.com) , which uses a nice
-least-common denominator subset that everybody seems to support. (The TE framework was
-designed with easy porting of ShaderToy shaders as a goal, so it is easy to cut and
-paste between the two, at least until you start using the TE specific audio and color uniforms.)
+The best way to avoid trouble is to prototype and test on [ShaderToy](https://www.shadertoy.com) , which uses a subset
+that everybody seems to support. The TE framework was designed with easy porting of ShaderToy shaders
+as a goal, so it is easy to cut and paste between the two, at least until you start using the TE specific
+audio and color uniforms.)
 
 ## Resources
+
 - [The Book of Shaders](https://thebookofshaders.com/)
 - [Inigo Quilez's Intro to Distance Functions](https://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm)
 - [ShaderToy](https://www.shadertoy.com)
 - [GraphToy](https://www.graphtoy.com)
-- [Ronja's Tutorials - 2D SDF Basics](https://www.ronja-tutorials.com/post/034-2d-sdf-basics/) 
+- [Ronja's Tutorials - 2D SDF Basics](https://www.ronja-tutorials.com/post/034-2d-sdf-basics/)
 - [OpenGL Reference Pages](https://registry.khronos.org/OpenGL-Refpages/gl4/)
