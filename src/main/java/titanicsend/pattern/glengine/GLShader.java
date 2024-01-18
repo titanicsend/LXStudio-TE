@@ -230,10 +230,18 @@ public class GLShader {
   // deactivated.)
   public void dispose() {
     // if we've been fully initialized, we need to release all
-    // OpenGL resources we've allocated.
+    // OpenGL GPU resources we've allocated.
     if (gl4 != null) {
+
+      // delete GPU buffers we directly allocated
       gl4.glDeleteBuffers(2, geometryBufferHandles, 0);
       gl4.glDeleteTextures(1, backbufferHandle, 0);
+
+      // free any textures on ShaderToy channels
+      for (Map.Entry<Integer, Texture> textureInput : textures.entrySet()) {
+        textureInput.getValue().destroy(gl4);
+      }
+
       shaderProgram.dispose(gl4);
     }
   }
