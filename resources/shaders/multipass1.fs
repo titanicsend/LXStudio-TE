@@ -32,5 +32,5 @@ vec4 sobel(vec2 center){
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // slow fade between original and edge detected images
     vec2 uv = fragCoord.xy / iResolution.xy;
-    fragColor =  mix(texture2D(iBackbuffer, uv), 4.0 * sobel(uv), abs(sin(iTime / 2.0)));
+    fragColor =  mix(texture(iBackbuffer, uv), 4.0 * sobel(uv), abs(sin(iTime / 2.0)));
 }

@@ -20,7 +20,7 @@ void mainImage(out vec4 fragColor, in vec2 coord) {
         lit = min(lit, 0.25 * length(p-v) * iScale);
     }
     // cool the entire backbuffer by a small amount
-    fragColor = max(vec4(0.),texture2D( iBackbuffer, uv ) - iWow1 / iScale);
+    fragColor = max(vec4(0.),texture( iBackbuffer, uv ) - iWow1 / iScale);
 
     // add heat where the fireflies are
     fragColor += clamp(color * pulse/lit,0.,1.);
