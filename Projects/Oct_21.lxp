@@ -1,6 +1,6 @@
 {
   "version": "0.4.2.TE.7-SNAPSHOT",
-  "timestamp": 1697916459321,
+  "timestamp": 1705709912116,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -30,7 +30,7 @@
         "children": {},
         "views": [
           {
-            "id": 39,
+            "id": 922,
             "class": "heronarts.lx.structure.view.LXViewDefinition",
             "internal": {
               "modulationColor": 0,
@@ -47,7 +47,7 @@
             "children": {}
           },
           {
-            "id": 40,
+            "id": 923,
             "class": "heronarts.lx.structure.view.LXViewDefinition",
             "internal": {
               "modulationColor": 1,
@@ -64,7 +64,7 @@
             "children": {}
           },
           {
-            "id": 41,
+            "id": 924,
             "class": "heronarts.lx.structure.view.LXViewDefinition",
             "internal": {
               "modulationColor": 2,
@@ -81,7 +81,7 @@
             "children": {}
           },
           {
-            "id": 42,
+            "id": 925,
             "class": "heronarts.lx.structure.view.LXViewDefinition",
             "internal": {
               "modulationColor": 3,
@@ -98,7 +98,7 @@
             "children": {}
           },
           {
-            "id": 43,
+            "id": 926,
             "class": "heronarts.lx.structure.view.LXViewDefinition",
             "internal": {
               "modulationColor": 4,
@@ -115,7 +115,7 @@
             "children": {}
           },
           {
-            "id": 44,
+            "id": 927,
             "class": "heronarts.lx.structure.view.LXViewDefinition",
             "internal": {
               "modulationColor": 5,
@@ -132,7 +132,7 @@
             "children": {}
           },
           {
-            "id": 45,
+            "id": 928,
             "class": "heronarts.lx.structure.view.LXViewDefinition",
             "internal": {
               "modulationColor": 6,
@@ -149,7 +149,7 @@
             "children": {}
           },
           {
-            "id": 46,
+            "id": 929,
             "class": "heronarts.lx.structure.view.LXViewDefinition",
             "internal": {
               "modulationColor": 7,
@@ -166,7 +166,7 @@
             "children": {}
           },
           {
-            "id": 47,
+            "id": 930,
             "class": "heronarts.lx.structure.view.LXViewDefinition",
             "internal": {
               "modulationColor": 8,
@@ -183,7 +183,7 @@
             "children": {}
           },
           {
-            "id": 48,
+            "id": 931,
             "class": "heronarts.lx.structure.view.LXViewDefinition",
             "internal": {
               "modulationColor": 9,
@@ -3030,7 +3030,7 @@
             },
             "parameters": {
               "label": "Input",
-              "device": 1
+              "device": 2
             },
             "children": {}
           },
@@ -3069,27 +3069,27 @@
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
-              "gain": 0.0,
+              "gain": 29.77125008404255,
               "range": 48.0,
               "attack": 10.0,
               "release": 216.89508730091052,
               "slope": 2.7914061456540367,
-              "band-1": 0.0,
-              "band-2": 0.0,
-              "band-3": 0.0,
-              "band-4": 0.0,
-              "band-5": 0.0,
-              "band-6": 0.0,
-              "band-7": 0.0,
-              "band-8": 0.0,
-              "band-9": 0.0,
-              "band-10": 0.0,
-              "band-11": 0.0,
-              "band-12": 0.0,
-              "band-13": 0.0,
-              "band-14": 0.0,
-              "band-15": 0.0,
-              "band-16": 0.0
+              "band-1": 1.0,
+              "band-2": 1.0,
+              "band-3": 1.0,
+              "band-4": 1.0,
+              "band-5": 0.8877964106043468,
+              "band-6": 0.702107415632719,
+              "band-7": 0.7972766082486455,
+              "band-8": 0.7065078826719267,
+              "band-9": 0.6901047187937213,
+              "band-10": 0.6659382312140345,
+              "band-11": 0.6832024268245183,
+              "band-12": 0.5842826051775853,
+              "band-13": 0.5141067271221698,
+              "band-14": 0.48663824613737794,
+              "band-15": 0.3601364918801556,
+              "band-16": 0.15457844943480958
             },
             "children": {}
           }
@@ -3383,13 +3383,13 @@
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 14,
+              "focusedPattern": 38,
               "triggerPatternCycle": false
             },
             "children": {},
             "effects": [],
             "clips": [],
-            "patternIndex": 14,
+            "patternIndex": 38,
             "patterns": [
               {
                 "id": 44599,
@@ -3433,8 +3433,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -3467,11 +3466,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -3517,8 +3517,7 @@
                   "te_wow2": 0.008,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -3551,11 +3550,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -3601,8 +3601,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -3635,11 +3634,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -3685,8 +3685,7 @@
                   "te_wow2": 0.4375625123735516,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -3719,11 +3718,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -3769,8 +3769,7 @@
                   "te_wow2": 0.5568750025704503,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -3803,11 +3802,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -3853,8 +3853,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -3887,11 +3886,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -3937,8 +3937,7 @@
                   "te_wow2": 0.22277344157919288,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -3971,11 +3970,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -4022,12 +4022,11 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.03804269667673088,
                   "panic": false,
-                  "viewPerPattern": 0,
-                  "speed": 0.7,
                   "hideBlocks": false,
-                  "glow": 0.5,
+                  "speed": 0.7,
+                  "ySpread": 1.6,
                   "numBlocks": 30.0,
-                  "ySpread": 1.6
+                  "glow": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -4060,11 +4059,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -4111,7 +4111,6 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
                   "width": 0.5,
                   "glow": 0.2
                 },
@@ -4146,11 +4145,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -4196,8 +4196,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -4230,11 +4229,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -4280,8 +4280,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -4314,11 +4313,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -4364,8 +4364,7 @@
                   "te_wow2": 0.13390625221654773,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -4398,11 +4397,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -4448,8 +4448,7 @@
                   "te_wow2": 0.7362500061281025,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -4482,11 +4481,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -4532,8 +4532,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -4566,11 +4565,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -4616,8 +4616,7 @@
                   "te_wow2": 0.2949609411007259,
                   "te_wowtrigger": false,
                   "te_angle": -0.47442957844482914,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -4650,11 +4649,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -4700,8 +4700,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -4734,11 +4733,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -4784,8 +4784,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -4818,11 +4817,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -4868,8 +4868,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -4902,11 +4901,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -4952,8 +4952,7 @@
                   "te_wow2": 0.07341043937242764,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -4986,11 +4985,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -5036,8 +5036,7 @@
                   "te_wow2": 0.0011017418411508606,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -5070,11 +5069,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -5120,8 +5120,7 @@
                   "te_wow2": 0.9017187533900142,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -5154,11 +5153,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -5204,8 +5204,7 @@
                   "te_wow2": 0.4201562483794987,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -5238,11 +5237,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -5288,8 +5288,7 @@
                   "te_wow2": 0.022343749762512743,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -5322,11 +5321,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -5372,8 +5372,7 @@
                   "te_wow2": 0.19558593455440132,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -5406,11 +5405,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -5457,7 +5457,6 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
                   "energy": 0.1
                 },
                 "children": {
@@ -5491,11 +5490,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -5542,7 +5542,6 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
                   "energy": 0.1
                 },
                 "children": {
@@ -5576,11 +5575,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -5627,7 +5627,6 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
                   "noise": 2.0,
                   "noise2": 2.0
                 },
@@ -5662,11 +5661,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -5713,9 +5713,8 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
-                  "noise2": 2.0,
-                  "noise": 2.0
+                  "noise": 2.0,
+                  "noise2": 2.0
                 },
                 "children": {
                   "modulation": {
@@ -5748,11 +5747,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -5798,8 +5798,7 @@
                   "te_wow2": 0.12638287340573184,
                   "te_wowtrigger": false,
                   "te_angle": 0.02282563233349233,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -5832,11 +5831,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -5882,8 +5882,7 @@
                   "te_wow2": 0.036132811524439604,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -5916,11 +5915,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -5966,8 +5966,7 @@
                   "te_wow2": 0.09841796767912456,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -6000,11 +5999,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -6050,8 +6050,7 @@
                   "te_wow2": 0.026400867777172564,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -6084,11 +6083,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -6134,8 +6134,7 @@
                   "te_wow2": 0.7677734363824129,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -6168,11 +6167,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -6218,8 +6218,7 @@
                   "te_wow2": 0.7677734363824129,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -6252,11 +6251,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -6302,8 +6302,7 @@
                   "te_wow2": 0.0024999999441206455,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -6336,11 +6335,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -6386,8 +6386,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -6420,11 +6419,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -6470,8 +6470,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -6504,11 +6503,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -6554,8 +6554,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -6588,11 +6587,96 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
+                ],
+                "effects": []
+              },
+              {
+                "id": 124438,
+                "class": "titanicsend.pattern.sina.TDPattern",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true,
+                  "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "TD",
+                  "view": 0,
+                  "viewPriority": 0,
+                  "enabled": true,
+                  "recall": false,
+                  "compositeMode": 0,
+                  "compositeLevel": 1.0,
+                  "hasCustomCycleTime": false,
+                  "customCycleTimeSecs": 60.0,
+                  "te_color/brightness": 100.0,
+                  "te_color/saturation": 100.0,
+                  "te_color/hue": 0.0,
+                  "te_color/solidSource": 1,
+                  "te_color/gradient": 0,
+                  "te_color/blendMode": 0,
+                  "te_color/offset": 0.0,
+                  "te_color/color2offset": 0.5,
+                  "te_speed": 0.5,
+                  "te_xpos": 0.0,
+                  "te_ypos": 0.0,
+                  "te_size": 1.0,
+                  "te_quantity": 0.5,
+                  "te_spin": 0.0,
+                  "te_brightness": 1.0,
+                  "te_explode": 0.0,
+                  "te_wow1": 0.0,
+                  "te_wow2": 0.0,
+                  "te_wowtrigger": false,
+                  "te_angle": 0.0,
+                  "panic": false
+                },
+                "children": {
+                  "modulation": {
+                    "id": 124439,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1,
+                "remoteControls": [
+                  "/te_color/offset",
+                  "/te_color/gradient",
+                  null,
+                  "/te_speed",
+                  "/te_xpos",
+                  "/te_ypos",
+                  "/te_quantity",
+                  "/te_size",
+                  "/te_angle",
+                  "/te_spin",
+                  "/panic",
+                  null,
+                  "/te_wow1",
+                  "/te_wow2",
+                  "/te_wowtrigger",
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               }
@@ -6687,8 +6771,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -6721,11 +6804,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -6771,8 +6855,7 @@
                   "te_wow2": 0.011544062746605053,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -6805,11 +6888,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -6855,8 +6939,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -6889,11 +6972,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -6939,8 +7023,7 @@
                   "te_wow2": 0.5699062613304703,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -6973,11 +7056,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -7023,8 +7107,7 @@
                   "te_wow2": 0.5568750025704503,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -7057,11 +7140,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -7107,8 +7191,7 @@
                   "te_wow2": 0.39980470202863216,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -7141,11 +7224,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -7191,8 +7275,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -7225,11 +7308,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -7276,12 +7360,11 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.03804269667673088,
                   "panic": false,
-                  "viewPerPattern": 0,
-                  "numBlocks": 30.0,
                   "hideBlocks": false,
                   "speed": 0.7,
-                  "glow": 0.5,
-                  "ySpread": 1.6
+                  "ySpread": 1.6,
+                  "numBlocks": 30.0,
+                  "glow": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -7314,11 +7397,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -7365,9 +7449,8 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
-                  "glow": 0.2,
-                  "width": 0.5
+                  "width": 0.5,
+                  "glow": 0.2
                 },
                 "children": {
                   "modulation": {
@@ -7400,11 +7483,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -7450,8 +7534,7 @@
                   "te_wow2": 0.0012499999720603228,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -7484,11 +7567,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -7534,8 +7618,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -7568,11 +7651,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -7618,8 +7702,7 @@
                   "te_wow2": 0.13390625221654773,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -7652,11 +7735,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -7702,8 +7786,7 @@
                   "te_wow2": 0.7362500061281025,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -7736,11 +7819,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -7786,8 +7870,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -7820,11 +7903,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -7870,8 +7954,7 @@
                   "te_wow2": 0.2949609411007259,
                   "te_wowtrigger": false,
                   "te_angle": -0.47442957844482914,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -7904,11 +7987,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -7954,8 +8038,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -7988,11 +8071,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -8038,8 +8122,7 @@
                   "te_wow2": 0.07341043937242764,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -8072,11 +8155,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -8122,8 +8206,7 @@
                   "te_wow2": 0.9017187533900142,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -8156,11 +8239,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -8206,8 +8290,7 @@
                   "te_wow2": 0.022343749762512743,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -8240,11 +8323,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -8291,7 +8375,6 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
                   "energy": 0.1
                 },
                 "children": {
@@ -8325,11 +8408,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -8376,9 +8460,8 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
-                  "noise2": 2.0,
-                  "noise": 2.0
+                  "noise": 2.0,
+                  "noise2": 2.0
                 },
                 "children": {
                   "modulation": {
@@ -8411,11 +8494,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -8461,8 +8545,7 @@
                   "te_wow2": 0.12638287340573184,
                   "te_wowtrigger": false,
                   "te_angle": 0.02282563233349233,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -8495,11 +8578,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -8545,8 +8629,7 @@
                   "te_wow2": 0.09841796767912456,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -8579,11 +8662,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -8629,8 +8713,7 @@
                   "te_wow2": 0.7677734363824129,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -8663,11 +8746,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -8713,8 +8797,7 @@
                   "te_wow2": 0.0024999999441206455,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -8747,11 +8830,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -8797,8 +8881,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -8831,11 +8914,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               }
@@ -8930,8 +9014,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -8964,11 +9047,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -9014,8 +9098,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -9048,11 +9131,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -9098,8 +9182,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -9132,11 +9215,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -9182,8 +9266,7 @@
                   "te_wow2": 1.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -9216,11 +9299,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -9266,8 +9350,7 @@
                   "te_wow2": 0.5568750025704503,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -9300,11 +9383,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -9350,8 +9434,7 @@
                   "te_wow2": 1.5,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 6
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -9384,11 +9467,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -9434,8 +9518,7 @@
                   "te_wow2": 0.3703906235678005,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -9468,11 +9551,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -9518,8 +9602,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -9552,11 +9635,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -9603,13 +9687,12 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 2,
                   "Energy": 0.0,
-                  "Glow": 1.5,
                   "Wibble Size": 0.15,
                   "Thickness": 0.3,
-                  "Speed": 0.0,
-                  "Glow2": 9.0
+                  "Glow": 1.5,
+                  "Glow2": 9.0,
+                  "Speed": 0.0
                 },
                 "children": {
                   "modulation": {
@@ -9642,11 +9725,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -9693,9 +9777,8 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
-                  "glow": 0.2,
-                  "width": 0.5
+                  "width": 0.5,
+                  "glow": 0.2
                 },
                 "children": {
                   "modulation": {
@@ -9728,11 +9811,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -9778,8 +9862,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -9812,11 +9895,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -9862,8 +9946,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -9896,11 +9979,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -9946,8 +10030,7 @@
                   "te_wow2": 0.03859374998137355,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -9980,11 +10063,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -10030,8 +10114,7 @@
                   "te_wow2": 0.5,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 2
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -10064,11 +10147,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -10114,8 +10198,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -10148,11 +10231,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -10198,8 +10282,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -10232,11 +10315,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -10282,8 +10366,7 @@
                   "te_wow2": 0.9872265623416752,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -10316,11 +10399,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -10366,8 +10450,7 @@
                   "te_wow2": 0.2,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -10400,11 +10483,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -10450,8 +10534,7 @@
                   "te_wow2": 2.1968503937007853,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -10484,11 +10567,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -10534,8 +10618,7 @@
                   "te_wow2": 0.19558593455440132,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -10568,11 +10651,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -10619,7 +10703,6 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
                   "energy": 0.1
                 },
                 "children": {
@@ -10653,11 +10736,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -10704,7 +10788,6 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
                   "noise": 2.0,
                   "noise2": 2.0
                 },
@@ -10739,11 +10822,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -10789,8 +10873,7 @@
                   "te_wow2": 0.11,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -10823,11 +10906,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -10873,8 +10957,7 @@
                   "te_wow2": 0.0883789052652719,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -10907,11 +10990,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -10957,8 +11041,7 @@
                   "te_wow2": 0.7677734363824129,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -10991,11 +11074,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -11041,8 +11125,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -11075,11 +11158,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -11125,8 +11209,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 2
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -11159,11 +11242,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -11209,8 +11293,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -11243,11 +11326,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -11293,8 +11377,7 @@
                   "te_wow2": 0.5,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -11327,11 +11410,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               }
@@ -11426,8 +11510,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -11460,11 +11543,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -11510,8 +11594,7 @@
                   "te_wow2": 0.011544062746605053,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -11544,11 +11627,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -11594,8 +11678,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -11628,11 +11711,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -11678,8 +11762,7 @@
                   "te_wow2": 0.5699062613304703,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -11712,11 +11795,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -11762,8 +11846,7 @@
                   "te_wow2": 0.5568750025704503,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -11796,11 +11879,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -11846,8 +11930,7 @@
                   "te_wow2": 0.39980470202863216,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -11880,11 +11963,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -11930,8 +12014,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -11964,11 +12047,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -12015,12 +12099,11 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.03804269667673088,
                   "panic": false,
-                  "viewPerPattern": 0,
                   "hideBlocks": false,
-                  "numBlocks": 30.0,
-                  "glow": 0.5,
+                  "speed": 0.7,
                   "ySpread": 1.6,
-                  "speed": 0.7
+                  "numBlocks": 30.0,
+                  "glow": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -12053,11 +12136,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -12104,7 +12188,6 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
                   "width": 0.5,
                   "glow": 0.2
                 },
@@ -12139,11 +12222,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -12189,8 +12273,7 @@
                   "te_wow2": 0.0012499999720603228,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -12223,11 +12306,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -12273,8 +12357,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -12307,11 +12390,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -12357,8 +12441,7 @@
                   "te_wow2": 0.13390625221654773,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -12391,11 +12474,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -12441,8 +12525,7 @@
                   "te_wow2": 0.7362500061281025,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -12475,11 +12558,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -12525,8 +12609,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -12559,11 +12642,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -12609,8 +12693,7 @@
                   "te_wow2": 0.2949609411007259,
                   "te_wowtrigger": false,
                   "te_angle": -0.47442957844482914,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -12643,11 +12726,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -12693,8 +12777,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -12727,11 +12810,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -12777,8 +12861,7 @@
                   "te_wow2": 0.07341043937242764,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -12811,11 +12894,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -12861,8 +12945,7 @@
                   "te_wow2": 0.9017187533900142,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -12895,11 +12978,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -12945,8 +13029,7 @@
                   "te_wow2": 0.022343749762512743,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -12979,11 +13062,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -13030,7 +13114,6 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
                   "energy": 0.1
                 },
                 "children": {
@@ -13064,11 +13147,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -13115,7 +13199,6 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
                   "noise": 2.0,
                   "noise2": 2.0
                 },
@@ -13150,11 +13233,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -13200,8 +13284,7 @@
                   "te_wow2": 0.12638287340573184,
                   "te_wowtrigger": false,
                   "te_angle": 0.02282563233349233,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -13234,11 +13317,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -13284,8 +13368,7 @@
                   "te_wow2": 0.09841796767912456,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -13318,11 +13401,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -13368,8 +13452,7 @@
                   "te_wow2": 0.7677734363824129,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -13402,11 +13485,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -13452,8 +13536,7 @@
                   "te_wow2": 0.0024999999441206455,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -13486,11 +13569,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -13536,8 +13620,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -13570,11 +13653,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               }
@@ -13669,8 +13753,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -13703,11 +13786,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -13753,8 +13837,7 @@
                   "te_wow2": 0.020444765753578394,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -13787,11 +13870,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -13837,8 +13921,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -13871,11 +13954,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -13921,8 +14005,7 @@
                   "te_wow2": 0.2,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -13955,11 +14038,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -14005,8 +14089,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -14039,11 +14122,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -14089,8 +14173,7 @@
                   "te_wow2": 0.3703906235678005,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -14123,11 +14206,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -14173,8 +14257,7 @@
                   "te_wow2": 0.03316406130034011,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -14207,11 +14290,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -14258,12 +14342,11 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
                   "hideBlocks": false,
                   "speed": 0.7,
-                  "glow": 0.5,
                   "ySpread": 1.6,
-                  "numBlocks": 30.0
+                  "numBlocks": 30.0,
+                  "glow": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -14296,11 +14379,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -14347,9 +14431,8 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
-                  "glow": 0.2,
-                  "width": 0.5
+                  "width": 0.5,
+                  "glow": 0.2
                 },
                 "children": {
                   "modulation": {
@@ -14382,11 +14465,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -14432,8 +14516,7 @@
                   "te_wow2": 0.9920703158713877,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -14466,11 +14549,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -14516,8 +14600,7 @@
                   "te_wow2": 0.19714844206464477,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -14550,11 +14633,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -14600,8 +14684,7 @@
                   "te_wow2": 0.03859374998137355,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -14634,11 +14717,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -14684,8 +14768,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -14718,11 +14801,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -14768,8 +14852,7 @@
                   "te_wow2": 0.9872265623416752,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -14802,11 +14885,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -14852,8 +14936,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -14886,11 +14969,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -14936,8 +15020,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -14970,11 +15053,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -15020,8 +15104,7 @@
                   "te_wow2": 0.0011017418411508606,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -15054,11 +15137,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -15104,8 +15188,7 @@
                   "te_wow2": 0.4201562483794987,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -15138,11 +15221,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -15188,8 +15272,7 @@
                   "te_wow2": 0.19558593455440132,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -15222,11 +15305,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -15273,7 +15357,6 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
                   "energy": 0.1
                 },
                 "children": {
@@ -15307,11 +15390,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -15358,7 +15442,6 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
                   "noise": 2.0,
                   "noise2": 2.0
                 },
@@ -15393,11 +15476,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -15443,8 +15527,7 @@
                   "te_wow2": 0.036132811524439604,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -15477,11 +15560,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -15527,8 +15611,7 @@
                   "te_wow2": 0.026400867777172564,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -15561,11 +15644,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -15611,8 +15695,7 @@
                   "te_wow2": 0.7677734363824129,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -15645,11 +15728,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -15695,8 +15779,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -15729,11 +15812,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -15779,8 +15863,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -15813,11 +15896,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               }
@@ -15912,8 +15996,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -15946,11 +16029,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -15996,8 +16080,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -16030,11 +16113,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -16080,8 +16164,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -16114,11 +16197,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -16164,8 +16248,7 @@
                   "te_wow2": 1.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -16198,11 +16281,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -16248,8 +16332,7 @@
                   "te_wow2": 0.5568750025704503,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -16282,11 +16365,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -16332,8 +16416,7 @@
                   "te_wow2": 1.5,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 6
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -16366,11 +16449,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -16416,8 +16500,7 @@
                   "te_wow2": 0.3703906235678005,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -16450,11 +16533,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -16500,8 +16584,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -16534,11 +16617,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -16585,13 +16669,12 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 2,
-                  "Glow": 1.5,
-                  "Wibble Size": 0.15,
-                  "Energy": 0.0,
+                  "Thickness": 0.3,
                   "Speed": 0.0,
+                  "Energy": 0.0,
+                  "Glow": 1.5,
                   "Glow2": 9.0,
-                  "Thickness": 0.3
+                  "Wibble Size": 0.15
                 },
                 "children": {
                   "modulation": {
@@ -16624,11 +16707,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -16675,9 +16759,8 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
-                  "glow": 0.2,
-                  "width": 0.5
+                  "width": 0.5,
+                  "glow": 0.2
                 },
                 "children": {
                   "modulation": {
@@ -16710,11 +16793,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -16760,8 +16844,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -16794,11 +16877,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -16844,8 +16928,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -16878,11 +16961,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -16928,8 +17012,7 @@
                   "te_wow2": 0.03859374998137355,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -16962,11 +17045,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -17012,8 +17096,7 @@
                   "te_wow2": 0.5,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 2
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -17046,11 +17129,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -17096,8 +17180,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -17130,11 +17213,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -17180,8 +17264,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -17214,11 +17297,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -17264,8 +17348,7 @@
                   "te_wow2": 0.9872265623416752,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -17298,11 +17381,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -17348,8 +17432,7 @@
                   "te_wow2": 0.2,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -17382,11 +17465,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -17432,8 +17516,7 @@
                   "te_wow2": 1.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -17466,11 +17549,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -17516,8 +17600,7 @@
                   "te_wow2": 0.19558593455440132,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -17550,11 +17633,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -17601,7 +17685,6 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
                   "energy": 0.1
                 },
                 "children": {
@@ -17635,11 +17718,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -17686,7 +17770,6 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
                   "noise": 2.0,
                   "noise2": 2.0
                 },
@@ -17721,11 +17804,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -17771,8 +17855,7 @@
                   "te_wow2": 0.11,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -17805,11 +17888,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -17855,8 +17939,7 @@
                   "te_wow2": 0.0883789052652719,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -17889,11 +17972,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -17939,8 +18023,7 @@
                   "te_wow2": 0.7677734363824129,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -17973,11 +18056,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -18023,8 +18107,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -18057,11 +18140,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -18107,8 +18191,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 2
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -18141,11 +18224,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -18191,8 +18275,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -18225,11 +18308,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               }
@@ -18324,8 +18408,7 @@
                   "te_wow2": 0.006525000032968818,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -18492,11 +18575,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -18542,8 +18626,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -18710,11 +18793,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -18975,8 +19059,7 @@
                   "te_wow2": 0.9682812377577648,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -19009,11 +19092,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               }
@@ -19108,8 +19192,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -19142,11 +19225,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               }
@@ -19411,8 +19495,7 @@
                   "te_wow2": 0.2009999971836805,
                   "te_wowtrigger": false,
                   "te_angle": 2.5132741252125035,
-                  "panic": false,
-                  "viewPerPattern": 6
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -19445,11 +19528,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -19495,8 +19579,7 @@
                   "te_wow2": 1.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 6
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -19529,11 +19612,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -19579,8 +19663,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 6
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -19613,11 +19696,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -19663,8 +19747,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 1.2566370333478902,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -19819,11 +19902,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -19869,8 +19953,7 @@
                   "te_wow2": 1.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -19903,11 +19986,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -19954,7 +20038,6 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
                   "enableEdges": true,
                   "enablePanels": true
                 },
@@ -19989,11 +20072,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -20039,8 +20123,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -20073,11 +20156,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -20123,8 +20207,7 @@
                   "te_wow2": 0.8975000246427953,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -20157,11 +20240,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -20207,8 +20291,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -20241,11 +20324,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -20291,8 +20375,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -20325,11 +20408,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -20375,8 +20459,7 @@
                   "te_wow2": 0.3,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 6
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -20409,11 +20492,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -20459,8 +20543,7 @@
                   "te_wow2": 0.4200000409036875,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 2
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -20493,11 +20576,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -20543,8 +20627,7 @@
                   "te_wow2": 0.008,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -20577,11 +20660,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               }
@@ -20676,8 +20760,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.06283185166739447,
-                  "panic": false,
-                  "viewPerPattern": 4
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -20710,11 +20793,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -20760,8 +20844,7 @@
                   "te_wow2": 0.001,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 4
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -20794,11 +20877,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -20844,8 +20928,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 2.010619253356624,
-                  "panic": false,
-                  "viewPerPattern": 4
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -20878,11 +20961,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -20928,8 +21012,7 @@
                   "te_wow2": 154.79999385774136,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -20962,11 +21045,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -21012,8 +21096,7 @@
                   "te_wow2": 35.99999248981476,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -21046,11 +21129,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -21096,8 +21180,7 @@
                   "te_wow2": 259.1999942064285,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -21130,11 +21213,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -21180,8 +21264,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -21214,11 +21297,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -21264,8 +21348,7 @@
                   "te_wow2": 2.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -21298,11 +21381,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -21348,8 +21432,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -21382,11 +21465,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -21432,8 +21516,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -21466,11 +21549,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -21517,9 +21601,8 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 6,
-                  "noise2": 2.0,
-                  "noise": 2.0
+                  "noise": 2.0,
+                  "noise2": 2.0
                 },
                 "children": {
                   "modulation": {
@@ -21552,11 +21635,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -21602,8 +21686,7 @@
                   "te_wow2": 2.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 4
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -21636,11 +21719,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -21686,8 +21770,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 5
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -21720,11 +21803,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -21770,8 +21854,7 @@
                   "te_wow2": 0.144749998440966,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 6
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -21804,11 +21887,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               }
@@ -22144,7 +22228,6 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
                   "enableEdges": false,
                   "enablePanels": true
                 },
@@ -22179,11 +22262,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -22230,12 +22314,11 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 6,
-                  "numBlocks": 30.0,
-                  "glow": 0.5,
-                  "ySpread": 1.6,
                   "hideBlocks": false,
-                  "speed": 0.7
+                  "speed": 0.7,
+                  "ySpread": 1.6,
+                  "numBlocks": 30.0,
+                  "glow": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -22268,11 +22351,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -22318,8 +22402,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 4
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -22352,11 +22435,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -22402,8 +22486,7 @@
                   "te_wow2": 1.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 6
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -22436,11 +22519,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -22486,8 +22570,7 @@
                   "te_wow2": 1.119999997317791,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -22520,11 +22603,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -22570,8 +22654,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 5
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -22604,11 +22687,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -22655,12 +22739,11 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 6,
-                  "Glow": 0.1,
                   "Double Layer": false,
+                  "Glow": 0.1,
+                  "Energy": 0.0,
                   "Double Speed": false,
-                  "Width": 0.5,
-                  "Energy": 0.0
+                  "Width": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -22693,11 +22776,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -22743,8 +22827,7 @@
                   "te_wow2": 3.9600000008940697,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 4
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -22777,11 +22860,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -22827,8 +22911,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 6
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -22861,11 +22944,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -22911,8 +22995,7 @@
                   "te_wow2": 0.2977499950211495,
                   "te_wowtrigger": false,
                   "te_angle": 0.06283185166739447,
-                  "panic": false,
-                  "viewPerPattern": 6
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -22945,11 +23028,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -22995,8 +23079,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 4
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -23029,11 +23112,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -23139,7 +23223,6 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "panic": false,
-                  "viewPerPattern": 0,
                   "enableEdges": true,
                   "enablePanels": true
                 },
@@ -23174,11 +23257,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -23224,8 +23308,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -23258,11 +23341,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -23308,8 +23392,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 4
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -23342,11 +23425,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -23392,8 +23476,7 @@
                   "te_wow2": 2.25,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 2
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -23426,11 +23509,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -23476,8 +23560,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 5
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -23510,11 +23593,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -23560,8 +23644,7 @@
                   "te_wow2": 0.005,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 2
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -23594,11 +23677,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -23644,8 +23728,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 4
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -23678,11 +23761,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -23728,8 +23812,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 6
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -23762,11 +23845,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               }
@@ -24064,8 +24148,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -24098,11 +24181,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -24365,8 +24449,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 4
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -24399,11 +24482,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               },
@@ -24449,8 +24533,7 @@
                   "te_wow2": 0.008,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "panic": false,
-                  "viewPerPattern": 0
+                  "panic": false
                 },
                 "children": {
                   "modulation": {
@@ -24483,11 +24566,12 @@
                   "/te_angle",
                   "/te_spin",
                   "/panic",
-                  "/viewPerPattern",
+                  null,
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  "/te_explode"
+                  "/te_explode",
+                  "/view"
                 ],
                 "effects": []
               }
@@ -24722,7 +24806,7 @@
               "exp": 0.25859374599531293
             },
             "children": {},
-            "basis": 0.13475000000016735
+            "basis": 0.3837499999999068
           },
           {
             "id": 78340,
@@ -24757,7 +24841,7 @@
               "exp": 1.0
             },
             "children": {},
-            "basis": 0.06737500000008367
+            "basis": 0.6918749999999534
           },
           {
             "id": 68570,
@@ -24792,7 +24876,7 @@
               "exp": 1.0
             },
             "children": {},
-            "basis": 0.2668437500000209
+            "basis": 0.9229687499999883
           },
           {
             "id": 116084,
@@ -24814,7 +24898,7 @@
               "midiFilter/velocityRange": 127,
               "inputA": 0.0,
               "inputB": 1.0,
-              "output": 0.5017063733567046
+              "output": 0.3144048090001624
             },
             "children": {}
           },
@@ -24838,7 +24922,7 @@
               "midiFilter/velocityRange": 127,
               "inputA": 0.0,
               "inputB": 0.9921259842519685,
-              "output": 0.539613775452587
+              "output": 0.04227683749516858
             },
             "children": {}
           },
@@ -24862,7 +24946,7 @@
               "midiFilter/velocityRange": 127,
               "inputA": 0.0,
               "inputB": 1.0,
-              "output": 3.4651877232981752E-12
+              "output": 0.003889799136791735
             },
             "children": {}
           }
@@ -27778,9 +27862,9 @@
           "receiveHost": "0.0.0.0",
           "receivePort": 3030,
           "receiveActive": true,
-          "transmitHost": "10.1.3.1",
+          "transmitHost": "0.0.0.0",
           "transmitPort": 7890,
-          "transmitActive": false,
+          "transmitActive": true,
           "logInput": false,
           "logOutput": false
         },
@@ -27820,8 +27904,21 @@
         },
         "children": {}
       },
+      "GLEngine": {
+        "id": 37,
+        "class": "titanicsend.pattern.glengine.GLEngine",
+        "internal": {
+          "modulationColor": 0,
+          "modulationControlsExpanded": true,
+          "modulationsExpanded": true
+        },
+        "parameters": {
+          "label": "GLEngine"
+        },
+        "children": {}
+      },
       "focus": {
-        "id": 49,
+        "id": 39,
         "class": "titanicsend.osc.CrutchOSC",
         "internal": {
           "modulationColor": 0,
@@ -27850,9 +27947,9 @@
         "depth": 1.0,
         "camera": {
           "active": false,
-          "radius": 1.4882593698387697E7,
+          "radius": 1.7E7,
           "theta": 270.0,
-          "phi": -6.215020164847374,
+          "phi": -6.0,
           "x": 2255849.2623291016,
           "y": 5053059.60546875,
           "z": 207717.87439727783
@@ -27860,9 +27957,9 @@
         "cue": [
           {
             "active": false,
-            "radius": 1.4882593698387697E7,
-            "theta": 270.0,
-            "phi": -6.215020164847374,
+            "radius": 1.7E7,
+            "theta": 262.6330275684595,
+            "phi": -1.401087448000908,
             "x": 2255849.2623291016,
             "y": 5053059.60546875,
             "z": 207717.87439727783
