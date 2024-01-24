@@ -9,8 +9,6 @@
   
   components: [
     /* Edges */
-    
-    /* Panels */
     { type: "edge/Edge9-12", artnetSequence: "artnetSequence" },
     { type: "edge/Edge9-83", artnetSequence: "artnetSequence" },
     { type: "edge/Edge9-114", artnetSequence: "artnetSequence" },
@@ -216,6 +214,8 @@
     { type: "edge/Edge125-127", artnetSequence: "artnetSequence" },
     { type: "edge/Edge126-129", artnetSequence: "artnetSequence" },
     { type: "edge/Edge128-129", artnetSequence: "artnetSequence" },
+    
+    /* Panels */
     { type: "panel/FA", artnetSequence: "artnetSequence" },
     { type: "panel/FB", artnetSequence: "artnetSequence" },
     { type: "panel/FSA", artnetSequence: "artnetSequence" },

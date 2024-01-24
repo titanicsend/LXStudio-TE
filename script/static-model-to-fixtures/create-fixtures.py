@@ -696,14 +696,16 @@ def create_top_level_fixture():
   },
   
   components: [
-    /* Edges */
-    
-    /* Panels */''')
+    /* Edges */''')
 
         # Add each edge as a fixture
         for edge_id, edge in edges.items():
             te_file.write('''
     { type: "edge/''' + edge.fixture_name + '''", artnetSequence: "artnetSequence" },''')
+
+        te_file.write('''
+
+    /* Panels */''')
 
         # Add each panel as a fixture
         for panel_id, panel in panels.items():
