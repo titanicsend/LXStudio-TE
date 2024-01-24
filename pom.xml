@@ -99,12 +99,6 @@
         </dependency>
 
         <dependency>
-            <groupId>me.walkerknapp</groupId>
-            <artifactId>devolay</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>uk.co.xfactory-librarians</groupId>
             <artifactId>coremidi4j</artifactId>
             <version>${coremidi4j.version}</version>
@@ -155,6 +149,13 @@
             <artifactId>byte-buddy</artifactId>
             <version>1.14.2</version>
         </dependency>
+
+        <dependency>
+            <groupId>me.walkerknapp</groupId>
+            <artifactId>devolay</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+
 
     </dependencies>
 

@@ -61,6 +61,7 @@ import titanicsend.modulator.dmx.DmxGridModulator;
 import titanicsend.modulator.dmx.DmxRangeModulator;
 import titanicsend.modulator.justin.MultiplierModulator;
 import titanicsend.modulator.justin.UIMultiplierModulator;
+import titanicsend.ndi.NDIEngine;
 import titanicsend.osc.CrutchOSC;
 import titanicsend.output.GPOutput;
 import titanicsend.output.GrandShlomoStation;
@@ -121,6 +122,7 @@ public class TEApp extends LXStudio {
 
     private final DmxEngine dmxEngine;
 
+    private final NDIEngine ndiEngine;
     private final GLEngine glEngine;
     private final TELaserTask laserTask;
     private final CrutchOSC crutchOSC;
@@ -146,7 +148,7 @@ public class TEApp extends LXStudio {
       //      new TEUIControls(ui, visual,
       // ui.leftPane.global.getContentWidth()).addToContainer(ui.leftPane.global);
       this.dmxEngine = new DmxEngine(lx);
-
+      this.ndiEngine = new NDIEngine(lx);
       this.glEngine = new GLEngine(lx);
 
       // create our loop task for outputting data to lasers
@@ -193,6 +195,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(Iceflow.class);
       lx.registry.addPattern(Kaleidosonic.class);
       lx.registry.addPattern(MultipassDemo.class);
+      lx.registry.addPattern(NDIRecieverTest.class);
       lx.registry.addPattern(Phasers.class);
       lx.registry.addPattern(PixelblazeSandbox.class);
       lx.registry.addPattern(PBAudio1.class);
