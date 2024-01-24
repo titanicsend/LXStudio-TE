@@ -1,0 +1,137 @@
+
+{
+  /* Titanic's End Fixture File */
+  label: "PCB",
+  tags: [ "PCB", "panel" ],
+
+  parameters: {
+    "xOffset": { default: 4.0, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
+    "yOffset": { default: 2.0, type: float, description: "Adjust Y position within the plane of the panel. Use to fine-tune position after installation" },
+  
+    /* Modify HOST and CONTROLLER OUTPUT default values HERE to assign one of this panel's strands to a
+       new controller output. Then click [Reload Fixture File] at the bottom of the Inspector section in Chromatik.
+       CAUTION: LXM model files containing this fixture might not update to the new defaults. */
+
+    "strand1host": { default: "10.7.1.10", type: "string", label: "S1 Host", description: "Strand 1 Controller IP address or hostname" },
+    "strand1output": { default: 1, type: "int", min: 1, max: 4, label: "S1 Output", description: "Strand 1 Controller Output Number 1-4" },
+    "strand2host": { default: "10.7.1.10", type: "string", label: "S2 Host", description: "Strand 2 Controller IP address or hostname" },
+    "strand2output": { default: 2, type: "int", min: 1, max: 4, label: "S2 Output", description: "Strand 2 Controller Output Number 1-4" },
+    "strand3host": { default: "10.7.1.10", type: "string", label: "S3 Host", description: "Strand 3 Controller IP address or hostname" },
+    "strand3output": { default: 3, type: "int", min: 1, max: 4, label: "S3 Output", description: "Strand 3 Controller Output Number 1-4" },
+
+    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
+    
+    # Debug tools
+    "onCar": { default: true, type: "boolean", label: "On Car", description: "True = Locate panel to its position on the car, False = Locate to origin" }
+  },
+  
+  transforms: [
+    /* Transpose starting corner to Vertex0 */
+    { x: "190.4843", enabled: "$onCar" },
+    { y: "51.3169", enabled: "$onCar" },
+    { z: "90.0000", enabled: "$onCar" },
+
+    /* Rotate to plane of panel */
+    { yaw: "-180.0000", enabled: "$onCar" },
+    { roll: "-14.5726", enabled: "$onCar" },
+    { pitch: "0.0000", enabled: "$onCar" },
+
+    /* X-Y adjustments within plane of panel */
+    { x: "$xOffset" },
+    { y: "$yOffset" }    
+  ],
+
+  meta: {
+    "edge1": "80-97",
+    "edge2": "79-80",
+    "edge3": "79-97",
+    "leadingEdge": "97->79"
+  },
+
+  components: [
+    /* Looking at the back of panel, starts from RIGHT
+       Looking at the front of panel, starts from LEFT */
+
+    { type: "panelRow", row: "0", offset: "0", numPoints: "64" },
+    { type: "panelRow", row: "1", offset: "2", numPoints: "60" },
+    { type: "panelRow", row: "2", offset: "3", numPoints: "57" },
+    { type: "panelRow", row: "3", offset: "5", numPoints: "53" },
+    { type: "panelRow", row: "4", offset: "6", numPoints: "50" },
+    { type: "panelRow", row: "5", offset: "8", numPoints: "46" },
+    { type: "panelRow", row: "6", offset: "9", numPoints: "43" },
+    { type: "panelRow", row: "7", offset: "11", numPoints: "39" },
+    { type: "panelRow", row: "8", offset: "11", numPoints: "37" },
+    { type: "panelRow", row: "9", offset: "14", numPoints: "32" },
+    { type: "panelRow", row: "10", offset: "15", numPoints: "29" },
+    { type: "panelRow", row: "11", offset: "17", numPoints: "25" },
+    { type: "panelRow", row: "12", offset: "18", numPoints: "22" },
+    { type: "panelRow", row: "13", offset: "20", numPoints: "18" },
+    { type: "panelRow", row: "14", offset: "21", numPoints: "15" },
+    { type: "panelRow", row: "15", offset: "23", numPoints: "11" },
+    { type: "panelRow", row: "16", offset: "24", numPoints: "8" },
+    { type: "panelRow", row: "17", offset: "26", numPoints: "4" },
+    { type: "panelRow", row: "18", offset: "26", numPoints: "2" },
+
+    /* Temporary method of handling gap pixels, will be removed soon */
+    { type: "point", id: "gap" }
+  ],
+
+  outputs: [
+                  
+    { host: "$strand1host", universe: "$strand1output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentIndex: 0, reverse: false },
+        { componentId: "gap" },
+        { componentId: "gap" },
+        { componentIndex: 1, reverse: true },
+        { componentId: "gap" },
+        { componentIndex: 2, reverse: false },
+        { componentId: "gap" },
+        { componentId: "gap" },
+        { componentIndex: 3, reverse: true },
+        { componentId: "gap" },
+        { componentIndex: 4, reverse: false, length: 10 },
+      ]
+    },
+                  
+    { host: "$strand2host", universe: "$strand2output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentIndex: 4, reverse: false, start: 10 },
+        { componentId: "gap" },
+        { componentId: "gap" },
+        { componentId: "gap" },
+        { componentIndex: 5, reverse: true },
+        { componentId: "gap" },
+        { componentIndex: 6, reverse: false },
+        { componentId: "gap" },
+        { componentIndex: 7, reverse: true },
+        { componentIndex: 8, reverse: false },
+        { componentId: "gap" },
+        { componentIndex: 9, reverse: true },
+        { componentId: "gap" },
+        { componentIndex: 10, reverse: false, length: 6 },
+      ]
+    },
+                  
+    { host: "$strand3host", universe: "$strand3output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentIndex: 10, reverse: false, start: 6 },
+        { componentId: "gap" },
+        { componentIndex: 11, reverse: true },
+        { componentId: "gap" },
+        { componentIndex: 12, reverse: false },
+        { componentId: "gap" },
+        { componentIndex: 13, reverse: true },
+        { componentId: "gap" },
+        { componentIndex: 14, reverse: false },
+        { componentId: "gap" },
+        { componentIndex: 15, reverse: true },
+        { componentId: "gap" },
+        { componentIndex: 16, reverse: false },
+        { componentId: "gap" },
+        { componentIndex: 17, reverse: true },
+        { componentIndex: 18, reverse: false },
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+
+{
+  /* Titanic's End Fixture File */
+  label: "Edge 112-116",
+  tags: [ "edge112_116", "edge" ],
+
+  parameters: {
+    "points": { default: 132, type: "int", min: 1, label: "Points", description: "Number of points in the edge" },
+    "host": { default: "10.7.19.121", type: "string", label: "Host", description: "Controller IP address or hostname" },    
+    "output": { default: 1, type: "int", min: 1, max: 4, label: "Output", description: "Controller output 1-4" },
+    "position": { default: 267, type: "int", min: 0, description: "Starting position, in pixels" },
+    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Whether ArtNet sequence packets are enabled" },
+    "reverse": { default: true, type: "boolean", description: "Reverse the output direction" },
+    
+    "xOffset": { default: 3, type: "float", label: "X offset", description: "Location offset of edge from starting vertex" },
+  
+    # Debug tools
+    "onCar": { default: true, type: "boolean", label: "On Car", description: "True = Locate panel to its position on the car, False = Locate to origin" }
+  },
+  
+  transforms: [
+    /* Transpose starting corner to Vertex0 */
+    { x: "-341.7206", enabled: "$onCar" },
+    { y: "90.6339", enabled: "$onCar" },
+    { z: "65.0000", enabled: "$onCar" },
+
+    /* Rotate to in line with Vertex0 and Vertex1 */
+    { yaw: "-1.0664", enabled: "$onCar" },
+    { roll: "-55.6555", enabled: "$onCar" },
+
+    /* X offset from starting vertex */
+    { x: "$xOffset" }    
+  ],
+
+  meta: {
+    "edgeId": "112-116",
+    "v0": "112",
+    "v1": "116"
+  },
+
+  components: [
+    { type: "strip", 
+      numPoints: "$points",
+      spacing: "0.6562",
+      reverse: "$reverse"
+    }
+  ],
+  
+  outputs: [
+    { host: "$host", 
+      universe: "$output*10+(($position*3)/512)", 
+      channel: "($position*3)%512",
+      protocol: "artnet", 
+      sequenceEnabled: "$artnetSequence"
+    }
+  ]
+}
