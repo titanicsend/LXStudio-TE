@@ -570,7 +570,9 @@ public class TEApp extends LXStudio {
       this.lx.removeProjectListener(this);
 
       this.devSwitch.dispose();
-      this.dmxEngine.dispose();
+      if (isStaticModel()) {
+        this.dmxEngine.dispose();
+      }
       this.crutchOSC.dispose();
     }
   }
