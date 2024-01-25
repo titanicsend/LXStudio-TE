@@ -437,11 +437,13 @@ def load_stripes(stripes):
         print(f"File '{file_path_stripes}' not found.")
 
 
-def create_fixtures_directory():
+def create_directories():
     if not os.path.exists("../../Fixtures"):
         os.makedirs("../../Fixtures")
     if not os.path.exists("../../Fixtures/TE"):
         os.makedirs("../../Fixtures/TE")
+    if not os.path.exists("../../Models"):
+        os.makedirs("../../Models")
 
 
 def create_panels():
@@ -718,6 +720,101 @@ def create_top_level_fixture():
 }''')
 
 
+def create_top_level_model():
+    filename = f"../../Models/TE_car.lxm"
+    with (open(filename, "w") as te_file):
+        te_file.write('''{
+  "version": "0.4.2.TE.7-SNAPSHOT",
+  "timestamp": 1706055285413,
+  "fixtures": [''')
+
+        is_first = True
+
+        # Insert each panel fixture
+        for panel_id, panel in panels.items():
+            if is_first:
+                is_first = False
+            else:
+                te_file.write(''',''')
+            te_file.write('''
+    {
+      "jsonFixtureType": "TE/panel/''' + panel_id + '''",
+      "jsonParameters": {
+        "onCar": true
+      },
+      "class": "heronarts.lx.structure.JsonFixture",
+      "internal": {
+        "modulationColor": 0,
+        "modulationControlsExpanded": true,
+        "modulationsExpanded": true
+      },
+      "parameters": {
+        "label": "''' + panel_id + '''",
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "yaw": 0.0,
+        "pitch": 0.0,
+        "roll": 0.0,
+        "scale": 1.0,
+        "selected": false,
+        "deactivate": false,
+        "enabled": true,
+        "brightness": 1.0,
+        "identify": false,
+        "mute": false,
+        "solo": false,
+        "tags": "",
+        "fixtureType": "TE/panel/''' + panel_id + '''"
+      },
+      "children": {}
+    }''')
+
+    # Insert each edge fixture
+        for edge_id, edge in edges.items():
+            if is_first:
+                is_first = False
+            else:
+                te_file.write(''',''')
+            te_file.write('''
+    {
+      "jsonFixtureType": "TE/edge/''' + edge.fixture_name + '''",
+      "jsonParameters": {
+        "onCar": true
+      },
+      "class": "heronarts.lx.structure.JsonFixture",
+      "internal": {
+        "modulationColor": 0,
+        "modulationControlsExpanded": true,
+        "modulationsExpanded": true
+      },
+      "parameters": {
+        "label": "Edge ''' + edge_id + '''",
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "yaw": 0.0,
+        "pitch": 0.0,
+        "roll": 0.0,
+        "scale": 1.0,
+        "selected": false,
+        "deactivate": false,
+        "enabled": true,
+        "brightness": 1.0,
+        "identify": false,
+        "mute": false,
+        "solo": false,
+        "tags": "",
+        "fixtureType": "TE/edge/''' + edge.fixture_name + '''"
+      },
+      "children": {}
+    }''')
+
+        # Finish fixtures section and file
+        te_file.write('''
+  ]
+}''')
+
 
 # Create empty dictionaries for vertexes, edges, panels, and stripes
 vertexes = {}
@@ -731,8 +828,12 @@ load_edges(edges)
 load_stripes(stripes)
 load_panels(panels)
 
-# Write new LXF files
-create_fixtures_directory()
+# Write new json config files
+# Fixture and Model directories
+create_directories()
+# LXF Fixture Files
 create_panels()
 create_edges()
 create_top_level_fixture()
+# LXM Model Files
+create_top_level_model()
