@@ -12,6 +12,10 @@ import textwrap
 
 # Convert measurements to inches
 UNIT_SCALE = 25400
+# This needs to match panelRow.lxf
+PANEL_POINT_SPACING = 1.9685039
+EDGE_POINT_SPACING = 0.6562
+
 
 class Vertex:
     def __init__(self, x, y, z, id=-1):
@@ -41,6 +45,11 @@ class Vertex:
         self.x = vertex_from.x
         self.y = vertex_from.y
         self.z = vertex_from.z
+
+    def dist(self, v):
+        return math.sqrt((self.x - v.x) ** 2 +
+                         (self.y - v.y) ** 2 +
+                         (self.z - v.z) ** 2)
 
     def __str__(self):
         if self.id is not None:
@@ -72,7 +81,7 @@ class Edge:
         self.roll = 0
         self.x_offset = 0
         self.reverse = reverse == "reversed"
-        self.num_points = num_points
+        self.num_points = int(num_points)
         # Parse output
         parts = output_full.split("#")
         self.host = parts[0]
@@ -123,8 +132,10 @@ class Edge:
         prev[1].copy_from(current[1])
 
         # Default (X)-offset
-        # TODO: center between vertices
-        self.x_offset = 3
+        length_v01 = self.v1.dist(self.v0)
+        length_edge = (self.num_points - 1) * EDGE_POINT_SPACING
+        # Center the edge between the two vertices
+        self.x_offset = (length_v01 - length_edge) / 2
 
 
 class Panel:
@@ -255,11 +266,18 @@ class Panel:
         prev[1].copy_from(current[1])
         prev[2].copy_from(current[2])
 
-        # Default X-offset and Y-offset
-        # TODO: center within 3 vertices
-        self.x_offset = 4.0
-        self.y_offset = 2.0
+        # Default X-offset
+        # This would be better with trig.  Either way it will need fine-tuning by hand.
+        length_v01 = math.sqrt((self.v1.x - self.v0.x) ** 2 +
+                               (self.v1.y - self.v0.y) ** 2 +
+                               (self.v1.z - self.v0.z) ** 2)
+        row0 = self.stripe.rows[0]
+        length_row0 = (row0.num_points + row0.offset - 1) * PANEL_POINT_SPACING
+        # Center the first row against leading edge
+        self.x_offset = (length_v01 - length_row0) / 2
 
+        # Default Y-offset
+        self.y_offset = 6.0
 
     def __str__(self):
         return f'{self.id} {self.leading_edge} V0: {self.v0}, V1: {self.v1}, V2: {self.v2}'
@@ -668,7 +686,7 @@ def create_edges():
   components: [
     { type: "strip", 
       numPoints: "$points",
-      spacing: "0.6562",
+      spacing: "''' + str(EDGE_POINT_SPACING) + '''",
       reverse: "$reverse"
     }
   ],

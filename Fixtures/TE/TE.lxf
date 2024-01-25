@@ -214,7 +214,7 @@
     { type: "edge/Edge125-127", artnetSequence: "artnetSequence" },
     { type: "edge/Edge126-129", artnetSequence: "artnetSequence" },
     { type: "edge/Edge128-129", artnetSequence: "artnetSequence" },
-    
+
     /* Panels */
     { type: "panel/FA", artnetSequence: "artnetSequence" },
     { type: "panel/FB", artnetSequence: "artnetSequence" },
