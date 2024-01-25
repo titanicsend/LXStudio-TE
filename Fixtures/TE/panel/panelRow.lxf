@@ -8,7 +8,7 @@
 
   parameters: {
     "row": { type: "int", default: 0, min: 0, description: "0-based row index, used for Y position" },
-    "offset": { type: "int", default: 0, description: "X-Offset in pointSpacing relative to default of 1/2 per row" },
+    "offset": { type: "int", default: 0, min: -200, description: "X-Offset in pointSpacing relative to default of 1/2 per row" },
     "numPoints": { type: "int", min: 1, default: 1 },
     "rowSpacing": { type: "float", default: "1.98" },
     "pointSpacing": { type: "float", default: "1.98" }
