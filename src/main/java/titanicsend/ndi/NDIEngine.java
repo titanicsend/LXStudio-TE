@@ -1,27 +1,34 @@
 package titanicsend.ndi;
 
-import static com.jogamp.opengl.GL.*;
-
-import com.jogamp.opengl.GL4;
-import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.util.GLBuffers;
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.LXLoopTask;
-import heronarts.lx.audio.GraphicMeter;
-import java.nio.FloatBuffer;
-import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
+import me.walkerknapp.devolay.*;
 
 public class NDIEngine extends LXComponent implements LXLoopTask {
   public static final String PATH = "NDIEngine";
+  private boolean isInitialized = false;
+  private boolean isEnabled = true;
 
-  // default canvas size
-  private static final int xSize = 640;
-  private static final int ySize = 480;
 
-  private boolean isRunning = false;
+  // TODO - implement this
+  private class NDIFinder extends Thread {
+    
+
+    public void run() {
+      // TODO - implement this
+    }
+  }
+
+
+
+
+  public void setEnabled(boolean enabled) {
+    isEnabled = enabled;
+  }
 
   public NDIEngine(LX lx) {
+    Devolay.loadLibraries();
 
     // TODO - start NDI finder thread, and provide an API so patterns can
     // TODO - access the list of NDI sources.
@@ -33,6 +40,10 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
     // TODO - or do we just provide a (scaled) buffer that gets updated every frame
     // TODO - for every source that is registered?
 
+    // TODO - also need to notify patterns when a source is added/removed
+    // TODO - (we expect video sources to be transient, especially over
+    // TODO - the several hour course of a run with patterns being swapped in/out)
+
     // register NDIEngine so we can access it from patterns.
     lx.engine.registerComponent(PATH, this);
     lx.engine.addLoopTask(this);
@@ -40,19 +51,19 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
 
   public void loop(double deltaMs) {
 
+    // if globally disabled, do nothing
+    if (!isEnabled) return;
+
     // On first frame...
-    if (isRunning == false) {
+    if (isInitialized) {
 
       // initialize stuff
 
-      // set running flag once initialization is complete
-      isRunning = true;
+      // set flag once initialization is complete
+      isInitialized = true;
     }
-
     // On every frame, after initial setup
-    if (isRunning) {
-
-
+    else {
 
       // per frame runtime stuff;
     }
