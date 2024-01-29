@@ -1,0 +1,4 @@
+numpy
+pybind11
+ndi-python
+opencv-python
