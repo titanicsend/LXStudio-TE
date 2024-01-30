@@ -45,7 +45,7 @@ public class ModelBender {
    * @param model
    * @return list of points
    */
-  protected ArrayList<LXPoint> getEndPoints(TEWholeModel model) {
+  public ArrayList<LXPoint> getEndPoints(TEWholeModel model) {
     ArrayList<LXPoint> endPoints = new ArrayList<LXPoint>();
 
     // add end panel points

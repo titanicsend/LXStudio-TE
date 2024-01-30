@@ -3,6 +3,7 @@ package titanicsend.pattern.sina;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.model.LXPoint;
+import heronarts.lx.studio.TEApp;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
@@ -13,6 +14,7 @@ import org.bytedeco.leptonica.NUMA;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
+import titanicsend.pattern.jon.ModelBender;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.util.TE;
 
@@ -47,6 +49,10 @@ public class TDPattern extends GLShaderPattern {
         new GLShaderFrameSetup() {
           @Override
           public void OnFrame(GLShader s) {
+//            ModelBender mb = new ModelBender();
+//            mb.adjustEndGeometry(TEApp.wholeModel);
+//            TEApp.wholeModel.normalizePoints();
+            TEApp.wholeModel.normalizePoints();
             if (mappedBuffer != null) {
               buffer.clear();
               // Ensure that the mapped buffer is ready for reading
@@ -81,6 +87,8 @@ public class TDPattern extends GLShaderPattern {
                 buffer.flip(); // Prepare the buffer for reading
               }
             }
+//            mb.restoreModel(TEApp.wholeModel);
+//            TEApp.wholeModel.normalizePoints();
           }
         });
   }
