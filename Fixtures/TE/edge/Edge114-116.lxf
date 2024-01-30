@@ -8,7 +8,7 @@
     "points": { default: 100, type: "int", min: 1, label: "Points", description: "Number of points in the edge" },
     "host": { default: "10.7.19.121", type: "string", label: "Host", description: "Controller IP address or hostname" },    
     "output": { default: 1, type: "int", min: 1, max: 4, label: "Output", description: "Controller output 1-4" },
-    "position": { default: 167, type: "int", min: 0, description: "Starting position, in pixels" },
+    "ledOffset": { default: 167, type: "int", min: 0, label: "LED Offset", description: "0-based starting position, in pixels, of this edge within the controller output" },
     "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Whether ArtNet sequence packets are enabled" },
     "reverse": { default: false, type: "boolean", description: "Reverse the output direction" },
     
@@ -48,8 +48,8 @@
   
   outputs: [
     { host: "$host", 
-      universe: "$output*10+(($position*3)/512)", 
-      channel: "($position*3)%512",
+      universe: "$output*10+(($ledOffset*3)/512)", 
+      channel: "($ledOffset*3)%512",
       protocol: "artnet", 
       sequenceEnabled: "$artnetSequence"
     }

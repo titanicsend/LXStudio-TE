@@ -88,7 +88,7 @@ class Edge:
         parts = parts[1].split(":")
         self.controller_channel = parts[0]
         # Optional pixel offset
-        self.pixel_offset = int(parts[1]) if len(parts) > 1 else 0
+        self.led_offset = int(parts[1]) if len(parts) > 1 else 0
 
     def calc_transforms(self):
         # This is a trimmed down copy of the Panel.calc_transforms() method
@@ -653,7 +653,7 @@ def create_edges():
     "points": { default: ''' + str(edge.num_points) + ''', type: "int", min: 1, label: "Points", description: "Number of points in the edge" },
     "host": { default: "''' + edge.host + '''", type: "string", label: "Host", description: "Controller IP address or hostname" },    
     "output": { default: ''' + str(edge.controller_channel) + ''', type: "int", min: 1, max: 4, label: "Output", description: "Controller output 1-4" },
-    "position": { default: ''' + str(edge.pixel_offset) + ''', type: "int", min: 0, description: "Starting position, in pixels" },
+    "ledOffset": { default: ''' + str(edge.led_offset) + ''', type: "int", min: 0, label: "LED Offset", description: "0-based starting position, in pixels, of this edge within the controller output" },
     "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Whether ArtNet sequence packets are enabled" },
     "reverse": { default: ''' + str(edge.reverse).lower() + ''', type: "boolean", description: "Reverse the output direction" },
     
@@ -693,8 +693,8 @@ def create_edges():
   
   outputs: [
     { host: "$host", 
-      universe: "$output*10+(($position*3)/512)", 
-      channel: "($position*3)%512",
+      universe: "$output*10+(($ledOffset*3)/512)",
+      channel: "($ledOffset*3)%512",
       protocol: "artnet", 
       sequenceEnabled: "$artnetSequence"
     }
