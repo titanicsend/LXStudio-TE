@@ -655,7 +655,7 @@ def create_edges():
     "output": { default: ''' + str(edge.controller_channel) + ''', type: "int", min: 1, max: 4, label: "Output", description: "Controller output 1-4" },
     "ledOffset": { default: ''' + str(edge.led_offset) + ''', type: "int", min: 0, label: "LED Offset", description: "0-based starting position, in pixels, of this edge within the controller output" },
     "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Whether ArtNet sequence packets are enabled" },
-    "reverse": { default: ''' + str(edge.reverse).lower() + ''', type: "boolean", description: "Reverse the output direction" },
+    "reverse": { default: ''' + str(edge.reverse).lower() + ''', type: "boolean", label: "Reverse", description: "Reverse the output direction" },
     
     "xOffset": { default: ''' + str(edge.x_offset) + ''', type: "float", label: "X offset", description: "Location offset of edge from starting vertex" },
   

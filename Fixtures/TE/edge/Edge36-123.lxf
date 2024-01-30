@@ -10,7 +10,7 @@
     "output": { default: 1, type: "int", min: 1, max: 4, label: "Output", description: "Controller output 1-4" },
     "ledOffset": { default: 60, type: "int", min: 0, label: "LED Offset", description: "0-based starting position, in pixels, of this edge within the controller output" },
     "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Whether ArtNet sequence packets are enabled" },
-    "reverse": { default: false, type: "boolean", description: "Reverse the output direction" },
+    "reverse": { default: false, type: "boolean", label: "Reverse", description: "Reverse the output direction" },
     
     "xOffset": { default: 4.96754893398969, type: "float", label: "X offset", description: "Location offset of edge from starting vertex" },
   
@@ -48,7 +48,7 @@
   
   outputs: [
     { host: "$host", 
-      universe: "$output*10+(($ledOffset*3)/512)", 
+      universe: "$output*10+(($ledOffset*3)/512)",
       channel: "($ledOffset*3)%512",
       protocol: "artnet", 
       sequenceEnabled: "$artnetSequence"
