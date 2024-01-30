@@ -1,11 +1,7 @@
 {
   /* Titanic's End Fixture File */
   label: "Module10",
-  tags: [ "m10", "module" ],
-
-  parameters: {
-    "placeholder": { default: "10", type: "string", description: "Placeholder parameter, does nothing" }
-  },
+  tags: [ "module10", "module" ],
 
   meta: {
     "moduleId": "10",
@@ -14,17 +10,26 @@
 
   components: [
     /* Edges */
-    { type: "TE/edge/Edge109-113" },
-    { type: "TE/edge/Edge109-112" },
-    { type: "TE/edge/Edge27-109" },
-    { type: "TE/edge/Edge27-110" },
-    { type: "TE/edge/Edge109-111" },
-    { type: "TE/edge/Edge28-111" },
+    { type: "TE/edge/Edge60-65" },
+    { type: "TE/edge/Edge60-93" },
+    { type: "TE/edge/Edge60-125" },
+    { type: "TE/edge/Edge60-127" },
+    { type: "TE/edge/Edge65-67" },
+    { type: "TE/edge/Edge65-93" },
+    { type: "TE/edge/Edge67-93" },
+    { type: "TE/edge/Edge89-125" },
+    { type: "TE/edge/Edge89-126" },
+    { type: "TE/edge/Edge89-127" },
+    { type: "TE/edge/Edge93-127" },
+    { type: "TE/edge/Edge125-126" },
+    { type: "TE/edge/Edge125-127" },
 
     /* Panels */
-    { type: "TE/panel/AB" },
-    { type: "TE/panel/ASC" },
-    { type: "TE/panel/APB" },
-    { type: "TE/panel/APC" }
+    { type: "TE/panel/FSA" },
+    { type: "TE/panel/SFA" },
+    { type: "TE/panel/SEA" },
+    { type: "TE/panel/SEB" },
+    { type: "TE/panel/SDA" },
+    { type: "TE/panel/SDB" }
   ]
 }

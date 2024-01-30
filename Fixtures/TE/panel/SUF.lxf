@@ -1,8 +1,7 @@
-
 {
   /* Titanic's End Fixture File */
   label: "SUF",
-  tags: [ "SUF", "panel" ],
+  tags: [ "SUF", "panel", "m6" ],
 
   parameters: {
     "xOffset": { default: 8.57917424606299, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
@@ -49,7 +48,8 @@
     "edge1": "47-50",
     "edge2": "44-47",
     "edge3": "44-50",
-    "leadingEdge": "44->47"
+    "leadingEdge": "44->47",
+    "module": "6"
   },
 
   components: [

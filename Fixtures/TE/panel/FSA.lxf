@@ -1,8 +1,7 @@
-
 {
   /* Titanic's End Fixture File */
   label: "FSA",
-  tags: [ "FSA", "panel" ],
+  tags: [ "FSA", "panel", "m10" ],
 
   parameters: {
     "xOffset": { default: 6.0938298584250035, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
@@ -47,7 +46,8 @@
     "edge1": "89-125",
     "edge2": "89-126",
     "edge3": "125-126",
-    "leadingEdge": "126->125"
+    "leadingEdge": "126->125",
+    "module": "10"
   },
 
   components: [

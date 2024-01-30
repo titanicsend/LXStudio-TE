@@ -1,8 +1,7 @@
-
 {
   /* Titanic's End Fixture File */
   label: "SCC",
-  tags: [ "SCC", "panel" ],
+  tags: [ "SCC", "panel", "m2" ],
 
   parameters: {
     "xOffset": { default: 6.938027792133468, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
@@ -49,7 +48,8 @@
     "edge1": "98-99",
     "edge2": "98-100",
     "edge3": "99-100",
-    "leadingEdge": "99->98"
+    "leadingEdge": "99->98",
+    "module": "2"
   },
 
   components: [

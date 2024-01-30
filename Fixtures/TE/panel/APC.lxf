@@ -1,8 +1,7 @@
-
 {
   /* Titanic's End Fixture File */
   label: "APC",
-  tags: [ "APC", "panel" ],
+  tags: [ "APC", "panel", "m20" ],
 
   parameters: {
     "xOffset": { default: 7.584538455639745, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
@@ -41,7 +40,8 @@
     "edge1": "109-110",
     "edge2": "27-109",
     "edge3": "27-110",
-    "leadingEdge": "109->110"
+    "leadingEdge": "109->110",
+    "module": "20"
   },
 
   components: [

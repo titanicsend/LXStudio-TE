@@ -1,8 +1,7 @@
-
 {
   /* Titanic's End Fixture File */
   label: "ASB",
-  tags: [ "ASB", "panel" ],
+  tags: [ "ASB", "panel", "m20" ],
 
   parameters: {
     "xOffset": { default: 9.83395498624759, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
@@ -43,7 +42,8 @@
     "edge1": "109-113",
     "edge2": "28-109",
     "edge3": "28-113",
-    "leadingEdge": "109->113"
+    "leadingEdge": "109->113",
+    "module": "20"
   },
 
   components: [

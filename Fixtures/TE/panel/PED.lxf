@@ -1,8 +1,7 @@
-
 {
   /* Titanic's End Fixture File */
   label: "PED",
-  tags: [ "PED", "panel" ],
+  tags: [ "PED", "panel", "m18" ],
 
   parameters: {
     "xOffset": { default: 8.612097550823094, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
@@ -49,7 +48,8 @@
     "edge1": "25-84",
     "edge2": "25-83",
     "edge3": "83-84",
-    "leadingEdge": "83->84"
+    "leadingEdge": "83->84",
+    "module": "18"
   },
 
   components: [

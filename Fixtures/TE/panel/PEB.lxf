@@ -1,8 +1,7 @@
-
 {
   /* Titanic's End Fixture File */
   label: "PEB",
-  tags: [ "PEB", "panel" ],
+  tags: [ "PEB", "panel", "m19" ],
 
   parameters: {
     "xOffset": { default: 15.387300247507135, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
@@ -41,7 +40,8 @@
     "edge1": "83-114",
     "edge2": "9-83",
     "edge3": "9-114",
-    "leadingEdge": "9->114"
+    "leadingEdge": "9->114",
+    "module": "19"
   },
 
   components: [

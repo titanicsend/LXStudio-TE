@@ -1,8 +1,7 @@
-
 {
   /* Titanic's End Fixture File */
   label: "PCC",
-  tags: [ "PCC", "panel" ],
+  tags: [ "PCC", "panel", "m12" ],
 
   parameters: {
     "xOffset": { default: 7.369670095469779, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
@@ -49,7 +48,8 @@
     "edge1": "96-97",
     "edge2": "80-96",
     "edge3": "80-97",
-    "leadingEdge": "96->80"
+    "leadingEdge": "96->80",
+    "module": "12"
   },
 
   components: [

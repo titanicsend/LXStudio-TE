@@ -1,8 +1,7 @@
-
 {
   /* Titanic's End Fixture File */
   label: "PEE",
-  tags: [ "PEE", "panel" ],
+  tags: [ "PEE", "panel", "m17" ],
 
   parameters: {
     "xOffset": { default: 9.854858664372607, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
@@ -43,7 +42,8 @@
     "edge1": "25-84",
     "edge2": "25-88",
     "edge3": "84-88",
-    "leadingEdge": "84->88"
+    "leadingEdge": "84->88",
+    "module": "17"
   },
 
   components: [

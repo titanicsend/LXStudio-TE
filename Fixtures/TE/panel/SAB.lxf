@@ -1,8 +1,7 @@
-
 {
   /* Titanic's End Fixture File */
   label: "SAB",
-  tags: [ "SAB", "panel" ],
+  tags: [ "SAB", "panel", "m2" ],
 
   parameters: {
     "xOffset": { default: 7.6962340856563145, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
@@ -47,7 +46,8 @@
     "edge1": "28-113",
     "edge2": "28-115",
     "edge3": "113-115",
-    "leadingEdge": "113->115"
+    "leadingEdge": "113->115",
+    "module": "2"
   },
 
   components: [

@@ -1,8 +1,7 @@
-
 {
   /* Titanic's End Fixture File */
   label: "SEE",
-  tags: [ "SEE", "panel" ],
+  tags: [ "SEE", "panel", "m8" ],
 
   parameters: {
     "xOffset": { default: 8.955739715201503, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
@@ -43,7 +42,8 @@
     "edge1": "69-90",
     "edge2": "51-90",
     "edge3": "51-69",
-    "leadingEdge": "69->90"
+    "leadingEdge": "69->90",
+    "module": "8"
   },
 
   components: [

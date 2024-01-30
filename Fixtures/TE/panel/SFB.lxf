@@ -1,8 +1,7 @@
-
 {
   /* Titanic's End Fixture File */
   label: "SFB",
-  tags: [ "SFB", "panel" ],
+  tags: [ "SFB", "panel", "m9" ],
 
   parameters: {
     "xOffset": { default: 7.6962340856563145, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
@@ -47,7 +46,8 @@
     "edge1": "89-127",
     "edge2": "70-89",
     "edge3": "70-127",
-    "leadingEdge": "127->89"
+    "leadingEdge": "127->89",
+    "module": "9"
   },
 
   components: [

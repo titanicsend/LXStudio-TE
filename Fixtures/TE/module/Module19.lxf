@@ -1,0 +1,35 @@
+{
+  /* Titanic's End Fixture File */
+  label: "Module19",
+  tags: [ "module19", "module" ],
+
+  meta: {
+    "moduleId": "19",
+    "definition": ""
+  },
+
+  components: [
+    /* Edges */
+    { type: "TE/edge/Edge9-12" },
+    { type: "TE/edge/Edge9-83" },
+    { type: "TE/edge/Edge9-114" },
+    { type: "TE/edge/Edge9-116" },
+    { type: "TE/edge/Edge12-83" },
+    { type: "TE/edge/Edge12-85" },
+    { type: "TE/edge/Edge83-85" },
+    { type: "TE/edge/Edge83-114" },
+    { type: "TE/edge/Edge112-114" },
+    { type: "TE/edge/Edge112-116" },
+    { type: "TE/edge/Edge112-124" },
+    { type: "TE/edge/Edge114-116" },
+    { type: "TE/edge/Edge116-124" },
+
+    /* Panels */
+    { type: "TE/panel/APA" },
+    { type: "TE/panel/PDA" },
+    { type: "TE/panel/PDB" },
+    { type: "TE/panel/PEA" },
+    { type: "TE/panel/PEB" },
+    { type: "TE/panel/PFA" }
+  ]
+}

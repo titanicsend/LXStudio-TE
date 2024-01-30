@@ -1,8 +1,7 @@
-
 {
   /* Titanic's End Fixture File */
   label: "Edge 45-50",
-  tags: [ "edge45_50", "edge" ],
+  tags: [ "edge45_50", "edge", "m6" ],
 
   parameters: {
     "points": { default: 111, type: "int", min: 1, label: "Points", description: "Number of points in the edge" },
@@ -38,7 +37,8 @@
   meta: {
     "edgeId": "45-50",
     "v0": "45",
-    "v1": "50"
+    "v1": "50",
+    "module": "6"
   },
 
   components: [

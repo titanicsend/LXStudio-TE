@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 
 # This script imports the TE v2022-3 config and generates Chromatik fixture files
-# TODO: Generate a .LXM model file containing every fixture
 
 import copy
 import math
@@ -87,6 +86,8 @@ class Edge:
         self.host = parts[0]
         parts = parts[1].split(":")
         self.controller_channel = parts[0]
+        # Module
+        self.module = ip_to_module(self.host)
         # Optional pixel offset
         self.led_offset = int(parts[1]) if len(parts) > 1 else 0
 
@@ -184,6 +185,9 @@ class Panel:
                 if o == num_outputs:
                     break
             o_entries_current += 1
+
+        # Module
+        self.module = ip_to_module(self.outputs[0].host)
 
     def find_vertices(self):
         # Pull vertices from dictionary by id
@@ -344,16 +348,16 @@ class Module:
     def __init__(self, id, definition):
         self.id = id
         self.fixture_name = "Module" + id.zfill(2)
-        self.tag = "m" + id
+        self.tag = "module" + id.zfill(2)
         self.definition = definition
         # Edge chains from modules.txt
-        self.chains = {}
+        # self.chains = {}
         # Dictionaries of components within this module
         self.vertexes = {}
         self.edges = {}
         self.panels = {}
 
-    def find_components(self):
+    def find_components_DEPRECATED(self):
         # Parse the definition
         # Split on space
         chains_str = self.definition.split()
@@ -371,9 +375,7 @@ class Module:
                         if (edge.v0name == vertex_prev and edge.v1name == vertex_str) or (edge.v0name == vertex_str and edge.v1name == vertex_prev):
                             self.edges[edge_id] = edge
                             break
-
-        # Find panels where two of the edges are within this module
-        # TODO: Is this capturing all the panels?
+        # Find panels where two of the edges are within this module (Note this was incorrect)
         for panel_id, panel in panels.items():
             num_edges = 0
             if self.edges.get(panel.edge1) != None:
@@ -384,6 +386,30 @@ class Module:
                 num_edges += 1
             if num_edges >= 2:
                 self.panels[panel_id] = panel
+
+
+def find_module_components_by_host():
+    # Add edges to modules
+    for edge_id, edge in edges.items():
+        module_id = str(edge.module)
+        if module_id not in modules:
+            # Create a module for this one
+            module = Module(module_id, "")
+            modules[module_id] = module
+        modules[module_id].edges[edge_id] = edge
+
+    # Add panels to modules
+    for panel_id, panel in panels.items():
+        module_id = str(panel.module)
+        if module_id not in modules:
+            module = Module(module_id, "")
+            modules[module_id] = module
+        modules[module_id].panels[panel_id] = panel
+
+
+def module_tag(module_id):
+    # For tag in edge and panel fixtures
+    return "m" + str(module_id)
 
 
 def load_vertexes(vertexes):
@@ -515,7 +541,7 @@ def load_modules(modules):
 
                     # Create a Module object and add it to the dictionary
                     module = Module(module_id, definition)
-                    module.find_components()
+                    # module.find_components_DEPRECATED()
                     modules[module_id] = module
                 else:
                     print(f"Invalid number of columns in module: {line}")
@@ -543,11 +569,10 @@ def create_panels():
     for panel_id, panel in panels.items():
         filename = f"../../Fixtures/TE/panel/{panel_id}.lxf"
         with (open(filename, "w") as panel_file):
-            panel_file.write('''
-{
+            panel_file.write('''{
   /* Titanic's End Fixture File */
   label: "''' + panel_id + '''",
-  tags: [ "''' + panel_id + '''", "panel" ],
+  tags: [ "''' + panel_id + '''", "panel", "''' + module_tag(panel.module) + '''" ],
 
   parameters: {
     "xOffset": { default: ''' + str(panel.x_offset) + ''', type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
@@ -594,7 +619,8 @@ def create_panels():
     "edge1": "''' + panel.edge1 + '''",
     "edge2": "''' + panel.edge2 + '''",
     "edge3": "''' + panel.edge3 + '''",
-    "leadingEdge": "''' + panel.leading_edge + '''"
+    "leadingEdge": "''' + panel.leading_edge + '''",
+    "module": "''' + str(panel.module) + '''"
   },
 
   components: [
@@ -711,11 +737,10 @@ def create_edges():
     for edge_id, edge in edges.items():
         filename = f"../../Fixtures/TE/edge/{edge.fixture_name}.lxf"
         with (open(filename, "w") as edge_file):
-            edge_file.write('''
-{
+            edge_file.write('''{
   /* Titanic's End Fixture File */
   label: "Edge ''' + edge.id + '''",
-  tags: [ "''' + edge.tag + '''", "edge" ],
+  tags: [ "''' + edge.tag + '''", "edge", "''' + module_tag(edge.module) + '''" ],
 
   parameters: {
     "points": { default: ''' + str(edge.num_points) + ''', type: "int", min: 1, label: "Points", description: "Number of points in the edge" },
@@ -751,7 +776,8 @@ def create_edges():
   meta: {
     "edgeId": "''' + edge.id + '''",
     "v0": "''' + edge.v0name + '''",
-    "v1": "''' + edge.v1name + '''"
+    "v1": "''' + edge.v1name + '''",
+    "module": "''' + str(edge.module) + '''"
   },
 
   components: [
@@ -787,23 +813,23 @@ def create_modules():
             module_file.write('''{
   /* Titanic's End Fixture File */
   label: "''' + module.fixture_name + '''",
-  tags: [ "''' + module.tag + '''", "module" ],
+  tags: [ "''' + module.tag + '''", "module" ],''')
 
-  parameters: {
-    "placeholder": { default: "''' + module.id + '''", type: "string", description: "Placeholder parameter, does nothing" }''')
-
+#  parameters: {
+#    "placeholder": { default: "''' + module.id + '''", type: "string", description: "Placeholder parameter, does nothing" }''')
             # Pass-through parameters for edges and panels
-            # JKB note: It might be better not to list these out in the module fixture, as the defaults
-            # will get out of sync with the defaults in the child fixture files.  For the case of module fixtures
-            # which is expected to be "for emergencies" use,
-            # it might be better to always be inheriting the defaults from the edge/panel files.
+            # JKB note: It might be better not to use tons of pass-through parameters in the module fixtures, b/c the defaults
+            # will get out of sync with the defaults in the child fixture files.  Module fixtures are expected to
+            # be "for emergencies", so it might be better to always be inheriting the defaults from the edge/panel fixtures.
 #            for edge_id, edge in module.edges.items():
 #                module_file.write(''',
 #    "e''' + edge.id + '''host": { default: "''' + edge.host + '''", type: "string", description: "Edge ''' + edge.id + ''' ip or hostname" }''')
+#
+#            # Finish parameters section
+#            module_file.write('''
+#  },
 
-            # Finish parameters section
             module_file.write('''
-  },
 
   meta: {
     "moduleId": "''' + module.id + '''",
@@ -976,6 +1002,11 @@ def create_top_level_model():
 }''')
 
 
+def ip_to_module(host):
+    parts = host.split(".")
+    return int(parts[2])
+
+
 # Create empty dictionaries for vertexes, edges, panels, and stripes
 vertexes = {}
 edges = {}
@@ -989,6 +1020,7 @@ load_edges(edges)
 load_stripes(stripes)
 load_panels(panels)
 load_modules(modules)
+find_module_components_by_host()
 
 # Write new json config files
 # Fixture and Model directories

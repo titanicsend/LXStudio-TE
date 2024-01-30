@@ -1,8 +1,7 @@
-
 {
   /* Titanic's End Fixture File */
   label: "SUA",
-  tags: [ "SUA", "panel" ],
+  tags: [ "SUA", "panel", "m6" ],
 
   parameters: {
     "xOffset": { default: 7.599933210260126, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
@@ -51,7 +50,8 @@
     "edge1": "39-101",
     "edge2": "39-44",
     "edge3": "44-101",
-    "leadingEdge": "101->44"
+    "leadingEdge": "101->44",
+    "module": "6"
   },
 
   components: [

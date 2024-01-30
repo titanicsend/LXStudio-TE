@@ -1,8 +1,7 @@
-
 {
   /* Titanic's End Fixture File */
   label: "SBB",
-  tags: [ "SBB", "panel" ],
+  tags: [ "SBB", "panel", "m11" ],
 
   parameters: {
     "xOffset": { default: 15.387300247507135, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
@@ -41,7 +40,8 @@
     "edge1": "100-115",
     "edge2": "10-100",
     "edge3": "10-115",
-    "leadingEdge": "115->10"
+    "leadingEdge": "115->10",
+    "module": "11"
   },
 
   components: [

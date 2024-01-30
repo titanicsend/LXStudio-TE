@@ -1,8 +1,7 @@
-
 {
   /* Titanic's End Fixture File */
   label: "SDC",
-  tags: [ "SDC", "panel" ],
+  tags: [ "SDC", "panel", "m9" ],
 
   parameters: {
     "xOffset": { default: 7.369670095469779, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
@@ -49,7 +48,8 @@
     "edge1": "67-90",
     "edge2": "67-93",
     "edge3": "90-93",
-    "leadingEdge": "90->67"
+    "leadingEdge": "90->67",
+    "module": "9"
   },
 
   components: [
