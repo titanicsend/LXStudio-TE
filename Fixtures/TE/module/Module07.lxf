@@ -1,0 +1,44 @@
+{
+  /* Titanic's End Fixture File */
+  label: "Module07",
+  tags: [ "m7", "module" ],
+
+  parameters: {
+    "placeholder": { default: "7", type: "string", description: "Placeholder parameter, does nothing" }
+  },
+
+  meta: {
+    "moduleId": "7",
+    "definition": "83-85-12-83 83-9-12 83-114-9-116 116-114-112 116-124-112-116 117-124-113-117 117-115-113 100-115-10-117 100-10-11 100-98-11-100"
+  },
+
+  components: [
+    /* Edges */
+    { type: "TE/edge/Edge83-85" },
+    { type: "TE/edge/Edge12-83" },
+    { type: "TE/edge/Edge9-83" },
+    { type: "TE/edge/Edge83-114" },
+    { type: "TE/edge/Edge114-116" },
+    { type: "TE/edge/Edge112-116" },
+    { type: "TE/edge/Edge116-124" },
+    { type: "TE/edge/Edge117-124" },
+    { type: "TE/edge/Edge113-117" },
+    { type: "TE/edge/Edge115-117" },
+    { type: "TE/edge/Edge100-115" },
+    { type: "TE/edge/Edge10-100" },
+    { type: "TE/edge/Edge11-100" },
+    { type: "TE/edge/Edge98-100" },
+
+    /* Panels */
+    { type: "TE/panel/ASA" },
+    { type: "TE/panel/APA" },
+    { type: "TE/panel/SCA" },
+    { type: "TE/panel/SCB" },
+    { type: "TE/panel/SBB" },
+    { type: "TE/panel/SAA" },
+    { type: "TE/panel/PDA" },
+    { type: "TE/panel/PDB" },
+    { type: "TE/panel/PEB" },
+    { type: "TE/panel/PFA" }
+  ]
+}

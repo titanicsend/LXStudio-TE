@@ -340,6 +340,52 @@ class Stripe:
         print(f"Stripe ID: {id}")#, Row Length: {str(self.row_length)}, Strand Lengths: {self.strand_lengths}, Side: {self.side}, Code: {self.code}")
 
 
+class Module:
+    def __init__(self, id, definition):
+        self.id = id
+        self.fixture_name = "Module" + id.zfill(2)
+        self.tag = "m" + id
+        self.definition = definition
+        # Edge chains from modules.txt
+        self.chains = {}
+        # Dictionaries of components within this module
+        self.vertexes = {}
+        self.edges = {}
+        self.panels = {}
+
+    def find_components(self):
+        # Parse the definition
+        # Split on space
+        chains_str = self.definition.split()
+        for chain_str in chains_str:
+            chain = chain_str.split("-")
+            vertex_prev = chain[0]
+            for vertex_str in chain:
+                # Keep a list of unique vertexes
+                if vertex_str not in self.vertexes:
+                    vertex = vertexes[vertex_str]
+                    self.vertexes[vertex_str] = vertex
+                # After the first vertex, look for edge
+                if vertex_prev != vertex_str:
+                    for edge_id, edge in edges.items():
+                        if (edge.v0name == vertex_prev and edge.v1name == vertex_str) or (edge.v0name == vertex_str and edge.v1name == vertex_prev):
+                            self.edges[edge_id] = edge
+                            break
+
+        # Find panels where two of the edges are within this module
+        # TODO: Is this capturing all the panels?
+        for panel_id, panel in panels.items():
+            num_edges = 0
+            if self.edges.get(panel.edge1) != None:
+                num_edges += 1
+            if self.edges.get(panel.edge2) != None:
+                num_edges += 1
+            if self.edges.get(panel.edge3) != None:
+                num_edges += 1
+            if num_edges >= 2:
+                self.panels[panel_id] = panel
+
+
 def load_vertexes(vertexes):
     file_path_vertexes = "../../resources/vehicle/vertexes.txt"
     try:
@@ -453,6 +499,30 @@ def load_stripes(stripes):
     # Handle file not found
     except FileNotFoundError:
         print(f"File '{file_path_stripes}' not found.")
+
+
+def load_modules(modules):
+    file_path_modules = "../../resources/vehicle/modules.txt"
+    try:
+        with open(file_path_modules, "r") as file:
+            for line in file:
+                parts = line.strip().split(":")
+
+                # Check if there are enough entries in the line to create a Module
+                if len(parts) == 2:
+                    module_id = parts[0]
+                    definition = parts[1].strip()
+
+                    # Create a Module object and add it to the dictionary
+                    module = Module(module_id, definition)
+                    module.find_components()
+                    modules[module_id] = module
+                else:
+                    print(f"Invalid number of columns in module: {line}")
+
+        # Handle file not found
+    except FileNotFoundError:
+        print(f"File '{file_path_modules}' not found.")
 
 
 def create_directories():
@@ -641,8 +711,6 @@ def create_edges():
     for edge_id, edge in edges.items():
         filename = f"../../Fixtures/TE/edge/{edge.fixture_name}.lxf"
         with (open(filename, "w") as edge_file):
-            # TODO: Calc a better default offset
-
             edge_file.write('''
 {
   /* Titanic's End Fixture File */
@@ -702,6 +770,76 @@ def create_edges():
       protocol: "artnet", 
       sequenceEnabled: "$artnetSequence"
     }
+  ]
+}
+''')
+
+
+def create_modules():
+    # Create "module" folder if it does not exist
+    if not os.path.exists("../../Fixtures/TE/module"):
+        os.makedirs("../../Fixtures/TE/module")
+
+    # Loop over each module and create a new file
+    for module_id, module in modules.items():
+        filename = f"../../Fixtures/TE/module/{module.fixture_name}.lxf"
+        with (open(filename, "w") as module_file):
+            module_file.write('''{
+  /* Titanic's End Fixture File */
+  label: "''' + module.fixture_name + '''",
+  tags: [ "''' + module.tag + '''", "module" ],
+
+  parameters: {
+    "placeholder": { default: "''' + module.id + '''", type: "string", description: "Placeholder parameter, does nothing" }''')
+
+            # Pass-through parameters for edges and panels
+            # JKB note: It might be better not to list these out in the module fixture, as the defaults
+            # will get out of sync with the defaults in the child fixture files.  For the case of module fixtures
+            # which is expected to be "for emergencies" use,
+            # it might be better to always be inheriting the defaults from the edge/panel files.
+#            for edge_id, edge in module.edges.items():
+#                module_file.write(''',
+#    "e''' + edge.id + '''host": { default: "''' + edge.host + '''", type: "string", description: "Edge ''' + edge.id + ''' ip or hostname" }''')
+
+            # Finish parameters section
+            module_file.write('''
+  },
+
+  meta: {
+    "moduleId": "''' + module.id + '''",
+    "definition": "''' + module.definition + '''"
+  },
+
+  components: [
+    /* Edges */''')
+
+            is_first = True
+            for edge_id, edge in module.edges.items():
+                if is_first:
+                    is_first = False
+                else:
+                    module_file.write(''',''')
+                module_file.write('''
+    { type: "TE/edge/''' + edge.fixture_name + '''" }''')
+
+            # Comma between edges and panels
+            if len(module.edges) > 0 and len(module.panels) > 0:
+                module_file.write(''',''')
+
+            module_file.write('''
+
+    /* Panels */''')
+
+            is_first = True
+            for panel_id, panel in module.panels.items():
+                if is_first:
+                    is_first = False
+                else:
+                    module_file.write(''',''')
+                module_file.write('''
+    { type: "TE/panel/''' + panel.id + '''" }''')
+
+            module_file.write('''
   ]
 }
 ''')
@@ -792,7 +930,7 @@ def create_top_level_model():
       "children": {}
     }''')
 
-    # Insert each edge fixture
+        # Insert each edge fixture
         for edge_id, edge in edges.items():
             if is_first:
                 is_first = False
@@ -843,12 +981,14 @@ vertexes = {}
 edges = {}
 stripes = {}
 panels = {}
+modules = {}
 
 # Load data from old config files into dictionaries
 load_vertexes(vertexes)
 load_edges(edges)
 load_stripes(stripes)
 load_panels(panels)
+load_modules(modules)
 
 # Write new json config files
 # Fixture and Model directories
@@ -856,6 +996,7 @@ create_directories()
 # LXF Fixture Files
 create_panels()
 create_edges()
+create_modules()
 create_top_level_fixture()
 # LXM Model Files
 create_top_level_model()

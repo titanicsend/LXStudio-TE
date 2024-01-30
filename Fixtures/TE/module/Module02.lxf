@@ -1,0 +1,34 @@
+{
+  /* Titanic's End Fixture File */
+  label: "Module02",
+  tags: [ "m2", "module" ],
+
+  parameters: {
+    "placeholder": { default: "2", type: "string", description: "Placeholder parameter, does nothing" }
+  },
+
+  meta: {
+    "moduleId": "2",
+    "definition": "84-86-88-120 84-88-25-84 88-110-25-27-110 88-119-110 99-101-102-121 99-102-26-99 102-111-26-28-111 102-119-111"
+  },
+
+  components: [
+    /* Edges */
+    { type: "TE/edge/Edge84-86" },
+    { type: "TE/edge/Edge84-88" },
+    { type: "TE/edge/Edge25-84" },
+    { type: "TE/edge/Edge88-110" },
+    { type: "TE/edge/Edge25-88" },
+    { type: "TE/edge/Edge88-119" },
+    { type: "TE/edge/Edge99-101" },
+    { type: "TE/edge/Edge99-102" },
+    { type: "TE/edge/Edge26-99" },
+    { type: "TE/edge/Edge102-111" },
+    { type: "TE/edge/Edge26-102" },
+    { type: "TE/edge/Edge102-119" },
+
+    /* Panels */
+    { type: "TE/panel/SBE" },
+    { type: "TE/panel/PEE" }
+  ]
+}

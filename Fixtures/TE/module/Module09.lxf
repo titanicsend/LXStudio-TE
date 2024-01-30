@@ -1,0 +1,27 @@
+{
+  /* Titanic's End Fixture File */
+  label: "Module09",
+  tags: [ "m9", "module" ],
+
+  parameters: {
+    "placeholder": { default: "9", type: "string", description: "Placeholder parameter, does nothing" }
+  },
+
+  meta: {
+    "moduleId": "9",
+    "definition": "26-100-99-98 26-115-28-113"
+  },
+
+  components: [
+    /* Edges */
+    { type: "TE/edge/Edge26-100" },
+    { type: "TE/edge/Edge26-99" },
+    { type: "TE/edge/Edge26-115" },
+    { type: "TE/edge/Edge26-28" },
+
+    /* Panels */
+    { type: "TE/panel/SBC" },
+    { type: "TE/panel/SBD" },
+    { type: "TE/panel/SAC" }
+  ]
+}
