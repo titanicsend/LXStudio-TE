@@ -660,7 +660,10 @@ def create_edges():
     "xOffset": { default: ''' + str(edge.x_offset) + ''', type: "float", label: "X offset", description: "Location offset of edge from starting vertex" },
   
     # Debug tools
-    "onCar": { default: true, type: "boolean", label: "On Car", description: "True = Locate panel to its position on the car, False = Locate to origin" }
+    "onCar": { default: true, type: "boolean", label: "On Car", description: "True = Locate panel to its position on the car, False = Locate to origin" },
+
+    # Option to disable output, such as when outputs are configured in a parent fixture
+    "hasOutput": { default: true, type: "boolean", label: "Has Output", description: "Whether built-in output is enabled" }
   },
   
   transforms: [
@@ -692,7 +695,8 @@ def create_edges():
   ],
   
   outputs: [
-    { host: "$host", 
+    { enabled: "$hasOutput",
+      host: "$host",
       universe: "$output*10+(($ledOffset*3)/512)",
       channel: "($ledOffset*3)%512",
       protocol: "artnet", 
