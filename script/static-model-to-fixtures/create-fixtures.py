@@ -94,11 +94,11 @@ class Edge:
     def calc_transforms(self):
         # This is a trimmed down copy of the Panel.calc_transforms() method
 
-        # Using the two vertices, calculate the transforms for locating the edge on the car.
+        # Using the two vertexes, calculate the transforms for locating the edge on the car.
         # These values will be written to the transform[] section of the LXF.
         # Think of these transforms as moving/pivoting the origin to bring it in line with the edge.
 
-        # Track the locations of the two vertices relative to the last move
+        # Track the locations of the two vertexes relative to the last move
         prev = [copy.deepcopy(self.v0),
                 copy.deepcopy(self.v1)]
 
@@ -135,7 +135,7 @@ class Edge:
         # Default (X)-offset
         length_v01 = self.v1.dist(self.v0)
         length_edge = (self.num_points - 1) * EDGE_POINT_SPACING
-        # Center the edge between the two vertices
+        # Center the edge between the two vertexes
         self.x_offset = (length_v01 - length_edge) / 2
 
 
@@ -189,13 +189,13 @@ class Panel:
         # Module
         self.module = ip_to_module(self.outputs[0].host)
 
-    def find_vertices(self):
-        # Pull vertices from dictionary by id
+    def find_vertexes(self):
+        # Pull vertexes from dictionary by id
         self.v0 = vertexes[self.v0name]
         self.v1 = vertexes[self.v1name]
         # Look for the vertex that wasn't in the leading edge. hacky...
-        known_vertices = [self.v0, self.v1]
-        other_vertices = [
+        known_vertexes = [self.v0, self.v1]
+        other_vertexes = [
             edges[self.edge1].v0,
             edges[self.edge1].v1,
             edges[self.edge2].v0,
@@ -203,20 +203,20 @@ class Panel:
             edges[self.edge3].v0,
             edges[self.edge3].v1]
 
-        for v in other_vertices:
-            if v not in known_vertices:
+        for v in other_vertexes:
+            if v not in known_vertexes:
                 self.v2 = v
                 self.v2name = v.id
                 break
 
     def calc_transforms(self):
-        # Using the three vertices, calculate the transforms for locating the panel on the car.
+        # Using the three vertexes, calculate the transforms for locating the panel on the car.
         # These values will be written to the transform[] section of the LXF.
         # Think of these transforms as moving/pivoting the origin to bring it in plane with the panel.
 
         # Fun fact: the Excel formula atan2(x,y) in Python is atan2(y,x)
 
-        # Track the locations of the three vertices relative to the last move
+        # Track the locations of the three vertexes relative to the last move
         prev = [copy.deepcopy(self.v0),
                 copy.deepcopy(self.v1),
                 copy.deepcopy(self.v2)]
@@ -478,7 +478,7 @@ def load_panels(panels):
 
                     # Create a Panel object and add it to the dictionary
                     panel = Panel(panel_id, num_points, edge1, edge2, edge3, v0, flipped, output_str)
-                    panel.find_vertices()
+                    panel.find_vertexes()
                     panel.stripe = stripes[panel.id]
                     panel.calc_transforms()
                     panels[panel_id] = panel
