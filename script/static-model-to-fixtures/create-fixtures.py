@@ -808,6 +808,10 @@ def create_modules():
 
     # Loop over each module and create a new file
     for module_id, module in modules.items():
+        # Skip empty modules (must have had an entry in modules.txt)
+        if len(module.edges) == 0 and len(module.panels) == 0:
+            continue
+
         filename = f"../../Fixtures/TE/module/{module.fixture_name}.lxf"
         with (open(filename, "w") as module_file):
             module_file.write('''{
