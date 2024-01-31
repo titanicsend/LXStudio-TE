@@ -26,10 +26,6 @@ public class MultipassDemo extends GLShaderPattern {
     // allocate a backbuffer for all the shaders to share
     buffer = GLShader.allocateBackBuffer();
 
-    // add the first shader, passing in the shared backbuffer
-    shader = new GLShader(lx, "fire.fs", this,buffer);
-    addShader(shader);
-
     // add the second shader, which applies a simple edge detection filter to the
     // output of the first shader
     shader = new GLShader(lx, "multipass1.fs", this, buffer);

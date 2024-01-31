@@ -82,6 +82,17 @@ public class GLShader {
   // TODO - figure out how to do global explode effect
   private final SplittableRandom random;
 
+  // get active GL profile so we can manipulate textures in shader patterns
+  // if necessary.
+  public GLProfile getGLProfile() {
+    return gl4.getGLProfile();
+  }
+
+  // get the GL4 object for this shader
+  public GL4 getGL4() {
+    return gl4;
+  }
+
   // Welcome to the Land of 1000 Constructors!
 
   /**

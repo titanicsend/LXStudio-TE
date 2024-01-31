@@ -336,7 +336,7 @@ public class TECommonControls {
       // even if they're not missing any controls.)
       // TODO - reminder to implement "explode" as an effect so all patterns can use it.
       else if (param.getLabel().equals(TEControlTag.EXPLODE.getLabel())) {
-        markUnused(param);
+        //markUnused(param);
       }
 
       this.pattern.addParam(tag.getPath(), param);
