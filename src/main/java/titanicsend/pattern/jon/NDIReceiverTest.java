@@ -104,8 +104,8 @@ public class NDIReceiverTest extends GLShaderPattern {
 
   @Override
   public void dispose() {
-    videoFrame.close();
     receiver.close();
+    videoFrame.close();
     super.dispose();
   }
 
