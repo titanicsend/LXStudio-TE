@@ -3,10 +3,10 @@
   <groupId>me.walkerknapp</groupId>
   <artifactId>devolay</artifactId>
   <versioning>
-    <release>2.1.0</release>
+    <release>2.1.0-te</release>
     <versions>
 
-      <version>2.1.0</version>
+      <version>2.1.0-te</version>
     </versions>
     <lastUpdated>20230329053521</lastUpdated>
   </versioning>

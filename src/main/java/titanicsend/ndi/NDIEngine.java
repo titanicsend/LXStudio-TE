@@ -67,8 +67,11 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
 
   public NDIEngine(LX lx) {
 
-    // TODO - start NDI finder thread, and provide an API so patterns can
-    // TODO - access the list of NDI sources.
+    // load the NDI libraries and start a finder thread.  Note that this
+    // may take a little time to complete, so it must be done before
+    // we fire up the loop task.
+    Devolay.loadLibraries();
+    finder = new DevolayFinder();
 
     // TODO - we probably need to build a register/unregister API so patterns
     // TODO - can register for NDI sources they want to use
@@ -84,9 +87,6 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
     // register NDIEngine so we can access it from patterns.
     lx.engine.registerComponent(PATH, this);
     lx.engine.addLoopTask(this);
-
-    Devolay.loadLibraries();
-    finder = new DevolayFinder();
   }
 
   public void loop(double deltaMs) {
@@ -102,14 +102,14 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
       // set flag once initialization is complete
       isInitialized = true;
     }
-    // On every frame, after initial setup
+    // On every frame after initial setup, refresh
+    // the list of sources
     else {
-
-      sources = finder.getCurrentSources();
-      if (sources.length > 0) {
-
+      if (finder != null) {
+        sources = finder.getCurrentSources();
+        if (sources.length > 0) {
+        }
       }
-
       // per frame runtime stuff;
     }
   }
