@@ -24,7 +24,6 @@ public class NDIReceiverTest extends GLShaderPattern {
   DevolayVideoFrame videoFrame;
   DevolayReceiver receiver = null;
 
-
   ByteBuffer buffer;
   TextureData textureData = null;
   Texture texture;
@@ -90,14 +89,20 @@ public class NDIReceiverTest extends GLShaderPattern {
   @Override
   public void onActive() {
     super.onActive();
+    // if no receiver yet, create one.  Otherwise connect to the
+    // previously connected source.
     if (receiver == null) {
       receiver = new DevolayReceiver(ndiEngine.sources[0], DevolayReceiver.ColorFormat.BGRX_BGRA, RECEIVE_BANDWIDTH_HIGHEST, true, "TE");
+    }
+    else {
+      receiver.connect(ndiEngine.sources[0]);
     }
   }
 
   @Override
   public void onInactive() {
-    //receiver.connect(null);
+    // disconnect receiver from all sources
+    receiver.connect(null);
     super.onInactive();
 
   }
