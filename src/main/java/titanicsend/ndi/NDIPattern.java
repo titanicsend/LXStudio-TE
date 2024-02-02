@@ -27,7 +27,7 @@ public class NDIPattern extends GLShaderPattern {
   protected int sourceIndex = 0;
   protected int frameWidth;
   protected int frameHeight;
-  protected float gain = 1.5f; // video gain - we eventually need UI for this
+  protected float gain = 1.25f; // video gain - we eventually need UI for this
 
   protected ByteBuffer buffer;
   protected TextureData textureData = null;
