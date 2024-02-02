@@ -186,12 +186,13 @@ public class NDIPattern extends GLShaderPattern {
   public void dispose() {
     // shut down receiver and free everything
     // we allocated.
-    if (receiver != null) {
-      receiver.connect(null);
-    }
     if (videoFrame != null) {
       videoFrame.close();
     }
+    if (receiver != null) {
+      receiver.connect(null);
+    }
+
     if (texture != null) texture.destroy(gl4);
 
     super.dispose();
