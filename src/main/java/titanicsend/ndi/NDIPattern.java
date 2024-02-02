@@ -11,6 +11,7 @@ import me.walkerknapp.devolay.DevolayReceiver;
 import me.walkerknapp.devolay.DevolayVideoFrame;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
+import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 import java.nio.ByteBuffer;
@@ -23,10 +24,12 @@ public class NDIPattern extends GLShaderPattern {
 
   protected DevolayVideoFrame videoFrame = null;
   protected DevolayReceiver receiver = null;
+  protected int sourceIndex = 0;
   protected int frameWidth;
   protected int frameHeight;
+  protected float gain = 1.5f; // video gain - we eventually need UI for this
 
-  protected ByteBuffer buffer = null;
+  protected ByteBuffer buffer;
   protected TextureData textureData = null;
   protected Texture texture = null;
   protected GL4 gl4;
@@ -45,11 +48,19 @@ public class NDIPattern extends GLShaderPattern {
       // Create frame objects to handle incoming video stream
       // (note that we are omitting audio and metadata for now)
       videoFrame = new DevolayVideoFrame();
-      ndiEngine.printSourceNames();
     }
 
-    // register common controls with LX
-    addCommonControls();
+    // default common controls settings.  Note that these aren't committed
+    // until the pattern calls addCommonControls(), so patterns can
+    // override these settings if they need to.
+
+    // Quantity control is used (temporarily) to select the NDI source.
+    // TODO - we need actual control+UI for this. Really can't use the quantity
+    // TODO - control for anything but the demo version.
+    controls.setRange(TEControlTag.QUANTITY, 0, 0, 10);
+
+    // set scale control to something that works for video.
+    controls.setRange(TEControlTag.SIZE,1,5,0.1);
 
     // allocate a backbuffer for all the shaders to share
     buffer = GLShader.allocateBackBuffer();
@@ -59,50 +70,81 @@ public class NDIPattern extends GLShaderPattern {
     addPrimaryShader();
   }
 
+  protected void changeChannel(int channel) {
+    sourceIndex = channel;
+    if (receiver != null) {
+      ndiEngine.connectByIndex(sourceIndex, receiver);
+      System.out.println("Channel changed. Connection count is: " + receiver.getConnectionCount());
+    }
+  }
+
+  /**
+   * Create a texture (and associated Java objects) appropriately dimensioned the current incoming
+   * video frame size. This is called on initial connection, and whenever the frame size changes.
+   */
+  public void createTextureForFrame() {
+
+    // free the previous GPU texture if it
+    // exists
+    if (texture != null) {
+      texture.destroy(gl4);
+    }
+
+    // save dimensions of the current frame
+    frameWidth = videoFrame.getXResolution();
+    frameHeight = videoFrame.getYResolution();
+
+    int format = GL.GL_RGBA;
+    int type = GL.GL_UNSIGNED_BYTE;
+    textureData =
+        new TextureData(
+            gl4.getGLProfile(),
+            format,
+            frameWidth,
+            frameHeight,
+            0,
+            GL.GL_BGRA,
+            type,
+            false,
+            false,
+            false,
+            videoFrame.getData(),
+            null);
+    texture = TextureIO.newTexture(textureData);
+  }
+
   /**
    * The primary shader handles incoming video frames from the NDI source. Your pattern can override
    * this method if you need something other than the default behavior. (Xpos/Ypos, Spin, Angle,
    * Size, Brightness, Explode work as expected, Wow1 controls the full color vs. palette color mix)
    */
   public void addPrimaryShader() {
-    GLShader shader = new GLShader(lx, "nditest.fs", this, buffer);
+    GLShader shader = new GLShader(lx, "ndidefault.fs", this, buffer);
     addShader(
         shader,
         new GLShaderFrameSetup() {
           @Override
           public void OnFrame(GLShader s) {
+            int ch = (int) getQuantity();
+            if (ch != sourceIndex) {
+              changeChannel(ch);
+            }
 
+            s.setUniform("gain", gain);
+
+            // if we have
             if (DevolayFrameType.VIDEO == receiver.receiveCapture(videoFrame, null, null, 0)) {
               // get pixel data from video frame
               ByteBuffer frameData = videoFrame.getData();
 
-              // TODO - create new textureData if the frame size changes
-
-              // if it's the first frame, build our texture data object
-              // otherwise, just replace the buffer with the current
-              // frame's pixel data.
-              if (textureData == null) {
+              // if it's the first frame, or if the frame dimensions changed,
+              // build our texture data object. Otherwise, just replace the
+              // buffer with the current frame's pixel data.
+              if (textureData == null
+                  || frameWidth != videoFrame.getXResolution()
+                  || frameHeight != videoFrame.getYResolution()) {
                 gl4 = s.getGL4();
-
-                int width = videoFrame.getXResolution();
-                int height = videoFrame.getYResolution();
-                int format = GL.GL_RGBA;
-                int type = GL.GL_UNSIGNED_BYTE;
-                textureData =
-                    new TextureData(
-                        s.getGLProfile(),
-                        format,
-                        width,
-                        height,
-                        0,
-                        GL.GL_BGRA,
-                        type,
-                        false,
-                        false,
-                        false,
-                        frameData,
-                        null);
-                texture = TextureIO.newTexture(textureData);
+                createTextureForFrame();
               } else {
                 textureData.setBuffer(frameData);
                 texture.updateImage(gl4, textureData);
@@ -123,13 +165,13 @@ public class NDIPattern extends GLShaderPattern {
     if (receiver == null) {
       receiver =
           new DevolayReceiver(
-              ndiEngine.sources[0],
+              ndiEngine.sources[sourceIndex],
               DevolayReceiver.ColorFormat.BGRX_BGRA,
               RECEIVE_BANDWIDTH_HIGHEST,
               true,
               "TE");
     } else {
-      receiver.connect(ndiEngine.sources[0]);
+      ndiEngine.connectByIndex(sourceIndex, receiver);
     }
   }
 
@@ -150,8 +192,7 @@ public class NDIPattern extends GLShaderPattern {
     if (videoFrame != null) {
       videoFrame.close();
     }
-    if (texture != null)
-      texture.destroy(gl4);
+    if (texture != null) texture.destroy(gl4);
 
     super.dispose();
   }

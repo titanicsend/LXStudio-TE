@@ -31,5 +31,8 @@ vec4 sobel(vec2 center){
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = fragCoord.xy / iResolution.xy;
-    fragColor =  mix(texture(iBackbuffer, uv), sobel(uv), iWow2);
+    vec4 color = texture(iBackbuffer, uv);
+
+    // returns backbuffer color unless WoW2 control is active
+    fragColor = (iWow2 > 0.0) ? mix(color, sobel(uv), iWow2) : color;
 }
