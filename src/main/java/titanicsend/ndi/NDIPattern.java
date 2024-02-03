@@ -178,22 +178,17 @@ public class NDIPattern extends GLShaderPattern {
   @Override
   public void onActive() {
     super.onActive();
-    // if no receiver yet, create one. Otherwise connect to the
-    // previously connected source.
-    // TODO - need to handle the case where we've started before the
-    // TODO - NDI source is available.  Right now this causes an exception
-    // TODO - and kills the pattern.
+    // if no receiver yet, create one, then connect it to
+    // its saved source if possible.
     if (receiver == null) {
       receiver =
           new DevolayReceiver(
-              ndiEngine.sources[sourceIndex],
               DevolayReceiver.ColorFormat.BGRX_BGRA,
               RECEIVE_BANDWIDTH_HIGHEST,
               true,
               "TE");
-    } else {
-      ndiEngine.connectByIndex(sourceIndex, receiver);
     }
+    ndiEngine.connectByIndex(sourceIndex, receiver);
   }
 
   @Override

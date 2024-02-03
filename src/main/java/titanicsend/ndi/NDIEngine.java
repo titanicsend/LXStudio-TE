@@ -61,6 +61,10 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
    *        False if the source is not available.
    */
   public boolean connectByIndex(int index, DevolayReceiver receiver) {
+    if (receiver == null) {
+      return false;
+    }
+
     if (index < sources.length) {
       receiver.connect(sources[index]);
       return true;
