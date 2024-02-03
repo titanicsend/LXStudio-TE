@@ -1,11 +1,18 @@
 package titanicsend.ndi;
 
+import static me.walkerknapp.devolay.DevolayReceiver.RECEIVE_BANDWIDTH_HIGHEST;
+
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureData;
 import com.jogamp.opengl.util.texture.TextureIO;
 import heronarts.lx.LX;
+import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.LXListenableNormalizedParameter;
+import heronarts.lx.parameter.LXNormalizedParameter;
+import heronarts.lx.parameter.LXParameter;
+import java.nio.ByteBuffer;
 import me.walkerknapp.devolay.DevolayFrameType;
 import me.walkerknapp.devolay.DevolayReceiver;
 import me.walkerknapp.devolay.DevolayVideoFrame;
@@ -13,10 +20,6 @@ import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-
-import java.nio.ByteBuffer;
-
-import static me.walkerknapp.devolay.DevolayReceiver.RECEIVE_BANDWIDTH_HIGHEST;
 
 public class NDIPattern extends GLShaderPattern {
 
@@ -27,12 +30,21 @@ public class NDIPattern extends GLShaderPattern {
   protected int sourceIndex = 0;
   protected int frameWidth;
   protected int frameHeight;
-  protected float gain = 1.25f; // video gain - we eventually need UI for this
 
   protected ByteBuffer buffer;
   protected TextureData textureData = null;
   protected Texture texture = null;
   protected GL4 gl4;
+
+  protected final LXListenableNormalizedParameter source;
+  public LXNormalizedParameter getSourceControl() {
+    return source;
+  }
+
+  protected final LXListenableNormalizedParameter gain;
+  public LXNormalizedParameter getGainControl() {
+    return gain;
+  }
 
   public NDIPattern(LX lx) {
     this(lx, TEShaderView.ALL_POINTS);
@@ -40,6 +52,13 @@ public class NDIPattern extends GLShaderPattern {
 
   public NDIPattern(LX lx, TEShaderView view) {
     super(lx, view);
+
+    source =
+        new CompoundParameter("Source", 0, 0, 10)
+            .setDescription("NDI Source")
+            .setUnits(LXParameter.Units.INTEGER);
+
+    gain = new CompoundParameter("Gain", 1, 0.5, 2).setDescription("Video gain");
 
     if (ndiEngine == null) {
       ndiEngine = (NDIEngine) lx.engine.getChild(NDIEngine.PATH);
@@ -60,7 +79,7 @@ public class NDIPattern extends GLShaderPattern {
     controls.setRange(TEControlTag.QUANTITY, 0, 0, 10);
 
     // set scale control to something that works for video.
-    controls.setRange(TEControlTag.SIZE,1,5,0.1);
+    controls.setRange(TEControlTag.SIZE, 1, 5, 0.1);
 
     // allocate a backbuffer for all the shaders to share
     buffer = GLShader.allocateBackBuffer();
@@ -74,7 +93,6 @@ public class NDIPattern extends GLShaderPattern {
     sourceIndex = channel;
     if (receiver != null) {
       ndiEngine.connectByIndex(sourceIndex, receiver);
-      System.out.println("Channel changed. Connection count is: " + receiver.getConnectionCount());
     }
   }
 
@@ -125,12 +143,12 @@ public class NDIPattern extends GLShaderPattern {
         new GLShaderFrameSetup() {
           @Override
           public void OnFrame(GLShader s) {
-            int ch = (int) getQuantity();
+            int ch = (int) source.getValue();
             if (ch != sourceIndex) {
               changeChannel(ch);
             }
 
-            s.setUniform("gain", gain);
+            s.setUniform("gain", gain.getValuef());
 
             // if we have
             if (DevolayFrameType.VIDEO == receiver.receiveCapture(videoFrame, null, null, 0)) {
@@ -162,6 +180,9 @@ public class NDIPattern extends GLShaderPattern {
     super.onActive();
     // if no receiver yet, create one. Otherwise connect to the
     // previously connected source.
+    // TODO - need to handle the case where we've started before the
+    // TODO - NDI source is available.  Right now this causes an exception
+    // TODO - and kills the pattern.
     if (receiver == null) {
       receiver =
           new DevolayReceiver(
