@@ -9,8 +9,11 @@ import java.util.ArrayList;
 
 public class NDIEngine extends LXComponent implements LXLoopTask {
   public static final String PATH = "NDIEngine";
+
   private boolean isInitialized = false;
   private boolean isEnabled = true;
+  private long time = 0;
+  private static final int sourceRefreshInterval = 1000;
 
   public DevolaySource[] sources;
   protected DevolayFinder finder;
@@ -74,17 +77,6 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
     Devolay.loadLibraries();
     finder = new DevolayFinder();
 
-    // TODO - we probably need to build a register/unregister API so patterns
-    // TODO - can register for NDI sources they want to use
-    // TODO - not sure how to best let them get the current frames
-    // TODO - do we need to run a thread per source and provide a callback?
-    // TODO - or do we just provide a (scaled) buffer that gets updated every frame
-    // TODO - for every source that is registered?
-
-    // TODO - also need to notify patterns when a source is added/removed
-    // TODO - (we expect video sources to be transient, especially over
-    // TODO - the several hour course of a run with patterns being swapped in/out)
-
     // register NDIEngine so we can access it from patterns.
     lx.engine.registerComponent(PATH, this);
     lx.engine.addLoopTask(this);
@@ -103,15 +95,27 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
       // set flag once initialization is complete
       isInitialized = true;
     }
-    // On every frame after initial setup, refresh
-    // the list of sources
+    // Once initial setup is complete, refresh list of sources
+    // periodically.
     else {
       if (finder != null) {
-        sources = finder.getCurrentSources();
-        if (sources.length > 0) {
+        if (System.currentTimeMillis() - time > sourceRefreshInterval) {
+          sources = finder.getCurrentSources();
+          time = System.currentTimeMillis();
+          if (sources.length > 0) {}
         }
       }
-      // per frame runtime stuff;
+      // additional per frame runtime stuff, TBD as needed;
     }
   }
+
+  @Override
+  public void dispose() {
+    super.dispose();
+    // stop the finder thread
+    if (finder != null) {
+      finder.close();
+    }
+  }
+
 }
