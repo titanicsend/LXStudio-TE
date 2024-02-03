@@ -31,6 +31,9 @@ public class NDIPattern extends GLShaderPattern {
   protected int frameWidth;
   protected int frameHeight;
 
+  protected boolean lastConnectState = false;
+  protected long connectTimer = 0;
+
   protected ByteBuffer buffer;
   protected TextureData textureData = null;
   protected Texture texture = null;
@@ -92,7 +95,7 @@ public class NDIPattern extends GLShaderPattern {
   protected void changeChannel(int channel) {
     sourceIndex = channel;
     if (receiver != null) {
-      ndiEngine.connectByIndex(sourceIndex, receiver);
+      lastConnectState = ndiEngine.connectByIndex(sourceIndex, receiver);
     }
   }
 
@@ -143,11 +146,26 @@ public class NDIPattern extends GLShaderPattern {
         new GLShaderFrameSetup() {
           @Override
           public void OnFrame(GLShader s) {
+
+
             int ch = (int) source.getValue();
             if (ch != sourceIndex) {
               changeChannel(ch);
             }
 
+            // Periodically try to connect if we weren't able to
+            // establish an initial connection to this pattern's
+            // desired NDI source. This makes things work
+            // without manual intervention if the source isn't
+            // available at startup.  Once the source becomes available,
+            // the connection will be automatically established.
+            if (!lastConnectState) {
+              if (System.currentTimeMillis() - connectTimer > 1000) {
+                connectTimer = System.currentTimeMillis();
+                lastConnectState = ndiEngine.connectByIndex(sourceIndex, receiver);
+              }
+            }
+            
             s.setUniform("gain", gain.getValuef());
 
             // if we have
@@ -188,7 +206,7 @@ public class NDIPattern extends GLShaderPattern {
               true,
               "TE");
     }
-    ndiEngine.connectByIndex(sourceIndex, receiver);
+    lastConnectState = ndiEngine.connectByIndex(sourceIndex, receiver);
   }
 
   @Override
