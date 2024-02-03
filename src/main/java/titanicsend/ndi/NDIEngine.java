@@ -3,12 +3,12 @@ package titanicsend.ndi;
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.LXLoopTask;
-import me.walkerknapp.devolay.*;
-
 import java.util.ArrayList;
+import me.walkerknapp.devolay.*;
 
 public class NDIEngine extends LXComponent implements LXLoopTask {
   public static final String PATH = "NDIEngine";
+  private static NDIEngine current;
 
   private boolean isInitialized = false;
   private boolean isEnabled = true;
@@ -17,6 +17,10 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
 
   public DevolaySource[] sources;
   protected DevolayFinder finder;
+
+  public static NDIEngine get() {
+    return current;
+  }
 
   public void setEnabled(boolean enabled) {
     isEnabled = enabled;
@@ -74,6 +78,7 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
   }
 
   public NDIEngine(LX lx) {
+    current = this;
 
     // load the NDI libraries and start a finder thread.  Note that this
     // may take a little time to complete, so it must be done before
@@ -92,7 +97,7 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
     if (!isEnabled) return;
 
     // On first frame...
-    if (isInitialized) {
+    if (!isInitialized) {
 
       // initialize stuff
 
@@ -106,7 +111,6 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
         if (System.currentTimeMillis() - time > sourceRefreshInterval) {
           sources = finder.getCurrentSources();
           time = System.currentTimeMillis();
-          if (sources.length > 0) {}
         }
       }
       // additional per frame runtime stuff, TBD as needed;

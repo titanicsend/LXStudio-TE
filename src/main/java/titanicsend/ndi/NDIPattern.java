@@ -23,9 +23,9 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 public class NDIPattern extends GLShaderPattern {
 
-  protected NDIEngine ndiEngine = null;
+  protected NDIEngine ndiEngine;
 
-  protected DevolayVideoFrame videoFrame = null;
+  protected DevolayVideoFrame videoFrame;
   protected DevolayReceiver receiver = null;
   protected int sourceIndex = 0;
   protected int frameWidth;
@@ -55,6 +55,11 @@ public class NDIPattern extends GLShaderPattern {
 
   public NDIPattern(LX lx, TEShaderView view) {
     super(lx, view);
+    ndiEngine = NDIEngine.get();
+
+    // Create frame objects to handle incoming video stream
+    // (note that we are omitting audio and metadata frames for now)
+    videoFrame = new DevolayVideoFrame();
 
     source =
         new CompoundParameter("Source", 0, 0, 10)
@@ -63,23 +68,9 @@ public class NDIPattern extends GLShaderPattern {
 
     gain = new CompoundParameter("Gain", 1, 0.5, 2).setDescription("Video gain");
 
-    if (ndiEngine == null) {
-      ndiEngine = (NDIEngine) lx.engine.getChild(NDIEngine.PATH);
-      // TE.log("Shader: Retrieved NDIEngine from LX");
-
-      // Create frame objects to handle incoming video stream
-      // (note that we are omitting audio and metadata for now)
-      videoFrame = new DevolayVideoFrame();
-    }
-
     // default common controls settings.  Note that these aren't committed
     // until the pattern calls addCommonControls(), so patterns can
     // override these settings if they need to.
-
-    // Quantity control is used (temporarily) to select the NDI source.
-    // TODO - we need actual control+UI for this. Really can't use the quantity
-    // TODO - control for anything but the demo version.
-    controls.setRange(TEControlTag.QUANTITY, 0, 0, 10);
 
     // set scale control to something that works for video.
     controls.setRange(TEControlTag.SIZE, 1, 5, 0.1);
@@ -165,8 +156,6 @@ public class NDIPattern extends GLShaderPattern {
                 lastConnectState = ndiEngine.connectByIndex(sourceIndex, receiver);
               }
             }
-            
-            s.setUniform("gain", gain.getValuef());
 
             // if we have
             if (DevolayFrameType.VIDEO == receiver.receiveCapture(videoFrame, null, null, 0)) {
@@ -185,8 +174,8 @@ public class NDIPattern extends GLShaderPattern {
                 textureData.setBuffer(frameData);
                 texture.updateImage(gl4, textureData);
               }
-
-              // pass the texture to the shader
+              // pass the video frame texture to the shader
+              s.setUniform("gain", gain.getValuef());
               s.setUniform("ndivideo", texture);
             }
           }
