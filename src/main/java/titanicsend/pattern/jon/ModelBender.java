@@ -80,6 +80,11 @@ public class ModelBender {
       modelZ.add(p.z);
     }
 
+    // set new z bounds for our modified model
+    model.zMax += endXMax;
+    model.zMin -= endXMax;
+    model.zRange = model.zMax - model.zMin;
+
     // adjust the z coordinates of the end points to taper them
     // with decreasing x. This gives the model a slightly pointy
     // nose and makes texture mapping easier and better looking.
@@ -95,7 +100,11 @@ public class ModelBender {
   }
 
   public void restoreModel(TEWholeModel model) {
-    // restore the model's original
+    // restore the model's original z bounds
+    model.zMax -= endXMax;
+    model.zMin += endXMax;
+    model.zRange = model.zMax - model.zMin;
+
     int i = 0;
     for (LXPoint p : model.getPoints()) {
       p.z = modelZ.get(i++);
