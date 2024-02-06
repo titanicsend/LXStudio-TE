@@ -2,8 +2,6 @@ package titanicsend.pattern.jon;
 
 import heronarts.lx.model.LXPoint;
 import java.util.ArrayList;
-import java.util.List;
-
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
 
@@ -79,15 +77,8 @@ public class ModelBender {
     modelZ = new ArrayList<Float>();
     endXMax = Math.abs(model.vertexesById.get(116).x);
     for (LXPoint p : model.getPoints()) {
-      //float x = Math.abs(p.x);
-      //if (x > endXMax) endXMax = x;
       modelZ.add(p.z);
     }
-
-    // set z bounds for our modified model
-    //model.zMax += endXMax;
-    //model.zMin -= endXMax;
-    //model.zRange = model.zMax - model.zMin;
 
     // adjust the z coordinates of the end points to taper them
     // with decreasing x. This gives the model a slightly pointy
@@ -99,7 +90,6 @@ public class ModelBender {
 
       double zOffset = endXMax - Math.abs(p.x);
       p.z += (p.z >= 0) ? zOffset : -zOffset;
-     // p.zn = (p.z - model.zMin) / model.zRange;
     }
     model.normalizePoints();
   }
@@ -110,9 +100,5 @@ public class ModelBender {
     for (LXPoint p : model.getPoints()) {
       p.z = modelZ.get(i++);
     }
-    // restore the model's original z bounds
-    model.zMax -= endXMax;
-    model.zMin += endXMax;
-    model.zRange = model.zMax - model.zMin;
   }
 }
