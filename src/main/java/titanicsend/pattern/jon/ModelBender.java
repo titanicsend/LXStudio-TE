@@ -2,10 +2,42 @@ package titanicsend.pattern.jon;
 
 import heronarts.lx.model.LXPoint;
 import java.util.ArrayList;
+import java.util.List;
+
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
 
 public class ModelBender {
+  private final String[] endEdgeIds = {
+    // aft
+    "110-111",
+    "109-110",
+    "109-111",
+    "27-109",
+    "28-109",
+    "109-112",
+    "109-113",
+    "112-113",
+    "112-124",
+    "113-124",
+    "116-124",
+    "117-124",
+
+    // fore
+    "82-92",
+    "81-82",
+    "81-92",
+    "70-81",
+    "73-81",
+    "81-89",
+    "81-91",
+    "89-91",
+    "89-126",
+    "91-126",
+    "125-126",
+    "126-129"
+  };
+
   protected ArrayList<Float> modelZ;
   protected float endXMax;
 
@@ -18,6 +50,7 @@ public class ModelBender {
   protected ArrayList<LXPoint> getEndPoints(TEWholeModel model) {
     ArrayList<LXPoint> endPoints = new ArrayList<LXPoint>();
 
+    // add end panel points
     for (TEPanelModel panel : model.getAllPanels()) {
       String id = panel.getId();
       if (id.startsWith("F") || id.startsWith("A")) {
@@ -26,6 +59,14 @@ public class ModelBender {
         }
       }
     }
+
+    // add end edge points
+    for (String edgeId : endEdgeIds) {
+      for (LXPoint point : model.edgesById.get(edgeId).getPoints()) {
+        endPoints.add(point);
+      }
+    }
+
     return endPoints;
   }
 
@@ -36,17 +77,17 @@ public class ModelBender {
     // the boundary of side and end (more-or-less).  We use it as the
     // starting x for our taper.
     modelZ = new ArrayList<Float>();
-    endXMax = 0;
+    endXMax = Math.abs(model.vertexesById.get(116).x);
     for (LXPoint p : model.getPoints()) {
-      float x = Math.abs(p.x);
-      if (x > endXMax) endXMax = x;
+      //float x = Math.abs(p.x);
+      //if (x > endXMax) endXMax = x;
       modelZ.add(p.z);
     }
 
     // set z bounds for our modified model
-    model.zMax += endXMax;
-    model.zMin -= endXMax;
-    model.zRange = model.zMax - model.zMin;
+    //model.zMax += endXMax;
+    //model.zMin -= endXMax;
+    //model.zRange = model.zMax - model.zMin;
 
     // adjust the z coordinates of the end points to taper them
     // with decreasing x. This gives the model a slightly pointy
@@ -58,8 +99,9 @@ public class ModelBender {
 
       double zOffset = endXMax - Math.abs(p.x);
       p.z += (p.z >= 0) ? zOffset : -zOffset;
-      p.zn = (p.z - model.zMin) / model.zRange;
+     // p.zn = (p.z - model.zMin) / model.zRange;
     }
+    model.normalizePoints();
   }
 
   public void restoreModel(TEWholeModel model) {
