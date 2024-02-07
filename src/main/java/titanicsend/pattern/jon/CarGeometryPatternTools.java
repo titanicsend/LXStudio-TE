@@ -13,16 +13,15 @@ import titanicsend.util.TE;
 /** Tools for converting car model geometry for use in patterns, particularly in native shaders. */
 public class CarGeometryPatternTools {
   // convert from normalized physical model coords
-  // to aspect corrected normalized 2D GL surface coords
+  // to normalized 2D GL surface coords
   protected static float modelToMapX(LXPoint pt) {
-    // correct for aspect ratio of render target
-    return 1.33333f * ((-0.5f + pt.zn));
+    return 2f * (-0.5f + pt.zn);
   }
 
   // convert from normalized physical model coords
   // to aspect corrected normalized 2D GL surface coords
   protected static float modelToMapY(LXPoint pt) {
-    return -0.5f + pt.yn;
+    return 2f * (-0.5f + pt.yn);
   }
 
   /**

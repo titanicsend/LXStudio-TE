@@ -70,8 +70,7 @@ float glowline2(vec2 p, vec4 seg,float width) {
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     vec2 uv = -1. + 2. * fragCoord / iResolution.xy;
-    uv.x *= iResolution.x / iResolution.y;
-    uv *= 0.5;
+
 
     // additional voltage when wow trigger is pressed
     sparkAmp = (iWowTrigger) ? 2 : 1.0;
