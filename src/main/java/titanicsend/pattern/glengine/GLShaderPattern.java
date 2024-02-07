@@ -4,6 +4,7 @@ import heronarts.lx.LX;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 /**
@@ -32,12 +33,20 @@ public class GLShaderPattern extends TEPerformancePattern {
   // list of shaders to run, with associated setup functions
   protected final ArrayList<ShaderInfo> shaderInfo = new ArrayList<>();
 
+  // function to paint the final shader output to the car
+  private ShaderPaintFn painter;
+
   public GLShaderPattern(LX lx) {
-    super(lx, TEShaderView.ALL_POINTS);
+    this(lx, TEShaderView.ALL_POINTS);
   }
 
   public GLShaderPattern(LX lx, TEShaderView view) {
     super(lx, view);
+    setPainter(new ShaderPaintFn() {});
+  }
+
+  public void setPainter(ShaderPaintFn painter) {
+    this.painter = painter;
   }
 
   // Add shader with OnFrame() function, which allows the pattern to do
@@ -68,24 +77,23 @@ public class GLShaderPattern extends TEPerformancePattern {
 
   @Override
   public void runTEAudioPattern(double deltaMs) {
+    ShaderInfo s = null;
+    ByteBuffer image = null;
     this.deltaMs = deltaMs;
 
-    int n = shaderInfo.size() - 1;
+    int n = shaderInfo.size();
 
     // run the chain of shaders, except for the last one,
     // copying the output of each to the next shader's input texture
     for (int i = 0; i < n; i++) {
-      ShaderInfo s = shaderInfo.get(i);
+      s = shaderInfo.get(i);
       s.shader.useProgram();
       s.setup.OnFrame(s.shader);
       s.shader.run();
     }
 
-    // run the last shader and copy its results to the lx point buffer
-    ShaderInfo s = shaderInfo.get(n);
-    s.shader.useProgram();
-    s.setup.OnFrame(s.shader);
-    s.shader.runAndPaint();
+    // paint the final shader output to the car
+    painter.mapToPoints(getModel().getPoints(), s.shader.getImageBuffer(),getColors());
   }
 
   @Override

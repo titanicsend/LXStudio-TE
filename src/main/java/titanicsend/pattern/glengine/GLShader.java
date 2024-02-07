@@ -11,16 +11,13 @@ import com.jogamp.opengl.util.GLBuffers;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import heronarts.lx.LX;
-import heronarts.lx.Tempo;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.*;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.shader_engine.*;
 import titanicsend.util.TE;
@@ -75,12 +72,7 @@ public class GLShader {
   private final List<LXParameter> parameters;
 
   // pattern control data
-  private final TEPerformancePattern pattern;
   private final PatternControlData controlData;
-
-  // for explode effect
-  // TODO - figure out how to do global explode effect
-  private final SplittableRandom random;
 
   // get the active GL profile so the calling pattern can work with
   // GL textures and buffers if necessary.  (NDI support
@@ -107,11 +99,8 @@ public class GLShader {
    */
   public GLShader(
       LX lx, FragmentShader fragmentShader, ByteBuffer frameBuf, TEPerformancePattern pattern) {
-    this.random = new SplittableRandom();
-    this.pattern = pattern;
     this.controlData = new PatternControlData(pattern);
     this.backBuffer = frameBuf;
-
 
     if (glEngine == null) {
       this.glEngine = (GLEngine) lx.engine.getChild(GLEngine.PATH);
@@ -177,6 +166,8 @@ public class GLShader {
       LX lx, String shaderFilename, TEPerformancePattern pattern, String... textureFilenames) {
     this(lx, shaderFilename, pattern, null, textureFilenames);
   }
+
+
 
   /**
    * Create appropriately sized gl-compatible buffer for reading offscreen surface to cpu memory.
@@ -258,8 +249,7 @@ public class GLShader {
     }
   }
 
-  public void display() {
-    // switch to this shader's gl context
+  public void run() {
     canvas.getContext().makeCurrent();
     render();
     saveSnapshot();
@@ -456,7 +446,7 @@ public class GLShader {
     }
   }
 
-  public ByteBuffer getSnapshot() {
+  public ByteBuffer getImageBuffer() {
     return backBuffer;
   }
 
@@ -472,96 +462,6 @@ public class GLShader {
     // TODO - anything we can temporarily release here?
     // for the moment, we're leaving the shader program intact
     // so it is very fast to reactivate.
-  }
-
-  public ByteBuffer getFrame() {
-    display();
-    return getSnapshot();
-  }
-
-  /**
-   * Called after a frame has been generated, this function samples the OpenGL backbuffer to set
-   * color at the specified points.
-   *
-   * @param points list of points to paint
-   * @param image backbuffer containing image for this frame
-   */
-  public void paint(List<LXPoint> points, ByteBuffer image) {
-    int xMax = xResolution - 1;
-    int yMax = yResolution - 1;
-    int[] colors = pattern.getColors();
-    boolean exploding = pattern.getExplode() > 0;
-
-    // Test to see if we're exploding once per frame, and use a "fast"
-    // painter branch if not.
-    // TODO - either move explode effect to the GLSL framework or figure
-    // TODO - out how to build a global explode effect that works for
-    // TODO - both java and shader patterns.
-    if (!exploding) {
-      for (LXPoint point : points) {
-        float zn = (1f - point.zn);
-        float yn = point.yn;
-
-        // use normalized point coordinates to calculate x/y coordinates and then the
-        // proper index in the image buffer.  the 'z' dimension of TE corresponds
-        // with 'x' dimension of the image based on the side that we're painting.
-        int xi = Math.round(zn * xMax);
-        int yi = Math.round(yn * yMax);
-
-        int index = 4 * ((yi * xResolution) + xi);
-
-        colors[point.index] = image.getInt(index);
-      }
-    }
-    else {
-      // calculate per-frame "explosion" parameters based on current
-      // position in measure
-      double measureProgress =
-          1.0
-              - this.pattern
-                  .getLX()
-                  .engine
-                  .tempo
-                  .getBasis(Tempo.Division.WHOLE); // 1 when we start measure, 0 when we finish
-      measureProgress *= measureProgress * measureProgress;
-      double k = 0.00035 + pattern.getExplode() * measureProgress;
-
-      // paint, moving coordinates according to explosion parameters
-      for (LXPoint point : points) {
-        float zn = (1f - point.zn);
-        float yn = point.yn;
-
-        // To "explode", we displace each pixel randomly in chessboard directions.
-        // this is slightly less random than calling nextDouble()) per coordinate
-        // but it saves us an expensive per-pixel calculation and given the
-        // number of pixels we're sampling, looks pretty much the same.
-        float displacement = (float) (k * (-0.5 + random.nextDouble()));
-        zn += displacement;
-        zn = Math.max(0, Math.min(1, zn));
-        yn += displacement;
-        yn = Math.max(0, Math.min(1, yn));
-
-        int xi = Math.round(zn * xMax);
-        int yi = Math.round(yn * yMax);
-
-        int index = 4 * ((yi * xResolution) + xi);
-
-        colors[point.index] = image.getInt(index);
-      }
-    }
-  }
-
-  // run the shader, copying the output to iBackbuffer
-  // of the next shader in the chain.
-  public void run() {
-    getFrame();
-  }
-
-  // run the shader and use the output to set actual pixel colors
-  // (saving iBackbuffer for the next frame, of course)
-  public void runAndPaint() {
-    ByteBuffer image = getFrame();
-    paint(this.pattern.getModel().getPoints(), image);
   }
 
   public List<ShaderConfiguration> getShaderConfig() {
