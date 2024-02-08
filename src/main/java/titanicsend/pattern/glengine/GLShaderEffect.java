@@ -1,18 +1,17 @@
 package titanicsend.pattern.glengine;
 
 import heronarts.lx.LX;
-import titanicsend.pattern.TEPerformancePattern;
-import titanicsend.pattern.yoffa.framework.TEShaderView;
-
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+
+import titanicsend.effect.TEEffect;
 
 /**
  * Wrapper class for OpenGL shaders. Simplifies handling of
  * context and native memory management, and provides a
  * convenient interface for adding shaders to a pattern.
  */
-public class GLShaderPattern extends TEPerformancePattern {
+public class GLShaderEffect extends TEEffect {
   public interface GLShaderFrameSetup {
     default void OnFrame(GLShader shader) {}
   }
@@ -27,7 +26,7 @@ public class GLShaderPattern extends TEPerformancePattern {
     }
   }
 
-  protected GLPatternControl controlData;
+  protected GLEffectControl controlData;
 
   // convenience, to simplify user setup of shader OnFrame() functions
   protected double deltaMs;
@@ -38,14 +37,11 @@ public class GLShaderPattern extends TEPerformancePattern {
   // function to paint the final shader output to the car
   private ShaderPaintFn painter;
 
-  public GLShaderPattern(LX lx) {
-    this(lx, TEShaderView.ALL_POINTS);
-  }
 
-  public GLShaderPattern(LX lx, TEShaderView view) {
-    super(lx, view);
+  public GLShaderEffect(LX lx) {
+    super(lx);
     setPainter(new ShaderPaintFn() {});
-    controlData = new GLPatternControl(this);
+    controlData = new GLEffectControl(this);
   }
 
   public void setPainter(ShaderPaintFn painter) {
@@ -78,8 +74,8 @@ public class GLShaderPattern extends TEPerformancePattern {
     addShader(new GLShader(lx, shaderName, controlData), setup);
   }
 
-  @Override
-  public void runTEAudioPattern(double deltaMs) {
+
+  public void run(double deltaMs, double enabledAmount) {
     ShaderInfo s = null;
     ByteBuffer image = null;
     this.deltaMs = deltaMs;
@@ -95,21 +91,21 @@ public class GLShaderPattern extends TEPerformancePattern {
       s.shader.run();
     }
 
-    // paint the final shader output to the car
+    // paint the final shader output to the car.
     painter.mapToPoints(getModel().getPoints(), s.shader.getImageBuffer(),getColors());
   }
 
   @Override
-  public void onActive() {
-    super.onActive();
+  public void onEnable() {
+    super.onEnable();
     for (ShaderInfo s : shaderInfo) {
       s.shader.onActive();
     }
   }
 
   @Override
-  public void onInactive() {
-    super.onInactive();
+  public void onDisable() {
+    super.onDisable();
     for (ShaderInfo s : shaderInfo) {
       s.shader.onInactive();
     }
@@ -124,3 +120,4 @@ public class GLShaderPattern extends TEPerformancePattern {
   }
 
 }
+

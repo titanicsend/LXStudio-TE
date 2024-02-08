@@ -11,14 +11,12 @@ import com.jogamp.opengl.util.GLBuffers;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import heronarts.lx.LX;
-import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.LXParameter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.*;
 import java.util.*;
 import java.util.stream.Collectors;
-import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.shader_engine.*;
 import titanicsend.util.TE;
 
@@ -72,7 +70,7 @@ public class GLShader {
   private final List<LXParameter> parameters;
 
   // pattern control data
-  private final PatternControlData controlData;
+  private final GLControlData controlData;
 
   // get the active GL profile so the calling pattern can work with
   // GL textures and buffers if necessary.  (NDI support
@@ -95,14 +93,14 @@ public class GLShader {
    * @param fragmentShader fragment shader object shader to use
    * @param frameBuf native (GL compatible) ByteBuffer to store render results for use in shaders
    *     that need to read the previous frame. If null, a buffer will be automatically allocated.
-   * @param pattern Pattern associated w/this shader
+   * @param controlData control data object to be associated w/this shader
    */
   public GLShader(
-      LX lx, FragmentShader fragmentShader, ByteBuffer frameBuf, TEPerformancePattern pattern) {
-    this.controlData = new PatternControlData(pattern);
+      LX lx, FragmentShader fragmentShader, ByteBuffer frameBuf, GLControlData controlData) {
+    this.controlData = controlData;
     this.backBuffer = frameBuf;
 
-    if (glEngine == null) {
+    if (this.glEngine == null) {
       this.glEngine = (GLEngine) lx.engine.getChild(GLEngine.PATH);
       // TE.log("Shader: Retrieved GLEngine object from LX");
     }
@@ -121,10 +119,10 @@ public class GLShader {
    *
    * @param lx LX instance
    * @param fragmentShader fragment shader object shader to use
-   * @param pattern Pattern associated w/this shader
+   * @param controlData control data object to be associated w/this shader
    */
-  public GLShader(LX lx, FragmentShader fragmentShader, TEPerformancePattern pattern) {
-    this(lx, fragmentShader, null, pattern);
+  public GLShader(LX lx, FragmentShader fragmentShader, GLControlData controlData) {
+    this(lx, fragmentShader, null, controlData);
   }
 
   /**
@@ -134,13 +132,13 @@ public class GLShader {
    * @param shaderFilename shader to use
    * @param frameBuf native (GL compatible) ByteBuffer to store render results for use in shaders
    *     that need to read the previous frame. If null, a buffer will be automatically allocated. *
-   * @param pattern Pattern associated w/this shader
+   * @param controlData control data object to be associated w/this shader
    * @param textureFilenames (optional) texture files to load
    */
   public GLShader(
       LX lx,
       String shaderFilename,
-      TEPerformancePattern pattern,
+      GLControlData controlData,
       ByteBuffer frameBuf,
       String... textureFilenames) {
     this(
@@ -151,7 +149,7 @@ public class GLShader {
                 .map(x -> new File("resources/shaders/textures/" + x))
                 .collect(Collectors.toList())),
         frameBuf,
-        pattern);
+        controlData);
   }
 
   /**
@@ -159,15 +157,13 @@ public class GLShader {
    *
    * @param lx LX instance
    * @param shaderFilename shader to use
-   * @param pattern Pattern associated w/this shader
+   * @param controlData control data object to be associated w/this shader
    * @param textureFilenames (optional) texture files to load
    */
   public GLShader(
-      LX lx, String shaderFilename, TEPerformancePattern pattern, String... textureFilenames) {
-    this(lx, shaderFilename, pattern, null, textureFilenames);
+      LX lx, String shaderFilename, GLControlData controlData, String... textureFilenames) {
+    this(lx, shaderFilename, controlData, null, textureFilenames);
   }
-
-
 
   /**
    * Create appropriately sized gl-compatible buffer for reading offscreen surface to cpu memory.
@@ -322,55 +318,6 @@ public class GLShader {
     gl4.glDisableVertexAttribArray(position);
   }
 
-  private void setColorUniform(String rgbName, String hsvName, int color) {
-    float x, y, z;
-
-    x = (float) (0xff & LXColor.red(color)) / 255f;
-    y = (float) (0xff & LXColor.green(color)) / 255f;
-    z = (float) (0xff & LXColor.blue(color)) / 255f;
-    setUniform(rgbName, x, y, z);
-
-    x = LXColor.h(color) / 360f;
-    y = LXColor.s(color) / 100f;
-    z = LXColor.b(color) / 100f;
-    setUniform(hsvName, x, y, z);
-  }
-
-  private void setStandardUniforms(PatternControlData ctl) {
-
-    // set standard shadertoy-style uniforms
-    setUniform("iTime", (float) ctl.getTime());
-    setUniform("iResolution", (float) xResolution, (float) yResolution);
-    // setUniform("iMouse", 0f, 0f, 0f, 0f);
-
-    // TE standard audio uniforms
-    setUniform("beat", (float) ctl.getBeat());
-    setUniform("sinPhaseBeat", (float) ctl.getSinePhaseOnBeat());
-    setUniform("bassLevel", (float) ctl.getBassLevel());
-    setUniform("trebleLevel", (float) ctl.getTrebleLevel());
-
-    // added by @look
-    setUniform("bassRatio", (float) ctl.getBassRatio());
-    setUniform("trebleRatio", (float) ctl.getTrebleRatio());
-    setUniform("volumeRatio", ctl.getVolumeRatiof());
-
-    // color-related uniforms
-    setColorUniform("iColorRGB", "iColorHSB", ctl.calcColor());
-    setColorUniform("iColor2RGB", "iColor2HSB", ctl.calcColor2());
-
-    // uniforms for common controls
-    setUniform("iSpeed", (float) ctl.getSpeed());
-    setUniform("iScale", (float) ctl.getSize());
-    setUniform("iQuantity", (float) ctl.getQuantity());
-    setUniform("iTranslate", (float) ctl.getXPos(), (float) ctl.getYPos());
-    setUniform("iSpin", (float) ctl.getSpin());
-    setUniform("iRotationAngle", (float) ctl.getRotationAngleFromSpin());
-    setUniform("iBrightness", (float) ctl.getBrightness());
-    setUniform("iWow1", (float) ctl.getWow1());
-    setUniform("iWow2", (float) ctl.getWow2());
-    setUniform("iWowTrigger", ctl.getWowTrigger());
-  }
-
   private void setUniforms() {
 
     // set textureKey to first available texture object location.
@@ -379,8 +326,8 @@ public class GLShader {
     // previous rendered frame.)
     textureKey = 2;
 
-    // set uniforms for standard controls and audio information
-    setStandardUniforms(controlData);
+    // set uniforms for the pattern or effect controls this shader uses
+    controlData.setUniforms(this);
 
     // Add all preprocessed LX parameters from the shader code as uniforms
     for (LXParameter customParameter : fragmentShader.getParameters()) {

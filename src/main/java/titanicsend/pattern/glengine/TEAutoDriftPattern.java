@@ -17,7 +17,7 @@ public class TEAutoDriftPattern extends DriftEnabledPattern {
     super(lx, defaultView);
 
     // create shader effect
-    GLShader shader = new GLShader(lx, this.getShaderFile(), this);
+    GLShader shader = new GLShader(lx, this.getShaderFile(), this.controlData);
 
     // use common control configuration data from shader to set control defaults,
     // then register controls with Chromatik.
