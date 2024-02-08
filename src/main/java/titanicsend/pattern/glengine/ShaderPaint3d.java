@@ -6,16 +6,16 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 /**
- * Works with textures wrapped around the entire car. Looks best if the shader is careful
- * about its coordinate wrapping behavior, so it is recommended to use this class only with
- * shaders that are designed to work this way.
+ * Works with textures wrapped around the entire car. Looks best if the shader is careful about its
+ * coordinate wrapping behavior, so it is recommended to use this class only with shaders that are
+ * designed to work this way.
  */
-public class ShaderPaint3d implements ShaderPaintFn{
+public class ShaderPaint3d implements ShaderPaintFn {
 
   /**
    * Called after a frame has been generated, this function samples the OpenGL backbuffer to set
-   * color at the specified points. This version wraps a texture around the entire car instead
-   * of the default symmetrical mirroring.
+   * color at the specified points. This version wraps a texture around the entire car instead of
+   * the default symmetrical mirroring.
    *
    * @param points list of points to paint
    * @param image backbuffer containing image for this frame
@@ -38,6 +38,7 @@ public class ShaderPaint3d implements ShaderPaintFn{
   }
 
   public void mapToBuffer(List<LXPoint> points, ByteBuffer image, int[] colors) {
+    
     for (LXPoint point : points) {
       float zn = 0.5f * ((point.x >= 0) ? 1f + point.zn : 1f - point.zn);
       float yn = point.yn;

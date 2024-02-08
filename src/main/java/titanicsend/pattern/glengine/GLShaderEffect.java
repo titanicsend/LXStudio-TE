@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import titanicsend.effect.TEEffect;
+import titanicsend.pattern.jon.VariableSpeedTimer;
 
 /**
  * Wrapper class for OpenGL shaders. Simplifies handling of
@@ -27,7 +28,7 @@ public class GLShaderEffect extends TEEffect {
   }
 
   protected GLEffectControl controlData;
-
+  private final VariableSpeedTimer iTime = new VariableSpeedTimer();
   protected ByteBuffer imageBuffer;
 
   // convenience, to simplify user setup of shader OnFrame() functions
@@ -41,7 +42,7 @@ public class GLShaderEffect extends TEEffect {
 
   public GLShaderEffect(LX lx) {
     super(lx);
-    setPainter(new ShaderPaintFn() {});
+    setPainter(new ShaderPaint3d() {});
     controlData = new GLEffectControl(this);
     imageBuffer = GLShader.allocateBackBuffer();
   }
@@ -76,14 +77,18 @@ public class GLShaderEffect extends TEEffect {
     addShader(new GLShader(lx, shaderName, controlData), setup);
   }
 
-  protected ByteBuffer getImageBuffer() {
+  protected ByteBuffer getDefaultImageBuffer() {
     return imageBuffer;
+  }
+
+  public double getTime() {
+    return iTime.getTime();
   }
 
   protected void run(double deltaMs, double enabledAmount) {
     ShaderInfo s = null;
-    ByteBuffer image = null;
     this.deltaMs = deltaMs;
+    iTime.tick();
 
     painter.mapToBuffer(modelTE.getPoints(), imageBuffer, colors);
 
@@ -99,7 +104,7 @@ public class GLShaderEffect extends TEEffect {
     }
 
     // paint the final shader output to the car.
-    painter.mapToPoints(getModel().getPoints(), s.shader.getImageBuffer(),getColors());
+    painter.mapToPoints(getModel().getPoints(), imageBuffer,getColors());
   }
 
   @Override

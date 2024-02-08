@@ -12,6 +12,7 @@ public class GLEffectControl implements GLControlData {
   }  
   
   public void setUniforms(GLShader s) {
+    s.setUniform("iTime", (float) effect.getTime());
     s.setUniform("iResolution", (float) GLEngine.getWidth(), (float) GLEngine.getHeight());
 
 /*
