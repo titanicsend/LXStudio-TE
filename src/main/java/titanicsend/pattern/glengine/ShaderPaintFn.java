@@ -36,12 +36,16 @@ public interface ShaderPaintFn {
   }
 
   /**
-   * Map current LX point colors to a texture buffer
+   * Map current LX point colors to a texture buffer that can be used
+   * by a shader.
    * @param points list of points to paint
-   * @param image backbuffer for map
+   * @param image buffer for bitmap
    * @param colors array of colors, one for each point
    */
   default void mapToBuffer(List<LXPoint> points, ByteBuffer image, int[] colors) {
+    // TODO - do we need to zero the buffer when we do this?
+    // TODO - not if we stick to strictly to the points we're painting,
+    // TODO - but maybe if we're doing something that changes coordinates.
     for (LXPoint point : points) {
       float zn = 1f - point.zn;
       float yn = point.yn;

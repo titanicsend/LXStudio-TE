@@ -28,6 +28,8 @@ public class GLShaderEffect extends TEEffect {
 
   protected GLEffectControl controlData;
 
+  protected ByteBuffer imageBuffer;
+
   // convenience, to simplify user setup of shader OnFrame() functions
   protected double deltaMs;
 
@@ -37,11 +39,11 @@ public class GLShaderEffect extends TEEffect {
   // function to paint the final shader output to the car
   private ShaderPaintFn painter;
 
-
   public GLShaderEffect(LX lx) {
     super(lx);
     setPainter(new ShaderPaintFn() {});
     controlData = new GLEffectControl(this);
+    imageBuffer = GLShader.allocateBackBuffer();
   }
 
   public void setPainter(ShaderPaintFn painter) {
@@ -74,11 +76,16 @@ public class GLShaderEffect extends TEEffect {
     addShader(new GLShader(lx, shaderName, controlData), setup);
   }
 
+  protected ByteBuffer getImageBuffer() {
+    return imageBuffer;
+  }
 
-  public void run(double deltaMs, double enabledAmount) {
+  protected void run(double deltaMs, double enabledAmount) {
     ShaderInfo s = null;
     ByteBuffer image = null;
     this.deltaMs = deltaMs;
+
+    painter.mapToBuffer(modelTE.getPoints(), imageBuffer, colors);
 
     int n = shaderInfo.size();
 
@@ -96,7 +103,7 @@ public class GLShaderEffect extends TEEffect {
   }
 
   @Override
-  public void onEnable() {
+   protected void onEnable() {
     super.onEnable();
     for (ShaderInfo s : shaderInfo) {
       s.shader.onActive();
@@ -104,7 +111,7 @@ public class GLShaderEffect extends TEEffect {
   }
 
   @Override
-  public void onDisable() {
+  protected void onDisable() {
     super.onDisable();
     for (ShaderInfo s : shaderInfo) {
       s.shader.onInactive();
@@ -118,6 +125,5 @@ public class GLShaderEffect extends TEEffect {
       s.shader.dispose();
     }
   }
-
 }
 

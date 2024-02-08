@@ -69,10 +69,13 @@ public class GLShader {
   // list of LX control parameters from the shader code
   private final List<LXParameter> parameters;
 
-  // pattern control data
+  // control data - this object is used by the pattern or
+  // effect that owns the shader to set any custom uniforms
+  // Usually, these are the parameters associated with
+  // the TECommonControls.
   private final GLControlData controlData;
 
-  // get the active GL profile so the calling pattern can work with
+  // get the active GL profile so the calling entity can work with
   // GL textures and buffers if necessary.  (NDI support
   // requires this, for example.)
   public GLProfile getGLProfile() {
@@ -90,7 +93,7 @@ public class GLShader {
    * Create new OpenGL shader effect
    *
    * @param lx LX instance
-   * @param fragmentShader fragment shader object shader to use
+   * @param fragmentShader fragment shader object to use
    * @param frameBuf native (GL compatible) ByteBuffer to store render results for use in shaders
    *     that need to read the previous frame. If null, a buffer will be automatically allocated.
    * @param controlData control data object to be associated w/this shader
@@ -115,7 +118,7 @@ public class GLShader {
   }
 
   /**
-   * Create new native shader effect with default backbuffer
+   * Create new shader object with default backbuffer
    *
    * @param lx LX instance
    * @param fragmentShader fragment shader object shader to use
@@ -126,7 +129,7 @@ public class GLShader {
   }
 
   /**
-   * Creates new native shader effect with additional texture support
+   * Creates new shader object with additional texture support
    *
    * @param lx LX instance
    * @param shaderFilename shader to use
@@ -153,7 +156,7 @@ public class GLShader {
   }
 
   /**
-   * Creates new native shader effect with additional texture support
+   * Creates new shader object with additional texture support
    *
    * @param lx LX instance
    * @param shaderFilename shader to use
@@ -198,7 +201,8 @@ public class GLShader {
   }
 
   // Shader initialization that requires the OpenGL context
-  // Normally called each time the pattern is activated.
+  // Normally called each time the pattern is activated or
+  // when the effect is enabled.
   public void init() {
     // The LX engine thread should have been initialized by now, so
     // we can safely retrieve our OpenGL canvas and context from the
@@ -262,7 +266,7 @@ public class GLShader {
 
   /**
    * Called at pattern initialization time to allocate and configure GPU buffers that are common to
-   * all patterns.
+   * all shaders.
    */
   private void allocateShaderBuffers() {
     // storage for geometry buffer handles
@@ -341,7 +345,7 @@ public class GLShader {
     // GL_TEXTURE0 and the backbuffer texture will use GL_TEXTURE1. Other textures
     // will be automatically bound to sequential ids starting with GL_TEXTURE2.
     //
-    // The audio texture can be used by all patterns, and stays bound to texture
+    // The audio texture can be used by all shaders, and stays bound to texture
     // unit 0 throughout the Chromatik run. All we have to do to use it is add the uniform.
     setUniform(Uniforms.AUDIO_CHANNEL, 0);
 
@@ -439,7 +443,7 @@ public class GLShader {
     }
     // The first instance of a uniform wins. Subsequent
     // attempts to (re)set it are ignored.  This makes it so control uniforms
-    // can be set from user pattern code without being overridden by the automatic
+    // can be set from user code without being overridden by the automatic
     // setter, which is called right before frame generation.
     // TODO - we'll have to be more sophisticated about this when we start retaining textures
     // TODO - and other large, invariant uniforms between frames.

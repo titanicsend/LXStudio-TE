@@ -1,21 +1,18 @@
 package titanicsend.pattern.glengine;
 
-import heronarts.lx.color.LXColor;
-import titanicsend.pattern.glengine.GLControlData;
-import titanicsend.pattern.glengine.GLShaderEffect;
 
 public class GLEffectControl implements GLControlData {
 
-  private GLShaderEffect effect;
+  private final GLShaderEffect effect;
   protected int lastColor1 = 0;
   protected int lastColor2 = 0;
 
-  // take that Java!  I can pass random pointers around if I feel like it!  Maybe
   public GLEffectControl(GLShaderEffect effect) {
     this.effect = effect;
   }  
   
   public void setUniforms(GLShader s) {
+    s.setUniform("iResolution", (float) GLEngine.getWidth(), (float) GLEngine.getHeight());
 
 /*
     // set standard shadertoy-style uniforms
