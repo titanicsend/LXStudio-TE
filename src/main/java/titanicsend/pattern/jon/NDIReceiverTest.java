@@ -19,6 +19,6 @@ public class NDIReceiverTest extends NDIPattern {
     addCommonControls();
 
     // add test edge detection effect shader
-    addShader(new GLShader(lx, "sobel.fs", this, buffer));
+    addShader(new GLShader(lx, "sobel.fs", controlData, buffer));
   }
 }
