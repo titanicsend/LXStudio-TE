@@ -1,18 +1,18 @@
 package titanicsend.pattern.glengine;
 
 import heronarts.lx.LX;
-import titanicsend.pattern.TEPerformancePattern;
-import titanicsend.pattern.yoffa.framework.TEShaderView;
-
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+
+import titanicsend.effect.TEEffect;
+import titanicsend.pattern.jon.VariableSpeedTimer;
 
 /**
  * Wrapper class for OpenGL shaders. Simplifies handling of
  * context and native memory management, and provides a
  * convenient interface for adding shaders to a pattern.
  */
-public class GLShaderPattern extends TEPerformancePattern {
+public class GLShaderEffect extends TEEffect {
   public interface GLShaderFrameSetup {
     default void OnFrame(GLShader shader) {}
   }
@@ -27,7 +27,9 @@ public class GLShaderPattern extends TEPerformancePattern {
     }
   }
 
-  protected GLPatternControl controlData;
+  protected GLEffectControl controlData;
+  private final VariableSpeedTimer iTime = new VariableSpeedTimer();
+  protected ByteBuffer imageBuffer;
 
   // convenience, to simplify user setup of shader OnFrame() functions
   protected double deltaMs;
@@ -38,14 +40,11 @@ public class GLShaderPattern extends TEPerformancePattern {
   // function to paint the final shader output to the car
   private ShaderPaintFn painter;
 
-  public GLShaderPattern(LX lx) {
-    this(lx, TEShaderView.ALL_POINTS);
-  }
-
-  public GLShaderPattern(LX lx, TEShaderView view) {
-    super(lx, view);
-    setPainter(new ShaderPaintFn() {});
-    controlData = new GLPatternControl(this);
+  public GLShaderEffect(LX lx) {
+    super(lx);
+    setPainter(new ShaderPaint3d() {});
+    controlData = new GLEffectControl(this);
+    imageBuffer = GLShader.allocateBackBuffer();
   }
 
   public void setPainter(ShaderPaintFn painter) {
@@ -78,11 +77,20 @@ public class GLShaderPattern extends TEPerformancePattern {
     addShader(new GLShader(lx, shaderName, controlData), setup);
   }
 
-  @Override
-  public void runTEAudioPattern(double deltaMs) {
+  protected ByteBuffer getDefaultImageBuffer() {
+    return imageBuffer;
+  }
+
+  public double getTime() {
+    return iTime.getTime();
+  }
+
+  protected void run(double deltaMs, double enabledAmount) {
     ShaderInfo s = null;
-    ByteBuffer image = null;
     this.deltaMs = deltaMs;
+    iTime.tick();
+
+    painter.mapToBuffer(modelTE.getPoints(), imageBuffer, colors);
 
     int n = shaderInfo.size();
 
@@ -95,21 +103,21 @@ public class GLShaderPattern extends TEPerformancePattern {
       s.shader.run();
     }
 
-    // paint the final shader output to the car
-    painter.mapToPoints(getModel().getPoints(), s.shader.getImageBuffer(),getColors());
+    // paint the final shader output to the car.
+    painter.mapToPoints(getModel().getPoints(), imageBuffer,getColors());
   }
 
   @Override
-  public void onActive() {
-    super.onActive();
+   protected void onEnable() {
+    super.onEnable();
     for (ShaderInfo s : shaderInfo) {
       s.shader.onActive();
     }
   }
 
   @Override
-  public void onInactive() {
-    super.onInactive();
+  protected void onDisable() {
+    super.onDisable();
     for (ShaderInfo s : shaderInfo) {
       s.shader.onInactive();
     }
@@ -122,5 +130,5 @@ public class GLShaderPattern extends TEPerformancePattern {
       s.shader.dispose();
     }
   }
-
 }
+

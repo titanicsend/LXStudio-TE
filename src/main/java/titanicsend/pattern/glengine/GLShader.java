@@ -11,17 +11,12 @@ import com.jogamp.opengl.util.GLBuffers;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import heronarts.lx.LX;
-import heronarts.lx.Tempo;
-import heronarts.lx.color.LXColor;
-import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.*;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.shader_engine.*;
 import titanicsend.util.TE;
 
@@ -74,13 +69,23 @@ public class GLShader {
   // list of LX control parameters from the shader code
   private final List<LXParameter> parameters;
 
-  // pattern control data
-  private final TEPerformancePattern pattern;
-  private final PatternControlData controlData;
+  // control data - this object is used by the pattern or
+  // effect that owns the shader to set any custom uniforms
+  // Usually, these are the parameters associated with
+  // the TECommonControls.
+  private final GLControlData controlData;
 
-  // for explode effect
-  // TODO - figure out how to do global explode effect
-  private final SplittableRandom random;
+  // get the active GL profile so the calling entity can work with
+  // GL textures and buffers if necessary.  (NDI support
+  // requires this, for example.)
+  public GLProfile getGLProfile() {
+    return gl4.getGLProfile();
+  }
+
+  // get the active GL4 object for this shader.
+  public GL4 getGL4() {
+    return gl4;
+  }
 
   // get active GL profile so we can manipulate textures in shader patterns
   // if necessary.
@@ -99,20 +104,17 @@ public class GLShader {
    * Create new OpenGL shader effect
    *
    * @param lx LX instance
-   * @param fragmentShader fragment shader object shader to use
+   * @param fragmentShader fragment shader object to use
    * @param frameBuf native (GL compatible) ByteBuffer to store render results for use in shaders
    *     that need to read the previous frame. If null, a buffer will be automatically allocated.
-   * @param pattern Pattern associated w/this shader
+   * @param controlData control data object to be associated w/this shader
    */
   public GLShader(
-      LX lx, FragmentShader fragmentShader, ByteBuffer frameBuf, TEPerformancePattern pattern) {
-    this.random = new SplittableRandom();
-    this.pattern = pattern;
-    this.controlData = new PatternControlData(pattern);
+      LX lx, FragmentShader fragmentShader, ByteBuffer frameBuf, GLControlData controlData) {
+    this.controlData = controlData;
     this.backBuffer = frameBuf;
 
-
-    if (glEngine == null) {
+    if (this.glEngine == null) {
       this.glEngine = (GLEngine) lx.engine.getChild(GLEngine.PATH);
       // TE.log("Shader: Retrieved GLEngine object from LX");
     }
@@ -127,30 +129,30 @@ public class GLShader {
   }
 
   /**
-   * Create new native shader effect with default backbuffer
+   * Create new shader object with default backbuffer
    *
    * @param lx LX instance
    * @param fragmentShader fragment shader object shader to use
-   * @param pattern Pattern associated w/this shader
+   * @param controlData control data object to be associated w/this shader
    */
-  public GLShader(LX lx, FragmentShader fragmentShader, TEPerformancePattern pattern) {
-    this(lx, fragmentShader, null, pattern);
+  public GLShader(LX lx, FragmentShader fragmentShader, GLControlData controlData) {
+    this(lx, fragmentShader, null, controlData);
   }
 
   /**
-   * Creates new native shader effect with additional texture support
+   * Creates new shader object with additional texture support
    *
    * @param lx LX instance
    * @param shaderFilename shader to use
    * @param frameBuf native (GL compatible) ByteBuffer to store render results for use in shaders
    *     that need to read the previous frame. If null, a buffer will be automatically allocated. *
-   * @param pattern Pattern associated w/this shader
+   * @param controlData control data object to be associated w/this shader
    * @param textureFilenames (optional) texture files to load
    */
   public GLShader(
       LX lx,
       String shaderFilename,
-      TEPerformancePattern pattern,
+      GLControlData controlData,
       ByteBuffer frameBuf,
       String... textureFilenames) {
     this(
@@ -161,20 +163,20 @@ public class GLShader {
                 .map(x -> new File("resources/shaders/textures/" + x))
                 .collect(Collectors.toList())),
         frameBuf,
-        pattern);
+        controlData);
   }
 
   /**
-   * Creates new native shader effect with additional texture support
+   * Creates new shader object with additional texture support
    *
    * @param lx LX instance
    * @param shaderFilename shader to use
-   * @param pattern Pattern associated w/this shader
+   * @param controlData control data object to be associated w/this shader
    * @param textureFilenames (optional) texture files to load
    */
   public GLShader(
-      LX lx, String shaderFilename, TEPerformancePattern pattern, String... textureFilenames) {
-    this(lx, shaderFilename, pattern, null, textureFilenames);
+      LX lx, String shaderFilename, GLControlData controlData, String... textureFilenames) {
+    this(lx, shaderFilename, controlData, null, textureFilenames);
   }
 
   /**
@@ -210,7 +212,8 @@ public class GLShader {
   }
 
   // Shader initialization that requires the OpenGL context
-  // Normally called each time the pattern is activated.
+  // Normally called each time the pattern is activated or
+  // when the effect is enabled.
   public void init() {
     // The LX engine thread should have been initialized by now, so
     // we can safely retrieve our OpenGL canvas and context from the
@@ -257,8 +260,7 @@ public class GLShader {
     }
   }
 
-  public void display() {
-    // switch to this shader's gl context
+  public void run() {
     canvas.getContext().makeCurrent();
     render();
     saveSnapshot();
@@ -275,7 +277,7 @@ public class GLShader {
 
   /**
    * Called at pattern initialization time to allocate and configure GPU buffers that are common to
-   * all patterns.
+   * all shaders.
    */
   private void allocateShaderBuffers() {
     // storage for geometry buffer handles
@@ -331,55 +333,6 @@ public class GLShader {
     gl4.glDisableVertexAttribArray(position);
   }
 
-  private void setColorUniform(String rgbName, String hsvName, int color) {
-    float x, y, z;
-
-    x = (float) (0xff & LXColor.red(color)) / 255f;
-    y = (float) (0xff & LXColor.green(color)) / 255f;
-    z = (float) (0xff & LXColor.blue(color)) / 255f;
-    setUniform(rgbName, x, y, z);
-
-    x = LXColor.h(color) / 360f;
-    y = LXColor.s(color) / 100f;
-    z = LXColor.b(color) / 100f;
-    setUniform(hsvName, x, y, z);
-  }
-
-  private void setStandardUniforms(PatternControlData ctl) {
-
-    // set standard shadertoy-style uniforms
-    setUniform("iTime", (float) ctl.getTime());
-    setUniform("iResolution", (float) xResolution, (float) yResolution);
-    // setUniform("iMouse", 0f, 0f, 0f, 0f);
-
-    // TE standard audio uniforms
-    setUniform("beat", (float) ctl.getBeat());
-    setUniform("sinPhaseBeat", (float) ctl.getSinePhaseOnBeat());
-    setUniform("bassLevel", (float) ctl.getBassLevel());
-    setUniform("trebleLevel", (float) ctl.getTrebleLevel());
-
-    // added by @look
-    setUniform("bassRatio", (float) ctl.getBassRatio());
-    setUniform("trebleRatio", (float) ctl.getTrebleRatio());
-    setUniform("volumeRatio", ctl.getVolumeRatiof());
-
-    // color-related uniforms
-    setColorUniform("iColorRGB", "iColorHSB", ctl.calcColor());
-    setColorUniform("iColor2RGB", "iColor2HSB", ctl.calcColor2());
-
-    // uniforms for common controls
-    setUniform("iSpeed", (float) ctl.getSpeed());
-    setUniform("iScale", (float) ctl.getSize());
-    setUniform("iQuantity", (float) ctl.getQuantity());
-    setUniform("iTranslate", (float) ctl.getXPos(), (float) ctl.getYPos());
-    setUniform("iSpin", (float) ctl.getSpin());
-    setUniform("iRotationAngle", (float) ctl.getRotationAngleFromSpin());
-    setUniform("iBrightness", (float) ctl.getBrightness());
-    setUniform("iWow1", (float) ctl.getWow1());
-    setUniform("iWow2", (float) ctl.getWow2());
-    setUniform("iWowTrigger", ctl.getWowTrigger());
-  }
-
   private void setUniforms() {
 
     // set textureKey to first available texture object location.
@@ -388,8 +341,8 @@ public class GLShader {
     // previous rendered frame.)
     textureKey = 2;
 
-    // set uniforms for standard controls and audio information
-    setStandardUniforms(controlData);
+    // set uniforms for the pattern or effect controls this shader uses
+    controlData.setUniforms(this);
 
     // Add all preprocessed LX parameters from the shader code as uniforms
     for (LXParameter customParameter : fragmentShader.getParameters()) {
@@ -403,7 +356,7 @@ public class GLShader {
     // GL_TEXTURE0 and the backbuffer texture will use GL_TEXTURE1. Other textures
     // will be automatically bound to sequential ids starting with GL_TEXTURE2.
     //
-    // The audio texture can be used by all patterns, and stays bound to texture
+    // The audio texture can be used by all shaders, and stays bound to texture
     // unit 0 throughout the Chromatik run. All we have to do to use it is add the uniform.
     setUniform(Uniforms.AUDIO_CHANNEL, 0);
 
@@ -455,7 +408,7 @@ public class GLShader {
     }
   }
 
-  public ByteBuffer getSnapshot() {
+  public ByteBuffer getImageBuffer() {
     return backBuffer;
   }
 
@@ -471,96 +424,6 @@ public class GLShader {
     // TODO - anything we can temporarily release here?
     // for the moment, we're leaving the shader program intact
     // so it is very fast to reactivate.
-  }
-
-  public ByteBuffer getFrame() {
-    display();
-    return getSnapshot();
-  }
-
-  /**
-   * Called after a frame has been generated, this function samples the OpenGL backbuffer to set
-   * color at the specified points.
-   *
-   * @param points list of points to paint
-   * @param image backbuffer containing image for this frame
-   */
-  public void paint(List<LXPoint> points, ByteBuffer image) {
-    int xMax = xResolution - 1;
-    int yMax = yResolution - 1;
-    int[] colors = pattern.getColors();
-    boolean exploding = pattern.getExplode() > 0;
-
-    // Test to see if we're exploding once per frame, and use a "fast"
-    // painter branch if not.
-    // TODO - either move explode effect to the GLSL framework or figure
-    // TODO - out how to build a global explode effect that works for
-    // TODO - both java and shader patterns.
-    if (!exploding) {
-      for (LXPoint point : points) {
-        float zn = (1f - point.zn);
-        float yn = point.yn;
-
-        // use normalized point coordinates to calculate x/y coordinates and then the
-        // proper index in the image buffer.  the 'z' dimension of TE corresponds
-        // with 'x' dimension of the image based on the side that we're painting.
-        int xi = Math.round(zn * xMax);
-        int yi = Math.round(yn * yMax);
-
-        int index = 4 * ((yi * xResolution) + xi);
-
-        colors[point.index] = image.getInt(index);
-      }
-    }
-    else {
-      // calculate per-frame "explosion" parameters based on current
-      // position in measure
-      double measureProgress =
-          1.0
-              - this.pattern
-                  .getLX()
-                  .engine
-                  .tempo
-                  .getBasis(Tempo.Division.WHOLE); // 1 when we start measure, 0 when we finish
-      measureProgress *= measureProgress * measureProgress;
-      double k = 0.00035 + pattern.getExplode() * measureProgress;
-
-      // paint, moving coordinates according to explosion parameters
-      for (LXPoint point : points) {
-        float zn = (1f - point.zn);
-        float yn = point.yn;
-
-        // To "explode", we displace each pixel randomly in chessboard directions.
-        // this is slightly less random than calling nextDouble()) per coordinate
-        // but it saves us an expensive per-pixel calculation and given the
-        // number of pixels we're sampling, looks pretty much the same.
-        float displacement = (float) (k * (-0.5 + random.nextDouble()));
-        zn += displacement;
-        zn = Math.max(0, Math.min(1, zn));
-        yn += displacement;
-        yn = Math.max(0, Math.min(1, yn));
-
-        int xi = Math.round(zn * xMax);
-        int yi = Math.round(yn * yMax);
-
-        int index = 4 * ((yi * xResolution) + xi);
-
-        colors[point.index] = image.getInt(index);
-      }
-    }
-  }
-
-  // run the shader, copying the output to iBackbuffer
-  // of the next shader in the chain.
-  public void run() {
-    getFrame();
-  }
-
-  // run the shader and use the output to set actual pixel colors
-  // (saving iBackbuffer for the next frame, of course)
-  public void runAndPaint() {
-    ByteBuffer image = getFrame();
-    paint(this.pattern.getModel().getPoints(), image);
   }
 
   public List<ShaderConfiguration> getShaderConfig() {
@@ -591,7 +454,7 @@ public class GLShader {
     }
     // The first instance of a uniform wins. Subsequent
     // attempts to (re)set it are ignored.  This makes it so control uniforms
-    // can be set from user pattern code without being overridden by the automatic
+    // can be set from user code without being overridden by the automatic
     // setter, which is called right before frame generation.
     // TODO - we'll have to be more sophisticated about this when we start retaining textures
     // TODO - and other large, invariant uniforms between frames.

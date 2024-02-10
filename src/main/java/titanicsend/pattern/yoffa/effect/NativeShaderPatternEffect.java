@@ -79,36 +79,10 @@ public class NativeShaderPatternEffect extends PatternEffect {
     int xMax = xSize - 1;
     int yMax = ySize - 1;
     int[] colors = pattern.getColors();
-    boolean exploding = pattern.getExplode() > 0;
-
-    // calculate per-frame "explosion" parameters
-    if (exploding) {
-      double measureProgress =
-          1.0
-              - this.pattern
-                  .getLX()
-                  .engine
-                  .tempo
-                  .getBasis(Tempo.Division.WHOLE); // 1 when we start measure, 0 when we finish
-      measureProgress *= measureProgress * measureProgress;
-      k = 0.00035 + pattern.getExplode() * measureProgress;
-    }
 
     for (LXPoint point : points) {
       float zn = (1f - point.zn);
       float yn = point.yn;
-
-      if (exploding) {
-        // displace each pixel randomly in chessboard directions.
-        // this is slightly less random than calling nextDouble()) per coordinate
-        // but it saves us an expensive per-pixel calculation and given the
-        // number of pixels we're sampling, looks pretty much the same.
-        float displacement = (float) (k * (-0.5 + random.nextDouble()));
-        zn += displacement;
-        zn = Math.max(0, Math.min(1, zn));
-        yn += displacement;
-        yn = Math.max(0, Math.min(1, yn));
-      }
 
       // use normalized point coordinates to calculate x/y coordinates and then the
       // proper index in the image buffer.  the 'z' dimension of TE corresponds

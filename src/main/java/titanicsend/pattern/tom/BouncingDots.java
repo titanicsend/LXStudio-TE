@@ -44,7 +44,6 @@ public class BouncingDots extends TEPerformancePattern {
     controls.markUnused(controls.getLXControl(TEControlTag.YPOS));
     controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
     controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
-    controls.markUnused(controls.getLXControl(TEControlTag.EXPLODE));
     controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
     controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
     controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
