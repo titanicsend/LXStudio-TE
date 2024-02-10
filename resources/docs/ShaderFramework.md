@@ -635,23 +635,23 @@ a function for doing this:
 Once you've allocated the buffer, you can add shaders to your pattern using multiple calls
 to addShader(). For example to create a pattern with two shaders:
 
-    // add the first shader, passing in the shared backbuffer
-    shader = new GLShader(lx, "fire.fs", this,buffer);
+    // add the first shader, passing in the default controlData object and shared backbuffer
+    shader = new GLShader(lx, "fire.fs",controlData, buffer);
     addShader(shader);
 
     // add the second shader, which applies a simple edge detection filter to the
     // output of the first shader
-    shader = new GLShader(lx, "multipass1.fs", this, buffer);
+    shader = new GLShader(lx, "multipass1.fs", controlData, buffer);
     addShader(shader );
 
 To add more shaders, just keep calling addShader(), remembering to pass in the shared
 backbuffer. The last shader in the sequence will set the final output color.
 
-One important note: The shader rendering system performs can adjusts the color and contrast
+One important note: The shader rendering system can adjust the color and contrast
 of output for best appearance on the car. In a multipass pattern, it's possible that this
 adjustment might change values passed between shaders in an unexpected way.
 
-If you're seeing strange results in a multipass shader, you can disable the post processing on 
+If you're seeing strange results in a multipass shader, you can disable this post processing on 
 individual shaders by defining ```#TE_NOPOSTPROCESSING``` in the shader code.
 
 ### Preprocessor Directives for Output Control
@@ -666,7 +666,8 @@ The current shader engine has the ability to optimize shader behavior by substit
 for alpha in certain circumstances. This works well for most shaders, but can cause problems
 in rare circumstances.  
 
-The following preprocessor directives are available to control this behavior:
+The following preprocessor directives are available to control this behavior and other
+interactions between the shader and the TE framework.
 
 #### #define TE_NOALPHAFIX
 The TE_NOALPHAFIX directive causes the renderer to use the "old", pre-EDC 2023 alpha
@@ -684,6 +685,12 @@ and transparency.
 The TE_NOPOSTPROCESSING directive disables all automatic color and alpha adjustment
 of shader output. This is useful in multipass patterns where the output of one shader
 is passed to another as data, and the precise values must be preserved.
+
+#### #define TE_EFFECTSHADER
+This directive tells the preprocessor and control management scripts that
+this shader provides a pre- or post-processing effect and doesn't interact with the
+common controls so including it as part of a pattern will not cause any controls to be
+disabled for that pattern.
 
 ## Tips and Traps
 
@@ -708,6 +715,15 @@ calculate a reasonable alpha channel. If you are porting a pattern, and it doesn
 do the right thing, you can either set the color to it's highest possible brightness
 and use alpha to control the brightness level, or set alpha to 1.0 and let the framework
 do it for you.
+
+### Mirroring vs 3D Wrapping
+By default, the TE shader engine produces symmetrically mirrored images on the port and starboard
+sides of the vehicle.  In most cases, this is the desired behavior because the audience is generally
+on only one side of the car, and the far side is not visible.  
+
+However, for effects, panoramic views and other "special occasions" you may want to produce a full
+3D wrap-around effect.  To enable this, all you need to do is call `setPainter(new ShaderPaint3d() {});` in
+your pattern's constructor.  
 
 ### Avoiding Version Chaos
 
