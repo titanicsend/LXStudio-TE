@@ -5,6 +5,7 @@ uniform float gain;
 uniform sampler2D ndivideo;
 
 #define TE_NOTRANSLATE
+#define TE_EFFECTSHADER
 
 // rotate (2D) a point about the specified origin by <angle> radians
 vec2 rotate(vec2 point, vec2 origin, float angle) {

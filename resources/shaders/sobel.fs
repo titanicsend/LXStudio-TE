@@ -1,3 +1,4 @@
+#define TE_EFFECTSHADER
 
 // how far to move in our backbuffer to get the next pixel
 const float stepx = 1.0/640.0;
