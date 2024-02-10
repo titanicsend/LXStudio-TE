@@ -325,18 +325,15 @@ public class TECommonControls {
     // TEControlTag enum
     for (TEControlTag tag : TEControlTag.values()) {
       LXListenableNormalizedParameter param = controlList.get(tag).control;
-      if (missingControls != null) {
+
+      // TODO - disable all explode controls for now.  We should
+      // TODO - remove them in the future. (Explode is now a separate effect)
+      if (param.getLabel().equals(TEControlTag.EXPLODE.getLabel()))  {
+        markUnused(param);
+      } else if (missingControls != null) {
         if (missingControls.missing_control_tags.contains(tag)) {
           markUnused(param);
         }
-      }
-
-      // disable explode control if the pattern isn't a shader
-      // (takes advantage of the fact that all shaders have a missingControls file entry,
-      // even if they're not missing any controls.)
-      // TODO - reminder to implement "explode" as an effect so all patterns can use it.
-      else if (param.getLabel().equals(TEControlTag.EXPLODE.getLabel())) {
-        markUnused(param);
       }
 
       this.pattern.addParam(tag.getPath(), param);

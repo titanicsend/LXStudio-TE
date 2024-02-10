@@ -38,7 +38,7 @@ public class ShaderPaint3d implements ShaderPaintFn {
   }
 
   public void mapToBuffer(List<LXPoint> points, ByteBuffer image, int[] colors) {
-    
+
     for (LXPoint point : points) {
       float zn = 0.5f * ((point.x >= 0) ? 1f + point.zn : 1f - point.zn);
       float yn = point.yn;
