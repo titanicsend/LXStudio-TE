@@ -39,7 +39,6 @@ public class ExampleDmxTEPerformancePattern extends TEPerformancePattern {
     controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
     controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
     controls.markUnused(controls.getLXControl(TEControlTag.BRIGHTNESS));
-    controls.markUnused(controls.getLXControl(TEControlTag.EXPLODE));
     controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
     controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
     controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));

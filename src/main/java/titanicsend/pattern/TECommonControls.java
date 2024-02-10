@@ -116,11 +116,6 @@ public class TECommonControls {
             .setDescription("Trigger WoW effects");
     setControl(TEControlTag.WOWTRIGGER, p);
 
-    p =
-        new CompoundParameter("Explode", 0, 0, 1.0)
-            .setDescription("Randomize the pixels to a certain radius on beat");
-    setControl(TEControlTag.EXPLODE, p);
-
     // in degrees for display 'cause more people think about it that way
     p =
         (LXListenableNormalizedParameter)
@@ -326,11 +321,7 @@ public class TECommonControls {
     for (TEControlTag tag : TEControlTag.values()) {
       LXListenableNormalizedParameter param = controlList.get(tag).control;
 
-      // TODO - disable all explode controls for now.  We should
-      // TODO - remove them in the future. (Explode is now a separate effect)
-      if (param.getLabel().equals(TEControlTag.EXPLODE.getLabel()))  {
-        markUnused(param);
-      } else if (missingControls != null) {
+      if (missingControls != null) {
         if (missingControls.missing_control_tags.contains(tag)) {
           markUnused(param);
         }
@@ -373,7 +364,7 @@ public class TECommonControls {
           getControl(TEControlTag.WOW1).control,
           getControl(TEControlTag.WOW2).control,
           getControl(TEControlTag.WOWTRIGGER).control,
-          getControl(TEControlTag.EXPLODE).control,
+          null,  // former shader-specific explode control
           // To be SHIFT, not implemented yet
 
           // For UI usage, LXDeviceComponent.view
@@ -416,7 +407,6 @@ public class TECommonControls {
     getControl(TEControlTag.ANGLE).control.reset();
     getControl(TEControlTag.SPIN).control.reset();
 
-    getControl(TEControlTag.EXPLODE).control.reset();
     getControl(TEControlTag.WOW1).control.reset();
     getControl(TEControlTag.WOW2).control.reset();
     getControl(TEControlTag.WOWTRIGGER).control.reset();

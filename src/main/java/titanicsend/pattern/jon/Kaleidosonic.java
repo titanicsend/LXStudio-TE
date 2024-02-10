@@ -21,12 +21,16 @@ public class Kaleidosonic extends GLShaderPattern {
     // register common controls with LX
     addCommonControls();
 
+    final boolean[] msgSent = {false};
     addShader(
         new GLShader(lx, "kaleidosonic.fs", controlData, "color_noise.png"),
         new GLShaderFrameSetup() {
           @Override
           public void OnFrame(GLShader s) {
-            s.setUniform("avgVolume", avgVolume.getValuef());
+            float volume = avgVolume.getValuef();
+            // tickle EMA if it drops too far, to keep the idle state interesting.
+            volume = (volume < 0.005) ? 0.5f : volume;
+            s.setUniform("avgVolume", volume);
           }
         });
   }
