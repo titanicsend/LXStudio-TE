@@ -48,6 +48,10 @@ public class GLShaderPattern extends TEPerformancePattern {
     controlData = new GLPatternControl(this);
   }
 
+  public GLPatternControl getControlData() {
+    return controlData;
+  }
+
   public void setPainter(ShaderPaintFn painter) {
     this.painter = painter;
   }
@@ -70,7 +74,7 @@ public class GLShaderPattern extends TEPerformancePattern {
   // The simple option for shaders that use only the default TEPerformancePattern
   // uniforms and don't require any additional computation in Java.
   public void addShader(String shaderName,      String... textureFilenames) {
-    addShader(new GLShader(lx, shaderName, controlData, textureFilenames));
+    addShader(new GLShader(lx, shaderName, getControlData(), textureFilenames));
   }
 
   // Add a shader by fragment shader filename, with an OnFrame() function.

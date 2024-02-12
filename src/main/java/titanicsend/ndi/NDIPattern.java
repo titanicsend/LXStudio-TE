@@ -40,13 +40,19 @@ public class NDIPattern extends GLShaderPattern {
   protected GL4 gl4;
 
   protected final LXListenableNormalizedParameter source;
+
   public LXNormalizedParameter getSourceControl() {
     return source;
   }
 
   protected final LXListenableNormalizedParameter gain;
+
   public LXNormalizedParameter getGainControl() {
     return gain;
+  }
+
+  protected ByteBuffer getImageBuffer() {
+    return buffer;
   }
 
   public NDIPattern(LX lx) {
@@ -131,13 +137,12 @@ public class NDIPattern extends GLShaderPattern {
    * Size, Brightness, Explode work as expected, Wow1 controls the full color vs. palette color mix)
    */
   public void addPrimaryShader() {
-    GLShader shader = new GLShader(lx, "ndidefault.fs", controlData, buffer);
+    GLShader shader = new GLShader(lx, "ndidefault.fs", getControlData(), buffer);
     addShader(
         shader,
         new GLShaderFrameSetup() {
           @Override
           public void OnFrame(GLShader s) {
-
 
             int ch = (int) source.getValue();
             if (ch != sourceIndex) {
@@ -190,10 +195,7 @@ public class NDIPattern extends GLShaderPattern {
     if (receiver == null) {
       receiver =
           new DevolayReceiver(
-              DevolayReceiver.ColorFormat.BGRX_BGRA,
-              RECEIVE_BANDWIDTH_HIGHEST,
-              true,
-              "TE");
+              DevolayReceiver.ColorFormat.BGRX_BGRA, RECEIVE_BANDWIDTH_HIGHEST, true, "TE");
     }
     lastConnectState = ndiEngine.connectByIndex(sourceIndex, receiver);
   }

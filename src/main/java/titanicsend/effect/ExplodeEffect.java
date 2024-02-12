@@ -146,7 +146,7 @@ public class ExplodeEffect extends GLShaderEffect {
     addParameter("trigger", this.trigger);
 
     // add the first shader, passing in the effect's backbuffer
-    GLShader shader = new GLShader(lx, "explode_effect.fs", controlData, getDefaultImageBuffer());
+    GLShader shader = new GLShader(lx, "explode_effect.fs", getControlData(), getImageBuffer());
     addShader(
         shader,
         new GLShaderFrameSetup() {

@@ -4,7 +4,6 @@ import heronarts.lx.LX;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
-import titanicsend.color.TEColorParameter;
 import titanicsend.effect.TEEffect;
 import titanicsend.pattern.jon.VariableSpeedTimer;
 
@@ -71,7 +70,7 @@ public class GLShaderEffect extends TEEffect {
   // The simple option for shaders that use only the default TEPerformancePattern
   // uniforms and don't require any additional computation in Java.
   public void addShader(String shaderName,      String... textureFilenames) {
-    addShader(new GLShader(lx, shaderName, controlData, textureFilenames));
+    addShader(new GLShader(lx, shaderName, getControlData(), textureFilenames));
   }
 
   // Add a shader by fragment shader filename, with an OnFrame() function.
@@ -79,8 +78,12 @@ public class GLShaderEffect extends TEEffect {
     addShader(new GLShader(lx, shaderName, controlData), setup);
   }
 
-  protected ByteBuffer getDefaultImageBuffer() {
+  protected ByteBuffer getImageBuffer() {
     return imageBuffer;
+  }
+
+  public GLEffectControl getControlData() {
+    return controlData;
   }
 
   public double getTime() {

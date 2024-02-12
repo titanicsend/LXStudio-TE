@@ -394,11 +394,6 @@ public class GLShader {
         ti.channel = textureInput.getKey();
         ti.uniformLocation = gl4.glGetUniformLocation(shaderProgram.getProgramId(), "iChannel"+ti.channel);
 
-        // TODO - get rid of diagnostics when we get this working
-        System.out.println(
-            "Texture name: " + textureInput.getValue() + " Texture unit: " + ti.textureUnit);
-        System.out.println("Uniform location: " + ti.uniformLocation);
-
         textures.add(ti);
     }
   }

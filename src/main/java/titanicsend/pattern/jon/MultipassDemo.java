@@ -24,12 +24,12 @@ public class MultipassDemo extends GLShaderPattern {
 
     // add the first shader, passing in the shared backbuffer
 
-    shader = new GLShader(lx, "fire.fs", controlData, buffer);
+    shader = new GLShader(lx, "fire.fs", getControlData(), buffer);
     addShader(shader);
 
     // add the second shader, which applies a simple edge detection filter to the
     // output of the first shader
-    shader = new GLShader(lx, "sobel_filter_effect.fs", controlData, buffer);
+    shader = new GLShader(lx, "sobel_filter_effect.fs", getControlData(), buffer);
     addShader(shader);
   }
 

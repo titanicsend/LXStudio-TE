@@ -2,11 +2,7 @@ package titanicsend.effect;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.Tempo;
-import heronarts.lx.modulator.LXWaveshape;
-import heronarts.lx.modulator.SawLFO;
 import heronarts.lx.parameter.*;
-import heronarts.lx.utils.LXUtils;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderEffect;
 
@@ -27,7 +23,7 @@ public class BasicShaderEffect extends GLShaderEffect {
     // setting the amount of effect to apply as the uniform "iWow2".
     GLShader shader =
         new GLShader(
-            lx, "demo_simple_effect.fs", controlData, getDefaultImageBuffer());
+            lx, "demo_simple_effect.fs", getControlData(), getImageBuffer());
     addShader(
         shader,
         new GLShaderFrameSetup() {

@@ -27,7 +27,7 @@ public class GLEffectControl implements GLControlData {
     s.setUniform("iTime", (float) effect.getTime());
     s.setUniform("iResolution", (float) GLEngine.getWidth(), (float) GLEngine.getHeight());
 
-    // get current primary and secondary colors - only reset uniforms when they change
+    // get current primary and secondary colors
     // TODO - we're just grabbing swatch colors here.  Do we need to worry about modulation?
     int col = getColor1();
     s.setUniform(
@@ -38,7 +38,6 @@ public class GLEffectControl implements GLControlData {
     s.setUniform("iColorHSB", LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
 
     col = getColor2();
-
     s.setUniform(
         "iColor2RGB",
         (float) (0xff & LXColor.red(col)) / 255f,

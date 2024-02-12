@@ -23,7 +23,7 @@ public class Kaleidosonic extends GLShaderPattern {
 
     final boolean[] msgSent = {false};
     addShader(
-        new GLShader(lx, "kaleidosonic.fs", controlData, "color_noise.png"),
+        new GLShader(lx, "kaleidosonic.fs", getControlData(), "color_noise.png"),
         new GLShaderFrameSetup() {
           @Override
           public void OnFrame(GLShader s) {

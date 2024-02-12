@@ -37,6 +37,7 @@ public class GLPatternControl implements GLControlData {
         (float) (0xff & LXColor.blue(col)) / 255f);
     s.setUniform("iColorHSB", LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
 
+    col = pattern.calcColor2();
     s.setUniform(
         "iColor2RGB",
         (float) (0xff & LXColor.red(col)) / 255f,
