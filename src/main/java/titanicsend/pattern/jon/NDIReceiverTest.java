@@ -9,7 +9,7 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
  * Test class for NDIReceiver: displays video frames, and adds a second shader for
  * a simple edge detection effect (controlled by WOW2)
  */
-@LXCategory("AAAardvark")
+@LXCategory("AAA")
 public class NDIReceiverTest extends NDIPattern {
 
   public NDIReceiverTest(LX lx) {
@@ -19,6 +19,6 @@ public class NDIReceiverTest extends NDIPattern {
     addCommonControls();
 
     // add test edge detection effect shader
-    addShader(new GLShader(lx, "sobel.fs", controlData, buffer));
+    addShader(new GLShader(lx, "sobel_filter_effect.fs", controlData, buffer));
   }
 }

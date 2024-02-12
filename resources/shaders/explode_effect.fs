@@ -1,6 +1,7 @@
 // tell the preprocessor and any control management scripts that this is a post effect shader
 // and doesn't use the common controls.
 #define TE_EFFECTSHADER
+#define TE_NOPOSTPROCESSING
 
 uniform float basis;
 uniform float size;

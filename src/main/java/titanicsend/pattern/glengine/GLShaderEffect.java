@@ -4,6 +4,7 @@ import heronarts.lx.LX;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
+import titanicsend.color.TEColorParameter;
 import titanicsend.effect.TEEffect;
 import titanicsend.pattern.jon.VariableSpeedTimer;
 
@@ -42,6 +43,7 @@ public class GLShaderEffect extends TEEffect {
 
   public GLShaderEffect(LX lx) {
     super(lx);
+
     setPainter(new ShaderPaint3d() {});
     controlData = new GLEffectControl(this);
     imageBuffer = GLShader.allocateBackBuffer();

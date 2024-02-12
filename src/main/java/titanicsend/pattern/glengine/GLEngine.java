@@ -3,13 +3,19 @@ package titanicsend.pattern.glengine;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.util.GLBuffers;
+import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.TextureIO;
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.LXLoopTask;
 import heronarts.lx.audio.GraphicMeter;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.jogamp.opengl.GL.*;
 
@@ -29,6 +35,21 @@ public class GLEngine extends LXComponent implements LXLoopTask {
   // audio data source & parameters
   private final GraphicMeter meter;
   private final float fftResampleFactor;
+
+  // texture unit management
+  private class TextureUnit {
+    private Texture texture;
+    private int textureUnit;
+    private int refCount;
+  }
+
+  private int nextTextureUnit = 2;
+
+  // staticTextures is a map of texture names to texture unit numbers.
+  private final HashMap<String, TextureUnit> staticTextures = new HashMap<>();
+
+  // a list of that we can use to keep track of released texture unit numbers
+  private final ArrayList<Integer> releasedTextureUnits = new ArrayList<>();
 
   private boolean isRunning = false;
 
@@ -62,6 +83,66 @@ public class GLEngine extends LXComponent implements LXLoopTask {
     return audioTextureHeight;
   }
 
+  // Returns the next available texture unit number, either by reusing a released
+  // texture unit number or by allocating a new one.
+  public int getNextTextureUnit() {
+    if (releasedTextureUnits.size() > 0) {
+      return releasedTextureUnits.remove(0);
+    } else {
+      return nextTextureUnit++;
+    }
+  }
+
+  // Add a released (ref count 0) texture unit number to the list of available
+  // texture units
+  private void recycleTextureUnit(TextureUnit t) {
+    if (!releasedTextureUnits.contains(t.textureUnit)) {
+      releasedTextureUnits.add(t.textureUnit);
+    }
+  }
+
+  public int useTexture(GL4 gl4, String textureName) {
+    TextureUnit t = new TextureUnit();
+
+    try {
+      // if the texture is already loaded, just increment the ref count
+      if (staticTextures.containsKey(textureName)) {
+        t = staticTextures.get(textureName);
+        t.refCount++;
+      } else {
+        // otherwise, load the texture its file and bind it to the next available texture unit
+        File file = new File(textureName);
+        t.texture = TextureIO.newTexture(file, false);
+        t.textureUnit = getNextTextureUnit();
+        t.refCount = 1;
+        staticTextures.put(textureName, t);
+
+        gl4.glActiveTexture(GL_TEXTURE0 + t.textureUnit);
+        gl4.glEnable(GL_TEXTURE_2D);
+        t.texture.enable(gl4);
+        t.texture.bind(gl4);
+      }
+      // return the texture unit number
+      return t.textureUnit;
+
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public void releaseTexture(String textureName) {
+    TextureUnit t = staticTextures.get(textureName);
+    if (t == null) {
+      throw new RuntimeException("Attempt to release texture that was never used: " + textureName);
+    }
+    t.refCount--;
+    if (t.refCount <= 0) {
+      t.texture.destroy(gl4);
+      recycleTextureUnit(t);
+      staticTextures.remove(textureName);
+    }
+  }
+
   /**
    * Retrieve a single sample of the current frame's fft data from the engine NOTE: 512 samples can
    * always be retrieved, regardless of how many bands the engine actually supplies. Data will be
@@ -85,10 +166,9 @@ public class GLEngine extends LXComponent implements LXLoopTask {
   }
 
   /**
-   * Construct texture to hold audio fft and waveform data and
-   * bind it to texture unit 0 for the entire run. Once done,
-   * every shader pattern can access the audio data texture
-   * with minimal per-pattern work.
+   * Construct texture to hold audio fft and waveform data and bind it to texture unit 0 for the
+   * entire run. Once done, every shader pattern can access the audio data texture with minimal
+   * per-pattern work.
    */
   private void initializeAudioTexture() {
     // allocate backing buffer in native memory
@@ -108,10 +188,7 @@ public class GLEngine extends LXComponent implements LXLoopTask {
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   }
 
-  /**
-   * Update audio texture object with new fft and waveform data.
-   * This is called once per frame.
-   */
+  /** Update audio texture object with new fft and waveform data. This is called once per frame. */
   private void updateAudioTexture() {
     // load frequency and waveform data into our texture buffer, fft data
     // in the first row, normalized audio waveform data in the second.

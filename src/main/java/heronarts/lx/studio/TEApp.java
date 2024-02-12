@@ -234,6 +234,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(BassReactiveEdge.class);
       lx.registry.addPattern(TempoReactiveEdge.class);
       lx.registry.addPattern(ArtStandards.class);
+      lx.registry.addEffect(titanicsend.effect.BasicShaderEffect.class);
       lx.registry.addEffect(titanicsend.effect.EdgeSieve.class);
       lx.registry.addEffect(titanicsend.effect.NoGapEffect.class);
       lx.registry.addEffect(titanicsend.effect.ExplodeEffect.class);

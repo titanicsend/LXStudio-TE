@@ -6,10 +6,7 @@ import titanicsend.pattern.TEPerformancePattern;
 public class GLPatternControl implements GLControlData {
 
   private TEPerformancePattern pattern;
-  protected int lastColor1 = 0;
-  protected int lastColor2 = 0;
 
-  // take that Java!  I can pass random pointers around if I feel like it!  Maybe
   public GLPatternControl(TEPerformancePattern pattern) {
     this.pattern = pattern;
   }
@@ -33,28 +30,19 @@ public class GLPatternControl implements GLControlData {
 
     // color-related uniforms
     int col = pattern.calcColor();
-    if (col != lastColor1) {
-      lastColor1 = col;
-      s.setUniform(
-          "iColorRGB",
-          (float) (0xff & LXColor.red(col)) / 255f,
-          (float) (0xff & LXColor.green(col)) / 255f,
-          (float) (0xff & LXColor.blue(col)) / 255f);
-      s.setUniform(
-          "iColorHSB", LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
-    }
+    s.setUniform(
+        "iColorRGB",
+        (float) (0xff & LXColor.red(col)) / 255f,
+        (float) (0xff & LXColor.green(col)) / 255f,
+        (float) (0xff & LXColor.blue(col)) / 255f);
+    s.setUniform("iColorHSB", LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
 
-    col = pattern.calcColor2();
-    if (col != lastColor2) {
-      lastColor2 = col;
-      s.setUniform(
-          "iColor2RGB",
-          (float) (0xff & LXColor.red(col)) / 255f,
-          (float) (0xff & LXColor.green(col)) / 255f,
-          (float) (0xff & LXColor.blue(col)) / 255f);
-      s.setUniform(
-          "iColor2HSB", LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
-    }
+    s.setUniform(
+        "iColor2RGB",
+        (float) (0xff & LXColor.red(col)) / 255f,
+        (float) (0xff & LXColor.green(col)) / 255f,
+        (float) (0xff & LXColor.blue(col)) / 255f);
+    s.setUniform("iColor2HSB", LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
 
     // uniforms for common controls
     s.setUniform("iSpeed", (float) pattern.getSpeed());

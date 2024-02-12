@@ -9,11 +9,9 @@ import com.jogamp.opengl.*;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.util.GLBuffers;
 import com.jogamp.opengl.util.texture.Texture;
-import com.jogamp.opengl.util.texture.TextureIO;
 import heronarts.lx.LX;
 import heronarts.lx.parameter.LXParameter;
 import java.io.File;
-import java.io.IOException;
 import java.nio.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -58,13 +56,22 @@ public class GLShader {
   private final int[] geometryBufferHandles = new int[2];
 
   // texture buffers
-  private Map<Integer, Texture> textures;
-  private int textureKey;
+  private class TextureInfo {
+    public String name;
+    public int channel;
+    public int textureUnit;
+    public int uniformLocation;
+  }
+
+  private final ArrayList<TextureInfo> textures = new ArrayList<>();
   private ByteBuffer backBuffer;
   private final int[] backbufferHandle = new int[1];
 
   // map of user created uniforms.
   protected HashMap<String, UniformTypes> uniforms = null;
+
+  // maps uniform names to GL texture units
+  protected final HashMap<String, Integer> uniformTextureUnits = new HashMap<>();
 
   // list of LX control parameters from the shader code
   private final List<LXParameter> parameters;
@@ -193,8 +200,6 @@ public class GLShader {
     this.indexBuffer = Buffers.newDirectIntBuffer(INDICES.length);
     this.vertexBuffer.put(VERTICES);
     this.indexBuffer.put(INDICES);
-    this.textures = new HashMap<>();
-    this.textureKey = 2; // textureKey 0-1 reserved.
 
     // allocate default buffer for reading offscreen surface to cpu memory
     if (this.backBuffer == null) this.backBuffer = allocateBackBuffer();
@@ -223,7 +228,7 @@ public class GLShader {
     // then activate it.
     if (!isInitialized()) {
       initShaderProgram(gl4);
-      loadTextureFiles(fragmentShader);
+      loadTextureFiles(gl4, fragmentShader);
     }
   }
 
@@ -241,8 +246,8 @@ public class GLShader {
       gl4.glDeleteTextures(1, backbufferHandle, 0);
 
       // free any textures on ShaderToy channels
-      for (Map.Entry<Integer, Texture> textureInput : textures.entrySet()) {
-        textureInput.getValue().destroy(gl4);
+      for (TextureInfo ti : textures) {
+        glEngine.releaseTexture(ti.name);
       }
 
       shaderProgram.dispose(gl4);
@@ -324,12 +329,6 @@ public class GLShader {
 
   private void setUniforms() {
 
-    // set textureKey to first available texture object location.
-    // (2 because location 0 is reserved for the TE audio data texture
-    //  and location 1 is reserved for a backbuffer containing the
-    // previous rendered frame.)
-    textureKey = 2;
-
     // set uniforms for the pattern or effect controls this shader uses
     controlData.setUniforms(this);
 
@@ -368,9 +367,11 @@ public class GLShader {
 
     setUniform("iBackbuffer", 1);
 
-    // add shadertoy texture channels
-    for (Map.Entry<Integer, Texture> textureInput : textures.entrySet()) {
-      setUniform(Uniforms.CHANNEL + textureInput.getKey(), textureInput.getValue(), true);
+    // add shadertoy texture channels. These textures already statically bound to
+    // texture units so all we have to do is tell the shader which texture unit to use.
+    for (TextureInfo ti : textures) {
+      //setUniform(Uniforms.CHANNEL + ti.channel, ti.textureUnit);
+      gl4.glUniform1i(ti.uniformLocation, ti.textureUnit);
     }
 
     // hand the complete uniform list to OpenGL
@@ -383,17 +384,22 @@ public class GLShader {
     allocateShaderBuffers();
   }
 
-  // TODO - make sure user assignable textures always start with unit 2
-  private void loadTextureFiles(FragmentShader fragmentShader) {
+  private void loadTextureFiles(GL4 gl4, FragmentShader fragmentShader) {
     for (Map.Entry<Integer, String> textureInput :
         fragmentShader.getChannelToTexture().entrySet()) {
-      try {
-        File file = new File(textureInput.getValue());
-        // TE.log("File Texture %s", textureInput.getValue());
-        textures.put(textureInput.getKey(), TextureIO.newTexture(file, false));
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
+
+        TextureInfo ti = new TextureInfo();
+        ti.textureUnit = glEngine.useTexture(gl4, textureInput.getValue());
+        ti.name = textureInput.getValue();
+        ti.channel = textureInput.getKey();
+        ti.uniformLocation = gl4.glGetUniformLocation(shaderProgram.getProgramId(), "iChannel"+ti.channel);
+
+        // TODO - get rid of diagnostics when we get this working
+        System.out.println(
+            "Texture name: " + textureInput.getValue() + " Texture unit: " + ti.textureUnit);
+        System.out.println("Uniform location: " + ti.uniformLocation);
+
+        textures.add(ti);
     }
   }
 
@@ -449,6 +455,17 @@ public class GLShader {
     // TODO - and other large, invariant uniforms between frames.
     if (!uniforms.containsKey(name)) {
       uniforms.put(name, new UniformTypes(type, value));
+    }
+  }
+
+  // get a texture id for a uniform either from uniformTextureUnits or by allocating a new one
+  protected int getTextureUnit(String name) {
+    if (uniformTextureUnits.containsKey(name)) {
+      return uniformTextureUnits.get(name);
+    } else {
+      int unit = glEngine.getNextTextureUnit();
+      uniformTextureUnits.put(name, unit);
+      return unit;
     }
   }
 
@@ -549,13 +566,16 @@ public class GLShader {
             break;
           case SAMPLER2DSTATIC:
           case SAMPLER2D:
+            // TODO - does this really work if you call it every frame?
+            // TODO - (probably, but it might be slow. And
+            // TODO - we need to be sure we're generating a unique name
+            // TODO - per pattern instance.)
             Texture tex = ((Texture) val.value);
-            gl4.glActiveTexture(GL_TEXTURE0 + textureKey);
+            int unit = getTextureUnit(name);
+            gl4.glActiveTexture(GL_TEXTURE0 + unit);
             tex.enable(gl4);
             tex.bind(gl4);
-            gl4.glUniform1i(loc, textureKey);
-            tex.disable(gl4);
-            textureKey++;
+            gl4.glUniform1i(loc, unit);
             break;
           default:
             LX.log("Unsupported uniform type");

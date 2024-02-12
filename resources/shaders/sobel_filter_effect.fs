@@ -1,3 +1,5 @@
+#define TE_EFFECTSHADER
+#define TE_NOPOSTPROCESSING
 
 // how far to move in our backbuffer to get the next pixel
 const float stepx = 1.0/640.0;
@@ -26,11 +28,13 @@ vec4 sobel(vec2 center){
     float y = -tleft - 2.0*top - tright + bleft + 2.0 * bottom + bright;
     float color = sqrt((x*x) + (y*y));
 
-    return vec4(color, color, color, color);
+    return vec4(color * iColorRGB, 0.9995);
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-    // slow fade between original and edge detected images
     vec2 uv = fragCoord.xy / iResolution.xy;
-    fragColor =  mix(texture(iBackbuffer, uv), 4.0 * sobel(uv), abs(sin(iTime / 2.0)));
+    vec4 color = texture(iBackbuffer, uv);
+
+    // returns backbuffer color unless WoW2 control is active
+    fragColor = (iWow2 > 0.0) ? mix(color, sobel(uv), iWow2) : color;
 }
