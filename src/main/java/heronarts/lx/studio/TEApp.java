@@ -275,9 +275,6 @@ public class TEApp extends LXStudio {
       // lx.registry.addPattern(Bubbles.class);
 
       // Nonfunctional - need work or additional hardware that will not be at EDC
-      lx.registry.addPattern(HandTracker.class);
-      lx.registry.addPattern(TargetPixelStamper.class);
-
       // "ShaderToyPattern" in ShaderPanelsPatternConfig.java
 
       // Useful for test, but might turn the car black in performance
@@ -295,17 +292,21 @@ public class TEApp extends LXStudio {
                       .filter(LXPattern.class::isAssignableFrom)
                       .toArray(Class[]::new);
 
+      // Patterns generated via ConstructedShaderPattern
       lx.registry.addPatterns(patternGetter.apply(OrganicPatternConfig.class));
       lx.registry.addPatterns(patternGetter.apply(ShaderPanelsPatternConfig.class));
       lx.registry.addPatterns(patternGetter.apply(ShaderEdgesPatternConfig.class));
 
-      // Test/debug patterns
+      // Test/debug/utility patterns
       lx.registry.addPattern(ModelDebugger.class);
       lx.registry.addPattern(PowerDebugger.class);
       // lx.registry.addPattern(ModuleEditor.class);
       lx.registry.addPattern(SignalDebugger.class);
       lx.registry.addPattern(TEEdgeTestPattern.class);
       lx.registry.addPattern(TEPanelTestPattern.class);
+      lx.registry.addPattern(HandTracker.class);
+      lx.registry.addPattern(TargetPixelStamper.class);
+      //lx.registry.addPattern(ModelFileWriter.class);
 
       // Midi surface names for use with BomeBox
       lx.engine.midi.registerSurface(MidiNames.BOMEBOX_APC40MK2, APC40Mk2.class);
