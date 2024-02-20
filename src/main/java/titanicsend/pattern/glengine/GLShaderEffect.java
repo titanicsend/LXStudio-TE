@@ -75,7 +75,7 @@ public class GLShaderEffect extends TEEffect {
 
   // Add a shader by fragment shader filename, with an OnFrame() function.
   public void addShader(String shaderName, GLShaderFrameSetup setup) {
-    addShader(new GLShader(lx, shaderName, controlData), setup);
+    addShader(new GLShader(lx, shaderName, getControlData()), setup);
   }
 
   protected ByteBuffer getImageBuffer() {
