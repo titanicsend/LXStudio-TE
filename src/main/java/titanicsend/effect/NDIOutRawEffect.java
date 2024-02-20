@@ -11,13 +11,13 @@ import titanicsend.pattern.glengine.GLShaderEffect;
 import titanicsend.util.TE;
 
 @LXCategory("Titanics End")
-public class NDIOutRawEffect extends GLShaderEffect {
+public class NDIOutRawEffect extends TEEffect {
 
   private boolean isInitialized = false;
 
   // output frame size
-  private static final int width = 640;//320;
-  private static final int height = 480;//240;
+  private static final int width = 320;
+  private static final int height = 240;
 
   private DevolaySender ndiSender;
   private DevolayVideoFrame ndiFrame;
@@ -29,22 +29,19 @@ public class NDIOutRawEffect extends GLShaderEffect {
 
   @Override
   protected void run(double deltaMs, double enabledAmount) {
-//          if ( !isInitialized ) {
-//            return;
-//          }
-//
-//          buffer.rewind();
-//          for (LXPoint p : this.model.points) {
-//            buffer.putInt(colors[p.index] );
-//          }
-//          buffer.flip();
+    if (!isInitialized) {
+      return;
+    }
 
-    super.run(deltaMs, enabledAmount);
-    TE.log("HIII");
-    buffer.put(getImageBuffer());
+    buffer.rewind();
+    for (LXPoint p : this.model.points) {
+      buffer.putInt(colors[p.index]);
+    }
     buffer.flip();
-    ndiSender.sendVideoFrame(ndiFrame);
 
+//    super.run(deltaMs, enabledAmount);
+//    buffer.put(getImageBuffer());
+    ndiSender.sendVideoFrame(ndiFrame);
   }
 
   @Override
