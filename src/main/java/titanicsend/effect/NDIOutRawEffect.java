@@ -7,15 +7,17 @@ import java.nio.ByteBuffer;
 import me.walkerknapp.devolay.DevolayFrameFourCCType;
 import me.walkerknapp.devolay.DevolaySender;
 import me.walkerknapp.devolay.DevolayVideoFrame;
+import titanicsend.pattern.glengine.GLShaderEffect;
+import titanicsend.util.TE;
 
 @LXCategory("Titanics End")
-public class NDIOutRawEffect extends TEEffect {
+public class NDIOutRawEffect extends GLShaderEffect {
 
   private boolean isInitialized = false;
 
   // output frame size
-  private static final int width = 320;
-  private static final int height = 240;
+  private static final int width = 640;//320;
+  private static final int height = 480;//240;
 
   private DevolaySender ndiSender;
   private DevolayVideoFrame ndiFrame;
@@ -27,16 +29,22 @@ public class NDIOutRawEffect extends TEEffect {
 
   @Override
   protected void run(double deltaMs, double enabledAmount) {
-      if ( !isInitialized ) {
-        return;
-      }
+//          if ( !isInitialized ) {
+//            return;
+//          }
+//
+//          buffer.rewind();
+//          for (LXPoint p : this.model.points) {
+//            buffer.putInt(colors[p.index] );
+//          }
+//          buffer.flip();
 
-      buffer.rewind();
-      for (LXPoint p : this.model.points) {
-        buffer.putInt(colors[p.index] );
-      }
-      buffer.flip();
-      ndiSender.sendVideoFrame(ndiFrame);
+    super.run(deltaMs, enabledAmount);
+    TE.log("HIII");
+    buffer.put(getImageBuffer());
+    buffer.flip();
+    ndiSender.sendVideoFrame(ndiFrame);
+
   }
 
   @Override

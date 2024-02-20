@@ -43,53 +43,55 @@ public class TDPattern extends GLShaderPattern {
 
     // add the second shader, which applies a simple edge detection filter to the
     // output of the first shader
-    shader = new GLShader(lx, "memory_mapped_video.fs", this, buffer);
-    addShader(
-        shader,
-        new GLShaderFrameSetup() {
-          @Override
-          public void OnFrame(GLShader s) {
-//            ModelBender mb = new ModelBender();
-//            mb.adjustEndGeometry(TEApp.wholeModel);
+    //////////////////////////////////// UNCOMMENT v
+//    shader = new GLShader(lx, "memory_mapped_video.fs", this, buffer);
+//    addShader(
+//        shader,
+//        new GLShaderFrameSetup() {
+//          @Override
+//          public void OnFrame(GLShader s) {
+////            ModelBender mb = new ModelBender();
+////            mb.adjustEndGeometry(TEApp.wholeModel);
+////            TEApp.wholeModel.normalizePoints();
 //            TEApp.wholeModel.normalizePoints();
-            TEApp.wholeModel.normalizePoints();
-            if (mappedBuffer != null) {
-              buffer.clear();
-              // Ensure that the mapped buffer is ready for reading
-              mappedBuffer.rewind();
-
-              // Transfer the data from the memory-mapped file to the main buffer
-              buffer.clear();
-              // Pixel values should be sorted as BGRA
-              buffer.put(mappedBuffer);
-              buffer.flip(); // Prepare the buffer for reading
-            } else {
-              // try to initialize the memory mapped file.
-              try {
-                fileChannel =
-                    FileChannel.open(
-                        Paths.get(MEMORY_MAPPED_FILE),
-                        StandardOpenOption.READ,
-                        StandardOpenOption.WRITE);
-
-                // Map the file into memory
-                mappedBuffer = fileChannel.map(FileChannel.MapMode.READ_WRITE, 0, BUFFER_SIZE);
-              } catch (IOException e) {
-                TE.err("Could not load the memory mapped file.");
-
-                buffer.clear();
-                for (int i = 0; i < BUFFER_SIZE; i += 4) {
-                  buffer.put((byte) 0); // Blue
-                  buffer.put((byte) 0); // Green
-                  buffer.put((byte) 255); // Red
-                  buffer.put((byte) 255); // Alpha
-                }
-                buffer.flip(); // Prepare the buffer for reading
-              }
-            }
-//            mb.restoreModel(TEApp.wholeModel);
-//            TEApp.wholeModel.normalizePoints();
-          }
-        });
+//            if (mappedBuffer != null) {
+//              buffer.clear();
+//              // Ensure that the mapped buffer is ready for reading
+//              mappedBuffer.rewind();
+//
+//              // Transfer the data from the memory-mapped file to the main buffer
+//              buffer.clear();
+//              // Pixel values should be sorted as BGRA
+//              buffer.put(mappedBuffer);
+//              buffer.flip(); // Prepare the buffer for reading
+//            } else {
+//              // try to initialize the memory mapped file.
+//              try {
+//                fileChannel =
+//                    FileChannel.open(
+//                        Paths.get(MEMORY_MAPPED_FILE),
+//                        StandardOpenOption.READ,
+//                        StandardOpenOption.WRITE);
+//
+//                // Map the file into memory
+//                mappedBuffer = fileChannel.map(FileChannel.MapMode.READ_WRITE, 0, BUFFER_SIZE);
+//              } catch (IOException e) {
+//                TE.err("Could not load the memory mapped file.");
+//
+//                buffer.clear();
+//                for (int i = 0; i < BUFFER_SIZE; i += 4) {
+//                  buffer.put((byte) 0); // Blue
+//                  buffer.put((byte) 0); // Green
+//                  buffer.put((byte) 255); // Red
+//                  buffer.put((byte) 255); // Alpha
+//                }
+//                buffer.flip(); // Prepare the buffer for reading
+//              }
+//            }
+//    //////////////////////////////////// UNCOMMENT ^
+////            mb.restoreModel(TEApp.wholeModel);
+////            TEApp.wholeModel.normalizePoints();
+//          }
+//        });
   }
 }
