@@ -4,6 +4,7 @@ import static org.lwjgl.system.linux.X11.False;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.studio.TEApp;
 import java.awt.Color;
@@ -22,6 +23,7 @@ import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.glengine.GLEngine;
 import java.awt.Graphics;
 import titanicsend.pattern.jon.ModelBender;
+import titanicsend.util.TE;
 
 @LXCategory("AAA")
 public class TETextureWriter extends TEPerformancePattern {
@@ -39,7 +41,7 @@ public class TETextureWriter extends TEPerformancePattern {
 
     addCommonControls();
 
-    width_ = GLEngine.getWidth();
+    width_ = 680; // GLEngine.getWidth();
     height_ = GLEngine.getHeight();
     x_max_ = width_ - 1;
     y_max_ = height_ - 1;
@@ -58,8 +60,6 @@ public class TETextureWriter extends TEPerformancePattern {
   }
 
   private void process_points(LXPoint[] points, int color, BufferedImage buffer, String file_name) {
-//    ModelBender mb = new ModelBender();
-//    mb.adjustEndGeometry(TEApp.wholeModel);
     TEApp.wholeModel.normalizePoints();
 
     for (LXPoint point : points) {
@@ -67,8 +67,10 @@ public class TETextureWriter extends TEPerformancePattern {
         continue;
       }
 
+      double xn = point.xn;
       double zn = (1f - point.zn);
       double yn = point.yn;
+//      TE.err("Xn: " + xn + " Yn: " + yn + " Zn: " + zn);
 
       // use normalized point coordinates to calculate x/y coordinates and then the
       // proper index in the image buffer.  the 'z' dimension of TE corresponds
@@ -76,8 +78,15 @@ public class TETextureWriter extends TEPerformancePattern {
       int xi = (int) Math.round(zn * x_max_);
       int yi = (int) Math.round(yn * y_max_);
 
-//      colors[point.index] = color;
-      buffer.setRGB(xi, yi, color);
+      try {
+        // Check if the current color at xi, yi is black (assuming ARGB format where high byte is alpha and black is 0x00000000)
+        int currentColor = buffer.getRGB(xi, yi);
+        if ((currentColor & 0x00FFFFFF) == 0) { // Masking to ignore the alpha channel if present
+          buffer.setRGB(xi, yi, color);
+        }
+      }catch (ArrayIndexOutOfBoundsException e){
+//        TE.err("Xi: " + xi + " Yi: " + yi);
+      }
     }
 
     if (!wrote_image_.containsKey(file_name)) {
@@ -90,9 +99,6 @@ public class TETextureWriter extends TEPerformancePattern {
       }
       wrote_image_.put(file_name, true);
     }
-
-//    mb.restoreModel(TEApp.wholeModel);
-//    TEApp.wholeModel.normalizePoints();
   }
 
   LXPoint[] get_points_for_panels(List<String> panel_names) {
@@ -112,6 +118,7 @@ public class TETextureWriter extends TEPerformancePattern {
   @Override
   protected void runTEAudioPattern(double deltaMs) {
     int color = calcColor();
+    int color_edges = LXColor.rgb(0, 255, 255);
 
     // Initialize the image buffer with the specified size
 
@@ -141,16 +148,19 @@ public class TETextureWriter extends TEPerformancePattern {
     points = TEApp.wholeModel.panelPoints.toArray(points);
     process_points(points, color, all_panel_buffer, "all_panels");
 
+    // Overlay edges on the panels
+    points = new LXPoint[TEApp.wholeModel.edgePoints.size()];
+    points = TEApp.wholeModel.edgePoints.toArray(points);
+    process_points(points, color_edges, all_panel_buffer, "overlayed_edges");
+
     BufferedImage all_edge_buffer = initialize_image();
     points = new LXPoint[TEApp.wholeModel.edgePoints.size()];
     points = TEApp.wholeModel.edgePoints.toArray(points);
     process_points(points, color, all_edge_buffer, "all_edges");
 
-    ModelBender mb = new ModelBender();
-    ArrayList<LXPoint> end_points = mb.getEndPoints(TEApp.wholeModel);
+
     BufferedImage end_point_buffer = initialize_image();
-    points = new LXPoint[end_points.size()];
-    points = end_points.toArray(points);
-    process_points(points, color, end_point_buffer, "end_edges");
+    points = TEApp.wholeModel.points;
+    process_points(points, color, end_point_buffer, "all_points");
   }
 }
