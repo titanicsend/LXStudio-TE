@@ -4,11 +4,10 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.model.LXPoint;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import me.walkerknapp.devolay.DevolayFrameFourCCType;
 import me.walkerknapp.devolay.DevolaySender;
 import me.walkerknapp.devolay.DevolayVideoFrame;
-import titanicsend.pattern.glengine.GLShaderEffect;
-import titanicsend.util.TE;
 
 @LXCategory("Titanics End")
 public class NDIOutRawEffect extends TEEffect {
@@ -33,14 +32,12 @@ public class NDIOutRawEffect extends TEEffect {
       return;
     }
 
+    buffer.order(ByteOrder.LITTLE_ENDIAN);
     buffer.rewind();
     for (LXPoint p : this.model.points) {
       buffer.putInt(colors[p.index]);
     }
     buffer.flip();
-
-//    super.run(deltaMs, enabledAmount);
-//    buffer.put(getImageBuffer());
     ndiSender.sendVideoFrame(ndiFrame);
   }
 
@@ -51,7 +48,7 @@ public class NDIOutRawEffect extends TEEffect {
     if (!isInitialized) {
       ndiSender = new DevolaySender("TitanicsEnd");
       ndiFrame = new DevolayVideoFrame();
-      ndiFrame.setResolution(width,height);
+      ndiFrame.setResolution(width, height);
       ndiFrame.setFourCCType(DevolayFrameFourCCType.BGRA);
       ndiFrame.setData(buffer);
       ndiFrame.setFrameRate(60, 1);

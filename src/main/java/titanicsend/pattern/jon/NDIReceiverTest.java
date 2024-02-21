@@ -5,9 +5,10 @@ import heronarts.lx.LXCategory;
 import titanicsend.ndi.NDIPattern;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
+
 /**
- * Test class for NDIReceiver: displays video frames, and adds a second shader for
- * a simple edge detection effect (controlled by WOW2)
+ * Test class for NDIReceiver: displays video frames, and adds a second shader for a simple edge
+ * detection effect (controlled by WOW2)
  */
 @LXCategory("AAA")
 public class NDIReceiverTest extends NDIPattern {

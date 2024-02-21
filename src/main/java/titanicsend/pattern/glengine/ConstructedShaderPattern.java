@@ -26,40 +26,29 @@ public abstract class ConstructedShaderPattern extends GLShaderPattern {
   }
 
   /**
-     Derived classes must implement createShader() to
-     add one or more OpenGL shaders to the pattern.  For example,
-     to add a single shader, which at frame generation time, does some
-     calculation and sets custom uniforms:
-
-       protected void createShader() {
-
-        // initialize common control values and ranges here.
-         controls.setRange(TEControlTag.QUANTITY, 5, 1, 10)
-         controls.setRange(TEControlTag.SIZE, 1.75, 1.0, 5);
-
-        // add the shader and its frame-time setup function
-        addShader("fireflies.fs",
-            new GLShaderFrameSetup() {
-            @Override
-            public void OnFrame(GLShader s) {
-              float wtf = (float) (PI / sin(getQuantity() * PI * 10));
-
-              s.setUniform("iCustomFloat", wtf);
-              s.setUniform("iCustomInt", 42);
-              s.setUniform("iCustomVec3", x, y, z);
-            }
-          });
-       }
-
-     Note that you can call addShader() multiple times to add multiple shaders
-     to the pattern.  Shaders will run in the order they are added, with
-     the output of each shader available to the next shader in line via the
-     iBackbuffer 2D sampler uniform.
-
-     Each shader can have its own onFrame() setup function, or you can
-     use the default function (which does nothing) by calling
-     addShader(shader) instead of addShader(shader, setupFunction).
+   * Derived classes must implement createShader() to add one or more OpenGL shaders to the pattern.
+   * For example, to add a single shader, which at frame generation time, does some calculation and
+   * sets custom uniforms:
+   *
+   * <p>protected void createShader() {
+   *
+   * <p>// initialize common control values and ranges here.
+   * controls.setRange(TEControlTag.QUANTITY, 5, 1, 10) controls.setRange(TEControlTag.SIZE, 1.75,
+   * 1.0, 5);
+   *
+   * <p>// add the shader and its frame-time setup function addShader("fireflies.fs", new
+   * GLShaderFrameSetup() { @Override public void OnFrame(GLShader s) { float wtf = (float) (PI /
+   * sin(getQuantity() * PI * 10));
+   *
+   * <p>s.setUniform("iCustomFloat", wtf); s.setUniform("iCustomInt", 42);
+   * s.setUniform("iCustomVec3", x, y, z); } }); }
+   *
+   * <p>Note that you can call addShader() multiple times to add multiple shaders to the pattern.
+   * Shaders will run in the order they are added, with the output of each shader available to the
+   * next shader in line via the iBackbuffer 2D sampler uniform.
+   *
+   * <p>Each shader can have its own onFrame() setup function, or you can use the default function
+   * (which does nothing) by calling addShader(shader) instead of addShader(shader, setupFunction).
    */
   protected abstract void createShader();
-
 }

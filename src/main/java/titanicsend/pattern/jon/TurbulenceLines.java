@@ -8,7 +8,6 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
 @LXCategory("Noise")
 public class TurbulenceLines extends DriftEnabledPattern {
 
-
   public TurbulenceLines(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
 

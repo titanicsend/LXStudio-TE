@@ -21,9 +21,7 @@ public class BasicShaderEffect extends GLShaderEffect {
 
     // add the first shader, passing in the effect's backbuffer and aon OnFrame function
     // setting the amount of effect to apply as the uniform "iWow2".
-    GLShader shader =
-        new GLShader(
-            lx, "demo_simple_effect.fs", getControlData(), getImageBuffer());
+    GLShader shader = new GLShader(lx, "demo_simple_effect.fs", getControlData(), getImageBuffer());
     addShader(
         shader,
         new GLShaderFrameSetup() {

@@ -3,14 +3,12 @@ package titanicsend.pattern.glengine;
 import heronarts.lx.LX;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-
 import titanicsend.effect.TEEffect;
 import titanicsend.pattern.jon.VariableSpeedTimer;
 
 /**
- * Wrapper class for OpenGL shaders. Simplifies handling of
- * context and native memory management, and provides a
- * convenient interface for adding shaders to a pattern.
+ * Wrapper class for OpenGL shaders. Simplifies handling of context and native memory management,
+ * and provides a convenient interface for adding shaders to a pattern.
  */
 public class GLShaderEffect extends TEEffect {
   public interface GLShaderFrameSetup {
@@ -69,7 +67,7 @@ public class GLShaderEffect extends TEEffect {
   // Add a shader by fragment shader filename, using the default OnFrame() function.
   // The simple option for shaders that use only the default TEPerformancePattern
   // uniforms and don't require any additional computation in Java.
-  public void addShader(String shaderName,      String... textureFilenames) {
+  public void addShader(String shaderName, String... textureFilenames) {
     addShader(new GLShader(lx, shaderName, getControlData(), textureFilenames));
   }
 
@@ -109,11 +107,11 @@ public class GLShaderEffect extends TEEffect {
     }
 
     // paint the final shader output to the car.
-    painter.mapToPoints(getModel().getPoints(), imageBuffer,getColors());
+    painter.mapToPoints(getModel().getPoints(), imageBuffer, getColors());
   }
 
   @Override
-   protected void onEnable() {
+  protected void onEnable() {
     super.onEnable();
     for (ShaderInfo s : shaderInfo) {
       s.shader.onActive();
@@ -136,4 +134,3 @@ public class GLShaderEffect extends TEEffect {
     }
   }
 }
-

@@ -16,7 +16,7 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
 @LXCategory("Utility")
 public class ModelFileWriter extends TEPerformancePattern {
   boolean doneWriting = false;
-  Path path = Path.of("resources/TEPoints.txt");
+  Path path = Path.of("resources/TEPoints.csv");
 
   public ModelFileWriter(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
@@ -24,7 +24,7 @@ public class ModelFileWriter extends TEPerformancePattern {
 
     // write CSV header
     try {
-      Files.writeString(path, "x,y,z\n", CREATE, APPEND);
+      Files.writeString(path, "tx,ty,tz\n", CREATE, APPEND);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

@@ -1,13 +1,12 @@
 package titanicsend.pattern.sina;
 
-import static org.lwjgl.system.linux.X11.False;
-
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.studio.TEApp;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -17,13 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
-import processing.core.PVector;
-import titanicsend.pattern.TEAudioPattern;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.glengine.GLEngine;
-import java.awt.Graphics;
-import titanicsend.pattern.jon.ModelBender;
-import titanicsend.util.TE;
 
 @LXCategory("AAA")
 public class TETextureWriter extends TEPerformancePattern {
@@ -70,7 +64,7 @@ public class TETextureWriter extends TEPerformancePattern {
       double xn = point.xn;
       double zn = (1f - point.zn);
       double yn = point.yn;
-//      TE.err("Xn: " + xn + " Yn: " + yn + " Zn: " + zn);
+      //      TE.err("Xn: " + xn + " Yn: " + yn + " Zn: " + zn);
 
       // use normalized point coordinates to calculate x/y coordinates and then the
       // proper index in the image buffer.  the 'z' dimension of TE corresponds
@@ -79,13 +73,14 @@ public class TETextureWriter extends TEPerformancePattern {
       int yi = (int) Math.round(yn * y_max_);
 
       try {
-        // Check if the current color at xi, yi is black (assuming ARGB format where high byte is alpha and black is 0x00000000)
+        // Check if the current color at xi, yi is black (assuming ARGB format where high byte is
+        // alpha and black is 0x00000000)
         int currentColor = buffer.getRGB(xi, yi);
         if ((currentColor & 0x00FFFFFF) == 0) { // Masking to ignore the alpha channel if present
           buffer.setRGB(xi, yi, color);
         }
-      }catch (ArrayIndexOutOfBoundsException e){
-//        TE.err("Xi: " + xi + " Yi: " + yi);
+      } catch (ArrayIndexOutOfBoundsException e) {
+        //        TE.err("Xi: " + xi + " Yi: " + yi);
       }
     }
 
@@ -122,7 +117,6 @@ public class TETextureWriter extends TEPerformancePattern {
 
     // Initialize the image buffer with the specified size
 
-
     List<String> front_panels =
         Arrays.asList(
             "SAA", "SAB", "SAD", "SAC", "SBC", "SBB", "SBA", "SBE", "SBD", "SCC", "SCB", "SCA");
@@ -157,7 +151,6 @@ public class TETextureWriter extends TEPerformancePattern {
     points = new LXPoint[TEApp.wholeModel.edgePoints.size()];
     points = TEApp.wholeModel.edgePoints.toArray(points);
     process_points(points, color, all_edge_buffer, "all_edges");
-
 
     BufferedImage end_point_buffer = initialize_image();
     points = TEApp.wholeModel.points;

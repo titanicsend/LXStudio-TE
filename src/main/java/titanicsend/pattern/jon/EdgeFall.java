@@ -22,40 +22,46 @@ public class EdgeFall extends GLShaderPattern {
   float[][] line_velocity;
 
   // Work to be done per frame
-  GLShaderFrameSetup setup = new GLShaderFrameSetup() {
-    @Override
-    public void OnFrame(GLShader s) {
-      float glowLevel;
+  GLShaderFrameSetup setup =
+      new GLShaderFrameSetup() {
+        @Override
+        public void OnFrame(GLShader s) {
+          float glowLevel;
 
-      double t = getTime();
-      elapsedTime = Math.abs(t - eventStartTime);
+          double t = getTime();
+          elapsedTime = Math.abs(t - eventStartTime);
 
-      glowLevel = (float) getSize();
+          glowLevel = (float) getSize();
 
-      // tiny state machine for falling vs. resting states
-      if (isFalling) {
-        // simulate short explosive burst (by greatly increasing line
-        // width/glow) when event is first triggered
-        if (elapsedTime < burstDuration) {
-          glowLevel *= (float) (elapsedTime / burstDuration);
+          // tiny state machine for falling vs. resting states
+          if (isFalling) {
+            // simulate short explosive burst (by greatly increasing line
+            // width/glow) when event is first triggered
+            if (elapsedTime < burstDuration) {
+              glowLevel *= (float) (elapsedTime / burstDuration);
+            }
+          } else {
+            eventStartTime = t;
+            randomizeLineVelocities();
+            elapsedTime = 0;
+          }
+
+          moveLines(saved_lines, working_lines);
+
+          s.setUniform("iScale", glowLevel);
+
+          // send current line segment position data
+          for (int i = 0; i < LINE_COUNT; i++) {
+            setUniformLine(
+                i,
+                working_lines[i][0],
+                working_lines[i][1],
+                working_lines[i][2],
+                working_lines[i][3]);
+          }
+          s.setUniform("lines", gl_segments, 4);
         }
-      } else {
-        eventStartTime = t;
-        randomizeLineVelocities();
-        elapsedTime = 0;
-      }
-
-      moveLines(saved_lines, working_lines);
-
-      s.setUniform("iScale", glowLevel);
-
-      // send current line segment position data
-      for (int i = 0; i < LINE_COUNT; i++) {
-        setUniformLine(i, working_lines[i][0], working_lines[i][1],working_lines[i][2], working_lines[i][3]);
-      }
-      s.setUniform("lines", gl_segments, 4);
-    }
-  };
+      };
 
   // Constructor
   public EdgeFall(LX lx) {

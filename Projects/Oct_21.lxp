@@ -1,6 +1,6 @@
 {
   "version": "0.4.2.TE.7-SNAPSHOT",
-  "timestamp": 1708400218730,
+  "timestamp": 1708552279691,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -3074,22 +3074,22 @@
               "attack": 10.0,
               "release": 216.89508730091052,
               "slope": 2.7914061456540367,
-              "band-1": 0.9368679645363626,
-              "band-2": 0.9594082470864637,
-              "band-3": 0.9282233027732071,
-              "band-4": 0.8615351378438668,
-              "band-5": 0.74738960185496,
-              "band-6": 0.3814905944189838,
-              "band-7": 0.3266408877953939,
-              "band-8": 0.3242391217569086,
-              "band-9": 0.3576704145232864,
-              "band-10": 0.27572635795817024,
-              "band-11": 0.26316066425139795,
-              "band-12": 0.2743119338310601,
-              "band-13": 0.30866346143005796,
-              "band-14": 0.22065553754602674,
-              "band-15": 0.09401188171113939,
-              "band-16": 0.030555476754373756
+              "band-1": 0.0,
+              "band-2": 0.0,
+              "band-3": 0.0,
+              "band-4": 0.0,
+              "band-5": 0.0,
+              "band-6": 0.0,
+              "band-7": 0.0,
+              "band-8": 0.0,
+              "band-9": 0.0,
+              "band-10": 0.0,
+              "band-11": 0.0,
+              "band-12": 0.0,
+              "band-13": 0.0,
+              "band-14": 0.0,
+              "band-15": 0.0,
+              "band-16": 0.0
             },
             "children": {}
           }
@@ -3606,7 +3606,46 @@
                   null,
                   "/view"
                 ],
-                "effects": []
+                "effects": [
+                  {
+                    "id": 129004,
+                    "class": "titanicsend.effect.NDIOutRawEffect",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true,
+                      "expanded": true,
+                      "expandedCue": true,
+                      "expandedAux": true,
+                      "modulationExpanded": false
+                    },
+                    "parameters": {
+                      "label": "NDIOutRaw",
+                      "view": 0,
+                      "viewPriority": 0,
+                      "enabled": true
+                    },
+                    "children": {
+                      "modulation": {
+                        "id": 129005,
+                        "class": "heronarts.lx.modulation.LXModulationEngine",
+                        "internal": {
+                          "modulationColor": 0,
+                          "modulationControlsExpanded": true,
+                          "modulationsExpanded": true
+                        },
+                        "parameters": {
+                          "label": "Modulation"
+                        },
+                        "children": {},
+                        "modulators": [],
+                        "modulations": [],
+                        "triggers": []
+                      }
+                    },
+                    "deviceVersion": -1
+                  }
+                ]
               },
               {
                 "id": 128645,
@@ -3631,9 +3670,9 @@
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
                   "te_color/brightness": 100.0,
-                  "te_color/saturation": 100.0,
+                  "te_color/saturation": 0.0,
                   "te_color/hue": 0.0,
-                  "te_color/solidSource": 1,
+                  "te_color/solidSource": 0,
                   "te_color/gradient": 0,
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0,
@@ -3689,46 +3728,7 @@
                   null,
                   "/view"
                 ],
-                "effects": [
-                  {
-                    "id": 128658,
-                    "class": "titanicsend.effect.NDIOutRawEffect",
-                    "internal": {
-                      "modulationColor": 0,
-                      "modulationControlsExpanded": true,
-                      "modulationsExpanded": true,
-                      "expanded": true,
-                      "expandedCue": true,
-                      "expandedAux": true,
-                      "modulationExpanded": false
-                    },
-                    "parameters": {
-                      "label": "NDIOutRaw",
-                      "view": 0,
-                      "viewPriority": 0,
-                      "enabled": true
-                    },
-                    "children": {
-                      "modulation": {
-                        "id": 128659,
-                        "class": "heronarts.lx.modulation.LXModulationEngine",
-                        "internal": {
-                          "modulationColor": 0,
-                          "modulationControlsExpanded": true,
-                          "modulationsExpanded": true
-                        },
-                        "parameters": {
-                          "label": "Modulation"
-                        },
-                        "children": {},
-                        "modulators": [],
-                        "modulations": [],
-                        "triggers": []
-                      }
-                    },
-                    "deviceVersion": -1
-                  }
-                ]
+                "effects": []
               }
             ]
           }
@@ -3960,7 +3960,7 @@
               "exp": 0.25859374599531293
             },
             "children": {},
-            "basis": 0.6685000000000016
+            "basis": 0.2530000000000001
           },
           {
             "id": 78340,
@@ -3995,7 +3995,7 @@
               "exp": 1.0
             },
             "children": {},
-            "basis": 0.3342500000000008
+            "basis": 0.12650000000000006
           },
           {
             "id": 68570,
@@ -4030,7 +4030,7 @@
               "exp": 1.0
             },
             "children": {},
-            "basis": 0.0835625000000002
+            "basis": 0.031625000000000014
           },
           {
             "id": 116084,
@@ -4052,7 +4052,7 @@
               "midiFilter/velocityRange": 127,
               "inputA": 0.0,
               "inputB": 1.0,
-              "output": 0.07958804748762391
+              "output": 0.32956426584773285
             },
             "children": {}
           },
@@ -4076,7 +4076,7 @@
               "midiFilter/velocityRange": 127,
               "inputA": 0.0,
               "inputB": 0.9921259842519685,
-              "output": 0.07902152544643211
+              "output": 0.3150842778462309
             },
             "children": {}
           },
@@ -4100,7 +4100,7 @@
               "midiFilter/velocityRange": 127,
               "inputA": 0.0,
               "inputB": 1.0,
-              "output": 0.02320089230604805
+              "output": 0.359143613215971
             },
             "children": {}
           }
@@ -4808,9 +4808,9 @@
         "cue": [
           {
             "active": false,
-            "radius": 1.7E7,
-            "theta": 262.6330275684595,
-            "phi": -1.401087448000908,
+            "radius": 1.4141599006874407E7,
+            "theta": 253.77972549200058,
+            "phi": 1.434292495250702,
             "x": 2255849.2623291016,
             "y": 5053059.60546875,
             "z": 207717.87439727783

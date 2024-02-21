@@ -370,7 +370,7 @@ public class GLShader {
     // add shadertoy texture channels. These textures already statically bound to
     // texture units so all we have to do is tell the shader which texture unit to use.
     for (TextureInfo ti : textures) {
-      //setUniform(Uniforms.CHANNEL + ti.channel, ti.textureUnit);
+      // setUniform(Uniforms.CHANNEL + ti.channel, ti.textureUnit);
       gl4.glUniform1i(ti.uniformLocation, ti.textureUnit);
     }
 
@@ -388,13 +388,14 @@ public class GLShader {
     for (Map.Entry<Integer, String> textureInput :
         fragmentShader.getChannelToTexture().entrySet()) {
 
-        TextureInfo ti = new TextureInfo();
-        ti.textureUnit = glEngine.useTexture(gl4, textureInput.getValue());
-        ti.name = textureInput.getValue();
-        ti.channel = textureInput.getKey();
-        ti.uniformLocation = gl4.glGetUniformLocation(shaderProgram.getProgramId(), "iChannel"+ti.channel);
+      TextureInfo ti = new TextureInfo();
+      ti.textureUnit = glEngine.useTexture(gl4, textureInput.getValue());
+      ti.name = textureInput.getValue();
+      ti.channel = textureInput.getKey();
+      ti.uniformLocation =
+          gl4.glGetUniformLocation(shaderProgram.getProgramId(), "iChannel" + ti.channel);
 
-        textures.add(ti);
+      textures.add(ti);
     }
   }
 

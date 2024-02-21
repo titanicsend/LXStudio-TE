@@ -4,11 +4,9 @@ import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import java.nio.FloatBuffer;
-
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-
 
 @LXCategory("Combo FG")
 public class ArcEdges extends GLShaderPattern {
@@ -44,19 +42,20 @@ public class ArcEdges extends GLShaderPattern {
     CarGeometryPatternTools.getPanelConnectedEdges(getModelTE(), "^S.*$", saved_lines, LINE_COUNT);
 
     // add the OpenGL shader and its frame-time setup function
-    addShader("arcedges.fs",
-      new GLShaderFrameSetup() {
-        @Override
-        public void OnFrame(GLShader s) {
-          // Here, we update line segment geometry
-          // Shader uniforms associated with a context stay resident
-          // on the GPU,so we only need to set them when something changes.
-          if (updateGeometry) {
-            sendSegments(s, saved_lines, LINE_COUNT);
-            updateGeometry = false;
+    addShader(
+        "arcedges.fs",
+        new GLShaderFrameSetup() {
+          @Override
+          public void OnFrame(GLShader s) {
+            // Here, we update line segment geometry
+            // Shader uniforms associated with a context stay resident
+            // on the GPU,so we only need to set them when something changes.
+            if (updateGeometry) {
+              sendSegments(s, saved_lines, LINE_COUNT);
+              updateGeometry = false;
+            }
           }
-        }
-      });
+        });
   }
 
   // store segment descriptors in our GL line segment buffer.

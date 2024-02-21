@@ -1,7 +1,6 @@
 package titanicsend.pattern.glengine;
 
 import heronarts.lx.model.LXPoint;
-
 import java.nio.ByteBuffer;
 import java.util.List;
 

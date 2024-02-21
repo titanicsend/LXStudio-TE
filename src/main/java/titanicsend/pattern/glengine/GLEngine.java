@@ -1,5 +1,7 @@
 package titanicsend.pattern.glengine;
 
+import static com.jogamp.opengl.GL.*;
+
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.util.GLBuffers;
@@ -9,15 +11,12 @@ import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.LXLoopTask;
 import heronarts.lx.audio.GraphicMeter;
-import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import static com.jogamp.opengl.GL.*;
+import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
 
 public class GLEngine extends LXComponent implements LXLoopTask {
   public static final String PATH = "GLEngine";

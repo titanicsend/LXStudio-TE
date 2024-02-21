@@ -5,12 +5,13 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 /**
- * Interface for painting a 2D texture onto the car.  The default implementation
- * mirrors the texture symmetrically on both sides.
+ * Interface for painting a 2D texture onto the car. The default implementation mirrors the texture
+ * symmetrically on both sides.
  */
 public interface ShaderPaintFn {
   int xMax = GLEngine.getWidth() - 1;
   int yMax = GLEngine.getHeight() - 1;
+
   /**
    * Called after a frame has been generated, this function samples the OpenGL backbuffer to set
    * color at the specified points.
@@ -36,8 +37,8 @@ public interface ShaderPaintFn {
   }
 
   /**
-   * Map current LX point colors to a texture buffer that can be used
-   * by a shader.
+   * Map current LX point colors to a texture buffer that can be used by a shader.
+   *
    * @param points list of points to paint
    * @param image buffer for bitmap
    * @param colors array of colors, one for each point
