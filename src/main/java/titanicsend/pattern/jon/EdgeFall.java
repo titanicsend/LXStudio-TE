@@ -4,16 +4,12 @@ import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import java.nio.FloatBuffer;
-import titanicsend.pattern.TEPerformancePattern;
-import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
-import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.glengine.GLShader;
+import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 
 @LXCategory("Combo FG")
-public class EdgeFall extends TEPerformancePattern {
-  NativeShaderPatternEffect effect;
-  NativeShader shader;
+public class EdgeFall extends GLShaderPattern {
   double eventStartTime;
   double elapsedTime;
   static final double fallingCycleLength = 2.75;
@@ -24,6 +20,42 @@ public class EdgeFall extends TEPerformancePattern {
   float[][] saved_lines;
   float[][] working_lines;
   float[][] line_velocity;
+
+  // Work to be done per frame
+  GLShaderFrameSetup setup = new GLShaderFrameSetup() {
+    @Override
+    public void OnFrame(GLShader s) {
+      float glowLevel;
+
+      double t = getTime();
+      elapsedTime = Math.abs(t - eventStartTime);
+
+      glowLevel = (float) getSize();
+
+      // tiny state machine for falling vs. resting states
+      if (isFalling) {
+        // simulate short explosive burst (by greatly increasing line
+        // width/glow) when event is first triggered
+        if (elapsedTime < burstDuration) {
+          glowLevel *= (float) (elapsedTime / burstDuration);
+        }
+      } else {
+        eventStartTime = t;
+        randomizeLineVelocities();
+        elapsedTime = 0;
+      }
+
+      moveLines(saved_lines, working_lines);
+
+      s.setUniform("iScale", glowLevel);
+
+      // send current line segment position data
+      for (int i = 0; i < LINE_COUNT; i++) {
+        setUniformLine(i, working_lines[i][0], working_lines[i][1],working_lines[i][2], working_lines[i][3]);
+      }
+      s.setUniform("lines", gl_segments, 4);
+    }
+  };
 
   // Constructor
   public EdgeFall(LX lx) {
@@ -39,7 +71,7 @@ public class EdgeFall extends TEPerformancePattern {
 
     addCommonControls();
 
-    effect = new NativeShaderPatternEffect("edgefall.fs", new PatternTarget(this));
+    addShader("edgefall.fs", setup);
 
     // create an n x 4 array, so we can pass line segment descriptors
     // to GLSL shaders.
@@ -78,16 +110,6 @@ public class EdgeFall extends TEPerformancePattern {
     gl_segments.rewind();
   }
 
-  // sends an array of line segments to the shader
-  // should be called after all line computation is done,
-  // before running the shader
-  void sendSegments(float[][] lines, int nLines) {
-    for (int i = 0; i < nLines; i++) {
-      setUniformLine(i, lines[i][0], lines[i][1], lines[i][2], lines[i][3]);
-    }
-    shader.setUniform("lines", gl_segments, 4);
-  }
-
   // generate a random value between a and b with minimum absolute value of c
   float randomBetween(float a, float b, float c) {
     float r = (float) (Math.random() * (b - a) + a);
@@ -118,52 +140,10 @@ public class EdgeFall extends TEPerformancePattern {
   }
 
   @Override
-  public void runTEAudioPattern(double deltaMs) {
-    float glowLevel;
-
-    double t = getTime();
-    elapsedTime = Math.abs(t - eventStartTime);
-
-    glowLevel = (float) getSize();
-
-    // tiny state machine for falling vs. resting states
-    if (isFalling) {
-      // simulate short explosive burst (by greatly increasing line
-      // width/glow) when event is first triggered
-      if (elapsedTime < burstDuration) {
-        glowLevel *= elapsedTime / burstDuration;
-      }
-    } else {
-      eventStartTime = t;
-      randomizeLineVelocities();
-      elapsedTime = 0;
-    }
-
-    moveLines(saved_lines, working_lines);
-
-    shader.setUniform("iScale", glowLevel);
-
-    // send line segment array data
-    sendSegments(working_lines, LINE_COUNT);
-
-    // run the shader
-    effect.run(deltaMs);
-  }
-
-  @Override
   protected void onWowTrigger(boolean on) {
     // when the wow trigger button is pressed...
     if (on) {
       isFalling = !isFalling;
     }
-  }
-
-  @Override
-  // THIS IS REQUIRED if you're not using ConstructedPattern!
-  // Initialize the NativeShaderPatternEffect and retrieve the native shader object
-  // from it when the pattern becomes active
-  public void onActive() {
-    effect.onActive();
-    shader = effect.getNativeShader();
   }
 }

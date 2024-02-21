@@ -5,7 +5,7 @@
 //
 // Wow2 controls audio reactivity
 #pragma name "Circuitry"
-#pragma TEControl.SIZE.Range(1.0,5.0,0.1)
+#pragma TEControl.SIZE.Range(2.0,5.0,0.1)
 #pragma TEControl.QUANTITY.Range(4.0,3.0,6.0)
 #pragma TEControl.WOW2.Value(0.6)
 #pragma TEControl.WOW1.Disable
@@ -63,11 +63,13 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
 
     // Generate an easy-to-track audio reactive value
     // n.b.  this is kind of underbaked, so feel free to improve it!
-    bandLevel = iWow2 * (-0.5 + max(trebleLevel, bassLevel) / (trebleLevel+bassLevel));
+    // slightly improved to dodge near-infinite coord shift at very low volume
+    float vol = trebleLevel + bassLevel;
+    bandLevel = (vol > 0.1) ? iWow2 * (-0.5 + max(trebleLevel, bassLevel) / vol) : 0.0;
 
-    // draw the fractal, antialiased by supersampling
-    // we don't need tons of this on the car
-    // but a little makes it much smoother looking
+    // draw the fractal, antialiased by drawing it multiple times
+    // at very small coordinate offsets.  For the car, we don't need
+    // many iterations, but a few makes it look much smoother.
     float aa=1.;
 
     // distance between samples.
@@ -80,6 +82,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
             c += fractal(p);
         }
     }
-    c = c/(aa*aa*0.35);
+    c = c/(aa*aa*0.33);
     fragColor = vec4(c * vec3(mix(iColorRGB, iColor2RGB, mod(minIteration,2.0))), c);
 }

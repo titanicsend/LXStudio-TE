@@ -150,6 +150,13 @@
             <version>1.14.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>me.walkerknapp</groupId>
+            <artifactId>devolay</artifactId>
+            <version>2.1.0-te</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>

@@ -2,17 +2,13 @@ package titanicsend.pattern.look;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.glengine.GLShader;
+import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.jon.TEControlTag;
-import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
-import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 
 @LXCategory("Look Shader Patterns")
-public class TriangleInfinityLevels extends TEPerformancePattern {
-  NativeShaderPatternEffect effect;
-  NativeShader shader;
+public class TriangleInfinityLevels extends GLShaderPattern {
 
   public TriangleInfinityLevels(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
@@ -25,24 +21,13 @@ public class TriangleInfinityLevels extends TEPerformancePattern {
     controls.setValue(TEControlTag.BRIGHTNESS, 0.5);
 
     addCommonControls();
-
-    effect = new NativeShaderPatternEffect("triangle_infinity.fs", new PatternTarget(this));
-  }
-
-  @Override
-  public void runTEAudioPattern(double deltaMs) {
-    shader.setUniform("brightnessDampening", 0.5f);
-    // run the shader
-    effect.run(deltaMs);
-  }
-
-  @Override
-  // THIS IS REQUIRED if you're not using ConstructedPattern!
-  // Initialize the NativeShaderPatternEffect and retrieve the native shader object
-  // from it when the pattern becomes active
-  public void onActive() {
-    super.onActive();
-    effect.onActive();
-    shader = effect.getNativeShader();
+    addShader(
+      "triangle_infinity.fs",
+      new GLShaderFrameSetup() {
+        @Override
+        public void OnFrame(GLShader s) {
+          s.setUniform("brightnessDampening", 0.5f);
+        }
+      });
   }
 }

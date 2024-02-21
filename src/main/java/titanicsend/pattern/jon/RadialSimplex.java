@@ -3,17 +3,12 @@ package titanicsend.pattern.jon;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.EnumParameter;
-import titanicsend.pattern.TEPerformancePattern;
-import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
-import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.glengine.GLShader;
+import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 
 @LXCategory("Noise")
-public class RadialSimplex extends TEPerformancePattern {
-
-  NativeShaderPatternEffect effect;
-  NativeShader shader;
+public class RadialSimplex extends GLShaderPattern {
 
   public enum NoiseMode {
     CLOUDS("Smoke Rings"),
@@ -22,7 +17,7 @@ public class RadialSimplex extends TEPerformancePattern {
 
     private final String label;
 
-    private NoiseMode(String label) {
+    NoiseMode(String label) {
       this.label = label;
     }
 
@@ -52,26 +47,14 @@ public class RadialSimplex extends TEPerformancePattern {
     // register common controls with LX
     addCommonControls();
 
-    effect = new NativeShaderPatternEffect("radial_simplex.fs", new PatternTarget(this));
-  }
-
-  @Override
-  protected void runTEAudioPattern(double deltaMs) {
-
-    RadialSimplex.NoiseMode mode = noiseMode.getEnum();
-    shader.setUniform("iWow1", (float) mode.ordinal());
-
-    // run the shader
-    effect.run(deltaMs);
-  }
-
-  @Override
-  // THIS IS REQUIRED if you're not using ConstructedPattern!
-  // Initialize the NativeShaderPatternEffect and retrieve the native shader object
-  // from it when the pattern becomes active
-  protected void onActive() {
-    super.onActive();
-    effect.onActive();
-    shader = effect.getNativeShader();
+    addShader(
+        "radial_simplex.fs",
+        new GLShaderFrameSetup() {
+          @Override
+          public void OnFrame(GLShader s) {
+            RadialSimplex.NoiseMode mode = noiseMode.getEnum();
+            s.setUniform("iWow1", (float) mode.ordinal());
+          }
+        });
   }
 }

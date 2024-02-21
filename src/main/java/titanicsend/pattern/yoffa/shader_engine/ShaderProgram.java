@@ -40,7 +40,6 @@ public class ShaderProgram {
 
   public void dispose(GL4 gl4) {
     initialized = false;
-    // free any remaining native shader resources
     gl4.glDeleteProgram(programId);
   }
 

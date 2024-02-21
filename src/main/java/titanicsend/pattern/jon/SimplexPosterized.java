@@ -2,16 +2,11 @@ package titanicsend.pattern.jon;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
-import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-import titanicsend.pattern.yoffa.shader_engine.NativeShader;
 
 @LXCategory("Noise")
 public class SimplexPosterized extends DriftEnabledPattern {
-
-  NativeShaderPatternEffect effect;
-  NativeShader shader;
 
   public SimplexPosterized(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
@@ -26,26 +21,12 @@ public class SimplexPosterized extends DriftEnabledPattern {
     // register common controls with LX
     addCommonControls();
 
-    effect = new NativeShaderPatternEffect("simplex_posterized.fs", new PatternTarget(this));
-  }
-
-  @Override
-  protected void runTEAudioPattern(double deltaMs) {
-
-    // calculate incremental transform based on elapsed time
-    shader.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
-
-    // run the shader
-    effect.run(deltaMs);
-  }
-
-  @Override
-  // THIS IS REQUIRED if you're not using ConstructedPattern!
-  // Initialize the NativeShaderPatternEffect and retrieve the native shader object
-  // from it when the pattern becomes active
-  protected void onActive() {
-    super.onActive();
-    effect.onActive();
-    shader = effect.getNativeShader();
+    addShader("simplex_posterized.fs", new GLShaderFrameSetup() {
+      @Override
+      public void OnFrame(GLShader s) {
+        // calculate incremental transform based on elapsed time
+        s.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
+      }
+    });
   }
 }

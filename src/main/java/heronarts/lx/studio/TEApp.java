@@ -61,6 +61,7 @@ import titanicsend.modulator.dmx.DmxGridModulator;
 import titanicsend.modulator.dmx.DmxRangeModulator;
 import titanicsend.modulator.justin.MultiplierModulator;
 import titanicsend.modulator.justin.UIMultiplierModulator;
+import titanicsend.ndi.NDIEngine;
 import titanicsend.osc.CrutchOSC;
 import titanicsend.output.GPOutput;
 import titanicsend.output.GrandShlomoStation;
@@ -70,6 +71,7 @@ import titanicsend.pattern.TEPanelTestPattern;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.ben.*;
 import titanicsend.pattern.cesar.HandTracker;
+import titanicsend.pattern.glengine.GLEngine;
 import titanicsend.pattern.glengine.ShaderPatternClassFactory;
 import titanicsend.pattern.glengine.ShaderPrecompiler;
 import titanicsend.pattern.jeff.*;
@@ -119,6 +121,9 @@ public class TEApp extends LXStudio {
     private TEPatternLibrary library;
 
     private final DmxEngine dmxEngine;
+
+    private final NDIEngine ndiEngine;
+    private final GLEngine glEngine;
     private final TELaserTask laserTask;
     private final CrutchOSC crutchOSC;
     private DevSwitch devSwitch;
@@ -143,6 +148,8 @@ public class TEApp extends LXStudio {
       //      new TEUIControls(ui, visual,
       // ui.leftPane.global.getContentWidth()).addToContainer(ui.leftPane.global);
       this.dmxEngine = new DmxEngine(lx);
+      this.ndiEngine = new NDIEngine(lx);
+      this.glEngine = new GLEngine(lx);
 
       // create our loop task for outputting data to lasers
       this.laserTask = new TELaserTask(lx);
@@ -181,11 +188,14 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(EdgeRunner.class);
       lx.registry.addPattern(Electric.class);
       lx.registry.addPattern(ElectricEdges.class);
+      lx.registry.addPattern(Fireflies.class);
       lx.registry.addPattern(FollowThatStar.class);
       lx.registry.addPattern(FrameBrights.class);
       lx.registry.addPattern(FourStar.class);
       lx.registry.addPattern(Iceflow.class);
       lx.registry.addPattern(Kaleidosonic.class);
+      lx.registry.addPattern(MultipassDemo.class);
+      lx.registry.addPattern(NDIReceiverTest.class);
       lx.registry.addPattern(Phasers.class);
       lx.registry.addPattern(PixelblazeSandbox.class);
       lx.registry.addPattern(PBAudio1.class);
@@ -224,8 +234,11 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(BassReactiveEdge.class);
       lx.registry.addPattern(TempoReactiveEdge.class);
       lx.registry.addPattern(ArtStandards.class);
+      lx.registry.addEffect(titanicsend.effect.BasicShaderEffect.class);
       lx.registry.addEffect(titanicsend.effect.EdgeSieve.class);
       lx.registry.addEffect(titanicsend.effect.NoGapEffect.class);
+      lx.registry.addEffect(titanicsend.effect.NDIOutRawEffect.class);
+      lx.registry.addEffect(titanicsend.effect.ExplodeEffect.class);
       lx.registry.addEffect(titanicsend.effect.PanelAdjustEffect.class);
       lx.registry.addEffect(BeaconEffect.class);
       lx.registry.addEffect(GlobalPatternControl.class);
@@ -262,9 +275,6 @@ public class TEApp extends LXStudio {
       // lx.registry.addPattern(Bubbles.class);
 
       // Nonfunctional - need work or additional hardware that will not be at EDC
-      lx.registry.addPattern(HandTracker.class);
-      lx.registry.addPattern(TargetPixelStamper.class);
-
       // "ShaderToyPattern" in ShaderPanelsPatternConfig.java
 
       // Useful for test, but might turn the car black in performance
@@ -282,17 +292,21 @@ public class TEApp extends LXStudio {
                       .filter(LXPattern.class::isAssignableFrom)
                       .toArray(Class[]::new);
 
+      // Patterns generated via ConstructedShaderPattern
       lx.registry.addPatterns(patternGetter.apply(OrganicPatternConfig.class));
       lx.registry.addPatterns(patternGetter.apply(ShaderPanelsPatternConfig.class));
       lx.registry.addPatterns(patternGetter.apply(ShaderEdgesPatternConfig.class));
 
-      // Test/debug patterns
+      // Test/debug/utility patterns
       lx.registry.addPattern(ModelDebugger.class);
       lx.registry.addPattern(PowerDebugger.class);
       // lx.registry.addPattern(ModuleEditor.class);
       lx.registry.addPattern(SignalDebugger.class);
       lx.registry.addPattern(TEEdgeTestPattern.class);
       lx.registry.addPattern(TEPanelTestPattern.class);
+      lx.registry.addPattern(HandTracker.class);
+      lx.registry.addPattern(TargetPixelStamper.class);
+      //lx.registry.addPattern(ModelFileWriter.class);
 
       // Midi surface names for use with BomeBox
       lx.engine.midi.registerSurface(MidiNames.BOMEBOX_APC40MK2, APC40Mk2.class);

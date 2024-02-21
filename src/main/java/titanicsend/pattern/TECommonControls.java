@@ -116,11 +116,6 @@ public class TECommonControls {
             .setDescription("Trigger WoW effects");
     setControl(TEControlTag.WOWTRIGGER, p);
 
-    p =
-        new CompoundParameter("Explode", 0, 0, 1.0)
-            .setDescription("Randomize the pixels to a certain radius on beat");
-    setControl(TEControlTag.EXPLODE, p);
-
     // in degrees for display 'cause more people think about it that way
     p =
         (LXListenableNormalizedParameter)
@@ -325,18 +320,11 @@ public class TECommonControls {
     // TEControlTag enum
     for (TEControlTag tag : TEControlTag.values()) {
       LXListenableNormalizedParameter param = controlList.get(tag).control;
+
       if (missingControls != null) {
         if (missingControls.missing_control_tags.contains(tag)) {
           markUnused(param);
         }
-      }
-
-      // disable explode control if the pattern isn't a shader
-      // (takes advantage of the fact that all shaders have a missingControls file entry,
-      // even if they're not missing any controls.)
-      // TODO - reminder to implement "explode" as an effect so all patterns can use it.
-      else if (param.getLabel().equals(TEControlTag.EXPLODE.getLabel())) {
-        markUnused(param);
       }
 
       this.pattern.addParam(tag.getPath(), param);
@@ -376,7 +364,7 @@ public class TECommonControls {
           getControl(TEControlTag.WOW1).control,
           getControl(TEControlTag.WOW2).control,
           getControl(TEControlTag.WOWTRIGGER).control,
-          getControl(TEControlTag.EXPLODE).control,
+          null,  // former shader-specific explode control
           // To be SHIFT, not implemented yet
 
           // For UI usage, LXDeviceComponent.view
@@ -419,7 +407,6 @@ public class TECommonControls {
     getControl(TEControlTag.ANGLE).control.reset();
     getControl(TEControlTag.SPIN).control.reset();
 
-    getControl(TEControlTag.EXPLODE).control.reset();
     getControl(TEControlTag.WOW1).control.reset();
     getControl(TEControlTag.WOW2).control.reset();
     getControl(TEControlTag.WOWTRIGGER).control.reset();
