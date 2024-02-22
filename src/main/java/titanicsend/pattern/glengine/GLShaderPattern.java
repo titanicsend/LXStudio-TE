@@ -34,7 +34,7 @@ public class GLShaderPattern extends TEPerformancePattern {
   protected final ArrayList<ShaderInfo> shaderInfo = new ArrayList<>();
 
   // function to paint the final shader output to the car
-  private ShaderPaintFn painter;
+  public ShaderPaintFn painter; // DO NOT SUBMIT: Add proper getter
 
   public GLShaderPattern(LX lx) {
     this(lx, TEShaderView.ALL_POINTS);

@@ -22,8 +22,8 @@ import titanicsend.pattern.glengine.GLEngine;
 @LXCategory("AAA")
 public class TETextureWriter extends TEPerformancePattern {
 
-  private final int x_max_;
-  private final int y_max_;
+  int x_max_ = GLEngine.getWidth() - 1;
+  int y_max_ = GLEngine.getHeight() - 1;
 
   private final int width_;
   private final int height_;
@@ -53,44 +53,66 @@ public class TETextureWriter extends TEPerformancePattern {
     return image;
   }
 
-  private void process_points(LXPoint[] points, int color, BufferedImage buffer, String file_name) {
-    TEApp.wholeModel.normalizePoints();
+  private void process_points(
+      LXPoint[] points, int color, BufferedImage buffer, String file_name, String type) {
+    if (type.equals("3d")) {
+      for (LXPoint point : points) {
+        float zn = 0.5f * ((point.x >= 0) ? 1f + point.zn : 1f - point.zn);
+        float yn = point.yn;
 
-    for (LXPoint point : points) {
-      if (this.modelTE.isGapPoint(point)) {
-        continue;
+        // use normalized point coordinates to calculate x/y coordinates and then the
+        // proper index in the image buffer.  the 'z' dimension of TE corresponds
+        // with 'x' dimension of the image based on the side that we're painting.
+        int xi = (int) (0.5f + zn * x_max_);
+        int yi = (int) (0.5f + yn * y_max_);
+
+        //        int index = 4 * ((yi * GLEngine.getWidth()) + xi);
+        try {
+          // Check if the current color at xi, yi is black (assuming ARGB format where high byte is
+          // alpha and black is 0x00000000)
+          int currentColor = buffer.getRGB(xi, yi);
+          if ((currentColor & 0x00FFFFFF) == 0) { // Masking to ignore the alpha channel if present
+            buffer.setRGB(xi, yi, color);
+          }
+        } catch (ArrayIndexOutOfBoundsException ignored) {
+        }
       }
 
-      double xn = point.xn;
-      double zn = (1f - point.zn);
-      double yn = point.yn;
-      //      TE.err("Xn: " + xn + " Yn: " + yn + " Zn: " + zn);
-
-      // use normalized point coordinates to calculate x/y coordinates and then the
-      // proper index in the image buffer.  the 'z' dimension of TE corresponds
-      // with 'x' dimension of the image based on the side that we're painting.
-      int xi = (int) Math.round(zn * x_max_);
-      int yi = (int) Math.round(yn * y_max_);
-
-      try {
-        // Check if the current color at xi, yi is black (assuming ARGB format where high byte is
-        // alpha and black is 0x00000000)
-        int currentColor = buffer.getRGB(xi, yi);
-        if ((currentColor & 0x00FFFFFF) == 0) { // Masking to ignore the alpha channel if present
-          buffer.setRGB(xi, yi, color);
+    } else if (type.equals("2d")) {
+      for (LXPoint point : points) {
+        if (this.modelTE.isGapPoint(point)) {
+          continue;
         }
-      } catch (ArrayIndexOutOfBoundsException e) {
-        //        TE.err("Xi: " + xi + " Yi: " + yi);
+
+        double xn = point.xn;
+        double zn = (1f - point.zn);
+        double yn = point.yn;
+
+        // use normalized point coordinates to calculate x/y coordinates and then the
+        // proper index in the image buffer.  the 'z' dimension of TE corresponds
+        // with 'x' dimension of the image based on the side that we're painting.
+        int xi = (int) Math.round(zn * x_max_);
+        int yi = (int) Math.round(yn * y_max_);
+
+        try {
+          // Check if the current color at xi, yi is black (assuming ARGB format where high byte is
+          // alpha and black is 0x00000000)
+          int currentColor = buffer.getRGB(xi, yi);
+          if ((currentColor & 0x00FFFFFF) == 0) { // Masking to ignore the alpha channel if present
+            buffer.setRGB(xi, yi, color);
+          }
+        } catch (ArrayIndexOutOfBoundsException ignored) {
+        }
       }
     }
 
     if (!wrote_image_.containsKey(file_name)) {
       // Write the image to file
-      File outputFile = new File("./resources/texture_maps/" + file_name + ".png");
+      File outputFile = new File("./resources/texture_maps/" + type + "/" + file_name + ".png");
+
       try {
         ImageIO.write(buffer, "png", outputFile);
-      } catch (IOException e) {
-        e.printStackTrace();
+      } catch (IOException ignored) {
       }
       wrote_image_.put(file_name, true);
     }
@@ -114,6 +136,7 @@ public class TETextureWriter extends TEPerformancePattern {
   protected void runTEAudioPattern(double deltaMs) {
     int color = calcColor();
     int color_edges = LXColor.rgb(0, 255, 255);
+    final String type = "3d"; // "3d" or "2d"
 
     // Initialize the image buffer with the specified size
 
@@ -127,33 +150,33 @@ public class TETextureWriter extends TEPerformancePattern {
 
     BufferedImage front_panel_buffer = initialize_image();
     LXPoint[] front_panel_points = get_points_for_panels(front_panels);
-    process_points(front_panel_points, color, front_panel_buffer, "front_panels");
+    process_points(front_panel_points, color, front_panel_buffer, "front_panels", type);
 
     BufferedImage left_side_panel_buffer = initialize_image();
     LXPoint[] left_side_panel_points = get_points_for_panels(left_side_panels);
-    process_points(left_side_panel_points, color, left_side_panel_buffer, "left_side_panels");
+    process_points(left_side_panel_points, color, left_side_panel_buffer, "left_side_panels", type);
 
     BufferedImage left_panel_buffer = initialize_image();
     LXPoint[] points = get_points_for_panels(left_panels);
-    process_points(points, color, left_panel_buffer, "left_panels");
+    process_points(points, color, left_panel_buffer, "left_panels", type);
 
     BufferedImage all_panel_buffer = initialize_image();
     points = new LXPoint[TEApp.wholeModel.panelPoints.size()];
     points = TEApp.wholeModel.panelPoints.toArray(points);
-    process_points(points, color, all_panel_buffer, "all_panels");
+    process_points(points, color, all_panel_buffer, "all_panels", type);
 
     // Overlay edges on the panels
     points = new LXPoint[TEApp.wholeModel.edgePoints.size()];
     points = TEApp.wholeModel.edgePoints.toArray(points);
-    process_points(points, color_edges, all_panel_buffer, "overlayed_edges");
+    process_points(points, color_edges, all_panel_buffer, "overlayed_edges", type);
 
     BufferedImage all_edge_buffer = initialize_image();
     points = new LXPoint[TEApp.wholeModel.edgePoints.size()];
     points = TEApp.wholeModel.edgePoints.toArray(points);
-    process_points(points, color, all_edge_buffer, "all_edges");
+    process_points(points, color, all_edge_buffer, "all_edges", type);
 
     BufferedImage end_point_buffer = initialize_image();
     points = TEApp.wholeModel.points;
-    process_points(points, color, end_point_buffer, "all_points");
+    process_points(points, color, end_point_buffer, "all_points", type);
   }
 }

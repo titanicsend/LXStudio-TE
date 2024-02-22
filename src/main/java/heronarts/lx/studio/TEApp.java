@@ -80,8 +80,8 @@ import titanicsend.pattern.justin.*;
 import titanicsend.pattern.look.*;
 import titanicsend.pattern.mike.*;
 import titanicsend.pattern.pixelblaze.*;
-import titanicsend.pattern.sina.TDPattern;
 import titanicsend.pattern.sina.TETextureWriter;
+import titanicsend.pattern.sina.TdNdiPattern;
 import titanicsend.pattern.tom.*;
 import titanicsend.pattern.util.TargetPixelStamper;
 import titanicsend.pattern.will.PowerDebugger;
@@ -484,7 +484,7 @@ public class TEApp extends LXStudio {
       l.addPattern(ShaderEdgesPatternConfig.NeonRipplesEdges.class, covPanelPartial, cPalette, up);
       l.addPattern(ArcEdges.class, covPanelPartial, cPalette, up);
 
-      l.addPattern(TDPattern.class, covPanelPartial, cPalette, up);
+      l.addPattern(TdNdiPattern.class, covPanelPartial, cPalette, up);
       l.addPattern(TETextureWriter.class, covPanelPartial, cPalette, up);
 
       return l;
