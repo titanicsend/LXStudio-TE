@@ -486,6 +486,7 @@ public class TEApp extends LXStudio {
 
       l.addPattern(TdNdiPattern.class, covPanelPartial, cPalette, up);
       l.addPattern(TETextureWriter.class, covPanelPartial, cPalette, up);
+      l.addPattern(ModelFileWriter.class, covPanelPartial, cPalette, up);
 
       return l;
     }

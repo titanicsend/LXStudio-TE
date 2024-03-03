@@ -1,6 +1,6 @@
 {
   "version": "0.4.2.TE.7-SNAPSHOT",
-  "timestamp": 1708622905821,
+  "timestamp": 1709184767507,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -3709,6 +3709,89 @@
                   "/view"
                 ],
                 "effects": []
+              },
+              {
+                "id": 130045,
+                "class": "titanicsend.pattern.jon.ModelFileWriter",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true,
+                  "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "ModelFileWriter",
+                  "view": 0,
+                  "viewPriority": 0,
+                  "enabled": true,
+                  "recall": false,
+                  "compositeMode": 0,
+                  "compositeLevel": 1.0,
+                  "hasCustomCycleTime": false,
+                  "customCycleTimeSecs": 60.0,
+                  "te_color/brightness": 100.0,
+                  "te_color/saturation": 100.0,
+                  "te_color/hue": 0.0,
+                  "te_color/solidSource": 1,
+                  "te_color/gradient": 0,
+                  "te_color/blendMode": 0,
+                  "te_color/offset": 0.0,
+                  "te_color/color2offset": 0.5,
+                  "te_speed": 0.5,
+                  "te_xpos": 0.0,
+                  "te_ypos": 0.0,
+                  "te_size": 1.0,
+                  "te_quantity": 0.5,
+                  "te_spin": 0.0,
+                  "te_brightness": 1.0,
+                  "te_wow1": 0.0,
+                  "te_wow2": 0.0,
+                  "te_wowtrigger": false,
+                  "te_angle": 0.0,
+                  "panic": false
+                },
+                "children": {
+                  "modulation": {
+                    "id": 130046,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1,
+                "remoteControls": [
+                  "/te_color/offset",
+                  "/te_color/gradient",
+                  null,
+                  "/te_speed",
+                  "/te_xpos",
+                  "/te_ypos",
+                  "/te_quantity",
+                  "/te_size",
+                  "/te_angle",
+                  "/te_spin",
+                  "/panic",
+                  null,
+                  "/te_wow1",
+                  "/te_wow2",
+                  "/te_wowtrigger",
+                  null,
+                  "/view"
+                ],
+                "effects": []
               }
             ]
           }
@@ -3940,7 +4023,7 @@
               "exp": 0.25859374599531293
             },
             "children": {},
-            "basis": 0.6447500000003856
+            "basis": 0.20625000000001137
           },
           {
             "id": 78340,
@@ -3975,7 +4058,7 @@
               "exp": 1.0
             },
             "children": {},
-            "basis": 0.8223750000001928
+            "basis": 0.10312500000000568
           },
           {
             "id": 68570,
@@ -4010,7 +4093,7 @@
               "exp": 1.0
             },
             "children": {},
-            "basis": 0.4555937500000482
+            "basis": 0.5257812500000014
           },
           {
             "id": 116084,
@@ -4032,7 +4115,7 @@
               "midiFilter/velocityRange": 127,
               "inputA": 0.0,
               "inputB": 1.0,
-              "output": 0.12036075397289939
+              "output": 0.36359005626825236
             },
             "children": {}
           },
@@ -4056,7 +4139,7 @@
               "midiFilter/velocityRange": 127,
               "inputA": 0.0,
               "inputB": 0.9921259842519685,
-              "output": 0.011264666400315803
+              "output": 0.388548026223768
             },
             "children": {}
           },
@@ -4080,7 +4163,7 @@
               "midiFilter/velocityRange": 127,
               "inputA": 0.0,
               "inputB": 1.0,
-              "output": 1.5418825106841503E-36
+              "output": 9.846133848974552E-25
             },
             "children": {}
           }
@@ -4779,8 +4862,8 @@
         "camera": {
           "active": false,
           "radius": 1.7E7,
-          "theta": 240.97050350904465,
-          "phi": -1.6327307224273682,
+          "theta": 270.0,
+          "phi": -6.0,
           "x": 2255849.2623291016,
           "y": 5053059.60546875,
           "z": 207717.87439727783
