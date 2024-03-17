@@ -240,6 +240,7 @@ public class TEApp extends LXStudio {
       lx.registry.addEffect(titanicsend.effect.EdgeSieve.class);
       lx.registry.addEffect(titanicsend.effect.NoGapEffect.class);
       lx.registry.addEffect(titanicsend.effect.NDIOutRawEffect.class);
+      lx.registry.addEffect(titanicsend.effect.NDIOutLaserEffect.class);
       lx.registry.addEffect(titanicsend.effect.ExplodeEffect.class);
       lx.registry.addEffect(titanicsend.effect.PanelAdjustEffect.class);
       lx.registry.addEffect(BeaconEffect.class);

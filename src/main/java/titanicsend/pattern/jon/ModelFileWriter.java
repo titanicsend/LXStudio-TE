@@ -35,7 +35,7 @@ public class ModelFileWriter extends TEPerformancePattern {
     }
   }
 
-  private List<String> splitEdgeString(String longEdgeString) {
+  public static List<String> splitEdgeString(String longEdgeString) {
     return Arrays.asList(longEdgeString.split("-"));
   }
 
@@ -60,8 +60,8 @@ public class ModelFileWriter extends TEPerformancePattern {
     return sortedNums[0] + "-" + sortedNums[1];
   }
 
-  LXPoint[] get_start_end_points_for_edges(String longEdgeString) {
-    List<String> edges = splitEdgeString(longEdgeString); // Split the input
+  public static LXPoint[] get_points_along_the_path(String edge_path) {
+    List<String> edges = splitEdgeString(edge_path); // Split the input
 
     List<LXPoint> points_list = new ArrayList<>();
     for (int i = 0; i < edges.size() - 1; i++) { // Process pairs of edges
@@ -74,18 +74,37 @@ public class ModelFileWriter extends TEPerformancePattern {
       List<LXPoint> edge_points = Arrays.asList(edge_model.points);
       int last_index = edge_points.size() - 1;
 
+      int interpolation_size = 10;
+
       // We assume the order of the input edge name was correct, if not,
       // we swap the start and end of the edge using these indexes, so we
       // can keep the ordering of the edges in the final output.
       int first_index = 0;
       int second_index = last_index;
+      int interpolation_inc = last_index / (interpolation_size - 1);
+
       if (!sorted_edge_name.equals(edge_name)) {
         first_index = last_index;
         second_index = 0;
-      }
 
-      // Add the lower point to the list
-      points_list.add(edge_points.get(first_index));
+        // Add the lower point to the list
+        points_list.add(edge_points.get(first_index));
+
+        for (int k = first_index; k > second_index; k -= interpolation_inc) {
+          TE.log("K: " + k + " Index: " + edge_points.get(k).index);
+          points_list.add(edge_points.get(k));
+        }
+
+      } else {
+        // Add the lower point to the list
+        points_list.add(edge_points.get(first_index));
+
+        TE.log("Last Index: " + last_index + " INC: " + interpolation_inc);
+        for (int k = first_index; k < second_index; k += interpolation_inc) {
+          TE.log("K: " + k + " Index: " + edge_points.get(k).index);
+          points_list.add(edge_points.get(k));
+        }
+      }
 
       // Add the other point unconditionally for the last edge
       if (i == edges.size() - 2) {
@@ -98,40 +117,7 @@ public class ModelFileWriter extends TEPerformancePattern {
     return points;
   }
 
-  private List<String> getEdgeProgressions() {
-    List<String> progressions = new ArrayList<>();
-
-    progressions.add("124-113-109-111-119-118-30");
-    progressions.add("117-113-28-111-102-119-31-118-30");
-    progressions.add("124-117-115-113-28-26-111-102-119-121-31-30");
-    progressions.add("117-10-115-28-26-102-121-39-31-33-30");
-    progressions.add("10-100-115-26-99-102-101-121-39-33-30");
-    progressions.add("10-11-100-26-99-101-39-33-30");
-    progressions.add("11-98-100-99-101-39-33-30");
-    progressions.add("11-98-99-101-39-33-30");
-    progressions.add("101-44-39-37-33-30");
-    progressions.add("44-37-123");
-    progressions.add("44-50-37-123");
-    progressions.add("44-47-50-123");
-    progressions.add("47-45-50-123");
-    progressions.add("47-45-123");
-    progressions.add("47-45-122");
-    progressions.add("47-122");
-    progressions.add("47-54-122");
-    progressions.add("47-51-54-82-122");
-    progressions.add("51-82");
-    progressions.add("65-67-90-47");
-    progressions.add("65-93-67-90-51");
-    progressions.add("65-60-93-90-69-51");
-    progressions.add("60-127-93-69-82");
-    progressions.add("60-125-127-69-70-82");
-    progressions.add("125-89-127-70-82");
-    progressions.add("125-126-89-70-82");
-
-    return progressions;
-  }
-
-  private List<String> getFullGraphEdges() {
+  public static List<String> getFullGraphEdges() {
     List<String> progressions = new ArrayList<>();
     progressions.add(
         "124-113-109-28-113-124-117-113-115-117-10-115-28-111-109-28-26-115-"
@@ -152,34 +138,16 @@ public class ModelFileWriter extends TEPerformancePattern {
     String file_name_prefix = "full_graph_";
 
     for (int i = 0; i < list_of_list_of_edges.size(); i++) {
-      LXPoint[] start_end_edge_points =
-          get_start_end_points_for_edges(list_of_list_of_edges.get(i));
+      LXPoint[] start_end_edge_points = get_points_along_the_path(list_of_list_of_edges.get(i));
 
       Path path = Path.of("resources/edge_points/" + file_name_prefix + i + ".csv");
       Files.writeString(path, "tx,ty,tz\n", CREATE, APPEND);
 
-      // Iterate through consecutive pairs of points
-      for (int j = 0; j < start_end_edge_points.length - 1; j++) {
+      for (int j = 0; j < start_end_edge_points.length; j++) {
         LXPoint point1 = start_end_edge_points[j];
-        LXPoint point2 = start_end_edge_points[j + 1];
 
         // Original point
         Files.writeString(path, point1.x + "," + point1.y + "," + point1.z + "\n", CREATE, APPEND);
-
-        // Interpolate between points
-        for (int k = 1; k <= numInterpolations; k++) {
-          double t = k / (double) (numInterpolations + 1); // Interpolation fraction
-
-          double interpolatedX = point1.x + (point2.x - point1.x) * t;
-          double interpolatedY = point1.y + (point2.y - point1.y) * t;
-          double interpolatedZ = point1.z + (point2.z - point1.z) * t;
-
-          Files.writeString(
-              path,
-              interpolatedX + "," + interpolatedY + "," + interpolatedZ + "\n",
-              CREATE,
-              APPEND);
-        }
       }
     }
   }

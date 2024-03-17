@@ -8,22 +8,27 @@ import java.nio.ByteOrder;
 import me.walkerknapp.devolay.DevolayFrameFourCCType;
 import me.walkerknapp.devolay.DevolaySender;
 import me.walkerknapp.devolay.DevolayVideoFrame;
+import titanicsend.pattern.jon.ModelFileWriter;
 
 @LXCategory("Titanics End")
-public class NDIOutRawEffect extends TEEffect {
+public class NDIOutLaserEffect extends TEEffect {
 
   private boolean isInitialized = false;
 
   // output frame size
-  private static final int width = 320;
-  private static final int height = 240;
+  private static final int width = 40;
+  private static final int height = 40;
 
   private DevolaySender ndiSender;
   private DevolayVideoFrame ndiFrame;
   private final ByteBuffer buffer = ByteBuffer.allocateDirect(width * height * 4);
 
-  public NDIOutRawEffect(LX lx) {
+  private LXPoint[] laser_points;
+
+  public NDIOutLaserEffect(LX lx) {
     super(lx);
+    laser_points =
+        ModelFileWriter.get_points_along_the_path(ModelFileWriter.getFullGraphEdges().get(0));
   }
 
   @Override
@@ -34,7 +39,7 @@ public class NDIOutRawEffect extends TEEffect {
 
     buffer.order(ByteOrder.LITTLE_ENDIAN);
     buffer.rewind();
-    for (LXPoint p : this.model.points) {
+    for (LXPoint p : laser_points) {
       buffer.putInt(colors[p.index]);
     }
     buffer.flip();
@@ -46,7 +51,7 @@ public class NDIOutRawEffect extends TEEffect {
     super.onEnable();
 
     if (!isInitialized) {
-      ndiSender = new DevolaySender("TE Panels");
+      ndiSender = new DevolaySender("TE Laser");
       ndiFrame = new DevolayVideoFrame();
       ndiFrame.setResolution(width, height);
       ndiFrame.setFourCCType(DevolayFrameFourCCType.BGRA);
