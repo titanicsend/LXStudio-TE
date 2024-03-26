@@ -31,7 +31,7 @@ public class Checkers extends TEPerformancePattern {
     addCommonControls();
 
     this.panelGroup = new HashMap<>();
-    List<TEPanelModel> queue = new ArrayList<>(modelTE.panelsById.values());
+    List<TEPanelModel> queue = new ArrayList<>(modelTE.getPanels());
     while (!queue.isEmpty()) {
       TEPanelModel panel = queue.remove(0);
       if (!this.panelGroup.containsKey(panel)) {

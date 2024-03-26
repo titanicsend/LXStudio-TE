@@ -152,7 +152,7 @@ public class FrameBrights extends TEAudioPattern {
     minZones = (minZones > maxZones) ? maxZones : minZones;
     maxZones = Math.min(zoneCount, maxZones);
 
-    for (TEEdgeModel edge : modelTE.getAllEdges()) {
+    for (TEEdgeModel edge : modelTE.getEdges()) {
       float alpha;
       lightRandomSegments(zoneCount, minZones, maxZones);
       for (TEEdgeModel.Point point : edge.points) {

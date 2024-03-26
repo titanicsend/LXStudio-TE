@@ -1,9 +1,11 @@
 package titanicsend.pattern.jon;
 
+import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import java.util.ArrayList;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
+import titanicsend.model.TEWholeModelStatic;
 
 public class ModelBender {
   private final String[] endEdgeIds = {
@@ -49,7 +51,7 @@ public class ModelBender {
     ArrayList<LXPoint> endPoints = new ArrayList<LXPoint>();
 
     // add end panel points
-    for (TEPanelModel panel : model.getAllPanels()) {
+    for (TEPanelModel panel : model.getPanels()) {
       String id = panel.getId();
       if (id.startsWith("F") || id.startsWith("A")) {
         for (LXPoint point : panel.getPoints()) {
@@ -59,16 +61,20 @@ public class ModelBender {
     }
 
     // add end edge points
+    LXModel endEdge;
     for (String edgeId : endEdgeIds) {
-      for (LXPoint point : model.edgesById.get(edgeId).getPoints()) {
-        endPoints.add(point);
+      endEdge = model.getEdge(edgeId);
+      if (endEdge != null) {
+        for (LXPoint point : endEdge.getPoints()) {
+          endPoints.add(point);
+        }
       }
     }
 
     return endPoints;
   }
 
-  public void adjustEndGeometry(TEWholeModel model) {
+  public void adjustEndGeometry(TEWholeModelStatic model) {
 
     // save the model's original z coordinates so we can restore them
     // after all views are created.  endXMax is the largest x coordinate at
@@ -99,7 +105,7 @@ public class ModelBender {
     model.normalizePoints();
   }
 
-  public void restoreModel(TEWholeModel model) {
+  public void restoreModel(TEWholeModelStatic model) {
     // restore the model's original z bounds
     model.zMax -= endXMax;
     model.zMin += endXMax;

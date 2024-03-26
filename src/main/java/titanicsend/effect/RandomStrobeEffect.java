@@ -142,14 +142,14 @@ public class RandomStrobeEffect extends TEEffect {
   }
 
   public void buildElementLists() {
-    for (TEPanelModel panel : modelTE.getAllPanels()) {
+    for (TEPanelModel panel : modelTE.getPanels()) {
       PanelElement pwe = new PanelElement();
       pwe.panel = panel;
       pwe.randomizeOffset();
       this.panelElements.add(pwe);
     }
 
-    for (TEEdgeModel edge : modelTE.getAllEdges()) {
+    for (TEEdgeModel edge : modelTE.getEdges()) {
       EdgeElement e = new EdgeElement();
       e.edge = edge;
       e.randomizeOffset();

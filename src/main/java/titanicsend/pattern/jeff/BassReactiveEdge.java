@@ -57,7 +57,7 @@ public class BassReactiveEdge extends TEAudioPattern {
      */
     bassBandCount = bassBandCountP.getValuei();
 
-    for (TEEdgeModel edge : modelTE.edgesById.values()) {
+    for (TEEdgeModel edge : this.modelTE.getEdges()) {
       // Max width of the lit section of this edge, from 0 to 200 percent of its length
       // of the overall edge length, depending on the energy parameter.
       float maxWidth = energy.getNormalizedf() * 2;

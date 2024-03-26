@@ -54,7 +54,7 @@ public class MF64XWave extends TEMidiFighter64Subpattern {
     float lightWave = movement;
 
     // do one wave on the panels
-    for (LXPoint point : modelTE.panelPoints) {
+    for (LXPoint point : this.modelTE.getPanelPoints()) {
       float dist = 1f - Math.abs(point.zn - lightWave);
       dist = dist * dist;
 
@@ -67,7 +67,7 @@ public class MF64XWave extends TEMidiFighter64Subpattern {
     lightWave = 1 - movement;
 
     // and another on the edges
-    for (LXPoint point : modelTE.edgePoints) {
+    for (LXPoint point : modelTE.getEdgePoints()) {
       float dist = 1f - Math.abs(point.zn - lightWave);
       dist = dist * dist;
 

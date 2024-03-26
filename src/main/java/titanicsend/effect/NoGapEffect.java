@@ -31,8 +31,8 @@ public class NoGapEffect extends TEEffect {
 
   @Override
   protected void run(double deltaMs, double enabledAmount) {
-    // There is only one LXPoint instance for all gap pixels
-    colors[this.modelTE.getGapPointIndex()] =
-        showGapPixels.isOn() ? LXColor.RED : TEPattern.GAP_PIXEL_COLOR;
+	for (int gapPointIndex : this.modelTE.getGapPointIndices()) {
+      colors[gapPointIndex] =  showGapPixels.isOn() ? LXColor.RED : TEPattern.GAP_PIXEL_COLOR;
+	}
   }
 }

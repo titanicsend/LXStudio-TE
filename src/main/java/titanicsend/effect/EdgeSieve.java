@@ -34,7 +34,7 @@ public class EdgeSieve extends TEEffect {
   @Override
   protected void run(double deltaMs, double enabledAmount) {
     if (enabledAmount > 0) {
-      for (TEEdgeModel edge : this.modelTE.edgesById.values()) {
+      for (TEEdgeModel edge : this.modelTE.getEdges()) {
         for (TEEdgeModel.Point point : edge.points) {
           if (Math.floorMod(point.i - offset, runLength) >= length.getValuei()) {
             colors[point.index] = LXColor.BLACK;

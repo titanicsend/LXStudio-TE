@@ -54,7 +54,7 @@ public class TEEdgeTestPattern extends TEPattern {
     clearPixels();
     String id = this.target.getObject();
 
-    for (TEEdgeModel model : this.modelTE.getAllEdges()) {
+    for (TEEdgeModel model : this.modelTE.getEdges()) {
       if (model.getShortId().equalsIgnoreCase(id)) {
         for (LXPoint p : model.getPoints()) {
           colors[p.index] = this.color.getColor();

@@ -38,7 +38,7 @@ public class TEPanelTestPattern extends TEPattern {
     clearPixels();
     String id = this.target.getObject();
 
-    for (TEPanelModel model : this.modelTE.getAllPanels()) {
+    for (TEPanelModel model : this.modelTE.getPanels()) {
       if (model.getId().equalsIgnoreCase(id)) {
         for (LXPoint p : model.getPoints()) {
           colors[p.index] = this.color.getColor();

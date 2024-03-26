@@ -9,7 +9,6 @@ import heronarts.lx.transform.LXVector;
 import heronarts.lx.utils.LXUtils;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -18,42 +17,57 @@ import titanicsend.dmx.model.AdjStealthModel;
 import titanicsend.dmx.model.BeaconModel;
 import titanicsend.dmx.model.DmxModel;
 import titanicsend.dmx.model.DmxModel.DmxCommonConfig;
-import titanicsend.dmx.model.DmxWholeModel;
 import titanicsend.lasercontrol.MovingTarget;
 import titanicsend.output.ChromatechSocket;
 import titanicsend.output.GrandShlomoStation;
 import titanicsend.pattern.jon.ModelBender;
 import titanicsend.util.TE;
 
-public class TEWholeModelStatic extends LXModel implements DmxWholeModel {
-  public String subdir;
+public class TEWholeModelStatic extends LXModel implements TEWholeModel {
+
   public String name;
-  private final LXPoint gapPoint; // Used for pixels that shouldn't actually be lit
+  private final LXPoint gapPoint;       // For pixel that shouldn't actually be lit
+  private final int[] gapPointIndices;  // Always 1 entry for static model
+  
   public HashMap<Integer, TEVertex> vertexesById;
+  
+  private final List<TEEdgeModel> mutableEdges = new ArrayList<TEEdgeModel>();
+  private final List<TEEdgeModel> edges = Collections.unmodifiableList(this.mutableEdges);
   public HashMap<String, TEEdgeModel> edgesById;
   public HashMap<LXVector, List<TEEdgeModel>> edgesBySymmetryGroup;
+  
+  private final List<TEPanelModel> mutablePanels = new ArrayList<TEPanelModel>();
+  private final List<TEPanelModel> panels = Collections.unmodifiableList(this.mutablePanels);
   public HashMap<String, TEPanelModel> panelsById;
   private final HashMap<TEPanelSection, Set<TEPanelModel>> panelsBySection;
   public HashMap<String, List<TEPanelModel>> panelsByFlavor;
+  
   public HashMap<String, TELaserModel> lasersById;
+  
   public List<LXPoint> edgePoints; // Points belonging to edges
   public List<LXPoint> panelPoints; // Points belonging to panels
   public List<TEBox> boxes;
   public Boundaries boundaryPoints;
 
-  public static final String RESOURCE_NAME_BEACONS = "/beacons.txt";
-  public static final String RESOURCE_NAME_DJLIGHTS = "/djLights.txt";
-  public static final String RESOURCE_NAME_VIEWS = "views.txt";
+  private static final String RESOURCE_NAME_BEACONS = "beacons.txt";
+  private static final String RESOURCE_NAME_DJLIGHTS = "djLights.txt";
+  private static final String RESOURCE_NAME_VIEWS = "views.txt";
 
   // Beacons
   private final List<DmxModel> mutableBeacons = new ArrayList<DmxModel>();
-  public final List<DmxModel> beacons = Collections.unmodifiableList(this.mutableBeacons);
+  private final List<DmxModel> beacons = Collections.unmodifiableList(this.mutableBeacons);
   private final HashMap<String, DmxModel> beaconsById = new HashMap<String, DmxModel>();
+  public List<DmxModel> getBeacons() {
+    return this.beacons;
+  }
 
   // DJ Lights
   private final List<DmxModel> mutableDjLights = new ArrayList<DmxModel>();
-  public final List<DmxModel> djLights = Collections.unmodifiableList(this.mutableDjLights);
+  private final List<DmxModel> djLights = Collections.unmodifiableList(this.mutableDjLights);
   private final HashMap<String, DmxModel> djLightsById = new HashMap<String, DmxModel>();
+  public List<DmxModel> getDjLights() {
+    return this.djLights;
+  }
 
   // All DMX models
   private int sizeDmx = 0;
@@ -89,7 +103,6 @@ public class TEWholeModelStatic extends LXModel implements DmxWholeModel {
   }
 
   private static class Geometry {
-    public String subdir;
     public String name;
     public LXPoint gapPoint;
     public HashMap<Integer, TEVertex> vertexesById;
@@ -105,15 +118,15 @@ public class TEWholeModelStatic extends LXModel implements DmxWholeModel {
     public Properties tags;
   }
 
-  public TEWholeModelStatic(String subdir) {
-    this(loadGeometry(subdir));
+  public TEWholeModelStatic() {
+    this(loadGeometry());
   }
 
   private TEWholeModelStatic(Geometry geometry) {
     super(geometry.children);
-    this.subdir = geometry.subdir;
     this.name = geometry.name;
     this.gapPoint = geometry.gapPoint;
+    this.gapPointIndices = new int[]{ geometry.gapPoint.index };
     this.vertexesById = geometry.vertexesById;
     this.edgePoints = new ArrayList<>();
     this.edgesById = geometry.edgesById;
@@ -190,6 +203,10 @@ public class TEWholeModelStatic extends LXModel implements DmxWholeModel {
     return this.gapPoint.index;
   }
 
+  public int[] getGapPointIndices() {
+    return this.gapPointIndices;
+  }
+  
   public boolean isEdgePoint(int index) {
     return index >= edgePoints.get(0).index && index <= edgePoints.get(edgePoints.size() - 1).index;
   }
@@ -201,6 +218,30 @@ public class TEWholeModelStatic extends LXModel implements DmxWholeModel {
 
   public boolean isGapPoint(LXPoint p) {
     return p.index == this.gapPoint.index;
+  }
+
+  public List<LXPoint> getPanelPoints(){
+    return this.panelPoints;
+  }
+
+  public List<LXPoint> getEdgePoints() {
+    return this.edgePoints;
+  }
+
+  public Collection<TEVertex> getVertexes() {
+    return this.vertexesById.values();
+  }
+
+  public TEVertex getVertex(String vertexId) {
+    return this.vertexesById.get(vertexId);
+  }
+
+  public LXModel[] getChildren() {
+    return this.children;
+  }
+
+  public String getName() {
+    return this.name;
   }
 
   /**
@@ -221,22 +262,9 @@ public class TEWholeModelStatic extends LXModel implements DmxWholeModel {
     }
   }
 
-  private static Scanner loadFilePrivate(String filename) {
-    try {
-      File f = new File(filename);
-      return new Scanner(f);
-    } catch (FileNotFoundException e) {
-      throw new Error(filename + " not found below " + System.getProperty("user.dir"));
-    }
-  }
-
-  public Scanner loadFile(String filename) {
-    return loadFilePrivate(this.subdir + "/" + filename);
-  }
-
   private static void loadVertexes(Geometry geometry) {
     geometry.vertexesById = new HashMap<Integer, TEVertex>();
-    Scanner s = loadFilePrivate(geometry.subdir + "/vertexes.txt");
+    Scanner s = TE.loadFile("vertexes.txt");
 
     while (s.hasNextLine()) {
       String line = s.nextLine();
@@ -264,7 +292,7 @@ public class TEWholeModelStatic extends LXModel implements DmxWholeModel {
 
   private static void loadEdges(Geometry geometry) {
     geometry.edgesById = new HashMap<String, TEEdgeModel>();
-    Scanner s = loadFilePrivate(geometry.subdir + "/edges.txt");
+    Scanner s = TE.loadFile("edges.txt");
 
     while (s.hasNextLine()) {
       String line = s.nextLine();
@@ -359,7 +387,7 @@ public class TEWholeModelStatic extends LXModel implements DmxWholeModel {
   }
 
   private static Map<String, TEStripingInstructions> loadStripingInstructions(Geometry geometry) {
-    Scanner s = loadFilePrivate(geometry.subdir + "/striping-instructions.txt");
+    Scanner s = TE.loadFile("striping-instructions.txt");
 
     Map<String, TEStripingInstructions> rv = new HashMap<>();
     while (s.hasNextLine()) {
@@ -522,7 +550,7 @@ public class TEWholeModelStatic extends LXModel implements DmxWholeModel {
       // LX.log(out.toString());
     }
 
-    Scanner s = loadFilePrivate(geometry.subdir + "/panels.txt");
+    Scanner s = TE.loadFile("panels.txt");
 
     while (s.hasNextLine()) {
       String line = s.nextLine();
@@ -630,7 +658,7 @@ public class TEWholeModelStatic extends LXModel implements DmxWholeModel {
   private static void loadLasers(Geometry geometry) {
     geometry.lasersById = new HashMap<>();
 
-    Scanner s = loadFilePrivate(geometry.subdir + "/lasers.txt");
+    Scanner s = TE.loadFile("lasers.txt");
 
     while (s.hasNextLine()) {
       String line = s.nextLine();
@@ -653,7 +681,7 @@ public class TEWholeModelStatic extends LXModel implements DmxWholeModel {
   private static void loadBeacons(Geometry geometry) {
     geometry.beacons = new ArrayList<DmxModel>();
 
-    try (Scanner s = loadFilePrivate(geometry.subdir + RESOURCE_NAME_BEACONS)) {
+    try (Scanner s = TE.loadFile(RESOURCE_NAME_BEACONS)) {
       while (s.hasNextLine()) {
         String line = s.nextLine();
         if (line.startsWith("#") || LXUtils.isEmpty(line)) {
@@ -689,7 +717,7 @@ public class TEWholeModelStatic extends LXModel implements DmxWholeModel {
   private static void loadDjLights(Geometry geometry) {
     geometry.djLights = new ArrayList<DmxModel>();
 
-    try (Scanner s = loadFilePrivate(geometry.subdir + RESOURCE_NAME_DJLIGHTS)) {
+    try (Scanner s = TE.loadFile(RESOURCE_NAME_DJLIGHTS)) {
       while (s.hasNextLine()) {
         String line = s.nextLine();
         if (line.startsWith("#") || LXUtils.isEmpty(line)) {
@@ -727,7 +755,7 @@ public class TEWholeModelStatic extends LXModel implements DmxWholeModel {
   private static void loadBoxes(Geometry geometry) {
     geometry.boxes = new ArrayList<>();
 
-    Scanner s = loadFilePrivate(geometry.subdir + "/boxes.txt");
+    Scanner s = TE.loadFile("boxes.txt");
 
     List<LXVector> vectors = new ArrayList<>();
     while (s.hasNextLine()) {
@@ -756,7 +784,7 @@ public class TEWholeModelStatic extends LXModel implements DmxWholeModel {
   }
 
   private static void loadGeneral(Geometry geometry) {
-    Scanner s = loadFilePrivate(geometry.subdir + "/general.txt");
+    Scanner s = TE.loadFile("general.txt");
 
     while (s.hasNextLine()) {
       String line = s.nextLine();
@@ -797,9 +825,8 @@ public class TEWholeModelStatic extends LXModel implements DmxWholeModel {
         maxZValuePoint);
   }
 
-  private static Geometry loadGeometry(String subdir) {
+  private static Geometry loadGeometry() {
     Geometry geometry = new Geometry();
-    geometry.subdir = "resources/" + subdir;
     List<LXModel> childList = new ArrayList<LXModel>();
 
     loadGeneral(geometry);
@@ -838,21 +865,45 @@ public class TEWholeModelStatic extends LXModel implements DmxWholeModel {
     return geometry;
   }
 
+  public float minX() {
+	return this.boundaryPoints.minXBoundaryPoint.x;
+  }
+
+  public float maxX() {
+	return this.boundaryPoints.maxXBoundaryPoint.x;
+  }
+
+  public float minY() {
+    return this.boundaryPoints.minYBoundaryPoint.y;
+  }
+
+  public float maxY() {
+	return this.boundaryPoints.maxYBoundaryPoint.y;
+  }
+
+  public float minZ() {
+	return this.boundaryPoints.minZBoundaryPoint.z;
+  }
+
+  public float maxZ() {
+	return this.boundaryPoints.maxZBoundaryPoint.z;
+  }
+
   public Set<TEPanelModel> getPanelsBySection(TEPanelSection section) {
     return panelsBySection.get(section);
   }
 
-  public Set<LXPoint> getEdgePointsBySection(TEEdgeSection section) {
+  public List<LXPoint> getEdgePointsBySection(TEEdgeSection section) {
     return edgePoints.stream()
         .filter(point -> section == TEEdgeSection.PORT ? point.x > 0 : point.x < 0)
-        .collect(Collectors.toSet());
+        .collect(Collectors.toList());
   }
 
-  public Set<LXPoint> getPointsBySection(TEPanelSection section) {
+  public List<LXPoint> getPointsBySection(TEPanelSection section) {
     return getPanelsBySection(section).stream()
         .map(LXModel::getPoints)
         .flatMap(List::stream)
-        .collect(Collectors.toSet());
+        .collect(Collectors.toList());
   }
 
   public Set<TEPanelModel> getPanelsBySections(Collection<TEPanelSection> sections) {
@@ -877,17 +928,54 @@ public class TEWholeModelStatic extends LXModel implements DmxWholeModel {
             TEPanelSection.FORE));
   }
 
-  public Set<TEPanelModel> getAllPanels() {
-    return new HashSet<>(panelsById.values());
+  public List<TEPanelModel> getPanels() {
+    return this.panels;
   }
 
-  public Set<TEEdgeModel> getAllEdges() {
-    return new HashSet<>(edgesById.values());
+  public List<TEEdgeModel> getEdges() {
+    return this.edges;
+  }
+
+
+  @Override
+  public TEVertex getVertex(int vertexId) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public TEPanelModel getPanel(String panelId) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public boolean hasPanel(String panelId) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public TEEdgeModel getEdge(String edgeId) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public boolean hasEdge(String edgeId) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public List<TELaserModel> getLasers() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
   // Beacons
 
-  public void addBeacons(List<DmxModel> beacons) {
+  private void addBeacons(List<DmxModel> beacons) {
     this.mutableBeacons.addAll(beacons);
     for (DmxModel beacon : beacons) {
       this.beaconsById.put(beacon.id, beacon);
@@ -902,7 +990,7 @@ public class TEWholeModelStatic extends LXModel implements DmxWholeModel {
 
   // DJ Lights
 
-  public void addDjLights(List<DmxModel> djLights) {
+  private void addDjLights(List<DmxModel> djLights) {
     this.mutableDjLights.addAll(djLights);
     for (DmxModel djLight : djLights) {
       this.djLightsById.put(djLight.id, djLight);
@@ -917,7 +1005,7 @@ public class TEWholeModelStatic extends LXModel implements DmxWholeModel {
 
   // All DMX Models
 
-  protected void addDmxModels(List<DmxModel> models) {
+  private void addDmxModels(List<DmxModel> models) {
     for (DmxModel model : models) {
       if (!this.mutableDmxModels.contains(model)) {
         model.index = this.nextDmxIndex++;
@@ -1002,4 +1090,5 @@ public class TEWholeModelStatic extends LXModel implements DmxWholeModel {
     view.selector.setValue(viewDefinition.viewSelector);
     view.normalization.setValue(viewDefinition.viewNormalization);
   }
+
 }

@@ -59,7 +59,7 @@ public class UILasers extends UI3dComponent {
     this.modelMatrixBuf = MemoryUtil.memAllocFloat(16);
     this.modelMatrix.get(this.modelMatrixBuf);
 
-    models.addAll(wholeModel.lasersById.values());
+    models.addAll(wholeModel.getLasers());
   }
 
   @Override
