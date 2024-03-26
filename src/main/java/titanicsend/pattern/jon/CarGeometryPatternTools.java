@@ -2,9 +2,11 @@ package titanicsend.pattern.jon;
 
 import heronarts.lx.model.LXPoint;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
@@ -38,7 +40,7 @@ public class CarGeometryPatternTools {
       TEWholeModel model, String regex, float lines[][], int lineCount) {
     Pattern edgePattern = Pattern.compile(regex);
 
-    Set<TEEdgeModel> edges = model.getAllEdges();
+    List<TEEdgeModel> edges = model.getEdges();
     int edgeCount = 0;
 
     for (TEEdgeModel edge : edges) {
@@ -61,9 +63,7 @@ public class CarGeometryPatternTools {
   // given an edge id, adds a model edge's vertices to our list of line segments
   protected static void getLineFromEdge(TEWholeModel model, float lines[][], int index, String id) {
 
-    HashMap<String, TEEdgeModel> edges = model.edgesById;
-
-    TEEdgeModel edge = edges.get(id);
+    TEEdgeModel edge = model.getEdge(id);
     if (edge != null) {
       LXPoint v1 = edge.points[0];
       LXPoint v2 = edge.points[edge.points.length - 1];

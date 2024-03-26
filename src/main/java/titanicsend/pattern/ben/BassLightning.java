@@ -217,10 +217,10 @@ public class BassLightning extends TEAudioPattern {
   }
 
   private void makeBolt() {
-    TEVertex vertex = modelTE.vertexesById.get(Math.random() > .5 ? 30 : 122);
+    TEVertex vertex = modelTE.getVertex(Math.random() > .5 ? 30 : 122);
     synchronized (bolts) {
       for (int i = 0; i < energy.getValuei(); i++) {
-        Collection<TEEdgeModel> edges = this.modelTE.edgesById.values();
+        Collection<TEEdgeModel> edges = this.modelTE.getEdges();
         TEEdgeModel edge = randomItem(vertex.edges);
         bolts.add(new Bolt(edge, 1, edge.v0 == vertex ? 0 : edge.points.length - 1, vertex, 0));
       }
@@ -234,8 +234,7 @@ public class BassLightning extends TEAudioPattern {
     }
 
     this.modelTE
-        .vertexesById
-        .values()
+        .getVertexes()
         .forEach(
             v -> {
               v.virtualColor.alpha *= .99;

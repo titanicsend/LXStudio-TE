@@ -85,7 +85,7 @@ public class TempoReactiveEdge extends TEPattern {
     // Compare to pulseHeadFrac above.
     double pulseHeadFrac = (beatInMeasure + swingBeat) / 4 * (1 + pulseWidthFrac);
 
-    for (TEEdgeModel edge : modelTE.edgesById.values()) {
+    for (TEEdgeModel edge : modelTE.getEdges()) {
       double pulseTailFrac = pulseHeadFrac - pulseWidthFrac;
 
       for (TEEdgeModel.Point point : edge.points) {

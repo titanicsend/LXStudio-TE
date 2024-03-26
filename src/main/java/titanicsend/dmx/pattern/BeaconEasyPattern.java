@@ -63,7 +63,7 @@ public class BeaconEasyPattern extends BeaconPattern
     int ptSpd = (int) this.ptSpdLinear.getValue();
     int colorWheel = this.colorWheelFixed.getDmxValue();
 
-    for (DmxModel d : this.modelTE.beacons) {
+    for (DmxModel d : this.modelTE.getBeacons()) {
       setDmxNormalized(d, BeaconModel.INDEX_PAN, pan);
       setDmxNormalized(d, BeaconModel.INDEX_TILT, tilt);
       setDmxValue(d, BeaconModel.INDEX_PT_SPEED, ptSpd);

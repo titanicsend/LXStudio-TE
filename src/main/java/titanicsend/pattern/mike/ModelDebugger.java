@@ -96,20 +96,20 @@ public class ModelDebugger extends TEPattern implements UIDeviceControls<ModelDe
     switch (this.objectType.getEnum()) {
       case VERTEX:
         try {
-          vertexes.add(this.modelTE.vertexesById.get(Integer.parseInt(idStr)));
+          vertexes.add(this.modelTE.getVertex(Integer.parseInt(idStr)));
         } catch (NumberFormatException ignored) {
         }
         break;
       case EDGE:
-        if (getAll) subModels.addAll(this.modelTE.edgesById.values());
-        else if (this.modelTE.edgesById.containsKey(idStr))
-          subModels.add(this.modelTE.edgesById.get(idStr));
+        if (getAll) subModels.addAll(this.modelTE.getEdges());
+        else if (this.modelTE.hasEdge(idStr))
+          subModels.add(this.modelTE.getEdge(idStr));
         else this.idErrLabel.setVisible(true);
         break;
       case PANEL:
-        if (getAll) subModels.addAll(this.modelTE.panelsById.values());
-        else if (this.modelTE.panelsById.containsKey(idStr))
-          subModels.add(this.modelTE.panelsById.get(idStr));
+        if (getAll) subModels.addAll(this.modelTE.getPanels());
+        else if (this.modelTE.hasPanel(idStr))
+          subModels.add(this.modelTE.getPanel(idStr));
         else this.idErrLabel.setVisible(true);
         break;
       case LASER:
@@ -141,7 +141,7 @@ public class ModelDebugger extends TEPattern implements UIDeviceControls<ModelDe
   }
 
   public void clearVertexes() {
-    for (TEVertex vertex : this.modelTE.vertexesById.values()) {
+    for (TEVertex vertex : this.modelTE.getVertexes()) {
       vertex.virtualColor = new TEVirtualColor(255, 255, 255, 255);
     }
   }

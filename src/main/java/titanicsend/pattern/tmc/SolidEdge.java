@@ -30,7 +30,7 @@ public class SolidEdge extends TEPattern {
   @Override
   public void run(double deltaMs) {
     int color = this.color.calcColor();
-    for (LXPoint point : this.modelTE.edgePoints) {
+    for (LXPoint point : this.modelTE.getEdgePoints()) {
       colors[point.index] = color;
     }
   }

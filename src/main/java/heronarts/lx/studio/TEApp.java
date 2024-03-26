@@ -54,6 +54,8 @@ import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.lx.MidiFighterTwister;
 import titanicsend.midi.MidiNames;
 import titanicsend.model.TEWholeModel;
+import titanicsend.model.TEWholeModelDynamic;
+import titanicsend.model.TEWholeModelStatic;
 import titanicsend.modulator.dmx.Dmx16bitModulator;
 import titanicsend.modulator.dmx.DmxColorModulator;
 import titanicsend.modulator.dmx.DmxDualRangeModulator;
@@ -105,6 +107,7 @@ import titanicsend.util.TE;
 public class TEApp extends LXStudio {
 
   public static TEWholeModel wholeModel;
+  private static boolean staticModel;
 
   private static int WINDOW_WIDTH = 1280;
   private static int WINDOW_HEIGHT = 800;
@@ -137,6 +140,10 @@ public class TEApp extends LXStudio {
       this.lx = lx;
       lx.addListener(this);
       lx.addProjectListener(this);
+      
+      if (!staticModel) {
+        wholeModel = new TEWholeModelDynamic(lx);
+      }
 
       // Saved options for UI overlays
       lx.engine.registerComponent(
@@ -176,7 +183,7 @@ public class TEApp extends LXStudio {
       log("TEApp.Plugin.initialize()");
 
       if (isStaticModel()) {
-        GrandShlomoStation.activateAll(lx, wholeModel.getGapPointIndex());
+        GrandShlomoStation.activateAll(lx, wholeModel.getGapPointIndices()[0]);
       }
 
       // Patterns/effects that currently conform to art direction standards
@@ -365,7 +372,7 @@ public class TEApp extends LXStudio {
       String destIP = "192.168.42.255";
       try {
         this.gpBroadcaster =
-            new GigglePixelBroadcaster(lx, destIP, isStaticModel() ? wholeModel.name : "TEApp", myGigglePixelID);
+            new GigglePixelBroadcaster(lx, destIP, wholeModel.getName(), myGigglePixelID);
         lx.engine.addLoopTask(this.gpBroadcaster);
         TE.log("GigglePixel broadcaster created");
       } catch (IOException e) {
@@ -593,6 +600,10 @@ public class TEApp extends LXStudio {
         this.dmxEngine.dispose();
       }
       this.crutchOSC.dispose();
+
+      if (!staticModel) {
+        ((TEWholeModelDynamic)wholeModel).dispose();
+      }
     }
   }
 
@@ -644,7 +655,7 @@ public class TEApp extends LXStudio {
     }
   }
 
-  private TEApp(Flags flags, TEWholeModel model) throws IOException {
+  private TEApp(Flags flags, TEWholeModelStatic model) throws IOException {
     super(flags, model);
   }
 
@@ -702,7 +713,7 @@ public class TEApp extends LXStudio {
     boolean headless = false;
     boolean loadTestahedron = false;
     boolean loadVehicle = true;
-    boolean staticModel = true;
+    staticModel = true;
     File projectFile = null;
     for (int i = 0; i < args.length; ++i) {
       final String arg = args[i];
@@ -736,6 +747,7 @@ public class TEApp extends LXStudio {
     } else {
       throw new IllegalArgumentException("You must specify either testahedron or vehicle");
     }
+    TE.resourcedir = "resources/" + resourceSubdir;
 
     if (headless) {
       log("Headless CLI flag set, running without UI...");
@@ -744,10 +756,10 @@ public class TEApp extends LXStudio {
       try {
         TEApp lx;
         if (staticModel) {
-	      TEWholeModel model = new TEWholeModel(resourceSubdir);
-	      TEApp.wholeModel = model;
-	      lx = new TEApp(flags, model);
-	      model.loadViews(lx);
+          TEWholeModelStatic model = new TEWholeModelStatic();
+          TEApp.wholeModel = model;
+          lx = new TEApp(flags, model);
+          model.loadViews(lx);
         } else {
           lx = new TEApp(flags);
         }

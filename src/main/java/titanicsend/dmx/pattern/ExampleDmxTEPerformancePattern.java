@@ -56,7 +56,7 @@ public class ExampleDmxTEPerformancePattern extends TEPerformancePattern {
     double dimmer = getNormalized(TEControlTag.SIZE);
     int shutter = ChauvetSpot160Model.SHUTTER_OPEN;
 
-    for (DmxModel d : this.modelTE.djLights) {
+    for (DmxModel d : this.modelTE.getDjLights()) {
       if (d instanceof ChauvetSpot160Model) {
         setDmxNormalized(d, ChauvetSpot160Model.INDEX_PAN, pan);
         setDmxNormalized(d, ChauvetSpot160Model.INDEX_TILT, tilt);

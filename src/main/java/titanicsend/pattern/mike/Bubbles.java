@@ -33,7 +33,7 @@ public class Bubbles extends TEPattern {
     // Initialize existing bubbles out-of-phase with each other by this fraction
     double bubbleOffset = 0.0;
 
-    for (TEPanelModel panel : modelTE.panelsById.values()) {
+    for (TEPanelModel panel : this.modelTE.getPanels()) {
       if (panel.panelType.equals(TEPanelModel.LIT)) {
         double fraction;
         if (bubblesLeftToMake > 0) {

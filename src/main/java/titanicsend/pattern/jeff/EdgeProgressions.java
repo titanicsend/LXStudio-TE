@@ -186,8 +186,8 @@ public class EdgeProgressions extends TEAudioPattern {
       edgeSets.putIfAbsent(es.name, new HashSet<>());
 
       for (String edgeId : es.edgeIds) {
-        if (modelTE.edgesById.containsKey(edgeId)) {
-          TEEdgeModel edge = modelTE.edgesById.get(edgeId);
+        if (this.modelTE.hasEdge(edgeId)) {
+          TEEdgeModel edge = this.modelTE.getEdge(edgeId);
           if (es.includeSymmetric) {
             edgeSets.get(es.name).addAll(edge.symmetryGroup);
           } else {

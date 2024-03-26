@@ -29,7 +29,7 @@ public class Kaleidoscope extends TEEffect {
   protected void run(double deltaMs, double enabledAmount) {
     if (enabledAmount > 0) {
       double segmentAngle = 2 * Math.PI / segments.getValue();
-      for (TEPanelModel panel : this.modelTE.panelsById.values()) {
+      for (TEPanelModel panel : this.modelTE.getPanels()) {
         if (!panel.panelType.equals(TEPanelModel.LIT)) {
           continue;
         }

@@ -57,7 +57,7 @@ public class BouncingDots extends TEPerformancePattern {
 
     int dotColor = calcColor();
     int dotWidth = (int) (getSize());
-    for (TEEdgeModel edge : modelTE.edgesById.values()) {
+    for (TEEdgeModel edge : this.modelTE.getEdges()) {
       int target = (int) (edge.size * phase);
       int i = 0;
       for (LXPoint point : edge.points) {
