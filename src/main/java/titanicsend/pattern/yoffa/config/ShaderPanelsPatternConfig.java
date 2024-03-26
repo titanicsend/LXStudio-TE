@@ -3,13 +3,8 @@ package titanicsend.pattern.yoffa.config;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.LXParameter;
-import java.util.List;
+import titanicsend.pattern.glengine.ConstructedShaderPattern;
 import titanicsend.pattern.jon.TEControlTag;
-import titanicsend.pattern.yoffa.effect.AlternatingDotsEffect;
-import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
-import titanicsend.pattern.yoffa.framework.ConstructedPattern;
-import titanicsend.pattern.yoffa.framework.PatternEffect;
-import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 @SuppressWarnings("unused")
@@ -32,56 +27,56 @@ public class ShaderPanelsPatternConfig {
 
   // multiple
   @LXCategory("Native Shaders Panels")
-  public static class LightBeamsPattern extends ConstructedPattern {
+  public static class LightBeamsPattern extends ConstructedShaderPattern {
     public LightBeamsPattern(LX lx) {
       super(lx, TEShaderView.ALL_PANELS_INDIVIDUAL);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
+    protected void createShader() {
       controls.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
       controls.setValue(TEControlTag.SPEED, 0.5);
 
-      return List.of(new NativeShaderPatternEffect("light_beams.fs", new PatternTarget(this)));
+      addShader("light_beams.fs");
     }
   }
 
   @LXCategory("Native Shaders Panels")
-  public static class NeonHeartNative extends ConstructedPattern {
+  public static class NeonHeartNative extends ConstructedShaderPattern {
     public NeonHeartNative(LX lx) {
       super(lx, TEShaderView.ALL_PANELS_INDIVIDUAL);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
+    protected void createShader() {
       controls.setRange(TEControlTag.QUANTITY, .25, .01, .5); // segment length
 
-      return List.of(new NativeShaderPatternEffect("neon_heart.fs", new PatternTarget(this)));
+      addShader("neon_heart.fs");
     }
   }
 
   @LXCategory("Utility")
-  public static class PixelScanner extends ConstructedPattern {
+  public static class PixelScanner extends ConstructedShaderPattern {
     public PixelScanner(LX lx) {
       super(lx, TEShaderView.ALL_POINTS);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
+    protected void createShader() {
       controls.setRange(TEControlTag.QUANTITY, 5, 1, 10);
 
-      return List.of(new NativeShaderPatternEffect("pixel_scanner.fs", new PatternTarget(this)));
+      addShader("pixel_scanner.fs");
     }
   }
 
   @LXCategory("Native Shaders Panels")
-  public static class Marbling extends ConstructedPattern {
+  public static class Marbling extends ConstructedShaderPattern {
     public Marbling(LX lx) {
       super(lx, TEShaderView.DOUBLE_LARGE);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
+    protected void createShader() {
       controls.setRange(TEControlTag.SPEED, 0, -4, 4); // overall scale
       controls.setValue(TEControlTag.SPEED, 0.5);
       controls.setRange(TEControlTag.SIZE, 3, 6, 1); // overall scale
@@ -89,18 +84,18 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.WOW1, 2.5, 1, 5); // x relative scale
       controls.setRange(TEControlTag.WOW2, 1.5, 1, 5); // y relative scale
 
-      return List.of(new NativeShaderPatternEffect("marbling.fs", new PatternTarget(this)));
+      addShader("marbling.fs");
     }
   }
 
   @LXCategory("Native Shaders Panels")
-  public static class NeonRipples extends ConstructedPattern {
+  public static class NeonRipples extends ConstructedShaderPattern {
     public NeonRipples(LX lx) {
       super(lx, TEShaderView.SPLIT_PANEL_SECTIONS);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
+    protected void createShader() {
       controls.setRange(TEControlTag.SPEED, 0, -4, 4);
       controls.setValue(TEControlTag.SPEED, 0.5);
 
@@ -109,216 +104,196 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.WOW1, 0, 0, 0.25); // "wiggle" in rings
       controls.setRange(TEControlTag.WOW2, 0, 0, 3); // radial rotation distortion
 
-      return List.of(new NativeShaderPatternEffect("neon_ripples.fs", new PatternTarget(this)));
+      addShader("neon_ripples.fs");
     }
   }
 
   @LXCategory("Native Shaders Panels")
-  public static class NeonTriangles extends ConstructedPattern {
+  public static class NeonTriangles extends ConstructedShaderPattern {
     public NeonTriangles(LX lx) {
       super(lx, TEShaderView.ALL_PANELS_INDIVIDUAL);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
+    protected void createShader() {
       controls.setRange(TEControlTag.SIZE, 1, 0.2, 10); // overall scale
       controls.setRange(TEControlTag.SPEED, 0, -4, 4);
       controls.setValue(TEControlTag.SPEED, 0.5);
       controls.setRange(TEControlTag.QUANTITY, 1, 2, 0.1); // triangle density
       controls.setRange(TEControlTag.WOW1, 1, 0.2, 5); // glow
 
-      return List.of(new NativeShaderPatternEffect("neon_triangles.fs", new PatternTarget(this)));
+      addShader("neon_triangles.fs");
     }
   }
 
   @LXCategory("Native Shaders Panels")
-  public static class SpaceExplosion extends ConstructedPattern {
+  public static class SpaceExplosion extends ConstructedShaderPattern {
     public SpaceExplosion(LX lx) {
       super(lx, TEShaderView.ALL_PANELS);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
+    protected void createShader() {
       controls.setRange(TEControlTag.SPEED, 0, -1.5, 1.5); // speed
       controls.setExponent(TEControlTag.SPEED, 2.0);
       controls.setValue(TEControlTag.SPEED, 0.5);
 
-      return List.of(new NativeShaderPatternEffect("space_explosion.fs", new PatternTarget(this)));
+      addShader("space_explosion.fs");
     }
   }
 
   @LXCategory("Native Shaders Panels")
-  public static class SynthWaves extends ConstructedPattern {
+  public static class SynthWaves extends ConstructedShaderPattern {
     public SynthWaves(LX lx) {
       super(lx, TEShaderView.DOUBLE_LARGE);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
-      return List.of(new NativeShaderPatternEffect("synth_waves.fs", new PatternTarget(this)));
+    protected void createShader() {
+      addShader("synth_waves.fs");
     }
   }
 
   @LXCategory("Native Shaders Panels")
-  public static class PulsingHeart extends ConstructedPattern {
+  public static class PulsingHeart extends ConstructedShaderPattern {
     public PulsingHeart(LX lx) {
       super(lx, TEShaderView.ALL_PANELS_INDIVIDUAL);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
+    protected void createShader() {
       controls.setRange(TEControlTag.SIZE, 1, 2.5, 0.4); // overall scale
 
-      return List.of(new NativeShaderPatternEffect("pulsing_heart.fs", new PatternTarget(this)));
+      addShader("pulsing_heart.fs");
     }
   }
 
   @LXCategory("Native Shaders Panels")
-  public static class NeonBlocks extends ConstructedPattern {
+  public static class NeonBlocks extends ConstructedShaderPattern {
     public NeonBlocks(LX lx) {
       super(lx, TEShaderView.DOUBLE_LARGE);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
-      return List.of(new NativeShaderPatternEffect("neon_blocks.fs", new PatternTarget(this)));
+    protected void createShader() {
+      addShader("neon_blocks.fs");
     }
   }
 
   @LXCategory("Native Shaders Panels")
-  public static class Warp extends ConstructedPattern {
+  public static class Warp extends ConstructedShaderPattern {
     public Warp(LX lx) {
       super(lx, TEShaderView.DOUBLE_LARGE);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
-      return List.of(new NativeShaderPatternEffect("warp.fs", new PatternTarget(this)));
+    protected void createShader() {
+      addShader("warp.fs");
     }
   }
 
   @LXCategory("Native Shaders Panels")
-  public static class Fire extends ConstructedPattern {
+  public static class Fire extends ConstructedShaderPattern {
     public Fire(LX lx) {
       super(lx, TEShaderView.SPLIT_PANEL_SECTIONS);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
-      return List.of(new NativeShaderPatternEffect("fire.fs", new PatternTarget(this)));
+    protected void createShader() {
+      addShader("fire.fs");
     }
   }
 
   @LXCategory("Native Shaders Panels")
-  public static class StormScanner extends ConstructedPattern {
+  public static class StormScanner extends ConstructedShaderPattern {
     public StormScanner(LX lx) {
       super(lx, TEShaderView.DOUBLE_LARGE);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
+    protected void createShader() {
       controls.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
       controls.setValue(TEControlTag.SPEED, 0.5);
 
       controls.setRange(TEControlTag.SIZE, 1, 3, 0.5); // overall scale
       controls.setRange(TEControlTag.WOW1, .35, 0.1, 1); // Contrast
 
-      return List.of(
-          new NativeShaderPatternEffect(
-              "storm_scanner.fs", new PatternTarget(this), "gray_noise.png"));
+      addShader("storm_scanner.fs", "gray_noise.png");
     }
   }
 
   @LXCategory("Native Shaders Panels")
-  public static class JetStream extends ConstructedPattern {
+  public static class JetStream extends ConstructedShaderPattern {
     public JetStream(LX lx) {
       super(lx, TEShaderView.DOUBLE_LARGE);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
-      return List.of(
-          new NativeShaderPatternEffect(
-              "jet_stream.fs", new PatternTarget(this), "color_noise.png"));
+    protected void createShader() {
+      addShader("jet_stream.fs", "color_noise.png");
     }
   }
 
   @LXCategory("Native Shaders Panels")
-  public static class OutrunGrid extends ConstructedPattern {
+  public static class OutrunGrid extends ConstructedShaderPattern {
     public OutrunGrid(LX lx) {
       super(lx, TEShaderView.ALL_POINTS);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
+    protected void createShader() {
       controls.setRange(TEControlTag.YPOS, -.35, -1.0, 1.0);
 
-      return List.of(new NativeShaderPatternEffect("outrun_grid.fs", new PatternTarget(this)));
-    }
-  }
-
-  @LXCategory("Yoffa Panel Combo")
-  public static class StarryOutrun extends ConstructedPattern {
-    public StarryOutrun(LX lx) {
-      super(lx, TEShaderView.DOUBLE_LARGE);
-    }
-
-    @Override
-    protected List<PatternEffect> createEffects() {
-      return List.of(
-          new NativeShaderPatternEffect("outrun_grid.fs", new PatternTarget(this)),
-          new AlternatingDotsEffect(new PatternTarget(this))
-              .setHorizon(AlternatingDotsEffect.OUTRUN_HORIZON_Y)
-              .setShouldBlend(true));
+      addShader("outrun_grid.fs");
     }
   }
 
   @LXCategory("Native Shaders Panels")
-  public static class Galaxy extends ConstructedPattern {
+  public static class Galaxy extends ConstructedShaderPattern {
     public Galaxy(LX lx) {
       super(lx, TEShaderView.ALL_PANELS);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
-      return List.of(new NativeShaderPatternEffect("galaxy.fs", new PatternTarget(this)));
+    protected void createShader() {
+      addShader("galaxy.fs");
     }
   }
 
   @LXCategory("Native Shaders Panels")
-  public static class AudioTest2 extends ConstructedPattern {
+  public static class AudioTest2 extends ConstructedShaderPattern {
     public AudioTest2(LX lx) {
       super(lx, TEShaderView.ALL_PANELS);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
-      return List.of(new NativeShaderPatternEffect("audio_test2.fs", new PatternTarget(this)));
+    protected void createShader() {
+      addShader("audio_test2.fs");
     }
   }
 
   @LXCategory("Native Shaders Panels")
-  public static class NeonCells extends ConstructedPattern {
+  public static class NeonCells extends ConstructedShaderPattern {
     public NeonCells(LX lx) {
       super(lx, TEShaderView.SPLIT_PANEL_SECTIONS);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
+    protected void createShader() {
       controls.setRange(TEControlTag.SIZE, 1, 2, 0.25); // overall scale
 
-      return List.of(new NativeShaderPatternEffect("neon_cells.fs", new PatternTarget(this)));
+      addShader("neon_cells.fs");
     }
   }
 
   @LXCategory("DREVO Shaders")
-  public static class SlitheringSnake extends ConstructedPattern {
+  public static class SlitheringSnake extends ConstructedShaderPattern {
     public SlitheringSnake(LX lx) {
       super(lx, TEShaderView.DOUBLE_LARGE);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
+    protected void createShader() {
       controls.setRange(TEControlTag.SPEED, 0, -4, 4);
       controls.setValue(TEControlTag.SPEED, 0.5);
 
@@ -327,38 +302,36 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.WOW1, 0.5, 0, 1.00); // snake color level
       controls.setRange(TEControlTag.WOW2, 0.4, 0, 1.00); // background level
 
-      return List.of(
-          new NativeShaderPatternEffect("snake_approaching.fs", new PatternTarget(this)));
+      addShader("snake_approaching.fs");
     }
   }
 
   @LXCategory("DREVO Shaders")
-  public static class PulsingPetriDish extends ConstructedPattern {
+  public static class PulsingPetriDish extends ConstructedShaderPattern {
     public PulsingPetriDish(LX lx) {
       super(lx, TEShaderView.ALL_PANELS);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
+    protected void createShader() {
       // set up common controls
       controls.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
       controls.setValue(TEControlTag.SPEED, 0.5);
 
       controls.setRange(TEControlTag.SIZE, 1, 0.5, 5); // overall scale
 
-      return List.of(
-          new NativeShaderPatternEffect("pulsing_petri_dish.fs", new PatternTarget(this)));
+      addShader("pulsing_petri_dish.fs");
     }
   }
 
   @LXCategory("DREVO Shaders")
-  public static class Mondelbrot extends ConstructedPattern {
+  public static class Mondelbrot extends ConstructedShaderPattern {
     public Mondelbrot(LX lx) {
       super(lx, TEShaderView.DOUBLE_LARGE);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
+    protected void createShader() {
       // set up common controls
       controls.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
       controls.setValue(TEControlTag.SPEED, 0.5);
@@ -366,18 +339,18 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.SIZE, 1, 4, 0.6); // overall scale
       controls.setRange(TEControlTag.WOW1, 0.5, 0.05, 2.5); // contrast
 
-      return List.of(new NativeShaderPatternEffect("mandelbrot.fs", new PatternTarget(this)));
+      addShader("mandelbrot.fs");
     }
   }
 
   @LXCategory("DREVO Shaders")
-  public static class MetallicWaves extends ConstructedPattern {
+  public static class MetallicWaves extends ConstructedShaderPattern {
     public MetallicWaves(LX lx) {
       super(lx, TEShaderView.ALL_POINTS);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
+    protected void createShader() {
       // set up common controls
       controls.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
       controls.setValue(TEControlTag.SPEED, 0.5);
@@ -386,18 +359,18 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.QUANTITY, 6, 1, 16); // number of waves
       controls.setRange(TEControlTag.WOW1, 0, 0, 0.25); // pixelated decomposition
 
-      return List.of(new NativeShaderPatternEffect("metallic_wave.fs", new PatternTarget(this)));
+      addShader("metallic_wave.fs");
     }
   }
 
   @LXCategory("Noise")
-  public static class SmokeShader extends ConstructedPattern {
+  public static class SmokeShader extends ConstructedShaderPattern {
     public SmokeShader(LX lx) {
       super(lx, TEShaderView.ALL_POINTS);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
+    protected void createShader() {
       controls.setRange(TEControlTag.SPEED, 0, -4, 4); // overall scale
       controls.setValue(TEControlTag.SPEED, 0.75);
 
@@ -407,7 +380,7 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.WOW1, 0, 0, 1);
       controls.setRange(TEControlTag.WOW2, 1.0, 0.25, 2.0);
 
-      return List.of(new NativeShaderPatternEffect("smoke_shader.fs", new PatternTarget(this)));
+      addShader("smoke_shader.fs");
     }
   }
 }

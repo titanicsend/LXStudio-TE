@@ -63,11 +63,9 @@ float glowline(vec2 U, vec4 seg) {
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     // normalize coordinates
     vec2 uv = -1. + 2. * fragCoord / iResolution.xy;
-    uv.x *= iResolution.x / iResolution.y;
-    uv *= 0.5;
 
     // gentle music reactivity - traveling wave moves upward with beat
-    currentGlow = abs(beat - (0.5 + uv.y));
+    currentGlow = abs(beat - (1.0 + uv.y));
     currentGlow = (currentGlow <= pulseWidth) ? (pulseWidth - currentGlow) / pulseWidth : 0.0;
     currentGlow = iScale - (iScale * iWow1  * currentGlow);
 

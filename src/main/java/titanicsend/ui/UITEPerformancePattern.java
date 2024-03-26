@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import titanicsend.color.TEColorParameter;
+import titanicsend.ndi.NDIPattern;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.util.TE;
@@ -81,6 +82,13 @@ public class UITEPerformancePattern
 
     // For design mode, append Brightness.  Useful for AutoVJ especially.
     params.add(device.getControls().getControl(TEControlTag.BRIGHTNESS).control);
+
+    // slight hack to add source select and gain controls for NDI patterns without
+    // replicating all this UI code...
+    if (device instanceof NDIPattern) {
+      params.add(((NDIPattern) device).getSourceControl());
+      params.add(((NDIPattern) device).getGainControl());
+    }
 
     // For the UI, replace unused controls with null
     hideUnusedControls(params);

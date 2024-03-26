@@ -8,7 +8,6 @@ public enum TEControlTag {
   QUANTITY,
   SPIN,
   BRIGHTNESS,
-  EXPLODE,
   WOW1,
   WOW2,
   WOWTRIGGER,
@@ -24,7 +23,6 @@ public enum TEControlTag {
           case QUANTITY -> "te_quantity";
           case SPIN -> "te_spin";
           case BRIGHTNESS -> "te_brightness";
-          case EXPLODE -> "te_explode";
           case WOW1 -> "te_wow1";
           case WOW2 -> "te_wow2";
           case WOWTRIGGER -> "te_wowtrigger";
@@ -48,7 +46,6 @@ public enum TEControlTag {
       case QUANTITY -> "Quantity";
       case BRIGHTNESS -> "Brightness";
       case WOWTRIGGER -> "WowTrigger";
-      case EXPLODE -> "Explode";
     };
   }
 }

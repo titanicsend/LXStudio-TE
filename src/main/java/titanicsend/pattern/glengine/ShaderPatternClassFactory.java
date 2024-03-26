@@ -174,38 +174,20 @@ public class ShaderPatternClassFactory {
     AnnotationDescription lxcategory =
         AnnotationDescription.Builder.ofType(LXCategory.class).define("value", category).build();
 
-    if (isDriftPattern) {
-      return new ByteBuddy()
-          .with(
-              new NamingStrategy.AbstractBase() {
-                @Override
-                protected String name(TypeDescription superClass) {
-                  return className;
-                }
-              })
-          .subclass(TEAutoDriftPattern.class)
-          .annotateType(lxcategory)
-          .method(ElementMatchers.named("getShaderFile"))
-          .intercept(FixedValue.value(shaderFile))
-          .make()
-          .load(ClassLoader.getSystemClassLoader(), ClassLoadingStrategy.Default.INJECTION)
-          .getLoaded();
-    } else {
-      return new ByteBuddy()
-          .with(
-              new NamingStrategy.AbstractBase() {
-                @Override
-                protected String name(TypeDescription superClass) {
-                  return className;
-                }
-              })
-          .subclass(TEAutoShaderPattern.class)
-          .annotateType(lxcategory)
-          .method(ElementMatchers.named("getShaderFile"))
-          .intercept(FixedValue.value(shaderFile))
-          .make()
-          .load(ClassLoader.getSystemClassLoader(), ClassLoadingStrategy.Default.INJECTION)
-          .getLoaded();
-    }
+    return new ByteBuddy()
+        .with(
+            new NamingStrategy.AbstractBase() {
+              @Override
+              protected String name(TypeDescription superClass) {
+                return className;
+              }
+            })
+        .subclass((isDriftPattern) ? TEAutoDriftPattern.class : TEAutoShaderPattern.class)
+        .annotateType(lxcategory)
+        .method(ElementMatchers.named("getShaderFile"))
+        .intercept(FixedValue.value(shaderFile))
+        .make()
+        .load(ClassLoader.getSystemClassLoader(), ClassLoadingStrategy.Default.INJECTION)
+        .getLoaded();
   }
 }

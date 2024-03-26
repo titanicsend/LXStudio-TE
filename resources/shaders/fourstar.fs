@@ -1,8 +1,5 @@
 precision mediump float;
 
-uniform float energy;
-uniform float basis;  // beat scaled w/user selected time division
-
 const float pi = 3.14159265359;
 const float two_pi = (pi * 2.0);
 
@@ -34,7 +31,7 @@ vec4 light(vec2 position, float pulse) {
     float ang = atan(position.y, position.x);    
     float offset = clamp(abs(position.x/position.y),1.,two_pi);
 	
-	float s = iTime * (speed * basis);
+	float s = iTime * (speed * beat);
    
     for (float n = 1.0; n <= numRays; n += 1.0) {    
         float rayang = 1.618 * n + (s) + offset;
@@ -66,15 +63,15 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )  {
     position = rotate(position,iRotationAngle);
 
     // roughly circular "bounce" with beat
-    float b = two_pi * basis;
+    float b = two_pi * beat;
     vec2 offset = 0.05 * vec2(sin(iTime+b),cos(b));
 
     // change average star size and level of diffraction effect
-    // with energy
-    float k = 0.2 * energy;
+    // with Wow1
+    float k = 0.2 * iWow1;
 	falloff = 0.75 - k;
 	exposure = 0.575 + k;
-    diff = 0.5 + (0.5 * energy);
+    diff = 0.5 + (0.5 * iWow1);
 
     // display stars!
     //	First the lower panels

@@ -2,41 +2,36 @@ package titanicsend.pattern.yoffa.config;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import java.util.List;
+import titanicsend.pattern.glengine.ConstructedShaderPattern;
 import titanicsend.pattern.jon.TEControlTag;
-import titanicsend.pattern.yoffa.effect.NativeShaderPatternEffect;
-import titanicsend.pattern.yoffa.framework.ConstructedPattern;
-import titanicsend.pattern.yoffa.framework.PatternEffect;
-import titanicsend.pattern.yoffa.framework.PatternTarget;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 @SuppressWarnings("unused")
 public class ShaderEdgesPatternConfig {
 
-  // multiple
   @LXCategory("Native Shaders Edges")
-  public static class LightBeamsEdges extends ConstructedPattern {
+  public static class LightBeamsEdges extends ConstructedShaderPattern {
     public LightBeamsEdges(LX lx) {
       super(lx, TEShaderView.ALL_EDGES);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
+    protected void createShader() {
       controls.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
       controls.setValue(TEControlTag.SPEED, 0.5);
 
-      return List.of(new NativeShaderPatternEffect("light_beams.fs", new PatternTarget(this)));
+      addShader("light_beams.fs");
     }
   }
 
   @LXCategory("Native Shaders Edges")
-  public static class NeonRipplesEdges extends ConstructedPattern {
+  public static class NeonRipplesEdges extends ConstructedShaderPattern {
     public NeonRipplesEdges(LX lx) {
       super(lx, TEShaderView.ALL_EDGES);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
+    protected void createShader() {
       // set up parameters for the edge version of this...
       controls.setRange(TEControlTag.SPEED, 0, -4, 4); // overall scale
       controls.setValue(TEControlTag.SPEED, 0.5);
@@ -55,23 +50,23 @@ public class ShaderEdgesPatternConfig {
 
       controls.setValue(TEControlTag.SPIN, 0.05);
 
-      return List.of(new NativeShaderPatternEffect("neon_ripples.fs", new PatternTarget(this)));
+      addShader("neon_ripples.fs");
     }
   }
 
   @LXCategory("Native Shaders Edges")
-  public static class SpaceExplosionEdges extends ConstructedPattern {
+  public static class SpaceExplosionEdges extends ConstructedShaderPattern {
     public SpaceExplosionEdges(LX lx) {
       super(lx, TEShaderView.ALL_EDGES);
     }
 
     @Override
-    protected List<PatternEffect> createEffects() {
+    protected void createShader() {
       controls.setRange(TEControlTag.SPEED, 0, -1.5, 1.5); // speed
       controls.setExponent(TEControlTag.SPEED, 2.0);
       controls.setValue(TEControlTag.SPEED, 0.5);
 
-      return List.of(new NativeShaderPatternEffect("space_explosion.fs", new PatternTarget(this)));
+      addShader("space_explosion.fs");
     }
   }
 }
