@@ -84,7 +84,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float bassEffect = bassReactivity * bassRatio;
     //float bassEffect = bassReactivity * bassLevel;
 
-    float trebleReactivity = 1.5;
+    float trebleReactivity = 1.8;
     float trebleEffect = trebleReactivity * trebleRatio;
 
     float twistDistortion = iWow1;
@@ -96,10 +96,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     // TODO: this might be better named to something like "zoom"
     float thickness = 3.0 + iScale;
-    thickness += 0.2*bassEffect;
+    thickness += 0.1*bassEffect;
 
     float lineWidth = iQuantity;
-    lineWidth += 0.2*bassEffect;
+    lineWidth += 0.1*bassEffect;
 
     // distort UVs a bit
     uv = cart2polar(uv);
