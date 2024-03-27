@@ -80,19 +80,39 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     uv *= r2d(iRotationAngle);
     float len = length(uv);
 
+    float bassReactivity = 1.0;
+    float bassEffect = bassReactivity * bassRatio;
+    //float bassEffect = bassReactivity * bassLevel;
+
+    float trebleReactivity = 1.5;
+    float trebleEffect = trebleReactivity * trebleRatio;
+
+    float twistDistortion = iWow1;
+    twistDistortion += trebleEffect;
+    //twistDistortion += bassEffect;
+
+    float repetitionFactor = iWow2;
+    repetitionFactor += 0.2*bassEffect;
+
+    // TODO: this might be better named to something like "zoom"
+    float thickness = 3.0 + iScale;
+    thickness += 0.2*bassEffect;
+
+    float lineWidth = iQuantity;
+    lineWidth += 0.2*bassEffect;
+
     // distort UVs a bit
     uv = cart2polar(uv);
-    uv.y += 2.5 * iWow1 * (.5 + .5 * sin(cos(uv.x) * len));
+    uv.y += 2.5 * twistDistortion * (.5 + .5 * sin(cos(uv.x) * len));
     uv = polar2cart(uv);
 
-    float thickness = 3.0 + iScale;
     float d1 = abs(uv.x * thickness / (uv.x + fbm(uv + 1.25 * -iTime)));
     float d2 = abs(uv.y * thickness / (uv.y + fbm(uv - 1.5 * -iTime)));
 
-    float size = 0.1 + iWow2 / 2.0;
+    float size = 0.1 + repetitionFactor / 2.0;
 
-    vec3 col = clamp(iQuantity * d1 * size,0.,1.2) * iColorRGB;
-    col += clamp(iQuantity * d2 * size,0.,1.2) * iColor2RGB;
+    vec3 col = clamp(lineWidth * d1 * size,0.,1.2) * iColorRGB;
+    col += clamp(lineWidth * d2 * size,0.,1.2) * iColor2RGB;
 
     fragColor = vec4(col, 1.);
 }
