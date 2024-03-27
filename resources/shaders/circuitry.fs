@@ -24,7 +24,7 @@ float bandLevel;
 
 float fractal(vec2 p) {
     // Rock! (oscillate on x a little with the beat.)
-    p.x += bandLevel;
+    //p.x += bandLevel;
 
     float dist = 999., minDist = dist;
     minIteration=0.;
@@ -39,7 +39,7 @@ float fractal(vec2 p) {
         // features
         float m = abs(p.x+sin(iTime * 2.));
         if (m < dist) {
-            dist = m + smoothstep(0.1,abs(p.y), fract(beat+i*.5));
+            dist = m + smoothstep(0.1,abs(p.y), fract(beat+bandLevel+i*0.618));
             minIteration = i;
         }
         // using minimum of manhattan and euclidean distance over all iterations
@@ -58,15 +58,16 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     // normalize, center, correct aspect ratio
     vec2 uv = fragCoord.xy/iResolution.xy - 0.5;
     uv.x *= iResolution.x/iResolution.y;
-    uv *= iScale + 0.05 * (-0.5+sinPhaseBeat);
-    uv *= rot(iRotationAngle);
 
-    // Generate an easy-to-track audio reactive value
-    // n.b.  this is kind of underbaked, so feel free to improve it!
-    // slightly improved to dodge near-infinite coord shift at very low volume
-    float vol = trebleLevel + bassLevel;
-    bandLevel = (vol > 0.1) ? iWow2 * (-0.5 + max(trebleLevel, bassLevel) / vol) : 0.0;
+    // use high frequency content to mess with the fractal, and
+    // rotate the whole thing back and forth a little
+    bandLevel = frequencyReact * (-0.5 +trebleRatio);
 
+    // use smoothed volume to scale the image
+    uv *= (iScale - volumeRatio * levelReact);
+    float ra = iRotationAngle + 0.2 * bandLevel;
+    uv *= rot(ra);
+    
     // draw the fractal, antialiased by drawing it multiple times
     // at very small coordinate offsets.  For the car, we don't need
     // many iterations, but a few makes it look much smoother.

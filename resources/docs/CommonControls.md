@@ -44,7 +44,9 @@ call ```addCommonControls()``` to add the common controls to the UI.
 The common controls, their associated helper functions, and the tags used to get and
 set control values are:
 ```text
-Name		Helper 					tag                     
+Name		Helper 					tag      
+LvlReact        double getLevelReactivity() TEControlTag.LEVELREACTIVITY
+FreqReact       double getFrequencyReactivity() TEControlTag.FREQREACTIVITY               
 Color		int getCurrentColor()   <none>
 Speed		double getSpeed()	TEControlTag.SPEED
 xPos		double getXPos()	TEControlTag.XPOS
@@ -57,6 +59,7 @@ Wow1		double getWow1()	TEControlTag.WOW1
 Wow2		double getWow2()	TEControlTag.WOW2
 WowTrigger      boolean getWowTrigger() TEControlTag.WOWTRIGGER
 Angle           double getStaticRotationAngle() TEControlTag.ANGLE
+
 ```
 
 ### Default Ranges and Values
@@ -184,6 +187,13 @@ uniform float beat;
 uniform float sinPhaseBeat;
 uniform float bassLevel;
 uniform float trebleLevel;
+
+uniform float volumeRatio;
+uniform float bassRatio;
+uniform float trebleRatio;
+
+uniform float levelReact;   // reactivity to audio level changes
+uniform float frequencyReact;  // reactivity to audio frequency content
 
 // TE color
 uniform vec3 iPalette[5]; // the complete currently active palette

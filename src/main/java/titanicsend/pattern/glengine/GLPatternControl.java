@@ -28,6 +28,9 @@ public class GLPatternControl implements GLControlData {
     s.setUniform("trebleRatio", (float) pattern.getTrebleRatio());
     s.setUniform("volumeRatio", pattern.getVolumeRatiof());
 
+    s.setUniform("levelReact", (float) pattern.getLevelReactivity());
+    s.setUniform("frequencyReact", (float) pattern.getFrequencyReactivity());
+
     // color-related uniforms
     int col = pattern.calcColor();
     s.setUniform(
