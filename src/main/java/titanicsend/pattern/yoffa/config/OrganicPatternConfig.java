@@ -265,17 +265,17 @@ public class OrganicPatternConfig {
     }
   }
 
-  @LXCategory("DREVO Shaders")
-  public static class RhythmicFlashStatic extends ConstructedPattern {
-    public RhythmicFlashStatic(LX lx) {
-      super(lx, TEShaderView.ALL_PANELS);
-    }
-
-    @Override
-    protected List<PatternEffect> createEffects() {
-      return List.of(new RhythmicFlashingStatic(new PatternTarget(this)));
-    }
-  }
+//  @LXCategory("DREVO Shaders")
+//  public static class RhythmicFlashStatic extends ConstructedPattern {
+//    public RhythmicFlashStatic(LX lx) {
+//      super(lx, TEShaderView.ALL_PANELS);
+//    }
+//
+//    @Override
+//    protected List<PatternEffect> createEffects() {
+//      return List.of(new RhythmicFlashingStatic(new PatternTarget(this)));
+//    }
+//  }
 
   @LXCategory("DREVO Shaders")
   public static class MatrixScroller extends ConstructedPattern {
