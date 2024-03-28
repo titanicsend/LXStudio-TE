@@ -17,6 +17,9 @@ uniform float volumeRatio;
 uniform float bassRatio;
 uniform float trebleRatio;
 
+uniform float levelReact;
+uniform float frequencyReact;
+
 // TE Colors
 uniform vec3 iColorRGB;
 uniform vec3 iColorHSB;

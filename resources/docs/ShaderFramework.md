@@ -54,6 +54,9 @@ uniform float volumeRatio;  // ratio of current volume to recent average volume
 uniform float bassRatio;
 uniform float trebleRatio;
 
+uniform float levelReact;   // reactivity to changes in audio level
+uniform float frequencyReact; // reactivity to audio frequency content
+
 // TE color
 uniform vec3 iColorRGB;   // color 1 - the color returned by calcColor() 
 uniform vec3 iColorHSB;   // color 1 in the HSB colorspace
@@ -88,7 +91,7 @@ uniform sampler2D iBackbuffer;
 
 ### ShaderToy/General Utility
 
-#### iTime (uniform float iTime;)
+#### iTime (uniform float iTime)
 
 'Time' since your pattern started running, in seconds.millis. With the common controls,
 the rate at which time passes will vary with the setting of the speed control.
@@ -97,7 +100,7 @@ Since shaders often use iTime to render animation as a function of time, this
 variable speed timer gives you smooth speed control without any additional code in the shader. Importantly,
 time can run both forwards and backwards, so be sure your pattern's math works in both directions.
 
-#### iResolution (uniform vec2 iResolution;)
+#### iResolution (uniform vec2 iResolution)
 
 The resolution of the "display" surface, used in shaders to normalize incoming pixel coordinates.
 Note that these are the dimensions of the off-screen 2D frame buffer that OpenGL uses for drawing and
@@ -106,7 +109,7 @@ between the frame buffer and car geometry are available in the TE
 framework's [CarGeometryPatternTools](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/CarGeometryPatternTools.java)
 class.
 
-#### iMouse (uniform vec4 iMouse;)
+#### iMouse (uniform vec4 iMouse)
 
 All zeros at this time. Never changes. Included for compatibility with ShaderToy
 shaders. There's no reason to ever use this in shader code.
@@ -115,23 +118,23 @@ shaders. There's no reason to ever use this in shader code.
 
 ### Color Uniforms
 
-#### iColorRGB (uniform vec3 iColorRGB;)
+#### iColorRGB (uniform vec3 iColorRGB)
 
 The RGB color from the color control returned by the calcColor() function. Colors in
 shaders are normalized to a floating point 0.0 to 1.0 range. You do not have to multiply them back
 to 0-255, and you don't have to worry about color components under- or overflowing while doing
 calculations. They are automatically clamped to the proper range on output.
 
-#### iColorHSB (uniform vec3 iColorHSB;)
+#### iColorHSB (uniform vec3 iColorHSB)
 
 The same color as iColorRGB, but pre-converted to normalized HSB format. (All components are
 in the range 0.0 to 1.0. It's just like a Pixelblaze!)
 
-#### iColor2RGB (uniform vec3 iColorRGB;)
+#### iColor2RGB (uniform vec3 iColorRGB)
 
 The RGB color from the color control returned by the calcColor2() function, normalized as above.
 
-#### iColor2HSB (uniform vec3 iColorHSB;)
+#### iColor2HSB (uniform vec3 iColorHSB)
 
 iColor2RGB converted to HSB colorspace and normalized to the range 0.0 to 1.0.
 
@@ -139,20 +142,26 @@ iColor2RGB converted to HSB colorspace and normalized to the range 0.0 to 1.0.
 
 ### Audio Uniforms
 
-#### beat (uniform float beat;)
+#### levelReact (uniform float levelReact)
+Used by audio-reactive patterns to control how the pattern responds to changes in audio level. 
+
+#### frequencyReact (uniform float frequencyReact)
+Used by audio-reactive patterns to control how the pattern responds to changes in audio frequency content.
+
+#### beat (uniform float beat)
 
 Sawtooth wave that moves from 0 to 1 with the beat. On the beat the value
 will be 0, then ramp up to 1 before the next beat triggers.
 
-#### sinPhaseBeat (uniform float sinPhaseBeat;)
+#### sinPhaseBeat (uniform float sinPhaseBeat)
 
 Sinusoidal wave that alternates between 0 and 1 with the beat.
 
-#### bassLevel (uniform float bassLevel;)
+#### bassLevel (uniform float bassLevel)
 
 Average level of low frequency content in the current audio signal.
 
-#### trebleLevel (uniform float trebleLevel;)
+#### trebleLevel (uniform float trebleLevel)
 
 Average level of high frequency content in the current audio signal.
 
@@ -176,47 +185,47 @@ Ratio of the current treble frequency content to the recent average.
 
 ### TE Common Control Uniforms
 
-#### iSpeed (uniform float iSpeed;)
+#### iSpeed (uniform float iSpeed)
 
 Current value of the "Speed" common control. Most shaders will not need to use this because
 speed will be automatically controlled by the variable iTime mechanism described above.
 
-#### iScale (uniform float iScale;)
+#### iScale (uniform float iScale)
 
 Current value of the "Scale" common control.
 
-#### iQuantity (uniform float iQuantity;)
+#### iQuantity (uniform float iQuantity)
 
 Current value of the "Quantity" common control.
 
-#### iTranslate (uniform vec2  iTranslate;)
+#### iTranslate (uniform vec2  iTranslate)
 
 (x,y) translation vector, derived from the settings of the XPos and YPos common controls.
 
-#### iSpin (uniform float iSpin;)
+#### iSpin (uniform float iSpin)
 
 Current value of the "Spin" common control.
 
-#### iRotationAngle (uniform float iRotationAngle;)
+#### iRotationAngle (uniform float iRotationAngle)
 
 Beat-linked rotation angle derived from the current setting of the "Spin" common control.
 
-#### iBrightness (uniform float iBrightness;)
+#### iBrightness (uniform float iBrightness)
 
 The current value of the "Brightness" common control. The shader framework uses this automatically
 as "contrast". It reduces the brightness of colors without affecting alpha.
 
-#### iWow1 (uniform float iWow1;)
+#### iWow1 (uniform float iWow1)
 
 Current setting of the "Wow1" common control. Wow1 controls the level of an optional "special"
 pattern-specific feature.
 
-#### iWow2 (uniform float iWow2;)
+#### iWow2 (uniform float iWow2)
 
 Current setting of the "Wow2" common control. Wow2 controls the level of an optional "special"
 pattern-specific feature.
 
-#### iWowTrigger (uniform bool  iWowTrigger;)
+#### iWowTrigger (uniform bool iWowTrigger)
 
 Current setting of the "Wow1" common control. WowTrigger is a momentary contact button that can
 trigger an (optional) pattern-specific feature.
@@ -225,7 +234,7 @@ trigger an (optional) pattern-specific feature.
 
 ### ShaderToy Texture Uniforms
 
-#### iChannel0 (uniform sampler2D iChannel0;)
+#### iChannel0 (uniform sampler2D iChannel0)
 
 A 2D texture (2x512) containing audio data from the LX engine.
 
@@ -233,17 +242,17 @@ The first row contains FFT data -- the frequency spectrum of the current playing
 The second contains a normalized version of the music's waveform,scaled to the range -1.0 to 1.0.
 See the **AudioTest2** pattern for an example of how this data can be used.
 
-#### iChannel1 (uniform sampler2D iChannel1;)
+#### iChannel1 (uniform sampler2D iChannel1)
 
-#### iChannel2 (uniform sampler2D iChannel2;)
+#### iChannel2 (uniform sampler2D iChannel2)
 
-#### iChannel3 (uniform sampler2D iChannel3;)
+#### iChannel3 (uniform sampler2D iChannel3)
 
 iChannels 1 through 3 are 2D textures loaded from user specified files. Some ShaderToy shaders
 require these, and it is possible for you to build your own textures and load them at pattern
 creation time.
 
-### iBackbuffer (uniform sampler2D iBackbuffer;)
+### iBackbuffer (uniform sampler2D iBackbuffer)
 
 The contents of the previously rendered frame. This is useful for creating feedback effects
 like trails, echoes, etc. See the **MultipassDemo** pattern for an example.

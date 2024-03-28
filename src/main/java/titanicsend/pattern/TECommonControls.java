@@ -59,6 +59,12 @@ public class TECommonControls {
   public void buildDefaultControlList() {
     LXListenableNormalizedParameter p;
 
+    p = new CompoundParameter(TEControlTag.LEVELREACTIVITY.getLabel(), 0.5, 0, 1).setDescription("Level Reactivity");
+    setControl(TEControlTag.LEVELREACTIVITY, p);
+
+    p = new CompoundParameter(TEControlTag.FREQREACTIVITY.getLabel(), 0.5, 0, 1).setDescription("Frequency Reactivity");
+    setControl(TEControlTag.FREQREACTIVITY, p);
+
     p =
         new CompoundParameter(TEControlTag.SPEED.getLabel(), 0.5, -4.0, 4.0)
             .setPolarity(LXParameter.Polarity.BIPOLAR)
@@ -310,11 +316,7 @@ public class TECommonControls {
     MissingControlsManager.MissingControls missingControls =
         MissingControlsManager.get().findMissingControls(pat.getClass());
 
-    String colorPrefix = "";
-    if (missingControls != null && !missingControls.uses_palette) {
-      colorPrefix = "[x] ";
-    }
-    TEColorParameter colorParam = registerColorControl(colorPrefix);
+
 
     // controls will be added in the order their tags appear in the
     // TEControlTag enum
@@ -331,6 +333,13 @@ public class TECommonControls {
     }
 
     this.pattern.addParam("panic", this.panic);
+
+    String colorPrefix = "";
+    if (missingControls != null && !missingControls.uses_palette) {
+      colorPrefix = "[x] ";
+    }
+    TEColorParameter colorParam = registerColorControl(colorPrefix);
+
   }
 
   /** Included for consistency. We may need it later. */
@@ -349,8 +358,10 @@ public class TECommonControls {
   protected void setRemoteControls() {
     this.pattern.setCustomRemoteControls(
         new LXListenableNormalizedParameter[] {
-          this.color.offset,
-          this.color.gradient,
+          //this.color.offset,
+          //this.color.gradient,
+          getControl(TEControlTag.LEVELREACTIVITY).control,
+          getControl(TEControlTag.FREQREACTIVITY).control,
           null, // getControl(TEControlTag.BRIGHTNESS).control,
           getControl(TEControlTag.SPEED).control,
           getControl(TEControlTag.XPOS).control,
@@ -410,6 +421,9 @@ public class TECommonControls {
     getControl(TEControlTag.WOW1).control.reset();
     getControl(TEControlTag.WOW2).control.reset();
     getControl(TEControlTag.WOWTRIGGER).control.reset();
+
+    getControl(TEControlTag.LEVELREACTIVITY).control.reset();
+    getControl(TEControlTag.FREQREACTIVITY).control.reset();
   }
 
   public void dispose() {

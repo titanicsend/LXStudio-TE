@@ -314,6 +314,14 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     return controls.getValue(TEControlTag.WOWTRIGGER) > 0.0;
   }
 
+  public double getLevelReactivity() {
+    return controls.getValue(TEControlTag.LEVELREACTIVITY);
+  }
+
+  public double getFrequencyReactivity() {
+    return controls.getValue(TEControlTag.FREQREACTIVITY);
+  }
+
   /**
    * Restarts the specified timer's elapsed time when called. The timer's rate is not changed.
    *
