@@ -7,7 +7,7 @@
 #pragma name "Circuitry"
 #pragma TEControl.SIZE.Range(2.0,5.0,0.1)
 #pragma TEControl.QUANTITY.Range(4.0,3.0,6.0)
-#pragma TEControl.WOW2.Value(0.6)
+#pragma TEControl.WOW2.Disable
 #pragma TEControl.WOW1.Disable
 #pragma TEControl.WOWTRIGGER.Disable
 
@@ -37,9 +37,9 @@ float fractal(vec2 p) {
 
         // animated manhattan distance gives size changing rectangular
         // features
-        float m = abs(p.x+sin(iTime * 2.));
+        float m = abs(p.x+fract(bassRatio) + 0.3 * sin(beat));
         if (m < dist) {
-            dist = m + smoothstep(0.1,abs(p.y), fract(beat+bandLevel+i*0.618));
+            dist = m + smoothstep(0.1,abs(p.y), fract(bandLevel+i*0.618));
             minIteration = i;
         }
         // using minimum of manhattan and euclidean distance over all iterations
@@ -61,11 +61,11 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
 
     // use high frequency content to mess with the fractal, and
     // rotate the whole thing back and forth a little
-    bandLevel = frequencyReact * (-0.5 +trebleRatio);
+    bandLevel = frequencyReact * (-0.5 + trebleRatio);
 
     // use smoothed volume to scale the image
     uv *= (iScale - volumeRatio * levelReact);
-    float ra = iRotationAngle + 0.2 * bandLevel;
+    float ra = iRotationAngle + 0.4 * bandLevel;
     uv *= rot(ra);
     
     // draw the fractal, antialiased by drawing it multiple times
