@@ -82,6 +82,8 @@ public class UITEPerformancePattern
 
     // For design mode, append Brightness.  Useful for AutoVJ especially.
     params.add(device.getControls().getControl(TEControlTag.BRIGHTNESS).control);
+    params.add(device.getControls().color.offset);
+    params.add(device.getControls().color.gradient);
 
     // slight hack to add source select and gain controls for NDI patterns without
     // replicating all this UI code...
