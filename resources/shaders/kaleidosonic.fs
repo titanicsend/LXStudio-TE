@@ -63,13 +63,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         // accumulation. (Switched to the latest fashionable noise
         // source - precomputed noise texture - it's faster and doesn't have
         // the problems with numerical precision that the old hash function did.)
-        vec4 noise = texelFetch(iChannel1, ivec2(i, i * 2),0);
-        vec2 pos = texelFetch(iChannel1, ivec2(i, i+2),0).xy;
+        vec4 noise = texelFetch(iChannel1, ivec2(i, 57.5),0);
+        vec2 pos = texelFetch(iChannel1, ivec2(i, 126.5),0).xy;
 
         // "velocity" moves the field outward at a rate based on bass
         // content.
-        vec2 velocity = noise.y + (0.15 * abs(fract(pos)) * level);
-        pos += iTime * velocity * .1;
+        vec2 velocity = noise.xz + (0.15 * abs(fract(pos)) * level);
+        pos += iTime * velocity * 0.25;
         pos = fract(pos);
 
         // normalize pos to display aspect ratio even though it's fake because
@@ -79,7 +79,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         // generate blob radius based on audio level at fake position
         // (the size of the field blob at the current location.)
         // Wow1 controls the max size.
-        float radius = clamp(intensity, 0.125 * abs(pos.x), iWow1 * 3.);
+        float radius = clamp(intensity, 0.125 * abs(pos.x), iWow1);
 
         // accumulate field density
         float density = field2(uv, pos, radius);
@@ -87,7 +87,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     }
 
     // apply color modulation based on the field density
-    float colorMix = mod(final_density * 2.0, 1.0);
+    float colorMix = mod(final_density * 1.618, 1.0);
     vec3 final_color = mix(iColor2RGB,iColorRGB,colorMix);
     // Wow2 controls gamma adjustment of final brightness
     fragColor = vec4(final_color,pow(colorMix,1.5 + iWow2));

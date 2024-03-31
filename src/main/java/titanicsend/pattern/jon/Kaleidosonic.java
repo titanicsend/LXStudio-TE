@@ -12,8 +12,8 @@ public class Kaleidosonic extends GLShaderPattern {
   public Kaleidosonic(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
 
-    controls.setRange(TEControlTag.WOW1, 0.04, 0, 0.08); // bass response
-    controls.setRange(TEControlTag.WOW2, 0.5, 0.2, 3); // overall audio level adjustment
+    controls.setRange(TEControlTag.WOW1, 1., 0, 2.5); // complexity
+    controls.setRange(TEControlTag.WOW2, 0.5, 0.2, 3); // contrast
     controls.setRange(TEControlTag.SIZE, 1., 5, 0.2); // scale
     controls.setRange(TEControlTag.QUANTITY, 7, 1, 13); // number of kaleidoscope slices
     controls.setValue(TEControlTag.SPIN, 0.125);
