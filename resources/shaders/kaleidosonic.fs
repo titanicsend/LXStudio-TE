@@ -54,7 +54,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     // modulate overall scale by level just a little for more movement.
     // (too much looks jittery)
-    uv *= iScale + 0.1 * level;
+    uv *= iScale + 0.05 * level;
 
     // iterate to generate a density field based on a sample
     // of random coordinates around the current pixel.
@@ -90,5 +90,5 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // gamma correct density and apply color
     float colorMix = mod(final_density * 2.0, 1.0);
     vec3 final_color = mix(iColor2RGB,iColorRGB,colorMix);
-    fragColor = vec4(final_color,pow(colorMix,1.5 + iWow2));
+    fragColor = vec4(final_color,pow(final_density,1.5 + iWow2));
 }
