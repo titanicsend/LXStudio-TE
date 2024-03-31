@@ -47,8 +47,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // generate radial reflections about the origin
     uv = Kaleidoscope(uv, iQuantity);
 
-    // ratio of level at current pixel's eq band to EMA volume from engine
-    // Wow2 acts as an overall level adjustment.
+    // levelReact controls audio-linked scaling "bounce" and minimum blob size
     float level = levelReact * volumeRatio;
     float intensity = levelReact * bassRatio;
 
@@ -87,8 +86,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         final_density += density;
     }
 
-    // gamma correct density and apply color
+    // apply color modulation based on the field density
     float colorMix = mod(final_density * 2.0, 1.0);
     vec3 final_color = mix(iColor2RGB,iColorRGB,colorMix);
-    fragColor = vec4(final_color,pow(final_density,1.5 + iWow2));
+    // Wow2 controls gamma adjustment of final brightness
+    fragColor = vec4(final_color,pow(colorMix,1.5 + iWow2));
 }
