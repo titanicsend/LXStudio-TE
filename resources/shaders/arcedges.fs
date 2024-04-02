@@ -4,7 +4,7 @@ uniform vec4[LINE_COUNT] lines;
 float sparkAmp;
 
 // Simple fbm noise system, used to generate the noise
-// field we use for electri arcs
+// field we use for electric arcs
 vec2 hash (in vec2 p) {
   p = vec2 (dot (p, vec2 (127.1, 311.7)),
             dot (p, vec2 (269.5, 183.3)));
@@ -32,6 +32,7 @@ float noise (in vec2 p) {
   return dot (n, vec3 (52.));
 }
 
+// 4-octave noise generator
 float fbm(vec2 pos, float tm) {
     vec2 offset = vec2(cos(tm), 0.0);
     float aggr = 0.0;
@@ -42,7 +43,6 @@ float fbm(vec2 pos, float tm) {
     aggr += noise(pos - offset) * 0.125;
 
     aggr /= 1.0 + 0.5 + 0.25 + 0.125;
-
     return sparkAmp * (aggr * 0.5) + 0.5;
 }
 
@@ -71,14 +71,16 @@ float glowline2(vec2 p, vec4 seg,float width) {
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     vec2 uv = -1. + 2. * fragCoord / iResolution.xy;
 
-
     // additional voltage when wow trigger is pressed
     sparkAmp = (iWowTrigger) ? 2 : 1.0;
 
     vec3 finalColor = vec3(0.0);
+    float baseWidth = iWow2 * 0.5;
+    float widthVariation = levelReact * (bassRatio/volumeRatio) *
+            0.1 * abs(noise(2.0 * uv + iTime));
     for (int i = 0; i < LINE_COUNT; i++) {
 
-      float dist = glowline2(uv,lines[i],iWow2);
+      float dist = glowline2(uv,lines[i],baseWidth + widthVariation);
 
       // add contribution of this segment's "electric arcs"
       vec3 col = electrify(uv, dist + iQuantity,(mod(i,2) == 0) ? 1. : -1.);
