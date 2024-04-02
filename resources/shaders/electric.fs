@@ -89,7 +89,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     twistDistortion += trebleEffect;
     uv.y += 2.5 * twistDistortion * (.5 + .5 * sin(cos(uv.x) * len));
     if (frequencyReact > 0.){
-        float wave = texelFetch(iChannel0, ivec2(fragCoord.x, 1), 0).x;
+        //float wave = texelFetch(iChannel0, ivec2(fragCoord.x, 1), 0).x;
+        float wave = 8.0 * texture(iChannel0, vec2(uv.x / 4.0,1)).x;
         uv.x += frequencyReact * wave;
     }
     uv = polar2cart(uv);
