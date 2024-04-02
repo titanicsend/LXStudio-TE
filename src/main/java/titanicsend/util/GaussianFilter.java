@@ -26,9 +26,9 @@ public class GaussianFilter {
     Arrays.fill(filterBuffer, 0.0f);
   }
 
-  public double applyGaussianFilter(double currentBassLevel) {
+  public double applyGaussianFilter(double rawValue) {
     System.arraycopy(filterBuffer, 1, filterBuffer, 0, filterWidth - 1);
-    filterBuffer[filterWidth - 1] = currentBassLevel;
+    filterBuffer[filterWidth - 1] = rawValue;
 
     filteredValue = 0.0f;
     double[] weights = calculateGaussianWeights(filterWidth);
