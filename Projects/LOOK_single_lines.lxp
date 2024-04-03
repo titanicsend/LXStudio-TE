@@ -1,6 +1,6 @@
 {
   "version": "0.4.2.TE.7-SNAPSHOT",
-  "timestamp": 1712100963816,
+  "timestamp": 1712103799987,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -683,8 +683,8 @@
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
                   "te_speed": 0.5,
-                  "te_xpos": -0.2907031288050348,
-                  "te_ypos": -0.4057031230768189,
+                  "te_xpos": 0.0,
+                  "te_ypos": 0.0,
                   "te_size": 1.729007805645233,
                   "te_quantity": 0.5,
                   "te_spin": 0.0,
@@ -746,7 +746,7 @@
                 "effects": []
               },
               {
-                "id": 965,
+                "id": 1011,
                 "class": "titanicsend.pattern.look.SketchDemo",
                 "internal": {
                   "modulationColor": 0,
@@ -768,9 +768,9 @@
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
                   "te_speed": 0.5,
-                  "te_xpos": -0.2603906312288018,
-                  "te_ypos": -0.3282812531106174,
-                  "te_size": 0.05228983149419934,
+                  "te_xpos": 0.0,
+                  "te_ypos": 0.0,
+                  "te_size": 4.140156382221903,
                   "te_quantity": 0.5,
                   "te_spin": 0.0,
                   "te_brightness": 1.0,
@@ -792,7 +792,7 @@
                 },
                 "children": {
                   "modulation": {
-                    "id": 966,
+                    "id": 1012,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,
@@ -1046,9 +1046,9 @@
         "depth": 2.0,
         "camera": {
           "active": false,
-          "radius": 1.2640662925239077E7,
-          "theta": 235.6586367363343,
-          "phi": -17.321720535866916,
+          "radius": 1.7E7,
+          "theta": 270.0,
+          "phi": -6.0,
           "x": 0.0,
           "y": 5715000.0,
           "z": 0.0

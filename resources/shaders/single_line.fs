@@ -25,6 +25,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     st = st * 2. - 1.;
     st.x *= iResolution.x/iResolution.y;
 
+    st.x += 0.7;
+    st.y += 0.8;
+
+    //st.x = abs(st.x);
+
     vec3 color = vec3(0.2);
     float pct = 0.;
 

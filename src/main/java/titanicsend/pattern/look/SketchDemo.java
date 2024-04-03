@@ -21,7 +21,7 @@ public class SketchDemo extends GLShaderPattern {
   float[][] points = new float[MAX_POINTS][2];
 
   SketchDataManager sketchMgr;
-  int currentSketchIdx = 0;
+  int currentSketchIdx = 3;
   boolean hasSketchBeenPassed = false;
 
   // Constructor
@@ -61,9 +61,10 @@ public class SketchDemo extends GLShaderPattern {
   // store an x,y point in the native buffer
   void setPoint(int segNo, float x, float y) {
 //    TE.log("setPoint %d : %.4f %.4f",segNo,x,y);
-    gl_segments.position(segNo * 4);
+    gl_segments.position(segNo * 2);
     gl_segments.put(x);
     gl_segments.put(y);
+    gl_segments.rewind();
   }
 
   // Sends an array of point coordinates to the shader. It's not
@@ -73,9 +74,10 @@ public class SketchDemo extends GLShaderPattern {
     for (int i = 0; i < data.num_points; i++) {
       setPoint(i, data.points[i][0], data.points[i][1]);
     }
-    gl_segments.rewind();
-    s.setUniform("sketchPoints", gl_segments, 2);
+    s.setUniform("points", gl_segments, 2);
     s.setUniform("numPoints", data.num_points);
-    s.setUniform("totalDistance", data.total_dist);
+    s.setUniform("totalLength", data.total_dist);
+//    TE.log("setNumPoints %d", data.num_points);
+//    TE.log("setTotalDistance %f", data.total_dist);
   }
 }
