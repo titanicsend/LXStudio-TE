@@ -50,7 +50,8 @@
     ],
     "uses_palette": true,
     "missing_control_tags": [
-      "SIZE"
+      "ANGLE",
+      "SPIN"
     ]
   },
   {

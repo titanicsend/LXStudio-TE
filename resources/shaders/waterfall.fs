@@ -1,21 +1,25 @@
 // Simplex noise-based waterfall, based on https://www.shadertoy.com/view/ttlXDN
 // Wow1 controls background fade level
-//
+// Wow2 controls water vs. palette color mix.  (All the way up is palette compliant)
 #pragma name "Waterfall"
-#pragma iChannel1 "resources/shaders/textures/lichen.png"
+#pragma iChannel1 "resources/shaders/textures/icecliff.png"
 #pragma TEControl.WOW1.Range(0.4,0.0,1.0)
 
 #define PI 3.14159265359
+
+vec3 color1 = 0.9 * vec3(0.635, 0.773, 1);
+vec3 color2 = 0.95 * vec3(0.075, 0.51, 0.902);
 
 mat2 rot(float angle) {
     return mat2(cos(angle), -sin(angle),
     sin(angle), cos(angle));
 }
 
-// Ashima noise
+// Ashima Arts Simplex noise
 // https://github.com/ashima/webgl-noise/blob/master/src/noise3Dgrad.glsl
-// modified to allow rotation for water swirls.
-// TODO - could probably use simpler/faster texture noise for this, if I could get
+// modified to allow alternating direction checkerboard rotation for water swirls.
+// TODO - Same noise generator is in radial_simplex.fs.  Library?
+// TODO - could maybe use simpler/faster texture noise for this, if I could get
 // TODO - the rotation to work properly.
 
 // alternate the direction of rotation in a checkerboard pattern
@@ -179,7 +183,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     // add extra "splashiness" at the top of the DJ booth by
     // changing the width of the waterfall in a narrow band
     float sm = max(0.,(0.3 - abs(ouv.y - 0.45)) / 0.3);
-    float splash = 0.4 - (sm * 0.35);
+    float splash = (0.4 - (sm * 0.35)) * iQuantity * 2.0;
 
     // shape the waterfall so it gets generally wider as it goes down
     float mask = get_mask(uv,splash);
@@ -193,15 +197,19 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     noise = noise*.5+.5;
 
     // add mist to the bottom of the waterfall with another noise field.
-    float fl = max(0.,(0.3 - ouv.y)) / 0.3;
+    float fl = max(0.,(0.25 - ouv.y)) / 0.3;
     p = vec3(ouv,0.);
     noiseParams = vec3(0.8,4.0,0.6);
     float fn = fbm(p + vec3(0., -iTime*.13, iTime *.2), noiseParams);
     fn = 0.5 + 0.5 * fn;
     vec3 mist = vec3(1.25 * fn) * fl;
 
+    // mix with palette colors according to Wow2 control setting
+    color1 = mix(color1, iColorRGB, iWow2);
+    color2 = mix(color2, iColor2RGB, iWow2);
+
     // create final blended water color, add in the mist, and done!
-    vec3 col = 2. * noise * mix(iColor2RGB,iColorRGB,noise);
+    vec3 col =  noise * mix(color2,color1,noise);
     col = mix(col, background, mask);
     fragColor = vec4(col + mist,1.0);
 }

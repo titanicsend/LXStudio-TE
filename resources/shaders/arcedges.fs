@@ -48,7 +48,7 @@ float fbm(vec2 pos, float tm) {
 
 // turn the noise field into electric arcs in two colors
 vec3 electrify(vec2 pos, float offset,float direction) {
-    float noiseMag = offset * iWow1 * sparkAmp;
+    float noiseMag = offset * iScale * sparkAmp;
     float time = direction * iTime;
     vec2 f = vec2(0.0, iTime * 0.25*direction);
 
@@ -75,12 +75,12 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     sparkAmp = (iWowTrigger) ? 2 : 1.0;
 
     vec3 finalColor = vec3(0.0);
-    float baseWidth = iWow2 * 0.5;
-    float widthVariation = levelReact * (bassRatio/volumeRatio) *
+    float baseWidth = iWow1 / 2.0;
+    float widthVariation = levelReact * max(0,bassRatio/volumeRatio) *
             0.1 * abs(noise(2.0 * uv + iTime));
     for (int i = 0; i < LINE_COUNT; i++) {
 
-      float dist = glowline2(uv,lines[i],baseWidth + widthVariation);
+      float dist = glowline2(uv,lines[i], baseWidth + widthVariation);
 
       // add contribution of this segment's "electric arcs"
       vec3 col = electrify(uv, dist + iQuantity,(mod(i,2) == 0) ? 1. : -1.);
