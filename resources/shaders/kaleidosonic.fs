@@ -1,5 +1,3 @@
-uniform float avgVolume;
-
 const float PI = 3.14159265359;
 
 vec3 hsv2rgb(vec3 c) {
@@ -21,15 +19,18 @@ vec2 rotate(vec2 point, float angle) {
 // output.
 float field2(vec2 p, vec2 center, float r) {
     float d = length(p - center) / r;
-    d = clamp(1.0/exp(d * d), 0.0, 0.995);
-    return d * d * d;
+    d = clamp(1.0/exp(d), 0.0, 0.995);
+    return d * d;
 }
 
 // smooth radial reflections
 vec2 Kaleidoscope(vec2 uv, float reflections) {
-    float angle = PI / reflections;
-    float r = length(uv*.5);
+    // use high frequency content to modulate the reflection
+    // angle.  This creates an interesting "folding" effect.
+    float k = frequencyReact * 3. * sin(trebleLevel * PI);
+    float angle = PI / (reflections + k);
 
+    float r = length(uv*.5);
     float a = atan(uv.y, uv.x) / angle;
     a = mix(fract(a), 1.0 - fract(a), mod(floor(a), 2.0)) * angle;
     return vec2(cos(a), sin(a)) * r;
@@ -46,18 +47,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // generate radial reflections about the origin
     uv = Kaleidoscope(uv, iQuantity);
 
-    // ratio of level at current pixel's eq band to EMA volume from engine
-    // Wow2 acts as an overall level adjustment.  Note that normalizing
-    // the volume this way means that the kaleidoscope will always be
-    // doing *something*, even when there's no audio.
-    float bandLevel = iWow2 * texture(iChannel0, vec2(uv.x, 0)).r/avgVolume;
-    float loudestHalf = max(trebleLevel, bassLevel) / avgVolume;
+    // levelReact controls audio-linked scaling "bounce" and minimum blob size
+    float level = levelReact * volumeRatio;
+    float intensity = levelReact * bassRatio;
 
     // modulate overall scale by level just a little for more movement.
     // (too much looks jittery)
-    uv *= iScale + 0.1 * bandLevel;
-
-    vec3 final_color = vec3(0.0);
+    uv *= iScale + 0.05 * level;
 
     // iterate to generate a density field based on a sample
     // of random coordinates around the current pixel.
@@ -67,37 +63,32 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         // accumulation. (Switched to the latest fashionable noise
         // source - precomputed noise texture - it's faster and doesn't have
         // the problems with numerical precision that the old hash function did.)
-        vec4 noise  = texture( iChannel1, vec2( float( i ) + 0.5, 0.5 ) / 256.0 );
-        vec2 pos = texture( iChannel1, vec2( float( i ) + 0.5, 64.5 ) / 256.0 ).xy;
+        vec4 noise = texelFetch(iChannel1, ivec2(i, 57.5),0);
+        vec2 pos = texelFetch(iChannel1, ivec2(i, 126.5),0).xy;
 
-        // "velocity" moves the field based on what's actually going on in the music
-        // at the current "real" pixel location
-        vec2 velocity = 2.0 + (0.15 * abs(pos) * bandLevel);
-
-        pos += iTime * velocity * 0.2;
-        pos = mix(fract(pos), fract(pos), mod(floor(pos), 2.0));
+        // "velocity" moves the field outward at a rate based on bass
+        // content.
+        vec2 velocity = noise.xz + (0.15 * abs(fract(pos)) * level);
+        pos += iTime * velocity * 0.25;
+        pos = fract(pos);
 
         // normalize pos to display aspect ratio even though it's fake because
         // it looks better!
         pos = (pos * 2.0 - 1.0) * aspect;
 
-        // "intensity" is the audio eq level at the current random sample position
-        float intensity = iWow2 *  texture(iChannel0, vec2(pos.y, 0)).r/avgVolume;
-
         // generate blob radius based on audio level at fake position
         // (the size of the field blob at the current location.)
-        // Wow1 limits the max size for rough reactivity control.
-        float radius =  loudestHalf / intensity;
-        radius = iWow1 + clamp(radius, 0.125 * abs(pos.x), iWow1 * 3.);
+        // Wow1 controls the max size.
+        float radius = clamp(intensity, 0.125 * abs(pos.x), iWow1);
 
         // accumulate field density
         float density = field2(uv, pos, radius);
         final_density += density;
-        final_color += density * noise.xyz;
     }
 
-    // gamma correct density and apply color
-    final_density = pow(clamp(final_density - 0.1, 0.0, 1.0), 2.25);
-    final_color = mix(iColorRGB,iColor2RGB,fract(final_color));
-    fragColor = vec4(final_color,final_density);
+    // apply color modulation based on the field density
+    float colorMix = mod(final_density * 1.618, 1.0);
+    vec3 final_color = mix(iColor2RGB,iColorRGB,colorMix);
+    // Wow2 controls gamma adjustment of final brightness
+    fragColor = vec4(final_color,pow(colorMix,1.5 + iWow2));
 }
