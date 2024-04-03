@@ -80,19 +80,35 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     uv *= r2d(iRotationAngle);
     float len = length(uv);
 
+    float bassEffect = levelReact * bassRatio;
+    float trebleEffect = levelReact * 1.8 * trebleRatio;
+
     // distort UVs a bit
     uv = cart2polar(uv);
-    uv.y += 2.5 * iWow1 * (.5 + .5 * sin(cos(uv.x) * len));
+    float twistDistortion = iWow1;
+    twistDistortion += trebleEffect;
+    uv.y += 2.5 * twistDistortion * (.5 + .5 * sin(cos(uv.x) * len));
+    if (frequencyReact > 0.){
+        float wave = texelFetch(iChannel0, ivec2(fragCoord.x, 1), 0).x;
+        uv.x += frequencyReact * wave;
+    }
     uv = polar2cart(uv);
 
+    // TODO: this might be better named to something like "zoom"
     float thickness = 3.0 + iScale;
+    thickness += 0.1*bassEffect;
     float d1 = abs(uv.x * thickness / (uv.x + fbm(uv + 1.25 * -iTime)));
     float d2 = abs(uv.y * thickness / (uv.y + fbm(uv - 1.5 * -iTime)));
 
-    float size = 0.1 + iWow2 / 2.0;
+    float repetitionFactor = iWow2;
+    repetitionFactor += 0.2*bassEffect;
+    float size = 0.1 + repetitionFactor / 2.0;
 
-    vec3 col = clamp(iQuantity * d1 * size,0.,1.2) * iColorRGB;
-    col += clamp(iQuantity * d2 * size,0.,1.2) * iColor2RGB;
+    float lineWidth = iQuantity;
+    lineWidth += 0.1*bassEffect;
+    float clampedLineWidth = clamp(lineWidth, 0., 0.3);
+    vec3 col = clamp(clampedLineWidth * d1 * size,0.,1.2) * iColorRGB;
+    col += clamp(clampedLineWidth * d2 * size,0.,1.2) * iColor2RGB;
 
     fragColor = vec4(col, 1.);
 }
