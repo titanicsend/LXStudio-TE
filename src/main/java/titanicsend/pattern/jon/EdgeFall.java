@@ -64,6 +64,8 @@ public class EdgeFall extends GLShaderPattern {
 
           moveLines(saved_lines, working_lines);
 
+          glowLevel -= 80f * (float) getBassLevel() * (float) getLevelReactivity();
+
           // set line brightness.  We need to override the default behavior because
           // when a fall is triggered, we make everything very, very bright for a short time
           // to simulate an explosive burst.
@@ -182,7 +184,7 @@ public class EdgeFall extends GLShaderPattern {
       }
     } else {
       // use structured noise to move the lines around with the beat
-      float d = 0.0375f * getVolumeRatiof() * (float) getLevelReactivity();
+      float d = 0.075f * (float) getTrebleLevel() * (float) getFrequencyReactivity();
       for (int i = 0; i < LINE_COUNT; i++) {
         float n = (float) getTime() + (float) i / 2f;
         dst[i][0] = src[i][0] + d * stb_perlin_noise3(n, 0.5f, 0.5f, 10, 10, 10);
