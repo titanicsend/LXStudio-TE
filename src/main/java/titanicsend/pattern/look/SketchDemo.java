@@ -32,7 +32,12 @@ public class SketchDemo extends GLShaderPattern {
     int totalSketches = sketchMgr.sketches.size();
     System.out.println("Loaded sketches: "+totalSketches);
 
-    controls.setRange(TEControlTag.SIZE, 1, 1, 100);
+    controls.setRange(TEControlTag.SIZE, 0.5, 0.1, 2.0);
+
+    // set the x-axis near the bottom of the car
+    controls.setValue(TEControlTag.YPOS, 0.85);
+    // offset the drawing position to mirror on either side of the central opening.
+    controls.setValue(TEControlTag.XPOS, 0.5);
 
     // register common controls with the UI
     addCommonControls();

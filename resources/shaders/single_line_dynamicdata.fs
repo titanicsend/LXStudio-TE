@@ -1,3 +1,5 @@
+#define TE_NOTRANSLATE
+
 uniform vec2[250] points;
 uniform int numPoints;
 uniform float totalLength;
@@ -16,42 +18,78 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     st.x *= iResolution.x/iResolution.y;
 
     // position it centrally on a panel
-    st.x += 0.8;
-    st.y += 0.8;
+    //st.x += 0.8;
+    st.y += iTranslate.y;
 
-    st /= iScale;
+    //st /= iScale;
 
     vec3 color = vec3(0.2);
     float pct = 0.;
 
-    float norm_y = 0.5 + 0.5*sin(iTime);
+    // TODO: create a new "progress" uninform to drive this value.
+    float drawingProgress = 0.5 + 0.5*sin(iTime);
+    float stroke = 0.005;
 
-    float desiredHeight = 0.5;
+    // before rendering the current drawing, mirror the coordinate space along the x-axis,
+    // with a gap defined by XPOS control.
+    st = vec2(abs(st.x) - iTranslate.x, st.y);
+    // use SIZE control to set the size of the drawing, without modifying the scale of the
+    // whole coordinate space.
+    float desiredHeight = iScale;
 
-    float maxDist = totalLength * desiredHeight * norm_y;
+    // how much of the drawing should be drawn.
+    float maxDist = totalLength * desiredHeight * drawingProgress;
 
+    // how much of the drawing has been covered as we loop through the line segments,
+    // looking for a hit on the distance field of one segment.
     float totalDist = 0.0;
+    // whether or not we should break out of the loop to avoid unnecessary computations
+    // (when we don't intend to render the full drawing).
+    bool stopIter = false;
+
     for (int i = 0; i < numPoints; i++) {
         vec2 a = points[i];
         vec2 b = points[i+1];
         a *= desiredHeight;
         b *= desiredHeight;
         float nextDist = distance(a, b);
+
+        float seg = sdSegment(st, a, b);
+
+        // if the total distance covered so far plus the length of the current line segment is less than the total
+        // length of the drawing we want to render, use the full line from 'a' to 'b'.
         if (totalDist + nextDist < maxDist) {
             totalDist += nextDist;
-            float seg = sdSegment(st, a, b);
-            pct += 1.-step(0.005, seg);
         } else {
+            // otherwise, we're on the last line segment we need to render. the rest of the points are irrelevant, so
+            // stop looping through them after we've given the render instruction.
+            stopIter = true;
+
+            // determine what 'fraction' of the current line we should draw, and compute the distance from a line segment
+            // starting at 'a' and ending at 'b' - 'a' * 'fraction'
             float targetDist = maxDist - totalDist;
             float ratio = targetDist / nextDist;
             vec2 delta = b - a;
+            seg = sdSegment(st, a, a + ratio*delta);
+        }
 
-            float seg = sdSegment(st, a, a + ratio*delta);
-            pct += 1.-step(0.005, seg);
+        // apply a threshold to the segment distance to get our line drawn.
+        pct += 1.-step(stroke, seg);
+
+        // if either:
+        // (a) our progress through the drawing doesn't require looping through the remaining points, or
+        // (b) we already made a match on at least one segment,
+        // we can stop looping.
+        if (stopIter || seg <= stroke) {
             break;
         }
     }
 
     color = vec3(pct);
+
+    // debugging: draw coord space axes.
+    color.r += 1. -smoothstep(0., 0.01, abs(st.x));
+    color.g += 1. -smoothstep(0., 0.01, abs(st.y));
+
     fragColor = vec4(color,1.0);
 }

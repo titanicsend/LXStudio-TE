@@ -1,6 +1,6 @@
 {
   "version": "0.4.2.TE.7-SNAPSHOT",
-  "timestamp": 1712103799987,
+  "timestamp": 1712256619979,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -746,7 +746,7 @@
                 "effects": []
               },
               {
-                "id": 1011,
+                "id": 1057,
                 "class": "titanicsend.pattern.look.SketchDemo",
                 "internal": {
                   "modulationColor": 0,
@@ -768,9 +768,9 @@
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
                   "te_speed": 0.5,
-                  "te_xpos": 0.0,
-                  "te_ypos": 0.0,
-                  "te_size": 4.140156382221903,
+                  "te_xpos": 0.5,
+                  "te_ypos": 0.85,
+                  "te_size": 1.384761716047069,
                   "te_quantity": 0.5,
                   "te_spin": 0.0,
                   "te_brightness": 1.0,
@@ -792,7 +792,7 @@
                 },
                 "children": {
                   "modulation": {
-                    "id": 1012,
+                    "id": 1058,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,
