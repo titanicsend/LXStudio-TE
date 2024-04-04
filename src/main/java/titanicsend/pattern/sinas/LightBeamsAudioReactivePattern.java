@@ -24,7 +24,7 @@ public class LightBeamsAudioReactivePattern extends ConstructedShaderPattern {
   private GaussianFilter timeDiffFilter = new GaussianFilter(20);
 
   public LightBeamsAudioReactivePattern(LX lx) {
-    super(lx, TEShaderView.ALL_PANELS_INDIVIDUAL);
+    super(lx, TEShaderView.ALL_POINTS);
 
     controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
     controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));

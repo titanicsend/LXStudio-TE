@@ -10,26 +10,10 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
 @SuppressWarnings("unused")
 public class ShaderPanelsPatternConfig {
 
-  /* Removed from UI - see TEApp.java for details.
-  @LXCategory("Native Shaders Panels")
-  public static class ShaderToyPattern extends ConstructedPattern {
-      public ShaderToyPattern(LX lx) {
-          super(lx);
-      }
-
-      @Override
-      protected List<PatternEffect> createEffects() {
-          return List.of(new ShaderToyPatternEffect(new PatternTarget(this, TEShaderView.SPLIT_PANEL_SECTIONS)));
-      }
-  }
-
-  */
-
-  // multiple
   @LXCategory("Native Shaders Panels")
   public static class LightBeamsPattern extends ConstructedShaderPattern {
     public LightBeamsPattern(LX lx) {
-      super(lx, TEShaderView.ALL_PANELS_INDIVIDUAL);
+      super(lx, TEShaderView.ALL_POINTS);
     }
 
     @Override
