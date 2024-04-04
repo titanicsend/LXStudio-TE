@@ -15,10 +15,6 @@ public class SpiralDiamonds extends TEPerformancePattern {
   private static final float cosT = (float) Math.cos(TEMath.TAU / 1000);
   private static final float sinT = (float) Math.sin(TEMath.TAU / 1000);
 
-  public final CompoundParameter energy =
-      new CompoundParameter("Energy", .1, 0, 1)
-          .setDescription("Ummm.... what does this button do?");
-
   public SpiralDiamonds(LX lx) {
     super(lx, TEShaderView.DOUBLE_LARGE);
 
@@ -31,7 +27,6 @@ public class SpiralDiamonds extends TEPerformancePattern {
         .setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
 
     addCommonControls();
-    addParameter("energy", energy);
   }
 
   @Override

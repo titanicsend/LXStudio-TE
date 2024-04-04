@@ -70,6 +70,25 @@ public class ShaderPanelsPatternConfig {
   }
 
   @LXCategory("Native Shaders Panels")
+  public static class RhythmicStatic extends ConstructedShaderPattern {
+    public RhythmicStatic(LX lx) {
+      super(lx, TEShaderView.ALL_POINTS);
+    }
+
+    @Override
+    protected void createShader() {
+      controls.setRange(TEControlTag.SPEED, 0, -4, 4)
+           .setValue(TEControlTag.SPEED, 1.0);
+      controls
+          .setRange(TEControlTag.SIZE, 0, 0, 5) // overall scale
+          .setUnits(TEControlTag.SIZE, LXParameter.Units.INTEGER);
+      controls.setRange(TEControlTag.QUANTITY, 1, 0.02, 1); // number of layers
+
+      addShader("rhythm_static.fs");
+    }
+  }
+
+  @LXCategory("Native Shaders Panels")
   public static class Marbling extends ConstructedShaderPattern {
     public Marbling(LX lx) {
       super(lx, TEShaderView.DOUBLE_LARGE);
