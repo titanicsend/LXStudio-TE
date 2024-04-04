@@ -37,7 +37,8 @@ float fractal(vec2 p) {
 
         // animated manhattan distance gives size changing rectangular
         // features
-        float m = abs(p.x+fract(bassRatio) + 0.3 * sin(beat));
+        float bassFactor = levelReact * fract(bassRatio);
+        float m = abs(p.x+bassFactor + 0.3 * sin(beat));
         if (m < dist) {
             dist = m + smoothstep(0.1,abs(p.y), fract(bandLevel+i*0.618));
             minIteration = i;
