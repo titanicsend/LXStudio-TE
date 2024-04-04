@@ -1,6 +1,6 @@
 {
   "version": "0.4.2.TE.7-SNAPSHOT",
-  "timestamp": 1712256619979,
+  "timestamp": 1712260070447,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -505,7 +505,7 @@
             },
             "parameters": {
               "label": "Input",
-              "device": 0
+              "device": 3
             },
             "children": {}
           },
@@ -746,7 +746,7 @@
                 "effects": []
               },
               {
-                "id": 1057,
+                "id": 1103,
                 "class": "titanicsend.pattern.look.SketchDemo",
                 "internal": {
                   "modulationColor": 0,
@@ -767,15 +767,15 @@
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
-                  "te_speed": 0.5,
+                  "te_speed": -0.0361296537183069,
                   "te_xpos": 0.5,
                   "te_ypos": 0.85,
-                  "te_size": 1.384761716047069,
+                  "te_size": 1.2275312489487988,
                   "te_quantity": 0.5,
                   "te_spin": 0.0,
                   "te_brightness": 1.0,
                   "te_wow1": 0.0,
-                  "te_wow2": 0.0,
+                  "te_wow2": 20.317601468530487,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "te_level": 0.5,
@@ -792,7 +792,7 @@
                 },
                 "children": {
                   "modulation": {
-                    "id": 1058,
+                    "id": 1104,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,

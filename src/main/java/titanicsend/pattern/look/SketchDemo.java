@@ -13,16 +13,18 @@ import titanicsend.util.TE;
 
 @LXCategory("Bogus Test Pattern")
 public class SketchDemo extends GLShaderPattern {
-  static final int MAX_POINTS = 250;
-  FloatBuffer gl_segments;
+  private static final int MAX_POINTS = 250;
+  private FloatBuffer gl_segments;
 
-  // IRL, initialize the points array with actual data for the line segments
-  // here, we just allocate and zero it.
-  float[][] points = new float[MAX_POINTS][2];
+  private float[][] points = new float[MAX_POINTS][2];
 
-  SketchDataManager sketchMgr;
-  int currentSketchIdx = 3;
-  boolean hasSketchBeenPassed = false;
+  private SketchDataManager sketchMgr;
+  private int currentSketchIdx = 3;
+  private boolean hasSketchBeenPassed = false;
+
+  private float progress = 0;
+
+  private float cumulativeBassLevel = 0;
 
   // Constructor
   public SketchDemo(LX lx) {
@@ -33,6 +35,8 @@ public class SketchDemo extends GLShaderPattern {
     System.out.println("Loaded sketches: "+totalSketches);
 
     controls.setRange(TEControlTag.SIZE, 0.5, 0.1, 2.0);
+
+    controls.setRange(TEControlTag.WOW2, 2.0, 0.1, 100.0);
 
     // set the x-axis near the bottom of the car
     controls.setValue(TEControlTag.YPOS, 0.85);
@@ -54,10 +58,25 @@ public class SketchDemo extends GLShaderPattern {
         new GLShaderFrameSetup() {
           @Override
           public void OnFrame(GLShader s) {
+            float pullback = (float) getControls().getControl(TEControlTag.WOW1).getValue();
+            cumulativeBassLevel += bassLevel - pullback;
+
+            float nextDrawingThreshold = (float) getControls().getControl(TEControlTag.WOW2).getValue();
+            progress = cumulativeBassLevel / nextDrawingThreshold;
+
+//            progress = (float) getControls().getControl(TEControlTag.WOW1).getValue();
+
+            s.setUniform("progress", progress);
             if (!hasSketchBeenPassed) {
                 SketchDataManager.SketchData currSketch = sketchMgr.sketches.get(currentSketchIdx);
                 setUniformPoints(s, currSketch);
                 hasSketchBeenPassed = true;
+            }
+
+            if (progress >= 1.0) {
+              progress = 0;
+              cumulativeBassLevel = 0;
+              swapDrawing();
             }
           }
         });
@@ -84,5 +103,21 @@ public class SketchDemo extends GLShaderPattern {
     s.setUniform("totalLength", data.total_dist);
 //    TE.log("setNumPoints %d", data.num_points);
 //    TE.log("setTotalDistance %f", data.total_dist);
+  }
+
+  void swapDrawing() {
+    hasSketchBeenPassed = false;
+    int totalSketches = sketchMgr.sketches.size();
+    double rand = Math.random();
+    currentSketchIdx = (int) Math.floor(rand * totalSketches);
+    TE.log("newIDX: %d, (%d * %f)", currentSketchIdx, totalSketches, rand);
+  }
+
+  @Override
+  protected void onWowTrigger(boolean on) {
+    // when the wow trigger button is pressed...
+    if (on) {
+      swapDrawing();
+    }
   }
 }

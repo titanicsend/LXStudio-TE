@@ -4,6 +4,8 @@ uniform vec2[250] points;
 uniform int numPoints;
 uniform float totalLength;
 
+uniform float progress;
+
 // https://iquilezles.org/articles/distfunctions2d/
 float sdSegment( in vec2 p, in vec2 a, in vec2 b )
 {
@@ -26,8 +28,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec3 color = vec3(0.2);
     float pct = 0.;
 
-    // TODO: create a new "progress" uninform to drive this value.
-    float drawingProgress = 0.5 + 0.5*sin(iTime);
+    float drawingProgress = progress; //0.5 + 0.5*sin(iTime);
     float stroke = 0.005;
 
     // before rendering the current drawing, mirror the coordinate space along the x-axis,
@@ -87,9 +88,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     color = vec3(pct);
 
+/*
     // debugging: draw coord space axes.
     color.r += 1. -smoothstep(0., 0.01, abs(st.x));
     color.g += 1. -smoothstep(0., 0.01, abs(st.y));
+*/
 
     fragColor = vec4(color,1.0);
 }
