@@ -4,17 +4,24 @@ import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import java.nio.FloatBuffer;
+
+import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
+import static heronarts.lx.utils.Noise.stb_perlin_noise3;
+
 @LXCategory("Combo FG")
 public class EdgeFall extends GLShaderPattern {
+  VariableSpeedTimer realTime;
   double eventStartTime;
   double elapsedTime;
-  static final double fallingCycleLength = 2.75;
+  int fallingCycleBeats;
+  int beatCounter;
   static final double burstDuration = 0.2;
   boolean isFalling;
+
   static final int LINE_COUNT = 52;
   FloatBuffer gl_segments;
   float[][] saved_lines;
@@ -22,52 +29,81 @@ public class EdgeFall extends GLShaderPattern {
   float[][] line_velocity;
 
   // Work to be done per frame
-  GLShaderFrameSetup setup = new GLShaderFrameSetup() {
-    @Override
-    public void OnFrame(GLShader s) {
-      float glowLevel;
+  GLShaderFrameSetup setup =
+      new GLShaderFrameSetup() {
+        @Override
+        public void OnFrame(GLShader s) {
+          float glowLevel;
 
-      double t = getTime();
-      elapsedTime = Math.abs(t - eventStartTime);
+          realTime.tick();
 
-      glowLevel = (float) getSize();
+          double t = realTime.getTime();
+          elapsedTime = Math.abs(t - eventStartTime);
 
-      // tiny state machine for falling vs. resting states
-      if (isFalling) {
-        // simulate short explosive burst (by greatly increasing line
-        // width/glow) when event is first triggered
-        if (elapsedTime < burstDuration) {
-          glowLevel *= (float) (elapsedTime / burstDuration);
+          beatCounter += lx.engine.tempo.beat() ? 1 : 0;
+
+          fallingCycleBeats = (int) Math.floor(getWow1());
+
+          glowLevel = (float) getSize();
+
+          // tiny state machine for falling vs. resting states
+          if (isFalling) {
+            // simulate short explosive burst (by greatly increasing line
+            // width/glow) when event is first triggered
+            if (elapsedTime < burstDuration) {
+              glowLevel *= (float) (elapsedTime / burstDuration);
+            }
+            // reset automatically at end of cycle
+            else if (beatCounter > fallingCycleBeats) {
+              reset(0);
+              isFalling = false;
+            }
+          } else {
+            reset(t);
+          }
+
+          moveLines(saved_lines, working_lines);
+
+          // set line brightness.  We need to override the default behavior because
+          // when a fall is triggered, we make everything very, very bright for a short time
+          // to simulate an explosive burst.
+          s.setUniform("iScale", glowLevel);
+
+          // override the default variable timer, since this shader needs actual 1:1 seconds.
+          s.setUniform("iTime", realTime.getTimef());
+
+          // send current line segment position data
+          for (int i = 0; i < LINE_COUNT; i++) {
+            setUniformLine(
+                i,
+                working_lines[i][0],
+                working_lines[i][1],
+                working_lines[i][2],
+                working_lines[i][3]);
+          }
+          s.setUniform("lines", gl_segments, 4);
         }
-      } else {
-        eventStartTime = t;
-        randomizeLineVelocities();
-        elapsedTime = 0;
-      }
-
-      moveLines(saved_lines, working_lines);
-
-      s.setUniform("iScale", glowLevel);
-
-      // send current line segment position data
-      for (int i = 0; i < LINE_COUNT; i++) {
-        setUniformLine(i, working_lines[i][0], working_lines[i][1],working_lines[i][2], working_lines[i][3]);
-      }
-      s.setUniform("lines", gl_segments, 4);
-    }
-  };
+      };
 
   // Constructor
   public EdgeFall(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
 
+    // set up timer for fall cycle length.
+    realTime = new VariableSpeedTimer();
+
+    // set default speed to 1:1 - line motion looks good that way
+    controls.setRange(TEControlTag.SPEED, 1, -4, 4);
+
     // Size controls line width/glow
-    controls.setRange(TEControlTag.SIZE, 80, 200, 15);
+    controls.setRange(TEControlTag.SIZE, 80, 200, 37);
     controls.setExponent(TEControlTag.SIZE, 0.3);
 
-    // Wow1 - beat reactive pulse
-    controls.setRange(TEControlTag.WOW1, 0, 0, 0.65);
-    // wow2 - foreground vs gradient color mix
+    // wow1 - falling phase duration before auto reset (in beats at current tempo)
+    controls.setRange(TEControlTag.WOW1, 4.0, 1, 16)
+        .setUnits(TEControlTag.WOW1, LXParameter.Units.INTEGER);
+
+    // wow2 controls palette color mix
 
     addCommonControls();
 
@@ -93,10 +129,15 @@ public class EdgeFall extends GLShaderPattern {
     // is very picky about this!
     CarGeometryPatternTools.getPanelConnectedEdges(getModelTE(), "^S.*$", saved_lines, LINE_COUNT);
 
-    randomizeLineVelocities();
+    // initialize in the at-rest state
+    reset(-99);
+  }
 
-    eventStartTime = -99;
-    isFalling = false;
+  void reset(double time) {
+    eventStartTime = time;
+    randomizeLineVelocities();
+    elapsedTime = 0;
+    beatCounter = 0;
   }
 
   // store segment descriptors in our GL line segment buffer.
@@ -129,13 +170,26 @@ public class EdgeFall extends GLShaderPattern {
 
   void moveLines(float[][] src, float[][] dst) {
 
-    float d = (isFalling) ? (float) (-0.5 * elapsedTime / fallingCycleLength) : 0f;
+    // if in falling mode, send the lines flying out along their current vectors
+    if (isFalling) {
+      float d = (float) (-0.5 * elapsedTime / fallingCycleBeats);
 
-    for (int i = 0; i < LINE_COUNT; i++) {
-      dst[i][0] = src[i][0] + d * line_velocity[i][0]; // x1
-      dst[i][1] = src[i][1] + d * line_velocity[i][1]; // y1
-      dst[i][2] = src[i][2] + d * line_velocity[i][0]; // x2
-      dst[i][3] = src[i][3] + d * line_velocity[i][1]; // y2
+      for (int i = 0; i < LINE_COUNT; i++) {
+        dst[i][0] = src[i][0] + d * line_velocity[i][0]; // x1
+        dst[i][1] = src[i][1] + d * line_velocity[i][1]; // y1
+        dst[i][2] = src[i][2] + d * line_velocity[i][0]; // x2
+        dst[i][3] = src[i][3] + d * line_velocity[i][1]; // y2
+      }
+    } else {
+      // use structured noise to move the lines around with the beat
+      float d = 0.0375f * getVolumeRatiof() * (float) getLevelReactivity();
+      for (int i = 0; i < LINE_COUNT; i++) {
+        float n = (float) getTime() + (float) i / 2f;
+        dst[i][0] = src[i][0] + d * stb_perlin_noise3(n, 0.5f, 0.5f, 10, 10, 10);
+        dst[i][1] = src[i][1] + d * stb_perlin_noise3(0.5f, n, 0.5f, 10, 10, 10);
+        dst[i][2] = src[i][2] + d * stb_perlin_noise3(0.5f, n, n, 10, 10, 10);
+        dst[i][3] = src[i][3] + d * stb_perlin_noise3(n, n, 0.5f, 10, 10, 10);
+      }
     }
   }
 

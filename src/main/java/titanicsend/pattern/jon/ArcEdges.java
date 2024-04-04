@@ -9,7 +9,6 @@ import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
-
 @LXCategory("Combo FG")
 public class ArcEdges extends GLShaderPattern {
   static final int LINE_COUNT = 52;
@@ -21,11 +20,21 @@ public class ArcEdges extends GLShaderPattern {
   public ArcEdges(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
 
-    // set up the controls used for this pattern.
-    controls.setRange(TEControlTag.SIZE, 1, 5, 0.1); // scale
-    controls.setRange(TEControlTag.QUANTITY, 0.6, 0.72, 0.35); // noise field position
-    controls.setRange(TEControlTag.WOW1, 0.025, 0.001, 0.08); // noise magnitude
-    controls.setRange(TEControlTag.WOW2, 0.008, 0.0005, 0.03); // edge "line width"
+    // defaults settings for reactivity controls
+    controls.setRange(TEControlTag.LEVELREACTIVITY, 0.333, 0.0, 1.0);
+    controls.setRange(TEControlTag.FREQREACTIVITY, 0.333, 0.0, 1.0);
+
+    // Noise field magnitude - controls size + density of arcs
+    controls.setRange(TEControlTag.SIZE, 0.025, 0.001, 0.08);
+
+    // Controls number of arcs by modifying noise field position offset
+    controls.setRange(TEControlTag.QUANTITY, 0.6, 0.72, 0.5);
+
+    // Base width of "lines" drawn on car edges.
+    // NOTE: Edge lighting will be modified by audio reactivity. Generally, setting WOW1
+    // higher will make the car's edges more visible while slightly magnifying the
+    // effect of the audio reactivity controls
+    controls.setRange(TEControlTag.WOW1, 0.015, 0.001, 0.04);
 
     // register common controls with the UI
     addCommonControls();
@@ -41,22 +50,24 @@ public class ArcEdges extends GLShaderPattern {
 
     // NOTE: To add more edges, you need to change LINE_COUNT so the
     // segment buffer will be the right size.
+    // TODO - eventually, we'll want arcs on the fore/aft car ends too.
     CarGeometryPatternTools.getPanelConnectedEdges(getModelTE(), "^S.*$", saved_lines, LINE_COUNT);
 
     // add the OpenGL shader and its frame-time setup function
-    addShader("arcedges.fs",
-      new GLShaderFrameSetup() {
-        @Override
-        public void OnFrame(GLShader s) {
-          // Here, we update line segment geometry
-          // Shader uniforms associated with a context stay resident
-          // on the GPU,so we only need to set them when something changes.
-          if (updateGeometry) {
-            sendSegments(s, saved_lines, LINE_COUNT);
-            updateGeometry = false;
+    addShader(
+        "arcedges.fs",
+        new GLShaderFrameSetup() {
+          @Override
+          public void OnFrame(GLShader s) {
+            // Here, we update line segment geometry
+            // Shader uniforms associated with a context stay resident
+            // on the GPU,so we only need to set them when something changes.
+            if (updateGeometry) {
+              sendSegments(s, saved_lines, LINE_COUNT);
+              updateGeometry = false;
+            }
           }
-        }
-      });
+        });
   }
 
   // store segment descriptors in our GL line segment buffer.
