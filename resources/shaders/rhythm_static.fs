@@ -35,21 +35,31 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     // avoid collisions.
     vec2 uv = fragCoord + vec2(1000000, 1000000.0);
 
+    //float bassEffect = bassRatio * levelReact;
+    //float trebleEffect = trebleRatio * frequencyReact;
+    float bassEffect = bassRatio * levelReact;
+    float trebleEffect = trebleRatio * frequencyReact;
+
     // Size control manages overall scale - from dots to HUGE blocks.
-    int startingPower = 1+int(iScale);
+    int startingPower = 1 + int(iScale) + int(clamp(2.*bassEffect, 0. ,4.));
+    //float startingPower = 1. + iScale + clamp(2.*bassEffect, 0. ,4.);
     float sum = 0.0;
-    float bassEffect = bassLevel * bassRatio;
 
     // subdivide the field into layers of randomly colored powers-of-two sized blocks
     for(int layer = 0; layer < LAYERS; layer++) {
-        int power = startingPower + layer;
-        float scale = pow(2.0, float(power));
+        float power = float(startingPower) + float(layer);
+        float scale = pow(2.0, power);
         ivec2 iuv = ivec2(uv / scale);
         vec2 rVec = randomVec2(iuv);
 
+        float timeFactor = 8.0;
+        if (iWowTrigger) {
+            timeFactor *= (1. + 0.05*trebleEffect);
+        }
+
         // rotate unit vector based on time to generate smooth movement,
         // and reduce the brightness with each layer.
-        float value = dot(rVec, vec2(1, 0) * rotate(iTime*8.0)) / (pow(2.0, float(layer)) * 2.0);
+        float value = dot(rVec, vec2(1, 0) * rotate(iTime*timeFactor)) / (pow(2.0, float(layer)) * 2.0);
 
         // last (topmost) layer is the smallest. Brighten it to make it more visible
         sum += (layer == LAYERS - 1) ? 2.0 * value : value;
@@ -60,6 +70,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
 
     // threshold values by iQuantity, gamma adjust, and flash the whole thing to the beat
     // with depth controlled by WOW1.
-    sum *= 1.25 * step(1.0-iQuantity, sum) * (1.0 - (beat * iWow1));
+    sum *= 1.25 * step(1.0-(iQuantity*(1.+trebleEffect)), sum) * (1.0 - (beat * iWow1));
     fragColor = vec4(sum * color, 1.0);
 }

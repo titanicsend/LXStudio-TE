@@ -61,12 +61,11 @@ public class ShaderPanelsPatternConfig {
 
     @Override
     protected void createShader() {
-      controls.setRange(TEControlTag.SPEED, 0, -4, 4)
-           .setValue(TEControlTag.SPEED, 1.0);
+      controls.setRange(TEControlTag.SPEED, 0.2, -4, 4);
       controls
           .setRange(TEControlTag.SIZE, 0, 0, 5) // overall scale
           .setUnits(TEControlTag.SIZE, LXParameter.Units.INTEGER);
-      controls.setRange(TEControlTag.QUANTITY, 1, 0.02, 1); // number of layers
+      controls.setRange(TEControlTag.QUANTITY, 0.25, 0.02, 1); // number of layers
 
       addShader("rhythm_static.fs");
     }
