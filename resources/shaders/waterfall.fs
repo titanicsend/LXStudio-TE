@@ -4,6 +4,7 @@
 #pragma name "Waterfall"
 #pragma iChannel1 "resources/shaders/textures/icecliff.png"
 #pragma TEControl.WOW1.Range(0.4,0.0,1.0)
+#pragma TEControl.SPEED.Value(0.75)
 
 #define PI 3.14159265359
 
@@ -115,10 +116,11 @@ float snoise(vec3 v, out vec3 gradient, float time)
     p3 *= norm.w;
 
     // add rotation
-    x0.xy *= rot(time*checkersign(a0.xy));
-    x1.xy *= rot(time*checkersign(a0.zw));
-    x2.xy *= rot(time*checkersign(a1.xy));
-    x3.xy *= rot(time*checkersign(a1.zw));
+    float k = 20. * bassLevel * levelReact;
+    x0.xy *= rot(k + time*checkersign(a0.xy));
+    x1.xy *= rot(k + time*checkersign(a0.zw));
+    x2.xy *= rot(k + time*checkersign(a1.xy));
+    x3.xy *= rot(k + time*checkersign(a1.zw));
 
     // Mix final noise value
     vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
@@ -178,7 +180,15 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
 
     // get pixel from background texture
     vec3 background = texture(iChannel1, ouv).rgb;
-    background *= background * iWow1;
+
+    // enhance contrast a little
+    background *= background;
+
+    // use perceptual brightness of bg pixel for tinting
+    vec3 tint = iColorRGB * dot(background, vec3(0.299, 0.587, 0.114));
+
+    // mix w/original color and fade according to control setting
+    background = mix(tint,background, iWow2) * iWow1;
 
     // add extra "splashiness" at the top of the DJ booth by
     // changing the width of the waterfall in a narrow band
@@ -191,22 +201,25 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     p.x *= pow(p.y, splash);
     p.y = pow(p.y, 0.75);
 
+    // WOWTRIGGER makes the waterfall flow backwards, very quickly!
+    float flowMultiplier = (iWowTrigger) ? -2.25 : 1.;
+
     // generate noise field for the waterfall
     vec3 noiseParams = vec3(1.25,2.5,1.75);
-    float noise = fbm(p + vec3(0., iTime*.6, 0.), noiseParams);
+    float noise = fbm(p + vec3(0., iTime * flowMultiplier * 0.6, 0.), noiseParams);
     noise = noise*.5+.5;
 
     // add mist to the bottom of the waterfall with another noise field.
-    float fl = max(0.,(0.25 - ouv.y)) / 0.3;
+    float mistDensity = max(0.,(0.25 - ouv.y)) / 0.3;
     p = vec3(ouv,0.);
     noiseParams = vec3(0.8,4.0,0.6);
-    float fn = fbm(p + vec3(0., -iTime*.13, iTime *.2), noiseParams);
-    fn = 0.5 + 0.5 * fn;
-    vec3 mist = vec3(1.25 * fn) * fl;
+    float mistField = fbm(p + vec3(0., iTime * flowMultiplier * 0.13, iTime *.2), noiseParams);
+    mistField = 0.5 + 0.5 * mistField;
+    vec3 mist = mix(iColorRGB, vec3(0.8), iWow2) * mistField * mistDensity;
 
     // mix with palette colors according to Wow2 control setting
-    color1 = mix(color1, iColorRGB, iWow2);
-    color2 = mix(color2, iColor2RGB, iWow2);
+    color1 = mix(iColorRGB, color1, iWow2);
+    color2 = mix(iColor2RGB, color2, iWow2);
 
     // create final blended water color, add in the mist, and done!
     vec3 col =  noise * mix(color2,color1,noise);
