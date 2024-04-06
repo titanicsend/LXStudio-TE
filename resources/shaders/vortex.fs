@@ -57,15 +57,8 @@ vec2 rotate(vec2 st, float a) {
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
-    float vol = max(0.01, volumeRatio);
-
-    float bVal = bassRatio / vol;
-    float tVal = trebleRatio / vol;
-    //float bVal = max(0.01, bassRatio / volumeRatio);
-    //float tVal = max(0.01, trebleRatio / volumeRatio);
-
-    bVal *= iWow1;
-    tVal *= iWow2;
+    float bVal = bassRatio * levelReact;
+    float tVal = trebleRatio * frequencyReact;
 
     float norm_x = max(0.01, tVal);
     float norm_y = max(0.01, 1. - bVal * 0.5);
