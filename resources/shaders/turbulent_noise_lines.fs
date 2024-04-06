@@ -1,5 +1,6 @@
 // override the default x/y offset control behavior
 #define TE_NOTRANSLATE
+uniform float freqShift;
 
 const float PI = 3.1415926;
 const float TAU = 2.0 * PI;
@@ -37,22 +38,21 @@ float noise(vec2 uv) {
 // several octaves of value noise make a cloudy-looking turbulent field
 // higher bassLevel increases the amount of "dirt" in the noise field
 float turbulenceNoise(vec2 uv) {
+    float dirt = bassLevel * levelReact * 0.3;
+    float curve = 4.0 * max(0.0005,freqShift);
     float k = 4.0;
 
+
     float res = 0.;
-    float c = 0.5;
-    float dirt = bassLevel * levelReact * 0.5;
+    float c = 0.5 + dirt;
 
     for (int i = 0; i < 8; i++) {
-        // max() here limits effects of audio signal dropout, which are particularly
-        // bad here, since floating point Infinity or NaN can cause the coordinates
-        // to be translated totally out of range, resulting in a black screen
-        // TODO - fix this for good in the 2024 audio engine update.
-        uv -= iTranslate  * 0.25 + max(0.0005,trebleRatio * frequencyReact);
-        uv = rotate2D(k + 0.00001 * iTime) * k * uv;
+        uv -= iTranslate * 0.25 + curve;
+        uv = rotate2D(curve + k + 0.00001 * iTime) * k * uv;
         res += c * noise(uv);;
         c *= 0.5 + dirt;
         dirt *= 0.5;
+        curve *= 0.5;
     }
 
     return res;
@@ -62,11 +62,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // normalize, scale, rotate
     vec2 uv = (fragCoord.xy - 0.5 * iResolution.xy) / iResolution.x;
 
-    float warp = 80. * bassLevel * levelReact;
-    float warpAmt = levelReact * 0.03;
-
-    uv.x -= warpAmt * sin(uv.y * warp);
-    uv.y += warpAmt * cos(uv.x * warp);
+    vec2 warp = vec2(60,-60) * bassLevel;
+    float warpAmt = levelReact * 0.02;
+    uv += warpAmt * sin(uv * warp);
 
     uv *= iScale;
     uv = uv * rotate2D(-iRotationAngle);
@@ -76,8 +74,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     // Quantity controls the density of the lines derived from the noise field
     // Volume ratio alters the number of lines drawn
-    float freqShift = max(0.0005,80.0 * volumeRatio * levelReact);
-    float line = smoothstep(0., 1., abs(res + sin(TAU * res + iQuantity * (uv.x+uv.y))));
+    float lineDensity = iQuantity + 40. * freqShift;
+    float line = smoothstep(0., 1., abs(res + sin(TAU * res + lineDensity * (uv.x+uv.y))));
     line = smoothstep(0., 1., line);
 
     // Wow Trigger runs the TE special dual ring pulse generator, which draws only on
