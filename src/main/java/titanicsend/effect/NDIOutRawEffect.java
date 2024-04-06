@@ -62,6 +62,9 @@ public class NDIOutRawEffect extends TEEffect {
 
   @Override
   public void dispose() {
+    if (isInitialized) {
+      ndiSender.close();
+    }
     super.dispose();
   }
 }
