@@ -3,9 +3,15 @@ package titanicsend.pattern.yoffa.config;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.LXParameter;
+import java.util.Arrays;
+import java.util.List;
 import titanicsend.pattern.glengine.ConstructedShaderPattern;
+import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
+import titanicsend.util.GaussianFilter;
+import titanicsend.util.SignalLogger;
+import titanicsend.util.TE;
 
 @SuppressWarnings("unused")
 public class ShaderPanelsPatternConfig {
@@ -274,17 +280,105 @@ public class ShaderPanelsPatternConfig {
     }
   }
 
+  // DO NOT MERGE: Move to a new pattern class
   @LXCategory("Native Shaders Panels")
   public static class NeonCells extends ConstructedShaderPattern {
+
+    // Kept internally to keep track of the time difference applied to the speed of the shader
+    // based on the trebleLevel.  private float timeDiff = 0;
+    private float sumTimeDiff = 0;
+
+    private final GaussianFilter rmsFilter = new GaussianFilter(5);
+
+    /////////////////////////////
+    // DO NOT MERGE TO MAIN /////
+    SignalLogger logger = null;//
+    /////////////////////////////
+
     public NeonCells(LX lx) {
       super(lx, TEShaderView.SPLIT_PANEL_SECTIONS);
+
+      List<String> signalNames = Arrays.asList("control", "RMS", "filteredRms", "ControlledRMS", "sumTimeDiff");
+      logger = new SignalLogger(signalNames, "Logs/signal_data.csv");
+      logger.startLogging(10);
     }
 
     @Override
     protected void createShader() {
-      controls.setRange(TEControlTag.SIZE, 1, 2, 0.25); // overall scale
+      controls.setRange(TEControlTag.SIZE, 1, 4, 0.25);
+      controls.setRange(TEControlTag.SPIN, 0.0, -.4f, .4f);
+      controls.setRange(TEControlTag.WOW1, 0.1, 0, 1);
 
-      addShader("neon_cells.fs");
+      controls.setRange(TEControlTag.LEVELREACTIVITY, 0.2, 0, 3);
+      controls.setRange(TEControlTag.FREQREACTIVITY, 0.8, 0, 2);
+
+      addShader(
+          "neon_cells.fs",
+          new GLShaderFrameSetup() {
+            @Override
+            public void OnFrame(GLShader s) {
+              float levelReactivityControl =
+                  (float) getControls().getControl(TEControlTag.LEVELREACTIVITY).getValue();
+
+              // Similar to the rotation, but for speed instead.
+              double currentTime = getTime();
+              currentTime += getTimeDiff(levelReactivityControl);
+              s.setUniform("iTime", (float) currentTime);
+            }
+          });
+    }
+
+    private float getTimeDiff(float controlLevel) {
+      float rms = getRMS(eq.getSamples(), 0.5f);
+      float filteredRms = (float) rmsFilter.applyGaussianFilter(rms);
+      float controlledRms = rms * controlLevel;
+
+      sumTimeDiff += controlledRms;
+      logger.logSignalValues(Arrays.asList(controlLevel, rms, filteredRms, controlledRms, sumTimeDiff));
+      return sumTimeDiff;
+    }
+
+    /**
+     * Calculates the Root Mean Square (RMS) of a given audio sample array, with the option to
+     * perform downsampling for optimization.
+     *
+     * TODO: Move to audio engine so it can be calculated once and used in all patterns.
+     *
+     * @param samples The array of audio samples.
+     * @param downsamplePercentage A value between 0.0 and 1.0 representing the percentage of
+     *     samples to use for the calculation. A value of 1.0 means no downsampling.
+     * @return The calculated RMS value.
+     */
+    private float getRMS(float[] samples, float downsamplePercentage) {
+      float rms = 0f;
+
+      // Input Validation: Ensure downsamplePercentage is within valid range
+      if (downsamplePercentage >= 1.0f) {
+        // No downsampling needed, set percentage to 100%.
+        downsamplePercentage = 1.0f;
+      } else if (downsamplePercentage <= 0.0f) {
+        // Avoid errors, use minimal (1%) downsampling.
+        downsamplePercentage = 0.01f;
+      }
+
+      // Calculate the target length of the downsampled array
+      int downsampledLength = (int) (samples.length * downsamplePercentage);
+
+      // Determine the step size to evenly sample the original array
+      int stepSize = samples.length / downsampledLength;
+
+      // Calculate the sum of squares using the downsampled values
+      float sumOfSquares = 0.0f;
+      for (int i = 0; i < samples.length; i += stepSize) {
+        float sample = samples[i];
+        sumOfSquares += sample * sample;
+      }
+
+      // Calculate average (mean) of the squared values
+      float meanOfSquares = sumOfSquares / downsampledLength;
+
+      // Calculate the Root Mean Square (RMS)
+      return (float) Math.sqrt(meanOfSquares);
     }
   }
 

@@ -66,17 +66,17 @@ public class SignalLogger {
     }
   }
 
-  public void startLogging(int intervalSeconds) {
-    writeHeader(); // Write header at the beginning
-    timer.scheduleAtFixedRate(
-        new TimerTask() {
-          @Override
-          public void run() {
-            writeDataToCSV();
-          }
-        },
-        0,
-        intervalSeconds * 1000L);
+  /**
+   * @param intervalMilliseconds Set to 10ms for an almost realtime signal.
+   */
+  public void startLogging(int intervalMilliseconds) {
+    writeHeader();
+    timer.scheduleAtFixedRate(new TimerTask() {
+      @Override
+      public void run() {
+        writeDataToCSV();
+      }
+    }, 0, intervalMilliseconds);
   }
 
   public void stopLogging() {
