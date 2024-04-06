@@ -1,6 +1,6 @@
 {
   "version": "0.4.2.TE.7-SNAPSHOT",
-  "timestamp": 1712431694400,
+  "timestamp": 1712433060081,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -15088,12 +15088,12 @@
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0,
                   "te_color/color2offset": 0.5,
-                  "Glow2": 9.0,
-                  "Thickness": 0.3,
-                  "Wibble Size": 0.15,
-                  "Energy": 0.0,
                   "Glow": 1.5,
-                  "Speed": 0.0
+                  "Energy": 0.0,
+                  "Wibble Size": 0.15,
+                  "Glow2": 9.0,
+                  "Speed": 0.0,
+                  "Thickness": 0.3
                 },
                 "children": {
                   "modulation": {
@@ -27736,7 +27736,7 @@
               "fader": 0.0,
               "arm": false,
               "selected": false,
-              "enabled": false,
+              "enabled": true,
               "cue": false,
               "aux": false,
               "crossfadeGroup": 0,
@@ -28519,7 +28519,7 @@
             },
             "parameters": {
               "label": "DMX Grid 1",
-              "fader": 1.0,
+              "fader": 0.0,
               "arm": false,
               "selected": false,
               "enabled": false,
@@ -29585,7 +29585,7 @@
         "depth": 1.0,
         "camera": {
           "active": false,
-          "radius": 1.3705428240417795E7,
+          "radius": 1.7E7,
           "theta": 270.0,
           "phi": -6.0,
           "x": 2255849.2623291016,
