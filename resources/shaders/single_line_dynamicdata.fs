@@ -33,7 +33,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     // before rendering the current drawing, mirror the coordinate space along the x-axis,
     // with a gap defined by XPOS control.
-    st = vec2(abs(st.x) - iTranslate.x, st.y);
+    st = vec2(abs(st.x) - iTranslate.x + 0.2*bassLevel, st.y);
     // use SIZE control to set the size of the drawing, without modifying the scale of the
     // whole coordinate space.
     float desiredHeight = iScale;
