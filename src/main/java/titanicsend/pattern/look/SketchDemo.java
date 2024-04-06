@@ -19,10 +19,9 @@ public class SketchDemo extends GLShaderPattern {
   private static final int MAX_POINTS = 250;
   private FloatBuffer gl_segments;
 
-  private float[][] points = new float[MAX_POINTS][2];
-
   private SketchDataManager sketchMgr;
-  private int currentSketchIdx = 3;
+  private int currSketchIdx = 3;
+  private int prevSketchIdx = 2;
   private boolean hasSketchBeenPassed = false;
 
   private float progress = 0;
@@ -47,16 +46,16 @@ public class SketchDemo extends GLShaderPattern {
         "normalizedLevelCumulative",
         "peakLevel",
         "peakLevelCumulative",
-            "pullback",
-            "progress",
-            "nextDrawingThreshold"
+        "pullback",
+        "progress",
+        "nextDrawingThreshold"
     );
     signalLogger = new SignalLogger(signalNames, "Logs/signal_data.csv");
     signalLogger.startLogging(10);
 
     sketchMgr = SketchDataManager.get();
     int totalSketches = sketchMgr.sketches.size();
-    System.out.println("Loaded sketches: "+totalSketches);
+    System.out.println("Loaded sketches: " + totalSketches);
 
     controls.setRange(TEControlTag.SIZE, 0.5, 0.1, 2.0);
 
@@ -82,7 +81,8 @@ public class SketchDemo extends GLShaderPattern {
         new GLShaderFrameSetup() {
           @Override
           public void OnFrame(GLShader s) {
-            float levelReact = (float) getControls().getControl(TEControlTag.LEVELREACTIVITY).getValue();
+            float levelReact =
+                (float) getControls().getControl(TEControlTag.LEVELREACTIVITY).getValue();
             float pullback = (float) getControls().getControl(TEControlTag.WOW1).getValue();
             bassLevelCumulative += (bassLevel * levelReact) - pullback;
 
@@ -94,7 +94,8 @@ public class SketchDemo extends GLShaderPattern {
             peakLevelCumulative += peakLevel - pullback;
             normalizedLevelCumulative += normalizedLevel - pullback;
 
-            float nextDrawingThreshold = (float) getControls().getControl(TEControlTag.WOW2).getValue();
+            float nextDrawingThreshold =
+                (float) getControls().getControl(TEControlTag.WOW2).getValue();
             progress = normalizedLevelCumulative / nextDrawingThreshold;
 //            progress = bassLevelCumulative / nextDrawingThreshold;
 
@@ -116,11 +117,13 @@ public class SketchDemo extends GLShaderPattern {
 
 //            progress = (float) getControls().getControl(TEControlTag.WOW1).getValue();
 
-            s.setUniform("progress", progress);
+            s.setUniform("currProgress", progress);
             if (!hasSketchBeenPassed) {
-                SketchDataManager.SketchData currSketch = sketchMgr.sketches.get(currentSketchIdx);
-                setUniformPoints(s, currSketch);
-                hasSketchBeenPassed = true;
+              SketchDataManager.SketchData currSketch = sketchMgr.sketches.get(currSketchIdx);
+              SketchDataManager.SketchData prevSketch = sketchMgr.sketches.get(prevSketchIdx);
+              setUniformPoints(s, currSketch, "curr");
+              setUniformPoints(s, prevSketch, "prev");
+              hasSketchBeenPassed = true;
             }
 
             if (progress >= 1.0) {
@@ -147,22 +150,21 @@ public class SketchDemo extends GLShaderPattern {
   // Sends an array of point coordinates to the shader. It's not
   // necessary to call this on every frame, particularly if the number
   // of points is large.  It can be called only when the points array changes.
-  void setUniformPoints(GLShader s, SketchDataManager.SketchData data) {
+  void setUniformPoints(GLShader s, SketchDataManager.SketchData data, String prefix) {
     for (int i = 0; i < data.num_points; i++) {
       setPoint(i, data.points[i][0], data.points[i][1]);
     }
-    s.setUniform("points", gl_segments, 2);
-    s.setUniform("numPoints", data.num_points);
-    s.setUniform("totalLength", data.total_dist);
+    s.setUniform(prefix+"Points", gl_segments, 2);
+    s.setUniform(prefix+"Count", data.num_points);
+    s.setUniform(prefix+"Length", data.total_dist);
 //    TE.log("setNumPoints %d", data.num_points);
 //    TE.log("setTotalDistance %f", data.total_dist);
   }
 
   void swapDrawing() {
     hasSketchBeenPassed = false;
-    int totalSketches = sketchMgr.sketches.size();
-    double rand = Math.random();
-    currentSketchIdx = (int) Math.floor(rand * totalSketches);
+    prevSketchIdx = currSketchIdx;
+    currSketchIdx = (int) Math.floor(Math.random() * sketchMgr.sketches.size());
 //    TE.log("newIDX: %d, (%d * %f)", currentSketchIdx, totalSketches, rand);
   }
 

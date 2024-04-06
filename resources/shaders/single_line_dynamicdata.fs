@@ -1,10 +1,14 @@
 #define TE_NOTRANSLATE
 
-uniform vec2[250] points;
-uniform int numPoints;
-uniform float totalLength;
+uniform vec2[250] currPoints;
+uniform int currCount;
+uniform float currLength;
+uniform float currProgress;
 
-uniform float progress;
+uniform vec2[250] prevPoints;
+uniform int prevCount;
+uniform float prevLength;
+uniform float prevProgress;
 
 // https://iquilezles.org/articles/distfunctions2d/
 float sdSegment( in vec2 p, in vec2 a, in vec2 b )
@@ -19,16 +23,12 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     st = st * 2. - 1.;
     st.x *= iResolution.x/iResolution.y;
 
-    // position it centrally on a panel
-    //st.x += 0.8;
     st.y += iTranslate.y;
-
-    //st /= iScale;
 
     vec3 color = vec3(0.2);
     float pct = 0.;
 
-    float drawingProgress = progress; //0.5 + 0.5*sin(iTime);
+    float drawingProgress = currProgress; //0.5 + 0.5*sin(iTime);
     float stroke = 0.005;
 
     // before rendering the current drawing, mirror the coordinate space along the x-axis,
@@ -39,7 +39,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float desiredHeight = iScale;
 
     // how much of the drawing should be drawn.
-    float maxDist = totalLength * desiredHeight * drawingProgress;
+    float maxDist = currLength * desiredHeight * drawingProgress;
 
     // how much of the drawing has been covered as we loop through the line segments,
     // looking for a hit on the distance field of one segment.
@@ -48,9 +48,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // (when we don't intend to render the full drawing).
     bool stopIter = false;
 
-    for (int i = 0; i < numPoints; i++) {
-        vec2 a = points[i];
-        vec2 b = points[i+1];
+    for (int i = 0; i < currCount; i++) {
+        vec2 a = currPoints[i];
+        vec2 b = currPoints[i+1];
         a *= desiredHeight;
         b *= desiredHeight;
         float nextDist = distance(a, b);
@@ -86,7 +86,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         }
     }
 
-    color = vec3(pct);
+    color = pct * iColorRGB;
 
 /*
     // debugging: draw coord space axes.
