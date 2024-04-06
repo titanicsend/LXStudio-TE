@@ -66,7 +66,7 @@ public class SignalLogger {
     }
   }
 
-  public void startLogging(int intervalSeconds) {
+  public void startLogging(int intervalMs) {
     writeHeader(); // Write header at the beginning
     timer.scheduleAtFixedRate(
         new TimerTask() {
@@ -76,7 +76,7 @@ public class SignalLogger {
           }
         },
         0,
-        intervalSeconds * 1000L);
+        intervalMs);
   }
 
   public void stopLogging() {

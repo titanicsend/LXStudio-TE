@@ -5,10 +5,13 @@ import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import java.nio.FloatBuffer;
+import java.util.Arrays;
+import java.util.List;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
+import titanicsend.util.SignalLogger;
 import titanicsend.util.TE;
 
 @LXCategory("Bogus Test Pattern")
@@ -24,11 +27,32 @@ public class SketchDemo extends GLShaderPattern {
 
   private float progress = 0;
 
-  private float cumulativeBassLevel = 0;
+  private float bassLevelCumulative = 0;
+  private float squareLevelCumulative = 0;
+  private float normalizedLevelCumulative = 0;
+  private float peakLevelCumulative = 0;
+
+  private final SignalLogger signalLogger;
 
   // Constructor
   public SketchDemo(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
+
+    List<String> signalNames = Arrays.asList(
+        "bassLevel",
+        "bassLevelCumulative",
+        "squareLevel",
+        "squareLevelCumulative",
+        "normalizedLevel",
+        "normalizedLevelCumulative",
+        "peakLevel",
+        "peakLevelCumulative",
+            "pullback",
+            "progress",
+            "nextDrawingThreshold"
+    );
+    signalLogger = new SignalLogger(signalNames, "Logs/signal_data.csv");
+    signalLogger.startLogging(10);
 
     sketchMgr = SketchDataManager.get();
     int totalSketches = sketchMgr.sketches.size();
@@ -58,11 +82,37 @@ public class SketchDemo extends GLShaderPattern {
         new GLShaderFrameSetup() {
           @Override
           public void OnFrame(GLShader s) {
+            float levelReact = (float) getControls().getControl(TEControlTag.LEVELREACTIVITY).getValue();
             float pullback = (float) getControls().getControl(TEControlTag.WOW1).getValue();
-            cumulativeBassLevel += bassLevel - pullback;
+            bassLevelCumulative += (bassLevel * levelReact) - pullback;
+
+            float squareLevel = eq.getSquaref() * levelReact;
+            float peakLevel = eq.getPeakf() * levelReact;
+            float normalizedLevel = eq.getNormalizedf() * levelReact;
+
+            squareLevelCumulative += squareLevel - pullback;
+            peakLevelCumulative += peakLevel - pullback;
+            normalizedLevelCumulative += normalizedLevel - pullback;
 
             float nextDrawingThreshold = (float) getControls().getControl(TEControlTag.WOW2).getValue();
-            progress = cumulativeBassLevel / nextDrawingThreshold;
+            progress = normalizedLevelCumulative / nextDrawingThreshold;
+//            progress = bassLevelCumulative / nextDrawingThreshold;
+
+            signalLogger.logSignalValues(
+                Arrays.asList(
+                    (float) bassLevel,
+                    bassLevelCumulative,
+                    squareLevel,
+                    squareLevelCumulative,
+                    normalizedLevel,
+                    normalizedLevelCumulative,
+                    peakLevel,
+                    peakLevelCumulative,
+                    pullback,
+                    progress,
+                    nextDrawingThreshold
+                )
+            );
 
 //            progress = (float) getControls().getControl(TEControlTag.WOW1).getValue();
 
@@ -75,7 +125,10 @@ public class SketchDemo extends GLShaderPattern {
 
             if (progress >= 1.0) {
               progress = 0;
-              cumulativeBassLevel = 0;
+              bassLevelCumulative = 0;
+              squareLevelCumulative = 0;
+              normalizedLevelCumulative = 0;
+              peakLevelCumulative = 0;
               swapDrawing();
             }
           }
@@ -110,7 +163,7 @@ public class SketchDemo extends GLShaderPattern {
     int totalSketches = sketchMgr.sketches.size();
     double rand = Math.random();
     currentSketchIdx = (int) Math.floor(rand * totalSketches);
-    TE.log("newIDX: %d, (%d * %f)", currentSketchIdx, totalSketches, rand);
+//    TE.log("newIDX: %d, (%d * %f)", currentSketchIdx, totalSketches, rand);
   }
 
   @Override
