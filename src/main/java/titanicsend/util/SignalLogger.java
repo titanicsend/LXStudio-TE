@@ -12,21 +12,23 @@ import java.util.TimerTask;
 /**
  * Utility class used to log signals to a CSV file every "intervalSeconds".
  *
- * <p>This class uses a list of signal names, then accepts an array of values for each of these
+ * This class uses a list of signal names, then accepts an array of values for each of these
  * signals. The names will be written to the CSV files as the header, and the values will be logged
  * to the file over time.
  *
- * <p>To use this class, first add the SignalLogger as a class member > SignalLogger logger; //
- * Class member.
+ * To use this class, first add the SignalLogger as a class member
+ * > SignalLogger logger; // Class member.
  *
- * <p>Then initialize the logger and provide it with the signal names and a file path. Then you need
- * to start the logging. > List<String> signalNames = Arrays.asList("signal_1", "signal_2"); >
- * logger = new SignalLogger(signalNames, "Logs/signal_data.csv"); > logger.startLogging(1); //
- * Write to CSV every 1s.
+ * Then initialize the logger and provide it with the signal names and a file path. Then you need
+ * to start the logging.
+ * > List<String> signalNames = Arrays.asList("signal_1", "signal_2");
+ * > logger = new SignalLogger(signalNames, "Logs/signal_data.csv");
+ * > logger.startLogging(1); // Write to CSV every 1s.
  *
- * <p>In your code, where you want to keep track of the signals, you can log the signals as it
- * follows: > List<Float> values = Arrays.asList(signal_1_value, signal_2_value); >
- * logger.logSignalValues(values);
+ * In your code, where you want to keep track of the signals, you can log the signals as it
+ * follows:
+ * > List<Float> values = Arrays.asList(signal_1_value, signal_2_value);
+ * > logger.logSignalValues(values);
  */
 public class SignalLogger {
   private List<String> signalNames;
@@ -36,10 +38,6 @@ public class SignalLogger {
   private long startTime;
   private String header; // Store the header string
 
-  /**
-   * Use this file name for the signals if you are using the accompanying TouchDesigner sketch to
-   * visualize the signals: "Logs/signal_data.csv"
-   */
   public SignalLogger(List<String> signalNames, String csvFilename) {
     this.signalNames = signalNames;
     this.csvFilename = csvFilename;
@@ -73,15 +71,12 @@ public class SignalLogger {
    */
   public void startLogging(int intervalMilliseconds) {
     writeHeader();
-    timer.scheduleAtFixedRate(
-        new TimerTask() {
-          @Override
-          public void run() {
-            writeDataToCSV();
-          }
-        },
-        0,
-        intervalMilliseconds);
+    timer.scheduleAtFixedRate(new TimerTask() {
+      @Override
+      public void run() {
+        writeDataToCSV();
+      }
+    }, 0, intervalMilliseconds);
   }
 
   public void stopLogging() {

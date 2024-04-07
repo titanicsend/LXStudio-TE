@@ -285,8 +285,10 @@ public class ShaderPanelsPatternConfig {
 
     private final GaussianFilter rmsFilter = new GaussianFilter(5);
 
+
     public NeonCells(LX lx) {
       super(lx, TEShaderView.SPLIT_PANEL_SECTIONS);
+
     }
 
     @Override
@@ -315,7 +317,7 @@ public class ShaderPanelsPatternConfig {
     }
 
     private float getTimeDiff(float controlLevel) {
-      float rms = eq.getRaw() * 100;
+      float rms = eq.getRaw();
       float filteredRms = (float) rmsFilter.applyGaussianFilter(rms);
       float controlledRms = rms * controlLevel;
 
