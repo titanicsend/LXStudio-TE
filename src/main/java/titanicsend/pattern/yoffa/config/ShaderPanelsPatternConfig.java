@@ -300,7 +300,7 @@ public class ShaderPanelsPatternConfig {
 
       List<String> signalNames = Arrays.asList("control", "RMS", "filteredRms", "ControlledRMS", "sumTimeDiff");
       logger = new SignalLogger(signalNames, "Logs/signal_data.csv");
-      logger.startLogging(10);
+     // logger.startLogging(10);
     }
 
     @Override
@@ -329,12 +329,12 @@ public class ShaderPanelsPatternConfig {
     }
 
     private float getTimeDiff(float controlLevel) {
-      float rms = getRMS(eq.getSamples(), 0.5f);
+      float rms = eq.getRaw(); // getRMS(eq.getSamples(), 0.5f);
       float filteredRms = (float) rmsFilter.applyGaussianFilter(rms);
       float controlledRms = rms * controlLevel;
 
       sumTimeDiff += controlledRms;
-      logger.logSignalValues(Arrays.asList(controlLevel, rms, filteredRms, controlledRms, sumTimeDiff));
+      //logger.logSignalValues(Arrays.asList(controlLevel, rms, filteredRms, controlledRms, sumTimeDiff));
       return sumTimeDiff;
     }
 
@@ -378,6 +378,8 @@ public class ShaderPanelsPatternConfig {
       float meanOfSquares = sumOfSquares / downsampledLength;
 
       // Calculate the Root Mean Square (RMS)
+      float r = (float) Math.sqrt(meanOfSquares);
+      System.out.println("RMS: " + r + "Sys RMS: " + eq.getRaw());
       return (float) Math.sqrt(meanOfSquares);
     }
   }
