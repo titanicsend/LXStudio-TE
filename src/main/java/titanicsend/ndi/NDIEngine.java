@@ -49,7 +49,7 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
    */
   public boolean connectByName(String sourceName,DevolayReceiver receiver) {
     for (DevolaySource source : sources) {
-      if (source.getSourceName().equals(sourceName)) {
+      if (source.getSourceName().contains(sourceName)) {
         receiver.connect(source);
         return true;
       }
