@@ -8,10 +8,12 @@ import me.walkerknapp.devolay.DevolayFrameFourCCType;
 import me.walkerknapp.devolay.DevolaySender;
 import me.walkerknapp.devolay.DevolayVideoFrame;
 
-@LXCategory("Titanics End")
+@LXCategory("NDI")
 public class NDIOutRawEffect extends TEEffect {
 
   private boolean isInitialized = false;
+
+  private final String channelName = "TE_all_pixels";
 
   // output frame size
   private static final int width = 320;
@@ -27,16 +29,16 @@ public class NDIOutRawEffect extends TEEffect {
 
   @Override
   protected void run(double deltaMs, double enabledAmount) {
-      if ( !isInitialized ) {
-        return;
-      }
+    if (!isInitialized) {
+      return;
+    }
 
-      buffer.rewind();
-      for (LXPoint p : this.model.points) {
-        buffer.putInt(colors[p.index] );
-      }
-      buffer.flip();
-      ndiSender.sendVideoFrame(ndiFrame);
+    buffer.rewind();
+    for (LXPoint p : this.model.points) {
+      buffer.putInt(colors[p.index]);
+    }
+    buffer.flip();
+    ndiSender.sendVideoFrame(ndiFrame);
   }
 
   @Override
@@ -44,9 +46,9 @@ public class NDIOutRawEffect extends TEEffect {
     super.onEnable();
 
     if (!isInitialized) {
-      ndiSender = new DevolaySender("TitanicsEnd");
+      ndiSender = new DevolaySender(channelName);
       ndiFrame = new DevolayVideoFrame();
-      ndiFrame.setResolution(width,height);
+      ndiFrame.setResolution(width, height);
       ndiFrame.setFourCCType(DevolayFrameFourCCType.BGRA);
       ndiFrame.setData(buffer);
       ndiFrame.setFrameRate(60, 1);

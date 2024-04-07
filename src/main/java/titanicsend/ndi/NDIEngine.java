@@ -5,6 +5,7 @@ import heronarts.lx.LXComponent;
 import heronarts.lx.LXLoopTask;
 import java.util.ArrayList;
 import me.walkerknapp.devolay.*;
+import titanicsend.util.TE;
 
 public class NDIEngine extends LXComponent implements LXLoopTask {
   public static final String PATH = "NDIEngine";
@@ -47,9 +48,9 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
    * @return True if the source is available and connection attempt was successful.
    *        False if the source is not available.
    */
-  public boolean connectByName(String sourceName,DevolayReceiver receiver) {
+  public boolean connectByName(String sourceName, DevolayReceiver receiver) {
     for (DevolaySource source : sources) {
-      if (source.getSourceName().equals(sourceName)) {
+      if (source.getSourceName().contains(sourceName)) {
         receiver.connect(source);
         return true;
       }

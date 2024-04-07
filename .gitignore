@@ -25,3 +25,7 @@ Projects/project.lxp
 resources/shaders/cache/*.bin
 
 .devSwitch
+
+TD/TE-Projection/Backup/*
+TD/TE-Projection/TDImportCache/*
+TD/Utils/Backup/*
