@@ -69,7 +69,7 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
       return false;
     }
 
-    if (index < sources.length) {
+    if (sources != null && index < sources.length) {
       receiver.connect(sources[index]);
       return true;
     }
