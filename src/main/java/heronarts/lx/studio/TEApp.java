@@ -198,6 +198,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(Kaleidosonic.class);
       lx.registry.addPattern(MultipassDemo.class);
       lx.registry.addPattern(NDIReceiverTest.class);
+      lx.registry.addPattern(TdNdiPattern.class);
       lx.registry.addPattern(Phasers.class);
       lx.registry.addPattern(PixelblazeSandbox.class);
       lx.registry.addPattern(PBAudio1.class);
@@ -485,9 +486,6 @@ public class TEApp extends LXStudio {
       l.addPattern(ShaderEdgesPatternConfig.NeonRipplesEdges.class, covPanelPartial, cPalette, up);
       l.addPattern(ArcEdges.class, covPanelPartial, cPalette, up);
       l.addPattern(LightBeamsAudioReactivePattern.class, covPanelPartial, cPalette, up);
-
-      // TouchDesigner/NDI Patterns.
-      l.addPattern(TdNdiPattern.class, covPanelPartial, cPalette, up);
 
       return l;
     }

@@ -26,6 +26,7 @@ resources/shaders/cache/*.bin
 
 .devSwitch
 
-TD/TE-Projection/Backup/*
-TD/TE-Projection/TDImportCache/*
-TD/Utils/Backup/*
+TD/Utils/Backup/
+TD/TE-Projection/Backup/
+TD/TE-Projection/TDImportCache/
+

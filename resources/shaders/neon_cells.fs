@@ -77,7 +77,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float glow = 0.1 + min(0.6, glow_audio); // glow levels that look good: min=0.1, avg=0.2, max=0.5
 
     // Associate noise to the p and q parameters of "pat" function with the iWow1.
-    float noise_uv_multiplier = 10; //3 * (1 + bassLevel); // TODO: Make this a very smooth bass
+    float noise_uv_multiplier = 3. * (1. + bassRatio);
     float noise_p_1 = getSimplex3DNoise(uv, noise_uv_multiplier, 0.1) * iWow1;
     float noise_q_1 = getSimplex3DNoise(uv, noise_uv_multiplier, 0.1) * iWow1;
     float noise_p_2 = getSimplex3DNoise(uv, noise_uv_multiplier, 0.1) * iWow1;
