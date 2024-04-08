@@ -1,10 +1,7 @@
 // Simplex noise-based waterfall, based on https://www.shadertoy.com/view/ttlXDN
 // Wow1 controls background fade level
 // Wow2 controls water vs. palette color mix.  (All the way up is palette compliant)
-#pragma name "Waterfall"
-#pragma iChannel1 "resources/shaders/textures/icecliff.png"
-#pragma TEControl.WOW1.Range(0.4,0.0,1.0)
-#pragma TEControl.SPEED.Value(0.75)
+// WowTrigger reverses the flow of the waterfall
 
 #define PI 3.14159265359
 

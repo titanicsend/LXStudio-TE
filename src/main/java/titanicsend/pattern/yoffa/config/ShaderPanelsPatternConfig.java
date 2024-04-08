@@ -423,4 +423,34 @@ public class ShaderPanelsPatternConfig {
       addShader("smoke_shader.fs");
     }
   }
+
+  @LXCategory("Combo FG")
+  public static class Circuitry extends ConstructedShaderPattern {
+    public Circuitry(LX lx) {
+      super(lx, TEShaderView.ALL_POINTS);
+    }
+
+    @Override
+    protected void createShader() {
+      controls.setRange(TEControlTag.SIZE, 2, 5, 0.1);
+      controls.setRange(TEControlTag.QUANTITY, 4, 3, 6);
+
+      addShader("circuitry.fs");
+    }
+  }
+
+  @LXCategory("Combo FG")
+  public static class Waterfall extends ConstructedShaderPattern {
+    public Waterfall(LX lx) {
+      super(lx, TEShaderView.ALL_POINTS);
+    }
+
+    @Override
+    protected void createShader() {
+      controls.setRange(TEControlTag.WOW1, 0.4, 0, 1);
+      controls.setValue(TEControlTag.SPEED, 0.75);
+
+      addShader("waterfall.fs", "icecliff.png");
+    }
+  }
 }
