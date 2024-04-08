@@ -26,7 +26,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     st.y += iTranslate.y;
 
     vec3 color = vec3(0.2);
-    float pct = 0.;
+    float currPct = 0.;
 
     float drawingProgress = currProgress; //0.5 + 0.5*sin(iTime);
     float stroke = 0.005;
@@ -39,11 +39,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float desiredHeight = iScale;
 
     // how much of the drawing should be drawn.
-    float maxDist = currLength * desiredHeight * drawingProgress;
+    float currPartialLength = currLength * desiredHeight * drawingProgress;
 
     // how much of the drawing has been covered as we loop through the line segments,
     // looking for a hit on the distance field of one segment.
-    float totalDist = 0.0;
+    float currTotalDist = 0.0;
     // whether or not we should break out of the loop to avoid unnecessary computations
     // (when we don't intend to render the full drawing).
     bool stopIter = false;
@@ -59,8 +59,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
         // if the total distance covered so far plus the length of the current line segment is less than the total
         // length of the drawing we want to render, use the full line from 'a' to 'b'.
-        if (totalDist + nextDist < maxDist) {
-            totalDist += nextDist;
+        if (currTotalDist + nextDist < currPartialLength) {
+            currTotalDist += nextDist;
         } else {
             // otherwise, we're on the last line segment we need to render. the rest of the points are irrelevant, so
             // stop looping through them after we've given the render instruction.
@@ -68,14 +68,14 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
             // determine what 'fraction' of the current line we should draw, and compute the distance from a line segment
             // starting at 'a' and ending at 'b' - 'a' * 'fraction'
-            float targetDist = maxDist - totalDist;
+            float targetDist = currPartialLength - currTotalDist;
             float ratio = targetDist / nextDist;
             vec2 delta = b - a;
             seg = sdSegment(st, a, a + ratio*delta);
         }
 
         // apply a threshold to the segment distance to get our line drawn.
-        pct += 1.-step(stroke, seg);
+        currPct += 1.-step(stroke, seg);
 
         // if either:
         // (a) our progress through the drawing doesn't require looping through the remaining points, or
@@ -85,8 +85,58 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
             break;
         }
     }
+    color += currPct * iColorRGB;
 
-    color = pct * iColorRGB;
+
+
+    // how much of the drawing should be drawn.
+    float prevPartialLength = prevLength * desiredHeight * drawingProgress;
+
+    // how much of the drawing has been covered as we loop through the line segments,
+    // looking for a hit on the distance field of one segment.
+    float prevTotalDist = 0.0;
+    // whether or not we should break out of the loop to avoid unnecessary computations
+    // (when we don't intend to render the full drawing).
+    stopIter = false;
+
+    for (int i = 0; i < prevCount; i++) {
+        vec2 a = prevPoints[i];
+        vec2 b = prevPoints[i+1];
+        a *= desiredHeight;
+        b *= desiredHeight;
+        float nextDist = distance(a, b);
+
+        float seg = sdSegment(st, a, b);
+
+        // if the total distance covered so far plus the length of the prevent line segment is less than the total
+        // length of the drawing we want to render, use the full line from 'a' to 'b'.
+        if (prevTotalDist + nextDist < prevPartialLength) {
+            prevTotalDist += nextDist;
+        } else {
+            // otherwise, we're on the last line segment we need to render. the rest of the points are irrelevant, so
+            // stop looping through them after we've given the render instruction.
+            stopIter = true;
+
+            // determine what 'fraction' of the prevent line we should draw, and compute the distance from a line segment
+            // starting at 'a' and ending at 'b' - 'a' * 'fraction'
+            float targetDist = prevPartialLength - prevTotalDist;
+            float ratio = targetDist / nextDist;
+            vec2 delta = b - a;
+            seg = sdSegment(st, a, a + ratio*delta);
+        }
+
+        // apply a threshold to the segment distance to get our line drawn.
+        prevPct += 1.-step(stroke, seg);
+
+        // if either:
+        // (a) our progress through the drawing doesn't require looping through the remaining points, or
+        // (b) we already made a match on at least one segment,
+        // we can stop looping.
+        if (stopIter || seg <= stroke) {
+            break;
+        }
+    }
+    color += prevPct * iColorRGB;
 
 /*
     // debugging: draw coord space axes.
