@@ -33,6 +33,7 @@ public class TdNdiPattern extends TEPerformancePattern {
 
     protected DevolayVideoFrame videoFrame;
     protected DevolayReceiver receiver = null;
+    private ByteBuffer frameData;
 
     protected boolean lastConnectState = false;
     protected long connectTimer = 0;
@@ -93,18 +94,23 @@ public class TdNdiPattern extends TEPerformancePattern {
 
         if (DevolayFrameType.VIDEO == receiver.receiveCapture(videoFrame, null, null, 0)) {
             // get pixel data from video frame
-            ByteBuffer frameData = videoFrame.getData();
+            frameData = videoFrame.getData();
             frameData.rewind();
             frameData.order(ByteOrder.LITTLE_ENDIAN);
 
             for (LXPoint p : this.model.points) {
                 int i = p.index * 4;
-
-                byte r = frameData.get(i + 2);
-                byte g = frameData.get(i + 1);
-                byte b = frameData.get(i);
-
-                colors[p.index] = LXColor.rgb(r, g, b);
+                colors[p.index] = LXColor.rgb(frameData.get(i + 2), frameData.get(i + 1), frameData.get(i));
+            }
+        } else if (frameData != null) {
+            // If no data was received since last frame, just show the last frame again on the car
+            // to avoid flickers. This can cause a frozen frame being shown on the car instead of
+            // a complete off screen when NDI is not being transferred on a good network.
+            frameData.rewind();
+            frameData.order(ByteOrder.LITTLE_ENDIAN);
+            for (LXPoint p : this.model.points) {
+                int i = p.index * 4;
+                colors[p.index] = LXColor.rgb(frameData.get(i + 2), frameData.get(i + 1), frameData.get(i));
             }
         }
     }
@@ -118,8 +124,8 @@ public class TdNdiPattern extends TEPerformancePattern {
             receiver =
                     new DevolayReceiver(
                             DevolayReceiver.ColorFormat.BGRX_BGRA, RECEIVE_BANDWIDTH_HIGHEST, true, "TE");
-            lastConnectState = ndiEngine.connectByName(channel_name, receiver);
         }
+        lastConnectState = ndiEngine.connectByName(channel_name, receiver);
     }
 
     @Override
