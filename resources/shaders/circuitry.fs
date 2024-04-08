@@ -4,12 +4,6 @@
 // The "artistic intention" is to sorta depict what's going on in all the circuitry inside Titanic's End
 //
 // Wow2 controls audio reactivity
-#pragma name "Circuitry"
-#pragma TEControl.SIZE.Range(2.0,5.0,0.1)
-#pragma TEControl.QUANTITY.Range(4.0,3.0,6.0)
-#pragma TEControl.WOW2.Disable
-#pragma TEControl.WOW1.Disable
-#pragma TEControl.WOWTRIGGER.Disable
 
 #include <include/constants.fs>
 #include <include/colorspace.fs>
