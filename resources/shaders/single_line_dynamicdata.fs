@@ -25,8 +25,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     st.y += iTranslate.y;
 
-    vec3 color = vec3(0.2);
+    vec3 color = vec3(0.0);
     float currPct = 0.;
+    float prevPct = 0.;
 
     float drawingProgress = currProgress; //0.5 + 0.5*sin(iTime);
     float stroke = 0.005;
@@ -75,7 +76,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         }
 
         // apply a threshold to the segment distance to get our line drawn.
-        currPct += 1.-step(stroke, seg);
+        currPct += 1.-step(stroke * (1. + 0.5*trebleRatio), seg);
 
         // if either:
         // (a) our progress through the drawing doesn't require looping through the remaining points, or
@@ -87,10 +88,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     }
     color += currPct * iColorRGB;
 
-
-
     // how much of the drawing should be drawn.
-    float prevPartialLength = prevLength * desiredHeight * drawingProgress;
+    float prevHeight = (1. + drawingProgress) * desiredHeight;
+    float prevPartialLength = prevLength * prevHeight * (1. - drawingProgress);
 
     // how much of the drawing has been covered as we loop through the line segments,
     // looking for a hit on the distance field of one segment.
@@ -102,8 +102,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     for (int i = 0; i < prevCount; i++) {
         vec2 a = prevPoints[i];
         vec2 b = prevPoints[i+1];
-        a *= desiredHeight;
-        b *= desiredHeight;
+        a *= prevHeight;
+        b *= prevHeight;
+        //a *= desiredHeight;
+        //b *= desiredHeight;
         float nextDist = distance(a, b);
 
         float seg = sdSegment(st, a, b);
@@ -126,7 +128,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         }
 
         // apply a threshold to the segment distance to get our line drawn.
-        prevPct += 1.-step(stroke, seg);
+        prevPct += 1.-step(stroke * (1. + bassRatio), seg);
 
         // if either:
         // (a) our progress through the drawing doesn't require looping through the remaining points, or
@@ -136,7 +138,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
             break;
         }
     }
-    color += prevPct * iColorRGB;
+    color += prevPct * iColor2RGB;
 
 /*
     // debugging: draw coord space axes.

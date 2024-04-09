@@ -26,45 +26,37 @@ public class SketchDemo extends GLShaderPattern {
 
   private float progress = 0;
 
-  private float bassLevelCumulative = 0;
-  private float squareLevelCumulative = 0;
   private float normalizedLevelCumulative = 0;
-  private float peakLevelCumulative = 0;
+  private float bassLevelCumulative = 0;
+//  private float squareLevelCumulative = 0;
+//  private float peakLevelCumulative = 0;
 
-  private final SignalLogger signalLogger;
+//  private final SignalLogger signalLogger;
 
   // Constructor
   public SketchDemo(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
 
-    List<String> signalNames = Arrays.asList(
-        "bassLevel",
-        "bassLevelCumulative",
-        "squareLevel",
-        "squareLevelCumulative",
-        "normalizedLevel",
-        "normalizedLevelCumulative",
-        "peakLevel",
-        "peakLevelCumulative",
-        "pullback",
-        "progress",
-        "nextDrawingThreshold"
-    );
-    signalLogger = new SignalLogger(signalNames, "Logs/signal_data.csv");
-    signalLogger.startLogging(10);
-
     sketchMgr = SketchDataManager.get();
     int totalSketches = sketchMgr.sketches.size();
     System.out.println("Loaded sketches: " + totalSketches);
 
-    controls.setRange(TEControlTag.SIZE, 0.5, 0.1, 2.0);
+    controls.setRange(TEControlTag.SIZE, 0.87, 0.1, 2.0);
 
-    controls.setRange(TEControlTag.WOW2, 2.0, 0.1, 100.0);
+    // how much progress is added by bass levels
+    controls.setValue(TEControlTag.LEVELREACTIVITY, 0.25);
+
+    // "next drawing threshold": how much total progress needs to be made before switching drawings
+    controls.setRange(TEControlTag.WOW2, 15.0, 0.1, 100.0);
+
+    // "pullback": how quickly progress is subtracted when no bass is present
+    controls.setRange(TEControlTag.WOW1, 0.08, 0.0, 0.4);
+
+    // offset the drawing position to mirror on either side of the central opening.
+    controls.setValue(TEControlTag.XPOS, 0.53);
 
     // set the x-axis near the bottom of the car
     controls.setValue(TEControlTag.YPOS, 0.85);
-    // offset the drawing position to mirror on either side of the central opening.
-    controls.setValue(TEControlTag.XPOS, 0.5);
 
     // register common controls with the UI
     addCommonControls();
@@ -72,6 +64,22 @@ public class SketchDemo extends GLShaderPattern {
     // create an n x 2 native FloatBuffer to hold 32-bit float values, so we can
     // hand them off to the GPU.
     this.gl_segments = Buffers.newDirectFloatBuffer(MAX_POINTS * 2 * 4);
+
+//    List<String> signalNames = Arrays.asList(
+//        "bassLevel",
+//        "bassLevelCumulative",
+//        "squareLevel",
+//        "squareLevelCumulative",
+//        "normalizedLevel",
+//        "normalizedLevelCumulative",
+//        "peakLevel",
+//        "peakLevelCumulative",
+//        "pullback",
+//        "progress",
+//        "nextDrawingThreshold"
+//    );
+//    signalLogger = new SignalLogger(signalNames, "Logs/signal_data.csv");
+//    signalLogger.startLogging(10);
 
     // add the OpenGL shader and its frame-time setup function which,
     // in this case, will copy the current contents of the points array
@@ -84,38 +92,42 @@ public class SketchDemo extends GLShaderPattern {
             float levelReact =
                 (float) getControls().getControl(TEControlTag.LEVELREACTIVITY).getValue();
             float pullback = (float) getControls().getControl(TEControlTag.WOW1).getValue();
-            bassLevelCumulative += (bassLevel * levelReact) - pullback;
-
-            float squareLevel = eq.getSquaref() * levelReact;
-            float peakLevel = eq.getPeakf() * levelReact;
-            float normalizedLevel = eq.getNormalizedf() * levelReact;
-
-            squareLevelCumulative += squareLevel - pullback;
-            peakLevelCumulative += peakLevel - pullback;
-            normalizedLevelCumulative += normalizedLevel - pullback;
-
             float nextDrawingThreshold =
                 (float) getControls().getControl(TEControlTag.WOW2).getValue();
-            progress = normalizedLevelCumulative / nextDrawingThreshold;
+            // for debugging: wire up a control directly to control progress.
+            //progress = (float) getControls().getControl(TEControlTag.WOW1).getValue();
+
+//            float squareLevel = eq.getSquaref() * levelReact;
+//            squareLevelCumulative += squareLevel - pullback;
+//            float peakLevel = eq.getPeakf() * levelReact;
+//            peakLevelCumulative += peakLevel - pullback;
+//            bassLevelCumulative += (bassLevel * levelReact) - pullback;
 //            progress = bassLevelCumulative / nextDrawingThreshold;
+//            normalizedLevelCumulative += (bassLevel * levelReact);
 
-            signalLogger.logSignalValues(
-                Arrays.asList(
-                    (float) bassLevel,
-                    bassLevelCumulative,
-                    squareLevel,
-                    squareLevelCumulative,
-                    normalizedLevel,
-                    normalizedLevelCumulative,
-                    peakLevel,
-                    peakLevelCumulative,
-                    pullback,
-                    progress,
-                    nextDrawingThreshold
-                )
-            );
+            float normalizedLevel = eq.getNormalizedf() * levelReact;
+            normalizedLevelCumulative += normalizedLevel;
 
-//            progress = (float) getControls().getControl(TEControlTag.WOW1).getValue();
+            if (normalizedLevelCumulative > 0) {
+              normalizedLevelCumulative -= pullback;
+            }
+            progress = normalizedLevelCumulative / nextDrawingThreshold;
+
+//            signalLogger.logSignalValues(
+//                Arrays.asList(
+//                    (float) bassLevel,
+//                    bassLevelCumulative,
+//                    squareLevel,
+//                    squareLevelCumulative,
+//                    normalizedLevel,
+//                    normalizedLevelCumulative,
+//                    peakLevel,
+//                    peakLevelCumulative,
+//                    pullback,
+//                    progress,
+//                    nextDrawingThreshold
+//                )
+//            );
 
             s.setUniform("currProgress", progress);
             if (!hasSketchBeenPassed) {
@@ -127,20 +139,33 @@ public class SketchDemo extends GLShaderPattern {
             }
 
             if (progress >= 1.0) {
-              progress = 0;
-              bassLevelCumulative = 0;
-              squareLevelCumulative = 0;
-              normalizedLevelCumulative = 0;
-              peakLevelCumulative = 0;
+
+//              bassLevelCumulative = 0;
+//              squareLevelCumulative = 0;
+//              peakLevelCumulative = 0;
               swapDrawing();
             }
           }
         });
   }
 
+  @Override
+  protected void onWowTrigger(boolean on) {
+    if (on) {
+      swapDrawing();
+    }
+  }
+
+  private void swapDrawing() {
+    progress = 0;
+    normalizedLevelCumulative = 0;
+    hasSketchBeenPassed = false;
+    prevSketchIdx = currSketchIdx;
+    currSketchIdx = (int) Math.floor(Math.random() * sketchMgr.sketches.size());
+  }
+
   // store an x,y point in the native buffer
-  void setPoint(int segNo, float x, float y) {
-//    TE.log("setPoint %d : %.4f %.4f",segNo,x,y);
+  private void setPoint(int segNo, float x, float y) {
     gl_segments.position(segNo * 2);
     gl_segments.put(x);
     gl_segments.put(y);
@@ -150,29 +175,12 @@ public class SketchDemo extends GLShaderPattern {
   // Sends an array of point coordinates to the shader. It's not
   // necessary to call this on every frame, particularly if the number
   // of points is large.  It can be called only when the points array changes.
-  void setUniformPoints(GLShader s, SketchDataManager.SketchData data, String prefix) {
+  private void setUniformPoints(GLShader s, SketchDataManager.SketchData data, String prefix) {
     for (int i = 0; i < data.num_points; i++) {
       setPoint(i, data.points[i][0], data.points[i][1]);
     }
     s.setUniform(prefix+"Points", gl_segments, 2);
     s.setUniform(prefix+"Count", data.num_points);
     s.setUniform(prefix+"Length", data.total_dist);
-//    TE.log("setNumPoints %d", data.num_points);
-//    TE.log("setTotalDistance %f", data.total_dist);
-  }
-
-  void swapDrawing() {
-    hasSketchBeenPassed = false;
-    prevSketchIdx = currSketchIdx;
-    currSketchIdx = (int) Math.floor(Math.random() * sketchMgr.sketches.size());
-//    TE.log("newIDX: %d, (%d * %f)", currentSketchIdx, totalSketches, rand);
-  }
-
-  @Override
-  protected void onWowTrigger(boolean on) {
-    // when the wow trigger button is pressed...
-    if (on) {
-      swapDrawing();
-    }
   }
 }
