@@ -34,7 +34,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     // before rendering the current drawing, mirror the coordinate space along the x-axis,
     // with a gap defined by XPOS control.
-    st = vec2(abs(st.x) - iTranslate.x + 0.2*bassLevel, st.y);
+    vec2 currST = vec2(abs(st.x) - iTranslate.x + 0.2*bassLevel, st.y);
     // use SIZE control to set the size of the drawing, without modifying the scale of the
     // whole coordinate space.
     float desiredHeight = iScale;
@@ -56,7 +56,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         b *= desiredHeight;
         float nextDist = distance(a, b);
 
-        float seg = sdSegment(st, a, b);
+        float seg = sdSegment(currST, a, b);
 
         // if the total distance covered so far plus the length of the current line segment is less than the total
         // length of the drawing we want to render, use the full line from 'a' to 'b'.
@@ -72,7 +72,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
             float targetDist = currPartialLength - currTotalDist;
             float ratio = targetDist / nextDist;
             vec2 delta = b - a;
-            seg = sdSegment(st, a, a + ratio*delta);
+            seg = sdSegment(currST, a, a + ratio*delta);
         }
 
         // apply a threshold to the segment distance to get our line drawn.
@@ -89,8 +89,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     color += currPct * iColorRGB;
 
     // how much of the drawing should be drawn.
-    float prevHeight = (1. + drawingProgress) * desiredHeight;
-    float prevPartialLength = prevLength * prevHeight * (1. - drawingProgress);
+    float prevHeight = (1. + 3.*drawingProgress) * desiredHeight;
+    float inverseProgress = (1. - .8*drawingProgress);
+    float prevPartialLength = prevLength * prevHeight * inverseProgress;
+
+    vec2 prevST = vec2(abs(st.x) - inverseProgress*iTranslate.x + 0.2*bassLevel, st.y);
 
     // how much of the drawing has been covered as we loop through the line segments,
     // looking for a hit on the distance field of one segment.
@@ -108,7 +111,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         //b *= desiredHeight;
         float nextDist = distance(a, b);
 
-        float seg = sdSegment(st, a, b);
+        float seg = sdSegment(prevST, a, b);
 
         // if the total distance covered so far plus the length of the prevent line segment is less than the total
         // length of the drawing we want to render, use the full line from 'a' to 'b'.
@@ -124,11 +127,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
             float targetDist = prevPartialLength - prevTotalDist;
             float ratio = targetDist / nextDist;
             vec2 delta = b - a;
-            seg = sdSegment(st, a, a + ratio*delta);
+            seg = sdSegment(prevST, a, a + ratio*delta);
         }
 
         // apply a threshold to the segment distance to get our line drawn.
-        prevPct += 1.-step(stroke * (1. + bassRatio), seg);
+        prevPct += 1.-step(stroke * (1. + bassRatio) * (2 * (1. + drawingProgress)), seg);
 
         // if either:
         // (a) our progress through the drawing doesn't require looping through the remaining points, or

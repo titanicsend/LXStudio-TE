@@ -18,18 +18,14 @@ import titanicsend.util.TE;
 public class SketchDemo extends GLShaderPattern {
   private static final int MAX_POINTS = 250;
   private FloatBuffer gl_segments;
-
   private SketchDataManager sketchMgr;
   private int currSketchIdx = 3;
   private int prevSketchIdx = 2;
   private boolean hasSketchBeenPassed = false;
-
   private float progress = 0;
 
   private float normalizedLevelCumulative = 0;
   private float bassLevelCumulative = 0;
-//  private float squareLevelCumulative = 0;
-//  private float peakLevelCumulative = 0;
 
 //  private final SignalLogger signalLogger;
 
@@ -97,18 +93,12 @@ public class SketchDemo extends GLShaderPattern {
             // for debugging: wire up a control directly to control progress.
             //progress = (float) getControls().getControl(TEControlTag.WOW1).getValue();
 
-//            float squareLevel = eq.getSquaref() * levelReact;
-//            squareLevelCumulative += squareLevel - pullback;
-//            float peakLevel = eq.getPeakf() * levelReact;
-//            peakLevelCumulative += peakLevel - pullback;
-//            bassLevelCumulative += (bassLevel * levelReact) - pullback;
-//            progress = bassLevelCumulative / nextDrawingThreshold;
 //            normalizedLevelCumulative += (bassLevel * levelReact);
 
             float normalizedLevel = eq.getNormalizedf() * levelReact;
             normalizedLevelCumulative += normalizedLevel;
 
-            if (normalizedLevelCumulative > 0) {
+            if (progress > -0.9) {
               normalizedLevelCumulative -= pullback;
             }
             progress = normalizedLevelCumulative / nextDrawingThreshold;
@@ -139,10 +129,6 @@ public class SketchDemo extends GLShaderPattern {
             }
 
             if (progress >= 1.0) {
-
-//              bassLevelCumulative = 0;
-//              squareLevelCumulative = 0;
-//              peakLevelCumulative = 0;
               swapDrawing();
             }
           }
