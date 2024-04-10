@@ -79,7 +79,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         // generate blob radius based on audio level at fake position
         // (the size of the field blob at the current location.)
         // Wow1 controls the max size.
-        float radius = clamp(intensity, 0.125 * abs(pos.x), iWow1);
+        //float radius = clamp(intensity, 0.125 * abs(pos.x), iWow1);
+        float radius = clamp((1 - beat) * (volumeRatio > 0.5 ? 1. : 0.) * iWow1, 0, iWow1);
 
         // accumulate field density
         float density = field2(uv, pos, radius);
@@ -90,5 +91,5 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float colorMix = mod(final_density * 1.618, 1.0);
     vec3 final_color = mix(iColor2RGB,iColorRGB,colorMix);
     // Wow2 controls gamma adjustment of final brightness
-    fragColor = vec4(final_color,pow(colorMix,1.5 + iWow2));
+    fragColor = vec4(final_color,pow(colorMix,1.5 + iWow2)) ;
 }
