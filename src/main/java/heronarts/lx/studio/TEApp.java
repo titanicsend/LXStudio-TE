@@ -85,6 +85,7 @@ import titanicsend.pattern.sinas.TdNdiPattern;
 import titanicsend.pattern.tom.*;
 import titanicsend.pattern.util.TargetPixelStamper;
 import titanicsend.pattern.will.PowerDebugger;
+import titanicsend.pattern.will.shaders.EnterTheMatrix;
 import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
@@ -221,6 +222,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(Fire.class);
       lx.registry.addPattern(TESolidPattern.class);
       lx.registry.addPattern(TEGradientPattern.class);
+      lx.registry.addPattern(EnterTheMatrix.class);
 
       // Patterns that will not aspire to art direction standards
       lx.registry.addPattern(SigmoidDanceAudioWaveform.class);
