@@ -144,10 +144,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         }
     }
     float fadeIn = 1.;
-    float drawingFade = 0.3;
+    /*float drawingFade = 0.3;
     if (abs(drawingProgress) < drawingFade) {
         fadeIn = clamp(abs(drawingProgress), 0, drawingFade) / drawingFade;
-    }
+    }*/
     vec3 color2 = isColor2Black ? iColorRGB : iColor2RGB;
     color += prevPct * color2 * fadeIn;
 
