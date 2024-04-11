@@ -26,6 +26,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     st.y += iTranslate.y;
 
     vec3 color = vec3(0.0);
+    bool isColor2Black = distance(iColor2RGB, vec3(0.)) < 0.1;
+
     float currPct = 0.;
     float prevPct = 0.;
 
@@ -131,7 +133,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         }
 
         // apply a threshold to the segment distance to get our line drawn.
-        prevPct += 1.-step(stroke * (1. + bassRatio) * (2 * (1. + drawingProgress)), seg);
+        prevPct += 1.-step(stroke * (1. + 2.*bassRatio) /* * (2 * (1. + drawingProgress))*/, seg);
 
         // if either:
         // (a) our progress through the drawing doesn't require looping through the remaining points, or
@@ -141,7 +143,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
             break;
         }
     }
-    color += prevPct * iColor2RGB;
+    float fadeIn = 1.;
+    float drawingFade = 0.3;
+    if (abs(drawingProgress) < drawingFade) {
+        fadeIn = clamp(abs(drawingProgress), 0, drawingFade) / drawingFade;
+    }
+    vec3 color2 = isColor2Black ? iColorRGB : iColor2RGB;
+    color += prevPct * color2 * fadeIn;
 
 /*
     // debugging: draw coord space axes.

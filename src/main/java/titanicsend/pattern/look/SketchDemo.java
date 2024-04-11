@@ -93,10 +93,10 @@ public class SketchDemo extends GLShaderPattern {
             // for debugging: wire up a control directly to control progress.
             //progress = (float) getControls().getControl(TEControlTag.WOW1).getValue();
 
-//            normalizedLevelCumulative += (bassLevel * levelReact);
+            normalizedLevelCumulative += (bassLevel * levelReact);
 
-            float normalizedLevel = eq.getNormalizedf() * levelReact;
-            normalizedLevelCumulative += normalizedLevel;
+//            float normalizedLevel = eq.getNormalizedf() * levelReact;
+//            normalizedLevelCumulative += normalizedLevel;
 
             if (progress > -0.9) {
               normalizedLevelCumulative -= pullback;
