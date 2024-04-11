@@ -362,7 +362,7 @@ public class TECommonControls {
           //this.color.gradient,
           getControl(TEControlTag.LEVELREACTIVITY).control,
           getControl(TEControlTag.FREQREACTIVITY).control,
-          null, // getControl(TEControlTag.BRIGHTNESS).control,
+          this.pattern.view,
           getControl(TEControlTag.SPEED).control,
           getControl(TEControlTag.XPOS).control,
           getControl(TEControlTag.YPOS).control,
@@ -377,9 +377,6 @@ public class TECommonControls {
           getControl(TEControlTag.WOWTRIGGER).control,
           null,  // former shader-specific explode control
           // To be SHIFT, not implemented yet
-
-          // For UI usage, LXDeviceComponent.view
-          this.pattern.view
         });
   }
 
