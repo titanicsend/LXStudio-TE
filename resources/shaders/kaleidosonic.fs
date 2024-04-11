@@ -49,7 +49,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     // levelReact controls audio-linked scaling "bounce" and minimum blob size
     float level = levelReact * volumeRatio;
-    float intensity = levelReact * bassRatio;
+    float intensity = levelReact * (bassRatio + 0.25 * (1. - beat));
 
     // modulate overall scale by level just a little for more movement.
     // (too much looks jittery)
@@ -79,8 +79,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         // generate blob radius based on audio level at fake position
         // (the size of the field blob at the current location.)
         // Wow1 controls the max size.
-        //float radius = clamp(intensity, 0.125 * abs(pos.x), iWow1);
-        float radius = clamp((1 - beat) * (volumeRatio > 0.5 ? 1. : 0.) * iWow1, 0, iWow1);
+        float radius = clamp(intensity, 0.125 * abs(pos.x), iWow1);
+        //float radius = clamp((1 - beat) * (volumeRatio > 0.5 ? 1. : 0.) * iWow1,0.125 * length(pos), iWow1);
 
         // accumulate field density
         float density = field2(uv, pos, radius);
