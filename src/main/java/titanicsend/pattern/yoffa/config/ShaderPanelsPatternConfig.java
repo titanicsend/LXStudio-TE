@@ -405,7 +405,7 @@ public class ShaderPanelsPatternConfig {
 
   @LXCategory("DREVO Shaders")
   public static class MetallicBitWaves extends ConstructedShaderPattern {
-    public MetallicWaves(LX lx) {
+    public MetallicBitWaves(LX lx) {
       super(lx, TEShaderView.ALL_POINTS);
     }
 
