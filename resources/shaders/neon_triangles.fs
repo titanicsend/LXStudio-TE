@@ -126,10 +126,12 @@ vec3 getBloom(vec3 pos, vec3 dir)
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    radius = 0.01 * iScale;
-    REPEAT = 2.0 * iQuantity;
+    float trebleEffect = frequencyReact*trebleRatio;
+    float bassEffect = levelReact*bassRatio;
+    radius = 0.01 * iScale * (1.+bassEffect);
+    REPEAT = 2.0 * iQuantity * (1.+bassEffect);
 
-    mat3 viewMat = buildRotationMatrix3D(vec3(0.,0.,1.),-iRotationAngle);
+    mat3 viewMat = buildRotationMatrix3D(vec3(0.,0.,1.),-iRotationAngle + 0.2*trebleEffect);
 
     seed = iTime + iResolution.y * fragCoord.x / iResolution.x + fragCoord.y / iResolution.y;
     vec3 pos = vec3(0, 0, iTime * REPEAT);
@@ -139,7 +141,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec3 col = getBloom(pos, dir);
 
     if (res <= MAX_DIST) {
-        col = triColor * max(1.0,iWow1);
+        col = triColor * max(1.0,iWow1 + bassEffect);
     }
 
     fragColor = vec4(col, 1.);
