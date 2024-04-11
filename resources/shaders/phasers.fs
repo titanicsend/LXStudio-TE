@@ -1,5 +1,3 @@
-
-
 // Controls
 // Speed - beam rotation speed
 // Spin/Angle - canvas rotation
@@ -20,6 +18,9 @@ const float yCenter = 0.3;
 
 // accumulator for "Wow Trigger" effect
 float zapper = 0.0;
+
+float trebleEffect = frequencyReact*trebleRatio;
+float bassEffect = levelReact*bassRatio;
 
 //  rotate a point around the origin by <angle> radians
 vec2 rotate(vec2 point, float angle) {
@@ -77,13 +78,13 @@ float laser(vec2 p, vec2 offset, float angle, float beams) {
 	float theta = atan(p.x, p.y);
 
     // draw constant width radial line for "laser beam"
-    float bend = iWow1 * sin(21.0 * radius +  TAU * beat);
-    float pulse = iWow1 * beat;
+    float bend = (iWow1+bassEffect) * sin(21.0 * radius +  TAU * beat);
+    float pulse = iWow1 * (beat + bassEffect);
     float lzr =  smoothstep(beamWidth,0.0 , radius * abs(bend+sin(theta * beams / 2.0)));
 
 	// generate a bright cone for glow effect
 	float glw = max(0.0,0.5+0.5*(bend + sin(halfpi - theta*beams)));
-    glw = pow(0.9*glw,iScale/beams);
+    glw = pow(0.9*glw,(iScale*(1.+trebleEffect))/beams);
 
     // add circular strobe burst on iWowTrigger
     zapper += (iWowTrigger) ? smoothstep(0.0,-0.1,circle(p, beat/4.0)) : 0.0 ;
@@ -116,7 +117,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord) {
   // Calculate the final color
   // laser beam always travels through *all* the fog, even if
   // the fog (controlled by iWow2) is turned down
-  vec3 col = iColorRGB * ((8.0 * l * c) + (c * iWow2) + zapper);
+  vec3 col = iColorRGB * ((8.0 * l * c) + (c * (iWow2+trebleEffect)) + zapper);
 
   // alpha is taken from the brightest color channel value.
   fragColor = vec4(col, 1.);
