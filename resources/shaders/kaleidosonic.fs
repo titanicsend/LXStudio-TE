@@ -1,4 +1,5 @@
 const float PI = 3.14159265359;
+const float brightness_floor = 0.333;
 
 vec3 hsv2rgb(vec3 c) {
     vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
@@ -41,6 +42,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 aspect = iResolution.xy / min(iResolution.x, iResolution.y);
     vec2 uv = (fragCoord.xy * 2.0 - iResolution.xy) / min(iResolution.x, iResolution.y);
 
+    float bpmReactivityAmount = max(1.0 - beat * levelReact, brightness_floor);
+
     // rotate according to current control settings
     uv = rotate(uv,iRotationAngle);
 
@@ -48,8 +51,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     uv = Kaleidoscope(uv, iQuantity);
 
     // levelReact controls audio-linked scaling "bounce" and minimum blob size
-    float level = levelReact * volumeRatio;
-    float intensity = levelReact * (bassRatio + 0.25 * (1. - beat));
+    float level = levelReact * clamp(bassRatio, 0.5, 8);
+    float intensity = levelReact * clamp(volumeRatio, 0.5, 8);
 
     // modulate overall scale by level just a little for more movement.
     // (too much looks jittery)
@@ -58,6 +61,12 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // iterate to generate a density field based on a sample
     // of random coordinates around the current pixel.
     float final_density = 0.0;
+
+    // generate blob radius based on audio level at fake position
+    // (the size of the field blob at the current location.)
+    // Wow1 controls the max size.
+    float radius = clamp(bpmReactivityAmount * iWow1, 0, iWow1);
+
     for (int i = 0; i < 128; i++) {
         // handy noise vector which we'll use for position and color
         // accumulation. (Switched to the latest fashionable noise
@@ -75,12 +84,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         // normalize pos to display aspect ratio even though it's fake because
         // it looks better!
         pos = (pos * 2.0 - 1.0) * aspect;
-
-        // generate blob radius based on audio level at fake position
-        // (the size of the field blob at the current location.)
-        // Wow1 controls the max size.
-        float radius = clamp(intensity, 0.125 * abs(pos.x), iWow1);
-        //float radius = clamp((1 - beat) * (volumeRatio > 0.5 ? 1. : 0.) * iWow1,0.125 * length(pos), iWow1);
 
         // accumulate field density
         float density = field2(uv, pos, radius);
