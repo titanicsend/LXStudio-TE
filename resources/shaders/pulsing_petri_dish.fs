@@ -53,26 +53,29 @@ mat2 rotate(float a) {
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
+    float trebleEffect = frequencyReact*trebleRatio;
+    float bassEffect = levelReact*bassRatio;
+
     // Normalized pixel coordinates (from 0 to 1)
     vec2 uv = fragCoord / iResolution.xy;
     uv = uv * 2. - 1.; // Remap the space to -1. to 1.
     uv.x *= iResolution.x / iResolution.y;
 
     // Create ray to fire into scene
-    vec3 ray = normalize(vec3(uv, 1.5 * iScale));
+    vec3 ray = normalize(vec3(uv, 1.5*iScale*(1.+trebleEffect)));
     ray.xy *= rotate(-iRotationAngle);
 
     // Create origin of scene
-    vec3 origin = vec3(0., 0., iTime); //iTime changes z perspective, going into screen
+    vec3 origin = vec3(0., 0., iTime+sqrt(bassEffect)); //iTime changes z perspective, going into screen
 
     // Trace any objects in the scene
     float t = trace(origin, ray);
 
     // Generate brightness based on distance from objects
-    float fog = 1.0 / (1.0 + t * t * 0.1);
+    float fog = (1.0+sqrt(trebleEffect)) / (1.0 + t * t * 0.1);
 
     // Wow2 controls foreground vs gradient color mix.
-    vec3 fc = fog * mix(iColorRGB, mix(iColorRGB, iColor2RGB, wave(fog * 3.0)), iWow2);
+    vec3 fc = fog * mix(iColorRGB, mix(iColorRGB, iColor2RGB, wave(fog * 3.0)), clamp(iWow2+trebleEffect, 0., 1.));
 
     fragColor = vec4(fc, 1.);
 }
