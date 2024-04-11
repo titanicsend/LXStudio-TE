@@ -11,7 +11,10 @@
 float REPEAT;
 float seed;
 vec3 triColor;
-float radius;
+//float radius;
+
+float trebleEffect;
+float bassEffect;
 
 float rand()
 {
@@ -74,7 +77,7 @@ float getDist(vec3 origin)
     vec3 b = dirByAng(120.0 + ang, 1.0);
     vec3 c = dirByAng(240.0 + ang, 1.0);
 
-    float radius = 0.01 * iScale;
+    float radius = 0.01 * iScale * (1. + bassEffect);
     float cap1 = capsule(a, b, radius, origin);
     float cap2 = capsule(b, c, radius, origin);
     float cap3 = capsule(c, a, radius, origin);
@@ -84,7 +87,7 @@ float getDist(vec3 origin)
 vec3 getCol(float z)
 {
 float fac = (cos(z / REPEAT * PI) + 1.0) * 0.5;
-return mix(iColorRGB,mix(iColorRGB,iColor2RGB,iWow2),fac);
+return mix(iColorRGB,mix(iColorRGB,iColor2RGB,iWow2+trebleEffect),fac);
 }
 
 float rayMarch(vec3 origin, vec3 direct)
@@ -121,14 +124,14 @@ vec3 getBloom(vec3 pos, vec3 dir)
         res += getCol(p.z) / d / float(BLOOM_IT);
     }
 
-    return res * 0.25 * iWow1;
+    return res * 0.25 * iWow1 * (1. + trebleEffect);
 }
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    float trebleEffect = frequencyReact*trebleRatio;
-    float bassEffect = levelReact*bassRatio;
-    radius = 0.01 * iScale * (1.+bassEffect);
+    trebleEffect = frequencyReact*trebleRatio;
+    bassEffect = levelReact*bassRatio;
+    //radius = 0.01 * iScale * (1.+bassEffect);
     REPEAT = 2.0 * iQuantity * (1.+bassEffect);
 
     mat3 viewMat = buildRotationMatrix3D(vec3(0.,0.,1.),-iRotationAngle + 0.2*trebleEffect);
@@ -141,7 +144,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec3 col = getBloom(pos, dir);
 
     if (res <= MAX_DIST) {
-        col = triColor * max(1.0,iWow1 + bassEffect);
+        col = triColor * max(1.0,iWow1 * (1. + trebleEffect));
     }
 
     fragColor = vec4(col, 1.);
