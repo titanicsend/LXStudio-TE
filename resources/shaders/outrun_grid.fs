@@ -7,11 +7,15 @@ float fov = 90.0;
 float farClip = -16.0;
 float boltSize = 0.25;
 
+
+float trebleEffect = frequencyReact*trebleRatio;
+float bassEffect = levelReact*bassRatio;
+
 // Parameters derived from controls.  Grouped here for
 // easier tuning.
 float invert = (iWowTrigger) ? 1.0 : -1.0; // WowTrigger inverts colors
-float glowScale = iScale / 10.0;  // line width/glow factor
-float gridScale = 0.5 + (iQuantity);  // grid size (number of lines visible)
+float glowScale = (iScale+(1.+0.2*trebleEffect)) / 10.0;  // line width/glow factor
+float gridScale = 0.5 + (iQuantity * trebleEffect);  // grid size (number of lines visible)
 
 //  rotate a point around the origin by <angle> radians
 vec2 rotate(vec2 point, float angle) {
@@ -45,14 +49,16 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     p = rotate(p,iRotationAngle);
 
     // iWow1 controls path curvature
+    float pathCurvature = iWow1 + bassEffect;
+
     // high values of iWow1 add 3D waves to the horizon
-    horizonY += (iWow1 > 0.5) ? (0.2*(iWow1 - 0.5)) * sin(p.x * 5.0 + iTime * 3.0) : 0.0;
+    horizonY += (pathCurvature > 0.5) ? (0.2*(pathCurvature - 0.5)) * sin(p.x * 5.0 + iTime * 3.0) : 0.0;
 
     // Define the current grid displacement
     vec3 displace = vec3(0.0, -4.0 * (1.0 / gridScale) * -iTime, 1.5);
 
     // bend x axis to the beat - iWow1 controls the amplitude of the curves
-    p.x += min(0.5,iWow1)/6.0 * sin(iTime + p.y * 12.0);
+    p.x += min(0.5,pathCurvature)/6.0 * sin(iTime + p.y * 12.0);
 
     // Get worldspace position of grid
     vec3 gridPos = revProject(p - vec2(0.0, horizonY), displace.z, fov);
