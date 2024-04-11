@@ -403,6 +403,29 @@ public class ShaderPanelsPatternConfig {
     }
   }
 
+  @LXCategory("DREVO Shaders")
+  public static class MetallicBitWaves extends ConstructedShaderPattern {
+    public MetallicWaves(LX lx) {
+      super(lx, TEShaderView.ALL_POINTS);
+    }
+
+    @Override
+    protected void createShader() {
+      controls.setValue(TEControlTag.LEVELREACTIVITY, 0.05);
+      controls.setValue(TEControlTag.FREQREACTIVITY, 0.08);
+      // set up common controls
+      controls.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
+      controls.setValue(TEControlTag.SPEED, 0.5);
+      controls.setValue(TEControlTag.SPIN, 0.08);
+
+      controls.setRange(TEControlTag.SIZE, 1, 6, 0.1); // overall scale
+      controls.setRange(TEControlTag.QUANTITY, 6, 1, 16); // number of waves
+      controls.setRange(TEControlTag.WOW1, 0, 0, 0.25); // pixelated decomposition
+
+      addShader("metallic_bit_wave.fs");
+    }
+  }
+
   @LXCategory("Noise")
   public static class SmokeShader extends ConstructedShaderPattern {
     public SmokeShader(LX lx) {
