@@ -59,10 +59,10 @@ public class TECommonControls {
   public void buildDefaultControlList() {
     LXListenableNormalizedParameter p;
 
-    p = new CompoundParameter(TEControlTag.LEVELREACTIVITY.getLabel(), 0.5, 0, 1).setDescription("Level Reactivity");
+    p = new CompoundParameter(TEControlTag.LEVELREACTIVITY.getLabel(), 0.1, 0, 1).setDescription("Level Reactivity");
     setControl(TEControlTag.LEVELREACTIVITY, p);
 
-    p = new CompoundParameter(TEControlTag.FREQREACTIVITY.getLabel(), 0.5, 0, 1).setDescription("Frequency Reactivity");
+    p = new CompoundParameter(TEControlTag.FREQREACTIVITY.getLabel(), 0.1, 0, 1).setDescription("Frequency Reactivity");
     setControl(TEControlTag.FREQREACTIVITY, p);
 
     p =
