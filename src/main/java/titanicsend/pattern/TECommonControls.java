@@ -375,7 +375,7 @@ public class TECommonControls {
           getControl(TEControlTag.WOW1).control,
           getControl(TEControlTag.WOW2).control,
           getControl(TEControlTag.WOWTRIGGER).control,
-          null,  // former shader-specific explode control
+          null  // former shader-specific explode control
           // To be SHIFT, not implemented yet
         });
   }
