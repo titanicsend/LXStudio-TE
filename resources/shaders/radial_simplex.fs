@@ -168,7 +168,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     }
 
     // bump up the gain a little, and adjust gamma
-    noise *= 1.15;
+    noise *= 1.15 * (1. - beat * levelReact);
     noise = noise * noise;
 
     // Wow2 controls the mix of foreground color vs. gradient
