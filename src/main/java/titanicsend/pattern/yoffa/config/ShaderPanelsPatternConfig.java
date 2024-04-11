@@ -394,10 +394,12 @@ public class ShaderPanelsPatternConfig {
       // set up common controls
       controls.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
       controls.setValue(TEControlTag.SPEED, 0.5);
-
-      controls.setRange(TEControlTag.SIZE, 1, 6, 0.1); // overall scale
-      controls.setRange(TEControlTag.QUANTITY, 6, 1, 16); // number of waves
-      controls.setRange(TEControlTag.WOW1, 0, 0, 0.25); // pixelated decomposition
+      controls.setRange(TEControlTag.WOW1, 0, 0, 0.25); // complexity
+      controls.setRange(TEControlTag.WOW2, 0, 0, 1); // contrast
+      controls.setRange(TEControlTag.QUANTITY, 1, 1, 16); // number of kaleidoscope slices
+      controls.setValue(TEControlTag.SPIN, 0);
+      controls.setRange(TEControlTag.LEVELREACTIVITY,0.33,0,1);
+      controls.setRange(TEControlTag.FREQREACTIVITY,0.33,0,1);
 
       addShader("metallic_wave.fs");
     }
