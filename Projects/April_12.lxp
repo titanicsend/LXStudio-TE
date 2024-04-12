@@ -1,6 +1,6 @@
 {
   "version": "0.4.2.TE.7-SNAPSHOT",
-  "timestamp": 1712908227302,
+  "timestamp": 1712908947365,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -2818,7 +2818,7 @@
         },
         "parameters": {
           "label": "Tempo",
-          "clockSource": 2,
+          "clockSource": 0,
           "period": 485.25,
           "bpm": 123.64760432766616,
           "tap": false,
@@ -3072,7 +3072,7 @@
               "gain": 0.0,
               "range": 48.0,
               "attack": 0.0,
-              "release": 163.76635545511724,
+              "release": 571.3931427862855,
               "slope": 6.356249867923907,
               "band-1": 0.0,
               "band-2": 0.0,
@@ -3105,7 +3105,7 @@
         },
         "parameters": {
           "label": "Mixer",
-          "crossfader": 0.8661417322834646,
+          "crossfader": 0.8740157480314961,
           "crossfaderBlendMode": 1,
           "focusedChannel": 9,
           "focusedChannelAux": 8,
@@ -3199,53 +3199,6 @@
                 "children": {
                   "modulation": {
                     "id": 46375,
-                    "class": "heronarts.lx.modulation.LXModulationEngine",
-                    "internal": {
-                      "modulationColor": 0,
-                      "modulationControlsExpanded": true,
-                      "modulationsExpanded": true
-                    },
-                    "parameters": {
-                      "label": "Modulation"
-                    },
-                    "children": {},
-                    "modulators": [],
-                    "modulations": [],
-                    "triggers": []
-                  }
-                },
-                "deviceVersion": -1
-              },
-              {
-                "id": 78342,
-                "class": "heronarts.lx.effect.StrobeEffect",
-                "internal": {
-                  "modulationColor": 0,
-                  "modulationControlsExpanded": true,
-                  "modulationsExpanded": true,
-                  "expanded": true,
-                  "expandedCue": true,
-                  "expandedAux": true,
-                  "modulationExpanded": false
-                },
-                "parameters": {
-                  "label": "Strobe",
-                  "view": 0,
-                  "viewPriority": 0,
-                  "enabled": false,
-                  "speed": 0.0,
-                  "depth": 1.0,
-                  "bias": -0.0599999837577343,
-                  "waveshape": 4,
-                  "tempoSync": true,
-                  "tempoDivision": 5,
-                  "tempoPhaseOffset": 0.0,
-                  "minFrequency": 0.5,
-                  "maxFrequency": 10.0
-                },
-                "children": {
-                  "modulation": {
-                    "id": 78343,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,
@@ -3418,6 +3371,53 @@
                 "children": {
                   "modulation": {
                     "id": 134290,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 142796,
+                "class": "heronarts.lx.effect.StrobeEffect",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true,
+                  "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "Strobe",
+                  "view": 0,
+                  "viewPriority": 0,
+                  "enabled": true,
+                  "speed": 0.5,
+                  "depth": 0.0,
+                  "bias": 0.0,
+                  "waveshape": 4,
+                  "tempoSync": true,
+                  "tempoDivision": 5,
+                  "tempoPhaseOffset": 0.0,
+                  "minFrequency": 0.5,
+                  "maxFrequency": 5.0
+                },
+                "children": {
+                  "modulation": {
+                    "id": 142797,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,
@@ -28830,35 +28830,9 @@
             "target": {
               "componentId": 58785,
               "parameterPath": "speed",
-              "path": "/mixer/master/effect/4/speed"
-            },
-            "id": 58795,
-            "class": "heronarts.lx.modulation.LXCompoundModulation",
-            "internal": {
-              "modulationColor": 0,
-              "modulationControlsExpanded": true,
-              "modulationsExpanded": true
-            },
-            "parameters": {
-              "label": "LX",
-              "enabled": true,
-              "polarity": 0,
-              "range": 1.0
-            },
-            "children": {}
-          },
-          {
-            "source": {
-              "componentId": 45112,
-              "parameterPath": "output1",
-              "path": "/modulation/modulator/5/output1"
-            },
-            "target": {
-              "componentId": 78342,
-              "parameterPath": "speed",
               "path": "/mixer/master/effect/3/speed"
             },
-            "id": 78349,
+            "id": 58795,
             "class": "heronarts.lx.modulation.LXCompoundModulation",
             "internal": {
               "modulationColor": 0,
@@ -28903,40 +28877,13 @@
           {
             "source": {
               "componentId": 45112,
-              "parameterPath": "range1active",
-              "path": "/modulation/modulator/5/range1active"
-            },
-            "target": {
-              "componentId": 78342,
-              "parameterPath": "enabled",
-              "path": "/mixer/master/effect/3/enabled"
-            },
-            "id": 78346,
-            "class": "heronarts.lx.modulation.LXTriggerModulation",
-            "internal": {
-              "modulationColor": 0,
-              "modulationControlsExpanded": true,
-              "modulationsExpanded": true
-            },
-            "parameters": {
-              "label": "LX",
-              "enabled": true,
-              "toggleMode": 0,
-              "momentaryToggleMode": 0,
-              "toggleMomentaryMode": 0
-            },
-            "children": {}
-          },
-          {
-            "source": {
-              "componentId": 45112,
               "parameterPath": "range2active",
               "path": "/modulation/modulator/5/range2active"
             },
             "target": {
               "componentId": 58785,
               "parameterPath": "enabled",
-              "path": "/mixer/master/effect/4/enabled"
+              "path": "/mixer/master/effect/3/enabled"
             },
             "id": 78350,
             "class": "heronarts.lx.modulation.LXTriggerModulation",
@@ -29426,6 +29373,38 @@
             "componentId": 112248,
             "parameterPath": "trigger",
             "pitch": 68
+          },
+          {
+            "channel": 0,
+            "type": "CONTROL_CHANGE",
+            "path": "/lx/mixer/master/effect/7/depth",
+            "componentId": 142796,
+            "parameterPath": "depth",
+            "cc": 16
+          },
+          {
+            "channel": 0,
+            "type": "CONTROL_CHANGE",
+            "path": "/lx/audio/modulator/1/gain",
+            "componentId": 16,
+            "parameterPath": "gain",
+            "cc": 20
+          },
+          {
+            "channel": 0,
+            "type": "CONTROL_CHANGE",
+            "path": "/lx/audio/modulator/1/release",
+            "componentId": 16,
+            "parameterPath": "release",
+            "cc": 21
+          },
+          {
+            "channel": 0,
+            "type": "NOTE",
+            "path": "/lx/mixer/master/effect/5/trigger",
+            "componentId": 134285,
+            "parameterPath": "trigger",
+            "pitch": 58
           }
         ]
       },
