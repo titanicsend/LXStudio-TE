@@ -1,6 +1,6 @@
 {
   "version": "0.4.2.TE.7-SNAPSHOT",
-  "timestamp": 1712908947365,
+  "timestamp": 1712909098166,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -3072,7 +3072,7 @@
               "gain": 0.0,
               "range": 48.0,
               "attack": 0.0,
-              "release": 571.3931427862855,
+              "release": 100.0,
               "slope": 6.356249867923907,
               "band-1": 0.0,
               "band-2": 0.0,
@@ -3105,7 +3105,7 @@
         },
         "parameters": {
           "label": "Mixer",
-          "crossfader": 0.8740157480314961,
+          "crossfader": 0.47244094488188976,
           "crossfaderBlendMode": 1,
           "focusedChannel": 9,
           "focusedChannelAux": 8,
@@ -3406,7 +3406,7 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "speed": 0.5,
-                  "depth": 0.0,
+                  "depth": 0.08661417322834646,
                   "bias": 0.0,
                   "waveshape": 4,
                   "tempoSync": true,
@@ -29404,7 +29404,7 @@
             "path": "/lx/mixer/master/effect/5/trigger",
             "componentId": 134285,
             "parameterPath": "trigger",
-            "pitch": 58
+            "pitch": 61
           }
         ]
       },
