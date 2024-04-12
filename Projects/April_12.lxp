@@ -1,6 +1,6 @@
 {
   "version": "0.4.2.TE.7-SNAPSHOT",
-  "timestamp": 1712433060081,
+  "timestamp": 1712908227302,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -30,7 +30,7 @@
         "children": {},
         "views": [
           {
-            "id": 923,
+            "id": 596,
             "class": "heronarts.lx.structure.view.LXViewDefinition",
             "internal": {
               "modulationColor": 0,
@@ -47,7 +47,7 @@
             "children": {}
           },
           {
-            "id": 924,
+            "id": 597,
             "class": "heronarts.lx.structure.view.LXViewDefinition",
             "internal": {
               "modulationColor": 1,
@@ -64,7 +64,7 @@
             "children": {}
           },
           {
-            "id": 925,
+            "id": 598,
             "class": "heronarts.lx.structure.view.LXViewDefinition",
             "internal": {
               "modulationColor": 2,
@@ -81,7 +81,7 @@
             "children": {}
           },
           {
-            "id": 926,
+            "id": 599,
             "class": "heronarts.lx.structure.view.LXViewDefinition",
             "internal": {
               "modulationColor": 3,
@@ -98,7 +98,7 @@
             "children": {}
           },
           {
-            "id": 927,
+            "id": 600,
             "class": "heronarts.lx.structure.view.LXViewDefinition",
             "internal": {
               "modulationColor": 4,
@@ -115,7 +115,7 @@
             "children": {}
           },
           {
-            "id": 928,
+            "id": 601,
             "class": "heronarts.lx.structure.view.LXViewDefinition",
             "internal": {
               "modulationColor": 5,
@@ -132,7 +132,7 @@
             "children": {}
           },
           {
-            "id": 929,
+            "id": 602,
             "class": "heronarts.lx.structure.view.LXViewDefinition",
             "internal": {
               "modulationColor": 6,
@@ -149,7 +149,7 @@
             "children": {}
           },
           {
-            "id": 930,
+            "id": 603,
             "class": "heronarts.lx.structure.view.LXViewDefinition",
             "internal": {
               "modulationColor": 7,
@@ -166,7 +166,7 @@
             "children": {}
           },
           {
-            "id": 931,
+            "id": 604,
             "class": "heronarts.lx.structure.view.LXViewDefinition",
             "internal": {
               "modulationColor": 8,
@@ -183,7 +183,7 @@
             "children": {}
           },
           {
-            "id": 932,
+            "id": 605,
             "class": "heronarts.lx.structure.view.LXViewDefinition",
             "internal": {
               "modulationColor": 9,
@@ -237,7 +237,7 @@
           "autoCycleEnabled": false,
           "autoCycleMode": 0,
           "autoCycleTimeSecs": 60.0,
-          "autoCycleCursor": 7,
+          "autoCycleCursor": 9,
           "triggerSwatchCycle": false,
           "expandedPerformance": true
         },
@@ -251,7 +251,7 @@
               "modulationsExpanded": true
             },
             "parameters": {
-              "label": "GreenRod",
+              "label": "SynWv",
               "recall": false,
               "autoCycleEligible": true
             },
@@ -310,13 +310,13 @@
                 "parameters": {
                   "label": "LX",
                   "mode": 0,
-                  "period": 32.0,
-                  "primary/brightness": 95.49999237060547,
-                  "primary/saturation": 80.83333587646484,
-                  "primary/hue": 78.0,
-                  "secondary/brightness": 94.99999237060547,
-                  "secondary/saturation": 82.5,
-                  "secondary/hue": 96.00000762939453
+                  "period": 16.0,
+                  "primary/brightness": 89.0,
+                  "primary/saturation": 75.0,
+                  "primary/hue": 323.0,
+                  "secondary/brightness": 84.99996185302734,
+                  "secondary/saturation": 71.66666412353516,
+                  "secondary/hue": 9.0
                 },
                 "children": {}
               },
@@ -331,13 +331,13 @@
                 "parameters": {
                   "label": "LX",
                   "mode": 0,
-                  "period": 24.0,
-                  "primary/brightness": 96.0,
-                  "primary/saturation": 95.83333587646484,
-                  "primary/hue": 99.0,
-                  "secondary/brightness": 100.0,
-                  "secondary/saturation": 98.33333587646484,
-                  "secondary/hue": 72.0
+                  "period": 8.0,
+                  "primary/brightness": 75.00000046938658,
+                  "primary/saturation": 77.25000762939453,
+                  "primary/hue": 256.0,
+                  "secondary/brightness": 76.66666412353516,
+                  "secondary/saturation": 77.25000762939453,
+                  "secondary/hue": 258.0
                 },
                 "children": {}
               },
@@ -355,7 +355,7 @@
                   "period": 30.0,
                   "primary/brightness": 0.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 39.0,
+                  "primary/hue": 27.000001907348633,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -2818,9 +2818,9 @@
         },
         "parameters": {
           "label": "Tempo",
-          "clockSource": 0,
-          "period": 445.25,
-          "bpm": 134.7557551937114,
+          "clockSource": 2,
+          "period": 485.25,
+          "bpm": 123.64760432766616,
           "tap": false,
           "nudgeUp": false,
           "nudgeDown": false,
@@ -3030,7 +3030,7 @@
             },
             "parameters": {
               "label": "Input",
-              "device": 3
+              "device": 0
             },
             "children": {}
           },
@@ -3105,10 +3105,10 @@
         },
         "parameters": {
           "label": "Mixer",
-          "crossfader": 0.4645669291338583,
+          "crossfader": 0.8661417322834646,
           "crossfaderBlendMode": 1,
           "focusedChannel": 9,
-          "focusedChannelAux": 6,
+          "focusedChannelAux": 8,
           "cueA": false,
           "cueB": false,
           "auxA": false,
@@ -3142,7 +3142,7 @@
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
                   "modulationsExpanded": true,
-                  "expanded": false,
+                  "expanded": true,
                   "expandedCue": true,
                   "expandedAux": true,
                   "modulationExpanded": false
@@ -3223,7 +3223,7 @@
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
                   "modulationsExpanded": true,
-                  "expanded": false,
+                  "expanded": true,
                   "expandedCue": true,
                   "expandedAux": true,
                   "modulationExpanded": false
@@ -3235,9 +3235,9 @@
                   "enabled": false,
                   "speed": 0.0,
                   "depth": 1.0,
-                  "bias": 1.0,
-                  "waveshape": 1,
-                  "tempoSync": false,
+                  "bias": -0.0599999837577343,
+                  "waveshape": 4,
+                  "tempoSync": true,
                   "tempoDivision": 5,
                   "tempoPhaseOffset": 0.0,
                   "minFrequency": 0.5,
@@ -3373,7 +3373,7 @@
                   "tempoSync": false,
                   "tempoDivision": 2,
                   "tempoPhaseOffset": 0.0,
-                  "size": 0.0,
+                  "size": 10.0,
                   "manualTrigger": true,
                   "trigger": false
                 },
@@ -3454,7 +3454,7 @@
             },
             "parameters": {
               "label": "1 (MAIN Hi + Lo)",
-              "fader": 1.0,
+              "fader": 0.0,
               "arm": false,
               "selected": false,
               "enabled": true,
@@ -3553,7 +3553,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -3566,8 +3566,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -3638,7 +3637,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -3651,8 +3650,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -3723,7 +3721,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -3736,8 +3734,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -3808,7 +3805,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -3821,8 +3818,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -3893,7 +3889,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -3906,8 +3902,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -3940,7 +3935,7 @@
                   "te_quantity": 1.2983695804141462,
                   "te_spin": 0.038102027168603,
                   "te_brightness": 1.0,
-                  "te_wow1": 0.6417289178352803,
+                  "te_wow1": 0.25,
                   "te_wow2": 0.5,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
@@ -3978,7 +3973,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -3991,8 +3986,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -4063,7 +4057,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -4076,8 +4070,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -4125,8 +4118,7 @@
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0,
                   "te_color/color2offset": 0.5,
-                  "width": 0.5,
-                  "glow": 0.2
+                  "width": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -4150,7 +4142,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -4163,8 +4155,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -4235,7 +4226,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -4248,8 +4239,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -4320,7 +4310,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -4333,8 +4323,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -4405,7 +4394,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -4418,8 +4407,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -4490,7 +4478,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -4503,8 +4491,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -4575,7 +4562,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -4588,8 +4575,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -4660,7 +4646,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -4673,8 +4659,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -4722,8 +4707,7 @@
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0,
                   "te_color/color2offset": 0.5,
-                  "width": 0.5,
-                  "glow": 0.2
+                  "width": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -4747,7 +4731,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -4760,8 +4744,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -4832,7 +4815,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -4845,8 +4828,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -4917,7 +4899,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -4930,8 +4912,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -5002,7 +4983,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -5015,8 +4996,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -5087,7 +5067,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -5100,8 +5080,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -5172,7 +5151,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -5185,8 +5164,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -5257,7 +5235,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -5270,8 +5248,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -5342,7 +5319,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -5355,8 +5332,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -5427,7 +5403,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -5440,8 +5416,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -5512,7 +5487,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -5525,8 +5500,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -5597,7 +5571,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -5610,8 +5584,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -5682,7 +5655,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -5695,8 +5668,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -5767,7 +5739,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -5780,8 +5752,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -5852,7 +5823,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -5865,8 +5836,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -5937,7 +5907,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -5950,8 +5920,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -6022,7 +5991,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -6035,8 +6004,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -6109,7 +6077,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -6122,8 +6090,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -6196,7 +6163,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -6209,8 +6176,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -6281,7 +6247,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -6294,8 +6260,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -6366,7 +6331,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -6379,8 +6344,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -6451,7 +6415,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -6464,8 +6428,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -6536,7 +6499,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -6549,8 +6512,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -6621,7 +6583,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -6634,8 +6596,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -6706,7 +6667,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -6719,8 +6680,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -6791,7 +6751,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -6804,8 +6764,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -6876,7 +6835,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -6889,8 +6848,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -6961,7 +6919,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -6974,8 +6932,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -7046,7 +7003,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -7059,8 +7016,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               }
@@ -7083,7 +7039,7 @@
               "fader": 1.0,
               "arm": false,
               "selected": false,
-              "enabled": false,
+              "enabled": true,
               "cue": false,
               "aux": false,
               "crossfadeGroup": 0,
@@ -7104,13 +7060,13 @@
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 10,
+              "focusedPattern": 42,
               "triggerPatternCycle": false
             },
             "children": {},
             "effects": [],
             "clips": [],
-            "patternIndex": 10,
+            "patternIndex": 42,
             "patterns": [
               {
                 "id": 131483,
@@ -7179,7 +7135,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -7192,8 +7148,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -7264,7 +7219,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -7277,8 +7232,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -7349,7 +7303,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -7362,8 +7316,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -7434,7 +7387,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -7447,8 +7400,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -7519,7 +7471,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -7532,8 +7484,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -7566,7 +7517,7 @@
                   "te_quantity": 1.2983695804141462,
                   "te_spin": 0.038102027168603,
                   "te_brightness": 1.0,
-                  "te_wow1": 0.6417289178352803,
+                  "te_wow1": 0.25,
                   "te_wow2": 0.5,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
@@ -7604,7 +7555,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -7617,8 +7568,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -7689,7 +7639,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -7702,8 +7652,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -7751,8 +7700,7 @@
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0,
                   "te_color/color2offset": 0.5,
-                  "width": 0.5,
-                  "glow": 0.2
+                  "width": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -7776,7 +7724,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -7789,8 +7737,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -7861,7 +7808,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -7874,8 +7821,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -7946,7 +7892,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -7959,8 +7905,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -8031,7 +7976,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -8044,8 +7989,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -8116,7 +8060,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -8129,8 +8073,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -8201,7 +8144,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -8214,8 +8157,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -8286,7 +8228,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -8299,8 +8241,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -8348,8 +8289,7 @@
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0,
                   "te_color/color2offset": 0.5,
-                  "width": 0.5,
-                  "glow": 0.2
+                  "width": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -8373,7 +8313,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -8386,8 +8326,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -8458,7 +8397,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -8471,8 +8410,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -8543,7 +8481,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -8556,8 +8494,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -8628,7 +8565,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -8641,8 +8578,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -8713,7 +8649,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -8726,8 +8662,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -8798,7 +8733,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -8811,8 +8746,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -8883,7 +8817,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -8896,8 +8830,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -8968,7 +8901,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -8981,8 +8914,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -9053,7 +8985,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -9066,8 +8998,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -9138,7 +9069,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -9151,8 +9082,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -9223,7 +9153,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -9236,8 +9166,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -9308,7 +9237,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -9321,8 +9250,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -9393,7 +9321,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -9406,8 +9334,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -9478,7 +9405,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -9491,8 +9418,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -9563,7 +9489,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -9576,8 +9502,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -9648,7 +9573,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -9661,8 +9586,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -9735,7 +9659,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -9748,8 +9672,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -9822,7 +9745,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -9835,8 +9758,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -9907,7 +9829,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -9920,8 +9842,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -9992,7 +9913,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -10005,8 +9926,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -10077,7 +9997,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -10090,8 +10010,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -10162,7 +10081,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -10175,8 +10094,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -10247,7 +10165,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -10260,8 +10178,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -10332,7 +10249,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -10345,8 +10262,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -10417,7 +10333,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -10430,8 +10346,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -10502,7 +10417,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -10515,8 +10430,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -10587,7 +10501,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -10600,8 +10514,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -10672,7 +10585,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -10685,8 +10598,91 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
+                  null
+                ],
+                "effects": []
+              },
+              {
+                "id": 142746,
+                "class": "titanicsend.pattern.sinas.TdNdiPattern",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true,
+                  "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "TdNdi",
+                  "view": 0,
+                  "viewPriority": 0,
+                  "enabled": true,
+                  "recall": false,
+                  "compositeMode": 0,
+                  "compositeLevel": 1.0,
+                  "hasCustomCycleTime": false,
+                  "customCycleTimeSecs": 60.0,
+                  "te_speed": 0.5,
+                  "te_xpos": 0.0,
+                  "te_ypos": 0.0,
+                  "te_size": 1.0,
+                  "te_quantity": 0.5,
+                  "te_spin": 0.0,
+                  "te_brightness": 1.0,
+                  "te_wow1": 0.0,
+                  "te_wow2": 0.0,
+                  "te_wowtrigger": false,
+                  "te_angle": 0.0,
+                  "te_level": 0.1,
+                  "te_freq": 0.1,
+                  "panic": false,
+                  "te_color/brightness": 100.0,
+                  "te_color/saturation": 100.0,
+                  "te_color/hue": 0.0,
+                  "te_color/solidSource": 1,
+                  "te_color/gradient": 0,
+                  "te_color/blendMode": 0,
+                  "te_color/offset": 0.0,
+                  "te_color/color2offset": 0.5
+                },
+                "children": {
+                  "modulation": {
+                    "id": 142747,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1,
+                "remoteControls": [
+                  "/te_level",
+                  "/te_freq",
+                  "/view",
+                  "/te_speed",
+                  "/te_xpos",
+                  "/te_ypos",
+                  "/te_quantity",
+                  "/te_size",
+                  "/te_angle",
+                  "/te_spin",
+                  "/panic",
                   null,
-                  "/view"
+                  "/te_wow1",
+                  "/te_wow2",
+                  "/te_wowtrigger",
+                  null
                 ],
                 "effects": []
               }
@@ -10706,7 +10702,7 @@
             },
             "parameters": {
               "label": "3 (Hi + Lo)",
-              "fader": 1.0,
+              "fader": 0.0,
               "arm": false,
               "selected": false,
               "enabled": false,
@@ -10805,7 +10801,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -10818,8 +10814,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -10890,7 +10885,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -10903,8 +10898,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -10975,7 +10969,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -10988,8 +10982,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -11060,7 +11053,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -11073,8 +11066,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -11145,7 +11137,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -11158,8 +11150,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -11192,7 +11183,7 @@
                   "te_quantity": 1.2983695804141462,
                   "te_spin": 0.038102027168603,
                   "te_brightness": 1.0,
-                  "te_wow1": 0.6417289178352803,
+                  "te_wow1": 0.25,
                   "te_wow2": 0.5,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
@@ -11230,7 +11221,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -11243,8 +11234,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -11315,7 +11305,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -11328,8 +11318,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -11377,8 +11366,7 @@
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0,
                   "te_color/color2offset": 0.5,
-                  "width": 0.5,
-                  "glow": 0.2
+                  "width": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -11402,7 +11390,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -11415,8 +11403,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -11487,7 +11474,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -11500,8 +11487,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -11572,7 +11558,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -11585,8 +11571,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -11657,7 +11642,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -11670,8 +11655,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -11742,7 +11726,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -11755,8 +11739,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -11827,7 +11810,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -11840,8 +11823,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -11912,7 +11894,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -11925,8 +11907,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -11974,8 +11955,7 @@
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0,
                   "te_color/color2offset": 0.5,
-                  "width": 0.5,
-                  "glow": 0.2
+                  "width": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -11999,7 +11979,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -12012,8 +11992,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -12084,7 +12063,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -12097,8 +12076,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -12169,7 +12147,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -12182,8 +12160,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -12254,7 +12231,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -12267,8 +12244,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -12339,7 +12315,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -12352,8 +12328,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -12424,7 +12399,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -12437,8 +12412,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -12509,7 +12483,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -12522,8 +12496,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -12594,7 +12567,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -12607,8 +12580,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -12679,7 +12651,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -12692,8 +12664,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -12764,7 +12735,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -12777,8 +12748,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -12849,7 +12819,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -12862,8 +12832,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -12934,7 +12903,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -12947,8 +12916,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -13019,7 +12987,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -13032,8 +13000,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -13104,7 +13071,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -13117,8 +13084,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -13189,7 +13155,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -13202,8 +13168,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -13274,7 +13239,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -13287,8 +13252,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -13361,7 +13325,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -13374,8 +13338,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -13448,7 +13411,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -13461,8 +13424,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -13533,7 +13495,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -13546,8 +13508,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -13618,7 +13579,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -13631,8 +13592,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -13703,7 +13663,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -13716,8 +13676,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -13788,7 +13747,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -13801,8 +13760,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -13873,7 +13831,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -13886,8 +13844,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -13958,7 +13915,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -13971,8 +13928,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -14043,7 +13999,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -14056,8 +14012,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -14128,7 +14083,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -14141,8 +14096,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -14213,7 +14167,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -14226,8 +14180,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -14298,7 +14251,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -14311,8 +14264,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               }
@@ -14332,7 +14284,7 @@
             },
             "parameters": {
               "label": "4 (Edges)",
-              "fader": 1.0,
+              "fader": 0.0,
               "arm": false,
               "selected": false,
               "enabled": true,
@@ -14431,7 +14383,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -14444,8 +14396,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -14516,7 +14467,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -14529,8 +14480,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -14601,7 +14551,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -14614,8 +14564,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -14686,7 +14635,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -14699,8 +14648,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -14771,7 +14719,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -14784,8 +14732,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -14856,7 +14803,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -14869,8 +14816,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -14941,7 +14887,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -14954,8 +14900,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -15026,7 +14971,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -15039,8 +14984,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -15089,11 +15033,11 @@
                   "te_color/offset": 0.0,
                   "te_color/color2offset": 0.5,
                   "Glow": 1.5,
-                  "Energy": 0.0,
-                  "Wibble Size": 0.15,
                   "Glow2": 9.0,
-                  "Speed": 0.0,
-                  "Thickness": 0.3
+                  "Energy": 0.0,
+                  "Thickness": 0.3,
+                  "Wibble Size": 0.15,
+                  "Speed": 0.0
                 },
                 "children": {
                   "modulation": {
@@ -15117,7 +15061,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -15130,8 +15074,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -15179,8 +15122,7 @@
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0,
                   "te_color/color2offset": 0.5,
-                  "width": 0.5,
-                  "glow": 0.2
+                  "width": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -15204,7 +15146,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -15217,8 +15159,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -15289,7 +15230,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -15302,8 +15243,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -15374,7 +15314,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -15387,8 +15327,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -15459,7 +15398,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -15472,8 +15411,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -15544,7 +15482,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -15557,8 +15495,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -15629,7 +15566,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -15642,8 +15579,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -15714,7 +15650,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -15727,8 +15663,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -15799,7 +15734,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -15812,8 +15747,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -15884,7 +15818,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -15897,8 +15831,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -15969,7 +15902,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -15982,8 +15915,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -16054,7 +15986,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -16067,8 +15999,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -16139,7 +16070,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -16152,8 +16083,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -16226,7 +16156,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -16239,8 +16169,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -16311,7 +16240,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -16324,8 +16253,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -16396,7 +16324,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -16409,8 +16337,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -16481,7 +16408,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -16494,8 +16421,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -16566,7 +16492,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -16579,8 +16505,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -16651,7 +16576,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -16664,8 +16589,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -16736,7 +16660,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -16749,8 +16673,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -16783,7 +16706,7 @@
                   "te_quantity": 7.0,
                   "te_spin": 0.0,
                   "te_brightness": 1.0,
-                  "te_wow1": 0.04,
+                  "te_wow1": 0.05,
                   "te_wow2": 0.5,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
@@ -16821,7 +16744,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -16834,8 +16757,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               }
@@ -16855,7 +16777,7 @@
             },
             "parameters": {
               "label": "5 (Hi + Lo)",
-              "fader": 1.0,
+              "fader": 0.0,
               "arm": false,
               "selected": false,
               "enabled": false,
@@ -16954,7 +16876,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -16967,8 +16889,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -17039,7 +16960,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -17052,8 +16973,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -17124,7 +17044,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -17137,8 +17057,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -17209,7 +17128,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -17222,8 +17141,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -17294,7 +17212,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -17307,8 +17225,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -17341,7 +17258,7 @@
                   "te_quantity": 1.2983695804141462,
                   "te_spin": 0.038102027168603,
                   "te_brightness": 1.0,
-                  "te_wow1": 0.6417289178352803,
+                  "te_wow1": 0.25,
                   "te_wow2": 0.5,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
@@ -17379,7 +17296,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -17392,8 +17309,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -17464,7 +17380,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -17477,8 +17393,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -17526,8 +17441,7 @@
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0,
                   "te_color/color2offset": 0.5,
-                  "width": 0.5,
-                  "glow": 0.2
+                  "width": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -17551,7 +17465,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -17564,8 +17478,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -17636,7 +17549,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -17649,8 +17562,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -17721,7 +17633,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -17734,8 +17646,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -17806,7 +17717,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -17819,8 +17730,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -17891,7 +17801,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -17904,8 +17814,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -17976,7 +17885,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -17989,8 +17898,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -18061,7 +17969,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -18074,8 +17982,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -18123,8 +18030,7 @@
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0,
                   "te_color/color2offset": 0.5,
-                  "width": 0.5,
-                  "glow": 0.2
+                  "width": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -18148,7 +18054,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -18161,8 +18067,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -18233,7 +18138,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -18246,8 +18151,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -18318,7 +18222,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -18331,8 +18235,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -18403,7 +18306,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -18416,8 +18319,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -18488,7 +18390,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -18501,8 +18403,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -18573,7 +18474,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -18586,8 +18487,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -18658,7 +18558,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -18671,8 +18571,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -18743,7 +18642,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -18756,8 +18655,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -18828,7 +18726,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -18841,8 +18739,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -18913,7 +18810,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -18926,8 +18823,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -18998,7 +18894,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -19011,8 +18907,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -19083,7 +18978,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -19096,8 +18991,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -19168,7 +19062,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -19181,8 +19075,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -19253,7 +19146,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -19266,8 +19159,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -19338,7 +19230,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -19351,8 +19243,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -19423,7 +19314,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -19436,8 +19327,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -19510,7 +19400,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -19523,8 +19413,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -19597,7 +19486,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -19610,8 +19499,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -19682,7 +19570,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -19695,8 +19583,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -19767,7 +19654,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -19780,8 +19667,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -19852,7 +19738,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -19865,8 +19751,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -19937,7 +19822,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -19950,8 +19835,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -20022,7 +19906,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -20035,8 +19919,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -20107,7 +19990,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -20120,8 +20003,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -20192,7 +20074,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -20205,8 +20087,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -20277,7 +20158,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -20290,8 +20171,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -20362,7 +20242,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -20375,8 +20255,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -20447,7 +20326,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -20460,8 +20339,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               }
@@ -20481,7 +20359,7 @@
             },
             "parameters": {
               "label": "6 (Hi + Lo)",
-              "fader": 1.0,
+              "fader": 0.0,
               "arm": false,
               "selected": false,
               "enabled": false,
@@ -20505,13 +20383,13 @@
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 10,
+              "focusedPattern": 18,
               "triggerPatternCycle": false
             },
             "children": {},
             "effects": [],
             "clips": [],
-            "patternIndex": 10,
+            "patternIndex": 18,
             "patterns": [
               {
                 "id": 133175,
@@ -20580,7 +20458,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -20593,8 +20471,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -20665,7 +20542,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -20678,8 +20555,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -20750,7 +20626,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -20763,8 +20639,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -20835,7 +20710,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -20848,8 +20723,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -20920,7 +20794,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -20933,8 +20807,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -20967,7 +20840,7 @@
                   "te_quantity": 1.2983695804141462,
                   "te_spin": 0.038102027168603,
                   "te_brightness": 1.0,
-                  "te_wow1": 0.6417289178352803,
+                  "te_wow1": 0.25,
                   "te_wow2": 0.5,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
@@ -21005,7 +20878,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -21018,8 +20891,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -21090,7 +20962,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -21103,8 +20975,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -21152,8 +21023,7 @@
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0,
                   "te_color/color2offset": 0.5,
-                  "width": 0.5,
-                  "glow": 0.2
+                  "width": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -21177,7 +21047,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -21190,8 +21060,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -21262,7 +21131,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -21275,8 +21144,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -21347,7 +21215,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -21360,8 +21228,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -21432,7 +21299,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -21445,8 +21312,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -21517,7 +21383,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -21530,8 +21396,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -21602,7 +21467,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -21615,8 +21480,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -21687,7 +21551,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -21700,8 +21564,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -21749,8 +21612,7 @@
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0,
                   "te_color/color2offset": 0.5,
-                  "width": 0.5,
-                  "glow": 0.2
+                  "width": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -21774,7 +21636,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -21787,8 +21649,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -21859,7 +21720,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -21872,8 +21733,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -21944,7 +21804,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -21957,8 +21817,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -22029,7 +21888,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -22042,8 +21901,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -22114,7 +21972,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -22127,8 +21985,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -22199,7 +22056,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -22212,8 +22069,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -22284,7 +22140,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -22297,8 +22153,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -22369,7 +22224,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -22382,8 +22237,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -22454,7 +22308,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -22467,8 +22321,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -22539,7 +22392,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -22552,8 +22405,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -22624,7 +22476,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -22637,8 +22489,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -22709,7 +22560,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -22722,8 +22573,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -22794,7 +22644,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -22807,8 +22657,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -22879,7 +22728,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -22892,8 +22741,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -22964,7 +22812,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -22977,8 +22825,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -23049,7 +22896,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -23062,8 +22909,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -23136,7 +22982,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -23149,8 +22995,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -23223,7 +23068,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -23236,8 +23081,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -23308,7 +23152,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -23321,8 +23165,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -23393,7 +23236,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -23406,8 +23249,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -23478,7 +23320,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -23491,8 +23333,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -23563,7 +23404,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -23576,8 +23417,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -23648,7 +23488,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -23661,8 +23501,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -23733,7 +23572,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -23746,8 +23585,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -23818,7 +23656,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -23831,8 +23669,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -23903,7 +23740,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -23916,8 +23753,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -23988,7 +23824,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -24001,8 +23837,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -24073,7 +23908,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -24086,8 +23921,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               }
@@ -24131,13 +23965,13 @@
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 1,
+              "focusedPattern": 42,
               "triggerPatternCycle": false
             },
             "children": {},
             "effects": [],
             "clips": [],
-            "patternIndex": 1,
+            "patternIndex": 42,
             "patterns": [
               {
                 "id": 133739,
@@ -24206,7 +24040,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -24219,8 +24053,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -24291,7 +24124,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -24304,8 +24137,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -24376,7 +24208,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -24389,8 +24221,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -24461,7 +24292,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -24474,8 +24305,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -24546,7 +24376,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -24559,8 +24389,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -24593,7 +24422,7 @@
                   "te_quantity": 1.2983695804141462,
                   "te_spin": 0.038102027168603,
                   "te_brightness": 1.0,
-                  "te_wow1": 0.6417289178352803,
+                  "te_wow1": 0.25,
                   "te_wow2": 0.5,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
@@ -24631,7 +24460,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -24644,8 +24473,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -24716,7 +24544,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -24729,8 +24557,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -24778,8 +24605,7 @@
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0,
                   "te_color/color2offset": 0.5,
-                  "width": 0.5,
-                  "glow": 0.2
+                  "width": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -24803,7 +24629,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -24816,8 +24642,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -24888,7 +24713,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -24901,8 +24726,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -24973,7 +24797,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -24986,8 +24810,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -25058,7 +24881,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -25071,8 +24894,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -25143,7 +24965,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -25156,8 +24978,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -25228,7 +25049,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -25241,8 +25062,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -25313,7 +25133,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -25326,8 +25146,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -25375,8 +25194,7 @@
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0,
                   "te_color/color2offset": 0.5,
-                  "width": 0.5,
-                  "glow": 0.2
+                  "width": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -25400,7 +25218,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -25413,8 +25231,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -25485,7 +25302,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -25498,8 +25315,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -25570,7 +25386,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -25583,8 +25399,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -25655,7 +25470,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -25668,8 +25483,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -25740,7 +25554,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -25753,8 +25567,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -25825,7 +25638,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -25838,8 +25651,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -25910,7 +25722,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -25923,8 +25735,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -25995,7 +25806,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -26008,8 +25819,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -26080,7 +25890,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -26093,8 +25903,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -26165,7 +25974,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -26178,8 +25987,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -26250,7 +26058,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -26263,8 +26071,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -26335,7 +26142,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -26348,8 +26155,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -26420,7 +26226,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -26433,8 +26239,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -26505,7 +26310,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -26518,8 +26323,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -26590,7 +26394,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -26603,8 +26407,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -26675,7 +26478,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -26688,8 +26491,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -26762,7 +26564,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -26775,8 +26577,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -26849,7 +26650,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -26862,8 +26663,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -26934,7 +26734,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -26947,8 +26747,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -27019,7 +26818,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -27032,8 +26831,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -27104,7 +26902,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -27117,8 +26915,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -27189,7 +26986,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -27202,8 +26999,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -27274,7 +27070,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -27287,8 +27083,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -27359,7 +27154,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -27372,8 +27167,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -27444,7 +27238,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -27457,8 +27251,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -27529,7 +27322,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -27542,8 +27335,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -27614,7 +27406,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -27627,8 +27419,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -27699,7 +27490,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -27712,8 +27503,175 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
+                  null
+                ],
+                "effects": []
+              },
+              {
+                "id": 138498,
+                "class": "titanicsend.pattern.sinas.TdNdiPattern",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true,
+                  "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "TdNdi",
+                  "view": 0,
+                  "viewPriority": 0,
+                  "enabled": true,
+                  "recall": false,
+                  "compositeMode": 0,
+                  "compositeLevel": 1.0,
+                  "hasCustomCycleTime": false,
+                  "customCycleTimeSecs": 60.0,
+                  "te_speed": 0.5,
+                  "te_xpos": 0.0,
+                  "te_ypos": 0.0,
+                  "te_size": 1.0,
+                  "te_quantity": 0.5,
+                  "te_spin": 0.0,
+                  "te_brightness": 1.0,
+                  "te_wow1": 0.0,
+                  "te_wow2": 0.0,
+                  "te_wowtrigger": false,
+                  "te_angle": 0.0,
+                  "te_level": 0.1,
+                  "te_freq": 0.1,
+                  "panic": false,
+                  "te_color/brightness": 100.0,
+                  "te_color/saturation": 100.0,
+                  "te_color/hue": 0.0,
+                  "te_color/solidSource": 1,
+                  "te_color/gradient": 0,
+                  "te_color/blendMode": 0,
+                  "te_color/offset": 0.0,
+                  "te_color/color2offset": 0.5
+                },
+                "children": {
+                  "modulation": {
+                    "id": 138499,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1,
+                "remoteControls": [
+                  "/te_level",
+                  "/te_freq",
+                  "/view",
+                  "/te_speed",
+                  "/te_xpos",
+                  "/te_ypos",
+                  "/te_quantity",
+                  "/te_size",
+                  "/te_angle",
+                  "/te_spin",
+                  "/panic",
                   null,
-                  "/view"
+                  "/te_wow1",
+                  "/te_wow2",
+                  "/te_wowtrigger",
+                  null
+                ],
+                "effects": []
+              },
+              {
+                "id": 138511,
+                "class": "titanicsend.pattern.jon.NDIReceiverTest",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true,
+                  "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "NDIReceiverTest",
+                  "view": 0,
+                  "viewPriority": 0,
+                  "enabled": true,
+                  "recall": false,
+                  "compositeMode": 0,
+                  "compositeLevel": 1.0,
+                  "hasCustomCycleTime": false,
+                  "customCycleTimeSecs": 60.0,
+                  "te_speed": 0.5,
+                  "te_xpos": 0.0,
+                  "te_ypos": 0.0,
+                  "te_size": 1.0,
+                  "te_quantity": 0.5,
+                  "te_spin": 0.0,
+                  "te_brightness": 1.0,
+                  "te_wow1": 0.0,
+                  "te_wow2": 0.0,
+                  "te_wowtrigger": false,
+                  "te_angle": 0.0,
+                  "te_level": 0.1,
+                  "te_freq": 0.1,
+                  "panic": false,
+                  "te_color/brightness": 100.0,
+                  "te_color/saturation": 100.0,
+                  "te_color/hue": 0.0,
+                  "te_color/solidSource": 1,
+                  "te_color/gradient": 0,
+                  "te_color/blendMode": 0,
+                  "te_color/offset": 0.0,
+                  "te_color/color2offset": 0.5
+                },
+                "children": {
+                  "modulation": {
+                    "id": 138512,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1,
+                "remoteControls": [
+                  "/te_level",
+                  "/te_freq",
+                  "/view",
+                  "/te_speed",
+                  "/te_xpos",
+                  "/te_ypos",
+                  "/te_quantity",
+                  "/te_size",
+                  "/te_angle",
+                  "/te_spin",
+                  "/panic",
+                  null,
+                  "/te_wow1",
+                  "/te_wow2",
+                  "/te_wowtrigger",
+                  null
                 ],
                 "effects": []
               }
@@ -27966,7 +27924,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -27979,8 +27937,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -28185,7 +28142,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -28198,8 +28155,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               },
@@ -28485,7 +28441,7 @@
                 "remoteControls": [
                   "/te_level",
                   "/te_freq",
-                  null,
+                  "/view",
                   "/te_speed",
                   "/te_xpos",
                   "/te_ypos",
@@ -28498,8 +28454,7 @@
                   "/te_wow1",
                   "/te_wow2",
                   "/te_wowtrigger",
-                  null,
-                  "/view"
+                  null
                 ],
                 "effects": []
               }
@@ -28708,7 +28663,7 @@
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
-              "universe": 101,
+              "universe": 32,
               "channel": 0
             },
             "children": {}
@@ -28731,7 +28686,7 @@
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
-              "universe": 101,
+              "universe": 32,
               "channel": 1,
               "byteOrder": 0,
               "colorPosition": 3
@@ -28756,7 +28711,7 @@
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
-              "universe": 101,
+              "universe": 32,
               "channel": 4,
               "byteOrder": 0,
               "colorPosition": 4
@@ -28768,7 +28723,7 @@
             "class": "titanicsend.modulator.dmx.DmxDualRangeModulator",
             "internal": {
               "modulationColor": 3,
-              "modulationControlsExpanded": true,
+              "modulationControlsExpanded": false,
               "modulationsExpanded": true
             },
             "parameters": {
@@ -28809,7 +28764,7 @@
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
-              "universe": 101,
+              "universe": 32,
               "channel": 8
             },
             "children": {}
@@ -28832,7 +28787,7 @@
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
-              "universe": 102,
+              "universe": 33,
               "channel": 0,
               "rows": 15,
               "columns": 30
@@ -29281,7 +29236,7 @@
         },
         "parameters": {
           "label": "Output",
-          "enabled": false,
+          "enabled": true,
           "brightness": 1.0,
           "fps": 0.0,
           "gamma": 1.0,
@@ -29384,7 +29339,7 @@
             "settings": {
               "masterFaderEnabled": true,
               "crossfaderEnabled": true,
-              "channelKnobIsView": false,
+              "deviceControl": false,
               "performanceLock": true
             }
           },
@@ -29489,7 +29444,7 @@
           "receiveActive": true,
           "transmitHost": "10.1.3.1",
           "transmitPort": 7890,
-          "transmitActive": false,
+          "transmitActive": true,
           "logInput": false,
           "logOutput": false
         },
@@ -29585,7 +29540,7 @@
         "depth": 1.0,
         "camera": {
           "active": false,
-          "radius": 1.7E7,
+          "radius": 1.7002193682157665E7,
           "theta": 270.0,
           "phi": -6.0,
           "x": 2255849.2623291016,
@@ -29595,7 +29550,7 @@
         "cue": [
           {
             "active": false,
-            "radius": 1.3705428240417795E7,
+            "radius": 1.7002193682157665E7,
             "theta": 270.0,
             "phi": -6.0,
             "x": 2255849.2623291016,
