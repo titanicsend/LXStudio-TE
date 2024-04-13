@@ -1,6 +1,6 @@
 {
   "version": "0.4.2.TE.7-SNAPSHOT",
-  "timestamp": 1712969600249,
+  "timestamp": 1712972681209,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -2818,7 +2818,7 @@
         },
         "parameters": {
           "label": "Tempo",
-          "clockSource": 2,
+          "clockSource": 0,
           "period": 483.8709677419355,
           "bpm": 124.0,
           "tap": false,
@@ -3069,27 +3069,27 @@
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
-              "gain": 0.0,
+              "gain": 8.69291338582677,
               "range": 48.0,
               "attack": 8.203125024738256,
-              "release": 100.0,
+              "release": 286.68857337714684,
               "slope": 6.0,
-              "band-1": 0.10379518571484614,
-              "band-2": 0.27100295118043183,
-              "band-3": 0.38927683584837947,
-              "band-4": 0.4973741506187356,
-              "band-5": 0.4785512354874798,
-              "band-6": 0.3835943385777757,
-              "band-7": 0.42095441514659215,
-              "band-8": 0.44627116867649985,
-              "band-9": 0.41895710224131333,
-              "band-10": 0.43082999339243655,
-              "band-11": 0.5443208883085919,
-              "band-12": 0.401679957988167,
-              "band-13": 0.5330285060239497,
-              "band-14": 0.5848125860871114,
-              "band-15": 0.5826210826402101,
-              "band-16": 0.16265041949790182
+              "band-1": 0.35298234801240813,
+              "band-2": 0.38977345462721047,
+              "band-3": 0.3703573323924272,
+              "band-4": 0.26696364615117574,
+              "band-5": 0.2644396035367885,
+              "band-6": 0.4039652341406943,
+              "band-7": 0.49836509096891823,
+              "band-8": 0.4857983961860858,
+              "band-9": 0.44074498844743504,
+              "band-10": 0.4886886991956524,
+              "band-11": 0.5546069204916473,
+              "band-12": 0.6066859198719738,
+              "band-13": 0.5637293057750883,
+              "band-14": 0.4897177559916438,
+              "band-15": 0.3171592492158899,
+              "band-16": 0.06931517409245203
             },
             "children": {}
           }
@@ -3105,9 +3105,9 @@
         },
         "parameters": {
           "label": "Mixer",
-          "crossfader": 0.5,
+          "crossfader": 0.5748031496062992,
           "crossfaderBlendMode": 1,
-          "focusedChannel": 5,
+          "focusedChannel": 15,
           "focusedChannelAux": 5,
           "cueA": false,
           "cueB": false,
@@ -3128,9 +3128,9 @@
             },
             "parameters": {
               "label": "Master",
-              "fader": 0.0,
+              "fader": 1.0,
               "arm": false,
-              "selected": false,
+              "selected": true,
               "previewMode": 0
             },
             "children": {},
@@ -3326,7 +3326,7 @@
                   "tempoSync": false,
                   "tempoDivision": 2,
                   "tempoPhaseOffset": 0.0,
-                  "size": 10.0,
+                  "size": 2.3622047244094486,
                   "manualTrigger": true,
                   "trigger": false
                 },
@@ -3406,7 +3406,7 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "speed": 0.5,
-                  "depth": 0.3228346456692913,
+                  "depth": 0.0,
                   "bias": 0.0,
                   "waveshape": 4,
                   "tempoSync": true,
@@ -3454,7 +3454,7 @@
             },
             "parameters": {
               "label": "HIGH",
-              "fader": 1.0,
+              "fader": 0.0,
               "arm": false,
               "selected": false,
               "enabled": true,
@@ -6110,7 +6110,7 @@
             },
             "parameters": {
               "label": "HIGH",
-              "fader": 1.0,
+              "fader": 0.0,
               "arm": false,
               "selected": false,
               "enabled": true,
@@ -16231,7 +16231,7 @@
               "label": "EDGES",
               "fader": 0.0,
               "arm": false,
-              "selected": true,
+              "selected": false,
               "enabled": true,
               "cue": false,
               "aux": false,
@@ -18760,7 +18760,7 @@
             "patternIndex": 0,
             "patterns": [
               {
-                "id": 150638,
+                "id": 162215,
                 "class": "titanicsend.pattern.sinas.TdNdiPattern",
                 "internal": {
                   "modulationColor": 0,
@@ -18806,7 +18806,7 @@
                 },
                 "children": {
                   "modulation": {
-                    "id": 150639,
+                    "id": 162216,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,
@@ -21666,7 +21666,7 @@
                           "exp": 0.11999999731779099
                         },
                         "children": {},
-                        "basis": 0.375
+                        "basis": 0.0
                       }
                     ],
                     "modulations": [
@@ -22257,11 +22257,11 @@
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0,
                   "te_color/color2offset": 0.5,
-                  "Energy": 0.0,
-                  "Double Speed": false,
+                  "Double Layer": false,
                   "Glow": 0.1,
-                  "Width": 0.5,
-                  "Double Layer": false
+                  "Double Speed": false,
+                  "Energy": 0.0,
+                  "Width": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -24159,8 +24159,8 @@
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
-              "universe": 32,
-              "channel": 0
+              "universe": 31,
+              "channel": 99
             },
             "children": {}
           },
@@ -24182,8 +24182,8 @@
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
-              "universe": 32,
-              "channel": 1,
+              "universe": 31,
+              "channel": 100,
               "byteOrder": 0,
               "colorPosition": 3
             },
@@ -24207,8 +24207,8 @@
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
-              "universe": 32,
-              "channel": 4,
+              "universe": 31,
+              "channel": 103,
               "byteOrder": 0,
               "colorPosition": 4
             },
@@ -24219,7 +24219,7 @@
             "class": "titanicsend.modulator.dmx.DmxDualRangeModulator",
             "internal": {
               "modulationColor": 3,
-              "modulationControlsExpanded": false,
+              "modulationControlsExpanded": true,
               "modulationsExpanded": true
             },
             "parameters": {
@@ -24232,8 +24232,8 @@
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
-              "universe": 101,
-              "channel": 7,
+              "universe": 31,
+              "channel": 106,
               "isZero": true,
               "range1active": false,
               "range2active": false,
@@ -24241,57 +24241,9 @@
               "output2": 0.0
             },
             "children": {}
-          },
-          {
-            "id": 45116,
-            "class": "titanicsend.modulator.dmx.Dmx16bitModulator",
-            "internal": {
-              "modulationColor": 4,
-              "modulationControlsExpanded": false,
-              "modulationsExpanded": true
-            },
-            "parameters": {
-              "label": "DMX 9 Speed 16-bit",
-              "running": false,
-              "trigger": false,
-              "midiFilter/enabled": true,
-              "midiFilter/channel": 16,
-              "midiFilter/minNote": 0,
-              "midiFilter/noteRange": 128,
-              "midiFilter/minVelocity": 1,
-              "midiFilter/velocityRange": 127,
-              "universe": 32,
-              "channel": 8
-            },
-            "children": {}
           }
         ],
         "modulations": [
-          {
-            "source": {
-              "id": 45116,
-              "path": "/modulation/modulator/6"
-            },
-            "target": {
-              "componentId": 46374,
-              "parameterPath": "speed",
-              "path": "/mixer/master/effect/2/speed"
-            },
-            "id": 58792,
-            "class": "heronarts.lx.modulation.LXCompoundModulation",
-            "internal": {
-              "modulationColor": 0,
-              "modulationControlsExpanded": true,
-              "modulationsExpanded": true
-            },
-            "parameters": {
-              "label": "LX",
-              "enabled": true,
-              "polarity": 1,
-              "range": 1.0
-            },
-            "children": {}
-          },
           {
             "source": {
               "componentId": 45112,
@@ -24357,33 +24309,6 @@
               "path": "/mixer/master/effect/3/enabled"
             },
             "id": 78350,
-            "class": "heronarts.lx.modulation.LXTriggerModulation",
-            "internal": {
-              "modulationColor": 0,
-              "modulationControlsExpanded": true,
-              "modulationsExpanded": true
-            },
-            "parameters": {
-              "label": "LX",
-              "enabled": true,
-              "toggleMode": 0,
-              "momentaryToggleMode": 0,
-              "toggleMomentaryMode": 0
-            },
-            "children": {}
-          },
-          {
-            "source": {
-              "componentId": 45116,
-              "parameterPath": "running",
-              "path": "/modulation/modulator/6/running"
-            },
-            "target": {
-              "componentId": 46374,
-              "parameterPath": "speedEnable",
-              "path": "/mixer/master/effect/2/speedEnable"
-            },
-            "id": 84460,
             "class": "heronarts.lx.modulation.LXTriggerModulation",
             "internal": {
               "modulationColor": 0,
@@ -24514,33 +24439,6 @@
               "path": "/modulation/modulator/1/macro1"
             },
             "target": {
-              "componentId": 45116,
-              "parameterPath": "running",
-              "path": "/modulation/modulator/6/running"
-            },
-            "id": 111310,
-            "class": "heronarts.lx.modulation.LXTriggerModulation",
-            "internal": {
-              "modulationColor": 0,
-              "modulationControlsExpanded": true,
-              "modulationsExpanded": true
-            },
-            "parameters": {
-              "label": "LX",
-              "enabled": true,
-              "toggleMode": 0,
-              "momentaryToggleMode": 0,
-              "toggleMomentaryMode": 0
-            },
-            "children": {}
-          },
-          {
-            "source": {
-              "componentId": 111303,
-              "parameterPath": "macro1",
-              "path": "/modulation/modulator/1/macro1"
-            },
-            "target": {
               "componentId": 44722,
               "parameterPath": "recall",
               "path": "/palette/swatches/11/recall"
@@ -24600,7 +24498,7 @@
         },
         "parameters": {
           "label": "Output",
-          "enabled": true,
+          "enabled": false,
           "brightness": 1.0,
           "fps": 0.0,
           "gamma": 1.0,
@@ -24790,6 +24688,14 @@
             "componentId": 134285,
             "parameterPath": "size",
             "cc": 23
+          },
+          {
+            "channel": 0,
+            "type": "NOTE",
+            "path": "/lx/mixer/master/effect/5/trigger",
+            "componentId": 134285,
+            "parameterPath": "trigger",
+            "pitch": 61
           }
         ]
       },
@@ -24808,7 +24714,7 @@
           "receiveActive": true,
           "transmitHost": "10.1.3.1",
           "transmitPort": 7890,
-          "transmitActive": true,
+          "transmitActive": false,
           "logInput": false,
           "logOutput": false
         },
