@@ -12,6 +12,8 @@ JAR_FILE="target/LXStudio-TE-0.2.3-SNAPSHOT-jar-with-dependencies.jar"
 # Burning man: Activate driving safety pattern if FOH is not up
 #LIGHTING_LAPTOP=10.1.1.10
 #
+
+
 #PING_TARGET=${LIGHTING_LAPTOP?}
 #
 #if ping -q -t 5 -c 3 ${PING_TARGET?}; then
