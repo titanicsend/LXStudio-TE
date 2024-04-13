@@ -104,10 +104,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
     float pct = 0.;
     float pct2 = 0.;
 
-    float xsize = 0.1 + iWow1 * 0.5 * trebleLevel;
-    float ysize = 0.25 - iWow1 * 0.2 * trebleLevel;
-    float outer = 1.2 + iWow1 * 1.5 * bassLevel;
-    float inner = 1.1 + iWow1 * 2.0 * bassLevel;
+    float xsize = 0.1 + levelReact * 0.5 * trebleLevel;
+    float ysize = 0.25 - levelReact * 0.2 * trebleLevel;
+    float outer = 1.2 + levelReact * 1.5 * bassLevel;
+    float inner = 1.1 + levelReact * 2.0 * bassLevel;
     //float xsize = 0.1;
     //float ysize = 0.15;
     //float outer = 1.2 + 0.2 * sin(iTime);
@@ -152,14 +152,14 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
 
     // scaling factor on triangle distance field
     float triangle_scale = 1.1;
-    //triangle_scale = iWow2;
+    //triangle_scale = frequencyReact;
     float triangle_dist = f / triangle_scale;
 
     // innermost step function we apply to triangle distance field
     float r = 0.15;
-    r += iWow2 * wave;
-    r += iWow1 * 0.2 * volumeRatio;
-    //r = iWow1;
+    r += frequencyReact * wave;
+    r += levelReact * 0.2 * volumeRatio;
+    //r = levelReact;
     float tri_inner_mask = r + noise1d(0.35, 3.*iTime);
 
     float tri_inner_margin = 0.04;// - 0.04 * volumeRatio;
