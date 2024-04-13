@@ -1,6 +1,6 @@
 {
   "version": "0.4.2.TE.7-SNAPSHOT",
-  "timestamp": 1712977271328,
+  "timestamp": 1712978156558,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -2818,9 +2818,9 @@
         },
         "parameters": {
           "label": "Tempo",
-          "clockSource": 2,
-          "period": 483.8709677419355,
-          "bpm": 124.0,
+          "clockSource": 0,
+          "period": 467.74999999999994,
+          "bpm": 128.27365045430253,
           "tap": false,
           "nudgeUp": false,
           "nudgeDown": false,
@@ -3069,7 +3069,7 @@
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
-              "gain": 8.69291338582677,
+              "gain": 0.0,
               "range": 48.0,
               "attack": 8.203125024738256,
               "release": 286.68857337714684,
@@ -3241,7 +3241,7 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "speed": 0.5,
-                  "depth": 0.0,
+                  "depth": 0.05511811023622047,
                   "bias": 0.0,
                   "waveshape": 4,
                   "tempoSync": true,
@@ -3326,14 +3326,14 @@
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,
-                  "speed": 0.15118425521483736,
+                  "speed": 0.05289999763518574,
                   "depth": 0.7601222926750779,
                   "waveshape": 0,
-                  "slope": 5.0,
+                  "slope": 6.819999985396862,
                   "tempoSync": false,
-                  "tempoDivision": 2,
+                  "tempoDivision": 1,
                   "tempoPhaseOffset": 0.0,
-                  "size": 2.3622047244094486,
+                  "size": 9.84251968503937,
                   "manualTrigger": true,
                   "trigger": false
                 },
@@ -3364,7 +3364,7 @@
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
                   "modulationsExpanded": true,
-                  "expanded": true,
+                  "expanded": false,
                   "expandedCue": true,
                   "expandedAux": true,
                   "modulationExpanded": false
@@ -3378,6 +3378,100 @@
                 "children": {
                   "modulation": {
                     "id": 134290,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 165947,
+                "class": "heronarts.lx.effect.StrobeEffect",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true,
+                  "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "Strobe",
+                  "view": 0,
+                  "viewPriority": 0,
+                  "enabled": true,
+                  "speed": 0.0,
+                  "depth": 0.0,
+                  "bias": 0.0,
+                  "waveshape": 0,
+                  "tempoSync": true,
+                  "tempoDivision": 5,
+                  "tempoPhaseOffset": 0.0,
+                  "minFrequency": 0.5,
+                  "maxFrequency": 5.0
+                },
+                "children": {
+                  "modulation": {
+                    "id": 165948,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 165951,
+                "class": "titanicsend.effect.RandomStrobeEffect",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true,
+                  "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "RandomStrobe",
+                  "view": 0,
+                  "viewPriority": 0,
+                  "enabled": true,
+                  "speed": 0.0,
+                  "depth": 0.75,
+                  "bias": 0.5,
+                  "waveshape": 0,
+                  "tempoSync": false,
+                  "tempoDivision": 5,
+                  "tempoPhaseOffset": 0.0,
+                  "minFrequency": 0.5,
+                  "maxFrequency": 6.0
+                },
+                "children": {
+                  "modulation": {
+                    "id": 165952,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,
@@ -18592,11 +18686,11 @@
             },
             "parameters": {
               "label": "FX",
-              "fader": 0.8582677165354331,
+              "fader": 0.7637795275590551,
               "arm": false,
               "selected": false,
               "enabled": true,
-              "cue": true,
+              "cue": false,
               "aux": false,
               "crossfadeGroup": 0,
               "blendMode": 0,
@@ -25077,14 +25171,6 @@
           {
             "channel": 0,
             "type": "CONTROL_CHANGE",
-            "path": "/lx/mixer/master/effect/3/depth",
-            "componentId": 142796,
-            "parameterPath": "depth",
-            "cc": 16
-          },
-          {
-            "channel": 0,
-            "type": "CONTROL_CHANGE",
             "path": "/lx/audio/modulator/1/gain",
             "componentId": 16,
             "parameterPath": "gain",
@@ -25101,22 +25187,6 @@
           {
             "channel": 0,
             "type": "CONTROL_CHANGE",
-            "path": "/lx/mixer/master/effect/2/speed",
-            "componentId": 58785,
-            "parameterPath": "speed",
-            "cc": 20
-          },
-          {
-            "channel": 0,
-            "type": "CONTROL_CHANGE",
-            "path": "/lx/mixer/master/effect/3/depth",
-            "componentId": 142796,
-            "parameterPath": "depth",
-            "cc": 21
-          },
-          {
-            "channel": 0,
-            "type": "CONTROL_CHANGE",
             "path": "/lx/mixer/master/effect/5/size",
             "componentId": 134285,
             "parameterPath": "size",
@@ -25129,6 +25199,38 @@
             "componentId": 134285,
             "parameterPath": "trigger",
             "pitch": 61
+          },
+          {
+            "channel": 0,
+            "type": "NOTE",
+            "path": "/lx/mixer/master/effect/5/trigger",
+            "componentId": 134285,
+            "parameterPath": "trigger",
+            "pitch": 60
+          },
+          {
+            "channel": 0,
+            "type": "NOTE",
+            "path": "/lx/tempo/tap",
+            "componentId": 10,
+            "parameterPath": "tap",
+            "pitch": 62
+          },
+          {
+            "channel": 0,
+            "type": "CONTROL_CHANGE",
+            "path": "/lx/mixer/master/effect/7/depth",
+            "componentId": 165947,
+            "parameterPath": "depth",
+            "cc": 21
+          },
+          {
+            "channel": 0,
+            "type": "CONTROL_CHANGE",
+            "path": "/lx/mixer/master/effect/8/speed",
+            "componentId": 165951,
+            "parameterPath": "speed",
+            "cc": 20
           }
         ]
       },
@@ -25245,7 +25347,7 @@
           "active": false,
           "radius": 1.7E7,
           "theta": 270.0,
-          "phi": -6.0,
+          "phi": -6.3483870923519135,
           "x": 2255849.2623291016,
           "y": 5053059.60546875,
           "z": 207717.87439727783
@@ -25253,9 +25355,9 @@
         "cue": [
           {
             "active": false,
-            "radius": 2.0966141775563728E7,
+            "radius": 1.7E7,
             "theta": 270.0,
-            "phi": -6.0,
+            "phi": -6.3483870923519135,
             "x": 2255849.2623291016,
             "y": 5053059.60546875,
             "z": 207717.87439727783
