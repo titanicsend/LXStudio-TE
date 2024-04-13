@@ -15,8 +15,8 @@ public class SigmoidDanceAudioWaveform extends GLShaderPattern {
 
     controls.setValue(TEControlTag.YPOS, -0.04);
     controls.setValue(TEControlTag.SIZE, 0.5);
-    controls.setRange(TEControlTag.WOW1, 4.0, 0.0, 8.0);
-    controls.setRange(TEControlTag.WOW2, 1.0, 0.0, 4.0);
+    controls.setRange(TEControlTag.LEVELREACTIVITY, 4.0, 0.0, 8.0);
+    controls.setRange(TEControlTag.FREQREACTIVITY, 1.0, 0.0, 4.0);
     addCommonControls();
 
     addShader(
