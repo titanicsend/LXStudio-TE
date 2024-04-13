@@ -1,6 +1,6 @@
 {
   "version": "0.4.2.TE.7-SNAPSHOT",
-  "timestamp": 1712978156558,
+  "timestamp": 1712978331485,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -218,7 +218,7 @@
       "networkMultithreaded": false,
       "framesPerSecond": 60.0,
       "speed": 1.0,
-      "performanceMode": false
+      "performanceMode": true
     },
     "children": {
       "palette": {
@@ -3107,8 +3107,8 @@
           "label": "Mixer",
           "crossfader": 1.0,
           "crossfaderBlendMode": 1,
-          "focusedChannel": 15,
-          "focusedChannelAux": 7,
+          "focusedChannel": 0,
+          "focusedChannelAux": 6,
           "cueA": false,
           "cueB": false,
           "auxA": false,
@@ -3130,7 +3130,7 @@
               "label": "Master",
               "fader": 1.0,
               "arm": false,
-              "selected": true,
+              "selected": false,
               "previewMode": 0
             },
             "children": {},
@@ -3510,9 +3510,9 @@
               "label": "HIGH",
               "fader": 0.0,
               "arm": false,
-              "selected": false,
+              "selected": true,
               "enabled": true,
-              "cue": false,
+              "cue": true,
               "aux": false,
               "crossfadeGroup": 0,
               "blendMode": 0,
@@ -3532,13 +3532,13 @@
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 9,
+              "focusedPattern": 6,
               "triggerPatternCycle": false
             },
             "children": {},
             "effects": [],
             "clips": [],
-            "patternIndex": 9,
+            "patternIndex": 6,
             "patterns": [
               {
                 "id": 157404,
@@ -6177,7 +6177,7 @@
                   "te_quantity": 0.5,
                   "te_spin": 0.0,
                   "te_brightness": 1.0,
-                  "te_wow1": 0.08,
+                  "te_wow1": 0.020000001341104502,
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
@@ -6272,13 +6272,13 @@
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 5,
+              "focusedPattern": 31,
               "triggerPatternCycle": false
             },
             "children": {},
             "effects": [],
             "clips": [],
-            "patternIndex": 5,
+            "patternIndex": 31,
             "patterns": [
               {
                 "id": 45511,
@@ -8917,7 +8917,7 @@
                   "te_quantity": 0.5,
                   "te_spin": 0.0,
                   "te_brightness": 1.0,
-                  "te_wow1": 0.08,
+                  "te_wow1": 0.020000001341104502,
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
@@ -11153,7 +11153,7 @@
                   "te_quantity": 12.201367290959752,
                   "te_spin": 0.0,
                   "te_brightness": 1.0,
-                  "te_wow1": 0.17629828819048154,
+                  "te_wow1": 0.01629829176676023,
                   "te_wow2": 0.12638287340573184,
                   "te_wowtrigger": false,
                   "te_angle": 0.02282563233349233,
@@ -18686,12 +18686,12 @@
             },
             "parameters": {
               "label": "FX",
-              "fader": 0.7637795275590551,
+              "fader": 0.7795275590551181,
               "arm": false,
               "selected": false,
               "enabled": true,
               "cue": false,
-              "aux": false,
+              "aux": true,
               "crossfadeGroup": 0,
               "blendMode": 0,
               "midiFilter/enabled": false,
@@ -19122,7 +19122,7 @@
               "selected": false,
               "enabled": true,
               "cue": false,
-              "aux": true,
+              "aux": false,
               "crossfadeGroup": 0,
               "blendMode": 0,
               "midiFilter/enabled": false,
