@@ -3,7 +3,7 @@
     <option name="ALTERNATIVE_JRE_PATH" value="temurin-17.0.8" />
     <option name="MAIN_CLASS_NAME" value="heronarts.lx.studio.TEApp" />
     <module name="LXStudio-TE" />
-    <option name="PROGRAM_PARAMETERS" value="vehicle Projects/April_12.lxp" />
+    <option name="PROGRAM_PARAMETERS" value="vehicle Projects/CoachellaMaster.lxp" />
     <option name="VM_PARAMETERS" value="-ea -XstartOnFirstThread -Djava.awt.headless=true " />
     <method v="2">
       <option name="Make" enabled="true" />
