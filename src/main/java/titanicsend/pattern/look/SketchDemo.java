@@ -43,7 +43,7 @@ public class SketchDemo extends GLShaderPattern {
     controls.setValue(TEControlTag.LEVELREACTIVITY, 0.25);
 
     // "next drawing threshold": how much total progress needs to be made before switching drawings
-    controls.setRange(TEControlTag.WOW2, 15.0, 0.1, 100.0);
+    controls.setRange(TEControlTag.SPEED, 0.25, 0.01, 1.);
 
     // "pullback": how quickly progress is subtracted when no bass is present
     controls.setRange(TEControlTag.WOW1, 0.08, 0.0, 0.4);
@@ -53,6 +53,8 @@ public class SketchDemo extends GLShaderPattern {
 
     // set the x-axis near the bottom of the car
     controls.setValue(TEControlTag.YPOS, 0.85);
+
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
 
     // register common controls with the UI
     addCommonControls();
@@ -88,8 +90,8 @@ public class SketchDemo extends GLShaderPattern {
             float levelReact =
                 (float) getControls().getControl(TEControlTag.LEVELREACTIVITY).getValue();
             float pullback = (float) getControls().getControl(TEControlTag.WOW1).getValue();
-            float nextDrawingThreshold =
-                (float) getControls().getControl(TEControlTag.WOW2).getValue();
+            float nextDrawingThreshold = 1.0f /
+                (float) getControls().getControl(TEControlTag.SPEED).getValue();
             // for debugging: wire up a control directly to control progress.
             //progress = (float) getControls().getControl(TEControlTag.WOW1).getValue();
 

@@ -78,7 +78,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         }
 
         // apply a threshold to the segment distance to get our line drawn.
-        currPct += 1.-step(stroke * (1. + 0.5*trebleRatio), seg);
+        float currWidth = stroke * (1. + 0.5*trebleRatio);
+        currPct += 1.-smoothstep(currWidth, currWidth*1.1, seg);
 
         // if either:
         // (a) our progress through the drawing doesn't require looping through the remaining points, or
@@ -88,7 +89,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
             break;
         }
     }
-    color += currPct * iColorRGB;
+    color += clamp(currPct, 0., 1.) * iColorRGB;
 
     // how much of the drawing should be drawn.
     float prevHeight = (1. + 3.*drawingProgress) * desiredHeight;
@@ -133,7 +134,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         }
 
         // apply a threshold to the segment distance to get our line drawn.
-        prevPct += 1.-step(stroke * (1. + 2.*bassRatio) /* * (2 * (1. + drawingProgress))*/, seg);
+        float prevWidth = stroke * (1. + 3.*bassRatio) * (2 * (1. + drawingProgress));
+        prevPct += 1.-smoothstep(prevWidth, prevWidth*1.1, seg);
 
         // if either:
         // (a) our progress through the drawing doesn't require looping through the remaining points, or
@@ -149,13 +151,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         fadeIn = clamp(abs(drawingProgress), 0, drawingFade) / drawingFade;
     }*/
     vec3 color2 = isColor2Black ? iColorRGB : iColor2RGB;
-    color += prevPct * color2 * fadeIn;
-
-/*
-    // debugging: draw coord space axes.
-    color.r += 1. -smoothstep(0., 0.01, abs(st.x));
-    color.g += 1. -smoothstep(0., 0.01, abs(st.y));
-*/
+    color += clamp(prevPct, 0., 1.) * color2 * fadeIn;
 
     fragColor = vec4(color,1.0);
 }
