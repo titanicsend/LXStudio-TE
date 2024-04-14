@@ -15,7 +15,7 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
   private long time = 0;
   private static final int sourceRefreshInterval = 1000;
 
-  public DevolaySource[] sources;
+  public DevolaySource[] sources = new DevolaySource[0];
   protected DevolayFinder finder;
 
   public static NDIEngine get() {
@@ -27,6 +27,7 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
   }
 
   public ArrayList<String> getSourceNames() {
+    // TODO: This should be refreshed when sources is updated, not on every method call.
     ArrayList<String> sourceNames = new ArrayList<String>();
     for (DevolaySource source : sources) {
       sourceNames.add(source.getSourceName());
@@ -47,9 +48,10 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
    * @return True if the source is available and connection attempt was successful.
    *        False if the source is not available.
    */
-  public boolean connectByName(String sourceName,DevolayReceiver receiver) {
+  public boolean connectByName(String sourceName, DevolayReceiver receiver) {
     for (DevolaySource source : sources) {
-      if (source.getSourceName().contains(sourceName)) {
+      String name = source.getSourceName();
+      if (name != null && name.contains(sourceName)) {
         receiver.connect(source);
         return true;
       }
