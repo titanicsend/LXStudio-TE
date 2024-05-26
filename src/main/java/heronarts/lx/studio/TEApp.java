@@ -48,6 +48,7 @@ import titanicsend.dmx.pattern.DjLightsDirectPattern;
 import titanicsend.dmx.pattern.DjLightsEasyPattern;
 import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
 import titanicsend.effect.GlobalPatternControl;
+import titanicsend.effect.LookColorPaletteEffect;
 import titanicsend.effect.RandomStrobeEffect;
 import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lasercontrol.TELaserTask;
@@ -95,6 +96,7 @@ import titanicsend.ui.UIBackings;
 import titanicsend.ui.UILasers;
 import titanicsend.ui.UIModelLabels;
 import titanicsend.ui.UITEPerformancePattern;
+import titanicsend.ui.effect.UILookColorPaletteEffect;
 import titanicsend.ui.effect.UIRandomStrobeEffect;
 import titanicsend.ui.modulator.UIDmx16bitModulator;
 import titanicsend.ui.modulator.UIDmxColorModulator;
@@ -264,6 +266,7 @@ public class TEApp extends LXStudio {
       lx.registry.addEffect(BeaconEffect.class);
       lx.registry.addEffect(GlobalPatternControl.class);
       lx.registry.addEffect(RandomStrobeEffect.class);
+      lx.registry.addEffect(LookColorPaletteEffect.class);
 
       // DMX patterns
       lx.registry.addPattern(BeaconDirectPattern.class);
@@ -350,6 +353,7 @@ public class TEApp extends LXStudio {
       if (lx instanceof LXStudio) {
         // UI: Effects
         ((LXStudio.Registry) lx.registry).addUIDeviceControls(UIRandomStrobeEffect.class);
+        ((LXStudio.Registry) lx.registry).addUIDeviceControls(UILookColorPaletteEffect.class);
 
         // UI: Modulators
         ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmx16bitModulator.class);
