@@ -1,6 +1,6 @@
 {
   "version": "0.4.2.TE.7-SNAPSHOT",
-  "timestamp": 1716774238906,
+  "timestamp": 1716777094409,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -375,7 +375,7 @@
               "modulationsExpanded": true
             },
             "parameters": {
-              "label": "Pink",
+              "label": "CUE",
               "recall": false,
               "autoCycleEligible": true
             },
@@ -435,9 +435,9 @@
                   "label": "LX",
                   "mode": 0,
                   "period": 16.0,
-                  "primary/brightness": 89.0,
-                  "primary/saturation": 75.0,
-                  "primary/hue": 323.0,
+                  "primary/brightness": 100.0,
+                  "primary/saturation": 100.0,
+                  "primary/hue": 155.5294189453125,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 75.83333587646484,
                   "secondary/hue": 51.0
@@ -456,9 +456,9 @@
                   "label": "LX",
                   "mode": 0,
                   "period": 30.0,
-                  "primary/brightness": 0.0,
+                  "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 183.0,
+                  "primary/hue": 275.5294189453125,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -477,9 +477,9 @@
                   "label": "LX",
                   "mode": 0,
                   "period": 30.0,
-                  "primary/brightness": 0.0,
-                  "primary/saturation": 99.16666412353516,
-                  "primary/hue": 188.99998474121094,
+                  "primary/brightness": 100.0,
+                  "primary/saturation": 100.0,
+                  "primary/hue": 35.52941131591797,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -3074,22 +3074,22 @@
               "attack": 8.203125024738256,
               "release": 321.4839838425844,
               "slope": 9.520312502405432,
-              "band-1": 0.21927828202343447,
-              "band-2": 0.34918160871232407,
-              "band-3": 0.4237541527697858,
-              "band-4": 0.49266163331445845,
-              "band-5": 0.5448916622236653,
-              "band-6": 0.45496370956666665,
-              "band-7": 0.4697994547758757,
-              "band-8": 0.41723346033986364,
-              "band-9": 0.4401422320603343,
-              "band-10": 0.32018980335649816,
-              "band-11": 0.2187735706723788,
-              "band-12": 0.20053185885028446,
-              "band-13": 0.16542446561971236,
-              "band-14": 0.18180174323279275,
-              "band-15": 0.20874523960222768,
-              "band-16": 0.2762167798609596
+              "band-1": 0.0,
+              "band-2": 0.0,
+              "band-3": 0.0,
+              "band-4": 0.0,
+              "band-5": 0.009923765202277557,
+              "band-6": 0.20052959839140916,
+              "band-7": 0.04216929361405086,
+              "band-8": 0.0,
+              "band-9": 0.0,
+              "band-10": 0.0,
+              "band-11": 0.0,
+              "band-12": 0.0,
+              "band-13": 0.0,
+              "band-14": 0.033039566882463234,
+              "band-15": 0.03541230334959522,
+              "band-16": 0.0
             },
             "children": {}
           }
@@ -3107,7 +3107,7 @@
           "label": "Mixer",
           "crossfader": 0.5748031496062992,
           "crossfaderBlendMode": 1,
-          "focusedChannel": 2,
+          "focusedChannel": 15,
           "focusedChannelAux": 5,
           "cueA": false,
           "cueB": false,
@@ -3130,7 +3130,7 @@
               "label": "Master",
               "fader": 1.0,
               "arm": false,
-              "selected": false,
+              "selected": true,
               "previewMode": 0
             },
             "children": {},
@@ -8816,7 +8816,7 @@
               "label": "HIGH",
               "fader": 1.0,
               "arm": false,
-              "selected": true,
+              "selected": false,
               "enabled": true,
               "cue": true,
               "aux": false,
@@ -22307,9 +22307,9 @@
                   "te_color/color2offset": 0.5,
                   "Double Layer": false,
                   "Double Speed": false,
-                  "Width": 0.5,
                   "Energy": 0.0,
-                  "Glow": 0.1
+                  "Glow": 0.1,
+                  "Width": 0.5
                 },
                 "children": {
                   "modulation": {
