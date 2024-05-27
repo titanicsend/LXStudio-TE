@@ -45,9 +45,10 @@ public class UILookColorPaletteEffect implements UIDeviceControls<LookColorPalet
     addColumn(
         uiDevice,
         new UILabel(56.0F, "Position"),
-        new UIDropMenu(56.0F, 16, effect.colorPosition),
+        new UIDropMenu(56.0F, 16, effect.color1Pos),
         new UILabel(56.0F, "Palette Type"),
-        newKnob(effect.paletteType)
+        newKnob(effect.paletteType),
+        newButton(effect.toggleCue)
     ).setChildSpacing(6).setWidth(56F);
 
     addVerticalBreak(ui, uiDevice);
@@ -57,6 +58,12 @@ public class UILookColorPaletteEffect implements UIDeviceControls<LookColorPalet
         row("Act", 20, new UIPalette.Swatch(ui, effect.getActiveSwatch(), 0, 0, 80, UIColorPicker.Corner.TOP_LEFT)),
         row("Cue", 20, new UIPalette.Swatch(ui, effect.getCueSwatch(), 0, 0, 80, UIColorPicker.Corner.TOP_LEFT))
     ).setChildSpacing(6).setWidth(SLIDER_WIDTH+10);
+
+    uiDevice.addListener(
+        effect.toggleCue,
+        (p) -> {
+          effect.swapCueSwatch();
+        });
   }
 
   private UI2dContainer row(String label, UI2dComponent component) {
