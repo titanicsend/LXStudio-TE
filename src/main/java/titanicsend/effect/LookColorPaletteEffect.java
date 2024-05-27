@@ -27,6 +27,7 @@ import heronarts.lx.color.LXDynamicColor;
 import heronarts.lx.color.LXPalette;
 import heronarts.lx.color.LXSwatch;
 import heronarts.lx.effect.LXEffect;
+import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.EnumParameter;
 import titanicsend.modulator.dmx.DmxColorModulator;
@@ -52,24 +53,30 @@ public class LookColorPaletteEffect extends LXEffect {
           .setPolarity(CompoundParameter.Polarity.BIPOLAR)
           .setDescription("Sets the amount to increase or decrease brightness");
 
-  public final ColorParameter color = new ColorParameter("Color", LXColor.BLACK);
+  public final ColorParameter color1 = new ColorParameter("Color1", LXColor.BLACK);
   public final ColorParameter color2 = new ColorParameter("Color2", LXColor.BLACK);
   public final ColorParameter color3 = new ColorParameter("Color3", LXColor.BLACK);
+  // update this so we know whether to re-render the palette
+  public PaletteType currPaletteType = PaletteType.TRIADIC;
 
-  public final EnumParameter<DmxColorModulator.ColorPosition> colorPosition =
+  public final EnumParameter<DmxColorModulator.ColorPosition> color1Pos =
       new EnumParameter<DmxColorModulator.ColorPosition>("Color Position", DmxColorModulator.ColorPosition.THREE)
           .setDescription(
               "Destination color position (1-based) in the global palette current swatch");
 
-  public final EnumParameter<DmxColorModulator.ColorPosition> secondPosition =
+  public final EnumParameter<DmxColorModulator.ColorPosition> color2Pos =
       new EnumParameter<DmxColorModulator.ColorPosition>("2nd Position", DmxColorModulator.ColorPosition.FOUR)
           .setDescription(
               "Destination color position (1-based) in the global palette current swatch");
 
-  public final EnumParameter<DmxColorModulator.ColorPosition> thirdPosition =
+  public final EnumParameter<DmxColorModulator.ColorPosition> color3Pos =
       new EnumParameter<DmxColorModulator.ColorPosition>("3rd Position", DmxColorModulator.ColorPosition.FIVE)
           .setDescription(
               "Destination color position (1-based) in the global palette current swatch");
+
+  public final BooleanParameter toggleCue =
+      new BooleanParameter("Toggle Cue", false)
+          .setDescription("Swap the cue and active swatches");
 
   public enum PaletteType {
     MONO,
@@ -89,11 +96,13 @@ public class LookColorPaletteEffect extends LXEffect {
     addParameter("hue", this.hue);
     addParameter("saturation", this.saturation);
     addParameter("brightness", this.brightness);
-    addParameter("colorPosition", this.colorPosition);
-    addParameter("2ndPosition", this.secondPosition);
-    addParameter("3rdPosition", this.thirdPosition);
-    addParameter("color", this.color);
     addParameter("paletteType", this.paletteType);
+    addParameter("color1Position", this.color1Pos);
+    addParameter("color2Position", this.color2Pos);
+    addParameter("color3Position", this.color3Pos);
+    addParameter("color1", this.color1);
+    addParameter("color2", this.color2);
+    addParameter("color3", this.color3);
   }
 
   public LXSwatch getActiveSwatch() {
@@ -104,46 +113,66 @@ public class LookColorPaletteEffect extends LXEffect {
     return findOrCreateCueSwatch();
   }
 
+  public void swapCueSwatch() {
+    LXSwatch active = getActiveSwatch();
+    LXSwatch cue = getCueSwatch();
+
+    int activeColor1 = active.getColor(this.color1Pos.getEnum().index).primary.getColor();
+    this.hue.setValue(LXColor.h(activeColor1));
+    this.saturation.setValue(LXColor.s(activeColor1));
+    this.brightness.setValue(LXColor.b(activeColor1));
+
+    for (int i = 0; i < LXSwatch.MAX_COLORS; ++i) {
+      int activeColor = active.getColor(i).primary.getColor();
+      int cueColor = cue.getColor(i).primary.getColor();
+      active.getColor(i).primary.setColor(cueColor);
+      cue.getColor(i).primary.setColor(activeColor);
+    }
+  }
+
   @Override
   protected void run(double deltaMs, double amount) {
     float hue = this.hue.getValuef();
     float saturation = this.saturation.getValuef();
     float brightness = this.brightness.getValuef();
 
-    int color = LXColor.hsb(hue, saturation, brightness);
-    int color2 = color;
-    int color3 = color;
-    this.color.setColor(color);
+    int color1 = LXColor.hsb(hue, saturation, brightness);
+    if (color1 != this.color1.getColor() || this.currPaletteType != this.paletteType.getEnum()) {
+      this.color1.setColor(color1);
+      this.currPaletteType = this.paletteType.getEnum();
 
-    if (this.paletteType.getEnum() == PaletteType.MONO) {
-      color2 = LXColor.BLACK;
-      color3 = LXColor.BLACK;
-    } else if (this.paletteType.getEnum() == PaletteType.COMPLEMENTARY) {
-      color2 = LXColor.hsb(hue + 180, saturation, brightness);
-      color3 = LXColor.BLACK;
-    } else if (this.paletteType.getEnum() == PaletteType.SPLIT_COMPLEMENTARY) {
-      color2 = LXColor.hsb(hue + 150, saturation, brightness);
-      color3 = LXColor.hsb(hue + 210, saturation, brightness);
-    } else if (this.paletteType.getEnum() == PaletteType.TRIADIC) {
-      color2 = LXColor.hsb(hue + 120, saturation, brightness);
-      color3 = LXColor.hsb(hue + 240, saturation, brightness);
-    } else if (this.paletteType.getEnum() == PaletteType.ANALOGOUS) {
-      color2 = LXColor.hsb(hue + 30, saturation, brightness);
-      color3 = LXColor.hsb(hue - 30, saturation, brightness);
+      int color2 = color1;
+      int color3 = color1;
+      if (this.paletteType.getEnum() == PaletteType.MONO) {
+        color2 = LXColor.BLACK;
+        color3 = LXColor.BLACK;
+      } else if (this.paletteType.getEnum() == PaletteType.COMPLEMENTARY) {
+        color2 = LXColor.hsb(hue + 180, saturation, brightness);
+        color3 = LXColor.BLACK;
+      } else if (this.paletteType.getEnum() == PaletteType.SPLIT_COMPLEMENTARY) {
+        color2 = LXColor.hsb(hue + 150, saturation, brightness);
+        color3 = LXColor.hsb(hue + 210, saturation, brightness);
+      } else if (this.paletteType.getEnum() == PaletteType.TRIADIC) {
+        color2 = LXColor.hsb(hue + 120, saturation, brightness);
+        color3 = LXColor.hsb(hue + 240, saturation, brightness);
+      } else if (this.paletteType.getEnum() == PaletteType.ANALOGOUS) {
+        color2 = LXColor.hsb(hue + 30, saturation, brightness);
+        color3 = LXColor.hsb(hue - 30, saturation, brightness);
+      }
+      this.color2.setColor(color2);
+      this.color3.setColor(color3);
+
+//      // Send to target color in global palette
+//      LXSwatch activeSwatch = this.lx.engine.palette.swatch;
+//      setColorAtPosition(activeSwatch, this.colorPosition.getEnum(), color);
+//      setColorAtPosition(activeSwatch, this.secondPosition.getEnum(), color2);
+//      setColorAtPosition(activeSwatch, this.thirdPosition.getEnum(), color3);
+
+      LXSwatch cueSwatch = findOrCreateCueSwatch();
+      setColorAtPosition(cueSwatch, this.color1Pos.getEnum(), color1);
+      setColorAtPosition(cueSwatch, this.color2Pos.getEnum(), color2);
+      setColorAtPosition(cueSwatch, this.color3Pos.getEnum(), color3);
     }
-    this.color2.setColor(color2);
-    this.color3.setColor(color3);
-
-    // Send to target color in global palette
-    LXSwatch activeSwatch = this.lx.engine.palette.swatch;
-    setColorAtPosition(activeSwatch, this.colorPosition.getEnum(), color);
-    setColorAtPosition(activeSwatch, this.secondPosition.getEnum(), color2);
-    setColorAtPosition(activeSwatch, this.thirdPosition.getEnum(), color3);
-
-    LXSwatch cueSwatch = findOrCreateCueSwatch();
-    setColorAtPosition(cueSwatch, this.colorPosition.getEnum(), color);
-    setColorAtPosition(cueSwatch, this.secondPosition.getEnum(), color2);
-    setColorAtPosition(cueSwatch, this.thirdPosition.getEnum(), color3);
   }
 
   protected void setColorAtPosition(LXSwatch swatch, DmxColorModulator.ColorPosition colorPosition, int color) {
