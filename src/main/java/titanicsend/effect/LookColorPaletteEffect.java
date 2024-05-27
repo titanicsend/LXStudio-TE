@@ -115,7 +115,7 @@ public class LookColorPaletteEffect extends LXEffect {
       this.color2.setColor(color2);
       this.color3.setColor(color3);
     }
-    
+
     // Send to target color in global palette
     setColorAtPosition(this.colorPosition.getEnum(), color);
     setColorAtPosition(this.secondPosition.getEnum(), color2);

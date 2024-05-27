@@ -54,7 +54,9 @@ public class UILookColorPaletteEffect implements UIDeviceControls<LookColorPalet
     addColumn(
         uiDevice,
         new UILabel(56.0F, "Position"),
-        new UIDropMenu(56.0F, 16, device.colorPosition)
+        new UIDropMenu(56.0F, 16, device.colorPosition),
+        new UILabel(56.0F, "Palette Type"),
+        newKnob(device.paletteType)
     ).setChildSpacing(6).setWidth(SLIDER_WIDTH);
 
 //    UI2dContainer container = UI2dContainer.newHorizontalContainer(160.0F, 6.0F);
