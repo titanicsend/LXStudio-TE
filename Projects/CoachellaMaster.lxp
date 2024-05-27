@@ -1,6 +1,6 @@
 {
   "version": "0.4.2.TE.7-SNAPSHOT",
-  "timestamp": 1716758750899,
+  "timestamp": 1716773858159,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -334,7 +334,7 @@
                   "period": 8.0,
                   "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 61.882354736328125,
+                  "primary/hue": 181.88235473632812,
                   "secondary/brightness": 76.66666412353516,
                   "secondary/saturation": 77.25000762939453,
                   "secondary/hue": 258.0
@@ -353,9 +353,9 @@
                   "label": "LX",
                   "mode": 0,
                   "period": 30.0,
-                  "primary/brightness": 0.0,
+                  "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 27.000001907348633,
+                  "primary/hue": 301.8823547363281,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -3456,9 +3456,12 @@
                   "saturation": 100.0,
                   "brightness": 100.0,
                   "colorPosition": 3,
+                  "2ndPosition": 4,
+                  "3rdPosition": 5,
                   "color/brightness": 100.0,
                   "color/saturation": 100.0,
-                  "color/hue": 61.882354736328125
+                  "color/hue": 61.882354736328125,
+                  "paletteType": 0
                 },
                 "children": {
                   "modulation": {
@@ -22302,11 +22305,11 @@
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0,
                   "te_color/color2offset": 0.5,
-                  "Energy": 0.0,
-                  "Width": 0.5,
-                  "Glow": 0.1,
+                  "Double Layer": false,
                   "Double Speed": false,
-                  "Double Layer": false
+                  "Width": 0.5,
+                  "Energy": 0.0,
+                  "Glow": 0.1
                 },
                 "children": {
                   "modulation": {
