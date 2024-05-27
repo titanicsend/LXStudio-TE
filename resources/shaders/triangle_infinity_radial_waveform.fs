@@ -83,7 +83,7 @@ float size = iScale;
     vec3 finalColor = vec3(0.0);
     float outerTriangleDF = exp(-sdEquilateralTriangle(uv0, 0.9));
     for (float i = 0.0; i < numIters; i++) {
-        uv = fract(uv * fractFactor) - 0.5;
+        uv = fract(uv * fractFactor);// - 0.5;
 
         uv.y *= -1.;
 
