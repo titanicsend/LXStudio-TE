@@ -3,11 +3,13 @@ package titanicsend.ui.effect;
 import heronarts.glx.ui.UI;
 import heronarts.glx.ui.UI2dComponent;
 import heronarts.glx.ui.UI2dContainer;
+import heronarts.glx.ui.component.UIColorPicker;
 import heronarts.glx.ui.component.UIDropMenu;
 import heronarts.glx.ui.component.UILabel;
 import heronarts.glx.ui.component.UISlider;
 import heronarts.glx.ui.vg.VGraphics;
 import heronarts.lx.color.LXColor;
+import heronarts.lx.studio.ui.global.UIPalette;
 import titanicsend.effect.LookColorPaletteEffect;
 import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.studio.LXStudio;
@@ -17,62 +19,44 @@ import heronarts.lx.utils.LXUtils;
 
 
 public class UILookColorPaletteEffect implements UIDeviceControls<LookColorPaletteEffect> {
-
   private static final int LABEL_WIDTH = 56;
   private static final float SLIDER_WIDTH = 120.0F;
 
   public UILookColorPaletteEffect() {
   }
 
-  public void buildDeviceControls(LXStudio.UI ui, UIDevice uiDevice, LookColorPaletteEffect device) {
-    System.out.println("==== UILookColorPaletteEffect ====");
+  public void buildDeviceControls(LXStudio.UI ui, UIDevice uiDevice, LookColorPaletteEffect effect) {
     uiDevice.setLayout(UI2dContainer.Layout.HORIZONTAL);
     uiDevice.setChildSpacing(4);
-    uiDevice.setContentWidth(240.0F);
-//
-//    new UILookColorPaletteEffect.UIHueDisplay(device.hue).addToContainer(uiDevice);
-//    new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, 120.0F, 16.0F,
-//        device.hue).addToContainer(uiDevice);
-//    new UILookColorPaletteEffect.UISaturationDisplay().addToContainer(uiDevice);
-//    new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, 120.0F, 16.0F,
-//        device.saturation).addToContainer(uiDevice);
-//    new UILookColorPaletteEffect.UIBrightnessDisplay().addToContainer(uiDevice);
-//    new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, 120.0F, 16.0F,
-//        device.brightness).addToContainer(uiDevice);
-//    new UIDropMenu(56, 16, device.colorPosition).setX(6);
+    uiDevice.setContentWidth(120F + 56F + 120F);
 
     addColumn(
         uiDevice,
-        new UILookColorPaletteEffect.UIHueDisplay(device.hue),
-        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, SLIDER_WIDTH, 16.0F, device.hue),
+        new UILookColorPaletteEffect.UIHueDisplay(effect.hue),
+        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, SLIDER_WIDTH, 16.0F, effect.hue),
         new UILookColorPaletteEffect.UISaturationDisplay().addToContainer(uiDevice),
-        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, SLIDER_WIDTH, 16.0F, device.saturation).addToContainer(uiDevice),
+        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, SLIDER_WIDTH, 16.0F, effect.saturation).addToContainer(uiDevice),
         new UILookColorPaletteEffect.UIBrightnessDisplay().addToContainer(uiDevice),
-        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, SLIDER_WIDTH, 16.0F, device.brightness).addToContainer(uiDevice)
-        ).setChildSpacing(6).setWidth(SLIDER_WIDTH);
+        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, SLIDER_WIDTH, 16.0F, effect.brightness).addToContainer(uiDevice)
+    ).setChildSpacing(6).setWidth(SLIDER_WIDTH);
+
     addVerticalBreak(ui, uiDevice);
+
     addColumn(
         uiDevice,
         new UILabel(56.0F, "Position"),
-        new UIDropMenu(56.0F, 16, device.colorPosition),
+        new UIDropMenu(56.0F, 16, effect.colorPosition),
         new UILabel(56.0F, "Palette Type"),
-        newKnob(device.paletteType)
-    ).setChildSpacing(6).setWidth(SLIDER_WIDTH);
+        newKnob(effect.paletteType)
+    ).setChildSpacing(6).setWidth(56F);
 
-//    UI2dContainer container = UI2dContainer.newHorizontalContainer(160.0F, 6.0F);
-//
-//    UI2dContainer.newVerticalContainer(56.0F, 6.0F)
-//        .addChildren(
-//
-//
-//        ).addToContainer(container);
-//
-//    UI2dContainer.newVerticalContainer(120.0F, 6.0F)
-//        .addChildren(
-//
-//        ).setX(120.0F).addToContainer(container);
-//
-//    container.addToContainer(uiDevice);
+    addVerticalBreak(ui, uiDevice);
+
+    addColumn(
+        uiDevice,
+        row("Act", 20, new UIPalette.Swatch(ui, effect.getActiveSwatch(), 0, 0, 80, UIColorPicker.Corner.TOP_LEFT)),
+        row("Cue", 20, new UIPalette.Swatch(ui, effect.getCueSwatch(), 0, 0, 80, UIColorPicker.Corner.TOP_LEFT))
+    ).setChildSpacing(6).setWidth(SLIDER_WIDTH+10);
   }
 
   private UI2dContainer row(String label, UI2dComponent component) {
