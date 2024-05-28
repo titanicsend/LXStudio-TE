@@ -751,9 +751,6 @@ public class TEApp extends LXStudio {
                 }
                 lx.preferences.loadInitialSchedule();
               }
-              if (flags.forceOutput) {
-                lx.engine.output.enabled.setValue(true);
-              }
             });
 
         lx.run();
@@ -777,9 +774,6 @@ public class TEApp extends LXStudio {
         } else {
           log("Opening project file: " + projectFile);
           lx.openProject(projectFile);
-        }
-        if (flags.forceOutput) {
-          lx.engine.output.enabled.setValue(true);
         }
       }
     } else {

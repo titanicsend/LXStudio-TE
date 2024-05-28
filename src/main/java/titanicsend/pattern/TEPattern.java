@@ -185,8 +185,8 @@ public abstract class TEPattern extends DmxPattern {
    */
   public double measure() {
     return (lx.engine.tempo.getCompositeBasis()
-        % lx.engine.tempo.beatsPerMeasure.getValue()
-        / lx.engine.tempo.beatsPerMeasure.getValue());
+        % lx.engine.tempo.beatsPerBar.getValue()
+        / lx.engine.tempo.beatsPerBar.getValue());
   }
 
   public Tempo getTempo() {

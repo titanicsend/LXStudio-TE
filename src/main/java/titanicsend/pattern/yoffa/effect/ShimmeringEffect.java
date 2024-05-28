@@ -64,7 +64,7 @@ public class ShimmeringEffect extends PatternEffect {
 
     double basis = getTempo().basis();
     int beatCount = getTempo().beatCount();
-    int beatsPerMeasure = getTempo().beatsPerMeasure.getValuei();
+    int beatsPerMeasure = getTempo().beatsPerBar.getValuei();
 
     if (beatCount > lastBeat && beatCount % beatsPerMeasure == 0) {
       lastBeat = getTempo().beatCount();
