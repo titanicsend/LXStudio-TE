@@ -1,51 +1,77 @@
 package titanicsend.model;
 
+import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
+
 import java.util.*;
 import titanicsend.app.TEVirtualColor;
 import titanicsend.util.OffsetTriangles;
+import titanicsend.util.TEMath;
 
 public class TEPanelModel extends TEModel {
-  public static final float PANEL_BACKING_DISTANCE = 90000; // About four inches
 
-  // Useful data for points inside LIT panels
-  public static class LitPointData {
-    public LXPoint point;
-    public double radius; // Distance from the centroid
-    public double radiusFraction; // ...expressed as a fraction <= 1.0
+  public static final String TE_MODEL_TYPE = "Panel";
 
-    LitPointData(LXPoint point, double radius, double radiusFraction) {
+  // Static model constants
+  public static final float PANEL_BACKING_DISTANCE_STATIC = 90000; // About four inches
+  public static final String UNKNOWN = "unknown";
+  public static final String SOLID = "solid";
+  public static final String LIT = "lit";
+
+  // Dynamic model constants
+  public static final float PANEL_BACKING_DISTANCE_DYNAMIC = 2;
+  public static final String TAG = "panel";
+  public static final String META_ID = "panelId";
+  public static final String META_EDGE1 = "edge1";
+  public static final String META_EDGE2 = "edge2";
+  public static final String META_EDGE3 = "edge3";
+  public static final String META_LEADING_EDGE = "leadingEdge";
+  public static final String META_MODULE = "module";
+  
+  /**
+   * Wrapper around each LXPoint in the panel
+   */
+  public static class Point {
+    public final LXPoint point;
+    public final double radius; // Distance from the centroid
+    public final double radiusFraction; // ...expressed as a fraction <= 1.0
+
+    Point(LXPoint point, double radius, double radiusFraction) {
       this.point = point;
       this.radius = radius;
       this.radiusFraction = radiusFraction;
     }
   }
 
-  public static final String UNKNOWN = "unknown";
-  public static final String SOLID = "solid";
-  public static final String LIT = "lit";
+  // Two versions of the internal array of points:
+  // 1. Pass-through to the underlying model's LXPoints
+  public final LXPoint[] points;
+  // 2. Wrapper around each LXPoint adding edge-specific data
+  public final Point[] panelPoints;
 
-  public String id;
-  public final TEVertex v0, v1, v2;
-  public final TEEdgeModel e0, e1, e2;
-  public String panelType;
-  public String flavor;
+  // Pass-through to model, for transition from static->dynamic.
+  public final int size;
+
+  public final String panelType;
+  public final String flavor;
   public final LXVector centroid;
 
-  int[] channelLengths;
-  public List<LitPointData> litPointData;
+  // UI backer coordinates
   public OffsetTriangles offsetTriangles;
-
-  private Adjustment currentAdjustment = new Adjustment();
-
   // Set to non-null and the virtual display will shade the panel's triangle
   public TEVirtualColor virtualColor;
 
-  public String getId() {
-    return this.id;
-  }
+  // Connections
+  public final TEVertex v0, v1, v2;
+  public TEEdgeModel e0, e1, e2;
 
+  // Adjustments for distortion on ends of car
+  private Adjustment currentAdjustment = new Adjustment();
+
+  /**
+   * Static model constructor (2022-23)
+   */
   public TEPanelModel(
       String id,
       ArrayList<LXPoint> points,
@@ -60,20 +86,20 @@ public class TEPanelModel extends TEModel {
       LXVector centroid,
       int[] channelLengths,
       String... tags) {
-    super("Panel", points, tags);
+    super(TE_MODEL_TYPE, points, tags);
 
-    this.id = id;
+    setId(id);
 
     this.panelType = panelType;
     this.flavor = flavor;
     this.centroid = centroid;
-    this.channelLengths = channelLengths;
 
     switch (panelType) {
       case UNKNOWN:
         // Display unknown panels as wispy pink
         this.virtualColor = new TEVirtualColor(255, 0, 255, 100);
-        this.litPointData = null;
+        this.points = new LXPoint[0];
+        this.panelPoints = new Point[0];
         break;
       case LIT:
         // Display lit panels as semi-transparent gold
@@ -88,22 +114,27 @@ public class TEPanelModel extends TEModel {
         double maxRadius = Math.max(radius0, Math.max(radius1, radius2));
 
         // Calculate useful data for each of this panel's points relative to the panel
-        this.litPointData = new ArrayList<LitPointData>();
-        for (LXPoint point : points) {
+        this.points = this.model.points;
+        this.panelPoints = new Point[this.points.length];
+        for (int i = 0; i < this.points.length; i++) {
+          LXPoint point = this.points[i];
           double radius = TEVertex.distance(this.centroid, point);
           double radiusFraction = radius / maxRadius;
-          litPointData.add(new LitPointData(point, radius, radiusFraction));
+          this.panelPoints[i] = new Point(point, radius, radiusFraction);
         }
         break;
       case SOLID:
         // Display solid panels as semi-transparent black, recolorable by patterns
         this.virtualColor = new TEVirtualColor(0, 0, 0, 200);
-        this.litPointData = null;
+        this.points = new LXPoint[0];
+        this.panelPoints = new Point[0];
 
         break;
       default:
         throw new Error("Unknown panel type: " + this.panelType);
     }
+
+    this.size = this.points.length;
 
     // Make sure we have three different edges
     assert e0 != e1;
@@ -133,7 +164,66 @@ public class TEPanelModel extends TEModel {
     this.v1 = v1;
     this.v2 = v2;
 
-    this.offsetTriangles = new OffsetTriangles(v0, v1, v2, PANEL_BACKING_DISTANCE);
+    this.offsetTriangles = new OffsetTriangles(v0, v1, v2, PANEL_BACKING_DISTANCE_STATIC);
+  }
+
+  /**
+   * Dynamic model constructor (2024+)
+   */
+  public TEPanelModel(LXModel model, TEVertex v0, TEVertex v1, TEVertex v2) {
+    super(TE_MODEL_TYPE, model);
+
+    this.v0 = v0;
+    this.v1 = v1;
+    this.v2 = v2;
+
+    setId(this.model.meta(META_ID));
+    
+    // These variables are unnecessary in dynamic model:
+    this.panelType = LIT;
+    this.flavor = "";
+
+    // Pass-through variables
+    this.size = this.model.points.length;
+    this.points = this.model.points;
+
+    // Calculate centroid as an average of the points,
+    // different from static model where it was an average of the 3 vertices.
+    this.centroid = calculateCentroid(this.points);
+    double maxRadius = 0;
+    for (LXPoint p : this.points) {
+      maxRadius = Math.max(maxRadius,
+        TEMath.distance(this.centroid.x, this.centroid.y, this.centroid.z, p.x, p.y, p.z));
+    }
+
+    // Wrap each point to store some additional data.
+    this.panelPoints = new Point[this.points.length];
+    for (int i = 0; i < this.points.length; i++) {
+      LXPoint point = this.points[i];
+      double radius = TEVertex.distance(this.centroid, point);
+      double radiusFraction = radius / maxRadius;
+      this.panelPoints[i] = new Point(point, radius, radiusFraction);
+    }
+
+    // Calculate UI backer triangles for dynamic model
+    // Use the end points of the first row and the middle point of the last row.
+    LXModel firstRow = this.model.children[0];
+    LXModel lastRow = this.model.children[this.model.children.length - 1];
+    LXVector vA = new LXVector(firstRow.points[0]);
+    LXVector vB = new LXVector(firstRow.points[firstRow.size - 1]);
+    LXVector vC = new LXVector(lastRow.points[lastRow.size / 2]);
+    this.offsetTriangles = new OffsetTriangles(vA, vB, vC, PANEL_BACKING_DISTANCE_DYNAMIC);
+  }
+
+  private static LXVector calculateCentroid(LXPoint[] points) {
+    LXVector centroid = new LXVector(0, 0, 0);
+    if (points.length > 0) {
+      for (LXPoint p : points) {
+        centroid.add(p.x, p.y, p.z);
+      }
+      centroid.div(points.length);
+    }
+    return centroid;
   }
 
   // Checks if two panels touch along an edge (not just at a vertex)

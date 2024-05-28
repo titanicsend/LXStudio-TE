@@ -5,6 +5,7 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.blend.MultiplyBlend;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
+import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.*;
 import heronarts.lx.transform.LXVector;
 import java.util.*;
@@ -88,7 +89,7 @@ public class EdgeSymmetry extends TEPattern {
     }
 
     for (TEEdgeModel edge : litEdges) {
-      for (TEEdgeModel.Point point : edge.points) {
+      for (LXPoint point : edge.points) {
         colors[point.index] = color;
       }
     }

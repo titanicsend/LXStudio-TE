@@ -3,6 +3,8 @@ package titanicsend.pattern.jon;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import java.util.ArrayList;
+
+import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
 import titanicsend.model.TEWholeModelStatic;
@@ -54,18 +56,18 @@ public class ModelBender {
     for (TEPanelModel panel : model.getPanels()) {
       String id = panel.getId();
       if (id.startsWith("F") || id.startsWith("A")) {
-        for (LXPoint point : panel.getPoints()) {
+        for (LXPoint point : panel.model.getPoints()) {
           endPoints.add(point);
         }
       }
     }
 
     // add end edge points
-    LXModel endEdge;
+    TEEdgeModel endEdge;
     for (String edgeId : endEdgeIds) {
       endEdge = model.getEdge(edgeId);
       if (endEdge != null) {
-        for (LXPoint point : endEdge.getPoints()) {
+        for (LXPoint point : endEdge.model.getPoints()) {
           endPoints.add(point);
         }
       }

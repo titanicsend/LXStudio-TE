@@ -34,7 +34,7 @@ public class Kaleidoscope extends TEEffect {
           continue;
         }
 
-        LXProjection projection = new LXProjection(panel);
+        LXProjection projection = new LXProjection(panel.model);
         projection.translate(-panel.centroid.x, -panel.centroid.y, -panel.centroid.z);
 
         LXVector zAxis = new LXVector(0, 0, 1);

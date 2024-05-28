@@ -1,7 +1,6 @@
 package titanicsend.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -22,32 +21,32 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
   public List<LXPoint> panelPoints; // Points belonging to panels
   //public List<TEBox> boxes;
 
+  // Vertexes placeholder, does not exist as a model with fixture files
+  private final List<TEVertex> vertexes = new ArrayList<TEVertex>();
+  
   // Edges
   private final List<TEEdgeModel> mutableEdges = new ArrayList<TEEdgeModel>();
-  private final List<TEEdgeModel> edges = Collections.unmodifiableList(this.mutableEdges);
-
+  public final List<TEEdgeModel> edges = Collections.unmodifiableList(this.mutableEdges);
   public HashMap<String, TEEdgeModel> edgesById;
   public HashMap<LXVector, List<TEEdgeModel>> edgesBySymmetryGroup;
 
   // Panels
   private final List<TEPanelModel> mutablePanels = new ArrayList<TEPanelModel>();
-  private final List<TEPanelModel> panels = Collections.unmodifiableList(this.mutablePanels);
-
-  public HashMap<String, TEPanelModel> panelsById;
-  private final HashMap<TEPanelSection, Set<TEPanelModel>> panelsBySection;
-  public HashMap<String, List<TEPanelModel>> panelsByFlavor;
+  public final List<TEPanelModel> panels = Collections.unmodifiableList(this.mutablePanels);
+  public final HashMap<String, TEPanelModel> panelsById = new HashMap<String, TEPanelModel>();
+  private final HashMap<TEPanelSection, Set<TEPanelModel>> panelsBySection = new HashMap<TEPanelSection, Set<TEPanelModel>>();
   
   // Lasers
   public HashMap<String, TELaserModel> lasersById;
 
   // Beacons
   private final List<DmxModel> mutableBeacons = new ArrayList<DmxModel>();
-  private final List<DmxModel> beacons = Collections.unmodifiableList(this.mutableBeacons);
+  public final List<DmxModel> beacons = Collections.unmodifiableList(this.mutableBeacons);
   private final HashMap<String, DmxModel> beaconsById = new HashMap<String, DmxModel>();
 
   // DJ Lights
   private final List<DmxModel> mutableDjLights = new ArrayList<DmxModel>();
-  private final List<DmxModel> djLights = Collections.unmodifiableList(this.mutableDjLights);
+  public final List<DmxModel> djLights = Collections.unmodifiableList(this.mutableDjLights);
   private final HashMap<String, DmxModel> djLightsById = new HashMap<String, DmxModel>();
 
   // All DMX models
@@ -64,7 +63,35 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
 
   @Override
   public void modelGenerationChanged(LX lx, LXModel model) {
+    // Find all edges
     
+    // Connect new edges to vertexes, create vertex if not found
+    
+    // Remove any previous edges that no longer exist
+    
+    // Remove deleted edges from connection lists (vertexes, edges, panels)
+    
+    // Find all panels
+    
+    // Connect new panels to vertexes, create vertex if not found
+    
+    // Remove any previous panels that no longer exist
+    
+    // Remove deleted panels from connection lists (vertexes, edges, panels)
+        
+    // Remove vertexes with no connections
+    
+    // Rebuild All Connections
+    // The vertex lists are now up to date.  Use them to rebuild connections
+    // between objects (edge->edge, edge->panel, panel->edge, panel->panel).
+    // foreach edge, edge.rebuildConnections()
+    // foreach panel, panel.rebuildConnections()
+    
+    // Find all DMX models (Beacons, DJ Lights)
+    
+    // There are no longer LXModels for lasers
+    
+    // Run the garbage collector to prevent buildup of old-generation objects? 
   }
   
   @Override
@@ -81,7 +108,7 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
 
   @Override
   public boolean isGapPoint(LXPoint p) {
-    // TODO Auto-generated method stub
+    // There are no LXPoints for gap pixels in this wonderful dynamic future.
     return false;
   }
 
@@ -150,14 +177,12 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
   }
 
   @Override
-  public Collection<TEVertex> getVertexes() {
-    // TODO Auto-generated method stub
-    return null;
+  public List<TEVertex> getVertexes() {
+    return this.vertexes;
   }
 
   @Override
   public TEVertex getVertex(int vertexId) {
-    // TODO Auto-generated method stub
     return null;
   }
 

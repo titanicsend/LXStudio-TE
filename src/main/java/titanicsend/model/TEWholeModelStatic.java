@@ -32,19 +32,18 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
   public HashMap<Integer, TEVertex> vertexesById;
   
   private final List<TEEdgeModel> mutableEdges = new ArrayList<TEEdgeModel>();
-  private final List<TEEdgeModel> edges = Collections.unmodifiableList(this.mutableEdges);
+  public final List<TEEdgeModel> edges = Collections.unmodifiableList(this.mutableEdges);
   public HashMap<String, TEEdgeModel> edgesById;
   public HashMap<LXVector, List<TEEdgeModel>> edgesBySymmetryGroup;
   
   private final List<TEPanelModel> mutablePanels = new ArrayList<TEPanelModel>();
-  private final List<TEPanelModel> panels = Collections.unmodifiableList(this.mutablePanels);
+  public final List<TEPanelModel> panels = Collections.unmodifiableList(this.mutablePanels);
   public HashMap<String, TEPanelModel> panelsById;
   private final HashMap<TEPanelSection, Set<TEPanelModel>> panelsBySection;
-  public HashMap<String, List<TEPanelModel>> panelsByFlavor;
   
   public HashMap<String, TELaserModel> lasersById;
   
-  public List<LXPoint> edgePoints; // Points belonging to edges
+  public List<LXPoint> edgePoints;  // Points belonging to edges
   public List<LXPoint> panelPoints; // Points belonging to panels
   public List<TEBox> boxes;
   public Boundaries boundaryPoints;
@@ -55,7 +54,7 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
 
   // Beacons
   private final List<DmxModel> mutableBeacons = new ArrayList<DmxModel>();
-  private final List<DmxModel> beacons = Collections.unmodifiableList(this.mutableBeacons);
+  public final List<DmxModel> beacons = Collections.unmodifiableList(this.mutableBeacons);
   private final HashMap<String, DmxModel> beaconsById = new HashMap<String, DmxModel>();
   public List<DmxModel> getBeacons() {
     return this.beacons;
@@ -63,7 +62,7 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
 
   // DJ Lights
   private final List<DmxModel> mutableDjLights = new ArrayList<DmxModel>();
-  private final List<DmxModel> djLights = Collections.unmodifiableList(this.mutableDjLights);
+  public final List<DmxModel> djLights = Collections.unmodifiableList(this.mutableDjLights);
   private final HashMap<String, DmxModel> djLightsById = new HashMap<String, DmxModel>();
   public List<DmxModel> getDjLights() {
     return this.djLights;
@@ -135,7 +134,6 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
 
     this.panelsById = geometry.panelsById;
     this.panelsBySection = geometry.panelsBySection;
-    this.panelsByFlavor = geometry.panelsByFlavor;
 
     this.panelPoints = new ArrayList<>();
     // filter gap points from panelPoints list
@@ -251,13 +249,14 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
   private void buildEdgeRelations() {
     for (TEEdgeModel edge : this.edgesById.values()) {
       // In decimeters to better group
-      int absY = Math.round(Math.abs(edge.center.y) / 100_000);
-      int absZ = Math.round(Math.abs(edge.center.z) / 100_000);
+      int absY = Math.round(Math.abs(edge.model.center.y) / 100_000);
+      int absZ = Math.round(Math.abs(edge.model.center.z) / 100_000);
       LXVector symmetryKey = new LXVector(0, absY * 100_000, absZ * 100_000);
       List<TEEdgeModel> symmetryGroup =
           this.edgesBySymmetryGroup.computeIfAbsent(symmetryKey, k -> new ArrayList<>());
       symmetryGroup.add(edge);
-      edge.symmetryGroup = symmetryGroup;
+      edge.symmetryGroup.clear();
+      edge.symmetryGroup.addAll(symmetryGroup);
       this.edgePoints.addAll(Arrays.asList(edge.points));
     }
   }
@@ -481,7 +480,7 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
     // Loop until every pixel in the panel has been mapped to an output channel.
     for (outputIndex = 0; firstChannelPixel < p.size; outputIndex++) {
       if (outputs.length <= outputIndex) {
-        TE.err("Ran out of configured channels before assigning all pixels in " + p.id);
+        TE.err("Ran out of configured channels before assigning all pixels in " + p.getId());
         return;
       }
       String[] tokens = outputs[outputIndex].split("#");
@@ -648,7 +647,7 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
       flavorStr.append(flavor);
       flavorStr.append(": ");
       for (TEPanelModel panel : geometry.panelsByFlavor.get(flavor)) {
-        flavorStr.append(panel.id);
+        flavorStr.append(panel.getId());
         flavorStr.append(" ");
       }
       // LX.log(flavorStr.toString());
@@ -841,7 +840,9 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
 
     loadLasers(geometry);
 
-    childList.addAll(geometry.lasersById.values());
+    for (TEModel child : geometry.lasersById.values()) {
+      childList.add(child.model);
+    }
 
     loadBeacons(geometry);
 
@@ -849,7 +850,9 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
 
     loadEdges(geometry);
 
-    childList.addAll(geometry.edgesById.values());
+    for (TEModel child : geometry.edgesById.values()) {
+      childList.add(child.model);
+    }
 
     geometry.gapPoint = new LXPoint();
     List<LXPoint> gapList = new ArrayList<>();
@@ -858,7 +861,9 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
 
     loadPanels(geometry);
 
-    childList.addAll(geometry.panelsById.values());
+    for (TEModel child : geometry.panelsById.values()) {
+      childList.add(child.model);
+    }
 
     geometry.children = childList.toArray(new LXModel[0]);
 
@@ -889,10 +894,6 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
 	return this.boundaryPoints.maxZBoundaryPoint.z;
   }
 
-  public Set<TEPanelModel> getPanelsBySection(TEPanelSection section) {
-    return panelsBySection.get(section);
-  }
-
   public List<LXPoint> getEdgePointsBySection(TEEdgeSection section) {
     return edgePoints.stream()
         .filter(point -> section == TEEdgeSection.PORT ? point.x > 0 : point.x < 0)
@@ -900,32 +901,10 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
   }
 
   public List<LXPoint> getPointsBySection(TEPanelSection section) {
-    return getPanelsBySection(section).stream()
-        .map(LXModel::getPoints)
+    return panelsBySection.get(section).stream()
+        .map(panel -> panel.model.getPoints())
         .flatMap(List::stream)
         .collect(Collectors.toList());
-  }
-
-  public Set<TEPanelModel> getPanelsBySections(Collection<TEPanelSection> sections) {
-    return panelsBySection.entrySet().stream()
-        .filter(entry -> sections.contains(entry.getKey()))
-        .map(Map.Entry::getValue)
-        .flatMap(Set::stream)
-        .collect(Collectors.toSet());
-  }
-
-  public Set<TEPanelModel> getLeftPanels() {
-    return getPanelsBySections(
-        List.of(
-            TEPanelSection.STARBOARD_AFT, TEPanelSection.STARBOARD_AFT_SINGLE, TEPanelSection.AFT));
-  }
-
-  public Set<TEPanelModel> getRightPanels() {
-    return getPanelsBySections(
-        List.of(
-            TEPanelSection.STARBOARD_FORE,
-            TEPanelSection.STARBOARD_FORE_SINGLE,
-            TEPanelSection.FORE));
   }
 
   public List<TEPanelModel> getPanels() {

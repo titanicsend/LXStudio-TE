@@ -67,9 +67,7 @@ import titanicsend.ndi.NDIEngine;
 import titanicsend.osc.CrutchOSC;
 import titanicsend.output.GPOutput;
 import titanicsend.output.GrandShlomoStation;
-import titanicsend.pattern.TEEdgeTestPattern;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
-import titanicsend.pattern.TEPanelTestPattern;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.ben.*;
 import titanicsend.pattern.cesar.HandTracker;
@@ -317,8 +315,6 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(PowerDebugger.class);
       // lx.registry.addPattern(ModuleEditor.class);
       lx.registry.addPattern(SignalDebugger.class);
-      lx.registry.addPattern(TEEdgeTestPattern.class);
-      lx.registry.addPattern(TEPanelTestPattern.class);
       lx.registry.addPattern(HandTracker.class);
       lx.registry.addPattern(TargetPixelStamper.class);
       //lx.registry.addPattern(ModelFileWriter.class);
