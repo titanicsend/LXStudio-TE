@@ -14,6 +14,8 @@ import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
 import java.util.*;
 import titanicsend.app.TEVirtualColor;
+import titanicsend.model.TEEdgeModel;
+import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEVertex;
 import titanicsend.pattern.TEPattern;
 
@@ -101,15 +103,23 @@ public class ModelDebugger extends TEPattern implements UIDeviceControls<ModelDe
         }
         break;
       case EDGE:
-        if (getAll) subModels.addAll(this.modelTE.getEdges());
+        if (getAll) {
+          for (TEEdgeModel edge : this.modelTE.getEdges()) {
+            subModels.add(edge.model);
+          }
+        }
         else if (this.modelTE.hasEdge(idStr))
-          subModels.add(this.modelTE.getEdge(idStr));
+          subModels.add(this.modelTE.getEdge(idStr).model);
         else this.idErrLabel.setVisible(true);
         break;
       case PANEL:
-        if (getAll) subModels.addAll(this.modelTE.getPanels());
+        if (getAll) {
+          for (TEPanelModel panel : this.modelTE.getPanels()) {
+            subModels.add(panel.model);
+          }
+        }
         else if (this.modelTE.hasPanel(idStr))
-          subModels.add(this.modelTE.getPanel(idStr));
+          subModels.add(this.modelTE.getPanel(idStr).model);
         else this.idErrLabel.setVisible(true);
         break;
       case LASER:

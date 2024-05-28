@@ -234,7 +234,7 @@ public class EdgeRunner extends TEPattern {
       } else if (panel.panelType.equals(TEPanelModel.LIT)) {
         PanelData panelData = this.panelData.get(panel);
         double litFraction = (double) panelData.litEdgePixels / panelData.numEdgePixels;
-        for (TEPanelModel.LitPointData lpd : panel.litPointData) {
+        for (TEPanelModel.Point lpd : panel.panelPoints) {
           int color;
           if (lpd.radiusFraction <= litFraction) {
             color = fillColor;

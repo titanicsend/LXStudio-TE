@@ -80,7 +80,7 @@ public class Bubbles extends TEPattern {
     for (Map.Entry<TEPanelModel, Double> entry : this.bubbleFraction.entrySet()) {
       TEPanelModel panel = entry.getKey();
       double fraction = entry.getValue();
-      for (TEPanelModel.LitPointData lpd : panel.litPointData) {
+      for (TEPanelModel.Point lpd : panel.panelPoints) {
         int color;
         if (lpd.radiusFraction >= fraction && lpd.radiusFraction < fraction + BUBBLE_THICKNESS) {
           color = bubbleColor;

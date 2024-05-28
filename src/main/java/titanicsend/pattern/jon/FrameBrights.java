@@ -155,23 +155,23 @@ public class FrameBrights extends TEAudioPattern {
     for (TEEdgeModel edge : modelTE.getEdges()) {
       float alpha;
       lightRandomSegments(zoneCount, minZones, maxZones);
-      for (TEEdgeModel.Point point : edge.points) {
+      for (TEEdgeModel.Point point : edge.edgePoints) {
         int zone = (int) Math.floor(point.frac * (zoneCount - 1));
 
         // lit segments to pulsing max brightness
-        if (zoneIsLit[zone] && point.yn >= yMin) {
+        if (zoneIsLit[zone] && point.point.yn >= yMin) {
           alpha = spotBrightness;
         } else {
           // non-lit segments get shifting min brightness pattern
           // build inexpensive but complex-looking pattern using precalculated point data
-          float w = (float) (10.0 * ((1.0 - (point.elevation / Math.PI)) * (point.xn + point.yn)));
+          float w = (float) (10.0 * ((1.0 - (point.point.elevation / Math.PI)) * (point.point.xn + point.point.yn)));
           alpha = (minBri + briShift * TEMath.trianglef(currentCycle + w));
         }
 
         // clear and reset alpha channel
         baseColor = baseColor & ~LXColor.ALPHA_MASK;
         baseColor = baseColor | ((int) (alpha * 255) << LXColor.ALPHA_SHIFT);
-        colors[point.index] = baseColor;
+        colors[point.point.index] = baseColor;
       }
     }
   }

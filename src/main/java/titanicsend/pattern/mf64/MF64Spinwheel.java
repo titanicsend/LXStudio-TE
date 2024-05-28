@@ -60,7 +60,7 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
 
   // does the spinwheel thing, returns the brightness
   // at the specified pixel.
-  float spinwheel(TEPanelModel.LitPointData lp, float spin, float grow) {
+  float spinwheel(TEPanelModel.Point lp, float spin, float grow) {
     // move coordinate origin to panel center
     float x = lp.point.z - panelCenter.z;
     float y = lp.point.y - panelCenter.y;
@@ -129,7 +129,7 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
       colorIndex = (colorIndex + 1) % colorSet.length;
 
       // now draw something on the panel
-      for (TEPanelModel.LitPointData p : panel.litPointData) {
+      for (TEPanelModel.Point p : panel.panelPoints) {
         // do the spinwheel thing
         panelCenter = panel.centroid;
         int alpha = (int) (255f * spinwheel(p, spin, grow));

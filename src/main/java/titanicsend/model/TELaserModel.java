@@ -15,6 +15,9 @@ public class TELaserModel extends TEModel {
   public String id;
   public LaserControl control;
 
+  // ***TEMPORARY FOR REFACTORING
+  public LXPoint[] points;
+
   public TELaserModel(String id, double x, double y, double z, String... tags) {
     super("Laser", makePoint(x, y, z), tags);
     this.id = id;

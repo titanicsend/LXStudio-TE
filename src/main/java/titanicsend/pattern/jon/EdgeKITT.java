@@ -55,7 +55,7 @@ public class EdgeKITT extends TEPerformancePattern {
     // on the Pixelblaze forum.
     // https://forum.electromage.com/t/kitt-without-arrays/1219
     for (TEEdgeModel edge : modelTE.getEdges()) {
-      for (TEEdgeModel.Point point : edge.points) {
+      for (TEEdgeModel.Point point : edge.edgePoints) {
 
         double x = 0.5 * point.frac;
         double pct1 = x - t1;
@@ -70,7 +70,7 @@ public class EdgeKITT extends TEPerformancePattern {
         double bri = clamp((w1 * w1) + (w2 * w2), 0, 1);
 
         bri = bri * 255; // scale for LX output
-        colors[point.index] = TEColor.reAlpha(baseColor, (int) bri);
+        colors[point.point.index] = TEColor.reAlpha(baseColor, (int) bri);
       }
     }
   }

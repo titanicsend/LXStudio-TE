@@ -38,7 +38,7 @@ public class Checkers extends TEPerformancePattern {
         // If not yet grouped, put it in Group 0, with a special exception
         // for SUA and PUA, which should be group 1 so they look different
         // from SUF/PUF
-        int group = panel.id.endsWith("UA") ? 1 : 0;
+        int group = panel.getId().endsWith("UA") ? 1 : 0;
         this.panelGroup.put(panel, group);
       }
       int thisPanelGroup = this.panelGroup.get(panel);
