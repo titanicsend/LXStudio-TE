@@ -43,6 +43,14 @@
             <name>project-repo</name>
             <url>file://${project.basedir}/repo</url>
             <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <checksumPolicy>ignore</checksumPolicy>
+            </snapshots>
         </repository>
 
         <repository>
