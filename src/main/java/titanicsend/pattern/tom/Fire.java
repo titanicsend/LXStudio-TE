@@ -1,7 +1,5 @@
 package titanicsend.pattern.tom;
 
-import static processing.core.PApplet.lerpColor;
-
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
@@ -102,11 +100,13 @@ public class Fire extends TEPattern {
     int[] gradient = new int[steps];
     double pos = this.colorPosition.getValue();
     for (int i = 0; i < steps * pos; i++) {
-      gradient[i] = lerpColor(LXColor.BLACK, middle, (float) (i / (steps * pos)), 3);
+      // gradient[i] = lerpColor(LXColor.BLACK, middle, (float) (i / (steps * pos)), 3);
+      gradient[i] = LXColor.lerp(LXColor.BLACK, middle, (float) (i / (steps * pos)));
     }
 
     for (int i = (int) (steps * pos); i < steps; i++) {
-      gradient[i] = lerpColor(middle, LXColor.WHITE, (float) ((i - steps * pos) / steps), 3);
+      // gradient[i] = lerpColor(middle, LXColor.WHITE, (float) ((i - steps * pos) / steps), 3);
+      gradient[i] = LXColor.lerp(middle, LXColor.WHITE, (float) ((i - steps * pos) / steps));
     }
 
     return gradient;
