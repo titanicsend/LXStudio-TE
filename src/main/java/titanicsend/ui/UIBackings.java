@@ -76,7 +76,7 @@ public class UIBackings extends UI3dComponent {
 
     List<TEPanelModel> models = TEApp.wholeModel.getPanels();
     this.numModels = models.size();
-    this.colorBufferMaxSize = this.numModels * VERTICES_PER_PANEL;
+    this.colorBufferMaxSize = Math.max(1, this.numModels) * VERTICES_PER_PANEL;
 
     for (TEPanelModel m : models) {
       initPanel = m;

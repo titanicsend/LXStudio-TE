@@ -5,6 +5,7 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
 
 import java.util.*;
+
 import titanicsend.app.TEVirtualColor;
 import titanicsend.util.OffsetTriangles;
 import titanicsend.util.TEMath;
@@ -21,8 +22,10 @@ public class TEPanelModel extends TEModel {
 
   // Dynamic model constants
   public static final float PANEL_BACKING_DISTANCE_DYNAMIC = 2;
-  public static final String TAG = "panel";
   public static final String META_ID = "panelId";
+  public static final String META_V0 = "v0";
+  public static final String META_V1 = "v1";
+  public static final String META_V2 = "v2";
   public static final String META_EDGE1 = "edge1";
   public static final String META_EDGE2 = "edge2";
   public static final String META_EDGE3 = "edge3";
@@ -64,7 +67,23 @@ public class TEPanelModel extends TEModel {
 
   // Connections
   public final TEVertex v0, v1, v2;
+
+  public final String edge0id, edge1id, edge2id;
   public TEEdgeModel e0, e1, e2;
+  private final List<TEEdgeModel> mutableEdges = new ArrayList<TEEdgeModel>();
+  public final List<TEEdgeModel> edges = Collections.unmodifiableList(this.mutableEdges);
+
+  private final List<TEPanelModel> mutableNeighbors = new ArrayList<TEPanelModel>();
+  /**
+   * Panels that share an edge with this panel
+   */
+  public final List<TEPanelModel> neighbors = Collections.unmodifiableList(this.mutableNeighbors);
+
+  private final List<TEPanelModel> mutableVertexNeighbors = new ArrayList<TEPanelModel>();
+  /**
+   * Panels that share a vertex but not an edge with this panel
+   */  
+  public final List<TEPanelModel> vertexNeighbors = Collections.unmodifiableList(this.mutableVertexNeighbors);
 
   // Adjustments for distortion on ends of car
   private Adjustment currentAdjustment = new Adjustment();
@@ -147,9 +166,9 @@ public class TEPanelModel extends TEModel {
     assert v1 != v2;
 
     // Make sure each edge touches the other two
-    assert e0.touches(e1);
-    assert e0.touches(e2);
-    assert e1.touches(e2);
+    assert edgeTouches(e0, e1);
+    assert edgeTouches(e0, e2);
+    assert edgeTouches(e1, e2);
 
     // Make sure each edge touches exactly two of the three vertexes
     assert countTouches(e0, v0, v1, v2) == 2;
@@ -160,11 +179,40 @@ public class TEPanelModel extends TEModel {
     this.e1 = e1;
     this.e2 = e2;
 
+    this.mutableEdges.add(this.e0);
+    this.mutableEdges.add(this.e1);
+    this.mutableEdges.add(this.e2);
+
+    this.edge0id = this.e0.getId();
+    this.edge1id = this.e1.getId();
+    this.edge2id = this.e2.getId();
+
     this.v0 = v0;
     this.v1 = v1;
     this.v2 = v2;
 
     this.offsetTriangles = new OffsetTriangles(v0, v1, v2, PANEL_BACKING_DISTANCE_STATIC);
+  }
+
+  // JKB Note: I moved all these touch methods into static here.
+  // Because they're only used by asserts in the above static model constructor,
+  // this version of them can be retired eventually.
+
+  // Given an Edge and three Vertexes, return the number of vertexes the edge touches
+  private static int countTouches(TEEdgeModel e, TEVertex v0, TEVertex v1, TEVertex v2) {
+    int rv = 0;
+    if (edgeTouches(e, v0)) rv++;
+    if (edgeTouches(e, v1)) rv++;
+    if (edgeTouches(e, v2)) rv++;
+    return rv;
+  }
+
+  private static boolean edgeTouches(TEEdgeModel edge, TEEdgeModel other) {
+    return edge.v0.edges.contains(other) || edge.v1.edges.contains(other);
+  }
+
+  private static boolean edgeTouches(TEEdgeModel edge, TEVertex v) {
+    return edge.v0 == v || edge.v1 == v;
   }
 
   /**
@@ -213,6 +261,10 @@ public class TEPanelModel extends TEModel {
     LXVector vB = new LXVector(firstRow.points[firstRow.size - 1]);
     LXVector vC = new LXVector(lastRow.points[lastRow.size / 2]);
     this.offsetTriangles = new OffsetTriangles(vA, vB, vC, PANEL_BACKING_DISTANCE_DYNAMIC);
+
+    this.edge0id = this.model.meta(META_EDGE1);
+    this.edge1id = this.model.meta(META_EDGE2);
+    this.edge2id = this.model.meta(META_EDGE3);
   }
 
   private static LXVector calculateCentroid(LXPoint[] points) {
@@ -226,32 +278,77 @@ public class TEPanelModel extends TEModel {
     return centroid;
   }
 
-  // Checks if two panels touch along an edge (not just at a vertex)
-  public boolean touches(TEPanelModel other) {
-    for (TEEdgeModel eThis : new TEEdgeModel[] {this.e0, this.e1, this.e2}) {
-      for (TEEdgeModel eOther : new TEEdgeModel[] {other.e0, other.e1, other.e2}) {
-        if (eThis == eOther) return true;
+  /**
+   * The model has changed and edges should be reconnected. Called by TEWholeModelDynamic.
+   */
+  public void reconnectEdges(List<TEEdgeModel> edges) {
+    this.e0 = edges.stream()
+      .filter(item -> this.edge0id.equals(item.getId()))
+      .findFirst()
+      .orElse(null);
+    this.e1 = edges.stream()
+      .filter(item -> this.edge1id.equals(item.getId()))
+      .findFirst()
+      .orElse(null);
+    this.e2 = edges.stream()
+      .filter(item -> this.edge2id.equals(item.getId()))
+      .findFirst()
+      .orElse(null);
+
+    this.mutableEdges.clear();
+    if (this.e0 != null) {
+      this.mutableEdges.add(this.e0);
+    }
+    if (this.e1 != null) {
+      this.mutableEdges.add(this.e1);
+    }
+    if (this.e2 != null) {
+      this.mutableEdges.add(this.e2);
+    }
+
+    if (this.mutableEdges.size() < 3) {
+      // TE.log("Not all edges found for panel " + getId());
+    }
+  }
+
+  /**
+   * The model has changed and panel connections should be rebuilt. Called by TEWholeModelDynamic.
+   */
+  public void reconnectPanels(List<TEPanelModel> panels) {
+    this.mutableNeighbors.clear();
+    for (TEPanelModel panel : panels) {
+      if (panel == this) {
+        continue;
+      }
+
+      for (TEEdgeModel edge: this.edges) {
+        if (panel.edges.contains(edge)) {
+          this.mutableNeighbors.add(panel);
+          break;
+        }
       }
     }
-    return false;
-  }
 
-  // Given an Edge and three Vertexes, return the number of vertexes the edge touches
-  private static int countTouches(TEEdgeModel e, TEVertex v0, TEVertex v1, TEVertex v2) {
-    int rv = 0;
-    if (e.touches(v0)) rv++;
-    if (e.touches(v1)) rv++;
-    if (e.touches(v2)) rv++;
-    return rv;
-  }
-
-  // Returns set of panels that touch along an edge (not just at a vertex)
-  public Set<TEPanelModel> neighbors() {
-    HashSet<TEPanelModel> rv = new HashSet<>();
-    for (TEEdgeModel e : new TEEdgeModel[] {this.e0, this.e1, this.e2}) {
-      rv.addAll(e.connectedPanels);
+    this.mutableVertexNeighbors.clear();
+    for (TEPanelModel panel : panels) {
+      if (panel != this && sharesVertex(panel) && !this.neighbors.contains(panel)) {
+        this.mutableVertexNeighbors.add(panel);
+      }
     }
-    return rv;
+  }
+
+  private boolean sharesVertex(TEPanelModel panel) {
+    return 
+      this.v0 == panel.v0 || this.v0 == panel.v1 || this.v0 == panel.v2 ||
+      this.v1 == panel.v0 || this.v1 == panel.v1 || this.v1 == panel.v2 ||
+      this.v2 == panel.v0 || this.v2 == panel.v1 || this.v2 == panel.v2;
+  }
+
+  /**
+   * Checks if two panels touch along an edge (not just at a vertex)
+   */
+  public boolean touches(TEPanelModel other) {
+    return this.neighbors.contains(other);
   }
 
   public TEPanelSection getSection() {

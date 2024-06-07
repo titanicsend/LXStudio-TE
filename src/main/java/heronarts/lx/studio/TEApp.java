@@ -104,6 +104,11 @@ import titanicsend.util.TE;
 
 public class TEApp extends LXStudio {
 
+  static {
+    // Ensure that AWT is only used in headless mode
+    System.setProperty("java.awt.headless", "true");
+  }
+
   public static TEWholeModel wholeModel;
   private static boolean staticModel;
 
@@ -154,9 +159,7 @@ public class TEApp extends LXStudio {
       //      lx.ui.preview.addComponent(visual);
       //      new TEUIControls(ui, visual,
       // ui.leftPane.global.getContentWidth()).addToContainer(ui.leftPane.global);
-      if (isStaticModel()) {
-        this.dmxEngine = new DmxEngine(lx);
-      }
+      this.dmxEngine = new DmxEngine(lx);
       this.ndiEngine = new NDIEngine(lx);
       this.glEngine = new GLEngine(lx);
 
@@ -180,7 +183,7 @@ public class TEApp extends LXStudio {
 
       log("TEApp.Plugin.initialize()");
 
-      if (isStaticModel()) {
+      if (staticModel) {
         GrandShlomoStation.activateAll(lx, wholeModel.getGapPointIndices()[0]);
       }
 
@@ -529,9 +532,8 @@ public class TEApp extends LXStudio {
       new TEUserInterface.AutopilotUISection(ui, this.autopilot)
           .addToContainer(ui.leftPane.global, 0);
 
-      if (isStaticModel()) {
-        applyTECameraPosition();
-      }
+      // Set camera zoom and point size to match current model
+      applyTECameraPosition();
 
       // 3D components
       ui.preview.addComponent(new UIBackings(lx, this.virtualOverlays));
@@ -572,16 +574,30 @@ public class TEApp extends LXStudio {
       }
     }
 
+    /**
+     * Sets camera position and point size for the appropriate model.
+     * Static model requires manual placement of the camera due to very large scale (1"=50000).
+     * Subsequently project files saved with one model type and opened with the other
+     * need their camera position updated. 
+     */
     public void applyTECameraPosition() {
       if (this.lx instanceof LXStudio) {
         LXStudio.UI ui = ((LXStudio) this.lx).ui;
-        ui.preview.pointCloud.pointSize.setValue(80000);
-        ui.preview.camera.theta.setValue(270);
-        ui.preview.camera.phi.setValue(-6);
-        ui.preview.camera.radius.setValue(17000000);
-        ui.previewAux.camera.theta.setValue(270);
-        ui.previewAux.camera.phi.setValue(-6);
-        ui.previewAux.camera.radius.setValue(17000000);
+        if (staticModel) {
+          // Camera position and point size for static model (2022-23)
+          ui.preview.pointCloud.pointSize.setValue(80000);
+          ui.preview.camera.theta.setValue(270);
+          ui.preview.camera.phi.setValue(-6);
+          ui.preview.camera.radius.setValue(17000000);
+          ui.previewAux.camera.theta.setValue(270);
+          ui.previewAux.camera.phi.setValue(-6);
+          ui.previewAux.camera.radius.setValue(17000000);
+        } else {
+          // Camera position and point size for dynamic model (2024+)
+          ui.preview.pointCloud.pointSize.reset();
+          ui.preview.camera.radius.reset();
+          ui.previewAux.camera.radius.reset();
+        }
       }
     }
 
@@ -592,9 +608,7 @@ public class TEApp extends LXStudio {
       this.lx.removeProjectListener(this);
 
       this.devSwitch.dispose();
-      if (isStaticModel()) {
-        this.dmxEngine.dispose();
-      }
+      this.dmxEngine.dispose();
       this.crutchOSC.dispose();
 
       if (!staticModel) {
@@ -657,10 +671,6 @@ public class TEApp extends LXStudio {
 
   private TEApp(Flags flags) throws IOException {
     super(flags);
-  }
-
-  public static boolean isStaticModel() {
-	return TEApp.wholeModel != null;
   }
 
   private static final DateFormat LOG_FILENAME_FORMAT =

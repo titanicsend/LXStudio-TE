@@ -7,6 +7,8 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.utils.LXUtils;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import titanicsend.app.TEVirtualColor;
@@ -218,6 +220,16 @@ public class BassLightning extends TEAudioPattern {
 
   private void makeBolt() {
     TEVertex vertex = modelTE.getVertex(Math.random() > .5 ? 30 : 122);
+    if (vertex == null) {
+      List<TEVertex> vertexes = this.modelTE.getVertexes();
+      if (vertexes.size() > 0) {
+        vertex = vertexes.get(LXUtils.randomi(0, vertexes.size() - 1));
+      }
+    }
+    if (vertex == null) {
+      return;
+    }
+
     synchronized (bolts) {
       for (int i = 0; i < energy.getValuei(); i++) {
         Collection<TEEdgeModel> edges = this.modelTE.getEdges();

@@ -3,12 +3,12 @@ package titanicsend.model;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TEEdgeModel extends TEModel {
 
   public static final String TE_MODEL_TYPE = "Edge";
 
-  public static final String TAG = "edge";
   public static final String META_ID = "edgeId";
   public static final String META_V0 = "v0";
   public static final String META_V1 = "v1";
@@ -32,16 +32,6 @@ public class TEEdgeModel extends TEModel {
      */
     public final float frac;
 
-    /**
-     * Static model constructor
-     */
-    public Point(int i, float fraction, float x, float y, float z) {
-      this(new LXPoint(x, y, z), i, fraction);
-    }
-
-    /**
-     * Dynamic model constructor
-     */
     public Point(LXPoint point, int i, float fraction) {
       this.point = point;
       this.i = i;
@@ -79,11 +69,12 @@ public class TEEdgeModel extends TEModel {
 
     this.size = this.model.size;
     this.points = this.model.points;
-    // Allocate an array of the LXPoint subclass, TEEdgeModel.Point
+    // Allocate an array of the LXPoint wrapper, TEEdgeModel.Point
     this.edgePoints = new Point[this.model.points.length];
-    // Shallow copy all existing point references into this array. This technique
-    // is seen in GridModel and to be frank, I don't fully understand why it's type safe.
-    System.arraycopy(this.model.points, 0, this.edgePoints, 0, this.model.points.length);
+    for (int i = 0; i < this.points.length; i++) {
+      // Now that Point can't extend LXPoint we ended up calculating the fraction twice.
+      this.edgePoints[i] = new Point(this.points[i], i, fraction(i, this.size));
+    }
   }
 
   private static List<LXPoint> makePoints(TEVertex v0, TEVertex v1, int numPixels, boolean dark) {
@@ -96,9 +87,7 @@ public class TEEdgeModel extends TEModel {
 
     for (int i = 0; i < numPixels; i++) {
       float fraction = fraction(i, numPixels);
-      Point point = new Point(
-        i, fraction, v0.x + dx * fraction, v0.y + dy * fraction, v0.z + dz * fraction);
-      points.add(point.point);
+      points.add(new LXPoint(v0.x + dx * fraction, v0.y + dy * fraction, v0.z + dz * fraction));
     }
     return points;
   }
@@ -130,12 +119,16 @@ public class TEEdgeModel extends TEModel {
     }
   }
 
-  public boolean touches(TEEdgeModel other) {
-    return this.v0.edges.contains(other) || this.v1.edges.contains(other);
-  }
+  public void rebuildConnections(List<TEEdgeModel> edges, List<TEPanelModel> panels) {
+    // TODO: Add more edge connection lists
 
-  public boolean touches(TEVertex v) {
-    return this.v0 == v || this.v1 == v;
+    this.connectedPanels.clear();
+    this.connectedPanels.addAll(
+      panels.stream()
+      .filter(item ->
+           item.edge0id == this.getId()
+        || item.edge1id == this.getId()
+        || item.edge2id == this.getId())
+      .collect(Collectors.toList()));
   }
-
 }

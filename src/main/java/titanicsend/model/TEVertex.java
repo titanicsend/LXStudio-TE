@@ -9,8 +9,10 @@ import titanicsend.util.TEMath;
 public class TEVertex extends LXVector {
 
   public final int id;
-  public final Set<TEEdgeModel> edges = new HashSet<TEEdgeModel>();
-  public final Set<TEPanelModel> panels = new HashSet<TEPanelModel>();
+  private final Set<TEEdgeModel> mutableEdges = new HashSet<TEEdgeModel>();
+  public final Set<TEEdgeModel> edges = Collections.unmodifiableSet(this.mutableEdges);
+  private final Set<TEPanelModel> mutablePanels = new HashSet<TEPanelModel>();
+  public final Set<TEPanelModel> panels = Collections.unmodifiableSet(this.mutablePanels);
 
   // Set to non-null and the virtual display will shade vertex's sphere
   public TEVirtualColor virtualColor;
@@ -57,11 +59,19 @@ public class TEVertex extends LXVector {
    */
 
   public void addEdge(TEEdgeModel edge) {
-    this.edges.add(edge);
+    this.mutableEdges.add(edge);
   }
 
   public void addPanel(TEPanelModel panel) {
-    this.panels.add(panel);
+    this.mutablePanels.add(panel);
+  }
+
+  public boolean remove(TEEdgeModel edge) {
+    return this.mutableEdges.remove(edge);
+  }
+
+  public boolean remove(TEPanelModel panel) {
+    return this.mutablePanels.remove(panel);
   }
 
   public void nudgeToward(LXVector other, float distance) {
