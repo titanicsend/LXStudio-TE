@@ -12,6 +12,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import titanicsend.color.TEColorType;
 import titanicsend.model.TEEdgeModel;
+import titanicsend.model.TEWholeModel;
 import titanicsend.model.TEWholeModelStatic;
 import titanicsend.pattern.TEPattern;
 
@@ -101,7 +102,7 @@ public class EdgeSymmetry extends TEPattern {
 
     // Select the range of symmetry groups by initial z index and groupCount
     // Allowing the range to start and end outside the real set of edges
-    int idxRange = ((TEWholeModelStatic)modelTE).edgesBySymmetryGroup.size() + groupCount;
+    int idxRange = this.modelTE.getEdgesBySymmetryGroup().size() + groupCount;
     int from = (int) (fracFromZCenter.getNormalized() * idxRange) - groupCount;
     int to = from + groupCount;
     List<LXVector> selectedEdgeGroups =
@@ -110,7 +111,7 @@ public class EdgeSymmetry extends TEPattern {
     // Find all applicable edges as a list. Filter by Y coordinate (height) and
     // flatten the Hashmap's values to get a combined list of all selected edges
     litEdges =
-      ((TEWholeModelStatic)modelTE).edgesBySymmetryGroup.entrySet().stream()
+      this.modelTE.getEdgesBySymmetryGroup().entrySet().stream()
             .filter(e -> selectedEdgeGroups.contains(e.getKey()))
             .filter(e -> e.getKey().y / model.yMax < height.getValue())
             .map(Map.Entry::getValue)

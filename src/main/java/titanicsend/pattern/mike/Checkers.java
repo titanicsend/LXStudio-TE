@@ -43,7 +43,7 @@ public class Checkers extends TEPerformancePattern {
       }
       int thisPanelGroup = this.panelGroup.get(panel);
       int newColor = 1 - thisPanelGroup; // Invert this panel's group
-      for (TEPanelModel neighbor : panel.neighbors()) {
+      for (TEPanelModel neighbor : panel.neighbors) {
         if (this.panelGroup.containsKey(neighbor)) continue; // Already grouped
         this.panelGroup.put(neighbor, newColor);
         queue.add(0, neighbor);

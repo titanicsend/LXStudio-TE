@@ -3,41 +3,60 @@ package titanicsend.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
 
 import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
 import titanicsend.dmx.model.DmxModel;
+import titanicsend.util.TE;
 
 public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
+
+  public static final String TAG_EDGE = "edge";
+  public static final String TAG_PANEL = "panel";
+
+  private final String name = "Titanic's End";
 
   private final LX lx;
 
   // Points
-  public List<LXPoint> edgePoints; // Points belonging to edges
-  public List<LXPoint> panelPoints; // Points belonging to panels
-  //public List<TEBox> boxes;
+  private final List<LXPoint> mutablePoints = new ArrayList<LXPoint>();
+  public final List<LXPoint> points = Collections.unmodifiableList(this.mutablePoints);
+  private final List<LXPoint> mutableEdgePoints = new ArrayList<LXPoint>();
+  public final List<LXPoint> edgePoints = Collections.unmodifiableList(this.mutableEdgePoints);
+  private final List<LXPoint> mutablePanelPoints = new ArrayList<LXPoint>();
+  public final List<LXPoint> panelPoints = Collections.unmodifiableList(this.mutablePanelPoints);
 
   // Vertexes placeholder, does not exist as a model with fixture files
-  private final List<TEVertex> vertexes = new ArrayList<TEVertex>();
-  
+  private final List<TEVertex> mutableVertexes = new ArrayList<TEVertex>();
+  public final List<TEVertex> vertexes = Collections.unmodifiableList(this.mutableVertexes);
+  private final Map<Integer, TEVertex> vertexesById = new TreeMap<Integer, TEVertex>();
+
   // Edges
   private final List<TEEdgeModel> mutableEdges = new ArrayList<TEEdgeModel>();
   public final List<TEEdgeModel> edges = Collections.unmodifiableList(this.mutableEdges);
-  public HashMap<String, TEEdgeModel> edgesById;
-  public HashMap<LXVector, List<TEEdgeModel>> edgesBySymmetryGroup;
+  private final Map<LXModel, TEEdgeModel> edgeModels = new HashMap<LXModel, TEEdgeModel>();
+  private final Map<String, TEEdgeModel> edgesById = new HashMap<String, TEEdgeModel>();
+  public final Map<LXVector, List<TEEdgeModel>> edgesBySymmetryGroup = new HashMap<LXVector, List<TEEdgeModel>>();
 
   // Panels
   private final List<TEPanelModel> mutablePanels = new ArrayList<TEPanelModel>();
   public final List<TEPanelModel> panels = Collections.unmodifiableList(this.mutablePanels);
-  public final HashMap<String, TEPanelModel> panelsById = new HashMap<String, TEPanelModel>();
-  private final HashMap<TEPanelSection, Set<TEPanelModel>> panelsBySection = new HashMap<TEPanelSection, Set<TEPanelModel>>();
-  
+  private final Map<LXModel, TEPanelModel> panelModels = new HashMap<LXModel, TEPanelModel>();
+  private final Map<String, TEPanelModel> panelsById = new HashMap<String, TEPanelModel>();
+  private final Map<TEPanelSection, Set<TEPanelModel>> panelsBySection = new HashMap<TEPanelSection, Set<TEPanelModel>>();
+
   // Lasers
-  public HashMap<String, TELaserModel> lasersById;
+  public final Map<String, TELaserModel> lasersById = new HashMap<String, TELaserModel>();
+  private final List<TELaserModel> mutableLasers = new ArrayList<TELaserModel>();
+  public final List<TELaserModel> lasers = Collections.unmodifiableList(this.mutableLasers);
 
   // Beacons
   private final List<DmxModel> mutableBeacons = new ArrayList<DmxModel>();
@@ -55,55 +74,223 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
   private final List<DmxModel> mutableDmxModels = new ArrayList<DmxModel>();
   public final List<DmxModel> dmxModels = Collections.unmodifiableList(this.mutableDmxModels);
 
+  private final List<LXModel> mutableChildren = new ArrayList<LXModel>();
+  public LXModel[] children = new LXModel[0];
+
+  // Placeholder until TEPanelSections are updated
+  private final List<LXPoint> emptyPointsList = new ArrayList<LXPoint>();
+
   public TEWholeModelDynamic(LX lx) {
     this.lx = lx;
 
     lx.addListener(this);
+
+    for (TEPanelSection section : TEPanelSection.values()) {
+      this.panelsBySection.put(section, new HashSet<TEPanelModel>());
+    }
   }
 
+  /**
+   * Use tags and metadata to identify TE-specific LXModels within the overall model.
+   */
   @Override
   public void modelGenerationChanged(LX lx, LXModel model) {
-    // Find all edges
+    Set<LXModel> expired;
+    List<LXModel> tagged;
     
-    // Connect new edges to vertexes, create vertex if not found
-    
+    // Find Edges
+    expired = new HashSet<LXModel>(this.edgeModels.keySet());
+    tagged = model.sub(TAG_EDGE);
+    List<TEEdgeModel> newEdges = new ArrayList<TEEdgeModel>();
+    for (LXModel m : tagged) {
+      if (this.edgeModels.containsKey(m)) {
+        expired.remove(m);
+      } else {
+        // Find vertexes using fixture metadata
+        int iv0, iv1;
+        try {
+          iv0 = Integer.parseInt(m.meta(TEEdgeModel.META_V0));
+        } catch (NumberFormatException x) {
+          LX.warning("TEEdgeModel does not contain valid metadata for vertex 0: " + m);
+          continue;
+        }
+        try {
+          iv1 = Integer.parseInt(m.meta(TEEdgeModel.META_V1));
+        } catch (NumberFormatException x) {
+          LX.warning("TEEdgeModel does not contain valid metadata for vertex 1: " + m);
+          continue;
+        }
+        TEVertex v0 = findOrCreateVertex(iv0);
+        TEVertex v1 = findOrCreateVertex(iv1);
+        // Create edge
+        TEEdgeModel edge = new TEEdgeModel(m, v0, v1);
+        newEdges.add(edge);
+        this.mutableEdges.add(edge);
+        this.edgeModels.put(m, edge);
+        // Add edge to vertexes
+        v0.addEdge(edge);
+        v1.addEdge(edge);
+      }
+    }
+
     // Remove any previous edges that no longer exist
+    for (LXModel m : expired) {
+      TEEdgeModel edge = this.edgeModels.remove(m);
+      this.mutableEdges.remove(edge);
+      edge.v0.remove(edge);
+      edge.v1.remove(edge);
+      // TODO: remove from edgesBySymmetryGroup
+    }
+    expired.clear();
+
+    // Rebuild edgesById, because an id may have stayed the same or may have changed objects
+    this.edgesById.clear();
+    for (TEEdgeModel edge : this.edges) {
+      this.edgesById.put(edge.getId(), edge);
+    }
     
-    // Remove deleted edges from connection lists (vertexes, edges, panels)
+    // Find Panels
+    expired = new HashSet<LXModel>(this.panelModels.keySet());
+    tagged = model.sub(TAG_PANEL);
+    List<TEPanelModel> newPanels = new ArrayList<TEPanelModel>();
+    for (LXModel m : tagged) {
+      if (this.panelModels.containsKey(m)) {
+        expired.remove(m);
+      } else {
+        // Find vertexes using fixture metadata
+        int iv0, iv1, iv2;
+        try {
+          iv0 = Integer.parseInt(m.meta(TEPanelModel.META_V0));
+        } catch (NumberFormatException x) {
+          LX.warning("TEPanelModel does not contain valid metadata for vertex 0.");
+          continue;
+        }
+        try {
+          iv1 = Integer.parseInt(m.meta(TEPanelModel.META_V1));
+        } catch (NumberFormatException x) {
+          LX.warning("TEPanelModel does not contain valid metadata for vertex 1.");
+          continue;
+        }
+        try {
+          iv2 = Integer.parseInt(m.meta(TEPanelModel.META_V2));
+        } catch (NumberFormatException x) {
+          LX.warning("TEPanelModel does not contain valid metadata for vertex 2.");
+          continue;
+        }
+        TEVertex v0 = findOrCreateVertex(iv0);
+        TEVertex v1 = findOrCreateVertex(iv1);
+        TEVertex v2 = findOrCreateVertex(iv2);
+        // Create panel
+        TEPanelModel panel = new TEPanelModel(m, v0, v1, v2);
+        newPanels.add(panel);
+        this.mutablePanels.add(panel);
+        this.panelModels.put(m, panel);
+        // Add panel to vertexes
+        v0.addPanel(panel);
+        v1.addPanel(panel);
+        v2.addPanel(panel);
+      }
+    }
     
-    // Find all panels
-    
-    // Connect new panels to vertexes, create vertex if not found
-    
-    // Remove any previous panels that no longer exist
-    
-    // Remove deleted panels from connection lists (vertexes, edges, panels)
-        
+    // Remove any previous panels that no longer exist   
+    for (LXModel m : expired) {
+      TEPanelModel panel = this.panelModels.remove(m);
+      this.mutablePanels.remove(panel);
+      panel.v0.remove(panel);
+      panel.v1.remove(panel);
+      panel.v2.remove(panel);
+      // TODO: remove from panelsBySection
+    }
+    expired.clear();
+
+    // Rebuild lookup by id
+    this.panelsById.clear();
+    for (TEPanelModel panel : this.panels) {
+      this.panelsById.put(panel.getId(), panel);
+    }
+
+    // Rebuild lists of points
+    this.mutableEdgePoints.clear();
+    for (TEEdgeModel edge : this.edges) {
+      this.mutableEdgePoints.addAll(edge.model.getPoints());
+    }
+
+    this.mutablePanelPoints.clear();
+    for (TEPanelModel panel : this.panels) {
+      this.mutablePanelPoints.addAll(panel.model.getPoints());
+    }
+
+    this.mutablePoints.clear();
+    this.mutablePoints.addAll(this.edgePoints);
+    this.mutablePoints.addAll(this.panelPoints);
+
     // Remove vertexes with no connections
+    for (int i = this.mutableVertexes.size() - 1; i >= 0; i--) {
+      TEVertex vertex = this.mutableVertexes.get(i);
+      if (vertex.edges.size() == 0 && vertex.panels.size() == 0) {
+        this.mutableVertexes.remove(i);
+        this.vertexesById.remove(vertex.id);
+      }
+    }
     
-    // Rebuild All Connections
-    // The vertex lists are now up to date.  Use them to rebuild connections
-    // between objects (edge->edge, edge->panel, panel->edge, panel->panel).
-    // foreach edge, edge.rebuildConnections()
-    // foreach panel, panel.rebuildConnections()
-    
+    // Rebuild Edge Connections
+    for (TEEdgeModel edge : this.edges) {
+      edge.rebuildConnections(this.edges, this.panels);
+    }
+
+    // Rebuild Panel Connections
+    // Set edges on all panels prior to panel->panel connections.
+    for (TEPanelModel panel : this.panels) {
+      panel.reconnectEdges(this.edges);
+    }
+    // Build panel->panel connections now that edges are known
+    for (TEPanelModel panel : this.panels) {
+      panel.reconnectPanels(this.panels);
+    }
+
     // Find all DMX models (Beacons, DJ Lights)
-    
+    // TODO
+
     // There are no longer LXModels for lasers
-    
+
+    // Rebuild list of TE models
+    this.mutableChildren.clear();
+    this.mutableChildren.addAll(this.edgeModels.keySet());
+    this.mutableChildren.addAll(this.panelModels.keySet());
+    this.children = this.mutableChildren.toArray(new LXModel[0]);
+
+    /* TE.log("Model changed. Found " +
+      this.edges.size() + " edges, " +
+      this.panels.size() + " panels, " +
+      this.edgePoints.size() + " edge points, " +
+      this.panelPoints.size() + " panel points, " +
+      this.points.size() + " total points"); */
+
+    for (TEListener listener : this.listeners) {
+      listener.modelTEChanged(this);
+    }
+
     // Run the garbage collector to prevent buildup of old-generation objects? 
+  }
+  
+  private TEVertex findOrCreateVertex(int v) {
+    TEVertex vertex = this.vertexesById.get(v);
+    if (vertex == null) {
+      vertex = new TEVertex(v);
+      this.mutableVertexes.add(vertex);
+      this.vertexesById.put(v, vertex);
+    }
+    return vertex;
   }
   
   @Override
   public int sizeDmx() {
-    // TODO Auto-generated method stub
-    return 0;
+    return this.sizeDmx;
   }
 
   @Override
   public List<DmxModel> getDmxModels() {
-    // TODO Auto-generated method stub
-    return null;
+    return this.dmxModels;
   }
 
   @Override
@@ -112,22 +299,22 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
     return false;
   }
 
+  private final int[] gapPointIndices = new int[0]; // Not used with dynamic model
+
   @Override
   public int[] getGapPointIndices() {
-    // TODO Auto-generated method stub
-    return null;
+    return this.gapPointIndices;
   }
 
   @Override
   public List<LXPoint> getPoints() {
-    // TODO Auto-generated method stub
-    return null;
+    return this.points;
   }
 
   @Override
   public List<LXPoint> getPointsBySection(TEPanelSection section) {
-    // TODO Auto-generated method stub
-    return null;
+    // TODO
+    return this.emptyPointsList;
   }
 
   @Override
@@ -142,8 +329,8 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
 
   @Override
   public List<LXPoint> getEdgePointsBySection(TEEdgeSection section) {
-    // TODO Auto-generated method stub
-    return null;
+    // TODO
+    return emptyPointsList;
   }
 
   @Override
@@ -177,13 +364,23 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
   }
 
   @Override
+  public TEVertex getVertex(int vertexId) {
+    return this.vertexesById.get(vertexId);
+  }
+
+  @Override
   public List<TEVertex> getVertexes() {
     return this.vertexes;
   }
 
   @Override
-  public TEVertex getVertex(int vertexId) {
-    return null;
+  public boolean hasPanel(String panelId) {
+    return this.panelsById.containsKey(panelId);
+  }
+
+  @Override
+  public TEPanelModel getPanel(String panelId) {
+    return this.panelsById.get(panelId);
   }
 
   @Override
@@ -192,66 +389,71 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
   }
 
   @Override
-  public TEPanelModel getPanel(String panelId) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public boolean hasPanel(String panelId) {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public List<TEEdgeModel> getEdges() {
-    // TODO Auto-generated method stub
-    return null;
+  public boolean hasEdge(String edgeId) {
+    return this.edgesById.containsKey(edgeId);
   }
 
   @Override
   public TEEdgeModel getEdge(String edgeId) {
-    // TODO Auto-generated method stub
-    return null;
+    return this.edgesById.get(edgeId);
   }
 
   @Override
-  public boolean hasEdge(String edgeId) {
-    // TODO Auto-generated method stub
-    return false;
+  public List<TEEdgeModel> getEdges() {
+    return this.edges;
+  }
+
+  @Override
+  public Map<LXVector, List<TEEdgeModel>> getEdgesBySymmetryGroup() {
+    return this.edgesBySymmetryGroup;
   }
 
   @Override
   public List<TELaserModel> getLasers() {
-    // TODO Auto-generated method stub
-    return null;
+    return this.lasers;
   }
 
   @Override
   public List<DmxModel> getBeacons() {
-    // TODO Auto-generated method stub
-    return null;
+    return this.beacons;
   }
 
   @Override
   public List<DmxModel> getDjLights() {
-    // TODO Auto-generated method stub
-    return null;
+    return this.djLights;
   }
 
   @Override
   public LXModel[] getChildren() {
-    // TODO Auto-generated method stub
-    return null;
+    return this.children;
   }
 
   @Override
   public String getName() {
-    // TODO Auto-generated method stub
-    return null;
+    return this.name;
+  }
+
+  private final List<TEListener> listeners = new ArrayList<TEListener>();
+
+  public TEWholeModel addListener(TEListener listener) {
+    Objects.requireNonNull(listener);
+    if (this.listeners.contains(listener)) {
+      throw new IllegalStateException("Cannot add duplicate TEListener: " + listener);
+    }
+    this.listeners.add(listener);
+    return this;
+  }
+
+  public TEWholeModel removeListener(TEListener listener) {
+    if (!this.listeners.contains(listener)) {
+      throw new IllegalStateException("Cannot remove non-registered TEListener: " + listener);
+    }
+    this.listeners.remove(listener);
+    return this;
   }
 
   public void dispose() {
-    this.lx.removeListener(this); 
+    this.lx.removeListener(this);
+    this.listeners.clear();
   }
 }

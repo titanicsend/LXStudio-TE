@@ -147,7 +147,7 @@ public abstract class TEPattern extends DmxPattern {
     }
     for (TELaserModel laser : this.modelTE.getLasers()) {
       laser.control.update(deltaMsec);
-      laser.color = colors[laser.points[0].index];
+      laser.color = colors[laser.model.points[0].index];
     }
   }
 

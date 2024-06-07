@@ -28,21 +28,25 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
   public String name;
   private final LXPoint gapPoint;       // For pixel that shouldn't actually be lit
   private final int[] gapPointIndices;  // Always 1 entry for static model
-  
+
+  private final List<TEVertex> mutableVertexes = new ArrayList<TEVertex>();
+  public final List<TEVertex> vertexes = Collections.unmodifiableList(this.mutableVertexes);
   public HashMap<Integer, TEVertex> vertexesById;
   
   private final List<TEEdgeModel> mutableEdges = new ArrayList<TEEdgeModel>();
   public final List<TEEdgeModel> edges = Collections.unmodifiableList(this.mutableEdges);
   public HashMap<String, TEEdgeModel> edgesById;
   public HashMap<LXVector, List<TEEdgeModel>> edgesBySymmetryGroup;
-  
+
   private final List<TEPanelModel> mutablePanels = new ArrayList<TEPanelModel>();
   public final List<TEPanelModel> panels = Collections.unmodifiableList(this.mutablePanels);
   public HashMap<String, TEPanelModel> panelsById;
   private final HashMap<TEPanelSection, Set<TEPanelModel>> panelsBySection;
-  
+
   public HashMap<String, TELaserModel> lasersById;
-  
+  private final List<TELaserModel> mutableLasers = new ArrayList<TELaserModel>();
+  public final List<TELaserModel> lasers = Collections.unmodifiableList(this.mutableLasers);
+
   public List<LXPoint> edgePoints;  // Points belonging to edges
   public List<LXPoint> panelPoints; // Points belonging to panels
   public List<TEBox> boxes;
@@ -152,6 +156,12 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
     }
 
     this.lasersById = geometry.lasersById;
+
+    this.mutableVertexes.addAll(this.vertexesById.values());
+    this.mutableEdges.addAll(this.edgesById.values());
+    this.mutablePanels.addAll(this.panelsById.values());
+    this.mutableLasers.addAll(this.lasersById.values());
+
     this.boxes = geometry.boxes;
 
     addBeacons(geometry.beacons);
@@ -226,12 +236,8 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
     return this.edgePoints;
   }
 
-  public Collection<TEVertex> getVertexes() {
-    return this.vertexesById.values();
-  }
-
-  public TEVertex getVertex(String vertexId) {
-    return this.vertexesById.get(vertexId);
+  public List<TEVertex> getVertexes() {
+    return this.vertexes;
   }
 
   public LXModel[] getChildren() {
@@ -907,49 +913,49 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
         .collect(Collectors.toList());
   }
 
-  public List<TEPanelModel> getPanels() {
-    return this.panels;
-  }
-
-  public List<TEEdgeModel> getEdges() {
-    return this.edges;
-  }
-
-
   @Override
   public TEVertex getVertex(int vertexId) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public TEPanelModel getPanel(String panelId) {
-    // TODO Auto-generated method stub
-    return null;
+    return this.vertexesById.get(vertexId);
   }
 
   @Override
   public boolean hasPanel(String panelId) {
-    // TODO Auto-generated method stub
-    return false;
+    return this.panelsById.containsKey(panelId);
   }
 
   @Override
-  public TEEdgeModel getEdge(String edgeId) {
-    // TODO Auto-generated method stub
-    return null;
+  public TEPanelModel getPanel(String panelId) {
+    return this.panelsById.get(panelId);
+  }
+
+  @Override
+  public List<TEPanelModel> getPanels() {
+    return this.panels;
   }
 
   @Override
   public boolean hasEdge(String edgeId) {
-    // TODO Auto-generated method stub
-    return false;
+    return this.edgesById.containsKey(edgeId);
+  }
+
+  @Override
+  public TEEdgeModel getEdge(String edgeId) {
+    return this.edgesById.get(edgeId);
+  }
+
+  @Override
+  public List<TEEdgeModel> getEdges() {
+    return this.edges;
+  }
+
+  @Override
+  public Map<LXVector, List<TEEdgeModel>> getEdgesBySymmetryGroup() {
+    return this.edgesBySymmetryGroup;
   }
 
   @Override
   public List<TELaserModel> getLasers() {
-    // TODO Auto-generated method stub
-    return null;
+    return this.lasers;
   }
 
   // Beacons
@@ -1070,4 +1076,22 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
     view.normalization.setValue(viewDefinition.viewNormalization);
   }
 
+  private final List<TEListener> listeners = new ArrayList<TEListener>();
+
+  public TEWholeModel addListener(TEListener listener) {
+    Objects.requireNonNull(listener);
+    if (this.listeners.contains(listener)) {
+      throw new IllegalStateException("Cannot add duplicate TEListener: " + listener);
+    }
+    this.listeners.add(listener);
+    return this;
+  }
+
+  public TEWholeModel removeListener(TEListener listener) {
+    if (!this.listeners.contains(listener)) {
+      throw new IllegalStateException("Cannot remove non-registered TEListener: " + listener);
+    }
+    this.listeners.remove(listener);
+    return this;
+  }
 }
