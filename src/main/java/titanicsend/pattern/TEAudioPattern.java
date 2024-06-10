@@ -19,6 +19,10 @@ public abstract class TEAudioPattern extends TEPattern {
   // The GraphicMeter holds the analyzed frequency content for the audio input
   protected final GraphicMeter eq = lx.engine.audio.meter;
 
+  // Small offset for audio signals to avoid divide by zero in ratio calculations,
+  // which can cause (possibly dramatic) visual glitches if the audio drops out.
+  protected static final double levelOffset = 0.01;
+
   // Fractions in 0..1 for the instantaneous frequency level this frame.
   // If we find this useful and track many more bands, a collection of ratio
   // tracker objects would make sense.
@@ -80,16 +84,16 @@ public abstract class TEAudioPattern extends TEPattern {
    */
   protected void computeAudio(double deltaMs) {
     // Instantaneous normalized (0..1) volume level
-    volumeLevel = eq.getNormalizedf();
+    volumeLevel = Math.max(levelOffset,eq.getNormalized());
 
     /* Average bass level of the bottom `bassBands` frequency bands.
      * The default lx.engine.audio.meter breaks up sound into 16 bands,
      * so a `bassBandCount` of 2 averages the bottom 12.5% of frequencies.
      */
-    bassLevel = eq.getAverage(0, bassBandCount);
+    bassLevel = Math.max(levelOffset, eq.getAverage(0, bassBandCount));
 
     // Instantaneous average level of the top half of the frequency bins
-    trebleLevel = eq.getAverage(eq.numBands / 2, eq.numBands / 2);
+    trebleLevel = Math.max(levelOffset, eq.getAverage(eq.numBands / 2, eq.numBands / 2));
 
     /* Compute the ratio of the current instantaneous frequency levels to
      * their new, updated moving averages.
