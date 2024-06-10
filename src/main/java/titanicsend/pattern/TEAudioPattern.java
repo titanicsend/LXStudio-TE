@@ -84,16 +84,16 @@ public abstract class TEAudioPattern extends TEPattern {
    */
   protected void computeAudio(double deltaMs) {
     // Instantaneous normalized (0..1) volume level
-    volumeLevel = eq.getNormalizedf() + levelOffset;
+    volumeLevel = Math.max(levelOffset,eq.getNormalized());
 
     /* Average bass level of the bottom `bassBands` frequency bands.
      * The default lx.engine.audio.meter breaks up sound into 16 bands,
      * so a `bassBandCount` of 2 averages the bottom 12.5% of frequencies.
      */
-    bassLevel = eq.getAverage(0, bassBandCount) + levelOffset;
+    bassLevel = Math.max(levelOffset, eq.getAverage(0, bassBandCount));
 
     // Instantaneous average level of the top half of the frequency bins
-    trebleLevel = eq.getAverage(eq.numBands / 2, eq.numBands / 2) + levelOffset;
+    trebleLevel = Math.max(levelOffset, eq.getAverage(eq.numBands / 2, eq.numBands / 2));
 
     /* Compute the ratio of the current instantaneous frequency levels to
      * their new, updated moving averages.
