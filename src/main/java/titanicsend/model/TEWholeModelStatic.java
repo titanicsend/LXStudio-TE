@@ -25,7 +25,7 @@ import titanicsend.output.GrandShlomoStation;
 import titanicsend.pattern.jon.ModelBender;
 import titanicsend.util.TE;
 
-public class TEWholeModel extends LXModel implements DmxWholeModel {
+public class TEWholeModelStatic extends LXModel implements DmxWholeModel {
   public String subdir;
   public String name;
   private final LXPoint gapPoint; // Used for pixels that shouldn't actually be lit
@@ -105,11 +105,11 @@ public class TEWholeModel extends LXModel implements DmxWholeModel {
     public Properties tags;
   }
 
-  public TEWholeModel(String subdir) {
+  public TEWholeModelStatic(String subdir) {
     this(loadGeometry(subdir));
   }
 
-  private TEWholeModel(Geometry geometry) {
+  private TEWholeModelStatic(Geometry geometry) {
     super(geometry.children);
     this.subdir = geometry.subdir;
     this.name = geometry.name;
