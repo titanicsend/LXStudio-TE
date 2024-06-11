@@ -1,0 +1,87 @@
+{
+  /* Mothership by Titanic's End
+     Window 8B, Strand S3a */
+
+  label: "Window8B",
+  tags: [ "w8B", "window", "rectangle", "s3a" ],
+
+  parameters:  {
+    /* Default 175 LEDs */
+    "extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 175" },
+    "ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+
+    /* HOPEFULLY these can be the same for every window,
+       depending on how consistently the LEDs sit in the track */
+    "corner12": { type: "int", default: "10", description: "Number of LEDs in the corner between side1 and side2" },
+    "side2": { type: "int", default: "18", description: "Number of LEDs on side 2" },
+    "corner23": { type: "int", default: "10", description: "Number of LEDs in the corner between side2 and side3" },
+    "side3": { type: "int", default: "58", description: "Number of LEDs on side 3" },
+    "corner34": { type: "int", default: "10", description: "Number of LEDs in the corner between side3 and side4" },
+
+    /* TODO: Immortalize these after final model has been measured */  
+    "insetX": { type: "float", default: 2.4, description: "Inset of LED strip from the line where window planes meet" },
+    "insetY": { type: "float", default: 1.5, description: "Inset of LED strip from the line where window planes meet" },
+
+    /* Fixed, but keep as a parameter for legibility and in case the LED strip changes */
+    "spacing": { type: "float", default: .2 },
+
+    /* Debug tools */
+    "onCar": { type: "boolean", default: true, label: "On Car", description: "True = Locate to position on car, False = Locate to origin" }
+  },
+
+  transforms: [
+    { z: "-24", enabled: "$onCar" },
+    { y: "117.576", enabled: "$onCar" },
+    { roll: "3.7", enabled: "$onCar" },
+    { pitch: "80.9", enabled: "$onCar" }
+  ],
+
+  components: [
+    /* From inside, default wiring is clockwise */
+
+    /* Side 1, short */
+    { type: "strip",
+      numPoints: "34 - $ledOffset",
+      spacing: "$spacing",
+      transforms: [
+        { x: "-$insetX" },
+        { y: "$insetY + ($ledOffset * $spacing)" },
+        { roll: "90" }
+      ]
+    },
+
+    /* Side 2, long */
+    { type: "strip",
+      numPoints: "53",
+      spacing: "$spacing",
+      transforms: [
+        { x: "-$insetX" },
+        { y: "$insetY + ((34 + 1) * $spacing)" },
+        { roll: 180 }
+      ]
+    },
+
+    /* Side 3, short */
+    { type: "strip",
+      numPoints: "34",
+      spacing: "$spacing",
+      transforms: [
+        { x: "-$insetX - (53 * $spacing)" },
+        { y: "$insetY + ((34 + 1) * $spacing)" },
+        { roll: "270" },
+        { x: ".5 * $spacing" }
+      ]
+    },
+
+    /* Side 4, long */
+    { type: "strip",
+      numPoints: "54 + $ledOffset + $extraLEDs",
+      spacing: "$spacing",
+      transforms: [
+        { x: "-$insetX - (53 * $spacing)" },
+        { y: "$insetY" }
+      ]
+    }
+
+  ]  
+}

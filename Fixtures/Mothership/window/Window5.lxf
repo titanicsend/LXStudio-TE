@@ -1,0 +1,69 @@
+{
+  /* Mothership by Titanic's End
+     Window 5, Strand S2b */
+
+  label: "Window5",
+  tags: [ "w5", "window", "triangle", "s2b" ],
+
+  parameters:  {
+    /* Default 114 LEDs */
+    "extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 114" },
+    "ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+  
+    /* TODO: Immortalize these after final model has been measured */  
+    "inset": { type: "float", default: 2.4 },
+    
+    /* Fixed, but keep as a parameter for legibility and in case the LED strip changes */
+    "spacing": { type: "float", default: .2 },
+  
+    # Debug tools
+    "onCar": { type: "boolean", default: true, label: "On Car", description: "True = Locate to position on car, False = Locate to origin" }
+  },
+
+  transforms: [
+    { z: "-24", enabled: "$onCar" },
+    { y: "117.576", enabled: "$onCar" },
+    { roll: "-3.7", enabled: "$onCar" },
+    { pitch: "15", enabled: "$onCar" }
+  ],
+
+  components: [
+
+    /* Diagonal */
+    { type: "strip",
+      numPoints: "46 + $ledOffset + $extraLEDs",
+      spacing: "$spacing",
+      transforms: [
+        { x: "15.38 - $inset - ($spacing * 37)" },
+        { y: "-$inset" },
+        { roll: "-40.3" },
+        { x: "$ledOffset * $spacing"}
+      ]
+    },
+
+    /* Side */
+    { type: "strip",
+      numPoints: "30",
+      spacing: "$spacing",
+      transforms: [
+        { x: "15.38 - $inset - ($spacing * 37)" },
+        { y: "-$inset" },
+        { roll: "-40.3" },
+        { x: "(46+1) * $spacing"},
+        { roll: "126.7" }
+      ]
+    },
+
+    /* Top */
+    { type: "strip", tag: "s2",
+      numPoints: "37 - $ledOffset",
+      spacing: "$spacing",
+      transforms: [
+        { x: "15.38 - $inset" },
+        { y: "-$inset" },
+        { roll: 180 } 
+      ]
+    }
+  ]
+  
+}

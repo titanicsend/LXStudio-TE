@@ -1,0 +1,69 @@
+{
+  /* Mothership by Titanic's End
+     Window 7, Strand S7b */
+
+  label: "Window7",
+  tags: [ "w7", "window", "triangle", "s7b" ],
+
+  parameters:  {
+    /* Default 100 LEDs */
+    "extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 100" },
+    "ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+  
+    /* TODO: Immortalize these after final model has been measured */  
+    "insetX": { type: "float", default: 2.4, description: "Inset of LED strip from the line where window planes meet" },
+    "insetY": { type: "float", default: 2.4, description: "Inset of LED strip from the line where window planes meet" },
+    
+    /* Fixed, but keep as a parameter for legibility and in case the LED strip changes */
+    "spacing": { type: "float", default: .2 },
+  
+    # Debug tools
+    "onCar": { type: "boolean", default: true, label: "On Car", description: "True = Locate to position on car, False = Locate to origin" }
+  },
+
+  transforms: [
+    { z: "-27.215", enabled: "$onCar" },
+    { y: "105.576", enabled: "$onCar" },
+    { roll: "3.7", enabled: "$onCar" },
+    { pitch: "15", enabled: "$onCar" },
+  ],
+
+  components: [
+
+    /* Side */
+    { type: "strip",
+      numPoints: "27 - $ledOffset",
+      spacing: "$spacing",
+      transforms: [
+        { x: "-$insetX" },
+        { y: "$insetY" },
+        { roll: "90 - 3.6" },
+        { x: "$ledOffset * $spacing" }
+      ]
+    },
+
+    /* Diagonal */
+    { type: "strip",
+      numPoints: "42",
+      spacing: "$spacing",
+      transforms: [
+        { x: "-$insetX" },
+        { y: "$insetY" },
+        { roll: "90 - 3.6" },
+        { x: "27 * $spacing" },
+        { roll: "134" }
+      ]
+    },
+
+    /* Bottom */
+    { type: "strip",
+      numPoints: "30 + $ledOffset + $extraLEDs",
+      spacing: "$spacing",
+      transforms: [
+        { x: "-$insetX - ((30 - .5) * $spacing)" },
+        { y: "$insetY" }
+      ]
+    }
+  ]
+
+}

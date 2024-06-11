@@ -1,0 +1,127 @@
+{
+  /* Mothership by Titanic's End
+     Window 8A, Strand S2a */
+
+  label: "Window8A",
+  tags: [ "w8a", "window", "rectangle", "s2a" ],
+
+  parameters:  {
+    /* Default 175 LEDs */
+    "extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 175" },
+    "ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+
+    /* HOPEFULLY these can be the same for every window,
+       depending on how consistently the LEDs sit in the track */
+    "corner12": { type: "int", default: "10", description: "Number of LEDs in the corner between side1 and side2" },
+    "side2": { type: "int", default: "18", description: "Number of LEDs on side 2" },
+    "corner23": { type: "int", default: "10", description: "Number of LEDs in the corner between side2 and side3" },
+    "side3": { type: "int", default: "58", description: "Number of LEDs on side 3" },
+    "corner34": { type: "int", default: "10", description: "Number of LEDs in the corner between side3 and side4" },
+
+    /* TODO: Immortalize these after final model has been measured */  
+    "width": { type: "int", default: 14, description: "Width of LED rectangle" },
+    "height": { type: "int", default: 6.3, description: "Height of LED rectangle" },
+    "radius": { type: "float", default: 1.125 },
+    "insetX": { type: "float", default: 1.5, description: "Inset of LED strip from the line where window planes meet" },
+    "insetY": { type: "float", default: 1.5, description: "Inset of LED strip from the line where window planes meet" },
+
+    /* Fixed, but keep as a parameter for legibility and in case the LED strip changes */
+    "spacing": { type: "float", default: .2 },
+
+    /* Debug tools */
+    "onCar": { type: "boolean", default: true, label: "On Car", description: "True = Locate to position on car, False = Locate to origin" }
+  },
+
+  transforms: [
+    { z: "-24", enabled: "$onCar" },
+    { y: "117.576", enabled: "$onCar" },
+    { roll: "-3.7", enabled: "$onCar" },
+    { pitch: "80.9", enabled: "$onCar" }
+  ],
+
+  components: [
+    /* From inside, default wiring is clockwise */
+
+    /* Side 1, long */
+    { type: "strip",
+      numPoints: "57 - $ledOffset",
+      spacing: "$spacing",
+      transforms: [
+        { x: "$insetX + $width - $radius - ($spacing * (57 - $ledOffset))" },
+        { y: "$insetY" }
+      ]
+    },
+
+    /* Corner 1-2 */
+    { type: "arc",
+      tag: "corner",
+      radius: "$radius",
+      degrees: "90",
+      numPoints: "$corner12",
+      transforms: [
+        { x: "$insetX + $width - $radius" },
+        { y: "$insetY" }
+      ]
+    },
+
+    /* Side 2, short */
+    { type: "strip",
+      numPoints: "$side2",
+      spacing: "($height - ($radius * 2) - ($spacing * 2)) / ($side2 - 1)",
+      transforms: [
+        { x: "$insetX + $width" },
+        { y: "$insetY + $radius + $spacing" },
+        { roll: "90" }
+      ]
+    },
+
+    /* Corner 2-3 */
+    { type: "arc",
+      tag: "corner",
+      radius: "$radius",
+      degrees: "90",
+      numPoints: "$corner23",
+      transforms: [
+        { x: "$insetX + $width" },
+        { y: "$insetY + $height - $radius" },
+        { roll: "90" }
+      ]
+    },
+
+    /* Side 3, long */
+    { type: "strip",
+      numPoints: "$side3",
+      spacing: "$spacing",
+      transforms: [
+        { x: "$insetX + $width - $radius - $spacing" },
+        { y: "$insetY + $height" },
+        { roll: 180 }
+      ]
+    },
+
+    /* Corner 3-4 */
+    { type: "arc",
+      tag: "corner",
+      radius: "$radius",
+      degrees: "90",
+      numPoints: "$corner34",
+      transforms: [
+        { x: "$insetX + $radius" },
+        { y: "$insetY + $height" },
+        { roll: "180" }
+      ]
+    },
+
+    /* Side 4, short */
+    { type: "strip",
+      numPoints: "175 - 57 - $corner12 - $side2 - $corner23 - $side3 - $corner34 + $ledOffset + $extraLEDs",
+      spacing: "$spacing",
+      transforms: [
+        { x: "$insetX" },
+        { y: "$insetY + $height - $radius - $spacing" },
+        { roll: "270" }
+      ]
+    }
+
+  ]  
+}
