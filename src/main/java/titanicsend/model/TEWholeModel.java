@@ -1,6 +1,5 @@
 package titanicsend.model;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -66,4 +65,10 @@ public interface TEWholeModel extends DmxWholeModel {
   public abstract LXModel[] getChildren();
 
   public abstract String getName();
+
+  /**
+   * During the transition period some components need to know which model is in use
+   * such as for different axis orientations. Avoid new dependencies on this method.
+   */
+  public abstract boolean isStatic();
 }

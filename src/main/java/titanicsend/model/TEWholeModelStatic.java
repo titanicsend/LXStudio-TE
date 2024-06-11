@@ -248,6 +248,11 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
     return this.name;
   }
 
+  @Override
+  public boolean isStatic() {
+    return true;
+  }
+
   /**
    * Builds structures that compute spacial relationships for edges, such as edges that are mirrored
    * fore-aft and port-starboard.
