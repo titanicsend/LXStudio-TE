@@ -15,7 +15,6 @@ import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
 import titanicsend.dmx.model.DmxModel;
-import titanicsend.util.TE;
 
 public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
 
@@ -431,6 +430,11 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
   @Override
   public String getName() {
     return this.name;
+  }
+
+  @Override
+  public boolean isStatic() {
+    return false;
   }
 
   private final List<TEListener> listeners = new ArrayList<TEListener>();
