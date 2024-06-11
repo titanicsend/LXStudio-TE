@@ -299,7 +299,7 @@ public class TEApp extends LXStudio {
       // "ShaderToyPattern" in ShaderPanelsPatternConfig.java
 
       // Useful for test, but might turn the car black in performance
-      lx.registry.removePattern(PlanesPattern.class); // remove pattern added automatically by LX.
+      // lx.registry.removePattern(PlanesPattern.class); // remove pattern added automatically by LX.
 
       // Frame Rate Killers
       // lx.registry.addEffect(titanicsend.effect.Kaleidoscope.class);

@@ -1,0 +1,115 @@
+{
+  /* Triangle with Rounded Corners
+     This file is part of the Chromatik / LX Software Library: https://chromatik.co/license/ */
+
+  label: "RoundedTriangle",
+  tags: [ "roundedtriangle" ],
+
+  parameters:  {
+    "spacing": { type: "float", default: ".66" },
+    "radius": { type: "float", default: "1" },
+    "angle12": { type: "float", default: "135", description: "Angle between side 1 and side 2" },
+    "angle23": { type: "float", default: "135", description: "Angle between side 2 and side 3" },
+    "length1": { type: "float", default: "5", description: "Length of triangle side 1" },
+    "side1": { type: "int", default: "5", description: "Number of LEDs on side 1" },
+    "corner12": { type: "int", default: "3", description: "Number of LEDs in the corner between side1 and side2" },
+    "side2": { type: "int", default: "10", description: "Number of LEDs on side 2" },
+    "corner23": { type: "int", default: "3", description: "Number of LEDs in the corner between side2 and side3" },
+    "side3": { type: "int", default: "5", description: "Number of LEDs on side 3" },
+
+    # Debug tools
+    "host": { type: "string", default: "localhost", label: "Host", description: "Controller IP address or hostname" },
+    "universe": { type: "int", default: 1, label: "Universe", description: "ArtNet Universe" },
+    "channel": { type: "int", default: 0, min: 0, max: 512, label: "Channel", description: "ArtNet channel" },
+    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
+    "outputEnabled": { type: "boolean", default: false }
+  },
+
+  components: [
+
+    /* Side 1 */
+    { type: "strip",
+      tags: [ "s", "s1"],
+      numPoints: "$side1",
+      spacing: "$spacing",
+      transforms: [
+        { x: "$radius + $length1 - (($side1 - 1) * $spacing)" }
+      ]
+    },
+
+    /* Corner 1-2 */
+    { type: "arc",
+      tags: [ "c", "c12"],
+      radius: "$radius",
+      degrees: "$angle12 - (2 * ($spacing * 360 / (6.283185 * $radius)))",
+      numPoints: "$corner12",
+      spacing: "$spacing",
+      transforms: [
+        { x: "$radius + $length1" },
+        { y: "$radius" },
+        { roll: "$spacing * 360 / (6.283185 * $radius)" },
+        { y: "-$radius" }
+      ]
+    },
+
+    /* Side 2 */
+    { type: "strip",
+      tags: [ "s", "s2"],
+      numPoints: "$side2",
+      spacing: "$spacing",
+      transforms: [
+        { x: "$radius + $length1" },
+        { y: "$radius" },
+        { roll: "$angle12" },
+        { y: "-$radius" }
+      ]
+    },
+
+    /* Corner 2-3 */
+    { type: "arc",
+      tags: [ "c", "c23"],
+      radius: "$radius",
+      degrees: "$angle23 - (2 * ($spacing * 360 / (6.283185 * $radius)))",
+      numPoints: "$corner23",
+      spacing: "$spacing",
+      transforms: [
+        { x: "$radius + $length1" },
+        { y: "$radius" },
+        { roll: "$angle12" },
+        { y: "-$radius" },
+        { x: "($side2 - 1) * $spacing" },
+        { y: "$radius" },
+        { roll: "$spacing * 360 / (6.283185 * $radius)" },
+        { y: "-$radius" }
+      ]
+    },
+    
+    /* Side 3 */
+    { type: "strip",
+      tags: [ "s", "s3"],
+      numPoints: "$side3",
+      spacing: "$spacing",
+      transforms: [
+        { x: "$radius + $length1" },
+        { y: "$radius" },
+        { roll: "$angle12" },
+        { y: "-$radius" },
+        { x: "($side2 - 1) * $spacing" },
+        { y: "$radius" },
+        { roll: "$angle23" },
+        { y: "-$radius" }
+      ]
+    }
+  ],
+  
+  outputs: [
+    { 
+      enabled: "$outputEnabled",
+      host: "$host",
+      universe: "$universe",
+      channel: "$channel",
+      protocol: "artnet",
+      sequenceEnabled: "$artnetSequence"
+    }
+  ]
+}
