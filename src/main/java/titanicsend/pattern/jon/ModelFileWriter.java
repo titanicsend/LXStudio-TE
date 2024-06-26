@@ -31,61 +31,6 @@ import javax.imageio.ImageIO;
 /** Write model points, and other data to one or more CSV files. */
 @LXCategory("Utility")
 public class ModelFileWriter extends TEPerformancePattern {
-//  boolean doneWriting = false;
-//
-//  public ModelFileWriter(LX lx) {
-//    super(lx, TEShaderView.ALL_POINTS);
-//    addCommonControls();
-//  }
-//
-//  @Override
-//  public void runTEAudioPattern(double deltaMs) {
-//    Path all_points = Path.of("resources/model_csv/TEPoints_All.txt");
-//    Path panel_points = Path.of("resources/model_csv/TEPoints_Panels.txt");
-//    Path edge_points = Path.of("resources/model_csv/TEPoints_Edges.txt");
-//
-//    if (doneWriting) return;
-//
-//    try {
-//      // Clear the existing data
-//      Files.deleteIfExists(all_points);
-//      Files.deleteIfExists(panel_points);
-//      Files.deleteIfExists(edge_points);
-//
-//      // write CSV header
-//
-//      Files.writeString(all_points, "tx,ty,tz\n", CREATE, APPEND);
-//      Files.writeString(panel_points, "tx,ty,tz\n", CREATE, APPEND);
-//      Files.writeString(edge_points, "tx,ty,tz\n", CREATE, APPEND);
-//
-//      // Write all points
-//      for (LXPoint point : getModel().getPoints()) {
-//        Files.writeString(
-//            all_points, point.x + "," + point.y + "," + point.z + "\n", CREATE, APPEND);
-//      }
-//
-//      // Write panel points only
-//      for (TEPanelModel panel : TEApp.wholeModel.panelsById.values()) {
-//        for (LXPoint point : panel.points) {
-//          Files.writeString(
-//              panel_points, point.x + "," + point.y + "," + point.z + "\n", CREATE, APPEND);
-//        }
-//      }
-//
-//      // Write edge points only
-//      for (TEEdgeModel edge : TEApp.wholeModel.edgesById.values()) {
-//        for (LXPoint point : edge.points) {
-//          Files.writeString(
-//              edge_points, point.x + "," + point.y + "," + point.z + "\n", CREATE, APPEND);
-//        }
-//      }
-//
-//      doneWriting = true;
-//    } catch (IOException e) {
-//      throw new RuntimeException(e);
-//    }
-//  }
-
   boolean doneWriting = false;
   public static final int IMAGE_WIDTH = 640;
   public static final int IMAGE_HEIGHT = 480;
