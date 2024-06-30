@@ -72,7 +72,7 @@ public class BassReactiveEdge extends TEAudioPattern {
       for (TEEdgeModel.Point point : edge.edgePoints) {
         // Only color the pixels between the low and high fraction.
         // Red is used for brevity. For real show patterns use LinkedColorParameters.
-        if (point.frac >= lowFrac && point.frac < highFrac) colors[point.point.index] = LXColor.RED;
+        if (point.n >= lowFrac && point.n < highFrac) colors[point.point.index] = LXColor.RED;
       }
     }
   }

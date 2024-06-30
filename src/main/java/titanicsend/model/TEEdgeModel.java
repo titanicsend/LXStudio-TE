@@ -21,21 +21,20 @@ public class TEEdgeModel extends TEModel {
     public final LXPoint point;
 
     /**
-     * `i` is the index into this edge Contrast this with `LXPoint.index` which must be globally
+     * `i` is the index into this edge. Contrast this with `LXPoint.index` which must be globally
      * unique
      */
     public final int i;
 
     /**
-     * `frac` is the fractional percentage (0..1) into this edge Calling it `in` would seem
-     * canonical ("i, normalized"), but is too similar to the abbreviation for "inches"
+     * `n` is the fractional percentage (0..1) into this edge
      */
-    public final float frac;
+    public final float n;
 
-    public Point(LXPoint point, int i, float fraction) {
+    public Point(LXPoint point, int i, float n) {
       this.point = point;
       this.i = i;
-      this.frac = fraction;
+      this.n = n;
     }
   }
 
