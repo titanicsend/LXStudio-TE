@@ -1,47 +1,51 @@
 package titanicsend.model;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
-import java.util.*;
-import titanicsend.util.Dimensions;
 
-public abstract class TEModel extends LXModel {
+public abstract class TEModel {
   private final String teModelType;
-  private final Dimensions dimensions;
+  private String id;
+  public final LXModel model;
 
+  /**
+   * Static model constructor (2022-23)
+   */
   public TEModel(String teModelType, List<LXPoint> points, String... tags) {
-    super(points, combineTags(teModelType, tags));
     this.teModelType = teModelType;
-    this.dimensions = Dimensions.fromPoints(points);
+    this.model = new LXModel(points, combineTags(teModelType, tags));
   }
 
-  public abstract String getId();
+  private static String[] combineTags(String tag0, String... tags) {
+    return Stream.concat(Stream.of(tag0), Stream.of(tags))
+      .filter(tag -> tag != null)
+      .toArray(String[]::new);
+  }
+
+  /**
+   * Dynamic model constructor (2024+)
+   */
+  public TEModel(String teModelType, LXModel model) {
+    this.teModelType = teModelType;
+    this.model = model;
+  }
+
+  /**
+   * Child classes should call to set the TE id
+   */
+  protected void setId(String id) {
+    this.id = id;
+  }
+
+  public String getId() {
+    return this.id;
+  }
 
   public String repr() {
     return teModelType + "_" + this.getId();
   }
 
-  public Dimensions getDimensions() {
-    return dimensions;
-  }
-
-  // This method can probably be replaced by a simple inline later
-  public static String[] combineTags(String tag0, String... tags) {
-    if (tag0 == null && tags == null) {
-      return null;
-    }
-
-    int i = 0;
-    String[] finalTags = new String[(tag0 != null ? 1 : 0) + (tags != null ? tags.length : 0)];
-
-    if (tag0 != null) {
-      finalTags[i++] = tag0;
-    }
-    if (tags != null) {
-      for (String tag : tags) {
-        finalTags[i++] = tag;
-      }
-    }
-    return finalTags;
-  }
 }

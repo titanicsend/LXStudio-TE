@@ -43,7 +43,7 @@ public class DmxGridPattern extends TEPattern {
     int numRows = mod.rows.getValuei();
     int numColumns = mod.columns.getValuei();
 
-    for (LXModel model : TEApp.wholeModel.children) {
+    for (LXModel model : this.modelTE.getChildren()) {
       LXVector vector = getLocation(model);
       int row = (int) ((numRows - 1) * (1 - vector.y));
       int column = (int) ((numColumns - 1) * (1 - vector.z));
@@ -60,14 +60,26 @@ public class DmxGridPattern extends TEPattern {
     if (vector == null) {
       vector =
           new LXVector(
-              (model.average.x - TEApp.wholeModel.xMin) / TEApp.wholeModel.xRange,
-              (model.average.y - TEApp.wholeModel.yMin) / TEApp.wholeModel.yRange,
-              (model.average.z - TEApp.wholeModel.zMin) / TEApp.wholeModel.zRange);
+              (model.average.x - TEApp.wholeModel.minX()) / xRange(),
+              (model.average.y - TEApp.wholeModel.minY()) / yRange(),
+              (model.average.z - TEApp.wholeModel.minZ()) / zRange());
       this.locations.put(model, vector);
     }
     return vector;
   }
 
+  private float xRange() {
+    return TEApp.wholeModel.maxX() - TEApp.wholeModel.minX();
+  }
+  
+  private float yRange() {
+    return TEApp.wholeModel.maxY() - TEApp.wholeModel.minY();
+  }
+  
+  private float zRange() {
+    return TEApp.wholeModel.maxZ() - TEApp.wholeModel.minZ();
+  }
+  
   void setFixtureColor(LXModel m, int color) {
     for (LXPoint p : m.points) {
       this.colors[p.index] = color;

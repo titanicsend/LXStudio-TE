@@ -80,7 +80,7 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
 
     prng.setSeed(seed);
     int colorIndex = 0;
-    for (TEPanelModel panel : modelTE.getAllPanels()) {
+    for (TEPanelModel panel : modelTE.getPanels()) {
       boolean isLit = (prng.nextFloat() <= litProbability);
       if (!isLit) continue;
 
@@ -88,8 +88,8 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
       int col = colorSet[colorIndex];
       colorIndex = (colorIndex + 1) % colorSet.length;
 
-      for (TEPanelModel.LitPointData p : panel.litPointData) {
-        if (p.radiusFraction <= 1.0) {
+      for (TEPanelModel.Point p : panel.panelPoints) {
+        if (p.rn <= 1.0) {
           blendColor(p.point.index, col | 0xFF000000);
         }
       }

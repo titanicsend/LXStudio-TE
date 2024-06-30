@@ -23,6 +23,7 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.Tempo;
 import heronarts.lx.color.LXColor;
+import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.LXWaveshape;
 import heronarts.lx.modulator.SawLFO;
 import heronarts.lx.parameter.BooleanParameter;
@@ -142,14 +143,14 @@ public class RandomStrobeEffect extends TEEffect {
   }
 
   public void buildElementLists() {
-    for (TEPanelModel panel : modelTE.getAllPanels()) {
+    for (TEPanelModel panel : modelTE.getPanels()) {
       PanelElement pwe = new PanelElement();
       pwe.panel = panel;
       pwe.randomizeOffset();
       this.panelElements.add(pwe);
     }
 
-    for (TEEdgeModel edge : modelTE.getAllEdges()) {
+    for (TEEdgeModel edge : modelTE.getEdges()) {
       EdgeElement e = new EdgeElement();
       e.edge = edge;
       e.randomizeOffset();
@@ -196,8 +197,8 @@ public class RandomStrobeEffect extends TEEffect {
             pe.randomizeOffset();
           } else {
             int src = LXColor.gray(100 * strobe);
-            for (TEPanelModel.LitPointData p : pe.panel.litPointData) {
-              this.colors[p.point.index] = LXColor.multiply(this.colors[p.point.index], src, 0xFF);
+            for (LXPoint p : pe.panel.points) {
+              this.colors[p.index] = LXColor.multiply(this.colors[p.index], src, 0xFF);
             }
           }
         }
@@ -213,7 +214,7 @@ public class RandomStrobeEffect extends TEEffect {
             e.randomizeOffset();
           } else {
             int src = LXColor.gray(100 * strobe);
-            for (TEEdgeModel.Point p : e.edge.points) {
+            for (LXPoint p : e.edge.points) {
               this.colors[p.index] = LXColor.multiply(this.colors[p.index], src, 0xFF);
             }
           }

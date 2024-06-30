@@ -29,25 +29,27 @@ public class PixelblazeParallel extends TEPerformancePattern {
     super(lx, TEShaderView.ALL_POINTS);
 
     try {
+      final List<LXPoint> edgePoints = this.modelTE.getEdgePoints();
+      final List<LXPoint> panelPoints = this.modelTE.getPanelPoints();
 
       // split edge points into chunks
-      int chunksize = (int) Math.ceil((float) this.modelTE.edgePoints.size() / N_THREADS);
+      int chunksize = (int) Math.ceil((float) edgePoints.size() / N_THREADS);
 
-      for (int i = 0; i < modelTE.edgePoints.size(); i += chunksize) {
+      for (int i = 0; i < edgePoints.size(); i += chunksize) {
         List<LXPoint> chunk =
-            modelTE.edgePoints.subList(i, Math.min(i + chunksize, modelTE.edgePoints.size() - 1));
+            edgePoints.subList(i, Math.min(i + chunksize, edgePoints.size() - 1));
         LXPoint[] chunkPoints = new LXPoint[chunk.size()];
         wrappers.add(
-            Wrapper.fromResource("neon_ice", this, modelTE.edgePoints.toArray(chunkPoints)));
+            Wrapper.fromResource("neon_ice", this, edgePoints.toArray(chunkPoints)));
       }
 
-      chunksize = (int) Math.ceil((float) modelTE.panelPoints.size() / N_THREADS);
-      for (int i = 0; i < modelTE.panelPoints.size(); i += chunksize) {
+      chunksize = (int) Math.ceil((float) panelPoints.size() / N_THREADS);
+      for (int i = 0; i < panelPoints.size(); i += chunksize) {
         List<LXPoint> chunk =
-            modelTE.panelPoints.subList(i, Math.min(i + chunksize, modelTE.panelPoints.size() - 1));
+        		panelPoints.subList(i, Math.min(i + chunksize, panelPoints.size() - 1));
         LXPoint[] chunkPoints = new LXPoint[chunk.size()];
         wrappers.add(
-            Wrapper.fromResource("xorcery", this, modelTE.panelPoints.toArray(chunkPoints)));
+            Wrapper.fromResource("xorcery", this, panelPoints.toArray(chunkPoints)));
       }
       LX.log("parallel chunks=" + wrappers.size());
 

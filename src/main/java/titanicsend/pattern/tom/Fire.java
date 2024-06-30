@@ -75,25 +75,17 @@ public class Fire extends TEPattern {
   }
 
   private int color(LXPoint point) {
-    int row = (int) ((point.y - modelTE.boundaryPoints.minYBoundaryPoint.y) / ROW_HEIGHT);
-    int column = (int) ((point.z - modelTE.boundaryPoints.minZBoundaryPoint.z) / COLUMN_WIDTH);
+    int row = (int) ((point.y - modelTE.minY()) / ROW_HEIGHT);
+    int column = (int) ((point.z - modelTE.minZ()) / COLUMN_WIDTH);
     return gradient[buffer[row][column]];
   }
 
   private int calculateRows() {
-    return (int)
-            ((modelTE.boundaryPoints.maxYBoundaryPoint.y
-                    - modelTE.boundaryPoints.minYBoundaryPoint.y)
-                / ROW_HEIGHT)
-        + 1;
+    return (int) ((modelTE.maxY() - modelTE.minY()) / ROW_HEIGHT) + 1;
   }
 
   private int calculateColumns() {
-    return (int)
-            ((modelTE.boundaryPoints.maxZBoundaryPoint.z
-                    - modelTE.boundaryPoints.minZBoundaryPoint.z)
-                / COLUMN_WIDTH)
-        + 1;
+    return (int) ((modelTE.maxZ() - modelTE.minZ()) / COLUMN_WIDTH) + 1;
   }
 
   private int[] calculateGradient(int middle, int steps) {

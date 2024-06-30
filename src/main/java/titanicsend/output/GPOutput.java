@@ -35,8 +35,8 @@ public class GPOutput extends LXOutput {
     // By default, it will pick a point in the middle of SUA and SDC panels and
     // a point in the middle of one of each of their edges.
 
-    TEPanelModel sua = this.modelTE.panelsById.get("SUA");
-    TEPanelModel sdc = this.modelTE.panelsById.get("SDC");
+    TEPanelModel sua = this.modelTE.getPanel("SUA");
+    TEPanelModel sdc = this.modelTE.getPanel("SDC");
 
     if (sua != null) {
       int halfway = sua.points.length / 2;

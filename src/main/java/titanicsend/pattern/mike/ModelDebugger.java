@@ -14,6 +14,8 @@ import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
 import java.util.*;
 import titanicsend.app.TEVirtualColor;
+import titanicsend.model.TEEdgeModel;
+import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEVertex;
 import titanicsend.pattern.TEPattern;
 
@@ -96,20 +98,28 @@ public class ModelDebugger extends TEPattern implements UIDeviceControls<ModelDe
     switch (this.objectType.getEnum()) {
       case VERTEX:
         try {
-          vertexes.add(this.modelTE.vertexesById.get(Integer.parseInt(idStr)));
+          vertexes.add(this.modelTE.getVertex(Integer.parseInt(idStr)));
         } catch (NumberFormatException ignored) {
         }
         break;
       case EDGE:
-        if (getAll) subModels.addAll(this.modelTE.edgesById.values());
-        else if (this.modelTE.edgesById.containsKey(idStr))
-          subModels.add(this.modelTE.edgesById.get(idStr));
+        if (getAll) {
+          for (TEEdgeModel edge : this.modelTE.getEdges()) {
+            subModels.add(edge.model);
+          }
+        }
+        else if (this.modelTE.hasEdge(idStr))
+          subModels.add(this.modelTE.getEdge(idStr).model);
         else this.idErrLabel.setVisible(true);
         break;
       case PANEL:
-        if (getAll) subModels.addAll(this.modelTE.panelsById.values());
-        else if (this.modelTE.panelsById.containsKey(idStr))
-          subModels.add(this.modelTE.panelsById.get(idStr));
+        if (getAll) {
+          for (TEPanelModel panel : this.modelTE.getPanels()) {
+            subModels.add(panel.model);
+          }
+        }
+        else if (this.modelTE.hasPanel(idStr))
+          subModels.add(this.modelTE.getPanel(idStr).model);
         else this.idErrLabel.setVisible(true);
         break;
       case LASER:
@@ -141,7 +151,7 @@ public class ModelDebugger extends TEPattern implements UIDeviceControls<ModelDe
   }
 
   public void clearVertexes() {
-    for (TEVertex vertex : this.modelTE.vertexesById.values()) {
+    for (TEVertex vertex : this.modelTE.getVertexes()) {
       vertex.virtualColor = new TEVirtualColor(255, 255, 255, 255);
     }
   }

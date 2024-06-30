@@ -9,6 +9,7 @@ import java.util.*;
 import titanicsend.model.TEStripingInstructions;
 import titanicsend.model.TEVertex;
 
+@Deprecated
 public class PanelStriper {
   public static final int MARGIN = 86000;
   public static final int DISTANCE_BETWEEN_PIXELS = 50000; // 50k microns ~= 2 inches

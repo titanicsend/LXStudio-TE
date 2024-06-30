@@ -33,7 +33,7 @@ public class Bubbles extends TEPattern {
     // Initialize existing bubbles out-of-phase with each other by this fraction
     double bubbleOffset = 0.0;
 
-    for (TEPanelModel panel : modelTE.panelsById.values()) {
+    for (TEPanelModel panel : this.modelTE.getPanels()) {
       if (panel.panelType.equals(TEPanelModel.LIT)) {
         double fraction;
         if (bubblesLeftToMake > 0) {
@@ -80,9 +80,9 @@ public class Bubbles extends TEPattern {
     for (Map.Entry<TEPanelModel, Double> entry : this.bubbleFraction.entrySet()) {
       TEPanelModel panel = entry.getKey();
       double fraction = entry.getValue();
-      for (TEPanelModel.LitPointData lpd : panel.litPointData) {
+      for (TEPanelModel.Point lpd : panel.panelPoints) {
         int color;
-        if (lpd.radiusFraction >= fraction && lpd.radiusFraction < fraction + BUBBLE_THICKNESS) {
+        if (lpd.rn >= fraction && lpd.rn < fraction + BUBBLE_THICKNESS) {
           color = bubbleColor;
         } else {
           color = TRANSPARENT;

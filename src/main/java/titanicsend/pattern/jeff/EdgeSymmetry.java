@@ -5,12 +5,15 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.blend.MultiplyBlend;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
+import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.*;
 import heronarts.lx.transform.LXVector;
 import java.util.*;
 import java.util.stream.Collectors;
 import titanicsend.color.TEColorType;
 import titanicsend.model.TEEdgeModel;
+import titanicsend.model.TEWholeModel;
+import titanicsend.model.TEWholeModelStatic;
 import titanicsend.pattern.TEPattern;
 
 /**
@@ -54,7 +57,14 @@ public class EdgeSymmetry extends TEPattern {
     addParameter("width", fracFromZCenter);
     addParameter("height", height);
     addParameter("mask", maskMode);
-    edgeGroupsByZ = new ArrayList<>(modelTE.edgesBySymmetryGroup.keySet());
+    
+    // JKB note: quick edit to work with only the static model.
+    // This will need to be updated before it works with a dynamic model.
+    if (this.modelTE instanceof TEWholeModelStatic) {
+      edgeGroupsByZ = new ArrayList<>(((TEWholeModelStatic)modelTE).edgesBySymmetryGroup.keySet());
+    } else {
+      edgeGroupsByZ = new ArrayList<>();
+    }
 
     /* Arrange from L-R (aft-fore, axis Z) for index-based sweep.
      * Accessing this by index is mostly just for learning purposes.
@@ -80,7 +90,7 @@ public class EdgeSymmetry extends TEPattern {
     }
 
     for (TEEdgeModel edge : litEdges) {
-      for (TEEdgeModel.Point point : edge.points) {
+      for (LXPoint point : edge.points) {
         colors[point.index] = color;
       }
     }
@@ -92,7 +102,7 @@ public class EdgeSymmetry extends TEPattern {
 
     // Select the range of symmetry groups by initial z index and groupCount
     // Allowing the range to start and end outside the real set of edges
-    int idxRange = modelTE.edgesBySymmetryGroup.size() + groupCount;
+    int idxRange = this.modelTE.getEdgesBySymmetryGroup().size() + groupCount;
     int from = (int) (fracFromZCenter.getNormalized() * idxRange) - groupCount;
     int to = from + groupCount;
     List<LXVector> selectedEdgeGroups =
@@ -101,7 +111,7 @@ public class EdgeSymmetry extends TEPattern {
     // Find all applicable edges as a list. Filter by Y coordinate (height) and
     // flatten the Hashmap's values to get a combined list of all selected edges
     litEdges =
-        modelTE.edgesBySymmetryGroup.entrySet().stream()
+      this.modelTE.getEdgesBySymmetryGroup().entrySet().stream()
             .filter(e -> selectedEdgeGroups.contains(e.getKey()))
             .filter(e -> e.getKey().y / model.yMax < height.getValue())
             .map(Map.Entry::getValue)

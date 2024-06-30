@@ -446,11 +446,17 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
   }
 
   private void onEngineBeaconsChanged(boolean isOn) {
-    DmxEngine.get().setOutputsEnabledByType(BeaconModel.class, isOn);
+    DmxEngine dmx = DmxEngine.get();
+    if (dmx != null) {
+      dmx.setOutputsEnabledByType(BeaconModel.class, isOn);
+    }
   }
 
   private void onEngineDJlightsChanged(boolean isOn) {
-    DmxEngine.get().setOutputsEnabledByType(AdjStealthModel.class, isOn);
+    DmxEngine dmx = DmxEngine.get();
+    if (dmx != null) {
+      dmx.setOutputsEnabledByType(AdjStealthModel.class, isOn);
+    }
   }
 
   /** this.midiSurfaces changed */

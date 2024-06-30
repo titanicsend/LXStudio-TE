@@ -1,0 +1,112 @@
+{
+  /* Titanic's End Fixture File */
+  label: "Panel PCA",
+  tags: [ "PCA", "panel", "m1" ],
+
+  parameters: {
+    "xOffset": { default: 17.108061399883056, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
+    "yOffset": { default: 6.0, type: float, description: "Adjust Y position within the plane of the panel. Use to fine-tune position after installation" },
+  
+    /* Modify HOST and CONTROLLER OUTPUT default values HERE to assign one of this panel's strands to a
+       new controller output. Then click [Reload Fixture File] at the bottom of the Inspector section in Chromatik.
+       CAUTION: LXM model files containing this fixture might not update to the new defaults. */
+
+    "strand1host": { default: "10.7.1.11", type: "string", label: "S1 Host", description: "Strand 1 Controller IP address or hostname" },
+    "strand1output": { default: 1, type: "int", min: 1, max: 4, label: "S1 Output", description: "Strand 1 Controller Output Number 1-4" },
+    "strand2host": { default: "10.7.1.11", type: "string", label: "S2 Host", description: "Strand 2 Controller IP address or hostname" },
+    "strand2output": { default: 2, type: "int", min: 1, max: 4, label: "S2 Output", description: "Strand 2 Controller Output Number 1-4" },
+    "strand3host": { default: "10.7.1.11", type: "string", label: "S3 Host", description: "Strand 3 Controller IP address or hostname" },
+    "strand3output": { default: 3, type: "int", min: 1, max: 4, label: "S3 Output", description: "Strand 3 Controller Output Number 1-4" },
+
+    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
+    
+    # Debug tools
+    "onCar": { default: true, type: "boolean", label: "On Car", description: "True = Locate panel to its position on the car, False = Locate to origin" }
+  },
+  
+  transforms: [
+    /* Transpose starting corner to Vertex0 */
+    { x: "190.4843", enabled: "$onCar" },
+    { y: "51.3169", enabled: "$onCar" },
+    { z: "90.0000", enabled: "$onCar" },
+
+    /* Rotate to plane of panel */
+    { yaw: "-180.0000", enabled: "$onCar" },
+    { roll: "-14.5726", enabled: "$onCar" },
+    { pitch: "180.0000", enabled: "$onCar" },
+
+    /* X-Y adjustments within plane of panel */
+    { x: "$xOffset" },
+    { y: "$yOffset" }    
+  ],
+
+  meta: {
+    "panelId": "PCA",
+    "v0": "97",
+    "v1": "79",
+    "v2": "78",
+    "edge1": "78-97",
+    "edge2": "78-79",
+    "edge3": "79-97",
+    "leadingEdge": "97->79",
+    "module": "1"
+  },
+
+  components: [
+    /* Looking at the back of panel, starts from LEFT
+       Looking at the front of panel, starts from RIGHT */
+
+    { type: "panelRow", row: "0", offset: "9", numPoints: "54" },
+    { type: "panelRow", row: "1", offset: "0", numPoints: "59" },
+    { type: "panelRow", row: "2", offset: "0", numPoints: "55" },
+    { type: "panelRow", row: "3", offset: "0", numPoints: "51" },
+    { type: "panelRow", row: "4", offset: "0", numPoints: "47" },
+    { type: "panelRow", row: "5", offset: "0", numPoints: "43" },
+    { type: "panelRow", row: "6", offset: "0", numPoints: "40" },
+    { type: "panelRow", row: "7", offset: "0", numPoints: "36" },
+    { type: "panelRow", row: "8", offset: "1", numPoints: "31" },
+    { type: "panelRow", row: "9", offset: "1", numPoints: "27" },
+    { type: "panelRow", row: "10", offset: "1", numPoints: "23" },
+    { type: "panelRow", row: "11", offset: "1", numPoints: "19" },
+    { type: "panelRow", row: "12", offset: "1", numPoints: "15" },
+    { type: "panelRow", row: "13", offset: "1", numPoints: "11" },
+    { type: "panelRow", row: "14", offset: "1", numPoints: "8" },
+    { type: "panelRow", row: "15", offset: "1", numPoints: "4" }
+  ],
+
+  outputs: [
+                  
+    { host: "$strand1host", universe: "$strand1output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentIndex: 0, reverse: false },
+        { componentIndex: 1, reverse: true, padPre: 2 },
+        { componentIndex: 2, reverse: false },
+        { componentIndex: 3, reverse: true, padPre: 2 },
+        { componentIndex: 4, reverse: false, length: 27 }
+      ]
+    },
+                  
+    { host: "$strand2host", universe: "$strand2output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentIndex: 4, reverse: false, start: 27 },
+        { componentIndex: 5, reverse: true, padPre: 2 },
+        { componentIndex: 6, reverse: false },
+        { componentIndex: 7, reverse: true, padPre: 2 },
+        { componentIndex: 8, reverse: false, padPre: 1 },
+        { componentIndex: 9, reverse: true, padPre: 2 },
+        { componentIndex: 10, reverse: false },
+        { componentIndex: 11, reverse: true, padPre: 2 },
+        { componentIndex: 12, reverse: false, length: 2 }
+      ]
+    },
+                  
+    { host: "$strand3host", universe: "$strand3output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentIndex: 12, reverse: false, start: 2 },
+        { componentIndex: 13, reverse: true, padPre: 2 },
+        { componentIndex: 14, reverse: false },
+        { componentIndex: 15, reverse: true, padPre: 2 }
+      ]
+    }
+  ]
+}

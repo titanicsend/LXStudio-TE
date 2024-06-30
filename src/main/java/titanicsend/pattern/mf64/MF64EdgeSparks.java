@@ -59,7 +59,7 @@ public class MF64EdgeSparks extends TEMidiFighter64Subpattern {
     // Build a moving sawtooth, coloring the leading edge with a solid color and
     // trailing off into random sparkles.  It winds up looking a lot like a particle
     // system, but it's much cheaper to compute.
-    for (LXPoint point : modelTE.edgePoints) {
+    for (LXPoint point : modelTE.getEdgePoints()) {
       float v;
 
       // get flipped y coord

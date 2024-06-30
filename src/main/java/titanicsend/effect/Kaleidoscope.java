@@ -29,12 +29,12 @@ public class Kaleidoscope extends TEEffect {
   protected void run(double deltaMs, double enabledAmount) {
     if (enabledAmount > 0) {
       double segmentAngle = 2 * Math.PI / segments.getValue();
-      for (TEPanelModel panel : this.modelTE.panelsById.values()) {
+      for (TEPanelModel panel : this.modelTE.getPanels()) {
         if (!panel.panelType.equals(TEPanelModel.LIT)) {
           continue;
         }
 
-        LXProjection projection = new LXProjection(panel);
+        LXProjection projection = new LXProjection(panel.model);
         projection.translate(-panel.centroid.x, -panel.centroid.y, -panel.centroid.z);
 
         LXVector zAxis = new LXVector(0, 0, 1);

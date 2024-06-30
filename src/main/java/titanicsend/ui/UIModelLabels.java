@@ -52,7 +52,7 @@ public class UIModelLabels extends UI3dComponent {
     textManager.setFontScale(15000);
     textManager.setFontColor(LXColor.WHITE);
     textManager.setFontBackground(LXColor.rgba(0, 0, 0, 255)); // opaque black
-    for (TEPanelModel p : TEApp.wholeModel.panelsById.values()) {
+    for (TEPanelModel p : TEApp.wholeModel.getPanels()) {
       getPanelCoordinates(p, position, rotation);
       panelLabels.add(textManager.labelMaker(p.getId(), position, rotation));
     }
@@ -61,7 +61,7 @@ public class UIModelLabels extends UI3dComponent {
     textManager.setFontScale(20000);
     textManager.setFontColor(LXColor.GREEN);
     textManager.setFontBackground(LXColor.rgba(0, 64, 64, 200));
-    for (TEVertex v : TEApp.wholeModel.vertexesById.values()) {
+    for (TEVertex v : TEApp.wholeModel.getVertexes()) {
       getVertexCoordinates(v, position, rotation);
       vertexLabels.add(textManager.labelMaker(String.valueOf(v.id), position, rotation));
     }

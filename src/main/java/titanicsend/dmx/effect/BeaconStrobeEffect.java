@@ -25,7 +25,7 @@ public class BeaconStrobeEffect extends BeaconEffect {
 
   @Override
   protected void run(double deltaMs, double enabledAmount) {
-    for (DmxModel d : this.modelTE.beacons) {
+    for (DmxModel d : this.modelTE.getBeacons()) {
       if (this.isStrobe.isOn()) {
         setDmxValue(d, BeaconModel.INDEX_SHUTTER, (int) this.strobeSpeed.getValue());
         setDmxNormalized(d, BeaconModel.INDEX_DIMMER, BeaconModel.DIMMER_NORMALIZED_100);

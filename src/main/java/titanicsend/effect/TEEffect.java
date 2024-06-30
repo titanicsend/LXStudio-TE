@@ -2,6 +2,7 @@ package titanicsend.effect;
 
 import heronarts.lx.LX;
 import heronarts.lx.effect.LXEffect;
+import heronarts.lx.studio.TEApp;
 import titanicsend.model.TEWholeModel;
 
 public abstract class TEEffect extends LXEffect {
@@ -11,6 +12,6 @@ public abstract class TEEffect extends LXEffect {
   public TEEffect(LX lx) {
     super(lx);
 
-    this.modelTE = (TEWholeModel) lx.getModel();
+    this.modelTE = TEApp.wholeModel;
   }
 }

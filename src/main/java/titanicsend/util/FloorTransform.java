@@ -8,6 +8,7 @@ import titanicsend.model.TEVertex;
 // Holds the information necessary to get a point off the floor
 // and up into a flying triangle, as well as three points on the floor
 // corresponding to where the triangle was lying before it floated away.
+@Deprecated
 public class FloorTransform {
   Matrix flightInstructions;
   FloorPoint f0; // Always at the origin:  (0, 0)

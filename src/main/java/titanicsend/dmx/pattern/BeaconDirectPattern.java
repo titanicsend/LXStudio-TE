@@ -78,7 +78,7 @@ public class BeaconDirectPattern extends BeaconPattern
     int ptSpd = this.ptSpeed.getDmxValue();
     int control = this.control.getDmxValue();
 
-    for (DmxModel d : this.modelTE.beacons) {
+    for (DmxModel d : this.modelTE.getBeacons()) {
       setDmxNormalized(d, BeaconModel.INDEX_PAN, pan);
       setDmxNormalized(d, BeaconModel.INDEX_TILT, tilt);
       setDmxNormalized(d, BeaconModel.INDEX_CYAN, cyan);

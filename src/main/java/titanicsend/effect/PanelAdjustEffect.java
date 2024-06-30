@@ -71,7 +71,7 @@ public class PanelAdjustEffect extends TEEffect implements UIDeviceControls<Pane
   protected void onEnable() {
     for (String panelId : PANEL_ID_TO_ADJUSTMENT.keySet()) {
       if (isValidPanelId(panelId)) {
-        modelTE.panelsById.get(panelId).setAdjustment(PANEL_ID_TO_ADJUSTMENT.get(panelId));
+        modelTE.getPanel(panelId).setAdjustment(PANEL_ID_TO_ADJUSTMENT.get(panelId));
       }
     }
   }
@@ -133,19 +133,19 @@ public class PanelAdjustEffect extends TEEffect implements UIDeviceControls<Pane
 
   private void refreshCurrentAdjustment() {
     if (isValidPanelId(panelIdParameter.getString())) {
-      TEPanelModel panelModel = modelTE.panelsById.get(panelIdParameter.getString());
+      TEPanelModel panelModel = modelTE.getPanel(panelIdParameter.getString());
       panelModel.setAdjustment(currentAdjustment);
     }
   }
 
   private void clearAdjustments() {
-    for (TEPanelModel panelModel : this.modelTE.panelsById.values()) {
+    for (TEPanelModel panelModel : this.modelTE.getPanels()) {
       panelModel.clearAdjustment();
     }
   }
 
   private boolean isValidPanelId(String panelId) {
-    return this.modelTE.panelsById.get(panelId) != null;
+    return this.modelTE.getPanel(panelId) != null;
   }
 
   @Override

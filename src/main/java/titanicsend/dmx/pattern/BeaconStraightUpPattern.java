@@ -55,7 +55,7 @@ public class BeaconStraightUpPattern extends BeaconPattern
     int colorWheel = this.colorWheelFixed.getDmxValue();
     double focus = this.focus.getNormalized();
 
-    for (DmxModel d : this.modelTE.beacons) {
+    for (DmxModel d : this.modelTE.getBeacons()) {
       setDmxNormalized(d, BeaconModel.INDEX_TILT, 0.5);
       setDmxValue(d, BeaconModel.INDEX_COLOR_WHEEL, colorWheel);
       setDmxNormalized(d, BeaconModel.INDEX_FOCUS, focus);

@@ -112,7 +112,7 @@ public class SignalDebugger extends TEPattern implements UIDeviceControls<Signal
               antProgress = 1 - antProgress;
             }
             if (j % ANT_SPACING != Math.floor(ANT_SPACING * antProgress)) {
-              TEEdgeModel.Point point = chainedEdge.edge.points[j];
+              LXPoint point = chainedEdge.edge.points[j];
               colors[point.index] = routeColor;
             }
           }
@@ -124,7 +124,7 @@ public class SignalDebugger extends TEPattern implements UIDeviceControls<Signal
     if (activePanelIds != null) {
       for (String activePanelId : activePanelIds) {
         int routeColor = colorIter.next();
-        List<LXPoint> activePoints = modelTE.panelsById.get(activePanelId).getPoints();
+        List<LXPoint> activePoints = modelTE.getPanel(activePanelId).model.getPoints();
         for (LXPoint point : activePoints) {
           colors[point.index] = routeColor;
         }
@@ -276,7 +276,7 @@ public class SignalDebugger extends TEPattern implements UIDeviceControls<Signal
     public String signalFrom;
 
     ChainedEdge(String edgeId, String signalFrom, String controllerVertex, String pri) {
-      this.edge = modelTE.edgesById.get(edgeId);
+      this.edge = modelTE.getEdge(edgeId);
       this.signalFrom = signalFrom;
       if (!controllerVertex.equals("")) {
         this.controllerVertex = Integer.parseInt(controllerVertex);

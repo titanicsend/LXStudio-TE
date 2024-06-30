@@ -34,10 +34,10 @@ public class EdgeSieve extends TEEffect {
   @Override
   protected void run(double deltaMs, double enabledAmount) {
     if (enabledAmount > 0) {
-      for (TEEdgeModel edge : this.modelTE.edgesById.values()) {
-        for (TEEdgeModel.Point point : edge.points) {
+      for (TEEdgeModel edge : this.modelTE.getEdges()) {
+        for (TEEdgeModel.Point point : edge.edgePoints) {
           if (Math.floorMod(point.i - offset, runLength) >= length.getValuei()) {
-            colors[point.index] = LXColor.BLACK;
+            colors[point.point.index] = LXColor.BLACK;
           }
         }
       }

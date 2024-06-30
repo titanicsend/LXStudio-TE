@@ -162,7 +162,7 @@ public class Dimensions {
   public static Dimensions fromModels(Collection<? extends TEModel> models) {
     Set<LXPoint> points = new HashSet<>();
     for (TEModel model : models) {
-      points.addAll(model.getPoints());
+      points.addAll(model.model.getPoints());
     }
     return fromPoints(points);
   }
