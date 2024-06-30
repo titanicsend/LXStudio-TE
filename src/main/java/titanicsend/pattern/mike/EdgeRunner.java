@@ -263,7 +263,7 @@ public class EdgeRunner extends TEPattern implements TEListener {
         double litFraction = (double) panelData.litEdgePixels / panelData.numEdgePixels;
         for (TEPanelModel.Point lpd : panel.panelPoints) {
           int color;
-          if (lpd.radiusFraction <= litFraction) {
+          if (lpd.rn <= litFraction) {
             color = fillColor;
           } else {
             color = TRANSPARENT;

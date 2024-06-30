@@ -224,10 +224,9 @@ public class BassLightning extends TEAudioPattern {
       List<TEVertex> vertexes = this.modelTE.getVertexes();
       if (vertexes.size() > 0) {
         vertex = vertexes.get(LXUtils.randomi(0, vertexes.size() - 1));
+      } else {
+        return;
       }
-    }
-    if (vertex == null) {
-      return;
     }
 
     synchronized (bolts) {

@@ -37,13 +37,19 @@ public class TEPanelModel extends TEModel {
    */
   public static class Point {
     public final LXPoint point;
-    public final double radius; // Distance from the centroid
-    public final double radiusFraction; // ...expressed as a fraction <= 1.0
+    /**
+     * Distance from the centroid.
+     */
+    public final double r;
+    /**
+     * Normalized distance from the centroid.
+     */
+    public final double rn;
 
-    Point(LXPoint point, double radius, double radiusFraction) {
+    Point(LXPoint point, double r, double rn) {
       this.point = point;
-      this.radius = radius;
-      this.radiusFraction = radiusFraction;
+      this.r = r;
+      this.rn = rn;
     }
   }
 
@@ -248,9 +254,9 @@ public class TEPanelModel extends TEModel {
     this.panelPoints = new Point[this.points.length];
     for (int i = 0; i < this.points.length; i++) {
       LXPoint point = this.points[i];
-      double radius = TEVertex.distance(this.centroid, point);
-      double radiusFraction = radius / maxRadius;
-      this.panelPoints[i] = new Point(point, radius, radiusFraction);
+      double r = TEVertex.distance(this.centroid, point);
+      double rn = r / maxRadius;
+      this.panelPoints[i] = new Point(point, r, rn);
     }
 
     // Calculate UI backer triangles for dynamic model

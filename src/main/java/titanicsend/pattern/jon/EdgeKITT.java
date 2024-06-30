@@ -57,7 +57,7 @@ public class EdgeKITT extends TEPerformancePattern {
     for (TEEdgeModel edge : modelTE.getEdges()) {
       for (TEEdgeModel.Point point : edge.edgePoints) {
 
-        double x = 0.5 * point.frac;
+        double x = 0.5 * point.n;
         double pct1 = x - t1;
         double pct2 = -x - t1;
 

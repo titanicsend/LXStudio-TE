@@ -68,7 +68,7 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
     // can derive local azimuth geometrically, but atan2 is faster...
     // the arX multiplier controls the number of petals.  Higher is more.
     float arX = (float) (Math.atan2(y, x) * 1.25 + spin);
-    float arY = (float) (lp.radiusFraction + grow);
+    float arY = (float) (lp.rn + grow);
 
     // Shape the pulse made by the arY + grow term. Higher divisor == more contrast
     float pulse = (float) (Math.floor(arY) / 6.0);

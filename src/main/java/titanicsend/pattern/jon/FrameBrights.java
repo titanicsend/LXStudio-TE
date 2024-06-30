@@ -156,7 +156,7 @@ public class FrameBrights extends TEAudioPattern {
       float alpha;
       lightRandomSegments(zoneCount, minZones, maxZones);
       for (TEEdgeModel.Point point : edge.edgePoints) {
-        int zone = (int) Math.floor(point.frac * (zoneCount - 1));
+        int zone = (int) Math.floor(point.n * (zoneCount - 1));
 
         // lit segments to pulsing max brightness
         if (zoneIsLit[zone] && point.point.yn >= yMin) {

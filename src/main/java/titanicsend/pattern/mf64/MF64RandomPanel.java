@@ -89,7 +89,7 @@ public class MF64RandomPanel extends TEMidiFighter64Subpattern {
       colorIndex = (colorIndex + 1) % colorSet.length;
 
       for (TEPanelModel.Point p : panel.panelPoints) {
-        if (p.radiusFraction <= 1.0) {
+        if (p.rn <= 1.0) {
           blendColor(p.point.index, col | 0xFF000000);
         }
       }

@@ -128,7 +128,7 @@ public class TEApp extends LXStudio {
     private TEOscListener oscListener;
     private TEPatternLibrary library;
 
-    private DmxEngine dmxEngine;
+    private final DmxEngine dmxEngine;
     private final NDIEngine ndiEngine;
     private final GLEngine glEngine;
 
