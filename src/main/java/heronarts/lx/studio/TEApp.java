@@ -36,6 +36,8 @@ import titanicsend.app.*;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.dev.DevSwitch;
 import titanicsend.app.dev.UIDevSwitch;
+import titanicsend.audio.AudioStems;
+import titanicsend.audio.UIAudioStems;
 import titanicsend.dmx.DmxEngine;
 import titanicsend.dmx.effect.BeaconStrobeEffect;
 import titanicsend.dmx.pattern.BeaconDirectPattern;
@@ -132,6 +134,7 @@ public class TEApp extends LXStudio {
     private final NDIEngine ndiEngine;
     private final GLEngine glEngine;
 
+    private final AudioStems audioStems;
     private final TELaserTask laserTask;
     private final CrutchOSC crutchOSC;
     private DevSwitch devSwitch;
@@ -162,6 +165,8 @@ public class TEApp extends LXStudio {
       this.dmxEngine = new DmxEngine(lx);
       this.ndiEngine = new NDIEngine(lx);
       this.glEngine = new GLEngine(lx);
+
+      lx.engine.registerComponent("audioStems", this.audioStems = new AudioStems(lx));
 
       // create our loop task for outputting data to lasers
       this.laserTask = new TELaserTask(lx);
@@ -531,6 +536,10 @@ public class TEApp extends LXStudio {
       // Add UI section for autopilot
       new TEUserInterface.AutopilotUISection(ui, this.autopilot)
           .addToContainer(ui.leftPane.global, 0);
+
+      // Add UI section for audio stems
+      new UIAudioStems(ui, this.audioStems, ui.leftPane.global.getContentWidth())
+          .addToContainer(ui.leftPane.global, 2);
 
       // Set camera zoom and point size to match current model
       applyTECameraPosition();
