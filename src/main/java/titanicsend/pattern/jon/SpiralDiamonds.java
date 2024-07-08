@@ -50,7 +50,7 @@ public class SpiralDiamonds extends TEPerformancePattern {
 
     for (LXPoint point : getModel().getPoints()) {
       // move normalized coord origin to model center
-      float x = point.zn - 0.5f + (float) getXPos();
+      float x = getXn(point) - 0.5f + (float) getXPos();
       float y = point.yn - 0.25f + (float) getYPos();
 
       // warp coordinate system in a waving flag pattern w/trebleLevel.
