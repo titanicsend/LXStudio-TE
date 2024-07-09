@@ -4,27 +4,24 @@ import heronarts.lx.model.LXPoint;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-/**
- * Works with textures wrapped around the entire car. Looks best if the shader is careful about its
- * coordinate wrapping behavior, so it is recommended to use this class only with shaders that are
- * designed to work this way.
- */
-public class ShaderPaint3d extends ShaderPainterClass {
+/** Paints a 2D texture onto the car, mirroring the texture symmetrically on both sides. */
+public class ShaderPaint2d extends ShaderPainterClass {
+  int xMax = GLEngine.getWidth() - 1;
+  int yMax = GLEngine.getHeight() - 1;
 
-  public ShaderPaint3d(boolean isStaticModel) {
+  public ShaderPaint2d(boolean isStaticModel) {
     super(isStaticModel);
   }
 
   /**
    * Called after a frame has been generated, this function samples the OpenGL backbuffer to set
-   * color at the specified points. This version wraps a texture around the entire car instead of
-   * the default symmetrical mirroring.
+   * color at the specified points.
    *
    * @param points list of points to paint
    * @param image backbuffer containing image for this frame
+   * @param colors array to hold colors, one for each point
    */
   public void mapToPoints(List<LXPoint> points, ByteBuffer image, int[] colors) {
-
     // TODO - remove this block when we move completely to dynamic model
     // TODO - (as well as the 'Static' versions of these functions)
     if (isStatic) {
@@ -33,22 +30,28 @@ public class ShaderPaint3d extends ShaderPainterClass {
     }
 
     for (LXPoint point : points) {
-      float xn = 0.5f * ((point.z >= 0) ? 1f + point.xn : 1f - point.xn);
+      float xn = 1f - point.xn;
       float yn = point.yn;
 
       // use normalized point coordinates to calculate x/y coordinates and then the
       // proper index in the image buffer.  the 'z' dimension of TE corresponds
       // with 'x' dimension of the image based on the side that we're painting.
-      int xi = (int) (0.5f + xn * xMax);
-      int yi = (int) (0.5f + yn * yMax);
+      int xi = (int) (0.5 + xn * xMax);
+      int yi = (int) (0.5 + yn * yMax);
 
       int index = 4 * ((yi * GLEngine.getWidth()) + xi);
       colors[point.index] = image.getInt(index);
     }
   }
 
+  /**
+   * Map current LX point colors to a texture buffer that can be used by a shader.
+   *
+   * @param points list of points to paint
+   * @param image buffer for bitmap
+   * @param colors array of colors, one for each point
+   */
   public void mapToBuffer(List<LXPoint> points, ByteBuffer image, int[] colors) {
-
     // TODO - remove this block when we move completely to dynamic model
     // TODO - (as well as the 'Static' versions of these functions)
     if (isStatic) {
@@ -57,11 +60,11 @@ public class ShaderPaint3d extends ShaderPainterClass {
     }
 
     for (LXPoint point : points) {
-      float xn = 0.5f * ((point.z >= 0) ? 1f + point.xn : 1f - point.xn);
+      float xn = 1f - point.xn;
       float yn = point.yn;
 
-      int xi = (int) (0.5f + xn * xMax);
-      int yi = (int) (0.5f + yn * yMax);
+      int xi = (int) (0.5 + xn * xMax);
+      int yi = (int) (0.5 + yn * yMax);
 
       int index = 4 * ((yi * GLEngine.getWidth()) + xi);
       image.putInt(index, colors[point.index]);
@@ -69,38 +72,50 @@ public class ShaderPaint3d extends ShaderPainterClass {
   }
 
   /**
-   * Called after a frame has been generated, this function samples the OpenGL backbuffer to set
-   * color at the specified points. This version wraps a texture around the entire car instead of
-   * the default symmetrical mirroring.
+   * Static (old) model variant - remove when we move to dynamic model
+   *
+   * <p>Called after a frame has been generated, this function samples the OpenGL backbuffer to set
+   * color at the specified points.
    *
    * @param points list of points to paint
    * @param image backbuffer containing image for this frame
+   * @param colors array to hold colors, one for each point
    */
   private void mapToPointsStatic(List<LXPoint> points, ByteBuffer image, int[] colors) {
-
     for (LXPoint point : points) {
-      float zn = 0.5f * ((point.x >= 0) ? 1f + point.zn : 1f - point.zn);
+      float zn = 1f - point.zn;
       float yn = point.yn;
 
       // use normalized point coordinates to calculate x/y coordinates and then the
       // proper index in the image buffer.  the 'z' dimension of TE corresponds
       // with 'x' dimension of the image based on the side that we're painting.
-      int xi = (int) (0.5f + zn * xMax);
-      int yi = (int) (0.5f + yn * yMax);
+      int xi = (int) (0.5 + zn * xMax);
+      int yi = (int) (0.5 + yn * yMax);
 
       int index = 4 * ((yi * GLEngine.getWidth()) + xi);
       colors[point.index] = image.getInt(index);
     }
   }
 
+  /**
+   * Static (old) model variant - remove when we move to dynamic model
+   *
+   * <p>Map current LX point colors to a texture buffer that can be used by a shader.
+   *
+   * @param points list of points to paint
+   * @param image buffer for bitmap
+   * @param colors array of colors, one for each point
+   */
   private void mapToBufferStatic(List<LXPoint> points, ByteBuffer image, int[] colors) {
-
+    // TODO - do we need to zero the buffer when we do this?
+    // TODO - not if we stick to strictly to the points we're painting,
+    // TODO - but maybe if we're doing something that changes coordinates.
     for (LXPoint point : points) {
-      float zn = 0.5f * ((point.x >= 0) ? 1f + point.zn : 1f - point.zn);
+      float zn = 1f - point.zn;
       float yn = point.yn;
 
-      int xi = (int) (0.5f + zn * xMax);
-      int yi = (int) (0.5f + yn * yMax);
+      int xi = (int) (0.5 + zn * xMax);
+      int yi = (int) (0.5 + yn * yMax);
 
       int index = 4 * ((yi * GLEngine.getWidth()) + xi);
       image.putInt(index, colors[point.index]);

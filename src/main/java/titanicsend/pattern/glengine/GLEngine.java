@@ -57,6 +57,13 @@ public class GLEngine extends LXComponent implements LXLoopTask {
   private GLAutoDrawable canvas = null;
   private GL4 gl4;
 
+  // Needed for housekeeping, during static-to-dynamic model transition
+  // This lets various shader components know if they're running the static model
+  // and need to swap the x and z axes.
+  // TODO - remove when we move to dynamic model
+  private final boolean isStatic;
+  public boolean isStaticModel() { return isStatic; }
+
   public GLAutoDrawable getCanvas() {
     return canvas;
   }
@@ -213,12 +220,14 @@ public class GLEngine extends LXComponent implements LXLoopTask {
         audioTextureData);
   }
 
-  public GLEngine(LX lx) {
+  public GLEngine(LX lx,boolean isStaticModel) {
 
     // register glEngine so we can access it from patterns.
     // and add it as an engine task for audio analysis and buffer management
     lx.engine.registerComponent(PATH, this);
     lx.engine.addLoopTask(this);
+
+    this.isStatic = isStaticModel;
 
     // set up audio fft and waveform handling
     // TODO - strongly consider expanding the number of FFT bands.

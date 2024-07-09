@@ -15,6 +15,7 @@ import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
 import titanicsend.dmx.model.DmxModel;
+import titanicsend.pattern.jon.ModelBender;
 
 public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
 
@@ -43,14 +44,16 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
   public final List<TEEdgeModel> edges = Collections.unmodifiableList(this.mutableEdges);
   private final Map<LXModel, TEEdgeModel> edgeModels = new HashMap<LXModel, TEEdgeModel>();
   private final Map<String, TEEdgeModel> edgesById = new HashMap<String, TEEdgeModel>();
-  public final Map<LXVector, List<TEEdgeModel>> edgesBySymmetryGroup = new HashMap<LXVector, List<TEEdgeModel>>();
+  public final Map<LXVector, List<TEEdgeModel>> edgesBySymmetryGroup =
+      new HashMap<LXVector, List<TEEdgeModel>>();
 
   // Panels
   private final List<TEPanelModel> mutablePanels = new ArrayList<TEPanelModel>();
   public final List<TEPanelModel> panels = Collections.unmodifiableList(this.mutablePanels);
   private final Map<LXModel, TEPanelModel> panelModels = new HashMap<LXModel, TEPanelModel>();
   private final Map<String, TEPanelModel> panelsById = new HashMap<String, TEPanelModel>();
-  private final Map<TEPanelSection, Set<TEPanelModel>> panelsBySection = new HashMap<TEPanelSection, Set<TEPanelModel>>();
+  private final Map<TEPanelSection, Set<TEPanelModel>> panelsBySection =
+      new HashMap<TEPanelSection, Set<TEPanelModel>>();
 
   // Lasers
   public final Map<String, TELaserModel> lasersById = new HashMap<String, TELaserModel>();
@@ -89,14 +92,12 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
     }
   }
 
-  /**
-   * Use tags and metadata to identify TE-specific LXModels within the overall model.
-   */
+  /** Use tags and metadata to identify TE-specific LXModels within the overall model. */
   @Override
   public void modelGenerationChanged(LX lx, LXModel model) {
     Set<LXModel> expired;
     List<LXModel> tagged;
-    
+
     // Find Edges
     expired = new HashSet<LXModel>(this.edgeModels.keySet());
     tagged = model.sub(TAG_EDGE);
@@ -147,7 +148,7 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
     for (TEEdgeModel edge : this.edges) {
       this.edgesById.put(edge.getId(), edge);
     }
-    
+
     // Find Panels
     expired = new HashSet<LXModel>(this.panelModels.keySet());
     tagged = model.sub(TAG_PANEL);
@@ -190,8 +191,8 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
         v2.addPanel(panel);
       }
     }
-    
-    // Remove any previous panels that no longer exist   
+
+    // Remove any previous panels that no longer exist
     for (LXModel m : expired) {
       TEPanelModel panel = this.panelModels.remove(m);
       this.mutablePanels.remove(panel);
@@ -231,7 +232,7 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
         this.vertexesById.remove(vertex.id);
       }
     }
-    
+
     // Rebuild Edge Connections
     for (TEEdgeModel edge : this.edges) {
       edge.rebuildConnections(this.edges, this.panels);
@@ -258,20 +259,25 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
     this.mutableChildren.addAll(this.panelModels.keySet());
     this.children = this.mutableChildren.toArray(new LXModel[0]);
 
+    // adjust model geometry for easy texture mapping in views
+    ModelBender mb = new ModelBender();
+    mb.adjustEndGeometry(this, this.lx.getModel());
+    mb.restoreModel(this, this.lx.getModel());
+
     /* TE.log("Model changed. Found " +
-      this.edges.size() + " edges, " +
-      this.panels.size() + " panels, " +
-      this.edgePoints.size() + " edge points, " +
-      this.panelPoints.size() + " panel points, " +
-      this.points.size() + " total points"); */
+    this.edges.size() + " edges, " +
+    this.panels.size() + " panels, " +
+    this.edgePoints.size() + " edge points, " +
+    this.panelPoints.size() + " panel points, " +
+    this.points.size() + " total points"); */
 
     for (TEListener listener : this.listeners) {
       listener.modelTEChanged(this);
     }
 
-    // Run the garbage collector to prevent buildup of old-generation objects? 
+    // Run the garbage collector to prevent buildup of old-generation objects?
   }
-  
+
   private TEVertex findOrCreateVertex(int v) {
     TEVertex vertex = this.vertexesById.get(v);
     if (vertex == null) {
@@ -281,7 +287,7 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
     }
     return vertex;
   }
-  
+
   @Override
   public int sizeDmx() {
     return this.sizeDmx;

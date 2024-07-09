@@ -161,7 +161,7 @@ public class TEApp extends LXStudio {
       // ui.leftPane.global.getContentWidth()).addToContainer(ui.leftPane.global);
       this.dmxEngine = new DmxEngine(lx);
       this.ndiEngine = new NDIEngine(lx);
-      this.glEngine = new GLEngine(lx);
+      this.glEngine = new GLEngine(lx,staticModel);
 
       // create our loop task for outputting data to lasers
       this.laserTask = new TELaserTask(lx);

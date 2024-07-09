@@ -225,4 +225,13 @@ public abstract class TEPattern extends DmxPattern {
     }
     return rv;
   }
+
+  /**
+   * utility method for use during the static-to-dynamic model transition.
+   * IMPORTANT:  There is a performance cost to this, so it should be
+   * removed when we no longer need to support the static model.
+   */
+   public float getXn(LXPoint p) {
+    return (modelTE.isStatic()) ? p.zn : p.xn;
+  }
 }
