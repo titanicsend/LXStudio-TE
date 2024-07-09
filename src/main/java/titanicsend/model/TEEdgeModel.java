@@ -125,9 +125,9 @@ public class TEEdgeModel extends TEModel {
     this.connectedPanels.addAll(
       panels.stream()
       .filter(item ->
-           item.edge0id == this.getId()
-        || item.edge1id == this.getId()
-        || item.edge2id == this.getId())
+        this.getId().equals(item.edge0id) ||
+        this.getId().equals(item.edge1id) ||
+        this.getId().equals(item.edge2id))
       .collect(Collectors.toList()));
   }
 }
