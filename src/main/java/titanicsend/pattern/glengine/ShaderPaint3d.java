@@ -9,7 +9,11 @@ import java.util.List;
  * coordinate wrapping behavior, so it is recommended to use this class only with shaders that are
  * designed to work this way.
  */
-public class ShaderPaint3d implements ShaderPaintFn {
+public class ShaderPaint3d extends ShaderPainterClass {
+
+  public ShaderPaint3d(boolean isStaticModel) {
+    super(isStaticModel);
+  }
 
   /**
    * Called after a frame has been generated, this function samples the OpenGL backbuffer to set
@@ -72,7 +76,7 @@ public class ShaderPaint3d implements ShaderPaintFn {
    * @param points list of points to paint
    * @param image backbuffer containing image for this frame
    */
-  public void mapToPointsStatic(List<LXPoint> points, ByteBuffer image, int[] colors) {
+  private void mapToPointsStatic(List<LXPoint> points, ByteBuffer image, int[] colors) {
 
     for (LXPoint point : points) {
       float zn = 0.5f * ((point.x >= 0) ? 1f + point.zn : 1f - point.zn);
@@ -89,7 +93,7 @@ public class ShaderPaint3d implements ShaderPaintFn {
     }
   }
 
-  public void mapToBufferStatic(List<LXPoint> points, ByteBuffer image, int[] colors) {
+  private void mapToBufferStatic(List<LXPoint> points, ByteBuffer image, int[] colors) {
 
     for (LXPoint point : points) {
       float zn = 0.5f * ((point.x >= 0) ? 1f + point.zn : 1f - point.zn);
@@ -102,5 +106,4 @@ public class ShaderPaint3d implements ShaderPaintFn {
       image.putInt(index, colors[point.index]);
     }
   }
-
 }

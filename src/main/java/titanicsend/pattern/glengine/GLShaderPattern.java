@@ -4,7 +4,6 @@ import heronarts.lx.LX;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 /**
@@ -36,7 +35,7 @@ public class GLShaderPattern extends TEPerformancePattern {
   protected final ArrayList<ShaderInfo> shaderInfo = new ArrayList<>();
 
   // function to paint the final shader output to the car
-  private ShaderPaintFn painter;
+  private ShaderPainterClass painter;
 
   public GLShaderPattern(LX lx) {
     this(lx, TEShaderView.ALL_POINTS);
@@ -44,7 +43,7 @@ public class GLShaderPattern extends TEPerformancePattern {
 
   public GLShaderPattern(LX lx, TEShaderView view) {
     super(lx, view);
-    setPainter(new ShaderPaintFn() {});
+    setPainter(new ShaderPaint2d(modelTE.isStatic()) {});
     controlData = new GLPatternControl(this);
   }
 
@@ -52,7 +51,7 @@ public class GLShaderPattern extends TEPerformancePattern {
     return controlData;
   }
 
-  public void setPainter(ShaderPaintFn painter) {
+  public void setPainter(ShaderPainterClass painter) {
     this.painter = painter;
   }
 
@@ -85,7 +84,6 @@ public class GLShaderPattern extends TEPerformancePattern {
   @Override
   public void runTEAudioPattern(double deltaMs) {
     ShaderInfo s = null;
-    ByteBuffer image = null;
     this.deltaMs = deltaMs;
 
     int n = shaderInfo.size();

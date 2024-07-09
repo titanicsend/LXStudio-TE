@@ -14,16 +14,24 @@ import titanicsend.util.TE;
 
 /** Tools for converting car model geometry for use in patterns, particularly in native shaders. */
 public class CarGeometryPatternTools {
+
   // convert from normalized physical model coords
   // to normalized 2D GL surface coords
   protected static float modelToMapX(LXPoint pt) {
-    return 2f * (-0.5f + pt.zn);
+    return 2f * (-0.5f + pt.xn);
   }
 
   // convert from normalized physical model coords
   // to aspect corrected normalized 2D GL surface coords
   protected static float modelToMapY(LXPoint pt) {
     return 2f * (-0.5f + pt.yn);
+  }
+
+  // TODO - Static model variant.  Remove when we move to dynamic model
+  // convert from normalized physical model coords
+  // to normalized 2D GL surface coords
+  protected static float modelToMapXStatic(LXPoint pt) {
+    return 2f * (-0.5f + pt.zn);
   }
 
   /**
@@ -64,17 +72,34 @@ public class CarGeometryPatternTools {
   protected static void getLineFromEdge(TEWholeModel model, float lines[][], int index, String id) {
 
     TEEdgeModel edge = model.getEdge(id);
-    if (edge != null) {
-      LXPoint v1 = edge.points[0];
-      LXPoint v2 = edge.points[edge.points.length - 1];
 
-      // set x1,y1,x2,y2 in line array
-      lines[index][0] = modelToMapX(v1);
-      lines[index][1] = modelToMapY(v1);
-      lines[index][2] = modelToMapX(v2);
-      lines[index][3] = modelToMapY(v2);
+    // TODO - Remove this madness when we move to the dynamic model
+    if (model.isStatic()) {
+      if (edge != null) {
+        LXPoint v1 = edge.points[0];
+        LXPoint v2 = edge.points[edge.points.length - 1];
+
+        // set x1,y1,x2,y2 in line array
+        lines[index][0] = modelToMapXStatic(v1);
+        lines[index][1] = modelToMapY(v1);
+        lines[index][2] = modelToMapXStatic(v2);
+        lines[index][3] = modelToMapY(v2);
+      } else {
+        TE.log("Null edge %s", id);
+      }
     } else {
-      TE.log("Null edge %s", id);
+      if (edge != null) {
+        LXPoint v1 = edge.points[0];
+        LXPoint v2 = edge.points[edge.points.length - 1];
+
+        // set x1,y1,x2,y2 in line array
+        lines[index][0] = modelToMapX(v1);
+        lines[index][1] = modelToMapY(v1);
+        lines[index][2] = modelToMapX(v2);
+        lines[index][3] = modelToMapY(v2);
+      } else {
+        TE.log("Null edge %s", id);
+      }
     }
   }
 }

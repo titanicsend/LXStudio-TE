@@ -4,17 +4,14 @@ import heronarts.lx.model.LXPoint;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-/**
- * Interface for painting a 2D texture onto the car.  The default implementation
- * mirrors the texture symmetrically on both sides.
- */
-public interface ShaderPaintFn {
+/** Paints a 2D texture onto the car, mirroring the texture symmetrically on both sides. */
+public class ShaderPaint2d extends ShaderPainterClass {
   int xMax = GLEngine.getWidth() - 1;
   int yMax = GLEngine.getHeight() - 1;
 
-  // for use during static-to-dynamic model transition
-  // TODO - remove when we move to dynamic model
-  boolean isStatic = false;
+  public ShaderPaint2d(boolean isStaticModel) {
+    super(isStaticModel);
+  }
 
   /**
    * Called after a frame has been generated, this function samples the OpenGL backbuffer to set
@@ -24,8 +21,7 @@ public interface ShaderPaintFn {
    * @param image backbuffer containing image for this frame
    * @param colors array to hold colors, one for each point
    */
-  default void mapToPoints(List<LXPoint> points, ByteBuffer image, int[] colors) {
-
+  public void mapToPoints(List<LXPoint> points, ByteBuffer image, int[] colors) {
     // TODO - remove this block when we move completely to dynamic model
     // TODO - (as well as the 'Static' versions of these functions)
     if (isStatic) {
@@ -49,14 +45,13 @@ public interface ShaderPaintFn {
   }
 
   /**
-   * Map current LX point colors to a texture buffer that can be used
-   * by a shader.
+   * Map current LX point colors to a texture buffer that can be used by a shader.
+   *
    * @param points list of points to paint
    * @param image buffer for bitmap
    * @param colors array of colors, one for each point
    */
-  default void mapToBuffer(List<LXPoint> points, ByteBuffer image, int[] colors) {
-
+  public void mapToBuffer(List<LXPoint> points, ByteBuffer image, int[] colors) {
     // TODO - remove this block when we move completely to dynamic model
     // TODO - (as well as the 'Static' versions of these functions)
     if (isStatic) {
@@ -79,14 +74,14 @@ public interface ShaderPaintFn {
   /**
    * Static (old) model variant - remove when we move to dynamic model
    *
-   * Called after a frame has been generated, this function samples the OpenGL backbuffer to set
+   * <p>Called after a frame has been generated, this function samples the OpenGL backbuffer to set
    * color at the specified points.
    *
    * @param points list of points to paint
    * @param image backbuffer containing image for this frame
    * @param colors array to hold colors, one for each point
    */
-  default void mapToPointsStatic(List<LXPoint> points, ByteBuffer image, int[] colors) {
+  private void mapToPointsStatic(List<LXPoint> points, ByteBuffer image, int[] colors) {
     for (LXPoint point : points) {
       float zn = 1f - point.zn;
       float yn = point.yn;
@@ -105,13 +100,13 @@ public interface ShaderPaintFn {
   /**
    * Static (old) model variant - remove when we move to dynamic model
    *
-   * Map current LX point colors to a texture buffer that can be used
-   * by a shader.
+   * <p>Map current LX point colors to a texture buffer that can be used by a shader.
+   *
    * @param points list of points to paint
    * @param image buffer for bitmap
    * @param colors array of colors, one for each point
    */
-  default void mapToBufferStatic(List<LXPoint> points, ByteBuffer image, int[] colors) {
+  private void mapToBufferStatic(List<LXPoint> points, ByteBuffer image, int[] colors) {
     // TODO - do we need to zero the buffer when we do this?
     // TODO - not if we stick to strictly to the points we're painting,
     // TODO - but maybe if we're doing something that changes coordinates.
@@ -126,6 +121,4 @@ public interface ShaderPaintFn {
       image.putInt(index, colors[point.index]);
     }
   }
-
-
 }
