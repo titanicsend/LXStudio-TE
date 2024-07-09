@@ -84,6 +84,7 @@ public class LookColorPaletteEffect extends LXEffect {
     ANALOGOUS,
     SPLIT_COMPLEMENTARY,
     COMPLEMENTARY,
+    // TODO(look): Jon Idea of Golden Ratio Conjugate (mult hue by 1.6181)
   }
 
   public final EnumParameter<PaletteType> paletteType =
