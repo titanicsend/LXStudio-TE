@@ -124,7 +124,7 @@ public class TECommonControls {
 
     p =
       new BooleanParameter(TEControlTag.TWIST.getLabel(), false)
-        .setMode(BooleanParameter.Mode.MOMENTARY)
+        .setMode(BooleanParameter.Mode.TOGGLE)
         .setDescription("Twist (axis swap)");
     setControl(TEControlTag.TWIST, p);
 
