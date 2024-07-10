@@ -1,6 +1,6 @@
 {
   "version": "1.0.1.TE.1-SNAPSHOT",
-  "timestamp": 1720491826433,
+  "timestamp": 1720573934496,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -11524,8 +11524,7 @@
         },
         "children": {}
       }
-    ],
-    "file": "TE_car.lxm"
+    ]
   },
   "engine": {
     "id": 1,
@@ -11704,7 +11703,7 @@
               "modulationsExpanded": true
             },
             "parameters": {
-              "label": "Pink",
+              "label": "CUE",
               "recall": false,
               "autoCycleEligible": true
             },
@@ -11764,9 +11763,9 @@
                   "label": "LX",
                   "mode": 0,
                   "period": 16.0,
-                  "primary/brightness": 89.0,
-                  "primary/saturation": 75.0,
-                  "primary/hue": 323.0,
+                  "primary/brightness": 100.0,
+                  "primary/saturation": 100.0,
+                  "primary/hue": 344.941162109375,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 75.83333587646484,
                   "secondary/hue": 51.0
@@ -11785,9 +11784,9 @@
                   "label": "LX",
                   "mode": 0,
                   "period": 30.0,
-                  "primary/brightness": 0.0,
+                  "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 183.0,
+                  "primary/hue": 104.94117736816406,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -11806,9 +11805,9 @@
                   "label": "LX",
                   "mode": 0,
                   "period": 30.0,
-                  "primary/brightness": 0.0,
-                  "primary/saturation": 99.16666412353516,
-                  "primary/hue": 188.99998474121094,
+                  "primary/brightness": 100.0,
+                  "primary/saturation": 100.0,
+                  "primary/hue": 224.94117736816406,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -14493,7 +14492,7 @@
             },
             "parameters": {
               "label": "Input",
-              "device": 3
+              "device": 0
             },
             "children": {}
           },
@@ -14523,7 +14522,7 @@
               "modulationsExpanded": true
             },
             "parameters": {
-              "label": "",
+              "label": "SoundStage",
               "mode": 0,
               "xAbsolute": 0.0,
               "yAbsolute": 0.0,
@@ -14764,22 +14763,22 @@
               "attack": 0.0,
               "release": 215.0309717563906,
               "slope": 6.0,
-              "band-1": 0.0,
-              "band-2": 0.0,
-              "band-3": 0.0,
-              "band-4": 0.0,
-              "band-5": 0.0,
-              "band-6": 0.0,
-              "band-7": 0.010803847305294156,
-              "band-8": 0.23211429113451432,
-              "band-9": 0.0,
-              "band-10": 0.0,
-              "band-11": 0.0,
-              "band-12": 0.0,
-              "band-13": 0.0,
-              "band-14": 0.0,
-              "band-15": 0.0,
-              "band-16": 0.0
+              "band-1": 0.44596422433948113,
+              "band-2": 0.5690570714043681,
+              "band-3": 0.6393628929332624,
+              "band-4": 0.7096680972484608,
+              "band-5": 0.6934621037459547,
+              "band-6": 0.6068841248026715,
+              "band-7": 0.6461396124820811,
+              "band-8": 0.7525604466223338,
+              "band-9": 0.6457065341545318,
+              "band-10": 0.6703542960294813,
+              "band-11": 0.6252752026388093,
+              "band-12": 0.5524053350458882,
+              "band-13": 0.5037978289779845,
+              "band-14": 0.4694192027980414,
+              "band-15": 0.3152150653273903,
+              "band-16": 0.22525547476135588
             },
             "children": {}
           }
@@ -14797,7 +14796,7 @@
           "label": "Mixer",
           "crossfader": 0.5748031496062992,
           "crossfaderBlendMode": 1,
-          "focusedChannel": 3,
+          "focusedChannel": 15,
           "focusedChannelAux": 5,
           "cueA": false,
           "cueB": false,
@@ -14821,7 +14820,7 @@
               "label": "Master",
               "fader": 1.0,
               "arm": false,
-              "selected": false,
+              "selected": true,
               "stopClips": false,
               "previewMode": 0
             },
@@ -14834,7 +14833,7 @@
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
                   "modulationsExpanded": true,
-                  "expanded": true,
+                  "expanded": false,
                   "expandedCue": true,
                   "expandedAux": true,
                   "modulationExpanded": false
@@ -14852,7 +14851,7 @@
                   "enabled": false,
                   "hue": 0.0,
                   "saturation": 0.0,
-                  "brightness": -100.0
+                  "brightness": 0.0
                 },
                 "children": {
                   "modulation": {
@@ -14927,7 +14926,7 @@
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
                   "modulationsExpanded": true,
-                  "expanded": true,
+                  "expanded": false,
                   "expandedCue": true,
                   "expandedAux": true,
                   "modulationExpanded": false
@@ -15025,7 +15024,7 @@
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
                   "modulationsExpanded": true,
-                  "expanded": true,
+                  "expanded": false,
                   "expandedCue": true,
                   "expandedAux": true,
                   "modulationExpanded": false
@@ -15079,7 +15078,7 @@
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
                   "modulationsExpanded": true,
-                  "expanded": true,
+                  "expanded": false,
                   "expandedCue": true,
                   "expandedAux": true,
                   "modulationExpanded": false
@@ -15123,7 +15122,7 @@
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
                   "modulationsExpanded": true,
-                  "expanded": true,
+                  "expanded": false,
                   "expandedCue": true,
                   "expandedAux": true,
                   "modulationExpanded": false
@@ -15152,6 +15151,66 @@
                 "children": {
                   "modulation": {
                     "id": 142797,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 178946,
+                "class": "titanicsend.effect.LookColorPaletteEffect",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true,
+                  "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "Look Color Palette",
+                  "midiFilter/enabled": true,
+                  "midiFilter/channel": 16,
+                  "midiFilter/minNote": 0,
+                  "midiFilter/noteRange": 128,
+                  "midiFilter/minVelocity": 1,
+                  "midiFilter/velocityRange": 127,
+                  "view": 0,
+                  "viewPriority": 0,
+                  "enabled": true,
+                  "hue": 344.83806705102324,
+                  "saturation": 100.0,
+                  "brightness": 100.0,
+                  "paletteType": 1,
+                  "color1Position": 3,
+                  "color2Position": 4,
+                  "color3Position": 5,
+                  "color1/brightness": 100.0,
+                  "color1/saturation": 100.0,
+                  "color1/hue": 344.941162109375,
+                  "color2/brightness": 100.0,
+                  "color2/saturation": 100.0,
+                  "color2/hue": 104.94117736816406,
+                  "color3/brightness": 100.0,
+                  "color3/saturation": 100.0,
+                  "color3/hue": 224.94117736816406
+                },
+                "children": {
+                  "modulation": {
+                    "id": 178947,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,
@@ -23719,7 +23778,7 @@
               "label": "LOW",
               "fader": 1.0,
               "arm": false,
-              "selected": true,
+              "selected": false,
               "stopClips": false,
               "enabled": true,
               "cue": false,
@@ -35300,11 +35359,11 @@
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0,
                   "te_color/color2offset": 0.5,
-                  "Double Speed": false,
-                  "Energy": 0.0,
                   "Width": 0.5,
+                  "Double Layer": false,
+                  "Double Speed": false,
                   "Glow": 0.1,
-                  "Double Layer": false
+                  "Energy": 0.0
                 },
                 "children": {
                   "modulation": {
@@ -38001,8 +38060,22 @@
         },
         "children": {}
       },
+      "audioStems": {
+        "id": 109,
+        "class": "titanicsend.audio.AudioStems",
+        "internal": {
+          "modulationColor": 0,
+          "modulationControlsExpanded": true,
+          "modulationsExpanded": true
+        },
+        "parameters": {
+          "label": "audioStems",
+          "gain": 0.0
+        },
+        "children": {}
+      },
       "focus": {
-        "id": 110,
+        "id": 111,
         "class": "titanicsend.osc.CrutchOSC",
         "internal": {
           "modulationColor": 0,
@@ -38036,7 +38109,7 @@
         "depth": 1.0,
         "camera": {
           "active": false,
-          "radius": 512.4250533883177,
+          "radius": 577.9636627721228,
           "theta": 359.8785308531951,
           "phi": -21.515743740368634,
           "x": 0.0,
@@ -38046,7 +38119,7 @@
         "cue": [
           {
             "active": false,
-            "radius": 512.4250533883177,
+            "radius": 577.9636627721228,
             "theta": 359.8785308531951,
             "phi": -21.515743740368634,
             "x": 0.0,
@@ -38136,7 +38209,7 @@
         "depth": 2.0,
         "camera": {
           "active": false,
-          "radius": 1366.8824462890625,
+          "radius": 120.0,
           "theta": 270.0,
           "phi": -6.0,
           "x": 0.0,
