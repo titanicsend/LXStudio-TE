@@ -31,6 +31,7 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.EnumParameter;
 import titanicsend.modulator.dmx.DmxColorModulator;
+import titanicsend.util.TE;
 
 @LXCategory(LXCategory.COLOR)
 @LXComponentName("Look Color Palette")
@@ -42,13 +43,13 @@ public class LookColorPaletteEffect extends LXEffect {
           .setDescription("Sets the amount of hue shift to apply");
 
   public final CompoundParameter saturation =
-      new CompoundParameter("Saturation", 0, -100, 100)
+      new CompoundParameter("Saturation", 100, -100, 100)
           .setUnits(CompoundParameter.Units.PERCENT)
           .setPolarity(CompoundParameter.Polarity.BIPOLAR)
           .setDescription("Sets the amount to increase or decrease saturation");
 
   public final CompoundParameter brightness =
-      new CompoundParameter("Brightness", 0, -100, 100)
+      new CompoundParameter("Brightness", 100, -100, 100)
           .setUnits(CompoundParameter.Units.PERCENT)
           .setPolarity(CompoundParameter.Polarity.BIPOLAR)
           .setDescription("Sets the amount to increase or decrease brightness");
@@ -136,7 +137,7 @@ public class LookColorPaletteEffect extends LXEffect {
     float hue = this.hue.getValuef();
     float saturation = this.saturation.getValuef();
     float brightness = this.brightness.getValuef();
-
+//    TE.log("Hue: %f, Saturation: %f, Brightness: %f", hue, saturation, brightness);
     int color1 = LXColor.hsb(hue, saturation, brightness);
     if (color1 != this.color1.getColor() || this.currPaletteType != this.paletteType.getEnum()) {
       this.color1.setColor(color1);
