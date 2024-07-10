@@ -57,6 +57,12 @@ uniform float trebleRatio;
 uniform float levelReact;   // reactivity to changes in audio level
 uniform float frequencyReact; // reactivity to audio frequency content
 
+// Current values from audio stems 
+uniform float stemBass;
+uniform float stemDrums;
+uniform float stemVocal;
+uniform float stemOther;
+
 // TE color
 uniform vec3 iColorRGB;   // color 1 - the color returned by calcColor() 
 uniform vec3 iColorHSB;   // color 1 in the HSB colorspace
@@ -180,6 +186,24 @@ Ratio of the current bass frequency content to the recent average.
 
 #### trebleRatio (uniform float trebleRatio)
 Ratio of the current treble frequency content to the recent average.
+
+-----
+
+### Current values from audio stems
+Depending on the model used by the audio stem splitter, values should
+range from -1.0 to 1.0
+
+#### uniform float stemBass;
+Level of the bass stem - low frequency, non-percussion instruments.
+
+#### uniform float stemDrums;
+Level of the drum stem - percussion instruments.
+
+#### uniform float stemVocal;
+Level of the vocal stem - human voices, possibly other midrange melodic instruments.
+
+#### uniform float stemOther;
+Level of all other audio content.
 
 -----
 
@@ -745,7 +769,7 @@ platform, and breaks, or does something really strange on others.
 The best way to avoid trouble is to prototype and test on [ShaderToy](https://www.shadertoy.com) , which uses a subset
 that everybody seems to support. The TE framework was designed with easy porting of ShaderToy shaders
 as a goal, so it is easy to cut and paste between the two, at least until you start using the TE specific
-audio and color uniforms.)
+audio and color uniforms.
 
 ## Resources
 

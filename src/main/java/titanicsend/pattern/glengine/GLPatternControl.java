@@ -1,6 +1,7 @@
 package titanicsend.pattern.glengine;
 
 import heronarts.lx.color.LXColor;
+import titanicsend.audio.AudioStems;
 import titanicsend.pattern.TEPerformancePattern;
 
 public class GLPatternControl implements GLControlData {
@@ -30,6 +31,12 @@ public class GLPatternControl implements GLControlData {
 
     s.setUniform("levelReact", (float) pattern.getLevelReactivity());
     s.setUniform("frequencyReact", (float) pattern.getFrequencyReactivity());
+
+    // Current values from audio stems
+    s.setUniform("stemBass", (float) AudioStems.current.bass.getValue());
+    s.setUniform("stemDrums", (float) AudioStems.current.drums.getValue());
+    s.setUniform("stemVocal", (float) AudioStems.current.vocal.getValue());
+    s.setUniform("stemOther", (float) AudioStems.current.other.getValue());
 
     // color-related uniforms
     int col = pattern.calcColor();
