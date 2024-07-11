@@ -1,0 +1,89 @@
+{
+  /* Mothership by Titanic's End
+     Window 1, Strand S6a */
+
+  label: "Window1",
+  tags: [ "w1", "window", "triangle", "s6a" ],
+
+  parameters:  {
+    /* Default 270 LEDs */
+    "extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 270" },
+    "ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+
+    # Remove these after calibration
+    "side1": { type: "int", default: "30", description: "Number of LEDs on side 1" },
+    "corner12": { type: "int", default: "13", description: "Number of LEDs in the corner between side1 and side2" },
+    "side2": { type: "int", default: "30", description: "Number of LEDs on side 2" },
+    "corner23": { type: "int", default: "13", description: "Number of LEDs in the corner between side2 and side3" },
+
+    "inset": { type: "float", default: "2.4", description: "Inset of LED strip from the line where window planes meet" },
+    "spacing": { type: "float", default: ".2" },
+
+    # Debug tools
+    "onCar": { type: "boolean", default: true, label: "On Car", description: "True = Locate to position on car, False = Locate to origin" },
+    "host": { type: "string", default: "localhost", label: "Host", description: "Controller IP address or hostname" },
+    "output": { type: "int", default: 1, min: 1, max: 8, label: "Output Num", description: "Controller Output Number 1-8" },
+    "pixelOffset": { type: "int", default: 0, min: 0, max: 512, label: "Pixel Offset", description: "ArtNet offset in pixels" },
+    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
+    "outputEnabled": { type: "boolean", default: false }
+  },
+
+  transforms: [
+    { z: "-45", enabled: "$onCar" },
+    { y: "96.822", enabled: "$onCar" },
+    { pitch: "63.8", enabled: "$onCar" }
+  ],
+
+  components: [
+    /* From inside, LED strip is clockwise */
+
+    /* First edge */
+    { type: "strip",
+      numPoints: "88 - $ledOffset", 
+      spacing: "$spacing",
+      transforms: [
+        { y: "$inset" },
+        { x: "0 - (94 / 2) * $spacing" },
+        { roll: "57.3" },
+        { x: "88 * $spacing" },
+        { roll: "180" },
+        { x: "$spacing * (0.5 + $ledOffset)" }
+      ]
+    },
+
+    /* Edge against ring */
+    { type: "strip",
+      numPoints: "94",
+      spacing: "$spacing",
+      transforms: [
+        { y: "$inset" },
+        { x: "0 - (94 / 2) * $spacing" },
+        { x: "$spacing / 2" }
+      ]
+    },
+
+    /* Last edge */
+    { type: "strip",
+      numPoints: "88 + $ledOffset + $extraLEDs",
+      spacing: "$spacing",
+      transforms: [
+        { y: "$inset" },
+        { x: "(94 / 2) * $spacing" },
+        { roll: "180 - 57.3" },
+        { x: "$spacing / 2" }
+      ]
+    }
+
+  ],
+  
+  outputs: [
+    { enabled: "$outputEnabled",
+      host: "$host",
+      universe: "$output*10",
+      channel: "$pixelOffset*3",
+      protocol: "artnet",
+      sequenceEnabled: "$artnetSequence"
+    }
+  ]
+}
+
