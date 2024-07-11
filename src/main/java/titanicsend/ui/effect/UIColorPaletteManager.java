@@ -3,9 +3,9 @@ package titanicsend.ui.effect;
 import heronarts.glx.ui.UI;
 import heronarts.glx.ui.UI2dComponent;
 import heronarts.glx.ui.UI2dContainer;
-import heronarts.glx.ui.UIContainer;
 import heronarts.glx.ui.component.UICollapsibleSection;
 import heronarts.glx.ui.component.UIColorPicker;
+import heronarts.glx.ui.component.UIDoubleBox;
 import heronarts.glx.ui.component.UIDropMenu;
 import heronarts.glx.ui.component.UILabel;
 import heronarts.glx.ui.component.UISlider;
@@ -16,38 +16,48 @@ import heronarts.lx.studio.ui.global.UIPalette;
 import titanicsend.color.ColorPaletteManager;
 import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.studio.LXStudio;
-import heronarts.lx.studio.ui.device.UIDevice;
-import heronarts.lx.studio.ui.device.UIDeviceControls;
 import heronarts.lx.utils.LXUtils;
 
 
-public class UILookColorPaletteEffect extends UICollapsibleSection implements UIControls {
+public class UIColorPaletteManager extends UICollapsibleSection implements UIControls {
   private static final int LABEL_WIDTH = 56;
   private static final float SLIDER_WIDTH = 120.0F;
+  private static final float GRADIENT_HEIGHT = 8.0F;
+  private final float width;
 
-  public UILookColorPaletteEffect(LXStudio.UI ui, ColorPaletteManager paletteMgr, float w) {
+  public UIColorPaletteManager(LXStudio.UI ui, ColorPaletteManager paletteMgr, float w) {
     super(ui, 0, 0, w, 0);
+    this.width = w;
+
     this.setLayout(Layout.VERTICAL, 6);
     this.setPadding(2, 0);
-    this.setTitle("LOOK COLOR PALETTE");
+    this.setTitle("PALETTE MANAGER");
+//    this.setContentWidth(this.width);
 
-    buildDeviceControls(ui, this, paletteMgr);
+    UI2dContainer container1 = UI2dContainer.newHorizontalContainer(this.width, 6);
+
+    float gradientWidth = this.width / 2;
+    addColumn(
+        container1,
+        new UIColorPaletteManager.UIHueDisplay(paletteMgr.hue, gradientWidth),
+        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, gradientWidth, 16.0F, paletteMgr.hue),
+//        new UIColorPaletteManager.UISaturationDisplay().addToContainer(uiContainer),
+        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, gradientWidth, 16.0F, paletteMgr.saturation),
+//        new UIColorPaletteManager.UIBrightnessDisplay().addToContainer(uiContainer),
+        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, gradientWidth , 16.0F, paletteMgr.brightness)
+    ).setChildSpacing(6).setWidth(gradientWidth);
+
+    container1.addToContainer(this);
+
+//    buildDeviceControls(ui, this, paletteMgr);
   }
 
   public void buildDeviceControls(LXStudio.UI ui, UI2dContainer uiContainer, ColorPaletteManager effect) {
-    uiContainer.setLayout(UI2dContainer.Layout.HORIZONTAL);
-    uiContainer.setChildSpacing(4);
-    uiContainer.setContentWidth(120F + 56F + 120F);
+//    uiContainer.setLayout(UI2dContainer.Layout.HORIZONTAL);
+//    uiContainer.setChildSpacing(4);
+//    uiContainer.setContentWidth(120F + 56F + 120F);
 
-    addColumn(
-        uiContainer,
-        new UILookColorPaletteEffect.UIHueDisplay(effect.hue),
-        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, SLIDER_WIDTH, 16.0F, effect.hue),
-        new UILookColorPaletteEffect.UISaturationDisplay().addToContainer(uiContainer),
-        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, SLIDER_WIDTH, 16.0F, effect.saturation).addToContainer(uiContainer),
-        new UILookColorPaletteEffect.UIBrightnessDisplay().addToContainer(uiContainer),
-        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, SLIDER_WIDTH, 16.0F, effect.brightness).addToContainer(uiContainer)
-    ).setChildSpacing(6).setWidth(SLIDER_WIDTH);
+
 
     addVerticalBreak(ui, uiContainer);
 
@@ -84,15 +94,15 @@ public class UILookColorPaletteEffect extends UICollapsibleSection implements UI
         16, 4, new UILabel(labelWidth, 12, label), component);
   }
 
-  private class UIHueDisplay extends UILookColorPaletteEffect.UIGradientDisplay {
+  private class UIHueDisplay extends UIColorPaletteManager.UIGradientDisplay {
     private double hueOffset = 0.0;
 
-    private UIHueDisplay() {
-      super();
+    private UIHueDisplay(float gradientWidth) {
+      super(gradientWidth, GRADIENT_HEIGHT);
     }
 
-    private UIHueDisplay(BoundedParameter hueOffset) {
-      super();
+    private UIHueDisplay(BoundedParameter hueOffset, float gradientWidth) {
+      super(gradientWidth, GRADIENT_HEIGHT);
       this.addListener(hueOffset, (p) -> {
         this.hueOffset = (double)hueOffset.getValuef();
         this.redraw();
@@ -115,9 +125,9 @@ public class UILookColorPaletteEffect extends UICollapsibleSection implements UI
     }
   }
 
-  private class UISaturationDisplay extends UILookColorPaletteEffect.UIGradientDisplay {
-    private UISaturationDisplay() {
-      super();
+  private class UISaturationDisplay extends UIColorPaletteManager.UIGradientDisplay {
+    private UISaturationDisplay(float gradientWidth) {
+      super(gradientWidth, GRADIENT_HEIGHT);
     }
 
     public void onDraw(UI ui, VGraphics vg) {
@@ -128,9 +138,9 @@ public class UILookColorPaletteEffect extends UICollapsibleSection implements UI
     }
   }
 
-  private class UIBrightnessDisplay extends UILookColorPaletteEffect.UIGradientDisplay {
-    private UIBrightnessDisplay() {
-      super();
+  private class UIBrightnessDisplay extends UIColorPaletteManager.UIGradientDisplay {
+    private UIBrightnessDisplay(float gradientWidth) {
+      super(gradientWidth, GRADIENT_HEIGHT);
     }
 
     public void onDraw(UI ui, VGraphics vg) {
@@ -142,8 +152,8 @@ public class UILookColorPaletteEffect extends UICollapsibleSection implements UI
   }
 
   private class UIGradientDisplay extends UI2dComponent {
-    protected UIGradientDisplay() {
-      super(0.0F, 0.0F, 120.0F, 8.0F);
+    protected UIGradientDisplay(float gradientWidth, float gradientHeight) {
+      super(0.0F, 0.0F, gradientWidth, gradientHeight);
     }
   }
 }

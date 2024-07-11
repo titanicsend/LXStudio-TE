@@ -38,6 +38,7 @@ import titanicsend.app.dev.DevSwitch;
 import titanicsend.app.dev.UIDevSwitch;
 import titanicsend.audio.AudioStems;
 import titanicsend.audio.UIAudioStems;
+import titanicsend.color.ColorPaletteManager;
 import titanicsend.dmx.DmxEngine;
 import titanicsend.dmx.effect.BeaconStrobeEffect;
 import titanicsend.dmx.pattern.BeaconDirectPattern;
@@ -47,7 +48,6 @@ import titanicsend.dmx.pattern.BeaconStraightUpPattern;
 import titanicsend.dmx.pattern.DjLightsDirectPattern;
 import titanicsend.dmx.pattern.DjLightsEasyPattern;
 import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
-import titanicsend.color.ColorPaletteManager;
 import titanicsend.effect.GlobalPatternControl;
 import titanicsend.effect.RandomStrobeEffect;
 import titanicsend.lasercontrol.PangolinHost;
@@ -96,7 +96,7 @@ import titanicsend.ui.UIBackings;
 import titanicsend.ui.UILasers;
 import titanicsend.ui.UIModelLabels;
 import titanicsend.ui.UITEPerformancePattern;
-import titanicsend.ui.effect.UILookColorPaletteEffect;
+import titanicsend.ui.effect.UIColorPaletteManager;
 import titanicsend.ui.effect.UIRandomStrobeEffect;
 import titanicsend.ui.modulator.UIDmx16bitModulator;
 import titanicsend.ui.modulator.UIDmxColorModulator;
@@ -137,6 +137,7 @@ public class TEApp extends LXStudio {
     private final GLEngine glEngine;
 
     private final AudioStems audioStems;
+    private final ColorPaletteManager colorPaletteManager;
     private final TELaserTask laserTask;
     private final CrutchOSC crutchOSC;
     private DevSwitch devSwitch;
@@ -169,6 +170,7 @@ public class TEApp extends LXStudio {
       this.glEngine = new GLEngine(lx,staticModel);
 
       lx.engine.registerComponent("audioStems", this.audioStems = new AudioStems(lx));
+      lx.engine.registerComponent("colorPaletteManager", this.colorPaletteManager = new ColorPaletteManager(lx));
 
       // create our loop task for outputting data to lasers
       this.laserTask = new TELaserTask(lx);
@@ -352,7 +354,6 @@ public class TEApp extends LXStudio {
       if (lx instanceof LXStudio) {
         // UI: Effects
         ((LXStudio.Registry) lx.registry).addUIDeviceControls(UIRandomStrobeEffect.class);
-        ((LXStudio.Registry) lx.registry).addUIDeviceControls(UILookColorPaletteEffect.class);
 
         // UI: Modulators
         ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmx16bitModulator.class);
@@ -543,6 +544,9 @@ public class TEApp extends LXStudio {
       // Add UI section for audio stems
       new UIAudioStems(ui, this.audioStems, ui.leftPane.global.getContentWidth())
           .addToContainer(ui.leftPane.global, 2);
+
+      new UIColorPaletteManager(ui, this.colorPaletteManager, ui.leftPane.global.getContentWidth())
+          .addToContainer(ui.leftPane.global, 3);
 
       // Set camera zoom and point size to match current model
       applyTECameraPosition();
