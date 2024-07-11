@@ -3,14 +3,17 @@ package titanicsend.ui.effect;
 import heronarts.glx.ui.UI;
 import heronarts.glx.ui.UI2dComponent;
 import heronarts.glx.ui.UI2dContainer;
+import heronarts.glx.ui.UIContainer;
+import heronarts.glx.ui.component.UICollapsibleSection;
 import heronarts.glx.ui.component.UIColorPicker;
 import heronarts.glx.ui.component.UIDropMenu;
 import heronarts.glx.ui.component.UILabel;
 import heronarts.glx.ui.component.UISlider;
 import heronarts.glx.ui.vg.VGraphics;
 import heronarts.lx.color.LXColor;
+import heronarts.lx.studio.ui.device.UIControls;
 import heronarts.lx.studio.ui.global.UIPalette;
-import titanicsend.effect.LookColorPaletteEffect;
+import titanicsend.color.ColorPaletteManager;
 import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.device.UIDevice;
@@ -18,32 +21,38 @@ import heronarts.lx.studio.ui.device.UIDeviceControls;
 import heronarts.lx.utils.LXUtils;
 
 
-public class UILookColorPaletteEffect implements UIDeviceControls<LookColorPaletteEffect> {
+public class UILookColorPaletteEffect extends UICollapsibleSection implements UIControls {
   private static final int LABEL_WIDTH = 56;
   private static final float SLIDER_WIDTH = 120.0F;
 
-  public UILookColorPaletteEffect() {
+  public UILookColorPaletteEffect(LXStudio.UI ui, ColorPaletteManager paletteMgr, float w) {
+    super(ui, 0, 0, w, 0);
+    this.setLayout(Layout.VERTICAL, 6);
+    this.setPadding(2, 0);
+    this.setTitle("LOOK COLOR PALETTE");
+
+    buildDeviceControls(ui, this, paletteMgr);
   }
 
-  public void buildDeviceControls(LXStudio.UI ui, UIDevice uiDevice, LookColorPaletteEffect effect) {
-    uiDevice.setLayout(UI2dContainer.Layout.HORIZONTAL);
-    uiDevice.setChildSpacing(4);
-    uiDevice.setContentWidth(120F + 56F + 120F);
+  public void buildDeviceControls(LXStudio.UI ui, UI2dContainer uiContainer, ColorPaletteManager effect) {
+    uiContainer.setLayout(UI2dContainer.Layout.HORIZONTAL);
+    uiContainer.setChildSpacing(4);
+    uiContainer.setContentWidth(120F + 56F + 120F);
 
     addColumn(
-        uiDevice,
+        uiContainer,
         new UILookColorPaletteEffect.UIHueDisplay(effect.hue),
         new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, SLIDER_WIDTH, 16.0F, effect.hue),
-        new UILookColorPaletteEffect.UISaturationDisplay().addToContainer(uiDevice),
-        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, SLIDER_WIDTH, 16.0F, effect.saturation).addToContainer(uiDevice),
-        new UILookColorPaletteEffect.UIBrightnessDisplay().addToContainer(uiDevice),
-        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, SLIDER_WIDTH, 16.0F, effect.brightness).addToContainer(uiDevice)
+        new UILookColorPaletteEffect.UISaturationDisplay().addToContainer(uiContainer),
+        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, SLIDER_WIDTH, 16.0F, effect.saturation).addToContainer(uiContainer),
+        new UILookColorPaletteEffect.UIBrightnessDisplay().addToContainer(uiContainer),
+        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, SLIDER_WIDTH, 16.0F, effect.brightness).addToContainer(uiContainer)
     ).setChildSpacing(6).setWidth(SLIDER_WIDTH);
 
-    addVerticalBreak(ui, uiDevice);
+    addVerticalBreak(ui, uiContainer);
 
     addColumn(
-        uiDevice,
+        uiContainer,
         new UILabel(56.0F, "Position"),
         new UIDropMenu(56.0F, 16, effect.color1Pos),
         new UILabel(56.0F, "Palette Type"),
@@ -51,15 +60,15 @@ public class UILookColorPaletteEffect implements UIDeviceControls<LookColorPalet
         newButton(effect.toggleCue)
     ).setChildSpacing(6).setWidth(56F);
 
-    addVerticalBreak(ui, uiDevice);
+    addVerticalBreak(ui, uiContainer);
 
     addColumn(
-        uiDevice,
+        uiContainer,
         row("Act", 20, new UIPalette.Swatch(ui, effect.getActiveSwatch(), 0, 0, 80, UIColorPicker.Corner.TOP_LEFT)),
         row("Cue", 20, new UIPalette.Swatch(ui, effect.getCueSwatch(), 0, 0, 80, UIColorPicker.Corner.TOP_LEFT))
     ).setChildSpacing(6).setWidth(SLIDER_WIDTH+10);
 
-    uiDevice.addListener(
+    uiContainer.addListener(
         effect.toggleCue,
         (p) -> {
           effect.swapCueSwatch();

@@ -16,26 +16,26 @@
  * @author Mark C. Slee <mark@heronarts.com>
  */
 
-package titanicsend.effect;
+package titanicsend.color;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import heronarts.lx.LXComponent;
 import heronarts.lx.LXComponentName;
 import heronarts.lx.color.ColorParameter;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LXDynamicColor;
 import heronarts.lx.color.LXPalette;
 import heronarts.lx.color.LXSwatch;
-import heronarts.lx.effect.LXEffect;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.EnumParameter;
+import heronarts.lx.parameter.LXParameter;
 import titanicsend.modulator.dmx.DmxColorModulator;
-import titanicsend.util.TE;
 
 @LXCategory(LXCategory.COLOR)
 @LXComponentName("Look Color Palette")
-public class LookColorPaletteEffect extends LXEffect {
+public class ColorPaletteManager extends LXComponent {
 
   public final CompoundParameter hue =
       new CompoundParameter("Hue", 0, -360, 360)
@@ -93,7 +93,7 @@ public class LookColorPaletteEffect extends LXEffect {
           .setDescription(
               "Destination color position (1-based) in the global palette current swatch");
 
-  public LookColorPaletteEffect(LX lx) {
+  public ColorPaletteManager(LX lx) {
     super(lx);
     addParameter("hue", this.hue);
     addParameter("saturation", this.saturation);
@@ -132,8 +132,10 @@ public class LookColorPaletteEffect extends LXEffect {
     }
   }
 
-  @Override
-  protected void run(double deltaMs, double amount) {
+  // TODO: properly introspect "parameter" and decide what to do more carefully
+  public void onParameterChanged(LXParameter parameter) {
+    System.out.println(parameter.getLabel());
+    System.out.println(parameter.getValue());
     float hue = this.hue.getValuef();
     float saturation = this.saturation.getValuef();
     float brightness = this.brightness.getValuef();

@@ -47,8 +47,8 @@ import titanicsend.dmx.pattern.BeaconStraightUpPattern;
 import titanicsend.dmx.pattern.DjLightsDirectPattern;
 import titanicsend.dmx.pattern.DjLightsEasyPattern;
 import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
+import titanicsend.color.ColorPaletteManager;
 import titanicsend.effect.GlobalPatternControl;
-import titanicsend.effect.LookColorPaletteEffect;
 import titanicsend.effect.RandomStrobeEffect;
 import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lasercontrol.TELaserTask;
@@ -266,7 +266,6 @@ public class TEApp extends LXStudio {
       lx.registry.addEffect(BeaconEffect.class);
       lx.registry.addEffect(GlobalPatternControl.class);
       lx.registry.addEffect(RandomStrobeEffect.class);
-      lx.registry.addEffect(LookColorPaletteEffect.class);
 
       // DMX patterns
       lx.registry.addPattern(BeaconDirectPattern.class);
