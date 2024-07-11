@@ -37,6 +37,9 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     UI2dContainer container1 = UI2dContainer.newHorizontalContainer(this.width, 6);
 
     float gradientWidth = this.width / 2;
+
+    UI2dContainer hueSlider = UI2dContainer.newHorizontalContainer(gradientWidth, 2);
+
     addColumn(
         container1,
         new UIColorPaletteManager.UIHueDisplay(paletteMgr.hue, gradientWidth),
