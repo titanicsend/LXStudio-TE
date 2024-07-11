@@ -29,10 +29,10 @@ public class GLEffectControl implements GLControlData {
     s.setUniform("iResolution", (float) GLEngine.getWidth(), (float) GLEngine.getHeight());
 
     // Current values from audio stems
-    s.setUniform("stemBass", (float) AudioStems.current.bass.getValue());
-    s.setUniform("stemDrums", (float) AudioStems.current.drums.getValue());
-    s.setUniform("stemVocal", (float) AudioStems.current.vocal.getValue());
-    s.setUniform("stemOther", (float) AudioStems.current.other.getValue());
+    s.setUniform("stemBass", (float) AudioStems.current.bass.getValuef());
+    s.setUniform("stemDrums", (float) AudioStems.current.drums.getValuef());
+    s.setUniform("stemVocal", (float) AudioStems.current.vocal.getValuef());
+    s.setUniform("stemOther", (float) AudioStems.current.other.getValuef());
 
     // get current primary and secondary colors
     // TODO - we're just grabbing swatch colors here.  Do we need to worry about modulation?

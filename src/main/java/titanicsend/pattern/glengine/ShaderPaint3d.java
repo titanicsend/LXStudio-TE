@@ -28,7 +28,7 @@ public class ShaderPaint3d extends ShaderPainterClass {
     // work on both static and dynamic models for now, which makes the logic a little
     // odd to look at. So...
     // TODO - simplify twist logic when we finish move to dynamic model
-    if ((isTwisted && !isStatic) || isStatic && !isTwisted) {
+    if (isTwisted != isStatic) {
       mapToPointsZYX(points, image, colors);
       return;
     }
@@ -50,7 +50,7 @@ public class ShaderPaint3d extends ShaderPainterClass {
 
   public void mapToBuffer(List<LXPoint> points, ByteBuffer image, int[] colors) {
     // TODO - simplify twist logic when we finish move to dynamic model
-    if ((isTwisted && !isStatic) || isStatic && !isTwisted) {
+    if (isTwisted != isStatic) {
       mapToBufferZYX(points, image, colors);
       return;
     }
