@@ -15170,7 +15170,7 @@
               },
               {
                 "id": 178946,
-                "class": "titanicsend.effect.LookColorPaletteEffect",
+                "class": "titanicsend.color.ColorPaletteManager",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
