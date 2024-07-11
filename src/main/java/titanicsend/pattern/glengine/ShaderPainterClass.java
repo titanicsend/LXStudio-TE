@@ -12,8 +12,9 @@ public abstract class ShaderPainterClass {
   protected int yMax = GLEngine.getHeight() - 1;
 
   // for use during static-to-dynamic model transition
-  // TODO - remove when we move to dynamic model
+  // TODO - remove isStatic when we move to dynamic model
   public boolean isStatic;
+  protected boolean isTwisted = false;
 
   public ShaderPainterClass(boolean isStaticModel) {
     this.isStatic = isStaticModel;
@@ -37,4 +38,8 @@ public abstract class ShaderPainterClass {
    * @param colors array of colors, one for each point
    */
   public abstract void mapToBuffer(List<LXPoint> points, ByteBuffer image, int[] colors);
+
+  public void setTwist(boolean twist) {
+    this.isTwisted = twist;
+  }
 }

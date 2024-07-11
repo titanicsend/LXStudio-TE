@@ -24,11 +24,12 @@ public class ShaderPaint3d extends ShaderPainterClass {
    * @param image backbuffer containing image for this frame
    */
   public void mapToPoints(List<LXPoint> points, ByteBuffer image, int[] colors) {
-
-    // TODO - remove this block when we move completely to dynamic model
-    // TODO - (as well as the 'Static' versions of these functions)
-    if (isStatic) {
-      mapToPointsStatic(points, image, colors);
+    // Added "twist" feature - allows controlled swap of x and z axes.  This must
+    // work on both static and dynamic models for now, which makes the logic a little
+    // odd to look at. So...
+    // TODO - simplify twist logic when we finish move to dynamic model
+    if (isTwisted != isStatic) {
+      mapToPointsZYX(points, image, colors);
       return;
     }
 
@@ -48,11 +49,9 @@ public class ShaderPaint3d extends ShaderPainterClass {
   }
 
   public void mapToBuffer(List<LXPoint> points, ByteBuffer image, int[] colors) {
-
-    // TODO - remove this block when we move completely to dynamic model
-    // TODO - (as well as the 'Static' versions of these functions)
-    if (isStatic) {
-      mapToBufferStatic(points, image, colors);
+    // TODO - simplify twist logic when we finish move to dynamic model
+    if (isTwisted != isStatic) {
+      mapToBufferZYX(points, image, colors);
       return;
     }
 
@@ -76,7 +75,7 @@ public class ShaderPaint3d extends ShaderPainterClass {
    * @param points list of points to paint
    * @param image backbuffer containing image for this frame
    */
-  private void mapToPointsStatic(List<LXPoint> points, ByteBuffer image, int[] colors) {
+  private void mapToPointsZYX(List<LXPoint> points, ByteBuffer image, int[] colors) {
 
     for (LXPoint point : points) {
       float zn = 0.5f * ((point.x >= 0) ? 1f + point.zn : 1f - point.zn);
@@ -93,7 +92,7 @@ public class ShaderPaint3d extends ShaderPainterClass {
     }
   }
 
-  private void mapToBufferStatic(List<LXPoint> points, ByteBuffer image, int[] colors) {
+  private void mapToBufferZYX(List<LXPoint> points, ByteBuffer image, int[] colors) {
 
     for (LXPoint point : points) {
       float zn = 0.5f * ((point.x >= 0) ? 1f + point.zn : 1f - point.zn);

@@ -22,10 +22,12 @@ public class ShaderPaint2d extends ShaderPainterClass {
    * @param colors array to hold colors, one for each point
    */
   public void mapToPoints(List<LXPoint> points, ByteBuffer image, int[] colors) {
-    // TODO - remove this block when we move completely to dynamic model
-    // TODO - (as well as the 'Static' versions of these functions)
-    if (isStatic) {
-      mapToPointsStatic(points, image, colors);
+    // Added "twist" feature - allows controlled swap of x and z axes.  This must
+    // work on both static and dynamic models for now, which makes the logic a little
+    // odd to look at. So...
+    // TODO - simplify twist logic when we finish move to dynamic model
+    if (isTwisted != isStatic) {
+      mapToPointsZYX(points, image, colors);
       return;
     }
 
@@ -52,10 +54,9 @@ public class ShaderPaint2d extends ShaderPainterClass {
    * @param colors array of colors, one for each point
    */
   public void mapToBuffer(List<LXPoint> points, ByteBuffer image, int[] colors) {
-    // TODO - remove this block when we move completely to dynamic model
-    // TODO - (as well as the 'Static' versions of these functions)
-    if (isStatic) {
-      mapToBufferStatic(points, image, colors);
+    // TODO - simplify twist logic when we finish move to dynamic model
+    if (isTwisted != isStatic) {
+      mapToBufferZYX(points, image, colors);
       return;
     }
 
@@ -81,7 +82,7 @@ public class ShaderPaint2d extends ShaderPainterClass {
    * @param image backbuffer containing image for this frame
    * @param colors array to hold colors, one for each point
    */
-  private void mapToPointsStatic(List<LXPoint> points, ByteBuffer image, int[] colors) {
+  private void mapToPointsZYX(List<LXPoint> points, ByteBuffer image, int[] colors) {
     for (LXPoint point : points) {
       float zn = 1f - point.zn;
       float yn = point.yn;
@@ -106,7 +107,7 @@ public class ShaderPaint2d extends ShaderPainterClass {
    * @param image buffer for bitmap
    * @param colors array of colors, one for each point
    */
-  private void mapToBufferStatic(List<LXPoint> points, ByteBuffer image, int[] colors) {
+  private void mapToBufferZYX(List<LXPoint> points, ByteBuffer image, int[] colors) {
     // TODO - do we need to zero the buffer when we do this?
     // TODO - not if we stick to strictly to the points we're painting,
     // TODO - but maybe if we're doing something that changes coordinates.

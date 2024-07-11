@@ -98,6 +98,7 @@ public class GLShaderPattern extends TEPerformancePattern {
     }
 
     // paint the final shader output to the car
+    painter.setTwist(getTwist());
     painter.mapToPoints(getModel().getPoints(), s.shader.getImageBuffer(),getColors());
   }
 

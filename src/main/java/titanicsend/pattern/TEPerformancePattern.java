@@ -83,6 +83,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     this.controls.setRemoteControls();
 
     this.controls.getLXControl(TEControlTag.WOWTRIGGER).addListener(wowTriggerListener);
+    this.controls.getLXControl(TEControlTag.TWIST).addListener(TwistListener);
   }
 
   // package-protected passthrough so TECommonControls can add parameters
@@ -314,6 +315,10 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     return controls.getValue(TEControlTag.WOWTRIGGER) > 0.0;
   }
 
+  public boolean getTwist() {
+    return controls.getValue(TEControlTag.TWIST) > 0.0;
+  }
+
   public double getLevelReactivity() {
     return controls.getValue(TEControlTag.LEVELREACTIVITY);
   }
@@ -349,8 +354,14 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
         onWowTrigger(getWowTrigger());
       };
 
+  private final LXParameterListener TwistListener =
+    (p) -> {
+      onTwist(getTwist());
+    };
+
   /** Subclasses can override */
   protected void onWowTrigger(boolean on) {}
+  protected void onTwist(boolean on) {}
 
   /**
    * To be called from the constructor of automatically configured shader patterns prior to calling
@@ -431,6 +442,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
   @Override
   public void dispose() {
     this.controls.getLXControl(TEControlTag.WOWTRIGGER).removeListener(wowTriggerListener);
+    this.controls.getLXControl(TEControlTag.TWIST).removeListener(TwistListener);
     this.controls.dispose();
     super.dispose();
   }
