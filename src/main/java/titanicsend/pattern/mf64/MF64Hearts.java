@@ -69,7 +69,7 @@ public class MF64Hearts extends TEMidiFighter64Subpattern {
     double t = 0.5 + 0.5 * Math.sin(TEMath.TAU * driver.getTempo().basis());
     double heartSize = 0.075 + 0.075 * t;
 
-    for (LXPoint point : modelTE.panelPoints) {
+    for (LXPoint point : this.modelTE.getPanelPoints()) {
 
       // adjust x and y to repeat pattern twice,
       // roughly centered on large car sections and

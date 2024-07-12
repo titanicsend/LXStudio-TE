@@ -51,8 +51,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     uv = Kaleidoscope(uv, iQuantity);
 
     // levelReact controls audio-linked scaling "bounce" and minimum blob size
-    float level = levelReact * clamp(bassRatio, 0.5, 8);
-    float intensity = levelReact * clamp(volumeRatio, 0.5, 8);
+    float level = levelReact * clamp(bassRatio, 0.5, 8.);
+    float intensity = levelReact * clamp(volumeRatio, 0.5, 8.);
 
     // modulate overall scale by level just a little for more movement.
     // (too much looks jittery)

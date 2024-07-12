@@ -92,16 +92,16 @@ public class TargetPixelStamper extends TEPattern {
     float w = side.getEnum() == Side.FORE ? this.xParam.getValuef() : -this.xParam.getValuef();
     float y = this.yParam.getValuef();
 
-    float xMax = this.modelTE.boundaryPoints.maxXBoundaryPoint.x;
-    float yMax = this.modelTE.boundaryPoints.maxYBoundaryPoint.y;
-    float zMax = this.modelTE.boundaryPoints.maxZBoundaryPoint.z;
+    float xMax = this.modelTE.maxX();
+    float yMax = this.modelTE.maxY();
+    float zMax = this.modelTE.maxZ();
 
     Set<LXPoint> pointsForSide = getPointsForSide(side.getEnum());
 
     Map<LXPoint, Integer> bullseye = new HashMap<>();
     LXPoint targetPoint = null;
     double closestDistance = Float.MAX_VALUE;
-    for (LXPoint point : this.modelTE.points) {
+    for (LXPoint point : this.model.points) {
       if (this.modelTE.isGapPoint(point)) continue;
       if (!pointsForSide.contains(point)) {
         if (!savedStamps.containsKey(point)) {

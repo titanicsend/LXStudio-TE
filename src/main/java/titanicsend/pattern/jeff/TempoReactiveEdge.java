@@ -85,13 +85,13 @@ public class TempoReactiveEdge extends TEPattern {
     // Compare to pulseHeadFrac above.
     double pulseHeadFrac = (beatInMeasure + swingBeat) / 4 * (1 + pulseWidthFrac);
 
-    for (TEEdgeModel edge : modelTE.edgesById.values()) {
+    for (TEEdgeModel edge : modelTE.getEdges()) {
       double pulseTailFrac = pulseHeadFrac - pulseWidthFrac;
 
-      for (TEEdgeModel.Point point : edge.points) {
+      for (TEEdgeModel.Point point : edge.edgePoints) {
         // point.frac is the 0..1 fractional percentage this point is into its edge
-        if (point.frac >= pulseTailFrac && point.frac < pulseHeadFrac)
-          colors[point.index] = LXColor.WHITE;
+        if (point.n >= pulseTailFrac && point.n < pulseHeadFrac)
+          colors[point.point.index] = LXColor.WHITE;
       }
     }
   }

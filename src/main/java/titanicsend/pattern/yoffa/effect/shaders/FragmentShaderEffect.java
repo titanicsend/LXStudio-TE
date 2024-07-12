@@ -49,7 +49,9 @@ public abstract class FragmentShaderEffect extends PatternEffect {
 
   private int getColorForPoint(LXPoint point, double timeSec) {
     float alpha;
-    double[] fragCoordinates = new double[] {point.zn, point.yn};
+
+    // TODO - change pattern.getXn() back to point.x when we finish moving to dynamic model
+    double[] fragCoordinates = new double[] {pattern.getXn(point), point.yn};
     double[] resolution = new double[] {1, 1};
     double[] colorRgb = getColorForPoint(fragCoordinates, resolution, timeSec);
 

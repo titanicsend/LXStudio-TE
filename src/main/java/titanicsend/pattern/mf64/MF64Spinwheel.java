@@ -60,7 +60,7 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
 
   // does the spinwheel thing, returns the brightness
   // at the specified pixel.
-  float spinwheel(TEPanelModel.LitPointData lp, float spin, float grow) {
+  float spinwheel(TEPanelModel.Point lp, float spin, float grow) {
     // move coordinate origin to panel center
     float x = lp.point.z - panelCenter.z;
     float y = lp.point.y - panelCenter.y;
@@ -68,7 +68,7 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
     // can derive local azimuth geometrically, but atan2 is faster...
     // the arX multiplier controls the number of petals.  Higher is more.
     float arX = (float) (Math.atan2(y, x) * 1.25 + spin);
-    float arY = (float) (lp.radiusFraction + grow);
+    float arY = (float) (lp.rn + grow);
 
     // Shape the pulse made by the arY + grow term. Higher divisor == more contrast
     float pulse = (float) (Math.floor(arY) / 6.0);
@@ -115,7 +115,7 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
     prng.setSeed(seed);
     int colorIndex = 0;
     int col;
-    for (TEPanelModel panel : modelTE.getAllPanels()) {
+    for (TEPanelModel panel : modelTE.getPanels()) {
 
       boolean isLit = (prng.nextFloat() <= litProbability);
       if (!isLit) continue;
@@ -129,7 +129,7 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
       colorIndex = (colorIndex + 1) % colorSet.length;
 
       // now draw something on the panel
-      for (TEPanelModel.LitPointData p : panel.litPointData) {
+      for (TEPanelModel.Point p : panel.panelPoints) {
         // do the spinwheel thing
         panelCenter = panel.centroid;
         int alpha = (int) (255f * spinwheel(p, spin, grow));

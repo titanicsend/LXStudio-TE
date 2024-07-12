@@ -1,0 +1,66 @@
+{
+  /* Mothership by Titanic's End
+     Window 4 */
+
+  label: "Window4",
+  tags: [ "w4", "window", "triangle" ],
+
+  parameters:  {
+    # Default 100 LEDs
+    "extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 100" },
+    "ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+
+    # Remove these after calibration
+    "side1": { type: "int", default: "30", description: "Number of LEDs on side 1" },
+    "corner12": { type: "int", default: "13", description: "Number of LEDs in the corner between side1 and side2" },
+    "side2": { type: "int", default: "30", description: "Number of LEDs on side 2" },
+    "corner23": { type: "int", default: "13", description: "Number of LEDs in the corner between side2 and side3" },
+
+    # Debug tools
+    "onCar": { type: "boolean", default: true, label: "On Car", description: "True = Locate to position on car, False = Locate to origin" },
+    "host": { type: "string", default: "localhost", label: "Host", description: "Controller IP address or hostname" },
+    "output": { type: "int", default: 1, min: 1, max: 8, label: "Output Num", description: "Controller Output Number 1-8" },
+    "pixelOffset": { type: "int", default: 0, min: 0, max: 512, label: "Pixel Offset", description: "ArtNet offset in pixels" },
+    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
+    "outputEnabled": { type: "boolean", default: false }
+  },
+
+  transforms: [
+    { z: "-27.215", enabled: "$onCar" },
+    { y: "105.576", enabled: "$onCar" },
+    { roll: "-3.7", enabled: "$onCar" },
+    { pitch: "15", enabled: "$onCar" }
+  ],
+
+  components: [
+    { type: "RoundedTriangle",
+      spacing: ".2",
+
+      radius: "1.125",
+      angle12: "139.7",
+      angle23: "133.9",
+
+      length1: "(23-1) * .2",
+      side1: "23 - $ledOffset",
+      corner12: "13",
+      side2: "30",
+      corner23: "13",
+      side3: "100 + $ledOffset + $extraLEDs - 23 - 13 - 30 - 13",
+      
+      transforms: [
+        { x: "1.4" },
+        { y: "1.4" }
+      ]
+    }
+  ],
+  
+  outputs: [
+    { enabled: "$outputEnabled",
+      host: "$host",
+      universe: "$output*10",
+      channel: "$pixelOffset*3",
+      protocol: "artnet",
+      sequenceEnabled: "$artnetSequence"
+    }
+  ]
+}

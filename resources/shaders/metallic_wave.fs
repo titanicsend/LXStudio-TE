@@ -18,7 +18,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec2 uv = fragCoord.xy / iResolution.xy * 2.0 - 1.0;
     uv *= rotate2D(-iRotationAngle);
 
-    float bassTrebleMax = clamp(levelReact * max(bassRatio, trebleRatio / 8.), 0.4, 8);
+    float bassTrebleMax = clamp(levelReact * max(bassRatio, trebleRatio / 8.), 0.4, 8.0);
     float beatEffect = 1.0 - beat * frequencyReact;
 
     float frequency = iQuantity;

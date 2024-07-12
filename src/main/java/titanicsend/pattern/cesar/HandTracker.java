@@ -62,11 +62,11 @@ public class HandTracker extends TEPattern {
 
     int color = this.color.calcColor();
 
-    float zMax = this.modelTE.boundaryPoints.maxZBoundaryPoint.z;
-    float yMax = this.modelTE.boundaryPoints.maxYBoundaryPoint.y;
+    float zMax = this.modelTE.maxZ();
+    float yMax = this.modelTE.maxY();
     boolean doCircle = this.circle.isOn();
 
-    for (LXPoint point : this.modelTE.points) {
+    for (LXPoint point : this.model.points) {
       if (this.modelTE.isGapPoint(point)) continue;
       float zPercent = 100.0f * point.z / zMax;
       float yPercent = 100.0f * point.y / yMax;

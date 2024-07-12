@@ -1,0 +1,89 @@
+{
+  /* Mothership by Titanic's End */
+
+  label: "Slice",
+  tag: "slice",
+
+  "parameters": {
+    "front": { type: "boolean", default: true, label: "Front", description: "True for front of car, False for back of car" },
+    "radial": { type: "int", default: 1, min: 1, max: 25, label: "Radial", description: "Clock position of this slice, 1-24" },
+
+    "host": { type: "string", default: "localhost", label: "Host", description: "Controller IP address or hostname" },
+    "outputS1": { type: "int", default: 1, min: 1, max: 8, label: "S1 Output", description: "Strand 1 Controller Output Number 1-8" },
+    "outputS2": { type: "int", default: 2, min: 1, max: 8, label: "S2 Output", description: "Strand 2 Controller Output Number 1-8" },
+    "outputS3": { type: "int", default: 3, min: 1, max: 8, label: "S3 Output", description: "Strand 3 Controller Output Number 1-8" },
+    "outputS6": { type: "int", default: 6, min: 1, max: 8, label: "S6 Output", description: "Strand 6 Controller Output Number 1-8" },
+    "outputS7": { type: "int", default: 7, min: 1, max: 8, label: "S7 Output", description: "Strand 7 Controller Output Number 1-8" },
+    "outputS8": { type: "int", default: 8, min: 1, max: 8, label: "S8 Output", description: "Strand 8 Controller Output Number 1-8" },
+    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" }
+  },
+
+  "transforms": [
+    { yaw: "180", enabled: "!$front" },
+    { roll: "(-0.5 - ($radial - 1)) * 360 / 24", enabled: "$front" },
+    { roll: "(0.5 + ($radial - 1)) * 360 / 24", enabled: "!$front" }
+  ],
+
+  "components": [
+    { type: "Window1", id: "w1" },
+    { type: "Window2", id: "w2" },
+    { type: "Window3", id: "w3" },
+    { type: "Window4", id: "w4" },
+    { type: "Window5", id: "w5" },
+    { type: "Window6", id: "w6" },
+    { type: "Window7", id: "w7" },
+    { type: "Window8A", id: "w8a" },
+    { type: "Window8B", id: "w8b" },
+    { type: "Window9", id: "w9" }
+  ],
+
+  outputs: [
+
+    /* Strand 1 */
+    { host: "$host", universe: "$outputS1*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentId: "w9" }
+      ]
+    },
+
+    /* Strand 2 */
+    { host: "$host", universe: "$outputS2*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentId: "w8a" },
+        { componentId: "w5" }
+      ]
+    },
+
+    /* Strand 3 */
+    { host: "$host", universe: "$outputS3*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentId: "w8b" },
+        { componentId: "w6" }
+      ]
+    },
+
+    /* Strand 6 */
+    { host: "$host", universe: "$outputS6*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentId: "w1" }
+      ]
+    },
+
+    /* Strand 7 */
+    { host: "$host", universe: "$outputS7*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentId: "w2" },
+        { componentId: "w7" }
+      ]
+    },
+
+    /* Strand 8 */
+    { host: "$host", universe: "$outputS8*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentId: "w3" },
+        { componentId: "w4" }
+      ]
+    },
+
+  ]
+}

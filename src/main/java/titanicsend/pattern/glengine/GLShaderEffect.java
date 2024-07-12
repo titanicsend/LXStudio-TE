@@ -38,17 +38,17 @@ public class GLShaderEffect extends TEEffect {
   protected final ArrayList<ShaderInfo> shaderInfo = new ArrayList<>();
 
   // function to paint the final shader output to the car
-  private ShaderPaintFn painter;
+  private ShaderPainterClass painter;
 
   public GLShaderEffect(LX lx) {
     super(lx);
 
-    setPainter(new ShaderPaint3d() {});
+    setPainter(new ShaderPaint3d(modelTE.isStatic()) {});
     controlData = new GLEffectControl(this);
     imageBuffer = GLShader.allocateBackBuffer();
   }
 
-  public void setPainter(ShaderPaintFn painter) {
+  public void setPainter(ShaderPainterClass painter) {
     this.painter = painter;
   }
 

@@ -42,8 +42,8 @@ public abstract class TEPattern extends DmxPattern {
 
     this.modelTE = TEApp.wholeModel;
 
-    this.sua = this.modelTE.panelsById.get("SUA");
-    this.sdc = this.modelTE.panelsById.get("SDC");
+    this.sua = this.modelTE.getPanel("SUA");
+    this.sdc = this.modelTE.getPanel("SDC");
 
     updateGradients();
   }
@@ -118,7 +118,7 @@ public abstract class TEPattern extends DmxPattern {
   public void clearPixels() {
     for (LXPoint point : this.model.points) {
       if (this.modelTE.isGapPoint(point)) {
-        colors[this.modelTE.getGapPointIndex()] = GAP_PIXEL_COLOR;
+        colors[point.index] = GAP_PIXEL_COLOR;
       } else {
         colors[point.index] = TEColor.TRANSPARENT;
       }
@@ -127,7 +127,7 @@ public abstract class TEPattern extends DmxPattern {
 
   // For patterns that only want to operate on edges
   public void setEdges(int color) {
-    for (LXPoint point : this.modelTE.edgePoints) {
+    for (LXPoint point : this.modelTE.getEdgePoints()) {
       colors[point.index] = color;
     }
   }
@@ -140,14 +140,14 @@ public abstract class TEPattern extends DmxPattern {
   // their LXPoint color
   // TODO: Return quickly if lasers/etc aren't being used
   public void updateVirtualColors(double deltaMsec) {
-    for (TEPanelModel panel : this.modelTE.panelsById.values()) {
+    for (TEPanelModel panel : this.modelTE.getPanels()) {
       if (panel.panelType.equals(TEPanelModel.SOLID)) {
         panel.virtualColor.rgb = colors[panel.points[0].index];
       }
     }
-    for (TELaserModel laser : this.modelTE.lasersById.values()) {
+    for (TELaserModel laser : this.modelTE.getLasers()) {
       laser.control.update(deltaMsec);
-      laser.color = colors[laser.points[0].index];
+      laser.color = colors[laser.model.points[0].index];
     }
   }
 
@@ -224,5 +224,14 @@ public abstract class TEPattern extends DmxPattern {
       if (halfway < this.sdc.e0.points.length) rv.add(this.sdc.e0.points[halfway]);
     }
     return rv;
+  }
+
+  /**
+   * utility method for use during the static-to-dynamic model transition.
+   * IMPORTANT:  There is a performance cost to this, so it should be
+   * removed when we no longer need to support the static model.
+   */
+   public float getXn(LXPoint p) {
+    return (modelTE.isStatic()) ? p.zn : p.xn;
   }
 }

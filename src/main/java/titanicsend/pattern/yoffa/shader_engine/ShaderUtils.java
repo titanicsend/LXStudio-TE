@@ -168,16 +168,22 @@ public class ShaderUtils {
     String cacheFile = getCacheFilename(shaderName);
 
     try {
-      byte[] outBuf = Files.readAllBytes(Path.of(cacheFile));
-      ByteBuffer shader = ByteBuffer.wrap(outBuf);
-
       // get available binary formats for shader storage
       int[] fmtCount = new int[1];
       gl4.glGetIntegerv(GL4.GL_NUM_PROGRAM_BINARY_FORMATS, fmtCount, 0);
 
+      // fast out if no binary formats are available (e.g. on MacOS)
+      if (fmtCount[0] < 1) {
+        // TE.log("Shader cache: No compatible binary shader format available.");
+        return false;
+      }
+
       // take the first available format
       int[] formatList = new int[fmtCount[0]];
       gl4.glGetIntegerv(GL4.GL_PROGRAM_BINARY_FORMATS, formatList, 0);
+
+      byte[] outBuf = Files.readAllBytes(Path.of(cacheFile));
+      ByteBuffer shader = ByteBuffer.wrap(outBuf);
 
       // attach binary to our shader program
       gl4.glProgramBinary(programId, formatList[0], shader, outBuf.length);

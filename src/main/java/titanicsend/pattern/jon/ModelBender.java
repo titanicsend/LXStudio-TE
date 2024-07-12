@@ -1,9 +1,9 @@
 package titanicsend.pattern.jon;
 
+import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import java.util.ArrayList;
-import titanicsend.model.TEPanelModel;
-import titanicsend.model.TEWholeModel;
+import titanicsend.model.*;
 
 public class ModelBender {
   private final String[] endEdgeIds = {
@@ -36,8 +36,8 @@ public class ModelBender {
     "126-129"
   };
 
-  protected ArrayList<Float> modelZ;
-  protected float endXMax;
+  protected ArrayList<Float> savedModelCoord;
+  protected float endDepthMax;
 
   /**
    * Get a list of points on the ends of the car
@@ -49,40 +49,44 @@ public class ModelBender {
     ArrayList<LXPoint> endPoints = new ArrayList<LXPoint>();
 
     // add end panel points
-    for (TEPanelModel panel : model.getAllPanels()) {
+    for (TEPanelModel panel : model.getPanels()) {
       String id = panel.getId();
       if (id.startsWith("F") || id.startsWith("A")) {
-        for (LXPoint point : panel.getPoints()) {
+        for (LXPoint point : panel.model.getPoints()) {
           endPoints.add(point);
         }
       }
     }
 
     // add end edge points
+    TEEdgeModel endEdge;
     for (String edgeId : endEdgeIds) {
-      for (LXPoint point : model.edgesById.get(edgeId).getPoints()) {
-        endPoints.add(point);
+      endEdge = model.getEdge(edgeId);
+      if (endEdge != null) {
+        for (LXPoint point : endEdge.model.getPoints()) {
+          endPoints.add(point);
+        }
       }
     }
 
     return endPoints;
   }
 
-  public void adjustEndGeometry(TEWholeModel model) {
+  public void adjustEndGeometry(TEWholeModelStatic model) {
 
     // save the model's original z coordinates so we can restore them
     // after all views are created.  endXMax is the largest x coordinate at
     // the boundary of side and end (more-or-less).  We use it as the
     // starting x for our taper.
-    modelZ = new ArrayList<Float>();
-    endXMax = Math.abs(model.vertexesById.get(116).x);
+    savedModelCoord = new ArrayList<Float>();
+    endDepthMax = Math.abs(model.vertexesById.get(116).x);
     for (LXPoint p : model.getPoints()) {
-      modelZ.add(p.z);
+      savedModelCoord.add(p.z);
     }
 
     // set new z bounds for our modified model
-    model.zMax += endXMax;
-    model.zMin -= endXMax;
+    model.zMax += endDepthMax;
+    model.zMin -= endDepthMax;
     model.zRange = model.zMax - model.zMin;
 
     // adjust the z coordinates of the end points to taper them
@@ -93,21 +97,70 @@ public class ModelBender {
       // kick out gap points or they'll break normalization.
       if (model.isGapPoint(p)) continue;
 
-      double zOffset = endXMax - Math.abs(p.x);
+      double zOffset = endDepthMax - Math.abs(p.x);
       p.z += (p.z >= 0) ? zOffset : -zOffset;
     }
     model.normalizePoints();
   }
 
-  public void restoreModel(TEWholeModel model) {
+  public void restoreModel(TEWholeModelStatic model) {
     // restore the model's original z bounds
-    model.zMax -= endXMax;
-    model.zMin += endXMax;
+    model.zMax -= endDepthMax;
+    model.zMin += endDepthMax;
     model.zRange = model.zMax - model.zMin;
 
     int i = 0;
     for (LXPoint p : model.getPoints()) {
-      p.z = modelZ.get(i++);
+      p.z = savedModelCoord.get(i++);
+    }
+  }
+
+  // Dynamic model version
+  public void adjustEndGeometry(TEWholeModelDynamic model, LXModel baseModel) {
+
+    // save the model's original x (width) coordinates so we can restore them
+    // after all views are created.  endDepthMax is the largest z coordinate at
+    // the boundary of side and end (more-or-less).  We use it as the
+    // starting z for our taper.
+    // TODO - replace estimate w/appropriate real value when model.getVertex() is working.
+    endDepthMax = 0.85f * baseModel.zMax; //Math.abs(model.getVertex(116).z);
+    System.out.println("endDepthMax: " + endDepthMax);
+
+    savedModelCoord = new ArrayList<Float>();
+    for (LXPoint p : baseModel.getPoints()) {
+      savedModelCoord.add(p.x);
+    }
+
+    // set new x bounds for our modified model
+    baseModel.xMax += endDepthMax;
+    baseModel.xMin -= endDepthMax;
+    baseModel.xRange = baseModel.xMax - baseModel.xMin;
+
+    // adjust the x coordinates of the end points to taper them
+    // with decreasing z. This gives the model a slightly pointy
+    // nose and makes texture mapping easier and better looking.
+    ArrayList<LXPoint> endPoints = getEndPoints(model);
+    for (LXPoint p : endPoints) {
+      // kick out gap points or they'll break normalization.
+      if (model.isGapPoint(p)) continue;
+
+      float xOffset = endDepthMax - Math.abs(p.z);
+      p.x += (p.x >= 0) ? xOffset : -xOffset;
+    }
+
+    baseModel.normalizePoints();
+  }
+
+  // Dynamic model version
+  public void restoreModel(TEWholeModelDynamic model, LXModel baseModel) {
+    // restore the model's original width (x) bounds
+    baseModel.xMax -= endDepthMax;
+    baseModel.xMin += endDepthMax;
+    baseModel.xRange = baseModel.xMax - baseModel.xMin;
+
+    int i = 0;
+    for (LXPoint p : baseModel.getPoints()) {
+      p.x = savedModelCoord.get(i++);
     }
   }
 }

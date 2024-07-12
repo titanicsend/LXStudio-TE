@@ -13,8 +13,8 @@ public enum TEControlTag {
   WOWTRIGGER,
   ANGLE,
   LEVELREACTIVITY,
-  FREQREACTIVITY;
-
+  FREQREACTIVITY,
+  TWIST;
 
   public String getPath() {
     String path =
@@ -32,6 +32,7 @@ public enum TEControlTag {
         case ANGLE -> "te_angle";
         case LEVELREACTIVITY -> "te_level";
         case FREQREACTIVITY -> "te_freq";
+        case TWIST -> "te_twist";
         default -> "";
       };
 
@@ -53,6 +54,7 @@ public enum TEControlTag {
       case WOWTRIGGER -> "WowTrigger";
       case LEVELREACTIVITY -> "LvlReact";
       case FREQREACTIVITY -> "FreqReact";
+      case TWIST -> "Twist";
     };
   }
 }

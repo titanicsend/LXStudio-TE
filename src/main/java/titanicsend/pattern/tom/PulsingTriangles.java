@@ -59,7 +59,7 @@ public class PulsingTriangles extends TEPattern {
     addParameter("tempoSync", this.tempoSync);
     addParameter("tempoLock", this.tempoLock);
     addParameter("rate", this.rate);
-    pointMap = buildPointMap(modelTE.panelsById);
+    pointMap = buildPointMap(modelTE.getPanels());
   }
 
   public void run(double deltaMs) {
@@ -67,13 +67,13 @@ public class PulsingTriangles extends TEPattern {
 
     int triangleColor = this.color.calcColor();
 
-    for (Map.Entry<String, TEPanelModel> entry : modelTE.panelsById.entrySet()) {
-      LXPoint[][] panelPoints = pointMap.get(entry.getKey());
+    for (TEPanelModel panel : modelTE.getPanels()) {
+      LXPoint[][] panelPoints = pointMap.get(panel.getId());
       int litIndex = (int) (phase * (panelPoints.length - 1));
       LXPoint[] litSection = panelPoints[litIndex];
 
-      for (int i = 0; i < entry.getValue().points.length; i++) {
-        colors[entry.getValue().points[i].index] = LXColor.BLACK;
+      for (int i = 0; i < panel.points.length; i++) {
+        colors[panel.points[i].index] = LXColor.BLACK;
       }
 
       for (LXPoint point : litSection) {
@@ -82,11 +82,14 @@ public class PulsingTriangles extends TEPattern {
     }
   }
 
-  private HashMap<String, LXPoint[][]> buildPointMap(HashMap<String, TEPanelModel> panels) {
-    return panels.entrySet().stream()
+  private HashMap<String, LXPoint[][]> buildPointMap(List<TEPanelModel> panels) {
+    return panels.stream()
         .collect(
             Collectors.toMap(
-                e -> e.getKey(), e -> buildPanelMap(e.getValue()), (a, b) -> a, HashMap::new));
+                TEPanelModel::getId,
+                panel -> buildPanelMap(panel),
+                (a, b) -> a,
+                HashMap::new));
   }
 
   private LXPoint[][] buildPanelMap(TEPanelModel panel) {

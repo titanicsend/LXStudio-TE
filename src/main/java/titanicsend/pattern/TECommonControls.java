@@ -122,6 +122,12 @@ public class TECommonControls {
             .setDescription("Trigger WoW effects");
     setControl(TEControlTag.WOWTRIGGER, p);
 
+    p =
+      new BooleanParameter(TEControlTag.TWIST.getLabel(), false)
+        .setMode(BooleanParameter.Mode.TOGGLE)
+        .setDescription("Twist (axis swap)");
+    setControl(TEControlTag.TWIST, p);
+
     // in degrees for display 'cause more people think about it that way
     p =
         (LXListenableNormalizedParameter)
@@ -316,8 +322,6 @@ public class TECommonControls {
     MissingControlsManager.MissingControls missingControls =
         MissingControlsManager.get().findMissingControls(pat.getClass());
 
-
-
     // controls will be added in the order their tags appear in the
     // TEControlTag enum
     for (TEControlTag tag : TEControlTag.values()) {
@@ -418,6 +422,7 @@ public class TECommonControls {
     getControl(TEControlTag.WOW1).control.reset();
     getControl(TEControlTag.WOW2).control.reset();
     getControl(TEControlTag.WOWTRIGGER).control.reset();
+    getControl(TEControlTag.TWIST).control.reset();
 
     getControl(TEControlTag.LEVELREACTIVITY).control.reset();
     getControl(TEControlTag.FREQREACTIVITY).control.reset();

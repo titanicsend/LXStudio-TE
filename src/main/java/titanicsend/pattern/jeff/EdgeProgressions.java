@@ -8,6 +8,7 @@ import heronarts.lx.Tempo;
 import heronarts.lx.blend.MultiplyBlend;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
+import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.Click;
 import heronarts.lx.parameter.*;
 import java.io.BufferedReader;
@@ -157,7 +158,7 @@ public class EdgeProgressions extends TEAudioPattern {
     if (triggerMode.getEnum().equals(Mode.BASS) && bassHit()) nextScene();
 
     for (TEEdgeModel edge : litEdges) {
-      for (TEEdgeModel.Point point : edge.points) {
+      for (LXPoint point : edge.points) {
         colors[point.index] = color;
       }
     }
@@ -186,8 +187,8 @@ public class EdgeProgressions extends TEAudioPattern {
       edgeSets.putIfAbsent(es.name, new HashSet<>());
 
       for (String edgeId : es.edgeIds) {
-        if (modelTE.edgesById.containsKey(edgeId)) {
-          TEEdgeModel edge = modelTE.edgesById.get(edgeId);
+        if (this.modelTE.hasEdge(edgeId)) {
+          TEEdgeModel edge = this.modelTE.getEdge(edgeId);
           if (es.includeSymmetric) {
             edgeSets.get(es.name).addAll(edge.symmetryGroup);
           } else {

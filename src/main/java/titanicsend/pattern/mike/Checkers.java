@@ -31,19 +31,19 @@ public class Checkers extends TEPerformancePattern {
     addCommonControls();
 
     this.panelGroup = new HashMap<>();
-    List<TEPanelModel> queue = new ArrayList<>(modelTE.panelsById.values());
+    List<TEPanelModel> queue = new ArrayList<>(modelTE.getPanels());
     while (!queue.isEmpty()) {
       TEPanelModel panel = queue.remove(0);
       if (!this.panelGroup.containsKey(panel)) {
         // If not yet grouped, put it in Group 0, with a special exception
         // for SUA and PUA, which should be group 1 so they look different
         // from SUF/PUF
-        int group = panel.id.endsWith("UA") ? 1 : 0;
+        int group = panel.getId().endsWith("UA") ? 1 : 0;
         this.panelGroup.put(panel, group);
       }
       int thisPanelGroup = this.panelGroup.get(panel);
       int newColor = 1 - thisPanelGroup; // Invert this panel's group
-      for (TEPanelModel neighbor : panel.neighbors()) {
+      for (TEPanelModel neighbor : panel.neighbors) {
         if (this.panelGroup.containsKey(neighbor)) continue; // Already grouped
         this.panelGroup.put(neighbor, newColor);
         queue.add(0, neighbor);

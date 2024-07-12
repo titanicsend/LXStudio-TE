@@ -1,0 +1,82 @@
+{
+  /* Mothership by Titanic's End
+     Window 9, Strand S1a */
+
+  label: "Window9",
+  tags: [ "w9", "window", "rectangle", "s1a" ],
+
+  parameters:  {
+    /* Default 368 LEDs */
+    "extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 368" },
+    "ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+    
+    /* TODO: Immortalize these after final model has been measured */  
+    "insetX": { type: "float", default: 2.4, description: "Inset of LED strip from the line where window planes meet" },
+    "insetY": { type: "float", default: 0.9, description: "Inset of LED strip from the line where window planes meet" },
+
+    /* Fixed, but keep as a parameter for legibility and in case the LED strip changes */
+    "spacing": { type: "float", default: .2 },
+
+    # Debug tools
+    "onCar": { type: "boolean", default: true, label: "On Car", description: "True = Locate to position on car, False = Locate to origin" }
+  },
+
+  transforms: [
+    { z: "-14", enabled: "$onCar" },
+    { y: "119.181", enabled: "$onCar" },
+    /*{ yaw: "-90", enabled: "$onCar" },*/
+    { roll: "-3.75", enabled: "$onCar" },
+    { pitch: "90", enabled: "$onCar" }
+  ],
+
+  components: [
+    /* From inside, default wiring is clockwise */
+
+    /* Short side */
+    { type: "strip",
+      numPoints: "54 - $ledOffset",
+      spacing: "$spacing",
+      transforms: [
+        { x: "$insetX" },
+        { y: "$insetY" },
+        { x: "(0.5 + $ledOffset) * $spacing" }
+      ]
+    },
+
+    /* Long side */
+    { type: "strip",
+      numPoints: "130",
+      spacing: "$spacing",
+      transforms: [
+        { x: "$insetX + (54 * $spacing)" },
+        { y: "$insetY" },
+        { roll: "90" },
+        { x: "$spacing / 2" }
+      ]
+    },
+    
+    /* Short side */
+    { type: "strip",
+      numPoints: "54",
+      spacing: "$spacing",
+      transforms: [
+        { x: "$insetX + ((54 + 1) * $spacing)" },
+        { y: "$insetY + ((130 + 1) * $spacing)" },
+        { roll: "180" },
+        { x: "$spacing / 2" }
+      ]
+    },
+
+    /* Long side */
+    { type: "strip",
+      numPoints: "130 + $ledOffset + $extraLEDs",
+      spacing: "$spacing",
+      transforms: [
+        { x: "$insetX" },
+        { y: "$insetY + (130 * $spacing)" },
+        { roll: "270" }
+      ]
+    }
+
+  ]
+}
