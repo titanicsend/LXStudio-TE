@@ -34,23 +34,63 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     this.setTitle("PALETTE MANAGER");
 //    this.setContentWidth(this.width);
 
-    UI2dContainer container1 = UI2dContainer.newHorizontalContainer(this.width, 6);
 
-    float gradientWidth = this.width / 2;
+    float SLIDER_SPACING = 4;
+    float controlWidth = this.width / 3;
+    float sliderWidth = controlWidth - (2*SLIDER_SPACING);
 
-    UI2dContainer hueSlider = UI2dContainer.newHorizontalContainer(gradientWidth, 2);
-
+    UI2dContainer container1 = UI2dContainer.newHorizontalContainer(controlWidth, SLIDER_SPACING);
     addColumn(
         container1,
-        new UIColorPaletteManager.UIHueDisplay(paletteMgr.hue, gradientWidth),
-        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, gradientWidth, 16.0F, paletteMgr.hue),
-//        new UIColorPaletteManager.UISaturationDisplay().addToContainer(uiContainer),
-        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, gradientWidth, 16.0F, paletteMgr.saturation),
-//        new UIColorPaletteManager.UIBrightnessDisplay().addToContainer(uiContainer),
-        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, gradientWidth , 16.0F, paletteMgr.brightness)
-    ).setChildSpacing(6).setWidth(gradientWidth);
-
+        new UIHueDisplay(paletteMgr.hue, sliderWidth),
+        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.hue)
+    );
+    addColumn(
+        container1,
+        new UISaturationDisplay(sliderWidth),
+        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.saturation)
+    );
+    addColumn(
+        container1,
+        new UIBrightnessDisplay(sliderWidth),
+        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.brightness)
+    );
     container1.addToContainer(this);
+
+    float MAIN_COLOR_SIZE = 24F;
+    UI2dContainer container2 = UI2dContainer.newHorizontalContainer(MAIN_COLOR_SIZE, 0F);
+    addColumn(
+        container2,
+        new UI2dComponent(0, 0, MAIN_COLOR_SIZE, MAIN_COLOR_SIZE) {
+          public void onDraw(UI ui, VGraphics vg) {
+            vg.fillColor(paletteMgr.color1.calcColor());
+            // LXColor.hsb(paletteMgr.hue.getValuef(), paletteMgr.saturation.getValuef(), paletteMgr.brightness.getValuef())
+            vg.rect(0, 0, this.getWidth(), this.getHeight());
+            vg.fill();
+          }
+        }).setWidth(24F);
+    container2.addToContainer(this);
+
+//    UI2dContainer container2 = UI2dContainer.newHorizontalContainer(controlWidth, 6);
+//    addColumn(container2, new UILabel(CHAR_WIDTH, "S"), new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, controlWidth - CHAR_WIDTH - 6, 12.0F, paletteMgr.saturation)); //"Saturation"));
+//    UI2dContainer container3 = UI2dContainer.newHorizontalContainer(controlWidth, 6);
+//    addColumn(container3, new UILabel(CHAR_WIDTH, "B"), new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, controlWidth - CHAR_WIDTH - 6, 12.0F, paletteMgr.brightness)); //Brightness"));
+//
+//    float gradientWidth = this.width / 2;
+//
+//    UI2dContainer hueSlider = UI2dContainer.newHorizontalContainer(gradientWidth, 2);
+//
+
+//    addColumn(
+//        container1,
+//
+////        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, gradientWidth, 16.0F, paletteMgr.hue),
+////        new UIColorPaletteManager.UISaturationDisplay(gradientWidth).addToContainer(uiContainer),
+//        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, gradientWidth, 16.0F, paletteMgr.saturation),
+////        new UIColorPaletteManager.UIBrightnessDisplay(gradientWidth).addToContainer(uiContainer),
+//        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, gradientWidth , 16.0F, paletteMgr.brightness)
+//    ).setChildSpacing(6).setWidth(gradientWidth);
+
 
 //    buildDeviceControls(ui, this, paletteMgr);
   }
@@ -97,12 +137,8 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
         16, 4, new UILabel(labelWidth, 12, label), component);
   }
 
-  private class UIHueDisplay extends UIColorPaletteManager.UIGradientDisplay {
+  private class UIHueDisplay extends UIGradientDisplay {
     private double hueOffset = 0.0;
-
-    private UIHueDisplay(float gradientWidth) {
-      super(gradientWidth, GRADIENT_HEIGHT);
-    }
 
     private UIHueDisplay(BoundedParameter hueOffset, float gradientWidth) {
       super(gradientWidth, GRADIENT_HEIGHT);
@@ -128,7 +164,7 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     }
   }
 
-  private class UISaturationDisplay extends UIColorPaletteManager.UIGradientDisplay {
+  private class UISaturationDisplay extends UIGradientDisplay {
     private UISaturationDisplay(float gradientWidth) {
       super(gradientWidth, GRADIENT_HEIGHT);
     }
@@ -141,7 +177,7 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     }
   }
 
-  private class UIBrightnessDisplay extends UIColorPaletteManager.UIGradientDisplay {
+  private class UIBrightnessDisplay extends UIGradientDisplay {
     private UIBrightnessDisplay(float gradientWidth) {
       super(gradientWidth, GRADIENT_HEIGHT);
     }
