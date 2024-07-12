@@ -3,8 +3,6 @@ package titanicsend.pattern.jon;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
-import static java.nio.file.StandardOpenOption.CREATE;
-
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
@@ -12,7 +10,6 @@ import heronarts.lx.model.LXPoint;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,7 +21,6 @@ import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-import titanicsend.util.TE;
 
 import javax.imageio.ImageIO;
 
@@ -36,7 +32,6 @@ public class ModelFileWriter extends TEPerformancePattern {
   public static final int IMAGE_HEIGHT = 480;
   public static final double EPSILON = 1e-6;
   private static final int MARGIN = 0;
-
 
   public ModelFileWriter(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
@@ -75,27 +70,27 @@ public class ModelFileWriter extends TEPerformancePattern {
       // Write all points
       for (LXPoint point : getModel().getPoints()) {
         Files.writeString(
-                all_points, point.x + "," + point.y + "," + point.z + "\n", CREATE, APPEND);
+            all_points, point.x + "," + point.y + "," + point.z + "\n", CREATE, APPEND);
       }
-      generateMapAndUv(all_points, all_map, all_map_uv, new int[]{2, 1, 0} /*z, y, x*/);
+      generateMapAndUv(all_points, all_map, all_map_uv, new int[] {2, 1, 0} /*z, y, x*/);
 
       // Write panel points only
-      for (TEPanelModel panel : TEApp.wholeModel.panelsById.values()) {
+      for (TEPanelModel panel : TEApp.wholeModel.getPanels()) {
         for (LXPoint point : panel.points) {
           Files.writeString(
-                  panel_points, point.x + "," + point.y + "," + point.z + "\n", CREATE, APPEND);
+              panel_points, point.x + "," + point.y + "," + point.z + "\n", CREATE, APPEND);
         }
       }
-      generateMapAndUv(panel_points, panel_map, panel_map_uv, new int[]{2, 1, 0} /*z, y, x*/);
+      generateMapAndUv(panel_points, panel_map, panel_map_uv, new int[] {2, 1, 0} /*z, y, x*/);
 
       // Write edge points only
-      for (TEEdgeModel edge : TEApp.wholeModel.edgesById.values()) {
+      for (TEEdgeModel edge : TEApp.wholeModel.getEdges()) {
         for (LXPoint point : edge.points) {
           Files.writeString(
-                  edge_points, point.x + "," + point.y + "," + point.z + "\n", CREATE, APPEND);
+              edge_points, point.x + "," + point.y + "," + point.z + "\n", CREATE, APPEND);
         }
       }
-      generateMapAndUv(edge_points, edge_map, edge_map_uv, new int[]{2, 1, 0} /*z, y, x*/);
+      generateMapAndUv(edge_points, edge_map, edge_map_uv, new int[] {2, 1, 0} /*z, y, x*/);
 
       doneWriting = true;
     } catch (IOException e) {
@@ -103,8 +98,9 @@ public class ModelFileWriter extends TEPerformancePattern {
     }
   }
 
-
-  public void generateMapAndUv(Path csvPath, Path outputFilePath, Path uvOutputFilePath, int[] columnOrder) throws IOException {
+  public void generateMapAndUv(
+      Path csvPath, Path outputFilePath, Path uvOutputFilePath, int[] columnOrder)
+      throws IOException {
     if (columnOrder.length != 3) {
       throw new IllegalArgumentException("Column order must contain exactly 3 elements");
     }
@@ -113,7 +109,8 @@ public class ModelFileWriter extends TEPerformancePattern {
     double[] min = {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
     double[] max = {-Double.MAX_VALUE, -Double.MAX_VALUE, -Double.MAX_VALUE};
 
-    // Find min and max values for normalization. Always use the whole model to have the same scale for all png outputs
+    // Find min and max values for normalization. Always use the whole model to have the same scale
+    // for all png outputs
     for (LXPoint point : getModel().getPoints()) {
       double[] values = {point.x, point.y, point.z};
       for (int i = 0; i < 3; i++) {
@@ -141,8 +138,18 @@ public class ModelFileWriter extends TEPerformancePattern {
       double z = Double.parseDouble(parts[columnOrder[2]]);
 
       // Normalize and map to pixel coordinates
-      int px = (int) ((x - min[0]) / Math.max(max[0] - min[0], EPSILON) * (IMAGE_WIDTH - 2 * Math.max(MARGIN, EPSILON)) + Math.max(MARGIN, EPSILON));
-      int py = (int) ((y - min[1]) / Math.max(max[1] - min[1], EPSILON) * (IMAGE_HEIGHT - 2 * Math.max(MARGIN, EPSILON)) + Math.max(MARGIN, EPSILON));
+      int px =
+          (int)
+              ((x - min[0])
+                      / Math.max(max[0] - min[0], EPSILON)
+                      * (IMAGE_WIDTH - 2 * Math.max(MARGIN, EPSILON))
+                  + Math.max(MARGIN, EPSILON));
+      int py =
+          (int)
+              ((y - min[1])
+                      / Math.max(max[1] - min[1], EPSILON)
+                      * (IMAGE_HEIGHT - 2 * Math.max(MARGIN, EPSILON))
+                  + Math.max(MARGIN, EPSILON));
 
       if (px >= 0 && px < IMAGE_WIDTH && py >= 0 && py < IMAGE_HEIGHT) {
         // Calculate color based on z value (using a simple gradient from blue to red)
