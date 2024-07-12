@@ -38,18 +38,18 @@ import titanicsend.modulator.dmx.DmxColorModulator;
 public class ColorPaletteManager extends LXComponent {
 
   public final CompoundParameter hue =
-      new CompoundParameter("Hue", 0, -360, 360)
+      new CompoundParameter("H", 0, -360, 360)
           .setPolarity(CompoundParameter.Polarity.BIPOLAR)
           .setDescription("Sets the amount of hue shift to apply");
 
   public final CompoundParameter saturation =
-      new CompoundParameter("Saturation", 100, -100, 100)
+      new CompoundParameter("S", 100, -100, 100)
           .setUnits(CompoundParameter.Units.PERCENT)
           .setPolarity(CompoundParameter.Polarity.BIPOLAR)
           .setDescription("Sets the amount to increase or decrease saturation");
 
   public final CompoundParameter brightness =
-      new CompoundParameter("Brightness", 100, -100, 100)
+      new CompoundParameter("B", 100, -100, 100)
           .setUnits(CompoundParameter.Units.PERCENT)
           .setPolarity(CompoundParameter.Polarity.BIPOLAR)
           .setDescription("Sets the amount to increase or decrease brightness");
@@ -145,38 +145,48 @@ public class ColorPaletteManager extends LXComponent {
       this.color1.setColor(color1);
       this.currPaletteType = this.paletteType.getEnum();
 
-      int color2 = color1;
-      int color3 = color1;
-      if (this.paletteType.getEnum() == PaletteType.MONO) {
-        color2 = LXColor.BLACK;
-        color3 = LXColor.BLACK;
-      } else if (this.paletteType.getEnum() == PaletteType.COMPLEMENTARY) {
-        color2 = LXColor.hsb(hue + 180, saturation, brightness);
-        color3 = LXColor.BLACK;
-      } else if (this.paletteType.getEnum() == PaletteType.SPLIT_COMPLEMENTARY) {
-        color2 = LXColor.hsb(hue + 150, saturation, brightness);
-        color3 = LXColor.hsb(hue + 210, saturation, brightness);
-      } else if (this.paletteType.getEnum() == PaletteType.TRIADIC) {
-        color2 = LXColor.hsb(hue + 120, saturation, brightness);
-        color3 = LXColor.hsb(hue + 240, saturation, brightness);
-      } else if (this.paletteType.getEnum() == PaletteType.ANALOGOUS) {
-        color2 = LXColor.hsb(hue + 30, saturation, brightness);
-        color3 = LXColor.hsb(hue - 30, saturation, brightness);
-      }
-      this.color2.setColor(color2);
-      this.color3.setColor(color3);
-
-//      // Send to target color in global palette
-//      LXSwatch activeSwatch = this.lx.engine.palette.swatch;
-//      setColorAtPosition(activeSwatch, this.colorPosition.getEnum(), color);
-//      setColorAtPosition(activeSwatch, this.secondPosition.getEnum(), color2);
-//      setColorAtPosition(activeSwatch, this.thirdPosition.getEnum(), color3);
-
+      updateColors2And3(color1);
       LXSwatch cueSwatch = findOrCreateCueSwatch();
-      setColorAtPosition(cueSwatch, this.color1Pos.getEnum(), color1);
-      setColorAtPosition(cueSwatch, this.color2Pos.getEnum(), color2);
-      setColorAtPosition(cueSwatch, this.color3Pos.getEnum(), color3);
+      updateSwatches(cueSwatch);
+//      setColorAtPosition(cueSwatch, this.color1Pos.getEnum(), color1);
+//      setColorAtPosition(cueSwatch, this.color2Pos.getEnum(), color2);
+//      setColorAtPosition(cueSwatch, this.color3Pos.getEnum(), color3);
     }
+  }
+
+  private void updateColors2And3(int color1) {
+    this.currPaletteType = this.paletteType.getEnum();
+
+    float hue = this.color1.hue.getValuef();
+    float saturation = this.color1.saturation.getValuef();
+    float brightness = this.color1.brightness.getValuef();
+    int color2 = color1;
+    int color3 = color1;
+    if (this.paletteType.getEnum() == PaletteType.MONO) {
+      color2 = LXColor.BLACK;
+      color3 = LXColor.BLACK;
+    } else if (this.paletteType.getEnum() == PaletteType.COMPLEMENTARY) {
+      color2 = LXColor.hsb(hue + 180, saturation, brightness);
+      color3 = LXColor.BLACK;
+    } else if (this.paletteType.getEnum() == PaletteType.SPLIT_COMPLEMENTARY) {
+      color2 = LXColor.hsb(hue + 150, saturation, brightness);
+      color3 = LXColor.hsb(hue + 210, saturation, brightness);
+    } else if (this.paletteType.getEnum() == PaletteType.TRIADIC) {
+      color2 = LXColor.hsb(hue + 120, saturation, brightness);
+      color3 = LXColor.hsb(hue + 240, saturation, brightness);
+    } else if (this.paletteType.getEnum() == PaletteType.ANALOGOUS) {
+      color2 = LXColor.hsb(hue + 30, saturation, brightness);
+      color3 = LXColor.hsb(hue - 30, saturation, brightness);
+    }
+    this.color2.setColor(color2);
+    this.color3.setColor(color3);
+  }
+
+  private void updateSwatches(LXSwatch swatch) {
+    // Send to target color in global palette
+    setColorAtPosition(swatch, this.color1Pos.getEnum(), this.color1.getColor());
+    setColorAtPosition(swatch, this.color2Pos.getEnum(), this.color2.getColor());
+    setColorAtPosition(swatch, this.color3Pos.getEnum(), this.color3.getColor());
   }
 
   protected void setColorAtPosition(LXSwatch swatch, DmxColorModulator.ColorPosition colorPosition, int color) {

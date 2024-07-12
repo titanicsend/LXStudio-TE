@@ -15,6 +15,7 @@
  */
 package heronarts.lx.studio;
 
+import heronarts.glx.ui.UI2dContainer;
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
 import heronarts.lx.mixer.LXBus;
@@ -24,6 +25,7 @@ import heronarts.lx.pattern.form.PlanesPattern;
 import heronarts.lx.pattern.texture.NoisePattern;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.SocketException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -547,6 +549,25 @@ public class TEApp extends LXStudio {
 
       new UIColorPaletteManager(ui, this.colorPaletteManager, ui.leftPane.global.getContentWidth())
           .addToContainer(ui.leftPane.global, 3);
+
+      UI2dContainer paletteHome = ui.leftPane.global;
+      try {
+        Field privateField = LXStudio.UI.class.getDeclaredField("mainContext");
+
+        // Set the accessibility as true
+        privateField.setAccessible(true);
+
+        // Store the value of private field in variable
+        LXStudio.UI.MainContext mainContext = (LXStudio.UI.MainContext)privateField.get(ui);
+
+        paletteHome = mainContext.rightPerformance;
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+      new UIColorPaletteManager(ui, this.colorPaletteManager, ui.leftPane.global.getContentWidth())
+          .addToContainer(paletteHome, 0);
+
+
 
       // Set camera zoom and point size to match current model
       applyTECameraPosition();

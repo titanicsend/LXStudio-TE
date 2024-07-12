@@ -1,6 +1,6 @@
 {
   "version": "1.0.1.TE.1-SNAPSHOT",
-  "timestamp": 1720664460464,
+  "timestamp": 1720750956223,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -11434,11 +11434,218 @@
                   "secondary/hue": 120.0
                 },
                 "children": {}
+              },
+              {
+                "id": 197083,
+                "class": "heronarts.lx.color.LXDynamicColor",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true
+                },
+                "parameters": {
+                  "label": "LX",
+                  "mode": 0,
+                  "period": 30.0,
+                  "primary/brightness": 0.0,
+                  "primary/saturation": 100.0,
+                  "primary/hue": 0.0,
+                  "secondary/brightness": 100.0,
+                  "secondary/saturation": 100.0,
+                  "secondary/hue": 120.0
+                },
+                "children": {}
+              },
+              {
+                "id": 197085,
+                "class": "heronarts.lx.color.LXDynamicColor",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true
+                },
+                "parameters": {
+                  "label": "LX",
+                  "mode": 0,
+                  "period": 30.0,
+                  "primary/brightness": 0.0,
+                  "primary/saturation": 100.0,
+                  "primary/hue": 0.0,
+                  "secondary/brightness": 100.0,
+                  "secondary/saturation": 100.0,
+                  "secondary/hue": 120.0
+                },
+                "children": {}
+              },
+              {
+                "id": 197087,
+                "class": "heronarts.lx.color.LXDynamicColor",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true
+                },
+                "parameters": {
+                  "label": "LX",
+                  "mode": 0,
+                  "period": 30.0,
+                  "primary/brightness": 0.0,
+                  "primary/saturation": 100.0,
+                  "primary/hue": 0.0,
+                  "secondary/brightness": 100.0,
+                  "secondary/saturation": 100.0,
+                  "secondary/hue": 120.0
+                },
+                "children": {}
+              },
+              {
+                "id": 197089,
+                "class": "heronarts.lx.color.LXDynamicColor",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true
+                },
+                "parameters": {
+                  "label": "LX",
+                  "mode": 0,
+                  "period": 30.0,
+                  "primary/brightness": 0.0,
+                  "primary/saturation": 100.0,
+                  "primary/hue": 0.0,
+                  "secondary/brightness": 100.0,
+                  "secondary/saturation": 100.0,
+                  "secondary/hue": 120.0
+                },
+                "children": {}
               }
             ]
           }
         },
-        "swatches": []
+        "swatches": [
+          {
+            "id": 197091,
+            "class": "heronarts.lx.color.LXSwatch",
+            "internal": {
+              "modulationColor": 0,
+              "modulationControlsExpanded": true,
+              "modulationsExpanded": true
+            },
+            "parameters": {
+              "label": "CUE",
+              "recall": false,
+              "autoCycleEligible": true
+            },
+            "children": {},
+            "colors": [
+              {
+                "id": 197092,
+                "class": "heronarts.lx.color.LXDynamicColor",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true
+                },
+                "parameters": {
+                  "label": "LX",
+                  "mode": 0,
+                  "period": 30.0,
+                  "primary/brightness": 0.0,
+                  "primary/saturation": 100.0,
+                  "primary/hue": 183.0,
+                  "secondary/brightness": 100.0,
+                  "secondary/saturation": 100.0,
+                  "secondary/hue": 120.0
+                },
+                "children": {}
+              },
+              {
+                "id": 197094,
+                "class": "heronarts.lx.color.LXDynamicColor",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true
+                },
+                "parameters": {
+                  "label": "LX",
+                  "mode": 0,
+                  "period": 30.0,
+                  "primary/brightness": 0.0,
+                  "primary/saturation": 100.0,
+                  "primary/hue": 0.0,
+                  "secondary/brightness": 100.0,
+                  "secondary/saturation": 100.0,
+                  "secondary/hue": 120.0
+                },
+                "children": {}
+              },
+              {
+                "id": 197096,
+                "class": "heronarts.lx.color.LXDynamicColor",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true
+                },
+                "parameters": {
+                  "label": "LX",
+                  "mode": 0,
+                  "period": 30.0,
+                  "primary/brightness": 100.0,
+                  "primary/saturation": 100.0,
+                  "primary/hue": 198.35293579101562,
+                  "secondary/brightness": 100.0,
+                  "secondary/saturation": 100.0,
+                  "secondary/hue": 120.0
+                },
+                "children": {}
+              },
+              {
+                "id": 197098,
+                "class": "heronarts.lx.color.LXDynamicColor",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true
+                },
+                "parameters": {
+                  "label": "LX",
+                  "mode": 0,
+                  "period": 30.0,
+                  "primary/brightness": 100.0,
+                  "primary/saturation": 100.0,
+                  "primary/hue": 318.3529357910156,
+                  "secondary/brightness": 100.0,
+                  "secondary/saturation": 100.0,
+                  "secondary/hue": 120.0
+                },
+                "children": {}
+              },
+              {
+                "id": 197100,
+                "class": "heronarts.lx.color.LXDynamicColor",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true
+                },
+                "parameters": {
+                  "label": "LX",
+                  "mode": 0,
+                  "period": 30.0,
+                  "primary/brightness": 100.0,
+                  "primary/saturation": 100.0,
+                  "primary/hue": 78.35295104980469,
+                  "secondary/brightness": 100.0,
+                  "secondary/saturation": 100.0,
+                  "secondary/hue": 120.0
+                },
+                "children": {}
+              }
+            ]
+          }
+        ]
       },
       "tempo": {
         "id": 10,
@@ -11781,7 +11988,7 @@
         },
         "parameters": {
           "label": "Audio",
-          "enabled": false,
+          "enabled": true,
           "mode": 0,
           "expandedPerformance": true
         },
@@ -12054,7 +12261,7 @@
             },
             "parameters": {
               "label": "Meter",
-              "running": false,
+              "running": true,
               "trigger": false,
               "midiFilter/enabled": true,
               "midiFilter/channel": 16,
@@ -12069,18 +12276,18 @@
               "slope": 6.0,
               "band-1": 0.0,
               "band-2": 0.0,
-              "band-3": 0.0,
-              "band-4": 0.09385767096217401,
-              "band-5": 0.1262932014536039,
-              "band-6": 0.16618059215199654,
-              "band-7": 0.12291845547075508,
-              "band-8": 0.14324512575641746,
-              "band-9": 0.1664022794666824,
-              "band-10": 0.3572143366059676,
-              "band-11": 0.429811620160069,
-              "band-12": 0.3489525938940513,
-              "band-13": 0.41973926786685,
-              "band-14": 0.0,
+              "band-3": 0.0012703440082511008,
+              "band-4": 0.1506276612390337,
+              "band-5": 0.24890980071365654,
+              "band-6": 0.3248929240590114,
+              "band-7": 0.3483940062553724,
+              "band-8": 0.16290354631527515,
+              "band-9": 0.16361837488459463,
+              "band-10": 0.47224427386016643,
+              "band-11": 0.3032020174386231,
+              "band-12": 0.28347416600521436,
+              "band-13": 0.35943523257145815,
+              "band-14": 0.12033067085045168,
               "band-15": 0.0,
               "band-16": 0.0
             },
@@ -12446,22 +12653,22 @@
         },
         "parameters": {
           "label": "Look Color Palette",
-          "hue": 0.0,
+          "hue": -161.65178443479817,
           "saturation": 100.0,
           "brightness": 100.0,
           "paletteType": 1,
           "color1Position": 3,
           "color2Position": 4,
           "color3Position": 5,
-          "color1/brightness": 0.0,
-          "color1/saturation": 0.0,
-          "color1/hue": 0.0,
-          "color2/brightness": 0.0,
-          "color2/saturation": 0.0,
-          "color2/hue": 0.0,
-          "color3/brightness": 0.0,
-          "color3/saturation": 0.0,
-          "color3/hue": 0.0
+          "color1/brightness": 100.0,
+          "color1/saturation": 100.0,
+          "color1/hue": 198.35293579101562,
+          "color2/brightness": 100.0,
+          "color2/saturation": 100.0,
+          "color2/hue": 318.3529357910156,
+          "color3/brightness": 100.0,
+          "color3/saturation": 100.0,
+          "color3/hue": 78.35295104980469
         },
         "children": {}
       },
@@ -12500,7 +12707,7 @@
         "depth": 1.0,
         "camera": {
           "active": false,
-          "radius": 574.9399752610337,
+          "radius": 120.0,
           "theta": 0.0,
           "phi": 0.0,
           "x": 0.0,

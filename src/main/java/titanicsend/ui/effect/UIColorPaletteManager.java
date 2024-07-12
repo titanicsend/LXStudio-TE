@@ -10,6 +10,7 @@ import heronarts.glx.ui.component.UIDropMenu;
 import heronarts.glx.ui.component.UILabel;
 import heronarts.glx.ui.component.UISlider;
 import heronarts.glx.ui.vg.VGraphics;
+import heronarts.lx.color.ColorParameter;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.studio.ui.device.UIControls;
 import heronarts.lx.studio.ui.global.UIPalette;
@@ -29,11 +30,10 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     super(ui, 0, 0, w, 0);
     this.width = w;
 
-    this.setLayout(Layout.VERTICAL, 6);
+    this.setLayout(Layout.VERTICAL, 0);
     this.setPadding(2, 0);
     this.setTitle("PALETTE MANAGER");
 //    this.setContentWidth(this.width);
-
 
     float SLIDER_SPACING = 4;
     float controlWidth = this.width / 3;
@@ -57,18 +57,25 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     );
     container1.addToContainer(this);
 
-    float MAIN_COLOR_SIZE = 24F;
-    UI2dContainer container2 = UI2dContainer.newHorizontalContainer(MAIN_COLOR_SIZE, 0F);
+    float MAIN_COLOR_SIZE = 28F;
+    UI2dContainer container2 = UI2dContainer.newHorizontalContainer(this.width, 2F);
     addColumn(
         container2,
-        new UI2dComponent(0, 0, MAIN_COLOR_SIZE, MAIN_COLOR_SIZE) {
-          public void onDraw(UI ui, VGraphics vg) {
-            vg.fillColor(paletteMgr.color1.calcColor());
-            // LXColor.hsb(paletteMgr.hue.getValuef(), paletteMgr.saturation.getValuef(), paletteMgr.brightness.getValuef())
-            vg.rect(0, 0, this.getWidth(), this.getHeight());
-            vg.fill();
-          }
-        }).setWidth(24F);
+        new UISingleColorDisplay(paletteMgr.color1, MAIN_COLOR_SIZE)
+    ).setWidth(MAIN_COLOR_SIZE);
+    addColumn(
+        container2,
+//        new UILabel(56.0F, "Palette Type"),
+        newKnob(paletteMgr.paletteType)
+    );
+    addColumn(
+        container2,
+        new UISingleColorDisplay(paletteMgr.color2, MAIN_COLOR_SIZE)
+    ).setWidth(MAIN_COLOR_SIZE);
+    addColumn(
+        container2,
+        new UISingleColorDisplay(paletteMgr.color3, MAIN_COLOR_SIZE)
+    ).setWidth(MAIN_COLOR_SIZE);
     container2.addToContainer(this);
 
 //    UI2dContainer container2 = UI2dContainer.newHorizontalContainer(controlWidth, 6);
@@ -137,6 +144,24 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
         16, 4, new UILabel(labelWidth, 12, label), component);
   }
 
+  private class UISingleColorDisplay extends UI2dComponent {
+    private int color = LXColor.BLACK;
+
+    private UISingleColorDisplay(ColorParameter colorParameter, float dimension) {
+      super(0, 0, dimension, dimension);
+      this.addListener(colorParameter, (p) -> {
+        this.color = ((ColorParameter)p).getColor();
+        this.redraw();
+      });
+    }
+
+    public void onDraw(UI ui, VGraphics vg) {
+      vg.fillColor(this.color);
+      vg.rect(0, 0, this.getWidth(), this.getHeight());
+      vg.fill();
+    }
+  }
+
   private class UIHueDisplay extends UIGradientDisplay {
     private double hueOffset = 0.0;
 
@@ -160,7 +185,6 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
         vg.rect(x0, 0.0F, x1 - x0, this.height);
         vg.fill();
       }
-
     }
   }
 
