@@ -3,6 +3,7 @@ package titanicsend.ui.effect;
 import heronarts.glx.ui.UI;
 import heronarts.glx.ui.UI2dComponent;
 import heronarts.glx.ui.UI2dContainer;
+import heronarts.glx.ui.UIColor;
 import heronarts.glx.ui.component.UICollapsibleSection;
 import heronarts.glx.ui.component.UIColorPicker;
 import heronarts.glx.ui.component.UIDoubleBox;
@@ -12,6 +13,7 @@ import heronarts.glx.ui.component.UISlider;
 import heronarts.glx.ui.vg.VGraphics;
 import heronarts.lx.color.ColorParameter;
 import heronarts.lx.color.LXColor;
+import heronarts.lx.color.LXSwatch;
 import heronarts.lx.studio.ui.device.UIControls;
 import heronarts.lx.studio.ui.global.UIPalette;
 import java.lang.reflect.Field;
@@ -35,6 +37,20 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     this.setPadding(2, 0);
     this.setTitle("PALETTE MANAGER");
 
+    UI2dContainer swatchDisplayContainer = UI2dContainer.newVerticalContainer(this.width-12, 6F,
+        row("Act", 20,
+            new UIPalette.Swatch(ui, paletteMgr.getActiveSwatch(), 0, 0, 80, UIColorPicker.Corner.TOP_LEFT)
+        ).setPadding(2F).setBorderRounding(2).setBackgroundColor(ui.theme.listItemBackgroundColor).setWidth(this.width-12).setHeight(24)
+    ); //.setPadding(0F).setBorderRounding(3).setBackgroundColor(ui.theme.listBackgroundColor);
+    LXSwatch cueSwatch = paletteMgr.getCueSwatch();
+    if (cueSwatch != null) {
+      row("Cue", 20,
+          new UIPalette.Swatch(ui, paletteMgr.getCueSwatch(), 0, 0, 80, UIColorPicker.Corner.TOP_LEFT)
+      ).setPadding(2F).setBorderRounding(2).setBackgroundColor(ui.theme.listItemBackgroundColor).setWidth(this.width-12).setHeight(24)
+          .addToContainer(swatchDisplayContainer);
+    }
+    swatchDisplayContainer.addToContainer(this);
+
     horizontalBreak(ui, this.width).addToContainer(this);
 
     buildColorSlidersRow(paletteMgr).addToContainer(this);
@@ -43,20 +59,18 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
 
     buildPaletteSelectionRow(paletteMgr).addToContainer(this);
 
-    UI2dContainer.newVerticalContainer(this.width, 6,
-        row("Active", 20, new UIPalette.Swatch(ui, paletteMgr.getActiveSwatch(), 0, 0, 80, UIColorPicker.Corner.TOP_LEFT)),
-        row("Cue", 20, new UIPalette.Swatch(ui, paletteMgr.getCueSwatch(), 0, 0, 80, UIColorPicker.Corner.TOP_LEFT))
-    ).addToContainer(this);
+    horizontalBreak(ui, this.width).addToContainer(this);
 
     this.addListener(
         paletteMgr.toggleCue,
         (p) -> {
           paletteMgr.swapCueSwatch();
+          this.redraw();
         });
   }
 
   private UI2dContainer buildPaletteSelectionRow(ColorPaletteManager paletteMgr) {
-    UI2dContainer paletteSelectionRow = UI2dContainer.newHorizontalContainer(this.width, 2F);
+    UI2dContainer paletteSelectionRow = UI2dContainer.newHorizontalContainer(40F, 2F);
 
     float swatchHeight = 40F;
     float swatchWidth = swatchHeight;
@@ -137,11 +151,11 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
 
     addVerticalBreak(ui, uiContainer);
 
-    addColumn(
-        uiContainer,
-        row("Act", 20, new UIPalette.Swatch(ui, effect.getActiveSwatch(), 0, 0, 80, UIColorPicker.Corner.TOP_LEFT)),
-        row("Cue", 20, new UIPalette.Swatch(ui, effect.getCueSwatch(), 0, 0, 80, UIColorPicker.Corner.TOP_LEFT))
-    ).setChildSpacing(6).setWidth(SLIDER_WIDTH+10);
+
+//    addColumn(
+//        uiContainer,
+//
+//    ).setChildSpacing(6).setWidth(SLIDER_WIDTH+10);
 
     uiContainer.addListener(
         effect.toggleCue,

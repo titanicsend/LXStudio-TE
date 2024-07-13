@@ -1,6 +1,6 @@
 {
   "version": "1.0.1.TE.1-SNAPSHOT",
-  "timestamp": 1720900136774,
+  "timestamp": 1720904839907,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -11470,7 +11470,7 @@
                   "period": 30.0,
                   "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 0.0,
+                  "primary/hue": 151.76470947265625,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -11491,7 +11491,7 @@
                   "period": 30.0,
                   "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 30.117645263671875,
+                  "primary/hue": 331.76470947265625,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -11510,9 +11510,9 @@
                   "label": "LX",
                   "mode": 0,
                   "period": 30.0,
-                  "primary/brightness": 100.0,
+                  "primary/brightness": 0.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 329.8823547363281,
+                  "primary/hue": 141.41177368164062,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -11594,7 +11594,7 @@
                   "period": 30.0,
                   "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 0.0,
+                  "primary/hue": 151.76470947265625,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -11615,7 +11615,7 @@
                   "period": 30.0,
                   "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 180.0,
+                  "primary/hue": 331.76470947265625,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -11636,7 +11636,7 @@
                   "period": 30.0,
                   "primary/brightness": 0.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 329.8823547363281,
+                  "primary/hue": 31.764707565307617,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -12278,16 +12278,16 @@
               "band-2": 0.0,
               "band-3": 0.0,
               "band-4": 0.0,
-              "band-5": 0.04521897608477643,
-              "band-6": 0.1519504126546085,
-              "band-7": 0.1899596732487625,
-              "band-8": 0.12559987940993234,
-              "band-9": 0.15590740288834015,
-              "band-10": 0.29507115456798483,
-              "band-11": 0.27462960360138344,
-              "band-12": 0.3060988359658454,
-              "band-13": 0.39968992069515485,
-              "band-14": 0.10189816451519496,
+              "band-5": 0.0,
+              "band-6": 0.0,
+              "band-7": 0.0,
+              "band-8": 0.0,
+              "band-9": 0.0,
+              "band-10": 0.0,
+              "band-11": 0.0,
+              "band-12": 0.0,
+              "band-13": 0.0,
+              "band-14": 0.0,
               "band-15": 0.0,
               "band-16": 0.0
             },
@@ -12389,8 +12389,8 @@
             "patternIndex": 0,
             "patterns": [
               {
-                "id": 187609,
-                "class": "heronarts.lx.pattern.color.SolidPattern",
+                "id": 202149,
+                "class": "titanicsend.pattern.justin.TESolidPattern",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
@@ -12401,7 +12401,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "Solid",
+                  "label": "TESolid",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
                   "midiFilter/minNote": 0,
@@ -12416,15 +12416,32 @@
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
-                  "color/brightness": 100.0,
-                  "color/saturation": 100.0,
-                  "color/hue": 0.0,
-                  "color/mode": 0,
-                  "color/index": 1
+                  "te_speed": 0.5,
+                  "te_xpos": 0.0,
+                  "te_ypos": 0.0,
+                  "te_size": 1.0,
+                  "te_quantity": 0.5,
+                  "te_spin": 0.0,
+                  "te_brightness": 1.0,
+                  "te_wow1": 0.0,
+                  "te_wow2": 0.0,
+                  "te_wowtrigger": false,
+                  "te_angle": 0.0,
+                  "te_level": 0.1,
+                  "te_freq": 0.1,
+                  "panic": false,
+                  "te_color/brightness": 100.0,
+                  "te_color/saturation": 100.0,
+                  "te_color/hue": 0.0,
+                  "te_color/solidSource": 1,
+                  "te_color/gradient": 0,
+                  "te_color/blendMode": 0,
+                  "te_color/offset": 0.0,
+                  "te_color/color2offset": 0.5
                 },
                 "children": {
                   "modulation": {
-                    "id": 187610,
+                    "id": 202150,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,
@@ -12441,6 +12458,24 @@
                   }
                 },
                 "deviceVersion": -1,
+                "remoteControls": [
+                  "/te_level",
+                  "/te_freq",
+                  "/view",
+                  "/te_speed",
+                  "/te_xpos",
+                  "/te_ypos",
+                  "/te_quantity",
+                  "/te_size",
+                  "/te_angle",
+                  "/te_spin",
+                  "/panic",
+                  null,
+                  "/te_wow1",
+                  "/te_wow2",
+                  "/te_wowtrigger",
+                  null
+                ],
                 "effects": []
               }
             ]
@@ -12653,7 +12688,7 @@
         },
         "parameters": {
           "label": "Look Color Palette",
-          "hue": 0.0,
+          "hue": -208.32588639110327,
           "saturation": 100.0,
           "brightness": 100.0,
           "paletteType": 4,
@@ -12662,10 +12697,10 @@
           "color3Position": 5,
           "color1/brightness": 100.0,
           "color1/saturation": 100.0,
-          "color1/hue": 0.0,
+          "color1/hue": 151.76470947265625,
           "color2/brightness": 100.0,
           "color2/saturation": 100.0,
-          "color2/hue": 180.0,
+          "color2/hue": 331.76470947265625,
           "color3/brightness": 0.0,
           "color3/saturation": 100.0,
           "color3/hue": 8.470587730407715
@@ -12707,9 +12742,9 @@
         "depth": 1.0,
         "camera": {
           "active": false,
-          "radius": 120.0,
-          "theta": 0.0,
-          "phi": 0.0,
+          "radius": 508.0407512361525,
+          "theta": 358.68729304522276,
+          "phi": -12.500639531761408,
           "x": 0.0,
           "y": 229.6736297607422,
           "z": -0.00849151611328125
@@ -12717,9 +12752,9 @@
         "cue": [
           {
             "active": false,
-            "radius": 635.888566363469,
-            "theta": 0.0,
-            "phi": 0.0,
+            "radius": 508.0407512361525,
+            "theta": 358.68729304522276,
+            "phi": -12.500639531761408,
             "x": 0.0,
             "y": 229.6736297607422,
             "z": -0.00849151611328125

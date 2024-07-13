@@ -105,6 +105,8 @@ public class ColorPaletteManager extends LXComponent {
     addParameter("color1", this.color1);
     addParameter("color2", this.color2);
     addParameter("color3", this.color3);
+
+    findOrCreateCueSwatch();
   }
 
   public LXSwatch getActiveSwatch() {
@@ -112,24 +114,31 @@ public class ColorPaletteManager extends LXComponent {
   }
 
   public LXSwatch getCueSwatch() {
-    return findOrCreateCueSwatch();
+    if (this.lx.engine.palette.swatches.size() == 0) {
+      return null;
+    }
+    return this.lx.engine.palette.swatches.get(0);
   }
 
   public void swapCueSwatch() {
     LXSwatch active = getActiveSwatch();
     LXSwatch cue = getCueSwatch();
 
-    int activeColor1 = active.getColor(this.color1Pos.getEnum().index).primary.getColor();
-    this.hue.setValue(LXColor.h(activeColor1));
-    this.saturation.setValue(LXColor.s(activeColor1));
-    this.brightness.setValue(LXColor.b(activeColor1));
+//    int activeColor1 = active.getColor(this.color1Pos.getEnum().index).primary.getColor();
+//    this.hue.setValue(LXColor.h(activeColor1));
+//    this.saturation.setValue(LXColor.s(activeColor1));
+//    this.brightness.setValue(LXColor.b(activeColor1));
+//
+    setColorAtPosition(active, this.color1Pos.getEnum(), this.color1.getColor());
+    setColorAtPosition(active, this.color2Pos.getEnum(), this.color2.getColor());
+    setColorAtPosition(active, this.color3Pos.getEnum(), this.color3.getColor());
 
-    for (int i = 0; i < LXSwatch.MAX_COLORS; ++i) {
-      int activeColor = active.getColor(i).primary.getColor();
-      int cueColor = cue.getColor(i).primary.getColor();
-      active.getColor(i).primary.setColor(cueColor);
-      cue.getColor(i).primary.setColor(activeColor);
-    }
+//    for (int i = 0; i < LXSwatch.MAX_COLORS; ++i) {
+////      int activeColor = active.getColor(i).primary.getColor();
+////      int cueColor = cue.getColor(i).primary.getColor();
+//      active.getColor(i).primary.setColor(cueColor);
+//      cue.getColor(i).primary.setColor(activeColor);
+//    }
   }
 
   // TODO: properly introspect "parameter" and decide what to do more carefully
