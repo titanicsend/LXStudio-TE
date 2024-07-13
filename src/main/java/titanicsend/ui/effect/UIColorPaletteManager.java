@@ -31,32 +31,13 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     super(ui, xOffset, 0, w, 0);
     this.width = w;
 
-    this.setLayout(Layout.VERTICAL, 0);
+    this.setLayout(Layout.VERTICAL, 2F);
     this.setPadding(2, 0);
     this.setTitle("PALETTE MANAGER");
-//    this.setContentWidth(this.width);
 
-    float SLIDER_SPACING = 4;
-    float controlWidth = this.width / 3;
-    float sliderWidth = controlWidth - (2*SLIDER_SPACING);
-
-    UI2dContainer container1 = UI2dContainer.newHorizontalContainer(controlWidth, SLIDER_SPACING);
-    addColumn(
-        container1,
-        new UIHueDisplay(paletteMgr.hue, sliderWidth),
-        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.hue)
-    );
-    addColumn(
-        container1,
-        new UISaturationDisplay(sliderWidth),
-        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.saturation)
-    );
-    addColumn(
-        container1,
-        new UIBrightnessDisplay(sliderWidth),
-        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.brightness)
-    );
-    container1.addToContainer(this);
+    horizontalBreak(ui, this.width).addToContainer(this);
+    buildColorSlidersRow(paletteMgr).addToContainer(this);
+    horizontalBreak(ui, this.width).addToContainer(this);
 
     float MAIN_COLOR_SIZE = 28F;
     UI2dContainer container2 = UI2dContainer.newHorizontalContainer(this.width, 2F);
@@ -66,7 +47,6 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     ).setWidth(MAIN_COLOR_SIZE);
     addColumn(
         container2,
-//        new UILabel(56.0F, "Palette Type"),
         newKnob(paletteMgr.paletteType)
     );
     addColumn(
@@ -101,6 +81,30 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
 
 
 //    buildDeviceControls(ui, this, paletteMgr);
+  }
+
+  private UI2dContainer buildColorSlidersRow(ColorPaletteManager paletteMgr) {
+    float SLIDER_SPACING = 4;
+    float controlWidth = this.width / 3;
+    float sliderWidth = controlWidth - (2*SLIDER_SPACING);
+    float height = 42;
+    UI2dContainer colorSlidersRow = UI2dContainer.newHorizontalContainer(height, SLIDER_SPACING);
+    addColumn(
+        colorSlidersRow,
+        new UIHueDisplay(paletteMgr.hue, sliderWidth),
+        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.hue)
+    );
+    addColumn(
+        colorSlidersRow,
+        new UISaturationDisplay(sliderWidth),
+        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.saturation)
+    );
+    addColumn(
+        colorSlidersRow,
+        new UIBrightnessDisplay(sliderWidth),
+        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.brightness)
+    );
+    return colorSlidersRow;
   }
 
   public void buildDeviceControls(LXStudio.UI ui, UI2dContainer uiContainer, ColorPaletteManager effect) {
@@ -153,14 +157,14 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
   }
 
   public static void addToRightPerformancePane(LXStudio.UI ui, ColorPaletteManager colorPaletteManager) {
-    LXStudio.UI.MainContext mainContext = getLXUIMainContext();
+    LXStudio.UI.MainContext mainContext = getLXUIMainContext(ui);
     UI2dContainer parentContainer = mainContext.rightPerformance;
-    float xOffsetWithinParent = 0;
-    new UIColorPaletteManager(ui, colorPaletteManager, parentContainer.getContentWidth(), xOffsetWithinParent)
+    float xOffsetWithinParent = 14;
+    new UIColorPaletteManager(ui, colorPaletteManager, parentContainer.getContentWidth() - 28, xOffsetWithinParent)
         .addToContainer(parentContainer, 1);
   }
 
-  private static LXStudio.UI.MainContext getLXUIMainContext() {
+  private static LXStudio.UI.MainContext getLXUIMainContext(LXStudio.UI ui) {
     try {
       Field privateField = LXStudio.UI.class.getDeclaredField("mainContext");
 
