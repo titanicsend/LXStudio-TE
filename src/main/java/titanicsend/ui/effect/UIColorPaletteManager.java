@@ -42,13 +42,24 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     horizontalBreak(ui, this.width).addToContainer(this);
 
     buildPaletteSelectionRow(paletteMgr).addToContainer(this);
+
+    UI2dContainer.newVerticalContainer(this.width, 6,
+        row("Active", 20, new UIPalette.Swatch(ui, paletteMgr.getActiveSwatch(), 0, 0, 80, UIColorPicker.Corner.TOP_LEFT)),
+        row("Cue", 20, new UIPalette.Swatch(ui, paletteMgr.getCueSwatch(), 0, 0, 80, UIColorPicker.Corner.TOP_LEFT))
+    ).addToContainer(this);
+
+    this.addListener(
+        paletteMgr.toggleCue,
+        (p) -> {
+          paletteMgr.swapCueSwatch();
+        });
   }
 
   private UI2dContainer buildPaletteSelectionRow(ColorPaletteManager paletteMgr) {
     UI2dContainer paletteSelectionRow = UI2dContainer.newHorizontalContainer(this.width, 2F);
 
     float swatchHeight = 40F;
-    float swatchWidth = swatchHeight * 2;
+    float swatchWidth = swatchHeight;
 
     addColumn(
         paletteSelectionRow,
@@ -59,6 +70,12 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
         paletteSelectionRow,
         newKnob(paletteMgr.paletteType)
     );
+
+    addColumn(
+        paletteSelectionRow,
+        newButton(paletteMgr.toggleCue, 40F).setActiveLabel("ON").setInactiveLabel("OFF")
+    );
+
     return paletteSelectionRow;
   }
 

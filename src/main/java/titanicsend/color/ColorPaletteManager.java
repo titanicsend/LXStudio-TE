@@ -134,8 +134,6 @@ public class ColorPaletteManager extends LXComponent {
 
   // TODO: properly introspect "parameter" and decide what to do more carefully
   public void onParameterChanged(LXParameter parameter) {
-//    System.out.println(parameter.getLabel());
-//    System.out.println(parameter.getValue());
     float hue = this.hue.getValuef();
     float saturation = this.saturation.getValuef();
     float brightness = this.brightness.getValuef();
