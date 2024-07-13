@@ -45,25 +45,41 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
   }
 
   private UI2dContainer buildPaletteSelectionRow(ColorPaletteManager paletteMgr) {
-    float MAIN_COLOR_SIZE = 28F;
     UI2dContainer paletteSelectionRow = UI2dContainer.newHorizontalContainer(this.width, 2F);
+
+    float swatchHeight = 40F;
+    float swatchWidth = swatchHeight * 2;
+
     addColumn(
         paletteSelectionRow,
-        new UISingleColorDisplay(paletteMgr.color1, MAIN_COLOR_SIZE)
-    ).setWidth(MAIN_COLOR_SIZE);
-    addColumn(
-        paletteSelectionRow,
-        new UISingleColorDisplay(paletteMgr.color2, MAIN_COLOR_SIZE)
-    ).setWidth(MAIN_COLOR_SIZE);
-    addColumn(
-        paletteSelectionRow,
-        new UISingleColorDisplay(paletteMgr.color3, MAIN_COLOR_SIZE)
-    ).setWidth(MAIN_COLOR_SIZE);
+        newHierarchichalSwatch(paletteMgr, swatchWidth, swatchHeight)
+    ).setWidth(swatchWidth);
+
     addColumn(
         paletteSelectionRow,
         newKnob(paletteMgr.paletteType)
     );
     return paletteSelectionRow;
+  }
+
+  private UI2dContainer newHierarchichalSwatch(ColorPaletteManager paletteMgr, float totalWidth, float totalHeight) {
+    float swatchChildSpacing = 2F;
+    float swatchTotalHeight = totalHeight - swatchChildSpacing/2;
+    float swatchSegmentHeight = swatchTotalHeight / 2;
+    float swatchSegmentWidth = (totalWidth/2) - (swatchChildSpacing/2);
+
+    UI2dContainer squareSwatch = UI2dContainer.newVerticalContainer(
+        totalWidth,
+        swatchChildSpacing,
+        new UISingleColorDisplay(paletteMgr.color1, totalWidth, swatchSegmentHeight),
+        UI2dContainer.newHorizontalContainer(
+            swatchSegmentHeight,
+            2F,
+            new UISingleColorDisplay(paletteMgr.color2, swatchSegmentWidth, swatchSegmentHeight),
+            new UISingleColorDisplay(paletteMgr.color3, swatchSegmentWidth, swatchSegmentHeight)
+        )
+    );
+    return squareSwatch;
   }
 
   private UI2dContainer buildColorSlidersRow(ColorPaletteManager paletteMgr) {
