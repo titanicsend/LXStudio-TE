@@ -10,10 +10,12 @@ import heronarts.lx.model.LXPoint;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import heronarts.lx.studio.TEApp;
@@ -21,6 +23,7 @@ import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
+import titanicsend.util.TE;
 
 import javax.imageio.ImageIO;
 
@@ -40,57 +43,19 @@ public class ModelFileWriter extends TEPerformancePattern {
 
   @Override
   public void runTEAudioPattern(double deltaMs) {
-    Path all_points = Path.of("resources/model/csv/TEPoints_All.csv");
-    Path all_map = Path.of("resources/model/map/TEPoints_All_map.png");
-    Path all_map_uv = Path.of("resources/model/uv/TEPoints_All_map_uv.csv");
-
-    Path panel_points = Path.of("resources/model/csv/TEPoints_Panels.csv");
-    Path panel_map = Path.of("resources/model/map/TEPoints_Panels_map.png");
-    Path panel_map_uv = Path.of("resources/model/uv/TEPoints_Panels_map_uv.csv");
-
-    Path edge_points = Path.of("resources/model/csv/TEPoints_Edges.csv");
-    Path edge_map = Path.of("resources/model/map/TEPoints_Edges_map.png");
-    Path edge_map_uv = Path.of("resources/model/uv/TEPoints_Edges_map_uv.csv");
 
     if (doneWriting) {
       return;
     }
 
     try {
-      // Clear the existing data
-      Files.deleteIfExists(all_points);
-      Files.deleteIfExists(panel_points);
-      Files.deleteIfExists(edge_points);
-
-      // write CSV header
-      Files.writeString(all_points, "tx,ty,tz\n", CREATE, APPEND);
-      Files.writeString(panel_points, "tx,ty,tz\n", CREATE, APPEND);
-      Files.writeString(edge_points, "tx,ty,tz\n", CREATE, APPEND);
 
       // Write all points
-      for (LXPoint point : getModel().getPoints()) {
-        Files.writeString(
-            all_points, point.x + "," + point.y + "," + point.z + "\n", CREATE, APPEND);
-      }
-      generateMapAndUv(all_points, all_map, all_map_uv, new int[] {2, 1, 0} /*z, y, x*/);
+      // This is the main model and is required to be written out.
+      LXPoint[] all_points_array = lx.getModel().points;
+      writeModel(all_points_array, "all");
 
-      // Write panel points only
-      for (TEPanelModel panel : TEApp.wholeModel.getPanels()) {
-        for (LXPoint point : panel.points) {
-          Files.writeString(
-              panel_points, point.x + "," + point.y + "," + point.z + "\n", CREATE, APPEND);
-        }
-      }
-      generateMapAndUv(panel_points, panel_map, panel_map_uv, new int[] {2, 1, 0} /*z, y, x*/);
-
-      // Write edge points only
-      for (TEEdgeModel edge : TEApp.wholeModel.getEdges()) {
-        for (LXPoint point : edge.points) {
-          Files.writeString(
-              edge_points, point.x + "," + point.y + "," + point.z + "\n", CREATE, APPEND);
-        }
-      }
-      generateMapAndUv(edge_points, edge_map, edge_map_uv, new int[] {2, 1, 0} /*z, y, x*/);
+      writeOptionalModels();
 
       doneWriting = true;
     } catch (IOException e) {
@@ -98,73 +63,104 @@ public class ModelFileWriter extends TEPerformancePattern {
     }
   }
 
-  public void generateMapAndUv(
-      Path csvPath, Path outputFilePath, Path uvOutputFilePath, int[] columnOrder)
-      throws IOException {
-    if (columnOrder.length != 3) {
-      throw new IllegalArgumentException("Column order must contain exactly 3 elements");
+  private void writeOptionalModels() throws IOException {
+    // Write "panel" points only
+    List<LXPoint> panel_points_list = new ArrayList<>();
+    for (TEPanelModel panel : TEApp.wholeModel.getPanels()) {
+      panel_points_list.addAll(Arrays.asList(panel.points));
     }
+    writeModel(panel_points_list, "panels");
 
-    List<String> lines = Files.readAllLines(csvPath);
-    double[] min = {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
-    double[] max = {-Double.MAX_VALUE, -Double.MAX_VALUE, -Double.MAX_VALUE};
+    // Write "edge" points only
+    List<LXPoint> edge_points_list = new ArrayList<>();
+    for (TEEdgeModel edge : TEApp.wholeModel.getEdges()) {
+      edge_points_list.addAll(Arrays.asList(edge.points));
+    }
+    writeModel(edge_points_list, "edges");
+  }
 
-    // Find min and max values for normalization. Always use the whole model to have the same scale
-    // for all png outputs
-    for (LXPoint point : getModel().getPoints()) {
-      double[] values = {point.x, point.y, point.z};
-      for (int i = 0; i < 3; i++) {
-        min[i] = Math.min(min[i], values[columnOrder[i]]);
-        max[i] = Math.max(max[i], values[columnOrder[i]]);
+  /**
+   * This function will write 3 main model files.
+   *
+   * <p>1. 3d_model: this is the coordinates of all 3d points for the points provide to the function
+   * 2. PNG mask: this is a mask that can be used to mask a texture to only points that will be used
+   * by TE 3. UV Coordinates: correlating the 3d_model points to the pixel coordinates in the PNG.
+   * This can be used to perform lossless mapping from outside of LX.
+   *
+   * @param points LXPoint[] for the model that needs to be exported.
+   * @param modelName name used to save the model. the name will be suffixed by "_3d.csv",
+   *     "_mask.png", and "_uv.csv" for each output file.
+   */
+  public void writeModel(LXPoint[] points, String modelName) throws IOException {
+    Path path3dModel = Path.of(String.format("resources/model/%s_3d.csv", modelName));
+    Path pathMask = Path.of(String.format("resources/model/%s_mask.png", modelName));
+    Path pathUv = Path.of(String.format("resources/model/%s_uv.csv", modelName));
+
+    Files.deleteIfExists(path3dModel);
+    Files.deleteIfExists(pathMask);
+    Files.deleteIfExists(pathUv);
+
+    // Write 3D model data as CSV
+    try (BufferedWriter writer = Files.newBufferedWriter(path3dModel, CREATE, APPEND)) {
+      writer.write("tx,ty,tz\n"); // Header row
+      for (LXPoint point : points) {
+        writer.write(String.format("%f,%f,%f\n", point.x, point.y, point.z));
       }
     }
 
-    // Create image
-    BufferedImage image = new BufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+    double[] min = {Double.MAX_VALUE, Double.MAX_VALUE}; // Min x, y
+    double[] max = {-Double.MAX_VALUE, -Double.MAX_VALUE}; // Max x, y
 
-    // Set background color (black in this case)
+    // Find min and max values for x and y
+    for (LXPoint point : points) {
+      min[0] = Math.min(min[0], point.x);
+      max[0] = Math.max(max[0], point.x);
+      min[1] = Math.min(min[1], point.y);
+      max[1] = Math.max(max[1], point.y);
+    }
+
+    BufferedImage image = new BufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
     Graphics2D g2d = image.createGraphics();
     g2d.setColor(Color.BLACK);
     g2d.fillRect(0, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
     g2d.dispose();
 
-    List<String> uv_points = new ArrayList<>();
+    List<String> uvPoints = new ArrayList<>();
+    TE.log("Received " + points.length + " points.");
 
-    // Iterate through points and draw
-    for (int i = 1; i < lines.size(); i++) { // Skip header line
-      String[] parts = lines.get(i).split(",");
-      double x = Double.parseDouble(parts[columnOrder[0]]);
-      double y = Double.parseDouble(parts[columnOrder[1]]);
-      double z = Double.parseDouble(parts[columnOrder[2]]);
+    // Generate mask and UV coordinates
+    for (LXPoint point : points) {
+      double x = point.x;
+      double y = point.y;
 
-      // Normalize and map to pixel coordinates
-      int px =
-          (int)
-              ((x - min[0])
-                      / Math.max(max[0] - min[0], EPSILON)
-                      * (IMAGE_WIDTH - 2 * Math.max(MARGIN, EPSILON))
-                  + Math.max(MARGIN, EPSILON));
-      int py =
-          (int)
-              ((y - min[1])
-                      / Math.max(max[1] - min[1], EPSILON)
-                      * (IMAGE_HEIGHT - 2 * Math.max(MARGIN, EPSILON))
-                  + Math.max(MARGIN, EPSILON));
+      // Restored original pixel calculations
+      int px = (int) ((x - min[0]) / Math.max(max[0] - min[0], 1e-6) * (IMAGE_WIDTH - 1));
+      int py = (int) ((y - min[1]) / Math.max(max[1] - min[1], 1e-6) * (IMAGE_HEIGHT - 1));
 
       if (px >= 0 && px < IMAGE_WIDTH && py >= 0 && py < IMAGE_HEIGHT) {
-        // Calculate color based on z value (using a simple gradient from blue to red)
-        Color color = Color.white;
-        image.setRGB(px, py, color.getRGB());
-
-        // Add UV coordinates to the list
-        uv_points.add(px + "," + py);
+        image.setRGB(px, py, Color.WHITE.getRGB()); // White for mask
+        uvPoints.add(px + "," + py);
+      } else {
+        TE.err("Point outside bounds: (" + px + ", " + py + ")");
       }
     }
 
-    // Save the image
-    ImageIO.write(image, "png", outputFilePath.toFile());
+    ImageIO.write(image, "png", pathMask.toFile());
+    Files.write(pathUv, uvPoints, CREATE, TRUNCATE_EXISTING);
+  }
 
-    // Save UV map as CSV
-    Files.write(uvOutputFilePath, uv_points, CREATE, TRUNCATE_EXISTING);
+  /**
+   * Writes 3D model data, PNG mask, and UV coordinates from a list of LXPoint.
+   *
+   * @param points The List of LXPoint to export.
+   * @param modelName The base name for the output files.
+   * @throws IOException If an error occurs during file writing.
+   */
+  public void writeModel(List<LXPoint> points, String modelName) throws IOException {
+    // Convert List<LXPoint> to LXPoint[]
+    LXPoint[] pointsArray = points.toArray(new LXPoint[0]);
+
+    // Call the original writeModel method
+    writeModel(pointsArray, modelName);
   }
 }
