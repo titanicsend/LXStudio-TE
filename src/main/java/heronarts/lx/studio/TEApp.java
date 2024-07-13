@@ -550,7 +550,7 @@ public class TEApp extends LXStudio {
       new UIColorPaletteManager(ui, this.colorPaletteManager, ui.leftPane.global.getContentWidth())
           .addToContainer(ui.leftPane.global, 3);
 
-      UI2dContainer paletteHome = ui.leftPane.global;
+      UI2dContainer paletteHome = null;
       try {
         Field privateField = LXStudio.UI.class.getDeclaredField("mainContext");
 
@@ -561,11 +561,15 @@ public class TEApp extends LXStudio {
         LXStudio.UI.MainContext mainContext = (LXStudio.UI.MainContext)privateField.get(ui);
 
         paletteHome = mainContext.rightPerformance;
+//        paletteHome = mainContext.performancePalette;
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
-      new UIColorPaletteManager(ui, this.colorPaletteManager, ui.leftPane.global.getContentWidth())
-          .addToContainer(paletteHome, 0);
+      if (paletteHome != null) {
+        new UIColorPaletteManager(ui, this.colorPaletteManager, ui.leftPane.global.getContentWidth())
+            .addToContainer(paletteHome, 1);
+      }
+
 
 
 
