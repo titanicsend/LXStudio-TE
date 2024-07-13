@@ -14,6 +14,7 @@ import heronarts.lx.color.ColorParameter;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.studio.ui.device.UIControls;
 import heronarts.lx.studio.ui.global.UIPalette;
+import java.lang.reflect.Field;
 import titanicsend.color.ColorPaletteManager;
 import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.studio.LXStudio;
@@ -26,8 +27,8 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
   private static final float GRADIENT_HEIGHT = 8.0F;
   private final float width;
 
-  public UIColorPaletteManager(LXStudio.UI ui, ColorPaletteManager paletteMgr, float w) {
-    super(ui, 0, 0, w, 0);
+  public UIColorPaletteManager(LXStudio.UI ui, ColorPaletteManager paletteMgr, float w, float xOffset) {
+    super(ui, xOffset, 0, w, 0);
     this.width = w;
 
     this.setLayout(Layout.VERTICAL, 0);
@@ -142,6 +143,37 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
   private UI2dContainer row(String label, int labelWidth, UI2dComponent component) {
     return UI2dContainer.newHorizontalContainer(
         16, 4, new UILabel(labelWidth, 12, label), component);
+  }
+
+  public static void addToLeftGlobalPane(LXStudio.UI ui, ColorPaletteManager colorPaletteManager) {
+    UI2dContainer parentContainer = ui.leftPane.global;
+    float xOffsetWithinParent = 0;
+    new UIColorPaletteManager(ui, colorPaletteManager, parentContainer.getContentWidth(), xOffsetWithinParent)
+        .addToContainer(parentContainer, 3);
+  }
+
+  public static void addToRightPerformancePane(LXStudio.UI ui, ColorPaletteManager colorPaletteManager) {
+    LXStudio.UI.MainContext mainContext = getLXUIMainContext();
+    UI2dContainer parentContainer = mainContext.rightPerformance;
+    float xOffsetWithinParent = 0;
+    new UIColorPaletteManager(ui, colorPaletteManager, parentContainer.getContentWidth(), xOffsetWithinParent)
+        .addToContainer(parentContainer, 1);
+  }
+
+  private static LXStudio.UI.MainContext getLXUIMainContext() {
+    try {
+      Field privateField = LXStudio.UI.class.getDeclaredField("mainContext");
+
+      // Set the accessibility as true
+      privateField.setAccessible(true);
+
+      // Store the value of private field in variable
+      LXStudio.UI.MainContext mainContext = (LXStudio.UI.MainContext)privateField.get(ui);
+
+      return mainContext;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private class UISingleColorDisplay extends UI2dComponent {

@@ -547,31 +547,8 @@ public class TEApp extends LXStudio {
       new UIAudioStems(ui, this.audioStems, ui.leftPane.global.getContentWidth())
           .addToContainer(ui.leftPane.global, 2);
 
-      new UIColorPaletteManager(ui, this.colorPaletteManager, ui.leftPane.global.getContentWidth())
-          .addToContainer(ui.leftPane.global, 3);
-
-      UI2dContainer paletteHome = null;
-      try {
-        Field privateField = LXStudio.UI.class.getDeclaredField("mainContext");
-
-        // Set the accessibility as true
-        privateField.setAccessible(true);
-
-        // Store the value of private field in variable
-        LXStudio.UI.MainContext mainContext = (LXStudio.UI.MainContext)privateField.get(ui);
-
-        paletteHome = mainContext.rightPerformance;
-//        paletteHome = mainContext.performancePalette;
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-      if (paletteHome != null) {
-        new UIColorPaletteManager(ui, this.colorPaletteManager, ui.leftPane.global.getContentWidth())
-            .addToContainer(paletteHome, 1);
-      }
-
-
-
+      UIColorPaletteManager.addToLeftGlobalPane(ui, this.colorPaletteManager);
+      UIColorPaletteManager.addToRightPerformancePane(ui, this.colorPaletteManager);
 
       // Set camera zoom and point size to match current model
       applyTECameraPosition();
