@@ -56,11 +56,12 @@ public class ModelFileWriter extends TEPerformancePattern {
       writeModel(all_points_array, "all");
 
       writeOptionalModels();
-
-      doneWriting = true;
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+
+    // Regardless of the success or failure of the model writing, consider this pattern's work done.
+    doneWriting = true;
   }
 
   private void writeOptionalModels() throws IOException {
