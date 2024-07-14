@@ -29,7 +29,7 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
   private static final float GRADIENT_HEIGHT = 8.0F;
   private final float width;
 
-  public UIColorPaletteManager(LXStudio.UI ui, ColorPaletteManager paletteMgr, float w, float xOffset) {
+  public UIColorPaletteManager(LXStudio.UI ui, ColorPaletteManager cueMgr, ColorPaletteManager auxMgr, float w, float xOffset) {
     super(ui, xOffset, 0, w, 0);
     this.width = w;
 
@@ -39,34 +39,46 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
 
     UI2dContainer swatchDisplayContainer = UI2dContainer.newVerticalContainer(this.width-12, 6F,
         row("Act", 20,
-            new UIPalette.Swatch(ui, paletteMgr.getActiveSwatch(), 0, 0, 80, UIColorPicker.Corner.TOP_LEFT)
+            new UIPalette.Swatch(ui, ui.lx.engine.palette.swatch, 0, 0, 80, UIColorPicker.Corner.TOP_LEFT)
         ).setPadding(2F).setBorderRounding(2).setBackgroundColor(ui.theme.listItemBackgroundColor).setWidth(this.width-12).setHeight(24)
     ); //.setPadding(0F).setBorderRounding(3).setBackgroundColor(ui.theme.listBackgroundColor);
-    LXSwatch cueSwatch = paletteMgr.getCueSwatch();
-    if (cueSwatch != null) {
-      row("Cue", 20,
-          new UIPalette.Swatch(ui, paletteMgr.getCueSwatch(), 0, 0, 80, UIColorPicker.Corner.TOP_LEFT)
-      ).setPadding(2F).setBorderRounding(2).setBackgroundColor(ui.theme.listItemBackgroundColor).setWidth(this.width-12).setHeight(24)
-          .addToContainer(swatchDisplayContainer);
-    }
+//    if (paletteMgr.cueSwatch != null) {
+//      row("Cue", 20,
+//          new UIPalette.Swatch(ui, paletteMgr.cueSwatch, 0, 0, 80, UIColorPicker.Corner.TOP_LEFT)
+//      ).setPadding(2F).setBorderRounding(2).setBackgroundColor(ui.theme.listItemBackgroundColor).setWidth(this.width-12).setHeight(24)
+//          .addToContainer(swatchDisplayContainer);
+//    }
     swatchDisplayContainer.addToContainer(this);
 
     horizontalBreak(ui, this.width).addToContainer(this);
 
-    buildColorSlidersRow(paletteMgr).addToContainer(this);
+    buildColorSlidersRow(cueMgr).addToContainer(this);
 
     horizontalBreak(ui, this.width).addToContainer(this);
 
-    buildPaletteSelectionRow(paletteMgr).addToContainer(this);
-
-    horizontalBreak(ui, this.width).addToContainer(this);
+    buildPaletteSelectionRow(cueMgr).addToContainer(this);
 
     this.addListener(
-        paletteMgr.toggleCue,
+        cueMgr.toggleCue,
         (p) -> {
-          paletteMgr.swapCueSwatch();
-          this.redraw();
+          cueMgr.swapCueSwatch();
         });
+
+    if (auxMgr != null) {
+      horizontalBreak(ui, this.width).addToContainer(this);
+
+      buildColorSlidersRow(auxMgr).addToContainer(this);
+
+      horizontalBreak(ui, this.width).addToContainer(this);
+
+      buildPaletteSelectionRow(auxMgr).addToContainer(this);
+
+      this.addListener(
+          auxMgr.toggleCue,
+          (p) -> {
+            auxMgr.swapCueSwatch();
+          });
+    }
   }
 
   private UI2dContainer buildPaletteSelectionRow(ColorPaletteManager paletteMgr) {
@@ -137,33 +149,6 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     return colorSlidersRow;
   }
 
-  public void buildDeviceControls(LXStudio.UI ui, UI2dContainer uiContainer, ColorPaletteManager effect) {
-    addVerticalBreak(ui, uiContainer);
-
-    addColumn(
-        uiContainer,
-        new UILabel(56.0F, "Position"),
-        new UIDropMenu(56.0F, 16, effect.color1Pos),
-        new UILabel(56.0F, "Palette Type"),
-        newKnob(effect.paletteType),
-        newButton(effect.toggleCue)
-    ).setChildSpacing(6).setWidth(56F);
-
-    addVerticalBreak(ui, uiContainer);
-
-
-//    addColumn(
-//        uiContainer,
-//
-//    ).setChildSpacing(6).setWidth(SLIDER_WIDTH+10);
-
-    uiContainer.addListener(
-        effect.toggleCue,
-        (p) -> {
-          effect.swapCueSwatch();
-        });
-  }
-
   private UI2dContainer row(String label, UI2dComponent component) {
     return row(label, LABEL_WIDTH, component);
   }
@@ -173,18 +158,18 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
         16, 4, new UILabel(labelWidth, 12, label), component);
   }
 
-  public static void addToLeftGlobalPane(LXStudio.UI ui, ColorPaletteManager colorPaletteManager) {
+  public static void addToLeftGlobalPane(LXStudio.UI ui, ColorPaletteManager cueMgr, ColorPaletteManager auxMgr) {
     UI2dContainer parentContainer = ui.leftPane.global;
     float xOffsetWithinParent = 0;
-    new UIColorPaletteManager(ui, colorPaletteManager, parentContainer.getContentWidth(), xOffsetWithinParent)
+    new UIColorPaletteManager(ui, cueMgr, auxMgr, parentContainer.getContentWidth(), xOffsetWithinParent)
         .addToContainer(parentContainer, 3);
   }
 
-  public static void addToRightPerformancePane(LXStudio.UI ui, ColorPaletteManager colorPaletteManager) {
+  public static void addToRightPerformancePane(LXStudio.UI ui, ColorPaletteManager cueMgr, ColorPaletteManager auxMgr) {
     LXStudio.UI.MainContext mainContext = getLXUIMainContext(ui);
     UI2dContainer parentContainer = mainContext.rightPerformance;
     float xOffsetWithinParent = 14;
-    new UIColorPaletteManager(ui, colorPaletteManager, parentContainer.getContentWidth() - 28, xOffsetWithinParent)
+    new UIColorPaletteManager(ui, cueMgr, auxMgr, parentContainer.getContentWidth() - 28, xOffsetWithinParent)
         .addToContainer(parentContainer, 1);
   }
 

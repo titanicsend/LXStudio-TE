@@ -15,7 +15,6 @@
  */
 package heronarts.lx.studio;
 
-import heronarts.glx.ui.UI2dContainer;
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
 import heronarts.lx.mixer.LXBus;
@@ -25,7 +24,6 @@ import heronarts.lx.pattern.form.PlanesPattern;
 import heronarts.lx.pattern.texture.NoisePattern;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.SocketException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -139,7 +137,8 @@ public class TEApp extends LXStudio {
     private final GLEngine glEngine;
 
     private final AudioStems audioStems;
-    private final ColorPaletteManager colorPaletteManager;
+    private final ColorPaletteManager cuePaletteManager;
+    private final ColorPaletteManager auxPaletteManager = null;
     private final TELaserTask laserTask;
     private final CrutchOSC crutchOSC;
     private DevSwitch devSwitch;
@@ -172,7 +171,8 @@ public class TEApp extends LXStudio {
       this.glEngine = new GLEngine(lx,staticModel);
 
       lx.engine.registerComponent("audioStems", this.audioStems = new AudioStems(lx));
-      lx.engine.registerComponent("colorPaletteManager", this.colorPaletteManager = new ColorPaletteManager(lx));
+      lx.engine.registerComponent("cuePaletteManager", this.cuePaletteManager = new ColorPaletteManager(lx, "CUE", 0));
+//      lx.engine.registerComponent("auxPaletteManager", this.auxPaletteManager = new ColorPaletteManager(lx, "AUX", 1));
 
       // create our loop task for outputting data to lasers
       this.laserTask = new TELaserTask(lx);
@@ -547,8 +547,8 @@ public class TEApp extends LXStudio {
       new UIAudioStems(ui, this.audioStems, ui.leftPane.global.getContentWidth())
           .addToContainer(ui.leftPane.global, 2);
 
-      UIColorPaletteManager.addToLeftGlobalPane(ui, this.colorPaletteManager);
-      UIColorPaletteManager.addToRightPerformancePane(ui, this.colorPaletteManager);
+      UIColorPaletteManager.addToLeftGlobalPane(ui, this.cuePaletteManager, this.auxPaletteManager);
+      UIColorPaletteManager.addToRightPerformancePane(ui, this.cuePaletteManager, this.auxPaletteManager);
 
       // Set camera zoom and point size to match current model
       applyTECameraPosition();

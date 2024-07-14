@@ -93,8 +93,20 @@ public class ColorPaletteManager extends LXComponent {
           .setDescription(
               "Destination color position (1-based) in the global palette current swatch");
 
+  public static final String DEFAULT_NAME = "CUE";
+  public static final int DEFAULT_INDEX = 0;
+
+  private final String name;
+  private final int index;
+
   public ColorPaletteManager(LX lx) {
+    this(lx, DEFAULT_NAME, DEFAULT_INDEX);
+  }
+
+  public ColorPaletteManager(LX lx, String name, int index) {
     super(lx);
+    this.name = name;
+    this.index = index;
     addParameter("hue", this.hue);
     addParameter("saturation", this.saturation);
     addParameter("brightness", this.brightness);
@@ -106,32 +118,41 @@ public class ColorPaletteManager extends LXComponent {
     addParameter("color2", this.color2);
     addParameter("color3", this.color3);
 
-    findOrCreateCueSwatch();
-  }
-
-  public LXSwatch getActiveSwatch() {
-    return this.lx.engine.palette.swatch;
-  }
-
-  public LXSwatch getCueSwatch() {
-    if (this.lx.engine.palette.swatches.size() == 0) {
-      return null;
+    // ensure there are at least enough swatches in the global palette list to fetch
+    // the correct index for this "managed swatch". TODO: listen in case it's deleted?
+    if (lxPalette().swatches.size() <= (this.index + 1)) {
+      lxPalette().saveSwatch();
     }
-    return this.lx.engine.palette.swatches.get(0);
+    // run `getManagedSwatch` to ensure the swatch is created, has the right name/num colors
+  }
+
+  protected LXPalette lxPalette() {
+    return this.lx.engine.palette;
+  }
+
+  protected LXSwatch managedSwatch() {
+    LXSwatch cueSwatch = lxPalette().swatches.get(this.index);
+    cueSwatch.label.setValue(this.name);
+    if (cueSwatch.colors.size() < LXSwatch.MAX_COLORS) {
+      for (int i = cueSwatch.colors.size(); i < LXSwatch.MAX_COLORS; ++i) {
+        cueSwatch.addColor();
+      }
+    }
+    return cueSwatch;
   }
 
   public void swapCueSwatch() {
-    LXSwatch active = getActiveSwatch();
-    LXSwatch cue = getCueSwatch();
+    LXSwatch activeSwatch = this.lx.engine.palette.swatch;
+
+    setColorAtPosition(activeSwatch, this.color1Pos.getEnum(), this.color1.getColor());
+    setColorAtPosition(activeSwatch, this.color2Pos.getEnum(), this.color2.getColor());
+    setColorAtPosition(activeSwatch, this.color3Pos.getEnum(), this.color3.getColor());
 
 //    int activeColor1 = active.getColor(this.color1Pos.getEnum().index).primary.getColor();
 //    this.hue.setValue(LXColor.h(activeColor1));
 //    this.saturation.setValue(LXColor.s(activeColor1));
 //    this.brightness.setValue(LXColor.b(activeColor1));
 //
-    setColorAtPosition(active, this.color1Pos.getEnum(), this.color1.getColor());
-    setColorAtPosition(active, this.color2Pos.getEnum(), this.color2.getColor());
-    setColorAtPosition(active, this.color3Pos.getEnum(), this.color3.getColor());
 
 //    for (int i = 0; i < LXSwatch.MAX_COLORS; ++i) {
 ////      int activeColor = active.getColor(i).primary.getColor();
@@ -146,15 +167,13 @@ public class ColorPaletteManager extends LXComponent {
     float hue = this.hue.getValuef();
     float saturation = this.saturation.getValuef();
     float brightness = this.brightness.getValuef();
-//    TE.log("Hue: %f, Saturation: %f, Brightness: %f", hue, saturation, brightness);
     int color1 = LXColor.hsb(hue, saturation, brightness);
     if (color1 != this.color1.getColor() || this.currPaletteType != this.paletteType.getEnum()) {
       this.color1.setColor(color1);
       this.currPaletteType = this.paletteType.getEnum();
 
       updateColors2And3(color1);
-      LXSwatch cueSwatch = findOrCreateCueSwatch();
-      updateSwatches(cueSwatch);
+      updateSwatches(managedSwatch());
 //      setColorAtPosition(cueSwatch, this.color1Pos.getEnum(), color1);
 //      setColorAtPosition(cueSwatch, this.color2Pos.getEnum(), color2);
 //      setColorAtPosition(cueSwatch, this.color3Pos.getEnum(), color3);
@@ -201,15 +220,5 @@ public class ColorPaletteManager extends LXComponent {
       swatch.getColor(colorPosition.index).primary.setColor(color);
       swatch.getColor(colorPosition.index).mode.setValue(LXDynamicColor.Mode.FIXED);
     }
-  }
-
-  protected LXSwatch findOrCreateCueSwatch() {
-    LXPalette palette = this.lx.engine.palette;
-    if (this.lx.engine.palette.swatches.size() == 0) {
-      palette.saveSwatch();
-    }
-    LXSwatch cueSwatch = palette.swatches.get(0);
-    cueSwatch.label.setValue("CUE");
-    return cueSwatch;
   }
 }
