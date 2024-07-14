@@ -99,6 +99,8 @@ public class ColorPaletteManager extends LXComponent {
   private final String name;
   private final int index;
 
+  public LXSwatch managedSwatch;
+
   public ColorPaletteManager(LX lx) {
     this(lx, DEFAULT_NAME, DEFAULT_INDEX);
   }
@@ -124,13 +126,14 @@ public class ColorPaletteManager extends LXComponent {
       lxPalette().saveSwatch();
     }
     // run `getManagedSwatch` to ensure the swatch is created, has the right name/num colors
+    this.managedSwatch = managedSwatch();
   }
 
   protected LXPalette lxPalette() {
     return this.lx.engine.palette;
   }
 
-  protected LXSwatch managedSwatch() {
+  public LXSwatch managedSwatch() {
     LXSwatch cueSwatch = lxPalette().swatches.get(this.index);
     cueSwatch.label.setValue(this.name);
     if (cueSwatch.colors.size() < LXSwatch.MAX_COLORS) {
@@ -141,28 +144,23 @@ public class ColorPaletteManager extends LXComponent {
     return cueSwatch;
   }
 
-  public void swapCueSwatch() {
-    LXSwatch activeSwatch = this.lx.engine.palette.swatch;
-
-    setColorAtPosition(activeSwatch, this.color1Pos.getEnum(), this.color1.getColor());
-    setColorAtPosition(activeSwatch, this.color2Pos.getEnum(), this.color2.getColor());
-    setColorAtPosition(activeSwatch, this.color3Pos.getEnum(), this.color3.getColor());
-
-//    int activeColor1 = active.getColor(this.color1Pos.getEnum().index).primary.getColor();
-//    this.hue.setValue(LXColor.h(activeColor1));
-//    this.saturation.setValue(LXColor.s(activeColor1));
-//    this.brightness.setValue(LXColor.b(activeColor1));
-//
-
-//    for (int i = 0; i < LXSwatch.MAX_COLORS; ++i) {
-////      int activeColor = active.getColor(i).primary.getColor();
-////      int cueColor = cue.getColor(i).primary.getColor();
-//      active.getColor(i).primary.setColor(cueColor);
-//      cue.getColor(i).primary.setColor(activeColor);
-//    }
+  public void updateSwatches() {
+    updateSwatches(lxPalette().swatch);
+  }
+  protected void updateSwatches(LXSwatch swatch) {
+    // Send to target color in global palette
+    setColorAtPosition(swatch, this.color1Pos.getEnum(), this.color1.getColor());
+    setColorAtPosition(swatch, this.color2Pos.getEnum(), this.color2.getColor());
+    setColorAtPosition(swatch, this.color3Pos.getEnum(), this.color3.getColor());
   }
 
-  // TODO: properly introspect "parameter" and decide what to do more carefully
+  protected void setColorAtPosition(LXSwatch swatch, DmxColorModulator.ColorPosition colorPosition, int color) {
+    if (colorPosition != DmxColorModulator.ColorPosition.NONE) {
+      swatch.getColor(colorPosition.index).primary.setColor(color);
+      swatch.getColor(colorPosition.index).mode.setValue(LXDynamicColor.Mode.FIXED);
+    }
+  }
+
   public void onParameterChanged(LXParameter parameter) {
     float hue = this.hue.getValuef();
     float saturation = this.saturation.getValuef();
@@ -171,12 +169,8 @@ public class ColorPaletteManager extends LXComponent {
     if (color1 != this.color1.getColor() || this.currPaletteType != this.paletteType.getEnum()) {
       this.color1.setColor(color1);
       this.currPaletteType = this.paletteType.getEnum();
-
       updateColors2And3(color1);
       updateSwatches(managedSwatch());
-//      setColorAtPosition(cueSwatch, this.color1Pos.getEnum(), color1);
-//      setColorAtPosition(cueSwatch, this.color2Pos.getEnum(), color2);
-//      setColorAtPosition(cueSwatch, this.color3Pos.getEnum(), color3);
     }
   }
 
@@ -208,17 +202,4 @@ public class ColorPaletteManager extends LXComponent {
     this.color3.setColor(color3);
   }
 
-  private void updateSwatches(LXSwatch swatch) {
-    // Send to target color in global palette
-    setColorAtPosition(swatch, this.color1Pos.getEnum(), this.color1.getColor());
-    setColorAtPosition(swatch, this.color2Pos.getEnum(), this.color2.getColor());
-    setColorAtPosition(swatch, this.color3Pos.getEnum(), this.color3.getColor());
-  }
-
-  protected void setColorAtPosition(LXSwatch swatch, DmxColorModulator.ColorPosition colorPosition, int color) {
-    if (colorPosition != DmxColorModulator.ColorPosition.NONE) {
-      swatch.getColor(colorPosition.index).primary.setColor(color);
-      swatch.getColor(colorPosition.index).mode.setValue(LXDynamicColor.Mode.FIXED);
-    }
-  }
 }

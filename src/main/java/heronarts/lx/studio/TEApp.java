@@ -138,7 +138,7 @@ public class TEApp extends LXStudio {
 
     private final AudioStems audioStems;
     private final ColorPaletteManager cuePaletteManager;
-    private final ColorPaletteManager auxPaletteManager = null;
+    private final ColorPaletteManager auxPaletteManager;
     private final TELaserTask laserTask;
     private final CrutchOSC crutchOSC;
     private DevSwitch devSwitch;
@@ -172,7 +172,7 @@ public class TEApp extends LXStudio {
 
       lx.engine.registerComponent("audioStems", this.audioStems = new AudioStems(lx));
       lx.engine.registerComponent("cuePaletteManager", this.cuePaletteManager = new ColorPaletteManager(lx, "CUE", 0));
-//      lx.engine.registerComponent("auxPaletteManager", this.auxPaletteManager = new ColorPaletteManager(lx, "AUX", 1));
+      lx.engine.registerComponent("auxPaletteManager", this.auxPaletteManager = new ColorPaletteManager(lx, "AUX", 1));
 
       // create our loop task for outputting data to lasers
       this.laserTask = new TELaserTask(lx);

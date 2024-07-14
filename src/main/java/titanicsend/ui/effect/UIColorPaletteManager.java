@@ -27,7 +27,13 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
   private static final int LABEL_WIDTH = 56;
   private static final float SLIDER_WIDTH = 120.0F;
   private static final float GRADIENT_HEIGHT = 8.0F;
+  // WIP(look): feature flags for UI elements I'm unsure about / experimenting with.
+  private static final boolean DISPLAY_MANAGED_SWATCH_ROWS = false;
+  private static final boolean DISPLAY_GRADIENTS_ABOVE_SLDIERS = false;
+
   private final float width;
+  private LXSwatch cueSwatch;
+  private LXSwatch auxSwatch;
 
   public UIColorPaletteManager(LXStudio.UI ui, ColorPaletteManager cueMgr, ColorPaletteManager auxMgr, float w, float xOffset) {
     super(ui, xOffset, 0, w, 0);
@@ -37,48 +43,65 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     this.setPadding(2, 0);
     this.setTitle("PALETTE MANAGER");
 
-    UI2dContainer swatchDisplayContainer = UI2dContainer.newVerticalContainer(this.width-12, 6F,
-        row("Act", 20,
-            new UIPalette.Swatch(ui, ui.lx.engine.palette.swatch, 0, 0, 80, UIColorPicker.Corner.TOP_LEFT)
-        ).setPadding(2F).setBorderRounding(2).setBackgroundColor(ui.theme.listItemBackgroundColor).setWidth(this.width-12).setHeight(24)
-    ); //.setPadding(0F).setBorderRounding(3).setBackgroundColor(ui.theme.listBackgroundColor);
-//    if (paletteMgr.cueSwatch != null) {
-//      row("Cue", 20,
-//          new UIPalette.Swatch(ui, paletteMgr.cueSwatch, 0, 0, 80, UIColorPicker.Corner.TOP_LEFT)
-//      ).setPadding(2F).setBorderRounding(2).setBackgroundColor(ui.theme.listItemBackgroundColor).setWidth(this.width-12).setHeight(24)
-//          .addToContainer(swatchDisplayContainer);
-//    }
+    cueSwatch = cueMgr.managedSwatch();
+    auxSwatch = auxMgr.managedSwatch();
+    UI2dContainer swatchDisplayContainer = UI2dContainer.newVerticalContainer(this.width-12, 6F);
+    swatchRow(ui, ui.lx.engine.palette.swatch, "Act").addToContainer(swatchDisplayContainer);
+
+
+    if (DISPLAY_MANAGED_SWATCH_ROWS) {
+        // TODO: these don't seem to get updated as the palette updates - just stay red in the UI
+        swatchRow(ui, cueSwatch, "Cue").addToContainer(swatchDisplayContainer);
+        if (auxMgr != null) {
+            swatchRow(ui, auxSwatch, "Aux").addToContainer(swatchDisplayContainer);
+        }
+    }
+
     swatchDisplayContainer.addToContainer(this);
-
-    horizontalBreak(ui, this.width).addToContainer(this);
-
-    buildColorSlidersRow(cueMgr).addToContainer(this);
 
     horizontalBreak(ui, this.width).addToContainer(this);
 
     buildPaletteSelectionRow(cueMgr).addToContainer(this);
 
+    horizontalBreak(ui, this.width).addToContainer(this);
+
+    buildColorSlidersRow(cueMgr).addToContainer(this);
+
     this.addListener(
         cueMgr.toggleCue,
         (p) -> {
-          cueMgr.swapCueSwatch();
+          cueMgr.updateSwatches();
+//          cueSwatch = cueMgr.managedSwatch();
         });
 
     if (auxMgr != null) {
       horizontalBreak(ui, this.width).addToContainer(this);
 
-      buildColorSlidersRow(auxMgr).addToContainer(this);
+      buildPaletteSelectionRow(auxMgr).addToContainer(this);
 
       horizontalBreak(ui, this.width).addToContainer(this);
 
-      buildPaletteSelectionRow(auxMgr).addToContainer(this);
+      buildColorSlidersRow(auxMgr).addToContainer(this);
 
       this.addListener(
           auxMgr.toggleCue,
           (p) -> {
-            auxMgr.swapCueSwatch();
+            auxMgr.updateSwatches();
+//            auxSwatch = auxMgr.managedSwatch();
           });
     }
+  }
+
+  private UI2dContainer swatchRow(UI ui, LXSwatch swatch, String label) {
+    UI2dContainer elem = row(label, 20,
+        new UIPalette.Swatch(ui, swatch, 0, 0, 80, UIColorPicker.Corner.TOP_LEFT)
+    );
+    elem.setPadding(2F)
+        .setBorderRounding(2)
+        .setBackgroundColor(ui.theme.listItemBackgroundColor)
+        .setWidth(this.width-12)
+        .setHeight(24);
+    return elem;
   }
 
   private UI2dContainer buildPaletteSelectionRow(ColorPaletteManager paletteMgr) {
@@ -99,7 +122,10 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
 
     addColumn(
         paletteSelectionRow,
-        newButton(paletteMgr.toggleCue, 40F).setActiveLabel("ON").setInactiveLabel("OFF")
+        newButton(paletteMgr.toggleCue, 40F)
+            .setActiveLabel("ON")
+            .setInactiveLabel("SWAP")
+            .setMomentary(true)
     );
 
     return paletteSelectionRow;
@@ -131,21 +157,37 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     float sliderWidth = controlWidth - (2*SLIDER_SPACING);
     float height = 42;
     UI2dContainer colorSlidersRow = UI2dContainer.newHorizontalContainer(height, SLIDER_SPACING);
-    addColumn(
-        colorSlidersRow,
-        new UIHueDisplay(paletteMgr.hue, sliderWidth),
-        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.hue)
-    );
-    addColumn(
-        colorSlidersRow,
-        new UISaturationDisplay(sliderWidth),
-        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.saturation)
-    );
-    addColumn(
-        colorSlidersRow,
-        new UIBrightnessDisplay(sliderWidth),
-        new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.brightness)
-    );
+    if (DISPLAY_GRADIENTS_ABOVE_SLDIERS) {
+      addColumn(
+          colorSlidersRow,
+          new UIHueDisplay(paletteMgr.hue, sliderWidth),
+          new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.hue)
+      );
+      addColumn(
+          colorSlidersRow,
+          new UISaturationDisplay(sliderWidth),
+          new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.saturation)
+      );
+      addColumn(
+          colorSlidersRow,
+          new UIBrightnessDisplay(sliderWidth),
+          new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.brightness)
+      );
+    } else {
+      addColumn(
+          colorSlidersRow,
+          new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.hue)
+      );
+      addColumn(
+          colorSlidersRow,
+          new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.saturation)
+      );
+      addColumn(
+          colorSlidersRow,
+          new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.brightness)
+      );
+    }
+
     return colorSlidersRow;
   }
 
@@ -170,20 +212,15 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     UI2dContainer parentContainer = mainContext.rightPerformance;
     float xOffsetWithinParent = 14;
     new UIColorPaletteManager(ui, cueMgr, auxMgr, parentContainer.getContentWidth() - 28, xOffsetWithinParent)
-        .addToContainer(parentContainer, 1);
+        .addToContainer(parentContainer, parentContainer.getChildren().size()-1);
   }
 
   private static LXStudio.UI.MainContext getLXUIMainContext(LXStudio.UI ui) {
     try {
+      // use reflection to access the private field `mainContext` in `LXStudio.UI`
       Field privateField = LXStudio.UI.class.getDeclaredField("mainContext");
-
-      // Set the accessibility as true
       privateField.setAccessible(true);
-
-      // Store the value of private field in variable
-      LXStudio.UI.MainContext mainContext = (LXStudio.UI.MainContext)privateField.get(ui);
-
-      return mainContext;
+      return (LXStudio.UI.MainContext)privateField.get(ui);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
