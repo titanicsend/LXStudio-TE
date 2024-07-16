@@ -38,18 +38,18 @@ import titanicsend.modulator.dmx.DmxColorModulator;
 public class ColorPaletteManager extends LXComponent {
 
   public final CompoundParameter hue =
-      new CompoundParameter("H", 0, -360, 360)
+      new CompoundParameter("H", 0, 0, 360)
           .setPolarity(CompoundParameter.Polarity.BIPOLAR)
           .setDescription("Sets the amount of hue shift to apply");
 
   public final CompoundParameter saturation =
-      new CompoundParameter("S", 100, -100, 100)
+      new CompoundParameter("S", 100, 0, 100)
           .setUnits(CompoundParameter.Units.PERCENT)
           .setPolarity(CompoundParameter.Polarity.BIPOLAR)
           .setDescription("Sets the amount to increase or decrease saturation");
 
   public final CompoundParameter brightness =
-      new CompoundParameter("B", 100, -100, 100)
+      new CompoundParameter("B", 100, 0, 100)
           .setUnits(CompoundParameter.Units.PERCENT)
           .setPolarity(CompoundParameter.Polarity.BIPOLAR)
           .setDescription("Sets the amount to increase or decrease brightness");
@@ -81,11 +81,12 @@ public class ColorPaletteManager extends LXComponent {
 
   public enum PaletteType {
     MONO,
-    TRIADIC,
     ANALOGOUS,
+    GOLDEN_RATIO_CONJUGATE,
     SPLIT_COMPLEMENTARY,
     COMPLEMENTARY,
-    // TODO(look): Jon Idea of Golden Ratio Conjugate (mult hue by 1.6181)
+    TRIADIC,
+    // TODO(look): Jon Idea of Golden Ratio Conjugate (mult hue by )
   }
 
   public final EnumParameter<PaletteType> paletteType =
@@ -185,7 +186,10 @@ public class ColorPaletteManager extends LXComponent {
     if (this.paletteType.getEnum() == PaletteType.MONO) {
       color2 = LXColor.BLACK;
       color3 = LXColor.BLACK;
-    } else if (this.paletteType.getEnum() == PaletteType.COMPLEMENTARY) {
+    } else if (this.paletteType.getEnum() == PaletteType.GOLDEN_RATIO_CONJUGATE) {
+      color2 = LXColor.hsb(hue * 0.6180339, saturation, brightness);
+      color3 = LXColor.BLACK; // LXColor.hsb(hue + 222.5f, saturation, brightness);
+    }else if (this.paletteType.getEnum() == PaletteType.COMPLEMENTARY) {
       color2 = LXColor.hsb(hue + 180, saturation, brightness);
       color3 = LXColor.BLACK;
     } else if (this.paletteType.getEnum() == PaletteType.SPLIT_COMPLEMENTARY) {
