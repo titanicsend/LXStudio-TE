@@ -1,82 +1,73 @@
 {
   /* Mothership by Titanic's End
-     Window 9, Strand S1a */
+     Window 9 */
 
   label: "Window9",
-  tags: [ "w9", "window", "rectangle", "s1a" ],
+  tags: [ "w9", "window", "rectangle" ],
 
   parameters:  {
-    /* Default 368 LEDs */
+    # Default 368 LEDs
     "extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 368" },
     "ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
-    
-    /* TODO: Immortalize these after final model has been measured */  
-    "insetX": { type: "float", default: 2.4, description: "Inset of LED strip from the line where window planes meet" },
-    "insetY": { type: "float", default: 0.9, description: "Inset of LED strip from the line where window planes meet" },
 
-    /* Fixed, but keep as a parameter for legibility and in case the LED strip changes */
-    "spacing": { type: "float", default: .2 },
+    # Side and Corner lengths
+    "side1": { type: "int", default: "56", description: "Number of LEDs on side 1" },
+    "corner12": { type: "int", default: "9", description: "Number of LEDs in the corner between side1 and side2" },
+    "side2": { type: "int", default: "116", description: "Number of LEDs on side 2" },
+    "corner23": { type: "int", default: "9", description: "Number of LEDs in the corner between side2 and side3" },
+    "side3": { type: "int", default: "54", description: "Number of LEDs on side 3" },
+    "corner34": { type: "int", default: "9", description: "Number of LEDs in the corner between side3 and side4" },
 
-    # Debug tools
-    "onCar": { type: "boolean", default: true, label: "On Car", description: "True = Locate to position on car, False = Locate to origin" }
+    /* Debug tools */
+    "onCar": { type: "boolean", default: true, label: "On Car", description: "True = Locate to position on car, False = Locate to origin" },
+    "outputEnabled": { type: "boolean", default: false },
+    "host": { type: "string", default: "localhost", label: "Host", description: "Controller IP address or hostname" },
+    "output": { type: "int", default: 4, min: 1, max: 8, label: "Output Num", description: "Controller Output Number 1-8" },
+    "pixelOffset": { type: "int", default: 0, min: 0, max: 512, label: "Pixel Offset", description: "ArtNet offset in pixels" },
+    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" }
   },
 
   transforms: [
     { z: "-14", enabled: "$onCar" },
     { y: "119.181", enabled: "$onCar" },
-    /*{ yaw: "-90", enabled: "$onCar" },*/
     { roll: "-3.75", enabled: "$onCar" },
-    { pitch: "90", enabled: "$onCar" }
+    { pitch: "90", enabled: "$onCar" },
+    { z: "-.25", enabled: "$onCar" }
   ],
 
   components: [
     /* From inside, default wiring is clockwise */
 
-    /* Short side */
-    { type: "strip",
-      numPoints: "54 - $ledOffset",
-      spacing: "$spacing",
-      transforms: [
-        { x: "$insetX" },
-        { y: "$insetY" },
-        { x: "(0.5 + $ledOffset) * $spacing" }
-      ]
-    },
+    { type: "RoundedQuad",
 
-    /* Long side */
-    { type: "strip",
-      numPoints: "130",
-      spacing: "$spacing",
-      transforms: [
-        { x: "$insetX + (54 * $spacing)" },
-        { y: "$insetY" },
-        { roll: "90" },
-        { x: "$spacing / 2" }
-      ]
-    },
-    
-    /* Short side */
-    { type: "strip",
-      numPoints: "54",
-      spacing: "$spacing",
-      transforms: [
-        { x: "$insetX + ((54 + 1) * $spacing)" },
-        { y: "$insetY + ((130 + 1) * $spacing)" },
-        { roll: "180" },
-        { x: "$spacing / 2" }
-      ]
-    },
+      length1: "15.38",
+      length2: "28",
+      length3: "15.59",
+      length4: "28",
 
-    /* Long side */
-    { type: "strip",
-      numPoints: "130 + $ledOffset + $extraLEDs",
-      spacing: "$spacing",
-      transforms: [
-        { x: "$insetX" },
-        { y: "$insetY + (130 * $spacing)" },
-        { roll: "270" }
-      ]
+      angle12: "90",
+      angle23: "90",
+      angle34: "90",
+      angle41: "90",
+
+      side1: "$side1 - $ledOffset",
+      corner12: "$corner12",
+      side2: "$side2",
+      corner23: "$corner23",
+      side3: "$side3",
+      corner34: "$corner34",
+      side4: "368 + $ledOffset + $extraLEDs - $side1 - $corner12 - $side2 - $corner23 - $side3 - $corner34"
     }
+  ],
 
+  outputs: [
+    { enabled: "$outputEnabled",
+      host: "$host",
+      universe: "($output * 10) + ($pixelOffset / 170)",
+      channel: "($pixelOffset % 170) * 3",
+      protocol: "artnet",
+      sequenceEnabled: "$artnetSequence"
+    }
   ]
 }
+

@@ -6,97 +6,58 @@
   tags: [ "w5", "window", "triangle" ],
 
   parameters:  {
-    /* Default 114 LEDs */
+    # Default 114 LEDs
     "extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 114" },
     "ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
   
-    # Remove these after calibration
-    "length1": { type: "float", default: "11" },
-    "side1": { type: "int", default: "24", description: "Number of LEDs on side 1" },
-    "corner12": { type: "int", default: "13", description: "Number of LEDs in the corner between side1 and side2" },
-    "side2": { type: "int", default: "30", description: "Number of LEDs on side 2" },
-    "corner23": { type: "int", default: "13", description: "Number of LEDs in the corner between side2 and side3" },
+    # Side and Corner lengths
+    "side1": { type: "int", default: "38", description: "Number of LEDs on side 1" },
+    "corner12": { type: "int", default: "14", description: "Number of LEDs in the corner between side1 and side2" },
+    "side2": { type: "int", default: "22", description: "Number of LEDs on side 2" },
+    "corner23": { type: "int", default: "10", description: "Number of LEDs in the corner between side2 and side3" },
 
     # Debug tools
     "onCar": { type: "boolean", default: true, label: "On Car", description: "True = Locate to position on car, False = Locate to origin" },
+    "outputEnabled": { type: "boolean", default: false },
     "host": { type: "string", default: "localhost", label: "Host", description: "Controller IP address or hostname" },
-    "output": { type: "int", default: 1, min: 1, max: 8, label: "Output Num", description: "Controller Output Number 1-8" },
-    "pixelOffset": { type: "int", default: 0, min: 0, max: 512, label: "Pixel Offset", description: "ArtNet offset in pixels" },
-    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
-    "outputEnabled": { type: "boolean", default: false }
+    "output": { type: "int", default: 3, min: 1, max: 8, label: "Output Num", description: "Controller Output Number 1-8" },
+    "pixelOffset": { type: "int", default: 175, min: 0, max: 512, label: "Pixel Offset", description: "ArtNet offset in pixels" },
+    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" }
   },
 
   transforms: [
     { z: "-24", enabled: "$onCar" },
     { y: "117.576", enabled: "$onCar" },
     { roll: "-3.7", enabled: "$onCar" },
-    { pitch: "15", enabled: "$onCar" }
+    { pitch: "15", enabled: "$onCar" },
+    { roll: "-40.3", enabled: "$onCar" },
+    { z: "-.25", enabled: "$onCar" }
   ],
 
   components: [
     { type: "RoundedTriangle",
-      spacing: ".2",
 
-      radius: "1.125",
-      angle12: "126.7",
-      angle23: "93.6",
+      length1: "19.15",
+      length2: "12.423",
+      length3: "15.38",
 
-      length1: "$length1",
+      angle12: "53.3",
+      angle23: "86.4",
+      angle31: "40.3",
+
       side1: "$side1 - $ledOffset",
       corner12: "$corner12",
       side2: "$side2",
       corner23: "$corner23",
-      side3: "114 + $ledOffset + $extraLEDs - $side1 - $corner12 - $side2 - $corner23",
-      
-      transforms: [
-        { x: "1.4" },
-        { y: "-1.4" },
-        { roll: "-40.3" }
-      ]
+      side3: "114 + $ledOffset + $extraLEDs - $side1 - $corner12 - $side2 - $corner23"
     }
-
-    /* Diagonal
-    { type: "strip",
-      numPoints: "46 + $ledOffset + $extraLEDs",
-      spacing: "$spacing",
-      transforms: [
-        { x: "15.38 - $inset - ($spacing * 37)" },
-        { y: "-$inset" },
-        { roll: "-40.3" },
-        { x: "$ledOffset * $spacing"}
-      ]
-    },
-
-     Side 
-    { type: "strip",
-      numPoints: "30",
-      spacing: "$spacing",
-      transforms: [
-        { x: "15.38 - $inset - ($spacing * 37)" },
-        { y: "-$inset" },
-        { roll: "-40.3" },
-        { x: "(46+1) * $spacing"},
-        { roll: "126.7" }
-      ]
-    },
-
-     Top 
-    { type: "strip", tag: "s2",
-      numPoints: "37 - $ledOffset",
-      spacing: "$spacing",
-      transforms: [
-        { x: "15.38 - $inset" },
-        { y: "-$inset" },
-        { roll: 180 } 
-      ]
-    }*/
   ],
   
   outputs: [
     { enabled: "$outputEnabled",
       host: "$host",
-      universe: "$output*10",
-      channel: "$pixelOffset*3",
+      universe: "($output * 10) + ($pixelOffset / 170)",
+      channel: "($pixelOffset % 170) * 3",
       protocol: "artnet",
       sequenceEnabled: "$artnetSequence"
     }

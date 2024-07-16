@@ -1,26 +1,28 @@
 {
-  /* Triangle with Rounded Corners
-     Common geometry for triangular windows on TE Mothership */
+  /* Quadrilateral with Rounded Corners
+     Common geometry for 4-sided windows on TE Mothership */
 
-  label: "RoundedTriangle",
-  tags: [ "roundedtriangle" ],
+  label: "RoundedQuad",
+  tags: [ "roundedquad" ],
 
   parameters:  {
     # TE defaults. Can be overridden but likely do not need to be.
     "spacing": { type: "float", default: ".2", description: "LED spacing. Used for first and last edge." },
     "radius": { type: "float", default: "1.125", description: "Corner radius" },
-    "inset": { type: "float", default: "1.4", description: "Inset of LED strip from edge of triangle. Can be adjusted to match perceived location." },
+    "inset": { type: "float", default: "1.4", description: "Inset of LED strip from edge of shape. Can be adjusted to match perceived location." },
 
     # Lengths of edges *without inset*
     # For TE this can be measured in the simplified CAD model as the intersecting line between two faces
     "length1": { type: "float", default: "12", description: "Length of triangle side 1" },
     "length2": { type: "float", default: "12", description: "Length of triangle side 2" },
     "length3": { type: "float", default: "12", description: "Length of triangle side 3" },
+    "length4": { type: "float", default: "12", description: "Length of triangle side 4" },
 
     # Angles
-    "angle12": { type: "float", default: "60", description: "Angle between side 1 and side 2" },
-    "angle23": { type: "float", default: "60", description: "Angle between side 2 and side 3" },
-    "angle31": { type: "float", default: "60", description: "Angle between side 3 and side 1, aka starting corner" },
+    "angle12": { type: "float", default: "90", description: "Angle between side 1 and side 2" },
+    "angle23": { type: "float", default: "90", description: "Angle between side 2 and side 3" },
+    "angle34": { type: "float", default: "90", description: "Angle between side 3 and side 4" },
+    "angle41": { type: "float", default: "90", description: "Angle between side 4 and side 1, aka starting corner" },
 
     # LED counts
     "side1": { type: "int", default: "16", description: "Number of LEDs on side 1" },
@@ -28,6 +30,8 @@
     "side2": { type: "int", default: "16", description: "Number of LEDs on side 2" },
     "corner23": { type: "int", default: "10", description: "Number of LEDs in the corner between side2 and side3" },
     "side3": { type: "int", default: "16", description: "Number of LEDs on side 3" },
+    "corner34": { type: "int", default: "10", description: "Number of LEDs in the corner between side2 and side3" },
+    "side4": { type: "int", default: "16", description: "Number of LEDs on side 4" },
 
     # Debug tools
     "outputEnabled": { type: "boolean", default: false },
@@ -96,12 +100,12 @@
         { y: "-$radius" }
       ]
     },
-    
+
     /* Side 3 */
     { type: "strip",
       tags: [ "s", "s3"],
       numPoints: "$side3",
-      spacing: "$spacing",
+      spacing: "($length3 - (($inset + $radius) / tan(0.5 * $angle23)) - (($inset + $radius) / tan(0.5 * $angle34))) / ($side3 - 1)",
       transforms: [
         { x: "$length1" },
         { roll: "180 - $angle12" },
@@ -112,13 +116,50 @@
       ]
     },
 
+    /* Corner 3-4 */
+    { type: "arc",
+      tags: [ "c", "c34"],
+      radius: "$radius",
+      degrees: "(180 - $angle34) * ($corner34 - 1) / ($corner34 + 1)",
+      numPoints: "$corner34",
+      transforms: [
+        { x: "$length1" },
+        { roll: "180 - $angle12" },
+        { x: "$length2" },
+        { roll: "180 - $angle23" },
+        { x: "$length3 - (($inset + $radius) / tan(0.5 * $angle34))" },
+        { y: "$inset" },
+        { y: "$radius" },
+        { roll: "(180 - $angle34) / ($corner34 + 1)" },
+        { y: "-$radius" }
+      ]
+    },
+
+    /* Side 4 */
+    { type: "strip",
+      tags: [ "s", "s4"],
+      numPoints: "$side4",
+      spacing: "$spacing",
+      transforms: [
+        { x: "$length1" },
+        { roll: "180 - $angle12" },
+        { x: "$length2" },
+        { roll: "180 - $angle23" },
+        { x: "$length3" },
+        { roll: "180 - $angle34" },
+        { x: "($inset + $radius) / tan(0.5 * $angle34)" },
+        { y: "$inset" }
+      ]
+    },
+
     /* DEBUG: UNCOMMENT TO CHECK OUTER EDGE ALIGNMENT
     { type: "strip", numPoints: "100", spacing: "$length1/99", transforms: [{ z: ".25" }]},
     { type: "strip", numPoints: "100", spacing: "$length2/99", transforms: [{ z: ".25" },{ x: "$length1" },{ roll: "180 - $angle12" }]},
-    { type: "strip", numPoints: "100", spacing: "$length3/99", transforms: [{ z: ".25" },{ x: "$length1" },{ roll: "180 - $angle12" },{ x: "$length2" },{ roll: "180 - $angle23" }]}
+    { type: "strip", numPoints: "100", spacing: "$length3/99", transforms: [{ z: ".25" },{ x: "$length1" },{ roll: "180 - $angle12" },{ x: "$length2" },{ roll: "180 - $angle23" }]},
+    { type: "strip", numPoints: "100", spacing: "$length4/99", transforms: [{ z: ".25" },{ x: "$length1" },{ roll: "180 - $angle12" },{ x: "$length2" },{ roll: "180 - $angle23" },{ x: "$length3" },{ roll: "180 - $angle34" },]}
     */
   ],
-  
+
   outputs: [
     { 
       enabled: "$outputEnabled",
