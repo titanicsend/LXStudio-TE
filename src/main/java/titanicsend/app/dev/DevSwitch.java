@@ -475,6 +475,12 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
         } else if (surface instanceof heronarts.lx.midi.surface.APC40Mk2) {
           ((heronarts.lx.midi.surface.APC40Mk2) surface).performanceLock.setValue(true);
         }
+        // TODO(look): any similar setup we need to do here?
+//        if (surface instanceof titanicsend.lx.APCmini) {
+//          ((titanicsend.lx.APCmini) surface).performanceLock.setValue(true);
+//        } else if (surface instanceof heronarts.lx.midi.surface.APCmini) {
+//          ((heronarts.lx.midi.surface.APCmini) surface).performanceLock.setValue(true);
+//        }
       }
     }
 
@@ -483,7 +489,10 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
         // MF64
         lmi.channelEnabled.setValue(enabled);
       } else if (lmi.getName().equals(MidiNames.APC40MK2)
-          || lmi.getName().equals(MidiNames.BOMEBOX_APC40MK2)) {
+          || lmi.getName().equals(MidiNames.BOMEBOX_APC40MK2)
+          || lmi.getName().equals(MidiNames.APCMINI)
+          || lmi.getName().equals(MidiNames.BOMEBOX_APCMINI)
+      ) {
         // APC40mk2
         lmi.controlEnabled.setValue(enabled);
       }
@@ -493,8 +502,10 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
   /** Returns TRUE for normal surfaces that should be enabled for TE production */
   private boolean isTESurface(LXMidiSurface surface) {
     return surface instanceof titanicsend.lx.APC40Mk2
+        || surface instanceof titanicsend.lx.APCmini
         || surface instanceof titanicsend.lx.MidiFighterTwister
         || surface instanceof heronarts.lx.midi.surface.APC40Mk2
+        || surface instanceof heronarts.lx.midi.surface.APCmini
         || surface instanceof heronarts.lx.midi.surface.MidiFighterTwister
         || surface instanceof heronarts.lx.midi.surface.DJM900nxs2
         || surface instanceof heronarts.lx.midi.surface.DJMV10;

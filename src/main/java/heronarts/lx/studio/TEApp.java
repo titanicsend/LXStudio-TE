@@ -53,6 +53,7 @@ import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lx.APC40Mk2;
 import titanicsend.lx.APC40Mk2.UserButton;
+import titanicsend.lx.APCmini;
 import titanicsend.lx.MidiFighterTwister;
 import titanicsend.midi.MidiNames;
 import titanicsend.model.TEWholeModel;
@@ -329,6 +330,7 @@ public class TEApp extends LXStudio {
 
       // Midi surface names for use with BomeBox
       lx.engine.midi.registerSurface(MidiNames.BOMEBOX_APC40MK2, APC40Mk2.class);
+      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_APCMINI, APCmini.class);
       lx.engine.midi.registerSurface(
           MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1, MidiFighterTwister.class);
       lx.engine.midi.registerSurface(
