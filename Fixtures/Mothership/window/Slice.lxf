@@ -15,7 +15,7 @@
     "outputW8a": { type: "int", default: 3, min: 1, max: 8, label: "Output W8a", description: "Window 8a Controller Output Number 1-8" },
     "outputW8b": { type: "int", default: 2, min: 1, max: 8, label: "Output W8b", description: "Window 8b Controller Output Number 1-8" },
     "outputW9": { type: "int", default: 4, min: 1, max: 8, label: "Output W9", description: "Window 9 Controller Output Number 1-8" },
-    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" }
+    "artnetSequence": { default: "false", type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" }
   },
 
   "transforms": [

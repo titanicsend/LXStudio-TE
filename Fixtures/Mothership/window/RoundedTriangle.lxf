@@ -6,35 +6,35 @@
   tags: [ "roundedtriangle" ],
 
   parameters:  {
-    # TE defaults. Can be overridden but likely do not need to be.
+    /* TE defaults. Can be overridden but likely do not need to be. */
     "spacing": { type: "float", default: ".2", description: "LED spacing. Used for first and last edge." },
     "radius": { type: "float", default: "1.125", description: "Corner radius" },
     "inset": { type: "float", default: "1.4", description: "Inset of LED strip from edge of triangle. Can be adjusted to match perceived location." },
 
-    # Lengths of edges *without inset*
-    # For TE this can be measured in the simplified CAD model as the intersecting line between two faces
+    /* Lengths of edges *without inset* */
+    /* For TE this can be measured in the simplified CAD model as the intersecting line between two faces */
     "length1": { type: "float", default: "12", description: "Length of triangle side 1" },
     "length2": { type: "float", default: "12", description: "Length of triangle side 2" },
     "length3": { type: "float", default: "12", description: "Length of triangle side 3" },
 
-    # Angles
+    /* Angles */
     "angle12": { type: "float", default: "60", description: "Angle between side 1 and side 2" },
     "angle23": { type: "float", default: "60", description: "Angle between side 2 and side 3" },
     "angle31": { type: "float", default: "60", description: "Angle between side 3 and side 1, aka starting corner" },
 
-    # LED counts
+    /* LED counts */
     "side1": { type: "int", default: "16", description: "Number of LEDs on side 1" },
     "corner12": { type: "int", default: "10", description: "Number of LEDs in the corner between side1 and side2" },
     "side2": { type: "int", default: "16", description: "Number of LEDs on side 2" },
     "corner23": { type: "int", default: "10", description: "Number of LEDs in the corner between side2 and side3" },
     "side3": { type: "int", default: "16", description: "Number of LEDs on side 3" },
 
-    # Debug tools
-    "outputEnabled": { type: "boolean", default: false },
+    /* Debug tools */
+    "outputEnabled": { type: "boolean", default: "false" },
     "host": { type: "string", default: "localhost", label: "Host", description: "Controller IP address or hostname" },
     "universe": { type: "int", default: 1, label: "Universe", description: "ArtNet Universe" },
     "channel": { type: "int", default: 0, min: 0, max: 512, label: "Channel", description: "ArtNet channel" },
-    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" }
+    "artnetSequence": { default: "false", type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" }
   },
 
   components: [

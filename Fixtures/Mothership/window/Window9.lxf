@@ -6,11 +6,11 @@
   tags: [ "w9", "window", "rectangle" ],
 
   parameters:  {
-    # Default 368 LEDs
+    /* Default 368 LEDs */
     "extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 368" },
     "ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
 
-    # Side and Corner lengths
+    /* Side and Corner lengths */
     "side1": { type: "int", default: "56", description: "Number of LEDs on side 1" },
     "corner12": { type: "int", default: "9", description: "Number of LEDs in the corner between side1 and side2" },
     "side2": { type: "int", default: "116", description: "Number of LEDs on side 2" },
@@ -19,12 +19,12 @@
     "corner34": { type: "int", default: "9", description: "Number of LEDs in the corner between side3 and side4" },
 
     /* Debug tools */
-    "onCar": { type: "boolean", default: true, label: "On Car", description: "True = Locate to position on car, False = Locate to origin" },
+    "onCar": { type: "boolean", default: "true", label: "On Car", description: "True = Locate to position on car, False = Locate to origin" },
     "outputEnabled": { type: "boolean", default: false },
     "host": { type: "string", default: "localhost", label: "Host", description: "Controller IP address or hostname" },
     "output": { type: "int", default: 4, min: 1, max: 8, label: "Output Num", description: "Controller Output Number 1-8" },
     "pixelOffset": { type: "int", default: 0, min: 0, max: 512, label: "Pixel Offset", description: "ArtNet offset in pixels" },
-    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" }
+    "artnetSequence": { default: "false", type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" }
   },
 
   transforms: [
