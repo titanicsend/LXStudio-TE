@@ -4,7 +4,7 @@ public class MidiNames {
 
   public static final String BOMEBOX = "FoH: ";
   public static final String APC40MK2 = heronarts.lx.midi.surface.APC40Mk2.DEVICE_NAME;
-  public static final String APCMINI = heronarts.lx.midi.surface.APCmini.DEVICE_NAME;
+  public static final String APCMINI = heronarts.lx.midi.surface.APCminiMk2.DEVICE_NAME;
 
   public static final String BOMEBOX_APC40MK2 = BOMEBOX + APC40MK2;
   public static final String BOMEBOX_APCMINI = BOMEBOX + APCMINI;
