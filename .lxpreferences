@@ -7,6 +7,7 @@
   "windowPosX": -1600,
   "windowPosY": 174,
   "uiZoom": 100,
+  "uiTheme": "DEFAULT",
   "focusChannelOnCue": true,
   "focusActivePattern": true,
   "sendCueToOutput": false,

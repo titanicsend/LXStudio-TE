@@ -337,8 +337,8 @@ public abstract class APCminiSurface extends LXMidiSurface implements LXMidiSurf
 
   public enum GridMode {
     PATTERNS(LXClipEngine.GridMode.PATTERNS),
-    CLIPS(LXClipEngine.GridMode.CLIPS),
-    PARAMETERS(null);
+    CLIPS(LXClipEngine.GridMode.CLIPS);
+//    PARAMETERS(null);
 
     public final LXClipEngine.GridMode engineGridMode;
 
@@ -770,9 +770,9 @@ public abstract class APCminiSurface extends LXMidiSurface implements LXMidiSurf
     return this.gridMode == GridMode.CLIPS;
   }
 
-  private boolean isGridModeParameters() {
-    return this.gridMode == GridMode.PARAMETERS;
-  }
+//  private boolean isGridModeParameters() {
+//    return this.gridMode == GridMode.PARAMETERS;
+//  }
 
   private void setGridMode(GridMode gridMode) {
     if (this.gridMode != gridMode) {
@@ -841,8 +841,8 @@ public abstract class APCminiSurface extends LXMidiSurface implements LXMidiSurf
           case CLIPS:
             sendChannelClips(i, channel);
             break;
-          case PARAMETERS:
-            break;
+//          case PARAMETERS:
+//            break;
         }
       }
 //    }
@@ -1021,7 +1021,7 @@ public abstract class APCminiSurface extends LXMidiSurface implements LXMidiSurf
       sendNoteOn(MIDI_CHANNEL_SINGLE, NOTE.GRID_MODE_PATTERNS, LED_ON(this.gridMode == GridMode.PATTERNS));
       sendNoteOn(MIDI_CHANNEL_SINGLE, NOTE.GRID_MODE_CLIPS, LED_ON(this.gridMode == GridMode.CLIPS));
       sendNoteOn(MIDI_CHANNEL_SINGLE, NOTE.FADER_CTRL_SEND, LED_OFF);
-      sendNoteOn(MIDI_CHANNEL_SINGLE, NOTE.GRID_MODE_PARAMETERS, LED_ON(this.gridMode == GridMode.PARAMETERS));
+//      sendNoteOn(MIDI_CHANNEL_SINGLE, NOTE.GRID_MODE_PARAMETERS, LED_ON(this.gridMode == GridMode.PARAMETERS));
     }
   }
 
@@ -1036,9 +1036,10 @@ public abstract class APCminiSurface extends LXMidiSurface implements LXMidiSurf
         color = LED_ON(this.gridMode == GridMode.PATTERNS);
       } else if (noteNumber == NOTE.GRID_MODE_CLIPS) {
         color = LED_ON(this.gridMode == GridMode.CLIPS);
-      } else if (noteNumber == NOTE.GRID_MODE_PARAMETERS) {
-        color = LED_ON(this.gridMode == GridMode.PARAMETERS);
       }
+//      else if (noteNumber == NOTE.GRID_MODE_PARAMETERS) {
+//        color = LED_ON(this.gridMode == GridMode.PARAMETERS);
+//      }
 
     } else {
 
@@ -1286,9 +1287,10 @@ public abstract class APCminiSurface extends LXMidiSurface implements LXMidiSurf
           setGridMode(GridMode.PATTERNS);
         } else if (pitch == NOTE.GRID_MODE_CLIPS) {
           setGridMode(GridMode.CLIPS);
-        } else if (pitch == NOTE.GRID_MODE_PARAMETERS) {
-          setGridMode(GridMode.PARAMETERS);
         }
+//        else if (pitch == NOTE.GRID_MODE_PARAMETERS) {
+//          setGridMode(GridMode.PARAMETERS);
+//        }
       }
 
     } else {
