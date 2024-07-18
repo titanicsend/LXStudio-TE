@@ -829,22 +829,31 @@ public abstract class APCminiSurface extends LXMidiSurface implements LXMidiSurf
   }
 
   private void sendGrid() {
+    for (int x = 0; x < NUM_CHANNELS; ++x) {
+      for (int y = 0; y < CLIP_LAUNCH_ROWS; ++y) {
+        int behavior = LED.DEFAULT_MULTI_BEHAVIOR;
+        int note = CLIP_LAUNCH + CLIP_LAUNCH_COLUMNS * (CLIP_LAUNCH_ROWS - 1 - y) + x;
+        int color = x+y;
+        sendNoteOn(behavior, note, color);
+      }
+    }
 //    if (isGridModeParameters()) {
 //      this.deviceListener.resend();
 //    } else {
-      for (int i = 0; i < NUM_CHANNELS; ++i) {
-        LXAbstractChannel channel = getChannel(i);
-        switch (this.gridMode) {
-          case PATTERNS:
-            sendChannelPatterns(i, channel);
-            break;
-          case CLIPS:
-            sendChannelClips(i, channel);
-            break;
-//          case PARAMETERS:
+
+//      for (int i = 0; i < NUM_CHANNELS; ++i) {
+//        LXAbstractChannel channel = getChannel(i);
+//        switch (this.gridMode) {
+//          case PATTERNS:
+//            sendChannelPatterns(i, channel);
 //            break;
-        }
-      }
+//          case CLIPS:
+//            sendChannelClips(i, channel);
+//            break;
+////          case PARAMETERS:
+////            break;
+//        }
+//      }
 //    }
   }
 
