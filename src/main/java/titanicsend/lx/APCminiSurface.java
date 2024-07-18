@@ -354,189 +354,189 @@ public abstract class APCminiSurface extends LXMidiSurface implements LXMidiSurf
 
   private final Map<LXAbstractChannel, ChannelListener> channelListeners = new HashMap<LXAbstractChannel, ChannelListener>();
 
-  private final DeviceListener deviceListener = new DeviceListener();
-
-  private class DeviceListener implements FocusedDevice.Listener, LXParameterListener {
-
-    private final FocusedDevice focusedDevice;
-    private LXDeviceComponent device = null;
-
-    private final LXListenableNormalizedParameter[] knobs =
-        new LXListenableNormalizedParameter[PARAMETER_NUM];
-
-    private DeviceListener() {
-      Arrays.fill(this.knobs, null);
-      this.focusedDevice = new FocusedDevice(lx, APCminiSurface.this, this);
-    }
-
-    @Override
-    public void onDeviceFocused(LXDeviceComponent device) {
-      registerDevice(device);
-    }
-
-    private void registerDevice(LXDeviceComponent device) {
-      if (this.device != device) {
-        unregisterDevice(false);
-        this.device = device;
-
-        int i = 0;
-        if (this.device != null) {
-          for (LXListenableNormalizedParameter parameter : getDeviceRemoteControls()) {
-            if (i >= this.knobs.length) {
-              break;
-            }
-            this.knobs[i] = parameter;
-            int patternButton = getParameterButton(i);
-            if (parameter != null) {
-              parameter.addListener(this);
-              if (isGridModeParameters()) {
-                sendNoteOn(LED.PARAMETER_INCREMENT_BEHAVIOR, patternButton, LED.PARAMETER_INCREMENT_COLOR);
-                sendNoteOn(LED.PARAMETER_DECREMENT_BEHAVIOR, patternButton - CLIP_LAUNCH_COLUMNS, LED.PARAMETER_DECREMENT_COLOR);
-                if (parameter.isDefault()) {
-                  sendNoteOn(LED.PARAMETER_ISDEFAULT_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 2), LED.PARAMETER_ISDEFAULT_COLOR);
-                } else {
-                  sendNoteOn(LED.PARAMETER_RESET_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 2), LED.PARAMETER_RESET_COLOR);
-                }
-                sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 3), LED_OFF);
-              }
-            } else {
-              // JKB: Added IF clause.  Why wasn't it here?
-              if (isGridModeParameters()) {
-                sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton, LED_OFF);
-                sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton - CLIP_LAUNCH_COLUMNS, LED_OFF);
-                sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 2), LED_OFF);
-                sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 3), LED_OFF);
-              }
-            }
-            ++i;
-          }
-          this.device.controlSurfaceSemaphore.increment();
-        }
-        if (isGridModeParameters()) {
-          while (i < this.knobs.length) {
-            int patternButton = getParameterButton(i);
-            sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton, LED_OFF);
-            sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton - CLIP_LAUNCH_COLUMNS, LED_OFF);
-            sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 2), LED_OFF);
-            sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 3), LED_OFF);
-            ++i;
-          }
-        }
-      }
-    }
-
-    private LXListenableNormalizedParameter[] getDeviceRemoteControls() {
-      return this.device.getRemoteControls();
-    }
-
-    @Override
-    public void onParameterChanged(LXParameter parameter) {
-      if (isGridModeParameters()) {
-        for (int i = 0; i < this.knobs.length; ++i) {
-          if (parameter == this.knobs[i]) {
-            int patternButton = getParameterButton(i);
-            if (((LXListenableNormalizedParameter) parameter).isDefault()) {
-              sendNoteOn(LED.PARAMETER_ISDEFAULT_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 2), LED.PARAMETER_ISDEFAULT_COLOR);
-            } else {
-              sendNoteOn(LED.PARAMETER_RESET_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 2), LED.PARAMETER_RESET_COLOR);
-            }
-            break;
-          }
-        }
-      }
-    }
-
-    private void resend() {
-      if (isGridModeParameters()) {
-        for (int i = 0; i < this.knobs.length; ++i) {
-          LXListenableNormalizedParameter parameter = this.knobs[i];
-          int patternButton = getParameterButton(i);
-          if (parameter != null) {
-            sendNoteOn(LED.PARAMETER_INCREMENT_BEHAVIOR, patternButton, LED.PARAMETER_INCREMENT_COLOR);
-            sendNoteOn(LED.PARAMETER_DECREMENT_BEHAVIOR, patternButton - CLIP_LAUNCH_COLUMNS, LED.PARAMETER_DECREMENT_COLOR);
-            if (parameter.isDefault()) {
-              sendNoteOn(LED.PARAMETER_ISDEFAULT_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 2), LED.PARAMETER_ISDEFAULT_COLOR);
-            } else {
-              sendNoteOn(LED.PARAMETER_RESET_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 2), LED.PARAMETER_RESET_COLOR);
-            }
-          } else {
-            sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton, LED_OFF);
-            sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton - CLIP_LAUNCH_COLUMNS, LED_OFF);
-            sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 2), LED_OFF);
-          }
-          sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 3), LED_OFF);
-        }
-      }
-    }
-
-    private int getParameterButton(int index) {
-      int row = index / PARAMETER_COLUMNS;
-      int column = index % PARAMETER_COLUMNS;
-      return PARAMETER_START + (row * CLIP_LAUNCH_COLUMNS * PARAMETER_ROW_STRIDE) + (column * PARAMETER_COLUMN_STRIDE);
-    }
-
-    private void onParameterButton(int columnIndex, int rowIndex) {
-      int paramIndex = 0;
-      int button = rowIndex;
-      while (button > 3) {
-        paramIndex += PARAMETER_COLUMNS;
-        button -= 4;
-      }
-      paramIndex += columnIndex;
-
-      LXListenableNormalizedParameter param = this.knobs[paramIndex];
-      if (param != null) {
-        switch (button) {
-          case 0:
-            if (param instanceof BooleanParameter) {
-              ((BooleanParameter)param).setValue(true);
-            } else if (param instanceof DiscreteParameter) {
-              ((DiscreteParameter)param).increment();
-            } else {
-              param.setNormalized(param.getNormalized() + PARAMETER_INCREMENT_AMOUNT);
-            }
-            break;
-          case 1:
-            if (param instanceof BooleanParameter) {
-              ((BooleanParameter)param).setValue(false);
-            } else if (param instanceof DiscreteParameter) {
-              ((DiscreteParameter)param).decrement();
-            } else {
-              param.setNormalized(param.getNormalized() - PARAMETER_INCREMENT_AMOUNT);
-            }
-            break;
-          case 2:
-            param.reset();
-            break;
-        }
-      }
-    }
-
-    private void unregisterDevice(boolean clearParams) {
-      if (this.device != null) {
-        for (int i = 0; i < this.knobs.length; ++i) {
-          if (this.knobs[i] != null) {
-            this.knobs[i].removeListener(this);
-            this.knobs[i] = null;
-            if (isGridModeParameters() && clearParams) {
-              final int patternButton = getParameterButton(i);
-              sendNoteOn(MIDI_CHANNEL_SINGLE, patternButton, LED_OFF);
-              sendNoteOn(MIDI_CHANNEL_SINGLE, patternButton - CLIP_LAUNCH_COLUMNS, LED_OFF);
-              sendNoteOn(MIDI_CHANNEL_SINGLE, patternButton - (CLIP_LAUNCH_COLUMNS * 2), LED_OFF);
-              sendNoteOn(MIDI_CHANNEL_SINGLE, patternButton - (CLIP_LAUNCH_COLUMNS * 3), LED_OFF);
-            }
-          }
-        }
-        this.device.controlSurfaceSemaphore.decrement();
-      }
-      this.device = null;
-    }
-
-    private void dispose() {
-      unregisterDevice(true);
-    }
-
-  }
+//  private final DeviceListener deviceListener = new DeviceListener();
+//
+//  private class DeviceListener implements FocusedDevice.Listener, LXParameterListener {
+//
+//    private final FocusedDevice focusedDevice;
+//    private LXDeviceComponent device = null;
+//
+//    private final LXListenableNormalizedParameter[] knobs =
+//        new LXListenableNormalizedParameter[PARAMETER_NUM];
+//
+//    private DeviceListener() {
+//      Arrays.fill(this.knobs, null);
+//      this.focusedDevice = new FocusedDevice(lx, APCminiSurface.this, this);
+//    }
+//
+//    @Override
+//    public void onDeviceFocused(LXDeviceComponent device) {
+//      registerDevice(device);
+//    }
+//
+//    private void registerDevice(LXDeviceComponent device) {
+//      if (this.device != device) {
+//        unregisterDevice(false);
+//        this.device = device;
+//
+//        int i = 0;
+//        if (this.device != null) {
+//          for (LXListenableNormalizedParameter parameter : getDeviceRemoteControls()) {
+//            if (i >= this.knobs.length) {
+//              break;
+//            }
+//            this.knobs[i] = parameter;
+//            int patternButton = getParameterButton(i);
+//            if (parameter != null) {
+//              parameter.addListener(this);
+//              if (isGridModeParameters()) {
+//                sendNoteOn(LED.PARAMETER_INCREMENT_BEHAVIOR, patternButton, LED.PARAMETER_INCREMENT_COLOR);
+//                sendNoteOn(LED.PARAMETER_DECREMENT_BEHAVIOR, patternButton - CLIP_LAUNCH_COLUMNS, LED.PARAMETER_DECREMENT_COLOR);
+//                if (parameter.isDefault()) {
+//                  sendNoteOn(LED.PARAMETER_ISDEFAULT_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 2), LED.PARAMETER_ISDEFAULT_COLOR);
+//                } else {
+//                  sendNoteOn(LED.PARAMETER_RESET_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 2), LED.PARAMETER_RESET_COLOR);
+//                }
+//                sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 3), LED_OFF);
+//              }
+//            } else {
+//              // JKB: Added IF clause.  Why wasn't it here?
+//              if (isGridModeParameters()) {
+//                sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton, LED_OFF);
+//                sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton - CLIP_LAUNCH_COLUMNS, LED_OFF);
+//                sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 2), LED_OFF);
+//                sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 3), LED_OFF);
+//              }
+//            }
+//            ++i;
+//          }
+//          this.device.controlSurfaceSemaphore.increment();
+//        }
+//        if (isGridModeParameters()) {
+//          while (i < this.knobs.length) {
+//            int patternButton = getParameterButton(i);
+//            sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton, LED_OFF);
+//            sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton - CLIP_LAUNCH_COLUMNS, LED_OFF);
+//            sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 2), LED_OFF);
+//            sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 3), LED_OFF);
+//            ++i;
+//          }
+//        }
+//      }
+//    }
+//
+//    private LXListenableNormalizedParameter[] getDeviceRemoteControls() {
+//      return this.device.getRemoteControls();
+//    }
+//
+//    @Override
+//    public void onParameterChanged(LXParameter parameter) {
+//      if (isGridModeParameters()) {
+//        for (int i = 0; i < this.knobs.length; ++i) {
+//          if (parameter == this.knobs[i]) {
+//            int patternButton = getParameterButton(i);
+//            if (((LXListenableNormalizedParameter) parameter).isDefault()) {
+//              sendNoteOn(LED.PARAMETER_ISDEFAULT_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 2), LED.PARAMETER_ISDEFAULT_COLOR);
+//            } else {
+//              sendNoteOn(LED.PARAMETER_RESET_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 2), LED.PARAMETER_RESET_COLOR);
+//            }
+//            break;
+//          }
+//        }
+//      }
+//    }
+//
+//    private void resend() {
+//      if (isGridModeParameters()) {
+//        for (int i = 0; i < this.knobs.length; ++i) {
+//          LXListenableNormalizedParameter parameter = this.knobs[i];
+//          int patternButton = getParameterButton(i);
+//          if (parameter != null) {
+//            sendNoteOn(LED.PARAMETER_INCREMENT_BEHAVIOR, patternButton, LED.PARAMETER_INCREMENT_COLOR);
+//            sendNoteOn(LED.PARAMETER_DECREMENT_BEHAVIOR, patternButton - CLIP_LAUNCH_COLUMNS, LED.PARAMETER_DECREMENT_COLOR);
+//            if (parameter.isDefault()) {
+//              sendNoteOn(LED.PARAMETER_ISDEFAULT_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 2), LED.PARAMETER_ISDEFAULT_COLOR);
+//            } else {
+//              sendNoteOn(LED.PARAMETER_RESET_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 2), LED.PARAMETER_RESET_COLOR);
+//            }
+//          } else {
+//            sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton, LED_OFF);
+//            sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton - CLIP_LAUNCH_COLUMNS, LED_OFF);
+//            sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 2), LED_OFF);
+//          }
+//          sendNoteOn(LED.DEFAULT_MULTI_BEHAVIOR, patternButton - (CLIP_LAUNCH_COLUMNS * 3), LED_OFF);
+//        }
+//      }
+//    }
+//
+//    private int getParameterButton(int index) {
+//      int row = index / PARAMETER_COLUMNS;
+//      int column = index % PARAMETER_COLUMNS;
+//      return PARAMETER_START + (row * CLIP_LAUNCH_COLUMNS * PARAMETER_ROW_STRIDE) + (column * PARAMETER_COLUMN_STRIDE);
+//    }
+//
+//    private void onParameterButton(int columnIndex, int rowIndex) {
+//      int paramIndex = 0;
+//      int button = rowIndex;
+//      while (button > 3) {
+//        paramIndex += PARAMETER_COLUMNS;
+//        button -= 4;
+//      }
+//      paramIndex += columnIndex;
+//
+//      LXListenableNormalizedParameter param = this.knobs[paramIndex];
+//      if (param != null) {
+//        switch (button) {
+//          case 0:
+//            if (param instanceof BooleanParameter) {
+//              ((BooleanParameter)param).setValue(true);
+//            } else if (param instanceof DiscreteParameter) {
+//              ((DiscreteParameter)param).increment();
+//            } else {
+//              param.setNormalized(param.getNormalized() + PARAMETER_INCREMENT_AMOUNT);
+//            }
+//            break;
+//          case 1:
+//            if (param instanceof BooleanParameter) {
+//              ((BooleanParameter)param).setValue(false);
+//            } else if (param instanceof DiscreteParameter) {
+//              ((DiscreteParameter)param).decrement();
+//            } else {
+//              param.setNormalized(param.getNormalized() - PARAMETER_INCREMENT_AMOUNT);
+//            }
+//            break;
+//          case 2:
+//            param.reset();
+//            break;
+//        }
+//      }
+//    }
+//
+//    private void unregisterDevice(boolean clearParams) {
+//      if (this.device != null) {
+//        for (int i = 0; i < this.knobs.length; ++i) {
+//          if (this.knobs[i] != null) {
+//            this.knobs[i].removeListener(this);
+//            this.knobs[i] = null;
+//            if (isGridModeParameters() && clearParams) {
+//              final int patternButton = getParameterButton(i);
+//              sendNoteOn(MIDI_CHANNEL_SINGLE, patternButton, LED_OFF);
+//              sendNoteOn(MIDI_CHANNEL_SINGLE, patternButton - CLIP_LAUNCH_COLUMNS, LED_OFF);
+//              sendNoteOn(MIDI_CHANNEL_SINGLE, patternButton - (CLIP_LAUNCH_COLUMNS * 2), LED_OFF);
+//              sendNoteOn(MIDI_CHANNEL_SINGLE, patternButton - (CLIP_LAUNCH_COLUMNS * 3), LED_OFF);
+//            }
+//          }
+//        }
+//        this.device.controlSurfaceSemaphore.decrement();
+//      }
+//      this.device = null;
+//    }
+//
+//    private void dispose() {
+//      unregisterDevice(true);
+//    }
+//
+//  }
 
   protected final MixerSurface mixerSurface;
 
@@ -817,7 +817,8 @@ public abstract class APCminiSurface extends LXMidiSurface implements LXMidiSurf
   protected void onReconnect() {
     if (this.enabled.isOn()) {
       initialize(true);
-      this.deviceListener.resend();
+//      // should this be gated by 'isGridModeParameters()'?
+//      this.deviceListener.resend();
     }
   }
 
@@ -828,9 +829,9 @@ public abstract class APCminiSurface extends LXMidiSurface implements LXMidiSurf
   }
 
   private void sendGrid() {
-    if (isGridModeParameters()) {
-      this.deviceListener.resend();
-    } else {
+//    if (isGridModeParameters()) {
+//      this.deviceListener.resend();
+//    } else {
       for (int i = 0; i < NUM_CHANNELS; ++i) {
         LXAbstractChannel channel = getChannel(i);
         switch (this.gridMode) {
@@ -844,7 +845,7 @@ public abstract class APCminiSurface extends LXMidiSurface implements LXMidiSurf
             break;
         }
       }
-    }
+//    }
   }
 
   private void clearGrid() {
@@ -1074,14 +1075,14 @@ public abstract class APCminiSurface extends LXMidiSurface implements LXMidiSurf
 
     this.mixerSurface.register();
     this.focusedChannel.register();
-    this.deviceListener.focusedDevice.register();
+//    this.deviceListener.focusedDevice.register();
   }
 
   private void unregister() {
     this.isRegistered = false;
 
     this.mixerSurface.unregister();
-    this.deviceListener.focusedDevice.unregister();
+//    this.deviceListener.focusedDevice.unregister();
     this.focusedChannel.unregister();
 
     clearGrid();
@@ -1144,12 +1145,12 @@ public abstract class APCminiSurface extends LXMidiSurface implements LXMidiSurf
     final int pitch = note.getPitch();
     final int channelIndex = (pitch - CLIP_LAUNCH) % CLIP_LAUNCH_COLUMNS;
     final int index = CLIP_LAUNCH_ROWS - 1 - ((pitch - CLIP_LAUNCH) / CLIP_LAUNCH_COLUMNS);
-    if (isGridModeParameters()) {
-      // Grid button: Parameter
-      if (!this.shiftOn) {
-        this.deviceListener.onParameterButton(channelIndex, index);
-      }
-    } else {
+//    if (isGridModeParameters()) {
+//      // Grid button: Parameter
+//      if (!this.shiftOn) {
+//        this.deviceListener.onParameterButton(channelIndex, index);
+//      }
+//    } else {
       LXAbstractChannel channel = getChannel(channelIndex);
       if (channel != null) {
         if (isGridModeClips()) {
@@ -1170,25 +1171,26 @@ public abstract class APCminiSurface extends LXMidiSurface implements LXMidiSurf
               }
             }
           }
-        } else if (isGridModePatterns()) {
-          // Grid button: Pattern
-          if (channel instanceof LXChannel) {
-            final LXChannel c = (LXChannel) channel;
-            int target = index + mixerSurface.getGridPatternOffset();
-            if (target < c.getPatterns().size()) {
-              c.focusedPattern.setValue(target);
-              if (!this.shiftOn) {
-                if (channel.isPlaylist()) {
-                  c.goPatternIndex(target);
-                } else {
-                  c.patterns.get(target).enabled.toggle();
-                }
-              }
-            }
-          }
         }
+//        else if (isGridModePatterns()) {
+//          // Grid button: Pattern
+//          if (channel instanceof LXChannel) {
+//            final LXChannel c = (LXChannel) channel;
+//            int target = index + mixerSurface.getGridPatternOffset();
+//            if (target < c.getPatterns().size()) {
+//              c.focusedPattern.setValue(target);
+//              if (!this.shiftOn) {
+//                if (channel.isPlaylist()) {
+//                  c.goPatternIndex(target);
+//                } else {
+//                  c.patterns.get(target).enabled.toggle();
+//                }
+//              }
+//            }
+//          }
+//        }
       }
-    }
+//    }
   }
 
   private void sceneLaunchNoteReceived(MidiNote note, boolean on) {
@@ -1250,35 +1252,35 @@ public abstract class APCminiSurface extends LXMidiSurface implements LXMidiSurf
       // Shift+Button press
       if (on) {
         if (pitch == NOTE.SELECT_LEFT) {
-          if (isGridModeParameters()) {
-            this.deviceListener.focusedDevice.previousDevice();
-          } else {
+//          if (isGridModeParameters()) {
+//            this.deviceListener.focusedDevice.previousDevice();
+//          } else {
             this.mixerSurface.channelNumber.decrement();
-          }
+//          }
         } else if (pitch == NOTE.SELECT_RIGHT) {
-          if (isGridModeParameters()) {
-            this.deviceListener.focusedDevice.nextDevice();
-          } else {
+//          if (isGridModeParameters()) {
+//            this.deviceListener.focusedDevice.nextDevice();
+//          } else {
             this.mixerSurface.channelNumber.increment();
-          }
+//          }
         } else if (pitch == NOTE.SELECT_UP) {
-          if (isGridModeParameters()) {
-            LXBus bus = this.lx.engine.mixer.getFocusedChannel();
-            if (bus instanceof LXChannel) {
-              ((LXChannel) bus).focusedPattern.decrement(1, false);
-            }
-          } else {
+//          if (isGridModeParameters()) {
+//            LXBus bus = this.lx.engine.mixer.getFocusedChannel();
+//            if (bus instanceof LXChannel) {
+//              ((LXChannel) bus).focusedPattern.decrement(1, false);
+//            }
+//          } else {
             this.mixerSurface.decrementGridOffset();
-          }
+//          }
         } else if (pitch == NOTE.SELECT_DOWN) {
-          if (isGridModeParameters()) {
-            LXBus bus = this.lx.engine.mixer.getFocusedChannel();
-            if (bus instanceof LXChannel) {
-              ((LXChannel) bus).focusedPattern.increment(1, false);
-            }
-          } else {
+//          if (isGridModeParameters()) {
+//            LXBus bus = this.lx.engine.mixer.getFocusedChannel();
+//            if (bus instanceof LXChannel) {
+//              ((LXChannel) bus).focusedPattern.increment(1, false);
+//            }
+//          } else {
             this.mixerSurface.incrementGridOffset();
-          }
+//          }
         } else if (pitch == NOTE.GRID_MODE_PATTERNS) {
           // SHIFT + FADER CTRL sets the GridMode
           setGridMode(GridMode.PATTERNS);
@@ -1368,7 +1370,7 @@ public abstract class APCminiSurface extends LXMidiSurface implements LXMidiSurf
     for (LXMidiParameterControl fader : this.channelFaders) {
       fader.dispose();
     }
-    this.deviceListener.dispose();
+//    this.deviceListener.dispose();
     this.mixerSurface.dispose();
     super.dispose();
   }
