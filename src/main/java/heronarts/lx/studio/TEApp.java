@@ -84,6 +84,7 @@ import titanicsend.pattern.mike.*;
 import titanicsend.pattern.pixelblaze.*;
 import titanicsend.pattern.sinas.LightBeamsAudioReactivePattern;
 import titanicsend.pattern.sinas.TdNdiPattern;
+import titanicsend.pattern.sinas.TdStableDiffusionPattern;
 import titanicsend.pattern.tom.*;
 import titanicsend.pattern.util.TargetPixelStamper;
 import titanicsend.pattern.will.PowerDebugger;
@@ -146,7 +147,7 @@ public class TEApp extends LXStudio {
       this.lx = lx;
       lx.addListener(this);
       lx.addProjectListener(this);
-      
+
       if (!staticModel) {
         wholeModel = new TEWholeModelDynamic(lx);
       }
@@ -164,7 +165,7 @@ public class TEApp extends LXStudio {
       // ui.leftPane.global.getContentWidth()).addToContainer(ui.leftPane.global);
       this.dmxEngine = new DmxEngine(lx);
       this.ndiEngine = new NDIEngine(lx);
-      this.glEngine = new GLEngine(lx,staticModel);
+      this.glEngine = new GLEngine(lx, staticModel);
 
       lx.engine.registerComponent("audioStems", this.audioStems = new AudioStems(lx));
 
@@ -216,6 +217,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(MultipassDemo.class);
       lx.registry.addPattern(NDIReceiverTest.class);
       lx.registry.addPattern(TdNdiPattern.class);
+      lx.registry.addPattern(TdStableDiffusionPattern.class);
       lx.registry.addPattern(ModelFileWriter.class);
       lx.registry.addPattern(Phasers.class);
       lx.registry.addPattern(PixelblazeSandbox.class);
@@ -300,7 +302,8 @@ public class TEApp extends LXStudio {
       // "ShaderToyPattern" in ShaderPanelsPatternConfig.java
 
       // Useful for test, but might turn the car black in performance
-      // lx.registry.removePattern(PlanesPattern.class); // remove pattern added automatically by LX.
+      // lx.registry.removePattern(PlanesPattern.class); // remove pattern added automatically by
+      // LX.
 
       // Frame Rate Killers
       // lx.registry.addEffect(titanicsend.effect.Kaleidoscope.class);
@@ -326,7 +329,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(SignalDebugger.class);
       lx.registry.addPattern(HandTracker.class);
       lx.registry.addPattern(TargetPixelStamper.class);
-      //lx.registry.addPattern(ModelFileWriter.class);
+      // lx.registry.addPattern(ModelFileWriter.class);
 
       // Midi surface names for use with BomeBox
       lx.engine.midi.registerSurface(MidiNames.BOMEBOX_APC40MK2, APC40Mk2.class);
@@ -585,10 +588,9 @@ public class TEApp extends LXStudio {
     }
 
     /**
-     * Sets camera position and point size for the appropriate model.
-     * Static model requires manual placement of the camera due to very large scale (1"=50000).
-     * Subsequently project files saved with one model type and opened with the other
-     * need their camera position updated. 
+     * Sets camera position and point size for the appropriate model. Static model requires manual
+     * placement of the camera due to very large scale (1"=50000). Subsequently project files saved
+     * with one model type and opened with the other need their camera position updated.
      */
     public void applyTECameraPosition() {
       if (this.lx instanceof LXStudio) {
@@ -622,7 +624,7 @@ public class TEApp extends LXStudio {
       this.crutchOSC.dispose();
 
       if (!staticModel) {
-        ((TEWholeModelDynamic)wholeModel).dispose();
+        ((TEWholeModelDynamic) wholeModel).dispose();
       }
     }
   }
