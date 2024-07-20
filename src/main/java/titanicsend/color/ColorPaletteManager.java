@@ -139,6 +139,7 @@ public class ColorPaletteManager extends LXComponent {
     swatch.getColor(teColorType.swatchIndex()).mode.setValue(LXDynamicColor.Mode.FIXED);
   }
 
+  @Override
   public void onParameterChanged(LXParameter parameter) {
     float hue = this.hue.getValuef();
     float saturation = this.saturation.getValuef();
