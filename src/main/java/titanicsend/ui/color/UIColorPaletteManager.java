@@ -165,11 +165,6 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
           new UISaturationDisplay(sliderWidth),
           new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.saturation)
       );
-      addColumn(
-          colorSlidersRow,
-          new UIBrightnessDisplay(sliderWidth),
-          new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.brightness)
-      );
     } else {
       addColumn(
           colorSlidersRow,
@@ -178,10 +173,6 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
       addColumn(
           colorSlidersRow,
           new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.saturation)
-      );
-      addColumn(
-          colorSlidersRow,
-          new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.brightness)
       );
     }
 
@@ -278,19 +269,6 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     public void onDraw(UI ui, VGraphics vg) {
       vg.beginPath();
       vg.fillLinearGradient(0.0F, 0.0F, this.width, 0.0F, LXColor.hsb(0.0F, 0.0F, 50.0F), LXColor.hsb(0.0F, 100.0F, 100.0F));
-      vg.rect(0.0F, 0.0F, this.width, this.height);
-      vg.fill();
-    }
-  }
-
-  private class UIBrightnessDisplay extends UIGradientDisplay {
-    private UIBrightnessDisplay(float gradientWidth) {
-      super(gradientWidth, GRADIENT_HEIGHT);
-    }
-
-    public void onDraw(UI ui, VGraphics vg) {
-      vg.beginPath();
-      vg.fillLinearGradient(0.0F, 0.0F, this.width, 0.0F, -16777216, -1);
       vg.rect(0.0F, 0.0F, this.width, this.height);
       vg.fill();
     }
