@@ -31,7 +31,6 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.modulator.dmx.DmxColorModulator;
 
 @LXCategory(LXCategory.COLOR)
 @LXComponentName("Look Color Palette")
