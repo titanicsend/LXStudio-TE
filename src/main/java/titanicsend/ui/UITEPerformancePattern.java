@@ -80,8 +80,14 @@ public class UITEPerformancePattern
     List<LXNormalizedParameter> params =
         new ArrayList<LXNormalizedParameter>(Arrays.asList(device.getRemoteControls()));
 
-    // For design mode, append Brightness.  Useful for AutoVJ especially.
+    // Extra controls, displayed only in design mode
     params.add(device.getControls().getControl(TEControlTag.BRIGHTNESS).control);
+    params.add(device.getControls().getControl(TEControlTag.TWIST).control);
+    // add two spaces so we wind up with two columns of these extra controls
+    // in the design UI - this makes them more visible without expanding
+    // the Chromatik window.
+    params.add(null);
+    params.add(null);
     params.add(device.getControls().color.offset);
     params.add(device.getControls().color.gradient);
 

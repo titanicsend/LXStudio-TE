@@ -2,6 +2,7 @@ package titanicsend.pattern.glengine;
 
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
+import titanicsend.audio.AudioStems;
 import titanicsend.color.TEColorType;
 
 public class GLEffectControl implements GLControlData {
@@ -26,6 +27,12 @@ public class GLEffectControl implements GLControlData {
   public void setUniforms(GLShader s) {
     s.setUniform("iTime", (float) effect.getTime());
     s.setUniform("iResolution", (float) GLEngine.getWidth(), (float) GLEngine.getHeight());
+
+    // Current values from audio stems
+    s.setUniform("stemBass", (float) AudioStems.current.bass.getValuef());
+    s.setUniform("stemDrums", (float) AudioStems.current.drums.getValuef());
+    s.setUniform("stemVocal", (float) AudioStems.current.vocal.getValuef());
+    s.setUniform("stemOther", (float) AudioStems.current.other.getValuef());
 
     // get current primary and secondary colors
     // TODO - we're just grabbing swatch colors here.  Do we need to worry about modulation?
