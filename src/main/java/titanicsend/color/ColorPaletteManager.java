@@ -81,7 +81,7 @@ public class ColorPaletteManager extends LXComponent {
   private final String name;
   private final int index;
 
-  public LXSwatch managedSwatch;
+  private LXSwatch managedSwatch;
 
   public ColorPaletteManager(LX lx) {
     this(lx, DEFAULT_NAME, DEFAULT_INDEX);
@@ -98,7 +98,6 @@ public class ColorPaletteManager extends LXComponent {
     addParameter("color1", this.color1);
     addParameter("color2", this.color2);
     addParameter("color3", this.color3);
-
     // run `getManagedSwatch` to ensure the swatch is created, has the right name/num colors
     this.managedSwatch = managedSwatch();
   }
@@ -109,14 +108,14 @@ public class ColorPaletteManager extends LXComponent {
     while (this.lx.engine.palette.swatches.size() <= (this.index + 1)) {
       this.lx.engine.palette.saveSwatch();
     }
-    LXSwatch cueSwatch = this.lx.engine.palette.swatches.get(this.index);
-    cueSwatch.label.setValue(this.name);
-    if (cueSwatch.colors.size() < LXSwatch.MAX_COLORS) {
-      for (int i = cueSwatch.colors.size(); i < LXSwatch.MAX_COLORS; ++i) {
-        cueSwatch.addColor();
+    this.managedSwatch = this.lx.engine.palette.swatches.get(this.index);
+    this.managedSwatch.label.setValue(this.name);
+    if (this.managedSwatch.colors.size() < LXSwatch.MAX_COLORS) {
+      for (int i = this.managedSwatch.colors.size(); i < LXSwatch.MAX_COLORS; ++i) {
+        this.managedSwatch.addColor();
       }
     }
-    return cueSwatch;
+    return this.managedSwatch;
   }
 
   public void updateSwatches() {
