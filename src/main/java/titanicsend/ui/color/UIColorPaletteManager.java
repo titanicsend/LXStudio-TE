@@ -1,13 +1,10 @@
-package titanicsend.ui.effect;
+package titanicsend.ui.color;
 
 import heronarts.glx.ui.UI;
 import heronarts.glx.ui.UI2dComponent;
 import heronarts.glx.ui.UI2dContainer;
-import heronarts.glx.ui.UIColor;
 import heronarts.glx.ui.component.UICollapsibleSection;
 import heronarts.glx.ui.component.UIColorPicker;
-import heronarts.glx.ui.component.UIDoubleBox;
-import heronarts.glx.ui.component.UIDropMenu;
 import heronarts.glx.ui.component.UILabel;
 import heronarts.glx.ui.component.UISlider;
 import heronarts.glx.ui.vg.VGraphics;
