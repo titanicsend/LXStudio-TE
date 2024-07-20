@@ -105,9 +105,9 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
 
     addColumn(
         paletteSelectionRow,
-        newButton(paletteMgr.toggleCue, 40F)
+        newButton(paletteMgr.pushSwatch, 40F)
             .setActiveLabel("ON")
-            .setInactiveLabel("SWAP")
+            .setInactiveLabel("PUSH")
             .setMomentary(true)
     );
 

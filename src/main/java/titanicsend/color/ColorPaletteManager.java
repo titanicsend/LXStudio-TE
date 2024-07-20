@@ -29,7 +29,6 @@ import heronarts.lx.color.LXSwatch;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.EnumParameter;
-import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
 
 @LXCategory(LXCategory.COLOR)
@@ -89,12 +88,11 @@ public class ColorPaletteManager extends LXComponent {
     updateSwatches(managedSwatch());
   };
 
-  // TODO(look): rename this
-  public final BooleanParameter toggleCue =
-      new BooleanParameter("Toggle Cue", false)
-          .setDescription("Swap the cue and active swatches");
+  public final BooleanParameter pushSwatch =
+      new BooleanParameter("Push Swatch", false)
+          .setDescription("Push the managed swatch to the global active swatch");
 
-  private final LXParameterListener toggleListener = (p) -> this.updateSwatches();
+  private final LXParameterListener pushListener = (p) -> this.updateSwatches();
 
   /**
    * Name of the managed swatch in Chromatik global palette list
@@ -132,7 +130,7 @@ public class ColorPaletteManager extends LXComponent {
     addParameter("color2", this.color2);
     addParameter("color3", this.color3);
 
-    this.toggleCue.addListener(toggleListener);
+    this.pushSwatch.addListener(pushListener);
     this.hue.addListener(colorListener);
     this.saturation.addListener(colorListener);
     this.brightness.addListener(colorListener);
@@ -142,7 +140,7 @@ public class ColorPaletteManager extends LXComponent {
 
   @Override
   public void dispose() {
-    this.toggleCue.removeListener(toggleListener);
+    this.pushSwatch.removeListener(pushListener);
     this.hue.removeListener(colorListener);
     this.saturation.removeListener(colorListener);
     this.brightness.removeListener(colorListener);
@@ -171,7 +169,7 @@ public class ColorPaletteManager extends LXComponent {
   }
 
   public void updateSwatches() {
-    updateSwatches(this.lx.engine.palette.swatch);
+    this.managedSwatch.recall.trigger();
   }
 
   private void updateSwatches(LXSwatch swatch) {
