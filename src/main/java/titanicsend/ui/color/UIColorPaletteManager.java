@@ -64,13 +64,6 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
 
     buildColorSlidersRow(cueMgr).addToContainer(this);
 
-    this.addListener(
-        cueMgr.toggleCue,
-        (p) -> {
-          cueMgr.updateSwatches();
-//          cueSwatch = cueMgr.managedSwatch();
-        });
-
     if (auxMgr != null) {
       horizontalBreak(ui, this.width).addToContainer(this);
 
@@ -79,13 +72,6 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
       horizontalBreak(ui, this.width).addToContainer(this);
 
       buildColorSlidersRow(auxMgr).addToContainer(this);
-
-      this.addListener(
-          auxMgr.toggleCue,
-          (p) -> {
-            auxMgr.updateSwatches();
-//            auxSwatch = auxMgr.managedSwatch();
-          });
     }
   }
 
@@ -177,10 +163,6 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     }
 
     return colorSlidersRow;
-  }
-
-  private UI2dContainer row(String label, UI2dComponent component) {
-    return row(label, LABEL_WIDTH, component);
   }
 
   private UI2dContainer row(String label, int labelWidth, UI2dComponent component) {

@@ -100,8 +100,13 @@ public class ColorPaletteManager extends LXComponent {
 
   public ColorPaletteManager(LX lx, String swatchName, int swatchIndex) {
     super(lx);
+
     this.swatchName = swatchName;
     this.swatchIndex = swatchIndex;
+
+    // ensure the swatch is created, has the right name/num colors
+    this.managedSwatch = managedSwatch();
+
     addParameter("hue", this.hue);
     addParameter("saturation", this.saturation);
     addParameter("brightness", this.brightness);
@@ -109,10 +114,16 @@ public class ColorPaletteManager extends LXComponent {
     addParameter("color1", this.color1);
     addParameter("color2", this.color2);
     addParameter("color3", this.color3);
-    // run `getManagedSwatch` to ensure the swatch is created, has the right name/num colors
-    this.managedSwatch = managedSwatch();
+
+    this.toggleCue.addListener(
+        (p) -> {
+          this.updateSwatches();
+        });
   }
 
+  /**
+   * Returns the managed swatch, creating it if it doesn't exist
+   */
   public LXSwatch managedSwatch() {
     // ensure there are at least enough swatches in the global palette list to fetch
     // the correct index for this "managed swatch".
