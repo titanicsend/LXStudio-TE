@@ -121,6 +121,7 @@ public class ColorPaletteManager extends LXComponent {
   public void updateSwatches() {
     updateSwatches(this.lx.engine.palette.swatch);
   }
+
   // Send to target color in global palette
   protected void updateSwatches(LXSwatch swatch) {
     setColorAtPosition(swatch, TEColorType.PRIMARY, this.color1.getColor());
