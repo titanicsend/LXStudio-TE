@@ -12691,7 +12691,7 @@
           "hue": -208.32588639110327,
           "saturation": 100.0,
           "brightness": 100.0,
-          "paletteType": 4,
+          "paletteStrategy": 4,
           "color1Position": 3,
           "color2Position": 4,
           "color3Position": 5,

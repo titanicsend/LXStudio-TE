@@ -58,7 +58,7 @@ public class ColorPaletteManager extends LXComponent {
       new BooleanParameter("Toggle Cue", false)
           .setDescription("Swap the cue and active swatches");
 
-  public enum PaletteType {
+  public enum PaletteStrategy {
     MONO,
     ANALOGOUS,
     GOLDEN_RATIO_CONJUGATE,
@@ -67,13 +67,13 @@ public class ColorPaletteManager extends LXComponent {
     TRIADIC,
   }
 
-  public final EnumParameter<PaletteType> paletteType =
-      new EnumParameter<PaletteType>("Color Position", PaletteType.TRIADIC)
+  public final EnumParameter<PaletteStrategy> paletteStrategy =
+      new EnumParameter<>("Palette Strategy", PaletteStrategy.TRIADIC)
           .setDescription(
-              "Destination color position (1-based) in the global palette current swatch");
+              "Color theory rule to use when generating the secondary and tertiary colors");
 
   // update this so we know whether to re-render the palette
-  public PaletteType currPaletteType = PaletteType.TRIADIC;
+  public PaletteStrategy currPaletteStrategy = PaletteStrategy.TRIADIC;
 
   public static final String DEFAULT_NAME = "CUE";
   public static final int DEFAULT_INDEX = 0;
@@ -94,7 +94,7 @@ public class ColorPaletteManager extends LXComponent {
     addParameter("hue", this.hue);
     addParameter("saturation", this.saturation);
     addParameter("brightness", this.brightness);
-    addParameter("paletteType", this.paletteType);
+    addParameter("paletteStrategy", this.paletteStrategy);
     addParameter("color1", this.color1);
     addParameter("color2", this.color2);
     addParameter("color3", this.color3);
@@ -139,9 +139,9 @@ public class ColorPaletteManager extends LXComponent {
     float saturation = this.saturation.getValuef();
     float brightness = this.brightness.getValuef();
     int color1 = LXColor.hsb(hue, saturation, brightness);
-    if (color1 != this.color1.getColor() || this.currPaletteType != this.paletteType.getEnum()) {
+    if (color1 != this.color1.getColor() || this.currPaletteStrategy != this.paletteStrategy.getEnum()) {
       this.color1.setColor(color1);
-      this.currPaletteType = this.paletteType.getEnum();
+      this.currPaletteStrategy = this.paletteStrategy.getEnum();
       updateColors2And3();
       updateSwatches(managedSwatch());
     }
@@ -153,7 +153,7 @@ public class ColorPaletteManager extends LXComponent {
     float brightness = this.color1.brightness.getValuef();
     int color2;
     int color3;
-    switch(this.paletteType.getEnum()) {
+    switch(this.paletteStrategy.getEnum()) {
       case MONO:
         color2 = LXColor.BLACK;
         color3 = LXColor.BLACK;
@@ -179,7 +179,7 @@ public class ColorPaletteManager extends LXComponent {
         color3 = LXColor.hsb(hue - 30, saturation, brightness);
         break;
       default:
-        throw new RuntimeException("Unknown palette type: " + this.paletteType.getEnum());
+        throw new RuntimeException("Unknown PaletteStrategy: " + this.paletteStrategy.getEnum());
     }
     this.color2.setColor(color2);
     this.color3.setColor(color3);

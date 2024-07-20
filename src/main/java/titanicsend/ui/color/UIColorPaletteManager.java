@@ -114,7 +114,7 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
 
     addColumn(
         paletteSelectionRow,
-        newKnob(paletteMgr.paletteType)
+        newKnob(paletteMgr.paletteStrategy)
     );
 
     addColumn(
