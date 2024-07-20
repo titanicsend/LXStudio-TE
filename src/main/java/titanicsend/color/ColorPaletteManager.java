@@ -33,7 +33,7 @@ import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
 
 @LXCategory(LXCategory.COLOR)
-@LXComponentName("Look Color Palette")
+@LXComponentName("Color Palette Manager")
 public class ColorPaletteManager extends LXComponent {
 
   public static final String DEFAULT_SWATCH_NAME = "SWATCH A";
@@ -163,13 +163,11 @@ public class ColorPaletteManager extends LXComponent {
 
   @Override
   public void onParameterChanged(LXParameter parameter) {
-    float hue = this.hue.getValuef();
-    float saturation = this.saturation.getValuef();
-    float brightness = this.brightness.getValuef();
-    int color1 = LXColor.hsb(hue, saturation, brightness);
-    if (color1 != this.color1.getColor() || this.currPaletteStrategy != this.paletteStrategy.getEnum()) {
-      this.color1.setColor(color1);
-      this.currPaletteStrategy = this.paletteStrategy.getEnum();
+    if (parameter == this.hue || parameter == this.saturation || parameter == this.brightness) {
+      this.color1.setColor(LXColor.hsb(this.hue.getValuef(),  this.saturation.getValuef(), this.brightness.getValuef()));
+      updateColors2And3();
+      updateSwatches(managedSwatch());
+    } else if (parameter == this.paletteStrategy) {
       updateColors2And3();
       updateSwatches(managedSwatch());
     }
