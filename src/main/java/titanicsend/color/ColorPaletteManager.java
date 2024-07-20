@@ -99,16 +99,16 @@ public class ColorPaletteManager extends LXComponent {
     addParameter("color2", this.color2);
     addParameter("color3", this.color3);
 
-    // ensure there are at least enough swatches in the global palette list to fetch
-    // the correct index for this "managed swatch". TODO: listen in case it's deleted?
-    if (this.lx.engine.palette.swatches.size() <= (this.index + 1)) {
-      this.lx.engine.palette.saveSwatch();
-    }
     // run `getManagedSwatch` to ensure the swatch is created, has the right name/num colors
     this.managedSwatch = managedSwatch();
   }
 
   public LXSwatch managedSwatch() {
+    // ensure there are at least enough swatches in the global palette list to fetch
+    // the correct index for this "managed swatch".
+    while (this.lx.engine.palette.swatches.size() <= (this.index + 1)) {
+      this.lx.engine.palette.saveSwatch();
+    }
     LXSwatch cueSwatch = this.lx.engine.palette.swatches.get(this.index);
     cueSwatch.label.setValue(this.name);
     if (cueSwatch.colors.size() < LXSwatch.MAX_COLORS) {
