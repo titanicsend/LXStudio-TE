@@ -58,21 +58,6 @@ public class ColorPaletteManager extends LXComponent {
   // update this so we know whether to re-render the palette
   public PaletteType currPaletteType = PaletteType.TRIADIC;
 
-  public final EnumParameter<DmxColorModulator.ColorPosition> color1Pos =
-      new EnumParameter<DmxColorModulator.ColorPosition>("Color Position", DmxColorModulator.ColorPosition.THREE)
-          .setDescription(
-              "Destination color position (1-based) in the global palette current swatch");
-
-  public final EnumParameter<DmxColorModulator.ColorPosition> color2Pos =
-      new EnumParameter<DmxColorModulator.ColorPosition>("2nd Position", DmxColorModulator.ColorPosition.FOUR)
-          .setDescription(
-              "Destination color position (1-based) in the global palette current swatch");
-
-  public final EnumParameter<DmxColorModulator.ColorPosition> color3Pos =
-      new EnumParameter<DmxColorModulator.ColorPosition>("3rd Position", DmxColorModulator.ColorPosition.FIVE)
-          .setDescription(
-              "Destination color position (1-based) in the global palette current swatch");
-
   public final BooleanParameter toggleCue =
       new BooleanParameter("Toggle Cue", false)
           .setDescription("Swap the cue and active swatches");
@@ -112,9 +97,6 @@ public class ColorPaletteManager extends LXComponent {
     addParameter("saturation", this.saturation);
     addParameter("brightness", this.brightness);
     addParameter("paletteType", this.paletteType);
-    addParameter("color1Position", this.color1Pos);
-    addParameter("color2Position", this.color2Pos);
-    addParameter("color3Position", this.color3Pos);
     addParameter("color1", this.color1);
     addParameter("color2", this.color2);
     addParameter("color3", this.color3);
@@ -146,18 +128,16 @@ public class ColorPaletteManager extends LXComponent {
   public void updateSwatches() {
     updateSwatches(lxPalette().swatch);
   }
+  // Send to target color in global palette
   protected void updateSwatches(LXSwatch swatch) {
-    // Send to target color in global palette
-    setColorAtPosition(swatch, this.color1Pos.getEnum(), this.color1.getColor());
-    setColorAtPosition(swatch, this.color2Pos.getEnum(), this.color2.getColor());
-    setColorAtPosition(swatch, this.color3Pos.getEnum(), this.color3.getColor());
+    setColorAtPosition(swatch, TEColorType.PRIMARY, this.color1.getColor());
+    setColorAtPosition(swatch, TEColorType.SECONDARY, this.color2.getColor());
+    setColorAtPosition(swatch, TEColorType.SECONDARY_BACKGROUND, this.color3.getColor());
   }
 
-  protected void setColorAtPosition(LXSwatch swatch, DmxColorModulator.ColorPosition colorPosition, int color) {
-    if (colorPosition != DmxColorModulator.ColorPosition.NONE) {
-      swatch.getColor(colorPosition.index).primary.setColor(color);
-      swatch.getColor(colorPosition.index).mode.setValue(LXDynamicColor.Mode.FIXED);
-    }
+  protected void setColorAtPosition(LXSwatch swatch, TEColorType teColorType, int color) {
+    swatch.getColor(teColorType.swatchIndex()).primary.setColor(color);
+    swatch.getColor(teColorType.swatchIndex()).mode.setValue(LXDynamicColor.Mode.FIXED);
   }
 
   public void onParameterChanged(LXParameter parameter) {
