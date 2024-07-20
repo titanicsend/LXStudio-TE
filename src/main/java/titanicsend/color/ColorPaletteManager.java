@@ -68,9 +68,26 @@ public class ColorPaletteManager extends LXComponent {
           .setPolarity(CompoundParameter.Polarity.BIPOLAR)
           .setDescription("Sets the amount to increase or decrease brightness");
 
+  /**
+   * If hue, saturation, or brightness change, update color1
+   */
+  private final LXParameterListener colorListener = (p) -> {
+    this.color1.setColor(
+        LXColor.hsb(
+            this.hue.getValuef(), this.saturation.getValuef(), this.brightness.getValuef()));
+  };
+
   public final ColorParameter color1 = new ColorParameter("Color1", LXColor.BLACK);
   public final ColorParameter color2 = new ColorParameter("Color2", LXColor.BLACK);
   public final ColorParameter color3 = new ColorParameter("Color3", LXColor.BLACK);
+
+  /**
+   * If color1 or palette strategy change, update colors 2 and 3
+   */
+  private final LXParameterListener paletteListener = (p) -> {
+    updateColors2And3();
+    updateSwatches(managedSwatch());
+  };
 
   // TODO(look): rename this
   public final BooleanParameter toggleCue =
@@ -78,9 +95,6 @@ public class ColorPaletteManager extends LXComponent {
           .setDescription("Swap the cue and active swatches");
 
   private final LXParameterListener toggleListener = (p) -> this.updateSwatches();
-
-  // update this so we know whether to re-render the palette
-  public PaletteStrategy currPaletteStrategy = PaletteStrategy.TRIADIC;
 
   /**
    * Name of the managed swatch in Chromatik global palette list
@@ -119,11 +133,21 @@ public class ColorPaletteManager extends LXComponent {
     addParameter("color3", this.color3);
 
     this.toggleCue.addListener(toggleListener);
+    this.hue.addListener(colorListener);
+    this.saturation.addListener(colorListener);
+    this.brightness.addListener(colorListener);
+    this.color1.addListener(paletteListener);
+    this.paletteStrategy.addListener(paletteListener);
   }
 
   @Override
   public void dispose() {
     this.toggleCue.removeListener(toggleListener);
+    this.hue.removeListener(colorListener);
+    this.saturation.removeListener(colorListener);
+    this.brightness.removeListener(colorListener);
+    this.color1.removeListener(paletteListener);
+    this.paletteStrategy.removeListener(paletteListener);
     super.dispose();
   }
 
@@ -159,18 +183,6 @@ public class ColorPaletteManager extends LXComponent {
   private void setColorAtPosition(LXSwatch swatch, TEColorType teColorType, int color) {
     swatch.getColor(teColorType.swatchIndex()).primary.setColor(color);
     swatch.getColor(teColorType.swatchIndex()).mode.setValue(LXDynamicColor.Mode.FIXED);
-  }
-
-  @Override
-  public void onParameterChanged(LXParameter parameter) {
-    if (parameter == this.hue || parameter == this.saturation || parameter == this.brightness) {
-      this.color1.setColor(LXColor.hsb(this.hue.getValuef(),  this.saturation.getValuef(), this.brightness.getValuef()));
-      updateColors2And3();
-      updateSwatches(managedSwatch());
-    } else if (parameter == this.paletteStrategy) {
-      updateColors2And3();
-      updateSwatches(managedSwatch());
-    }
   }
 
   private void updateColors2And3() {
