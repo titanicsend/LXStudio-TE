@@ -352,6 +352,8 @@ public abstract class APCminiSurface extends LXMidiSurface implements LXMidiSurf
 
   private boolean shiftOn = false;
 
+  private int offset = 0;
+
   private final Map<LXAbstractChannel, ChannelListener> channelListeners = new HashMap<LXAbstractChannel, ChannelListener>();
 
 //  private final DeviceListener deviceListener = new DeviceListener();
@@ -822,21 +824,164 @@ public abstract class APCminiSurface extends LXMidiSurface implements LXMidiSurf
     }
   }
 
+
+
+
   private void initialize(boolean reconnect) {
     sendGrid();
-    sendChannelButtonRow();
-    sendSceneLaunchButtons();
+//    sendChannelButtonRow();
+//    sendSceneLaunchButtons();
+  }
+
+  private void sendSysEx(int startPad, int endPad, int[] colors) {
+    int length = (endPad - startPad) + 1;
+    if (colors.length != length) {
+        throw new IllegalArgumentException("Invalid number of colors for pads: (endPad - startPad + 1) = " + length + " != " + colors.length);
+    }
+    int numBytesToFollow = 2 + (length * 6);
+
+    byte numBytesLSB = (byte) (numBytesToFollow % 256);
+    byte numBytesMSB = (byte) (numBytesToFollow / 256);
+    System.out.printf("numBytesToFollow: %d, numBytesMSB: %d, numBytesLSB: %d\n", numBytesToFollow, numBytesMSB & 0xFF, numBytesLSB & 0xFF);
+    System.out.printf("numBytesMSB: 0x%02X\n", numBytesMSB);
+    System.out.printf("numBytesMSB: 0x%02X\n", numBytesLSB);
+
+    byte startPadByte = (byte) startPad;
+    byte endPadByte = (byte) endPad;
+    System.out.printf("startPadByte: 0x%02X\n", startPadByte);
+    System.out.printf("endPadByte: 0x%02X\n", endPadByte);
+
+    int b = 0xF7;
+    int msb = (b >> 7) & 0x7F;
+    int lsb = b & 0x7F;
+    System.out.printf("b: 0x%02X\n", b);
+    System.out.printf("b: 0x%02X\n", msb);
+    System.out.printf("b: 0x%02X\n", lsb);
+
+    int messageLength = numBytesToFollow + 8;
+    byte[] data = new byte[messageLength];
+    data[0] = (byte) 0xF0; // MIDI system exclusive message start
+    data[1] = (byte) 0x47; // manufacturers ID byte
+    data[2] = (byte) 0x7F; // system exclusive device ID
+    data[3] = (byte) 0x4F; // product model ID
+    data[4] = (byte) 0x24; // message type identifier
+    data[5] = numBytesMSB; // number of bytes to follow (most significant)
+    data[6] = numBytesLSB; // number of bytes to follow (least significant)
+    data[7] = startPadByte; // start pad (index of starting pad ID)
+    data[8] = endPadByte; // end pad (index of ending pad ID)
+    for (int i = 0; i < colors.length; i++) {
+        int color = colors[i];
+        if (color < 0x000000 || color > 0xFFFFFF) {
+          throw new IllegalArgumentException("Invalid color");
+        }
+        System.out.printf("color[%d]: 0x%06X\n", i, color);
+
+        int c0 = (color >> 16) & 0xFF;
+        int c1 = (color >> 8) & 0xFF;
+        int c2 = color & 0xFF;
+
+        System.out.printf("\tc0: 0x%02X (%d)\n", c0, c0);
+        System.out.printf("\tc1: 0x%02X (%d)\n", c1, c1);
+        System.out.printf("\tc2: 0x%02X (%d)\n", c2, c2);
+
+        int c0msb = (c0 >> 7) & 0x7F;
+        int c0lsb = c0 & 0x7F;
+
+        System.out.printf("\tc0[msb]: 0x%02X\n", c0msb);
+        System.out.printf("\tc0[lsb]: 0x%02X\n", c0lsb);
+
+        int c1msb = (c1 >> 7) & 0x7F;
+        int c1lsb = c1 & 0x7F;
+
+        System.out.printf("\tc1[msb]: 0x%02X\n", c1msb);
+        System.out.printf("\tc1[lsb]: 0x%02X\n", c1lsb);
+
+        int c2msb = (c2 >> 7) & 0x7F;
+        int c2lsb = c2 & 0x7F;
+
+        System.out.printf("\tc2[msb]: 0x%02X\n", c2msb);
+        System.out.printf("\tc2[lsb]: 0x%02X\n", c2lsb);
+
+        data[9 + (i * 6)] = (byte) c0msb; // red MSB
+        data[10 + (i * 6)] = (byte) c0lsb; // red LSB
+        data[11 + (i * 6)] = (byte) c1msb; // green MSB
+        data[12 + (i * 6)] = (byte) c1lsb; // green LSB
+        data[13 + (i * 6)] = (byte) c2msb; // blue MSB
+        data[14 + (i * 6)] = (byte) c2lsb; // blue LSB
+    }
+    data[messageLength - 1] = (byte) 0xF7; // MIDI system exclusive message end
+    System.out.println(prettyPrintByteArray(data));
+    this.output.sendSysex(data);
+  }
+
+  public static String prettyPrintByteArray(byte[] byteArray) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("[");
+
+    for (int i = 0; i < byteArray.length; i++) {
+      sb.append("\n\t");
+      sb.append(String.format("0x%02X", byteArray[i]));
+      sb.append(String.format("\t%d", i));
+      if (i < byteArray.length - 1) {
+        sb.append(", ");
+      }
+    }
+
+    sb.append("\n]");
+    return sb.toString();
   }
 
   private void sendGrid() {
-    for (int x = 0; x < NUM_CHANNELS; ++x) {
-      for (int y = 0; y < CLIP_LAUNCH_ROWS; ++y) {
-        int behavior = LED.DEFAULT_MULTI_BEHAVIOR;
-        int note = CLIP_LAUNCH + CLIP_LAUNCH_COLUMNS * (CLIP_LAUNCH_ROWS - 1 - y) + x;
-        int color = x+y;
-        sendNoteOn(behavior, note, color);
-      }
-    }
+    sendSysEx(0, 0, new int[]{
+        0xFF0000,
+    });
+    sendSysEx(1, 1, new int[]{
+        0x00FF00,
+    });
+    sendSysEx(2, 2, new int[]{
+        0x0000FF,
+    });
+    sendSysEx(3, 3, new int[]{
+        0xFFFF00,
+    });
+    sendSysEx(4, 4, new int[]{
+        0x00FFFF,
+    });
+    sendSysEx(5, 5, new int[]{
+        0xFF00FF,
+    });
+//    byte[] data = new byte[] {
+//        (byte) 0xF0, // MIDI system exclusive message start
+//        (byte) 0x47, // manufacturers ID byte
+//        (byte) 0x7F, // system exclusive device ID
+//        (byte) 0x4F, // product model ID
+//        (byte) 0x24, // message type identifier
+//        (byte) 0x00, // number of bytes to follow (most significant)
+//        (byte) 0x08, // number of bytes to follow (least significant)
+//        (byte) 0x01, // start pad (index of starting pad ID)
+//        (byte) 0x01, // end pad (index of ending pad ID)
+//        (byte) 0x00, // red MSB
+//        (byte) 0x00, // red LSB
+//        (byte) 0x00, // green MSB
+//        (byte) 0x00, // green LSB
+//        (byte) 0x7F, // blue MSB
+//        (byte) 0x7F, // blue LSB
+//        (byte) 0xF7  // MIDI system exclusive message end
+//    };
+//    System.out.println(data);
+//    this.output.sendSysex(data);
+
+//    for (int x = 0; x < NUM_CHANNELS; ++x) {
+//      for (int y = 0; y < CLIP_LAUNCH_ROWS; ++y) {
+//        int behavior = LED.DEFAULT_MULTI_BEHAVIOR;
+//        int note = CLIP_LAUNCH + CLIP_LAUNCH_COLUMNS * (CLIP_LAUNCH_ROWS - 1 - y) + x;
+//        int color = x+y;
+////        int finalColor = Math.abs(offset + color) & 128;
+//        sendNoteOn(behavior, note, color);
+//      }
+//    }
+
+
 //    if (isGridModeParameters()) {
 //      this.deviceListener.resend();
 //    } else {
@@ -1083,17 +1228,17 @@ public abstract class APCminiSurface extends LXMidiSurface implements LXMidiSurf
   private void register() {
     this.isRegistered = true;
 
-    this.mixerSurface.register();
-    this.focusedChannel.register();
+//    this.mixerSurface.register();
+//    this.focusedChannel.register();
 //    this.deviceListener.focusedDevice.register();
   }
 
   private void unregister() {
     this.isRegistered = false;
 
-    this.mixerSurface.unregister();
-//    this.deviceListener.focusedDevice.unregister();
-    this.focusedChannel.unregister();
+//    this.mixerSurface.unregister();
+////    this.deviceListener.focusedDevice.unregister();
+//    this.focusedChannel.unregister();
 
     clearGrid();
     clearChannelButtonRow();
@@ -1252,7 +1397,17 @@ public abstract class APCminiSurface extends LXMidiSurface implements LXMidiSurf
 
   private void channelButtonNoteReceived(MidiNote note, boolean on) {
     final int pitch = note.getPitch();
-    if (this.shiftOn) {
+
+    if (pitch == NOTE.SELECT_UP) {
+      this.offset += 1;
+      sendGrid();
+    } else if (pitch == NOTE.SELECT_DOWN) {
+      this.offset -= 1;
+      sendGrid();
+    }
+    return;
+
+    /*if (this.shiftOn) {
 
       // Momentary buttons
       if (NOTE.isSelect(pitch)) {
@@ -1338,7 +1493,7 @@ public abstract class APCminiSurface extends LXMidiSurface implements LXMidiSurf
           }
         }
       }
-    }
+    }*/
   }
 
   @Override
