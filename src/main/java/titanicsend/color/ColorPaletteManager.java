@@ -54,9 +54,6 @@ public class ColorPaletteManager extends LXComponent {
   public final ColorParameter color1 = new ColorParameter("Color1", LXColor.BLACK);
   public final ColorParameter color2 = new ColorParameter("Color2", LXColor.BLACK);
   public final ColorParameter color3 = new ColorParameter("Color3", LXColor.BLACK);
-  // update this so we know whether to re-render the palette
-  public PaletteType currPaletteType = PaletteType.TRIADIC;
-
   public final BooleanParameter toggleCue =
       new BooleanParameter("Toggle Cue", false)
           .setDescription("Swap the cue and active swatches");
@@ -68,13 +65,15 @@ public class ColorPaletteManager extends LXComponent {
     SPLIT_COMPLEMENTARY,
     COMPLEMENTARY,
     TRIADIC,
-    // TODO(look): Jon Idea of Golden Ratio Conjugate (mult hue by )
   }
 
   public final EnumParameter<PaletteType> paletteType =
       new EnumParameter<PaletteType>("Color Position", PaletteType.TRIADIC)
           .setDescription(
               "Destination color position (1-based) in the global palette current swatch");
+
+  // update this so we know whether to re-render the palette
+  public PaletteType currPaletteType = PaletteType.TRIADIC;
 
   public static final String DEFAULT_NAME = "CUE";
   public static final int DEFAULT_INDEX = 0;
@@ -148,40 +147,46 @@ public class ColorPaletteManager extends LXComponent {
     if (color1 != this.color1.getColor() || this.currPaletteType != this.paletteType.getEnum()) {
       this.color1.setColor(color1);
       this.currPaletteType = this.paletteType.getEnum();
-      updateColors2And3(color1);
+      updateColors2And3();
       updateSwatches(managedSwatch());
     }
   }
 
-  private void updateColors2And3(int color1) {
-    this.currPaletteType = this.paletteType.getEnum();
-
+  private void updateColors2And3() {
     float hue = this.color1.hue.getValuef();
     float saturation = this.color1.saturation.getValuef();
     float brightness = this.color1.brightness.getValuef();
-    int color2 = color1;
-    int color3 = color1;
-    if (this.paletteType.getEnum() == PaletteType.MONO) {
-      color2 = LXColor.BLACK;
-      color3 = LXColor.BLACK;
-    } else if (this.paletteType.getEnum() == PaletteType.GOLDEN_RATIO_CONJUGATE) {
-      color2 = LXColor.hsb(hue * 0.6180339, saturation, brightness);
-      color3 = LXColor.BLACK; // LXColor.hsb(hue + 222.5f, saturation, brightness);
-    }else if (this.paletteType.getEnum() == PaletteType.COMPLEMENTARY) {
-      color2 = LXColor.hsb(hue + 180, saturation, brightness);
-      color3 = LXColor.BLACK;
-    } else if (this.paletteType.getEnum() == PaletteType.SPLIT_COMPLEMENTARY) {
-      color2 = LXColor.hsb(hue + 150, saturation, brightness);
-      color3 = LXColor.hsb(hue + 210, saturation, brightness);
-    } else if (this.paletteType.getEnum() == PaletteType.TRIADIC) {
-      color2 = LXColor.hsb(hue + 120, saturation, brightness);
-      color3 = LXColor.hsb(hue + 240, saturation, brightness);
-    } else if (this.paletteType.getEnum() == PaletteType.ANALOGOUS) {
-      color2 = LXColor.hsb(hue + 30, saturation, brightness);
-      color3 = LXColor.hsb(hue - 30, saturation, brightness);
+    int color2;
+    int color3;
+    switch(this.paletteType.getEnum()) {
+      case MONO:
+        color2 = LXColor.BLACK;
+        color3 = LXColor.BLACK;
+        break;
+      case GOLDEN_RATIO_CONJUGATE:
+        color2 = LXColor.hsb(hue * 0.6180339, saturation, brightness);
+        color3 = LXColor.BLACK;
+        break;
+      case COMPLEMENTARY:
+        color2 = LXColor.hsb(hue + 180, saturation, brightness);
+        color3 = LXColor.BLACK;
+        break;
+      case SPLIT_COMPLEMENTARY:
+        color2 = LXColor.hsb(hue + 150, saturation, brightness);
+        color3 = LXColor.hsb(hue + 210, saturation, brightness);
+        break;
+      case TRIADIC:
+        color2 = LXColor.hsb(hue + 120, saturation, brightness);
+        color3 = LXColor.hsb(hue + 240, saturation, brightness);
+        break;
+      case ANALOGOUS:
+        color2 = LXColor.hsb(hue + 30, saturation, brightness);
+        color3 = LXColor.hsb(hue - 30, saturation, brightness);
+        break;
+      default:
+        throw new RuntimeException("Unknown palette type: " + this.paletteType.getEnum());
     }
     this.color2.setColor(color2);
     this.color3.setColor(color3);
   }
-
 }
