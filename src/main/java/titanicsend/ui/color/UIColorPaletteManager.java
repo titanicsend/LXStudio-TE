@@ -109,6 +109,10 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
             .setActiveLabel("ON")
             .setInactiveLabel("PUSH")
             .setMomentary(true)
+            .setEnabled(!paletteMgr.pinSwatch.isOn()),
+        newButton(paletteMgr.pinSwatch, 40F)
+            .setActiveLabel("PINNED")
+            .setInactiveLabel("PIN")
     );
 
     return paletteSelectionRow;

@@ -85,14 +85,22 @@ public class ColorPaletteManager extends LXComponent {
    */
   private final LXParameterListener paletteListener = (p) -> {
     updateColors2And3();
-    updateSwatches(managedSwatch());
+    updateManagedSwatch();
+    if (this.pinSwatch.isOn()) {
+      pushToActiveSwatch();
+    }
   };
 
   public final BooleanParameter pushSwatch =
       new BooleanParameter("Push Swatch", false)
           .setDescription("Push the managed swatch to the global active swatch");
 
-  private final LXParameterListener pushListener = (p) -> this.updateSwatches();
+  public final BooleanParameter pinSwatch =
+      new BooleanParameter("Pin Swatch", false)
+          .setDescription("Pin the managed swatch to the global active swatch, " +
+              "so any changes are reflected in the global palette immediately.");
+
+  private final LXParameterListener pushListener = (p) -> this.pushToActiveSwatch();
 
   /**
    * Name of the managed swatch in Chromatik global palette list
@@ -129,6 +137,8 @@ public class ColorPaletteManager extends LXComponent {
     addParameter("color1", this.color1);
     addParameter("color2", this.color2);
     addParameter("color3", this.color3);
+    addParameter("pushSwatch", this.pushSwatch);
+    addParameter("pinSwatch", this.pinSwatch);
 
     this.pushSwatch.addListener(pushListener);
     this.hue.addListener(colorListener);
@@ -168,14 +178,15 @@ public class ColorPaletteManager extends LXComponent {
     return this.managedSwatch;
   }
 
-  public void updateSwatches() {
+  public void pushToActiveSwatch() {
     this.managedSwatch.recall.trigger();
   }
 
-  private void updateSwatches(LXSwatch swatch) {
-    setColorAtPosition(swatch, TEColorType.PRIMARY, this.color1.getColor());
-    setColorAtPosition(swatch, TEColorType.SECONDARY, this.color2.getColor());
-    setColorAtPosition(swatch, TEColorType.SECONDARY_BACKGROUND, this.color3.getColor());
+  private void updateManagedSwatch() {
+    this.managedSwatch = managedSwatch();
+    setColorAtPosition(this.managedSwatch, TEColorType.PRIMARY, this.color1.getColor());
+    setColorAtPosition(this.managedSwatch, TEColorType.SECONDARY, this.color2.getColor());
+    setColorAtPosition(this.managedSwatch, TEColorType.SECONDARY_BACKGROUND, this.color3.getColor());
   }
 
   private void setColorAtPosition(LXSwatch swatch, TEColorType teColorType, int color) {
