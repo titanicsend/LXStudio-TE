@@ -162,16 +162,17 @@ public class TEApp extends LXStudio {
       // by a single external input (e.g. DMX controller )
       lx.engine.registerComponent("globalPatternControls", new TEGlobalPatternControls(lx));
 
-      //      lx.ui.preview.addComponent(visual);
-      //      new TEUIControls(ui, visual,
-      // ui.leftPane.global.getContentWidth()).addToContainer(ui.leftPane.global);
       this.dmxEngine = new DmxEngine(lx);
       this.ndiEngine = new NDIEngine(lx);
       this.glEngine = new GLEngine(lx,staticModel);
 
       lx.engine.registerComponent("audioStems", this.audioStems = new AudioStems(lx));
       lx.engine.registerComponent("paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx, "SWATCH A", 0));
-      lx.engine.registerComponent("paletteManagerB", this.paletteManagerB = new ColorPaletteManager(lx, "SWATCH B", 1));
+      if (UIColorPaletteManager.DISPLAY_TWO_MANAGED_SWATCHES) {
+        lx.engine.registerComponent("paletteManagerB", this.paletteManagerB = new ColorPaletteManager(lx, "SWATCH B", 1));
+      } else {
+        this.paletteManagerB = null;
+      }
 
       // create our loop task for outputting data to lasers
       this.laserTask = new TELaserTask(lx);

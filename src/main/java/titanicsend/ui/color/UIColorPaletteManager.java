@@ -21,18 +21,17 @@ import heronarts.lx.utils.LXUtils;
 
 
 public class UIColorPaletteManager extends UICollapsibleSection implements UIControls {
-  private static final int LABEL_WIDTH = 56;
-  private static final float SLIDER_WIDTH = 120.0F;
   private static final float GRADIENT_HEIGHT = 8.0F;
   // WIP(look): feature flags for UI elements I'm unsure about / experimenting with.
   private static final boolean DISPLAY_MANAGED_SWATCH_ROWS = false;
   private static final boolean DISPLAY_GRADIENTS_ABOVE_SLDIERS = false;
+  public static final boolean DISPLAY_TWO_MANAGED_SWATCHES = false;
 
   private final float width;
-  private LXSwatch cueSwatch;
-  private LXSwatch auxSwatch;
+  private LXSwatch managedSwatchA;
+  private LXSwatch managedSwatchB;
 
-  public UIColorPaletteManager(LXStudio.UI ui, ColorPaletteManager cueMgr, ColorPaletteManager auxMgr, float w, float xOffset) {
+  public UIColorPaletteManager(LXStudio.UI ui, ColorPaletteManager paletteManagerA, ColorPaletteManager paletteManagerB, float w, float xOffset) {
     super(ui, xOffset, 0, w, 0);
     this.width = w;
 
@@ -40,17 +39,16 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     this.setPadding(2, 0);
     this.setTitle("PALETTE MANAGER");
 
-    cueSwatch = cueMgr.managedSwatch();
-    auxSwatch = auxMgr.managedSwatch();
     UI2dContainer swatchDisplayContainer = UI2dContainer.newVerticalContainer(this.width-12, 6F);
     swatchRow(ui, ui.lx.engine.palette.swatch, "Act").addToContainer(swatchDisplayContainer);
 
-
+    managedSwatchA = paletteManagerA.managedSwatch();
+    managedSwatchB = paletteManagerB != null ? paletteManagerB.managedSwatch() : null;
     if (DISPLAY_MANAGED_SWATCH_ROWS) {
         // TODO: these don't seem to get updated as the palette updates - just stay red in the UI
-        swatchRow(ui, cueSwatch, "Cue").addToContainer(swatchDisplayContainer);
-        if (auxMgr != null) {
-            swatchRow(ui, auxSwatch, "Aux").addToContainer(swatchDisplayContainer);
+        swatchRow(ui, managedSwatchA, "SWATCH A").addToContainer(swatchDisplayContainer);
+        if (paletteManagerB != null) {
+            swatchRow(ui, managedSwatchB, "SWATCH B").addToContainer(swatchDisplayContainer);
         }
     }
 
@@ -58,20 +56,20 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
 
     horizontalBreak(ui, this.width).addToContainer(this);
 
-    buildPaletteSelectionRow(cueMgr).addToContainer(this);
+    buildPaletteSelectionRow(paletteManagerA).addToContainer(this);
 
     horizontalBreak(ui, this.width).addToContainer(this);
 
-    buildColorSlidersRow(cueMgr).addToContainer(this);
+    buildColorSlidersRow(paletteManagerA).addToContainer(this);
 
-    if (auxMgr != null) {
+    if (paletteManagerB != null) {
       horizontalBreak(ui, this.width).addToContainer(this);
 
-      buildPaletteSelectionRow(auxMgr).addToContainer(this);
+      buildPaletteSelectionRow(paletteManagerB).addToContainer(this);
 
       horizontalBreak(ui, this.width).addToContainer(this);
 
-      buildColorSlidersRow(auxMgr).addToContainer(this);
+      buildColorSlidersRow(paletteManagerB).addToContainer(this);
     }
   }
 

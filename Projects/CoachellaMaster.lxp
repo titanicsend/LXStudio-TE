@@ -1,6 +1,6 @@
 {
   "version": "1.0.1.TE.1-SNAPSHOT",
-  "timestamp": 1721506831810,
+  "timestamp": 1721508788880,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -11641,7 +11641,7 @@
                   "period": 16.0,
                   "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 177.88235473632812,
+                  "primary/hue": 130.3529510498047,
                   "secondary/brightness": 58.33328628540039,
                   "secondary/saturation": 70.83333587646484,
                   "secondary/hue": 195.0
@@ -11662,7 +11662,7 @@
                   "period": 30.0,
                   "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 208.00001525878906,
+                  "primary/hue": 280.4705810546875,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -11683,7 +11683,7 @@
                   "period": 30.0,
                   "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 148.0,
+                  "primary/hue": 340.4706115722656,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -11765,7 +11765,7 @@
                   "period": 16.0,
                   "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 177.88235473632812,
+                  "primary/hue": 130.3529510498047,
                   "secondary/brightness": 58.33328628540039,
                   "secondary/saturation": 70.83333587646484,
                   "secondary/hue": 195.0
@@ -11786,7 +11786,7 @@
                   "period": 30.0,
                   "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 208.00001525878906,
+                  "primary/hue": 280.4705810546875,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -11807,7 +11807,7 @@
                   "period": 30.0,
                   "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 148.0,
+                  "primary/hue": 340.4706115722656,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -14233,7 +14233,7 @@
         },
         "parameters": {
           "label": "Audio",
-          "enabled": true,
+          "enabled": false,
           "mode": 0,
           "expandedPerformance": true
         },
@@ -14506,7 +14506,7 @@
             },
             "parameters": {
               "label": "Meter",
-              "running": true,
+              "running": false,
               "trigger": false,
               "midiFilter/enabled": true,
               "midiFilter/channel": 16,
@@ -14519,22 +14519,22 @@
               "attack": 0.0,
               "release": 215.0309717563906,
               "slope": 6.0,
-              "band-1": 0.6977073387093884,
-              "band-2": 0.7987109558008022,
-              "band-3": 0.8371149879436933,
-              "band-4": 0.8824470624932089,
-              "band-5": 0.8781059502893115,
-              "band-6": 0.829748971395795,
-              "band-7": 0.8128740690854196,
-              "band-8": 0.7970985751337412,
-              "band-9": 0.8770994420536051,
-              "band-10": 0.7397348412874951,
-              "band-11": 0.7242234550834823,
-              "band-12": 0.7234314805494853,
-              "band-13": 0.7433511810113969,
-              "band-14": 0.7751948260337782,
-              "band-15": 0.7138394904020038,
-              "band-16": 0.5049915294769212
+              "band-1": 0.0,
+              "band-2": 0.0,
+              "band-3": 0.0,
+              "band-4": 0.0,
+              "band-5": 0.07967031597957863,
+              "band-6": 0.15715439621127203,
+              "band-7": 0.1423546523027781,
+              "band-8": 0.11694480981164634,
+              "band-9": 0.1509354204419635,
+              "band-10": 0.2432369131229558,
+              "band-11": 0.2324491512630592,
+              "band-12": 0.4254929269157163,
+              "band-13": 0.6037554369767248,
+              "band-14": 0.20273779832552652,
+              "band-15": 0.0,
+              "band-16": 0.0
             },
             "children": {}
           }
@@ -35267,8 +35267,8 @@
                   "te_color/color2offset": 0.5,
                   "Double Layer": false,
                   "Energy": 0.0,
-                  "Double Speed": false,
                   "Width": 0.5,
+                  "Double Speed": false,
                   "Glow": 0.1
                 },
                 "children": {
@@ -38005,49 +38005,21 @@
         },
         "parameters": {
           "label": "Color Palette Manager",
-          "hue": 177.92410282418132,
+          "hue": 130.3459786484018,
           "saturation": 100.0,
           "brightness": 100.0,
-          "paletteStrategy": 1,
+          "paletteStrategy": 3,
           "color1/brightness": 100.0,
           "color1/saturation": 100.0,
-          "color1/hue": 177.88235473632812,
+          "color1/hue": 130.3529510498047,
           "color2/brightness": 100.0,
           "color2/saturation": 100.0,
-          "color2/hue": 208.00001525878906,
+          "color2/hue": 280.4705810546875,
           "color3/brightness": 100.0,
           "color3/saturation": 100.0,
-          "color3/hue": 148.0,
+          "color3/hue": 340.4706115722656,
           "pushSwatch": false,
           "pinSwatch": true
-        },
-        "children": {}
-      },
-      "paletteManagerB": {
-        "id": 125,
-        "class": "titanicsend.color.ColorPaletteManager",
-        "internal": {
-          "modulationColor": 0,
-          "modulationControlsExpanded": true,
-          "modulationsExpanded": true
-        },
-        "parameters": {
-          "label": "Color Palette Manager",
-          "hue": 238.66071132099023,
-          "saturation": 100.0,
-          "brightness": 100.0,
-          "paletteStrategy": 5,
-          "color1/brightness": 100.0,
-          "color1/saturation": 100.0,
-          "color1/hue": 238.58822631835938,
-          "color2/brightness": 100.0,
-          "color2/saturation": 100.0,
-          "color2/hue": 358.5882263183594,
-          "color3/brightness": 100.0,
-          "color3/saturation": 100.0,
-          "color3/hue": 118.58822631835938,
-          "pushSwatch": false,
-          "pinSwatch": false
         },
         "children": {}
       },
@@ -38072,7 +38044,7 @@
       "audioExpanded": false,
       "envelopExpanded": true,
       "reaperExpanded": true,
-      "paletteExpanded": true,
+      "paletteExpanded": false,
       "cameraExpanded": true,
       "mixerCentered": false,
       "fixtureInspectorExpanded": true,
@@ -38086,7 +38058,7 @@
         "depth": 1.0,
         "camera": {
           "active": false,
-          "radius": 375.37426252059214,
+          "radius": 297.5924950158921,
           "theta": 5.189208188327029,
           "phi": -5.221952510997653,
           "x": 0.0,
@@ -38096,7 +38068,7 @@
         "cue": [
           {
             "active": false,
-            "radius": 375.37426252059214,
+            "radius": 297.5924950158921,
             "theta": 5.189208188327029,
             "phi": -5.221952510997653,
             "x": 0.0,
