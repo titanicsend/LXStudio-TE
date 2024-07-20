@@ -30,6 +30,7 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.parameter.LXParameterListener;
 
 @LXCategory(LXCategory.COLOR)
 @LXComponentName("Look Color Palette")
@@ -76,6 +77,8 @@ public class ColorPaletteManager extends LXComponent {
       new BooleanParameter("Toggle Cue", false)
           .setDescription("Swap the cue and active swatches");
 
+  private final LXParameterListener toggleListener = (p) -> this.updateSwatches();
+
   // update this so we know whether to re-render the palette
   public PaletteStrategy currPaletteStrategy = PaletteStrategy.TRIADIC;
 
@@ -115,10 +118,13 @@ public class ColorPaletteManager extends LXComponent {
     addParameter("color2", this.color2);
     addParameter("color3", this.color3);
 
-    this.toggleCue.addListener(
-        (p) -> {
-          this.updateSwatches();
-        });
+    this.toggleCue.addListener(toggleListener);
+  }
+
+  @Override
+  public void dispose() {
+    this.toggleCue.removeListener(toggleListener);
+    super.dispose();
   }
 
   /**
