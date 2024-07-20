@@ -25,7 +25,6 @@ import heronarts.lx.LXComponentName;
 import heronarts.lx.color.ColorParameter;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LXDynamicColor;
-import heronarts.lx.color.LXPalette;
 import heronarts.lx.color.LXSwatch;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
@@ -35,6 +34,23 @@ import heronarts.lx.parameter.LXParameter;
 @LXCategory(LXCategory.COLOR)
 @LXComponentName("Look Color Palette")
 public class ColorPaletteManager extends LXComponent {
+
+  public static final String DEFAULT_SWATCH_NAME = "SWATCH A";
+  public static final int DEFAULT_SWATCH_INDEX = 0;
+
+  public enum PaletteStrategy {
+    MONO,
+    ANALOGOUS,
+    GOLDEN_RATIO_CONJUGATE,
+    SPLIT_COMPLEMENTARY,
+    COMPLEMENTARY,
+    TRIADIC,
+  }
+
+  public final EnumParameter<PaletteStrategy> paletteStrategy =
+      new EnumParameter<>("Palette Strategy", PaletteStrategy.TRIADIC)
+          .setDescription(
+              "Color theory rule to use when generating the secondary and tertiary colors");
 
   public final CompoundParameter hue =
       new CompoundParameter("H", 0, 0, 360)
@@ -54,43 +70,38 @@ public class ColorPaletteManager extends LXComponent {
   public final ColorParameter color1 = new ColorParameter("Color1", LXColor.BLACK);
   public final ColorParameter color2 = new ColorParameter("Color2", LXColor.BLACK);
   public final ColorParameter color3 = new ColorParameter("Color3", LXColor.BLACK);
+
+  // TODO(look): rename this
   public final BooleanParameter toggleCue =
       new BooleanParameter("Toggle Cue", false)
           .setDescription("Swap the cue and active swatches");
 
-  public enum PaletteStrategy {
-    MONO,
-    ANALOGOUS,
-    GOLDEN_RATIO_CONJUGATE,
-    SPLIT_COMPLEMENTARY,
-    COMPLEMENTARY,
-    TRIADIC,
-  }
-
-  public final EnumParameter<PaletteStrategy> paletteStrategy =
-      new EnumParameter<>("Palette Strategy", PaletteStrategy.TRIADIC)
-          .setDescription(
-              "Color theory rule to use when generating the secondary and tertiary colors");
-
   // update this so we know whether to re-render the palette
   public PaletteStrategy currPaletteStrategy = PaletteStrategy.TRIADIC;
 
-  public static final String DEFAULT_NAME = "CUE";
-  public static final int DEFAULT_INDEX = 0;
+  /**
+   * Name of the managed swatch in Chromatik global palette list
+   */
+  private final String swatchName;
 
-  private final String name;
-  private final int index;
+  /**
+   * Position of the managed swatch in Chromatik's global palette list
+   */
+  private final int swatchIndex;
 
+  /**
+   * Pointer to the managed LXSwatch
+   */
   private LXSwatch managedSwatch;
 
   public ColorPaletteManager(LX lx) {
-    this(lx, DEFAULT_NAME, DEFAULT_INDEX);
+    this(lx, DEFAULT_SWATCH_NAME, DEFAULT_SWATCH_INDEX);
   }
 
-  public ColorPaletteManager(LX lx, String name, int index) {
+  public ColorPaletteManager(LX lx, String swatchName, int swatchIndex) {
     super(lx);
-    this.name = name;
-    this.index = index;
+    this.swatchName = swatchName;
+    this.swatchIndex = swatchIndex;
     addParameter("hue", this.hue);
     addParameter("saturation", this.saturation);
     addParameter("brightness", this.brightness);
@@ -105,11 +116,11 @@ public class ColorPaletteManager extends LXComponent {
   public LXSwatch managedSwatch() {
     // ensure there are at least enough swatches in the global palette list to fetch
     // the correct index for this "managed swatch".
-    while (this.lx.engine.palette.swatches.size() <= (this.index + 1)) {
+    while (this.lx.engine.palette.swatches.size() <= (this.swatchIndex + 1)) {
       this.lx.engine.palette.saveSwatch();
     }
-    this.managedSwatch = this.lx.engine.palette.swatches.get(this.index);
-    this.managedSwatch.label.setValue(this.name);
+    this.managedSwatch = this.lx.engine.palette.swatches.get(this.swatchIndex);
+    this.managedSwatch.label.setValue(this.swatchName);
     if (this.managedSwatch.colors.size() < LXSwatch.MAX_COLORS) {
       for (int i = this.managedSwatch.colors.size(); i < LXSwatch.MAX_COLORS; ++i) {
         this.managedSwatch.addColor();
@@ -122,14 +133,13 @@ public class ColorPaletteManager extends LXComponent {
     updateSwatches(this.lx.engine.palette.swatch);
   }
 
-  // Send to target color in global palette
-  protected void updateSwatches(LXSwatch swatch) {
+  private void updateSwatches(LXSwatch swatch) {
     setColorAtPosition(swatch, TEColorType.PRIMARY, this.color1.getColor());
     setColorAtPosition(swatch, TEColorType.SECONDARY, this.color2.getColor());
     setColorAtPosition(swatch, TEColorType.SECONDARY_BACKGROUND, this.color3.getColor());
   }
 
-  protected void setColorAtPosition(LXSwatch swatch, TEColorType teColorType, int color) {
+  private void setColorAtPosition(LXSwatch swatch, TEColorType teColorType, int color) {
     swatch.getColor(teColorType.swatchIndex()).primary.setColor(color);
     swatch.getColor(teColorType.swatchIndex()).mode.setValue(LXDynamicColor.Mode.FIXED);
   }

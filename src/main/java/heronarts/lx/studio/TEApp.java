@@ -136,8 +136,8 @@ public class TEApp extends LXStudio {
     private final GLEngine glEngine;
 
     private final AudioStems audioStems;
-    private final ColorPaletteManager cuePaletteManager;
-    private final ColorPaletteManager auxPaletteManager;
+    private final ColorPaletteManager paletteManagerA;
+    private final ColorPaletteManager paletteManagerB;
     private final TELaserTask laserTask;
     private final CrutchOSC crutchOSC;
     private DevSwitch devSwitch;
@@ -170,8 +170,8 @@ public class TEApp extends LXStudio {
       this.glEngine = new GLEngine(lx,staticModel);
 
       lx.engine.registerComponent("audioStems", this.audioStems = new AudioStems(lx));
-      lx.engine.registerComponent("cuePaletteManager", this.cuePaletteManager = new ColorPaletteManager(lx, "CUE", 0));
-      lx.engine.registerComponent("auxPaletteManager", this.auxPaletteManager = new ColorPaletteManager(lx, "AUX", 1));
+      lx.engine.registerComponent("paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx, "SWATCH A", 0));
+      lx.engine.registerComponent("paletteManagerB", this.paletteManagerB = new ColorPaletteManager(lx, "SWATCH B", 1));
 
       // create our loop task for outputting data to lasers
       this.laserTask = new TELaserTask(lx);
@@ -546,8 +546,8 @@ public class TEApp extends LXStudio {
       new UIAudioStems(ui, this.audioStems, ui.leftPane.global.getContentWidth())
           .addToContainer(ui.leftPane.global, 2);
 
-      UIColorPaletteManager.addToLeftGlobalPane(ui, this.cuePaletteManager, this.auxPaletteManager);
-      UIColorPaletteManager.addToRightPerformancePane(ui, this.cuePaletteManager, this.auxPaletteManager);
+      UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB);
+      UIColorPaletteManager.addToRightPerformancePane(ui, this.paletteManagerA, this.paletteManagerB);
 
       // Set camera zoom and point size to match current model
       applyTECameraPosition();
