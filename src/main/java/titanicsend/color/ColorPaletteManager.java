@@ -39,13 +39,11 @@ public class ColorPaletteManager extends LXComponent {
 
   public final CompoundParameter hue =
       new CompoundParameter("H", 0, 0, 360)
-          .setPolarity(CompoundParameter.Polarity.BIPOLAR)
           .setDescription("Sets the amount of hue shift to apply");
 
   public final CompoundParameter saturation =
       new CompoundParameter("S", 100, 0, 100)
           .setUnits(CompoundParameter.Units.PERCENT)
-          .setPolarity(CompoundParameter.Polarity.BIPOLAR)
           .setDescription("Sets the amount to increase or decrease saturation");
 
   public final CompoundParameter brightness =
