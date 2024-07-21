@@ -6,59 +6,57 @@
   tags: [ "w4", "window", "triangle" ],
 
   parameters:  {
-    # Default 100 LEDs
+    /* Default 100 LEDs */
     "extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 100" },
     "ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
 
-    # Remove these after calibration
-    "side1": { type: "int", default: "30", description: "Number of LEDs on side 1" },
-    "corner12": { type: "int", default: "13", description: "Number of LEDs in the corner between side1 and side2" },
-    "side2": { type: "int", default: "30", description: "Number of LEDs on side 2" },
-    "corner23": { type: "int", default: "13", description: "Number of LEDs in the corner between side2 and side3" },
+    /* Side and Corner lengths */
+    "side1": { type: "int", default: "20", description: "Number of LEDs on side 1" },
+    "corner12": { type: "int", default: "14", description: "Number of LEDs in the corner between side1 and side2" },
+    "side2": { type: "int", default: "28", description: "Number of LEDs on side 2" },
+    "corner23": { type: "int", default: "16", description: "Number of LEDs in the corner between side2 and side3" },
 
-    # Debug tools
-    "onCar": { type: "boolean", default: true, label: "On Car", description: "True = Locate to position on car, False = Locate to origin" },
+    /* Debug tools */
+    "onCar": { type: "boolean", default: "true", label: "On Car", description: "True = Locate to position on car, False = Locate to origin" },
+    "outputEnabled": { type: "boolean", default: false },
     "host": { type: "string", default: "localhost", label: "Host", description: "Controller IP address or hostname" },
-    "output": { type: "int", default: 1, min: 1, max: 8, label: "Output Num", description: "Controller Output Number 1-8" },
-    "pixelOffset": { type: "int", default: 0, min: 0, max: 512, label: "Pixel Offset", description: "ArtNet offset in pixels" },
-    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
-    "outputEnabled": { type: "boolean", default: false }
+    "output": { type: "int", default: 8, min: 1, max: 8, label: "Output Num", description: "Controller Output Number 1-8" },
+    "pixelOffset": { type: "int", default: 166, min: 0, max: 512, label: "Pixel Offset", description: "ArtNet offset in pixels" },
+    "artnetSequence": { default: "false", type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" }
   },
 
   transforms: [
     { z: "-27.215", enabled: "$onCar" },
     { y: "105.576", enabled: "$onCar" },
-    { roll: "-3.7", enabled: "$onCar" },
-    { pitch: "15", enabled: "$onCar" }
+    { roll: "-3.75", enabled: "$onCar" },
+    { pitch: "15.031", enabled: "$onCar" },
+    { z: "-.25", enabled: "$onCar" }
   ],
 
   components: [
     { type: "RoundedTriangle",
-      spacing: ".2",
 
-      radius: "1.125",
-      angle12: "139.7",
-      angle23: "133.9",
+      length1: "13.81",
+      length2: "19.15",
+      length3: "12.423",
 
-      length1: "(23-1) * .2",
-      side1: "23 - $ledOffset",
-      corner12: "13",
-      side2: "30",
-      corner23: "13",
-      side3: "100 + $ledOffset + $extraLEDs - 23 - 13 - 30 - 13",
-      
-      transforms: [
-        { x: "1.4" },
-        { y: "1.4" }
-      ]
+      angle12: "40.3",
+      angle23: "46",
+      angle31: "93.6",
+
+      side1: "$side1 - $ledOffset",
+      corner12: "$corner12",
+      side2: "$side2",
+      corner23: "$corner23",
+      side3: "100 + $ledOffset + $extraLEDs - $side1 - $corner12 - $side2 - $corner23"
     }
   ],
   
   outputs: [
     { enabled: "$outputEnabled",
       host: "$host",
-      universe: "$output*10",
-      channel: "$pixelOffset*3",
+      universe: "($output * 10) + ($pixelOffset / 170)",
+      channel: "($pixelOffset % 170) * 3",
       protocol: "artnet",
       sequenceEnabled: "$artnetSequence"
     }
