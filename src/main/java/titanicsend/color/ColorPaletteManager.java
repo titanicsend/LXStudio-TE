@@ -202,7 +202,6 @@ public class ColorPaletteManager extends LXComponent {
 
   @Override
   public void dispose() {
-    this.pushSwatch.removeListener(pushListener);
     this.hue.removeListener(colorListener);
     this.saturation.removeListener(colorListener);
     this.brightness.removeListener(colorListener);
