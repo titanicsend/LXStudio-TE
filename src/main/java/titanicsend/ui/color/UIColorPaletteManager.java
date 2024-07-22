@@ -42,13 +42,11 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     UI2dContainer swatchDisplayContainer = UI2dContainer.newVerticalContainer(this.width-12, 6F);
     swatchRow(ui, ui.lx.engine.palette.swatch, "Act").addToContainer(swatchDisplayContainer);
 
-    managedSwatchA = paletteManagerA.managedSwatch();
-    managedSwatchB = paletteManagerB != null ? paletteManagerB.managedSwatch() : null;
     if (DISPLAY_MANAGED_SWATCH_ROWS) {
         // TODO: these don't seem to get updated as the palette updates - just stay red in the UI
-        swatchRow(ui, managedSwatchA, "SWATCH A").addToContainer(swatchDisplayContainer);
+        swatchRow(ui, paletteManagerA.managedSwatch, "SWATCH A").addToContainer(swatchDisplayContainer);
         if (paletteManagerB != null) {
-            swatchRow(ui, managedSwatchB, "SWATCH B").addToContainer(swatchDisplayContainer);
+            swatchRow(ui, paletteManagerB.managedSwatch, "SWATCH B").addToContainer(swatchDisplayContainer);
         }
     }
 

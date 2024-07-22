@@ -93,9 +93,9 @@ public class ColorPaletteManager extends LXComponent {
   private final int swatchIndex;
 
   /**
-   * Pointer to the managed LXSwatch
+   * Pointer to the managed LXSwatch. Public so that it can be accessed from UIColorPaletteManager.
    */
-  private LXSwatch managedSwatch;
+  public LXSwatch managedSwatch;
 
   public ColorPaletteManager(LX lx) {
     this(lx, DEFAULT_SWATCH_NAME, DEFAULT_SWATCH_INDEX);
@@ -108,7 +108,7 @@ public class ColorPaletteManager extends LXComponent {
     this.swatchIndex = swatchIndex;
 
     // ensure the swatch is created, has the right name/num colors
-    this.managedSwatch = managedSwatch();
+    refreshManagedSwatch();
 
     addParameter("hue", this.hue);
     addParameter("saturation", this.saturation);
@@ -128,9 +128,9 @@ public class ColorPaletteManager extends LXComponent {
   }
 
   /**
-   * Returns the managed swatch, creating it if it doesn't exist
+   * Update the reference `this.managedSwatch`, creating it if it doesn't exist.
    */
-  public LXSwatch managedSwatch() {
+  public void refreshManagedSwatch() {
     // ensure there are at least enough swatches in the global palette list to fetch
     // the correct index for this "managed swatch".
     while (this.lx.engine.palette.swatches.size() <= (this.swatchIndex + 1)) {
@@ -143,7 +143,6 @@ public class ColorPaletteManager extends LXComponent {
         this.managedSwatch.addColor();
       }
     }
-    return this.managedSwatch;
   }
 
   public void pushToActiveSwatch() {
@@ -151,15 +150,15 @@ public class ColorPaletteManager extends LXComponent {
   }
 
   private void updateManagedSwatch() {
-    this.managedSwatch = managedSwatch();
-    setColorAtPosition(this.managedSwatch, TEColorType.PRIMARY, this.color1.getColor());
-    setColorAtPosition(this.managedSwatch, TEColorType.SECONDARY, this.color2.getColor());
-    setColorAtPosition(this.managedSwatch, TEColorType.SECONDARY_BACKGROUND, this.color3.getColor());
+    refreshManagedSwatch();
+    setColorAtPosition(TEColorType.PRIMARY, this.color1.getColor());
+    setColorAtPosition(TEColorType.SECONDARY, this.color2.getColor());
+    setColorAtPosition(TEColorType.SECONDARY_BACKGROUND, this.color3.getColor());
   }
 
-  private void setColorAtPosition(LXSwatch swatch, TEColorType teColorType, int color) {
-    swatch.getColor(teColorType.swatchIndex()).primary.setColor(color);
-    swatch.getColor(teColorType.swatchIndex()).mode.setValue(LXDynamicColor.Mode.FIXED);
+  private void setColorAtPosition(TEColorType teColorType, int color) {
+    this.managedSwatch.getColor(teColorType.swatchIndex()).primary.setColor(color);
+    this.managedSwatch.getColor(teColorType.swatchIndex()).mode.setValue(LXDynamicColor.Mode.FIXED);
   }
 
   private void updateColors2And3() {
