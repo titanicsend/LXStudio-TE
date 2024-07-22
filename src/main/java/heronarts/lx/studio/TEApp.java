@@ -167,7 +167,7 @@ public class TEApp extends LXStudio {
       this.glEngine = new GLEngine(lx,staticModel);
 
       lx.engine.registerComponent("audioStems", this.audioStems = new AudioStems(lx));
-      lx.engine.registerComponent("paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx, "SWATCH A", 0));
+      lx.engine.registerComponent("paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
       if (UIColorPaletteManager.DISPLAY_TWO_MANAGED_SWATCHES) {
         lx.engine.registerComponent("paletteManagerB", this.paletteManagerB = new ColorPaletteManager(lx, "SWATCH B", 1));
       } else {
