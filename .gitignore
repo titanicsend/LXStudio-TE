@@ -27,3 +27,4 @@ resources/shaders/cache/*.bin
 
 .devSwitch
 TD/Utils/Backup/
+Projects/Test*.lxp
