@@ -1,21 +1,3 @@
-/**
- * Copyright 2013- Mark C. Slee, Heron Arts LLC
- *
- * This file is part of the LX Studio software library. By using
- * LX, you agree to the terms of the LX Studio Software License
- * and Distribution Agreement, available at: http://lx.studio/license
- *
- * Please note that the LX license is not open-source. The license
- * allows for free, non-commercial use.
- *
- * HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR
- * OTHERWISE, AND SPECIFICALLY DISCLAIMS ANY WARRANTY OF
- * MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR
- * PURPOSE, WITH RESPECT TO THE SOFTWARE.
- *
- * @author Mark C. Slee <mark@heronarts.com>
- */
-
 package titanicsend.color;
 
 import heronarts.lx.LX;
@@ -64,7 +46,6 @@ public class ColorPaletteManager extends LXComponent {
   public final CompoundParameter brightness =
       new CompoundParameter("B", 100, 0, 100)
           .setUnits(CompoundParameter.Units.PERCENT)
-          .setPolarity(CompoundParameter.Polarity.BIPOLAR)
           .setDescription("Sets the amount to increase or decrease brightness");
 
   /**
@@ -148,17 +129,6 @@ public class ColorPaletteManager extends LXComponent {
     this.paletteStrategy.addListener(paletteListener);
   }
 
-  @Override
-  public void dispose() {
-    this.pushSwatch.removeListener(pushListener);
-    this.hue.removeListener(colorListener);
-    this.saturation.removeListener(colorListener);
-    this.brightness.removeListener(colorListener);
-    this.color1.removeListener(paletteListener);
-    this.paletteStrategy.removeListener(paletteListener);
-    super.dispose();
-  }
-
   /**
    * Returns the managed swatch, creating it if it doesn't exist
    */
@@ -230,5 +200,16 @@ public class ColorPaletteManager extends LXComponent {
     }
     this.color2.setColor(color2);
     this.color3.setColor(color3);
+  }
+  
+  @Override
+  public void dispose() {
+    this.pushSwatch.removeListener(pushListener);
+    this.hue.removeListener(colorListener);
+    this.saturation.removeListener(colorListener);
+    this.brightness.removeListener(colorListener);
+    this.color1.removeListener(paletteListener);
+    this.paletteStrategy.removeListener(paletteListener);
+    super.dispose();
   }
 }
