@@ -145,22 +145,6 @@ public class ColorPaletteManager extends LXComponent {
     }
   }
 
-  public void pushToActiveSwatch() {
-    this.managedSwatch.recall.trigger();
-  }
-
-  private void updateManagedSwatch() {
-    refreshManagedSwatch();
-    setColorAtPosition(TEColorType.PRIMARY, this.color1.getColor());
-    setColorAtPosition(TEColorType.SECONDARY, this.color2.getColor());
-    setColorAtPosition(TEColorType.SECONDARY_BACKGROUND, this.color3.getColor());
-  }
-
-  private void setColorAtPosition(TEColorType teColorType, int color) {
-    this.managedSwatch.getColor(teColorType.swatchIndex()).primary.setColor(color);
-    this.managedSwatch.getColor(teColorType.swatchIndex()).mode.setValue(LXDynamicColor.Mode.FIXED);
-  }
-
   private void updateColors2And3() {
     float hue = this.color1.hue.getValuef();
     float saturation = this.color1.saturation.getValuef();
@@ -197,6 +181,22 @@ public class ColorPaletteManager extends LXComponent {
     }
     this.color2.setColor(color2);
     this.color3.setColor(color3);
+  }
+
+  private void updateManagedSwatch() {
+    refreshManagedSwatch();
+    setColorAtPosition(TEColorType.PRIMARY, this.color1.getColor());
+    setColorAtPosition(TEColorType.SECONDARY, this.color2.getColor());
+    setColorAtPosition(TEColorType.SECONDARY_BACKGROUND, this.color3.getColor());
+  }
+
+  private void setColorAtPosition(TEColorType teColorType, int color) {
+    this.managedSwatch.getColor(teColorType.swatchIndex()).primary.setColor(color);
+    this.managedSwatch.getColor(teColorType.swatchIndex()).mode.setValue(LXDynamicColor.Mode.FIXED);
+  }
+
+  public void pushToActiveSwatch() {
+    this.managedSwatch.recall.trigger();
   }
 
   @Override
