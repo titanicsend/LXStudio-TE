@@ -12,6 +12,7 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.LXParameterListener;
+import heronarts.lx.parameter.TriggerParameter;
 
 @LXCategory(LXCategory.COLOR)
 @LXComponentName("Color Palette Manager")
@@ -72,16 +73,14 @@ public class ColorPaletteManager extends LXComponent {
     }
   };
 
-  public final BooleanParameter pushSwatch =
-      new BooleanParameter("Push Swatch", false)
+  public final TriggerParameter pushSwatch =
+      new TriggerParameter("Push Swatch", this::pushToActiveSwatch)
           .setDescription("Push the managed swatch to the global active swatch");
 
   public final BooleanParameter pinSwatch =
       new BooleanParameter("Pin Swatch", false)
           .setDescription("Pin the managed swatch to the global active swatch, " +
               "so any changes are reflected in the global palette immediately.");
-
-  private final LXParameterListener pushListener = (p) -> this.pushToActiveSwatch();
 
   /**
    * Name of the managed swatch in Chromatik global palette list
@@ -121,7 +120,6 @@ public class ColorPaletteManager extends LXComponent {
     addParameter("pushSwatch", this.pushSwatch);
     addParameter("pinSwatch", this.pinSwatch);
 
-    this.pushSwatch.addListener(pushListener);
     this.hue.addListener(colorListener);
     this.saturation.addListener(colorListener);
     this.brightness.addListener(colorListener);
@@ -201,7 +199,7 @@ public class ColorPaletteManager extends LXComponent {
     this.color2.setColor(color2);
     this.color3.setColor(color3);
   }
-  
+
   @Override
   public void dispose() {
     this.pushSwatch.removeListener(pushListener);
