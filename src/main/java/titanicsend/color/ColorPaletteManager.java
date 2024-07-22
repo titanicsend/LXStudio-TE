@@ -163,8 +163,8 @@ public class ColorPaletteManager extends LXComponent {
     int color3;
     switch(this.paletteStrategy.getEnum()) {
       case MONO:
-        color2 = LXColor.BLACK;
-        color3 = LXColor.BLACK;
+        color2 = this.color1.getColor();
+        color3 = this.color1.getColor();
         break;
       case GOLDEN_RATIO_CONJUGATE:
         color2 = LXColor.hsb(hue * 0.6180339, saturation, brightness);
