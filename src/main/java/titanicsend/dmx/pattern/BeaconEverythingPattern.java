@@ -146,7 +146,7 @@ public class BeaconEverythingPattern extends BeaconPattern
     double frost1 = this.frost1.getNormalized();
     double frost2 = this.frost2.getNormalized();
 
-    for (DmxModel d : this.modelTE.beacons) {
+    for (DmxModel d : this.modelTE.getBeacons()) {
       setDmxNormalized(d, BeaconModel.INDEX_PAN, pan);
       setDmxNormalized(d, BeaconModel.INDEX_TILT, tilt);
       setDmxValue(d, BeaconModel.INDEX_COLOR_WHEEL, colorWheel);

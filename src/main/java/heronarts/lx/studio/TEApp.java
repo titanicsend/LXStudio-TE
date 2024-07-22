@@ -20,7 +20,6 @@ import heronarts.lx.LXPlugin;
 import heronarts.lx.mixer.LXBus;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.pattern.LXPattern;
-import heronarts.lx.pattern.form.PlanesPattern;
 import heronarts.lx.pattern.texture.NoisePattern;
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +35,9 @@ import titanicsend.app.*;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.dev.DevSwitch;
 import titanicsend.app.dev.UIDevSwitch;
+import titanicsend.audio.AudioStems;
+import titanicsend.audio.UIAudioStems;
+import titanicsend.color.ColorPaletteManager;
 import titanicsend.dmx.DmxEngine;
 import titanicsend.dmx.effect.BeaconStrobeEffect;
 import titanicsend.dmx.pattern.BeaconDirectPattern;
@@ -54,6 +56,8 @@ import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.lx.MidiFighterTwister;
 import titanicsend.midi.MidiNames;
 import titanicsend.model.TEWholeModel;
+import titanicsend.model.TEWholeModelDynamic;
+import titanicsend.model.TEWholeModelStatic;
 import titanicsend.modulator.dmx.Dmx16bitModulator;
 import titanicsend.modulator.dmx.DmxColorModulator;
 import titanicsend.modulator.dmx.DmxDualRangeModulator;
@@ -65,9 +69,7 @@ import titanicsend.ndi.NDIEngine;
 import titanicsend.osc.CrutchOSC;
 import titanicsend.output.GPOutput;
 import titanicsend.output.GrandShlomoStation;
-import titanicsend.pattern.TEEdgeTestPattern;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
-import titanicsend.pattern.TEPanelTestPattern;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.ben.*;
 import titanicsend.pattern.cesar.HandTracker;
@@ -93,6 +95,7 @@ import titanicsend.ui.UIBackings;
 import titanicsend.ui.UILasers;
 import titanicsend.ui.UIModelLabels;
 import titanicsend.ui.UITEPerformancePattern;
+import titanicsend.ui.color.UIColorPaletteManager;
 import titanicsend.ui.effect.UIRandomStrobeEffect;
 import titanicsend.ui.modulator.UIDmx16bitModulator;
 import titanicsend.ui.modulator.UIDmxColorModulator;
@@ -104,7 +107,13 @@ import titanicsend.util.TE;
 
 public class TEApp extends LXStudio {
 
+  static {
+    // Ensure that AWT is only used in headless mode
+    System.setProperty("java.awt.headless", "true");
+  }
+
   public static TEWholeModel wholeModel;
+  private static boolean staticModel;
 
   private static int WINDOW_WIDTH = 1280;
   private static int WINDOW_HEIGHT = 800;
@@ -123,9 +132,12 @@ public class TEApp extends LXStudio {
     private TEPatternLibrary library;
 
     private final DmxEngine dmxEngine;
-
     private final NDIEngine ndiEngine;
     private final GLEngine glEngine;
+
+    private final AudioStems audioStems;
+    private final ColorPaletteManager paletteManagerA;
+    private final ColorPaletteManager paletteManagerB;
     private final TELaserTask laserTask;
     private final CrutchOSC crutchOSC;
     private DevSwitch devSwitch;
@@ -137,6 +149,10 @@ public class TEApp extends LXStudio {
       this.lx = lx;
       lx.addListener(this);
       lx.addProjectListener(this);
+      
+      if (!staticModel) {
+        wholeModel = new TEWholeModelDynamic(lx);
+      }
 
       // Saved options for UI overlays
       lx.engine.registerComponent(
@@ -146,12 +162,17 @@ public class TEApp extends LXStudio {
       // by a single external input (e.g. DMX controller )
       lx.engine.registerComponent("globalPatternControls", new TEGlobalPatternControls(lx));
 
-      //      lx.ui.preview.addComponent(visual);
-      //      new TEUIControls(ui, visual,
-      // ui.leftPane.global.getContentWidth()).addToContainer(ui.leftPane.global);
       this.dmxEngine = new DmxEngine(lx);
       this.ndiEngine = new NDIEngine(lx);
-      this.glEngine = new GLEngine(lx);
+      this.glEngine = new GLEngine(lx,staticModel);
+
+      lx.engine.registerComponent("audioStems", this.audioStems = new AudioStems(lx));
+      lx.engine.registerComponent("paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
+      if (UIColorPaletteManager.DISPLAY_TWO_MANAGED_SWATCHES) {
+        lx.engine.registerComponent("paletteManagerB", this.paletteManagerB = new ColorPaletteManager(lx, "SWATCH B", 1));
+      } else {
+        this.paletteManagerB = null;
+      }
 
       // create our loop task for outputting data to lasers
       this.laserTask = new TELaserTask(lx);
@@ -173,7 +194,9 @@ public class TEApp extends LXStudio {
 
       log("TEApp.Plugin.initialize()");
 
-      GrandShlomoStation.activateAll(lx, wholeModel.getGapPointIndex());
+      if (staticModel) {
+        GrandShlomoStation.activateAll(lx, wholeModel.getGapPointIndices()[0]);
+      }
 
       // Patterns/effects that currently conform to art direction standards
       lx.registry.addPattern(EdgeProgressions.class);
@@ -282,7 +305,7 @@ public class TEApp extends LXStudio {
       // "ShaderToyPattern" in ShaderPanelsPatternConfig.java
 
       // Useful for test, but might turn the car black in performance
-      lx.registry.removePattern(PlanesPattern.class); // remove pattern added automatically by LX.
+      // lx.registry.removePattern(PlanesPattern.class); // remove pattern added automatically by LX.
 
       // Frame Rate Killers
       // lx.registry.addEffect(titanicsend.effect.Kaleidoscope.class);
@@ -306,8 +329,6 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(PowerDebugger.class);
       // lx.registry.addPattern(ModuleEditor.class);
       lx.registry.addPattern(SignalDebugger.class);
-      lx.registry.addPattern(TEEdgeTestPattern.class);
-      lx.registry.addPattern(TEPanelTestPattern.class);
       lx.registry.addPattern(HandTracker.class);
       lx.registry.addPattern(TargetPixelStamper.class);
       //lx.registry.addPattern(ModelFileWriter.class);
@@ -361,7 +382,7 @@ public class TEApp extends LXStudio {
       String destIP = "192.168.42.255";
       try {
         this.gpBroadcaster =
-            new GigglePixelBroadcaster(lx, destIP, wholeModel.name, myGigglePixelID);
+            new GigglePixelBroadcaster(lx, destIP, wholeModel.getName(), myGigglePixelID);
         lx.engine.addLoopTask(this.gpBroadcaster);
         TE.log("GigglePixel broadcaster created");
       } catch (IOException e) {
@@ -522,6 +543,14 @@ public class TEApp extends LXStudio {
       new TEUserInterface.AutopilotUISection(ui, this.autopilot)
           .addToContainer(ui.leftPane.global, 0);
 
+      // Add UI section for audio stems
+      new UIAudioStems(ui, this.audioStems, ui.leftPane.global.getContentWidth())
+          .addToContainer(ui.leftPane.global, 2);
+
+      UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB);
+      UIColorPaletteManager.addToRightPerformancePane(ui, this.paletteManagerA, this.paletteManagerB);
+
+      // Set camera zoom and point size to match current model
       applyTECameraPosition();
 
       // 3D components
@@ -563,16 +592,30 @@ public class TEApp extends LXStudio {
       }
     }
 
+    /**
+     * Sets camera position and point size for the appropriate model.
+     * Static model requires manual placement of the camera due to very large scale (1"=50000).
+     * Subsequently project files saved with one model type and opened with the other
+     * need their camera position updated. 
+     */
     public void applyTECameraPosition() {
       if (this.lx instanceof LXStudio) {
         LXStudio.UI ui = ((LXStudio) this.lx).ui;
-        ui.preview.pointCloud.pointSize.setValue(80000);
-        ui.preview.camera.theta.setValue(270);
-        ui.preview.camera.phi.setValue(-6);
-        ui.preview.camera.radius.setValue(17000000);
-        ui.previewAux.camera.theta.setValue(270);
-        ui.previewAux.camera.phi.setValue(-6);
-        ui.previewAux.camera.radius.setValue(17000000);
+        if (staticModel) {
+          // Camera position and point size for static model (2022-23)
+          ui.preview.pointCloud.pointSize.setValue(80000);
+          ui.preview.camera.theta.setValue(270);
+          ui.preview.camera.phi.setValue(-6);
+          ui.preview.camera.radius.setValue(17000000);
+          ui.previewAux.camera.theta.setValue(270);
+          ui.previewAux.camera.phi.setValue(-6);
+          ui.previewAux.camera.radius.setValue(17000000);
+        } else {
+          // Camera position and point size for dynamic model (2024+)
+          ui.preview.pointCloud.pointSize.reset();
+          ui.preview.camera.radius.reset();
+          ui.previewAux.camera.radius.reset();
+        }
       }
     }
 
@@ -585,6 +628,10 @@ public class TEApp extends LXStudio {
       this.devSwitch.dispose();
       this.dmxEngine.dispose();
       this.crutchOSC.dispose();
+
+      if (!staticModel) {
+        ((TEWholeModelDynamic)wholeModel).dispose();
+      }
     }
   }
 
@@ -636,7 +683,7 @@ public class TEApp extends LXStudio {
     }
   }
 
-  private TEApp(Flags flags, TEWholeModel model) throws IOException {
+  private TEApp(Flags flags, TEWholeModelStatic model) throws IOException {
     super(flags, model);
   }
 
@@ -690,6 +737,7 @@ public class TEApp extends LXStudio {
     boolean headless = false;
     boolean loadTestahedron = false;
     boolean loadVehicle = true;
+    staticModel = true;
     File projectFile = null;
     for (int i = 0; i < args.length; ++i) {
       final String arg = args[i];
@@ -709,6 +757,8 @@ public class TEApp extends LXStudio {
       } else if (arg.equals("vehicle")) {
         loadTestahedron = false;
         loadVehicle = true;
+      } else if (arg.equals("dynamic")) {
+        staticModel = false;
       } else {
         error("Unrecognized CLI argument, ignoring: " + arg);
       }
@@ -721,17 +771,22 @@ public class TEApp extends LXStudio {
     } else {
       throw new IllegalArgumentException("You must specify either testahedron or vehicle");
     }
+    TE.resourcedir = "resources/" + resourceSubdir;
 
     if (headless) {
       log("Headless CLI flag set, running without UI...");
       headless(flags, projectFile);
     } else {
       try {
-        TEWholeModel model = new TEWholeModel(resourceSubdir);
-        TEApp.wholeModel = model;
-
-        TEApp lx = new TEApp(flags, model);
-        model.loadViews(lx);
+        TEApp lx;
+        if (staticModel) {
+          TEWholeModelStatic model = new TEWholeModelStatic();
+          TEApp.wholeModel = model;
+          lx = new TEApp(flags, model);
+          model.loadViews(lx);
+        } else {
+          lx = new TEApp(flags);
+        }
 
         // Schedule a task to load the initial project file at launch
         final File finalProjectFile = projectFile;
@@ -750,9 +805,6 @@ public class TEApp extends LXStudio {
                   error(x, "Exception loading initial project: " + x.getLocalizedMessage());
                 }
                 lx.preferences.loadInitialSchedule();
-              }
-              if (flags.forceOutput) {
-                lx.engine.output.enabled.setValue(true);
               }
             });
 
@@ -777,9 +829,6 @@ public class TEApp extends LXStudio {
         } else {
           log("Opening project file: " + projectFile);
           lx.openProject(projectFile);
-        }
-        if (flags.forceOutput) {
-          lx.engine.output.enabled.setValue(true);
         }
       }
     } else {

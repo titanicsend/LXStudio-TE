@@ -18,6 +18,7 @@ application.linux64
 application.windows32
 application.windows64
 application.macosx
+Autosave/
 bin/
 target/
 classes/
@@ -26,3 +27,4 @@ resources/shaders/cache/*.bin
 
 .devSwitch
 TD/Utils/Backup/
+Projects/Test*.lxp

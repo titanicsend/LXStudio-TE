@@ -9,15 +9,18 @@ import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.Click;
 import heronarts.lx.parameter.DiscreteParameter;
+import heronarts.lx.utils.LXUtils;
+
 import java.util.*;
 import titanicsend.app.TEVirtualColor;
 import titanicsend.color.TEColorType;
 import titanicsend.model.*;
+import titanicsend.model.TEWholeModel.TEListener;
 import titanicsend.pattern.TEPattern;
 import titanicsend.util.TEColor;
 
 @LXCategory("Combo FG")
-public class EdgeRunner extends TEPattern {
+public class EdgeRunner extends TEPattern implements TEListener {
   public final DiscreteParameter numRunners =
       new DiscreteParameter("Runners", 10, 0, 50).setDescription("Number of concurrent runners");
 
@@ -55,7 +58,7 @@ public class EdgeRunner extends TEPattern {
 
   private final HashMap<TEEdgeModel, Integer> edgeLastVisit;
   private final HashMap<LXPoint, Integer> pointLastVisit;
-  private final HashMap<TEPanelModel, PanelData> panelData;
+  private final Map<TEPanelModel, PanelData> panelData = new HashMap<TEPanelModel, PanelData>();
   private final List<Runner> runners;
   private int moveNumber;
 
@@ -80,10 +83,25 @@ public class EdgeRunner extends TEPattern {
     startModulator(this.resetter);
     this.spawner.fire();
     this.moveNumber = 0;
-    this.panelData = new HashMap<>();
-    for (TEPanelModel panel : modelTE.panelsById.values()) {
+
+    this.modelTE.addListener(this);
+    initialize();
+  }
+
+  @Override
+  public void modelTEChanged(TEWholeModel model) {
+    initialize();
+  }
+
+  private void initialize() {
+    this.runners.clear();
+    this.panelData.clear();
+    for (TEPanelModel panel : this.modelTE.getPanels()) {
       if (!panel.panelType.equals(TEPanelModel.LIT)) continue;
-      int numEdgePixels = panel.e0.points.length + panel.e1.points.length + panel.e2.points.length;
+      int numEdgePixels =
+        (panel.e0 != null ? panel.e0.points.length : 0) +
+        (panel.e1 != null ? panel.e1.points.length : 0) +
+        (panel.e2 != null ? panel.e2.points.length : 0);
       PanelData pd = new PanelData(numEdgePixels);
       this.panelData.put(panel, pd);
     }
@@ -97,7 +115,7 @@ public class EdgeRunner extends TEPattern {
       pd.litEdgePixels = 0;
     }
 
-    for (TEVertex v : modelTE.vertexesById.values()) {
+    for (TEVertex v : this.modelTE.getVertexes()) {
       // Initialize all vertexes to gray
       v.virtualColor = new TEVirtualColor(50, 50, 50, 255);
     }
@@ -117,7 +135,6 @@ public class EdgeRunner extends TEPattern {
       }
     }
 
-    assert winner != null;
     return winner;
   }
 
@@ -163,13 +180,16 @@ public class EdgeRunner extends TEPattern {
     Set<TEEdgeModel> connectedEdges = reachedVertex.edges;
 
     TEEdgeModel newEdge = selectEdge(connectedEdges);
-    runner.currentEdge = newEdge;
-    if (newEdge.v0 == reachedVertex) {
+    // newEdge will be null if there is only one edge
+    if (newEdge != null) {
+      runner.currentEdge = newEdge;
+    }
+    if (runner.currentEdge.v0 == reachedVertex) {
       runner.fwd = true;
       runner.currentPoint = 0;
     } else {
       runner.fwd = false;
-      runner.currentPoint = newEdge.points.length - 1;
+      runner.currentPoint = runner.currentEdge.points.length - 1;
     }
   }
 
@@ -190,10 +210,17 @@ public class EdgeRunner extends TEPattern {
         this.runners.remove(0);
       }
       if (this.runners.size() < this.numRunners.getValuei()) {
-        // Spawn from Edge 37-44, if it exists, or else just whatever comes first
-        TEEdgeModel edge = modelTE.edgesById.get("37-44");
-        if (edge == null) edge = modelTE.edgesById.values().iterator().next();
-        this.runners.add(new Runner(edge));
+        // Spawn from Edge 37-44, if it exists, or else random
+        TEEdgeModel edge = this.modelTE.getEdge("37-44");
+        if (edge == null) {
+          List<TEEdgeModel> edges = this.modelTE.getEdges();
+          if (edges.size() > 0) {
+            edge = edges.get(LXUtils.randomi(edges.size() - 1));
+          }
+        }
+        if (edge != null) {
+          this.runners.add(new Runner(edge));
+        }
       }
     }
 
@@ -201,7 +228,7 @@ public class EdgeRunner extends TEPattern {
     int trailColor = this.trailColor.calcColor();
     int fillColor = this.fillColor.calcColor();
 
-    for (LXPoint point : modelTE.edgePoints) {
+    for (LXPoint point : modelTE.getEdgePoints()) {
       int lastVisit = this.pointLastVisit.getOrDefault(point, -1);
       int color;
       if (lastVisit == -1) {
@@ -221,8 +248,7 @@ public class EdgeRunner extends TEPattern {
       }
       colors[point.index] = color;
     }
-    for (Map.Entry<String, TEPanelModel> entry : modelTE.panelsById.entrySet()) {
-      TEPanelModel panel = entry.getValue();
+    for (TEPanelModel panel : this.modelTE.getPanels()) {
       if (panel.panelType.equals(TEPanelModel.SOLID)) {
         assert panel.points.length == 1;
         LXPoint point = panel.points[0];
@@ -235,9 +261,9 @@ public class EdgeRunner extends TEPattern {
       } else if (panel.panelType.equals(TEPanelModel.LIT)) {
         PanelData panelData = this.panelData.get(panel);
         double litFraction = (double) panelData.litEdgePixels / panelData.numEdgePixels;
-        for (TEPanelModel.LitPointData lpd : panel.litPointData) {
+        for (TEPanelModel.Point lpd : panel.panelPoints) {
           int color;
-          if (lpd.radiusFraction <= litFraction) {
+          if (lpd.rn <= litFraction) {
             color = fillColor;
           } else {
             color = TRANSPARENT;
@@ -246,5 +272,11 @@ public class EdgeRunner extends TEPattern {
         }
       }
     }
+  }
+
+  @Override
+  public void dispose() {
+    this.modelTE.removeListener(this);
+    super.dispose();
   }
 }

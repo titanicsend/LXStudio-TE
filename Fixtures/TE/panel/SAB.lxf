@@ -1,0 +1,167 @@
+{
+  /* Titanic's End Fixture File */
+  label: "Panel SAB",
+  tags: [ "SAB", "panel", "m2" ],
+
+  parameters: {
+    "xOffset": { default: 7.6962340856563145, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
+    "yOffset": { default: 6.0, type: float, description: "Adjust Y position within the plane of the panel. Use to fine-tune position after installation" },
+  
+    /* Modify HOST and CONTROLLER OUTPUT default values HERE to assign one of this panel's strands to a
+       new controller output. Then click [Reload Fixture File] at the bottom of the Inspector section in Chromatik.
+       CAUTION: LXM model files containing this fixture might not update to the new defaults. */
+
+    "strand1host": { default: "10.7.2.24", type: "string", label: "S1 Host", description: "Strand 1 Controller IP address or hostname" },
+    "strand1output": { default: 1, type: "int", min: 1, max: 4, label: "S1 Output", description: "Strand 1 Controller Output Number 1-4" },
+    "strand2host": { default: "10.7.2.24", type: "string", label: "S2 Host", description: "Strand 2 Controller IP address or hostname" },
+    "strand2output": { default: 2, type: "int", min: 1, max: 4, label: "S2 Output", description: "Strand 2 Controller Output Number 1-4" },
+    "strand3host": { default: "10.7.2.24", type: "string", label: "S3 Host", description: "Strand 3 Controller IP address or hostname" },
+    "strand3output": { default: 3, type: "int", min: 1, max: 4, label: "S3 Output", description: "Strand 3 Controller Output Number 1-4" },
+    "strand4host": { default: "10.7.2.24", type: "string", label: "S4 Host", description: "Strand 4 Controller IP address or hostname" },
+    "strand4output": { default: 4, type: "int", min: 1, max: 4, label: "S4 Output", description: "Strand 4 Controller Output Number 1-4" },
+
+    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
+    
+    # Debug tools
+    "onCar": { default: true, type: "boolean", label: "On Car", description: "True = Locate panel to its position on the car, False = Locate to origin" }
+  },
+  
+  transforms: [
+    /* Transpose starting corner to Vertex0 */
+    { x: "-341.7206", enabled: "$onCar" },
+    { y: "90.6339", enabled: "$onCar" },
+    { z: "-65.0000", enabled: "$onCar" },
+
+    /* Rotate to plane of panel */
+    { yaw: "10.6600", enabled: "$onCar" },
+    { roll: "-14.3316", enabled: "$onCar" },
+    { pitch: "15.8241", enabled: "$onCar" },
+
+    /* X-Y adjustments within plane of panel */
+    { x: "$xOffset" },
+    { y: "$yOffset" }    
+  ],
+
+  meta: {
+    "panelId": "SAB",
+    "v0": "113",
+    "v1": "115",
+    "v2": "28",
+    "edge1": "28-113",
+    "edge2": "28-115",
+    "edge3": "113-115",
+    "leadingEdge": "113->115",
+    "module": "2"
+  },
+
+  components: [
+    /* Looking at the back of panel, starts from RIGHT
+       Looking at the front of panel, starts from LEFT */
+
+    { type: "panelRow", row: "0", offset: "0", numPoints: "42" },
+    { type: "panelRow", row: "1", offset: "0", numPoints: "41" },
+    { type: "panelRow", row: "2", offset: "0", numPoints: "40" },
+    { type: "panelRow", row: "3", offset: "-1", numPoints: "40" },
+    { type: "panelRow", row: "4", offset: "-1", numPoints: "38" },
+    { type: "panelRow", row: "5", offset: "-1", numPoints: "37" },
+    { type: "panelRow", row: "6", offset: "-1", numPoints: "36" },
+    { type: "panelRow", row: "7", offset: "-1", numPoints: "35" },
+    { type: "panelRow", row: "8", offset: "-1", numPoints: "33" },
+    { type: "panelRow", row: "9", offset: "-2", numPoints: "33" },
+    { type: "panelRow", row: "10", offset: "-2", numPoints: "32" },
+    { type: "panelRow", row: "11", offset: "-2", numPoints: "31" },
+    { type: "panelRow", row: "12", offset: "-2", numPoints: "30" },
+    { type: "panelRow", row: "13", offset: "-2", numPoints: "28" },
+    { type: "panelRow", row: "14", offset: "-2", numPoints: "27" },
+    { type: "panelRow", row: "15", offset: "-3", numPoints: "27" },
+    { type: "panelRow", row: "16", offset: "-3", numPoints: "26" },
+    { type: "panelRow", row: "17", offset: "-3", numPoints: "25" },
+    { type: "panelRow", row: "18", offset: "-3", numPoints: "23" },
+    { type: "panelRow", row: "19", offset: "-3", numPoints: "22" },
+    { type: "panelRow", row: "20", offset: "-3", numPoints: "21" },
+    { type: "panelRow", row: "21", offset: "-3", numPoints: "20" },
+    { type: "panelRow", row: "22", offset: "-4", numPoints: "19" },
+    { type: "panelRow", row: "23", offset: "-4", numPoints: "18" },
+    { type: "panelRow", row: "24", offset: "-4", numPoints: "17" },
+    { type: "panelRow", row: "25", offset: "-4", numPoints: "16" },
+    { type: "panelRow", row: "26", offset: "-4", numPoints: "15" },
+    { type: "panelRow", row: "27", offset: "-4", numPoints: "13" },
+    { type: "panelRow", row: "28", offset: "-5", numPoints: "13" },
+    { type: "panelRow", row: "29", offset: "-5", numPoints: "12" },
+    { type: "panelRow", row: "30", offset: "-5", numPoints: "11" },
+    { type: "panelRow", row: "31", offset: "-5", numPoints: "10" },
+    { type: "panelRow", row: "32", offset: "-5", numPoints: "8" },
+    { type: "panelRow", row: "33", offset: "-5", numPoints: "7" },
+    { type: "panelRow", row: "34", offset: "-5", numPoints: "6" },
+    { type: "panelRow", row: "35", offset: "-6", numPoints: "6" },
+    { type: "panelRow", row: "36", offset: "-6", numPoints: "4" },
+    { type: "panelRow", row: "37", offset: "-6", numPoints: "3" },
+    { type: "panelRow", row: "38", offset: "-6", numPoints: "2" },
+    { type: "panelRow", row: "39", offset: "-6", numPoints: "1" }
+  ],
+
+  outputs: [
+                  
+    { host: "$strand1host", universe: "$strand1output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentIndex: 0, reverse: false },
+        { componentIndex: 1, reverse: true },
+        { componentIndex: 2, reverse: false },
+        { componentIndex: 3, reverse: true },
+        { componentIndex: 4, reverse: false, padPre: 1 },
+        { componentIndex: 5, reverse: true },
+        { componentIndex: 6, reverse: false, length: 11 }
+      ]
+    },
+                  
+    { host: "$strand2host", universe: "$strand2output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentIndex: 6, reverse: false, start: 11 },
+        { componentIndex: 7, reverse: true },
+        { componentIndex: 8, reverse: false },
+        { componentIndex: 9, reverse: true, padPre: 2 },
+        { componentIndex: 10, reverse: false },
+        { componentIndex: 11, reverse: true },
+        { componentIndex: 12, reverse: false },
+        { componentIndex: 13, reverse: true, padPre: 1 }
+      ]
+    },
+                  
+    { host: "$strand3host", universe: "$strand3output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentIndex: 14, reverse: false },
+        { componentIndex: 15, reverse: true },
+        { componentIndex: 16, reverse: false },
+        { componentIndex: 17, reverse: true },
+        { componentIndex: 18, reverse: false },
+        { componentIndex: 19, reverse: true },
+        { componentIndex: 20, reverse: false },
+        { componentIndex: 21, reverse: true },
+        { componentIndex: 22, reverse: false },
+        { componentIndex: 23, reverse: true },
+        { componentIndex: 24, reverse: false },
+        { componentIndex: 25, reverse: true, length: 5 }
+      ]
+    },
+                  
+    { host: "$strand4host", universe: "$strand4output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentIndex: 25, reverse: true, start: 5 },
+        { componentIndex: 26, reverse: false },
+        { componentIndex: 27, reverse: true, padPre: 1 },
+        { componentIndex: 28, reverse: false },
+        { componentIndex: 29, reverse: true },
+        { componentIndex: 30, reverse: false },
+        { componentIndex: 31, reverse: true },
+        { componentIndex: 32, reverse: false },
+        { componentIndex: 33, reverse: true },
+        { componentIndex: 34, reverse: false },
+        { componentIndex: 35, reverse: true },
+        { componentIndex: 36, reverse: false },
+        { componentIndex: 37, reverse: true },
+        { componentIndex: 38, reverse: false },
+        { componentIndex: 39, reverse: true }
+      ]
+    }
+  ]
+}

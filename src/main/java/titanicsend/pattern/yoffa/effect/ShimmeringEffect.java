@@ -64,7 +64,7 @@ public class ShimmeringEffect extends PatternEffect {
 
     double basis = getTempo().basis();
     int beatCount = getTempo().beatCount();
-    int beatsPerMeasure = getTempo().beatsPerMeasure.getValuei();
+    int beatsPerMeasure = getTempo().beatsPerBar.getValuei();
 
     if (beatCount > lastBeat && beatCount % beatsPerMeasure == 0) {
       lastBeat = getTempo().beatCount();
@@ -101,7 +101,9 @@ public class ShimmeringEffect extends PatternEffect {
     double target;
     int direction = (int) (Math.abs(pattern.getStaticRotationAngle()) / (.5 * Math.PI));
     target = basis;
-    current = direction == 0 || direction == 2 ? point.yn : point.zn;
+
+    // TODO - change call to getXn() back to point.x when we finish moving to dynamic model
+    current = direction == 0 || direction == 2 ? point.yn : pattern.getXn(point);
     if (direction > 1) {
       current = 1 - current;
     }

@@ -74,10 +74,11 @@ public class UIBackings extends UI3dComponent {
     this.modelMatrixBuf = MemoryUtil.memAllocFloat(16);
     this.modelMatrix.get(this.modelMatrixBuf);
 
-    this.numModels = TEApp.wholeModel.panelsById.size();
-    this.colorBufferMaxSize = this.numModels * VERTICES_PER_PANEL;
+    List<TEPanelModel> models = TEApp.wholeModel.getPanels();
+    this.numModels = models.size();
+    this.colorBufferMaxSize = Math.max(1, this.numModels) * VERTICES_PER_PANEL;
 
-    for (TEPanelModel m : TEApp.wholeModel.panelsById.values()) {
+    for (TEPanelModel m : models) {
       initPanel = m;
       panels.add(new PanelBuffer(glx, m));
     }

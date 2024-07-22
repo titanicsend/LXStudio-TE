@@ -1,0 +1,25 @@
+{
+  /* Mothership by Titanic's End */
+
+  /* This is a convenience fixture so the full Mothership can be loaded quickly for development.
+   * Live shows will use the Slice fixtures directly, or this file will be expanded to pass IPs through.
+   */
+
+  label: "Mothership",
+  tag: "mothership",
+  
+  "components": [
+    { type: "window/Slice",
+      instances: "24",
+      front: "true",
+      radial: "$instance + 1",
+      offset: "$offset"
+    },
+    { type: "window/Slice",
+      instances: "24",
+      front: "false",
+      radial: "$instance + 1",
+      offset: "$offset"
+    }
+  ]
+}

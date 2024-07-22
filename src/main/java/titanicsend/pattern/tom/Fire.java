@@ -1,7 +1,5 @@
 package titanicsend.pattern.tom;
 
-import static processing.core.PApplet.lerpColor;
-
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
@@ -77,36 +75,30 @@ public class Fire extends TEPattern {
   }
 
   private int color(LXPoint point) {
-    int row = (int) ((point.y - modelTE.boundaryPoints.minYBoundaryPoint.y) / ROW_HEIGHT);
-    int column = (int) ((point.z - modelTE.boundaryPoints.minZBoundaryPoint.z) / COLUMN_WIDTH);
+    int row = (int) ((point.y - modelTE.minY()) / ROW_HEIGHT);
+    int column = (int) ((point.z - modelTE.minZ()) / COLUMN_WIDTH);
     return gradient[buffer[row][column]];
   }
 
   private int calculateRows() {
-    return (int)
-            ((modelTE.boundaryPoints.maxYBoundaryPoint.y
-                    - modelTE.boundaryPoints.minYBoundaryPoint.y)
-                / ROW_HEIGHT)
-        + 1;
+    return (int) ((modelTE.maxY() - modelTE.minY()) / ROW_HEIGHT) + 1;
   }
 
   private int calculateColumns() {
-    return (int)
-            ((modelTE.boundaryPoints.maxZBoundaryPoint.z
-                    - modelTE.boundaryPoints.minZBoundaryPoint.z)
-                / COLUMN_WIDTH)
-        + 1;
+    return (int) ((modelTE.maxZ() - modelTE.minZ()) / COLUMN_WIDTH) + 1;
   }
 
   private int[] calculateGradient(int middle, int steps) {
     int[] gradient = new int[steps];
     double pos = this.colorPosition.getValue();
     for (int i = 0; i < steps * pos; i++) {
-      gradient[i] = lerpColor(LXColor.BLACK, middle, (float) (i / (steps * pos)), 3);
+      // gradient[i] = lerpColor(LXColor.BLACK, middle, (float) (i / (steps * pos)), 3);
+      gradient[i] = LXColor.lerp(LXColor.BLACK, middle, (float) (i / (steps * pos)));
     }
 
     for (int i = (int) (steps * pos); i < steps; i++) {
-      gradient[i] = lerpColor(middle, LXColor.WHITE, (float) ((i - steps * pos) / steps), 3);
+      // gradient[i] = lerpColor(middle, LXColor.WHITE, (float) ((i - steps * pos) / steps), 3);
+      gradient[i] = LXColor.lerp(middle, LXColor.WHITE, (float) ((i - steps * pos) / steps));
     }
 
     return gradient;

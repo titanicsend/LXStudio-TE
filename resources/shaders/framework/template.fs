@@ -20,6 +20,12 @@ uniform float trebleRatio;
 uniform float levelReact;
 uniform float frequencyReact;
 
+// Current values from audio stems
+uniform float stemBass;
+uniform float stemDrums;
+uniform float stemVocal;
+uniform float stemOther;
+
 // TE Colors
 uniform vec3 iColorRGB;
 uniform vec3 iColorHSB;
