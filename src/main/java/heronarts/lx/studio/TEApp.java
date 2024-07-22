@@ -20,7 +20,6 @@ import heronarts.lx.LXPlugin;
 import heronarts.lx.mixer.LXBus;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.pattern.LXPattern;
-import heronarts.lx.pattern.form.PlanesPattern;
 import heronarts.lx.pattern.texture.NoisePattern;
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +37,7 @@ import titanicsend.app.dev.DevSwitch;
 import titanicsend.app.dev.UIDevSwitch;
 import titanicsend.audio.AudioStems;
 import titanicsend.audio.UIAudioStems;
+import titanicsend.color.ColorPaletteManager;
 import titanicsend.dmx.DmxEngine;
 import titanicsend.dmx.effect.BeaconStrobeEffect;
 import titanicsend.dmx.pattern.BeaconDirectPattern;
@@ -95,6 +95,7 @@ import titanicsend.ui.UIBackings;
 import titanicsend.ui.UILasers;
 import titanicsend.ui.UIModelLabels;
 import titanicsend.ui.UITEPerformancePattern;
+import titanicsend.ui.color.UIColorPaletteManager;
 import titanicsend.ui.effect.UIRandomStrobeEffect;
 import titanicsend.ui.modulator.UIDmx16bitModulator;
 import titanicsend.ui.modulator.UIDmxColorModulator;
@@ -135,6 +136,8 @@ public class TEApp extends LXStudio {
     private final GLEngine glEngine;
 
     private final AudioStems audioStems;
+    private final ColorPaletteManager paletteManagerA;
+    private final ColorPaletteManager paletteManagerB;
     private final TELaserTask laserTask;
     private final CrutchOSC crutchOSC;
     private DevSwitch devSwitch;
@@ -159,14 +162,17 @@ public class TEApp extends LXStudio {
       // by a single external input (e.g. DMX controller )
       lx.engine.registerComponent("globalPatternControls", new TEGlobalPatternControls(lx));
 
-      //      lx.ui.preview.addComponent(visual);
-      //      new TEUIControls(ui, visual,
-      // ui.leftPane.global.getContentWidth()).addToContainer(ui.leftPane.global);
       this.dmxEngine = new DmxEngine(lx);
       this.ndiEngine = new NDIEngine(lx);
       this.glEngine = new GLEngine(lx,staticModel);
 
       lx.engine.registerComponent("audioStems", this.audioStems = new AudioStems(lx));
+      lx.engine.registerComponent("paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
+      if (UIColorPaletteManager.DISPLAY_TWO_MANAGED_SWATCHES) {
+        lx.engine.registerComponent("paletteManagerB", this.paletteManagerB = new ColorPaletteManager(lx, "SWATCH B", 1));
+      } else {
+        this.paletteManagerB = null;
+      }
 
       // create our loop task for outputting data to lasers
       this.laserTask = new TELaserTask(lx);
@@ -540,6 +546,9 @@ public class TEApp extends LXStudio {
       // Add UI section for audio stems
       new UIAudioStems(ui, this.audioStems, ui.leftPane.global.getContentWidth())
           .addToContainer(ui.leftPane.global, 2);
+
+      UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB);
+      UIColorPaletteManager.addToRightPerformancePane(ui, this.paletteManagerA, this.paletteManagerB);
 
       // Set camera zoom and point size to match current model
       applyTECameraPosition();
