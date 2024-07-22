@@ -53,9 +53,7 @@ public class ColorPaletteManager extends LXComponent {
    * If hue, saturation, or brightness change, update color1
    */
   private final LXParameterListener colorListener = (p) -> {
-    this.color1.setColor(
-        LXColor.hsb(
-            this.hue.getValuef(), this.saturation.getValuef(), this.brightness.getValuef()));
+    this.setColor1();
   };
 
   public final ColorParameter color1 = new ColorParameter("Color1", LXColor.BLACK);
@@ -120,6 +118,9 @@ public class ColorPaletteManager extends LXComponent {
     addParameter("pushSwatch", this.pushSwatch);
     addParameter("pinSwatch", this.pinSwatch);
 
+    // Set color1 to current values of hue/saturation/brightness, so it doesn't default to black.
+    this.setColor1();
+
     this.hue.addListener(colorListener);
     this.saturation.addListener(colorListener);
     this.brightness.addListener(colorListener);
@@ -143,6 +144,15 @@ public class ColorPaletteManager extends LXComponent {
         this.managedSwatch.addColor();
       }
     }
+  }
+
+  /**
+   * Set the color1 parameter based on the current values of hue, saturation, and brightness.
+   */
+  private void setColor1() {
+    this.color1.setColor(
+        LXColor.hsb(
+            this.hue.getValuef(), this.saturation.getValuef(), this.brightness.getValuef()));
   }
 
   private void updateColors2And3() {
