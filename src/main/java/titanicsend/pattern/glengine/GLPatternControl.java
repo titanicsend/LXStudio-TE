@@ -35,7 +35,7 @@ public class GLPatternControl implements GLControlData {
     // Current values from audio stems
     s.setUniform("stemBass", (float) AudioStems.current.bass.getValuef());
     s.setUniform("stemDrums", (float) AudioStems.current.drums.getValuef());
-    s.setUniform("stemVocal", (float) AudioStems.current.vocal.getValuef());
+    s.setUniform("stemVocals", (float) AudioStems.current.vocals.getValuef());
     s.setUniform("stemOther", (float) AudioStems.current.other.getValuef());
 
     // color-related uniforms
