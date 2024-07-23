@@ -14,7 +14,7 @@ public class AudioStems extends LXComponent implements LXOscListener {
   public static final String PATH_STEM = "/te/stem/";
   public static final String PATH_BASS = "bass";
   public static final String PATH_DRUMS = "drums";
-  public static final String PATH_VOCAL = "vocal";
+  public static final String PATH_VOCAL = "vocals";
   public static final String PATH_OTHER = "other";
 
   public static AudioStems current;
