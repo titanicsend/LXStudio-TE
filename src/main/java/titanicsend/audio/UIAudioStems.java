@@ -21,7 +21,7 @@ public class UIAudioStems extends UICollapsibleSection {
     UI2dContainer meters = UI2dContainer.newHorizontalContainer(50, 4);
     addMeter(ui, meters, audioStems.bass);
     addMeter(ui, meters, audioStems.drums);
-    addMeter(ui, meters, audioStems.vocal);
+    addMeter(ui, meters, audioStems.vocals);
     addMeter(ui, meters, audioStems.other);
     meters.setX(10);
     meters.addToContainer(this);
