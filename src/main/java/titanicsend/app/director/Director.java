@@ -90,7 +90,11 @@ public class Director extends LXComponent implements LX.Listener, LXOscComponent
     }
   }
 
-  public static Director current;
+  private static Director current;
+
+  public static Director get() {
+    return current;
+  }
 
   private final List<Filter> mutableFilters = new ArrayList<Filter>();
   public final List<Filter> filters = Collections.unmodifiableList(this.mutableFilters);
@@ -124,6 +128,7 @@ public class Director extends LXComponent implements LX.Listener, LXOscComponent
     addParameter(filter.path, filter.fader);
   }
 
+  @Override
   public void modelGenerationChanged(LX lx, LXModel model) {
     onModelChanged(model);
   }

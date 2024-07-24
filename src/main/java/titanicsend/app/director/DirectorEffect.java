@@ -18,9 +18,9 @@ public class DirectorEffect extends TEEffect {
 
   @Override
   protected void run(double deltaMs, double enabledAmount) {
-    final float main = Director.current.main.getValuef();
+    final float main = Director.get().main.getValuef();
 
-    for (Filter filter : Director.current.filters) {
+    for (Filter filter : Director.get().filters) {
       filter.run(this.colors, main);
     }
   }
