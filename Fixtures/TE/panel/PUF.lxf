@@ -1,7 +1,7 @@
 {
   /* Titanic's End Fixture File */
   label: "Panel PUF",
-  tags: [ "PUF", "panel", "m6" ],
+  tags: [ "PUF", "panel", "Panel", "m6" ],
 
   parameters: {
     "xOffset": { default: 8.57917424606299, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },

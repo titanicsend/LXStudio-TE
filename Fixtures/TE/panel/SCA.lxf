@@ -1,7 +1,7 @@
 {
   /* Titanic's End Fixture File */
   label: "Panel SCA",
-  tags: [ "SCA", "panel", "m11" ],
+  tags: [ "SCA", "panel", "Panel", "m11" ],
 
   parameters: {
     "xOffset": { default: 18.104323214327877, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },

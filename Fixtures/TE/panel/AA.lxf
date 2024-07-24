@@ -1,7 +1,7 @@
 {
   /* Titanic's End Fixture File */
   label: "Panel AA",
-  tags: [ "AA", "panel", "m20" ],
+  tags: [ "AA", "panel", "Panel", "m20" ],
 
   parameters: {
     "xOffset": { default: 7.913386899999999, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },

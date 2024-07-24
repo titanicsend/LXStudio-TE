@@ -1,7 +1,7 @@
 {
   /* Titanic's End Fixture File */
   label: "Panel PFC",
-  tags: [ "PFC", "panel", "m18" ],
+  tags: [ "PFC", "panel", "Panel", "m18" ],
 
   parameters: {
     "xOffset": { default: 6.188870548524061, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
