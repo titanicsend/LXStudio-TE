@@ -336,7 +336,7 @@ public class TEApp extends LXStudio {
 
       // Midi surface names for use with BomeBox
       lx.engine.midi.registerSurface(MidiNames.BOMEBOX_APC40MK2, APC40Mk2.class);
-      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_APCMINI, TEAPCminiMk2.class);
+      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_APCMINIMK2, TEAPCminiMk2.class);
       lx.engine.midi.registerSurface(
           MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1, MidiFighterTwister.class);
       lx.engine.midi.registerSurface(
