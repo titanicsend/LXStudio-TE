@@ -6,7 +6,6 @@ import heronarts.glx.ui.component.UISlider;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.studio.LXStudio.UI;
 import heronarts.lx.studio.ui.device.UIControls;
-import titanicsend.app.director.Director.Filter;
 
 public class UIDirector extends UICollapsibleSection implements UIControls {
 
@@ -35,7 +34,7 @@ public class UIDirector extends UICollapsibleSection implements UIControls {
       }
     }
 
-    addFader(ui, row, columnWidth, director.main);
+    addFader(ui, row, columnWidth, director.master);
     this.addChildren(row);
   }
 

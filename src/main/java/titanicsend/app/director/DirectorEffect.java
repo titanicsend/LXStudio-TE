@@ -2,7 +2,6 @@ package titanicsend.app.director;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import titanicsend.app.director.Director.Filter;
 import titanicsend.effect.TEEffect;
 
 /**
@@ -18,10 +17,10 @@ public class DirectorEffect extends TEEffect {
 
   @Override
   protected void run(double deltaMs, double enabledAmount) {
-    final float main = Director.get().main.getValuef();
+    final float master = Director.get().master.getValuef();
 
     for (Filter filter : Director.get().filters) {
-      filter.run(this.colors, main);
+      filter.run(this.colors, master);
     }
   }
 }
