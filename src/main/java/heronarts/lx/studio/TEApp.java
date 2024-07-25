@@ -35,6 +35,9 @@ import titanicsend.app.*;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.dev.DevSwitch;
 import titanicsend.app.dev.UIDevSwitch;
+import titanicsend.app.director.Director;
+import titanicsend.app.director.DirectorEffect;
+import titanicsend.app.director.UIDirector;
 import titanicsend.audio.AudioStems;
 import titanicsend.audio.UIAudioStems;
 import titanicsend.color.ColorPaletteManager;
@@ -141,6 +144,7 @@ public class TEApp extends LXStudio {
     private final TELaserTask laserTask;
     private final CrutchOSC crutchOSC;
     private DevSwitch devSwitch;
+    private final Director director;
 
     private LX lx;
 
@@ -184,6 +188,8 @@ public class TEApp extends LXStudio {
 
       // CrutchOSC is an LXOscEngine supplement for TouchOSC clients
       lx.engine.registerComponent("focus", this.crutchOSC = new CrutchOSC(lx));
+
+      this.director = new Director(lx);
     }
 
     public void initialize(LX lx) {
@@ -279,6 +285,9 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(DjLightsDirectPattern.class);
       lx.registry.addPattern(DjLightsEasyPattern.class);
       lx.registry.addPattern(ExampleDmxTEPerformancePattern.class);
+
+      // Effects
+      lx.registry.addEffect(DirectorEffect.class);
 
       // DMX effects
       lx.registry.addEffect(BeaconStrobeEffect.class);
@@ -539,15 +548,19 @@ public class TEApp extends LXStudio {
 
       // Global pane
 
+      // Add UI section for director
+      new UIDirector(ui, this.director, ui.leftPane.global.getContentWidth())
+          .addToContainer(ui.leftPane.global, 0);
+
       // Add UI section for autopilot
       new TEUserInterface.AutopilotUISection(ui, this.autopilot)
-          .addToContainer(ui.leftPane.global, 0);
+          .addToContainer(ui.leftPane.global, 1);
 
       // Add UI section for audio stems
       new UIAudioStems(ui, this.audioStems, ui.leftPane.global.getContentWidth())
-          .addToContainer(ui.leftPane.global, 2);
+          .addToContainer(ui.leftPane.global, 3);
 
-      UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB);
+      UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 4);
       UIColorPaletteManager.addToRightPerformancePane(ui, this.paletteManagerA, this.paletteManagerB);
 
       // Set camera zoom and point size to match current model
