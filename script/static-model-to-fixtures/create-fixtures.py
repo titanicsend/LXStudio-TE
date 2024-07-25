@@ -576,7 +576,7 @@ def create_panels():
             panel_file.write('''{
   /* Titanic's End Fixture File */
   label: "Panel ''' + panel_id + '''",
-  tags: [ "''' + panel_id + '''", "panel", "''' + module_tag(panel.module) + '''" ],
+  tags: [ "''' + panel_id + '''", "panel", "Panel", "''' + module_tag(panel.module) + '''" ],
 
   parameters: {
     "xOffset": { default: ''' + str(panel.x_offset) + ''', type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
@@ -754,7 +754,7 @@ def create_edges():
             edge_file.write('''{
   /* Titanic's End Fixture File */
   label: "Edge ''' + edge.id + '''",
-  tags: [ "''' + edge.tag + '''", "edge", "''' + module_tag(edge.module) + '''" ],
+  tags: [ "''' + edge.tag + '''", "edge", "Edge", "''' + module_tag(edge.module) + '''" ],
 
   parameters: {
     "points": { default: ''' + str(edge.num_points) + ''', type: "int", min: 1, label: "Points", description: "Number of points in the edge" },
