@@ -599,7 +599,7 @@ def create_panels():
 
     "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
     
-    # Debug tools
+    /* Debug tools */
     "onCar": { default: true, type: "boolean", label: "On Car", description: "True = Locate panel to its position on the car, False = Locate to origin" }
   },
   
@@ -766,10 +766,10 @@ def create_edges():
     
     "xOffset": { default: ''' + str(edge.x_offset) + ''', type: "float", label: "X offset", description: "Location offset of edge from starting vertex" },
   
-    # Debug tools
+    /* Debug tools */
     "onCar": { default: true, type: "boolean", label: "On Car", description: "True = Locate panel to its position on the car, False = Locate to origin" },
 
-    # Option to disable output, such as when outputs are configured in a parent fixture
+    /* Option to disable output, such as when outputs are configured in a parent fixture */
     "hasOutput": { default: true, type: "boolean", label: "Has Output", description: "Whether built-in output is enabled" }
   },
   
@@ -808,7 +808,8 @@ def create_edges():
       universe: "$output*10+(($ledOffset*3)/512)",
       channel: "($ledOffset*3)%512",
       protocol: "artnet", 
-      sequenceEnabled: "$artnetSequence"
+      sequenceEnabled: "$artnetSequence",
+      reverse: "$reverse"
     }
   ]
 }

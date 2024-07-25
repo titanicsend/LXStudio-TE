@@ -13,10 +13,10 @@
     
     "xOffset": { default: 5.344909915201505, type: "float", label: "X offset", description: "Location offset of edge from starting vertex" },
   
-    # Debug tools
+    /* Debug tools */
     "onCar": { default: true, type: "boolean", label: "On Car", description: "True = Locate panel to its position on the car, False = Locate to origin" },
 
-    # Option to disable output, such as when outputs are configured in a parent fixture
+    /* Option to disable output, such as when outputs are configured in a parent fixture */
     "hasOutput": { default: true, type: "boolean", label: "Has Output", description: "Whether built-in output is enabled" }
   },
   
@@ -42,10 +42,9 @@
   },
 
   components: [
-    { type: "strip", 
+    { type: "strip",
       numPoints: "$points",
-      spacing: "0.6562",
-      reverse: "$reverse"
+      spacing: "0.6562"
     }
   ],
   
@@ -55,7 +54,8 @@
       universe: "$output*10+(($ledOffset*3)/512)",
       channel: "($ledOffset*3)%512",
       protocol: "artnet", 
-      sequenceEnabled: "$artnetSequence"
+      sequenceEnabled: "$artnetSequence",
+      reverse: "$reverse"
     }
   ]
 }
