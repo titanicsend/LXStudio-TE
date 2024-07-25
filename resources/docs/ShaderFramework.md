@@ -60,7 +60,7 @@ uniform float frequencyReact; // reactivity to audio frequency content
 // Current values from audio stems 
 uniform float stemBass;
 uniform float stemDrums;
-uniform float stemVocal;
+uniform float stemVocals;
 uniform float stemOther;
 
 // TE color
@@ -194,16 +194,16 @@ Depending on the model used by the audio stem splitter, values should
 range from -1.0 to 1.0
 
 #### uniform float stemBass;
-Level of the bass stem - low frequency, non-percussion instruments.
+RMS energy of the bass stem - low frequency, non-percussion instruments.
 
 #### uniform float stemDrums;
-Level of the drum stem - percussion instruments.
+RMS energy of the drum stem - percussion instruments.
 
-#### uniform float stemVocal;
-Level of the vocal stem - human voices, possibly other midrange melodic instruments.
+#### uniform float stemVocals;
+RMS energy of the vocal stem - human voices, possibly other midrange melodic instruments.
 
 #### uniform float stemOther;
-Level of all other audio content.
+RMS energy of all other audio content.
 
 -----
 

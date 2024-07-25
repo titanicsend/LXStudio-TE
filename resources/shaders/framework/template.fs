@@ -23,7 +23,7 @@ uniform float frequencyReact;
 // Current values from audio stems
 uniform float stemBass;
 uniform float stemDrums;
-uniform float stemVocal;
+uniform float stemVocals;
 uniform float stemOther;
 
 // TE Colors
