@@ -51,8 +51,8 @@
   outputs: [
     { enabled: "$hasOutput",
       host: "$host",
-      universe: "$output*10+(($ledOffset*3)/512)",
-      channel: "($ledOffset*3)%512",
+      universe: "$output*10+(($ledOffset*3)/510)",
+      channel: "($ledOffset*3)%510",
       protocol: "artnet",
       sequenceEnabled: "$artnetSequence",
       reverse: "$reverse"
