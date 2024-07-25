@@ -1,7 +1,7 @@
 {
   /* Titanic's End Fixture File */
   label: "Panel PDA",
-  tags: [ "PDA", "panel", "m19" ],
+  tags: [ "PDA", "panel", "Panel", "m19" ],
 
   parameters: {
     "xOffset": { default: 18.104323214327877, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },

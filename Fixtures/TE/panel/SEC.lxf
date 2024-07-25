@@ -1,7 +1,7 @@
 {
   /* Titanic's End Fixture File */
   label: "Panel SEC",
-  tags: [ "SEC", "panel", "m9" ],
+  tags: [ "SEC", "panel", "Panel", "m9" ],
 
   parameters: {
     "xOffset": { default: 9.90309768291283, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },

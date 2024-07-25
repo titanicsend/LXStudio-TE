@@ -1,7 +1,7 @@
 {
   /* Titanic's End Fixture File */
   label: "Panel PEC",
-  tags: [ "PEC", "panel", "m18" ],
+  tags: [ "PEC", "panel", "Panel", "m18" ],
 
   parameters: {
     "xOffset": { default: 9.919804135425046, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },

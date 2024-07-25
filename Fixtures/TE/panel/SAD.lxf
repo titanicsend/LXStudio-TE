@@ -1,7 +1,7 @@
 {
   /* Titanic's End Fixture File */
   label: "Panel SAD",
-  tags: [ "SAD", "panel", "m3" ],
+  tags: [ "SAD", "panel", "Panel", "m3" ],
 
   parameters: {
     "xOffset": { default: 12.445379467271444, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },

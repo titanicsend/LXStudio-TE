@@ -1,7 +1,7 @@
 {
   /* Titanic's End Fixture File */
   label: "Panel SED",
-  tags: [ "SED", "panel", "m9" ],
+  tags: [ "SED", "panel", "Panel", "m9" ],
 
   parameters: {
     "xOffset": { default: 9.052723857217252, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },

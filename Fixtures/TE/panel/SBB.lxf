@@ -1,7 +1,7 @@
 {
   /* Titanic's End Fixture File */
   label: "Panel SBB",
-  tags: [ "SBB", "panel", "m11" ],
+  tags: [ "SBB", "panel", "Panel", "m11" ],
 
   parameters: {
     "xOffset": { default: 15.387300247507135, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },

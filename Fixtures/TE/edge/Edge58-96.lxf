@@ -1,7 +1,7 @@
 {
   /* Titanic's End Fixture File */
   label: "Edge 58-96",
-  tags: [ "edge58_96", "edge", "m13" ],
+  tags: [ "edge58_96", "edge", "Edge", "m13" ],
 
   parameters: {
     "points": { default: 67, type: "int", min: 1, label: "Points", description: "Number of points in the edge" },

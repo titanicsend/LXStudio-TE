@@ -1,7 +1,7 @@
 {
   /* Titanic's End Fixture File */
   label: "Panel PBE",
-  tags: [ "PBE", "panel", "m13" ],
+  tags: [ "PBE", "panel", "Panel", "m13" ],
 
   parameters: {
     "xOffset": { default: 9.939991665201504, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },

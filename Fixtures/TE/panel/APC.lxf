@@ -1,7 +1,7 @@
 {
   /* Titanic's End Fixture File */
   label: "Panel APC",
-  tags: [ "APC", "panel", "m20" ],
+  tags: [ "APC", "panel", "Panel", "m20" ],
 
   parameters: {
     "xOffset": { default: 7.584538455639745, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },

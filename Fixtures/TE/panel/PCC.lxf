@@ -1,7 +1,7 @@
 {
   /* Titanic's End Fixture File */
   label: "Panel PCC",
-  tags: [ "PCC", "panel", "m12" ],
+  tags: [ "PCC", "panel", "Panel", "m12" ],
 
   parameters: {
     "xOffset": { default: 7.369670095469779, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },

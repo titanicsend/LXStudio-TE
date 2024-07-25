@@ -1,7 +1,7 @@
 {
   /* Titanic's End Fixture File */
   label: "Panel FB",
-  tags: [ "FB", "panel", "m21" ],
+  tags: [ "FB", "panel", "Panel", "m21" ],
 
   parameters: {
     "xOffset": { default: 8.89763885, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
