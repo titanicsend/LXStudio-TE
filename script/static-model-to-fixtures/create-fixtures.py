@@ -579,8 +579,8 @@ def create_panels():
   tags: [ "''' + panel_id + '''", "panel", "''' + module_tag(panel.module) + '''" ],
 
   parameters: {
-    "xOffset": { default: ''' + str(panel.x_offset) + ''', type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
-    "yOffset": { default: ''' + str(panel.y_offset) + ''', type: float, description: "Adjust Y position within the plane of the panel. Use to fine-tune position after installation" },
+    "xOffset": { default: ''' + str(panel.x_offset) + ''', type: "float", description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
+    "yOffset": { default: ''' + str(panel.y_offset) + ''', type: "float", description: "Adjust Y position within the plane of the panel. Use to fine-tune position after installation" },
   
     /* Modify HOST and CONTROLLER OUTPUT default values HERE to assign one of this panel's strands to a
        new controller output. Then click [Reload Fixture File] at the bottom of the Inspector section in Chromatik.
