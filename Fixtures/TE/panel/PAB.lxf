@@ -1,7 +1,7 @@
 {
   /* Titanic's End Fixture File */
   label: "Panel PAB",
-  tags: [ "PAB", "panel", "m12" ],
+  tags: [ "PAB", "panel", "Panel", "m12" ],
 
   parameters: {
     "xOffset": { default: 7.6962340856563145, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },

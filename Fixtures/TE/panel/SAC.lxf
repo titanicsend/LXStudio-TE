@@ -1,7 +1,7 @@
 {
   /* Titanic's End Fixture File */
   label: "Panel SAC",
-  tags: [ "SAC", "panel", "m2" ],
+  tags: [ "SAC", "panel", "Panel", "m2" ],
 
   parameters: {
     "xOffset": { default: 8.631026025799002, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
