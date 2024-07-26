@@ -94,10 +94,7 @@ import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.pattern.yoffa.effect.BeaconEffect;
-import titanicsend.ui.UIBackings;
-import titanicsend.ui.UILasers;
-import titanicsend.ui.UIModelLabels;
-import titanicsend.ui.UITEPerformancePattern;
+import titanicsend.ui.*;
 import titanicsend.ui.color.UIColorPaletteManager;
 import titanicsend.ui.effect.UIRandomStrobeEffect;
 import titanicsend.ui.modulator.UIDmx16bitModulator;
@@ -146,6 +143,9 @@ public class TEApp extends LXStudio {
     private DevSwitch devSwitch;
     private final Director director;
 
+    // objects that manage UI displayed in 3D views
+    private UI3DManager ui3dManager;
+
     private LX lx;
 
     public Plugin(LX lx) {
@@ -177,6 +177,7 @@ public class TEApp extends LXStudio {
       } else {
         this.paletteManagerB = null;
       }
+      lx.engine.registerComponent("ui3dManager", this.ui3dManager = new UI3DManager(lx));
 
       // create our loop task for outputting data to lasers
       this.laserTask = new TELaserTask(lx);
@@ -573,9 +574,9 @@ public class TEApp extends LXStudio {
       ui.preview.addComponent(new UILasers(lx, this.virtualOverlays));
       ui.previewAux.addComponent(new UILasers(lx, this.virtualOverlays));
 
-      ui.preview.addComponent(new UIModelLabels(lx, this.virtualOverlays));
-      // Do we need model labels in the secondary view?  Uncomment if so.
-      // ui.previewAux.addComponent(new UIModelLabels(lx, this.virtualOverlays));
+      // 3D model labels - save object so we can use it whenever model changes.
+      ui3dManager.modelLabels = new UIModelLabels(lx, this.virtualOverlays);
+      ui.preview.addComponent(ui3dManager.modelLabels);
 
       // precompile binaries for any new or changed shaders
       ShaderPrecompiler.rebuildCache();
