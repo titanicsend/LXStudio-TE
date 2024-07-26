@@ -106,7 +106,7 @@ public class UIBackings extends UI3dComponent {
 
   @Override
   public void onDraw(UI ui, View view) {
-    if (!this.virtualOverlays.opaqueBackPanelsVisible.isOn()) {
+    if (UI3DManager.current.inRebuild.get() || !this.virtualOverlays.opaqueBackPanelsVisible.isOn()) {
       return;
     }
 

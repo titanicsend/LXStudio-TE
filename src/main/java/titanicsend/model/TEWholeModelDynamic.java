@@ -17,7 +17,6 @@ import heronarts.lx.transform.LXVector;
 import titanicsend.dmx.model.DmxModel;
 import titanicsend.pattern.jon.ModelBender;
 import titanicsend.ui.UI3DManager;
-import titanicsend.ui.UIModelLabels;
 
 public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
 
@@ -266,10 +265,14 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
     mb.adjustEndGeometry(this, this.lx.getModel());
     mb.restoreModel(this, this.lx.getModel());
 
-    // Update 3D ui elements
+    // Update 3D ui elements (now with extra thread safety!)
+    UI3DManager.lock();
+
     UI3DManager.current.modelLabels.rebuild();
     UI3DManager.current.backings.rebuild();
     UI3DManager.current.backingsAux.rebuild();
+
+    UI3DManager.unlock();
 
     /* TE.log("Model changed. Found " +
     this.edges.size() + " edges, " +

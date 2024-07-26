@@ -202,6 +202,9 @@ public class UIModelLabels extends UI3dComponent {
 
   @Override
   public void onDraw(UI ui, View view) {
+    // Make sure the model isn't changing while we're trying to draw.
+    if (UI3DManager.current.inRebuild.get()) return;
+
     if (this.virtualOverlays.panelLabelsVisible.isOn()) {
       textManager.draw(view, panelLabels);
     }
