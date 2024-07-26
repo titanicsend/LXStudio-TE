@@ -38,18 +38,32 @@ public class UIModelLabels extends UI3dComponent {
   private final List<Label> panelLabels = new ArrayList<Label>();
   private final List<Label> vertexLabels = new ArrayList<Label>();
 
+  // TODO - remove when switch to dynamic model is complete
+  private final boolean isStatic;
+
   // initialization that should be done once, when the UI is ready
   public UIModelLabels(GLX glx, final TEVirtualOverlays virtualOverlays) {
     this.virtualOverlays = virtualOverlays;
     this.glx = glx;
+    this.isStatic = TEApp.wholeModel.isStatic();
 
     // Create text manager object and load font texture atlas
     // (Inconsolata is a nicely readable, open source font)
     this.textManager = new TextManager3d(glx, "resources/fonts/Inconsolata.font3d");
+
+    // if using the static model, we can build labels now
+    // TODO - remove when switch to dynamic model is complete
+    if (this.isStatic) {
+      rebuild();
+    }
   }
 
   /** Build labels for the current model. Called when the model is loaded or changed. */
-  public void refreshLabels() {
+  public void rebuild() {
+
+    // TODO - remove static checks when switch to dynamic model is complete
+    float fontScale = (isStatic) ? 15000f : 0.5f;
+    float labelOffset = (isStatic) ? 200000f : 5f;
 
     // clean up any existing labels
     clear();
@@ -58,21 +72,21 @@ public class UIModelLabels extends UI3dComponent {
     Vector3f rotation = new Vector3f(0, 0, 0);
 
     // create labels for panels
-    textManager.setFontScale(0.5f);
+    textManager.setFontScale(fontScale);
     textManager.setFontColor(LXColor.WHITE);
     textManager.setFontBackground(LXColor.rgba(0, 0, 0, 255)); // opaque black
 
     for (TEPanelModel p : TEApp.wholeModel.getPanels()) {
-      getPanelCoordinates(p, position, rotation);
+      getPanelCoordinates(p, position, rotation, labelOffset);
       panelLabels.add(textManager.labelMaker(p.getId(), position, rotation));
     }
 
     // create labels for vertices
-    textManager.setFontScale(.5f);
+    textManager.setFontScale(fontScale * 1.333f);
     textManager.setFontColor(LXColor.GREEN);
     textManager.setFontBackground(LXColor.rgba(0, 64, 64, 200));
     for (TEVertex v : TEApp.wholeModel.getVertexes()) {
-      getVertexCoordinates(v, position, rotation);
+      getVertexCoordinates(v, position, rotation, labelOffset);
       vertexLabels.add(textManager.labelMaker(String.valueOf(v.id), position, rotation));
     }
   }
@@ -115,7 +129,6 @@ public class UIModelLabels extends UI3dComponent {
     // which are highly angled, increase the offset to bump the labels outward a
     // little extra. Also flip fore/aft labels by 180 degrees as needed to keep
     // text oriented correctly.
-    // TODO - we can find out if a panel is fore/aft by checking the panel label
     if (onCarEnd) {
       outPosition.x += ((outPosition.x > 0) ? 1 : -1) * offset * ((outPosition.y < 1f) ? 1.5f : 1);
       outRotation.y += (outPosition.x > 0) ? (float) (-Math.PI / 2) : (float) (Math.PI / 2);
@@ -128,15 +141,63 @@ public class UIModelLabels extends UI3dComponent {
     }
   }
 
-  public void getPanelCoordinates(TEPanelModel panel, Vector3f position, Vector3f rotation) {
-    Vector3f panelCenter = new Vector3f(panel.centroid.x, panel.centroid.y, panel.centroid.z);
-    boolean onCarEnd = panel.getId().startsWith("F") || panel.getId().startsWith("A");
-    getLabelCoordinates(panelCenter, position, rotation, 5f, onCarEnd);
+  /**
+   * STATIC MODEL VARIANT - Remove when switch to dynamic model is complete
+   *
+   * <p>Given the coordinates of a label center on the model, return the offset position and the
+   * rotation needed to orient the label correctly.
+   *
+   * @param inCenter - label center
+   * @param outPosition - offset position of label center
+   * @param outRotation - rotations (radians) needed to orient the label correctly
+   */
+  public void getLabelCoordinatesStatic(
+      Vector3f inCenter, Vector3f outPosition, Vector3f outRotation, float offset) {
+    outPosition.set(inCenter);
+    outRotation.set(0, 0, 0);
+
+    // if the label is on the end of the car, displace z outward and build the
+    // texture box in x and y, with offset z-ward.  On the lowest fore/aft panels,
+    // which are highly angled, increase the offset to bump the labels outward a
+    // little extra. Also flip fore/aft labels by 180 degrees as needed to keep
+    // text oriented correctly.
+    if (Math.abs(outPosition.x) < 1200000) {
+      outPosition.z +=
+          ((outPosition.z > 0) ? 1 : -1) * offset * ((outPosition.y < 1000000f) ? 1.5f : 1);
+      outRotation.y += (outPosition.z > 0) ? (float) Math.PI : 0;
+
+    }
+    // otherwise, displace x and build the box on the z/y plane
+    // (by rotating 90 degrees about y)
+    else {
+      outPosition.x += ((outPosition.x > 0) ? 1 : -1) * offset;
+      outRotation.y = (float) Math.PI / 2f + ((outPosition.x > 0) ? (float) Math.PI : 0);
+    }
   }
 
-  public void getVertexCoordinates(TEVertex vertex, Vector3f position, Vector3f rotation) {
+  public void getPanelCoordinates(
+      TEPanelModel panel, Vector3f position, Vector3f rotation, float offset) {
+    Vector3f panelCenter = new Vector3f(panel.centroid.x, panel.centroid.y, panel.centroid.z);
+    boolean onCarEnd = panel.getId().startsWith("F") || panel.getId().startsWith("A");
+
+    // TODO - remove isStatic check when switch to dynamic model is complete
+    if (this.isStatic) {
+      getLabelCoordinatesStatic(panelCenter, position, rotation, offset);
+    } else {
+      getLabelCoordinates(panelCenter, position, rotation, offset, onCarEnd);
+    }
+  }
+
+  public void getVertexCoordinates(
+      TEVertex vertex, Vector3f position, Vector3f rotation, float offset) {
     Vector3f panelCenter = new Vector3f(vertex.x, vertex.y, vertex.z);
-    getLabelCoordinates(panelCenter, position, rotation, 5f, false);
+
+    // TODO - remove isStatic check when switch to dynamic model is complete
+    if (this.isStatic) {
+      getLabelCoordinatesStatic(panelCenter, position, rotation, offset);
+    } else {
+      getLabelCoordinates(panelCenter, position, rotation, offset, false);
+    }
   }
 
   @Override
@@ -144,7 +205,10 @@ public class UIModelLabels extends UI3dComponent {
     if (this.virtualOverlays.panelLabelsVisible.isOn()) {
       textManager.draw(view, panelLabels);
     }
-    if (this.virtualOverlays.vertexLabelsVisible.isOn()) {
+
+    // TODO - fill in vertex locations for dynamic model.  It currently has
+    // TODO - labels, but no data, so we only show these labels for the static model.
+    if (this.virtualOverlays.vertexLabelsVisible.isOn() && this.isStatic) {
       textManager.draw(view, vertexLabels);
     }
   }

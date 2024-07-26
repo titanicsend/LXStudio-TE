@@ -567,16 +567,23 @@ public class TEApp extends LXStudio {
       // Set camera zoom and point size to match current model
       applyTECameraPosition();
 
-      // 3D components
-      ui.preview.addComponent(new UIBackings(lx, this.virtualOverlays));
-      ui.previewAux.addComponent(new UIBackings(lx, this.virtualOverlays));
-
-      ui.preview.addComponent(new UILasers(lx, this.virtualOverlays));
-      ui.previewAux.addComponent(new UILasers(lx, this.virtualOverlays));
-
-      // 3D model labels - save object so we can use it whenever model changes.
+      // 3D UI components - save objects in ui3dManager so we can
+      // rebuild them on model changes.
       ui3dManager.modelLabels = new UIModelLabels(lx, this.virtualOverlays);
       ui.preview.addComponent(ui3dManager.modelLabels);
+
+      ui3dManager.backings = new UIBackings(lx, this.virtualOverlays);
+      ui.preview.addComponent(ui3dManager.backings);
+      ui3dManager.backingsAux = new UIBackings(lx, this.virtualOverlays);
+      ui.previewAux.addComponent(ui3dManager.backingsAux);
+
+      // TODO - laser preview not currently supported on dynamic model.  Do we
+      // TODO - need them?  Do we want to render at least beam color and
+      // TODO - angle if we have that info from Pangolin?
+      ui3dManager.lasers = new UILasers(lx, this.virtualOverlays);
+      ui.preview.addComponent(ui3dManager.lasers);
+      ui3dManager.lasersAux = new UILasers(lx, this.virtualOverlays);
+      ui.previewAux.addComponent(ui3dManager.lasersAux);
 
       // precompile binaries for any new or changed shaders
       ShaderPrecompiler.rebuildCache();

@@ -12,8 +12,14 @@ public class UI3DManager extends LXComponent {
   public static UI3DManager current;
 
   public UIModelLabels modelLabels = null;
+
+  // Chromatik requires a separate UI object per context (main and aux) if
+  // we want the element to show up in performance mode.
   public UIBackings backings = null;
+  public UIBackings backingsAux = null;
+
   public UILasers lasers = null;
+  public UILasers lasersAux = null;
 
   public UI3DManager(LX lx) {
     super(lx, "UI3DManager");
