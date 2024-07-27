@@ -94,9 +94,7 @@ import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.pattern.yoffa.effect.BeaconEffect;
-import titanicsend.ui.UIBackings;
-import titanicsend.ui.UILasers;
-import titanicsend.ui.UIModelLabels;
+import titanicsend.ui.UI3DManager;
 import titanicsend.ui.UITEPerformancePattern;
 import titanicsend.ui.color.UIColorPaletteManager;
 import titanicsend.ui.effect.UIRandomStrobeEffect;
@@ -145,6 +143,9 @@ public class TEApp extends LXStudio {
     private final CrutchOSC crutchOSC;
     private DevSwitch devSwitch;
     private final Director director;
+
+    // objects that manage UI displayed in 3D views
+    private UI3DManager ui3dManager;
 
     private LX lx;
 
@@ -563,19 +564,11 @@ public class TEApp extends LXStudio {
       UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 4);
       UIColorPaletteManager.addToRightPerformancePane(ui, this.paletteManagerA, this.paletteManagerB);
 
+      // Add 3D Ui components
+      this.ui3dManager = new UI3DManager(lx, ui, this.virtualOverlays);
+
       // Set camera zoom and point size to match current model
       applyTECameraPosition();
-
-      // 3D components
-      ui.preview.addComponent(new UIBackings(lx, this.virtualOverlays));
-      ui.previewAux.addComponent(new UIBackings(lx, this.virtualOverlays));
-
-      ui.preview.addComponent(new UILasers(lx, this.virtualOverlays));
-      ui.previewAux.addComponent(new UILasers(lx, this.virtualOverlays));
-
-      ui.preview.addComponent(new UIModelLabels(lx, this.virtualOverlays));
-      // Do we need model labels in the secondary view?  Uncomment if so.
-      // ui.previewAux.addComponent(new UIModelLabels(lx, this.virtualOverlays));
 
       // precompile binaries for any new or changed shaders
       ShaderPrecompiler.rebuildCache();

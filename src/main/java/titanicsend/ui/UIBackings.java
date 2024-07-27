@@ -40,12 +40,8 @@ public class UIBackings extends UI3dComponent {
 
   private class PanelBuffer extends VertexBuffer {
 
-    // To use for setting color by panel type
-    private final TEPanelModel panel;
-
-    private PanelBuffer(GLX glx, TEPanelModel panel) {
+    private PanelBuffer(GLX glx) {
       super(glx, VERTICES_PER_PANEL, VertexDeclaration.ATTRIB_POSITION);
-      this.panel = panel;
     }
 
     @Override
@@ -58,40 +54,63 @@ public class UIBackings extends UI3dComponent {
   }
 
   private final TEVirtualOverlays virtualOverlays;
+  private final GLX glx;
   private final List<PanelBuffer> panels = new ArrayList<PanelBuffer>();
   private TEPanelModel initPanel;
   private static final int VERTICES_PER_PANEL = 3;
-  private final int numModels;
-  private final int colorBufferMaxSize;
+  private int numModels;
 
-  private final DynamicVertexBuffer colorBuffer;
+  private DynamicVertexBuffer colorBuffer;
 
   private final Matrix4f modelMatrix = new Matrix4f();
   private final FloatBuffer modelMatrixBuf;
 
   public UIBackings(GLX glx, final TEVirtualOverlays virtualOverlays) {
     this.virtualOverlays = virtualOverlays;
+    this.glx = glx;
     this.modelMatrixBuf = MemoryUtil.memAllocFloat(16);
     this.modelMatrix.get(this.modelMatrixBuf);
 
+    // if using the static model, we can build our backing panels now
+    // TODO - remove when switch to dynamic model is complete
+    if (TEApp.wholeModel.isStatic()) {
+      rebuild();
+    }
+  }
+
+   /** Build backing panels for the current model. Called when the model is loaded or changed. */
+  public void rebuild() {
+    clear();
+
     List<TEPanelModel> models = TEApp.wholeModel.getPanels();
-    this.numModels = models.size();
-    this.colorBufferMaxSize = Math.max(1, this.numModels) * VERTICES_PER_PANEL;
+    numModels = models.size();
+    int colorBufferMaxSize = Math.max(1, this.numModels) * VERTICES_PER_PANEL;
 
     for (TEPanelModel m : models) {
       initPanel = m;
-      panels.add(new PanelBuffer(glx, m));
+      panels.add(new PanelBuffer(glx));
     }
 
     this.colorBuffer =
-        new DynamicVertexBuffer(glx, this.colorBufferMaxSize, VertexDeclaration.ATTRIB_COLOR0);
+      new DynamicVertexBuffer(glx, colorBufferMaxSize, VertexDeclaration.ATTRIB_COLOR0);
+  }
+
+  // Free resources allocated by previous model
+  public void clear() {
+    for (PanelBuffer b : this.panels) {
+      b.dispose();
+    }
+    this.panels.clear();
+    if (this.colorBuffer != null) this.colorBuffer.dispose();
   }
 
   @Override
   public void onDraw(UI ui, View view) {
-    if (!this.virtualOverlays.opaqueBackPanelsVisible.isOn()) {
+    if (!this.virtualOverlays.opaqueBackPanelsVisible.isOn() || UI3DManager.isLocked()) {
       return;
     }
+
+    UI3DManager.beginDraw();
 
     // Update the color data
     final ByteBuffer colorData = this.colorBuffer.getVertexData();
@@ -123,6 +142,7 @@ public class UIBackings extends UI3dComponent {
           1, this.colorBuffer.getHandle(), vertexIndex++ * VERTICES_PER_PANEL, VERTICES_PER_PANEL);
       ui.lx.program.vertexFill.submit(view, state, b);
     }
+    UI3DManager.endDraw();
   }
 
   @Override
