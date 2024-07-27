@@ -94,7 +94,8 @@ import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.pattern.yoffa.effect.BeaconEffect;
-import titanicsend.ui.*;
+import titanicsend.ui.UI3DManager;
+import titanicsend.ui.UITEPerformancePattern;
 import titanicsend.ui.color.UIColorPaletteManager;
 import titanicsend.ui.effect.UIRandomStrobeEffect;
 import titanicsend.ui.modulator.UIDmx16bitModulator;
@@ -177,7 +178,6 @@ public class TEApp extends LXStudio {
       } else {
         this.paletteManagerB = null;
       }
-      lx.engine.registerComponent("ui3dManager", this.ui3dManager = new UI3DManager(lx));
 
       // create our loop task for outputting data to lasers
       this.laserTask = new TELaserTask(lx);
@@ -564,26 +564,11 @@ public class TEApp extends LXStudio {
       UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 4);
       UIColorPaletteManager.addToRightPerformancePane(ui, this.paletteManagerA, this.paletteManagerB);
 
+      // Add 3D Ui components
+      this.ui3dManager = new UI3DManager(lx, ui, this.virtualOverlays);
+
       // Set camera zoom and point size to match current model
       applyTECameraPosition();
-
-      // 3D UI components - save objects in ui3dManager so we can
-      // rebuild them on model changes.
-      ui3dManager.modelLabels = new UIModelLabels(lx, this.virtualOverlays);
-      ui.preview.addComponent(ui3dManager.modelLabels);
-
-      ui3dManager.backings = new UIBackings(lx, this.virtualOverlays);
-      ui.preview.addComponent(ui3dManager.backings);
-      ui3dManager.backingsAux = new UIBackings(lx, this.virtualOverlays);
-      ui.previewAux.addComponent(ui3dManager.backingsAux);
-
-      // TODO - laser preview not currently supported on dynamic model.  Do we
-      // TODO - need them?  Do we want to render at least beam color and
-      // TODO - angle if we have that info from Pangolin?
-      ui3dManager.lasers = new UILasers(lx, this.virtualOverlays);
-      ui.preview.addComponent(ui3dManager.lasers);
-      ui3dManager.lasersAux = new UILasers(lx, this.virtualOverlays);
-      ui.previewAux.addComponent(ui3dManager.lasersAux);
 
       // precompile binaries for any new or changed shaders
       ShaderPrecompiler.rebuildCache();

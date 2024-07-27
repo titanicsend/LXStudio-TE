@@ -8,7 +8,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 // update them easily when the model changes
 public class UI3DManager  {
   public static UI3DManager current;
-  public final AtomicBoolean inRebuild = new AtomicBoolean(false);
+  public static final AtomicBoolean inRebuild = new AtomicBoolean(false);
+  public static final AtomicBoolean inDraw = new AtomicBoolean(false);
 
   public final UIModelLabels modelLabels;
 
@@ -21,15 +22,48 @@ public class UI3DManager  {
   public final UILasers lasersAux;
 
   public static void lock() {
-    if (current != null) {
-      current.inRebuild.set(true);
-    }
+      UI3DManager.inRebuild.set(true);
   }
 
   public static void unlock() {
-    if (current != null) {
-      current.inRebuild.set(false);
-    }
+      UI3DManager.inRebuild.set(false);
+  }
+
+  public static boolean isLocked() {
+      return UI3DManager.inRebuild.get();
+  }
+
+  public static void beginDraw() {
+    UI3DManager.inDraw.set(true);
+  }
+
+  public static void endDraw() {
+    UI3DManager.inDraw.set(false);
+  }
+  public int oneshot = 0;
+  public void rebuild() {
+
+    if (oneshot > 0) return;
+    oneshot++;
+
+    // lock everyone out of draw while rebuilding
+    UI3DManager.lock();
+
+    // wait for any current draws to finish
+     while (UI3DManager.inDraw.get()) {
+      try {
+        Thread.sleep(5);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+     }
+
+    // rebuild the model
+    modelLabels.rebuild();
+    backings.rebuild();
+    backingsAux.rebuild();
+
+    UI3DManager.unlock();
   }
 
   public UI3DManager(LXStudio lx, LXStudio.UI ui,  TEVirtualOverlays virtualOverlays) {

@@ -266,13 +266,7 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
     mb.restoreModel(this, this.lx.getModel());
 
     // Update 3D ui elements (now with extra thread safety!)
-    UI3DManager.lock();
-
-    UI3DManager.current.modelLabels.rebuild();
-    UI3DManager.current.backings.rebuild();
-    UI3DManager.current.backingsAux.rebuild();
-
-    UI3DManager.unlock();
+    UI3DManager.current.rebuild();
 
     /* TE.log("Model changed. Found " +
     this.edges.size() + " edges, " +

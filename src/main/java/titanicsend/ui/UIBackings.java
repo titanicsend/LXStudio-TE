@@ -106,9 +106,11 @@ public class UIBackings extends UI3dComponent {
 
   @Override
   public void onDraw(UI ui, View view) {
-    if (UI3DManager.current.inRebuild.get() || !this.virtualOverlays.opaqueBackPanelsVisible.isOn()) {
+    if (!this.virtualOverlays.opaqueBackPanelsVisible.isOn() || UI3DManager.isLocked()) {
       return;
     }
+
+    UI3DManager.beginDraw();
 
     // Update the color data
     final ByteBuffer colorData = this.colorBuffer.getVertexData();
@@ -140,6 +142,7 @@ public class UIBackings extends UI3dComponent {
           1, this.colorBuffer.getHandle(), vertexIndex++ * VERTICES_PER_PANEL, VERTICES_PER_PANEL);
       ui.lx.program.vertexFill.submit(view, state, b);
     }
+    UI3DManager.endDraw();
   }
 
   @Override
