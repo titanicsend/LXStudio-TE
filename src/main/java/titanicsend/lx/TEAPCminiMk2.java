@@ -28,12 +28,20 @@ import heronarts.lx.midi.MidiNote;
 import heronarts.lx.midi.MidiNoteOn;
 import heronarts.lx.midi.surface.LXMidiSurface;
 import java.awt.Color;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import titanicsend.color.ColorPaletteManager;
 import titanicsend.util.TE;
 
 public class TEAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirectional {
 
   public static final String DEVICE_NAME = "APC mini mk2 Control";
+
+  public static final boolean EXPORT_GRID_TO_CSV = true;
+
+  public static final float PARTIAL_SATURATION = 0.6f;
 
   // LEDs
   // Single color (perimeter buttons)
@@ -108,6 +116,9 @@ public class TEAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirec
   public static final int PARAMETER_NUM = PARAMETER_COLUMNS * PARAMETER_ROWS;
   public static final int PARAMETER_START = (CLIP_LAUNCH_ROWS - 1) * CLIP_LAUNCH_COLUMNS + CLIP_LAUNCH;
 
+  public static final int COLOR_GRID_ROWS = CLIP_LAUNCH_ROWS;
+  public static final int COLOR_GRID_COLUMNS = CLIP_LAUNCH_COLUMNS;
+
   private boolean shiftOn = false;
 
   private boolean isRegistered = false;
@@ -170,6 +181,7 @@ public class TEAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirec
   }
 
   private void noteReceived(MidiNote note, boolean on) {
+    System.out.println(note);
     final int pitch = note.getPitch();
 
     // Global momentary
@@ -246,35 +258,102 @@ public class TEAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirec
     }
   }
 
+  static boolean exported = false;
+
   public static int[][] generateColorGrid() {
-    int[][] grid = new int[8][8];
+    int[][] grid = new int[COLOR_GRID_ROWS][COLOR_GRID_COLUMNS];
+    float[][] hues = new float[COLOR_GRID_ROWS][COLOR_GRID_COLUMNS];
+    float[][] sats = new float[COLOR_GRID_ROWS][COLOR_GRID_COLUMNS];
+
+    final int steps = 31;
+    float hueStep = 1f / ((float)steps);
+    float hue = 0;
 
     // 0 to 90 degrees in 8 steps, normalized to [0,1]
     for (int i = 0; i < 8; i++) {
-      float hue = i * 11.25f / 360;
-      grid[0][i] = hsvToHex(hue, 1.0f, 1.0f);
-      grid[1][i] = hsvToHex(hue, 0.5f, 1.0f);
+      // float hue = i * 11.25f / 360;
+      grid[0][i] = hsvToHex(hue, 1.0f, 1.0f); // Full saturation
+      grid[1][i] = hsvToHex(hue, PARTIAL_SATURATION, 1.0f); // Half saturation
+      hues[0][i] = hue;
+      hues[1][i] = hue;
+      sats[0][i] = 1.0f;
+      sats[1][i] = PARTIAL_SATURATION;
+      hue += hueStep;
+    }
+    // 90 to 180 degrees in 8 steps, normalized to [0,1]
+    for (int i = 0; i < 8; i++) {
+      // float hue = (90 + i * 11.25f) / 360;
+      grid[2][i] = hsvToHex(hue, 1.0f, 1.0f); // Full saturation
+      grid[3][i] = hsvToHex(hue, PARTIAL_SATURATION, 1.0f); // Half saturation
+      hues[2][i] = hue;
+      hues[3][i] = hue;
+      sats[2][i] = 1.0f;
+      sats[3][i] = PARTIAL_SATURATION;
+      hue += hueStep;
     }
     // 180 to 270 degrees in 8 steps, normalized to [0,1]
     for (int i = 0; i < 8; i++) {
-      float hue = (90 + i * 11.25f) / 360;
-      grid[2][i] = hsvToHex(hue, 1.0f, 1.0f);
-      grid[3][i] = hsvToHex(hue, 0.5f, 1.0f);
+      // float hue = (180 + i * 11.25f) / 360;
+      grid[4][i] = hsvToHex(hue, 1.0f, 1.0f); // Full saturation
+      grid[5][i] = hsvToHex(hue, PARTIAL_SATURATION, 1.0f); // Half saturation
+      hues[4][i] = hue;
+      hues[5][i] = hue;
+      sats[4][i] = 1.0f;
+      sats[5][i] = PARTIAL_SATURATION;
+      hue += hueStep;
     }
-    // 180 to 270 degrees in 8 steps, normalized to [0,1]
-    for (int i = 0; i < 8; i++) {
-      float hue = (180 + i * 11.25f) / 360;
-      grid[4][i] = hsvToHex(hue, 1.0f, 1.0f);
-      grid[5][i] = hsvToHex(hue, 0.5f, 1.0f);
+    // 270 to 360 degrees in 8 steps, normalized to [0,1]
+    for (int i = 0; i < 8 - (32 - steps); i++) {
+      // float hue = (270 + i * 11.25f) / 360;
+      grid[6][i] = hsvToHex(hue, 1.0f, 1.0f); // Full saturation
+      grid[7][i] = hsvToHex(hue, PARTIAL_SATURATION, 1.0f); // Half saturation
+      hues[6][i] = hue;
+      hues[7][i] = hue;
+      sats[6][i] = 1.0f;
+      sats[7][i] = PARTIAL_SATURATION;
+      hue += hueStep;
     }
-    // 180 to 270 degrees in 8 steps, normalized to [0,1]
-    for (int i = 0; i < 8; i++) {
-      float hue = (270 + i * 11.25f) / 360;
-      grid[6][i] = hsvToHex(hue, 1.0f, 1.0f);
-      grid[7][i] = hsvToHex(hue, 0.5f, 1.0f);
+
+    // White
+    grid[6][7] = hsvToHex(0f, 0f, 1f);
+    grid[7][7] = hsvToHex(0f, 0f, 1f);
+    hues[6][7] = 0f;
+    hues[7][7] = 0f;
+    sats[6][7] = 0f;
+    sats[7][7] = 0f;
+
+    if (EXPORT_GRID_TO_CSV && !exported) {
+      exported = true;
+      exportGrid(hues, sats);
     }
 
     return grid;
+  }
+
+  private static void exportGrid(float[][] hue, float[][] sat) {
+    String fileName = "colors_TE_grid.csv";
+
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+      // Rows are currently bottom-up to match color assignment
+      for (int i = hue.length - 1; i >= 0; i--) {
+        for (int j = 0; j < hue[i].length; j++) {
+          String hueString = String.format("%.2f", hue[i][j] * 360f);
+          // Convert sat to percentage string
+          String satString = String.format("%d%%", Math.round(sat[i][j] * 100));
+          String midi = String.format("Midi CH=%d NOTE=%d", MIDI_CHANNEL_SINGLE, i * 8 + j);
+          writer.write(hueString + "       " + satString + "     " + midi);
+          // If it's not the last cell in the row, add a comma separator
+          if (j < hue[i].length - 1) {
+            writer.write(",");
+          }
+        }
+        // Add a new line at the end of each row
+        writer.newLine();
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    LX.log("Exported grid colors to " + fileName);
   }
 
   private void sendIndividualSysEx(int padIndex, int color) {
