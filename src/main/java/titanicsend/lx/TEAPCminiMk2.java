@@ -174,7 +174,6 @@ public class TEAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirec
 
     // Global momentary
     if (pitch == SHIFT) {
-      // Shift doesn't have an LED, odd.
       this.shiftOn = on;
       return;
     }
@@ -186,25 +185,20 @@ public class TEAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirec
         return;
       }
       int color = noteToColor[pitch];
-//      System.out.printf("0x%06X (on=%s)\n", color, on);
       float h = LXColor.h(color);
       float s = LXColor.s(color);
       float b = LXColor.b(color);
-//      System.out.printf("h: %f, s: %f, b: %f\n", h, s, b);
       if (this.paletteManager != null) {
         this.paletteManager.hue.setValue(h);
         this.paletteManager.saturation.setValue(s);
         this.paletteManager.brightness.setValue(b);
       }
       return;
-    }
-
-    // Scene launch buttons
-    if (inRange(pitch, SCENE_LAUNCH, SCENE_LAUNCH_MAX)) {
+    } else if (inRange(pitch, SCENE_LAUNCH, SCENE_LAUNCH_MAX)) {
+      // placeholder for using scene launch buttons
       return;
-    }
-
-    if (inRange(pitch, CHANNEL_BUTTON, CHANNEL_BUTTON_MAX)) {
+    } else if (inRange(pitch, CHANNEL_BUTTON, CHANNEL_BUTTON_MAX)) {
+      // placeholder for using channel buttons
       return;
     }
 
@@ -225,7 +219,7 @@ public class TEAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirec
     for (int row = 0; row < 8; row++) {
       for (int col = 0; col < 8; col++) {
         int idx = (row * 8) + col;
-        sendSysEx(idx, idx, new int[]{0x000000});
+        sendIndividualSysEx(idx, 0x000000);
         try {
           // Need to sleep between each SysEx message (to avoid MIDI overflow?)
           Thread.sleep(10);
@@ -240,11 +234,9 @@ public class TEAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirec
       for (int col = 0; col < grid[0].length; col++) {
         int idx = (row * 8) + col;
         int color = grid[row][col];
-
         noteToColor[idx] = color;
-
-//        System.out.printf("row: %d, col: %d, idx: %d, color: %06X\n", row, col, idx, color);
-        sendSysEx(idx, idx, new int[]{color});
+        sendIndividualSysEx(idx, color);
+        // System.out.printf("row: %d, col: %d, idx: %d, color: %06X\n", row, col, idx, color);
         try {
           Thread.sleep(10);
         } catch (InterruptedException e) {
@@ -257,109 +249,79 @@ public class TEAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirec
   public static int[][] generateColorGrid() {
     int[][] grid = new int[8][8];
 
-    // Generate first 1/4 of the hue wheel (0 to 90 degrees) at full and half saturation
+    // 0 to 90 degrees in 8 steps, normalized to [0,1]
     for (int i = 0; i < 8; i++) {
-      float hue = i * 11.25f / 360; // 0 to 90 degrees in 8 steps, normalized to [0,1]
-      grid[0][i] = hsvToHex(hue, 1.0f, 1.0f); // Full saturation
-      grid[1][i] = hsvToHex(hue, 0.5f, 1.0f); // Half saturation
+      float hue = i * 11.25f / 360;
+      grid[0][i] = hsvToHex(hue, 1.0f, 1.0f);
+      grid[1][i] = hsvToHex(hue, 0.5f, 1.0f);
     }
-
+    // 180 to 270 degrees in 8 steps, normalized to [0,1]
     for (int i = 0; i < 8; i++) {
-      float hue = (90 + i * 11.25f) / 360; // 180 to 270 degrees in 8 steps, normalized to [0,1]
-      grid[2][i] = hsvToHex(hue, 1.0f, 1.0f); // Full saturation
-      grid[3][i] = hsvToHex(hue, 0.5f, 1.0f); // Half saturation
+      float hue = (90 + i * 11.25f) / 360;
+      grid[2][i] = hsvToHex(hue, 1.0f, 1.0f);
+      grid[3][i] = hsvToHex(hue, 0.5f, 1.0f);
     }
-
+    // 180 to 270 degrees in 8 steps, normalized to [0,1]
     for (int i = 0; i < 8; i++) {
-      float hue = (180 + i * 11.25f) / 360; // 180 to 270 degrees in 8 steps, normalized to [0,1]
-      grid[4][i] = hsvToHex(hue, 1.0f, 1.0f); // Full saturation
-      grid[5][i] = hsvToHex(hue, 0.5f, 1.0f); // Half saturation
+      float hue = (180 + i * 11.25f) / 360;
+      grid[4][i] = hsvToHex(hue, 1.0f, 1.0f);
+      grid[5][i] = hsvToHex(hue, 0.5f, 1.0f);
     }
-
+    // 180 to 270 degrees in 8 steps, normalized to [0,1]
     for (int i = 0; i < 8; i++) {
-      float hue = (270 + i * 11.25f) / 360; // 180 to 270 degrees in 8 steps, normalized to [0,1]
-      grid[6][i] = hsvToHex(hue, 1.0f, 1.0f); // Full saturation
-      grid[7][i] = hsvToHex(hue, 0.5f, 1.0f); // Half saturation
+      float hue = (270 + i * 11.25f) / 360;
+      grid[6][i] = hsvToHex(hue, 1.0f, 1.0f);
+      grid[7][i] = hsvToHex(hue, 0.5f, 1.0f);
     }
 
     return grid;
   }
 
-  private void sendSysEx(int startPad, int endPad, int[] colors) {
+  private void sendIndividualSysEx(int padIndex, int color) {
+    sendMultipleSysEx(padIndex, padIndex, new int[]{color});
+  }
+
+  /**
+   * Send a custom RGB value to LEDs on pads.
+   *
+   * See page 9 of APC mini mk2 communications protocol:
+   * - https://cdn.inmusicbrands.com/akai/attachments/APC%20mini%20mk2%20-%20Communication%20Protocol%20-%20v1.0.pdf
+   *
+   * @param startPad start index of pad button (button 0 is bottom-left corner on the pad)
+   * @param endPad   end index of pad button (button 63 is top-right corner on the pad)
+   * @param colors   array of RGB values for each pad button
+   */
+  private void sendMultipleSysEx(int startPad, int endPad, int[] colors) {
     int length = (endPad - startPad) + 1;
     if (colors.length != length) {
       throw new IllegalArgumentException("Invalid number of colors for pads: (endPad - startPad + 1) = " + length + " != " + colors.length);
     }
     int numBytesToFollow = 2 + (length * 6);
-
-    byte numBytesLSB = (byte) (numBytesToFollow % 256);
-    byte numBytesMSB = (byte) (numBytesToFollow / 256);
-//    System.out.printf("numBytesToFollow: %d, numBytesMSB: %d, numBytesLSB: %d\n", numBytesToFollow, numBytesMSB & 0xFF, numBytesLSB & 0xFF);
-//    System.out.printf("numBytesMSB: 0x%02X\n", numBytesMSB);
-//    System.out.printf("numBytesMSB: 0x%02X\n", numBytesLSB);
-
-    byte startPadByte = (byte) startPad;
-    byte endPadByte = (byte) endPad;
-//    System.out.printf("startPadByte: 0x%02X\n", startPadByte);
-//    System.out.printf("endPadByte: 0x%02X\n", endPadByte);
-
-    int b = 0xF7;
-    int msb = (b >> 7) & 0x7F;
-    int lsb = b & 0x7F;
-//    System.out.printf("b: 0x%02X\n", b);
-//    System.out.printf("b: 0x%02X\n", msb);
-//    System.out.printf("b: 0x%02X\n", lsb);
-
     int messageLength = numBytesToFollow + 8;
     byte[] data = new byte[messageLength];
-    data[0] = (byte) 0xF0; // MIDI system exclusive message start
-    data[1] = (byte) 0x47; // manufacturers ID byte
-    data[2] = (byte) 0x7F; // system exclusive device ID
-    data[3] = (byte) 0x4F; // product model ID
-    data[4] = (byte) 0x24; // message type identifier
-    data[5] = numBytesMSB; // number of bytes to follow (most significant)
-    data[6] = numBytesLSB; // number of bytes to follow (least significant)
-    data[7] = startPadByte; // start pad (index of starting pad ID)
-    data[8] = endPadByte; // end pad (index of ending pad ID)
+    data[0] = (byte) 0xF0;                      // MIDI system exclusive message start
+    data[1] = (byte) 0x47;                      // manufacturers ID byte
+    data[2] = (byte) 0x7F;                      // system exclusive device ID
+    data[3] = (byte) 0x4F;                      // product model ID
+    data[4] = (byte) 0x24;                      // message type identifier
+    data[5] = (byte) (numBytesToFollow / 256);  // number of bytes to follow (most significant)
+    data[6] = (byte) (numBytesToFollow % 256);  // number of bytes to follow (least significant)
+    data[7] = (byte) startPad;                  // start pad (index of starting pad ID)
+    data[8] = (byte) endPad;                    // end pad (index of ending pad ID)
     for (int i = 0; i < colors.length; i++) {
       int color = colors[i];
       if (color < 0x000000 || color > 0xFFFFFF) {
         throw new IllegalArgumentException("Invalid color");
       }
-//        System.out.printf("color[%d]: 0x%06X\n", i, color);
-
-      int c0 = (color >> 16) & 0xFF;
-      int c1 = (color >> 8) & 0xFF;
-      int c2 = color & 0xFF;
-
-//        System.out.printf("\tc0: 0x%02X (%d)\n", c0, c0);
-//        System.out.printf("\tc1: 0x%02X (%d)\n", c1, c1);
-//        System.out.printf("\tc2: 0x%02X (%d)\n", c2, c2);
-
-      int c0msb = (c0 >> 7) & 0x7F;
-      int c0lsb = c0 & 0x7F;
-
-//        System.out.printf("\tc0[msb]: 0x%02X\n", c0msb);
-//        System.out.printf("\tc0[lsb]: 0x%02X\n", c0lsb);
-
-      int c1msb = (c1 >> 7) & 0x7F;
-      int c1lsb = c1 & 0x7F;
-
-//        System.out.printf("\tc1[msb]: 0x%02X\n", c1msb);
-//        System.out.printf("\tc1[lsb]: 0x%02X\n", c1lsb);
-
-      int c2msb = (c2 >> 7) & 0x7F;
-      int c2lsb = c2 & 0x7F;
-
-//        System.out.printf("\tc2[msb]: 0x%02X\n", c2msb);
-//        System.out.printf("\tc2[lsb]: 0x%02X\n", c2lsb);
-
-      data[9 + (i * 6)] = (byte) c0msb; // red MSB
-      data[10 + (i * 6)] = (byte) c0lsb; // red LSB
-      data[11 + (i * 6)] = (byte) c1msb; // green MSB
-      data[12 + (i * 6)] = (byte) c1lsb; // green LSB
-      data[13 + (i * 6)] = (byte) c2msb; // blue MSB
-      data[14 + (i * 6)] = (byte) c2lsb; // blue LSB
+      int red = (color >> 16) & 0xFF;
+      int green = (color >> 8) & 0xFF;
+      int blue = color & 0xFF;
+      data[9 + (i * 6)] = (byte) ((red >> 7) & 0x7F);     // red MSB
+      data[10 + (i * 6)] = (byte) (red & 0x7F);           // red LSB
+      data[11 + (i * 6)] = (byte) ((green >> 7) & 0x7F);  // green MSB
+      data[12 + (i * 6)] = (byte) (green & 0x7F);         // green LSB
+      data[13 + (i * 6)] = (byte) ((blue >> 7) & 0x7F);   // blue MSB
+      data[14 + (i * 6)] = (byte) (blue & 0x7F);          // blue LSB
     }
     data[messageLength - 1] = (byte) 0xF7; // MIDI system exclusive message end
 //    System.out.println(prettyPrintByteArray(data));
