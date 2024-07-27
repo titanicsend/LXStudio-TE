@@ -49,7 +49,7 @@ public class UI3DManager  {
      while (UI3DManager.inDraw.get()) {
       try {
         Thread.sleep(10);
-        System.out.print(".");
+        //System.out.print(".");
       } catch (InterruptedException e) {
         ;
       }
