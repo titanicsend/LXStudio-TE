@@ -40,21 +40,18 @@ public class UI3DManager  {
   public static void endDraw() {
     UI3DManager.inDraw.set(false);
   }
-  public int oneshot = 0;
+
   public void rebuild() {
-
-    if (oneshot > 0) return;
-    oneshot++;
-
     // lock everyone out of draw while rebuilding
     UI3DManager.lock();
 
     // wait for any current draws to finish
      while (UI3DManager.inDraw.get()) {
       try {
-        Thread.sleep(5);
+        Thread.sleep(10);
+        System.out.print(".");
       } catch (InterruptedException e) {
-        e.printStackTrace();
+        ;
       }
      }
 
