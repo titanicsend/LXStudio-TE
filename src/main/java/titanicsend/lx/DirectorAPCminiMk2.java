@@ -19,23 +19,29 @@
 
 package titanicsend.lx;
 
+import static java.lang.Thread.sleep;
+
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.midi.LXMidiEngine;
 import heronarts.lx.midi.LXMidiInput;
 import heronarts.lx.midi.LXMidiOutput;
+import heronarts.lx.midi.MidiControlChange;
 import heronarts.lx.midi.MidiNote;
 import heronarts.lx.midi.MidiNoteOn;
+import heronarts.lx.midi.surface.LXMidiParameterControl;
 import heronarts.lx.midi.surface.LXMidiSurface;
+import heronarts.lx.parameter.CompoundParameter;
 import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import titanicsend.app.director.Director;
 import titanicsend.color.ColorPaletteManager;
 import titanicsend.util.TE;
 
-public class TEAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirectional {
+public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirectional {
 
   public static final String DEVICE_NAME = "APC mini mk2 Control";
 
@@ -86,22 +92,10 @@ public class TEAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirec
 
   public static final int MIDI_CHANNEL_MULTI_100_PERCENT = 6;
 
-  public TEAPCminiMk2(LX lx, LXMidiInput input, LXMidiOutput output) {
-    super(lx, input, output);
-  }
-
-  @Override
-  public String getName() {
-    return "TE APCmini mk2";
-  }
-
-  public static final double PARAMETER_INCREMENT_AMOUNT = 0.1;
-
   // CCs
   public static final int CHANNEL_FADER = 48;
   public static final int CHANNEL_FADER_MAX = CHANNEL_FADER + NUM_CHANNELS - 1;
   public static final int MASTER_FADER = 56;
-
 
   public static final int CLIP_LAUNCH = 0;
   public static final int CLIP_LAUNCH_ROWS = 8;
@@ -124,11 +118,38 @@ public class TEAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirec
   private boolean isRegistered = false;
 
   private ColorPaletteManager paletteManager = null;
+  private Director director = null;
+
+  private final LXMidiParameterControl masterFader;
+  private final LXMidiParameterControl[] channelFaders;
+
+  private CompoundParameter master;
+  private CompoundParameter channel0_te;
+  private CompoundParameter channel1_panels;
+  private CompoundParameter channel2_edges;
+  private CompoundParameter channel3_foh;
+  private CompoundParameter channel4_lasers;
+  private CompoundParameter channel5_beacons;
+  private CompoundParameter[] channelParameters;
+
+  public DirectorAPCminiMk2(LX lx, LXMidiInput input, LXMidiOutput output) {
+    super(lx, input, output);
+    this.masterFader = new LXMidiParameterControl(this.lx.engine.mixer.masterBus.fader);
+    this.channelFaders = new LXMidiParameterControl[NUM_CHANNELS];
+    for (int i = 0; i < NUM_CHANNELS; i++) {
+      this.channelFaders[i] = new LXMidiParameterControl();
+    }
+  }
+
+  @Override
+  public String getName() {
+    return DEVICE_NAME + " (Director)";
+  }
 
   /**
    * Populated by generateColorGrid() - used as a lookup in noteReceived()
    */
-  private int[] noteToColor = new int[64];
+  private final int[] noteToColor = new int[64];
 
   @Override
   protected void onEnable(boolean on) {
@@ -152,6 +173,50 @@ public class TEAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirec
     } catch (Exception e) {
       TE.log("Palette manager not found");
     }
+    try {
+      director = Director.get();
+
+      this.master = director.master;
+      this.masterFader.setTarget(this.master);
+
+      this.channel0_te = director.filters.get(0).fader;
+      if (!director.filters.get(0).path.equals("te")) {
+        TE.log("Director error: filter 'te' was expected, but found: " + director.filters.get(0).path);
+      }
+      this.channel1_panels = director.filters.get(1).fader;
+      if (!director.filters.get(1).path.equals("panels")) {
+        TE.log("Director error: filter 'panels' was expected, but found: " + director.filters.get(1).path);
+      }
+      this.channel2_edges = director.filters.get(2).fader;
+      if (!director.filters.get(2).path.equals("edges")) {
+        TE.log("Director error: filter 'edges' was expected, but found: " + director.filters.get(2).path);
+      }
+      this.channel3_foh = director.filters.get(3).fader;
+      if (!director.filters.get(3).path.equals("foh")) {
+        TE.log("Director error: filter 'foh' was expected, but found: " + director.filters.get(3).path);
+      }
+      this.channel4_lasers = director.filters.get(4).fader;
+      if (!director.filters.get(4).path.equals("lasers")) {
+        TE.log("Director error: filter 'lasers' was expected, but found: " + director.filters.get(4).path);
+      }
+      this.channel5_beacons = director.filters.get(5).fader;
+      if (!director.filters.get(5).path.equals("beacons")) {
+        TE.log("Director error: filter 'beacons' was expected, but found: " + director.filters.get(5).path);
+      }
+      channelParameters = new CompoundParameter[]{
+          channel0_te,
+          channel1_panels,
+          channel2_edges,
+          channel3_foh,
+          channel4_lasers,
+          channel5_beacons
+      };
+      for (int i = 0; i < channelParameters.length; i++) {
+        this.channelFaders[i].setTarget(channelParameters[i]);
+      }
+    } catch (Exception e) {
+      TE.log("Director error: " + e.getMessage());
+    }
     this.isRegistered = true;
   }
 
@@ -172,6 +237,10 @@ public class TEAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirec
     if (this.isRegistered) {
       unregister();
     }
+    this.masterFader.dispose();
+    for (LXMidiParameterControl fader : this.channelFaders) {
+      fader.dispose();
+    }
     super.dispose();
   }
 
@@ -181,7 +250,6 @@ public class TEAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirec
   }
 
   private void noteReceived(MidiNote note, boolean on) {
-    System.out.println(note);
     final int pitch = note.getPitch();
 
     // Global momentary
@@ -227,6 +295,24 @@ public class TEAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirec
     noteReceived(note, false);
   }
 
+  @Override
+  public void controlChangeReceived(MidiControlChange cc) {
+    int number = cc.getCC();
+
+    switch (number) {
+      case MASTER_FADER:
+        this.masterFader.setValue(cc);
+    }
+
+    if (number >= CHANNEL_FADER && number <= CHANNEL_FADER_MAX) {
+      int channel = number - CHANNEL_FADER;
+      this.channelFaders[channel].setValue(cc);
+      return;
+    }
+
+    LXMidiEngine.error("APCmini unmapped control change: " + cc);
+  }
+
   private void sendGrid() {
     for (int row = 0; row < 8; row++) {
       for (int col = 0; col < 8; col++) {
@@ -234,7 +320,7 @@ public class TEAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirec
         sendIndividualSysEx(idx, 0x000000);
         try {
           // Need to sleep between each SysEx message (to avoid MIDI overflow?)
-          Thread.sleep(10);
+          sleep(10);
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
@@ -250,7 +336,7 @@ public class TEAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirec
         sendIndividualSysEx(idx, color);
         // System.out.printf("row: %d, col: %d, idx: %d, color: %06X\n", row, col, idx, color);
         try {
-          Thread.sleep(10);
+          sleep(10);
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
@@ -458,225 +544,4 @@ public class TEAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirec
   public static boolean inRange(int val, int min, int max) {
     return (val >= min) && (val <= max);
   }
-
-  /*
-    public final int DEFAULT_MULTI_BEHAVIOR;
-
-    public final int PARAMETER_INCREMENT_BEHAVIOR;
-    public final int PARAMETER_INCREMENT_COLOR;
-    public final int PARAMETER_DECREMENT_BEHAVIOR;
-    public final int PARAMETER_DECREMENT_COLOR;
-    public final int PARAMETER_ISDEFAULT_BEHAVIOR;
-    public final int PARAMETER_ISDEFAULT_COLOR;
-    public final int PARAMETER_RESET_BEHAVIOR;
-    public final int PARAMETER_RESET_COLOR;
-
-    public final int PATTERN_ACTIVE_BEHAVIOR;
-    public final int PATTERN_ACTIVE_COLOR;
-    public final int PATTERN_ENABLED_BEHAVIOR;
-    public final int PATTERN_ENABLED_COLOR;
-    public final int PATTERN_DISABLED_BEHAVIOR;
-    public final int PATTERN_DISABLED_COLOR;
-    public final int PATTERN_DISABLED_FOCUSED_BEHAVIOR;
-    public final int PATTERN_DISABLED_FOCUSED_COLOR;
-    public final int PATTERN_FOCUSED_BEHAVIOR;
-    public final int PATTERN_FOCUSED_COLOR;
-    public final int PATTERN_INACTIVE_BEHAVIOR;
-    public final int PATTERN_INACTIVE_COLOR;
-    public final int PATTERN_TRANSITION_BEHAVIOR;
-    public final int PATTERN_TRANSITION_COLOR;
-
-    public final int CLIP_RECORD_BEHAVIOR;
-    public final int CLIP_RECORD_COLOR;
-    public final int CLIP_ARM_BEHAVIOR;
-    public final int CLIP_ARM_COLOR;
-    public final int CLIP_INACTIVE_BEHAVIOR;
-    public final int CLIP_INACTIVE_COLOR;
-    public final int CLIP_PLAY_BEHAVIOR;
-    public final int CLIP_PLAY_COLOR;
-
-    this.DEFAULT_MULTI_BEHAVIOR = def.getDefaultMultiBehavior();
-
-    this.PARAMETER_INCREMENT_BEHAVIOR = def.getParameterIncrementBehavior();
-    this.PARAMETER_INCREMENT_COLOR = def.getParameterIncrementColor();
-    this.PARAMETER_DECREMENT_BEHAVIOR = def.getParameterDecrementBehavior();
-    this.PARAMETER_DECREMENT_COLOR = def.getParameterDecrementColor();
-    this.PARAMETER_ISDEFAULT_BEHAVIOR = def.getParameterIsDefaultBehavior();
-    this.PARAMETER_ISDEFAULT_COLOR = def.getParameterIsDefaultColor();
-    this.PARAMETER_RESET_BEHAVIOR = def.getParameterResetBehavior();
-    this.PARAMETER_RESET_COLOR = def.getParameterResetColor();
-
-    this.PATTERN_ACTIVE_BEHAVIOR = def.getPatternActiveBehavior();
-    this.PATTERN_ACTIVE_COLOR = def.getPatternActiveColor();
-    this.PATTERN_ENABLED_BEHAVIOR = def.getPatternEnabledBehavior();
-    this.PATTERN_ENABLED_COLOR = def.getPatternEnabledColor();
-    this.PATTERN_DISABLED_BEHAVIOR = def.getPatternDisabledBehavior();
-    this.PATTERN_DISABLED_COLOR = def.getPatternDisabledColor();
-    this.PATTERN_DISABLED_FOCUSED_BEHAVIOR = def.getPatternDisabledFocusedBehavior();
-    this.PATTERN_DISABLED_FOCUSED_COLOR = def.getPatternDisabledFocusedColor();
-    this.PATTERN_FOCUSED_BEHAVIOR = def.getPatternFocusedBehavior();
-    this.PATTERN_FOCUSED_COLOR = def.getPatternFocusedColor();
-    this.PATTERN_INACTIVE_BEHAVIOR = def.getPatternInactiveBehavior();
-    this.PATTERN_INACTIVE_COLOR = def.getPatternInactiveColor();
-    this.PATTERN_TRANSITION_BEHAVIOR = def.getPatternTransitionBehavior();
-    this.PATTERN_TRANSITION_COLOR = def.getPatternTransitionColor();
-
-    this.CLIP_RECORD_BEHAVIOR = def.getClipRecordBehavior();
-    this.CLIP_RECORD_COLOR = def.getClipRecordColor();
-    this.CLIP_ARM_BEHAVIOR = def.getClipArmBehavior();
-    this.CLIP_ARM_COLOR = def.getClipArmColor();
-    this.CLIP_INACTIVE_BEHAVIOR = def.getClipInactiveBehavior();
-    this.CLIP_INACTIVE_COLOR = def.getClipInactiveColor();
-    this.CLIP_PLAY_BEHAVIOR = def.getClipPlayBehavior();
-    this.CLIP_PLAY_COLOR = def.getClipPlayColor();
-  */
-
-  /*
-  public final int SHIFT;
-
-  public final int CLIP_STOP;
-  public final int SOLO;
-  public final int MUTE;
-  public final int REC_ARM;
-  public final int SELECT;
-  public final int DRUM_MODE;
-  public final int NOTE_MODE;
-  public final int STOP_ALL_CLIPS;
-
-  public final int FADER_CTRL_VOLUME;
-  public final int FADER_CTRL_PAN;
-  public final int FADER_CTRL_SEND;
-  public final int FADER_CTRL_DEVICE;
-  public final int SELECT_UP;
-  public final int SELECT_DOWN;
-  public final int SELECT_LEFT;
-  public final int SELECT_RIGHT;
-
-  public final int CHANNEL_BUTTON;
-  public final int CHANNEL_BUTTON_MAX;
-
-  // The FADER CTRL buttons are used with shift to set the grid mode
-  public final int GRID_MODE_PATTERNS;
-  public final int GRID_MODE_CLIPS;
-  public final int GRID_MODE_PARAMETERS;
-
-  public static final int SCENE_LAUNCH_NUM = 8;
-  public final int SCENE_LAUNCH;
-  public final int SCENE_LAUNCH_MAX;
-
-  // The SOFT KEYS buttons are used with shift to set the channel mode
-  public final int CHANNEL_BUTTON_MODE_FOCUS;
-  public final int CHANNEL_BUTTON_MODE_ENABLED;
-  public final int CHANNEL_BUTTON_MODE_CUE;
-  public final int CHANNEL_BUTTON_MODE_ARM;
-  public final int CHANNEL_BUTTON_MODE_CLIP_STOP;
-  */
-
-  /*
-  this.SHIFT = def.getShift();
-
-  this.CLIP_STOP = def.getClipStop();
-  this.SOLO = def.getSolo();
-  this.MUTE = def.getMute();
-  this.REC_ARM = def.getRecArm();
-  this.SELECT = def.getSelect();
-  this.DRUM_MODE = def.getDrumMode();
-  this.NOTE_MODE = def.getNoteMode();
-  this.STOP_ALL_CLIPS = def.getStopAllClips();
-
-  this.CHANNEL_BUTTON_MODE_FOCUS = SELECT;
-  this.CHANNEL_BUTTON_MODE_ENABLED = MUTE;
-  this.CHANNEL_BUTTON_MODE_CUE = SOLO;
-  this.CHANNEL_BUTTON_MODE_ARM = REC_ARM;
-  this.CHANNEL_BUTTON_MODE_CLIP_STOP = CLIP_STOP;
-
-  this.SCENE_LAUNCH = CLIP_STOP;
-  this.SCENE_LAUNCH_MAX = SCENE_LAUNCH + SCENE_LAUNCH_NUM - 1;
-
-  this.FADER_CTRL_VOLUME = def.getFaderCtrlVolume();
-  this.FADER_CTRL_PAN = def.getFaderCtrlPan();
-  this.FADER_CTRL_SEND = def.getFaderCtrlSend();
-  this.FADER_CTRL_DEVICE = def.getFaderCtrlDevice();
-  this.SELECT_UP = def.getSelectUp();
-  this.SELECT_DOWN = def.getSelectDown();
-  this.SELECT_LEFT = def.getSelectLeft();
-  this.SELECT_RIGHT = def.getSelectRight();
-
-  this.GRID_MODE_PATTERNS = FADER_CTRL_VOLUME;
-  this.GRID_MODE_CLIPS = FADER_CTRL_PAN;
-  this.GRID_MODE_PARAMETERS = FADER_CTRL_DEVICE;
-
-  this.CHANNEL_BUTTON = def.getChannelButton();
-  this.CHANNEL_BUTTON_MAX = CHANNEL_BUTTON + NUM_CHANNELS - 1;
-
-  public boolean isSelect(int pitch) {
-      return
-          (pitch == SELECT_UP) ||
-              (pitch == SELECT_DOWN) ||
-              (pitch == SELECT_LEFT) ||
-              (pitch == SELECT_RIGHT);
-    }
-  */
-
-  //
-//  // Multi color buttons
-//  // TODO: There are 127 possible colors in APCminiMk2Colors...
-//  public static final int LED_COLOR_OFF = 0;
-//  public static final int LED_GRAY_50 = 1;
-//  public static final int LED_GRAY_75 = 2;
-//  public static final int LED_WHITE = 3;
-//  public static final int LED_RED = 5;
-//  public static final int LED_YELLOW = 12;
-//  public static final int LED_GREEN = 21;
-//  public static final int LED_BLUE = 67;
-//
-//  // Brightness and Behavior are set by MIDI Channel
-//  // Multi color (grid buttons)
-//  public static final int MIDI_CHANNEL_MULTI_10_PERCENT = 0;
-//  public static final int MIDI_CHANNEL_MULTI_25_PERCENT = 1;
-//  public static final int MIDI_CHANNEL_MULTI_50_PERCENT = 2;
-//  public static final int MIDI_CHANNEL_MULTI_65_PERCENT = 3;
-//  public static final int MIDI_CHANNEL_MULTI_75_PERCENT = 4;
-//  public static final int MIDI_CHANNEL_MULTI_90_PERCENT = 5;
-//  public static final int MIDI_CHANNEL_MULTI_PULSE_SIXTEENTH = 7;
-//  public static final int MIDI_CHANNEL_MULTI_PULSE_EIGTH = 8;
-//  public static final int MIDI_CHANNEL_MULTI_PULSE_QUARTER = 9;
-//  public static final int MIDI_CHANNEL_MULTI_PULSE_HALF = 10;
-//  public static final int MIDI_CHANNEL_MULTI_BLINK_TWENTYFOURTH = 11;
-//  public static final int MIDI_CHANNEL_MULTI_BLINK_SIXTEENTH = 12;
-//  public static final int MIDI_CHANNEL_MULTI_BLINK_EIGTH = 13;
-//  public static final int MIDI_CHANNEL_MULTI_BLINK_QUARTER = 14;
-//  public static final int MIDI_CHANNEL_MULTI_BLINK_HALF = 15;
-//
-//  // Configurable color options
-//  public static final int LED_PATTERN_ACTIVE_BEHAVIOR = MIDI_CHANNEL_MULTI_100_PERCENT;
-//  public static final int LED_PATTERN_ACTIVE_COLOR = LED_RED;
-//  public static final int LED_PATTERN_ENABLED_BEHAVIOR = MIDI_CHANNEL_MULTI_100_PERCENT;
-//  public static final int LED_PATTERN_ENABLED_COLOR = LED_GREEN;
-//  public static final int LED_PATTERN_DISABLED_BEHAVIOR = MIDI_CHANNEL_MULTI_50_PERCENT;
-//  public static final int LED_PATTERN_DISABLED_COLOR = LED_WHITE;
-//  public static final int LED_PATTERN_TRANSITION_BEHAVIOR = MIDI_CHANNEL_MULTI_PULSE_SIXTEENTH;
-//  public static final int LED_PATTERN_TRANSITION_COLOR = LED_RED;
-//  public static final int LED_PATTERN_FOCUSED_BEHAVIOR = MIDI_CHANNEL_MULTI_100_PERCENT;
-//  public static final int LED_PATTERN_FOCUSED_COLOR = LED_YELLOW;
-//  public static final int LED_PATTERN_INACTIVE_BEHAVIOR = MIDI_CHANNEL_MULTI_50_PERCENT;
-//  public static final int LED_PATTERN_INACTIVE_COLOR = LED_WHITE;
-//
-//  public static final int LED_CLIP_INACTIVE_BEHAVIOR = MIDI_CHANNEL_MULTI_100_PERCENT;
-//  public static final int LED_CLIP_INACTIVE_COLOR = LED_GRAY_50;
-//  public static final int LED_CLIP_PLAY_BEHAVIOR = MIDI_CHANNEL_MULTI_100_PERCENT;
-//  public static final int LED_CLIP_PLAY_COLOR = LED_GREEN;
-//  public static final int LED_CLIP_ARM_BEHAVIOR = MIDI_CHANNEL_MULTI_100_PERCENT;
-//  public static final int LED_CLIP_ARM_COLOR = LED_RED;
-//  public static final int LED_CLIP_RECORD_BEHAVIOR = MIDI_CHANNEL_MULTI_BLINK_EIGTH;
-//  public static final int LED_CLIP_RECORD_COLOR = LED_RED;
-//
-//  public static final int LED_PARAMETER_INCREMENT_BEHAVIOR = MIDI_CHANNEL_MULTI_100_PERCENT;
-//  public static final int LED_PARAMETER_INCREMENT_COLOR = LED_GREEN;
-//  public static final int LED_PARAMETER_DECREMENT_BEHAVIOR = MIDI_CHANNEL_MULTI_100_PERCENT;
-//  public static final int LED_PARAMETER_DECREMENT_COLOR = LED_YELLOW;
-//  public static final int LED_PARAMETER_RESET_BEHAVIOR = MIDI_CHANNEL_MULTI_100_PERCENT;
-//  public static final int LED_PARAMETER_RESET_COLOR = LED_RED;
-//  public static final int LED_PARAMETER_ISDEFAULT_BEHAVIOR = MIDI_CHANNEL_MULTI_100_PERCENT;
-//  public static final int LED_PARAMETER_ISDEFAULT_COLOR = LED_OFF;
 }
