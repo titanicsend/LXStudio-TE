@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 // update them easily when the model changes
 public class UI3DManager  {
   public static UI3DManager current;
-  public static final AtomicBoolean inRebuild = new AtomicBoolean(false);
+  public static final AtomicBoolean inRebuild = new AtomicBoolean(true);
   public static final AtomicBoolean inDraw = new AtomicBoolean(false);
 
   public final UIModelLabels modelLabels;
