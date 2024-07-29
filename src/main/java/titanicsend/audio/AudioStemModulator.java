@@ -103,11 +103,6 @@ public class AudioStemModulator extends LXModulator implements LXOscComponent, L
     .setY(10)
     .setWidth(60)
     .addToContainer(uiModulator, Position.LEFT);
-    newDropMenu(this.stem)
-    .setLeftMargin(10)
-    .setY(10)
-    .setWidth(60)
-    .addToContainer(uiModulator, Position.LEFT);
     UIMeter.newVerticalMeter(ui, this, 12, UIKnob.HEIGHT)
     .addToContainer(uiModulator, Position.RIGHT);
   }
