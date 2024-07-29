@@ -260,13 +260,16 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
     this.mutableChildren.addAll(this.panelModels.keySet());
     this.children = this.mutableChildren.toArray(new LXModel[0]);
 
-    // adjust model geometry for easy texture mapping in views
+    // adjust model geometry to improve texture mapping of ends in all views.
     ModelBender mb = new ModelBender();
     mb.adjustEndGeometry(this, this.lx.getModel());
-    mb.restoreModel(this, this.lx.getModel());
 
-    // Update 3D ui elements (now with extra thread safety!)
-    UI3DManager.current.rebuild();
+    // method in heronarts.lx.structure.view.LXViewEngine:
+    // iterate over the views and rebuild them (with the "adjusted" model)
+    lx.structure.views.modelGenerationChanged(lx, this.lx.getModel());
+
+    // restore the model to its original state
+    mb.restoreModel(this, this.lx.getModel());
 
     /* TE.log("Model changed. Found " +
     this.edges.size() + " edges, " +
@@ -278,6 +281,9 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
     for (TEListener listener : this.listeners) {
       listener.modelTEChanged(this);
     }
+
+    // Update 3D ui elements (now with extra thread safety!)
+    UI3DManager.current.rebuild();
 
     // Run the garbage collector to prevent buildup of old-generation objects?
   }
