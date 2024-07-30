@@ -1,21 +1,27 @@
 package titanicsend.audio;
 
+import heronarts.glx.ui.UI2dContainer;
 import heronarts.glx.ui.UI2dContainer.Position;
 import heronarts.glx.ui.component.UIKnob;
 import heronarts.glx.ui.component.UIMeter;
 import heronarts.lx.LXCategory;
 import heronarts.lx.modulator.LXModulator;
+import heronarts.lx.modulator.Smoother;
 import heronarts.lx.osc.LXOscComponent;
+import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.modulation.UIModulator;
 import heronarts.lx.studio.ui.modulation.UIModulatorControls;
+import heronarts.lx.utils.LXUtils;
 
 @LXModulator.Global("Audio Stem")
 @LXModulator.Device("Audio Stem")
 @LXCategory(LXCategory.AUDIO)
 public class AudioStemModulator extends LXModulator implements LXOscComponent, LXNormalizedParameter, UIModulatorControls<AudioStemModulator> {
+
+  public static final double MAX_SMOOTHING_MS = 1000;
 
   public static enum Stem {
     BASS("Bass") {
@@ -57,19 +63,37 @@ public class AudioStemModulator extends LXModulator implements LXOscComponent, L
   public final EnumParameter<Stem> stem = new EnumParameter<Stem>("Stem", Stem.BASS)
     .setDescription("Which audio stem is the source for this modulator");
 
+  public final CompoundParameter smooth = new CompoundParameter("Smooth", 0, 0, MAX_SMOOTHING_MS)
+    .setDescription("Amount of smoothing time applied to the input, in milliseconds")
+    .setExponent(2)
+    .setUnits(Units.MILLISECONDS);
+
   public AudioStemModulator() {
     this("Audio Stem");
-
-    addParameter("stem", this.stem);
   }
 
   public AudioStemModulator(String label) {
     super(label);
+
+    addParameter("stem", this.stem);
+    addParameter("smooth", this.smooth);
   }
 
   @Override
   protected double computeValue(double deltaMs) {
-    return this.stem.getEnum().getValue();
+    final double input = this.stem.getEnum().getValue();
+    final double smooth = this.smooth.getValue();
+
+    if (smooth == 0) {
+      return input;
+    } else {
+      // This math is from the LX Smoother modulator:
+      // https://github.com/heronarts/LX/blob/master/src/main/java/heronarts/lx/modulator/Smoother.java
+      return LXUtils.lerp(
+        getValue(),
+        input,
+        LXUtils.min(1, deltaMs / smooth));
+    }
   }
 
   /*
@@ -98,11 +122,15 @@ public class AudioStemModulator extends LXModulator implements LXOscComponent, L
       LXStudio.UI ui, UIModulator uiModulator, AudioStemModulator modulator) {
     uiModulator.setContentHeight(UIKnob.HEIGHT + 4);
     uiModulator.setChildSpacing(2);
-    newDropMenu(this.stem)
+    UI2dContainer.newHorizontalContainer(UIKnob.HEIGHT + 4, 4,
+      newDropMenu(this.stem)
+      .setY(10)
+      .setWidth(60),
+      this.newKnob(this.smooth)
+    )
     .setLeftMargin(10)
-    .setY(10)
-    .setWidth(60)
     .addToContainer(uiModulator, Position.LEFT);
+
     UIMeter.newVerticalMeter(ui, this, 12, UIKnob.HEIGHT)
     .addToContainer(uiModulator, Position.RIGHT);
   }
