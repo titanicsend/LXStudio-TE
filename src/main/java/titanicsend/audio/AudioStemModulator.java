@@ -6,15 +6,15 @@ import heronarts.glx.ui.component.UIKnob;
 import heronarts.glx.ui.component.UIMeter;
 import heronarts.lx.LXCategory;
 import heronarts.lx.modulator.LXModulator;
-import heronarts.lx.modulator.Smoother;
 import heronarts.lx.osc.LXOscComponent;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
+import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.modulation.UIModulator;
 import heronarts.lx.studio.ui.modulation.UIModulatorControls;
-import heronarts.lx.utils.LXUtils;
+import titanicsend.util.EMA;
 
 @LXModulator.Global("Audio Stem")
 @LXModulator.Device("Audio Stem")
@@ -63,10 +63,12 @@ public class AudioStemModulator extends LXModulator implements LXOscComponent, L
   public final EnumParameter<Stem> stem = new EnumParameter<Stem>("Stem", Stem.BASS)
     .setDescription("Which audio stem is the source for this modulator");
 
-  public final CompoundParameter smooth = new CompoundParameter("Smooth", 0, 0, MAX_SMOOTHING_MS)
-    .setDescription("Amount of smoothing time applied to the input, in milliseconds")
+  public final CompoundParameter emaMs = new CompoundParameter("EMA", 0, 0, MAX_SMOOTHING_MS)
+    .setDescription("Length of EMA smoothing time applied to the input, in milliseconds")
     .setExponent(2)
     .setUnits(Units.MILLISECONDS);
+
+  private final EMA ema = new EMA(0);
 
   public AudioStemModulator() {
     this("Audio Stem");
@@ -76,24 +78,25 @@ public class AudioStemModulator extends LXModulator implements LXOscComponent, L
     super(label);
 
     addParameter("stem", this.stem);
-    addParameter("smooth", this.smooth);
+    addParameter("emaMs", this.emaMs);
+  }
+
+  @Override
+  public void onParameterChanged(LXParameter p) {
+    if (p == this.emaMs) {
+      updatePeriod();
+    }
+  }
+
+  private void updatePeriod() {
+    double emaMs = this.emaMs.getValue();
+    this.ema.setPeriod(emaMs);
   }
 
   @Override
   protected double computeValue(double deltaMs) {
-    final double input = this.stem.getEnum().getValue();
-    final double smooth = this.smooth.getValue();
-
-    if (smooth == 0) {
-      return input;
-    } else {
-      // This math is from the LX Smoother modulator:
-      // https://github.com/heronarts/LX/blob/master/src/main/java/heronarts/lx/modulator/Smoother.java
-      return LXUtils.lerp(
-        getValue(),
-        input,
-        LXUtils.min(1, deltaMs / smooth));
-    }
+    double input = this.stem.getEnum().getValue();
+    return this.ema.update(input, deltaMs);
   }
 
   /*
@@ -126,7 +129,7 @@ public class AudioStemModulator extends LXModulator implements LXOscComponent, L
       newDropMenu(this.stem)
       .setY(10)
       .setWidth(60),
-      this.newKnob(this.smooth)
+      this.newKnob(this.emaMs)
     )
     .setLeftMargin(10)
     .addToContainer(uiModulator, Position.LEFT);
