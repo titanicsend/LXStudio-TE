@@ -46,5 +46,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         float power = pow(2.0, float(i));
         color += (1.5 / power) * snoise(coord + vec3(0.,-iTime*.05, -iTime*.01), power*16.);
     }
-    fragColor = vec4( color, pow(max(color,0.),2.)*0.4, pow(max(color,0.),3.)*0.15 , 1.0);
+    color = clamp(color, 0., 1.);
+    fragColor = vec4(iColorRGB, color * color);
 }
