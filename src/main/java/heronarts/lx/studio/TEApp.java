@@ -38,6 +38,7 @@ import titanicsend.app.dev.UIDevSwitch;
 import titanicsend.app.director.Director;
 import titanicsend.app.director.DirectorEffect;
 import titanicsend.app.director.UIDirector;
+import titanicsend.audio.AudioStemModulator;
 import titanicsend.audio.AudioStems;
 import titanicsend.audio.UIAudioStems;
 import titanicsend.color.ColorPaletteManager;
@@ -355,6 +356,7 @@ public class TEApp extends LXStudio {
           MidiNames.BOMEBOX_MIDIFIGHTERTWISTER4, MidiFighterTwister.class);
 
       // Custom modulators
+      lx.registry.addModulator(AudioStemModulator.class);
       lx.registry.addModulator(Dmx16bitModulator.class);
       lx.registry.addModulator(DmxGridModulator.class);
       lx.registry.addModulator(DmxColorModulator.class);

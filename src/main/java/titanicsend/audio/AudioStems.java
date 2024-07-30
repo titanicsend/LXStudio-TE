@@ -17,7 +17,11 @@ public class AudioStems extends LXComponent implements LXOscListener {
   public static final String PATH_VOCALS = "vocals";
   public static final String PATH_OTHER = "other";
 
-  public static AudioStems current;
+  private static AudioStems current;
+
+  public static AudioStems get() {
+    return current;
+  }
 
   public final CompoundParameter gain =
     new CompoundParameter("Gain", 0, -1, 2)
