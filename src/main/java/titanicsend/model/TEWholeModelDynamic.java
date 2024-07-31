@@ -262,14 +262,20 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
 
     // adjust model geometry to improve texture mapping of ends in all views.
     ModelBender mb = new ModelBender();
-    mb.adjustEndGeometry(this, this.lx.getModel());
-
-    // method in heronarts.lx.structure.view.LXViewEngine:
-    // iterate over the views and rebuild them (with the "adjusted" model)
-    lx.structure.views.modelGenerationChanged(lx, this.lx.getModel());
+    boolean rebuildViews = mb.adjustEndGeometry(this, lx.getModel());
+    
+    // if the TE main car is part of this model, iterate over the views
+    // and rebuild them (with the "adjusted" end geometry)
+    // To do this, we call a method in heronarts.lx.structure.view.LXViewEngine
+    //
+    // NOTE that this method, though public, is mainly used internally by Chromatik,
+    // and its behavior might change without warning in a future version.
+    if (rebuildViews) {
+      lx.structure.views.modelGenerationChanged(lx, lx.getModel());
+    }
 
     // restore the model to its original state
-    mb.restoreModel(this, this.lx.getModel());
+    mb.restoreModel(this, lx.getModel());
 
     /* TE.log("Model changed. Found " +
     this.edges.size() + " edges, " +
