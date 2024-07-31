@@ -4,8 +4,8 @@
   tags: [ "SBB", "panel", "Panel", "m11" ],
 
   parameters: {
-    "xOffset": { default: 15.387300247507135, type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
-    "yOffset": { default: 6.0, type: float, description: "Adjust Y position within the plane of the panel. Use to fine-tune position after installation" },
+    "xOffset": { default: 15.387300247507135, type: "float", description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
+    "yOffset": { default: 6.0, type: "float", description: "Adjust Y position within the plane of the panel. Use to fine-tune position after installation" },
   
     /* Modify HOST and CONTROLLER OUTPUT default values HERE to assign one of this panel's strands to a
        new controller output. Then click [Reload Fixture File] at the bottom of the Inspector section in Chromatik.
@@ -16,7 +16,7 @@
 
     "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
     
-    # Debug tools
+    /* Debug tools */
     "onCar": { default: true, type: "boolean", label: "On Car", description: "True = Locate panel to its position on the car, False = Locate to origin" }
   },
   
