@@ -487,6 +487,8 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
           || lmi.getName().equals(MidiNames.BOMEBOX_APC40MK2)
           || lmi.getName().equals(MidiNames.APCMINIMK2)
           || lmi.getName().equals(MidiNames.BOMEBOX_APCMINIMK2)
+          || lmi.getName().equals(MidiNames.APCMINIMK2_DIRECTOR)
+          || lmi.getName().equals(MidiNames.BOMEBOX_APCMINIMK2_DIRECTOR)
       ) {
         // APC40mk2
         lmi.controlEnabled.setValue(enabled);

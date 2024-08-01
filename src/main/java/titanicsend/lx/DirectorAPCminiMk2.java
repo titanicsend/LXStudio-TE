@@ -43,7 +43,7 @@ import titanicsend.util.TE;
 
 public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirectional {
 
-  public static final String DEVICE_NAME = "APC mini mk2 Control";
+  public static final String DEVICE_NAME = "APC mini mk2 (Director) Control";
 
   public static final boolean EXPORT_GRID_TO_CSV = true;
 
@@ -139,11 +139,6 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
     for (int i = 0; i < NUM_CHANNELS; i++) {
       this.channelFaders[i] = new LXMidiParameterControl();
     }
-  }
-
-  @Override
-  public String getName() {
-    return DEVICE_NAME + " (Director)";
   }
 
   /**
