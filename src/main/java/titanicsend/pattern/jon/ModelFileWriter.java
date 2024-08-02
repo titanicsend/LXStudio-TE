@@ -49,6 +49,7 @@ public class ModelFileWriter extends TEPerformancePattern {
     }
 
     try {
+      ensureModelDirectoryExists();
 
       // Write all points
       // This is the main model and is required to be written out.
@@ -62,6 +63,18 @@ public class ModelFileWriter extends TEPerformancePattern {
 
     // Regardless of the success or failure of the model writing, consider this pattern's work done.
     doneWriting = true;
+  }
+
+  private void ensureModelDirectoryExists() throws IOException {
+    Path modelDirectory = Path.of("resources/model"); // Construct the path
+
+    // Check if the directory exists, and create it if not
+    if (!Files.exists(modelDirectory)) {
+      Files.createDirectories(modelDirectory);
+      TE.log("Model directory created: " + modelDirectory);
+    } else {
+      TE.log("Model directory already exists: " + modelDirectory);
+    }
   }
 
   private void writeOptionalModels() throws IOException {
@@ -78,6 +91,21 @@ public class ModelFileWriter extends TEPerformancePattern {
       edge_points_list.addAll(Arrays.asList(edge.points));
     }
     writeModel(edge_points_list, "edges");
+  }
+
+  /**
+   * Writes 3D model data, PNG mask, and UV coordinates from a list of LXPoint.
+   *
+   * @param points The List of LXPoint to export.
+   * @param modelName The base name for the output files.
+   * @throws IOException If an error occurs during file writing.
+   */
+  public void writeModel(List<LXPoint> points, String modelName) throws IOException {
+    // Convert List<LXPoint> to LXPoint[]
+    LXPoint[] pointsArray = points.toArray(new LXPoint[0]);
+
+    // Call the original writeModel method
+    writeModel(pointsArray, modelName);
   }
 
   /**
@@ -148,20 +176,5 @@ public class ModelFileWriter extends TEPerformancePattern {
 
     ImageIO.write(image, "png", pathMask.toFile());
     Files.write(pathUv, uvPoints, CREATE, TRUNCATE_EXISTING);
-  }
-
-  /**
-   * Writes 3D model data, PNG mask, and UV coordinates from a list of LXPoint.
-   *
-   * @param points The List of LXPoint to export.
-   * @param modelName The base name for the output files.
-   * @throws IOException If an error occurs during file writing.
-   */
-  public void writeModel(List<LXPoint> points, String modelName) throws IOException {
-    // Convert List<LXPoint> to LXPoint[]
-    LXPoint[] pointsArray = points.toArray(new LXPoint[0]);
-
-    // Call the original writeModel method
-    writeModel(pointsArray, modelName);
   }
 }

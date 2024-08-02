@@ -48,11 +48,11 @@ public class TdNdiPattern extends TEPerformancePattern {
 
   public TdNdiPattern(LX lx, TEShaderView view) {
     super(lx, view);
-    ndiEngine = NDIEngine.get();
+    this.ndiEngine = NDIEngine.get();
 
     // Create frame objects to handle incoming video stream
     // (note that we are omitting audio and metadata frames for now)
-    videoFrame = new DevolayVideoFrame();
+    this.videoFrame = new DevolayVideoFrame();
 
     // default common controls settings.  Note that these aren't committed
     // until the pattern calls addCommonControls(), so patterns can
@@ -76,8 +76,8 @@ public class TdNdiPattern extends TEPerformancePattern {
   }
 
   protected void changeChannel() {
-    if (receiver != null) {
-      lastConnectState = ndiEngine.connectByName(channel_name, receiver);
+    if (this.receiver != null) {
+      this.lastConnectState = this.ndiEngine.connectByName(this.channel_name, this.receiver);
     }
   }
 
@@ -88,32 +88,36 @@ public class TdNdiPattern extends TEPerformancePattern {
     // without manual intervention if the source isn't
     // available at startup.  Once the source becomes available,
     // the connection will be automatically established.
-    if (!lastConnectState) {
-      if (System.currentTimeMillis() - connectTimer > 1000) {
-        connectTimer = System.currentTimeMillis();
-        lastConnectState = ndiEngine.connectByName(channel_name, receiver);
+    if (!this.lastConnectState) {
+      if (System.currentTimeMillis() - this.connectTimer > 1000) {
+        this.connectTimer = System.currentTimeMillis();
+        this.lastConnectState = this.ndiEngine.connectByName(this.channel_name, this.receiver);
       }
     }
 
-    if (DevolayFrameType.VIDEO == receiver.receiveCapture(videoFrame, null, null, 0)) {
+    if (DevolayFrameType.VIDEO == this.receiver.receiveCapture(this.videoFrame, null, null, 0)) {
       // get pixel data from video frame
-      frameData = videoFrame.getData();
-      frameData.rewind();
-      frameData.order(ByteOrder.LITTLE_ENDIAN);
+      this.frameData = this.videoFrame.getData();
+      this.frameData.rewind();
+      this.frameData.order(ByteOrder.LITTLE_ENDIAN);
 
       for (LXPoint p : lx.getModel().points) {
         int i = p.index * 4;
-        colors[p.index] = LXColor.rgb(frameData.get(i + 2), frameData.get(i + 1), frameData.get(i));
+        colors[p.index] =
+            LXColor.rgb(
+                this.frameData.get(i + 2), this.frameData.get(i + 1), this.frameData.get(i));
       }
-    } else if (frameData != null) {
+    } else if (this.frameData != null) {
       // If no data was received since last frame, just show the last frame again on the car
       // to avoid flickers. This can cause a frozen frame being shown on the car instead of
       // a complete off screen when NDI is not being transferred on a good network.
-      frameData.rewind();
-      frameData.order(ByteOrder.LITTLE_ENDIAN);
+      this.frameData.rewind();
+      this.frameData.order(ByteOrder.LITTLE_ENDIAN);
       for (LXPoint p : lx.getModel().points) {
         int i = p.index * 4;
-        colors[p.index] = LXColor.rgb(frameData.get(i + 2), frameData.get(i + 1), frameData.get(i));
+        colors[p.index] =
+            LXColor.rgb(
+                this.frameData.get(i + 2), this.frameData.get(i + 1), this.frameData.get(i));
       }
     }
   }
@@ -123,18 +127,18 @@ public class TdNdiPattern extends TEPerformancePattern {
     super.onActive();
     // if no receiver yet, create one, then connect it to
     // its saved source if possible.
-    if (receiver == null) {
-      receiver =
+    if (this.receiver == null) {
+      this.receiver =
           new DevolayReceiver(
               DevolayReceiver.ColorFormat.BGRX_BGRA, RECEIVE_BANDWIDTH_HIGHEST, true, "TE");
     }
-    lastConnectState = ndiEngine.connectByName(channel_name, receiver);
+    this.lastConnectState = this.ndiEngine.connectByName(this.channel_name, this.receiver);
   }
 
   @Override
   public void onInactive() {
     // disconnect receiver from all sources
-    receiver.connect(null);
+    this.receiver.connect(null);
     super.onInactive();
   }
 
@@ -142,11 +146,11 @@ public class TdNdiPattern extends TEPerformancePattern {
   public void dispose() {
     // shut down receiver and free everything
     // we allocated.
-    if (videoFrame != null) {
-      videoFrame.close();
+    if (this.videoFrame != null) {
+      this.videoFrame.close();
     }
-    if (receiver != null) {
-      receiver.connect(null);
+    if (this.receiver != null) {
+      this.receiver.connect(null);
     }
 
     super.dispose();
