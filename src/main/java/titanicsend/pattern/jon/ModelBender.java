@@ -8,7 +8,7 @@ import heronarts.lx.studio.TEApp;
 import titanicsend.model.*;
 
 public class ModelBender {
-  private final String[] endEdgeIds = {
+  private static final String[] endEdgeIds = {
     // aft
     "110-111",
     "109-110",
@@ -43,8 +43,8 @@ public class ModelBender {
   // object so that if someone reorders the points in the model, we can
   // still restore it correctly.
   protected class SavedPoint {
-    private LXPoint p;
-    private float v;
+    private final LXPoint p;
+    private final float v;
 
     public SavedPoint(LXPoint p, float v) {
       this.p = p;
@@ -163,16 +163,17 @@ public class ModelBender {
     // adjust the z coordinates of the end points to taper them
     // with decreasing x. This gives the model a slightly pointy
     // nose and makes texture mapping easier and better looking.
+    this.savedModelCoord.clear();
 
     for (LXPoint p : endPoints) {
       // save the original coordinate for each point we're modifying
       // so we can restore it later
-      savedModelCoord.add(new SavedPoint(p, p.z));
+      this.savedModelCoord.add(new SavedPoint(p, p.z));
 
       // kick out gap points or they'll break normalization.
       if (model.isGapPoint(p)) continue;
 
-      double zOffset = endDepthMax - Math.abs(p.x);
+      float zOffset = endDepthMax - Math.abs(p.x);
       p.z += (p.z >= 0) ? zOffset : -zOffset;
     }
     model.normalizePoints();
@@ -187,7 +188,7 @@ public class ModelBender {
     model.zRange = model.zMax - model.zMin;
 
     // restore the original z coordinates
-    for (SavedPoint sp : savedModelCoord) {
+    for (SavedPoint sp : this.savedModelCoord) {
       sp.restore();
     }
   }
@@ -205,6 +206,8 @@ public class ModelBender {
     // get the list of points we need to adjust and find the
     // car dimensions needed to build the taper.
     ArrayList<LXPoint> endPoints = getEndPoints(model);
+
+    this.savedModelCoord.clear();
 
     // if the model doesn't include the main car, nothing more to do.
     if (endPoints.size() == 0) {
@@ -228,7 +231,7 @@ public class ModelBender {
     for (LXPoint p : endPoints) {
       // save the original coordinate for each point we're modifying
       // so we can restore it later
-      savedModelCoord.add(new SavedPoint(p, p.x));
+      this.savedModelCoord.add(new SavedPoint(p, p.x));
 
       // kick out gap points or they'll break normalization.
       if (model.isGapPoint(p)) continue;
@@ -244,7 +247,7 @@ public class ModelBender {
   // Dynamic model version
   public void restoreModel(TEWholeModelDynamic model, LXModel baseModel) {
     // if nothing is saved, we don't need to restore it.
-    if (savedModelCoord.size() == 0) {
+    if (this.savedModelCoord.size() == 0) {
       return;
     }
 
@@ -254,7 +257,7 @@ public class ModelBender {
     baseModel.xRange = baseModel.xMax - baseModel.xMin;
 
     // restore the original x coordinates for the end points
-    for (SavedPoint sp : savedModelCoord) {
+    for (SavedPoint sp : this.savedModelCoord) {
       sp.restore();
     }
   }
