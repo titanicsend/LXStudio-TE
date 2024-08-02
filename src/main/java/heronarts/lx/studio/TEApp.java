@@ -20,7 +20,6 @@ import heronarts.lx.LXPlugin;
 import heronarts.lx.mixer.LXBus;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.pattern.LXPattern;
-import heronarts.lx.pattern.form.PlanesPattern;
 import heronarts.lx.pattern.texture.NoisePattern;
 import java.io.File;
 import java.io.IOException;
@@ -36,8 +35,13 @@ import titanicsend.app.*;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.dev.DevSwitch;
 import titanicsend.app.dev.UIDevSwitch;
+import titanicsend.app.director.Director;
+import titanicsend.app.director.DirectorEffect;
+import titanicsend.app.director.UIDirector;
+import titanicsend.audio.AudioStemModulator;
 import titanicsend.audio.AudioStems;
 import titanicsend.audio.UIAudioStems;
+import titanicsend.color.ColorPaletteManager;
 import titanicsend.dmx.DmxEngine;
 import titanicsend.dmx.effect.BeaconStrobeEffect;
 import titanicsend.dmx.pattern.BeaconDirectPattern;
@@ -91,10 +95,9 @@ import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.pattern.yoffa.effect.BeaconEffect;
-import titanicsend.ui.UIBackings;
-import titanicsend.ui.UILasers;
-import titanicsend.ui.UIModelLabels;
+import titanicsend.ui.UI3DManager;
 import titanicsend.ui.UITEPerformancePattern;
+import titanicsend.ui.color.UIColorPaletteManager;
 import titanicsend.ui.effect.UIRandomStrobeEffect;
 import titanicsend.ui.modulator.UIDmx16bitModulator;
 import titanicsend.ui.modulator.UIDmxColorModulator;
@@ -135,9 +138,15 @@ public class TEApp extends LXStudio {
     private final GLEngine glEngine;
 
     private final AudioStems audioStems;
+    private final ColorPaletteManager paletteManagerA;
+    private final ColorPaletteManager paletteManagerB;
     private final TELaserTask laserTask;
     private final CrutchOSC crutchOSC;
     private DevSwitch devSwitch;
+    private final Director director;
+
+    // objects that manage UI displayed in 3D views
+    private UI3DManager ui3dManager;
 
     private LX lx;
 
@@ -159,14 +168,17 @@ public class TEApp extends LXStudio {
       // by a single external input (e.g. DMX controller )
       lx.engine.registerComponent("globalPatternControls", new TEGlobalPatternControls(lx));
 
-      //      lx.ui.preview.addComponent(visual);
-      //      new TEUIControls(ui, visual,
-      // ui.leftPane.global.getContentWidth()).addToContainer(ui.leftPane.global);
       this.dmxEngine = new DmxEngine(lx);
       this.ndiEngine = new NDIEngine(lx);
       this.glEngine = new GLEngine(lx,staticModel);
 
       lx.engine.registerComponent("audioStems", this.audioStems = new AudioStems(lx));
+      lx.engine.registerComponent("paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
+      if (UIColorPaletteManager.DISPLAY_TWO_MANAGED_SWATCHES) {
+        lx.engine.registerComponent("paletteManagerB", this.paletteManagerB = new ColorPaletteManager(lx, "SWATCH B", 1));
+      } else {
+        this.paletteManagerB = null;
+      }
 
       // create our loop task for outputting data to lasers
       this.laserTask = new TELaserTask(lx);
@@ -178,6 +190,8 @@ public class TEApp extends LXStudio {
 
       // CrutchOSC is an LXOscEngine supplement for TouchOSC clients
       lx.engine.registerComponent("focus", this.crutchOSC = new CrutchOSC(lx));
+
+      this.director = new Director(lx);
     }
 
     public void initialize(LX lx) {
@@ -275,6 +289,9 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(DjLightsEasyPattern.class);
       lx.registry.addPattern(ExampleDmxTEPerformancePattern.class);
 
+      // Effects
+      lx.registry.addEffect(DirectorEffect.class);
+
       // DMX effects
       lx.registry.addEffect(BeaconStrobeEffect.class);
 
@@ -340,6 +357,7 @@ public class TEApp extends LXStudio {
           MidiNames.BOMEBOX_MIDIFIGHTERTWISTER4, MidiFighterTwister.class);
 
       // Custom modulators
+      lx.registry.addModulator(AudioStemModulator.class);
       lx.registry.addModulator(Dmx16bitModulator.class);
       lx.registry.addModulator(DmxGridModulator.class);
       lx.registry.addModulator(DmxColorModulator.class);
@@ -534,27 +552,26 @@ public class TEApp extends LXStudio {
 
       // Global pane
 
+      // Add UI section for director
+      new UIDirector(ui, this.director, ui.leftPane.global.getContentWidth())
+          .addToContainer(ui.leftPane.global, 0);
+
       // Add UI section for autopilot
       new TEUserInterface.AutopilotUISection(ui, this.autopilot)
-          .addToContainer(ui.leftPane.global, 0);
+          .addToContainer(ui.leftPane.global, 1);
 
       // Add UI section for audio stems
       new UIAudioStems(ui, this.audioStems, ui.leftPane.global.getContentWidth())
-          .addToContainer(ui.leftPane.global, 2);
+          .addToContainer(ui.leftPane.global, 3);
+
+      UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 4);
+      UIColorPaletteManager.addToRightPerformancePane(ui, this.paletteManagerA, this.paletteManagerB);
+
+      // Add 3D Ui components
+      this.ui3dManager = new UI3DManager(lx, ui, this.virtualOverlays);
 
       // Set camera zoom and point size to match current model
       applyTECameraPosition();
-
-      // 3D components
-      ui.preview.addComponent(new UIBackings(lx, this.virtualOverlays));
-      ui.previewAux.addComponent(new UIBackings(lx, this.virtualOverlays));
-
-      ui.preview.addComponent(new UILasers(lx, this.virtualOverlays));
-      ui.previewAux.addComponent(new UILasers(lx, this.virtualOverlays));
-
-      ui.preview.addComponent(new UIModelLabels(lx, this.virtualOverlays));
-      // Do we need model labels in the secondary view?  Uncomment if so.
-      // ui.previewAux.addComponent(new UIModelLabels(lx, this.virtualOverlays));
 
       // precompile binaries for any new or changed shaders
       ShaderPrecompiler.rebuildCache();

@@ -124,7 +124,6 @@ public class ModelBender {
     // starting z for our taper.
     // TODO - replace estimate w/appropriate real value when model.getVertex() is working.
     endDepthMax = 0.85f * baseModel.zMax; //Math.abs(model.getVertex(116).z);
-    System.out.println("endDepthMax: " + endDepthMax);
 
     savedModelCoord = new ArrayList<Float>();
     for (LXPoint p : baseModel.getPoints()) {

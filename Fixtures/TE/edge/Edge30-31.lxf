@@ -1,7 +1,7 @@
 {
   /* Titanic's End Fixture File */
   label: "Edge 30-31",
-  tags: [ "edge30_31", "edge", "m4" ],
+  tags: [ "edge30_31", "edge", "Edge", "m4" ],
 
   parameters: {
     "points": { default: 168, type: "int", min: 1, label: "Points", description: "Number of points in the edge" },
@@ -13,10 +13,10 @@
     
     "xOffset": { default: 6.197672441623922, type: "float", label: "X offset", description: "Location offset of edge from starting vertex" },
   
-    # Debug tools
+    /* Debug tools */
     "onCar": { default: true, type: "boolean", label: "On Car", description: "True = Locate panel to its position on the car, False = Locate to origin" },
 
-    # Option to disable output, such as when outputs are configured in a parent fixture
+    /* Option to disable output, such as when outputs are configured in a parent fixture */
     "hasOutput": { default: true, type: "boolean", label: "Has Output", description: "Whether built-in output is enabled" }
   },
   
@@ -42,20 +42,20 @@
   },
 
   components: [
-    { type: "strip", 
+    { type: "strip",
       numPoints: "$points",
-      spacing: "0.6562",
-      reverse: "$reverse"
+      spacing: "0.6562"
     }
   ],
   
   outputs: [
     { enabled: "$hasOutput",
       host: "$host",
-      universe: "$output*10+(($ledOffset*3)/512)",
-      channel: "($ledOffset*3)%512",
+      universe: "$output*10+(($ledOffset*3)/510)",
+      channel: "($ledOffset*3)%510",
       protocol: "artnet", 
-      sequenceEnabled: "$artnetSequence"
+      sequenceEnabled: "$artnetSequence",
+      reverse: "$reverse"
     }
   ]
 }

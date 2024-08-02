@@ -23,7 +23,7 @@ public class HandTracker extends TEPattern {
       new CompoundParameter("Junk2", 0, 0, 100).setDescription("Placeholder 2");
   public final CompoundParameter targetY =
       new CompoundParameter("Altitude", 25.5, 0, 100).setDescription("Target height from ground");
-  public final CompoundParameter targetZ =
+  public final CompoundParameter targetX =
       new CompoundParameter("Azimuth", 61, -100, 100)
           .setDescription("Target position left and right");
   public final CompoundParameter targetH =
@@ -39,6 +39,18 @@ public class HandTracker extends TEPattern {
       new StringParameter("Index Tip", "10,50")
           .setDescription("Following a finger tip (X, Z) 0-100 like '(10,50)'");
 
+  // Utility methods for use during the static-to-dynamic model transition.
+  // These can be safely removed when we are fully committed to the
+  // dynamic model
+
+  public float getModelX(LXPoint p) {
+    return (modelTE.isStatic()) ? p.z : p.x;
+  }
+
+  public float getModelXMax() {
+    return (modelTE.isStatic()) ? modelTE.maxZ() : modelTE.maxX();
+  }
+
   public HandTracker(LX lx) {
     super(lx);
     addParameter("circle", this.circle);
@@ -49,7 +61,7 @@ public class HandTracker extends TEPattern {
     addParameter("junk2", this.junk2);
 
     addParameter("Altitude", this.targetY);
-    addParameter("Azimuth", this.targetZ);
+    addParameter("Azimuth", this.targetX);
     addParameter("Height", this.targetH);
     addParameter("Width", this.targetW);
     addParameter("indexTip", this.indexTip);
@@ -58,27 +70,27 @@ public class HandTracker extends TEPattern {
   @Override
   public void run(double deltaMs) {
     float y = this.targetY.getValuef();
-    float z = -this.targetZ.getValuef();
+    float x = -this.targetX.getValuef();
 
     int color = this.color.calcColor();
-
-    float zMax = this.modelTE.maxZ();
+    
+    float xMax = getModelXMax();
     float yMax = this.modelTE.maxY();
     boolean doCircle = this.circle.isOn();
 
     for (LXPoint point : this.model.points) {
       if (this.modelTE.isGapPoint(point)) continue;
-      float zPercent = 100.0f * point.z / zMax;
+      float xPercent = 100.0f * getModelX(point) / xMax;
       float yPercent = 100.0f * point.y / yMax;
       float dy = yPercent - y;
-      float dz = zPercent - z;
+      float dx = xPercent - x;
       boolean opaque;
       if (doCircle) {
-        dz *= 0.85; // Make ellipse into circle
-        double distance = Math.sqrt(dy * dy + dz * dz);
+        dx *= 0.85; // Make ellipse into circle
+        double distance = Math.sqrt(dy * dy + dx * dx);
         opaque = distance < targetH.getValue();
       } else {
-        boolean isCloseToZ = Math.abs(dz) < targetW.getValue();
+        boolean isCloseToZ = Math.abs(dx) < targetW.getValue();
         boolean isCloseToY = Math.abs(dy) < targetH.getValue();
         opaque = isCloseToZ && isCloseToY;
       }
@@ -99,7 +111,7 @@ public class HandTracker extends TEPattern {
       float zFromPoint = Float.parseFloat(points[0]);
 
       this.targetY.setValue(yFromPoint);
-      this.targetZ.setValue(zFromPoint);
+      this.targetX.setValue(zFromPoint);
     }
   }
 }

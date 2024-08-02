@@ -576,11 +576,11 @@ def create_panels():
             panel_file.write('''{
   /* Titanic's End Fixture File */
   label: "Panel ''' + panel_id + '''",
-  tags: [ "''' + panel_id + '''", "panel", "''' + module_tag(panel.module) + '''" ],
+  tags: [ "''' + panel_id + '''", "panel", "Panel", "''' + module_tag(panel.module) + '''" ],
 
   parameters: {
-    "xOffset": { default: ''' + str(panel.x_offset) + ''', type: float, description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
-    "yOffset": { default: ''' + str(panel.y_offset) + ''', type: float, description: "Adjust Y position within the plane of the panel. Use to fine-tune position after installation" },
+    "xOffset": { default: ''' + str(panel.x_offset) + ''', type: "float", description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
+    "yOffset": { default: ''' + str(panel.y_offset) + ''', type: "float", description: "Adjust Y position within the plane of the panel. Use to fine-tune position after installation" },
   
     /* Modify HOST and CONTROLLER OUTPUT default values HERE to assign one of this panel's strands to a
        new controller output. Then click [Reload Fixture File] at the bottom of the Inspector section in Chromatik.
@@ -599,7 +599,7 @@ def create_panels():
 
     "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
     
-    # Debug tools
+    /* Debug tools */
     "onCar": { default: true, type: "boolean", label: "On Car", description: "True = Locate panel to its position on the car, False = Locate to origin" }
   },
   
@@ -754,7 +754,7 @@ def create_edges():
             edge_file.write('''{
   /* Titanic's End Fixture File */
   label: "Edge ''' + edge.id + '''",
-  tags: [ "''' + edge.tag + '''", "edge", "''' + module_tag(edge.module) + '''" ],
+  tags: [ "''' + edge.tag + '''", "edge", "Edge", "''' + module_tag(edge.module) + '''" ],
 
   parameters: {
     "points": { default: ''' + str(edge.num_points) + ''', type: "int", min: 1, label: "Points", description: "Number of points in the edge" },
@@ -766,10 +766,10 @@ def create_edges():
     
     "xOffset": { default: ''' + str(edge.x_offset) + ''', type: "float", label: "X offset", description: "Location offset of edge from starting vertex" },
   
-    # Debug tools
+    /* Debug tools */
     "onCar": { default: true, type: "boolean", label: "On Car", description: "True = Locate panel to its position on the car, False = Locate to origin" },
 
-    # Option to disable output, such as when outputs are configured in a parent fixture
+    /* Option to disable output, such as when outputs are configured in a parent fixture */
     "hasOutput": { default: true, type: "boolean", label: "Has Output", description: "Whether built-in output is enabled" }
   },
   
@@ -805,10 +805,11 @@ def create_edges():
   outputs: [
     { enabled: "$hasOutput",
       host: "$host",
-      universe: "$output*10+(($ledOffset*3)/512)",
-      channel: "($ledOffset*3)%512",
+      universe: "$output*10+(($ledOffset*3)/510)",
+      channel: "($ledOffset*3)%510",
       protocol: "artnet", 
-      sequenceEnabled: "$artnetSequence"
+      sequenceEnabled: "$artnetSequence",
+      reverse: "$reverse"
     }
   ]
 }
