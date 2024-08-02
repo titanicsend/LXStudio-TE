@@ -61,7 +61,7 @@
 
     /* Quick and easy method for rendering all the slices without outputs:
     { type: "window/Slice",
-      instances: "3",
+      instances: "24",
       front: "true",
       radial: "$instance + 1",
       offset: "$offset"
