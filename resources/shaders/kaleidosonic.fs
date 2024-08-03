@@ -56,7 +56,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     // modulate overall scale by level just a little for more movement.
     // (too much looks jittery)
-    uv *= iScale + 0.05 * level;
+    //iScale += (stemDrums * 0.05);
+    uv *= (iScale + stemDrums * 0.05) + 0.05 * level;
+    //uv *= iScale + 0.05 * level;
 
     // iterate to generate a density field based on a sample
     // of random coordinates around the current pixel.
@@ -78,7 +80,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         // "velocity" moves the field outward at a rate based on bass
         // content.
         vec2 velocity = noise.xz + (0.15 * abs(fract(pos)) * level);
-        pos += iTime * velocity * 0.25;
+        pos += (iTime + stemBass * -0.05) * velocity * 0.25;
         pos = fract(pos);
 
         // normalize pos to display aspect ratio even though it's fake because
@@ -94,5 +96,5 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float colorMix = mod(final_density * 1.618, 1.0);
     vec3 final_color = mix(iColor2RGB,iColorRGB,colorMix);
     // Wow2 controls gamma adjustment of final brightness
-    fragColor = vec4(final_color,pow(colorMix,1.5 + iWow2)) ;
+    fragColor = vec4(final_color,pow(colorMix,1.5 + iWow2)) * (1.0 + stemDrums * 0.6);
 }
