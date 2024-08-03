@@ -57,6 +57,7 @@ import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lx.APC40Mk2;
 import titanicsend.lx.APC40Mk2.UserButton;
+import titanicsend.lx.DirectorAPCminiMk2;
 import titanicsend.lx.MidiFighterTwister;
 import titanicsend.midi.MidiNames;
 import titanicsend.model.TEWholeModel;
@@ -243,11 +244,12 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(RainBands.class);
       lx.registry.addPattern(SimplexPosterized.class);
       lx.registry.addPattern(SpaceExplosionFX.class);
+      lx.registry.addPattern(SpiralDiamonds.class);
       lx.registry.addPattern(TEMidiFighter64DriverPattern.class);
       lx.registry.addPattern(TESparklePattern.class);
       lx.registry.addPattern(TurbulenceLines.class);
       lx.registry.addPattern(TriangleNoise.class);
-      lx.registry.addPattern(SpiralDiamonds.class);
+      lx.registry.addPattern(OldSpiralDiamonds.class);
       lx.registry.addPattern(PulsingTriangles.class);
       lx.registry.addPattern(Fire.class);
       lx.registry.addPattern(TESolidPattern.class);
@@ -346,6 +348,11 @@ public class TEApp extends LXStudio {
 
       // Midi surface names for use with BomeBox
       lx.engine.midi.registerSurface(MidiNames.BOMEBOX_APC40MK2, APC40Mk2.class);
+      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_APCMINIMK2,
+          heronarts.lx.midi.surface.APCminiMk2.class);
+      // The Director midi surface must be registered *after* the Director and ColorPaletteManager
+      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_APCMINIMK2_DIRECTOR,
+          DirectorAPCminiMk2.class);
       lx.engine.midi.registerSurface(
           MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1, MidiFighterTwister.class);
       lx.engine.midi.registerSurface(
