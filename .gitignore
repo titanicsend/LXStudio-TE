@@ -26,6 +26,6 @@ Projects/project.lxp
 resources/shaders/cache/*.bin
 
 .devSwitch
-colors_TE_grid.csv
-Projects/Test*.lxp
 TD/Utils/Backup/
+Projects/Test*.lxp
+.lxpreferences
