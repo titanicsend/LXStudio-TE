@@ -207,7 +207,7 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
       this.addListener(colorParameter, (p) -> {
         this.color = ((ColorParameter)p).getColor();
         this.redraw();
-      });
+      }, true);
     }
 
     public void onDraw(UI ui, VGraphics vg) {

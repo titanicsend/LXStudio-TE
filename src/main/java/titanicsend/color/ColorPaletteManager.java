@@ -143,6 +143,7 @@ public class ColorPaletteManager extends LXComponent {
       for (int i = this.managedSwatch.colors.size(); i < LXSwatch.MAX_COLORS; ++i) {
         this.managedSwatch.addColor();
       }
+      // TODO: set the first two TEColorTypes, background and transition
     }
   }
 
