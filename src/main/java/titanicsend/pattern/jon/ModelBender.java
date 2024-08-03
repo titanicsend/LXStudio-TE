@@ -215,8 +215,8 @@ public class ModelBender {
     }
 
     // set new x bounds for our modified model
-    oldLengthMin = baseModel.xMax;
-    oldLengthMax = baseModel.xMin;
+    oldLengthMin = baseModel.xMin;
+    oldLengthMax = baseModel.xMax;
 
     // adjust the model's x bounds to make room for the taper
     // if the car is part of a larger model space, check to see if there

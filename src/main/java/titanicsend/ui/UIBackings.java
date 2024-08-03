@@ -147,6 +147,19 @@ public class UIBackings extends UI3dComponent {
 
   @Override
   public void dispose() {
+    // make sure we're not in the middle of a model rebuild when we
+    // start destroying objects.
+    while (UI3DManager.isLocked()) {
+      try {
+        Thread.sleep(5);
+      } catch (InterruptedException e) {
+        ;
+      }
+    }
+
+    // Take draw lock to keep the model from being rebuilt while we're
+    // disposing of objects.
+    UI3DManager.beginDraw();
     for (PanelBuffer b : this.panels) {
       b.dispose();
     }
@@ -156,5 +169,6 @@ public class UIBackings extends UI3dComponent {
     if (this.colorBuffer != null) this.colorBuffer.dispose();
     MemoryUtil.memFree(this.modelMatrixBuf);
     super.dispose();
+    UI3DManager.endDraw();
   }
 }
