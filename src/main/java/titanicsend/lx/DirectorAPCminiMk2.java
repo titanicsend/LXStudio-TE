@@ -31,7 +31,9 @@ import heronarts.lx.midi.MidiNote;
 import heronarts.lx.midi.MidiNoteOn;
 import heronarts.lx.midi.surface.LXMidiParameterControl;
 import heronarts.lx.midi.surface.LXMidiSurface;
-import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.EnumParameter;
+import heronarts.lx.parameter.LXParameter;
+
 import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -41,11 +43,14 @@ import titanicsend.app.director.Director;
 import titanicsend.color.ColorPaletteManager;
 import titanicsend.util.TE;
 
+/**
+ * Midi control surface using
+ */
 public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirectional {
 
   public static final String DEVICE_NAME = "APC mini mk2 (Director) Control";
 
-  public static final boolean EXPORT_GRID_TO_CSV = true;
+  public static final boolean EXPORT_GRID_TO_CSV = false;
 
   public static final float PARTIAL_SATURATION = 0.6f;
 
@@ -112,25 +117,21 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
 
   public static final int COLOR_GRID_ROWS = CLIP_LAUNCH_ROWS;
   public static final int COLOR_GRID_COLUMNS = CLIP_LAUNCH_COLUMNS;
+  public static final int COLOR_NUM = COLOR_GRID_ROWS * COLOR_GRID_COLUMNS;
 
   private boolean shiftOn = false;
 
   private boolean isRegistered = false;
 
   private ColorPaletteManager paletteManager = null;
-  private Director director = null;
+
+  public final EnumParameter<LXMidiParameterControl.Mode> faderMode =
+    new EnumParameter<LXMidiParameterControl.Mode>("Fader Mode",
+      LXMidiParameterControl.Mode.SCALE)
+    .setDescription("Parameter control mode for faders");
 
   private final LXMidiParameterControl masterFader;
   private final LXMidiParameterControl[] channelFaders;
-
-  private CompoundParameter master;
-  private CompoundParameter channel0_te;
-  private CompoundParameter channel1_panels;
-  private CompoundParameter channel2_edges;
-  private CompoundParameter channel3_foh;
-  private CompoundParameter channel4_lasers;
-  private CompoundParameter channel5_beacons;
-  private CompoundParameter[] channelParameters;
 
   public DirectorAPCminiMk2(LX lx, LXMidiInput input, LXMidiOutput output) {
     super(lx, input, output);
@@ -139,12 +140,31 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
     for (int i = 0; i < NUM_CHANNELS; i++) {
       this.channelFaders[i] = new LXMidiParameterControl();
     }
+    updateFaderMode();
+
+    addSetting("faderMode", this.faderMode);
+  }
+
+  @Override
+  public void onParameterChanged(LXParameter p) {
+    super.onParameterChanged(p);
+    if (p == this.faderMode) {
+      updateFaderMode();
+    }
+  }
+
+  private void updateFaderMode() {
+    final LXMidiParameterControl.Mode mode = this.faderMode.getEnum();
+    this.masterFader.setMode(mode);
+    for (LXMidiParameterControl channelFader : this.channelFaders) {
+      channelFader.setMode(mode);
+    }
   }
 
   /**
    * Populated by generateColorGrid() - used as a lookup in noteReceived()
    */
-  private final int[] noteToColor = new int[64];
+  private final int[] noteToColor = new int[COLOR_NUM];
 
   @Override
   protected void onEnable(boolean on) {
@@ -163,60 +183,37 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
   }
 
   private void register() {
+    this.isRegistered = true;
     try {
-      paletteManager = (ColorPaletteManager) this.lx.engine.getChild("paletteManagerA");
+      this.paletteManager = (ColorPaletteManager) this.lx.engine.getChild("paletteManagerA");
     } catch (Exception e) {
-      TE.log("Palette manager not found");
+      TE.err("Palette manager not found: " + e.getMessage());
     }
     try {
-      director = Director.get();
+      Director director = Director.get();
 
-      this.master = director.master;
-      this.masterFader.setTarget(this.master);
+      this.masterFader.setTarget(director.master);
 
-      this.channel0_te = director.filters.get(0).fader;
-      if (!director.filters.get(0).path.equals("te")) {
-        TE.log("Director error: filter 'te' was expected, but found: " + director.filters.get(0).path);
-      }
-      this.channel1_panels = director.filters.get(1).fader;
-      if (!director.filters.get(1).path.equals("panels")) {
-        TE.log("Director error: filter 'panels' was expected, but found: " + director.filters.get(1).path);
-      }
-      this.channel2_edges = director.filters.get(2).fader;
-      if (!director.filters.get(2).path.equals("edges")) {
-        TE.log("Director error: filter 'edges' was expected, but found: " + director.filters.get(2).path);
-      }
-      this.channel3_foh = director.filters.get(3).fader;
-      if (!director.filters.get(3).path.equals("foh")) {
-        TE.log("Director error: filter 'foh' was expected, but found: " + director.filters.get(3).path);
-      }
-      this.channel4_lasers = director.filters.get(4).fader;
-      if (!director.filters.get(4).path.equals("lasers")) {
-        TE.log("Director error: filter 'lasers' was expected, but found: " + director.filters.get(4).path);
-      }
-      this.channel5_beacons = director.filters.get(5).fader;
-      if (!director.filters.get(5).path.equals("beacons")) {
-        TE.log("Director error: filter 'beacons' was expected, but found: " + director.filters.get(5).path);
-      }
-      channelParameters = new CompoundParameter[]{
-          channel0_te,
-          channel1_panels,
-          channel2_edges,
-          channel3_foh,
-          channel4_lasers,
-          channel5_beacons
-      };
-      for (int i = 0; i < channelParameters.length; i++) {
-        this.channelFaders[i].setTarget(channelParameters[i]);
+      for (int i = 0; i < NUM_CHANNELS; i++) {
+        if (i < director.filters.size()) {
+          this.channelFaders[i].setTarget(director.filters.get(i).fader);
+        } else {
+          this.channelFaders[i].setTarget(null);
+        }
       }
     } catch (Exception e) {
       TE.log("Director error: " + e.getMessage());
     }
-    this.isRegistered = true;
   }
 
   private void unregister() {
     this.isRegistered = false;
+
+    this.masterFader.setTarget(null);
+    for (int i = 0; i < NUM_CHANNELS; i++) {
+      this.channelFaders[i].setTarget(null);
+    }
+
     clearGrid();
   }
 
@@ -255,10 +252,15 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
 
     // Clip grid buttons
     if (inRange(pitch, CLIP_LAUNCH, CLIP_LAUNCH_MAX)) {
-      if (pitch < 0 || pitch >= 64) {
-        LXMidiEngine.error("APCminiMk2 received unmapped note: " + note);
+      if (pitch < 0 || pitch >= COLOR_NUM) {
+        LXMidiEngine.error("Grid button not assigned to color: " + note);
         return;
       }
+      if (isWhiteButton(pitch)) {
+        // Ignore white in Chromatik, this is only for lasers.
+        return;
+      }
+
       int color = noteToColor[pitch];
       float h = LXColor.h(color);
       float s = LXColor.s(color);
@@ -294,9 +296,9 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
   public void controlChangeReceived(MidiControlChange cc) {
     int number = cc.getCC();
 
-    switch (number) {
-      case MASTER_FADER:
-        this.masterFader.setValue(cc);
+    if (number == MASTER_FADER) {
+      this.masterFader.setValue(cc);
+      return;
     }
 
     if (number >= CHANNEL_FADER && number <= CHANNEL_FADER_MAX) {
@@ -308,28 +310,21 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
     LXMidiEngine.error("APCmini unmapped control change: " + cc);
   }
 
-  private void sendGrid() {
-    for (int row = 0; row < 8; row++) {
-      for (int col = 0; col < 8; col++) {
-        int idx = (row * 8) + col;
-        sendIndividualSysEx(idx, 0x000000);
-        try {
-          // Need to sleep between each SysEx message (to avoid MIDI overflow?)
-          sleep(10);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-      }
-    }
+  private int gridNote(int row, int col) {
+    return (row * 8) + col;
+  }
 
+  private void sendGrid() {
     int[][] grid = generateColorGrid();
     for (int row = 0; row < grid.length; row++) {
       for (int col = 0; col < grid[0].length; col++) {
-        int idx = (row * 8) + col;
+        int idx = gridNote(row, col);
         int color = grid[row][col];
         noteToColor[idx] = color;
         sendIndividualSysEx(idx, color);
-        // System.out.printf("row: %d, col: %d, idx: %d, color: %06X\n", row, col, idx, color);
+
+        // It would be ideal to get away from sleeping here, it lags the engine by
+        // 640ms when the controller connects/reconnects
         try {
           sleep(10);
         } catch (InterruptedException e) {
@@ -341,7 +336,18 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
 
   static boolean exported = false;
 
-  public static int[][] generateColorGrid() {
+  private int[] whiteButtons = new int[0];
+
+  private boolean isWhiteButton(int pitch) {
+    for (int p : this.whiteButtons) {
+      if (p == pitch) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public int[][] generateColorGrid() {
     int[][] grid = new int[COLOR_GRID_ROWS][COLOR_GRID_COLUMNS];
     float[][] hues = new float[COLOR_GRID_ROWS][COLOR_GRID_COLUMNS];
     float[][] sats = new float[COLOR_GRID_ROWS][COLOR_GRID_COLUMNS];
@@ -352,7 +358,6 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
 
     // 0 to 90 degrees in 8 steps, normalized to [0,1]
     for (int i = 0; i < 8; i++) {
-      // float hue = i * 11.25f / 360;
       grid[0][i] = hsvToHex(hue, 1.0f, 1.0f); // Full saturation
       grid[1][i] = hsvToHex(hue, PARTIAL_SATURATION, 1.0f); // Half saturation
       hues[0][i] = hue;
@@ -363,7 +368,6 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
     }
     // 90 to 180 degrees in 8 steps, normalized to [0,1]
     for (int i = 0; i < 8; i++) {
-      // float hue = (90 + i * 11.25f) / 360;
       grid[2][i] = hsvToHex(hue, 1.0f, 1.0f); // Full saturation
       grid[3][i] = hsvToHex(hue, PARTIAL_SATURATION, 1.0f); // Half saturation
       hues[2][i] = hue;
@@ -374,7 +378,6 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
     }
     // 180 to 270 degrees in 8 steps, normalized to [0,1]
     for (int i = 0; i < 8; i++) {
-      // float hue = (180 + i * 11.25f) / 360;
       grid[4][i] = hsvToHex(hue, 1.0f, 1.0f); // Full saturation
       grid[5][i] = hsvToHex(hue, PARTIAL_SATURATION, 1.0f); // Half saturation
       hues[4][i] = hue;
@@ -385,7 +388,6 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
     }
     // 270 to 360 degrees in 8 steps, normalized to [0,1]
     for (int i = 0; i < 8 - (32 - steps); i++) {
-      // float hue = (270 + i * 11.25f) / 360;
       grid[6][i] = hsvToHex(hue, 1.0f, 1.0f); // Full saturation
       grid[7][i] = hsvToHex(hue, PARTIAL_SATURATION, 1.0f); // Half saturation
       hues[6][i] = hue;
@@ -402,6 +404,9 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
     hues[7][7] = 0f;
     sats[6][7] = 0f;
     sats[7][7] = 0f;
+    this.whiteButtons = new int[2];
+    this.whiteButtons[0] = gridNote(6, 7);
+    this.whiteButtons[1] = gridNote(7, 7);
 
     if (EXPORT_GRID_TO_CSV && !exported) {
       exported = true;
@@ -454,7 +459,9 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
   private void sendMultipleSysEx(int startPad, int endPad, int[] colors) {
     int length = (endPad - startPad) + 1;
     if (colors.length != length) {
-      throw new IllegalArgumentException("Invalid number of colors for pads: (endPad - startPad + 1) = " + length + " != " + colors.length);
+      throw new IllegalArgumentException(
+        "Invalid number of colors for pads: (endPad - startPad + 1) = " + length +
+        " != " + colors.length);
     }
     int numBytesToFollow = 2 + (length * 6);
     int messageLength = numBytesToFollow + 8;
@@ -484,7 +491,7 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
       data[14 + (i * 6)] = (byte) (blue & 0x7F);          // blue LSB
     }
     data[messageLength - 1] = (byte) 0xF7; // MIDI system exclusive message end
-//    System.out.println(prettyPrintByteArray(data));
+    // System.out.println(prettyPrintByteArray(data));
     this.output.sendSysex(data);
   }
 
