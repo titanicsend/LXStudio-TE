@@ -57,8 +57,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec3 color = vec3(0.);
     bool isColor2Black = distance(iColor2RGB, vec3(0.)) < 0.1;
 
-    float norm_y = 0.05 + bassLevel * iWow1;
-    float norm_x = 0.05 + trebleLevel * iWow1;
+    float norm_y = 0.05 + bassLevel * levelReact;
+    float norm_x = 0.05 + trebleLevel * levelReact;
     //float norm_x = iScaledLo;
     //float norm_y = iScaledHi;
 
@@ -68,8 +68,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float tx = halfBin+pixPerBin * p;
     float freq  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
 
-    norm_x += iWow2 * wave;
-    norm_y += iWow2 * freq;
+    norm_x += frequencyReact * wave;
+    norm_y += frequencyReact * freq;
 
     if (iWowTrigger) {
         norm_x *= norm_x;
