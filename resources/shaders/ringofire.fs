@@ -18,7 +18,6 @@ mat2 r2d(float a) {
 }
 
 // cheap 3D simplex noise from Shadertoy
-// Can't remember exactly where.
 // TODO - use texture-based noise fn instead.
 float snoise(vec3 uv, float res) {
     const vec3 s = vec3(1.0, 10.0, 100.0);
@@ -69,7 +68,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     hsb.y = 1.5 - color * color;
     // n.b.- we leave value where it was in the palette color
     // let alpha handle brightness
-
 
     fragColor = vec4(hsv2rgb(hsb), color);
 }
