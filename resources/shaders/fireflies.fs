@@ -7,14 +7,15 @@ mat2 r2d(float a) {
 void mainImage(out vec4 fragColor, in vec2 coord) {
     vec2 uv = ( coord.xy / iResolution.xy );
     vec2 p = (uv*2.-1.) * vec2(iResolution.x/iResolution.y,1.);
-    //p *= r2d(-iRotationAngle);
 
-    // blob size pulses with the beat, amount controlled by levelReact
-    float radius = iScale + (levelReact * iScale * (-1. + 2.0 * beat));
 
-    // inter-firefly spacing changes w/bassRatio, controlled by frequencyReact
+    // blob size pulses with drums, amount controlled by levelReact
+    float blobScale = (stemDrums > 0.1) ? -1.0 + 2.0 * stemDrums : 0.0;
+    float radius = iScale + (levelReact * iScale * blobScale);
+
+    // inter-firefly spacing changes w/stem value, controlled by frequencyReact
     // turned up, this gets really fun!
-    float spacing = max(0.1,(bassRatio * frequencyReact) / 4.0);
+    float spacing = max(0.05,(stemVocals * frequencyReact) / 3.0);
 
     // offset the start time a little so that the fireflies don't start
     // grouped tightly together
