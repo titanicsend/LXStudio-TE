@@ -1,6 +1,7 @@
 package titanicsend.ui;
 
 import heronarts.glx.ui.UI2dComponent;
+import heronarts.glx.ui.UI2dContainer;
 import heronarts.glx.ui.UI2dContainer.Layout;
 import heronarts.glx.ui.component.UIKnob;
 import heronarts.glx.ui.component.UISwitch;
@@ -20,19 +21,20 @@ import titanicsend.color.TEColorParameter;
 import titanicsend.ndi.NDIPattern;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.jon.TEControlTag;
-import titanicsend.util.TE;
+import titanicsend.preset.UIUserPresetCollection;
 
 /**
  * Device UI for TEPerformancePattern
  *
- * <p>Adds special UI control for TEColorParameter. Parameters are arranged in columns of 4 to line
+ * Adds special UI control for TEColorParameter. Parameters are arranged in columns of 4 to line
  * up with the MidiFighterTwister.
  *
- * <p>Based on UIDeviceControl with components from J.Belcher's Rubix project.
+ * Based on UIDeviceControl with components from J.Belcher's Rubix project.
  */
 public class UITEPerformancePattern
     implements UIDeviceControls<TEPerformancePattern>, LXParameterListener {
 
+  private heronarts.lx.studio.LXStudio.UI ui;
   private UIDevice uiDevice;
   private TEPerformancePattern device;
   private final List<UI2dComponent> controls = new ArrayList<UI2dComponent>();
@@ -40,14 +42,14 @@ public class UITEPerformancePattern
   @Override
   public void buildDeviceControls(
       heronarts.lx.studio.LXStudio.UI ui, UIDevice uiDevice, TEPerformancePattern device) {
-    uiDevice.setLayout(Layout.NONE);
-    uiDevice.setChildSpacing(2);
+    uiDevice.setLayout(Layout.HORIZONTAL, 2);
 
+    this.ui = ui;
     this.uiDevice = uiDevice;
     this.device = device;
     this.device.remoteControlsChanged.addListener(this);
 
-    addControls();
+    refresh();
   }
 
   @Override
@@ -59,24 +61,24 @@ public class UITEPerformancePattern
 
   protected void refresh() {
     clearControls();
-    addControls();
+    this.uiDevice.addChildren(
+      createControls(),
+      createUserPresets()
+    );
+
   }
+
+  /*
+   * Remote Controls
+   */
 
   private void clearControls() {
-    for (UI2dComponent control : this.controls) {
-      try {
-        control.removeFromContainer();
-        control.dispose();
-      } catch (Exception ex) {
-        TE.log(
-            "Warning in UITEPerformancePattern: error removing control from container: "
-                + ex.toString());
-      }
-    }
-    this.controls.clear();
+    this.uiDevice.removeAllChildren(true);
   }
 
-  private void addControls() {
+  private UI2dContainer createControls() {
+    UI2dContainer container = new UI2dContainer(0,0,0, this.uiDevice.getContentHeight());
+
     List<LXNormalizedParameter> params =
         new ArrayList<LXNormalizedParameter>(Arrays.asList(device.getRemoteControls()));
 
@@ -113,13 +115,13 @@ public class UITEPerformancePattern
       if (param instanceof TEColorParameter.TEColorOffsetParameter) {
         this.controls.add(
             new UITEColorControl(x, y, (TEColorParameter) param.getParentParameter())
-                .addToContainer(uiDevice));
+                .addToContainer(container));
       } else if (param instanceof BoundedParameter
           || param instanceof DiscreteParameter
           || param instanceof BoundedFunctionalParameter) {
-        this.controls.add(new UIKnob(x, y).setParameter(param).addToContainer(uiDevice));
+        this.controls.add(new UIKnob(x, y).setParameter(param).addToContainer(container));
       } else if (param instanceof BooleanParameter) {
-        this.controls.add(new UISwitch(x, y).setParameter(param).addToContainer(uiDevice));
+        this.controls.add(new UISwitch(x, y).setParameter(param).addToContainer(container));
       } else if (param == null) {
         // Leave a space
       } else {
@@ -131,7 +133,9 @@ public class UITEPerformancePattern
 
       ++ki;
     }
-    uiDevice.setContentWidth((col + 1) * (4 * (UIKnob.WIDTH + 2) + 15) - 15 - 2);
+    container.setWidth((col + 1) * (4 * (UIKnob.WIDTH + 2) + 15) - 15 - 2);
+
+    return container;
   }
 
   private void hideUnusedControls(List<LXNormalizedParameter> params) {
@@ -145,6 +149,14 @@ public class UITEPerformancePattern
 
   private boolean isUnusedControl(LXNormalizedParameter p) {
     return this.device.getControls().unusedParams.contains(p);
+  }
+
+  /*
+   * User Presets
+   */
+
+  private UI2dContainer createUserPresets() {
+    return new UIUserPresetCollection(this.ui, this.device, uiDevice.getContentHeight());
   }
 
   @Override
