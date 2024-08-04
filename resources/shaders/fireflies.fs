@@ -1,27 +1,54 @@
+// generate 2D rotation matrix
+mat2 r2d(float a) {
+    float c=cos(a),s=sin(a);
+    return mat2(c, s, -s, c);
+}
+
 void mainImage(out vec4 fragColor, in vec2 coord) {
     vec2 uv = ( coord.xy / iResolution.xy );
     vec2 p = (uv*2.-1.) * vec2(iResolution.x/iResolution.y,1.);
-    vec4 color = vec4(iColorRGB,1.);
 
-    // blob size pulses with the beat, controlled by
-    // WOW2
-    float pulse = 0.01 - (iScale * iWow2 / 100. * beat);
+
+    // blob size pulses with drums, amount controlled by levelReact
+    float blobScale = (stemDrums > 0.1) ? -1.0 + 2.0 * stemDrums : 0.0;
+    float radius = iScale + (levelReact * iScale * blobScale);
+
+    // inter-firefly spacing changes w/stem value, controlled by frequencyReact
+    // turned up, this gets really fun!
+    float spacing = max(0.05,(stemVocals * frequencyReact) / 3.0);
+
+    // offset the start time a little so that the fireflies don't start
+    // grouped tightly together
+    float flyTime = iTime + 3.;
 
     // calculate the contribution of each firefly to the current pixel
-    float lit = 999.;
+    float lit = 0.;
     for (float i = 0; i < iQuantity; i++) {
         // distance between fireflies;
-        float t = iTime + i *.1;
-
-        // position of the firefly - looks random, but is actually a deterministic
-        // wobbly circular path.
+        float t = flyTime + i * spacing;
         float d = 0.05 * i;
-        vec2 v = cos(t*d)*vec2( cos(t*1.5), sin(t*3.) ) + sin(t*d) * vec2( cos(t*2.), sin(t*.75) );
-        lit = min(lit, 0.25 * length(p-v) * iScale);
+        // v is the current position of the firefly - looks random, but is actually a deterministic
+        // wobbly circular path.
+        vec2 v = cos(t*d)*vec2(cos(t*1.5), sin(t*3.) ) + sin(t*d) * vec2( cos(t*2.), sin(t*.75) );
+
+        // brightness of the firefly at a given pixel location is inversely
+        // proportional to the distance from firefly center.
+        // we restrict light falloff range by making it so that distances
+        // greater than the desired radius go negative, and get clamped to 0.
+        float l = max(0.0,1.0 - length(p-v)/radius);
+        // sharpen brightness curve so tail decay will look more natural
+        lit += l * l;
     }
     // cool the entire backbuffer by a small amount
-    fragColor = max(vec4(0.),texture( iBackbuffer, uv ) - iWow1 / iScale);
+    fragColor = max(vec4(0.),texture(iBackbuffer, uv) - iWow1 / 10.);
+
+    // iWow2 controls the mix of primary color vs. primary + secondary.
+    // In cases where color 2 is black, we'll "adjust" the controls so only the primary is used
+    // (Otherwise, fireflies will be significantly less visible w/single color palettes)
+    float colorMix =  (iColor2RGB == vec3(0.)) ? 0. : iWow2;
+
+    vec3 color = min(1.0,lit) * mix(iColorRGB, mix(iColorRGB, iColor2RGB, fract(lit)), colorMix);
 
     // add heat where the fireflies are
-    fragColor += clamp(color * pulse/lit,0.,1.);
+    fragColor += vec4(color,1.0);
 }
