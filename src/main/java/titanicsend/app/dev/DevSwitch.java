@@ -196,6 +196,8 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     addDetailParameter(this.lx.engine.dmx.artNetReceiveActive, "ArtNet Input");
     addDetailParameter(this.lx.engine.audio.enabled, "Audio Input");
     addDetailParameter(this.midiSurfaces);
+    addDetailParameter(this.lx.preferences.focusChannelOnCue);
+    addDetailParameter(this.lx.preferences.focusActivePattern);
     addDetailParameter(this.lx.engine.tempo.enabled, "Tempo Enabled");
     addDetailParameter(this.tempoSourceOSC);
 
@@ -345,6 +347,8 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
         && this.lx.engine.dmx.artNetReceiveActive.isOn()
         && this.lx.engine.audio.enabled.isOn()
         && this.midiSurfaces.isOn()
+        && this.lx.preferences.focusChannelOnCue.isOn()
+        && this.lx.preferences.focusActivePattern.isOn()
         && this.lx.engine.tempo.enabled.isOn()
         && this.lx.engine.tempo.clockSource.getEnum() == ClockSource.INTERNAL) {
       return State.DEVELOPER;
@@ -359,6 +363,8 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
         && this.lx.engine.dmx.artNetReceiveActive.isOn()
         && this.lx.engine.audio.enabled.isOn()
         && this.midiSurfaces.isOn()
+        && this.lx.preferences.focusChannelOnCue.isOn()
+        && this.lx.preferences.focusActivePattern.isOn()
         && this.lx.engine.tempo.enabled.isOn()
         && this.lx.engine.tempo.clockSource.getEnum() == ClockSource.OSC) {
       return State.PRODUCTION;
@@ -392,6 +398,8 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
       // Confirm they're on since we're not tracking them individually for now
       setMidiSurfacesEnabled(true);
     }
+    this.lx.preferences.focusChannelOnCue.setValue(true);
+    this.lx.preferences.focusActivePattern.setValue(true);
     this.lx.engine.tempo.enabled.setValue(true);
     this.lx.engine.tempo.clockSource.setValue(ClockSource.INTERNAL);
   }
@@ -420,6 +428,8 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
       // Confirm they're on since we're not tracking them individually for now
       setMidiSurfacesEnabled(true);
     }
+    this.lx.preferences.focusChannelOnCue.setValue(true);
+    this.lx.preferences.focusActivePattern.setValue(true);
     this.lx.engine.tempo.enabled.setValue(true);
     this.lx.engine.tempo.clockSource.setValue(ClockSource.OSC);
 
