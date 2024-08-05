@@ -10,7 +10,7 @@
     "outputW2": { type: "int", default: 7, min: 1, max: 8, label: "Output W2", description: "Window 2 Controller Output Number 1-8" },
     "outputW3": { type: "int", default: 8, min: 1, max: 8, label: "Output W3", description: "Window 3 Controller Output Number 1-8" },
     "outputW8a": { type: "int", default: 3, min: 1, max: 8, label: "Output W8a", description: "Window 8a Controller Output Number 1-8" },
-    "outputW8b": { type: "int", default: 2, min: 1, max: 8, label: "Output W8b", description: "Window 8b Controller Output Number 1-8" },
+    "outputW6": { type: "int", default: 2, min: 1, max: 8, label: "Output W6", description: "Window 6 Controller Output Number 1-8" },
     "outputW9": { type: "int", default: 4, min: 1, max: 8, label: "Output W9", description: "Window 9 Controller Output Number 1-8" },
     "artnetSequence": { default: "false", type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
 
@@ -30,8 +30,8 @@
     "w7ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
     "w8AextraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 175" },
     "w8AledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
-    "w8BextraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 175" },
-    "w8BledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+    /* "w8BextraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 175" }, */
+    /* "w8BledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" }, */
     "w9extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 368" },
     "w9ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
 
@@ -57,7 +57,7 @@
     { type: "Window6", id: "w6", extraLEDs: "$w6extraLEDs", ledOffset: "$w6ledOffset" },
     { type: "Window7", id: "w7", extraLEDs: "$w7extraLEDs", ledOffset: "$w7ledOffset" },
     { type: "Window8A", id: "w8a", extraLEDs: "$w8AextraLEDs", ledOffset: "$w8AledOffset" },
-    { type: "Window8B", id: "w8b", extraLEDs: "$w8BextraLEDs", ledOffset: "$w8BledOffset" },
+    /* w8b is a lift point */
     { type: "Window9", id: "w9", extraLEDs: "$w9extraLEDs", ledOffset: "$w9ledOffset" }
   ],
 
@@ -77,8 +77,7 @@
         { componentId: "w8a" },
         { componentId: "w5" }
     ] },
-    { host: "$host", universe: "$outputW8b*10", protocol: "artnet", sequenceEnabled: "$artnetSequence", segments: [
-        { componentId: "w8b" },
+    { host: "$host", universe: "$outputW6*10", protocol: "artnet", sequenceEnabled: "$artnetSequence", segments: [
         { componentId: "w6" }
     ] },
     { host: "$host", universe: "$outputW9*10", protocol: "artnet", sequenceEnabled: "$artnetSequence", segments: [
