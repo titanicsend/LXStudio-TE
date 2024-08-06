@@ -3,7 +3,7 @@
      Window 8B */
 
   label: "Window8B",
-  tags: [ "w8", "w8B", "window", "rectangle" ],
+  tags: [ "w8", "w8b", "window", "rectangle" ],
 
   parameters:  {
     /* Default 175 LEDs */
