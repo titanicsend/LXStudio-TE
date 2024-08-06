@@ -4,8 +4,8 @@
   tags: [ "FSC", "panel", "Panel", "m21" ],
 
   parameters: {
-    "xOffset": { default: 8.568790405639746, type: "float", description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
-    "yOffset": { default: 6.0, type: "float", description: "Adjust Y position within the plane of the panel. Use to fine-tune position after installation" },
+    "xOffset": { default: 8.568790435791016, type: "float", description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
+    "yOffset": { default: 6, type: "float", description: "Adjust Y position within the plane of the panel. Use to fine-tune position after installation" },
   
     /* Modify HOST and CONTROLLER OUTPUT default values HERE to assign one of this panel's strands to a
        new controller output. Then click [Reload Fixture File] at the bottom of the Inspector section in Chromatik.
