@@ -23,17 +23,11 @@ public class FxXWave extends TEPerformancePattern {
     // Size controls the width of the waves
     controls.setRange(TEControlTag.SIZE, 0.05, 0.01, 0.24);
 
-    // Quantity controls the length of the trail
-    //controls.setRange(TEControlTag.QUANTITY, 0.25,0,1);
-
-    // Speed controls the speed of the rocket. It is limited to twice
-    // per beat.
-    //controls.setRange(TEControlTag.SPEED, 1, -2, -2);
-
-    //controls.markUnused(controls.getLXControl(TEControlTag.XPOS));
-    //controls.markUnused(controls.getLXControl(TEControlTag.YPOS));
-    //controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
-    //controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
+    controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.XPOS));
+    controls.markUnused(controls.getLXControl(TEControlTag.YPOS));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
 
     addCommonControls();
   }
@@ -69,9 +63,19 @@ public class FxXWave extends TEPerformancePattern {
     int color = calcColor();
     float width = (float) getSize();
 
+    // precalculate trig for point rotation so we don't have to do it for every point
+    double theta = (float) -getRotationAngleFromSpin();
+    float cosT = (float) Math.cos(theta);
+    float sinT = (float) Math.sin(theta);
+
     // do one wave on the panels
     for (LXPoint point : this.modelTE.getPanelPoints()) {
-      float dist = Math.abs(point.xn - lightWave);
+      // rotate point at x, y using precalculated trig values
+      float x = point.xn - 0.5f;
+      float y = (-0.5f + point.yn);
+      x = 0.5f + (x * cosT - y * sinT);
+
+      float dist = Math.abs(x - lightWave);
 
       if (dist <= width) {
         //color = setBrightness(color, (float) TEMath.clamp(dist, 0f, 1f));
@@ -83,7 +87,13 @@ public class FxXWave extends TEPerformancePattern {
 
     // and another on the edges
     for (LXPoint point : modelTE.getEdgePoints()) {
-      float dist = Math.abs(point.xn - lightWave);
+
+      // rotate point at x, y using precalculated trig values
+      float x = point.xn - 0.5f;
+      float y = (-0.5f + point.yn);
+      x = 0.5f + (x * cosT - y * sinT);
+
+      float dist = Math.abs(x - lightWave);
 
       if (dist <= width) {
         //color = setBrightness(color, (float) TEMath.clamp(dist, 0f, 1f));

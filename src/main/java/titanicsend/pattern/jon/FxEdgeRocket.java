@@ -25,7 +25,7 @@ public class FxEdgeRocket extends TEPerformancePattern {
     controls.setRange(TEControlTag.SIZE, 0.06, 0.02, 0.2);
 
     // Quantity controls the length of the trail
-    controls.setRange(TEControlTag.QUANTITY, 0.25,0,1);
+    controls.setRange(TEControlTag.QUANTITY, 0.45,0,1);
 
     // Speed controls the speed of the rocket. It is limited to twice
     // per beat, and can't run backwards.
@@ -103,10 +103,9 @@ public class FxEdgeRocket extends TEPerformancePattern {
         if (1.0f - spark < rocketSize) {
           spark = 1.0f;
         } else {
-          spark = (spark > (2f * Math.random())) ? spark * spark : 0f;
+          spark = (spark > (3f * Math.random())) ? spark * spark * spark : 0f;
         }
-        color = setBrightness(color, spark);
-        colors[point.index] = color;
+        colors[point.index] = setBrightness(color, spark);
       }
     }
   }
