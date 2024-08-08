@@ -24,6 +24,7 @@ target/
 classes/
 Projects/project.lxp
 resources/shaders/cache/*.bin
+resources/model/
 
 .devSwitch
 TD/Utils/Backup/
