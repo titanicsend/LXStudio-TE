@@ -1,0 +1,90 @@
+#pragma name "StarField1"
+#pragma TEControl.QUANTITY.Range(1.5,2.5,0.15)
+#pragma TEControl.SIZE.Range(0.05,0.025,0.125)
+#pragma TEControl.WOW2.Value(0.7);
+
+mat2 rot(float a) {
+    float s=sin(a), c=cos(a);
+    return mat2(c,s,-s,c);
+}
+
+vec3 star(vec2 position) {
+    // Spin the stars
+    position *= rot(iTime);
+    // define the blade shape and brightness
+    float blade = 0.7 * clamp(pow(sin(atan(position.y,position.x )*6.0)+0.1, 3.0), 0.0, 1.0);
+
+    // Now combine star center w/blades
+    float bri =  1.0 / length(position) * iScale;
+    bri += blade * 1.0 / length(position)* (iScale * 1.5);
+
+    return iColorRGB * bri;
+}
+
+// Tweaked from http://glsl.heroku.com/e#4982.0
+float hash( float n ) { return fract(sin(n)*43758.5453); }
+
+float noise( in vec2 x ) {
+    vec2 p = floor(x);
+    vec2 f = fract(x);
+    f = f*f*(3.0-2.0*f);
+    float n = p.x + p.y*57.0;
+    float res = mix(mix(hash(n+0.0), hash(n+1.0),f.x), mix(hash(n+57.0), hash(n+58.0),f.x),f.y);
+    return res;
+}
+
+// four octaves of noise
+vec3 cloud(vec2 p) {
+    float f = 0.0;
+    f += 0.5000*noise(p*10.0);
+    f += 0.2500*noise(p*20.0);
+    f += 0.1250*noise(p*40.0);
+    f += 0.0625*noise(p*80.0);
+    f *= f * f;
+    return vec3(f * iColor2RGB * iWow2);
+}
+
+const float LAYERS    = 4.0;
+const float SPEED    = -0.005;
+const float SCALE    = 80.0;
+const float DENSITY    = 1.5;
+const float BRIGHTNESS  = 10.0;
+
+float rand(vec2 co){ return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453); }
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
+
+    // center, normalize and convert to polar coordinates
+    vec2   pos = fragCoord.xy - iResolution.xy * 0.5;
+    pos *= rot(-iRotationAngle);
+    float dist = length(pos) / iResolution.y;
+    vec2 coord = vec2(pow(dist, 0.1), atan(pos.y, pos.x) / (3.1415926*2.0));
+
+    // noise "clouds" in far background
+    vec3 color = cloud(pos/iResolution.xy);
+
+    // Background stars
+    float a = pow((1.0-dist),20.0);
+    float t = iTime*-.05;
+    float r = coord.x - (t*SPEED);
+    float c = fract(a+coord.y + 0.0*.543);
+    vec2  p = vec2(r, c*.5)*4000.0;
+    vec2 uv = fract(p)*2.0-1.0;
+    float m = clamp((rand(floor(p))-.925)*BRIGHTNESS, 0.0, 1.0);
+
+    color +=  clamp(mix(iColor2RGB,iColorRGB,m)*m*dist, 0.0, 1.0);
+
+    // Layers of flying stars
+    for (float i = 1.0; i < 6.0; i++) {
+        a = pow((1.0-dist),20.0);
+        t = i*10.0 - iTime*i*i;
+        r = coord.x - (t*SPEED);
+        c = fract(a+coord.y + i*.543);
+        p = vec2(r, c*.5)*SCALE*(LAYERS/(i*i));
+        uv = fract(p)*2.0-1.0;
+        m = clamp((rand(floor(p))-iQuantity/i)*BRIGHTNESS, 0.0, 1.0);
+        color += clamp(star(uv*0.5)*m*dist, 0.0, 1.0);
+    }
+
+    fragColor = vec4(color, 1.0);
+}

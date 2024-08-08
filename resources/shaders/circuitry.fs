@@ -5,7 +5,7 @@
 //
 // Wow2 controls audio reactivity
 #pragma name "Circuitry"
-#pragma TEControl.SIZE.Range(2.0,5.0,0.1)
+#pragma TEControl.SIZE.Range(2.0,10.0,0.1)
 #pragma TEControl.QUANTITY.Range(4.0,3.0,6.0)
 #pragma TEControl.WOW2.Disable
 #pragma TEControl.WOW1.Disable
@@ -23,11 +23,12 @@ float minIteration;
 float bandLevel;
 
 float fractal(vec2 p) {
-    // Rock! (oscillate on x a little with the beat.)
-    //p.x += bandLevel;
-
     float dist = 999., minDist = dist;
     minIteration=0.;
+
+    p.y+=iTime / 3.0;
+    p.x+=sin(iTime * 0.1);
+    p.y=fract(p.y*1.05);
 
     for (float i = 0.; i < iQuantity; i++) {
         p = abs(p);
@@ -38,9 +39,10 @@ float fractal(vec2 p) {
         // animated manhattan distance gives size changing rectangular
         // features
         float bassFactor = levelReact * fract(bassRatio);
-        float m = abs(p.x+bassFactor + 0.3 * sin(beat));
+        float m = abs(p.x);
         if (m < dist) {
-            dist = m + smoothstep(0.1,abs(p.y), fract(bandLevel+i*0.618));
+            dist = m + smoothstep(0.05,0.8,fract(beat+float(i)*.5));
+            //dist = m+step(fract(beat+float(i)*.5),abs(p.y));
             minIteration = i;
         }
         // using minimum of manhattan and euclidean distance over all iterations
@@ -52,20 +54,21 @@ float fractal(vec2 p) {
 
     // scale the fractal results to smaller (hand tuned) values to use
     // when calculating color
-    return exp(-20.*dist)+exp(-10.*minDist);
+    return exp(-5. * dist)+exp(-8. * minDist);
 }
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     // normalize, center, correct aspect ratio
     vec2 uv = fragCoord.xy/iResolution.xy - 0.5;
     uv.x *= iResolution.x/iResolution.y;
+    uv *= iScale;
 
     // use high frequency content to mess with the fractal, and
     // rotate the whole thing back and forth a little
     bandLevel = frequencyReact * (-0.5 + trebleRatio);
 
     // use smoothed volume to scale the image
-    uv *= (iScale - volumeRatio * levelReact);
+    //uv *= (iScale - volumeRatio * levelReact);
     float ra = iRotationAngle + 0.4 * bandLevel;
     uv *= rot(ra);
     
@@ -84,6 +87,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
             c += fractal(p);
         }
     }
-    c = c/(aa*aa*0.33);
-    fragColor = vec4(c * vec3(mix(iColorRGB, iColor2RGB, mod(minIteration,2.0))), c);
+    c = c/3.;
+
+    fragColor = vec4(mix(iColorRGB,iColor2RGB,minIteration/floor(iQuantity)),c);
 }
