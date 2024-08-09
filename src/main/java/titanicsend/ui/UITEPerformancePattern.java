@@ -88,8 +88,8 @@ public class UITEPerformancePattern
     // the Chromatik window.
     params.add(null);
     params.add(null);
-    params.add(device.getControls().color.offset);
-    params.add(device.getControls().color.gradient);
+    params.add(null);
+    params.add(null);
 
     // slight hack to add source select and gain controls for NDI patterns without
     // replicating all this UI code...

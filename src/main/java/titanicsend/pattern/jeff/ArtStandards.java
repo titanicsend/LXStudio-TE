@@ -8,8 +8,11 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.utils.LXUtils;
+import titanicsend.color.TEGradientSource;
+import titanicsend.lx.LXGradientUtils;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.pattern.TEAudioPattern;
+import titanicsend.util.TEMath;
 
 /**
  * This edge pattern aims to apply all our art standards as documented:
@@ -40,6 +43,24 @@ public class ArtStandards extends TEAudioPattern {
     addParameter("energy", energy);
   }
 
+  /**
+   * Given a value in 0..1 (and wrapped back outside that range) Return a color within the
+   * primaryGradient
+   *
+   * @param lerp as a frac
+   * @return LXColor
+   */
+  @Deprecated
+  public int getPrimaryGradientColor(float lerp) {
+    /* HSV2 mode wraps returned colors around the color wheel via the shortest
+     * hue distance. In other words, we usually want a gradient to go from yellow
+     * to red via orange, not via lime, green, cyan, blue, purple, red.
+     */
+    return TEGradientSource.get().darkGradient.getColor(
+      TEMath.trianglef(lerp / 2), // Allow wrapping
+      LXGradientUtils.BlendMode.HSVM.function);
+  }
+
   public void runTEAudioPattern(double deltaMs) {
     /* Inside run(), and before iterating over the LED points, we want to do
      * anything that should be done only once per frame. We're targeting about
@@ -53,9 +74,7 @@ public class ArtStandards extends TEAudioPattern {
      */
 
     // Art standard: Respect the palette
-    // We'll use the `primaryGradient` that TEPattern provides. In case the
-    // palette has changed or is transitioning, this gets the new values.
-    updateGradients();
+    // We'll use the `primaryGradient` that TEPattern provides.
 
     /* Art standard: Use the tempo
      * `measure` is a 0..1 normalized ramp (fraction) into the current

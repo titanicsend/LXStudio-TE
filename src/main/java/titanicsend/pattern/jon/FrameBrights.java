@@ -102,8 +102,6 @@ public class FrameBrights extends TEAudioPattern {
   }
 
   public void runTEAudioPattern(double deltaMs) {
-    updateGradients();
-
     // sync lit segment selection changes to measures, and
     // light pulses to the beat.
     float currentCycle = (float) measure();

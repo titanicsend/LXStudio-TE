@@ -433,7 +433,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     speedRotor.updateAngle(iTime.getTime(), value);
 
     // Gradients always need to be up to date for TEColorParameter
-    updateGradients();
     expireColors();
 
     super.run(deltaMs);

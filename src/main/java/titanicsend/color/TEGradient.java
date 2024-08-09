@@ -1,10 +1,8 @@
 package titanicsend.color;
 
 public enum TEGradient {
-  FULL_PALETTE("Full Palette"),
-  PRIMARY("Primary"),
-  SECONDARY("Secondary"),
-  FOREGROUND("Foreground");
+  NORMAL("Normal"),
+  DARK("Dark");
 
   public final String label;
 

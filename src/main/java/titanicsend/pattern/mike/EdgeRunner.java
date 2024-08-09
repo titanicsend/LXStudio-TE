@@ -71,7 +71,7 @@ public class EdgeRunner extends TEPattern implements TEListener {
 
   public final LinkedColorParameter fillColor =
       registerColor(
-          "Fill", "fillColor", TEColorType.SECONDARY_BACKGROUND, "Color to fill the panels with");
+          "Fill", "fillColor", TEColorType.TERTIARY, "Color to fill the panels with");
 
   public EdgeRunner(LX lx) {
     super(lx);
