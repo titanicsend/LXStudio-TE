@@ -42,6 +42,7 @@ import titanicsend.audio.AudioStemModulator;
 import titanicsend.audio.AudioStems;
 import titanicsend.audio.UIAudioStems;
 import titanicsend.color.ColorPaletteManager;
+import titanicsend.color.TEGradientSource;
 import titanicsend.dmx.DmxEngine;
 import titanicsend.dmx.effect.BeaconStrobeEffect;
 import titanicsend.dmx.pattern.BeaconDirectPattern;
@@ -180,6 +181,8 @@ public class TEApp extends LXStudio {
       } else {
         this.paletteManagerB = null;
       }
+
+      new TEGradientSource(lx);
 
       // create our loop task for outputting data to lasers
       this.laserTask = new TELaserTask(lx);
