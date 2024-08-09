@@ -350,9 +350,9 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
   }
 
   private final LXParameterListener wowTriggerListener =
-      (p) -> {
-        onWowTrigger(getWowTrigger());
-      };
+    (p) -> {
+      onWowTrigger(getWowTrigger());
+    };
 
   private final LXParameterListener TwistListener =
     (p) -> {

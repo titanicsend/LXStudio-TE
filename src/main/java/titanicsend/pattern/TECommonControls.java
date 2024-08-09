@@ -15,6 +15,7 @@ import titanicsend.color.TEColorParameter;
 import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon._CommonControlGetter;
+import titanicsend.quantize.QuantizeTriggerParameter;
 import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
 
@@ -117,9 +118,8 @@ public class TECommonControls {
     setControl(TEControlTag.WOW2, p);
 
     p =
-        new BooleanParameter(TEControlTag.WOWTRIGGER.getLabel(), false)
-            .setMode(BooleanParameter.Mode.MOMENTARY)
-            .setDescription("Trigger WoW effects");
+      new QuantizeTriggerParameter(this.pattern.getLX(), TEControlTag.WOWTRIGGER.getLabel())
+          .setDescription("Trigger WoW effects");
     setControl(TEControlTag.WOWTRIGGER, p);
 
     p =
