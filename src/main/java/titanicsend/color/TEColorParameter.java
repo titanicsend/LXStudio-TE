@@ -14,16 +14,16 @@ import titanicsend.lx.LXGradientUtils;
 
 public class TEColorParameter extends ColorParameter implements GradientUtils.GradientFunction {
 
-  // SOLID-COLOR SOURCE
+  // COLOR SOURCE
 
-  public enum SolidColorSource {
+  public enum ColorSource {
     STATIC("Static"),
-    FOREGROUND("Foreground"),
-    GRADIENT("Selected Gradient");
+    NORMAL("Normal TE"),
+    DARK("Dark TE");
 
     public final String label;
 
-    private SolidColorSource(String label) {
+    private ColorSource(String label) {
       this.label = label;
     }
 
@@ -33,33 +33,21 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
     }
   }
 
-  private final SolidColorSource SOLID_SOURCE_DEFAULT = SolidColorSource.FOREGROUND;
+  private final ColorSource COLOR_SOURCE_DEFAULT = ColorSource.NORMAL;
 
-  public final EnumParameter<SolidColorSource> solidSource =
-      new EnumParameter<SolidColorSource>("SolidSource", SOLID_SOURCE_DEFAULT) {
+  public final EnumParameter<ColorSource> colorSource =
+      new EnumParameter<ColorSource>("ColorSource", COLOR_SOURCE_DEFAULT) {
         @Override
         public LXParameter reset() {
           // JKB: Don't worry about this, just avoiding a minor bug
           // in EnumParameter. It'll be fixed soon.
-          setValue(SOLID_SOURCE_DEFAULT);
+          setValue(COLOR_SOURCE_DEFAULT);
           return this;
         }
       }.setDescription(
-          "For a solid color: Whether to use global TE palette (preferred), or a static color unique to this pattern");
+          "Whether to use global TE palette (preferred), or a static color unique to this pattern");
 
-  public final CompoundParameter color2offset = new CompoundParameter("C2Offset", 0.5);
-
-  // GRADIENT
-
-  @SuppressWarnings("unchecked")
-  public final EnumParameter<TEGradient> gradient =
-      (EnumParameter<TEGradient>)
-          new EnumParameter<TEGradient>("Gradient", TEGradient.FULL_PALETTE)
-              .setDescription(
-                  "Which TEGradient to use. Full_Palette=entire, Foreground=Primary-Secondary, Primary=Primary-BackgroundPrimary, Secondary=Secondary-BackgroundSecondary")
-              .setWrappable(false);
-
-  // GRADIENT BLEND. Excluding RGB because it does play well with gradients.
+  // BLEND MODE FOR THE GRADIENT. Excluding RGB because it does not play well with gradients.
 
   public enum BlendMode {
     HSVM,
@@ -80,7 +68,7 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
         }
       }.setDescription("Blend mode for the gradient");
 
-  // OFFSET affects both Solid Colors and Gradient
+  // OFFSET
 
   // This custom wrapper class allows the device UI to render a color
   // picker on just this subparameter.
@@ -100,7 +88,7 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
             public BoundedParameter reset() {
               super.reset();
               // As the main user-facing sub-parameter, reset the color picker in STATIC mode.
-              if (solidSource.getEnum() == SolidColorSource.STATIC) {
+              if (colorSource.getEnum() == ColorSource.STATIC) {
                 brightness.reset();
                 saturation.reset();
                 hue.reset();
@@ -115,7 +103,7 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
         double value = p.getValue();
         // When SolidColorSource is STATIC, turning the offset pushes the
         // hue position so the UI hue indicator stays in sync.
-        if (solidSource.getEnum() == SolidColorSource.STATIC) {
+        if (colorSource.getEnum() == ColorSource.STATIC) {
           hue.incrementNormalized(value - lastOffset);
         }
         lastOffset = value;
@@ -137,11 +125,9 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
 
     offset.addListener(offsetListener);
 
-    addSubparameter("solidSource", this.solidSource);
-    addSubparameter("gradient", this.gradient);
+    addSubparameter("solidSource", this.colorSource);
     addSubparameter("blendMode", this.blendMode);
     addSubparameter("offset", this.offset);
-    addSubparameter("color2offset", this.color2offset);
   }
 
   @Override
@@ -171,15 +157,15 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
    * returns if there are LFOs/etc being applied. Offset has been applied to this color.
    */
   public int calcColor() {
-    switch (this.solidSource.getEnum()) {
-      case GRADIENT:
+    switch (this.colorSource.getEnum()) {
+      case NORMAL:
         // TODO: scale brightness here
-        return _getGradientColor(getOffsetf());
-      case FOREGROUND:
+        return getGradientColorFixed(getOffsetf(), TEGradient.NORMAL);
+      case DARK:
         // TODO: scale brightness here
-        return _getGradientColor(getOffsetf(), TEGradient.FOREGROUND);
-      default:
+        return getGradientColorFixed(getOffsetf(), TEGradient.DARK);
       case STATIC:
+      default:
         return LXColor.hsb(
             this.hue.getValue(), this.saturation.getValue(), this.brightness.getValue());
     }
@@ -191,17 +177,21 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
    * @return LXColor
    */
   public int calcColor2() {
-    switch (this.solidSource.getEnum()) {
-      case GRADIENT:
+    // TODO: This needs to maintain the hue offset used by ColorPaletteManager
+
+    float colorPaletteManagerOffset = 0f;
+
+    switch (this.colorSource.getEnum()) {
+      case NORMAL:
         // TODO: scale brightness here
-        return _getGradientColor(getOffsetf() + color2offset.getValuef());
-      case FOREGROUND:
+        return getGradientColorFixed(getOffsetf() + colorPaletteManagerOffset);
+      case DARK:
         // TODO: scale brightness here
-        return _getGradientColor(getOffsetf() + color2offset.getValuef(), TEGradient.FOREGROUND);
-      default:
+        return LXColor.BLACK;
       case STATIC:
+      default:
         return LXColor.hsb(
-            this.hue.getValue() + (color2offset.getValue() * 360.),
+            this.hue.getValue(),
             this.saturation.getValue(),
             this.brightness.getValue());
     }
@@ -213,9 +203,11 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
    */
   @Override
   public int getColor() {
-    switch (this.solidSource.getEnum()) {
-      case FOREGROUND:
-        return getGradientColor(0);
+    switch (this.colorSource.getEnum()) {
+      case NORMAL:
+        return getGradientColorFixed(0, TEGradient.NORMAL);
+      case DARK:
+        return getGradientColorFixed(0, TEGradient.DARK);
       default:
       case STATIC:
         return super.getColor();
@@ -234,20 +226,25 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
    * @return LXColor
    */
   public int getGradientColor(float lerp) {
-    return _getGradientColor(lerp + getOffsetf());
+    return getGradientColorFixed(lerp + getOffsetf());
   }
 
   /**
    * Returns absolute position within current gradient.
-   *
-   * @param lerp
-   * @return
    */
-  private int _getGradientColor(float lerp) {
-    return _getGradientColor(lerp, this.gradient.getEnum());
+  public int getGradientColorFixed(float lerp) {
+    switch (this.colorSource.getEnum()) {
+      case STATIC:
+        return super.getColor();
+      case DARK:
+        return getGradientColorFixed(lerp, TEGradient.DARK);
+      case NORMAL:
+      default:
+        return getGradientColorFixed(lerp, TEGradient.NORMAL);
+    }
   }
 
-  private int _getGradientColor(float lerp, TEGradient gradient) {
+  private int getGradientColorFixed(float lerp, TEGradient gradient) {
     lerp = (float) LXUtils.wrapnf(lerp);
 
     LXGradientUtils.BlendFunction bf;
@@ -269,22 +266,18 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
   /** Internal helper method. Maps gradient enum to ColorStops. */
   private LXGradientUtils.ColorStops getGradientStops(TEGradient gradient) {
     switch (gradient) {
-      case FOREGROUND:
-        return this.gradientSource.foregroundGradient;
-      case PRIMARY:
-        return this.gradientSource.primaryGradient;
-      case SECONDARY:
-        return this.gradientSource.secondaryGradient;
-      case FULL_PALETTE:
+      case DARK:
+        return this.gradientSource.darkGradient;
+      case NORMAL:
       default:
-        return this.gradientSource.paletteGradient;
+        return this.gradientSource.normalGradient;
     }
   }
 
   @Override
   protected void onSubparameterUpdate(LXParameter p) {
     // TODO: some fixing up here
-    if (this.solidSource.getEnum() == SolidColorSource.FOREGROUND) {
+    if (this.colorSource.getEnum() == ColorSource.NORMAL) {
       setColor(getGradientColor(0));
     } else {
       super.onSubparameterUpdate(p);
