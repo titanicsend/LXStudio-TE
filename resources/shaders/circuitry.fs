@@ -10,6 +10,8 @@
 #pragma TEControl.WOW2.Disable
 #pragma TEControl.WOW1.Disable
 #pragma TEControl.WOWTRIGGER.Disable
+#pragma TEControl.LEVELREACTIVITY.Disable
+#pragma TEControl.FREQREACTIVITY.Disable
 
 #include <include/constants.fs>
 #include <include/colorspace.fs>

@@ -179,7 +179,12 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
   public int calcColor2() {
     // TODO: This needs to maintain the hue offset used by ColorPaletteManager
 
-    float colorPaletteManagerOffset = 0f;
+    // TODO: Below is is a quick fix to get color2 to work -- if I understand
+    // TODO: correctly, an offset of 0.5 will get us to the second color in a two color
+    // TODO: palette, and to a still-reasonable color in a three color palette.
+    // TODO: Not sure what we want here.  Would be nice to have a controllable
+    // TODO offset for color2.
+    float colorPaletteManagerOffset = 0.5f;
 
     switch (this.colorSource.getEnum()) {
       case NORMAL:
