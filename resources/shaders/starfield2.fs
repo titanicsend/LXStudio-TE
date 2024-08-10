@@ -1,6 +1,9 @@
 #pragma name "StarField2"
-#pragma TEControl.SIZE.Range(0.0125,.005,0.04)
+#pragma TEControl.SIZE.Range(0.0175,.005,0.04)
+#pragma TEControl.QUANTITY.Value(0.8)
 #pragma TEControl.WOW2.Range(0.1,0.0,0.3)
+
+// Simpler stars, but you can have *lots* of them!
 
 mat2 rot(float a) {
     float s=sin(a), c=cos(a);
@@ -9,12 +12,19 @@ mat2 rot(float a) {
 
 float star(vec2 uv,float scale,float seed) {
     uv *= scale;
+
+    // determine which uv tile we're in. We use this
+    // to seed the prng to make sure we get the same star
+    // in every frame.
     vec2 s=floor(uv);
     vec2 f=fract(uv);
 
+    // generate random position
     vec2 p=.5+.44*sin(11.*fract(sin((s+seed)*mat2(7.5,3.3,6.2,5.4))*55.))-f;
     float d = length(p);
     float k = min(d,3.0);
+
+    // draw smoothed blob for star
     return smoothstep(0.,k,iScale);
 }
 

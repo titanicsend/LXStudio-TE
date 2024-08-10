@@ -38,11 +38,9 @@ float fractal(vec2 p) {
 
         // animated manhattan distance gives size changing rectangular
         // features
-        float bassFactor = levelReact * fract(bassRatio);
-        float m = abs(p.x);
+        float m = abs(p.x);;
         if (m < dist) {
-            dist = m + smoothstep(0.05,0.8,fract(beat+float(i)*.5));
-            //dist = m+step(fract(beat+float(i)*.5),abs(p.y));
+            dist = m + max(0.025,abs(sin(PI * fract(iTime)+float(i))));
             minIteration = i;
         }
         // using minimum of manhattan and euclidean distance over all iterations
@@ -61,16 +59,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     // normalize, center, correct aspect ratio
     vec2 uv = fragCoord.xy/iResolution.xy - 0.5;
     uv.x *= iResolution.x/iResolution.y;
+
     uv *= iScale;
-
-    // use high frequency content to mess with the fractal, and
-    // rotate the whole thing back and forth a little
-    bandLevel = frequencyReact * (-0.5 + trebleRatio);
-
-    // use smoothed volume to scale the image
-    //uv *= (iScale - volumeRatio * levelReact);
-    float ra = iRotationAngle + 0.4 * bandLevel;
-    uv *= rot(ra);
+    uv *= rot(iRotationAngle);
     
     // draw the fractal, antialiased by drawing it multiple times
     // at very small coordinate offsets.  For the car, we don't need
@@ -87,7 +78,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
             c += fractal(p);
         }
     }
-    c = c/3.;
+    c = c/2.;
 
     fragColor = vec4(mix(iColorRGB,iColor2RGB,minIteration/floor(iQuantity)),c);
 }
