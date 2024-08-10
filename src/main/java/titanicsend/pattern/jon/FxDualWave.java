@@ -1,23 +1,19 @@
 package titanicsend.pattern.jon;
 
-import static titanicsend.util.TEColor.setBrightness;
-
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-import titanicsend.util.TEMath;
 
 @LXCategory("Edge FG")
-public class FxXWave extends TEPerformancePattern {
+public class FxDualWave extends TEPerformancePattern {
   boolean active = false;
   boolean stopRequest = false;
   double time;
   double startTime;
 
-  public FxXWave(LX lx) {
+  public FxDualWave(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
 
     // Size controls the width of the waves
