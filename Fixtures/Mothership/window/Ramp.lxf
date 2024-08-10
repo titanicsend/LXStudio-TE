@@ -5,9 +5,9 @@
   tags: [ "ramp", "slice" ],
 
   "parameters": {
-    "host": { type: "string", default: "10.7.42.", label: "Host", description: "Controller IP address or hostname" },
+    "host": { type: "string", default: "10.128.42.", label: "Host", description: "Controller IP address or hostname" },
     "angle": { type: "float", default: 0, min: 0, label: "Angle" },
-    "onCar": { type: "boolean", default: "true", label: "On Car", description: "True = Locate to position on car, False = Locate to origin" },
+    "onCar": { type: "boolean", default: true, label: "On Car", description: "True = Locate to position on car, False = Locate to origin" },
 
     "outputP1W9": { type: "int", default: 6, min: 1, max: 8, label: "OutputP1 W9", description: "Slice P1 Window 9 Controller Output Number 1-8" },
     "outputS2W9": { type: "int", default: 7, min: 1, max: 8, label: "OutputS2 W9", description: "Slice S2 Window 9 Controller Output Number 1-8" },
@@ -15,7 +15,7 @@
     "outputS3W9": { type: "int", default: 3, min: 1, max: 8, label: "OutputS3 W9", description: "Slice S3 Window 9 Controller Output Number 1-8" },
     "outputP3W9": { type: "int", default: 2, min: 1, max: 8, label: "OutputP3 W9", description: "Slice P3 Window 9 Controller Output Number 1-8" },
     "outputS4W9": { type: "int", default: 4, min: 1, max: 8, label: "OutputS4 W9", description: "Slice S4 Window 9 Controller Output Number 1-8" },
-    "artnetSequence": { default: "false", type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
+    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
 
     "p1w9extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 368" },
     "p1w9ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },

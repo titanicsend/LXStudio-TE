@@ -5,14 +5,14 @@
   tags: [ "slice", "port", "slice13", "slice13p" ],
 
   "parameters": {
-    "host": { type: "string", default: "10.7.42.", label: "Host", description: "Controller IP address or hostname" },
-    "outputW1": { type: "int", default: 6, min: 1, max: 8, label: "Output W1", description: "Window 1 Controller Output Number 1-8" },
-    "outputW2": { type: "int", default: 7, min: 1, max: 8, label: "Output W2", description: "Window 2 Controller Output Number 1-8" },
-    "outputW3": { type: "int", default: 8, min: 1, max: 8, label: "Output W3", description: "Window 3 Controller Output Number 1-8" },
+    "host": { type: "string", default: "10.128.42.", label: "Host", description: "Controller IP address or hostname" },
+    "outputW1": { type: "int", default: 5, min: 1, max: 8, label: "Output W1", description: "Window 1 Controller Output Number 1-8" },
+    "outputW2": { type: "int", default: 6, min: 1, max: 8, label: "Output W2", description: "Window 2 Controller Output Number 1-8" },
+    "outputW3": { type: "int", default: 7, min: 1, max: 8, label: "Output W3", description: "Window 3 Controller Output Number 1-8" },
     "outputW8a": { type: "int", default: 3, min: 1, max: 8, label: "Output W8a", description: "Window 8a Controller Output Number 1-8" },
     "outputW8b": { type: "int", default: 2, min: 1, max: 8, label: "Output W8b", description: "Window 8b Controller Output Number 1-8" },
     "outputW9": { type: "int", default: 4, min: 1, max: 8, label: "Output W9", description: "Window 9 Controller Output Number 1-8" },
-    "artnetSequence": { default: "false", type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
+    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
 
     "w1extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 270" },
     "w1ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },

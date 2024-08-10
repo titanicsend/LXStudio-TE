@@ -12,9 +12,9 @@
     "radial": { type: "int", default: 1, min: 1, max: 25, label: "Radial", description: "Clock position of this slice, 1-24" },
 
     "host": { type: "string", default: "localhost", label: "Host", description: "Controller IP address or hostname" },
-    "outputW1": { type: "int", default: 6, min: 1, max: 8, label: "Output W1", description: "Window 1 Controller Output Number 1-8" },
-    "outputW2": { type: "int", default: 7, min: 1, max: 8, label: "Output W2", description: "Window 2 Controller Output Number 1-8" },
-    "outputW3": { type: "int", default: 8, min: 1, max: 8, label: "Output W3", description: "Window 3 Controller Output Number 1-8" },
+    "outputW1": { type: "int", default: 5, min: 1, max: 8, label: "Output W1", description: "Window 1 Controller Output Number 1-8" },
+    "outputW2": { type: "int", default: 6, min: 1, max: 8, label: "Output W2", description: "Window 2 Controller Output Number 1-8" },
+    "outputW3": { type: "int", default: 7, min: 1, max: 8, label: "Output W3", description: "Window 3 Controller Output Number 1-8" },
     "outputW8a": { type: "int", default: 3, min: 1, max: 8, label: "Output W8a", description: "Window 8a Controller Output Number 1-8" },
     "outputW8b": { type: "int", default: 2, min: 1, max: 8, label: "Output W8b", description: "Window 8b Controller Output Number 1-8" },
     "outputW9": { type: "int", default: 4, min: 1, max: 8, label: "Output W9", description: "Window 9 Controller Output Number 1-8" },
