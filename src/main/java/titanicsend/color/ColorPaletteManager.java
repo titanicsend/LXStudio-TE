@@ -20,6 +20,7 @@ public class ColorPaletteManager extends LXComponent {
 
   public static final String DEFAULT_SWATCH_NAME = "SWATCH A";
   public static final int DEFAULT_SWATCH_INDEX = 0;
+  public static final int SWATCH_COLORS = 3;
 
   public enum PaletteStrategy {
     MONO,
@@ -139,10 +140,11 @@ public class ColorPaletteManager extends LXComponent {
     }
     this.managedSwatch = this.lx.engine.palette.swatches.get(this.swatchIndex);
     this.managedSwatch.label.setValue(this.swatchName);
-    if (this.managedSwatch.colors.size() < LXSwatch.MAX_COLORS) {
-      for (int i = this.managedSwatch.colors.size(); i < LXSwatch.MAX_COLORS; ++i) {
+    if (this.managedSwatch.colors.size() < SWATCH_COLORS) {
+      for (int i = this.managedSwatch.colors.size(); i < SWATCH_COLORS; ++i) {
         this.managedSwatch.addColor();
       }
+      // TODO: set the first two TEColorTypes, background and transition
     }
   }
 
@@ -197,7 +199,7 @@ public class ColorPaletteManager extends LXComponent {
     refreshManagedSwatch();
     setColorAtPosition(TEColorType.PRIMARY, this.color1.getColor());
     setColorAtPosition(TEColorType.SECONDARY, this.color2.getColor());
-    setColorAtPosition(TEColorType.SECONDARY_BACKGROUND, this.color3.getColor());
+    setColorAtPosition(TEColorType.TERTIARY, this.color3.getColor());
   }
 
   private void setColorAtPosition(TEColorType teColorType, int color) {
