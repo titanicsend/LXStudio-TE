@@ -42,7 +42,8 @@ float snoise(vec3 uv, float res) {
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     vec2 p = -.5 + fragCoord.xy / iResolution.xy;
-    p.x *= iResolution.x/iResolution.y;
+    //p.x *= iResolution.x/iResolution.y;
+
     p *= r2d(iRotationAngle);
     p *= iScale;
 
