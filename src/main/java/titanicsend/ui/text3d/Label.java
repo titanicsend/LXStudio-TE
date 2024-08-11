@@ -6,6 +6,8 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
 
+import static org.lwjgl.bgfx.BGFX.bgfx_destroy_vertex_buffer;
+
 // Information needed to render a single 3d text label
 public class Label {
   public Vector3f position;
@@ -42,6 +44,8 @@ public class Label {
   }
 
   public void dispose() {
+    bgfx_destroy_vertex_buffer(vbh);
+
     MemoryUtil.memFree(this.modelMatrixBuf);
     MemoryUtil.memFree(this.vertexBuffer);
   }

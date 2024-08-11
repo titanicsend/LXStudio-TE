@@ -27,8 +27,7 @@ Want a personal intro to the project and codebase? Contact current team lead [An
 Either go to https://adoptium.net/installation/ or, on a Mac with Homebrew:
 
 ```sh
-brew tap homebrew/cask-versions
-brew install --cask temurin17
+brew install --cask temurin@17
 
 # verify your installation by running:
 /Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java --version

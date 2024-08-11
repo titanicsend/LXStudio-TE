@@ -1,9 +1,26 @@
 package titanicsend.color;
 
+import heronarts.lx.LX;
+import heronarts.lx.color.LXColor;
+import heronarts.lx.color.LXDynamicColor;
 import heronarts.lx.color.LXSwatch;
 import titanicsend.lx.LXGradientUtils;
 
+/**
+ * Calculates TE gradients once per frame in a global singleton
+ */
 public class TEGradientSource {
+
+  private static TEGradientSource current;
+
+  public static TEGradientSource get() {
+    return current;
+  }
+
+  private final LX lx;
+
+  // Keep black for building gradients
+  private final LXDynamicColor black;
 
   private static LXGradientUtils.ColorStops initColorStops(int numStops) {
     LXGradientUtils.ColorStops colorStops = new LXGradientUtils.ColorStops();
@@ -11,33 +28,45 @@ public class TEGradientSource {
     return colorStops;
   }
 
-  // Whole palette gradient across all 5 stops. Usually starts and ends with black.
-  public LXGradientUtils.ColorStops paletteGradient =
-      initColorStops(5); // [X] [X] [X] [X] [X]  All five color entries
-  public LXGradientUtils.ColorStops primaryGradient =
-      initColorStops(3); // [X] [ ] [X] [ ] [ ]  Background primary -> Primary
-  public LXGradientUtils.ColorStops secondaryGradient =
-      initColorStops(3); // [ ] [ ] [ ] [X] [X]  Background secondary -> Secondary
-  public LXGradientUtils.ColorStops foregroundGradient =
-      initColorStops(3); // [ ] [ ] [X] [X] [ ]  Primary -> Secondary
+  /**
+   * Primary -> Secondary -> Tertiary -> (Wrap to Primary)
+   */
+  public LXGradientUtils.ColorStops normalGradient = initColorStops(4);
+  /**
+   * Primary -> Black -> (Wrap to Primary)
+   */
+  public LXGradientUtils.ColorStops darkGradient = initColorStops(3);
 
-  // If a pattern uses the standard gradients, call this in run() to ensure
-  // palette changes are known and transitions are smooth
-  public TEGradientSource updateGradients(LXSwatch swatch) {
-    paletteGradient.stops[0].set(swatch.getColor(0));
-    paletteGradient.stops[1].set(swatch.getColor(1));
-    paletteGradient.stops[2].set(swatch.getColor(2));
-    paletteGradient.stops[3].set(swatch.getColor(3));
-    paletteGradient.stops[4].set(swatch.getColor(4));
-    primaryGradient.stops[0].set(swatch.getColor(TEColorType.PRIMARY.swatchIndex()));
-    primaryGradient.stops[1].set(swatch.getColor(TEColorType.BACKGROUND.swatchIndex()));
-    primaryGradient.stops[2].set(swatch.getColor(TEColorType.PRIMARY.swatchIndex()));
-    secondaryGradient.stops[0].set(swatch.getColor(TEColorType.SECONDARY.swatchIndex()));
-    secondaryGradient.stops[1].set(swatch.getColor(TEColorType.SECONDARY_BACKGROUND.swatchIndex()));
-    secondaryGradient.stops[2].set(swatch.getColor(TEColorType.SECONDARY.swatchIndex()));
-    foregroundGradient.stops[0].set(swatch.getColor(TEColorType.PRIMARY.swatchIndex()));
-    foregroundGradient.stops[1].set(swatch.getColor(TEColorType.SECONDARY.swatchIndex()));
-    foregroundGradient.stops[2].set(swatch.getColor(TEColorType.PRIMARY.swatchIndex()));
-    return this;
+  public TEGradientSource(LX lx) {
+    current = this;
+    this.lx = lx;
+
+    // Initialize a black dynamicColor that can be used every frame
+    LXSwatch blackSwatch = new LXSwatch(lx);
+    this.black = blackSwatch.getColor(0);
+    this.black.primary.setColor(LXColor.BLACK);
+
+    lx.engine.addLoopTask((p) -> {
+      loop();
+    });
   }
+
+  /**
+   * Refresh gradients from the global palette.
+   * Called every engine loop.
+   */
+  private void loop() {
+    updateGradients(this.lx.engine.palette.swatch);
+  }
+
+  private void updateGradients(LXSwatch swatch) {
+    normalGradient.stops[0].set(swatch.getColor(TEColorType.PRIMARY.swatchIndex()));
+    normalGradient.stops[1].set(swatch.getColor(TEColorType.SECONDARY.swatchIndex()));
+    normalGradient.stops[2].set(swatch.getColor(TEColorType.TERTIARY.swatchIndex()));
+    normalGradient.stops[3].set(swatch.getColor(TEColorType.PRIMARY.swatchIndex()));
+    darkGradient.stops[0].set(swatch.getColor(TEColorType.PRIMARY.swatchIndex()));
+    darkGradient.stops[1].set(this.black);
+    darkGradient.stops[2].set(swatch.getColor(TEColorType.PRIMARY.swatchIndex()));
+  }
+
 }

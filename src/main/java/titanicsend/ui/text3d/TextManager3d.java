@@ -11,7 +11,7 @@ public class TextManager3d {
 
   // multiplier to generate final font size in world space units
 
-  private float font3dScale = 10000f;
+  private float font3dScale = .1f;
   private int fontForeground = LXColor.WHITE;
   private int fontBackground = LXColor.BLACK;
 

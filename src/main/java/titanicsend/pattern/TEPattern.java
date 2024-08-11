@@ -23,14 +23,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import titanicsend.color.TEColorType;
-import titanicsend.color.TEGradientSource;
 import titanicsend.dmx.pattern.DmxPattern;
-import titanicsend.lx.LXGradientUtils;
 import titanicsend.model.TELaserModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
 import titanicsend.util.TEColor;
-import titanicsend.util.TEMath;
 
 public abstract class TEPattern extends DmxPattern {
   private final TEPanelModel sua;
@@ -53,10 +50,6 @@ public abstract class TEPattern extends DmxPattern {
 
   protected TEPattern(LX lx) {
     super(lx);
-    // NOTE(mcslee): in newer LX version, colors array does not exist at instantiation
-    // time. If this call was truly necessary, it will need to be refactored to happen elsewhere
-    // this.clearPixels();
-
     this.modelTE = TEApp.wholeModel;
 
     this.sua = this.modelTE.getPanel("SUA");
@@ -98,24 +91,6 @@ public abstract class TEPattern extends DmxPattern {
   }
 
   /**
-   * Given a value in 0..1 (and wrapped back outside that range) Return a color within the
-   * primaryGradient
-   *
-   * @param lerp as a frac
-   * @return LXColor
-   */
-  @Deprecated
-  public int getPrimaryGradientColor(float lerp) {
-    /* HSV2 mode wraps returned colors around the color wheel via the shortest
-     * hue distance. In other words, we usually want a gradient to go from yellow
-     * to red via orange, not via lime, green, cyan, blue, purple, red.
-     */
-    return this.gradientSource.primaryGradient.getColor(
-        TEMath.trianglef(lerp / 2), // Allow wrapping
-        LXGradientUtils.BlendMode.HSVM.function);
-  }
-
-  /**
    * Get a ColorType's color from the Swatch
    *
    * @param type
@@ -123,11 +98,6 @@ public abstract class TEPattern extends DmxPattern {
    */
   public int getSwatchColor(TEColorType type) {
     return lx.engine.palette.getSwatchColor(type.swatchIndex()).getColor();
-  }
-
-  /** Refresh gradients from the global palette */
-  protected void updateGradients() {
-    this.gradientSource.updateGradients(this.lx.engine.palette.swatch);
   }
 
   // During construction, make gap points show up in red

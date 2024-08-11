@@ -14,10 +14,14 @@ public class AudioStems extends LXComponent implements LXOscListener {
   public static final String PATH_STEM = "/te/stem/";
   public static final String PATH_BASS = "bass";
   public static final String PATH_DRUMS = "drums";
-  public static final String PATH_VOCAL = "vocal";
+  public static final String PATH_VOCALS = "vocals";
   public static final String PATH_OTHER = "other";
 
-  public static AudioStems current;
+  private static AudioStems current;
+
+  public static AudioStems get() {
+    return current;
+  }
 
   public final CompoundParameter gain =
     new CompoundParameter("Gain", 0, -1, 2)
@@ -29,7 +33,7 @@ public class AudioStems extends LXComponent implements LXOscListener {
 
   public final BoundedParameter bassRaw = new BoundedParameter("bassRaw");
   public final BoundedParameter drumsRaw = new BoundedParameter("drumsRaw");
-  public final BoundedParameter vocalRaw = new BoundedParameter("vocalRaw");
+  public final BoundedParameter vocalsRaw = new BoundedParameter("vocalsRaw");
   public final BoundedParameter otherRaw = new BoundedParameter("otherRaw");
 
   /*
@@ -54,14 +58,14 @@ public class AudioStems extends LXComponent implements LXOscListener {
     }
     .setDescription("Audio stem for drums");
 
-  public final BoundedFunctionalParameter vocal =
-    new BoundedFunctionalParameter("Vocal") {
+  public final BoundedFunctionalParameter vocals =
+    new BoundedFunctionalParameter("Vocals") {
       @Override
       protected double computeValue() {
-        return adjusted(vocalRaw);
+        return adjusted(vocalsRaw);
       }
     }
-    .setDescription("Audio stem for vocal");
+    .setDescription("Audio stem for vocals");
 
   public final BoundedFunctionalParameter other =
     new BoundedFunctionalParameter("Other") {
@@ -76,7 +80,7 @@ public class AudioStems extends LXComponent implements LXOscListener {
    * Apply adjustments (gain, smoothing) to a raw parameter
    */
   private double adjusted(BoundedParameter raw) {
-    return raw.getValue() * (1 + gain.getValue());
+    return raw.getValue() * (1.0 + gain.getValue());
   }
 
   public AudioStems(LX lx) {
@@ -86,7 +90,7 @@ public class AudioStems extends LXComponent implements LXOscListener {
     addParameter("gain", this.gain);
     addParameter("bass", this.bass);
     addParameter("drums", this.drums);
-    addParameter("vocal", this.vocal);
+    addParameter("vocals", this.vocals);
     addParameter("other", this.other);
 
     this.lx.engine.osc.addListener(this);
@@ -114,8 +118,8 @@ public class AudioStems extends LXComponent implements LXOscListener {
         handleBass(value);
       } else if (stem.equals(PATH_DRUMS)) {
         handleDrums(value);
-      } else if (stem.equals(PATH_VOCAL)) {
-        handleVocal(value);
+      } else if (stem.equals(PATH_VOCALS)) {
+        handleVocals(value);
       } else if (stem.equals(PATH_OTHER)) {
         handleOther(value);
       } else {
@@ -133,8 +137,8 @@ public class AudioStems extends LXComponent implements LXOscListener {
     this.drumsRaw.setValue(value);
   }
   
-  private void handleVocal(float value) {
-    this.vocalRaw.setValue(value);
+  private void handleVocals(float value) {
+    this.vocalsRaw.setValue(value);
   }
   
   private void handleOther(float value) {

@@ -16,6 +16,7 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
 import titanicsend.dmx.model.DmxModel;
 import titanicsend.pattern.jon.ModelBender;
+import titanicsend.ui.UI3DManager;
 
 public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
 
@@ -259,10 +260,22 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
     this.mutableChildren.addAll(this.panelModels.keySet());
     this.children = this.mutableChildren.toArray(new LXModel[0]);
 
-    // adjust model geometry for easy texture mapping in views
+    // adjust model geometry to improve texture mapping of ends in all views.
     ModelBender mb = new ModelBender();
-    mb.adjustEndGeometry(this, this.lx.getModel());
-    mb.restoreModel(this, this.lx.getModel());
+    boolean rebuildViews = mb.adjustEndGeometry(this, lx.getModel());
+    
+    // if the TE main car is part of this model, iterate over the views
+    // and rebuild them (with the "adjusted" end geometry)
+    // To do this, we call a method in heronarts.lx.structure.view.LXViewEngine
+    //
+    // NOTE that this method, though public, is mainly used internally by Chromatik,
+    // and its behavior might change without warning in a future version.
+    if (rebuildViews) {
+      lx.structure.views.modelGenerationChanged(lx, lx.getModel());
+    }
+
+    // restore the model to its original state
+    mb.restoreModel(this, lx.getModel());
 
     /* TE.log("Model changed. Found " +
     this.edges.size() + " edges, " +
@@ -274,6 +287,9 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
     for (TEListener listener : this.listeners) {
       listener.modelTEChanged(this);
     }
+
+    // Update 3D ui elements (now with extra thread safety!)
+    UI3DManager.current.rebuild();
 
     // Run the garbage collector to prevent buildup of old-generation objects?
   }

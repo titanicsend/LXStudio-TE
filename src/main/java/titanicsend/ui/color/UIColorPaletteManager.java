@@ -170,11 +170,11 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
         16, 4, new UILabel(labelWidth, 12, label), component);
   }
 
-  public static void addToLeftGlobalPane(LXStudio.UI ui, ColorPaletteManager cueMgr, ColorPaletteManager auxMgr) {
+  public static void addToLeftGlobalPane(LXStudio.UI ui, ColorPaletteManager cueMgr, ColorPaletteManager auxMgr, int index) {
     UI2dContainer parentContainer = ui.leftPane.global;
     float xOffsetWithinParent = 0;
     new UIColorPaletteManager(ui, cueMgr, auxMgr, parentContainer.getContentWidth(), xOffsetWithinParent)
-        .addToContainer(parentContainer, 3);
+        .addToContainer(parentContainer, index);
   }
 
   public static void addToRightPerformancePane(LXStudio.UI ui, ColorPaletteManager cueMgr, ColorPaletteManager auxMgr) {
@@ -207,7 +207,7 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
       this.addListener(colorParameter, (p) -> {
         this.color = ((ColorParameter)p).getColor();
         this.redraw();
-      });
+      }, true);
     }
 
     public void onDraw(UI ui, VGraphics vg) {

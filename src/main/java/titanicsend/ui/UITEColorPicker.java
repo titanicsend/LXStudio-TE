@@ -35,7 +35,6 @@ import heronarts.glx.ui.component.UIDoubleBox;
 import heronarts.glx.ui.component.UIKnob;
 import heronarts.glx.ui.component.UILabel;
 import heronarts.glx.ui.component.UIParameterControl;
-import heronarts.glx.ui.component.UISlider;
 import heronarts.glx.ui.vg.VGraphics;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.command.LXCommand;
@@ -55,6 +54,9 @@ public class UITEColorPicker extends UI2dComponent {
   };
 
   private Corner corner = Corner.BOTTOM_RIGHT;
+
+  private static float INDICATOR_HEIGHT = 4;
+  private static float INDICATOR_WIDTH = 6;
 
   private TEColorParameter color;
 
@@ -148,7 +150,10 @@ public class UITEColorPicker extends UI2dComponent {
     if (this.deviceMode) {
       vg.beginPath();
       vg.strokeColor(ui.theme.controlBorderColor);
-      vg.rect(UIKnob.KNOB_MARGIN + .5f, .5f, UIKnob.KNOB_SIZE - 1, UIKnob.KNOB_SIZE - 1);
+      vg.rect(UIKnob.KNOB_MARGIN + .5f,
+              INDICATOR_HEIGHT + .5f,
+              UIKnob.KNOB_SIZE - 1f,
+              UIKnob.KNOB_SIZE - (INDICATOR_HEIGHT * 2) - 1f);
       vg.stroke();
     } else {
       super.drawBorder(ui, vg);
@@ -157,19 +162,49 @@ public class UITEColorPicker extends UI2dComponent {
 
   @Override
   public void onDraw(UI ui, VGraphics vg) {
-    vg.beginPath();
-    vg.fillColor(this.drawColor);
-    if (this.deviceMode) {
-      vg.rect(UIKnob.KNOB_MARGIN, 0, UIKnob.KNOB_SIZE, UIKnob.KNOB_SIZE);
-    } else {
-      vgRoundedRect(vg, .5f, .5f, this.width - 1, this.height - 1);
+    vg.strokeWidth(1f);
+
+    // Gradient
+    for(float x = UIKnob.KNOB_MARGIN + 1f; x < this.width - UIKnob.KNOB_MARGIN; ++x) {
+      float lerp = (x - UIKnob.KNOB_MARGIN) / UIKnob.KNOB_SIZE;
+      vg.beginPath();
+      vg.strokeColor(this.color.getGradientColorFixed(lerp));
+      vg.moveTo(x, INDICATOR_HEIGHT + 1f);
+      vg.lineTo(x, UIKnob.KNOB_SIZE - INDICATOR_HEIGHT - 1);
+      vg.stroke();
     }
-    vg.fill();
+
+    // Indicators
+    float offset = this.color.getOffsetf();
+    float indicatorX = UIKnob.KNOB_MARGIN + .5f + (UIKnob.KNOB_SIZE * offset);
+    drawTriangle(ui, this, vg,
+            indicatorX,
+            INDICATOR_HEIGHT,
+            INDICATOR_WIDTH,
+            INDICATOR_HEIGHT,
+            true);
+    drawTriangle(ui, this, vg,
+            indicatorX,
+            UIKnob.KNOB_SIZE - INDICATOR_HEIGHT,
+            INDICATOR_WIDTH,
+            INDICATOR_HEIGHT,
+            false);
 
     if (this.deviceMode) {
       UIParameterControl.drawParameterLabel(
           ui, vg, this, this.color != null ? this.color.getLabel() : "-");
     }
+  }
+
+  private void drawTriangle(UI ui, UI2dComponent component, VGraphics vg,
+      float x, float y, float w, float h, boolean invert) {
+    vg.fillColor(this.enabled ? ui.theme.controlTextColor : ui.theme.controlDisabledTextColor);
+    vg.beginPath();
+    vg.moveTo(x-(w/2), y + (invert ? 0 - h : h));
+    vg.lineTo(x+(w/2), y + (invert ? 0 - h : h));
+    vg.lineTo(x, y);
+    vg.closePath();
+    vg.fill();
   }
 
   protected void hideOverlay() {
@@ -303,27 +338,26 @@ public class UITEColorPicker extends UI2dComponent {
               .setBackgroundColor(LXColor.rgba(75, 75, 75, 200))
               .addToContainer(this);
 
+      // Offset
+      new UIKnob(4, 147, color.offset).addToContainer(this);
+
       // Solid color
       UI2dContainer.newHorizontalContainer(
               16,
               4,
-              new UILabel(58, 12, "Solid Color:").setFont(ui.theme.getControlFont()),
-              new UIButton(128, 16, color.solidSource))
-          .setPosition(PADDING, 148)
+              new UILabel(40, 12, "Source:").setFont(ui.theme.getControlFont()),
+              new UIButton(65, 16, color.colorSource))
+          .setPosition(58, 148)
           .addToContainer(this);
 
-      // Gradient
+      // Blend
       UI2dContainer.newHorizontalContainer(
               16,
               4,
-              new UILabel(58, 12, "Gradient:").setFont(ui.theme.getControlFont()),
-              new UIButton(68, 16, color.gradient),
-              new UIButton(56, 16, color.blendMode))
-          .setPosition(PADDING, 171)
+              new UILabel(40, 12, "Blend:").setFont(ui.theme.getControlFont()),
+              new UIButton(65, 16, color.blendMode))
+          .setPosition(58, 171)
           .addToContainer(this);
-
-      // Offset
-      new UIKnob(204, 147, color.offset).addToContainer(this);
 
       // Solid color preview
       UI2dContainer.newHorizontalContainer(
@@ -333,13 +367,12 @@ public class UITEColorPicker extends UI2dComponent {
                   new UI2dComponent(0, 0, 16, 16) {}.setBorderColor(ui.theme.controlBorderColor)
                       .setBackgroundColor(color.calcColor())
                       .setBorderRounding(4),
-              new UISlider(UISlider.Direction.HORIZONTAL, 30, 16, color.color2offset)
-                  .setShowLabel(false),
               color2 =
                   new UI2dComponent(0, 0, 16, 16) {}.setBorderColor(ui.theme.controlBorderColor)
                       .setBackgroundColor(color.calcColor2())
                       .setBorderRounding(4))
-          .setPosition(248, 148)
+          .setPosition(292, 148)
+          .setVisible(false)
           .addToContainer(this);
 
       addListener(
@@ -350,14 +383,14 @@ public class UITEColorPicker extends UI2dComponent {
           });
 
       // Gradient preview
-      new UIPaletteGradient((LXStudio.UI) ui, color, 64, 16)
-          .setPosition(248, 171)
+      new UIPaletteGradient((LXStudio.UI) ui, color, 64, 28)
+          .setPosition(178, 154)
           .addToContainer(this);
 
-      color.solidSource.addListener(
+      color.colorSource.addListener(
           (p) -> {
             boolean isStatic =
-                color.solidSource.getEnum() == TEColorParameter.SolidColorSource.STATIC;
+                color.colorSource.getEnum() == TEColorParameter.ColorSource.STATIC;
             swatch.setEnabled(isStatic);
             hueBox.setEnabled(isStatic);
             satBox.setEnabled(isStatic);

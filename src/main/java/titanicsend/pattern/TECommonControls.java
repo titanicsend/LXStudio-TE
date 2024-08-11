@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import titanicsend.color.TEColorParameter;
+import titanicsend.color.TEGradientSource;
 import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon._CommonControlGetter;
@@ -362,7 +363,6 @@ public class TECommonControls {
   protected void setRemoteControls() {
     this.pattern.setCustomRemoteControls(
         new LXListenableNormalizedParameter[] {
-          //this.color.offset,
           //this.color.gradient,
           getControl(TEControlTag.LEVELREACTIVITY).control,
           getControl(TEControlTag.FREQREACTIVITY).control,
@@ -379,7 +379,7 @@ public class TECommonControls {
           getControl(TEControlTag.WOW1).control,
           getControl(TEControlTag.WOW2).control,
           getControl(TEControlTag.WOWTRIGGER).control,
-          null,  // former shader-specific explode control
+          this.color.offset
           this.pattern.captureDefaults
           // To be SHIFT, not implemented yet
         });
@@ -387,7 +387,7 @@ public class TECommonControls {
 
   protected TEColorParameter registerColorControl(String prefix) {
     color =
-        new TEColorParameter(this.pattern.gradientSource, prefix + "Color")
+        new TEColorParameter(TEGradientSource.get(), prefix + "Color")
             .setDescription("TE Color");
     // "addParameter(java.lang.String, heronarts.lx.parameter.LXParameter)' has protected access in
     // 'heronarts.lx.LXComponent'"
@@ -401,11 +401,9 @@ public class TECommonControls {
    */
   protected void onPanic() {
     // For color, reset everything but Hue
-    this.color.gradient.reset();
     this.color.blendMode.reset();
-    this.color.solidSource.reset();
+    this.color.colorSource.reset();
     this.color.offset.reset();
-    this.color.color2offset.reset();
     this.color.saturation.setNormalized(1);
     this.color.brightness.setNormalized(1);
 
