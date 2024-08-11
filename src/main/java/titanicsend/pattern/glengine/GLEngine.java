@@ -10,6 +10,7 @@ import heronarts.lx.LXComponent;
 import heronarts.lx.LXLoopTask;
 import heronarts.lx.audio.GraphicMeter;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
+import titanicsend.util.TE;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,9 +23,10 @@ import static com.jogamp.opengl.GL.*;
 public class GLEngine extends LXComponent implements LXLoopTask {
   public static final String PATH = "GLEngine";
 
-  // default canvas size
-  private static final int xSize = 640;
-  private static final int ySize = 480;
+  // rendering canvas size.  May be changed
+  // via the startup command line.
+  private static int xSize;
+  private static int ySize;
 
   // audio texture size and buffer
   private static final int audioTextureWidth = 512;
@@ -62,7 +64,10 @@ public class GLEngine extends LXComponent implements LXLoopTask {
   // and need to swap the x and z axes.
   // TODO - remove when we move to dynamic model
   private final boolean isStatic;
-  public boolean isStaticModel() { return isStatic; }
+
+  public boolean isStaticModel() {
+    return isStatic;
+  }
 
   public GLAutoDrawable getCanvas() {
     return canvas;
@@ -220,7 +225,11 @@ public class GLEngine extends LXComponent implements LXLoopTask {
         audioTextureData);
   }
 
-  public GLEngine(LX lx,boolean isStaticModel) {
+  public GLEngine(LX lx, int width, int height,  boolean isStaticModel) {
+    // save rendering canvas dimensions
+    this.xSize = width;
+    this.ySize = height;
+    TE.log("GLEngine: Rendering canvas size: " + xSize + "x" + ySize);
 
     // register glEngine so we can access it from patterns.
     // and add it as an engine task for audio analysis and buffer management
