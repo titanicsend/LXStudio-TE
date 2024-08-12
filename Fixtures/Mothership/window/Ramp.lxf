@@ -1,0 +1,113 @@
+{
+  /* Mothership by Titanic's End */
+
+  label: "Ramp",
+  tags: [ "ramp", "slice" ],
+
+  "parameters": {
+    "host": { type: "string", default: "10.128.42.", label: "Host", description: "Controller IP address or hostname" },
+    "angle": { type: "float", default: 0, min: 0, label: "Angle" },
+    "onCar": { type: "boolean", default: true, label: "On Car", description: "True = Locate to position on car, False = Locate to origin" },
+
+    "outputP1W9": { type: "int", default: 6, min: 1, max: 8, label: "OutputP1 W9", description: "Slice P1 Window 9 Controller Output Number 1-8" },
+    "outputS2W9": { type: "int", default: 7, min: 1, max: 8, label: "OutputS2 W9", description: "Slice S2 Window 9 Controller Output Number 1-8" },
+    "outputP2W9": { type: "int", default: 8, min: 1, max: 8, label: "OutputP2 W9", description: "Slice P2 Window 9 Controller Output Number 1-8" },
+    "outputS3W9": { type: "int", default: 3, min: 1, max: 8, label: "OutputS3 W9", description: "Slice S3 Window 9 Controller Output Number 1-8" },
+    "outputP3W9": { type: "int", default: 2, min: 1, max: 8, label: "OutputP3 W9", description: "Slice P3 Window 9 Controller Output Number 1-8" },
+    "outputS4W9": { type: "int", default: 4, min: 1, max: 8, label: "OutputS4 W9", description: "Slice S4 Window 9 Controller Output Number 1-8" },
+    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
+
+    "p1w9extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 368" },
+    "p1w9ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+    "s2w9extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 368" },
+    "s2w9ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+    "p2w9extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 368" },
+    "p2w9ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+    "s3w9extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 368" },
+    "s3w9ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+    "p3w9extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 368" },
+    "p3w9ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+    "s4w9extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 368" },
+    "s4w9ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" }
+  },
+
+  "transforms": [
+    { y:  "145" }
+  ],
+
+  "components": [
+    { type: "Window9", id: "p1w9", extraLEDs: "$p1w9extraLEDs", ledOffset: "$p1w9ledOffset",
+      onCar: "false",
+      "transforms": [
+        /* Port */
+        { roll: "(-6.5 - (1 - 1)) * 360 / 24" },
+        /* JKB note: funky behavior here, shouldn't have needed to copy these out of the fixture */
+        { z: "-14" }, { y: "119.181" }, { roll: "-3.75" }, { pitch: "90" }, { z: "-.25" }
+      ]
+    },
+    { type: "Window9", id: "s2w9", extraLEDs: "$s2w9extraLEDs", ledOffset: "$s2w9ledOffset",
+      onCar: "false",
+      "transforms": [
+        /* Starboard */
+        { yaw: "180" },
+        { roll: "(6.5 + (2 - 1)) * 360 / 24" },
+        { z: "-14" }, { y: "119.181" }, { roll: "-3.75" }, { pitch: "90" }, { z: "-.25" }
+      ]
+    },
+    { type: "Window9", id: "p2w9", extraLEDs: "$p2w9extraLEDs", ledOffset: "$p2w9ledOffset",
+      onCar: "false",
+      "transforms": [
+        /* Port */
+        { roll: "(-6.5 - (2 - 1)) * 360 / 24" },
+        { z: "-14" }, { y: "119.181" }, { roll: "-3.75" }, { pitch: "90" }, { z: "-.25" }
+      ]
+    },
+    { type: "Window9", id: "s3w9", extraLEDs: "$s3w9extraLEDs", ledOffset: "$s3w9ledOffset",
+      onCar: "false",
+      "transforms": [
+        /* Starboard */
+        { yaw: "180" },
+        { roll: "(6.5 + (3 - 1)) * 360 / 24" },
+        { z: "-14" }, { y: "119.181" }, { roll: "-3.75" }, { pitch: "90" }, { z: "-.25" }
+      ]
+    },
+    { type: "Window9", id: "p3w9", extraLEDs: "$p3w9extraLEDs", ledOffset: "$p3w9ledOffset",
+      onCar: "false",
+      "transforms": [
+        /* Port */
+        { roll: "(-6.5 - (3 - 1)) * 360 / 24" },
+        { z: "-14" }, { y: "119.181" }, { roll: "-3.75" }, { pitch: "90" }, { z: "-.25" }
+      ]
+    },
+    { type: "Window9", id: "s4w9", extraLEDs: "$s4w9extraLEDs", ledOffset: "$s4w9ledOffset",
+      onCar: "false",
+      "transforms": [
+        /* Starboard */
+        { yaw: "180" },
+        { roll: "(6.5 + (4 - 1)) * 360 / 24" },
+        { z: "-14" }, { y: "119.181" }, { roll: "-3.75" }, { pitch: "90" }, { z: "-.25" }
+      ]
+    }
+  ],
+
+  outputs: [
+    { host: "$host", universe: "outputP1W9*10", protocol: "artnet", sequenceEnabled: "$artnetSequence", segments: [
+        { componentId: "p1w9" }
+    ] },
+    { host: "$host", universe: "outputS2W9*10", protocol: "artnet", sequenceEnabled: "$artnetSequence", segments: [
+        { componentId: "s2w9" }
+    ] },
+    { host: "$host", universe: "outputP2W9*10", protocol: "artnet", sequenceEnabled: "$artnetSequence", segments: [
+        { componentId: "p2w9" }
+    ] },
+    { host: "$host", universe: "outputS3W9*10", protocol: "artnet", sequenceEnabled: "$artnetSequence", segments: [
+        { componentId: "s3w9" }
+    ] },
+    { host: "$host", universe: "outputP3W9*10", protocol: "artnet", sequenceEnabled: "$artnetSequence", segments: [
+        { componentId: "p3w9" }
+    ] },
+    { host: "$host", universe: "outputS4W9*10", protocol: "artnet", sequenceEnabled: "$artnetSequence", segments: [
+        { componentId: "s4w9" }
+    ] }
+  ]
+}
