@@ -203,9 +203,9 @@ public class UIModelLabels extends UI3dComponent {
   @Override
   public void onDraw(UI ui, View view) {
     // Make sure the model isn't changing while we're trying to draw.
-    if (UI3DManager.isLocked()) return;
+    if (UI3DManager.isRebuildLocked()) return;
 
-    UI3DManager.beginDraw();
+    UI3DManager.lockDraw();
 
     if (this.virtualOverlays.panelLabelsVisible.isOn()) {
       textManager.draw(view, panelLabels);
@@ -216,7 +216,7 @@ public class UIModelLabels extends UI3dComponent {
     if (this.virtualOverlays.vertexLabelsVisible.isOn() && this.isStatic) {
       textManager.draw(view, vertexLabels);
     }
-    UI3DManager.endDraw();
+    UI3DManager.unlockDraw();
   }
 
   @Override

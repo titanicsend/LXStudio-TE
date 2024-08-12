@@ -17,6 +17,7 @@ package heronarts.lx.studio;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
+import heronarts.lx.midi.surface.MidiFighterTwister;
 import heronarts.lx.mixer.LXBus;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.pattern.LXPattern;
@@ -59,7 +60,6 @@ import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lx.APC40Mk2;
 import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.lx.DirectorAPCminiMk2;
-import titanicsend.lx.MidiFighterTwister;
 import titanicsend.midi.MidiNames;
 import titanicsend.model.TEWholeModel;
 import titanicsend.model.TEWholeModelDynamic;
