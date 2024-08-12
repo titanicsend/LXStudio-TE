@@ -169,8 +169,11 @@ public class ColorPaletteManager extends LXComponent {
         color3 = this.color1.getColor();
         break;
       case GOLDEN_RATIO_CONJUGATE:
-        color2 = LXColor.hsb(hue * 0.6180339, saturation, brightness);
-        color3 = LXColor.BLACK;
+        // color3 will be offset by 0.61803 x 360 == 227.5 degrees
+        // color2 will be offset by 0.61803^2 x 360 == 137.5 degrees
+        float paletteOffset = (360f * 0.618f);
+        color2 = LXColor.hsb(hue + paletteOffset * 0.618f, saturation, brightness);
+        color3 = LXColor.hsb(hue + paletteOffset, saturation, brightness);
         break;
       case COMPLEMENTARY:
         color2 = LXColor.hsb(hue + 180, saturation, brightness);
