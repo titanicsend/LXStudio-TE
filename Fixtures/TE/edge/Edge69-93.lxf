@@ -11,7 +11,7 @@
     "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Whether ArtNet sequence packets are enabled" },
     "reverse": { default: false, type: "boolean", label: "Reverse", description: "Reverse the output direction" },
     
-    "xOffset": { default: 5.635539332912828, type: "float", label: "X offset", description: "Location offset of edge from starting vertex" },
+    "xOffset": { default: 5.635539531707764, type: "float", label: "X offset", description: "Location offset of edge from starting vertex" },
   
     /* Debug tools */
     "onCar": { default: true, type: "boolean", label: "On Car", description: "True = Locate panel to its position on the car, False = Locate to origin" },

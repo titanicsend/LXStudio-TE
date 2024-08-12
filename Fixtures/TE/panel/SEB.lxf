@@ -4,8 +4,8 @@
   tags: [ "SEB", "panel", "Panel", "m10" ],
 
   parameters: {
-    "xOffset": { default: 14.403048297507134, type: "float", description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
-    "yOffset": { default: 6.0, type: "float", description: "Adjust Y position within the plane of the panel. Use to fine-tune position after installation" },
+    "xOffset": { default: 14.403048515319824, type: "float", description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
+    "yOffset": { default: 6, type: "float", description: "Adjust Y position within the plane of the panel. Use to fine-tune position after installation" },
   
     /* Modify HOST and CONTROLLER OUTPUT default values HERE to assign one of this panel's strands to a
        new controller output. Then click [Reload Fixture File] at the bottom of the Inspector section in Chromatik.
