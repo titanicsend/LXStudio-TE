@@ -509,7 +509,6 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
   private boolean isTESurface(LXMidiSurface surface) {
     return surface instanceof titanicsend.lx.APC40Mk2
         || surface instanceof DirectorAPCminiMk2
-        || surface instanceof titanicsend.lx.MidiFighterTwister
         || surface instanceof heronarts.lx.midi.surface.APC40Mk2
         || surface instanceof heronarts.lx.midi.surface.APCminiMk2
         || surface instanceof heronarts.lx.midi.surface.MidiFighterTwister

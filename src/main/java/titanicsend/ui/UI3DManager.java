@@ -21,29 +21,29 @@ public class UI3DManager  {
   public final UILasers lasers;
   public final UILasers lasersAux;
 
-  public static void lock() {
+  public static void lockRebuild() {
       UI3DManager.inRebuild.set(true);
   }
 
-  public static void unlock() {
+  public static void unlockRebuild() {
       UI3DManager.inRebuild.set(false);
   }
 
-  public static boolean isLocked() {
+  public static boolean isRebuildLocked() {
       return UI3DManager.inRebuild.get();
   }
 
-  public static void beginDraw() {
+  public static void lockDraw() {
     UI3DManager.inDraw.set(true);
   }
 
-  public static void endDraw() {
+  public static void unlockDraw() {
     UI3DManager.inDraw.set(false);
   }
 
   public void rebuild() {
     // lock everyone out of draw while rebuilding
-    UI3DManager.lock();
+    UI3DManager.lockRebuild();
 
     // wait for any current draws to finish
      while (UI3DManager.inDraw.get()) {
@@ -60,7 +60,7 @@ public class UI3DManager  {
     backings.rebuild();
     backingsAux.rebuild();
 
-    UI3DManager.unlock();
+    UI3DManager.unlockRebuild();
   }
 
   public UI3DManager(LXStudio lx, LXStudio.UI ui,  TEVirtualOverlays virtualOverlays) {

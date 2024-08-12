@@ -929,7 +929,7 @@ def create_top_level_model():
     filename = f"../../Models/TE_car.lxm"
     with (open(filename, "w") as te_file):
         te_file.write('''{
-  "version": "1.0.1.TE.1-SNAPSHOT",
+  "version": "1.0.1.TE.2-SNAPSHOT",
   "timestamp": 1706055285413,
   "fixtures": [''')
 

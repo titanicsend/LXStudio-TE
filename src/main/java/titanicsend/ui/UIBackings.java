@@ -106,11 +106,11 @@ public class UIBackings extends UI3dComponent {
 
   @Override
   public void onDraw(UI ui, View view) {
-    if (!this.virtualOverlays.opaqueBackPanelsVisible.isOn() || UI3DManager.isLocked()) {
+    if (!this.virtualOverlays.opaqueBackPanelsVisible.isOn() || UI3DManager.isRebuildLocked()) {
       return;
     }
 
-    UI3DManager.beginDraw();
+    UI3DManager.lockDraw();
 
     // Update the color data
     final ByteBuffer colorData = this.colorBuffer.getVertexData();
@@ -142,14 +142,14 @@ public class UIBackings extends UI3dComponent {
           1, this.colorBuffer.getHandle(), vertexIndex++ * VERTICES_PER_PANEL, VERTICES_PER_PANEL);
       ui.lx.program.vertexFill.submit(view, state, b);
     }
-    UI3DManager.endDraw();
+    UI3DManager.unlockDraw();
   }
 
   @Override
   public void dispose() {
     // make sure we're not in the middle of a model rebuild when we
     // start destroying objects.
-    while (UI3DManager.isLocked()) {
+    while (UI3DManager.isRebuildLocked()) {
       try {
         Thread.sleep(5);
       } catch (InterruptedException e) {
@@ -159,7 +159,7 @@ public class UIBackings extends UI3dComponent {
 
     // Take draw lock to keep the model from being rebuilt while we're
     // disposing of objects.
-    UI3DManager.beginDraw();
+    UI3DManager.lockDraw();
     for (PanelBuffer b : this.panels) {
       b.dispose();
     }
@@ -168,7 +168,7 @@ public class UIBackings extends UI3dComponent {
     // free borrowed BGFX resources if they exist
     if (this.colorBuffer != null) this.colorBuffer.dispose();
     MemoryUtil.memFree(this.modelMatrixBuf);
+    UI3DManager.unlockDraw();
     super.dispose();
-    UI3DManager.endDraw();
   }
 }
