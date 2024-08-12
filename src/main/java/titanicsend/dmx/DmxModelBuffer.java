@@ -17,31 +17,24 @@ package titanicsend.dmx;
 
 import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
+import titanicsend.dmx.model.DmxModel;
 import titanicsend.dmx.model.DmxWholeModel;
+
+import java.util.List;
 
 /**
  * The DMX equivalent to ModelBuffer uses two classes, DmxBuffer and DmxModelBuffer, due to
  * effectively being a 2D array.
  *
- * <p>DmxBuffer is one fixture, DmxModelBuffer is all the fixtures
+ * DmxBuffer is one fixture, DmxModelBuffer is all the fixtures
  */
-public class DmxModelBuffer extends DmxFullBuffer {
+public class DmxModelBuffer extends DmxFullBuffer implements DmxWholeModel.DmxWholeModelListener {
 
   private final LX lx;
+  private final DmxWholeModel dmxWholeModel;
   private DmxBuffer[] array;
 
   public boolean modified = false;
-
-  private final LX.Listener modelListener =
-      new LX.Listener() {
-        @Override
-        public void modelChanged(LX lx, LXModel model) {
-          // TE is a static model so this isn't necessary
-          // if (array.length != model.size) {
-          //   initArray(getWholeModel(model));
-          // }
-        }
-      };
 
   public static DmxWholeModel getWholeModel(LXModel model) {
     if (model instanceof DmxWholeModel) {
@@ -57,8 +50,13 @@ public class DmxModelBuffer extends DmxFullBuffer {
 
   public DmxModelBuffer(LX lx, DmxWholeModel model) {
     this.lx = lx;
+    this.dmxWholeModel = model;
     initArray(model);
-    lx.addListener(this.modelListener);
+    this.dmxWholeModel.addDmxListener(this);
+  }
+  @Override
+  public void dmxModelsChanged(List<DmxModel> dmxModels) {
+    initArray(this.dmxWholeModel);
   }
 
   private void initArray(DmxWholeModel dmxWholeModel) {
@@ -84,7 +82,8 @@ public class DmxModelBuffer extends DmxFullBuffer {
   }
 
   public void dispose() {
-    this.lx.removeListener(this.modelListener);
+    this.dmxWholeModel.removeDmxListener(this);
     this.array = null;
   }
+
 }

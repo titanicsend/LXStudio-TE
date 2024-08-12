@@ -1,0 +1,15 @@
+{
+  label: "BeamQ60",
+  tags: [ "dmx", "beam", "dmxFixture" ],
+
+  "meta": {
+    "dmx": "titanicsend.dmx.model.ChauvetBeamQ60Model",
+    "dmx_host": "10.0.0.69"
+  },
+
+  "components": [
+    {
+      type: "point"
+    }
+  ]
+}

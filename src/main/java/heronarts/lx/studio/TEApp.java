@@ -15,6 +15,8 @@
  */
 package heronarts.lx.studio;
 
+import heronarts.glx.event.GamepadEvent;
+import heronarts.glx.event.KeyEvent;
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
 import heronarts.lx.midi.surface.MidiFighterTwister;
@@ -46,15 +48,10 @@ import titanicsend.color.ColorPaletteManager;
 import titanicsend.color.TEGradientSource;
 import titanicsend.dmx.DmxEngine;
 import titanicsend.dmx.effect.BeaconStrobeEffect;
-import titanicsend.dmx.pattern.BeaconDirectPattern;
-import titanicsend.dmx.pattern.BeaconEasyPattern;
-import titanicsend.dmx.pattern.BeaconEverythingPattern;
-import titanicsend.dmx.pattern.BeaconStraightUpPattern;
-import titanicsend.dmx.pattern.DjLightsDirectPattern;
-import titanicsend.dmx.pattern.DjLightsEasyPattern;
-import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
+import titanicsend.dmx.pattern.*;
 import titanicsend.effect.GlobalPatternControl;
 import titanicsend.effect.RandomStrobeEffect;
+import titanicsend.gamepad.GamepadEngine;
 import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lx.APC40Mk2;
@@ -129,6 +126,8 @@ public class TEApp extends LXStudio {
   public static int glRenderWidth = 640;
   public static int glRenderHeight = 480;
 
+  public static GamepadEngine gamepadEngine;
+
   @LXPlugin.Name("Titanic's End")
   public static class Plugin implements LXStudio.Plugin, LX.Listener, LX.ProjectListener {
 
@@ -179,6 +178,7 @@ public class TEApp extends LXStudio {
       this.dmxEngine = new DmxEngine(lx);
       this.ndiEngine = new NDIEngine(lx);
       this.glEngine = new GLEngine(lx,glRenderWidth,glRenderHeight,staticModel);
+      gamepadEngine = new GamepadEngine(lx);
 
       lx.engine.registerComponent("audioStems", this.audioStems = new AudioStems(lx));
       lx.engine.registerComponent("paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
@@ -298,6 +298,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(BeaconDirectPattern.class);
       lx.registry.addPattern(BeaconEasyPattern.class);
       lx.registry.addPattern(BeaconEverythingPattern.class);
+      lx.registry.addPattern(BeaconGamePattern.class);
       lx.registry.addPattern(BeaconStraightUpPattern.class);
       lx.registry.addPattern(DjLightsDirectPattern.class);
       lx.registry.addPattern(DjLightsEasyPattern.class);
@@ -596,6 +597,9 @@ public class TEApp extends LXStudio {
       // precompile binaries for any new or changed shaders
       ShaderPrecompiler.rebuildCache();
 
+      // Import latest gamepad controllers db
+      gamepadEngine.updateGamepadMappings();
+
       lx.engine.addTask(
           () -> {
             setOscDestinationForIpads();
@@ -657,6 +661,7 @@ public class TEApp extends LXStudio {
       this.devSwitch.dispose();
       this.dmxEngine.dispose();
       this.crutchOSC.dispose();
+      gamepadEngine.dispose();
 
       if (!staticModel) {
         ((TEWholeModelDynamic)wholeModel).dispose();
@@ -664,19 +669,18 @@ public class TEApp extends LXStudio {
     }
   }
 
-  /* TODO: Move this from P4LX version to Chromatik version
   @Override
-  public void keyPressed(processing.event.KeyEvent keyEvent) {
+  protected void onKeyPressed(KeyEvent keyEvent, char keyChar, int keyCode) {
     // Keyboard shortcut for debugging: Add all patterns to current channel
     // (Ctrl or Meta) + Alt + Shift + A
     if ((keyEvent.isControlDown() || keyEvent.isMetaDown()) && keyEvent.isAltDown() && keyEvent.isShiftDown() && keyEvent.getKeyCode() == 65) {
-      this.lx.engine.addTask(() -> {
+      this.engine.addTask(() -> {
         addAllPatterns();
       });
     } else {
-      super.keyPressed(keyEvent);
+      super.onKeyPressed(keyEvent, keyChar, keyCode);
     }
-  }*/
+  }
 
   /** Dev tool: add all patterns in registry to current channel. */
   private void addAllPatterns() {
@@ -710,6 +714,21 @@ public class TEApp extends LXStudio {
     } else {
       TE.err("Selected channel must be a channel and not a group before adding all patterns.");
     }
+  }
+
+  @Override
+  protected void onGamepadButtonPressed(GamepadEvent gamepadEvent, int button) {
+    this.gamepadEngine.lxGamepadButtonPressed(gamepadEvent, button);
+  }
+
+  @Override
+  protected void onGamepadButtonReleased(GamepadEvent gamepadEvent, int button) {
+    this.gamepadEngine.lxGamepadButtonPressed(gamepadEvent, button);
+  }
+
+  @Override
+  protected void onGamepadAxisChanged(GamepadEvent gamepadEvent, int axis, float value) {
+    this.gamepadEngine.lxGamepadAxisChanged(gamepadEvent, axis, value);
   }
 
   private TEApp(Flags flags, TEWholeModelStatic model) throws IOException {

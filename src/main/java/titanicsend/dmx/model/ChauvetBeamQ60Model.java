@@ -1,5 +1,7 @@
 package titanicsend.dmx.model;
 
+import heronarts.lx.model.LXModel;
+import heronarts.lx.model.LXPoint;
 import titanicsend.dmx.parameter.DmxCompoundParameter;
 import titanicsend.dmx.parameter.DmxDiscreteParameter;
 import titanicsend.dmx.parameter.DmxDiscreteParameterOption;
@@ -22,16 +24,37 @@ public class ChauvetBeamQ60Model extends DmxModel {
   public static final int INDEX_SHUTTER = 5;
   public static final int INDEX_DIMMER = 6;
   public static final int INDEX_VIRTUAL_COLOR_WHEEL_CONTROL = 7;
-  public static final int INDEX_VIRTCAL_COLOR_WHEEL = 8;
+  public static final int INDEX_VIRTUAL_COLOR_WHEEL = 8;
   public static final int INDEX_RED = 9;
   public static final int INDEX_GREEN = 10;
   public static final int INDEX_BLUE = 11;
   public static final int INDEX_WHITE = 12;
   public static final int INDEX_CONTROL = 13;
 
+  static DmxCommonConfig createConfig(LXModel model) {
+    LXPoint point = model.points[0];
+    DmxCommonConfig c = new DmxCommonConfig();
+    c.host = model.meta("dmx_host");
+    c.x = point.x;
+    c.y = point.y;
+    c.z = point.z;
+
+    return c;
+  }
+
+  /** Dynamic model constructor */
+  public ChauvetBeamQ60Model(LXModel model) {
+    super(model, createConfig(model));
+    initialize();
+  }
+
+  /** Static model constructor */
   public ChauvetBeamQ60Model(DmxCommonConfig config, String... tags) {
     super(MODEL_TYPE, config, tags);
+    initialize();
+  }
 
+  private void initialize() {
     DmxCompoundParameter pan = new DmxCompoundParameter("Pan").setNumBytes(2);
     DmxCompoundParameter tilt = new DmxCompoundParameter("Tilt", -180, 180, 0).setNumBytes(2);
     DmxDiscreteParameter panContinuous =

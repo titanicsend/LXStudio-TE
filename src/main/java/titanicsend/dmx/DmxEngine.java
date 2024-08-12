@@ -25,6 +25,7 @@ import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.mixer.LXGroup;
 import heronarts.lx.mixer.LXMasterBus;
 import heronarts.lx.mixer.LXMixerEngine;
+import heronarts.lx.model.LXModel;
 import heronarts.lx.output.LXOutput;
 import heronarts.lx.studio.TEApp;
 import java.util.ArrayList;
@@ -33,10 +34,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import heronarts.lx.utils.LXUtils;
 import titanicsend.app.dev.DevSwitch;
 import titanicsend.dmx.model.DmxModel;
 import titanicsend.dmx.model.DmxWholeModel;
 import titanicsend.dmx.parameter.DmxParameter;
+import titanicsend.model.TEWholeModel;
 
 /**
  * DmxEngine manages the dmx buffers and mixes the dmx frames. Much of the heavy lifting here is a
@@ -45,7 +49,10 @@ import titanicsend.dmx.parameter.DmxParameter;
  * Roles: - Maintains a reference of one DmxModelBuffer per LXBuffer for consumption by
  * patterns/effects. - Acts as a DmxMixer
  */
-public class DmxEngine implements LXLoopTask {
+public class DmxEngine implements LXLoopTask, TEWholeModel.TEModelListener {
+
+  private static final String META_TAG_DMX_FIXTURE = "dmxFixture";
+  private static final String META_KEY_DMX_CLASS = "dmx";
 
   private static final boolean ENABLE_DEBUG = false;
 
@@ -58,6 +65,8 @@ public class DmxEngine implements LXLoopTask {
   protected final LX lx;
 
   protected final DmxWholeModel dmxWholeModel;
+
+  protected final TEWholeModel modelTE;
 
   private final MixerListener mixerListener = new MixerListener();
 
@@ -87,6 +96,8 @@ public class DmxEngine implements LXLoopTask {
     this.lx = lx;
 
     this.dmxWholeModel = TEApp.wholeModel;
+    this.modelTE = TEApp.wholeModel;
+    TEApp.wholeModel.addListener(this);
 
     // Set up global add blend
     this.addBlend = new AddBlend(lx);
@@ -113,6 +124,76 @@ public class DmxEngine implements LXLoopTask {
     this.backgroundTransparent = new DmxModelBuffer(lx, this.dmxWholeModel);
     this.blendBufferLeft = new DmxModelBuffer(lx, this.dmxWholeModel);
     this.blendBufferRight = new DmxModelBuffer(lx, this.dmxWholeModel);
+
+    refresh();
+  }
+
+  /* Monitor the model for changes */
+
+  @Override
+  public void modelTEChanged(TEWholeModel model) {
+    refresh();
+  }
+
+  private void refresh() {
+    // Taking some shortcuts here for time's sake, leaving for the desert in a few days
+    this.dmxWholeModel.clearBeacons();
+
+    // Search models for the DMX metadata tag
+    // List<LXModel> subModels = new ArrayList<LXModel>();
+    // getMetaSubmodels(this.lx.getModel(), META_KEY_FIXTURE_CLASS, subModels, true);
+    // 11th hour: Using tags because they're already indexed
+    List<LXModel> subModels = this.lx.getModel().sub(META_TAG_DMX_FIXTURE);
+
+    for (LXModel subModel : subModels) {
+      // Get DMX fixture class name from metadata
+      String className = subModel.meta(META_KEY_DMX_CLASS);
+      if (LXUtils.isEmpty(className)) {
+        continue;
+      }
+
+      // Attempt instantiate DMX fixture/model
+      DmxModel dmxModel = null;
+      try {
+        dmxModel = instantiateDmxModel(className, subModel);
+      } catch (LX.InstantiationException x) {
+        // Might be some redundancy here
+        LX.error(x, "Could not instantiate DMX model: " + className);
+      }
+
+      // Add to DMX models list
+      if (dmxModel != null) {
+        this.dmxWholeModel.addBeacon(dmxModel);
+      }
+    }
+
+    this.dmxWholeModel.notifyDmxWholeModelListeners();
+
+    this.buffer.refreshFrame(this.dmxWholeModel);
+  }
+
+  /* Search for metadata key. Too slow when tags are already indexed? */
+  private void getMetaSubmodels(LXModel parent, String key, List<LXModel> output, boolean recurse) {
+    for (LXModel submodel : parent.children) {
+      for (String metaKey : submodel.metaData.keySet()) {
+        if (metaKey.equals(key)) {
+          output.add(submodel);
+        }
+      }
+      if (recurse) {
+        getMetaSubmodels(submodel, key, output, recurse);
+      }
+    }
+  }
+
+  private DmxModel instantiateDmxModel(String className, LXModel model) throws LX.InstantiationException {
+    try {
+      Class<? extends DmxModel> cls = Class.forName(className).asSubclass(DmxModel.class);
+      return cls.getConstructor(LXModel.class).newInstance(model);
+    } catch (Exception x) {
+      throw new LX.InstantiationException(x,
+        "DmxModel " + className + " could not be loaded. " + x.toString());
+    }
   }
 
   /* Buffer management */
@@ -514,6 +595,7 @@ public class DmxEngine implements LXLoopTask {
     }
     this.dmxBufferByLXBuffer.clear();
     this.dmxBufferByGroup.clear();
+    TEApp.wholeModel.removeListener(this);
     this.lx.engine.mixer.removeListener(this.mixerListener);
     current = null;
   }
@@ -582,11 +664,11 @@ public class DmxEngine implements LXLoopTask {
         DmxWholeModel dmxWholeModel = (DmxWholeModel) model;
 
         this.model = dmxWholeModel;
-        if (this.main == null) {
+        //if (this.main == null) {
           this.main = createFullBuffer(this.model);
           this.cue = createFullBuffer(this.model);
           this.aux = createFullBuffer(this.model);
-        }
+        //}
       } else {
         LX.error("Model is not DmxWholeModel, DmxEngine will fail.");
       }
@@ -668,6 +750,12 @@ public class DmxEngine implements LXLoopTask {
 
     synchronized void copyTo(Frame that) {
       that.copyFrom(this.copy);
+    }
+
+    synchronized void refreshFrame(DmxWholeModel model) {
+      // Rebuild output buffers to match the new number of DMX fixtures and parameters
+      this.render.setModel(model);
+      this.copy.setModel(model);
     }
   }
 

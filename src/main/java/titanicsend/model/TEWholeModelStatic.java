@@ -1081,9 +1081,9 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
     view.normalization.setValue(viewDefinition.viewNormalization);
   }
 
-  private final List<TEListener> listeners = new ArrayList<TEListener>();
+  private final List<TEModelListener> listeners = new ArrayList<TEModelListener>();
 
-  public TEWholeModel addListener(TEListener listener) {
+  public TEWholeModel addListener(TEModelListener listener) {
     Objects.requireNonNull(listener);
     if (this.listeners.contains(listener)) {
       throw new IllegalStateException("Cannot add duplicate TEListener: " + listener);
@@ -1092,7 +1092,7 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
     return this;
   }
 
-  public TEWholeModel removeListener(TEListener listener) {
+  public TEWholeModel removeListener(TEModelListener listener) {
     if (!this.listeners.contains(listener)) {
       throw new IllegalStateException("Cannot remove non-registered TEListener: " + listener);
     }
