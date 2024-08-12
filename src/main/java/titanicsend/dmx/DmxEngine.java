@@ -42,7 +42,7 @@ import titanicsend.dmx.parameter.DmxParameter;
  * DmxEngine manages the dmx buffers and mixes the dmx frames. Much of the heavy lifting here is a
  * modified copy of LXMixerEngine.
  *
- * <p>Roles: - Maintains a reference of one DmxModelBuffer per LXBuffer for consumption by
+ * Roles: - Maintains a reference of one DmxModelBuffer per LXBuffer for consumption by
  * patterns/effects. - Acts as a DmxMixer
  */
 public class DmxEngine implements LXLoopTask {
@@ -59,154 +59,9 @@ public class DmxEngine implements LXLoopTask {
 
   protected final DmxWholeModel dmxWholeModel;
 
-  /*
-   * LXMixerEngine.Listener for releasing buffers when channels are removed
-   */
-
-  public class MixerListener implements heronarts.lx.mixer.LXMixerEngine.Listener {
-    @Override
-    public void channelAdded(LXMixerEngine mixer, LXAbstractChannel channel) {}
-
-    @Override
-    public void channelRemoved(LXMixerEngine mixer, LXAbstractChannel channel) {
-      removeChannel(channel);
-    }
-
-    @Override
-    public void channelMoved(LXMixerEngine mixer, LXAbstractChannel channel) {}
-  }
-
   private final MixerListener mixerListener = new MixerListener();
 
-  /*
-   * Internal LXOutput class, is called after LXMixerEngine ie patterns have run.
-   * Used to start the DMX mixer.
-   */
-
-  public class OutputTrigger extends LXOutput {
-
-    private OutputTrigger(LX lx) {
-      super(lx);
-    }
-
-    @Override
-    protected void onSend(int[] colors, GammaTable glut, double brightness) {
-      runDmxMixer();
-    }
-  }
-
   private final OutputTrigger outputTrigger;
-
-  // Copied from LXEngine
-  // Buffer for a single frame, which was rendered with
-  // a particular model state, has a main view along with
-  // a cue and auxiliary view, as well as cue/aux view state
-  public static class Frame extends DmxFullBuffer {
-
-    private DmxWholeModel model;
-    private DmxBuffer[] main = null;
-    private DmxBuffer[] cue = null;
-    private DmxBuffer[] aux = null;
-    private boolean cueOn = false;
-    private boolean auxOn = false;
-
-    public Frame(DmxWholeModel model) {
-      setModel(model);
-    }
-
-    public void setModel(DmxWholeModel model) {
-      if (model instanceof DmxWholeModel) {
-        DmxWholeModel dmxWholeModel = (DmxWholeModel) model;
-
-        this.model = dmxWholeModel;
-        if (this.main == null) {
-          this.main = createFullBuffer(this.model);
-          this.cue = createFullBuffer(this.model);
-          this.aux = createFullBuffer(this.model);
-        }
-      } else {
-        LX.error("Model is not DmxWholeModel, DmxEngine will fail.");
-      }
-    }
-
-    public void setCueOn(boolean cueOn) {
-      this.cueOn = cueOn;
-    }
-
-    public void setAuxOn(boolean auxOn) {
-      this.auxOn = auxOn;
-    }
-
-    public void copyFrom(Frame that) {
-      this.cueOn = that.cueOn;
-      this.auxOn = that.auxOn;
-      copyFullBuffer(that.main, this.main);
-      copyFullBuffer(that.cue, this.cue);
-      copyFullBuffer(that.aux, this.aux);
-    }
-
-    public DmxBuffer[] getColors() {
-      return this.cueOn ? this.cue : this.main;
-    }
-
-    public DmxBuffer[] getAuxColors() {
-      return this.auxOn ? this.aux : this.main;
-    }
-
-    public DmxWholeModel getModel() {
-      return this.model;
-    }
-
-    @Override
-    public DmxBuffer[] getArray() {
-      return this.main;
-    }
-
-    public DmxBuffer[] getMain() {
-      return this.main;
-    }
-
-    public DmxBuffer[] getCue() {
-      return this.cue;
-    }
-
-    public DmxBuffer[] getAux() {
-      return this.aux;
-    }
-  }
-
-  // Copied from LXEngine.DoubleBuffer
-  // A double buffer that holds two frames which are flipped back and forth such that
-  // the engine thread may render into one of them while UI or networking threads may
-  // copy off the contents of another
-  class DoubleBuffer {
-
-    // Frame buffer that is currently used by the engine to render
-    Frame render;
-
-    // Complete buffer that may be copied off for UI or networking while engine
-    // works on the other buffer.
-    Frame copy;
-
-    DoubleBuffer(DmxWholeModel model) {
-      this.render = new Frame(model);
-      this.copy = new Frame(model);
-    }
-
-    synchronized void sync() {
-      this.copy.copyFrom(this.render);
-    }
-
-    synchronized void flip() {
-      Frame tmp = this.render;
-      this.render = this.copy;
-      this.copy = tmp;
-    }
-
-    synchronized void copyTo(Frame that) {
-      that.copyFrom(this.copy);
-    }
-  }
 
   private final DoubleBuffer buffer;
 
@@ -260,9 +115,7 @@ public class DmxEngine implements LXLoopTask {
     this.blendBufferRight = new DmxModelBuffer(lx, this.dmxWholeModel);
   }
 
-  /*
-   * Buffer management
-   */
+  /* Buffer management */
 
   public DmxModelBuffer getDmxModelBuffer(LXBuffer buffer, LXAbstractChannel channel) {
     if (dmxBufferByLXBuffer.containsKey(buffer)) {
@@ -315,9 +168,7 @@ public class DmxEngine implements LXLoopTask {
     }
   }
 
-  /*
-   * LXLoopTask. Initialize buffers before patterns are run.
-   */
+  /* LXLoopTask. Initialize buffers before patterns are run. */
 
   @Override
   public void loop(double deltaMs) {
@@ -329,9 +180,7 @@ public class DmxEngine implements LXLoopTask {
     }
   }
 
-  /*
-   * DMX Mixer
-   */
+  /* DMX Mixer */
 
   /** Copied from LXEngine, modified for DMX */
   private class BlendStack {
@@ -696,4 +545,143 @@ public class DmxEngine implements LXLoopTask {
               + (dmx.isActive ? "" : " NOT ACTIVE"));
     }
   }
+
+  /** LXMixerEngine.Listener for releasing buffers when channels are removed */
+  public class MixerListener implements heronarts.lx.mixer.LXMixerEngine.Listener {
+    @Override
+    public void channelAdded(LXMixerEngine mixer, LXAbstractChannel channel) {}
+
+    @Override
+    public void channelRemoved(LXMixerEngine mixer, LXAbstractChannel channel) {
+      removeChannel(channel);
+    }
+
+    @Override
+    public void channelMoved(LXMixerEngine mixer, LXAbstractChannel channel) {}
+  }
+
+  // Copied from LXEngine
+  // Buffer for a single frame, which was rendered with
+  // a particular model state, has a main view along with
+  // a cue and auxiliary view, as well as cue/aux view state
+  public static class Frame extends DmxFullBuffer {
+
+    private DmxWholeModel model;
+    private DmxBuffer[] main = null;
+    private DmxBuffer[] cue = null;
+    private DmxBuffer[] aux = null;
+    private boolean cueOn = false;
+    private boolean auxOn = false;
+
+    public Frame(DmxWholeModel model) {
+      setModel(model);
+    }
+
+    public void setModel(DmxWholeModel model) {
+      if (model instanceof DmxWholeModel) {
+        DmxWholeModel dmxWholeModel = (DmxWholeModel) model;
+
+        this.model = dmxWholeModel;
+        if (this.main == null) {
+          this.main = createFullBuffer(this.model);
+          this.cue = createFullBuffer(this.model);
+          this.aux = createFullBuffer(this.model);
+        }
+      } else {
+        LX.error("Model is not DmxWholeModel, DmxEngine will fail.");
+      }
+    }
+
+    public void setCueOn(boolean cueOn) {
+      this.cueOn = cueOn;
+    }
+
+    public void setAuxOn(boolean auxOn) {
+      this.auxOn = auxOn;
+    }
+
+    public void copyFrom(Frame that) {
+      this.cueOn = that.cueOn;
+      this.auxOn = that.auxOn;
+      copyFullBuffer(that.main, this.main);
+      copyFullBuffer(that.cue, this.cue);
+      copyFullBuffer(that.aux, this.aux);
+    }
+
+    public DmxBuffer[] getColors() {
+      return this.cueOn ? this.cue : this.main;
+    }
+
+    public DmxBuffer[] getAuxColors() {
+      return this.auxOn ? this.aux : this.main;
+    }
+
+    public DmxWholeModel getModel() {
+      return this.model;
+    }
+
+    @Override
+    public DmxBuffer[] getArray() {
+      return this.main;
+    }
+
+    public DmxBuffer[] getMain() {
+      return this.main;
+    }
+
+    public DmxBuffer[] getCue() {
+      return this.cue;
+    }
+
+    public DmxBuffer[] getAux() {
+      return this.aux;
+    }
+  }
+
+  // Copied from LXEngine.DoubleBuffer
+  // A double buffer that holds two frames which are flipped back and forth such that
+  // the engine thread may render into one of them while UI or networking threads may
+  // copy off the contents of another
+  class DoubleBuffer {
+
+    // Frame buffer that is currently used by the engine to render
+    Frame render;
+
+    // Complete buffer that may be copied off for UI or networking while engine
+    // works on the other buffer.
+    Frame copy;
+
+    DoubleBuffer(DmxWholeModel model) {
+      this.render = new Frame(model);
+      this.copy = new Frame(model);
+    }
+
+    synchronized void sync() {
+      this.copy.copyFrom(this.render);
+    }
+
+    synchronized void flip() {
+      Frame tmp = this.render;
+      this.render = this.copy;
+      this.copy = tmp;
+    }
+
+    synchronized void copyTo(Frame that) {
+      that.copyFrom(this.copy);
+    }
+  }
+
+  /** Internal LXOutput class, called after LXMixerEngine ie patterns have run. Starts DMX mixer. */
+  public class OutputTrigger extends LXOutput {
+
+    private OutputTrigger(LX lx) {
+      super(lx);
+    }
+
+    @Override
+    protected void onSend(int[] colors, GammaTable glut, double brightness) {
+      runDmxMixer();
+    }
+  }
+
 }
