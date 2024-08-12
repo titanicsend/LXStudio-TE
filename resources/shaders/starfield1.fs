@@ -2,6 +2,12 @@
 #pragma TEControl.QUANTITY.Range(1.5,2.5,0.15)
 #pragma TEControl.SIZE.Range(0.05,0.025,0.125)
 #pragma TEControl.WOW2.Value(0.7);
+#pragma TEControl.WOW1.Disable
+#pragma TEControl.WOWTRIGGER.Disable
+#pragma TEControl.LEVELREACTIVITY.Disable
+#pragma TEControl.FREQREACTIVITY.Disable
+
+// Starfield with "more complicated" stars and clouds.
 
 mat2 rot(float a) {
     float s=sin(a), c=cos(a);
@@ -39,7 +45,8 @@ float noise( in vec2 x ) {
     return res;
 }
 
-// simple galactic clousds from four octaves of noise
+
+// simple galactic clouds from four octaves of noise
 vec3 cloud(vec2 p) {
     float f = 0.0;
     f += 0.5000*noise(p*10.0);

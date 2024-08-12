@@ -2,6 +2,11 @@
 #pragma TEControl.SIZE.Range(0.0175,.005,0.04)
 #pragma TEControl.QUANTITY.Value(0.8)
 #pragma TEControl.WOW2.Range(0.1,0.0,0.3)
+#pragma TEControl.WOW2.Disable
+#pragma TEControl.WOW1.Disable
+#pragma TEControl.WOWTRIGGER.Disable
+#pragma TEControl.LEVELREACTIVITY.Disable
+#pragma TEControl.FREQREACTIVITY.Disable
 
 // Simpler stars, but you can have *lots* of them!
 
