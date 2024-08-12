@@ -363,6 +363,8 @@ public class TEApp extends LXStudio {
         MidiNames.BOMEBOX_APC40MK2, APC40Mk2.class);
       // The Director midi surface must be registered *after* the Director and ColorPaletteManager
       lx.engine.midi.registerSurface(
+        MidiNames.APCMINIMK2_DIRECTOR, DirectorAPCminiMk2.class);
+      lx.engine.midi.registerSurface(
         MidiNames.BOMEBOX_VIRTUAL_APCMINIMK2_DIRECTOR, DirectorAPCminiMk2.class);
       lx.engine.midi.registerSurface(
         MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1, MidiFighterTwister.class);
