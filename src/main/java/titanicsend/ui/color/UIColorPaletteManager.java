@@ -31,8 +31,8 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
   private LXSwatch managedSwatchA;
   private LXSwatch managedSwatchB;
 
-  public UIColorPaletteManager(LXStudio.UI ui, ColorPaletteManager paletteManagerA, ColorPaletteManager paletteManagerB, float w, float xOffset) {
-    super(ui, xOffset, 0, w, 0);
+  public UIColorPaletteManager(LXStudio.UI ui, ColorPaletteManager paletteManagerA, ColorPaletteManager paletteManagerB, float w) {
+    super(ui, 0, 0, w, 0);
     this.width = w;
 
     this.setLayout(Layout.VERTICAL, 2F);
@@ -172,28 +172,14 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
 
   public static void addToLeftGlobalPane(LXStudio.UI ui, ColorPaletteManager cueMgr, ColorPaletteManager auxMgr, int index) {
     UI2dContainer parentContainer = ui.leftPane.global;
-    float xOffsetWithinParent = 0;
-    new UIColorPaletteManager(ui, cueMgr, auxMgr, parentContainer.getContentWidth(), xOffsetWithinParent)
+    new UIColorPaletteManager(ui, cueMgr, auxMgr, parentContainer.getContentWidth())
         .addToContainer(parentContainer, index);
   }
 
   public static void addToRightPerformancePane(LXStudio.UI ui, ColorPaletteManager cueMgr, ColorPaletteManager auxMgr) {
-    LXStudio.UI.MainContext mainContext = getLXUIMainContext(ui);
-    UI2dContainer parentContainer = mainContext.rightPerformance;
-    float xOffsetWithinParent = 14;
-    new UIColorPaletteManager(ui, cueMgr, auxMgr, parentContainer.getContentWidth() - 28, xOffsetWithinParent)
+    UI2dContainer parentContainer = ui.rightPerformanceTools;
+    new UIColorPaletteManager(ui, cueMgr, auxMgr, parentContainer.getContentWidth())
         .addToContainer(parentContainer, parentContainer.getChildren().size()-1);
-  }
-
-  private static LXStudio.UI.MainContext getLXUIMainContext(LXStudio.UI ui) {
-    try {
-      // use reflection to access the private field `mainContext` in `LXStudio.UI`
-      Field privateField = LXStudio.UI.class.getDeclaredField("mainContext");
-      privateField.setAccessible(true);
-      return (LXStudio.UI.MainContext)privateField.get(ui);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
   }
 
   private class UISingleColorDisplay extends UI2dComponent {
