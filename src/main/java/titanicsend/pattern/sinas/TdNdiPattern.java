@@ -8,6 +8,7 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+
 import me.walkerknapp.devolay.DevolayFrameType;
 import me.walkerknapp.devolay.DevolayReceiver;
 import me.walkerknapp.devolay.DevolayVideoFrame;
@@ -29,123 +30,129 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
 @LXCategory("NDI")
 public class TdNdiPattern extends TEPerformancePattern {
 
-    protected NDIEngine ndiEngine;
+  protected NDIEngine ndiEngine;
 
-    protected DevolayVideoFrame videoFrame;
-    protected DevolayReceiver receiver = null;
-    private ByteBuffer frameData;
+  protected DevolayVideoFrame videoFrame;
+  protected DevolayReceiver receiver = null;
+  private ByteBuffer frameData;
 
-    protected boolean lastConnectState = false;
-    protected long connectTimer = 0;
-    protected String channel_name = "TE_TD_Mapped";
+  protected boolean lastConnectState = false;
+  protected long connectTimer = 0;
+  protected String channel_name = "TE_TD_Mapped";
 
-    public TdNdiPattern(LX lx) {
-        this(lx, TEShaderView.ALL_POINTS);
+  LXPoint[] points = null;
+
+  public TdNdiPattern(LX lx) {
+    this(lx, TEShaderView.ALL_POINTS);
+  }
+
+  public TdNdiPattern(LX lx, TEShaderView view) {
+    super(lx, view);
+    this.ndiEngine = NDIEngine.get();
+
+    // Create frame objects to handle incoming video stream
+    // (note that we are omitting audio and metadata frames for now)
+    this.videoFrame = new DevolayVideoFrame();
+
+    // default common controls settings.  Note that these aren't committed
+    // until the pattern calls addCommonControls(), so patterns can
+    // override these settings if they need to.
+    controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.SPEED));
+    controls.markUnused(controls.getLXControl(TEControlTag.XPOS));
+    controls.markUnused(controls.getLXControl(TEControlTag.YPOS));
+    controls.markUnused(controls.getLXControl(TEControlTag.SIZE));
+    controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
+    controls.markUnused(controls.getLXControl(TEControlTag.BRIGHTNESS));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
+    controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
+    addCommonControls();
+
+    changeChannel();
+  }
+
+  protected void changeChannel() {
+    if (this.receiver != null) {
+      this.lastConnectState = this.ndiEngine.connectByName(this.channel_name, this.receiver);
+    }
+  }
+
+  public void runTEAudioPattern(double deltaMs) {
+    // Periodically try to connect if we weren't able to
+    // establish an initial connection to this pattern's
+    // desired NDI source. This makes things work
+    // without manual intervention if the source isn't
+    // available at startup.  Once the source becomes available,
+    // the connection will be automatically established.
+    if (!this.lastConnectState) {
+      if (System.currentTimeMillis() - this.connectTimer > 1000) {
+        this.connectTimer = System.currentTimeMillis();
+        this.lastConnectState = this.ndiEngine.connectByName(this.channel_name, this.receiver);
+      }
     }
 
-    public TdNdiPattern(LX lx, TEShaderView view) {
-        super(lx, view);
-        ndiEngine = NDIEngine.get();
+    if (DevolayFrameType.VIDEO == this.receiver.receiveCapture(this.videoFrame, null, null, 0)) {
+      // get pixel data from video frame
+      this.frameData = this.videoFrame.getData();
+      this.frameData.rewind();
+      this.frameData.order(ByteOrder.LITTLE_ENDIAN);
 
-        // Create frame objects to handle incoming video stream
-        // (note that we are omitting audio and metadata frames for now)
-        videoFrame = new DevolayVideoFrame();
+      for (LXPoint p : lx.getModel().points) {
+        int i = p.index * 4;
+        colors[p.index] =
+            LXColor.rgb(
+                this.frameData.get(i + 2), this.frameData.get(i + 1), this.frameData.get(i));
+      }
+    } else if (this.frameData != null) {
+      // If no data was received since last frame, just show the last frame again on the car
+      // to avoid flickers. This can cause a frozen frame being shown on the car instead of
+      // a complete off screen when NDI is not being transferred on a good network.
+      this.frameData.rewind();
+      this.frameData.order(ByteOrder.LITTLE_ENDIAN);
+      for (LXPoint p : lx.getModel().points) {
+        int i = p.index * 4;
+        colors[p.index] =
+            LXColor.rgb(
+                this.frameData.get(i + 2), this.frameData.get(i + 1), this.frameData.get(i));
+      }
+    }
+  }
 
-        // default common controls settings.  Note that these aren't committed
-        // until the pattern calls addCommonControls(), so patterns can
-        // override these settings if they need to.
-        controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
-        controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
-        controls.markUnused(controls.getLXControl(TEControlTag.SPEED));
-        controls.markUnused(controls.getLXControl(TEControlTag.XPOS));
-        controls.markUnused(controls.getLXControl(TEControlTag.YPOS));
-        controls.markUnused(controls.getLXControl(TEControlTag.SIZE));
-        controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
-        controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
-        controls.markUnused(controls.getLXControl(TEControlTag.BRIGHTNESS));
-        controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
-        controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
-        controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
-        controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
-        addCommonControls();
+  @Override
+  public void onActive() {
+    super.onActive();
+    // if no receiver yet, create one, then connect it to
+    // its saved source if possible.
+    if (this.receiver == null) {
+      this.receiver =
+          new DevolayReceiver(
+              DevolayReceiver.ColorFormat.BGRX_BGRA, RECEIVE_BANDWIDTH_HIGHEST, true, "TE");
+    }
+    this.lastConnectState = this.ndiEngine.connectByName(this.channel_name, this.receiver);
+  }
 
-        changeChannel();
+  @Override
+  public void onInactive() {
+    // disconnect receiver from all sources
+    this.receiver.connect(null);
+    super.onInactive();
+  }
+
+  @Override
+  public void dispose() {
+    // shut down receiver and free everything
+    // we allocated.
+    if (this.videoFrame != null) {
+      this.videoFrame.close();
+    }
+    if (this.receiver != null) {
+      this.receiver.connect(null);
     }
 
-    protected void changeChannel() {
-        if (receiver != null) {
-            lastConnectState = ndiEngine.connectByName(channel_name, receiver);
-        }
-    }
-
-    public void runTEAudioPattern(double deltaMs) {
-        // Periodically try to connect if we weren't able to
-        // establish an initial connection to this pattern's
-        // desired NDI source. This makes things work
-        // without manual intervention if the source isn't
-        // available at startup.  Once the source becomes available,
-        // the connection will be automatically established.
-        if (!lastConnectState) {
-            if (System.currentTimeMillis() - connectTimer > 1000) {
-                connectTimer = System.currentTimeMillis();
-                lastConnectState = ndiEngine.connectByName(channel_name, receiver);
-            }
-        }
-
-        if (DevolayFrameType.VIDEO == receiver.receiveCapture(videoFrame, null, null, 0)) {
-            // get pixel data from video frame
-            frameData = videoFrame.getData();
-            frameData.rewind();
-            frameData.order(ByteOrder.LITTLE_ENDIAN);
-
-            for (LXPoint p : this.model.points) {
-                int i = p.index * 4;
-                colors[p.index] = LXColor.rgb(frameData.get(i + 2), frameData.get(i + 1), frameData.get(i));
-            }
-        } else if (frameData != null) {
-            // If no data was received since last frame, just show the last frame again on the car
-            // to avoid flickers. This can cause a frozen frame being shown on the car instead of
-            // a complete off screen when NDI is not being transferred on a good network.
-            frameData.rewind();
-            frameData.order(ByteOrder.LITTLE_ENDIAN);
-            for (LXPoint p : this.model.points) {
-                int i = p.index * 4;
-                colors[p.index] = LXColor.rgb(frameData.get(i + 2), frameData.get(i + 1), frameData.get(i));
-            }
-        }
-    }
-
-    @Override
-    public void onActive() {
-        super.onActive();
-        // if no receiver yet, create one, then connect it to
-        // its saved source if possible.
-        if (receiver == null) {
-            receiver =
-                    new DevolayReceiver(
-                            DevolayReceiver.ColorFormat.BGRX_BGRA, RECEIVE_BANDWIDTH_HIGHEST, true, "TE");
-        }
-        lastConnectState = ndiEngine.connectByName(channel_name, receiver);
-    }
-
-    @Override
-    public void onInactive() {
-        // disconnect receiver from all sources
-        receiver.connect(null);
-        super.onInactive();
-    }
-
-    @Override
-    public void dispose() {
-        // shut down receiver and free everything
-        // we allocated.
-        if (videoFrame != null) {
-            videoFrame.close();
-        }
-        if (receiver != null) {
-            receiver.connect(null);
-        }
-
-        super.dispose();
-    }
+    super.dispose();
+  }
 }
