@@ -261,7 +261,7 @@ public class NativeShader implements GLEventListener {
     //
     // By Imperial Decree, the audio texture will heretofore always use the first texture
     // object slot, TextureId(GL_TEXTURE0).  Other texture uniforms will be automatically
-    // assigned sequential ids starting with GL_TEXTURE1.
+    // assigned sequential ids starting with GL_TEXTURE5.
     //
     gl4.glActiveTexture(GL_TEXTURE0);
     gl4.glBindTexture(GL4.GL_TEXTURE_2D, audioTextureHandle[0]);

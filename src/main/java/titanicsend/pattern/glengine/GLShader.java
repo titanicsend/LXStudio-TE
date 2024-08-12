@@ -296,7 +296,7 @@ public class GLShader {
         GL.GL_STATIC_DRAW);
 
     // backbuffer texture object
-    gl4.glActiveTexture(GL_TEXTURE1);
+    gl4.glActiveTexture(GL_TEXTURE5);
     gl4.glEnable(GL_TEXTURE_2D);
     gl4.glGenTextures(1, backbufferHandle, 0);
     gl4.glBindTexture(GL4.GL_TEXTURE_2D, backbufferHandle[0]);
@@ -341,16 +341,19 @@ public class GLShader {
     // channel if it's a shadertoy shader, or iChannel0 if it's a local shader.
 
     // By Imperial Decree, the audio texture will heretofore always use texture unit
-    // GL_TEXTURE0 and the backbuffer texture will use GL_TEXTURE1. Other textures
-    // will be automatically bound to sequential ids starting with GL_TEXTURE2.
+    // GL_TEXTURE0 and the backbuffer texture will use GL_TEXTURE5. Other textures
+    // will be automatically bound to sequential ids starting with GL_TEXTURE6.
     //
     // The audio texture can be used by all shaders, and stays bound to texture
     // unit 0 throughout the Chromatik run. All we have to do to use it is add the uniform.
     setUniform(Uniforms.AUDIO_CHANNEL, 0);
+    setUniform(Uniforms.X_CHANNEL, 1);
+    setUniform(Uniforms.Y_CHANNEL, 2);
+    setUniform(Uniforms.Z_CHANNEL, 3);
 
     // Update backbuffer texture data. This buffer contains the result of the
     // previous render pass.  It is always bound to texture unit 1.
-    gl4.glActiveTexture(GL_TEXTURE1);
+    gl4.glActiveTexture(GL_TEXTURE5);
     gl4.glEnable(GL_TEXTURE_2D);
     gl4.glBindTexture(GL4.GL_TEXTURE_2D, backbufferHandle[0]);
 
@@ -365,7 +368,7 @@ public class GLShader {
         GL_UNSIGNED_BYTE,
         backBuffer);
 
-    setUniform("iBackbuffer", 1);
+    setUniform("iBackbuffer", 5);
 
     // add shadertoy texture channels. These textures already statically bound to
     // texture units so all we have to do is tell the shader which texture unit to use.

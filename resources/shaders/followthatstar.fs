@@ -16,7 +16,14 @@ vec3 hsv2rgb(vec3 c) {
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
 
     // normalize and shift origin to center (-0.5-0.5 coordinate range)
-    vec2 uPos = -0.5+(fragCoord.xy / iResolution.xy );
+//    vec2 uPos = -0.5+(fragCoord.xy / iResolution.xy );
+
+    // Retrieve coordinates from location textures
+    float xValue = texture(iChannel1, vec2(fragCoord.x, fragCoord.y)).r;
+    float yValue = texture(iChannel2, vec2(fragCoord.x, fragCoord.y)).r;
+//    float xValue = texture(iChannel1, vec2(fragCoord.y * iResolution.x + fragCoord.x, 0.0)).r;
+//    float yValue = texture(iChannel2, vec2(fragCoord.y * iResolution.x + fragCoord.x, 0.0)).r;
+    vec2 uPos = vec2(xValue, yValue);
 
     // star size pulses with the music!
     float pulse = iScale * ((iWow1 * (-0.5+beat)) + .618);

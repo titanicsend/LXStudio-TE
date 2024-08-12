@@ -30,6 +30,8 @@ public abstract class ShaderPainterClass {
    */
   public abstract void mapToPoints(List<LXPoint> points, ByteBuffer image, int[] colors);
 
+  public abstract void mapToPointsDirect(List<LXPoint> points, ByteBuffer image, int[] colors);
+
   /**
    * Map current LX point colors to a texture buffer that can be used by a shader.
    *

@@ -9,6 +9,8 @@ import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.LXLoopTask;
 import heronarts.lx.audio.GraphicMeter;
+import heronarts.lx.model.LXModel;
+import heronarts.lx.model.LXPoint;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
 import titanicsend.util.TE;
 
@@ -17,22 +19,42 @@ import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static com.jogamp.opengl.GL.*;
 
-public class GLEngine extends LXComponent implements LXLoopTask {
+public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   public static final String PATH = "GLEngine";
+
+  private static final int TEXTURE_HANDLE_AUDIO = 0;
+  private static final int TEXTURE_HANDLE_XN = 1;
+  private static final int TEXTURE_HANDLE_YN = 2;
+  private static final int TEXTURE_HANDLE_ZN = 3;
+  private static final int TEXTURE_HANDLE_EXISTS = 4;
+  private final int[] textureHandles = {
+          TEXTURE_HANDLE_AUDIO,
+          TEXTURE_HANDLE_XN,
+          TEXTURE_HANDLE_YN,
+          TEXTURE_HANDLE_ZN,
+          TEXTURE_HANDLE_EXISTS
+  };
 
   // rendering canvas size.  May be changed
   // via the startup command line.
   private static int xSize;
   private static int ySize;
+  private static int resolution;
+
+  // Location textures
+  private FloatBuffer xn;
+  private FloatBuffer yn;
+  private FloatBuffer zn;
+  private FloatBuffer exists;
 
   // audio texture size and buffer
   private static final int audioTextureWidth = 512;
   private static final int audioTextureHeight = 2;
   private FloatBuffer audioTextureData;
-  private final int[] audioTextureHandle = new int[1];
 
   // audio data source & parameters
   private final GraphicMeter meter;
@@ -45,7 +67,7 @@ public class GLEngine extends LXComponent implements LXLoopTask {
     private int refCount;
   }
 
-  private int nextTextureUnit = 2;
+  private int nextTextureUnit = 6; //2;
 
   // staticTextures is a map of texture names to texture unit numbers.
   private final HashMap<String, TextureUnit> staticTextures = new HashMap<>();
@@ -189,8 +211,8 @@ public class GLEngine extends LXComponent implements LXLoopTask {
     // create texture and bind it to texture unit 0, where it will stay for the whole run
     gl4.glActiveTexture(GL_TEXTURE0);
     gl4.glEnable(GL_TEXTURE_2D);
-    gl4.glGenTextures(1, audioTextureHandle, 0);
-    gl4.glBindTexture(GL4.GL_TEXTURE_2D, audioTextureHandle[0]);
+    gl4.glGenTextures(1, textureHandles, TEXTURE_HANDLE_AUDIO);
+    gl4.glBindTexture(GL4.GL_TEXTURE_2D, textureHandles[TEXTURE_HANDLE_AUDIO]);
 
     // configure texture coordinate handling
     // TODO - would GL_LINEAR filtering look more interesting here?
@@ -198,6 +220,33 @@ public class GLEngine extends LXComponent implements LXLoopTask {
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  }
+
+  private void initializeLocationTextures() {
+    this.xn = initializeLocationTexture(GL_TEXTURE1, TEXTURE_HANDLE_XN);
+    this.yn = initializeLocationTexture(GL_TEXTURE2, TEXTURE_HANDLE_YN);
+    this.zn = initializeLocationTexture(GL_TEXTURE3, TEXTURE_HANDLE_ZN);
+    this.exists = initializeLocationTexture(GL_TEXTURE4, TEXTURE_HANDLE_EXISTS);
+  }
+
+  private FloatBuffer initializeLocationTexture(int gl_texture, int index) {
+    // allocate backing buffer in native memory
+    FloatBuffer buffer = GLBuffers.newDirectFloatBuffer(xSize * ySize);
+
+    // create texture and bind it to texture unit 0, where it will stay for the whole run
+    gl4.glActiveTexture(gl_texture);
+    gl4.glEnable(GL_TEXTURE_2D);
+    gl4.glGenTextures(1, textureHandles, index);
+    gl4.glBindTexture(GL4.GL_TEXTURE_2D, textureHandles[index]);
+
+    // configure texture coordinate handling
+    // TODO - would GL_LINEAR filtering look more interesting here?
+    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    return buffer;
   }
 
   /** Update audio texture object with new fft and waveform data. This is called once per frame. */
@@ -211,7 +260,7 @@ public class GLEngine extends LXComponent implements LXLoopTask {
 
     // update audio texture on the GPU from our buffer
     gl4.glActiveTexture(GL_TEXTURE0);
-    gl4.glBindTexture(GL_TEXTURE_2D, audioTextureHandle[0]);
+    gl4.glBindTexture(GL_TEXTURE_2D, textureHandles[TEXTURE_HANDLE_AUDIO]);
 
     gl4.glTexImage2D(
         GL4.GL_TEXTURE_2D,
@@ -225,11 +274,96 @@ public class GLEngine extends LXComponent implements LXLoopTask {
         audioTextureData);
   }
 
+  /**
+   * Copy LXPoints' normalized coordinates into textures for use by shaders.
+   */
+  private void updateLocationTextures() {
+    this.modelChanged = false;
+    final int numPoints = this.model.points.length;
+
+    for (int i = 0; i < resolution; i++) {
+      if (i < numPoints) {
+        this.xn.put(i, this.model.points[i].xn);
+        this.yn.put(i, this.model.points[i].yn);
+        this.zn.put(i, this.model.points[i].zn);
+        this.exists.put(i, 1);
+      } else {
+        this.xn.put(i, 0);
+        this.yn.put(i, 0);
+        this.zn.put(i, 0);
+        this.exists.put(i, 0);
+      }
+    }
+
+    // update location textures on the GPU from our buffer
+    // x
+    gl4.glActiveTexture(GL_TEXTURE1);
+    gl4.glBindTexture(GL_TEXTURE_2D, textureHandles[TEXTURE_HANDLE_XN]);
+    gl4.glTexImage2D(
+            GL4.GL_TEXTURE_2D,
+            0,
+            GL4.GL_R32F,
+            xSize,
+            ySize,
+            0,
+            GL4.GL_RED,
+            GL_FLOAT,
+            xn);
+    // y
+    gl4.glActiveTexture(GL_TEXTURE2);
+    gl4.glBindTexture(GL_TEXTURE_2D, textureHandles[TEXTURE_HANDLE_YN]);
+    gl4.glTexImage2D(
+            GL4.GL_TEXTURE_2D,
+            0,
+            GL4.GL_R32F,
+            xSize,
+            ySize,
+            0,
+            GL4.GL_RED,
+            GL_FLOAT,
+            yn);
+    // z
+    gl4.glActiveTexture(GL_TEXTURE3);
+    gl4.glBindTexture(GL_TEXTURE_2D, textureHandles[TEXTURE_HANDLE_ZN]);
+    gl4.glTexImage2D(
+            GL4.GL_TEXTURE_2D,
+            0,
+            GL4.GL_R32F,
+            xSize,
+            ySize,
+            0,
+            GL4.GL_RED,
+            GL_FLOAT,
+            zn);
+    // exists
+    gl4.glActiveTexture(GL_TEXTURE4);
+    gl4.glBindTexture(GL_TEXTURE_2D, textureHandles[TEXTURE_HANDLE_EXISTS]);
+    gl4.glTexImage2D(
+            GL4.GL_TEXTURE_2D,
+            0,
+            GL4.GL_R32F,
+            xSize,
+            ySize,
+            0,
+            GL4.GL_RED,
+            GL_FLOAT,
+            exists);
+    LX.log("GLEngine refreshed location data for " + numPoints + " points");
+
+    if (numPoints > resolution) {
+      LX.error("GLEngine resolution (" + resolution
+              + ") too small for number of points in the model (" + numPoints + ")");
+    }
+  }
+
+  private LXModel model;
+
   public GLEngine(LX lx, int width, int height,  boolean isStaticModel) {
     // save rendering canvas dimensions
-    this.xSize = width;
-    this.ySize = height;
-    TE.log("GLEngine: Rendering canvas size: " + xSize + "x" + ySize);
+    xSize = width;
+    ySize = height;
+    resolution = width * height;
+    TE.log("GLEngine: Rendering canvas size: " + xSize + "x" + ySize + " = " + resolution + " total points");
 
     // register glEngine so we can access it from patterns.
     // and add it as an engine task for audio analysis and buffer management
@@ -237,6 +371,8 @@ public class GLEngine extends LXComponent implements LXLoopTask {
     lx.engine.addLoopTask(this);
 
     this.isStatic = isStaticModel;
+    this.model = lx.getModel();
+    lx.addListener(this);
 
     // set up audio fft and waveform handling
     // TODO - strongly consider expanding the number of FFT bands.
@@ -245,6 +381,14 @@ public class GLEngine extends LXComponent implements LXLoopTask {
     this.meter = lx.engine.audio.meter;
     fftResampleFactor = meter.bands.length / 512f;
   }
+
+  @Override
+  public void modelGenerationChanged(LX lx, LXModel model) {
+    this.model = model;
+    modelChanged = true;
+  }
+
+  private boolean modelChanged = true;
 
   public void loop(double deltaMs) {
 
@@ -258,6 +402,7 @@ public class GLEngine extends LXComponent implements LXLoopTask {
       // activate our context and do initialization tasks
       canvas.getContext().makeCurrent();
 
+      initializeLocationTextures();
       initializeAudioTexture();
 
       // set running flag once initialization is complete
@@ -270,7 +415,14 @@ public class GLEngine extends LXComponent implements LXLoopTask {
       // activate our context and do per-frame tasks
       canvas.getContext().makeCurrent();
 
+      if (this.modelChanged) {
+        updateLocationTextures();
+      }
       updateAudioTexture();
     }
+  }
+
+  public void dispose() {
+    this.lx.removeListener(this);
   }
 }

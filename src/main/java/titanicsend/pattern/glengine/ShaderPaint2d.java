@@ -46,6 +46,12 @@ public class ShaderPaint2d extends ShaderPainterClass {
     }
   }
 
+  public void mapToPointsDirect(List<LXPoint> points, ByteBuffer image, int[] colors) {
+    for (int i = 0; i < points.size(); i++) {
+      colors[i] = image.getInt(i * 4);
+    }
+  }
+
   /**
    * Map current LX point colors to a texture buffer that can be used by a shader.
    *

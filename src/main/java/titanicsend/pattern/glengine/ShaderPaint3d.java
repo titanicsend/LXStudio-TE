@@ -15,6 +15,12 @@ public class ShaderPaint3d extends ShaderPainterClass {
     super(isStaticModel);
   }
 
+  public void mapToPointsDirect(List<LXPoint> points, ByteBuffer image, int[] colors) {
+    for (int i = 0; i < points.size(); i++) {
+      colors[i] = image.getInt(i * 4);
+    }
+  }
+
   /**
    * Called after a frame has been generated, this function samples the OpenGL backbuffer to set
    * color at the specified points. This version wraps a texture around the entire car instead of
