@@ -123,6 +123,12 @@ public class TEApp extends LXStudio {
   private static int WINDOW_HEIGHT = 800;
   private static String resourceSubdir;
 
+  // Default shader system rendering canvas
+  // resolution.  May be changed via the startup
+  // command line argument --resolution=WIDTHxHEIGHT
+  public static int glRenderWidth = 640;
+  public static int glRenderHeight = 480;
+
   @LXPlugin.Name("Titanic's End")
   public static class Plugin implements LXStudio.Plugin, LX.Listener, LX.ProjectListener {
 
@@ -172,7 +178,7 @@ public class TEApp extends LXStudio {
 
       this.dmxEngine = new DmxEngine(lx);
       this.ndiEngine = new NDIEngine(lx);
-      this.glEngine = new GLEngine(lx,staticModel);
+      this.glEngine = new GLEngine(lx,glRenderWidth,glRenderHeight,staticModel);
 
       lx.engine.registerComponent("audioStems", this.audioStems = new AudioStems(lx));
       lx.engine.registerComponent("paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
@@ -779,6 +785,25 @@ public class TEApp extends LXStudio {
         loadVehicle = true;
       } else if (arg.equals("dynamic")) {
         staticModel = false;
+      } else if (arg.equals("--resolution")) {
+        // Parse shader rendering resolution from command line. Resolution is specified as a string
+        // in the format "WIDTHxHEIGHT" where WIDTH and HEIGHT are integers. (e.g. "640x480")
+        if (i + 1 < args.length) {
+          String[] resolution = args[i + 1].split("x");
+          if (resolution.length == 2) {
+            try {
+              glRenderWidth = Integer.parseInt(resolution[0]);
+              glRenderHeight = Integer.parseInt(resolution[1]);
+              i++; // let the rest of the parser skip the resolution argument
+            } catch (NumberFormatException nfx) {
+              error("Invalid render resolution: " + args[i + 1]);
+            }
+          } else {
+            error("Invalid render resolution: " + args[i + 1]);
+          }
+        } else {
+          error("Missing render resolution");
+        }
       } else {
         error("Unrecognized CLI argument, ignoring: " + arg);
       }
