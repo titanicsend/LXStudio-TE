@@ -45,17 +45,12 @@ public abstract class TEPattern extends DmxPattern {
 
   private final Map<String, Double> defaults  = new LinkedHashMap<String, Double>();
 
-  // TODO(JKB): we could have one of these, instead of one per pattern.
-  protected final TEGradientSource gradientSource = new TEGradientSource();
-
   protected TEPattern(LX lx) {
     super(lx);
     this.modelTE = TEApp.wholeModel;
 
     this.sua = this.modelTE.getPanel("SUA");
     this.sdc = this.modelTE.getPanel("SDC");
-
-    updateGradients();
 
     addParameter("setDefaults", this.captureDefaults);
   }
@@ -279,7 +274,8 @@ public abstract class TEPattern extends DmxPattern {
       LX.error("Parameter " + path + " not found, default value will be discarded");
       return;
     } else if (!(parameter instanceof LXListenableParameter)) {
-      LX.error("Unable to restore default value, parameter " + path + " is not LXListenableParameter");
+      LX.error(
+          "Unable to restore default value, parameter " + path + " is not LXListenableParameter");
       return;
     } else if (parameter instanceof StringParameter || parameter instanceof FunctionalParameter) {
       LX.error("Unable to restore default value, parameter " + path + " is invalid type");
@@ -292,11 +288,17 @@ public abstract class TEPattern extends DmxPattern {
       // Calling reset(value) overrides the current value that was just loaded from file.
       // To avoid, uncomment these two lines:
       // double currentValue = parameter.getValue();
-      ((LXListenableParameter)parameter).reset(value);
+      ((LXListenableParameter) parameter).reset(value);
       // parameter.setValue(currentValue);
     } catch (Exception x) {
-      LX.error(x,  "Invalid format loading default parameter value " + path + " from JSON value: " + defaultElement);
+      LX.error(
+          x,
+          "Invalid format loading default parameter value "
+              + path
+              + " from JSON value: "
+              + defaultElement);
     }
+  }
 
   /**
    * utility method for use during the static-to-dynamic model transition.
