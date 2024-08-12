@@ -379,8 +379,8 @@ public class TECommonControls {
           getControl(TEControlTag.WOW1).control,
           getControl(TEControlTag.WOW2).control,
           getControl(TEControlTag.WOWTRIGGER).control,
-          this.color.offset
-          // former shader-specific explode control
+          this.color.offset,
+          this.pattern.captureDefaults
           // To be SHIFT, not implemented yet
         });
   }

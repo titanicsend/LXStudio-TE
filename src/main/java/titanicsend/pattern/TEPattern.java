@@ -9,8 +9,19 @@ import heronarts.lx.audio.GraphicMeter;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
+import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.FunctionalParameter;
+import heronarts.lx.parameter.LXListenableParameter;
+import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.parameter.StringParameter;
+import heronarts.lx.parameter.TriggerParameter;
 import heronarts.lx.studio.TEApp;
 import java.util.*;
+import java.util.Map.Entry;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import titanicsend.color.TEColorType;
 import titanicsend.dmx.pattern.DmxPattern;
 import titanicsend.model.TELaserModel;
@@ -28,12 +39,20 @@ public abstract class TEPattern extends DmxPattern {
     return this.modelTE;
   }
 
+  public final TriggerParameter captureDefaults =
+    new TriggerParameter("SetDefaults", this::captureDefaults)
+    .setDescription("Set current parameter values as the default values for this pattern instance");
+
+  private final Map<String, Double> defaults  = new LinkedHashMap<String, Double>();
+
   protected TEPattern(LX lx) {
     super(lx);
     this.modelTE = TEApp.wholeModel;
 
     this.sua = this.modelTE.getPanel("SUA");
     this.sdc = this.modelTE.getPanel("SDC");
+
+    addParameter("setDefaults", this.captureDefaults);
   }
 
   @Override
@@ -189,6 +208,96 @@ public abstract class TEPattern extends DmxPattern {
       if (halfway < this.sdc.e0.points.length) rv.add(this.sdc.e0.points[halfway]);
     }
     return rv;
+  }
+
+  /**
+   * Set all current parameter values as the defaults for this pattern instance
+   */
+  protected void captureDefaults() {
+    for (LXParameter p : this.getParameters()) {
+      if (p instanceof LXListenableParameter) {
+        captureDefault((LXListenableParameter)p);
+      }
+    }
+  }
+
+  /**
+   * Set a parameter's current value as its default and remember new default for file save/load.
+   */
+  protected void captureDefault(LXListenableParameter p) {
+    if (p.getParent() != this) {
+      throw new UnsupportedOperationException("Can not apply default value, parameter is not child of pattern.");
+    }
+
+    if (p instanceof StringParameter) {
+      // Placeholder: StringParameter does not have a public method for setting the default value
+    } else {
+      // Use base value for modulated parameters
+      double value = p instanceof CompoundParameter ? ((CompoundParameter)p).getBaseValue() : p.getValue();
+      this.defaults.put(p.getPath(), value);
+      ((LXListenableParameter)p).reset(value);
+    }
+  }
+
+  private static final String KEY_DEFAULTS = "defaults";
+
+  @Override
+  public void save(LX lx, JsonObject obj) {
+    super.save(lx, obj);
+    obj.add(KEY_DEFAULTS, toObject(lx, this.defaults));
+  }
+
+  public static JsonObject toObject(LX lx, Map<String, Double> map) {
+    JsonObject obj = new JsonObject();
+    for (Entry<String, Double> entry : map.entrySet()) {
+      obj.addProperty(entry.getKey(), entry.getValue());
+    }
+    return obj;
+  }
+
+  @Override
+  public void load(LX lx, JsonObject obj) {
+    super.load(lx, obj);
+
+    this.defaults.clear();
+    if (obj.has(KEY_DEFAULTS)) {
+      JsonObject defaultsObject = obj.getAsJsonObject(KEY_DEFAULTS);
+      for (Entry<String, JsonElement> defaultEntry : defaultsObject.entrySet()) {
+        loadDefault(defaultEntry.getKey(), defaultEntry.getValue());
+      }
+    }
+  }
+
+  private void loadDefault(String path, JsonElement defaultElement) {
+    LXParameter parameter = this.getParameter(path);
+    if (parameter == null) {
+      LX.error("Parameter " + path + " not found, default value will be discarded");
+      return;
+    } else if (!(parameter instanceof LXListenableParameter)) {
+      LX.error(
+          "Unable to restore default value, parameter " + path + " is not LXListenableParameter");
+      return;
+    } else if (parameter instanceof StringParameter || parameter instanceof FunctionalParameter) {
+      LX.error("Unable to restore default value, parameter " + path + " is invalid type");
+      return;
+    }
+
+    try {
+      Double value = defaultElement.getAsDouble();
+      this.defaults.put(path, value);
+      // Calling reset(value) overrides the current value that was just loaded from file.
+      // To avoid, uncomment these two lines:
+      // double currentValue = parameter.getValue();
+      ((LXListenableParameter) parameter).reset(value);
+      // parameter.setValue(currentValue);
+    } catch (Exception x) {
+      LX.error(
+          x,
+          "Invalid format loading default parameter value "
+              + path
+              + " from JSON value: "
+              + defaultElement);
+    }
   }
 
   /**

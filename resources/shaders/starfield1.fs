@@ -45,6 +45,7 @@ float noise( in vec2 x ) {
     return res;
 }
 
+
 // simple galactic clouds from four octaves of noise
 vec3 cloud(vec2 p) {
     float f = 0.0;

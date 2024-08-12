@@ -1,17 +1,20 @@
 {
   /* Mothership by Titanic's End */
 
+  /* This is a simple Slice for testing.  The outputs will work but
+     it does not contain detailed pass-throughs for odd LED strip lengths etc. */
+
   label: "Slice",
   tag: "slice",
 
   "parameters": {
-    "front": { type: "boolean", default: true, label: "Front", description: "True for front of car, False for back of car" },
+    "port": { type: "boolean", default: true, label: "Port", description: "True for port/left of car, False for starboard/right side of car" },
     "radial": { type: "int", default: 1, min: 1, max: 25, label: "Radial", description: "Clock position of this slice, 1-24" },
 
     "host": { type: "string", default: "localhost", label: "Host", description: "Controller IP address or hostname" },
-    "outputW1": { type: "int", default: 6, min: 1, max: 8, label: "Output W1", description: "Window 1 Controller Output Number 1-8" },
-    "outputW2": { type: "int", default: 7, min: 1, max: 8, label: "Output W2", description: "Window 2 Controller Output Number 1-8" },
-    "outputW3": { type: "int", default: 8, min: 1, max: 8, label: "Output W3", description: "Window 3 Controller Output Number 1-8" },
+    "outputW1": { type: "int", default: 5, min: 1, max: 8, label: "Output W1", description: "Window 1 Controller Output Number 1-8" },
+    "outputW2": { type: "int", default: 6, min: 1, max: 8, label: "Output W2", description: "Window 2 Controller Output Number 1-8" },
+    "outputW3": { type: "int", default: 7, min: 1, max: 8, label: "Output W3", description: "Window 3 Controller Output Number 1-8" },
     "outputW8a": { type: "int", default: 3, min: 1, max: 8, label: "Output W8a", description: "Window 8a Controller Output Number 1-8" },
     "outputW8b": { type: "int", default: 2, min: 1, max: 8, label: "Output W8b", description: "Window 8b Controller Output Number 1-8" },
     "outputW9": { type: "int", default: 4, min: 1, max: 8, label: "Output W9", description: "Window 9 Controller Output Number 1-8" },
@@ -19,9 +22,11 @@
   },
 
   "transforms": [
+    /* Port */
+    { roll: "(-6.5 - ($radial - 1)) * 360 / 24", enabled: "port" },
+    /* Starboard */
     { yaw: "180", enabled: "!$front" },
-    { roll: "(-0.5 - ($radial - 1)) * 360 / 24", enabled: "$front" },
-    { roll: "(0.5 + ($radial - 1)) * 360 / 24", enabled: "!$front" }
+    { roll: "(6.5 + ($radial - 1)) * 360 / 24", enabled: "!port" }
   ],
 
   "components": [
@@ -39,14 +44,14 @@
 
   outputs: [
 
-    /* Window 1 (old Strand 6) */
+    /* Window 1 */
     { host: "$host", universe: "$outputW1*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
       segments: [
         { componentId: "w1" }
       ]
     },
 
-    /* Window 2 & 7 (old Strand 7) */
+    /* Window 2 & 7 */
     { host: "$host", universe: "$outputW2*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
       segments: [
         { componentId: "w2" },
@@ -54,7 +59,7 @@
       ]
     },
 
-    /* Window 3 & 4 (old Strand 8) */
+    /* Window 3 & 4 */
     { host: "$host", universe: "$outputW3*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
       segments: [
         { componentId: "w3" },
@@ -62,7 +67,7 @@
       ]
     },
 
-    /* Window 8a & 5 (old Strand 2) */
+    /* Window 8a & 5 */
     { host: "$host", universe: "$outputW8a*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
       segments: [
         { componentId: "w8a" },
@@ -70,7 +75,7 @@
       ]
     },
 
-    /* Window 8b & 6 (old Strand 3) */
+    /* Window 8b & 6 */
     { host: "$host", universe: "$outputW8b*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
       segments: [
         { componentId: "w8b" },
@@ -78,7 +83,7 @@
       ]
     },
 
-    /* Window 9 (old Strand 1) */
+    /* Window 9 */
     { host: "$host", universe: "$outputW9*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
       segments: [
         { componentId: "w9" }
