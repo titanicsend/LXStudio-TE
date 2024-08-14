@@ -271,6 +271,9 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
         this.paletteManager.hue.setValue(h);
         this.paletteManager.saturation.setValue(s);
         this.paletteManager.brightness.setValue(b);
+        // Push the managed swatch to the global palette immediately,
+        // so it doesn't need to be "pinned".
+        this.paletteManager.pushSwatch.trigger();
       }
       return;
     } else if (inRange(pitch, SCENE_LAUNCH, SCENE_LAUNCH_MAX)) {
