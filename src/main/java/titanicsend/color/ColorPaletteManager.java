@@ -27,12 +27,10 @@ public class ColorPaletteManager extends LXComponent {
     ANALOGOUS,
     GOLDEN_RATIO_CONJUGATE,
     SPLIT_COMPLEMENTARY,
-    COMPLEMENTARY,
-    TRIADIC,
   }
 
   public final EnumParameter<PaletteStrategy> paletteStrategy =
-      new EnumParameter<>("Palette Strategy", PaletteStrategy.TRIADIC)
+      new EnumParameter<>("Palette Strategy", PaletteStrategy.MONO)
           .setDescription(
               "Color theory rule to use when generating the secondary and tertiary colors");
 
@@ -172,17 +170,9 @@ public class ColorPaletteManager extends LXComponent {
         color2 = LXColor.hsb(hue * 0.6180339, saturation, brightness);
         color3 = LXColor.BLACK;
         break;
-      case COMPLEMENTARY:
-        color2 = LXColor.hsb(hue + 180, saturation, brightness);
-        color3 = LXColor.BLACK;
-        break;
       case SPLIT_COMPLEMENTARY:
         color2 = LXColor.hsb(hue + 150, saturation, brightness);
         color3 = LXColor.hsb(hue + 210, saturation, brightness);
-        break;
-      case TRIADIC:
-        color2 = LXColor.hsb(hue + 120, saturation, brightness);
-        color3 = LXColor.hsb(hue + 240, saturation, brightness);
         break;
       case ANALOGOUS:
         color2 = LXColor.hsb(hue + 30, saturation, brightness);
