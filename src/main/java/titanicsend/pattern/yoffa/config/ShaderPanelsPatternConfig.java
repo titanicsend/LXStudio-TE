@@ -285,10 +285,8 @@ public class ShaderPanelsPatternConfig {
 
     private final GaussianFilter rmsFilter = new GaussianFilter(5);
 
-
     public NeonCells(LX lx) {
       super(lx, TEShaderView.SPLIT_PANEL_SECTIONS);
-
     }
 
     @Override
@@ -398,8 +396,8 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.WOW2, 0, 0, 1); // contrast
       controls.setRange(TEControlTag.QUANTITY, 1, 1, 16); // number of kaleidoscope slices
       controls.setValue(TEControlTag.SPIN, 0);
-      controls.setRange(TEControlTag.LEVELREACTIVITY,0.33,0,1);
-      controls.setRange(TEControlTag.FREQREACTIVITY,0.33,0,1);
+      controls.setRange(TEControlTag.LEVELREACTIVITY, 0.33, 0, 1);
+      controls.setRange(TEControlTag.FREQREACTIVITY, 0.33, 0, 1);
 
       addShader("metallic_wave.fs");
     }
@@ -446,6 +444,42 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.WOW2, 1.0, 0.25, 2.0);
 
       addShader("smoke_shader.fs");
+    }
+  }
+
+  @LXCategory("Mothership")
+  public static class RingOfFire extends ConstructedShaderPattern {
+    public RingOfFire(LX lx) {
+      super(lx, TEShaderView.DOUBLE_LARGE);
+    }
+
+    @Override
+    protected void createShader() {
+      // set up common controls
+
+      controls.setRange(TEControlTag.SIZE, 0.91, 1.15, 0.8);
+      controls.setValue(TEControlTag.SPEED, 0.64);
+
+      controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
+
+      addShader("ringofire.fs");
+    }
+  }
+
+  @LXCategory("Mothership")
+  public static class DarkRadiance extends ConstructedShaderPattern {
+    public DarkRadiance(LX lx) {
+      super(lx, TEShaderView.DOUBLE_LARGE);
+    }
+
+    @Override
+    protected void createShader() {
+      controls.setRange(TEControlTag.SIZE, 0.64, 0.25, 1); // overall scale
+
+      addShader("darkradiance.fs");
     }
   }
 }
