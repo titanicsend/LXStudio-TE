@@ -63,8 +63,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float tx = halfBin+pixPerBin * p;
     float freq  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
 
-    float norm_x = pow(wave, 1. / iWow2);
-    float norm_y = pow(freq, 1. / iWow1);
+    float norm_x = pow(wave, 1. / frequencyReact);
+    float norm_y = pow(freq, 1. / levelReact);
 
     //float norm_x = (wave / avgVolume);
     //float norm_y = (freq / avgVolume);
