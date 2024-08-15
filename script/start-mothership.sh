@@ -5,7 +5,7 @@
 #     cd /Users/te/src/code/LXStudio-TE;
 # as should be in the automator app.
 
-LXP=Projects/BM2024_TE.lxp
+LXP=Projects/BM2024_Mothership.lxp
 JAR_FILE="target/LXStudio-TE-0.2.3-SNAPSHOT-jar-with-dependencies.jar"
 
 
@@ -62,4 +62,4 @@ java \
   -XstartOnFirstThread \
   -Djava.awt.headless=true \
   -jar $JAR_FILE \
-  dynamic ${LXP?};
+  dynamic ${LXP?} --resolution 512x512;
