@@ -19,9 +19,8 @@ public class TriangleInfinityRadialWaveform extends GLShaderPattern {
     controls.setRange(TEControlTag.QUANTITY, 6.0, 2.0, 12.0);
     controls.setRange(TEControlTag.LEVELREACTIVITY, 0.11, 0.0, 0.5);
     controls.setRange(TEControlTag.FREQREACTIVITY, 0.03, 0.0, 0.5);
-
-//    controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
-//    controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
 
     addCommonControls();
 

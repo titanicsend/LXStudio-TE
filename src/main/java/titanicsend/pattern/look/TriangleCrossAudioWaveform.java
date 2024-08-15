@@ -20,9 +20,8 @@ public class TriangleCrossAudioWaveform extends ConstructedShaderPattern {
     controls.setRange(TEControlTag.QUANTITY, 12.0, 1.0, 16.0);
     controls.setRange(TEControlTag.LEVELREACTIVITY, 0.3, 0.0, 1.0);
     controls.setRange(TEControlTag.FREQREACTIVITY, 0.11, 0.0, 1.0);
-
-//    controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
-//    controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
 
     addShader("triangle_cross_waveform.fs");
   }
