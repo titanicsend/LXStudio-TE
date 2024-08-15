@@ -237,7 +237,6 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(FourStar.class);
       lx.registry.addPattern(FxEdgeRocket.class);
       lx.registry.addPattern(FxDualWave.class);
-      lx.registry.addPattern(FxXWave.class);
       lx.registry.addPattern(Iceflow.class);
       lx.registry.addPattern(Kaleidosonic.class);
       lx.registry.addPattern(MultipassDemo.class);
@@ -799,6 +798,10 @@ public class TEApp extends LXStudio {
               glRenderHeight = Integer.parseInt(resolution[1]);
               i++; // let the rest of the parser skip the resolution argument
             } catch (NumberFormatException nfx) {
+              error("Invalid render resolution: " + args[i + 1]);
+            }
+            // test for out-of-bounds resolutions, just in case
+            if (glRenderWidth < 64 || glRenderHeight < 64 || glRenderWidth > 4096 || glRenderHeight > 4096) {
               error("Invalid render resolution: " + args[i + 1]);
             }
           } else {
