@@ -11,6 +11,7 @@ import java.util.*;
 import playasystems.gigglepixel.*;
 import titanicsend.util.TimeAccumulator;
 
+@Deprecated
 public class GigglePixelBroadcaster implements LXLoopTask {
   public static final int BROADCAST_PERIOD_MSEC = 100;
 

@@ -134,8 +134,8 @@ public class TEApp extends LXStudio {
 
     private final TEVirtualOverlays virtualOverlays;
 
-    private GigglePixelListener gpListener;
-    private GigglePixelBroadcaster gpBroadcaster;
+//    private GigglePixelListener gpListener;
+//    private GigglePixelBroadcaster gpBroadcaster;
 
     private TEAutopilot autopilot;
     private TEOscListener oscListener;
@@ -402,25 +402,25 @@ public class TEApp extends LXStudio {
       // create our library for autopilot
       this.library = initializePatternLibrary(lx);
 
-      int myGigglePixelID = 73; // Looks like "TE"
-      try {
-        this.gpListener = new GigglePixelListener(lx, "0.0.0.0", myGigglePixelID);
-        lx.engine.addLoopTask(this.gpListener);
-        TE.log("GigglePixel listener created");
-      } catch (IOException e) {
-        TE.log("Failed to create GigglePixel listener: " + e.getMessage());
-      }
+//      int myGigglePixelID = 73; // Looks like "TE"
+//      try {
+//        this.gpListener = new GigglePixelListener(lx, "0.0.0.0", myGigglePixelID);
+//        lx.engine.addLoopTask(this.gpListener);
+//        TE.log("GigglePixel listener created");
+//      } catch (IOException e) {
+//        TE.log("Failed to create GigglePixel listener: " + e.getMessage());
+//      }
 
-      // This should of course be in the config, but we leave for the playa in like a week
-      String destIP = "192.168.42.255";
-      try {
-        this.gpBroadcaster =
-            new GigglePixelBroadcaster(lx, destIP, wholeModel.getName(), myGigglePixelID);
-        lx.engine.addLoopTask(this.gpBroadcaster);
-        TE.log("GigglePixel broadcaster created");
-      } catch (IOException e) {
-        TE.log("Failed to create GigglePixel broadcaster: " + e.getMessage());
-      }
+//      // This should of course be in the config, but we leave for the playa in like a week
+//      String destIP = "192.168.42.255";
+//      try {
+//        this.gpBroadcaster =
+//            new GigglePixelBroadcaster(lx, destIP, wholeModel.getName(), myGigglePixelID);
+//        lx.engine.addLoopTask(this.gpBroadcaster);
+//        TE.log("GigglePixel broadcaster created");
+//      } catch (IOException e) {
+//        TE.log("Failed to create GigglePixel broadcaster: " + e.getMessage());
+//      }
 
       // create our historian instance
       TEHistorian history = new TEHistorian();
@@ -451,8 +451,8 @@ public class TEApp extends LXStudio {
         sx.printStackTrace();
       }
 
-      GPOutput gpOutput = new GPOutput(lx, this.gpBroadcaster);
-      lx.addOutput(gpOutput);
+//      GPOutput gpOutput = new GPOutput(lx, this.gpBroadcaster);
+//      lx.addOutput(gpOutput);
 
       TEOscMessage.applyTEOscOutputSettings(lx);
 
@@ -563,12 +563,12 @@ public class TEApp extends LXStudio {
       new UIDevSwitch(ui, this.devSwitch, ui.leftPane.model.getContentWidth())
           .addToContainer(ui.leftPane.model, 0);
 
-      new GigglePixelUI(
-              ui, ui.leftPane.model.getContentWidth(), this.gpListener, this.gpBroadcaster)
-          .addToContainer(ui.leftPane.model, 1);
+//      new GigglePixelUI(
+//              ui, ui.leftPane.model.getContentWidth(), this.gpListener, this.gpBroadcaster)
+//          .addToContainer(ui.leftPane.model, 1);
 
       new TEUIControls(ui, this.virtualOverlays, ui.leftPane.model.getContentWidth())
-          .addToContainer(ui.leftPane.model, 2);
+          .addToContainer(ui.leftPane.model, 1);
 
       // Global pane
 
@@ -578,11 +578,11 @@ public class TEApp extends LXStudio {
 
       // Add UI section for autopilot
       new TEUserInterface.AutopilotUISection(ui, this.autopilot)
-          .addToContainer(ui.leftPane.global, 1);
+          .addToContainer(ui.leftPane.global, 6);
 
       // Add UI section for audio stems
       new UIAudioStems(ui, this.audioStems, ui.leftPane.global.getContentWidth())
-          .addToContainer(ui.leftPane.global, 3);
+          .addToContainer(ui.leftPane.global, 2);
 
       UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 4);
       UIColorPaletteManager.addToRightPerformancePane(ui, this.paletteManagerA, this.paletteManagerB);
