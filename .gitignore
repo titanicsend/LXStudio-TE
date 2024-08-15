@@ -30,3 +30,5 @@ resources/model/
 TD/Utils/Backup/
 Projects/Test*.lxp
 .lxpreferences
+
+*.onnx
