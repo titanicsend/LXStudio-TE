@@ -1,6 +1,6 @@
 {
-  "version": "1.0.1.TE.1-SNAPSHOT",
-  "timestamp": 1723319742744,
+  "version": "1.0.1.TE.2-SNAPSHOT",
+  "timestamp": 1723666671027,
   "fixtures": [
     {
       "jsonFixtureType": "Mothership/window/Ramp",
@@ -107,7 +107,7 @@
         "enabled": true,
         "brightness": 1.0,
         "identify": false,
-        "mute": false,
+        "mute": true,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice01P"
@@ -226,7 +226,7 @@
         "enabled": true,
         "brightness": 1.0,
         "identify": false,
-        "mute": false,
+        "mute": true,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice02P"
@@ -342,7 +342,7 @@
         "enabled": true,
         "brightness": 1.0,
         "identify": false,
-        "mute": false,
+        "mute": true,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice03P"
@@ -461,7 +461,7 @@
         "enabled": true,
         "brightness": 1.0,
         "identify": false,
-        "mute": false,
+        "mute": true,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice04P"
@@ -581,7 +581,7 @@
         "enabled": true,
         "brightness": 1.0,
         "identify": false,
-        "mute": false,
+        "mute": true,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice05P"
@@ -703,7 +703,7 @@
         "enabled": true,
         "brightness": 1.0,
         "identify": false,
-        "mute": false,
+        "mute": true,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice06P"
@@ -825,7 +825,7 @@
         "enabled": true,
         "brightness": 1.0,
         "identify": false,
-        "mute": false,
+        "mute": true,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice07P"
@@ -947,7 +947,7 @@
         "enabled": true,
         "brightness": 1.0,
         "identify": false,
-        "mute": false,
+        "mute": true,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice08P"
@@ -1069,7 +1069,7 @@
         "enabled": true,
         "brightness": 1.0,
         "identify": false,
-        "mute": false,
+        "mute": true,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice09P"
@@ -1191,7 +1191,7 @@
         "enabled": true,
         "brightness": 1.0,
         "identify": false,
-        "mute": false,
+        "mute": true,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice10P"
@@ -1313,7 +1313,7 @@
         "enabled": true,
         "brightness": 1.0,
         "identify": false,
-        "mute": false,
+        "mute": true,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice11P"
@@ -1435,7 +1435,7 @@
         "enabled": true,
         "brightness": 1.0,
         "identify": false,
-        "mute": false,
+        "mute": true,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice12P"
@@ -1554,7 +1554,7 @@
         "scale": 1.0,
         "selected": false,
         "deactivate": false,
-        "enabled": false,
+        "enabled": true,
         "brightness": 1.0,
         "identify": false,
         "mute": true,
@@ -1615,10 +1615,10 @@
         "scale": 1.0,
         "selected": false,
         "deactivate": false,
-        "enabled": false,
+        "enabled": true,
         "brightness": 1.0,
         "identify": false,
-        "mute": true,
+        "mute": false,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice13S"
@@ -1676,7 +1676,7 @@
         "scale": 1.0,
         "selected": false,
         "deactivate": false,
-        "enabled": false,
+        "enabled": true,
         "brightness": 1.0,
         "identify": false,
         "mute": true,
@@ -1740,7 +1740,7 @@
         "enabled": false,
         "brightness": 1.0,
         "identify": false,
-        "mute": true,
+        "mute": false,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice14S"
@@ -1862,7 +1862,7 @@
         "enabled": false,
         "brightness": 1.0,
         "identify": false,
-        "mute": true,
+        "mute": false,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice15S"
@@ -1980,7 +1980,7 @@
         "enabled": false,
         "brightness": 1.0,
         "identify": false,
-        "mute": true,
+        "mute": false,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice16S"
@@ -2102,7 +2102,7 @@
         "enabled": false,
         "brightness": 1.0,
         "identify": false,
-        "mute": true,
+        "mute": false,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice17S"
@@ -2224,7 +2224,7 @@
         "enabled": false,
         "brightness": 1.0,
         "identify": false,
-        "mute": true,
+        "mute": false,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice18S"
@@ -2346,7 +2346,7 @@
         "enabled": false,
         "brightness": 1.0,
         "identify": false,
-        "mute": true,
+        "mute": false,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice19S"
@@ -2468,7 +2468,7 @@
         "enabled": false,
         "brightness": 1.0,
         "identify": false,
-        "mute": true,
+        "mute": false,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice20S"
@@ -2586,7 +2586,7 @@
         "enabled": false,
         "brightness": 1.0,
         "identify": false,
-        "mute": true,
+        "mute": false,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice21S"
@@ -2708,7 +2708,7 @@
         "enabled": false,
         "brightness": 1.0,
         "identify": false,
-        "mute": true,
+        "mute": false,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice22S"
@@ -2830,7 +2830,7 @@
         "enabled": false,
         "brightness": 1.0,
         "identify": false,
-        "mute": true,
+        "mute": false,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice23S"
@@ -2952,7 +2952,7 @@
         "enabled": false,
         "brightness": 1.0,
         "identify": false,
-        "mute": true,
+        "mute": false,
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice24S"
