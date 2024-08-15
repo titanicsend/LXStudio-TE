@@ -7,10 +7,6 @@ public class Uniforms {
   public static final String MOUSE = "iMouse";
   public static final String CHANNEL = "iChannel";
   public static final String AUDIO_CHANNEL = CHANNEL + "0";
-  public static final String X_CHANNEL = CHANNEL + "1";
-  public static final String Y_CHANNEL = CHANNEL + "2";
-  public static final String Z_CHANNEL = CHANNEL + "3";
-  
   public static final String CUSTOM_SUFFIX = "_parameter";
 
   public enum Audio {
