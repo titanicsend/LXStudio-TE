@@ -35,6 +35,7 @@ public class ModelFileWriter extends TEPerformancePattern {
   public static final int IMAGE_HEIGHT = 480;
   public static final double EPSILON = 1e-6;
   private static final int MARGIN = 0;
+  private LXPoint[] allPoints;
 
   public ModelFileWriter(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
@@ -54,8 +55,12 @@ public class ModelFileWriter extends TEPerformancePattern {
       // Write all points
       // This is the main model and is required to be written out.
       LXPoint[] all_points_array = lx.getModel().points;
-      writeModel(all_points_array, "all");
+      writeModel(all_points_array, "all", all_points_array);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
 
+    try {
       writeOptionalModels();
     } catch (IOException e) {
       throw new RuntimeException(e);
@@ -83,47 +88,95 @@ public class ModelFileWriter extends TEPerformancePattern {
     for (TEPanelModel panel : TEApp.wholeModel.getPanels()) {
       panel_points_list.addAll(Arrays.asList(panel.points));
     }
-    writeModel(panel_points_list, "panels");
+    writeModel(panel_points_list, "panels", true);
 
     // Write "edge" points only
     List<LXPoint> edge_points_list = new ArrayList<>();
     for (TEEdgeModel edge : TEApp.wholeModel.getEdges()) {
       edge_points_list.addAll(Arrays.asList(edge.points));
     }
-    writeModel(edge_points_list, "edges");
+    writeModel(edge_points_list, "edges", true);
+
+    // Write each panel separately.
+    for (TEPanelModel panel : TEApp.wholeModel.getPanels()) {
+      String model_name = panel.getId();
+      List<LXPoint> panel_points = panel.model.getPoints();
+      writeModel(panel_points, model_name, true, "separate_panels");
+    }
+
+    // Write all points except for side panels AA, AB, FA, FB.
+    // These panels are mapped with very few points from the shader textures, and
+    // they don't look normal/good for some patterns used in the boot up sequence.
+    List<String> ignoredPanels =
+            Arrays.asList(
+                    "AA", "AB", "FA", "FB", "FSB", "FPB", "FSA", "FPA", "FSC", "FPC", "APA", "ASA", "APB",
+                    "APC", "ASC", "ASB");
+    List<String> ignoredEdges =
+            Arrays.asList(
+                    "113-124", "109-113", "109-112", "112-124", "81-89", "81-91", "91-126", "89-126",
+                    "89-91", "70-81", "73-81", "81-82", "81-92", "27-109", "28-109", "109-110", "109-111",
+                    "28-113", "28-111", "27-112", "27-110", "112-116", "113-117", "116-124", "117-124",
+                    "89-125", "70-89", "70-82", "73-92", "73-91", "91-129", "125-126", "126-129");
+
+    List<LXPoint> all_no_side_panels_points = new ArrayList<>();
+
+    for (TEPanelModel panel : TEApp.wholeModel.getPanels()) {
+      if (ignoredPanels.contains(panel.getId())) {
+        continue;
+      }
+      all_no_side_panels_points.addAll(Arrays.asList(panel.points));
+    }
+
+    for (TEEdgeModel edge : TEApp.wholeModel.getEdges()) {
+      TE.log(edge.getId());
+      if (ignoredEdges.contains(edge.getId())) {
+        continue;
+      }
+      all_no_side_panels_points.addAll(Arrays.asList(edge.points));
+    }
+    writeModel(all_no_side_panels_points, "no_sides_all", true);
   }
 
   /**
-   * Writes 3D model data, PNG mask, and UV coordinates from a list of LXPoint.
+   * Writes the 3D model data (coordinates), PNG mask, and UV coordinates to files.
    *
-   * @param points The List of LXPoint to export.
+   * <p>This method handles the core logic of generating the model representation for use with TE
+   * (and potentially other tools). It produces three output files:
+   *
+   * <ol>
+   *   <li>**{modelName}_3d.csv:** A CSV file containing the 3D coordinates (x, y, z) of each point
+   *       in the provided `points` array.
+   *   <li>**{modelName}_mask.png:** A PNG image representing a mask. White pixels in the mask
+   *       correspond to the locations of the 3D points projected onto a 2D plane.
+   *   <li>**{modelName}_uv.csv:** A CSV file containing UV coordinates. Each line in this file maps
+   *       a 3D point from `points` to its corresponding pixel location in the generated mask image.
+   * </ol>
+   *
+   * <p>The UV coordinates enable a direct, lossless mapping between the 3D model and a 2D texture,
+   * which can be useful for applying textures or effects outside of the LX environment.
+   *
+   * @param points The array of {@link LXPoint} objects representing the 3D model.
    * @param modelName The base name for the output files.
+   * @param useAllPoints If true, the PNG mask will be generated using the bounding box of the
+   *     `allPoints` array (set using `writeModel` with the `allPoints` argument). If false, the
+   *     mask will be generated using the bounding box of the `points` array provided to this
+   *     method.
+   * @param dirName Optional directory name to write the files into. If null, the files are written
+   *     to the default "resources/model/" directory.
    * @throws IOException If an error occurs during file writing.
    */
-  public void writeModel(List<LXPoint> points, String modelName) throws IOException {
-    // Convert List<LXPoint> to LXPoint[]
-    LXPoint[] pointsArray = points.toArray(new LXPoint[0]);
+  private void writeModel(LXPoint[] points, String modelName, boolean useAllPoints, String dirName)
+          throws IOException {
+    // Construct the file paths, incorporating the optional directory
+    Path basePath = Path.of("resources/model/");
+    if (dirName != null) {
+      basePath = basePath.resolve(dirName); // Append dirName to the base path
+      Files.createDirectories(basePath); // Create the directory if it doesn't exist
+    }
 
-    // Call the original writeModel method
-    writeModel(pointsArray, modelName);
-  }
-
-  /**
-   * This function will write 3 main model files.
-   *
-   * <p>1. 3d_model: this is the coordinates of all 3d points for the points provide to the function
-   * 2. PNG mask: this is a mask that can be used to mask a texture to only points that will be used
-   * by TE 3. UV Coordinates: correlating the 3d_model points to the pixel coordinates in the PNG.
-   * This can be used to perform lossless mapping from outside of LX.
-   *
-   * @param points LXPoint[] for the model that needs to be exported.
-   * @param modelName name used to save the model. the name will be suffixed by "_3d.csv",
-   *     "_mask.png", and "_uv.csv" for each output file.
-   */
-  public void writeModel(LXPoint[] points, String modelName) throws IOException {
-    Path path3dModel = Path.of(String.format("resources/model/%s_3d.csv", modelName));
-    Path pathMask = Path.of(String.format("resources/model/%s_mask.png", modelName));
-    Path pathUv = Path.of(String.format("resources/model/%s_uv.csv", modelName));
+    Path path3dModel = basePath.resolve(String.format("%s_3d.csv", modelName));
+    Path pathMask = basePath.resolve(String.format("%s_mask.png", modelName));
+    Path pathUv = basePath.resolve(String.format("%s_uv.csv", modelName));
 
     Files.deleteIfExists(path3dModel);
     Files.deleteIfExists(pathMask);
@@ -140,8 +193,8 @@ public class ModelFileWriter extends TEPerformancePattern {
     double[] min = {Double.MAX_VALUE, Double.MAX_VALUE}; // Min x, y
     double[] max = {-Double.MAX_VALUE, -Double.MAX_VALUE}; // Max x, y
 
-    // Find min and max values for x and y
-    for (LXPoint point : points) {
+    // Calculate min and max using either provided points or allPoints
+    for (LXPoint point : (useAllPoints && allPoints != null) ? allPoints : points) {
       min[0] = Math.min(min[0], point.x);
       max[0] = Math.max(max[0], point.x);
       min[1] = Math.min(min[1], point.y);
@@ -163,8 +216,8 @@ public class ModelFileWriter extends TEPerformancePattern {
       double y = point.y;
 
       // Restored original pixel calculations
-      int px = (int) ((x - min[0]) / Math.max(max[0] - min[0], 1e-6) * (IMAGE_WIDTH - 1));
-      int py = (int) ((y - min[1]) / Math.max(max[1] - min[1], 1e-6) * (IMAGE_HEIGHT - 1));
+      int px = (int) ((x - min[0]) / Math.max(max[0] - min[0], EPSILON) * (IMAGE_WIDTH - 1));
+      int py = (int) ((y - min[1]) / Math.max(max[1] - min[1], EPSILON) * (IMAGE_HEIGHT - 1));
 
       if (px >= 0 && px < IMAGE_WIDTH && py >= 0 && py < IMAGE_HEIGHT) {
         image.setRGB(px, py, Color.WHITE.getRGB()); // White for mask
@@ -176,5 +229,39 @@ public class ModelFileWriter extends TEPerformancePattern {
 
     ImageIO.write(image, "png", pathMask.toFile());
     Files.write(pathUv, uvPoints, CREATE, TRUNCATE_EXISTING);
+  }
+
+  // Overloads for array version
+  private void writeModel(LXPoint[] points, String modelName, boolean useAllPoints)
+          throws IOException {
+    writeModel(points, modelName, useAllPoints, null);
+  }
+
+  public void writeModel(LXPoint[] points, String modelName, LXPoint[] allPoints, String dirName)
+          throws IOException {
+    this.allPoints = allPoints;
+    writeModel(points, modelName, true, dirName);
+  }
+
+  public void writeModel(LXPoint[] points, String modelName, LXPoint[] allPoints)
+          throws IOException {
+    writeModel(points, modelName, allPoints, null);
+  }
+
+  // Overloads for List version
+  public void writeModel(
+          List<LXPoint> points, String modelName, boolean useAllPoints, String dirName)
+          throws IOException {
+    LXPoint[] pointsArray = points.toArray(new LXPoint[0]);
+    writeModel(pointsArray, modelName, useAllPoints, dirName);
+  }
+
+  public void writeModel(List<LXPoint> points, String modelName, boolean useAllPoints)
+          throws IOException {
+    writeModel(points, modelName, useAllPoints, null);
+  }
+
+  public void writeModel(List<LXPoint> points, String modelName) throws IOException {
+    writeModel(points, modelName, false, null);
   }
 }

@@ -104,8 +104,8 @@ public class TdNdiPattern extends TEPerformancePattern {
       for (LXPoint p : lx.getModel().points) {
         int i = p.index * 4;
         colors[p.index] =
-            LXColor.rgb(
-                this.frameData.get(i + 2), this.frameData.get(i + 1), this.frameData.get(i));
+                LXColor.rgb(
+                        this.frameData.get(i + 2), this.frameData.get(i + 1), this.frameData.get(i));
       }
     } else if (this.frameData != null) {
       // If no data was received since last frame, just show the last frame again on the car
@@ -116,8 +116,8 @@ public class TdNdiPattern extends TEPerformancePattern {
       for (LXPoint p : lx.getModel().points) {
         int i = p.index * 4;
         colors[p.index] =
-            LXColor.rgb(
-                this.frameData.get(i + 2), this.frameData.get(i + 1), this.frameData.get(i));
+                LXColor.rgb(
+                        this.frameData.get(i + 2), this.frameData.get(i + 1), this.frameData.get(i));
       }
     }
   }
@@ -129,8 +129,8 @@ public class TdNdiPattern extends TEPerformancePattern {
     // its saved source if possible.
     if (this.receiver == null) {
       this.receiver =
-          new DevolayReceiver(
-              DevolayReceiver.ColorFormat.BGRX_BGRA, RECEIVE_BANDWIDTH_HIGHEST, true, "TE");
+              new DevolayReceiver(
+                      DevolayReceiver.ColorFormat.BGRX_BGRA, RECEIVE_BANDWIDTH_HIGHEST, true, "TE");
     }
     this.lastConnectState = this.ndiEngine.connectByName(this.channel_name, this.receiver);
   }
