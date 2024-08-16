@@ -225,6 +225,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(ArcEdges.class);
       lx.registry.addPattern(BassLightning.class);
       lx.registry.addPattern(BouncingDots.class);
+      lx.registry.addPattern(FxLaserCharge.class);
       lx.registry.addPattern(Checkers.class);
       lx.registry.addPattern(EdgeFall.class);
       lx.registry.addPattern(EdgeKITT.class);
