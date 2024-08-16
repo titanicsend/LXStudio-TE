@@ -95,7 +95,7 @@ vec4 _blendFix(vec4 col) {
 }
 
 void main() {
-    vec2 coords = texelFetch(lxModelCoords, ivec2(gl_FragCoord.xy), 0).rg;
+    vec2 coords = texelFetch(lxModelCoords, ivec2(gl_FragCoord.xy), 0).xy;
     coords *= iResolution.xy;
 
     // translate according to XPos and YPos controls unless explicitly overriden

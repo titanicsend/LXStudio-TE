@@ -40,7 +40,7 @@ void mainImage(out vec4 fragColor, in vec2 coord) {
         lit += l * l;
     }
     // cool the entire backbuffer by a small amount
-    fragColor = max(vec4(0.),texture(iBackbuffer, uv) - iWow1 / 10.);
+    fragColor = max(vec4(0.),texelFetch(iBackbuffer, ivec2(gl_FragCoord.xy), 0) - iWow1 / 10.);
 
     // iWow2 controls the mix of primary color vs. primary + secondary.
     // In cases where color 2 is black, we'll "adjust" the controls so only the primary is used
