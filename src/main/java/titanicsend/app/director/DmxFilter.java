@@ -1,8 +1,6 @@
 package titanicsend.app.director;
 
 import heronarts.lx.model.LXModel;
-import heronarts.lx.studio.TEApp;
-import titanicsend.dmx.DmxEngine;
 
 public class DmxFilter extends Filter {
 
