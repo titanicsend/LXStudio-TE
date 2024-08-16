@@ -11,6 +11,7 @@ import titanicsend.app.GigglePixelBroadcaster;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
 
+@Deprecated
 public class GPOutput extends LXOutput {
   private GigglePixelBroadcaster broadcaster;
 

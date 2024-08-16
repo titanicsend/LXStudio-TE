@@ -189,6 +189,7 @@ public abstract class TEPattern extends DmxPattern {
   // By default, it will pick a point in the middle of SUA and SDC panels and
   // a point in the middle of one of each of their edges. If your pattern would
   // prefer to use some other points as the source of its GP packets, override!
+  @Deprecated
   public List<LXPoint> getGigglePixelPoints() {
     List<LXPoint> rv = new ArrayList<>();
 
