@@ -1,6 +1,6 @@
 {
   label: "Beacon1",
-  tags: [ "dmx", "beam", "dmxFixture" ],
+  tags: [ "dmx", "beacon", "dmxFixture" ],
 
   "meta": {
     "dmx": "titanicsend.dmx.model.BeaconModel",

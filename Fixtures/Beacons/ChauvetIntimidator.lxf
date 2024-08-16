@@ -1,6 +1,6 @@
 {
   label: "BeamQ60",
-  tags: [ "dmx", "beam", "dmxFixture" ],
+  tags: [ "dmx", "beacon", "dmxFixture" ],
 
   "meta": {
     "dmx": "titanicsend.dmx.model.ChauvetBeamQ60Model",

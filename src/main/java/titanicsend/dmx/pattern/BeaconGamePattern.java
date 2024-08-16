@@ -2,6 +2,7 @@ package titanicsend.dmx.pattern;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
@@ -10,6 +11,7 @@ import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.TEApp;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
+import titanicsend.color.TEColorType;
 import titanicsend.dmx.model.BeaconModel;
 import titanicsend.dmx.model.ChauvetBeamQ60Model;
 import titanicsend.dmx.model.DmxModel;
@@ -149,10 +151,29 @@ public class BeaconGamePattern extends BeaconPattern
                 setDmxNormalized(d, ChauvetBeamQ60Model.INDEX_TILT, tilt);
                 setDmxValue(d, ChauvetBeamQ60Model.INDEX_PT_SPEED, ptSpd);
                 setDmxValue(d, ChauvetBeamQ60Model.INDEX_SHUTTER, shutterValue);
-                setDmxNormalized(d, ChauvetBeamQ60Model.INDEX_DIMMER, 1);
-                setDmxNormalized(d, ChauvetBeamQ60Model.INDEX_RED, 100);
+                setDmxNormalized(d, ChauvetBeamQ60Model.INDEX_DIMMER, dimmer);
+                int color =  getColor(TEColorType.PRIMARY);
+                setDmxNormalized(d, ChauvetBeamQ60Model.INDEX_RED, redNormalized(color));
+                setDmxNormalized(d, ChauvetBeamQ60Model.INDEX_GREEN, greenNormalized(color));
+                setDmxNormalized(d, ChauvetBeamQ60Model.INDEX_BLUE, blueNormalized(color));
             }
         }
+    }
+
+    private int getColor(TEColorType colorType) {
+      return this.lx.engine.palette.getSwatchColor(colorType.swatchIndex()).getColor();
+    }
+
+    private float redNormalized(int color) {
+      return ((float)Byte.toUnsignedInt(LXColor.red(color))) / 255f;
+    }
+
+    private float greenNormalized(int color) {
+      return ((float)Byte.toUnsignedInt(LXColor.green(color))) / 255f;
+    }
+
+    private float blueNormalized(int color) {
+      return ((float)Byte.toUnsignedInt(LXColor.blue(color))) / 255f;
     }
 
     @Override
