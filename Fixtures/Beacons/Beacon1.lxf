@@ -4,7 +4,8 @@
 
   "meta": {
     "dmx": "titanicsend.dmx.model.BeaconModel",
-    "dmx_host": "10.6.1.101"
+    "dmx_host": "10.6.1.101",
+    "tiltLimit": "90"
   },
 
   "components": [
