@@ -2,14 +2,15 @@ package titanicsend.ui;
 
 import heronarts.lx.studio.LXStudio;
 import titanicsend.app.TEVirtualOverlays;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
 
 // Thin wrapper that allows global access to 3D UI components, so we can
 // update them easily when the model changes
-public class UI3DManager  {
+public class UI3DManager {
   public static UI3DManager current;
-  public static final AtomicBoolean inRebuild = new AtomicBoolean(true);
-  public static final AtomicBoolean inDraw = new AtomicBoolean(false);
+
+  public static final ReentrantLock labelsLock = new ReentrantLock();
+  public static final ReentrantLock backingsLock = new ReentrantLock();
 
   public final UIModelLabels modelLabels;
 
@@ -21,49 +22,52 @@ public class UI3DManager  {
   public final UILasers lasers;
   public final UILasers lasersAux;
 
-  public static void lockRebuild() {
-      UI3DManager.inRebuild.set(true);
+  public static boolean labelsLocked() {
+    return UI3DManager.labelsLock.isLocked();
   }
 
-  public static void unlockRebuild() {
-      UI3DManager.inRebuild.set(false);
-  }
-
-  public static boolean isRebuildLocked() {
-      return UI3DManager.inRebuild.get();
-  }
-
-  public static void lockDraw() {
-    UI3DManager.inDraw.set(true);
-  }
-
-  public static void unlockDraw() {
-    UI3DManager.inDraw.set(false);
+  public static boolean backingsLocked() {
+    return UI3DManager.backingsLock.isLocked();
   }
 
   public void rebuild() {
-    // lock everyone out of draw while rebuilding
-    UI3DManager.lockRebuild();
+    boolean inRebuild = false;
+    // lock everyone out of draw while rebuilding UI elements.
+    // We'll wait for up to roughly one frame's worth of time to acquire
+    // the lock for each object, and if we don't get it, we skip that
+    // portion of the rebuild.
 
-    // wait for any current draws to finish
-     while (UI3DManager.inDraw.get()) {
-      try {
-        Thread.sleep(10);
-        //System.out.print(".");
-      } catch (InterruptedException e) {
-        ;
+    // Rebuild panel backings
+    try {
+      inRebuild = UI3DManager.backingsLock.tryLock(17, java.util.concurrent.TimeUnit.MILLISECONDS);
+      if (inRebuild) {
+        backings.rebuild();
+        backingsAux.rebuild();
       }
-     }
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    } finally {
+      if (inRebuild) {
+        UI3DManager.backingsLock.unlock();
+      }
+    }
 
-    // rebuild the model
-    modelLabels.rebuild();
-    backings.rebuild();
-    backingsAux.rebuild();
-
-    UI3DManager.unlockRebuild();
+    // Rebuild model labels
+    try {
+      inRebuild = UI3DManager.labelsLock.tryLock(17, java.util.concurrent.TimeUnit.MILLISECONDS);
+      if (inRebuild) {
+        modelLabels.rebuild();
+      }
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    } finally {
+      if (inRebuild) {
+        UI3DManager.labelsLock.unlock();
+      }
+    }
   }
 
-  public UI3DManager(LXStudio lx, LXStudio.UI ui,  TEVirtualOverlays virtualOverlays) {
+  public UI3DManager(LXStudio lx, LXStudio.UI ui, TEVirtualOverlays virtualOverlays) {
     current = this;
 
     this.modelLabels = new UIModelLabels(lx, virtualOverlays);

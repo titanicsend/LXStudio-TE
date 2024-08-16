@@ -14,9 +14,11 @@ public class SigmoidDanceAudioLevels extends GLShaderPattern {
     super(lx, TEShaderView.ALL_POINTS);
 
     controls.setRange(TEControlTag.QUANTITY, 4.0, 0.0, 4.0);
-    controls.setRange(TEControlTag.WOW1, 1.5, 0.0, 2.0);
-    controls.setRange(TEControlTag.WOW2, 0.2, 0.0, 2.0);
+    controls.setRange(TEControlTag.LEVELREACTIVITY, 1.5, 0.0, 2.0);
+    controls.setRange(TEControlTag.FREQREACTIVITY, 0.2, 0.0, 2.0);
     controls.setRange(TEControlTag.SIZE, 0.55, 0.0, 2.0);
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
 
     addCommonControls();
 

@@ -15,12 +15,12 @@ import java.util.*;
 import titanicsend.app.TEVirtualColor;
 import titanicsend.color.TEColorType;
 import titanicsend.model.*;
-import titanicsend.model.TEWholeModel.TEListener;
+import titanicsend.model.TEWholeModel.TEModelListener;
 import titanicsend.pattern.TEPattern;
 import titanicsend.util.TEColor;
 
 @LXCategory("Combo FG")
-public class EdgeRunner extends TEPattern implements TEListener {
+public class EdgeRunner extends TEPattern implements TEModelListener {
   public final DiscreteParameter numRunners =
       new DiscreteParameter("Runners", 10, 0, 50).setDescription("Number of concurrent runners");
 

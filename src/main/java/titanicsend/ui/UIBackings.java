@@ -106,69 +106,82 @@ public class UIBackings extends UI3dComponent {
 
   @Override
   public void onDraw(UI ui, View view) {
-    if (!this.virtualOverlays.opaqueBackPanelsVisible.isOn() || UI3DManager.isRebuildLocked()) {
+    // if backings don't exist, or are not visible, or someone else has the lock, skip this draw
+    if (this.colorBuffer == null || !this.virtualOverlays.opaqueBackPanelsVisible.isOn() || UI3DManager.backingsLocked()) {
       return;
     }
 
-    UI3DManager.lockDraw();
+    // try to acquire the backings lock, if we can't get it immediately, skip this draw
+    boolean inDraw = false;
+    try {
+      inDraw = UI3DManager.backingsLock.tryLock(0, java.util.concurrent.TimeUnit.MILLISECONDS);
+      if (inDraw) {
+        // Update the color data
+        final ByteBuffer colorData = this.colorBuffer.getVertexData();
+        colorData.rewind();
 
-    // Update the color data
-    final ByteBuffer colorData = this.colorBuffer.getVertexData();
-    colorData.rewind();
-
-    // TODO: fix variable opacity - may require a (BGFX) shader
-    final int panelColor =
-        LXColor.toABGR(
+        // TODO: fix variable opacity - may require a (BGFX) shader
+        final int panelColor =
+          LXColor.toABGR(
             LXColor.rgba(0, 0, 0, (int) this.virtualOverlays.backingOpacity.getNormalized() * 255));
-    for (int i = 0; i < numModels; i++) {
-      colorData.putInt(panelColor);
-      colorData.putInt(panelColor);
-      colorData.putInt(panelColor);
-    }
-    colorData.rewind();
-    this.colorBuffer.update();
+        for (int i = 0; i < numModels; i++) {
+          colorData.putInt(panelColor);
+          colorData.putInt(panelColor);
+          colorData.putInt(panelColor);
+        }
+        colorData.rewind();
+        this.colorBuffer.update();
 
-    final long state =
-        BGFX_STATE_PT_TRISTRIP
+        final long state =
+          BGFX_STATE_PT_TRISTRIP
             | BGFX_STATE_WRITE_RGB
             | BGFX_STATE_WRITE_A
             | BGFX_STATE_WRITE_Z
             | BGFX_STATE_DEPTH_TEST_LESS;
 
-    int vertexIndex = 0;
-    for (PanelBuffer b : panels) {
-      bgfx_set_transform(this.modelMatrix.get(this.modelMatrixBuf));
-      bgfx_set_dynamic_vertex_buffer(
-          1, this.colorBuffer.getHandle(), vertexIndex++ * VERTICES_PER_PANEL, VERTICES_PER_PANEL);
-      ui.lx.program.vertexFill.submit(view, state, b);
+        int vertexIndex = 0;
+        for (PanelBuffer b : panels) {
+          bgfx_set_transform(this.modelMatrix.get(this.modelMatrixBuf));
+          bgfx_set_dynamic_vertex_buffer(
+            1, this.colorBuffer.getHandle(), vertexIndex++ * VERTICES_PER_PANEL, VERTICES_PER_PANEL);
+          ui.lx.program.vertexFill.submit(view, state, b);
+        }
+      }
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    } finally {
+      if (inDraw) {
+        UI3DManager.backingsLock.unlock();
+      }
     }
-    UI3DManager.unlockDraw();
   }
 
   @Override
   public void dispose() {
-    // make sure we're not in the middle of a model rebuild when we
-    // start destroying objects.
-    while (UI3DManager.isRebuildLocked()) {
-      try {
-        Thread.sleep(5);
-      } catch (InterruptedException e) {
-        ;
+    boolean inDispose = false;
+
+    // try to acquire the lock.  Here, we can afford to wait a while for it because
+    // we're disposing of the object, and everything else that uses the lock should be
+    // either stopped or in the process of stopping.
+    try {
+      inDispose = UI3DManager.backingsLock.tryLock(100, java.util.concurrent.TimeUnit.MILLISECONDS);
+      if (inDispose) {
+        for (PanelBuffer b : this.panels) {
+          b.dispose();
+        }
+        this.panels.clear();
+
+        // free borrowed BGFX resources if they exist
+        if (this.colorBuffer != null) this.colorBuffer.dispose();
+        MemoryUtil.memFree(this.modelMatrixBuf);
+        super.dispose();
+      }
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    } finally {
+      if (inDispose) {
+        UI3DManager.backingsLock.unlock();
       }
     }
-
-    // Take draw lock to keep the model from being rebuilt while we're
-    // disposing of objects.
-    UI3DManager.lockDraw();
-    for (PanelBuffer b : this.panels) {
-      b.dispose();
-    }
-    this.panels.clear();
-
-    // free borrowed BGFX resources if they exist
-    if (this.colorBuffer != null) this.colorBuffer.dispose();
-    MemoryUtil.memFree(this.modelMatrixBuf);
-    UI3DManager.unlockDraw();
-    super.dispose();
   }
 }

@@ -1,12 +1,5 @@
 // Experimental fire for Mothership
-#pragma name "RingOfFire"
-#pragma TEControl.SIZE.Range(0.91,1.15,0.8)
-#pragma TECONTROL.SPEED.Value(0.64)
 
-#pragma TEControl.QUANTITY.Disable
-#pragma TEControl.WOWTRIGGER.Disable
-#pragma TEControl.WOW2.Disable
-#pragma TEControl.WOW1.Disable
 
 #include <include/constants.fs>
 #include <include/colorspace.fs>

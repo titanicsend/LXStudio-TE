@@ -28,8 +28,6 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
   public static final boolean DISPLAY_TWO_MANAGED_SWATCHES = false;
 
   private final float width;
-  private LXSwatch managedSwatchA;
-  private LXSwatch managedSwatchB;
 
   public UIColorPaletteManager(LXStudio.UI ui, ColorPaletteManager paletteManagerA, ColorPaletteManager paletteManagerB, float w) {
     super(ui, 0, 0, w, 0);
@@ -105,11 +103,13 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
             .setActiveLabel("ON")
             .setInactiveLabel("PUSH")
             .setMomentary(true)
-            .setEnabled(!paletteMgr.pinSwatch.isOn()),
-        newButton(paletteMgr.pinSwatch, 40F)
-            .setActiveLabel("PINNED")
-            .setInactiveLabel("PIN")
+            .setEnabled(true)
     );
+//            .setEnabled(!paletteMgr.pinSwatch.isOn()),
+//        newButton(paletteMgr.pinSwatch, 40F)
+//            .setActiveLabel("PINNED")
+//            .setInactiveLabel("PIN")
+//    );
 
     return paletteSelectionRow;
   }

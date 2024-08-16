@@ -8,6 +8,7 @@ import heronarts.glx.ui.component.UITextBox;
 import heronarts.lx.parameter.*;
 import heronarts.lx.studio.LXStudio;
 
+@Deprecated
 public class GigglePixelUI extends UICollapsibleSection {
   public enum GPMode {
     OFF("Off"),

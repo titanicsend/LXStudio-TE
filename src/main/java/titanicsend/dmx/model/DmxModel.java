@@ -17,6 +17,7 @@
  */
 package titanicsend.dmx.model;
 
+import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.output.ArtNetDatagram;
 import heronarts.lx.output.LXBufferOutput;
@@ -138,8 +139,44 @@ public abstract class DmxModel extends TEModel implements LXParameterListener {
 
   public int numBytes = 0;
 
+  public final DmxCommonConfig config;
+
+  /** Dynamic model constructor */
+  public DmxModel(LXModel model, DmxCommonConfig config) {
+    super("DmxModel", model);
+
+    this.config = config;
+
+    this.id = config.id;
+    this.x.setValue(config.x);
+    this.y.setValue(config.y);
+    this.z.setValue(config.z);
+    this.yaw.setValue(config.yaw);
+    this.pitch.setValue(config.pitch);
+    this.roll.setValue(config.roll);
+    this.host.setValue(config.host);
+    this.artNetSequenceEnabled.setValue(config.sequenceEnabled);
+    this.fps.setValue(config.fps);
+    this.artNetUniverse.setValue(config.universe);
+    this.dmxChannel.setValue(config.channel);
+
+    // It's a baby version of LXStructure classes.
+    // If user changes an output parameter, let's notice and rebuild the output.
+    // Allows runtime adjustments such as from a UI element
+    addOutputParameter("byteOrder", this.byteOrder);
+    addOutputParameter("host", this.host);
+    addOutputParameter("port", this.port);
+    addOutputParameter("fps", this.fps);
+    addOutputParameter("dmxChannel", this.dmxChannel);
+    addOutputParameter("artNetUniverse", this.artNetUniverse);
+    addOutputParameter("artNetSequenceEnabled", this.artNetSequenceEnabled);
+  }
+
+  /** Static model constructor */
   public DmxModel(String teModelType, DmxCommonConfig config, String... tags) {
     super(teModelType, new ArrayList<LXPoint>(), tags);
+
+    this.config = config;
 
     this.id = config.id;
     this.x.setValue(config.x);

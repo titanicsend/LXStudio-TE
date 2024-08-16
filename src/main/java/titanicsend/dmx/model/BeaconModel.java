@@ -1,5 +1,7 @@
 package titanicsend.dmx.model;
 
+import heronarts.lx.model.LXModel;
+import heronarts.lx.model.LXPoint;
 import titanicsend.dmx.DmxBuffer;
 import titanicsend.dmx.parameter.DmxCompoundParameter;
 import titanicsend.dmx.parameter.DmxDiscreteParameter;
@@ -48,9 +50,40 @@ public class BeaconModel extends DmxModel {
 
   public static final int CONTROL_NORMAL = 0;
 
+  public static class BeaconConfig extends DmxCommonConfig {
+    public float tiltLimit;
+
+    public BeaconConfig setTiltLimit(float tiltLimit) {
+      this.tiltLimit = tiltLimit;
+      return this;
+    }
+  }
+
+  static BeaconConfig createConfig(LXModel model) {
+    LXPoint point = model.points[0];
+    BeaconConfig c = new BeaconConfig();
+    c.host = model.meta("dmx_host");
+    c.tiltLimit = Float.parseFloat(model.meta("tiltLimit"));
+    c.x = point.x;
+    c.y = point.y;
+    c.z = point.z;
+
+    return c;
+  }
+
+  /** Dynamic model constructor */
+  public BeaconModel(LXModel model) {
+    super(model, createConfig(model));
+    initialize(((BeaconConfig)this.config).tiltLimit);
+  }
+
+  /** Static model constructor */
   public BeaconModel(DmxCommonConfig config, float tiltLimit, String... tags) {
     super(MODEL_TYPE, config, tags);
+    initialize(tiltLimit);
+  }
 
+  private void initialize(float tiltLimit){
     DmxCompoundParameter pan = new DmxCompoundParameter("Pan").setNumBytes(2);
     DmxCompoundParameter tilt =
         new DmxCompoundParameter("Tilt", TILT_MIN, TILT_MIN, TILT_MAX).setNumBytes(2);
@@ -96,7 +129,7 @@ public class BeaconModel extends DmxModel {
               new DmxDiscreteParameterOption("Open", 0),
               new DmxDiscreteParameterOption("Spot Open", 11),
               new DmxDiscreteParameterOption("Gobo 1", 22),
-              new DmxDiscreteParameterOption("Gobo 2", 32),
+              new DmxDiscreteParameterOption("Gobo 12", 32),
               new DmxDiscreteParameterOption("Gobo 3", 42),
               new DmxDiscreteParameterOption("Gobo 4", 52),
               new DmxDiscreteParameterOption("Gobo 5", 62),

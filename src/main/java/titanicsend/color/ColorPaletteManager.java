@@ -8,6 +8,7 @@ import heronarts.lx.color.ColorParameter;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LXDynamicColor;
 import heronarts.lx.color.LXSwatch;
+import heronarts.lx.osc.LXOscComponent;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.EnumParameter;
@@ -16,7 +17,7 @@ import heronarts.lx.parameter.TriggerParameter;
 
 @LXCategory(LXCategory.COLOR)
 @LXComponentName("Color Palette Manager")
-public class ColorPaletteManager extends LXComponent {
+public class ColorPaletteManager extends LXComponent implements LXOscComponent {
 
   public static final String DEFAULT_SWATCH_NAME = "SWATCH A";
   public static final int DEFAULT_SWATCH_INDEX = 0;
@@ -27,12 +28,10 @@ public class ColorPaletteManager extends LXComponent {
     ANALOGOUS,
     GOLDEN_RATIO_CONJUGATE,
     SPLIT_COMPLEMENTARY,
-    COMPLEMENTARY,
-    TRIADIC,
   }
 
   public final EnumParameter<PaletteStrategy> paletteStrategy =
-      new EnumParameter<>("Palette Strategy", PaletteStrategy.TRIADIC)
+      new EnumParameter<>("Palette Strategy", PaletteStrategy.MONO)
           .setDescription(
               "Color theory rule to use when generating the secondary and tertiary colors");
 
@@ -169,20 +168,15 @@ public class ColorPaletteManager extends LXComponent {
         color3 = this.color1.getColor();
         break;
       case GOLDEN_RATIO_CONJUGATE:
-        color2 = LXColor.hsb(hue * 0.6180339, saturation, brightness);
-        color3 = LXColor.BLACK;
-        break;
-      case COMPLEMENTARY:
-        color2 = LXColor.hsb(hue + 180, saturation, brightness);
-        color3 = LXColor.BLACK;
+        // color3 will be offset by 0.61803 x 360 == 227.5 degrees
+        // color2 will be offset by 0.61803^2 x 360 == 137.5 degrees
+        float paletteOffset = (360f * 0.618f);
+        color2 = LXColor.hsb(hue + paletteOffset * 0.618f, saturation, brightness);
+        color3 = LXColor.hsb(hue + paletteOffset, saturation, brightness);
         break;
       case SPLIT_COMPLEMENTARY:
         color2 = LXColor.hsb(hue + 150, saturation, brightness);
         color3 = LXColor.hsb(hue + 210, saturation, brightness);
-        break;
-      case TRIADIC:
-        color2 = LXColor.hsb(hue + 120, saturation, brightness);
-        color3 = LXColor.hsb(hue + 240, saturation, brightness);
         break;
       case ANALOGOUS:
         color2 = LXColor.hsb(hue + 30, saturation, brightness);

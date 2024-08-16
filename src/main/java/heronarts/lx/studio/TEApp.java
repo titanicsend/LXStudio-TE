@@ -15,6 +15,8 @@
  */
 package heronarts.lx.studio;
 
+import heronarts.glx.event.GamepadEvent;
+import heronarts.glx.event.KeyEvent;
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
 import heronarts.lx.midi.surface.MidiFighterTwister;
@@ -46,15 +48,10 @@ import titanicsend.color.ColorPaletteManager;
 import titanicsend.color.TEGradientSource;
 import titanicsend.dmx.DmxEngine;
 import titanicsend.dmx.effect.BeaconStrobeEffect;
-import titanicsend.dmx.pattern.BeaconDirectPattern;
-import titanicsend.dmx.pattern.BeaconEasyPattern;
-import titanicsend.dmx.pattern.BeaconEverythingPattern;
-import titanicsend.dmx.pattern.BeaconStraightUpPattern;
-import titanicsend.dmx.pattern.DjLightsDirectPattern;
-import titanicsend.dmx.pattern.DjLightsEasyPattern;
-import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
+import titanicsend.dmx.pattern.*;
 import titanicsend.effect.GlobalPatternControl;
 import titanicsend.effect.RandomStrobeEffect;
+import titanicsend.gamepad.GamepadEngine;
 import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lx.APC40Mk2;
@@ -129,13 +126,15 @@ public class TEApp extends LXStudio {
   public static int glRenderWidth = 640;
   public static int glRenderHeight = 480;
 
+  public static GamepadEngine gamepadEngine;
+
   @LXPlugin.Name("Titanic's End")
   public static class Plugin implements LXStudio.Plugin, LX.Listener, LX.ProjectListener {
 
     private final TEVirtualOverlays virtualOverlays;
 
-    private GigglePixelListener gpListener;
-    private GigglePixelBroadcaster gpBroadcaster;
+//    private GigglePixelListener gpListener;
+//    private GigglePixelBroadcaster gpBroadcaster;
 
     private TEAutopilot autopilot;
     private TEOscListener oscListener;
@@ -179,6 +178,7 @@ public class TEApp extends LXStudio {
       this.dmxEngine = new DmxEngine(lx);
       this.ndiEngine = new NDIEngine(lx);
       this.glEngine = new GLEngine(lx,glRenderWidth,glRenderHeight,staticModel);
+      gamepadEngine = new GamepadEngine(lx);
 
       lx.engine.registerComponent("audioStems", this.audioStems = new AudioStems(lx));
       lx.engine.registerComponent("paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
@@ -225,6 +225,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(ArcEdges.class);
       lx.registry.addPattern(BassLightning.class);
       lx.registry.addPattern(BouncingDots.class);
+      lx.registry.addPattern(FxLaserCharge.class);
       lx.registry.addPattern(Checkers.class);
       lx.registry.addPattern(EdgeFall.class);
       lx.registry.addPattern(EdgeKITT.class);
@@ -237,12 +238,12 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(FourStar.class);
       lx.registry.addPattern(FxEdgeRocket.class);
       lx.registry.addPattern(FxDualWave.class);
-      lx.registry.addPattern(FxXWave.class);
       lx.registry.addPattern(Iceflow.class);
       lx.registry.addPattern(Kaleidosonic.class);
       lx.registry.addPattern(MultipassDemo.class);
       lx.registry.addPattern(NDIReceiverTest.class);
       lx.registry.addPattern(TdNdiPattern.class);
+      lx.registry.addPattern(ModelFileWriter.class);
       lx.registry.addPattern(Phasers.class);
       lx.registry.addPattern(PixelblazeSandbox.class);
       lx.registry.addPattern(PBAudio1.class);
@@ -297,6 +298,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(BeaconDirectPattern.class);
       lx.registry.addPattern(BeaconEasyPattern.class);
       lx.registry.addPattern(BeaconEverythingPattern.class);
+      lx.registry.addPattern(BeaconGamePattern.class);
       lx.registry.addPattern(BeaconStraightUpPattern.class);
       lx.registry.addPattern(DjLightsDirectPattern.class);
       lx.registry.addPattern(DjLightsEasyPattern.class);
@@ -401,25 +403,25 @@ public class TEApp extends LXStudio {
       // create our library for autopilot
       this.library = initializePatternLibrary(lx);
 
-      int myGigglePixelID = 73; // Looks like "TE"
-      try {
-        this.gpListener = new GigglePixelListener(lx, "0.0.0.0", myGigglePixelID);
-        lx.engine.addLoopTask(this.gpListener);
-        TE.log("GigglePixel listener created");
-      } catch (IOException e) {
-        TE.log("Failed to create GigglePixel listener: " + e.getMessage());
-      }
+//      int myGigglePixelID = 73; // Looks like "TE"
+//      try {
+//        this.gpListener = new GigglePixelListener(lx, "0.0.0.0", myGigglePixelID);
+//        lx.engine.addLoopTask(this.gpListener);
+//        TE.log("GigglePixel listener created");
+//      } catch (IOException e) {
+//        TE.log("Failed to create GigglePixel listener: " + e.getMessage());
+//      }
 
-      // This should of course be in the config, but we leave for the playa in like a week
-      String destIP = "192.168.42.255";
-      try {
-        this.gpBroadcaster =
-            new GigglePixelBroadcaster(lx, destIP, wholeModel.getName(), myGigglePixelID);
-        lx.engine.addLoopTask(this.gpBroadcaster);
-        TE.log("GigglePixel broadcaster created");
-      } catch (IOException e) {
-        TE.log("Failed to create GigglePixel broadcaster: " + e.getMessage());
-      }
+//      // This should of course be in the config, but we leave for the playa in like a week
+//      String destIP = "192.168.42.255";
+//      try {
+//        this.gpBroadcaster =
+//            new GigglePixelBroadcaster(lx, destIP, wholeModel.getName(), myGigglePixelID);
+//        lx.engine.addLoopTask(this.gpBroadcaster);
+//        TE.log("GigglePixel broadcaster created");
+//      } catch (IOException e) {
+//        TE.log("Failed to create GigglePixel broadcaster: " + e.getMessage());
+//      }
 
       // create our historian instance
       TEHistorian history = new TEHistorian();
@@ -450,8 +452,8 @@ public class TEApp extends LXStudio {
         sx.printStackTrace();
       }
 
-      GPOutput gpOutput = new GPOutput(lx, this.gpBroadcaster);
-      lx.addOutput(gpOutput);
+//      GPOutput gpOutput = new GPOutput(lx, this.gpBroadcaster);
+//      lx.addOutput(gpOutput);
 
       TEOscMessage.applyTEOscOutputSettings(lx);
 
@@ -562,12 +564,12 @@ public class TEApp extends LXStudio {
       new UIDevSwitch(ui, this.devSwitch, ui.leftPane.model.getContentWidth())
           .addToContainer(ui.leftPane.model, 0);
 
-      new GigglePixelUI(
-              ui, ui.leftPane.model.getContentWidth(), this.gpListener, this.gpBroadcaster)
-          .addToContainer(ui.leftPane.model, 1);
+//      new GigglePixelUI(
+//              ui, ui.leftPane.model.getContentWidth(), this.gpListener, this.gpBroadcaster)
+//          .addToContainer(ui.leftPane.model, 1);
 
       new TEUIControls(ui, this.virtualOverlays, ui.leftPane.model.getContentWidth())
-          .addToContainer(ui.leftPane.model, 2);
+          .addToContainer(ui.leftPane.model, 1);
 
       // Global pane
 
@@ -577,11 +579,11 @@ public class TEApp extends LXStudio {
 
       // Add UI section for autopilot
       new TEUserInterface.AutopilotUISection(ui, this.autopilot)
-          .addToContainer(ui.leftPane.global, 1);
+          .addToContainer(ui.leftPane.global, 6);
 
       // Add UI section for audio stems
       new UIAudioStems(ui, this.audioStems, ui.leftPane.global.getContentWidth())
-          .addToContainer(ui.leftPane.global, 3);
+          .addToContainer(ui.leftPane.global, 2);
 
       UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 4);
       UIColorPaletteManager.addToRightPerformancePane(ui, this.paletteManagerA, this.paletteManagerB);
@@ -594,6 +596,9 @@ public class TEApp extends LXStudio {
 
       // precompile binaries for any new or changed shaders
       ShaderPrecompiler.rebuildCache();
+
+      // Import latest gamepad controllers db
+      gamepadEngine.updateGamepadMappings();
 
       lx.engine.addTask(
           () -> {
@@ -657,6 +662,7 @@ public class TEApp extends LXStudio {
       this.dmxEngine.dispose();
       this.crutchOSC.dispose();
       this.glEngine.dispose();
+      gamepadEngine.dispose();
 
       if (!staticModel) {
         ((TEWholeModelDynamic)wholeModel).dispose();
@@ -664,19 +670,18 @@ public class TEApp extends LXStudio {
     }
   }
 
-  /* TODO: Move this from P4LX version to Chromatik version
   @Override
-  public void keyPressed(processing.event.KeyEvent keyEvent) {
+  protected void onKeyPressed(KeyEvent keyEvent, char keyChar, int keyCode) {
     // Keyboard shortcut for debugging: Add all patterns to current channel
     // (Ctrl or Meta) + Alt + Shift + A
     if ((keyEvent.isControlDown() || keyEvent.isMetaDown()) && keyEvent.isAltDown() && keyEvent.isShiftDown() && keyEvent.getKeyCode() == 65) {
-      this.lx.engine.addTask(() -> {
+      this.engine.addTask(() -> {
         addAllPatterns();
       });
     } else {
-      super.keyPressed(keyEvent);
+      super.onKeyPressed(keyEvent, keyChar, keyCode);
     }
-  }*/
+  }
 
   /** Dev tool: add all patterns in registry to current channel. */
   private void addAllPatterns() {
@@ -710,6 +715,21 @@ public class TEApp extends LXStudio {
     } else {
       TE.err("Selected channel must be a channel and not a group before adding all patterns.");
     }
+  }
+
+  @Override
+  protected void onGamepadButtonPressed(GamepadEvent gamepadEvent, int button) {
+    this.gamepadEngine.lxGamepadButtonPressed(gamepadEvent, button);
+  }
+
+  @Override
+  protected void onGamepadButtonReleased(GamepadEvent gamepadEvent, int button) {
+    this.gamepadEngine.lxGamepadButtonPressed(gamepadEvent, button);
+  }
+
+  @Override
+  protected void onGamepadAxisChanged(GamepadEvent gamepadEvent, int axis, float value) {
+    this.gamepadEngine.lxGamepadAxisChanged(gamepadEvent, axis, value);
   }
 
   private TEApp(Flags flags, TEWholeModelStatic model) throws IOException {
@@ -799,6 +819,10 @@ public class TEApp extends LXStudio {
               glRenderHeight = Integer.parseInt(resolution[1]);
               i++; // let the rest of the parser skip the resolution argument
             } catch (NumberFormatException nfx) {
+              error("Invalid render resolution: " + args[i + 1]);
+            }
+            // test for out-of-bounds resolutions, just in case
+            if (glRenderWidth < 64 || glRenderHeight < 64 || glRenderWidth > 4096 || glRenderHeight > 4096) {
               error("Invalid render resolution: " + args[i + 1]);
             }
           } else {

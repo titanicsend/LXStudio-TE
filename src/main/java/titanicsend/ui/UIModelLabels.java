@@ -202,32 +202,60 @@ public class UIModelLabels extends UI3dComponent {
 
   @Override
   public void onDraw(UI ui, View view) {
-    // Make sure the model isn't changing while we're trying to draw.
-    if (UI3DManager.isRebuildLocked()) return;
+    if (UI3DManager.labelsLocked()) return;
 
-    UI3DManager.lockDraw();
+    // try to acquire the backings lock, if we can't, skip this draw
+    boolean inDraw = false;
+    try {
+      inDraw = UI3DManager.labelsLock.tryLock(0, java.util.concurrent.TimeUnit.MILLISECONDS);
+      if (inDraw) {
+        if (this.virtualOverlays.panelLabelsVisible.isOn()) {
+          textManager.draw(view, panelLabels);
+        }
 
-    if (this.virtualOverlays.panelLabelsVisible.isOn()) {
-      textManager.draw(view, panelLabels);
+        // TODO - fill in vertex locations for dynamic model.  It currently has
+        // TODO - labels, but no data, so we only show these labels for the static model.
+        if (this.virtualOverlays.vertexLabelsVisible.isOn() && this.isStatic) {
+          textManager.draw(view, vertexLabels);
+        }
+      }
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    } finally {
+      if (inDraw) {
+        UI3DManager.labelsLock.unlock();
+      }
     }
-
-    // TODO - fill in vertex locations for dynamic model.  It currently has
-    // TODO - labels, but no data, so we only show these labels for the static model.
-    if (this.virtualOverlays.vertexLabelsVisible.isOn() && this.isStatic) {
-      textManager.draw(view, vertexLabels);
-    }
-    UI3DManager.unlockDraw();
   }
 
   @Override
   public void dispose() {
-    // free native and GPU resources
+
     super.dispose();
-    for (Label l : panelLabels) {
-      l.dispose();
-    }
-    for (Label l : vertexLabels) {
-      l.dispose();
+
+    boolean inDispose = false;
+
+    // try to acquire the labels lock.  Here, we can afford to wait a while for it because
+    // we're disposing of the object, and everything else that uses the lock should be
+    // either stopped or stopping
+    try {
+      inDispose = UI3DManager.labelsLock.tryLock(100, java.util.concurrent.TimeUnit.MILLISECONDS);
+      if (inDispose) {
+
+        // free native and GPU resources
+        for (Label l : panelLabels) {
+          l.dispose();
+        }
+        for (Label l : vertexLabels) {
+          l.dispose();
+        }
+      }
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    } finally {
+      if (inDispose) {
+        UI3DManager.labelsLock.unlock();
+      }
     }
   }
 }

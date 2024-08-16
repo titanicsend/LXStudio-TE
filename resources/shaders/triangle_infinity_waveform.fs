@@ -4,8 +4,8 @@
 // #iUniform float iSpeed = 0.5 in {0.25, 3.0}
 // #iUniform float iScale = 1.0 in {0.25, 5.0}
 // #iUniform float iQuantity = 3.0 in {1.0, 9.0}
-// #iUniform float iWow2 = 2.5 in {1.0, 3.0}
-// #iUniform float iWow1 = 0.9 in {0.5, 2.0}
+// #iUniform float frequencyReact = 2.5 in {1.0, 3.0}
+// #iUniform float levelReact = 0.9 in {0.5, 2.0}
 // #iUniform float iRotationAngle = 0.0 in {0.0, 6.28}
 
 #define TEXTURE_SIZE 512.0
@@ -47,12 +47,12 @@ float sdEquilateralTriangle( in vec2 p, in float r ) {
 //}
 
 float numIters = iQuantity;
-float waveFreq = 8.0 + iWow1 * 4.0 * volumeRatio;
+float waveFreq = 8.0 + levelReact * 4.0 * volumeRatio;
 const float defaultYOffset = -0.17;
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 float size = iScale;
-    size += iWow1 * 0.2 * bassRatio;
+    size += levelReact * 0.2 * bassRatio;
 
     // normalize coordinates
     vec2 uv = fragCoord.xy / iResolution.xy;
@@ -72,7 +72,7 @@ float size = iScale;
     //float freq  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
 
     float fractFactor = 0.86;
-    fractFactor = 0.7 + iWow1 * 0.9 * trebleLevel;
+    fractFactor = 0.7 + levelReact * 0.9 * trebleLevel;
 
     vec2 uv0 = uv;
     vec3 finalColor = vec3(0.0);
@@ -83,7 +83,7 @@ float size = iScale;
         uv.y *= -1.;
 
         float d = 1.;
-        d *= sdEquilateralTriangle(uv, 0.9) + iWow2*wave;
+        d *= sdEquilateralTriangle(uv, 0.9) + frequencyReact*wave;
         d *= outerTriangleDF;
         //d += 0.3*noise(i*d, iTime*0.1);
 
