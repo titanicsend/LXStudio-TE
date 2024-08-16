@@ -7,6 +7,7 @@ import heronarts.lx.studio.LXStudio.UI;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
 import titanicsend.dmx.model.BeaconModel;
+import titanicsend.dmx.model.ChauvetBeamQ60Model;
 import titanicsend.dmx.model.DmxModel;
 import titanicsend.dmx.parameter.DmxDiscreteParameter;
 import titanicsend.dmx.parameter.DmxDiscreteParameterOption;
@@ -14,7 +15,7 @@ import titanicsend.ui.UIUtils;
 
 @LXCategory("DMX")
 public class BeaconEasyPattern extends BeaconPattern
-    implements UIDeviceControls<BeaconEasyPattern> {
+        implements UIDeviceControls<BeaconEasyPattern> {
 
   // Color Wheel (without the scroll options)
   DmxDiscreteParameter colorWheelFixed =
@@ -57,19 +58,26 @@ public class BeaconEasyPattern extends BeaconPattern
 
   @Override
   protected void run(double deltaMs) {
-
     double pan = this.pan.getNormalized();
     double tilt = this.tilt.getNormalized();
     int ptSpd = (int) this.ptSpdLinear.getValue();
     int colorWheel = this.colorWheelFixed.getDmxValue();
 
     for (DmxModel d : this.modelTE.getBeacons()) {
-      setDmxNormalized(d, BeaconModel.INDEX_PAN, pan);
-      setDmxNormalized(d, BeaconModel.INDEX_TILT, tilt);
-      setDmxValue(d, BeaconModel.INDEX_PT_SPEED, ptSpd);
-      setDmxValue(d, BeaconModel.INDEX_COLOR_WHEEL, colorWheel);
-      setDmxValue(d, BeaconModel.INDEX_SHUTTER, BeaconModel.SHUTTER_OPEN);
-      setDmxNormalized(d, BeaconModel.INDEX_DIMMER, BeaconModel.DIMMER_NORMALIZED_100);
+      if (d instanceof BeaconModel) {
+        setDmxNormalized(d, BeaconModel.INDEX_PAN, pan);
+        setDmxNormalized(d, BeaconModel.INDEX_TILT, tilt);
+        setDmxValue(d, BeaconModel.INDEX_PT_SPEED, ptSpd);
+        setDmxValue(d, BeaconModel.INDEX_COLOR_WHEEL, colorWheel);
+        setDmxValue(d, BeaconModel.INDEX_SHUTTER, BeaconModel.SHUTTER_OPEN);
+        setDmxNormalized(d, BeaconModel.INDEX_DIMMER, BeaconModel.DIMMER_NORMALIZED_100);
+      } else if (d instanceof ChauvetBeamQ60Model) {
+        setDmxNormalized(d, ChauvetBeamQ60Model.INDEX_PAN, pan);
+        setDmxNormalized(d, ChauvetBeamQ60Model.INDEX_TILT, tilt);
+        setDmxNormalized(d, ChauvetBeamQ60Model.INDEX_SHUTTER, 32);
+        setDmxNormalized(d, ChauvetBeamQ60Model.INDEX_DIMMER, 1);
+        setDmxNormalized(d, ChauvetBeamQ60Model.INDEX_RED, 100);
+      }
     }
   }
 
@@ -77,4 +85,5 @@ public class BeaconEasyPattern extends BeaconPattern
   public void buildDeviceControls(UI ui, UIDevice uiDevice, BeaconEasyPattern device) {
     UIUtils.buildMftStyleDeviceControls(ui, uiDevice, device);
   }
+
 }

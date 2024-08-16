@@ -17,6 +17,7 @@ package titanicsend.dmx.parameter;
 
 import heronarts.lx.LX;
 import heronarts.lx.parameter.CompoundParameter;
+import titanicsend.app.director.Director;
 
 public class DmxCompoundParameter extends CompoundParameter implements DmxParameter {
 
@@ -117,7 +118,8 @@ public class DmxCompoundParameter extends CompoundParameter implements DmxParame
    */
   @Override
   public double getDmxValue(double alpha) {
-    return super.getValue() * (this.scaleToAlpha ? alpha : 1);
+    // Quick solution, the director beacons fader will combine with channel fader here
+    return super.getValue() * (this.scaleToAlpha ? (alpha * Director.get().getBeaconsLevel()) : 1);
   }
 
   public DmxParameter setDmxValue(double value) {

@@ -26,6 +26,8 @@ public class Director extends LXComponent implements LX.Listener, LXOscComponent
       .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
       .setDescription("Top fader, dims all components");
 
+  private final CompoundParameter beaconsFader;
+
   public Director(LX lx) {
     super(lx, "director");
     current = this;
@@ -37,7 +39,10 @@ public class Director extends LXComponent implements LX.Listener, LXOscComponent
     addFilter(new TagFilter("edges", "Edges", "edge"));
     addFilter(new TagFilter("foh", "FOH", "mothership"));
     addFilter(new Filter("lasers", "Lasers"));
-    addFilter(new DmxFilter("beacons", "Beacons", "beacon"));
+
+    Filter beaconsFilter = new DmxFilter("beacons", "Beacons", "beacon");
+    addFilter(beaconsFilter);
+    this.beaconsFader = beaconsFilter.fader;
 
     addParameter("master", this.master);
 
@@ -59,6 +64,10 @@ public class Director extends LXComponent implements LX.Listener, LXOscComponent
     for (Filter filter : this.filters) {
       filter.modelChanged(model);
     }
+  }
+
+  public double getBeaconsLevel() {
+    return this.beaconsFader.getNormalized() * this.master.getNormalized();
   }
 
   @Override

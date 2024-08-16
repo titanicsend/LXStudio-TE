@@ -15,6 +15,7 @@ import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
 import titanicsend.dmx.model.DmxModel;
+import titanicsend.dmx.model.DmxWholeModel;
 import titanicsend.pattern.jon.ModelBender;
 import titanicsend.ui.UI3DManager;
 
@@ -72,8 +73,6 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
   private final HashMap<String, DmxModel> djLightsById = new HashMap<String, DmxModel>();
 
   // All DMX models
-  private int sizeDmx = 0;
-  private int nextDmxIndex = 0;
   private final List<DmxModel> mutableDmxModels = new ArrayList<DmxModel>();
   public final List<DmxModel> dmxModels = Collections.unmodifiableList(this.mutableDmxModels);
 
@@ -284,7 +283,7 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
     this.panelPoints.size() + " panel points, " +
     this.points.size() + " total points"); */
 
-    for (TEListener listener : this.listeners) {
+    for (TEModelListener listener : this.listeners) {
       listener.modelTEChanged(this);
     }
 
@@ -306,12 +305,49 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
 
   @Override
   public int sizeDmx() {
-    return this.sizeDmx;
+    return this.dmxModels.size();
   }
 
   @Override
   public List<DmxModel> getDmxModels() {
     return this.dmxModels;
+  }
+
+  @Override
+  public void clearBeacons() {
+    // Fast hack
+    this.mutableDmxModels.clear();
+    this.mutableBeacons.clear();
+  }
+
+  @Override
+  public void addBeacon(DmxModel dmxModel) {
+    System.out.println("Adding beacon! " + dmxModel);
+    // Fast hack
+    this.mutableDmxModels.add(dmxModel);
+    this.mutableBeacons.add(dmxModel);
+    dmxModel.index = this.mutableBeacons.indexOf(dmxModel);
+  }
+
+  private final List<DmxWholeModelListener> dmxWholeModelListeners =
+    new ArrayList<DmxWholeModelListener>();
+
+  @Override
+  public void addDmxListener(DmxWholeModelListener listener) {
+    this.dmxWholeModelListeners.add(listener);
+  }
+
+  @Override
+  public void removeDmxListener(DmxWholeModelListener listener) {
+    this.dmxWholeModelListeners.remove(listener);
+  }
+
+  // haaack
+  @Override
+  public void notifyDmxWholeModelListeners() {
+    for (DmxWholeModelListener listener : this.dmxWholeModelListeners) {
+      listener.dmxModelsChanged(this.dmxModels);
+    }
   }
 
   @Override
@@ -459,9 +495,9 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
     return false;
   }
 
-  private final List<TEListener> listeners = new ArrayList<TEListener>();
+  private final List<TEModelListener> listeners = new ArrayList<TEModelListener>();
 
-  public TEWholeModel addListener(TEListener listener) {
+  public TEWholeModel addListener(TEModelListener listener) {
     Objects.requireNonNull(listener);
     if (this.listeners.contains(listener)) {
       throw new IllegalStateException("Cannot add duplicate TEListener: " + listener);
@@ -470,7 +506,7 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
     return this;
   }
 
-  public TEWholeModel removeListener(TEListener listener) {
+  public TEWholeModel removeListener(TEModelListener listener) {
     if (!this.listeners.contains(listener)) {
       throw new IllegalStateException("Cannot remove non-registered TEListener: " + listener);
     }

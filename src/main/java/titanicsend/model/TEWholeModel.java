@@ -18,7 +18,7 @@ import titanicsend.dmx.model.DmxWholeModel;
  */
 public interface TEWholeModel extends DmxWholeModel {
 
-  public static interface TEListener {
+  public static interface TEModelListener {
     /**
      * TEWholeModel collections have been rebuilt following a change to the
      * LXModel hierarchy. All users of these collections and objects should
@@ -26,8 +26,8 @@ public interface TEWholeModel extends DmxWholeModel {
      */
     public void modelTEChanged(TEWholeModel model);
   }
-  public TEWholeModel addListener(TEListener listener);
-  public TEWholeModel removeListener(TEListener listener);
+  public TEWholeModel addListener(TEModelListener listener);
+  public TEWholeModel removeListener(TEModelListener listener);
 
   public abstract boolean isGapPoint(LXPoint p);
   public abstract int[] getGapPointIndices();

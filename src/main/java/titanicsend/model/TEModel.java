@@ -3,6 +3,7 @@ package titanicsend.model;
 import java.util.List;
 import java.util.stream.Stream;
 
+import heronarts.lx.LXComponent;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 
