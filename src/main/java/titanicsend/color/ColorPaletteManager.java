@@ -8,6 +8,7 @@ import heronarts.lx.color.ColorParameter;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LXDynamicColor;
 import heronarts.lx.color.LXSwatch;
+import heronarts.lx.osc.LXOscComponent;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.EnumParameter;
@@ -16,7 +17,7 @@ import heronarts.lx.parameter.TriggerParameter;
 
 @LXCategory(LXCategory.COLOR)
 @LXComponentName("Color Palette Manager")
-public class ColorPaletteManager extends LXComponent {
+public class ColorPaletteManager extends LXComponent implements LXOscComponent {
 
   public static final String DEFAULT_SWATCH_NAME = "SWATCH A";
   public static final int DEFAULT_SWATCH_INDEX = 0;
