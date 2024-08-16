@@ -106,8 +106,8 @@ public class UIBackings extends UI3dComponent {
 
   @Override
   public void onDraw(UI ui, View view) {
-    // if no backings are visible, or someone else has the lock, skip this draw
-    if (!this.virtualOverlays.opaqueBackPanelsVisible.isOn() || UI3DManager.backingsLocked()) {
+    // if backings don't exist, or are not visible, or someone else has the lock, skip this draw
+    if (this.colorBuffer == null || !this.virtualOverlays.opaqueBackPanelsVisible.isOn() || UI3DManager.backingsLocked()) {
       return;
     }
 
