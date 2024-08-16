@@ -17,7 +17,6 @@ import me.walkerknapp.devolay.DevolayVideoFrame;
 import titanicsend.ndi.NDIEngine;
 import titanicsend.osc.CrutchOSC;
 import titanicsend.pattern.TEPerformancePattern;
-import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.util.TE;
 
