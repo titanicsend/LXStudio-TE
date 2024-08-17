@@ -2,7 +2,7 @@
   /* Mothership by Titanic's End */
 
   label: "Slice 05P",
-  tags: [ "slice", "port", "slice05", "slice05p" ],
+  tags: [ "slice", "port", "slice05", "slice05p", "drive" ],
 
   "parameters": {
     "host": { type: "string", default: "10.128.42.35", label: "Host", description: "Controller IP address or hostname" },

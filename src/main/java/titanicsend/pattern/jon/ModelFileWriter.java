@@ -24,11 +24,12 @@ import titanicsend.model.TEPanelModel;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.util.TE;
+import titanicsend.util.TECategory;
 
 import javax.imageio.ImageIO;
 
 /** Write model points, and other data to one or more CSV files. */
-@LXCategory("Utility")
+@LXCategory(TECategory.UTILITY)
 public class ModelFileWriter extends TEPerformancePattern {
   boolean doneWriting = false;
   public static final int IMAGE_WIDTH = 640;
