@@ -49,13 +49,13 @@
   ],
 
   "components": [
-    { type: "Window1", id: "w1", extraLEDs: "$w1extraLEDs", ledOffset: "$w1ledOffset" },
-    { type: "Window2", id: "w2", extraLEDs: "$w2extraLEDs", ledOffset: "$w2ledOffset" },
-    { type: "Window3", id: "w3", extraLEDs: "$w3extraLEDs", ledOffset: "$w3ledOffset" },
-    { type: "Window4", id: "w4", extraLEDs: "$w4extraLEDs", ledOffset: "$w4ledOffset" },
-    { type: "Window5", id: "w5", extraLEDs: "$w5extraLEDs", ledOffset: "$w5ledOffset" },
-    { type: "Window6", id: "w6", extraLEDs: "$w6extraLEDs", ledOffset: "$w6ledOffset" },
-    { type: "Window7", id: "w7", extraLEDs: "$w7extraLEDs", ledOffset: "$w7ledOffset" },
+    { type: "Window1", id: "w1", extraLEDs: "$w1extraLEDs", ledOffset: "$w1ledOffset", tag: "drive" },
+    { type: "Window2", id: "w2", extraLEDs: "$w2extraLEDs", ledOffset: "$w2ledOffset", tag: "drive" },
+    { type: "Window3", id: "w3", extraLEDs: "$w3extraLEDs", ledOffset: "$w3ledOffset", tag: "drive" },
+    { type: "Window4", id: "w4", extraLEDs: "$w4extraLEDs", ledOffset: "$w4ledOffset", tag: "drive" },
+    { type: "Window5", id: "w5", extraLEDs: "$w5extraLEDs", ledOffset: "$w5ledOffset", tag: "drive" },
+    { type: "Window6", id: "w6", extraLEDs: "$w6extraLEDs", ledOffset: "$w6ledOffset", tag: "drive" },
+    { type: "Window7", id: "w7", extraLEDs: "$w7extraLEDs", ledOffset: "$w7ledOffset", tag: "drive" },
     { type: "Window8A", id: "w8a", extraLEDs: "$w8AextraLEDs", ledOffset: "$w8AledOffset" },
     { type: "Window8B", id: "w8b", extraLEDs: "$w8BextraLEDs", ledOffset: "$w8BledOffset" },
     { type: "Window9", id: "w9", extraLEDs: "$w9extraLEDs", ledOffset: "$w9ledOffset" }
