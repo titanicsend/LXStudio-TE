@@ -1,16 +1,18 @@
 package titanicsend.app.director;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
+import heronarts.lx.effect.LXEffect;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.osc.LXOscComponent;
 import heronarts.lx.parameter.CompoundParameter;
 
-public class Director extends LXComponent implements LX.Listener, LXOscComponent {
+public class Director extends LXComponent implements LX.Listener, LXOscComponent, LX.ProjectListener {
 
   private static Director current;
 
@@ -48,6 +50,8 @@ public class Director extends LXComponent implements LX.Listener, LXOscComponent
 
     lx.addListener(this);
     onModelChanged(lx.getModel());
+
+    lx.addProjectListener(this);
   }
 
   private void addFilter(Filter filter) {
@@ -63,6 +67,37 @@ public class Director extends LXComponent implements LX.Listener, LXOscComponent
   private void onModelChanged(LXModel model) {
     for (Filter filter : this.filters) {
       filter.modelChanged(model);
+    }
+  }
+
+  @Override
+  public void projectChanged(File file, Change change) {
+    // Auto-create Director Effect
+    if (change == Change.NEW || change == Change.OPEN) {
+      DirectorEffect directorEffect = null;
+
+      // Does effect already exist?
+      for (LXEffect effect : this.lx.engine.mixer.masterBus.effects) {
+        if (effect instanceof DirectorEffect) {
+          directorEffect = (DirectorEffect) effect;
+          break;
+        }
+      }
+
+      // Create effect
+      if (directorEffect == null) {
+        directorEffect = new DirectorEffect(this.lx);
+        this.lx.engine.mixer.masterBus.addEffect(directorEffect);
+        LX.log("Added DirectorEffect to master channel");
+      }
+
+      // Make sure effect is enabled and locked
+      if (!directorEffect.enabled.isOn() || !directorEffect.locked.isOn()) {
+        // Unlock to toggle enabled state
+        directorEffect.locked.setValue(false);
+        directorEffect.enabled.setValue(true);
+        directorEffect.locked.setValue(true);
+      }
     }
   }
 
