@@ -1,11 +1,10 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Titanic's End Dynamic" type="Application" factoryName="Application">
-    <option name="ALTERNATIVE_JRE_PATH" value="openjdk-18" />
-    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="ALTERNATIVE_JRE_PATH" value="temurin-17.0.8" />
     <option name="MAIN_CLASS_NAME" value="heronarts.lx.studio.TEApp" />
     <module name="LXStudio-TE" />
-    <option name="PROGRAM_PARAMETERS" value="dynamic --resolution 320x320" />
-    <option name="VM_PARAMETERS" value="-ea -Djava.awt.headless=true " />
+    <option name="PROGRAM_PARAMETERS" value="dynamic" />
+    <option name="VM_PARAMETERS" value="-ea -XstartOnFirstThread -Djava.awt.headless=true " />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
