@@ -104,6 +104,8 @@ public class GLShaderPattern extends TEPerformancePattern {
 
   @Override
   public void onActive() {
+    // fix exception on slow startup
+    if (this.colors == null) return;
     super.onActive();
     for (ShaderInfo s : shaderInfo) {
       s.shader.onActive();
@@ -112,6 +114,8 @@ public class GLShaderPattern extends TEPerformancePattern {
 
   @Override
   public void onInactive() {
+    // fix exception on slow startup
+    if (this.colors == null) return;
     super.onInactive();
     for (ShaderInfo s : shaderInfo) {
       s.shader.onInactive();
