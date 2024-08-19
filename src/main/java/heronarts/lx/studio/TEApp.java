@@ -359,6 +359,8 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(HandTracker.class);
       lx.registry.addPattern(TargetPixelStamper.class);
       //lx.registry.addPattern(ModelFileWriter.class);
+      lx.registry.addPattern(TwoColorPattern.class);
+      lx.registry.addPattern(MothershipDrivingPattern.class);
 
       // Midi surface names for use with BomeBox
       lx.engine.midi.registerSurface(
@@ -634,7 +636,8 @@ public class TEApp extends LXStudio {
     public void applyTECameraPosition() {
       if (this.lx instanceof LXStudio) {
         LXStudio.UI ui = ((LXStudio) this.lx).ui;
-        if (staticModel) {
+        double pointSize = ui.preview.pointCloud.pointSize.getValue();
+        if (staticModel && pointSize < 500) {
           // Camera position and point size for static model (2022-23)
           ui.preview.pointCloud.pointSize.setValue(80000);
           ui.preview.camera.theta.setValue(270);
@@ -643,7 +646,7 @@ public class TEApp extends LXStudio {
           ui.previewAux.camera.theta.setValue(270);
           ui.previewAux.camera.phi.setValue(-6);
           ui.previewAux.camera.radius.setValue(17000000);
-        } else {
+        } else if (!staticModel && pointSize > 500) {
           // Camera position and point size for dynamic model (2024+)
           ui.preview.pointCloud.pointSize.reset();
           ui.preview.camera.radius.reset();
