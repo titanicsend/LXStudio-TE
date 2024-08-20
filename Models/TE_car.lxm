@@ -1,6 +1,6 @@
 {
   "version": "1.0.1.TE.1-SNAPSHOT",
-  "timestamp": 1722737659539,
+  "timestamp": 1723328659709,
   "fixtures": [
     {
       "jsonFixtureType": "TE/panel/FA",
@@ -38,7 +38,7 @@
         "pitch": 0.0,
         "roll": 0.0,
         "scale": 1.0,
-        "selected": true,
+        "selected": false,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
@@ -11281,7 +11281,7 @@
         "pitch": 0.0,
         "roll": 0.0,
         "scale": 1.0,
-        "selected": false,
+        "selected": true,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
