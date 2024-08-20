@@ -1,0 +1,14 @@
+{
+  /* HiRes grid for capturing TE Output */
+  label: "HRGrid",
+   tags: [ "panel"],
+
+  "components": [
+    { type: "strip",
+      instances: 1280,
+      numPoints: 1280,
+      spacing: 1,
+      y: "$instance"
+    }
+  ]
+}
