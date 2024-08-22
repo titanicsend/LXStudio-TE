@@ -21,10 +21,12 @@ public class UIUserPresetCollection extends UI2dContainer implements UIControls 
 
     this.component = component;
     this.collection = PresetEngine.get().currentLibrary.get(component);
+    String presetName = PresetEngine.getPresetShortName(component);
 
     // List
     newVerticalContainer(PRESETS_LIST_WIDTH, 4,
-      sectionLabel("PRESETS", PRESETS_LIST_WIDTH).setTextAlignment(VGraphics.Align.LEFT),
+      sectionLabel("PRESETS: " + presetName, PRESETS_LIST_WIDTH)
+        .setTextAlignment(VGraphics.Align.LEFT),
       this.presetList = (UIUserPresetList)
         new UIUserPresetList(ui, 0, 0, PRESETS_LIST_WIDTH, (int) h - 20, this.collection, this.component)
           .setDescription("Presets available for this pattern, click to select, double-click to activate")
