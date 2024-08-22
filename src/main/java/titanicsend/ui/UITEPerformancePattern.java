@@ -12,6 +12,7 @@ import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
+import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
 import java.util.ArrayList;
@@ -39,17 +40,29 @@ public class UITEPerformancePattern
   private TEPerformancePattern device;
   private final List<UI2dComponent> controls = new ArrayList<UI2dComponent>();
 
+  private UI2dContainer controlsContainer;
+  private UIUserPresetCollection presets;
+
   @Override
-  public void buildDeviceControls(
-      heronarts.lx.studio.LXStudio.UI ui, UIDevice uiDevice, TEPerformancePattern device) {
+  public void buildDeviceControls(LXStudio.UI ui, UIDevice uiDevice, TEPerformancePattern device) {
     uiDevice.setLayout(Layout.HORIZONTAL, 2);
 
     this.ui = ui;
     this.uiDevice = uiDevice;
     this.device = device;
-    this.device.remoteControlsChanged.addListener(this);
 
-    refresh();
+    // Remote controls, MFT-layout
+    this.controlsContainer = new UI2dContainer(0,0,0, this.uiDevice.getContentHeight());
+    createControls(this.controlsContainer);
+    // Presets
+    this.presets = createUserPresets();
+
+    this.uiDevice.addChildren(
+      this.controlsContainer,
+      this.presets
+    );
+
+    this.device.remoteControlsChanged.addListener(this);
   }
 
   @Override
@@ -60,24 +73,16 @@ public class UITEPerformancePattern
   }
 
   protected void refresh() {
-    clearControls();
-    this.uiDevice.addChildren(
-      createControls(),
-      createUserPresets()
-    );
-
+    this.controlsContainer.removeAllChildren();
+    createControls(this.controlsContainer);
   }
 
   /*
    * Remote Controls
    */
 
-  private void clearControls() {
-    this.uiDevice.removeAllChildren(true);
-  }
+  private void createControls(UI2dContainer container) {
 
-  private UI2dContainer createControls() {
-    UI2dContainer container = new UI2dContainer(0,0,0, this.uiDevice.getContentHeight());
 
     List<LXNormalizedParameter> params =
         new ArrayList<LXNormalizedParameter>(Arrays.asList(device.getRemoteControls()));
@@ -134,8 +139,6 @@ public class UITEPerformancePattern
       ++ki;
     }
     container.setWidth((col + 1) * (4 * (UIKnob.WIDTH + 2) + 15) - 15 - 2);
-
-    return container;
   }
 
   private void hideUnusedControls(List<LXNormalizedParameter> params) {
@@ -155,15 +158,13 @@ public class UITEPerformancePattern
    * User Presets
    */
 
-  private UI2dContainer createUserPresets() {
+  private UIUserPresetCollection createUserPresets() {
     return new UIUserPresetCollection(this.ui, this.device, uiDevice.getContentHeight());
   }
 
   @Override
-  public void disposeDeviceControls(
-      heronarts.lx.studio.LXStudio.UI ui, UIDevice uiDevice, TEPerformancePattern device) {
+  public void disposeDeviceControls(LXStudio.UI ui, UIDevice uiDevice, TEPerformancePattern device) {
     if (this.device != null) {
-      clearControls();
       this.device.remoteControlsChanged.removeListener(this);
       this.device = null;
       this.uiDevice = null;
