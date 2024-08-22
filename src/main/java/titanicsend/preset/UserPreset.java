@@ -5,6 +5,7 @@ import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.LXPresetComponent;
 import heronarts.lx.LXSerializable;
+import titanicsend.pattern.TEPattern;
 
 /**
  * A saveable snapshot of a component including parameter values and modulators.
@@ -73,6 +74,10 @@ public class UserPreset extends LXComponent implements LXComponent.Renamable {
 
     // Custom tweak to LX framework, allow loading of preset from JsonObject
     ((LXComponent)component).loadPreset(this.preset);
+    if (component instanceof TEPattern) {
+      // Set current parameter values as the defaults. Panic button will return to these.
+      ((TEPattern)component).captureDefaults();
+    }
 
     return this;
   }
