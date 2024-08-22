@@ -42,8 +42,11 @@ public class UserPreset extends LXComponent implements LXComponent.Renamable {
     if (!matches(component)) {
       throw new IllegalArgumentException("Can not capture component that does not match UserPreset class");
     }
-    this.preset = LXSerializable.Utils.toObject((LXComponent)component);
+
+    this.preset = new JsonObject();
+    ((LXComponent) component).save(this.lx, this.preset);
     component.postProcessPreset(this.lx, this.preset);
+
     return this;
   }
 
@@ -55,12 +58,14 @@ public class UserPreset extends LXComponent implements LXComponent.Renamable {
       throw new IllegalArgumentException("Component must be LXComponent to restore preset");
     }
     if (!matches(component)) {
-      throw new IllegalArgumentException("Can not restore UserPreset to unmatching component" + component);
+      throw new IllegalArgumentException("Can not restore UserPreset to unmatching component type" + component);
     }
-    ((LXComponent)component).load(this.lx, this.preset);
+
+    // Custom tweak to LX framework, allow loading of preset from JsonObject
+    ((LXComponent)component).loadPreset(this.preset);
+
     return this;
   }
-
 
   public void setIndex(int index) {
     this.index = index;
