@@ -30,4 +30,11 @@ public class PresetEngine extends LXComponent {
   public static String getPresetName(LXPresetComponent component) {
     return component.getPresetClass().getCanonicalName();
   }
+
+  public static String getPresetShortName(LXPresetComponent component) {
+    if (!(component instanceof LXComponent)) {
+      return null;
+    }
+    return LXComponent.getComponentName(((LXComponent)component).getClass());
+  }
 }
