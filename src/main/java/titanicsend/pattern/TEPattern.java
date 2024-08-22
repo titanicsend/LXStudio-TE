@@ -214,9 +214,9 @@ public abstract class TEPattern extends DmxPattern {
   /**
    * Set all current parameter values as the defaults for this pattern instance
    */
-  protected void captureDefaults() {
+  public void captureDefaults() {
     for (LXParameter p : this.getParameters()) {
-      if (p instanceof LXListenableParameter) {
+      if (p instanceof LXListenableParameter && !isHiddenControl(p)) {
         captureDefault((LXListenableParameter)p);
       }
     }
