@@ -1,9 +1,7 @@
 package titanicsend.preset;
 
 import heronarts.glx.ui.UI;
-import heronarts.glx.ui.UIColor;
 import heronarts.glx.ui.component.UIItemList;
-import heronarts.lx.LX;
 import heronarts.lx.LXPresetComponent;
 import heronarts.lx.command.LXCommand;
 import heronarts.lx.studio.LXStudio;
@@ -17,7 +15,6 @@ public class UIUserPresetList extends UIItemList.ScrollList {
   private final LXPresetComponent component;
   final Map<UserPreset, PresetItem> presetToItem = new HashMap<UserPreset, PresetItem>();
   private final UserPresetCollection.Listener collectionListener;
-  private UIColor controlSurfaceFocusColor;
 
   private boolean isDeleteEnabled = true;
 
@@ -31,7 +28,6 @@ public class UIUserPresetList extends UIItemList.ScrollList {
     setReorderable(true);
     setDeletable(true);
 
-    this.controlSurfaceFocusColor = ui.theme.surfaceColor;
     this.collection = collection;
     this.component = component;
 
@@ -58,10 +54,10 @@ public class UIUserPresetList extends UIItemList.ScrollList {
   }
 
   private void setActiveItem(PresetItem item) {
-    LX.error("Trace: setting active item to " + item);
     this.activeItem = item;
-    // Trying to get this to draw active color
-    // redraw();
+    // Active item is UI-instance specific, therefore need to redraw
+    // now instead of waiting for an underlying parameter to change.
+    redraw();
   }
 
   public UIUserPresetList setDeleteEnabled(boolean isDeleteEnabled) {
@@ -89,16 +85,10 @@ public class UIUserPresetList extends UIItemList.ScrollList {
       throw new IllegalStateException("Preset removed from collection not found in map: " + preset);
     }
     if (presetItem.equals(this.activeItem)) {
-      LX.error("Setting active item to null");
       setActiveItem(null);
     }
     removeItem(presetItem);
     presetItem.dispose();
-  }
-
-  public UIUserPresetList setControlSurfaceFocusColor(UIColor controlSurfaceFocusColor) {
-    this.controlSurfaceFocusColor = controlSurfaceFocusColor;
-    return this;
   }
 
   /**
@@ -113,11 +103,8 @@ public class UIUserPresetList extends UIItemList.ScrollList {
   }
 
   public UIUserPresetList updateActive() {
-    //PresetItem item = (PresetItem) this.getFocusedItem();
     if (this.activeItem != null) {
       this.activeItem.preset.capture(this.component);
-    } else {
-      LX.error("TODO: activeItem should not be null after a double-click");
     }
     return this;
   }
@@ -168,8 +155,8 @@ public class UIUserPresetList extends UIItemList.ScrollList {
 
     @Override
     public void onActivate() {
-      setActiveItem(this);
       this.preset.restore(component);
+      setActiveItem(this);
     }
 
     @Override
