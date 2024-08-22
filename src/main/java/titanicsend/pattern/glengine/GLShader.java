@@ -63,9 +63,19 @@ public class GLShader {
     public int uniformLocation;
   }
 
+  private boolean useMappedBuffer = false;
+
   private final ArrayList<TextureInfo> textures = new ArrayList<>();
   private ByteBuffer backBuffer;
   private final int[] backbufferHandle = new int[1];
+
+  // support for optional texture mapped (as opposed to the new linear format) buffer
+  // containing the last rendered frame.
+  private ByteBuffer mappedBuffer = null;
+  private final int[] mappedBufferHandle = new int[1];
+  private int mappedBufferUnit = -1;
+  private int mappedBufferWidth = 640;
+  private int mappedBufferHeight = 640;
 
   // map of user created uniforms.
   protected HashMap<String, UniformTypes> uniforms = null;
@@ -186,6 +196,32 @@ public class GLShader {
     return GLBuffers.newDirectByteBuffer(GLEngine.getWidth() * GLEngine.getHeight() * 4);
   }
 
+  /**
+   * Create appropriately sized buffer to contain a 2D texture mapped version of the last
+   * rendered frame.
+   * @return ByteBuffer
+   */
+  public static ByteBuffer allocateMappedBuffer(int width, int height) {
+    return GLBuffers.newDirectByteBuffer(width * height * 4);
+  }
+
+  /**
+   * Set the buffer to be used as a rectangular texture backbuffer for this shader. (As opposed to
+   * iBackbuffer, which is a linear list of colors corresponding to LX 3D model points and can't be
+   * used for algorithms that need the ability to access neighboring pixels.)
+   * NOTE: MUST BE CALLED BEFORE THE SHADER IS INITIALIZED. (i.e. in the pattern's constructor.)
+   * TODO - at present, this buffer is only used by shader effects.  It should eventually
+   * TODO - be optional for shader patterns as well.
+   *
+   * @param buffer previously allocated ByteBuffer of sufficient size to hold the desired texture
+   */
+  public void setMappedBuffer(ByteBuffer buffer, int width, int height) {
+    this.mappedBufferWidth = width;
+    this.mappedBufferHeight = height;
+    this.mappedBuffer = buffer;
+    this.useMappedBuffer = true;
+  }
+
   /** Activate this shader for rendering in the current context */
   public void useProgram() {
     gl4.glUseProgram(shaderProgram.getProgramId());
@@ -245,6 +281,11 @@ public class GLShader {
       gl4.glDeleteBuffers(2, geometryBufferHandles, 0);
       gl4.glDeleteTextures(1, backbufferHandle, 0);
 
+      if (useMappedBuffer) {
+        gl4.glDeleteTextures(1, mappedBufferHandle, 0);
+        glEngine.releaseTextureUnit(mappedBufferUnit);
+      }
+
       // free any textures on ShaderToy channels
       for (TextureInfo ti : textures) {
         glEngine.releaseTexture(ti.name);
@@ -300,12 +341,29 @@ public class GLShader {
     gl4.glGenTextures(1, backbufferHandle, 0);
     gl4.glBindTexture(GL4.GL_TEXTURE_2D, backbufferHandle[0]);
 
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     gl4.glBindTexture(GL_TEXTURE_2D, 0);
+
+    // create mapped buffer texture object, if needed
+    if (useMappedBuffer) {
+      this.mappedBufferUnit = glEngine.getNextTextureUnit();
+
+      gl4.glActiveTexture(GL_TEXTURE0 + mappedBufferUnit);
+      gl4.glEnable(GL_TEXTURE_2D);
+      gl4.glGenTextures(1, mappedBufferHandle, 0);
+      gl4.glBindTexture(GL4.GL_TEXTURE_2D, mappedBufferHandle[0]);
+
+      gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+      gl4.glBindTexture(GL_TEXTURE_2D, 0);
+    }
   }
 
   /** Set up geometry at frame generation time */
@@ -367,6 +425,26 @@ public class GLShader {
         backBuffer);
 
     setUniform("iBackbuffer", 2);
+
+    // if necessary, update the mapped buffer texture data
+    if (useMappedBuffer) {
+      gl4.glActiveTexture(GL_TEXTURE0 + mappedBufferUnit);
+      gl4.glEnable(GL_TEXTURE_2D);
+      gl4.glBindTexture(GL4.GL_TEXTURE_2D, mappedBufferHandle[0]);
+
+      gl4.glTexImage2D(
+          GL4.GL_TEXTURE_2D,
+          0,
+          GL4.GL_RGBA,
+          mappedBufferWidth,
+          mappedBufferHeight,
+          0,
+          GL4.GL_BGRA,
+          GL_UNSIGNED_BYTE,
+          mappedBuffer);
+
+      setUniform("iMappedBuffer", mappedBufferUnit);
+    }
 
     // add shadertoy texture channels. These textures already statically bound to
     // texture units so all we have to do is tell the shader which texture unit to use.

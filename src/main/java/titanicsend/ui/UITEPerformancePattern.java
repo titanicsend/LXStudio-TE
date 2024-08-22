@@ -82,8 +82,10 @@ public class UITEPerformancePattern
 
     // Extra controls, displayed only in design mode
     params.add(device.getControls().getControl(TEControlTag.BRIGHTNESS).control);
-    params.add(device.getControls().getControl(TEControlTag.TWIST).control);
-    // add two spaces so we wind up with two columns of these extra controls
+    // TODO - twist disabled for now.  We may add it again later.
+    //params.add(device.getControls().getControl(TEControlTag.TWIST).control);
+    params.add(null);
+    // add spaces so we wind up with two columns of these extra controls
     // in the design UI - this makes them more visible without expanding
     // the Chromatik window.
     params.add(null);

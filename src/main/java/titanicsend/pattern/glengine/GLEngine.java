@@ -10,7 +10,6 @@ import heronarts.lx.LXComponent;
 import heronarts.lx.LXLoopTask;
 import heronarts.lx.audio.GraphicMeter;
 import heronarts.lx.model.LXModel;
-import heronarts.lx.model.LXPoint;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
 import titanicsend.util.TE;
 
@@ -19,12 +18,12 @@ import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import static com.jogamp.opengl.GL.*;
 
 public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   public static final String PATH = "GLEngine";
+  public static GLEngine current;
 
   private static final int TEXTURE_HANDLE_AUDIO = 0;
   private static final int TEXTURE_HANDLE_COORDS = 1;
@@ -37,7 +36,22 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   // via the startup command line.
   private static int xSize;
   private static int ySize;
-  private static int resolution;
+  private static int maxPoints;
+  private float aspectRatio;
+
+  // Dimensions of mapped texture backbuffer.
+  //
+  // This buffer is never directly rendered by either the GPU or by Java
+  // Instead, the pixel locations corresponding to the lx model's LEDs are
+  // colored at frame time and the buffer is supplied as a read-only sampler
+  // to the shader system.
+  //
+  // So increasing the size of this buffer affects memory usage but does
+  // not affect rendering performance.  The default size is sufficient for
+  // even very large models, but can be increased if necessary.
+  // TODO - make this configurable per pattern or effect.
+  private static final int mappedBufferWidth = 640;
+  private static final int mappedBufferHeight = 640;
 
   // Location textures
   private FloatBuffer modelCoords;
@@ -72,6 +86,11 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   private GLAutoDrawable canvas = null;
   private GL4 gl4;
 
+  private LXModel model;
+  public LXModel getModel() {
+    return model;
+  }
+
   // Needed for housekeeping, during static-to-dynamic model transition
   // This lets various shader components know if they're running the static model
   // and need to swap the x and z axes.
@@ -92,6 +111,16 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
   public static int getHeight() {
     return ySize;
+  }
+
+  public float getAspectRatio() { return aspectRatio; }
+
+  public static int getMappedBufferWidth() {
+    return mappedBufferWidth;
+  }
+
+  public static int getMappedBufferHeight() {
+    return mappedBufferHeight;
   }
 
   // Utility methods to give java patterns access to the audio texture
@@ -116,6 +145,17 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     } else {
       return nextTextureUnit++;
     }
+  }
+
+  public int releaseTextureUnit(int textureUnit) {
+    if (textureUnit < 3) {
+      throw new RuntimeException("GLEngine: Attempt to release a reserved texture unit: " + textureUnit);
+    }
+    if (releasedTextureUnits.contains(textureUnit)) {
+      throw new RuntimeException("GLEngine: Attempt to release a texture unit that is already released: " + textureUnit);
+    }
+    releasedTextureUnits.add(textureUnit);
+    return textureUnit;
   }
 
   // Add a released (ref count 0) texture unit number to the list of available
@@ -268,12 +308,10 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   private void updateLocationTextures() {
     this.modelChanged = false;
     final int numPoints = this.model.points.length;
+    aspectRatio = this.model.xRange / this.model.yRange;
 
     this.modelCoords.rewind();
-    // TODO - can multiply by fake rectangular grid resolution here
-    // TODO - and also adjust aspect ratio to match model so we
-    // TODO - don't have to do it on every frame.
-    for (int i = 0; i < resolution; i++) {
+    for (int i = 0; i < maxPoints; i++) {
       if (i < numPoints) {
         this.modelCoords.put(this.model.points[i].xn);
         this.modelCoords.put(this.model.points[i].yn);
@@ -301,21 +339,28 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
             modelCoords);
 
     LX.log("GLEngine refreshed location data for " + numPoints + " points");
+    LX.log("GLEngine aspect ratio: " + aspectRatio);
 
-    if (numPoints > resolution) {
-      LX.error("GLEngine resolution (" + resolution
+    if (numPoints > maxPoints) {
+      LX.error("GLEngine resolution (" + maxPoints
               + ") too small for number of points in the model (" + numPoints + ")");
     }
   }
 
-  private LXModel model;
-
   public GLEngine(LX lx, int width, int height,  boolean isStaticModel) {
-    // save rendering canvas dimensions
-    xSize = width;
-    ySize = height;
-    resolution = width * height;
-    TE.log("GLEngine: Rendering canvas size: " + xSize + "x" + ySize + " = " + resolution + " total points");
+    current = this;
+    // The shape the user gives us affects the rendered aspect ratio,
+    // but what really matters is that it needs to have room for the
+    // largest number of points we're going to encounter during a run.
+    // TODO - adjust buffer size & shape dynamically as the model changes.
+    // TODO - this will require a lot of GPU memory management, so is
+    // TODO - a longer-term goal.
+    this.xSize = width;
+    this.ySize = height;
+
+    this.maxPoints = xSize * ySize;
+    aspectRatio = 1.0f;
+    TE.log("GLEngine: Rendering canvas size: " + xSize + "x" + ySize + " = " + GLEngine.maxPoints + " total points");
 
     // register glEngine so we can access it from patterns.
     // and add it as an engine task for audio analysis and buffer management
