@@ -54,6 +54,20 @@ public class UserPresetCollection implements LXSerializable {
     return preset;
   }
 
+  public UserPreset addPreset(LXPresetComponent component, JsonObject object) {
+    Objects.requireNonNull(component);
+    UserPreset preset = new UserPreset(this.lx, this.clazz, object);
+    if (!preset.matches(component)) {
+      throw new IllegalArgumentException("Component '" + component + "' does not match preset '" + preset + "'");
+    }
+    preset.setIndex(this.mutablePresets.size());
+    this.mutablePresets.add(preset);
+    for (Listener listener : this.listeners) {
+      listener.presetAdded(preset);
+    }
+    return preset;
+  }
+
   public UserPresetCollection removePreset(UserPreset preset) {
     int index = this.mutablePresets.indexOf(preset);
     if (index < 0) {

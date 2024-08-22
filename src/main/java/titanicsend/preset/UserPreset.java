@@ -18,10 +18,20 @@ public class UserPreset extends LXComponent implements LXComponent.Renamable {
   private int index = -1;
 
   public UserPreset(LX lx, String clazz) {
+    this(lx, clazz, null);
+  }
+
+  public UserPreset(LX lx, String clazz, JsonObject preset) {
     super(lx);
     this.label.setDescription("The name of this preset");
 
     this.clazz = clazz;
+    this.preset = preset;
+  }
+
+  public UserPreset setLabel(String name) {
+    this.label.setValue(name);
+    return this;
   }
 
   /**
