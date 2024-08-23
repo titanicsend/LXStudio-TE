@@ -19,11 +19,14 @@ import heronarts.glx.event.GamepadEvent;
 import heronarts.glx.event.KeyEvent;
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
-import heronarts.lx.midi.surface.MidiFighterTwister;
 import heronarts.lx.mixer.LXBus;
 import heronarts.lx.mixer.LXChannel;
+import heronarts.lx.modulator.LXModulator;
 import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.pattern.texture.NoisePattern;
+
+import jkbstudio.supermod.SuperMod;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.SocketException;
@@ -110,6 +113,8 @@ import titanicsend.ui.modulator.UIDmxRangeModulator;
 import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
 
+import static titanicsend.audio.AudioStemModulator.Stem.*;
+
 public class TEApp extends LXStudio {
 
   static {
@@ -147,6 +152,7 @@ public class TEApp extends LXStudio {
     private final DmxEngine dmxEngine;
     private final NDIEngine ndiEngine;
     private final GLEngine glEngine;
+    private final SuperMod superMod;
 
     private final AudioStems audioStems;
     private final ColorPaletteManager paletteManagerA;
@@ -185,6 +191,9 @@ public class TEApp extends LXStudio {
       this.glEngine = new GLEngine(lx,glRenderWidth,glRenderHeight,staticModel);
       gamepadEngine = new GamepadEngine(lx);
       this.presetEngine = new PresetEngine(lx);
+
+      // Super Modulator midi controller
+      this.superMod = new SuperMod(lx);
 
       lx.engine.registerComponent("audioStems", this.audioStems = new AudioStems(lx));
       lx.engine.registerComponent("paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
@@ -374,21 +383,26 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(MothershipDrivingPattern.class);
 
       // Midi surface names for use with BomeBox
-      lx.engine.midi.registerSurface(
-        MidiNames.BOMEBOX_APC40MK2, APC40Mk2.class);
+      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_APC40MK2, APC40Mk2.class);
       // The Director midi surface must be registered *after* the Director and ColorPaletteManager
-      lx.engine.midi.registerSurface(
-        MidiNames.APCMINIMK2_DIRECTOR, DirectorAPCminiMk2.class);
-      lx.engine.midi.registerSurface(
-        MidiNames.BOMEBOX_VIRTUAL_APCMINIMK2_DIRECTOR, DirectorAPCminiMk2.class);
-      lx.engine.midi.registerSurface(
-        MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1, MidiFighterTwister.class);
-      lx.engine.midi.registerSurface(
-        MidiNames.BOMEBOX_MIDIFIGHTERTWISTER2, MidiFighterTwister.class);
-      lx.engine.midi.registerSurface(
-        MidiNames.BOMEBOX_MIDIFIGHTERTWISTER3, MidiFighterTwister.class);
-      lx.engine.midi.registerSurface(
-        MidiNames.BOMEBOX_MIDIFIGHTERTWISTER4, MidiFighterTwister.class);
+      lx.engine.midi.registerSurface(MidiNames.APCMINIMK2_DIRECTOR, DirectorAPCminiMk2.class);
+      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_VIRTUAL_APCMINIMK2_DIRECTOR, DirectorAPCminiMk2.class);
+      // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1, MidiFighterTwister.class);
+      // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER2, MidiFighterTwister.class);
+      // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER3, MidiFighterTwister.class);
+      // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER4, MidiFighterTwister.class);
+
+      // Fast edit: direct chain to SuperMod plugin
+      this.superMod.initialize(lx);
+      this.superMod.addModulatorSource(this.superModSource);
+
+      // Register midi surface names for Super Mod
+      this.superMod.registerAPCmini2("SuperMod Control");
+      this.superMod.registerAPCmini2(MidiNames.BOMEBOX_VIRTUAL_APCMINIMK2_SUPERMOD);
+      this.superMod.registerMidiFighterTwister(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1);
+      this.superMod.registerMidiFighterTwister(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER2);
+      this.superMod.registerMidiFighterTwister(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER3);
+      this.superMod.registerMidiFighterTwister(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER4);
 
       // Custom modulators
       lx.registry.addModulator(AudioStemModulator.class);
@@ -648,6 +662,43 @@ public class TEApp extends LXStudio {
       ;
     }
 
+    /**
+     * Redirect some of the SuperMod buttons to Audio Stem modulators
+     */
+    private final SuperMod.ModulatorSource superModSource = (label, col, row) -> {
+      AudioStemModulator m = null;
+      if (row >= 0 && row <=1) {
+        if (col == 0) {
+          m = new AudioStemModulator(label + " " + BASS);
+          m.stem.setValue(BASS);
+        }
+        if (col == 1 && row == 0) {
+          m = new AudioStemModulator(label + " " + DRUMS);
+          m.stem.setValue(DRUMS);
+        }
+        if (col == 2 && row == 0) {
+          m = new AudioStemModulator(label + " " + VOCALS);
+          m.stem.setValue(VOCALS);
+        }
+        if (col == 3 && row == 0) {
+          m = new AudioStemModulator(label + " " + OTHER);
+          m.stem.setValue(OTHER);
+        }
+
+        // Row 0 = normal, Row 1 = wave
+        if (m != null) {
+          if (row == 0) {
+            m.outputMode.setValue(AudioStemModulator.OutputMode.ENERGY);
+          } else if (row == 1) {
+            m.outputMode.setValue(AudioStemModulator.OutputMode.WAVE);
+          }
+        }
+      }
+
+      // If button was not in our space, m will be null
+      return m;
+    };
+
     public void initializeUI(LXStudio lx, LXStudio.UI ui) {
       // Here is where you may modify the initial settings of the UI before it is fully
       // built. Note that this will not be called in headless mode. Anything required
@@ -655,6 +706,8 @@ public class TEApp extends LXStudio {
       log("TEApp.Plugin.initializeUI()");
 
       ((LXStudio.Registry) lx.registry).addUIDeviceControls(UITEPerformancePattern.class);
+
+      this.superMod.initializeUI(lx, ui);
     }
 
     public void onUIReady(LXStudio lx, LXStudio.UI ui) {
@@ -714,6 +767,8 @@ public class TEApp extends LXStudio {
             // Replace old saved destination IPs from project files
             // setOscDestinationForIpads();
           });
+
+      this.superMod.onUIReady(lx, ui);
     }
 
     public void setOscDestinationForIpads() {
@@ -763,6 +818,9 @@ public class TEApp extends LXStudio {
     @Override
     public void dispose() {
       log("TEApp.Plugin.dispose()");
+      this.superMod.removeModulatorSource(this.superModSource);
+      this.superMod.dispose();
+
       this.lx.removeListener(this);
       this.lx.removeProjectListener(this);
 
