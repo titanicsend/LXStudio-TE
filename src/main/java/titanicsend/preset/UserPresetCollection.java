@@ -1,5 +1,7 @@
 package titanicsend.preset;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import heronarts.lx.LX;
 import heronarts.lx.LXPresetComponent;
@@ -120,34 +122,39 @@ public class UserPresetCollection implements LXSerializable {
 
   private boolean inLoad = false;
 
-  private void save() {
-    /*        // Don't re-save the file on updates caused by loading it...
-        if (this.inLoad) {
-            return;
-        }
 
-        JsonObject obj = new JsonObject();
-        save(this.lx, obj);
-        try (JsonWriter writer = new JsonWriter(new FileWriter(this.file))) {
-            writer.setIndent("  ");
-            new GsonBuilder().create().toJson(obj, writer);
-        } catch (IOException iox) {
-            LX.error(iox, "Exception writing the preferences file: " + this.file);
-        }*/
-  }
-
+  public static final String KEY_CLASS = "clazz";
   private static final String KEY_PRESETS = "presets";
 
   @Override
-  public void save(LX lx, JsonObject object) {
-    /*        if (this.fileName != null) {
-            object.addProperty("TestPropertyName", this.fileName);
-        }
-        object.add(KEY_PRESETS, LXSerializable.Utils.toArray(lx, this.presets));*/
+  public void save(LX lx, JsonObject obj) {
+    obj.addProperty(KEY_CLASS, this.clazz);
+    obj.add(KEY_PRESETS, LXSerializable.Utils.toArray(lx, this.presets));
   }
 
   @Override
-  public void load(LX lx, JsonObject object) {
+  public void load(LX lx, JsonObject obj) {
+    if (obj.has(KEY_CLASS)) {
+      // Should already match
+    }
 
+    if (obj.has(KEY_PRESETS)) {
+      JsonArray presetsArray = obj.getAsJsonArray(KEY_PRESETS);
+      for (JsonElement presetElement : presetsArray) {
+        JsonObject presetObj = (JsonObject) presetElement;
+        loadPreset(presetObj);
+      }
+    }
+  }
+
+  private void loadPreset(JsonObject presetObj) {
+    UserPreset preset = new UserPreset(this.lx, this.clazz);
+    preset.load(this.lx, presetObj);
+
+    preset.setIndex(this.mutablePresets.size());
+    this.mutablePresets.add(preset);
+    for (Listener listener : this.listeners) {
+      listener.presetAdded(preset);
+    }
   }
 }

@@ -11,7 +11,7 @@ import titanicsend.pattern.TEPattern;
  * A saveable snapshot of a component including parameter values and modulators.
  * Adds a renamable label and list ordering.
  */
-public class UserPreset extends LXComponent implements LXComponent.Renamable {
+public class UserPreset extends LXComponent implements LXComponent.Renamable, LXSerializable {
 
   public final String clazz;
   private JsonObject preset;
@@ -54,6 +54,12 @@ public class UserPreset extends LXComponent implements LXComponent.Renamable {
       throw new IllegalArgumentException("Can not capture component that does not match UserPreset class");
     }
 
+    if (component instanceof TEPattern) {
+      // Set the current parameter values as default before creating preset.
+      // Panic button will return to these.
+      ((TEPattern)component).captureDefaults();
+    }
+
     this.preset = new JsonObject();
     ((LXComponent) component).save(this.lx, this.preset);
     component.postProcessPreset(this.lx, this.preset);
@@ -74,10 +80,6 @@ public class UserPreset extends LXComponent implements LXComponent.Renamable {
 
     // Custom tweak to LX framework, allow loading of preset from JsonObject
     ((LXComponent)component).loadPreset(this.preset);
-    if (component instanceof TEPattern) {
-      // Set current parameter values as the defaults. Panic button will return to these.
-      ((TEPattern)component).captureDefaults();
-    }
 
     return this;
   }
@@ -90,13 +92,23 @@ public class UserPreset extends LXComponent implements LXComponent.Renamable {
     return this.index;
   }
 
-  // TODO
-
-  private static final String KEY_PATTERN_CLASS = "pattern";
+  public static final String KEY_LABEL = "label";
+  public static final String KEY_PRESET_OBJ = "presetObj";
 
   @Override
   public void save(LX lx, JsonObject obj) {
-    super.save(lx, obj);
-    //obj.addProperty(KEY_PATTERN_CLASS, this.pattern.getCanonicalName());
+    obj.addProperty(KEY_LABEL, this.getLabel());
+    obj.add(KEY_PRESET_OBJ, this.preset.deepCopy());
+  }
+
+  @Override
+  public void load(LX lx, JsonObject obj) {
+    if (obj.has(KEY_LABEL)) {
+      this.setLabel(obj.get(KEY_LABEL).getAsString());
+    }
+    if (obj.has(KEY_PRESET_OBJ)) {
+      JsonObject presetObj  = obj.get(KEY_PRESET_OBJ).getAsJsonObject().deepCopy();
+      this.preset = presetObj;
+    }
   }
 }
