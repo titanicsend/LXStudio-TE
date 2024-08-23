@@ -383,28 +383,22 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(MothershipDrivingPattern.class);
 
       // Midi surface names for use with BomeBox
-      lx.engine.midi.registerSurface(
-        MidiNames.BOMEBOX_APC40MK2, APC40Mk2.class);
+      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_APC40MK2, APC40Mk2.class);
       // The Director midi surface must be registered *after* the Director and ColorPaletteManager
-      lx.engine.midi.registerSurface(
-        MidiNames.APCMINIMK2_DIRECTOR, DirectorAPCminiMk2.class);
-      lx.engine.midi.registerSurface(
-        MidiNames.BOMEBOX_VIRTUAL_APCMINIMK2_DIRECTOR, DirectorAPCminiMk2.class);
-      /*  lx.engine.midi.registerSurface(
-        MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1, MidiFighterTwister.class);
-      lx.engine.midi.registerSurface(
-        MidiNames.BOMEBOX_MIDIFIGHTERTWISTER2, MidiFighterTwister.class);
-      lx.engine.midi.registerSurface(
-        MidiNames.BOMEBOX_MIDIFIGHTERTWISTER3, MidiFighterTwister.class);
-      lx.engine.midi.registerSurface(
-        MidiNames.BOMEBOX_MIDIFIGHTERTWISTER4, MidiFighterTwister.class);*/
+      lx.engine.midi.registerSurface(MidiNames.APCMINIMK2_DIRECTOR, DirectorAPCminiMk2.class);
+      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_VIRTUAL_APCMINIMK2_DIRECTOR, DirectorAPCminiMk2.class);
+      // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1, MidiFighterTwister.class);
+      // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER2, MidiFighterTwister.class);
+      // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER3, MidiFighterTwister.class);
+      // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER4, MidiFighterTwister.class);
 
       // Fast edit: direct chain to SuperMod plugin
       this.superMod.initialize(lx);
       this.superMod.addModulatorSource(this.superModSource);
 
       // Register midi surface names for Super Mod
-      this.superMod.registerAPCmini2("TE mini Control");
+      this.superMod.registerAPCmini2("SuperMod Control");
+      this.superMod.registerAPCmini2(MidiNames.BOMEBOX_VIRTUAL_APCMINIMK2_SUPERMOD);
       this.superMod.registerMidiFighterTwister(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1);
       this.superMod.registerMidiFighterTwister(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER2);
       this.superMod.registerMidiFighterTwister(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER3);
