@@ -22,6 +22,7 @@ public class GigglePixelListener implements LXLoopTask {
   Set<String> peersSeen;
   UITextBox peersTextbox;
 
+  @Deprecated
   public GigglePixelListener(LX lx, String listenIP, int myID) throws IOException {
     this.lx = lx;
     this.listenAddr = InetAddress.getByName(listenIP);

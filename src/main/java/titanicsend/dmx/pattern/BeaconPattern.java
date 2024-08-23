@@ -187,7 +187,7 @@ public abstract class BeaconPattern extends DmxPattern {
           });
   // It would be fine for a pattern to set dimmer to max and let the faders do the rest
   DmxCompoundParameter dimmer =
-      new DmxCompoundParameter("Dimmer", 0, 0, 100)
+      new DmxCompoundParameter("Dimmer", 100, 0, 100)
           .setNumBytes(2)
           .setScaleToAlpha(true); // Faders applied to this parameter
   DmxCompoundParameter frost1 = new DmxCompoundParameter("Frost1", 0, 0, 100);

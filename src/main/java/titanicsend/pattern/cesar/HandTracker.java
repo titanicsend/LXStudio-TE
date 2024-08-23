@@ -12,8 +12,9 @@ import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.StringParameter;
 import titanicsend.color.TEColorType;
 import titanicsend.pattern.TEPattern;
+import titanicsend.util.TECategory;
 
-@LXCategory("Panel FG")
+@LXCategory(TECategory.UTILITY)
 public class HandTracker extends TEPattern {
   public final BooleanParameter circle =
       new BooleanParameter("Circle", false).setDescription("Square or circle");

@@ -13,8 +13,9 @@ import heronarts.lx.parameter.LXParameter;
 import java.util.*;
 import titanicsend.model.TEPanelSection;
 import titanicsend.pattern.TEPattern;
+import titanicsend.util.TECategory;
 
-@LXCategory("Utility")
+@LXCategory(TECategory.UTILITY)
 public class TargetPixelStamper extends TEPattern {
   public static final int MSEC_PER_COLOR = 1000;
 

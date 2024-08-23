@@ -21,7 +21,7 @@ import titanicsend.dmx.parameter.DmxParameter;
 /**
  * Similar to ModelBuffer. Eventually might be merged with LXBuffer/ModelBuffer.
  *
- * <p>DmxBuffer is one fixture, DmxModelBuffer is all the fixtures
+ * DmxBuffer is one fixture, DmxModelBuffer is all the fixtures
  */
 public class DmxBuffer {
 

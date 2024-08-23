@@ -15,6 +15,8 @@
  */
 package heronarts.lx.studio;
 
+import heronarts.glx.event.GamepadEvent;
+import heronarts.glx.event.KeyEvent;
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
 import heronarts.lx.midi.surface.MidiFighterTwister;
@@ -32,8 +34,11 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.function.Function;
+
 import titanicsend.app.*;
 import titanicsend.app.autopilot.*;
+import titanicsend.app.autopilot.justin.*;
+import titanicsend.app.autopilot.justin.AutoParameter.Scale;
 import titanicsend.app.dev.DevSwitch;
 import titanicsend.app.dev.UIDevSwitch;
 import titanicsend.app.director.Director;
@@ -46,15 +51,10 @@ import titanicsend.color.ColorPaletteManager;
 import titanicsend.color.TEGradientSource;
 import titanicsend.dmx.DmxEngine;
 import titanicsend.dmx.effect.BeaconStrobeEffect;
-import titanicsend.dmx.pattern.BeaconDirectPattern;
-import titanicsend.dmx.pattern.BeaconEasyPattern;
-import titanicsend.dmx.pattern.BeaconEverythingPattern;
-import titanicsend.dmx.pattern.BeaconStraightUpPattern;
-import titanicsend.dmx.pattern.DjLightsDirectPattern;
-import titanicsend.dmx.pattern.DjLightsEasyPattern;
-import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
+import titanicsend.dmx.pattern.*;
 import titanicsend.effect.GlobalPatternControl;
 import titanicsend.effect.RandomStrobeEffect;
+import titanicsend.gamepad.GamepadEngine;
 import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lx.APC40Mk2;
@@ -73,7 +73,6 @@ import titanicsend.modulator.justin.MultiplierModulator;
 import titanicsend.modulator.justin.UIMultiplierModulator;
 import titanicsend.ndi.NDIEngine;
 import titanicsend.osc.CrutchOSC;
-import titanicsend.output.GPOutput;
 import titanicsend.output.GrandShlomoStation;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.pattern.TEPerformancePattern;
@@ -130,17 +129,19 @@ public class TEApp extends LXStudio {
   public static int glRenderWidth = 640;
   public static int glRenderHeight = 480;
 
+  public static GamepadEngine gamepadEngine;
+
   @LXPlugin.Name("Titanic's End")
   public static class Plugin implements LXStudio.Plugin, LX.Listener, LX.ProjectListener {
 
     private final TEVirtualOverlays virtualOverlays;
 
-    private GigglePixelListener gpListener;
-    private GigglePixelBroadcaster gpBroadcaster;
+//    private GigglePixelListener gpListener;
+//    private GigglePixelBroadcaster gpBroadcaster;
 
     private TEAutopilot autopilot;
     private TEOscListener oscListener;
-    private TEPatternLibrary library;
+    private Autopilot autopilotJKB;
 
     private final DmxEngine dmxEngine;
     private final NDIEngine ndiEngine;
@@ -180,6 +181,7 @@ public class TEApp extends LXStudio {
       this.dmxEngine = new DmxEngine(lx);
       this.ndiEngine = new NDIEngine(lx);
       this.glEngine = new GLEngine(lx,glRenderWidth,glRenderHeight,staticModel);
+      gamepadEngine = new GamepadEngine(lx);
 
       lx.engine.registerComponent("audioStems", this.audioStems = new AudioStems(lx));
       lx.engine.registerComponent("paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
@@ -190,6 +192,10 @@ public class TEApp extends LXStudio {
       }
 
       new TEGradientSource(lx);
+
+      // JKB Autopilot
+      // lx.engine.registerComponent("autopilot", this.autopilotJKB = new AutopilotExample(lx));
+      // initializeAutopilotLibraryJKB();
 
       // create our loop task for outputting data to lasers
       this.laserTask = new TELaserTask(lx);
@@ -226,6 +232,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(ArcEdges.class);
       lx.registry.addPattern(BassLightning.class);
       lx.registry.addPattern(BouncingDots.class);
+      lx.registry.addPattern(FxLaserCharge.class);
       lx.registry.addPattern(Checkers.class);
       lx.registry.addPattern(EdgeFall.class);
       lx.registry.addPattern(EdgeKITT.class);
@@ -299,6 +306,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(BeaconDirectPattern.class);
       lx.registry.addPattern(BeaconEasyPattern.class);
       lx.registry.addPattern(BeaconEverythingPattern.class);
+      lx.registry.addPattern(BeaconGamePattern.class);
       lx.registry.addPattern(BeaconStraightUpPattern.class);
       lx.registry.addPattern(DjLightsDirectPattern.class);
       lx.registry.addPattern(DjLightsEasyPattern.class);
@@ -359,6 +367,8 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(HandTracker.class);
       lx.registry.addPattern(TargetPixelStamper.class);
       //lx.registry.addPattern(ModelFileWriter.class);
+      lx.registry.addPattern(TwoColorPattern.class);
+      lx.registry.addPattern(MothershipDrivingPattern.class);
 
       // Midi surface names for use with BomeBox
       lx.engine.midi.registerSurface(
@@ -400,28 +410,28 @@ public class TEApp extends LXStudio {
         ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIMultiplierModulator.class);
       }
 
+//      int myGigglePixelID = 73; // Looks like "TE"
+//      try {
+//        this.gpListener = new GigglePixelListener(lx, "0.0.0.0", myGigglePixelID);
+//        lx.engine.addLoopTask(this.gpListener);
+//        TE.log("GigglePixel listener created");
+//      } catch (IOException e) {
+//        TE.log("Failed to create GigglePixel listener: " + e.getMessage());
+//      }
+
+//      // This should of course be in the config, but we leave for the playa in like a week
+//      String destIP = "192.168.42.255";
+//      try {
+//        this.gpBroadcaster =
+//            new GigglePixelBroadcaster(lx, destIP, wholeModel.getName(), myGigglePixelID);
+//        lx.engine.addLoopTask(this.gpBroadcaster);
+//        TE.log("GigglePixel broadcaster created");
+//      } catch (IOException e) {
+//        TE.log("Failed to create GigglePixel broadcaster: " + e.getMessage());
+//      }
+
       // create our library for autopilot
-      this.library = initializePatternLibrary(lx);
-
-      int myGigglePixelID = 73; // Looks like "TE"
-      try {
-        this.gpListener = new GigglePixelListener(lx, "0.0.0.0", myGigglePixelID);
-        lx.engine.addLoopTask(this.gpListener);
-        TE.log("GigglePixel listener created");
-      } catch (IOException e) {
-        TE.log("Failed to create GigglePixel listener: " + e.getMessage());
-      }
-
-      // This should of course be in the config, but we leave for the playa in like a week
-      String destIP = "192.168.42.255";
-      try {
-        this.gpBroadcaster =
-            new GigglePixelBroadcaster(lx, destIP, wholeModel.getName(), myGigglePixelID);
-        lx.engine.addLoopTask(this.gpBroadcaster);
-        TE.log("GigglePixel broadcaster created");
-      } catch (IOException e) {
-        TE.log("Failed to create GigglePixel broadcaster: " + e.getMessage());
-      }
+      TEPatternLibrary library = initializePatternLibrary(lx);
 
       // create our historian instance
       TEHistorian history = new TEHistorian();
@@ -452,8 +462,8 @@ public class TEApp extends LXStudio {
         sx.printStackTrace();
       }
 
-      GPOutput gpOutput = new GPOutput(lx, this.gpBroadcaster);
-      lx.addOutput(gpOutput);
+//      GPOutput gpOutput = new GPOutput(lx, this.gpBroadcaster);
+//      lx.addOutput(gpOutput);
 
       TEOscMessage.applyTEOscOutputSettings(lx);
 
@@ -545,6 +555,96 @@ public class TEApp extends LXStudio {
       return l;
     }
 
+    static public final double SLOWMIN = 30;
+    static public final double SLOWMAX = 90;
+
+    public void initializeAutopilotLibraryJKB() {
+      AutopilotLibrary library = this.autopilotJKB.library;
+
+      // Tell autopilot which parameters to animate
+
+      // Gradient
+      library.addPattern(heronarts.lx.pattern.color.GradientPattern.class)
+        .addParameter(new AutoParameter("gradient", AutoParameter.Scale.ABSOLUTE, .75, 1))
+        .addParameter(new AutoParameter("xAmount", AutoParameter.Scale.ABSOLUTE, .7, 1, SLOWMIN, SLOWMAX))
+        .addParameter(new AutoParameter("rotate", AutoParameter.Scale.ABSOLUTE, 1, 1, 0))   // force rotate on
+        .addParameter(new AutoParameter("yaw", AutoParameter.Scale.ABSOLUTE, 0, 360, 120))
+      ;
+
+      // Noise is both a color and pattern
+      library.addPattern(NoisePattern.class)
+        .addParameter(new AutoParameter("scale", Scale.ABSOLUTE, 22, 80, 0))  // Randomize 22-80
+        .addParameter(new AutoParameter("midpoint", Scale.ABSOLUTE, 20, 80, 40))
+        .addParameter(new AutoParameter("xScale", Scale.NORMALIZED, .25, .75, .1))
+        .addParameter(new AutoParameter("yScale", Scale.NORMALIZED, 0, 1, .2))
+        .addParameter(new AutoParameter("contrast", Scale.ABSOLUTE, 100, 400, 100))
+        .addParameter(new AutoParameter("motionSpeed", Scale.ABSOLUTE, .6, .9, .1))
+        .addParameter(new AutoParameter("xMotion", Scale.NORMALIZED, 0, 1, .5))
+        .addParameter(new AutoParameter("yMotion", Scale.NORMALIZED, 0, 1, .5))
+      ;
+
+      // Chase
+      library.addPattern(heronarts.lx.pattern.strip.ChasePattern.class)
+        .addParameter(new AutoParameter("speed", Scale.ABSOLUTE, -20, 40, 20))
+        .addParameter(new AutoParameter("size", Scale.ABSOLUTE, 20, 70, 40))
+        .addParameter(new AutoParameter("fade", Scale.ABSOLUTE, 20, 60, 20))
+        .addParameter(new AutoParameter("chunkSize", Scale.ABSOLUTE, 20, 80, 0))
+        .addParameter(new AutoParameter("shift", Scale.ABSOLUTE, 0, 70, 14))
+      ;
+
+      // Chevron
+      library.addPattern(heronarts.lx.pattern.form.ChevronPattern.class)
+        .addParameter(new AutoParameter("speed", Scale.ABSOLUTE, 45, 75, 20))
+        .addParameter(new AutoParameter("xAmt", Scale.ABSOLUTE, 0, 1, .2))
+        .addParameter(new AutoParameter("zAmt", Scale.ABSOLUTE, 0, 1, SLOWMIN, SLOWMAX, .5))
+        .addParameter(new AutoParameter("sharp", Scale.ABSOLUTE, 1.7, 30, SLOWMIN, SLOWMAX, 20))
+        .addParameter(new AutoParameter("stripes", Scale.ABSOLUTE, 1, 4, SLOWMIN, SLOWMAX, 1.75))
+        .addParameter(new AutoParameter("yaw", Scale.ABSOLUTE, 0, 360, SLOWMIN, SLOWMAX, 120))
+        .addParameter(new AutoParameter("pitch", Scale.ABSOLUTE, 0, 180, SLOWMIN, SLOWMAX))
+      ;
+
+      // Life (deprecated)
+      library.addPattern(heronarts.lx.pattern.texture.LifePattern.class)
+        .addParameter(new AutoParameter("translateX", Scale.ABSOLUTE, -.7, .7, .9))
+        .addParameter(new AutoParameter("yaw", Scale.ABSOLUTE, 0, 360, 180))
+        .addParameter(new AutoParameter("translateY", Scale.ABSOLUTE, -.4, .7, SLOWMIN, SLOWMAX, .2))
+        .addParameter(new AutoParameter("expand", Scale.ABSOLUTE, 1, 3, 1))
+        .addParameter(new AutoParameter("pitch", Scale.ABSOLUTE, 175, 211, SLOWMIN, SLOWMAX, 20))
+      ;
+
+      // Orbox
+      library.addPattern(heronarts.lx.pattern.form.OrboxPattern.class)
+        .addParameter(new AutoParameter("shapeLerp", Scale.NORMALIZED, 0, 1, .5))
+        .addParameter(new AutoParameter("fill", Scale.NORMALIZED, 0, .5, .3))
+        .addParameter(new AutoParameter("radius", Scale.ABSOLUTE, 0, 100, 50))
+        .addParameter(new AutoParameter("width", Scale.ABSOLUTE, 0, 8, 4 ))
+        .addParameter(new AutoParameter("fade", Scale.ABSOLUTE, 5, 100, 30))
+        .addParameter(new AutoParameter("xAmt", Scale.ABSOLUTE, 40, 90, 25))
+        .addParameter(new AutoParameter("zAmt", Scale.ABSOLUTE, 40, 90, 25))
+        .addParameter(new AutoParameter("yaw", Scale.ABSOLUTE, 0, 360, SLOWMIN, SLOWMAX, 180))
+        .addParameter(new AutoParameter("shearY", Scale.NORMALIZED, 0, 1, SLOWMIN, SLOWMAX, .7))
+      ;
+
+      // Planes
+      library.addPattern(heronarts.lx.pattern.form.PlanesPattern.class)
+        .addParameter(new AutoParameter("layer/1/position", Scale.NORMALIZED, 0, 1, .4))  // Check to see if layered patterns work
+      ;
+
+      // Solid
+      library.addPattern(heronarts.lx.pattern.color.SolidPattern.class)
+        .addParameter(new AutoParameter("hue", Scale.NORMALIZED, 0, 1, .2))
+        .addParameter(new AutoParameter("saturation", Scale.NORMALIZED, 0, 1, .3))
+      ;
+
+      // Sparkle
+      library.addPattern(heronarts.lx.pattern.texture.SparklePattern.class)
+        .addParameter(new AutoParameter("maxLevel", Scale.ABSOLUTE, 50, 100, 30))
+        .addParameter(new AutoParameter("minLevel", Scale.ABSOLUTE, 42, 70, 20))
+        .addParameter(new AutoParameter("density", Scale.ABSOLUTE, 10, 180, SLOWMIN, SLOWMAX, 50))
+        .addParameter(new AutoParameter("sharp", Scale.ABSOLUTE, -.5, .5, .3))
+      ;
+    }
+
     public void initializeUI(LXStudio lx, LXStudio.UI ui) {
       // Here is where you may modify the initial settings of the UI before it is fully
       // built. Note that this will not be called in headless mode. Anything required
@@ -564,12 +664,12 @@ public class TEApp extends LXStudio {
       new UIDevSwitch(ui, this.devSwitch, ui.leftPane.model.getContentWidth())
           .addToContainer(ui.leftPane.model, 0);
 
-      new GigglePixelUI(
-              ui, ui.leftPane.model.getContentWidth(), this.gpListener, this.gpBroadcaster)
-          .addToContainer(ui.leftPane.model, 1);
+//      new GigglePixelUI(
+//              ui, ui.leftPane.model.getContentWidth(), this.gpListener, this.gpBroadcaster)
+//          .addToContainer(ui.leftPane.model, 1);
 
       new TEUIControls(ui, this.virtualOverlays, ui.leftPane.model.getContentWidth())
-          .addToContainer(ui.leftPane.model, 2);
+          .addToContainer(ui.leftPane.model, 1);
 
       // Global pane
 
@@ -579,11 +679,15 @@ public class TEApp extends LXStudio {
 
       // Add UI section for autopilot
       new TEUserInterface.AutopilotUISection(ui, this.autopilot)
-          .addToContainer(ui.leftPane.global, 1);
+          .addToContainer(ui.leftPane.global, 6);
+
+      // Add UI section for JKB Autopilot
+      //new UIAutopilot(ui, this.autopilotJKB, ui.leftPane.global.getContentWidth())
+      //    .addToContainer(ui.leftPane.global, 7);
 
       // Add UI section for audio stems
       new UIAudioStems(ui, this.audioStems, ui.leftPane.global.getContentWidth())
-          .addToContainer(ui.leftPane.global, 3);
+          .addToContainer(ui.leftPane.global, 2);
 
       UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 4);
       UIColorPaletteManager.addToRightPerformancePane(ui, this.paletteManagerA, this.paletteManagerB);
@@ -596,6 +700,9 @@ public class TEApp extends LXStudio {
 
       // precompile binaries for any new or changed shaders
       ShaderPrecompiler.rebuildCache();
+
+      // Import latest gamepad controllers db
+      gamepadEngine.updateGamepadMappings();
 
       lx.engine.addTask(
           () -> {
@@ -631,7 +738,8 @@ public class TEApp extends LXStudio {
     public void applyTECameraPosition() {
       if (this.lx instanceof LXStudio) {
         LXStudio.UI ui = ((LXStudio) this.lx).ui;
-        if (staticModel) {
+        double pointSize = ui.preview.pointCloud.pointSize.getValue();
+        if (staticModel && pointSize < 500) {
           // Camera position and point size for static model (2022-23)
           ui.preview.pointCloud.pointSize.setValue(80000);
           ui.preview.camera.theta.setValue(270);
@@ -640,7 +748,7 @@ public class TEApp extends LXStudio {
           ui.previewAux.camera.theta.setValue(270);
           ui.previewAux.camera.phi.setValue(-6);
           ui.previewAux.camera.radius.setValue(17000000);
-        } else {
+        } else if (!staticModel && pointSize > 500) {
           // Camera position and point size for dynamic model (2024+)
           ui.preview.pointCloud.pointSize.reset();
           ui.preview.camera.radius.reset();
@@ -658,6 +766,7 @@ public class TEApp extends LXStudio {
       this.devSwitch.dispose();
       this.dmxEngine.dispose();
       this.crutchOSC.dispose();
+      gamepadEngine.dispose();
 
       if (!staticModel) {
         ((TEWholeModelDynamic)wholeModel).dispose();
@@ -665,19 +774,18 @@ public class TEApp extends LXStudio {
     }
   }
 
-  /* TODO: Move this from P4LX version to Chromatik version
   @Override
-  public void keyPressed(processing.event.KeyEvent keyEvent) {
+  protected void onKeyPressed(KeyEvent keyEvent, char keyChar, int keyCode) {
     // Keyboard shortcut for debugging: Add all patterns to current channel
     // (Ctrl or Meta) + Alt + Shift + A
     if ((keyEvent.isControlDown() || keyEvent.isMetaDown()) && keyEvent.isAltDown() && keyEvent.isShiftDown() && keyEvent.getKeyCode() == 65) {
-      this.lx.engine.addTask(() -> {
+      this.engine.addTask(() -> {
         addAllPatterns();
       });
     } else {
-      super.keyPressed(keyEvent);
+      super.onKeyPressed(keyEvent, keyChar, keyCode);
     }
-  }*/
+  }
 
   /** Dev tool: add all patterns in registry to current channel. */
   private void addAllPatterns() {
@@ -711,6 +819,21 @@ public class TEApp extends LXStudio {
     } else {
       TE.err("Selected channel must be a channel and not a group before adding all patterns.");
     }
+  }
+
+  @Override
+  protected void onGamepadButtonPressed(GamepadEvent gamepadEvent, int button) {
+    this.gamepadEngine.lxGamepadButtonPressed(gamepadEvent, button);
+  }
+
+  @Override
+  protected void onGamepadButtonReleased(GamepadEvent gamepadEvent, int button) {
+    this.gamepadEngine.lxGamepadButtonPressed(gamepadEvent, button);
+  }
+
+  @Override
+  protected void onGamepadAxisChanged(GamepadEvent gamepadEvent, int axis, float value) {
+    this.gamepadEngine.lxGamepadAxisChanged(gamepadEvent, axis, value);
   }
 
   private TEApp(Flags flags, TEWholeModelStatic model) throws IOException {
