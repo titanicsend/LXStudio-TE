@@ -61,9 +61,6 @@ public class TdStableDiffusionPattern extends TEPerformancePattern {
     private int channelNumber = -1;
     private int patternNumber = -1;
 
-    private final String SD_FOCUSED_CHANNEL = "/lx/pattern/stable_diffusion_channel";
-    private final String SD_FOCUSED_PATTERN = "/lx/pattern/stable_diffusion_pattern";
-
     protected NDIEngine ndiEngine;
 
     protected DevolayVideoFrame videoFrame;
@@ -72,11 +69,9 @@ public class TdStableDiffusionPattern extends TEPerformancePattern {
 
     protected boolean lastConnectState = false;
     protected long connectTimer = 0;
-    protected String channel_name = "TE_TD_Mapped";
+    protected String channel_name = "TE_StableDiffusion";
 
     private CrutchOSC osc = null;
-
-    LXPoint[] points = null;
 
     public TdStableDiffusionPattern(LX lx) {
         this(lx, TEShaderView.ALL_POINTS);
