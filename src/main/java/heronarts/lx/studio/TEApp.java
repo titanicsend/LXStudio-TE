@@ -89,6 +89,7 @@ import titanicsend.pattern.mike.*;
 import titanicsend.pattern.pixelblaze.*;
 import titanicsend.pattern.sinas.LightBeamsAudioReactivePattern;
 import titanicsend.pattern.sinas.TdNdiPattern;
+import titanicsend.pattern.sinas.TdStableDiffusionPattern;
 import titanicsend.pattern.tom.*;
 import titanicsend.pattern.util.TargetPixelStamper;
 import titanicsend.pattern.will.PowerDebugger;
@@ -249,6 +250,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(MultipassDemo.class);
       lx.registry.addPattern(NDIReceiverTest.class);
       lx.registry.addPattern(TdNdiPattern.class);
+      lx.registry.addPattern(TdStableDiffusionPattern.class);
       lx.registry.addPattern(ModelFileWriter.class);
       lx.registry.addPattern(Phasers.class);
       lx.registry.addPattern(PixelblazeSandbox.class);
