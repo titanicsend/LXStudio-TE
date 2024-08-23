@@ -53,7 +53,7 @@ public class UITEPerformancePattern
 
     // Remote controls, MFT-layout
     this.controlsContainer = new UI2dContainer(0,0,0, this.uiDevice.getContentHeight());
-    createControls(this.controlsContainer);
+    buildControls();
     // Presets
     this.presets = createUserPresets();
 
@@ -73,17 +73,25 @@ public class UITEPerformancePattern
   }
 
   protected void refresh() {
-    this.controlsContainer.removeAllChildren();
-    createControls(this.controlsContainer);
+    clearControls();
+    buildControls();
   }
 
   /*
    * Remote Controls
    */
 
-  private void createControls(UI2dContainer container) {
+  private void clearControls() {
+    // Note! It's important to remove these controls one at a time from the container, then dispose each one.
+    // The container's children list is a CopyOnWriteArrayList, also accessed by the drawing thread.
+    // Don't call container.removeAllChildren() from the engine thread, it is not thread safe.
+    for (UI2dComponent control : this.controls) {
+      control.removeFromContainer().dispose();
+    }
+    this.controls.clear();
+  }
 
-
+  private void buildControls() {
     List<LXNormalizedParameter> params =
         new ArrayList<LXNormalizedParameter>(Arrays.asList(device.getRemoteControls()));
 
@@ -120,13 +128,13 @@ public class UITEPerformancePattern
       if (param instanceof TEColorParameter.TEColorOffsetParameter) {
         this.controls.add(
             new UITEColorControl(x, y, (TEColorParameter) param.getParentParameter())
-                .addToContainer(container));
+                .addToContainer(this.controlsContainer));
       } else if (param instanceof BoundedParameter
           || param instanceof DiscreteParameter
           || param instanceof BoundedFunctionalParameter) {
-        this.controls.add(new UIKnob(x, y).setParameter(param).addToContainer(container));
+        this.controls.add(new UIKnob(x, y).setParameter(param).addToContainer(this.controlsContainer));
       } else if (param instanceof BooleanParameter) {
-        this.controls.add(new UISwitch(x, y).setParameter(param).addToContainer(container));
+        this.controls.add(new UISwitch(x, y).setParameter(param).addToContainer(this.controlsContainer));
       } else if (param == null) {
         // Leave a space
       } else {
@@ -138,7 +146,7 @@ public class UITEPerformancePattern
 
       ++ki;
     }
-    container.setWidth((col + 1) * (4 * (UIKnob.WIDTH + 2) + 15) - 15 - 2);
+    this.controlsContainer.setWidth((col + 1) * (4 * (UIKnob.WIDTH + 2) + 15) - 15 - 2);
   }
 
   private void hideUnusedControls(List<LXNormalizedParameter> params) {
