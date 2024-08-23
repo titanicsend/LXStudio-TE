@@ -1,9 +1,10 @@
-#pragma name "Vortex"
+#pragma name "Vortex2"
 #pragma TEControl.YPOS.Value(-0.15)
-#pragma TEControl.SIZE.Range(1.0,5.0,0.1)
-#pragma TEControl.QUANTITY.Range(4.0,3.0,6.0)
+#pragma TEControl.SIZE.Range(1.0,0.1,5.0)
+#pragma TEControl.QUANTITY.Range(1.0,0.1,6.0)
 #pragma TEControl.WOW1.Range(0.6,0.0,5.0)
 #pragma TEControl.WOW2.Range(0.6,0.0,5.0)
+#pragma TEControl.FREQREACTIVITY.Range(3.0,0.0,5.0)
 //#pragma TEControl.WOW1.Disable
 #pragma TEControl.WOWTRIGGER.Disable
 // Wow2 controls audio reactivity
@@ -55,13 +56,17 @@ vec2 rotate(vec2 st, float a) {
     return st + .5;
 }
 
+#define TEXTURE_SIZE 512.0
+#define CHANNEL_COUNT 16.0
+#define pixPerBin (TEXTURE_SIZE / CHANNEL_COUNT)
+#define halfBin (pixPerBin / 2.0)
+
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
-    float bVal = bassRatio * levelReact;
-    float tVal = trebleRatio * frequencyReact;
-
-    float norm_x = max(0.01, tVal);
-    float norm_y = max(0.01, 1. - bVal * 0.5);
+    //float bVal = bassRatio * levelReact;
+    //float tVal = trebleRatio * frequencyReact;
+    float norm_x = iWow1; // max(0.01, tVal);
+    float norm_y = iWow2; // max(0.01, 1. - bVal * 0.5);
     //float norm_x = max(0.1, 1. - bVal * 0.5);
     //float norm_y = max(0.1, tVal);
 
@@ -99,8 +104,16 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float rhomb = rhombSDF(uv_f);
     float tri = triSDF(uv_f);
 
+    float sub_angle = atan(uv_f.y,uv_f.x);
+    float sub_norm_angle = a / TWO_PI;
+    float index = mod(sub_norm_angle * TEXTURE_SIZE * 2.0, TEXTURE_SIZE);
+    float wave = (0.5 * (1.0+texelFetch(iChannel0, ivec2(index, 1), 0).x)) - 0.3;
+
     // float shape = abs(sin(u_time))*rhomb + (1.-sin(2.*u_time))*tri;
-    float shape = norm_x * rhomb + norm_y * tri;
+    //float shape = norm_x * rhomb + norm_y * tri;
+    float shape = rhomb;
+    shape += frequencyReact * wave;
+
     // float shape = 0.9 * rhomb + 0.5 * tri;
 
     color += fill(shape, .8);// * step(.75, 1. - r);
