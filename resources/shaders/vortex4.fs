@@ -1,17 +1,15 @@
-#pragma name "Vortex3"
+#pragma name "Vortex4"
 
 #pragma TEControl.YPOS.Value(-0.15)
 #pragma TEControl.SIZE.Range(1.0,0.1,5.0)
 
 #pragma TEControl.QUANTITY.Range(30.0,5.0,100.0)
 #pragma TEControl.WOW1.Range(0.5,0.0,2.0)
-#pragma TEControl.WOW2.Range(0.5,0.0,1.0)
+#pragma TEControl.WOW2.Range(0.5,0.0,2.0)
 
-#pragma TEControl.LEVELREACTIVITY.Range(1.0,0.0,2.0)
+#pragma TEControl.LEVELREACTIVITY.Range(1.0,0.0,5.0)
 #pragma TEControl.FREQREACTIVITY.Range(1.0,0.0,2.0)
-//#pragma TEControl.WOW1.Disable
 #pragma TEControl.WOWTRIGGER.Disable
-// Wow2 controls audio reactivity
 
 // #ifdef GL_ES
 // precision mediump float;
@@ -57,11 +55,11 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
 //     //norm_y = 1. - norm_y;
 
     float norm_x = iWow1;
-    float norm_y = iWow2;
+//     float norm_y = iWow2;
 
     vec2 st = fragCoord.xy / iResolution.xy;
     st.x *= iResolution.x / iResolution.y;
-    st *= iScale;
+//     st *= iScale;
     st = rotate(st,iRotationAngle);
 
 
@@ -78,7 +76,7 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
     float a = (atan(st.y, st.x)/PI);
     vec2 uv = vec2(a,r);
 
-    vec2 grid = vec2(5., log(r)*iQuantity*norm_y);
+    vec2 grid = vec2(5., log(r)*iQuantity*iScale);
     // vec2 grid = vec2(5. + norm_x, log(r)*20.*norm_y);
     // vec2 grid = vec2(5.* 0.5*norm_x, log(r)*20.);
     // vec2 grid = vec2(5.* norm_x, log(r)*20.*norm_y);
@@ -99,8 +97,8 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
     float tri = triSDF(uv_f);
 
     // float shape = abs(sin(u_time))*rhomb + (1.-sin(2.*u_time))*tri;
-    float shape = norm_x * rhomb + norm_y * tri;
-    shape += levelReact * wave;
+    float shape = mix(rhomb, tri, iWow2);
+    shape -= levelReact * wave;
     // float shape = 0.9 * rhomb + 0.5 * tri;
 
     vec3 tmpColor = iColorRGB;
