@@ -164,7 +164,7 @@ public class Quantizer implements Tempo.Listener {
 
   @Override
   public void onBar(Tempo tempo, int bar) {
-    if (ready() && this.event == QuantizeEvent.BEAT) {
+    if (ready() && this.event == QuantizeEvent.BAR) {
       fire();
     }
   }
