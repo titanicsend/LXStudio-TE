@@ -92,6 +92,7 @@ import titanicsend.pattern.mike.*;
 import titanicsend.pattern.pixelblaze.*;
 import titanicsend.pattern.sinas.LightBeamsAudioReactivePattern;
 import titanicsend.pattern.sinas.TdNdiPattern;
+import titanicsend.pattern.sinas.TdStableDiffusionPattern;
 import titanicsend.pattern.tom.*;
 import titanicsend.pattern.util.TargetPixelStamper;
 import titanicsend.pattern.will.PowerDebugger;
@@ -99,6 +100,7 @@ import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.pattern.yoffa.effect.BeaconEffect;
+import titanicsend.preset.PresetEngine;
 import titanicsend.ui.UI3DManager;
 import titanicsend.ui.UITEPerformancePattern;
 import titanicsend.ui.color.UIColorPaletteManager;
@@ -159,6 +161,7 @@ public class TEApp extends LXStudio {
     private final CrutchOSC crutchOSC;
     private DevSwitch devSwitch;
     private final Director director;
+    private final PresetEngine presetEngine;
 
     // objects that manage UI displayed in 3D views
     private UI3DManager ui3dManager;
@@ -187,6 +190,7 @@ public class TEApp extends LXStudio {
       this.ndiEngine = new NDIEngine(lx);
       this.glEngine = new GLEngine(lx,glRenderWidth,glRenderHeight,staticModel);
       gamepadEngine = new GamepadEngine(lx);
+      this.presetEngine = new PresetEngine(lx);
 
       // Super Modulator midi controller
       this.superMod = new SuperMod(lx);
@@ -258,6 +262,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(MultipassDemo.class);
       lx.registry.addPattern(NDIReceiverTest.class);
       lx.registry.addPattern(TdNdiPattern.class);
+      lx.registry.addPattern(TdStableDiffusionPattern.class);
       lx.registry.addPattern(ModelFileWriter.class);
       lx.registry.addPattern(Phasers.class);
       lx.registry.addPattern(PixelblazeSandbox.class);
