@@ -15,6 +15,7 @@ import titanicsend.color.TEColorParameter;
 import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon._CommonControlGetter;
+import titanicsend.quantize.QuantizeBooleanParameter;
 import titanicsend.quantize.QuantizeTriggerParameter;
 import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
@@ -106,8 +107,7 @@ public class TECommonControls {
 
     setControl(TEControlTag.SPIN, p);
 
-    p =
-        new CompoundParameter(TEControlTag.BRIGHTNESS.getLabel(), 1.0, 0.0, 1.0)
+    p = new CompoundParameter(TEControlTag.BRIGHTNESS.getLabel(), 1.0, 0.0, 1.0)
             .setDescription("Brightness");
     setControl(TEControlTag.BRIGHTNESS, p);
 
@@ -117,13 +117,15 @@ public class TECommonControls {
     p = new CompoundParameter(TEControlTag.WOW2.getLabel(), 0, 0, 1.0).setDescription("Wow 2");
     setControl(TEControlTag.WOW2, p);
 
-    p =
-      new QuantizeTriggerParameter(this.pattern.getLX(), TEControlTag.WOWTRIGGER.getLabel())
-          .setDescription("Trigger WoW effects");
+    p = new BooleanParameter(TEControlTag.WOWTRIGGER.getLabel(), false)
+        .setMode(BooleanParameter.Mode.MOMENTARY)
+        .setDescription("Trigger WoW effects");
+//    p = new QuantizeBooleanParameter(this.pattern.getLX(), TEControlTag.WOWTRIGGER.getLabel())
+//        .setMode(BooleanParameter.Mode.MOMENTARY)
+//        .setDescription("Trigger WoW effects");
     setControl(TEControlTag.WOWTRIGGER, p);
 
-    p =
-      new BooleanParameter(TEControlTag.TWIST.getLabel(), false)
+    p = new BooleanParameter(TEControlTag.TWIST.getLabel(), false)
         .setMode(BooleanParameter.Mode.TOGGLE)
         .setDescription("Twist (axis swap)");
     setControl(TEControlTag.TWIST, p);
