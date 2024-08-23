@@ -57,8 +57,13 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
     float norm_x = iWow1;
 //     float norm_y = iWow2;
 
-    vec2 st = fragCoord.xy / iResolution.xy;
-    st.x *= iResolution.x / iResolution.y;
+//     vec2 st = fragCoord.xy / iResolution.xy;
+//     st.x *= iResolution.x / iResolution.y;
+    vec2 st = fragCoord.xy;
+    st -= .5;
+//     st *= 2.;
+//     st -= 1.;
+
 //     st *= iScale;
     st = rotate(st,iRotationAngle);
 
@@ -68,7 +73,6 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
 
     vec3 color = vec3(0.);
     float pct = 0.;
-
 
     st -= .5;
 

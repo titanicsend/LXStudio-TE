@@ -7,17 +7,9 @@
 #pragma TEControl.WOW1.Range(0.5,0.0,2.0)
 #pragma TEControl.WOW2.Range(0.5,0.0,1.0)
 
+#pragma TEControl.LEVELREACTIVITY.Disable
 #pragma TEControl.FREQREACTIVITY.Range(1.0,0.0,1.0)
-//#pragma TEControl.WOW1.Disable
 #pragma TEControl.WOWTRIGGER.Disable
-// Wow2 controls audio reactivity
-
-// #ifdef GL_ES
-// precision mediump float;
-// #endif
-// uniform vec2 iResolution;
-// uniform vec2 iMouse;
-// uniform float u_time;
 
 #define PI 3.141592653589793
 #define HALF_PI 1.5707963267948966
@@ -42,14 +34,6 @@ vec2 rotate(vec2 st, float a) {
 }
 
 void mainImage(out vec4 fragColor,in vec2 fragCoord){
-//     // hack: UI debug params
-//     float norm_x = iMouse.x/iResolution.x;
-//     float norm_y = iMouse.y/iResolution.y;
-//
-//     // norm_x = 1. - norm_x * 0.5;
-//     norm_x = 0.5 + norm_x * 0.5;
-//     //norm_y = 1. - norm_y;
-
     float norm_x = iWow1;
     float norm_y = iWow2;
 
@@ -59,14 +43,9 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
     st = rotate(st,iRotationAngle);
 
 
-//     vec2 st = fragCoord.xy/iResolution.xy;
-//     st.x *= iResolution.x/iResolution.y;
-
     vec3 color = vec3(0.);
-    float pct = 0.;
 
-
-    st -= .5;
+//     st -= .5;
 
     float r = dot(st,st);
     float a = (atan(st.y, st.x)/PI);
