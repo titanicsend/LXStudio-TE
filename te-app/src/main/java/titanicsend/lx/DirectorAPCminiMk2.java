@@ -262,9 +262,11 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
       float s = LXColor.s(color);
       float b = LXColor.b(color);
       if (this.paletteManager != null) {
-        this.paletteManager.hue.setValue(h);
+        this.paletteManager.setColor(color); //.hue.setValue(h);
+/*
         this.paletteManager.saturation.setValue(s);
         this.paletteManager.brightness.setValue(b);
+*/
         // Push the managed swatch to the global palette immediately,
         // so it doesn't need to be "pinned".
         this.paletteManager.pushSwatch.trigger();

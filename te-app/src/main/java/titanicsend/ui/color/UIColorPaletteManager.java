@@ -44,11 +44,11 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
 
     if (DISPLAY_MANAGED_SWATCH_ROWS) {
       // TODO: these don't seem to get updated as the palette updates - just stay red in the UI
-      swatchRow(ui, paletteManagerA.managedSwatch, "SWATCH A")
-          .addToContainer(swatchDisplayContainer);
+      swatchRow(ui, paletteManagerA.getManagedSwatch(), paletteManagerA.getSwatchName())
+      .addToContainer(swatchDisplayContainer);
       if (paletteManagerB != null) {
-        swatchRow(ui, paletteManagerB.managedSwatch, "SWATCH B")
-            .addToContainer(swatchDisplayContainer);
+        swatchRow(ui, paletteManagerB.getManagedSwatch(), paletteManagerB.getSwatchName())
+        .addToContainer(swatchDisplayContainer);
       }
     }
 
@@ -56,7 +56,9 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
 
     horizontalBreak(ui, this.width).addToContainer(this);
 
-    buildPaletteSelectionRow(paletteManagerA).addToContainer(this);
+    // buildPaletteSelectionRow(paletteManagerA).addToContainer(this);
+
+    buildPaletteSelectionRowV2(paletteManagerA).addToContainer(this);
 
     horizontalBreak(ui, this.width).addToContainer(this);
 
@@ -74,8 +76,9 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
   }
 
   private UI2dContainer swatchRow(UI ui, LXSwatch swatch, String label) {
-    UI2dContainer elem =
-        row(label, 20, new UIPalette.Swatch(ui, swatch, 0, 0, 80, UIColorPicker.Corner.TOP_LEFT));
+    UI2dContainer elem = row(label, 20,
+        new UIPalette.Swatch(ui, swatch, 0, 0, 80, UIColorPicker.Corner.BOTTOM_RIGHT)
+    );
     elem.setPadding(2F)
         .setBorderRounding(2)
         .setBackgroundColor(ui.theme.listItemBackgroundColor)
@@ -111,25 +114,56 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     return paletteSelectionRow;
   }
 
-  private UI2dContainer newHierarchichalSwatch(
-      ColorPaletteManager paletteMgr, float totalWidth, float totalHeight) {
+  private UI2dContainer buildPaletteSelectionRowV2(ColorPaletteManager paletteMgr) {
+    UI2dContainer paletteSelectionRow = UI2dContainer.newHorizontalContainer(40F, 2F);
+
+    float swatchHeight = 40F;
+    float swatchWidth = swatchHeight;
+
+    addColumn(
+      paletteSelectionRow,
+      newHierarchichalSwatch(paletteMgr, swatchWidth, swatchHeight)
+    ).setWidth(swatchWidth);
+
+    addColumn(
+      paletteSelectionRow,
+      newKnob(paletteMgr.paletteStrategy)
+    );
+
+    addColumn(
+      paletteSelectionRow,
+      newButton(paletteMgr.pushSwatch, 40F)
+        .setActiveLabel("ON")
+        .setInactiveLabel("PUSH")
+        .setMomentary(true)
+        .setEnabled(true)
+    );
+//            .setEnabled(!paletteMgr.pinSwatch.isOn()),
+//        newButton(paletteMgr.pinSwatch, 40F)
+//            .setActiveLabel("PINNED")
+//            .setInactiveLabel("PIN")
+//    );
+
+    return paletteSelectionRow;
+  }
+
+  private UI2dContainer newHierarchichalSwatch(ColorPaletteManager paletteMgr, float totalWidth, float totalHeight) {
     float swatchChildSpacing = 2F;
     float swatchTotalHeight = totalHeight - swatchChildSpacing / 2;
     float swatchSegmentHeight = swatchTotalHeight / 2;
     float swatchSegmentWidth = (totalWidth / 2) - (swatchChildSpacing / 2);
 
-    UI2dContainer squareSwatch =
-        UI2dContainer.newVerticalContainer(
-            totalWidth,
-            swatchChildSpacing,
-            new UISingleColorDisplay(paletteMgr.color1, totalWidth, swatchSegmentHeight),
-            UI2dContainer.newHorizontalContainer(
-                swatchSegmentHeight,
-                2F,
-                new UISingleColorDisplay(
-                    paletteMgr.color2, swatchSegmentWidth, swatchSegmentHeight),
-                new UISingleColorDisplay(
-                    paletteMgr.color3, swatchSegmentWidth, swatchSegmentHeight)));
+    UI2dContainer squareSwatch = UI2dContainer.newVerticalContainer(
+        totalWidth,
+        swatchChildSpacing,
+        new UISingleColorDisplay(paletteMgr.color1.color, totalWidth, swatchSegmentHeight),
+        UI2dContainer.newHorizontalContainer(
+            swatchSegmentHeight,
+            2F,
+            new UISingleColorDisplay(paletteMgr.getManagedSwatch().getColor(1).color, swatchSegmentWidth, swatchSegmentHeight),
+            new UISingleColorDisplay(paletteMgr.getManagedSwatch().getColor(2).color, swatchSegmentWidth, swatchSegmentHeight)
+        )
+    );
     return squareSwatch;
   }
 
@@ -142,33 +176,23 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     if (DISPLAY_GRADIENTS_ABOVE_SLDIERS) {
       addColumn(
           colorSlidersRow,
-          new UIHueDisplay(paletteMgr.hue, sliderWidth),
-          new UISlider(
-              UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.hue));
+          new UIHueDisplay(paletteMgr.color1.color.hue, sliderWidth),
+          new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.color1.color.hue)
+      );
       addColumn(
           colorSlidersRow,
           new UISaturationDisplay(sliderWidth),
-          new UISlider(
-              UISlider.Direction.HORIZONTAL,
-              0.0F,
-              0.0F,
-              sliderWidth,
-              12.0F,
-              paletteMgr.saturation));
+          new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.color1.color.saturation)
+      );
     } else {
       addColumn(
           colorSlidersRow,
-          new UISlider(
-              UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.hue));
+          new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.color1.color.hue)
+      );
       addColumn(
           colorSlidersRow,
-          new UISlider(
-              UISlider.Direction.HORIZONTAL,
-              0.0F,
-              0.0F,
-              sliderWidth,
-              12.0F,
-              paletteMgr.saturation));
+          new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.color1.color.saturation)
+      );
     }
 
     return colorSlidersRow;
