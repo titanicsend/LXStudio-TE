@@ -57,6 +57,7 @@ import titanicsend.dmx.effect.BeaconStrobeEffect;
 import titanicsend.dmx.pattern.*;
 import titanicsend.effect.GlobalPatternControl;
 import titanicsend.effect.RandomStrobeEffect;
+import titanicsend.effect.SimplifyEffect;
 import titanicsend.gamepad.GamepadEngine;
 import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lasercontrol.TELaserTask;
@@ -326,6 +327,7 @@ public class TEApp extends LXStudio {
 
       // Effects
       lx.registry.addEffect(DirectorEffect.class);
+      lx.registry.addEffect(SimplifyEffect.class);
 
       // DMX effects
       lx.registry.addEffect(BeaconStrobeEffect.class);
