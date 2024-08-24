@@ -3,8 +3,12 @@ package titanicsend.pattern.jon;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.model.LXPoint;
+import heronarts.lx.parameter.EnumParameter;
+import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
+
+import java.util.Arrays;
 
 @LXCategory("Edge FG")
 public class FxDualWave extends TEPerformancePattern {
@@ -13,16 +17,41 @@ public class FxDualWave extends TEPerformancePattern {
   double time;
   double startTime;
 
+  public enum TriggerMode {
+    ONCE("Once"),
+    RUN("Run");
+
+    private final String label;
+
+    TriggerMode(String label) {
+      this.label = label;
+    }
+
+    @Override
+    public String toString() {
+      return this.label;
+    }
+  }
+
+  public final EnumParameter<FxDualWave.TriggerMode> triggerMode =
+    new EnumParameter<FxDualWave.TriggerMode>("Mode", FxDualWave.TriggerMode.ONCE)
+      .setDescription("Trigger Mode");
+
   public FxDualWave(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
+    
+    // Speed controls the transit speed of the waves
+    controls.setRange(TEControlTag.SPEED, 0.5, -1.25, 1.25);
 
     // Size controls the width of the waves
-    controls.setRange(TEControlTag.SIZE, 0.05, 0.01, 0.24);
+    controls.setRange(TEControlTag.SIZE, 0.05, 0.01, 0.25);
+
+    // Trigger mode (in Wow1 control position)
+    controls.setControl(TEControlTag.WOW1, triggerMode);
 
     controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
     controls.markUnused(controls.getLXControl(TEControlTag.XPOS));
     controls.markUnused(controls.getLXControl(TEControlTag.YPOS));
-    controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
     controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
 
     addCommonControls();
@@ -99,7 +128,9 @@ public class FxDualWave extends TEPerformancePattern {
   }
 
   // Button activation logic.  Keep going while button is held,
-  // stop at end of cycle when released.
+  // stop at end of cycle when released. If in continuous RUN mode,
+  // you can restart the wave at any time with a new button press, and it will
+  // continue to run.
   @Override
   protected void onWowTrigger(boolean on) {
     // trigger pattern when wow button is pressed.
@@ -109,7 +140,24 @@ public class FxDualWave extends TEPerformancePattern {
       this.stopRequest = false;
       this.startTime = getTime() * 1000.0;
     } else {
-      this.stopRequest = true;
+      if (this.triggerMode.getEnum() == TriggerMode.ONCE) {
+        this.stopRequest = true;
+      }
     }
   }
+
+  @Override
+  public void onParameterChanged(LXParameter parameter) {
+    super.onParameterChanged(parameter);
+    if (parameter == triggerMode) {
+      if (triggerMode.getEnum() == TriggerMode.ONCE) {
+        this.active = false;
+      }
+      else {
+        this.active = true;
+      }
+    }
+  }
+
+
 }

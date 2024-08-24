@@ -34,6 +34,7 @@
         <gigglepixel.version>0.0.3</gigglepixel.version>
         <gov-nist-math-jama.version>1.1.1</gov-nist-math-jama.version>
         <junit-jupiter.version>5.9.2</junit-jupiter.version>
+        <supermod.version>0.1.3-SNAPSHOT</supermod.version>
     </properties>
 
     <!-- Define a local repository -->
@@ -157,6 +158,11 @@
             <version>2.1.0-te</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.jkbstudio</groupId>
+            <artifactId>supermod</artifactId>
+            <version>${supermod.version}</version>
+        </dependency>
 
     </dependencies>
 
