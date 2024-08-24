@@ -1,6 +1,6 @@
 {
   "version": "1.0.1.TE.2-SNAPSHOT",
-  "timestamp": 1724480316787,
+  "timestamp": 1724498909661,
   "fixtures": [
     {
       "jsonFixtureType": "Mothership/window/Ramp",
@@ -2402,7 +2402,7 @@
         "pitch": 0.0,
         "roll": 0.0,
         "scale": 1.0,
-        "selected": true,
+        "selected": false,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
@@ -2947,7 +2947,7 @@
         "pitch": 0.0,
         "roll": 0.0,
         "scale": 1.0,
-        "selected": false,
+        "selected": true,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
@@ -2956,51 +2956,6 @@
         "solo": false,
         "tags": "",
         "fixtureType": "Mothership/window/Slice24S"
-      },
-      "children": {}
-    },
-    {
-      "id": 156125,
-      "class": "heronarts.lx.structure.StripFixture",
-      "internal": {
-        "modulationColor": 0,
-        "modulationControlsExpanded": true,
-        "modulationsExpanded": true
-      },
-      "parameters": {
-        "label": "Strip 50",
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "yaw": 0.0,
-        "pitch": 0.0,
-        "roll": 0.0,
-        "scale": 1.0,
-        "selected": false,
-        "deactivate": false,
-        "enabled": false,
-        "brightness": 1.0,
-        "identify": false,
-        "mute": false,
-        "solo": false,
-        "tags": "strip",
-        "protocol": 1,
-        "byteOrder": 0,
-        "transport": 0,
-        "reverse": false,
-        "host": "10.128.255.255",
-        "port": 7890,
-        "dmxChannel": 0,
-        "artNetUniverse": 10,
-        "artNetSequenceEnabled": false,
-        "sacnPriority": 100,
-        "opcChannel": 0,
-        "opcOffset": 0,
-        "ddpDataOffset": 0,
-        "kinetPort": 1,
-        "kinetVersion": 1,
-        "numPoints": 30,
-        "spacing": 10.0
       },
       "children": {}
     }
