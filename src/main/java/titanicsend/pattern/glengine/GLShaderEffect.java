@@ -4,6 +4,7 @@ import heronarts.lx.LX;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
+import heronarts.lx.model.LXModel;
 import titanicsend.effect.TEEffect;
 import titanicsend.pattern.jon.VariableSpeedTimer;
 
@@ -92,16 +93,29 @@ public class GLShaderEffect extends TEEffect {
     return iTime.getTime();
   }
 
+  LXModel lastModel = null;
+
   protected void run(double deltaMs, double enabledAmount) {
+    LXModel m = getModel();
     ShaderInfo s;
     this.deltaMs = deltaMs;
     iTime.tick();
 
-    ShaderPainter.mapToBufferDirect(getModel().getPoints(), imageBuffer, colors);
-    ShaderPainter.mapFromLinearBuffer(
-        getModel().points, mappedBufferWidth, mappedBufferHeight, mappedBuffer, colors);
-
+    // update location texture if the model has changed
     int n = shaderInfo.size();
+
+    if (lastModel != m) {
+      for (int i = 0; i < n; i++) {
+        s = shaderInfo.get(i);
+        s.shader.updateLocationTexture(m);
+      }
+      lastModel = m;
+    }
+
+    ShaderPainter.mapToBufferDirect(m.points, imageBuffer, colors);
+    ShaderPainter.mapFromLinearBuffer(
+        m.points, mappedBufferWidth, mappedBufferHeight, mappedBuffer, colors);
+
 
     // run the chain of shaders, except for the last one,
     // copying the output of each to the next shader's input texture
@@ -113,7 +127,7 @@ public class GLShaderEffect extends TEEffect {
     }
 
     // paint the final shader output to the car.
-    ShaderPainter.mapToPointsDirect(getModel().getPoints(), imageBuffer, getColors());
+    ShaderPainter.mapToPointsDirect(m.points, imageBuffer, getColors());
   }
 
   @Override
