@@ -10,11 +10,13 @@ import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.util.GLBuffers;
 import com.jogamp.opengl.util.texture.Texture;
 import heronarts.lx.LX;
+import heronarts.lx.model.LXModel;
 import heronarts.lx.parameter.LXParameter;
 import java.io.File;
 import java.nio.*;
 import java.util.*;
 import java.util.stream.Collectors;
+
 import titanicsend.pattern.yoffa.shader_engine.*;
 import titanicsend.util.TE;
 
@@ -76,6 +78,10 @@ public class GLShader {
   private int mappedBufferUnit = -1;
   private int mappedBufferWidth = 640;
   private int mappedBufferHeight = 640;
+
+  // the shader's private copy of the model coordinate texture
+  private final int[] modelCoordsHandle = new int[1];
+  private FloatBuffer modelCoords;
 
   // map of user created uniforms.
   protected HashMap<String, UniformTypes> uniforms = null;
@@ -197,8 +203,9 @@ public class GLShader {
   }
 
   /**
-   * Create appropriately sized buffer to contain a 2D texture mapped version of the last
-   * rendered frame.
+   * Create appropriately sized buffer to contain a 2D texture mapped version of the last rendered
+   * frame.
+   *
    * @return ByteBuffer
    */
   public static ByteBuffer allocateMappedBuffer(int width, int height) {
@@ -208,10 +215,10 @@ public class GLShader {
   /**
    * Set the buffer to be used as a rectangular texture backbuffer for this shader. (As opposed to
    * iBackbuffer, which is a linear list of colors corresponding to LX 3D model points and can't be
-   * used for algorithms that need the ability to access neighboring pixels.)
-   * NOTE: MUST BE CALLED BEFORE THE SHADER IS INITIALIZED. (i.e. in the pattern's constructor.)
-   * TODO - at present, this buffer is only used by shader effects.  It should eventually
-   * TODO - be optional for shader patterns as well.
+   * used for algorithms that need the ability to access neighboring pixels.) NOTE: MUST BE CALLED
+   * BEFORE THE SHADER IS INITIALIZED. (i.e. in the pattern's constructor.) TODO - at present, this
+   * buffer is only used by shader effects. It should eventually TODO - be optional for shader
+   * patterns as well.
    *
    * @param buffer previously allocated ByteBuffer of sufficient size to hold the desired texture
    */
@@ -239,6 +246,9 @@ public class GLShader {
 
     // allocate default buffer for reading offscreen surface to cpu memory
     if (this.backBuffer == null) this.backBuffer = allocateBackBuffer();
+
+    // allocate buffer to hold model coordinates
+    modelCoords = GLBuffers.newDirectFloatBuffer(GLEngine.getWidth() * GLEngine.getHeight() * 3);
   }
 
   // Shader initialization that requires the OpenGL context
@@ -268,6 +278,42 @@ public class GLShader {
     }
   }
 
+  /**
+   * Copy LXPoints' normalized coordinates into textures for use by shaders. Must be called by the
+   * parent pattern or effect at least once before the first frame is rendered. And should be called
+   * by the pattern's frametime run() function if the model has changed since the last frame.
+   */
+  public void updateLocationTexture(LXModel model) {
+    int xSize = GLEngine.getWidth();
+    int ySize = GLEngine.getHeight();
+    int maxPoints = xSize * ySize;
+
+    final int numPoints = model.points.length;
+
+    this.modelCoords.rewind();
+    for (int i = 0; i < maxPoints; i++) {
+      if (i < numPoints) {
+        this.modelCoords.put(model.points[i].xn);
+        this.modelCoords.put(model.points[i].yn);
+        this.modelCoords.put(model.points[i].zn);
+      } else {
+        this.modelCoords.put(0);
+        this.modelCoords.put(0);
+        this.modelCoords.put(0);
+      }
+    }
+    this.modelCoords.rewind();
+
+    if (numPoints > maxPoints) {
+      LX.error(
+          "GLEngine resolution ("
+              + maxPoints
+              + ") too small for number of points in the model ("
+              + numPoints
+              + ")");
+    }
+  }
+
   // Releases native resources allocated by this shader.
   // Should be called by the pattern's dispose() function
   // when the pattern is unloaded. (Not when just
@@ -280,6 +326,8 @@ public class GLShader {
       // delete GPU buffers we directly allocated
       gl4.glDeleteBuffers(2, geometryBufferHandles, 0);
       gl4.glDeleteTextures(1, backbufferHandle, 0);
+
+      gl4.glDeleteTextures(1, modelCoordsHandle, 0);
 
       if (useMappedBuffer) {
         gl4.glDeleteTextures(1, mappedBufferHandle, 0);
@@ -334,6 +382,19 @@ public class GLShader {
         (long) indexBuffer.capacity() * Integer.BYTES,
         indexBuffer,
         GL.GL_STATIC_DRAW);
+
+    // initialize location texture object
+    gl4.glActiveTexture(GL_TEXTURE1);
+    gl4.glEnable(GL_TEXTURE_2D);
+    gl4.glGenTextures(1, modelCoordsHandle, 0);
+    gl4.glBindTexture(GL4.GL_TEXTURE_2D, modelCoordsHandle[0]);
+
+    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    gl4.glBindTexture(GL_TEXTURE_2D, 0);
 
     // backbuffer texture object
     gl4.glActiveTexture(GL_TEXTURE2);
@@ -405,6 +466,21 @@ public class GLShader {
     // The audio texture can be used by all shaders, and stays bound to texture
     // unit 0 throughout the Chromatik run. All we have to do to use it is add the uniform.
     setUniform(Uniforms.AUDIO_CHANNEL, 0);
+
+    // load this shader's location texture data onto the GPU
+    gl4.glActiveTexture(GL_TEXTURE1);
+    gl4.glBindTexture(GL_TEXTURE_2D, modelCoordsHandle[0]);
+    gl4.glTexImage2D(
+        GL4.GL_TEXTURE_2D,
+        0,
+        GL4.GL_RGB32F,
+        xResolution,
+        yResolution,
+        0,
+        GL4.GL_RGB,
+        GL_FLOAT,
+        modelCoords);
+
     setUniform("lxModelCoords", 1);
 
     // Update backbuffer texture data. This buffer contains the result of the
@@ -467,13 +543,14 @@ public class GLShader {
     for (Map.Entry<Integer, String> textureInput :
         fragmentShader.getChannelToTexture().entrySet()) {
 
-        TextureInfo ti = new TextureInfo();
-        ti.textureUnit = glEngine.useTexture(gl4, textureInput.getValue());
-        ti.name = textureInput.getValue();
-        ti.channel = textureInput.getKey();
-        ti.uniformLocation = gl4.glGetUniformLocation(shaderProgram.getProgramId(), "iChannel"+ti.channel);
+      TextureInfo ti = new TextureInfo();
+      ti.textureUnit = glEngine.useTexture(gl4, textureInput.getValue());
+      ti.name = textureInput.getValue();
+      ti.channel = textureInput.getKey();
+      ti.uniformLocation =
+          gl4.glGetUniformLocation(shaderProgram.getProgramId(), "iChannel" + ti.channel);
 
-        textures.add(ti);
+      textures.add(ti);
     }
   }
 

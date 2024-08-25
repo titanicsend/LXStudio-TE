@@ -1,6 +1,7 @@
 package titanicsend.pattern.glengine;
 
 import heronarts.lx.LX;
+import heronarts.lx.model.LXModel;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
@@ -79,12 +80,23 @@ public class GLShaderPattern extends TEPerformancePattern {
     addShader(new GLShader(lx, shaderName, controlData), setup);
   }
 
+  private LXModel lastModel = null;
+
   @Override
   public void runTEAudioPattern(double deltaMs) {
+    LXModel m = getModel();
     ShaderInfo s = null;
     this.deltaMs = deltaMs;
-
     int n = shaderInfo.size();
+
+    // update location texture if the model has changed
+    if (lastModel != m) {
+      for (int i = 0; i < n; i++) {
+        s = shaderInfo.get(i);
+        s.shader.updateLocationTexture(m);
+      }
+      lastModel = m;
+    }
 
     // run the chain of shaders, except for the last one,
     // copying the output of each to the next shader's input texture
@@ -96,7 +108,7 @@ public class GLShaderPattern extends TEPerformancePattern {
     }
 
     // paint the final shader output to the car
-    ShaderPainter.mapToPointsDirect(getModel().getPoints(), s.shader.getImageBuffer(),getColors());
+    ShaderPainter.mapToPointsDirect(m.points, s.shader.getImageBuffer(),getColors());
   }
 
   @Override
