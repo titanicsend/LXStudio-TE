@@ -1,6 +1,6 @@
 {
   "version": "1.0.1.TE.1-SNAPSHOT",
-  "timestamp": 1723328659709,
+  "timestamp": 1724559509291,
   "fixtures": [
     {
       "jsonFixtureType": "TE/panel/FA",
@@ -931,11 +931,11 @@
       "jsonParameters": {
         "xOffset": 9.903098106384277,
         "yOffset": 6.0,
-        "strand1host": "10.7.9.23",
+        "strand1host": "10.7.100.17",
         "strand1output": 1,
-        "strand2host": "10.7.9.23",
+        "strand2host": "10.7.100.17",
         "strand2output": 2,
-        "strand3host": "10.7.9.23",
+        "strand3host": "10.7.100.17",
         "strand3output": 3,
         "artnetSequence": false,
         "onCar": true
@@ -1273,13 +1273,13 @@
       "jsonParameters": {
         "xOffset": 6.938027858734131,
         "yOffset": 6.0,
-        "strand1host": "10.7.2.21",
+        "strand1host": "10.7.100.12",
         "strand1output": 1,
-        "strand2host": "10.7.2.21",
+        "strand2host": "10.7.100.12",
         "strand2output": 2,
-        "strand3host": "10.7.2.21",
+        "strand3host": "10.7.100.12",
         "strand3output": 3,
-        "strand4host": "10.7.2.21",
+        "strand4host": "10.7.100.12",
         "strand4output": 4,
         "strand5host": "10.7.2.20",
         "strand5output": 1,
@@ -2037,11 +2037,11 @@
       "jsonParameters": {
         "xOffset": 9.903098106384277,
         "yOffset": 6.0,
-        "strand1host": "10.7.12.123",
+        "strand1host": "10.7.100.9",
         "strand1output": 1,
-        "strand2host": "10.7.12.123",
+        "strand2host": "10.7.100.9",
         "strand2output": 2,
-        "strand3host": "10.7.12.123",
+        "strand3host": "10.7.100.9",
         "strand3output": 3,
         "artnetSequence": false,
         "onCar": true
@@ -2845,13 +2845,13 @@
       "jsonParameters": {
         "xOffset": 7.59993314743042,
         "yOffset": 6.0,
-        "strand1host": "10.7.6.110",
+        "strand1host": "10.7.100.4",
         "strand1output": 1,
-        "strand2host": "10.7.6.110",
+        "strand2host": "10.7.100.4",
         "strand2output": 2,
-        "strand3host": "10.7.6.110",
+        "strand3host": "10.7.100.4",
         "strand3output": 3,
-        "strand4host": "10.7.6.110",
+        "strand4host": "10.7.100.4",
         "strand4output": 4,
         "strand5host": "10.7.6.121",
         "strand5output": 1,
@@ -3139,7 +3139,7 @@
       "jsonParameters": {
         "points": 119,
         "host": "10.7.11.121",
-        "output": 1,
+        "output": 2,
         "ledOffset": 48,
         "artnetSequence": false,
         "reverse": false,
@@ -4205,7 +4205,7 @@
       "jsonParameters": {
         "points": 168,
         "host": "10.7.4.10",
-        "output": 1,
+        "output": 2,
         "ledOffset": 296,
         "artnetSequence": false,
         "reverse": true,
@@ -4492,7 +4492,7 @@
       "jsonParameters": {
         "points": 121,
         "host": "10.7.4.10",
-        "output": 1,
+        "output": 2,
         "ledOffset": 175,
         "artnetSequence": false,
         "reverse": true,
@@ -5270,7 +5270,7 @@
       "jsonFixtureType": "TE/edge/Edge39-101",
       "jsonParameters": {
         "points": 129,
-        "host": "10.7.6.20",
+        "host": "10.7.100.13",
         "output": 1,
         "ledOffset": 93,
         "artnetSequence": false,
@@ -5311,7 +5311,7 @@
       "jsonFixtureType": "TE/edge/Edge39-121",
       "jsonParameters": {
         "points": 93,
-        "host": "10.7.6.20",
+        "host": "10.7.100.13",
         "output": 1,
         "ledOffset": 0,
         "artnetSequence": false,
@@ -5516,7 +5516,7 @@
       "jsonFixtureType": "TE/edge/Edge43-57",
       "jsonParameters": {
         "points": 177,
-        "host": "10.7.6.122",
+        "host": "10.7.100.114",
         "output": 1,
         "ledOffset": 131,
         "artnetSequence": false,
@@ -5557,7 +5557,7 @@
       "jsonFixtureType": "TE/edge/Edge43-86",
       "jsonParameters": {
         "points": 144,
-        "host": "10.7.6.120",
+        "host": "10.7.100.14",
         "output": 1,
         "ledOffset": 93,
         "artnetSequence": false,
@@ -5721,7 +5721,7 @@
       "jsonFixtureType": "TE/edge/Edge44-101",
       "jsonParameters": {
         "points": 185,
-        "host": "10.7.6.20",
+        "host": "10.7.100.13",
         "output": 1,
         "ledOffset": 222,
         "artnetSequence": false,
@@ -7115,7 +7115,7 @@
       "jsonFixtureType": "TE/edge/Edge57-86",
       "jsonParameters": {
         "points": 179,
-        "host": "10.7.6.120",
+        "host": "10.7.100.14",
         "output": 1,
         "ledOffset": 237,
         "artnetSequence": false,
@@ -9822,7 +9822,7 @@
       "jsonParameters": {
         "points": 159,
         "host": "10.7.2.10",
-        "output": 2,
+        "output": 3,
         "ledOffset": 165,
         "artnetSequence": false,
         "reverse": true,
@@ -9904,7 +9904,7 @@
       "jsonParameters": {
         "points": 165,
         "host": "10.7.2.10",
-        "output": 2,
+        "output": 3,
         "ledOffset": 0,
         "artnetSequence": false,
         "reverse": true,
@@ -10765,7 +10765,7 @@
       "jsonParameters": {
         "points": 132,
         "host": "10.7.11.121",
-        "output": 1,
+        "output": 2,
         "ledOffset": 260,
         "artnetSequence": false,
         "reverse": true,
@@ -10888,7 +10888,7 @@
       "jsonParameters": {
         "points": 93,
         "host": "10.7.11.121",
-        "output": 1,
+        "output": 2,
         "ledOffset": 167,
         "artnetSequence": false,
         "reverse": false,
@@ -11011,7 +11011,7 @@
       "jsonParameters": {
         "points": 175,
         "host": "10.7.4.10",
-        "output": 1,
+        "output": 2,
         "ledOffset": 0,
         "artnetSequence": false,
         "reverse": true,
