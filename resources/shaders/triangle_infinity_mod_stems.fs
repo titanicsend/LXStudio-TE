@@ -138,6 +138,6 @@ float size = iScale;
         finalColor += col * d;
     }
 
-    finalColor *= {%brightnessDampening[.9,.1,1.0]};
+    finalColor *= .9;
     fragColor = vec4(finalColor,1.0);
 }
