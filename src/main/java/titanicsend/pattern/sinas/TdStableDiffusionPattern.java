@@ -32,21 +32,6 @@ import titanicsend.util.TE;
  */
 @LXCategory("NDI")
 public class TdStableDiffusionPattern extends TEPerformancePattern {
-
-    private class FocusedChannelListener implements LXParameterListener {
-        @Override
-        public void onParameterChanged(LXParameter parameter) {
-            TE.log("Focused Channel Changed: " + parameter.getLabel());
-        }
-    }
-
-    private class FocusedChannelAuxListener implements LXParameterListener {
-        @Override
-        public void onParameterChanged(LXParameter parameter) {
-            TE.log("Focused Channel Aux Changed: " + parameter.getLabel());
-        }
-    }
-
     private static int reset_signal = -1;
     private final String SD_CHANNELS_RESET = "/lx/control/reset_channels";
 
@@ -65,7 +50,7 @@ public class TdStableDiffusionPattern extends TEPerformancePattern {
 
     protected DevolayVideoFrame videoFrame;
     protected DevolayReceiver receiver = null;
-    private ByteBuffer frameData;
+    int[] colorsBuffer = new int[0];
 
     protected boolean lastConnectState = false;
     protected long connectTimer = 0;
@@ -79,11 +64,6 @@ public class TdStableDiffusionPattern extends TEPerformancePattern {
 
     public TdStableDiffusionPattern(LX lx, TEShaderView view) {
         super(lx, view);
-
-        // Listen and fire immediately
-        lx.engine.mixer.focusedChannel.addListener(new FocusedChannelListener(), true);
-        lx.engine.mixer.focusedChannelAux.addListener(new FocusedChannelAuxListener(), true);
-
         ndiEngine = NDIEngine.get();
 
         // Create frame objects to handle incoming video stream
@@ -126,6 +106,10 @@ public class TdStableDiffusionPattern extends TEPerformancePattern {
     }
 
     public void runTEAudioPattern(double deltaMs) {
+        if (this.colorsBuffer.length != this.colors.length) {
+            initColorsBuffer();
+        }
+
         // Periodically try to connect if we weren't able to
         // establish an initial connection to this pattern's
         // desired NDI source. This makes things work
@@ -141,30 +125,26 @@ public class TdStableDiffusionPattern extends TEPerformancePattern {
 
         if (DevolayFrameType.VIDEO == receiver.receiveCapture(videoFrame, null, null, 0)) {
             // get pixel data from video frame
-            frameData = videoFrame.getData();
+            ByteBuffer frameData = videoFrame.getData();
             frameData.rewind();
             frameData.order(ByteOrder.LITTLE_ENDIAN);
 
             for (LXPoint p : lx.getModel().points) {
                 int i = p.index * 4;
-                colors[p.index] = LXColor.rgb(frameData.get(i + 2), frameData.get(i + 1), frameData.get(i));
+                this.colorsBuffer[p.index] = LXColor.rgb(frameData.get(i + 2), frameData.get(i + 1), frameData.get(i));
             }
-        } else if (frameData != null) {
-            // If no data was received since last frame, just show the last frame again on the car
-            // to avoid flickers. This can cause a frozen frame being shown on the car instead of
-            // a complete off screen when NDI is not being transferred on a good network.
-            frameData.rewind();
-            frameData.order(ByteOrder.LITTLE_ENDIAN);
-            for (LXPoint p : lx.getModel().points) {
-                int i = p.index * 4;
-                colors[p.index] = LXColor.rgb(frameData.get(i + 2), frameData.get(i + 1), frameData.get(i));
-            }
+        }
+
+        for (int i = 0; i < this.colors.length; i++) {
+            this.colors[i] = this.colorsBuffer[i];
         }
     }
 
     @Override
     public void onActive() {
         super.onActive();
+        initColorsBuffer();
+
         initChannelAndPatternNumbers();
 
         osc.sendOscMessage(SD_ACTIVE_CHANNEL, channelNumber);
@@ -190,6 +170,10 @@ public class TdStableDiffusionPattern extends TEPerformancePattern {
 
         // disconnect receiver from all sources
         receiver.connect(null);
+    }
+
+    private void initColorsBuffer() {
+        this.colorsBuffer = new int[this.colors.length];
     }
 
     @Override
