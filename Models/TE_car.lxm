@@ -1,6 +1,6 @@
 {
   "version": "1.0.1.TE.2-SNAPSHOT",
-  "timestamp": 1724662366921,
+  "timestamp": 1724662771521,
   "fixtures": [
     {
       "jsonFixtureType": "TE/panel/FA",
@@ -1835,8 +1835,8 @@
         "strand1output": 1,
         "strand2host": "10.7.12.124",
         "strand2output": 2,
-        "strand3host": "10.7.12.124",
-        "strand3output": 3,
+        "strand3host": "10.7.12.112",
+        "strand3output": 4,
         "strand4host": "10.7.12.124",
         "strand4output": 4,
         "artnetSequence": false,
