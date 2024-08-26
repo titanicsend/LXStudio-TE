@@ -1,6 +1,6 @@
 {
   "version": "1.0.1.TE.2-SNAPSHOT",
-  "timestamp": 1724670405492,
+  "timestamp": 1724672908751,
   "fixtures": [
     {
       "jsonFixtureType": "TE/panel/FA",
@@ -1002,7 +1002,7 @@
         "pitch": 0.0,
         "roll": 0.0,
         "scale": 1.0,
-        "selected": true,
+        "selected": false,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
@@ -1831,13 +1831,13 @@
       "jsonParameters": {
         "xOffset": 7.696234226226807,
         "yOffset": 6.0,
-        "strand1host": "10.7.12.124",
+        "strand1host": "10.7.12.112",
         "strand1output": 1,
-        "strand2host": "10.7.12.124",
+        "strand2host": "10.7.12.112",
         "strand2output": 2,
-        "strand3host": "10.7.12.124",
+        "strand3host": "10.7.12.112",
         "strand3output": 3,
-        "strand4host": "10.7.12.124",
+        "strand4host": "10.7.12.112",
         "strand4output": 4,
         "artnetSequence": false,
         "onCar": true
@@ -1917,12 +1917,12 @@
       "jsonParameters": {
         "xOffset": 7.6467742919921875,
         "yOffset": 6.0,
-        "strand1host": "10.7.12.112",
+        "strand1host": "10.7.12.124",
         "strand1output": 1,
-        "strand2host": "10.7.12.112",
+        "strand2host": "10.7.12.124",
         "strand2output": 2,
-        "strand3host": "10.7.12.112",
-        "strand3output": 4,
+        "strand3host": "10.7.12.124",
+        "strand3output": 3,
         "artnetSequence": false,
         "onCar": true
       },
@@ -1942,7 +1942,7 @@
         "pitch": 0.0,
         "roll": 0.0,
         "scale": 1.0,
-        "selected": false,
+        "selected": true,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
