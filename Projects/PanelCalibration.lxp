@@ -1,6 +1,6 @@
 {
   "version": "1.0.1.TE.2-SNAPSHOT",
-  "timestamp": 1724662771519,
+  "timestamp": 1724664533920,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -1243,9 +1243,9 @@
           "strand2host": "10.7.9.22",
           "strand2output": 3,
           "strand3host": "10.7.9.22",
-          "strand3output": 2,
+          "strand3output": 4,
           "strand4host": "10.7.9.22",
-          "strand4output": 4,
+          "strand4output": 2,
           "strand5host": "10.7.9.21",
           "strand5output": 4,
           "artnetSequence": false,
@@ -1267,7 +1267,7 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
-          "selected": false,
+          "selected": true,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -2100,8 +2100,8 @@
           "strand1output": 1,
           "strand2host": "10.7.12.124",
           "strand2output": 2,
-          "strand3host": "10.7.12.112",
-          "strand3output": 4,
+          "strand3host": "10.7.12.124",
+          "strand3output": 3,
           "strand4host": "10.7.12.124",
           "strand4output": 4,
           "artnetSequence": false,
@@ -2123,7 +2123,7 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
-          "selected": true,
+          "selected": false,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -13293,7 +13293,7 @@
           "label": "Mixer",
           "crossfader": 0.5748031496062992,
           "crossfaderBlendMode": 1,
-          "focusedChannel": 0,
+          "focusedChannel": 1,
           "focusedChannelAux": 1,
           "cueA": false,
           "cueB": false,
@@ -13407,9 +13407,9 @@
             },
             "parameters": {
               "label": "Solid",
-              "fader": 0.8281249907522579,
+              "fader": 0.9950334821915021,
               "arm": false,
-              "selected": true,
+              "selected": false,
               "stopClips": false,
               "enabled": true,
               "cue": false,
@@ -13422,7 +13422,7 @@
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
-              "view": 0,
+              "view": 2,
               "compositeMode": 0,
               "compositeDampingEnabled": true,
               "compositeDampingTimeSecs": 0.1,
@@ -13555,7 +13555,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.15580822244255765
+                        "basis": 0.5382169074143507
                       }
                     ],
                     "modulations": [
@@ -13804,9 +13804,9 @@
               "label": "Solid",
               "fader": 0.8281249907522579,
               "arm": false,
-              "selected": false,
+              "selected": true,
               "stopClips": false,
-              "enabled": false,
+              "enabled": true,
               "cue": true,
               "aux": false,
               "crossfadeGroup": 0,
@@ -13973,8 +13973,8 @@
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
                   "setDefaults": false,
-                  "start": 7,
-                  "spacing": 29
+                  "start": 10,
+                  "spacing": 14
                 },
                 "children": {
                   "modulation": {
@@ -15195,9 +15195,9 @@
         "depth": 1.0,
         "camera": {
           "active": false,
-          "radius": 387.5200066761436,
-          "theta": 356.24798399419524,
-          "phi": 15.623458896763623,
+          "radius": 495.0035008137473,
+          "theta": 359.9781521803234,
+          "phi": 6.6805683127604425,
           "x": 170.22485914671415,
           "y": 126.06100092921406,
           "z": 26.906242488563294
@@ -15205,9 +15205,9 @@
         "cue": [
           {
             "active": false,
-            "radius": 387.5200066761436,
-            "theta": 356.24798399419524,
-            "phi": 15.623458896763623,
+            "radius": 495.0035008137473,
+            "theta": 359.9781521803234,
+            "phi": 6.6805683127604425,
             "x": 170.22485914671415,
             "y": 126.06100092921406,
             "z": 26.906242488563294
