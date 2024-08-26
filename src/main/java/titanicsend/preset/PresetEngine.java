@@ -7,6 +7,7 @@ import heronarts.lx.LXComponent;
 import heronarts.lx.LXPresetComponent;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -84,4 +85,12 @@ public class PresetEngine extends LXComponent {
     }
   }
 
+  public PresetEngine openFile(String path) {
+    return openFile(path);
+  }
+
+  public PresetEngine openFile(File file) {
+    this.currentLibrary.load(file);
+    return this;
+  }
 }

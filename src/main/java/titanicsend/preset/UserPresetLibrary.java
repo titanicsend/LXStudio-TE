@@ -11,7 +11,9 @@ import heronarts.lx.LXPresetComponent;
 import heronarts.lx.LXSerializable;
 import heronarts.lx.color.ColorParameter;
 import heronarts.lx.color.LXColor;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -76,10 +78,13 @@ public class UserPresetLibrary implements LXSerializable {
   }
 
   public void load(File file) {
+    LX.log("Loading user presets: " + file.getPath());
     try (FileReader fr = new FileReader(file)) {
       load(this.lx, new Gson().fromJson(fr, JsonObject.class));
+    } catch (FileNotFoundException ex) {
+      LX.error("User preset library not found: " + file.getPath());
     } catch (IOException iox) {
-      LX.error(iox, "Could not import views from file: " + file.toString());
+      LX.error(iox, "Could not import user preset library from file: " + file.toString());
     }
   }
 

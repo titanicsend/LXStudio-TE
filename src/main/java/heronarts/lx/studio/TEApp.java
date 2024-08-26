@@ -192,6 +192,7 @@ public class TEApp extends LXStudio {
       this.glEngine = new GLEngine(lx,glRenderWidth,glRenderHeight,staticModel);
       gamepadEngine = new GamepadEngine(lx);
       this.presetEngine = new PresetEngine(lx);
+      this.presetEngine.openFile(lx.getMediaFile("Presets/UserPresets/BM24.userPresets"));
 
       // Super Modulator midi controller
       this.superMod = new SuperMod(lx);
