@@ -1,6 +1,6 @@
 {
-  "version": "1.0.1.TE.1-SNAPSHOT",
-  "timestamp": 1724660406513,
+  "version": "1.0.1.TE.2-SNAPSHOT",
+  "timestamp": 1724662366921,
   "fixtures": [
     {
       "jsonFixtureType": "TE/panel/FA",
@@ -22,7 +22,7 @@
         "artnetSequence": false,
         "onCar": true
       },
-      "id": 131,
+      "id": 412710,
       "class": "heronarts.lx.structure.JsonFixture",
       "internal": {
         "modulationColor": 0,
@@ -978,11 +978,11 @@
         "strand2host": "10.7.9.22",
         "strand2output": 3,
         "strand3host": "10.7.9.22",
-        "strand3output": 4,
+        "strand3output": 2,
         "strand4host": "10.7.9.22",
-        "strand4output": 2,
+        "strand4output": 4,
         "strand5host": "10.7.9.21",
-        "strand5output": 1,
+        "strand5output": 4,
         "artnetSequence": false,
         "onCar": true
       },
@@ -1132,7 +1132,7 @@
         "pitch": 0.0,
         "roll": 0.0,
         "scale": 1.0,
-        "selected": true,
+        "selected": false,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
@@ -1858,7 +1858,7 @@
         "pitch": 0.0,
         "roll": 0.0,
         "scale": 1.0,
-        "selected": false,
+        "selected": true,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
@@ -2037,11 +2037,11 @@
       "jsonParameters": {
         "xOffset": 9.903098106384277,
         "yOffset": 6.0,
-        "strand1host": "10.7.100.9",
+        "strand1host": "10.7.100.7",
         "strand1output": 1,
-        "strand2host": "10.7.100.9",
+        "strand2host": "10.7.100.7",
         "strand2output": 2,
-        "strand3host": "10.7.100.9",
+        "strand3host": "10.7.100.7",
         "strand3output": 3,
         "artnetSequence": false,
         "onCar": true
