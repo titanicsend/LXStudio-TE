@@ -95,6 +95,7 @@ import titanicsend.pattern.sinas.LightBeamsAudioReactivePattern;
 import titanicsend.pattern.sinas.TdNdiPattern;
 import titanicsend.pattern.sinas.TdStableDiffusionPattern;
 import titanicsend.pattern.tom.*;
+import titanicsend.pattern.util.PanelDebugPattern;
 import titanicsend.pattern.util.TargetPixelStamper;
 import titanicsend.pattern.will.PowerDebugger;
 import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
@@ -378,6 +379,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(ModelDebugger.class);
       lx.registry.addPattern(PowerDebugger.class);
       // lx.registry.addPattern(ModuleEditor.class);
+      lx.registry.addPattern(PanelDebugPattern.class);
       lx.registry.addPattern(SignalDebugger.class);
       lx.registry.addPattern(HandTracker.class);
       lx.registry.addPattern(TargetPixelStamper.class);
