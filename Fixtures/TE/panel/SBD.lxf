@@ -156,13 +156,13 @@
         { componentIndex: 28, reverse: false },
         { componentIndex: 29, reverse: true },
         { componentIndex: 30, reverse: false },
-        { componentIndex: 31, reverse: true, num: 4, padPre: 1 }
+        { componentIndex: 31, reverse: true, start: 9, num: 4, padPre: 1 }
       ]
     },
                   
     { host: "$strand5host", universe: "$strand5output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
       segments: [
-        { componentIndex: 31, reverse: true, start: 4 },
+        { componentIndex: 31, reverse: true, num: 9 },
         { componentIndex: 32, reverse: false },
         { componentIndex: 33, reverse: true },
         { componentIndex: 34, reverse: false },
