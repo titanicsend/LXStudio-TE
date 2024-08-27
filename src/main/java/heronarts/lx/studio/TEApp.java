@@ -300,6 +300,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(TriangleInfinityWaveform.class);
       lx.registry.addPattern(TriangleInfinityRadialWaveform.class);
       lx.registry.addPattern(SketchDemo.class);
+      lx.registry.addPattern(SketchStem.class);
 
       // Examples for teaching and on-boarding developers
       lx.registry.addPattern(BasicRainbowPattern.class);
