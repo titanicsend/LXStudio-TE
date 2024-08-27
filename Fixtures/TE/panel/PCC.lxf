@@ -118,13 +118,13 @@
         { componentIndex: 2, reverse: false },
         { componentIndex: 3, reverse: true },
         { componentIndex: 4, reverse: false },
-        { componentIndex: 5, reverse: true, num: 5 }
+        { componentIndex: 5, reverse: true, start:40, num: 5 }
       ]
     },
                   
     { host: "$strand2host", universe: "$strand2output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
       segments: [
-        { componentIndex: 5, reverse: true, start: 5 },
+        { componentIndex: 5, reverse: true, num: 40 },
         { componentIndex: 6, reverse: false },
         { componentIndex: 7, reverse: true },
         { componentIndex: 8, reverse: false },
@@ -142,13 +142,13 @@
         { componentIndex: 14, reverse: false },
         { componentIndex: 15, reverse: true },
         { componentIndex: 16, reverse: false },
-        { componentIndex: 17, reverse: true, num: 31 }
+        { componentIndex: 17, reverse: true, start: 1, num: 31 }
       ]
     },
                   
     { host: "$strand4host", universe: "$strand4output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
       segments: [
-        { componentIndex: 17, reverse: true, start: 31 },
+        { componentIndex: 17, reverse: true, num: 1 },
         { componentIndex: 18, reverse: false },
         { componentIndex: 19, reverse: true },
         { componentIndex: 20, reverse: false },
@@ -158,13 +158,13 @@
         { componentIndex: 24, reverse: false },
         { componentIndex: 25, reverse: true },
         { componentIndex: 26, reverse: false },
-        { componentIndex: 27, reverse: true, num: 7 }
+        { componentIndex: 27, reverse: true, start: 15, num: 7 }
       ]
     },
                   
     { host: "$strand5host", universe: "$strand5output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
       segments: [
-        { componentIndex: 27, reverse: true, start: 7 },
+        { componentIndex: 27, reverse: true, num: 15 },
         { componentIndex: 28, reverse: false },
         { componentIndex: 29, reverse: true },
         { componentIndex: 30, reverse: false },

@@ -136,13 +136,13 @@
         { componentIndex: 14, reverse: false, padPre: 1 },
         { componentIndex: 15, reverse: true },
         { componentIndex: 16, reverse: false },
-        { componentIndex: 17, reverse: true, num: 18 }
+        { componentIndex: 17, reverse: true, start: 12, num: 18 }
       ]
     },
                   
     { host: "$strand4host", universe: "$strand4output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
       segments: [
-        { componentIndex: 17, reverse: true, start: 18 },
+        { componentIndex: 17, reverse: true, num: 12 },
         { componentIndex: 18, reverse: false, padPre: 1 },
         { componentIndex: 19, reverse: true },
         { componentIndex: 20, reverse: false },
@@ -152,13 +152,13 @@
         { componentIndex: 24, reverse: false },
         { componentIndex: 25, reverse: true },
         { componentIndex: 26, reverse: false },
-        { componentIndex: 27, reverse: true, num: 10 }
+        { componentIndex: 27, reverse: true, start: 9, num: 10 }
       ]
     },
                   
     { host: "$strand5host", universe: "$strand5output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
       segments: [
-        { componentIndex: 27, reverse: true, start: 10 },
+        { componentIndex: 27, reverse: true, num: 9 },
         { componentIndex: 28, reverse: false, padPre: 1 },
         { componentIndex: 29, reverse: true },
         { componentIndex: 30, reverse: false },
