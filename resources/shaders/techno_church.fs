@@ -131,15 +131,17 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
     float pct=0.;
     float pct2=0.;
 
+    /*
     float xsize=.1+levelReact*.5*trebleLevel;
     float ysize=.25-levelReact*.2*trebleLevel;
     float outer=1.2 + (.2 * sin(iTime))+levelReact*1.5*bassLevel;
     float inner=1.1 + (.3 * cos(iTime))+levelReact*2.*bassLevel;
-
-//    float xsize=.1;
-//    float ysize=.25;
-//    float outer=1.2+(.2*sin(iTime));
-//    float inner=1.1+(.3*cos(iTime));
+    */
+    
+    float xsize=.1;
+    float ysize=.25;
+    float outer=1.2+(.2*sin(iTime));
+    float inner=1.1+(.3*cos(iTime));
 
     float a=atan(st.y,st.x);
     float m=abs(mod(a+iTime*2.,3.14*2.)-3.14)/3.6;
