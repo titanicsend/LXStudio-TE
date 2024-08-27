@@ -117,7 +117,7 @@
         { componentIndex: 2, reverse: false },
         { componentIndex: 3, reverse: true },
         { componentIndex: 4, reverse: false },
-        { componentIndex: 5, reverse: true, length: 5 }
+        { componentIndex: 5, reverse: true, num: 5 }
       ]
     },
                   
@@ -128,7 +128,7 @@
         { componentIndex: 7, reverse: true },
         { componentIndex: 8, reverse: false },
         { componentIndex: 9, reverse: true },
-        { componentIndex: 10, reverse: false, length: 39 }
+        { componentIndex: 10, reverse: false, num: 39 }
       ]
     },
                   
@@ -141,7 +141,7 @@
         { componentIndex: 14, reverse: false },
         { componentIndex: 15, reverse: true },
         { componentIndex: 16, reverse: false },
-        { componentIndex: 17, reverse: true, length: 31 }
+        { componentIndex: 17, reverse: true, num: 31 }
       ]
     },
                   
@@ -157,7 +157,7 @@
         { componentIndex: 24, reverse: false },
         { componentIndex: 25, reverse: true },
         { componentIndex: 26, reverse: false },
-        { componentIndex: 27, reverse: true, length: 6 }
+        { componentIndex: 27, reverse: true, num: 6 }
       ]
     },
                   

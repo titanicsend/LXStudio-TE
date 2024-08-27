@@ -110,7 +110,7 @@
         { componentIndex: 1, reverse: true },
         { componentIndex: 2, reverse: false },
         { componentIndex: 3, reverse: true },
-        { componentIndex: 4, reverse: false, length: 26 }
+        { componentIndex: 4, reverse: false, num: 26 }
       ]
     },
                   
@@ -121,7 +121,7 @@
         { componentIndex: 6, reverse: false },
         { componentIndex: 7, reverse: true },
         { componentIndex: 8, reverse: false },
-        { componentIndex: 9, reverse: true, length: 28 }
+        { componentIndex: 9, reverse: true, num: 28 }
       ]
     },
                   
@@ -133,7 +133,7 @@
         { componentIndex: 12, reverse: false },
         { componentIndex: 13, reverse: true, padPre: 1 },
         { componentIndex: 14, reverse: false, padPre: 1 },
-        { componentIndex: 15, reverse: true, length: 27 }
+        { componentIndex: 15, reverse: true, num: 27 }
       ]
     },
                   
@@ -148,7 +148,7 @@
         { componentIndex: 21, reverse: true },
         { componentIndex: 22, reverse: false, padPre: 1 },
         { componentIndex: 23, reverse: true },
-        { componentIndex: 24, reverse: false, length: 1 }
+        { componentIndex: 24, reverse: false, num: 1 }
       ]
     },
                   

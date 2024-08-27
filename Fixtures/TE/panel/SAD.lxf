@@ -84,7 +84,7 @@
         { componentIndex: 6, reverse: false, padPre: 1 },
         { componentIndex: 7, reverse: true },
         { componentIndex: 8, reverse: false, padPre: 1 },
-        { componentIndex: 9, reverse: true, length: 7 }
+        { componentIndex: 9, reverse: true, num: 7 }
       ]
     },
                   

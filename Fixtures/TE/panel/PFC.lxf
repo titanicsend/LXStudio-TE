@@ -123,7 +123,7 @@
         { componentIndex: 16, reverse: false },
         { componentIndex: 17, reverse: true },
         { componentIndex: 18, reverse: false },
-        { componentIndex: 19, reverse: true, length: 16 }
+        { componentIndex: 19, reverse: true, num: 16 }
       ]
     },
                   

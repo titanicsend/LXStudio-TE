@@ -117,7 +117,7 @@
         { componentIndex: 5, reverse: true },
         { componentIndex: 6, reverse: false },
         { componentIndex: 7, reverse: true },
-        { componentIndex: 8, reverse: false, length: 4 }
+        { componentIndex: 8, reverse: false, num: 4 }
       ]
     },
                   
@@ -133,7 +133,7 @@
         { componentIndex: 15, reverse: true },
         { componentIndex: 16, reverse: false },
         { componentIndex: 17, reverse: true },
-        { componentIndex: 18, reverse: false, length: 16 }
+        { componentIndex: 18, reverse: false, num: 16 }
       ]
     },
                   
@@ -158,7 +158,7 @@
         { componentIndex: 34, reverse: false },
         { componentIndex: 35, reverse: true },
         { componentIndex: 36, reverse: false },
-        { componentIndex: 37, reverse: true, length: 5 }
+        { componentIndex: 37, reverse: true, num: 5 }
       ]
     },
                   
