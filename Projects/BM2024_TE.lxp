@@ -1,6 +1,6 @@
 {
   "version": "1.0.1.TE.2-SNAPSHOT",
-  "timestamp": 1724815902475,
+  "timestamp": 1724816891740,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -247,13 +247,13 @@
         "jsonParameters": {
           "xOffset": 6.09382963180542,
           "yOffset": 6.0,
-          "strand1host": "10.7.10.14",
+          "strand1host": "10.7.19.114",
           "strand1output": 1,
-          "strand2host": "10.7.10.14",
+          "strand2host": "10.7.19.114",
           "strand2output": 2,
-          "strand3host": "10.7.10.14",
+          "strand3host": "10.7.19.114",
           "strand3output": 3,
-          "strand4host": "10.7.10.14",
+          "strand4host": "10.7.19.114",
           "strand4output": 4,
           "artnetSequence": false,
           "onCar": true
@@ -707,13 +707,13 @@
         "jsonParameters": {
           "xOffset": 7.482972621917725,
           "yOffset": 6.0,
-          "strand1host": "10.7.19.114",
+          "strand1host": "10.7.10.14",
           "strand1output": 1,
-          "strand2host": "10.7.19.114",
+          "strand2host": "10.7.10.14",
           "strand2output": 2,
-          "strand3host": "10.7.19.114",
+          "strand3host": "10.7.10.14",
           "strand3output": 3,
-          "strand4host": "10.7.19.114",
+          "strand4host": "10.7.10.14",
           "strand4output": 4,
           "artnetSequence": false,
           "onCar": true
@@ -2504,11 +2504,11 @@
           "x": 0.0,
           "y": 0.0,
           "z": 0.0,
-          "yaw": 0.0,
+          "yaw": 180.0,
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
-          "selected": false,
+          "selected": true,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -11427,7 +11427,7 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
-          "selected": true,
+          "selected": false,
           "deactivate": false,
           "enabled": false,
           "brightness": 1.0,
@@ -13153,7 +13153,7 @@
           "label": "Mixer",
           "crossfader": 0.5,
           "crossfaderBlendMode": 1,
-          "focusedChannel": 13,
+          "focusedChannel": 6,
           "focusedChannelAux": 4,
           "cueA": false,
           "cueB": false,
@@ -13177,9 +13177,9 @@
             },
             "parameters": {
               "label": "Master",
-              "fader": 0.8224330366356298,
+              "fader": 1.0,
               "arm": false,
-              "selected": true,
+              "selected": false,
               "stopClips": false,
               "previewMode": 0
             },
@@ -29681,11 +29681,11 @@
             },
             "parameters": {
               "label": "BOOTUP",
-              "fader": 0.009999990463256836,
+              "fader": 0.0,
               "arm": false,
               "selected": false,
               "stopClips": false,
-              "enabled": false,
+              "enabled": true,
               "cue": false,
               "aux": false,
               "crossfadeGroup": 0,
@@ -30025,12 +30025,12 @@
             },
             "parameters": {
               "label": "---",
-              "fader": 1.0,
+              "fader": 0.8857143018394709,
               "arm": false,
-              "selected": false,
+              "selected": true,
               "stopClips": false,
               "enabled": true,
-              "cue": false,
+              "cue": true,
               "aux": false,
               "crossfadeGroup": 0,
               "blendMode": 0,
@@ -30050,7 +30050,7 @@
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 0,
+              "focusedPattern": 1,
               "triggerPatternCycle": false
             },
             "children": {
@@ -30073,7 +30073,7 @@
             },
             "effects": [],
             "clips": [],
-            "patternIndex": 0,
+            "patternIndex": 1,
             "patterns": [
               {
                 "id": 293151,
@@ -30110,6 +30110,71 @@
                 "children": {
                   "modulation": {
                     "id": 293152,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1,
+                "effects": [],
+                "defaults": {}
+              },
+              {
+                "id": 417713,
+                "class": "titanicsend.pattern.cesar.HandTracker",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true,
+                  "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "HandTracker",
+                  "midiFilter/enabled": true,
+                  "midiFilter/channel": 16,
+                  "midiFilter/minNote": 0,
+                  "midiFilter/noteRange": 128,
+                  "midiFilter/minVelocity": 1,
+                  "midiFilter/velocityRange": 127,
+                  "view": 0,
+                  "viewPriority": 0,
+                  "enabled": true,
+                  "recall": false,
+                  "compositeMode": 0,
+                  "compositeLevel": 1.0,
+                  "hasCustomCycleTime": false,
+                  "customCycleTimeSecs": 60.0,
+                  "setDefaults": false,
+                  "color/brightness": 0.0,
+                  "color/saturation": 0.0,
+                  "color/hue": 0.0,
+                  "color/mode": 1,
+                  "color/index": 1,
+                  "circle": false,
+                  "junk1": 0.0,
+                  "junk2": 0.0,
+                  "Altitude": 25.5,
+                  "Azimuth": 61.0,
+                  "Height": 14.653899638509753,
+                  "Width": 4.0,
+                  "indexTip": "10,50"
+                },
+                "children": {
+                  "modulation": {
+                    "id": 417714,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,
@@ -36244,7 +36309,7 @@
           "label": "TEVirtualOverlays",
           "vertexSpheresVisible": false,
           "vertexLabelsVisible": false,
-          "panelLabelsVisible": false,
+          "panelLabelsVisible": true,
           "unknownPanelsVisible": true,
           "opaqueBackPanelsVisible": true,
           "backingOpacity": 1.0,
@@ -36389,9 +36454,9 @@
         "depth": 1.0,
         "camera": {
           "active": false,
-          "radius": 598.0412796041986,
-          "theta": 1.225867965258658,
-          "phi": 6.582172475289553,
+          "radius": 561.7979146889472,
+          "theta": 355.60817990545183,
+          "phi": 2.368909321259707,
           "x": 25.405086532817222,
           "y": 168.9212394368369,
           "z": 19.341244314797223
@@ -36399,9 +36464,9 @@
         "cue": [
           {
             "active": false,
-            "radius": 598.0412796041986,
-            "theta": 1.225867965258658,
-            "phi": 6.582172475289553,
+            "radius": 561.7979146889472,
+            "theta": 355.60817990545183,
+            "phi": 2.368909321259707,
             "x": 25.405086532817222,
             "y": 168.9212394368369,
             "z": 19.341244314797223
