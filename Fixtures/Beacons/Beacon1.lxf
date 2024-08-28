@@ -1,11 +1,11 @@
 {
-  label: "Beacon1",
+  label: "BeaconRight",
   tags: [ "dmx", "beacon", "dmxFixture" ],
 
   "meta": {
     "dmx": "titanicsend.dmx.model.BeaconModel",
-    "dmx_host": "10.6.1.101",
-    "tiltLimit": "90"
+    "dmx_host": "10.128.102.221",
+    "tiltLimit": "95"
   },
 
   "components": [

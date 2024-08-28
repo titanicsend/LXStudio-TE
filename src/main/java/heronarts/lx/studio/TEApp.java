@@ -897,7 +897,7 @@ public class TEApp extends LXStudio {
 
   @Override
   protected void onGamepadButtonReleased(GamepadEvent gamepadEvent, int button) {
-    this.gamepadEngine.lxGamepadButtonPressed(gamepadEvent, button);
+    this.gamepadEngine.lxGamepadButtonReleased(gamepadEvent, button);
   }
 
   @Override

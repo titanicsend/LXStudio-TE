@@ -414,7 +414,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
 
     this.lx.engine.output.enabled.setValue(true);
     this.engineLEDs.setValue(true);
-    this.engineBeacons.setValue(false);
+    this.engineBeacons.setValue(true);
     this.engineDJlights.setValue(false);
     this.lx.engine.osc.receiveActive.setValue(true);
     this.lx.engine.osc.transmitActive.setValue(true);
