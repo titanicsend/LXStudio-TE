@@ -163,7 +163,7 @@
     },
                   
     { host: "$strand5host", universe: "$strand5output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
-      segments: {
+      segments: [
         { componentIndex: 27, reverse: true, num: 16 },
         { componentIndex: 28, reverse: false },
         { componentIndex: 29, reverse: true },
