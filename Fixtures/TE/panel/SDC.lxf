@@ -141,7 +141,7 @@
         { componentIndex: 14, reverse: false },
         { componentIndex: 15, reverse: true },
         { componentIndex: 16, reverse: false },
-        { componentIndex: 17, reverse: true, length: 31 }
+        { componentIndex: 17, reverse: true, start: 1, length: 31 }
       ]
     },
                   
