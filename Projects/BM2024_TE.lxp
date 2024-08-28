@@ -1,6 +1,6 @@
 {
   "version": "1.0.1.TE.2-SNAPSHOT",
-  "timestamp": 1724721407840,
+  "timestamp": 1724815902475,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -168,7 +168,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 165877,
+        "id": 412710,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -214,7 +214,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 165962,
+        "id": 216,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -258,7 +258,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 166043,
+        "id": 297,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -298,7 +298,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 166134,
+        "id": 388,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -336,7 +336,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 166179,
+        "id": 433,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -380,7 +380,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 166214,
+        "id": 468,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -420,7 +420,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 166283,
+        "id": 537,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -458,7 +458,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 166328,
+        "id": 582,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -506,7 +506,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 166365,
+        "id": 619,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -552,7 +552,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 166450,
+        "id": 704,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -596,7 +596,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 166529,
+        "id": 783,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -636,7 +636,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 166620,
+        "id": 874,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -674,7 +674,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 166665,
+        "id": 919,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -718,7 +718,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 166700,
+        "id": 954,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -758,7 +758,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 166769,
+        "id": 1023,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -796,7 +796,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 166814,
+        "id": 1068,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -838,7 +838,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 166849,
+        "id": 1103,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -850,7 +850,7 @@
           "x": 0.0,
           "y": 0.0,
           "z": 0.0,
-          "yaw": 0.0,
+          "yaw": 180.0,
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
@@ -882,7 +882,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 166914,
+        "id": 1168,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -924,7 +924,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 166995,
+        "id": 1249,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -936,7 +936,7 @@
           "x": 0.0,
           "y": 0.0,
           "z": 0.0,
-          "yaw": 0.0,
+          "yaw": 180.0,
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
@@ -966,7 +966,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 167052,
+        "id": 1306,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1006,7 +1006,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 167115,
+        "id": 1369,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1044,7 +1044,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 167146,
+        "id": 1400,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1056,7 +1056,7 @@
           "x": 0.0,
           "y": 0.0,
           "z": 0.0,
-          "yaw": 0.0,
+          "yaw": 180.0,
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
@@ -1077,16 +1077,16 @@
         "jsonParameters": {
           "xOffset": 9.903098106384277,
           "yOffset": 6.0,
-          "strand1host": "10.7.9.23",
+          "strand1host": "10.7.100.17",
           "strand1output": 1,
-          "strand2host": "10.7.9.23",
+          "strand2host": "10.7.100.17",
           "strand2output": 2,
-          "strand3host": "10.7.9.23",
+          "strand3host": "10.7.100.17",
           "strand3output": 3,
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 167167,
+        "id": 1421,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1122,17 +1122,17 @@
           "strand1host": "10.7.9.22",
           "strand1output": 1,
           "strand2host": "10.7.9.22",
-          "strand2output": 2,
+          "strand2output": 3,
           "strand3host": "10.7.9.22",
-          "strand3output": 3,
+          "strand3output": 4,
           "strand4host": "10.7.9.22",
-          "strand4output": 4,
+          "strand4output": 2,
           "strand5host": "10.7.9.21",
           "strand5output": 4,
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 167218,
+        "id": 1472,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1174,7 +1174,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 167301,
+        "id": 1555,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1186,7 +1186,7 @@
           "x": 0.0,
           "y": 0.0,
           "z": 0.0,
-          "yaw": 0.0,
+          "yaw": 180.0,
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
@@ -1216,7 +1216,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 167334,
+        "id": 1588,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1228,7 +1228,7 @@
           "x": 0.0,
           "y": 0.0,
           "z": 0.0,
-          "yaw": 0.0,
+          "yaw": 180.0,
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
@@ -1262,7 +1262,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 167373,
+        "id": 1627,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1302,7 +1302,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 167466,
+        "id": 1720,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1344,7 +1344,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 167509,
+        "id": 1763,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1353,7 +1353,7 @@
         },
         "parameters": {
           "label": "Panel SCA",
-          "x": 0.0,
+          "x": -10.0,
           "y": 0.0,
           "z": 0.0,
           "yaw": 0.0,
@@ -1386,7 +1386,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 167544,
+        "id": 1798,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1419,20 +1419,20 @@
         "jsonParameters": {
           "xOffset": 6.938027858734131,
           "yOffset": 6.0,
-          "strand1host": "10.7.2.21",
+          "strand1host": "10.7.100.12",
           "strand1output": 1,
-          "strand2host": "10.7.2.21",
+          "strand2host": "10.7.100.12",
           "strand2output": 2,
           "strand3host": "10.7.2.21",
           "strand3output": 3,
-          "strand4host": "10.7.2.21",
+          "strand4host": "10.7.100.12",
           "strand4output": 4,
-          "strand5host": "10.7.2.20",
-          "strand5output": 1,
+          "strand5host": "10.7.2.21",
+          "strand5output": 2,
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 167581,
+        "id": 1835,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1474,7 +1474,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 167676,
+        "id": 1930,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1512,7 +1512,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 167733,
+        "id": 1987,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1554,7 +1554,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 167754,
+        "id": 2008,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1590,9 +1590,9 @@
           "strand1host": "10.7.2.22",
           "strand1output": 1,
           "strand2host": "10.7.2.22",
-          "strand2output": 2,
+          "strand2output": 3,
           "strand3host": "10.7.2.22",
-          "strand3output": 3,
+          "strand3output": 2,
           "strand4host": "10.7.2.22",
           "strand4output": 4,
           "strand5host": "10.7.2.23",
@@ -1600,7 +1600,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 167805,
+        "id": 2059,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1640,7 +1640,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 167888,
+        "id": 2142,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1682,7 +1682,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 167933,
+        "id": 2187,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1726,7 +1726,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 167998,
+        "id": 2252,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1768,7 +1768,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 168079,
+        "id": 2333,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1808,7 +1808,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 168142,
+        "id": 2396,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1854,7 +1854,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 168173,
+        "id": 2427,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1902,7 +1902,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 168250,
+        "id": 2504,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1944,7 +1944,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 168351,
+        "id": 2605,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -1977,18 +1977,18 @@
         "jsonParameters": {
           "xOffset": 7.696234226226807,
           "yOffset": 6.0,
-          "strand1host": "10.7.12.124",
+          "strand1host": "10.7.12.112",
           "strand1output": 1,
-          "strand2host": "10.7.12.124",
+          "strand2host": "10.7.12.112",
           "strand2output": 2,
           "strand3host": "10.7.12.124",
-          "strand3output": 3,
-          "strand4host": "10.7.12.124",
+          "strand3output": 4,
+          "strand4host": "10.7.12.112",
           "strand4output": 4,
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 168416,
+        "id": 2670,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2030,7 +2030,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 168497,
+        "id": 2751,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2063,16 +2063,16 @@
         "jsonParameters": {
           "xOffset": 7.6467742919921875,
           "yOffset": 6.0,
-          "strand1host": "10.7.12.112",
+          "strand1host": "10.7.12.124",
           "strand1output": 1,
-          "strand2host": "10.7.12.112",
+          "strand2host": "10.7.12.124",
           "strand2output": 2,
-          "strand3host": "10.7.12.112",
-          "strand3output": 4,
+          "strand3host": "10.7.12.124",
+          "strand3output": 3,
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 168554,
+        "id": 2808,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2112,7 +2112,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 168615,
+        "id": 2869,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2150,7 +2150,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 168646,
+        "id": 2900,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2183,16 +2183,16 @@
         "jsonParameters": {
           "xOffset": 9.903098106384277,
           "yOffset": 6.0,
-          "strand1host": "10.7.12.123",
+          "strand1host": "10.7.100.7",
           "strand1output": 1,
-          "strand2host": "10.7.12.123",
+          "strand2host": "10.7.100.7",
           "strand2output": 2,
-          "strand3host": "10.7.12.123",
+          "strand3host": "10.7.100.7",
           "strand3output": 3,
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 168667,
+        "id": 2921,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2238,7 +2238,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 168720,
+        "id": 2974,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2280,7 +2280,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 168805,
+        "id": 3059,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2322,7 +2322,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 168838,
+        "id": 3092,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2368,7 +2368,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 168877,
+        "id": 3131,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2408,7 +2408,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 168972,
+        "id": 3226,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2450,7 +2450,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 169015,
+        "id": 3269,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2462,7 +2462,7 @@
           "x": 0.0,
           "y": 0.0,
           "z": 0.0,
-          "yaw": 0.0,
+          "yaw": 180.0,
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
@@ -2492,7 +2492,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 169048,
+        "id": 3302,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2538,7 +2538,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 169087,
+        "id": 3341,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2572,7 +2572,7 @@
           "xOffset": 9.530516624450684,
           "yOffset": 6.0,
           "strand1host": "10.7.19.112",
-          "strand1output": 1,
+          "strand1output": 4,
           "strand2host": "10.7.19.112",
           "strand2output": 2,
           "strand3host": "10.7.19.112",
@@ -2580,7 +2580,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 169180,
+        "id": 3434,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2592,7 +2592,7 @@
           "x": 0.0,
           "y": 0.0,
           "z": 0.0,
-          "yaw": 0.0,
+          "yaw": 180.0,
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
@@ -2618,7 +2618,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 169237,
+        "id": 3491,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2630,7 +2630,7 @@
           "x": 0.0,
           "y": 0.0,
           "z": 0.0,
-          "yaw": 0.0,
+          "yaw": 180.0,
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
@@ -2660,7 +2660,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 169258,
+        "id": 3512,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2706,7 +2706,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 169309,
+        "id": 3563,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2746,7 +2746,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 169392,
+        "id": 3646,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2788,7 +2788,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 169437,
+        "id": 3691,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2800,7 +2800,7 @@
           "x": 0.0,
           "y": 0.0,
           "z": 0.0,
-          "yaw": 0.0,
+          "yaw": 180.0,
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
@@ -2832,7 +2832,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 169502,
+        "id": 3756,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2872,7 +2872,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 169583,
+        "id": 3837,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2912,7 +2912,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 169672,
+        "id": 3926,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2945,20 +2945,20 @@
         "jsonParameters": {
           "xOffset": 8.579174041748047,
           "yOffset": 6.0,
-          "strand1host": "10.7.6.111",
+          "strand1host": "10.7.100.10",
           "strand1output": 1,
-          "strand2host": "10.7.6.111",
+          "strand2host": "10.7.100.10",
           "strand2output": 2,
-          "strand3host": "10.7.6.111",
+          "strand3host": "10.7.100.10",
           "strand3output": 3,
-          "strand4host": "10.7.6.111",
+          "strand4host": "10.7.100.10",
           "strand4output": 4,
           "strand5host": "10.7.6.121",
           "strand5output": 4,
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 169703,
+        "id": 3957,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -2991,13 +2991,13 @@
         "jsonParameters": {
           "xOffset": 7.59993314743042,
           "yOffset": 6.0,
-          "strand1host": "10.7.6.110",
+          "strand1host": "10.7.100.4",
           "strand1output": 1,
-          "strand2host": "10.7.6.110",
+          "strand2host": "10.7.100.4",
           "strand2output": 2,
-          "strand3host": "10.7.6.110",
+          "strand3host": "10.7.100.4",
           "strand3output": 3,
-          "strand4host": "10.7.6.110",
+          "strand4host": "10.7.100.4",
           "strand4output": 4,
           "strand5host": "10.7.6.121",
           "strand5output": 1,
@@ -3006,7 +3006,7 @@
           "artnetSequence": false,
           "onCar": true
         },
-        "id": 169780,
+        "id": 4034,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3039,7 +3039,7 @@
         "jsonParameters": {
           "points": 188,
           "host": "10.7.19.120",
-          "output": 1,
+          "output": 3,
           "ledOffset": 233,
           "artnetSequence": false,
           "reverse": true,
@@ -3047,7 +3047,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169879,
+        "id": 4133,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3088,7 +3088,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169881,
+        "id": 4135,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3129,7 +3129,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169883,
+        "id": 4137,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3170,7 +3170,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169885,
+        "id": 4139,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3211,7 +3211,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169887,
+        "id": 4141,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3244,7 +3244,7 @@
         "jsonParameters": {
           "points": 48,
           "host": "10.7.11.121",
-          "output": 1,
+          "output": 2,
           "ledOffset": 0,
           "artnetSequence": false,
           "reverse": true,
@@ -3252,7 +3252,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169889,
+        "id": 4143,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3285,7 +3285,7 @@
         "jsonParameters": {
           "points": 119,
           "host": "10.7.11.121",
-          "output": 1,
+          "output": 2,
           "ledOffset": 48,
           "artnetSequence": false,
           "reverse": false,
@@ -3293,7 +3293,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169891,
+        "id": 4145,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3334,7 +3334,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169893,
+        "id": 4147,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3375,7 +3375,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169895,
+        "id": 4149,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3416,7 +3416,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169897,
+        "id": 4151,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3448,7 +3448,7 @@
         "jsonFixtureType": "TE/edge/Edge12-83",
         "jsonParameters": {
           "points": 209,
-          "host": "10.7.19.122",
+          "host": "10.7.100.11",
           "output": 1,
           "ledOffset": 208,
           "artnetSequence": false,
@@ -3457,7 +3457,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169899,
+        "id": 4153,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3490,7 +3490,7 @@
         "jsonParameters": {
           "points": 100,
           "host": "10.7.19.120",
-          "output": 1,
+          "output": 3,
           "ledOffset": 133,
           "artnetSequence": false,
           "reverse": true,
@@ -3498,7 +3498,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169901,
+        "id": 4155,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3539,7 +3539,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169903,
+        "id": 4157,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3580,7 +3580,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169905,
+        "id": 4159,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3621,7 +3621,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169907,
+        "id": 4161,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3662,7 +3662,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169909,
+        "id": 4163,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3703,7 +3703,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169911,
+        "id": 4165,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3744,7 +3744,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169913,
+        "id": 4167,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3785,7 +3785,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169915,
+        "id": 4169,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3826,7 +3826,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169917,
+        "id": 4171,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3867,7 +3867,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169919,
+        "id": 4173,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3908,7 +3908,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169921,
+        "id": 4175,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3949,7 +3949,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169923,
+        "id": 4177,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -3990,7 +3990,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169925,
+        "id": 4179,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4031,7 +4031,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169927,
+        "id": 4181,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4072,7 +4072,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169929,
+        "id": 4183,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4113,7 +4113,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169931,
+        "id": 4185,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4154,7 +4154,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169933,
+        "id": 4187,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4195,7 +4195,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169935,
+        "id": 4189,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4236,7 +4236,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169937,
+        "id": 4191,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4277,7 +4277,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169939,
+        "id": 4193,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4318,7 +4318,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169941,
+        "id": 4195,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4351,7 +4351,7 @@
         "jsonParameters": {
           "points": 168,
           "host": "10.7.4.10",
-          "output": 1,
+          "output": 2,
           "ledOffset": 296,
           "artnetSequence": false,
           "reverse": true,
@@ -4359,7 +4359,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169943,
+        "id": 4197,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4400,7 +4400,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169945,
+        "id": 4199,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4432,16 +4432,16 @@
         "jsonFixtureType": "TE/edge/Edge30-38",
         "jsonParameters": {
           "points": 138,
-          "host": "10.7.4.110",
+          "host": "10.7.4.111",
           "output": 1,
-          "ledOffset": 289,
+          "ledOffset": 209,
           "artnetSequence": false,
           "reverse": true,
           "xOffset": 6.2379021644592285,
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169947,
+        "id": 4201,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4473,16 +4473,16 @@
         "jsonFixtureType": "TE/edge/Edge30-42",
         "jsonParameters": {
           "points": 168,
-          "host": "10.7.4.110",
+          "host": "10.7.4.120",
           "output": 1,
-          "ledOffset": 121,
+          "ledOffset": 331,
           "artnetSequence": false,
           "reverse": true,
           "xOffset": 6.197672367095947,
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169949,
+        "id": 4203,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4523,7 +4523,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169951,
+        "id": 4205,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4564,7 +4564,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169953,
+        "id": 4207,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4605,7 +4605,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169955,
+        "id": 4209,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4638,7 +4638,7 @@
         "jsonParameters": {
           "points": 121,
           "host": "10.7.4.10",
-          "output": 1,
+          "output": 2,
           "ledOffset": 175,
           "artnetSequence": false,
           "reverse": true,
@@ -4646,7 +4646,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169957,
+        "id": 4211,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4687,7 +4687,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169959,
+        "id": 4213,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4728,7 +4728,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169961,
+        "id": 4215,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4769,7 +4769,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169963,
+        "id": 4217,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4801,7 +4801,7 @@
         "jsonFixtureType": "TE/edge/Edge33-38",
         "jsonParameters": {
           "points": 45,
-          "host": "10.7.4.111",
+          "host": "10.7.100.255",
           "output": 1,
           "ledOffset": 209,
           "artnetSequence": false,
@@ -4810,7 +4810,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169965,
+        "id": 4219,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4851,7 +4851,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169967,
+        "id": 4221,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4892,7 +4892,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169969,
+        "id": 4223,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4924,16 +4924,16 @@
         "jsonFixtureType": "TE/edge/Edge36-38",
         "jsonParameters": {
           "points": 237,
-          "host": "10.7.15.110",
+          "host": "10.7.100.2",
           "output": 1,
           "ledOffset": 0,
           "artnetSequence": false,
-          "reverse": false,
+          "reverse": true,
           "xOffset": 5.648992538452148,
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169971,
+        "id": 4225,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -4974,7 +4974,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169973,
+        "id": 4227,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5015,7 +5015,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169975,
+        "id": 4229,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5046,17 +5046,17 @@
       {
         "jsonFixtureType": "TE/edge/Edge36-57",
         "jsonParameters": {
-          "points": 121,
+          "points": 160,
           "host": "10.7.6.122",
           "output": 1,
-          "ledOffset": 308,
+          "ledOffset": 131,
           "artnetSequence": false,
           "reverse": true,
           "xOffset": 5.130076885223389,
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169977,
+        "id": 4231,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5097,7 +5097,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169979,
+        "id": 4233,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5138,7 +5138,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169981,
+        "id": 4235,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5179,7 +5179,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169983,
+        "id": 4237,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5220,7 +5220,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169985,
+        "id": 4239,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5261,7 +5261,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169987,
+        "id": 4241,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5302,7 +5302,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169989,
+        "id": 4243,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5343,7 +5343,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169991,
+        "id": 4245,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5384,7 +5384,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169993,
+        "id": 4247,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5416,7 +5416,7 @@
         "jsonFixtureType": "TE/edge/Edge39-101",
         "jsonParameters": {
           "points": 129,
-          "host": "10.7.6.20",
+          "host": "10.7.100.13",
           "output": 1,
           "ledOffset": 93,
           "artnetSequence": false,
@@ -5425,7 +5425,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169995,
+        "id": 4249,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5457,7 +5457,7 @@
         "jsonFixtureType": "TE/edge/Edge39-121",
         "jsonParameters": {
           "points": 93,
-          "host": "10.7.6.20",
+          "host": "10.7.100.13",
           "output": 1,
           "ledOffset": 0,
           "artnetSequence": false,
@@ -5466,7 +5466,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169997,
+        "id": 4251,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5507,7 +5507,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 169999,
+        "id": 4253,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5540,7 +5540,7 @@
         "jsonParameters": {
           "points": 121,
           "host": "10.7.4.110",
-          "output": 1,
+          "output": 3,
           "ledOffset": 0,
           "artnetSequence": false,
           "reverse": true,
@@ -5548,7 +5548,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170001,
+        "id": 4255,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5589,7 +5589,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170003,
+        "id": 4257,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5630,7 +5630,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170005,
+        "id": 4259,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5662,7 +5662,7 @@
         "jsonFixtureType": "TE/edge/Edge43-57",
         "jsonParameters": {
           "points": 177,
-          "host": "10.7.6.122",
+          "host": "10.7.100.114",
           "output": 1,
           "ledOffset": 131,
           "artnetSequence": false,
@@ -5671,7 +5671,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170007,
+        "id": 4261,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5703,8 +5703,8 @@
         "jsonFixtureType": "TE/edge/Edge43-86",
         "jsonParameters": {
           "points": 144,
-          "host": "10.7.6.120",
-          "output": 1,
+          "host": "10.7.100.14",
+          "output": 4,
           "ledOffset": 93,
           "artnetSequence": false,
           "reverse": false,
@@ -5712,7 +5712,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170009,
+        "id": 4263,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5753,7 +5753,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170011,
+        "id": 4265,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5794,7 +5794,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170013,
+        "id": 4267,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5835,7 +5835,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170015,
+        "id": 4269,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5867,7 +5867,7 @@
         "jsonFixtureType": "TE/edge/Edge44-101",
         "jsonParameters": {
           "points": 185,
-          "host": "10.7.6.20",
+          "host": "10.7.100.13",
           "output": 1,
           "ledOffset": 222,
           "artnetSequence": false,
@@ -5876,7 +5876,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170017,
+        "id": 4271,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5917,7 +5917,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170019,
+        "id": 4273,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5958,7 +5958,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170021,
+        "id": 4275,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -5999,7 +5999,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170023,
+        "id": 4277,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6040,7 +6040,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170025,
+        "id": 4279,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6081,7 +6081,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170027,
+        "id": 4281,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6122,7 +6122,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170029,
+        "id": 4283,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6163,7 +6163,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170031,
+        "id": 4285,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6204,7 +6204,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170033,
+        "id": 4287,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6245,7 +6245,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170035,
+        "id": 4289,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6286,7 +6286,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170037,
+        "id": 4291,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6327,7 +6327,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170039,
+        "id": 4293,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6368,7 +6368,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170041,
+        "id": 4295,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6409,7 +6409,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170043,
+        "id": 4297,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6450,7 +6450,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170045,
+        "id": 4299,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6491,7 +6491,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170047,
+        "id": 4301,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6532,7 +6532,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170049,
+        "id": 4303,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6573,7 +6573,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170051,
+        "id": 4305,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6614,7 +6614,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170053,
+        "id": 4307,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6655,7 +6655,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170055,
+        "id": 4309,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6696,7 +6696,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170057,
+        "id": 4311,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6737,7 +6737,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170059,
+        "id": 4313,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6778,7 +6778,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170061,
+        "id": 4315,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6819,7 +6819,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170063,
+        "id": 4317,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6860,7 +6860,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170065,
+        "id": 4319,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6901,7 +6901,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170067,
+        "id": 4321,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6942,7 +6942,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170069,
+        "id": 4323,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -6983,7 +6983,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170071,
+        "id": 4325,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7024,7 +7024,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170073,
+        "id": 4327,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7065,7 +7065,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170075,
+        "id": 4329,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7106,7 +7106,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170077,
+        "id": 4331,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7147,7 +7147,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170079,
+        "id": 4333,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7188,7 +7188,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170081,
+        "id": 4335,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7229,7 +7229,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170083,
+        "id": 4337,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7261,8 +7261,8 @@
         "jsonFixtureType": "TE/edge/Edge57-86",
         "jsonParameters": {
           "points": 179,
-          "host": "10.7.6.120",
-          "output": 1,
+          "host": "10.7.100.14",
+          "output": 4,
           "ledOffset": 237,
           "artnetSequence": false,
           "reverse": true,
@@ -7270,7 +7270,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170085,
+        "id": 4339,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7301,7 +7301,7 @@
       {
         "jsonFixtureType": "TE/edge/Edge58-96",
         "jsonParameters": {
-          "points": 67,
+          "points": 90,
           "host": "10.7.13.110",
           "output": 1,
           "ledOffset": 248,
@@ -7311,7 +7311,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170087,
+        "id": 4341,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7352,7 +7352,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170089,
+        "id": 4343,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7393,7 +7393,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170091,
+        "id": 4345,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7434,7 +7434,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170093,
+        "id": 4347,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7466,8 +7466,8 @@
         "jsonFixtureType": "TE/edge/Edge60-125",
         "jsonParameters": {
           "points": 158,
-          "host": "10.7.10.23",
-          "output": 2,
+          "host": "10.7.100.1",
+          "output": 1,
           "ledOffset": 249,
           "artnetSequence": false,
           "reverse": true,
@@ -7475,7 +7475,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170095,
+        "id": 4349,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7516,7 +7516,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170097,
+        "id": 4351,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7557,7 +7557,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170099,
+        "id": 4353,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7594,11 +7594,11 @@
           "ledOffset": 208,
           "artnetSequence": false,
           "reverse": true,
-          "xOffset": 1.0,
+          "xOffset": 9.886881828308105,
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170101,
+        "id": 4355,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7639,7 +7639,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170103,
+        "id": 4357,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7680,7 +7680,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170105,
+        "id": 4359,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7721,7 +7721,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170107,
+        "id": 4361,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7762,7 +7762,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170109,
+        "id": 4363,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7803,7 +7803,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170111,
+        "id": 4365,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7844,7 +7844,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170113,
+        "id": 4367,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7885,7 +7885,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170115,
+        "id": 4369,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7926,7 +7926,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170117,
+        "id": 4371,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -7967,7 +7967,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170119,
+        "id": 4373,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8000,7 +8000,7 @@
         "jsonParameters": {
           "points": 113,
           "host": "10.7.9.13",
-          "output": 1,
+          "output": 2,
           "ledOffset": 0,
           "artnetSequence": false,
           "reverse": true,
@@ -8008,7 +8008,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170121,
+        "id": 4375,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8041,7 +8041,7 @@
         "jsonParameters": {
           "points": 142,
           "host": "10.7.9.13",
-          "output": 1,
+          "output": 2,
           "ledOffset": 113,
           "artnetSequence": false,
           "reverse": false,
@@ -8049,7 +8049,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170123,
+        "id": 4377,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8090,7 +8090,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170125,
+        "id": 4379,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8131,7 +8131,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170127,
+        "id": 4381,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8172,7 +8172,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170129,
+        "id": 4383,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8213,7 +8213,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170131,
+        "id": 4385,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8254,7 +8254,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170133,
+        "id": 4387,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8295,7 +8295,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170135,
+        "id": 4389,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8336,7 +8336,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170137,
+        "id": 4391,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8377,7 +8377,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170139,
+        "id": 4393,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8418,7 +8418,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170141,
+        "id": 4395,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8459,7 +8459,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170143,
+        "id": 4397,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8500,7 +8500,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170145,
+        "id": 4399,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8541,7 +8541,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170147,
+        "id": 4401,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8582,7 +8582,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170149,
+        "id": 4403,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8623,7 +8623,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170151,
+        "id": 4405,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8656,7 +8656,7 @@
         "jsonParameters": {
           "points": 209,
           "host": "10.7.1.22",
-          "output": 1,
+          "output": 2,
           "ledOffset": 208,
           "artnetSequence": false,
           "reverse": true,
@@ -8664,7 +8664,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170153,
+        "id": 4407,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8697,7 +8697,7 @@
         "jsonParameters": {
           "points": 160,
           "host": "10.7.12.110",
-          "output": 1,
+          "output": 2,
           "ledOffset": 166,
           "artnetSequence": false,
           "reverse": true,
@@ -8705,7 +8705,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170155,
+        "id": 4409,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8746,7 +8746,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170157,
+        "id": 4411,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8787,7 +8787,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170159,
+        "id": 4413,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8828,7 +8828,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170161,
+        "id": 4415,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8869,7 +8869,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170163,
+        "id": 4417,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8910,7 +8910,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170165,
+        "id": 4419,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8951,7 +8951,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170167,
+        "id": 4421,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -8992,7 +8992,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170169,
+        "id": 4423,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9033,7 +9033,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170171,
+        "id": 4425,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9066,7 +9066,7 @@
         "jsonParameters": {
           "points": 133,
           "host": "10.7.19.120",
-          "output": 1,
+          "output": 3,
           "ledOffset": 0,
           "artnetSequence": false,
           "reverse": false,
@@ -9074,7 +9074,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170173,
+        "id": 4427,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9106,7 +9106,7 @@
         "jsonFixtureType": "TE/edge/Edge83-114",
         "jsonParameters": {
           "points": 76,
-          "host": "10.7.19.122",
+          "host": "10.7.100.11",
           "output": 1,
           "ledOffset": 132,
           "artnetSequence": false,
@@ -9115,7 +9115,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170175,
+        "id": 4429,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9156,7 +9156,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170177,
+        "id": 4431,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9197,7 +9197,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170179,
+        "id": 4433,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9238,7 +9238,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170181,
+        "id": 4435,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9279,7 +9279,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170183,
+        "id": 4437,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9320,7 +9320,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170185,
+        "id": 4439,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9361,7 +9361,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170187,
+        "id": 4441,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9402,7 +9402,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170189,
+        "id": 4443,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9443,7 +9443,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170191,
+        "id": 4445,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9484,7 +9484,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170193,
+        "id": 4447,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9525,7 +9525,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170195,
+        "id": 4449,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9557,8 +9557,8 @@
         "jsonFixtureType": "TE/edge/Edge89-126",
         "jsonParameters": {
           "points": 145,
-          "host": "10.7.10.23",
-          "output": 2,
+          "host": "10.7.100.1",
+          "output": 1,
           "ledOffset": 0,
           "artnetSequence": false,
           "reverse": false,
@@ -9566,7 +9566,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170197,
+        "id": 4451,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9607,7 +9607,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170199,
+        "id": 4453,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9648,7 +9648,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170201,
+        "id": 4455,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9689,7 +9689,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170203,
+        "id": 4457,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9722,7 +9722,7 @@
         "jsonParameters": {
           "points": 132,
           "host": "10.7.1.22",
-          "output": 1,
+          "output": 2,
           "ledOffset": 0,
           "artnetSequence": false,
           "reverse": false,
@@ -9730,7 +9730,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170205,
+        "id": 4459,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9771,7 +9771,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170207,
+        "id": 4461,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9812,7 +9812,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170209,
+        "id": 4463,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9853,7 +9853,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170211,
+        "id": 4465,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9886,7 +9886,7 @@
         "jsonParameters": {
           "points": 166,
           "host": "10.7.12.110",
-          "output": 1,
+          "output": 2,
           "ledOffset": 0,
           "artnetSequence": false,
           "reverse": true,
@@ -9894,7 +9894,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170213,
+        "id": 4467,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9927,7 +9927,7 @@
         "jsonParameters": {
           "points": 76,
           "host": "10.7.1.22",
-          "output": 1,
+          "output": 2,
           "ledOffset": 132,
           "artnetSequence": false,
           "reverse": true,
@@ -9935,7 +9935,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170215,
+        "id": 4469,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -9968,7 +9968,7 @@
         "jsonParameters": {
           "points": 159,
           "host": "10.7.2.10",
-          "output": 2,
+          "output": 3,
           "ledOffset": 165,
           "artnetSequence": false,
           "reverse": true,
@@ -9976,7 +9976,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170217,
+        "id": 4471,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10017,7 +10017,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170219,
+        "id": 4473,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10050,7 +10050,7 @@
         "jsonParameters": {
           "points": 165,
           "host": "10.7.2.10",
-          "output": 2,
+          "output": 3,
           "ledOffset": 0,
           "artnetSequence": false,
           "reverse": true,
@@ -10058,7 +10058,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170221,
+        "id": 4475,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10099,7 +10099,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170223,
+        "id": 4477,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10140,7 +10140,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170225,
+        "id": 4479,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10181,7 +10181,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170227,
+        "id": 4481,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10222,7 +10222,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170229,
+        "id": 4483,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10263,7 +10263,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170231,
+        "id": 4485,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10304,7 +10304,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170233,
+        "id": 4487,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10345,7 +10345,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170235,
+        "id": 4489,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10386,7 +10386,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170237,
+        "id": 4491,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10427,7 +10427,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170239,
+        "id": 4493,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10468,7 +10468,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170241,
+        "id": 4495,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10509,7 +10509,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170243,
+        "id": 4497,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10550,7 +10550,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170245,
+        "id": 4499,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10591,7 +10591,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170247,
+        "id": 4501,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10632,7 +10632,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170249,
+        "id": 4503,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10673,7 +10673,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170251,
+        "id": 4505,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10714,7 +10714,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170253,
+        "id": 4507,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10746,7 +10746,7 @@
         "jsonFixtureType": "TE/edge/Edge112-114",
         "jsonParameters": {
           "points": 132,
-          "host": "10.7.19.122",
+          "host": "10.7.100.11",
           "output": 1,
           "ledOffset": 0,
           "artnetSequence": false,
@@ -10755,7 +10755,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170255,
+        "id": 4509,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10796,7 +10796,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170257,
+        "id": 4511,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10837,7 +10837,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170259,
+        "id": 4513,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10878,7 +10878,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170261,
+        "id": 4515,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10911,7 +10911,7 @@
         "jsonParameters": {
           "points": 132,
           "host": "10.7.11.121",
-          "output": 1,
+          "output": 2,
           "ledOffset": 260,
           "artnetSequence": false,
           "reverse": true,
@@ -10919,7 +10919,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170263,
+        "id": 4517,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -10960,7 +10960,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170265,
+        "id": 4519,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -11001,7 +11001,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170267,
+        "id": 4521,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -11034,7 +11034,7 @@
         "jsonParameters": {
           "points": 93,
           "host": "10.7.11.121",
-          "output": 1,
+          "output": 2,
           "ledOffset": 167,
           "artnetSequence": false,
           "reverse": false,
@@ -11042,7 +11042,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170269,
+        "id": 4523,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -11083,7 +11083,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170271,
+        "id": 4525,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -11124,7 +11124,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170273,
+        "id": 4527,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -11157,7 +11157,7 @@
         "jsonParameters": {
           "points": 175,
           "host": "10.7.4.10",
-          "output": 1,
+          "output": 2,
           "ledOffset": 0,
           "artnetSequence": false,
           "reverse": true,
@@ -11165,7 +11165,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170275,
+        "id": 4529,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -11206,7 +11206,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170277,
+        "id": 4531,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -11247,7 +11247,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170279,
+        "id": 4533,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -11279,8 +11279,8 @@
         "jsonFixtureType": "TE/edge/Edge125-126",
         "jsonParameters": {
           "points": 104,
-          "host": "10.7.10.23",
-          "output": 2,
+          "host": "10.7.100.1",
+          "output": 1,
           "ledOffset": 145,
           "artnetSequence": false,
           "reverse": true,
@@ -11288,7 +11288,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170281,
+        "id": 4535,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -11329,7 +11329,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170283,
+        "id": 4537,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -11370,7 +11370,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170285,
+        "id": 4539,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -11411,7 +11411,7 @@
           "onCar": true,
           "hasOutput": true
         },
-        "id": 170287,
+        "id": 4541,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -11429,7 +11429,7 @@
           "scale": 1.0,
           "selected": true,
           "deactivate": false,
-          "enabled": true,
+          "enabled": false,
           "brightness": 1.0,
           "identify": false,
           "mute": false,
@@ -11439,7 +11439,8 @@
         },
         "children": {}
       }
-    ]
+    ],
+    "file": "TE_car.lxm"
   },
   "engine": {
     "id": 1,
@@ -11512,9 +11513,9 @@
                   "label": "LX",
                   "mode": 1,
                   "period": 16.0,
-                  "primary/brightness": 91.00000020116568,
-                  "primary/saturation": 61.00000087171793,
-                  "primary/hue": 192.58998466096818,
+                  "primary/brightness": 100.0,
+                  "primary/saturation": 81.05549812316895,
+                  "primary/hue": 0.0,
                   "secondary/brightness": 73.33330535888672,
                   "secondary/saturation": 65.0,
                   "secondary/hue": 204.0
@@ -11533,9 +11534,9 @@
                   "label": "LX",
                   "mode": 1,
                   "period": 16.0,
-                  "primary/brightness": 95.0,
-                  "primary/saturation": 47.0,
-                  "primary/hue": 258.0,
+                  "primary/brightness": 100.0,
+                  "primary/saturation": 100.0,
+                  "primary/hue": 188.27359282970428,
                   "secondary/brightness": 98.33332824707031,
                   "secondary/saturation": 28.333335876464844,
                   "secondary/hue": 273.0
@@ -12502,7 +12503,7 @@
         },
         "parameters": {
           "label": "Tempo",
-          "clockSource": 0,
+          "clockSource": 2,
           "period": 481.02779757142855,
           "bpm": 124.73291627411722,
           "tap": false,
@@ -12848,7 +12849,7 @@
             },
             "parameters": {
               "label": "Input",
-              "device": 4
+              "device": 0
             },
             "children": {}
           },
@@ -13119,22 +13120,22 @@
               "attack": 0.0,
               "release": 215.0309717563906,
               "slope": 6.0,
-              "band-1": 0.34411437141168,
-              "band-2": 0.37685255852848154,
-              "band-3": 0.3840557470406133,
-              "band-4": 0.36529372403953053,
-              "band-5": 0.27675066452172625,
-              "band-6": 0.14492558652688425,
-              "band-7": 0.11543957202266297,
-              "band-8": 0.14928045524948919,
-              "band-9": 0.25966994153602396,
-              "band-10": 0.2992512957901724,
-              "band-11": 0.2970494689735643,
-              "band-12": 0.3292981643159122,
-              "band-13": 0.35037264510998367,
-              "band-14": 0.3374370989361388,
-              "band-15": 0.2925575619744777,
-              "band-16": 0.22835774332267678
+              "band-1": 0.0,
+              "band-2": 0.0,
+              "band-3": 0.0,
+              "band-4": 0.0,
+              "band-5": 0.0,
+              "band-6": 0.0,
+              "band-7": 0.0,
+              "band-8": 0.0,
+              "band-9": 0.0,
+              "band-10": 0.0,
+              "band-11": 0.0,
+              "band-12": 0.0,
+              "band-13": 0.0,
+              "band-14": 0.0,
+              "band-15": 0.0,
+              "band-16": 0.0
             },
             "children": {}
           }
@@ -13253,7 +13254,7 @@
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
                   "modulationsExpanded": true,
-                  "expanded": false,
+                  "expanded": true,
                   "expandedCue": true,
                   "expandedAux": true,
                   "modulationExpanded": false
@@ -13271,14 +13272,14 @@
                   "enabled": true,
                   "locked": false,
                   "speed": 0.0,
-                  "depth": 0.75,
+                  "depth": 0.0,
                   "bias": 0.5,
                   "waveshape": 0,
                   "tempoSync": false,
                   "tempoDivision": 5,
                   "tempoPhaseOffset": 0.0,
-                  "minFrequency": 0.5,
-                  "maxFrequency": 6.0
+                  "minFrequency": 0.55,
+                  "maxFrequency": 30.0
                 },
                 "children": {
                   "modulation": {
@@ -13322,10 +13323,10 @@
                   "midiFilter/velocityRange": 127,
                   "view": 0,
                   "viewPriority": 0,
-                  "enabled": true,
+                  "enabled": false,
                   "locked": false,
-                  "speed": 0.15118425521483736,
-                  "depth": 0.7601222926750779,
+                  "speed": 0.0,
+                  "depth": 0.0,
                   "waveshape": 0,
                   "slope": 5.0,
                   "tempoSync": false,
@@ -20032,7 +20033,7 @@
             },
             "parameters": {
               "label": "LOW",
-              "fader": 1.0,
+              "fader": 0.0,
               "arm": false,
               "selected": false,
               "stopClips": false,
@@ -29520,7 +29521,7 @@
               "viewPatternLabel": false
             },
             "parameters": {
-              "label": "BOOTUP_NDI",
+              "label": "BOOTUP-NDI",
               "fader": 0.0,
               "arm": false,
               "selected": false,
@@ -29680,12 +29681,12 @@
             },
             "parameters": {
               "label": "BOOTUP",
-              "fader": 0.0,
+              "fader": 0.009999990463256836,
               "arm": false,
               "selected": false,
               "stopClips": false,
-              "enabled": true,
-              "cue": true,
+              "enabled": false,
+              "cue": false,
               "aux": false,
               "crossfadeGroup": 0,
               "blendMode": 0,
@@ -29695,7 +29696,7 @@
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
-              "view": 5,
+              "view": 0,
               "compositeMode": 0,
               "compositeDampingEnabled": true,
               "compositeDampingTimeSecs": 0.1,
@@ -29705,7 +29706,7 @@
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 0,
+              "focusedPattern": 2,
               "triggerPatternCycle": false
             },
             "children": {
@@ -29728,7 +29729,7 @@
             },
             "effects": [],
             "clips": [],
-            "patternIndex": 0,
+            "patternIndex": 2,
             "patterns": [
               {
                 "id": 285372,
@@ -29851,10 +29852,10 @@
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
                   "setDefaults": false,
-                  "te_speed": 0.6943768269490409,
-                  "te_xpos": 0.17476562457159162,
+                  "te_speed": 1.2874825924017461,
+                  "te_xpos": -0.35187499271705747,
                   "te_ypos": 0.24078125157393515,
-                  "te_size": 1.0,
+                  "te_size": 0.8212264660280197,
                   "te_quantity": 4.0,
                   "te_spin": 0.04244243795135705,
                   "te_brightness": 1.0,
@@ -29862,14 +29863,14 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "te_level": 0.22597656203433872,
+                  "te_level": 0.21691406229510904,
                   "te_freq": 0.1451562494970858,
                   "te_twist": false,
                   "panic": false,
                   "te_color/brightness": 100.0,
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
-                  "te_color/solidSource": 1,
+                  "te_color/solidSource": 0,
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0
                 },
@@ -29955,13 +29956,13 @@
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "te_level": 1.213085934893752,
-                  "te_freq": 0.8767968748696149,
+                  "te_freq": 1.0562499986961484,
                   "te_twist": false,
                   "panic": false,
                   "te_color/brightness": 100.0,
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
-                  "te_color/solidSource": 1,
+                  "te_color/solidSource": 0,
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0,
                   "width": 0.5
@@ -30024,11 +30025,11 @@
             },
             "parameters": {
               "label": "---",
-              "fader": 0.0,
+              "fader": 1.0,
               "arm": false,
               "selected": false,
               "stopClips": false,
-              "enabled": false,
+              "enabled": true,
               "cue": false,
               "aux": false,
               "crossfadeGroup": 0,
@@ -30072,8 +30073,63 @@
             },
             "effects": [],
             "clips": [],
-            "patternIndex": -1,
-            "patterns": []
+            "patternIndex": 0,
+            "patterns": [
+              {
+                "id": 293151,
+                "class": "titanicsend.pattern.util.PanelDebugPattern",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true,
+                  "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "PanelDebug",
+                  "midiFilter/enabled": true,
+                  "midiFilter/channel": 16,
+                  "midiFilter/minNote": 0,
+                  "midiFilter/noteRange": 128,
+                  "midiFilter/minVelocity": 1,
+                  "midiFilter/velocityRange": 127,
+                  "view": 0,
+                  "viewPriority": 0,
+                  "enabled": true,
+                  "recall": false,
+                  "compositeMode": 0,
+                  "compositeLevel": 1.0,
+                  "hasCustomCycleTime": false,
+                  "customCycleTimeSecs": 60.0,
+                  "setDefaults": false,
+                  "start": 0,
+                  "spacing": 3
+                },
+                "children": {
+                  "modulation": {
+                    "id": 293152,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1,
+                "effects": [],
+                "defaults": {}
+              }
+            ]
           },
           {
             "id": 149756,
@@ -33799,11 +33855,11 @@
                   "te_color/solidSource": 1,
                   "te_color/blendMode": 0,
                   "te_color/offset": 0.0,
-                  "Glow": 0.1,
-                  "Energy": 0.0,
-                  "Width": 0.5,
                   "Double Speed": false,
-                  "Double Layer": false
+                  "Glow": 0.1,
+                  "Double Layer": false,
+                  "Energy": 0.0,
+                  "Width": 0.5
                 },
                 "children": {
                   "modulation": {
@@ -35926,7 +35982,7 @@
         },
         "parameters": {
           "label": "Output",
-          "enabled": false,
+          "enabled": true,
           "brightness": 1.0,
           "fps": 0.0,
           "gamma": 1.0,
@@ -35999,6 +36055,12 @@
         "children": {},
         "inputs": [
           {
+            "name": "Director",
+            "channel": false,
+            "control": true,
+            "sync": false
+          },
+          {
             "name": "FoH: APC40 mkII",
             "channel": false,
             "control": true,
@@ -36024,6 +36086,13 @@
           }
         ],
         "surfaces": [
+          {
+            "class": "titanicsend.lx.DirectorAPCminiMk2",
+            "name": "Director",
+            "settings": {
+              "faderMode": 2
+            }
+          },
           {
             "name": "FoH: APC40 mkII",
             "settings": {
@@ -36157,7 +36226,7 @@
           "receiveActive": true,
           "transmitHost": "10.1.3.1",
           "transmitPort": 7890,
-          "transmitActive": false,
+          "transmitActive": true,
           "logInput": false,
           "logOutput": false
         },
@@ -36320,9 +36389,9 @@
         "depth": 1.0,
         "camera": {
           "active": false,
-          "radius": 447.5244190621947,
-          "theta": 6.434845262207091,
-          "phi": -8.112134472001344,
+          "radius": 598.0412796041986,
+          "theta": 1.225867965258658,
+          "phi": 6.582172475289553,
           "x": 25.405086532817222,
           "y": 168.9212394368369,
           "z": 19.341244314797223
@@ -36330,9 +36399,9 @@
         "cue": [
           {
             "active": false,
-            "radius": 447.5244190621947,
-            "theta": 6.434845262207091,
-            "phi": -8.112134472001344,
+            "radius": 598.0412796041986,
+            "theta": 1.225867965258658,
+            "phi": 6.582172475289553,
             "x": 25.405086532817222,
             "y": 168.9212394368369,
             "z": 19.341244314797223
