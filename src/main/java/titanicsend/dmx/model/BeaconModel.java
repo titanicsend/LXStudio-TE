@@ -39,22 +39,27 @@ public class BeaconModel extends DmxModel {
   public static final int INDEX_PT_SPEED = 17;
   public static final int INDEX_CONTROL = 18;
 
-  public static final int TILT_MIN = -124;
-  public static final int TILT_MAX = 124;
+  public static final int TILT_MIN = -100;
+  public static final int TILT_MAX = 95;
 
   public static final int SHUTTER_OPEN = 32;
+  public static final int STROBE_MIN = 64;
+  public static final int STROBE_MAX = 95;
 
   public static final double DIMMER_NORMALIZED_0 = 0;
   public static final double DIMMER_NORMALIZED_50 = 0.5;
   public static final double DIMMER_NORMALIZED_100 = 1;
 
   public static final int CONTROL_NORMAL = 0;
+  public static final int DEFAULT_FOCUS = 0;
 
   public static class BeaconConfig extends DmxCommonConfig {
     public float tiltLimit;
 
     public BeaconConfig setTiltLimit(float tiltLimit) {
       this.tiltLimit = tiltLimit;
+      this.channel = 0;
+      this.universe = 1;
       return this;
     }
   }
@@ -85,10 +90,14 @@ public class BeaconModel extends DmxModel {
 
   private void initialize(float tiltLimit){
     DmxCompoundParameter pan = new DmxCompoundParameter("Pan").setNumBytes(2);
+/*
     DmxCompoundParameter tilt =
-        new DmxCompoundParameter("Tilt", TILT_MIN, TILT_MIN, TILT_MAX).setNumBytes(2);
+      new DmxCompoundParameter("Tilt", 0, TILT_MIN, TILT_MAX).setNumBytes(2);
+*/
+    DmxCompoundParameter tilt =
+      new DmxCompoundParameter("Tilt", .5, 0, 1).setNumBytes(2);
     // Apply tilt limit from config file to beacon
-    tilt.getLimiter().setLimits(0 - tiltLimit, tiltLimit).setLimitType(LimitType.ZOOM);
+    //tilt.getLimiter().setLimits(0 - tiltLimit, tiltLimit).setLimitType(LimitType.ZOOM);
     DmxCompoundParameter cyan = new DmxCompoundParameter("Cyan", 0, 0, 100);
     DmxCompoundParameter magenta = new DmxCompoundParameter("Magenta", 0, 0, 100);
     DmxCompoundParameter yellow = new DmxCompoundParameter("Yellow", 0, 0, 100);
@@ -232,7 +241,7 @@ public class BeaconModel extends DmxModel {
             new DmxDiscreteParameterOption[] {
               new DmxDiscreteParameterOption("Closed", 0),
               new DmxDiscreteParameterOption("Open", 32),
-              new DmxDiscreteParameterOption("Strobe slow-fast", 64, 95),
+              new DmxDiscreteParameterOption("Strobe slow-fast", STROBE_MIN, STROBE_MAX),
               new DmxDiscreteParameterOption("Open", 96, 127),
               new DmxDiscreteParameterOption("Pulse in sequences", 128, 159), // is range?
               new DmxDiscreteParameterOption("Open", 160),
