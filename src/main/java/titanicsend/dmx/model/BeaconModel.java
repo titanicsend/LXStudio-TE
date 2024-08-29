@@ -2,6 +2,7 @@ package titanicsend.dmx.model;
 
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
+import heronarts.lx.utils.LXUtils;
 import titanicsend.dmx.DmxBuffer;
 import titanicsend.dmx.parameter.DmxCompoundParameter;
 import titanicsend.dmx.parameter.DmxDiscreteParameter;
@@ -90,14 +91,12 @@ public class BeaconModel extends DmxModel {
 
   private void initialize(float tiltLimit){
     DmxCompoundParameter pan = new DmxCompoundParameter("Pan").setNumBytes(2);
-/*
-    DmxCompoundParameter tilt =
-      new DmxCompoundParameter("Tilt", 0, TILT_MIN, TILT_MAX).setNumBytes(2);
-*/
     DmxCompoundParameter tilt =
       new DmxCompoundParameter("Tilt", .5, 0, 1).setNumBytes(2);
     // Apply tilt limit from config file to beacon
-    //tilt.getLimiter().setLimits(0 - tiltLimit, tiltLimit).setLimitType(LimitType.ZOOM);
+    tilt.getLimiter()
+      .setLimits(.5 - LXUtils.max(0,tiltLimit / 2), Math.min(1, .5 + (tiltLimit / 2)))
+      .setLimitType(LimitType.ZOOM);
     DmxCompoundParameter cyan = new DmxCompoundParameter("Cyan", 0, 0, 100);
     DmxCompoundParameter magenta = new DmxCompoundParameter("Magenta", 0, 0, 100);
     DmxCompoundParameter yellow = new DmxCompoundParameter("Yellow", 0, 0, 100);
