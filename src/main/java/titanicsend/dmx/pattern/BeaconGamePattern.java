@@ -16,6 +16,7 @@ import titanicsend.dmx.model.BeaconModel;
 import titanicsend.dmx.model.ChauvetBeamQ60Model;
 import titanicsend.dmx.model.DmxModel;
 import titanicsend.dmx.parameter.DmxCompoundParameter;
+import titanicsend.dmx.parameter.DmxDiscreteParameter;
 import titanicsend.gamepad.GamepadEngine;
 import titanicsend.ui.UIUtils;
 
@@ -23,7 +24,9 @@ import titanicsend.ui.UIUtils;
 public class BeaconGamePattern extends BeaconPattern
         implements UIDeviceControls<BeaconGamePattern>, GamepadEngine.Gamepad.GamepadListener {
 
-    public final DiscreteParameter input = new DiscreteParameter("Input", 16)
+    public static final float TRIGGER_THRESHOLD = 0.1f;
+
+    public final DiscreteParameter input = new DiscreteParameter("Gamepad", 16)
             .setDescription("Gamepad input number 1-16");
 
     private final GamepadEngine.Gamepad gamepad;
@@ -31,7 +34,8 @@ public class BeaconGamePattern extends BeaconPattern
     public BeaconGamePattern(LX lx) {
         super(lx);
 
-        addParameter("Gamepad", this.input);
+        this.pan.setNormalized(0.5);
+        this.tilt.setNormalized(0.5);
 
         // TODO: remove visual controls from game pattern
         addParameter("Pan", this.pan);
@@ -54,6 +58,8 @@ public class BeaconGamePattern extends BeaconPattern
         addParameter("ptSpd", this.ptSpeed);
         addParameter("Control", this.control); // Use caution!
 
+        addParameter("Gamepad", this.input);
+
         this.gamepad = TEApp.gamepadEngine.createGamepad();
         this.gamepad.addListener(this);
     }
@@ -67,66 +73,141 @@ public class BeaconGamePattern extends BeaconPattern
 
     private static final int ptSpeedTick = 5;
 
-    @Override
-    public void onGamepadParameterChanged(LXParameter p) {
+  @Override
+  public void onGamepadParameterChanged(LXParameter p) {
+      // Axis parameters
       if (p == this.gamepad.axisLeftX) {
         gamepadAxisToBeaconParameter(this.pan, this.gamepad.axisLeftX);
-      } else if (p == this.gamepad.axisRightX) {
+      } else if (p == this.gamepad.axisRightY) {
         gamepadAxisToBeaconParameter(this.tilt, this.gamepad.axisRightY);
-      } else if (p == this.gamepad.dpUp) {
-        if (this.ptSpeed.getDmxValue() < (225-ptSpeedTick)) {
-          this.ptSpeed.increment(ptSpeedTick);
+
+      // Button pairs for Up/Down discrete parameter options.
+      // These cycle through a hardcoded short list.
+
+      // DPad up/down
+      } else if (p == this.gamepad.dpUp && this.gamepad.dpUp.isOn()) {
+        incrementBeaconParameter(this.gobo1, this.gobo1CycleValues);
+      } else if (p == this.gamepad.dpDown && this.gamepad.dpDown.isOn()) {
+        decrementBeaconParameter(this.gobo1, this.gobo1CycleValues);
+
+      // DPad right/left
+      } else if (p == this.gamepad.dpRight && this.gamepad.dpRight.isOn()) {
+        incrementBeaconParameter(this.gobo2, this.gobo2CycleValues);
+      } else if (p == this.gamepad.dpLeft && this.gamepad.dpLeft.isOn()) {
+        decrementBeaconParameter(this.gobo2, this.gobo2CycleValues);
+
+      // Shoulder right/left
+      } else if (p == this.gamepad.rightShoulder && this.gamepad.rightShoulder.isOn()) {
+          incrementBeaconParameter(this.colorWheel, this.clrWheelCycleValues);
+      } else if (p == this.gamepad.leftShoulder && this.gamepad.leftShoulder.isOn()) {
+        decrementBeaconParameter(this.colorWheel, this.clrWheelCycleValues);
+
+      // A/B
+      } else if (p == this.gamepad.a && this.gamepad.a.isOn()) {
+        incrementBeaconParameter(this.prism1, this.prism1.getDmxValuesInt());
+      } else if (p == this.gamepad.b && this.gamepad.b.isOn()) {
+        decrementBeaconParameter(this.prism1, this.prism1.getDmxValuesInt());
+
+      // X/Y
+      } else if (p == this.gamepad.x && this.gamepad.x.isOn()) {
+        if (this.gobo1rotation.getDmxValueLimited() < 255) {
+          this.gobo1rotation.incrementNormalized(3 / 255.);
         }
-//        this.ptSpeed.setNormalized(this.ptSpeed.getNormalized() + .05);
-      } else if (p == this.gamepad.dpDown) {
-          if (this.ptSpeed.getDmxValue() > ptSpeedTick) {
-              this.ptSpeed.decrement(ptSpeedTick);
-          }
-//        this.ptSpeed.setNormalized(this.ptSpeed.getNormalized() - .05);
+      } else if (p == this.gamepad.y && this.gamepad.y.isOn()) {
+        if (this.gobo1rotation.getDmxValueLimited() > 128) {
+          this.gobo1rotation.incrementNormalized(-(3 / 255.));
+        }
       }
-      // TODO: map other buttons to beacon parameters on playa!
+
+      // LX.log("Gamepad parameter changed: " + p.getLabel() + " -> " + p.getValue());
+  }
+
+    private void incrementBeaconParameter(DmxDiscreteParameter parameter, int[] options) {
+      int value = parameter.getDmxValue();
+      int iNext = 0;
+      for (int i = 0; i < options.length; i++) {
+        if (options[i] == value) {
+          iNext = (i + 1) % options.length;
+          break;
+        }
+      }
+      parameter.setDmxValue(options[iNext]);
+    }
+
+    private void decrementBeaconParameter(DmxDiscreteParameter parameter, int[] options) {
+        int value = parameter.getDmxValue();
+        int iPrev = 0;
+        for (int i = 0; i < options.length; i++) {
+            if (options[i] == value) {
+                iPrev = i - 1;
+                if (iPrev < 0) {
+                    iPrev = options.length - 1;
+                }
+                break;
+            }
+        }
+        parameter.setDmxValue(options[iPrev]);
     }
 
     private void gamepadAxisToBeaconParameter(DmxCompoundParameter target, LXNormalizedParameter source) {
       target.setValue(target.range.normalizedToValue(source.getNormalized(), 3, BoundedParameter.NormalizationCurve.BIAS_CENTER));
     }
 
-    private int shutterValue = 32;
+    // Values of trigger axis
+    private int shutterValue = BeaconModel.SHUTTER_OPEN;
+    private int focusValue = BeaconModel.DEFAULT_FOCUS;
+
+    private static final int STROBE_MIN = 75;   // A little faster than the minimum
+    private static final int STROBE_MAX = BeaconModel.STROBE_MAX;
 
     @Override
     public void run(double deltaMs) {
         float rightTrigger = this.gamepad.axisRightTrigger.getNormalizedf();
-        if (rightTrigger < .1) {
-            shutterValue = 32;
+        if (rightTrigger < TRIGGER_THRESHOLD) {
+            shutterValue = BeaconModel.SHUTTER_OPEN;
         } else {
-            shutterValue = (int) ((rightTrigger - .1) * (95-75) / (1 - .1) + 75);
+            shutterValue = (int) ((rightTrigger - TRIGGER_THRESHOLD) * (STROBE_MAX-STROBE_MIN) / (1 - TRIGGER_THRESHOLD) + STROBE_MIN);
         }
+        this.shutter.setDmxValue(shutterValue);
+
+        float leftTrigger = this.gamepad.axisLeftTrigger.getNormalizedf();
+        if (leftTrigger < TRIGGER_THRESHOLD) {
+            focusValue = BeaconModel.DEFAULT_FOCUS;
+        } else {
+            focusValue = (int) ((leftTrigger - TRIGGER_THRESHOLD) / (1 - TRIGGER_THRESHOLD) * 255);
+        }
+        this.focus.setDmxValue(focusValue);
 
         // Reminder: Don't use Normalized for DmxDiscreteParameters,
         // they likely do not scale linearly to 0-255.
-        double pan = this.pan.getNormalized();
-        double tilt = this.tilt.getNormalized();
         double cyan = this.cyan.getNormalized();
         double magenta = this.magenta.getNormalized();
         double yellow = this.yellow.getNormalized();
         int colorWheel = this.colorWheel.getDmxValue();
+        double dimmer = this.dimmer.getNormalized();
+        int control = this.control.getDmxValue();
+
+        // For tactile control
+        double pan = this.pan.getNormalized();
+        double tilt = this.tilt.getNormalized();
+        double focus = this.focus.getNormalized();
+        int shutter = this.shutter.getDmxValue();
+
         int gobo1 = this.gobo1.getDmxValue();
         double gobo1rotate = this.gobo1rotation.getNormalized();
         int gobo2 = this.gobo2.getDmxValue();
         int prism1 = this.prism1.getDmxValue();
         double prism1rotate = this.prism1rotation.getNormalized();
         double prism2rotate = this.prism2rotation.getNormalized();
-        double focus = this.focus.getNormalized();
-        int shutter = this.shutter.getDmxValue();
-        double dimmer = this.dimmer.getNormalized();
         double frost1 = this.frost1.getNormalized();
         double frost2 = this.frost2.getNormalized();
         int ptSpd = this.ptSpeed.getDmxValue();
-        int control = this.control.getDmxValue();
+
+        boolean invertPan = false;
 
         for (DmxModel d : this.modelTE.getBeacons()) {
             if (d instanceof BeaconModel) {
-                setDmxNormalized(d, BeaconModel.INDEX_PAN, pan);
+                setDmxNormalized(d, BeaconModel.INDEX_PAN, invertPan ? pan : (1 - pan));
                 setDmxNormalized(d, BeaconModel.INDEX_TILT, tilt);
                 setDmxNormalized(d, BeaconModel.INDEX_CYAN, cyan);
                 setDmxNormalized(d, BeaconModel.INDEX_MAGENTA, magenta);
@@ -146,8 +227,9 @@ public class BeaconGamePattern extends BeaconPattern
                 setDmxValue(d, BeaconModel.INDEX_PT_SPEED, ptSpd);
                 // CONTROL_NORMAL is a default value so isn't required to be set by pattern
                 setDmxValue(d, BeaconModel.INDEX_CONTROL, control);
+
             } else if (d instanceof ChauvetBeamQ60Model) {
-                setDmxNormalized(d, ChauvetBeamQ60Model.INDEX_PAN, pan);
+                setDmxNormalized(d, BeaconModel.INDEX_PAN, invertPan ? pan : (1 - pan));
                 setDmxNormalized(d, ChauvetBeamQ60Model.INDEX_TILT, tilt);
                 setDmxValue(d, ChauvetBeamQ60Model.INDEX_PT_SPEED, ptSpd);
                 setDmxValue(d, ChauvetBeamQ60Model.INDEX_SHUTTER, shutterValue);
@@ -157,6 +239,7 @@ public class BeaconGamePattern extends BeaconPattern
                 setDmxNormalized(d, ChauvetBeamQ60Model.INDEX_GREEN, greenNormalized(color));
                 setDmxNormalized(d, ChauvetBeamQ60Model.INDEX_BLUE, blueNormalized(color));
             }
+            invertPan = !invertPan;
         }
     }
 

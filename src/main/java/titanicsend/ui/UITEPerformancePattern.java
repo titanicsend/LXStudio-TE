@@ -85,10 +85,13 @@ public class UITEPerformancePattern
     // Note! It's important to remove these controls one at a time from the container, then dispose each one.
     // The container's children list is a CopyOnWriteArrayList, also accessed by the drawing thread.
     // Don't call container.removeAllChildren() from the engine thread, it is not thread safe.
-    for (UI2dComponent control : this.controls) {
-      control.removeFromContainer().dispose();
+/*    for (UI2dComponent control : this.controls) {
+      control.removeFromContainer();
+      control.dispose();
     }
-    this.controls.clear();
+    this.controls.clear();*/
+    this.controlsContainer.removeAllChildren();
+    controls.clear();
   }
 
   private void buildControls() {

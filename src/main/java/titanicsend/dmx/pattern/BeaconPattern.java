@@ -27,14 +27,21 @@ public abstract class BeaconPattern extends DmxPattern {
 
   protected final TEWholeModel modelTE;
 
+  public final int[] gobo1CycleValues = new int[] {0,22,32,42,52,62,72,82,92};
+  public final int[] gobo2CycleValues = new int[] {0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85};
+  public final int[] clrWheelCycleValues = new int[] {0,16,23,30,37,44,51,58,65,79,86,93,100,107,114};
+
   // Don't mind this code duplication with the model class.
   // It's just a coincidence.
 
   DmxCompoundParameter pan = new DmxCompoundParameter("Pan").setNumBytes(2);
+/*
   DmxCompoundParameter tilt =
-      new DmxCompoundParameter(
-              "Tilt", BeaconModel.TILT_MIN, BeaconModel.TILT_MIN, BeaconModel.TILT_MAX)
+      new DmxCompoundParameter("Tilt", BeaconModel.TILT_MIN, BeaconModel.TILT_MIN, BeaconModel.TILT_MAX)
           .setNumBytes(2);
+*/
+  DmxCompoundParameter tilt =
+    new DmxCompoundParameter("Tilt", .5, 0, 1).setNumBytes(2);
   DmxCompoundParameter cyan = new DmxCompoundParameter("Cyan", 0, 0, 100);
   DmxCompoundParameter magenta = new DmxCompoundParameter("Magenta", 0, 0, 100);
   DmxCompoundParameter yellow = new DmxCompoundParameter("Yellow", 0, 0, 100);
@@ -94,9 +101,10 @@ public abstract class BeaconPattern extends DmxPattern {
             new DmxDiscreteParameterOption("Idle", 222),
             new DmxDiscreteParameterOption("Scroll CCW slow-fast", 224, 255)
           });
+
   // Could use parameter options if they worked with Compound type
   DmxCompoundParameter gobo1rotation =
-      new DmxCompoundParameter("G1 Rotation", 0, 0, 255).setNumBytes(2);
+      new DmxCompoundParameter("G1 Rotation", 190, 0, 255).setNumBytes(2);
   // "Fixed Gobo"
   DmxDiscreteParameter gobo2 =
       new DmxDiscreteParameter(

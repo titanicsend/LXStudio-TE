@@ -57,6 +57,7 @@ import titanicsend.dmx.effect.BeaconStrobeEffect;
 import titanicsend.dmx.pattern.*;
 import titanicsend.effect.GlobalPatternControl;
 import titanicsend.effect.RandomStrobeEffect;
+import titanicsend.effect.SimplifyEffect;
 import titanicsend.gamepad.GamepadEngine;
 import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lasercontrol.TELaserTask;
@@ -94,6 +95,7 @@ import titanicsend.pattern.sinas.LightBeamsAudioReactivePattern;
 import titanicsend.pattern.sinas.TdNdiPattern;
 import titanicsend.pattern.sinas.TdStableDiffusionPattern;
 import titanicsend.pattern.tom.*;
+import titanicsend.pattern.util.PanelDebugPattern;
 import titanicsend.pattern.util.TargetPixelStamper;
 import titanicsend.pattern.will.PowerDebugger;
 import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
@@ -193,6 +195,7 @@ public class TEApp extends LXStudio {
       this.glEngine = new GLEngine(lx,glRenderWidth,glRenderHeight,staticModel);
       gamepadEngine = new GamepadEngine(lx);
       this.presetEngine = new PresetEngine(lx);
+      this.presetEngine.openFile(lx.getMediaFile("Presets/UserPresets/BM24.userPresets"));
 
       // Super Modulator midi controller
       this.superMod = new SuperMod(lx);
@@ -299,6 +302,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(TriangleInfinityWaveform.class);
       lx.registry.addPattern(TriangleInfinityRadialWaveform.class);
       lx.registry.addPattern(SketchDemo.class);
+      lx.registry.addPattern(SketchStem.class);
 
       // Examples for teaching and on-boarding developers
       lx.registry.addPattern(BasicRainbowPattern.class);
@@ -328,6 +332,7 @@ public class TEApp extends LXStudio {
 
       // Effects
       lx.registry.addEffect(DirectorEffect.class);
+      lx.registry.addEffect(SimplifyEffect.class);
 
       // DMX effects
       lx.registry.addEffect(BeaconStrobeEffect.class);
@@ -377,6 +382,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(ModelDebugger.class);
       lx.registry.addPattern(PowerDebugger.class);
       // lx.registry.addPattern(ModuleEditor.class);
+      lx.registry.addPattern(PanelDebugPattern.class);
       lx.registry.addPattern(SignalDebugger.class);
       lx.registry.addPattern(HandTracker.class);
       lx.registry.addPattern(TargetPixelStamper.class);
@@ -894,7 +900,7 @@ public class TEApp extends LXStudio {
 
   @Override
   protected void onGamepadButtonReleased(GamepadEvent gamepadEvent, int button) {
-    this.gamepadEngine.lxGamepadButtonPressed(gamepadEvent, button);
+    this.gamepadEngine.lxGamepadButtonReleased(gamepadEvent, button);
   }
 
   @Override

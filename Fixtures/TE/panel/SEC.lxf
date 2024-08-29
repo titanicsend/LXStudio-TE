@@ -11,11 +11,11 @@
        new controller output. Then click [Reload Fixture File] at the bottom of the Inspector section in Chromatik.
        CAUTION: LXM model files containing this fixture might not update to the new defaults. */
 
-    "strand1host": { default: "10.7.9.23", type: "string", label: "S1 Host", description: "Strand 1 Controller IP address or hostname" },
+    "strand1host": { default: "10.7.100.17", type: "string", label: "S1 Host", description: "Strand 1 Controller IP address or hostname" },
     "strand1output": { default: 1, type: "int", min: 1, max: 4, label: "S1 Output", description: "Strand 1 Controller Output Number 1-4" },
-    "strand2host": { default: "10.7.9.23", type: "string", label: "S2 Host", description: "Strand 2 Controller IP address or hostname" },
+    "strand2host": { default: "10.7.100.17", type: "string", label: "S2 Host", description: "Strand 2 Controller IP address or hostname" },
     "strand2output": { default: 2, type: "int", min: 1, max: 4, label: "S2 Output", description: "Strand 2 Controller Output Number 1-4" },
-    "strand3host": { default: "10.7.9.23", type: "string", label: "S3 Host", description: "Strand 3 Controller IP address or hostname" },
+    "strand3host": { default: "10.7.100.17", type: "string", label: "S3 Host", description: "Strand 3 Controller IP address or hostname" },
     "strand3output": { default: 3, type: "int", min: 1, max: 4, label: "S3 Output", description: "Strand 3 Controller Output Number 1-4" },
 
     "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
@@ -92,13 +92,13 @@
         { componentIndex: 2, reverse: false, padPre: 1 },
         { componentIndex: 3, reverse: true },
         { componentIndex: 4, reverse: false },
-        { componentIndex: 5, reverse: true, length: 29 }
+        { componentIndex: 5, reverse: true, start: 9, num: 29 }
       ]
     },
                   
     { host: "$strand2host", universe: "$strand2output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
       segments: [
-        { componentIndex: 5, reverse: true, start: 29 },
+        { componentIndex: 5, reverse: true, num: 9 },
         { componentIndex: 6, reverse: false, padPre: 1 },
         { componentIndex: 7, reverse: true },
         { componentIndex: 8, reverse: false, padPre: 1 },
@@ -107,7 +107,7 @@
         { componentIndex: 11, reverse: true },
         { componentIndex: 12, reverse: false, padPre: 1 },
         { componentIndex: 13, reverse: true },
-        { componentIndex: 14, reverse: false, length: 2 }
+        { componentIndex: 14, reverse: false, num: 2 }
       ]
     },
                   

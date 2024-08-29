@@ -17,7 +17,7 @@ import java.util.Scanner;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_LAST;
 import static org.lwjgl.glfw.GLFW.glfwUpdateGamepadMappings;
 
-/**
+/**x
  * A relay between Chromatik system gamepad events and consumers such as patterns.
  * Two mechanisms are available for classes wishing to use gamepad data:
  * 1. Listen to GamepadEngine to be notified of raw gamepad events.
@@ -221,8 +221,8 @@ public class GamepadEngine extends LXComponent {
     public final BoundedParameter axisRightX = new BoundedParameter("Axis R-X", 0, -1, 1);
     public final BoundedParameter axisRightY = new BoundedParameter("Axis R-Y", 0, -1, 1);
 
-    public final BoundedParameter axisLeftTrigger = new BoundedParameter("Axis R-Y", 0, -1, 1);
-    public final BoundedParameter axisRightTrigger = new BoundedParameter("Axis R-Y", 0, -1, 1);
+    public final BoundedParameter axisLeftTrigger = new BoundedParameter("Axis LTrig-Y", 0, -1, 1);
+    public final BoundedParameter axisRightTrigger = new BoundedParameter("Axis RTrig-Y", 0, -1, 1);
 
     public final BooleanParameter a = new BooleanParameter("A");
     public final BooleanParameter b = new BooleanParameter("B");
