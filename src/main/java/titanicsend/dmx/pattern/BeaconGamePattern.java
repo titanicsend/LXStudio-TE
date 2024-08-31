@@ -3,10 +3,13 @@ package titanicsend.dmx.pattern;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
+import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.BoundedParameter;
+import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
 import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.parameter.TriggerParameter;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.TEApp;
 import heronarts.lx.studio.ui.device.UIDevice;
@@ -24,12 +27,36 @@ import titanicsend.ui.UIUtils;
 public class BeaconGamePattern extends BeaconPattern
         implements UIDeviceControls<BeaconGamePattern>, GamepadEngine.Gamepad.GamepadListener {
 
-    public static final float TRIGGER_THRESHOLD = 0.1f;
+  public static final double TRIGGER_THRESHOLD = 0.1;
+  public static final double STICK_THRESHOLD = 0.02;
 
-    public final DiscreteParameter input = new DiscreteParameter("Gamepad", 16)
-            .setDescription("Gamepad input number 1-16");
+  public final DiscreteParameter input = new DiscreteParameter("Gamepad", 16)
+    .setDescription("Gamepad input number 1-16");
 
-    private final GamepadEngine.Gamepad gamepad;
+  public final CompoundParameter stickPan = new CompoundParameter("StickPan", 0, -1, 1)
+    .setDescription("Pan joystick input")
+    .setExponent(2)
+    .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
+    .setPolarity(LXParameter.Polarity.BIPOLAR);
+
+
+  public final CompoundParameter stickTilt = new CompoundParameter("StickTilt", 0, -1, 1)
+    .setDescription("Tilt joystick input")
+    .setExponent(2)
+    .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
+    .setPolarity(LXParameter.Polarity.BIPOLAR);
+
+  // Max pan/tilt speed
+  public static final double STICK_ROTATIONS_PER_BEAT = .25;
+  public final CompoundParameter jerk =
+    new CompoundParameter("Jerk", STICK_ROTATIONS_PER_BEAT, STICK_ROTATIONS_PER_BEAT, 1)
+    .setDescription("Pan/Tilt sensitivity, aka Jerk")
+    .setExponent(2);
+
+  public final TriggerParameter resetPos = new TriggerParameter("ResetPos", this::resetPosition)
+    .setDescription("Reset pan, tilt, and gobo rotation");
+
+  private final GamepadEngine.Gamepad gamepad;
 
     public BeaconGamePattern(LX lx) {
         super(lx);
@@ -38,6 +65,8 @@ public class BeaconGamePattern extends BeaconPattern
         this.tilt.setNormalized(0.5);
 
         // TODO: remove visual controls from game pattern
+        addParameter("stickL", this.stickPan);
+        addParameter("stickR", this.stickTilt);
         addParameter("Pan", this.pan);
         addParameter("Tilt", this.tilt);
         addParameter("Cyan", this.cyan);
@@ -59,6 +88,7 @@ public class BeaconGamePattern extends BeaconPattern
         addParameter("Control", this.control); // Use caution!
 
         addParameter("Gamepad", this.input);
+        addParameter("reset", this.resetPos);
 
         this.gamepad = TEApp.gamepadEngine.createGamepad();
         this.gamepad.addListener(this);
@@ -77,9 +107,19 @@ public class BeaconGamePattern extends BeaconPattern
   public void onGamepadParameterChanged(LXParameter p) {
       // Axis parameters
       if (p == this.gamepad.axisLeftX) {
-        gamepadAxisToBeaconParameter(this.pan, this.gamepad.axisLeftX);
-      } else if (p == this.gamepad.axisRightY) {
-        gamepadAxisToBeaconParameter(this.tilt, this.gamepad.axisRightY);
+        this.stickPan.setNormalized(this.gamepad.axisLeftX.getNormalized());
+      } else if (p == this.gamepad.axisLeftY) {
+        this.stickTilt.setNormalized(this.gamepad.axisLeftY.getNormalized());
+      } else if (p == this.gamepad.axisLeftTrigger) {
+        double leftTrigger = this.gamepad.axisLeftTrigger.getNormalized();
+        this.jerk.setNormalized(
+          leftTrigger > TRIGGER_THRESHOLD ? (leftTrigger - TRIGGER_THRESHOLD) / (1 - TRIGGER_THRESHOLD) : 0);
+
+      // Click left stick
+      } else if (p == this.gamepad.leftStick) {
+        if (this.gamepad.leftStick.isOn()) {
+          resetPosition();
+        }
 
       // Button pairs for Up/Down discrete parameter options.
       // These cycle through a hardcoded short list.
@@ -122,6 +162,15 @@ public class BeaconGamePattern extends BeaconPattern
       // LX.log("Gamepad parameter changed: " + p.getLabel() + " -> " + p.getValue());
   }
 
+  private void resetPosition() {
+    // Resetting stick to be safe in case the next frame is missed
+    this.stickPan.reset();
+    this.stickTilt.reset();
+    this.pan.reset();
+    this.tilt.reset();
+    this.gobo1rotation.reset();
+  }
+
     private void incrementBeaconParameter(DmxDiscreteParameter parameter, int[] options) {
       int value = parameter.getDmxValue();
       int iNext = 0;
@@ -160,8 +209,34 @@ public class BeaconGamePattern extends BeaconPattern
     private static final int STROBE_MIN = 75;   // A little faster than the minimum
     private static final int STROBE_MAX = BeaconModel.STROBE_MAX;
 
+    private double scaleStickInput(double value) {
+      return (value > 0 ? (value - STICK_THRESHOLD) : (value + STICK_THRESHOLD))
+        / (1 - STICK_THRESHOLD);
+    }
+
     @Override
     public void run(double deltaMs) {
+        // Move pan/tilt position
+        // STICK_THRESHOLD avoids drift at center, although maybe not an issue with Hall Effect joysticks
+        // Range -1 to 1
+        double jerk = this.jerk.getValue();
+        double stickPan = this.stickPan.getValue();
+        if (Math.abs(stickPan) > STICK_THRESHOLD) {
+          double panValue = scaleStickInput(stickPan);
+          double msPerBeat = 60 / this.lx.engine.tempo.bpm() * 1000;
+          double percentOfBeat = deltaMs / msPerBeat;
+          double amtToMove = percentOfBeat * jerk * panValue;
+          this.pan.setNormalized(this.pan.getNormalized() + amtToMove);
+        }
+        double stickTilt = this.stickTilt.getValue();
+        if (Math.abs(stickTilt) > STICK_THRESHOLD) {
+          double tiltValue = scaleStickInput (stickTilt);
+          double msPerBeat = 60 / this.lx.engine.tempo.bpm() * 1000;
+          double percentOfBeat = deltaMs / msPerBeat;
+          double amtToMove = percentOfBeat * jerk * tiltValue;
+          this.tilt.setNormalized(this.tilt.getNormalized() + amtToMove);
+        }
+
         float rightTrigger = this.gamepad.axisRightTrigger.getNormalizedf();
         if (rightTrigger < TRIGGER_THRESHOLD) {
             shutterValue = BeaconModel.SHUTTER_OPEN;
@@ -170,13 +245,14 @@ public class BeaconGamePattern extends BeaconPattern
         }
         this.shutter.setDmxValue(shutterValue);
 
+        /* TODO: Move focus to right axis Y
         float leftTrigger = this.gamepad.axisLeftTrigger.getNormalizedf();
         if (leftTrigger < TRIGGER_THRESHOLD) {
             focusValue = BeaconModel.DEFAULT_FOCUS;
         } else {
             focusValue = (int) ((leftTrigger - TRIGGER_THRESHOLD) / (1 - TRIGGER_THRESHOLD) * 255);
         }
-        this.focus.setDmxValue(focusValue);
+        this.focus.setDmxValue(focusValue);*/
 
         // Reminder: Don't use Normalized for DmxDiscreteParameters,
         // they likely do not scale linearly to 0-255.
