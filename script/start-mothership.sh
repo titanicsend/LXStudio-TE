@@ -5,7 +5,7 @@
 #     cd /Users/te/src/code/LXStudio-TE;
 # as should be in the automator app.
 
-LXP=Projects/BM2024_Mothership.lxp
+LXP=Projects/BM2024_Mship.lxp
 JAR_FILE="target/LXStudio-TE-0.2.3-SNAPSHOT-jar-with-dependencies.jar"
 
 

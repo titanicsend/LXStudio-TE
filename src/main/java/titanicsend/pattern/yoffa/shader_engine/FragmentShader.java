@@ -37,7 +37,7 @@ public class FragmentShader {
     if (shaderConfig.isEmpty()) {
       for (int i = 0; i < textureFiles.size(); i++) {
         // automatically assign textures to iChannels, starting
-        // at 1 since audio will be texture 0
+        // at 1 since audio will be at iChannel0.
         channelToTexture.put(i + 1, textureFiles.get(i).getPath());
       }
     }

@@ -16,6 +16,7 @@
 package titanicsend.dmx.pattern;
 
 import heronarts.lx.LX;
+import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.studio.TEApp;
 import titanicsend.dmx.model.BeaconModel;
 import titanicsend.dmx.parameter.DmxCompoundParameter;
@@ -27,6 +28,10 @@ public abstract class BeaconPattern extends DmxPattern {
 
   protected final TEWholeModel modelTE;
 
+  public static final double BEACON_BAY_TILT = 22.5;
+  public static final double BEACON_TILT_RANGE = 120;
+  public static final double BEACON_TILT_DEFAULT_NORMALIZED = 0.5 + (BEACON_BAY_TILT / BEACON_TILT_RANGE);
+
   public final int[] gobo1CycleValues = new int[] {0,22,32,42,52,62,72,82,92};
   public final int[] gobo2CycleValues = new int[] {0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85};
   public final int[] clrWheelCycleValues = new int[] {0,16,23,30,37,44,51,58,65,79,86,93,100,107,114};
@@ -34,14 +39,14 @@ public abstract class BeaconPattern extends DmxPattern {
   // Don't mind this code duplication with the model class.
   // It's just a coincidence.
 
-  DmxCompoundParameter pan = new DmxCompoundParameter("Pan").setNumBytes(2);
-/*
+  DmxCompoundParameter pan = (DmxCompoundParameter)
+    new DmxCompoundParameter("Pan", .5, 0, 1)
+    .setNumBytes(2)
+    .setPolarity(LXParameter.Polarity.BIPOLAR);
   DmxCompoundParameter tilt =
-      new DmxCompoundParameter("Tilt", BeaconModel.TILT_MIN, BeaconModel.TILT_MIN, BeaconModel.TILT_MAX)
-          .setNumBytes(2);
-*/
-  DmxCompoundParameter tilt =
-    new DmxCompoundParameter("Tilt", .5, 0, 1).setNumBytes(2);
+    (DmxCompoundParameter) new DmxCompoundParameter("Tilt", BEACON_TILT_DEFAULT_NORMALIZED, 0, 1)
+    .setNumBytes(2)
+    .setPolarity(LXParameter.Polarity.BIPOLAR);
   DmxCompoundParameter cyan = new DmxCompoundParameter("Cyan", 0, 0, 100);
   DmxCompoundParameter magenta = new DmxCompoundParameter("Magenta", 0, 0, 100);
   DmxCompoundParameter yellow = new DmxCompoundParameter("Yellow", 0, 0, 100);

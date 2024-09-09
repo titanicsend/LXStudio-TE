@@ -479,6 +479,10 @@ public class ShaderPanelsPatternConfig {
     protected void createShader() {
       controls.setRange(TEControlTag.SIZE, 0.64, 0.25, 1); // overall scale
 
+      controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
+
       addShader("darkradiance.fs");
     }
   }

@@ -4,13 +4,13 @@ import heronarts.lx.LX;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
+import heronarts.lx.model.LXModel;
 import titanicsend.effect.TEEffect;
 import titanicsend.pattern.jon.VariableSpeedTimer;
 
 /**
- * Wrapper class for OpenGL shaders. Simplifies handling of
- * context and native memory management, and provides a
- * convenient interface for adding shaders to a pattern.
+ * Wrapper class for OpenGL shaders. Simplifies handling of context and native memory management,
+ * and provides a convenient interface for adding shaders to a pattern.
  */
 public class GLShaderEffect extends TEEffect {
   public interface GLShaderFrameSetup {
@@ -30,6 +30,9 @@ public class GLShaderEffect extends TEEffect {
   protected GLEffectControl controlData;
   private final VariableSpeedTimer iTime = new VariableSpeedTimer();
   protected ByteBuffer imageBuffer;
+  protected ByteBuffer mappedBuffer;
+  protected final int mappedBufferWidth = GLEngine.getMappedBufferWidth();
+  protected final int mappedBufferHeight = GLEngine.getMappedBufferHeight();
 
   // convenience, to simplify user setup of shader OnFrame() functions
   protected double deltaMs;
@@ -37,19 +40,17 @@ public class GLShaderEffect extends TEEffect {
   // list of shaders to run, with associated setup functions
   protected final ArrayList<ShaderInfo> shaderInfo = new ArrayList<>();
 
-  // function to paint the final shader output to the car
-  private ShaderPainterClass painter;
-
   public GLShaderEffect(LX lx) {
     super(lx);
 
-    setPainter(new ShaderPaint3d(modelTE.isStatic()) {});
     controlData = new GLEffectControl(this);
     imageBuffer = GLShader.allocateBackBuffer();
-  }
-
-  public void setPainter(ShaderPainterClass painter) {
-    this.painter = painter;
+    mappedBuffer = GLShader.allocateMappedBuffer(mappedBufferWidth, mappedBufferHeight);
+    // zero mappedBuffer
+    mappedBuffer.rewind();
+    for (int i = 0; i < mappedBuffer.capacity(); i++) {
+      mappedBuffer.put(i, (byte) 0);
+    }
   }
 
   // Add shader with OnFrame() function, which allows the pattern to do
@@ -58,7 +59,9 @@ public class GLShaderEffect extends TEEffect {
   public void addShader(GLShader shader, GLShaderFrameSetup setup) {
     // add the shader and its frame-time setup function to our
     //
-    shaderInfo.add(new ShaderInfo(shader, setup));
+    ShaderInfo s = new ShaderInfo(shader, setup);
+    s.shader.setMappedBuffer(mappedBuffer, mappedBufferWidth, mappedBufferHeight);
+    shaderInfo.add(s);
   }
 
   // add shader with default OnFrame() function
@@ -69,7 +72,7 @@ public class GLShaderEffect extends TEEffect {
   // Add a shader by fragment shader filename, using the default OnFrame() function.
   // The simple option for shaders that use only the default TEPerformancePattern
   // uniforms and don't require any additional computation in Java.
-  public void addShader(String shaderName,      String... textureFilenames) {
+  public void addShader(String shaderName, String... textureFilenames) {
     addShader(new GLShader(lx, shaderName, getControlData(), textureFilenames));
   }
 
@@ -90,14 +93,29 @@ public class GLShaderEffect extends TEEffect {
     return iTime.getTime();
   }
 
+  LXModel lastModel = null;
+
   protected void run(double deltaMs, double enabledAmount) {
-    ShaderInfo s = null;
+    LXModel m = getModel();
+    ShaderInfo s;
     this.deltaMs = deltaMs;
     iTime.tick();
 
-    painter.mapToBuffer(modelTE.getPoints(), imageBuffer, colors);
-
+    // update location texture if the model has changed
     int n = shaderInfo.size();
+
+    if (lastModel != m) {
+      for (int i = 0; i < n; i++) {
+        s = shaderInfo.get(i);
+        s.shader.updateLocationTexture(m);
+      }
+      lastModel = m;
+    }
+
+    ShaderPainter.mapToBufferDirect(m.points, imageBuffer, colors);
+    ShaderPainter.mapFromLinearBuffer(
+        m.points, mappedBufferWidth, mappedBufferHeight, mappedBuffer, colors);
+
 
     // run the chain of shaders, except for the last one,
     // copying the output of each to the next shader's input texture
@@ -109,11 +127,11 @@ public class GLShaderEffect extends TEEffect {
     }
 
     // paint the final shader output to the car.
-    painter.mapToPoints(getModel().getPoints(), imageBuffer,getColors());
+    ShaderPainter.mapToPointsDirect(m.points, imageBuffer, getColors());
   }
 
   @Override
-   protected void onEnable() {
+  protected void onEnable() {
     super.onEnable();
     for (ShaderInfo s : shaderInfo) {
       s.shader.onActive();
@@ -136,4 +154,3 @@ public class GLShaderEffect extends TEEffect {
     }
   }
 }
-

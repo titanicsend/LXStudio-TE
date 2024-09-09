@@ -1,9 +1,11 @@
 package titanicsend.pattern.glengine;
 
 import heronarts.lx.LX;
+import heronarts.lx.model.LXModel;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 /**
@@ -28,14 +30,16 @@ public class GLShaderPattern extends TEPerformancePattern {
 
   protected GLPatternControl controlData;
 
+  // TODO - mappedBuffer functionality not yet supported for shader patterns
+  protected ByteBuffer mappedBuffer;
+  protected final int mappedBufferWidth = GLEngine.getMappedBufferWidth();
+  protected final int mappedBufferHeight = GLEngine.getMappedBufferHeight();
+
   // convenience, to simplify user setup of shader OnFrame() functions
   protected double deltaMs;
 
   // list of shaders to run, with associated setup functions
   protected final ArrayList<ShaderInfo> shaderInfo = new ArrayList<>();
-
-  // function to paint the final shader output to the car
-  private ShaderPainterClass painter;
 
   public GLShaderPattern(LX lx) {
     this(lx, TEShaderView.ALL_POINTS);
@@ -43,16 +47,11 @@ public class GLShaderPattern extends TEPerformancePattern {
 
   public GLShaderPattern(LX lx, TEShaderView view) {
     super(lx, view);
-    setPainter(new ShaderPaint2d(modelTE.isStatic()) {});
     controlData = new GLPatternControl(this);
   }
 
   public GLPatternControl getControlData() {
     return controlData;
-  }
-
-  public void setPainter(ShaderPainterClass painter) {
-    this.painter = painter;
   }
 
   // Add shader with OnFrame() function, which allows the pattern to do
@@ -81,12 +80,23 @@ public class GLShaderPattern extends TEPerformancePattern {
     addShader(new GLShader(lx, shaderName, controlData), setup);
   }
 
+  private LXModel lastModel = null;
+
   @Override
   public void runTEAudioPattern(double deltaMs) {
+    LXModel m = getModel();
     ShaderInfo s = null;
     this.deltaMs = deltaMs;
-
     int n = shaderInfo.size();
+
+    // update location texture if the model has changed
+    if (lastModel != m) {
+      for (int i = 0; i < n; i++) {
+        s = shaderInfo.get(i);
+        s.shader.updateLocationTexture(m);
+      }
+      lastModel = m;
+    }
 
     // run the chain of shaders, except for the last one,
     // copying the output of each to the next shader's input texture
@@ -98,12 +108,13 @@ public class GLShaderPattern extends TEPerformancePattern {
     }
 
     // paint the final shader output to the car
-    painter.setTwist(getTwist());
-    painter.mapToPoints(getModel().getPoints(), s.shader.getImageBuffer(),getColors());
+    ShaderPainter.mapToPointsDirect(m.points, s.shader.getImageBuffer(),getColors());
   }
 
   @Override
   public void onActive() {
+    // fix exception on slow startup
+    if (this.colors == null) return;
     super.onActive();
     for (ShaderInfo s : shaderInfo) {
       s.shader.onActive();
@@ -112,6 +123,8 @@ public class GLShaderPattern extends TEPerformancePattern {
 
   @Override
   public void onInactive() {
+    // fix exception on slow startup
+    if (this.colors == null) return;
     super.onInactive();
     for (ShaderInfo s : shaderInfo) {
       s.shader.onInactive();

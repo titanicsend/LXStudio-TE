@@ -9,6 +9,7 @@ import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.LXLoopTask;
 import heronarts.lx.audio.GraphicMeter;
+import heronarts.lx.model.LXModel;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
 import titanicsend.util.TE;
 
@@ -20,19 +21,37 @@ import java.util.HashMap;
 
 import static com.jogamp.opengl.GL.*;
 
-public class GLEngine extends LXComponent implements LXLoopTask {
+public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   public static final String PATH = "GLEngine";
+  public static GLEngine current;
+
+  private final int[] audioTextureHandle = new int[1];
 
   // rendering canvas size.  May be changed
   // via the startup command line.
   private static int xSize;
   private static int ySize;
+  private static int maxPoints;
+  private float aspectRatio;
+
+  // Dimensions of mapped texture backbuffer.
+  //
+  // This buffer is never directly rendered by either the GPU or by Java
+  // Instead, the pixel locations corresponding to the lx model's LEDs are
+  // colored at frame time and the buffer is supplied as a read-only sampler
+  // to the shader system.
+  //
+  // So increasing the size of this buffer affects memory usage but does
+  // not affect rendering performance.  The default size is sufficient for
+  // even very large models, but can be increased if necessary.
+  // TODO - make this configurable per pattern or effect.
+  private static final int mappedBufferWidth = 640;
+  private static final int mappedBufferHeight = 640;
 
   // audio texture size and buffer
   private static final int audioTextureWidth = 512;
   private static final int audioTextureHeight = 2;
   private FloatBuffer audioTextureData;
-  private final int[] audioTextureHandle = new int[1];
 
   // audio data source & parameters
   private final GraphicMeter meter;
@@ -45,7 +64,7 @@ public class GLEngine extends LXComponent implements LXLoopTask {
     private int refCount;
   }
 
-  private int nextTextureUnit = 2;
+  private int nextTextureUnit = 3;
 
   // staticTextures is a map of texture names to texture unit numbers.
   private final HashMap<String, TextureUnit> staticTextures = new HashMap<>();
@@ -58,6 +77,11 @@ public class GLEngine extends LXComponent implements LXLoopTask {
   // Data and utility methods for the GL canvas/context.
   private GLAutoDrawable canvas = null;
   private GL4 gl4;
+
+  private LXModel model;
+  public LXModel getModel() {
+    return model;
+  }
 
   // Needed for housekeeping, during static-to-dynamic model transition
   // This lets various shader components know if they're running the static model
@@ -79,6 +103,16 @@ public class GLEngine extends LXComponent implements LXLoopTask {
 
   public static int getHeight() {
     return ySize;
+  }
+
+  public float getAspectRatio() { return aspectRatio; }
+
+  public static int getMappedBufferWidth() {
+    return mappedBufferWidth;
+  }
+
+  public static int getMappedBufferHeight() {
+    return mappedBufferHeight;
   }
 
   // Utility methods to give java patterns access to the audio texture
@@ -103,6 +137,17 @@ public class GLEngine extends LXComponent implements LXLoopTask {
     } else {
       return nextTextureUnit++;
     }
+  }
+
+  public int releaseTextureUnit(int textureUnit) {
+    if (textureUnit < 3) {
+      throw new RuntimeException("GLEngine: Attempt to release a reserved texture unit: " + textureUnit);
+    }
+    if (releasedTextureUnits.contains(textureUnit)) {
+      throw new RuntimeException("GLEngine: Attempt to release a texture unit that is already released: " + textureUnit);
+    }
+    releasedTextureUnits.add(textureUnit);
+    return textureUnit;
   }
 
   // Add a released (ref count 0) texture unit number to the list of available
@@ -226,10 +271,19 @@ public class GLEngine extends LXComponent implements LXLoopTask {
   }
 
   public GLEngine(LX lx, int width, int height,  boolean isStaticModel) {
-    // save rendering canvas dimensions
+    current = this;
+    // The shape the user gives us affects the rendered aspect ratio,
+    // but what really matters is that it needs to have room for the
+    // largest number of points we're going to encounter during a run.
+    // TODO - adjust buffer size & shape dynamically as the model changes.
+    // TODO - this will require a lot of GPU memory management, so is
+    // TODO - a longer-term goal.
     this.xSize = width;
     this.ySize = height;
-    TE.log("GLEngine: Rendering canvas size: " + xSize + "x" + ySize);
+
+    this.maxPoints = xSize * ySize;
+    aspectRatio = 1.0f;
+    TE.log("GLEngine: Rendering canvas size: " + xSize + "x" + ySize + " = " + GLEngine.maxPoints + " total points");
 
     // register glEngine so we can access it from patterns.
     // and add it as an engine task for audio analysis and buffer management
@@ -237,6 +291,7 @@ public class GLEngine extends LXComponent implements LXLoopTask {
     lx.engine.addLoopTask(this);
 
     this.isStatic = isStaticModel;
+    this.model = lx.getModel();
 
     // set up audio fft and waveform handling
     // TODO - strongly consider expanding the number of FFT bands.
@@ -245,6 +300,14 @@ public class GLEngine extends LXComponent implements LXLoopTask {
     this.meter = lx.engine.audio.meter;
     fftResampleFactor = meter.bands.length / 512f;
   }
+
+  @Override
+  public void modelGenerationChanged(LX lx, LXModel model) {
+    this.model = model;
+    // modelChanged = true;
+  }
+
+ // private boolean modelChanged = true;
 
   public void loop(double deltaMs) {
 
@@ -269,8 +332,12 @@ public class GLEngine extends LXComponent implements LXLoopTask {
 
       // activate our context and do per-frame tasks
       canvas.getContext().makeCurrent();
-
       updateAudioTexture();
     }
+  }
+
+  public void dispose() {
+    // free GPU resources we directly allocated
+    gl4.glDeleteTextures(audioTextureHandle.length, audioTextureHandle, 0);
   }
 }

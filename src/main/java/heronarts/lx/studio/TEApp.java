@@ -136,10 +136,12 @@ public class TEApp extends LXStudio {
   private static String resourceSubdir;
 
   // Default shader system rendering canvas
-  // resolution.  May be changed via the startup
+  // resolution.  Determines the maximum number of
+  // model points allowed. May be changed via the startup
   // command line argument --resolution=WIDTHxHEIGHT
-  public static int glRenderWidth = 640;
-  public static int glRenderHeight = 480;
+  // (Default allows roughly 102,000 points.)
+  public static int glRenderWidth = 320;
+  public static int glRenderHeight = 320;
 
   public static GamepadEngine gamepadEngine;
 
@@ -847,6 +849,7 @@ public class TEApp extends LXStudio {
       this.devSwitch.dispose();
       this.dmxEngine.dispose();
       this.crutchOSC.dispose();
+      this.glEngine.dispose();
       gamepadEngine.dispose();
 
       if (!staticModel) {

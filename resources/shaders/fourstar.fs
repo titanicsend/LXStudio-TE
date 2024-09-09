@@ -57,7 +57,7 @@ vec4 light(vec2 position, float pulse) {
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )  {
     // normalize and center coordinates
-    vec2 position = ( gl_FragCoord.xy / iResolution.xy ) - 0.5;
+    vec2 position = ( fragCoord.xy / iResolution.xy ) - 0.5;
     position.y *= iResolution.y/iResolution.x;
 
     position = rotate(position,iRotationAngle);

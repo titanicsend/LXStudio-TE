@@ -15,7 +15,9 @@ vec2 random2(vec2 p) {
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-    vec2 uv = fragCoord.xy / iResolution.xy;
+    vec3 modelCoords = _getModelCoordinates().xyz;
+    vec2 uv = vec2((modelCoords.z < 0.5) ? modelCoords.x : 1. + (1. - modelCoords.x), modelCoords.y);
+    uv.x *= 0.5;
     vec2 quv = uv; // copy we use to quantize later
 
     // To "explode", we randomly displace uv coordinates in
@@ -28,7 +30,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         vec2 scale=vec2(2. * size, size);
         quv = floor(quv * scale) / scale;
     }
-    vec2 displacement = (-0.5 + random2(quv));
-
-    fragColor = texture(iBackbuffer, uv + displacement * basis);
+    vec2 displacement = (-0.5 + random2(quv)) * basis;
+    //fragColor = (basis <= 0.001) ? texelFetch(iBackbuffer, ivec2(gl_FragCoord.xy), 0) :
+    //    texelFetch(iMappedBuffer, ivec2((uv + displacement) * 639), 0);
+    fragColor = texelFetch(iMappedBuffer, ivec2((uv + displacement) * 639), 0);
 }

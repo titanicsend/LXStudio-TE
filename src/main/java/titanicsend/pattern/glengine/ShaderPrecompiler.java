@@ -7,8 +7,10 @@ import titanicsend.util.TE;
 
 /** Checks shader cache and builds binaries for any changed or previously uncached shaders. */
 public class ShaderPrecompiler {
-  private static final int xResolution = OffscreenShaderRenderer.getXResolution();
-  private static final int yResolution = OffscreenShaderRenderer.getYResolution();
+
+  // Can be any resolution -- we just need a context for the compiler
+  private static final int xResolution = 640;
+  private static final int yResolution = 480;
 
   /** Create and save binary versions of any shaders that need it. */
   public static void rebuildCache() {

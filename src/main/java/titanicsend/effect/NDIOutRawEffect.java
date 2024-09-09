@@ -31,11 +31,17 @@ public class NDIOutRawEffect extends TEEffect {
         return;
       }
 
+      // TODO - make frame size adapt automatically to the size of the
+      // TODO - current model.
+      // Make sure we don't overrun the frame buffer if the model is too large
+      int nPoints = Math.min(width * height, this.model.points.length);
+
       buffer.rewind();
-      for (LXPoint p : this.model.points) {
-        buffer.putInt(colors[p.index] );
+      for (int i = 0; i < nPoints; i++) {
+        buffer.putInt(this.colors[this.model.points[i].index]);
       }
       buffer.flip();
+
       ndiSender.sendVideoFrame(ndiFrame);
   }
 
