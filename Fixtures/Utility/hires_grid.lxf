@@ -5,8 +5,8 @@
 
   "components": [
     { type: "strip",
-      instances: 1280,
-      numPoints: 1280,
+      instances: 480,
+      numPoints: 640,
       spacing: 1,
       y: "$instance"
     }
