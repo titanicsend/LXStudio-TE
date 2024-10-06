@@ -414,7 +414,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
 
     this.lx.engine.output.enabled.setValue(true);
     this.engineLEDs.setValue(true);
-    this.engineBeacons.setValue(false);
+    this.engineBeacons.setValue(true);
     this.engineDJlights.setValue(false);
     this.lx.engine.osc.receiveActive.setValue(true);
     this.lx.engine.osc.transmitActive.setValue(true);
@@ -508,10 +508,12 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
   /** Returns TRUE for normal surfaces that should be enabled for TE production */
   private boolean isTESurface(LXMidiSurface surface) {
     return surface instanceof titanicsend.lx.APC40Mk2
-        || surface instanceof DirectorAPCminiMk2
         || surface instanceof heronarts.lx.midi.surface.APC40Mk2
         || surface instanceof heronarts.lx.midi.surface.APCminiMk2
+        || surface instanceof DirectorAPCminiMk2
+        || surface instanceof jkbstudio.supermod.APCminiMk2
         || surface instanceof heronarts.lx.midi.surface.MidiFighterTwister
+        || surface instanceof jkbstudio.supermod.MidiFighterTwister
         || surface instanceof heronarts.lx.midi.surface.DJM900nxs2
         || surface instanceof heronarts.lx.midi.surface.DJMV10;
   }

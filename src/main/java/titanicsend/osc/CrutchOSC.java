@@ -35,6 +35,7 @@ import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameter.Polarity;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.pattern.LXPattern;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -178,6 +179,18 @@ public class CrutchOSC extends LXComponent
         && (this.lx.engine != null)
         && (this.lx.engine.osc != null)
         && (this.lx.engine.osc.transmitActive.isOn());
+  }
+
+  public void sendOscMessage(String address, float value) {
+    if (canSend()) {
+      lx.engine.osc.sendMessage(address, value);
+    }
+  }
+
+  public void sendOscMessage(String address, int value) {
+    if (canSend()) {
+      lx.engine.osc.sendMessage(address, value);
+    }
   }
 
   private void parameterInstanceChanged(

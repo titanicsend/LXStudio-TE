@@ -34,13 +34,11 @@ public class TdNdiPattern extends TEPerformancePattern {
 
   protected DevolayVideoFrame videoFrame;
   protected DevolayReceiver receiver = null;
-  private ByteBuffer frameData;
+  int[] colorsBuffer = new int[0];
 
   protected boolean lastConnectState = false;
   protected long connectTimer = 0;
   protected String channel_name = "TE_TD_Mapped";
-
-  LXPoint[] points = null;
 
   public TdNdiPattern(LX lx) {
     this(lx, TEShaderView.ALL_POINTS);
@@ -81,7 +79,15 @@ public class TdNdiPattern extends TEPerformancePattern {
     }
   }
 
+  private void initColorsBuffer() {
+    this.colorsBuffer = new int[this.colors.length];
+  }
+
   public void runTEAudioPattern(double deltaMs) {
+    if (this.colorsBuffer.length != this.colors.length) {
+      initColorsBuffer();
+    }
+
     // Periodically try to connect if we weren't able to
     // establish an initial connection to this pattern's
     // desired NDI source. This makes things work
@@ -97,34 +103,25 @@ public class TdNdiPattern extends TEPerformancePattern {
 
     if (DevolayFrameType.VIDEO == this.receiver.receiveCapture(this.videoFrame, null, null, 0)) {
       // get pixel data from video frame
-      this.frameData = this.videoFrame.getData();
-      this.frameData.rewind();
-      this.frameData.order(ByteOrder.LITTLE_ENDIAN);
+      ByteBuffer frameData = videoFrame.getData();
+      frameData.rewind();
+      frameData.order(ByteOrder.LITTLE_ENDIAN);
 
       for (LXPoint p : lx.getModel().points) {
         int i = p.index * 4;
-        colors[p.index] =
-                LXColor.rgb(
-                        this.frameData.get(i + 2), this.frameData.get(i + 1), this.frameData.get(i));
+        this.colorsBuffer[p.index] = LXColor.rgb(frameData.get(i + 2), frameData.get(i + 1), frameData.get(i));
       }
-    } else if (this.frameData != null) {
-      // If no data was received since last frame, just show the last frame again on the car
-      // to avoid flickers. This can cause a frozen frame being shown on the car instead of
-      // a complete off screen when NDI is not being transferred on a good network.
-      this.frameData.rewind();
-      this.frameData.order(ByteOrder.LITTLE_ENDIAN);
-      for (LXPoint p : lx.getModel().points) {
-        int i = p.index * 4;
-        colors[p.index] =
-                LXColor.rgb(
-                        this.frameData.get(i + 2), this.frameData.get(i + 1), this.frameData.get(i));
-      }
+    }
+
+    for (int i = 0; i < this.colors.length; i++) {
+      this.colors[i] = this.colorsBuffer[i];
     }
   }
 
   @Override
   public void onActive() {
     super.onActive();
+    initColorsBuffer();
     // if no receiver yet, create one, then connect it to
     // its saved source if possible.
     if (this.receiver == null) {

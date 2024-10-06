@@ -11,11 +11,11 @@
        new controller output. Then click [Reload Fixture File] at the bottom of the Inspector section in Chromatik.
        CAUTION: LXM model files containing this fixture might not update to the new defaults. */
 
-    "strand1host": { default: "10.7.12.123", type: "string", label: "S1 Host", description: "Strand 1 Controller IP address or hostname" },
+    "strand1host": { default: "10.7.100.9", type: "string", label: "S1 Host", description: "Strand 1 Controller IP address or hostname" },
     "strand1output": { default: 1, type: "int", min: 1, max: 4, label: "S1 Output", description: "Strand 1 Controller Output Number 1-4" },
-    "strand2host": { default: "10.7.12.123", type: "string", label: "S2 Host", description: "Strand 2 Controller IP address or hostname" },
+    "strand2host": { default: "10.7.100.9", type: "string", label: "S2 Host", description: "Strand 2 Controller IP address or hostname" },
     "strand2output": { default: 2, type: "int", min: 1, max: 4, label: "S2 Output", description: "Strand 2 Controller Output Number 1-4" },
-    "strand3host": { default: "10.7.12.123", type: "string", label: "S3 Host", description: "Strand 3 Controller IP address or hostname" },
+    "strand3host": { default: "10.7.100.9", type: "string", label: "S3 Host", description: "Strand 3 Controller IP address or hostname" },
     "strand3output": { default: 3, type: "int", min: 1, max: 4, label: "S3 Output", description: "Strand 3 Controller Output Number 1-4" },
 
     "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },

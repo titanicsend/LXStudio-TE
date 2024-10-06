@@ -78,8 +78,9 @@ public class AudioStemModulator extends LXModulator
     }
   }
 
-  public final EnumParameter<OutputMode> noiseMode =
-      new EnumParameter<OutputMode>("Mode", OutputMode.ENERGY).setDescription("Stem output mode");
+  public final EnumParameter<OutputMode> outputMode =
+      new EnumParameter<OutputMode>("Mode", OutputMode.ENERGY)
+          .setDescription("Stem output mode");
 
   public final CompoundParameter accRate =
       new CompoundParameter("Rate", 0.2, 0.2, MAX_ACCUMULATOR_RATE)
@@ -122,10 +123,12 @@ public class AudioStemModulator extends LXModulator
 
     addParameter("stem", this.stem);
     addParameter("emaMs", this.emaMs);
-    addParameter("noiseMode", this.noiseMode);
+    addParameter("outputMode", this.outputMode);
     addParameter("accRate", this.accRate);
     addParameter("shape", this.waveshape);
     addParameter("slope", this.slope);
+
+    addLegacyParameter("noiseMode", this.outputMode);
   }
 
   @Override
@@ -145,7 +148,7 @@ public class AudioStemModulator extends LXModulator
     double input = this.stem.getEnum().getValue();
     double r = this.ema.update(input, deltaMs);
 
-    if (this.noiseMode.getEnum() == OutputMode.WAVE) {
+    if (this.outputMode.getEnum() == OutputMode.WAVE) {
       // Accumulate a rolling 0-1 value at the specified rate
       // so we can drive a wave output function
       this.accumulator += r * this.accRate.getValue() * deltaMs / 1000.0;
@@ -192,7 +195,7 @@ public class AudioStemModulator extends LXModulator
     this.addColumn(
         controls,
         50.0f,
-        new UI2dComponent[] {this.newDropMenu(this.stem), this.newKnob(this.noiseMode).setPosition(0,6)});
+        new UI2dComponent[] {this.newDropMenu(this.stem), this.newKnob(this.outputMode).setPosition(0,6)});
 
     this.addColumn(
         controls,

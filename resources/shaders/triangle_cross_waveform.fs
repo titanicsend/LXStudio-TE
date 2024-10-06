@@ -1,189 +1,194 @@
-const float PI = 3.14159265359;
-const float TWO_PI = 6.28318530718;
+/*
+#iUniform vec3 iColorRGB=vec3(0.9647, 0.1451, 0.5176)
+// #iUniform vec3 iColor2RGB=vec3(0., 0., 0.)
+#iUniform vec3 iColor2RGB=vec3(.226,.046,.636)
+// #iUniform vec3 iColor2RGB=vec3(.964,.144,.519)
+#iUniform float iSpin=0. in{-1.,1.}
+#iUniform float iSpeed=1. in{1.,10.}
+#iUniform float iSize=.25 in{.1,.9}
+#iUniform float iQuantity=8. in{1., 16.}
+#iUniform float iScale=1. in {0.5, 4.}
+#iUniform float iRotationAngle=0. in {0., 3.14}
+#iUniform vec2 iTranslate=vec2(0., 0.)
+#iUniform float bassLevel=0. in {0., 1.}
+#iUniform float trebleLevel=0. in {0., 1.}
+#iUniform float levelReact=0. in {0., 1.}
+#iUniform float frequencyReact=0. in {0., 1.}
+#iUniform float volumeRatio=0. in {0., 1.}
+*/
 
-vec2 rotate(vec2 point, float angle) {
-    mat2 rotationMatrix = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
-    return rotationMatrix * point;
+const float PI=3.14159265359;
+const float TWO_PI=6.28318530718;
+
+vec2 rotate(vec2 point,float angle){
+  mat2 rotationMatrix=mat2(cos(angle),-sin(angle),sin(angle),cos(angle));
+  return rotationMatrix*point;
 }
 
-float shape(in vec2 st, in int sides) {
-    // Angle and radius from the current pixel
-    float a = atan(st.x,st.y)+PI;
-    float r = TWO_PI/float(sides);
+float shape(in vec2 st,in int sides){
+  // Angle and radius from the current pixel
+  float a=atan(st.x,st.y)+PI;
+  float r=TWO_PI/float(sides);
 
-    // Shaping function that modulate the distance
-    float d = cos(floor(.5+a/r)*r-a)*length(st);
+  // Shaping function that modulate the distance
+  float d=cos(floor(.5+a/r)*r-a)*length(st);
 
-    return d;
+  return d;
 }
 
-float box(in vec2 _st, in vec2 _size){
-    _size = vec2(0.5) - _size*0.5;
-    vec2 uv = smoothstep(_size,
-                        _size+vec2(0.001),
-                        _st);
-    uv *= smoothstep(_size,
-                    _size+vec2(0.001),
-                    vec2(1.0)-_st);
+float box(in vec2 _st,in vec2 _size){
+  _size=vec2(.5)-_size*.5;
+  vec2 uv=smoothstep(_size,
+    _size+vec2(.001),
+  _st);
+  uv*=smoothstep(_size,
+    _size+vec2(.001),
+    vec2(1.)-_st);
     return uv.x*uv.y;
-}
+  }
 
-float xcross(in vec2 st, float xsize, float ysize, float outer, float inner){
-    float pct = 0.;
-    pct += box(st, vec2(outer*xsize, outer*xsize/4.));
-    pct += box(st, vec2(outer*ysize/4., outer*ysize));
+  float xcross(in vec2 st,float xsize,float ysize,float outer,float inner){
+    float pct=0.;
+    pct+=box(st,vec2(outer*xsize,outer*xsize/4.));
+    pct+=box(st,vec2(outer*ysize/4.,outer*ysize));
 
-    pct -= box(st, vec2(inner*xsize, inner*xsize/4.));
-    pct -= box(st, vec2(inner*ysize/4., inner*ysize));
+    pct-=box(st,vec2(inner*xsize,inner*xsize/4.));
+    pct-=box(st,vec2(inner*ysize/4.,inner*ysize));
 
-    pct += box(st, vec2(ysize/4., ysize));
-    pct += box(st, vec2(xsize, xsize/4.));
+    pct+=box(st,vec2(ysize/4.,ysize));
+    pct+=box(st,vec2(xsize,xsize/4.));
 
     return pct;
-}
+  }
 
-float nest_xcross(float prev_pct, in vec2 st, float xsize, float ysize, float outer, float inner, float alpha, float base, float inc){
-    float f1 = base + inc;
-    float f2 = base + 2. * inc;
-    float f3 = base + 3. * inc;
-    float f4 = base + 4. * inc;
+  float nest_xcross(float prev_pct,in vec2 st,float xsize,float ysize,float outer,float inner,float alpha,float base,float inc){
+    float f1=base+inc;
+    float f2=base+2.*inc;
+    float f3=base+3.*inc;
+    float f4=base+4.*inc;
 
-    float pct = prev_pct;
-    pct = alpha*xcross(st, xsize*base, ysize*base, outer, inner) - pct;
-    pct = alpha*xcross(st, xsize*f1, ysize*f1, outer, inner) - pct;
-    pct = alpha*xcross(st, xsize*f2, ysize*f2, outer, inner) - pct;
-    pct = alpha*xcross(st, xsize*f3, ysize*f3, outer, inner) - pct;
-    pct = alpha*xcross(st, xsize*f3, ysize*f3, outer, inner) - pct;
+    float pct=prev_pct;
+    pct=alpha*xcross(st,xsize*base,ysize*base,outer,inner)-pct;
+    pct=alpha*xcross(st,xsize*f1,ysize*f1,outer,inner)-pct;
+    pct=alpha*xcross(st,xsize*f2,ysize*f2,outer,inner)-pct;
+    pct=alpha*xcross(st,xsize*f3,ysize*f3,outer,inner)-pct;
+    pct=alpha*xcross(st,xsize*f3,ysize*f3,outer,inner)-pct;
     return pct;
-}
+  }
 
-float noise1d(in float x, in float ts) {
-  float amplitude = 0.2 * pow(x, 3.);
-  float frequency = 2.;
-  float y = sin(x * frequency);
-  // float t = 0.01*(-iTime*130.0);
-  float t = 0.01*(-ts*130.0);
-  y += sin(x*frequency*2.1 + t)*4.5;
-  y += sin(x*frequency*1.72 + t*1.121)*4.0;
-  y += sin(x*frequency*2.221 + t*0.437)*5.0;
-  y += sin(x*frequency*3.1122+ t*4.269)*2.5;
-  y *= amplitude*0.06;
-  return y;
-}
+  float noise1d(in float x,in float ts){
+    float amplitude=.2*pow(x,3.);
+    float frequency=2.;
+    float y=sin(x*frequency);
+    // float t = 0.01*(-iTime*130.0);
+    float t=.01*(-ts*130.);
+    y+=sin(x*frequency*2.1+t)*4.5;
+    y+=sin(x*frequency*1.72+t*1.121)*4.;
+    y+=sin(x*frequency*2.221+t*.437)*5.;
+    y+=sin(x*frequency*3.1122+t*4.269)*2.5;
+    y*=amplitude*.06;
+    return y;
+  }
 
-vec2 random2(vec2 st){
-    st = vec2( dot(st,vec2(127.1,311.7)),
-              dot(st,vec2(269.5,183.3)) );
-    return -1.0 + 2.0*fract(sin(st)*43758.5453123);
-}
+  vec2 random2(vec2 st){
+    st=vec2(dot(st,vec2(127.1,311.7)),
+    dot(st,vec2(269.5,183.3)));
+    return-1.+2.*fract(sin(st)*43758.5453123);
+  }
 
-float noise(vec2 st) {
-    vec2 i = floor(st);
-    vec2 f = fract(st);
-    vec2 u = f*f*(3.0-2.0*f);
-    return mix( mix( dot( random2(i + vec2(0.0,0.0) ), f - vec2(0.0,0.0) ),
-                     dot( random2(i + vec2(1.0,0.0) ), f - vec2(1.0,0.0) ), u.x),
-                mix( dot( random2(i + vec2(0.0,1.0) ), f - vec2(0.0,1.0) ),
-                     dot( random2(i + vec2(1.0,1.0) ), f - vec2(1.0,1.0) ), u.x), u.y);
-}
+  float noise(vec2 st){
+    vec2 i=floor(st);
+    vec2 f=fract(st);
+    vec2 u=f*f*(3.-2.*f);
+    return mix(mix(dot(random2(i+vec2(0.,0.)),f-vec2(0.,0.)),
+    dot(random2(i+vec2(1.,0.)),f-vec2(1.,0.)),u.x),
+    mix(dot(random2(i+vec2(0.,1.)),f-vec2(0.,1.)),
+    dot(random2(i+vec2(1.,1.)),f-vec2(1.,1.)),u.x),u.y);
+  }
+  #define TEXTURE_SIZE 512.
+  #define CHANNEL_COUNT 16.
 
-#define TEXTURE_SIZE 512.0
-#define CHANNEL_COUNT 16.0
-#define pixPerBin (TEXTURE_SIZE / CHANNEL_COUNT)
-#define halfBin (pixPerBin / 2.0)
+  float pixPerBin = TEXTURE_SIZE/CHANNEL_COUNT;
+  float halfBin = (TEXTURE_SIZE/CHANNEL_COUNT) / 2.;
 
-void mainImage(out vec4 fragColor, in vec2 fragCoord){
-    vec2 st = fragCoord.xy/iResolution.xy;
-    st.x *= iResolution.x/iResolution.y;
+  void mainImage(out vec4 fragColor,in vec2 fragCoord){
+    vec2 st=fragCoord.xy/iResolution.xy;
+    st.x*=iResolution.x/iResolution.y;
 
-    st = st - vec2(0.5);
-    st = rotate(st, iRotationAngle) / iScale;
-    st -= iTranslate;
+    st=st-vec2(.5);
+    st=rotate(st,iRotationAngle)/iScale;
+    st-=iTranslate;
 
-    vec3 color = vec3(0.0);
-    float pct = 0.;
-    float pct2 = 0.;
+    vec3 color=vec3(0.);
+    float pct=0.;
+    float pct2=0.;
 
-    float xsize = 0.1 + levelReact * 0.5 * trebleLevel;
-    float ysize = 0.25 - levelReact * 0.2 * trebleLevel;
-    float outer = 1.2 + levelReact * 1.5 * bassLevel;
-    float inner = 1.1 + levelReact * 2.0 * bassLevel;
-    //float xsize = 0.1;
-    //float ysize = 0.15;
-    //float outer = 1.2 + 0.2 * sin(iTime);
-    //float inner = 1.1 + 0.3 * cos(iTime);
-    float yoffset = 0.7;
-    st += vec2(0.5, yoffset);
-    for (int i = 0; i < int(iQuantity); i++) {
-        if (i % 2 == 0) {
-            pct = nest_xcross(pct, st, xsize, ysize, outer, inner, 0.5, 1.0 + 1.5*float(i), 0.5);
-        } else {
-            pct2 = nest_xcross(pct2, st, xsize, ysize, outer, inner, 0.5, 1.0 + 1.5*float(i), 0.5);
-        }
+    float xsize=.1+levelReact*.5*trebleLevel;
+    float ysize=.25-levelReact*.2*trebleLevel;
+    float outer=1.2+levelReact*1.5*bassLevel;
+    float inner=1.1+levelReact*2.*bassLevel;
+
+    float yoffset=.7;
+    st+=vec2(.5,yoffset);
+    for(int i=0;i<int(iQuantity);i++){
+      if(i%2==0){
+        pct=nest_xcross(pct,st,xsize,ysize,outer,inner,.5,1.+1.5*float(i),.5);
+      }else{
+        pct2=nest_xcross(pct2,st,xsize,ysize,outer,inner,.5,1.+1.5*float(i),.5);
+      }
     }
-    st -= vec2(0.5, yoffset);
+    st-=vec2(.5,yoffset);
 
     // original triangle shape
-    float f = shape(st, 3);
+    float f=shape(st,3);
     // setup radial noise
-    float a = atan(st.y,st.x);
-    float normAngle = a / TWO_PI;
+    float a=atan(st.y,st.x);
+    float normAngle=a/TWO_PI;
 
     // The audio texture size is 512x2
     // mapping to screen depends on iScale and iQuantity - here
     // we use iQuantity to figure out which texture pixels are relevant
-    float index = mod(normAngle * TEXTURE_SIZE * 2.0, TEXTURE_SIZE);
+    float index=mod(normAngle*TEXTURE_SIZE*2.,TEXTURE_SIZE);
     // The second row of is normalized waveform data
     // we'll just draw this over the spectrum analyzer.  Sound data
     // coming from LX is in the range -1 to 1, so we scale it and move it down
     // a bit so we can see it better.
-    float wave = (0.5 * (1.0+texelFetch(iChannel0, ivec2(index, 1), 0).x)) - 0.25;
-//    // subdivide fft data into bins determined by iQuantity
-//    float p = floor(index / pixPerBin);
-//    float tx = halfBin+pixPerBin * p;
-//    float dist = abs(halfBin - mod(index, pixPerBin)) / halfBin;
-//    // since we're using dist to calculate desatuation for a specular
-//    // reflection effect, we'll modulate it with beat, to change
-//    // apparent shininess and give it some extra bounce.
-//    dist = dist - (beat * beat);
-//    // get frequency data pixel from texture
-//    float freq  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
-
+    float wave=(.5*(1.+texelFetch(iChannel0,ivec2(index,1),0).x))-.25;
 
     // scaling factor on triangle distance field
-    float triangle_scale = 1.1;
+    float triangle_scale=1.1;
     //triangle_scale = frequencyReact;
-    float triangle_dist = f / triangle_scale;
+    float triangle_dist=f/triangle_scale;
 
     // innermost step function we apply to triangle distance field
-    float r = 0.15;
-    r += frequencyReact * wave;
-    r += levelReact * 0.2 * volumeRatio;
-    //r = levelReact;
-    float tri_inner_mask = r + noise1d(0.35, 3.*iTime);
+    float r=.15;
+    r+=frequencyReact*wave;
+    r+=levelReact*.2*volumeRatio;
+    float tri_inner_mask=r+noise1d(.35,3.*iTime);
 
-    float tri_inner_margin = 0.04;// - 0.04 * volumeRatio;
-    float tri_inner_start = tri_inner_mask + tri_inner_margin;
-    float tri_inner_thickness = 0.1;
+    float tri_inner_margin=.04;// - 0.04 * volumeRatio;
+    float tri_inner_start=tri_inner_mask+tri_inner_margin;
+    float tri_inner_thickness=.1;
 
-    float tri_outer_margin = 0.01;
-    float tri_outer_start = tri_inner_start + tri_inner_thickness + tri_outer_margin;
-    float tri_outer_thickness = 0.01;
+    float tri_outer_margin=.01;
+    float tri_outer_start=tri_inner_start+tri_inner_thickness+tri_outer_margin;
+    float tri_outer_thickness=.01;
 
-    float inner_mask = step(tri_inner_mask, triangle_dist);
-    float outer_triangle_edge = step(tri_outer_start+tri_outer_thickness+0.07, triangle_dist);
+    float inner_mask=step(tri_inner_mask,triangle_dist);
+    float outer_triangle_edge=step(tri_outer_start+tri_outer_thickness+.07,triangle_dist);
 
-    pct *= 1. - inner_mask;
-    pct += step(tri_inner_start, triangle_dist) - step(tri_inner_start+tri_inner_thickness, triangle_dist);
-    pct += 0.4*step(tri_outer_start, triangle_dist) - step(tri_outer_start+tri_outer_thickness, triangle_dist);
-    pct += step(tri_outer_start+2.*tri_outer_thickness, triangle_dist) - step(tri_outer_start+3.*tri_outer_thickness, triangle_dist);
+    // mask out 1st color
+    pct*=1.-inner_mask;
+    pct+=step(tri_inner_start,triangle_dist)-step(tri_inner_start+tri_inner_thickness,triangle_dist);
+    // apply 1st color
+    color+=pct*iColorRGB;
 
-    if (pct2 == 0. || distance(iColor2RGB, vec3(0.)) < 0.1) {
-        color += pct * iColorRGB;
-    } else {
-        pct2 += pct;
-        color += pct2 * iColor2RGB;
-    }
-    //color += pct * iColorRGB;
-    fragColor = vec4(color,1.0);
-}
+    // mask out the second color
+    pct2*=1.-inner_mask;
+    pct2+=.4*step(tri_outer_start,triangle_dist)-step(tri_outer_start+tri_outer_thickness,triangle_dist);
+    pct2+=step(tri_outer_start+2.*tri_outer_thickness,triangle_dist)-step(tri_outer_start+3.*tri_outer_thickness,triangle_dist);
+    // apply 2nd color
+    color+=pct2*iColor2RGB;
+
+    fragColor=vec4(color,1.);
+  }

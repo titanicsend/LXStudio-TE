@@ -19,6 +19,7 @@ public class MidiNames {
   // APCminiMk2 midi input names get changed by Bomebox, and we want to run multiple.
   // To bypass the hassle we're mapping it to a virtual midi port in Bome Network Pro
   public static final String BOMEBOX_VIRTUAL_APCMINIMK2_DIRECTOR = "Director";
+  public static final String BOMEBOX_VIRTUAL_APCMINIMK2_SUPERMOD = "SuperMod";
 
   // MidiFighter64
   public static final String MF64 = "Midi Fighter 64";

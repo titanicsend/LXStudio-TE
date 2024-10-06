@@ -158,6 +158,10 @@ public class DmxDiscreteParameter extends ObjectParameter<DmxDiscreteParameterOp
     // return current.min;
   }
 
+  public int[] getDmxValuesInt() {
+    return this.internalValues;
+  }
+
   public DmxParameter setDmxValue(double value) {
     return setDmxValue((int) value);
   }

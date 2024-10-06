@@ -95,13 +95,13 @@
         { componentIndex: 2, reverse: false, padPre: 1 },
         { componentIndex: 3, reverse: true },
         { componentIndex: 4, reverse: false },
-        { componentIndex: 5, reverse: true, length: 19, padPre: 1 }
+        { componentIndex: 5, reverse: true, start: 21, num: 19, padPre: 1 }
       ]
     },
                   
     { host: "$strand2host", universe: "$strand2output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
       segments: [
-        { componentIndex: 5, reverse: true, start: 19 },
+        { componentIndex: 5, reverse: true, num: 21 },
         { componentIndex: 6, reverse: false },
         { componentIndex: 7, reverse: true },
         { componentIndex: 8, reverse: false },
