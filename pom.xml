@@ -15,7 +15,7 @@
 
     <properties>
         <!-- https://stackoverflow.com/a/43103038 -->
-        <maven.compiler.release>17</maven.compiler.release>
+        <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Plugin versions -->
@@ -29,6 +29,7 @@
         <gson.version>2.10.1</gson.version>
         <jogamp.version>2.4.0-rc-20230123</jogamp.version>
         <lx.version>1.0.1.TE.2-SNAPSHOT</lx.version>
+<!--        <lx.version>1.0.1.TE.2-SNAPSHOT</lx.version>-->
 
         <!-- Project dependency versions -->
         <gigglepixel.version>0.0.3</gigglepixel.version>
@@ -72,7 +73,8 @@
         <dependency>
             <groupId>com.heronarts</groupId>
             <artifactId>lx</artifactId>
-            <version>${lx.version}</version>
+            <version>1.0.1.LOOKVEC-SNAPSHOT</version>
+<!--            <version>${lx.version}</version>-->
         </dependency>
 
         <dependency>
@@ -167,10 +169,15 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
+                    <release>21</release>
                     <compilerArgs>
                         <arg>-Xlint</arg>
                         <arg>-Xpkginfo:always</arg>
+<!--                        <arg>&#45;&#45;enable-preview</arg>-->
+                        <arg>--add-modules</arg>
+                        <arg>jdk.incubator.vector</arg>
                     </compilerArgs>
+                    <enablePreview>true</enablePreview>
                 </configuration>
             </plugin>
 
@@ -217,6 +224,9 @@
                             <arguments>
                                 <argument>-XstartOnFirstThread</argument>
                                 <argument>-Djava.awt.headless=true</argument>
+<!--                                <argument>&#45;&#45;enable-preview</argument>-->
+<!--                                <argument>&#45;&#45;add-modules</argument>-->
+<!--                                <argument>jdk.incubator.vector</argument>-->
                                 <argument>-jar</argument>
                                 <argument>target/LXStudio-TE-${project.version}-jar-with-dependencies.jar</argument>
                                 <argument>vehicle</argument>

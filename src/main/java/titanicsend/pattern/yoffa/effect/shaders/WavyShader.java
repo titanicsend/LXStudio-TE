@@ -1,6 +1,5 @@
 package titanicsend.pattern.yoffa.effect.shaders;
 
-import static java.lang.Math.*;
 import static titanicsend.util.TEMath.*;
 
 import heronarts.lx.parameter.LXParameter;
@@ -8,6 +7,7 @@ import java.util.Collection;
 import titanicsend.pattern.TECommonControls;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.util.TEMath;
 
 // https://www.shadertoy.com/view/4lB3DG
 public class WavyShader extends FragmentShaderEffect {
@@ -32,22 +32,22 @@ public class WavyShader extends FragmentShaderEffect {
     timeSeconds = -timeSeconds;
 
     double scale = 10 * pattern.getSize();
-    double z = atan2(-a[1], -a[0]) * 3;
+    double z = Math.atan2(-a[1], -a[0]) * 3;
     double v =
-        cos(z + sin(timeSeconds * .1))
+        Math.cos(z + Math.sin(timeSeconds * .1))
             + .5
-            + sin(fragCoordinates[0] * scale + timeSeconds * 1.3) * .4 * pattern.getQuantity();
+            + Math.sin(fragCoordinates[0] * scale + timeSeconds * 1.3) * .4 * pattern.getQuantity();
     double x =
-        1.2 + cos(z - timeSeconds * .2) + sin(fragCoordinates[1] * scale + timeSeconds * 1.5) * .5;
+        1.2 + Math.cos(z - timeSeconds * .2) + Math.sin(fragCoordinates[1] * scale + timeSeconds * 1.5) * .5;
 
     // No magic here, just adapting the old hand-tuned color calculation to produce a
     // brightness value that we can use to interpolate our gradient.
-    double k = min(x, min(sin(v * 4.) * .25 + x * .5, sin(v * 2.) * .3 + x * .5));
+    double k = Math.min(x, Math.min(Math.sin(v * 4.) * .25 + x * .5, Math.sin(v * 2.) * .3 + x * .5));
 
     // roughly reproduce the effect of colorize
     double[] col = new double[4];
     colorToRGBArray(pattern.getGradientColor((float) k), col);
-    col[3] = clamp(k, 0, 1);
+    col[3] = TEMath.clamp(k, 0, 1);
 
     return col;
   }

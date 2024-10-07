@@ -109,7 +109,7 @@ public class GLShaderEffect extends TEEffect {
     }
 
     // paint the final shader output to the car.
-    painter.mapToPoints(getModel().getPoints(), imageBuffer,getColors());
+    painter.mapToPoints(getModel().getPoints(), imageBuffer, getColors());
   }
 
   @Override

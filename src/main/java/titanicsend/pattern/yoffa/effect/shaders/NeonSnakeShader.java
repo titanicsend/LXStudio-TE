@@ -1,6 +1,5 @@
 package titanicsend.pattern.yoffa.effect.shaders;
 
-import static java.lang.Math.*;
 import static java.lang.Math.abs;
 import static titanicsend.util.TEMath.*;
 
@@ -36,7 +35,7 @@ public class NeonSnakeShader extends FragmentShaderEffect {
 
     // Wow2 makes the snake expand and contract a little with the beat
     double dispersion =
-        pattern.getSize() + pattern.getWow2() * sin(PI * pattern.getTempo().basis());
+        pattern.getSize() + pattern.getWow2() * Math.sin(Math.PI * pattern.getTempo().basis());
 
     // normalize coordinates
     double[] uv = divideArrays(fragCoordinates, resolution);
@@ -54,7 +53,7 @@ public class NeonSnakeShader extends FragmentShaderEffect {
 
     double brightness = 0;
     for (int i = 0; i < 13; i++) {
-      uv[1] += dispersion * sin(uv[0] + i / 1.5 + timeSeconds);
+      uv[1] += dispersion * Math.sin(uv[0] + i / 1.5 + timeSeconds);
       double waveWidth = glow * abs(1.0 / (150 * uv[1]));
       brightness += waveWidth;
     }
