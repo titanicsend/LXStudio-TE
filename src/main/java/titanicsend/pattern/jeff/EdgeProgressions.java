@@ -5,7 +5,7 @@ import com.google.gson.stream.JsonReader;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.Tempo;
-import heronarts.lx.blend.MultiplyBlend;
+//import heronarts.lx.blend.MultiplyBlend;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
@@ -139,13 +139,13 @@ public class EdgeProgressions extends TEAudioPattern {
   public void runTEAudioPattern(double deltaMs) {
     int color = colorParam.getColor();
     if (getChannel() != null) {
-      if (getChannel().blendMode.getObject().getClass().equals(MultiplyBlend.class)) {
-        // Operate in Mask mode
-        setEdges(LXColor.BLACK);
-        color = LXColor.WHITE;
-      } else {
+//      if (getChannel().blendMode.getObject().getClass().equals(MultiplyBlend.class)) {
+//        // Operate in Mask mode
+//        setEdges(LXColor.BLACK);
+//        color = LXColor.WHITE;
+//      } else {
         clearEdges();
-      }
+//      }
     }
 
     // TODO Swap when fix

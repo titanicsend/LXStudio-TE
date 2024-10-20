@@ -2,7 +2,7 @@ package titanicsend.pattern.jeff;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.blend.MultiplyBlend;
+//import heronarts.lx.blend.MultiplyBlend;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
@@ -80,13 +80,13 @@ public class EdgeSymmetry extends TEPattern {
   public void run(double deltaMs) {
     int color = colorParam.getColor();
     if (getChannel() != null) {
-      if (getChannel().blendMode.getObject().getClass().equals(MultiplyBlend.class)) {
-        // Operate in Mask mode
-        setEdges(LXColor.BLACK);
-        color = LXColor.WHITE;
-      } else {
+//      if (getChannel().blendMode.getObject().getClass().equals(MultiplyBlend.class)) {
+//        // Operate in Mask mode
+//        setEdges(LXColor.BLACK);
+//        color = LXColor.WHITE;
+//      } else {
         clearEdges();
-      }
+//      }
     }
 
     for (TEEdgeModel edge : litEdges) {

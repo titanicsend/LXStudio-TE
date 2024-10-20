@@ -3,7 +3,7 @@ package titanicsend.pattern;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.blend.LXBlend;
-import heronarts.lx.blend.NormalBlend;
+//import heronarts.lx.blend.NormalBlend;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.midi.*;
 import heronarts.lx.mixer.LXChannel;
@@ -415,11 +415,11 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
     if (channel != null) {
       // Set channel blend to Normal
       for (LXBlend blend : channel.blendMode.getObjects()) {
-        if (blend instanceof NormalBlend) {
-          this.priorBlend = channel.blendMode.getObject();
-          channel.blendMode.setValue(blend);
-          break;
-        }
+//        if (blend instanceof NormalBlend) {
+//          this.priorBlend = channel.blendMode.getObject();
+//          channel.blendMode.setValue(blend);
+//          break;
+//        }
       }
       // Turn on MIDI input to channel
       this.priorMidiFilter = channel.midiFilter.enabled.getValueb();
