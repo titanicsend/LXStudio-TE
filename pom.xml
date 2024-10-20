@@ -173,11 +173,8 @@
                     <compilerArgs>
                         <arg>-Xlint</arg>
                         <arg>-Xpkginfo:always</arg>
-<!--                        <arg>&#45;&#45;enable-preview</arg>-->
-                        <arg>--add-modules</arg>
-                        <arg>jdk.incubator.vector</arg>
+                        <arg>--add-modules=jdk.incubator.vector</arg>
                     </compilerArgs>
-                    <enablePreview>true</enablePreview>
                 </configuration>
             </plugin>
 
