@@ -18,7 +18,7 @@ package titanicsend.dmx;
 import heronarts.lx.LX;
 import heronarts.lx.LXBuffer;
 import heronarts.lx.LXLoopTask;
-import heronarts.lx.blend.AddBlend;
+import heronarts.lx.blend.FunctionalAddBlend;
 import heronarts.lx.blend.LXBlend;
 import heronarts.lx.mixer.LXAbstractChannel;
 import heronarts.lx.mixer.LXChannel;
@@ -81,7 +81,7 @@ public class DmxEngine implements LXLoopTask, TEWholeModel.TEModelListener {
   private final HashMap<LXGroup, DmxModelBuffer> dmxBufferByGroup =
       new HashMap<LXGroup, DmxModelBuffer>();
 
-  private final AddBlend addBlend;
+  private final FunctionalAddBlend addBlend;
 
   private final DmxBlend dmxBlend;
 
@@ -100,7 +100,7 @@ public class DmxEngine implements LXLoopTask, TEWholeModel.TEModelListener {
     TEApp.wholeModel.addListener(this);
 
     // Set up global add blend
-    this.addBlend = new AddBlend(lx);
+    this.addBlend = new FunctionalAddBlend(lx);
     this.addBlend.onActive();
 
     // Global default blend

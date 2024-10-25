@@ -8,6 +8,7 @@ import java.util.List;
 public class ShaderPaint2d extends ShaderPainterClass {
   int xMax = GLEngine.getWidth() - 1;
   int yMax = GLEngine.getHeight() - 1;
+  int[] indices = null;
 
   public ShaderPaint2d(boolean isStaticModel) {
     super(isStaticModel);
@@ -22,16 +23,32 @@ public class ShaderPaint2d extends ShaderPainterClass {
    * @param colors array to hold colors, one for each point
    */
   public void mapToPoints(List<LXPoint> points, ByteBuffer image, int[] colors) {
-    // Added "twist" feature - allows controlled swap of x and z axes.  This must
-    // work on both static and dynamic models for now, which makes the logic a little
-    // odd to look at. So...
-    // TODO - simplify twist logic when we finish move to dynamic model
-    if (isTwisted != isStatic) {
-      mapToPointsZYX(points, image, colors);
-      return;
+//    // Added "twist" feature - allows controlled swap of x and z axes.  This must
+//    // work on both static and dynamic models for now, which makes the logic a little
+//    // odd to look at. So...
+//    // TODO - simplify twist logic when we finish move to dynamic model
+//    if (isTwisted != isStatic) {
+//      mapToPointsZYX(points, image, colors);
+//      return;
+//    }
+
+    // precompute mapping of LXPoints to their position in shader buffer.
+    // (ideally we'd update this on model changes).
+    if (this.indices == null) {
+      this.indices = this.populateIndices(points);
     }
 
-    for (LXPoint point : points) {
+    // map shader buffer values to LXColors. this loop operates on two arrays
+    // and should be easier for the JVM's compiler to unroll loops and optimize.
+    for (int i = 0; i < indices.length; i++) {
+      colors[i] = image.getInt(indices[i]);
+    }
+  }
+
+  synchronized int[] populateIndices(List<LXPoint> points) {
+    int[] result = new int[points.size()];
+    for (int i = 0;  i < points.size(); i++) {
+      LXPoint point = points.get(i);
       float xn = 1f - point.xn;
       float yn = point.yn;
 
@@ -42,8 +59,9 @@ public class ShaderPaint2d extends ShaderPainterClass {
       int yi = (int) (0.5 + yn * yMax);
 
       int index = 4 * ((yi * GLEngine.getWidth()) + xi);
-      colors[point.index] = image.getInt(index);
+      result[i] = index;
     }
+    return result;
   }
 
   /**

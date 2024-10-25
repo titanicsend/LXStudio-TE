@@ -5,7 +5,7 @@
     <option name="MAIN_CLASS_NAME" value="heronarts.lx.studio.TEApp" />
     <module name="LXStudio-TE" />
     <option name="PROGRAM_PARAMETERS" value="dynamic Projects/HiResGridModel.lxp --resolution 1280x1280 " />
-    <option name="VM_PARAMETERS" value="-ea  -Djava.awt.headless=true -XstartOnFirstThread " />
+    <option name="VM_PARAMETERS" value="-ea  -Djava.awt.headless=true -XstartOnFirstThread --add-modules=jdk.incubator.vector " />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
