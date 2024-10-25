@@ -1,6 +1,6 @@
 {
   "version": "1.0.1.TE.2-SNAPSHOT",
-  "timestamp": 1729819518129,
+  "timestamp": 1729820194523,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -149,9 +149,9 @@
     },
     "fixtures": [
       {
-        "jsonFixtureType": "Utility/hires_grid",
+        "jsonFixtureType": "Utility/hires_grid_512x2048",
         "jsonParameters": {},
-        "id": 463996,
+        "id": 469466,
         "class": "heronarts.lx.structure.JsonFixture",
         "internal": {
           "modulationColor": 0,
@@ -175,7 +175,7 @@
           "mute": false,
           "solo": false,
           "tags": "",
-          "fixtureType": "Utility/hires_grid"
+          "fixtureType": "Utility/hires_grid_512x2048"
         },
         "children": {}
       }
@@ -1630,7 +1630,7 @@
             },
             "parameters": {
               "label": "Input",
-              "device": 0
+              "device": 1
             },
             "children": {}
           },
@@ -1896,27 +1896,27 @@
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
-              "gain": 31.964723371731964,
+              "gain": 48.0,
               "range": 48.0,
               "attack": 0.0,
               "release": 140.5167569998605,
               "slope": 6.0,
-              "band-1": 0.229863544319015,
-              "band-2": 0.39308599882614315,
-              "band-3": 0.5076511013530112,
-              "band-4": 0.621022836771751,
-              "band-5": 0.71698142261552,
-              "band-6": 0.7520073085199841,
-              "band-7": 0.49735456668644995,
-              "band-8": 0.3525791857368482,
-              "band-9": 0.3093419965510197,
-              "band-10": 0.3348417228786268,
-              "band-11": 0.378788495961795,
-              "band-12": 0.36353430673276055,
-              "band-13": 0.2103334807390761,
-              "band-14": 0.12333819926488798,
-              "band-15": 0.12013768737636177,
-              "band-16": 0.15640153072562646
+              "band-1": 0.0,
+              "band-2": 0.0,
+              "band-3": 0.0,
+              "band-4": 0.0,
+              "band-5": 0.09316314185273222,
+              "band-6": 0.10355623896542276,
+              "band-7": 0.0,
+              "band-8": 0.0068062384796553355,
+              "band-9": 0.0,
+              "band-10": 0.028450388074050537,
+              "band-11": 0.059296293733394734,
+              "band-12": 0.10881979672970366,
+              "band-13": 0.13885848393411793,
+              "band-14": 0.17678175094655246,
+              "band-15": 0.24237342911111648,
+              "band-16": 0.3102568259740467
             },
             "children": {}
           }
@@ -2093,7 +2093,7 @@
             },
             "parameters": {
               "label": "HIGH",
-              "fader": 0.2571428893133998,
+              "fader": 0.323809489607811,
               "arm": false,
               "selected": false,
               "stopClips": false,
@@ -9293,7 +9293,7 @@
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 20,
+              "focusedPattern": 8,
               "triggerPatternCycle": false
             },
             "children": {
@@ -9316,7 +9316,7 @@
             },
             "effects": [],
             "clips": [],
-            "patternIndex": 20,
+            "patternIndex": 8,
             "patterns": [
               {
                 "id": 426887,
@@ -10895,7 +10895,7 @@
                   "te_speed": 1.3205553790395044,
                   "te_xpos": 0.0,
                   "te_ypos": 0.0,
-                  "te_size": 1.0,
+                  "te_size": 1.4250001412583515,
                   "te_quantity": 0.5,
                   "te_spin": 0.0,
                   "te_brightness": 1.0,
@@ -11080,7 +11080,7 @@
                   "te_speed": 0.4072078062682767,
                   "te_xpos": 0.0,
                   "te_ypos": 0.0,
-                  "te_size": 0.4152425808669068,
+                  "te_size": 2.113909128943924,
                   "te_quantity": 4.0,
                   "te_spin": 0.0,
                   "te_brightness": 1.0,
@@ -11088,7 +11088,7 @@
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "te_level": 0.0,
+                  "te_level": 0.019999992568045855,
                   "te_freq": 0.13492187410593035,
                   "te_twist": false,
                   "panic": false,
@@ -13384,7 +13384,7 @@
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
                   "te_ypos": -0.009921877266606316,
-                  "te_size": 0.34666663222014904,
+                  "te_size": 0.35999996215105057,
                   "te_quantity": 1.6821874994784594,
                   "te_spin": 0.01582092283984826,
                   "te_brightness": 1.0,
@@ -16101,7 +16101,7 @@
             },
             "parameters": {
               "label": "HIGH",
-              "fader": 0.9133858267716535,
+              "fader": 0.0,
               "arm": false,
               "selected": false,
               "stopClips": false,
@@ -23367,21 +23367,21 @@
         "depth": 1.0,
         "camera": {
           "active": false,
-          "radius": 814.7691624690746,
+          "radius": 1704.6419981012618,
           "theta": 359.550836995244,
           "phi": 5.67810068349354,
-          "x": 319.5,
-          "y": 239.5,
+          "x": 1023.5,
+          "y": 255.5,
           "z": 0.0
         },
         "cue": [
           {
             "active": false,
-            "radius": 814.7691624690746,
+            "radius": 1704.6419981012618,
             "theta": 359.550836995244,
             "phi": 5.67810068349354,
-            "x": 319.5,
-            "y": 239.5,
+            "x": 1023.5,
+            "y": 255.5,
             "z": 0.0
           },
           {
@@ -23467,11 +23467,11 @@
         "depth": 2.0,
         "camera": {
           "active": false,
-          "radius": 1278.0,
+          "radius": 4094.0,
           "theta": 354.9674906730652,
           "phi": -13.724316954612732,
-          "x": 319.5,
-          "y": 239.5,
+          "x": 1023.5,
+          "y": 255.5,
           "z": 0.0
         },
         "cue": [
