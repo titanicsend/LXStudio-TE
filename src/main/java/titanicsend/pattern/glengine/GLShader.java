@@ -717,10 +717,6 @@ public class GLShader {
             break;
           case SAMPLER2DSTATIC:
           case SAMPLER2D:
-            // TODO - does this really work if you call it every frame?
-            // TODO - (probably, but it might be slow. And
-            // TODO - we need to be sure we're generating a unique name
-            // TODO - per pattern instance.)
             Texture tex = ((Texture) val.value);
             int unit = getTextureUnit(name);
             gl4.glActiveTexture(GL_TEXTURE0 + unit);
