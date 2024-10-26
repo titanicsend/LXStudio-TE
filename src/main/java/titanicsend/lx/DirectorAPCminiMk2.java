@@ -49,7 +49,7 @@ import titanicsend.util.TE;
 public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirectional {
 
   // To use locally, rename system device to match LOCAL_DEVICE_NAME
-  public static final String LOCAL_DEVICE_NAME = "Director";
+  public static final String LOCAL_DEVICE_NAME = "APC mini mk2";
   public static final String DEVICE_NAME = LOCAL_DEVICE_NAME + " Control";
 
   public static final boolean EXPORT_GRID_TO_CSV = false;
