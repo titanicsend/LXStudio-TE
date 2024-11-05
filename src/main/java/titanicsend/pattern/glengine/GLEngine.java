@@ -57,20 +57,8 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   private final GraphicMeter meter;
   private final float fftResampleFactor;
 
-  // texture unit management
-  private class TextureUnit {
-    private Texture texture;
-    private int textureUnit;
-    private int refCount;
-  }
-
-  private int nextTextureUnit = 3;
-
-  // staticTextures is a map of texture names to texture unit numbers.
-  private final HashMap<String, TextureUnit> staticTextures = new HashMap<>();
-
-  // a list of that we can use to keep track of released texture unit numbers
-  private final ArrayList<Integer> releasedTextureUnits = new ArrayList<>();
+  // Texture cache management
+  private TextureManager textureCache = new TextureManager();
 
   private boolean isRunning = false;
 
@@ -79,6 +67,7 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   private GL4 gl4;
 
   private LXModel model;
+
   public LXModel getModel() {
     return model;
   }
@@ -105,7 +94,9 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     return ySize;
   }
 
-  public float getAspectRatio() { return aspectRatio; }
+  public float getAspectRatio() {
+    return aspectRatio;
+  }
 
   public static int getMappedBufferWidth() {
     return mappedBufferWidth;
@@ -129,75 +120,32 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     return audioTextureHeight;
   }
 
-  // Returns the next available texture unit number, either by reusing a released
-  // texture unit number or by allocating a new one.
-  public int getNextTextureUnit() {
-    if (releasedTextureUnits.size() > 0) {
-      return releasedTextureUnits.remove(0);
-    } else {
-      return nextTextureUnit++;
-    }
+  // Create a coordinate texture from the normalized coordinates of the given model
+  // and bind it to the next available texture unit.  If the view's coordinate texture
+  // already exists,return the bound texture unit number.
+  public Texture createCoordinateTexture(GL4 gl4, LXModel model) {
+    return textureCache.createCoordinateTexture(gl4, model);
   }
 
-  public int releaseTextureUnit(int textureUnit) {
-    if (textureUnit < 3) {
-      throw new RuntimeException("GLEngine: Attempt to release a reserved texture unit: " + textureUnit);
-    }
-    if (releasedTextureUnits.contains(textureUnit)) {
-      throw new RuntimeException("GLEngine: Attempt to release a texture unit that is already released: " + textureUnit);
-    }
-    releasedTextureUnits.add(textureUnit);
-    return textureUnit;
-  }
-
-  // Add a released (ref count 0) texture unit number to the list of available
-  // texture units
-  private void recycleTextureUnit(TextureUnit t) {
-    if (!releasedTextureUnits.contains(t.textureUnit)) {
-      releasedTextureUnits.add(t.textureUnit);
-    }
-  }
-
+  // Load a static texture from a file and bind it to the next available texture unit
+  // Returns the texture unit number. If the texture is already loaded, just increment
+  // the ref count and return the existing texture unit number.
   public int useTexture(GL4 gl4, String textureName) {
-    TextureUnit t = new TextureUnit();
-
-    try {
-      // if the texture is already loaded, just increment the ref count
-      if (staticTextures.containsKey(textureName)) {
-        t = staticTextures.get(textureName);
-        t.refCount++;
-      } else {
-        // otherwise, load the texture its file and bind it to the next available texture unit
-        File file = new File(textureName);
-        t.texture = TextureIO.newTexture(file, false);
-        t.textureUnit = getNextTextureUnit();
-        t.refCount = 1;
-        staticTextures.put(textureName, t);
-
-        gl4.glActiveTexture(GL_TEXTURE0 + t.textureUnit);
-        gl4.glEnable(GL_TEXTURE_2D);
-        t.texture.enable(gl4);
-        t.texture.bind(gl4);
-      }
-      // return the texture unit number
-      return t.textureUnit;
-
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    return textureCache.useTexture(gl4, textureName);
   }
 
   public void releaseTexture(String textureName) {
-    TextureUnit t = staticTextures.get(textureName);
-    if (t == null) {
-      throw new RuntimeException("Attempt to release texture that was never used: " + textureName);
-    }
-    t.refCount--;
-    if (t.refCount <= 0) {
-      t.texture.destroy(gl4);
-      recycleTextureUnit(t);
-      staticTextures.remove(textureName);
-    }
+    textureCache.releaseTexture(textureName);
+  }
+
+  // Returns the next available texture unit number, either by reusing a released
+  // texture unit number or by allocating a new one.
+  public int getNextTextureUnit() {
+    return textureCache.getNextTextureUnit();
+  }
+
+  public int releaseTextureUnit(int textureUnit) {
+    return textureCache.releaseTextureUnit(textureUnit);
   }
 
   /**
@@ -245,7 +193,9 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   }
 
-  /** Update audio texture object with new fft and waveform data. This is called once per frame. */
+  /**
+   * Update audio texture object with new fft and waveform data. This is called once per frame.
+   */
   private void updateAudioTexture() {
     // load frequency and waveform data into our texture buffer, fft data
     // in the first row, normalized audio waveform data in the second.
@@ -259,18 +209,18 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     gl4.glBindTexture(GL_TEXTURE_2D, audioTextureHandle[0]);
 
     gl4.glTexImage2D(
-        GL4.GL_TEXTURE_2D,
-        0,
-        GL4.GL_R32F,
-        audioTextureWidth,
-        audioTextureHeight,
-        0,
-        GL4.GL_RED,
-        GL_FLOAT,
-        audioTextureData);
+      GL4.GL_TEXTURE_2D,
+      0,
+      GL4.GL_R32F,
+      audioTextureWidth,
+      audioTextureHeight,
+      0,
+      GL4.GL_RED,
+      GL_FLOAT,
+      audioTextureData);
   }
 
-  public GLEngine(LX lx, int width, int height,  boolean isStaticModel) {
+  public GLEngine(LX lx, int width, int height, boolean isStaticModel) {
     current = this;
     // The shape the user gives us affects the rendered aspect ratio,
     // but what really matters is that it needs to have room for the
@@ -304,10 +254,9 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   @Override
   public void modelGenerationChanged(LX lx, LXModel model) {
     this.model = model;
-    // modelChanged = true;
+    // when the model changes, discard all existing view coordinate textures
+    textureCache.clearCoordinateTextures();
   }
-
- // private boolean modelChanged = true;
 
   public void loop(double deltaMs) {
 
@@ -329,7 +278,6 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
     // On every frame, after initial setup
     if (isRunning) {
-
       // activate our context and do per-frame tasks
       canvas.getContext().makeCurrent();
       updateAudioTexture();
@@ -337,7 +285,11 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   }
 
   public void dispose() {
-    // free GPU resources we directly allocated
+    // free all view coordinate textures (static textures in the cache
+    // will be automatically freed when their associated shaders unload
+    textureCache.clearCoordinateTextures();
+
+    // free other GPU resources that we directly allocated
     gl4.glDeleteTextures(audioTextureHandle.length, audioTextureHandle, 0);
   }
 }

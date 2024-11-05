@@ -12,6 +12,7 @@ import com.jogamp.opengl.util.texture.Texture;
 import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.parameter.LXParameter;
+
 import java.io.File;
 import java.nio.*;
 import java.util.*;
@@ -115,14 +116,14 @@ public class GLShader {
   /**
    * Create new OpenGL shader effect
    *
-   * @param lx LX instance
+   * @param lx             LX instance
    * @param fragmentShader fragment shader object to use
-   * @param frameBuf native (GL compatible) ByteBuffer to store render results for use in shaders
-   *     that need to read the previous frame. If null, a buffer will be automatically allocated.
-   * @param controlData control data object to be associated w/this shader
+   * @param frameBuf       native (GL compatible) ByteBuffer to store render results for use in shaders
+   *                       that need to read the previous frame. If null, a buffer will be automatically allocated.
+   * @param controlData    control data object to be associated w/this shader
    */
   public GLShader(
-      LX lx, FragmentShader fragmentShader, ByteBuffer frameBuf, GLControlData controlData) {
+    LX lx, FragmentShader fragmentShader, ByteBuffer frameBuf, GLControlData controlData) {
     this.controlData = controlData;
     this.backBuffer = frameBuf;
 
@@ -143,9 +144,9 @@ public class GLShader {
   /**
    * Create new shader object with default backbuffer
    *
-   * @param lx LX instance
+   * @param lx             LX instance
    * @param fragmentShader fragment shader object shader to use
-   * @param controlData control data object to be associated w/this shader
+   * @param controlData    control data object to be associated w/this shader
    */
   public GLShader(LX lx, FragmentShader fragmentShader, GLControlData controlData) {
     this(lx, fragmentShader, null, controlData);
@@ -154,40 +155,40 @@ public class GLShader {
   /**
    * Creates new shader object with additional texture support
    *
-   * @param lx LX instance
-   * @param shaderFilename shader to use
-   * @param frameBuf native (GL compatible) ByteBuffer to store render results for use in shaders
-   *     that need to read the previous frame. If null, a buffer will be automatically allocated. *
-   * @param controlData control data object to be associated w/this shader
+   * @param lx               LX instance
+   * @param shaderFilename   shader to use
+   * @param frameBuf         native (GL compatible) ByteBuffer to store render results for use in shaders
+   *                         that need to read the previous frame. If null, a buffer will be automatically allocated. *
+   * @param controlData      control data object to be associated w/this shader
    * @param textureFilenames (optional) texture files to load
    */
   public GLShader(
-      LX lx,
-      String shaderFilename,
-      GLControlData controlData,
-      ByteBuffer frameBuf,
-      String... textureFilenames) {
+    LX lx,
+    String shaderFilename,
+    GLControlData controlData,
+    ByteBuffer frameBuf,
+    String... textureFilenames) {
     this(
-        lx,
-        new FragmentShader(
-            new File("resources/shaders/" + shaderFilename),
-            Arrays.stream(textureFilenames)
-                .map(x -> new File("resources/shaders/textures/" + x))
-                .collect(Collectors.toList())),
-        frameBuf,
-        controlData);
+      lx,
+      new FragmentShader(
+        new File("resources/shaders/" + shaderFilename),
+        Arrays.stream(textureFilenames)
+          .map(x -> new File("resources/shaders/textures/" + x))
+          .collect(Collectors.toList())),
+      frameBuf,
+      controlData);
   }
 
   /**
    * Creates new shader object with additional texture support
    *
-   * @param lx LX instance
-   * @param shaderFilename shader to use
-   * @param controlData control data object to be associated w/this shader
+   * @param lx               LX instance
+   * @param shaderFilename   shader to use
+   * @param controlData      control data object to be associated w/this shader
    * @param textureFilenames (optional) texture files to load
    */
   public GLShader(
-      LX lx, String shaderFilename, GLControlData controlData, String... textureFilenames) {
+    LX lx, String shaderFilename, GLControlData controlData, String... textureFilenames) {
     this(lx, shaderFilename, controlData, null, textureFilenames);
   }
 
@@ -229,7 +230,9 @@ public class GLShader {
     this.useMappedBuffer = true;
   }
 
-  /** Activate this shader for rendering in the current context */
+  /**
+   * Activate this shader for rendering in the current context
+   */
   public void useProgram() {
     gl4.glUseProgram(shaderProgram.getProgramId());
   }
@@ -306,11 +309,11 @@ public class GLShader {
 
     if (numPoints > maxPoints) {
       LX.error(
-          "GLEngine resolution ("
-              + maxPoints
-              + ") too small for number of points in the model ("
-              + numPoints
-              + ")");
+        "GLEngine resolution ("
+          + maxPoints
+          + ") too small for number of points in the model ("
+          + numPoints
+          + ")");
     }
   }
 
@@ -369,19 +372,19 @@ public class GLShader {
     vertexBuffer.rewind();
     gl4.glBindBuffer(GL_ARRAY_BUFFER, geometryBufferHandles[0]);
     gl4.glBufferData(
-        GL_ARRAY_BUFFER,
-        (long) vertexBuffer.capacity() * Float.BYTES,
-        vertexBuffer,
-        GL.GL_STATIC_DRAW);
+      GL_ARRAY_BUFFER,
+      (long) vertexBuffer.capacity() * Float.BYTES,
+      vertexBuffer,
+      GL.GL_STATIC_DRAW);
 
     // geometry (triangles built from vertices)
     indexBuffer.rewind();
     gl4.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometryBufferHandles[1]);
     gl4.glBufferData(
-        GL_ELEMENT_ARRAY_BUFFER,
-        (long) indexBuffer.capacity() * Integer.BYTES,
-        indexBuffer,
-        GL.GL_STATIC_DRAW);
+      GL_ELEMENT_ARRAY_BUFFER,
+      (long) indexBuffer.capacity() * Integer.BYTES,
+      indexBuffer,
+      GL.GL_STATIC_DRAW);
 
     // initialize location texture object
     gl4.glActiveTexture(GL_TEXTURE1);
@@ -427,7 +430,9 @@ public class GLShader {
     }
   }
 
-  /** Set up geometry at frame generation time */
+  /**
+   * Set up geometry at frame generation time
+   */
   private void render() {
     // set uniforms
     setUniforms();
@@ -471,15 +476,15 @@ public class GLShader {
     gl4.glActiveTexture(GL_TEXTURE1);
     gl4.glBindTexture(GL_TEXTURE_2D, modelCoordsHandle[0]);
     gl4.glTexImage2D(
-        GL4.GL_TEXTURE_2D,
-        0,
-        GL4.GL_RGB32F,
-        xResolution,
-        yResolution,
-        0,
-        GL4.GL_RGB,
-        GL_FLOAT,
-        modelCoords);
+      GL4.GL_TEXTURE_2D,
+      0,
+      GL4.GL_RGB32F,
+      xResolution,
+      yResolution,
+      0,
+      GL4.GL_RGB,
+      GL_FLOAT,
+      modelCoords);
 
     setUniform("lxModelCoords", 1);
 
@@ -490,15 +495,15 @@ public class GLShader {
     gl4.glBindTexture(GL4.GL_TEXTURE_2D, backbufferHandle[0]);
 
     gl4.glTexImage2D(
-        GL4.GL_TEXTURE_2D,
-        0,
-        GL4.GL_RGBA,
-        xResolution,
-        yResolution,
-        0,
-        GL4.GL_BGRA,
-        GL_UNSIGNED_BYTE,
-        backBuffer);
+      GL4.GL_TEXTURE_2D,
+      0,
+      GL4.GL_RGBA,
+      xResolution,
+      yResolution,
+      0,
+      GL4.GL_BGRA,
+      GL_UNSIGNED_BYTE,
+      backBuffer);
 
     setUniform("iBackbuffer", 2);
 
@@ -509,15 +514,15 @@ public class GLShader {
       gl4.glBindTexture(GL4.GL_TEXTURE_2D, mappedBufferHandle[0]);
 
       gl4.glTexImage2D(
-          GL4.GL_TEXTURE_2D,
-          0,
-          GL4.GL_RGBA,
-          mappedBufferWidth,
-          mappedBufferHeight,
-          0,
-          GL4.GL_BGRA,
-          GL_UNSIGNED_BYTE,
-          mappedBuffer);
+        GL4.GL_TEXTURE_2D,
+        0,
+        GL4.GL_RGBA,
+        mappedBufferWidth,
+        mappedBufferHeight,
+        0,
+        GL4.GL_BGRA,
+        GL_UNSIGNED_BYTE,
+        mappedBuffer);
 
       setUniform("iMappedBuffer", mappedBufferUnit);
     }
@@ -541,14 +546,14 @@ public class GLShader {
 
   private void loadTextureFiles(GL4 gl4, FragmentShader fragmentShader) {
     for (Map.Entry<Integer, String> textureInput :
-        fragmentShader.getChannelToTexture().entrySet()) {
+      fragmentShader.getChannelToTexture().entrySet()) {
 
       TextureInfo ti = new TextureInfo();
       ti.textureUnit = glEngine.useTexture(gl4, textureInput.getValue());
       ti.name = textureInput.getValue();
       ti.channel = textureInput.getKey();
       ti.uniformLocation =
-          gl4.glGetUniformLocation(shaderProgram.getProgramId(), "iChannel" + ti.channel);
+        gl4.glGetUniformLocation(shaderProgram.getProgramId(), "iChannel" + ti.channel);
 
       textures.add(ti);
     }
@@ -733,52 +738,68 @@ public class GLShader {
     }
   }
 
-  /** setter -- single int */
+  /**
+   * setter -- single int
+   */
   public void setUniform(String name, int x) {
-    addUniform(name, INT1, new int[] {x});
+    addUniform(name, INT1, new int[]{x});
   }
 
-  /** 2 element int array or ivec2 */
+  /**
+   * 2 element int array or ivec2
+   */
   public void setUniform(String name, int x, int y) {
-    addUniform(name, INT2, new int[] {x, y});
+    addUniform(name, INT2, new int[]{x, y});
   }
 
-  /** 3 element int array or ivec3 */
+  /**
+   * 3 element int array or ivec3
+   */
   public void setUniform(String name, int x, int y, int z) {
-    addUniform(name, INT3, new int[] {x, y, z});
+    addUniform(name, INT3, new int[]{x, y, z});
   }
 
-  /** 4 element int array or ivec4 */
+  /**
+   * 4 element int array or ivec4
+   */
   public void setUniform(String name, int x, int y, int z, int w) {
-    addUniform(name, UniformTypes.INT4, new int[] {x, y, z, w});
+    addUniform(name, UniformTypes.INT4, new int[]{x, y, z, w});
   }
 
-  /** single float */
+  /**
+   * single float
+   */
   public void setUniform(String name, float x) {
-    addUniform(name, UniformTypes.FLOAT1, new float[] {x});
+    addUniform(name, UniformTypes.FLOAT1, new float[]{x});
   }
 
-  /** 2 element float array or vec2 */
+  /**
+   * 2 element float array or vec2
+   */
   public void setUniform(String name, float x, float y) {
-    addUniform(name, UniformTypes.FLOAT2, new float[] {x, y});
+    addUniform(name, UniformTypes.FLOAT2, new float[]{x, y});
   }
 
-  /** 3 element float array or vec3 */
+  /**
+   * 3 element float array or vec3
+   */
   public void setUniform(String name, float x, float y, float z) {
-    addUniform(name, UniformTypes.FLOAT3, new float[] {x, y, z});
+    addUniform(name, UniformTypes.FLOAT3, new float[]{x, y, z});
   }
 
-  /** 4 element float array or vec4 */
+  /**
+   * 4 element float array or vec4
+   */
   public void setUniform(String name, float x, float y, float z, float w) {
-    addUniform(name, UniformTypes.FLOAT4, new float[] {x, y, z, w});
+    addUniform(name, UniformTypes.FLOAT4, new float[]{x, y, z, w});
   }
 
   public void setUniform(String name, boolean x) {
-    addUniform(name, INT1, new int[] {(x) ? 1 : 0});
+    addUniform(name, INT1, new int[]{(x) ? 1 : 0});
   }
 
   public void setUniform(String name, boolean x, boolean y) {
-    addUniform(name, INT2, new int[] {(x) ? 1 : 0, (y) ? 1 : 0});
+    addUniform(name, INT2, new int[]{(x) ? 1 : 0, (y) ? 1 : 0});
   }
 
   /**
@@ -847,8 +868,8 @@ public class GLShader {
    * Internal - Creates a uniform for a square floating point matrix, of size 2x2, 3x3 or 4x4
    *
    * @param name of uniform
-   * @param vec Floating point matrix data, in row major order
-   * @param sz Size of matrix (Number of rows & columns. 2,3 or 4)
+   * @param vec  Floating point matrix data, in row major order
+   * @param sz   Size of matrix (Number of rows & columns. 2,3 or 4)
    */
   public void setUniformMatrix(String name, FloatBuffer vec, int sz) {
     switch (sz) {
