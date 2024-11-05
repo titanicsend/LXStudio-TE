@@ -3,8 +3,6 @@ package titanicsend.pattern.glengine;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.util.GLBuffers;
-import com.jogamp.opengl.util.texture.Texture;
-import com.jogamp.opengl.util.texture.TextureIO;
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.LXLoopTask;
@@ -13,11 +11,7 @@ import heronarts.lx.model.LXModel;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
 import titanicsend.util.TE;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import static com.jogamp.opengl.GL.*;
 
@@ -58,7 +52,8 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   private final float fftResampleFactor;
 
   // Texture cache management
-  private TextureManager textureCache = new TextureManager();
+  private TextureManager textureCache = null;
+  private boolean modelChanged = false;
 
   private boolean isRunning = false;
 
@@ -120,11 +115,18 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     return audioTextureHeight;
   }
 
-  // Create a coordinate texture from the normalized coordinates of the given model
-  // and bind it to the next available texture unit.  If the view's coordinate texture
-  // already exists,return the bound texture unit number.
-  public Texture createCoordinateTexture(GL4 gl4, LXModel model) {
-    return textureCache.createCoordinateTexture(gl4, model);
+  /**
+   * Copy a model's normalized coordinates into a special texture for use by shaders. Must be
+   * called by the parent pattern or effect at least once before the first frame is rendered and
+   * Should be called by the pattern's frametime run() function on every frame for full Chromatik view
+   * support.
+   *
+   * @param model The model (view) to copy coordinates from
+   * @return The texture unit number that the view's coordinate texture
+   * is bound to.
+   */
+  public int useViewCoordinates(LXModel model) {
+    return textureCache.useViewCoordinates(model);
   }
 
   // Load a static texture from a file and bind it to the next available texture unit
@@ -254,8 +256,7 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   @Override
   public void modelGenerationChanged(LX lx, LXModel model) {
     this.model = model;
-    // when the model changes, discard all existing view coordinate textures
-    textureCache.clearCoordinateTextures();
+    this.modelChanged = true;
   }
 
   public void loop(double deltaMs) {
@@ -270,7 +271,12 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
       // activate our context and do initialization tasks
       canvas.getContext().makeCurrent();
 
+      // set up the per-frame audio info texture
       initializeAudioTexture();
+      textureCache = new TextureManager(gl4);
+
+      // start listening for model changes
+      lx.addListener(this);
 
       // set running flag once initialization is complete
       isRunning = true;
@@ -281,14 +287,17 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
       // activate our context and do per-frame tasks
       canvas.getContext().makeCurrent();
       updateAudioTexture();
+
+      if (modelChanged) {
+        // if the model has changed, discard all existing view coordinate textures
+        textureCache.clearCoordinateTextures();
+        modelChanged = false;
+      }
+
     }
   }
 
   public void dispose() {
-    // free all view coordinate textures (static textures in the cache
-    // will be automatically freed when their associated shaders unload
-    textureCache.clearCoordinateTextures();
-
     // free other GPU resources that we directly allocated
     gl4.glDeleteTextures(audioTextureHandle.length, audioTextureHandle, 0);
   }

@@ -80,9 +80,9 @@ public class GLShader {
   private int mappedBufferWidth = 640;
   private int mappedBufferHeight = 640;
 
-  // the shader's private copy of the model coordinate texture
-  private final int[] modelCoordsHandle = new int[1];
-  private FloatBuffer modelCoords;
+  // the GL texture unit to which the current view model coordinate
+  // texture is bound.
+  private int modelCoordsTextureUnit = -1;
 
   // map of user created uniforms.
   protected HashMap<String, UniformTypes> uniforms = null;
@@ -249,9 +249,6 @@ public class GLShader {
 
     // allocate default buffer for reading offscreen surface to cpu memory
     if (this.backBuffer == null) this.backBuffer = allocateBackBuffer();
-
-    // allocate buffer to hold model coordinates
-    modelCoords = GLBuffers.newDirectFloatBuffer(GLEngine.getWidth() * GLEngine.getHeight() * 3);
   }
 
   // Shader initialization that requires the OpenGL context
@@ -286,37 +283,9 @@ public class GLShader {
    * parent pattern or effect at least once before the first frame is rendered. And should be called
    * by the pattern's frametime run() function if the model has changed since the last frame.
    */
-  public void updateLocationTexture(LXModel model) {
-    int xSize = GLEngine.getWidth();
-    int ySize = GLEngine.getHeight();
-    int maxPoints = xSize * ySize;
-
-    final int numPoints = model.points.length;
-
-    this.modelCoords.rewind();
-    for (int i = 0; i < maxPoints; i++) {
-      if (i < numPoints) {
-        this.modelCoords.put(model.points[i].xn);
-        this.modelCoords.put(model.points[i].yn);
-        this.modelCoords.put(model.points[i].zn);
-      } else {
-        this.modelCoords.put(0);
-        this.modelCoords.put(0);
-        this.modelCoords.put(0);
-      }
-    }
-    this.modelCoords.rewind();
-
-    if (numPoints > maxPoints) {
-      LX.error(
-        "GLEngine resolution ("
-          + maxPoints
-          + ") too small for number of points in the model ("
-          + numPoints
-          + ")");
-    }
+  public void useViewCoordinates(LXModel model) {
+    modelCoordsTextureUnit = glEngine.useViewCoordinates(model);
   }
-
   // Releases native resources allocated by this shader.
   // Should be called by the pattern's dispose() function
   // when the pattern is unloaded. (Not when just
@@ -329,8 +298,6 @@ public class GLShader {
       // delete GPU buffers we directly allocated
       gl4.glDeleteBuffers(2, geometryBufferHandles, 0);
       gl4.glDeleteTextures(1, backbufferHandle, 0);
-
-      gl4.glDeleteTextures(1, modelCoordsHandle, 0);
 
       if (useMappedBuffer) {
         gl4.glDeleteTextures(1, mappedBufferHandle, 0);
@@ -385,19 +352,6 @@ public class GLShader {
       (long) indexBuffer.capacity() * Integer.BYTES,
       indexBuffer,
       GL.GL_STATIC_DRAW);
-
-    // initialize location texture object
-    gl4.glActiveTexture(GL_TEXTURE1);
-    gl4.glEnable(GL_TEXTURE_2D);
-    gl4.glGenTextures(1, modelCoordsHandle, 0);
-    gl4.glBindTexture(GL4.GL_TEXTURE_2D, modelCoordsHandle[0]);
-
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    gl4.glBindTexture(GL_TEXTURE_2D, 0);
 
     // backbuffer texture object
     gl4.glActiveTexture(GL_TEXTURE2);
@@ -472,21 +426,10 @@ public class GLShader {
     // unit 0 throughout the Chromatik run. All we have to do to use it is add the uniform.
     setUniform(Uniforms.AUDIO_CHANNEL, 0);
 
-    // load this shader's location texture data onto the GPU
-    gl4.glActiveTexture(GL_TEXTURE1);
-    gl4.glBindTexture(GL_TEXTURE_2D, modelCoordsHandle[0]);
-    gl4.glTexImage2D(
-      GL4.GL_TEXTURE_2D,
-      0,
-      GL4.GL_RGB32F,
-      xResolution,
-      yResolution,
-      0,
-      GL4.GL_RGB,
-      GL_FLOAT,
-      modelCoords);
-
-    setUniform("lxModelCoords", 1);
+    // use the current view's model coordinates texture which
+    // has already been loaded to the GPU by the texture cache manager.
+    // All we need to do is point at the right GL texture unit.
+    setUniform("lxModelCoords", modelCoordsTextureUnit);
 
     // Update backbuffer texture data. This buffer contains the result of the
     // previous render pass.  It is always bound to texture unit 2.

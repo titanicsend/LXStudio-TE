@@ -93,34 +93,23 @@ public class GLShaderEffect extends TEEffect {
     return iTime.getTime();
   }
 
-  LXModel lastModel = null;
-
   protected void run(double deltaMs, double enabledAmount) {
     LXModel m = getModel();
     ShaderInfo s;
     this.deltaMs = deltaMs;
     iTime.tick();
 
-    // update location texture if the model has changed
-    int n = shaderInfo.size();
-
-    if (lastModel != m) {
-      for (int i = 0; i < n; i++) {
-        s = shaderInfo.get(i);
-        s.shader.updateLocationTexture(m);
-      }
-      lastModel = m;
-    }
-
+    // set up rectangular texture buffers for effects that need them
     ShaderPainter.mapToBufferDirect(m.points, imageBuffer, colors);
     ShaderPainter.mapFromLinearBuffer(
         m.points, mappedBufferWidth, mappedBufferHeight, mappedBuffer, colors);
 
-
     // run the chain of shaders, except for the last one,
     // copying the output of each to the next shader's input texture
+    int n = shaderInfo.size();
     for (int i = 0; i < n; i++) {
       s = shaderInfo.get(i);
+      s.shader.useViewCoordinates(m);
       s.shader.useProgram();
       s.setup.OnFrame(s.shader);
       s.shader.run();

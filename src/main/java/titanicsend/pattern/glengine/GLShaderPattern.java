@@ -80,8 +80,6 @@ public class GLShaderPattern extends TEPerformancePattern {
     addShader(new GLShader(lx, shaderName, controlData), setup);
   }
 
-  private LXModel lastModel = null;
-
   @Override
   public void runTEAudioPattern(double deltaMs) {
     LXModel m = getModel();
@@ -89,19 +87,11 @@ public class GLShaderPattern extends TEPerformancePattern {
     this.deltaMs = deltaMs;
     int n = shaderInfo.size();
 
-    // update location texture if the model has changed
-    if (lastModel != m) {
-      for (int i = 0; i < n; i++) {
-        s = shaderInfo.get(i);
-        s.shader.updateLocationTexture(m);
-      }
-      lastModel = m;
-    }
-
     // run the chain of shaders, except for the last one,
     // copying the output of each to the next shader's input texture
     for (int i = 0; i < n; i++) {
       s = shaderInfo.get(i);
+      s.shader.useViewCoordinates(m);
       s.shader.useProgram();
       s.setup.OnFrame(s.shader);
       s.shader.run();
