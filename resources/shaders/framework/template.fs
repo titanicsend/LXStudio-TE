@@ -119,7 +119,18 @@ vec4 _blendFix(vec4 col) {
 }
 
 void main() {
-    vec2 coords = _getModelCoordinates().xy * iResolution;
+    vec2 coords = _getModelCoordinates().xy;
+    // NaN value signals the end of valid coordinates
+    // We can use this to avoid doing work for points that
+    // are not part of the current view.
+    if (isnan(coords.r)) {
+        finalColor = vec4(0.0);
+        return;
+    }
+
+    // Scale the coordinates to the resolution specified by Chromatik
+    // (which can be changed via the --resolution command line option)
+    coords *= iResolution;
 
     // translate according to XPos and YPos controls unless explicitly overriden
     #ifndef TE_NOTRANSLATE
