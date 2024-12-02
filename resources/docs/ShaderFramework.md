@@ -319,6 +319,29 @@ current pixel you're working on. For example:
 
 `vec4 pix = texelFetch(iBackbuffer, ivec2(gl_FragCoord.xy), 0);`
 
+### iMappedBuffer (uniform sampler2D iMappedBuffer)
+
+iMappedBuffer is an optional texture containing the data rendered by the previous shader in "normal"
+rectangular buffer form.  It is currently available only to effect shaders, and can be used for convolution
+and other effects that need rectangular "neighborhoods" of pixels.
+
+Note that only pixels that actually exist on the target LED fixture will be colored. All other pixels
+will be zero.  So blur, bloom and similar filters may not have the expected effect.
+
+It is currently not supported in pattern shaders, but will be available as an option at some point in the future.
+
+### lxModelCoords (uniform sampler2D lxModelCoords)
+
+A floating point array containing normalized 3D coordinates for the selected view of the current LX model.
+The points are in linear order corresponding to the order of pixels in the corresponding Java LXModel. 
+
+An appropriately scaled 2D version of these coordinates is automatically supplied to shaders in the
+fragCoord uniform, so most shaders will not need to interact directly with `lxModelCoords`.  However,
+if you need to access the full 3D coordinates of the current pixel, you can use texelFetch() on the
+`gl_FragCoords` passed to the shader to access the values for the pixel you're working on. For example:
+
+`vec3 coords3D = texelFetch(lxModelCoords, ivec2(gl_FragCoord.xy), 0).xyz;`
+
 -----
 
 ### Automatic LX Control Uniforms
