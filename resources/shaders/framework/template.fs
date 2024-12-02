@@ -63,6 +63,16 @@ uniform sampler2D iChannel3;
 
 // returns the normalized model coordinates for the current fragment
 vec4 _getModelCoordinates() {
+    // create 3d rotation matrix rotating around the x axis by iRotationAngle
+    // TODO: Yes, this works, now we need to do it for real using LXMatrix
+    // TODO: operations from Java.  Keeping demo code for reference and reminder.
+    //float c = cos(iRotationAngle);
+    //float s = sin(iRotationAngle);
+    //mat3 rotX = mat3(1, 0, 0, 0, c, -s, 0, s, c);
+    //vec4 nc = texelFetch(lxModelCoords, ivec2(gl_FragCoord.xy), 0);
+    // apply rotation
+    //return vec4(rotX * nc.xyz, nc.w);
+
     return texelFetch(lxModelCoords, ivec2(gl_FragCoord.xy), 0);
 }
 

@@ -87,8 +87,40 @@ uniform sampler2D iChannel1;   // first optional texture
 uniform sampler2D iChannel2;   // second optional texture
 uniform sampler2D iChannel3;   
 
-// contents of the previously rendered frame
-uniform sampler2D iBackbuffer;  
+// iBackbuffer contains the output of the previous shader pass or
+// frame. 
+// This is really a buffer, not a rectangular texture . It contains 
+// pixel values from the previous frame in linear order, matching the
+// order of pixels in the Java LXModel.  There is no implied spatial
+// relationship between pixels in the buffer.
+// Use texelFetch() on the gl_FragCoords passed to the shader to access
+// the values for the pixel you're working on. For example:
+// vec4 pix = texelFetch(iBackbuffer, ivec2(gl_FragCoord.xy), 0);
+// 
+uniform sampler2D iBackbuffer;
+
+// iMappedBuffer is a texture containing the data rendered by the
+// previous shader.  It is available to effect shaders, and can be
+// used for convolution and other effects that need rectangular "neighborhoods"
+// of pixels.
+// Note that only pixels that exist on the target LED fixture will be colored.
+// Everything else will be zero.  So blur, bloom and other filters may not have the
+// expected effect.
+// It is currently not supported in pattern shaders, but will be 
+// available as an option at some point in the future. 
+//
+uniform sampler2D iMappedBuffer;
+
+// A floating point array containing normalized 3D coordinates for the
+// selected view of the current LX model.  The points are in linear order
+// corresponding to the order of pixels in the Java LXModel.  
+// Most shaders will not need to interact directly with lxModelCoords, but
+// if you need to access the 3D coordinates of the current pixel, you can
+// use texelFetch() on the gl_FragCoords passed to the shader to access the
+// values for the pixel you're working on. For example:
+// vec3 coords3D = texelFetch(lxModelCoords, ivec2(gl_FragCoord.xy), 0).xyz;
+//
+uniform sampler2D lxModelCoords;
 
 ```
 
@@ -278,12 +310,14 @@ creation time.
 
 ### iBackbuffer (uniform sampler2D iBackbuffer)
 
-The contents of the previously rendered frame. This is useful for creating feedback effects
-like trails, echoes, etc. See the **MultipassDemo** pattern for an example.
+iBackbuffer contains the output of the previous shader pass or frame. Important: This is really
+a buffer, not a rectangular texture . It contains pixel values from the previous frame in linear order, matching the
+order of pixels in the current Java LXModel view.  There is no implied spatial relationship between pixels in the buffer.
 
-Use the
-GLSL [```texture(sampler2D textureName,vec2D coords)```](https://registry.khronos.org/OpenGL-Refpages/gl4/html/texture.xhtml)
-function with normalized coordinates to retrieve data from these textures.
+Use texelFetch() with the gl_FragCoords passed to the shader to retrieve the color values for the
+current pixel you're working on. For example:
+
+`vec4 pix = texelFetch(iBackbuffer, ivec2(gl_FragCoord.xy), 0);`
 
 -----
 
@@ -374,7 +408,7 @@ from the pattern browser panel.
     // basic #include support (handles nested includes, up to 9 levels)
 #include "resources/shaders/library/file.fs"
 //...or...
-#include <library/file.fs>// prefixes with default resource path
+#include <library/file.fs> // prefixes with default resource path
 
 // Use the automatic wrapper for ths shader. Recommended, but only required if you
 // use no other configuration pragmas. 
