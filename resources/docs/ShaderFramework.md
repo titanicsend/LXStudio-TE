@@ -22,6 +22,44 @@ While GPUs vary greatly in capability, they will all run your shader in parallel
 on many cores at the same time. This means you can make much more interesting, organic-looking,
 realistic, etc. graphics without bogging down the CPU.
 
+## How it works on TE
+If you've worked with shaders before, you've most likely seen them used to apply textures to geometry.  In games,
+for example, a shader might be used to apply a texture to a 3D character, or create explosions or water effects.  In 
+programs like ShaderToy, the geometry is less complicated.  Shaders are used to draw in 2D rectangles that are displayed
+on the screen.
+
+TE's shader engine is a little different. It's mostly Shadertoy compatible, but it is designed to work with the LED
+fixtures on our vehicles.  The shader engine takes the output of your shader and maps it to the vehicle's LEDs, so
+that the pattern you create is displayed on the car.  It is possible to do this by taking a Shadertoy-like rectangular texture
+and mapping each of its pixels to the nearest corresponding LED, but this has some important limitations when dealing with 3D 
+objects like TE and Mothership. Our art cars are definitely not rectangular, and they contain a lot of empty spaces where LEDs
+are sparse or nonexistent. (Think, the hole in the middle of Mothership, or the big space for the DJ booth on TE.)  
+
+Mapping a rectangular texture to this sort of object requires rendering a lot of pixels that will never be displayed.  Also
+the pixels in the map are not always well aligned with the LEDs, so the texture needs to be filtered to get the right color
+for each LED. This is somewhat computationally expensive, and can produce undesirable artifacts, like blurring and color bleed.  
+
+To solve these problems, and to give shaders the ability to address each pixel on our vehicles in full 3D, the latest TE shader engine
+uses a different approach.  Instead of rendering a rectangle and mapping it to the car's LEDs, the engine renders only the exact pixels
+found on the car. This is done by giving the shader access to the normalized physical space coordinates of the pixel it is rendering.
+
+In general, this means that fewer pixels need to be rendered, and the images produced on the LEDs are sharper, smoother in motion,
+and just plain better looking.
+
+For the most part, this happens automatically and does not affect how shaders are written.  But there are a few things
+to be aware of, especially if you want to use the engine's more advanced features:  
+
+- iBackbuffer, the sampler containing the previous frame is not a rectangular texture. It contains pixel values from the previous frame
+in linear order, matching the order of pixels in the current Java LXModel view.  See the section on iBackbuffer below for more
+information on how to use the backbuffer in your shader.
+
+- For shaders that do filtering or other convolution effects, the iMappedBuffer texture is available.  This texture contains the
+data rendered by the previous shader in "normal" rectangular buffer form.  It is currently available only to effect shaders. See
+the section on iMappedBuffer below for more information.
+
+- If you want to work directly with the normalized 3D model coordinates in your shader, use the lxModelCoords uniform sampler as
+described below.
+
 ## Uniforms - Data Supplied by the TE Framework
 Patterns on Titanic's End are highly interactive. Each show is unique, with visuals
 generated in real time in response to audio, directed by a VJ running the controls.
