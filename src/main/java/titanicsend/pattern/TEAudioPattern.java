@@ -88,7 +88,7 @@ public abstract class TEAudioPattern extends TEPattern {
     trebleLevel = GLEngine.getTrebleLevel();
 
     /* Compute the ratio of the current instantaneous frequency levels to
-     * their new, updated moving averages.
+     * their current moving averages.
      */
     volumeRatio = GLEngine.getVolumeRatio();
     bassRatio = GLEngine.getBassRatio();

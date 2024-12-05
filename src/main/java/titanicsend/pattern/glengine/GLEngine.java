@@ -328,14 +328,15 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
         gl4.glBindBufferRange(GL4.GL_UNIFORM_BUFFER, perFrameUniformBlockBinding, uniformBlockHandles[1], 0, perFrameUniformBlockSize);
     }
 
-    private void updatePerFrameUniforms(double deltaMs) {
-        // update the per-frame uniform block with the latest audio data
+    // Update once-per-frame audio data and all the calculated
+    // values derived from it.
+    private void updateAudioFrameData(double deltaMs) {
         double levelMin = 0.01;
 
         beat = lx.engine.tempo.basis();
         sinPhaseBeat = 0.5 + 0.5 * Math.sin(Math.PI * beat);
 
-        // current instantaneous levels of various bands
+        // current instantaneous levels of frequency ranges we're interested in
         volume = Math.max(levelMin, meter.getNormalized());
         bassLevel = Math.max(levelMin, meter.getAverage(0, 2));
         trebleLevel = Math.max(levelMin, meter.getAverage(meter.numBands / 2, meter.numBands / 2));
@@ -345,7 +346,10 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
         volumeRatio = volume / avgVolume.update(volume, deltaMs);
         bassRatio = bassLevel / avgBass.update(bassLevel, deltaMs);
         trebleRatio = trebleLevel / avgTreble.update(trebleLevel, deltaMs);
+    }
 
+    // update the per-frame shared uniform block with current audio data
+    private void updatePerFrameUniforms() {
         perFrameUniformBlock.put((float) beat);                        // beat
         perFrameUniformBlock.put((float) sinPhaseBeat);                // sinPhaseBeat
         perFrameUniformBlock.put((float) bassLevel);                   // bassLevel
@@ -430,8 +434,9 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
         if (isRunning) {
             // activate our context and do per-frame tasks
             canvas.getContext().makeCurrent();
+            updateAudioFrameData(deltaMs);
             updateAudioTexture();
-            updatePerFrameUniforms(deltaMs);
+            updatePerFrameUniforms();
 
             if (modelChanged) {
                 // if the model has changed, discard all existing view coordinate textures

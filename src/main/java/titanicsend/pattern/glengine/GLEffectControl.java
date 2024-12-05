@@ -26,13 +26,6 @@ public class GLEffectControl implements GLControlData {
   // send a subset of the controls we use with patterns
   public void setUniforms(GLShader s) {
     s.setUniform("iTime", (float) effect.getTime());
-    s.setUniform("iResolution", (float) GLEngine.getWidth(), (float) GLEngine.getHeight());
-
-    // Current values from audio stems
-    s.setUniform("stemBass", (float) AudioStems.get().bass.getValuef());
-    s.setUniform("stemDrums", (float) AudioStems.get().drums.getValuef());
-    s.setUniform("stemVocals", (float) AudioStems.get().vocals.getValuef());
-    s.setUniform("stemOther", (float) AudioStems.get().other.getValuef());
 
     // get current primary and secondary colors
     // TODO - we're just grabbing swatch colors here.  Do we need to worry about modulation?
