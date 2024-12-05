@@ -382,6 +382,13 @@ public class GLShader {
 
       gl4.glBindTexture(GL_TEXTURE_2D, 0);
     }
+
+    // assign uniform blocks to binding points
+    int perRunBlockIndex = gl4.glGetUniformBlockIndex(shaderProgram.getProgramId(), "PerRunBlock");
+    gl4.glUniformBlockBinding(shaderProgram.getProgramId(), perRunBlockIndex, GLEngine.perRunUniformBlockBinding);
+
+    int perFrameBlockIndex = gl4.glGetUniformBlockIndex(shaderProgram.getProgramId(), "PerFrameBlock");
+    gl4.glUniformBlockBinding(shaderProgram.getProgramId(), perFrameBlockIndex, GLEngine.perFrameUniformBlockBinding);
   }
 
   /**

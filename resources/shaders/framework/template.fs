@@ -2,29 +2,34 @@
 
 out vec4 finalColor;
 
-// standard shadertoy
+// shared uniforms that are set once per run
+layout (std140) uniform PerRunBlock {
+  vec4 iMouse;
+  vec2 iResolution;
+};
+
+// shared uniforms that are set once per frame
+layout (std140) uniform PerFrameBlock {
+// Legacy TE Audio uniforms
+    uniform float beat;
+    uniform float sinPhaseBeat;
+    uniform float bassLevel;
+    uniform float trebleLevel;
+
+    uniform float volumeRatio;
+    uniform float bassRatio;
+    uniform float trebleRatio;
+
+// Values from audio stem splitter
+    uniform float stemBass;
+    uniform float stemDrums;
+    uniform float stemVocals;
+    uniform float stemOther;
+};
+
+// standard shadertoy uniforms (updated per frame for each
+// running pattern.)
 uniform float iTime;
-uniform vec2 iResolution;
-uniform vec4 iMouse;
-
-// TE Audio
-uniform float beat;
-uniform float sinPhaseBeat;
-uniform float bassLevel;
-uniform float trebleLevel;
-
-uniform float volumeRatio;
-uniform float bassRatio;
-uniform float trebleRatio;
-
-uniform float levelReact;
-uniform float frequencyReact;
-
-// Current values from audio stems
-uniform float stemBass;
-uniform float stemDrums;
-uniform float stemVocals;
-uniform float stemOther;
 
 // TE Colors
 uniform vec3 iColorRGB;
@@ -43,6 +48,8 @@ uniform float iBrightness;
 uniform float iWow1;
 uniform float iWow2;
 uniform bool iWowTrigger;
+uniform float frequencyReact;
+uniform float levelReact;
 
 // Shadertoy audio channel
 uniform sampler2D iChannel0;
@@ -158,7 +165,7 @@ void main() {
     finalColor = _blendFix(finalColor);
     #else
     // Old EDC blending - force black pixels to full transparency, otherwise
-    //use shader provided alpha
+    // use shader provided alpha
     finalColor.a = ((finalColor.r + finalColor.g + finalColor.b) == 0.0) ? 0.0 : finalColor.a;
     #endif
     #endif
