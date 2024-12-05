@@ -4,6 +4,8 @@ import heronarts.lx.LX;
 import heronarts.lx.audio.GraphicMeter;
 import heronarts.lx.parameter.LXParameter;
 import java.util.List;
+
+import titanicsend.pattern.glengine.GLEngine;
 import titanicsend.util.TEMath;
 
 /**
@@ -19,10 +21,6 @@ public abstract class TEAudioPattern extends TEPattern {
   // The GraphicMeter holds the analyzed frequency content for the audio input
   protected final GraphicMeter eq = lx.engine.audio.meter;
 
-  // Small offset for audio signals to avoid divide by zero in ratio calculations,
-  // which can cause (possibly dramatic) visual glitches if the audio drops out.
-  protected static final double levelOffset = 0.01;
-
   // Fractions in 0..1 for the instantaneous frequency level this frame.
   // If we find this useful and track many more bands, a collection of ratio
   // tracker objects would make sense.
@@ -33,12 +31,6 @@ public abstract class TEAudioPattern extends TEPattern {
   // One of the demo patterns allows the VJ to vary how many bass bands
   // are tracked.
   protected int bassBandCount;
-
-  // Accumulate recent frequency band measurements into an exponentially
-  // weighted moving average.
-  protected TEMath.EMA avgVolume = new TEMath.EMA(0.5, .01);
-  protected TEMath.EMA avgBass = new TEMath.EMA(0.2, .01);
-  protected TEMath.EMA avgTreble = new TEMath.EMA(0.2, .01);
 
   /* Ratios of the instantaneous frequency levels in bands to their recent
    * running average. Using a ratio like this helps auto-scale to various
@@ -84,30 +76,30 @@ public abstract class TEAudioPattern extends TEPattern {
    */
   protected void computeAudio(double deltaMs) {
     // Instantaneous normalized (0..1) volume level
-    volumeLevel = Math.max(levelOffset,eq.getNormalized());
+    volumeLevel = GLEngine.getVolume();
 
     /* Average bass level of the bottom `bassBands` frequency bands.
      * The default lx.engine.audio.meter breaks up sound into 16 bands,
      * so a `bassBandCount` of 2 averages the bottom 12.5% of frequencies.
      */
-    bassLevel = Math.max(levelOffset, eq.getAverage(0, bassBandCount));
+    bassLevel = GLEngine.getBassLevel();
 
     // Instantaneous average level of the top half of the frequency bins
-    trebleLevel = Math.max(levelOffset, eq.getAverage(eq.numBands / 2, eq.numBands / 2));
+    trebleLevel = GLEngine.getTrebleLevel();
 
     /* Compute the ratio of the current instantaneous frequency levels to
      * their new, updated moving averages.
      */
-    volumeRatio = volumeLevel / avgVolume.update(volumeLevel, deltaMs);
-    bassRatio = bassLevel / avgBass.update(bassLevel, deltaMs);
-    trebleRatio = trebleLevel / avgTreble.update(trebleLevel, deltaMs);
+    volumeRatio = GLEngine.getVolumeRatio();
+    bassRatio = GLEngine.getBassRatio();
+    trebleRatio = GLEngine.getTrebleRatio();
 
     bassHit = false;
     // If bass is over 20% higher than recent average
     // and greater than in the previous frame
     // and enough time has elapsed since we last triggered
     // mark the frame as a bassHit().
-    if (bassLevel > 1.2 * avgBass.getValue()
+    if (bassLevel > 1.2 * GLEngine.getAvgBass()
         && bassLevel > lastBassLevel
         && msSinceBassRise > bassRetriggerMs) {
       bassHit = true;

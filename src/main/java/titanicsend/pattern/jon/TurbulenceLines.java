@@ -23,9 +23,6 @@ public class TurbulenceLines extends DriftEnabledPattern {
     controls.setValue(TEControlTag.XPOS, 0.25);
     controls.setValue(TEControlTag.YPOS, -0.25);
 
-    // let the bass averaging filter respond a little faster
-    avgBass.alpha = 0.02;
-
     // register common controls with LX
     addCommonControls();
 
