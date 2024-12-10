@@ -376,7 +376,7 @@ from the pattern browser panel.
 //...or...
 #include <library/file.fs>// prefixes with default resource path
 
-// Use the automatic wrapper for ths shader. Recommended, but only required if you
+// Use the automatic wrapper for this shader. Recommended, but only required if you
 // use no other configuration pragmas. 
 #pragma auto 
 
@@ -658,7 +658,7 @@ shader as a texture. The last shader in the sequence is the one that actually dr
 the frame.
 
 To create a multipass pattern, derive your pattern class from ```GLShaderPattern```  
-and configure your controls as described above. Then,before adding any shaders, you must
+and configure your controls as described above. Then, before adding any shaders, you must
 create shared backing store for the intermediate results. The ```GLShader``` class provides
 a function for doing this:
 
