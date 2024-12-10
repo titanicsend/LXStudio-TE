@@ -1,6 +1,6 @@
 These are lists of edge IDs (with the dash omitted) that comprise the car's silhouette, front and back. 
 
-We found at Burning Man 2022 that we almost always wanted these lit up to help people find us from a distance. At shows where the iceberg is ore of a stationary stage, we will probably not want these always lit.
+We found at Burning Man 2022 that we almost always wanted these lit up to help people find us from a distance. At shows where the iceberg is more of a stationary stage, we will probably not want these always lit.
 
 To use these, apply the list as ViewSelectors to a new LX channel (typically labeled "Outline" or "Silhouette"). You can apply something like SolidPattern to these fixtures.
 
