@@ -304,7 +304,7 @@ encapsulation protocol. To make this work:
 
 [Here's a video](https://youtu.be/ulBLF_IR46I) illustrating our configuration.
 
-### Resources
+## Resources
 
 * [#lighting-software on Slack](https://titanicsend.slack.com/archives/C02L0MDQB2M)
 * [Chromatik Wiki](https://github.com/heronarts/LXStudio/wiki) 
@@ -315,8 +315,6 @@ encapsulation protocol. To make this work:
 * [Using Tempo and Sound](https://docs.google.com/document/d/17iICAfbhCzPL77KbmFDL4-lN0zgBb1k6wdWnoBSPDjk/edit)
 * [The APC40 and LX Studio](https://docs.google.com/document/d/110qgYR_4wtE0gN8K3QZdqU75Xq0W115qe7J6mcgm1So/edit)
 * [Titanic’s End](http://titanicsend.com)
-
----
 
 ## License Note
 
