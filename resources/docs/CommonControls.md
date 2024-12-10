@@ -6,7 +6,7 @@
 made using ConstructedPattern)
 - In your constructor use the ```control.setXXX(TECommonControlTag.xxx,value(s)...)``` helper functions to configure the controls
 as needed. 
-- Once your've configured the common controls, call ```addCommonControls()``` from your constructor to register them
+- Once you've configured the common controls, call ```addCommonControls()``` from your constructor to register them
 with the UI.
 - If your pattern has any additional controls, you should also add them in your constructor, after the call to
 - ```addCommonControls``` so the UI will be consistent across all patterns.  
@@ -98,7 +98,7 @@ default getter function, or to replace the control with a completely new one.
 using the default getter function for the specified control type.
 - ```void setControl(TEControlTag tag,LXListenableParameter lxp,_CommonControlGetter getFn)```  - installs a
 new control and a custom getter function for the specified control type.
-- ```void SetGetterFunction(TEControlTag tag, _CommonControlGetter getFn```)  - installs a custom getter function
+- ```void setGetterFunction(TEControlTag tag, _CommonControlGetter getFn)```  - installs a custom getter function
 for the specified existing control.
 
 For example, to make a custom getter function for the speed control, first define it:
@@ -107,7 +107,7 @@ For example, to make a custom getter function for the speed control, first defin
  return ctl.getValuef(); }
 }
 ```
-Then call ```SetGetterFunction(TEControlTag.SPEED, myNewGetter)``` to install it, and everything that
+Then call ```setGetterFunction(TEControlTag.SPEED, myNewGetter)``` to install it, and everything that
 uses ```TEPerformancePattern.getSpeed()``` will be calling your new function.
 
 To completely replace the speed control, define a new control that can be cast to LXListenableParameter, build a getter,
@@ -137,7 +137,7 @@ other events.  Starts the next variable clock "second" when called.
 ```int getPrimaryGradientColor(lerp)``` Returns a color interpolated from the palette's primary gradient,
 with brightness modified by the Brightness control.
 
-```int getSecondaryGradientColor(lerp``` Returns a color interpolated from the palette's secondary gradient,
+```int getSecondaryGradientColor(lerp)``` Returns a color interpolated from the palette's secondary gradient,
 with brightness modified by the brightness control.
 
 ### Speed and Spin:  Tempo Linked Parameters
