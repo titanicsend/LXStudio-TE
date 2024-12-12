@@ -38,7 +38,11 @@ public class NDIOutRawEffect extends TEEffect {
 
       buffer.rewind();
       for (int i = 0; i < nPoints; i++) {
-        buffer.putInt(this.colors[this.model.points[i].index]);
+        // Move alpha channel to the low order byte so we wind up with ARGB
+        // data that NDI can use.
+        int k = colors[this.model.points[i].index];
+        k = ((k >> 24) & 0xFF) | (k << 8);
+        buffer.putInt(k);
       }
       buffer.flip();
 
@@ -53,7 +57,7 @@ public class NDIOutRawEffect extends TEEffect {
       ndiSender = new DevolaySender("TitanicsEnd");
       ndiFrame = new DevolayVideoFrame();
       ndiFrame.setResolution(width,height);
-      ndiFrame.setFourCCType(DevolayFrameFourCCType.BGRA);
+      ndiFrame.setFourCCType(DevolayFrameFourCCType.RGBA);
       ndiFrame.setData(buffer);
       ndiFrame.setFrameRate(60, 1);
       ndiFrame.setAspectRatio(1);
