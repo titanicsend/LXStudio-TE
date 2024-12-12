@@ -37,7 +37,7 @@ public class NDIOutRawEffect extends TEEffect {
       // Make sure we don't overrun the frame buffer if the model is too large
       int nPoints = Math.min(width * height, this.model.points.length);
 
-      buffer.rewind()
+      buffer.rewind();
         
       for (int i = 0; i < nPoints; i++) {
         // Move alpha channel to the low order byte so we wind up with ARGB
