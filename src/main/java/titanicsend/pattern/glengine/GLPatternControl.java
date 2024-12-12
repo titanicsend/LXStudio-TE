@@ -15,28 +15,6 @@ public class GLPatternControl implements GLControlData {
   public void setUniforms(GLShader s) {
     // set standard shadertoy-style uniforms
     s.setUniform("iTime", (float) pattern.getTime());
-    s.setUniform("iResolution", (float) GLEngine.getWidth(), (float) GLEngine.getHeight());
-    // s.setUniform("iMouse", 0f, 0f, 0f, 0f);
-
-    // TE standard audio uniforms
-    s.setUniform("beat", (float) pattern.getTempo().basis());
-    s.setUniform("sinPhaseBeat", (float) pattern.sinePhaseOnBeat());
-    s.setUniform("bassLevel", (float) pattern.getBassLevel());
-    s.setUniform("trebleLevel", (float) pattern.getTrebleLevel());
-
-    // added by @look
-    s.setUniform("bassRatio", (float) pattern.getBassRatio());
-    s.setUniform("trebleRatio", (float) pattern.getTrebleRatio());
-    s.setUniform("volumeRatio", pattern.getVolumeRatiof());
-
-    s.setUniform("levelReact", (float) pattern.getLevelReactivity());
-    s.setUniform("frequencyReact", (float) pattern.getFrequencyReactivity());
-
-    // Current values from audio stems
-    s.setUniform("stemBass", (float) AudioStems.get().bass.getValuef());
-    s.setUniform("stemDrums", (float) AudioStems.get().drums.getValuef());
-    s.setUniform("stemVocals", (float) AudioStems.get().vocals.getValuef());
-    s.setUniform("stemOther", (float) AudioStems.get().other.getValuef());
 
     // color-related uniforms
     int col = pattern.calcColor();
@@ -66,5 +44,7 @@ public class GLPatternControl implements GLControlData {
     s.setUniform("iWow1", (float) pattern.getWow1());
     s.setUniform("iWow2", (float) pattern.getWow2());
     s.setUniform("iWowTrigger", pattern.getWowTrigger());
+    s.setUniform("levelReact", (float) pattern.getLevelReactivity());
+    s.setUniform("frequencyReact", (float) pattern.getFrequencyReactivity());
   }
 }

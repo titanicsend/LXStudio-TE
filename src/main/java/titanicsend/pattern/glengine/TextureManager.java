@@ -11,8 +11,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static com.jogamp.opengl.GL.*;
 
@@ -48,10 +48,8 @@ public class TextureManager {
   // map of texture hash codes to texture data
   // The hash code uniquely identifies the texture, the texture unit number is
   // used to bind the texture to the GPU, and the other data is used for
-  // cache management. NOTE: Used ConcurrentHashMap here because the normal
-  // HashMap doesn't let you remove elements while iterating over it, which
-  // we need to do when dealing with model changes.
-  private final Map<Integer, CachedTextureInfo> textures = new ConcurrentHashMap<>();
+  // cache management.
+  private final Map<Integer, CachedTextureInfo> textures = new HashMap<>();
 
   // a list of that we can use to keep track of released texture unit numbers
   private final ArrayList<Integer> releasedTextureUnits = new ArrayList<>();
@@ -262,12 +260,21 @@ public class TextureManager {
    * textures map.
    */
   public void clearCoordinateTextures() {
+    ArrayList<Integer> keysToRemove = new ArrayList<>();
+
     for (Map.Entry<Integer, CachedTextureInfo> entry : textures.entrySet()) {
       CachedTextureInfo t = entry.getValue();
+
+      // create a list of keys for all coordinate textures
       if (t.type == CachedTextureType.COORDINATE) {
-        t.refCount = 0; // just making sure
-        releaseTexture(entry.getKey());
+        t.refCount = 0; // should already be zero, but just in case
+        keysToRemove.add(entry.getKey());
       }
+    }
+
+    // remove all coordinate textures from the map
+    for (Integer key : keysToRemove) {
+      releaseTexture(key);
     }
   }
 

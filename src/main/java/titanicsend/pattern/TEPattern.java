@@ -1,8 +1,5 @@
 package titanicsend.pattern;
 
-import static java.lang.Math.PI;
-import static java.lang.Math.sin;
-
 import heronarts.lx.LX;
 import heronarts.lx.Tempo;
 import heronarts.lx.audio.GraphicMeter;
@@ -27,6 +24,7 @@ import titanicsend.dmx.pattern.DmxPattern;
 import titanicsend.model.TELaserModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
+import titanicsend.pattern.glengine.GLEngine;
 import titanicsend.util.TEColor;
 
 public abstract class TEPattern extends DmxPattern {
@@ -159,7 +157,7 @@ public abstract class TEPattern extends DmxPattern {
 
   // Sine modulator alternative between 0 and 1 on beat
   public double sinePhaseOnBeat() {
-    return .5 * sin(PI * lx.engine.tempo.getCompositeBasis()) + .5;
+    return GLEngine.getSinPhaseOnBeat();
   }
 
   /**
