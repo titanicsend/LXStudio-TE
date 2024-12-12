@@ -70,11 +70,15 @@ import titanicsend.model.TEWholeModelDynamic;
 import titanicsend.model.TEWholeModelStatic;
 import titanicsend.modulator.dmx.Dmx16bitModulator;
 import titanicsend.modulator.dmx.DmxColorModulator;
+import titanicsend.modulator.dmx.DmxDirectorColorModulator;
 import titanicsend.modulator.dmx.DmxDualRangeModulator;
 import titanicsend.modulator.dmx.DmxGridModulator;
 import titanicsend.modulator.dmx.DmxRangeModulator;
 import titanicsend.modulator.justin.MultiplierModulator;
 import titanicsend.modulator.justin.UIMultiplierModulator;
+import titanicsend.modulator.outputOsc.OutputOscColorModulator;
+import titanicsend.modulator.outputOsc.OutputOscFloatModulator;
+import titanicsend.modulator.outputOsc.OutputOscTempoModulator;
 import titanicsend.ndi.NDIEngine;
 import titanicsend.osc.CrutchOSC;
 import titanicsend.output.GrandShlomoStation;
@@ -416,10 +420,17 @@ public class TEApp extends LXStudio {
       lx.registry.addModulator(AudioStemModulator.class);
       lx.registry.addModulator(Dmx16bitModulator.class);
       lx.registry.addModulator(DmxGridModulator.class);
-      lx.registry.addModulator(DmxColorModulator.class);
+      // Replaced by Chromatik version:
+      // lx.registry.addModulator(DmxColorModulator.class);
+      lx.registry.addModulator(DmxDirectorColorModulator.class);
       lx.registry.addModulator(DmxDualRangeModulator.class);
       lx.registry.addModulator(DmxRangeModulator.class);
       lx.registry.addModulator(MultiplierModulator.class);
+
+      // Output modulators
+      lx.registry.addModulator(OutputOscFloatModulator.class);
+      lx.registry.addModulator(OutputOscTempoModulator.class);
+      lx.registry.addModulator(OutputOscColorModulator.class);
 
       // Custom UI components
       if (lx instanceof LXStudio) {
@@ -429,7 +440,8 @@ public class TEApp extends LXStudio {
         // UI: Modulators
         ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmx16bitModulator.class);
         ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmxGridModulator.class);
-        ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmxColorModulator.class);
+        // Replaced by Chromatik version:
+        // ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmxColorModulator.class);
         ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmxDualRangeModulator.class);
         ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmxRangeModulator.class);
         ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIMultiplierModulator.class);

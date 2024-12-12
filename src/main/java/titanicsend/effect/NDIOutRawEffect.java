@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 import me.walkerknapp.devolay.DevolayFrameFourCCType;
 import me.walkerknapp.devolay.DevolaySender;
 import me.walkerknapp.devolay.DevolayVideoFrame;
+import titanicsend.pattern.glengine.GLEngine;
 
 @LXCategory("Titanics End")
 public class NDIOutRawEffect extends TEEffect {
@@ -14,8 +15,8 @@ public class NDIOutRawEffect extends TEEffect {
   private boolean isInitialized = false;
 
   // output frame size
-  private static final int width = 320;
-  private static final int height = 240;
+  private static final int width = GLEngine.getWidth();
+  private static final int height = GLEngine.getHeight();
 
   private DevolaySender ndiSender;
   private DevolayVideoFrame ndiFrame;
@@ -36,7 +37,8 @@ public class NDIOutRawEffect extends TEEffect {
       // Make sure we don't overrun the frame buffer if the model is too large
       int nPoints = Math.min(width * height, this.model.points.length);
 
-      buffer.rewind();
+      buffer.rewind()
+        
       for (int i = 0; i < nPoints; i++) {
         // Move alpha channel to the low order byte so we wind up with ARGB
         // data that NDI can use.

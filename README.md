@@ -19,7 +19,7 @@ Want a personal intro to the project and codebase? Contact current team lead [An
 <details>
     <summary>What if I want to know more?</summary>
     <p>This doc sets out the project vision and has much more information: <a href="https://docs.google.com/document/d/1YK9umrhOodwnRWGRzYOR1iOocrO6Cf9ZpHF7FWgBKKI/edit#">2022 Lighting Design Doc</a></p>
-    <p>Team members can reference several docs on our Notion for more background including [Networking and Front of House](https://www.notion.so/titanicsend/Networking-and-Front-of-House-Setup-fe5360a00b594955b735e02115548ff4) and [Software / Integration Hub](https://www.notion.so/titanicsend/2023-Lighting-Software-Integration-61c9cd5c6e884c6db66d4f843a1b8812).</p>
+    <p>Team members can reference several docs on our Notion for more background including <a href="https://www.notion.so/titanicsend/Networking-and-Front-of-House-Setup-fe5360a00b594955b735e02115548ff4">Networking and Front of House</a> and <a href="https://www.notion.so/titanicsend/2023-Lighting-Software-Integration-61c9cd5c6e884c6db66d4f843a1b8812">Software / Integration Hub</a>.</p>
 </details>
 
 ## JDK Installation
@@ -48,7 +48,7 @@ Steps for setup:
    git clone https://github.com/titanicsend/LXStudio-TE.git
    ```
 
-2. Open the project director you cloned to when you're presented with "New Project" and
+2. Open the project directory you cloned to when you're presented with "New Project" and
    "Open" options. That's the initial screen.
 
 3. File → Project Structure (or ⌘-;)
@@ -88,7 +88,7 @@ cp pre-commit ./git/hooks/pre-commit
 
 Now commits will fail if there's a style violation, since this runs `mvn spotless:check`.
 
-YOu can manually apply formatting fixes using `mvn spotless:apply`.
+You can manually apply formatting fixes using `mvn spotless:apply`.
 
 2. (Optional) Install the IDE plugin
    for [IntelliJ](https://github.com/google/google-java-format#intellij-android-studio-and-other-jetbrains-ides)
