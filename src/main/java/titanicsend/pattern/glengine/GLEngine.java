@@ -80,8 +80,6 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   private TextureManager textureCache = null;
   private boolean modelChanged = false;
 
-  private boolean isRunning = false;
-
   // Data and utility methods for the GL canvas/context.
   private GLAutoDrawable canvas = null;
   private GL4 gl4;
@@ -424,25 +422,18 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
       // start listening for model changes
       lx.addListener(this);
-
-      // set running flag once initialization is complete
-      isRunning = true;
     }
 
-    // On every frame, after initial setup
-    if (isRunning) {
-      // activate our context and do per-frame tasks
-      canvas.getContext().makeCurrent();
-      updateAudioFrameData(deltaMs);
-      updateAudioTexture();
-      updatePerFrameUniforms();
+    // activate our context and do per-frame tasks
+    canvas.getContext().makeCurrent();
+    updateAudioFrameData(deltaMs);
+    updateAudioTexture();
+    updatePerFrameUniforms();
 
-      if (modelChanged) {
-        // if the model has changed, discard all existing view coordinate textures
-        textureCache.clearCoordinateTextures();
-        modelChanged = false;
-      }
-
+    if (modelChanged) {
+      // if the model has changed, discard all existing view coordinate textures
+      textureCache.clearCoordinateTextures();
+      modelChanged = false;
     }
   }
 
