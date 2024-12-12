@@ -12,7 +12,7 @@ Outline;	true	113117;28113;28111;111119;118119;30118;3033;3337;37123;45123;45122
 Outline DJ	true	11-98,98-99,99-101,44-101,44-47,47-90,67-90,65-67
 Outline DJ;	true	11-98;98-99;99-101;44-101;44-47;47-90;67-90;65-67
 #
-# These is how you make a shortcut to the tags.properties file, which is a list of tags and fixtures to which they should be applied:
+# This is how you make a shortcut to the tags.properties file, which is a list of tags and fixtures to which they should be applied:
 # DJ Area Edges	true	dj-e
 #
 # Back Upper is useful for finding the car from behind on playa
