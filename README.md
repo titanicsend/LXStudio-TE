@@ -1,7 +1,6 @@
-Titanic's End LXStudio
-==
+## Titanic's End LXStudio
 
-Titanic's End is a mutant vehicle that debuted at Burning Man 2022 and has since participated in EDC and Framework events.
+[Titanic's End](http://titanicsend.com) is a mutant vehicle that debuted at [Burning Man](https://burningman.org) 2022 and has since participated in EDC and Framework events.
 
 We are the largest team developing on Chromatik in the open so other artists can benefit from our work (see the [license](LICENSE.md)). This repo contains the shader & pattern code for the 128,000 LEDS, sound reactivity, MIDI control, OSC middleware, and ArtNet bidirectional control.
 
@@ -24,21 +23,43 @@ Want a personal intro to the project and codebase? Contact current team lead [An
 
 ## JDK Installation
 
-Either go to https://adoptium.net/installation/ or, on a Mac with Homebrew:
+Visit https://adoptium.net/installation/ or if you are using macOS and [Homebrew](https://brew.sh) use these commands:
 
 ```sh
+brew uninstall --cask temurin # ensure you are running 17
 brew install --cask temurin@17
+```
 
-# verify your installation by running:
+Verify your installation:
+
+``` 
 /Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java --version
 ```
 
-## Getting started
+After installing the temurin JDK, we recommend installing and building maven, a package manager for our project:
 
-> These are geared toward running Chromatik on a Macbook with `git` already installed. If you need help with anything, ask in the Slack #lighting-software channel!
+```sh
+brew install maven 
+```
 
-First, you'll need an IDE (editor). IntelliJ's Community Edition is the best
-free one available. You can download it here:
+Clean and install the maven dependencies:
+
+```
+mvn clean -U package && mvn install
+```
+
+One more thing… we have a coding style setup, as described below, so you’ll also need to install [google-java-format](https://github.com/google/google-java-format):
+
+```sh
+brew install google-java-format  
+```
+
+## Quick Start
+
+> These are geared toward running Chromatik on macOS with `git` already installed. If you need help with anything, ask in the Slack #lighting-software channel!
+
+First, you'll need an IDE (editor). IntelliJ's Community Edition is the best free one available. You can download it here:
+
 https://www.jetbrains.com/idea/
 
 Steps for setup:
@@ -67,26 +88,25 @@ Steps for setup:
         1. Select the Temurin 17 JDK
            ![Project SDK](assets/IDE%20Setup/Select%20Project.png)
 
-4. Select "Titanic's End" in the top bar (in the dropdown to the right of the hammer) if
-   you want to use the vehicle model, or "Testahedron" if you want the testahedron model.
+4. Select "Titanic's End" in the top bar (in the dropdown to the right of the hammer) if you want to use the vehicle model, or "Testahedron" if you want the testahedron model.
    ![Play button](assets/IDE%20Setup/Play%20Button.png)
 
 5. Hit the green arrow "play" button. (If you just want to build, you can hit the hammer.)
 
 6. Assuming things work okay, a UI for Chromatik will pop up: Great! Now, you can play with the buttons.
 
-### Code Style
+### Coding Style
 
 These are the steps to use [google-java-format](https://github.com/google/google-java-format) automatically
 and ensure that each commit gets formatted before being submitted.
 
-1. Setup git pre-commit hook to run the `google-java-format` CLI tool on changed files
+1. Setup the git pre-commit hook to run the `google-java-format` CLI tool on changed files
 
 ```sh
-cp pre-commit ./git/hooks/pre-commit
+cp pre-commit .git/hooks/pre-commit
 ```
 
-Now commits will fail if there's a style violation, since this runs `mvn spotless:check`.
+Commits may now fail if there's a style violation, since this runs `mvn spotless:check`.
 
 You can manually apply formatting fixes using `mvn spotless:apply`.
 
@@ -94,6 +114,7 @@ You can manually apply formatting fixes using `mvn spotless:apply`.
    for [IntelliJ](https://github.com/google/google-java-format#intellij-android-studio-and-other-jetbrains-ides)
     1. After plugin install, go to `Settings > Tools > Actions on Save` and enable `Reformat Code`
        and `Optimize Imports`.
+       
 3. (Optional) Or install the IDE plugin for [Eclipse](https://github.com/google/google-java-format#eclipse).
 
 ### Potential issues
@@ -149,8 +170,7 @@ Things that can help improve your experience with LX Studio.
 
 ### Recognize Chromatik JSON file extensions
 
-It can be handy to edit Chromatik's JSON config files in the IDE. Add the .lxf
-and .lxp extensions to be recognized as JSON.
+It can be handy to edit Chromatik's JSON config files in the IDE. Add the .lxf and .lxp extensions to be recognized as JSON.
 
 1. Open IntelliJ preferences (⌘-, on Mac) and go to Editor → File Types → JSON.
 2. Next, add "*.lxp" to the list, and so on.
@@ -247,8 +267,7 @@ Restart your machine and you should see Chromatik open automatically on startup.
 
 ## Eclipse
 
-If Eclipse is like a warm snuggie to you, we'd appreciate you adding any SDK and
-environment configuration tips here.
+If Eclipse is like a warm snuggie to you, we'd appreciate you adding any SDK and environment configuration tips here.
 
 ## Connecting remote USB-MIDI devices
 
@@ -285,7 +304,17 @@ encapsulation protocol. To make this work:
 
 [Here's a video](https://youtu.be/ulBLF_IR46I) illustrating our configuration.
 
----
+## Resources
+
+* [#lighting-software on Slack](https://titanicsend.slack.com/archives/C02L0MDQB2M)
+* [Chromatik Wiki](https://github.com/heronarts/LXStudio/wiki) 
+* [Chromatik API](https://chromatik.co/api/)
+* [Chromatik Source](https://github.com/heronarts/LX/tree/master/src/main/java/heronarts/lx)
+* [TE Visual Map](https://docs.google.com/spreadsheets/d/1C7VPybckgH9bWGxwtgMN_Ij1T__c5qc-k7yIhG-592Y/edit#gid=877106241)
+* [TE Operation Modes and Art Direction Standards](https://docs.google.com/document/d/16FGnQ8jopCGwQ0qZizqILt3KYiLo0LPYkDYtnYzY7gI/edit)
+* [Using Tempo and Sound](https://docs.google.com/document/d/17iICAfbhCzPL77KbmFDL4-lN0zgBb1k6wdWnoBSPDjk/edit)
+* [The APC40 and LX Studio](https://docs.google.com/document/d/110qgYR_4wtE0gN8K3QZdqU75Xq0W115qe7J6mcgm1So/edit)
+* [Titanic’s End](http://titanicsend.com)
 
 ## License Note
 
