@@ -15,3 +15,54 @@ vec3 rgb2hsv(vec3 c) {
     float e = 1.0e-10;
     return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
 }
+
+// from IQ's oklab shader
+// Takes two RGB colors, performs linear interpolation between them in the the Oklab
+// color space and returns an RGB color that is a mix of the two.
+//
+// Oklab is a perceptually uniform color space, so the interpolation should have
+// minimal color banding, and be of uniform brightness throughout, without as much
+// grey desaturated color as the equivalent RGB or sRGB interpolation.
+//
+// Original oklab paper by Björn Ottosson: https://bottosson.github.io/posts/oklab
+vec3 oklab_mix( vec3 colA, vec3 colB, float h ) {
+    const mat3 kCONEtoLMS = mat3(
+    0.4121656120,  0.2118591070,  0.0883097947,
+    0.5362752080,  0.6807189584,  0.2818474174,
+    0.0514575653,  0.1074065790,  0.6302613616);
+    const mat3 kLMStoCONE = mat3(
+    4.0767245293, -1.2681437731, -0.0041119885,
+    -3.3072168827,  2.6093323231, -0.7034763098,
+    0.2307590544, -0.3411344290,  1.7068625689);
+
+    // rgb to oklab cone
+    vec3 lmsA = pow( kCONEtoLMS*colA, vec3(1.0/3.0));
+    vec3 lmsB = pow( kCONEtoLMS*colB, vec3(1.0/3.0));
+
+    // interpolate in oklab color space
+    vec3 lms = mix( lmsA, lmsB, h );
+
+    // and back to rgb
+    return kLMStoCONE*(lms*lms*lms);
+}
+
+// Shortest arc distance HSV color interpolator. Roughly
+// equivalent to what Chromatik is doing in Java.
+// Takes two RGB colors, performs linear interpolation in HSV
+// color space and returns an RGB color that is a mix of the two.
+vec3 hsv_mix(vec3 colA,vec3 colB, float h) {
+    const float black_threshold = 0.005;
+    vec3 hsv1 = rgb2hsv(colA);
+    vec3 hsv2 = rgb2hsv(colB);
+
+    // if either color is black, we can just do a straight mix on
+    // the rgb color, avoiding complication due to black's undefined hue
+    // and saturation in the hsv color space.
+    if (hsv1.z < black_threshold || hsv2.z < black_threshold) {
+        return mix(colA, colB, h);
+    }
+
+    // otherwise, interpolate the hue along shortest arc of the color wheel
+    float hue = (mod(mod((hsv2.x-hsv1.x), 1.) + 1.5, 1.)-0.5)*h + hsv1.x;
+    return hsv2rgb(vec3(hue, mix(hsv1.yz, hsv2.yz, h)));
+}
