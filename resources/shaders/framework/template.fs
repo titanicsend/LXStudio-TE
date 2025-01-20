@@ -1,5 +1,7 @@
 #version 410
 
+#define MAX_PALETTE_ENTRIES 5
+
 out vec4 finalColor;
 
 // shared uniforms that are set once per run
@@ -25,6 +27,10 @@ layout (std140) uniform PerFrameBlock {
     uniform float stemDrums;
     uniform float stemVocals;
     uniform float stemOther;
+
+// Palette uniforms
+    uniform float iPaletteSize; // number of active entries in the palette
+    uniform vec3[MAX_PALETTE_ENTRIES] iPalette;
 };
 
 // standard shadertoy uniforms (updated per frame for each
