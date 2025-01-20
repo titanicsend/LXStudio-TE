@@ -1,5 +1,6 @@
 package titanicsend.pattern.glengine;
 
+import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.util.GLBuffers;
@@ -7,6 +8,8 @@ import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.LXLoopTask;
 import heronarts.lx.audio.GraphicMeter;
+import heronarts.lx.color.LXColor;
+import heronarts.lx.color.LXSwatch;
 import heronarts.lx.model.LXModel;
 import titanicsend.audio.AudioStems;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
@@ -135,14 +138,13 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   }
 
   /**
-   * Copy a model's normalized coordinates into a special texture for use by shaders. Must be
-   * called by the parent pattern or effect at least once before the first frame is rendered and
-   * Should be called by the pattern's frametime run() function on every frame for full Chromatik view
+   * Copy a model's normalized coordinates into a special texture for use by shaders. Must be called
+   * by the parent pattern or effect at least once before the first frame is rendered and Should be
+   * called by the pattern's frametime run() function on every frame for full Chromatik view
    * support.
    *
    * @param model The model (view) to copy coordinates from
-   * @return The texture unit number that the view's coordinate texture
-   * is bound to.
+   * @return The texture unit number that the view's coordinate texture is bound to.
    */
   public int useViewCoordinates(LXModel model) {
     return textureCache.useViewCoordinates(model);
@@ -214,9 +216,7 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   }
 
-  /**
-   * Update audio texture object with new fft and waveform data. This is called once per frame.
-   */
+  /** Update audio texture object with new fft and waveform data. This is called once per frame. */
   private void updateAudioTexture() {
     // load frequency and waveform data into our texture buffer, fft data
     // in the first row, normalized audio waveform data in the second.
@@ -230,25 +230,54 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     gl4.glBindTexture(GL_TEXTURE_2D, audioTextureHandle[0]);
 
     gl4.glTexImage2D(
-      GL4.GL_TEXTURE_2D,
-      0,
-      GL4.GL_R32F,
-      audioTextureWidth,
-      audioTextureHeight,
-      0,
-      GL4.GL_RED,
-      GL_FLOAT,
-      audioTextureData);
+        GL4.GL_TEXTURE_2D,
+        0,
+        GL4.GL_R32F,
+        audioTextureWidth,
+        audioTextureHeight,
+        0,
+        GL4.GL_RED,
+        GL_FLOAT,
+        audioTextureData);
   }
 
   /**
-   * Return a properly aligned size for a uniform block. This is necessary, particularly on
-   * macOS, where the size of a uniform block must be a multiple of GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT.
-   * (NVidia drivers on Windows and Linux are more forgiving.  I always discover things like this the
+   * Set the palette size and colors in the shader uniform block.
+   *
+   * @param uniformBuffer The uniform block buffer. When called, the current index must be at the
+   *                      start of the palette data area
+   */
+  public void setPaletteUniforms(FloatBuffer uniformBuffer) {
+    float r, g, b;
+    LXSwatch activeSwatch = getLX().engine.palette.swatch;
+    int n = activeSwatch.colors.size();
+
+    // store palette size (iPaletteSize)
+    uniformBuffer.put((float) activeSwatch.colors.size());
+
+    // store palette colors
+    for (int i = 0; i < n; i++) {
+      int color = activeSwatch.getColor(i).getColor();
+
+      r = (float) (0xff & LXColor.red(color)) / 255f;
+      uniformBuffer.put(r);
+      g = (float) (0xff & LXColor.green(color)) / 255f;
+      uniformBuffer.put(g);
+      b = (float) (0xff & LXColor.blue(color)) / 255f;
+      uniformBuffer.put(b);
+      uniformBuffer.put(1.0f); // alpha (filler at this point)
+    }
+  }
+
+  /**
+   * Return a properly aligned size for a uniform block. This is necessary, particularly on macOS,
+   * where the size of a uniform block must be a multiple of GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT.
+   * (NVidia drivers on Windows and Linux are more forgiving. I always discover things like this the
    * hard way!)
    *
    * @param elements The number of 4-byte elements in the uniform block
-   * @return The size of the uniform block in bytes, aligned to the GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT
+   * @return The size of the uniform block in bytes, aligned to the
+   *     GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT
    */
   private int getUBOAlignedSize(int elements) {
     int[] alignment = new int[1];
@@ -257,11 +286,10 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   }
 
   /**
-   * Initialize shared uniform blocks. These blocks let us centrally
-   * manage uniforms that are common to all shaders and are only updated once per run,
-   * or once per frame. Keeping a single copy of these uniforms in GPU memory saves space
-   * and reduces the number of uniform setup and data transfer calls needed for each
-   * running shader.
+   * Initialize shared uniform blocks. These blocks let us centrally manage uniforms that are common
+   * to all shaders and are only updated once per run, or once per frame. Keeping a single copy of
+   * these uniforms in GPU memory saves space and reduces the number of uniform setup and data
+   * transfer calls needed for each running shader.
    */
   private void initializeUniformBlocks() {
 
@@ -305,10 +333,12 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     // 1 float for stemDrums
     // 1 float for stemVocals
     // 1 float for stemOther
+    // 1 float for iPaletteSize
+    // 20 floats (5 x 4) for the palette
     // VERY IMPORTANT NOTE: whatever order this buffer is loaded in MUST be replicated exactly
     // in the shader framework code's uniform block declaration. Otherwise, the uniforms will not
     // have the correct values in the shader.
-    this.perFrameUniformBlockSize = getUBOAlignedSize(11);
+    this.perFrameUniformBlockSize = getUBOAlignedSize(32);
     this.perFrameUniformBlock = GLBuffers.newDirectFloatBuffer(perFrameUniformBlockSize / 4);
 
     // Generate the uniform block buffers
@@ -318,13 +348,25 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     gl4.glBindBuffer(GL4.GL_UNIFORM_BUFFER, uniformBlockHandles[0]);
 
     // copy the per-run uniform block data to the buffer
-    gl4.glBufferData(GL4.GL_UNIFORM_BUFFER, perRunUniformBlockSize, perRunUniformBlock, GL4.GL_DYNAMIC_DRAW);
-    gl4.glBindBufferRange(GL4.GL_UNIFORM_BUFFER, perRunUniformBlockBinding, uniformBlockHandles[0], 0, perRunUniformBlockSize);
+    gl4.glBufferData(
+        GL4.GL_UNIFORM_BUFFER, perRunUniformBlockSize, perRunUniformBlock, GL4.GL_DYNAMIC_DRAW);
+    gl4.glBindBufferRange(
+        GL4.GL_UNIFORM_BUFFER,
+        perRunUniformBlockBinding,
+        uniformBlockHandles[0],
+        0,
+        perRunUniformBlockSize);
 
     // Do the same for the per-frame uniform block and its initial data
     gl4.glBindBuffer(GL4.GL_UNIFORM_BUFFER, uniformBlockHandles[1]);
-    gl4.glBufferData(GL4.GL_UNIFORM_BUFFER, perFrameUniformBlockSize, perFrameUniformBlock, GL4.GL_DYNAMIC_DRAW);
-    gl4.glBindBufferRange(GL4.GL_UNIFORM_BUFFER, perFrameUniformBlockBinding, uniformBlockHandles[1], 0, perFrameUniformBlockSize);
+    gl4.glBufferData(
+        GL4.GL_UNIFORM_BUFFER, perFrameUniformBlockSize, perFrameUniformBlock, GL4.GL_DYNAMIC_DRAW);
+    gl4.glBindBufferRange(
+        GL4.GL_UNIFORM_BUFFER,
+        perFrameUniformBlockBinding,
+        uniformBlockHandles[1],
+        0,
+        perFrameUniformBlockSize);
   }
 
   // Update once-per-frame audio data and all the calculated
@@ -336,7 +378,8 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     // current instantaneous levels of frequency ranges we're interested in
     volume = Math.max(AUDIO_LEVEL_MIN, meter.getNormalized());
     bassLevel = Math.max(AUDIO_LEVEL_MIN, meter.getAverage(0, 2));
-    trebleLevel = Math.max(AUDIO_LEVEL_MIN, meter.getAverage(meter.numBands / 2, meter.numBands / 2));
+    trebleLevel =
+        Math.max(AUDIO_LEVEL_MIN, meter.getAverage(meter.numBands / 2, meter.numBands / 2));
 
     // Compute the ratios of current instantaneous levels
     // to their slow EMAs.  See TEAudioPattern.java for more info.
@@ -347,17 +390,20 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
   // update the per-frame shared uniform block with current audio data
   private void updatePerFrameUniforms() {
-    perFrameUniformBlock.put((float) beat);                        // beat
-    perFrameUniformBlock.put((float) sinPhaseBeat);                // sinPhaseBeat
-    perFrameUniformBlock.put((float) bassLevel);                   // bassLevel
-    perFrameUniformBlock.put((float) trebleLevel);                 // trebleLevel
-    perFrameUniformBlock.put((float) bassRatio);                   // bassRatio
-    perFrameUniformBlock.put((float) trebleRatio);                 // trebleRatio
-    perFrameUniformBlock.put((float) volumeRatio);                 // volumeRatio
-    perFrameUniformBlock.put(AudioStems.get().bass.getValuef());   // stemBass
-    perFrameUniformBlock.put(AudioStems.get().drums.getValuef());  // stemDrums
+    perFrameUniformBlock.put((float) beat); // beat
+    perFrameUniformBlock.put((float) sinPhaseBeat); // sinPhaseBeat
+    perFrameUniformBlock.put((float) bassLevel); // bassLevel
+    perFrameUniformBlock.put((float) trebleLevel); // trebleLevel
+    perFrameUniformBlock.put((float) bassRatio); // bassRatio
+    perFrameUniformBlock.put((float) trebleRatio); // trebleRatio
+    perFrameUniformBlock.put((float) volumeRatio); // volumeRatio
+    perFrameUniformBlock.put(AudioStems.get().bass.getValuef()); // stemBass
+    perFrameUniformBlock.put(AudioStems.get().drums.getValuef()); // stemDrums
     perFrameUniformBlock.put(AudioStems.get().vocals.getValuef()); // stemVocals
-    perFrameUniformBlock.put(AudioStems.get().other.getValuef());  // stemOther
+    perFrameUniformBlock.put(AudioStems.get().other.getValuef()); // stemOther
+
+    // set the palette size and colors
+    setPaletteUniforms(perFrameUniformBlock);
 
     // update the GPU buffer with the new data
     perFrameUniformBlock.rewind();
@@ -377,7 +423,14 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     ySize = height;
 
     maxPoints = xSize * ySize;
-    TE.log("GLEngine: Rendering canvas size: " + xSize + "x" + ySize + " = " + GLEngine.maxPoints + " total points");
+    TE.log(
+        "GLEngine: Rendering canvas size: "
+            + xSize
+            + "x"
+            + ySize
+            + " = "
+            + GLEngine.maxPoints
+            + " total points");
 
     // register glEngine so we can access it from patterns.
     // and add it as an engine task for audio analysis and buffer management
@@ -490,5 +543,4 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   public static double getTrebleRatio() {
     return trebleRatio;
   }
-
 }
