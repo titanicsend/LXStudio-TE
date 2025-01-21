@@ -42,6 +42,7 @@ uniform vec3 iColorRGB;
 uniform vec3 iColorHSB;
 uniform vec3 iColor2RGB;
 uniform vec3 iColor2HSB;
+uniform float iPaletteOffset;
 
 // TE common controls
 uniform float iSpeed;
