@@ -17,11 +17,22 @@ mat2 rot(float a) {
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     // normalize
     vec2 uv = fragCoord.xy/iResolution.xy;
-    fragColor = (uv.y > 0.1) ?
-    ((iWow1 < 0.5)? vec4(getPaletteColor_hsv(uv.x), 0.995):  vec4(getPaletteColor_oklab(uv.x), 0.995)) :
-    vec4(iPalette[int(iPaletteSize * uv.x)], 0.995);
 
-    if (abs(uv.y - 0.1) <= 0.005) fragColor = vec4(0.0);
+    if (abs(uv.y - 0.1) <= 0.005) {
+        fragColor = vec4(0.0);
+    }
+    else if (uv.y < 0.1) {
+        fragColor = vec4(iPalette[int(iPaletteSize * uv.x)], 0.995);
+    }
+    else if (iWow1 > 0.6) {
+        fragColor = vec4(getPaletteColor_oklab(uv.x), 0.995);
+    }
+    else if (iWow1 > 0.3) {
+        fragColor = vec4(getPaletteColor_hsv(uv.x), 0.995);
+    }
+    else {
+        fragColor = vec4(getPaletteColor_linear(uv.x), 0.995);
+    }
 
 }
 

@@ -80,12 +80,23 @@ vec3 getPaletteColor_hsv(float h) {
 }
 
 // Given a target value in the range 0.0 to 1.0 denoting a position in the
-// current palette, interpolate in hsv color space and return the resulting
+// current palette, interpolate in oklab color space and return the resulting
 // color as an RGB vec3.
 vec3 getPaletteColor_oklab(float h) {
     float fIndex = fract(h) * (iPaletteSize - 1.0);
     int index = int(fIndex);
-    return oklab_mix(iPalette[index], iPalette[index + 1], fract(fIndex));
+
+    return oklab_mix(iPalette[index],iPalette[index + 1], fract(fIndex));
 }
+
+// Given a target value in the range 0.0 to 1.0 denoting a position in the
+// current palette, interpolate in linear rgb color space and return the resulting
+// color as an RGB vec3.
+vec3 getPaletteColor_linear(float h) {
+    float fIndex = fract(h) * (iPaletteSize - 1.0);
+    int index = int(fIndex);
+    return mix(iPalette[index], iPalette[index + 1], fract(fIndex));
+}
+
 
 
