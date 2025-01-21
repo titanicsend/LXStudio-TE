@@ -1,19 +1,14 @@
 // Adapted from https://www.shadertoy.com/view/MdtGWH
 
 uniform float focus;
-
+#include <include/constants.fs>
+#include <include/colorspace.fs>
 
 const float NOISE_ITERATIONS = 8.;
 const float LAYERS = 3.;
 
 // coordinate offset weights
 vec3 offsets = vec3(0.5, 0.4, 1.5);
-
-vec3 hsv2rgb(vec3 c) {
-    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
-}
 
 // get density of "ice" field at the specified point
 float mapDensity( vec3 p) {
@@ -54,11 +49,5 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
         density += mapDensity(vec3(uv, density) + vec3(pointShift / i, 0.));
     }
 
-    density = clamp(density*density,0.,1.);
-    vec3 col = vec3(iColorHSB.x,
-                    (1.0 - density*density) * iColorHSB.y,
-                    density * iColorHSB.z);
-    col = hsv2rgb(col);
-
-    fragColor = vec4(col, density);
+    fragColor = vec4(getPaletteColor_oklab(density), density);
 }
