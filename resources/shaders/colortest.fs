@@ -15,7 +15,7 @@ mat2 rot(float a) {
 }
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
-    // normalize
+    // normalize coordinates
     vec2 uv = fragCoord.xy/iResolution.xy;
 
     if (abs(uv.y - 0.1) <= 0.005) {

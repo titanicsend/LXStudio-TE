@@ -1,5 +1,22 @@
 // Color Space Conversions and Blending
 
+
+//=  Ref: https://en.wikipedia.org/wiki/SRGB  =//
+//=============================================//
+
+
+// linear rgb to srgb. Approximately.  Does not preserve the strange
+// nonlinearity at the low end, which doesn't matter for LEDs.
+// Ref: https://en.wikipedia.org/wiki/SRGB
+vec3 lrgb_to_srgb(vec3 c) {
+    return pow(c, vec3(1.0/2.4));
+}
+
+// srgb to linear rgb. See comments above.
+vec3 srgb_to_lrgb(vec3 c) {
+    return pow(c, vec3(2.4));
+}
+
 // convert RGB to HSV
 vec3 hsv2rgb(vec3 c) {
     vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
@@ -43,6 +60,9 @@ vec3 oklab_mix( vec3 colA, vec3 colB, float h ) {
 
     // interpolate in oklab color space
     vec3 lms = mix( lmsA, lmsB, h );
+
+    // slight boost to midrange, as suggested by iq
+    lms *= 1.0+0.2*h*(1.0-h);
 
     // now back to rgb
     return kLMStoCONE*(lms*lms*lms);
