@@ -1,9 +1,6 @@
+#ifndef COLORSPACE_FS
+#define COLORSPACE_FS
 // Color Space Conversions and Blending
-
-
-//=  Ref: https://en.wikipedia.org/wiki/SRGB  =//
-//=============================================//
-
 
 // linear rgb to srgb. Approximately.  Does not preserve the strange
 // nonlinearity at the low end, which doesn't matter for LEDs.
@@ -61,8 +58,8 @@ vec3 oklab_mix( vec3 colA, vec3 colB, float h ) {
     // interpolate in oklab color space
     vec3 lms = mix( lmsA, lmsB, h );
 
-    // slight boost to midrange, as suggested by iq
-    lms *= 1.0+0.2*h*(1.0-h);
+    // slight boost to midrange tones, as suggested by iq
+    lms *= (1.0+0.2*h*(1.0-h));
 
     // now back to rgb
     return kLMStoCONE*(lms*lms*lms);
@@ -84,9 +81,12 @@ vec3 hsv_mix(vec3 colA,vec3 colB, float h) {
         return mix(colA, colB, h);
     }
 
-    // otherwise, interpolate the hue along shortest arc of the color wheel
-    float hue = (mod(mod((hsv2.x-hsv1.x), 1.) + 1.5, 1.)-0.5)*h + hsv1.x;
-    return hsv2rgb(vec3(hue, mix(hsv1.yz, hsv2.yz, h)));
+    // otherwise, interpolate the hue along the shortest distance around
+    // the HSV color wheel
+    float dist = hsv2.x - hsv1.x;
+    dist = (abs(dist) <= 0.5) ? dist : -sign(dist) * (1.0 - abs(dist));
+    dist *= h;
+    return hsv2rgb(vec3(hsv1.x + dist, mix(hsv1.yz, hsv2.yz, h)));
 }
 
 // Given a target value in the range 0.0 to 1.0 denoting a position in the
@@ -94,29 +94,38 @@ vec3 hsv_mix(vec3 colA,vec3 colB, float h) {
 // distance, and checking for black) and return the resulting color as an
 // RGB vec3.
 vec3 getPaletteColor_hsv(float h) {
-    float fIndex = fract(h) * (iPaletteSize - 1.0);
-    int index = int(fIndex);
-    return hsv_mix(iPalette[index], iPalette[index + 1], fract(fIndex));
+    float fIndex = h * iPaletteSize;
+    int c1 = int(mod(fIndex,iPaletteSize));
+    int c2 = int(mod(fIndex + 1, iPaletteSize));
+    return hsv_mix(iPalette[c1], iPalette[c2], fract(fIndex));
 }
 
 // Given a target value in the range 0.0 to 1.0 denoting a position in the
 // current palette, interpolate in oklab color space and return the resulting
 // color as an RGB vec3.
 vec3 getPaletteColor_oklab(float h) {
-    float fIndex = fract(h) * (iPaletteSize - 1.0);
-    int index = int(fIndex);
-
-    return oklab_mix(iPalette[index],iPalette[index + 1], fract(fIndex));
+    float fIndex = h * iPaletteSize;
+    int c1 = int(mod(fIndex,iPaletteSize));
+    int c2 = int(mod(fIndex + 1, iPaletteSize));
+    return oklab_mix(iPalette[c1], iPalette[c2], fract(fIndex));
 }
 
 // Given a target value in the range 0.0 to 1.0 denoting a position in the
 // current palette, interpolate in linear rgb color space and return the resulting
 // color as an RGB vec3.
 vec3 getPaletteColor_linear(float h) {
-    float fIndex = fract(h) * (iPaletteSize - 1.0);
-    int index = int(fIndex);
-    return mix(iPalette[index], iPalette[index + 1], fract(fIndex));
+    float fIndex = h * iPaletteSize;
+    int c1 = int(mod(fIndex,iPaletteSize));
+    int c2 = int(mod(fIndex + 1, iPaletteSize));
+    return mix(iPalette[c1], iPalette[c2], fract(fIndex));
 }
+
+// the default gradient palette interpolator
+vec3 getPaletteColor(float h) {
+    return getPaletteColor_hsv(fract(h + iPaletteOffset));
+}
+
+#endif // COLORSPACE_FS
 
 
 

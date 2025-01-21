@@ -9,29 +9,25 @@
 #include <include/constants.fs>
 #include <include/colorspace.fs>
 
-mat2 rot(float a) {
-    float s=sin(a), c=cos(a);
-    return mat2(c,s,-s,c);
-}
-
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
-    // normalize coordinates
+    // normalize coordinates to [0,1] 
     vec2 uv = fragCoord.xy/iResolution.xy;
+    float col = min(0.995,uv.x) + iPaletteOffset;
 
     if (abs(uv.y - 0.1) <= 0.005) {
         fragColor = vec4(0.0);
     }
     else if (uv.y < 0.1) {
-        fragColor = vec4(iPalette[int(iPaletteSize * uv.x)], 0.995);
+        fragColor = vec4(iPalette[int(mod(iPaletteSize * col,iPaletteSize))], 0.995);
     }
     else if (iWow1 > 0.6) {
-        fragColor = vec4(getPaletteColor_oklab(uv.x), 0.995);
+        fragColor = vec4(getPaletteColor_oklab(col), 0.995);
     }
     else if (iWow1 > 0.3) {
-        fragColor = vec4(getPaletteColor_hsv(uv.x), 0.995);
+        fragColor = vec4(getPaletteColor_hsv(col), 0.995);
     }
     else {
-        fragColor = vec4(getPaletteColor_linear(uv.x), 0.995);
+        fragColor = vec4(getPaletteColor_linear(col), 0.995);
     }
 
 }

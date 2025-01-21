@@ -33,6 +33,8 @@ public class GLPatternControl implements GLControlData {
         (float) (0xff & LXColor.blue(col)) / 255f);
     s.setUniform("iColor2HSB", LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
 
+    s.setUniform("iPaletteOffset", (float) pattern.getControls().color.getOffsetf());
+
     // uniforms for common controls
     s.setUniform("iSpeed", (float) pattern.getSpeed());
     s.setUniform("iScale", (float) pattern.getSize());
