@@ -3,6 +3,7 @@
 
 const float PI = 3.1415926;
 const float TAU = 2.0 * PI;
+#include <include/colorspace.fs>
 
 
 // circle function from nimitz @ ShaderToy
@@ -88,7 +89,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float bri = mix(res, line, iWow1);
 
     // Wow2 controls the mix of foreground color vs. gradient
-    vec3 col = bri * mix(iColorRGB, mix(iColor2RGB, iColorRGB,smoothstep(0.1,0.8, bri * bri)), iWow2);
+    vec3 col = bri * mix(iColorRGB, getGradientColor(smoothstep(0.1,0.8, bri * bri)), iWow2);
 
     fragColor = vec4(col, 1.);
 }
