@@ -22,20 +22,19 @@ public class TEGradientSource {
   // Keep black for building gradients
   private final LXDynamicColor black;
 
-  private static LXGradientUtils.ColorStops initColorStops(int numStops) {
+  private static LXGradientUtils.ColorStops initColorStops() {
     LXGradientUtils.ColorStops colorStops = new LXGradientUtils.ColorStops();
-    colorStops.setNumStops(numStops);
     return colorStops;
   }
 
   /**
    * Primary -> Secondary -> Tertiary -> (Wrap to Primary)
    */
-  public LXGradientUtils.ColorStops normalGradient = initColorStops(4);
+  public LXGradientUtils.ColorStops normalGradient = initColorStops();
   /**
    * Primary -> Black -> (Wrap to Primary)
    */
-  public LXGradientUtils.ColorStops darkGradient = initColorStops(3);
+  public LXGradientUtils.ColorStops darkGradient = initColorStops();
 
   public TEGradientSource(LX lx) {
     current = this;
@@ -60,10 +59,19 @@ public class TEGradientSource {
   }
 
   private void updateGradients(LXSwatch swatch) {
-    normalGradient.stops[0].set(swatch.getColor(TEColorType.PRIMARY.swatchIndex()));
-    normalGradient.stops[1].set(swatch.getColor(TEColorType.SECONDARY.swatchIndex()));
-    normalGradient.stops[2].set(swatch.getColor(TEColorType.TERTIARY.swatchIndex()));
-    normalGradient.stops[3].set(swatch.getColor(TEColorType.PRIMARY.swatchIndex()));
+
+    int n = swatch.colors.size();
+
+    // numStops should be the number of actual colors in the swatch, not counting the wrap
+    normalGradient.numStops = n;
+    // set gradient stops to match colors in current swatch
+    for (int i = 0; i < n; ++i) {
+      normalGradient.stops[i].set(swatch.getColor(i));
+    }
+    // wrap back to color 0
+    normalGradient.stops[n].set(swatch.getColor(0));
+
+    darkGradient.numStops = 2;
     darkGradient.stops[0].set(swatch.getColor(TEColorType.PRIMARY.swatchIndex()));
     darkGradient.stops[1].set(this.black);
     darkGradient.stops[2].set(swatch.getColor(TEColorType.PRIMARY.swatchIndex()));

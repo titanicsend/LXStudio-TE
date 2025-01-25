@@ -51,6 +51,7 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
 
   public enum BlendMode {
     HSVM,
+    OKLAB,
     HSVCW,
     HSVCCW
   }
@@ -259,6 +260,9 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
         break;
       case HSVCW:
         bf = LXGradientUtils.BlendMode.HSVCW.function;
+        break;
+      case OKLAB:
+        bf = LXGradientUtils.BlendMode.OKLAB.function;
         break;
       case HSVM:
       default:

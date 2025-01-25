@@ -18,16 +18,16 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
         fragColor = vec4(0.0);
     }
     else if (uv.y < 0.1) {
-        fragColor = vec4(iPalette[int(mod(iPaletteSize * col,iPaletteSize))], 0.995);
+        fragColor = vec4(getPaletteColor(int(col * iPaletteSize)), 0.995);
     }
     else if (iWow1 > 0.6) {
-        fragColor = vec4(getPaletteColor_oklab(col), 0.995);
+        fragColor = vec4(getGradientColor_oklab(col), 0.995);
     }
     else if (iWow1 > 0.3) {
-        fragColor = vec4(getPaletteColor_hsv(col), 0.995);
+        fragColor = vec4(getGradientColor_hsv(col), 0.995);
     }
     else {
-        fragColor = vec4(getPaletteColor_linear(col), 0.995);
+        fragColor = vec4(getGradientColor_linear(col), 0.995);
     }
 
 }

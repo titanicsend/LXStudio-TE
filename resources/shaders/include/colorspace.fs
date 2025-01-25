@@ -42,18 +42,18 @@ vec3 rgb2hsv(vec3 c) {
 // Original oklab paper by Björn Ottosson: https://bottosson.github.io/posts/oklab
 // LMS (Long, Medium, Short) color space: https://en.wikipedia.org/wiki/LMS_color_space
 vec3 oklab_mix( vec3 colA, vec3 colB, float h ) {
-    const mat3 kCONEtoLMS = mat3(
+    const mat3 forwardXform = mat3(
     0.4121656120,  0.2118591070,  0.0883097947,
     0.5362752080,  0.6807189584,  0.2818474174,
     0.0514575653,  0.1074065790,  0.6302613616);
-    const mat3 kLMStoCONE = mat3(
+    const mat3 inverseXForm = mat3(
     4.0767245293, -1.2681437731, -0.0041119885,
     -3.3072168827,  2.6093323231, -0.7034763098,
     0.2307590544, -0.3411344290,  1.7068625689);
 
-    // rgb to oklab transfer function
-    vec3 lmsA = pow( kCONEtoLMS*colA, vec3(1.0/3.0));
-    vec3 lmsB = pow( kCONEtoLMS*colB, vec3(1.0/3.0));
+    // convert input colors from RGB to oklab (actually LMS)
+    vec3 lmsA = pow( forwardXform * colA, vec3(1.0/3.0));
+    vec3 lmsB = pow( forwardXForm * colB, vec3(1.0/3.0));
 
     // interpolate in oklab color space
     vec3 lms = mix( lmsA, lmsB, h );
@@ -61,8 +61,8 @@ vec3 oklab_mix( vec3 colA, vec3 colB, float h ) {
     // slight boost to midrange tones, as suggested by iq
     lms *= (1.0+0.2*h*(1.0-h));
 
-    // now back to rgb
-    return kLMStoCONE*(lms*lms*lms);
+    // now convert result back to RGB
+    return inverseXForm*(lms*lms*lms);
 }
 
 // Shortest arc distance HSV color interpolator. Roughly
@@ -93,7 +93,7 @@ vec3 hsv_mix(vec3 colA,vec3 colB, float h) {
 // current palette, interpolate in hsv color space (using the shortest hue
 // distance, and checking for black) and return the resulting color as an
 // RGB vec3.
-vec3 getPaletteColor_hsv(float h) {
+vec3 getGradientColor_hsv(float h) {
     float fIndex = h * iPaletteSize;
     int c1 = int(mod(fIndex,iPaletteSize));
     int c2 = int(mod(fIndex + 1, iPaletteSize));
@@ -103,7 +103,7 @@ vec3 getPaletteColor_hsv(float h) {
 // Given a target value in the range 0.0 to 1.0 denoting a position in the
 // current palette, interpolate in oklab color space and return the resulting
 // color as an RGB vec3.
-vec3 getPaletteColor_oklab(float h) {
+vec3 getGradientColor_oklab(float h) {
     float fIndex = h * iPaletteSize;
     int c1 = int(mod(fIndex,iPaletteSize));
     int c2 = int(mod(fIndex + 1, iPaletteSize));
@@ -113,16 +113,21 @@ vec3 getPaletteColor_oklab(float h) {
 // Given a target value in the range 0.0 to 1.0 denoting a position in the
 // current palette, interpolate in linear rgb color space and return the resulting
 // color as an RGB vec3.
-vec3 getPaletteColor_linear(float h) {
+vec3 getGradientColor_linear(float h) {
     float fIndex = h * iPaletteSize;
     int c1 = int(mod(fIndex,iPaletteSize));
     int c2 = int(mod(fIndex + 1, iPaletteSize));
     return mix(iPalette[c1], iPalette[c2], fract(fIndex));
 }
 
+// Return the RGB color at the given index in the current palette.
+vec3 getPaletteColor(int index) {
+    return iPalette[int(mod(index, iPaletteSize))];
+}
+
 // the default gradient palette interpolator
-vec3 getPaletteColor(float h) {
-    return getPaletteColor_hsv(fract(h + iPaletteOffset));
+vec3 getGradientColor(float h) {
+    return getGradientColor_oklab(fract(h + iPaletteOffset));
 }
 
 #endif // COLORSPACE_FS
