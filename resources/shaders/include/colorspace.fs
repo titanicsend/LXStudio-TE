@@ -46,14 +46,14 @@ vec3 oklab_mix( vec3 colA, vec3 colB, float h ) {
     0.4121656120,  0.2118591070,  0.0883097947,
     0.5362752080,  0.6807189584,  0.2818474174,
     0.0514575653,  0.1074065790,  0.6302613616);
-    const mat3 inverseXForm = mat3(
+    const mat3 inverseXform = mat3(
     4.0767245293, -1.2681437731, -0.0041119885,
     -3.3072168827,  2.6093323231, -0.7034763098,
     0.2307590544, -0.3411344290,  1.7068625689);
 
     // convert input colors from RGB to oklab (actually LMS)
     vec3 lmsA = pow( forwardXform * colA, vec3(1.0/3.0));
-    vec3 lmsB = pow( forwardXForm * colB, vec3(1.0/3.0));
+    vec3 lmsB = pow( forwardXform * colB, vec3(1.0/3.0));
 
     // interpolate in oklab color space
     vec3 lms = mix( lmsA, lmsB, h );
@@ -62,7 +62,7 @@ vec3 oklab_mix( vec3 colA, vec3 colB, float h ) {
     lms *= (1.0+0.2*h*(1.0-h));
 
     // now convert result back to RGB
-    return inverseXForm*(lms*lms*lms);
+    return inverseXform*(lms*lms*lms);
 }
 
 // Shortest arc distance HSV color interpolator. Roughly
@@ -125,9 +125,11 @@ vec3 getPaletteColor(int index) {
     return iPalette[int(mod(index, iPaletteSize))];
 }
 
-// the default gradient palette interpolator
+// the default gradient palette interpolator. Returns a color from the
+// current palette, or the first system color if the pattern is set to static
+// color mode.
 vec3 getGradientColor(float h) {
-    return getGradientColor_oklab(fract(h + iPaletteOffset));
+    return (iPaletteOffset >= 0.0) ? getGradientColor_oklab(fract(h + iPaletteOffset)) : iColorRGB;
 }
 
 #endif // COLORSPACE_FS
