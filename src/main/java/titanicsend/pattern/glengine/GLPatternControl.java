@@ -2,6 +2,7 @@ package titanicsend.pattern.glengine;
 
 import heronarts.lx.color.LXColor;
 import titanicsend.audio.AudioStems;
+import titanicsend.color.TEColorParameter;
 import titanicsend.pattern.TEPerformancePattern;
 
 public class GLPatternControl implements GLControlData {
@@ -33,7 +34,8 @@ public class GLPatternControl implements GLControlData {
         (float) (0xff & LXColor.blue(col)) / 255f);
     s.setUniform("iColor2HSB", LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
 
-    s.setUniform("iPaletteOffset", (float) pattern.getControls().color.getOffsetf());
+    boolean usePalette = pattern.getControls().color.colorSource.getEnum() != TEColorParameter.ColorSource.STATIC;
+    s.setUniform("iPaletteOffset", (float) (usePalette ? pattern.getControls().color.getOffsetf() : -1f));
 
     // uniforms for common controls
     s.setUniform("iSpeed", (float) pattern.getSpeed());
