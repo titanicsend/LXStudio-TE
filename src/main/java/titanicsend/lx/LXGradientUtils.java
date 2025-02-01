@@ -84,8 +84,7 @@ public class LXGradientUtils {
     private int g;
     private int b;
 
-    // values for oklab (actually the intermediate LMS perceptual space mapping,
-    // which saves us a matrix multiply on conversions going both ways)
+    // values for oklab color space
     private float lStar;
     private float aStar;
     private float bStar;
@@ -155,8 +154,7 @@ public class LXGradientUtils {
       //
       // use bit manipulation to get an initial guess for cbrt, which we
       // do by using bit shifts to divide the exponent by 3, then
-      // "adjusting" the mantissa by adding a magic constant to produce
-      // a sane floating point number.
+      // "adjusting" the mantissa by adding a magic constant.
       int ix = Float.floatToRawIntBits(x);
       final float x0 = x;
       ix = (ix >>> 2) + (ix >>> 4);
@@ -166,7 +164,7 @@ public class LXGradientUtils {
 
       // now refine the estimate using the
       // Newton-Raphson algorithm, which converges
-      // very quickly. Two trips should get us close enough.
+      // very quickly. Two trips get us close enough.
       x = 0.33333334f * (2f * x + x0 / (x * x));
       x = 0.33333334f * (2f * x + x0 / (x * x));
       return x;
