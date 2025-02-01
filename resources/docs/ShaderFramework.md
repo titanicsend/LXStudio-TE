@@ -690,9 +690,6 @@ When in doubt be specific. Cast if necessary for clarity.
 
 
 ### Colors, Color Spaces and Color Mixing
-
-<TODO:  This is a placeholder for a more detailed discussion of color handling in TE shaders.>
-
 Each running shader can use:
 - a single static color selected from the UI (the color will be in `iColorRGB/HSB` if the static color source
 is enabled.)
@@ -708,18 +705,11 @@ To use `getPaletteColor()` or `getGradientColor()`, you must include the followi
 ```#include <include/colorspace.fs>```
 
 
-
 By default, color interpolation is performed in Oklab color space. This is a perceptually uniform color space 
 that provides smoother color mixing than RGB or HSV.  If you'd prefer to use a different color space,
 your shader can call `getGradientColor_linear(lerp)` or `getGradientColor_hsv(lerp)` to interpolate in linear RGB
 or HSV color spaces, respectively. These functions all return colors in RGB, regardless of the color space
 used to do the interpolation.  
-
-
-
-
-
-
 
 ### Using Car Geometry
 You can access the car's geometry - edges and triangles - from a shader to create patterns that uniquely fit

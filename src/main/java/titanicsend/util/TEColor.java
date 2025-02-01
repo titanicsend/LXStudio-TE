@@ -57,11 +57,4 @@ public class TEColor {
   public static int reAlpha(int color, int alpha) {
     return ((alpha & 0xff) << LXColor.ALPHA_SHIFT) | (color & LXColor.RGB_MASK);
   }
-
-
-
-
-
-
-
 }

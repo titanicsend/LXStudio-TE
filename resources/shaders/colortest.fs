@@ -1,10 +1,15 @@
-// A kali-style iterative fractal
-//   (https://www.fractalforums.com/new-theories-and-research/very-simple-formula-for-fractal-patterns/)
-// that tries to do for rectangles what @andrewlook's shaders did for triangles.
-// The "artistic intention" is to sorta depict what's going on in all the circuitry inside Titanic's End
-//
-// Wow2 controls audio reactivity
+// Utility shader for comparing various color blending methods
+// Displays the un-blended palette in a strip at the bottom of
+// the screen, and the blended gradient above it.
+// Wow1 selects the color blending method.
+// 0.0 for linear, 0.3 for HSV, 0.6 for Oklab
+
 #pragma name "Colortest"
+// this shader should really live with the rest of the test/utility patterns,
+// but that puts it inconveniently at the bottom of a long, long list. So for now,
+// with no category, it's near the top.  When done testing, uncomment the following
+// line to put it in its proper place.
+// #pragma LXCategory("Utility")
 
 #include <include/constants.fs>
 #include <include/colorspace.fs>
