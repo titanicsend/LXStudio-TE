@@ -130,9 +130,17 @@ sudo snap install intellij-idea-community --classic
    git clone https://github.com/titanicsend/LXStudio-TE.git
    ```
 
-2. Open the project directory in IntelliJ IDEA
+2. Replace the default `pom.xml` with the Linux-specific version:
+   ```sh
+   # Backup the original pom.xml (optional)
+   mv pom.xml pom.xml.original
+   # Replace with Linux configuration
+   mv linux-pom.xml pom.xml
+   ```
 
-3. Configure Project Structure (Ctrl+Alt+Shift+S):
+3. Open the project directory in IntelliJ IDEA
+
+4. Configure Project Structure (Ctrl+Alt+Shift+S):
    - Under Platform Settings → SDKs:
      - Add Temurin 17 JDK if not listed
      - Or click '+' → "Add JDK"
@@ -140,7 +148,7 @@ sudo snap install intellij-idea-community --classic
    - Under Project Settings → Project:
      - Select Temurin 17 as the Project SDK
 
-4. Select Model:
+5. Select Model:
    - In the top bar dropdown (right of the hammer icon):
      - Choose "Titanic's End" for the vehicle model
      - Or "Testahedron" for the testahedron model
