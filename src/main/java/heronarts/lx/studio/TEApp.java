@@ -962,7 +962,11 @@ public class TEApp extends LXStudio {
     flags.windowHeight = WINDOW_HEIGHT;
     flags.zeroconf = false;
     flags.classpathPlugins.add("heronarts.lx.studio.TEApp$Plugin");
-    // flags.useOpenGL = true;
+    
+    // Automatically enable OpenGL on Linux to avoid Vulkan issues
+    if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+      flags.useOpenGL = true;
+    }
 
     String logFileName = LOG_FILENAME_FORMAT.format(Calendar.getInstance().getTime());
     File logs = new File(LX.Media.LOGS.getDirName());
