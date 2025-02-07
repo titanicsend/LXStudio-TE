@@ -1,29 +1,3 @@
-# LXStudio-TE
-
-## Table of Contents
-
-- [LXStudio-TE](#lxstudio-te)
-  - [Table of Contents](#table-of-contents)
-  - [Titanic's End LXStudio](#titanics-end-lxstudio)
-  - [JDK Installation](#jdk-installation)
-    - [macOS (with Homebrew)](#macos-with-homebrew)
-    - [Debian/Ubuntu Linux (experimental)](#debianubuntu-linux-experimental)
-  - [Quick Start](#quick-start)
-    - [Troubleshooting IntelliJ](#troubleshooting-intellij)
-      - [Common Issues (All Platforms)](#common-issues-all-platforms)
-      - [🍎 macOS-Specific Setup](#-macos-specific-setup)
-      - [🐧 Linux-Specific Setup and Troubleshooting](#-linux-specific-setup-and-troubleshooting)
-  - [Common Issues](#common-issues)
-    - [Graphics Issues](#graphics-issues)
-    - [Build Issues](#build-issues)
-    - [IDE Issues](#ide-issues)
-  - [Development](#development)
-    - [Running the Application](#running-the-application)
-    - [Debugging](#debugging)
-  - [Contributing](#contributing)
-    - [Code Style](#code-style)
-    - [Pull Requests](#pull-requests)
-
 ## Titanic's End LXStudio
 
 [Titanic's End](http://titanicsend.com) is a mutant vehicle that debuted at [Burning Man](https://burningman.org) 2022 and has since participated in EDC and Framework events.
@@ -31,6 +5,8 @@
 We are the largest team developing on Chromatik in the open so other artists can benefit from our work (see the [license](LICENSE.md)). This repo contains the shader & pattern code for the 128,000 LEDS, sound reactivity, MIDI control, OSC middleware, and ArtNet bidirectional control.
 
 We use [Chromatik](https://chromatik.co/) (formerly known as [LX Studio](https://lx.studio/)) to control the show. Although not required, we also support Chromatik financially because it's excellent. This README will get you up and running with it so you, too, can create stunning LED art. 
+
+> 🐧 **Linux Users**: We have an experimental Linux-specific guide available in [README-linux.md](README-linux.md) that provides detailed installation and troubleshooting steps for Linux systems.
 
 Our work is notable for:
 
@@ -47,318 +23,79 @@ Want a personal intro to the project and codebase? Contact current team lead [An
     <p>Team members can reference several docs on our Notion for more background including <a href="https://www.notion.so/titanicsend/Networking-and-Front-of-House-Setup-fe5360a00b594955b735e02115548ff4">Networking and Front of House</a> and <a href="https://www.notion.so/titanicsend/2023-Lighting-Software-Integration-61c9cd5c6e884c6db66d4f843a1b8812">Software / Integration Hub</a>.</p>
 </details>
 
-## JDK Installation (prerequisite)
+## JDK Installation
 
-Visit https://adoptium.net/installation/ or follow the instructions below for your operating system:
-
-### Installation
-#### macOS (with Homebrew)
+Visit https://adoptium.net/installation/ or if you are using macOS and [Homebrew](https://brew.sh) use these commands:
 
 ```sh
 brew uninstall --cask temurin # ensure you are running 17
 brew install --cask temurin@17
 ```
 
-#### Debian/Ubuntu Linux (experimental)
+Verify your installation:
 
-```sh
-# Add Adoptium repository
-wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | sudo apt-key add -
-echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | sudo tee /etc/apt/sources.list.d/adoptium.list
-
-# Update package list and install Temurin 17
-sudo apt update
-sudo apt install temurin-17-jdk
-```
-
-### Verify your installation:
-
-For macOS:
 ``` 
 /Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java --version
 ```
 
-For Linux:
-```
-java --version
-```
-
-### Maven Installation
 After installing the temurin JDK, we recommend installing and building maven, a package manager for our project:
 
-For macOS:
 ```sh
 brew install maven 
 ```
 
-For Debian/Ubuntu Linux:
-```sh
-sudo apt install maven
-```
-
-Clean and install the maven dependencies (this may take a while):
+Clean and install the maven dependencies:
 
 ```
 mvn clean -U package && mvn install
 ```
 
-### Google Java Format Installation
-
 One more thing… we have a coding style setup, as described below, so you'll also need to install [google-java-format](https://github.com/google/google-java-format):
 
-For macOS:
 ```sh
 brew install google-java-format  
 ```
 
-For Debian/Ubuntu Linux:
-
-There are several ways to install google-java-format:
-
-1. Using the JAR file (recommended):
-```sh
-# Create a directory for the tool
-mkdir -p ~/.local/bin
-cd ~/.local/bin
-
-# Download the latest version
-wget https://github.com/google/google-java-format/releases/download/v1.17.0/google-java-format-1.17.0-all-deps.jar
-
-# Create a wrapper script
-echo '#!/bin/bash
-java -jar ~/.local/bin/google-java-format-1.17.0-all-deps.jar "$@"' > ~/.local/bin/google-java-format
-
-# Make it executable
-chmod +x ~/.local/bin/google-java-format
-
-# Add to PATH if not already there
-echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
-source ~/.bashrc
-```
-
-2. Using SDKMAN! (if you have it installed, untested):
-```sh
-sdk install google-java-format
-```
-
-Verify the installation:
-```sh
-google-java-format --version
-```
-
----
-
-# Starting the Application
 ## Quick Start
 
-> These are geared toward running Chromatik on macOS and Linux with `git` already installed. If you need help with anything, ask in the Slack #lighting-software channel!
+> These are geared toward running Chromatik on macOS with `git` already installed. If you need help with anything, ask in the Slack #lighting-software channel!
 
-### Standard Installation
 First, you'll need an IDE (editor). IntelliJ's Community Edition is the best free one available. You can download it here:
 
 https://www.jetbrains.com/idea/
 
-### Linux Installation
-For Debian/Ubuntu Linux, you have several installation options:
+Steps for setup:
 
-1. Using the JetBrains Toolbox (Recommended):
-```sh
-# Download JetBrains Toolbox
-curl -fsSL https://raw.githubusercontent.com/nagygergo/jetbrains-toolbox-install/master/jetbrains-toolbox.sh | bash
-
-# Launch JetBrains Toolbox and install IntelliJ IDEA Community Edition from the UI
-```
-
-2. Using the official .tar.gz (Alternative, untested):
-```sh
-# Download and extract to /opt
-sudo wget -O /opt/ideaIC.tar.gz https://download.jetbrains.com/idea/ideaIC-2023.3.4.tar.gz
-cd /opt && sudo tar -xzf ideaIC.tar.gz
-sudo rm ideaIC.tar.gz
-
-# Create a desktop entry
-echo "[Desktop Entry]
-Version=1.0
-Type=Application
-Name=IntelliJ IDEA Community
-Icon=/opt/idea-IC-*/bin/idea.svg
-Exec="/opt/idea-IC-*/bin/idea.sh" %f
-Comment=Capable and Ergonomic IDE for JVM
-Categories=Development;IDE;
-Terminal=false
-StartupWMClass=jetbrains-idea-ce" | sudo tee /usr/share/applications/jetbrains-idea-ce.desktop
-
-# Make it executable
-sudo chmod +x /usr/share/applications/jetbrains-idea-ce.desktop
-```
-
-3. Using snap (Not recommended due to potential plugin issues):
-```sh
-sudo snap install intellij-idea-community --classic
-```
-
-### Getting Started
-
-1. Clone the Repository via the terminal or the GUI as part of step 2 below:
-   ```sh
-   # Either clone the Titanic's End repository:
+1. Clone the git repo you're looking at:
+   ```
    git clone https://github.com/titanicsend/LXStudio-TE.git
-   
-   # Or clone your own fork/repository if you have one:
-   git clone <your-repository-url>
    ```
 
-2. Open Project:
-   - Launch IntelliJ
-   - Select "Open" when presented with the initial screen
-   - Navigate to and select the cloned project directory
+2. Open the project directory you cloned to when you're presented with "New Project" and
+   "Open" options. That's the initial screen.
 
-3. Configure Project Structure:
-   - macOS: Press ⌘-; 
-   - Linux: Press Ctrl+Alt+Shift+S
-   - Or navigate to: File → Project Structure
+3. File → Project Structure (or ⌘-;)
    ![Project Structure](assets/IDE%20Setup/Project%20Structure.png)
 
-4. Set Up SDK:
-   a. Under Platform Settings → SDKs:
-      - Add Temurin 17 JDK if not listed
-      - Or click '+' → "Add JDK"
-      - macOS: Navigate to `/Library/Java/JavaVirtualMachines/temurin-17.jdk`
-      - Linux: Navigate to `/usr/lib/jvm/temurin-17-jdk-amd64`
+    1. Platform Settings → SDKs
+        1. Either add the installed Temurin 17 JDK
+        2. Or, if that JDK is not installed, you can click the '+' and then select
+           "Add JDK..."
+            1. Navigate to `/Library/Java/JavaVirtualMachines/temurin-17.jdk`
+            2. Select `temurin-17.jdk`
+               ![Add JDK](assets/IDE%20Setup/AddJDK.png)
+               ![Select Temurin 17](assets/IDE%20Setup/SelectTemurin17.png)
 
-   b. Under Project Settings → Project:
-      - Select Temurin 17 as the Project SDK
+    2. Project Settings → Project
+        1. Select the Temurin 17 JDK
+           ![Project SDK](assets/IDE%20Setup/Select%20Project.png)
 
-5. Select Model:
-   - In the top bar dropdown (right of the hammer icon):
-     - Choose "Titanic's End" for the vehicle model
-     - Or "Testahedron" for the testahedron model
+4. Select "Titanic's End" in the top bar (in the dropdown to the right of the hammer) if you want to use the vehicle model, or "Testahedron" if you want the testahedron model.
+   ![Play button](assets/IDE%20Setup/Play%20Button.png)
 
-6. Run Configuration:
-   🐧 Linux users only, follow the instructions below in [🐧 Linux-Specific Setup and Troubleshooting](#-linux-specific-setup-and-troubleshooting)
+5. Hit the green arrow "play" button. (If you just want to build, you can hit the hammer.)
 
-7. Launch:
-   - Click the green "play" button to run
-   - Or click the hammer icon to build without running
-
-### Troubleshooting IntelliJ
-
-#### Common Issues (All Platforms)
-
-- `Maven resources compiler: Failed to copy [...]/target/generated-test-sources/test-annotations/Icon ' to '[...]/target/test-classes/Icon`
-    - Solution: Go to the top of your TE repo and run `find . -name Icon\? -delete`
-
-#### 🍎 macOS-Specific Setup
-
-1. Run Configuration:
-   - Ensure `-XstartOnFirstThread` is present in VM options
-   - This is automatically configured when using the IDE's run configuration
-
-2. Graphics:
-   - macOS users don't need to modify any graphics settings
-   - The application will use the appropriate renderer automatically
-
-#### 🐧 Linux-Specific Setup and Troubleshooting
-
-> Note: macOS users can skip this section
-
-1. Graphics Setup:
-   - Install required graphics libraries:
-     ```sh
-     sudo apt install libgl1-mesa-dev mesa-common-dev libvulkan-dev
-     ```
-   - The application automatically uses OpenGL instead of Vulkan on Linux systems
-   - If you still experience graphics issues, try these solutions in sequence:
-     
-     a. Set environment variables:
-        ```sh
-        BGFX_RUNTIME_OPENGL=1
-        BGFX_RUNTIME_VULKAN=0
-        JAVA_TOOL_OPTIONS=-DBGFX_RUNTIME_OPENGL=1 -DBGFX_RUNTIME_VULKAN=0 -Dprism.order=sw
-        LD_LIBRARY_PATH=$ProjectFileDir$/target/natives-linux/linux/x64/org/lwjgl
-        ```
-     
-     b. Set VM options (if running in IntelliJ):
-        ```
-        -DBGFX_RUNTIME_OPENGL=1
-        -DBGFX_RUNTIME_VULKAN=0
-        -Djava.awt.headless=true
-        -Dprism.order=sw
-        -Dsun.java2d.opengl=false
-        -Dorg.lwjgl.util.Debug=true
-        -Dos.name=Linux
-        -Dos.arch=x86_64
-        -Dorg.lwjgl.librarypath=$ProjectFileDir$/target/natives-linux/linux/x64/org/lwjgl
-        -Djava.library.path=$ProjectFileDir$/target/natives-linux/linux/x64/org/lwjgl
-        -XX:+UseCompressedOops
-        -XX:+UseG1GC
-        -Djavax.accessibility.assistive_technologies=" "
-        ```
-
-   Note: For the most reliable experience on Linux, we recommend using the provided shell script:
-   ```sh
-   ./run_chromatik_linux.sh
-   ```
-
-   The IntelliJ configuration is primarily useful when you need debugging capabilities. For normal development and testing, the shell script provides a more reliable solution.
-
-2. IntelliJ Configuration:
-   
-   a. Plugin Registry Fix:
-      - Navigate to Help → Edit Custom Properties
-      - Add: `idea.is.internal=true`
-      - Restart IntelliJ
-
-   b. Cache/Index Issues:
-      ```sh
-      # Clear IntelliJ caches and restart
-      rm -rf ~/.cache/JetBrains/IdeaIC*/
-      rm -rf ~/.local/share/JetBrains/IdeaIC*/
-      ```
-
-   c. Kotlin Compiler Issues:
-      - Go to File → Invalidate Caches...
-      - Select all boxes
-      - Click "Invalidate and Restart"
-      - Let indexing complete after restart
-      - If issues persist:
-        ```sh
-        # Clear Kotlin cache
-        rm -rf ~/.cache/JetBrains/IdeaIC*/kotlin-data-container
-        ```
-
-   d. Permission Issues:
-      ```sh
-      # Fix IntelliJ directory permissions
-      sudo chown -R $USER:$USER ~/.cache/JetBrains
-      sudo chown -R $USER:$USER ~/.local/share/JetBrains
-      sudo chown -R $USER:$USER ~/.config/JetBrains
-      ```
-
-
-### Running Without IDE
-
-If you prefer to run Chromatik directly without the IDE, we provide platform-specific scripts:
-
-#### 🍎 macOS (untested):
-```sh
-./run_chromatik_mac.sh
-```
-
-#### 🐧 Linux:
-```sh
-./run_chromatik_linux.sh
-```
-
-These scripts will:
-1. Build the project if needed
-2. Set appropriate platform-specific options
-3. Launch Chromatik with the vehicle model
-
-You can modify the scripts to:
-- Change the project file (default: `Vehicle.lxp`)
-- Switch to testahedron model (change `vehicle` to `testahedron`)
-- Adjust Java options or environment variables
+6. Assuming things work okay, a UI for Chromatik will pop up: Great! Now, you can play with the buttons.
 
 ### Coding Style
 
@@ -381,6 +118,12 @@ You can manually apply formatting fixes using `mvn spotless:apply`.
        and `Optimize Imports`.
        
 3. (Optional) Or install the IDE plugin for [Eclipse](https://github.com/google/google-java-format#eclipse).
+
+### Potential issues
+
+- `Maven resources compiler: Failed to copy [...]/target/generated-test-sources/test-annotations/Icon
+  ' to '[...]/target/test-classes/Icon`
+    - Go to the top of your TE repo and run `find . -name Icon\? -delete`
 
 ## Digging in
 
@@ -472,41 +215,18 @@ If you just need to execute Chromatik to run a show without editing anything, yo
 2. Execute the JAR (Note that the version number may be different — The version
    as of this document revision is 0.2.1-SNAPSHOT — substitute the correct
    version as necessary):
-
-   For macOS:
    ```shell
-   java -XstartOnFirstThread -jar target/LXStudio-TE-0.2.1-SNAPSHOT-jar-with-dependencies.jar vehicle Vehicle.lxp
+   java -jar target/LXStudio-TE-0.2.1-SNAPSHOT-jar-with-dependencies.jar vehicle Vehicle.lxp
    ```
-
-   For Linux:
+3. If the Temurin JDK isn't your default Java, then you can use the full path,
+   for example:
    ```shell
-   java -Djava.awt.headless=true -DBGFX_RUNTIME_OPENGL=1 -DBGFX_RUNTIME_VULKAN=0 -jar target/LXStudio-TE-0.2.1-SNAPSHOT-jar-with-dependencies.jar vehicle Vehicle.lxp
+   /Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java -jar target/LXStudio-TE-0.2.1-SNAPSHOT-jar-with-dependencies.jar vehicle Vehicle.lxp
    ```
-
-3. If the Temurin JDK isn't your default Java:
-
-   For macOS:
-   ```shell
-   /Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java -XstartOnFirstThread -jar target/LXStudio-TE-0.2.1-SNAPSHOT-jar-with-dependencies.jar vehicle Vehicle.lxp
-   ```
-
-   For Linux:
-   ```shell
-   /usr/lib/jvm/temurin-17-jdk-amd64/bin/java -Djava.awt.headless=true -DBGFX_RUNTIME_OPENGL=1 -DBGFX_RUNTIME_VULKAN=0 -jar target/LXStudio-TE-0.2.1-SNAPSHOT-jar-with-dependencies.jar vehicle Vehicle.lxp
-   ```
-
 4. Use Maven to execute the program instead of the `java` command:
-
-   For macOS:
    ```shell
    mvn clean compile  # Cleaning and compiling is optional, depending on your needs
-   MAVEN_OPTS="-XstartOnFirstThread" mvn exec:exec@Main -Dexec.args="vehicle Vehicle.lxp"
-   ```
-
-   For Linux:
-   ```shell
-   mvn clean compile  # Cleaning and compiling is optional, depending on your needs
-   MAVEN_OPTS="-Djava.awt.headless=true -DBGFX_RUNTIME_OPENGL=1 -DBGFX_RUNTIME_VULKAN=0" mvn exec:exec@Main -Dexec.args="vehicle Vehicle.lxp"
+   mvn exec:exec@Main -Dexec.args="vehicle Vehicle.lxp"
    ```
 
    Fun fact: The "Main" target isn't defined in the POM to have arguments, but
