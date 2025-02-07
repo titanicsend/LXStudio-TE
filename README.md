@@ -47,18 +47,19 @@ Want a personal intro to the project and codebase? Contact current team lead [An
     <p>Team members can reference several docs on our Notion for more background including <a href="https://www.notion.so/titanicsend/Networking-and-Front-of-House-Setup-fe5360a00b594955b735e02115548ff4">Networking and Front of House</a> and <a href="https://www.notion.so/titanicsend/2023-Lighting-Software-Integration-61c9cd5c6e884c6db66d4f843a1b8812">Software / Integration Hub</a>.</p>
 </details>
 
-## JDK Installation
+## JDK Installation (prerequisite)
 
 Visit https://adoptium.net/installation/ or follow the instructions below for your operating system:
 
-### macOS (with Homebrew)
+### Installation
+#### macOS (with Homebrew)
 
 ```sh
 brew uninstall --cask temurin # ensure you are running 17
 brew install --cask temurin@17
 ```
 
-### Debian/Ubuntu Linux (experimental)
+#### Debian/Ubuntu Linux (experimental)
 
 ```sh
 # Add Adoptium repository
@@ -70,7 +71,7 @@ sudo apt update
 sudo apt install temurin-17-jdk
 ```
 
-Verify your installation:
+### Verify your installation:
 
 For macOS:
 ``` 
@@ -82,6 +83,7 @@ For Linux:
 java --version
 ```
 
+### Maven Installation
 After installing the temurin JDK, we recommend installing and building maven, a package manager for our project:
 
 For macOS:
@@ -99,6 +101,8 @@ Clean and install the maven dependencies (this may take a while):
 ```
 mvn clean -U package && mvn install
 ```
+
+### Google Java Format Installation
 
 One more thing… we have a coding style setup, as described below, so you'll also need to install [google-java-format](https://github.com/google/google-java-format):
 
@@ -142,14 +146,19 @@ Verify the installation:
 google-java-format --version
 ```
 
+---
+
+# Starting the Application
 ## Quick Start
 
 > These are geared toward running Chromatik on macOS and Linux with `git` already installed. If you need help with anything, ask in the Slack #lighting-software channel!
 
+### Standard Installation
 First, you'll need an IDE (editor). IntelliJ's Community Edition is the best free one available. You can download it here:
 
 https://www.jetbrains.com/idea/
 
+### Linux Installation
 For Debian/Ubuntu Linux, you have several installation options:
 
 1. Using the JetBrains Toolbox (Recommended):
@@ -187,6 +196,50 @@ sudo chmod +x /usr/share/applications/jetbrains-idea-ce.desktop
 ```sh
 sudo snap install intellij-idea-community --classic
 ```
+
+### Getting Started
+
+1. Clone the Repository via the terminal or the GUI as part of step 2 below:
+   ```sh
+   # Either clone the Titanic's End repository:
+   git clone https://github.com/titanicsend/LXStudio-TE.git
+   
+   # Or clone your own fork/repository if you have one:
+   git clone <your-repository-url>
+   ```
+
+2. Open Project:
+   - Launch IntelliJ
+   - Select "Open" when presented with the initial screen
+   - Navigate to and select the cloned project directory
+
+3. Configure Project Structure:
+   - macOS: Press ⌘-; 
+   - Linux: Press Ctrl+Alt+Shift+S
+   - Or navigate to: File → Project Structure
+   ![Project Structure](assets/IDE%20Setup/Project%20Structure.png)
+
+4. Set Up SDK:
+   a. Under Platform Settings → SDKs:
+      - Add Temurin 17 JDK if not listed
+      - Or click '+' → "Add JDK"
+      - macOS: Navigate to `/Library/Java/JavaVirtualMachines/temurin-17.jdk`
+      - Linux: Navigate to `/usr/lib/jvm/temurin-17-jdk-amd64`
+
+   b. Under Project Settings → Project:
+      - Select Temurin 17 as the Project SDK
+
+5. Select Model:
+   - In the top bar dropdown (right of the hammer icon):
+     - Choose "Titanic's End" for the vehicle model
+     - Or "Testahedron" for the testahedron model
+
+6. Run Configuration:
+   🐧 Linux users only, follow the instructions below in [🐧 Linux-Specific Setup and Troubleshooting](#-linux-specific-setup-and-troubleshooting)
+
+7. Launch:
+   - Click the green "play" button to run
+   - Or click the hammer icon to build without running
 
 ### Troubleshooting IntelliJ
 
@@ -282,49 +335,6 @@ sudo snap install intellij-idea-community --classic
       sudo chown -R $USER:$USER ~/.config/JetBrains
       ```
 
-### Getting Started
-
-1. Clone the Repository:
-   ```sh
-   git clone https://github.com/titanicsend/LXStudio-TE.git
-   ```
-
-2. Open Project:
-   - Launch IntelliJ
-   - Select "Open" when presented with the initial screen
-   - Navigate to and select the cloned project directory
-
-3. Configure Project Structure:
-   - macOS: Press ⌘-; 
-   - Linux: Press Ctrl+Alt+Shift+S
-   - Or navigate to: File → Project Structure
-   ![Project Structure](assets/IDE%20Setup/Project%20Structure.png)
-
-4. Set Up SDK:
-   a. Under Platform Settings → SDKs:
-      - Add Temurin 17 JDK if not listed
-      - Or click '+' → "Add JDK"
-      - macOS: Navigate to `/Library/Java/JavaVirtualMachines/temurin-17.jdk`
-      - Linux: Navigate to `/usr/lib/jvm/temurin-17-jdk-amd64`
-
-   b. Under Project Settings → Project:
-      - Select Temurin 17 as the Project SDK
-
-5. Select Model:
-   - In the top bar dropdown (right of the hammer icon):
-     - Choose "Titanic's End" for the vehicle model
-     - Or "Testahedron" for the testahedron model
-
-6. Run Configuration:
-   🐧 Linux users only:
-   - Click "Edit Configurations..." in the run configuration dropdown
-   - Remove `-XstartOnFirstThread` from VM options
-   - Add `-Djava.awt.headless=true` if not present
-   - Click "Apply" and "OK"
-
-7. Launch:
-   - Click the green "play" button to run
-   - Or click the hammer icon to build without running
 
 ### Running Without IDE
 
