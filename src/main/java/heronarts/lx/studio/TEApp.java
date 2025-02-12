@@ -764,8 +764,8 @@ public class TEApp extends LXStudio {
       // Add UI section for audio stems
       new UIAudioStems(ui, this.audioStems, ui.leftPane.global.getContentWidth())
           .addToContainer(ui.leftPane.global, 2);
-      new UIAudioStems(ui, this.audioStems, ui.leftPerformanceTools.getContentWidth())
-          .addToContainer(ui.leftPerformanceTools, 0);
+      new UIAudioStems(ui, this.audioStems, ui.leftPerformance.tools.getContentWidth())
+          .addToContainer(ui.leftPerformance.tools, 0);
 
       UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 4);
       UIColorPaletteManager.addToRightPerformancePane(ui, this.paletteManagerA, this.paletteManagerB);

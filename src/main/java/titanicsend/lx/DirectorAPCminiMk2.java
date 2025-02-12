@@ -497,7 +497,7 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
     }
     data[messageLength - 1] = (byte) 0xF7; // MIDI system exclusive message end
     // System.out.println(prettyPrintByteArray(data));
-    this.output.sendSysex(data);
+    sendSysex(data);
   }
 
   public static String prettyPrintByteArray(byte[] byteArray) {

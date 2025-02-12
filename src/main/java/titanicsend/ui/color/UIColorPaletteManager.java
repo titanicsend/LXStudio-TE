@@ -177,7 +177,7 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
   }
 
   public static void addToRightPerformancePane(LXStudio.UI ui, ColorPaletteManager cueMgr, ColorPaletteManager auxMgr) {
-    UI2dContainer parentContainer = ui.rightPerformanceTools;
+    UI2dContainer parentContainer = ui.rightPerformance.tools;
     new UIColorPaletteManager(ui, cueMgr, auxMgr, parentContainer.getContentWidth())
         .addToContainer(parentContainer, parentContainer.getChildren().size()-1);
   }

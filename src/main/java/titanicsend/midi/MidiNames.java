@@ -10,11 +10,11 @@ public class MidiNames {
   public static final String BOMEBOX = "FoH: ";
 
   // APC40Mk2
-  public static final String APC40MK2 = heronarts.lx.midi.surface.APC40Mk2.DEVICE_NAME;
+  public static final String APC40MK2 = "APC40 mkII";
   public static final String BOMEBOX_APC40MK2 = BOMEBOX + APC40MK2;
 
   // APCminiMk2
-  public static final String APCMINIMK2 = heronarts.lx.midi.surface.APCminiMk2.DEVICE_NAME;
+  public static final String APCMINIMK2 = "APC mini mk2 Control";
   public static final String APCMINIMK2_DIRECTOR = DirectorAPCminiMk2.DEVICE_NAME;
   // APCminiMk2 midi input names get changed by Bomebox, and we want to run multiple.
   // To bypass the hassle we're mapping it to a virtual midi port in Bome Network Pro
