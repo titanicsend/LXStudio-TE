@@ -37,3 +37,4 @@ Projects/Test*.lxp
 .vscode/
 chromatik.log
 sues*
+.venv/
