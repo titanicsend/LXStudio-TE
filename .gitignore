@@ -32,3 +32,9 @@ Projects/Test*.lxp
 .lxpreferences
 
 *.onnx
+
+# IDE and logs
+.vscode/
+chromatik.log
+sues*
+.venv/

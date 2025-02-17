@@ -6,6 +6,8 @@ We are the largest team developing on Chromatik in the open so other artists can
 
 We use [Chromatik](https://chromatik.co/) (formerly known as [LX Studio](https://lx.studio/)) to control the show. Although not required, we also support Chromatik financially because it's excellent. This README will get you up and running with it so you, too, can create stunning LED art. 
 
+> 🐧 **Linux Users**: We have an experimental Linux-specific guide available in [README-linux.md](README-linux.md) that provides detailed installation and troubleshooting steps for Linux systems.
+
 Our work is notable for:
 
 * AutoVJ - an autopilot that uses Pioneer Rekordbox's phrase and beat analysis to change patterns when a human VJ would
@@ -48,7 +50,7 @@ Clean and install the maven dependencies:
 mvn clean -U package && mvn install
 ```
 
-One more thing… we have a coding style setup, as described below, so you’ll also need to install [google-java-format](https://github.com/google/google-java-format):
+One more thing… we have a coding style setup, as described below, so you'll also need to install [google-java-format](https://github.com/google/google-java-format):
 
 ```sh
 brew install google-java-format  
@@ -148,7 +150,7 @@ These have been compiled by our team:
 * [Using Tempo and Sound](https://docs.google.com/document/d/17iICAfbhCzPL77KbmFDL4-lN0zgBb1k6wdWnoBSPDjk/edit)
 * [The APC40 and LX Studio](https://docs.google.com/document/d/110qgYR_4wtE0gN8K3QZdqU75Xq0W115qe7J6mcgm1So/edit)
 
-As you really get rolling, you’ll appreciate the [API docs](https://lx.studio/api/) and public portion
+As you really get rolling, you'll appreciate the [API docs](https://lx.studio/api/) and public portion
 of [the source](https://github.com/heronarts/LX/tree/master/src/main/java/heronarts/lx).
 
 ## Celebrating the installation
@@ -314,7 +316,7 @@ encapsulation protocol. To make this work:
 * [TE Operation Modes and Art Direction Standards](https://docs.google.com/document/d/16FGnQ8jopCGwQ0qZizqILt3KYiLo0LPYkDYtnYzY7gI/edit)
 * [Using Tempo and Sound](https://docs.google.com/document/d/17iICAfbhCzPL77KbmFDL4-lN0zgBb1k6wdWnoBSPDjk/edit)
 * [The APC40 and LX Studio](https://docs.google.com/document/d/110qgYR_4wtE0gN8K3QZdqU75Xq0W115qe7J6mcgm1So/edit)
-* [Titanic’s End](http://titanicsend.com)
+* [Titanic's End](http://titanicsend.com)
 
 ## License Note
 
