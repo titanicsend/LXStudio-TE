@@ -35,7 +35,7 @@ public class GLPatternControl implements GLControlData {
     s.setUniform("iColor2HSB", LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
 
     boolean usePalette = pattern.getControls().color.colorSource.getEnum() != TEColorParameter.ColorSource.STATIC;
-    s.setUniform("iPaletteOffset", (float) (usePalette ? pattern.getControls().color.getOffsetf() : -1f));
+    s.setUniform("iPaletteOffset", usePalette ? pattern.getControls().color.getOffsetf() : -1f);
 
     // uniforms for common controls
     s.setUniform("iSpeed", (float) pattern.getSpeed());
