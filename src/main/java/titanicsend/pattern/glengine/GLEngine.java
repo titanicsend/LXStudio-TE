@@ -245,7 +245,7 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
    * Set the palette size and colors in the shader uniform block.
    *
    * @param uniformBuffer The uniform block buffer. When called, the current index must be at the
-   *                      start of the palette data area
+   *     start of the palette data area
    */
   public void setPaletteUniforms(FloatBuffer uniformBuffer) {
     float r, g, b;
@@ -424,13 +424,13 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
     maxPoints = xSize * ySize;
     TE.log(
-        "GLEngine: Rendering canvas size: "
-            + xSize
-            + "x"
-            + ySize
-            + " = "
-            + GLEngine.maxPoints
-            + " total points");
+      "GLEngine: Rendering canvas size: "
+          + xSize
+          + "x"
+          + ySize
+          + " = "
+          + GLEngine.maxPoints
+          + " total points");
 
     // register glEngine so we can access it from patterns.
     // and add it as an engine task for audio analysis and buffer management

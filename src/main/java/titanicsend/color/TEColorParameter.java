@@ -50,8 +50,9 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
   // BLEND MODE FOR THE GRADIENT. Excluding RGB because it does not play well with gradients.
 
   public enum BlendMode {
-    HSVM,
+
     OKLAB,
+    HSVM,
     HSVCW,
     HSVCCW
   }
