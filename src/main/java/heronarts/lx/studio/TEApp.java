@@ -962,7 +962,13 @@ public class TEApp extends LXStudio {
     flags.windowHeight = WINDOW_HEIGHT;
     flags.zeroconf = false;
     flags.classpathPlugins.add("heronarts.lx.studio.TEApp$Plugin");
-    // flags.useOpenGL = true;
+
+    // Always use OpenGL back-end for BGFX on Linux'
+    // NOTE: Consider changing this if Chromatik ever implements
+    // full Vulkan support.
+    if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+      flags.useOpenGL = true;
+    }
 
     String logFileName = LOG_FILENAME_FORMAT.format(Calendar.getInstance().getTime());
     File logs = new File(LX.Media.LOGS.getDirName());
