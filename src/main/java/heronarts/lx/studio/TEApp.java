@@ -21,7 +21,6 @@ import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
 import heronarts.lx.mixer.LXBus;
 import heronarts.lx.mixer.LXChannel;
-import heronarts.lx.modulator.LXModulator;
 import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.pattern.texture.NoisePattern;
 
@@ -69,7 +68,6 @@ import titanicsend.model.TEWholeModel;
 import titanicsend.model.TEWholeModelDynamic;
 import titanicsend.model.TEWholeModelStatic;
 import titanicsend.modulator.dmx.Dmx16bitModulator;
-import titanicsend.modulator.dmx.DmxColorModulator;
 import titanicsend.modulator.dmx.DmxDirectorColorModulator;
 import titanicsend.modulator.dmx.DmxDualRangeModulator;
 import titanicsend.modulator.dmx.DmxGridModulator;
@@ -112,7 +110,6 @@ import titanicsend.ui.UITEPerformancePattern;
 import titanicsend.ui.color.UIColorPaletteManager;
 import titanicsend.ui.effect.UIRandomStrobeEffect;
 import titanicsend.ui.modulator.UIDmx16bitModulator;
-import titanicsend.ui.modulator.UIDmxColorModulator;
 import titanicsend.ui.modulator.UIDmxDualRangeModulator;
 import titanicsend.ui.modulator.UIDmxGridModulator;
 import titanicsend.ui.modulator.UIDmxRangeModulator;
@@ -248,6 +245,8 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(EdgeProgressions.class);
       lx.registry.addPattern(EdgeSymmetry.class);
       lx.registry.addPattern(Smoke.class);
+      lx.registry.addPattern(PlanesDemoPattern.class);
+      lx.registry.addPattern(LookDemoPattern.class);
 
       // Patterns that are in development towards meeting standards
       lx.registry.addPattern(ArcEdges.class);
