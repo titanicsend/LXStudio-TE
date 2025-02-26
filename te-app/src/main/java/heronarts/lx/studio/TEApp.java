@@ -246,6 +246,8 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(EdgeProgressions.class);
       lx.registry.addPattern(EdgeSymmetry.class);
       lx.registry.addPattern(Smoke.class);
+      lx.registry.addPattern(PlanesDemoPattern.class);
+      lx.registry.addPattern(LookDemoPattern.class);
 
       // Patterns that are in development towards meeting standards
       lx.registry.addPattern(ArcEdges.class);
