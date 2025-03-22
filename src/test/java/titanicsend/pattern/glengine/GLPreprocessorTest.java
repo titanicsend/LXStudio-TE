@@ -24,6 +24,7 @@ class GLPreprocessorTest {
 
   static final String TEST_IUNIFORMS = "#iUniform vec3 iColorRGB=vec3(.964,.144,.519)\n" +
           "#iUniform vec3 iColor2RGB=vec3(.226,.046,.636)\n" +
+          "#iUniform vec2 iTranslate=vec2(0.,0.)\n" +
           "#iUniform float bassLevel=0.in{0.,1.}\n" +
           "#iUniform float trebleLevel=0.in{0.,1.}\n" +
           "#iUniform float volumeRatio=0.in{0.,1.}\n" +
@@ -31,14 +32,13 @@ class GLPreprocessorTest {
           "#iUniform float iSpin=0. in{-1.,1.}\n" +
           "#iUniform float iScale=1.in{.01,4.}\n" +
           "#iUniform float iRotationAngle=0.in{0.,3.14}\n" +
-          "#iUniform vec2 iTranslate=vec2(0.,0.)\n" +
           "\n" +
           "#iUniform float iSpeed=1. in{1.,10.}\n" +
           "#iUniform float iQuantity=8. in{1., 16.}\n" +
           "#iUniform float levelReact=0. in {0., 1.}\n" +
           "#iUniform float frequencyReact=0. in {0., 1.}\n" +
           "#iUniform float iWow2=0.5 in {0., 1.}\n" +
-          "#iUniform float iWow1=.1 in{0.,1.}";
+          "#iUniform float iWow1=-.1 in{0.,1.}";
 
   @Test
   public void iUniformParsingTest() {

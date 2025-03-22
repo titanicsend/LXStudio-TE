@@ -242,20 +242,81 @@ public class GLPreprocessor {
     while (matcher.find()) {
       try {
         // tokenize the line, dividing first by whitespace and parentheses
-        String[] parts = matcher.group().split("=");
+        // NOTE: trim leading/trailing whitespace, so that leading/trailing
+        // newline matches don't screw up our parsing.
+        String[] parts = matcher.group().trim().split("=");
         if (parts.length != 2) {
           throw new Exception("Expected 2 parts delimited by '=', but found: "+parts.length);
         }
         String[] lhsTokens = parts[0].split("\\s|\\(|\\)");
+        String rhs = parts[1];
+
+//        System.out.println("(in) LHS: " + Arrays.toString(lhsTokens));
         if (lhsTokens.length != 3) {
           throw new Exception("Expected 3 LHS tokens delimited by whitespace, but found: "+lhsTokens.length+" in string'"+parts[0]+"'");
         } else if (!lhsTokens[0].equals("#iUniform")) {
           throw new Exception("Expected first token on LHS to be '#iUniform'");
         }
-        String varType = lhsTokens[2];
+        String varType = lhsTokens[1];
         String varName = lhsTokens[2];
-        String rhs = parts[1];
-        System.out.println(varName + "=" + rhs);
+        //        System.out.println("(out) LHS: '"+varType+" "+varName+"'");
+
+
+        if (varType.equals("float")) {
+          /*
+           * Regular expression pattern to extract three floating-point values from strings in the format:
+           * "<value> in {<lowerBound>,<upperBound>}"
+           *
+           * Pattern: (\\d*\\.\\d*|\\d+\\.?)\\s*in\\s*\\{\\s*(\\d*\\.\\d*|\\d+\\.?)\\s*,\\s*(\\d*\\.\\d*|\\d+\\.?)\\s*\\}
+           *
+           * Breakdown:
+           * 1. (\\d*\\.\\d*|\\d+\\.?) - Captures a floating-point number in GLSL notation:
+           *    - \\d*\\.\\d* matches numbers like ".5", "0.5", or "1.0"
+           *    - \\d+\\.? matches numbers like "1" or "1."
+           *    - The | (OR) operator allows either format
+           *
+           * 2. \\s*in\\s* - Matches the word "in" with optional whitespace before and after
+           *
+           * 3. \\{\\s* - Matches the opening curly brace with optional whitespace after
+           *
+           * 4. The same floating-point pattern is repeated for the lower bound
+           *
+           * 5. \\s*,\\s* - Matches the comma separator with optional whitespace
+           *
+           * 6. The floating-point pattern is repeated again for the upper bound
+           *
+           * 7. \\s*\\} - Matches the closing curly brace with optional whitespace before
+           *
+           * Capturing groups:
+           * - Group 1: The initial value
+           * - Group 2: The lower bound
+           * - Group 3: The upper bound
+           */
+          Pattern floatRangePattern = Pattern.compile(
+                  "(-?\\d*\\.\\d*|\\d+\\.?)\\s*"+
+                          "in\\s*\\{\\s*(-?\\d*\\.\\d*|\\d+\\.?)"+
+                          "\\s*,\\s*(-?\\d*\\.\\d*|\\d+\\.?)"+
+                          "\\s*}"  // Removed the \n and escaped the closing brace properly
+          );
+
+          Matcher floatRangeMatcher = floatRangePattern.matcher(rhs);
+
+          if (!floatRangeMatcher.matches()) {
+            throw new RuntimeException("float range didn't match: ["+rhs+"]");
+          } else if (floatRangeMatcher.groupCount() != 3) {
+            throw new RuntimeException("incorrect group count: "+floatRangeMatcher.groupCount());
+          }
+
+// Correct the group indices (1, 2, 3 instead of 0, 1, 2)
+          float rangeDefault = parseGlslFloat(floatRangeMatcher.group(1));
+          float rangeLower = parseGlslFloat(floatRangeMatcher.group(2));
+          float rangeUpper = parseGlslFloat(floatRangeMatcher.group(3));
+
+          System.out.println("(out) RHS: " + rangeDefault + ", " + rangeLower + ", " + rangeUpper);
+        }
+
+        String[] rhsTokens = parts[1].split("\\s|\\(|\\)");
+//        System.out.println("(in) RHS: " + Arrays.toString(rhsTokens));
 
         // then by commas
         String[] tokens = matcher.group().split("\\s|\\(|\\)");
@@ -292,6 +353,15 @@ public class GLPreprocessor {
         throw new RuntimeException("Error in " + matcher.group() + "\n" + e.getMessage());
       }
     }
+  }
+
+  private static float parseGlslFloat(String s) {
+    if (s.startsWith(".")) {
+      return Float.parseFloat("0"+s);
+    } else if (s.endsWith(".")) {
+      return Float.parseFloat(s+"0");
+    }
+    return Float.parseFloat(s);
   }
 
   public static String getFragmentShaderTemplate() {
