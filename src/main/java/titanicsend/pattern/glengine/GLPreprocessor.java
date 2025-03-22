@@ -301,53 +301,50 @@ public class GLPreprocessor {
 
           Matcher floatRangeMatcher = floatRangePattern.matcher(rhs);
 
-          if (!floatRangeMatcher.matches()) {
+          if (!floatRangeMatcher.find()) {
             throw new RuntimeException("float range didn't match: ["+rhs+"]");
-          } else if (floatRangeMatcher.groupCount() != 3) {
-            throw new RuntimeException("incorrect group count: "+floatRangeMatcher.groupCount());
           }
 
-// Correct the group indices (1, 2, 3 instead of 0, 1, 2)
           float rangeDefault = parseGlslFloat(floatRangeMatcher.group(1));
           float rangeLower = parseGlslFloat(floatRangeMatcher.group(2));
           float rangeUpper = parseGlslFloat(floatRangeMatcher.group(3));
 
-          System.out.println("(out) RHS: " + rangeDefault + ", " + rangeLower + ", " + rangeUpper);
-        }
+          ShaderConfiguration control = new ShaderConfiguration();
 
-        String[] rhsTokens = parts[1].split("\\s|\\(|\\)");
-//        System.out.println("(in) RHS: " + Arrays.toString(rhsTokens));
+          String tagName = varName.trim().toUpperCase();
+          if (tagName.startsWith("I")) {
+            // "iSpeed" should look up tag "SPEED"
+            tagName = tagName.substring(1);
+          }
+          try {
+            control.parameterId = TEControlTag.valueOf(tagName);
+            control.name = control.parameterId.getLabel();
 
-        // then by commas
-        String[] tokens = matcher.group().split("\\s|\\(|\\)");
-        // discard empty tokens
-        tokens = Arrays.stream(tokens).filter(s -> !s.isEmpty()).toArray(String[]::new);
-        // discard the #pragma token
-        tokens = Arrays.copyOfRange(tokens, 1, tokens.length);
+            control.value = rangeDefault;
+            control.v1 = rangeLower;
+            control.v2 = rangeUpper;
+          } catch (IllegalArgumentException exception) {
+            System.out.println("Unsupported tag name: "+varName);
+          }
+          // System.out.println("(out) RHS: " + rangeDefault + ", " + rangeLower + ", " + rangeUpper);
+        } else if (varType.equals("vec2") || varType.equals("vec3")) {
+          Pattern vecPattern = Pattern.compile("(vec\\d+)\\(([^)]*)\\)");
+          Matcher vecMatcher = vecPattern.matcher(rhs);
 
-        // Common controls configuration
-        String pragma = tokens[0].toLowerCase();
-//        System.out.println(String.join(",", tokens));
-        if (pragma.startsWith("tecontrol.")) {
-          parseControl(tokens, parameters);
-        }
-        // Texture channel definition
-        else if (pragma.startsWith("ichannel")) {
-          parseTextures(tokens, parameters);
-        }
-        // name of class/pattern in UI
-        else if (pragma.equals("name")) {
-          parseClassName(tokens, parameters);
-        }
-        // set LXCategory for pattern
-        else if (pragma.equals("lxcategory")) {
-          parseLXCategory(tokens, parameters);
-        }
-        // auto keyword forces use of automatic class generation system
-        else if (pragma.equals("auto")) {
-          ShaderConfiguration p = new ShaderConfiguration();
-          p.opcode = ShaderConfigOpcode.AUTO;
-          parameters.add(p);
+          if (!vecMatcher.find()) {
+            throw new RuntimeException("vec matcher failed: "+rhs);
+          }
+          // String dataType = vecMatcher.group(1); // "vec3" or "vec2"
+          String paramsContent = vecMatcher.group(2); // ".226,.046,.636" or ".1, 2.0, -5"
+          // If you need to further process the parameters
+          String[] params = paramsContent.split(",");
+          Float[] values = Arrays.stream(params).map(GLPreprocessor::parseGlslFloat).toArray(Float[]::new);
+
+          System.out.println("(out) RHS: " + Arrays.toString(values));
+
+          // TODO(look): do I need to update any TEControls? I think I only use vec2/vec3 to replicate color/translate.
+        } else {
+          throw new RuntimeException("iUniform data type not yet inmplemented: "+varType);
         }
       } catch (Exception e) {
         throw new RuntimeException("Error in " + matcher.group() + "\n" + e.getMessage());
@@ -362,6 +359,13 @@ public class GLPreprocessor {
       return Float.parseFloat(s+"0");
     }
     return Float.parseFloat(s);
+  }
+
+  private static String removeIUniformLines(String fileContent) {
+    String[] lines = Arrays.stream(fileContent.split("\\n"))
+            .filter(line -> !line.contains("#iUniform"))
+            .toArray(String[]::new);
+    return String.join("\n", lines);
   }
 
   public static String getFragmentShaderTemplate() {
@@ -448,6 +452,10 @@ public class GLPreprocessor {
         }
       }
       shaderBody = legacyPreprocessor(shaderBody, parameters);
+
+      // VSCode Shadertoy extension support
+      parseIUniforms(shaderBody, parameters);
+      shaderBody = removeIUniformLines(shaderBody);
 
       parsePragmas(shaderBody, parameters);
     } catch (Exception e) {
