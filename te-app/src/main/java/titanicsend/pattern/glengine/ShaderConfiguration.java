@@ -14,4 +14,29 @@ public class ShaderConfiguration {
   public double v2;
   public int textureChannel;
   public String name;
+
+  @Override
+  public String toString() {
+    return "ShaderConfiguration{"
+        + "opcode="
+        + opcode
+        + ", parameterId="
+        + parameterId
+        + ", lxParameter="
+        + lxParameter
+        + ", normalizationCurve="
+        + normalizationCurve
+        + ", value="
+        + value
+        + ", v1="
+        + v1
+        + ", v2="
+        + v2
+        + ", textureChannel="
+        + textureChannel
+        + ", name='"
+        + name
+        + '\''
+        + '}';
+  }
 }
