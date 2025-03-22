@@ -234,6 +234,66 @@ public class GLPreprocessor {
     }
   }
 
+  // Parse #iUniform directives (to be compatible with VSCode ShaderToy extension).
+  public void parseIUniforms(String input, List<ShaderConfiguration> parameters) {
+    Pattern pattern = Pattern.compile("^\\s*#iUniform.*", Pattern.MULTILINE);
+    Matcher matcher = pattern.matcher(input);
+
+    while (matcher.find()) {
+      try {
+        // tokenize the line, dividing first by whitespace and parentheses
+        String[] parts = matcher.group().split("=");
+        if (parts.length != 2) {
+          throw new Exception("Expected 2 parts delimited by '=', but found: "+parts.length);
+        }
+        String[] lhsTokens = parts[0].split("\\s|\\(|\\)");
+        if (lhsTokens.length != 3) {
+          throw new Exception("Expected 3 LHS tokens delimited by whitespace, but found: "+lhsTokens.length+" in string'"+parts[0]+"'");
+        } else if (!lhsTokens[0].equals("#iUniform")) {
+          throw new Exception("Expected first token on LHS to be '#iUniform'");
+        }
+        String varType = lhsTokens[2];
+        String varName = lhsTokens[2];
+        String rhs = parts[1];
+        System.out.println(varName + "=" + rhs);
+
+        // then by commas
+        String[] tokens = matcher.group().split("\\s|\\(|\\)");
+        // discard empty tokens
+        tokens = Arrays.stream(tokens).filter(s -> !s.isEmpty()).toArray(String[]::new);
+        // discard the #pragma token
+        tokens = Arrays.copyOfRange(tokens, 1, tokens.length);
+
+        // Common controls configuration
+        String pragma = tokens[0].toLowerCase();
+//        System.out.println(String.join(",", tokens));
+        if (pragma.startsWith("tecontrol.")) {
+          parseControl(tokens, parameters);
+        }
+        // Texture channel definition
+        else if (pragma.startsWith("ichannel")) {
+          parseTextures(tokens, parameters);
+        }
+        // name of class/pattern in UI
+        else if (pragma.equals("name")) {
+          parseClassName(tokens, parameters);
+        }
+        // set LXCategory for pattern
+        else if (pragma.equals("lxcategory")) {
+          parseLXCategory(tokens, parameters);
+        }
+        // auto keyword forces use of automatic class generation system
+        else if (pragma.equals("auto")) {
+          ShaderConfiguration p = new ShaderConfiguration();
+          p.opcode = ShaderConfigOpcode.AUTO;
+          parameters.add(p);
+        }
+      } catch (Exception e) {
+        throw new RuntimeException("Error in " + matcher.group() + "\n" + e.getMessage());
+      }
+    }
+  }
+
   public static String getFragmentShaderTemplate() {
     return ShaderUtils.loadResource(ShaderUtils.FRAMEWORK_PATH + "template.fs");
   }
