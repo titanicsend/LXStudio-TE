@@ -1,6 +1,7 @@
 package titanicsend.pattern.glengine;
 
-import com.jogamp.common.nio.Buffers;
+import static com.jogamp.opengl.GL.*;
+
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.util.GLBuffers;
@@ -11,14 +12,11 @@ import heronarts.lx.audio.GraphicMeter;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LXSwatch;
 import heronarts.lx.model.LXModel;
+import java.nio.FloatBuffer;
 import titanicsend.audio.AudioStems;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
 import titanicsend.util.TE;
 import titanicsend.util.TEMath;
-
-import java.nio.FloatBuffer;
-
-import static com.jogamp.opengl.GL.*;
 
 public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   public static final String PATH = "GLEngine";
@@ -424,13 +422,13 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
     maxPoints = xSize * ySize;
     TE.log(
-      "GLEngine: Rendering canvas size: "
-          + xSize
-          + "x"
-          + ySize
-          + " = "
-          + GLEngine.maxPoints
-          + " total points");
+        "GLEngine: Rendering canvas size: "
+            + xSize
+            + "x"
+            + ySize
+            + " = "
+            + GLEngine.maxPoints
+            + " total points");
 
     // register glEngine so we can access it from patterns.
     // and add it as an engine task for audio analysis and buffer management

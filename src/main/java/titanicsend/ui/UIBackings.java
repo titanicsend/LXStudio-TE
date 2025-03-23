@@ -78,7 +78,7 @@ public class UIBackings extends UI3dComponent {
     }
   }
 
-   /** Build backing panels for the current model. Called when the model is loaded or changed. */
+  /** Build backing panels for the current model. Called when the model is loaded or changed. */
   public void rebuild() {
     clear();
 
@@ -92,7 +92,7 @@ public class UIBackings extends UI3dComponent {
     }
 
     this.colorBuffer =
-      new DynamicVertexBuffer(glx, colorBufferMaxSize, VertexDeclaration.ATTRIB_COLOR0);
+        new DynamicVertexBuffer(glx, colorBufferMaxSize, VertexDeclaration.ATTRIB_COLOR0);
   }
 
   // Free resources allocated by previous model
@@ -107,7 +107,9 @@ public class UIBackings extends UI3dComponent {
   @Override
   public void onDraw(UI ui, View view) {
     // if backings don't exist, or are not visible, or someone else has the lock, skip this draw
-    if (this.colorBuffer == null || !this.virtualOverlays.opaqueBackPanelsVisible.isOn() || UI3DManager.backingsLocked()) {
+    if (this.colorBuffer == null
+        || !this.virtualOverlays.opaqueBackPanelsVisible.isOn()
+        || UI3DManager.backingsLocked()) {
       return;
     }
 
@@ -122,8 +124,9 @@ public class UIBackings extends UI3dComponent {
 
         // TODO: fix variable opacity - may require a (BGFX) shader
         final int panelColor =
-          LXColor.toABGR(
-            LXColor.rgba(0, 0, 0, (int) this.virtualOverlays.backingOpacity.getNormalized() * 255));
+            LXColor.toABGR(
+                LXColor.rgba(
+                    0, 0, 0, (int) this.virtualOverlays.backingOpacity.getNormalized() * 255));
         for (int i = 0; i < numModels; i++) {
           colorData.putInt(panelColor);
           colorData.putInt(panelColor);
@@ -133,17 +136,20 @@ public class UIBackings extends UI3dComponent {
         this.colorBuffer.update();
 
         final long state =
-          BGFX_STATE_PT_TRISTRIP
-            | BGFX_STATE_WRITE_RGB
-            | BGFX_STATE_WRITE_A
-            | BGFX_STATE_WRITE_Z
-            | BGFX_STATE_DEPTH_TEST_LESS;
+            BGFX_STATE_PT_TRISTRIP
+                | BGFX_STATE_WRITE_RGB
+                | BGFX_STATE_WRITE_A
+                | BGFX_STATE_WRITE_Z
+                | BGFX_STATE_DEPTH_TEST_LESS;
 
         int vertexIndex = 0;
         for (PanelBuffer b : panels) {
           bgfx_set_transform(this.modelMatrix.get(this.modelMatrixBuf));
           bgfx_set_dynamic_vertex_buffer(
-            1, this.colorBuffer.getHandle(), vertexIndex++ * VERTICES_PER_PANEL, VERTICES_PER_PANEL);
+              1,
+              this.colorBuffer.getHandle(),
+              vertexIndex++ * VERTICES_PER_PANEL,
+              VERTICES_PER_PANEL);
           ui.lx.program.vertexFill.submit(view, state, b);
         }
       }

@@ -150,10 +150,11 @@ public class UITEColorPicker extends UI2dComponent {
     if (this.deviceMode) {
       vg.beginPath();
       vg.strokeColor(ui.theme.controlBorderColor);
-      vg.rect(UIKnob.KNOB_MARGIN + .5f,
-              INDICATOR_HEIGHT + .5f,
-              UIKnob.KNOB_SIZE - 1f,
-              UIKnob.KNOB_SIZE - (INDICATOR_HEIGHT * 2) - 1f);
+      vg.rect(
+          UIKnob.KNOB_MARGIN + .5f,
+          INDICATOR_HEIGHT + .5f,
+          UIKnob.KNOB_SIZE - 1f,
+          UIKnob.KNOB_SIZE - (INDICATOR_HEIGHT * 2) - 1f);
       vg.stroke();
     } else {
       super.drawBorder(ui, vg);
@@ -165,7 +166,7 @@ public class UITEColorPicker extends UI2dComponent {
     vg.strokeWidth(1f);
 
     // Gradient
-    for(float x = UIKnob.KNOB_MARGIN + 1f; x < this.width - UIKnob.KNOB_MARGIN; ++x) {
+    for (float x = UIKnob.KNOB_MARGIN + 1f; x < this.width - UIKnob.KNOB_MARGIN; ++x) {
       float lerp = (x - UIKnob.KNOB_MARGIN) / UIKnob.KNOB_SIZE;
       vg.beginPath();
       vg.strokeColor(this.color.getGradientColorFixed(lerp));
@@ -177,18 +178,17 @@ public class UITEColorPicker extends UI2dComponent {
     // Indicators
     float offset = this.color.getOffsetf();
     float indicatorX = UIKnob.KNOB_MARGIN + .5f + (UIKnob.KNOB_SIZE * offset);
-    drawTriangle(ui, this, vg,
-            indicatorX,
-            INDICATOR_HEIGHT,
-            INDICATOR_WIDTH,
-            INDICATOR_HEIGHT,
-            true);
-    drawTriangle(ui, this, vg,
-            indicatorX,
-            UIKnob.KNOB_SIZE - INDICATOR_HEIGHT,
-            INDICATOR_WIDTH,
-            INDICATOR_HEIGHT,
-            false);
+    drawTriangle(
+        ui, this, vg, indicatorX, INDICATOR_HEIGHT, INDICATOR_WIDTH, INDICATOR_HEIGHT, true);
+    drawTriangle(
+        ui,
+        this,
+        vg,
+        indicatorX,
+        UIKnob.KNOB_SIZE - INDICATOR_HEIGHT,
+        INDICATOR_WIDTH,
+        INDICATOR_HEIGHT,
+        false);
 
     if (this.deviceMode) {
       UIParameterControl.drawParameterLabel(
@@ -196,12 +196,19 @@ public class UITEColorPicker extends UI2dComponent {
     }
   }
 
-  private void drawTriangle(UI ui, UI2dComponent component, VGraphics vg,
-      float x, float y, float w, float h, boolean invert) {
+  private void drawTriangle(
+      UI ui,
+      UI2dComponent component,
+      VGraphics vg,
+      float x,
+      float y,
+      float w,
+      float h,
+      boolean invert) {
     vg.fillColor(this.enabled ? ui.theme.controlTextColor : ui.theme.controlDisabledTextColor);
     vg.beginPath();
-    vg.moveTo(x-(w/2), y + (invert ? 0 - h : h));
-    vg.lineTo(x+(w/2), y + (invert ? 0 - h : h));
+    vg.moveTo(x - (w / 2), y + (invert ? 0 - h : h));
+    vg.lineTo(x + (w / 2), y + (invert ? 0 - h : h));
     vg.lineTo(x, y);
     vg.closePath();
     vg.fill();
@@ -389,8 +396,7 @@ public class UITEColorPicker extends UI2dComponent {
 
       color.colorSource.addListener(
           (p) -> {
-            boolean isStatic =
-                color.colorSource.getEnum() == TEColorParameter.ColorSource.STATIC;
+            boolean isStatic = color.colorSource.getEnum() == TEColorParameter.ColorSource.STATIC;
             swatch.setEnabled(isStatic);
             hueBox.setEnabled(isStatic);
             satBox.setEnabled(isStatic);

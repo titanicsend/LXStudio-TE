@@ -1,10 +1,15 @@
 ## Titanic's End LXStudio
 
-[Titanic's End](http://titanicsend.com) is a mutant vehicle that debuted at [Burning Man](https://burningman.org) 2022 and has since participated in EDC and Framework events.
+[Titanic's End](http://titanicsend.com) is a mutant vehicle that debuted at [Burning Man](https://burningman.org) 2022
+and has since participated in EDC and Framework events.
 
-We are the largest team developing on Chromatik in the open so other artists can benefit from our work (see the [license](LICENSE.md)). This repo contains the shader & pattern code for the 128,000 LEDS, sound reactivity, MIDI control, OSC middleware, and ArtNet bidirectional control.
+We are the largest team developing on Chromatik in the open so other artists can benefit from our work (see
+the [license](LICENSE.md)). This repo contains the shader & pattern code for the 128,000 LEDS, sound reactivity, MIDI
+control, OSC middleware, and ArtNet bidirectional control.
 
-We use [Chromatik](https://chromatik.co/) (formerly known as [LX Studio](https://lx.studio/)) to control the show. Although not required, we also support Chromatik financially because it's excellent. This README will get you up and running with it so you, too, can create stunning LED art. 
+We use [Chromatik](https://chromatik.co/) (formerly known as [LX Studio](https://lx.studio/)) to control the show.
+Although not required, we also support Chromatik financially because it's excellent. This README will get you up and
+running with it so you, too, can create stunning LED art.
 
 Our work is notable for:
 
@@ -13,7 +18,9 @@ Our work is notable for:
 * Developed to team-friendly maintainability standards for long-term enjoyment of the codebase
 * GigglePixel, Pixelblaze, and ArtNet integration
 
-Want a personal intro to the project and codebase? Contact current team lead [Andrew Look](https://github.com/andrewlook) by messaging andrew-m-look (s/-/./g) electronically at the big Gm.com thing.
+Want a personal intro to the project and codebase? Contact current team
+lead [Andrew Look](https://github.com/andrewlook) by messaging andrew-m-look (s/-/./g) electronically at the big Gm.com
+thing.
 
 <details>
     <summary>What if I want to know more?</summary>
@@ -48,7 +55,8 @@ Clean and install the maven dependencies:
 mvn clean -U package && mvn install
 ```
 
-One more thing… we have a coding style setup, as described below, so you’ll also need to install [google-java-format](https://github.com/google/google-java-format):
+One more thing… we have a coding style setup, as described below, so you’ll also need to
+install [google-java-format](https://github.com/google/google-java-format):
 
 ```sh
 brew install google-java-format  
@@ -56,9 +64,11 @@ brew install google-java-format
 
 ## Quick Start
 
-> These are geared toward running Chromatik on macOS with `git` already installed. If you need help with anything, ask in the Slack #lighting-software channel!
+> These are geared toward running Chromatik on macOS with `git` already installed. If you need help with anything, ask
+> in the Slack #lighting-software channel!
 
-First, you'll need an IDE (editor). IntelliJ's Community Edition is the best free one available. You can download it here:
+First, you'll need an IDE (editor). IntelliJ's Community Edition is the best free one available. You can download it
+here:
 
 https://www.jetbrains.com/idea/
 
@@ -88,7 +98,9 @@ Steps for setup:
         1. Select the Temurin 17 JDK
            ![Project SDK](assets/IDE%20Setup/Select%20Project.png)
 
-4. Select "Titanic's End" in the top bar (in the dropdown to the right of the hammer) if you want to use the vehicle model, or "Testahedron" if you want the testahedron model.
+4. Select "Titanic's End Dynamic" in the top bar (in the dropdown to the right of the hammer) if you want to use the
+   vehicle
+   model.
    ![Play button](assets/IDE%20Setup/Play%20Button.png)
 
 5. Hit the green arrow "play" button. (If you just want to build, you can hit the hammer.)
@@ -100,22 +112,48 @@ Steps for setup:
 These are the steps to use [google-java-format](https://github.com/google/google-java-format) automatically
 and ensure that each commit gets formatted before being submitted.
 
-1. Setup the git pre-commit hook to run the `google-java-format` CLI tool on changed files
+1. As mentioned earlier, run the following to ensure you have `google-java-format` installed:
+
+```sh
+brew install google-java-format
+```
+
+2. Set up the git pre-commit hook to run the `google-java-format` CLI tool on changed files
 
 ```sh
 cp pre-commit .git/hooks/pre-commit
 ```
 
-Commits may now fail if there's a style violation, since this runs `mvn spotless:check`.
+Commits may now fail if there's a style violation on any files modified in that commit, since this runs
+`mvn spotless:check`. If you really need to commit something and are okay to fix the lint errors later, you can do a
+`git commit --no-verify` just to bypass this check temporarily and save your commit. However, `mvn spotless:check` is
+required to pass on any PR's before they're merge-able, so you'll need to make the lint fixes eventually.
 
-You can manually apply formatting fixes using `mvn spotless:apply`.
+You can manually apply formatting fixes using `mvn spotless:apply`. It's easiest, though, to have your code reformatted
+by the IDE, every time you save.
 
-2. (Optional) Install the IDE plugin
-   for [IntelliJ](https://github.com/google/google-java-format#intellij-android-studio-and-other-jetbrains-ides)
-    1. After plugin install, go to `Settings > Tools > Actions on Save` and enable `Reformat Code`
-       and `Optimize Imports`.
-       
-3. (Optional) Or install the IDE plugin for [Eclipse](https://github.com/google/google-java-format#eclipse).
+(IntelliJ Users) Install this
+plugin: [google-java-format plugin](https://github.com/google/google-java-format#intellij-android-studio-and-other-jetbrains-ides)
+
+- The google-java-format plugin uses some internal classes that aren't available without extra configuration. To use the
+  plugin, you need to add some options to your IDE's Java runtime. To do that, go to `Help→Edit Custom VM Options...`
+  and paste in these lines:
+
+```sh
+--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
+```
+
+- The plugin will be disabled by default. To enable, open the Project settings, then click `google-java-format
+       Settings` and check the `Enable google-java-format` checkbox.
+- After plugin install, go to `Settings > Tools > Actions on Save` and enable `Reformat Code`
+  and `Optimize Imports`.
+
+(Eclipse Users) Or install the IDE plugin for [Eclipse](https://github.com/google/google-java-format#eclipse).
 
 ### Potential issues
 
@@ -170,7 +208,8 @@ Things that can help improve your experience with LX Studio.
 
 ### Recognize Chromatik JSON file extensions
 
-It can be handy to edit Chromatik's JSON config files in the IDE. Add the .lxf and .lxp extensions to be recognized as JSON.
+It can be handy to edit Chromatik's JSON config files in the IDE. Add the .lxf and .lxp extensions to be recognized as
+JSON.
 
 1. Open IntelliJ preferences (⌘-, on Mac) and go to Editor → File Types → JSON.
 2. Next, add "*.lxp" to the list, and so on.
@@ -246,9 +285,9 @@ rm -r ~/.m2
 To run on machine startup (ie: press power button and Chromatik just starts up), you'll need to do three things:
 
 1. Add `TE.app` to your startup items
-   1. System Preferences > Users & Groups
-   2. Click the user to run Chromatik with
-   3. Login Items > "+" button > add TE.app 
+    1. System Preferences > Users & Groups
+    2. Click the user to run Chromatik with
+    3. Login Items > "+" button > add TE.app
 2. Change to automatic login
     1. System Preferences > Users & Groups
     2. Click "Login Options" underneath list of accounts (may need to enter password)
@@ -276,7 +315,7 @@ to the car's LAN. The UI is controlled via a remote desktop (VNC) connection ove
 a high-speed PTP wireless bridge. Since the VJ at this remote Front-of-House desk
 will want to use MIDI surfaces and controllers to perform, we needed to come up
 with a MIDI-over-WiFi solution to connect the USB MIDI devices to the box running
-Chromatik on the car. 
+Chromatik on the car.
 
 In 2022, we utilized OSX's arcane built-in support for RTP-MIDI. This was brittle
 and fickle to maintain.
@@ -284,30 +323,30 @@ and fickle to maintain.
 In 2023 we've changed to using a device called a BomeBox that uses a proprietary
 encapsulation protocol. To make this work:
 
-1. The Bome Network tool should be installed on the computer that runs Chromatik. The 
-    "Multiple Named Virtual interfaces" upgrade is required.
+1. The Bome Network tool should be installed on the computer that runs Chromatik. The
+   "Multiple Named Virtual interfaces" upgrade is required.
 2. The remote BomeBox should be on the same subnet, with updated firmware
 3. Optionally, renamed the BomeBox. We changed "BomeBox" to "FoH" for "Front of House"
 4. Connect the MIDI controllers to the BomeBox USB port via a USB Hub. In the
    Bome Network tool, enable Remote Direct Midi for those devices.
 5. You can disable MIDI routes that aren't used, such as the DIN ports or
-    MIDI messaging between the USB devices. This likely helps performance.
-    Leave 2 routes per device: The bidirection pair Chromatik->Device, and Device->Chromatik. 
-6. Register the correct new names in Chromatik. The Bome Remote Direct Midi device 
-    names follow a pattern of "{BomeBoxName}: {DeviceName}", like
-    "FoH: APC40 mkII". For example, in your main app you may need to
-    `lx.engine.midi.registerSurface(name, class)` or match the name with 
-    an entry in `lx.engine.midi.inputs[].getName()`. If using more than one midi
-    device of the same type BoxBox will present each device with a unique name by
-    appending a number such as "FoH: Midi Fighter Twister (2)".
-    `registerSurface(name, class)` needs to be called for each of these unique names.
+   MIDI messaging between the USB devices. This likely helps performance.
+   Leave 2 routes per device: The bidirection pair Chromatik->Device, and Device->Chromatik.
+6. Register the correct new names in Chromatik. The Bome Remote Direct Midi device
+   names follow a pattern of "{BomeBoxName}: {DeviceName}", like
+   "FoH: APC40 mkII". For example, in your main app you may need to
+   `lx.engine.midi.registerSurface(name, class)` or match the name with
+   an entry in `lx.engine.midi.inputs[].getName()`. If using more than one midi
+   device of the same type BoxBox will present each device with a unique name by
+   appending a number such as "FoH: Midi Fighter Twister (2)".
+   `registerSurface(name, class)` needs to be called for each of these unique names.
 
 [Here's a video](https://youtu.be/ulBLF_IR46I) illustrating our configuration.
 
 ## Resources
 
 * [#lighting-software on Slack](https://titanicsend.slack.com/archives/C02L0MDQB2M)
-* [Chromatik Wiki](https://github.com/heronarts/LXStudio/wiki) 
+* [Chromatik Wiki](https://github.com/heronarts/LXStudio/wiki)
 * [Chromatik API](https://chromatik.co/api/)
 * [Chromatik Source](https://github.com/heronarts/LX/tree/master/src/main/java/heronarts/lx)
 * [TE Visual Map](https://docs.google.com/spreadsheets/d/1C7VPybckgH9bWGxwtgMN_Ij1T__c5qc-k7yIhG-592Y/edit#gid=877106241)

@@ -1,10 +1,9 @@
 package titanicsend.util;
 
+import heronarts.lx.LX;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-
-import heronarts.lx.LX;
 
 /** For utilty funcs that we want really fast syntactic sugar access to! */
 public class TE {
@@ -28,11 +27,10 @@ public class TE {
 
   public static Scanner loadFile(String filename) {
     try {
-	  File f = new File(resourcedir + "/" + filename);
-	  return new Scanner(f);
-	} catch (FileNotFoundException e) {
-	  throw new Error(filename + " not found below " + System.getProperty("user.dir"));
-	}
+      File f = new File(resourcedir + "/" + filename);
+      return new Scanner(f);
+    } catch (FileNotFoundException e) {
+      throw new Error(filename + " not found below " + System.getProperty("user.dir"));
+    }
   }
-
 }

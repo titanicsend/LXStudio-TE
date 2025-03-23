@@ -10,7 +10,6 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.Click;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.utils.LXUtils;
-
 import java.util.*;
 import titanicsend.app.TEVirtualColor;
 import titanicsend.color.TEColorType;
@@ -70,8 +69,7 @@ public class EdgeRunner extends TEPattern implements TEModelListener {
           "Trail", "trailColor", TEColorType.SECONDARY, "Color of the trail they leave behind");
 
   public final LinkedColorParameter fillColor =
-      registerColor(
-          "Fill", "fillColor", TEColorType.TERTIARY, "Color to fill the panels with");
+      registerColor("Fill", "fillColor", TEColorType.TERTIARY, "Color to fill the panels with");
 
   public EdgeRunner(LX lx) {
     super(lx);
@@ -99,9 +97,9 @@ public class EdgeRunner extends TEPattern implements TEModelListener {
     for (TEPanelModel panel : this.modelTE.getPanels()) {
       if (!panel.panelType.equals(TEPanelModel.LIT)) continue;
       int numEdgePixels =
-        (panel.e0 != null ? panel.e0.points.length : 0) +
-        (panel.e1 != null ? panel.e1.points.length : 0) +
-        (panel.e2 != null ? panel.e2.points.length : 0);
+          (panel.e0 != null ? panel.e0.points.length : 0)
+              + (panel.e1 != null ? panel.e1.points.length : 0)
+              + (panel.e2 != null ? panel.e2.points.length : 0);
       PanelData pd = new PanelData(numEdgePixels);
       this.panelData.put(panel, pd);
     }

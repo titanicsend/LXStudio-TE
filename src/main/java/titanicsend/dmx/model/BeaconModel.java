@@ -80,7 +80,7 @@ public class BeaconModel extends DmxModel {
   /** Dynamic model constructor */
   public BeaconModel(LXModel model) {
     super(model, createConfig(model));
-    initialize(((BeaconConfig)this.config).tiltLimit);
+    initialize(((BeaconConfig) this.config).tiltLimit);
   }
 
   /** Static model constructor */
@@ -89,14 +89,13 @@ public class BeaconModel extends DmxModel {
     initialize(tiltLimit);
   }
 
-  private void initialize(float tiltLimit){
+  private void initialize(float tiltLimit) {
     DmxCompoundParameter pan = new DmxCompoundParameter("Pan").setNumBytes(2);
-    DmxCompoundParameter tilt =
-      new DmxCompoundParameter("Tilt", .5, 0, 1).setNumBytes(2);
+    DmxCompoundParameter tilt = new DmxCompoundParameter("Tilt", .5, 0, 1).setNumBytes(2);
     // Apply tilt limit from config file to beacon
     tilt.getLimiter()
-      .setLimits(.5 - LXUtils.max(0,tiltLimit / 2), Math.min(1, .5 + (tiltLimit / 2)))
-      .setLimitType(LimitType.ZOOM);
+        .setLimits(.5 - LXUtils.max(0, tiltLimit / 2), Math.min(1, .5 + (tiltLimit / 2)))
+        .setLimitType(LimitType.ZOOM);
     DmxCompoundParameter cyan = new DmxCompoundParameter("Cyan", 0, 0, 100);
     DmxCompoundParameter magenta = new DmxCompoundParameter("Magenta", 0, 0, 100);
     DmxCompoundParameter yellow = new DmxCompoundParameter("Yellow", 0, 0, 100);

@@ -1,12 +1,12 @@
 package titanicsend.ui.text3d;
 
+import static org.lwjgl.bgfx.BGFX.bgfx_destroy_vertex_buffer;
+
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
-
-import static org.lwjgl.bgfx.BGFX.bgfx_destroy_vertex_buffer;
 
 // Information needed to render a single 3d text label
 public class Label {

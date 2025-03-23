@@ -36,8 +36,7 @@ public class ColorPaletteManager extends LXComponent implements LXOscComponent {
               "Color theory rule to use when generating the secondary and tertiary colors");
 
   public final CompoundParameter hue =
-      new CompoundParameter("H", 0, 0, 360)
-          .setDescription("Sets the amount of hue shift to apply");
+      new CompoundParameter("H", 0, 0, 360).setDescription("Sets the amount of hue shift to apply");
 
   public final CompoundParameter saturation =
       new CompoundParameter("S", 100, 0, 100)
@@ -49,27 +48,25 @@ public class ColorPaletteManager extends LXComponent implements LXOscComponent {
           .setUnits(CompoundParameter.Units.PERCENT)
           .setDescription("Sets the amount to increase or decrease brightness");
 
-  /**
-   * If hue, saturation, or brightness change, update color1
-   */
-  private final LXParameterListener colorListener = (p) -> {
-    this.setColor1();
-  };
+  /** If hue, saturation, or brightness change, update color1 */
+  private final LXParameterListener colorListener =
+      (p) -> {
+        this.setColor1();
+      };
 
   public final ColorParameter color1 = new ColorParameter("Color1", LXColor.BLACK);
   public final ColorParameter color2 = new ColorParameter("Color2", LXColor.BLACK);
   public final ColorParameter color3 = new ColorParameter("Color3", LXColor.BLACK);
 
-  /**
-   * If color1 or palette strategy change, update colors 2 and 3
-   */
-  private final LXParameterListener paletteListener = (p) -> {
-    updateColors2And3();
-    updateManagedSwatch();
-    if (this.pinSwatch.isOn()) {
-      pushToActiveSwatch();
-    }
-  };
+  /** If color1 or palette strategy change, update colors 2 and 3 */
+  private final LXParameterListener paletteListener =
+      (p) -> {
+        updateColors2And3();
+        updateManagedSwatch();
+        if (this.pinSwatch.isOn()) {
+          pushToActiveSwatch();
+        }
+      };
 
   public final TriggerParameter pushSwatch =
       new TriggerParameter("Push Swatch", this::pushToActiveSwatch)
@@ -77,17 +74,14 @@ public class ColorPaletteManager extends LXComponent implements LXOscComponent {
 
   public final BooleanParameter pinSwatch =
       new BooleanParameter("Pin Swatch", false)
-          .setDescription("Pin the managed swatch to the global active swatch, " +
-              "so any changes are reflected in the global palette immediately.");
+          .setDescription(
+              "Pin the managed swatch to the global active swatch, "
+                  + "so any changes are reflected in the global palette immediately.");
 
-  /**
-   * Name of the managed swatch in Chromatik global palette list
-   */
+  /** Name of the managed swatch in Chromatik global palette list */
   private final String swatchName;
 
-  /**
-   * Position of the managed swatch in Chromatik's global palette list
-   */
+  /** Position of the managed swatch in Chromatik's global palette list */
   private final int swatchIndex;
 
   /**
@@ -128,9 +122,7 @@ public class ColorPaletteManager extends LXComponent implements LXOscComponent {
     this.paletteStrategy.addListener(paletteListener);
   }
 
-  /**
-   * Update the reference `this.managedSwatch`, creating it if it doesn't exist.
-   */
+  /** Update the reference `this.managedSwatch`, creating it if it doesn't exist. */
   public void refreshManagedSwatch() {
     // ensure there are at least enough swatches in the global palette list to fetch
     // the correct index for this "managed swatch".
@@ -147,9 +139,7 @@ public class ColorPaletteManager extends LXComponent implements LXOscComponent {
     }
   }
 
-  /**
-   * Set the color1 parameter based on the current values of hue, saturation, and brightness.
-   */
+  /** Set the color1 parameter based on the current values of hue, saturation, and brightness. */
   private void setColor1() {
     this.color1.setColor(
         LXColor.hsb(
@@ -162,7 +152,7 @@ public class ColorPaletteManager extends LXComponent implements LXOscComponent {
     float brightness = this.color1.brightness.getValuef();
     int color2;
     int color3;
-    switch(this.paletteStrategy.getEnum()) {
+    switch (this.paletteStrategy.getEnum()) {
       case MONO:
         color2 = this.color1.getColor();
         color3 = this.color1.getColor();

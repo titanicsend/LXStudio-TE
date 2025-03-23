@@ -1,41 +1,39 @@
 package titanicsend.gamepad;
 
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_LAST;
+import static org.lwjgl.glfw.GLFW.glfwUpdateGamepadMappings;
+
 import heronarts.glx.event.GamepadEvent;
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.parameter.*;
 import heronarts.lx.utils.LXUtils;
-import org.lwjgl.system.MemoryUtil;
-
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
+import org.lwjgl.system.MemoryUtil;
 
-import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_LAST;
-import static org.lwjgl.glfw.GLFW.glfwUpdateGamepadMappings;
-
-/**x
- * A relay between Chromatik system gamepad events and consumers such as patterns.
- * Two mechanisms are available for classes wishing to use gamepad data:
- * 1. Listen to GamepadEngine to be notified of raw gamepad events.
- * 2. Create a new Gamepad object which has axis+button parameters and an adjustable Input
- *    parameter to choose from one of the 16 system gamepad slots.
+/**
+ * x A relay between Chromatik system gamepad events and consumers such as patterns. Two mechanisms
+ * are available for classes wishing to use gamepad data: 1. Listen to GamepadEngine to be notified
+ * of raw gamepad events. 2. Create a new Gamepad object which has axis+button parameters and an
+ * adjustable Input parameter to choose from one of the 16 system gamepad slots.
  */
 public class GamepadEngine extends LXComponent {
 
-  static public final String MAPPINGS_FILE = "resources/gamecontrollers/gamecontrollerdb.txt";
+  public static final String MAPPINGS_FILE = "resources/gamecontrollers/gamecontrollerdb.txt";
   // Fixed number of gamepad slots as defined by GLFW
-  static public final int NUM_GAMEPADS = GLFW_JOYSTICK_LAST + 1;
+  public static final int NUM_GAMEPADS = GLFW_JOYSTICK_LAST + 1;
 
   public static interface Listener {
-    default public void onGamepadButtonPressed(GamepadEvent gamepadEvent, int button) { }
+    public default void onGamepadButtonPressed(GamepadEvent gamepadEvent, int button) {}
 
-    default public void onGamepadButtonReleased(GamepadEvent gamepadEvent, int button) { }
+    public default void onGamepadButtonReleased(GamepadEvent gamepadEvent, int button) {}
 
-    default public void onGamepadAxisChanged(GamepadEvent gamepadEvent, int axis, float value) { }
+    public default void onGamepadAxisChanged(GamepadEvent gamepadEvent, int axis, float value) {}
   }
 
   private final List<Listener> listeners = new ArrayList<Listener>();
@@ -50,9 +48,7 @@ public class GamepadEngine extends LXComponent {
     }
   }
 
-  /**
-   * Update gamepad mappings for this runtime.
-   */
+  /** Update gamepad mappings for this runtime. */
   public void updateGamepadMappings() {
     // To get the latest mappings, download a new copy of
     // https://github.com/mdqinc/SDL_GameControllerDB/blob/master/gamecontrollerdb.txt
@@ -72,8 +68,8 @@ public class GamepadEngine extends LXComponent {
   }
 
   /**
-   * Load gamepad mappings from a text file. Only needed for mappings that did not exist
-   * in the lwjgl db, but it's fine to load the full latest db too.
+   * Load gamepad mappings from a text file. Only needed for mappings that did not exist in the
+   * lwjgl db, but it's fine to load the full latest db too.
    */
   private String loadGamepadMappingsFromFile() {
     StringBuilder mappings = new StringBuilder();
@@ -104,7 +100,7 @@ public class GamepadEngine extends LXComponent {
   public GamepadEngine removeListener(Listener listener) {
     if (!this.listeners.contains(listener)) {
       throw new IllegalStateException(
-        "May not remove non-registered GamepadEngine.Listener: " + listener);
+          "May not remove non-registered GamepadEngine.Listener: " + listener);
     }
     this.listeners.remove(listener);
     return this;
@@ -208,8 +204,8 @@ public class GamepadEngine extends LXComponent {
   }
 
   /**
-   * Common base class for system and user gamepads. Represents a physical gamepad
-   * with parameters for button and axis states.
+   * Common base class for system and user gamepads. Represents a physical gamepad with parameters
+   * for button and axis states.
    */
   public abstract class GamepadBase extends LXComponent {
     public interface GamepadListener {
@@ -293,9 +289,7 @@ public class GamepadEngine extends LXComponent {
     }
   }
 
-  /**
-   * Gamepad representing a fixed input number 1-16
-   */
+  /** Gamepad representing a fixed input number 1-16 */
   public class SystemGamepad extends GamepadBase {
     public final int input;
 
@@ -305,23 +299,22 @@ public class GamepadEngine extends LXComponent {
     }
   }
 
-  /**
-   * Gamepad with an adjustable input number allowing selection from the system gamepad slots.
-   */
+  /** Gamepad with an adjustable input number allowing selection from the system gamepad slots. */
   public class Gamepad extends GamepadBase {
-    public final DiscreteParameter input = new DiscreteParameter("Input", NUM_GAMEPADS)
-      .setDescription("Gamepad input number 1-16");
+    public final DiscreteParameter input =
+        new DiscreteParameter("Input", NUM_GAMEPADS).setDescription("Gamepad input number 1-16");
 
     // Event source
     private SystemGamepad source;
 
-    private GamepadListener sourceListener = (p) -> {
-      // Follow source parameters
-      getParameter(p.getPath()).setValue(p.getValue());
-    };
+    private GamepadListener sourceListener =
+        (p) -> {
+          // Follow source parameters
+          getParameter(p.getPath()).setValue(p.getValue());
+        };
 
     private Gamepad(LX lx) {
-      this(lx,0);
+      this(lx, 0);
     }
 
     private Gamepad(LX lx, int input) {
@@ -360,9 +353,7 @@ public class GamepadEngine extends LXComponent {
       this.source.removeListener(this.sourceListener);
     }
 
-    /**
-     * Copy parameter values from source gamepad
-     */
+    /** Copy parameter values from source gamepad */
     private void refreshFromSource() {
       this.axisLeftX.setValue(this.source.axisLeftX.getValue());
       this.axisLeftY.setValue(this.source.axisLeftY.getValue());

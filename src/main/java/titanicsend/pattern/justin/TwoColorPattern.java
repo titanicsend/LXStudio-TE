@@ -17,10 +17,9 @@ import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
 import heronarts.lx.utils.LXUtils;
-import titanicsend.util.TECategory;
-
 import java.util.ArrayList;
 import java.util.List;
+import titanicsend.util.TECategory;
 
 @LXCategory(TECategory.UTILITY)
 @LXComponentName("Two Color")
@@ -104,14 +103,9 @@ public class TwoColorPattern extends LXPattern implements UIDeviceControls<TwoCo
     uiDevice.setContentWidth(155);
 
     uiDevice.addChildren(
-      UIDevice.newHorizontalContainer(UIKnob.HEIGHT, 4).addChildren(
-        newColorControl(this.color1),
-        newTextBox(this.tag1, 100).setY(10)
-      ),
-      UIDevice.newHorizontalContainer(UIKnob.HEIGHT, 4).addChildren(
-        newColorControl(this.color2),
-        newTextBox(this.tag2, 100).setY(10)
-      )
-    );
+        UIDevice.newHorizontalContainer(UIKnob.HEIGHT, 4)
+            .addChildren(newColorControl(this.color1), newTextBox(this.tag1, 100).setY(10)),
+        UIDevice.newHorizontalContainer(UIKnob.HEIGHT, 4)
+            .addChildren(newColorControl(this.color2), newTextBox(this.tag2, 100).setY(10)));
   }
 }

@@ -1,5 +1,9 @@
 package titanicsend.model;
 
+import heronarts.lx.LX;
+import heronarts.lx.model.LXModel;
+import heronarts.lx.model.LXPoint;
+import heronarts.lx.transform.LXVector;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,13 +13,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
-
-import heronarts.lx.LX;
-import heronarts.lx.model.LXModel;
-import heronarts.lx.model.LXPoint;
-import heronarts.lx.transform.LXVector;
 import titanicsend.dmx.model.DmxModel;
-import titanicsend.dmx.model.DmxWholeModel;
 import titanicsend.pattern.jon.ModelBender;
 import titanicsend.ui.UI3DManager;
 
@@ -262,7 +260,7 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
     // adjust model geometry to improve texture mapping of ends in all views.
     ModelBender mb = new ModelBender();
     boolean rebuildViews = mb.adjustEndGeometry(this, lx.getModel());
-    
+
     // if the TE main car is part of this model, iterate over the views
     // and rebuild them (with the "adjusted" end geometry)
     // To do this, we call a method in heronarts.lx.structure.view.LXViewEngine
@@ -330,7 +328,7 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
   }
 
   private final List<DmxWholeModelListener> dmxWholeModelListeners =
-    new ArrayList<DmxWholeModelListener>();
+      new ArrayList<DmxWholeModelListener>();
 
   @Override
   public void addDmxListener(DmxWholeModelListener listener) {

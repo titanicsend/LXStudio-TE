@@ -107,9 +107,7 @@ public class ModelDebugger extends TEPattern implements UIDeviceControls<ModelDe
           for (TEEdgeModel edge : this.modelTE.getEdges()) {
             subModels.add(edge.model);
           }
-        }
-        else if (this.modelTE.hasEdge(idStr))
-          subModels.add(this.modelTE.getEdge(idStr).model);
+        } else if (this.modelTE.hasEdge(idStr)) subModels.add(this.modelTE.getEdge(idStr).model);
         else this.idErrLabel.setVisible(true);
         break;
       case PANEL:
@@ -117,9 +115,7 @@ public class ModelDebugger extends TEPattern implements UIDeviceControls<ModelDe
           for (TEPanelModel panel : this.modelTE.getPanels()) {
             subModels.add(panel.model);
           }
-        }
-        else if (this.modelTE.hasPanel(idStr))
-          subModels.add(this.modelTE.getPanel(idStr).model);
+        } else if (this.modelTE.hasPanel(idStr)) subModels.add(this.modelTE.getPanel(idStr).model);
         else this.idErrLabel.setVisible(true);
         break;
       case LASER:

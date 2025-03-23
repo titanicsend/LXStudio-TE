@@ -1,18 +1,18 @@
 package titanicsend.app.director;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.effect.LXEffect;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.osc.LXOscComponent;
 import heronarts.lx.parameter.CompoundParameter;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class Director extends LXComponent implements LX.Listener, LXOscComponent, LX.ProjectListener {
+public class Director extends LXComponent
+    implements LX.Listener, LXOscComponent, LX.ProjectListener {
 
   private static Director current;
 
@@ -24,9 +24,9 @@ public class Director extends LXComponent implements LX.Listener, LXOscComponent
   public final List<Filter> filters = Collections.unmodifiableList(this.mutableFilters);
 
   public final CompoundParameter master =
-    new CompoundParameter("Master", 1)
-      .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
-      .setDescription("Top fader, dims all components");
+      new CompoundParameter("Master", 1)
+          .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
+          .setDescription("Top fader, dims all components");
 
   private final CompoundParameter beaconsFader;
 

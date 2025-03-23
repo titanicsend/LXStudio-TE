@@ -1,11 +1,9 @@
 package titanicsend.pattern.look;
 
-
 import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import java.nio.FloatBuffer;
-
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.jon.TEControlTag;
@@ -24,7 +22,7 @@ public class SketchStem extends GLShaderPattern {
   private float normalizedLevelCumulative = 0;
   private float bassLevelCumulative = 0;
 
-//  private final SignalLogger signalLogger;
+  //  private final SignalLogger signalLogger;
 
   // Constructor
   public SketchStem(LX lx) {
@@ -36,8 +34,8 @@ public class SketchStem extends GLShaderPattern {
 
     controls.setRange(TEControlTag.SIZE, 0.87, 0.1, 2.0);
 
-//    // how much progress is added by bass levels
-//    controls.setValue(TEControlTag.LEVELREACTIVITY, 0.25);
+    //    // how much progress is added by bass levels
+    //    controls.setValue(TEControlTag.LEVELREACTIVITY, 0.25);
 
     controls.setRange(TEControlTag.SPEED, 0.03, -0.5, 0.5);
 
@@ -63,21 +61,21 @@ public class SketchStem extends GLShaderPattern {
     // hand them off to the GPU.
     this.gl_segments = Buffers.newDirectFloatBuffer(MAX_POINTS * 2 * 4);
 
-//    List<String> signalNames = Arrays.asList(
-//        "bassLevel",
-//        "bassLevelCumulative",
-//        "squareLevel",
-//        "squareLevelCumulative",
-//        "normalizedLevel",
-//        "normalizedLevelCumulative",
-//        "peakLevel",
-//        "peakLevelCumulative",
-//        "pullback",
-//        "progress",
-//        "nextDrawingThreshold"
-//    );
-//    signalLogger = new SignalLogger(signalNames, "Logs/signal_data.csv");
-//    signalLogger.startLogging(10);
+    //    List<String> signalNames = Arrays.asList(
+    //        "bassLevel",
+    //        "bassLevelCumulative",
+    //        "squareLevel",
+    //        "squareLevelCumulative",
+    //        "normalizedLevel",
+    //        "normalizedLevelCumulative",
+    //        "peakLevel",
+    //        "peakLevelCumulative",
+    //        "pullback",
+    //        "progress",
+    //        "nextDrawingThreshold"
+    //    );
+    //    signalLogger = new SignalLogger(signalNames, "Logs/signal_data.csv");
+    //    signalLogger.startLogging(10);
 
     // add the OpenGL shader and its frame-time setup function which,
     // in this case, will copy the current contents of the points array
@@ -87,10 +85,10 @@ public class SketchStem extends GLShaderPattern {
         new GLShaderFrameSetup() {
           @Override
           public void OnFrame(GLShader s) {
-            float currSpeed =
-                (float) getControls().getControl(TEControlTag.SPEED).getValue();
+            float currSpeed = (float) getControls().getControl(TEControlTag.SPEED).getValue();
             float pullback = (float) getControls().getControl(TEControlTag.WOW1).getValue();
-            float nextDrawingThreshold = (float) getControls().getControl(TEControlTag.WOW2).getValue();
+            float nextDrawingThreshold =
+                (float) getControls().getControl(TEControlTag.WOW2).getValue();
 
             normalizedLevelCumulative += currSpeed;
 
@@ -147,8 +145,8 @@ public class SketchStem extends GLShaderPattern {
     for (int i = 0; i < data.num_points; i++) {
       setPoint(i, data.points[i][0], data.points[i][1]);
     }
-    s.setUniform(prefix+"Points", gl_segments, 2);
-    s.setUniform(prefix+"Count", data.num_points);
-    s.setUniform(prefix+"Length", data.total_dist);
+    s.setUniform(prefix + "Points", gl_segments, 2);
+    s.setUniform(prefix + "Count", data.num_points);
+    s.setUniform(prefix + "Length", data.total_dist);
   }
 }

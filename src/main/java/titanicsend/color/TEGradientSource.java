@@ -6,9 +6,7 @@ import heronarts.lx.color.LXDynamicColor;
 import heronarts.lx.color.LXSwatch;
 import titanicsend.lx.LXGradientUtils;
 
-/**
- * Calculates TE gradients once per frame in a global singleton
- */
+/** Calculates TE gradients once per frame in a global singleton */
 public class TEGradientSource {
 
   private static TEGradientSource current;
@@ -27,13 +25,10 @@ public class TEGradientSource {
     return colorStops;
   }
 
-  /**
-   * Primary -> Secondary -> Tertiary -> (Wrap to Primary)
-   */
+  /** Primary -> Secondary -> Tertiary -> (Wrap to Primary) */
   public LXGradientUtils.ColorStops normalGradient = initColorStops();
-  /**
-   * Primary -> Black -> (Wrap to Primary)
-   */
+
+  /** Primary -> Black -> (Wrap to Primary) */
   public LXGradientUtils.ColorStops darkGradient = initColorStops();
 
   public TEGradientSource(LX lx) {
@@ -45,15 +40,13 @@ public class TEGradientSource {
     this.black = blackSwatch.getColor(0);
     this.black.primary.setColor(LXColor.BLACK);
 
-    lx.engine.addLoopTask((p) -> {
-      loop();
-    });
+    lx.engine.addLoopTask(
+        (p) -> {
+          loop();
+        });
   }
 
-  /**
-   * Refresh gradients from the global palette.
-   * Called every engine loop.
-   */
+  /** Refresh gradients from the global palette. Called every engine loop. */
   private void loop() {
     updateGradients(this.lx.engine.palette.swatch);
   }
@@ -76,5 +69,4 @@ public class TEGradientSource {
     darkGradient.stops[1].set(this.black);
     darkGradient.stops[2].set(swatch.getColor(TEColorType.PRIMARY.swatchIndex()));
   }
-
 }

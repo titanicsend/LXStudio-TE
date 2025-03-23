@@ -14,9 +14,7 @@ public class TEEdgeModel extends TEModel {
   public static final String META_V1 = "v1";
   public static final String META_MODULE = "module";
 
-  /**
-   * Wrapper around each LXPoint in the edge
-   */
+  /** Wrapper around each LXPoint in the edge */
   public static class Point {
     public final LXPoint point;
 
@@ -26,9 +24,7 @@ public class TEEdgeModel extends TEModel {
      */
     public final int i;
 
-    /**
-     * `n` is the fractional percentage (0..1) into this edge
-     */
+    /** `n` is the fractional percentage (0..1) into this edge */
     public final float n;
 
     public Point(LXPoint point, int i, float n) {
@@ -50,14 +46,11 @@ public class TEEdgeModel extends TEModel {
   // Connections
   public final TEVertex v0, v1;
   public final Set<TEPanelModel> connectedPanels = new HashSet<TEPanelModel>();
-  /**
-   * This edge and any other that's a reflection about the XY or YZ planes 
-   */
+
+  /** This edge and any other that's a reflection about the XY or YZ planes */
   public final List<TEEdgeModel> symmetryGroup = new ArrayList<TEEdgeModel>();
 
-  /**
-   * Static model constructor (2022-23)
-   */
+  /** Static model constructor (2022-23) */
   public TEEdgeModel(TEVertex v0, TEVertex v1, int numPixels, boolean dark, String... tags) {
     super(TE_MODEL_TYPE, makePoints(v0, v1, numPixels, dark), tags);
 
@@ -99,9 +92,7 @@ public class TEEdgeModel extends TEModel {
     }
   }
 
-  /**
-   * Dynamic model constructor (2024+)
-   */
+  /** Dynamic model constructor (2024+) */
   public TEEdgeModel(LXModel model, TEVertex v0, TEVertex v1) {
     super(TE_MODEL_TYPE, model);
 
@@ -123,11 +114,12 @@ public class TEEdgeModel extends TEModel {
 
     this.connectedPanels.clear();
     this.connectedPanels.addAll(
-      panels.stream()
-      .filter(item ->
-        this.getId().equals(item.edge0id) ||
-        this.getId().equals(item.edge1id) ||
-        this.getId().equals(item.edge2id))
-      .collect(Collectors.toList()));
+        panels.stream()
+            .filter(
+                item ->
+                    this.getId().equals(item.edge0id)
+                        || this.getId().equals(item.edge1id)
+                        || this.getId().equals(item.edge2id))
+            .collect(Collectors.toList()));
   }
 }

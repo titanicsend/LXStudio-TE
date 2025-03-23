@@ -162,7 +162,11 @@ public class FrameBrights extends TEAudioPattern {
         } else {
           // non-lit segments get shifting min brightness pattern
           // build inexpensive but complex-looking pattern using precalculated point data
-          float w = (float) (10.0 * ((1.0 - (point.point.elevation / Math.PI)) * (point.point.xn + point.point.yn)));
+          float w =
+              (float)
+                  (10.0
+                      * ((1.0 - (point.point.elevation / Math.PI))
+                          * (point.point.xn + point.point.yn)));
           alpha = (minBri + briShift * TEMath.trianglef(currentCycle + w));
         }
 

@@ -25,24 +25,21 @@ public interface DmxWholeModel {
 
   public List<DmxModel> getDmxModels();
 
-  default void clearBeacons() { }
+  default void clearBeacons() {}
 
-  default void addBeacon(DmxModel dmxModel) { }
+  default void addBeacon(DmxModel dmxModel) {}
 
   public interface DmxWholeModelListener {
     public void dmxModelsChanged(List<DmxModel> dmxModels);
   }
 
-  default public void addDmxListener(DmxWholeModelListener listener) { }
+  public default void addDmxListener(DmxWholeModelListener listener) {}
 
-  default public void removeDmxListener(DmxWholeModelListener listener) { }
+  public default void removeDmxListener(DmxWholeModelListener listener) {}
 
   /**
-   * Sequence of events:
-   * LX.modelChanged
-   * TEWholeModel.modelTEChanged
-   * DmxWholeModel.dmxModelsChanged
-   *   --model buffers monitor this one and update
+   * Sequence of events: LX.modelChanged TEWholeModel.modelTEChanged DmxWholeModel.dmxModelsChanged
+   * --model buffers monitor this one and update
    */
-  default void notifyDmxWholeModelListeners() { }
+  default void notifyDmxWholeModelListeners() {}
 }

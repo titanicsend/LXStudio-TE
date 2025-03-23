@@ -43,10 +43,11 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
 
   /**
    * Connect to the first source found with the given name.
+   *
    * @param sourceName
    * @param receiver
-   * @return True if the source is available and connection attempt was successful.
-   *        False if the source is not available.
+   * @return True if the source is available and connection attempt was successful. False if the
+   *     source is not available.
    */
   public boolean connectByName(String sourceName, DevolayReceiver receiver) {
     for (DevolaySource source : sources) {
@@ -61,10 +62,11 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
 
   /**
    * Connect to the source at the given index.
+   *
    * @param index
    * @param receiver
-   * @return True if the source is available and connection attempt was successful.
-   *        False if the source is not available.
+   * @return True if the source is available and connection attempt was successful. False if the
+   *     source is not available.
    */
   public boolean connectByIndex(int index, DevolayReceiver receiver) {
     if (receiver == null) {
@@ -127,5 +129,4 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
       finder.close();
     }
   }
-
 }

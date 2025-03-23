@@ -17,9 +17,7 @@ public class TEVertex extends LXVector {
   // Set to non-null and the virtual display will shade vertex's sphere
   public TEVirtualColor virtualColor;
 
-  /**
-   * Static model constructor (2022-23)
-   */
+  /** Static model constructor (2022-23) */
   public TEVertex(LXVector vector, int id) {
     super(vector);
     this.id = id;
@@ -28,14 +26,14 @@ public class TEVertex extends LXVector {
 
   /**
    * Dynamic model constructor (2024+)
-   * 
-   * In this case TEVertex is just a label referenced by multiple edges & panels.
-   * It does not have exact coordinates and therefore does not need to extend LXVector.
+   *
+   * <p>In this case TEVertex is just a label referenced by multiple edges & panels. It does not
+   * have exact coordinates and therefore does not need to extend LXVector.
    */
   public TEVertex(int id) {
     super(0, 0, 0);
     this.id = id;
-    this.virtualColor = new TEVirtualColor(255, 255, 255, 255);    
+    this.virtualColor = new TEVirtualColor(255, 255, 255, 255);
   }
 
   /*
@@ -77,5 +75,4 @@ public class TEVertex extends LXVector {
   public void nudgeToward(LXVector other, float distance) {
     lerp(other, distance);
   }
-
 }
