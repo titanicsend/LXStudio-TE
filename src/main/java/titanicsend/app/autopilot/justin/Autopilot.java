@@ -1,27 +1,19 @@
 /**
  * Copyright 2022- Justin Belcher, Mark C. Slee, Heron Arts LLC
  *
- * This file is part of the LX Studio software library. By using
- * LX, you agree to the terms of the LX Studio Software License
- * and Distribution Agreement, available at: http://lx.studio/license
+ * <p>This file is part of the LX Studio software library. By using LX, you agree to the terms of
+ * the LX Studio Software License and Distribution Agreement, available at: http://lx.studio/license
  *
- * Please note that the LX license is not open-source. The license
- * allows for free, non-commercial use.
+ * <p>Please note that the LX license is not open-source. The license allows for free,
+ * non-commercial use.
  *
- * HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR
- * OTHERWISE, AND SPECIFICALLY DISCLAIMS ANY WARRANTY OF
- * MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR
- * PURPOSE, WITH RESPECT TO THE SOFTWARE.
+ * <p>HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, AND SPECIFICALLY
+ * DISCLAIMS ANY WARRANTY OF MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR PURPOSE,
+ * WITH RESPECT TO THE SOFTWARE.
  *
  * @author Justin K Belcher <justin@jkb.studio>
  */
-
 package titanicsend.app.autopilot.justin;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
@@ -41,58 +33,65 @@ import heronarts.lx.modulator.LXVariablePeriodModulator.ClockMode;
 import heronarts.lx.modulator.LXWaveshape;
 import heronarts.lx.modulator.VariableLFO;
 import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.BooleanParameter.Mode;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.parameter.TriggerParameter;
-import heronarts.lx.parameter.BooleanParameter.Mode;
 import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.snapshot.LXGlobalSnapshot;
 import heronarts.lx.utils.LXUtils;
-
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import titanicsend.app.autopilot.justin.AutoParameter.Scale;
 
 /**
- * Autopilot system creates modulators for current patterns
- * and enables autocycle and transitions. Disabling the autopilot
- * restores the animated components to their prior state with
- * a snapshot.
+ * Autopilot system creates modulators for current patterns and enables autocycle and transitions.
+ * Disabling the autopilot restores the animated components to their prior state with a snapshot.
  *
- * Origin Joule 2022
+ * <p>Origin Joule 2022
  *
  * @author Justin K. Belcher <jkb.studio>
  */
 public abstract class Autopilot extends LXComponent implements LX.ProjectListener {
 
-  static public final String SNAPSHOTNAME_BEFORE = "Before Autopilot";
-  static public final String SNAPSHOTNAME_RUNNING = "Autopilot";
+  public static final String SNAPSHOTNAME_BEFORE = "Before Autopilot";
+  public static final String SNAPSHOTNAME_RUNNING = "Autopilot";
 
   /**
-   * Prefix for all modulator and modulation labels created by the Autopilot.
-   * Will be used to clear objects from previous runs.
+   * Prefix for all modulator and modulation labels created by the Autopilot. Will be used to clear
+   * objects from previous runs.
    */
-  static public final String MOD_PREFIX = "A_";
+  public static final String MOD_PREFIX = "A_";
 
   public final BooleanParameter enabled =
-    new BooleanParameter("Enabled", false)
-      .setMode(Mode.TOGGLE)
-      .setDescription("Set to TRUE to start Autopilot");
+      new BooleanParameter("Enabled", false)
+          .setMode(Mode.TOGGLE)
+          .setDescription("Set to TRUE to start Autopilot");
 
-  private final LXParameterListener enabledListener = (p) -> {
-    enabledChanged(this.enabled.isOn());
-  };
+  private final LXParameterListener enabledListener =
+      (p) -> {
+        enabledChanged(this.enabled.isOn());
+      };
 
   public final TriggerParameter reset =
-    new TriggerParameter("Reset", () -> {
-      if (!this.enabled.isOn()) {
-        this.onReset();
-      }
-    })
-      .setDescription("Clear objects created by Autopilot.  Will result in new modulators being created on the next run.  Only works when Autopilot is disabled.");
+      new TriggerParameter(
+              "Reset",
+              () -> {
+                if (!this.enabled.isOn()) {
+                  this.onReset();
+                }
+              })
+          .setDescription(
+              "Clear objects created by Autopilot.  Will result in new modulators being created on the next run.  Only works when Autopilot is disabled.");
 
-  private final List<LXNormalizedParameter> mutableVisibleParameters = new ArrayList<LXNormalizedParameter>();
-  public final List<LXNormalizedParameter> visibleParameters = Collections.unmodifiableList(this.mutableVisibleParameters);
+  private final List<LXNormalizedParameter> mutableVisibleParameters =
+      new ArrayList<LXNormalizedParameter>();
+  public final List<LXNormalizedParameter> visibleParameters =
+      Collections.unmodifiableList(this.mutableVisibleParameters);
 
   private LXGlobalSnapshot before;
   private LXGlobalSnapshot running;
@@ -116,8 +115,8 @@ public abstract class Autopilot extends LXComponent implements LX.ProjectListene
   }
 
   /**
-   * Subclasses can register a parameter with this method
-   * instead of addParameter() to include it in the UI.
+   * Subclasses can register a parameter with this method instead of addParameter() to include it in
+   * the UI.
    */
   protected Autopilot addVisibleParameter(String path, LXNormalizedParameter parameter) {
     addParameter(path, parameter);
@@ -125,9 +124,7 @@ public abstract class Autopilot extends LXComponent implements LX.ProjectListene
     return this;
   }
 
-  /**
-   * Adding a parameter here will make it show up in the Autopilot UI
-   */
+  /** Adding a parameter here will make it show up in the Autopilot UI */
   protected Autopilot setParameterVisible(LXNormalizedParameter parameter) {
     this.mutableVisibleParameters.add(parameter);
     return this;
@@ -189,7 +186,6 @@ public abstract class Autopilot extends LXComponent implements LX.ProjectListene
     }
   }
 
-
   private void refreshSnapshotReferences() {
     if (this.before == null) {
       // Look for existing by name - could have been a file save/load
@@ -221,10 +217,9 @@ public abstract class Autopilot extends LXComponent implements LX.ProjectListene
     }
   }
 
-
   /**
-   * First start of the Autopilot.  Will not be called if restarting (applying a snapshot).
-   * This will get called if the "running" snapshot is not found.
+   * First start of the Autopilot. Will not be called if restarting (applying a snapshot). This will
+   * get called if the "running" snapshot is not found.
    */
   private void firstStart() {
     // Delete any modulators from previous runs
@@ -236,8 +231,8 @@ public abstract class Autopilot extends LXComponent implements LX.ProjectListene
     int newMods = 0;
 
     for (LXAbstractChannel aChannel : lx.engine.mixer.channels) {
-      if (aChannel instanceof LXChannel && checkChannelQualifies((LXChannel)aChannel)) {
-        LXChannel channel = (LXChannel)aChannel;
+      if (aChannel instanceof LXChannel && checkChannelQualifies((LXChannel) aChannel)) {
+        LXChannel channel = (LXChannel) aChannel;
 
         // Channel transition and autocycle
         enableTransitions(channel);
@@ -255,16 +250,22 @@ public abstract class Autopilot extends LXComponent implements LX.ProjectListene
 
                 LXParameter p = pattern.getParameter(ap.path);
                 if (p == null) {
-                  LX.warning("Autopilot failed to find parameter " + ap.path + " on pattern " + pattern.getCanonicalLabel());
+                  LX.warning(
+                      "Autopilot failed to find parameter "
+                          + ap.path
+                          + " on pattern "
+                          + pattern.getCanonicalLabel());
                   continue;
                 }
                 if (!(p instanceof CompoundParameter)) {
-                  LX.warning("Autopilot cannot modulate parameter, is invalid type: " + p.getCanonicalLabel());
+                  LX.warning(
+                      "Autopilot cannot modulate parameter, is invalid type: "
+                          + p.getCanonicalLabel());
                   continue;
                 }
 
                 // Modulate the parameter
-                CompoundParameter cp = (CompoundParameter)p;
+                CompoundParameter cp = (CompoundParameter) p;
                 mod(pattern, cp, ap, getModulationLabel(pattern, cp, ap));
                 newMods++;
               }
@@ -278,10 +279,9 @@ public abstract class Autopilot extends LXComponent implements LX.ProjectListene
     onStarted();
   }
 
-  /**
-   * Create modulator on a parameter
-   */
-  protected void mod(LXDeviceComponent device, CompoundParameter parameter, AutoParameter ap, String label) {
+  /** Create modulator on a parameter */
+  protected void mod(
+      LXDeviceComponent device, CompoundParameter parameter, AutoParameter ap, String label) {
 
     // Modulation can be global or local to device
     LXModulationEngine modulationEngine = device != null ? device.modulation : lx.engine.modulation;
@@ -300,7 +300,7 @@ public abstract class Autopilot extends LXComponent implements LX.ProjectListene
 
     // Set parameter base value, randomly placing the active range within the total range
     // If active range is zero, this effectively randomizes the parameter
-    parameter.setNormalized(min + (Math.random() * (rangeTotal-rangeActive)));
+    parameter.setNormalized(min + (Math.random() * (rangeTotal - rangeActive)));
 
     // If this was just a randomizer, don't create modulator
     if (rangeActive == 0) {
@@ -328,7 +328,8 @@ public abstract class Autopilot extends LXComponent implements LX.ProjectListene
 
     try {
       // Add Modulation (links source -> target)
-      LXCompoundModulation modulation = new LXCompoundModulation(modulationEngine,  modulator, parameter);
+      LXCompoundModulation modulation =
+          new LXCompoundModulation(modulationEngine, modulator, parameter);
       modulation.range.setValue(rangeActive);
       modulationEngine.addModulation(modulation);
       onModAdded(parameter, modulator, modulation);
@@ -343,50 +344,37 @@ public abstract class Autopilot extends LXComponent implements LX.ProjectListene
     return LXUtils.random(ap.minPeriodSec, ap.maxPeriodSec);
   }
 
-  protected String getModulationLabel(LXPattern pattern, CompoundParameter parameter, AutoParameter ap) {
+  protected String getModulationLabel(
+      LXPattern pattern, CompoundParameter parameter, AutoParameter ap) {
     return MOD_PREFIX + parameter.getLabel();
   }
 
-  /**
-   * Called every time Autopilot is enabled, prior to snapshot and modulators created.
-   */
-  protected void onWillEnable() { }
+  /** Called every time Autopilot is enabled, prior to snapshot and modulators created. */
+  protected void onWillEnable() {}
 
-  /**
-   * Called the first time Autopilot is started, prior to modulators created.
-   */
-  protected void onStarting() { }
+  /** Called the first time Autopilot is started, prior to modulators created. */
+  protected void onStarting() {}
 
-  /**
-   * Called the first time Autopilot is started, after modulators created
-   */
-  protected void onStarted() { }
+  /** Called the first time Autopilot is started, after modulators created */
+  protected void onStarted() {}
 
-  /**
-   * Called every time after Autopilot is enabled
-   */
-  protected void onDidEnable() { }
+  /** Called every time after Autopilot is enabled */
+  protected void onDidEnable() {}
 
-  /**
-   * Called when Autopilot is stopping, before Running snapshot is taken
-   */
-  protected void onWillDisable() { }
+  /** Called when Autopilot is stopping, before Running snapshot is taken */
+  protected void onWillDisable() {}
 
-  /**
-   * Called when Autopilot is stopped, after Before snapshot restored
-   */
-  protected void onDidDisable() { }
+  /** Called when Autopilot is stopped, after Before snapshot restored */
+  protected void onDidDisable() {}
 
-  /**
-   * Notification to subclasses a new modulator was created.
-   * This only happens on first start.
-   */
-  protected void onModAdded(CompoundParameter parameter, VariableLFO modulator, LXCompoundModulation modulation) { }
+  /** Notification to subclasses a new modulator was created. This only happens on first start. */
+  protected void onModAdded(
+      CompoundParameter parameter, VariableLFO modulator, LXCompoundModulation modulation) {}
 
   protected void enableChannelTransitions() {
     for (LXAbstractChannel aChannel : lx.engine.mixer.channels) {
       if (aChannel instanceof LXChannel) {
-        enableTransitions((LXChannel)aChannel);
+        enableTransitions((LXChannel) aChannel);
       }
     }
   }
@@ -411,24 +399,22 @@ public abstract class Autopilot extends LXComponent implements LX.ProjectListene
   protected void disableChannelTransitions() {
     for (LXAbstractChannel aChannel : lx.engine.mixer.channels) {
       if (aChannel instanceof LXChannel) {
-        LXChannel channel = (LXChannel)aChannel;
+        LXChannel channel = (LXChannel) aChannel;
         channel.transitionEnabled.setValue(false);
         channel.autoCycleEnabled.setValue(false);
       }
     }
   }
 
-  /**
-   * Clear modulators from past autopilot runs
-   */
+  /** Clear modulators from past autopilot runs */
   private void clearAutopilotModulators() {
     // Globals
     clearAutopilotModulators(lx.engine.modulation);
 
     // Loop over channels
     for (LXAbstractChannel aChannel : lx.engine.mixer.channels) {
-      if (aChannel instanceof LXChannel && checkChannelQualifies((LXChannel)aChannel)) {
-        LXChannel channel = (LXChannel)aChannel;
+      if (aChannel instanceof LXChannel && checkChannelQualifies((LXChannel) aChannel)) {
+        LXChannel channel = (LXChannel) aChannel;
 
         // Patterns
         for (LXPattern pattern : channel.getPatterns()) {
@@ -469,8 +455,8 @@ public abstract class Autopilot extends LXComponent implements LX.ProjectListene
 
     // Loop over channels
     for (LXAbstractChannel aChannel : lx.engine.mixer.channels) {
-      if (aChannel instanceof LXChannel && checkChannelQualifies((LXChannel)aChannel)) {
-        LXChannel channel = (LXChannel)aChannel;
+      if (aChannel instanceof LXChannel && checkChannelQualifies((LXChannel) aChannel)) {
+        LXChannel channel = (LXChannel) aChannel;
 
         // Patterns
         for (LXPattern pattern : channel.getPatterns()) {
@@ -485,15 +471,13 @@ public abstract class Autopilot extends LXComponent implements LX.ProjectListene
     }
   }
 
-  /**
-   * Stop modulators and set their basis to zero
-   */
+  /** Stop modulators and set their basis to zero */
   protected final void disableAutopilotModulators(LXModulationEngine scope) {
     for (LXModulator modulator : scope.modulators) {
       if (isAutopilotModulator(modulator)) {
         modulator.stop();
         if (modulator instanceof LXPeriodicModulator) {
-          LXPeriodicModulator modulatorP = (LXPeriodicModulator)modulator;
+          LXPeriodicModulator modulatorP = (LXPeriodicModulator) modulator;
           // Funny trick, have to disable tempo lock to reset basis.
           // We accept the immediate value jump to regain full parameter range.
           boolean wasTempoLock = modulatorP.tempoLock.getValueb();
@@ -510,17 +494,15 @@ public abstract class Autopilot extends LXComponent implements LX.ProjectListene
     }
   }
 
-  /**
-   * Turn modulators back on
-   */
+  /** Turn modulators back on */
   protected void enableAutopilotModulators() {
     // Globals
     enableAutopilotModulators(lx.engine.modulation);
 
     // Loop over channels
     for (LXAbstractChannel aChannel : lx.engine.mixer.channels) {
-      if (aChannel instanceof LXChannel && checkChannelQualifies((LXChannel)aChannel)) {
-        LXChannel channel = (LXChannel)aChannel;
+      if (aChannel instanceof LXChannel && checkChannelQualifies((LXChannel) aChannel)) {
+        LXChannel channel = (LXChannel) aChannel;
 
         // Patterns
         for (LXPattern pattern : channel.getPatterns()) {
@@ -551,16 +533,12 @@ public abstract class Autopilot extends LXComponent implements LX.ProjectListene
     return modulation.getLabel().startsWith(MOD_PREFIX);
   }
 
-  /**
-   * Subclasses can override to exclude certain channels.
-   */
+  /** Subclasses can override to exclude certain channels. */
   protected boolean checkChannelQualifies(LXChannel channel) {
     return true;
   }
 
-  /**
-   * Subclasses can override to exclude certain patterns.
-   */
+  /** Subclasses can override to exclude certain patterns. */
   protected boolean checkPatternQualifies(LXChannel channel, LXPattern pattern) {
     return true;
   }
@@ -574,16 +552,15 @@ public abstract class Autopilot extends LXComponent implements LX.ProjectListene
     clearAutopilotModulators();
   }
 
-  /**
-   * Delete any snapshots that may have been created by Autopilot
-   */
+  /** Delete any snapshots that may have been created by Autopilot */
   protected void clearSnapshots() {
     releaseSnapshots();
 
     LXGlobalSnapshot snapshot;
     for (int i = lx.engine.snapshots.snapshots.size() - 1; i >= 0; i--) {
       snapshot = lx.engine.snapshots.snapshots.get(i);
-      if (snapshot.getLabel().equals(SNAPSHOTNAME_BEFORE) || snapshot.getLabel().equals(SNAPSHOTNAME_RUNNING)) {
+      if (snapshot.getLabel().equals(SNAPSHOTNAME_BEFORE)
+          || snapshot.getLabel().equals(SNAPSHOTNAME_RUNNING)) {
         lx.engine.snapshots.removeSnapshot(snapshot);
       }
     }
@@ -606,5 +583,4 @@ public abstract class Autopilot extends LXComponent implements LX.ProjectListene
     this.enabled.removeListener(this.enabledListener);
     super.dispose();
   }
-
 }

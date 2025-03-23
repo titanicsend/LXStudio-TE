@@ -1,6 +1,5 @@
 package titanicsend.pattern.yoffa.effect;
 
-import heronarts.lx.Tempo;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
 import java.io.File;

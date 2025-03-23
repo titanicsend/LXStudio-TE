@@ -5,9 +5,7 @@ import com.google.gson.JsonObject;
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.LXPresetComponent;
-
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,12 +15,14 @@ import java.util.List;
 public class PresetEngine extends LXComponent {
 
   private static PresetEngine current;
+
   public static PresetEngine get() {
     return current;
   }
 
   private final List<UserPresetLibrary> mutableLibraries = new ArrayList<UserPresetLibrary>();
-  public final List<UserPresetLibrary> libraries = Collections.unmodifiableList(this.mutableLibraries);
+  public final List<UserPresetLibrary> libraries =
+      Collections.unmodifiableList(this.mutableLibraries);
 
   public UserPresetLibrary currentLibrary;
 
@@ -41,14 +41,15 @@ public class PresetEngine extends LXComponent {
     if (!(component instanceof LXComponent)) {
       return null;
     }
-    return LXComponent.getComponentName(((LXComponent)component).getClass());
+    return LXComponent.getComponentName(((LXComponent) component).getClass());
   }
 
   /**
-   * Import existing .lxd presets from Chromatik's Presets/ folder, for the current component (pattern) class.
+   * Import existing .lxd presets from Chromatik's Presets/ folder, for the current component
+   * (pattern) class.
    */
   public void importPresets(LXPresetComponent component) {
-    File presetFolder = this.lx.getPresetFolder((LXComponent)component);
+    File presetFolder = this.lx.getPresetFolder((LXComponent) component);
     File[] files = presetFolder.listFiles((dir, name) -> name.endsWith(".lxd"));
     if (files != null) {
       for (File file : files) {
@@ -68,9 +69,7 @@ public class PresetEngine extends LXComponent {
     }
   }
 
-  /**
-   * Import all file system presets for all patterns
-   */
+  /** Import all file system presets for all patterns */
   public void importAllPatternPresets() {
     // TODO
   }

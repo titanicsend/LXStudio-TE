@@ -1,18 +1,13 @@
 package titanicsend.pattern.look;
 
-
 import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import java.nio.FloatBuffer;
-import java.util.Arrays;
-import java.util.List;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-import titanicsend.util.SignalLogger;
-import titanicsend.util.TE;
 
 @LXCategory("Bogus Test Pattern")
 public class SketchDemo extends GLShaderPattern {
@@ -27,7 +22,7 @@ public class SketchDemo extends GLShaderPattern {
   private float normalizedLevelCumulative = 0;
   private float bassLevelCumulative = 0;
 
-//  private final SignalLogger signalLogger;
+  //  private final SignalLogger signalLogger;
 
   // Constructor
   public SketchDemo(LX lx) {
@@ -63,21 +58,21 @@ public class SketchDemo extends GLShaderPattern {
     // hand them off to the GPU.
     this.gl_segments = Buffers.newDirectFloatBuffer(MAX_POINTS * 2 * 4);
 
-//    List<String> signalNames = Arrays.asList(
-//        "bassLevel",
-//        "bassLevelCumulative",
-//        "squareLevel",
-//        "squareLevelCumulative",
-//        "normalizedLevel",
-//        "normalizedLevelCumulative",
-//        "peakLevel",
-//        "peakLevelCumulative",
-//        "pullback",
-//        "progress",
-//        "nextDrawingThreshold"
-//    );
-//    signalLogger = new SignalLogger(signalNames, "Logs/signal_data.csv");
-//    signalLogger.startLogging(10);
+    //    List<String> signalNames = Arrays.asList(
+    //        "bassLevel",
+    //        "bassLevelCumulative",
+    //        "squareLevel",
+    //        "squareLevelCumulative",
+    //        "normalizedLevel",
+    //        "normalizedLevelCumulative",
+    //        "peakLevel",
+    //        "peakLevelCumulative",
+    //        "pullback",
+    //        "progress",
+    //        "nextDrawingThreshold"
+    //    );
+    //    signalLogger = new SignalLogger(signalNames, "Logs/signal_data.csv");
+    //    signalLogger.startLogging(10);
 
     // add the OpenGL shader and its frame-time setup function which,
     // in this case, will copy the current contents of the points array
@@ -90,36 +85,36 @@ public class SketchDemo extends GLShaderPattern {
             float levelReact =
                 (float) getControls().getControl(TEControlTag.LEVELREACTIVITY).getValue();
             float pullback = (float) getControls().getControl(TEControlTag.WOW1).getValue();
-            float nextDrawingThreshold = 1.0f /
-                (float) getControls().getControl(TEControlTag.SPEED).getValue();
+            float nextDrawingThreshold =
+                1.0f / (float) getControls().getControl(TEControlTag.SPEED).getValue();
             // for debugging: wire up a control directly to control progress.
-            //progress = (float) getControls().getControl(TEControlTag.WOW1).getValue();
+            // progress = (float) getControls().getControl(TEControlTag.WOW1).getValue();
 
             normalizedLevelCumulative += (bassLevel * levelReact);
 
-//            float normalizedLevel = eq.getNormalizedf() * levelReact;
-//            normalizedLevelCumulative += normalizedLevel;
+            //            float normalizedLevel = eq.getNormalizedf() * levelReact;
+            //            normalizedLevelCumulative += normalizedLevel;
 
             if (progress > -0.9) {
               normalizedLevelCumulative -= pullback;
             }
             progress = normalizedLevelCumulative / nextDrawingThreshold;
 
-//            signalLogger.logSignalValues(
-//                Arrays.asList(
-//                    (float) bassLevel,
-//                    bassLevelCumulative,
-//                    squareLevel,
-//                    squareLevelCumulative,
-//                    normalizedLevel,
-//                    normalizedLevelCumulative,
-//                    peakLevel,
-//                    peakLevelCumulative,
-//                    pullback,
-//                    progress,
-//                    nextDrawingThreshold
-//                )
-//            );
+            //            signalLogger.logSignalValues(
+            //                Arrays.asList(
+            //                    (float) bassLevel,
+            //                    bassLevelCumulative,
+            //                    squareLevel,
+            //                    squareLevelCumulative,
+            //                    normalizedLevel,
+            //                    normalizedLevelCumulative,
+            //                    peakLevel,
+            //                    peakLevelCumulative,
+            //                    pullback,
+            //                    progress,
+            //                    nextDrawingThreshold
+            //                )
+            //            );
 
             s.setUniform("currProgress", progress);
             if (!hasSketchBeenPassed) {
@@ -167,8 +162,8 @@ public class SketchDemo extends GLShaderPattern {
     for (int i = 0; i < data.num_points; i++) {
       setPoint(i, data.points[i][0], data.points[i][1]);
     }
-    s.setUniform(prefix+"Points", gl_segments, 2);
-    s.setUniform(prefix+"Count", data.num_points);
-    s.setUniform(prefix+"Length", data.total_dist);
+    s.setUniform(prefix + "Points", gl_segments, 2);
+    s.setUniform(prefix + "Count", data.num_points);
+    s.setUniform(prefix + "Length", data.total_dist);
   }
 }

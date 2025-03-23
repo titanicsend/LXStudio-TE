@@ -13,19 +13,17 @@ import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter.Units;
 import heronarts.lx.pattern.LXPattern;
 
-/**
- * A project-specific autopilot
- */
+/** A project-specific autopilot */
 public class AutopilotExample extends Autopilot {
 
   public final CompoundParameter audio =
-    new CompoundParameter("Audio", 0, 0, .5)
-      .setDescription("Level of audio reactivity");
+      new CompoundParameter("Audio", 0, 0, .5).setDescription("Level of audio reactivity");
 
   public final CompoundParameter percentAudioReactive =
-    new CompoundParameter("%Audio", 15, 0, 100)
-      .setDescription("Percentage of modulators that are audio reactive.  Must be set before first run of Autopilot.")
-      .setUnits(Units.PERCENT);
+      new CompoundParameter("%Audio", 15, 0, 100)
+          .setDescription(
+              "Percentage of modulators that are audio reactive.  Must be set before first run of Autopilot.")
+          .setUnits(Units.PERCENT);
 
   public AutopilotExample(LX lx) {
     super(lx);
@@ -38,9 +36,7 @@ public class AutopilotExample extends Autopilot {
     setParameterVisible(this.lx.engine.speed);
   }
 
-  /**
-   * Called every time after Autopilot is enabled
-   */
+  /** Called every time after Autopilot is enabled */
   @Override
   protected void onDidEnable() {
     // Color palette cycles
@@ -56,15 +52,15 @@ public class AutopilotExample extends Autopilot {
     }
   }
 
-  /**
-   * Called for each modulator created by Autopilot
-   */
+  /** Called for each modulator created by Autopilot */
   @Override
-  protected void onModAdded(CompoundParameter parameter, VariableLFO modulator, LXCompoundModulation modulation) {
+  protected void onModAdded(
+      CompoundParameter parameter, VariableLFO modulator, LXCompoundModulation modulation) {
 
     // ** Audio/tempo reaction **
     // For a percentage of newly created modulators, sync them to the beat.
-    // This percentage is controlled with the %Audio knob.  It needs to be set *prior* to the first autopilot run.
+    // This percentage is controlled with the %Audio knob.  It needs to be set *prior* to the first
+    // autopilot run.
 
     if (Math.random() < this.percentAudioReactive.getNormalized()) {
       // Change modulator to tempo quarter beats
@@ -78,7 +74,8 @@ public class AutopilotExample extends Autopilot {
 
       // Map global Audio knob to modulation amount, now that this is possible
       try {
-        LXCompoundModulation audioMod = new LXCompoundModulation(this.lx.engine.modulation, this.audio, modulation.range);
+        LXCompoundModulation audioMod =
+            new LXCompoundModulation(this.lx.engine.modulation, this.audio, modulation.range);
         audioMod.range.setValue(previousRange / 2);
         this.lx.engine.modulation.addModulation(audioMod);
       } catch (ModulationException e) {
@@ -101,5 +98,4 @@ public class AutopilotExample extends Autopilot {
   protected boolean checkPatternQualifies(LXChannel channel, LXPattern pattern) {
     return true;
   }
-
 }

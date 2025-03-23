@@ -2,9 +2,8 @@ package titanicsend.pattern.jon;
 
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
-import java.util.ArrayList;
-
 import heronarts.lx.studio.TEApp;
+import java.util.ArrayList;
 import titanicsend.model.*;
 
 public class ModelBender {
@@ -81,9 +80,8 @@ public class ModelBender {
   protected float oldLengthMax;
 
   /**
-   * Get a list of points on the ends of the car,
-   * and find the min and max length (z or x) axis values for the
-   * car (as opposed to the whole model).
+   * Get a list of points on the ends of the car, and find the min and max length (z or x) axis
+   * values for the car (as opposed to the whole model).
    *
    * @param model
    * @return list of points
@@ -105,11 +103,11 @@ public class ModelBender {
           if (isStatic) {
             carLengthMin = Math.min(carLengthMin, point.z);
             carLengthMax = Math.max(carLengthMax, point.z);
-            endDepthMax =  Math.max(endDepthMax, Math.abs(point.x));
+            endDepthMax = Math.max(endDepthMax, Math.abs(point.x));
           } else {
             carLengthMin = Math.min(carLengthMin, point.x);
             carLengthMax = Math.max(carLengthMax, point.x);
-            endDepthMax =  Math.max(endDepthMax, Math.abs(point.z));
+            endDepthMax = Math.max(endDepthMax, Math.abs(point.z));
           }
           endPoints.add(point);
         }
@@ -125,11 +123,11 @@ public class ModelBender {
           if (isStatic) {
             carLengthMin = Math.min(carLengthMin, point.z);
             carLengthMax = Math.max(carLengthMax, point.z);
-            endDepthMax =  Math.max(endDepthMax, Math.abs(point.x));
+            endDepthMax = Math.max(endDepthMax, Math.abs(point.x));
           } else {
             carLengthMin = Math.min(carLengthMin, point.x);
             carLengthMax = Math.max(carLengthMax, point.x);
-            endDepthMax =  Math.max(endDepthMax, Math.abs(point.z));
+            endDepthMax = Math.max(endDepthMax, Math.abs(point.z));
           }
           endPoints.add(point);
         }
@@ -140,11 +138,10 @@ public class ModelBender {
   }
 
   /**
-   * Adjust the geometry of the end of the car to taper it.
-   * STATIC MODEL VERSION
+   * Adjust the geometry of the end of the car to taper it. STATIC MODEL VERSION
+   *
    * @param model pointer to the (static) model
-   * @return true if the model was adjusted and requires view
-   *        renormalization, false otherwise.
+   * @return true if the model was adjusted and requires view renormalization, false otherwise.
    */
   public boolean adjustEndGeometry(TEWholeModelStatic model) {
 
@@ -194,12 +191,11 @@ public class ModelBender {
   }
 
   /**
-   * Adjust the geometry of the end of the car to taper it to improve
-   * texture mapping.
-   * DYNAMIC MODEL VERSION
+   * Adjust the geometry of the end of the car to taper it to improve texture mapping. DYNAMIC MODEL
+   * VERSION
+   *
    * @param model pointer to the (dynamic) model
-   * @return true if the model was adjusted and requires view
-   *        renormalization, false otherwise.
+   * @return true if the model was adjusted and requires view renormalization, false otherwise.
    */
   public boolean adjustEndGeometry(TEWholeModelDynamic model, LXModel baseModel) {
 

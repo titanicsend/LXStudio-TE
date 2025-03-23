@@ -11,14 +11,12 @@ import heronarts.glx.ui.vg.VGraphics;
 import heronarts.lx.color.ColorParameter;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LXSwatch;
-import heronarts.lx.studio.ui.device.UIControls;
-import heronarts.lx.studio.ui.global.UIPalette;
-import java.lang.reflect.Field;
-import titanicsend.color.ColorPaletteManager;
 import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.studio.LXStudio;
+import heronarts.lx.studio.ui.device.UIControls;
+import heronarts.lx.studio.ui.global.UIPalette;
 import heronarts.lx.utils.LXUtils;
-
+import titanicsend.color.ColorPaletteManager;
 
 public class UIColorPaletteManager extends UICollapsibleSection implements UIControls {
   private static final float GRADIENT_HEIGHT = 8.0F;
@@ -29,7 +27,11 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
 
   private final float width;
 
-  public UIColorPaletteManager(LXStudio.UI ui, ColorPaletteManager paletteManagerA, ColorPaletteManager paletteManagerB, float w) {
+  public UIColorPaletteManager(
+      LXStudio.UI ui,
+      ColorPaletteManager paletteManagerA,
+      ColorPaletteManager paletteManagerB,
+      float w) {
     super(ui, 0, 0, w, 0);
     this.width = w;
 
@@ -37,15 +39,17 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     this.setPadding(2, 0);
     this.setTitle("PALETTE MANAGER");
 
-    UI2dContainer swatchDisplayContainer = UI2dContainer.newVerticalContainer(this.width-12, 6F);
+    UI2dContainer swatchDisplayContainer = UI2dContainer.newVerticalContainer(this.width - 12, 6F);
     swatchRow(ui, ui.lx.engine.palette.swatch, "Act").addToContainer(swatchDisplayContainer);
 
     if (DISPLAY_MANAGED_SWATCH_ROWS) {
-        // TODO: these don't seem to get updated as the palette updates - just stay red in the UI
-        swatchRow(ui, paletteManagerA.managedSwatch, "SWATCH A").addToContainer(swatchDisplayContainer);
-        if (paletteManagerB != null) {
-            swatchRow(ui, paletteManagerB.managedSwatch, "SWATCH B").addToContainer(swatchDisplayContainer);
-        }
+      // TODO: these don't seem to get updated as the palette updates - just stay red in the UI
+      swatchRow(ui, paletteManagerA.managedSwatch, "SWATCH A")
+          .addToContainer(swatchDisplayContainer);
+      if (paletteManagerB != null) {
+        swatchRow(ui, paletteManagerB.managedSwatch, "SWATCH B")
+            .addToContainer(swatchDisplayContainer);
+      }
     }
 
     swatchDisplayContainer.addToContainer(this);
@@ -70,13 +74,12 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
   }
 
   private UI2dContainer swatchRow(UI ui, LXSwatch swatch, String label) {
-    UI2dContainer elem = row(label, 20,
-        new UIPalette.Swatch(ui, swatch, 0, 0, 80, UIColorPicker.Corner.TOP_LEFT)
-    );
+    UI2dContainer elem =
+        row(label, 20, new UIPalette.Swatch(ui, swatch, 0, 0, 80, UIColorPicker.Corner.TOP_LEFT));
     elem.setPadding(2F)
         .setBorderRounding(2)
         .setBackgroundColor(ui.theme.listItemBackgroundColor)
-        .setWidth(this.width-12)
+        .setWidth(this.width - 12)
         .setHeight(24);
     return elem;
   }
@@ -87,15 +90,10 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     float swatchHeight = 40F;
     float swatchWidth = swatchHeight;
 
-    addColumn(
-        paletteSelectionRow,
-        newHierarchichalSwatch(paletteMgr, swatchWidth, swatchHeight)
-    ).setWidth(swatchWidth);
+    addColumn(paletteSelectionRow, newHierarchichalSwatch(paletteMgr, swatchWidth, swatchHeight))
+        .setWidth(swatchWidth);
 
-    addColumn(
-        paletteSelectionRow,
-        newKnob(paletteMgr.paletteStrategy)
-    );
+    addColumn(paletteSelectionRow, newKnob(paletteMgr.paletteStrategy));
 
     addColumn(
         paletteSelectionRow,
@@ -103,63 +101,74 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
             .setActiveLabel("ON")
             .setInactiveLabel("PUSH")
             .setMomentary(true)
-            .setEnabled(true)
-    );
-//            .setEnabled(!paletteMgr.pinSwatch.isOn()),
-//        newButton(paletteMgr.pinSwatch, 40F)
-//            .setActiveLabel("PINNED")
-//            .setInactiveLabel("PIN")
-//    );
+            .setEnabled(true));
+    //            .setEnabled(!paletteMgr.pinSwatch.isOn()),
+    //        newButton(paletteMgr.pinSwatch, 40F)
+    //            .setActiveLabel("PINNED")
+    //            .setInactiveLabel("PIN")
+    //    );
 
     return paletteSelectionRow;
   }
 
-  private UI2dContainer newHierarchichalSwatch(ColorPaletteManager paletteMgr, float totalWidth, float totalHeight) {
+  private UI2dContainer newHierarchichalSwatch(
+      ColorPaletteManager paletteMgr, float totalWidth, float totalHeight) {
     float swatchChildSpacing = 2F;
-    float swatchTotalHeight = totalHeight - swatchChildSpacing/2;
+    float swatchTotalHeight = totalHeight - swatchChildSpacing / 2;
     float swatchSegmentHeight = swatchTotalHeight / 2;
-    float swatchSegmentWidth = (totalWidth/2) - (swatchChildSpacing/2);
+    float swatchSegmentWidth = (totalWidth / 2) - (swatchChildSpacing / 2);
 
-    UI2dContainer squareSwatch = UI2dContainer.newVerticalContainer(
-        totalWidth,
-        swatchChildSpacing,
-        new UISingleColorDisplay(paletteMgr.color1, totalWidth, swatchSegmentHeight),
-        UI2dContainer.newHorizontalContainer(
-            swatchSegmentHeight,
-            2F,
-            new UISingleColorDisplay(paletteMgr.color2, swatchSegmentWidth, swatchSegmentHeight),
-            new UISingleColorDisplay(paletteMgr.color3, swatchSegmentWidth, swatchSegmentHeight)
-        )
-    );
+    UI2dContainer squareSwatch =
+        UI2dContainer.newVerticalContainer(
+            totalWidth,
+            swatchChildSpacing,
+            new UISingleColorDisplay(paletteMgr.color1, totalWidth, swatchSegmentHeight),
+            UI2dContainer.newHorizontalContainer(
+                swatchSegmentHeight,
+                2F,
+                new UISingleColorDisplay(
+                    paletteMgr.color2, swatchSegmentWidth, swatchSegmentHeight),
+                new UISingleColorDisplay(
+                    paletteMgr.color3, swatchSegmentWidth, swatchSegmentHeight)));
     return squareSwatch;
   }
 
   private UI2dContainer buildColorSlidersRow(ColorPaletteManager paletteMgr) {
     float SLIDER_SPACING = 4;
     float controlWidth = this.width / 3;
-    float sliderWidth = controlWidth - (2*SLIDER_SPACING);
+    float sliderWidth = controlWidth - (2 * SLIDER_SPACING);
     float height = 42;
     UI2dContainer colorSlidersRow = UI2dContainer.newHorizontalContainer(height, SLIDER_SPACING);
     if (DISPLAY_GRADIENTS_ABOVE_SLDIERS) {
       addColumn(
           colorSlidersRow,
           new UIHueDisplay(paletteMgr.hue, sliderWidth),
-          new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.hue)
-      );
+          new UISlider(
+              UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.hue));
       addColumn(
           colorSlidersRow,
           new UISaturationDisplay(sliderWidth),
-          new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.saturation)
-      );
+          new UISlider(
+              UISlider.Direction.HORIZONTAL,
+              0.0F,
+              0.0F,
+              sliderWidth,
+              12.0F,
+              paletteMgr.saturation));
     } else {
       addColumn(
           colorSlidersRow,
-          new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.hue)
-      );
+          new UISlider(
+              UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.hue));
       addColumn(
           colorSlidersRow,
-          new UISlider(UISlider.Direction.HORIZONTAL, 0.0F, 0.0F, sliderWidth, 12.0F, paletteMgr.saturation)
-      );
+          new UISlider(
+              UISlider.Direction.HORIZONTAL,
+              0.0F,
+              0.0F,
+              sliderWidth,
+              12.0F,
+              paletteMgr.saturation));
     }
 
     return colorSlidersRow;
@@ -170,16 +179,18 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
         16, 4, new UILabel(labelWidth, 12, label), component);
   }
 
-  public static void addToLeftGlobalPane(LXStudio.UI ui, ColorPaletteManager cueMgr, ColorPaletteManager auxMgr, int index) {
+  public static void addToLeftGlobalPane(
+      LXStudio.UI ui, ColorPaletteManager cueMgr, ColorPaletteManager auxMgr, int index) {
     UI2dContainer parentContainer = ui.leftPane.global;
     new UIColorPaletteManager(ui, cueMgr, auxMgr, parentContainer.getContentWidth())
         .addToContainer(parentContainer, index);
   }
 
-  public static void addToRightPerformancePane(LXStudio.UI ui, ColorPaletteManager cueMgr, ColorPaletteManager auxMgr) {
+  public static void addToRightPerformancePane(
+      LXStudio.UI ui, ColorPaletteManager cueMgr, ColorPaletteManager auxMgr) {
     UI2dContainer parentContainer = ui.rightPerformanceTools;
     new UIColorPaletteManager(ui, cueMgr, auxMgr, parentContainer.getContentWidth())
-        .addToContainer(parentContainer, parentContainer.getChildren().size()-1);
+        .addToContainer(parentContainer, parentContainer.getChildren().size() - 1);
   }
 
   private class UISingleColorDisplay extends UI2dComponent {
@@ -188,12 +199,16 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
     private UISingleColorDisplay(ColorParameter colorParameter, float dimension) {
       this(colorParameter, dimension, dimension);
     }
+
     private UISingleColorDisplay(ColorParameter colorParameter, float w, float h) {
       super(0, 0, w, h);
-      this.addListener(colorParameter, (p) -> {
-        this.color = ((ColorParameter)p).getColor();
-        this.redraw();
-      }, true);
+      this.addListener(
+          colorParameter,
+          (p) -> {
+            this.color = ((ColorParameter) p).getColor();
+            this.redraw();
+          },
+          true);
     }
 
     public void onDraw(UI ui, VGraphics vg) {
@@ -208,21 +223,29 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
 
     private UIHueDisplay(BoundedParameter hueOffset, float gradientWidth) {
       super(gradientWidth, GRADIENT_HEIGHT);
-      this.addListener(hueOffset, (p) -> {
-        this.hueOffset = (double)hueOffset.getValuef();
-        this.redraw();
-      });
+      this.addListener(
+          hueOffset,
+          (p) -> {
+            this.hueOffset = (double) hueOffset.getValuef();
+            this.redraw();
+          });
     }
 
     public void onDraw(UI ui, VGraphics vg) {
       int numStops = 12;
-      float stopWidth = this.width / (float)numStops;
+      float stopWidth = this.width / (float) numStops;
 
-      for(int i = 0; i < numStops; ++i) {
-        float x0 = stopWidth * (float)i;
+      for (int i = 0; i < numStops; ++i) {
+        float x0 = stopWidth * (float) i;
         float x1 = LXUtils.clampf(x0 + stopWidth + 0.5F, 0.0F, this.width);
         vg.beginPath();
-        vg.fillLinearGradient(x0, 0.0F, x1, 0.0F, LXColor.hsb(this.hueOffset + (double)(i * 360 / numStops), 100.0, 100.0), LXColor.hsb(this.hueOffset + (double)((i + 1) * 360 / numStops), 100.0, 100.0));
+        vg.fillLinearGradient(
+            x0,
+            0.0F,
+            x1,
+            0.0F,
+            LXColor.hsb(this.hueOffset + (double) (i * 360 / numStops), 100.0, 100.0),
+            LXColor.hsb(this.hueOffset + (double) ((i + 1) * 360 / numStops), 100.0, 100.0));
         vg.rect(x0, 0.0F, x1 - x0, this.height);
         vg.fill();
       }
@@ -236,7 +259,13 @@ public class UIColorPaletteManager extends UICollapsibleSection implements UICon
 
     public void onDraw(UI ui, VGraphics vg) {
       vg.beginPath();
-      vg.fillLinearGradient(0.0F, 0.0F, this.width, 0.0F, LXColor.hsb(0.0F, 0.0F, 50.0F), LXColor.hsb(0.0F, 100.0F, 100.0F));
+      vg.fillLinearGradient(
+          0.0F,
+          0.0F,
+          this.width,
+          0.0F,
+          LXColor.hsb(0.0F, 0.0F, 50.0F),
+          LXColor.hsb(0.0F, 100.0F, 100.0F));
       vg.rect(0.0F, 0.0F, this.width, this.height);
       vg.fill();
     }

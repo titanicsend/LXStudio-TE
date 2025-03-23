@@ -7,7 +7,7 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.model.LXPoint;
-
+import heronarts.lx.studio.TEApp;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
@@ -17,16 +17,13 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import heronarts.lx.studio.TEApp;
+import javax.imageio.ImageIO;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.util.TE;
 import titanicsend.util.TECategory;
-
-import javax.imageio.ImageIO;
 
 /** Write model points, and other data to one or more CSV files. */
 @LXCategory(TECategory.UTILITY)
@@ -109,15 +106,15 @@ public class ModelFileWriter extends TEPerformancePattern {
     // These panels are mapped with very few points from the shader textures, and
     // they don't look normal/good for some patterns used in the boot up sequence.
     List<String> ignoredPanels =
-            Arrays.asList(
-                    "AA", "AB", "FA", "FB", "FSB", "FPB", "FSA", "FPA", "FSC", "FPC", "APA", "ASA", "APB",
-                    "APC", "ASC", "ASB");
+        Arrays.asList(
+            "AA", "AB", "FA", "FB", "FSB", "FPB", "FSA", "FPA", "FSC", "FPC", "APA", "ASA", "APB",
+            "APC", "ASC", "ASB");
     List<String> ignoredEdges =
-            Arrays.asList(
-                    "113-124", "109-113", "109-112", "112-124", "81-89", "81-91", "91-126", "89-126",
-                    "89-91", "70-81", "73-81", "81-82", "81-92", "27-109", "28-109", "109-110", "109-111",
-                    "28-113", "28-111", "27-112", "27-110", "112-116", "113-117", "116-124", "117-124",
-                    "89-125", "70-89", "70-82", "73-92", "73-91", "91-129", "125-126", "126-129");
+        Arrays.asList(
+            "113-124", "109-113", "109-112", "112-124", "81-89", "81-91", "91-126", "89-126",
+            "89-91", "70-81", "73-81", "81-82", "81-92", "27-109", "28-109", "109-110", "109-111",
+            "28-113", "28-111", "27-112", "27-110", "112-116", "113-117", "116-124", "117-124",
+            "89-125", "70-89", "70-82", "73-92", "73-91", "91-129", "125-126", "126-129");
 
     List<LXPoint> all_no_side_panels_points = new ArrayList<>();
 
@@ -167,7 +164,7 @@ public class ModelFileWriter extends TEPerformancePattern {
    * @throws IOException If an error occurs during file writing.
    */
   private void writeModel(LXPoint[] points, String modelName, boolean useAllPoints, String dirName)
-          throws IOException {
+      throws IOException {
     // Construct the file paths, incorporating the optional directory
     Path basePath = Path.of("resources/model/");
     if (dirName != null) {
@@ -234,31 +231,31 @@ public class ModelFileWriter extends TEPerformancePattern {
 
   // Overloads for array version
   private void writeModel(LXPoint[] points, String modelName, boolean useAllPoints)
-          throws IOException {
+      throws IOException {
     writeModel(points, modelName, useAllPoints, null);
   }
 
   public void writeModel(LXPoint[] points, String modelName, LXPoint[] allPoints, String dirName)
-          throws IOException {
+      throws IOException {
     this.allPoints = allPoints;
     writeModel(points, modelName, true, dirName);
   }
 
   public void writeModel(LXPoint[] points, String modelName, LXPoint[] allPoints)
-          throws IOException {
+      throws IOException {
     writeModel(points, modelName, allPoints, null);
   }
 
   // Overloads for List version
   public void writeModel(
-          List<LXPoint> points, String modelName, boolean useAllPoints, String dirName)
-          throws IOException {
+      List<LXPoint> points, String modelName, boolean useAllPoints, String dirName)
+      throws IOException {
     LXPoint[] pointsArray = points.toArray(new LXPoint[0]);
     writeModel(pointsArray, modelName, useAllPoints, dirName);
   }
 
   public void writeModel(List<LXPoint> points, String modelName, boolean useAllPoints)
-          throws IOException {
+      throws IOException {
     writeModel(points, modelName, useAllPoints, null);
   }
 

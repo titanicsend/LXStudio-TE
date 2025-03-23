@@ -9,7 +9,7 @@ import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter.Units;
 
-public class AudioStems extends LXComponent implements LXOscListener { 
+public class AudioStems extends LXComponent implements LXOscListener {
 
   public static final String PATH_STEM = "/te/stem/";
   public static final String PATH_BASS = "bass";
@@ -24,8 +24,7 @@ public class AudioStems extends LXComponent implements LXOscListener {
   }
 
   public final CompoundParameter gain =
-    new CompoundParameter("Gain", 0, -1, 2)
-    .setUnits(Units.PERCENT_NORMALIZED);
+      new CompoundParameter("Gain", 0, -1, 2).setUnits(Units.PERCENT_NORMALIZED);
 
   /*
    * Raw input values
@@ -41,44 +40,38 @@ public class AudioStems extends LXComponent implements LXOscListener {
    */
 
   public final BoundedFunctionalParameter bass =
-    new BoundedFunctionalParameter("Bass") {
-      @Override
-      protected double computeValue() {
-        return adjusted(bassRaw);
-      }
-    }
-    .setDescription("Audio stem for bass");
+      new BoundedFunctionalParameter("Bass") {
+        @Override
+        protected double computeValue() {
+          return adjusted(bassRaw);
+        }
+      }.setDescription("Audio stem for bass");
 
   public final BoundedFunctionalParameter drums =
-    new BoundedFunctionalParameter("Drums") {
-      @Override
-      protected double computeValue() {
-        return adjusted(drumsRaw);
-      }
-    }
-    .setDescription("Audio stem for drums");
+      new BoundedFunctionalParameter("Drums") {
+        @Override
+        protected double computeValue() {
+          return adjusted(drumsRaw);
+        }
+      }.setDescription("Audio stem for drums");
 
   public final BoundedFunctionalParameter vocals =
-    new BoundedFunctionalParameter("Vocals") {
-      @Override
-      protected double computeValue() {
-        return adjusted(vocalsRaw);
-      }
-    }
-    .setDescription("Audio stem for vocals");
+      new BoundedFunctionalParameter("Vocals") {
+        @Override
+        protected double computeValue() {
+          return adjusted(vocalsRaw);
+        }
+      }.setDescription("Audio stem for vocals");
 
   public final BoundedFunctionalParameter other =
-    new BoundedFunctionalParameter("Other") {
-      @Override
-      protected double computeValue() {
-        return adjusted(otherRaw);
-      }
-    }
-    .setDescription("Audio stem for other");
+      new BoundedFunctionalParameter("Other") {
+        @Override
+        protected double computeValue() {
+          return adjusted(otherRaw);
+        }
+      }.setDescription("Audio stem for other");
 
-  /**
-   * Apply adjustments (gain, smoothing) to a raw parameter
-   */
+  /** Apply adjustments (gain, smoothing) to a raw parameter */
   private double adjusted(BoundedParameter raw) {
     return raw.getValue() * (1.0 + gain.getValue());
   }
@@ -96,10 +89,7 @@ public class AudioStems extends LXComponent implements LXOscListener {
     this.lx.engine.osc.addListener(this);
   }
 
-  /**
-   * Starting point for OSC input.
-   * Called for messages received by the LX OSC Receiver.
-   */
+  /** Starting point for OSC input. Called for messages received by the LX OSC Receiver. */
   @Override
   public void oscMessage(OscMessage message) {
     String address = message.getAddressPattern().getValue();
@@ -110,9 +100,9 @@ public class AudioStems extends LXComponent implements LXOscListener {
         LX.warning("Audio stem name not specified: " + address);
         return;
       }
-      
+
       float value = message.getFloat();
-      
+
       String stem = address.substring(PATH_STEM.length());
       if (stem.equals(PATH_BASS)) {
         handleBass(value);
@@ -132,15 +122,15 @@ public class AudioStems extends LXComponent implements LXOscListener {
   private void handleBass(float value) {
     this.bassRaw.setValue(value);
   }
-  
+
   private void handleDrums(float value) {
     this.drumsRaw.setValue(value);
   }
-  
+
   private void handleVocals(float value) {
     this.vocalsRaw.setValue(value);
   }
-  
+
   private void handleOther(float value) {
     this.otherRaw.setValue(value);
   }

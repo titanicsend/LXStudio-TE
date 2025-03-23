@@ -26,17 +26,20 @@ public class UIAudioStems extends UICollapsibleSection {
     meters.setX(10);
     meters.addToContainer(this);
 
-    UI2dContainer.newHorizontalContainer(16, 10,
-      new UILabel.Control(ui, 0, 0, 24, 16, audioStems.gain.getLabel()),
-      new UIDoubleBox(26, 0, 54, 16, audioStems.gain)
-    ).addToContainer(this);
+    UI2dContainer.newHorizontalContainer(
+            16,
+            10,
+            new UILabel.Control(ui, 0, 0, 24, 16, audioStems.gain.getLabel()),
+            new UIDoubleBox(26, 0, 54, 16, audioStems.gain))
+        .addToContainer(this);
   }
 
   private void addMeter(UI ui, UI2dContainer container, LXNormalizedParameter parameter) {
-    UI2dContainer.newVerticalContainer(35, 0,
-      new UIMeter(ui, parameter, 8, 0, 12, 36),
-      new UILabel(0, 0, 35, 12, parameter.getLabel())
-      )
-    .addToContainer(container);
+    UI2dContainer.newVerticalContainer(
+            35,
+            0,
+            new UIMeter(ui, parameter, 8, 0, 12, 36),
+            new UILabel(0, 0, 35, 12, parameter.getLabel()))
+        .addToContainer(container);
   }
 }

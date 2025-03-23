@@ -71,15 +71,15 @@ public class DmxGridPattern extends TEPattern {
   private float xRange() {
     return TEApp.wholeModel.maxX() - TEApp.wholeModel.minX();
   }
-  
+
   private float yRange() {
     return TEApp.wholeModel.maxY() - TEApp.wholeModel.minY();
   }
-  
+
   private float zRange() {
     return TEApp.wholeModel.maxZ() - TEApp.wholeModel.minZ();
   }
-  
+
   void setFixtureColor(LXModel m, int color) {
     for (LXPoint p : m.points) {
       this.colors[p.index] = color;

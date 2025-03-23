@@ -35,7 +35,6 @@ import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameter.Polarity;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.pattern.LXPattern;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

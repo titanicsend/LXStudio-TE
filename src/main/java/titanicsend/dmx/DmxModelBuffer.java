@@ -17,16 +17,15 @@ package titanicsend.dmx;
 
 import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
+import java.util.List;
 import titanicsend.dmx.model.DmxModel;
 import titanicsend.dmx.model.DmxWholeModel;
-
-import java.util.List;
 
 /**
  * The DMX equivalent to ModelBuffer uses two classes, DmxBuffer and DmxModelBuffer, due to
  * effectively being a 2D array.
  *
- * DmxBuffer is one fixture, DmxModelBuffer is all the fixtures
+ * <p>DmxBuffer is one fixture, DmxModelBuffer is all the fixtures
  */
 public class DmxModelBuffer extends DmxFullBuffer implements DmxWholeModel.DmxWholeModelListener {
 
@@ -54,6 +53,7 @@ public class DmxModelBuffer extends DmxFullBuffer implements DmxWholeModel.DmxWh
     initArray(model);
     this.dmxWholeModel.addDmxListener(this);
   }
+
   @Override
   public void dmxModelsChanged(List<DmxModel> dmxModels) {
     initArray(this.dmxWholeModel);
@@ -85,5 +85,4 @@ public class DmxModelBuffer extends DmxFullBuffer implements DmxWholeModel.DmxWh
     this.dmxWholeModel.removeDmxListener(this);
     this.array = null;
   }
-
 }

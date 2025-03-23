@@ -12,7 +12,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import titanicsend.color.TEColorType;
 import titanicsend.model.TEEdgeModel;
-import titanicsend.model.TEWholeModel;
 import titanicsend.model.TEWholeModelStatic;
 import titanicsend.pattern.TEPattern;
 
@@ -57,11 +56,11 @@ public class EdgeSymmetry extends TEPattern {
     addParameter("width", fracFromZCenter);
     addParameter("height", height);
     addParameter("mask", maskMode);
-    
+
     // JKB note: quick edit to work with only the static model.
     // This will need to be updated before it works with a dynamic model.
     if (this.modelTE instanceof TEWholeModelStatic) {
-      edgeGroupsByZ = new ArrayList<>(((TEWholeModelStatic)modelTE).edgesBySymmetryGroup.keySet());
+      edgeGroupsByZ = new ArrayList<>(((TEWholeModelStatic) modelTE).edgesBySymmetryGroup.keySet());
     } else {
       edgeGroupsByZ = new ArrayList<>();
     }
@@ -111,7 +110,7 @@ public class EdgeSymmetry extends TEPattern {
     // Find all applicable edges as a list. Filter by Y coordinate (height) and
     // flatten the Hashmap's values to get a combined list of all selected edges
     litEdges =
-      this.modelTE.getEdgesBySymmetryGroup().entrySet().stream()
+        this.modelTE.getEdgesBySymmetryGroup().entrySet().stream()
             .filter(e -> selectedEdgeGroups.contains(e.getKey()))
             .filter(e -> e.getKey().y / model.yMax < height.getValue())
             .map(Map.Entry::getValue)

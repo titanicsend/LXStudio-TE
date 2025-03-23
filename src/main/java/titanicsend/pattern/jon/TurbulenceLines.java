@@ -4,7 +4,6 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-import titanicsend.util.TEMath;
 
 @LXCategory("Noise")
 public class TurbulenceLines extends DriftEnabledPattern {

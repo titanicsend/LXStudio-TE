@@ -56,9 +56,11 @@ public class ArtStandards extends TEAudioPattern {
      * hue distance. In other words, we usually want a gradient to go from yellow
      * to red via orange, not via lime, green, cyan, blue, purple, red.
      */
-    return TEGradientSource.get().darkGradient.getColor(
-      TEMath.trianglef(lerp / 2), // Allow wrapping
-      LXGradientUtils.BlendMode.HSVM.function);
+    return TEGradientSource.get()
+        .darkGradient
+        .getColor(
+            TEMath.trianglef(lerp / 2), // Allow wrapping
+            LXGradientUtils.BlendMode.HSVM.function);
   }
 
   public void runTEAudioPattern(double deltaMs) {

@@ -26,13 +26,13 @@ import titanicsend.util.TE;
 public class TEWholeModelStatic extends LXModel implements TEWholeModel {
 
   public String name;
-  private final LXPoint gapPoint;       // For pixel that shouldn't actually be lit
-  private final int[] gapPointIndices;  // Always 1 entry for static model
+  private final LXPoint gapPoint; // For pixel that shouldn't actually be lit
+  private final int[] gapPointIndices; // Always 1 entry for static model
 
   private final List<TEVertex> mutableVertexes = new ArrayList<TEVertex>();
   public final List<TEVertex> vertexes = Collections.unmodifiableList(this.mutableVertexes);
   public HashMap<Integer, TEVertex> vertexesById;
-  
+
   private final List<TEEdgeModel> mutableEdges = new ArrayList<TEEdgeModel>();
   public final List<TEEdgeModel> edges = Collections.unmodifiableList(this.mutableEdges);
   public HashMap<String, TEEdgeModel> edgesById;
@@ -47,7 +47,7 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
   private final List<TELaserModel> mutableLasers = new ArrayList<TELaserModel>();
   public final List<TELaserModel> lasers = Collections.unmodifiableList(this.mutableLasers);
 
-  public List<LXPoint> edgePoints;  // Points belonging to edges
+  public List<LXPoint> edgePoints; // Points belonging to edges
   public List<LXPoint> panelPoints; // Points belonging to panels
   public List<TEBox> boxes;
   public Boundaries boundaryPoints;
@@ -60,6 +60,7 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
   private final List<DmxModel> mutableBeacons = new ArrayList<DmxModel>();
   public final List<DmxModel> beacons = Collections.unmodifiableList(this.mutableBeacons);
   private final HashMap<String, DmxModel> beaconsById = new HashMap<String, DmxModel>();
+
   public List<DmxModel> getBeacons() {
     return this.beacons;
   }
@@ -68,6 +69,7 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
   private final List<DmxModel> mutableDjLights = new ArrayList<DmxModel>();
   public final List<DmxModel> djLights = Collections.unmodifiableList(this.mutableDjLights);
   private final HashMap<String, DmxModel> djLightsById = new HashMap<String, DmxModel>();
+
   public List<DmxModel> getDjLights() {
     return this.djLights;
   }
@@ -129,7 +131,7 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
     super(geometry.children);
     this.name = geometry.name;
     this.gapPoint = geometry.gapPoint;
-    this.gapPointIndices = new int[]{ geometry.gapPoint.index };
+    this.gapPointIndices = new int[] {geometry.gapPoint.index};
     this.vertexesById = geometry.vertexesById;
     this.edgePoints = new ArrayList<>();
     this.edgesById = geometry.edgesById;
@@ -214,7 +216,7 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
   public int[] getGapPointIndices() {
     return this.gapPointIndices;
   }
-  
+
   public boolean isEdgePoint(int index) {
     return index >= edgePoints.get(0).index && index <= edgePoints.get(edgePoints.size() - 1).index;
   }
@@ -228,7 +230,7 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
     return p.index == this.gapPoint.index;
   }
 
-  public List<LXPoint> getPanelPoints(){
+  public List<LXPoint> getPanelPoints() {
     return this.panelPoints;
   }
 
@@ -882,11 +884,11 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
   }
 
   public float minX() {
-	return this.boundaryPoints.minXBoundaryPoint.x;
+    return this.boundaryPoints.minXBoundaryPoint.x;
   }
 
   public float maxX() {
-	return this.boundaryPoints.maxXBoundaryPoint.x;
+    return this.boundaryPoints.maxXBoundaryPoint.x;
   }
 
   public float minY() {
@@ -894,15 +896,15 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
   }
 
   public float maxY() {
-	return this.boundaryPoints.maxYBoundaryPoint.y;
+    return this.boundaryPoints.maxYBoundaryPoint.y;
   }
 
   public float minZ() {
-	return this.boundaryPoints.minZBoundaryPoint.z;
+    return this.boundaryPoints.minZBoundaryPoint.z;
   }
 
   public float maxZ() {
-	return this.boundaryPoints.maxZBoundaryPoint.z;
+    return this.boundaryPoints.maxZBoundaryPoint.z;
   }
 
   public List<LXPoint> getEdgePointsBySection(TEEdgeSection section) {
