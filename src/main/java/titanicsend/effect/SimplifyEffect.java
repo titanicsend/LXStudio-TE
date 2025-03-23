@@ -1,8 +1,5 @@
 package titanicsend.effect;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.LXComponentName;
@@ -19,17 +16,19 @@ import heronarts.lx.studio.LXStudio.UI;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
 import heronarts.lx.utils.LXUtils;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * The SimplifyEffect forces output to be the same for all points
- * within each view group, or within subgroups as controlled
- * by the depth parameter.
+ * The SimplifyEffect forces output to be the same for all points within each view group, or within
+ * subgroups as controlled by the depth parameter.
  *
  * @author Justin K. Belcher <justin@jkb.studio>
  */
 @LXCategory("Model")
 @LXComponentName("Simplify")
-public class SimplifyEffect extends LXEffect  implements heronarts.lx.LX.Listener, UIDeviceControls<SimplifyEffect> {
+public class SimplifyEffect extends LXEffect
+    implements heronarts.lx.LX.Listener, UIDeviceControls<SimplifyEffect> {
 
   public enum BlendMode {
     HSB("HSB") {
@@ -61,18 +60,12 @@ public class SimplifyEffect extends LXEffect  implements heronarts.lx.LX.Listene
 
       @Override
       int average() {
-        return LXColor.hsb(
-          this.h / this.num,
-          this.s / this.num,
-          this.b / this.num);
+        return LXColor.hsb(this.h / this.num, this.s / this.num, this.b / this.num);
       }
 
       @Override
       int average(float brightness) {
-        return LXColor.hsb(
-          (float) this.h / this.num,
-          (float) this.s / this.num,
-          brightness);
+        return LXColor.hsb((float) this.h / this.num, (float) this.s / this.num, brightness);
       }
     },
     RGB("RGB") {
@@ -109,10 +102,7 @@ public class SimplifyEffect extends LXEffect  implements heronarts.lx.LX.Listene
       @Override
       int average(float brightness) {
         int color = average();
-        return LXColor.hsb(
-          LXColor.h(color),
-          LXColor.s(color),
-          brightness);
+        return LXColor.hsb(LXColor.h(color), LXColor.s(color), brightness);
       }
     };
 
@@ -123,38 +113,38 @@ public class SimplifyEffect extends LXEffect  implements heronarts.lx.LX.Listene
     }
 
     abstract void clear();
+
     abstract void add(int color);
-    /**
-     * Get brightness level of the average
-     */
+
+    /** Get brightness level of the average */
     abstract float brightness();
+
     abstract int average();
-    /**
-     * Get the average color but reset the brightness to this new value
-     */
+
+    /** Get the average color but reset the brightness to this new value */
     abstract int average(float brightness);
   }
 
   public final CompoundParameter amount =
-    new CompoundParameter("Amount", 1)
-      .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
-      .setDescription("Percentage of effect to apply");
+      new CompoundParameter("Amount", 1)
+          .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
+          .setDescription("Percentage of effect to apply");
 
   public final EnumParameter<BlendMode> blendMode =
-    new EnumParameter<BlendMode>("Mode", BlendMode.HSB);
+      new EnumParameter<BlendMode>("Mode", BlendMode.HSB);
 
   public final DiscreteParameter depth =
-    new DiscreteParameter("DepthMd", 1, 1, 4)
-      .setDescription("Depth of [view] model hierarchy at which to extract models");
+      new DiscreteParameter("DepthMd", 1, 1, 4)
+          .setDescription("Depth of [view] model hierarchy at which to extract models");
 
   public final CompoundParameter gate =
-    new CompoundParameter("Gate", .1)
-      .setUnits(Units.PERCENT_NORMALIZED)
-      .setDescription("Percentages of points that need to be on to turn the model on");
+      new CompoundParameter("Gate", .1)
+          .setUnits(Units.PERCENT_NORMALIZED)
+          .setDescription("Percentages of points that need to be on to turn the model on");
 
   public final CompoundParameter gain =
-    new CompoundParameter("Gain", 0)
-      .setDescription("0 = variable output brightness.  1 = all or nothing brightness");
+      new CompoundParameter("Gain", 0)
+          .setDescription("0 = variable output brightness.  1 = all or nothing brightness");
 
   final List<LXModel> models = new ArrayList<LXModel>();
 
@@ -226,18 +216,14 @@ public class SimplifyEffect extends LXEffect  implements heronarts.lx.LX.Listene
     }
   }
 
-  /**
-   * Lerps every point in a model between its current color and the new color
-   */
+  /** Lerps every point in a model between its current color and the new color */
   private void setModelColor(LXModel m, int color, double lerp) {
     for (LXPoint p : m.points) {
       this.colors[p.index] = LXColor.lerp(this.colors[p.index], color, lerp);
     }
   }
 
-  /**
-   * Recursive model extraction
-   */
+  /** Recursive model extraction */
   protected void extractModels(List<LXModel> toList, LXModel fromModel, int depth) {
     if (depth > 0 && fromModel.children.length > 0) {
       for (LXModel child : fromModel.children) {
@@ -262,25 +248,21 @@ public class SimplifyEffect extends LXEffect  implements heronarts.lx.LX.Listene
 
     final int colWidth = 70;
 
-    addColumn(uiDevice,
-      sectionLabel("Amount"),
-      newKnob(this.amount),
-      newDropMenu(this.blendMode).setTopMargin(6)
-    );
-    addColumn(uiDevice,
-      sectionLabel("Source").setWidth(colWidth),
-      newDropMenu(this.view).setWidth(colWidth).setTopMargin(6),
-      controlLabel(ui, "View").setWidth(colWidth).setTopMargin(-3).setBottomMargin(7),
-      newKnob(this.depth)
-    )
-    .setChildSpacing(4)
-    .setWidth(colWidth)
-    .setLeftMargin(1);
+    addColumn(
+        uiDevice,
+        sectionLabel("Amount"),
+        newKnob(this.amount),
+        newDropMenu(this.blendMode).setTopMargin(6));
+    addColumn(
+            uiDevice,
+            sectionLabel("Source").setWidth(colWidth),
+            newDropMenu(this.view).setWidth(colWidth).setTopMargin(6),
+            controlLabel(ui, "View").setWidth(colWidth).setTopMargin(-3).setBottomMargin(7),
+            newKnob(this.depth))
+        .setChildSpacing(4)
+        .setWidth(colWidth)
+        .setLeftMargin(1);
     this.addVerticalBreak(ui, uiDevice).setLeftMargin(5);
-    addColumn(uiDevice, "Output",
-      newKnob(this.gate),
-      newKnob(this.gain)
-    )
-    .setChildSpacing(4);
+    addColumn(uiDevice, "Output", newKnob(this.gate), newKnob(this.gain)).setChildSpacing(4);
   }
 }

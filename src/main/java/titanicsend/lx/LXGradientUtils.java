@@ -20,7 +20,6 @@ package titanicsend.lx;
 import heronarts.lx.color.ColorParameter;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LXDynamicColor;
-import heronarts.lx.color.LXPalette;
 import heronarts.lx.color.LXSwatch;
 import heronarts.lx.parameter.LXNormalizedParameter;
 import heronarts.lx.utils.LXUtils;
@@ -140,8 +139,7 @@ public class LXGradientUtils {
 
     /**
      * cube-root approximation function for float values. Faster than Math.cbrt(), but does not work
-     * for negative inputs. That's fine for our one use case - RGB->Oklab conversion.
-     * <br>
+     * for negative inputs. That's fine for our one use case - RGB->Oklab conversion. <br>
      * Original code:
      * https://github.com/Marc-B-Reynolds/Stand-alone-junk/blob/master/src/Posts/ballcube.c#L182-L197
      * . <br>
@@ -298,27 +296,35 @@ public class LXGradientUtils {
         };
 
     public static final BlendFunction OKLAB =
-      (c1, c2, lerp) -> {
-        // linear interpolation in oklab space
-        float l = LXUtils.lerpf(c1.lStar, c2.lStar, lerp);
-        float m = LXUtils.lerpf(c1.aStar, c2.aStar, lerp);
-        float s = LXUtils.lerpf(c1.bStar, c2.bStar, lerp);
+        (c1, c2, lerp) -> {
+          // linear interpolation in oklab space
+          float l = LXUtils.lerpf(c1.lStar, c2.lStar, lerp);
+          float m = LXUtils.lerpf(c1.aStar, c2.aStar, lerp);
+          float s = LXUtils.lerpf(c1.bStar, c2.bStar, lerp);
 
-        // Optional:
-        // This will give a slight boost to mid-gradient colors, as
-        // suggested by iq. Not part of oklab spec, but looks
-        // a little nicer on 2 and 3 color swatches imo. Ymmv though.
-        float bump = 1.0f+0.2f*lerp*(1.0f-lerp);
-        l *= bump; m *= bump; s *= bump;
+          // Optional:
+          // This will give a slight boost to mid-gradient colors, as
+          // suggested by iq. Not part of oklab spec, but looks
+          // a little nicer on 2 and 3 color swatches imo. Ymmv though.
+          float bump = 1.0f + 0.2f * lerp * (1.0f - lerp);
+          l *= bump;
+          m *= bump;
+          s *= bump;
 
-        // convert back to rgb (clamped to 0..1)
-        // TODO: Can we SIMD this w/Vector library or JBLAS at some point?
-        float r = Math.min(Math.max(+4.0767245293f * l - 3.3072168827f * m + 0.2307590544f * s, 0f), 1f);
-        float g = Math.min(Math.max(-1.2681437731f * l + 2.6093323231f * m - 0.3411344290f * s, 0f), 1f);
-        float b = Math.min(Math.max(-0.0041119885f * l - 0.7034763098f * m + 1.7068625689f * s, 0f), 1f);
+          // convert back to rgb (clamped to 0..1)
+          // TODO: Can we SIMD this w/Vector library or JBLAS at some point?
+          float r =
+              Math.min(
+                  Math.max(+4.0767245293f * l - 3.3072168827f * m + 0.2307590544f * s, 0f), 1f);
+          float g =
+              Math.min(
+                  Math.max(-1.2681437731f * l + 2.6093323231f * m - 0.3411344290f * s, 0f), 1f);
+          float b =
+              Math.min(
+                  Math.max(-0.0041119885f * l - 0.7034763098f * m + 1.7068625689f * s, 0f), 1f);
 
-        return LXColor.rgbf(r*r*r, g*g*g, b*b*b);
-      };
+          return LXColor.rgbf(r * r * r, g * g * g, b * b * b);
+        };
 
     static BlendFunction _HSV(HueInterpolation hueLerp) {
       return (c1, c2, lerp) -> {
@@ -353,7 +359,6 @@ public class LXGradientUtils {
     OKLAB("Oklab", null, BlendFunction.OKLAB),
     HSVCW("HSV-CW", HueInterpolation.HSVCW, BlendFunction.HSVCW),
     HSVCCW("HSV-CCW", HueInterpolation.HSVCCW, BlendFunction.HSVCCW);
-
 
     public final String label;
     public final HueInterpolation hueInterpolation;

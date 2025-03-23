@@ -23,7 +23,7 @@ public class SketchDataManager {
       orig_idx = -1;
       num_points = -1;
       total_dist = -1;
-      points = new float[][]{};
+      points = new float[][] {};
     }
   }
 

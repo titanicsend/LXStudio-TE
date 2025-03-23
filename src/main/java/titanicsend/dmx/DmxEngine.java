@@ -28,14 +28,13 @@ import heronarts.lx.mixer.LXMixerEngine;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.output.LXOutput;
 import heronarts.lx.studio.TEApp;
+import heronarts.lx.utils.LXUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import heronarts.lx.utils.LXUtils;
 import titanicsend.app.dev.DevSwitch;
 import titanicsend.dmx.model.DmxModel;
 import titanicsend.dmx.model.DmxWholeModel;
@@ -46,7 +45,7 @@ import titanicsend.model.TEWholeModel;
  * DmxEngine manages the dmx buffers and mixes the dmx frames. Much of the heavy lifting here is a
  * modified copy of LXMixerEngine.
  *
- * Roles: - Maintains a reference of one DmxModelBuffer per LXBuffer for consumption by
+ * <p>Roles: - Maintains a reference of one DmxModelBuffer per LXBuffer for consumption by
  * patterns/effects. - Acts as a DmxMixer
  */
 public class DmxEngine implements LXLoopTask, TEWholeModel.TEModelListener {
@@ -186,13 +185,14 @@ public class DmxEngine implements LXLoopTask, TEWholeModel.TEModelListener {
     }
   }
 
-  private DmxModel instantiateDmxModel(String className, LXModel model) throws LX.InstantiationException {
+  private DmxModel instantiateDmxModel(String className, LXModel model)
+      throws LX.InstantiationException {
     try {
       Class<? extends DmxModel> cls = Class.forName(className).asSubclass(DmxModel.class);
       return cls.getConstructor(LXModel.class).newInstance(model);
     } catch (Exception x) {
-      throw new LX.InstantiationException(x,
-        "DmxModel " + className + " could not be loaded. " + x.toString());
+      throw new LX.InstantiationException(
+          x, "DmxModel " + className + " could not be loaded. " + x.toString());
     }
   }
 
@@ -664,11 +664,11 @@ public class DmxEngine implements LXLoopTask, TEWholeModel.TEModelListener {
         DmxWholeModel dmxWholeModel = (DmxWholeModel) model;
 
         this.model = dmxWholeModel;
-        //if (this.main == null) {
-          this.main = createFullBuffer(this.model);
-          this.cue = createFullBuffer(this.model);
-          this.aux = createFullBuffer(this.model);
-        //}
+        // if (this.main == null) {
+        this.main = createFullBuffer(this.model);
+        this.cue = createFullBuffer(this.model);
+        this.aux = createFullBuffer(this.model);
+        // }
       } else {
         LX.error("Model is not DmxWholeModel, DmxEngine will fail.");
       }
@@ -771,5 +771,4 @@ public class DmxEngine implements LXLoopTask, TEWholeModel.TEModelListener {
       runDmxMixer();
     }
   }
-
 }

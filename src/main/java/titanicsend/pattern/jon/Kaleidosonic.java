@@ -17,8 +17,8 @@ public class Kaleidosonic extends GLShaderPattern {
     controls.setRange(TEControlTag.SIZE, 2., 3, 0.5); // scale
     controls.setRange(TEControlTag.QUANTITY, 7, 1, 13); // number of kaleidoscope slices
     controls.setValue(TEControlTag.SPIN, 0.05);
-    controls.setRange(TEControlTag.LEVELREACTIVITY,0.1,0,0.3);
-    controls.setRange(TEControlTag.FREQREACTIVITY,0.1,0,1);
+    controls.setRange(TEControlTag.LEVELREACTIVITY, 0.1, 0, 0.3);
+    controls.setRange(TEControlTag.FREQREACTIVITY, 0.1, 0, 1);
 
     // register common controls with LX
     addCommonControls();

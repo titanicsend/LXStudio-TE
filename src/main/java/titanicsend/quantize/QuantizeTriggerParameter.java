@@ -30,6 +30,7 @@ public class QuantizeTriggerParameter extends TriggerParameter {
 
   /**
    * Enable or disable quantized inputs
+   *
    * @param on Whether to delay input until the next quantized event
    * @return this
    */
@@ -47,5 +48,4 @@ public class QuantizeTriggerParameter extends TriggerParameter {
     this.quantizer.dispose();
     super.dispose();
   }
-
 }

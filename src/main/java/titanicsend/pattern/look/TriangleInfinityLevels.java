@@ -22,12 +22,12 @@ public class TriangleInfinityLevels extends GLShaderPattern {
 
     addCommonControls();
     addShader(
-      "triangle_infinity.fs",
-      new GLShaderFrameSetup() {
-        @Override
-        public void OnFrame(GLShader s) {
-          s.setUniform("brightnessDampening", 0.5f);
-        }
-      });
+        "triangle_infinity.fs",
+        new GLShaderFrameSetup() {
+          @Override
+          public void OnFrame(GLShader s) {
+            s.setUniform("brightnessDampening", 0.5f);
+          }
+        });
   }
 }

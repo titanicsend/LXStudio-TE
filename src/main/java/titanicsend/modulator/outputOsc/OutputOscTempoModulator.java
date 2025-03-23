@@ -16,15 +16,14 @@ import heronarts.lx.utils.LXUtils;
 @LXModulator.Device("Output OSC Tempo")
 @LXCategory("Output")
 public class OutputOscTempoModulator extends LXModulator
-  implements LXOscComponent, UIModulatorControls<OutputOscTempoModulator> {
+    implements LXOscComponent, UIModulatorControls<OutputOscTempoModulator> {
 
-
-  public final StringParameter path =
-    new StringParameter("Path", "/te/tempo");
+  public final StringParameter path = new StringParameter("Path", "/te/tempo");
 
   public OutputOscTempoModulator() {
     this("Output OSC Tempo");
   }
+
   public OutputOscTempoModulator(String label) {
     super(label);
     addParameter("path", this.path);
@@ -34,10 +33,9 @@ public class OutputOscTempoModulator extends LXModulator
     // Copied from LXComponent: These checks are necessary for bootstrapping, before the OSC engine
     // is spun up
     return (this.lx != null)
-      && (this.lx.engine != null)
-      && (this.lx.engine.osc != null)
-      && (this.lx.engine.osc.transmitActive.isOn()
-      && (this.lx.engine.output.enabled.isOn()));
+        && (this.lx.engine != null)
+        && (this.lx.engine.osc != null)
+        && (this.lx.engine.osc.transmitActive.isOn() && (this.lx.engine.output.enabled.isOn()));
   }
 
   @Override
@@ -51,24 +49,22 @@ public class OutputOscTempoModulator extends LXModulator
   }
 
   @Override
-  public void buildModulatorControls(LXStudio.UI ui, UIModulator uiModulator, OutputOscTempoModulator modulator) {
+  public void buildModulatorControls(
+      LXStudio.UI ui, UIModulator uiModulator, OutputOscTempoModulator modulator) {
     uiModulator.setContentHeight(UIKnob.HEIGHT + 4);
     uiModulator.setLayout(UI2dContainer.Layout.HORIZONTAL);
     uiModulator.setChildSpacing(2);
     uiModulator.addChildren(
-      newTextBox(this.path)
-        .setWidth(150)
-        .setTextAlignment(VGraphics.Align.LEFT),
-      newDoubleBox(this.lx.engine.tempo.bpm)
-        .setEditable(false)
-        .setTextAlignment(VGraphics.Align.LEFT)
-        .setWidth(40)
-    );
+        newTextBox(this.path).setWidth(150).setTextAlignment(VGraphics.Align.LEFT),
+        newDoubleBox(this.lx.engine.tempo.bpm)
+            .setEditable(false)
+            .setTextAlignment(VGraphics.Align.LEFT)
+            .setWidth(40));
   }
 
   @Override
-  public void disposeModulatorControls(LXStudio.UI ui, UIModulator uiModulator, OutputOscTempoModulator modulator) {
+  public void disposeModulatorControls(
+      LXStudio.UI ui, UIModulator uiModulator, OutputOscTempoModulator modulator) {
     UIModulatorControls.super.disposeModulatorControls(ui, uiModulator, modulator);
   }
-
 }

@@ -15,7 +15,7 @@ import titanicsend.ui.UIUtils;
 
 @LXCategory("DMX")
 public class BeaconEasyPattern extends BeaconPattern
-        implements UIDeviceControls<BeaconEasyPattern> {
+    implements UIDeviceControls<BeaconEasyPattern> {
 
   // Color Wheel (without the scroll options)
   DmxDiscreteParameter colorWheelFixed =
@@ -85,5 +85,4 @@ public class BeaconEasyPattern extends BeaconPattern
   public void buildDeviceControls(UI ui, UIDevice uiDevice, BeaconEasyPattern device) {
     UIUtils.buildMftStyleDeviceControls(ui, uiDevice, device);
   }
-
 }

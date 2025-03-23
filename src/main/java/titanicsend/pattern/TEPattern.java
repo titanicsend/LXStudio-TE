@@ -1,5 +1,7 @@
 package titanicsend.pattern;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import heronarts.lx.LX;
 import heronarts.lx.Tempo;
 import heronarts.lx.audio.GraphicMeter;
@@ -15,10 +17,6 @@ import heronarts.lx.parameter.TriggerParameter;
 import heronarts.lx.studio.TEApp;
 import java.util.*;
 import java.util.Map.Entry;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
 import titanicsend.color.TEColorType;
 import titanicsend.dmx.pattern.DmxPattern;
 import titanicsend.model.TELaserModel;
@@ -38,10 +36,11 @@ public abstract class TEPattern extends DmxPattern {
   }
 
   public final TriggerParameter captureDefaults =
-    new TriggerParameter("SetDefaults", this::captureDefaults)
-    .setDescription("Set current parameter values as the default values for this pattern instance");
+      new TriggerParameter("SetDefaults", this::captureDefaults)
+          .setDescription(
+              "Set current parameter values as the default values for this pattern instance");
 
-  private final Map<String, Double> defaults  = new LinkedHashMap<String, Double>();
+  private final Map<String, Double> defaults = new LinkedHashMap<String, Double>();
 
   protected TEPattern(LX lx) {
     super(lx);
@@ -209,32 +208,30 @@ public abstract class TEPattern extends DmxPattern {
     return rv;
   }
 
-  /**
-   * Set all current parameter values as the defaults for this pattern instance
-   */
+  /** Set all current parameter values as the defaults for this pattern instance */
   public void captureDefaults() {
     for (LXParameter p : this.getParameters()) {
       if (p instanceof LXListenableParameter && !isHiddenControl(p)) {
-        captureDefault((LXListenableParameter)p);
+        captureDefault((LXListenableParameter) p);
       }
     }
   }
 
-  /**
-   * Set a parameter's current value as its default and remember new default for file save/load.
-   */
+  /** Set a parameter's current value as its default and remember new default for file save/load. */
   protected void captureDefault(LXListenableParameter p) {
     if (p.getParent() != this) {
-      throw new UnsupportedOperationException("Can not apply default value, parameter is not child of pattern.");
+      throw new UnsupportedOperationException(
+          "Can not apply default value, parameter is not child of pattern.");
     }
 
     if (p instanceof StringParameter) {
       // Placeholder: StringParameter does not have a public method for setting the default value
     } else {
       // Use base value for modulated parameters
-      double value = p instanceof CompoundParameter ? ((CompoundParameter)p).getBaseValue() : p.getValue();
+      double value =
+          p instanceof CompoundParameter ? ((CompoundParameter) p).getBaseValue() : p.getValue();
       this.defaults.put(p.getPath(), value);
-      ((LXListenableParameter)p).reset(value);
+      ((LXListenableParameter) p).reset(value);
     }
   }
 
@@ -300,11 +297,11 @@ public abstract class TEPattern extends DmxPattern {
   }
 
   /**
-   * utility method for use during the static-to-dynamic model transition.
-   * IMPORTANT:  There is a performance cost to this, so it should be
-   * removed when we no longer need to support the static model.
+   * utility method for use during the static-to-dynamic model transition. IMPORTANT: There is a
+   * performance cost to this, so it should be removed when we no longer need to support the static
+   * model.
    */
-   public float getXn(LXPoint p) {
+  public float getXn(LXPoint p) {
     return (modelTE.isStatic()) ? p.zn : p.xn;
   }
 }

@@ -1,16 +1,15 @@
 package titanicsend.pattern.jon;
 
+import static heronarts.lx.utils.Noise.stb_perlin_noise3;
+
 import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import java.nio.FloatBuffer;
-
 import heronarts.lx.parameter.LXParameter;
+import java.nio.FloatBuffer;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-
-import static heronarts.lx.utils.Noise.stb_perlin_noise3;
 
 @LXCategory("Combo FG")
 public class EdgeFall extends GLShaderPattern {
@@ -102,7 +101,8 @@ public class EdgeFall extends GLShaderPattern {
     controls.setExponent(TEControlTag.SIZE, 0.3);
 
     // wow1 - falling phase duration before auto reset (in beats at current tempo)
-    controls.setRange(TEControlTag.WOW1, 4.0, 1, 16)
+    controls
+        .setRange(TEControlTag.WOW1, 4.0, 1, 16)
         .setUnits(TEControlTag.WOW1, LXParameter.Units.INTEGER);
 
     // wow2 controls palette color mix

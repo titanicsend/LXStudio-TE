@@ -4,9 +4,7 @@ import heronarts.lx.LX;
 import heronarts.lx.audio.GraphicMeter;
 import heronarts.lx.parameter.LXParameter;
 import java.util.List;
-
 import titanicsend.pattern.glengine.GLEngine;
-import titanicsend.util.TEMath;
 
 /**
  * Patterns should inherit from this if they wish to make use of live audio data and several useful

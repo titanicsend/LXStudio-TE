@@ -5,7 +5,6 @@ import heronarts.glx.ui.component.UIItemList;
 import heronarts.lx.LXPresetComponent;
 import heronarts.lx.command.LXCommand;
 import heronarts.lx.studio.LXStudio;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +19,12 @@ public class UIUserPresetList extends UIItemList.ScrollList {
 
   private PresetItem activeItem;
 
-  public UIUserPresetList(LXStudio.UI ui, int x, int y, int w, int h,
+  public UIUserPresetList(
+      LXStudio.UI ui,
+      int x,
+      int y,
+      int w,
+      int h,
       final UserPresetCollection collection,
       LXPresetComponent component) {
     super(ui, x, y, w, h);
@@ -35,22 +39,24 @@ public class UIUserPresetList extends UIItemList.ScrollList {
       onPresetAdded(pattern);
     }
 
-    collection.addListener(this.collectionListener = new UserPresetCollection.Listener() {
-      @Override
-      public void presetAdded(UserPreset pattern) {
-        onPresetAdded(pattern);
-      }
+    collection.addListener(
+        this.collectionListener =
+            new UserPresetCollection.Listener() {
+              @Override
+              public void presetAdded(UserPreset pattern) {
+                onPresetAdded(pattern);
+              }
 
-      @Override
-      public void presetMoved(UserPreset pattern) {
-        onPresetMoved(pattern);
-      }
+              @Override
+              public void presetMoved(UserPreset pattern) {
+                onPresetMoved(pattern);
+              }
 
-      @Override
-      public void presetRemoved(UserPreset pattern) {
-        onPresetRemoved(pattern);
-      }
-    });
+              @Override
+              public void presetRemoved(UserPreset pattern) {
+                onPresetRemoved(pattern);
+              }
+            });
   }
 
   private void setActiveItem(PresetItem item) {
@@ -92,8 +98,7 @@ public class UIUserPresetList extends UIItemList.ScrollList {
   }
 
   /**
-   * By adding a preset through the list, we can make it the active preset in
-   * this list instance.
+   * By adding a preset through the list, we can make it the active preset in this list instance.
    */
   public UserPreset addPreset() {
     UserPreset preset = this.collection.addPreset(component);
@@ -135,7 +140,6 @@ public class UIUserPresetList extends UIItemList.ScrollList {
       preset.label.addListener(redraw);
     }
 
-
     @Override
     public boolean isActive() {
       return this.equals(activeItem);
@@ -143,9 +147,9 @@ public class UIUserPresetList extends UIItemList.ScrollList {
 
     @Override
     public int getActiveColor(UI ui) {
-      return this.equals(activeItem) ?
-        ui.theme.primaryColor.get() :
-          ui.theme.listItemSecondaryColor.get();
+      return this.equals(activeItem)
+          ? ui.theme.primaryColor.get()
+          : ui.theme.listItemSecondaryColor.get();
     }
 
     @Override
@@ -187,5 +191,4 @@ public class UIUserPresetList extends UIItemList.ScrollList {
       this.preset.label.removeListener(redraw);
     }
   }
-
 }

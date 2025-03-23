@@ -2,16 +2,14 @@ package titanicsend.pattern.glengine;
 
 import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-
 /**
- * Wrapper class for OpenGL shaders. Simplifies handling of
- * context and native memory management, and provides a
- * convenient interface for adding shaders to a pattern.
+ * Wrapper class for OpenGL shaders. Simplifies handling of context and native memory management,
+ * and provides a convenient interface for adding shaders to a pattern.
  */
 public class GLShaderPattern extends TEPerformancePattern {
   public interface GLShaderFrameSetup {
@@ -71,7 +69,7 @@ public class GLShaderPattern extends TEPerformancePattern {
   // Add a shader by fragment shader filename, using the default OnFrame() function.
   // The simple option for shaders that use only the default TEPerformancePattern
   // uniforms and don't require any additional computation in Java.
-  public void addShader(String shaderName,      String... textureFilenames) {
+  public void addShader(String shaderName, String... textureFilenames) {
     addShader(new GLShader(lx, shaderName, getControlData(), textureFilenames));
   }
 
@@ -98,7 +96,7 @@ public class GLShaderPattern extends TEPerformancePattern {
     }
 
     // paint the final shader output to the car
-    ShaderPainter.mapToPointsDirect(m.points, s.shader.getImageBuffer(),getColors());
+    ShaderPainter.mapToPointsDirect(m.points, s.shader.getImageBuffer(), getColors());
   }
 
   @Override
@@ -128,5 +126,4 @@ public class GLShaderPattern extends TEPerformancePattern {
       s.shader.dispose();
     }
   }
-
 }

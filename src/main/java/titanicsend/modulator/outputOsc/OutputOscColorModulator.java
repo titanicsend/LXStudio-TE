@@ -24,21 +24,19 @@ import heronarts.lx.utils.LXUtils;
 @LXModulator.Device("Output OSC Color")
 @LXCategory("Output")
 public class OutputOscColorModulator extends LXModulator
-  implements LXOscComponent, UIModulatorControls<OutputOscColorModulator> {
+    implements LXOscComponent, UIModulatorControls<OutputOscColorModulator> {
 
-  public final StringParameter path =
-    new StringParameter("Path", "/te/color123");
+  public final StringParameter path = new StringParameter("Path", "/te/color123");
 
   public final DiscreteParameter paletteIndex =
-    new LXPalette.IndexSelector("Index")
-      .setDescription("Target index in the global palette's active swatch");
+      new LXPalette.IndexSelector("Index")
+          .setDescription("Target index in the global palette's active swatch");
 
   public final EnumParameter<LXDmxEngine.ByteOrder> byteOrder =
-    new EnumParameter<LXDmxEngine.ByteOrder>("Byte Order", LXDmxEngine.ByteOrder.RGB);
+      new EnumParameter<LXDmxEngine.ByteOrder>("Byte Order", LXDmxEngine.ByteOrder.RGB);
 
   public final ColorParameter color =
-    new ColorParameter("Color", LXColor.BLACK)
-      .setDescription("Color to send");
+      new ColorParameter("Color", LXColor.BLACK).setDescription("Color to send");
 
   public OutputOscColorModulator() {
     this("Output OSC Color");
@@ -56,10 +54,9 @@ public class OutputOscColorModulator extends LXModulator
     // Copied from LXComponent: These checks are necessary for bootstrapping, before the OSC engine
     // is spun up
     return (this.lx != null)
-      && (this.lx.engine != null)
-      && (this.lx.engine.osc != null)
-      && (this.lx.engine.osc.transmitActive.isOn()
-      && (this.lx.engine.output.enabled.isOn()));
+        && (this.lx.engine != null)
+        && (this.lx.engine.osc != null)
+        && (this.lx.engine.osc.transmitActive.isOn() && (this.lx.engine.output.enabled.isOn()));
   }
 
   @Override
@@ -69,7 +66,7 @@ public class OutputOscColorModulator extends LXModulator
     this.color.setColor(color);
     String path = this.path.getString();
     if (!LXUtils.isEmpty(path) && canSend()) {
-/*    LXDmxEngine.ByteOrder byteOrder = this.byteOrder.getEnum();
+      /*    LXDmxEngine.ByteOrder byteOrder = this.byteOrder.getEnum();
       LXColor.rgba(
         this.data[universe][channel + byteOrder.r],
         this.data[universe][channel + byteOrder.g],
@@ -87,30 +84,30 @@ public class OutputOscColorModulator extends LXModulator
   UI2dComponent uiColor;
 
   @Override
-  public void buildModulatorControls(LXStudio.UI ui, UIModulator uiModulator, OutputOscColorModulator modulator) {
+  public void buildModulatorControls(
+      LXStudio.UI ui, UIModulator uiModulator, OutputOscColorModulator modulator) {
     uiModulator.setContentHeight(UIKnob.HEIGHT + 4);
     uiModulator.setLayout(UI2dContainer.Layout.HORIZONTAL);
     uiModulator.setChildSpacing(2);
 
     uiModulator.addChildren(
-      newTextBox(this.path)
-        .setWidth(120)
-        .setTextAlignment(VGraphics.Align.LEFT)
-        .setY(12),
+        newTextBox(this.path).setWidth(120).setTextAlignment(VGraphics.Align.LEFT).setY(12),
+        new UIDropMenu(140, 0, 48, 16, this.paletteIndex),
+        uiColor =
+            new UI2dComponent(uiModulator.getContentWidth() - 16, 0, 16, HEIGHT) {}.setBorderColor(
+                ui.theme.controlBorderColor));
 
-      new UIDropMenu(140, 0, 48, 16, this.paletteIndex),
-
-      uiColor = new UI2dComponent(uiModulator.getContentWidth() - 16, 0, 16, HEIGHT) {}
-        .setBorderColor(ui.theme.controlBorderColor)
-    );
-
-    uiModulator.addListener(this.color, p -> {
-      uiColor.setBackgroundColor(this.color.getColor());
-    }, true);
+    uiModulator.addListener(
+        this.color,
+        p -> {
+          uiColor.setBackgroundColor(this.color.getColor());
+        },
+        true);
   }
 
   @Override
-  public void disposeModulatorControls(LXStudio.UI ui, UIModulator uiModulator, OutputOscColorModulator modulator) {
+  public void disposeModulatorControls(
+      LXStudio.UI ui, UIModulator uiModulator, OutputOscColorModulator modulator) {
     UIModulatorControls.super.disposeModulatorControls(ui, uiModulator, modulator);
   }
 }

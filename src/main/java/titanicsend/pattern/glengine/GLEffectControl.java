@@ -2,7 +2,6 @@ package titanicsend.pattern.glengine;
 
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
-import titanicsend.audio.AudioStems;
 import titanicsend.color.TEColorType;
 
 public class GLEffectControl implements GLControlData {

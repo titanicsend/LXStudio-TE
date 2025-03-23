@@ -8,8 +8,6 @@ import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
-import java.util.Arrays;
-
 @LXCategory("Edge FG")
 public class FxDualWave extends TEPerformancePattern {
   boolean active = false;
@@ -34,12 +32,12 @@ public class FxDualWave extends TEPerformancePattern {
   }
 
   public final EnumParameter<FxDualWave.TriggerMode> triggerMode =
-    new EnumParameter<FxDualWave.TriggerMode>("Mode", FxDualWave.TriggerMode.ONCE)
-      .setDescription("Trigger Mode");
+      new EnumParameter<FxDualWave.TriggerMode>("Mode", FxDualWave.TriggerMode.ONCE)
+          .setDescription("Trigger Mode");
 
   public FxDualWave(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
-    
+
     // Speed controls the transit speed of the waves
     controls.setRange(TEControlTag.SPEED, 0.5, -1.25, 1.25);
 
@@ -103,7 +101,7 @@ public class FxDualWave extends TEPerformancePattern {
       float dist = Math.abs(x - lightWave);
 
       if (dist <= width) {
-        //color = setBrightness(color, (float) TEMath.clamp(dist, 0f, 1f));
+        // color = setBrightness(color, (float) TEMath.clamp(dist, 0f, 1f));
         colors[point.index] = color;
       }
     }
@@ -121,7 +119,7 @@ public class FxDualWave extends TEPerformancePattern {
       float dist = Math.abs(x - lightWave);
 
       if (dist <= width) {
-        //color = setBrightness(color, (float) TEMath.clamp(dist, 0f, 1f));
+        // color = setBrightness(color, (float) TEMath.clamp(dist, 0f, 1f));
         colors[point.index] = color;
       }
     }
@@ -152,12 +150,9 @@ public class FxDualWave extends TEPerformancePattern {
     if (parameter == triggerMode) {
       if (triggerMode.getEnum() == TriggerMode.ONCE) {
         this.active = false;
-      }
-      else {
+      } else {
         this.active = true;
       }
     }
   }
-
-
 }

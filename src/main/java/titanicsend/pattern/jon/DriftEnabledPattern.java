@@ -7,8 +7,8 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
 /**
  * Class for patterns that need controllable continuous, unbounded x/y movement. Overrides the
  * default XOffset/YOffset control behavior so the controls set a direction vector, and the position
- * is smoothly changed. The maximum movement rate is based on the real-time clock, independent of the
- * speed control.
+ * is smoothly changed. The maximum movement rate is based on the real-time clock, independent of
+ * the speed control.
  *
  * <p>Note that patterns must be "drift aware" - they must know that the offset controls now set a
  * direction and speed, and that the current position is available via the getXPosition() and

@@ -11,7 +11,6 @@ import heronarts.lx.LXPresetComponent;
 import heronarts.lx.LXSerializable;
 import heronarts.lx.color.ColorParameter;
 import heronarts.lx.color.LXColor;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -19,9 +18,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
-/**
- * Contains presets for multiple components
- */
+/** Contains presets for multiple components */
 public class UserPresetLibrary implements LXSerializable {
   private final LX lx;
 
@@ -30,10 +27,13 @@ public class UserPresetLibrary implements LXSerializable {
 
   public final ColorParameter color = new ColorParameter("Color", LXColor.RED);
 
-  private final List<UserPresetCollection> mutableCollections = new ArrayList<UserPresetCollection>();
-  public final List<UserPresetCollection> collections = Collections.unmodifiableList(this.mutableCollections);
+  private final List<UserPresetCollection> mutableCollections =
+      new ArrayList<UserPresetCollection>();
+  public final List<UserPresetCollection> collections =
+      Collections.unmodifiableList(this.mutableCollections);
 
-  private final Map<String, UserPresetCollection> collectionDict = new HashMap<String, UserPresetCollection>();
+  private final Map<String, UserPresetCollection> collectionDict =
+      new HashMap<String, UserPresetCollection>();
 
   public UserPresetLibrary(LX lx) {
     this.lx = lx;
@@ -44,9 +44,7 @@ public class UserPresetLibrary implements LXSerializable {
     return this.file;
   }
 
-  /**
-   * Retrieve a collection of presets for a given component (pattern, etc)
-   */
+  /** Retrieve a collection of presets for a given component (pattern, etc) */
   public UserPresetCollection get(LXPresetComponent component) {
     return get(PresetEngine.getPresetName(component));
   }
@@ -61,10 +59,7 @@ public class UserPresetLibrary implements LXSerializable {
     return c;
   }
 
-  /**
-   * Save/Load
-   */
-
+  /** Save/Load */
   public void save(File file) {
     JsonObject obj = new JsonObject();
     save(this.lx, obj);

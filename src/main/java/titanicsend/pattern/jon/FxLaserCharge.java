@@ -44,8 +44,7 @@ public class FxLaserCharge extends GLShaderPattern {
 
     addCommonControls();
 
-    addShader(new GLShader(lx, "ms_charge_lasers.fs",
-      getControlData(), "color_noise.png"), setup);
+    addShader(new GLShader(lx, "ms_charge_lasers.fs", getControlData(), "color_noise.png"), setup);
 
     eventStartTime = 0;
     running = false;

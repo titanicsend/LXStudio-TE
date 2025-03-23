@@ -8,8 +8,8 @@ import heronarts.lx.LXSerializable;
 import titanicsend.pattern.TEPattern;
 
 /**
- * A saveable snapshot of a component including parameter values and modulators.
- * Adds a renamable label and list ordering.
+ * A saveable snapshot of a component including parameter values and modulators. Adds a renamable
+ * label and list ordering.
  */
 public class UserPreset extends LXComponent implements LXComponent.Renamable, LXSerializable {
 
@@ -35,15 +35,14 @@ public class UserPreset extends LXComponent implements LXComponent.Renamable, LX
     return this;
   }
 
-  /**
-   * Checks whether an object instance matches this preset class
-   */
+  /** Checks whether an object instance matches this preset class */
   public boolean matches(LXPresetComponent component) {
     return this.clazz.equals(PresetEngine.getPresetName(component));
   }
 
   /**
    * Update this preset with the current state of a component
+   *
    * @param component Component matching the class of this UserPreset
    */
   public UserPreset capture(LXPresetComponent component) {
@@ -51,13 +50,14 @@ public class UserPreset extends LXComponent implements LXComponent.Renamable, LX
       throw new IllegalArgumentException("Component must be LXComponent to capture preset");
     }
     if (!matches(component)) {
-      throw new IllegalArgumentException("Can not capture component that does not match UserPreset class");
+      throw new IllegalArgumentException(
+          "Can not capture component that does not match UserPreset class");
     }
 
     if (component instanceof TEPattern) {
       // Set the current parameter values as default before creating preset.
       // Panic button will return to these.
-      ((TEPattern)component).captureDefaults();
+      ((TEPattern) component).captureDefaults();
     }
 
     this.preset = new JsonObject();
@@ -67,19 +67,18 @@ public class UserPreset extends LXComponent implements LXComponent.Renamable, LX
     return this;
   }
 
-  /**
-   * Restore a preset to a component.  Component type must match.
-   */
+  /** Restore a preset to a component. Component type must match. */
   public UserPreset restore(LXPresetComponent component) {
     if (!(component instanceof LXComponent)) {
       throw new IllegalArgumentException("Component must be LXComponent to restore preset");
     }
     if (!matches(component)) {
-      throw new IllegalArgumentException("Can not restore UserPreset to unmatching component type" + component);
+      throw new IllegalArgumentException(
+          "Can not restore UserPreset to unmatching component type" + component);
     }
 
     // Custom tweak to LX framework, allow loading of preset from JsonObject
-    ((LXComponent)component).loadPreset(this.preset);
+    ((LXComponent) component).loadPreset(this.preset);
 
     return this;
   }
@@ -107,7 +106,7 @@ public class UserPreset extends LXComponent implements LXComponent.Renamable, LX
       this.setLabel(obj.get(KEY_LABEL).getAsString());
     }
     if (obj.has(KEY_PRESET_OBJ)) {
-      JsonObject presetObj  = obj.get(KEY_PRESET_OBJ).getAsJsonObject().deepCopy();
+      JsonObject presetObj = obj.get(KEY_PRESET_OBJ).getAsJsonObject().deepCopy();
       this.preset = presetObj;
     }
   }
