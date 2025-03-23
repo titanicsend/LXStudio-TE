@@ -10,7 +10,6 @@ import heronarts.lx.mixer.LXBus;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXParameterListener;
-
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -81,10 +80,10 @@ public class APC40Mk2 extends heronarts.lx.midi.surface.APC40Mk2 {
   private boolean isRegistered = false;
 
   private final LXParameterListener userButtonListener =
-    (p) -> {
-      UserButton button = userButtonsRev.get((BooleanParameter) p);
-      sendUserButton(button, ((BooleanParameter) p).isOn());
-    };
+      (p) -> {
+        UserButton button = userButtonsRev.get((BooleanParameter) p);
+        sendUserButton(button, ((BooleanParameter) p).isOn());
+      };
 
   private void registerUserButtons() {
     if (this.isRegistered) {
@@ -122,10 +121,11 @@ public class APC40Mk2 extends heronarts.lx.midi.surface.APC40Mk2 {
   }
 
   /**
-   * A static call registers a parameter for all instances of the surface,
-   * which notifies each surface so they can listen to the parameters.
+   * A static call registers a parameter for all instances of the surface, which notifies each
+   * surface so they can listen to the parameters.
    */
-  private void userButtonChanged(UserButton button, BooleanParameter oldParameter, BooleanParameter newParameter) {
+  private void userButtonChanged(
+      UserButton button, BooleanParameter oldParameter, BooleanParameter newParameter) {
     if (this.isRegistered) {
       if (oldParameter != null) {
         unregisterUserButton(oldParameter);

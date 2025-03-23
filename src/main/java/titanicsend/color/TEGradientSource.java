@@ -6,9 +6,7 @@ import heronarts.lx.color.LXDynamicColor;
 import heronarts.lx.color.LXSwatch;
 import titanicsend.lx.LXGradientUtils;
 
-/**
- * Calculates TE gradients once per frame in a global singleton
- */
+/** Calculates TE gradients once per frame in a global singleton */
 public class TEGradientSource {
 
   private static TEGradientSource current;
@@ -22,20 +20,16 @@ public class TEGradientSource {
   // Keep black for building gradients
   private final LXDynamicColor black;
 
-  private static LXGradientUtils.ColorStops initColorStops(int numStops) {
+  private static LXGradientUtils.ColorStops initColorStops() {
     LXGradientUtils.ColorStops colorStops = new LXGradientUtils.ColorStops();
-    colorStops.setNumStops(numStops);
     return colorStops;
   }
 
-  /**
-   * Primary -> Secondary -> Tertiary -> (Wrap to Primary)
-   */
-  public LXGradientUtils.ColorStops normalGradient = initColorStops(4);
-  /**
-   * Primary -> Black -> (Wrap to Primary)
-   */
-  public LXGradientUtils.ColorStops darkGradient = initColorStops(3);
+  /** Primary -> Secondary -> Tertiary -> (Wrap to Primary) */
+  public LXGradientUtils.ColorStops normalGradient = initColorStops();
+
+  /** Primary -> Black -> (Wrap to Primary) */
+  public LXGradientUtils.ColorStops darkGradient = initColorStops();
 
   public TEGradientSource(LX lx) {
     current = this;
@@ -46,27 +40,33 @@ public class TEGradientSource {
     this.black = blackSwatch.getColor(0);
     this.black.primary.setColor(LXColor.BLACK);
 
-    lx.engine.addLoopTask((p) -> {
-      loop();
-    });
+    lx.engine.addLoopTask(
+        (p) -> {
+          loop();
+        });
   }
 
-  /**
-   * Refresh gradients from the global palette.
-   * Called every engine loop.
-   */
+  /** Refresh gradients from the global palette. Called every engine loop. */
   private void loop() {
     updateGradients(this.lx.engine.palette.swatch);
   }
 
   private void updateGradients(LXSwatch swatch) {
-    normalGradient.stops[0].set(swatch.getColor(TEColorType.PRIMARY.swatchIndex()));
-    normalGradient.stops[1].set(swatch.getColor(TEColorType.SECONDARY.swatchIndex()));
-    normalGradient.stops[2].set(swatch.getColor(TEColorType.TERTIARY.swatchIndex()));
-    normalGradient.stops[3].set(swatch.getColor(TEColorType.PRIMARY.swatchIndex()));
+
+    int n = swatch.colors.size();
+
+    // numStops should be the number of actual colors in the swatch, not counting the wrap
+    normalGradient.numStops = n;
+    // set gradient stops to match colors in current swatch
+    for (int i = 0; i < n; ++i) {
+      normalGradient.stops[i].set(swatch.getColor(i));
+    }
+    // wrap back to color 0
+    normalGradient.stops[n].set(swatch.getColor(0));
+
+    darkGradient.numStops = 2;
     darkGradient.stops[0].set(swatch.getColor(TEColorType.PRIMARY.swatchIndex()));
     darkGradient.stops[1].set(this.black);
     darkGradient.stops[2].set(swatch.getColor(TEColorType.PRIMARY.swatchIndex()));
   }
-
 }

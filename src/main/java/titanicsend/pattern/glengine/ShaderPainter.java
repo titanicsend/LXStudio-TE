@@ -3,25 +3,23 @@ package titanicsend.pattern.glengine;
 import heronarts.lx.model.LXPoint;
 import java.nio.ByteBuffer;
 
-/**
- * Tools for mapping textures onto the model. Most key methods are
- * static for best performance.
- */
+/** Tools for mapping textures onto the model. Most key methods are static for best performance. */
 public class ShaderPainter {
 
-  public static void mapToPointsDirect(LXPoint [] points, ByteBuffer image, int[] colors) {
+  public static void mapToPointsDirect(LXPoint[] points, ByteBuffer image, int[] colors) {
     for (int i = 0; i < points.length; i++) {
       colors[points[i].index] = image.getInt(i * 4);
     }
   }
 
-  public static void mapToBufferDirect(LXPoint [] points, ByteBuffer image, int[] colors) {
+  public static void mapToBufferDirect(LXPoint[] points, ByteBuffer image, int[] colors) {
     for (int i = 0; i < points.length; i++) {
       image.putInt(points[i].index * 4, colors[i]);
     }
   }
 
-  public static void mapFromLinearBuffer(LXPoint [] points, int xSize, int ySize, ByteBuffer dest, int[] colors) {
+  public static void mapFromLinearBuffer(
+      LXPoint[] points, int xSize, int ySize, ByteBuffer dest, int[] colors) {
     float xm = (float) xSize - 1;
     float ym = (float) ySize - 1;
 

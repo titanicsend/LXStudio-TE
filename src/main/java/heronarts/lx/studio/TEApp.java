@@ -15,18 +15,16 @@
  */
 package heronarts.lx.studio;
 
+import static titanicsend.audio.AudioStemModulator.Stem.*;
+
 import heronarts.glx.event.GamepadEvent;
 import heronarts.glx.event.KeyEvent;
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
 import heronarts.lx.mixer.LXBus;
 import heronarts.lx.mixer.LXChannel;
-import heronarts.lx.modulator.LXModulator;
 import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.pattern.texture.NoisePattern;
-
-import jkbstudio.supermod.SuperMod;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.SocketException;
@@ -37,7 +35,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.function.Function;
-
+import jkbstudio.supermod.SuperMod;
 import titanicsend.app.*;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.autopilot.justin.*;
@@ -69,7 +67,6 @@ import titanicsend.model.TEWholeModel;
 import titanicsend.model.TEWholeModelDynamic;
 import titanicsend.model.TEWholeModelStatic;
 import titanicsend.modulator.dmx.Dmx16bitModulator;
-import titanicsend.modulator.dmx.DmxColorModulator;
 import titanicsend.modulator.dmx.DmxDirectorColorModulator;
 import titanicsend.modulator.dmx.DmxDualRangeModulator;
 import titanicsend.modulator.dmx.DmxGridModulator;
@@ -112,14 +109,11 @@ import titanicsend.ui.UITEPerformancePattern;
 import titanicsend.ui.color.UIColorPaletteManager;
 import titanicsend.ui.effect.UIRandomStrobeEffect;
 import titanicsend.ui.modulator.UIDmx16bitModulator;
-import titanicsend.ui.modulator.UIDmxColorModulator;
 import titanicsend.ui.modulator.UIDmxDualRangeModulator;
 import titanicsend.ui.modulator.UIDmxGridModulator;
 import titanicsend.ui.modulator.UIDmxRangeModulator;
 import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
-
-import static titanicsend.audio.AudioStemModulator.Stem.*;
 
 public class TEApp extends LXStudio {
 
@@ -150,8 +144,8 @@ public class TEApp extends LXStudio {
 
     private final TEVirtualOverlays virtualOverlays;
 
-//    private GigglePixelListener gpListener;
-//    private GigglePixelBroadcaster gpBroadcaster;
+    //    private GigglePixelListener gpListener;
+    //    private GigglePixelBroadcaster gpBroadcaster;
 
     private TEAutopilot autopilot;
     private TEOscListener oscListener;
@@ -181,7 +175,7 @@ public class TEApp extends LXStudio {
       this.lx = lx;
       lx.addListener(this);
       lx.addProjectListener(this);
-      
+
       if (!staticModel) {
         wholeModel = new TEWholeModelDynamic(lx);
       }
@@ -196,7 +190,7 @@ public class TEApp extends LXStudio {
 
       this.dmxEngine = new DmxEngine(lx);
       this.ndiEngine = new NDIEngine(lx);
-      this.glEngine = new GLEngine(lx,glRenderWidth,glRenderHeight,staticModel);
+      this.glEngine = new GLEngine(lx, glRenderWidth, glRenderHeight, staticModel);
       gamepadEngine = new GamepadEngine(lx);
       this.presetEngine = new PresetEngine(lx);
       this.presetEngine.openFile(lx.getMediaFile("Presets/UserPresets/BM24.userPresets"));
@@ -205,9 +199,11 @@ public class TEApp extends LXStudio {
       this.superMod = new SuperMod(lx);
 
       lx.engine.registerComponent("audioStems", this.audioStems = new AudioStems(lx));
-      lx.engine.registerComponent("paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
+      lx.engine.registerComponent(
+          "paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
       if (UIColorPaletteManager.DISPLAY_TWO_MANAGED_SWATCHES) {
-        lx.engine.registerComponent("paletteManagerB", this.paletteManagerB = new ColorPaletteManager(lx, "SWATCH B", 1));
+        lx.engine.registerComponent(
+            "paletteManagerB", this.paletteManagerB = new ColorPaletteManager(lx, "SWATCH B", 1));
       } else {
         this.paletteManagerB = null;
       }
@@ -363,7 +359,8 @@ public class TEApp extends LXStudio {
       // "ShaderToyPattern" in ShaderPanelsPatternConfig.java
 
       // Useful for test, but might turn the car black in performance
-      // lx.registry.removePattern(PlanesPattern.class); // remove pattern added automatically by LX.
+      // lx.registry.removePattern(PlanesPattern.class); // remove pattern added automatically by
+      // LX.
 
       // Frame Rate Killers
       // lx.registry.addEffect(titanicsend.effect.Kaleidoscope.class);
@@ -390,7 +387,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(SignalDebugger.class);
       lx.registry.addPattern(HandTracker.class);
       lx.registry.addPattern(TargetPixelStamper.class);
-      //lx.registry.addPattern(ModelFileWriter.class);
+      // lx.registry.addPattern(ModelFileWriter.class);
       lx.registry.addPattern(TwoColorPattern.class);
       lx.registry.addPattern(MothershipDrivingPattern.class);
 
@@ -398,11 +395,16 @@ public class TEApp extends LXStudio {
       lx.engine.midi.registerSurface(MidiNames.BOMEBOX_APC40MK2, APC40Mk2.class);
       // The Director midi surface must be registered *after* the Director and ColorPaletteManager
       lx.engine.midi.registerSurface(MidiNames.APCMINIMK2_DIRECTOR, DirectorAPCminiMk2.class);
-      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_VIRTUAL_APCMINIMK2_DIRECTOR, DirectorAPCminiMk2.class);
-      // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1, MidiFighterTwister.class);
-      // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER2, MidiFighterTwister.class);
-      // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER3, MidiFighterTwister.class);
-      // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER4, MidiFighterTwister.class);
+      lx.engine.midi.registerSurface(
+          MidiNames.BOMEBOX_VIRTUAL_APCMINIMK2_DIRECTOR, DirectorAPCminiMk2.class);
+      // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1,
+      // MidiFighterTwister.class);
+      // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER2,
+      // MidiFighterTwister.class);
+      // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER3,
+      // MidiFighterTwister.class);
+      // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER4,
+      // MidiFighterTwister.class);
 
       // Fast edit: direct chain to SuperMod plugin
       this.superMod.initialize(lx);
@@ -447,25 +449,25 @@ public class TEApp extends LXStudio {
         ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIMultiplierModulator.class);
       }
 
-//      int myGigglePixelID = 73; // Looks like "TE"
-//      try {
-//        this.gpListener = new GigglePixelListener(lx, "0.0.0.0", myGigglePixelID);
-//        lx.engine.addLoopTask(this.gpListener);
-//        TE.log("GigglePixel listener created");
-//      } catch (IOException e) {
-//        TE.log("Failed to create GigglePixel listener: " + e.getMessage());
-//      }
+      //      int myGigglePixelID = 73; // Looks like "TE"
+      //      try {
+      //        this.gpListener = new GigglePixelListener(lx, "0.0.0.0", myGigglePixelID);
+      //        lx.engine.addLoopTask(this.gpListener);
+      //        TE.log("GigglePixel listener created");
+      //      } catch (IOException e) {
+      //        TE.log("Failed to create GigglePixel listener: " + e.getMessage());
+      //      }
 
-//      // This should of course be in the config, but we leave for the playa in like a week
-//      String destIP = "192.168.42.255";
-//      try {
-//        this.gpBroadcaster =
-//            new GigglePixelBroadcaster(lx, destIP, wholeModel.getName(), myGigglePixelID);
-//        lx.engine.addLoopTask(this.gpBroadcaster);
-//        TE.log("GigglePixel broadcaster created");
-//      } catch (IOException e) {
-//        TE.log("Failed to create GigglePixel broadcaster: " + e.getMessage());
-//      }
+      //      // This should of course be in the config, but we leave for the playa in like a week
+      //      String destIP = "192.168.42.255";
+      //      try {
+      //        this.gpBroadcaster =
+      //            new GigglePixelBroadcaster(lx, destIP, wholeModel.getName(), myGigglePixelID);
+      //        lx.engine.addLoopTask(this.gpBroadcaster);
+      //        TE.log("GigglePixel broadcaster created");
+      //      } catch (IOException e) {
+      //        TE.log("Failed to create GigglePixel broadcaster: " + e.getMessage());
+      //      }
 
       // create our library for autopilot
       TEPatternLibrary library = initializePatternLibrary(lx);
@@ -499,8 +501,8 @@ public class TEApp extends LXStudio {
         sx.printStackTrace();
       }
 
-//      GPOutput gpOutput = new GPOutput(lx, this.gpBroadcaster);
-//      lx.addOutput(gpOutput);
+      //      GPOutput gpOutput = new GPOutput(lx, this.gpBroadcaster);
+      //      lx.addOutput(gpOutput);
 
       TEOscMessage.applyTEOscOutputSettings(lx);
 
@@ -592,8 +594,8 @@ public class TEApp extends LXStudio {
       return l;
     }
 
-    static public final double SLOWMIN = 30;
-    static public final double SLOWMAX = 90;
+    public static final double SLOWMIN = 30;
+    public static final double SLOWMAX = 90;
 
     public void initializeAutopilotLibraryJKB() {
       AutopilotLibrary library = this.autopilotJKB.library;
@@ -601,123 +603,132 @@ public class TEApp extends LXStudio {
       // Tell autopilot which parameters to animate
 
       // Gradient
-      library.addPattern(heronarts.lx.pattern.color.GradientPattern.class)
-        .addParameter(new AutoParameter("gradient", AutoParameter.Scale.ABSOLUTE, .75, 1))
-        .addParameter(new AutoParameter("xAmount", AutoParameter.Scale.ABSOLUTE, .7, 1, SLOWMIN, SLOWMAX))
-        .addParameter(new AutoParameter("rotate", AutoParameter.Scale.ABSOLUTE, 1, 1, 0))   // force rotate on
-        .addParameter(new AutoParameter("yaw", AutoParameter.Scale.ABSOLUTE, 0, 360, 120))
-      ;
+      library
+          .addPattern(heronarts.lx.pattern.color.GradientPattern.class)
+          .addParameter(new AutoParameter("gradient", AutoParameter.Scale.ABSOLUTE, .75, 1))
+          .addParameter(
+              new AutoParameter("xAmount", AutoParameter.Scale.ABSOLUTE, .7, 1, SLOWMIN, SLOWMAX))
+          .addParameter(
+              new AutoParameter("rotate", AutoParameter.Scale.ABSOLUTE, 1, 1, 0)) // force rotate on
+          .addParameter(new AutoParameter("yaw", AutoParameter.Scale.ABSOLUTE, 0, 360, 120));
 
       // Noise is both a color and pattern
-      library.addPattern(NoisePattern.class)
-        .addParameter(new AutoParameter("scale", Scale.ABSOLUTE, 22, 80, 0))  // Randomize 22-80
-        .addParameter(new AutoParameter("midpoint", Scale.ABSOLUTE, 20, 80, 40))
-        .addParameter(new AutoParameter("xScale", Scale.NORMALIZED, .25, .75, .1))
-        .addParameter(new AutoParameter("yScale", Scale.NORMALIZED, 0, 1, .2))
-        .addParameter(new AutoParameter("contrast", Scale.ABSOLUTE, 100, 400, 100))
-        .addParameter(new AutoParameter("motionSpeed", Scale.ABSOLUTE, .6, .9, .1))
-        .addParameter(new AutoParameter("xMotion", Scale.NORMALIZED, 0, 1, .5))
-        .addParameter(new AutoParameter("yMotion", Scale.NORMALIZED, 0, 1, .5))
-      ;
+      library
+          .addPattern(NoisePattern.class)
+          .addParameter(new AutoParameter("scale", Scale.ABSOLUTE, 22, 80, 0)) // Randomize 22-80
+          .addParameter(new AutoParameter("midpoint", Scale.ABSOLUTE, 20, 80, 40))
+          .addParameter(new AutoParameter("xScale", Scale.NORMALIZED, .25, .75, .1))
+          .addParameter(new AutoParameter("yScale", Scale.NORMALIZED, 0, 1, .2))
+          .addParameter(new AutoParameter("contrast", Scale.ABSOLUTE, 100, 400, 100))
+          .addParameter(new AutoParameter("motionSpeed", Scale.ABSOLUTE, .6, .9, .1))
+          .addParameter(new AutoParameter("xMotion", Scale.NORMALIZED, 0, 1, .5))
+          .addParameter(new AutoParameter("yMotion", Scale.NORMALIZED, 0, 1, .5));
 
       // Chase
-      library.addPattern(heronarts.lx.pattern.strip.ChasePattern.class)
-        .addParameter(new AutoParameter("speed", Scale.ABSOLUTE, -20, 40, 20))
-        .addParameter(new AutoParameter("size", Scale.ABSOLUTE, 20, 70, 40))
-        .addParameter(new AutoParameter("fade", Scale.ABSOLUTE, 20, 60, 20))
-        .addParameter(new AutoParameter("chunkSize", Scale.ABSOLUTE, 20, 80, 0))
-        .addParameter(new AutoParameter("shift", Scale.ABSOLUTE, 0, 70, 14))
-      ;
+      library
+          .addPattern(heronarts.lx.pattern.strip.ChasePattern.class)
+          .addParameter(new AutoParameter("speed", Scale.ABSOLUTE, -20, 40, 20))
+          .addParameter(new AutoParameter("size", Scale.ABSOLUTE, 20, 70, 40))
+          .addParameter(new AutoParameter("fade", Scale.ABSOLUTE, 20, 60, 20))
+          .addParameter(new AutoParameter("chunkSize", Scale.ABSOLUTE, 20, 80, 0))
+          .addParameter(new AutoParameter("shift", Scale.ABSOLUTE, 0, 70, 14));
 
       // Chevron
-      library.addPattern(heronarts.lx.pattern.form.ChevronPattern.class)
-        .addParameter(new AutoParameter("speed", Scale.ABSOLUTE, 45, 75, 20))
-        .addParameter(new AutoParameter("xAmt", Scale.ABSOLUTE, 0, 1, .2))
-        .addParameter(new AutoParameter("zAmt", Scale.ABSOLUTE, 0, 1, SLOWMIN, SLOWMAX, .5))
-        .addParameter(new AutoParameter("sharp", Scale.ABSOLUTE, 1.7, 30, SLOWMIN, SLOWMAX, 20))
-        .addParameter(new AutoParameter("stripes", Scale.ABSOLUTE, 1, 4, SLOWMIN, SLOWMAX, 1.75))
-        .addParameter(new AutoParameter("yaw", Scale.ABSOLUTE, 0, 360, SLOWMIN, SLOWMAX, 120))
-        .addParameter(new AutoParameter("pitch", Scale.ABSOLUTE, 0, 180, SLOWMIN, SLOWMAX))
-      ;
+      library
+          .addPattern(heronarts.lx.pattern.form.ChevronPattern.class)
+          .addParameter(new AutoParameter("speed", Scale.ABSOLUTE, 45, 75, 20))
+          .addParameter(new AutoParameter("xAmt", Scale.ABSOLUTE, 0, 1, .2))
+          .addParameter(new AutoParameter("zAmt", Scale.ABSOLUTE, 0, 1, SLOWMIN, SLOWMAX, .5))
+          .addParameter(new AutoParameter("sharp", Scale.ABSOLUTE, 1.7, 30, SLOWMIN, SLOWMAX, 20))
+          .addParameter(new AutoParameter("stripes", Scale.ABSOLUTE, 1, 4, SLOWMIN, SLOWMAX, 1.75))
+          .addParameter(new AutoParameter("yaw", Scale.ABSOLUTE, 0, 360, SLOWMIN, SLOWMAX, 120))
+          .addParameter(new AutoParameter("pitch", Scale.ABSOLUTE, 0, 180, SLOWMIN, SLOWMAX));
 
       // Life (deprecated)
-      library.addPattern(heronarts.lx.pattern.texture.LifePattern.class)
-        .addParameter(new AutoParameter("translateX", Scale.ABSOLUTE, -.7, .7, .9))
-        .addParameter(new AutoParameter("yaw", Scale.ABSOLUTE, 0, 360, 180))
-        .addParameter(new AutoParameter("translateY", Scale.ABSOLUTE, -.4, .7, SLOWMIN, SLOWMAX, .2))
-        .addParameter(new AutoParameter("expand", Scale.ABSOLUTE, 1, 3, 1))
-        .addParameter(new AutoParameter("pitch", Scale.ABSOLUTE, 175, 211, SLOWMIN, SLOWMAX, 20))
-      ;
+      library
+          .addPattern(heronarts.lx.pattern.texture.LifePattern.class)
+          .addParameter(new AutoParameter("translateX", Scale.ABSOLUTE, -.7, .7, .9))
+          .addParameter(new AutoParameter("yaw", Scale.ABSOLUTE, 0, 360, 180))
+          .addParameter(
+              new AutoParameter("translateY", Scale.ABSOLUTE, -.4, .7, SLOWMIN, SLOWMAX, .2))
+          .addParameter(new AutoParameter("expand", Scale.ABSOLUTE, 1, 3, 1))
+          .addParameter(new AutoParameter("pitch", Scale.ABSOLUTE, 175, 211, SLOWMIN, SLOWMAX, 20));
 
       // Orbox
-      library.addPattern(heronarts.lx.pattern.form.OrboxPattern.class)
-        .addParameter(new AutoParameter("shapeLerp", Scale.NORMALIZED, 0, 1, .5))
-        .addParameter(new AutoParameter("fill", Scale.NORMALIZED, 0, .5, .3))
-        .addParameter(new AutoParameter("radius", Scale.ABSOLUTE, 0, 100, 50))
-        .addParameter(new AutoParameter("width", Scale.ABSOLUTE, 0, 8, 4 ))
-        .addParameter(new AutoParameter("fade", Scale.ABSOLUTE, 5, 100, 30))
-        .addParameter(new AutoParameter("xAmt", Scale.ABSOLUTE, 40, 90, 25))
-        .addParameter(new AutoParameter("zAmt", Scale.ABSOLUTE, 40, 90, 25))
-        .addParameter(new AutoParameter("yaw", Scale.ABSOLUTE, 0, 360, SLOWMIN, SLOWMAX, 180))
-        .addParameter(new AutoParameter("shearY", Scale.NORMALIZED, 0, 1, SLOWMIN, SLOWMAX, .7))
-      ;
+      library
+          .addPattern(heronarts.lx.pattern.form.OrboxPattern.class)
+          .addParameter(new AutoParameter("shapeLerp", Scale.NORMALIZED, 0, 1, .5))
+          .addParameter(new AutoParameter("fill", Scale.NORMALIZED, 0, .5, .3))
+          .addParameter(new AutoParameter("radius", Scale.ABSOLUTE, 0, 100, 50))
+          .addParameter(new AutoParameter("width", Scale.ABSOLUTE, 0, 8, 4))
+          .addParameter(new AutoParameter("fade", Scale.ABSOLUTE, 5, 100, 30))
+          .addParameter(new AutoParameter("xAmt", Scale.ABSOLUTE, 40, 90, 25))
+          .addParameter(new AutoParameter("zAmt", Scale.ABSOLUTE, 40, 90, 25))
+          .addParameter(new AutoParameter("yaw", Scale.ABSOLUTE, 0, 360, SLOWMIN, SLOWMAX, 180))
+          .addParameter(new AutoParameter("shearY", Scale.NORMALIZED, 0, 1, SLOWMIN, SLOWMAX, .7));
 
       // Planes
-      library.addPattern(heronarts.lx.pattern.form.PlanesPattern.class)
-        .addParameter(new AutoParameter("layer/1/position", Scale.NORMALIZED, 0, 1, .4))  // Check to see if layered patterns work
+      library
+          .addPattern(heronarts.lx.pattern.form.PlanesPattern.class)
+          .addParameter(
+              new AutoParameter(
+                  "layer/1/position",
+                  Scale.NORMALIZED,
+                  0,
+                  1,
+                  .4)) // Check to see if layered patterns work
       ;
 
       // Solid
-      library.addPattern(heronarts.lx.pattern.color.SolidPattern.class)
-        .addParameter(new AutoParameter("hue", Scale.NORMALIZED, 0, 1, .2))
-        .addParameter(new AutoParameter("saturation", Scale.NORMALIZED, 0, 1, .3))
-      ;
+      library
+          .addPattern(heronarts.lx.pattern.color.SolidPattern.class)
+          .addParameter(new AutoParameter("hue", Scale.NORMALIZED, 0, 1, .2))
+          .addParameter(new AutoParameter("saturation", Scale.NORMALIZED, 0, 1, .3));
 
       // Sparkle
-      library.addPattern(heronarts.lx.pattern.texture.SparklePattern.class)
-        .addParameter(new AutoParameter("maxLevel", Scale.ABSOLUTE, 50, 100, 30))
-        .addParameter(new AutoParameter("minLevel", Scale.ABSOLUTE, 42, 70, 20))
-        .addParameter(new AutoParameter("density", Scale.ABSOLUTE, 10, 180, SLOWMIN, SLOWMAX, 50))
-        .addParameter(new AutoParameter("sharp", Scale.ABSOLUTE, -.5, .5, .3))
-      ;
+      library
+          .addPattern(heronarts.lx.pattern.texture.SparklePattern.class)
+          .addParameter(new AutoParameter("maxLevel", Scale.ABSOLUTE, 50, 100, 30))
+          .addParameter(new AutoParameter("minLevel", Scale.ABSOLUTE, 42, 70, 20))
+          .addParameter(new AutoParameter("density", Scale.ABSOLUTE, 10, 180, SLOWMIN, SLOWMAX, 50))
+          .addParameter(new AutoParameter("sharp", Scale.ABSOLUTE, -.5, .5, .3));
     }
 
-    /**
-     * Redirect some of the SuperMod buttons to Audio Stem modulators
-     */
-    private final SuperMod.ModulatorSource superModSource = (label, col, row) -> {
-      AudioStemModulator m = null;
-      if (row >= 0 && row <=1) {
-        if (col == 0) {
-          m = new AudioStemModulator(label + " " + BASS);
-          m.stem.setValue(BASS);
-        }
-        if (col == 1 && row == 0) {
-          m = new AudioStemModulator(label + " " + DRUMS);
-          m.stem.setValue(DRUMS);
-        }
-        if (col == 2 && row == 0) {
-          m = new AudioStemModulator(label + " " + VOCALS);
-          m.stem.setValue(VOCALS);
-        }
-        if (col == 3 && row == 0) {
-          m = new AudioStemModulator(label + " " + OTHER);
-          m.stem.setValue(OTHER);
-        }
+    /** Redirect some of the SuperMod buttons to Audio Stem modulators */
+    private final SuperMod.ModulatorSource superModSource =
+        (label, col, row) -> {
+          AudioStemModulator m = null;
+          if (row >= 0 && row <= 1) {
+            if (col == 0) {
+              m = new AudioStemModulator(label + " " + BASS);
+              m.stem.setValue(BASS);
+            }
+            if (col == 1 && row == 0) {
+              m = new AudioStemModulator(label + " " + DRUMS);
+              m.stem.setValue(DRUMS);
+            }
+            if (col == 2 && row == 0) {
+              m = new AudioStemModulator(label + " " + VOCALS);
+              m.stem.setValue(VOCALS);
+            }
+            if (col == 3 && row == 0) {
+              m = new AudioStemModulator(label + " " + OTHER);
+              m.stem.setValue(OTHER);
+            }
 
-        // Row 0 = normal, Row 1 = wave
-        if (m != null) {
-          if (row == 0) {
-            m.outputMode.setValue(AudioStemModulator.OutputMode.ENERGY);
-          } else if (row == 1) {
-            m.outputMode.setValue(AudioStemModulator.OutputMode.WAVE);
+            // Row 0 = normal, Row 1 = wave
+            if (m != null) {
+              if (row == 0) {
+                m.outputMode.setValue(AudioStemModulator.OutputMode.ENERGY);
+              } else if (row == 1) {
+                m.outputMode.setValue(AudioStemModulator.OutputMode.WAVE);
+              }
+            }
           }
-        }
-      }
 
-      // If button was not in our space, m will be null
-      return m;
-    };
+          // If button was not in our space, m will be null
+          return m;
+        };
 
     public void initializeUI(LXStudio lx, LXStudio.UI ui) {
       // Here is where you may modify the initial settings of the UI before it is fully
@@ -740,9 +751,9 @@ public class TEApp extends LXStudio {
       new UIDevSwitch(ui, this.devSwitch, ui.leftPane.model.getContentWidth())
           .addToContainer(ui.leftPane.model, 0);
 
-//      new GigglePixelUI(
-//              ui, ui.leftPane.model.getContentWidth(), this.gpListener, this.gpBroadcaster)
-//          .addToContainer(ui.leftPane.model, 1);
+      //      new GigglePixelUI(
+      //              ui, ui.leftPane.model.getContentWidth(), this.gpListener, this.gpBroadcaster)
+      //          .addToContainer(ui.leftPane.model, 1);
 
       new TEUIControls(ui, this.virtualOverlays, ui.leftPane.model.getContentWidth())
           .addToContainer(ui.leftPane.model, 1);
@@ -758,7 +769,7 @@ public class TEApp extends LXStudio {
           .addToContainer(ui.leftPane.global, 6);
 
       // Add UI section for JKB Autopilot
-      //new UIAutopilot(ui, this.autopilotJKB, ui.leftPane.global.getContentWidth())
+      // new UIAutopilot(ui, this.autopilotJKB, ui.leftPane.global.getContentWidth())
       //    .addToContainer(ui.leftPane.global, 7);
 
       // Add UI section for audio stems
@@ -768,7 +779,8 @@ public class TEApp extends LXStudio {
           .addToContainer(ui.leftPerformance.tools, 0);
 
       UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 4);
-      UIColorPaletteManager.addToRightPerformancePane(ui, this.paletteManagerA, this.paletteManagerB);
+      UIColorPaletteManager.addToRightPerformancePane(
+          ui, this.paletteManagerA, this.paletteManagerB);
 
       // Add 3D Ui components
       this.ui3dManager = new UI3DManager(lx, ui, this.virtualOverlays);
@@ -810,10 +822,9 @@ public class TEApp extends LXStudio {
     }
 
     /**
-     * Sets camera position and point size for the appropriate model.
-     * Static model requires manual placement of the camera due to very large scale (1"=50000).
-     * Subsequently project files saved with one model type and opened with the other
-     * need their camera position updated. 
+     * Sets camera position and point size for the appropriate model. Static model requires manual
+     * placement of the camera due to very large scale (1"=50000). Subsequently project files saved
+     * with one model type and opened with the other need their camera position updated.
      */
     public void applyTECameraPosition() {
       if (this.lx instanceof LXStudio) {
@@ -853,7 +864,7 @@ public class TEApp extends LXStudio {
       gamepadEngine.dispose();
 
       if (!staticModel) {
-        ((TEWholeModelDynamic)wholeModel).dispose();
+        ((TEWholeModelDynamic) wholeModel).dispose();
       }
     }
   }
@@ -862,10 +873,14 @@ public class TEApp extends LXStudio {
   protected void onKeyPressed(KeyEvent keyEvent, char keyChar, int keyCode) {
     // Keyboard shortcut for debugging: Add all patterns to current channel
     // (Ctrl or Meta) + Alt + Shift + A
-    if ((keyEvent.isControlDown() || keyEvent.isMetaDown()) && keyEvent.isAltDown() && keyEvent.isShiftDown() && keyEvent.getKeyCode() == 65) {
-      this.engine.addTask(() -> {
-        addAllPatterns();
-      });
+    if ((keyEvent.isControlDown() || keyEvent.isMetaDown())
+        && keyEvent.isAltDown()
+        && keyEvent.isShiftDown()
+        && keyEvent.getKeyCode() == 65) {
+      this.engine.addTask(
+          () -> {
+            addAllPatterns();
+          });
     } else {
       super.onKeyPressed(keyEvent, keyChar, keyCode);
     }
@@ -1016,7 +1031,10 @@ public class TEApp extends LXStudio {
               error("Invalid render resolution: " + args[i + 1]);
             }
             // test for out-of-bounds resolutions, just in case
-            if (glRenderWidth < 64 || glRenderHeight < 64 || glRenderWidth > 4096 || glRenderHeight > 4096) {
+            if (glRenderWidth < 64
+                || glRenderHeight < 64
+                || glRenderWidth > 4096
+                || glRenderHeight > 4096) {
               error("Invalid render resolution: " + args[i + 1]);
             }
           } else {

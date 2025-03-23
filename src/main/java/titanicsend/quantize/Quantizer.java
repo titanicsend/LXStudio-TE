@@ -4,10 +4,10 @@ import heronarts.lx.LX;
 import heronarts.lx.Tempo;
 
 /**
- * A helper utility to delay method calls until a system quantize event
- * such as Tempo Beat or Tempo Bar.
+ * A helper utility to delay method calls until a system quantize event such as Tempo Beat or Tempo
+ * Bar.
  *
- * Quantize behavior can be disabled in which case input events will result in immediate output.
+ * <p>Quantize behavior can be disabled in which case input events will result in immediate output.
  */
 public class Quantizer implements Tempo.Listener {
 
@@ -17,24 +17,18 @@ public class Quantizer implements Tempo.Listener {
   private Runnable onEvent;
   private int queue;
 
-  /**
-   * What to do if queue() was called multiple times between quantize events
-   */
+  /** What to do if queue() was called multiple times between quantize events */
   public static enum CallbackMode {
-    /**
-     * onEvent is called a maximum of once per quantize event, even if multiple queues were set
-     */
+    /** onEvent is called a maximum of once per quantize event, even if multiple queues were set */
     SINGLE,
-    /**
-     * onEvent is called once per queue call
-     */
+    /** onEvent is called once per queue call */
     MULTIPLE
   }
 
   private CallbackMode mode = CallbackMode.SINGLE;
 
   public Quantizer(LX lx, boolean enabled) {
-    this(lx,null, enabled);
+    this(lx, null, enabled);
   }
 
   public Quantizer(LX lx, Runnable onEvent) {
@@ -47,18 +41,16 @@ public class Quantizer implements Tempo.Listener {
     onEvent(onEvent);
   }
 
-  /**
-   * Specify behavior if queue() were to be called multiple times between quantize events
-   */
+  /** Specify behavior if queue() were to be called multiple times between quantize events */
   public Quantizer setMode(CallbackMode mode) {
     this.mode = mode;
     return this;
   }
 
   /**
-   * Set enabled state of Quantizer. If on, calls to queue() will result
-   * in a quantized callback to onEvent. If off, calls to queue() will
-   * result in immediate callback to onEvent;
+   * Set enabled state of Quantizer. If on, calls to queue() will result in a quantized callback to
+   * onEvent. If off, calls to queue() will result in immediate callback to onEvent;
+   *
    * @param on Whether quantizer is enabled
    * @return this
    */
@@ -97,6 +89,7 @@ public class Quantizer implements Tempo.Listener {
 
   /**
    * Set the method to be run when a quantize event occurs.
+   *
    * @param onEvent A runnable method to call
    * @return this
    */
@@ -110,6 +103,7 @@ public class Quantizer implements Tempo.Listener {
 
   /**
    * Prime the quantizer to call onEvent when the next quantize event occurs
+   *
    * @return this
    */
   public Quantizer queue() {
@@ -126,9 +120,7 @@ public class Quantizer implements Tempo.Listener {
     return this.queue > 0;
   }
 
-  /**
-   * Go time
-   */
+  /** Go time */
   private void fire() {
     int remaining = this.queue;
     // Reset before callbacks in case of immediate re-queue
@@ -148,6 +140,7 @@ public class Quantizer implements Tempo.Listener {
 
   /**
    * Clear the queue count. The next quantize event will result in no callbacks.
+   *
    * @return this
    */
   public Quantizer reset() {

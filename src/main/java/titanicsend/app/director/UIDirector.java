@@ -47,28 +47,32 @@ public class UIDirector extends UICollapsibleSection implements UIControls {
 
   private UI2dContainer addRow() {
     return new UI2dContainer(0, 0, this.getContentWidth(), FADER_HEIGHT + 30)
-      .setLayout(UI2dContainer.Layout.NONE);
+        .setLayout(UI2dContainer.Layout.NONE);
   }
 
-  private void addFader(UI ui, UI2dContainer uiDevice, LXListenableNormalizedParameter parameter,
-    int column, boolean labelUp) {
+  private void addFader(
+      UI ui,
+      UI2dContainer uiDevice,
+      LXListenableNormalizedParameter parameter,
+      int column,
+      boolean labelUp) {
 
     new UISlider(
-      UISlider.Direction.VERTICAL,
-      (column * this.columnWidth) + ((this.columnWidth - FADER_WIDTH) / 2),
-      0,
-      FADER_WIDTH,
-      FADER_HEIGHT,
-      parameter)
-    .setShowLabel(false)
-    .setWidth(20)
-    .addToContainer(uiDevice);
+            UISlider.Direction.VERTICAL,
+            (column * this.columnWidth) + ((this.columnWidth - FADER_WIDTH) / 2),
+            0,
+            FADER_WIDTH,
+            FADER_HEIGHT,
+            parameter)
+        .setShowLabel(false)
+        .setWidth(20)
+        .addToContainer(uiDevice);
 
     new UILabel(this.columnWidth * 2, parameter.getLabel())
-    .setFont(ui.theme.getControlFont())
-    .setTextAlignment(VGraphics.Align.CENTER, VGraphics.Align.TOP)
-    .setX((column - 0.5f) * this.columnWidth)
-    .setY(FADER_HEIGHT + (labelUp ? 4 : 16))
-    .addToContainer(uiDevice);
+        .setFont(ui.theme.getControlFont())
+        .setTextAlignment(VGraphics.Align.CENTER, VGraphics.Align.TOP)
+        .setX((column - 0.5f) * this.columnWidth)
+        .setY(FADER_HEIGHT + (labelUp ? 4 : 16))
+        .addToContainer(uiDevice);
   }
 }

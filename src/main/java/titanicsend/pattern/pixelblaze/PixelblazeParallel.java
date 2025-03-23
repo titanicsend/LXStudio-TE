@@ -36,20 +36,17 @@ public class PixelblazeParallel extends TEPerformancePattern {
       int chunksize = (int) Math.ceil((float) edgePoints.size() / N_THREADS);
 
       for (int i = 0; i < edgePoints.size(); i += chunksize) {
-        List<LXPoint> chunk =
-            edgePoints.subList(i, Math.min(i + chunksize, edgePoints.size() - 1));
+        List<LXPoint> chunk = edgePoints.subList(i, Math.min(i + chunksize, edgePoints.size() - 1));
         LXPoint[] chunkPoints = new LXPoint[chunk.size()];
-        wrappers.add(
-            Wrapper.fromResource("neon_ice", this, edgePoints.toArray(chunkPoints)));
+        wrappers.add(Wrapper.fromResource("neon_ice", this, edgePoints.toArray(chunkPoints)));
       }
 
       chunksize = (int) Math.ceil((float) panelPoints.size() / N_THREADS);
       for (int i = 0; i < panelPoints.size(); i += chunksize) {
         List<LXPoint> chunk =
-        		panelPoints.subList(i, Math.min(i + chunksize, panelPoints.size() - 1));
+            panelPoints.subList(i, Math.min(i + chunksize, panelPoints.size() - 1));
         LXPoint[] chunkPoints = new LXPoint[chunk.size()];
-        wrappers.add(
-            Wrapper.fromResource("xorcery", this, panelPoints.toArray(chunkPoints)));
+        wrappers.add(Wrapper.fromResource("xorcery", this, panelPoints.toArray(chunkPoints)));
       }
       LX.log("parallel chunks=" + wrappers.size());
 

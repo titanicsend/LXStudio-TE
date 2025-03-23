@@ -1,10 +1,9 @@
 package titanicsend.pattern.glengine;
 
 import heronarts.lx.LX;
+import heronarts.lx.model.LXModel;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-
-import heronarts.lx.model.LXModel;
 import titanicsend.effect.TEEffect;
 import titanicsend.pattern.jon.VariableSpeedTimer;
 

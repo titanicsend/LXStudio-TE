@@ -60,10 +60,14 @@ public class TECommonControls {
   public void buildDefaultControlList() {
     LXListenableNormalizedParameter p;
 
-    p = new CompoundParameter(TEControlTag.LEVELREACTIVITY.getLabel(), 0.1, 0, 1).setDescription("Level Reactivity");
+    p =
+        new CompoundParameter(TEControlTag.LEVELREACTIVITY.getLabel(), 0.1, 0, 1)
+            .setDescription("Level Reactivity");
     setControl(TEControlTag.LEVELREACTIVITY, p);
 
-    p = new CompoundParameter(TEControlTag.FREQREACTIVITY.getLabel(), 0.1, 0, 1).setDescription("Frequency Reactivity");
+    p =
+        new CompoundParameter(TEControlTag.FREQREACTIVITY.getLabel(), 0.1, 0, 1)
+            .setDescription("Frequency Reactivity");
     setControl(TEControlTag.FREQREACTIVITY, p);
 
     p =
@@ -106,7 +110,8 @@ public class TECommonControls {
 
     setControl(TEControlTag.SPIN, p);
 
-    p = new CompoundParameter(TEControlTag.BRIGHTNESS.getLabel(), 1.0, 0.0, 1.0)
+    p =
+        new CompoundParameter(TEControlTag.BRIGHTNESS.getLabel(), 1.0, 0.0, 1.0)
             .setDescription("Brightness");
     setControl(TEControlTag.BRIGHTNESS, p);
 
@@ -116,14 +121,16 @@ public class TECommonControls {
     p = new CompoundParameter(TEControlTag.WOW2.getLabel(), 0, 0, 1.0).setDescription("Wow 2");
     setControl(TEControlTag.WOW2, p);
 
-    p = new BooleanParameter(TEControlTag.WOWTRIGGER.getLabel(), false)
-        .setMode(BooleanParameter.Mode.MOMENTARY)
-        .setDescription("Trigger WoW effects");
+    p =
+        new BooleanParameter(TEControlTag.WOWTRIGGER.getLabel(), false)
+            .setMode(BooleanParameter.Mode.MOMENTARY)
+            .setDescription("Trigger WoW effects");
     setControl(TEControlTag.WOWTRIGGER, p);
 
-    p = new BooleanParameter(TEControlTag.TWIST.getLabel(), false)
-        .setMode(BooleanParameter.Mode.TOGGLE)
-        .setDescription("Twist (axis swap)");
+    p =
+        new BooleanParameter(TEControlTag.TWIST.getLabel(), false)
+            .setMode(BooleanParameter.Mode.TOGGLE)
+            .setDescription("Twist (axis swap)");
     setControl(TEControlTag.TWIST, p);
 
     // in degrees for display 'cause more people think about it that way
@@ -341,7 +348,6 @@ public class TECommonControls {
       colorPrefix = "[x] ";
     }
     TEColorParameter colorParam = registerColorControl(colorPrefix);
-
   }
 
   /** Included for consistency. We may need it later. */
@@ -360,7 +366,7 @@ public class TECommonControls {
   protected void setRemoteControls() {
     this.pattern.setCustomRemoteControls(
         new LXListenableNormalizedParameter[] {
-          //this.color.gradient,
+          // this.color.gradient,
           getControl(TEControlTag.LEVELREACTIVITY).control,
           getControl(TEControlTag.FREQREACTIVITY).control,
           this.pattern.view,
@@ -384,8 +390,7 @@ public class TECommonControls {
 
   protected TEColorParameter registerColorControl(String prefix) {
     color =
-        new TEColorParameter(TEGradientSource.get(), prefix + "Color")
-            .setDescription("TE Color");
+        new TEColorParameter(TEGradientSource.get(), prefix + "Color").setDescription("TE Color");
     // "addParameter(java.lang.String, heronarts.lx.parameter.LXParameter)' has protected access in
     // 'heronarts.lx.LXComponent'"
     this.pattern.addParam("te_color", color);

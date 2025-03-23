@@ -1,8 +1,6 @@
 package titanicsend.util;
 
-/**
- * Provides a simple signal lag functionality with separate attack and release controls.
- */
+/** Provides a simple signal lag functionality with separate attack and release controls. */
 public class SignalLag {
   private double laggedSignal = 0.0f;
   private double attackSmoothness = 0.9f;

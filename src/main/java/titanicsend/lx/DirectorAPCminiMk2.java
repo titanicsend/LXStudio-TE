@@ -1,22 +1,19 @@
 /**
  * Copyright 2024- Justin Belcher, Mark C. Slee, Heron Arts LLC
  *
- * This file is part of the LX Studio software library. By using
- * LX, you agree to the terms of the LX Studio Software License
- * and Distribution Agreement, available at: http://lx.studio/license
+ * <p>This file is part of the LX Studio software library. By using LX, you agree to the terms of
+ * the LX Studio Software License and Distribution Agreement, available at: http://lx.studio/license
  *
- * Please note that the LX license is not open-source. The license
- * allows for free, non-commercial use.
+ * <p>Please note that the LX license is not open-source. The license allows for free,
+ * non-commercial use.
  *
- * HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR
- * OTHERWISE, AND SPECIFICALLY DISCLAIMS ANY WARRANTY OF
- * MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR
- * PURPOSE, WITH RESPECT TO THE SOFTWARE.
+ * <p>HERON ARTS MAKES NO WARRANTY, EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, AND SPECIFICALLY
+ * DISCLAIMS ANY WARRANTY OF MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR PURPOSE,
+ * WITH RESPECT TO THE SOFTWARE.
  *
  * @author Mark C. Slee <mark@heronarts.com>
  * @author Justin K. Belcher <justin@jkb.studio>
  */
-
 package titanicsend.lx;
 
 import static java.lang.Thread.sleep;
@@ -33,19 +30,15 @@ import heronarts.lx.midi.surface.LXMidiParameterControl;
 import heronarts.lx.midi.surface.LXMidiSurface;
 import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.LXParameter;
-
 import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-
 import titanicsend.app.director.Director;
 import titanicsend.color.ColorPaletteManager;
 import titanicsend.util.TE;
 
-/**
- * Midi control surface using
- */
+/** Midi control surface using */
 public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirectional {
 
   // To use locally, rename system device to match LOCAL_DEVICE_NAME
@@ -115,7 +108,8 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
   public static final int PARAMETER_ROWS = 2;
   public static final int PARAMETER_ROW_STRIDE = -4;
   public static final int PARAMETER_NUM = PARAMETER_COLUMNS * PARAMETER_ROWS;
-  public static final int PARAMETER_START = (CLIP_LAUNCH_ROWS - 1) * CLIP_LAUNCH_COLUMNS + CLIP_LAUNCH;
+  public static final int PARAMETER_START =
+      (CLIP_LAUNCH_ROWS - 1) * CLIP_LAUNCH_COLUMNS + CLIP_LAUNCH;
 
   public static final int COLOR_GRID_ROWS = CLIP_LAUNCH_ROWS;
   public static final int COLOR_GRID_COLUMNS = CLIP_LAUNCH_COLUMNS;
@@ -128,9 +122,9 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
   private ColorPaletteManager paletteManager = null;
 
   public final EnumParameter<LXMidiParameterControl.Mode> faderMode =
-    new EnumParameter<LXMidiParameterControl.Mode>("Fader Mode",
-      LXMidiParameterControl.Mode.SCALE)
-    .setDescription("Parameter control mode for faders");
+      new EnumParameter<LXMidiParameterControl.Mode>(
+              "Fader Mode", LXMidiParameterControl.Mode.SCALE)
+          .setDescription("Parameter control mode for faders");
 
   private final LXMidiParameterControl masterFader;
   private final LXMidiParameterControl[] channelFaders;
@@ -163,9 +157,7 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
     }
   }
 
-  /**
-   * Populated by generateColorGrid() - used as a lookup in noteReceived()
-   */
+  /** Populated by generateColorGrid() - used as a lookup in noteReceived() */
   private final int[] noteToColor = new int[COLOR_NUM];
 
   @Override
@@ -358,7 +350,7 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
     float[][] sats = new float[COLOR_GRID_ROWS][COLOR_GRID_COLUMNS];
 
     final int steps = 31;
-    float hueStep = 1f / ((float)steps);
+    float hueStep = 1f / ((float) steps);
     float hue = 0;
 
     // 0 to 90 degrees in 8 steps, normalized to [0,1]
@@ -448,38 +440,40 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
   }
 
   private void sendIndividualSysEx(int padIndex, int color) {
-    sendMultipleSysEx(padIndex, padIndex, new int[]{color});
+    sendMultipleSysEx(padIndex, padIndex, new int[] {color});
   }
 
   /**
    * Send a custom RGB value to LEDs on pads.
    *
-   * See page 9 of APC mini mk2 communications protocol:
-   * - https://cdn.inmusicbrands.com/akai/attachments/APC%20mini%20mk2%20-%20Communication%20Protocol%20-%20v1.0.pdf
+   * <p>See page 9 of APC mini mk2 communications protocol: -
+   * https://cdn.inmusicbrands.com/akai/attachments/APC%20mini%20mk2%20-%20Communication%20Protocol%20-%20v1.0.pdf
    *
    * @param startPad start index of pad button (button 0 is bottom-left corner on the pad)
-   * @param endPad   end index of pad button (button 63 is top-right corner on the pad)
-   * @param colors   array of RGB values for each pad button
+   * @param endPad end index of pad button (button 63 is top-right corner on the pad)
+   * @param colors array of RGB values for each pad button
    */
   private void sendMultipleSysEx(int startPad, int endPad, int[] colors) {
     int length = (endPad - startPad) + 1;
     if (colors.length != length) {
       throw new IllegalArgumentException(
-        "Invalid number of colors for pads: (endPad - startPad + 1) = " + length +
-        " != " + colors.length);
+          "Invalid number of colors for pads: (endPad - startPad + 1) = "
+              + length
+              + " != "
+              + colors.length);
     }
     int numBytesToFollow = 2 + (length * 6);
     int messageLength = numBytesToFollow + 8;
     byte[] data = new byte[messageLength];
-    data[0] = (byte) 0xF0;                      // MIDI system exclusive message start
-    data[1] = (byte) 0x47;                      // manufacturers ID byte
-    data[2] = (byte) 0x7F;                      // system exclusive device ID
-    data[3] = (byte) 0x4F;                      // product model ID
-    data[4] = (byte) 0x24;                      // message type identifier
-    data[5] = (byte) (numBytesToFollow / 256);  // number of bytes to follow (most significant)
-    data[6] = (byte) (numBytesToFollow % 256);  // number of bytes to follow (least significant)
-    data[7] = (byte) startPad;                  // start pad (index of starting pad ID)
-    data[8] = (byte) endPad;                    // end pad (index of ending pad ID)
+    data[0] = (byte) 0xF0; // MIDI system exclusive message start
+    data[1] = (byte) 0x47; // manufacturers ID byte
+    data[2] = (byte) 0x7F; // system exclusive device ID
+    data[3] = (byte) 0x4F; // product model ID
+    data[4] = (byte) 0x24; // message type identifier
+    data[5] = (byte) (numBytesToFollow / 256); // number of bytes to follow (most significant)
+    data[6] = (byte) (numBytesToFollow % 256); // number of bytes to follow (least significant)
+    data[7] = (byte) startPad; // start pad (index of starting pad ID)
+    data[8] = (byte) endPad; // end pad (index of ending pad ID)
     for (int i = 0; i < colors.length; i++) {
       int color = colors[i];
       if (color < 0x000000 || color > 0xFFFFFF) {
@@ -488,12 +482,12 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
       int red = (color >> 16) & 0xFF;
       int green = (color >> 8) & 0xFF;
       int blue = color & 0xFF;
-      data[9 + (i * 6)] = (byte) ((red >> 7) & 0x7F);     // red MSB
-      data[10 + (i * 6)] = (byte) (red & 0x7F);           // red LSB
-      data[11 + (i * 6)] = (byte) ((green >> 7) & 0x7F);  // green MSB
-      data[12 + (i * 6)] = (byte) (green & 0x7F);         // green LSB
-      data[13 + (i * 6)] = (byte) ((blue >> 7) & 0x7F);   // blue MSB
-      data[14 + (i * 6)] = (byte) (blue & 0x7F);          // blue LSB
+      data[9 + (i * 6)] = (byte) ((red >> 7) & 0x7F); // red MSB
+      data[10 + (i * 6)] = (byte) (red & 0x7F); // red LSB
+      data[11 + (i * 6)] = (byte) ((green >> 7) & 0x7F); // green MSB
+      data[12 + (i * 6)] = (byte) (green & 0x7F); // green LSB
+      data[13 + (i * 6)] = (byte) ((blue >> 7) & 0x7F); // blue MSB
+      data[14 + (i * 6)] = (byte) (blue & 0x7F); // blue LSB
     }
     data[messageLength - 1] = (byte) 0xF7; // MIDI system exclusive message end
     // System.out.println(prettyPrintByteArray(data));
@@ -535,8 +529,7 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
       sendNoteOn(
           MIDI_CHANNEL_MULTI_100_PERCENT,
           CLIP_LAUNCH + CLIP_LAUNCH_COLUMNS * (CLIP_LAUNCH_ROWS - 1 - y) + index,
-          LED_OFF
-      );
+          LED_OFF);
     }
   }
 

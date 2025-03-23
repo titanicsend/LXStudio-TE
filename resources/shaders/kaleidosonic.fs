@@ -1,11 +1,6 @@
 const float PI = 3.14159265359;
 const float brightness_floor = 0.333;
-
-vec3 hsv2rgb(vec3 c) {
-    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
-}
+#include <include/colorspace.fs>
 
 //  rotate a point around the origin by <angle> radians
 vec2 rotate(vec2 point, float angle) {
@@ -92,7 +87,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     // apply color modulation based on the field density
     float colorMix = mod(final_density * 1.618, 1.0);
-    vec3 final_color = mix(iColor2RGB,iColorRGB,colorMix);
-    // Wow2 controls gamma adjustment of final brightness
-    fragColor = vec4(final_color,pow(colorMix,1.5 + iWow2)) ;
+    vec3 final_color = getGradientColor(colorMix); //mix(iColor2RGB,iColorRGB,colorMix);
+
+    // iWow2 controls the final gamma correction, which acts as a rough
+    // contrast control, letting you thin out the kaleidoscope if you want.
+    fragColor = vec4(final_color,pow(colorMix,1.0 + iWow2));
 }

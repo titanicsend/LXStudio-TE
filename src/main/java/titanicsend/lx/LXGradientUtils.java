@@ -20,7 +20,6 @@ package titanicsend.lx;
 import heronarts.lx.color.ColorParameter;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LXDynamicColor;
-import heronarts.lx.color.LXPalette;
 import heronarts.lx.color.LXSwatch;
 import heronarts.lx.parameter.LXNormalizedParameter;
 import heronarts.lx.utils.LXUtils;
@@ -84,6 +83,11 @@ public class LXGradientUtils {
     private int g;
     private int b;
 
+    // values for oklab color space
+    private float lStar;
+    private float aStar;
+    private float bStar;
+
     public void set(ColorParameter color) {
       set(color, 0);
     }
@@ -97,7 +101,9 @@ public class LXGradientUtils {
       this.hue = color.hue.getValuef() + hueOffset;
       this.saturation = LXUtils.clampf(color.saturation.getValuef() + saturationOffset, 0, 100);
       this.brightness = LXUtils.clampf(color.brightness.getValuef() + brightnessOffset, 0, 100);
-      setRGB(LXColor.hsb(this.hue, this.saturation, this.brightness));
+      int col = LXColor.hsb(this.hue, this.saturation, this.brightness);
+      setRGB(col);
+      setOklab(col);
     }
 
     public void set(LXDynamicColor color) {
@@ -109,7 +115,9 @@ public class LXGradientUtils {
       this.hue = color.getHuef() + hueOffset;
       this.saturation = color.getSaturation();
       this.brightness = LXColor.b(c);
-      setRGB(LXColor.hsb(this.hue, this.saturation, this.brightness));
+      int col = LXColor.hsb(this.hue, this.saturation, this.brightness);
+      setRGB(col);
+      setOklab(col);
     }
 
     public void set(
@@ -118,13 +126,57 @@ public class LXGradientUtils {
       this.hue = color.getHuef() + hueOffset;
       this.saturation = LXUtils.clampf(LXColor.s(c) + saturationOffset, 0, 100);
       this.brightness = LXUtils.clampf(LXColor.b(c) + brightnessOffset, 0, 100);
-      setRGB(LXColor.hsb(this.hue, this.saturation, this.brightness));
+      int col = LXColor.hsb(this.hue, this.saturation, this.brightness);
+      setRGB(col);
+      setOklab(col);
     }
 
     public void setRGB(int c) {
       this.r = (c & LXColor.R_MASK) >>> LXColor.R_SHIFT;
       this.g = (c & LXColor.G_MASK) >>> LXColor.G_SHIFT;
       this.b = (c & LXColor.B_MASK);
+    }
+
+    /**
+     * cube-root approximation function for float values. Faster than Math.cbrt(), but does not work
+     * for negative inputs. That's fine for our one use case - RGB->Oklab conversion. <br>
+     * Original code:
+     * https://github.com/Marc-B-Reynolds/Stand-alone-junk/blob/master/src/Posts/ballcube.c#L182-L197
+     * . <br>
+     *
+     * @param x non-negative floating point number
+     * @return the (approximate) cube root of x
+     */
+    public static float cbrt(float x) {
+      // comments here are me figuring out wtf this is doing...
+      //
+      // use bit manipulation to get an initial guess for cbrt, which we
+      // do by using bit shifts to divide the exponent by 3, then
+      // "adjusting" the mantissa by adding a magic constant.
+      int ix = Float.floatToRawIntBits(x);
+      final float x0 = x;
+      ix = (ix >>> 2) + (ix >>> 4);
+      ix += (ix >>> 4);
+      ix += (ix >>> 8) + 0x2A5137A0;
+      x = Float.intBitsToFloat(ix);
+
+      // now refine the estimate using the
+      // Newton-Raphson algorithm, which converges
+      // very quickly. Two trips get us close enough.
+      x = 0.33333334f * (2f * x + x0 / (x * x));
+      x = 0.33333334f * (2f * x + x0 / (x * x));
+      return x;
+    }
+
+    public void setOklab(int col) {
+      final float r = (float) (0xFF & LXColor.red(col)) * (1f / 255f);
+      final float g = (float) (0xFF & LXColor.green(col)) * (1f / 255f);
+      final float b = (float) (0xFF & LXColor.blue(col)) * (1f / 255f);
+
+      // RGB->Oklab transfer function: multiply by oklab matrix, then take cube root
+      this.lStar = cbrt(0.4121656120f * r + 0.5362752080f * g + 0.0514575653f * b);
+      this.aStar = cbrt(0.2118591070f * r + 0.6807189584f * g + 0.1074065790f * b);
+      this.bStar = cbrt(0.0883097947f * r + 0.2818474174f * g + 0.6302613616f * b);
     }
 
     public void set(ColorStop that) {
@@ -134,6 +186,9 @@ public class LXGradientUtils {
       this.r = that.r;
       this.g = that.g;
       this.b = that.b;
+      this.lStar = that.lStar;
+      this.aStar = that.aStar;
+      this.bStar = that.bStar;
     }
 
     public boolean isBlack() {
@@ -156,29 +211,8 @@ public class LXGradientUtils {
       }
     }
 
-    public void setPaletteGradient(LXPalette palette, int start, int num) {
-      int first = Math.min(start, palette.swatch.colors.size() - 1);
-      int last = first + num;
-      int i = 0;
-      int j = 0;
-      for (LXDynamicColor color : palette.swatch.colors) {
-        if (j >= first && j < last) {
-          this.stops[i++].set(color);
-        }
-        ++j;
-      }
-      setNumStops(i);
-    }
-
-    public void setNumStops(int numStops) {
-      this.numStops = numStops;
-      if (this.numStops > 0) {
-        this.stops[numStops].set(this.stops[numStops - 1]);
-      }
-    }
-
     public int getColor(float lerp, BlendFunction blendFunction) {
-      lerp *= (this.numStops - 1);
+      lerp = (lerp % 1f) * this.numStops;
       int stop = (int) Math.floor(lerp);
       return blendFunction.blend(this.stops[stop], this.stops[stop + 1], lerp - stop);
     }
@@ -261,6 +295,37 @@ public class LXGradientUtils {
           return LXColor.rgba(r, g, b, 255);
         };
 
+    public static final BlendFunction OKLAB =
+        (c1, c2, lerp) -> {
+          // linear interpolation in oklab space
+          float l = LXUtils.lerpf(c1.lStar, c2.lStar, lerp);
+          float m = LXUtils.lerpf(c1.aStar, c2.aStar, lerp);
+          float s = LXUtils.lerpf(c1.bStar, c2.bStar, lerp);
+
+          // Optional:
+          // This will give a slight boost to mid-gradient colors, as
+          // suggested by iq. Not part of oklab spec, but looks
+          // a little nicer on 2 and 3 color swatches imo. Ymmv though.
+          float bump = 1.0f + 0.2f * lerp * (1.0f - lerp);
+          l *= bump;
+          m *= bump;
+          s *= bump;
+
+          // convert back to rgb (clamped to 0..1)
+          // TODO: Can we SIMD this w/Vector library or JBLAS at some point?
+          float r =
+              Math.min(
+                  Math.max(+4.0767245293f * l - 3.3072168827f * m + 0.2307590544f * s, 0f), 1f);
+          float g =
+              Math.min(
+                  Math.max(-1.2681437731f * l + 2.6093323231f * m - 0.3411344290f * s, 0f), 1f);
+          float b =
+              Math.min(
+                  Math.max(-0.0041119885f * l - 0.7034763098f * m + 1.7068625689f * s, 0f), 1f);
+
+          return LXColor.rgbf(r * r * r, g * g * g, b * b * b);
+        };
+
     static BlendFunction _HSV(HueInterpolation hueLerp) {
       return (c1, c2, lerp) -> {
         float hue1 = c1.hue;
@@ -291,6 +356,7 @@ public class LXGradientUtils {
     RGB("RGB", null, BlendFunction.RGB),
     HSV("HSV", HueInterpolation.HSV, BlendFunction.HSV),
     HSVM("HSV-Min", HueInterpolation.HSVM, BlendFunction.HSVM),
+    OKLAB("Oklab", null, BlendFunction.OKLAB),
     HSVCW("HSV-CW", HueInterpolation.HSVCW, BlendFunction.HSVCW),
     HSVCCW("HSV-CCW", HueInterpolation.HSVCCW, BlendFunction.HSVCCW);
 

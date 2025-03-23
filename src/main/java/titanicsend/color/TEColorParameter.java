@@ -50,6 +50,7 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
   // BLEND MODE FOR THE GRADIENT. Excluding RGB because it does not play well with gradients.
 
   public enum BlendMode {
+    OKLAB,
     HSVM,
     HSVCW,
     HSVCCW
@@ -196,9 +197,7 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
       case STATIC:
       default:
         return LXColor.hsb(
-            this.hue.getValue(),
-            this.saturation.getValue(),
-            this.brightness.getValue());
+            this.hue.getValue(), this.saturation.getValue(), this.brightness.getValue());
     }
   }
 
@@ -234,9 +233,7 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
     return getGradientColorFixed(lerp + getOffsetf());
   }
 
-  /**
-   * Returns absolute position within current gradient.
-   */
+  /** Returns absolute position within current gradient. */
   public int getGradientColorFixed(float lerp) {
     switch (this.colorSource.getEnum()) {
       case STATIC:
@@ -259,6 +256,9 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
         break;
       case HSVCW:
         bf = LXGradientUtils.BlendMode.HSVCW.function;
+        break;
+      case OKLAB:
+        bf = LXGradientUtils.BlendMode.OKLAB.function;
         break;
       case HSVM:
       default:

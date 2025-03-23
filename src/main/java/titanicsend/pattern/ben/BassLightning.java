@@ -8,7 +8,6 @@ import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.utils.LXUtils;
-
 import java.util.*;
 import java.util.stream.Collectors;
 import titanicsend.app.TEVirtualColor;

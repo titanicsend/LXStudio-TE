@@ -17,18 +17,17 @@ import heronarts.lx.utils.LXUtils;
 @LXModulator.Device("Output OSC Float")
 @LXCategory("Output")
 public class OutputOscFloatModulator extends LXModulator
-  implements LXOscComponent, UIModulatorControls<OutputOscFloatModulator> {
+    implements LXOscComponent, UIModulatorControls<OutputOscFloatModulator> {
 
-  public final StringParameter path =
-    new StringParameter("Path", "/te/oscOutput");
+  public final StringParameter path = new StringParameter("Path", "/te/oscOutput");
 
   public final CompoundParameter value =
-    new CompoundParameter("Float", 0, 0, 1)
-      .setDescription("Output value to send");
+      new CompoundParameter("Float", 0, 0, 1).setDescription("Output value to send");
 
   public OutputOscFloatModulator() {
     this("Output OSC Float");
   }
+
   public OutputOscFloatModulator(String label) {
     super(label);
     addParameter("path", this.path);
@@ -39,10 +38,9 @@ public class OutputOscFloatModulator extends LXModulator
     // Copied from LXComponent: These checks are necessary for bootstrapping, before the OSC engine
     // is spun up
     return (this.lx != null)
-      && (this.lx.engine != null)
-      && (this.lx.engine.osc != null)
-      && (this.lx.engine.osc.transmitActive.isOn()
-      && (this.lx.engine.output.enabled.isOn()));
+        && (this.lx.engine != null)
+        && (this.lx.engine.osc != null)
+        && (this.lx.engine.osc.transmitActive.isOn() && (this.lx.engine.output.enabled.isOn()));
   }
 
   @Override
@@ -56,21 +54,19 @@ public class OutputOscFloatModulator extends LXModulator
   }
 
   @Override
-  public void buildModulatorControls(LXStudio.UI ui, UIModulator uiModulator, OutputOscFloatModulator modulator) {
+  public void buildModulatorControls(
+      LXStudio.UI ui, UIModulator uiModulator, OutputOscFloatModulator modulator) {
     uiModulator.setContentHeight(UIKnob.HEIGHT + 4);
     uiModulator.setLayout(UI2dContainer.Layout.HORIZONTAL);
     uiModulator.setChildSpacing(2);
     uiModulator.addChildren(
-      newTextBox(this.path)
-        .setWidth(150)
-        .setTextAlignment(VGraphics.Align.LEFT)
-        .setY(12),
-      newKnob(this.value)
-    );
+        newTextBox(this.path).setWidth(150).setTextAlignment(VGraphics.Align.LEFT).setY(12),
+        newKnob(this.value));
   }
 
   @Override
-  public void disposeModulatorControls(LXStudio.UI ui, UIModulator uiModulator, OutputOscFloatModulator modulator) {
+  public void disposeModulatorControls(
+      LXStudio.UI ui, UIModulator uiModulator, OutputOscFloatModulator modulator) {
     UIModulatorControls.super.disposeModulatorControls(ui, uiModulator, modulator);
   }
 }

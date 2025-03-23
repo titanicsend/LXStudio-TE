@@ -1,8 +1,8 @@
 package titanicsend.ui;
 
 import heronarts.lx.studio.LXStudio;
-import titanicsend.app.TEVirtualOverlays;
 import java.util.concurrent.locks.ReentrantLock;
+import titanicsend.app.TEVirtualOverlays;
 
 // Thin wrapper that allows global access to 3D UI components, so we can
 // update them easily when the model changes

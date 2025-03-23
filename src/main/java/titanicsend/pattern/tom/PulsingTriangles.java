@@ -86,10 +86,7 @@ public class PulsingTriangles extends TEPattern {
     return panels.stream()
         .collect(
             Collectors.toMap(
-                TEPanelModel::getId,
-                panel -> buildPanelMap(panel),
-                (a, b) -> a,
-                HashMap::new));
+                TEPanelModel::getId, panel -> buildPanelMap(panel), (a, b) -> a, HashMap::new));
   }
 
   private LXPoint[][] buildPanelMap(TEPanelModel panel) {

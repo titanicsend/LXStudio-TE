@@ -27,10 +27,10 @@ import titanicsend.preset.UIUserPresetCollection;
 /**
  * Device UI for TEPerformancePattern
  *
- * Adds special UI control for TEColorParameter. Parameters are arranged in columns of 4 to line
+ * <p>Adds special UI control for TEColorParameter. Parameters are arranged in columns of 4 to line
  * up with the MidiFighterTwister.
  *
- * Based on UIDeviceControl with components from J.Belcher's Rubix project.
+ * <p>Based on UIDeviceControl with components from J.Belcher's Rubix project.
  */
 public class UITEPerformancePattern
     implements UIDeviceControls<TEPerformancePattern>, LXParameterListener {
@@ -52,15 +52,12 @@ public class UITEPerformancePattern
     this.device = device;
 
     // Remote controls, MFT-layout
-    this.controlsContainer = new UI2dContainer(0,0,0, this.uiDevice.getContentHeight());
+    this.controlsContainer = new UI2dContainer(0, 0, 0, this.uiDevice.getContentHeight());
     buildControls();
     // Presets
     this.presets = createUserPresets();
 
-    this.uiDevice.addChildren(
-      this.controlsContainer,
-      this.presets
-    );
+    this.uiDevice.addChildren(this.controlsContainer, this.presets);
 
     this.device.remoteControlsChanged.addListener(this);
   }
@@ -82,10 +79,11 @@ public class UITEPerformancePattern
    */
 
   private void clearControls() {
-    // Note! It's important to remove these controls one at a time from the container, then dispose each one.
+    // Note! It's important to remove these controls one at a time from the container, then dispose
+    // each one.
     // The container's children list is a CopyOnWriteArrayList, also accessed by the drawing thread.
     // Don't call container.removeAllChildren() from the engine thread, it is not thread safe.
-/*    for (UI2dComponent control : this.controls) {
+    /*    for (UI2dComponent control : this.controls) {
       control.removeFromContainer();
       control.dispose();
     }
@@ -101,7 +99,7 @@ public class UITEPerformancePattern
     // Extra controls, displayed only in design mode
     params.add(device.getControls().getControl(TEControlTag.BRIGHTNESS).control);
     // TODO - twist disabled for now.  We may add it again later.
-    //params.add(device.getControls().getControl(TEControlTag.TWIST).control);
+    // params.add(device.getControls().getControl(TEControlTag.TWIST).control);
     params.add(null);
     // add spaces so we wind up with two columns of these extra controls
     // in the design UI - this makes them more visible without expanding
@@ -137,9 +135,11 @@ public class UITEPerformancePattern
       } else if (param instanceof BoundedParameter
           || param instanceof DiscreteParameter
           || param instanceof BoundedFunctionalParameter) {
-        this.controls.add(new UIKnob(x, y).setParameter(param).addToContainer(this.controlsContainer));
+        this.controls.add(
+            new UIKnob(x, y).setParameter(param).addToContainer(this.controlsContainer));
       } else if (param instanceof BooleanParameter) {
-        this.controls.add(new UISwitch(x, y).setParameter(param).addToContainer(this.controlsContainer));
+        this.controls.add(
+            new UISwitch(x, y).setParameter(param).addToContainer(this.controlsContainer));
       } else if (param == null) {
         // Leave a space
       } else {
@@ -176,7 +176,8 @@ public class UITEPerformancePattern
   }
 
   @Override
-  public void disposeDeviceControls(LXStudio.UI ui, UIDevice uiDevice, TEPerformancePattern device) {
+  public void disposeDeviceControls(
+      LXStudio.UI ui, UIDevice uiDevice, TEPerformancePattern device) {
     if (this.device != null) {
       this.device.remoteControlsChanged.removeListener(this);
       this.device = null;

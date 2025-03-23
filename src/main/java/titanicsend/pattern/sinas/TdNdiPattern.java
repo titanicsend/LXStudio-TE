@@ -8,7 +8,6 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-
 import me.walkerknapp.devolay.DevolayFrameType;
 import me.walkerknapp.devolay.DevolayReceiver;
 import me.walkerknapp.devolay.DevolayVideoFrame;
@@ -109,7 +108,8 @@ public class TdNdiPattern extends TEPerformancePattern {
 
       for (LXPoint p : lx.getModel().points) {
         int i = p.index * 4;
-        this.colorsBuffer[p.index] = LXColor.rgb(frameData.get(i + 2), frameData.get(i + 1), frameData.get(i));
+        this.colorsBuffer[p.index] =
+            LXColor.rgb(frameData.get(i + 2), frameData.get(i + 1), frameData.get(i));
       }
     }
 
@@ -126,8 +126,8 @@ public class TdNdiPattern extends TEPerformancePattern {
     // its saved source if possible.
     if (this.receiver == null) {
       this.receiver =
-              new DevolayReceiver(
-                      DevolayReceiver.ColorFormat.BGRX_BGRA, RECEIVE_BANDWIDTH_HIGHEST, true, "TE");
+          new DevolayReceiver(
+              DevolayReceiver.ColorFormat.BGRX_BGRA, RECEIVE_BANDWIDTH_HIGHEST, true, "TE");
     }
     this.lastConnectState = this.ndiEngine.connectByName(this.channel_name, this.receiver);
   }

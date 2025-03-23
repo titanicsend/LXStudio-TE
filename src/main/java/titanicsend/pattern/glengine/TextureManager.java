@@ -1,20 +1,19 @@
 package titanicsend.pattern.glengine;
 
+import static com.jogamp.opengl.GL.*;
+
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.util.GLBuffers;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.jogamp.opengl.GL.*;
 
 // Manages the lifecycle of the (relatively) static OpenGL textures used by
 // the shader engine.  We use are two types of textures: coordinate and static.
@@ -55,12 +54,10 @@ public class TextureManager {
   private final ArrayList<Integer> releasedTextureUnits = new ArrayList<>();
 
   /**
-   * Almost certainly reliable hashing function!
-   * This generates a hash code for a texture file name string, which is
-   * then used to look up the texture unit number in our static textures map.
-   * It is, as mentioned, almost certainly reliable for our use case, but
-   * not absolutely guaranteed to generate a unique code for every
-   * possible filename.
+   * Almost certainly reliable hashing function! This generates a hash code for a texture file name
+   * string, which is then used to look up the texture unit number in our static textures map. It
+   * is, as mentioned, almost certainly reliable for our use case, but not absolutely guaranteed to
+   * generate a unique code for every possible filename.
    */
   private int stringToHash(String s) {
     int hash = 0;
@@ -71,14 +68,13 @@ public class TextureManager {
   }
 
   /**
-   * Copy a model's normalized coordinates into a special texture for use by shaders. Must be
-   * called by the parent pattern or effect at least once before the first frame is rendered and
-   * Should be called by the pattern's frametime run() function on every frame for full Chromatik view
+   * Copy a model's normalized coordinates into a special texture for use by shaders. Must be called
+   * by the parent pattern or effect at least once before the first frame is rendered and Should be
+   * called by the pattern's frametime run() function on every frame for full Chromatik view
    * support.
    *
    * @param model The model (view) to copy coordinates from
-   * @return The texture unit number that the view's coordinate texture
-   * is bound to.
+   * @return The texture unit number that the view's coordinate texture is bound to.
    */
   public int useViewCoordinates(LXModel model) {
     CachedTextureInfo t;
@@ -100,9 +96,9 @@ public class TextureManager {
   }
 
   /**
-   * Create a coordinate texture from the normalized coordinates of the given model
-   * and bind it to the next available texture unit.  If the view's coordinate texture
-   * already exists,return the bound texture unit number.
+   * Create a coordinate texture from the normalized coordinates of the given model and bind it to
+   * the next available texture unit. If the view's coordinate texture already exists,return the
+   * bound texture unit number.
    */
   public CachedTextureInfo createCoordinateTexture(LXModel model) {
     // create new cached texture management object
@@ -144,11 +140,11 @@ public class TextureManager {
     // This should really never fail, but we're checkin' anyway.
     if (numPoints > maxPoints) {
       LX.error(
-        "GLEngine resolution ("
-          + maxPoints
-          + ") too small for number of points in the model ("
-          + numPoints
-          + ")");
+          "GLEngine resolution ("
+              + maxPoints
+              + ") too small for number of points in the model ("
+              + numPoints
+              + ")");
     }
 
     // Create an OpenGL texture to hold the coordinate data
@@ -165,23 +161,15 @@ public class TextureManager {
     // load the coordinate data into the texture, where it will stay 'till
     // the model changes or Chromatik is stopped.
     gl4.glTexImage2D(
-      GL4.GL_TEXTURE_2D,
-      0,
-      GL4.GL_RGB32F,
-      xSize,
-      ySize,
-      0,
-      GL4.GL_RGB,
-      GL_FLOAT,
-      coords);
+        GL4.GL_TEXTURE_2D, 0, GL4.GL_RGB32F, xSize, ySize, 0, GL4.GL_RGB, GL_FLOAT, coords);
 
     // done!  return the cache management object
     return t;
   }
 
   /**
-   * Returns the next available texture unit number, either by reusing a released
-   * texture unit number or by allocating a new one.
+   * Returns the next available texture unit number, either by reusing a released texture unit
+   * number or by allocating a new one.
    */
   public int getNextTextureUnit() {
     if (releasedTextureUnits.size() > 0) {
@@ -191,24 +179,23 @@ public class TextureManager {
     }
   }
 
-  /**
-   * Return a texture unit number to the pool of available texture units.
-   */
+  /** Return a texture unit number to the pool of available texture units. */
   public int releaseTextureUnit(int textureUnit) {
     if (textureUnit < FIRST_UNRESERVED_TEXTURE_UNIT) {
-      throw new RuntimeException("GLEngine: Attempt to release a reserved texture unit: " + textureUnit);
+      throw new RuntimeException(
+          "GLEngine: Attempt to release a reserved texture unit: " + textureUnit);
     }
     if (releasedTextureUnits.contains(textureUnit)) {
-      throw new RuntimeException("GLEngine: Attempt to release a texture unit that is already released: " + textureUnit);
+      throw new RuntimeException(
+          "GLEngine: Attempt to release a texture unit that is already released: " + textureUnit);
     }
     releasedTextureUnits.add(textureUnit);
     return textureUnit;
   }
 
   /**
-   * (internal only)
-   * Given a cached texture object with a ref count of zero, return
-   * its texture unit number to the pool of available units.
+   * (internal only) Given a cached texture object with a ref count of zero, return its texture unit
+   * number to the pool of available units.
    */
   private void recycleTextureUnit(CachedTextureInfo t) {
     if (!releasedTextureUnits.contains(t.textureUnit)) {
@@ -217,9 +204,9 @@ public class TextureManager {
   }
 
   /**
-   * Load a static texture from a file and bind it to the next available texture unit
-   * Returns the texture unit number. If the texture is already loaded, just increment
-   * the ref count and return the existing texture unit number.
+   * Load a static texture from a file and bind it to the next available texture unit Returns the
+   * texture unit number. If the texture is already loaded, just increment the ref count and return
+   * the existing texture unit number.
    */
   public int useTexture(GL4 gl4, String textureName) {
     CachedTextureInfo t;
@@ -254,9 +241,8 @@ public class TextureManager {
   }
 
   /**
-   * This function must be called when the model changes (when it is
-   * edited, or when a project is loaded/unloaded) to delete
-   * all existing view coordinate textures and remove them from the
+   * This function must be called when the model changes (when it is edited, or when a project is
+   * loaded/unloaded) to delete all existing view coordinate textures and remove them from the
    * textures map.
    */
   public void clearCoordinateTextures() {
@@ -279,9 +265,8 @@ public class TextureManager {
   }
 
   /**
-   * Release a cached texture. If the texture's ref count reaches 0,
-   * delete the texture, return it's GL texture unit to the pool and remove it
-   * from the textures map.
+   * Release a cached texture. If the texture's ref count reaches 0, delete the texture, return it's
+   * GL texture unit to the pool and remove it from the textures map.
    *
    * @param textureName - filename of the texture to release
    */
@@ -290,9 +275,8 @@ public class TextureManager {
   }
 
   /**
-   * Release a cached texture. If the texture's ref count reaches 0,
-   * delete the texture, return it's GL texture unit to the pool and remove it
-   * from the textures map.
+   * Release a cached texture. If the texture's ref count reaches 0, delete the texture, return it's
+   * GL texture unit to the pool and remove it from the textures map.
    *
    * @param textureHash - integer hash code of the texture to release
    */

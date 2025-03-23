@@ -1,12 +1,9 @@
 package titanicsend.pattern.jon;
 
 import heronarts.lx.model.LXPoint;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;

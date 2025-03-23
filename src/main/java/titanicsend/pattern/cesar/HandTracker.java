@@ -29,13 +29,11 @@ public class HandTracker extends TEPattern {
           .setDescription("Target position left and right");
   public final CompoundParameter targetH =
       new CompoundParameter("Height", 4.2, 0.25, 100)
-      .setDescription("Target height")
-      .setExponent(2);
+          .setDescription("Target height")
+          .setExponent(2);
 
   public final CompoundParameter targetW =
-      new CompoundParameter("Width", 4, 0.25, 100)
-      .setDescription("Target width")
-      .setExponent(2);
+      new CompoundParameter("Width", 4, 0.25, 100).setDescription("Target width").setExponent(2);
 
   public final LinkedColorParameter color =
       registerColor("Color", "color", TEColorType.PRIMARY, "Color of the pattern");
@@ -84,14 +82,13 @@ public class HandTracker extends TEPattern {
     boolean doCircle = this.circle.isOn();
 
     for (LXPoint point : this.lx.getModel().points) {
-      //if (this.modelTE.isGapPoint(point)) continue;
+      // if (this.modelTE.isGapPoint(point)) continue;
       boolean lit =
-        (point.xn > x-w) && (point.xn < x+w) &&
-        (point.yn > y-h) && (point.yn < y+h);
+          (point.xn > x - w) && (point.xn < x + w) && (point.yn > y - h) && (point.yn < y + h);
 
       colors[point.index] = lit ? color : TRANSPARENT;
 
-/*
+      /*
       float xPercent = 100.0f * getModelX(point) / xMax;
       float yPercent = 100.0f * point.y / yMax;
       float dy = yPercent - y;

@@ -6,15 +6,12 @@ import com.google.gson.JsonObject;
 import heronarts.lx.LX;
 import heronarts.lx.LXPresetComponent;
 import heronarts.lx.LXSerializable;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * A collection of presets for one component
- */
+/** A collection of presets for one component */
 public class UserPresetCollection implements LXSerializable {
 
   private final LX lx;
@@ -25,7 +22,9 @@ public class UserPresetCollection implements LXSerializable {
 
   public interface Listener {
     public default void presetAdded(UserPreset preset) {}
+
     public default void presetMoved(UserPreset preset) {}
+
     public default void presetRemoved(UserPreset preset) {}
   }
 
@@ -44,7 +43,8 @@ public class UserPresetCollection implements LXSerializable {
     UserPreset preset = new UserPreset(this.lx, this.clazz);
     if (component != null) {
       if (!preset.matches(component)) {
-        throw new IllegalArgumentException("Component '" + component + "' does not match preset '" + preset + "'");
+        throw new IllegalArgumentException(
+            "Component '" + component + "' does not match preset '" + preset + "'");
       }
       preset.capture(component);
     }
@@ -60,7 +60,8 @@ public class UserPresetCollection implements LXSerializable {
     Objects.requireNonNull(component);
     UserPreset preset = new UserPreset(this.lx, this.clazz, object);
     if (!preset.matches(component)) {
-      throw new IllegalArgumentException("Component '" + component + "' does not match preset '" + preset + "'");
+      throw new IllegalArgumentException(
+          "Component '" + component + "' does not match preset '" + preset + "'");
     }
     preset.setIndex(this.mutablePresets.size());
     this.mutablePresets.add(preset);
@@ -101,14 +102,16 @@ public class UserPresetCollection implements LXSerializable {
   public final void addListener(Listener listener) {
     Objects.requireNonNull(listener, "May not add null LXChannel.Listener");
     if (this.listeners.contains(listener)) {
-      throw new IllegalStateException("May not add duplicate UserPresetCollection.Listener: " + listener);
+      throw new IllegalStateException(
+          "May not add duplicate UserPresetCollection.Listener: " + listener);
     }
     this.listeners.add(listener);
   }
 
   public final void removeListener(Listener listener) {
     if (!this.listeners.contains(listener)) {
-      throw new IllegalStateException("May not remove non-registered UserPresetCollection.Listener: " + listener);
+      throw new IllegalStateException(
+          "May not remove non-registered UserPresetCollection.Listener: " + listener);
     }
     this.listeners.remove(listener);
   }
@@ -117,11 +120,9 @@ public class UserPresetCollection implements LXSerializable {
     return this.presets;
   }
 
-
   // TODO: File save/load
 
   private boolean inLoad = false;
-
 
   public static final String KEY_CLASS = "clazz";
   private static final String KEY_PRESETS = "presets";

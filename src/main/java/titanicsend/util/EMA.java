@@ -1,8 +1,6 @@
 package titanicsend.util;
 
-/**
- * Exponential Moving Average with adjustable smoothing time
- */
+/** Exponential Moving Average with adjustable smoothing time */
 public class EMA {
 
   private double periodMs;
@@ -32,5 +30,4 @@ public class EMA {
     this.ema = alpha * value + (1 - alpha) * ema;
     return this.ema;
   }
-
 }

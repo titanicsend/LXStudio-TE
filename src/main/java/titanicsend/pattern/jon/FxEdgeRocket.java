@@ -1,13 +1,12 @@
 package titanicsend.pattern.jon;
 
+import static titanicsend.util.TEColor.setBrightness;
+
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-
-import static titanicsend.util.TEColor.setBrightness;
 
 @LXCategory("Edge FG")
 public class FxEdgeRocket extends TEPerformancePattern {
@@ -25,7 +24,7 @@ public class FxEdgeRocket extends TEPerformancePattern {
     controls.setRange(TEControlTag.SIZE, 0.06, 0.02, 0.2);
 
     // Quantity controls the length of the trail
-    controls.setRange(TEControlTag.QUANTITY, 0.45,0,1);
+    controls.setRange(TEControlTag.QUANTITY, 0.45, 0, 1);
 
     // Speed controls the speed of the rocket. It is limited to twice
     // per beat, and can't run backwards.

@@ -6,10 +6,7 @@ import heronarts.lx.LXComponentName;
 import heronarts.lx.color.LXColor;
 import titanicsend.util.TECategory;
 
-/**
- * Driving lights and running lights for Mothership.
- * Tags are set in the fixture files.
- */
+/** Driving lights and running lights for Mothership. Tags are set in the fixture files. */
 @LXCategory(TECategory.UTILITY)
 @LXComponentName("Mothership Driving")
 public class MothershipDrivingPattern extends TwoColorPattern {

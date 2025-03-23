@@ -688,8 +688,30 @@ When in doubt be specific. Cast if necessary for clarity.
 
 ## Advanced Pattern Building
 
-### Using Car Geometry
 
+### Colors, Color Spaces and Color Mixing
+Each running shader can use:
+- a single static color selected from the UI (the color will be in `iColorRGB/HSB` if the static color source
+is enabled.)
+- two "default" system colors (`iColorRGB/HSB` and `iColor2RGB/HSB`), taken from the current active color swatch. These
+are always available.
+- the `getPaletteColor(index)` function to retrieve individual RGB colors from the current palette. (This works
+regardless of the color source selected for the pattern in the Chromatik UI.)
+- the `getGradientColor(lerp)` function to get an interpolated color from the current palette. (This will return the
+user selected static color if the `STATIC` color source is selected in the Chromatik UI.)
+
+To use `getPaletteColor()` or `getGradientColor()`, you must include the following line in your shader code:
+
+```#include <include/colorspace.fs>```
+
+
+By default, color interpolation is performed in Oklab color space. This is a perceptually uniform color space 
+that provides smoother color mixing than RGB or HSV.  If you'd prefer to use a different color space,
+your shader can call `getGradientColor_linear(lerp)` or `getGradientColor_hsv(lerp)` to interpolate in linear RGB
+or HSV color spaces, respectively. These functions all return colors in RGB, regardless of the color space
+used to do the interpolation.  
+
+### Using Car Geometry
 You can access the car's geometry - edges and triangles - from a shader to create patterns that uniquely fit
 Titanic's End. The
 [CarGeometryPatternTools](https://github.com/titanicsend/LXStudio-TE/blob/main/src/main/java/titanicsend/pattern/jon/CarGeometryPatternTools.java)

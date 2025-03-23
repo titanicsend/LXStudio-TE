@@ -1,9 +1,7 @@
 package titanicsend.pattern.glengine;
 
 import com.jogamp.opengl.*;
-import java.io.File;
 import titanicsend.pattern.yoffa.shader_engine.*;
-import titanicsend.util.TE;
 
 /** Checks shader cache and builds binaries for any changed or previously uncached shaders. */
 public class ShaderPrecompiler {
@@ -18,7 +16,7 @@ public class ShaderPrecompiler {
     int totalFiles = 0;
     int compiledFiles = 0;
 
-    //TE.log("Refreshing shader cache...");
+    // TE.log("Refreshing shader cache...");
 
     // save the currently active GL context
     GLContext prevContext = GLContext.getCurrent();
@@ -78,7 +76,7 @@ public class ShaderPrecompiler {
 
     if (prevContext != null) prevContext.makeCurrent();
 
-    //TE.log("%d shaders processed in %d ms.", totalFiles, System.currentTimeMillis() - timer);
+    // TE.log("%d shaders processed in %d ms.", totalFiles, System.currentTimeMillis() - timer);
     // TE.log("%d cache file%s updated.", compiledFiles, (compiledFiles == 1) ? "" : "s");
   }
 }

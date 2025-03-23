@@ -3,9 +3,7 @@ package titanicsend.model;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
-
 import java.util.*;
-
 import titanicsend.app.TEVirtualColor;
 import titanicsend.util.OffsetTriangles;
 import titanicsend.util.TEMath;
@@ -31,19 +29,15 @@ public class TEPanelModel extends TEModel {
   public static final String META_EDGE3 = "edge3";
   public static final String META_LEADING_EDGE = "leadingEdge";
   public static final String META_MODULE = "module";
-  
-  /**
-   * Wrapper around each LXPoint in the panel
-   */
+
+  /** Wrapper around each LXPoint in the panel */
   public static class Point {
     public final LXPoint point;
-    /**
-     * Distance from the centroid.
-     */
+
+    /** Distance from the centroid. */
     public final double r;
-    /**
-     * Normalized distance from the centroid.
-     */
+
+    /** Normalized distance from the centroid. */
     public final double rn;
 
     Point(LXPoint point, double r, double rn) {
@@ -73,30 +67,26 @@ public class TEPanelModel extends TEModel {
 
   // Connections
   public final TEVertex v0, v1, v2;
-
   public final String edge0id, edge1id, edge2id;
   public TEEdgeModel e0, e1, e2;
   private final List<TEEdgeModel> mutableEdges = new ArrayList<TEEdgeModel>();
   public final List<TEEdgeModel> edges = Collections.unmodifiableList(this.mutableEdges);
 
   private final List<TEPanelModel> mutableNeighbors = new ArrayList<TEPanelModel>();
-  /**
-   * Panels that share an edge with this panel
-   */
+
+  /** Panels that share an edge with this panel */
   public final List<TEPanelModel> neighbors = Collections.unmodifiableList(this.mutableNeighbors);
 
   private final List<TEPanelModel> mutableVertexNeighbors = new ArrayList<TEPanelModel>();
-  /**
-   * Panels that share a vertex but not an edge with this panel
-   */  
-  public final List<TEPanelModel> vertexNeighbors = Collections.unmodifiableList(this.mutableVertexNeighbors);
+
+  /** Panels that share a vertex but not an edge with this panel */
+  public final List<TEPanelModel> vertexNeighbors =
+      Collections.unmodifiableList(this.mutableVertexNeighbors);
 
   // Adjustments for distortion on ends of car
   private Adjustment currentAdjustment = new Adjustment();
 
-  /**
-   * Static model constructor (2022-23)
-   */
+  /** Static model constructor (2022-23) */
   public TEPanelModel(
       String id,
       ArrayList<LXPoint> points,
@@ -221,9 +211,7 @@ public class TEPanelModel extends TEModel {
     return edge.v0 == v || edge.v1 == v;
   }
 
-  /**
-   * Dynamic model constructor (2024+)
-   */
+  /** Dynamic model constructor (2024+) */
   public TEPanelModel(LXModel model, TEVertex v0, TEVertex v1, TEVertex v2) {
     super(TE_MODEL_TYPE, model);
 
@@ -232,7 +220,7 @@ public class TEPanelModel extends TEModel {
     this.v2 = v2;
 
     setId(this.model.meta(META_ID));
-    
+
     // These variables are unnecessary in dynamic model:
     this.panelType = LIT;
     this.flavor = "";
@@ -246,8 +234,10 @@ public class TEPanelModel extends TEModel {
     this.centroid = calculateCentroid(this.points);
     double maxRadius = 0;
     for (LXPoint p : this.points) {
-      maxRadius = Math.max(maxRadius,
-        TEMath.distance(this.centroid.x, this.centroid.y, this.centroid.z, p.x, p.y, p.z));
+      maxRadius =
+          Math.max(
+              maxRadius,
+              TEMath.distance(this.centroid.x, this.centroid.y, this.centroid.z, p.x, p.y, p.z));
     }
 
     // Wrap each point to store some additional data.
@@ -284,22 +274,14 @@ public class TEPanelModel extends TEModel {
     return centroid;
   }
 
-  /**
-   * The model has changed and edges should be reconnected. Called by TEWholeModelDynamic.
-   */
+  /** The model has changed and edges should be reconnected. Called by TEWholeModelDynamic. */
   public void reconnectEdges(List<TEEdgeModel> edges) {
-    this.e0 = edges.stream()
-      .filter(item -> this.edge0id.equals(item.getId()))
-      .findFirst()
-      .orElse(null);
-    this.e1 = edges.stream()
-      .filter(item -> this.edge1id.equals(item.getId()))
-      .findFirst()
-      .orElse(null);
-    this.e2 = edges.stream()
-      .filter(item -> this.edge2id.equals(item.getId()))
-      .findFirst()
-      .orElse(null);
+    this.e0 =
+        edges.stream().filter(item -> this.edge0id.equals(item.getId())).findFirst().orElse(null);
+    this.e1 =
+        edges.stream().filter(item -> this.edge1id.equals(item.getId())).findFirst().orElse(null);
+    this.e2 =
+        edges.stream().filter(item -> this.edge2id.equals(item.getId())).findFirst().orElse(null);
 
     this.mutableEdges.clear();
     if (this.e0 != null) {
@@ -327,7 +309,7 @@ public class TEPanelModel extends TEModel {
         continue;
       }
 
-      for (TEEdgeModel edge: this.edges) {
+      for (TEEdgeModel edge : this.edges) {
         if (panel.edges.contains(edge)) {
           this.mutableNeighbors.add(panel);
           break;
@@ -344,15 +326,18 @@ public class TEPanelModel extends TEModel {
   }
 
   private boolean sharesVertex(TEPanelModel panel) {
-    return 
-      this.v0 == panel.v0 || this.v0 == panel.v1 || this.v0 == panel.v2 ||
-      this.v1 == panel.v0 || this.v1 == panel.v1 || this.v1 == panel.v2 ||
-      this.v2 == panel.v0 || this.v2 == panel.v1 || this.v2 == panel.v2;
+    return this.v0 == panel.v0
+        || this.v0 == panel.v1
+        || this.v0 == panel.v2
+        || this.v1 == panel.v0
+        || this.v1 == panel.v1
+        || this.v1 == panel.v2
+        || this.v2 == panel.v0
+        || this.v2 == panel.v1
+        || this.v2 == panel.v2;
   }
 
-  /**
-   * Checks if two panels touch along an edge (not just at a vertex)
-   */
+  /** Checks if two panels touch along an edge (not just at a vertex) */
   public boolean touches(TEPanelModel other) {
     return this.neighbors.contains(other);
   }
