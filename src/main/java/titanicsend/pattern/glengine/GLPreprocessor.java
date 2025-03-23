@@ -113,9 +113,8 @@ public class GLPreprocessor {
           control.v2 = Double.parseDouble(range[2]);
         }
         case SET_LABEL -> control.name = stringCleanup(line[1]);
-        case SET_NORMALIZATION_CURVE ->
-            control.normalizationCurve =
-                BoundedParameter.NormalizationCurve.valueOf(line[1].toUpperCase());
+        case SET_NORMALIZATION_CURVE -> control.normalizationCurve =
+            BoundedParameter.NormalizationCurve.valueOf(line[1].toUpperCase());
       }
     }
     parameters.add(control);
