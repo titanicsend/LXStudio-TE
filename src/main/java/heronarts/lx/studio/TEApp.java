@@ -775,8 +775,8 @@ public class TEApp extends LXStudio {
       // Add UI section for audio stems
       new UIAudioStems(ui, this.audioStems, ui.leftPane.global.getContentWidth())
           .addToContainer(ui.leftPane.global, 2);
-      new UIAudioStems(ui, this.audioStems, ui.leftPerformanceTools.getContentWidth())
-          .addToContainer(ui.leftPerformanceTools, 0);
+      new UIAudioStems(ui, this.audioStems, ui.leftPerformance.tools.getContentWidth())
+          .addToContainer(ui.leftPerformance.tools, 0);
 
       UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 4);
       UIColorPaletteManager.addToRightPerformancePane(
@@ -977,7 +977,13 @@ public class TEApp extends LXStudio {
     flags.windowHeight = WINDOW_HEIGHT;
     flags.zeroconf = false;
     flags.classpathPlugins.add("heronarts.lx.studio.TEApp$Plugin");
-    // flags.useOpenGL = true;
+
+    // Always use OpenGL back-end for BGFX on Linux'
+    // NOTE: Consider changing this if Chromatik ever implements
+    // full Vulkan support.
+    if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+      flags.useOpenGL = true;
+    }
 
     String logFileName = LOG_FILENAME_FORMAT.format(Calendar.getInstance().getTime());
     File logs = new File(LX.Media.LOGS.getDirName());

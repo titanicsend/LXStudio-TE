@@ -47,7 +47,7 @@ public class WavyShader extends FragmentShaderEffect {
     // roughly reproduce the effect of colorize
     double[] col = new double[4];
     colorToRGBArray(pattern.getGradientColor((float) k), col);
-    col[3] = clamp(k, 0, 1);
+    col[3] = titanicsend.util.TEMath.clamp(k, 0, 1);
 
     return col;
   }

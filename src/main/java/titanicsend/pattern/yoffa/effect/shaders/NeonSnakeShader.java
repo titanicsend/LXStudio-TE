@@ -60,7 +60,7 @@ public class NeonSnakeShader extends FragmentShaderEffect {
     }
 
     // gamma correct brightness and use it as alpha
-    brightness = clamp(brightness, 0, 1);
+    brightness = titanicsend.util.TEMath.clamp(brightness, 0, 1);
     waveColor[3] = brightness * brightness;
     return waveColor;
   }
