@@ -20,5 +20,5 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 17
-      - name: Apply Spotless
-        run: mvn spotless:apply
+      - name: Check Spotless
+        run: mvn spotless:check
