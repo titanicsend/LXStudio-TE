@@ -317,12 +317,13 @@ public class GLPreprocessor {
             tagName = tagName.substring(1);
           }
           try {
+            control.opcode = ShaderConfigOpcode.SET_RANGE;
             control.parameterId = TEControlTag.valueOf(tagName);
             control.name = control.parameterId.getLabel();
-
             control.value = rangeDefault;
             control.v1 = rangeLower;
             control.v2 = rangeUpper;
+            parameters.add(control);
           } catch (IllegalArgumentException exception) {
             System.out.println("Unsupported tag name: "+varName);
           }
@@ -343,10 +344,12 @@ public class GLPreprocessor {
           System.out.println("(out) RHS: " + Arrays.toString(values));
 
           // TODO(look): do I need to update any TEControls? I think I only use vec2/vec3 to replicate color/translate.
+        } else if (varType.equals("color3")) {
+          // no-op
         } else {
           throw new RuntimeException("iUniform data type not yet inmplemented: "+varType);
         }
-      } catch (Exception e) {
+      }catch (Exception e) {
         throw new RuntimeException("Error in " + matcher.group() + "\n" + e.getMessage());
       }
     }
