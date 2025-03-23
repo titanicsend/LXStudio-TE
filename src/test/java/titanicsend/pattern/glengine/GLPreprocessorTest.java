@@ -1,10 +1,9 @@
 package titanicsend.pattern.glengine;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static titanicsend.pattern.glengine.GLPreprocessorHelpers.parseIUniforms;
 
-import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class GLPreprocessorTest {
@@ -41,33 +40,24 @@ class GLPreprocessorTest {
 
   @Test
   public void iUniformParsingTest() {
-    GLPreprocessor p = new GLPreprocessor();
+    List<ShaderConfiguration> parameters = parseIUniforms(TEST_IUNIFORMS);
 
-    List<ShaderConfiguration> parameters = new ArrayList<ShaderConfiguration>();
+    String actualNames =
+        String.join(", ", parameters.stream().map(p -> p.name).toArray(String[]::new));
 
-    p.parseIUniforms(TEST_IUNIFORMS, parameters);
-
-    for (ShaderConfiguration c : parameters) {
-      System.out.println(c);
-    }
-
-    //    assertEquals(parameters.get(0), null);
-    //    Assertions.assertIterableEquals(parameters, new ArrayList<>());
+    assertEquals("Spin, Size, Speed, Quantity, Wow2, Wow1", actualNames);
   }
 
   @Test
   public void pragmaParsingTest() {
-    GLPreprocessor p = new GLPreprocessor();
+    GLPreprocessor gl = new GLPreprocessor();
 
-    List<ShaderConfiguration> parameters = new ArrayList<ShaderConfiguration>();
+    List<ShaderConfiguration> parameters = gl.parsePragmas(TEST_PRAGMAS);
 
-    p.parsePragmas(TEST_PRAGMAS, parameters);
+    String actualNames =
+        String.join(", ", parameters.stream().map(p -> p.name).toArray(String[]::new));
 
-    for (ShaderConfiguration c : parameters) {
-      System.out.println(c);
-    }
-
-    assertEquals(parameters.get(0), null);
-    Assertions.assertIterableEquals(parameters, new ArrayList<>());
+    assertEquals(
+        "TechnoChurch, xPos, yPos, Speed, Quantity, LvlReact, FreqReact, Wow1, Wow2", actualNames);
   }
 }
