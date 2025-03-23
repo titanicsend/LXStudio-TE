@@ -198,6 +198,9 @@ public class GLPreprocessorHelpers {
             // "iSpeed" should look up tag "SPEED"
             tagName = tagName.substring(1);
           }
+          if (tagName.equals("SCALE")) {
+            tagName = "SIZE";
+          }
           try {
             control.opcode = ShaderConfigOpcode.SET_RANGE;
             control.parameterId = TEControlTag.valueOf(tagName);
