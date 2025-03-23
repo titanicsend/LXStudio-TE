@@ -113,8 +113,9 @@ public class GLPreprocessor {
           control.v2 = Double.parseDouble(range[2]);
         }
         case SET_LABEL -> control.name = stringCleanup(line[1]);
-        case SET_NORMALIZATION_CURVE -> control.normalizationCurve =
-            BoundedParameter.NormalizationCurve.valueOf(line[1].toUpperCase());
+        case SET_NORMALIZATION_CURVE ->
+            control.normalizationCurve =
+                BoundedParameter.NormalizationCurve.valueOf(line[1].toUpperCase());
       }
     }
     parameters.add(control);
@@ -246,21 +247,25 @@ public class GLPreprocessor {
         // newline matches don't screw up our parsing.
         String[] parts = matcher.group().trim().split("=");
         if (parts.length != 2) {
-          throw new Exception("Expected 2 parts delimited by '=', but found: "+parts.length);
+          throw new Exception("Expected 2 parts delimited by '=', but found: " + parts.length);
         }
         String[] lhsTokens = parts[0].split("\\s|\\(|\\)");
         String rhs = parts[1];
 
-//        System.out.println("(in) LHS: " + Arrays.toString(lhsTokens));
+        //        System.out.println("(in) LHS: " + Arrays.toString(lhsTokens));
         if (lhsTokens.length != 3) {
-          throw new Exception("Expected 3 LHS tokens delimited by whitespace, but found: "+lhsTokens.length+" in string'"+parts[0]+"'");
+          throw new Exception(
+              "Expected 3 LHS tokens delimited by whitespace, but found: "
+                  + lhsTokens.length
+                  + " in string'"
+                  + parts[0]
+                  + "'");
         } else if (!lhsTokens[0].equals("#iUniform")) {
           throw new Exception("Expected first token on LHS to be '#iUniform'");
         }
         String varType = lhsTokens[1];
         String varName = lhsTokens[2];
         //        System.out.println("(out) LHS: '"+varType+" "+varName+"'");
-
 
         if (varType.equals("float")) {
           /*
@@ -292,17 +297,18 @@ public class GLPreprocessor {
            * - Group 2: The lower bound
            * - Group 3: The upper bound
            */
-          Pattern floatRangePattern = Pattern.compile(
-                  "(-?\\d*\\.\\d*|\\d+\\.?)\\s*"+
-                          "in\\s*\\{\\s*(-?\\d*\\.\\d*|\\d+\\.?)"+
-                          "\\s*,\\s*(-?\\d*\\.\\d*|\\d+\\.?)"+
-                          "\\s*}"  // Removed the \n and escaped the closing brace properly
-          );
+          Pattern floatRangePattern =
+              Pattern.compile(
+                  "(-?\\d*\\.\\d*|\\d+\\.?)\\s*"
+                      + "in\\s*\\{\\s*(-?\\d*\\.\\d*|\\d+\\.?)"
+                      + "\\s*,\\s*(-?\\d*\\.\\d*|\\d+\\.?)"
+                      + "\\s*}" // Removed the \n and escaped the closing brace properly
+                  );
 
           Matcher floatRangeMatcher = floatRangePattern.matcher(rhs);
 
           if (!floatRangeMatcher.find()) {
-            throw new RuntimeException("float range didn't match: ["+rhs+"]");
+            throw new RuntimeException("float range didn't match: [" + rhs + "]");
           }
 
           float rangeDefault = parseGlslFloat(floatRangeMatcher.group(1));
@@ -317,6 +323,7 @@ public class GLPreprocessor {
             tagName = tagName.substring(1);
           }
           try {
+
             control.opcode = ShaderConfigOpcode.SET_RANGE;
             control.parameterId = TEControlTag.valueOf(tagName);
             control.name = control.parameterId.getLabel();
@@ -325,31 +332,34 @@ public class GLPreprocessor {
             control.v2 = rangeUpper;
             parameters.add(control);
           } catch (IllegalArgumentException exception) {
-            System.out.println("Unsupported tag name: "+varName);
+            System.out.println("Unsupported tag name: " + varName);
           }
-          // System.out.println("(out) RHS: " + rangeDefault + ", " + rangeLower + ", " + rangeUpper);
+          // System.out.println("(out) RHS: " + rangeDefault + ", " + rangeLower + ", " +
+          // rangeUpper);
         } else if (varType.equals("vec2") || varType.equals("vec3")) {
           Pattern vecPattern = Pattern.compile("(vec\\d+)\\(([^)]*)\\)");
           Matcher vecMatcher = vecPattern.matcher(rhs);
 
           if (!vecMatcher.find()) {
-            throw new RuntimeException("vec matcher failed: "+rhs);
+            throw new RuntimeException("vec matcher failed: " + rhs);
           }
           // String dataType = vecMatcher.group(1); // "vec3" or "vec2"
           String paramsContent = vecMatcher.group(2); // ".226,.046,.636" or ".1, 2.0, -5"
           // If you need to further process the parameters
           String[] params = paramsContent.split(",");
-          Float[] values = Arrays.stream(params).map(GLPreprocessor::parseGlslFloat).toArray(Float[]::new);
+          Float[] values =
+              Arrays.stream(params).map(GLPreprocessor::parseGlslFloat).toArray(Float[]::new);
 
           System.out.println("(out) RHS: " + Arrays.toString(values));
 
-          // TODO(look): do I need to update any TEControls? I think I only use vec2/vec3 to replicate color/translate.
+          // TODO(look): do I need to update any TEControls? I think I only use vec2/vec3 to
+          // replicate color/translate.
         } else if (varType.equals("color3")) {
           // no-op
         } else {
-          throw new RuntimeException("iUniform data type not yet inmplemented: "+varType);
+          throw new RuntimeException("iUniform data type not yet inmplemented: " + varType);
         }
-      }catch (Exception e) {
+      } catch (Exception e) {
         throw new RuntimeException("Error in " + matcher.group() + "\n" + e.getMessage());
       }
     }
@@ -357,15 +367,16 @@ public class GLPreprocessor {
 
   private static float parseGlslFloat(String s) {
     if (s.startsWith(".")) {
-      return Float.parseFloat("0"+s);
+      return Float.parseFloat("0" + s);
     } else if (s.endsWith(".")) {
-      return Float.parseFloat(s+"0");
+      return Float.parseFloat(s + "0");
     }
     return Float.parseFloat(s);
   }
 
   private static String removeIUniformLines(String fileContent) {
-    String[] lines = Arrays.stream(fileContent.split("\\n"))
+    String[] lines =
+        Arrays.stream(fileContent.split("\\n"))
             .filter(line -> !line.contains("#iUniform"))
             .toArray(String[]::new);
     return String.join("\n", lines);
