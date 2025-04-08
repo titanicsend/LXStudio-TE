@@ -15,8 +15,6 @@
  */
 package heronarts.lx.studio;
 
-import static titanicsend.audio.AudioStemModulator.Stem.*;
-
 import heronarts.glx.event.GamepadEvent;
 import heronarts.glx.event.KeyEvent;
 import heronarts.lx.LX;
@@ -36,6 +34,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.function.Function;
 import jkbstudio.supermod.SuperMod;
+import studio.jkb.audio.stems.component.AudioStems;
+import studio.jkb.audio.stems.modulator.AudioStemModulator;
+import studio.jkb.audio.stems.plugin.AudioStemsPlugin;
 import titanicsend.app.*;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.autopilot.justin.*;
@@ -45,9 +46,6 @@ import titanicsend.app.dev.UIDevSwitch;
 import titanicsend.app.director.Director;
 import titanicsend.app.director.DirectorEffect;
 import titanicsend.app.director.UIDirector;
-import titanicsend.audio.AudioStemModulator;
-import titanicsend.audio.AudioStems;
-import titanicsend.audio.UIAudioStems;
 import titanicsend.color.ColorPaletteManager;
 import titanicsend.color.TEGradientSource;
 import titanicsend.dmx.DmxEngine;
@@ -156,7 +154,6 @@ public class TEApp extends LXStudio {
     private final GLEngine glEngine;
     private final SuperMod superMod;
 
-    private final AudioStems audioStems;
     private final ColorPaletteManager paletteManagerA;
     private final ColorPaletteManager paletteManagerB;
     private final TELaserTask laserTask;
@@ -198,7 +195,6 @@ public class TEApp extends LXStudio {
       // Super Modulator midi controller
       this.superMod = new SuperMod(lx);
 
-      lx.engine.registerComponent("audioStems", this.audioStems = new AudioStems(lx));
       lx.engine.registerComponent(
           "paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
       if (UIColorPaletteManager.DISPLAY_TWO_MANAGED_SWATCHES) {
@@ -235,6 +231,8 @@ public class TEApp extends LXStudio {
       // available.
 
       log("TEApp.Plugin.initialize()");
+
+      AudioStemsPlugin.registerComponents(lx);
 
       if (staticModel) {
         GrandShlomoStation.activateAll(lx, wholeModel.getGapPointIndices()[0]);
@@ -419,7 +417,6 @@ public class TEApp extends LXStudio {
       this.superMod.registerMidiFighterTwister(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER4);
 
       // Custom modulators
-      lx.registry.addModulator(AudioStemModulator.class);
       lx.registry.addModulator(Dmx16bitModulator.class);
       lx.registry.addModulator(DmxGridModulator.class);
       // Replaced by Chromatik version:
@@ -694,41 +691,32 @@ public class TEApp extends LXStudio {
           .addParameter(new AutoParameter("sharp", Scale.ABSOLUTE, -.5, .5, .3));
     }
 
+    private static final int SUPERMOD_STEM_COLUMN_START = 0;
+    private static final int SUPERMOD_STEM_COLUMNS = 4;
+    private static final int SUPERMOD_STEM_ROW_ENERGY = 0;
+    private static final int SUPERMOD_STEM_ROW_WAVE = 1;
+
     /** Redirect some of the SuperMod buttons to Audio Stem modulators */
     private final SuperMod.ModulatorSource superModSource =
-        (label, col, row) -> {
-          AudioStemModulator m = null;
-          if (row >= 0 && row <= 1) {
-            if (col == 0) {
-              m = new AudioStemModulator(label + " " + BASS);
-              m.stem.setValue(BASS);
-            }
-            if (col == 1 && row == 0) {
-              m = new AudioStemModulator(label + " " + DRUMS);
-              m.stem.setValue(DRUMS);
-            }
-            if (col == 2 && row == 0) {
-              m = new AudioStemModulator(label + " " + VOCALS);
-              m.stem.setValue(VOCALS);
-            }
-            if (col == 3 && row == 0) {
-              m = new AudioStemModulator(label + " " + OTHER);
-              m.stem.setValue(OTHER);
-            }
+      (label, col, row) -> {
+        if (col >= SUPERMOD_STEM_COLUMN_START
+          && col < (SUPERMOD_STEM_COLUMN_START + SUPERMOD_STEM_COLUMNS)
+          && (row == SUPERMOD_STEM_ROW_ENERGY || row == SUPERMOD_STEM_ROW_WAVE)) {
 
-            // Row 0 = normal, Row 1 = wave
-            if (m != null) {
-              if (row == 0) {
-                m.outputMode.setValue(AudioStemModulator.OutputMode.ENERGY);
-              } else if (row == 1) {
-                m.outputMode.setValue(AudioStemModulator.OutputMode.WAVE);
-              }
-            }
+          AudioStems.Stem stem = AudioStems.get().stems.get(col);
+          AudioStemModulator m = new AudioStemModulator(label + " " + stem.label);
+          m.stem.setValue(stem);
+          if (row == SUPERMOD_STEM_ROW_ENERGY) {
+            m.outputMode.setValue(AudioStemModulator.OutputMode.ENERGY);
+          } else {
+            m.outputMode.setValue(AudioStemModulator.OutputMode.WAVE);
           }
-
-          // If button was not in our space, m will be null
           return m;
-        };
+        }
+
+        // If button was not in target range, decline opportunity to build custom modulator
+        return null;
+      };
 
     public void initializeUI(LXStudio lx, LXStudio.UI ui) {
       // Here is where you may modify the initial settings of the UI before it is fully
@@ -771,12 +759,6 @@ public class TEApp extends LXStudio {
       // Add UI section for JKB Autopilot
       // new UIAutopilot(ui, this.autopilotJKB, ui.leftPane.global.getContentWidth())
       //    .addToContainer(ui.leftPane.global, 7);
-
-      // Add UI section for audio stems
-      new UIAudioStems(ui, this.audioStems, ui.leftPane.global.getContentWidth())
-          .addToContainer(ui.leftPane.global, 2);
-      new UIAudioStems(ui, this.audioStems, ui.leftPerformance.tools.getContentWidth())
-          .addToContainer(ui.leftPerformance.tools, 0);
 
       UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 4);
       UIColorPaletteManager.addToRightPerformancePane(
@@ -976,6 +958,7 @@ public class TEApp extends LXStudio {
     flags.windowWidth = WINDOW_WIDTH;
     flags.windowHeight = WINDOW_HEIGHT;
     flags.zeroconf = false;
+    flags.classpathPlugins.add(studio.jkb.audio.stems.plugin.AudioStemsPlugin.class.getTypeName());
     flags.classpathPlugins.add("heronarts.lx.studio.TEApp$Plugin");
 
     // Always use OpenGL back-end for BGFX on Linux'

@@ -1,0 +1,3 @@
+[submodule "submodules/audioStems"]
+	path = submodules/audio-stems
+	url = https://github.com/jkbelcher/AudioStemsPlugin.git

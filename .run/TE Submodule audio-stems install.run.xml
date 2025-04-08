@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Titanic's End clean package" type="MavenRunConfiguration" factoryName="Maven">
+  <configuration default="false" name="TE Submodule audio-stems install" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>
       <option name="myGeneralSettings" />
       <option name="myRunnerSettings" />
@@ -13,7 +13,8 @@
             <list>
               <option value="clean" />
               <option value="-U" />
-              <option value="package" />
+              <option value="install" />
+              <option value="-Dskip-chromatik-package" />
             </list>
           </option>
           <option name="multimoduleDir" />
@@ -25,12 +26,10 @@
             <list />
           </option>
           <option name="resolveToWorkspace" value="false" />
-          <option name="workingDirPath" value="$PROJECT_DIR$" />
+          <option name="workingDirPath" value="$PROJECT_DIR$/../LXStudio-TE\submodules\audio-stems" />
         </MavenRunnerParameters>
       </option>
     </MavenSettings>
-    <method v="2">
-      <option name="RunConfigurationTask" enabled="true" run_configuration_name="TE Submodule audio-stems install" run_configuration_type="MavenRunConfiguration" />
-    </method>
+    <method v="2" />
   </configuration>
 </component>

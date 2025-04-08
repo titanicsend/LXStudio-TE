@@ -31,6 +31,7 @@
         <lx.version>1.0.1.TE.3-SNAPSHOT</lx.version>
 
         <!-- Project dependency versions -->
+        <audio-stems.version>0.1.2-SNAPSHOT</audio-stems.version>
         <gigglepixel.version>0.0.3</gigglepixel.version>
         <gov-nist-math-jama.version>1.1.1</gov-nist-math-jama.version>
         <junit-jupiter.version>5.9.2</junit-jupiter.version>
@@ -39,6 +40,7 @@
 
     <!-- Define a local repository -->
     <repositories>
+
         <repository>
             <id>project-repo</id>
             <name>project-repo</name>
@@ -164,6 +166,12 @@
             <version>${supermod.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>studio.jkb</groupId>
+            <artifactId>audio-stems</artifactId>
+            <version>${audio-stems.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -243,6 +251,7 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>

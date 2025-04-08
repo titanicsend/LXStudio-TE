@@ -13,7 +13,8 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LXSwatch;
 import heronarts.lx.model.LXModel;
 import java.nio.FloatBuffer;
-import titanicsend.audio.AudioStems;
+
+import studio.jkb.audio.stems.component.AudioStems;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
 import titanicsend.util.TE;
 import titanicsend.util.TEMath;
@@ -395,10 +396,9 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     perFrameUniformBlock.put((float) bassRatio); // bassRatio
     perFrameUniformBlock.put((float) trebleRatio); // trebleRatio
     perFrameUniformBlock.put((float) volumeRatio); // volumeRatio
-    perFrameUniformBlock.put(AudioStems.get().bass.getValuef()); // stemBass
-    perFrameUniformBlock.put(AudioStems.get().drums.getValuef()); // stemDrums
-    perFrameUniformBlock.put(AudioStems.get().vocals.getValuef()); // stemVocals
-    perFrameUniformBlock.put(AudioStems.get().other.getValuef()); // stemOther
+    for (AudioStems.Stem stem : AudioStems.get().stems) {
+      perFrameUniformBlock.put((float) stem.getValue());
+    }
 
     // set the palette size and colors
     setPaletteUniforms(perFrameUniformBlock);

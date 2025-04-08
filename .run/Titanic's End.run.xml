@@ -6,6 +6,7 @@
     <option name="PROGRAM_PARAMETERS" value="dynamic Projects/CoachellaMaster.lxp" />
     <option name="VM_PARAMETERS" value="-ea -XstartOnFirstThread -Djava.awt.headless=true " />
     <method v="2">
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="TE Submodule audio-stems install" run_configuration_type="MavenRunConfiguration" />
       <option name="Make" enabled="true" />
     </method>
   </configuration>
