@@ -698,25 +698,25 @@ public class TEApp extends LXStudio {
 
     /** Redirect some of the SuperMod buttons to Audio Stem modulators */
     private final SuperMod.ModulatorSource superModSource =
-      (label, col, row) -> {
-        if (col >= SUPERMOD_STEM_COLUMN_START
-          && col < (SUPERMOD_STEM_COLUMN_START + SUPERMOD_STEM_COLUMNS)
-          && (row == SUPERMOD_STEM_ROW_ENERGY || row == SUPERMOD_STEM_ROW_WAVE)) {
+        (label, col, row) -> {
+          if (col >= SUPERMOD_STEM_COLUMN_START
+              && col < (SUPERMOD_STEM_COLUMN_START + SUPERMOD_STEM_COLUMNS)
+              && (row == SUPERMOD_STEM_ROW_ENERGY || row == SUPERMOD_STEM_ROW_WAVE)) {
 
-          AudioStems.Stem stem = AudioStems.get().stems.get(col);
-          AudioStemModulator m = new AudioStemModulator(label + " " + stem.label);
-          m.stem.setValue(stem);
-          if (row == SUPERMOD_STEM_ROW_ENERGY) {
-            m.outputMode.setValue(AudioStemModulator.OutputMode.ENERGY);
-          } else {
-            m.outputMode.setValue(AudioStemModulator.OutputMode.WAVE);
+            AudioStems.Stem stem = AudioStems.get().stems.get(col);
+            AudioStemModulator m = new AudioStemModulator(label + " " + stem.label);
+            m.stem.setValue(stem);
+            if (row == SUPERMOD_STEM_ROW_ENERGY) {
+              m.outputMode.setValue(AudioStemModulator.OutputMode.ENERGY);
+            } else {
+              m.outputMode.setValue(AudioStemModulator.OutputMode.WAVE);
+            }
+            return m;
           }
-          return m;
-        }
 
-        // If button was not in target range, decline opportunity to build custom modulator
-        return null;
-      };
+          // If button was not in target range, decline opportunity to build custom modulator
+          return null;
+        };
 
     public void initializeUI(LXStudio lx, LXStudio.UI ui) {
       // Here is where you may modify the initial settings of the UI before it is fully

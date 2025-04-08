@@ -13,7 +13,6 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LXSwatch;
 import heronarts.lx.model.LXModel;
 import java.nio.FloatBuffer;
-
 import studio.jkb.audio.stems.component.AudioStems;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
 import titanicsend.util.TE;
