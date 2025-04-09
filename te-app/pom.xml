@@ -11,7 +11,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>LXStudio-TE</artifactId>
+    <artifactId>te-app</artifactId>
     <name>Titanic's End LX Studio Application</name>
 
     <!-- Define a local repository -->
