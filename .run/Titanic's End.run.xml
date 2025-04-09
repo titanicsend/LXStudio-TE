@@ -5,6 +5,7 @@
     <module name="LXStudio-TE" />
     <option name="PROGRAM_PARAMETERS" value="dynamic Projects/CoachellaMaster.lxp" />
     <option name="VM_PARAMETERS" value="-ea -XstartOnFirstThread -Djava.awt.headless=true " />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/te-app" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
