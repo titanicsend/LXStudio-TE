@@ -1,6 +1,6 @@
 #pragma name "GummyWorms"
-#iUniform color3 iColorRGB = vec3(0.964, 0.144, 0.519)
-#iUniform color3 iColor2RGB = vec3(0.226, 0.046, 0.636)
+// #iUniform color3 iColorRGB = vec3(0.964, 0.144, 0.519)
+// #iUniform color3 iColor2RGB = vec3(0.226, 0.046, 0.636)
 #iUniform float iRotationAngle = 0.0 in {0.0, 6.28}
 #iUniform float iSpeed = 0.5 in {0.25, 3.0}
 #iUniform float iScale = 0.05 in {0.01, 1.0}
@@ -16,6 +16,11 @@ precision mediump float;
 #define HALF_PI 1.5707963267948966
 #define TWO_PI 6.28318530718
 #define TAU 6.28318530718
+
+#define TEXTURE_SIZE 512.0
+#define CHANNEL_COUNT 16.0
+#define pixPerBin (TEXTURE_SIZE / CHANNEL_COUNT)
+#define halfBin (pixPerBin / 2.0)
 
 /****************************************************
  * Palettes                                         *
@@ -195,7 +200,12 @@ vec3 drawSquiggle(
 
         acc += step;
 
-        color += fill(sdCircle(st + acc), radius) * (N-i) * pal * ALPHA;
+        float circleSize = radius;
+//         float audioIndex = mod(i / 200. * TEXTURE_SIZE, TEXTURE_SIZE);
+//         float audioWave = (2. * (1.0+texelFetch(iChannel0, ivec2(audioIndex, 1), 0).x)) - 1.;
+//         radius *= audioWave;
+
+        color += fill(sdCircle(st + acc), circleSize) * (N-i) * pal * ALPHA;
     }
 
     return color;
@@ -213,7 +223,7 @@ vec3 tiledSquiggles(in vec2 st, float time) {
     f = rotate(f, -2.*iRotationAngle);
     vec2 pt = f - vec2(0.5);
 
-    
+
 
     vec2 rand2 = random2(n);
     float r = rand2.x + rand2.y;
@@ -222,7 +232,13 @@ vec3 tiledSquiggles(in vec2 st, float time) {
     float freq = .1 + .1 * r;
     float speed = 1.5 + r;
 
-    float len = N*(0.5 + .5*sin(time + 2.*r));
+//     float len = N*(0.5 + .5*sin(time + 2.*r));
+    // subdivide fft data into bins determined by iQuantity
+    float p = floor(0.5*abs(n.x+n.y) / iQuantity);
+    float tx = halfBin+pixPerBin * p;
+    // get frequency data pixel from texture
+    float fftBin  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
+    float len = N*fftBin;
     
     vec2 step_size = vec2(
         0.02 + 0.02 * r,
@@ -230,7 +246,7 @@ vec3 tiledSquiggles(in vec2 st, float time) {
     );
     vec4 wave = vec4(freq, speed, 0., 0.);
 
-    return drawSquiggle(pt, r, bounds, step_size, len, wave, time);
+    return drawSquiggle(pt, r+fftBin, bounds, step_size, len, wave, time);
 
     // // alternate axes
     // //
@@ -252,11 +268,17 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     st *= iQuantity;
 
     float time = iTime;
-    time *= iSpeed;
+//     time *= iSpeed;
 
-    // // overlapping...
-    color += 1.0 - tiledSquiggles(st, time);
-    color *= 1.0 - tiledSquiggles(st*(iWow2 + 0.2*sin(time)), time);
+//     // (LIGHT) overlapping
+//     color += 1.0 - tiledSquiggles(st, time);
+//     color *= 1.0 - tiledSquiggles(st*(iWow2 + 0.2*sin(time)), time);
+//
+    // (DARK) overlapping
+    color += tiledSquiggles(st, time);
+    color += tiledSquiggles(st*(iWow2 + 0.2*sin(time)), time);
+
+
 
     // color += tiledSquiggles(st);
 
