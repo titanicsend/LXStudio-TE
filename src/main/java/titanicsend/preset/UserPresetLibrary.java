@@ -20,9 +20,13 @@ import java.util.*;
 
 /** Contains presets for multiple components */
 public class UserPresetLibrary implements LXSerializable {
+
+  private static String getDefaultFileName() {
+    return String.format("Presets/UserPresets/%s.userPresets", System.getProperty("user.name"));
+  }
+
   private final LX lx;
 
-  private static final String defaultFileName = "Presets/UserPresets/newFile.userPresets";
   private File file;
 
   public final ColorParameter color = new ColorParameter("Color", LXColor.RED);
@@ -37,12 +41,12 @@ public class UserPresetLibrary implements LXSerializable {
 
   public UserPresetLibrary(LX lx) {
     this.lx = lx;
-    resetFileName();
+    setFileDefault();
   }
 
   public void reset() {
     removeAll();
-    resetFileName();
+    setFileDefault();
   }
 
   /**
@@ -56,8 +60,8 @@ public class UserPresetLibrary implements LXSerializable {
     }
   }
 
-  private void resetFileName() {
-    this.file = lx.getMediaFile(defaultFileName);
+  private void setFileDefault() {
+    this.file = lx.getMediaFile(getDefaultFileName());
   }
 
   public File getFile() {
