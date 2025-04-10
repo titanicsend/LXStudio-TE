@@ -2,15 +2,12 @@ package titanicsend.preset;
 
 import heronarts.glx.ui.UI;
 import heronarts.glx.ui.UI2dContainer;
-import heronarts.glx.ui.UI2dScrollPane;
 import heronarts.glx.ui.UIContextActions;
 import heronarts.glx.ui.component.UIButton;
 import heronarts.glx.ui.vg.VGraphics;
-import heronarts.lx.LX;
 import heronarts.lx.LXPresetComponent;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.device.UIControls;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,28 +108,28 @@ public class UIUserPresetCollection extends UI2dContainer implements UIControls,
    */
 
   public final UIContextActions.Action actionImportPresets =
-    new UIContextActions.Action("Import all presets for pattern") {
-      @Override
-      public void onContextAction(UI ui) {
-        PresetEngine.get().importPresets(component);
-      }
-    };
+      new UIContextActions.Action("Import all presets for pattern") {
+        @Override
+        public void onContextAction(UI ui) {
+          PresetEngine.get().importPresets(component);
+        }
+      };
 
   public final UIContextActions.Action actionImportAllPresets =
-    new UIContextActions.Action("Import presets for ALL patterns") {
-      @Override
-      public void onContextAction(UI ui) {
-        PresetEngine.get().importAllPatternPresets();
-      }
-    };
+      new UIContextActions.Action("Import presets for ALL patterns") {
+        @Override
+        public void onContextAction(UI ui) {
+          PresetEngine.get().importAllPatternPresets();
+        }
+      };
 
   public final UIContextActions.Action actionManageLibrary =
-    new UIContextActions.Action("Manage Library...") {
-      @Override
-      public void onContextAction(UI ui) {
-        showLibraryManager();
-      }
-    };
+      new UIContextActions.Action("Manage Library...") {
+        @Override
+        public void onContextAction(UI ui) {
+          showLibraryManager();
+        }
+      };
 
   @Override
   public List<Action> getContextActions() {

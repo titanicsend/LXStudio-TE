@@ -49,9 +49,7 @@ public class UserPresetLibrary implements LXSerializable {
     setFileDefault();
   }
 
-  /**
-   * Remove presets in all collections
-   */
+  /** Remove presets in all collections */
   private void removeAll() {
     for (UserPresetCollection c : this.collections) {
       for (int j = c.presets.size() - 1; j >= 0; --j) {
@@ -82,7 +80,6 @@ public class UserPresetLibrary implements LXSerializable {
     }
     return c;
   }
-
 
   /** Save/Load */
   public void save(File file) {

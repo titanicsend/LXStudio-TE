@@ -6,7 +6,6 @@ import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.LXPresetComponent;
 import heronarts.lx.parameter.StringParameter;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -28,8 +27,7 @@ public class PresetEngine extends LXComponent {
 
   private UserPresetLibrary currentLibrary;
 
-  public final StringParameter libraryName =
-    new StringParameter("Library", "");
+  public final StringParameter libraryName = new StringParameter("Library", "");
 
   public PresetEngine(LX lx) {
     super(lx, "PresetEngine");
