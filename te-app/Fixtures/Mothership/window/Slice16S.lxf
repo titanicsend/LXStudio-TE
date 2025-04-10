@@ -1,0 +1,87 @@
+{
+  /* Mothership by Titanic's End */
+
+  label: "Slice 16S",
+  tags: [ "slice", "starboard", "star", "slice16", "slice16s" ],
+
+  "parameters": {
+    "host": { type: "string", default: "10.128.42.", label: "Host", description: "Controller IP address or hostname" },
+    "outputW1": { type: "int", default: 5, min: 1, max: 8, label: "Output W1", description: "Window 1 Controller Output Number 1-8" },
+    "outputW2": { type: "int", default: 6, min: 1, max: 8, label: "Output W2", description: "Window 2 Controller Output Number 1-8" },
+    "outputW3": { type: "int", default: 7, min: 1, max: 8, label: "Output W3", description: "Window 3 Controller Output Number 1-8" },
+    "outputW8a": { type: "int", default: 3, min: 1, max: 8, label: "Output W8a", description: "Window 8a Controller Output Number 1-8" },
+    "outputW6": { type: "int", default: 2, min: 1, max: 8, label: "Output W6", description: "Window 6 Controller Output Number 1-8" },
+    "outputW9": { type: "int", default: 4, min: 1, max: 8, label: "Output W9", description: "Window 9 Controller Output Number 1-8" },
+    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
+
+    "w1extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 270" },
+    "w1ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+    "w2extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 166" },
+    "w2ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+    "w3extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 166" },
+    "w3ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+    "w4extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 100" },
+    "w4ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+    "w5extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 114" },
+    "w5ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+    "w6extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 114" },
+    "w6ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+    "w7extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 100" },
+    "w7ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+    "w8AextraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 175" },
+    "w8AledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+    /* "w8BextraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 175" }, */
+    /* "w8BledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" }, */
+    "w9extraLEDs": { type: "int", default: 0, min: -999, description: "Number of LEDs relative to the default of 368" },
+    "w9ledOffset": { type: "int", default: 0, min: -999, description: "How far (in LEDs) the strip has been pushed around the track" },
+
+    "radial": { type: "int", default: 16, min: 16, max: 16, label: "Radial", description: "Slice number, 1-24" }
+  },
+
+  "transforms": [
+    { y:  "145" },
+    /* Port
+    { roll: "(-6.5 - ($radial - 1)) * 360 / 24" }
+    */
+    /* Starboard */
+    { yaw: "180" },
+    { roll: "(6.5 + ($radial - 1)) * 360 / 24" }
+  ],
+
+  "components": [
+    { type: "Window1", id: "w1", extraLEDs: "$w1extraLEDs", ledOffset: "$w1ledOffset" },
+    { type: "Window2", id: "w2", extraLEDs: "$w2extraLEDs", ledOffset: "$w2ledOffset" },
+    { type: "Window3", id: "w3", extraLEDs: "$w3extraLEDs", ledOffset: "$w3ledOffset" },
+    { type: "Window4", id: "w4", extraLEDs: "$w4extraLEDs", ledOffset: "$w4ledOffset" },
+    { type: "Window5", id: "w5", extraLEDs: "$w5extraLEDs", ledOffset: "$w5ledOffset" },
+    { type: "Window6", id: "w6", extraLEDs: "$w6extraLEDs", ledOffset: "$w6ledOffset" },
+    { type: "Window7", id: "w7", extraLEDs: "$w7extraLEDs", ledOffset: "$w7ledOffset" },
+    { type: "Window8A", id: "w8a", extraLEDs: "$w8AextraLEDs", ledOffset: "$w8AledOffset" },
+    /* w8b is a lift point */
+    { type: "Window9", id: "w9", extraLEDs: "$w9extraLEDs", ledOffset: "$w9ledOffset" }
+  ],
+
+  outputs: [
+    { host: "$host", universe: "$outputW1*10", protocol: "artnet", sequenceEnabled: "$artnetSequence", segments: [
+        { componentId: "w1" }
+    ] },
+    { host: "$host", universe: "$outputW2*10", protocol: "artnet", sequenceEnabled: "$artnetSequence", segments: [
+        { componentId: "w2" },
+        { componentId: "w7" }
+    ] },
+    { host: "$host", universe: "$outputW3*10", protocol: "artnet", sequenceEnabled: "$artnetSequence", segments: [
+        { componentId: "w3" },
+        { componentId: "w4" }
+    ] },
+    { host: "$host", universe: "$outputW8a*10", protocol: "artnet", sequenceEnabled: "$artnetSequence", segments: [
+        { componentId: "w8a" },
+        { componentId: "w5" }
+    ] },
+    { host: "$host", universe: "$outputW6*10", protocol: "artnet", sequenceEnabled: "$artnetSequence", segments: [
+        { componentId: "w6" }
+    ] },
+    { host: "$host", universe: "$outputW9*10", protocol: "artnet", sequenceEnabled: "$artnetSequence", segments: [
+        { componentId: "w9" }
+    ] }
+  ]
+}

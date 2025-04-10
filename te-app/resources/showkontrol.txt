@@ -1,0 +1,89 @@
+AUTOVJ SHOWKONTROL SETTINGS:
+
+Layer M Preferences (Events)
+    EXECUTOR | SPEED CHANGE
+        OSC OUT: /lx/tempo/setBPM F %BPMVAL%.%BPMDECIMAL%;
+    EXECUTOR | BPM CHANGE
+        OSC OUT: /lx/tempo/setBPM F %BPMVAL%.%BPMDECIMAL%;
+    EXECUTOR | BEAT CHANGE
+        OSC OUT: /lx/tempo/beat I %BEATMARKER%; OSC OUT: /lx/tempo/string/setBPM S %BPMVAL%:%BPMDECIMAL%;
+
+Layer M Preferences (Status)
+    EXECUTOR | PLAY
+        OSC OUT: /lx/tempo/setBPM F %BPMVAL%.%BPMDECIMAL%; OSC OUT: /lx/tempo/string/setBPM S %BPMVAL%:%BPMDECIMAL%;
+    EXECUTOR | CHANGE TRACK
+        OSC OUT: /lx/tempo/setBPM F %BPMVAL%.%BPMDECIMAL%; OSC OUT: /lx/tempo/string/setBPM S %BPMVAL%:%BPMDECIMAL%;
+
+Layer M Preferences (Phrase :: Club)
+    INTRO
+        OSC OUT: /te/phrase/up I 1;
+    UP
+        OSC OUT: /te/phrase/up I 1;
+    DOWN
+        OSC OUT: /te/phrase/down I 1;
+    ELEVATE
+        OSC OUT: /te/phrase/up I 1;
+    CHORUS
+        OSC OUT: /te/phrase/chorus I 1;
+    OUTRO
+        OSC OUT: /te/phrase/down I 1;
+
+Layer M Preferences (Phrase :: ROCK/POP)
+    INTRO
+        OSC OUT: /te/phrase/up I 1;
+    BRIDGE
+        OSC OUT: /te/phrase/down I 1;
+    CHORUS
+        OSC OUT: /te/phrase/chorus I 1;
+    OUTRO
+        OSC OUT: /te/phrase/down I 1;
+    VERSE1
+        OSC OUT: /te/phrase/up I 1;
+    VERSE2
+        OSC OUT: /te/phrase/chorus I 1;
+    VERSE3
+        OSC OUT: /te/phrase/chorus I 1;
+    VERSE4
+        OSC OUT: /te/phrase/up I 1;
+    VERSE5
+        OSC OUT: /te/phrase/chorus I 1;
+    VERSE6
+        OSC OUT: /te/phrase/chorus I 1;
+
+Layer M Preferences (Phrase :: OTHER)
+    INTRO
+        OSC OUT: /te/phrase/up I 1;
+    BRIDGE
+        OSC OUT: /te/phrase/down I 1;
+    CHORUS
+        OSC OUT: /te/phrase/chorus I 1;
+    OUTRO
+        OSC OUT: /te/phrase/down I 1;
+    VERSE1
+        OSC OUT: /te/phrase/up I 1;
+    VERSE2
+        OSC OUT: /te/phrase/chorus I 1;
+    VERSE3
+        OSC OUT: /te/phrase/chorus I 1;
+    VERSE4
+        OSC OUT: /te/phrase/up I 1;
+    VERSE5
+        OSC OUT: /te/phrase/chorus I 1;
+    VERSE6
+        OSC OUT: /te/phrase/chorus I 1;
+
+Deck 1 Preferences (MIXER)
+    EXECUTOR | FADER POS CHANGE
+        /te/mixer/fader/1 I %FADERPOS%;
+
+Deck 2 Preferences (MIXER)
+    EXECUTOR | FADER POS CHANGE
+        /te/mixer/fader/2 I %FADERPOS%;
+
+Deck 3 Preferences (MIXER)
+    EXECUTOR | FADER POS CHANGE
+        /te/mixer/fader/3 I %FADERPOS%;
+
+Deck 4 Preferences (MIXER)
+    EXECUTOR | FADER POS CHANGE
+        /te/mixer/fader/4 I %FADERPOS%;

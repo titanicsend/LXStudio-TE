@@ -1,0 +1,190 @@
+{
+  /* Titanic's End Fixture File */
+  label: "Panel SCC",
+  tags: [ "SCC", "panel", "Panel", "m2" ],
+
+  parameters: {
+    "xOffset": { default: 6.938027858734131, type: "float", description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
+    "yOffset": { default: 6, type: "float", description: "Adjust Y position within the plane of the panel. Use to fine-tune position after installation" },
+  
+    /* Modify HOST and CONTROLLER OUTPUT default values HERE to assign one of this panel's strands to a
+       new controller output. Then click [Reload Fixture File] at the bottom of the Inspector section in Chromatik.
+       CAUTION: LXM model files containing this fixture might not update to the new defaults. */
+
+    "strand1host": { default: "10.7.100.12", type: "string", label: "S1 Host", description: "Strand 1 Controller IP address or hostname" },
+    "strand1output": { default: 1, type: "int", min: 1, max: 4, label: "S1 Output", description: "Strand 1 Controller Output Number 1-4" },
+    "strand2host": { default: "10.7.100.12", type: "string", label: "S2 Host", description: "Strand 2 Controller IP address or hostname" },
+    "strand2output": { default: 2, type: "int", min: 1, max: 4, label: "S2 Output", description: "Strand 2 Controller Output Number 1-4" },
+    "strand3host": { default: "10.7.100.12", type: "string", label: "S3 Host", description: "Strand 3 Controller IP address or hostname" },
+    "strand3output": { default: 3, type: "int", min: 1, max: 4, label: "S3 Output", description: "Strand 3 Controller Output Number 1-4" },
+    "strand4host": { default: "10.7.100.12", type: "string", label: "S4 Host", description: "Strand 4 Controller IP address or hostname" },
+    "strand4output": { default: 4, type: "int", min: 1, max: 4, label: "S4 Output", description: "Strand 4 Controller Output Number 1-4" },
+    "strand5host": { default: "10.7.2.20", type: "string", label: "S5 Host", description: "Strand 5 Controller IP address or hostname" },
+    "strand5output": { default: 1, type: "int", min: 1, max: 4, label: "S5 Output", description: "Strand 5 Controller Output Number 1-4" },
+
+    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
+    
+    /* Debug tools */
+    "onCar": { default: true, type: "boolean", label: "On Car", description: "True = Locate panel to its position on the car, False = Locate to origin" }
+  },
+  
+  transforms: [
+    /* Transpose starting corner to Vertex0 */
+    { x: "-151.6250", enabled: "$onCar" },
+    { y: "156.1228", enabled: "$onCar" },
+    { z: "-50.6589", enabled: "$onCar" },
+
+    /* Rotate to plane of panel */
+    { yaw: "33.2750", enabled: "$onCar" },
+    { roll: "-53.3445", enabled: "$onCar" },
+    { pitch: "-144.4001", enabled: "$onCar" },
+
+    /* X-Y adjustments within plane of panel */
+    { x: "$xOffset" },
+    { y: "$yOffset" }    
+  ],
+
+  meta: {
+    "panelId": "SCC",
+    "v0": "99",
+    "v1": "98",
+    "v2": "100",
+    "edge1": "98-99",
+    "edge2": "98-100",
+    "edge3": "99-100",
+    "leadingEdge": "99->98",
+    "module": "2"
+  },
+
+  components: [
+    /* Looking at the back of panel, starts from LEFT
+       Looking at the front of panel, starts from RIGHT */
+
+    { type: "panelRow", row: "0", offset: "0", numPoints: "51" },
+    { type: "panelRow", row: "1", offset: "1", numPoints: "49" },
+    { type: "panelRow", row: "2", offset: "1", numPoints: "48" },
+    { type: "panelRow", row: "3", offset: "1", numPoints: "48" },
+    { type: "panelRow", row: "4", offset: "1", numPoints: "47" },
+    { type: "panelRow", row: "5", offset: "2", numPoints: "45" },
+    { type: "panelRow", row: "6", offset: "2", numPoints: "44" },
+    { type: "panelRow", row: "7", offset: "2", numPoints: "43" },
+    { type: "panelRow", row: "8", offset: "2", numPoints: "42" },
+    { type: "panelRow", row: "9", offset: "3", numPoints: "41" },
+    { type: "panelRow", row: "10", offset: "3", numPoints: "40" },
+    { type: "panelRow", row: "11", offset: "3", numPoints: "39" },
+    { type: "panelRow", row: "12", offset: "3", numPoints: "38" },
+    { type: "panelRow", row: "13", offset: "4", numPoints: "36" },
+    { type: "panelRow", row: "14", offset: "4", numPoints: "35" },
+    { type: "panelRow", row: "15", offset: "4", numPoints: "35" },
+    { type: "panelRow", row: "16", offset: "4", numPoints: "34" },
+    { type: "panelRow", row: "17", offset: "5", numPoints: "32" },
+    { type: "panelRow", row: "18", offset: "5", numPoints: "31" },
+    { type: "panelRow", row: "19", offset: "5", numPoints: "30" },
+    { type: "panelRow", row: "20", offset: "5", numPoints: "29" },
+    { type: "panelRow", row: "21", offset: "6", numPoints: "27" },
+    { type: "panelRow", row: "22", offset: "6", numPoints: "27" },
+    { type: "panelRow", row: "23", offset: "6", numPoints: "26" },
+    { type: "panelRow", row: "24", offset: "6", numPoints: "25" },
+    { type: "panelRow", row: "25", offset: "7", numPoints: "23" },
+    { type: "panelRow", row: "26", offset: "7", numPoints: "22" },
+    { type: "panelRow", row: "27", offset: "7", numPoints: "21" },
+    { type: "panelRow", row: "28", offset: "7", numPoints: "21" },
+    { type: "panelRow", row: "29", offset: "8", numPoints: "19" },
+    { type: "panelRow", row: "30", offset: "8", numPoints: "18" },
+    { type: "panelRow", row: "31", offset: "8", numPoints: "17" },
+    { type: "panelRow", row: "32", offset: "8", numPoints: "16" },
+    { type: "panelRow", row: "33", offset: "9", numPoints: "14" },
+    { type: "panelRow", row: "34", offset: "9", numPoints: "13" },
+    { type: "panelRow", row: "35", offset: "9", numPoints: "12" },
+    { type: "panelRow", row: "36", offset: "9", numPoints: "12" },
+    { type: "panelRow", row: "37", offset: "9", numPoints: "11" },
+    { type: "panelRow", row: "38", offset: "9", numPoints: "10" },
+    { type: "panelRow", row: "39", offset: "10", numPoints: "8" },
+    { type: "panelRow", row: "40", offset: "10", numPoints: "7" },
+    { type: "panelRow", row: "41", offset: "10", numPoints: "6" },
+    { type: "panelRow", row: "42", offset: "11", numPoints: "5" },
+    { type: "panelRow", row: "43", offset: "11", numPoints: "4" },
+    { type: "panelRow", row: "44", offset: "11", numPoints: "3" },
+    { type: "panelRow", row: "45", offset: "11", numPoints: "2" },
+    { type: "panelRow", row: "46", offset: "11", numPoints: "1" }
+  ],
+
+  outputs: [
+                  
+    { host: "$strand1host", universe: "$strand1output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentIndex: 0, reverse: false },
+        { componentIndex: 1, reverse: true },
+        { componentIndex: 2, reverse: false },
+        { componentIndex: 3, reverse: true },
+        { componentIndex: 4, reverse: false },
+        { componentIndex: 5, reverse: true, start: 38, num: 7 }
+      ]
+    },
+                  
+    { host: "$strand2host", universe: "$strand2output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentIndex: 5, reverse: true, num: 38 },
+        { componentIndex: 6, reverse: false },
+        { componentIndex: 7, reverse: true, padPre: 1 },
+        { componentIndex: 8, reverse: false },
+        { componentIndex: 9, reverse: true },
+        { componentIndex: 10, reverse: false },
+        { componentIndex: 11, reverse: true, num: 1 }
+      ]
+    },
+                  
+    { host: "$strand3host", universe: "$strand3output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentIndex: 11, reverse: true, start: 1 },
+        { componentIndex: 12, reverse: false, padPre: 1 },
+        { componentIndex: 13, reverse: true },
+        { componentIndex: 14, reverse: false },
+        { componentIndex: 15, reverse: true },
+        { componentIndex: 16, reverse: false },
+        { componentIndex: 17, reverse: true },
+        { componentIndex: 18, reverse: false, num: 1 }
+      ]
+    },
+                  
+    { host: "$strand4host", universe: "$strand4output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentIndex: 18, reverse: false, start: 1 },
+        { componentIndex: 19, reverse: true },
+        { componentIndex: 20, reverse: false },
+        { componentIndex: 21, reverse: true },
+        { componentIndex: 22, reverse: false },
+        { componentIndex: 23, reverse: true },
+        { componentIndex: 24, reverse: false },
+        { componentIndex: 25, reverse: true },
+        { componentIndex: 26, reverse: false },
+        { componentIndex: 27, reverse: true, start: 10, num: 11 }
+      ]
+    },
+                  
+    { host: "$strand5host", universe: "$strand5output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentIndex: 27, reverse: true, num: 10 },
+        { componentIndex: 28, reverse: false },
+        { componentIndex: 29, reverse: true },
+        { componentIndex: 30, reverse: false },
+        { componentIndex: 31, reverse: true },
+        { componentIndex: 32, reverse: false },
+        { componentIndex: 33, reverse: true },
+        { componentIndex: 34, reverse: false },
+        { componentIndex: 35, reverse: true },
+        { componentIndex: 36, reverse: false },
+        { componentIndex: 37, reverse: true },
+        { componentIndex: 38, reverse: false },
+        { componentIndex: 39, reverse: true },
+        { componentIndex: 40, reverse: false },
+        { componentIndex: 41, reverse: true },
+        { componentIndex: 42, reverse: false, padPre: 1 },
+        { componentIndex: 43, reverse: true },
+        { componentIndex: 44, reverse: false },
+        { componentIndex: 45, reverse: true },
+        { componentIndex: 46, reverse: false }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+open Launch\ ShowKontrol.app
+

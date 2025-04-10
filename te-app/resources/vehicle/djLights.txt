@@ -1,0 +1,4 @@
+# ID	X	Y	Z	Yaw	Pitch	Roll	IP	SequenceEnabled	fps	Universe	Channel(0-based, fixture may be 1-based)
+#DJ1	0	2000000	7000000	0	0	0	10.6.2.101	false	0	0	0
+#DJ2	0	2000000	7000000	0	0	0	10.6.2.102	false	0	0	0
+#DJJKB	0	2000000	7000000	0	0	0	10.1.1.92	false	0	0	0
