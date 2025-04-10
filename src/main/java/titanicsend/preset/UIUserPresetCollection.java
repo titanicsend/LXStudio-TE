@@ -2,6 +2,7 @@ package titanicsend.preset;
 
 import heronarts.glx.ui.UI;
 import heronarts.glx.ui.UI2dContainer;
+import heronarts.glx.ui.UI2dScrollPane;
 import heronarts.glx.ui.UIContextActions;
 import heronarts.glx.ui.component.UIButton;
 import heronarts.glx.ui.vg.VGraphics;
@@ -21,12 +22,15 @@ public class UIUserPresetCollection extends UI2dContainer implements UIControls,
   private final LXPresetComponent component;
   private final UIUserPresetList presetList;
 
+  private final LXStudio.UI ui;
+
   public UIUserPresetCollection(final LXStudio.UI ui, final LXPresetComponent component, float h) {
     super(0, 0, 0, h);
     setLayout(Layout.HORIZONTAL, 4);
+    this.ui = ui;
 
     this.component = component;
-    this.collection = PresetEngine.get().currentLibrary.get(component);
+    this.collection = PresetEngine.get().getLibrary().get(component);
     String presetName = PresetEngine.getPresetShortName(component);
 
     // List
@@ -97,77 +101,44 @@ public class UIUserPresetCollection extends UI2dContainer implements UIControls,
     this.presetList.removeSelected();
   }
 
+  private void showLibraryManager() {
+    this.ui.leftPane.setActiveSection(0);
+    UIUserPresetManager.get().scrollTo();
+  }
+
   /*
    * Context Menu
    */
 
   public final UIContextActions.Action actionImportPresets =
-      new UIContextActions.Action("Import File Presets") {
-        @Override
-        public void onContextAction(UI ui) {
-          PresetEngine.get().importPresets(component);
-        }
-      };
+    new UIContextActions.Action("Import all presets for pattern") {
+      @Override
+      public void onContextAction(UI ui) {
+        PresetEngine.get().importPresets(component);
+      }
+    };
 
   public final UIContextActions.Action actionImportAllPresets =
-      new UIContextActions.Action("Import presets for ALL patterns") {
-        @Override
-        public void onContextAction(UI ui) {
-          PresetEngine.get().importAllPatternPresets();
-        }
-      };
+    new UIContextActions.Action("Import presets for ALL patterns") {
+      @Override
+      public void onContextAction(UI ui) {
+        PresetEngine.get().importAllPatternPresets();
+      }
+    };
 
-  public final UIContextActions.Action actionSaveLibrary =
-      new UIContextActions.Action("Save User Library") {
-        @Override
-        public void onContextAction(UI ui) {
-          UserPresetLibrary library = PresetEngine.get().currentLibrary;
-          if (library == null) {
-            LX.warning("No user preset library found, can not save.");
-            return;
-          }
-
-          getLX()
-              .showSaveFileDialog(
-                  "Save User Presets",
-                  "User Presets File",
-                  new String[] {"userPresets"},
-                  library.getFile().getPath(),
-                  (path) -> {
-                    library.save(new File(path));
-                  });
-        }
-      };
-
-  public final UIContextActions.Action actionOpenLibrary =
-      new UIContextActions.Action("Open User Library") {
-        @Override
-        public void onContextAction(UI ui) {
-          UserPresetLibrary library = PresetEngine.get().currentLibrary;
-          if (library == null) {
-            LX.warning("No user preset library found, can not save.");
-            return;
-          }
-
-          getLX()
-              .showOpenFileDialog(
-                  "Open User Presets",
-                  "User Presets File",
-                  new String[] {"userPresets"},
-                  library.getFile().toString(),
-                  (path) -> {
-                    PresetEngine.get().currentLibrary.load(new File(path));
-                  });
-        }
-      };
+  public final UIContextActions.Action actionManageLibrary =
+    new UIContextActions.Action("Manage Library...") {
+      @Override
+      public void onContextAction(UI ui) {
+        showLibraryManager();
+      }
+    };
 
   @Override
   public List<Action> getContextActions() {
-    List<Action> actions = new ArrayList<Action>();
+    List<Action> actions = new ArrayList<>();
     actions.add(this.actionImportPresets);
-    // actions.add(this.actionImportAllPresets);  // TODO
-    actions.add(this.actionSaveLibrary);
-    actions.add(this.actionOpenLibrary);
+    actions.add(this.actionManageLibrary);
     return actions;
   }
 }

@@ -22,7 +22,7 @@ import java.util.*;
 public class UserPresetLibrary implements LXSerializable {
   private final LX lx;
 
-  private static final String defaultFileName = "newFile.userPresets";
+  private static final String defaultFileName = "Presets/UserPresets/newFile.userPresets";
   private File file;
 
   public final ColorParameter color = new ColorParameter("Color", LXColor.RED);
@@ -37,6 +37,26 @@ public class UserPresetLibrary implements LXSerializable {
 
   public UserPresetLibrary(LX lx) {
     this.lx = lx;
+    resetFileName();
+  }
+
+  public void reset() {
+    removeAll();
+    resetFileName();
+  }
+
+  /**
+   * Remove presets in all collections
+   */
+  private void removeAll() {
+    for (UserPresetCollection c : this.collections) {
+      for (int j = c.presets.size() - 1; j >= 0; --j) {
+        c.removePreset(c.presets.get(j));
+      }
+    }
+  }
+
+  private void resetFileName() {
     this.file = lx.getMediaFile(defaultFileName);
   }
 
@@ -59,6 +79,7 @@ public class UserPresetLibrary implements LXSerializable {
     return c;
   }
 
+
   /** Save/Load */
   public void save(File file) {
     JsonObject obj = new JsonObject();
@@ -76,6 +97,7 @@ public class UserPresetLibrary implements LXSerializable {
     LX.log("Loading user presets: " + file.getPath());
     try (FileReader fr = new FileReader(file)) {
       load(this.lx, new Gson().fromJson(fr, JsonObject.class));
+      this.file = file;
     } catch (FileNotFoundException ex) {
       LX.error("User preset library not found: " + file.getPath());
     } catch (IOException iox) {
@@ -92,12 +114,7 @@ public class UserPresetLibrary implements LXSerializable {
 
   @Override
   public void load(LX lx, JsonObject obj) {
-    // Remove presets in all collections
-    for (UserPresetCollection c : this.collections) {
-      for (int j = c.presets.size() - 1; j >= 0; --j) {
-        c.removePreset(c.presets.get(j));
-      }
-    }
+    removeAll();
 
     // Load collections
     JsonArray collectionsArray = obj.getAsJsonArray(KEY_COLLECTIONS);
