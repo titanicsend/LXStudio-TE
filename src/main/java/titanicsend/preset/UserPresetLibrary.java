@@ -20,9 +20,13 @@ import java.util.*;
 
 /** Contains presets for multiple components */
 public class UserPresetLibrary implements LXSerializable {
+
+  private static String getDefaultFileName() {
+    return String.format("Presets/UserPresets/%s.userPresets", System.getProperty("user.name"));
+  }
+
   private final LX lx;
 
-  private static final String defaultFileName = "newFile.userPresets";
   private File file;
 
   public final ColorParameter color = new ColorParameter("Color", LXColor.RED);
@@ -37,7 +41,25 @@ public class UserPresetLibrary implements LXSerializable {
 
   public UserPresetLibrary(LX lx) {
     this.lx = lx;
-    this.file = lx.getMediaFile(defaultFileName);
+    setFileDefault();
+  }
+
+  public void reset() {
+    removeAll();
+    setFileDefault();
+  }
+
+  /** Remove presets in all collections */
+  private void removeAll() {
+    for (UserPresetCollection c : this.collections) {
+      for (int j = c.presets.size() - 1; j >= 0; --j) {
+        c.removePreset(c.presets.get(j));
+      }
+    }
+  }
+
+  private void setFileDefault() {
+    this.file = lx.getMediaFile(getDefaultFileName());
   }
 
   public File getFile() {
@@ -76,6 +98,7 @@ public class UserPresetLibrary implements LXSerializable {
     LX.log("Loading user presets: " + file.getPath());
     try (FileReader fr = new FileReader(file)) {
       load(this.lx, new Gson().fromJson(fr, JsonObject.class));
+      this.file = file;
     } catch (FileNotFoundException ex) {
       LX.error("User preset library not found: " + file.getPath());
     } catch (IOException iox) {
@@ -92,12 +115,7 @@ public class UserPresetLibrary implements LXSerializable {
 
   @Override
   public void load(LX lx, JsonObject obj) {
-    // Remove presets in all collections
-    for (UserPresetCollection c : this.collections) {
-      for (int j = c.presets.size() - 1; j >= 0; --j) {
-        c.removePreset(c.presets.get(j));
-      }
-    }
+    removeAll();
 
     // Load collections
     JsonArray collectionsArray = obj.getAsJsonArray(KEY_COLLECTIONS);
