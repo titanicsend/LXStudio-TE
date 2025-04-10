@@ -30,11 +30,7 @@ public class BassLightning extends TEAudioPattern {
     double waitMs = 0;
     HashSet<String> visitedEdges = new HashSet<>();
 
-    /**
-     * Make a random bolt
-     *
-     * @param edge
-     */
+    /** Make a random bolt */
     public Bolt(TEEdgeModel edge) {
       this(
           edge,
@@ -44,15 +40,7 @@ public class BassLightning extends TEAudioPattern {
           0);
     }
 
-    /**
-     * Make a bolt with specific location and parameters
-     *
-     * @param edge
-     * @param life
-     * @param edgePointsIndex
-     * @param startVertex
-     * @param waitMs
-     */
+    /** Make a bolt with specific location and parameters */
     public Bolt(
         TEEdgeModel edge, float life, int edgePointsIndex, TEVertex startVertex, double waitMs) {
       this.edge = edge;
@@ -69,14 +57,11 @@ public class BassLightning extends TEAudioPattern {
 
       return (int)
           ((fixedDistanceParam.getValue() * life) + (r * r * randomDistanceParam.getValue()));
-      //			return 100;
     }
 
     /**
      * Fork a bolt into another bolt at the destination vertex. Both this bolt and the new bolt
      * start along new different edges.
-     *
-     * @return
      */
     Bolt fork() {
       TEVertex origin = edge.v0 == startVertex ? edge.v1 : edge.v0;
@@ -90,18 +75,17 @@ public class BassLightning extends TEAudioPattern {
         candidateEdges.remove(edge);
       } else {
         candidateEdges =
-            new ArrayList<>(
-                origin.edges.stream()
-                    .filter(e -> !visitedEdges.contains(e.getId()))
-                    .collect(Collectors.toList()));
+            origin.edges.stream()
+                .filter(e -> !visitedEdges.contains(e.getId()))
+                .collect(Collectors.toCollection(ArrayList::new));
       }
 
       Collections.shuffle(candidateEdges);
 
       // with possibly two edges picked, move this bolt to the first, and make a new bolt for the
       // second
-      if (candidateEdges.size() >= 1) {
-        edge = candidateEdges.get(0);
+      if (!candidateEdges.isEmpty()) {
+        edge = candidateEdges.getFirst();
         visitedEdges.add(edge.getId());
         startVertex = origin;
         edgePointsIndex = edge.v0 == origin ? 0 : edge.points.length - 1;
@@ -130,7 +114,7 @@ public class BassLightning extends TEAudioPattern {
 
     void run(double deltaMs) {
       waitMs -= deltaMs;
-      life -= deltaMs / lifeParam.getValue();
+      life -= (float) (deltaMs / lifeParam.getValue());
       if (waitMs <= 0) {
         // time to jump!
         waitMs = boltWaitMs();
@@ -184,7 +168,7 @@ public class BassLightning extends TEAudioPattern {
           .setDescription("Allow bolts to loop to an edge they've already visited");
 
   float[] values;
-  List<Bolt> bolts = new LinkedList<>();
+  final List<Bolt> bolts = new LinkedList<>();
   List<Bolt> newBolts = new LinkedList<>();
 
   public BassLightning(LX lx) {
@@ -221,7 +205,7 @@ public class BassLightning extends TEAudioPattern {
     TEVertex vertex = modelTE.getVertex(Math.random() > .5 ? 30 : 122);
     if (vertex == null) {
       List<TEVertex> vertexes = this.modelTE.getVertexes();
-      if (vertexes.size() > 0) {
+      if (!vertexes.isEmpty()) {
         vertex = vertexes.get(LXUtils.randomi(0, vertexes.size() - 1));
       } else {
         return;
@@ -247,7 +231,7 @@ public class BassLightning extends TEAudioPattern {
         .getVertexes()
         .forEach(
             v -> {
-              v.virtualColor.alpha *= .99;
+              v.virtualColor.alpha *= .99f;
               v.virtualColor.alpha = Math.max(64, v.virtualColor.alpha);
             });
 

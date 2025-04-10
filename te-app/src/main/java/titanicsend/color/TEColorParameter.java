@@ -82,22 +82,7 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
 
   private double lastOffset = 0;
 
-  public final TEColorOffsetParameter offset =
-      (TEColorOffsetParameter)
-          new TEColorOffsetParameter("Offset") {
-            @Override
-            public BoundedParameter reset() {
-              super.reset();
-              // As the main user-facing sub-parameter, reset the color picker in STATIC mode.
-              if (colorSource.getEnum() == ColorSource.STATIC) {
-                brightness.reset();
-                saturation.reset();
-                hue.reset();
-              }
-              return this;
-            }
-          }.setDescription(
-              "Allows user variation of solid color.  If Static, adjusts hue offset. If Palette, adjusts normalized position within gradient.");
+  public final TEColorOffsetParameter offset;
 
   private final LXParameterListener offsetListener =
       (p) -> {
@@ -123,6 +108,25 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
     // Modify defaults of sat/bright
     this.saturation.reset(100);
     this.brightness.reset(100);
+
+    // Initialize offset parameter here in constructor
+    TEColorOffsetParameter tempOffset =
+        new TEColorOffsetParameter("Offset") {
+          @Override
+          public BoundedParameter reset() {
+            super.reset();
+            // As the main user-facing sub-parameter, reset the color picker in STATIC mode.
+            if (colorSource.getEnum() == ColorSource.STATIC) {
+              brightness.reset();
+              saturation.reset();
+              hue.reset();
+            }
+            return this;
+          }
+        };
+    tempOffset.setDescription(
+        "Allows user variation of solid color. If Static, adjusts hue offset. If Palette, adjusts normalized position within gradient.");
+    this.offset = tempOffset;
 
     offset.addListener(offsetListener);
 

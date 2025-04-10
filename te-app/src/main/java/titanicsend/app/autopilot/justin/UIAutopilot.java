@@ -41,7 +41,7 @@ public class UIAutopilot extends UICollapsibleSection {
     for (LXNormalizedParameter param : autopilot.visibleParameters) {
       if (col++ == 4) {
         col = 0;
-        y += row.getHeight();
+        y += (int) row.getHeight();
         row = createRow();
       }
 
@@ -60,13 +60,11 @@ public class UIAutopilot extends UICollapsibleSection {
   }
 
   UI2dContainer createRow() {
-    UI2dContainer row =
-        (UI2dContainer)
-            new UI2dContainer(0, y, getContentWidth(), UIKnob.HEIGHT)
-                .setLayout(UI2dContainer.Layout.HORIZONTAL)
-                .setChildSpacing(3)
-                .addToContainer(this);
 
-    return row;
+    return (UI2dContainer)
+        new UI2dContainer(0, y, getContentWidth(), UIKnob.HEIGHT)
+            .setLayout(Layout.HORIZONTAL)
+            .setChildSpacing(3)
+            .addToContainer(this);
   }
 }

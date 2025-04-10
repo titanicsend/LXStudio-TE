@@ -262,8 +262,8 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
   private void buildEdgeRelations() {
     for (TEEdgeModel edge : this.edgesById.values()) {
       // In decimeters to better group
-      int absY = Math.round(Math.abs(edge.model.center.y) / 100_000);
-      int absZ = Math.round(Math.abs(edge.model.center.z) / 100_000);
+      int absY = Math.round(Math.abs(edge.model.cy) / 100_000);
+      int absZ = Math.round(Math.abs(edge.model.cz) / 100_000);
       LXVector symmetryKey = new LXVector(0, absY * 100_000, absZ * 100_000);
       List<TEEdgeModel> symmetryGroup =
           this.edgesBySymmetryGroup.computeIfAbsent(symmetryKey, k -> new ArrayList<>());

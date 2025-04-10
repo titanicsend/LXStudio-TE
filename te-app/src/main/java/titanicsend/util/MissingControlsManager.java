@@ -55,11 +55,11 @@ public class MissingControlsManager {
     }
   }
 
-  public MissingControls findMissingControls(Class patternClass) {
+  public MissingControls findMissingControls(Class<?> patternClass) {
     return classToMissingControls.get(extractUnqualifiedClassname(patternClass));
   }
 
-  protected static String extractUnqualifiedClassname(Class clazz) {
+  protected static String extractUnqualifiedClassname(Class<?> clazz) {
     String packageAndClassname = clazz.getName();
     if (packageAndClassname.contains("$")) {
       String[] parts = packageAndClassname.split("\\$");

@@ -59,11 +59,13 @@ public class FrameBrights extends TEAudioPattern {
           .setMode(BooleanParameter.Mode.MOMENTARY)
           .setDescription("New light segments NOW!");
 
-  public final LinkedColorParameter color =
-      registerColor("Color", "color", TEColorType.PRIMARY, "Color");
+  public final LinkedColorParameter color;
 
   public FrameBrights(LX lx) {
     super(lx);
+    // Initialize color after the parent constructor has completed
+    this.color = registerColor("Color", "color", TEColorType.PRIMARY, "Color");
+
     addParameter("energy", energy);
     addParameter("beatsPerCycle", cycleLength);
     addParameter("zoneCount", zonesPerEdge);
