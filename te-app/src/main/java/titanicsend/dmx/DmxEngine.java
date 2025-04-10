@@ -661,9 +661,7 @@ public class DmxEngine implements LXLoopTask, TEWholeModel.TEModelListener {
 
     public void setModel(DmxWholeModel model) {
       if (model instanceof DmxWholeModel) {
-        DmxWholeModel dmxWholeModel = (DmxWholeModel) model;
-
-        this.model = dmxWholeModel;
+        this.model = model;
         // if (this.main == null) {
         this.main = createFullBuffer(this.model);
         this.cue = createFullBuffer(this.model);

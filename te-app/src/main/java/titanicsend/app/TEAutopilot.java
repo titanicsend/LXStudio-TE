@@ -31,17 +31,17 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
       };
 
   // number of bars to fade out on various occasions
-  private final int MISPREDICTED_FADE_OUT_BARS = 2;
-  private final int PREV_FADE_OUT_BARS = 2;
+  private static final int MISPREDICTED_FADE_OUT_BARS = 2;
+  private static final int PREV_FADE_OUT_BARS = 2;
 
   // when we're inot getting OSC phrase messages, this is how long
   // we wait to change phrases
-  private final int SYNTHETIC_PHRASE_LEN_BARS = 32;
+  private static final int SYNTHETIC_PHRASE_LEN_BARS = 32;
 
   // number of bars after a chorus to continue leaving
   // FX channels visible
-  private final double TRIGGERS_AT_CHORUS_LENGTH_BARS = 1.5; // 1.0;
-  private final double STROBES_AT_CHORUS_LENGTH_BARS = 1.75; // 1.25;
+  private static final double TRIGGERS_AT_CHORUS_LENGTH_BARS = 1.5; // 1.0;
+  private static final double STROBES_AT_CHORUS_LENGTH_BARS = 1.75; // 1.25;
 
   // how long do we think the shortest legit phrase might be?
   private static final int MIN_NUM_BEATS_IN_PHRASE = 4;
@@ -61,19 +61,19 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
 
   // Probability that we launch CHORUS clips upon a repeated CHORUS phrase
   // sometimes there are like 5 CHORUS's in a row, and want to keep some variety
-  private static float PROB_CLIPS_ON_SAME_PHRASE = 1f;
+  private static final float PROB_CLIPS_ON_SAME_PHRASE = 1f;
 
   // if OSC messages are older than this, throw them out
-  private static long OSC_MSG_MAX_AGE_MS = 2 * 1000;
+  private static final long OSC_MSG_MAX_AGE_MS = 2 * 1000;
 
   // after a while (ie: 2 min) without receiving a phrase OSC msg,
   // on the next downbeat chose a phrase and enter it! this is how
   // non-rekordbox phrase mode is engaged
-  private static long OSC_PHRASE_TIMEOUT_MS = 2 * 60 * 1000;
+  private static final long OSC_PHRASE_TIMEOUT_MS = 2 * 60 * 1000;
 
   // after a while (ie: 2 min) without receiving an OSC msg,
   // non-OSC mode is engaged
-  private static long OSC_TIMEOUT_MS = 30 * 1000;
+  private static final long OSC_TIMEOUT_MS = 30 * 1000;
   private boolean oscBeatModeOnlyOn = false;
 
   // if we're not recieving OSC at all
@@ -81,10 +81,10 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
 
   // how long in between palette changes
   // palette changes only happen on new CHORUS phrase changes
-  private static long PALETTE_DURATION_MS = 10 * 60 * 1000;
+  private static final long PALETTE_DURATION_MS = 10 * 60 * 1000;
 
   // OSC message related fields
-  private ConcurrentLinkedQueue<TEOscMessage> unprocessedOscMessages;
+  private final ConcurrentLinkedQueue<TEOscMessage> unprocessedOscMessages;
   private long lastOscMessageReceivedAt;
 
   // our historical tracking object, keeping state about events in past
@@ -107,12 +107,12 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
   private TEPhrase prevPhrase = null, curPhrase = null, nextPhrase = null, oldNextPhrase = null;
 
   // use this to track the last set value of each of these faders
-  private double nextChannelFaderVal = 0.0, oldNextChannelFaderVal = 0.0, fxChannelFaderVal = 0.0;
+  private double nextChannelFaderVal = 0.0;
 
   // FX channels
-  private LXChannel triggerChannel = null, strobesChannel = null, fxChannel = null;
+  private LXChannel triggerChannel = null, strobesChannel = null;
 
-  private TEAutopilotMixer autoMixer;
+  private final TEAutopilotMixer autoMixer;
 
   /**
    * Instantiate the autopilot with a reference to both LX and the pattern library.
@@ -328,8 +328,8 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
 
     try {
       // check for new OSC messages
-      String msgs = "";
-      while (unprocessedOscMessages.size() > 0) {
+      StringBuilder msgs = new StringBuilder();
+      while (!unprocessedOscMessages.isEmpty()) {
         // grab a new message off the queue
         TEOscMessage oscTE = unprocessedOscMessages.poll();
         if (oscTE == null) {
@@ -346,8 +346,8 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
         String address = oscTE.message.getAddressPattern().toString();
 
         if (!oscTE.message.toString().contains("/tempo/beat"))
-          msgs +=
-              String.format(", %s (%d ms ago)", oscTE.message.toString(), now - oscTE.timestamp);
+          msgs.append(
+              String.format(", %s (%d ms ago)", oscTE.message.toString(), now - oscTE.timestamp));
 
         // handle OSC message based on type
         if (TEOscMessage.isBeat(address)) {
