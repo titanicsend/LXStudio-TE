@@ -48,8 +48,8 @@ public class GaussianFilter {
     double sum = 0.0f;
 
     for (int i = 0; i < windowSize; i++) {
-      double x = i - windowSize / 2.0f;
-      weights[i] = (double) Math.exp(-0.5 * x * x / (sigma * sigma));
+      double x = i - windowSize / 2.0;
+      weights[i] = Math.exp(-0.5 * x * x / (sigma * sigma));
       sum += weights[i];
     }
 
