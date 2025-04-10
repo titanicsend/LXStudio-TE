@@ -23,15 +23,13 @@ public class FrameBrights extends TEAudioPattern {
   float cycleCount;
   double lastCycle;
   protected final CompoundParameter cycleLength =
-      (CompoundParameter)
-          new CompoundParameter("Measures", 2, 1, 16)
-              .setUnits(LXParameter.Units.INTEGER)
-              .setDescription("Number of measures between segment shifts");
+      new CompoundParameter("Measures", 2, 1, 16)
+          .setUnits(LXParameter.Units.INTEGER)
+          .setDescription("Number of measures between segment shifts");
   protected final CompoundParameter zonesPerEdge =
-      (CompoundParameter)
-          new CompoundParameter("Zones", 30, 1, MAX_ZONES)
-              .setUnits(LXParameter.Units.INTEGER)
-              .setDescription("Total lit segments per edge");
+      new CompoundParameter("Zones", 30, 1, MAX_ZONES)
+          .setUnits(LXParameter.Units.INTEGER)
+          .setDescription("Total lit segments per edge");
 
   public final CompoundParameter minBrightness =
       new CompoundParameter("BG Bri", 0.125, 0.0, 1).setDescription("Background Brightness");
@@ -41,16 +39,14 @@ public class FrameBrights extends TEAudioPattern {
           .setDescription("Min starting height for bright lights");
 
   protected final CompoundParameter minLit =
-      (CompoundParameter)
-          new CompoundParameter("MinLit", 1, 0, MAX_ZONES)
-              .setUnits(LXParameter.Units.INTEGER)
-              .setDescription("Min lit segments per edge");
+      new CompoundParameter("MinLit", 1, 0, MAX_ZONES)
+          .setUnits(LXParameter.Units.INTEGER)
+          .setDescription("Min lit segments per edge");
 
   protected final CompoundParameter maxLit =
-      (CompoundParameter)
-          new CompoundParameter("MaxLit", 3, 1, MAX_ZONES)
-              .setUnits(LXParameter.Units.INTEGER)
-              .setDescription("Max lit segments per edge");
+      new CompoundParameter("MaxLit", 3, 1, MAX_ZONES)
+          .setUnits(LXParameter.Units.INTEGER)
+          .setDescription("Max lit segments per edge");
 
   public final CompoundParameter energy =
       new CompoundParameter("Energy", .5, 0, 1).setDescription("Depth of light pulse");

@@ -34,10 +34,9 @@ public class TECommonControls {
 
   // Panic control courtesy of JKB's Rubix codebase
   public final BooleanParameter panic =
-      (BooleanParameter)
-          new BooleanParameter("PANIC", false)
-              .setDescription("Panic! Moves parameters into a visible range")
-              .setMode(BooleanParameter.Mode.MOMENTARY);
+      new BooleanParameter("PANIC", false)
+          .setDescription("Panic! Moves parameters into a visible range")
+          .setMode(BooleanParameter.Mode.MOMENTARY);
 
   private final LXParameterListener panicListener =
       (p) -> {
@@ -101,12 +100,11 @@ public class TECommonControls {
     setControl(TEControlTag.QUANTITY, p);
 
     p =
-        (CompoundParameter)
-            new CompoundParameter(TEControlTag.SPIN.getLabel(), 0, -1.0, 1.0)
-                .setPolarity(LXParameter.Polarity.BIPOLAR)
-                .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
-                .setExponent(2)
-                .setDescription("Spin");
+        new CompoundParameter(TEControlTag.SPIN.getLabel(), 0, -1.0, 1.0)
+            .setPolarity(LXParameter.Polarity.BIPOLAR)
+            .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
+            .setExponent(2)
+            .setDescription("Spin");
 
     setControl(TEControlTag.SPIN, p);
 
@@ -135,21 +133,20 @@ public class TECommonControls {
 
     // in degrees for display 'cause more people think about it that way
     p =
-        (LXListenableNormalizedParameter)
-            new TECommonAngleParameter(
-                    this.pattern,
-                    this.pattern.spinRotor,
-                    TEControlTag.ANGLE.getLabel(),
-                    0,
-                    -Math.PI,
-                    Math.PI)
-                .setDescription("Static Rotation Angle")
-                .setPolarity(LXParameter.Polarity.BIPOLAR)
-                .setWrappable(true)
-                .setFormatter(
-                    (v) -> {
-                      return Double.toString(Math.toDegrees(v));
-                    });
+        new TECommonAngleParameter(
+                this.pattern,
+                this.pattern.spinRotor,
+                TEControlTag.ANGLE.getLabel(),
+                0,
+                -Math.PI,
+                Math.PI)
+            .setDescription("Static Rotation Angle")
+            .setPolarity(LXParameter.Polarity.BIPOLAR)
+            .setWrappable(true)
+            .setFormatter(
+                (v) -> {
+                  return Double.toString(Math.toDegrees(v));
+                });
     setControl(TEControlTag.ANGLE, p);
   }
 
@@ -278,36 +275,32 @@ public class TECommonControls {
     LXListenableNormalizedParameter newControl;
     if (oldControl instanceof CompoundParameter) {
       newControl =
-          (CompoundParameter)
-              new CompoundParameter(label, value, v0, v1)
-                  .setNormalizationCurve(((CompoundParameter) oldControl).getNormalizationCurve())
-                  .setExponent(oldControl.getExponent())
-                  .setDescription(oldControl.getDescription())
-                  .setPolarity(oldControl.getPolarity())
-                  .setUnits(oldControl.getUnits());
+          new CompoundParameter(label, value, v0, v1)
+              .setNormalizationCurve(((CompoundParameter) oldControl).getNormalizationCurve())
+              .setExponent(oldControl.getExponent())
+              .setDescription(oldControl.getDescription())
+              .setPolarity(oldControl.getPolarity())
+              .setUnits(oldControl.getUnits());
     } else if (oldControl instanceof BoundedParameter) {
       newControl =
-          (BoundedParameter)
-              new BoundedParameter(label, value, v0, v1)
-                  .setNormalizationCurve(((BoundedParameter) oldControl).getNormalizationCurve())
-                  .setExponent(oldControl.getExponent())
-                  .setDescription(oldControl.getDescription())
-                  .setPolarity(oldControl.getPolarity())
-                  .setUnits(oldControl.getUnits());
+          new BoundedParameter(label, value, v0, v1)
+              .setNormalizationCurve(((BoundedParameter) oldControl).getNormalizationCurve())
+              .setExponent(oldControl.getExponent())
+              .setDescription(oldControl.getDescription())
+              .setPolarity(oldControl.getPolarity())
+              .setUnits(oldControl.getUnits());
     } else if (oldControl instanceof BooleanParameter) {
       newControl =
-          (BooleanParameter)
-              new BooleanParameter(label)
-                  .setMode(((BooleanParameter) oldControl).getMode())
-                  .setDescription(oldControl.getDescription())
-                  .setUnits(oldControl.getUnits());
+          new BooleanParameter(label)
+              .setMode(((BooleanParameter) oldControl).getMode())
+              .setDescription(oldControl.getDescription())
+              .setUnits(oldControl.getUnits());
     } else if (oldControl instanceof DiscreteParameter) {
       newControl =
-          (DiscreteParameter)
-              new DiscreteParameter(label, ((DiscreteParameter) oldControl).getOptions())
-                  .setIncrementMode(((DiscreteParameter) oldControl).getIncrementMode())
-                  .setDescription(oldControl.getDescription())
-                  .setUnits(oldControl.getUnits());
+          new DiscreteParameter(label, ((DiscreteParameter) oldControl).getOptions())
+              .setIncrementMode(((DiscreteParameter) oldControl).getIncrementMode())
+              .setDescription(oldControl.getDescription())
+              .setUnits(oldControl.getUnits());
     } else {
       TE.err("Unrecognized control type in TE Common Control " + oldControl.getClass().getName());
       return oldControl;

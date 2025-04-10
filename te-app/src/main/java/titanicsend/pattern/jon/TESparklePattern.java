@@ -95,16 +95,14 @@ public class TESparklePattern extends TEPerformancePattern {
     private int maxPixelsPerSparkle;
 
     public final CompoundParameter minLevel =
-        (CompoundParameter)
-            new CompoundParameter("Min", 75, 0, 100)
-                .setUnits(CompoundParameter.Units.PERCENT)
-                .setDescription("Minimum brightness level, as a percentage of the maximum");
+        new CompoundParameter("Min", 75, 0, 100)
+            .setUnits(CompoundParameter.Units.PERCENT)
+            .setDescription("Minimum brightness level, as a percentage of the maximum");
 
     public final CompoundParameter maxLevel =
-        (CompoundParameter)
-            new CompoundParameter("Max", 100, 0, 100)
-                .setUnits(CompoundParameter.Units.PERCENT)
-                .setDescription("Peak sparkle brightness level");
+        new CompoundParameter("Max", 100, 0, 100)
+            .setUnits(CompoundParameter.Units.PERCENT)
+            .setDescription("Peak sparkle brightness level");
 
     public Engine(LXModel model) {
       setModel(model);

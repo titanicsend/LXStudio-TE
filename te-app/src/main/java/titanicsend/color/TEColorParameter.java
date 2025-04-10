@@ -247,7 +247,7 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
   }
 
   private int getGradientColorFixed(float lerp, TEGradient gradient) {
-    lerp = (float) LXUtils.wrapnf(lerp);
+    lerp = LXUtils.wrapnf(lerp);
 
     LXGradientUtils.BlendFunction bf;
     switch (this.blendMode.getEnum()) {

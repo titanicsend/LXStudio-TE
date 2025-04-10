@@ -65,7 +65,7 @@ public class SimplifyEffect extends LXEffect
 
       @Override
       int average(float brightness) {
-        return LXColor.hsb((float) this.h / this.num, (float) this.s / this.num, brightness);
+        return LXColor.hsb(this.h / this.num, this.s / this.num, brightness);
       }
     },
     RGB("RGB") {

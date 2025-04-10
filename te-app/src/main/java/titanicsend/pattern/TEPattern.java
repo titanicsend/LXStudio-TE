@@ -231,7 +231,7 @@ public abstract class TEPattern extends DmxPattern {
       double value =
           p instanceof CompoundParameter ? ((CompoundParameter) p).getBaseValue() : p.getValue();
       this.defaults.put(p.getPath(), value);
-      ((LXListenableParameter) p).reset(value);
+      p.reset(value);
     }
   }
 
