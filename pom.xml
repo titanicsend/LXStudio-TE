@@ -70,6 +70,29 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec-maven-plugin.version}</version>
+                <inherited>false</inherited> <!-- Important: prevents execution in child modules -->
+                <executions>
+                    <execution>
+                    <id>clean-phantom-dirs</id>
+                    <phase>validate</phase> <!-- Early in the build cycle -->
+                    <goals>
+                        <goal>exec</goal>
+                    </goals>
+                    <configuration>
+                        <executable>bash</executable>
+                        <arguments>
+                        <argument>${project.basedir}/cleanup.sh</argument>
+                        </arguments>
+                    </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
     <dependencyManagement>
