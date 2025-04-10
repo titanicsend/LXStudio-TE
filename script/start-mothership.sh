@@ -5,9 +5,17 @@
 #     cd /Users/te/src/code/LXStudio-TE;
 # as should be in the automator app.
 
-LXP=Projects/BM2024_Mship.lxp
-JAR_FILE="target/LXStudio-TE-0.2.3-SNAPSHOT-jar-with-dependencies.jar"
+SCRIPT_DIR="$( cd "$( dirname "$(readlink -f "$0")" )" &> /dev/null && pwd )"
 
+APP_MODULE_DIR="${SCRIPT_DIR}/.."
+
+MODULE_NAME="te-app"
+# ensure we run this command from the right directory
+pushd $APP_MODULE_DIR
+MODULE_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+
+LXP="${APP_MODULE_DIR}/Projects/BM2024_Mship.lxp"
+JAR_FILE="${APP_MODULE_DIR}/target/${MODULE_NAME}-${MODULE_VERSION}-jar-with-dependencies.jar"
 
 # Burning man: Activate driving safety pattern if FOH is not up
 #LIGHTING_LAPTOP=10.1.1.10
