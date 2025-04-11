@@ -3,7 +3,6 @@ package titanicsend.pattern.jeff;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.modulator.DampedParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.transform.LXVector;
@@ -24,9 +23,6 @@ import titanicsend.pattern.TEAudioPattern;
 
 @LXCategory("TE Examples")
 public class Smoke extends TEAudioPattern {
-  public final LinkedColorParameter color =
-      registerColor("Color", "color", TEColorType.PRIMARY, "Primary color of the field");
-
   // Magic numbers for parameter ranges come from testing and are pattern-specific.
   // A better practice might be to transform human parameter units (0-100)
   // to the arbitrary (e.g. (-.5..2)) or other ranges desired.
@@ -85,6 +81,8 @@ public class Smoke extends TEAudioPattern {
 
     scaleValue = smoothScale.getValuef();
 
+    int color = getSwatchColor(TEColorType.PRIMARY);
+
     for (SmokePoint point : transformedPoints) {
       if (point == null) continue; // Skip gap pixels
       float yOut = point.y;
@@ -93,9 +91,10 @@ public class Smoke extends TEAudioPattern {
       for (float i = 1.f; i <= octaves - 1; i++) {
         frequency = i * i * scaleValue;
         yOut +=
-            0.1
-                * Math.sin(yOut * frequency + sinFieldPhase)
-                * Math.sin(point.z * frequency + sinFieldPhase);
+            (float)
+                (0.1
+                    * Math.sin(yOut * frequency + sinFieldPhase)
+                    * Math.sin(point.z * frequency + sinFieldPhase));
       }
       // Lerp into last octave. Boosts FPS to dupe this code from the loop above.
       int lastOctave = (int) octaves;
@@ -103,10 +102,11 @@ public class Smoke extends TEAudioPattern {
         frequency = lastOctave * lastOctave * scaleValue;
         ;
         yOut +=
-            0.1
-                * (octaves - lastOctave)
-                * Math.sin(yOut * frequency + sinFieldPhase)
-                * Math.sin(point.z * frequency + sinFieldPhase);
+            (float)
+                (0.1
+                    * (octaves - lastOctave)
+                    * Math.sin(yOut * frequency + sinFieldPhase)
+                    * Math.sin(point.z * frequency + sinFieldPhase));
       }
 
       // Normalize yOut to 0..1. Magic numbers for parameter ranges come from testing.
@@ -115,10 +115,10 @@ public class Smoke extends TEAudioPattern {
 
       colors[point.index] =
           LXColor.hsa(
-              LXColor.h(color.getColor()),
+              LXColor.h(color),
 
               // Make the selected color white (icy!) for the top half.
-              LXUtils.clampf(LXColor.s(color.getColor()) - point.topDesat, 0, 100),
+              LXUtils.clampf(LXColor.s(color) - point.topDesat, 0, 100),
 
               // The yOut value is the alpha. Low values let through the background (or black).
               yOutNorm);

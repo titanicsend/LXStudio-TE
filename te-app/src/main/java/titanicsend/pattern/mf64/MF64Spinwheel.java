@@ -54,8 +54,8 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
     return (float) (n - Math.floor(n));
   }
 
-  float clamp(float value, float min, float max) {
-    return Math.max(min, Math.min(max, value));
+  float clamp(float value) {
+    return Math.max((float) 0.0, Math.min((float) 1.0, value));
   }
 
   // does the spinwheel thing, returns the brightness
@@ -73,7 +73,7 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
     // Shape the pulse made by the arY + grow term. Higher divisor == more contrast
     float pulse = (float) (Math.floor(arY) / 6.0);
     // keep us from flashing the whole panel to absolute black
-    pulse += (pulse == 0) ? 0.5 : 0;
+    pulse += (pulse == 0) ? (float) 0.5 : 0;
 
     arX = Math.abs(fract(arX)) - 0.5f;
     arY = Math.abs(fract(arY)) - 0.5f;
@@ -81,7 +81,7 @@ public class MF64Spinwheel extends TEMidiFighter64Subpattern {
     float bri = (float) ((0.2 / (arX * arX + arY * arY) * .19) * pulse);
 
     // clamp to range, then small gamma correction
-    bri = clamp(bri * 4f, 0f, 1f);
+    bri = clamp(bri * 4f);
     return bri * bri;
   }
 

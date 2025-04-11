@@ -12,15 +12,14 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
 @LXCategory("Bogus Test Pattern")
 public class SketchDemo extends GLShaderPattern {
   private static final int MAX_POINTS = 250;
-  private FloatBuffer gl_segments;
-  private SketchDataManager sketchMgr;
+  private final FloatBuffer gl_segments;
+  private final SketchDataManager sketchMgr;
   private int currSketchIdx = 3;
   private int prevSketchIdx = 2;
   private boolean hasSketchBeenPassed = false;
   private float progress = 0;
 
   private float normalizedLevelCumulative = 0;
-  private float bassLevelCumulative = 0;
 
   //  private final SignalLogger signalLogger;
 
@@ -90,7 +89,7 @@ public class SketchDemo extends GLShaderPattern {
             // for debugging: wire up a control directly to control progress.
             // progress = (float) getControls().getControl(TEControlTag.WOW1).getValue();
 
-            normalizedLevelCumulative += (bassLevel * levelReact);
+            normalizedLevelCumulative += (float) (bassLevel * levelReact);
 
             //            float normalizedLevel = eq.getNormalizedf() * levelReact;
             //            normalizedLevelCumulative += normalizedLevel;

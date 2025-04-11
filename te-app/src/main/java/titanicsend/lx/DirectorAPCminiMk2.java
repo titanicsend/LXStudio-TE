@@ -36,6 +36,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import titanicsend.app.director.Director;
 import titanicsend.color.ColorPaletteManager;
+import titanicsend.midi.MidiNames;
 import titanicsend.util.TE;
 
 /** Midi control surface using */
@@ -139,6 +140,11 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
     updateFaderMode();
 
     addSetting("faderMode", this.faderMode);
+  }
+
+  @Override
+  public String getDeviceName() {
+    return MidiNames.APCMINIMK2_DIRECTOR;
   }
 
   @Override

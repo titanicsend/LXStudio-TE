@@ -60,9 +60,9 @@ public class DmxGridPattern extends TEPattern {
     if (vector == null) {
       vector =
           new LXVector(
-              (model.average.x - TEApp.wholeModel.minX()) / xRange(),
-              (model.average.y - TEApp.wholeModel.minY()) / yRange(),
-              (model.average.z - TEApp.wholeModel.minZ()) / zRange());
+              (model.ax - TEApp.wholeModel.minX()) / xRange(),
+              (model.ay - TEApp.wholeModel.minY()) / yRange(),
+              (model.az - TEApp.wholeModel.minZ()) / zRange());
       this.locations.put(model, vector);
     }
     return vector;

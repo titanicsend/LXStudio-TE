@@ -4,7 +4,6 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.blend.MultiplyBlend;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.*;
 import heronarts.lx.transform.LXVector;
@@ -26,9 +25,6 @@ import titanicsend.pattern.TEPattern;
  */
 @LXCategory("Geometry Masks")
 public class EdgeSymmetry extends TEPattern {
-  public final LinkedColorParameter colorParam =
-      registerColor("Color", "color", TEColorType.PRIMARY, "Primary color for edges");
-
   public final CompoundParameter energy =
       new CompoundParameter("Energy", .31, 0, 1)
           .setDescription("Number of adjacent edges to select");
@@ -77,7 +73,7 @@ public class EdgeSymmetry extends TEPattern {
   }
 
   public void run(double deltaMs) {
-    int color = colorParam.getColor();
+    int color = getSwatchColor(TEColorType.PRIMARY);
     if (getChannel() != null) {
       if (getChannel().blendMode.getObject().getClass().equals(MultiplyBlend.class)) {
         // Operate in Mask mode

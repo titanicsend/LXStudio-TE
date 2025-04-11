@@ -125,9 +125,8 @@ public class TEApp extends LXStudio {
   public static TEWholeModel wholeModel;
   private static boolean staticModel;
 
-  private static int WINDOW_WIDTH = 1280;
-  private static int WINDOW_HEIGHT = 800;
-  private static String resourceSubdir;
+  private static final int WINDOW_WIDTH = 1280;
+  private static final int WINDOW_HEIGHT = 800;
 
   // Default shader system rendering canvas
   // resolution.  Determines the maximum number of
@@ -168,7 +167,7 @@ public class TEApp extends LXStudio {
     // objects that manage UI displayed in 3D views
     private UI3DManager ui3dManager;
 
-    private LX lx;
+    private final LX lx;
 
     public Plugin(LX lx) {
       log("TEApp.Plugin(LX)");
@@ -392,11 +391,11 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(MothershipDrivingPattern.class);
 
       // Midi surface names for use with BomeBox
-      lx.engine.midi.registerSurface(MidiNames.BOMEBOX_APC40MK2, APC40Mk2.class);
+      lx.engine.midi.registerSurface(APC40Mk2.class);
       // The Director midi surface must be registered *after* the Director and ColorPaletteManager
-      lx.engine.midi.registerSurface(MidiNames.APCMINIMK2_DIRECTOR, DirectorAPCminiMk2.class);
-      lx.engine.midi.registerSurface(
-          MidiNames.BOMEBOX_VIRTUAL_APCMINIMK2_DIRECTOR, DirectorAPCminiMk2.class);
+      lx.engine.midi.registerSurface(DirectorAPCminiMk2.class);
+      // lx.engine.midi.registerSurface(
+      //     MidiNames.BOMEBOX_VIRTUAL_APCMINIMK2_DIRECTOR, DirectorAPCminiMk2.class);
       // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1,
       // MidiFighterTwister.class);
       // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER2,
@@ -543,10 +542,8 @@ public class TEApp extends LXStudio {
           ShaderPanelsPatternConfig.NeonBlocks.class, covPanelPartial, cNonConforming, chorus);
       l.addPattern(Audio1.class, covPanelPartial, cPalette, chorus);
       l.addPattern(ShaderPanelsPatternConfig.OutrunGrid.class, covPanels, cNonConforming, chorus);
-      l.addPattern(OrganicPatternConfig.MatrixScroller.class, covPanels, cNonConforming, chorus);
       l.addPattern(FollowThatStar.class, covBoth, cPalette, chorus);
       l.addPattern(ShaderPanelsPatternConfig.Marbling.class, covPanels, cNonConforming, chorus);
-      l.addPattern(OrganicPatternConfig.NeonCellsLegacy.class, covPanelPartial, cPalette, chorus);
       l.addPattern(
           ShaderPanelsPatternConfig.NeonTriangles.class, covPanels, cNonConforming, chorus);
       l.addPattern(Phasers.class, covPanels, cPalette, chorus);
@@ -560,14 +557,11 @@ public class TEApp extends LXStudio {
           ShaderPanelsPatternConfig.MetallicWaves.class, covPanelPartial, cPalette, chorus);
       l.addPattern(
           ShaderEdgesPatternConfig.NeonRipplesEdges.class, covPanelPartial, cPalette, chorus);
-      l.addPattern(OrganicPatternConfig.WaterEdges.class, covPanelPartial, cPalette, chorus);
       l.addPattern(OrganicPatternConfig.PulseCenter.class, covPanelPartial, cPalette, chorus);
-      l.addPattern(OrganicPatternConfig.WavyPanels.class, covPanelPartial, cPalette, chorus);
 
       // DOWN patterns
       l.addPattern(ShaderPanelsPatternConfig.Galaxy.class, covPanelPartial, cPalette, down);
       l.addPattern(TEGradientPattern.class, covPanelPartial, cPalette, down);
-      l.addPattern(OrganicPatternConfig.WaterPanels.class, covPanelPartial, cPalette, down);
       l.addPattern(SimplexPosterized.class, covBoth, cPalette, down);
       l.addPattern(ShaderPanelsPatternConfig.Galaxy.class, covPanelPartial, cPalette, down);
       l.addPattern(ShaderPanelsPatternConfig.SmokeShader.class, covPanelPartial, cPalette, down);
@@ -720,7 +714,7 @@ public class TEApp extends LXStudio {
             if (m != null) {
               if (row == 0) {
                 m.outputMode.setValue(AudioStemModulator.OutputMode.ENERGY);
-              } else if (row == 1) {
+              } else {
                 m.outputMode.setValue(AudioStemModulator.OutputMode.WAVE);
               }
             }
@@ -794,13 +788,10 @@ public class TEApp extends LXStudio {
       // Import latest gamepad controllers db
       gamepadEngine.updateGamepadMappings();
 
-      lx.engine.addTask(
-          () -> {
-            setOscDestinationForIpads();
-            // openDelayedFile(lx);
-            // Replace old saved destination IPs from project files
-            // setOscDestinationForIpads();
-          });
+      // openDelayedFile(lx);
+      // Replace old saved destination IPs from project files
+      // setOscDestinationForIpads();
+      lx.engine.addTask(this::setOscDestinationForIpads);
 
       this.superMod.onUIReady(lx, ui);
     }
@@ -877,10 +868,7 @@ public class TEApp extends LXStudio {
         && keyEvent.isAltDown()
         && keyEvent.isShiftDown()
         && keyEvent.getKeyCode() == 65) {
-      this.engine.addTask(
-          () -> {
-            addAllPatterns();
-          });
+      this.engine.addTask(this::addAllPatterns);
     } else {
       super.onKeyPressed(keyEvent, keyChar, keyCode);
     }
@@ -922,17 +910,17 @@ public class TEApp extends LXStudio {
 
   @Override
   protected void onGamepadButtonPressed(GamepadEvent gamepadEvent, int button) {
-    this.gamepadEngine.lxGamepadButtonPressed(gamepadEvent, button);
+    gamepadEngine.lxGamepadButtonPressed(gamepadEvent, button);
   }
 
   @Override
   protected void onGamepadButtonReleased(GamepadEvent gamepadEvent, int button) {
-    this.gamepadEngine.lxGamepadButtonReleased(gamepadEvent, button);
+    gamepadEngine.lxGamepadButtonReleased(gamepadEvent, button);
   }
 
   @Override
   protected void onGamepadAxisChanged(GamepadEvent gamepadEvent, int axis, float value) {
-    this.gamepadEngine.lxGamepadAxisChanged(gamepadEvent, axis, value);
+    gamepadEngine.lxGamepadAxisChanged(gamepadEvent, axis, value);
   }
 
   private TEApp(Flags flags, TEWholeModelStatic model) throws IOException {
@@ -945,8 +933,6 @@ public class TEApp extends LXStudio {
 
   private static final DateFormat LOG_FILENAME_FORMAT =
       new SimpleDateFormat("'LXStudio-TE-'yyyy.MM.dd-HH.mm.ss'.log'");
-
-  private static String projectFileName = null;
 
   /**
    * Main interface into the program. Two modes are supported, if the --headless flag is supplied
@@ -988,7 +974,9 @@ public class TEApp extends LXStudio {
     String logFileName = LOG_FILENAME_FORMAT.format(Calendar.getInstance().getTime());
     File logs = new File(LX.Media.LOGS.getDirName());
     if (!logs.exists()) {
-      logs.mkdir();
+      if (!logs.mkdir()) {
+        log("failed to create logs dir");
+      }
     }
     setLogFile(new File(LX.Media.LOGS.getDirName(), logFileName));
 
@@ -1003,9 +991,8 @@ public class TEApp extends LXStudio {
         headless = true;
       } else if (arg.endsWith(".lxp") || arg.endsWith(".lxs")) {
         try {
-          projectFileName = arg;
           projectFile = new File(arg);
-          LX.log("Received command-line project file name: " + projectFileName);
+          LX.log("Received command-line project file name: " + arg);
         } catch (Exception x) {
           LX.error(x, "Command-line project file path invalid: " + arg);
         }
@@ -1048,6 +1035,8 @@ public class TEApp extends LXStudio {
       }
     }
 
+    // TODO(look): is this needed?
+    String resourceSubdir;
     if (loadTestahedron && !loadVehicle) {
       resourceSubdir = "testahedron";
     } else if (loadVehicle && !loadTestahedron) {
@@ -1074,8 +1063,7 @@ public class TEApp extends LXStudio {
 
         // Schedule a task to load the initial project file at launch
         final File finalProjectFile = projectFile;
-        final boolean isSchedule =
-            (projectFile != null) ? projectFile.getName().endsWith(".lxs") : false;
+        final boolean isSchedule = projectFile != null && projectFile.getName().endsWith(".lxs");
         lx.engine.addTask(
             () -> {
               if (isSchedule) {

@@ -52,46 +52,44 @@ public class BeaconEverythingPattern extends BeaconPattern
               .setDescription("Color Wheel");
   // Gobo1 (without the scroll options)
   DmxDiscreteParameter gobo1Fixed =
-      (DmxDiscreteParameter)
-          new DmxDiscreteParameter(
-              "Gobo1",
-              new DmxDiscreteParameterOption[] {
-                new DmxDiscreteParameterOption("Open", 0),
-                new DmxDiscreteParameterOption("Spot Open", 11),
-                new DmxDiscreteParameterOption("Gobo1.1", 22),
-                new DmxDiscreteParameterOption("Gobo1.2", 32),
-                new DmxDiscreteParameterOption("Gobo1.3", 42),
-                new DmxDiscreteParameterOption("Gobo1.4", 52),
-                new DmxDiscreteParameterOption("Gobo1.5", 62),
-                new DmxDiscreteParameterOption("Gobo1.6", 72),
-                new DmxDiscreteParameterOption("Gobo1.7", 82),
-                new DmxDiscreteParameterOption("Gobo1.8", 92)
-              });
+      new DmxDiscreteParameter(
+          "Gobo1",
+          new DmxDiscreteParameterOption[] {
+            new DmxDiscreteParameterOption("Open", 0),
+            new DmxDiscreteParameterOption("Spot Open", 11),
+            new DmxDiscreteParameterOption("Gobo1.1", 22),
+            new DmxDiscreteParameterOption("Gobo1.2", 32),
+            new DmxDiscreteParameterOption("Gobo1.3", 42),
+            new DmxDiscreteParameterOption("Gobo1.4", 52),
+            new DmxDiscreteParameterOption("Gobo1.5", 62),
+            new DmxDiscreteParameterOption("Gobo1.6", 72),
+            new DmxDiscreteParameterOption("Gobo1.7", 82),
+            new DmxDiscreteParameterOption("Gobo1.8", 92)
+          });
   // Gobo2 (without the scroll options)
   DmxDiscreteParameter gobo2Fixed =
-      (DmxDiscreteParameter)
-          new DmxDiscreteParameter(
-              "Gobo2",
-              new DmxDiscreteParameterOption[] {
-                new DmxDiscreteParameterOption("Open", 0),
-                new DmxDiscreteParameterOption("Gobo2.1", 5),
-                new DmxDiscreteParameterOption("Gobo2.2", 10),
-                new DmxDiscreteParameterOption("Gobo2.3", 15),
-                new DmxDiscreteParameterOption("Gobo2.4", 20),
-                new DmxDiscreteParameterOption("Gobo2.5", 25),
-                new DmxDiscreteParameterOption("Gobo2.6", 30),
-                new DmxDiscreteParameterOption("Gobo2.7", 35),
-                new DmxDiscreteParameterOption("Gobo2.8", 40),
-                new DmxDiscreteParameterOption("Gobo2.9", 45),
-                new DmxDiscreteParameterOption("Gobo2.10", 50),
-                new DmxDiscreteParameterOption("Gobo2.11", 55),
-                new DmxDiscreteParameterOption("Gobo2.12", 60),
-                new DmxDiscreteParameterOption("Gobo2.13", 65),
-                new DmxDiscreteParameterOption("Gobo2.14", 70),
-                new DmxDiscreteParameterOption("Gobo2.15", 75),
-                new DmxDiscreteParameterOption("Gobo2.16", 80),
-                new DmxDiscreteParameterOption("Gobo2.17", 85)
-              });
+      new DmxDiscreteParameter(
+          "Gobo2",
+          new DmxDiscreteParameterOption[] {
+            new DmxDiscreteParameterOption("Open", 0),
+            new DmxDiscreteParameterOption("Gobo2.1", 5),
+            new DmxDiscreteParameterOption("Gobo2.2", 10),
+            new DmxDiscreteParameterOption("Gobo2.3", 15),
+            new DmxDiscreteParameterOption("Gobo2.4", 20),
+            new DmxDiscreteParameterOption("Gobo2.5", 25),
+            new DmxDiscreteParameterOption("Gobo2.6", 30),
+            new DmxDiscreteParameterOption("Gobo2.7", 35),
+            new DmxDiscreteParameterOption("Gobo2.8", 40),
+            new DmxDiscreteParameterOption("Gobo2.9", 45),
+            new DmxDiscreteParameterOption("Gobo2.10", 50),
+            new DmxDiscreteParameterOption("Gobo2.11", 55),
+            new DmxDiscreteParameterOption("Gobo2.12", 60),
+            new DmxDiscreteParameterOption("Gobo2.13", 65),
+            new DmxDiscreteParameterOption("Gobo2.14", 70),
+            new DmxDiscreteParameterOption("Gobo2.15", 75),
+            new DmxDiscreteParameterOption("Gobo2.16", 80),
+            new DmxDiscreteParameterOption("Gobo2.17", 85)
+          });
 
   CompoundParameter ptSpdLinear =
       new CompoundParameter("ptSpd", 0, 225, 0).setDescription("Pan/Tilt Speed, slow->fast");

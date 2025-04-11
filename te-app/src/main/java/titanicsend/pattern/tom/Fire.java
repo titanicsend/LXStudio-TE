@@ -11,19 +11,17 @@ import titanicsend.color.TEColorType;
 import titanicsend.pattern.TEPattern;
 
 public class Fire extends TEPattern {
-  private float ROW_HEIGHT = 50000;
-  private float COLUMN_WIDTH = 50000;
-  private int NUM_COLUMNS;
-  private int NUM_ROWS;
-  private int[][] buffer;
+  private final float ROW_HEIGHT = 50000;
+  private final float COLUMN_WIDTH = 50000;
+  private final int NUM_COLUMNS;
+  private final int NUM_ROWS;
+  private final int[][] buffer;
   private int[] gradient;
 
   protected final CompoundParameter fuel = new CompoundParameter("Fuel", 1);
 
   protected final CompoundParameter colorPosition = new CompoundParameter("Color Position", 0.5);
 
-  public final LinkedColorParameter fireColor =
-      registerColor("Color", "fireColor", TEColorType.PRIMARY, "Color of the fire");
   protected final Click rate = new Click(100);
 
   public Fire(LX lx) {
@@ -88,17 +86,17 @@ public class Fire extends TEPattern {
     return (int) ((modelTE.maxZ() - modelTE.minZ()) / COLUMN_WIDTH) + 1;
   }
 
-  private int[] calculateGradient(int middle, int steps) {
-    int[] gradient = new int[steps];
+  private int[] calculateGradient(int middle) {
+    int[] gradient = new int[36];
     double pos = this.colorPosition.getValue();
-    for (int i = 0; i < steps * pos; i++) {
+    for (int i = 0; i < 36 * pos; i++) {
       // gradient[i] = lerpColor(LXColor.BLACK, middle, (float) (i / (steps * pos)), 3);
-      gradient[i] = LXColor.lerp(LXColor.BLACK, middle, (float) (i / (steps * pos)));
+      gradient[i] = LXColor.lerp(LXColor.BLACK, middle, (float) (i / (36 * pos)));
     }
 
-    for (int i = (int) (steps * pos); i < steps; i++) {
+    for (int i = (int) (36 * pos); i < 36; i++) {
       // gradient[i] = lerpColor(middle, LXColor.WHITE, (float) ((i - steps * pos) / steps), 3);
-      gradient[i] = LXColor.lerp(middle, LXColor.WHITE, (float) ((i - steps * pos) / steps));
+      gradient[i] = LXColor.lerp(middle, LXColor.WHITE, (float) ((i - 36 * pos) / 36));
     }
 
     return gradient;
@@ -108,9 +106,9 @@ public class Fire extends TEPattern {
   public void onParameterChanged(LXParameter parameter) {
     super.onParameterChanged(parameter);
     if (parameter.getPath().equals("fireColor")) {
-      this.gradient = calculateGradient(((LinkedColorParameter) parameter).calcColor(), 36);
+      this.gradient = calculateGradient(((LinkedColorParameter) parameter).calcColor());
     } else if (parameter.getPath().equals("colorPosition")) {
-      this.gradient = calculateGradient(fireColor.calcColor(), 36);
+      this.gradient = calculateGradient(getSwatchColor(TEColorType.PRIMARY));
     }
   }
 }

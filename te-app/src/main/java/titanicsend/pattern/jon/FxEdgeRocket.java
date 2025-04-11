@@ -91,7 +91,7 @@ public class FxEdgeRocket extends TEPerformancePattern {
       y = x * sinT + y * cosT;
 
       // get distance from point to wavefront
-      float dist = (float) Math.abs(y - cc);
+      float dist = Math.abs(y - cc);
 
       // bright rocket at front of wave, with trailing
       // sparkles that fade out behind.

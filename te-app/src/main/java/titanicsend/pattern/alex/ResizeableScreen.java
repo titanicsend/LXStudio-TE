@@ -4,7 +4,6 @@ import heronarts.glx.ui.UI2dContainer;
 import heronarts.glx.ui.component.UIButton;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.DiscreteParameter;
@@ -31,10 +30,10 @@ public class ResizeableScreen extends TEPattern implements UIDeviceControls<Resi
   // fraction
   // of a micron, you can figure out how to do this with BoundedParameters instead.
   // Note: extra +1 is because DiscreteParameters have an _exclusive_ bound on the upper end.
-  private int roundedLowerYLimit = (int) this.modelTE.minY();
-  private int roundedUpperYLimit = (int) this.modelTE.maxY();
-  private int roundedLowerZLimit = (int) this.modelTE.minZ();
-  private int roundedUpperZLimit = (int) this.modelTE.maxZ();
+  private final int roundedLowerYLimit = (int) this.modelTE.minY();
+  private final int roundedUpperYLimit = (int) this.modelTE.maxY();
+  private final int roundedLowerZLimit = (int) this.modelTE.minZ();
+  private final int roundedUpperZLimit = (int) this.modelTE.maxZ();
 
   // The extra +1 on the ends is because DiscreteParameter bounds are exclusive at the top end.
   public final DiscreteParameter lowerYBoundParam =
@@ -71,9 +70,6 @@ public class ResizeableScreen extends TEPattern implements UIDeviceControls<Resi
               "Toggle whether screen is drawn on both sides of the car or not (Default false)")
           .setValue(false);
 
-  public final LinkedColorParameter color =
-      registerColor("Color", "color", TEColorType.PRIMARY, "Color of the screen");
-
   private void toggleDoubleSided() {
     this.doubleSidedParam.setValue(!this.doubleSidedParam.getValueb());
   }
@@ -107,7 +103,7 @@ public class ResizeableScreen extends TEPattern implements UIDeviceControls<Resi
   }
 
   private void paint(double deltaMs) {
-    int color = this.color.calcColor();
+    int color = getSwatchColor(TEColorType.PRIMARY);
 
     for (LXPoint point : this.screen.screenGrid) {
       colors[point.index] = color;

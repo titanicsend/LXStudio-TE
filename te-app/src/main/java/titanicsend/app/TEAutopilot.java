@@ -413,7 +413,7 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
         String syntheticOscAddr = TEOscMessage.makeOscPhraseChangeAddress(TEPhrase.DOWN);
         TE.log("No OSC mode activated: triggering synthethic prhase=%s", syntheticOscAddr);
         history.setLastSynthethicPhraseAt(now);
-        onPhraseChange(syntheticOscAddr, (long) now);
+        onPhraseChange(syntheticOscAddr, now);
 
         // if we are in this mode already, just check if we need to trigger another phrase
       } else if (noOscModeOn) {
@@ -425,7 +425,7 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
           String syntheticOscAddr = TEOscMessage.makeOscPhraseChangeAddress(next);
           history.setLastSynthethicPhraseAt(now);
           TE.log("No OSC mode, another phrase: triggering synthetic phrase=%s", syntheticOscAddr);
-          onPhraseChange(syntheticOscAddr, (long) now);
+          onPhraseChange(syntheticOscAddr, now);
         }
       }
 
@@ -942,7 +942,6 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
     this.oldNextChannel = null;
     this.triggerChannel = null;
     this.strobesChannel = null;
-    this.fxChannel = null;
   }
 
   @Override

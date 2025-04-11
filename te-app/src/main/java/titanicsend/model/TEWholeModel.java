@@ -25,9 +25,9 @@ public interface TEWholeModel extends DmxWholeModel {
     public void modelTEChanged(TEWholeModel model);
   }
 
-  public TEWholeModel addListener(TEModelListener listener);
+  public TEWholeModel addWholeModelListener(TEModelListener listener);
 
-  public TEWholeModel removeListener(TEModelListener listener);
+  public TEWholeModel removeWholeModelListener(TEModelListener listener);
 
   public abstract boolean isGapPoint(LXPoint p);
 
