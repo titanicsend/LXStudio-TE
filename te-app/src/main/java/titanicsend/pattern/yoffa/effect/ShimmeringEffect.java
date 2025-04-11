@@ -31,10 +31,9 @@ public class ShimmeringEffect extends PatternEffect {
   }
 
   public final EnumParameter<Mode> mode =
-      (EnumParameter<Mode>)
-          new EnumParameter<Mode>("Mode", Mode.FOREGROUND)
-              .setDescription("Color Mode")
-              .setWrappable(false);
+      new EnumParameter<Mode>("Mode", Mode.FOREGROUND)
+          .setDescription("Color Mode")
+          .setWrappable(false);
   private int lastBeat;
 
   public ShimmeringEffect(PatternTarget target) {

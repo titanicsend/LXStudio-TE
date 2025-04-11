@@ -37,7 +37,7 @@ public class Cone extends LaserControl {
   }
 
   public void update(double deltaMsec) {
-    this.theta += (deltaMsec * RADIANS_PER_MSEC) % (2.0 * Math.PI);
+    this.theta += (float) ((deltaMsec * RADIANS_PER_MSEC) % (2.0 * Math.PI));
     LXVector direction = this.perpendicular.copy();
     direction.rotate(this.theta, this.homeDirection.x, this.homeDirection.y, this.homeDirection.z);
     direction.add(this.homeDirection);

@@ -4,7 +4,6 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.Tempo;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.SawLFO;
 import heronarts.lx.parameter.*;
@@ -15,11 +14,11 @@ import titanicsend.color.TEColorType;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEVertex;
 import titanicsend.pattern.TEPattern;
-import titanicsend.util.PanelStriper;
 
 @LXCategory("Panel FG")
 public class PulsingTriangles extends TEPattern {
-  private HashMap<String, LXPoint[][]> pointMap;
+  private static final int DISTANCE_BETWEEN_PIXELS = 50000;
+  private final HashMap<String, LXPoint[][]> pointMap;
 
   public final BooleanParameter tempoSync =
       new BooleanParameter("Sync", false).setDescription("Whether this modulator syncs to a tempo");
@@ -33,11 +32,10 @@ public class PulsingTriangles extends TEPattern {
           .setDescription("Whether this modulator is locked to the beat grid or free-running");
 
   protected final CompoundParameter rate =
-      (CompoundParameter)
-          new CompoundParameter("Rate", .50, .01, 2)
-              .setExponent(2)
-              .setUnits(LXParameter.Units.HERTZ)
-              .setDescription("Pulse rate");
+      new CompoundParameter("Rate", .50, .01, 2)
+          .setExponent(2)
+          .setUnits(LXParameter.Units.HERTZ)
+          .setDescription("Pulse rate");
 
   protected final SawLFO phase =
       new SawLFO(
@@ -48,9 +46,6 @@ public class PulsingTriangles extends TEPattern {
               return 1000 / rate.getValue();
             }
           });
-
-  public final LinkedColorParameter color =
-      registerColor("Color", "color", TEColorType.PRIMARY, "Color of the triangles");
 
   public PulsingTriangles(LX lx) {
     super(lx);
@@ -65,7 +60,7 @@ public class PulsingTriangles extends TEPattern {
   public void run(double deltaMs) {
     float phase = this.phase.getValuef();
 
-    int triangleColor = this.color.calcColor();
+    int triangleColor = getSwatchColor(TEColorType.PRIMARY);
 
     for (TEPanelModel panel : modelTE.getPanels()) {
       LXPoint[][] panelPoints = pointMap.get(panel.getId());
@@ -85,8 +80,7 @@ public class PulsingTriangles extends TEPattern {
   private HashMap<String, LXPoint[][]> buildPointMap(List<TEPanelModel> panels) {
     return panels.stream()
         .collect(
-            Collectors.toMap(
-                TEPanelModel::getId, panel -> buildPanelMap(panel), (a, b) -> a, HashMap::new));
+            Collectors.toMap(TEPanelModel::getId, this::buildPanelMap, (a, b) -> a, HashMap::new));
   }
 
   private LXPoint[][] buildPanelMap(TEPanelModel panel) {
@@ -99,7 +93,7 @@ public class PulsingTriangles extends TEPattern {
     };
 
     int i = 1;
-    while (currentVertices[0].distanceTo(panel.centroid) > (PanelStriper.DISTANCE_BETWEEN_PIXELS)) {
+    while (currentVertices[0].distanceTo(panel.centroid) > (DISTANCE_BETWEEN_PIXELS)) {
       points.add(0, new ArrayList<LXPoint>());
       LXVector[][] edges = {
         {currentVertices[0], currentVertices[1]},
@@ -110,8 +104,8 @@ public class PulsingTriangles extends TEPattern {
       for (LXPoint point : panel.points) {
         for (LXVector[] edge : edges) {
           if (distanceBetweenPointAndLineSegment(edge[0], edge[1], point)
-              < 2 * PanelStriper.DISTANCE_BETWEEN_PIXELS) {
-            points.get(0).add(point);
+              < 2 * DISTANCE_BETWEEN_PIXELS) {
+            points.getFirst().add(point);
           }
         }
       }
@@ -122,7 +116,7 @@ public class PulsingTriangles extends TEPattern {
       i++;
     }
 
-    return points.stream().map(l -> l.stream().toArray(LXPoint[]::new)).toArray(LXPoint[][]::new);
+    return points.stream().map(l -> l.toArray(LXPoint[]::new)).toArray(LXPoint[][]::new);
   }
 
   private static double distanceBetweenPointAndLineSegment(

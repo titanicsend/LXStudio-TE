@@ -4,7 +4,6 @@ import static titanicsend.util.TEColor.TRANSPARENT;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
@@ -34,9 +33,6 @@ public class HandTracker extends TEPattern {
 
   public final CompoundParameter targetW =
       new CompoundParameter("Width", 4, 0.25, 100).setDescription("Target width").setExponent(2);
-
-  public final LinkedColorParameter color =
-      registerColor("Color", "color", TEColorType.PRIMARY, "Color of the pattern");
 
   public final StringParameter indexTip =
       new StringParameter("Index Tip", "10,50")
@@ -77,7 +73,7 @@ public class HandTracker extends TEPattern {
     float w = this.targetW.getNormalizedf();
     float h = this.targetH.getNormalizedf();
 
-    int color = this.color.calcColor();
+    int color = getSwatchColor(TEColorType.PRIMARY);
 
     boolean doCircle = this.circle.isOn();
 

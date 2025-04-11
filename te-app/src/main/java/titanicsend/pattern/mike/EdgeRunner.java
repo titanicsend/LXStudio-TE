@@ -5,7 +5,6 @@ import static titanicsend.util.TEColor.TRANSPARENT;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.Click;
 import heronarts.lx.parameter.DiscreteParameter;
@@ -61,15 +60,15 @@ public class EdgeRunner extends TEPattern implements TEModelListener {
   private final List<Runner> runners;
   private int moveNumber;
 
-  public final LinkedColorParameter runnerColor =
-      registerColor("Runner", "runnerColor", TEColorType.PRIMARY, "Color of the runner dots");
-
-  public final LinkedColorParameter trailColor =
-      registerColor(
-          "Trail", "trailColor", TEColorType.SECONDARY, "Color of the trail they leave behind");
-
-  public final LinkedColorParameter fillColor =
-      registerColor("Fill", "fillColor", TEColorType.TERTIARY, "Color to fill the panels with");
+  // public final LinkedColorParameter runnerColor =
+  //     registerColor("Runner", "runnerColor", TEColorType.PRIMARY, "Color of the runner dots");
+  //
+  // public final LinkedColorParameter trailColor =
+  //     registerColor(
+  //         "Trail", "trailColor", TEColorType.SECONDARY, "Color of the trail they leave behind");
+  //
+  // public final LinkedColorParameter fillColor =
+  //     registerColor("Fill", "fillColor", TEColorType.TERTIARY, "Color to fill the panels with");
 
   public EdgeRunner(LX lx) {
     super(lx);
@@ -82,7 +81,7 @@ public class EdgeRunner extends TEPattern implements TEModelListener {
     this.spawner.fire();
     this.moveNumber = 0;
 
-    this.modelTE.addListener(this);
+    this.modelTE.addWholeModelListener(this);
     initialize();
   }
 
@@ -222,9 +221,9 @@ public class EdgeRunner extends TEPattern implements TEModelListener {
       }
     }
 
-    int runnerColor = this.runnerColor.calcColor();
-    int trailColor = this.trailColor.calcColor();
-    int fillColor = this.fillColor.calcColor();
+    int runnerColor = getSwatchColor(TEColorType.PRIMARY);
+    int trailColor = getSwatchColor(TEColorType.SECONDARY);
+    int fillColor = getSwatchColor(TEColorType.TERTIARY);
 
     for (LXPoint point : modelTE.getEdgePoints()) {
       int lastVisit = this.pointLastVisit.getOrDefault(point, -1);
@@ -274,7 +273,7 @@ public class EdgeRunner extends TEPattern implements TEModelListener {
 
   @Override
   public void dispose() {
-    this.modelTE.removeListener(this);
+    this.modelTE.removeWholeModelListener(this);
     super.dispose();
   }
 }

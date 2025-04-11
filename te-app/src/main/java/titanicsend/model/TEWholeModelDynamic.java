@@ -495,7 +495,7 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
 
   private final List<TEModelListener> listeners = new ArrayList<TEModelListener>();
 
-  public TEWholeModel addListener(TEModelListener listener) {
+  public TEWholeModel addWholeModelListener(TEModelListener listener) {
     Objects.requireNonNull(listener);
     if (this.listeners.contains(listener)) {
       throw new IllegalStateException("Cannot add duplicate TEListener: " + listener);
@@ -504,7 +504,7 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
     return this;
   }
 
-  public TEWholeModel removeListener(TEModelListener listener) {
+  public TEWholeModel removeWholeModelListener(TEModelListener listener) {
     if (!this.listeners.contains(listener)) {
       throw new IllegalStateException("Cannot remove non-registered TEListener: " + listener);
     }

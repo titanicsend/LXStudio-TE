@@ -51,7 +51,7 @@
                     <version>${maven-compiler-plugin.version}</version>
                     <configuration>
                         <compilerArgs>
-                            <arg>-Xlint</arg>
+                            <arg>-Xlint:all,-this-escape,-classfile</arg>
                             <arg>-Xpkginfo:always</arg>
                         </compilerArgs>
                     </configuration>
@@ -68,6 +68,11 @@
                         </java>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>findbugs-maven-plugin</artifactId>
+                    <version>3.0.6-SNAPSHOT</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -78,20 +83,21 @@
                 <inherited>false</inherited> <!-- Important: prevents execution in child modules -->
                 <executions>
                     <execution>
-                    <id>clean-phantom-dirs</id>
-                    <phase>validate</phase> <!-- Early in the build cycle -->
-                    <goals>
-                        <goal>exec</goal>
-                    </goals>
-                    <configuration>
-                        <executable>bash</executable>
-                        <arguments>
-                        <argument>${project.basedir}/cleanup.sh</argument>
-                        </arguments>
-                    </configuration>
+                        <id>clean-phantom-dirs</id>
+                        <phase>validate</phase> <!-- Early in the build cycle -->
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>bash</executable>
+                            <arguments>
+                                <argument>${project.basedir}/cleanup.sh</argument>
+                            </arguments>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 

@@ -26,16 +26,14 @@ public class DjLightsEasyPattern extends DjLightsPattern
   CompoundParameter focus = new CompoundParameter("Focus");
 
   public final BooleanParameter mirror =
-      (BooleanParameter)
-          new BooleanParameter("MIRROR", false)
-              .setDescription("Alternates beam angle between fixtures")
-              .setMode(Mode.MOMENTARY);
+      new BooleanParameter("MIRROR", false)
+          .setDescription("Alternates beam angle between fixtures")
+          .setMode(Mode.MOMENTARY);
 
   public final BooleanParameter strobe =
-      (BooleanParameter)
-          new BooleanParameter("Strobe!", false)
-              .setDescription("Press for strobe action!")
-              .setMode(Mode.MOMENTARY);
+      new BooleanParameter("Strobe!", false)
+          .setDescription("Press for strobe action!")
+          .setMode(Mode.MOMENTARY);
 
   DiscreteParameter strobeSpeed =
       new DiscreteParameter("StrbSpd", 245, 10, 245)
@@ -89,7 +87,7 @@ public class DjLightsEasyPattern extends DjLightsPattern
     int r = ((color >> 16) & 0xff);
     int g = ((color >> 8) & 0xff);
     int b = (color & 0xff);
-    int w = (r < g) ? ((r < b) ? r : b) : ((g < b) ? g : b);
+    int w = (r < g) ? (Math.min(r, b)) : (Math.min(g, b));
     r -= w;
     g -= w;
     b -= w;
