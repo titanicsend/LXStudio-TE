@@ -31,9 +31,9 @@ public class TEAutopilotMixer {
   public static final double FADER_LEVEL_OFF_THRESH = 0.01;
 
   // mapping from TEChannelName -> LXChannel
-  private HashMap<TEChannelName, LXChannel> channelName2channel;
+  private final HashMap<TEChannelName, LXChannel> channelName2channel;
 
-  private LX lx;
+  private final LX lx;
   private TEPatternLibrary library;
 
   // our LX mixer group
@@ -45,12 +45,7 @@ public class TEAutopilotMixer {
     channelName2channel = new HashMap<>();
   }
 
-  /**
-   * Set fader to given value based on TEChannelName.
-   *
-   * @param name
-   * @param faderLevel
-   */
+  /** Set fader to given value based on TEChannelName. */
   public void setFaderTo(TEChannelName name, double faderLevel) {
     try {
       // TE.log("Getting channel by name: %s", name);
@@ -168,12 +163,7 @@ public class TEAutopilotMixer {
     return new AutoVJScanResult(found, groupIdx);
   }
 
-  /**
-   * Removes ID fields from an LX JsonObject.
-   *
-   * @param JsonObject o
-   * @return JsonObject with no ID fields
-   */
+  /** Removes ID fields from an LX JsonObject. */
   public JsonObject stripIdsFromJsonObject(JsonObject o) {
     if (o.keySet().contains("id")) o.remove("id");
 
@@ -187,9 +177,6 @@ public class TEAutopilotMixer {
    * not care whether or not there are duplicates in any way.
    *
    * <p>See: stripIdsFromJsonObject for the actual operation.
-   *
-   * @param JsonElement e
-   * @return an id-free JsonElement
    */
   public JsonElement removeIds(JsonElement e) {
     if (e.isJsonObject()) {
@@ -271,8 +258,7 @@ public class TEAutopilotMixer {
         JsonElement rootElt = null;
         try {
           // pull out the sub-JSON objects we need
-          JsonParser parser = new JsonParser();
-          rootElt = parser.parse(new FileReader(AUTO_VJ_TEMPLATE_LXP_PATH));
+          rootElt = JsonParser.parseReader(new FileReader(AUTO_VJ_TEMPLATE_LXP_PATH));
           if (rootElt == null)
             TE.err("Could not parse proper JSON object from: %s", AUTO_VJ_TEMPLATE_LXP_PATH);
         } catch (FileNotFoundException e) {

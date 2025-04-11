@@ -7,7 +7,6 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.Tempo;
 import heronarts.lx.blend.MultiplyBlend;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.Click;
 import heronarts.lx.parameter.*;
@@ -36,13 +35,6 @@ import titanicsend.pattern.TEAudioPattern;
  */
 @LXCategory("Geometry Masks")
 public class EdgeProgressions extends TEAudioPattern {
-  public final LinkedColorParameter colorParam =
-      registerColor(
-          "Color",
-          "color",
-          TEColorType.PRIMARY,
-          "Primary color for edges, when not in auto-mask mode");
-
   // In this pattern the "energy" is how quickly the scenes can progress,
   // IE shorter tempoDivisions
   Tempo.Division[] divisions;
@@ -137,7 +129,7 @@ public class EdgeProgressions extends TEAudioPattern {
   double lastClickBasis;
 
   public void runTEAudioPattern(double deltaMs) {
-    int color = colorParam.getColor();
+    int color = getSwatchColor(TEColorType.PRIMARY);
     if (getChannel() != null) {
       if (getChannel().blendMode.getObject().getClass().equals(MultiplyBlend.class)) {
         // Operate in Mask mode

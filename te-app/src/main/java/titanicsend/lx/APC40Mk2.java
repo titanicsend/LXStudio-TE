@@ -12,6 +12,7 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import java.util.*;
 import java.util.Map.Entry;
+import titanicsend.midi.MidiNames;
 
 public class APC40Mk2 extends heronarts.lx.midi.surface.APC40Mk2 {
 
@@ -32,6 +33,11 @@ public class APC40Mk2 extends heronarts.lx.midi.surface.APC40Mk2 {
       new HashMap<UserButton, BooleanParameter>();
   private static final Map<BooleanParameter, UserButton> userButtonsRev =
       new HashMap<BooleanParameter, UserButton>();
+
+  @Override
+  public String getDeviceName() {
+    return MidiNames.BOMEBOX_APC40MK2;
+  }
 
   public static void setUserButton(UserButton button, BooleanParameter parameter) {
     BooleanParameter oldParameter = userButtons.get(button);

@@ -3,7 +3,6 @@ package titanicsend.pattern.jon;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
@@ -59,12 +58,8 @@ public class FrameBrights extends TEAudioPattern {
           .setMode(BooleanParameter.Mode.MOMENTARY)
           .setDescription("New light segments NOW!");
 
-  public final LinkedColorParameter color;
-
   public FrameBrights(LX lx) {
     super(lx);
-    // Initialize color after the parent constructor has completed
-    this.color = registerColor("Color", "color", TEColorType.PRIMARY, "Color");
 
     addParameter("energy", energy);
     addParameter("beatsPerCycle", cycleLength);
@@ -128,7 +123,7 @@ public class FrameBrights extends TEAudioPattern {
     prng.setSeed(seed);
 
     // get the current color
-    int baseColor = this.color.calcColor();
+    int baseColor = getSwatchColor(TEColorType.PRIMARY);
 
     // spotlight brightness pulses with the beat
     float spotBrightness = (float) (1.0 - energy.getValue() * currentBeat);
@@ -145,7 +140,7 @@ public class FrameBrights extends TEAudioPattern {
     int maxZones = (int) maxLit.getValue();
 
     minZones = Math.min(zoneCount, minZones);
-    minZones = (minZones > maxZones) ? maxZones : minZones;
+    minZones = Math.min(minZones, maxZones);
     maxZones = Math.min(zoneCount, maxZones);
 
     for (TEEdgeModel edge : modelTE.getEdges()) {

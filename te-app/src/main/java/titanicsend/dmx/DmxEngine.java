@@ -96,7 +96,7 @@ public class DmxEngine implements LXLoopTask, TEWholeModel.TEModelListener {
 
     this.dmxWholeModel = TEApp.wholeModel;
     this.modelTE = TEApp.wholeModel;
-    TEApp.wholeModel.addListener(this);
+    TEApp.wholeModel.addWholeModelListener(this);
 
     // Set up global add blend
     this.addBlend = new AddBlend(lx);
@@ -595,7 +595,7 @@ public class DmxEngine implements LXLoopTask, TEWholeModel.TEModelListener {
     }
     this.dmxBufferByLXBuffer.clear();
     this.dmxBufferByGroup.clear();
-    TEApp.wholeModel.removeListener(this);
+    TEApp.wholeModel.removeWholeModelListener(this);
     this.lx.engine.mixer.removeListener(this.mixerListener);
     current = null;
   }
