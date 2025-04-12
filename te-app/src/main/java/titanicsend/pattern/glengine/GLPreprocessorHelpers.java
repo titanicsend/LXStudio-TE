@@ -200,6 +200,10 @@ public class GLPreprocessorHelpers {
           }
           if (tagName.equals("SCALE")) {
             tagName = "SIZE";
+          } else if (tagName.equals("LEVELREACT")) {
+            tagName = "LEVELREACTIVITY";
+          } else if (tagName.equals("FREQUENCYREACT")) {
+            tagName = "FREQREACTIVITY";
           }
           try {
             control.opcode = ShaderConfigOpcode.SET_RANGE;
