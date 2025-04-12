@@ -112,11 +112,6 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
     vec2 uv0=uv;
     vec3 finalColor=vec3(0.);
 
-    float a = atan(uv.y,uv.x);
-    float normAngle = a / TWO_PI;
-    float index = mod(normAngle * TEXTURE_SIZE * 2.0, TEXTURE_SIZE);
-    float wave = (0.5 * (1.0+texelFetch(iChannel0, ivec2(index, 1), 0).x)) - 0.25;
-
     for(float i=0.;i<iQuantity;i++){
 
 
@@ -134,6 +129,11 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
         // uv.y += 0.2;
         uv.y+=.02*abs(sin(noise(i,iTime*.02)));
         // uv.y += 0.02 * noise(i, iTime*0.02);
+
+         float a = atan(uv.y,uv.x);
+        float normAngle = a / TWO_PI;
+        float index = mod(normAngle * TEXTURE_SIZE * 2.0, TEXTURE_SIZE);
+        float wave = (0.5 * (1.0+texelFetch(iChannel0, ivec2(index, 1), 0).x)) - 0.25;
 
         float d=1.;
         d*=sdEquilateralTriangle(uv,.9) + frequencyReact*wave;
