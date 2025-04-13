@@ -46,7 +46,6 @@ import titanicsend.app.director.UIDirector;
 import titanicsend.audio.AudioStemModulator;
 import titanicsend.audio.AudioStems;
 import titanicsend.audio.AudioStemsPlugin;
-import titanicsend.audio.UIAudioStems;
 import titanicsend.color.ColorPaletteManager;
 import titanicsend.color.TEGradientSource;
 import titanicsend.dmx.DmxEngine;

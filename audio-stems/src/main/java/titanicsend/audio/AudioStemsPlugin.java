@@ -25,15 +25,15 @@ public class AudioStemsPlugin implements LXStudio.Plugin {
   }
 
   @Override
-  public void initializeUI(LXStudio lxStudio, LXStudio.UI ui) { }
+  public void initializeUI(LXStudio lxStudio, LXStudio.UI ui) {}
 
   @Override
   public void onUIReady(LXStudio lxStudio, LXStudio.UI ui) {
     new UIAudioStems(ui, this.audioStems, ui.leftPane.global.getContentWidth())
-      .addToContainer(ui.leftPane.global, 2);
+        .addToContainer(ui.leftPane.global, 2);
 
     new UIAudioStems(ui, this.audioStems, ui.leftPerformance.tools.getContentWidth())
-      .addToContainer(ui.leftPerformance.tools, 0);
+        .addToContainer(ui.leftPerformance.tools, 0);
   }
 
   @Override
@@ -42,11 +42,10 @@ public class AudioStemsPlugin implements LXStudio.Plugin {
   }
 
   /**
-   * Projects that import this library and are NOT an LXPackage (such as a custom build)
-   * should call this method from their initialize().
+   * Projects that import this library and are NOT an LXPackage (such as a custom build) should call
+   * this method from their initialize().
    */
   public static void registerComponents(LX lx) {
     lx.registry.addModulator(AudioStemModulator.class);
   }
-
 }
