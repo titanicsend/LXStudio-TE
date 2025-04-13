@@ -120,6 +120,12 @@
             <groupId>com.jkbstudio</groupId>
             <artifactId>supermod</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.titanicsend</groupId>
+            <artifactId>audio-stems</artifactId>
+            <version>${audio-stems.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
