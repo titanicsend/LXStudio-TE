@@ -28,12 +28,6 @@ for name in "${MOVE_DIRS[@]}"; do
     fi
 done
 
-echo "Checking target"
-if [ -d "$SCRIPT_DIR/target" ]; then
-    echo "  Found target; clearing"
-    rm -rf "$SCRIPT_DIR/target"
-fi
-
 # Define the directories to check, where we don't want to auto-move the files
 PHANTOM_DIRS=("Fixtures" "Projects" "Models" "Colors" "Presets" "script" "resources")
 
@@ -83,3 +77,9 @@ for name in "${PHANTOM_DIRS[@]}"; do
         done
     fi
 done
+
+echo "Checking target"
+if [ -d "$SCRIPT_DIR/target" ]; then
+    echo "  Found target; clearing"
+    rm -rf "$SCRIPT_DIR/target"
+fi
