@@ -8,7 +8,7 @@ SCRIPT_DIR="$( cd "$( dirname "$(readlink -f "$0")" )" &> /dev/null && pwd )"
 # For dirs with auto-generated contents, move the content to the new subfolders
 MOVE_DIRS=("Logs" "Autosave" "target")
 
-for name in "${PHANTOM_DIRS[@]}"; do
+for name in "${MOVE_DIRS[@]}"; do
     echo "Checking $name"
     cur_dir="$SCRIPT_DIR/$name"
 
@@ -16,7 +16,7 @@ for name in "${PHANTOM_DIRS[@]}"; do
     if [ -d "$cur_dir" ]; then
         echo "Checking $name"
         if [ -z "$(ls -A "$cur_dir")" ]; then
-            echo "  Empty; clearning"
+            echo "  Empty; clearing"
             rmdir "$cur_dir"
         else
             echo "  Not empty; moving contents to ./te-app/$name"
