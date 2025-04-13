@@ -43,15 +43,15 @@ public class Xorcery extends PixelblazePort {
     // translate so origin is at vehicle center and
     // rotate according to spin control setting
     //
-    x -= 0.5;
-    y -= 0.5;
-    z -= 0.5;
+    x -= 0.5f;
+    y -= 0.5f;
+    z -= 0.5f;
     float outX = (cosT * x) - (sinT * z);
     z = (sinT * x) + (cosT * z);
     x = outX;
 
-    y += t1 + measureWave * .05; // add a slight bounce to movement
-    x += breath * measureWave; // breathing effect
+    y += (float) (t1 + measureWave * .05); // add a slight bounce to movement
+    x += (float) (breath * measureWave); // breathing effect
     h = t2 + wave(xorf(scale * x, xorf(scale * z, scale * y)) / 50 * (t3 * 10 + 4 * t4) % modRange);
 
     v = (abs(h) + modRange + t1) % 1;

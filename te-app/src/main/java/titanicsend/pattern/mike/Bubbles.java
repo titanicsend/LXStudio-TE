@@ -5,7 +5,6 @@ import static titanicsend.util.TEColor.TRANSPARENT;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.color.LinkedColorParameter;
 import java.util.*;
 import titanicsend.color.TEColorType;
 import titanicsend.model.*;
@@ -19,9 +18,6 @@ public class Bubbles extends TEPattern {
   private static final int NUM_BUBBLES = 5;
   private final HashMap<TEPanelModel, Double> bubbleFraction; // -1 if no bubble; else, 0.0-1.1
   private final List<TEPanelModel> newBubbleQueue;
-
-  public final LinkedColorParameter color =
-      registerColor("Color", "color", TEColorType.PRIMARY, "Color of the bubbles");
 
   public Bubbles(LX lx) {
     super(lx);
@@ -54,7 +50,7 @@ public class Bubbles extends TEPattern {
   }
 
   private void newBubble() {
-    TEPanelModel panel = this.newBubbleQueue.remove(0);
+    TEPanelModel panel = this.newBubbleQueue.removeFirst();
     this.bubbleFraction.put(panel, 0.0);
     this.newBubbleQueue.add(panel);
   }
@@ -75,7 +71,7 @@ public class Bubbles extends TEPattern {
       }
     }
 
-    int bubbleColor = this.color.calcColor();
+    int bubbleColor = getSwatchColor(TEColorType.PRIMARY);
 
     for (Map.Entry<TEPanelModel, Double> entry : this.bubbleFraction.entrySet()) {
       TEPanelModel panel = entry.getKey();

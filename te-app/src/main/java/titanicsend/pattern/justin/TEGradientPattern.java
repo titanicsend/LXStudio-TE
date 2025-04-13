@@ -22,7 +22,6 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.EnumParameter;
-import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.transform.LXMatrix;
 import heronarts.lx.utils.LXUtils;
 import titanicsend.pattern.TEPerformancePattern;
@@ -57,8 +56,8 @@ public class TEGradientPattern extends TEPerformancePattern {
         });
 
     public final String name;
-    public final CoordinateFunction function;
-    public final CoordinateFunction invert;
+    private final CoordinateFunction function;
+    private final CoordinateFunction invert;
 
     private CoordinateMode(String name, CoordinateFunction function) {
       this.name = name;
@@ -97,7 +96,7 @@ public class TEGradientPattern extends TEPerformancePattern {
     this.controls.setRange(TEControlTag.WOW1, 0, -1, 1);
     this.controls.setRange(TEControlTag.WOW2, 0, 0, 360);
 
-    ((LXListenableNormalizedParameter) controls.getLXControl(TEControlTag.WOW2)).setWrappable(true);
+    controls.getLXControl(TEControlTag.WOW2).setWrappable(true);
 
     controls.markUnused(controls.getLXControl(TEControlTag.SPEED));
     controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));

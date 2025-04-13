@@ -262,8 +262,8 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
   private void buildEdgeRelations() {
     for (TEEdgeModel edge : this.edgesById.values()) {
       // In decimeters to better group
-      int absY = Math.round(Math.abs(edge.model.center.y) / 100_000);
-      int absZ = Math.round(Math.abs(edge.model.center.z) / 100_000);
+      int absY = Math.round(Math.abs(edge.model.cy) / 100_000);
+      int absZ = Math.round(Math.abs(edge.model.cz) / 100_000);
       LXVector symmetryKey = new LXVector(0, absY * 100_000, absZ * 100_000);
       List<TEEdgeModel> symmetryGroup =
           this.edgesBySymmetryGroup.computeIfAbsent(symmetryKey, k -> new ArrayList<>());
@@ -1085,7 +1085,7 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
 
   private final List<TEModelListener> listeners = new ArrayList<TEModelListener>();
 
-  public TEWholeModel addListener(TEModelListener listener) {
+  public TEWholeModel addWholeModelListener(TEModelListener listener) {
     Objects.requireNonNull(listener);
     if (this.listeners.contains(listener)) {
       throw new IllegalStateException("Cannot add duplicate TEListener: " + listener);
@@ -1094,7 +1094,7 @@ public class TEWholeModelStatic extends LXModel implements TEWholeModel {
     return this;
   }
 
-  public TEWholeModel removeListener(TEModelListener listener) {
+  public TEWholeModel removeWholeModelListener(TEModelListener listener) {
     if (!this.listeners.contains(listener)) {
       throw new IllegalStateException("Cannot remove non-registered TEListener: " + listener);
     }

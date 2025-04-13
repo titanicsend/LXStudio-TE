@@ -10,7 +10,7 @@ public class SwatchParameter extends ObjectParameter<SwatchDefinition>
     implements DisposableParameter {
 
   public interface Listener {
-    public void swatchesChanged(SwatchParameter parameter);
+    void swatchesChanged(SwatchParameter parameter);
   }
 
   private final List<Listener> listeners = new ArrayList<Listener>();
@@ -35,7 +35,7 @@ public class SwatchParameter extends ObjectParameter<SwatchDefinition>
    * @param listener Parameter listener
    * @return this
    */
-  public SwatchParameter addListener(Listener listener) {
+  public SwatchParameter addSwwatchParamListener(Listener listener) {
     Objects.requireNonNull(listener);
     if (this.listeners.contains(listener)) {
       throw new IllegalStateException(
@@ -51,7 +51,7 @@ public class SwatchParameter extends ObjectParameter<SwatchDefinition>
    * @param listener Parameter listener
    * @return this
    */
-  public SwatchParameter removeListener(Listener listener) {
+  public SwatchParameter removeSwatchParamListener(Listener listener) {
     if (!this.listeners.contains(listener)) {
       throw new IllegalStateException(
           "May not remove non-registered SelectedSwatchParameter.Listener: " + listener);
