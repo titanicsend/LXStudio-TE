@@ -2,12 +2,10 @@
 
 set -euo pipefail
 
-# Define the directories to check
-PHANTOM_DIRS=("Fixtures" "Projects" "Models" "Colors" "Presets" "Autosave")
-
 SCRIPT_DIR="$( cd "$( dirname "$(readlink -f "$0")" )" &> /dev/null && pwd )"
 
 
+# For 'Logs' and 'Autosave' dirs, move the content to the new subfolders
 if [ -d "$SCRIPT_DIR/Logs" ]; then
     echo "Checking Logs"
     if [ -z "$(ls -A "$SCRIPT_DIR/Logs")" ]; then
@@ -15,11 +13,29 @@ if [ -d "$SCRIPT_DIR/Logs" ]; then
         rmdir "$SCRIPT_DIR/Logs"
     else
         echo "  Not empty; moving contents to ./te-app/Logs"
+        mkdir -p $SCRIPT_DIR/te-app/Logs/
         mv $SCRIPT_DIR/Logs/* $SCRIPT_DIR/te-app/Logs/
         rmdir "$SCRIPT_DIR/Logs"
     fi
 fi
 
+
+if [ -d "$SCRIPT_DIR/Autosave" ]; then
+    echo "Checking Autosave"
+    if [ -z "$(ls -A "$SCRIPT_DIR/Autosave")" ]; then
+        echo "  Empty; clearning"
+        rmdir "$SCRIPT_DIR/Autosave"
+    else
+        echo "  Not empty; moving contents to ./te-app/Autosave"
+        mkdir -p $SCRIPT_DIR/te-app/Autosave/
+        mv $SCRIPT_DIR/Autosave/* $SCRIPT_DIR/te-app/Autosave/
+        rmdir "$SCRIPT_DIR/Autosave"
+    fi
+fi
+
+
+# Define the directories to check, where we don't want to auto-move the files
+PHANTOM_DIRS=("Fixtures" "Projects" "Models" "Colors" "Presets")
 
 
 for name in "${PHANTOM_DIRS[@]}"; do
