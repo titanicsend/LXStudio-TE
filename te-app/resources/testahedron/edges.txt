@@ -1,0 +1,14 @@
+0-1	default	10.0.0.64#10:0
+1-12	default	10.0.0.64#50:0
+2-12	reversed	10.0.0.64#50:62
+0-2	default	10.0.0.64#20:0
+2-23	default	10.0.0.64#60:0
+3-23	reversed	10.0.0.64#60:78
+0-3	default	10.0.0.64#30:0
+0-4	default	10.0.0.64#40:0
+3-34	default	10.0.0.64#70:0
+4-34	reversed	10.0.0.64#70:78
+1-4	default	10.0.0.64#80:0
+0-12	dark	uncontrolled
+0-23	dark	uncontrolled
+0-34	dark	uncontrolled
