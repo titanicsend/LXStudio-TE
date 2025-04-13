@@ -79,7 +79,7 @@
                 <executions>
                     <execution>
                     <id>clean-phantom-dirs</id>
-                    <phase>validate</phase> <!-- Early in the build cycle -->
+                    <phase>clean</phase> <!-- Early in the build cycle -->
                     <goals>
                         <goal>exec</goal>
                     </goals>
