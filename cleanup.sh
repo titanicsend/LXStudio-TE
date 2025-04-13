@@ -29,7 +29,7 @@ for name in "${MOVE_DIRS[@]}"; do
 done
 
 # Define the directories to check, where we don't want to auto-move the files
-PHANTOM_DIRS=("Fixtures" "Projects" "Models" "Colors" "Presets" "script" "resources")
+PHANTOM_DIRS=("Fixtures" "Projects" "Models" "Colors" "Presets" "script" "resources" "TD")
 
 
 for name in "${PHANTOM_DIRS[@]}"; do
