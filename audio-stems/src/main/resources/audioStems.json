@@ -2,19 +2,19 @@
   "stems": [
     {
       "label": "Bass",
-      "oscPath": "/stem/bass"
+      "oscPath": "/te/stem/bass"
     },
     {
       "label": "Drums",
-      "oscPath": "/stem/drums"
+      "oscPath": "/te/stem/drums"
     },
     {
       "label": "Vocals",
-      "oscPath": "/stem/vocals"
+      "oscPath": "/te/stem/vocals"
     },
     {
       "label": "Other",
-      "oscPath": "/stem/other"
+      "oscPath": "/te/stem/other"
     }
   ]
 }
