@@ -1,0 +1,20 @@
+{
+  "stems": [
+    {
+      "label": "Bass",
+      "oscPath": "/stem/bass"
+    },
+    {
+      "label": "Drums",
+      "oscPath": "/stem/drums"
+    },
+    {
+      "label": "Vocals",
+      "oscPath": "/stem/vocals"
+    },
+    {
+      "label": "Other",
+      "oscPath": "/stem/other"
+    }
+  ]
+}

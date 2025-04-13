@@ -1,5 +1,9 @@
 package titanicsend.audio;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.osc.LXOscListener;
@@ -8,14 +12,19 @@ import heronarts.lx.parameter.BoundedFunctionalParameter;
 import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter.Units;
+import heronarts.lx.parameter.ObjectParameter;
+import heronarts.lx.utils.LXUtils;
+import heronarts.lx.utils.ObservableList;
+import java.io.File;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
+/** Top-level component for Audio Stems, runs as a child of LX Engine */
 public class AudioStems extends LXComponent implements LXOscListener {
-
-  public static final String PATH_STEM = "/te/stem/";
-  public static final String PATH_BASS = "bass";
-  public static final String PATH_DRUMS = "drums";
-  public static final String PATH_VOCALS = "vocals";
-  public static final String PATH_OTHER = "other";
 
   private static AudioStems current;
 
@@ -23,121 +32,172 @@ public class AudioStems extends LXComponent implements LXOscListener {
     return current;
   }
 
+  private final ObservableList<Stem> mutableStems = new ObservableList<>();
+  public final ObservableList<Stem> stems = mutableStems.asUnmodifiableList();
+
+  private Stem[] selectorObjects = new Stem[] {null};
+  private String[] selectorOptions = new String[] {null};
+  private final List<Selector> selectors = new ArrayList<>();
+
   public final CompoundParameter gain =
       new CompoundParameter("Gain", 0, -1, 2).setUnits(Units.PERCENT_NORMALIZED);
 
-  /*
-   * Raw input values
-   */
-
-  public final BoundedParameter bassRaw = new BoundedParameter("bassRaw");
-  public final BoundedParameter drumsRaw = new BoundedParameter("drumsRaw");
-  public final BoundedParameter vocalsRaw = new BoundedParameter("vocalsRaw");
-  public final BoundedParameter otherRaw = new BoundedParameter("otherRaw");
-
-  /*
-   * Values after gain, smoothing, etc.
-   */
-
-  public final BoundedFunctionalParameter bass =
-      new BoundedFunctionalParameter("Bass") {
-        @Override
-        protected double computeValue() {
-          return adjusted(bassRaw);
-        }
-      }.setDescription("Audio stem for bass");
-
-  public final BoundedFunctionalParameter drums =
-      new BoundedFunctionalParameter("Drums") {
-        @Override
-        protected double computeValue() {
-          return adjusted(drumsRaw);
-        }
-      }.setDescription("Audio stem for drums");
-
-  public final BoundedFunctionalParameter vocals =
-      new BoundedFunctionalParameter("Vocals") {
-        @Override
-        protected double computeValue() {
-          return adjusted(vocalsRaw);
-        }
-      }.setDescription("Audio stem for vocals");
-
-  public final BoundedFunctionalParameter other =
-      new BoundedFunctionalParameter("Other") {
-        @Override
-        protected double computeValue() {
-          return adjusted(otherRaw);
-        }
-      }.setDescription("Audio stem for other");
-
-  /** Apply adjustments (gain, smoothing) to a raw parameter */
-  private double adjusted(BoundedParameter raw) {
-    return raw.getValue() * (1.0 + gain.getValue());
-  }
-
   public AudioStems(LX lx) {
     super(lx, "audioStems");
+    if (current != null) {
+      throw new IllegalStateException("Only one instance of AudioStems engine is permitted");
+    }
     current = this;
-
     addParameter("gain", this.gain);
-    addParameter("bass", this.bass);
-    addParameter("drums", this.drums);
-    addParameter("vocals", this.vocals);
-    addParameter("other", this.other);
-
+    loadConfig(lx);
     this.lx.engine.osc.addListener(this);
   }
 
-  /** Starting point for OSC input. Called for messages received by the LX OSC Receiver. */
-  @Override
-  public void oscMessage(OscMessage message) {
-    String address = message.getAddressPattern().getValue();
+  private void addStem(Stem stem) {
+    this.mutableStems.add(stem);
+    updateSelectors();
+  }
 
-    if (address.startsWith(PATH_STEM)) {
-      address = address.trim();
-      if (address.length() == PATH_STEM.length()) {
-        LX.warning("Audio stem name not specified: " + address);
-        return;
-      }
+  @SuppressWarnings("unused")
+  private void removeStem(Stem stem) {
+    if (!this.stems.contains(stem)) {
+      throw new IllegalStateException("Cannot remove unknown stem: " + stem.label);
+    }
+    this.mutableStems.remove(stem);
+    updateSelectors();
+  }
 
-      float value = message.getFloat();
-
-      String stem = address.substring(PATH_STEM.length());
-      if (stem.equals(PATH_BASS)) {
-        handleBass(value);
-      } else if (stem.equals(PATH_DRUMS)) {
-        handleDrums(value);
-      } else if (stem.equals(PATH_VOCALS)) {
-        handleVocals(value);
-      } else if (stem.equals(PATH_OTHER)) {
-        handleOther(value);
-      } else {
-        LX.warning("Unknown audio stem path: " + address);
-        return;
+  private void updateSelectors() {
+    int numOptions = this.stems.size();
+    this.selectorObjects = new Stem[numOptions];
+    this.selectorOptions = new String[numOptions];
+    for (int i = 0; i < numOptions; i++) {
+      Stem stem = this.stems.get(i);
+      this.selectorObjects[i] = stem;
+      this.selectorOptions[i] = stem.label;
+    }
+    for (Selector selector : this.selectors) {
+      final Stem selected = selector.getObject();
+      selector.setObjects(this.selectorObjects, this.selectorOptions);
+      if ((selected != selector.getObject()) && this.stems.contains(selected)) {
+        selector.setValue(selected);
       }
     }
   }
 
-  private void handleBass(float value) {
-    this.bassRaw.setValue(value);
+  public Selector newSelector(String label, String description) {
+    return (Selector) new Selector(label).setDescription(description);
   }
 
-  private void handleDrums(float value) {
-    this.drumsRaw.setValue(value);
+  @Override
+  public void oscMessage(OscMessage message) {
+    String oscPath = message.getAddressPattern().getValue();
+    for (Stem stem : this.stems) {
+      if (oscPath.equals(stem.oscPath)) {
+        float value = message.getFloat();
+        stem.rawParameter.setValue(value);
+      }
+    }
   }
 
-  private void handleVocals(float value) {
-    this.vocalsRaw.setValue(value);
-  }
+  private static final String CONFIG_FILENAME = "audioStems.json";
+  private static final String KEY_STEMS = "stems";
 
-  private void handleOther(float value) {
-    this.otherRaw.setValue(value);
+  private void loadConfig(LX lx) {
+    File file = lx.getMediaFile(CONFIG_FILENAME);
+
+    // On first run, copy the config file out of the package jar
+    if (!file.exists()) {
+      try (InputStream resourceStream = getClass().getResourceAsStream("/" + CONFIG_FILENAME)) {
+        if (resourceStream == null) {
+          throw new IllegalStateException(
+              "Template config file " + CONFIG_FILENAME + " not found in package");
+        }
+        Files.copy(resourceStream, file.toPath());
+      } catch (Exception e) {
+        LOG.error(e, "Failed to copy default config file from resources: " + CONFIG_FILENAME);
+      }
+    }
+
+    // Load from file
+    if (file.exists()) {
+      try (FileReader fr = new FileReader(file)) {
+        JsonObject obj = new Gson().fromJson(fr, JsonObject.class);
+        if (obj.has(KEY_STEMS)) {
+          JsonArray stemsArray = obj.getAsJsonArray(KEY_STEMS);
+          for (JsonElement stemElement : stemsArray) {
+            JsonObject stemObj = stemElement.getAsJsonObject();
+            String label = stemObj.get("label").getAsString();
+            String oscPath = stemObj.get("oscPath").getAsString();
+            Stem stem = new Stem(label, oscPath);
+            addStem(stem);
+          }
+        }
+      } catch (Exception x) {
+        LOG.error(x, "Exception loading audio stems config file: " + file);
+      }
+    } else {
+      LOG.error("Audio stems config file not found: " + file);
+    }
   }
 
   @Override
   public void dispose() {
     this.lx.engine.osc.removeListener(this);
     super.dispose();
+  }
+
+  public class Stem {
+
+    public final String label;
+    public final String oscPath;
+    public final BoundedParameter rawParameter;
+    public final BoundedFunctionalParameter parameter;
+
+    private Stem(String label, String oscPath) {
+      if (LXUtils.isEmpty(label)) {
+        throw new IllegalArgumentException("Audio stem label cannot be empty");
+      }
+      this.label = label;
+      this.oscPath = Objects.requireNonNull(oscPath).trim();
+
+      this.rawParameter = new BoundedParameter(label + "Raw");
+      this.parameter =
+          new BoundedFunctionalParameter(label) {
+            @Override
+            protected double computeValue() {
+              // Apply adjustments (gain, smoothing) to a raw parameter
+              return rawParameter.getValue() * (1.0 + gain.getValue());
+            }
+          }.setDescription("Audio stem for " + label);
+    }
+
+    /** Get the stem's current raw value prior to gain or smoothing. */
+    public double getValueRaw() {
+      return this.rawParameter.getValue();
+    }
+
+    /** Get the stem's current value with global gain applied. */
+    public double getValue() {
+      return this.parameter.getValue();
+    }
+  }
+
+  public class Selector extends ObjectParameter<Stem> {
+
+    public Selector(String label) {
+      this(label, selectorObjects, selectorOptions);
+      selectors.add(this);
+    }
+
+    private Selector(String label, Stem[] objects, String[] options) {
+      super(label, objects, options);
+    }
+
+    @Override
+    public void dispose() {
+      selectors.remove(this);
+      super.dispose();
+    }
   }
 }

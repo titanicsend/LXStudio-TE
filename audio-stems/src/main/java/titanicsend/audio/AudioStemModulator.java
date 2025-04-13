@@ -22,45 +22,10 @@ public class AudioStemModulator extends LXModulator
     implements LXOscComponent, LXNormalizedParameter, UIModulatorControls<AudioStemModulator> {
 
   public static final double MAX_SMOOTHING_MS = 1000;
-
   // Accumulator rate in maximum units per second
   public static final double MAX_ACCUMULATOR_RATE = 8.0;
-  public double accumulator = 0.0;
 
-  public static enum Stem {
-    BASS("Bass") {
-      @Override
-      public double getValue() {
-        return AudioStems.get().bass.getValue();
-      }
-    },
-    DRUMS("Drums") {
-      @Override
-      public double getValue() {
-        return AudioStems.get().drums.getValue();
-      }
-    },
-    VOCALS("Vocals") {
-      @Override
-      public double getValue() {
-        return AudioStems.get().vocals.getValue();
-      }
-    },
-    OTHER("Other") {
-      @Override
-      public double getValue() {
-        return AudioStems.get().other.getValue();
-      }
-    };
-
-    public final String label;
-
-    private Stem(String label) {
-      this.label = label;
-    }
-
-    public abstract double getValue();
-  }
+  public final AudioStems.Selector stem;
 
   public enum OutputMode {
     ENERGY("Energy"), // raw stem energy value
@@ -79,16 +44,12 @@ public class AudioStemModulator extends LXModulator
   }
 
   public final EnumParameter<OutputMode> outputMode =
-      new EnumParameter<OutputMode>("Mode", OutputMode.ENERGY).setDescription("Stem output mode");
+      new EnumParameter<>("Mode", OutputMode.ENERGY).setDescription("Stem output mode");
 
   public final CompoundParameter accRate =
       new CompoundParameter("Rate", 0.2, 0.2, MAX_ACCUMULATOR_RATE)
           .setDescription("Wave mode frequency (Accumulation rate in stem energy units/sec)")
           .setExponent(2);
-
-  public final EnumParameter<Stem> stem =
-      new EnumParameter<Stem>("Stem", Stem.BASS)
-          .setDescription("Which audio stem is the source for this modulator");
 
   public final CompoundParameter emaMs =
       new CompoundParameter("EMA", 0, 0, MAX_SMOOTHING_MS)
@@ -97,7 +58,7 @@ public class AudioStemModulator extends LXModulator
           .setUnits(Units.MILLISECONDS);
 
   public final ObjectParameter<LXWaveshape> waveshape =
-      new ObjectParameter<LXWaveshape>(
+      new ObjectParameter<>(
               "Shape",
               new LXWaveshape[] {
                 LXWaveshape.SIN,
@@ -113,6 +74,8 @@ public class AudioStemModulator extends LXModulator
 
   private final EMA ema = new EMA(0);
 
+  private double accumulator = 0.0;
+
   public AudioStemModulator() {
     this("Audio Stem");
   }
@@ -120,14 +83,16 @@ public class AudioStemModulator extends LXModulator
   public AudioStemModulator(String label) {
     super(label);
 
-    addParameter("stem", this.stem);
+    addParameter(
+        "stem",
+        this.stem =
+            AudioStems.get()
+                .newSelector("Stem", "Which audio stem is the source for this modulator"));
     addParameter("emaMs", this.emaMs);
     addParameter("outputMode", this.outputMode);
     addParameter("accRate", this.accRate);
     addParameter("shape", this.waveshape);
     addParameter("slope", this.slope);
-
-    addLegacyParameter("noiseMode", this.outputMode);
   }
 
   @Override
@@ -144,7 +109,8 @@ public class AudioStemModulator extends LXModulator
 
   @Override
   protected double computeValue(double deltaMs) {
-    double input = this.stem.getEnum().getValue();
+    AudioStems.Stem stem = this.stem.getObject();
+    double input = stem != null ? stem.getValue() : 0.0;
     double r = this.ema.update(input, deltaMs);
 
     if (this.outputMode.getEnum() == OutputMode.WAVE) {

@@ -124,7 +124,7 @@
         <dependency>
             <groupId>com.titanicsend</groupId>
             <artifactId>audio-stems</artifactId>
-            <version>${audio-stems.version}</version>
+            <version>0.1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

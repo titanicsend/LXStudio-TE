@@ -1,14 +1,15 @@
 /**
+ * Chromatik Plugin Log
+ *
  * @author Justin Belcher <justin@jkb.studio>
  */
-
-package titanicsend.audio.stems;
+package titanicsend.audio;
 
 import heronarts.lx.LX;
 
 /**
- * Provides static logging methods within the context of a plugin
- * that prepend a plugin-specific string before passing to LX logging methods.
+ * Provides static logging methods within the context of a plugin that prepend a plugin-specific
+ * string before passing to LX logging methods.
  */
 public class LOG {
 
@@ -40,5 +41,4 @@ public class LOG {
   public static void error(Throwable x, String message) {
     LX.error(x, prefix(message));
   }
-
 }
