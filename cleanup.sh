@@ -9,40 +9,44 @@ SCRIPT_DIR="$( cd "$( dirname "$(readlink -f "$0")" )" &> /dev/null && pwd )"
 
 for name in "${PHANTOM_DIRS[@]}"; do
     echo "Checking $name"
-    dir="$SCRIPT_DIR/$name"
-    # Check if directory exists and is empty
-    if [ -e "$dir/.DS_Store" ]; then
-        echo "Found .DS_Store; removing"
-        rm -f "$dir/.DS_Store"
-    fi
-    if [ -d "$dir" ]; then
-        echo "Found phantom directory: $dir"
-        if [ -z "$(ls -A "$dir")" ]; then
-            echo "Phantom directory is empty: $dir"
-            
-            # Ask for confirmation (skip if running in non-interactive mode)
-            if [ -t 0 ]; then
-                read -p "Delete this empty directory? (y/n): " confirm
-                if [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]]; then
-                    rmdir "$dir"
-                    echo "Deleted: $dir"
+    cur_dir="$SCRIPT_DIR/$name"
+
+    # Find and delete .DS_Store in all subfolders
+    find $cur_dir -iname ".DS_Store" -exec rm {} \;
+
+    # 'find -d' returns most deeply nested folders first
+    for dir in $(find $cur_dir -d); do
+        echo "Checking $dir"
+        # Check if directory exists and is empty
+        if [ -d "$dir" ]; then
+            echo "Found phantom directory: $dir"
+            if [ -z "$(ls -A "$dir")" ]; then
+                echo "Phantom directory is empty: $dir"
+                
+                # Ask for confirmation (skip if running in non-interactive mode)
+                if [ -t 0 ]; then
+                    read -p "Delete this empty directory? (y/n): " confirm
+                    if [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]]; then
+                        rmdir "$dir"
+                        echo "Deleted: $dir"
+                    else
+                        echo "Skipped: $dir"
+                    fi
                 else
-                    echo "Skipped: $dir"
+                    # In non-interactive mode (like when running from Maven), auto-delete
+                    rmdir "$dir"
+                    echo "Auto-deleted phantom directory: $dir"
                 fi
             else
-                # In non-interactive mode (like when running from Maven), auto-delete
-                rmdir "$dir"
-                    echo "Auto-deleted phantom directory: $dir"
+                echo "Phantom directory is not empty: $dir"
+                echo "-------------"
+                ls -al $dir
+                echo "-------------"
+                echo "Please move the contents to their new home in './te-app/$name' and retry"
+                exit 1
             fi
-        else
-            echo "Phantom directory is not empty: $dir"
-            echo "-------------"
-            ls -al $dir
-            echo "-------------"
-            echo "Please move the contents to their new home in './te-app/$name' and retry"
-            exit 1
         fi
-    fi
+    done
 done
 
 # Base directory is the parent project directory
