@@ -10,7 +10,7 @@ SCRIPT_DIR="$( cd "$( dirname "$(readlink -f "$0")" )" &> /dev/null && pwd )"
 
 if [ -d "$SCRIPT_DIR/Logs" ]; then
     echo "Checking Logs"
-    if [ -z "$(ls -A "$dir")" ]; then
+    if [ -z "$(ls -A "$SCRIPT_DIR/Logs")" ]; then
         echo "  Empty; clearning"
         rmdir "$SCRIPT_DIR/Logs"
     else
