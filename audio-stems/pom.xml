@@ -26,6 +26,14 @@
             <groupId>com.heronarts</groupId>
             <artifactId>lx</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.heronarts</groupId>
+            <artifactId>glx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.heronarts</groupId>
+            <artifactId>glxstudio</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
