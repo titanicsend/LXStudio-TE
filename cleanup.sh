@@ -3,9 +3,24 @@
 set -euo pipefail
 
 # Define the directories to check
-PHANTOM_DIRS=("Fixtures" "Projects" "Models" "Colors" "Presets" "Logs" "Autosave")
+PHANTOM_DIRS=("Fixtures" "Projects" "Models" "Colors" "Presets" "Autosave")
 
 SCRIPT_DIR="$( cd "$( dirname "$(readlink -f "$0")" )" &> /dev/null && pwd )"
+
+
+if [ -d "$SCRIPT_DIR/Logs" ]; then
+    echo "Checking Logs"
+    if [ -z "$(ls -A "$dir")" ]; then
+        echo "  Empty; clearning"
+        rmdir "$SCRIPT_DIR/Logs"
+    else
+        echo "  Not empty; moving contents to ./te-app/Logs"
+        mv $SCRIPT_DIR/Logs/* $SCRIPT_DIR/te-app/Logs/
+        rmdir "$SCRIPT_DIR/Logs"
+    fi
+fi
+
+
 
 for name in "${PHANTOM_DIRS[@]}"; do
     echo "Checking $name"
@@ -17,35 +32,35 @@ for name in "${PHANTOM_DIRS[@]}"; do
             echo "Checking $dir"
             # Check if directory exists and is empty
             if [ -d "$dir" ]; then
-                echo "Found phantom directory: $dir"
+                echo "  Found phantom directory: $dir"
 
                 # Find and delete .DS_Store in all subfolders
                 find $cur_dir -iname ".DS_Store" -exec rm {} \;
 
                 # After clearing any DS_Store entries, check if empty
                 if [ -z "$(ls -A "$dir")" ]; then
-                    echo "Phantom directory is empty: $dir"
+                    echo "  Phantom directory is empty: $dir"
                     
                     # Ask for confirmation (skip if running in non-interactive mode)
                     if [ -t 0 ]; then
                         read -p "Delete this empty directory? (y/n): " confirm
                         if [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]]; then
                             rmdir "$dir"
-                            echo "Deleted: $dir"
+                            echo "    Deleted: $dir"
                         else
-                            echo "Skipped: $dir"
+                            echo "    Skipped: $dir"
                         fi
                     else
                         # In non-interactive mode (like when running from Maven), auto-delete
                         rmdir "$dir"
-                        echo "Auto-deleted phantom directory: $dir"
+                        echo "    Auto-deleted phantom directory: $dir"
                     fi
                 else
-                    echo "Phantom directory is not empty: $dir"
-                    echo "-------------"
+                    echo "  Phantom directory is not empty: $dir"
+                    echo "  -------------"
                     ls -al $dir
-                    echo "-------------"
-                    echo "Please move the contents to their new home in './te-app/$name' and retry"
+                    echo "  -------------"
+                    echo "  Please move the contents to their new home in './te-app/$name' and retry"
                     exit 1
                 fi
             fi
