@@ -6,7 +6,7 @@
 #iUniform float iScale = 0.05 in {0.01, 1.0}
 #iUniform float iQuantity = 3.0 in {1.0, 9.0}
 #iUniform float iWow2 = 2.5 in {1.0, 3.0}
-#iUniform float iWow1 = 0.9 in {0.5, 2.0}
+#iUniform float iWow1 = 0.9 in {0.0, 2.0}
 
 #ifdef GL_ES
 precision mediump float;
@@ -175,11 +175,10 @@ vec3 drawSquiggle(
     in vec2 dims,
     in vec2 offset,
     in float max_n,
-    in vec4 wave
+    in vec4 wave,
+    in float radius
 ) {
     vec3 color = vec3(0.);
-    float radius = 0.1;
-    radius = iScale;
 
     // vec2 x_wave = wave.xy;
     float x_freq = wave.x;
@@ -217,7 +216,6 @@ vec3 drawSquiggle(
             dir.y *= -1.;
         }
 
-
         step.x *= noiseStep * sin(x_freq*i + x_speed*iTime);
         // step.x *= clamp(i, 0., 10.) * 0.05; // fix the base
 
@@ -234,44 +232,6 @@ vec3 drawSquiggle(
     return color;
 }
 
-vec3 tiledSquiggles(in vec2 st) {
-    vec3 color = vec3(0.);
-
-    float w = .4;
-    float h = .4;
-    vec2 bounds = vec2(w, h);
-
-    vec2 n = floor(st);
-    vec2 f = fract(st);
-    vec2 pt = f - vec2(0.5);
-
-    vec2 rand2 = random2(n);
-    float r = rand2.x + rand2.y;
-    // r = 1.;
-
-    float freq = .1 + .1 * r;
-    float speed = 1.5 + r;
-
-    float len = N*(0.5 + .5*sin(iTime + 2.*r));
-
-    vec2 step_size = vec2(
-        0.02 + 0.02 * r,
-        2. / N
-    );
-    vec4 wave = vec4(freq, speed, 0., 0.);
-
-    return drawSquiggle(pt, bounds, step_size, len, wave);
-
-    // // alternate axes
-    // //
-    // vec2 step_size = vec2(
-    //     2. / N,
-    //     0.02 + 0.02 * r
-    // );
-    // vec4 wave = vec4(0., 0., freq, speed);
-    // return drawSquiggle(pt, bounds, step_size, len, wave);
-}
-
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec3 color = vec3(0.);
     vec2 st = fragCoord.xy/iResolution.xy;
@@ -280,14 +240,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     st -= vec2(0.5);
     st *= iQuantity;
 
-
-//     // blob size pulses with drums, amount controlled by levelReact
-//     float blobScale = (stemDrums > 0.1) ? -1.0 + 2.0 * stemDrums : 0.0;
-//     float radius = iScale + (levelReact * iScale * blobScale);
+    // blob size pulses with drums, amount controlled by levelReact
+    float blobScale = (stemOther > 0.1) ? -1.0 + 2.0 * stemOther : 0.0;
+    float radius = iScale + (levelReact * iScale * blobScale);
 
     // inter-firefly spacing changes w/stem value, controlled by frequencyReact
     // turned up, this gets really fun!
-    float spacing = 0.02; //max(0.05,(stemVocals * frequencyReact) / 3.0);
+    float spacing = max(0.05,(stemVocals * frequencyReact) / 3.0);
 
     // offset the start time a little so that the fireflies don't start
     // grouped tightly together
@@ -330,15 +289,14 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
             bounds,
             step_size * gradient_v,
             len,
-            wave
+            wave,
+            radius
         );
     }
-    // // overlapping...
-    // color += 1.0 - tiledSquiggles(st);
-
-    fragColor = vec4(color,1.0);
-
-    // float rect = sdRect(pt, dims);
-    // debugRect(rect, color);
-    // debugGrid(pt, color);
+    fragColor = vec4(0.);
+    if (iWowTrigger) {
+        // cool the entire backbuffer by a small amount
+        fragColor = max(vec4(0.),texelFetch(iBackbuffer, ivec2(gl_FragCoord.xy), 0) - iWow1 / 10.);
+    }
+    fragColor += vec4(color,1.0);
 }

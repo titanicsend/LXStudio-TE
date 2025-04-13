@@ -17,6 +17,12 @@ precision mediump float;
 #define TWO_PI 6.28318530718
 #define TAU 6.28318530718
 
+#define TEXTURE_SIZE 512.0
+#define CHANNEL_COUNT 16.0
+#define pixPerBin (TEXTURE_SIZE / CHANNEL_COUNT)
+#define halfBin (pixPerBin / 2.0)
+
+
 vec3 col1 = vec3(0.964, 0.144, 0.519);
 vec3 col2 = vec3(0.226, 0.046, 0.636);
 
@@ -235,15 +241,33 @@ vec3 drawSquiggle(
 
 vec3 tiledSquiggles(in vec2 st) {
     vec3 color = vec3(0.);
+
+//     // The audio texture size is 512x2
+//     // mapping to screen depends on iScale and iQuantity - here
+//     // we use iQuantity to figure out which texture pixels are relevant
+//     float index = mod(st.x * TEXTURE_SIZE * 2.0 * iQuantity, TEXTURE_SIZE);
+//
+//     // subdivide fft data into bins determined by iQuantity
+//     float p = floor(index / pixPerBin);
+//     float tx = halfBin+pixPerBin * p;
+//     float dist = abs(halfBin - mod(index, pixPerBin)) / halfBin;
+//
+//     // get frequency data pixel from texture
+//     float freq  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
+
     float scale = iQuantity;
     st *= 2.*scale;
-
     vec2 n = floor(st);
     vec2 f = fract(st);
 
+
+//     float index = mod((n.x/scale) * TEXTURE_SIZE, TEXTURE_SIZE);
+//     float p = floor(index / pixPerBin);
+    float tx = halfBin+pixPerBin * mod(n.x, CHANNEL_COUNT);
+    float freq  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
+
     bool is_n_even = mod(n.x, 2.) < 0.001;
     float initial_dir = is_n_even ? -1. : 1.;
-
 
     vec2 s_x = vec2(f.x - .5, st.y - initial_dir*.8*scale);
 
@@ -254,7 +278,8 @@ vec3 tiledSquiggles(in vec2 st) {
     float x_r = x_rand.x + x_rand.y;
 
     vec2 x_bounds = vec2(.5, 2.*scale);
-    float x_len = N*(0.5 + .5*sin(iTime + 2.*x_r));
+//     float x_len = N*(0.1 + .1*sin(iTime + 2.*x_r));
+    float x_len = N*freq;
     float x_freq = .1 + .1 * x_r;
     float x_speed = 1.5 + x_r;
 
