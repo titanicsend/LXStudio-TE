@@ -259,7 +259,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
         // v is the current position of the firefly - looks random, but is actually a deterministic
         // wobbly circular path.
-        vec2 v = cos(t*d)*vec2(cos(t*1.5), sin(t*3.) ) + sin(t*d) * vec2( cos(t*2.), sin(t*.75) );
+        vec2 v = 1.5*cos(t*d)*vec2(cos(t*1.5), sin(t*3.) ) + 1.5*sin(t*d) * vec2( cos(t*2.), sin(t*.75) );
 
         vec2 gradient_v = -d*sin(t*d) * vec2(cos(t*1.5), sin(t*3.))
                 + cos(t*d) * vec2(-1.5*sin(t*1.5), 3.0*cos(t*3.))
