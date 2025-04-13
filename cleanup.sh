@@ -11,6 +11,10 @@ for name in "${PHANTOM_DIRS[@]}"; do
     echo "Checking $name"
     dir="$SCRIPT_DIR/$name"
     # Check if directory exists and is empty
+    if [ -e "$dir/.DS_Store" ]; then
+        echo "Found .DS_Store; removing"
+        rm -f "$dir/.DS_Store"
+    fi
     if [ -d "$dir" ]; then
         echo "Found phantom directory: $dir"
         if [ -z "$(ls -A "$dir")" ]; then
@@ -32,6 +36,11 @@ for name in "${PHANTOM_DIRS[@]}"; do
             fi
         else
             echo "Phantom directory is not empty: $dir"
+            echo "-------------"
+            ls -al $dir
+            echo "-------------"
+            echo "Please move the contents to their new home in './te-app/$name' and retry"
+            exit 1
         fi
     fi
 done
