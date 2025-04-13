@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.titanicsend</groupId>
+        <artifactId>titanicsend-parent</artifactId>
+        <version>0.2.3-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>te-app</artifactId>
+    <name>Titanic's End LX Studio Application</name>
+
+    <!-- Define a local repository -->
+    <repositories>
+        <repository>
+            <id>project-repo</id>
+            <name>project-repo</name>
+            <url>file://${project.parent.basedir}/repo</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <checksumPolicy>ignore</checksumPolicy>
+            </snapshots>
+        </repository>
+
+        <repository>
+            <id>jogamp-repo</id>
+            <name>jogamp-repo</name>
+            <url>https://jogamp.org/deployment/maven/</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.heronarts</groupId>
+            <artifactId>lx</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.heronarts</groupId>
+            <artifactId>glxstudio</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.heronarts</groupId>
+            <artifactId>glx</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>gov.nist.math.jama</groupId>
+            <artifactId>gov.nist.math.jama</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.playasystems</groupId>
+            <artifactId>gigglepixel</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.co.xfactory-librarians</groupId>
+            <artifactId>coremidi4j</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjdk.nashorn</groupId>
+            <artifactId>nashorn-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>javacv-platform</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jogamp.gluegen</groupId>
+            <artifactId>gluegen-rt-main</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jogamp.jogl</groupId>
+            <artifactId>jogl-all-main</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>me.walkerknapp</groupId>
+            <artifactId>devolay</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jkbstudio</groupId>
+            <artifactId>supermod</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${maven-assembly-plugin.version}</version>
+
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>heronarts.lx.studio.TEApp</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec-maven-plugin.version}</version>
+
+                <executions>
+                    <execution>
+                        <id>Main</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-XstartOnFirstThread</argument>
+                                <argument>-Djava.awt.headless=true</argument>
+                                <argument>-jar</argument>
+                                <argument>target/LXStudio-TE-${project.version}-jar-with-dependencies.jar</argument>
+                                <argument>vehicle</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>MarkUnusedControls</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>python3</executable>
+                            <arguments>
+                                <argument>${project.basedir}/script/shader-mgmt/mark_unused_controls.py</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

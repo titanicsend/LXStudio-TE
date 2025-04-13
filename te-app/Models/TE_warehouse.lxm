@@ -1,0 +1,108 @@
+{
+  "version": "1.0.1.TE.1-SNAPSHOT",
+  "timestamp": 1722739075879,
+  "fixtures": [
+    {
+      "jsonFixtureType": "TE/module/Module10",
+      "jsonParameters": {},
+      "id": 228220,
+      "class": "heronarts.lx.structure.JsonFixture",
+      "internal": {
+        "modulationColor": 0,
+        "modulationControlsExpanded": true,
+        "modulationsExpanded": true
+      },
+      "parameters": {
+        "label": "Module10",
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "yaw": 0.0,
+        "pitch": 0.0,
+        "roll": 0.0,
+        "scale": 1.0,
+        "selected": false,
+        "deactivate": false,
+        "enabled": false,
+        "brightness": 1.0,
+        "identify": false,
+        "mute": false,
+        "solo": false,
+        "tags": "",
+        "fixtureType": "TE/module/Module10"
+      },
+      "children": {}
+    },
+    {
+      "jsonFixtureType": "TE/module/Module17",
+      "jsonParameters": {},
+      "id": 228553,
+      "class": "heronarts.lx.structure.JsonFixture",
+      "internal": {
+        "modulationColor": 0,
+        "modulationControlsExpanded": true,
+        "modulationsExpanded": true
+      },
+      "parameters": {
+        "label": "Module17",
+        "x": 220.0,
+        "y": -150.0,
+        "z": 0.0,
+        "yaw": 180.0,
+        "pitch": 0.0,
+        "roll": 0.0,
+        "scale": 1.0,
+        "selected": false,
+        "deactivate": false,
+        "enabled": false,
+        "brightness": 1.0,
+        "identify": false,
+        "mute": false,
+        "solo": false,
+        "tags": "",
+        "fixtureType": "TE/module/Module17"
+      },
+      "children": {}
+    },
+    {
+      "jsonFixtureType": "TE/module/Module04",
+      "jsonParameters": {},
+      "id": 228656,
+      "class": "heronarts.lx.structure.JsonFixture",
+      "internal": {
+        "modulationColor": 0,
+        "modulationControlsExpanded": true,
+        "modulationsExpanded": true
+      },
+      "parameters": {
+        "label": "Module04",
+        "x": 340.0,
+        "y": -220.0,
+        "z": 0.0,
+        "yaw": 0.0,
+        "pitch": 0.0,
+        "roll": -70.0,
+        "scale": 1.0,
+        "selected": true,
+        "deactivate": false,
+        "enabled": false,
+        "brightness": 1.0,
+        "identify": false,
+        "mute": false,
+        "solo": false,
+        "tags": "",
+        "fixtureType": "TE/module/Module04"
+      },
+      "children": {}
+    }
+  ],
+  "normalization": {
+    "normalizationMode": 0,
+    "normalizationX": 0.0,
+    "normalizationY": 0.0,
+    "normalizationZ": 0.0,
+    "normalizationWidth": 1000.0,
+    "normalizationHeight": 1000.0,
+    "normalizationDepth": 1000.0
+  }
+}

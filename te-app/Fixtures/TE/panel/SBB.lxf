@@ -1,0 +1,84 @@
+{
+  /* Titanic's End Fixture File */
+  label: "Panel SBB",
+  tags: [ "SBB", "panel", "Panel", "m11" ],
+
+  parameters: {
+    "xOffset": { default: 15.387300491333008, type: "float", description: "Adjust X position within the plane of the panel. Use to fine-tune position after installation" },
+    "yOffset": { default: 6, type: "float", description: "Adjust Y position within the plane of the panel. Use to fine-tune position after installation" },
+  
+    /* Modify HOST and CONTROLLER OUTPUT default values HERE to assign one of this panel's strands to a
+       new controller output. Then click [Reload Fixture File] at the bottom of the Inspector section in Chromatik.
+       CAUTION: LXM model files containing this fixture might not update to the new defaults. */
+
+    "strand1host": { default: "10.7.11.111", type: "string", label: "S1 Host", description: "Strand 1 Controller IP address or hostname" },
+    "strand1output": { default: 4, type: "int", min: 1, max: 4, label: "S1 Output", description: "Strand 1 Controller Output Number 1-4" },
+
+    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
+    
+    /* Debug tools */
+    "onCar": { default: true, type: "boolean", label: "On Car", description: "True = Locate panel to its position on the car, False = Locate to origin" }
+  },
+  
+  transforms: [
+    /* Transpose starting corner to Vertex0 */
+    { x: "-250.2171", enabled: "$onCar" },
+    { y: "66.8457", enabled: "$onCar" },
+    { z: "-82.2235", enabled: "$onCar" },
+
+    /* Rotate to plane of panel */
+    { yaw: "6.0640", enabled: "$onCar" },
+    { roll: "-36.6882", enabled: "$onCar" },
+    { pitch: "3.1907", enabled: "$onCar" },
+
+    /* X-Y adjustments within plane of panel */
+    { x: "$xOffset" },
+    { y: "$yOffset" }    
+  ],
+
+  meta: {
+    "panelId": "SBB",
+    "v0": "115",
+    "v1": "10",
+    "v2": "100",
+    "edge1": "100-115",
+    "edge2": "10-100",
+    "edge3": "10-115",
+    "leadingEdge": "115->10",
+    "module": "11"
+  },
+
+  components: [
+    /* Looking at the back of panel, starts from RIGHT
+       Looking at the front of panel, starts from LEFT */
+
+    { type: "panelRow", row: "0", offset: "0", numPoints: "32" },
+    { type: "panelRow", row: "1", offset: "1", numPoints: "29" },
+    { type: "panelRow", row: "2", offset: "3", numPoints: "26" },
+    { type: "panelRow", row: "3", offset: "5", numPoints: "22" },
+    { type: "panelRow", row: "4", offset: "6", numPoints: "19" },
+    { type: "panelRow", row: "5", offset: "8", numPoints: "15" },
+    { type: "panelRow", row: "6", offset: "10", numPoints: "11" },
+    { type: "panelRow", row: "7", offset: "11", numPoints: "9" },
+    { type: "panelRow", row: "8", offset: "13", numPoints: "5" },
+    { type: "panelRow", row: "9", offset: "14", numPoints: "2" }
+  ],
+
+  outputs: [
+                  
+    { host: "$strand1host", universe: "$strand1output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
+      segments: [
+        { componentIndex: 0, reverse: false },
+        { componentIndex: 1, reverse: true, padPre: 1 },
+        { componentIndex: 2, reverse: false, padPre: 2 },
+        { componentIndex: 3, reverse: true, padPre: 1 },
+        { componentIndex: 4, reverse: false, padPre: 1 },
+        { componentIndex: 5, reverse: true, padPre: 1 },
+        { componentIndex: 6, reverse: false, padPre: 1 },
+        { componentIndex: 7, reverse: true },
+        { componentIndex: 8, reverse: false, padPre: 1 },
+        { componentIndex: 9, reverse: true, padPre: 1 }
+      ]
+    }
+  ]
+}
