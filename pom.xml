@@ -51,7 +51,7 @@
                     <version>${maven-compiler-plugin.version}</version>
                     <configuration>
                         <compilerArgs>
-                            <arg>-Xlint</arg>
+                            <arg>-Xlint:-this-escape</arg>
                             <arg>-Xpkginfo:always</arg>
                         </compilerArgs>
                     </configuration>
