@@ -14,31 +14,6 @@
     <artifactId>te-app</artifactId>
     <name>Titanic's End LX Studio Application</name>
 
-    <!-- Define a local repository -->
-    <repositories>
-        <repository>
-            <id>project-repo</id>
-            <name>project-repo</name>
-            <url>file://${project.parent.basedir}/repo</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>true</enabled>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <checksumPolicy>ignore</checksumPolicy>
-            </snapshots>
-        </repository>
-
-        <repository>
-            <id>jogamp-repo</id>
-            <name>jogamp-repo</name>
-            <url>https://jogamp.org/deployment/maven/</url>
-            <layout>default</layout>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>com.google.code.gson</groupId>
