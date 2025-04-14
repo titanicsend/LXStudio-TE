@@ -239,9 +239,6 @@ float easeInOut(float t) {
     return t < 0.5 ? 4.0 * t * t * t : 1.0 - pow(-2.0 * t + 2.0, 3.0) / 2.0;
 }
 
-const bool useBrickTile = true;
-const bool useVerticalLines = true;
-
 vec3 tiledSquiggles(in vec2 st) {
     vec3 color = vec3(0.);
 
@@ -252,9 +249,10 @@ vec3 tiledSquiggles(in vec2 st) {
     vec2 p = st;
     vec2 cellId = floor(p);
     vec2 cellPos = fract(p);
+
     vec2 rand2 = random2(cellId);
 
-    if (useBrickTile) {
+    if (iWowTrigger) {
         float t = iTime/3.;
         vec2 animatedSt = st;
 
@@ -281,19 +279,21 @@ vec3 tiledSquiggles(in vec2 st) {
         cellPos = fract(animatedSt);
     }
 
-    float freq = .1 + .1 * rand2.x;
-    float speed = 1.5 + rand2.y;
+
+    float freq = (0.1 + 0.1 * rand2.x) * iWow1;
+    float speed = (1.5 + rand2.y);
 
     // size of step in the direction of the squiggle (so it's important to frame it relative to N, max num circles)
     float step_height = 2. / N;
+
     // size of step crosswise to the direction of the squiggle.
     float step_width = 0.02 + 0.02 * rand2.y;
 
-    vec2 step_size = useVerticalLines ? vec2(step_width, step_height) : vec2(step_height, step_width);
-    vec4 wave = useVerticalLines ? vec4(freq, speed, 0., 0.) : vec4(0., 0., freq, speed);
+    vec2 step_size = vec2(step_width, step_height);
+    vec4 wave = vec4(freq, speed, 0., 0.);
 
-    // how long the squiggle should be (how many circle steps to draw)
-    float len = N*(0.5 + .5*sin(iTime + 2.*rand2.x));
+    // how long the squiggle should be / how many circle steps to draw
+    float len = N*(0.5 + .5*sin(iTime * 2.*rand2.x));
 
     vec2 pt = cellPos - vec2(0.5);
     return drawSquiggle(
@@ -305,7 +305,6 @@ vec3 tiledSquiggles(in vec2 st) {
     );
 }
 
-
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec3 color = vec3(0.);
     vec2 st = fragCoord.xy/iResolution.xy;
@@ -314,10 +313,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     st -= vec2(0.5);
     st *= iQuantity;
 
-    // // overlapping...
-    // color += 1.0 - tiledSquiggles(st);
+    // overlapping...
+    color += tiledSquiggles(st + vec2(.3 * iTime, 0.));
+    st *= iWow2;
 
-    color += tiledSquiggles(st);
+    color += tiledSquiggles(st - vec2(.3 * iTime, 0.));
 
     fragColor = vec4(color,1.0);
 
