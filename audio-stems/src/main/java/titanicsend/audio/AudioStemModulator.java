@@ -83,11 +83,10 @@ public class AudioStemModulator extends LXModulator
   public AudioStemModulator(String label) {
     super(label);
 
-    addParameter(
-        "stem",
-        this.stem =
-            AudioStemsPlugin.get()
-                .newSelector("Stem", "Which audio stem is the source for this modulator"));
+    this.stem =
+        AudioStemsPlugin.get()
+            .newSelector("Stem", "Which audio stem is the source for this modulator");
+    addParameter("stem", this.stem);
     addParameter("emaMs", this.emaMs);
     addParameter("outputMode", this.outputMode);
     addParameter("accRate", this.accRate);
