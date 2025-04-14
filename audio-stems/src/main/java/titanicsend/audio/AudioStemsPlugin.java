@@ -10,13 +10,10 @@ import java.util.Properties;
 @LXPlugin.Name("Audio Stems")
 public class AudioStemsPlugin implements LXStudio.Plugin {
 
-  private final String version;
-
   private AudioStems audioStems;
 
   public AudioStemsPlugin(LX lx) {
-    this.version = loadVersion();
-    LOG.log("AudioStemsPlugin(LX) version: " + this.version);
+    LOG.log("AudioStemsPlugin(LX) version: " + loadVersion());
   }
 
   @Override
