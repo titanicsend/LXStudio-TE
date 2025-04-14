@@ -3,17 +3,20 @@ package titanicsend.audio;
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
 import heronarts.lx.studio.LXStudio;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 @LXPlugin.Name("Audio Stems")
 public class AudioStemsPlugin implements LXStudio.Plugin {
 
-  // This string must be manually updated to match the pom.xml version
-  private static final String VERSION = "0.1.2-SNAPSHOT";
+  private final String version;
 
   private AudioStems audioStems;
 
   public AudioStemsPlugin(LX lx) {
-    LOG.log("AudioStemsPlugin(LX) version: " + VERSION);
+    this.version = loadVersion();
+    LOG.log("AudioStemsPlugin(LX) version: " + this.version);
   }
 
   @Override
@@ -47,5 +50,23 @@ public class AudioStemsPlugin implements LXStudio.Plugin {
    */
   public static void registerComponents(LX lx) {
     lx.registry.addModulator(AudioStemModulator.class);
+  }
+
+  /**
+   * Loads 'audioStems.properties', after maven resource filtering has been applied. Note that you
+   * may need to run `mvn clean package` once from inside `audio-stems` directory to generate the
+   * templated properties file. To verify: `cat target/classes/audioStems.properties`.
+   */
+  private String loadVersion() {
+    String version = "";
+    Properties properties = new Properties();
+    try (InputStream inputStream =
+        getClass().getClassLoader().getResourceAsStream("audioStems.properties")) {
+      properties.load(inputStream);
+      version = properties.getProperty("audioStems.version");
+    } catch (IOException e) {
+      LOG.error("Failed to load version information " + e);
+    }
+    return version;
   }
 }
