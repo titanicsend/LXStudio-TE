@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.titanicsend</groupId>
+        <artifactId>titanicsend-parent</artifactId>
+        <version>0.2.3-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>audio-stems</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <name>Audio Stems Plugin</name>
+    <description>A Chromatik plugin that receives audio stem information over OSC and makes it available for real-time
+        display and mapping.
+    </description>
+    <inceptionYear>2025</inceptionYear>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.heronarts</groupId>
+            <artifactId>lx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.heronarts</groupId>
+            <artifactId>glx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.heronarts</groupId>
+            <artifactId>glxstudio</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
+    </dependencies>
+</project>

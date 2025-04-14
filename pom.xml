@@ -15,12 +15,15 @@
     </description>
 
     <modules>
+        <module>audio-stems</module>
         <module>te-app</module>
     </modules>
 
     <properties>
         <!-- https://stackoverflow.com/a/43103038 -->
         <maven.compiler.release>21</maven.compiler.release>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Plugin versions -->
@@ -41,6 +44,31 @@
         <junit-jupiter.version>5.9.2</junit-jupiter.version>
         <supermod.version>0.1.4-SNAPSHOT</supermod.version>
     </properties>
+
+    <!-- Define a local repository -->
+    <repositories>
+        <repository>
+            <id>project-repo</id>
+            <name>project-repo</name>
+            <url>file://${project.basedir}/repo</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <checksumPolicy>ignore</checksumPolicy>
+            </snapshots>
+        </repository>
+
+        <repository>
+            <id>jogamp-repo</id>
+            <name>jogamp-repo</name>
+            <url>https://jogamp.org/deployment/maven/</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
 
     <build>
         <pluginManagement>
@@ -70,6 +98,12 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 
     <dependencyManagement>

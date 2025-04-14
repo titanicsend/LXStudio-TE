@@ -14,31 +14,6 @@
     <artifactId>te-app</artifactId>
     <name>Titanic's End LX Studio Application</name>
 
-    <!-- Define a local repository -->
-    <repositories>
-        <repository>
-            <id>project-repo</id>
-            <name>project-repo</name>
-            <url>file://${project.parent.basedir}/repo</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>true</enabled>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <checksumPolicy>ignore</checksumPolicy>
-            </snapshots>
-        </repository>
-
-        <repository>
-            <id>jogamp-repo</id>
-            <name>jogamp-repo</name>
-            <url>https://jogamp.org/deployment/maven/</url>
-            <layout>default</layout>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -119,6 +94,12 @@
         <dependency>
             <groupId>com.jkbstudio</groupId>
             <artifactId>supermod</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.titanicsend</groupId>
+            <artifactId>audio-stems</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
