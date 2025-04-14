@@ -5,7 +5,7 @@
 #iUniform float iSpeed = 0.5 in {0.0, 4.0}
 #iUniform float iScale = 0.05 in {0.01, 1.0}
 #iUniform float iQuantity = 3.0 in {1.0, 9.0}
-#iUniform float iWow2 = 2.5 in {1.0, 3.0}
+#iUniform float iWow2 = 1.0 in {0.1, 3.0}
 #iUniform float iWow1 = 0.9 in {0.5, 2.0}
 
 #ifdef GL_ES
@@ -17,8 +17,10 @@ precision mediump float;
 #define TWO_PI 6.28318530718
 #define TAU 6.28318530718
 
-vec3 col1 = vec3(0.964, 0.144, 0.519);
-vec3 col2 = vec3(0.226, 0.046, 0.636);
+#define TEXTURE_SIZE 512.0
+#define CHANNEL_COUNT 16.0
+#define pixPerBin (TEXTURE_SIZE / CHANNEL_COUNT)
+#define halfBin (pixPerBin / 2.0)
 
 /****************************************************
  * Palettes                                         *
@@ -152,14 +154,11 @@ float noise (in vec2 st) {
     // Four corners in 2D of a tile
     float a = random(i);
     float b = random(i + vec2(1.0, 0.0));
-float c = random(i + vec2(0.0, 1.0));
+    float c = random(i + vec2(0.0, 1.0));
     float d = random(i + vec2(1.0, 1.0));
-
-    // Smooth Interpolation
 
     // Cubic Hermine Curve.  Same as SmoothStep()
     vec2 u = f*f*(3.0-2.0*f);
-    // u = smoothstep(0.,1.,f);
 
     // Mix 4 coorners percentages
     return mix(a, b, u.x) +
@@ -168,7 +167,7 @@ float c = random(i + vec2(0.0, 1.0));
 }
 
 #define N 100.
-#define ALPHA 1. / N
+#define ALPHA .5 / N
 
 vec3 drawSquiggle(
     in vec2 st,
@@ -206,7 +205,7 @@ vec3 drawSquiggle(
         vec2 limit = dir * crop;
         step = dir * currOffset;
 
-        float noiseStep = noise(i* (st + acc));
+        float noiseStep = noise(i * (st + acc));
 
         step.y += noiseStep * sin(y_freq*i + y_speed*iTime);
         // step.y *= sin(y_freq*i + y_speed*iTime);
@@ -279,6 +278,20 @@ vec3 tiledSquiggles(in vec2 st) {
         cellPos = fract(animatedSt);
     }
 
+    float index_x = cellId.x * (iQuantity / (TEXTURE_SIZE / 4));
+    float index_y = cellId.y * (iQuantity / (TEXTURE_SIZE / 4));
+    float index = mod(abs(index_x + index_y * 2), TEXTURE_SIZE);
+
+    // subdivide fft data into bins determined by iQuantity
+    float px = floor(index / pixPerBin);
+    float tx = halfBin+pixPerBin * px;
+    float dist = abs(halfBin - mod(index, pixPerBin)) / halfBin;
+
+    // get frequency data pixel from texture
+    float fft = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
+
+//     float wave = (0.5 * (1.0+texelFetch(iChannel0, ivec2(index, 1), 0).x)) - 0.25;
+//     float modulatedWave = wave * frequencyReact;
 
     float freq = (0.1 + 0.1 * rand2.x) * iWow1;
     float speed = (1.5 + rand2.y);
@@ -293,7 +306,7 @@ vec3 tiledSquiggles(in vec2 st) {
     vec4 wave = vec4(freq, speed, 0., 0.);
 
     // how long the squiggle should be / how many circle steps to draw
-    float len = N*(0.5 + .5*sin(iTime * 2.*rand2.x));
+    float len = N * fft; //N*(0.5 + .5*sin(iTime * 2.*rand2.x));
 
     vec2 pt = cellPos - vec2(0.5);
     return drawSquiggle(
