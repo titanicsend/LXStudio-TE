@@ -18,19 +18,6 @@
 //#iUniform float iRotationAngle=0. in{0.,6.28}
 //const bool iWowTrigger = false;
 
-//#pragma name"ArtOfCode"
-//#pragma TEControl.SIZE.Range(3.,.1,5.)
-//#pragma TEControl.QUANTITY.Range(4.,3.,24.)
-//#pragma TEControl.WOW1.Range(1.,0.,1.)
-//// #pragma TEControl.WOW2.Disable
-//// #pragma TEControl.WOW1.Disable
-//// #pragma TEControl.WOWTRIGGER.Disable
-//// #pragma TEControl.LEVELREACTIVITY.Disable
-//// #pragma TEControl.FREQREACTIVITY.Disable
-
-//#include <include/constants.fs>
-//#include <include/colorspace.fs>
-
 #define PI 3.14159265359
 #define TWO_PI 6.28318530718
 
@@ -74,7 +61,6 @@ vec3 hsb2rgb(in vec3 c){
     return c.z*mix(vec3(1.),rgb,c.y);
 }
 
-
 float sdEquilateralTriangle(in vec2 p,in float r){
     const float k=sqrt(3.);
     p.x=abs(p.x)-r;
@@ -88,7 +74,6 @@ float noise(in float x,in float ts){
     float amplitude=.2*pow(x,3.);
     float frequency=2.;
     float y=sin(x*frequency);
-    // float t = 0.01*(-iTime*130.0);
     float t=.01*(-ts*130.);
     y+=sin(x*frequency*2.1+t)*4.5;
     y+=sin(x*frequency*1.72+t*1.121)*4.;
@@ -113,8 +98,6 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
     vec3 finalColor=vec3(0.);
 
     for(float i=0.;i<iQuantity;i++){
-
-
         if(iWowTrigger){
             uv=fract(uv*1.1)-.5;
         }
@@ -130,7 +113,7 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
         uv.y+=.02*abs(sin(noise(i,iTime*.02)));
         // uv.y += 0.02 * noise(i, iTime*0.02);
 
-         float a = atan(uv.y,uv.x);
+        float a = atan(uv.y,uv.x);
         float normAngle = a / TWO_PI;
         float index = mod(normAngle * TEXTURE_SIZE * 2.0, TEXTURE_SIZE);
         float wave = (0.5 * (1.0+texelFetch(iChannel0, ivec2(index, 1), 0).x)) - 0.25;
