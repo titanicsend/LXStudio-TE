@@ -951,7 +951,6 @@ public class TEApp extends LXStudio {
             + System.getProperty("os.version")
             + " "
             + System.getProperty("os.arch"));
-
     LX.LOG_WARNINGS = true;
 
     Flags flags = new Flags();
