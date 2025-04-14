@@ -26,12 +26,6 @@ import java.util.Objects;
 /** Top-level component for Audio Stems, runs as a child of LX Engine */
 public class AudioStems extends LXComponent implements LXOscListener {
 
-  private static AudioStems current;
-
-  public static AudioStems get() {
-    return current;
-  }
-
   private final ObservableList<Stem> mutableStems = new ObservableList<>();
   public final ObservableList<Stem> stems = mutableStems.asUnmodifiableList();
 
@@ -42,12 +36,12 @@ public class AudioStems extends LXComponent implements LXOscListener {
   public final CompoundParameter gain =
       new CompoundParameter("Gain", 0, -1, 2).setUnits(Units.PERCENT_NORMALIZED);
 
-  public AudioStems(LX lx) {
+  /**
+   * By omitting 'public', this constructor is package-protected and can only be called from within
+   * "titanicsend.audio".
+   */
+  AudioStems(LX lx) {
     super(lx, "audioStems");
-    if (current != null) {
-      throw new IllegalStateException("Only one instance of AudioStems engine is permitted");
-    }
-    current = this;
     addParameter("gain", this.gain);
     loadConfig(lx);
     this.lx.engine.osc.addListener(this);

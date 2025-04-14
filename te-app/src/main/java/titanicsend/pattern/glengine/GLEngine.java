@@ -14,6 +14,7 @@ import heronarts.lx.color.LXSwatch;
 import heronarts.lx.model.LXModel;
 import java.nio.FloatBuffer;
 import titanicsend.audio.AudioStems;
+import titanicsend.audio.AudioStemsPlugin;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
 import titanicsend.util.TE;
 import titanicsend.util.TEMath;
@@ -395,7 +396,8 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     perFrameUniformBlock.put((float) bassRatio); // bassRatio
     perFrameUniformBlock.put((float) trebleRatio); // trebleRatio
     perFrameUniformBlock.put((float) volumeRatio); // volumeRatio
-    for (AudioStems.Stem stem : AudioStems.get().stems) {
+
+    for (AudioStems.Stem stem : AudioStemsPlugin.get().stems) {
       perFrameUniformBlock.put((float) stem.getValue());
     }
 

@@ -704,7 +704,7 @@ public class TEApp extends LXStudio {
               && col < (SUPERMOD_STEM_COLUMN_START + SUPERMOD_STEM_COLUMNS)
               && (row == SUPERMOD_STEM_ROW_ENERGY || row == SUPERMOD_STEM_ROW_WAVE)) {
 
-            AudioStems.Stem stem = AudioStems.get().stems.get(col);
+            AudioStems.Stem stem = AudioStemsPlugin.get().stems.get(col);
             AudioStemModulator m = new AudioStemModulator(label + " " + stem.label);
             m.stem.setValue(stem);
             if (row == SUPERMOD_STEM_ROW_ENERGY) {
