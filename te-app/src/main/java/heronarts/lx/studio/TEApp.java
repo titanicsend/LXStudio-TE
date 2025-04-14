@@ -104,6 +104,7 @@ import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.pattern.yoffa.effect.BeaconEffect;
 import titanicsend.preset.PresetEngine;
+import titanicsend.preset.UIUserPresetManager;
 import titanicsend.ui.UI3DManager;
 import titanicsend.ui.UITEPerformancePattern;
 import titanicsend.ui.color.UIColorPaletteManager;
@@ -777,6 +778,10 @@ public class TEApp extends LXStudio {
           .addToContainer(ui.leftPane.global, 2);
       new UIAudioStems(ui, this.audioStems, ui.leftPerformance.tools.getContentWidth())
           .addToContainer(ui.leftPerformance.tools, 0);
+
+      // Add UI section for User Presets
+      new UIUserPresetManager(ui, lx, ui.leftPane.content.getContentWidth())
+          .addToContainer(ui.leftPane.content, 2);
 
       UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 4);
       UIColorPaletteManager.addToRightPerformancePane(
