@@ -94,6 +94,7 @@ public class AudioStems extends LXComponent implements LXOscListener {
     }
   }
 
+  private static final String CONFIG_DEFAULT_FILENAME = "audioStems.default.json";
   private static final String CONFIG_FILENAME = "audioStems.json";
   private static final String KEY_STEMS = "stems";
 
@@ -102,14 +103,15 @@ public class AudioStems extends LXComponent implements LXOscListener {
 
     // On first run, copy the config file out of the package jar
     if (!file.exists()) {
-      try (InputStream resourceStream = getClass().getResourceAsStream("/" + CONFIG_FILENAME)) {
+      try (InputStream resourceStream =
+          getClass().getResourceAsStream("/" + CONFIG_DEFAULT_FILENAME)) {
         if (resourceStream == null) {
           throw new IllegalStateException(
-              "Template config file " + CONFIG_FILENAME + " not found in package");
+              "Template config file " + CONFIG_DEFAULT_FILENAME + " not found in package");
         }
         Files.copy(resourceStream, file.toPath());
       } catch (Exception e) {
-        LOG.error(e, "Failed to copy default config file from resources: " + CONFIG_FILENAME);
+        LOG.error(e, "Failed to copy config file from resources: " + CONFIG_DEFAULT_FILENAME);
       }
     }
 
