@@ -234,6 +234,14 @@ vec3 drawSquiggle(
     return color;
 }
 
+// Cubic ease in-out function for smooth transitions
+float easeInOut(float t) {
+    return t < 0.5 ? 4.0 * t * t * t : 1.0 - pow(-2.0 * t + 2.0, 3.0) / 2.0;
+}
+
+const bool useBrickTile = true;
+const bool useVerticalLines = true;
+
 vec3 tiledSquiggles(in vec2 st) {
     vec3 color = vec3(0.);
 
@@ -241,36 +249,62 @@ vec3 tiledSquiggles(in vec2 st) {
     float h = .4;
     vec2 bounds = vec2(w, h);
 
-    vec2 n = floor(st);
-    vec2 f = fract(st);
-    vec2 pt = f - vec2(0.5);
+    vec2 p = st;
+    vec2 cellId = floor(p);
+    vec2 cellPos = fract(p);
+    vec2 rand2 = random2(cellId);
 
-    vec2 rand2 = random2(n);
-    float r = rand2.x + rand2.y;
-    // r = 1.;
+    if (useBrickTile) {
+        float t = iTime/3.;
+        vec2 animatedSt = st;
 
-    float freq = .1 + .1 * r;
-    float speed = 1.5 + r;
+        // Get the animation phase (0-1 for horizontal, 1-2 for vertical)
+        // and calculate the progress within the current phase
+        float phase = floor(mod(t, 2.0));
+        float progress = fract(t);
+        float easedProgress = easeInOut(progress);
 
-    float len = N*(0.5 + .5*sin(iTime + 2.*r));
+        if (phase < 0.5) {
+            // Horizontal movement phase (even integer seconds)
+            float rowOddEven = step(1., mod(animatedSt.y, 2.0));
+            float rowOffset = mix(-1.0 * easedProgress, easedProgress, rowOddEven);
+            animatedSt.x += rowOffset;
+        } else {
+            // Vertical movement phase (odd integer seconds)
+            float colOddEven = step(1., mod(animatedSt.x, 2.0));
+            float colOffset = mix(-1.0 * easedProgress, easedProgress, colOddEven);
+            animatedSt.y += colOffset;
+        }
 
-    vec2 step_size = vec2(
-        0.02 + 0.02 * r,
-        2. / N
+        // Get the integer cell ID and fractional position within the cell
+        cellId = floor(animatedSt);
+        cellPos = fract(animatedSt);
+    }
+
+    float freq = .1 + .1 * rand2.x;
+    float speed = 1.5 + rand2.y;
+
+    // size of step in the direction of the squiggle (so it's important to frame it relative to N, max num circles)
+    float step_height = 2. / N;
+    // size of step crosswise to the direction of the squiggle.
+    float step_width = 0.02 + 0.02 * rand2.y;
+
+    vec2 step_size = useVerticalLines ? vec2(step_width, step_height) : vec2(step_height, step_width);
+    vec4 wave = useVerticalLines ? vec4(freq, speed, 0., 0.) : vec4(0., 0., freq, speed);
+
+    // how long the squiggle should be (how many circle steps to draw)
+    float len = N*(0.5 + .5*sin(iTime + 2.*rand2.x));
+
+    vec2 pt = cellPos - vec2(0.5);
+    return drawSquiggle(
+        pt,
+        bounds,
+        step_size,
+        len,
+        wave
     );
-    vec4 wave = vec4(freq, speed, 0., 0.);
-
-    return drawSquiggle(pt, bounds, step_size, len, wave);
-
-    // // alternate axes
-    // //
-    // vec2 step_size = vec2(
-    //     2. / N,
-    //     0.02 + 0.02 * r
-    // );
-    // vec4 wave = vec4(0., 0., freq, speed);
-    // return drawSquiggle(pt, bounds, step_size, len, wave);
 }
+
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec3 color = vec3(0.);
