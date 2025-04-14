@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.LXPresetComponent;
+import heronarts.lx.parameter.StringParameter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -24,13 +25,24 @@ public class PresetEngine extends LXComponent {
   public final List<UserPresetLibrary> libraries =
       Collections.unmodifiableList(this.mutableLibraries);
 
-  public UserPresetLibrary currentLibrary;
+  private UserPresetLibrary currentLibrary;
+
+  public final StringParameter libraryName = new StringParameter("Library", "");
 
   public PresetEngine(LX lx) {
     super(lx, "PresetEngine");
     current = this;
 
-    currentLibrary = new UserPresetLibrary(lx);
+    this.currentLibrary = new UserPresetLibrary(lx);
+    updateLibraryName();
+  }
+
+  private void updateLibraryName() {
+    this.libraryName.setValue(this.currentLibrary.getFile().getName());
+  }
+
+  public UserPresetLibrary getLibrary() {
+    return this.currentLibrary;
   }
 
   public static String getPresetName(LXPresetComponent component) {
@@ -42,6 +54,21 @@ public class PresetEngine extends LXComponent {
       return null;
     }
     return LXComponent.getComponentName(((LXComponent) component).getClass());
+  }
+
+  public void newLibrary() {
+    this.currentLibrary.reset();
+    updateLibraryName();
+  }
+
+  public void openLibrary(String path) {
+    this.currentLibrary.load(new File(path));
+    updateLibraryName();
+  }
+
+  public void saveLibrary(String path) {
+    this.currentLibrary.save(new File(path));
+    updateLibraryName();
   }
 
   /**
@@ -84,12 +111,9 @@ public class PresetEngine extends LXComponent {
     }
   }
 
-  public PresetEngine openFile(String path) {
-    return openFile(path);
-  }
-
   public PresetEngine openFile(File file) {
     this.currentLibrary.load(file);
+    updateLibraryName();
     return this;
   }
 }

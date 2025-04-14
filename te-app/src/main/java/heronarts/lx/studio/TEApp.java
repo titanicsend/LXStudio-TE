@@ -102,6 +102,7 @@ import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
 import titanicsend.pattern.yoffa.effect.BeaconEffect;
 import titanicsend.preset.PresetEngine;
+import titanicsend.preset.UIUserPresetManager;
 import titanicsend.ui.UI3DManager;
 import titanicsend.ui.UITEPerformancePattern;
 import titanicsend.ui.color.UIColorPaletteManager;
@@ -760,6 +761,10 @@ public class TEApp extends LXStudio {
       // Add UI section for JKB Autopilot
       // new UIAutopilot(ui, this.autopilotJKB, ui.leftPane.global.getContentWidth())
       //    .addToContainer(ui.leftPane.global, 7);
+
+      // Add UI section for User Presets
+      new UIUserPresetManager(ui, lx, ui.leftPane.content.getContentWidth())
+          .addToContainer(ui.leftPane.content, 2);
 
       // Add UI section for User Presets
       new UIUserPresetManager(ui, lx, ui.leftPane.content.getContentWidth())
