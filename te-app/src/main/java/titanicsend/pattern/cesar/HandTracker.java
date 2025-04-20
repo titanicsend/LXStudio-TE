@@ -47,11 +47,11 @@ public class HandTracker extends TEPattern {
   // dynamic model
 
   public float getModelX(LXPoint p) {
-    return (modelTE.isStatic()) ? p.z : p.x;
+    return p.x;
   }
 
   public float getModelXMax() {
-    return (modelTE.isStatic()) ? modelTE.maxZ() : modelTE.maxX();
+    return modelTE.maxX();
   }
 
   public HandTracker(LX lx) {

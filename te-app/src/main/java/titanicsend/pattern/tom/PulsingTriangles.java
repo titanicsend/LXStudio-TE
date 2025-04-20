@@ -15,11 +15,11 @@ import titanicsend.color.TEColorType;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEVertex;
 import titanicsend.pattern.TEPattern;
-import titanicsend.util.PanelStriper;
 
 @LXCategory("Panel FG")
 public class PulsingTriangles extends TEPattern {
   private HashMap<String, LXPoint[][]> pointMap;
+  public static final int DISTANCE_BETWEEN_PIXELS = 50000; // 50k microns ~= 2 inches
 
   public final BooleanParameter tempoSync =
       new BooleanParameter("Sync", false).setDescription("Whether this modulator syncs to a tempo");
@@ -85,8 +85,7 @@ public class PulsingTriangles extends TEPattern {
   private HashMap<String, LXPoint[][]> buildPointMap(List<TEPanelModel> panels) {
     return panels.stream()
         .collect(
-            Collectors.toMap(
-                TEPanelModel::getId, panel -> buildPanelMap(panel), (a, b) -> a, HashMap::new));
+            Collectors.toMap(TEPanelModel::getId, this::buildPanelMap, (a, b) -> a, HashMap::new));
   }
 
   private LXPoint[][] buildPanelMap(TEPanelModel panel) {
@@ -99,7 +98,7 @@ public class PulsingTriangles extends TEPattern {
     };
 
     int i = 1;
-    while (currentVertices[0].distanceTo(panel.centroid) > (PanelStriper.DISTANCE_BETWEEN_PIXELS)) {
+    while (currentVertices[0].distanceTo(panel.centroid) > (DISTANCE_BETWEEN_PIXELS)) {
       points.add(0, new ArrayList<LXPoint>());
       LXVector[][] edges = {
         {currentVertices[0], currentVertices[1]},
@@ -110,7 +109,7 @@ public class PulsingTriangles extends TEPattern {
       for (LXPoint point : panel.points) {
         for (LXVector[] edge : edges) {
           if (distanceBetweenPointAndLineSegment(edge[0], edge[1], point)
-              < 2 * PanelStriper.DISTANCE_BETWEEN_PIXELS) {
+              < 2 * DISTANCE_BETWEEN_PIXELS) {
             points.get(0).add(point);
           }
         }
@@ -122,7 +121,7 @@ public class PulsingTriangles extends TEPattern {
       i++;
     }
 
-    return points.stream().map(l -> l.stream().toArray(LXPoint[]::new)).toArray(LXPoint[][]::new);
+    return points.stream().map(l -> l.toArray(LXPoint[]::new)).toArray(LXPoint[][]::new);
   }
 
   private static double distanceBetweenPointAndLineSegment(

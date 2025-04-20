@@ -63,7 +63,6 @@ import titanicsend.lx.DirectorAPCminiMk2;
 import titanicsend.midi.MidiNames;
 import titanicsend.model.TEWholeModel;
 import titanicsend.model.TEWholeModelDynamic;
-import titanicsend.model.TEWholeModelStatic;
 import titanicsend.modulator.dmx.Dmx16bitModulator;
 import titanicsend.modulator.dmx.DmxDirectorColorModulator;
 import titanicsend.modulator.dmx.DmxDualRangeModulator;
@@ -76,7 +75,6 @@ import titanicsend.modulator.outputOsc.OutputOscFloatModulator;
 import titanicsend.modulator.outputOsc.OutputOscTempoModulator;
 import titanicsend.ndi.NDIEngine;
 import titanicsend.osc.CrutchOSC;
-import titanicsend.output.GrandShlomoStation;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.ben.*;
@@ -96,7 +94,6 @@ import titanicsend.pattern.sinas.TdStableDiffusionPattern;
 import titanicsend.pattern.tom.*;
 import titanicsend.pattern.util.PanelDebugPattern;
 import titanicsend.pattern.util.TargetPixelStamper;
-import titanicsend.pattern.will.PowerDebugger;
 import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderEdgesPatternConfig;
 import titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig;
@@ -122,11 +119,9 @@ public class TEApp extends LXStudio {
   }
 
   public static TEWholeModel wholeModel;
-  private static boolean staticModel;
 
   private static int WINDOW_WIDTH = 1280;
   private static int WINDOW_HEIGHT = 800;
-  private static String resourceSubdir;
 
   // Default shader system rendering canvas
   // resolution.  Determines the maximum number of
@@ -174,9 +169,7 @@ public class TEApp extends LXStudio {
       lx.addListener(this);
       lx.addProjectListener(this);
 
-      if (!staticModel) {
-        wholeModel = new TEWholeModelDynamic(lx);
-      }
+      wholeModel = new TEWholeModelDynamic(lx);
 
       // Saved options for UI overlays
       lx.engine.registerComponent(
@@ -188,7 +181,7 @@ public class TEApp extends LXStudio {
 
       this.dmxEngine = new DmxEngine(lx);
       this.ndiEngine = new NDIEngine(lx);
-      this.glEngine = new GLEngine(lx, glRenderWidth, glRenderHeight, staticModel);
+      this.glEngine = new GLEngine(lx, glRenderWidth, glRenderHeight);
       gamepadEngine = new GamepadEngine(lx);
       this.presetEngine = new PresetEngine(lx);
       this.presetEngine.openFile(lx.getMediaFile("Presets/UserPresets/BM24.userPresets"));
@@ -235,10 +228,6 @@ public class TEApp extends LXStudio {
 
       // Register child plugin components
       AudioStemsPlugin.registerComponents(lx);
-
-      if (staticModel) {
-        GrandShlomoStation.activateAll(lx, wholeModel.getGapPointIndices()[0]);
-      }
 
       // Patterns/effects that currently conform to art direction standards
       lx.registry.addPattern(EdgeProgressions.class);
@@ -381,7 +370,6 @@ public class TEApp extends LXStudio {
 
       // Test/debug/utility patterns
       lx.registry.addPattern(ModelDebugger.class);
-      lx.registry.addPattern(PowerDebugger.class);
       // lx.registry.addPattern(ModuleEditor.class);
       lx.registry.addPattern(PanelDebugPattern.class);
       lx.registry.addPattern(SignalDebugger.class);
@@ -822,16 +810,7 @@ public class TEApp extends LXStudio {
       if (this.lx instanceof LXStudio) {
         LXStudio.UI ui = ((LXStudio) this.lx).ui;
         double pointSize = ui.preview.pointCloud.pointSize.getValue();
-        if (staticModel && pointSize < 500) {
-          // Camera position and point size for static model (2022-23)
-          ui.preview.pointCloud.pointSize.setValue(80000);
-          ui.preview.camera.theta.setValue(270);
-          ui.preview.camera.phi.setValue(-6);
-          ui.preview.camera.radius.setValue(17000000);
-          ui.previewAux.camera.theta.setValue(270);
-          ui.previewAux.camera.phi.setValue(-6);
-          ui.previewAux.camera.radius.setValue(17000000);
-        } else if (!staticModel && pointSize > 500) {
+        if (pointSize > 500) {
           // Camera position and point size for dynamic model (2024+)
           ui.preview.pointCloud.pointSize.reset();
           ui.preview.camera.radius.reset();
@@ -855,9 +834,7 @@ public class TEApp extends LXStudio {
       this.glEngine.dispose();
       gamepadEngine.dispose();
 
-      if (!staticModel) {
-        ((TEWholeModelDynamic) wholeModel).dispose();
-      }
+      ((TEWholeModelDynamic) wholeModel).dispose();
     }
   }
 
@@ -869,10 +846,7 @@ public class TEApp extends LXStudio {
         && keyEvent.isAltDown()
         && keyEvent.isShiftDown()
         && keyEvent.getKeyCode() == 65) {
-      this.engine.addTask(
-          () -> {
-            addAllPatterns();
-          });
+      this.engine.addTask(this::addAllPatterns);
     } else {
       super.onKeyPressed(keyEvent, keyChar, keyCode);
     }
@@ -925,10 +899,6 @@ public class TEApp extends LXStudio {
   @Override
   protected void onGamepadAxisChanged(GamepadEvent gamepadEvent, int axis, float value) {
     this.gamepadEngine.lxGamepadAxisChanged(gamepadEvent, axis, value);
-  }
-
-  private TEApp(Flags flags, TEWholeModelStatic model) throws IOException {
-    super(flags, model);
   }
 
   private TEApp(Flags flags) throws IOException {
@@ -985,9 +955,6 @@ public class TEApp extends LXStudio {
     setLogFile(new File(LX.Media.LOGS.getDirName(), logFileName));
 
     boolean headless = false;
-    boolean loadTestahedron = false;
-    boolean loadVehicle = true;
-    staticModel = true;
     File projectFile = null;
     for (int i = 0; i < args.length; ++i) {
       final String arg = args[i];
@@ -1001,14 +968,6 @@ public class TEApp extends LXStudio {
         } catch (Exception x) {
           LX.error(x, "Command-line project file path invalid: " + arg);
         }
-      } else if (arg.equals("testahedron")) {
-        loadTestahedron = true;
-        loadVehicle = false;
-      } else if (arg.equals("vehicle")) {
-        loadTestahedron = false;
-        loadVehicle = true;
-      } else if (arg.equals("dynamic")) {
-        staticModel = false;
       } else if (arg.equals("--resolution")) {
         // Parse shader rendering resolution from command line. Resolution is specified as a string
         // in the format "WIDTHxHEIGHT" where WIDTH and HEIGHT are integers. (e.g. "640x480")
@@ -1040,34 +999,16 @@ public class TEApp extends LXStudio {
       }
     }
 
-    if (loadTestahedron && !loadVehicle) {
-      resourceSubdir = "testahedron";
-    } else if (loadVehicle && !loadTestahedron) {
-      resourceSubdir = "vehicle";
-    } else {
-      throw new IllegalArgumentException("You must specify either testahedron or vehicle");
-    }
-    TE.resourcedir = "resources/" + resourceSubdir;
-
     if (headless) {
       log("Headless CLI flag set, running without UI...");
       headless(flags, projectFile);
     } else {
       try {
-        TEApp lx;
-        if (staticModel) {
-          TEWholeModelStatic model = new TEWholeModelStatic();
-          TEApp.wholeModel = model;
-          lx = new TEApp(flags, model);
-          model.loadViews(lx);
-        } else {
-          lx = new TEApp(flags);
-        }
+        TEApp lx = new TEApp(flags);
 
         // Schedule a task to load the initial project file at launch
         final File finalProjectFile = projectFile;
-        final boolean isSchedule =
-            (projectFile != null) ? projectFile.getName().endsWith(".lxs") : false;
+        final boolean isSchedule = projectFile != null && projectFile.getName().endsWith(".lxs");
         lx.engine.addTask(
             () -> {
               if (isSchedule) {

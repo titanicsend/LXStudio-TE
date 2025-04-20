@@ -38,32 +38,20 @@ public class UIModelLabels extends UI3dComponent {
   private final List<Label> panelLabels = new ArrayList<Label>();
   private final List<Label> vertexLabels = new ArrayList<Label>();
 
-  // TODO - remove when switch to dynamic model is complete
-  private final boolean isStatic;
-
   // initialization that should be done once, when the UI is ready
   public UIModelLabels(GLX glx, final TEVirtualOverlays virtualOverlays) {
     this.virtualOverlays = virtualOverlays;
     this.glx = glx;
-    this.isStatic = TEApp.wholeModel.isStatic();
 
     // Create text manager object and load font texture atlas
     // (Inconsolata is a nicely readable, open source font)
     this.textManager = new TextManager3d(glx, "resources/fonts/Inconsolata.font3d");
-
-    // if using the static model, we can build labels now
-    // TODO - remove when switch to dynamic model is complete
-    if (this.isStatic) {
-      rebuild();
-    }
   }
 
   /** Build labels for the current model. Called when the model is loaded or changed. */
   public void rebuild() {
-
-    // TODO - remove static checks when switch to dynamic model is complete
-    float fontScale = (isStatic) ? 15000f : 0.5f;
-    float labelOffset = (isStatic) ? 200000f : 5f;
+    float fontScale = 0.5f;
+    float labelOffset = 5f;
 
     // clean up any existing labels
     clear();
@@ -180,24 +168,14 @@ public class UIModelLabels extends UI3dComponent {
     Vector3f panelCenter = new Vector3f(panel.centroid.x, panel.centroid.y, panel.centroid.z);
     boolean onCarEnd = panel.getId().startsWith("F") || panel.getId().startsWith("A");
 
-    // TODO - remove isStatic check when switch to dynamic model is complete
-    if (this.isStatic) {
-      getLabelCoordinatesStatic(panelCenter, position, rotation, offset);
-    } else {
-      getLabelCoordinates(panelCenter, position, rotation, offset, onCarEnd);
-    }
+    getLabelCoordinates(panelCenter, position, rotation, offset, onCarEnd);
   }
 
   public void getVertexCoordinates(
       TEVertex vertex, Vector3f position, Vector3f rotation, float offset) {
     Vector3f panelCenter = new Vector3f(vertex.x, vertex.y, vertex.z);
 
-    // TODO - remove isStatic check when switch to dynamic model is complete
-    if (this.isStatic) {
-      getLabelCoordinatesStatic(panelCenter, position, rotation, offset);
-    } else {
-      getLabelCoordinates(panelCenter, position, rotation, offset, false);
-    }
+    getLabelCoordinates(panelCenter, position, rotation, offset, false);
   }
 
   @Override
@@ -213,11 +191,14 @@ public class UIModelLabels extends UI3dComponent {
           textManager.draw(view, panelLabels);
         }
 
+        // TODO(look): I wasn't sure how to deal with this code while removing static model support.
+        /*
         // TODO - fill in vertex locations for dynamic model.  It currently has
         // TODO - labels, but no data, so we only show these labels for the static model.
         if (this.virtualOverlays.vertexLabelsVisible.isOn() && this.isStatic) {
           textManager.draw(view, vertexLabels);
         }
+        */
       }
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
