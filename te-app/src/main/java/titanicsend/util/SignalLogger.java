@@ -86,7 +86,7 @@ public class SignalLogger {
     try (FileWriter writer = new FileWriter(csvFilename)) {
       writer.write(header);
     } catch (IOException e) {
-      TE.err("Error writing CSV header: " + e.getMessage());
+      TE.error("Error writing CSV header: " + e.getMessage());
     }
   }
 
@@ -109,7 +109,7 @@ public class SignalLogger {
       }
 
     } catch (IOException e) {
-      TE.err("Error writing to CSV file: " + e.getMessage());
+      TE.error("Error writing to CSV file: " + e.getMessage());
     }
   }
 }

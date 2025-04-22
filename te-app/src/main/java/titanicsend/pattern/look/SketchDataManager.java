@@ -49,7 +49,7 @@ public class SketchDataManager {
       }
 
     } catch (Exception e) {
-      TE.err(e, "Error reading sketch data");
+      TE.error(e, "Error reading sketch data");
     }
   }
 

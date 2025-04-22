@@ -35,7 +35,7 @@ public class TEDeckGroup {
   public int updateFaderValue(int deckNum, int newFaderValue) {
     // is this a valid deck?
     if (!deck2faderValue.containsKey(deckNum)) {
-      TE.err("ERROR! Deck=%d does not exist!", deckNum);
+      TE.error("ERROR! Deck=%d does not exist!", deckNum);
       return -1;
     }
 

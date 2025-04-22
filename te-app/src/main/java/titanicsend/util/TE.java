@@ -2,21 +2,24 @@ package titanicsend.util;
 
 import heronarts.lx.LX;
 
-/** For utilty funcs that we want really fast syntactic sugar access to! */
 public class TE {
   public static void log(String format, Object... arguments) {
     LX.log(String.format(format, arguments));
   }
 
-  public static void err(String format, Object... arguments) {
+  public static void warning(String format, Object... arguments) {
+    LX.warning(String.format(format, arguments));
+  }
+
+  public static void error(String format, Object... arguments) {
     LX.error(String.format(format, arguments));
   }
 
-  public static void err(Throwable x, String format, Object... arguments) {
+  public static void error(Throwable x, String format, Object... arguments) {
     LX.error(x, String.format(format, arguments));
   }
 
-  public static void err(Throwable x, String message) {
+  public static void error(Throwable x, String message) {
     LX.error(x, message);
   }
 

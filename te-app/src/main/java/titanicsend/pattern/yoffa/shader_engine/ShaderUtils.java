@@ -270,7 +270,7 @@ public class ShaderUtils {
       // and save the complete program object to file
       saveShaderToCache(gl4, cacheName, programId);
     } catch (Exception e) {
-      TE.err("Error building shader " + shaderName + "\n" + e.getMessage());
+      TE.error("Error building shader " + shaderName + "\n" + e.getMessage());
     }
   }
 

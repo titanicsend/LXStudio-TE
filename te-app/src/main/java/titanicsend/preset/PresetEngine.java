@@ -87,11 +87,11 @@ public class PresetEngine extends LXComponent {
           UserPresetCollection collection = this.currentLibrary.get(component);
           collection.addPreset(component, obj).setLabel(name);
         } catch (IOException iox) {
-          TE.err("Could not load preset file: %s", iox.getLocalizedMessage());
+          TE.error("Could not load preset file: %s", iox.getLocalizedMessage());
           this.lx.pushError(
               iox, String.format("Could not load preset file: %s", iox.getLocalizedMessage()));
         } catch (Exception x) {
-          TE.err(x, "Exception loading preset file: %s", x.getLocalizedMessage());
+          TE.error(x, "Exception loading preset file: %s", x.getLocalizedMessage());
           this.lx.pushError(
               x, String.format("Exception in importPresets: %s", x.getLocalizedMessage()));
         }

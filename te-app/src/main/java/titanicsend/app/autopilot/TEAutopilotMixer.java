@@ -64,8 +64,8 @@ public class TEAutopilotMixer {
         channel.enabled.setValue(true);
       }
     } catch (Exception np) {
-      TE.err(np, "failed...");
-      TE.err("setFaderTo(lx, %s, %f) failed!", name, faderLevel);
+      TE.error(np, "failed...");
+      TE.error("setFaderTo(lx, %s, %f) failed!", name, faderLevel);
     }
   }
 
@@ -274,9 +274,9 @@ public class TEAutopilotMixer {
           JsonParser parser = new JsonParser();
           rootElt = parser.parse(new FileReader(AUTO_VJ_TEMPLATE_LXP_PATH));
           if (rootElt == null)
-            TE.err("Could not parse proper JSON object from: %s", AUTO_VJ_TEMPLATE_LXP_PATH);
+            TE.error("Could not parse proper JSON object from: %s", AUTO_VJ_TEMPLATE_LXP_PATH);
         } catch (FileNotFoundException e) {
-          TE.err("TEAutopilotMixer, FileNotFoundException: %s", e);
+          TE.error("TEAutopilotMixer, FileNotFoundException: %s", e);
         }
 
         assert rootElt != null;

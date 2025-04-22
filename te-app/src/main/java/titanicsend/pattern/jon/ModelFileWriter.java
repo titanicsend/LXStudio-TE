@@ -221,7 +221,7 @@ public class ModelFileWriter extends TEPerformancePattern {
         image.setRGB(px, py, Color.WHITE.getRGB()); // White for mask
         uvPoints.add(px + "," + py);
       } else {
-        TE.err("Point outside bounds: (" + px + ", " + py + ")");
+        TE.error("Point outside bounds: (" + px + ", " + py + ")");
       }
     }
 

@@ -83,7 +83,7 @@ public class VideoPainter {
 
   public void startVideo() {
     if (colors == null) {
-      TE.err("VideoPainter needs colors[] array before startVideo() is called.");
+      TE.error("VideoPainter needs colors[] array before startVideo() is called.");
       return;
     }
     try {

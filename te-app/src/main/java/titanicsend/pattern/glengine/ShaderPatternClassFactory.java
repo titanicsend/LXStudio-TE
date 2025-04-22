@@ -103,7 +103,7 @@ public class ShaderPatternClassFactory {
       try {
         glp.preprocessShader(file, config);
       } catch (Exception e) {
-        TE.err("Error scanning shader " + file.getName() + "\n" + e.getMessage());
+        TE.error("Error scanning shader " + file.getName() + "\n" + e.getMessage());
         continue;
       }
 
@@ -126,7 +126,7 @@ public class ShaderPatternClassFactory {
           lx.registry.addPattern((Class<? extends LXPattern>) clazz);
           // TE.log("Registered shader class: " + className);
         } catch (Exception e) {
-          TE.err(
+          TE.error(
               "Error. Shader class "
                   + className
                   + " could not be registered."

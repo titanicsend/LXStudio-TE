@@ -309,7 +309,7 @@ public class TECommonControls {
                   .setDescription(oldControl.getDescription())
                   .setUnits(oldControl.getUnits());
     } else {
-      TE.err("Unrecognized control type in TE Common Control " + oldControl.getClass().getName());
+      TE.error("Unrecognized control type in TE Common Control " + oldControl.getClass().getName());
       return oldControl;
     }
     return newControl;

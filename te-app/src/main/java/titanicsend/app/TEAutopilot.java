@@ -236,7 +236,7 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
         lx.engine.palette.transitionTimeSecs.setValue(0);
       }
     } catch (Exception e) {
-      TE.err("Error changing palette transition duration!");
+      TE.error("Error changing palette transition duration!");
       e.printStackTrace();
     }
 
@@ -395,7 +395,7 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
       //    TE.log("OSC RECEIEVED: %s", msgs);
 
     } catch (Exception e) {
-      TE.err("ERROR - unexpected exception in Autopilot.run(): %s", e.toString());
+      TE.error("ERROR - unexpected exception in Autopilot.run(): %s", e.toString());
       e.printStackTrace(System.out);
     }
 
@@ -430,7 +430,7 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
       }
 
     } catch (Exception oscBeatOnlyException) {
-      TE.err("No OSC mode check, something went wrong: %s", oscBeatOnlyException);
+      TE.error("No OSC mode check, something went wrong: %s", oscBeatOnlyException);
       oscBeatOnlyException.printStackTrace();
     }
 
@@ -819,7 +819,7 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
         }
       } catch (Exception ex) {
         // REALLY failed to start.
-        TE.err(ex, "...AutoVJ start failed in an unexpected manner:");
+        TE.error(ex, "...AutoVJ start failed in an unexpected manner:");
         this.startFailed = true;
         this.enabled.setValue(false);
       }

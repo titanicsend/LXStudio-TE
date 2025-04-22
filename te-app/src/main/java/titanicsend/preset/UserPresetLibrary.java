@@ -91,7 +91,7 @@ public class UserPresetLibrary implements LXSerializable {
       new GsonBuilder().create().toJson(obj, writer);
       this.file = file;
     } catch (IOException iox) {
-      TE.err(iox, "Exception writing the user preset library file: %s", this.file);
+      TE.error(iox, "Exception writing the user preset library file: %s", this.file);
     }
   }
 
@@ -101,9 +101,9 @@ public class UserPresetLibrary implements LXSerializable {
       load(this.lx, new Gson().fromJson(fr, JsonObject.class));
       this.file = file;
     } catch (FileNotFoundException ex) {
-      TE.err("User preset library not found: %s", file.getPath());
+      TE.error("User preset library not found: %s", file.getPath());
     } catch (IOException iox) {
-      TE.err(iox, "Could not import user preset library from file: %s", file.toString());
+      TE.error(iox, "Could not import user preset library from file: %s", file.toString());
     }
   }
 

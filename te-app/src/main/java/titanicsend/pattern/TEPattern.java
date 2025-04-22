@@ -267,13 +267,13 @@ public abstract class TEPattern extends DmxPattern {
   private void loadDefault(String path, JsonElement defaultElement) {
     LXParameter parameter = this.getParameter(path);
     if (parameter == null) {
-      TE.err("Parameter %s not found, default value will be discarded", path);
+      TE.error("Parameter %s not found, default value will be discarded", path);
       return;
     } else if (!(parameter instanceof LXListenableParameter)) {
-      TE.err("Unable to restore default value, parameter %s is not LXListenableParameter", path);
+      TE.error("Unable to restore default value, parameter %s is not LXListenableParameter", path);
       return;
     } else if (parameter instanceof StringParameter) {
-      TE.err("Unable to restore default value, parameter %s is invalid type", path);
+      TE.error("Unable to restore default value, parameter %s is invalid type", path);
       return;
     }
 
@@ -286,7 +286,7 @@ public abstract class TEPattern extends DmxPattern {
       ((LXListenableParameter) parameter).reset(value);
       // parameter.setValue(currentValue);
     } catch (Exception x) {
-      TE.err(
+      TE.error(
           x,
           "Invalid format loading default parameter value %s from JSON value: %s",
           path,

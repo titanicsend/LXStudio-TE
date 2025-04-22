@@ -790,7 +790,7 @@ public class TEApp extends LXStudio {
         this.lx.engine.osc.transmitHost.setValue(PangolinHost.HOSTNAME);
         this.lx.engine.osc.transmitPort.setValue(PangolinHost.PORT);
       } catch (Exception ex) {
-        TE.err(ex, "Failed to set destination OSC address to ShowKontrol IP for iPads relay");
+        TE.error(ex, "Failed to set destination OSC address to ShowKontrol IP for iPads relay");
       }
     }
 
@@ -867,7 +867,7 @@ public class TEApp extends LXStudio {
             patterns.add(instantiatePattern(clazz));
           }
         } catch (Exception ex) {
-          TE.err(ex, "Broken pattern! Could not instantiate " + clazz);
+          TE.error(ex, "Broken pattern! Could not instantiate " + clazz);
         }
       }
       patterns.sort((p1, p2) -> p1.getLabel().compareTo(p2.getLabel()));
@@ -875,11 +875,11 @@ public class TEApp extends LXStudio {
         try {
           ((LXChannel) channel).addPattern(pattern);
         } catch (Exception ex) {
-          TE.err(ex, "Failure adding pattern to channel! ");
+          TE.error(ex, "Failure adding pattern to channel! ");
         }
       }
     } else {
-      TE.err("Selected channel must be a channel and not a group before adding all patterns.");
+      TE.error("Selected channel must be a channel and not a group before adding all patterns.");
     }
   }
 

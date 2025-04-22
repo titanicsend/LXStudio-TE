@@ -609,7 +609,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
       writer.setIndent("  ");
       new GsonBuilder().create().toJson(obj, writer);
     } catch (IOException iox) {
-      TE.err(iox, "Exception writing the DevSwitch file: %s", this.file);
+      TE.error(iox, "Exception writing the DevSwitch file: %s", this.file);
     }
   }
 
@@ -620,7 +620,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
         // Load parameters and settings from file
         load(this.lx, new Gson().fromJson(fr, JsonObject.class));
       } catch (Exception x) {
-        TE.err(x, "Exception loading DevSwitch file: %s", this.file);
+        TE.error(x, "Exception loading DevSwitch file: %s", this.file);
       }
     }
     this.inLoad = false;

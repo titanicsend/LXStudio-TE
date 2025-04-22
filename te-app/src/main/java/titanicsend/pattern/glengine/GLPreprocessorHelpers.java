@@ -211,7 +211,7 @@ public class GLPreprocessorHelpers {
             control.v2 = rangeUpper;
             parameters.add(control);
           } catch (IllegalArgumentException exception) {
-            TE.err("Unsupported tag name: %s", varName);
+            TE.error("Unsupported tag name: %s", varName);
           }
         } else if (varType.equals("vec2") || varType.equals("vec3") || varType.equals("color3")) {
           // no-op
