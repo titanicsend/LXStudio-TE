@@ -1,0 +1,9 @@
+# see https://www.jetbrains.com/help/resharper/EditorConfig_XML_XmlCodeStylePageSchema.html
+[*.xml]
+max_line_length = off
+end_of_line = lf
+indent_style = space
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+indent_size = 2
