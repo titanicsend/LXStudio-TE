@@ -12,6 +12,10 @@ public class TE {
     LX.error(String.format(format, arguments));
   }
 
+  public static void err(Throwable x, String format, Object... arguments) {
+    LX.error(x, String.format(format, arguments));
+  }
+
   public static void err(Throwable x, String message) {
     LX.error(x, message);
   }

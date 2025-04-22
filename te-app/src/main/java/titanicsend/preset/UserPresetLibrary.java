@@ -17,6 +17,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import titanicsend.util.TE;
 
 /** Contains presets for multiple components */
 public class UserPresetLibrary implements LXSerializable {
@@ -90,19 +91,19 @@ public class UserPresetLibrary implements LXSerializable {
       new GsonBuilder().create().toJson(obj, writer);
       this.file = file;
     } catch (IOException iox) {
-      LX.error(iox, "Exception writing the user preset library file: " + this.file);
+      TE.err(iox, "Exception writing the user preset library file: %s", this.file);
     }
   }
 
   public void load(File file) {
-    LX.log("Loading user presets: " + file.getPath());
+    TE.log("Loading user presets: %s", file.getPath());
     try (FileReader fr = new FileReader(file)) {
       load(this.lx, new Gson().fromJson(fr, JsonObject.class));
       this.file = file;
     } catch (FileNotFoundException ex) {
-      LX.error("User preset library not found: " + file.getPath());
+      TE.err("User preset library not found: %s", file.getPath());
     } catch (IOException iox) {
-      LX.error(iox, "Could not import user preset library from file: " + file.toString());
+      TE.err(iox, "Could not import user preset library from file: %s", file.toString());
     }
   }
 

@@ -857,11 +857,8 @@ public class TEApp extends LXStudio {
     LXBus channel = this.engine.mixer.getFocusedChannel();
     if (channel instanceof LXChannel) {
       TE.log(
-          "*** Instantiating all "
-              + this.registry.patterns.size()
-              + " patterns in registry to channel "
-              + channel.getLabel()
-              + " ***");
+          "*** Instantiating all %d patterns in registry to channel %s ***",
+          this.registry.patterns.size(), channel.getLabel());
       TE.log("Here we gOOOOOOOOOOOO....");
       List<LXPattern> patterns = new ArrayList<LXPattern>();
       for (Class<? extends LXPattern> clazz : this.registry.patterns) {

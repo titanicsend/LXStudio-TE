@@ -5,6 +5,7 @@ import heronarts.lx.LXComponent;
 import heronarts.lx.LXLoopTask;
 import java.util.ArrayList;
 import me.walkerknapp.devolay.*;
+import titanicsend.util.TE;
 
 public class NDIEngine extends LXComponent implements LXLoopTask {
   public static final String PATH = "NDIEngine";
@@ -37,7 +38,7 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
 
   public void printSourceNames() {
     for (DevolaySource source : sources) {
-      System.out.println(source.getSourceName());
+      TE.log("NDI Source: %s", source.getSourceName());
     }
   }
 

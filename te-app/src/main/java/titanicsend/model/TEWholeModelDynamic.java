@@ -16,6 +16,7 @@ import java.util.TreeMap;
 import titanicsend.dmx.model.DmxModel;
 import titanicsend.pattern.jon.ModelBender;
 import titanicsend.ui.UI3DManager;
+import titanicsend.util.TE;
 
 public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
 
@@ -320,7 +321,7 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
 
   @Override
   public void addBeacon(DmxModel dmxModel) {
-    System.out.println("Adding beacon! " + dmxModel);
+    TE.log("Adding beacon! %s", dmxModel);
     // Fast hack
     this.mutableDmxModels.add(dmxModel);
     this.mutableBeacons.add(dmxModel);

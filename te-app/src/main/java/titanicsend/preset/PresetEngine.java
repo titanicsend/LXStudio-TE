@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import titanicsend.util.TE;
 
 public class PresetEngine extends LXComponent {
 
@@ -86,11 +87,13 @@ public class PresetEngine extends LXComponent {
           UserPresetCollection collection = this.currentLibrary.get(component);
           collection.addPreset(component, obj).setLabel(name);
         } catch (IOException iox) {
-          LX.error("Could not load preset file: " + iox.getLocalizedMessage());
-          this.lx.pushError(iox, "Could not load preset file: " + iox.getLocalizedMessage());
+          TE.err("Could not load preset file: %s", iox.getLocalizedMessage());
+          this.lx.pushError(
+              iox, String.format("Could not load preset file: %s", iox.getLocalizedMessage()));
         } catch (Exception x) {
-          LX.error(x, "Exception loading preset file: " + x.getLocalizedMessage());
-          this.lx.pushError(x, "Exception in importPresets: " + x.getLocalizedMessage());
+          TE.err(x, "Exception loading preset file: %s", x.getLocalizedMessage());
+          this.lx.pushError(
+              x, String.format("Exception in importPresets: %s", x.getLocalizedMessage()));
         }
       }
     }
