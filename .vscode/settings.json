@@ -1,0 +1,7 @@
+{
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.format.enabled": true,
+    "editor.formatOnSave": true,
+    "java.format.settings.url": "eclipse-formatter.xml"
+} 

@@ -13,7 +13,7 @@ import heronarts.lx.parameter.*;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.modulation.UIModulator;
 import heronarts.lx.studio.ui.modulation.UIModulatorControls;
-import titanicsend.util.EMA;
+import titanicsend.audio.util.EMA;
 
 @LXModulator.Global("Audio Stem")
 @LXModulator.Device("Audio Stem")
