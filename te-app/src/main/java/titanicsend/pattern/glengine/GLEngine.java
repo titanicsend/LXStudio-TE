@@ -422,7 +422,7 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     // register glEngine so we can access it from patterns.
     // and add it as an engine task for audio analysis and buffer management
     lx.engine.registerComponent(PATH, this);
-    lx.engine.addLoopTask(this);
+    lx.engine.addTask(this::initialize);
 
     this.model = lx.getModel();
 
@@ -440,29 +440,31 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     this.modelChanged = true;
   }
 
-  public void loop(double deltaMs) {
-
+  private void initialize() {
     // On first frame...
-    if (canvas == null) {
-      // create and initialize offscreen drawable for gl rendering
-      canvas = ShaderUtils.createGLSurface(xSize, ySize);
-      canvas.display();
-      gl4 = canvas.getGL().getGL4();
+    // create and initialize offscreen drawable for gl rendering
+    LX.error("Initialized GL Engine!");
+    canvas = ShaderUtils.createGLSurface(xSize, ySize);
+    canvas.display();
+    gl4 = canvas.getGL().getGL4();
 
-      // activate our context and do initialization tasks
-      canvas.getContext().makeCurrent();
+    // activate our context and do initialization tasks
+    canvas.getContext().makeCurrent();
 
-      // set up shared uniform blocks
-      initializeUniformBlocks();
+    // set up shared uniform blocks
+    initializeUniformBlocks();
 
-      // set up the per-frame audio info texture
-      initializeAudioTexture();
-      textureCache = new TextureManager(gl4);
+    // set up the per-frame audio info texture
+    initializeAudioTexture();
+    textureCache = new TextureManager(gl4);
 
-      // start listening for model changes
-      lx.addListener(this);
-    }
+    // start listening for model changes
+    lx.addListener(this);
 
+    lx.engine.addLoopTask(this);
+  }
+
+  public void loop(double deltaMs) {
     // activate our context and do per-frame tasks
     canvas.getContext().makeCurrent();
     updateAudioFrameData(deltaMs);
