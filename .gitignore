@@ -30,5 +30,6 @@ resources/model/
 TD/Utils/Backup/
 Projects/Test*.lxp
 .lxpreferences
+.lxmidi
 Logs/
 *.onnx
