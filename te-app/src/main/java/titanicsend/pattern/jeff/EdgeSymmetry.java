@@ -12,7 +12,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import titanicsend.color.TEColorType;
 import titanicsend.model.TEEdgeModel;
-import titanicsend.model.TEWholeModelStatic;
 import titanicsend.pattern.TEPattern;
 
 /**
@@ -57,13 +56,14 @@ public class EdgeSymmetry extends TEPattern {
     addParameter("height", height);
     addParameter("mask", maskMode);
 
-    // JKB note: quick edit to work with only the static model.
-    // This will need to be updated before it works with a dynamic model.
-    if (this.modelTE instanceof TEWholeModelStatic) {
-      edgeGroupsByZ = new ArrayList<>(((TEWholeModelStatic) modelTE).edgesBySymmetryGroup.keySet());
-    } else {
-      edgeGroupsByZ = new ArrayList<>();
-    }
+    //    // JKB note: quick edit to work with only the static model.
+    //    // This will need to be updated before it works with a dynamic model.
+    //    if (this.modelTE instanceof TEWholeModelStatic) {
+    //      edgeGroupsByZ = new ArrayList<>(((TEWholeModelStatic)
+    // modelTE).edgesBySymmetryGroup.keySet());
+    //    } else {
+    edgeGroupsByZ = new ArrayList<>();
+    //    }
 
     /* Arrange from L-R (aft-fore, axis Z) for index-based sweep.
      * Accessing this by index is mostly just for learning purposes.

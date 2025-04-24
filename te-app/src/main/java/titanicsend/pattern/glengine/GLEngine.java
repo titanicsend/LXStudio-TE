@@ -91,16 +91,6 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     return model;
   }
 
-  // Needed for housekeeping, during static-to-dynamic model transition
-  // This lets various shader components know if they're running the static model
-  // and need to swap the x and z axes.
-  // TODO - remove when we move to dynamic model
-  private final boolean isStatic;
-
-  public boolean isStaticModel() {
-    return isStatic;
-  }
-
   public GLAutoDrawable getCanvas() {
     return canvas;
   }
@@ -408,7 +398,7 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     gl4.glBufferSubData(GL4.GL_UNIFORM_BUFFER, 0, perFrameUniformBlockSize, perFrameUniformBlock);
   }
 
-  public GLEngine(LX lx, int width, int height, boolean isStaticModel) {
+  public GLEngine(LX lx, int width, int height) {
     current = this;
     // The shape the user gives us affects the rendered aspect ratio,
     // but what really matters is that it needs to have room for the
@@ -434,7 +424,6 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     lx.engine.registerComponent(PATH, this);
     lx.engine.addLoopTask(this);
 
-    this.isStatic = isStaticModel;
     this.model = lx.getModel();
 
     // set up audio fft and waveform handling

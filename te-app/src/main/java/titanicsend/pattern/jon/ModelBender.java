@@ -2,7 +2,6 @@ package titanicsend.pattern.jon;
 
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
-import heronarts.lx.studio.TEApp;
 import java.util.ArrayList;
 import titanicsend.model.*;
 
@@ -51,11 +50,7 @@ public class ModelBender {
     }
 
     public void restore() {
-      if (TEApp.wholeModel.isStatic()) {
-        p.z = v;
-      } else {
-        p.x = v;
-      }
+      p.x = v;
     }
   }
 
@@ -93,22 +88,14 @@ public class ModelBender {
     carLengthMin = Float.MAX_VALUE;
     carLengthMax = Float.MIN_VALUE;
 
-    boolean isStatic = model.isStatic();
-
     // add end panel points
     for (TEPanelModel panel : model.getPanels()) {
       String id = panel.getId();
       if (id.startsWith("F") || id.startsWith("A")) {
         for (LXPoint point : panel.model.getPoints()) {
-          if (isStatic) {
-            carLengthMin = Math.min(carLengthMin, point.z);
-            carLengthMax = Math.max(carLengthMax, point.z);
-            endDepthMax = Math.max(endDepthMax, Math.abs(point.x));
-          } else {
-            carLengthMin = Math.min(carLengthMin, point.x);
-            carLengthMax = Math.max(carLengthMax, point.x);
-            endDepthMax = Math.max(endDepthMax, Math.abs(point.z));
-          }
+          carLengthMin = Math.min(carLengthMin, point.x);
+          carLengthMax = Math.max(carLengthMax, point.x);
+          endDepthMax = Math.max(endDepthMax, Math.abs(point.z));
           endPoints.add(point);
         }
       }
@@ -120,74 +107,15 @@ public class ModelBender {
       endEdge = model.getEdge(edgeId);
       if (endEdge != null) {
         for (LXPoint point : endEdge.model.getPoints()) {
-          if (isStatic) {
-            carLengthMin = Math.min(carLengthMin, point.z);
-            carLengthMax = Math.max(carLengthMax, point.z);
-            endDepthMax = Math.max(endDepthMax, Math.abs(point.x));
-          } else {
-            carLengthMin = Math.min(carLengthMin, point.x);
-            carLengthMax = Math.max(carLengthMax, point.x);
-            endDepthMax = Math.max(endDepthMax, Math.abs(point.z));
-          }
+          carLengthMin = Math.min(carLengthMin, point.x);
+          carLengthMax = Math.max(carLengthMax, point.x);
+          endDepthMax = Math.max(endDepthMax, Math.abs(point.z));
           endPoints.add(point);
         }
       }
     }
 
     return endPoints;
-  }
-
-  /**
-   * Adjust the geometry of the end of the car to taper it. STATIC MODEL VERSION
-   *
-   * @param model pointer to the (static) model
-   * @return true if the model was adjusted and requires view renormalization, false otherwise.
-   */
-  public boolean adjustEndGeometry(TEWholeModelStatic model) {
-
-    // get the list of points we need to adjust and find the
-    // car dimensions needed to build the taper.
-    ArrayList<LXPoint> endPoints = getEndPoints(model);
-
-    // set new z bounds for our modified model
-    oldLengthMin = model.zMin;
-    oldLengthMax = model.zMax;
-
-    model.zMax = carLengthMax + endDepthMax;
-    model.zMin -= carLengthMin - endDepthMax;
-    model.zRange = model.zMax - model.zMin;
-
-    // adjust the z coordinates of the end points to taper them
-    // with decreasing x. This gives the model a slightly pointy
-    // nose and makes texture mapping easier and better looking.
-    this.savedModelCoord.clear();
-
-    for (LXPoint p : endPoints) {
-      // save the original coordinate for each point we're modifying
-      // so we can restore it later
-      this.savedModelCoord.add(new SavedPoint(p, p.z));
-
-      // kick out gap points or they'll break normalization.
-      if (model.isGapPoint(p)) continue;
-
-      float zOffset = endDepthMax - Math.abs(p.x);
-      p.z += (p.z >= 0) ? zOffset : -zOffset;
-    }
-    model.normalizePoints();
-
-    return true;
-  }
-
-  public void restoreModel(TEWholeModelStatic model) {
-    // restore the model's original z bounds
-    model.zMax = oldLengthMax;
-    model.zMin = oldLengthMin;
-    model.zRange = model.zMax - model.zMin;
-
-    // restore the original z coordinates
-    for (SavedPoint sp : this.savedModelCoord) {
-      sp.restore();
-    }
   }
 
   /**
@@ -206,7 +134,7 @@ public class ModelBender {
     this.savedModelCoord.clear();
 
     // if the model doesn't include the main car, nothing more to do.
-    if (endPoints.size() == 0) {
+    if (endPoints.isEmpty()) {
       return false;
     }
 
@@ -243,7 +171,7 @@ public class ModelBender {
   // Dynamic model version
   public void restoreModel(TEWholeModelDynamic model, LXModel baseModel) {
     // if nothing is saved, we don't need to restore it.
-    if (this.savedModelCoord.size() == 0) {
+    if (this.savedModelCoord.isEmpty()) {
       return;
     }
 

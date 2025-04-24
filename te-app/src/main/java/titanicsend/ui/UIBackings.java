@@ -70,12 +70,6 @@ public class UIBackings extends UI3dComponent {
     this.glx = glx;
     this.modelMatrixBuf = MemoryUtil.memAllocFloat(16);
     this.modelMatrix.get(this.modelMatrixBuf);
-
-    // if using the static model, we can build our backing panels now
-    // TODO - remove when switch to dynamic model is complete
-    if (TEApp.wholeModel.isStatic()) {
-      rebuild();
-    }
   }
 
   /** Build backing panels for the current model. Called when the model is loaded or changed. */

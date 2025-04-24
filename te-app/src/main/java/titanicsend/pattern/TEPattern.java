@@ -9,7 +9,6 @@ import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.CompoundParameter;
-import heronarts.lx.parameter.FunctionalParameter;
 import heronarts.lx.parameter.LXListenableParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.StringParameter;
@@ -273,13 +272,13 @@ public abstract class TEPattern extends DmxPattern {
       LX.error(
           "Unable to restore default value, parameter " + path + " is not LXListenableParameter");
       return;
-    } else if (parameter instanceof StringParameter || parameter instanceof FunctionalParameter) {
+    } else if (parameter instanceof StringParameter) {
       LX.error("Unable to restore default value, parameter " + path + " is invalid type");
       return;
     }
 
     try {
-      Double value = defaultElement.getAsDouble();
+      double value = defaultElement.getAsDouble();
       this.defaults.put(path, value);
       // Calling reset(value) overrides the current value that was just loaded from file.
       // To avoid, uncomment these two lines:
@@ -296,12 +295,8 @@ public abstract class TEPattern extends DmxPattern {
     }
   }
 
-  /**
-   * utility method for use during the static-to-dynamic model transition. IMPORTANT: There is a
-   * performance cost to this, so it should be removed when we no longer need to support the static
-   * model.
-   */
+  /** utility method for use during the static-to-dynamic model transition. */
   public float getXn(LXPoint p) {
-    return (modelTE.isStatic()) ? p.zn : p.xn;
+    return p.xn;
   }
 }
