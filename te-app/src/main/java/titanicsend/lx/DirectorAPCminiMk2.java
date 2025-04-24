@@ -181,7 +181,7 @@ public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.B
     try {
       this.paletteManager = (ColorPaletteManager) this.lx.engine.getChild("paletteManagerA");
     } catch (Exception e) {
-      TE.err("Palette manager not found: " + e.getMessage());
+      TE.error("Palette manager not found: " + e.getMessage());
     }
     try {
       Director director = Director.get();

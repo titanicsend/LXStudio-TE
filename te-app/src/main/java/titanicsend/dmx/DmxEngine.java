@@ -40,6 +40,7 @@ import titanicsend.dmx.model.DmxModel;
 import titanicsend.dmx.model.DmxWholeModel;
 import titanicsend.dmx.parameter.DmxParameter;
 import titanicsend.model.TEWholeModel;
+import titanicsend.util.TE;
 
 /**
  * DmxEngine manages the dmx buffers and mixes the dmx frames. Much of the heavy lifting here is a
@@ -620,11 +621,12 @@ public class DmxEngine implements LXLoopTask, TEWholeModel.TEModelListener {
       for (int i = 0; i < output.length; i++) {
         outputUnsigned[i] = output[i] & 0xFF;
       }
-      System.out.println(
-          location
-              + " ".repeat(38 - location.length())
-              + Arrays.toString(outputUnsigned)
-              + (dmx.isActive ? "" : " NOT ACTIVE"));
+      TE.log(
+          "%s%s%s%s",
+          location,
+          " ".repeat(38 - location.length()),
+          Arrays.toString(outputUnsigned),
+          (dmx.isActive ? "" : " NOT ACTIVE"));
     }
   }
 

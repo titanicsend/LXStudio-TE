@@ -552,14 +552,14 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
       // About to do an Open File
       this.stateBeforeFileOpen = this.state;
       TE.log(
-          "DevSwitch detected potential file change, remembering state "
-              + this.stateBeforeFileOpen);
+          "DevSwitch detected potential file change, remembering state %s",
+          this.stateBeforeFileOpen);
     } else if (change == Change.OPEN) {
       // Completion of project file open
       if (this.lock.isOn()) {
         // Force relevant parameters back into Dev or Production mode,
         // regardless of how they were saved in the file.
-        TE.log("DevSwitch restoring the state " + this.stateBeforeFileOpen);
+        TE.log("DevSwitch restoring the state %s", this.stateBeforeFileOpen);
         setState(this.stateBeforeFileOpen);
         save();
       } else {
@@ -609,7 +609,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
       writer.setIndent("  ");
       new GsonBuilder().create().toJson(obj, writer);
     } catch (IOException iox) {
-      LX.error(iox, "Exception writing the DevSwitch file: " + this.file);
+      TE.error(iox, "Exception writing the DevSwitch file: %s", this.file);
     }
   }
 
@@ -620,7 +620,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
         // Load parameters and settings from file
         load(this.lx, new Gson().fromJson(fr, JsonObject.class));
       } catch (Exception x) {
-        LX.error(x, "Exception loading DevSwitch file: " + this.file);
+        TE.error(x, "Exception loading DevSwitch file: %s", this.file);
       }
     }
     this.inLoad = false;

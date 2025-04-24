@@ -41,7 +41,7 @@ public enum TEPhrase {
     if (stringToPhrase.containsKey(phrase)) {
       return stringToPhrase.get(phrase);
     }
-    TE.err("Unknown phrase detected: %s", showKontrolPhraseString);
+    TE.error("Unknown phrase detected: %s", showKontrolPhraseString);
     return UNKNOWN;
   }
 }

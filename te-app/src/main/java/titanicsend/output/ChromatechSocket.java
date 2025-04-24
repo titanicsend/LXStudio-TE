@@ -121,7 +121,7 @@ public class ChromatechSocket implements Comparable<ChromatechSocket> {
       int existingLastPixel = existingFirstPixel + edgeLink.edge.size - 1;
       if (existingFirstPixel <= noobLastPixel && existingLastPixel >= noobFirstPixel) {
         conflict = true;
-        TE.err(
+        TE.error(
             edge.repr()
                 + ", running from "
                 + noobFirstPixel

@@ -51,7 +51,7 @@ public class MissingControlsManager {
         }
       }
     } catch (Exception e) {
-      TE.err(e, "Error reading missingControls.json");
+      TE.error(e, "Error reading missingControls.json");
     }
   }
 

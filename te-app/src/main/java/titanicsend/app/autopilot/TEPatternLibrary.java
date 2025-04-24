@@ -368,7 +368,7 @@ public class TEPatternLibrary {
           String.format(
               "Could not find TEPatternRecord for pattern=%s, curPhrase=%s, nextPhrase=%s",
               curPattern, curPhrase, nextPhrase);
-      TE.err(error);
+      TE.error(error);
       throw new Exception(error);
     }
 
@@ -381,7 +381,7 @@ public class TEPatternLibrary {
           String.format(
               "No compatible patterns for: pattern=%s, curPhrase=%s, nextPhrase=%s",
               curPattern, curPhrase, nextPhrase);
-      TE.err(error);
+      TE.error(error);
       throw new Exception(error);
     }
 
@@ -443,7 +443,7 @@ public class TEPatternLibrary {
     for (TEPatternRecord r : this.patternRecords) {
       TEChannelName name = TEChannelName.getChannelNameFromPhraseType(r.phraseType);
       LXChannel ch = autoMixer.getChannelByName(name);
-      if (ch == null) TE.err("[TEPatternLibrary] Could not load channel=%s, it is null", name);
+      if (ch == null) TE.error("[TEPatternLibrary] Could not load channel=%s, it is null", name);
 
       int found = 0;
       rec2patterns.put(r, new ArrayList<>());
@@ -465,7 +465,7 @@ public class TEPatternLibrary {
       }
 
       if (found == 0) {
-        TE.err(
+        TE.error(
             "No LXPattern found for %s (channel=%s). Either add to AUTO_VJ_TEMPLATE.lxp, or remove from TEApp::initializePatternLibrary()",
             r, name);
         if (!missingPatternsPerPhrase.containsKey(r.phraseType))

@@ -416,7 +416,7 @@ public class TEMath {
 
     } else {
       // default to LINEAR_RAMP_DOWN
-      TE.err("Unsupported easing func: %s", fn);
+      TE.error("Unsupported easing func: %s", fn);
       result = minOutput + inputRank * outputRange;
     }
 

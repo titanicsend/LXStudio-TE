@@ -136,7 +136,7 @@ public class TEOscMessage {
       double newBpmDecimal = Double.parseDouble(parts[1]) / 100.0;
       newTempo = newBpmWhole + newBpmDecimal;
     } catch (Exception e) {
-      TE.err("Could not parse OscMessage='%s', error: %s", otherMsg.toString(), e.toString());
+      TE.error("Could not parse OscMessage='%s', error: %s", otherMsg.toString(), e.toString());
     }
     return newTempo;
   }

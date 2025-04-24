@@ -86,7 +86,7 @@ public class TEOscListener {
           }
 
         } catch (Exception e) {
-          TE.err("Error trying to parse fader change message=%s", teMsg);
+          TE.error("Error trying to parse fader change message=%s", teMsg);
           e.printStackTrace();
         }
 
@@ -105,11 +105,11 @@ public class TEOscListener {
 
       } else {
         // if we get here, this is an unsupported message!
-        TE.err("Unsupported OSC message received by TE: %s", copy.toString());
+        TE.error("Unsupported OSC message received by TE: %s", copy.toString());
       }
 
     } catch (Exception e) {
-      TE.err(
+      TE.error(
           "Exception in OSC message processing: %s: %s (msg=%s)",
           e.toString(), e.getMessage(), copy.toString());
     }

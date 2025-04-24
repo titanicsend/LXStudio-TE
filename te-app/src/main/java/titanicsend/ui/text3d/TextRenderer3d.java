@@ -111,7 +111,7 @@ public class TextRenderer3d {
       inStream.close();
       return MemoryUtil.memAlloc(imageSize).put(imageData).flip();
     } catch (Exception e) {
-      TE.err("TextRenderer3d: Error reading font atlas: " + e.getMessage());
+      TE.error("TextRenderer3d: Error reading font atlas: " + e.getMessage());
     }
     return null;
   }
@@ -149,7 +149,7 @@ public class TextRenderer3d {
       return outBuf;
 
     } catch (IOException e) {
-      TE.err("Unable to load shader " + name + " from " + path);
+      TE.error("Unable to load shader " + name + " from " + path);
       return null;
     }
   }
