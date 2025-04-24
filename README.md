@@ -152,10 +152,8 @@ plugin: [google-java-format plugin](https://github.com/google/google-java-format
        Settings` and check the `Enable google-java-format` checkbox.
 - After plugin install, go to `Settings > Tools > Actions on Save` and enable `Reformat Code`
   and `Optimize Imports`.
-- Also, in IntelliJ search for the EditorConfig plugin. Install it, click "Enable", and restart your IDE. Editorconfig
-  maintains settings for non-java formats.
 
-For Eclipse Users: install [google-java-format plugin](https://github.com/google/google-java-format#eclipse).
+(Eclipse Users) Or install the IDE plugin for [Eclipse](https://github.com/google/google-java-format#eclipse).
 
 ### Potential issues
 
