@@ -1,4 +1,4 @@
-package titanicsend.util;
+package titanicsend.audio.util;
 
 /** Exponential Moving Average with adjustable smoothing time */
 public class EMA {
