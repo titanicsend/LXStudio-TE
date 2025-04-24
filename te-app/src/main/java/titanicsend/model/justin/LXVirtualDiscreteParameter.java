@@ -170,6 +170,8 @@ public abstract class LXVirtualDiscreteParameter<T extends DiscreteParameter>
    * DiscreteParameter overrides
    */
 
+  /*
+  // TODO: These are now final in DiscreteParameter.  Resolve if this class is put back into use.
   @Override
   public int getMinValue() {
     if (this.parameter != null) {
@@ -192,7 +194,7 @@ public abstract class LXVirtualDiscreteParameter<T extends DiscreteParameter>
       return this.parameter.getRange();
     }
     return super.getRange();
-  }
+  }*/
 
   @Override
   public DiscreteParameter increment() {

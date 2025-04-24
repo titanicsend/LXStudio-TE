@@ -28,7 +28,8 @@ resources/model/
 
 .devSwitch
 TD/Utils/Backup/
-Projects/Test*.lxp
+te-app/Projects/Test*.lxp
 .lxpreferences
+.lxmidi
 Logs/
 *.onnx
