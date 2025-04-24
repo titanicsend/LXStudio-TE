@@ -170,7 +170,7 @@ public abstract class LXVirtualDiscreteParameter<T extends DiscreteParameter>
    * DiscreteParameter overrides
    */
 
-/*
+  /*
   // TODO: These are now final in DiscreteParameter.  Resolve if this class is put back into use.
   @Override
   public int getMinValue() {
