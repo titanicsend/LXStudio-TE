@@ -6,6 +6,7 @@ import heronarts.lx.midi.LXMidiOutput;
 import heronarts.lx.midi.MidiControlChange;
 import heronarts.lx.midi.MidiNote;
 import heronarts.lx.midi.MidiNoteOn;
+import heronarts.lx.midi.surface.LXMidiSurface;
 import heronarts.lx.mixer.LXBus;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.parameter.BooleanParameter;
@@ -13,6 +14,8 @@ import heronarts.lx.parameter.LXParameterListener;
 import java.util.*;
 import java.util.Map.Entry;
 
+@LXMidiSurface.Name("Akai APC40 mkII TE")
+@LXMidiSurface.DeviceName("APC40 mkII")
 public class APC40Mk2 extends heronarts.lx.midi.surface.APC40Mk2 {
 
   public static enum UserButton {

@@ -39,6 +39,8 @@ import titanicsend.color.ColorPaletteManager;
 import titanicsend.util.TE;
 
 /** Midi control surface using */
+@LXMidiSurface.Name("Akai APC Mini mk2 Director")
+@LXMidiSurface.DeviceName("APC mini mk2 Control")
 public class DirectorAPCminiMk2 extends LXMidiSurface implements LXMidiSurface.Bidirectional {
 
   // To use locally, rename system device to match LOCAL_DEVICE_NAME
