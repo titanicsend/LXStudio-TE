@@ -28,6 +28,9 @@ public class GLPreprocessorHelpers {
     };
   }
 
+  public static final List<String> IGNORED_IUNIFORMS =
+      Arrays.asList("IROTATIONANGLE", "BASSLEVEL", "TREBLELEVEL", "VOLUMERATIO");
+
   /** Parse a control definition #pragma and add it to the list of shader configuration parameter */
   public static ShaderConfiguration parseControl(String[] line) {
     ShaderConfiguration control = new ShaderConfiguration();
@@ -192,27 +195,42 @@ public class GLPreprocessorHelpers {
           float rangeLower = parseGlslFloat(floatRangeMatcher.group(2));
           float rangeUpper = parseGlslFloat(floatRangeMatcher.group(3));
 
-          ShaderConfiguration control = new ShaderConfiguration();
-
           String tagName = varName.trim().toUpperCase();
+
+          // Skip uniforms that are useful to simulate in VSCode but don't affect live pattern
+          // defaults
+          // (e.g. iRotationAngle, bassLevel).
+          if (IGNORED_IUNIFORMS.contains(tagName)) {
+            continue;
+          }
+
+          // Trim "i" prefix from shadertoy-style uniform names (e.g. "iSpeed" should look up tag
+          // "SPEED").
           if (tagName.startsWith("I")) {
-            // "iSpeed" should look up tag "SPEED"
             tagName = tagName.substring(1);
           }
-          if (tagName.equals("SCALE")) {
-            tagName = "SIZE";
-          }
+
+          // Remap certain uniform names that don't directly map to their TEControlTag equivalents.
+          tagName =
+              switch (tagName) {
+                case "SCALE" -> "SIZE";
+                case "LEVELREACT" -> "LEVELREACTIVITY";
+                case "FREQUENCYREACT" -> "FREQREACTIVITY";
+                default -> tagName;
+              };
+
+          ShaderConfiguration control = new ShaderConfiguration();
           try {
-            control.opcode = ShaderConfigOpcode.SET_RANGE;
             control.parameterId = TEControlTag.valueOf(tagName);
-            control.name = control.parameterId.getLabel();
-            control.value = rangeDefault;
-            control.v1 = rangeLower;
-            control.v2 = rangeUpper;
-            parameters.add(control);
           } catch (IllegalArgumentException exception) {
             TE.error("Unsupported tag name: %s", varName);
           }
+          control.opcode = ShaderConfigOpcode.SET_RANGE;
+          control.name = control.parameterId.getLabel();
+          control.value = rangeDefault;
+          control.v1 = rangeLower;
+          control.v2 = rangeUpper;
+          parameters.add(control);
         } else if (varType.equals("vec2") || varType.equals("vec3") || varType.equals("color3")) {
           // no-op
         } else {
