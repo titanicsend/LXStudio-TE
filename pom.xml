@@ -30,6 +30,7 @@
         <exec-maven-plugin.version>3.1.1</exec-maven-plugin.version>
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
         <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
+        <maven-enforcer-plugin.version>3.4.1</maven-enforcer-plugin.version>
         <spotless.version>2.41.1</spotless.version>
 
         <!-- LX dependency versions -->
@@ -50,7 +51,10 @@
         <repository>
             <id>project-repo</id>
             <name>project-repo</name>
-            <url>file://${project.basedir}/repo</url>
+            <!-- Important: using `maven.multiModuleProjectDirectory` here rather than `project.basedir` because
+                 this configuration is inherited by child poms, which resolve `project.basedir` to their sub-dirs
+                 rather than to the project root dir. `maven.multiModuleProjectDirectory` requires mvn 3.3.1+. -->
+            <url>file://${maven.multiModuleProjectDirectory}/repo</url>
             <layout>default</layout>
             <releases>
                 <enabled>true</enabled>
@@ -83,6 +87,30 @@
                             <arg>-Xpkginfo:always</arg>
                         </compilerArgs>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>${maven-enforcer-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>enforce-maven</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <requireMavenVersion>
+                                        <version>3.3.1</version> <!-- Specify your minimum Maven version here -->
+                                        <message>Maven version 3.3.1 or higher is required to use
+                                            ${maven.multiModuleProjectDirectory} property
+                                        </message>
+                                    </requireMavenVersion>
+                                </rules>
+                                <fail>true</fail>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>com.diffplug.spotless</groupId>
