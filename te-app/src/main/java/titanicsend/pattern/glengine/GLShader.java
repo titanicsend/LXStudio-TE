@@ -41,7 +41,7 @@ public class GLShader {
   };
 
   // local copies of frequently used OpenGL objects
-  private GLEngine glEngine = null;
+  private final GLEngine glEngine;
   private GLAutoDrawable canvas = null;
   private GL4 gl4 = null;
 
@@ -89,7 +89,7 @@ public class GLShader {
   protected final HashMap<String, Integer> uniformTextureUnits = new HashMap<>();
 
   // list of LX control parameters from the shader code
-  private final List<LXParameter> parameters;
+  private final List<LXParameter> parameters = new ArrayList<>();
 
   // control data - this object is used by the pattern or
   // effect that owns the shader to set any custom uniforms
@@ -130,10 +130,8 @@ public class GLShader {
 
     if (fragmentShader != null) {
       this.fragmentShader = fragmentShader;
-      this.parameters = fragmentShader.getParameters();
+      this.parameters.addAll(fragmentShader.getParameters());
       createShaderProgram(fragmentShader, this.glEngine.getWidth(), this.glEngine.getHeight());
-    } else {
-      this.parameters = null;
     }
   }
 
