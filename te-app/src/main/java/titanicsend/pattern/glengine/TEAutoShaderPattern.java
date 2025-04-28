@@ -15,6 +15,7 @@ public class TEAutoShaderPattern extends GLShaderPattern {
   protected TEAutoShaderPattern(LX lx, TEShaderView defaultView) {
     super(lx, defaultView);
 
+    // Create shader instance
     GLShader shader = new GLShader(lx, this.getShaderFile(), this.getControlData());
 
     // use common control configuration data from shader to set control defaults,
@@ -23,7 +24,6 @@ public class TEAutoShaderPattern extends GLShaderPattern {
     configureCommonControls(shaderConfig);
     addCommonControls();
 
-    // create shader effect
     addShader(shader);
   }
 

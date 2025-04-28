@@ -16,7 +16,7 @@ public class TEAutoDriftPattern extends DriftEnabledPattern {
   protected TEAutoDriftPattern(LX lx, TEShaderView defaultView) {
     super(lx, defaultView);
 
-    // create shader effect
+    // Create shader instance
     GLShader shader = new GLShader(lx, this.getShaderFile(), this.controlData);
 
     // use common control configuration data from shader to set control defaults,
