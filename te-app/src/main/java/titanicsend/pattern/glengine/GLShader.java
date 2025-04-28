@@ -394,6 +394,7 @@ public class GLShader {
     // set up geometry
     int position = shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION);
 
+    // TODO(jkb): move these lines to init, just use glBindVertexArray() in render loop?
     gl4.glBindBuffer(GL_ARRAY_BUFFER, geometryBufferHandles[0]);
     gl4.glVertexAttribPointer(position, 3, GL4.GL_FLOAT, false, 0, 0);
     gl4.glEnableVertexAttribArray(position);
