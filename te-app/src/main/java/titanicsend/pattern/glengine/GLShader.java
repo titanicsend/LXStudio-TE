@@ -125,10 +125,8 @@ public class GLShader {
     this.controlData = controlData;
     this.backBuffer = frameBuf;
 
-    if (this.glEngine == null) {
-      this.glEngine = (GLEngine) lx.engine.getChild(GLEngine.PATH);
-      // TE.log("Shader: Retrieved GLEngine object from LX");
-    }
+    this.glEngine = (GLEngine) lx.engine.getChild(GLEngine.PATH);
+    // TE.log("Shader: Retrieved GLEngine object from LX");
 
     if (fragmentShader != null) {
       this.fragmentShader = fragmentShader;
