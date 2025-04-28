@@ -27,9 +27,8 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
   // rendering canvas size.  May be changed
   // via the startup command line.
-  private static int xSize;
-  private static int ySize;
-  private static int maxPoints;
+  private final int xSize;
+  private final int ySize;
 
   // Dimensions of mapped texture backbuffer.
   //
@@ -95,12 +94,12 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     return canvas;
   }
 
-  public static int getWidth() {
-    return xSize;
+  public int getWidth() {
+    return this.xSize;
   }
 
-  public static int getHeight() {
-    return ySize;
+  public int getHeight() {
+    return this.ySize;
   }
 
   public static int getMappedBufferWidth() {
@@ -409,14 +408,14 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     xSize = width;
     ySize = height;
 
-    maxPoints = xSize * ySize;
+    int maxPoints = xSize * ySize;
     TE.log(
         "GLEngine: Rendering canvas size: "
             + xSize
             + "x"
             + ySize
             + " = "
-            + GLEngine.maxPoints
+            + maxPoints
             + " total points");
 
     // register glEngine so we can access it from patterns.

@@ -109,8 +109,8 @@ public class TextureManager {
 
     // get data we need to create the texture from the system and
     // the model
-    int xSize = GLEngine.getWidth();
-    int ySize = GLEngine.getHeight();
+    int xSize = GLEngine.current.getWidth();
+    int ySize = GLEngine.current.getHeight();
     int maxPoints = xSize * ySize;
 
     final int numPoints = model.points.length;

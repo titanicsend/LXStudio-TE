@@ -131,7 +131,7 @@ public class GLShader {
     if (fragmentShader != null) {
       this.fragmentShader = fragmentShader;
       this.parameters = fragmentShader.getParameters();
-      createShaderProgram(fragmentShader, GLEngine.getWidth(), GLEngine.getHeight());
+      createShaderProgram(fragmentShader, this.glEngine.getWidth(), this.glEngine.getHeight());
     } else {
       this.parameters = null;
     }
@@ -196,7 +196,7 @@ public class GLShader {
    * @return ByteBuffer
    */
   public static ByteBuffer allocateBackBuffer() {
-    return GLBuffers.newDirectByteBuffer(GLEngine.getWidth() * GLEngine.getHeight() * 4);
+    return GLBuffers.newDirectByteBuffer(GLEngine.current.getWidth() * GLEngine.current.getHeight() * 4);
   }
 
   /**
