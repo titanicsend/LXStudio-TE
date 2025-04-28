@@ -303,7 +303,7 @@ public class GLShader {
       for (TextureInfo ti : textures) {
         glEngine.releaseTexture(ti.name);
       }
-      shaderProgram.dispose(gl4);
+      this.shaderProgram.dispose();
     }
   }
 
@@ -485,8 +485,7 @@ public class GLShader {
   }
 
   private void initShaderProgram(GL4 gl4) {
-    shaderProgram = new ShaderProgram();
-    shaderProgram.init(gl4, fragmentShader.getShaderName());
+    this.shaderProgram = new ShaderProgram(gl4, fragmentShader.getShaderName());
     allocateShaderBuffers();
   }
 
@@ -510,7 +509,7 @@ public class GLShader {
   }
 
   public boolean isInitialized() {
-    return (shaderProgram != null) && (shaderProgram.isInitialized());
+    return shaderProgram != null;
   }
 
   public void onActive() {

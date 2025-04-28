@@ -295,8 +295,7 @@ public class NativeShader implements GLEventListener {
   }
 
   private void initShaderProgram(GL4 gl4) {
-    shaderProgram = new ShaderProgram();
-    shaderProgram.init(gl4, fragmentShader.getShaderName());
+    shaderProgram = new ShaderProgram(gl4, fragmentShader.getShaderName());
 
     allocateShaderBuffers(gl4);
   }
@@ -318,7 +317,7 @@ public class NativeShader implements GLEventListener {
   public void dispose(GLAutoDrawable glAutoDrawable) {
     GL4 gl4 = glAutoDrawable.getGL().getGL4();
     cleanupGLHandles(gl4);
-    shaderProgram.dispose(gl4);
+    shaderProgram.dispose();
   }
 
   @Override
@@ -339,7 +338,7 @@ public class NativeShader implements GLEventListener {
   }
 
   public boolean isInitialized() {
-    return (shaderProgram != null) && (shaderProgram.isInitialized());
+    return shaderProgram != null;
   }
 
   /*
