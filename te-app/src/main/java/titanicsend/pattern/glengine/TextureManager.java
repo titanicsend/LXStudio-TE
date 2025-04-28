@@ -38,7 +38,7 @@ public class TextureManager {
     protected int refCount;
   }
 
-  private GL4 gl4;
+  private final GL4 gl4;
 
   // the next available OpenGL texture unit number
   private static final int FIRST_UNRESERVED_TEXTURE_UNIT = 3;
@@ -52,6 +52,10 @@ public class TextureManager {
 
   // a list of that we can use to keep track of released texture unit numbers
   private final ArrayList<Integer> releasedTextureUnits = new ArrayList<>();
+
+  public TextureManager(GL4 gl4) {
+    this.gl4 = gl4;
+  }
 
   /**
    * Almost certainly reliable hashing function! This generates a hash code for a texture file name
@@ -300,7 +304,4 @@ public class TextureManager {
     }
   }
 
-  public TextureManager(GL4 gl4) {
-    this.gl4 = gl4;
-  }
 }
