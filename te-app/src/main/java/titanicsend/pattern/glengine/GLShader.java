@@ -1,7 +1,6 @@
 package titanicsend.pattern.glengine;
 
 import static com.jogamp.opengl.GL.*;
-import static titanicsend.pattern.yoffa.shader_engine.UniformTypes.*;
 
 import Jama.Matrix;
 import com.jogamp.common.nio.Buffers;
@@ -83,7 +82,7 @@ public class GLShader {
   private int modelCoordsTextureUnit = -1;
 
   // map of user created uniforms.
-  protected HashMap<String, UniformTypes> uniforms = null;
+  protected final HashMap<String, Uniform> uniforms = new HashMap<>();
 
   // maps uniform names to GL texture units
   protected final HashMap<String, Integer> uniformTextureUnits = new HashMap<>();
@@ -542,10 +541,7 @@ public class GLShader {
   */
 
   // worker for adding user specified uniforms to our big list'o'uniforms
-  protected void addUniform(String name, int type, Object value) {
-    if (uniforms == null) {
-      uniforms = new HashMap<>();
-    }
+  protected void addUniform(String name, UniformType type, Object value) {
     // The first instance of a uniform wins. Subsequent
     // attempts to (re)set it are ignored.  This makes it so control uniforms
     // can be set from user code without being overridden by the automatic
@@ -553,7 +549,7 @@ public class GLShader {
     // TODO - we'll have to be more sophisticated about this when we start retaining textures
     // TODO - and other large, invariant uniforms between frames.
     if (!uniforms.containsKey(name)) {
-      uniforms.put(name, new UniformTypes(type, value));
+      uniforms.put(name, new Uniform(type, value));
     }
   }
 
@@ -576,157 +572,157 @@ public class GLShader {
     float[] vf;
     IntBuffer vIArray;
     FloatBuffer vFArray;
-    if (uniforms != null && !uniforms.isEmpty()) {
-      for (String name : uniforms.keySet()) {
-        int loc = gl4.glGetUniformLocation(shaderProgram.getProgramId(), name);
 
-        if (loc == -1) {
-          // LX.log("No uniform \"" + name + "\"  found in shader");
-          continue;
-        }
-        UniformTypes val = uniforms.get(name);
+    for (Map.Entry<String, Uniform> entry : uniforms.entrySet()) {
+      String name = entry.getKey();
+      Uniform uniform = entry.getValue();
 
-        switch (val.type) {
-          case INT1:
-            v = ((int[]) val.value);
-            gl4.glUniform1i(loc, v[0]);
-            break;
-          case INT2:
-            v = ((int[]) val.value);
-            gl4.glUniform2i(loc, v[0], v[1]);
-            break;
-          case INT3:
-            v = ((int[]) val.value);
-            gl4.glUniform3i(loc, v[0], v[1], v[2]);
-            break;
-          case INT4:
-            v = ((int[]) val.value);
-            gl4.glUniform4i(loc, v[0], v[1], v[2], v[3]);
-            break;
-          case FLOAT1:
-            vf = ((float[]) val.value);
-            gl4.glUniform1f(loc, vf[0]);
-            break;
-          case FLOAT2:
-            vf = ((float[]) val.value);
-            gl4.glUniform2f(loc, vf[0], vf[1]);
-            break;
-          case FLOAT3:
-            vf = ((float[]) val.value);
-            gl4.glUniform3f(loc, vf[0], vf[1], vf[2]);
-            break;
-          case FLOAT4:
-            vf = ((float[]) val.value);
-            gl4.glUniform4f(loc, vf[0], vf[1], vf[2], vf[3]);
-            break;
-          case INT1VEC:
-            vIArray = ((IntBuffer) val.value);
-            gl4.glUniform1iv(loc, vIArray.capacity(), vIArray);
-            break;
-          case INT2VEC:
-            vIArray = ((IntBuffer) val.value);
-            gl4.glUniform2iv(loc, vIArray.capacity() / 2, vIArray);
-            break;
-          case INT3VEC:
-            vIArray = ((IntBuffer) val.value);
-            gl4.glUniform3iv(loc, vIArray.capacity() / 3, vIArray);
-            break;
-          case INT4VEC:
-            vIArray = ((IntBuffer) val.value);
-            gl4.glUniform4iv(loc, vIArray.capacity() / 4, vIArray);
-            break;
-          case FLOAT1VEC:
-            vFArray = ((FloatBuffer) val.value);
-            gl4.glUniform1fv(loc, vFArray.capacity(), vFArray);
-            break;
-          case FLOAT2VEC:
-            vFArray = ((FloatBuffer) val.value);
-            gl4.glUniform2fv(loc, vFArray.capacity() / 2, vFArray);
-            break;
-          case FLOAT3VEC:
-            vFArray = ((FloatBuffer) val.value);
-            gl4.glUniform3fv(loc, vFArray.capacity() / 3, vFArray);
-            break;
-          case FLOAT4VEC:
-            vFArray = ((FloatBuffer) val.value);
-            gl4.glUniform4fv(loc, vFArray.capacity() / 4, vFArray);
-            break;
-          case MAT2:
-            vFArray = ((FloatBuffer) val.value);
-            gl4.glUniformMatrix2fv(loc, 1, true, vFArray);
-            break;
-          case MAT3:
-            vFArray = ((FloatBuffer) val.value);
-            gl4.glUniformMatrix3fv(loc, 1, true, vFArray);
-            break;
-          case MAT4:
-            vFArray = ((FloatBuffer) val.value);
-            gl4.glUniformMatrix4fv(loc, 1, true, vFArray);
-            break;
-          case SAMPLER2DSTATIC:
-          case SAMPLER2D:
-            Texture tex = ((Texture) val.value);
-            int unit = getTextureUnit(name);
-            gl4.glActiveTexture(GL_TEXTURE0 + unit);
-            tex.enable(gl4);
-            tex.bind(gl4);
-            gl4.glUniform1i(loc, unit);
-            break;
-          default:
-            LX.log("Unsupported uniform type");
-            break;
-        }
+      int loc = gl4.glGetUniformLocation(shaderProgram.getProgramId(), name);
+      if (loc == -1) {
+        // LX.log("No uniform \"" + name + "\"  found in shader");
+        continue;
       }
-      uniforms.clear();
+
+      switch (uniform.type) {
+        case INT1:
+          v = ((int[]) uniform.value);
+          gl4.glUniform1i(loc, v[0]);
+          break;
+        case INT2:
+          v = ((int[]) uniform.value);
+          gl4.glUniform2i(loc, v[0], v[1]);
+          break;
+        case INT3:
+          v = ((int[]) uniform.value);
+          gl4.glUniform3i(loc, v[0], v[1], v[2]);
+          break;
+        case INT4:
+          v = ((int[]) uniform.value);
+          gl4.glUniform4i(loc, v[0], v[1], v[2], v[3]);
+          break;
+        case FLOAT1:
+          vf = ((float[]) uniform.value);
+          gl4.glUniform1f(loc, vf[0]);
+          break;
+        case FLOAT2:
+          vf = ((float[]) uniform.value);
+          gl4.glUniform2f(loc, vf[0], vf[1]);
+          break;
+        case FLOAT3:
+          vf = ((float[]) uniform.value);
+          gl4.glUniform3f(loc, vf[0], vf[1], vf[2]);
+          break;
+        case FLOAT4:
+          vf = ((float[]) uniform.value);
+          gl4.glUniform4f(loc, vf[0], vf[1], vf[2], vf[3]);
+          break;
+        case INT1VEC:
+          vIArray = ((IntBuffer) uniform.value);
+          gl4.glUniform1iv(loc, vIArray.capacity(), vIArray);
+          break;
+        case INT2VEC:
+          vIArray = ((IntBuffer) uniform.value);
+          gl4.glUniform2iv(loc, vIArray.capacity() / 2, vIArray);
+          break;
+        case INT3VEC:
+          vIArray = ((IntBuffer) uniform.value);
+          gl4.glUniform3iv(loc, vIArray.capacity() / 3, vIArray);
+          break;
+        case INT4VEC:
+          vIArray = ((IntBuffer) uniform.value);
+          gl4.glUniform4iv(loc, vIArray.capacity() / 4, vIArray);
+          break;
+        case FLOAT1VEC:
+          vFArray = ((FloatBuffer) uniform.value);
+          gl4.glUniform1fv(loc, vFArray.capacity(), vFArray);
+          break;
+        case FLOAT2VEC:
+          vFArray = ((FloatBuffer) uniform.value);
+          gl4.glUniform2fv(loc, vFArray.capacity() / 2, vFArray);
+          break;
+        case FLOAT3VEC:
+          vFArray = ((FloatBuffer) uniform.value);
+          gl4.glUniform3fv(loc, vFArray.capacity() / 3, vFArray);
+          break;
+        case FLOAT4VEC:
+          vFArray = ((FloatBuffer) uniform.value);
+          gl4.glUniform4fv(loc, vFArray.capacity() / 4, vFArray);
+          break;
+        case MAT2:
+          vFArray = ((FloatBuffer) uniform.value);
+          gl4.glUniformMatrix2fv(loc, 1, true, vFArray);
+          break;
+        case MAT3:
+          vFArray = ((FloatBuffer) uniform.value);
+          gl4.glUniformMatrix3fv(loc, 1, true, vFArray);
+          break;
+        case MAT4:
+          vFArray = ((FloatBuffer) uniform.value);
+          gl4.glUniformMatrix4fv(loc, 1, true, vFArray);
+          break;
+        case SAMPLER2DSTATIC:
+        case SAMPLER2D:
+          Texture tex = ((Texture) uniform.value);
+          int unit = getTextureUnit(name);
+          gl4.glActiveTexture(GL_TEXTURE0 + unit);
+          tex.enable(gl4);
+          tex.bind(gl4);
+          gl4.glUniform1i(loc, unit);
+          break;
+        default:
+          LX.log("Unsupported uniform type");
+          break;
+      }
     }
+    uniforms.clear();
   }
 
   /** setter -- single int */
   public void setUniform(String name, int x) {
-    addUniform(name, INT1, new int[] {x});
+    addUniform(name, UniformType.INT1, new int[] {x});
   }
 
   /** 2 element int array or ivec2 */
   public void setUniform(String name, int x, int y) {
-    addUniform(name, INT2, new int[] {x, y});
+    addUniform(name, UniformType.INT2, new int[] {x, y});
   }
 
   /** 3 element int array or ivec3 */
   public void setUniform(String name, int x, int y, int z) {
-    addUniform(name, INT3, new int[] {x, y, z});
+    addUniform(name, UniformType.INT3, new int[] {x, y, z});
   }
 
   /** 4 element int array or ivec4 */
   public void setUniform(String name, int x, int y, int z, int w) {
-    addUniform(name, UniformTypes.INT4, new int[] {x, y, z, w});
+    addUniform(name, UniformType.INT4, new int[] {x, y, z, w});
   }
 
   /** single float */
   public void setUniform(String name, float x) {
-    addUniform(name, UniformTypes.FLOAT1, new float[] {x});
+    addUniform(name, UniformType.FLOAT1, new float[] {x});
   }
 
   /** 2 element float array or vec2 */
   public void setUniform(String name, float x, float y) {
-    addUniform(name, UniformTypes.FLOAT2, new float[] {x, y});
+    addUniform(name, UniformType.FLOAT2, new float[] {x, y});
   }
 
   /** 3 element float array or vec3 */
   public void setUniform(String name, float x, float y, float z) {
-    addUniform(name, UniformTypes.FLOAT3, new float[] {x, y, z});
+    addUniform(name, UniformType.FLOAT3, new float[] {x, y, z});
   }
 
   /** 4 element float array or vec4 */
   public void setUniform(String name, float x, float y, float z, float w) {
-    addUniform(name, UniformTypes.FLOAT4, new float[] {x, y, z, w});
+    addUniform(name, UniformType.FLOAT4, new float[] {x, y, z, w});
   }
 
   public void setUniform(String name, boolean x) {
-    addUniform(name, INT1, new int[] {(x) ? 1 : 0});
+    addUniform(name, UniformType.INT1, new int[] {(x) ? 1 : 0});
   }
 
   public void setUniform(String name, boolean x, boolean y) {
-    addUniform(name, INT2, new int[] {(x) ? 1 : 0, (y) ? 1 : 0});
+    addUniform(name, UniformType.INT2, new int[] {(x) ? 1 : 0, (y) ? 1 : 0});
   }
 
   /**
@@ -735,7 +731,7 @@ public class GLShader {
    * name, Texture tex) instead. TODO - STATIC TEXTURES NOT YET IMPLEMENTED
    */
   public void setUniform(String name, Texture tex, boolean isStatic) {
-    addUniform(name, UniformTypes.SAMPLER2D, tex);
+    addUniform(name, UniformType.SAMPLER2D, tex);
   }
 
   /**
@@ -745,7 +741,7 @@ public class GLShader {
    * and reloaded on every frame.
    */
   public void setUniform(String name, Texture tex) {
-    addUniform(name, UniformTypes.SAMPLER2D, tex);
+    addUniform(name, UniformType.SAMPLER2D, tex);
   }
 
   /**
@@ -754,16 +750,16 @@ public class GLShader {
   public void setUniform(String name, IntBuffer vec, int columns) {
     switch (columns) {
       case 1:
-        addUniform(name, UniformTypes.INT1VEC, vec);
+        addUniform(name, UniformType.INT1VEC, vec);
         break;
       case 2:
-        addUniform(name, UniformTypes.INT2VEC, vec);
+        addUniform(name, UniformType.INT2VEC, vec);
         break;
       case 3:
-        addUniform(name, UniformTypes.INT3VEC, vec);
+        addUniform(name, UniformType.INT3VEC, vec);
         break;
       case 4:
-        addUniform(name, UniformTypes.INT4VEC, vec);
+        addUniform(name, UniformType.INT4VEC, vec);
         break;
       default:
         // TE.log("SetUniform(%s): %d coords specified, maximum 4 allowed", name, columns);
@@ -774,16 +770,16 @@ public class GLShader {
   public void setUniform(String name, FloatBuffer vec, int columns) {
     switch (columns) {
       case 1:
-        addUniform(name, UniformTypes.FLOAT1VEC, vec);
+        addUniform(name, UniformType.FLOAT1VEC, vec);
         break;
       case 2:
-        addUniform(name, UniformTypes.FLOAT2VEC, vec);
+        addUniform(name, UniformType.FLOAT2VEC, vec);
         break;
       case 3:
-        addUniform(name, UniformTypes.FLOAT3VEC, vec);
+        addUniform(name, UniformType.FLOAT3VEC, vec);
         break;
       case 4:
-        addUniform(name, UniformTypes.FLOAT4VEC, vec);
+        addUniform(name, UniformType.FLOAT4VEC, vec);
         break;
       default:
         // TE.log("SetUniform(%s): %d coords specified, maximum 4 allowed", name, columns);
@@ -801,13 +797,13 @@ public class GLShader {
   public void setUniformMatrix(String name, FloatBuffer vec, int sz) {
     switch (sz) {
       case 2:
-        addUniform(name, UniformTypes.MAT2, vec);
+        addUniform(name, UniformType.MAT2, vec);
         break;
       case 3:
-        addUniform(name, UniformTypes.MAT3, vec);
+        addUniform(name, UniformType.MAT3, vec);
         break;
       case 4:
-        addUniform(name, UniformTypes.MAT4, vec);
+        addUniform(name, UniformType.MAT4, vec);
         break;
       default:
         // TE.log("SetUniformMatrix(%s): %d incorrect matrix size specified", name, columns);
