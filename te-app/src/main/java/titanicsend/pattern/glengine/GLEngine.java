@@ -133,8 +133,8 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
    * @param model The model (view) to copy coordinates from
    * @return The texture unit number that the view's coordinate texture is bound to.
    */
-  public int useViewCoordinates(LXModel model) {
-    return textureCache.useViewCoordinates(model);
+  public int getCoordinatesTexture(LXModel model) {
+    return textureCache.getCoordinatesTexture(model);
   }
 
   // Load a static texture from a file and bind it to the next available texture unit
@@ -477,10 +477,13 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     }
   }
 
+  @Override
   public void dispose() {
     // free GPU resources that we directly allocated
     gl4.glDeleteTextures(audioTextureHandle.length, audioTextureHandle, 0);
     gl4.glDeleteBuffers(uniformBlockHandles.length, uniformBlockHandles, 0);
+
+    super.dispose();
   }
 
   // Static getters for per-frame audio parameters

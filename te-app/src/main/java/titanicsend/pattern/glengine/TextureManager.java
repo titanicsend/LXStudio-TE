@@ -80,7 +80,7 @@ public class TextureManager {
    * @param model The model (view) to copy coordinates from
    * @return The texture unit number that the view's coordinate texture is bound to.
    */
-  public int useViewCoordinates(LXModel model) {
+  public int getCoordinatesTexture(LXModel model) {
     CachedTextureInfo t;
 
     // if the view's coordinate texture is already loaded, just use it

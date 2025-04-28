@@ -278,7 +278,7 @@ public class GLShader {
    * by the pattern's frametime run() function if the model has changed since the last frame.
    */
   public void useViewCoordinates(LXModel model) {
-    modelCoordsTextureUnit = glEngine.useViewCoordinates(model);
+    this.modelCoordsTextureUnit = glEngine.getCoordinatesTexture(model);
   }
 
   // Releases native resources allocated by this shader.
