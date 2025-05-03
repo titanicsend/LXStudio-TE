@@ -249,7 +249,7 @@ public class NativeShader implements GLEventListener {
     setStandardUniforms(controlData);
 
     // Add all preprocessed LX parameters from the shader code as uniforms
-    for (LXParameter customParameter : fragmentShader.getParameters()) {
+    for (LXParameter customParameter : fragmentShader.parameters) {
       setUniform(customParameter.getLabel() + Uniforms.CUSTOM_SUFFIX, customParameter.getValuef());
     }
 

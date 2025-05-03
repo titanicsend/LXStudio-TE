@@ -31,8 +31,7 @@ public class NativeShaderPatternEffect extends PatternEffect {
     if (fragmentShader != null) {
       this.fragmentShader = fragmentShader;
       this.renderer = new OffscreenShaderRenderer(fragmentShader);
-      this.parameters = fragmentShader.getParameters();
-
+      this.parameters = fragmentShader.parameters;
     } else {
       this.parameters = null;
     }

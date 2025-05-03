@@ -96,9 +96,6 @@ public class GLShader {
   // maps uniform names to GL texture units
   protected final HashMap<String, Integer> uniformTextureUnits = new HashMap<>();
 
-  // list of LX control parameters from the shader code
-  private final List<LXParameter> parameters = new ArrayList<>();
-
   // Callbacks used by the pattern or effect that owns the shader to set any custom uniforms.
   // Usually, these are the parameters associated with the TECommonControls.
   private final List<UniformSource> uniformSources = new ArrayList<>();
@@ -154,7 +151,6 @@ public class GLShader {
 
     // initialization that can be done before the OpenGL context is available
     this.fragmentShader = Objects.requireNonNull(fragmentShader);
-    this.parameters.addAll(fragmentShader.getParameters());
     this.vertexBuffer = Buffers.newDirectFloatBuffer(VERTICES.length);
     this.indexBuffer = Buffers.newDirectIntBuffer(INDICES.length);
     this.vertexBuffer.put(VERTICES);
@@ -310,8 +306,9 @@ public class GLShader {
     return fragmentShader.getShaderConfig();
   }
 
+  /** List of LX control parameters from the shader code */
   public List<LXParameter> getParameters() {
-    return parameters;
+    return this.fragmentShader.parameters;
   }
 
   // Initialization
@@ -466,7 +463,7 @@ public class GLShader {
     }
 
     // Add all preprocessed LX parameters from the shader code as uniforms
-    for (LXParameter customParameter : fragmentShader.getParameters()) {
+    for (LXParameter customParameter : fragmentShader.parameters) {
       setUniform(customParameter.getLabel() + Uniforms.CUSTOM_SUFFIX, customParameter.getValuef());
     }
 
