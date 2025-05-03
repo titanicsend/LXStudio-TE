@@ -443,19 +443,20 @@ public class GLShader {
 
   // Run loop
 
-  /** Activate this shader for rendering in the current context */
-  public void useProgram() {
-    gl4.glUseProgram(shaderProgram.getProgramId());
-  }
-
   public void run() {
-    canvas.getContext().makeCurrent();
+    this.canvas.getContext().makeCurrent();
+    useProgram();
     // Stage updates to uniforms
     setUniforms();
     // hand the complete uniform list to OpenGL
     updateUniforms(gl4);
     render();
     saveBackBuffer();
+  }
+
+  /** Activate this shader for rendering in the current context */
+  private void useProgram() {
+    this.gl4.glUseProgram(this.shaderProgram.getProgramId());
   }
 
   private void setUniforms() {

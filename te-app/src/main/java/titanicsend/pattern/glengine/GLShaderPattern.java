@@ -85,7 +85,6 @@ public class GLShaderPattern extends TEPerformancePattern {
     for (int i = 0; i < n; i++) {
       shader = this.shaders.get(i);
       shader.useViewCoordinates(m);
-      shader.useProgram();
       shader.run();
     }
 
