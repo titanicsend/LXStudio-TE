@@ -153,18 +153,19 @@ public class GLShaderPattern extends TEPerformancePattern {
   @Override
   public void onInactive() {
     // fix exception on slow startup
+    // TODO(jkb): remove this null check?
     if (this.colors == null) return;
-    super.onInactive();
     for (GLShader shader : this.shaders) {
       shader.onInactive();
     }
+    super.onInactive();
   }
 
   @Override
   public void dispose() {
-    super.dispose();
     for (GLShader shader : this.shaders) {
       shader.dispose();
     }
+    super.dispose();
   }
 }

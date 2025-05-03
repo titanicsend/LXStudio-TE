@@ -159,10 +159,10 @@ public class GLShaderEffect extends TEEffect {
 
   @Override
   protected void onDisable() {
-    super.onDisable();
     for (GLShader shader : this.shaders) {
       shader.onInactive();
     }
+    super.onDisable();
   }
 
   @Override
