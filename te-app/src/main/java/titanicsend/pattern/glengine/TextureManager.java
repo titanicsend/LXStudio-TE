@@ -250,20 +250,20 @@ public class TextureManager {
    * textures map.
    */
   public void clearCoordinateTextures() {
-    ArrayList<Integer> keysToRemove = new ArrayList<>();
+    ArrayList<Integer> hashesToRemove = new ArrayList<>();
 
     for (Map.Entry<Integer, CachedTextureInfo> entry : textures.entrySet()) {
       CachedTextureInfo t = entry.getValue();
 
       // create a list of keys for all coordinate textures
       if (t.type == CachedTextureType.COORDINATE) {
-        keysToRemove.add(entry.getKey());
+        hashesToRemove.add(entry.getKey());
       }
     }
 
     // remove all coordinate textures from the map
-    for (Integer key : keysToRemove) {
-      releaseTexture(key, true);
+    for (Integer textureHash : hashesToRemove) {
+      releaseTexture(textureHash, true);
     }
   }
 
