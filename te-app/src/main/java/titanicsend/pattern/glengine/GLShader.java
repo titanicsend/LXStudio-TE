@@ -53,15 +53,15 @@ public class GLShader {
   private GLAutoDrawable canvas = null;
   private GL4 gl4 = null;
 
-  private FragmentShader fragmentShader;
-  private int width;
-  private int height;
+  private final FragmentShader fragmentShader;
+  private final int width;
+  private final int height;
 
   private ShaderProgram shaderProgram;
 
   // geometry buffers
-  private FloatBuffer vertexBuffer;
-  private IntBuffer indexBuffer;
+  private final FloatBuffer vertexBuffer;
+  private final IntBuffer indexBuffer;
   private final int[] geometryBufferHandles = new int[2];
 
   // texture buffers
@@ -75,7 +75,7 @@ public class GLShader {
   private boolean useMappedBuffer = false;
 
   private final ArrayList<TextureInfo> textures = new ArrayList<>();
-  private ByteBuffer backBuffer;
+  private final ByteBuffer backBuffer;
   private final int[] backbufferHandle = new int[1];
 
   // support for optional texture mapped (as opposed to the new linear format) buffer
@@ -145,16 +145,20 @@ public class GLShader {
       FragmentShader fragmentShader,
       ByteBuffer frameBuf,
       List<UniformSource> uniformSources) {
-    this.backBuffer = frameBuf;
 
     this.glEngine = (GLEngine) lx.engine.getChild(GLEngine.PATH);
-    // TE.log("Shader: Retrieved GLEngine object from LX");
+    this.width = this.glEngine.getWidth();
+    this.height = this.glEngine.getHeight();
 
-    if (fragmentShader != null) {
-      this.fragmentShader = fragmentShader;
-      this.parameters.addAll(fragmentShader.getParameters());
-      createShaderProgram(fragmentShader, this.glEngine.getWidth(), this.glEngine.getHeight());
-    }
+    // initialization that can be done before the OpenGL context is available
+    this.fragmentShader = Objects.requireNonNull(fragmentShader);
+    this.parameters.addAll(fragmentShader.getParameters());
+    this.vertexBuffer = Buffers.newDirectFloatBuffer(VERTICES.length);
+    this.indexBuffer = Buffers.newDirectIntBuffer(INDICES.length);
+    this.vertexBuffer.put(VERTICES);
+    this.indexBuffer.put(INDICES);
+    // allocate default buffer for reading offscreen surface to cpu memory
+    this.backBuffer = frameBuf != null ? frameBuf : allocateBackBuffer();
 
     for (UniformSource uniformSource : uniformSources) {
       if (uniformSource != null) {
@@ -299,20 +303,6 @@ public class GLShader {
   /** Activate this shader for rendering in the current context */
   public void useProgram() {
     gl4.glUseProgram(shaderProgram.getProgramId());
-  }
-
-  // initialization that can be done before the OpenGL context is available
-  public void createShaderProgram(FragmentShader fragmentShader, int width, int height) {
-    this.width = width;
-    this.height = height;
-    this.fragmentShader = fragmentShader;
-    this.vertexBuffer = Buffers.newDirectFloatBuffer(VERTICES.length);
-    this.indexBuffer = Buffers.newDirectIntBuffer(INDICES.length);
-    this.vertexBuffer.put(VERTICES);
-    this.indexBuffer.put(INDICES);
-
-    // allocate default buffer for reading offscreen surface to cpu memory
-    if (this.backBuffer == null) this.backBuffer = allocateBackBuffer();
   }
 
   // Shader initialization that requires the OpenGL context
