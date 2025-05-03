@@ -95,7 +95,9 @@ public class GLShaderPattern extends TEPerformancePattern {
     }
 
     // paint the final shader output to the car
-    ShaderPainter.mapToPointsDirect(m.points, shader.getImageBuffer(), getColors());
+    if (shader != null) {
+      ShaderPainter.mapToPointsDirect(m.points, shader.getImageBuffer(), getColors());
+    }
   }
 
   private void setUniforms(GLShader s) {
