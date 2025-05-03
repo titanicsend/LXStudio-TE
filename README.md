@@ -176,7 +176,7 @@ of the Modules, Edges and Panels sheet.
 ### Learning Chromatik and Developing Patterns
 
 TE is using the full IDE-ready distribution instead of the P4 Processing Applet version. Don't struggle - ask questions
-in [#lighting-software on Slack](https://titanicsend.slack.com/archives/C02L0MDQB2M).
+in [#te-lighting-software on Slack](https://titanicsend.slack.com/archives/C047AD94VCG).
 
 The tutorials in the [LX Studio Wiki](https://github.com/heronarts/LXStudio/wiki) are an effective introduction.
 
@@ -188,6 +188,95 @@ These have been compiled by our team:
 
 As you really get rolling, you’ll appreciate the [API docs](https://lx.studio/api/) and public portion
 of [the source](https://github.com/heronarts/LX/tree/master/src/main/java/heronarts/lx).
+
+### Working With Local Audio
+
+Chromatik uses your default audio input device out of the box, so if you're playing music in range of your microphone
+sound reactivity should mostly work. But there's a better way.
+
+#### BlackHole
+
+[BlackHole](https://github.com/ExistentialAudio/BlackHole) is a *virtual audio loopback driver* for macOS. Using
+BlackHole, you can route local audio to Chromatik.
+
+First, install BlackHole:
+
+```
+brew install blackhole-2ch
+```
+
+(For other installation options, see [the BlackHole
+README](https://github.com/ExistentialAudio/BlackHole?tab=readme-ov-file#installation-instructions).)
+
+After installing, you should see a new BlackHole audio device in the Audio MIDI Setup utility.
+
+<img src="assets/audio-setup/blackhole-device.png" alt="BlackHole virtual audio device in Audio Midi Setup" width="800"/>
+
+At this point you should be able to send audio to Chromatik by selecting BlackHole as your computer's output device, and
+as Chromatik's audio input device. But since sound output is being sent to BlackHole, you won't hear anything.
+
+To play audio from your computer speakers (and/or another device) while simultaneously sending audio to BlackHole, you
+can set up a [multi-output device](https://github.com/ExistentialAudio/BlackHole/wiki/Multi-Output-Device):
+
+- Open the Audio MIDI Setup utility
+- Click + > Create Multi-Output Device
+- Check "Use" for both audio devices
+- Right-click the new device and select "Use This Device For Sound Output"
+
+<img src="assets/audio-setup/multi-output-device.png" alt="Multi-output device setup" width="800"/>
+<img src="assets/audio-setup/multi-output-device-use.png" alt="Use multi-output device for sound output" width="800"/>
+
+The BlackHole docs recommend setting the non-BlackHole device as the "Primary Device", changing the device order so the
+primary device appears first in the list, and enabling drift correction for all other devices. Device order and primacy
+don't seem to affect anything on macOS Sequoia 15.4, but YMMV.
+
+Now, in Chromatik, set the audio input to BlackHole:
+
+![Set Chromatik audio input to BlackHole device](assets/audio-setup/chromatik-blackhole-input.png)
+
+After setting the new multi-output device as audio output in macOS, and the BlackHole device as the audio input device
+in Chromatik, you should be able to hear music from your speakers and *see* it on the spectrum meter in Chromatik.
+
+#### VJLab
+
+VJLab is a stem splitter that extracts audio stems in real time. These stems can be used to control patterns in
+Chromatik.
+
+To get a recent VJLab build, come chat with the developers in [#te-lighting-software on
+Slack](https://titanicsend.slack.com/archives/C047AD94VCG).
+
+<img src="assets/audio-setup/vjlab-home.png" alt="VJLab home" width="800">
+
+To configure VJLab for use with Chromatik, go to Audio Settings and set the input and output device to BlackHole:
+
+<img src="assets/audio-setup/vjlab-audio-settings.png" alt="VJLab Audio Settings" width="800"/>
+
+To use VJLab's tempo tracker to set the tempo in Chromatik, go to Outputs and enable the Send Beat Messages option:
+
+<img src="assets/audio-setup/vjlab-outputs.png" alt="VJLab Audio Settings" width="800"/>
+
+Chromatik should already be configured to listen for OSC messages on port 3030:
+
+![Chromatik OSC I/O](assets/audio-setup/chromatik-osc-io.png)
+
+If everything is set up correctly, and music is playing, you should see live audio stem volume in Chromatik:
+
+![Chromatik audio stems](assets/audio-setup/chromatik-audio-stems.png)
+
+#### Audio Troubleshooting
+
+**Can't change multi-output device volume**
+- Switch back to the output device for which you want to change the volume, e.g. MacBook Pro Speakers
+- Change the volume
+- Switch back to the multi-output device, which should respect the current volume
+
+But this may lead to another problem...
+
+**VJLab stops receiving audio input from BlackHole after switching audio devices**
+- Switch to the multi-output device you want to use, either in Audio Midi Setup or Preferences > Sound
+- Quit VJLab and any applications playing sound
+- Start sound-playing applications again
+- Start VJLab again
 
 ## Celebrating the installation
 
@@ -345,7 +434,7 @@ encapsulation protocol. To make this work:
 
 ## Resources
 
-* [#lighting-software on Slack](https://titanicsend.slack.com/archives/C02L0MDQB2M)
+* [#te-lighting-software on Slack](https://titanicsend.slack.com/archives/C047AD94VCG)
 * [Chromatik Wiki](https://github.com/heronarts/LXStudio/wiki)
 * [Chromatik API](https://chromatik.co/api/)
 * [Chromatik Source](https://github.com/heronarts/LX/tree/master/src/main/java/heronarts/lx)
