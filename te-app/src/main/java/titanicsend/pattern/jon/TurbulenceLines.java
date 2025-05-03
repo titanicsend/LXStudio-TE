@@ -24,13 +24,15 @@ public class TurbulenceLines extends DriftEnabledPattern {
     // register common controls with LX
     addCommonControls();
 
-    addShader("turbulent_noise_lines.fs", (s) -> {
-      // calculate incremental transform based on elapsed time
-      s.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
+    addShader(
+        "turbulent_noise_lines.fs",
+        (s) -> {
+          // calculate incremental transform based on elapsed time
+          s.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
 
-      // override iTime so we can speed up noise field progression while leaving the controls
-      // in a more reasonable range
-      s.setUniform("iTime", 2f * (float) getTime());
-    });
+          // override iTime so we can speed up noise field progression while leaving the controls
+          // in a more reasonable range
+          s.setUniform("iTime", 2f * (float) getTime());
+        });
   }
 }

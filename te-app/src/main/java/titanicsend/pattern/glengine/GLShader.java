@@ -25,13 +25,11 @@ import titanicsend.util.TE;
 public class GLShader {
 
   /**
-   * Callback interface to set any uniforms that have been modified since the last frame.
-   * Can be implemented by child classes or provided to the constructor.
+   * Callback interface to set any uniforms that have been modified since the last frame. Can be
+   * implemented by child classes or provided to the constructor.
    */
   public interface UniformSource {
-    /**
-     * Called once per frame. Set uniforms on the shader here.
-     */
+    /** Called once per frame. Set uniforms on the shader here. */
     void setUniforms(GLShader s);
   }
 
@@ -143,7 +141,10 @@ public class GLShader {
    * @param uniformSources list of callbacks that will set uniforms on this shader
    */
   public GLShader(
-    LX lx, FragmentShader fragmentShader, ByteBuffer frameBuf, List<UniformSource> uniformSources) {
+      LX lx,
+      FragmentShader fragmentShader,
+      ByteBuffer frameBuf,
+      List<UniformSource> uniformSources) {
     this.backBuffer = frameBuf;
 
     this.glEngine = (GLEngine) lx.engine.getChild(GLEngine.PATH);
@@ -203,20 +204,20 @@ public class GLShader {
    * @param textureFilenames (optional) texture files to load
    */
   public GLShader(
-    LX lx,
-    String shaderFilename,
-    List<UniformSource> uniformSources,
-    ByteBuffer frameBuf,
-    String... textureFilenames) {
+      LX lx,
+      String shaderFilename,
+      List<UniformSource> uniformSources,
+      ByteBuffer frameBuf,
+      String... textureFilenames) {
     this(
-      lx,
-      new FragmentShader(
-        new File("resources/shaders/" + shaderFilename),
-        Arrays.stream(textureFilenames)
-          .map(x -> new File("resources/shaders/textures/" + x))
-          .collect(Collectors.toList())),
-      frameBuf,
-      uniformSources);
+        lx,
+        new FragmentShader(
+            new File("resources/shaders/" + shaderFilename),
+            Arrays.stream(textureFilenames)
+                .map(x -> new File("resources/shaders/textures/" + x))
+                .collect(Collectors.toList())),
+        frameBuf,
+        uniformSources);
   }
 
   /**
@@ -241,7 +242,10 @@ public class GLShader {
    * @param textureFilenames (optional) texture files to load
    */
   public GLShader(
-      LX lx, String shaderFilename, List<UniformSource> uniformSources, String... textureFilenames) {
+      LX lx,
+      String shaderFilename,
+      List<UniformSource> uniformSources,
+      String... textureFilenames) {
     this(lx, shaderFilename, uniformSources, null, textureFilenames);
   }
 
@@ -513,8 +517,8 @@ public class GLShader {
         GL4.GL_TEXTURE_2D,
         0,
         GL4.GL_RGBA,
-      width,
-      height,
+        width,
+        height,
         0,
         GL4.GL_BGRA,
         GL_UNSIGNED_BYTE,

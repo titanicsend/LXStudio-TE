@@ -20,8 +20,10 @@ public class TriangleInfinityLevels extends GLShaderPattern {
     controls.setValue(TEControlTag.BRIGHTNESS, 0.5);
 
     addCommonControls();
-    addShader("triangle_infinity.fs", (s) -> {
-      s.setUniform("brightnessDampening", 0.5f);
-    });
+    addShader(
+        "triangle_infinity.fs",
+        (s) -> {
+          s.setUniform("brightnessDampening", 0.5f);
+        });
   }
 }

@@ -22,8 +22,10 @@ public class SigmoidDanceAudioLevels extends GLShaderPattern {
 
     addCommonControls();
 
-    addShader("sigmoid_dance_audio_levels.fs", (s) -> {
-      s.setUniform("avgVolume", (float) GLEngine.getAvgVolume());
-    });
+    addShader(
+        "sigmoid_dance_audio_levels.fs",
+        (s) -> {
+          s.setUniform("avgVolume", (float) GLEngine.getAvgVolume());
+        });
   }
 }

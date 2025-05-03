@@ -24,9 +24,11 @@ public class RainBands extends DriftEnabledPattern {
     // register common controls with LX
     addCommonControls();
 
-    addShader("rain_noise.fs", (s) -> {
-      // calculate incremental transform based on elapsed time
-      s.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
-    });
+    addShader(
+        "rain_noise.fs",
+        (s) -> {
+          // calculate incremental transform based on elapsed time
+          s.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
+        });
   }
 }

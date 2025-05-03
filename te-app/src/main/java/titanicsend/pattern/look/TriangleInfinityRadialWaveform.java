@@ -23,8 +23,10 @@ public class TriangleInfinityRadialWaveform extends GLShaderPattern {
 
     addCommonControls();
 
-    addShader("triangle_infinity_radial_waveform.fs", (s) -> {
-      s.setUniform("brightnessDampening", 0.5f);
-    });
+    addShader(
+        "triangle_infinity_radial_waveform.fs",
+        (s) -> {
+          s.setUniform("brightnessDampening", 0.5f);
+        });
   }
 }

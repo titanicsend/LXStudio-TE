@@ -7,7 +7,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import titanicsend.color.TEColorType;
 import titanicsend.effect.TEEffect;
 import titanicsend.pattern.jon.VariableSpeedTimer;
@@ -46,40 +45,36 @@ public class GLShaderEffect extends TEEffect {
   }
 
   /**
-   * Add a shader by fragment shader filename.
-   * The simple option for shaders that use only the default TEPerformancePattern
-   * uniforms and don't require any additional computation in Java.
+   * Add a shader by fragment shader filename. The simple option for shaders that use only the
+   * default TEPerformancePattern uniforms and don't require any additional computation in Java.
    */
   protected GLShader addShader(String shaderName, String... textureFilenames) {
     return addShader(new GLShader(lx, shaderName, this::setUniforms, textureFilenames));
   }
 
   /**
-   * Add a shader by fragment shader filename.
-   * The simple option for shaders that use only the default TEPerformancePattern
-   * uniforms and don't require any additional computation in Java.
+   * Add a shader by fragment shader filename. The simple option for shaders that use only the
+   * default TEPerformancePattern uniforms and don't require any additional computation in Java.
    */
-  protected GLShader addShader(String shaderName, GLShader.UniformSource uniformSource, String... textureFilenames) {
-    return addShader(new GLShader(lx, shaderName, List.of(this::setUniforms, uniformSource), textureFilenames));
+  protected GLShader addShader(
+      String shaderName, GLShader.UniformSource uniformSource, String... textureFilenames) {
+    return addShader(
+        new GLShader(lx, shaderName, List.of(this::setUniforms, uniformSource), textureFilenames));
   }
 
-  /**
-   * Add a shader by fragment shader filename, with a callback for setting custom uniforms.
-   */
+  /** Add a shader by fragment shader filename, with a callback for setting custom uniforms. */
   protected GLShader addShader(String shaderName, GLShader.UniformSource uniformSource) {
     return addShader(new GLShader(lx, shaderName, List.of(this::setUniforms, uniformSource)));
   }
 
-  /**
-   * Add a shader by fragment shader filename, with a callback for setting custom uniforms.
-   */
-  protected GLShader addShader(String shaderName, GLShader.UniformSource uniformSource, ByteBuffer frameBuf) {
-    return addShader(new GLShader(lx, shaderName, List.of(this::setUniforms, uniformSource), frameBuf));
+  /** Add a shader by fragment shader filename, with a callback for setting custom uniforms. */
+  protected GLShader addShader(
+      String shaderName, GLShader.UniformSource uniformSource, ByteBuffer frameBuf) {
+    return addShader(
+        new GLShader(lx, shaderName, List.of(this::setUniforms, uniformSource), frameBuf));
   }
 
-  /**
-   * Add a shader by fragment shader filename
-   */
+  /** Add a shader by fragment shader filename */
   protected GLShader addShader(String shaderName, ByteBuffer frameBuf) {
     return addShader(new GLShader(lx, shaderName, this::setUniforms, frameBuf));
   }
@@ -134,18 +129,18 @@ public class GLShaderEffect extends TEEffect {
     // TODO - we're just grabbing swatch colors here.  Do we need to worry about modulation?
     int col = getColor1();
     s.setUniform(
-      "iColorRGB",
-      (float) (0xff & LXColor.red(col)) / 255f,
-      (float) (0xff & LXColor.green(col)) / 255f,
-      (float) (0xff & LXColor.blue(col)) / 255f);
+        "iColorRGB",
+        (float) (0xff & LXColor.red(col)) / 255f,
+        (float) (0xff & LXColor.green(col)) / 255f,
+        (float) (0xff & LXColor.blue(col)) / 255f);
     s.setUniform("iColorHSB", LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
 
     col = getColor2();
     s.setUniform(
-      "iColor2RGB",
-      (float) (0xff & LXColor.red(col)) / 255f,
-      (float) (0xff & LXColor.green(col)) / 255f,
-      (float) (0xff & LXColor.blue(col)) / 255f);
+        "iColor2RGB",
+        (float) (0xff & LXColor.red(col)) / 255f,
+        (float) (0xff & LXColor.green(col)) / 255f,
+        (float) (0xff & LXColor.blue(col)) / 255f);
     s.setUniform("iColor2HSB", LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
   }
 

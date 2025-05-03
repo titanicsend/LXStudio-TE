@@ -44,17 +44,16 @@ public class LightBeamsAudioReactivePattern extends ConstructedShaderPattern {
   private void setUniforms(GLShader s) {
     // Update the pattern local control values based on the UI values.
     float levelReactivityControl =
-      (float) getControls().getControl(TEControlTag.LEVELREACTIVITY).getValue();
+        (float) getControls().getControl(TEControlTag.LEVELREACTIVITY).getValue();
     float freqReactivityControl =
-      (float) getControls().getControl(TEControlTag.FREQREACTIVITY).getValue();
+        (float) getControls().getControl(TEControlTag.FREQREACTIVITY).getValue();
 
     // Get the rotation angle from the spin. This is the default value for the
     // iRotationAngle and we're going to apply a diff on this value based on the
     // bassLevel.
     double radians = getRotationAngleFromSpin();
     int spinControlSign =
-      Float.compare(
-        (float) getControls().getLXControl(TEControlTag.SPIN).getValue(), 0.0f);
+        Float.compare((float) getControls().getLXControl(TEControlTag.SPIN).getValue(), 0.0f);
     radians += getRotationDiff(levelReactivityControl) * spinControlSign;
     s.setUniform("iRotationAngle", (float) radians);
 

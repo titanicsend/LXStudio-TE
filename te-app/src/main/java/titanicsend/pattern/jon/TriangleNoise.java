@@ -24,9 +24,11 @@ public class TriangleNoise extends DriftEnabledPattern {
     // register common controls with LX
     addCommonControls();
 
-    addShader("triangle_noise.fs", (s) -> {
-      // calculate incremental transform based on elapsed time
-      s.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
-    });
+    addShader(
+        "triangle_noise.fs",
+        (s) -> {
+          // calculate incremental transform based on elapsed time
+          s.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
+        });
   }
 }

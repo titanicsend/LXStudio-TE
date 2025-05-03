@@ -3,7 +3,6 @@ package titanicsend.pattern.jon;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.EnumParameter;
-import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
@@ -47,9 +46,11 @@ public class RadialSimplex extends GLShaderPattern {
     // register common controls with LX
     addCommonControls();
 
-    addShader("radial_simplex.fs", (s) -> {
-      RadialSimplex.NoiseMode mode = noiseMode.getEnum();
-      s.setUniform("iWow1", (float) mode.ordinal());
-    });
+    addShader(
+        "radial_simplex.fs",
+        (s) -> {
+          RadialSimplex.NoiseMode mode = noiseMode.getEnum();
+          s.setUniform("iWow1", (float) mode.ordinal());
+        });
   }
 }

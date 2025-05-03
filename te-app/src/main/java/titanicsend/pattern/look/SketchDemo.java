@@ -81,11 +81,10 @@ public class SketchDemo extends GLShaderPattern {
   }
 
   private void setUniforms(GLShader s) {
-    float levelReact =
-      (float) getControls().getControl(TEControlTag.LEVELREACTIVITY).getValue();
+    float levelReact = (float) getControls().getControl(TEControlTag.LEVELREACTIVITY).getValue();
     float pullback = (float) getControls().getControl(TEControlTag.WOW1).getValue();
     float nextDrawingThreshold =
-      1.0f / (float) getControls().getControl(TEControlTag.SPEED).getValue();
+        1.0f / (float) getControls().getControl(TEControlTag.SPEED).getValue();
     // for debugging: wire up a control directly to control progress.
     // progress = (float) getControls().getControl(TEControlTag.WOW1).getValue();
 

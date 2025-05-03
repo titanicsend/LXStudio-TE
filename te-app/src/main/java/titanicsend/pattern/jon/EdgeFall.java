@@ -73,11 +73,7 @@ public class EdgeFall extends GLShaderPattern {
     // send current line segment position data
     for (int i = 0; i < LINE_COUNT; i++) {
       setUniformLine(
-        i,
-        working_lines[i][0],
-        working_lines[i][1],
-        working_lines[i][2],
-        working_lines[i][3]);
+          i, working_lines[i][0], working_lines[i][1], working_lines[i][2], working_lines[i][3]);
     }
     s.setUniform("lines", gl_segments, 4);
   }

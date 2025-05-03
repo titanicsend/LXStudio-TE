@@ -168,8 +168,8 @@ public class NDIPattern extends GLShaderPattern {
       // build our texture data object. Otherwise, just replace the
       // buffer with the current frame's pixel data.
       if (textureData == null
-        || frameWidth != videoFrame.getXResolution()
-        || frameHeight != videoFrame.getYResolution()) {
+          || frameWidth != videoFrame.getXResolution()
+          || frameHeight != videoFrame.getYResolution()) {
         gl4 = s.getGL4();
         createTextureForFrame();
       } else {

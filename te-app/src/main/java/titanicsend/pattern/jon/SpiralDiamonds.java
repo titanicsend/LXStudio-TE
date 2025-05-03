@@ -21,13 +21,15 @@ public class SpiralDiamonds extends GLShaderPattern {
     controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
     // Quantity controls density of diamonds
     controls
-      .setRange(TEControlTag.QUANTITY, 4, 1, 7)
-      .setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
+        .setRange(TEControlTag.QUANTITY, 4, 1, 7)
+        .setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
 
     addCommonControls();
 
-    addShader("spiral_diamonds.fs", (s) -> {
-      s.setUniform("speedAngle", (float) getRotationAngleFromSpeed());
-    });
+    addShader(
+        "spiral_diamonds.fs",
+        (s) -> {
+          s.setUniform("speedAngle", (float) getRotationAngleFromSpeed());
+        });
   }
 }

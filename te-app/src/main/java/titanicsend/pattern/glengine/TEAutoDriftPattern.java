@@ -17,10 +17,13 @@ public class TEAutoDriftPattern extends DriftEnabledPattern {
     super(lx, defaultView);
 
     // Create shader instance
-    GLShader shader = addShader(this.getShaderFile(), (s) -> {
-      // calculate incremental transform based on elapsed time
-      s.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
-    });
+    GLShader shader =
+        addShader(
+            this.getShaderFile(),
+            (s) -> {
+              // calculate incremental transform based on elapsed time
+              s.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
+            });
 
     // use common control configuration data from shader to set control defaults,
     // then register controls with Chromatik.

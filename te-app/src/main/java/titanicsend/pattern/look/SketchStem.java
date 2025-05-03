@@ -86,8 +86,7 @@ public class SketchStem extends GLShaderPattern {
   private void setUniforms(GLShader s) {
     float currSpeed = (float) getControls().getControl(TEControlTag.SPEED).getValue();
     float pullback = (float) getControls().getControl(TEControlTag.WOW1).getValue();
-    float nextDrawingThreshold =
-      (float) getControls().getControl(TEControlTag.WOW2).getValue();
+    float nextDrawingThreshold = (float) getControls().getControl(TEControlTag.WOW2).getValue();
 
     normalizedLevelCumulative += currSpeed;
 
