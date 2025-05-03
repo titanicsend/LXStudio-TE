@@ -257,14 +257,13 @@ public class TextureManager {
 
       // create a list of keys for all coordinate textures
       if (t.type == CachedTextureType.COORDINATE) {
-        t.refCount = 0; // should already be zero, but just in case
         keysToRemove.add(entry.getKey());
       }
     }
 
     // remove all coordinate textures from the map
     for (Integer key : keysToRemove) {
-      releaseTexture(key);
+      releaseTexture(key, true);
     }
   }
 
@@ -285,12 +284,16 @@ public class TextureManager {
    * @param textureHash - integer hash code of the texture to release
    */
   public void releaseTexture(int textureHash) {
+    releaseTexture(textureHash, false);
+  }
+
+  private void releaseTexture(int textureHash, boolean force) {
     CachedTextureInfo t = textures.get(textureHash);
     if (t == null) {
       throw new RuntimeException("Attempt to release texture that was never used:");
     }
     t.refCount--;
-    if (t.refCount <= 0) {
+    if (t.refCount <= 0 || force) {
       switch (t.type) {
         case STATIC:
           t.texture.destroy(gl4);
