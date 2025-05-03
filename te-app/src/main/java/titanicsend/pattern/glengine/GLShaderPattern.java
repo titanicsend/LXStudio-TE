@@ -1,9 +1,14 @@
 package titanicsend.pattern.glengine;
 
 import heronarts.lx.LX;
+import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXModel;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import titanicsend.color.TEColorParameter;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
@@ -12,32 +17,15 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
  * and provides a convenient interface for adding shaders to a pattern.
  */
 public class GLShaderPattern extends TEPerformancePattern {
-  public interface GLShaderFrameSetup {
-    default void OnFrame(GLShader shader) {}
-  }
-
-  protected class ShaderInfo {
-    protected GLShader shader;
-    protected GLShaderFrameSetup setup;
-
-    public ShaderInfo(GLShader shader, GLShaderFrameSetup setup) {
-      this.shader = shader;
-      this.setup = setup;
-    }
-  }
-
-  protected GLPatternControl controlData;
 
   // TODO - mappedBuffer functionality not yet supported for shader patterns
   protected ByteBuffer mappedBuffer;
   protected final int mappedBufferWidth = GLEngine.getMappedBufferWidth();
   protected final int mappedBufferHeight = GLEngine.getMappedBufferHeight();
 
-  // convenience, to simplify user setup of shader OnFrame() functions
-  protected double deltaMs;
-
-  // list of shaders to run, with associated setup functions
-  protected final ArrayList<ShaderInfo> shaderInfo = new ArrayList<>();
+  // list of shaders to run
+  private final List<GLShader> mutableShaders = new ArrayList<>();
+  protected final List<GLShader> shaders = Collections.unmodifiableList(this.mutableShaders);
 
   public GLShaderPattern(LX lx) {
     this(lx, TEShaderView.ALL_POINTS);
@@ -45,58 +33,109 @@ public class GLShaderPattern extends TEPerformancePattern {
 
   public GLShaderPattern(LX lx, TEShaderView view) {
     super(lx, view);
-    controlData = new GLPatternControl(this);
   }
 
-  public GLPatternControl getControlData() {
-    return controlData;
+  private GLShader addShader(GLShader shader) {
+    this.mutableShaders.add(shader);
+    return shader;
   }
 
-  // Add shader with OnFrame() function, which allows the pattern to do
-  // whatever additional computation and setting of uniforms and so forth
-  // before the shader runs.
-  public void addShader(GLShader shader, GLShaderFrameSetup setup) {
-    // add the shader and its frame-time setup function to our
-    //
-    shaderInfo.add(new ShaderInfo(shader, setup));
+  /**
+   * Add a shader by fragment shader filename.
+   * The simple option for shaders that use only the default TEPerformancePattern
+   * uniforms and don't require any additional computation in Java.
+   */
+  protected GLShader addShader(String shaderName, String... textureFilenames) {
+    return addShader(new GLShader(lx, shaderName, this::setUniforms, textureFilenames));
   }
 
-  // add shader with default OnFrame() function
-  public void addShader(GLShader shader) {
-    addShader(shader, new GLShaderFrameSetup() {});
+  /**
+   * Add a shader by fragment shader filename.
+   * The simple option for shaders that use only the default TEPerformancePattern
+   * uniforms and don't require any additional computation in Java.
+   */
+  protected GLShader addShader(String shaderName, GLShader.UniformSource uniformSource, String... textureFilenames) {
+    return addShader(new GLShader(lx, shaderName, List.of(this::setUniforms, uniformSource), textureFilenames));
   }
 
-  // Add a shader by fragment shader filename, using the default OnFrame() function.
-  // The simple option for shaders that use only the default TEPerformancePattern
-  // uniforms and don't require any additional computation in Java.
-  public void addShader(String shaderName, String... textureFilenames) {
-    addShader(new GLShader(lx, shaderName, getControlData(), textureFilenames));
+  /**
+   * Add a shader by fragment shader filename, with a callback for setting custom uniforms.
+   */
+  protected GLShader addShader(String shaderName, GLShader.UniformSource uniformSource) {
+    return addShader(new GLShader(lx, shaderName, List.of(this::setUniforms, uniformSource)));
   }
 
-  // Add a shader by fragment shader filename, with an OnFrame() function.
-  public void addShader(String shaderName, GLShaderFrameSetup setup) {
-    addShader(new GLShader(lx, shaderName, controlData), setup);
+  /**
+   * Add a shader by fragment shader filename, with a callback for setting custom uniforms.
+   */
+  protected GLShader addShader(String shaderName, GLShader.UniformSource uniformSource, ByteBuffer frameBuf) {
+    return addShader(new GLShader(lx, shaderName, List.of(this::setUniforms, uniformSource), frameBuf));
+  }
+
+  /**
+   * Add a shader by fragment shader filename
+   */
+  protected GLShader addShader(String shaderName, ByteBuffer frameBuf) {
+    return addShader(new GLShader(lx, shaderName, this::setUniforms, frameBuf));
   }
 
   @Override
   public void runTEAudioPattern(double deltaMs) {
     LXModel m = getModel();
-    ShaderInfo s = null;
-    this.deltaMs = deltaMs;
-    int n = shaderInfo.size();
+    GLShader shader = null;
+    int n = this.shaders.size();
 
     // run the chain of shaders, except for the last one,
     // copying the output of each to the next shader's input texture
     for (int i = 0; i < n; i++) {
-      s = shaderInfo.get(i);
-      s.shader.useViewCoordinates(m);
-      s.shader.useProgram();
-      s.setup.OnFrame(s.shader);
-      s.shader.run();
+      shader = this.shaders.get(i);
+      shader.useViewCoordinates(m);
+      shader.useProgram();
+      shader.run();
     }
 
     // paint the final shader output to the car
-    ShaderPainter.mapToPointsDirect(m.points, s.shader.getImageBuffer(), getColors());
+    ShaderPainter.mapToPointsDirect(m.points, shader.getImageBuffer(), getColors());
+  }
+
+  private void setUniforms(GLShader s) {
+    // set standard shadertoy-style uniforms
+    s.setUniform("iTime", (float) getTime());
+
+    // color-related uniforms
+    int col = calcColor();
+    s.setUniform(
+      "iColorRGB",
+      (float) (0xff & LXColor.red(col)) / 255f,
+      (float) (0xff & LXColor.green(col)) / 255f,
+      (float) (0xff & LXColor.blue(col)) / 255f);
+    s.setUniform("iColorHSB", LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
+
+    col = calcColor2();
+    s.setUniform(
+      "iColor2RGB",
+      (float) (0xff & LXColor.red(col)) / 255f,
+      (float) (0xff & LXColor.green(col)) / 255f,
+      (float) (0xff & LXColor.blue(col)) / 255f);
+    s.setUniform("iColor2HSB", LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
+
+    boolean usePalette =
+      getControls().color.colorSource.getEnum() != TEColorParameter.ColorSource.STATIC;
+    s.setUniform("iPaletteOffset", usePalette ? getControls().color.getOffsetf() : -1f);
+
+    // uniforms for common controls
+    s.setUniform("iSpeed", (float) getSpeed());
+    s.setUniform("iScale", (float) getSize());
+    s.setUniform("iQuantity", (float) getQuantity());
+    s.setUniform("iTranslate", (float) getXPos(), (float) getYPos());
+    s.setUniform("iSpin", (float) getSpin());
+    s.setUniform("iRotationAngle", (float) getRotationAngleFromSpin());
+    s.setUniform("iBrightness", (float) getBrightness());
+    s.setUniform("iWow1", (float) getWow1());
+    s.setUniform("iWow2", (float) getWow2());
+    s.setUniform("iWowTrigger", getWowTrigger());
+    s.setUniform("levelReact", (float) getLevelReactivity());
+    s.setUniform("frequencyReact", (float) getFrequencyReactivity());
   }
 
   @Override
@@ -104,8 +143,8 @@ public class GLShaderPattern extends TEPerformancePattern {
     // fix exception on slow startup
     if (this.colors == null) return;
     super.onActive();
-    for (ShaderInfo s : shaderInfo) {
-      s.shader.onActive();
+    for (GLShader shader : this.shaders) {
+      shader.onActive();
     }
   }
 
@@ -114,16 +153,16 @@ public class GLShaderPattern extends TEPerformancePattern {
     // fix exception on slow startup
     if (this.colors == null) return;
     super.onInactive();
-    for (ShaderInfo s : shaderInfo) {
-      s.shader.onInactive();
+    for (GLShader shader : this.shaders) {
+      shader.onInactive();
     }
   }
 
   @Override
   public void dispose() {
     super.dispose();
-    for (ShaderInfo s : shaderInfo) {
-      s.shader.dispose();
+    for (GLShader shader : this.shaders) {
+      shader.dispose();
     }
   }
 }

@@ -45,7 +45,7 @@ public class SpaceExplosionFX extends GLShaderPattern {
 
     addCommonControls();
 
-    addShader("space_explosionfx.fs", setup);
+    addShader("space_explosionfx.fs", this::setUniforms);
 
     eventStartTime = 0;
     lastBasis = 0;
@@ -67,56 +67,52 @@ public class SpaceExplosionFX extends GLShaderPattern {
   }
 
   // Work to be done per frame
-  GLShaderFrameSetup setup =
-      new GLShaderFrameSetup() {
-        @Override
-        public void OnFrame(GLShader s) {
-          // state of explosion visual
-          boolean explode = false;
+  private void setUniforms(GLShader s) {
+    // state of explosion visual
+    boolean explode = false;
 
-          // If the WowTrigger button is pressed and we're not
-          // already exploding, start the explosions.
-          if (getWowTrigger()) {
-            if (!running) {
-              // reset the pattern's clock to sync to button press
-              retrigger(TEControlTag.SPEED);
-              eventStartTime = 0; // current time, since we just reset the clock
+    // If the WowTrigger button is pressed and we're not
+    // already exploding, start the explosions.
+    if (getWowTrigger()) {
+      if (!running) {
+        // reset the pattern's clock to sync to button press
+        retrigger(TEControlTag.SPEED);
+        eventStartTime = 0; // current time, since we just reset the clock
 
-              // start explosion state machine and turn on visuals
-              running = true;
-              explode = true;
-            }
+        // start explosion state machine and turn on visuals
+        running = true;
+        explode = true;
+      }
+    }
+
+    // if explosions are running, check event duration to see if we
+    // need to retrigger, or just keep showing the explosion visual
+    if (running) {
+      if (Math.abs(getTime() - eventStartTime) > eventDuration) {
+
+        if (getWowTrigger()) {
+          // wait for a beat to start before retriggering
+          if (getBeatState()) {
+            // reset the pattern's clock to sync to this beat, and start
+            // another explosion
+            retrigger(TEControlTag.SPEED);
+            eventStartTime = 0;
+            explode = true;
           }
-
-          // if explosions are running, check event duration to see if we
-          // need to retrigger, or just keep showing the explosion visual
-          if (running) {
-            if (Math.abs(getTime() - eventStartTime) > eventDuration) {
-
-              if (getWowTrigger()) {
-                // wait for a beat to start before retriggering
-                if (getBeatState()) {
-                  // reset the pattern's clock to sync to this beat, and start
-                  // another explosion
-                  retrigger(TEControlTag.SPEED);
-                  eventStartTime = 0;
-                  explode = true;
-                }
-              } else {
-                // button is up, and explosion complete.
-                // return to idle state
-                running = false;
-              }
-            } else {
-              // continue current explosion
-              explode = true;
-            }
-          }
-
-          // Use iWowTrigger to control display of the explosion visuals.
-          // Send our visual flag, rather than the simple button value from the
-          // control, to the shader.
-          s.setUniform("iWowTrigger", explode);
+        } else {
+          // button is up, and explosion complete.
+          // return to idle state
+          running = false;
         }
-      };
+      } else {
+        // continue current explosion
+        explode = true;
+      }
+    }
+
+    // Use iWowTrigger to control display of the explosion visuals.
+    // Send our visual flag, rather than the simple button value from the
+    // control, to the shader.
+    s.setUniform("iWowTrigger", explode);
+  }
 }

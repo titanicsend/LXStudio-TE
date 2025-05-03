@@ -24,6 +24,17 @@ import titanicsend.util.TE;
  */
 public class GLShader {
 
+  /**
+   * Callback interface to set any uniforms that have been modified since the last frame.
+   * Can be implemented by child classes or provided to the constructor.
+   */
+  public interface UniformSource {
+    /**
+     * Called once per frame. Set uniforms on the shader here.
+     */
+    void setUniforms(GLShader s);
+  }
+
   // Vertices for default geometry - a rectangle that covers the entire canvas
   private static final float[] VERTICES = {
     1.0f, 1.0f, 0.0f,
@@ -90,11 +101,9 @@ public class GLShader {
   // list of LX control parameters from the shader code
   private final List<LXParameter> parameters = new ArrayList<>();
 
-  // control data - this object is used by the pattern or
-  // effect that owns the shader to set any custom uniforms
-  // Usually, these are the parameters associated with
-  // the TECommonControls.
-  private final GLControlData controlData;
+  // Callbacks used by the pattern or effect that owns the shader to set any custom uniforms.
+  // Usually, these are the parameters associated with the TECommonControls.
+  private final List<UniformSource> uniformSources = new ArrayList<>();
 
   // get the active GL profile so the calling entity can work with
   // GL textures and buffers if necessary.  (NDI support
@@ -117,11 +126,24 @@ public class GLShader {
    * @param fragmentShader fragment shader object to use
    * @param frameBuf native (GL compatible) ByteBuffer to store render results for use in shaders
    *     that need to read the previous frame. If null, a buffer will be automatically allocated.
-   * @param controlData control data object to be associated w/this shader
+   * @param uniformSource callback that will set uniforms on this shader
    */
   public GLShader(
-      LX lx, FragmentShader fragmentShader, ByteBuffer frameBuf, GLControlData controlData) {
-    this.controlData = controlData;
+      LX lx, FragmentShader fragmentShader, ByteBuffer frameBuf, UniformSource uniformSource) {
+    this(lx, fragmentShader, frameBuf, List.of(uniformSource));
+  }
+
+  /**
+   * Create new OpenGL shader effect
+   *
+   * @param lx LX instance
+   * @param fragmentShader fragment shader object to use
+   * @param frameBuf native (GL compatible) ByteBuffer to store render results for use in shaders
+   *     that need to read the previous frame. If null, a buffer will be automatically allocated.
+   * @param uniformSources list of callbacks that will set uniforms on this shader
+   */
+  public GLShader(
+    LX lx, FragmentShader fragmentShader, ByteBuffer frameBuf, List<UniformSource> uniformSources) {
     this.backBuffer = frameBuf;
 
     this.glEngine = (GLEngine) lx.engine.getChild(GLEngine.PATH);
@@ -132,6 +154,12 @@ public class GLShader {
       this.parameters.addAll(fragmentShader.getParameters());
       createShaderProgram(fragmentShader, this.glEngine.getWidth(), this.glEngine.getHeight());
     }
+
+    for (UniformSource uniformSource : uniformSources) {
+      if (uniformSource != null) {
+        addUniformSource(uniformSource);
+      }
+    }
   }
 
   /**
@@ -139,10 +167,10 @@ public class GLShader {
    *
    * @param lx LX instance
    * @param fragmentShader fragment shader object shader to use
-   * @param controlData control data object to be associated w/this shader
+   * @param uniformSource callback that will set uniforms on this shader
    */
-  public GLShader(LX lx, FragmentShader fragmentShader, GLControlData controlData) {
-    this(lx, fragmentShader, null, controlData);
+  public GLShader(LX lx, FragmentShader fragmentShader, UniformSource uniformSource) {
+    this(lx, fragmentShader, null, uniformSource);
   }
 
   /**
@@ -152,24 +180,16 @@ public class GLShader {
    * @param shaderFilename shader to use
    * @param frameBuf native (GL compatible) ByteBuffer to store render results for use in shaders
    *     that need to read the previous frame. If null, a buffer will be automatically allocated. *
-   * @param controlData control data object to be associated w/this shader
+   * @param uniformSource callback that will set uniforms on this shader
    * @param textureFilenames (optional) texture files to load
    */
   public GLShader(
       LX lx,
       String shaderFilename,
-      GLControlData controlData,
+      UniformSource uniformSource,
       ByteBuffer frameBuf,
       String... textureFilenames) {
-    this(
-        lx,
-        new FragmentShader(
-            new File("resources/shaders/" + shaderFilename),
-            Arrays.stream(textureFilenames)
-                .map(x -> new File("resources/shaders/textures/" + x))
-                .collect(Collectors.toList())),
-        frameBuf,
-        controlData);
+    this(lx, shaderFilename, List.of(uniformSource), frameBuf, textureFilenames);
   }
 
   /**
@@ -177,12 +197,60 @@ public class GLShader {
    *
    * @param lx LX instance
    * @param shaderFilename shader to use
-   * @param controlData control data object to be associated w/this shader
+   * @param frameBuf native (GL compatible) ByteBuffer to store render results for use in shaders
+   *     that need to read the previous frame. If null, a buffer will be automatically allocated. *
+   * @param uniformSources list of callbacks that will set uniforms on this shader
    * @param textureFilenames (optional) texture files to load
    */
   public GLShader(
-      LX lx, String shaderFilename, GLControlData controlData, String... textureFilenames) {
-    this(lx, shaderFilename, controlData, null, textureFilenames);
+    LX lx,
+    String shaderFilename,
+    List<UniformSource> uniformSources,
+    ByteBuffer frameBuf,
+    String... textureFilenames) {
+    this(
+      lx,
+      new FragmentShader(
+        new File("resources/shaders/" + shaderFilename),
+        Arrays.stream(textureFilenames)
+          .map(x -> new File("resources/shaders/textures/" + x))
+          .collect(Collectors.toList())),
+      frameBuf,
+      uniformSources);
+  }
+
+  /**
+   * Creates new shader object with additional texture support
+   *
+   * @param lx LX instance
+   * @param shaderFilename shader to use
+   * @param uniformSource callback that will set uniforms on this shader
+   * @param textureFilenames (optional) texture files to load
+   */
+  public GLShader(
+      LX lx, String shaderFilename, UniformSource uniformSource, String... textureFilenames) {
+    this(lx, shaderFilename, uniformSource, null, textureFilenames);
+  }
+
+  /**
+   * Creates new shader object with additional texture support
+   *
+   * @param lx LX instance
+   * @param shaderFilename shader to use
+   * @param uniformSources list of callbacks that will set uniforms on this shader
+   * @param textureFilenames (optional) texture files to load
+   */
+  public GLShader(
+      LX lx, String shaderFilename, List<UniformSource> uniformSources, String... textureFilenames) {
+    this(lx, shaderFilename, uniformSources, null, textureFilenames);
+  }
+
+  protected GLShader addUniformSource(UniformSource uniformSource) {
+    if (uniformSource == null) {
+      throw new IllegalArgumentException("UniformSource cannot be null");
+    }
+    this.uniformSources.add(uniformSource);
+    return this;
   }
 
   /**
@@ -409,7 +477,9 @@ public class GLShader {
   private void setUniforms() {
 
     // set uniforms for the pattern or effect controls this shader uses
-    controlData.setUniforms(this);
+    for (UniformSource uniformSource : this.uniformSources) {
+      uniformSource.setUniforms(this);
+    }
 
     // Add all preprocessed LX parameters from the shader code as uniforms
     for (LXParameter customParameter : fragmentShader.getParameters()) {

@@ -12,17 +12,13 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
 public class Phasers extends GLShaderPattern {
 
   // Work to be done per frame
-  GLShaderFrameSetup shaderSetup =
-      new GLShaderFrameSetup() {
-        @Override
-        public void OnFrame(GLShader s) {
-          // use the size control to control both the laser's beam size and surrounding glow
-          CompoundParameter scaleCtl = (CompoundParameter) controls.getLXControl(TEControlTag.SIZE);
-          double beamWidth = 0.005 + 0.0125 * scaleCtl.getNormalized();
-          s.setUniform("beamWidth", (float) beamWidth);
-          s.setUniform("iRotationAngle", (float) -getRotationAngleFromSpin());
-        }
-      };
+  private void setUniforms(GLShader s) {
+    // use the size control to control both the laser's beam size and surrounding glow
+    CompoundParameter scaleCtl = (CompoundParameter) controls.getLXControl(TEControlTag.SIZE);
+    double beamWidth = 0.005 + 0.0125 * scaleCtl.getNormalized();
+    s.setUniform("beamWidth", (float) beamWidth);
+    s.setUniform("iRotationAngle", (float) -getRotationAngleFromSpin());
+  }
 
   public Phasers(LX lx) {
     super(lx, TEShaderView.ALL_PANELS);
@@ -53,6 +49,6 @@ public class Phasers extends GLShaderPattern {
     addCommonControls();
 
     // Create the underlying shader pattern
-    addShader("phasers.fs", shaderSetup);
+    addShader("phasers.fs", this::setUniforms);
   }
 }

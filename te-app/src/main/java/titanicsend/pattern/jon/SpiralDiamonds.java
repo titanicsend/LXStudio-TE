@@ -3,7 +3,6 @@ package titanicsend.pattern.jon;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
@@ -22,18 +21,13 @@ public class SpiralDiamonds extends GLShaderPattern {
     controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
     // Quantity controls density of diamonds
     controls
-        .setRange(TEControlTag.QUANTITY, 4, 1, 7)
-        .setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
+      .setRange(TEControlTag.QUANTITY, 4, 1, 7)
+      .setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
 
     addCommonControls();
 
-    addShader(
-        "spiral_diamonds.fs",
-        new GLShaderFrameSetup() {
-          @Override
-          public void OnFrame(GLShader s) {
-            s.setUniform("speedAngle", (float) getRotationAngleFromSpeed());
-          }
-        });
+    addShader("spiral_diamonds.fs", (s) -> {
+      s.setUniform("speedAngle", (float) getRotationAngleFromSpeed());
+    });
   }
 }

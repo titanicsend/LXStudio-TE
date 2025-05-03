@@ -80,39 +80,36 @@ public class SketchStem extends GLShaderPattern {
     // add the OpenGL shader and its frame-time setup function which,
     // in this case, will copy the current contents of the points array
     // to the native FloatBuffer and send it to the shader as an array uniform.
-    addShader(
-        "single_line_dynamicdata.fs",
-        new GLShaderFrameSetup() {
-          @Override
-          public void OnFrame(GLShader s) {
-            float currSpeed = (float) getControls().getControl(TEControlTag.SPEED).getValue();
-            float pullback = (float) getControls().getControl(TEControlTag.WOW1).getValue();
-            float nextDrawingThreshold =
-                (float) getControls().getControl(TEControlTag.WOW2).getValue();
+    addShader("single_line_dynamicdata.fs", this::setUniforms);
+  }
 
-            normalizedLevelCumulative += currSpeed;
+  private void setUniforms(GLShader s) {
+    float currSpeed = (float) getControls().getControl(TEControlTag.SPEED).getValue();
+    float pullback = (float) getControls().getControl(TEControlTag.WOW1).getValue();
+    float nextDrawingThreshold =
+      (float) getControls().getControl(TEControlTag.WOW2).getValue();
 
-            s.setUniform("currProgress", progress);
-            if (!hasSketchBeenPassed) {
-              SketchDataManager.SketchData currSketch = sketchMgr.sketches.get(currSketchIdx);
-              SketchDataManager.SketchData prevSketch = sketchMgr.sketches.get(prevSketchIdx);
-              setUniformPoints(s, currSketch, "curr");
-              setUniformPoints(s, prevSketch, "prev");
-              hasSketchBeenPassed = true;
-            }
+    normalizedLevelCumulative += currSpeed;
 
-            if (progress > -0.1) {
-              normalizedLevelCumulative -= pullback;
-            }
-            progress = normalizedLevelCumulative / nextDrawingThreshold;
+    s.setUniform("currProgress", progress);
+    if (!hasSketchBeenPassed) {
+      SketchDataManager.SketchData currSketch = sketchMgr.sketches.get(currSketchIdx);
+      SketchDataManager.SketchData prevSketch = sketchMgr.sketches.get(prevSketchIdx);
+      setUniformPoints(s, currSketch, "curr");
+      setUniformPoints(s, prevSketch, "prev");
+      hasSketchBeenPassed = true;
+    }
 
-            if (progress >= 1.0) {
-              swapDrawing();
-            } else if (progress <= -0.1) {
-              swapDrawing();
-            }
-          }
-        });
+    if (progress > -0.1) {
+      normalizedLevelCumulative -= pullback;
+    }
+    progress = normalizedLevelCumulative / nextDrawingThreshold;
+
+    if (progress >= 1.0) {
+      swapDrawing();
+    } else if (progress <= -0.1) {
+      swapDrawing();
+    }
   }
 
   @Override

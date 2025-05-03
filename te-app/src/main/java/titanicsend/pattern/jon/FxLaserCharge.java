@@ -44,43 +44,39 @@ public class FxLaserCharge extends GLShaderPattern {
 
     addCommonControls();
 
-    addShader(new GLShader(lx, "ms_charge_lasers.fs", getControlData(), "color_noise.png"), setup);
+    addShader("ms_charge_lasers.fs", this::setUniforms, "color_noise.png");
 
     eventStartTime = 0;
     running = false;
   }
 
   // Work to be done per frame
-  GLShaderFrameSetup setup =
-      new GLShaderFrameSetup() {
-        @Override
-        public void OnFrame(GLShader s) {
-          // state of explosion visual
-          double progress = 0;
-          double eventDuration = 2 * getWow2();
+  private void setUniforms(GLShader s) {
+    // state of explosion visual
+    double progress = 0;
+    double eventDuration = 2 * getWow2();
 
-          // If the WowTrigger button is pressed and we're not
-          // already running, start the event
-          if (getWowTrigger()) {
-            if (!running) {
-              eventStartTime = getTime();
-              running = true;
-            }
-          }
+    // If the WowTrigger button is pressed and we're not
+    // already running, start the event
+    if (getWowTrigger()) {
+      if (!running) {
+        eventStartTime = getTime();
+        running = true;
+      }
+    }
 
-          // if  running, calculate the progress of the event
-          // and stop when it's done
-          if (running) {
-            double elapsedTime = getTime() - eventStartTime;
-            // figure where we are in the charging cycle
-            // wow1 is `k` in the exponential curve formula
-            progress = Math.exp(-getWow1() * (eventDuration - elapsedTime));
-            if (progress >= 1) {
-              running = false;
-            }
-          }
+    // if running, calculate the progress of the event
+    // and stop when it's done
+    if (running) {
+      double elapsedTime = getTime() - eventStartTime;
+      // figure where we are in the charging cycle
+      // wow1 is `k` in the exponential curve formula
+      progress = Math.exp(-getWow1() * (eventDuration - elapsedTime));
+      if (progress >= 1) {
+        running = false;
+      }
+    }
 
-          s.setUniform("progress", (float) progress);
-        }
-      };
+    s.setUniform("progress", (float) progress);
+  }
 }

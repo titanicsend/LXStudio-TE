@@ -10,7 +10,6 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
 @LXCategory("TE Examples")
 public class MultipassDemo extends GLShaderPattern {
   ByteBuffer buffer;
-  GLShader shader;
 
   // simple demo of multipass rendering
   public MultipassDemo(LX lx) {
@@ -23,14 +22,11 @@ public class MultipassDemo extends GLShaderPattern {
     buffer = GLShader.allocateBackBuffer();
 
     // add the first shader, passing in the shared backbuffer
-
-    shader = new GLShader(lx, "fire.fs", getControlData(), buffer);
-    addShader(shader);
+    addShader("fire.fs", buffer);
 
     // add the second shader, which applies a simple edge detection filter to the
     // output of the first shader
-    shader = new GLShader(lx, "sobel_filter_effect.fs", getControlData(), buffer);
-    addShader(shader);
+    addShader("sobel_filter_effect.fs", buffer);
   }
 
   // additional shaders can be added in the same way. They will be run in the order

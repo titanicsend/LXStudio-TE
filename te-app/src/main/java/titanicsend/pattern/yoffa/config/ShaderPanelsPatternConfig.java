@@ -298,20 +298,15 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.LEVELREACTIVITY, 0.2, 0, 3);
       controls.setRange(TEControlTag.FREQREACTIVITY, 0.8, 0, 2);
 
-      addShader(
-          "neon_cells.fs",
-          new GLShaderFrameSetup() {
-            @Override
-            public void OnFrame(GLShader s) {
-              float levelReactivityControl =
-                  (float) getControls().getControl(TEControlTag.LEVELREACTIVITY).getValue();
+      addShader("neon_cells.fs", (s) -> {
+        float levelReactivityControl =
+          (float) getControls().getControl(TEControlTag.LEVELREACTIVITY).getValue();
 
-              // Similar to the rotation, but for speed instead.
-              double currentTime = getTime();
-              currentTime += getTimeDiff(levelReactivityControl);
-              s.setUniform("iTime", (float) currentTime);
-            }
-          });
+        // Similar to the rotation, but for speed instead.
+        double currentTime = getTime();
+        currentTime += getTimeDiff(levelReactivityControl);
+        s.setUniform("iTime", (float) currentTime);
+      });
     }
 
     private float getTimeDiff(float controlLevel) {

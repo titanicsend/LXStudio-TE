@@ -2,7 +2,6 @@ package titanicsend.pattern.look;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
@@ -21,13 +20,8 @@ public class TriangleInfinityLevels extends GLShaderPattern {
     controls.setValue(TEControlTag.BRIGHTNESS, 0.5);
 
     addCommonControls();
-    addShader(
-        "triangle_infinity.fs",
-        new GLShaderFrameSetup() {
-          @Override
-          public void OnFrame(GLShader s) {
-            s.setUniform("brightnessDampening", 0.5f);
-          }
-        });
+    addShader("triangle_infinity.fs", (s) -> {
+      s.setUniform("brightnessDampening", 0.5f);
+    });
   }
 }
