@@ -56,8 +56,8 @@ public class GLShader {
   private GL4 gl4 = null;
 
   private FragmentShader fragmentShader;
-  private int xResolution;
-  private int yResolution;
+  private int width;
+  private int height;
 
   private ShaderProgram shaderProgram;
 
@@ -298,9 +298,9 @@ public class GLShader {
   }
 
   // initialization that can be done before the OpenGL context is available
-  public void createShaderProgram(FragmentShader fragmentShader, int xResolution, int yResolution) {
-    this.xResolution = xResolution;
-    this.yResolution = yResolution;
+  public void createShaderProgram(FragmentShader fragmentShader, int width, int height) {
+    this.width = width;
+    this.height = height;
     this.fragmentShader = fragmentShader;
     this.vertexBuffer = Buffers.newDirectFloatBuffer(VERTICES.length);
     this.indexBuffer = Buffers.newDirectIntBuffer(INDICES.length);
@@ -385,7 +385,7 @@ public class GLShader {
 
     // using BGRA byte order lets us read int values from the buffer and pass them
     // directly to LX as colors, without any additional work on the Java side.
-    gl4.glReadPixels(0, 0, xResolution, yResolution, GL_BGRA, GL_UNSIGNED_BYTE, backBuffer);
+    gl4.glReadPixels(0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, backBuffer);
   }
 
   /**
@@ -513,8 +513,8 @@ public class GLShader {
         GL4.GL_TEXTURE_2D,
         0,
         GL4.GL_RGBA,
-        xResolution,
-        yResolution,
+      width,
+      height,
         0,
         GL4.GL_BGRA,
         GL_UNSIGNED_BYTE,

@@ -113,9 +113,9 @@ public class TextureManager {
 
     // get data we need to create the texture from the system and
     // the model
-    int xSize = GLEngine.current.getWidth();
-    int ySize = GLEngine.current.getHeight();
-    int maxPoints = xSize * ySize;
+    int width = GLEngine.current.getWidth();
+    int height = GLEngine.current.getHeight();
+    int maxPoints = width * height;
 
     final int numPoints = model.points.length;
 
@@ -165,7 +165,7 @@ public class TextureManager {
     // load the coordinate data into the texture, where it will stay 'till
     // the model changes or Chromatik is stopped.
     gl4.glTexImage2D(
-        GL4.GL_TEXTURE_2D, 0, GL4.GL_RGB32F, xSize, ySize, 0, GL4.GL_RGB, GL_FLOAT, coords);
+        GL4.GL_TEXTURE_2D, 0, GL4.GL_RGB32F, width, height, 0, GL4.GL_RGB, GL_FLOAT, coords);
 
     // done!  return the cache management object
     return t;

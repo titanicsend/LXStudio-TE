@@ -27,8 +27,8 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
   // rendering canvas size.  May be changed
   // via the startup command line.
-  private final int xSize;
-  private final int ySize;
+  private final int width;
+  private final int height;
 
   // Dimensions of mapped texture backbuffer.
   //
@@ -95,11 +95,11 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   }
 
   public int getWidth() {
-    return this.xSize;
+    return this.width;
   }
 
   public int getHeight() {
-    return this.ySize;
+    return this.height;
   }
 
   public static int getMappedBufferWidth() {
@@ -304,8 +304,8 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     perRunUniformBlock.put(3, 0f);
 
     // iResolution is the size of the canvas
-    perRunUniformBlock.put(4, (float) xSize);
-    perRunUniformBlock.put(5, (float) ySize);
+    perRunUniformBlock.put(4, (float) width);
+    perRunUniformBlock.put(5, (float) height);
 
     // Do the same thing for per frame uniforms
     // The items in the block are, in order:
@@ -405,15 +405,15 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     // TODO - adjust buffer size & shape dynamically as the model changes.
     // TODO - this will require a lot of GPU memory management, so is
     // TODO - a longer-term goal.
-    xSize = width;
-    ySize = height;
+    this.width = width;
+    this.height = height;
 
-    int maxPoints = xSize * ySize;
+    int maxPoints = this.width * this.height;
     TE.log(
         "GLEngine: Rendering canvas size: "
-            + xSize
+            + this.width
             + "x"
-            + ySize
+            + this.height
             + " = "
             + maxPoints
             + " total points");
@@ -443,7 +443,7 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     // On first frame...
     // create and initialize offscreen drawable for gl rendering
     LX.error("Initialized GL Engine!");
-    canvas = ShaderUtils.createGLSurface(xSize, ySize);
+    canvas = ShaderUtils.createGLSurface(width, height);
     canvas.display();
     gl4 = canvas.getGL().getGL4();
 

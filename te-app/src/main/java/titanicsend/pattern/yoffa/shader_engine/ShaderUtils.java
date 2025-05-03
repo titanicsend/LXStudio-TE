@@ -46,7 +46,7 @@ public class ShaderUtils {
   }
 
   /** Creates offscreen drawable OpenGL surface at the specified resolution */
-  public static GLAutoDrawable createGLSurface(int xResolution, int yResolution) {
+  public static GLAutoDrawable createGLSurface(int width, int height) {
     GLProfile glProfile = GLProfile.getGL4ES3();
     GLCapabilities glCapabilities = new GLCapabilities(glProfile);
     glCapabilities.setHardwareAccelerated(true);
@@ -63,8 +63,8 @@ public class ShaderUtils {
         factory.getDefaultDevice(),
         glCapabilities,
         new DefaultGLCapabilitiesChooser(),
-        xResolution,
-        yResolution);
+        width,
+        height);
   }
 
   public static String getVertexShaderTemplate() {

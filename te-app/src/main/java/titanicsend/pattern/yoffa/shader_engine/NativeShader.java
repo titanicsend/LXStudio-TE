@@ -40,8 +40,8 @@ public class NativeShader implements GLEventListener {
   };
 
   private final FragmentShader fragmentShader;
-  private final int xResolution;
-  private final int yResolution;
+  private final int width;
+  private final int height;
 
   private final FloatBuffer vertexBuffer;
   private final IntBuffer indexBuffer;
@@ -59,9 +59,9 @@ public class NativeShader implements GLEventListener {
   // map of user created uniforms.
   protected final HashMap<String, Uniform> uniforms = new HashMap<>();
 
-  public NativeShader(FragmentShader fragmentShader, int xResolution, int yResolution) {
-    this.xResolution = xResolution;
-    this.yResolution = yResolution;
+  public NativeShader(FragmentShader fragmentShader, int width, int height) {
+    this.width = width;
+    this.height = height;
     this.fragmentShader = fragmentShader;
     this.vertexBuffer = Buffers.newDirectFloatBuffer(VERTICES.length);
     this.indexBuffer = Buffers.newDirectIntBuffer(INDICES.length);
@@ -72,7 +72,7 @@ public class NativeShader implements GLEventListener {
     this.controlData = null;
 
     // gl-compatible buffer for reading offscreen surface to cpu memory
-    this.backBuffer = GLBuffers.newDirectByteBuffer(xResolution * yResolution * 4);
+    this.backBuffer = GLBuffers.newDirectByteBuffer(width * height * 4);
 
     this.audioTextureWidth = 512;
     this.audioTextureHeight = 2;
@@ -113,7 +113,7 @@ public class NativeShader implements GLEventListener {
     setUniforms(gl4);
 
     render(gl4);
-    saveSnapshot(gl4, xResolution, yResolution);
+    saveSnapshot(gl4, width, height);
   }
 
   private void saveSnapshot(GL4 gl4, int width, int height) {
@@ -212,7 +212,7 @@ public class NativeShader implements GLEventListener {
 
     // set standard shadertoy-style uniforms
     setUniform("iTime", (float) ctl.getTime());
-    setUniform("iResolution", (float) xResolution, (float) yResolution);
+    setUniform("iResolution", (float) width, (float) height);
     // setUniform("iMouse", 0f, 0f, 0f, 0f);
 
     // TE standard audio uniforms
