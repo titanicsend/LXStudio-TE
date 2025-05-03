@@ -193,7 +193,8 @@ public class GLShader {
    * @return ByteBuffer
    */
   public static ByteBuffer allocateBackBuffer() {
-    return GLBuffers.newDirectByteBuffer(GLEngine.current.getWidth() * GLEngine.current.getHeight() * 4);
+    return GLBuffers.newDirectByteBuffer(
+        GLEngine.current.getWidth() * GLEngine.current.getHeight() * 4);
   }
 
   /**

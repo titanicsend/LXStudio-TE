@@ -303,5 +303,4 @@ public class TextureManager {
       textures.remove(textureHash);
     }
   }
-
 }

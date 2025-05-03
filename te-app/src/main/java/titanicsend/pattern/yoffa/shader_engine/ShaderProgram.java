@@ -20,8 +20,8 @@ public class ShaderProgram {
     }
 
     shaderAttributeLocations.put(
-      ShaderAttribute.POSITION,
-      gl4.glGetAttribLocation(programId, ShaderAttribute.POSITION.getAttributeName()));
+        ShaderAttribute.POSITION,
+        gl4.glGetAttribLocation(programId, ShaderAttribute.POSITION.getAttributeName()));
 
     // NOTE: Uncomment when we make the geometry complex enough that we need the index attribute.
     // shaderAttributeLocations.put(ShaderAttribute.INDEX,
@@ -39,5 +39,4 @@ public class ShaderProgram {
   public int getShaderAttributeLocation(ShaderAttribute shaderAttribute) {
     return shaderAttributeLocations.get(shaderAttribute);
   }
-
 }
