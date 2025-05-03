@@ -162,9 +162,9 @@ public class GLShaderEffect extends TEEffect {
 
   @Override
   public void dispose() {
-    super.dispose();
     for (GLShader shader : this.shaders) {
       shader.dispose();
     }
+    super.dispose();
   }
 }
