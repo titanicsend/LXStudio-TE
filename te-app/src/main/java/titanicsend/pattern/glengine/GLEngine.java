@@ -86,10 +86,6 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
   private LXModel model;
 
-  public LXModel getModel() {
-    return model;
-  }
-
   public GLAutoDrawable getCanvas() {
     return canvas;
   }
