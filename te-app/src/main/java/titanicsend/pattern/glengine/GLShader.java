@@ -526,7 +526,8 @@ public class GLShader {
 
     // Add all preprocessed LX parameters from the shader code as uniforms
     for (LXParameter customParameter : fragmentShader.parameters) {
-      setUniform(customParameter.getLabel() + Uniforms.CUSTOM_SUFFIX, customParameter.getValuef());
+      setUniform(
+          customParameter.getLabel() + Uniforms.LX_PARAMETER_SUFFIX, customParameter.getValuef());
     }
 
     // Set user uniforms last, giving user the option to override any default values
