@@ -9,6 +9,8 @@ public enum UniformType {
   INT2,
   INT3,
   INT4,
+  BOOLEAN1,
+  BOOLEAN2,
   FLOAT1,
   FLOAT2,
   FLOAT3,
