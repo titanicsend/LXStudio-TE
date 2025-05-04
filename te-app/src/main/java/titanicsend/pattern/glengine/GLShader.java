@@ -103,6 +103,8 @@ public class GLShader {
   // Usually, these are the parameters associated with the TECommonControls.
   private final List<UniformSource> uniformSources = new ArrayList<>();
 
+  private boolean initialized = false;
+
   // get the active GL profile so the calling entity can work with
   // GL textures and buffers if necessary.  (NDI support
   // requires this, for example.)
@@ -305,31 +307,31 @@ public class GLShader {
     gl4.glUseProgram(shaderProgram.getProgramId());
   }
 
-  // Shader initialization that requires the OpenGL context
-  // Normally called each time the pattern is activated or
-  // when the effect is enabled.
+  public boolean isInitialized() {
+    return this.initialized;
+  }
+
+  /** Shader initialization that requires the OpenGL context. Call once. */
   public void init() {
+    if (this.initialized) {
+      throw new IllegalStateException("Shader already initialized");
+    }
+    this.initialized = true;
+
     // The LX engine thread should have been initialized by now, so
     // we can safely retrieve our OpenGL canvas and context from the
     // glEngine task.
-    if (canvas == null) {
-      this.canvas = glEngine.getCanvas();
-      this.gl4 = canvas.getGL().getGL4();
-    }
-
-    // it's likely the context is already current, but
-    // let's make sure.
-    canvas.getContext().makeCurrent();
+    this.canvas = this.glEngine.getCanvas();
+    this.gl4 = this.canvas.getGL().getGL4();
 
     // uncomment to enable OpenGL debug output
     // context.getGL().getGL4().glEnable(GL_DEBUG_OUTPUT);
 
-    // complete the initialization of the shader program if necessary.
-    // then activate it.
-    if (!isInitialized()) {
-      initShaderProgram(gl4);
-      loadTextureFiles(gl4, fragmentShader);
-    }
+    // complete the initialization of the shader program
+    this.canvas.getContext().makeCurrent();
+    initShaderProgram();
+    allocateShaderBuffers();
+    loadTextureFiles();
   }
 
   /**
@@ -348,7 +350,7 @@ public class GLShader {
   public void dispose() {
     // if we've been fully initialized, we need to release all
     // OpenGL GPU resources we've allocated.
-    if (gl4 != null) {
+    if (this.initialized) {
 
       // delete GPU buffers we directly allocated
       gl4.glDeleteBuffers(2, geometryBufferHandles, 0);
@@ -547,12 +549,11 @@ public class GLShader {
     updateUniforms(gl4);
   }
 
-  private void initShaderProgram(GL4 gl4) {
+  private void initShaderProgram() {
     this.shaderProgram = new ShaderProgram(gl4, fragmentShader.getShaderName());
-    allocateShaderBuffers();
   }
 
-  private void loadTextureFiles(GL4 gl4, FragmentShader fragmentShader) {
+  private void loadTextureFiles() {
     for (Map.Entry<Integer, String> textureInput :
         fragmentShader.getChannelToTexture().entrySet()) {
 
@@ -571,12 +572,10 @@ public class GLShader {
     return backBuffer;
   }
 
-  public boolean isInitialized() {
-    return shaderProgram != null;
-  }
-
   public void onActive() {
-    init();
+    if (!initialized) {
+      init();
+    }
   }
 
   public void onInactive() {
