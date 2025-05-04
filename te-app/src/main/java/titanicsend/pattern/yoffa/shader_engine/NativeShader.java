@@ -79,11 +79,13 @@ public class NativeShader implements GLEventListener {
     this.audioTextureData = GLBuffers.newDirectFloatBuffer(audioTextureHeight * audioTextureWidth);
   }
 
+  private GL4 gl4;
+
   @Override
   public void init(GLAutoDrawable glAutoDrawable) {
     GLContext context = glAutoDrawable.getContext();
     context.makeCurrent();
-    GL4 gl4 = glAutoDrawable.getGL().getGL4();
+    this.gl4 = glAutoDrawable.getGL().getGL4();
 
     if (!isInitialized()) {
       initShaderProgram(gl4);
@@ -356,15 +358,19 @@ public class NativeShader implements GLEventListener {
 
   // worker for adding user specified uniforms to our big list'o'uniforms
   protected void addUniform(String name, UniformType type, Object value) {
-    // The first instance of a uniform wins. Subsequent
-    // attempts to (re)set it are ignored.  This makes it so control uniforms
-    // can be set from user pattern code without being overridden by the automatic
-    // setter, which is called right before frame generation.
+    // Note(jkb): Child setters now get called last, so values set by user code take priority.
+    // This is the same outcome but a different mechanism than the previous code.
     // TODO - we'll have to be more sophisticated about this when we start retaining textures
     // TODO - and other large, invariant uniforms between frames.
-    if (!uniforms.containsKey(name)) {
-      uniforms.put(name, new Uniform(type, value));
+    Uniform uniform = this.uniforms.get(name);
+    if (uniform == null) {
+      int location = this.gl4.glGetUniformLocation(this.shaderProgram.getProgramId(), name);
+      uniform = new Uniform(location, type);
+      this.uniforms.put(name, uniform);
     }
+
+    // Stage the new uniform value and mark it as modified
+    uniform.set(value);
   }
 
   // parse uniform list and create necessary GL objects
@@ -380,12 +386,11 @@ public class NativeShader implements GLEventListener {
       String name = entry.getKey();
       Uniform uniform = entry.getValue();
 
-      int loc = gl4.glGetUniformLocation(shaderProgram.getProgramId(), name);
-      if (loc == -1) {
-        // LX.log("No uniform \"" + name + "\"  found in shader");
+      if (!uniform.hasUpdate()) {
         continue;
       }
 
+      int loc = uniform.location;
       switch (uniform.type) {
         case INT1:
           v = ((int[]) uniform.value);
@@ -477,8 +482,8 @@ public class NativeShader implements GLEventListener {
           LX.log("Unsupported uniform type");
           break;
       }
+      uniform.modified = false;
     }
-    uniforms.clear();
   }
 
   /** setter -- single int */

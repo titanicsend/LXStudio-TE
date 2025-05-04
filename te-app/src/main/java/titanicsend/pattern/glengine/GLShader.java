@@ -457,16 +457,6 @@ public class GLShader {
   }
 
   private void setUniforms() {
-    // set uniforms for the pattern or effect controls this shader uses
-    for (UniformSource uniformSource : this.uniformSources) {
-      uniformSource.setUniforms(this);
-    }
-
-    // Add all preprocessed LX parameters from the shader code as uniforms
-    for (LXParameter customParameter : fragmentShader.parameters) {
-      setUniform(customParameter.getLabel() + Uniforms.CUSTOM_SUFFIX, customParameter.getValuef());
-    }
-
     // Set audio waveform and fft data as a 512x2 texture on the specified audio
     // channel if it's a shadertoy shader, or iChannel0 if it's a local shader.
 
@@ -528,6 +518,16 @@ public class GLShader {
     for (TextureInfo ti : textures) {
       setUniform(Uniforms.CHANNEL + ti.channel, ti.textureUnit);
       gl4.glUniform1i(ti.uniformLocation, ti.textureUnit);
+    }
+
+    // Add all preprocessed LX parameters from the shader code as uniforms
+    for (LXParameter customParameter : fragmentShader.parameters) {
+      setUniform(customParameter.getLabel() + Uniforms.CUSTOM_SUFFIX, customParameter.getValuef());
+    }
+
+    // Set user uniforms last, giving user the option to override any default values
+    for (UniformSource uniformSource : this.uniformSources) {
+      uniformSource.setUniforms(this);
     }
   }
 
@@ -774,15 +774,19 @@ public class GLShader {
 
   // worker for adding user specified uniforms to our big list'o'uniforms
   protected void addUniform(String name, UniformType type, Object value) {
-    // The first instance of a uniform wins. Subsequent
-    // attempts to (re)set it are ignored.  This makes it so control uniforms
-    // can be set from user code without being overridden by the automatic
-    // setter, which is called right before frame generation.
+    // Note(jkb): Child setters now get called last, so values set by user code take priority.
+    // This is the same outcome but a different mechanism than the previous code.
     // TODO - we'll have to be more sophisticated about this when we start retaining textures
     // TODO - and other large, invariant uniforms between frames.
-    if (!uniforms.containsKey(name)) {
-      uniforms.put(name, new Uniform(type, value));
+    Uniform uniform = this.uniforms.get(name);
+    if (uniform == null) {
+      int location = this.gl4.glGetUniformLocation(this.shaderProgram.getProgramId(), name);
+      uniform = new Uniform(location, type);
+      this.uniforms.put(name, uniform);
     }
+
+    // Stage the new uniform value and mark it as modified
+    uniform.set(value);
   }
 
   // Passing Uniforms to OpenGL
@@ -800,12 +804,11 @@ public class GLShader {
       String name = entry.getKey();
       Uniform uniform = entry.getValue();
 
-      int loc = gl4.glGetUniformLocation(shaderProgram.getProgramId(), name);
-      if (loc == -1) {
-        // LX.log("No uniform \"" + name + "\"  found in shader");
+      if (!uniform.hasUpdate()) {
         continue;
       }
 
+      int loc = uniform.location;
       switch (uniform.type) {
         case INT1:
           v = ((int[]) uniform.value);
@@ -896,8 +899,8 @@ public class GLShader {
           LX.log("Unsupported uniform type");
           break;
       }
+      uniform.modified = false;
     }
-    uniforms.clear();
   }
 
   // get a texture id for a uniform either from uniformTextureUnits or by allocating a new one
@@ -916,6 +919,9 @@ public class GLShader {
   // when the pattern is unloaded. (Not when just
   // deactivated.)
   public void dispose() {
+    // Release references to uniform objects. If container classes do the same they can be GC'd.
+    this.uniforms.clear();
+
     // if we've been fully initialized, we need to release all
     // OpenGL GPU resources we've allocated.
     if (this.initialized) {
