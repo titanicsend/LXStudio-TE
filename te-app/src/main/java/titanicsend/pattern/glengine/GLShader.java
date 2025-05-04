@@ -446,7 +446,7 @@ public class GLShader {
     // Stage updates to uniforms
     setUniforms();
     // hand the complete uniform list to OpenGL
-    updateUniforms(gl4);
+    updateUniforms();
     render();
     saveBackBuffer();
   }
@@ -790,7 +790,7 @@ public class GLShader {
   // parse uniform list and create necessary GL objects
   // Note that array buffers passed in must be allocated to the exact appropriate size
   // you want. No allocating a big buffer, then partly filling it. GL is picky about this.
-  protected void updateUniforms(GL4 gl4) {
+  private void updateUniforms() {
     int[] v;
     float[] vf;
     IntBuffer vIArray;
@@ -901,7 +901,7 @@ public class GLShader {
   }
 
   // get a texture id for a uniform either from uniformTextureUnits or by allocating a new one
-  protected int getTextureUnit(String name) {
+  private int getTextureUnit(String name) {
     if (uniformTextureUnits.containsKey(name)) {
       return uniformTextureUnits.get(name);
     } else {
