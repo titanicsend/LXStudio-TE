@@ -27,6 +27,8 @@ public class GLShaderEffect extends TEEffect {
   private final List<GLShader> mutableShaders = new ArrayList<>();
   protected final List<GLShader> shaders = Collections.unmodifiableList(this.mutableShaders);
 
+  private boolean modelChanged = true;
+
   public GLShaderEffect(LX lx) {
     super(lx);
 
@@ -87,10 +89,23 @@ public class GLShaderEffect extends TEEffect {
     return iTime.getTime();
   }
 
+  @Override
+  protected void onModelChanged(LXModel model) {
+    super.onModelChanged(model);
+    this.modelChanged = true;
+  }
+
   protected void run(double deltaMs, double enabledAmount) {
     LXModel m = getModel();
-    GLShader shader = null;
     iTime.tick();
+
+    // Update the model coords texture only when changed (and the first run)
+    if (this.modelChanged) {
+      this.modelChanged = false;
+      for (GLShader shader : this.shaders) {
+        shader.setModelCoordinates(m);
+      }
+    }
 
     // set up rectangular texture buffers for effects that need them
     ShaderPainter.mapToBufferDirect(m.points, imageBuffer, colors);
@@ -99,10 +114,10 @@ public class GLShaderEffect extends TEEffect {
 
     // run the chain of shaders, except for the last one,
     // copying the output of each to the next shader's input texture
+    GLShader shader = null;
     int n = this.shaders.size();
     for (int i = 0; i < n; i++) {
       shader = this.shaders.get(i);
-      shader.useViewCoordinates(m);
       shader.run();
     }
 

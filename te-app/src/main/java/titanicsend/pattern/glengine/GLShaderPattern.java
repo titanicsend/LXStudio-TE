@@ -26,6 +26,8 @@ public class GLShaderPattern extends TEPerformancePattern {
   private final List<GLShader> mutableShaders = new ArrayList<>();
   protected final List<GLShader> shaders = Collections.unmodifiableList(this.mutableShaders);
 
+  private boolean modelChanged = true;
+
   public GLShaderPattern(LX lx) {
     this(lx, TEShaderView.ALL_POINTS);
   }
@@ -75,16 +77,28 @@ public class GLShaderPattern extends TEPerformancePattern {
   }
 
   @Override
+  protected void onModelChanged(LXModel model) {
+    super.onModelChanged(model);
+    this.modelChanged = true;
+  }
+
+  @Override
   public void runTEAudioPattern(double deltaMs) {
     LXModel m = getModel();
-    GLShader shader = null;
-    int n = this.shaders.size();
+
+    // Update the model coords texture only when changed (and the first run)
+    if (this.modelChanged) {
+      this.modelChanged = false;
+      for (GLShader shader : this.shaders) {
+        shader.setModelCoordinates(m);
+      }
+    }
 
     // run the chain of shaders, except for the last one,
     // copying the output of each to the next shader's input texture
-    for (int i = 0; i < n; i++) {
+    GLShader shader = null;
+    for (int i = 0; i < this.shaders.size(); i++) {
       shader = this.shaders.get(i);
-      shader.useViewCoordinates(m);
       shader.run();
     }
 

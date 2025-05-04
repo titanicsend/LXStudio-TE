@@ -89,6 +89,7 @@ public class GLShader {
   // the GL texture unit to which the current view model coordinate
   // texture is bound.
   private int modelCoordsTextureUnit = -1;
+  private boolean modelCoordsChanged = false;
 
   // map of user created uniforms.
   protected final HashMap<String, Uniform> uniforms = new HashMap<>();
@@ -472,7 +473,10 @@ public class GLShader {
     // use the current view's model coordinates texture which
     // has already been loaded to the GPU by the texture cache manager.
     // All we need to do is point at the right GL texture unit.
-    setUniform("lxModelCoords", modelCoordsTextureUnit);
+    if (this.modelCoordsChanged) {
+      this.modelCoordsChanged = false;
+      setUniform("lxModelCoords", this.modelCoordsTextureUnit);
+    }
 
     // Update backbuffer texture data. This buffer contains the result of the
     // previous render pass.  It is always bound to texture unit 2.
@@ -566,9 +570,12 @@ public class GLShader {
    * Copy LXPoints' normalized coordinates into textures for use by shaders. Must be called by the
    * parent pattern or effect at least once before the first frame is rendered. And should be called
    * by the pattern's frametime run() function if the model has changed since the last frame.
+   *
+   * @param model Current LXModel of the calling context, which is a LXView or the global model
    */
-  public void useViewCoordinates(LXModel model) {
-    this.modelCoordsTextureUnit = glEngine.getCoordinatesTexture(model);
+  public void setModelCoordinates(LXModel model) {
+    this.modelCoordsTextureUnit = this.glEngine.getCoordinatesTexture(model);
+    this.modelCoordsChanged = true;
   }
 
   // Staging Uniforms
