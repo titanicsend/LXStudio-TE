@@ -455,7 +455,7 @@ public class GLShader {
     // hand the complete uniform list to OpenGL
     updateUniforms(gl4);
     render();
-    saveSnapshot();
+    saveBackBuffer();
   }
 
   private void setUniforms() {
@@ -549,7 +549,7 @@ public class GLShader {
     gl4.glDisableVertexAttribArray(position);
   }
 
-  private void saveSnapshot() {
+  private void saveBackBuffer() {
     backBuffer.rewind();
     gl4.glReadBuffer(GL_BACK);
 
@@ -558,7 +558,7 @@ public class GLShader {
     gl4.glReadPixels(0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, backBuffer);
   }
 
-  public ByteBuffer getImageBuffer() {
+  public ByteBuffer getBackBuffer() {
     return backBuffer;
   }
 
