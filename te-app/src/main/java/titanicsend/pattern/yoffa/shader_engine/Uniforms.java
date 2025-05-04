@@ -8,4 +8,7 @@ public class Uniforms {
   public static final String CHANNEL = "iChannel";
   public static final String AUDIO_CHANNEL = CHANNEL + "0";
   public static final String CUSTOM_SUFFIX = "_parameter";
+  public static final String LX_MODEL_COORDS = "lxModelCoords";
+  public static final String BACK_BUFFER = "iBackbuffer";
+  public static final String MAPPED_BUFFER = "iMappedBuffer";
 }

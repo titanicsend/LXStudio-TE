@@ -475,7 +475,7 @@ public class GLShader {
     // All we need to do is point at the right GL texture unit.
     if (this.modelCoordsChanged) {
       this.modelCoordsChanged = false;
-      setUniform("lxModelCoords", this.modelCoordsTextureUnit);
+      setUniform(Uniforms.LX_MODEL_COORDS, this.modelCoordsTextureUnit);
     }
 
     // Update backbuffer texture data. This buffer contains the result of the
@@ -495,7 +495,7 @@ public class GLShader {
         GL_UNSIGNED_BYTE,
         backBuffer);
 
-    setUniform("iBackbuffer", 2);
+    setUniform(Uniforms.BACK_BUFFER, 2);
 
     // if necessary, update the mapped buffer texture data
     if (useMappedBuffer) {
@@ -514,7 +514,7 @@ public class GLShader {
           GL_UNSIGNED_BYTE,
           mappedBuffer);
 
-      setUniform("iMappedBuffer", mappedBufferUnit);
+      setUniform(Uniforms.MAPPED_BUFFER, mappedBufferUnit);
     }
 
     // add shadertoy texture channels. These textures already statically bound to
