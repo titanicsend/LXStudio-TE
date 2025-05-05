@@ -92,7 +92,7 @@ public class NativeShader implements GLEventListener {
     if (!isInitialized()) {
       initShaderProgram(gl4);
       loadTextureFiles(fragmentShader);
-      gl4.glUseProgram(shaderProgram.getProgramId());
+      gl4.glUseProgram(shaderProgram.id);
     }
     context.release();
   }
@@ -158,7 +158,7 @@ public class NativeShader implements GLEventListener {
         indexBuffer,
         GL.GL_STATIC_DRAW);
 
-    this.position = gl4.glGetAttribLocation(shaderProgram.getProgramId(), ShaderAttribute.POSITION);
+    this.position = gl4.glGetAttribLocation(shaderProgram.id, ShaderAttribute.POSITION);
 
     // Audio texture object - on id GL_TEXTURE0
     gl4.glActiveTexture(GL_TEXTURE0);
@@ -552,7 +552,7 @@ public class NativeShader implements GLEventListener {
     Uniform uniform = this.uniformMap.get(name);
     if (uniform == null) {
       // First time accessing this uniform, create a new object.
-      int location = this.gl4.glGetUniformLocation(this.shaderProgram.getProgramId(), name);
+      int location = this.gl4.glGetUniformLocation(this.shaderProgram.id, name);
       // Special handling for Sampler2D, textureUnit will be set once in the constructor.
       // if (type == UniformType.SAMPLER2D || type == UniformType.SAMPLER2DSTATIC) {
       //   TODO: Looks like this class didn't handle texture units the same way as GLShader...

@@ -389,7 +389,7 @@ public class GLShader {
         indexBuffer,
         GL.GL_STATIC_DRAW);
 
-    int position = gl4.glGetAttribLocation(shaderProgram.getProgramId(), ShaderAttribute.POSITION);
+    int position = gl4.glGetAttribLocation(shaderProgram.id, ShaderAttribute.POSITION);
     gl4.glVertexAttribPointer(position, 3, GL4.GL_FLOAT, false, 0, 0);
     gl4.glEnableVertexAttribArray(position);
 
@@ -426,14 +426,13 @@ public class GLShader {
     }
 
     // assign shared uniform blocks to the shader's binding points
-    int perRunBlockIndex = gl4.glGetUniformBlockIndex(shaderProgram.getProgramId(), "PerRunBlock");
+    int perRunBlockIndex = gl4.glGetUniformBlockIndex(shaderProgram.id, "PerRunBlock");
     gl4.glUniformBlockBinding(
-        shaderProgram.getProgramId(), perRunBlockIndex, GLEngine.perRunUniformBlockBinding);
+        shaderProgram.id, perRunBlockIndex, GLEngine.perRunUniformBlockBinding);
 
-    int perFrameBlockIndex =
-        gl4.glGetUniformBlockIndex(shaderProgram.getProgramId(), "PerFrameBlock");
+    int perFrameBlockIndex = gl4.glGetUniformBlockIndex(shaderProgram.id, "PerFrameBlock");
     gl4.glUniformBlockBinding(
-        shaderProgram.getProgramId(), perFrameBlockIndex, GLEngine.perFrameUniformBlockBinding);
+        shaderProgram.id, perFrameBlockIndex, GLEngine.perFrameUniformBlockBinding);
   }
 
   private void loadTextureFiles() {
@@ -445,7 +444,7 @@ public class GLShader {
       ti.name = textureInput.getValue();
       ti.channel = textureInput.getKey();
       ti.uniformLocation =
-          this.gl4.glGetUniformLocation(this.shaderProgram.getProgramId(), "iChannel" + ti.channel);
+          this.gl4.glGetUniformLocation(this.shaderProgram.id, "iChannel" + ti.channel);
 
       textures.add(ti);
     }
@@ -466,7 +465,7 @@ public class GLShader {
 
   /** Activate this shader for rendering in the current context */
   private void useProgram() {
-    this.gl4.glUseProgram(this.shaderProgram.getProgramId());
+    this.gl4.glUseProgram(this.shaderProgram.id);
   }
 
   private void setUniforms() {
@@ -855,7 +854,7 @@ public class GLShader {
     Uniform uniform = this.uniformMap.get(name);
     if (uniform == null) {
       // First time accessing this uniform, create a new object.
-      int location = this.gl4.glGetUniformLocation(this.shaderProgram.getProgramId(), name);
+      int location = this.gl4.glGetUniformLocation(this.shaderProgram.id, name);
       // Special handling for Sampler2D, textureUnit will be set once in the constructor.
       if (type == UniformType.SAMPLER2D || type == UniformType.SAMPLER2DSTATIC) {
         uniform = Uniform.create(this.gl4, name, location, type, getTextureUnit(name));
