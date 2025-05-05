@@ -10,6 +10,7 @@ import java.util.List;
 import titanicsend.color.TEColorParameter;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
+import titanicsend.pattern.yoffa.shader_engine.Uniform;
 
 /**
  * Wrapper class for OpenGL shaders. Simplifies handling of context and native memory management,
@@ -27,6 +28,30 @@ public class GLShaderPattern extends TEPerformancePattern {
   protected final List<GLShader> shaders = Collections.unmodifiableList(this.mutableShaders);
 
   private boolean modelChanged = true;
+
+  private static class Uniforms {
+    private Uniform.Float1 iTime;
+    private Uniform.Float3 iColorRGB;
+    private Uniform.Float3 iColorHSB;
+    private Uniform.Float3 iColor2RGB;
+    private Uniform.Float3 iColor2HSB;
+    private Uniform.Float1 iPaletteOffset;
+    private Uniform.Float1 iSpeed;
+    private Uniform.Float1 iScale;
+    private Uniform.Float1 iQuantity;
+    private Uniform.Float2 iTranslate;
+    private Uniform.Float1 iSpin;
+    private Uniform.Float1 iRotationAngle;
+    private Uniform.Float1 iBrightness;
+    private Uniform.Float1 iWow1;
+    private Uniform.Float1 iWow2;
+    private Uniform.Boolean1 iWowTrigger;
+    private Uniform.Float1 levelReact;
+    private Uniform.Float1 frequencyReact;
+  }
+
+  private final Uniforms uniforms = new Uniforms();
+  private boolean initializedUniforms = false;
 
   public GLShaderPattern(LX lx) {
     this(lx, TEShaderView.ALL_POINTS);
@@ -108,44 +133,71 @@ public class GLShaderPattern extends TEPerformancePattern {
     }
   }
 
+  private void initializeUniforms(GLShader s) {
+    // Keep direct references to each Uniform, saves hashmap lookup.
+    this.uniforms.iTime = s.getUniformFloat1("iTime");
+    this.uniforms.iColorRGB = s.getUniformFloat3("iColorRGB");
+    this.uniforms.iColorHSB = s.getUniformFloat3("iColorHSB");
+    this.uniforms.iColor2RGB = s.getUniformFloat3("iColor2RGB");
+    this.uniforms.iColor2HSB = s.getUniformFloat3("iColor2HSB");
+    this.uniforms.iPaletteOffset = s.getUniformFloat1("iPaletteOffset");
+    this.uniforms.iSpeed = s.getUniformFloat1("iSpeed");
+    this.uniforms.iScale = s.getUniformFloat1("iScale");
+    this.uniforms.iQuantity = s.getUniformFloat1("iQuantity");
+    this.uniforms.iTranslate = s.getUniformFloat2("iTranslate");
+    this.uniforms.iSpin = s.getUniformFloat1("iSpin");
+    this.uniforms.iRotationAngle = s.getUniformFloat1("iRotationAngle");
+    this.uniforms.iBrightness = s.getUniformFloat1("iBrightness");
+    this.uniforms.iWow1 = s.getUniformFloat1("iWow1");
+    this.uniforms.iWow2 = s.getUniformFloat1("iWow2");
+    this.uniforms.iWowTrigger = s.getUniformBoolean1("iWowTrigger");
+    this.uniforms.levelReact = s.getUniformFloat1("levelReact");
+    this.uniforms.frequencyReact = s.getUniformFloat1("frequencyReact");
+  }
+
   private void setUniforms(GLShader s) {
+    if (!this.initializedUniforms) {
+      this.initializedUniforms = true;
+      initializeUniforms(s);
+    }
+
     // set standard shadertoy-style uniforms
-    s.setUniform("iTime", (float) getTime());
+    this.uniforms.iTime.setValue((float) getTime());
 
     // color-related uniforms
     int col = calcColor();
-    s.setUniform(
-        "iColorRGB",
+    this.uniforms.iColorRGB.setValue(
         (float) (0xff & LXColor.red(col)) / 255f,
         (float) (0xff & LXColor.green(col)) / 255f,
         (float) (0xff & LXColor.blue(col)) / 255f);
-    s.setUniform("iColorHSB", LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
+    this.uniforms.iColorHSB.setValue(
+        LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
 
     col = calcColor2();
-    s.setUniform(
-        "iColor2RGB",
+    this.uniforms.iColor2RGB.setValue(
         (float) (0xff & LXColor.red(col)) / 255f,
         (float) (0xff & LXColor.green(col)) / 255f,
         (float) (0xff & LXColor.blue(col)) / 255f);
-    s.setUniform("iColor2HSB", LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
+    this.uniforms.iColor2HSB.setValue(
+        LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
 
     boolean usePalette =
         getControls().color.colorSource.getEnum() != TEColorParameter.ColorSource.STATIC;
-    s.setUniform("iPaletteOffset", usePalette ? getControls().color.getOffsetf() : -1f);
+    this.uniforms.iPaletteOffset.setValue(usePalette ? getControls().color.getOffsetf() : -1f);
 
     // uniforms for common controls
-    s.setUniform("iSpeed", (float) getSpeed());
-    s.setUniform("iScale", (float) getSize());
-    s.setUniform("iQuantity", (float) getQuantity());
-    s.setUniform("iTranslate", (float) getXPos(), (float) getYPos());
-    s.setUniform("iSpin", (float) getSpin());
-    s.setUniform("iRotationAngle", (float) getRotationAngleFromSpin());
-    s.setUniform("iBrightness", (float) getBrightness());
-    s.setUniform("iWow1", (float) getWow1());
-    s.setUniform("iWow2", (float) getWow2());
-    s.setUniform("iWowTrigger", getWowTrigger());
-    s.setUniform("levelReact", (float) getLevelReactivity());
-    s.setUniform("frequencyReact", (float) getFrequencyReactivity());
+    this.uniforms.iSpeed.setValue((float) getSpeed());
+    this.uniforms.iScale.setValue((float) getSize());
+    this.uniforms.iQuantity.setValue((float) getQuantity());
+    this.uniforms.iTranslate.setValue((float) getXPos(), (float) getYPos());
+    this.uniforms.iSpin.setValue((float) getSpin());
+    this.uniforms.iRotationAngle.setValue((float) getRotationAngleFromSpin());
+    this.uniforms.iBrightness.setValue((float) getBrightness());
+    this.uniforms.iWow1.setValue((float) getWow1());
+    this.uniforms.iWow2.setValue((float) getWow2());
+    this.uniforms.iWowTrigger.setValue(getWowTrigger());
+    this.uniforms.levelReact.setValue((float) getLevelReactivity());
+    this.uniforms.frequencyReact.setValue((float) getFrequencyReactivity());
   }
 
   @Override

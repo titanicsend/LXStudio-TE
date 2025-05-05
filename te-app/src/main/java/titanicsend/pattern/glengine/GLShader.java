@@ -754,6 +754,98 @@ public class GLShader {
     return setUniformMatrix(name, buf, dim);
   }
 
+  public Uniform.Int1 getUniformInt1(String name) {
+    return (Uniform.Int1) getUniform(name, UniformType.INT1);
+  }
+
+  public Uniform.Int2 getUniformInt2(String name) {
+    return (Uniform.Int2) getUniform(name, UniformType.INT2);
+  }
+
+  public Uniform.Int3 getUniformInt3(String name) {
+    return (Uniform.Int3) getUniform(name, UniformType.INT3);
+  }
+
+  public Uniform.Int4 getUniformInt4(String name) {
+    return (Uniform.Int4) getUniform(name, UniformType.INT4);
+  }
+
+  public Uniform.Float1 getUniformFloat1(String name) {
+    return (Uniform.Float1) getUniform(name, UniformType.FLOAT1);
+  }
+
+  public Uniform.Float2 getUniformFloat2(String name) {
+    return (Uniform.Float2) getUniform(name, UniformType.FLOAT2);
+  }
+
+  public Uniform.Float3 getUniformFloat3(String name) {
+    return (Uniform.Float3) getUniform(name, UniformType.FLOAT3);
+  }
+
+  public Uniform.Float4 getUniformFloat4(String name) {
+    return (Uniform.Float4) getUniform(name, UniformType.FLOAT4);
+  }
+
+  public Uniform.Boolean1 getUniformBoolean1(String name) {
+    return (Uniform.Boolean1) getUniform(name, UniformType.BOOLEAN1);
+  }
+
+  public Uniform.Boolean2 getUniformBoolean2(String name) {
+    return (Uniform.Boolean2) getUniform(name, UniformType.BOOLEAN2);
+  }
+
+  public Uniform.Int1Vec getUniformInt1Vec(String name) {
+    return (Uniform.Int1Vec) getUniform(name, UniformType.INT1VEC);
+  }
+
+  public Uniform.Int2Vec getUniformInt2Vec(String name) {
+    return (Uniform.Int2Vec) getUniform(name, UniformType.INT2VEC);
+  }
+
+  public Uniform.Int3Vec getUniformInt3Vec(String name) {
+    return (Uniform.Int3Vec) getUniform(name, UniformType.INT3VEC);
+  }
+
+  public Uniform.Int4Vec getUniformInt4Vec(String name) {
+    return (Uniform.Int4Vec) getUniform(name, UniformType.INT4VEC);
+  }
+
+  public Uniform.Float1Vec getUniformFloat1Vec(String name) {
+    return (Uniform.Float1Vec) getUniform(name, UniformType.FLOAT1VEC);
+  }
+
+  public Uniform.Float2Vec getUniformFloat2Vec(String name) {
+    return (Uniform.Float2Vec) getUniform(name, UniformType.FLOAT2VEC);
+  }
+
+  public Uniform.Float3Vec getUniformFloat3Vec(String name) {
+    return (Uniform.Float3Vec) getUniform(name, UniformType.FLOAT3VEC);
+  }
+
+  public Uniform.Float4Vec getUniformFloat4Vec(String name) {
+    return (Uniform.Float4Vec) getUniform(name, UniformType.FLOAT4VEC);
+  }
+
+  public Uniform.Mat2 getUniformMat2(String name) {
+    return (Uniform.Mat2) getUniform(name, UniformType.MAT2);
+  }
+
+  public Uniform.Mat3 getUniformMat3(String name) {
+    return (Uniform.Mat3) getUniform(name, UniformType.MAT3);
+  }
+
+  public Uniform.Mat4 getUniformMat4(String name) {
+    return (Uniform.Mat4) getUniform(name, UniformType.MAT4);
+  }
+
+  public Uniform.Sampler2D getUniformSampler2D(String name) {
+    return (Uniform.Sampler2D) getUniform(name, UniformType.SAMPLER2D);
+  }
+
+  public Uniform.Sampler2D getUniformSampler2DStatic(String name) {
+    return (Uniform.Sampler2D) getUniform(name, UniformType.SAMPLER2DSTATIC);
+  }
+
   /**
    * Retrieve a Uniform by name and type. Creates a uniform for this shader instance if it does not
    * exist.
@@ -809,7 +901,7 @@ public class GLShader {
   // when the pattern is unloaded. (Not when just
   // deactivated.)
   public void dispose() {
-    // Release references to uniform objects. If container classes do the same they can be GC'd.
+    // Release references to uniform objects
     this.uniformMap.clear();
     this.mutableUniforms.clear();
 
