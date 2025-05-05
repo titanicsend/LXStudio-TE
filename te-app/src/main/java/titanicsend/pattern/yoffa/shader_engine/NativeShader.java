@@ -129,6 +129,8 @@ public class NativeShader implements GLEventListener {
     gl4.glReadPixels(0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, backBuffer);
   }
 
+  private int position;
+
   /**
    * Preallocate GPU memory objects at initialization time
    *
@@ -155,6 +157,8 @@ public class NativeShader implements GLEventListener {
         (long) indexBuffer.capacity() * Integer.BYTES,
         indexBuffer,
         GL.GL_STATIC_DRAW);
+
+    this.position = gl4.glGetAttribLocation(shaderProgram.getProgramId(), ShaderAttribute.POSITION);
 
     // Audio texture object - on id GL_TEXTURE0
     gl4.glActiveTexture(GL_TEXTURE0);
@@ -185,8 +189,6 @@ public class NativeShader implements GLEventListener {
    */
   private void render(GL4 gl4) {
     // set up geometry
-    int position = shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION);
-
     gl4.glBindBuffer(GL_ARRAY_BUFFER, geometryBufferHandles[0]);
     gl4.glVertexAttribPointer(position, 3, GL4.GL_FLOAT, false, 0, 0);
     gl4.glEnableVertexAttribArray(position);

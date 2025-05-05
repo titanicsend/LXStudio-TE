@@ -389,7 +389,7 @@ public class GLShader {
         indexBuffer,
         GL.GL_STATIC_DRAW);
 
-    int position = shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION);
+    int position = gl4.glGetAttribLocation(shaderProgram.getProgramId(), ShaderAttribute.POSITION);
     gl4.glVertexAttribPointer(position, 3, GL4.GL_FLOAT, false, 0, 0);
     gl4.glEnableVertexAttribArray(position);
 
