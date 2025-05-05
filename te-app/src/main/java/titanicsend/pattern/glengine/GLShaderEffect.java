@@ -24,16 +24,16 @@ public class GLShaderEffect extends TEEffect {
   protected final int mappedBufferHeight = GLEngine.getMappedBufferHeight();
 
   // list of shaders to run
-  private final List<GLShader> mutableShaders = new ArrayList<>();
-  protected final List<GLShader> shaders = Collections.unmodifiableList(this.mutableShaders);
+  private final List<TEShader> mutableShaders = new ArrayList<>();
+  protected final List<TEShader> shaders = Collections.unmodifiableList(this.mutableShaders);
 
   private boolean modelChanged = true;
 
   public GLShaderEffect(LX lx) {
     super(lx);
 
-    imageBuffer = GLShader.allocateBackBuffer();
-    mappedBuffer = GLShader.allocateMappedBuffer(mappedBufferWidth, mappedBufferHeight);
+    imageBuffer = TEShader.allocateBackBuffer();
+    mappedBuffer = TEShader.allocateMappedBuffer(mappedBufferWidth, mappedBufferHeight);
     // zero mappedBuffer
     mappedBuffer.rewind();
     for (int i = 0; i < mappedBuffer.capacity(); i++) {
@@ -41,7 +41,7 @@ public class GLShaderEffect extends TEEffect {
     }
   }
 
-  private GLShader addShader(GLShader shader) {
+  private TEShader addShader(TEShader shader) {
     this.mutableShaders.add(shader);
     return shader;
   }
@@ -50,35 +50,35 @@ public class GLShaderEffect extends TEEffect {
    * Add a shader by fragment shader filename. The simple option for shaders that use only the
    * default TEPerformancePattern uniforms and don't require any additional computation in Java.
    */
-  protected GLShader addShader(String shaderName, String... textureFilenames) {
-    return addShader(new GLShader(lx, shaderName, this::setUniforms, textureFilenames));
+  protected TEShader addShader(String shaderName, String... textureFilenames) {
+    return addShader(new TEShader(lx, shaderName, this::setUniforms, textureFilenames));
   }
 
   /**
    * Add a shader by fragment shader filename. The simple option for shaders that use only the
    * default TEPerformancePattern uniforms and don't require any additional computation in Java.
    */
-  protected GLShader addShader(
-      String shaderName, GLShader.UniformSource uniformSource, String... textureFilenames) {
+  protected TEShader addShader(
+      String shaderName, TEShader.UniformSource uniformSource, String... textureFilenames) {
     return addShader(
-        new GLShader(lx, shaderName, List.of(this::setUniforms, uniformSource), textureFilenames));
+        new TEShader(lx, shaderName, List.of(this::setUniforms, uniformSource), textureFilenames));
   }
 
   /** Add a shader by fragment shader filename, with a callback for setting custom uniforms. */
-  protected GLShader addShader(String shaderName, GLShader.UniformSource uniformSource) {
-    return addShader(new GLShader(lx, shaderName, List.of(this::setUniforms, uniformSource)));
+  protected TEShader addShader(String shaderName, TEShader.UniformSource uniformSource) {
+    return addShader(new TEShader(lx, shaderName, List.of(this::setUniforms, uniformSource)));
   }
 
   /** Add a shader by fragment shader filename, with a callback for setting custom uniforms. */
-  protected GLShader addShader(
-      String shaderName, GLShader.UniformSource uniformSource, ByteBuffer frameBuf) {
+  protected TEShader addShader(
+      String shaderName, TEShader.UniformSource uniformSource, ByteBuffer frameBuf) {
     return addShader(
-        new GLShader(lx, shaderName, List.of(this::setUniforms, uniformSource), frameBuf));
+        new TEShader(lx, shaderName, List.of(this::setUniforms, uniformSource), frameBuf));
   }
 
   /** Add a shader by fragment shader filename */
-  protected GLShader addShader(String shaderName, ByteBuffer frameBuf) {
-    return addShader(new GLShader(lx, shaderName, this::setUniforms, frameBuf));
+  protected TEShader addShader(String shaderName, ByteBuffer frameBuf) {
+    return addShader(new TEShader(lx, shaderName, this::setUniforms, frameBuf));
   }
 
   protected ByteBuffer getImageBuffer() {
@@ -102,7 +102,7 @@ public class GLShaderEffect extends TEEffect {
     // Update the model coords texture only when changed (and the first run)
     if (this.modelChanged) {
       this.modelChanged = false;
-      for (GLShader shader : this.shaders) {
+      for (TEShader shader : this.shaders) {
         shader.setModelCoordinates(m);
       }
     }
@@ -114,7 +114,7 @@ public class GLShaderEffect extends TEEffect {
 
     // run the chain of shaders, except for the last one,
     // copying the output of each to the next shader's input texture
-    GLShader shader = null;
+    TEShader shader = null;
     int n = this.shaders.size();
     for (int i = 0; i < n; i++) {
       shader = this.shaders.get(i);
@@ -161,14 +161,14 @@ public class GLShaderEffect extends TEEffect {
   @Override
   protected void onEnable() {
     super.onEnable();
-    for (GLShader shader : this.shaders) {
+    for (TEShader shader : this.shaders) {
       shader.onActive();
     }
   }
 
   @Override
   protected void onDisable() {
-    for (GLShader shader : this.shaders) {
+    for (TEShader shader : this.shaders) {
       shader.onInactive();
     }
     super.onDisable();
@@ -176,7 +176,7 @@ public class GLShaderEffect extends TEEffect {
 
   @Override
   public void dispose() {
-    for (GLShader shader : this.shaders) {
+    for (TEShader shader : this.shaders) {
       shader.dispose();
     }
     super.dispose();

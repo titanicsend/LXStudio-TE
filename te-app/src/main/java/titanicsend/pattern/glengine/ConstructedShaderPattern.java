@@ -18,7 +18,7 @@ public abstract class ConstructedShaderPattern extends GLShaderPattern {
     // add LX controls for any non-standard parameters found in the shader code
     // (right now, this is mostly for legacy code support, but we may use it
     // for other things in the future)
-    for (GLShader shader : this.shaders) {
+    for (TEShader shader : this.shaders) {
       for (LXParameter parameter : shader.getParameters()) {
         addParameter(parameter.getLabel(), parameter);
       }

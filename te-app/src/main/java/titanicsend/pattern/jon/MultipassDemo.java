@@ -3,8 +3,8 @@ package titanicsend.pattern.jon;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import java.nio.ByteBuffer;
-import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
+import titanicsend.pattern.glengine.TEShader;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 @LXCategory("TE Examples")
@@ -19,7 +19,7 @@ public class MultipassDemo extends GLShaderPattern {
     addCommonControls();
 
     // allocate a backbuffer for all the shaders to share
-    buffer = GLShader.allocateBackBuffer();
+    buffer = TEShader.allocateBackBuffer();
 
     // add the first shader, passing in the shared backbuffer
     addShader("fire.fs", buffer);

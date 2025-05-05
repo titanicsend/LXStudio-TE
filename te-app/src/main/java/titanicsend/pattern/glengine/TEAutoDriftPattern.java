@@ -17,7 +17,7 @@ public class TEAutoDriftPattern extends DriftEnabledPattern {
     super(lx, defaultView);
 
     // Create shader instance
-    GLShader shader =
+    TEShader shader =
         addShader(
             this.getShaderFile(),
             (s) -> {

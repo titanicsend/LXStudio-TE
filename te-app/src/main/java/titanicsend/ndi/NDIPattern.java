@@ -18,6 +18,7 @@ import me.walkerknapp.devolay.DevolayReceiver;
 import me.walkerknapp.devolay.DevolayVideoFrame;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
+import titanicsend.pattern.glengine.TEShader;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
@@ -82,7 +83,7 @@ public class NDIPattern extends GLShaderPattern {
     controls.setRange(TEControlTag.SIZE, 1, 5, 0.1);
 
     // allocate a backbuffer for all the shaders to share
-    buffer = GLShader.allocateBackBuffer();
+    buffer = TEShader.allocateBackBuffer();
 
     // add the primary shader, which handles mapping incoming video frames
     // from the NDI source to the shared buffer.
