@@ -61,6 +61,7 @@ public class GLShader {
   // geometry buffers
   private final FloatBuffer vertexBuffer;
   private final IntBuffer indexBuffer;
+  private final int[] vaohandles = new int[1];
   private final int[] geometryBufferHandles = new int[2];
 
   // texture buffers
@@ -364,7 +365,11 @@ public class GLShader {
    */
   private void allocateShaderBuffers() {
     // storage for geometry buffer handles
+    gl4.glGenVertexArrays(1, this.vaohandles, 0);
     gl4.glGenBuffers(2, IntBuffer.wrap(geometryBufferHandles));
+
+    // Bind Vertex Array Object first
+    gl4.glBindVertexArray(this.vaohandles[0]);
 
     // vertices
     vertexBuffer.rewind();
@@ -383,6 +388,12 @@ public class GLShader {
         (long) indexBuffer.capacity() * Integer.BYTES,
         indexBuffer,
         GL.GL_STATIC_DRAW);
+
+    int position = shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION);
+    gl4.glVertexAttribPointer(position, 3, GL4.GL_FLOAT, false, 0, 0);
+    gl4.glEnableVertexAttribArray(position);
+
+    gl4.glBindVertexArray(0);
 
     // backbuffer texture object
     gl4.glActiveTexture(GL_TEXTURE2);
@@ -540,18 +551,8 @@ public class GLShader {
 
   /** Set up geometry at frame generation time */
   private void render() {
-    // set up geometry
-    int position = shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION);
-
-    // TODO(jkb): move these lines to init, just use glBindVertexArray() in render loop?
-    gl4.glBindBuffer(GL_ARRAY_BUFFER, geometryBufferHandles[0]);
-    gl4.glVertexAttribPointer(position, 3, GL4.GL_FLOAT, false, 0, 0);
-    gl4.glEnableVertexAttribArray(position);
-    gl4.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometryBufferHandles[1]);
-
-    // render a frame
+    gl4.glBindVertexArray(vaohandles[0]);
     gl4.glDrawElements(GL2.GL_TRIANGLES, INDICES.length, GL2.GL_UNSIGNED_INT, 0);
-    gl4.glDisableVertexAttribArray(position);
   }
 
   private void saveBackBuffer() {
@@ -911,6 +912,7 @@ public class GLShader {
 
       // delete GPU buffers we directly allocated
       gl4.glDeleteBuffers(2, geometryBufferHandles, 0);
+      gl4.glDeleteVertexArrays(1, vaohandles, 0);
       gl4.glDeleteTextures(1, backbufferHandle, 0);
 
       if (useMappedBuffer) {
