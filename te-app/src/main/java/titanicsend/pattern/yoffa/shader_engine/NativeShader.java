@@ -255,7 +255,8 @@ public class NativeShader implements GLEventListener {
     // Add all preprocessed LX parameters from the shader code as uniforms
     for (LXParameter customParameter : fragmentShader.parameters) {
       setUniform(
-          customParameter.getLabel() + Uniforms.LX_PARAMETER_SUFFIX, customParameter.getValuef());
+          customParameter.getLabel() + UniformNames.LX_PARAMETER_SUFFIX,
+          customParameter.getValuef());
     }
 
     // Set audio waveform and fft data as a 512x2 texture on the specified audio
@@ -288,11 +289,11 @@ public class NativeShader implements GLEventListener {
         GL4.GL_RED,
         GL_FLOAT,
         audioTextureData);
-    setUniform(Uniforms.AUDIO_CHANNEL, 0);
+    setUniform(UniformNames.AUDIO_CHANNEL, 0);
 
     // add shadertoy texture channels
     for (Map.Entry<Integer, Texture> textureInput : textures.entrySet()) {
-      setUniform(Uniforms.CHANNEL + textureInput.getKey(), textureInput.getValue(), true);
+      setUniform(UniformNames.CHANNEL + textureInput.getKey(), textureInput.getValue(), true);
     }
 
     // hand the complete uniform list to OpenGL

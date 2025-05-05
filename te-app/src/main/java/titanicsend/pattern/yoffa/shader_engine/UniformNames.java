@@ -1,6 +1,6 @@
 package titanicsend.pattern.yoffa.shader_engine;
 
-public class Uniforms {
+public class UniformNames {
 
   public static final String TIME_SECONDS = "iTime";
   public static final String RESOLUTION = "iResolution";

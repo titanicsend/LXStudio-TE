@@ -469,14 +469,14 @@ public class GLShader {
     //
     // The audio texture can be used by all shaders, and stays bound to texture
     // unit 0 throughout the Chromatik run. All we have to do to use it is add the uniform.
-    setUniform(Uniforms.AUDIO_CHANNEL, 0);
+    setUniform(UniformNames.AUDIO_CHANNEL, 0);
 
     // use the current view's model coordinates texture which
     // has already been loaded to the GPU by the texture cache manager.
     // All we need to do is point at the right GL texture unit.
     if (this.modelCoordsChanged) {
       this.modelCoordsChanged = false;
-      setUniform(Uniforms.LX_MODEL_COORDS, this.modelCoordsTextureUnit);
+      setUniform(UniformNames.LX_MODEL_COORDS, this.modelCoordsTextureUnit);
     }
 
     // Update backbuffer texture data. This buffer contains the result of the
@@ -496,7 +496,7 @@ public class GLShader {
         GL_UNSIGNED_BYTE,
         backBuffer);
 
-    setUniform(Uniforms.BACK_BUFFER, 2);
+    setUniform(UniformNames.BACK_BUFFER, 2);
 
     // if necessary, update the mapped buffer texture data
     if (useMappedBuffer) {
@@ -515,20 +515,21 @@ public class GLShader {
           GL_UNSIGNED_BYTE,
           mappedBuffer);
 
-      setUniform(Uniforms.MAPPED_BUFFER, mappedBufferUnit);
+      setUniform(UniformNames.MAPPED_BUFFER, mappedBufferUnit);
     }
 
     // add shadertoy texture channels. These textures already statically bound to
     // texture units so all we have to do is tell the shader which texture unit to use.
     for (TextureInfo ti : textures) {
-      setUniform(Uniforms.CHANNEL + ti.channel, ti.textureUnit);
+      setUniform(UniformNames.CHANNEL + ti.channel, ti.textureUnit);
       gl4.glUniform1i(ti.uniformLocation, ti.textureUnit);
     }
 
     // Add all preprocessed LX parameters from the shader code as uniforms
     for (LXParameter customParameter : fragmentShader.parameters) {
       setUniform(
-          customParameter.getLabel() + Uniforms.LX_PARAMETER_SUFFIX, customParameter.getValuef());
+          customParameter.getLabel() + UniformNames.LX_PARAMETER_SUFFIX,
+          customParameter.getValuef());
     }
 
     // Set user uniforms last, giving user the option to override any default values
