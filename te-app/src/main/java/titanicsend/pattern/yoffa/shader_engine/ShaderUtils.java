@@ -240,20 +240,25 @@ public class ShaderUtils {
    * @param gl4 an active OpenGL context
    * @param programId id to which the shader binary will be attached
    * @param shaderName filename (without path) of fragment shader
+   * @param tePreProcess whether to perform te pre-processing and merge with template shader
    */
-  public static void buildShader(GL4 gl4, int programId, String shaderName) {
+  public static void buildShader(GL4 gl4, int programId, String shaderName, boolean tePreProcess) {
     ArrayList<ShaderConfiguration> config = new ArrayList<>();
     String cacheName = getCacheFilename(shaderName);
     String shaderText = loadResource(SHADER_PATH + shaderName);
 
     String shaderBody;
     try {
-      GLPreprocessor glp = new GLPreprocessor();
-      // try the new way
-      try {
-        shaderBody = glp.preprocessShader(shaderText, config);
-      } catch (Exception e) {
-        throw new RuntimeException(e);
+      if (tePreProcess) {
+        GLPreprocessor glp = new GLPreprocessor();
+        // try the new way
+        try {
+          shaderBody = glp.preprocessShader(shaderText, config);
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+      } else {
+        shaderBody = shaderText;
       }
 
       int vertexShaderId =
