@@ -1,12 +1,8 @@
 package titanicsend.pattern.glengine;
 
 import static com.jogamp.opengl.GL.*;
-import static titanicsend.pattern.glengine.TextureManager.TEXTURE_UNIT_AUDIO;
-import static titanicsend.pattern.glengine.TextureManager.TEXTURE_UNIT_BACKBUFFER;
-import static titanicsend.pattern.glengine.TextureManager.TEXTURE_UNIT_COORDS;
 
 import com.jogamp.opengl.*;
-import com.jogamp.opengl.GL4;
 import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.parameter.LXParameter;
@@ -32,19 +28,11 @@ public class TEShader extends GLShader {
   }
 
   private final ArrayList<TextureInfo> textures = new ArrayList<>();
-  private final ByteBuffer backBuffer;
-  private final int[] backbufferHandle = new int[1];
 
-  // support for optional texture mapped (as opposed to the new linear format) buffer
-  // containing the last rendered frame.
-  private boolean useMappedBuffer = false;
-  private ByteBuffer mappedBuffer = null;
-  private final int[] mappedBufferHandle = new int[1];
-  private int mappedBufferUnit = -1;
-  private int mappedBufferWidth = 640;
-  private int mappedBufferHeight = 640;
+  // Render buffers: ping-pong FBOs and textures
+  private PingPongFBO ppFBOs;
 
-  // Handle of the GL texture corresponding to the current model/view
+  // the GL texture unit to which the current view model coordinate texture is bound.
   private int modelCoordsTextureHandle = -1;
 
   // Welcome to the Land of 1000 Constructors!
@@ -56,11 +44,9 @@ public class TEShader extends GLShader {
       List<UniformSource> uniformSources) {
     super(lx, fragmentShader);
 
-    // allocate default buffer for reading offscreen surface to cpu memory
-    this.backBuffer = frameBuf != null ? frameBuf : allocateBackBuffer();
-
     // Uniform callback for TE common controls
     addUniformSource(this::setUniforms);
+
     // Children set uniforms last, giving user the option to override any default values
     for (UniformSource uniformSource : uniformSources) {
       if (uniformSource != null) {
@@ -163,30 +149,6 @@ public class TEShader extends GLShader {
 
   // Setup
 
-  // get the active GL profile so the calling entity can work with
-  // GL textures and buffers if necessary.  (NDI support
-  // requires this, for example.)
-  public GLProfile getGLProfile() {
-    return gl4.getGLProfile();
-  }
-
-  /**
-   * Set the buffer to be used as a rectangular texture backbuffer for this shader. (As opposed to
-   * iBackbuffer, which is a linear list of colors corresponding to LX 3D model points and can't be
-   * used for algorithms that need the ability to access neighboring pixels.) NOTE: MUST BE CALLED
-   * BEFORE THE SHADER IS INITIALIZED. (i.e. in the pattern's constructor.) TODO - at present, this
-   * buffer is only used by shader effects. It should eventually TODO - be optional for shader
-   * patterns as well.
-   *
-   * @param buffer previously allocated ByteBuffer of sufficient size to hold the desired texture
-   */
-  public void setMappedBuffer(ByteBuffer buffer, int width, int height) {
-    this.mappedBufferWidth = width;
-    this.mappedBufferHeight = height;
-    this.mappedBuffer = buffer;
-    this.useMappedBuffer = true;
-  }
-
   public List<ShaderConfiguration> getShaderConfig() {
     return fragmentShader.getShaderConfig();
   }
@@ -202,38 +164,12 @@ public class TEShader extends GLShader {
    * Called at pattern initialization time to allocate and configure GPU buffers that are common to
    * all shaders.
    */
+  @Override
   protected void allocateShaderBuffers() {
     super.allocateShaderBuffers();
 
-    // backbuffer texture object
-    gl4.glActiveTexture(GL_TEXTURE0 + TEXTURE_UNIT_BACKBUFFER);
-    gl4.glEnable(GL_TEXTURE_2D);
-    gl4.glGenTextures(1, backbufferHandle, 0);
-    gl4.glBindTexture(GL4.GL_TEXTURE_2D, backbufferHandle[0]);
-
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    gl4.glBindTexture(GL_TEXTURE_2D, 0);
-
-    // create mapped buffer texture object, if needed
-    if (useMappedBuffer) {
-      this.mappedBufferUnit = getNextTextureUnit();
-
-      gl4.glActiveTexture(GL_TEXTURE0 + mappedBufferUnit);
-      gl4.glEnable(GL_TEXTURE_2D);
-      gl4.glGenTextures(1, mappedBufferHandle, 0);
-      gl4.glBindTexture(GL4.GL_TEXTURE_2D, mappedBufferHandle[0]);
-
-      gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-      gl4.glBindTexture(GL_TEXTURE_2D, 0);
-    }
+    // Create ping-pong FBOs (framebuffers) and textures for rendering
+    this.ppFBOs = new PingPongFBO();
 
     // assign shared uniform blocks to the shader's binding points
     int perRunBlockIndex = gl4.glGetUniformBlockIndex(shaderProgram.id, "PerRunBlock");
@@ -264,6 +200,9 @@ public class TEShader extends GLShader {
   // Run loop
 
   private void setUniforms(GLShader s) {
+    // Swap render/copy FBOs
+    this.ppFBOs.swap();
+
     // Set audio waveform and fft data as a 512x2 texture on the specified audio
     // channel if it's a shadertoy shader, or iChannel0 if it's a local shader.
 
@@ -278,55 +217,20 @@ public class TEShader extends GLShader {
 
     // use the current view's model coordinates texture which
     // has already been loaded to the GPU by the texture cache manager.
-    // All we need to do is point at the right GL texture unit.
-    // Texture handle changes per view. Bind it to the dedicated view texture unit.
+    // All we need to do is bind it to right GL texture unit.
     gl4.glActiveTexture(GL_TEXTURE0 + TEXTURE_UNIT_COORDS);
     gl4.glEnable(GL_TEXTURE_2D);
-    gl4.glBindTexture(GL4.GL_TEXTURE_2D, this.modelCoordsTextureHandle);
-    // Direct coords uniform to the view texture unit
+    gl4.glBindTexture(GL_TEXTURE_2D, this.modelCoordsTextureHandle);
     setUniform(UniformNames.LX_MODEL_COORDS, TEXTURE_UNIT_COORDS);
 
-    // Update backbuffer texture data. This buffer contains the result of the
-    // previous render pass.  It is always bound to texture unit 2.
+    // Use older FBO as backbuffer
     gl4.glActiveTexture(GL_TEXTURE0 + TEXTURE_UNIT_BACKBUFFER);
     gl4.glEnable(GL_TEXTURE_2D);
-    gl4.glBindTexture(GL4.GL_TEXTURE_2D, backbufferHandle[0]);
-
-    gl4.glTexImage2D(
-        GL4.GL_TEXTURE_2D,
-        0,
-        GL4.GL_RGBA,
-        width,
-        height,
-        0,
-        GL4.GL_BGRA,
-        GL_UNSIGNED_BYTE,
-        backBuffer);
-
+    gl4.glBindTexture(GL_TEXTURE_2D, this.ppFBOs.copy.getTextureHandle());
     setUniform(UniformNames.BACK_BUFFER, TEXTURE_UNIT_BACKBUFFER);
 
-    // if necessary, update the mapped buffer texture data
-    if (useMappedBuffer) {
-      gl4.glActiveTexture(GL_TEXTURE0 + mappedBufferUnit);
-      gl4.glEnable(GL_TEXTURE_2D);
-      gl4.glBindTexture(GL4.GL_TEXTURE_2D, mappedBufferHandle[0]);
-
-      gl4.glTexImage2D(
-          GL4.GL_TEXTURE_2D,
-          0,
-          GL4.GL_RGBA,
-          mappedBufferWidth,
-          mappedBufferHeight,
-          0,
-          GL4.GL_BGRA,
-          GL_UNSIGNED_BYTE,
-          mappedBuffer);
-
-      setUniform(UniformNames.MAPPED_BUFFER, mappedBufferUnit);
-    } else {
-      // GL will complain if you don't assign a unit to the sampler2D
-      setUniform(UniformNames.MAPPED_BUFFER, TEXTURE_UNIT_BACKBUFFER);
-    }
+    // GL will complain if you don't assign a unit to the sampler2D...
+    setUniform(UniformNames.MAPPED_BUFFER, TEXTURE_UNIT_BACKBUFFER);
 
     // Bind shadertoy textures to corresponding shader-specific texture units.
     for (TextureInfo ti : textures) {
@@ -344,24 +248,25 @@ public class TEShader extends GLShader {
     }
   }
 
+  @Override
   protected void render() {
-    gl4.glBindVertexArray(getVaoHandle());
-    gl4.glDrawElements(GL2.GL_TRIANGLES, INDICES.length, GL2.GL_UNSIGNED_INT, 0);
+    // Bind vertex array object
+    bindVAO();
 
-    saveBackBuffer();
+    // Bind framebuffer object (FBO)
+    this.ppFBOs.render.bind();
+
+    // render a frame
+    drawElements();
+
+    // No need to unbind VAO.
+    // Also not unbinding the FBO here, as other shader render passes will change it.
+    // And GLMixer will unbind the last FBO at the end of postMix().
   }
 
-  private void saveBackBuffer() {
-    backBuffer.rewind();
-    gl4.glReadBuffer(GL_BACK);
-
-    // using BGRA byte order lets us read int values from the buffer and pass them
-    // directly to LX as colors, without any additional work on the Java side.
-    gl4.glReadPixels(0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, backBuffer);
-  }
-
-  public ByteBuffer getBackBuffer() {
-    return backBuffer;
+  /** Called by GLMixer to retrieve the current render texture handle */
+  public int getRenderTexture() {
+    return this.ppFBOs.render.getTextureHandle();
   }
 
   // Staging Uniforms: LX Model
@@ -381,18 +286,11 @@ public class TEShader extends GLShader {
   // Should be called by the pattern's dispose() function
   // when the pattern is unloaded. (Not when just
   // deactivated.)
+  @Override
   public void dispose() {
-    // if we've been fully initialized, we need to release all
-    // OpenGL GPU resources we've allocated.
+    // release all OpenGL GPU resources we've allocated
     if (isInitialized()) {
-
-      // Back Buffer
-      gl4.glDeleteTextures(1, backbufferHandle, 0);
-
-      // Mapped Buffer
-      if (useMappedBuffer) {
-        gl4.glDeleteTextures(1, mappedBufferHandle, 0);
-      }
+      this.ppFBOs.dispose();
 
       // free any textures on ShaderToy channels
       for (TextureInfo ti : textures) {

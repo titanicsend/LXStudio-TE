@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Titanic's End GPU" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="heronarts.lx.studio.TEApp" />
+    <module name="te-app" />
+    <option name="PROGRAM_PARAMETERS" value="--gpu --resolution 1920x1200" />
+    <option name="VM_PARAMETERS" value="-ea -XstartOnFirstThread -Djava.awt.headless=true " />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/te-app" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

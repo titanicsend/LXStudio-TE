@@ -1,11 +1,26 @@
 package titanicsend.pattern.glengine;
 
 import static com.jogamp.opengl.GL.GL_ARRAY_BUFFER;
+import static com.jogamp.opengl.GL.GL_BGRA;
+import static com.jogamp.opengl.GL.GL_CLAMP_TO_EDGE;
+import static com.jogamp.opengl.GL.GL_COLOR_ATTACHMENT0;
+import static com.jogamp.opengl.GL.GL_COLOR_BUFFER_BIT;
 import static com.jogamp.opengl.GL.GL_ELEMENT_ARRAY_BUFFER;
+import static com.jogamp.opengl.GL.GL_FRAMEBUFFER;
+import static com.jogamp.opengl.GL.GL_FRAMEBUFFER_COMPLETE;
+import static com.jogamp.opengl.GL.GL_LINEAR;
+import static com.jogamp.opengl.GL.GL_RGBA8;
+import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
+import static com.jogamp.opengl.GL.GL_TEXTURE_MAG_FILTER;
+import static com.jogamp.opengl.GL.GL_TEXTURE_MIN_FILTER;
+import static com.jogamp.opengl.GL.GL_TEXTURE_WRAP_S;
+import static com.jogamp.opengl.GL.GL_TEXTURE_WRAP_T;
+import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
 
 import Jama.Matrix;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.util.GLBuffers;
@@ -22,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.lwjgl.BufferUtils;
 import titanicsend.pattern.yoffa.shader_engine.FragmentShader;
 import titanicsend.pattern.yoffa.shader_engine.ShaderAttribute;
 import titanicsend.pattern.yoffa.shader_engine.ShaderProgram;
@@ -30,6 +46,12 @@ import titanicsend.pattern.yoffa.shader_engine.UniformType;
 
 /** Shader program components that are currently common across shader classes. */
 public abstract class GLShader {
+
+  // Reserved texture unit assignments in our context
+  public static final int TEXTURE_UNIT_AUDIO = 0;
+  public static final int TEXTURE_UNIT_COORDS = 1;
+  public static final int TEXTURE_UNIT_BACKBUFFER = 2;
+  public static final int FIRST_UNRESERVED_TEXTURE_UNIT = 3;
 
   /**
    * Callback interface to set any uniforms that have been modified since the last frame. Can be
@@ -84,6 +106,9 @@ public abstract class GLShader {
   private final List<UniformSource> uniformSources = new ArrayList<>();
 
   private boolean initialized = false;
+
+  /** Tracks texture units within the context of this shader */
+  private int nextTextureUnit = FIRST_UNRESERVED_TEXTURE_UNIT;
 
   /** Helper to construct a FragmentShader inline */
   protected static FragmentShader newFragmentShader(
@@ -249,7 +274,13 @@ public abstract class GLShader {
   }
 
   private void initShaderProgram() {
-    this.shaderProgram = new ShaderProgram(this.gl4, this.fragmentShader.getShaderName());
+    this.shaderProgram =
+        new ShaderProgram(this.gl4, this.fragmentShader.getShaderName(), useTEPreProcess());
+  }
+
+  /** Subclasses can override to suppress TE shader pre-processing */
+  protected boolean useTEPreProcess() {
+    return true;
   }
 
   protected void allocateShaderBuffers() {
@@ -280,11 +311,12 @@ public abstract class GLShader {
         indexBuffer,
         GL.GL_STATIC_DRAW);
 
+    // vertex attributes
     int position = gl4.glGetAttribLocation(shaderProgram.id, ShaderAttribute.POSITION);
     gl4.glVertexAttribPointer(position, 3, GL4.GL_FLOAT, false, 0, 0);
     gl4.glEnableVertexAttribArray(position);
 
-    // finished with VAO
+    // Unbind VAO to prevent subsequent setup from modifying it by mistake
     gl4.glBindVertexArray(0);
   }
 
@@ -323,8 +355,45 @@ public abstract class GLShader {
   /** Child classes should run GL draw commands here */
   protected abstract void render();
 
-  protected int getVaoHandle() {
-    return this.vaoHandles[0];
+  /** Bind the vertex array object */
+  protected void bindVAO() {
+    gl4.glBindVertexArray(this.vaoHandles[0]);
+  }
+
+  protected void drawElements() {
+    gl4.glDrawElements(GL2.GL_TRIANGLES, INDICES.length, GL2.GL_UNSIGNED_INT, 0);
+  }
+
+  /** Debug tool. Prints the first values in a texture to the console. */
+  public void debugTexture(String label, int textureId) {
+    gl4.glActiveTexture(GL4.GL_TEXTURE0);
+    gl4.glBindTexture(GL4.GL_TEXTURE_2D, textureId);
+
+    ByteBuffer pixels = BufferUtils.createByteBuffer(width * height * 4);
+
+    gl4.glGetTexImage(GL4.GL_TEXTURE_2D, 0, GL_BGRA, GL4.GL_UNSIGNED_BYTE, pixels);
+
+    StringBuilder sb = new StringBuilder();
+    pixels.rewind();
+    sb.append(label).append(": ");
+    for (int i = 0; i < 30 && pixels.hasRemaining(); i++) {
+      sb.append(byteToThreeCharString(pixels.get()));
+      if (i < 29 && pixels.hasRemaining()) {
+        sb.append(" ");
+      }
+    }
+    System.out.println(sb);
+
+    gl4.glBindTexture(GL4.GL_TEXTURE_2D, 0);
+  }
+
+  private static String byteToThreeCharString(byte b) {
+    int unsignedValue = b & 0xFF;
+    String result = String.valueOf(unsignedValue);
+    while (result.length() < 3) {
+      result = " " + result;
+    }
+    return result;
   }
 
   // Staging Uniforms
@@ -628,9 +697,6 @@ public abstract class GLShader {
     }
   }
 
-  /** Tracks texture units within the context of this shader */
-  private int nextTextureUnit = TextureManager.FIRST_UNRESERVED_TEXTURE_UNIT;
-
   protected int getNextTextureUnit() {
     return this.nextTextureUnit++;
   }
@@ -646,6 +712,141 @@ public abstract class GLShader {
       gl4.glDeleteVertexArrays(1, vaoHandles, 0);
 
       this.shaderProgram.dispose();
+    }
+  }
+
+  // Helper classes for GL buffers
+
+  /** Framebuffer Object */
+  protected class FBO {
+
+    final int[] textureHandles = new int[1];
+    final int[] fboHandles = new int[1];
+
+    public FBO() {
+      // Generate handles
+      gl4.glGenTextures(1, this.textureHandles, 0);
+      gl4.glGenFramebuffers(1, this.fboHandles, 0);
+
+      // Texture
+      gl4.glBindTexture(GL_TEXTURE_2D, this.textureHandles[0]);
+      gl4.glTexImage2D(
+          GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, null);
+      gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+      // Framebuffer
+      gl4.glBindFramebuffer(GL_FRAMEBUFFER, this.fboHandles[0]);
+      gl4.glFramebufferTexture2D(
+          GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this.textureHandles[0], 0);
+
+      // Check framebuffer status
+      int status = gl4.glCheckFramebufferStatus(GL_FRAMEBUFFER);
+      if (status != GL_FRAMEBUFFER_COMPLETE) {
+        throw new IllegalStateException("FBO failed to initialize: " + status);
+      }
+
+      // Initialize the texture to black
+      gl4.glViewport(0, 0, width, height);
+      gl4.glClearColor(0f, 0f, 0f, 1f);
+      gl4.glClear(GL_COLOR_BUFFER_BIT);
+
+      // Clean up - unbind texture and framebuffer
+      gl4.glBindTexture(GL_TEXTURE_2D, 0);
+      gl4.glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    public int getTextureHandle() {
+      return this.textureHandles[0];
+    }
+
+    public int getFboHandle() {
+      return this.fboHandles[0];
+    }
+
+    public void bind() {
+      gl4.glBindFramebuffer(GL_FRAMEBUFFER, this.fboHandles[0]);
+      gl4.glViewport(0, 0, width, height);
+      gl4.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+      gl4.glClear(GL_COLOR_BUFFER_BIT);
+    }
+
+    public void dispose() {
+      gl4.glDeleteFramebuffers(1, this.fboHandles, 0);
+      gl4.glDeleteTextures(1, this.textureHandles, 0);
+    }
+  }
+
+  protected class PingPongFBO {
+    /** FBO currently being rendered to */
+    FBO render = new FBO();
+
+    /** Older FBO available for reading */
+    FBO copy = new FBO();
+
+    protected PingPongFBO() {}
+
+    void swap() {
+      FBO temp = this.copy;
+      this.copy = render;
+      this.render = temp;
+    }
+
+    void dispose() {
+      this.copy.dispose();
+      this.render.dispose();
+    }
+  }
+
+  /** Pixel Pack Buffer */
+  protected class PBO {
+    private final int[] handles = new int[1];
+
+    public PBO() {
+      gl4.glGenBuffers(1, handles, 0);
+      gl4.glBindBuffer(GL4.GL_PIXEL_PACK_BUFFER, this.handles[0]);
+      gl4.glBufferData(
+          GL4.GL_PIXEL_PACK_BUFFER, (long) width * height * 4, null, GL4.GL_STREAM_READ);
+      gl4.glBindBuffer(GL4.GL_PIXEL_PACK_BUFFER, 0);
+    }
+
+    public int getHandle() {
+      return handles[0];
+    }
+
+    public void bind() {
+      gl4.glBindBuffer(GL4.GL_PIXEL_PACK_BUFFER, this.handles[0]);
+    }
+
+    public void unbind() {
+      gl4.glBindBuffer(GL4.GL_PIXEL_PACK_BUFFER, 0);
+    }
+
+    public void dispose() {
+      gl4.glDeleteBuffers(1, handles, 0);
+    }
+  }
+
+  protected class PingPongPBO {
+    // PBO currently being rendered to
+    public PBO render = new PBO();
+
+    // Older PBO available for reading
+    public PBO copy = new PBO();
+
+    public PingPongPBO() {}
+
+    public void swap() {
+      PBO temp = this.render;
+      this.render = copy;
+      this.copy = temp;
+    }
+
+    public void dispose() {
+      this.render.dispose();
+      this.copy.dispose();
     }
   }
 }

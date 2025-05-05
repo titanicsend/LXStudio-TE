@@ -9,6 +9,7 @@ import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
+import heronarts.lx.model.LXPoint;
 import java.io.File;
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -22,12 +23,6 @@ import java.util.Map;
 // image files, and are used as 2D textures in the shaders.
 //
 public class TextureManager implements LX.Listener {
-
-  // Reserved texture units within our GL context
-  public static final int TEXTURE_UNIT_AUDIO = 0;
-  public static final int TEXTURE_UNIT_COORDS = 1;
-  public static final int TEXTURE_UNIT_BACKBUFFER = 2;
-  public static final int FIRST_UNRESERVED_TEXTURE_UNIT = 3;
 
   private final LX lx;
   private final GLEngine glEngine;
@@ -50,7 +45,7 @@ public class TextureManager implements LX.Listener {
     lx.addListener(this);
   }
 
-  public void init(GL4 gl4) {
+  public void initialize(GL4 gl4) {
     if (this.initialized) {
       throw new IllegalStateException("TextureManager already initialized");
     }
@@ -110,22 +105,20 @@ public class TextureManager implements LX.Listener {
     // TODO: always insert points in top-level model order
     coords.rewind();
     for (int i = 0; i < enginePoints; i++) {
-      if (i < modelPoints) {
-        coords.put(model.points[i].xn);
-        coords.put(model.points[i].yn);
-        coords.put(model.points[i].zn);
-      } else {
-        // fill unused points with NaN so we can stop
-        // computation in the shader early when possible.
-        coords.put(Float.NaN);
-        coords.put(Float.NaN);
-        coords.put(Float.NaN);
-      }
+      // fill unused points with NaN so we can skip computation in the shader when possible
+      coords.put(Float.NaN);
+      coords.put(Float.NaN);
+      coords.put(Float.NaN);
+    }
+    for (LXPoint p : model.points) {
+      coords.put(p.index * 3, p.xn);
+      coords.put(p.index * 3 + 1, p.yn);
+      coords.put(p.index * 3 + 2, p.zn);
     }
     coords.rewind();
 
     // Create an OpenGL texture to hold the coordinate data
-    gl4.glActiveTexture(GL_TEXTURE0 + TEXTURE_UNIT_COORDS);
+    gl4.glActiveTexture(GL_TEXTURE0);
     gl4.glEnable(GL_TEXTURE_2D);
     gl4.glBindTexture(GL4.GL_TEXTURE_2D, t.getHandle());
 
@@ -139,7 +132,6 @@ public class TextureManager implements LX.Listener {
         GL4.GL_TEXTURE_2D, 0, GL4.GL_RGB32F, width, height, 0, GL4.GL_RGB, GL_FLOAT, coords);
 
     gl4.glBindTexture(GL4.GL_TEXTURE_2D, 0);
-    gl4.glActiveTexture(GL_TEXTURE0);
 
     return t.getHandle();
   }

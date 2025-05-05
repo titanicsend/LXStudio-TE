@@ -11,9 +11,9 @@ import heronarts.lx.LXLoopTask;
 import heronarts.lx.audio.GraphicMeter;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LXSwatch;
-import heronarts.lx.model.LXModel;
 import java.nio.FloatBuffer;
 import titanicsend.audio.AudioStems;
+import titanicsend.pattern.glengine.mixer.GLMixer;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
 import titanicsend.util.TE;
 import titanicsend.util.TEMath;
@@ -41,8 +41,8 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   // not affect rendering performance.  The default size is sufficient for
   // even very large models, but can be increased if necessary.
   // TODO - make this configurable per pattern or effect.
-  private static final int mappedBufferWidth = 640;
-  private static final int mappedBufferHeight = 640;
+  @Deprecated private static final int mappedBufferWidth = 640;
+  @Deprecated private static final int mappedBufferHeight = 640;
 
   // audio texture size and buffer
   private static final int audioTextureWidth = 512;
@@ -79,11 +79,12 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   // Texture cache management
   public final TextureManager textureCache;
 
+  // GPU Mixer Engine
+  private final GLMixer mixer;
+
   // Data and utility methods for the GL canvas/context.
   private GLAutoDrawable canvas = null;
   private GL4 gl4;
-
-  private LXModel model;
 
   public GLAutoDrawable getCanvas() {
     return canvas;
@@ -97,10 +98,12 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     return this.height;
   }
 
+  @Deprecated
   public static int getMappedBufferWidth() {
     return mappedBufferWidth;
   }
 
+  @Deprecated
   public static int getMappedBufferHeight() {
     return mappedBufferHeight;
   }
@@ -174,7 +177,7 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     }
 
     // update audio texture on the GPU from our buffer
-    gl4.glActiveTexture(GL_TEXTURE0);
+    gl4.glActiveTexture(GL_TEXTURE0 + GLShader.TEXTURE_UNIT_AUDIO);
     gl4.glBindTexture(GL_TEXTURE_2D, audioTextureHandle[0]);
 
     gl4.glTexImage2D(
@@ -384,9 +387,9 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     lx.engine.registerComponent(PATH, this);
     lx.engine.addTask(this::initialize);
 
-    this.model = lx.getModel();
-
+    // Child engines
     this.textureCache = new TextureManager(lx, this);
+    this.mixer = new GLMixer(lx, this);
 
     // set up audio fft and waveform handling
     // TODO - strongly consider expanding the number of FFT bands.
@@ -410,9 +413,12 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     // set up shared uniform blocks
     initializeUniformBlocks();
 
+    // Initialize child engines
+    this.textureCache.initialize(this.gl4);
+    this.mixer.initialize(this.gl4);
+
     // set up the per-frame audio info texture
     initializeAudioTexture();
-    this.textureCache.init(gl4);
 
     lx.engine.addLoopTask(this);
   }
@@ -423,6 +429,8 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     updateAudioFrameData(deltaMs);
     updateAudioTexture();
     updatePerFrameUniforms();
+
+    this.mixer.loop();
   }
 
   @Override
@@ -432,6 +440,10 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     // free GPU resources that we directly allocated
     gl4.glDeleteTextures(audioTextureHandle.length, audioTextureHandle, 0);
     gl4.glDeleteBuffers(uniformBlockHandles.length, uniformBlockHandles, 0);
+
+    ShaderUtils.disposeCompileVAO(this.gl4);
+
+    this.mixer.dispose();
 
     super.dispose();
   }

@@ -1,14 +1,19 @@
 {
   /* HiRes grid for capturing TE Output */
   label: "HRGrid",
-   tags: [ "panel"],
+   tags: [ "projector"],
+   parameters: {
+     "width": { type: "int", default: "640" },
+     "height": { type: "int", default: "480" },
+     "spacing": { type: "float", default: "5" }
+   },
 
   "components": [
     { type: "strip",
-      instances: 480,
-      numPoints: 640,
-      spacing: 1,
-      y: "$instance"
+      instances: "$height",
+      numPoints: "$width",
+      spacing: "$spacing",
+      y: "$instance*$spacing"
     }
   ]
 }

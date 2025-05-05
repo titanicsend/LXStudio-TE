@@ -29,6 +29,9 @@ public class ShaderUtils {
   public static final String SHADER_BODY_PLACEHOLDER = "{{%shader_body%}}";
   public static final Pattern PLACEHOLDER_FINDER = Pattern.compile("\\{%(.*?)(\\[(.*?)\\])??\\}");
 
+  // Global "compile VAO" for use during program validation
+  private static final int[] compileVao = new int[] {0};
+
   public static String loadResource(File file) {
     try {
       Scanner s = new Scanner(file, "UTF-8");
@@ -283,8 +286,31 @@ public class ShaderUtils {
     gl4.glLinkProgram(programId);
     validateStatus(gl4, programId, GL4.GL_LINK_STATUS);
 
+    // Must have a VAO bound to validate the program
+    bindCompileVAO(gl4);
+
     gl4.glValidateProgram(programId);
     validateStatus(gl4, programId, GL4.GL_VALIDATE_STATUS);
+
+    unbindCompileVAO(gl4);
+  }
+
+  private static void bindCompileVAO(GL4 gl4) {
+    if (compileVao[0] == 0) {
+      gl4.glGenVertexArrays(1, compileVao, 0);
+    }
+    gl4.glBindVertexArray(compileVao[0]);
+  }
+
+  private static void unbindCompileVAO(GL4 gl4) {
+    gl4.glBindVertexArray(0);
+  }
+
+  public static void disposeCompileVAO(GL4 gl4) {
+    if (compileVao[0] != 0) {
+      gl4.glDeleteVertexArrays(1, compileVao, 0);
+      compileVao[0] = 0;
+    }
   }
 
   private static void validateStatus(GL4 gl4, int id, int statusConstant) {

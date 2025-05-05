@@ -18,14 +18,11 @@ import titanicsend.pattern.yoffa.shader_engine.Uniform;
  */
 public class GLShaderPattern extends TEPerformancePattern {
 
-  // TODO - mappedBuffer functionality not yet supported for shader patterns
-  protected ByteBuffer mappedBuffer;
-  protected final int mappedBufferWidth = GLEngine.getMappedBufferWidth();
-  protected final int mappedBufferHeight = GLEngine.getMappedBufferHeight();
+  public static final int NO_TEXTURE = -1;
 
   // list of shaders to run
   private final List<TEShader> mutableShaders = new ArrayList<>();
-  protected final List<TEShader> shaders = Collections.unmodifiableList(this.mutableShaders);
+  public final List<TEShader> shaders = Collections.unmodifiableList(this.mutableShaders);
 
   private boolean modelChanged = true;
 
@@ -126,11 +123,6 @@ public class GLShaderPattern extends TEPerformancePattern {
       shader = this.shaders.get(i);
       shader.run();
     }
-
-    // paint the final shader output to the car
-    if (shader != null) {
-      ShaderPainter.mapToPointsDirect(m.points, shader.getBackBuffer(), getColors());
-    }
   }
 
   private void initializeUniforms(GLShader s) {
@@ -198,6 +190,19 @@ public class GLShaderPattern extends TEPerformancePattern {
     this.uniforms.iWowTrigger.setValue(getWowTrigger());
     this.uniforms.levelReact.setValue((float) getLevelReactivity());
     this.uniforms.frequencyReact.setValue((float) getFrequencyReactivity());
+  }
+
+  /**
+   * Retrieve the render(output) texture handle for the pattern.
+   *
+   * @return The output texture handle of the last shader, or NO_TEXTURE if no shaders exist
+   */
+  public int getRenderTexture() {
+    if (!this.shaders.isEmpty()) {
+      return this.shaders.getLast().getRenderTexture();
+    } else {
+      return NO_TEXTURE;
+    }
   }
 
   @Override
