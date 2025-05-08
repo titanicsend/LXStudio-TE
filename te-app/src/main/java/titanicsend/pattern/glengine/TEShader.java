@@ -1,6 +1,9 @@
 package titanicsend.pattern.glengine;
 
 import static com.jogamp.opengl.GL.*;
+import static titanicsend.pattern.glengine.TextureManager.TEXTURE_UNIT_AUDIO;
+import static titanicsend.pattern.glengine.TextureManager.TEXTURE_UNIT_BACKBUFFER;
+import static titanicsend.pattern.glengine.TextureManager.TEXTURE_UNIT_COORDS;
 
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.GL4;
@@ -21,8 +24,11 @@ public class TEShader extends GLShader {
   private class TextureInfo {
     public String name;
     public int channel;
-    public int textureUnit;
-    public int uniformLocation;
+    public String uniformName;
+    public int handle;
+
+    /** This texture is always bound to the following unit on this shader */
+    public int unit;
   }
 
   private final ArrayList<TextureInfo> textures = new ArrayList<>();
@@ -38,10 +44,8 @@ public class TEShader extends GLShader {
   private int mappedBufferWidth = 640;
   private int mappedBufferHeight = 640;
 
-  // the GL texture unit to which the current view model coordinate
-  // texture is bound.
-  private int modelCoordsTextureUnit = -1;
-  private boolean modelCoordsChanged = false;
+  // Handle of the GL texture corresponding to the current model/view
+  private int modelCoordsTextureHandle = -1;
 
   // Welcome to the Land of 1000 Constructors!
 
@@ -202,7 +206,7 @@ public class TEShader extends GLShader {
     super.allocateShaderBuffers();
 
     // backbuffer texture object
-    gl4.glActiveTexture(GL_TEXTURE2);
+    gl4.glActiveTexture(GL_TEXTURE0 + TEXTURE_UNIT_BACKBUFFER);
     gl4.glEnable(GL_TEXTURE_2D);
     gl4.glGenTextures(1, backbufferHandle, 0);
     gl4.glBindTexture(GL4.GL_TEXTURE_2D, backbufferHandle[0]);
@@ -216,7 +220,7 @@ public class TEShader extends GLShader {
 
     // create mapped buffer texture object, if needed
     if (useMappedBuffer) {
-      this.mappedBufferUnit = glEngine.getNextTextureUnit();
+      this.mappedBufferUnit = getNextTextureUnit();
 
       gl4.glActiveTexture(GL_TEXTURE0 + mappedBufferUnit);
       gl4.glEnable(GL_TEXTURE_2D);
@@ -248,12 +252,11 @@ public class TEShader extends GLShader {
         this.fragmentShader.getChannelToTexture().entrySet()) {
 
       TextureInfo ti = new TextureInfo();
-      ti.textureUnit = glEngine.useTexture(this.gl4, textureInput.getValue());
       ti.name = textureInput.getValue();
       ti.channel = textureInput.getKey();
-      ti.uniformLocation =
-          this.gl4.glGetUniformLocation(this.shaderProgram.id, "iChannel" + ti.channel);
-
+      ti.uniformName = UniformNames.CHANNEL + ti.channel;
+      ti.handle = this.glEngine.textureCache.useTexture(textureInput.getValue());
+      ti.unit = getNextTextureUnit();
       textures.add(ti);
     }
   }
@@ -271,19 +274,21 @@ public class TEShader extends GLShader {
     //
     // The audio texture can be used by all shaders, and stays bound to texture
     // unit 0 throughout the Chromatik run. All we have to do to use it is add the uniform.
-    setUniform(UniformNames.AUDIO_CHANNEL, 0);
+    setUniform(UniformNames.AUDIO_CHANNEL, TEXTURE_UNIT_AUDIO);
 
     // use the current view's model coordinates texture which
     // has already been loaded to the GPU by the texture cache manager.
     // All we need to do is point at the right GL texture unit.
-    if (this.modelCoordsChanged) {
-      this.modelCoordsChanged = false;
-      setUniform(UniformNames.LX_MODEL_COORDS, this.modelCoordsTextureUnit);
-    }
+    // Texture handle changes per view. Bind it to the dedicated view texture unit.
+    gl4.glActiveTexture(GL_TEXTURE0 + TEXTURE_UNIT_COORDS);
+    gl4.glEnable(GL_TEXTURE_2D);
+    gl4.glBindTexture(GL4.GL_TEXTURE_2D, this.modelCoordsTextureHandle);
+    // Direct coords uniform to the view texture unit
+    setUniform(UniformNames.LX_MODEL_COORDS, TEXTURE_UNIT_COORDS);
 
     // Update backbuffer texture data. This buffer contains the result of the
     // previous render pass.  It is always bound to texture unit 2.
-    gl4.glActiveTexture(GL_TEXTURE2);
+    gl4.glActiveTexture(GL_TEXTURE0 + TEXTURE_UNIT_BACKBUFFER);
     gl4.glEnable(GL_TEXTURE_2D);
     gl4.glBindTexture(GL4.GL_TEXTURE_2D, backbufferHandle[0]);
 
@@ -298,7 +303,7 @@ public class TEShader extends GLShader {
         GL_UNSIGNED_BYTE,
         backBuffer);
 
-    setUniform(UniformNames.BACK_BUFFER, 2);
+    setUniform(UniformNames.BACK_BUFFER, TEXTURE_UNIT_BACKBUFFER);
 
     // if necessary, update the mapped buffer texture data
     if (useMappedBuffer) {
@@ -318,13 +323,17 @@ public class TEShader extends GLShader {
           mappedBuffer);
 
       setUniform(UniformNames.MAPPED_BUFFER, mappedBufferUnit);
+    } else {
+      // GL will complain if you don't assign a unit to the sampler2D
+      setUniform(UniformNames.MAPPED_BUFFER, TEXTURE_UNIT_BACKBUFFER);
     }
 
-    // add shadertoy texture channels. These textures already statically bound to
-    // texture units so all we have to do is tell the shader which texture unit to use.
+    // Bind shadertoy textures to corresponding shader-specific texture units.
     for (TextureInfo ti : textures) {
-      setUniform(UniformNames.CHANNEL + ti.channel, ti.textureUnit);
-      gl4.glUniform1i(ti.uniformLocation, ti.textureUnit);
+      gl4.glActiveTexture(GL_TEXTURE0 + ti.unit);
+      gl4.glEnable(GL_TEXTURE_2D);
+      gl4.glBindTexture(GL4.GL_TEXTURE_2D, ti.handle);
+      setUniform(ti.uniformName, ti.unit);
     }
 
     // Add all preprocessed LX parameters from the shader code as uniforms
@@ -365,8 +374,7 @@ public class TEShader extends GLShader {
    * @param model Current LXModel of the calling context, which is a LXView or the global model
    */
   public void setModelCoordinates(LXModel model) {
-    this.modelCoordsTextureUnit = this.glEngine.getCoordinatesTexture(model);
-    this.modelCoordsChanged = true;
+    this.modelCoordsTextureHandle = this.glEngine.textureCache.getCoordinatesTexture(model);
   }
 
   // Releases native resources allocated by this shader.
@@ -384,12 +392,11 @@ public class TEShader extends GLShader {
       // Mapped Buffer
       if (useMappedBuffer) {
         gl4.glDeleteTextures(1, mappedBufferHandle, 0);
-        glEngine.releaseTextureUnit(mappedBufferUnit);
       }
 
       // free any textures on ShaderToy channels
       for (TextureInfo ti : textures) {
-        glEngine.releaseTexture(ti.name);
+        this.glEngine.textureCache.releaseStaticTexture(ti.name);
       }
     }
 

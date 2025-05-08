@@ -56,6 +56,7 @@ public abstract class GLShader {
   };
 
   // Local copies of frequently used OpenGL objects
+  protected final LX lx;
   protected final GLEngine glEngine;
   private GLAutoDrawable canvas = null;
   protected GL4 gl4 = null;
@@ -97,7 +98,7 @@ public abstract class GLShader {
   // Welcome to the Land of 1000 Constructors!
 
   public GLShader(LX lx, FragmentShader fragmentShader) {
-
+    this.lx = lx;
     this.glEngine = (GLEngine) lx.engine.getChild(GLEngine.PATH);
     this.width = this.glEngine.getWidth();
     this.height = this.glEngine.getHeight();
@@ -616,16 +617,22 @@ public abstract class GLShader {
     return uniform;
   }
 
-  // get a texture id for a uniform either from uniformTextureUnits or by allocating a new one
-  // TODO: should these be unique per shader, instead of global unique?
-  private int getTextureUnit(String name) {
+  // get a texture unit for a uniform either from uniformTextureUnits or by allocating a new one
+  protected int getTextureUnit(String name) {
     if (uniformTextureUnits.containsKey(name)) {
       return uniformTextureUnits.get(name);
     } else {
-      int unit = glEngine.getNextTextureUnit();
+      int unit = getNextTextureUnit();
       uniformTextureUnits.put(name, unit);
       return unit;
     }
+  }
+
+  /** Tracks texture units within the context of this shader */
+  private int nextTextureUnit = TextureManager.FIRST_UNRESERVED_TEXTURE_UNIT;
+
+  protected int getNextTextureUnit() {
+    return this.nextTextureUnit++;
   }
 
   public void dispose() {

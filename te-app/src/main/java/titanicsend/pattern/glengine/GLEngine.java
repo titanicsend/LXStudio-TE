@@ -77,8 +77,7 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   public static final int perFrameUniformBlockBinding = 1;
 
   // Texture cache management
-  private TextureManager textureCache = null;
-  private boolean modelChanged = false;
+  public final TextureManager textureCache;
 
   // Data and utility methods for the GL canvas/context.
   private GLAutoDrawable canvas = null;
@@ -118,40 +117,6 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
   public static int getAudioTextureHeight() {
     return audioTextureHeight;
-  }
-
-  /**
-   * Copy a model's normalized coordinates into a special texture for use by shaders. Must be called
-   * by the parent pattern or effect at least once before the first frame is rendered and Should be
-   * called by the pattern's frametime run() function on every frame for full Chromatik view
-   * support.
-   *
-   * @param model The model (view) to copy coordinates from
-   * @return The texture unit number that the view's coordinate texture is bound to.
-   */
-  public int getCoordinatesTexture(LXModel model) {
-    return textureCache.getCoordinatesTexture(model);
-  }
-
-  // Load a static texture from a file and bind it to the next available texture unit
-  // Returns the texture unit number. If the texture is already loaded, just increment
-  // the ref count and return the existing texture unit number.
-  public int useTexture(GL4 gl4, String textureName) {
-    return textureCache.useTexture(gl4, textureName);
-  }
-
-  public void releaseTexture(String textureName) {
-    textureCache.releaseTexture(textureName);
-  }
-
-  // Returns the next available texture unit number, either by reusing a released
-  // texture unit number or by allocating a new one.
-  public int getNextTextureUnit() {
-    return textureCache.getNextTextureUnit();
-  }
-
-  public int releaseTextureUnit(int textureUnit) {
-    return textureCache.releaseTextureUnit(textureUnit);
   }
 
   /**
@@ -421,18 +386,14 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
     this.model = lx.getModel();
 
+    this.textureCache = new TextureManager(lx, this);
+
     // set up audio fft and waveform handling
     // TODO - strongly consider expanding the number of FFT bands.
     // TODO - LX defaults to 16, but more bands would let us do more
     // TODO - interesting audio analysis.
     this.meter = lx.engine.audio.meter;
     fftResampleFactor = meter.bands.length / 512f;
-  }
-
-  @Override
-  public void modelGenerationChanged(LX lx, LXModel model) {
-    this.model = model;
-    this.modelChanged = true;
   }
 
   private void initialize() {
@@ -451,10 +412,7 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
     // set up the per-frame audio info texture
     initializeAudioTexture();
-    textureCache = new TextureManager(gl4);
-
-    // start listening for model changes
-    lx.addListener(this);
+    this.textureCache.init(gl4);
 
     lx.engine.addLoopTask(this);
   }
@@ -465,16 +423,12 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     updateAudioFrameData(deltaMs);
     updateAudioTexture();
     updatePerFrameUniforms();
-
-    if (modelChanged) {
-      // if the model has changed, discard all existing view coordinate textures
-      textureCache.clearCoordinateTextures();
-      modelChanged = false;
-    }
   }
 
   @Override
   public void dispose() {
+    this.textureCache.dispose();
+
     // free GPU resources that we directly allocated
     gl4.glDeleteTextures(audioTextureHandle.length, audioTextureHandle, 0);
     gl4.glDeleteBuffers(uniformBlockHandles.length, uniformBlockHandles, 0);
