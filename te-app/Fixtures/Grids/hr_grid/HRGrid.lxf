@@ -1,0 +1,32 @@
+{
+  /* HiRes grid for capturing TE Output */
+  label: "HRGrid",
+  tags: [
+    "grid"
+  ],
+  width: {
+    "type": "int",
+    "default": 640,
+    "min": 10,
+    "max": 10000,
+    "label": "Width",
+    "description": "Width in Pixels"
+  },
+  height: {
+    "type": "int",
+    "default": 480,
+    "min": 10,
+    "max": 10000,
+    "label": "Height",
+    "description": "Height in Pixels"
+  },
+  "components": [
+    {
+      type: "strip",
+      numPoints: "$width",
+      instances: "$height",
+      spacing: 1,
+      y: "$instance"
+    }
+  ]
+}

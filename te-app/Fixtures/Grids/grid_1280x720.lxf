@@ -1,0 +1,15 @@
+{
+  label: "Grid 1280x240",
+  tags: [
+    "grid"
+  ],
+  components: [
+    {
+      type: "strip",
+      instances: 720,
+      numPoints: 1280,
+      spacing: 1,
+      y: "$instance"
+    }
+  ]
+}
