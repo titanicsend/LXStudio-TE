@@ -156,7 +156,7 @@
     },
     "fixtures": [
       {
-        "jsonFixtureType": "Utility/hires_grid_640x480",
+        "jsonFixtureType": "Grids/grid_640x480",
         "jsonParameters": {},
         "id": 463996,
         "class": "heronarts.lx.structure.JsonFixture",
@@ -182,7 +182,7 @@
           "mute": false,
           "solo": false,
           "tags": "",
-          "fixtureType": "Utility/hires_grid_640x480"
+          "fixtureType": "Grids/grid_640x480"
         },
         "children": {}
       }

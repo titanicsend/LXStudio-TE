@@ -1,0 +1,15 @@
+{
+  label: "Grid 1024x1024",
+  tags: [
+    "grid"
+  ],
+  components: [
+    {
+      type: "strip",
+      instances: 1024,
+      numPoints: 1024,
+      spacing: 1,
+      y: "$instance"
+    }
+  ]
+}
