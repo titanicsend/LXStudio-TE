@@ -267,8 +267,10 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
       int dst = blackBackground;
       // Blend all channels in the mixer
       for (LXAbstractChannel channel : lx.engine.mixer.channels) {
-        GLAbstractChannel glChannel = channelMap.get(channel);
-        dst = glChannel.blend(dst);
+        if (!channel.isInGroup()) {
+          GLAbstractChannel glChannel = channelMap.get(channel);
+          dst = glChannel.blend(dst);
+        }
       }
       return dst;
     }
