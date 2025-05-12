@@ -5,11 +5,9 @@
   ],
   components: [
     {
-      type: "strip",
-      instances: 240,
-      numPoints: 1280,
-      spacing: 1,
-      y: "$instance"
-    }
+      type: "hr_grid/HRGrid",
+      width: 1280,
+      height: 240
+    },
   ]
 }
