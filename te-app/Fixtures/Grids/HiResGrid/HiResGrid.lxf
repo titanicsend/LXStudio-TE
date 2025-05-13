@@ -1,0 +1,50 @@
+{
+  /* HiRes grid for capturing TE Output */
+  label: "HiResGrid",
+  tags: [
+    "grid"
+  ],
+  parameters: {
+    width: {
+      type: "int",
+      default: 640,
+      min: 10,
+      max: 10000,
+      label: "Width",
+      description: "Width (in Pixels)"
+    },
+    height: {
+      type: "int",
+      default: 480,
+      min: 10,
+      max: 10000,
+      label: "Height",
+      description: "Height (in Pixels)"
+    },
+    widthFt: {
+      type: "float",
+      default: 6,
+      min: 1,
+      max: 500,
+      label: "WidthFt",
+      description: "Width (in Feet)"
+    },
+    heightFt: {
+      type: "float",
+      default: 4,
+      min: 1,
+      max: 500,
+      label: "HeightFt",
+      description: "Height (in Feet)"
+    }
+  },
+  components: [
+    {
+      type: "strip",
+      numPoints: "$width",
+      instances: "$height",
+      spacing: "$widthFt*12/($width-1)",
+      y: "$instance*$heightFt*12/($height-1)"
+    }
+  ]
+}
