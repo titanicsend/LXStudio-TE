@@ -20,7 +20,7 @@
   },
   components: [
     {
-      type: "hr_grid/HRGrid",
+      type: "HiResGrid/HiResGrid",
       width: 1024,
       height: 1024,
       widthFt: "$widthFt",

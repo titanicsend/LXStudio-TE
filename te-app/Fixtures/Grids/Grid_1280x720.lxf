@@ -1,8 +1,8 @@
 {
-  label: "Grid 1280x240",
+  label: "Grid 1280x720",
   tags: [
     "width_1280",
-    "height_240"
+    "height_720"
   ],
   parameters: {
     widthFt: {
@@ -13,16 +13,16 @@
     },
     heightFt: {
       type: "float",
-      default: 12,
+      default: 36,
       label: "HeightFt",
       description: "Height (in Feet)"
     }
   },
   components: [
     {
-      type: "hr_grid/HRGrid",
+      type: "HiResGrid/HiResGrid",
       width: 1280,
-      height: 240,
+      height: 720,
       widthFt: "$widthFt",
       heightFt: "$heightFt"
     }
