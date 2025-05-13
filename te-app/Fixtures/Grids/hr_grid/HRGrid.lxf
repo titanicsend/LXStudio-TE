@@ -22,19 +22,19 @@
       description: "Height (in Pixels)"
     },
     widthFt: {
-      type: "int",
+      type: "float",
       default: 6,
       min: 1,
       max: 500,
-      label: "Width",
+      label: "WidthFt",
       description: "Width (in Feet)"
     },
     heightFt: {
-      type: "int",
+      type: "float",
       default: 4,
       min: 1,
       max: 500,
-      label: "Height",
+      label: "HeightFt",
       description: "Height (in Feet)"
     }
   },

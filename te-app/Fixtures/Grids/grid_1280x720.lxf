@@ -4,13 +4,27 @@
     "width_1280",
     "height_720"
   ],
+  parameters: {
+    widthFt: {
+      type: "float",
+      default: 64,
+      label: "WidthFt",
+      description: "Width (in Feet)"
+    },
+    heightFt: {
+      type: "float",
+      default: 36,
+      label: "HeightFt",
+      description: "Height (in Feet)"
+    }
+  },
   components: [
     {
       type: "hr_grid/HRGrid",
       width: 1280,
       height: 720,
-      widthFt: 64,
-      heightFt: 36
+      widthFt: "$widthFt",
+      heightFt: "$heightFt"
     }
   ]
 }
