@@ -35,13 +35,15 @@ import titanicsend.pattern.glengine.GLShaderPattern;
 /** Experimental OpenGL-based LX mixer */
 public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer {
 
+  private static final int UNINITIALIZED = -1;
+
   private final LX lx;
   private final GLEngine glEngine;
   private GL4 gl4;
 
   private boolean initialized = false;
 
-  int blackBackground = -1;
+  private int blackBackground = UNINITIALIZED;
 
   // Wrapper classes around LX channels
   private final GLMasterBus glMasterBus;
