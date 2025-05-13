@@ -26,7 +26,7 @@ public class GLShaderPattern extends TEPerformancePattern {
 
   private boolean modelChanged = true;
 
-  private static class Uniforms {
+  private static class TEUniforms {
     private Uniform.Float1 iTime;
     private Uniform.Float3 iColorRGB;
     private Uniform.Float3 iColorHSB;
@@ -47,7 +47,7 @@ public class GLShaderPattern extends TEPerformancePattern {
     private Uniform.Float1 frequencyReact;
   }
 
-  private final Uniforms uniforms = new Uniforms();
+  private final TEUniforms uniforms = new TEUniforms();
   private boolean initializedUniforms = false;
 
   public GLShaderPattern(LX lx) {
