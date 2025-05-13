@@ -94,7 +94,7 @@ public class TextureManager implements LX.Listener {
     if (modelPoints > enginePoints) {
       LX.error(
           String.format(
-              "GLEngine resolution (%d) too small for number of points in the model (%d)",
+              "GLEngine resolution (%d) too small for number of points in the model (%d). Re-run with higher --resolution WxH",
               enginePoints, modelPoints));
     }
 
