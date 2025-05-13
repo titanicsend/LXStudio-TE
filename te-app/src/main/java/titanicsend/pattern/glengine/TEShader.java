@@ -58,31 +58,6 @@ public class TEShader extends GLShader {
   }
 
   /**
-   * Create new OpenGL shader effect
-   *
-   * @param lx LX instance
-   * @param fragmentShader fragment shader object to use
-   * @param frameBuf native (GL compatible) ByteBuffer to store render results for use in shaders
-   *     that need to read the previous frame. If null, a buffer will be automatically allocated.
-   * @param uniformSource callback that will set uniforms on this shader
-   */
-  public TEShader(
-      LX lx, FragmentShader fragmentShader, ByteBuffer frameBuf, UniformSource uniformSource) {
-    this(lx, fragmentShader, frameBuf, List.of(uniformSource));
-  }
-
-  /**
-   * Create new shader object with default backbuffer
-   *
-   * @param lx LX instance
-   * @param fragmentShader fragment shader object shader to use
-   * @param uniformSource callback that will set uniforms on this shader
-   */
-  public TEShader(LX lx, FragmentShader fragmentShader, UniformSource uniformSource) {
-    this(lx, fragmentShader, null, uniformSource);
-  }
-
-  /**
    * Creates new shader object with additional texture support
    *
    * @param lx LX instance
