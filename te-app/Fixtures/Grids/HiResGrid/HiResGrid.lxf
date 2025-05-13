@@ -1,6 +1,6 @@
 {
   /* HiRes grid for capturing TE Output */
-  label: "HRGrid",
+  label: "HiResGrid",
   tags: [
     "grid"
   ],
