@@ -10,7 +10,7 @@
       width: 1280,
       height: 240,
       widthFt: 64,
-      heightFt: 12,
-    },
+      heightFt: 12
+    }
   ]
 }

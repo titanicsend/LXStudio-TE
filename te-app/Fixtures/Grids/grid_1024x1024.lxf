@@ -10,7 +10,7 @@
       width: 1024,
       height: 1024,
       widthFt: 10,
-      heightFt: 10,
-    },
+      heightFt: 10
+    }
   ]
 }
