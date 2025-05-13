@@ -1,13 +1,16 @@
 {
   label: "Grid 1024x1024",
   tags: [
-    "grid"
+    "width_1024",
+    "height_1024"
   ],
   components: [
     {
       type: "hr_grid/HRGrid",
       width: 1024,
-      height: 1024
+      height: 1024,
+      widthFt: 10,
+      heightFt: 10,
     },
   ]
 }

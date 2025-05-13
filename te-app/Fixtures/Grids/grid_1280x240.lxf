@@ -1,13 +1,16 @@
 {
   label: "Grid 1280x240",
   tags: [
-    "grid"
+    "width_1280",
+    "height_240"
   ],
   components: [
     {
       type: "hr_grid/HRGrid",
       width: 1280,
-      height: 240
+      height: 240,
+      widthFt: 64,
+      heightFt: 12,
     },
   ]
 }

@@ -11,7 +11,7 @@
       min: 10,
       max: 10000,
       label: "Width",
-      description: "Width in Pixels"
+      description: "Width (in Pixels)"
     },
     height: {
       type: "int",
@@ -19,7 +19,23 @@
       min: 10,
       max: 10000,
       label: "Height",
-      description: "Height in Pixels"
+      description: "Height (in Pixels)"
+    },
+    widthFt: {
+      type: "int",
+      default: 6,
+      min: 1,
+      max: 500,
+      label: "Width",
+      description: "Width (in Feet)"
+    },
+    heightFt: {
+      type: "int",
+      default: 4,
+      min: 1,
+      max: 500,
+      label: "Height",
+      description: "Height (in Feet)"
     }
   },
   components: [
@@ -27,8 +43,8 @@
       type: "strip",
       numPoints: "$width",
       instances: "$height",
-      spacing: 1,
-      y: "$instance"
+      spacing: "$widthFt*12/($width-1)",
+      y: "$instance*$heightFt*12/($height-1)"
     }
   ]
 }
