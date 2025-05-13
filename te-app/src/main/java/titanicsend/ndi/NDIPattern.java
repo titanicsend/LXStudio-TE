@@ -138,7 +138,11 @@ public class NDIPattern extends GLShaderPattern {
    * Size, Brightness, Explode work as expected, Wow1 controls the full color vs. palette color mix)
    */
   public void addPrimaryShader() {
-    addShader("ndidefault.fs", this::setUniforms, buffer);
+    addShader(
+        GLShader.config(lx)
+            .withFilename("ndidefault.fs")
+            .withUniformSource(this::setUniforms)
+            .withLegacyBackBuffer(buffer));
   }
 
   private void setUniforms(GLShader s) {

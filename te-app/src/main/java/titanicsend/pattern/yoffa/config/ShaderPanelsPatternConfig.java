@@ -4,6 +4,7 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.glengine.ConstructedShaderPattern;
+import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.util.GaussianFilter;
@@ -221,7 +222,8 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.SIZE, 1, 3, 0.5); // overall scale
       controls.setRange(TEControlTag.WOW1, .35, 0.1, 1); // Contrast
 
-      addShader("storm_scanner.fs", "gray_noise.png");
+      addShader(
+          GLShader.config(lx).withFilename("storm_scanner.fs").withTextures("gray_noise.png"));
     }
   }
 
@@ -233,7 +235,7 @@ public class ShaderPanelsPatternConfig {
 
     @Override
     protected void createShader() {
-      addShader("jet_stream.fs", "color_noise.png");
+      addShader(GLShader.config(lx).withFilename("jet_stream.fs").withTextures("color_noise.png"));
     }
   }
 
@@ -298,16 +300,18 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.FREQREACTIVITY, 0.8, 0, 2);
 
       addShader(
-          "neon_cells.fs",
-          (s) -> {
-            float levelReactivityControl =
-                (float) getControls().getControl(TEControlTag.LEVELREACTIVITY).getValue();
+          GLShader.config(lx)
+              .withFilename("neon_cells.fs")
+              .withUniformSource(
+                  (s) -> {
+                    float levelReactivityControl =
+                        (float) getControls().getControl(TEControlTag.LEVELREACTIVITY).getValue();
 
-            // Similar to the rotation, but for speed instead.
-            double currentTime = getTime();
-            currentTime += getTimeDiff(levelReactivityControl);
-            s.setUniform("iTime", (float) currentTime);
-          });
+                    // Similar to the rotation, but for speed instead.
+                    double currentTime = getTime();
+                    currentTime += getTimeDiff(levelReactivityControl);
+                    s.setUniform("iTime", (float) currentTime);
+                  }));
     }
 
     private float getTimeDiff(float controlLevel) {

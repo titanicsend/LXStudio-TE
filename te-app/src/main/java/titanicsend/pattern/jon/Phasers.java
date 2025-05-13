@@ -49,6 +49,6 @@ public class Phasers extends GLShaderPattern {
     addCommonControls();
 
     // Create the underlying shader pattern
-    addShader("phasers.fs", this::setUniforms);
+    addShader(GLShader.config(lx).withFilename("phasers.fs").withUniformSource(this::setUniforms));
   }
 }

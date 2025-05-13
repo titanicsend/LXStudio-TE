@@ -3,6 +3,7 @@ package titanicsend.pattern.look;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import titanicsend.pattern.glengine.GLEngine;
+import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
@@ -23,9 +24,11 @@ public class SigmoidDanceAudioWaveform extends GLShaderPattern {
     addCommonControls();
 
     addShader(
-        "sigmoid_dance_audio_waveform.fs",
-        (s) -> {
-          s.setUniform("avgVolume", (float) GLEngine.getAvgVolume());
-        });
+        GLShader.config(lx)
+            .withFilename("sigmoid_dance_audio_waveform.fs")
+            .withUniformSource(
+                (s) -> {
+                  s.setUniform("avgVolume", (float) GLEngine.getAvgVolume());
+                }));
   }
 }

@@ -3,7 +3,6 @@ package titanicsend.pattern.glengine;
 import static com.jogamp.opengl.GL.*;
 
 import com.jogamp.opengl.*;
-import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.parameter.LXParameter;
 import java.nio.*;
@@ -37,91 +36,11 @@ public class TEShader extends GLShader {
   // Texture handle for the current view model coordinate texture
   private int modelCoordsTextureHandle = UNINITIALIZED;
 
-  // Welcome to the Land of 1000 Constructors!
-
-  public TEShader(
-      LX lx,
-      FragmentShader fragmentShader,
-      ByteBuffer frameBuf,
-      List<UniformSource> uniformSources) {
-    super(lx, fragmentShader);
+  public TEShader(GLShader.Config config) {
+    super(config);
 
     // Uniform callback for TE common controls
     addUniformSource(this::setUniforms);
-
-    // Children set uniforms last, giving user the option to override any default values
-    for (UniformSource uniformSource : uniformSources) {
-      if (uniformSource != null) {
-        addUniformSource(uniformSource);
-      }
-    }
-  }
-
-  /**
-   * Creates new shader object with additional texture support
-   *
-   * @param lx LX instance
-   * @param shaderFilename shader to use
-   * @param frameBuf native (GL compatible) ByteBuffer to store render results for use in shaders
-   *     that need to read the previous frame. If null, a buffer will be automatically allocated. *
-   * @param uniformSource callback that will set uniforms on this shader
-   * @param textureFilenames (optional) texture files to load
-   */
-  public TEShader(
-      LX lx,
-      String shaderFilename,
-      UniformSource uniformSource,
-      ByteBuffer frameBuf,
-      String... textureFilenames) {
-    this(lx, shaderFilename, List.of(uniformSource), frameBuf, textureFilenames);
-  }
-
-  /**
-   * Creates new shader object with additional texture support
-   *
-   * @param lx LX instance
-   * @param shaderFilename shader to use
-   * @param frameBuf native (GL compatible) ByteBuffer to store render results for use in shaders
-   *     that need to read the previous frame. If null, a buffer will be automatically allocated. *
-   * @param uniformSources list of callbacks that will set uniforms on this shader
-   * @param textureFilenames (optional) texture files to load
-   */
-  public TEShader(
-      LX lx,
-      String shaderFilename,
-      List<UniformSource> uniformSources,
-      ByteBuffer frameBuf,
-      String... textureFilenames) {
-    this(lx, newFragmentShader(shaderFilename, textureFilenames), frameBuf, uniformSources);
-  }
-
-  /**
-   * Creates new shader object with additional texture support
-   *
-   * @param lx LX instance
-   * @param shaderFilename shader to use
-   * @param uniformSource callback that will set uniforms on this shader
-   * @param textureFilenames (optional) texture files to load
-   */
-  public TEShader(
-      LX lx, String shaderFilename, UniformSource uniformSource, String... textureFilenames) {
-    this(lx, shaderFilename, uniformSource, null, textureFilenames);
-  }
-
-  /**
-   * Creates new shader object with additional texture support
-   *
-   * @param lx LX instance
-   * @param shaderFilename shader to use
-   * @param uniformSources list of callbacks that will set uniforms on this shader
-   * @param textureFilenames (optional) texture files to load
-   */
-  public TEShader(
-      LX lx,
-      String shaderFilename,
-      List<UniformSource> uniformSources,
-      String... textureFilenames) {
-    this(lx, shaderFilename, uniformSources, null, textureFilenames);
   }
 
   // Setup

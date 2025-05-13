@@ -3,6 +3,7 @@ package titanicsend.pattern.jon;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.LXParameter;
+import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
@@ -27,9 +28,11 @@ public class SpiralDiamonds extends GLShaderPattern {
     addCommonControls();
 
     addShader(
-        "spiral_diamonds.fs",
-        (s) -> {
-          s.setUniform("speedAngle", (float) getRotationAngleFromSpeed());
-        });
+        GLShader.config(lx)
+            .withFilename("spiral_diamonds.fs")
+            .withUniformSource(
+                (s) -> {
+                  s.setUniform("speedAngle", (float) getRotationAngleFromSpeed());
+                }));
   }
 }

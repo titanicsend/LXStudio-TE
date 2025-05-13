@@ -101,7 +101,7 @@ public class EdgeFall extends GLShaderPattern {
 
     addCommonControls();
 
-    addShader("edgefall.fs", this::setUniforms);
+    addShader(GLShader.config(lx).withFilename("edgefall.fs").withUniformSource(this::setUniforms));
 
     // create an n x 4 array, so we can pass line segment descriptors
     // to GLSL shaders.

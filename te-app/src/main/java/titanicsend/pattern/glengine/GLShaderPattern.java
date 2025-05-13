@@ -3,7 +3,6 @@ package titanicsend.pattern.glengine;
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXModel;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -58,44 +57,14 @@ public class GLShaderPattern extends TEPerformancePattern {
     super(lx, view);
   }
 
-  private TEShader addShader(TEShader shader) {
+  protected TEShader addShader(GLShader.Config config) {
+    TEShader shader = new TEShader(config.withUniformSource(this::setUniforms));
     this.mutableShaders.add(shader);
     return shader;
   }
 
-  /**
-   * Add a shader by fragment shader filename. The simple option for shaders that use only the
-   * default TEPerformancePattern uniforms and don't require any additional computation in Java.
-   */
-  protected TEShader addShader(String shaderName, String... textureFilenames) {
-    return addShader(new TEShader(lx, shaderName, this::setUniforms, textureFilenames));
-  }
-
-  /**
-   * Add a shader by fragment shader filename. The simple option for shaders that use only the
-   * default TEPerformancePattern uniforms and don't require any additional computation in Java.
-   */
-  protected TEShader addShader(
-      String shaderName, TEShader.UniformSource uniformSource, String... textureFilenames) {
-    return addShader(
-        new TEShader(lx, shaderName, List.of(this::setUniforms, uniformSource), textureFilenames));
-  }
-
-  /** Add a shader by fragment shader filename, with a callback for setting custom uniforms. */
-  protected TEShader addShader(String shaderName, TEShader.UniformSource uniformSource) {
-    return addShader(new TEShader(lx, shaderName, List.of(this::setUniforms, uniformSource)));
-  }
-
-  /** Add a shader by fragment shader filename, with a callback for setting custom uniforms. */
-  protected TEShader addShader(
-      String shaderName, TEShader.UniformSource uniformSource, ByteBuffer frameBuf) {
-    return addShader(
-        new TEShader(lx, shaderName, List.of(this::setUniforms, uniformSource), frameBuf));
-  }
-
-  /** Add a shader by fragment shader filename */
-  protected TEShader addShader(String shaderName, ByteBuffer frameBuf) {
-    return addShader(new TEShader(lx, shaderName, this::setUniforms, frameBuf));
+  protected TEShader addShader(String shaderFilename) {
+    return addShader(GLShader.config(lx).withFilename(shaderFilename));
   }
 
   @Override

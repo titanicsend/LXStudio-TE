@@ -2,6 +2,7 @@ package titanicsend.pattern.look;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
@@ -24,9 +25,11 @@ public class TriangleInfinityWaveform extends GLShaderPattern {
     addCommonControls();
 
     addShader(
-        "triangle_infinity.fs",
-        (s) -> {
-          s.setUniform("brightnessDampening", 0.5f);
-        });
+        GLShader.config(lx)
+            .withFilename("triangle_infinity.fs")
+            .withUniformSource(
+                (s) -> {
+                  s.setUniform("brightnessDampening", 0.5f);
+                }));
   }
 }

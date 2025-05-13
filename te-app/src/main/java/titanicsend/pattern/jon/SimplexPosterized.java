@@ -2,6 +2,7 @@ package titanicsend.pattern.jon;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 @LXCategory("Noise")
@@ -21,10 +22,12 @@ public class SimplexPosterized extends DriftEnabledPattern {
     addCommonControls();
 
     addShader(
-        "simplex_posterized.fs",
-        (s) -> {
-          // calculate incremental transform based on elapsed time
-          s.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
-        });
+        GLShader.config(lx)
+            .withFilename("simplex_posterized.fs")
+            .withUniformSource(
+                (s) -> {
+                  // calculate incremental transform based on elapsed time
+                  s.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
+                }));
   }
 }

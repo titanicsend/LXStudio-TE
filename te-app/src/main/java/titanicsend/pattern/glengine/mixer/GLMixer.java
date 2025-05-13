@@ -330,7 +330,7 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
         shaderName = "blendAdd.fs";
       }
 
-      this.blendShader = new BlendShader(lx, shaderName);
+      this.blendShader = new BlendShader(BlendShader.config(lx).withFilename(shaderName));
       if (this.initialized) {
         this.blendShader.init();
       }
@@ -398,7 +398,8 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
       super(channel);
       this.channel = channel;
 
-      this.transitionShader = new BlendShader(lx, "blendDissolve.fs");
+      this.transitionShader =
+          new BlendShader(BlendShader.config(lx).withFilename("blendDissolve.fs"));
     }
 
     void init() {

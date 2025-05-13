@@ -19,9 +19,11 @@ public class BasicShaderEffect extends GLShaderEffect {
 
     addParameter("amount", this.amount);
 
-    // add the first shader, passing in the effect's backbuffer and aon OnFrame function
-    // setting the amount of effect to apply as the uniform "iWow2".
-    addShader("demo_simple_effect.fs", this::setUniforms, getImageBuffer());
+    // add the shader, passing a callback to override the TE value for uniform "iWow2"
+    addShader(
+        GLShader.config(lx)
+            .withFilename("demo_simple_effect.fs")
+            .withUniformSource(this::setUniforms));
   }
 
   private void setUniforms(GLShader s) {

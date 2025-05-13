@@ -3,7 +3,6 @@ package titanicsend.pattern.glengine.mixer;
 import static com.jogamp.opengl.GL.GL_TEXTURE0;
 import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
 
-import heronarts.lx.LX;
 import titanicsend.pattern.glengine.GLShader;
 
 public class BlendShader extends GLShader {
@@ -22,8 +21,9 @@ public class BlendShader extends GLShader {
   // Amount of src to blend into dst
   private float level = 0f;
 
-  public BlendShader(LX lx, String fragmentShaderFilename) {
-    super(lx, newFragmentShader(fragmentShaderFilename));
+  //  public BlendShader(LX lx, String fragmentShaderFilename) {
+  public BlendShader(GLShader.Config config) {
+    super(config);
 
     addUniformSource(this::setUniforms);
 

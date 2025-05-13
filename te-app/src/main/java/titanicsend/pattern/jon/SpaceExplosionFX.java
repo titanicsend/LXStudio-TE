@@ -45,7 +45,10 @@ public class SpaceExplosionFX extends GLShaderPattern {
 
     addCommonControls();
 
-    addShader("space_explosionfx.fs", this::setUniforms);
+    addShader(
+        GLShader.config(lx)
+            .withFilename("space_explosionfx.fs")
+            .withUniformSource(this::setUniforms));
 
     eventStartTime = 0;
     lastBasis = 0;

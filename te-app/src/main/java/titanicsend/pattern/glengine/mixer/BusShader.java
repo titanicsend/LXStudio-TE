@@ -27,7 +27,7 @@ public class BusShader extends GLShader {
   private int[] main;
 
   public BusShader(LX lx) {
-    super(lx, newFragmentShader("bus.fs"));
+    super(config(lx).withFilename("bus.fs"));
 
     addUniformSource(this::setUniforms);
   }

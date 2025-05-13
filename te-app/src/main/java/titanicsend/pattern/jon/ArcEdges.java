@@ -54,16 +54,18 @@ public class ArcEdges extends GLShaderPattern {
 
     // add the OpenGL shader and its frame-time setup function
     addShader(
-        "arcedges.fs",
-        (s) -> {
-          // Here, we update line segment geometry
-          // Shader uniforms associated with a context stay resident
-          // on the GPU,so we only need to set them when something changes.
-          if (updateGeometry) {
-            sendSegments(s, saved_lines, LINE_COUNT);
-            updateGeometry = false;
-          }
-        });
+        GLShader.config(lx)
+            .withFilename("arcedges.fs")
+            .withUniformSource(
+                (s) -> {
+                  // Here, we update line segment geometry
+                  // Shader uniforms associated with a context stay resident
+                  // on the GPU,so we only need to set them when something changes.
+                  if (updateGeometry) {
+                    sendSegments(s, saved_lines, LINE_COUNT);
+                    updateGeometry = false;
+                  }
+                }));
   }
 
   // store segment descriptors in our GL line segment buffer.

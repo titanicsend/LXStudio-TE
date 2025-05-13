@@ -2,6 +2,7 @@ package titanicsend.pattern.jon;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
@@ -22,6 +23,6 @@ public class Kaleidosonic extends GLShaderPattern {
     // register common controls with LX
     addCommonControls();
 
-    addShader("kaleidosonic.fs", "color_noise.png");
+    addShader(GLShader.config(lx).withFilename("kaleidosonic.fs").withTextures("color_noise.png"));
   }
 }

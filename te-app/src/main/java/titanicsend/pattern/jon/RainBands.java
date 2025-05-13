@@ -3,6 +3,7 @@ package titanicsend.pattern.jon;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.BoundedParameter;
+import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 @LXCategory("Noise")
@@ -25,10 +26,12 @@ public class RainBands extends DriftEnabledPattern {
     addCommonControls();
 
     addShader(
-        "rain_noise.fs",
-        (s) -> {
-          // calculate incremental transform based on elapsed time
-          s.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
-        });
+        GLShader.config(lx)
+            .withFilename("rain_noise.fs")
+            .withUniformSource(
+                (s) -> {
+                  // calculate incremental transform based on elapsed time
+                  s.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
+                }));
   }
 }

@@ -38,7 +38,8 @@ public class LightBeamsAudioReactivePattern extends ConstructedShaderPattern {
     controls.setRange(TEControlTag.LEVELREACTIVITY, 1.2, 0, 2);
     controls.setRange(TEControlTag.FREQREACTIVITY, 0.01, 0, 1);
 
-    addShader("light_beams.fs", this::setUniforms);
+    addShader(
+        GLShader.config(lx).withFilename("light_beams.fs").withUniformSource(this::setUniforms));
   }
 
   private void setUniforms(GLShader s) {

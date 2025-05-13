@@ -26,17 +26,16 @@ import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.util.GLBuffers;
 import com.jogamp.opengl.util.texture.Texture;
 import heronarts.lx.LX;
+import heronarts.lx.utils.LXUtils;
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import org.lwjgl.BufferUtils;
 import titanicsend.pattern.yoffa.shader_engine.FragmentShader;
 import titanicsend.pattern.yoffa.shader_engine.ShaderAttribute;
@@ -110,88 +109,101 @@ public abstract class GLShader {
   /** Tracks texture units within the context of this shader */
   private int nextTextureUnit = FIRST_UNRESERVED_TEXTURE_UNIT;
 
-  /** Helper to construct a FragmentShader inline */
-  protected static FragmentShader newFragmentShader(
-      String shaderFilename, String... textureFilenames) {
-    return new FragmentShader(
-        new File("resources/shaders/" + shaderFilename),
-        Arrays.stream(textureFilenames)
-            .map(x -> new File("resources/shaders/textures/" + x))
-            .collect(Collectors.toList()));
+  /** Helper class to handle a variety of constructor parameters. */
+  public static class Config {
+
+    private final LX lx;
+    private String shaderFilename;
+    private final List<String> textureFilenames = new ArrayList<>();
+    private final List<UniformSource> uniformSources = new ArrayList<>();
+    private ByteBuffer legacyBackBuffer;
+
+    public Config(LX lx) {
+      this.lx = lx;
+    }
+
+    public Config withFilename(String shaderFilename) {
+      if (this.shaderFilename != null) {
+        throw new IllegalStateException("Shader filename can only  be set once");
+      }
+      this.shaderFilename = Objects.requireNonNull(shaderFilename);
+      return this;
+    }
+
+    public Config withTextures(String... textureFilenames) {
+      for (String textureFilename : textureFilenames) {
+        if (LXUtils.isEmpty(textureFilename)) {
+          throw new IllegalArgumentException("Texture filename cannot be null or empty");
+        }
+        this.textureFilenames.add(textureFilename);
+      }
+      return this;
+    }
+
+    public Config withUniformSource(UniformSource... uniformSources) {
+      for (UniformSource uniformSource : uniformSources) {
+        if (uniformSource == null) {
+          throw new IllegalArgumentException("UniformSource cannot be null");
+        }
+        this.uniformSources.add(uniformSource);
+      }
+      return this;
+    }
+
+    public Config withLegacyBackBuffer(ByteBuffer legacyBackBuffer) {
+      this.legacyBackBuffer = Objects.requireNonNull(legacyBackBuffer);
+      return this;
+    }
+
+    public String getShaderFilename() {
+      return this.shaderFilename;
+    }
+
+    public List<String> getTextureFilenames() {
+      return this.textureFilenames;
+    }
+
+    public List<UniformSource> getUniformSources() {
+      return this.uniformSources;
+    }
+
+    public ByteBuffer getLegacyBackBuffer() {
+      return this.legacyBackBuffer;
+    }
   }
 
-  // Welcome to the Land of 1000 Constructors!
+  /** Create a new set of constructor parameters for GLShader */
+  public static Config config(LX lx) {
+    return new Config(lx);
+  }
 
-  public GLShader(LX lx, FragmentShader fragmentShader) {
-    this.lx = lx;
+  private final List<UniformSource> configUniformSources;
+
+  public GLShader(Config config) {
+    this.lx = config.lx;
     this.glEngine = (GLEngine) lx.engine.getChild(GLEngine.PATH);
     this.width = this.glEngine.getWidth();
     this.height = this.glEngine.getHeight();
 
+    // Fragment Shader
+    if (LXUtils.isEmpty(config.getShaderFilename())) {
+      throw new IllegalArgumentException("Shader filename cannot be null or empty");
+    }
+    File shaderFile = new File("resources/shaders/" + config.getShaderFilename());
+    List<File> textureFiles =
+        config.getTextureFilenames().stream()
+            .map(x -> new File("resources/shaders/textures/" + x))
+            .toList();
+    this.fragmentShader = new FragmentShader(shaderFile, textureFiles);
+
+    // Wonky... uniformSources added from child constructors need to go *before* configs
+    this.configUniformSources = config.getUniformSources();
+
     // initialization that can be done before the OpenGL context is available
-    this.fragmentShader = Objects.requireNonNull(fragmentShader);
     this.vertexBuffer = Buffers.newDirectFloatBuffer(VERTICES.length);
     this.indexBuffer = Buffers.newDirectIntBuffer(INDICES.length);
     this.vertexBuffer.put(VERTICES);
     this.indexBuffer.put(INDICES);
-  }
-
-  /**
-   * Create new OpenGL shader effect
-   *
-   * @param lx LX instance
-   * @param fragmentShader fragment shader object to use that need to read the previous frame. If
-   *     null, a buffer will be automatically allocated.
-   * @param uniformSources list of callbacks that will set uniforms on this shader
-   */
-  public GLShader(LX lx, FragmentShader fragmentShader, List<UniformSource> uniformSources) {
-    this(lx, fragmentShader);
-
-    for (UniformSource uniformSource : uniformSources) {
-      if (uniformSource != null) {
-        addUniformSource(uniformSource);
-      }
-    }
-  }
-
-  /**
-   * Create new OpenGL shader effect
-   *
-   * @param lx LX instance
-   * @param fragmentShader fragment shader object to use
-   * @param uniformSource callback that will set uniforms on this shader
-   */
-  public GLShader(LX lx, FragmentShader fragmentShader, UniformSource uniformSource) {
-    this(lx, fragmentShader, List.of(uniformSource));
-  }
-
-  /**
-   * Creates new shader object with additional texture support
-   *
-   * @param lx LX instance
-   * @param shaderFilename shader to use
-   * @param uniformSources list of callbacks that will set uniforms on this shader
-   * @param textureFilenames (optional) texture files to load
-   */
-  public GLShader(
-      LX lx,
-      String shaderFilename,
-      List<UniformSource> uniformSources,
-      String... textureFilenames) {
-    this(lx, newFragmentShader(shaderFilename, textureFilenames), uniformSources);
-  }
-
-  /**
-   * Creates new shader object with additional texture support
-   *
-   * @param lx LX instance
-   * @param shaderFilename shader to use
-   * @param uniformSource callback that will set uniforms on this shader
-   * @param textureFilenames (optional) texture files to load
-   */
-  public GLShader(
-      LX lx, String shaderFilename, UniformSource uniformSource, String... textureFilenames) {
-    this(lx, shaderFilename, List.of(uniformSource), textureFilenames);
   }
 
   // Buffers
@@ -257,6 +269,11 @@ public abstract class GLShader {
       throw new IllegalStateException("Shader already initialized");
     }
     this.initialized = true;
+
+    // Add config uniformSources now, they will be after those added from child constructors...
+    for (UniformSource uniformSource : this.configUniformSources) {
+      addUniformSource(uniformSource);
+    }
 
     // The LX engine thread should have been initialized by now, so
     // we can safely retrieve our OpenGL canvas and context from the

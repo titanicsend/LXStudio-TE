@@ -80,7 +80,10 @@ public class SketchStem extends GLShaderPattern {
     // add the OpenGL shader and its frame-time setup function which,
     // in this case, will copy the current contents of the points array
     // to the native FloatBuffer and send it to the shader as an array uniform.
-    addShader("single_line_dynamicdata.fs", this::setUniforms);
+    addShader(
+        GLShader.config(lx)
+            .withFilename("single_line_dynamicdata.fs")
+            .withUniformSource(this::setUniforms));
   }
 
   private void setUniforms(GLShader s) {

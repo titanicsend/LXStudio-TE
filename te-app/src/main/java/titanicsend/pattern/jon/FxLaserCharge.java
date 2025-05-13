@@ -44,7 +44,11 @@ public class FxLaserCharge extends GLShaderPattern {
 
     addCommonControls();
 
-    addShader("ms_charge_lasers.fs", this::setUniforms, "color_noise.png");
+    addShader(
+        GLShader.config(lx)
+            .withFilename("ms_charge_lasers.fs")
+            .withTextures("color_noise.png")
+            .withUniformSource(this::setUniforms));
 
     eventStartTime = 0;
     running = false;
