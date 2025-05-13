@@ -87,9 +87,7 @@ public class GLShaderPattern extends TEPerformancePattern {
 
     // run the chain of shaders, except for the last one,
     // copying the output of each to the next shader's input texture
-    TEShader shader = null;
-    for (int i = 0; i < this.shaders.size(); i++) {
-      shader = this.shaders.get(i);
+    for (TEShader shader : this.shaders) {
       shader.run();
     }
   }
