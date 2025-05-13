@@ -16,6 +16,8 @@ import titanicsend.pattern.yoffa.shader_engine.*;
  */
 public class TEShader extends GLShader {
 
+  private static final int UNINITIALIZED = -1;
+
   // texture buffers
   private class TextureInfo {
     public String name;
@@ -32,8 +34,8 @@ public class TEShader extends GLShader {
   // Render buffers: ping-pong FBOs and textures
   private PingPongFBO ppFBOs;
 
-  // the GL texture unit to which the current view model coordinate texture is bound.
-  private int modelCoordsTextureHandle = -1;
+  // Texture handle for the current view model coordinate texture
+  private int modelCoordsTextureHandle = UNINITIALIZED;
 
   // Welcome to the Land of 1000 Constructors!
 
