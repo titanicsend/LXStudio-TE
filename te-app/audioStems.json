@@ -15,6 +15,10 @@
     {
       "label": "Other",
       "oscPath": "/te/stem/other"
+    },
+    {
+      "label": "DrumHits",
+      "oscPath": "/te/stem/drums/hit"
     }
   ]
 }
