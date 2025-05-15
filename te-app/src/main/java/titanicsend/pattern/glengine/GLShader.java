@@ -386,14 +386,7 @@ public abstract class GLShader {
    * @param textureHandle Texture handle that should be bound to the unit
    */
   protected void bindTextureUnit(int unit, int textureHandle) {
-    // Safety check that textureHandle was initialized
-    if (textureHandle < 0) {
-      throw new IllegalStateException(
-          "Texture has not been initialized, can not bind to unit " + unit);
-    }
-
-    this.gl4.glActiveTexture(GL_TEXTURE0 + unit);
-    this.gl4.glBindTexture(GL_TEXTURE_2D, textureHandle);
+    this.glEngine.bindTextureUnit(unit, textureHandle);
   }
 
   /**
@@ -402,7 +395,7 @@ public abstract class GLShader {
    * @param unit Texture unit to bind to "0"
    */
   protected void unbindTextureUnit(int unit) {
-    bindTextureUnit(unit, 0);
+    this.glEngine.unbindTextureUnit(unit);
   }
 
   /** Bind the vertex array object */

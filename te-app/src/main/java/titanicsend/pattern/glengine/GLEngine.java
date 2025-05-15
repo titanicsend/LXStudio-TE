@@ -481,6 +481,15 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     this.gl4.glBindTexture(GL_TEXTURE_2D, textureHandle);
   }
 
+  /**
+   * Helper method to unbind the current texture from a texture unit
+   *
+   * @param unit Texture unit to bind to "0"
+   */
+  public void unbindTextureUnit(int unit) {
+    bindTextureUnit(unit, 0);
+  }
+
   public void loop(double deltaMs) {
     // activate our context and do per-frame tasks
     canvas.getContext().makeCurrent();
