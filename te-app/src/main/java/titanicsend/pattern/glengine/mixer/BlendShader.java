@@ -8,8 +8,8 @@ public class BlendShader extends GLShader {
   private FBO fbo;
 
   // Input texture units
-  private final int textureUnitSrc;
-  private final int textureUnitDst;
+  private int textureUnitSrc;
+  private int textureUnitDst;
 
   // Input texture handles (src = blending from, dst = blending into)
   public int iSrc = -1;
@@ -23,10 +23,6 @@ public class BlendShader extends GLShader {
     super(config);
 
     addUniformSource(this::setUniforms);
-
-    // Use the first two "rotating" texture unit slots, avoiding our few reserved units
-    this.textureUnitSrc = getNextTextureUnit();
-    this.textureUnitDst = getNextTextureUnit();
   }
 
   @Override
@@ -37,6 +33,10 @@ public class BlendShader extends GLShader {
   @Override
   protected void allocateShaderBuffers() {
     super.allocateShaderBuffers();
+
+    // Use the first two "rotating" texture unit slots, avoiding our few reserved units
+    this.textureUnitSrc = getNextTextureUnit();
+    this.textureUnitDst = getNextTextureUnit();
 
     // FBO (framebuffer and texture) for rendering
     this.fbo = new FBO();

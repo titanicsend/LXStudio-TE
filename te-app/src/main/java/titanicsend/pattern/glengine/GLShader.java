@@ -739,6 +739,12 @@ public abstract class GLShader {
     }
   }
 
+  /**
+   * Retrieve the next unreserved texture unit for this shader. The GL context must be set before
+   * calling this method, as the unit will be enabled.
+   *
+   * @return the assigned texture unit
+   */
   protected int getNextTextureUnit() {
     int textureUnit = this.nextTextureUnit++;
     this.glEngine.enableTextureUnit(textureUnit);
