@@ -54,7 +54,7 @@ public abstract class TEPattern extends DmxPattern {
 
   @Override
   public void onInactive() {
-    clearPixels();
+    // clearPixels(); // Note(JKB): should be ok to remove this, confirm after running for a while
     super.onInactive();
   }
 
