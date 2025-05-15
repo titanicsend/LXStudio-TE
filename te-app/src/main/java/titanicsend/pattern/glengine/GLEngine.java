@@ -2,8 +2,6 @@ package titanicsend.pattern.glengine;
 
 import static com.jogamp.opengl.GL.*;
 import static titanicsend.pattern.glengine.GLShader.TEXTURE_UNIT_AUDIO;
-import static titanicsend.pattern.glengine.GLShader.TEXTURE_UNIT_BACKBUFFER;
-import static titanicsend.pattern.glengine.GLShader.TEXTURE_UNIT_COORDS;
 
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -452,11 +450,6 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     // activate our context and do initialization tasks
     canvas.getContext().makeCurrent();
 
-    // enable the texture units common to all patterns
-    enableTextureUnit(TEXTURE_UNIT_AUDIO);
-    enableTextureUnit(TEXTURE_UNIT_COORDS);
-    enableTextureUnit(TEXTURE_UNIT_BACKBUFFER);
-
     // set up shared uniform blocks
     initializeUniformBlocks();
 
@@ -468,12 +461,6 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     initializeAudioTexture();
 
     lx.engine.addLoopTask(this);
-  }
-
-  public void enableTextureUnit(int unit) {
-    this.gl4.glActiveTexture(GL_TEXTURE0 + unit);
-    this.gl4.glEnable(GL_TEXTURE_2D);
-    this.gl4.glActiveTexture(GL_TEXTURE0);
   }
 
   /**

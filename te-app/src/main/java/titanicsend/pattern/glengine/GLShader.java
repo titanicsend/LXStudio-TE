@@ -753,9 +753,7 @@ public abstract class GLShader {
    * @return the assigned texture unit
    */
   protected int getNextTextureUnit() {
-    int textureUnit = this.nextTextureUnit++;
-    this.glEngine.enableTextureUnit(textureUnit);
-    return textureUnit;
+    return this.nextTextureUnit++;
   }
 
   public void dispose() {
