@@ -128,6 +128,9 @@ public class TEShader extends GLShader {
     //
     // The audio texture can be used by all shaders, and stays bound to texture
     // unit 0 throughout the Chromatik run. All we have to do to use it is add the uniform.
+
+    // Note(JKB): encountered mystery error without rebinding the audio texture here:
+    this.glEngine.bindAudioTexture();
     this.uniforms.audio.setValue(TEXTURE_UNIT_AUDIO);
 
     // use the current view's model coordinates texture which

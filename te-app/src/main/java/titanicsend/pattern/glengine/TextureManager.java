@@ -1,6 +1,7 @@
 package titanicsend.pattern.glengine;
 
 import static com.jogamp.opengl.GL.*;
+import static titanicsend.pattern.glengine.GLShader.TEXTURE_UNIT_COORDS;
 
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -118,7 +119,7 @@ public class TextureManager implements LX.Listener {
     coords.rewind();
 
     // Create an OpenGL texture to hold the coordinate data
-    this.glEngine.bindTextureUnit(0, t.getHandle());
+    this.glEngine.bindTextureUnit(TEXTURE_UNIT_COORDS, t.getHandle());
 
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -129,7 +130,8 @@ public class TextureManager implements LX.Listener {
     gl4.glTexImage2D(
         GL4.GL_TEXTURE_2D, 0, GL4.GL_RGB32F, width, height, 0, GL4.GL_RGB, GL_FLOAT, coords);
 
-    gl4.glBindTexture(GL4.GL_TEXTURE_2D, 0);
+    gl4.glBindTexture(GL_TEXTURE_2D, 0);
+    gl4.glActiveTexture(GL_TEXTURE0);
 
     return t.getHandle();
   }

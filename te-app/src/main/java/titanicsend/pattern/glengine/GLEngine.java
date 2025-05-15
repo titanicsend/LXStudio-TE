@@ -145,6 +145,10 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     return meter.getSamples()[index];
   }
 
+  public void bindAudioTexture() {
+    bindTextureUnit(TEXTURE_UNIT_AUDIO, this.audioTextureHandle[0]);
+  }
+
   /**
    * Construct texture to hold audio fft and waveform data and bind it to texture unit 0 for the
    * entire run. Once done, every shader pattern can access the audio data texture with minimal
@@ -154,9 +158,9 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     // allocate backing buffer in native memory
     this.audioTextureData = GLBuffers.newDirectFloatBuffer(audioTextureHeight * audioTextureWidth);
 
-    // create texture and bind it to texture unit 0, where it will stay for the whole run
+    // create texture and bind it to the dedicated texture unit
     gl4.glGenTextures(1, audioTextureHandle, 0);
-    bindTextureUnit(TEXTURE_UNIT_AUDIO, audioTextureHandle[0]);
+    bindAudioTexture();
 
     // allocate storage once
     gl4.glTexImage2D(
@@ -188,7 +192,7 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
       audioTextureData.put(n + audioTextureWidth, getWaveformData(n));
     }
 
-    bindTextureUnit(TEXTURE_UNIT_AUDIO, audioTextureHandle[0]);
+    bindAudioTexture();
 
     // update audio texture on the GPU from our buffer, *without* re-allocating
     gl4.glTexSubImage2D(
@@ -460,6 +464,7 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     // set up the per-frame audio info texture
     initializeAudioTexture();
 
+    // Run on every frame. The first run will be before the first mixer loop.
     lx.engine.addLoopTask(this);
   }
 
