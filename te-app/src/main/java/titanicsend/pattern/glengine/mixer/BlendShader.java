@@ -82,8 +82,8 @@ public class BlendShader extends GLShader {
     drawElements();
 
     // Unbind textures
-    bindTextureUnit(this.textureUnitSrc, 0);
-    bindTextureUnit(this.textureUnitDst, 0);
+    unbindTextureUnit(this.textureUnitSrc);
+    unbindTextureUnit(this.textureUnitDst);
     activateDefaultTextureUnit();
 
     // No need to unbind VAO.

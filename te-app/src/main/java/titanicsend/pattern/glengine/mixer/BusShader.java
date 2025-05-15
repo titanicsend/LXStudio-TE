@@ -118,6 +118,9 @@ public class BusShader extends GLShader {
     // Switch to the next PBO for the next frame
     this.ppPBOs.swap();
 
+    unbindTextureUnit(TEXTURE_UNIT_INPUT);
+    activateDefaultTextureUnit();
+
     // No need to unbind VAO.
     // Also not unbinding the FBO here, as other shader render passes will change it.
     // And GLMixer will unbind the last FBO at the end of postMix().

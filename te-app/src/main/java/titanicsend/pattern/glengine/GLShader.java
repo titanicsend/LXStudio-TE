@@ -389,6 +389,15 @@ public abstract class GLShader {
     gl4.glBindTexture(GL4.GL_TEXTURE_2D, textureHandle);
   }
 
+  /**
+   * Helper method to unbind the current texture from a texture unit
+   *
+   * @param unit Texture unit to bind to "0"
+   */
+  protected void unbindTextureUnit(int unit) {
+    bindTextureUnit(unit, 0);
+  }
+
   /** Bind the vertex array object */
   protected void bindVAO() {
     gl4.glBindVertexArray(this.vaoHandles[0]);

@@ -149,6 +149,14 @@ public class TEShader extends GLShader {
     // render a frame
     drawElements();
 
+    // Unbind textures (except for audio, which stays bound for all patterns)
+    unbindTextureUnit(TEXTURE_UNIT_COORDS);
+    unbindTextureUnit(TEXTURE_UNIT_BACKBUFFER);
+    for (TextureInfo ti : textures) {
+      unbindTextureUnit(ti.unit);
+    }
+    activateDefaultTextureUnit();
+
     // No need to unbind VAO.
     // Also not unbinding the FBO here, as other shader render passes will change it.
     // And GLMixer will unbind the last FBO at the end of postMix().
