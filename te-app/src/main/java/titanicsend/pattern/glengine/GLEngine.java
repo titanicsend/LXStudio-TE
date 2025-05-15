@@ -374,6 +374,35 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     gl4.glBufferSubData(GL4.GL_UNIFORM_BUFFER, 0, perFrameUniformBlockSize, perFrameUniformBlock);
   }
 
+  /**
+   * Check for an OpenGL error, which also resets the error code. Caution: an error detected here
+   * could be left over from an earlier GL call instead of being from the most recent call. To be
+   * certain, call it before and after your area of concern.
+   */
+  @SuppressWarnings("unused")
+  public void checkGLError() {
+    int err = this.gl4.glGetError();
+    if (err != GL_NO_ERROR) {
+      String errorString = getGLErrorString(err);
+      LX.error("GL Error: " + err + " (" + errorString + ")");
+    }
+  }
+
+  /** Helper method to convert GL error codes to readable strings */
+  private String getGLErrorString(int err) {
+    return switch (err) {
+      case GL_INVALID_ENUM -> "GL_INVALID_ENUM";
+      case GL_INVALID_VALUE -> "GL_INVALID_VALUE";
+      case GL_INVALID_OPERATION -> "GL_INVALID_OPERATION";
+      case GL4.GL_STACK_OVERFLOW -> "GL_STACK_OVERFLOW";
+      case GL4.GL_STACK_UNDERFLOW -> "GL_STACK_UNDERFLOW";
+      case GL_OUT_OF_MEMORY -> "GL_OUT_OF_MEMORY";
+      case GL_INVALID_FRAMEBUFFER_OPERATION -> "GL_INVALID_FRAMEBUFFER_OPERATION";
+      case GL4.GL_CONTEXT_LOST -> "GL_CONTEXT_LOST";
+      default -> "Unknown error code: " + err;
+    };
+  }
+
   public GLEngine(LX lx, int width, int height) {
     current = this;
     // The shape the user gives us affects the rendered aspect ratio,
