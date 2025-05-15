@@ -10,6 +10,7 @@ import static com.jogamp.opengl.GL.GL_FRAMEBUFFER;
 import static com.jogamp.opengl.GL.GL_FRAMEBUFFER_COMPLETE;
 import static com.jogamp.opengl.GL.GL_LINEAR;
 import static com.jogamp.opengl.GL.GL_RGBA8;
+import static com.jogamp.opengl.GL.GL_TEXTURE0;
 import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
 import static com.jogamp.opengl.GL.GL_TEXTURE_MAG_FILTER;
 import static com.jogamp.opengl.GL.GL_TEXTURE_MIN_FILTER;
@@ -242,7 +243,7 @@ public abstract class GLShader {
 
   // get the active GL4 object for this shader.
   public GL4 getGL4() {
-    return gl4;
+    return this.gl4;
   }
 
   // Initialization
@@ -304,16 +305,16 @@ public abstract class GLShader {
     // Shader geometry is the same across all our shader classes, for now.
 
     // storage for geometry buffer handles
-    gl4.glGenVertexArrays(1, this.vaoHandles, 0);
-    gl4.glGenBuffers(2, IntBuffer.wrap(geometryBufferHandles));
+    this.gl4.glGenVertexArrays(1, this.vaoHandles, 0);
+    this.gl4.glGenBuffers(2, IntBuffer.wrap(geometryBufferHandles));
 
     // bind Vertex Array Object first
-    gl4.glBindVertexArray(this.vaoHandles[0]);
+    this.gl4.glBindVertexArray(this.vaoHandles[0]);
 
     // vertices
     vertexBuffer.rewind();
-    gl4.glBindBuffer(GL_ARRAY_BUFFER, geometryBufferHandles[0]);
-    gl4.glBufferData(
+    this.gl4.glBindBuffer(GL_ARRAY_BUFFER, geometryBufferHandles[0]);
+    this.gl4.glBufferData(
         GL_ARRAY_BUFFER,
         (long) vertexBuffer.capacity() * Float.BYTES,
         vertexBuffer,
@@ -321,20 +322,20 @@ public abstract class GLShader {
 
     // geometry (triangles built from vertices)
     indexBuffer.rewind();
-    gl4.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometryBufferHandles[1]);
-    gl4.glBufferData(
+    this.gl4.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometryBufferHandles[1]);
+    this.gl4.glBufferData(
         GL_ELEMENT_ARRAY_BUFFER,
         (long) indexBuffer.capacity() * Integer.BYTES,
         indexBuffer,
         GL.GL_STATIC_DRAW);
 
     // vertex attributes
-    int position = gl4.glGetAttribLocation(shaderProgram.id, ShaderAttribute.POSITION);
-    gl4.glVertexAttribPointer(position, 3, GL4.GL_FLOAT, false, 0, 0);
-    gl4.glEnableVertexAttribArray(position);
+    int position = this.gl4.glGetAttribLocation(shaderProgram.id, ShaderAttribute.POSITION);
+    this.gl4.glVertexAttribPointer(position, 3, GL4.GL_FLOAT, false, 0, 0);
+    this.gl4.glEnableVertexAttribArray(position);
 
     // Unbind VAO to prevent subsequent setup from modifying it by mistake
-    gl4.glBindVertexArray(0);
+    this.gl4.glBindVertexArray(0);
   }
 
   // Run loop
@@ -374,7 +375,7 @@ public abstract class GLShader {
 
   /** Activates texture unit 0. */
   protected void activateDefaultTextureUnit() {
-    gl4.glActiveTexture(GL4.GL_TEXTURE0);
+    this.gl4.glActiveTexture(GL_TEXTURE0);
   }
 
   /**
@@ -391,8 +392,8 @@ public abstract class GLShader {
           "Texture has not been initialized, can not bind to unit " + unit);
     }
 
-    gl4.glActiveTexture(GL4.GL_TEXTURE0 + unit);
-    gl4.glBindTexture(GL4.GL_TEXTURE_2D, textureHandle);
+    this.gl4.glActiveTexture(GL_TEXTURE0 + unit);
+    this.gl4.glBindTexture(GL_TEXTURE_2D, textureHandle);
   }
 
   /**
@@ -406,11 +407,11 @@ public abstract class GLShader {
 
   /** Bind the vertex array object */
   protected void bindVAO() {
-    gl4.glBindVertexArray(this.vaoHandles[0]);
+    this.gl4.glBindVertexArray(this.vaoHandles[0]);
   }
 
   protected void drawElements() {
-    gl4.glDrawElements(GL2.GL_TRIANGLES, INDICES.length, GL2.GL_UNSIGNED_INT, 0);
+    this.gl4.glDrawElements(GL2.GL_TRIANGLES, INDICES.length, GL2.GL_UNSIGNED_INT, 0);
   }
 
   /** Debug tool. Prints the first values in a texture to the console. */
@@ -419,7 +420,7 @@ public abstract class GLShader {
 
     ByteBuffer pixels = BufferUtils.createByteBuffer(width * height * 4);
 
-    gl4.glGetTexImage(GL4.GL_TEXTURE_2D, 0, GL_BGRA, GL4.GL_UNSIGNED_BYTE, pixels);
+    this.gl4.glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL4.GL_UNSIGNED_BYTE, pixels);
 
     StringBuilder sb = new StringBuilder();
     pixels.rewind();
@@ -432,7 +433,7 @@ public abstract class GLShader {
     }
     System.out.println(sb);
 
-    gl4.glBindTexture(GL4.GL_TEXTURE_2D, 0);
+    this.gl4.glBindTexture(GL_TEXTURE_2D, 0);
   }
 
   private static String byteToThreeCharString(byte b) {
@@ -764,8 +765,8 @@ public abstract class GLShader {
 
     if (this.initialized) {
       // delete GPU buffers we directly allocated
-      gl4.glDeleteBuffers(2, geometryBufferHandles, 0);
-      gl4.glDeleteVertexArrays(1, vaoHandles, 0);
+      this.gl4.glDeleteBuffers(2, geometryBufferHandles, 0);
+      this.gl4.glDeleteVertexArrays(1, vaoHandles, 0);
 
       this.shaderProgram.dispose();
     }

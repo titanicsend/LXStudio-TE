@@ -128,7 +128,7 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     this.glMasterBus.blend(this.blackBackground);
 
     // Unbind framebuffer, the next GL commands might be out of GLEngine scope...
-    gl4.glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    this.gl4.glBindFramebuffer(GL_FRAMEBUFFER, 0);
   }
 
   // LXMixerEngine.Listener

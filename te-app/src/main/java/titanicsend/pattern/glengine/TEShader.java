@@ -74,12 +74,12 @@ public class TEShader extends GLShader {
     this.ppFBOs = new PingPongFBO();
 
     // assign shared uniform blocks to the shader's binding points
-    int perRunBlockIndex = gl4.glGetUniformBlockIndex(shaderProgram.id, "PerRunBlock");
-    gl4.glUniformBlockBinding(
+    int perRunBlockIndex = this.gl4.glGetUniformBlockIndex(shaderProgram.id, "PerRunBlock");
+    this.gl4.glUniformBlockBinding(
         shaderProgram.id, perRunBlockIndex, GLEngine.perRunUniformBlockBinding);
 
-    int perFrameBlockIndex = gl4.glGetUniformBlockIndex(shaderProgram.id, "PerFrameBlock");
-    gl4.glUniformBlockBinding(
+    int perFrameBlockIndex = this.gl4.glGetUniformBlockIndex(shaderProgram.id, "PerFrameBlock");
+    this.gl4.glUniformBlockBinding(
         shaderProgram.id, perFrameBlockIndex, GLEngine.perFrameUniformBlockBinding);
 
     loadTextureFiles();
@@ -144,13 +144,13 @@ public class TEShader extends GLShader {
     this.uniforms.mappedBuffer.setValue(TEXTURE_UNIT_BACKBUFFER);
 
     // Bind shadertoy textures to corresponding shader-specific texture units.
-    for (TextureInfo ti : textures) {
+    for (TextureInfo ti : this.textures) {
       bindTextureUnit(ti.unit, ti.handle);
       setUniform(ti.uniformName, ti.unit);
     }
 
     // Add all preprocessed LX parameters from the shader code as uniforms
-    for (LXParameter customParameter : fragmentShader.parameters) {
+    for (LXParameter customParameter : this.fragmentShader.parameters) {
       setUniform(
           customParameter.getLabel() + UniformNames.LX_PARAMETER_SUFFIX,
           customParameter.getValuef());
@@ -171,7 +171,7 @@ public class TEShader extends GLShader {
     // Unbind textures (except for audio, which stays bound for all patterns)
     unbindTextureUnit(TEXTURE_UNIT_COORDS);
     unbindTextureUnit(TEXTURE_UNIT_BACKBUFFER);
-    for (TextureInfo ti : textures) {
+    for (TextureInfo ti : this.textures) {
       unbindTextureUnit(ti.unit);
     }
     activateDefaultTextureUnit();
@@ -210,7 +210,7 @@ public class TEShader extends GLShader {
       this.ppFBOs.dispose();
 
       // free any textures on ShaderToy channels
-      for (TextureInfo ti : textures) {
+      for (TextureInfo ti : this.textures) {
         this.glEngine.textureCache.releaseStaticTexture(ti.name);
       }
     }

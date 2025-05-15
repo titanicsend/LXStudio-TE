@@ -108,7 +108,7 @@ public class BusShader extends GLShader {
     this.ppPBOs.render.bind();
 
     // Read pixels into current PBO
-    gl4.glReadPixels(0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, 0);
+    this.gl4.glReadPixels(0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, 0);
 
     if (firstFrame) {
       // Skip the first frame, PBO is empty
@@ -117,7 +117,7 @@ public class BusShader extends GLShader {
 
       // Map the other PBO for reading (from previous frame)
       this.ppPBOs.copy.bind();
-      ByteBuffer pboData = gl4.glMapBuffer(GL4.GL_PIXEL_PACK_BUFFER, GL4.GL_READ_ONLY);
+      ByteBuffer pboData = this.gl4.glMapBuffer(GL4.GL_PIXEL_PACK_BUFFER, GL4.GL_READ_ONLY);
 
       if (pboData != null) {
         // Copy data from PBO to main array
@@ -129,12 +129,12 @@ public class BusShader extends GLShader {
         src.get(this.main, 0, count);
 
         // Unmap the PBO
-        gl4.glUnmapBuffer(GL4.GL_PIXEL_PACK_BUFFER);
+        this.gl4.glUnmapBuffer(GL4.GL_PIXEL_PACK_BUFFER);
       }
     }
 
     // Unbind the PBO
-    gl4.glBindBuffer(GL4.GL_PIXEL_PACK_BUFFER, 0);
+    this.gl4.glBindBuffer(GL4.GL_PIXEL_PACK_BUFFER, 0);
 
     // Switch to the next PBO for the next frame
     this.ppPBOs.swap();

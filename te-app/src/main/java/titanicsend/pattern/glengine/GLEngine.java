@@ -429,9 +429,9 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   }
 
   public void enableTextureUnit(int unit) {
-    gl4.glActiveTexture(GL_TEXTURE0 + unit);
-    gl4.glEnable(GL_TEXTURE_2D);
-    gl4.glActiveTexture(GL_TEXTURE0);
+    this.gl4.glActiveTexture(GL_TEXTURE0 + unit);
+    this.gl4.glEnable(GL_TEXTURE_2D);
+    this.gl4.glActiveTexture(GL_TEXTURE0);
   }
 
   /**
@@ -448,8 +448,8 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
           "Texture has not been initialized, can not bind to unit " + unit);
     }
 
-    gl4.glActiveTexture(GL_TEXTURE0 + unit);
-    gl4.glBindTexture(GL_TEXTURE_2D, textureHandle);
+    this.gl4.glActiveTexture(GL_TEXTURE0 + unit);
+    this.gl4.glBindTexture(GL_TEXTURE_2D, textureHandle);
   }
 
   public void loop(double deltaMs) {
