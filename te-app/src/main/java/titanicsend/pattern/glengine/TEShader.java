@@ -1,11 +1,7 @@
 package titanicsend.pattern.glengine;
 
-import static com.jogamp.opengl.GL.*;
-
-import com.jogamp.opengl.*;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.parameter.LXParameter;
-import java.nio.*;
 import java.util.*;
 import titanicsend.pattern.yoffa.shader_engine.*;
 
@@ -35,6 +31,16 @@ public class TEShader extends GLShader {
 
   // Texture handle for the current view model coordinate texture
   private int modelCoordsTextureHandle = UNINITIALIZED;
+
+  private static class TEShaderUniforms {
+    private Uniform.Int1 audio;
+    private Uniform.Int1 lxModelCoords;
+    private Uniform.Int1 backBuffer;
+    private Uniform.Int1 mappedBuffer;
+  }
+
+  private final TEShaderUniforms uniforms = new TEShaderUniforms();
+  private boolean initializedUniforms = false;
 
   public TEShader(GLShader.Config config) {
     super(config);
@@ -95,7 +101,20 @@ public class TEShader extends GLShader {
 
   // Run loop
 
+  private void initializeUniforms() {
+    this.uniforms.audio = getUniformInt1(UniformNames.AUDIO_CHANNEL);
+    this.uniforms.lxModelCoords = getUniformInt1(UniformNames.LX_MODEL_COORDS);
+    this.uniforms.backBuffer = getUniformInt1(UniformNames.BACK_BUFFER);
+    this.uniforms.mappedBuffer = getUniformInt1(UniformNames.MAPPED_BUFFER);
+  }
+
   private void setUniforms(GLShader s) {
+    // Use Uniform objects to track locations and values
+    if (!initializedUniforms) {
+      this.initializedUniforms = true;
+      initializeUniforms();
+    }
+
     // Swap render/copy FBOs
     this.ppFBOs.swap();
 
@@ -109,20 +128,20 @@ public class TEShader extends GLShader {
     //
     // The audio texture can be used by all shaders, and stays bound to texture
     // unit 0 throughout the Chromatik run. All we have to do to use it is add the uniform.
-    setUniform(UniformNames.AUDIO_CHANNEL, TEXTURE_UNIT_AUDIO);
+    this.uniforms.audio.setValue(TEXTURE_UNIT_AUDIO);
 
     // use the current view's model coordinates texture which
     // has already been loaded to the GPU by the texture cache manager.
     // All we need to do is bind it to right GL texture unit.
     bindTextureUnit(TEXTURE_UNIT_COORDS, this.modelCoordsTextureHandle);
-    setUniform(UniformNames.LX_MODEL_COORDS, TEXTURE_UNIT_COORDS);
+    this.uniforms.lxModelCoords.setValue(TEXTURE_UNIT_COORDS);
 
     // Use older FBO as backbuffer
     bindTextureUnit(TEXTURE_UNIT_BACKBUFFER, this.ppFBOs.copy.getTextureHandle());
-    setUniform(UniformNames.BACK_BUFFER, TEXTURE_UNIT_BACKBUFFER);
+    this.uniforms.backBuffer.setValue(TEXTURE_UNIT_BACKBUFFER);
 
     // GL will complain if you don't assign a unit to the sampler2D...
-    setUniform(UniformNames.MAPPED_BUFFER, TEXTURE_UNIT_BACKBUFFER);
+    this.uniforms.mappedBuffer.setValue(TEXTURE_UNIT_BACKBUFFER);
 
     // Bind shadertoy textures to corresponding shader-specific texture units.
     for (TextureInfo ti : textures) {

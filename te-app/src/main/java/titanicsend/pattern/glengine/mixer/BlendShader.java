@@ -1,6 +1,7 @@
 package titanicsend.pattern.glengine.mixer;
 
 import titanicsend.pattern.glengine.GLShader;
+import titanicsend.pattern.yoffa.shader_engine.Uniform;
 
 public class BlendShader extends GLShader {
 
@@ -17,6 +18,15 @@ public class BlendShader extends GLShader {
 
   // Amount of src to blend into dst
   private float level = 0f;
+
+  private static class BlendUniforms {
+    private Uniform.Int1 iSrc;
+    private Uniform.Int1 iDst;
+    private Uniform.Float1 level;
+  }
+
+  private final BlendUniforms uniforms = new BlendUniforms();
+  private boolean initializedUniforms = false;
 
   //  public BlendShader(LX lx, String fragmentShaderFilename) {
   public BlendShader(GLShader.Config config) {
@@ -54,20 +64,32 @@ public class BlendShader extends GLShader {
     this.level = level;
   }
 
+  private void initializeUniforms() {
+    this.uniforms.iSrc = getUniformInt1("iSrc");
+    this.uniforms.iDst = getUniformInt1("iDst");
+    this.uniforms.level = getUniformFloat1("level");
+  }
+
   /** Stage new uniform values that need to be sent to the shader */
   private void setUniforms(GLShader s) {
     if (iSrc < 0 || iDst < 0) {
       throw new IllegalStateException("BlendShader: input textures have not been set");
     }
 
+    // Use Uniform objects to track locations and values
+    if (!initializedUniforms) {
+      this.initializedUniforms = true;
+      initializeUniforms();
+    }
+
     // Bind input textures to texture units
     bindTextureUnit(this.textureUnitSrc, this.iSrc);
-    setUniform("iSrc", this.textureUnitSrc);
-
     bindTextureUnit(this.textureUnitDst, this.iDst);
-    setUniform("iDst", this.textureUnitDst);
 
-    setUniform("level", this.level);
+    // Stage uniform values for updating
+    this.uniforms.iSrc.setValue(this.textureUnitSrc);
+    this.uniforms.iDst.setValue(this.textureUnitDst);
+    this.uniforms.level.setValue(this.level);
   }
 
   @Override

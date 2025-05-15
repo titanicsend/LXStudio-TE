@@ -8,6 +8,7 @@ import heronarts.lx.LX;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import titanicsend.pattern.glengine.GLShader;
+import titanicsend.pattern.yoffa.shader_engine.Uniform;
 
 public class BusShader extends GLShader {
 
@@ -23,6 +24,14 @@ public class BusShader extends GLShader {
   private int inputTexture = -1;
   private float level = 1f;
   private int[] main;
+
+  private static class BusUniforms {
+    private Uniform.Int1 input1;
+    private Uniform.Float1 level;
+  }
+
+  private final BusUniforms uniforms = new BusUniforms();
+  private boolean initializedUniforms = false;
 
   public BusShader(LX lx) {
     super(config(lx).withFilename("bus.fs"));
@@ -61,15 +70,25 @@ public class BusShader extends GLShader {
     this.inputTexture = inputTextureHandle;
   }
 
+  private void initializeUniforms() {
+    this.uniforms.input1 = getUniformInt1("input1");
+    this.uniforms.level = getUniformFloat1("level");
+  }
+
   private void setUniforms(GLShader s) {
+    // Use Uniform objects to track locations and values
+    if (!initializedUniforms) {
+      this.initializedUniforms = true;
+      initializeUniforms();
+    }
+
     // Bind input textures to texture units
     bindTextureUnit(this.textureUnitInput, this.inputTexture);
-    setUniform("input1", this.textureUnitInput);
-
     activateDefaultTextureUnit();
 
-    setUniform("level", this.level);
-    setUniform("iResolution", (float) this.width, (float) this.height);
+    // Stage uniform values for updating
+    this.uniforms.input1.setValue(this.textureUnitInput);
+    this.uniforms.level.setValue(this.level);
   }
 
   boolean firstFrame = true;
@@ -120,7 +139,7 @@ public class BusShader extends GLShader {
     // Switch to the next PBO for the next frame
     this.ppPBOs.swap();
 
-    unbindTextureUnit(textureUnitInput);
+    unbindTextureUnit(this.textureUnitInput);
     activateDefaultTextureUnit();
 
     // No need to unbind VAO.

@@ -385,6 +385,7 @@ public abstract class GLShader {
    * @param textureHandle Texture handle that should be bound to the unit
    */
   protected void bindTextureUnit(int unit, int textureHandle) {
+    // TODO: Safety check that textureHandle is not -1 (Uninitialized)
     gl4.glActiveTexture(GL4.GL_TEXTURE0 + unit);
     gl4.glBindTexture(GL4.GL_TEXTURE_2D, textureHandle);
   }
