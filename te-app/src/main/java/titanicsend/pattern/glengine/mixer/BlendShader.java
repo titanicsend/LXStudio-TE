@@ -1,8 +1,5 @@
 package titanicsend.pattern.glengine.mixer;
 
-import static com.jogamp.opengl.GL.GL_TEXTURE0;
-import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
-
 import titanicsend.pattern.glengine.GLShader;
 
 public class BlendShader extends GLShader {
@@ -64,12 +61,10 @@ public class BlendShader extends GLShader {
     }
 
     // Bind input textures to texture units
-    gl4.glActiveTexture(GL_TEXTURE0 + this.textureUnitSrc);
-    gl4.glBindTexture(GL_TEXTURE_2D, this.iSrc);
+    bindTextureUnit(this.textureUnitSrc, this.iSrc);
     setUniform("iSrc", this.textureUnitSrc);
 
-    gl4.glActiveTexture(GL_TEXTURE0 + this.textureUnitDst);
-    gl4.glBindTexture(GL_TEXTURE_2D, this.iDst);
+    bindTextureUnit(this.textureUnitDst, this.iDst);
     setUniform("iDst", this.textureUnitDst);
 
     setUniform("level", this.level);
@@ -86,12 +81,10 @@ public class BlendShader extends GLShader {
     // Render frame to FBO
     drawElements();
 
-    // TODO: Unbind textures?
-    // gl4.glActiveTexture(GL_TEXTURE0 + this.textureUnitSrc);
-    // gl4.glBindTexture(GL_TEXTURE_2D, 0);
-    // gl4.glActiveTexture(GL_TEXTURE0 + this.textureUnitDst);
-    // gl4.glBindTexture(GL_TEXTURE_2D, 0);
-    // gl4.glActiveTexture(GL_TEXTURE0);
+    // Unbind textures
+    bindTextureUnit(this.textureUnitSrc, 0);
+    bindTextureUnit(this.textureUnitDst, 0);
+    activateDefaultTextureUnit();
 
     // No need to unbind VAO.
     // Also not unbinding the FBO here, as other shader render passes will change it.

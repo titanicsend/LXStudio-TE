@@ -372,6 +372,23 @@ public abstract class GLShader {
   /** Child classes should run GL draw commands here */
   protected abstract void render();
 
+  /** Activates texture unit 0. */
+  protected void activateDefaultTextureUnit() {
+    gl4.glActiveTexture(GL4.GL_TEXTURE0);
+  }
+
+  /**
+   * Helper method to activate a texture unit and bind a texture to it. In higher OpenGL versions
+   * (4.5+) this method is built-in.
+   *
+   * @param unit Texture unit to activate (0+)
+   * @param textureHandle Texture handle that should be bound to the unit
+   */
+  protected void bindTextureUnit(int unit, int textureHandle) {
+    gl4.glActiveTexture(GL4.GL_TEXTURE0 + unit);
+    gl4.glBindTexture(GL4.GL_TEXTURE_2D, textureHandle);
+  }
+
   /** Bind the vertex array object */
   protected void bindVAO() {
     gl4.glBindVertexArray(this.vaoHandles[0]);
@@ -383,8 +400,7 @@ public abstract class GLShader {
 
   /** Debug tool. Prints the first values in a texture to the console. */
   public void debugTexture(String label, int textureId) {
-    gl4.glActiveTexture(GL4.GL_TEXTURE0);
-    gl4.glBindTexture(GL4.GL_TEXTURE_2D, textureId);
+    bindTextureUnit(0, textureId);
 
     ByteBuffer pixels = BufferUtils.createByteBuffer(width * height * 4);
 
@@ -715,7 +731,9 @@ public abstract class GLShader {
   }
 
   protected int getNextTextureUnit() {
-    return this.nextTextureUnit++;
+    int textureUnit = this.nextTextureUnit++;
+    this.glEngine.enableTextureUnit(textureUnit);
+    return textureUnit;
   }
 
   public void dispose() {

@@ -114,15 +114,11 @@ public class TEShader extends GLShader {
     // use the current view's model coordinates texture which
     // has already been loaded to the GPU by the texture cache manager.
     // All we need to do is bind it to right GL texture unit.
-    gl4.glActiveTexture(GL_TEXTURE0 + TEXTURE_UNIT_COORDS);
-    gl4.glEnable(GL_TEXTURE_2D);
-    gl4.glBindTexture(GL_TEXTURE_2D, this.modelCoordsTextureHandle);
+    bindTextureUnit(TEXTURE_UNIT_COORDS, this.modelCoordsTextureHandle);
     setUniform(UniformNames.LX_MODEL_COORDS, TEXTURE_UNIT_COORDS);
 
     // Use older FBO as backbuffer
-    gl4.glActiveTexture(GL_TEXTURE0 + TEXTURE_UNIT_BACKBUFFER);
-    gl4.glEnable(GL_TEXTURE_2D);
-    gl4.glBindTexture(GL_TEXTURE_2D, this.ppFBOs.copy.getTextureHandle());
+    bindTextureUnit(TEXTURE_UNIT_BACKBUFFER, this.ppFBOs.copy.getTextureHandle());
     setUniform(UniformNames.BACK_BUFFER, TEXTURE_UNIT_BACKBUFFER);
 
     // GL will complain if you don't assign a unit to the sampler2D...
@@ -130,9 +126,7 @@ public class TEShader extends GLShader {
 
     // Bind shadertoy textures to corresponding shader-specific texture units.
     for (TextureInfo ti : textures) {
-      gl4.glActiveTexture(GL_TEXTURE0 + ti.unit);
-      gl4.glEnable(GL_TEXTURE_2D);
-      gl4.glBindTexture(GL4.GL_TEXTURE_2D, ti.handle);
+      bindTextureUnit(ti.unit, ti.handle);
       setUniform(ti.uniformName, ti.unit);
     }
 

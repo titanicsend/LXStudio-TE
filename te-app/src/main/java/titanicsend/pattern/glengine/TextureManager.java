@@ -118,9 +118,7 @@ public class TextureManager implements LX.Listener {
     coords.rewind();
 
     // Create an OpenGL texture to hold the coordinate data
-    gl4.glActiveTexture(GL_TEXTURE0);
-    gl4.glEnable(GL_TEXTURE_2D);
-    gl4.glBindTexture(GL4.GL_TEXTURE_2D, t.getHandle());
+    this.glEngine.bindTextureUnit(0, t.getHandle());
 
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

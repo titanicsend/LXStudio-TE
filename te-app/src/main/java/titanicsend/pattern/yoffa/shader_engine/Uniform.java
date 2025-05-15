@@ -591,7 +591,6 @@ public abstract class Uniform {
     @Override
     public void update() {
       gl4.glActiveTexture(GL_TEXTURE0 + this.textureUnit);
-      this.texture.enable(gl4);
       this.texture.bind(gl4);
       gl4.glUniform1i(this.location, this.textureUnit);
     }

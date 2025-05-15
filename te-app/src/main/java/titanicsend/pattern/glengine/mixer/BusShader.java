@@ -1,8 +1,6 @@
 package titanicsend.pattern.glengine.mixer;
 
 import static com.jogamp.opengl.GL.GL_BGRA;
-import static com.jogamp.opengl.GL.GL_TEXTURE0;
-import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
 import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
 
 import com.jogamp.opengl.GL4;
@@ -63,12 +61,10 @@ public class BusShader extends GLShader {
 
   private void setUniforms(GLShader s) {
     // Bind input textures to texture units
-    gl4.glActiveTexture(GL_TEXTURE0 + TEXTURE_UNIT_INPUT);
-    gl4.glEnable(GL_TEXTURE_2D);
-    gl4.glBindTexture(GL_TEXTURE_2D, this.inputTexture);
+    bindTextureUnit(TEXTURE_UNIT_INPUT, this.inputTexture);
     setUniform("input1", TEXTURE_UNIT_INPUT);
 
-    gl4.glActiveTexture(GL_TEXTURE0);
+    activateDefaultTextureUnit();
 
     setUniform("level", this.level);
     setUniform("iResolution", (float) this.width, (float) this.height);

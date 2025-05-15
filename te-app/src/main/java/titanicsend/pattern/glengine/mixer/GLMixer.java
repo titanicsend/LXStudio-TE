@@ -4,6 +4,7 @@ import static com.jogamp.opengl.GL.GL_FRAMEBUFFER;
 import static com.jogamp.opengl.GL.GL_LINEAR;
 import static com.jogamp.opengl.GL.GL_RGBA;
 import static com.jogamp.opengl.GL.GL_RGBA8;
+import static com.jogamp.opengl.GL.GL_TEXTURE0;
 import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
 import static com.jogamp.opengl.GL.GL_TEXTURE_MAG_FILTER;
 import static com.jogamp.opengl.GL.GL_TEXTURE_MIN_FILTER;
@@ -73,6 +74,7 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     blackBuffer.rewind();
     int[] backgroundHandles = new int[1];
     gl4.glGenTextures(1, backgroundHandles, 0);
+    gl4.glActiveTexture(GL_TEXTURE0);
     gl4.glBindTexture(GL_TEXTURE_2D, backgroundHandles[0]);
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

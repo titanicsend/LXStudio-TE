@@ -162,7 +162,6 @@ public class NativeShader implements GLEventListener {
 
     // Audio texture object - on id GL_TEXTURE0
     gl4.glActiveTexture(GL_TEXTURE0);
-    gl4.glEnable(GL_TEXTURE_2D);
     gl4.glGenTextures(1, audioTextureHandle, 0);
     gl4.glBindTexture(GL4.GL_TEXTURE_2D, audioTextureHandle[0]);
 
