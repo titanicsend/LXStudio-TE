@@ -72,10 +72,6 @@ public class BlendShader extends GLShader {
 
   /** Stage new uniform values that need to be sent to the shader */
   private void setUniforms(GLShader s) {
-    if (iSrc < 0 || iDst < 0) {
-      throw new IllegalStateException("BlendShader: input textures have not been set");
-    }
-
     // Use Uniform objects to track locations and values
     if (!initializedUniforms) {
       this.initializedUniforms = true;

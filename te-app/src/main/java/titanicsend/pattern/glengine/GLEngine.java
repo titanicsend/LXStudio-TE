@@ -442,6 +442,12 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
    * @param textureHandle Texture handle that should be bound to the unit
    */
   public void bindTextureUnit(int unit, int textureHandle) {
+    // Safety check that textureHandle was initialized
+    if (textureHandle < 0) {
+      throw new IllegalStateException(
+          "Texture has not been initialized, can not bind to unit " + unit);
+    }
+
     gl4.glActiveTexture(GL_TEXTURE0 + unit);
     gl4.glBindTexture(GL_TEXTURE_2D, textureHandle);
   }
