@@ -160,6 +160,18 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     gl4.glGenTextures(1, audioTextureHandle, 0);
     bindTextureUnit(TEXTURE_UNIT_AUDIO, audioTextureHandle[0]);
 
+    // allocate storage once
+    gl4.glTexImage2D(
+        GL4.GL_TEXTURE_2D,
+        0,
+        GL4.GL_R32F,
+        audioTextureWidth,
+        audioTextureHeight,
+        0,
+        GL4.GL_RED,
+        GL_FLOAT,
+        null);
+
     // configure texture coordinate handling
     // TODO - would GL_LINEAR filtering look more interesting here?
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -170,23 +182,24 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
   /** Update audio texture object with new fft and waveform data. This is called once per frame. */
   private void updateAudioTexture() {
-    // load frequency and waveform data into our texture buffer, fft data
-    // in the first row, normalized audio waveform data in the second.
+    // load frequency and waveform data into our texture buffer
     for (int n = 0; n < audioTextureWidth; n++) {
+      // fft data in the first row
       audioTextureData.put(n, getFrequencyData(n));
+      // normalized audio waveform data in the second row
       audioTextureData.put(n + audioTextureWidth, getWaveformData(n));
     }
 
-    // update audio texture on the GPU from our buffer
     bindTextureUnit(TEXTURE_UNIT_AUDIO, audioTextureHandle[0]);
 
-    gl4.glTexImage2D(
-        GL4.GL_TEXTURE_2D,
+    // update audio texture on the GPU from our buffer, *without* re-allocating
+    gl4.glTexSubImage2D(
+        GL_TEXTURE_2D,
         0,
-        GL4.GL_R32F,
+        0,
+        0,
         audioTextureWidth,
         audioTextureHeight,
-        0,
         GL4.GL_RED,
         GL_FLOAT,
         audioTextureData);
