@@ -11,7 +11,7 @@ import titanicsend.pattern.glengine.GLShader;
 
 public class BusShader extends GLShader {
 
-  private static final int TEXTURE_UNIT_INPUT = 0;
+  private int textureUnitInput;
 
   // Framebuffer object (FBO) for rendering
   private FBO fbo;
@@ -39,6 +39,8 @@ public class BusShader extends GLShader {
   protected void allocateShaderBuffers() {
     super.allocateShaderBuffers();
 
+    this.textureUnitInput = getNextTextureUnit();
+
     // FBO (framebuffer and texture) for rendering
     this.fbo = new FBO();
 
@@ -61,8 +63,8 @@ public class BusShader extends GLShader {
 
   private void setUniforms(GLShader s) {
     // Bind input textures to texture units
-    bindTextureUnit(TEXTURE_UNIT_INPUT, this.inputTexture);
-    setUniform("input1", TEXTURE_UNIT_INPUT);
+    bindTextureUnit(this.textureUnitInput, this.inputTexture);
+    setUniform("input1", this.textureUnitInput);
 
     activateDefaultTextureUnit();
 
@@ -118,7 +120,7 @@ public class BusShader extends GLShader {
     // Switch to the next PBO for the next frame
     this.ppPBOs.swap();
 
-    unbindTextureUnit(TEXTURE_UNIT_INPUT);
+    unbindTextureUnit(textureUnitInput);
     activateDefaultTextureUnit();
 
     // No need to unbind VAO.
