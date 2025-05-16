@@ -96,14 +96,10 @@ public abstract class TEPattern extends DmxPattern {
   public static final int GAP_PIXEL_COLOR = TEColor.TRANSPARENT;
 
   // Compare to LXLayeredComponent's clearColors(), which is declared final.
-  public void clearPixels() {
-    for (LXPoint point : this.model.points) {
-      if (this.modelTE.isGapPoint(point)) {
-        colors[point.index] = GAP_PIXEL_COLOR;
-      } else {
-        colors[point.index] = TEColor.TRANSPARENT;
-      }
-    }
+  protected void clearPixels() {
+    // Note(JKB): Simplified. The dynamic model no longer loads points for gap pixels.
+    // And when clearing the entire buffer, Arrays.fill() should be even faster than clearColors():
+    Arrays.fill(colors, 0);
   }
 
   // For patterns that only want to operate on edges
