@@ -446,7 +446,6 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   private void initialize() {
     // On first frame...
     // create and initialize offscreen drawable for gl rendering
-    LX.error("Initialized GL Engine!");
     canvas = ShaderUtils.createGLSurface(width, height);
     canvas.display();
     gl4 = canvas.getGL().getGL4();
