@@ -93,6 +93,7 @@ public abstract class TEPattern extends DmxPattern {
   }
 
   // During construction, make gap points show up in red
+  @Deprecated
   public static final int GAP_PIXEL_COLOR = TEColor.TRANSPARENT;
 
   // Compare to LXLayeredComponent's clearColors(), which is declared final.
