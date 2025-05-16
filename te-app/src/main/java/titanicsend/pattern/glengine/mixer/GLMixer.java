@@ -218,7 +218,7 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
       src = loopEffects(src, bus.effects);
 
       // Blend the bus texture onto the dst texture
-      return finalBlend(src, dst);
+      return finalBlend(dst, src);
     }
 
     /**
@@ -244,7 +244,7 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     }
 
     /** Final step, blend the bus output texture onto the dst texture at the current fader level */
-    protected abstract int finalBlend(int src, int dst);
+    protected abstract int finalBlend(int dst, int src);
 
     protected abstract void dispose();
   }
@@ -285,7 +285,7 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     }
 
     @Override
-    protected int finalBlend(int src, int dst) {
+    protected int finalBlend(int dst, int src) {
       this.mainBusShader.setInputTextureHandle(src);
       this.mainBusShader.setLevel(bus.fader.getValuef());
       // Render GPU mixer output to current LX engine frame
@@ -355,9 +355,9 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     }
 
     @Override
-    protected int finalBlend(int src, int dst) {
-      this.blendShader.setSrc(src);
+    protected int finalBlend(int dst, int src) {
       this.blendShader.setDst(dst);
+      this.blendShader.setSrc(src);
       this.blendShader.setLevel(bus.fader.getValuef());
       this.blendShader.run();
 

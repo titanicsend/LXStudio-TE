@@ -9,19 +9,19 @@ public class BlendShader extends GLShader {
   private FBO fbo;
 
   // Input texture units
-  private int textureUnitSrc;
   private int textureUnitDst;
+  private int textureUnitSrc;
 
   // Input texture handles (src = blending from, dst = blending into)
-  public int iSrc = -1;
   public int iDst = -1;
+  public int iSrc = -1;
 
   // Amount of src to blend into dst
   private float level = 0f;
 
   private static class BlendUniforms {
-    private Uniform.Int1 iSrc;
     private Uniform.Int1 iDst;
+    private Uniform.Int1 iSrc;
     private Uniform.Float1 level;
   }
 
@@ -52,12 +52,12 @@ public class BlendShader extends GLShader {
     this.fbo = new FBO();
   }
 
-  public void setSrc(int iSrc) {
-    this.iSrc = iSrc;
-  }
-
   public void setDst(int iDst) {
     this.iDst = iDst;
+  }
+
+  public void setSrc(int iSrc) {
+    this.iSrc = iSrc;
   }
 
   public void setLevel(float level) {
@@ -65,8 +65,8 @@ public class BlendShader extends GLShader {
   }
 
   private void initializeUniforms() {
-    this.uniforms.iSrc = getUniformInt1("iSrc");
     this.uniforms.iDst = getUniformInt1("iDst");
+    this.uniforms.iSrc = getUniformInt1("iSrc");
     this.uniforms.level = getUniformFloat1("level");
   }
 
@@ -79,12 +79,12 @@ public class BlendShader extends GLShader {
     }
 
     // Bind input textures to texture units
-    bindTextureUnit(this.textureUnitSrc, this.iSrc);
     bindTextureUnit(this.textureUnitDst, this.iDst);
+    bindTextureUnit(this.textureUnitSrc, this.iSrc);
 
     // Stage uniform values for updating
-    this.uniforms.iSrc.setValue(this.textureUnitSrc);
     this.uniforms.iDst.setValue(this.textureUnitDst);
+    this.uniforms.iSrc.setValue(this.textureUnitSrc);
     this.uniforms.level.setValue(this.level);
   }
 
@@ -100,8 +100,8 @@ public class BlendShader extends GLShader {
     drawElements();
 
     // Unbind textures
-    unbindTextureUnit(this.textureUnitSrc);
     unbindTextureUnit(this.textureUnitDst);
+    unbindTextureUnit(this.textureUnitSrc);
     activateDefaultTextureUnit();
 
     // No need to unbind VAO.
