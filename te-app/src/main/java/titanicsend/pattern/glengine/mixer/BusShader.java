@@ -12,7 +12,8 @@ import titanicsend.pattern.yoffa.shader_engine.Uniform;
 
 public class BusShader extends GLShader {
 
-  private int textureUnitInput;
+  // Input texture units
+  private int textureUnitSrc;
 
   // Framebuffer object (FBO) for rendering
   private FBO fbo;
@@ -21,12 +22,15 @@ public class BusShader extends GLShader {
   private PingPongPBO ppPBOs;
 
   // Variables that will be passed to uniforms
-  private int inputTexture = -1;
+  // Source texture handle
+  private int src = -1;
+  // Amount of src to blend onto a black background
   private float level = 1f;
+  // Target CPU buffer
   private int[] main;
 
   private static class BusUniforms {
-    private Uniform.Int1 input1;
+    private Uniform.Int1 iSrc;
     private Uniform.Float1 level;
   }
 
@@ -48,7 +52,7 @@ public class BusShader extends GLShader {
   protected void allocateShaderBuffers() {
     super.allocateShaderBuffers();
 
-    this.textureUnitInput = getNextTextureUnit();
+    this.textureUnitSrc = getNextTextureUnit();
 
     // FBO (framebuffer and texture) for rendering
     this.fbo = new FBO();
@@ -66,12 +70,12 @@ public class BusShader extends GLShader {
   }
 
   /** Set input texture handle */
-  public void setInputTextureHandle(int inputTextureHandle) {
-    this.inputTexture = inputTextureHandle;
+  public void setSrc(int src) {
+    this.src = src;
   }
 
   private void initializeUniforms() {
-    this.uniforms.input1 = getUniformInt1("input1");
+    this.uniforms.iSrc = getUniformInt1("iSrc");
     this.uniforms.level = getUniformFloat1("level");
   }
 
@@ -83,11 +87,11 @@ public class BusShader extends GLShader {
     }
 
     // Bind input textures to texture units
-    bindTextureUnit(this.textureUnitInput, this.inputTexture);
+    bindTextureUnit(this.textureUnitSrc, this.src);
     activateDefaultTextureUnit();
 
     // Stage uniform values for updating
-    this.uniforms.input1.setValue(this.textureUnitInput);
+    this.uniforms.iSrc.setValue(this.textureUnitSrc);
     this.uniforms.level.setValue(this.level);
   }
 
@@ -139,7 +143,7 @@ public class BusShader extends GLShader {
     // Switch to the next PBO for the next frame
     this.ppPBOs.swap();
 
-    unbindTextureUnit(this.textureUnitInput);
+    unbindTextureUnit(this.textureUnitSrc);
     activateDefaultTextureUnit();
 
     // No need to unbind VAO.

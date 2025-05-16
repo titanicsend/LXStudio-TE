@@ -286,7 +286,7 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
 
     @Override
     protected int finalBlend(int dst, int src) {
-      this.mainBusShader.setInputTextureHandle(src);
+      this.mainBusShader.setSrc(src);
       this.mainBusShader.setLevel(bus.fader.getValuef());
       // Render GPU mixer output to current LX engine frame
       this.mainBusShader.run();
