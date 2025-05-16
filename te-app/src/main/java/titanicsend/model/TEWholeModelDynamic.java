@@ -357,8 +357,7 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
     return false;
   }
 
-  @Deprecated
-  private final int[] gapPointIndices = new int[0]; // Not used with dynamic model
+  @Deprecated private final int[] gapPointIndices = new int[0]; // Not used with dynamic model
 
   @Deprecated
   @Override
