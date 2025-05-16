@@ -5,6 +5,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
 
+// Legacy artnet output. No longer used. Can be deleted in a standalone PR.
+@Deprecated
 public class GrandShlomoStation {
 
   // Using a map like a set because Java doesn't have Set.get(T) returning T

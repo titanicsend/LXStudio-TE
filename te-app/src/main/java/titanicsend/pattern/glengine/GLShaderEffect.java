@@ -1,9 +1,13 @@
 package titanicsend.pattern.glengine;
 
 import heronarts.lx.LX;
+import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXModel;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import titanicsend.color.TEColorType;
 import titanicsend.effect.TEEffect;
 import titanicsend.pattern.jon.VariableSpeedTimer;
 
@@ -12,39 +16,24 @@ import titanicsend.pattern.jon.VariableSpeedTimer;
  * and provides a convenient interface for adding shaders to a pattern.
  */
 public class GLShaderEffect extends TEEffect {
-  public interface GLShaderFrameSetup {
-    default void OnFrame(GLShader shader) {}
-  }
 
-  protected class ShaderInfo {
-    protected GLShader shader;
-    protected GLShaderFrameSetup setup;
-
-    public ShaderInfo(GLShader shader, GLShaderFrameSetup setup) {
-      this.shader = shader;
-      this.setup = setup;
-    }
-  }
-
-  protected GLEffectControl controlData;
   private final VariableSpeedTimer iTime = new VariableSpeedTimer();
   protected ByteBuffer imageBuffer;
   protected ByteBuffer mappedBuffer;
   protected final int mappedBufferWidth = GLEngine.getMappedBufferWidth();
   protected final int mappedBufferHeight = GLEngine.getMappedBufferHeight();
 
-  // convenience, to simplify user setup of shader OnFrame() functions
-  protected double deltaMs;
+  // list of shaders to run
+  private final List<TEShader> mutableShaders = new ArrayList<>();
+  protected final List<TEShader> shaders = Collections.unmodifiableList(this.mutableShaders);
 
-  // list of shaders to run, with associated setup functions
-  protected final ArrayList<ShaderInfo> shaderInfo = new ArrayList<>();
+  private boolean modelChanged = true;
 
   public GLShaderEffect(LX lx) {
     super(lx);
 
-    controlData = new GLEffectControl(this);
-    imageBuffer = GLShader.allocateBackBuffer();
-    mappedBuffer = GLShader.allocateMappedBuffer(mappedBufferWidth, mappedBufferHeight);
+    imageBuffer = TEShader.allocateBackBuffer();
+    mappedBuffer = TEShader.allocateMappedBuffer(mappedBufferWidth, mappedBufferHeight);
     // zero mappedBuffer
     mappedBuffer.rewind();
     for (int i = 0; i < mappedBuffer.capacity(); i++) {
@@ -52,51 +41,37 @@ public class GLShaderEffect extends TEEffect {
     }
   }
 
-  // Add shader with OnFrame() function, which allows the pattern to do
-  // whatever additional computation and setting of uniforms and so forth
-  // before the shader runs.
-  public void addShader(GLShader shader, GLShaderFrameSetup setup) {
-    // add the shader and its frame-time setup function to our
-    //
-    ShaderInfo s = new ShaderInfo(shader, setup);
-    s.shader.setMappedBuffer(mappedBuffer, mappedBufferWidth, mappedBufferHeight);
-    shaderInfo.add(s);
-  }
-
-  // add shader with default OnFrame() function
-  public void addShader(GLShader shader) {
-    addShader(shader, new GLShaderFrameSetup() {});
-  }
-
-  // Add a shader by fragment shader filename, using the default OnFrame() function.
-  // The simple option for shaders that use only the default TEPerformancePattern
-  // uniforms and don't require any additional computation in Java.
-  public void addShader(String shaderName, String... textureFilenames) {
-    addShader(new GLShader(lx, shaderName, getControlData(), textureFilenames));
-  }
-
-  // Add a shader by fragment shader filename, with an OnFrame() function.
-  public void addShader(String shaderName, GLShaderFrameSetup setup) {
-    addShader(new GLShader(lx, shaderName, getControlData()), setup);
+  protected TEShader addShader(GLShader.Config config) {
+    TEShader shader = new TEShader(config.withUniformSource(this::setUniforms));
+    this.mutableShaders.add(shader);
+    return shader;
   }
 
   protected ByteBuffer getImageBuffer() {
     return imageBuffer;
   }
 
-  public GLEffectControl getControlData() {
-    return controlData;
-  }
-
   public double getTime() {
     return iTime.getTime();
   }
 
+  @Override
+  protected void onModelChanged(LXModel model) {
+    super.onModelChanged(model);
+    this.modelChanged = true;
+  }
+
   protected void run(double deltaMs, double enabledAmount) {
     LXModel m = getModel();
-    ShaderInfo s;
-    this.deltaMs = deltaMs;
     iTime.tick();
+
+    // Update the model coords texture only when changed (and the first run)
+    if (this.modelChanged) {
+      this.modelChanged = false;
+      for (TEShader shader : this.shaders) {
+        shader.setModelCoordinates(m);
+      }
+    }
 
     // set up rectangular texture buffers for effects that need them
     ShaderPainter.mapToBufferDirect(m.points, imageBuffer, colors);
@@ -105,40 +80,71 @@ public class GLShaderEffect extends TEEffect {
 
     // run the chain of shaders, except for the last one,
     // copying the output of each to the next shader's input texture
-    int n = shaderInfo.size();
+    TEShader shader = null;
+    int n = this.shaders.size();
     for (int i = 0; i < n; i++) {
-      s = shaderInfo.get(i);
-      s.shader.useViewCoordinates(m);
-      s.shader.useProgram();
-      s.setup.OnFrame(s.shader);
-      s.shader.run();
+      shader = this.shaders.get(i);
+      shader.run();
     }
 
     // paint the final shader output to the car.
-    ShaderPainter.mapToPointsDirect(m.points, imageBuffer, getColors());
+    if (shader != null) {
+      ShaderPainter.mapToPointsDirect(m.points, imageBuffer, getColors());
+    }
+  }
+
+  protected int getColor1() {
+    return lx.engine.palette.getSwatchColor(TEColorType.PRIMARY.swatchIndex()).getColor();
+  }
+
+  protected int getColor2() {
+    return lx.engine.palette.getSwatchColor(TEColorType.SECONDARY.swatchIndex()).getColor();
+  }
+
+  // send a subset of the controls we use with patterns
+  private void setUniforms(GLShader s) {
+    s.setUniform("iTime", (float) getTime());
+
+    // get current primary and secondary colors
+    // TODO - we're just grabbing swatch colors here.  Do we need to worry about modulation?
+    int col = getColor1();
+    s.setUniform(
+        "iColorRGB",
+        (float) (0xff & LXColor.red(col)) / 255f,
+        (float) (0xff & LXColor.green(col)) / 255f,
+        (float) (0xff & LXColor.blue(col)) / 255f);
+    s.setUniform("iColorHSB", LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
+
+    col = getColor2();
+    s.setUniform(
+        "iColor2RGB",
+        (float) (0xff & LXColor.red(col)) / 255f,
+        (float) (0xff & LXColor.green(col)) / 255f,
+        (float) (0xff & LXColor.blue(col)) / 255f);
+    s.setUniform("iColor2HSB", LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
   }
 
   @Override
   protected void onEnable() {
     super.onEnable();
-    for (ShaderInfo s : shaderInfo) {
-      s.shader.onActive();
+    for (TEShader shader : this.shaders) {
+      shader.onActive();
     }
   }
 
   @Override
   protected void onDisable() {
-    super.onDisable();
-    for (ShaderInfo s : shaderInfo) {
-      s.shader.onInactive();
+    for (TEShader shader : this.shaders) {
+      shader.onInactive();
     }
+    super.onDisable();
   }
 
   @Override
   public void dispose() {
-    super.dispose();
-    for (ShaderInfo s : shaderInfo) {
-      s.shader.dispose();
+    for (TEShader shader : this.shaders) {
+      shader.dispose();
     }
+    super.dispose();
   }
 }

@@ -28,63 +28,55 @@ public class EdgeFall extends GLShaderPattern {
   float[][] line_velocity;
 
   // Work to be done per frame
-  GLShaderFrameSetup setup =
-      new GLShaderFrameSetup() {
-        @Override
-        public void OnFrame(GLShader s) {
-          float glowLevel;
+  private void setUniforms(GLShader s) {
+    float glowLevel;
 
-          realTime.tick();
+    realTime.tick();
 
-          double t = realTime.getTime();
-          elapsedTime = Math.abs(t - eventStartTime);
+    double t = realTime.getTime();
+    elapsedTime = Math.abs(t - eventStartTime);
 
-          beatCounter += lx.engine.tempo.beat() ? 1 : 0;
+    beatCounter += lx.engine.tempo.beat() ? 1 : 0;
 
-          fallingCycleBeats = (int) Math.floor(getWow1());
+    fallingCycleBeats = (int) Math.floor(getWow1());
 
-          glowLevel = (float) getSize();
+    glowLevel = (float) getSize();
 
-          // tiny state machine for falling vs. resting states
-          if (isFalling) {
-            // simulate short explosive burst (by greatly increasing line
-            // width/glow) when event is first triggered
-            if (elapsedTime < burstDuration) {
-              glowLevel *= (float) (elapsedTime / burstDuration);
-            }
-            // reset automatically at end of cycle
-            else if (beatCounter > fallingCycleBeats) {
-              reset(0);
-              isFalling = false;
-            }
-          } else {
-            reset(t);
-          }
+    // tiny state machine for falling vs. resting states
+    if (isFalling) {
+      // simulate short explosive burst (by greatly increasing line
+      // width/glow) when event is first triggered
+      if (elapsedTime < burstDuration) {
+        glowLevel *= (float) (elapsedTime / burstDuration);
+      }
+      // reset automatically at end of cycle
+      else if (beatCounter > fallingCycleBeats) {
+        reset(0);
+        isFalling = false;
+      }
+    } else {
+      reset(t);
+    }
 
-          moveLines(saved_lines, working_lines);
+    moveLines(saved_lines, working_lines);
 
-          glowLevel -= 80f * (float) getBassLevel() * (float) getLevelReactivity();
+    glowLevel -= 80f * (float) getBassLevel() * (float) getLevelReactivity();
 
-          // set line brightness.  We need to override the default behavior because
-          // when a fall is triggered, we make everything very, very bright for a short time
-          // to simulate an explosive burst.
-          s.setUniform("iScale", glowLevel);
+    // set line brightness.  We need to override the default behavior because
+    // when a fall is triggered, we make everything very, very bright for a short time
+    // to simulate an explosive burst.
+    s.setUniform("iScale", glowLevel);
 
-          // override the default variable timer, since this shader needs actual 1:1 seconds.
-          s.setUniform("iTime", realTime.getTimef());
+    // override the default variable timer, since this shader needs actual 1:1 seconds.
+    s.setUniform("iTime", realTime.getTimef());
 
-          // send current line segment position data
-          for (int i = 0; i < LINE_COUNT; i++) {
-            setUniformLine(
-                i,
-                working_lines[i][0],
-                working_lines[i][1],
-                working_lines[i][2],
-                working_lines[i][3]);
-          }
-          s.setUniform("lines", gl_segments, 4);
-        }
-      };
+    // send current line segment position data
+    for (int i = 0; i < LINE_COUNT; i++) {
+      setUniformLine(
+          i, working_lines[i][0], working_lines[i][1], working_lines[i][2], working_lines[i][3]);
+    }
+    s.setUniform("lines", gl_segments, 4);
+  }
 
   // Constructor
   public EdgeFall(LX lx) {
@@ -109,7 +101,7 @@ public class EdgeFall extends GLShaderPattern {
 
     addCommonControls();
 
-    addShader("edgefall.fs", setup);
+    addShader(GLShader.config(lx).withFilename("edgefall.fs").withUniformSource(this::setUniforms));
 
     // create an n x 4 array, so we can pass line segment descriptors
     // to GLSL shaders.

@@ -349,14 +349,17 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
     }
   }
 
+  // Note(JKB): Gap points are no longer loaded into the model. This can be removed.
+  @Deprecated
   @Override
   public boolean isGapPoint(LXPoint p) {
     // There are no LXPoints for gap pixels in this wonderful dynamic future.
     return false;
   }
 
-  private final int[] gapPointIndices = new int[0]; // Not used with dynamic model
+  @Deprecated private final int[] gapPointIndices = new int[0]; // Not used with dynamic model
 
+  @Deprecated
   @Override
   public int[] getGapPointIndices() {
     return this.gapPointIndices;

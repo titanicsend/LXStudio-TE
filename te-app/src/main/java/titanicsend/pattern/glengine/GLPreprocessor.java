@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
-import titanicsend.pattern.yoffa.shader_engine.Uniforms;
+import titanicsend.pattern.yoffa.shader_engine.UniformNames;
 
 public class GLPreprocessor {
 
@@ -199,14 +199,14 @@ public class GLPreprocessor {
             finalShader
                 .append("uniform bool ")
                 .append(placeholderName)
-                .append(Uniforms.CUSTOM_SUFFIX)
+                .append(UniformNames.LX_PARAMETER_SUFFIX)
                 .append(";\n");
             addLXParameter(parameters, new BooleanParameter(placeholderName));
           } else {
             finalShader
                 .append("uniform float ")
                 .append(placeholderName)
-                .append(Uniforms.CUSTOM_SUFFIX)
+                .append(UniformNames.LX_PARAMETER_SUFFIX)
                 .append(";\n");
             Double[] rangeValues =
                 Arrays.stream(metadata.split(",")).map(Double::parseDouble).toArray(Double[]::new);
@@ -216,7 +216,7 @@ public class GLPreprocessor {
                     placeholderName, rangeValues[0], rangeValues[1], rangeValues[2]));
           }
         }
-        matcher.appendReplacement(shaderCode, placeholderName + Uniforms.CUSTOM_SUFFIX);
+        matcher.appendReplacement(shaderCode, placeholderName + UniformNames.LX_PARAMETER_SUFFIX);
       } catch (Exception e) {
         throw new RuntimeException("Problem parsing placeholder: " + matcher.group(0), e);
       }

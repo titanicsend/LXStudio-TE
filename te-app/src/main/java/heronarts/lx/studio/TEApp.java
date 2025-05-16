@@ -18,6 +18,7 @@ package heronarts.lx.studio;
 import heronarts.glx.event.GamepadEvent;
 import heronarts.glx.event.KeyEvent;
 import heronarts.lx.LX;
+import heronarts.lx.LXEngine;
 import heronarts.lx.LXPlugin;
 import heronarts.lx.mixer.LXBus;
 import heronarts.lx.mixer.LXChannel;
@@ -118,6 +119,8 @@ public class TEApp extends LXStudio {
     System.setProperty("java.awt.headless", "true");
   }
 
+  private static final String FLAG_GPU_MIXER = "--gpu";
+
   public static TEWholeModel wholeModel;
 
   private static int WINDOW_WIDTH = 1280;
@@ -128,8 +131,8 @@ public class TEApp extends LXStudio {
   // model points allowed. May be changed via the startup
   // command line argument --resolution=WIDTHxHEIGHT
   // (Default allows roughly 102,000 points.)
-  public static int glRenderWidth = 320;
-  public static int glRenderHeight = 320;
+  public static int glRenderWidth = 1920;
+  public static int glRenderHeight = 1200;
 
   public static GamepadEngine gamepadEngine;
 
@@ -950,6 +953,7 @@ public class TEApp extends LXStudio {
     setLogFile(new File(LX.Media.LOGS.getDirName(), logFileName));
 
     boolean headless = false;
+    boolean gpuMixer = false;
     File projectFile = null;
     for (int i = 0; i < args.length; ++i) {
       final String arg = args[i];
@@ -989,6 +993,8 @@ public class TEApp extends LXStudio {
         } else {
           error("Missing render resolution");
         }
+      } else if (FLAG_GPU_MIXER.equals(arg)) {
+        gpuMixer = true;
       } else {
         error("Unrecognized CLI argument, ignoring: " + arg);
       }
@@ -1000,6 +1006,11 @@ public class TEApp extends LXStudio {
     } else {
       try {
         TEApp lx = new TEApp(flags);
+
+        // Enable experimental GPU mixer
+        if (gpuMixer) {
+          lx.engine.renderMode = LXEngine.RenderMode.GPU;
+        }
 
         // Schedule a task to load the initial project file at launch
         final File finalProjectFile = projectFile;

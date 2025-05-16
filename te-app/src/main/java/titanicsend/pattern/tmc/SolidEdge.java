@@ -24,7 +24,6 @@ public class SolidEdge extends TEPattern {
     addParameter("color", this.color);
     color.mode.setValue(LinkedColorParameter.Mode.PALETTE);
     color.index.setValue(4);
-    clearPixels();
   }
 
   @Override

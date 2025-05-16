@@ -28,12 +28,11 @@ public class SpiralDiamonds extends GLShaderPattern {
     addCommonControls();
 
     addShader(
-        "spiral_diamonds.fs",
-        new GLShaderFrameSetup() {
-          @Override
-          public void OnFrame(GLShader s) {
-            s.setUniform("speedAngle", (float) getRotationAngleFromSpeed());
-          }
-        });
+        GLShader.config(lx)
+            .withFilename("spiral_diamonds.fs")
+            .withUniformSource(
+                (s) -> {
+                  s.setUniform("speedAngle", (float) getRotationAngleFromSpeed());
+                }));
   }
 }

@@ -31,8 +31,7 @@ public class NativeShaderPatternEffect extends PatternEffect {
     if (fragmentShader != null) {
       this.fragmentShader = fragmentShader;
       this.renderer = new OffscreenShaderRenderer(fragmentShader);
-      this.parameters = fragmentShader.getParameters();
-
+      this.parameters = fragmentShader.parameters;
     } else {
       this.parameters = null;
     }
@@ -70,13 +69,13 @@ public class NativeShaderPatternEffect extends PatternEffect {
    *
    * @param points list of points to paint
    * @param image backbuffer containing image for this frame
-   * @param xSize x resolution of image
-   * @param ySize y resolution of image
+   * @param width x resolution of image
+   * @param height y resolution of image
    */
-  public void paint(List<LXPoint> points, ByteBuffer image, int xSize, int ySize) {
+  public void paint(List<LXPoint> points, ByteBuffer image, int width, int height) {
     double k = 0;
-    int xMax = xSize - 1;
-    int yMax = ySize - 1;
+    int xMax = width - 1;
+    int yMax = height - 1;
     int[] colors = pattern.getColors();
 
     for (LXPoint point : points) {
@@ -89,7 +88,7 @@ public class NativeShaderPatternEffect extends PatternEffect {
       int xi = Math.round(zn * xMax);
       int yi = Math.round(yn * yMax);
 
-      int index = 4 * ((yi * xSize) + xi);
+      int index = 4 * ((yi * width) + xi);
 
       colors[point.index] = image.getInt(index);
     }
@@ -104,8 +103,8 @@ public class NativeShaderPatternEffect extends PatternEffect {
     paint(
         getPoints(),
         image,
-        OffscreenShaderRenderer.getXResolution(),
-        OffscreenShaderRenderer.getYResolution());
+        OffscreenShaderRenderer.getWidth(),
+        OffscreenShaderRenderer.getHeight());
   }
 
   public List<ShaderConfiguration> getShaderConfig() {

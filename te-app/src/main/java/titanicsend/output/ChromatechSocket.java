@@ -11,6 +11,8 @@ import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.util.TE;
 
+// Legacy artnet output. No longer used. Can be deleted in a standalone PR.
+@Deprecated
 public class ChromatechSocket implements Comparable<ChromatechSocket> {
   public static final int MAX_PIXELS_PER_CHANNEL = 510;
   public static final int PIXELS_PER_UNIVERSE = 170;

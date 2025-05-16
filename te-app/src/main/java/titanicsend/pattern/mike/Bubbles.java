@@ -46,8 +46,6 @@ public class Bubbles extends TEPattern {
         this.bubbleFraction.put(panel, fraction);
         this.newBubbleQueue.add(panel);
       }
-
-      clearPixels();
     }
 
     shuffle(this.newBubbleQueue);

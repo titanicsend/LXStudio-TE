@@ -15,16 +15,14 @@ public class TEAutoShaderPattern extends GLShaderPattern {
   protected TEAutoShaderPattern(LX lx, TEShaderView defaultView) {
     super(lx, defaultView);
 
-    GLShader shader = new GLShader(lx, this.getShaderFile(), this.getControlData());
+    // Create shader instance
+    TEShader shader = addShader(this.getShaderFile());
 
     // use common control configuration data from shader to set control defaults,
     // then register controls with Chromatik.
     List<ShaderConfiguration> shaderConfig = shader.getShaderConfig();
     configureCommonControls(shaderConfig);
     addCommonControls();
-
-    // create shader effect
-    addShader(shader);
   }
 
   // Returns the shader file path. This is intended to be overridden when we create our

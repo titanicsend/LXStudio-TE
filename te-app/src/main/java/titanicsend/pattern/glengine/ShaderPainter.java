@@ -19,9 +19,9 @@ public class ShaderPainter {
   }
 
   public static void mapFromLinearBuffer(
-      LXPoint[] points, int xSize, int ySize, ByteBuffer dest, int[] colors) {
-    float xm = (float) xSize - 1;
-    float ym = (float) ySize - 1;
+      LXPoint[] points, int width, int height, ByteBuffer dest, int[] colors) {
+    float xm = (float) width - 1;
+    float ym = (float) height - 1;
 
     for (int i = 0; i < points.length; i++) {
       // this is a full 3D mapping.  It splits the model into two 'sides' at the z origin
@@ -34,7 +34,7 @@ public class ShaderPainter {
       int xi = (int) (xn * xm);
       int yi = (int) (yn * ym);
 
-      int index = 4 * ((yi * xSize) + xi);
+      int index = 4 * ((yi * width) + xi);
       dest.putInt(index, colors[i]);
     }
   }

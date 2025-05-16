@@ -7,6 +7,9 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.BooleanParameter;
 import titanicsend.pattern.TEPattern;
 
+// Deprecated: Gap pixels are no longer loaded in the model. This can be retired.
+// When deleting, be sure to remove it from any current project files.
+@Deprecated
 @LXCategory("Titanics End")
 public class NoGapEffect extends TEEffect {
 

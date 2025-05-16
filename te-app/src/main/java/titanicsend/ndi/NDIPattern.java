@@ -18,6 +18,7 @@ import me.walkerknapp.devolay.DevolayReceiver;
 import me.walkerknapp.devolay.DevolayVideoFrame;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderPattern;
+import titanicsend.pattern.glengine.TEShader;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
@@ -82,7 +83,7 @@ public class NDIPattern extends GLShaderPattern {
     controls.setRange(TEControlTag.SIZE, 1, 5, 0.1);
 
     // allocate a backbuffer for all the shaders to share
-    buffer = GLShader.allocateBackBuffer();
+    buffer = TEShader.allocateBackBuffer();
 
     // add the primary shader, which handles mapping incoming video frames
     // from the NDI source to the shared buffer.
@@ -137,54 +138,53 @@ public class NDIPattern extends GLShaderPattern {
    * Size, Brightness, Explode work as expected, Wow1 controls the full color vs. palette color mix)
    */
   public void addPrimaryShader() {
-    GLShader shader = new GLShader(lx, "ndidefault.fs", getControlData(), buffer);
     addShader(
-        shader,
-        new GLShaderFrameSetup() {
-          @Override
-          public void OnFrame(GLShader s) {
+        GLShader.config(lx)
+            .withFilename("ndidefault.fs")
+            .withUniformSource(this::setUniforms)
+            .withLegacyBackBuffer(buffer));
+  }
 
-            int ch = (int) source.getValue();
-            if (ch != sourceIndex) {
-              changeChannel(ch);
-            }
+  private void setUniforms(GLShader s) {
+    int ch = (int) source.getValue();
+    if (ch != sourceIndex) {
+      changeChannel(ch);
+    }
 
-            // Periodically try to connect if we weren't able to
-            // establish an initial connection to this pattern's
-            // desired NDI source. This makes things work
-            // without manual intervention if the source isn't
-            // available at startup.  Once the source becomes available,
-            // the connection will be automatically established.
-            if (!lastConnectState) {
-              if (System.currentTimeMillis() - connectTimer > 1000) {
-                connectTimer = System.currentTimeMillis();
-                lastConnectState = ndiEngine.connectByIndex(sourceIndex, receiver);
-              }
-            }
+    // Periodically try to connect if we weren't able to
+    // establish an initial connection to this pattern's
+    // desired NDI source. This makes things work
+    // without manual intervention if the source isn't
+    // available at startup.  Once the source becomes available,
+    // the connection will be automatically established.
+    if (!lastConnectState) {
+      if (System.currentTimeMillis() - connectTimer > 1000) {
+        connectTimer = System.currentTimeMillis();
+        lastConnectState = ndiEngine.connectByIndex(sourceIndex, receiver);
+      }
+    }
 
-            // if we have
-            if (DevolayFrameType.VIDEO == receiver.receiveCapture(videoFrame, null, null, 0)) {
-              // get pixel data from video frame
-              ByteBuffer frameData = videoFrame.getData();
+    // if we have
+    if (DevolayFrameType.VIDEO == receiver.receiveCapture(videoFrame, null, null, 0)) {
+      // get pixel data from video frame
+      ByteBuffer frameData = videoFrame.getData();
 
-              // if it's the first frame, or if the frame dimensions changed,
-              // build our texture data object. Otherwise, just replace the
-              // buffer with the current frame's pixel data.
-              if (textureData == null
-                  || frameWidth != videoFrame.getXResolution()
-                  || frameHeight != videoFrame.getYResolution()) {
-                gl4 = s.getGL4();
-                createTextureForFrame();
-              } else {
-                textureData.setBuffer(frameData);
-                texture.updateImage(gl4, textureData);
-              }
-              // pass the video frame texture to the shader
-              s.setUniform("gain", gain.getValuef());
-              s.setUniform("ndivideo", texture);
-            }
-          }
-        });
+      // if it's the first frame, or if the frame dimensions changed,
+      // build our texture data object. Otherwise, just replace the
+      // buffer with the current frame's pixel data.
+      if (textureData == null
+          || frameWidth != videoFrame.getXResolution()
+          || frameHeight != videoFrame.getYResolution()) {
+        gl4 = s.getGL4();
+        createTextureForFrame();
+      } else {
+        textureData.setBuffer(frameData);
+        texture.updateImage(gl4, textureData);
+      }
+      // pass the video frame texture to the shader
+      s.setUniform("gain", gain.getValuef());
+      s.setUniform("ndivideo", texture);
+    }
   }
 
   @Override

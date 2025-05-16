@@ -29,8 +29,10 @@ public interface TEWholeModel extends DmxWholeModel {
 
   public TEWholeModel removeListener(TEModelListener listener);
 
+  @Deprecated
   public abstract boolean isGapPoint(LXPoint p);
 
+  @Deprecated
   public abstract int[] getGapPointIndices();
 
   public abstract List<LXPoint> getPoints();

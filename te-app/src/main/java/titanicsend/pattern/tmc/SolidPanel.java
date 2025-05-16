@@ -24,7 +24,6 @@ public class SolidPanel extends TEPattern {
     addParameter("color", this.color);
     color.mode.setValue(LinkedColorParameter.Mode.PALETTE);
     color.index.setValue(5);
-    clearPixels();
   }
 
   @Override
