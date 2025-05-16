@@ -64,6 +64,7 @@ public abstract class TEPattern extends DmxPattern {
     // With view-per-pattern, this can now get called when pattern is inactive.
     if (this.colors != null) {
       // Active pattern
+      // Note(JKB): does this get handled by LX now?
       clearPixels();
     }
     super.onModelChanged(model);
