@@ -13,10 +13,10 @@ running with it so you, too, can create stunning LED art.
 
 Our work is notable for:
 
-* AutoVJ - an autopilot that uses Pioneer Rekordbox's phrase and beat analysis to change patterns when a human VJ would
-* GLSL shader support
-* Developed to team-friendly maintainability standards for long-term enjoyment of the codebase
-* GigglePixel, Pixelblaze, and ArtNet integration
+- GLSL shader support
+- Developed to team-friendly maintainability standards for long-term enjoyment of the codebase
+- AutoVJ - an autopilot that uses Pioneer Rekordbox's phrase and beat analysis to change patterns when a human VJ would
+- GigglePixel, Pixelblaze, and ArtNet integration
 
 Want a personal intro to the project and codebase? Contact current team
 lead [Andrew Look](https://github.com/andrewlook) by messaging andrew-m-look (s/-/./g) electronically at the big Gm.com
@@ -33,25 +33,25 @@ thing.
 Visit https://adoptium.net/installation/ or if you are using macOS and [Homebrew](https://brew.sh) use these commands:
 
 ```sh
-brew uninstall --cask temurin # ensure you are running 17
-brew install --cask temurin@17
+brew uninstall --cask temurin # ensure you are running 21
+brew install --cask temurin@21
 ```
 
 Verify your installation:
 
-``` 
-/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java --version
+```
+/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java --version
 ```
 
 After installing the temurin JDK, we recommend installing and building maven, a package manager for our project:
 
 ```sh
-brew install maven 
+brew install maven
 ```
 
 Clean and install the maven dependencies:
 
-```
+```sh
 mvn clean -U package && mvn install
 ```
 
@@ -59,7 +59,7 @@ One more thing… we have a coding style setup, as described below, so you’ll 
 install [google-java-format](https://github.com/google/google-java-format):
 
 ```sh
-brew install google-java-format  
+brew install google-java-format
 ```
 
 ## Quick Start
@@ -68,14 +68,13 @@ brew install google-java-format
 > in the Slack #lighting-software channel!
 
 First, you'll need an IDE (editor). IntelliJ's Community Edition is the best free one available. You can download it
-here:
-
-https://www.jetbrains.com/idea/
+[here](https://www.jetbrains.com/idea/).
 
 Steps for setup:
 
 1. Clone the git repo you're looking at:
-   ```
+
+   ```sh
    git clone https://github.com/titanicsend/LXStudio-TE.git
    ```
 
@@ -85,18 +84,19 @@ Steps for setup:
 3. File → Project Structure (or ⌘-;)
    ![Project Structure](assets/IDE%20Setup/Project%20Structure.png)
 
-    1. Platform Settings → SDKs
-        1. Either add the installed Temurin 17 JDK
-        2. Or, if that JDK is not installed, you can click the '+' and then select
-           "Add JDK..."
-            1. Navigate to `/Library/Java/JavaVirtualMachines/temurin-17.jdk`
-            2. Select `temurin-17.jdk`
-               ![Add JDK](assets/IDE%20Setup/AddJDK.png)
-               ![Select Temurin 17](assets/IDE%20Setup/SelectTemurin17.png)
+   1. Platform Settings → SDKs
 
-    2. Project Settings → Project
-        1. Select the Temurin 17 JDK
-           ![Project SDK](assets/IDE%20Setup/Select%20Project.png)
+      1. Either add the installed Temurin 21 JDK
+      2. Or, if that JDK is not installed, you can click the '+' and then select
+         "Add JDK..."
+         1. Navigate to `/Library/Java/JavaVirtualMachines/temurin-21.jdk`
+         2. Select `temurin-21.jdk`
+            ![Add JDK](assets/IDE%20Setup/AddJDK.png)
+            ![Select Temurin 21](assets/IDE%20Setup/SelectTemurin17.png)
+
+   2. Project Settings → Project
+      1. Select the Temurin 21 JDK
+         ![Project SDK](assets/IDE%20Setup/Select%20Project.png)
 
 4. Select "Titanic's End Dynamic" in the top bar (in the dropdown to the right of the hammer) if you want to use the
    vehicle
@@ -149,7 +149,7 @@ plugin: [google-java-format plugin](https://github.com/google/google-java-format
 ```
 
 - The plugin will be disabled by default. To enable, open the Project settings, then click `google-java-format
-       Settings` and check the `Enable google-java-format` checkbox.
+ Settings` and check the `Enable google-java-format` checkbox.
 - After plugin install, go to `Settings > Tools > Actions on Save` and enable `Reformat Code`
   and `Optimize Imports`.
 
@@ -158,8 +158,8 @@ plugin: [google-java-format plugin](https://github.com/google/google-java-format
 ### Potential issues
 
 - `Maven resources compiler: Failed to copy [...]/target/generated-test-sources/test-annotations/Icon
-  ' to '[...]/target/test-classes/Icon`
-    - Go to the top of your TE repo and run `find . -name Icon\? -delete`
+' to '[...]/target/test-classes/Icon`
+  - Go to the top of your TE repo and run `find . -name Icon\? -delete`
 
 ## Digging in
 
@@ -182,9 +182,9 @@ The tutorials in the [LX Studio Wiki](https://github.com/heronarts/LXStudio/wiki
 
 These have been compiled by our team:
 
-* [Operation Modes and Art Direction Standards](https://docs.google.com/document/d/16FGnQ8jopCGwQ0qZizqILt3KYiLo0LPYkDYtnYzY7gI/edit)
-* [Using Tempo and Sound](https://docs.google.com/document/d/17iICAfbhCzPL77KbmFDL4-lN0zgBb1k6wdWnoBSPDjk/edit)
-* [The APC40 and LX Studio](https://docs.google.com/document/d/110qgYR_4wtE0gN8K3QZdqU75Xq0W115qe7J6mcgm1So/edit)
+- [Operation Modes and Art Direction Standards](https://docs.google.com/document/d/16FGnQ8jopCGwQ0qZizqILt3KYiLo0LPYkDYtnYzY7gI/edit)
+- [Using Tempo and Sound](https://docs.google.com/document/d/17iICAfbhCzPL77KbmFDL4-lN0zgBb1k6wdWnoBSPDjk/edit)
+- [The APC40 and LX Studio](https://docs.google.com/document/d/110qgYR_4wtE0gN8K3QZdqU75Xq0W115qe7J6mcgm1So/edit)
 
 As you really get rolling, you’ll appreciate the [API docs](https://lx.studio/api/) and public portion
 of [the source](https://github.com/heronarts/LX/tree/master/src/main/java/heronarts/lx).
@@ -196,12 +196,12 @@ sound reactivity should mostly work. But there's a better way.
 
 #### BlackHole
 
-[BlackHole](https://github.com/ExistentialAudio/BlackHole) is a *virtual audio loopback driver* for macOS. Using
+[BlackHole](https://github.com/ExistentialAudio/BlackHole) is a _virtual audio loopback driver_ for macOS. Using
 BlackHole, you can route local audio to Chromatik.
 
 First, install BlackHole:
 
-```
+```sh
 brew install blackhole-2ch
 ```
 
@@ -235,7 +235,7 @@ Now, in Chromatik, set the audio input to BlackHole:
 ![Set Chromatik audio input to BlackHole device](assets/audio-setup/chromatik-blackhole-input.png)
 
 After setting the new multi-output device as audio output in macOS, and the BlackHole device as the audio input device
-in Chromatik, you should be able to hear music from your speakers and *see* it on the spectrum meter in Chromatik.
+in Chromatik, you should be able to hear music from your speakers and _see_ it on the spectrum meter in Chromatik.
 
 #### VJLab
 
@@ -266,6 +266,7 @@ If everything is set up correctly, and music is playing, you should see live aud
 #### Audio Troubleshooting
 
 **Can't change multi-output device volume**
+
 - Switch back to the output device for which you want to change the volume, e.g. MacBook Pro Speakers
 - Change the volume
 - Switch back to the multi-output device, which should respect the current volume
@@ -273,6 +274,7 @@ If everything is set up correctly, and music is playing, you should see live aud
 But this may lead to another problem...
 
 **VJLab stops receiving audio input from BlackHole after switching audio devices**
+
 - Switch to the multi-output device you want to use, either in Audio Midi Setup or Preferences > Sound
 - Quit VJLab and any applications playing sound
 - Start sound-playing applications again
@@ -283,12 +285,13 @@ But this may lead to another problem...
 Once it's running, go tell Slack so we can celebrate with you and maybe give you a tour.
 Or, if you prefer self-guided tours:
 
-* Read the [LX Studio Wiki](https://github.com/heronarts/LXStudio/wiki)
-* Play with the UI until you have a modulator controlling the parameter for a pattern, and an effect applied on top.
-    * See [this guide](https://github.com/tracyscott/RainbowStudio/blob/master/LXStudioUserGuide.md) from another
-      memorable Burning Man art piece
-* Define a new fixture in the UI
-* [Optional] Save your playground as a new project with your name: `Playground <YourName>.lxp`. You can mess this
+- Read the [Chromatik Guide](https://chromatik.co/guide/)
+  - Or, read the older [LX Studio Wiki](https://github.com/heronarts/LXStudio/wiki)
+- Play with the UI until you have a modulator controlling the parameter for a pattern, and an effect applied on top.
+  - See [this guide](https://github.com/tracyscott/RainbowStudio/blob/master/LXStudioUserGuide.md) from another
+    memorable Burning Man art piece
+- Define a new fixture in the UI
+- (Optional) Save your playground as a new project with your name: `Playground <YourName>.lxp`. You can mess this
   project up and experiment broadly.
 
 ## Tips and tricks
@@ -300,8 +303,8 @@ Things that can help improve your experience with LX Studio.
 It can be handy to edit Chromatik's JSON config files in the IDE. Add the .lxf and .lxp extensions to be recognized as
 JSON.
 
-1. Open IntelliJ preferences (⌘-, on Mac) and go to Editor → File Types → JSON.
-2. Next, add "*.lxp" to the list, and so on.
+1. Open IntelliJ preferences (`⌘-, on Mac`) and go to `Editor → File Types → JSON5`. _(Note: JSON5 handles comments, unquoted keys, etc.)_
+2. Next, add `*.lxp`, `*.lxf`, `*.lxm` to the list.
 
 ![JSON File Types](assets/IDE%20Setup/JSON%20File%20Types.png)
 
@@ -309,12 +312,12 @@ JSON.
 
 Jeff's enjoying the following (he comes from Sublime and vim):
 
-* CodeGlance
-* Rainbow Brackets
-* IdeaVim
-* CSV
-* KeyPromoter X
-* Python Community Edition
+- CodeGlance
+- Rainbow Brackets
+- IdeaVim
+- CSV
+- KeyPromoter X
+- Python Community Edition
 
 ### Coming from VS Code?
 
@@ -335,28 +338,29 @@ If you just need to execute Chromatik to run a show without editing anything, yo
 0. Install Temurin JDK (see JDK installation above).
 
 1. Build into a runnable JAR:
-   ```shell
+   ```sh
    mvn clean package  # Packaging creates the JAR and cleaning is optional
    ```
 2. Execute the JAR (Note that the version number may be different — The version
    as of this document revision is 0.2.1-SNAPSHOT — substitute the correct
    version as necessary):
-   ```shell
-   java -jar target/LXStudio-TE-0.2.1-SNAPSHOT-jar-with-dependencies.jar vehicle Vehicle.lxp
+   ```sh
+   java -XstartOnFirstThread -jar target/te-app-*-jar-with-dependencies.jar  Projects/BM2024_TE.lxp
    ```
 3. If the Temurin JDK isn't your default Java, then you can use the full path,
    for example:
-   ```shell
-   /Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java -jar target/LXStudio-TE-0.2.1-SNAPSHOT-jar-with-dependencies.jar vehicle Vehicle.lxp
+   ```sh
+   /Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java -XstartOnFirstThread -jar target/te-app-*-jar-with-dependencies.jar  Projects/BM2024_TE.lxp
    ```
 4. Use Maven to execute the program instead of the `java` command:
+
    ```shell
    mvn clean compile  # Cleaning and compiling is optional, depending on your needs
-   mvn exec:exec@Main -Dexec.args="vehicle Vehicle.lxp"
+   mvn exec:exec@Main -Dexec.args="Projects/BM2024_TE.lxp"
    ```
 
    Fun fact: The "Main" target isn't defined in the POM to have arguments, but
-   it could, in which case you wouldn't need the `vehicle Vehicle.lxp` args.
+   it could, in which case you wouldn't need the `Projects/BM2024_TE.lxp` argument.
 
 ### Potential issues
 
@@ -374,22 +378,22 @@ rm -r ~/.m2
 To run on machine startup (ie: press power button and Chromatik just starts up), you'll need to do three things:
 
 1. Add `TE.app` to your startup items
-    1. System Preferences > Users & Groups
-    2. Click the user to run Chromatik with
-    3. Login Items > "+" button > add TE.app
+   1. System Preferences > Users & Groups
+   2. Click the user to run Chromatik with
+   3. Login Items > "+" button > add TE.app
 2. Change to automatic login
-    1. System Preferences > Users & Groups
-    2. Click "Login Options" underneath list of accounts (may need to enter password)
-    3. Using the combo box, select desired user, ie "te" or whatever
-    4. Uncheck all the boxes underneath
+   1. System Preferences > Users & Groups
+   2. Click "Login Options" underneath list of accounts (may need to enter password)
+   3. Using the combo box, select desired user, ie "te" or whatever
+   4. Uncheck all the boxes underneath
 3. Remove the password from your user account
-    1. System Preferences > Users & Groups
-    2. Click the user > "Change Password"
-    3. Leave new password blank
+   1. System Preferences > Users & Groups
+   2. Click the user > "Change Password"
+   3. Leave new password blank
 4. Keep in Dock
-    1. When TE.app is running, right click on it, and say "Keep in Dock"
-    2. This way, during a show, it's very easy for anyone non-technical to simply quit the program and re-run it if
-       there is an issue
+   1. When TE.app is running, right click on it, and say "Keep in Dock"
+   2. This way, during a show, it's very easy for anyone non-technical to simply quit the program and re-run it if
+      there is an issue
 
 Restart your machine and you should see Chromatik open automatically on startup.
 
@@ -434,15 +438,15 @@ encapsulation protocol. To make this work:
 
 ## Resources
 
-* [#te-lighting-software on Slack](https://titanicsend.slack.com/archives/C047AD94VCG)
-* [Chromatik Wiki](https://github.com/heronarts/LXStudio/wiki)
-* [Chromatik API](https://chromatik.co/api/)
-* [Chromatik Source](https://github.com/heronarts/LX/tree/master/src/main/java/heronarts/lx)
-* [TE Visual Map](https://docs.google.com/spreadsheets/d/1C7VPybckgH9bWGxwtgMN_Ij1T__c5qc-k7yIhG-592Y/edit#gid=877106241)
-* [TE Operation Modes and Art Direction Standards](https://docs.google.com/document/d/16FGnQ8jopCGwQ0qZizqILt3KYiLo0LPYkDYtnYzY7gI/edit)
-* [Using Tempo and Sound](https://docs.google.com/document/d/17iICAfbhCzPL77KbmFDL4-lN0zgBb1k6wdWnoBSPDjk/edit)
-* [The APC40 and LX Studio](https://docs.google.com/document/d/110qgYR_4wtE0gN8K3QZdqU75Xq0W115qe7J6mcgm1So/edit)
-* [Titanic’s End](http://titanicsend.com)
+- [#te-lighting-software on Slack](https://titanicsend.slack.com/archives/C047AD94VCG)
+- [Chromatik Wiki](https://github.com/heronarts/LXStudio/wiki)
+- [Chromatik API](https://chromatik.co/api/)
+- [Chromatik Source](https://github.com/heronarts/LX/tree/master/src/main/java/heronarts/lx)
+- [TE Visual Map](https://docs.google.com/spreadsheets/d/1C7VPybckgH9bWGxwtgMN_Ij1T__c5qc-k7yIhG-592Y/edit#gid=877106241)
+- [TE Operation Modes and Art Direction Standards](https://docs.google.com/document/d/16FGnQ8jopCGwQ0qZizqILt3KYiLo0LPYkDYtnYzY7gI/edit)
+- [Using Tempo and Sound](https://docs.google.com/document/d/17iICAfbhCzPL77KbmFDL4-lN0zgBb1k6wdWnoBSPDjk/edit)
+- [The APC40 and LX Studio](https://docs.google.com/document/d/110qgYR_4wtE0gN8K3QZdqU75Xq0W115qe7J6mcgm1So/edit)
+- [Titanic’s End](http://titanicsend.com)
 
 ## License Note
 
