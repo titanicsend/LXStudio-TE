@@ -10,10 +10,7 @@ import java.nio.IntBuffer;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.yoffa.shader_engine.Uniform;
 
-public class BusShader extends GLShader {
-
-  // Input texture units
-  private int textureUnitSrc;
+public class BusShader extends GLShader implements GLShader.UniformSource {
 
   // Framebuffer object (FBO) for rendering
   private FBO fbo;
@@ -23,14 +20,14 @@ public class BusShader extends GLShader {
 
   // Variables that will be passed to uniforms
   // Source texture handle
-  private int src = -1;
+  private int iSrc = -1;
   // Amount of src to blend onto a black background
   private float level = 1f;
   // Target CPU buffer
   private int[] main;
 
   private static class BusUniforms {
-    private Uniform.Int1 iSrc;
+    private Uniform.Sampler2D iSrc;
     private Uniform.Float1 level;
   }
 
@@ -40,7 +37,7 @@ public class BusShader extends GLShader {
   public BusShader(LX lx) {
     super(config(lx).withFilename("bus.fs"));
 
-    addUniformSource(this::setUniforms);
+    addUniformSource(this);
   }
 
   @Override
@@ -51,8 +48,6 @@ public class BusShader extends GLShader {
   @Override
   protected void allocateShaderBuffers() {
     super.allocateShaderBuffers();
-
-    this.textureUnitSrc = getNextTextureUnit();
 
     // FBO (framebuffer and texture) for rendering
     this.fbo = new FBO();
@@ -70,28 +65,25 @@ public class BusShader extends GLShader {
   }
 
   /** Set input texture handle */
-  public void setSrc(int src) {
-    this.src = src;
+  public void setSrc(int iSrc) {
+    this.iSrc = iSrc;
   }
 
   private void initializeUniforms() {
-    this.uniforms.iSrc = getUniformInt1("iSrc");
+    this.uniforms.iSrc = getUniformSampler2D("iSrc");
     this.uniforms.level = getUniformFloat1("level");
   }
 
-  private void setUniforms(GLShader s) {
+  @Override
+  public void setUniforms(GLShader s) {
     // Use Uniform objects to track locations and values
     if (!initializedUniforms) {
       this.initializedUniforms = true;
       initializeUniforms();
     }
 
-    // Bind input textures to texture units
-    bindTextureUnit(this.textureUnitSrc, this.src);
-    activateDefaultTextureUnit();
-
     // Stage uniform values for updating
-    this.uniforms.iSrc.setValue(this.textureUnitSrc);
+    this.uniforms.iSrc.setValue(this.iSrc);
     this.uniforms.level.setValue(this.level);
   }
 
@@ -143,12 +135,14 @@ public class BusShader extends GLShader {
     // Switch to the next PBO for the next frame
     this.ppPBOs.swap();
 
-    unbindTextureUnit(this.textureUnitSrc);
-    activateDefaultTextureUnit();
-
     // No need to unbind VAO.
     // Also not unbinding the FBO here, as other shader render passes will change it.
     // And GLMixer will unbind the last FBO at the end of postMix().
+  }
+
+  @Override
+  public void unbindTextures() {
+    this.uniforms.iSrc.unbind();
   }
 
   public int getRenderTexture() {

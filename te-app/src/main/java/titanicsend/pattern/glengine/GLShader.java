@@ -60,6 +60,9 @@ public abstract class GLShader {
   public interface UniformSource {
     /** Called once per frame. Set uniforms on the shader here. */
     void setUniforms(GLShader s);
+
+    /** Called once per frame after render(). Unbind any Sampler2D uniforms. */
+    default void unbindTextures() {}
   }
 
   // Vertices for default geometry - a rectangle that covers the entire canvas
@@ -348,6 +351,8 @@ public abstract class GLShader {
     // hand the complete uniform list to OpenGL
     updateUniforms();
     render();
+    unbindTextures();
+    activateDefaultTextureUnit();
   }
 
   /** Activate this shader for rendering in the current context */
@@ -372,6 +377,12 @@ public abstract class GLShader {
 
   /** Child classes should run GL draw commands here */
   protected abstract void render();
+
+  private void unbindTextures() {
+    for (UniformSource uniformSource : this.uniformSources) {
+      uniformSource.unbindTextures();
+    }
+  }
 
   /** Activates texture unit 0. */
   protected void activateDefaultTextureUnit() {
@@ -815,9 +826,13 @@ public abstract class GLShader {
     }
 
     public void bind() {
+      bind(false);
+    }
+
+    public void bind(boolean zeroAlpha) {
       gl4.glBindFramebuffer(GL_FRAMEBUFFER, this.fboHandles[0]);
       gl4.glViewport(0, 0, width, height);
-      gl4.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+      gl4.glClearColor(0.0f, 0.0f, 0.0f, zeroAlpha ? 0f : 1.0f);
       gl4.glClear(GL_COLOR_BUFFER_BIT);
     }
 

@@ -55,14 +55,8 @@ public class GLShaderPattern extends TEPerformancePattern implements GpuDevice {
     this(lx, TEShaderView.ALL_POINTS);
   }
 
-  protected ByteBuffer imageBuffer;
-
   public GLShaderPattern(LX lx, TEShaderView view) {
     super(lx, view);
-
-    if (this.lx.engine.renderMode.cpu) {
-      imageBuffer = TEShader.allocateBackBuffer();
-    }
   }
 
   protected TEShader addShader(GLShader.Config config) {
@@ -103,7 +97,7 @@ public class GLShaderPattern extends TEPerformancePattern implements GpuDevice {
     }
     // Set the CPU buffer for the last shader, if using CPU mixer
     this.shaders
-        .get(this.shaders.size() - 1)
+        .getLast()
         .setCpuBuffer(this.lx.engine.renderMode.cpu ? this.colors : null);
 
     // Run the chain of shaders,

@@ -30,10 +30,6 @@ public class NDIOutRawEffect extends TEEffect {
 
   @Override
   protected void run(double deltaMs, double enabledAmount) {
-    if (!isInitialized) {
-      return;
-    }
-
     // TODO - make frame size adapt automatically to the size of the
     // TODO - current model.
     // Make sure we don't overrun the frame buffer if the model is too large

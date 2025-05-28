@@ -15,7 +15,7 @@ import titanicsend.pattern.yoffa.shader_engine.*;
  * Shader class for TE patterns and effects. Adds image file textures and uniforms for TE common
  * controls.
  */
-public class TEShader extends GLShader {
+public class TEShader extends GLShader implements GLShader.UniformSource {
 
   private static final int UNINITIALIZED = -1;
 
@@ -54,11 +54,13 @@ public class TEShader extends GLShader {
   private final TEShaderUniforms uniforms = new TEShaderUniforms();
   private boolean initializedUniforms = false;
 
+  boolean clearBackbuffer = false;
+
   public TEShader(GLShader.Config config) {
     super(config);
 
     // Uniform callback for TE common controls
-    addUniformSource(this::setUniforms);
+    addUniformSource(this);
   }
 
   // Setup
@@ -123,6 +125,12 @@ public class TEShader extends GLShader {
 
   // Run loop
 
+  @Override
+  public void onActive() {
+    this.clearBackbuffer = true;
+    super.onActive();
+  }
+
   private void initializeUniforms() {
     this.uniforms.audio = getUniformInt1(UniformNames.AUDIO_CHANNEL);
     this.uniforms.lxModelCoords = getUniformInt1(UniformNames.LX_MODEL_COORDS);
@@ -130,7 +138,8 @@ public class TEShader extends GLShader {
     this.uniforms.mappedBuffer = getUniformInt1(UniformNames.MAPPED_BUFFER);
   }
 
-  private void setUniforms(GLShader s) {
+  @Override
+  public void setUniforms(GLShader s) {
     // Use Uniform objects to track locations and values
     if (!initializedUniforms) {
       this.initializedUniforms = true;
@@ -163,6 +172,8 @@ public class TEShader extends GLShader {
 
     // Use older FBO as backbuffer
     int backBufferHandle = this.ppFBOs.copy.getTextureHandle();
+
+
     bindTextureUnit(TEXTURE_UNIT_BACKBUFFER, backBufferHandle);
     this.uniforms.backBuffer.setValue(TEXTURE_UNIT_BACKBUFFER);
 
@@ -189,6 +200,12 @@ public class TEShader extends GLShader {
   protected void render() {
     // Bind vertex array object
     bindVAO();
+
+    // Clear backbuffer on first frame (TODO: do this on disable)
+    if (this.clearBackbuffer) {
+      this.clearBackbuffer = false;
+      this.ppFBOs.copy.bind(true);
+    }
 
     // Bind framebuffer object (FBO)
     this.ppFBOs.render.bind();
@@ -234,17 +251,19 @@ public class TEShader extends GLShader {
       this.ppPBOs.swap();
     }
 
+    // No need to unbind VAO.
+    // Also not unbinding the FBO here, as other shader render passes will change it.
+    // And GLMixer will unbind the last FBO at the end of postMix().
+  }
+
+  @Override
+  public void unbindTextures() {
     // Unbind textures (except for audio, which stays bound for all patterns)
     unbindTextureUnit(TEXTURE_UNIT_COORDS);
     unbindTextureUnit(TEXTURE_UNIT_BACKBUFFER);
     for (TextureInfo ti : this.textures) {
       unbindTextureUnit(ti.unit);
     }
-    activateDefaultTextureUnit();
-
-    // No need to unbind VAO.
-    // Also not unbinding the FBO here, as other shader render passes will change it.
-    // And GLMixer will unbind the last FBO at the end of postMix().
   }
 
   /** Called by GLMixer to retrieve the current render texture handle */
