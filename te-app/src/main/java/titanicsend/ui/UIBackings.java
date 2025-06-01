@@ -41,7 +41,7 @@ public class UIBackings extends UI3dComponent {
   private class PanelBuffer extends VertexBuffer {
 
     private PanelBuffer(GLX glx) {
-      super(glx, VERTICES_PER_PANEL, VertexDeclaration.ATTRIB_POSITION);
+      super(glx, VERTICES_PER_PANEL, VertexDeclaration.Attribute.POSITION);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class UIBackings extends UI3dComponent {
     }
 
     this.colorBuffer =
-        new DynamicVertexBuffer(glx, colorBufferMaxSize, VertexDeclaration.ATTRIB_COLOR0);
+        new DynamicVertexBuffer(glx, colorBufferMaxSize, VertexDeclaration.Attribute.COLOR0);
   }
 
   // Free resources allocated by previous model

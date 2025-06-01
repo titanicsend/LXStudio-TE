@@ -91,14 +91,14 @@ public class CrutchOSC extends LXComponent
 
   private LXParameterListener focusedPatternListener =
       (p) -> {
-        if (this.channel != null && p == this.channel.focusedPattern) {
+        if (this.channel != null && p == this.channel.patternEngine.focusedPattern) {
           onFocusedPattern(this.channel.getFocusedPattern(), false);
         }
       };
 
   private LXParameterListener focusedPatternAuxListener =
       (p) -> {
-        if (this.channelAux != null && p == this.channelAux.focusedPattern) {
+        if (this.channelAux != null && p == this.channelAux.patternEngine.focusedPattern) {
           onFocusedPattern(this.channelAux.getFocusedPattern(), true);
         }
       };
@@ -146,11 +146,11 @@ public class CrutchOSC extends LXComponent
   private void registerChannel(LXChannel channel, boolean isAux) {
     LXPattern pattern = channel.getFocusedPattern();
     if (isAux) {
-      channel.focusedPattern.addListener(focusedPatternAuxListener);
+      channel.patternEngine.focusedPattern.addListener(focusedPatternAuxListener);
       this.patternAux = pattern;
       registerPattern(this.patternAux, isAux); // ok to pass null
     } else {
-      channel.focusedPattern.addListener(focusedPatternListener);
+      channel.patternEngine.focusedPattern.addListener(focusedPatternListener);
       this.pattern = pattern;
       registerPattern(this.pattern, isAux); // ok to pass null
     }
@@ -158,12 +158,12 @@ public class CrutchOSC extends LXComponent
 
   private void unregisterChannel(LXChannel channel, boolean isAux) {
     if (isAux) {
-      channel.focusedPattern.removeListener(focusedPatternAuxListener);
+      channel.patternEngine.focusedPattern.removeListener(focusedPatternAuxListener);
       if (this.pattern != null) {
         unRegisterPattern(isAux);
       }
     } else {
-      channel.focusedPattern.removeListener(focusedPatternListener);
+      channel.patternEngine.focusedPattern.removeListener(focusedPatternListener);
       if (this.patternAux != null) {
         unRegisterPattern(isAux);
       }
