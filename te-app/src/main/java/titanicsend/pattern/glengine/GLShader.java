@@ -290,7 +290,7 @@ public class GLShader {
   public void dispose() {
     // if we've been fully initialized, we need to release all
     // OpenGL GPU resources we've allocated.
-    if (gl4 != null) {
+    if (gl4 != null && GLContext.getCurrent() != null) {
 
       // delete GPU buffers we directly allocated
       gl4.glDeleteBuffers(2, geometryBufferHandles, 0);
