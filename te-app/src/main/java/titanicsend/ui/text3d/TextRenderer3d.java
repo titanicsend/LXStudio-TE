@@ -122,12 +122,13 @@ public class TextRenderer3d {
     // we support dx11, opengl, and metal
     // TODO - add Vulkan if/when Chromatik adds support
     String path = "resources/shaders/bgfx/";
-    switch (glx.getRenderer()) {
+    final int renderer = glx.getRenderer();
+    switch (renderer) {
       case 3:
       case 4:
         path = path + "dx11/";
         break;
-      case 6:
+      case 5:
         path = path + "metal/";
         break;
       case 9:
@@ -135,7 +136,7 @@ public class TextRenderer3d {
         break;
       default:
         throw new IOException(
-            "Custom shaders are not supported on " + bgfx_get_renderer_name(glx.getRenderer()));
+            "Custom shaders are not supported on " + bgfx_get_renderer_name(renderer));
     }
 
     try {
