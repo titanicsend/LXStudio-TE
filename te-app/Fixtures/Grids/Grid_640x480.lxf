@@ -1,0 +1,30 @@
+{
+  label: "Grid 640x480",
+  tags: [
+    "width_1280",
+    "height_240"
+  ],
+  parameters: {
+    widthFt: {
+      type: "float",
+      default: 72,
+      label: "WidthFt",
+      description: "Width (in Feet)"
+    },
+    heightFt: {
+      type: "float",
+      default: 48,
+      label: "HeightFt",
+      description: "Height (in Feet)"
+    }
+  },
+  components: [
+    {
+      type: "HiResGrid/HiResGrid",
+      width: 720,
+      height: 480,
+      widthFt: "$widthFt",
+      heightFt: "$heightFt"
+    }
+  ]
+}
