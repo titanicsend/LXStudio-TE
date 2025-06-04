@@ -15,6 +15,7 @@
  */
 package heronarts.lx.studio;
 
+import heronarts.glx.GLXWindow;
 import heronarts.glx.event.GamepadEvent;
 import heronarts.glx.event.KeyEvent;
 import heronarts.lx.LX;
@@ -34,6 +35,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.function.Function;
 import jkbstudio.supermod.SuperMod;
+import org.lwjgl.system.Platform;
 import titanicsend.app.*;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.autopilot.justin.*;
@@ -122,6 +124,14 @@ public class TEApp extends LXStudio {
 
   private static int WINDOW_WIDTH = 1280;
   private static int WINDOW_HEIGHT = 800;
+
+  private static final String FLAG_HEADLESS = "--headless";
+  private static final String FLAG_OPENGL = "--opengl";
+  private static final String FLAG_WARNINGS = "--warnings";
+  private static final String FLAG_DEBUG = "--debug";
+  private static final String FLAG_DISABLE_ZEROCONF = "--disable-zeroconf";
+  private static final String FLAG_FORCE_OUTPUT = "--force-output";
+  private static final String FLAG_DISABLE_OUTPUT = "--disable-output";
 
   // Default shader system rendering canvas
   // resolution.  Determines the maximum number of
@@ -896,8 +906,8 @@ public class TEApp extends LXStudio {
     this.gamepadEngine.lxGamepadAxisChanged(gamepadEvent, axis, value);
   }
 
-  private TEApp(Flags flags) throws IOException {
-    super(flags);
+  private TEApp(GLXWindow window, Flags flags) throws IOException {
+    super(window, flags);
   }
 
   private static final DateFormat LOG_FILENAME_FORMAT =
@@ -906,125 +916,173 @@ public class TEApp extends LXStudio {
   private static String projectFileName = null;
 
   /**
-   * Main interface into the program. Two modes are supported, if the --headless flag is supplied
-   * then a raw CLI version of LX is used. If not, then we embed in a Processing 4 applet and run as
-   * such.
+   * Main interface into the program.
    *
    * @param args Command-line arguments
    */
   public static void main(String[] args) {
-    LX.log("Initializing LX version " + LXStudio.VERSION);
-    LX.log(
-        "Running java "
-            + System.getProperty("java.version")
-            + " "
-            + System.getProperty("java.vendor")
-            + " "
-            + System.getProperty("os.name")
-            + " "
-            + System.getProperty("os.version")
-            + " "
-            + System.getProperty("os.arch"));
-    LX.LOG_WARNINGS = true;
+    try {
+      String logFileName = LOG_FILENAME_FORMAT.format(Calendar.getInstance().getTime());
+      File logs = new File(LX.Media.LOGS.getDirName());
+      if (!logs.exists()) {
+        logs.mkdir();
+      }
+      setLogFile(new File(LX.Media.LOGS.getDirName(), logFileName));
 
-    Flags flags = new Flags();
-    flags.windowTitle = "Chromatik — Titanic's End";
-    flags.windowWidth = WINDOW_WIDTH;
-    flags.windowHeight = WINDOW_HEIGHT;
-    flags.zeroconf = false;
-    flags.classpathPlugins.add(titanicsend.audio.AudioStemsPlugin.class.getTypeName());
-    flags.classpathPlugins.add("heronarts.lx.studio.TEApp$Plugin");
+      LX.log("Starting Chromatik version " + LXStudio.VERSION);
+      LX.log(
+          "Running java "
+              + System.getProperty("java.version")
+              + " "
+              + System.getProperty("java.vendor")
+              + " "
+              + System.getProperty("os.name")
+              + " "
+              + System.getProperty("os.version")
+              + " "
+              + System.getProperty("os.arch"));
+      LX.LOG_WARNINGS = true;
 
-    // Always use OpenGL back-end for BGFX on Linux'
-    // NOTE: Consider changing this if Chromatik ever implements
-    // full Vulkan support.
-    if (System.getProperty("os.name").toLowerCase().contains("linux")) {
-      flags.useOpenGL = true;
-    }
+      Flags flags = new Flags();
+      flags.windowTitle = "Chromatik — Titanic's End";
+      flags.windowWidth = WINDOW_WIDTH;
+      flags.windowHeight = WINDOW_HEIGHT;
+      flags.zeroconf = false;
+      flags.classpathPlugins.add(titanicsend.audio.AudioStemsPlugin.class.getTypeName());
+      flags.classpathPlugins.add("heronarts.lx.studio.TEApp$Plugin");
 
-    String logFileName = LOG_FILENAME_FORMAT.format(Calendar.getInstance().getTime());
-    File logs = new File(LX.Media.LOGS.getDirName());
-    if (!logs.exists()) {
-      logs.mkdir();
-    }
-    setLogFile(new File(LX.Media.LOGS.getDirName(), logFileName));
-
-    boolean headless = false;
-    File projectFile = null;
-    for (int i = 0; i < args.length; ++i) {
-      final String arg = args[i];
-      if ("--headless".equals(arg)) {
-        headless = true;
-      } else if (arg.endsWith(".lxp") || arg.endsWith(".lxs")) {
-        try {
-          projectFileName = arg;
-          projectFile = new File(arg);
-          LX.log("Received command-line project file name: " + projectFileName);
-        } catch (Exception x) {
-          LX.error(x, "Command-line project file path invalid: " + arg);
+      if (args.length > 0) {
+        final StringBuilder argString = new StringBuilder(256);
+        for (String arg : args) {
+          argString.append(arg);
+          argString.append(" ");
         }
-      } else if (arg.equals("--resolution")) {
-        // Parse shader rendering resolution from command line. Resolution is specified as a string
-        // in the format "WIDTHxHEIGHT" where WIDTH and HEIGHT are integers. (e.g. "640x480")
-        if (i + 1 < args.length) {
-          String[] resolution = args[i + 1].split("x");
-          if (resolution.length == 2) {
-            try {
-              glRenderWidth = Integer.parseInt(resolution[0]);
-              glRenderHeight = Integer.parseInt(resolution[1]);
-              i++; // let the rest of the parser skip the resolution argument
-            } catch (NumberFormatException nfx) {
-              error("Invalid render resolution: " + args[i + 1]);
-            }
-            // test for out-of-bounds resolutions, just in case
-            if (glRenderWidth < 64
-                || glRenderHeight < 64
-                || glRenderWidth > 4096
-                || glRenderHeight > 4096) {
+        log("CLI args: " + argString.toString());
+      }
+
+      // Always use OpenGL back-end for BGFX on Linux'
+      // NOTE: Consider changing this if Chromatik ever implements
+      // full Vulkan support.
+      if (Platform.get() == Platform.LINUX) {
+        log("Forcing use of OpenGL on Linux");
+        flags.useOpenGL = true;
+      }
+
+      boolean headless = false;
+      File projectFile = null;
+      for (int i = 0; i < args.length; ++i) {
+        final String arg = args[i];
+        if (FLAG_HEADLESS.equals(arg)) {
+          headless = true;
+        } else if (FLAG_OPENGL.equals(arg)) {
+          flags.useOpenGL = true;
+        } else if (FLAG_WARNINGS.equals(arg)) {
+          LX.LOG_WARNINGS = true;
+        } else if (FLAG_DEBUG.equals(arg)) {
+          LX.LOG_DEBUG = true;
+        } else if (FLAG_DISABLE_ZEROCONF.equals(arg)) {
+          flags.zeroconf = false;
+        } else if (FLAG_FORCE_OUTPUT.equals(arg)) {
+          flags.outputMode = Flags.OutputMode.ACTIVE;
+        } else if (FLAG_DISABLE_OUTPUT.equals(arg)) {
+          flags.outputMode = Flags.OutputMode.INACTIVE;
+        } else if (arg.endsWith(".lxp") || arg.endsWith(".lxs")) {
+          try {
+            projectFileName = arg;
+            projectFile = new File(arg);
+            LX.log("Received command-line project file name: " + projectFileName);
+          } catch (Exception x) {
+            LX.error(x, "Command-line project file path invalid: " + arg);
+          }
+        } else if (arg.equals("--resolution")) {
+          // Parse shader rendering resolution from command line. Resolution is specified as a
+          // string
+          // in the format "WIDTHxHEIGHT" where WIDTH and HEIGHT are integers. (e.g. "640x480")
+          if (i + 1 < args.length) {
+            String[] resolution = args[i + 1].split("x");
+            if (resolution.length == 2) {
+              try {
+                glRenderWidth = Integer.parseInt(resolution[0]);
+                glRenderHeight = Integer.parseInt(resolution[1]);
+                i++; // let the rest of the parser skip the resolution argument
+              } catch (NumberFormatException nfx) {
+                error("Invalid render resolution: " + args[i + 1]);
+              }
+              // test for out-of-bounds resolutions, just in case
+              if (glRenderWidth < 64
+                  || glRenderHeight < 64
+                  || glRenderWidth > 4096
+                  || glRenderHeight > 4096) {
+                error("Invalid render resolution: " + args[i + 1]);
+              }
+            } else {
               error("Invalid render resolution: " + args[i + 1]);
             }
           } else {
-            error("Invalid render resolution: " + args[i + 1]);
+            error("Missing render resolution");
           }
         } else {
-          error("Missing render resolution");
+          error("Unrecognized CLI argument, ignoring: " + arg);
         }
-      } else {
-        error("Unrecognized CLI argument, ignoring: " + arg);
       }
-    }
 
-    if (headless) {
-      log("Headless CLI flag set, running without UI...");
-      headless(flags, projectFile);
-    } else {
-      try {
-        TEApp lx = new TEApp(flags);
+      if (headless) {
+        log("Headless CLI flag set, running without UI...");
+        headless(flags, projectFile);
+        return;
+      }
 
-        // Schedule a task to load the initial project file at launch
-        final File finalProjectFile = projectFile;
-        final boolean isSchedule = projectFile != null && projectFile.getName().endsWith(".lxs");
-        lx.engine.addTask(
-            () -> {
-              if (isSchedule) {
-                lx.preferences.schedulerEnabled.setValue(true);
-                LX.log("Opening schedule file: " + finalProjectFile);
-                lx.scheduler.openSchedule(finalProjectFile, true);
-              } else {
+      // Run the full windowed application
+      final GLXWindow window = new GLXWindow(flags);
+      final File finalProjectFile = projectFile;
+
+      // Start the GLX Chromatik application on another thread
+      new Thread(
+              () -> {
                 try {
-                  lx.preferences.loadInitialProject(finalProjectFile);
-                } catch (Exception x) {
-                  error(x, "Exception loading initial project: " + x.getLocalizedMessage());
+                  applicationThread(window, flags, finalProjectFile);
+                } catch (Throwable x) {
+                  error(
+                      x,
+                      "Unhandled exception in Chromatik application thread: "
+                          + x.getLocalizedMessage());
                 }
-                lx.preferences.loadInitialSchedule();
-              }
-            });
+              })
+          .start();
 
-        lx.run();
-      } catch (Exception x) {
-        throw new RuntimeException(x);
-      }
+      // Run the main event loop
+      window.main();
+
+    } catch (Throwable x) {
+      error(x, "Unhandled exception in Chromatik.main: " + x.getLocalizedMessage());
     }
+  }
+
+  private static void applicationThread(GLXWindow window, Chromatik.Flags flags, File projectFile)
+      throws IOException {
+    final TEApp lx = new TEApp(window, flags);
+
+    // Schedule a task to load the initial project file at launch
+    final File finalProjectFile = projectFile;
+    final boolean isSchedule = projectFile != null && projectFile.getName().endsWith(".lxs");
+    lx.engine.addTask(
+        () -> {
+          if (isSchedule) {
+            lx.preferences.schedulerEnabled.setValue(true);
+            LX.log("Opening schedule file: " + finalProjectFile);
+            lx.scheduler.openSchedule(finalProjectFile, true);
+          } else {
+            try {
+              lx.preferences.loadInitialProject(finalProjectFile);
+            } catch (Exception x) {
+              error(x, "Exception loading initial project: " + x.getLocalizedMessage());
+            }
+            lx.preferences.loadInitialSchedule();
+          }
+        });
+
+    // Run the application UI!
+    lx.run();
   }
 
   public static void headless(Flags flags, File projectFile) {

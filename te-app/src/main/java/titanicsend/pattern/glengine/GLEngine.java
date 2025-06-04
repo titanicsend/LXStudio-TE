@@ -479,7 +479,7 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
   public void dispose() {
     // free GPU resources that we directly allocated
-    if(GLContext.getCurrent() != null ) {
+    if (GLContext.getCurrent() != null) {
       gl4.glDeleteTextures(audioTextureHandle.length, audioTextureHandle, 0);
       gl4.glDeleteBuffers(uniformBlockHandles.length, uniformBlockHandles, 0);
     }

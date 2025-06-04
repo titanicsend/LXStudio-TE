@@ -57,7 +57,7 @@ public class TextRenderer3d {
     // Vertex buffer layout: 3 position + 2 texture coordinates per character,
     // plus 4 byte vertex color information in ARGB format.
     this.vertexLayout = BGFXVertexLayout.calloc();
-    bgfx_vertex_layout_begin(this.vertexLayout, glx.getRenderer());
+    bgfx_vertex_layout_begin(this.vertexLayout, glx.bgfx.getRenderer());
     bgfx_vertex_layout_add(
         this.vertexLayout, BGFX_ATTRIB_POSITION, 3, BGFX_ATTRIB_TYPE_FLOAT, false, false);
     bgfx_vertex_layout_add(
@@ -122,7 +122,7 @@ public class TextRenderer3d {
     // we support dx11, opengl, and metal
     // TODO - add Vulkan if/when Chromatik adds support
     String path = "resources/shaders/bgfx/";
-    final int renderer = glx.getRenderer();
+    final int renderer = glx.bgfx.getRenderer();
     switch (renderer) {
       case 3:
       case 4:
