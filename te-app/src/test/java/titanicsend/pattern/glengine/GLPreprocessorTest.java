@@ -45,7 +45,7 @@ class GLPreprocessorTest {
     String actualNames =
         String.join(", ", parameters.stream().map(p -> p.name).toArray(String[]::new));
 
-    assertEquals("Spin, Size, Speed, Quantity, Wow2, Wow1", actualNames);
+    assertEquals("Spin, Size, Speed, Quantity, LvlReact, FreqReact, Wow2, Wow1", actualNames);
   }
 
   @Test
