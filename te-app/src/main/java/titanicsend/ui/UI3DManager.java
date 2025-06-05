@@ -41,8 +41,8 @@ public class UI3DManager {
     try {
       inRebuild = UI3DManager.backingsLock.tryLock(17, java.util.concurrent.TimeUnit.MILLISECONDS);
       if (inRebuild) {
-        backings.rebuild();
-        backingsAux.rebuild();
+        // backings.rebuild();
+        // backingsAux.rebuild();
       }
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();

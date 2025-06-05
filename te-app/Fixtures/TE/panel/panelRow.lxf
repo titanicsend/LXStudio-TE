@@ -12,7 +12,9 @@
     "offset": { type: "int", default: 0, min: -200, description: "X-Offset in pointSpacing relative to default of 1/2 per row" },
     "numPoints": { type: "int", min: 1, default: 1 },
     "pointSpacing": { type: "float", default: "1.9685039" },  /* 50mm */
-    "rowSpacing": { type: "float", default: "1.7047743848" }  /* 50mm * 0.5 * sqrt(3) */
+    "rowSpacing": { type: "float", default: "1.7047743848" },  /* 50mm * 0.5 * sqrt(3) */
+    "showBacking": { type: "boolean", default: "true", description: "Whether to display an opaque backing behind the pixels" },
+    "flipBacking": { type: "boolean", default: "false", description: "Inverts the backing to the other side of the panel" }
   },
 
   components: [
@@ -22,5 +24,44 @@
       x: "($offset+(($row-1)/2))*$pointSpacing",
       y: "($row-1)*$rowSpacing"
     }
-  ]
+  ],
+
+  "ui": {
+    "meshes": [
+      /* Normal backing */
+      {
+        "enabled": "$showBacking & !$flipBacking",
+        "type": "uniformFill",
+        "color": "0xff000000",
+        "vertices": [
+          {
+            "type": "rect",
+            "axis": "xy",
+            "x": "($offset+(($row-1)/2)-0.5)*$pointSpacing",
+            "y": "($row-1.5)*$rowSpacing",
+            "z": "2",
+            "width": "$numPoints * $pointSpacing",
+            "height": "$pointSpacing"
+          }
+        ]
+      },
+      /* Flipped backing */
+      {
+        "enabled": "$showBacking & $flipBacking",
+        "type": "uniformFill",
+        "color": "0xff000000",
+        "vertices": [
+          {
+            "type": "rect",
+            "axis": "xy",
+            "x": "($offset+(($row-1)/2)-0.5)*$pointSpacing",
+            "y": "($row-1.5)*$rowSpacing",
+            "z": "-2",
+            "width": "$numPoints * $pointSpacing",
+            "height": "$pointSpacing"
+          }
+        ]
+      }
+    ]
+  }
 }

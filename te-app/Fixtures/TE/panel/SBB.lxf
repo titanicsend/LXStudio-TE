@@ -15,6 +15,8 @@
     "strand1output": { default: 4, type: "int", min: 1, max: 4, label: "S1 Output", description: "Strand 1 Controller Output Number 1-4" },
 
     "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
+
+    "flipBacking": { type: "boolean", default: "false", description: "Inverts the backing to the other side of the panel" },
     
     /* Debug tools */
     "onCar": { default: true, type: "boolean", label: "On Car", description: "True = Locate panel to its position on the car, False = Locate to origin" }
@@ -52,16 +54,16 @@
     /* Looking at the back of panel, starts from RIGHT
        Looking at the front of panel, starts from LEFT */
 
-    { type: "panelRow", row: "0", offset: "0", numPoints: "32" },
-    { type: "panelRow", row: "1", offset: "1", numPoints: "29" },
-    { type: "panelRow", row: "2", offset: "3", numPoints: "26" },
-    { type: "panelRow", row: "3", offset: "5", numPoints: "22" },
-    { type: "panelRow", row: "4", offset: "6", numPoints: "19" },
-    { type: "panelRow", row: "5", offset: "8", numPoints: "15" },
-    { type: "panelRow", row: "6", offset: "10", numPoints: "11" },
-    { type: "panelRow", row: "7", offset: "11", numPoints: "9" },
-    { type: "panelRow", row: "8", offset: "13", numPoints: "5" },
-    { type: "panelRow", row: "9", offset: "14", numPoints: "2" }
+    { type: "panelRow", row: "0", offset: "0", numPoints: "32", "flipBacking": "$flipBacking" },
+    { type: "panelRow", row: "1", offset: "1", numPoints: "29", "flipBacking": "$flipBacking" },
+    { type: "panelRow", row: "2", offset: "3", numPoints: "26", "flipBacking": "$flipBacking" },
+    { type: "panelRow", row: "3", offset: "5", numPoints: "22", "flipBacking": "$flipBacking" },
+    { type: "panelRow", row: "4", offset: "6", numPoints: "19", "flipBacking": "$flipBacking" },
+    { type: "panelRow", row: "5", offset: "8", numPoints: "15", "flipBacking": "$flipBacking" },
+    { type: "panelRow", row: "6", offset: "10", numPoints: "11", "flipBacking": "$flipBacking" },
+    { type: "panelRow", row: "7", offset: "11", numPoints: "9", "flipBacking": "$flipBacking" },
+    { type: "panelRow", row: "8", offset: "13", numPoints: "5", "flipBacking": "$flipBacking" },
+    { type: "panelRow", row: "9", offset: "14", numPoints: "2", "flipBacking": "$flipBacking" }
   ],
 
   outputs: [
