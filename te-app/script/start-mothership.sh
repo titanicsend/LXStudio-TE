@@ -70,4 +70,4 @@ java \
   -XstartOnFirstThread \
   -Djava.awt.headless=true \
   -jar $JAR_FILE \
-  dynamic ${LXP?} --resolution 512x512;
+  ${LXP?} --resolution 512x512;
