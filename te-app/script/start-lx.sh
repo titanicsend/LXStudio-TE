@@ -66,8 +66,8 @@ fi
 # Start Chromatik
 
 
-java \
+echo java \
   -XstartOnFirstThread \
   -Djava.awt.headless=true \
   -jar $JAR_FILE \
-  dynamic ${LXP?};
+  ${LXP?};
