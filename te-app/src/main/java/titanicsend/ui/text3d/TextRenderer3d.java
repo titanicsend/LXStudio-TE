@@ -120,23 +120,34 @@ public class TextRenderer3d {
 
     // get the shader path for the current renderer
     // we support dx11, opengl, and metal
-    // TODO - add Vulkan if/when Chromatik adds support
+
+
     String path = "resources/shaders/bgfx/";
-    final int renderer = glx.bgfx.getRenderer();
-    switch (renderer) {
-      case 3:
-      case 4:
-        path = path + "dx11/";
-        break;
-      case 5:
-        path = path + "metal/";
-        break;
-      case 9:
-        path = path + "glsl/";
-        break;
-      default:
-        throw new IOException(
-            "Custom shaders are not supported on " + bgfx_get_renderer_name(renderer));
+    final int rendererIdx = glx.bgfx.getRenderer();
+
+    // TODO - be sure this stays correct if Chromatik updates bgfx
+    // I'm paranoid now -- make sure the index is valid in case something
+    // gets changed in BGFX again, and convert to enum value.
+    if (rendererIdx >= 0 && rendererIdx < BGFXRendererType.values().length) {
+      BGFXRendererType renderer = BGFXRendererType.values()[rendererIdx];
+
+      switch (renderer) {
+        case Direct3D11:
+        case Direct3D12:
+          path = path + "dx11/";
+          break;
+        case Metal:
+          path = path + "metal/";
+          break;
+        case OpenGL:
+          path = path + "glsl/";
+          break;
+        default:
+          throw new IOException(
+            "Custom shaders are not currently supported on " + bgfx_get_renderer_name(rendererIdx));
+      }
+    } else {
+      throw new IOException("Unknown renderer index: " + rendererIdx);
     }
 
     try {
