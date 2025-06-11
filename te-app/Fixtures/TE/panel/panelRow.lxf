@@ -28,9 +28,8 @@
 
   "ui": {
     "meshes": [
-      /* Normal backing */
       {
-        "enabled": "$showBacking & !$flipBacking",
+        "enabled": "$showBacking",
         "type": "uniformFill",
         "color": "0xff000000",
         "vertices": [
@@ -39,24 +38,7 @@
             "axis": "xy",
             "x": "($offset+(($row-1)/2)-0.5)*$pointSpacing",
             "y": "($row-1.5)*$rowSpacing",
-            "z": "2",
-            "width": "$numPoints * $pointSpacing",
-            "height": "$pointSpacing"
-          }
-        ]
-      },
-      /* Flipped backing */
-      {
-        "enabled": "$showBacking & $flipBacking",
-        "type": "uniformFill",
-        "color": "0xff000000",
-        "vertices": [
-          {
-            "type": "rect",
-            "axis": "xy",
-            "x": "($offset+(($row-1)/2)-0.5)*$pointSpacing",
-            "y": "($row-1.5)*$rowSpacing",
-            "z": "-2",
+            "z": "$flipBacking ? -2 : 2",
             "width": "$numPoints * $pointSpacing",
             "height": "$pointSpacing"
           }
