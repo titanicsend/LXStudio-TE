@@ -19,8 +19,8 @@ public class UI3DManager {
   public final UIBackings backings;
   public final UIBackings backingsAux;
 
-  public final UILasers lasers;
-  public final UILasers lasersAux;
+  // public final UILasers lasers;
+  // public final UILasers lasersAux;
 
   public static boolean labelsLocked() {
     return UI3DManager.labelsLock.isLocked();
@@ -78,9 +78,10 @@ public class UI3DManager {
     this.backingsAux = new UIBackings(lx, virtualOverlays);
     ui.previewAux.addComponent(backingsAux);
 
-    this.lasers = new UILasers(lx, virtualOverlays);
-    ui.preview.addComponent(lasers);
-    this.lasersAux = new UILasers(lx, virtualOverlays);
-    ui.previewAux.addComponent(lasersAux);
+    // As of 6-9-25 UILasers is broken due to UnitCube not having a public constructor.
+    // this.lasers = new UILasers(lx, virtualOverlays);
+    // ui.preview.addComponent(lasers);
+    // this.lasersAux = new UILasers(lx, virtualOverlays);
+    // ui.previewAux.addComponent(lasersAux);
   }
 }
