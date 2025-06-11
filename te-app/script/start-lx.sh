@@ -66,7 +66,7 @@ fi
 # Start Chromatik
 
 
-echo java \
+java \
   -XstartOnFirstThread \
   -Djava.awt.headless=true \
   -jar $JAR_FILE \
