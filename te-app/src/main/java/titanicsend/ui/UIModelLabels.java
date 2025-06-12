@@ -149,7 +149,6 @@ public class UIModelLabels extends UI3dComponent {
   @Override
   public void onDraw(UI ui, View view) {
     if (UI3DManager.needsLabelsRebuild()) {
-      System.out.println("UIModelLabels.onDraw() rebuilding labels");
       // rebuild the labels if needed
       this.rebuild();
       UI3DManager.clearLabelsRebuild();
@@ -170,7 +169,6 @@ public class UIModelLabels extends UI3dComponent {
 
   @Override
   public void dispose() {
-    System.out.println("UIModelLabels.dispose() called");
     super.dispose();
     clear();
   }
