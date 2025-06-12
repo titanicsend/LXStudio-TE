@@ -200,6 +200,7 @@ public class BassLightning extends TEAudioPattern {
     addParameter("trigger", trigger);
     addParameter("loops", allowLoopsParam);
 
+    // TODO(look): use modelListener?
     values = new float[model.size];
   }
 
@@ -270,6 +271,8 @@ public class BassLightning extends TEAudioPattern {
       bolts.addAll(newBolts);
       newBolts.clear();
     }
+
+    // TODO(look): exit if no bolts
 
     for (int i = 0; i < values.length; i++) {
       int v = (int) (values[i] * 255);
