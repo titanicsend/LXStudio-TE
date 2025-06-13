@@ -150,7 +150,9 @@ public class UIBackings extends UI3dComponent {
     this.panels.clear();
 
     // free borrowed BGFX resources if they exist
-    if (this.colorBuffer != null) this.colorBuffer.dispose();
+    if (this.colorBuffer != null) {
+      this.colorBuffer.dispose();
+    }
     MemoryUtil.memFree(this.modelMatrixBuf);
     super.dispose();
   }
