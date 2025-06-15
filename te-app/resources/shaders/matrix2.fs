@@ -12,10 +12,18 @@
 // #iUniform color3 iColor2RGB = vec3(0.226, 0.046, 0.636)
 #iUniform float iRotationAngle = 0.0 in {0.0, 6.28}
 #iUniform float iSpeed = 0.5 in {-4.0, 4.0}
-#iUniform float iScale = 25.0 in {20.0, 100.0}
+#iUniform float iScale = 45.0 in {20.0, 100.0}
 #iUniform float iQuantity = 3.0 in {1.0, 9.0}
 #iUniform float iWow2 = 0.0 in {0.0, 1.0}
 #iUniform float iWow1 = 0.0 in {0.0, 1.0}
+
+#pragma TEControl.YPOS.Value(-0.1)
+#pragma TEControl.WOW1.Disable
+#pragma TEControl.WOW2.Disable
+#pragma TEControl.QUANTITY.Disable
+#pragma TEControl.WOWTRIGGER.Disable
+#pragma TEControl.LEVELREACTIVITY.Disable
+#pragma TEControl.FREQREACTIVITY.Disable
 
 #ifdef GL_ES
 precision mediump float;
@@ -84,52 +92,6 @@ vec3 getPaletteColor(float t) {
 }
 
 /****************************************************
- * SDFs                                             *
- ****************************************************/
-
-float sdCircle(vec2 st) {
-    // NOTE: modified to reference zero
-    return length(st-.0)*2.;
-}
-
-float sdRect(vec2 st, vec2 s) {
-    // st = st*2.-1.;
-    //// NOTE: modified to reference zero (commented line above)
-    return max(abs(st.x/s.x), abs(st.y/s.y));
-}
-
-/****************************************************
- * Drawing                                          *
- ****************************************************/
-
-float stroke(float x, float s, float w) {
-    float d = step(s, x + w * .5) - step(s, x - w * .5);
-    return clamp(d, 0., 1.);
-}
-
-float fill(float x, float size) {
-    return 1. - step(size, x);
-}
-
-void debugGrid(in vec2 pt, out vec3 color) {
-    color.r += 0.2*(1.0 - smoothstep(0.0, 0.02, abs(fract(pt.x))));
-    color.g += 0.2*(1.0 - smoothstep(0.0, 0.02, abs(fract(pt.y))));
-    // color.r += 1.0 - smoothstep(0.0, 0.02, abs(pt.x));
-    // color.g += 1.0 - smoothstep(0.0, 0.02, abs(pt.y));
-}
-
-void debugRect(in float rect, out vec3 color) {
-    if (rect < 1.) {
-        color.b += .4*(rect);
-    }
-    if (rect < 2.) {
-        color.g += .4*(rect / 2.);
-    }
-    color.b += 0.3*stroke(rect, 1., 0.01);
-    color.g += 0.2*stroke(rect, 2., 0.01);
-}
-
-/****************************************************
  * Utils                                            *
  ****************************************************/
 
@@ -176,6 +138,8 @@ float noise (in vec2 st) {
             (d - b) * u.x * u.y;
 }
 
+#include <include/colorspace.fs>
+
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec3 color = vec3(0.);
     vec2 st = fragCoord.xy/iResolution.xy;
@@ -184,33 +148,41 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     st -= vec2(0.5);
 
     vec3 v = vec3(st, 1.0);
+
+    // Calculate the distance to each axis boundary. For each component of v,
+    // this computes how far you can travel in that direction before hitting
+    // the edge of the [-0.5, 0.5] cube.
     vec3 s = 0.3 / abs(v);
 
+    // Set s.z to the minimum of the x and y distances. This represents the
+    // closest boundary in the XY plane.
     s.z = min(s.y, s.x);
-    vec3 t = s.y < s.x ? v.xzz : v.zyz;
 
+    // axis swapping based on which boundary is closer. If the y-boundary is closer than x-boundary, it uses
+    // (v.x, v.z, v.z), otherwise (v.z, v.y, v.z). This effectively projects the 3D point onto the appropriate
+    // face of the cube.
+    vec3 t = s.y < s.x ? v.xzz : v.yzz;
+
+    // Scales the projected coordinates by the distance to boundary (s.z) times 800, then takes the ceiling.
+    // This creates a grid pattern that gets denser as you approach the boundaries, creating the tunnel effect.
     vec3 i = ceil(8e2 * s.z * t) / iScale;
 
+    // Takes the fractional part of each component, creating repeating patterns in the [0,1] range.
     vec3 j = fract(i);
     i -= j;
 
-    float b = (9. + 8. + sin(i).x);
-
+    float b = (9. + 8. * sin(i).x);
     int tb = int(iTime * b);
-
     vec3 p = vec3(9, tb, 0) + i;
 
-    float R = fract(1e2 * sin(p.x * 5. + p.y));
+    // pseudo-random value based on a 2D point p
+    float R = fract(1e2 * sin(p.x * 5. + p.y ));
 
     float k = R / s.z;
 
-    color += k * iColorRGB;
+    fragColor = vec4(vec3(k * iColorRGB), 1.);
+//     fragColor.rgb = k * oklab_mix(iColorRGB, iColor2RGB, .5*k + iWow1);
 
-    float mask = (R > 0.5 && j[0] < 0.6 && j[1] < 0.8) ? 1.25 : 0.0;
-    color *= mask;
-
-//     st *= iQuantity;
-
-    fragColor = vec4(0.);
-    fragColor += vec4(color,1.0);
+    float mask = (R > 0.5 && j.x < 0.6 && j.y < 0.8) ? 1.25 : 0.0;
+    fragColor *= vec4(vec3(mask), 1.0);
 }
