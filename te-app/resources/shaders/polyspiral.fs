@@ -2,20 +2,23 @@
 #iUniform color3 iColorRGB=vec3(.964,.144,.519)
 #iUniform color3 iColor2RGB=vec3(.226,.046,.636)
 #iUniform float iRotationAngle=0.in{0.,6.28}
-#iUniform float iQuantity=6.in{3.,12.}// iSides
-#iUniform float iScale=.8 in{.5,.99}
+#iUniform float iQuantity=7.in{3.,12.}// iSides
+#iUniform float iScale=.85 in{.5,.99}
+#iUniform float iSpeed=0.1 in{-1.,1.}
 #iUniform float iWow2=5.in{1.,10.}// num turns
-#iUniform float iWow1=.005 in{.001,.05}// line width
+#iUniform float iWow1=1.in{0.,3.}// zSpeed
 
 #pragma TEControl.YPOS.Value(-.07)
+#pragma TEControl.SPIN.Value(0.1)
 #pragma TEControl.WOWTRIGGER.Disable
 #pragma TEControl.LEVELREACTIVITY.Disable
 #pragma TEControl.FREQREACTIVITY.Disable
 
-// perspective: iWow1=1.5 in{.5,3.}
+//float iWow1=1.5 in{.5,3.} // perspective
+//float iWow1=.05 in{.001,.05}// line width
 
 float iHue=180.;//in{0.,360.}
-float iZSpeed=1.;//in{0.,3.}
+const float iLineWidth=0.04;
 
 // #iUniform float stemDrums=.9 in{0.,1.}
 // #iUniform float stemVocals=.9 in{0.,1.}
@@ -56,12 +59,13 @@ vec3 getPolygonVertex3D(float sides,float index,float radius,float z){
 void mainImage(out vec4 fragColor,in vec2 fragCoord){
     vec2 uv=(fragCoord.xy-.5*iResolution.xy)/min(iResolution.x,iResolution.y);
 
+    float iZSpeed=iWow1;
     float zTime=iTime*iZSpeed;
     float minDist=1000.;
 
     float iTurns=iWow2;
     float iPerspective=3.;
-    float iLineWidth=iWow1;
+
 
     float focalLength=iPerspective;
 
