@@ -1,15 +1,17 @@
 #pragma name "PolySpiral"
 #iUniform color3 iColorRGB=vec3(.964,.144,.519)
 #iUniform color3 iColor2RGB=vec3(.226,.046,.636)
-
 #iUniform float iRotationAngle=0.in{0.,6.28}
-// #iUniform float iSpeed=.5 in{0.,4.}
-// #iUniform float iScale=.05 in{.01,1.}
 #iUniform float iQuantity=6.in{3.,12.}// iSides
 #iUniform float iScale=.8 in{.5,.99}
-
 #iUniform float iWow2=5.in{1.,10.} // num turns
 #iUniform float iWow1=.005 in{.001,.02} // line width
+
+#pragma TEControl.YPOS.Value(-0.07)
+#pragma TEControl.WOWTRIGGER.Disable
+#pragma TEControl.LEVELREACTIVITY.Disable
+#pragma TEControl.FREQREACTIVITY.Disable
+
 // perspective: iWow1=1.5 in{.5,3.}
 
 float iHue=180.;//in{0.,360.}
