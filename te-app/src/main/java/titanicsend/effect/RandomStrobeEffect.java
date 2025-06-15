@@ -215,6 +215,7 @@ public class RandomStrobeEffect extends TEEffect {
           } else {
             int src = LXColor.gray(100 * strobe);
             for (LXPoint p : e.edge.points) {
+              // TODO(look): sanity-check length of `this.colors`? Or handle modelChanged below...
               this.colors[p.index] = LXColor.multiply(this.colors[p.index], src, 0xFF);
             }
           }
@@ -222,6 +223,27 @@ public class RandomStrobeEffect extends TEEffect {
       }
     }
   }
+
+  /*
+    Error message after unloading TE model, loading mothership, the re-loading TE:
+
+    java.lang.ArrayIndexOutOfBoundsException: Index 72649 out of bounds for length 72649
+  	at titanicsend.effect.RandomStrobeEffect.run(RandomStrobeEffect.java:218)
+  	at heronarts.lx.effect.LXEffect.onLoop(LXEffect.java:384)
+  	at heronarts.lx.LXLayeredComponent.loop(LXLayeredComponent.java:106)
+  	at heronarts.lx.LXDeviceComponent.loop(LXDeviceComponent.java:369)
+  	at heronarts.lx.mixer.LXMixerEngine.loop(LXMixerEngine.java:1158)
+  	at heronarts.lx.LXEngine._run(LXEngine.java:1210)
+  	at heronarts.lx.LXEngine.run(LXEngine.java:1060)
+  	at heronarts.lx.LXEngine$ExecutorService.runLoop(LXEngine.java:725)
+  	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+  	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:358)
+  	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+  	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+  	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+  	at java.base/java.lang.Thread.run(Thread.java:1583)
+
+  */
 
   /*
    * To be called when the model changes. Not working for now b/c
