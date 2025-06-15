@@ -189,8 +189,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     s.z = min(s.y, s.x);
     vec3 t = s.y < s.x ? v.xzz : v.zyz;
 
-    vec3 i = ceil(8e2 * s.z * t);
-    i *= 0.1; // ?
+    vec3 i = ceil(8e2 * s.z * t) * iScale;
+//     i *= 0.1; // ?
 
     vec3 j = fract(i);
     i -= j;
