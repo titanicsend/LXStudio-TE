@@ -1,13 +1,13 @@
-#pragma name "PolySpiral"
+#pragma name"PolySpiral"
 #iUniform color3 iColorRGB=vec3(.964,.144,.519)
 #iUniform color3 iColor2RGB=vec3(.226,.046,.636)
 #iUniform float iRotationAngle=0.in{0.,6.28}
 #iUniform float iQuantity=6.in{3.,12.}// iSides
 #iUniform float iScale=.8 in{.5,.99}
-#iUniform float iWow2=5.in{1.,10.} // num turns
-#iUniform float iWow1=.005 in{.001,.02} // line width
+#iUniform float iWow2=5.in{1.,10.}// num turns
+#iUniform float iWow1=.005 in{.001,.05}// line width
 
-#pragma TEControl.YPOS.Value(-0.07)
+#pragma TEControl.YPOS.Value(-.07)
 #pragma TEControl.WOWTRIGGER.Disable
 #pragma TEControl.LEVELREACTIVITY.Disable
 #pragma TEControl.FREQREACTIVITY.Disable
@@ -100,8 +100,9 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
         if(visibilityFactor<.01)continue;
 
         // Smooth rotation for spiral effect
-        float rotation=t*TWO_PI/iQuantity+iTime+sin(zTime*.3+t)*.1;
+        //float rotation=t*TWO_PI/iQuantity+iTime+sin(zTime*.3+t)*.1;
 
+        float rotation=iRotationAngle;
         // Create rotation matrix
         float cosR=cos(rotation);
         float sinR=sin(rotation);
@@ -185,7 +186,7 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
     }
 
     // Calculate intensity based on distance
-    float intensity=1.-smoothstep(0.,iLineWidth,minDist);
+    float intensity=1.-smoothstep(0.,iLineWidth*(.1+abs(distance(uv,vec2(0.)))),minDist);
 
     // Smoother color transitions
     float centerDist=length(uv);
@@ -194,9 +195,12 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
     vec3 color=hsv2rgb(vec3(iHue/360.+colorT*.25,.8,1.));
 
     // Smoother glow effect
-    float glowIntensity=.3*(1.+sin(zTime*.8)*.3);
+    float glowIntensity=.5*(1.+sin(zTime*.8)*.3);
     float glow=exp(-minDist*40.)*glowIntensity;
     color+=glow;
+
+    // float d=minDist;
+    // d=pow(.01/d,1.5);
 
     // Gentler pulsing
     float pulse=1.+sin(zTime*1.2)*.15;
