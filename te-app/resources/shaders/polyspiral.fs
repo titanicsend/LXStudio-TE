@@ -1,4 +1,4 @@
-#pragma name"PolySpiral"
+#pragma name "PolySpiral"
 #iUniform color3 iColorRGB=vec3(.964,.144,.519)
 #iUniform color3 iColor2RGB=vec3(.226,.046,.636)
 #iUniform float iRotationAngle=0.in{0.,6.28}
@@ -195,9 +195,10 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
     vec3 color=hsv2rgb(vec3(iHue/360.+colorT*.25,.8,1.));
 
     // Smoother glow effect
-    float glowIntensity=.5*(1.+sin(zTime*.8)*.3);
+    float glowIntensity=.4*(1.+sin(zTime*.8)*.3);
     float glow=exp(-minDist*40.)*glowIntensity;
-    color+=glow;
+    glow=pow(.02/minDist,glowIntensity);
+    color*=glow;
 
     // float d=minDist;
     // d=pow(.01/d,1.5);
