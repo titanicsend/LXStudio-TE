@@ -12,7 +12,7 @@
 // #iUniform color3 iColor2RGB = vec3(0.226, 0.046, 0.636)
 #iUniform float iRotationAngle = 0.0 in {0.0, 6.28}
 #iUniform float iSpeed = 0.5 in {-4.0, 4.0}
-#iUniform float iScale = 0.02 in {0.05, 0.01}
+#iUniform float iScale = 25.0 in {20.0, 100.0}
 #iUniform float iQuantity = 3.0 in {1.0, 9.0}
 #iUniform float iWow2 = 0.0 in {0.0, 1.0}
 #iUniform float iWow1 = 0.0 in {0.0, 1.0}
@@ -189,8 +189,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     s.z = min(s.y, s.x);
     vec3 t = s.y < s.x ? v.xzz : v.zyz;
 
-    vec3 i = ceil(8e2 * s.z * t) * iScale;
-//     i *= 0.1; // ?
+    vec3 i = ceil(8e2 * s.z * t) / iScale;
 
     vec3 j = fract(i);
     i -= j;
@@ -206,6 +205,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float k = R / s.z;
 
     color += k * iColorRGB;
+
+    float mask = (R > 0.5 && j[0] < 0.6 && j[1] < 0.8) ? 1.25 : 0.0;
+    color *= mask;
 
 //     st *= iQuantity;
 
