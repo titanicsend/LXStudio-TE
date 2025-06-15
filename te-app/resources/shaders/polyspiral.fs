@@ -6,11 +6,12 @@
 // #iUniform float iSpeed=.5 in{0.,4.}
 // #iUniform float iScale=.05 in{.01,1.}
 #iUniform float iQuantity=6.in{3.,12.}// iSides
-#iUniform float iWow2=5.in{1.,10.}
-#iUniform float iWow1=1.5 in{.5,3.}
 #iUniform float iScale=.8 in{.5,.99}
 
-float iLineWidth=.005;// in{.001,.02}
+#iUniform float iWow2=5.in{1.,10.} // num turns
+#iUniform float iWow1=.005 in{.001,.02} // line width
+// perspective: iWow1=1.5 in{.5,3.}
+
 float iHue=180.;//in{0.,360.}
 float iZSpeed=1.;//in{0.,3.}
 
@@ -57,7 +58,8 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
     float minDist=1000.;
 
     float iTurns=iWow2;
-    float iPerspective=iWow1;
+    float iPerspective=3.;
+    float iLineWidth=iWow1;
 
     float focalLength=iPerspective;
 
