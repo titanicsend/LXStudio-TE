@@ -1,10 +1,10 @@
-## Titanic's End LXStudio
+# Titanic's End LXStudio
 
 [Titanic's End](http://titanicsend.com) is a mutant vehicle that debuted at [Burning Man](https://burningman.org) 2022
 and has since participated in EDC and Framework events.
 
-We are the largest team developing on Chromatik in the open so other artists can benefit from our work (see
-the [license](LICENSE.md)). This repo contains the shader & pattern code for the 128,000 LEDS, sound reactivity, MIDI
+We are the largest team developing on Chromatik in the open, so other artists can benefit from our work (see
+the [license](LICENSE.md)). This repo contains the shader and pattern code for the 128,000 LEDS, sound reactivity, MIDI
 control, OSC middleware, and ArtNet bidirectional control.
 
 We use [Chromatik](https://chromatik.co/) (formerly known as [LX Studio](https://lx.studio/)) to control the show.
@@ -15,7 +15,7 @@ Our work is notable for:
 
 - GLSL shader support
 - Developed to team-friendly maintainability standards for long-term enjoyment of the codebase
-- AutoVJ - an autopilot that uses Pioneer Rekordbox's phrase and beat analysis to change patterns when a human VJ would
+- AutoVJ: an autopilot that uses Pioneer Rekordbox's phrase and beat analysis to change patterns when a human VJ would
 - GigglePixel, Pixelblaze, and ArtNet integration
 
 Want a personal intro to the project and codebase? Contact current team
@@ -28,31 +28,25 @@ thing.
     <p>Team members can reference several docs on our Notion for more background including <a href="https://www.notion.so/titanicsend/Networking-and-Front-of-House-Setup-fe5360a00b594955b735e02115548ff4">Networking and Front of House</a> and <a href="https://www.notion.so/titanicsend/2023-Lighting-Software-Integration-61c9cd5c6e884c6db66d4f843a1b8812">Software / Integration Hub</a>.</p>
 </details>
 
-## JDK Installation
+## Install Dependencies
 
 Visit https://adoptium.net/installation/ or if you are using macOS and [Homebrew](https://brew.sh) use these commands:
 
 ```sh
-brew uninstall --cask temurin # ensure you are running 21
-brew install --cask temurin@21
+brew uninstall temurin # ensure you are running 21
+brew install temurin@21
 ```
 
 Verify your installation:
 
-```
+```sh
 /Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java --version
 ```
 
-After installing the temurin JDK, we recommend installing and building maven, a package manager for our project:
+After installing the Temurin JDK, we recommend installing and building `maven`, a package manager for our project:
 
 ```sh
 brew install maven
-```
-
-Clean and install the maven dependencies:
-
-```sh
-mvn clean -U package && mvn install
 ```
 
 One more thing… we have a coding style setup, as described below, so you’ll also need to
@@ -62,50 +56,50 @@ install [google-java-format](https://github.com/google/google-java-format):
 brew install google-java-format
 ```
 
-## Quick Start
+## Setup
 
 > These are geared toward running Chromatik on macOS with `git` already installed. If you need help with anything, ask
-> in the Slack #lighting-software channel!
+> in the Slack [#te-lighting-software](https://titanicsend.slack.com/archives/C047AD94VCG) channel!
 
-First, you'll need an IDE (editor). IntelliJ's Community Edition is the best free one available. You can download it
-[here](https://www.jetbrains.com/idea/).
+First, you'll need an IDE (editor). IntelliJ Community Edition is the best free one available. You can 
+[download it here](https://www.jetbrains.com/idea/).
 
-Steps for setup:
-
-1. Clone the git repo you're looking at:
+1. Clone the git repo you're looking at (and `cd` into it):
 
    ```sh
-   git clone https://github.com/titanicsend/LXStudio-TE.git
+   git clone https://github.com/titanicsend/LXStudio-TE.git && cd LXStudio-TE
+   ```
+   
+2. Clean and Install the Maven dependencies (from inside `LXStudio-TE` directory):
+
+   ```sh
+   mvn clean -U package && mvn install
    ```
 
-2. Open the project directory you cloned to when you're presented with "New Project" and
-   "Open" options. That's the initial screen.
+3. Open the IntelliJ app. On the initial screen, click Open, and select the `LXStudio-TE` directory you cloned.
 
-3. File → Project Structure (or ⌘-;)
-   ![Project Structure](assets/IDE%20Setup/Project%20Structure.png)
+4. File → Project Structure (or ⌘-;)
+   ![Project Structure](assets/IDE-Setup/ProjectStructure.png)
 
    1. Platform Settings → SDKs
-
-      1. Either add the installed Temurin 21 JDK
-      2. Or, if that JDK is not installed, you can click the '+' and then select
-         "Add JDK..."
+      1. Select the installed Temurin 21 JDK (e.g. `/Library/Java/JavaVirtualMachines/temurin-21.jdk`)
+      2. Or, if that JDK is not listed, you can also click the '+' and then select "Add JDK..."
          1. Navigate to `/Library/Java/JavaVirtualMachines/temurin-21.jdk`
          2. Select `temurin-21.jdk`
-            ![Add JDK](assets/IDE%20Setup/AddJDK.png)
-            ![Select Temurin 21](assets/IDE%20Setup/SelectTemurin17.png)
+         
+         ![Add JDK from disk](assets/IDE-Setup/AddJDK.png)
 
    2. Project Settings → Project
       1. Select the Temurin 21 JDK
-         ![Project SDK](assets/IDE%20Setup/Select%20Project.png)
+         ![Project SDK](assets/IDE-Setup/SelectProject.png)
 
-4. Select "Titanic's End Dynamic" in the top bar (in the dropdown to the right of the hammer) if you want to use the
-   vehicle
-   model.
-   ![Play button](assets/IDE%20Setup/Play%20Button.png)
+5. Select "Titanic's End" in the top bar (in the dropdown) if you want to use the
+   vehicle model.
+   ![Play button](assets/IDE-Setup/PlayButton.png)
 
-5. Hit the green arrow "play" button. (If you just want to build, you can hit the hammer.)
+6. Hit the green arrow "play" button. (If you just want to build, you can hit the hammer.)
 
-6. Assuming things work okay, a UI for Chromatik will pop up: Great! Now, you can play with the buttons.
+7. Assuming things work okay, a UI for Chromatik will pop up: Great! Now, you can play with the buttons.
 
 ### Coding Style
 
@@ -114,15 +108,15 @@ and ensure that each commit gets formatted before being submitted.
 
 1. As mentioned earlier, run the following to ensure you have `google-java-format` installed:
 
-```sh
-brew install google-java-format
-```
+   ```sh
+   brew install google-java-format
+   ```
 
 2. Set up the git pre-commit hook to run the `google-java-format` CLI tool on changed files
 
-```sh
-cp pre-commit .git/hooks/pre-commit
-```
+   ```sh
+   cp pre-commit .git/hooks/pre-commit
+   ```
 
 Commits may now fail if there's a style violation on any files modified in that commit, since this runs
 `mvn spotless:check`. If you really need to commit something and are okay to fix the lint errors later, you can do a
@@ -167,7 +161,7 @@ So you've got the app up and running. You see some patterns in the code. How do 
 
 ### Coordinate System
 
-![JSON File Types](assets/vehicle-axes-orientation.png)
+![Vehicle Axis Orientation](assets/vehicle-axes-orientation.png)
 
 To understand the point, edge, and panel naming scheme, see
 the [Visual Map tab](https://docs.google.com/spreadsheets/d/1C7VPybckgH9bWGxwtgMN_Ij1T__c5qc-k7yIhG-592Y/edit#gid=877106241)
@@ -175,12 +169,12 @@ of the Modules, Edges and Panels sheet.
 
 ### Learning Chromatik and Developing Patterns
 
-TE is using the full IDE-ready distribution instead of the P4 Processing Applet version. Don't struggle - ask questions
+TE is using the full IDE-ready distribution instead of the P4 Processing Applet version. Don't struggle, ask questions
 in [#te-lighting-software on Slack](https://titanicsend.slack.com/archives/C047AD94VCG).
 
 The tutorials in the [LX Studio Wiki](https://github.com/heronarts/LXStudio/wiki) are an effective introduction.
 
-These have been compiled by our team:
+Our team has compiled these:
 
 - [Operation Modes and Art Direction Standards](https://docs.google.com/document/d/16FGnQ8jopCGwQ0qZizqILt3KYiLo0LPYkDYtnYzY7gI/edit)
 - [Using Tempo and Sound](https://docs.google.com/document/d/17iICAfbhCzPL77KbmFDL4-lN0zgBb1k6wdWnoBSPDjk/edit)
@@ -205,8 +199,8 @@ First, install BlackHole:
 brew install blackhole-2ch
 ```
 
-(For other installation options, see [the BlackHole
-README](https://github.com/ExistentialAudio/BlackHole?tab=readme-ov-file#installation-instructions).)
+For other installation options, see [the BlackHole
+README](https://github.com/ExistentialAudio/BlackHole?tab=readme-ov-file#installation-instructions)
 
 After installing, you should see a new BlackHole audio device in the Audio MIDI Setup utility.
 
@@ -306,7 +300,7 @@ JSON.
 1. Open IntelliJ preferences (`⌘-, on Mac`) and go to `Editor → File Types → JSON5`. _(Note: JSON5 handles comments, unquoted keys, etc.)_
 2. Next, add `*.lxp`, `*.lxf`, `*.lxm` to the list.
 
-![JSON File Types](assets/IDE%20Setup/JSON%20File%20Types.png)
+![JSON File Types](assets/IDE-Setup/JSONFileTypes.png)
 
 ### Optional Plugins
 
@@ -335,24 +329,24 @@ IntelliJ to behave more like VS Code, I'd recommend:
 
 If you just need to execute Chromatik to run a show without editing anything, you can do that:
 
-0. Install Temurin JDK (see JDK installation above).
+1. Install Temurin JDK (see JDK installation above).
 
-1. Build into a runnable JAR:
+2. Build into a runnable JAR:
    ```sh
    mvn clean package  # Packaging creates the JAR and cleaning is optional
    ```
-2. Execute the JAR (Note that the version number may be different — The version
+3. Execute the JAR (Note that the version number may be different — The version
    as of this document revision is 0.2.1-SNAPSHOT — substitute the correct
    version as necessary):
    ```sh
    java -XstartOnFirstThread -jar target/te-app-*-jar-with-dependencies.jar  Projects/BM2024_TE.lxp
    ```
-3. If the Temurin JDK isn't your default Java, then you can use the full path,
+4. If the Temurin JDK isn't your default Java, then you can use the full path,
    for example:
    ```sh
    /Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java -XstartOnFirstThread -jar target/te-app-*-jar-with-dependencies.jar  Projects/BM2024_TE.lxp
    ```
-4. Use Maven to execute the program instead of the `java` command:
+5. Use Maven to execute the program instead of the `java` command:
 
    ```shell
    mvn clean compile  # Cleaning and compiling is optional, depending on your needs
@@ -375,7 +369,7 @@ rm -r ~/.m2
 
 ## Running LXStudio on startup
 
-To run on machine startup (ie: press power button and Chromatik just starts up), you'll need to do three things:
+To run on machine startup (i.e.: press power button and Chromatik just starts up), you'll need to do three things:
 
 1. Add `TE.app` to your startup items
    1. System Preferences > Users & Groups
@@ -384,18 +378,18 @@ To run on machine startup (ie: press power button and Chromatik just starts up),
 2. Change to automatic login
    1. System Preferences > Users & Groups
    2. Click "Login Options" underneath list of accounts (may need to enter password)
-   3. Using the combo box, select desired user, ie "te" or whatever
+   3. Using the combo box, select desired user, e.g. "te" or whatever
    4. Uncheck all the boxes underneath
 3. Remove the password from your user account
    1. System Preferences > Users & Groups
    2. Click the user > "Change Password"
    3. Leave new password blank
 4. Keep in Dock
-   1. When TE.app is running, right click on it, and say "Keep in Dock"
+   1. When TE.app is running, right-click on it, and click "Keep in Dock"
    2. This way, during a show, it's very easy for anyone non-technical to simply quit the program and re-run it if
       there is an issue
 
-Restart your machine and you should see Chromatik open automatically on startup.
+Restart your machine, and you should see Chromatik open automatically on startup.
 
 ## Eclipse
 
@@ -410,10 +404,10 @@ will want to use MIDI surfaces and controllers to perform, we needed to come up
 with a MIDI-over-WiFi solution to connect the USB MIDI devices to the box running
 Chromatik on the car.
 
-In 2022, we utilized OSX's arcane built-in support for RTP-MIDI. This was brittle
+In 2022, we used OSX's arcane built-in support for RTP-MIDI. This was brittle
 and fickle to maintain.
 
-In 2023 we've changed to using a device called a BomeBox that uses a proprietary
+In 2023, we changed to using a device called a [BomeBox](https://www.bome.com/products/bomebox) that uses a proprietary
 encapsulation protocol. To make this work:
 
 1. The Bome Network tool should be installed on the computer that runs Chromatik. The
@@ -424,7 +418,7 @@ encapsulation protocol. To make this work:
    Bome Network tool, enable Remote Direct Midi for those devices.
 5. You can disable MIDI routes that aren't used, such as the DIN ports or
    MIDI messaging between the USB devices. This likely helps performance.
-   Leave 2 routes per device: The bidirection pair Chromatik->Device, and Device->Chromatik.
+   Leave 2 routes per device: The bidirectional pair Chromatik → Device, and Device → Chromatik.
 6. Register the correct new names in Chromatik. The Bome Remote Direct Midi device
    names follow a pattern of "{BomeBoxName}: {DeviceName}", like
    "FoH: APC40 mkII". For example, in your main app you may need to
@@ -450,4 +444,4 @@ encapsulation protocol. To make this work:
 
 ## License Note
 
-Please see LICENSE.md - significant parts of this repository are not open source and we support those authors' wishes.
+Please see [`LICENSE.md`](LICENSE.md) — significant parts of this repository are not open source, and we support those authors' wishes.
