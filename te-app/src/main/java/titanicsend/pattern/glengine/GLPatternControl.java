@@ -1,6 +1,8 @@
 package titanicsend.pattern.glengine;
 
 import heronarts.lx.color.LXColor;
+import heronarts.lx.parameter.LXListenableNormalizedParameter;
+import java.util.Map;
 import titanicsend.color.TEColorParameter;
 import titanicsend.pattern.TEPerformancePattern;
 
@@ -50,5 +52,15 @@ public class GLPatternControl implements GLControlData {
     s.setUniform("iWowTrigger", pattern.getWowTrigger());
     s.setUniform("levelReact", (float) pattern.getLevelReactivity());
     s.setUniform("frequencyReact", (float) pattern.getFrequencyReactivity());
+
+    if (pattern.getExtraParams() != null) {
+      for (Map.Entry<String, LXListenableNormalizedParameter> entry :
+          pattern.getExtraParams().entrySet()) {
+        String paramName = entry.getKey();
+        LXListenableNormalizedParameter param = entry.getValue();
+        // TODO(look): smarter typing based on parameter class?
+        s.setUniform(paramName, param.getValuef());
+      }
+    }
   }
 }

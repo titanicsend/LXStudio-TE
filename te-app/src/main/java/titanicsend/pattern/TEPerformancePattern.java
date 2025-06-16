@@ -5,10 +5,12 @@ import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.BoundedParameter;
+import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import java.nio.FloatBuffer;
 import java.util.List;
+import java.util.Map;
 import titanicsend.app.TEGlobalPatternControls;
 import titanicsend.pattern.glengine.ShaderConfiguration;
 import titanicsend.pattern.jon.TEControlTag;
@@ -48,8 +50,13 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
   }
 
   protected TEPerformancePattern(LX lx, TEShaderView defaultView) {
+    this(lx, defaultView, null);
+  }
+
+  protected TEPerformancePattern(
+      LX lx, TEShaderView defaultView, Map<String, LXListenableNormalizedParameter> extraParams) {
     super(lx);
-    controls = new TECommonControls(this);
+    controls = new TECommonControls(this, extraParams);
 
     this.defaultView = defaultView;
 
@@ -325,6 +332,10 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
   public double getFrequencyReactivity() {
     return controls.getValue(TEControlTag.FREQREACTIVITY);
+  }
+
+  public Map<String, LXListenableNormalizedParameter> getExtraParams() {
+    return this.controls.extraParams;
   }
 
   /**

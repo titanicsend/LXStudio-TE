@@ -2,6 +2,8 @@ package titanicsend.pattern.look;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import heronarts.lx.parameter.CompoundParameter;
+import java.util.Map;
 import titanicsend.pattern.glengine.ConstructedShaderPattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
@@ -9,8 +11,16 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
 @LXCategory("Look Shader Patterns")
 public class TriangleCrossAudioLevels extends ConstructedShaderPattern {
 
+  //  public final CompoundParameter energy;
+
   public TriangleCrossAudioLevels(LX lx) {
-    super(lx, TEShaderView.ALL_POINTS);
+    super(
+        lx,
+        TEShaderView.ALL_POINTS,
+        Map.of(
+            "energy",
+            new CompoundParameter("Energy", .1, 0, 1)
+                .setDescription("Amount of motion for various modes")));
   }
 
   @Override

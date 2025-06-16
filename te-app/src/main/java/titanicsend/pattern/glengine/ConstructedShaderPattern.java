@@ -1,13 +1,20 @@
 package titanicsend.pattern.glengine;
 
 import heronarts.lx.LX;
+import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.LXParameter;
+import java.util.Map;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 public abstract class ConstructedShaderPattern extends GLShaderPattern {
 
   protected ConstructedShaderPattern(LX lx, TEShaderView defaultView) {
-    super(lx, defaultView);
+    this(lx, defaultView, null);
+  }
+
+  protected ConstructedShaderPattern(
+      LX lx, TEShaderView defaultView, Map<String, LXListenableNormalizedParameter> extraParams) {
+    super(lx, defaultView, extraParams);
 
     // create the OpenGL shaders and add them to the pattern
     createShader();
