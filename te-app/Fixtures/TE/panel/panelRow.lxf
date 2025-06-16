@@ -24,8 +24,9 @@
       x: "($offset+(($row-1)/2))*$pointSpacing",
       y: "($row-1)*$rowSpacing"
     }
-  ],
+  ]
 
+  /*
   "ui": {
     "meshes": [
       {
@@ -46,4 +47,5 @@
       }
     ]
   }
+  */
 }
