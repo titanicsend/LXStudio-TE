@@ -20,8 +20,8 @@ public class UI3DManager {
   // TODO: The "old" backing panel system is disabled and can be removed
   // at some point in the future. Chromatik now supports opaque polygons
   // in fixtures.
-  //public final UIBackings backings;
-  //public final UIBackings backingsAux;
+  // public final UIBackings backings;
+  // public final UIBackings backingsAux;
 
   // UILasers is currently broken due to UnitCube not having a public constructor.
   // public final UILasers lasers;
@@ -57,10 +57,10 @@ public class UI3DManager {
     this.modelLabels = new UIModelLabels(lx, virtualOverlays);
     ui.preview.addComponent(modelLabels);
 
-    //this.backings = new UIBackings(lx, virtualOverlays);
-    //ui.preview.addComponent(backings);
-    //this.backingsAux = new UIBackings(lx, virtualOverlays);
-    //ui.previewAux.addComponent(backingsAux);
+    // this.backings = new UIBackings(lx, virtualOverlays);
+    // ui.preview.addComponent(backings);
+    // this.backingsAux = new UIBackings(lx, virtualOverlays);
+    // ui.previewAux.addComponent(backingsAux);
 
     // As of 6-9-25 UILasers is broken due to UnitCube not having a public constructor.
     // this.lasers = new UILasers(lx, virtualOverlays);

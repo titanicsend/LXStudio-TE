@@ -121,7 +121,6 @@ public class TextRenderer3d {
     // get the shader path for the current renderer
     // we support dx11, opengl, and metal
 
-
     String path = "resources/shaders/bgfx/";
     final int rendererIdx = glx.bgfx.getRenderer();
 
@@ -144,7 +143,8 @@ public class TextRenderer3d {
           break;
         default:
           throw new IOException(
-            "Custom shaders are not currently supported on " + bgfx_get_renderer_name(rendererIdx));
+              "Custom shaders are not currently supported on "
+                  + bgfx_get_renderer_name(rendererIdx));
       }
     } else {
       throw new IOException("Unknown renderer index: " + rendererIdx);
