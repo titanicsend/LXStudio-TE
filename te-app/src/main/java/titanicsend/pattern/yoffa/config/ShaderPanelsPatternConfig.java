@@ -3,9 +3,11 @@ package titanicsend.pattern.yoffa.config;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.LXParameter;
+import titanicsend.pattern.TECommonControls;
 import titanicsend.pattern.glengine.ConstructedShaderPattern;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.jon.TEControlTag;
+import titanicsend.pattern.yoffa.framework.ConstructedPattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.util.GaussianFilter;
 
@@ -423,6 +425,28 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.WOW1, 0, 0, 0.25); // pixelated decomposition
 
       addShader("metallic_bit_wave.fs");
+    }
+  }
+
+  @LXCategory("DREVO Shaders")
+  public static class MatrixScroller extends ConstructedShaderPattern {
+    public MatrixScroller(LX lx) {
+      super(lx, TEShaderView.ALL_POINTS);
+    }
+
+    @Override
+    protected void createShader() {
+
+      controls
+        .setRange(TEControlTag.SPEED, 0, -2, 2)
+        .setValue(TEControlTag.SPEED, 0.3);
+
+      controls.setRange(TEControlTag.SIZE, 0.01, 0.02, 0.005); // grid size
+      controls.setRange(TEControlTag.QUANTITY, 0.7, .1, 0.95); // grid density
+      controls.setRange(TEControlTag.WOW1, 0.0, 0, 1);
+      controls.setRange(TEControlTag.WOW2, 0.0, 0, 1); // beat reactivity
+
+      addShader("matrixscroll.fs");
     }
   }
 
