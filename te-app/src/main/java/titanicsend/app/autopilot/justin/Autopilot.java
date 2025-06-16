@@ -23,7 +23,7 @@ import heronarts.lx.blend.LXBlend;
 import heronarts.lx.effect.LXEffect;
 import heronarts.lx.mixer.LXAbstractChannel;
 import heronarts.lx.mixer.LXChannel;
-import heronarts.lx.mixer.LXChannel.AutoCycleMode;
+import heronarts.lx.mixer.LXPatternEngine.AutoCycleMode;
 import heronarts.lx.modulation.LXCompoundModulation;
 import heronarts.lx.modulation.LXModulationEngine;
 import heronarts.lx.modulation.LXParameterModulation.ModulationException;
@@ -380,28 +380,28 @@ public abstract class Autopilot extends LXComponent implements LX.ProjectListene
   }
 
   protected void enableTransitions(LXChannel channel) {
-    for (LXBlend blend : channel.transitionBlendMode.getObjects()) {
+    for (LXBlend blend : channel.patternEngine.transitionBlendMode.getObjects()) {
       if (blend instanceof DissolveBlend) {
         // Set to dissolve blend
-        channel.transitionBlendMode.setValue(blend);
+        channel.patternEngine.transitionBlendMode.setValue(blend);
         break;
       }
     }
 
-    channel.transitionTimeSecs.setValue(LXUtils.random(2, 15));
-    channel.transitionEnabled.setValue(true);
+    channel.patternEngine.transitionTimeSecs.setValue(LXUtils.random(2, 15));
+    channel.patternEngine.transitionEnabled.setValue(true);
 
-    channel.autoCycleTimeSecs.setValue(LXUtils.random(30, 75));
-    channel.autoCycleMode.setValue(AutoCycleMode.RANDOM);
-    channel.autoCycleEnabled.setValue(true);
+    channel.patternEngine.autoCycleTimeSecs.setValue(LXUtils.random(30, 75));
+    channel.patternEngine.autoCycleMode.setValue(AutoCycleMode.RANDOM);
+    channel.patternEngine.autoCycleEnabled.setValue(true);
   }
 
   protected void disableChannelTransitions() {
     for (LXAbstractChannel aChannel : lx.engine.mixer.channels) {
       if (aChannel instanceof LXChannel) {
         LXChannel channel = (LXChannel) aChannel;
-        channel.transitionEnabled.setValue(false);
-        channel.autoCycleEnabled.setValue(false);
+        channel.patternEngine.transitionEnabled.setValue(false);
+        channel.patternEngine.autoCycleEnabled.setValue(false);
       }
     }
   }

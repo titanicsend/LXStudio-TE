@@ -508,7 +508,7 @@ public class DmxEngine implements LXLoopTask, TEWholeModel.TEModelListener {
   private void sendDmx() {
     // Step 5: our cue and render frames are ready! Let's get them output
     boolean isNetworkMultithreaded = this.lx.engine.isNetworkMultithreaded.isOn();
-    boolean isDoubleBuffering = this.lx.engine.isThreaded() || isNetworkMultithreaded;
+    boolean isDoubleBuffering = isNetworkMultithreaded;
     if (isDoubleBuffering) {
       // We are multi-threading, lock the double buffer and flip it
       this.buffer.flip();

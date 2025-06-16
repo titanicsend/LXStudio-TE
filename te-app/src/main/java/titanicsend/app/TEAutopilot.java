@@ -601,7 +601,7 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
    */
   private void startPattern(LXChannel channel, LXPattern pattern) {
     // disable the 100ms latency restriction LX has
-    channel.transitionEnabled.setValue(false);
+    channel.patternEngine.transitionEnabled.setValue(false);
 
     // trigger the pattern
     channel.goPattern(pattern);
@@ -609,14 +609,14 @@ public class TEAutopilot extends LXComponent implements LXLoopTask, LX.ProjectLi
     // if we're in a mode where we don't know the exact phrase bounaries
     // then let's make the transition happen more slowly
     if (noOscModeOn || oscBeatModeOnlyOn) {
-      channel.transitionEnabled.setValue(true);
+      channel.patternEngine.transitionEnabled.setValue(true);
       double secInTransition = TETimeUtils.calcPhraseLengthMs(lx.engine.tempo.bpm(), 8) / 1000.0;
-      channel.transitionTimeSecs.setValue(secInTransition);
+      channel.patternEngine.transitionTimeSecs.setValue(secInTransition);
       return;
     } else {
       // turn transitions back off if we're in normal phrase OSC mode!
-      channel.transitionEnabled.setValue(false);
-      channel.transitionTimeSecs.setValue(0);
+      channel.patternEngine.transitionEnabled.setValue(false);
+      channel.patternEngine.transitionTimeSecs.setValue(0);
     }
 
     // if not, we want this to happen immediately

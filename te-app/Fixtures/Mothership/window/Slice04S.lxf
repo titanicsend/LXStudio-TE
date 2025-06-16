@@ -55,8 +55,7 @@
     { type: "Window6", id: "w6", extraLEDs: "$w6extraLEDs", ledOffset: "$w6ledOffset" },
     { type: "Window7", id: "w7", extraLEDs: "$w7extraLEDs", ledOffset: "$w7ledOffset" },
     { type: "Window8A", id: "w8a", extraLEDs: "$w8AextraLEDs", ledOffset: "$w8AledOffset" },
-    { type: "Window8B", id: "w8b", extraLEDs: "$w8BextraLEDs", ledOffset: "$w8BledOffset" },
-    { type: "Window9", id: "w9", extraLEDs: "$w9extraLEDs", ledOffset: "$w9ledOffset" }
+    { type: "Window8B", id: "w8b", extraLEDs: "$w8BextraLEDs", ledOffset: "$w8BledOffset" }
   ],
 
   outputs: [
@@ -78,9 +77,6 @@
     { host: "$host", universe: "$outputW8b*10", protocol: "artnet", sequenceEnabled: "$artnetSequence", segments: [
         { componentId: "w8b" },
         { componentId: "w6" }
-    ] },
-    { host: "$host", universe: "$outputW9*10", protocol: "artnet", sequenceEnabled: "$artnetSequence", segments: [
-        { componentId: "w9" }
     ] }
   ]
 }

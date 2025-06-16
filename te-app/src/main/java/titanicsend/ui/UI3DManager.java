@@ -1,7 +1,7 @@
 package titanicsend.ui;
 
 import heronarts.lx.studio.LXStudio;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.atomic.AtomicBoolean;
 import titanicsend.app.TEVirtualOverlays;
 
 // Thin wrapper that allows global access to 3D UI components, so we can
@@ -9,62 +9,46 @@ import titanicsend.app.TEVirtualOverlays;
 public class UI3DManager {
   public static UI3DManager current;
 
-  public static final ReentrantLock labelsLock = new ReentrantLock();
-  public static final ReentrantLock backingsLock = new ReentrantLock();
+  public static final AtomicBoolean labelsRebuild = new AtomicBoolean(false);
+  public static final AtomicBoolean backingsRebuild = new AtomicBoolean(false);
 
   public final UIModelLabels modelLabels;
 
-  // Chromatik requires a separate UI object per context (main and aux) if
+  // NOTE: Chromatik requires a separate UI object per context (main and aux) if
   // we want the element to show up in performance mode.
-  public final UIBackings backings;
-  public final UIBackings backingsAux;
 
-  public final UILasers lasers;
-  public final UILasers lasersAux;
+  // TODO: The "old" backing panel system is disabled and can be removed
+  // at some point in the future. Chromatik now supports opaque polygons
+  // in fixtures.
+  // public final UIBackings backings;
+  // public final UIBackings backingsAux;
 
-  public static boolean labelsLocked() {
-    return UI3DManager.labelsLock.isLocked();
+  // UILasers is currently broken due to UnitCube not having a public constructor.
+  // public final UILasers lasers;
+  // public final UILasers lasersAux;
+
+  public static boolean needsLabelsRebuild() {
+    return labelsRebuild.get();
   }
 
-  public static boolean backingsLocked() {
-    return UI3DManager.backingsLock.isLocked();
+  public static boolean needsBackingsRebuild() {
+    return backingsRebuild.get();
+  }
+
+  // Call this from the graphics thread after processing the rebuild
+  public static void clearLabelsRebuild() {
+    labelsRebuild.set(false);
+  }
+
+  // Call this from the graphics thread after processing the rebuild
+  public static void clearBackingsRebuild() {
+    backingsRebuild.set(false);
   }
 
   public void rebuild() {
-    boolean inRebuild = false;
-    // lock everyone out of draw while rebuilding UI elements.
-    // We'll wait for up to roughly one frame's worth of time to acquire
-    // the lock for each object, and if we don't get it, we skip that
-    // portion of the rebuild.
-
-    // Rebuild panel backings
-    try {
-      inRebuild = UI3DManager.backingsLock.tryLock(17, java.util.concurrent.TimeUnit.MILLISECONDS);
-      if (inRebuild) {
-        backings.rebuild();
-        backingsAux.rebuild();
-      }
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-    } finally {
-      if (inRebuild) {
-        UI3DManager.backingsLock.unlock();
-      }
-    }
-
-    // Rebuild model labels
-    try {
-      inRebuild = UI3DManager.labelsLock.tryLock(17, java.util.concurrent.TimeUnit.MILLISECONDS);
-      if (inRebuild) {
-        modelLabels.rebuild();
-      }
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-    } finally {
-      if (inRebuild) {
-        UI3DManager.labelsLock.unlock();
-      }
-    }
+    // Simply set flags to indicate rebuild needed
+    backingsRebuild.set(true);
+    labelsRebuild.set(true);
   }
 
   public UI3DManager(LXStudio lx, LXStudio.UI ui, TEVirtualOverlays virtualOverlays) {
@@ -73,14 +57,15 @@ public class UI3DManager {
     this.modelLabels = new UIModelLabels(lx, virtualOverlays);
     ui.preview.addComponent(modelLabels);
 
-    this.backings = new UIBackings(lx, virtualOverlays);
-    ui.preview.addComponent(backings);
-    this.backingsAux = new UIBackings(lx, virtualOverlays);
-    ui.previewAux.addComponent(backingsAux);
+    // this.backings = new UIBackings(lx, virtualOverlays);
+    // ui.preview.addComponent(backings);
+    // this.backingsAux = new UIBackings(lx, virtualOverlays);
+    // ui.previewAux.addComponent(backingsAux);
 
-    this.lasers = new UILasers(lx, virtualOverlays);
-    ui.preview.addComponent(lasers);
-    this.lasersAux = new UILasers(lx, virtualOverlays);
-    ui.previewAux.addComponent(lasersAux);
+    // As of 6-9-25 UILasers is broken due to UnitCube not having a public constructor.
+    // this.lasers = new UILasers(lx, virtualOverlays);
+    // ui.preview.addComponent(lasers);
+    // this.lasersAux = new UILasers(lx, virtualOverlays);
+    // ui.previewAux.addComponent(lasersAux);
   }
 }

@@ -4,6 +4,7 @@ import static com.jogamp.opengl.GL.*;
 
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLContext;
 import com.jogamp.opengl.util.GLBuffers;
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
@@ -478,8 +479,10 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
   public void dispose() {
     // free GPU resources that we directly allocated
-    gl4.glDeleteTextures(audioTextureHandle.length, audioTextureHandle, 0);
-    gl4.glDeleteBuffers(uniformBlockHandles.length, uniformBlockHandles, 0);
+    if (GLContext.getCurrent() != null) {
+      gl4.glDeleteTextures(audioTextureHandle.length, audioTextureHandle, 0);
+      gl4.glDeleteBuffers(uniformBlockHandles.length, uniformBlockHandles, 0);
+    }
   }
 
   // Static getters for per-frame audio parameters
