@@ -255,6 +255,21 @@ public class ShaderPanelsPatternConfig {
   }
 
   @LXCategory("Native Shaders Panels")
+  public static class Bubbles extends ConstructedShaderPattern {
+    public Bubbles(LX lx) {
+      super(lx, TEShaderView.ALL_POINTS);
+    }
+
+    @Override
+    protected void createShader() {
+      controls.setRange(TEControlTag.WOW1, 0.25, 0, 1);
+
+      addShader("bubbles.fs");
+    }
+  }
+
+
+  @LXCategory("Native Shaders Panels")
   public static class Galaxy extends ConstructedShaderPattern {
     public Galaxy(LX lx) {
       super(lx, TEShaderView.ALL_PANELS);
