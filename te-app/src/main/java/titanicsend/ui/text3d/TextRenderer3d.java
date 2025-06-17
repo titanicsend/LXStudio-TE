@@ -57,7 +57,7 @@ public class TextRenderer3d {
     // Vertex buffer layout: 3 position + 2 texture coordinates per character,
     // plus 4 byte vertex color information in ARGB format.
     this.vertexLayout = BGFXVertexLayout.calloc();
-    bgfx_vertex_layout_begin(this.vertexLayout, glx.getRenderer());
+    bgfx_vertex_layout_begin(this.vertexLayout, glx.bgfx.getRenderer());
     bgfx_vertex_layout_add(
         this.vertexLayout, BGFX_ATTRIB_POSITION, 3, BGFX_ATTRIB_TYPE_FLOAT, false, false);
     bgfx_vertex_layout_add(
@@ -120,22 +120,34 @@ public class TextRenderer3d {
 
     // get the shader path for the current renderer
     // we support dx11, opengl, and metal
-    // TODO - add Vulkan if/when Chromatik adds support
+
     String path = "resources/shaders/bgfx/";
-    switch (glx.getRenderer()) {
-      case 3:
-      case 4:
-        path = path + "dx11/";
-        break;
-      case 6:
-        path = path + "metal/";
-        break;
-      case 9:
-        path = path + "glsl/";
-        break;
-      default:
-        throw new IOException(
-            "Custom shaders are not supported on " + bgfx_get_renderer_name(glx.getRenderer()));
+    final int rendererIdx = glx.bgfx.getRenderer();
+
+    // TODO - be sure this stays correct if Chromatik updates bgfx
+    // I'm paranoid now -- make sure the index is valid in case something
+    // gets changed in BGFX again, and convert to enum value.
+    if (rendererIdx >= 0 && rendererIdx < BGFXRendererType.values().length) {
+      BGFXRendererType renderer = BGFXRendererType.values()[rendererIdx];
+
+      switch (renderer) {
+        case Direct3D11:
+        case Direct3D12:
+          path = path + "dx11/";
+          break;
+        case Metal:
+          path = path + "metal/";
+          break;
+        case OpenGL:
+          path = path + "glsl/";
+          break;
+        default:
+          throw new IOException(
+              "Custom shaders are not currently supported on "
+                  + bgfx_get_renderer_name(rendererIdx));
+      }
+    } else {
+      throw new IOException("Unknown renderer index: " + rendererIdx);
     }
 
     try {

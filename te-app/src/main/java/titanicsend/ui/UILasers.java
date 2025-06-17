@@ -38,12 +38,13 @@ import titanicsend.app.TEVirtualOverlays;
 import titanicsend.model.TELaserModel;
 import titanicsend.model.TEWholeModel;
 
+@Deprecated
 public class UILasers extends UI3dComponent {
 
   private final TEWholeModel wholeModel;
 
   private final TEVirtualOverlays virtualOverlays;
-  private final VertexBuffer vertexBuffer;
+  private VertexBuffer vertexBuffer;
 
   private final Matrix4f modelMatrix = new Matrix4f();
   private final FloatBuffer modelMatrixBuf;
@@ -55,7 +56,7 @@ public class UILasers extends UI3dComponent {
   public UILasers(GLX glx, final TEVirtualOverlays virtualOverlays) {
     this.wholeModel = TEApp.wholeModel;
     this.virtualOverlays = virtualOverlays;
-    this.vertexBuffer = new VertexBuffer.UnitCube(glx);
+    // this.vertexBuffer = new VertexBuffer.UnitCube(glx);  // Not public as of 6-9-25
     this.modelMatrixBuf = MemoryUtil.memAllocFloat(16);
     this.modelMatrix.get(this.modelMatrixBuf);
 
