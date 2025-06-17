@@ -2,25 +2,12 @@
 uniform int lineCount;
 uniform vec4[MAX_LINE_COUNT] lines;
 
-const float MarchDumping = 1.0;
-const float Far = 62.82;
-const int MaxSteps = 32;
-const float FOV = 0.4;
-const vec3 Eye = vec3(0.14, 0.0, 3.4999998);
-const vec3 Direction = vec3(0.0, 0.0, -1.0);
-const vec3 Up = vec3(0.0, 1.0, 0.0);
-
 // Noise settings:
-const float Power = 5.059;
-const float MaxLength = 0.9904;
+const float MaxLength = .1;
 const float Dumping = 10.0;
 
 #define PI 3.141592
 #define HALF_PI 1.57079632679
-
-const float DEG_TO_RAD = PI / 180.0;
-const float TIME_FACTOR = 0.3;
-const float ROTATION_DIST = 16.0;
 
 vec3 hash3(vec3 p) {
     p = vec3(dot(p, vec3(127.1, 311.7, 74.7)),
@@ -54,50 +41,6 @@ float noise(vec3 p) {
     return ret * 2.0 - 1.0;
 }
 
-float sdBox(vec3 p, vec3 b) {
-    vec3 d = abs(p) - b;
-    return min(max(d.x, max(d.y, d.z)), 0.0) + length(max(d, 0.0));
-}
-
-vec3 rotateY(vec3 p, float a) {
-    float sa = sin(a);
-    float ca = cos(a);
-    return vec3(ca * p.x + sa * p.z, p.y, ca * p.z - sa * p.x);
-}
-
-float getAngle(float x) {
-    return ((1.0 - x) * 100.0 - 15.0) * DEG_TO_RAD;
-}
-
-
-float map(vec3 p) {
-    vec3 q = p;;
-    return sdBox(q, vec3(1.0, 1.0, 0.0001));
-}
-
-vec2 castRay(vec3 ro, vec3 rd) {
-    float tmin = 0.0;
-    float tmax = Far;
-
-    float precis = 0.002;
-    float t = tmin;
-    float m = -1.0;
-
-    for (int i = 0; i < MaxSteps; i++) {
-        float res = map(ro + rd * t);
-        if (res < precis || t > tmax) {
-            break;
-        }
-        t += res * MarchDumping;
-        m = 1.0;
-    }
-
-    if (t > tmax) {
-        m = -1.0;
-    }
-    return vec2(t, m);
-}
-
 float udSegment(vec2 p, vec2 a, vec2 b) {
     vec2 pa = p - a, ba = b - a;
     float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
@@ -120,30 +63,31 @@ float normalizeScalar(float value, float max) {
 }
 
 vec3 color(vec2 p) {
-    vec3 coord = vec3(p, iTime * 0.25);
+    vec3 coord =   vec3(10.0 * p, iTime * 0.25);
     float n = abs(noise(coord));
     n += 0.5 * abs(noise(coord * 2.0));
     n += 0.25 * abs(noise(coord * 4.0));
-    n += 0.125 * abs(noise(coord * 8.0));
+    //n += 0.125 * abs(noise(coord * 8.0));
 
-    n *= (100.001 - Power);
+    n *= 1000. * iWow1;
     float dist = distToFireLines(p);
-    float k = normalizeScalar(dist, MaxLength);
-    n *= dist / pow(1.001 - k, Dumping);
+    float maxDist = 0.5;
+    if (dist <= 0.001) dist = abs(noise(coord)) / 20.0;
+
+    float k = normalizeScalar(dist, maxDist);
+    n *= dist / pow(1.001 - k, 15.0);
 
     vec3 col = vec3(1.0, 0.25, 0.08) / n;
-    return pow(col, vec3(2.0));
+    return pow(col, vec3(1.5));
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-    // Normalized coordinates: -1 to 1, aspect-corrected
+    //vec2 coord  = _getModelCoordinates().xy;
     vec2 q = fragCoord.xy / iResolution.xy;
     vec2 coord = 2.0 * q - 1.0;
-    coord.x *= iResolution.x / iResolution.y;
-    // Optionally scale/shift as desired for your effect
 
     vec3 col = color(coord);
-    col = pow(col, vec3(0.4545)); // gamma correction
+    col = pow(col, vec3(0.5)); // gamma correction
 
     fragColor = vec4(col, 1.0);
 }

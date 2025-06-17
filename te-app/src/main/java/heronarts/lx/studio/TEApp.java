@@ -245,6 +245,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(EdgeRunner.class);
       lx.registry.addPattern(Electric.class);
       lx.registry.addPattern(ElectricEdges.class);
+      lx.registry.addPattern(FireEdges.class);
       lx.registry.addPattern(Fireflies.class);
       lx.registry.addPattern(FollowThatStar.class);
       lx.registry.addPattern(FrameBrights.class);

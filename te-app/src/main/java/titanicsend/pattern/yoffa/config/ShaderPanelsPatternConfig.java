@@ -262,9 +262,41 @@ public class ShaderPanelsPatternConfig {
 
     @Override
     protected void createShader() {
-      controls.setRange(TEControlTag.WOW1, 0.25, 0, 1);
+      controls
+        .setRange(TEControlTag.SPEED, 0, -4, 4)
+        .setValue(TEControlTag.SPEED, 0.5);
+
+      controls.setRange(TEControlTag.SIZE, 1, 1.25, 0.25); // bubble size
+      controls.setRange(TEControlTag.QUANTITY, 1.0, 1.95, 0.0); // bubble density
+      controls.setRange(TEControlTag.WOW1, 0, 0, .09);  // beat reactivity
+      controls.setRange(TEControlTag.WOW2, 0.15, 0, 1);  // background level
+
+      controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
 
       addShader("bubbles.fs");
+    }
+  }
+
+  @LXCategory("Native Shaders Panels")
+  public static class DotVortex extends ConstructedShaderPattern {
+    public DotVortex(LX lx) {
+      super(lx, TEShaderView.ALL_POINTS);
+    }
+
+    @Override
+    protected void createShader() {
+      controls
+        .setRange(TEControlTag.SPEED, 0, -4, 4)
+        .setValue(TEControlTag.SPEED, 0.5);
+
+      controls.setRange(TEControlTag.SIZE, 1.3, 6., 0.75); // vortex size
+      controls.setRange(TEControlTag.SPIN, 0, -0.5, 0.5); // rotate about x
+     // controls.setRange(TEControlTag.WOW1, 0, 0, .09);  // beat reactivity
+     // controls.setRange(TEControlTag.WOW2, 0.15, 0, 1);  // background level
+
+      controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
+
+      addShader("vortex1.fs");
     }
   }
 
@@ -460,6 +492,8 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.QUANTITY, 0.7, .1, 0.95); // grid density
       controls.setRange(TEControlTag.WOW1, 0.0, 0, 1);
       controls.setRange(TEControlTag.WOW2, 0.0, 0, 1); // beat reactivity
+
+      controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
 
       addShader("matrixscroll.fs");
     }
