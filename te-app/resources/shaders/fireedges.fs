@@ -1,13 +1,13 @@
-#define MAX_LINE_COUNT 70
+#define MAX_LINE_COUNT 104
 uniform int lineCount;
 uniform vec4[MAX_LINE_COUNT] lines;
+
+#include <include/constants.fs>
+#include <include/colorspace.fs>
 
 // Noise settings:
 const float MaxLength = .1;
 const float Dumping = 10.0;
-
-#define PI 3.141592
-#define HALF_PI 1.57079632679
 
 vec3 hash3(vec3 p) {
     p = vec3(dot(p, vec3(127.1, 311.7, 74.7)),
@@ -17,6 +17,8 @@ vec3 hash3(vec3 p) {
     return -1.0 + 2.0 * fract(sin(p) * 43758.5453123);
 }
 
+// 3D value noise function. Note: this is probably too many octaves
+// for TE's resolution. Great for projection mapping though.
 float noise(vec3 p) {
     vec3 i = floor(p);
     vec3 f = fract(p);
@@ -41,12 +43,14 @@ float noise(vec3 p) {
     return ret * 2.0 - 1.0;
 }
 
+// SDF for line segment
 float udSegment(vec2 p, vec2 a, vec2 b) {
     vec2 pa = p - a, ba = b - a;
     float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
     return length(pa - ba * h);
 }
 
+// Distance to the nearest fire line segment
 float distToFireLines(vec2 p) {
     float minDist = 1e6;
     for (int i = 0; i < MAX_LINE_COUNT; i++) {
@@ -63,22 +67,48 @@ float normalizeScalar(float value, float max) {
 }
 
 vec3 color(vec2 p) {
-    vec3 coord =   vec3(10.0 * p, iTime * 0.25);
+    // generate animated noise field
+    vec3 coord =  vec3(10.0 * p, iTime * 0.25);
     float n = abs(noise(coord));
     n += 0.5 * abs(noise(coord * 2.0));
     n += 0.25 * abs(noise(coord * 4.0));
-    //n += 0.125 * abs(noise(coord * 8.0));
 
-    n *= 1000. * iWow1;
+    // save noise field value for later use
+    float nv = n;
+
+    // iQuantity controls the density of the noise field which
+    // controls how much fire we see.
+    n *= 1000. * iQuantity;
     float dist = distToFireLines(p);
-    float maxDist = 0.5;
-    if (dist <= 0.001) dist = abs(noise(coord)) / 20.0;
 
-    float k = normalizeScalar(dist, maxDist);
-    n *= dist / pow(1.001 - k, 15.0);
+    // if we just color the fire as a function of the inverse of distance,
+    // the center lines will be pure, obnoxious white.  So we cheat a little
+    // and use a noise function to decide color the center of the fire.
+    // It's still "hot", but it's not full brightness white.
+    if (dist <= 0.001) dist += abs(noise(coord)) / 20.0;
 
-    vec3 col = vec3(1.0, 0.25, 0.08) / n;
-    return pow(col, vec3(1.5));
+    float k = normalizeScalar(dist, 0.5);
+    n *= dist / pow(1. - k, 15.0);
+
+    vec3 fireColor = vec3(1.0, 0.25, 0.08) / n;
+
+    // try not to overdrive the palette - n can get quite close
+    // to zero, which makes the resulting colors um... all white.
+    //
+    // The default fire color uses this trick to drive its base
+    // red all the way to white heat, but it's way too strong for
+    // the palette colors. So we both limit the division
+    // range and clamp the resulting color when we use the palette.
+    //
+    // iWow1 controls the allowed range of palette colors. (iWow1 = 0.0
+    // just allows the first color, 1.0 uses all the colors in
+    // the palette)
+    vec3 color = getGradientColor(k * (4.0 * iWow1)) / max(0.9,n);
+    color = min(color, vec3(1.0));
+
+    // iWow2 controls the mix of palette-colored fire vs. fire-colored fire.
+    vec3 col = mix(color, fireColor, iWow2);
+    return col;
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
@@ -87,7 +117,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 coord = 2.0 * q - 1.0;
 
     vec3 col = color(coord);
-    col = pow(col, vec3(0.5)); // gamma correction
+    col = pow(col, vec3(0.75)); // gamma correction
 
-    fragColor = vec4(col, 1.0);
+    fragColor = vec4(col, 0.995);
 }

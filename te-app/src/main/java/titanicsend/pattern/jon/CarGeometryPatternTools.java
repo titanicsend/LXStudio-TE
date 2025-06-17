@@ -65,38 +65,54 @@ public class CarGeometryPatternTools {
     return edgeCount;
   }
 
+  /**
+   * Get all edges on a specified side of the car model. The signum parameter determines
+   * which side to retrieve edges from: 1 for starboard (right) side, -1 for port (left) side.
+   *
+   * @param model the TE model object
+   * @param signum 1 for starboard side, -1 for port side
+   * @param lines an n x 4 array of line segments, in the form x1,y1,x2,y2
+   * @param lineCount the maximum number of lines(edges) to retrieve.
+   * @return the number of edges actually retrieved
+   */
+  public static int getAllEdgesOnSide(TEWholeModel model, float signum, float lines[][], int lineCount) {
+    // signum is 1 for starboard side, -1 for port side (I think!)
+
+    int edgeCount = 0;
+    List<TEEdgeModel> edges = model.getEdges();
+    for (TEEdgeModel edge : edges) {
+      if (edge != null) {
+        LXPoint v1 = edge.points[0];
+        LXPoint v2 = edge.points[edge.points.length - 1];
+        // if it's on the side we want, or directly on the centerline,
+        // add it to the list of lines.
+        if (signum * v1.z > 0.0 || v1.z == 0.0) {
+          getLineFromEdge(model, lines, edgeCount, edge.getId());
+          edgeCount++;
+          if (edgeCount >= lineCount) break;
+        }
+      }
+    }
+    TE.log("getAllEdgesOnSide: found %d edges on side %f", edgeCount, signum);
+    return edgeCount;
+  }
+
   // given an edge id, adds a model edge's vertices to our list of line segments
   protected static void getLineFromEdge(TEWholeModel model, float lines[][], int index, String id) {
 
     TEEdgeModel edge = model.getEdge(id);
 
-    // TODO - Remove this madness when we move to the dynamic model
-    if (model.isStatic()) {
-      if (edge != null) {
-        LXPoint v1 = edge.points[0];
-        LXPoint v2 = edge.points[edge.points.length - 1];
+    if (edge != null) {
+      LXPoint v1 = edge.points[0];
+      LXPoint v2 = edge.points[edge.points.length - 1];
 
-        // set x1,y1,x2,y2 in line array
-        lines[index][0] = modelToMapXStatic(v1);
-        lines[index][1] = modelToMapY(v1);
-        lines[index][2] = modelToMapXStatic(v2);
-        lines[index][3] = modelToMapY(v2);
-      } else {
-        TE.log("Null edge %s", id);
-      }
+      // set x1,y1,x2,y2 in line array
+      lines[index][0] = modelToMapX(v1);
+      lines[index][1] = modelToMapY(v1);
+      lines[index][2] = modelToMapX(v2);
+      lines[index][3] = modelToMapY(v2);
     } else {
-      if (edge != null) {
-        LXPoint v1 = edge.points[0];
-        LXPoint v2 = edge.points[edge.points.length - 1];
-
-        // set x1,y1,x2,y2 in line array
-        lines[index][0] = modelToMapX(v1);
-        lines[index][1] = modelToMapY(v1);
-        lines[index][2] = modelToMapX(v2);
-        lines[index][3] = modelToMapY(v2);
-      } else {
-        TE.log("Null edge %s", id);
-      }
+      TE.log("Null edge %s", id);
     }
   }
 }

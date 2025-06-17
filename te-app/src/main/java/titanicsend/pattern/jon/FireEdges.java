@@ -10,7 +10,7 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 @LXCategory("Combo FG")
 public class FireEdges extends GLShaderPattern {
-  static final int MAX_LINE_COUNT = 70;
+  static final int MAX_LINE_COUNT = 104;
   int lineCount = 0;
   boolean updateGeometry = true;
   FloatBuffer gl_segments;
@@ -20,21 +20,25 @@ public class FireEdges extends GLShaderPattern {
   public FireEdges(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
 
-    // defaults settings for reactivity controls
-    // controls.setRange(TEControlTag.LEVELREACTIVITY, 0.333, 0.0, 1.0);
-    //controls.setRange(TEControlTag.FREQREACTIVITY, 0.333, 0.0, 1.0);
+    // Controls HOW MUCH FIRE IS FIRE!!!
+    controls.setRange(TEControlTag.QUANTITY, 0.5, 1, 0.2);
 
-    // Noise field magnitude - controls size + density of arcs
-    //controls.setRange(TEControlTag.SIZE, 0.025, 0.001, 0.08);
+    // Controls how much of the color range of the current palette is
+    // used to tint the fire. (0.0 = basically just the first color,
+    // 1.0 = all colors in the palette)
+    controls.setRange(TEControlTag.WOW1, 0.5, 0,1);
 
-    // Controls number of arcs by modifying noise field position offset
-    //controls.setRange(TEControlTag.QUANTITY, 0.6, 0.72, 0.5);
+    // Controls the mix of palette-tinted fire vs. fire-colored fire.
+    controls.setRange(TEControlTag.WOW2, 0., 0,1);
 
-    // Base width of "lines" drawn on car edges.
-    // NOTE: Edge lighting will be modified by audio reactivity. Generally, setting WOW1
-    // higher will make the car's edges more visible while slightly magnifying the
-    // effect of the audio reactivity controls
-    controls.setRange(TEControlTag.WOW1, 0.2, 1, 0.02);
+    controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.XPOS));
+    controls.markUnused(controls.getLXControl(TEControlTag.YPOS));
+    controls.markUnused(controls.getLXControl(TEControlTag.SIZE));
+    controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
+    controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
 
     // register common controls with the UI
     addCommonControls();
@@ -50,8 +54,8 @@ public class FireEdges extends GLShaderPattern {
 
     // NOTE: To add more edges, you need to change LINE_COUNT so the
     // segment buffer will be the right size.
-    // TODO - eventually, we'll want arcs on the fore/aft car ends too.
-    lineCount = CarGeometryPatternTools.getPanelConnectedEdges(getModelTE(),".*S.*", saved_lines, MAX_LINE_COUNT);
+    //lineCount = CarGeometryPatternTools.getPanelConnectedEdges(getModelTE(),".*S.*", saved_lines, MAX_LINE_COUNT);
+    lineCount = CarGeometryPatternTools.getAllEdgesOnSide(getModelTE(), -1, saved_lines, MAX_LINE_COUNT);
 
     // add the OpenGL shader and its frame-time setup function
     addShader(
@@ -62,6 +66,7 @@ public class FireEdges extends GLShaderPattern {
             // Here, we update line segment geometry
             // Shader uniforms associated with a context stay resident
             // on the GPU,so we only need to set them when something changes.
+
             if (updateGeometry) {
               sendSegments(s, saved_lines, lineCount);
               updateGeometry = false;
