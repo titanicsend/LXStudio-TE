@@ -252,7 +252,6 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(FourStar.class);
       lx.registry.addPattern(FxEdgeRocket.class);
       lx.registry.addPattern(FxDualWave.class);
-      lx.registry.addPattern(Iceflow.class);
       lx.registry.addPattern(Kaleidosonic.class);
       lx.registry.addPattern(MultipassDemo.class);
       lx.registry.addPattern(NDIReceiverTest.class);

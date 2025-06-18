@@ -291,15 +291,15 @@ public class ShaderPanelsPatternConfig {
 
       controls.setRange(TEControlTag.SIZE, 1.3, 6., 0.75); // vortex size
       controls.setRange(TEControlTag.SPIN, 0, -0.5, 0.5); // rotate about x
-     // controls.setRange(TEControlTag.WOW1, 0, 0, .09);  // beat reactivity
-     // controls.setRange(TEControlTag.WOW2, 0.15, 0, 1);  // background level
+      controls.setRange(TEControlTag.WOW1, 1.0, 0.1, 1.0);  // dot shape/mode
 
+      controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
       controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
 
       addShader("vortex1.fs");
     }
   }
-
 
   @LXCategory("Native Shaders Panels")
   public static class Galaxy extends ConstructedShaderPattern {
