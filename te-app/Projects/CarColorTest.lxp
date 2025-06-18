@@ -1,6 +1,6 @@
 {
   "version": "1.0.1-TE.4-SNAPSHOT",
-  "timestamp": 1750194949037,
+  "timestamp": 1750209038351,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -11564,7 +11564,7 @@
                 "children": {}
               },
               {
-                "id": 558650,
+                "id": 564084,
                 "class": "heronarts.lx.color.LXDynamicColor",
                 "internal": {
                   "modulationColor": 0,
@@ -13664,7 +13664,7 @@
                   "te_xpos": 0.0,
                   "te_ypos": 0.0,
                   "te_size": 1.25,
-                  "te_quantity": 0.0,
+                  "te_quantity": 1.0,
                   "te_spin": 0.017777778638733865,
                   "te_brightness": 1.0,
                   "te_wow1": 0.0,
@@ -13879,6 +13879,102 @@
                 "children": {
                   "modulation": {
                     "id": 558653,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1,
+                "remoteControls": [
+                  "/te_level",
+                  "/te_freq",
+                  "/view",
+                  "/te_speed",
+                  "/te_xpos",
+                  "/te_ypos",
+                  "/te_quantity",
+                  "/te_size",
+                  "/te_angle",
+                  "/te_spin",
+                  "/panic",
+                  null,
+                  "/te_wow1",
+                  "/te_wow2",
+                  "/te_wowtrigger",
+                  "/te_color/offset",
+                  "/setDefaults"
+                ],
+                "effects": [],
+                "defaults": {}
+              },
+              {
+                "id": 564090,
+                "class": "titanicsend.pattern.glengine.NeonMess",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true,
+                  "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "NeonMess",
+                  "midiFilter/enabled": true,
+                  "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
+                  "midiFilter/minNote": 0,
+                  "midiFilter/noteRange": 128,
+                  "midiFilter/minVelocity": 1,
+                  "midiFilter/velocityRange": 127,
+                  "view": 0,
+                  "viewPriority": 0,
+                  "enabled": true,
+                  "recall": false,
+                  "launch": false,
+                  "compositeMode": 0,
+                  "compositeLevel": 1.0,
+                  "hasCustomCycleTime": false,
+                  "customCycleTimeSecs": 60.0,
+                  "setDefaults": false,
+                  "te_speed": 0.5,
+                  "te_xpos": 0.0,
+                  "te_ypos": 0.0,
+                  "te_size": 1.3033332987688482,
+                  "te_quantity": 0.5,
+                  "te_spin": 0.04551111331515845,
+                  "te_brightness": 1.0,
+                  "te_wow1": 0.0,
+                  "te_wow2": 0.0,
+                  "te_wowtrigger": false,
+                  "te_angle": 0.0,
+                  "te_level": 0.1,
+                  "te_freq": 0.1,
+                  "te_twist": false,
+                  "panic": false,
+                  "te_color/brightness": 100.0,
+                  "te_color/saturation": 100.0,
+                  "te_color/hue": 0.0,
+                  "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
+                  "te_color/blendMode": 1,
+                  "te_color/blendMode/name": "HSVM",
+                  "te_color/offset": 0.0
+                },
+                "children": {
+                  "modulation": {
+                    "id": 564091,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,
@@ -14506,7 +14602,7 @@
   },
   "externals": {
     "ui": {
-      "leftPaneActiveSection": 0,
+      "leftPaneActiveSection": 2,
       "audioExpanded": true,
       "envelopExpanded": true,
       "reaperExpanded": true,
@@ -14524,9 +14620,9 @@
         "depth": 1.0,
         "camera": {
           "active": false,
-          "radius": 498.39760921636184,
-          "theta": 0.024091511964797974,
-          "phi": -0.3377900638151914,
+          "radius": 510.2328551690655,
+          "theta": 6.269644111394882,
+          "phi": -7.544194630580023,
           "x": -1.7113183912263707,
           "y": 185.4640899852384,
           "z": 27.942448032789343
@@ -14534,9 +14630,9 @@
         "cue": [
           {
             "active": false,
-            "radius": 498.39760921636184,
-            "theta": 0.024091511964797974,
-            "phi": -0.3377900638151914,
+            "radius": 510.2328551690655,
+            "theta": 6.269644111394882,
+            "phi": -7.544194630580023,
             "x": -1.7113183912263707,
             "y": 185.4640899852384,
             "z": 27.942448032789343
