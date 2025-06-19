@@ -52,7 +52,7 @@ void mainImage( out vec4 O, vec2 U) {
             p.zw = length(p.xz) < length(p.zw) ? p.xz : p.zw;  //reflection
 
 
-            if (abs(sc - signal) < 0.1) {
+            if (abs(sc - signal) < 0.081) {
                 beatWave -= min(.006,signal / 100.0);
             }
 
@@ -67,9 +67,7 @@ void mainImage( out vec4 O, vec2 U) {
         acc += ((levelReact * beatWave) + stepsize) * exp(-i*i*stepsize*stepsize/ 2.0);
     }
 
-
-
-    acc = 1.0 - ( acc);
+    acc = 1.0 - acc;
     float bri = smoothstep(-0.5 + iWow1, 1.0, acc);
     O = vec4(getGradientColor(fract(acc)),bri);
 
