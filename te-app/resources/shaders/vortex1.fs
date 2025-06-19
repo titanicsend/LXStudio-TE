@@ -13,7 +13,7 @@
 // Really cool spiral segmentation technique, plus nice way of
 // parameterizing moving waves from:
 // https://www.shadertoy.com/view/lsdBzX
-void mainImage(out vec4 RGBA, in vec2 XY) {
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float  c = 0.0;// brightness accumulator
     float n = 2.0 -  abs(sin(iTime / 60.));// main animation timing driver
     float e = n * 2.;// exponent for spiral gradient
@@ -56,7 +56,7 @@ void mainImage(out vec4 RGBA, in vec2 XY) {
     float ts = cr+s/n*TAU;           // segment spiral in time
 
     c += sin(ts / 2.);               // spiral 1 wave
-    c *= cos(ts);                    // spiral 2 wave
+    c *= cos(ts);             // spiral 2 wave
     // we could add more waves!  It gets pretty hard to see at low res though.
 
     // control darkness between spirals
@@ -66,5 +66,6 @@ void mainImage(out vec4 RGBA, in vec2 XY) {
     c = c * 3.;                              // and brighten the whole mess
 
     vec3 rgb = getGradientColor(fract(n + vd + 1.));
-    RGBA = vec4(rgb, c);
+
+    fragColor = vec4(rgb, c);
 }

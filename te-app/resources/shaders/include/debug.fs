@@ -22,7 +22,7 @@ vec4 pInt(sampler2D ic, vec2 p, float n, float d) {
     return v;
 }
 
-// texture, screen coords, value, size, num left digits, num right digits
+// texture, screen coords, value, size, left digit count, right digit count
 // returns a single float intensity value
 float print(sampler2D ic, vec2 uv, float v, float s, float l, float r) {
     float numleft = min(log2(abs(v))/log2(10.), l-1.);

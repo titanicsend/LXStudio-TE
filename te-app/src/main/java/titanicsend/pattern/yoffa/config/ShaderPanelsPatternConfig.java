@@ -266,6 +266,8 @@ public class ShaderPanelsPatternConfig {
         .setRange(TEControlTag.SPEED, 0, -4, 4)
         .setValue(TEControlTag.SPEED, 0.5);
 
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
       controls.setRange(TEControlTag.SIZE, 1, 1.25, 0.25); // bubble size
       controls.setRange(TEControlTag.QUANTITY, 1.0, 1.95, 0.0); // bubble density
       controls.setRange(TEControlTag.WOW1, 0, 0, .09);  // beat reactivity
@@ -293,6 +295,8 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.SPIN, 0, -0.5, 0.5); // rotate about x
       controls.setRange(TEControlTag.WOW1, 1.0, 0.1, 1.0);  // dot shape/mode
 
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
       controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
       controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
       controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
@@ -493,6 +497,8 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.WOW1, 0.0, 0, 1);
       controls.setRange(TEControlTag.WOW2, 0.0, 0, 1); // beat reactivity
 
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
       controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
 
       addShader("matrixscroll.fs");

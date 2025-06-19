@@ -92,7 +92,8 @@ vec4 bubble(vec2 te, vec2 pos, float numCells) {
     colorb.rgb *= zb2;
 
     // pick up "iridescence" colors from the background.
-    vec4 color = vec4(getBackgroundColor(uv - 0.1), 1.0);
+    // (scaled by the iWow2 setting, but always allowing a little palette color)
+    vec4 color = (max(iWow2,0.35)) * vec4(getBackgroundColor(uv - 0.1), 1.0);
     color = mix(color, vec4(1.0), noise2(te2*20.5+vec2(200.0, 200.0)));
 
     // randomize the color based on the distance to the bubble center
@@ -193,7 +194,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 l3=vec2(-iTime*0.005, -iTime*0.15);
 
     // base color is a gradient based on the current TE palette
-    vec4 color = vec4(iWow2 * getBackgroundColor(uv), 0.995);
+    vec4 color = vec4((iWow2 * 0.5) * getBackgroundColor(uv), 0.995);
 
     // generate several layers of bubbles and calculate their contribution
     // to the pixel's color. Ideally this would be a loop, but
