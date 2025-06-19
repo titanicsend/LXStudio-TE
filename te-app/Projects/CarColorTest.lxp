@@ -1,6 +1,6 @@
 {
   "version": "1.0.1-TE.4-SNAPSHOT",
-  "timestamp": 1750209038351,
+  "timestamp": 1750290005780,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -13315,7 +13315,7 @@
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 5,
+              "focusedPattern": 6,
               "triggerPatternCycle": false,
               "launchPatternCycle": false
             },
@@ -13339,7 +13339,7 @@
             },
             "effects": [],
             "clips": [],
-            "patternIndex": 5,
+            "patternIndex": 6,
             "patterns": [
               {
                 "id": 506037,
@@ -13918,7 +13918,7 @@
                 "defaults": {}
               },
               {
-                "id": 564090,
+                "id": 569799,
                 "class": "titanicsend.pattern.glengine.NeonMess",
                 "internal": {
                   "modulationColor": 0,
@@ -13951,15 +13951,15 @@
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
                   "te_ypos": 0.0,
-                  "te_size": 1.3033332987688482,
+                  "te_size": 0.4,
                   "te_quantity": 0.5,
-                  "te_spin": 0.04551111331515845,
+                  "te_spin": -0.03484444543653087,
                   "te_brightness": 1.0,
-                  "te_wow1": 0.0,
+                  "te_wow1": 0.26666667498648167,
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
-                  "te_level": 0.1,
+                  "te_level": 0.966666666790843,
                   "te_freq": 0.1,
                   "te_twist": false,
                   "panic": false,
@@ -13974,7 +13974,7 @@
                 },
                 "children": {
                   "modulation": {
-                    "id": 564091,
+                    "id": 569800,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,
@@ -14602,7 +14602,7 @@
   },
   "externals": {
     "ui": {
-      "leftPaneActiveSection": 2,
+      "leftPaneActiveSection": 0,
       "audioExpanded": true,
       "envelopExpanded": true,
       "reaperExpanded": true,
@@ -14620,9 +14620,9 @@
         "depth": 1.0,
         "camera": {
           "active": false,
-          "radius": 510.2328551690655,
-          "theta": 6.269644111394882,
-          "phi": -7.544194630580023,
+          "radius": 529.1083731659731,
+          "theta": 5.5045991241931915,
+          "phi": -2.202878675656393,
           "x": -1.7113183912263707,
           "y": 185.4640899852384,
           "z": 27.942448032789343
@@ -14630,9 +14630,9 @@
         "cue": [
           {
             "active": false,
-            "radius": 510.2328551690655,
-            "theta": 6.269644111394882,
-            "phi": -7.544194630580023,
+            "radius": 529.1083731659731,
+            "theta": 5.5045991241931915,
+            "phi": -2.202878675656393,
             "x": -1.7113183912263707,
             "y": 185.4640899852384,
             "z": 27.942448032789343
