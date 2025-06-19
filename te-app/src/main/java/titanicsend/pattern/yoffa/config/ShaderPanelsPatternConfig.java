@@ -3,11 +3,9 @@ package titanicsend.pattern.yoffa.config;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.TECommonControls;
 import titanicsend.pattern.glengine.ConstructedShaderPattern;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.jon.TEControlTag;
-import titanicsend.pattern.yoffa.framework.ConstructedPattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.util.GaussianFilter;
 
@@ -262,16 +260,14 @@ public class ShaderPanelsPatternConfig {
 
     @Override
     protected void createShader() {
-      controls
-        .setRange(TEControlTag.SPEED, 0, -4, 4)
-        .setValue(TEControlTag.SPEED, 0.5);
+      controls.setRange(TEControlTag.SPEED, 0, -4, 4).setValue(TEControlTag.SPEED, 0.5);
 
       controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
       controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
       controls.setRange(TEControlTag.SIZE, 1, 1.25, 0.25); // bubble size
       controls.setRange(TEControlTag.QUANTITY, 1.0, 1.95, 0.0); // bubble density
-      controls.setRange(TEControlTag.WOW1, 0, 0, .09);  // beat reactivity
-      controls.setRange(TEControlTag.WOW2, 0.15, 0, 1);  // background level
+      controls.setRange(TEControlTag.WOW1, 0, 0, .09); // beat reactivity
+      controls.setRange(TEControlTag.WOW2, 0.15, 0, 1); // background level
 
       controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
 
@@ -287,13 +283,11 @@ public class ShaderPanelsPatternConfig {
 
     @Override
     protected void createShader() {
-      controls
-        .setRange(TEControlTag.SPEED, 0, -4, 4)
-        .setValue(TEControlTag.SPEED, 0.5);
+      controls.setRange(TEControlTag.SPEED, 0, -4, 4).setValue(TEControlTag.SPEED, 0.5);
 
       controls.setRange(TEControlTag.SIZE, 1.3, 6., 0.75); // vortex size
       controls.setRange(TEControlTag.SPIN, 0, -0.5, 0.5); // rotate about x
-      controls.setRange(TEControlTag.WOW1, 1.0, 0.1, 1.0);  // dot shape/mode
+      controls.setRange(TEControlTag.WOW1, 1.0, 0.1, 1.0); // dot shape/mode
 
       controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
       controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
@@ -488,9 +482,7 @@ public class ShaderPanelsPatternConfig {
     @Override
     protected void createShader() {
 
-      controls
-        .setRange(TEControlTag.SPEED, 0, -2, 2)
-        .setValue(TEControlTag.SPEED, 0.3);
+      controls.setRange(TEControlTag.SPEED, 0, -2, 2).setValue(TEControlTag.SPEED, 0.3);
 
       controls.setRange(TEControlTag.SIZE, 0.01, 0.02, 0.005); // grid size
       controls.setRange(TEControlTag.QUANTITY, 0.7, .1, 0.95); // grid density

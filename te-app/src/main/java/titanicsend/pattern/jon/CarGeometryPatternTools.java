@@ -66,8 +66,8 @@ public class CarGeometryPatternTools {
   }
 
   /**
-   * Get all edges on a specified side of the car model. The signum parameter determines
-   * which side to retrieve edges from: 1 for starboard (right) side, -1 for port (left) side.
+   * Get all edges on a specified side of the car model. The signum parameter determines which side
+   * to retrieve edges from: 1 for starboard (right) side, -1 for port (left) side.
    *
    * @param model the TE model object
    * @param signum 1 for starboard side, -1 for port side
@@ -75,7 +75,8 @@ public class CarGeometryPatternTools {
    * @param lineCount the maximum number of lines(edges) to retrieve.
    * @return the number of edges actually retrieved
    */
-  public static int getAllEdgesOnSide(TEWholeModel model, float signum, float lines[][], int lineCount) {
+  public static int getAllEdgesOnSide(
+      TEWholeModel model, float signum, float lines[][], int lineCount) {
     // signum is 1 for starboard side, -1 for port side (I think!)
 
     int edgeCount = 0;

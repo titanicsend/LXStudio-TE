@@ -26,10 +26,10 @@ public class FireEdges extends GLShaderPattern {
     // Controls how much of the color range of the current palette is
     // used to tint the fire. (0.0 = basically just the first color,
     // 1.0 = all colors in the palette)
-    controls.setRange(TEControlTag.WOW1, 0.5, 0,1);
+    controls.setRange(TEControlTag.WOW1, 0.5, 0, 1);
 
     // Controls the mix of palette-tinted fire vs. fire-colored fire.
-    controls.setRange(TEControlTag.WOW2, 0., 0,1);
+    controls.setRange(TEControlTag.WOW2, 0., 0, 1);
 
     controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
     controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
@@ -54,8 +54,10 @@ public class FireEdges extends GLShaderPattern {
 
     // NOTE: To add more edges, you need to change LINE_COUNT so the
     // segment buffer will be the right size.
-    //lineCount = CarGeometryPatternTools.getPanelConnectedEdges(getModelTE(),".*S.*", saved_lines, MAX_LINE_COUNT);
-    lineCount = CarGeometryPatternTools.getAllEdgesOnSide(getModelTE(), -1, saved_lines, MAX_LINE_COUNT);
+    // lineCount = CarGeometryPatternTools.getPanelConnectedEdges(getModelTE(),".*S.*", saved_lines,
+    // MAX_LINE_COUNT);
+    lineCount =
+        CarGeometryPatternTools.getAllEdgesOnSide(getModelTE(), -1, saved_lines, MAX_LINE_COUNT);
 
     // add the OpenGL shader and its frame-time setup function
     addShader(
@@ -77,7 +79,7 @@ public class FireEdges extends GLShaderPattern {
 
   // store segment descriptors in our GL line segment buffer.
   void setUniformLine(int segNo, float x1, float y1, float x2, float y2) {
-    //System.out.printf("setLine %d : %.4f %.4f, %.4f %.4f\n",segNo,x1,y1,x2,y2);
+    // System.out.printf("setLine %d : %.4f %.4f, %.4f %.4f\n",segNo,x1,y1,x2,y2);
     gl_segments.position(segNo * 4);
     gl_segments.put(x1);
     gl_segments.put(y1);

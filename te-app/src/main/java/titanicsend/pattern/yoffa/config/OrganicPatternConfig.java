@@ -3,8 +3,6 @@ package titanicsend.pattern.yoffa.config;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import java.util.List;
-
-import heronarts.lx.parameter.LXParameter;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.will.shaders.*;
 import titanicsend.pattern.yoffa.effect.*;
@@ -279,5 +277,4 @@ public class OrganicPatternConfig {
       return List.of(new OldMatrixScroll(new PatternTarget(this)));
     }
   }
-
 }
