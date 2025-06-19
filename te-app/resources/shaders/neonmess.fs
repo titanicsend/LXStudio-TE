@@ -1,7 +1,14 @@
 #pragma name "NeonMess"
 
 #pragma TEControl.SIZE.Range(0.4,1.1,0.25)
+// Wow1 controls the "black level"
 #pragma TEControl.WOW1.Range(0.25,0.0,1.0)
+
+#pragma TEControl.FREQREACTIVITY.Disable
+#pragma TECONTROL.QUANTITY.Disable
+#pragma TEControl.WOW2.Disable
+#pragma TEControl.WOWTRIGGER.Disable
+
 //#pragma iChannel1 "resources/shaders/textures/fontgenerator.png"
 
 #include <include/constants.fs>
