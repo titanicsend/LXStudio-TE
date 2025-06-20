@@ -33,3 +33,4 @@ te-app/Projects/Test*.lxp
 .lxmidi
 Logs/
 *.onnx
+/te-app/resources/shaders/cache/

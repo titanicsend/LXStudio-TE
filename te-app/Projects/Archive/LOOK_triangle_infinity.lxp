@@ -4365,7 +4365,7 @@
               },
               {
                 "id": 55078,
-                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$MatrixScroller",
+                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$OldMatrixScroller",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
@@ -4376,7 +4376,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "MatrixScroller",
+                  "label": "OldMatrixScroller",
                   "enabled": true,
                   "recall": false,
                   "compositeMode": 0,
@@ -8470,7 +8470,7 @@
               },
               {
                 "id": 55659,
-                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$MatrixScroller",
+                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$OldMatrixScroller",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
@@ -8481,7 +8481,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "MatrixScroller",
+                  "label": "OldMatrixScroller",
                   "enabled": true,
                   "recall": false,
                   "compositeMode": 0,
@@ -12575,7 +12575,7 @@
               },
               {
                 "id": 56240,
-                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$MatrixScroller",
+                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$OldMatrixScroller",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,

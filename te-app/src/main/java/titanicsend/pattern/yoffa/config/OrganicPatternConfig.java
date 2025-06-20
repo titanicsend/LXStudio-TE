@@ -266,15 +266,15 @@ public class OrganicPatternConfig {
   }
 
   @LXCategory("DREVO Shaders")
-  public static class MatrixScroller extends ConstructedPattern {
-    public MatrixScroller(LX lx) {
+  public static class OldMatrixScroller extends ConstructedPattern {
+    public OldMatrixScroller(LX lx) {
       super(lx, TEShaderView.ALL_PANELS);
     }
 
     @Override
     protected List<PatternEffect> createEffects() {
 
-      return List.of(new MatrixScrolling(new PatternTarget(this)));
+      return List.of(new OldMatrixScroll(new PatternTarget(this)));
     }
   }
 }

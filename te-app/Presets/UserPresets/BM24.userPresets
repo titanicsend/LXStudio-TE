@@ -2755,7 +2755,7 @@
       ]
     },
     {
-      "clazz": "titanicsend.pattern.yoffa.config.OrganicPatternConfig.MatrixScroller",
+      "clazz": "titanicsend.pattern.yoffa.config.OrganicPatternConfig.OldMatrixScroller",
       "presets": [
         {
           "label": "PanelsStems",
@@ -2763,7 +2763,7 @@
             "version": "1.0.1.TE.2-SNAPSHOT",
             "timestamp": 1724374862454,
             "id": 45680,
-            "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$MatrixScroller",
+            "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$OldMatrixScroller",
             "internal": {
               "modulationColor": 0,
               "modulationControlsExpanded": true,

@@ -255,13 +255,13 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(EdgeRunner.class);
       lx.registry.addPattern(Electric.class);
       lx.registry.addPattern(ElectricEdges.class);
+      lx.registry.addPattern(FireEdges.class);
       lx.registry.addPattern(Fireflies.class);
       lx.registry.addPattern(FollowThatStar.class);
       lx.registry.addPattern(FrameBrights.class);
       lx.registry.addPattern(FourStar.class);
       lx.registry.addPattern(FxEdgeRocket.class);
       lx.registry.addPattern(FxDualWave.class);
-      lx.registry.addPattern(Iceflow.class);
       lx.registry.addPattern(Kaleidosonic.class);
       lx.registry.addPattern(MultipassDemo.class);
       lx.registry.addPattern(NDIReceiverTest.class);
@@ -538,7 +538,7 @@ public class TEApp extends LXStudio {
           ShaderPanelsPatternConfig.NeonBlocks.class, covPanelPartial, cNonConforming, chorus);
       l.addPattern(Audio1.class, covPanelPartial, cPalette, chorus);
       l.addPattern(ShaderPanelsPatternConfig.OutrunGrid.class, covPanels, cNonConforming, chorus);
-      l.addPattern(OrganicPatternConfig.MatrixScroller.class, covPanels, cNonConforming, chorus);
+      l.addPattern(OrganicPatternConfig.OldMatrixScroller.class, covPanels, cNonConforming, chorus);
       l.addPattern(FollowThatStar.class, covBoth, cPalette, chorus);
       l.addPattern(ShaderPanelsPatternConfig.Marbling.class, covPanels, cNonConforming, chorus);
       l.addPattern(OrganicPatternConfig.NeonCellsLegacy.class, covPanelPartial, cPalette, chorus);

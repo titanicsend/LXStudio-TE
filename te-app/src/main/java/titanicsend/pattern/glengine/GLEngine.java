@@ -57,8 +57,8 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   private final float fftResampleFactor;
 
   private static final TEMath.EMA avgVolume = new TEMath.EMA(0.5, .01);
-  private static final TEMath.EMA avgBass = new TEMath.EMA(0.2, .01);
-  private static final TEMath.EMA avgTreble = new TEMath.EMA(0.2, .01);
+  private static final TEMath.EMA avgBass = new TEMath.EMA(0.5, .01);
+  private static final TEMath.EMA avgTreble = new TEMath.EMA(0.5, .01);
 
   private static double beat = 0.0;
   private static double sinPhaseBeat = 0.0;
