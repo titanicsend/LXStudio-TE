@@ -44,7 +44,8 @@ vec4 NC1=vec4(1.0, 158.0, 114.0, 271.0);
 
 vec4 hash4(vec4 n) { return fract(sin(n)*753.5453123); }
 vec2 hash2(vec2 n) { return fract(sin(n)*753.5453123); }
-float noise2(vec2 x) {
+
+float hashNoise2(vec2 x) {
     vec2 p = floor(x);
     vec2 f = fract(x);
     f = f*f*(3.0-2.0*f);
@@ -54,7 +55,7 @@ float noise2(vec2 x) {
     return mix(s1.x, s1.y, f.y);
 }
 
-float noise3(vec3 x) {
+float hashNoise3(vec3 x) {
     vec3 p = floor(x);
     vec3 f = fract(x);
     f = f*f*(3.0-2.0*f);
@@ -77,14 +78,14 @@ vec4 bubble(vec2 te, vec2 pos, float numCells) {
     vec2 te2 =- te1;
 
     // Use a bunch of noise values to make highlights and reflections
-    float zb1=max(pow(noise2(te2 * 1000.11 * d), 10.0), 0.01);
-    float zb2=noise2(te1 * 1000.11 * d);
-    float zb3=noise2(te1 * 200.11 * d);
-    float zb4=noise2(te1 * 200.11 * d + vec2(20.0));
+    float zb1=max(pow(hashNoise2(te2 * 1000.11 * d), 10.0), 0.01);
+    float zb2=hashNoise2(te1 * 1000.11 * d);
+    float zb3=hashNoise2(te1 * 200.11 * d);
+    float zb4=hashNoise2(te1 * 200.11 * d + vec2(20.0));
 
     // random greyscale highlight color based on the distance from the bubble center
     vec4 colorb = vec4(1.0);
-    colorb.rgb *= (0.3 + noise2(te1 * 1000.11 * d) * 0.3);
+    colorb.rgb *= (0.3 + hashNoise2(te1 * 1000.11 * d) * 0.3);
 
     // control transparency in the interior of the bubble. A lot of
     // the bubble should be transparent.
@@ -94,10 +95,10 @@ vec4 bubble(vec2 te, vec2 pos, float numCells) {
     // pick up "iridescence" colors from the background.
     // (scaled by the iWow2 setting, but always allowing a little palette color)
     vec4 color = (max(iWow2,0.35)) * vec4(getBackgroundColor(uv - 0.1), 1.0);
-    color = mix(color, vec4(1.0), noise2(te2*20.5+vec2(200.0, 200.0)));
+    color = mix(color, vec4(1.0), hashNoise2(te2*20.5+vec2(200.0, 200.0)));
 
     // randomize the color based on the distance to the bubble center
-    color.rgb *= 0.7 + noise2(te2*1000.11*d)*0.3;
+    color.rgb *= 0.7 + hashNoise2(te2*1000.11*d)*0.3;
     color.rgb *= 0.2 + zb1*1.9;
 
     // calculate the bubble's size
