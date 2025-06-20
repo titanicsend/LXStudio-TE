@@ -295,7 +295,7 @@ public class ShaderPanelsPatternConfig {
       controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
       controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
 
-      addShader("vortex1.fs");
+      addShader("dot_vortex.fs");
     }
   }
 
