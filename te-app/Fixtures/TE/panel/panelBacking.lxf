@@ -1,0 +1,96 @@
+{
+  /* Titanic's End Fixture File */
+
+  /* This is a dummy sub-fixture that exists only to draw a panel's backing */
+
+  label: "panelBacking",
+  tags: [
+    "backing"
+  ],
+
+  /* Hide from fixture list */
+  isVisible: false,
+
+  parameters: {
+    "rows": { type: "int", min: 1, default: 1, description: "Number of rows in the panel" },
+    "offset": { type: "int", default: 0, min: -200, description: "Offset parameter value of last row" },
+    "numPointsFirst": { type: "int", min: 1, default: 1, description: "Number of points in the first row" },
+    "numPointsLast": { type: "int", min: 1, default: 1, description: "Number of points in the last row" },
+    "pointSpacing": { type: "float", default: "1.9685039" },  /* 50mm */
+    "rowSpacing": { type: "float", default: "1.7047743848" },  /* 50mm * 0.5 * sqrt(3) */
+    "showBacking": { type: "boolean", default: "true", description: "Whether to display an opaque backing behind the pixels" },
+    "flipBacking": { type: "boolean", default: "false", description: "Inverts the backing to the other side of the panel" }
+  },
+
+  "transforms": [
+    { "z": "-2", enabled: "$flipBacking" },
+    { "z": "2", enabled: "!$flipBacking" }
+  ],
+
+  "ui": {
+    "mesh": {
+      "enabled": "$showBacking",
+
+      "type": "phong",
+      "lighting": {
+        "color": "0xff333333",
+        "ambient": 0.2,
+        "diffuse": 0.1,
+        "specular": 0.1,
+        "shininess": 32,
+        "direction": { "y": -.1, "z" : 1 }
+      },
+      "color": "0xff669900",
+
+      /* Simple color for debugging */
+      /*
+      "type": "uniformFill",
+      "color": "0xff0000ff",
+      */
+
+      "vertices": [
+        /* Triangle 1 of 2 */
+
+        /* V0 */
+        {
+          "axis": "xy",
+          "x": "-2*$pointSpacing",
+          "y": "-2*$rowSpacing"
+        },
+        /* V1 */
+        {
+          "axis": "xy",
+          "x": "($numPointsFirst+0.5)*$pointSpacing",
+          "y": "-2*$rowSpacing"
+        },
+        /* V2 */
+        {
+          "axis": "xy",
+          "x": "($offset+(($rows-1)/2)-0.5+$numPointsLast)*$pointSpacing",
+          "y": "($rows)*$rowSpacing"
+        },
+
+        /* Triangle 2 of 2 */
+
+        /* V2 - same as V2 above */
+        {
+          "axis": "xy",
+          "x": "($offset+(($rows-1)/2)-0.5+$numPointsLast)*$pointSpacing",
+          "y": "($rows)*$rowSpacing"
+        },
+        /* V3 */
+        {
+          "axis": "xy",
+          "x": "($offset+(($rows-1)/2)-0.5)*$pointSpacing",
+          "y": "($rows)*$rowSpacing"
+        },
+        /* V0  - same as V0 above*/
+        {
+          "axis": "xy",
+          "x": "-2*$pointSpacing",
+          "y": "-2*$rowSpacing"
+        }
+      ]
+    }
+  }
+}

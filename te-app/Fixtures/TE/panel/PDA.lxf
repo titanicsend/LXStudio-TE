@@ -20,6 +20,7 @@
 
     "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Enable ArtNet sequence packets" },
 
+    "showBacking": { type: "boolean", default: "true", description: "Whether to display an opaque backing behind the pixels" },
     "flipBacking": { type: "boolean", default: "false", description: "Inverts the backing to the other side of the panel" },
     
     /* Debug tools */
@@ -58,22 +59,23 @@
     /* Looking at the back of panel, starts from RIGHT
        Looking at the front of panel, starts from LEFT */
 
-    { type: "panelRow", row: "0", offset: "0", numPoints: "62", "flipBacking": "$flipBacking" },
-    { type: "panelRow", row: "1", offset: "0", numPoints: "59", "flipBacking": "$flipBacking" },
-    { type: "panelRow", row: "2", offset: "0", numPoints: "54", "flipBacking": "$flipBacking" },
-    { type: "panelRow", row: "3", offset: "0", numPoints: "50", "flipBacking": "$flipBacking" },
-    { type: "panelRow", row: "4", offset: "0", numPoints: "47", "flipBacking": "$flipBacking" },
-    { type: "panelRow", row: "5", offset: "0", numPoints: "43", "flipBacking": "$flipBacking" },
-    { type: "panelRow", row: "6", offset: "1", numPoints: "38", "flipBacking": "$flipBacking" },
-    { type: "panelRow", row: "7", offset: "1", numPoints: "34", "flipBacking": "$flipBacking" },
-    { type: "panelRow", row: "8", offset: "1", numPoints: "31", "flipBacking": "$flipBacking" },
-    { type: "panelRow", row: "9", offset: "1", numPoints: "27", "flipBacking": "$flipBacking" },
-    { type: "panelRow", row: "10", offset: "1", numPoints: "23", "flipBacking": "$flipBacking" },
-    { type: "panelRow", row: "11", offset: "1", numPoints: "19", "flipBacking": "$flipBacking" },
-    { type: "panelRow", row: "12", offset: "1", numPoints: "15", "flipBacking": "$flipBacking" },
-    { type: "panelRow", row: "13", offset: "1", numPoints: "12", "flipBacking": "$flipBacking" },
-    { type: "panelRow", row: "14", offset: "1", numPoints: "7", "flipBacking": "$flipBacking" },
-    { type: "panelRow", row: "15", offset: "1", numPoints: "3", "flipBacking": "$flipBacking" }
+    { type: "panelRow", row: "0", offset: "0", numPoints: "62" },
+    { type: "panelRow", row: "1", offset: "0", numPoints: "59" },
+    { type: "panelRow", row: "2", offset: "0", numPoints: "54" },
+    { type: "panelRow", row: "3", offset: "0", numPoints: "50" },
+    { type: "panelRow", row: "4", offset: "0", numPoints: "47" },
+    { type: "panelRow", row: "5", offset: "0", numPoints: "43" },
+    { type: "panelRow", row: "6", offset: "1", numPoints: "38" },
+    { type: "panelRow", row: "7", offset: "1", numPoints: "34" },
+    { type: "panelRow", row: "8", offset: "1", numPoints: "31" },
+    { type: "panelRow", row: "9", offset: "1", numPoints: "27" },
+    { type: "panelRow", row: "10", offset: "1", numPoints: "23" },
+    { type: "panelRow", row: "11", offset: "1", numPoints: "19" },
+    { type: "panelRow", row: "12", offset: "1", numPoints: "15" },
+    { type: "panelRow", row: "13", offset: "1", numPoints: "12" },
+    { type: "panelRow", row: "14", offset: "1", numPoints: "7" },
+    { type: "panelRow", row: "15", offset: "1", numPoints: "3" },
+    { type: "panelBacking", rows: "15", offset: "1", numPointsLast: "3", numPointsFirst: "62", showBacking: "$showBacking", flipBacking: "$flipBacking" }
   ],
 
   outputs: [
