@@ -486,4 +486,23 @@ public class ShaderPanelsPatternConfig {
       addShader("darkradiance.fs");
     }
   }
+  @LXCategory("piemonte shaders")
+  public static class IceGlintPattern extends ConstructedShaderPattern {
+    public IceGlintPattern(LX lx) {
+      super(lx, TEShaderView.DOUBLE_LARGE);
+    }
+
+    @Override
+    protected void createShader() {
+      controls.setRange(TEControlTag.SPEED, 0, -4, 4);
+      controls.setValue(TEControlTag.SPEED, 0.5);
+      controls.setRange(TEControlTag.SIZE, 0.1, 3, 1);
+      controls.setRange(TEControlTag.QUANTITY, 1, 20, 10);
+      controls.setRange(TEControlTag.WOW1, 0, 2, 1);
+      controls.setRange(TEControlTag.WOW2, 0, 1, 0.5);
+
+      addShader("ice_glint.fs");
+    }
+  }
+
 }
