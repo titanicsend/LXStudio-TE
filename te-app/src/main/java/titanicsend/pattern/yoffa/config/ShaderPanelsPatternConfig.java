@@ -253,6 +253,53 @@ public class ShaderPanelsPatternConfig {
   }
 
   @LXCategory("Native Shaders Panels")
+  public static class Bubbles extends ConstructedShaderPattern {
+    public Bubbles(LX lx) {
+      super(lx, TEShaderView.ALL_POINTS);
+    }
+
+    @Override
+    protected void createShader() {
+      controls.setRange(TEControlTag.SPEED, 0, -4, 4).setValue(TEControlTag.SPEED, 0.5);
+
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+      controls.setRange(TEControlTag.SIZE, 1, 1.25, 0.25); // bubble size
+      controls.setRange(TEControlTag.QUANTITY, 1.0, 1.95, 0.0); // bubble density
+      controls.setRange(TEControlTag.WOW1, 0, 0, .09); // beat reactivity
+      controls.setRange(TEControlTag.WOW2, 0.15, 0, 1); // background level
+
+      controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
+
+      addShader("bubbles.fs");
+    }
+  }
+
+  @LXCategory("Native Shaders Panels")
+  public static class DotVortex extends ConstructedShaderPattern {
+    public DotVortex(LX lx) {
+      super(lx, TEShaderView.ALL_POINTS);
+    }
+
+    @Override
+    protected void createShader() {
+      controls.setRange(TEControlTag.SPEED, 0, -4, 4).setValue(TEControlTag.SPEED, 0.5);
+
+      controls.setRange(TEControlTag.SIZE, 1.3, 6., 0.75); // vortex size
+      controls.setRange(TEControlTag.SPIN, 0, -0.5, 0.5); // rotate about x
+      controls.setRange(TEControlTag.WOW1, 1.0, 0.1, 1.0); // dot shape/mode
+
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
+
+      addShader("dot_vortex.fs");
+    }
+  }
+
+  @LXCategory("Native Shaders Panels")
   public static class Galaxy extends ConstructedShaderPattern {
     public Galaxy(LX lx) {
       super(lx, TEShaderView.ALL_PANELS);
@@ -423,6 +470,30 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.WOW1, 0, 0, 0.25); // pixelated decomposition
 
       addShader("metallic_bit_wave.fs");
+    }
+  }
+
+  @LXCategory("DREVO Shaders")
+  public static class MatrixScroller extends ConstructedShaderPattern {
+    public MatrixScroller(LX lx) {
+      super(lx, TEShaderView.ALL_POINTS);
+    }
+
+    @Override
+    protected void createShader() {
+
+      controls.setRange(TEControlTag.SPEED, 0, -2, 2).setValue(TEControlTag.SPEED, 0.3);
+
+      controls.setRange(TEControlTag.SIZE, 0.01, 0.02, 0.005); // grid size
+      controls.setRange(TEControlTag.QUANTITY, 0.7, .1, 0.95); // grid density
+      controls.setRange(TEControlTag.WOW1, 0.0, 0, 1);
+      controls.setRange(TEControlTag.WOW2, 0.0, 0, 1); // beat reactivity
+
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
+
+      addShader("matrixscroll.fs");
     }
   }
 

@@ -12,13 +12,13 @@ import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.effect.shaders.FragmentShaderEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 
-public class MatrixScrolling extends FragmentShaderEffect {
+public class OldMatrixScroll extends FragmentShaderEffect {
 
   SplittableRandom random;
 
   double[] origin;
 
-  public MatrixScrolling(PatternTarget target) {
+  public OldMatrixScroll(PatternTarget target) {
     super(target);
 
     TECommonControls ctl = pattern.getControls();

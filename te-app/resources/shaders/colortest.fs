@@ -9,7 +9,7 @@
 // but that puts it inconveniently at the bottom of a long, long list. So for now,
 // with no category, it's near the top.  When done testing, uncomment the following
 // line to put it in its proper place.
-// #pragma LXCategory("Utility")
+#pragma LXCategory("Utility")
 
 #include <include/constants.fs>
 #include <include/colorspace.fs>

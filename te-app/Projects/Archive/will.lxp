@@ -506,7 +506,7 @@
             "patterns": [
               {
                 "id": 10515,
-                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$MatrixScroller",
+                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$OldMatrixScroller",
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
@@ -514,7 +514,7 @@
                   "autoCycleEligible": true
                 },
                 "parameters": {
-                  "label": "MatrixScroller",
+                  "label": "OldMatrixScroller",
                   "recall": false,
                   "te_color/brightness": 0.0,
                   "te_color/saturation": 0.0,
