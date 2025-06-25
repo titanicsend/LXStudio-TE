@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.function.Function;
-import jkbstudio.supermod.SuperMod;
+import studio.jkb.supermod.SuperMod;
 import org.lwjgl.system.Platform;
 import titanicsend.app.*;
 import titanicsend.app.autopilot.*;
@@ -406,14 +406,6 @@ public class TEApp extends LXStudio {
       this.superMod.initialize(lx);
       this.superMod.addModulatorSource(this.superModSource);
 
-      // Register midi surface names for Super Mod
-      this.superMod.registerAPCmini2("SuperMod Control");
-      this.superMod.registerAPCmini2(MidiNames.BOMEBOX_VIRTUAL_APCMINIMK2_SUPERMOD);
-      this.superMod.registerMidiFighterTwister(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1);
-      this.superMod.registerMidiFighterTwister(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER2);
-      this.superMod.registerMidiFighterTwister(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER3);
-      this.superMod.registerMidiFighterTwister(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER4);
-
       // Custom modulators
       lx.registry.addModulator(Dmx16bitModulator.class);
       lx.registry.addModulator(DmxGridModulator.class);
@@ -695,7 +687,7 @@ public class TEApp extends LXStudio {
     private static final int SUPERMOD_STEM_ROW_WAVE = 1;
 
     /** Redirect some of the SuperMod buttons to Audio Stem modulators */
-    private final SuperMod.ModulatorSource superModSource =
+    private final studio.jkb.supermod.SuperMod.ModulatorSource superModSource =
         (label, col, row) -> {
           if (col >= SUPERMOD_STEM_COLUMN_START
               && col < (SUPERMOD_STEM_COLUMN_START + SUPERMOD_STEM_COLUMNS)
