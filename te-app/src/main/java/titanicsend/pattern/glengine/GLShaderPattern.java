@@ -3,6 +3,7 @@ package titanicsend.pattern.glengine;
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXModel;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -53,8 +54,14 @@ public class GLShaderPattern extends TEPerformancePattern {
     this(lx, TEShaderView.ALL_POINTS);
   }
 
+  protected ByteBuffer imageBuffer;
+
   public GLShaderPattern(LX lx, TEShaderView view) {
     super(lx, view);
+
+    if (this.lx.engine.renderMode.cpu) {
+      imageBuffer = TEShader.allocateBackBuffer();
+    }
   }
 
   protected TEShader addShader(GLShader.Config config) {
@@ -75,19 +82,33 @@ public class GLShaderPattern extends TEPerformancePattern {
 
   @Override
   public void runTEAudioPattern(double deltaMs) {
-    LXModel m = getModel();
+    // Safety check: bail if the pattern contains no shaders
+    if (this.shaders.isEmpty()) {
+      return;
+    }
 
     // Update the model coords texture only when changed (and the first run)
     if (this.modelChanged) {
       this.modelChanged = false;
+      LXModel m = getModel();
       for (TEShader shader : this.shaders) {
         shader.setModelCoordinates(m);
       }
     }
 
-    // run the chain of shaders, except for the last one,
-    // copying the output of each to the next shader's input texture
+    // Set the CPU buffer for any non-last shader to be null. These will be chained.
+    for (int i = 0; i < (this.shaders.size() - 1); i++) {
+      this.shaders.get(i).setCpuBuffer(null);
+    }
+    // Set the CPU buffer for the last shader, if using CPU mixer
+    this.shaders
+        .get(this.shaders.size() - 1)
+        .setCpuBuffer(this.lx.engine.renderMode.cpu ? this.colors : null);
+
+    // Run the chain of shaders,
+    // mapping the output texture of each to the next shader's input texture
     for (TEShader shader : this.shaders) {
+      // TODO: map output of each shader to the next shader's input
       shader.run();
     }
   }

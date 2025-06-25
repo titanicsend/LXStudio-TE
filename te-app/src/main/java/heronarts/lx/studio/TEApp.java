@@ -1065,7 +1065,8 @@ public class TEApp extends LXStudio {
     }
   }
 
-  private static void applicationThread(GLXWindow window, Chromatik.Flags flags, File projectFile, boolean gpuMixer)
+  private static void applicationThread(
+      GLXWindow window, Chromatik.Flags flags, File projectFile, boolean gpuMixer)
       throws IOException {
     final TEApp lx = new TEApp(window, flags);
 

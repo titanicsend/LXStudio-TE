@@ -1,7 +1,13 @@
 package titanicsend.pattern.glengine;
 
+import static com.jogamp.opengl.GL.GL_BGRA;
+import static com.jogamp.opengl.GL.GL_COLOR_ATTACHMENT0;
+import static com.jogamp.opengl.GL.GL_READ_FRAMEBUFFER;
+import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
+
 import heronarts.lx.model.LXModel;
 import heronarts.lx.parameter.LXParameter;
+import java.nio.ByteBuffer;
 import java.util.*;
 import titanicsend.pattern.yoffa.shader_engine.*;
 
@@ -62,6 +68,8 @@ public class TEShader extends GLShader {
 
   // Initialization
 
+  protected ByteBuffer imageBuffer;
+
   /**
    * Called at pattern initialization time to allocate and configure GPU buffers that are common to
    * all shaders.
@@ -83,6 +91,10 @@ public class TEShader extends GLShader {
         shaderProgram.id, perFrameBlockIndex, GLEngine.perFrameUniformBlockBinding);
 
     loadTextureFiles();
+
+    if (this.lx.engine.renderMode.cpu) {
+      this.imageBuffer = TEShader.allocateBackBuffer();
+    }
   }
 
   private void loadTextureFiles() {
@@ -171,6 +183,19 @@ public class TEShader extends GLShader {
     // render a frame
     drawElements();
 
+    if (this.lx.engine.renderMode.cpu && this.cpuBuffer != null) {
+      // TODO: Use ppPBOs for async readback
+      int copyFbo = this.ppFBOs.copy.getFboHandle();
+      gl4.glBindFramebuffer(GL_READ_FRAMEBUFFER, copyFbo);
+      gl4.glReadBuffer(GL_COLOR_ATTACHMENT0);
+
+      this.imageBuffer.rewind();
+      gl4.glReadPixels(0, 0, this.width, this.height, GL_BGRA, GL_UNSIGNED_BYTE, this.imageBuffer);
+
+      this.imageBuffer.rewind();
+      this.imageBuffer.asIntBuffer().get(this.cpuBuffer, 0, this.cpuBuffer.length);
+    }
+
     // Unbind textures (except for audio, which stays bound for all patterns)
     unbindTextureUnit(TEXTURE_UNIT_COORDS);
     unbindTextureUnit(TEXTURE_UNIT_BACKBUFFER);
@@ -187,6 +212,12 @@ public class TEShader extends GLShader {
   /** Called by GLMixer to retrieve the current render texture handle */
   public int getRenderTexture() {
     return this.ppFBOs.render.getTextureHandle();
+  }
+
+  private int[] cpuBuffer = null;
+
+  public void setCpuBuffer(int[] cpuBuffer) {
+    this.cpuBuffer = cpuBuffer;
   }
 
   // Staging Uniforms: LX Model
