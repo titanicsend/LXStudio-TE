@@ -510,9 +510,9 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
         || surface instanceof heronarts.lx.midi.surface.APC40Mk2
         || surface instanceof heronarts.lx.midi.surface.APCminiMk2
         || surface instanceof DirectorAPCminiMk2
-        || surface instanceof jkbstudio.supermod.APCminiMk2
+        || surface instanceof studio.jkb.supermod.APCminiMk2
         || surface instanceof heronarts.lx.midi.surface.MidiFighterTwister
-        || surface instanceof jkbstudio.supermod.MidiFighterTwister
+        || surface instanceof studio.jkb.supermod.MidiFighterTwister
         || surface instanceof heronarts.lx.midi.surface.DJM900nxs2
         || surface instanceof heronarts.lx.midi.surface.DJMV10;
   }

@@ -92,7 +92,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.jkbstudio</groupId>
+            <groupId>studio.jkb</groupId>
             <artifactId>supermod</artifactId>
         </dependency>
 
