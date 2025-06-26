@@ -69247,7 +69247,7 @@
           },
           {
             "id": 500964,
-            "class": "jkbstudio.supermod.MidiFighterTwister",
+            "class": "studio.jkb.supermod.MidiFighterTwister",
             "internal": {
               "modulationColor": 0,
               "modulationControlsExpanded": true,
@@ -69274,7 +69274,7 @@
           },
           {
             "id": 500965,
-            "class": "jkbstudio.supermod.MidiFighterTwister",
+            "class": "studio.jkb.supermod.MidiFighterTwister",
             "internal": {
               "modulationColor": 0,
               "modulationControlsExpanded": true,

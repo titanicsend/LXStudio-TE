@@ -60111,7 +60111,7 @@
             }
           },
           {
-            "class": "jkbstudio.supermod.MidiFighterTwister",
+            "class": "studio.jkb.supermod.MidiFighterTwister",
             "name": "FoH: Midi Fighter Twister",
             "settings": {
               "knobClickMode": 0,
@@ -60122,7 +60122,7 @@
             }
           },
           {
-            "class": "jkbstudio.supermod.MidiFighterTwister",
+            "class": "studio.jkb.supermod.MidiFighterTwister",
             "name": "FoH: Midi Fighter Twister (2)",
             "settings": {
               "knobClickMode": 0,
