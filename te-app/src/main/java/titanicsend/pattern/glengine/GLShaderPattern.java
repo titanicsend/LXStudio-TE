@@ -2,8 +2,10 @@ package titanicsend.pattern.glengine;
 
 import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
+import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Map;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
@@ -44,7 +46,12 @@ public class GLShaderPattern extends TEPerformancePattern {
   }
 
   public GLShaderPattern(LX lx, TEShaderView view) {
-    super(lx, view);
+    this(lx, view, null);
+  }
+
+  public GLShaderPattern(
+      LX lx, TEShaderView view, Map<String, LXListenableNormalizedParameter> extraParams) {
+    super(lx, view, extraParams);
     controlData = new GLPatternControl(this);
   }
 
