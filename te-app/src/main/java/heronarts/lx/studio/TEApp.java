@@ -285,7 +285,6 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(TESparklePattern.class);
       lx.registry.addPattern(TurbulenceLines.class);
       lx.registry.addPattern(TriangleNoise.class);
-      lx.registry.addPattern(OldSpiralDiamonds.class);
       lx.registry.addPattern(PulsingTriangles.class);
       lx.registry.addPattern(Fire.class);
       lx.registry.addPattern(TESolidPattern.class);
