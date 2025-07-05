@@ -43,6 +43,11 @@ Verify your installation:
 /Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java --version
 ```
 
+Make sure JAVA_HOME points to temurin.
+```sh
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/
+```
+
 After installing the Temurin JDK, we recommend installing and building `maven`, a package manager for our project:
 
 ```sh
@@ -362,6 +367,11 @@ If your `~/.m2` Maven cache has any conflicting things, you may need to delete
 the conflicts, otherwise the execution may complain about things like missing
 libraries or invalid versions, and the like. Finding the conflicts is a more
 advanced approach. A simple one is to just delete that whole directory:
+
+Note: If you are having trouble with wrong packages installed here, make sure 
+that you have IntelliJ closed. It may attempt to install missing dependencies when
+after you delete `.m2` when it re-indexes and they will be wrong. Delete the `.m2`
+and reinstall dependencies through an external terminal.
 
 ```shell
 rm -r ~/.m2
