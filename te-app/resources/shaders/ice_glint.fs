@@ -14,20 +14,17 @@
 uniform float iFade;       // {"default": 1.0, "min": 0.0, "max": 2.0}
 uniform float iRotation;   // {"default": 1.0, "min": 0.0, "max": 2.0}
 
-// === UTILITY FUNCTIONS ===
-// Hash function for procedural randomness in crystal placement
 float hash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
 }
 
-// 2D hash function for better random distribution
+// 2D hash function for better randomness
 vec2 hash2(vec2 p) {
     p = vec2(dot(p, vec2(127.1, 311.7)),
              dot(p, vec2(269.5, 183.3)));
     return fract(sin(p) * 43758.5453);
 }
 
-// Triangle containment test using barycentric coordinates
 // Returns barycentric coordinates (u, v, w) where w = 1 - u - v
 vec3 triangleBarycentric(vec2 p, vec2 a, vec2 b, vec2 c) {
     vec2 v0 = c - a;
@@ -47,72 +44,64 @@ vec3 triangleBarycentric(vec2 p, vec2 a, vec2 b, vec2 c) {
     if (u >= 0.0 && v >= 0.0 && u + v <= 1.0) {
         return vec3(u, v, 1.0 - u - v);
     }
-    return vec3(-1.0); // Outside triangle
+    return vec3(-1.0);
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-    // Normalize coordinates to 0-1 range
     vec2 uv = fragCoord / iResolution.xy;
 
-    // Calculate aspect ratio
+    // calculate aspect ratio
     float aspectRatio = iResolution.x / iResolution.y;
 
-    // Map to full coordinate space with aspect ratio correction
     vec2 p = (uv - 0.5) * vec2(aspectRatio, 1.0) * 2.0 / iScale;
 
-    // Initialize accumulation variables for layered effects
     float color = 0.0;
     float maxBrightness = 0.0;
     float t = iTime * iSpeed * 2.0; // Faster default animation
 
-    // Calculate number of triangles based on quantity control
     float numTriangles = floor(iQuantity * 3.0 + 5.0); // 5 to 35 triangles
-
-    // Calculate minimum spacing between triangles
     float minSpacing = max(aspectRatio, 1.0) * 0.3 / sqrt(iQuantity + 1.0);
 
-    // === MULTI-LAYER CRYSTAL GENERATION ===
-    // Create multiple overlapping layers for depth
+    // create multiple overlapping layers for depth
     for (float layer = 0.0; layer < 2.0; layer++) {
         float layerTime = t + layer * 2.0;
 
-        // Generate randomly distributed triangles
+        // generate randomly distributed triangles
         for (float n = 0.0; n < 50.0; n++) {
             if (n >= numTriangles) break;
 
-            // Create unique seed for each triangle
+            // create a unique seed for each triangle
             vec2 triSeed = vec2(n * 137.5, n * 285.7 + layer * 500.0);
 
-            // Generate random position using time-based offset for animation
+            // generate random position for animation
             float timeOffset = floor(layerTime * 0.1 + hash(triSeed) * 10.0);
             vec2 randPos = hash2(triSeed + vec2(timeOffset, 0.0));
 
-            // Map to screen space with proper aspect ratio
+            // map to screen space
             vec2 center = (randPos - 0.5) * vec2(aspectRatio, 1.0) * 2.5;
 
-            // Add slow drift animation
+            // add slow drift animation
             float driftSpeed = 0.1 + hash(triSeed + vec2(3.0, 0.0)) * 0.1;
             center += vec2(
                 sin(layerTime * driftSpeed + hash(triSeed) * 6.28) * 0.1,
                 cos(layerTime * driftSpeed * 0.7 + hash(triSeed + vec2(1.0, 0.0)) * 6.28) * 0.1
             );
 
-            // Animation parameters
+            // animation
             float animPhase = hash(triSeed) * 6.28318;
             float animSpeed = 0.5 + hash(triSeed + vec2(1.0, 0.0)) * 1.0;
 
-            // Create larger, more varied triangles
             vec2 a, b, c;
 
-            // Variable triangle sizes for organic look
+            // change the triangle sizes for organic look
             float sizeVar = 0.5 + hash(triSeed + vec2(4.0, 0.0)) * 0.8;
             float triSize = minSpacing * sizeVar * 2.5; // Large triangles
 
-            // Create different triangle shapes
+            // create various triangle shapes
             float shapeType = hash(triSeed + vec2(8.0, 0.0));
 
             if (shapeType < 0.25) {
-                // Equilateral triangles
+                // equilateral triangles
                 float angle = hash(triSeed + vec2(2.0, 0.0)) * 6.28318;
                 angle += sin(layerTime * animSpeed * 0.2 + animPhase) * 0.1 * iRotation;
 
@@ -121,7 +110,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
                 c = center + vec2(cos(angle + 4.1888) * triSize, sin(angle + 4.1888) * triSize);
             }
             else if (shapeType < 0.5) {
-                // Isosceles triangles - tall
+                // isosceles triangles - tall
                 float angle = hash(triSeed + vec2(2.0, 0.0)) * 6.28318;
                 float stretch = 1.5 + hash(triSeed + vec2(21.0, 0.0)) * 1.0;
 
@@ -129,7 +118,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
                 b = center + vec2(-triSize * 0.7, -triSize * 0.5);
                 c = center + vec2(triSize * 0.7, -triSize * 0.5);
 
-                // Rotate the triangle
+                // rotate the triangle
                 float ca = cos(angle);
                 float sa = sin(angle);
                 vec2 ta = a - center;
@@ -140,7 +129,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
                 c = center + vec2(ca * tc.x - sa * tc.y, sa * tc.x + ca * tc.y);
             }
             else if (shapeType < 0.75) {
-                // Wide triangles
+                // wide triangles
                 float angle = hash(triSeed + vec2(2.0, 0.0)) * 6.28318;
                 float width = 1.5 + hash(triSeed + vec2(22.0, 0.0)) * 0.8;
 
@@ -148,7 +137,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
                 b = center + vec2(-triSize * width, -triSize * 0.4);
                 c = center + vec2(triSize * width, -triSize * 0.4);
 
-                // Rotate
+                // rotate
                 float ca = cos(angle);
                 float sa = sin(angle);
                 vec2 ta = a - center;
@@ -159,7 +148,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
                 c = center + vec2(ca * tc.x - sa * tc.y, sa * tc.x + ca * tc.y);
             }
             else {
-                // Irregular triangles
+                // triangles
                 float angle1 = hash(triSeed + vec2(11.0, 0.0)) * 6.28318;
                 float angle2 = angle1 + 1.5 + hash(triSeed + vec2(12.0, 0.0)) * 2.5;
                 float angle3 = angle2 + 1.5 + hash(triSeed + vec2(13.0, 0.0)) * 2.5;
@@ -175,58 +164,57 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
             vec3 bary = triangleBarycentric(p, a, b, c);
             if (bary.x >= 0.0) {
-                // Layer-based maximum opacity
+                // layer-based maximum opacity
                 float layerOpacity = 1.0 - layer * 0.3;
                 float maxOpacity = (0.4 + 0.6 * hash(triSeed + vec2(6.0, 0.0))) * layerOpacity;
 
-                // Electric glint sweep
+                // glint sweep
                 float wavePhase = layerTime * animSpeed * 2.5 + animPhase;
 
-                // Directional wave across triangle
+                // directional wave across triangle
                 float waveDir = hash(triSeed + vec2(7.0, 0.0)) * 6.28318;
                 float wavePosition = bary.x * cos(waveDir) + bary.y * sin(waveDir) + bary.z * 0.5;
 
-                // Create a sharp electric sweep line
+                // create glint line
                 float sweepSpeed = 4.0 + hash(triSeed + vec2(25.0, 0.0)) * 2.0;
                 float sweepPos = fract(wavePhase / sweepSpeed);
 
-                // Sharp bright line with falloff
+                // sharp bright line with falloff
                 float lineDist = abs(wavePosition - sweepPos);
                 float lineWidth = 0.08 + 0.04 * sin(wavePhase * 8.0); // Pulsing width
                 float electricLine = exp(-lineDist * lineDist / (lineWidth * lineWidth)) * 2.0;
 
-                // Add some electric flicker
+                // add flicker
                 float flicker = 0.8 + 0.2 * sin(wavePhase * 30.0 + hash(triSeed + vec2(26.0, 0.0)) * 10.0);
                 electricLine *= flicker;
 
-                // Background shimmer (reduced)
+                // background shimmer (reduced)
                 float shimmer = sin(wavePosition * 15.0 + wavePhase * 2.0) * 0.1 + 0.1;
 
                 float glint = shimmer + electricLine * iWow2;
 
-                // Strong edge highlighting for crystalline look
+                // edge highlighting
                 float edgeDist = min(min(bary.x, bary.y), bary.z);
                 float edgeGlow = 1.0 - smoothstep(0.0, 0.15, edgeDist);
                 float edgeFlash = edgeGlow * (0.5 + 0.5 * sin(wavePhase * 2.0));
                 glint = max(glint, edgeFlash);
 
-                // Rapid fade in/out for dynamic appearance
+                // fade in/out
                 float fadeTime = layerTime * animSpeed * 1.0 + animPhase * 4.0;
                 float fadeInOut = pow(sin(fadeTime) * 0.5 + 0.5, 2.0) * maxOpacity;
 
-                // Apply WOW1 control to overall effect intensity
-                // Electric line becomes more prominent during fade-out
+                // apply WOW1 control
+                // glint line becomes more prominent during fade-out
                 float fadeFactor = sin(fadeTime) * 0.5 + 0.5;
                 float electricBoost = 1.0 + (1.0 - fadeFactor) * electricLine * 0.5;
                 float finalOpacity = fadeInOut * (0.3 + glint * 0.7 * iWow1) * electricBoost;
 
                 maxBrightness = max(maxBrightness, finalOpacity);
-                color += finalOpacity * (1.0 - color * 0.5); // Soft additive blending
+                color += finalOpacity * (1.0 - color * 0.5); // blend
             }
         }
     }
 
-    // Normalize and apply colors
     color = min(1.0, color);
     vec3 iceColor = mix(iColorRGB, iColor2RGB, color);
 
