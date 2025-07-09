@@ -12,10 +12,9 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
  * <p>a crystalline ice pattern for the deep playa... (features various optical properties that make
  * it sparkle, refract, and glint)
  *
- * <p>controls: - SPEED: Crystallization/melting speed (0-2, default 1) - SIZE: Crystal scale and
- * detail level (0.1-3, default 1) - QUANTITY: Crystal density and count (1-20, default 10) - WOW1:
- * Glint intensity and refraction (0-2, default 1) - WOW2: Temperature/color temperature (0-1,
- * default 0.5)
+ * <p>controls: - SPEED: crystallization/melting speed - SIZE: crystal scale and detail level -
+ * QUANTITY: crystal density and count - WOW1: glint intensity and refraction - WOW2:
+ * temperature/color temperature
  */
 @LXCategory("piemonte shaders")
 public class IceGlint extends GLShaderPattern {
@@ -28,18 +27,18 @@ public class IceGlint extends GLShaderPattern {
   public IceGlint(LX lx) {
     super(lx, TEShaderView.DOUBLE_LARGE);
 
-    controls.setRange(TEControlTag.SPEED, 0, 2, 1);
-    controls.setRange(TEControlTag.SIZE, 0.1, 3, 1);
-    controls.setRange(TEControlTag.QUANTITY, 1, 30, 15);
+    controls.setRange(TEControlTag.SPEED, 0.4, 0, 1);
+    controls.setValue(TEControlTag.SPEED, 0.4);
+
+    controls.setRange(TEControlTag.SIZE, 1, 1, 3);
+
+    controls.setRange(TEControlTag.QUANTITY, 17, 10, 25);
 
     // configure glint intensity
-    controls.setRange(TEControlTag.WOW1, 0, 2, 1);
+    controls.setRange(TEControlTag.WOW1, 1.5, 0, 3);
 
-    // configure temp (affects color: 0=cold blue, 1=warm white)
-    controls.setRange(TEControlTag.WOW2, 0, 1, 0.5);
-
-    // disable unused controls
-    controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
+    // configure temp
+    controls.setRange(TEControlTag.WOW2, 0.5, 0, 1);
 
     addCommonControls();
     addShader("ice_glint.fs");
