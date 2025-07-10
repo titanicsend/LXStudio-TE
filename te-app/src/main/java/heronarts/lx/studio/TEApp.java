@@ -121,8 +121,6 @@ public class TEApp extends LXStudio {
     System.setProperty("java.awt.headless", "true");
   }
 
-  private static final String FLAG_GPU_MIXER = "--gpu";
-
   public static TEWholeModel wholeModel;
 
   private static int WINDOW_WIDTH = 1280;
@@ -972,7 +970,6 @@ public class TEApp extends LXStudio {
       }
 
       boolean headless = false;
-      boolean gpuMixer = false;
       File projectFile = null;
       for (int i = 0; i < args.length; ++i) {
         final String arg = args[i];
@@ -1025,8 +1022,6 @@ public class TEApp extends LXStudio {
           } else {
             error("Missing render resolution");
           }
-        } else if (FLAG_GPU_MIXER.equals(arg)) {
-          gpuMixer = true;
         } else {
           error("Unrecognized CLI argument, ignoring: " + arg);
         }
@@ -1041,13 +1036,12 @@ public class TEApp extends LXStudio {
       // Run the full windowed application
       final GLXWindow window = new GLXWindow(flags);
       final File finalProjectFile = projectFile;
-      final boolean enableGpuMixer = gpuMixer;
 
       // Start the GLX Chromatik application on another thread
       new Thread(
               () -> {
                 try {
-                  applicationThread(window, flags, finalProjectFile, enableGpuMixer);
+                  applicationThread(window, flags, finalProjectFile);
                 } catch (Throwable x) {
                   error(
                       x,
@@ -1066,14 +1060,9 @@ public class TEApp extends LXStudio {
   }
 
   private static void applicationThread(
-      GLXWindow window, Chromatik.Flags flags, File projectFile, boolean gpuMixer)
+      GLXWindow window, Chromatik.Flags flags, File projectFile)
       throws IOException {
     final TEApp lx = new TEApp(window, flags);
-
-    // Enable experimental GPU mixer
-    if (gpuMixer) {
-      lx.engine.renderMode = LXEngine.RenderMode.GPU;
-    }
 
     // Schedule a task to load the initial project file at launch
     final File finalProjectFile = projectFile;
