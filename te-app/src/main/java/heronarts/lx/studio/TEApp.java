@@ -19,7 +19,6 @@ import heronarts.glx.GLXWindow;
 import heronarts.glx.event.GamepadEvent;
 import heronarts.glx.event.KeyEvent;
 import heronarts.lx.LX;
-import heronarts.lx.LXEngine;
 import heronarts.lx.LXPlugin;
 import heronarts.lx.mixer.LXBus;
 import heronarts.lx.mixer.LXChannel;
@@ -1059,8 +1058,7 @@ public class TEApp extends LXStudio {
     }
   }
 
-  private static void applicationThread(
-      GLXWindow window, Chromatik.Flags flags, File projectFile)
+  private static void applicationThread(GLXWindow window, Chromatik.Flags flags, File projectFile)
       throws IOException {
     final TEApp lx = new TEApp(window, flags);
 

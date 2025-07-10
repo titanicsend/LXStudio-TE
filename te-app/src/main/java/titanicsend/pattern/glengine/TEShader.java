@@ -1,13 +1,13 @@
 package titanicsend.pattern.glengine;
 
 import static com.jogamp.opengl.GL.GL_BGRA;
-import static com.jogamp.opengl.GL.GL_COLOR_ATTACHMENT0;
-import static com.jogamp.opengl.GL.GL_READ_FRAMEBUFFER;
 import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
 
+import com.jogamp.opengl.GL4;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.parameter.LXParameter;
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.*;
 import titanicsend.pattern.yoffa.shader_engine.*;
 
@@ -32,6 +32,17 @@ public class TEShader extends GLShader {
 
   private final ArrayList<TextureInfo> textures = new ArrayList<>();
 
+  // TODO(JKB): this combination of CPU and GPU render variables is a bit of a mess
+  // but for now they're crammed in here so we can develop both on one branch
+
+  // CPU Mode:
+  // Framebuffer object (FBO) for rendering
+  private FBO fbo;
+
+  // Pixel Pack Buffers (PBOs) for ping-pong output
+  private PingPongPBO ppPBOs;
+
+  // GPU Mode:
   // Render buffers: ping-pong FBOs and textures
   private PingPongFBO ppFBOs;
 
@@ -78,8 +89,20 @@ public class TEShader extends GLShader {
   protected void allocateShaderBuffers() {
     super.allocateShaderBuffers();
 
-    // Create ping-pong FBOs (framebuffers) and textures for rendering
-    this.ppFBOs = new PingPongFBO();
+    if (this.lx.engine.renderMode.cpu) {
+      // CPU Mode
+      // FBO (framebuffer and texture) for rendering
+      this.fbo = new FBO();
+
+      // Pixel Pack Buffers (PBOs) for ping-pong output
+      this.ppPBOs = new PingPongPBO();
+
+      this.imageBuffer = TEShader.allocateBackBuffer();
+    } else {
+      // GPU Mode
+      // Create ping-pong FBOs (framebuffers) and textures for rendering
+      this.ppFBOs = new PingPongFBO();
+    }
 
     // assign shared uniform blocks to the shader's binding points
     int perRunBlockIndex = this.gl4.glGetUniformBlockIndex(shaderProgram.id, "PerRunBlock");
@@ -91,10 +114,6 @@ public class TEShader extends GLShader {
         shaderProgram.id, perFrameBlockIndex, GLEngine.perFrameUniformBlockBinding);
 
     loadTextureFiles();
-
-    if (this.lx.engine.renderMode.cpu) {
-      this.imageBuffer = TEShader.allocateBackBuffer();
-    }
   }
 
   private void loadTextureFiles() {
@@ -127,8 +146,10 @@ public class TEShader extends GLShader {
       initializeUniforms();
     }
 
-    // Swap render/copy FBOs
-    this.ppFBOs.swap();
+    if (this.lx.engine.renderMode.gpu) {
+      // Swap render/copy FBOs
+      this.ppFBOs.swap();
+    }
 
     // Set audio waveform and fft data as a 512x2 texture on the specified audio
     // channel if it's a shadertoy shader, or iChannel0 if it's a local shader.
@@ -152,7 +173,11 @@ public class TEShader extends GLShader {
     this.uniforms.lxModelCoords.setValue(TEXTURE_UNIT_COORDS);
 
     // Use older FBO as backbuffer
-    bindTextureUnit(TEXTURE_UNIT_BACKBUFFER, this.ppFBOs.copy.getTextureHandle());
+    int backBufferHandle =
+        this.lx.engine.renderMode.gpu
+            ? this.ppFBOs.copy.getTextureHandle()
+            : this.ppPBOs.copy.getHandle();
+    bindTextureUnit(TEXTURE_UNIT_BACKBUFFER, backBufferHandle);
     this.uniforms.backBuffer.setValue(TEXTURE_UNIT_BACKBUFFER);
 
     // GL will complain if you don't assign a unit to the sampler2D...
@@ -172,28 +197,59 @@ public class TEShader extends GLShader {
     }
   }
 
+  boolean firstFrame = true;
+
   @Override
   protected void render() {
     // Bind vertex array object
     bindVAO();
 
     // Bind framebuffer object (FBO)
-    this.ppFBOs.render.bind();
+    if (this.lx.engine.renderMode.cpu) {
+      this.fbo.bind();
+    } else {
+      this.ppFBOs.render.bind();
+    }
 
     // render a frame
     drawElements();
 
+    // JKB note: Retrofit of CPU compatibility for the GPU branch:
     if (this.lx.engine.renderMode.cpu && this.cpuBuffer != null) {
-      // TODO: Use ppPBOs for async readback
-      int copyFbo = this.ppFBOs.copy.getFboHandle();
-      gl4.glBindFramebuffer(GL_READ_FRAMEBUFFER, copyFbo);
-      gl4.glReadBuffer(GL_COLOR_ATTACHMENT0);
+      // Bind the current PBO
+      this.ppPBOs.render.bind();
 
-      this.imageBuffer.rewind();
-      gl4.glReadPixels(0, 0, this.width, this.height, GL_BGRA, GL_UNSIGNED_BYTE, this.imageBuffer);
+      gl4.glReadPixels(0, 0, this.width, this.height, GL_BGRA, GL_UNSIGNED_BYTE, 0);
 
-      this.imageBuffer.rewind();
-      this.imageBuffer.asIntBuffer().get(this.cpuBuffer, 0, this.cpuBuffer.length);
+      if (firstFrame) {
+        // Skip the first frame, PBO is empty
+        firstFrame = false;
+      } else {
+
+        // Map the other PBO for reading (from previous frame)
+        this.ppPBOs.copy.bind();
+
+        this.imageBuffer = this.gl4.glMapBuffer(GL4.GL_PIXEL_PACK_BUFFER, GL4.GL_READ_ONLY);
+
+        if (this.imageBuffer != null) {
+          // Copy data from PBO to cpu buffer
+          this.imageBuffer.rewind();
+          IntBuffer src = this.imageBuffer.asIntBuffer();
+          // Clamp
+          int count = Math.min(src.remaining(), this.cpuBuffer.length);
+          // Safe copy
+          src.get(this.cpuBuffer, 0, count);
+
+          // Unmap the PBO
+          this.gl4.glUnmapBuffer(GL4.GL_PIXEL_PACK_BUFFER);
+        }
+      }
+
+      // Unbind the PBO
+      this.gl4.glBindBuffer(GL4.GL_PIXEL_PACK_BUFFER, 0);
+
+      // Switch to the next PBO for the next frame
+      this.ppPBOs.swap();
     }
 
     // Unbind textures (except for audio, which stays bound for all patterns)
@@ -241,7 +297,12 @@ public class TEShader extends GLShader {
   public void dispose() {
     // release all OpenGL GPU resources we've allocated
     if (isInitialized()) {
-      this.ppFBOs.dispose();
+      if (this.lx.engine.renderMode.cpu) {
+        this.fbo.dispose();
+        this.ppPBOs.dispose();
+      } else {
+        this.ppFBOs.dispose();
+      }
 
       // free any textures on ShaderToy channels
       for (TextureInfo ti : this.textures) {
