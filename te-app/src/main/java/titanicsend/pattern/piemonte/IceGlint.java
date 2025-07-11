@@ -27,7 +27,7 @@ public class IceGlint extends GLShaderPattern {
   public IceGlint(LX lx) {
     super(lx, TEShaderView.DOUBLE_LARGE);
 
-    controls.setRange(TEControlTag.SPEED, 0.4, 0, 1);
+    controls.setRange(TEControlTag.SPEED, 0.4, -1, 1);
 
     controls.setRange(TEControlTag.SIZE, 1, 1, 3);
 
