@@ -27,7 +27,9 @@ public class IceGlint extends GLShaderPattern {
   public IceGlint(LX lx) {
     super(lx, TEShaderView.DOUBLE_LARGE);
 
-    controls.setRange(TEControlTag.SPEED, 0.4, -1, 1);
+    // configure time travel support for reversal
+    controls.setRange(TEControlTag.SPEED, 0.0, -1, 1);
+    controls.setValue(TEControlTag.SPEED, 0.4);
 
     controls.setRange(TEControlTag.SIZE, 1, 1, 3);
 
