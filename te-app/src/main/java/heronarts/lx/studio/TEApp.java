@@ -88,6 +88,7 @@ import titanicsend.pattern.jon.*;
 import titanicsend.pattern.justin.*;
 import titanicsend.pattern.look.*;
 import titanicsend.pattern.mike.*;
+import titanicsend.pattern.piemonte.IceGlint;
 import titanicsend.pattern.pixelblaze.*;
 import titanicsend.pattern.sinas.LightBeamsAudioReactivePattern;
 import titanicsend.pattern.sinas.TdNdiPattern;
@@ -289,6 +290,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(Fire.class);
       lx.registry.addPattern(TESolidPattern.class);
       lx.registry.addPattern(TEGradientPattern.class);
+      lx.registry.addPattern(IceGlint.class);
 
       // Patterns that will not aspire to art direction standards
       lx.registry.addPattern(SigmoidDanceAudioWaveform.class);

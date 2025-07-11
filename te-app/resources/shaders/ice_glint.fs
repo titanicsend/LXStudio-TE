@@ -1,8 +1,6 @@
 // Ice Glint - crystalline ice formations for the deep playa
 // simulates ice crystal structures with light refraction and glinting
 //
-uniform float iFade;       // {"default": 1.0, "min": 0.0, "max": 2.0}
-uniform float iRotation;   // {"default": 1.0, "min": 0.0, "max": 2.0}
 
 float hash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
@@ -47,7 +45,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     float color = 0.0;
     float maxBrightness = 0.0;
-    float t = iTime * iSpeed * 2.0; // Faster default animation
+    float t = iTime * 2.0; // faster default animation
 
     float numTriangles = floor(iQuantity * 3.0 + 5.0); // 5 to 35 triangles
     float minSpacing = max(aspectRatio, 1.0) * 0.3 / sqrt(iQuantity + 1.0);
@@ -93,7 +91,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
             if (shapeType < 0.25) {
                 // equilateral triangles
                 float angle = hash(triSeed + vec2(2.0, 0.0)) * 6.28318;
-                angle += sin(layerTime * animSpeed * 0.2 + animPhase) * 0.1 * iRotation;
+                angle += sin(layerTime * animSpeed * 0.2 + animPhase) * iSpin;
 
                 a = center + vec2(cos(angle) * triSize, sin(angle) * triSize);
                 b = center + vec2(cos(angle + 2.0944) * triSize, sin(angle + 2.0944) * triSize);
@@ -200,7 +198,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
                 float finalOpacity = fadeInOut * (0.3 + glint * 0.7 * iWow1) * electricBoost;
 
                 maxBrightness = max(maxBrightness, finalOpacity);
-                color += finalOpacity * (1.0 - color * 0.5); // blend
+                color += maxBrightness * (1.0 - color * 0.5); // blend
             }
         }
     }
@@ -208,5 +206,5 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     color = min(1.0, color);
     vec3 iceColor = mix(iColorRGB, iColor2RGB, color);
 
-    fragColor = vec4(iceColor * color, 1.0);
+    fragColor = vec4(iceColor, color);
 }

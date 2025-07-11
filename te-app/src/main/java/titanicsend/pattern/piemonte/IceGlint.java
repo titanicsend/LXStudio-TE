@@ -28,7 +28,6 @@ public class IceGlint extends GLShaderPattern {
     super(lx, TEShaderView.DOUBLE_LARGE);
 
     controls.setRange(TEControlTag.SPEED, 0.4, 0, 1);
-    controls.setValue(TEControlTag.SPEED, 0.4);
 
     controls.setRange(TEControlTag.SIZE, 1, 1, 3);
 
@@ -39,6 +38,9 @@ public class IceGlint extends GLShaderPattern {
 
     // configure temp
     controls.setRange(TEControlTag.WOW2, 0.5, 0, 1);
+
+    // disable unused controls
+    controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
 
     addCommonControls();
     addShader("ice_glint.fs");
