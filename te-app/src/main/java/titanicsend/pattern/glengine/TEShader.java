@@ -35,14 +35,9 @@ public class TEShader extends GLShader {
   // TODO(JKB): this combination of CPU and GPU render variables is a bit of a mess
   // but for now they're crammed in here so we can develop both on one branch
 
-  // CPU Mode:
-  // Framebuffer object (FBO) for rendering
-  private FBO fbo;
-
-  // Pixel Pack Buffers (PBOs) for ping-pong output
+  // CPU Mode: Pixel Pack Buffers (PBOs) for ping-pong output
   private PingPongPBO ppPBOs;
 
-  // GPU Mode:
   // Render buffers: ping-pong FBOs and textures
   private PingPongFBO ppFBOs;
 
@@ -89,19 +84,15 @@ public class TEShader extends GLShader {
   protected void allocateShaderBuffers() {
     super.allocateShaderBuffers();
 
-    if (this.lx.engine.renderMode.cpu) {
-      // CPU Mode
-      // FBO (framebuffer and texture) for rendering
-      this.fbo = new FBO();
+    // Create ping-pong FBOs (framebuffers) and textures for rendering
+    this.ppFBOs = new PingPongFBO();
 
+    // CPU Mode output
+    if (this.lx.engine.renderMode.cpu) {
       // Pixel Pack Buffers (PBOs) for ping-pong output
       this.ppPBOs = new PingPongPBO();
 
       this.imageBuffer = TEShader.allocateBackBuffer();
-    } else {
-      // GPU Mode
-      // Create ping-pong FBOs (framebuffers) and textures for rendering
-      this.ppFBOs = new PingPongFBO();
     }
 
     // assign shared uniform blocks to the shader's binding points
@@ -146,10 +137,8 @@ public class TEShader extends GLShader {
       initializeUniforms();
     }
 
-    if (this.lx.engine.renderMode.gpu) {
-      // Swap render/copy FBOs
-      this.ppFBOs.swap();
-    }
+    // Swap render/copy FBOs
+    this.ppFBOs.swap();
 
     // Set audio waveform and fft data as a 512x2 texture on the specified audio
     // channel if it's a shadertoy shader, or iChannel0 if it's a local shader.
@@ -173,10 +162,7 @@ public class TEShader extends GLShader {
     this.uniforms.lxModelCoords.setValue(TEXTURE_UNIT_COORDS);
 
     // Use older FBO as backbuffer
-    int backBufferHandle =
-        this.lx.engine.renderMode.gpu
-            ? this.ppFBOs.copy.getTextureHandle()
-            : this.ppPBOs.copy.getHandle();
+    int backBufferHandle = this.ppFBOs.copy.getTextureHandle();
     bindTextureUnit(TEXTURE_UNIT_BACKBUFFER, backBufferHandle);
     this.uniforms.backBuffer.setValue(TEXTURE_UNIT_BACKBUFFER);
 
@@ -205,11 +191,7 @@ public class TEShader extends GLShader {
     bindVAO();
 
     // Bind framebuffer object (FBO)
-    if (this.lx.engine.renderMode.cpu) {
-      this.fbo.bind();
-    } else {
-      this.ppFBOs.render.bind();
-    }
+    this.ppFBOs.render.bind();
 
     // render a frame
     drawElements();
@@ -297,11 +279,9 @@ public class TEShader extends GLShader {
   public void dispose() {
     // release all OpenGL GPU resources we've allocated
     if (isInitialized()) {
+      this.ppFBOs.dispose();
       if (this.lx.engine.renderMode.cpu) {
-        this.fbo.dispose();
         this.ppPBOs.dispose();
-      } else {
-        this.ppFBOs.dispose();
       }
 
       // free any textures on ShaderToy channels
