@@ -138,8 +138,8 @@ public class TEApp extends LXStudio {
   // model points allowed. May be changed via the startup
   // command line argument --resolution=WIDTHxHEIGHT
   // (Default allows roughly 102,000 points.)
-  public static int glRenderWidth = 1920;
-  public static int glRenderHeight = 1200;
+  public static int glRenderWidth = 480;
+  public static int glRenderHeight = 480;
 
   public static GamepadEngine gamepadEngine;
 
