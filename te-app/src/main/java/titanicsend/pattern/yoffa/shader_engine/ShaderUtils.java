@@ -300,6 +300,11 @@ public class ShaderUtils {
       gl4.glGenVertexArrays(1, compileVao, 0);
     }
     gl4.glBindVertexArray(compileVao[0]);
+    // JKB note 7-12-25: A new problem has appeared. When a project file is
+    // manually opened after launch, the default framebuffer is not bound
+    // at pattern constructor time which causes a validation error.
+    // Binding it here to avoid errors:
+    gl4.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, 0);
   }
 
   private static void unbindCompileVAO(GL4 gl4) {
