@@ -82,7 +82,7 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   public final TextureManager textureCache;
 
   // GPU Mixer Engine
-  private final GLMixer mixer;
+  private GLMixer mixer;
 
   // Data and utility methods for the GL canvas/context.
   private GLAutoDrawable canvas = null;
@@ -434,7 +434,9 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
     // Child engines
     this.textureCache = new TextureManager(lx, this);
-    this.mixer = new GLMixer(lx, this);
+    if (this.lx.engine.renderMode.gpu) {
+      this.mixer = new GLMixer(lx, this);
+    }
 
     // set up audio fft and waveform handling
     // TODO - strongly consider expanding the number of FFT bands.
@@ -459,7 +461,9 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
     // Initialize child engines
     this.textureCache.initialize(this.gl4);
-    this.mixer.initialize(this.gl4);
+    if (this.lx.engine.renderMode.gpu) {
+      this.mixer.initialize(this.gl4);
+    }
 
     // set up the per-frame audio info texture
     initializeAudioTexture();
@@ -502,7 +506,9 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     updateAudioTexture();
     updatePerFrameUniforms();
 
-    this.mixer.loop();
+    if (this.lx.engine.renderMode.gpu) {
+      this.mixer.loop();
+    }
   }
 
   @Override
@@ -517,7 +523,9 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
     ShaderUtils.disposeCompileVAO(this.gl4);
 
-    this.mixer.dispose();
+    if (this.lx.engine.renderMode.gpu) {
+      this.mixer.dispose();
+    }
 
     super.dispose();
   }
