@@ -8,9 +8,7 @@ import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import titanicsend.color.TEColorParameter;
 import titanicsend.color.TEGradientSource;
 import titanicsend.pattern.jon.TEControl;
@@ -25,6 +23,9 @@ public class TECommonControls {
 
   private final HashMap<TEControlTag, TEControl> controlList =
       new HashMap<TEControlTag, TEControl>();
+
+  // package-protexted, so it's accessible to TEPerformancePattern
+  final Map<String, LXListenableNormalizedParameter> extraParams;
 
   public final Set<LXNormalizedParameter> unusedParams = new HashSet<>();
 
@@ -46,8 +47,10 @@ public class TECommonControls {
         }
       };
 
-  TECommonControls(TEPerformancePattern pat) {
+  TECommonControls(
+      TEPerformancePattern pat, Map<String, LXListenableNormalizedParameter> extraParams) {
     this.pattern = pat;
+    this.extraParams = extraParams;
 
     panic.addListener(panicListener);
 
@@ -101,12 +104,11 @@ public class TECommonControls {
     setControl(TEControlTag.QUANTITY, p);
 
     p =
-        (CompoundParameter)
-            new CompoundParameter(TEControlTag.SPIN.getLabel(), 0, -1.0, 1.0)
-                .setPolarity(LXParameter.Polarity.BIPOLAR)
-                .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
-                .setExponent(2)
-                .setDescription("Spin");
+        new CompoundParameter(TEControlTag.SPIN.getLabel(), 0, -1.0, 1.0)
+            .setPolarity(LXParameter.Polarity.BIPOLAR)
+            .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
+            .setExponent(2)
+            .setDescription("Spin");
 
     setControl(TEControlTag.SPIN, p);
 
@@ -278,36 +280,32 @@ public class TECommonControls {
     LXListenableNormalizedParameter newControl;
     if (oldControl instanceof CompoundParameter) {
       newControl =
-          (CompoundParameter)
-              new CompoundParameter(label, value, v0, v1)
-                  .setNormalizationCurve(((CompoundParameter) oldControl).getNormalizationCurve())
-                  .setExponent(oldControl.getExponent())
-                  .setDescription(oldControl.getDescription())
-                  .setPolarity(oldControl.getPolarity())
-                  .setUnits(oldControl.getUnits());
+          new CompoundParameter(label, value, v0, v1)
+              .setNormalizationCurve(((CompoundParameter) oldControl).getNormalizationCurve())
+              .setExponent(oldControl.getExponent())
+              .setDescription(oldControl.getDescription())
+              .setPolarity(oldControl.getPolarity())
+              .setUnits(oldControl.getUnits());
     } else if (oldControl instanceof BoundedParameter) {
       newControl =
-          (BoundedParameter)
-              new BoundedParameter(label, value, v0, v1)
-                  .setNormalizationCurve(((BoundedParameter) oldControl).getNormalizationCurve())
-                  .setExponent(oldControl.getExponent())
-                  .setDescription(oldControl.getDescription())
-                  .setPolarity(oldControl.getPolarity())
-                  .setUnits(oldControl.getUnits());
+          new BoundedParameter(label, value, v0, v1)
+              .setNormalizationCurve(((BoundedParameter) oldControl).getNormalizationCurve())
+              .setExponent(oldControl.getExponent())
+              .setDescription(oldControl.getDescription())
+              .setPolarity(oldControl.getPolarity())
+              .setUnits(oldControl.getUnits());
     } else if (oldControl instanceof BooleanParameter) {
       newControl =
-          (BooleanParameter)
-              new BooleanParameter(label)
-                  .setMode(((BooleanParameter) oldControl).getMode())
-                  .setDescription(oldControl.getDescription())
-                  .setUnits(oldControl.getUnits());
+          new BooleanParameter(label)
+              .setMode(((BooleanParameter) oldControl).getMode())
+              .setDescription(oldControl.getDescription())
+              .setUnits(oldControl.getUnits());
     } else if (oldControl instanceof DiscreteParameter) {
       newControl =
-          (DiscreteParameter)
-              new DiscreteParameter(label, ((DiscreteParameter) oldControl).getOptions())
-                  .setIncrementMode(((DiscreteParameter) oldControl).getIncrementMode())
-                  .setDescription(oldControl.getDescription())
-                  .setUnits(oldControl.getUnits());
+          new DiscreteParameter(label, ((DiscreteParameter) oldControl).getOptions())
+              .setIncrementMode(((DiscreteParameter) oldControl).getIncrementMode())
+              .setDescription(oldControl.getDescription())
+              .setUnits(oldControl.getUnits());
     } else {
       TE.error("Unrecognized control type in TE Common Control " + oldControl.getClass().getName());
       return oldControl;
@@ -348,12 +346,23 @@ public class TECommonControls {
       colorPrefix = "[x] ";
     }
     TEColorParameter colorParam = registerColorControl(colorPrefix);
+
+    if (this.extraParams != null) {
+      for (Map.Entry<String, LXListenableNormalizedParameter> extra : this.extraParams.entrySet()) {
+        this.pattern.addParam(extra.getKey(), extra.getValue());
+      }
+    }
   }
 
   /** Included for consistency. We may need it later. */
   public void removeCommonControls() {
     for (TEControlTag tag : controlList.keySet()) {
       this.pattern.removeParam(tag.getPath());
+    }
+    if (this.extraParams != null) {
+      for (Map.Entry<String, LXListenableNormalizedParameter> extra : this.extraParams.entrySet()) {
+        this.pattern.removeParam(extra.getKey());
+      }
     }
     controlList.clear();
   }
@@ -364,28 +373,34 @@ public class TECommonControls {
 
   /** Set remote controls in order they will appear on the midi surfaces */
   protected void setRemoteControls() {
-    this.pattern.setCustomRemoteControls(
-        new LXListenableNormalizedParameter[] {
-          // this.color.gradient,
-          getControl(TEControlTag.LEVELREACTIVITY).control,
-          getControl(TEControlTag.FREQREACTIVITY).control,
-          this.pattern.view,
-          getControl(TEControlTag.SPEED).control,
-          getControl(TEControlTag.XPOS).control,
-          getControl(TEControlTag.YPOS).control,
-          getControl(TEControlTag.QUANTITY).control,
-          getControl(TEControlTag.SIZE).control,
-          getControl(TEControlTag.ANGLE).control,
-          getControl(TEControlTag.SPIN).control,
-          this.panic,
-          null,
-          getControl(TEControlTag.WOW1).control,
-          getControl(TEControlTag.WOW2).control,
-          getControl(TEControlTag.WOWTRIGGER).control,
-          this.color.offset,
-          this.pattern.captureDefaults
-          // To be SHIFT, not implemented yet
-        });
+
+    List<LXListenableNormalizedParameter> params =
+        new ArrayList<>(
+            Arrays.asList(
+                // this.color.gradient,
+                getControl(TEControlTag.LEVELREACTIVITY).control,
+                getControl(TEControlTag.FREQREACTIVITY).control,
+                this.pattern.view,
+                getControl(TEControlTag.SPEED).control,
+                getControl(TEControlTag.XPOS).control,
+                getControl(TEControlTag.YPOS).control,
+                getControl(TEControlTag.QUANTITY).control,
+                getControl(TEControlTag.SIZE).control,
+                getControl(TEControlTag.ANGLE).control,
+                getControl(TEControlTag.SPIN).control,
+                this.panic,
+                null,
+                getControl(TEControlTag.WOW1).control,
+                getControl(TEControlTag.WOW2).control,
+                getControl(TEControlTag.WOWTRIGGER).control,
+                this.color.offset,
+                this.pattern.captureDefaults
+                // To be SHIFT, not implemented yet
+                ));
+    if (this.extraParams != null && !this.extraParams.isEmpty()) {
+      params.addAll(this.extraParams.values());
+    }
+    this.pattern.setCustomRemoteControls(params.toArray(new LXListenableNormalizedParameter[0]));
   }
 
   protected TEColorParameter registerColorControl(String prefix) {
