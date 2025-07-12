@@ -1,5 +1,6 @@
 package titanicsend.pattern.glengine;
 
+import heronarts.lx.GpuDevice;
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXModel;
@@ -16,7 +17,7 @@ import titanicsend.pattern.yoffa.shader_engine.Uniform;
  * Wrapper class for OpenGL shaders. Simplifies handling of context and native memory management,
  * and provides a convenient interface for adding shaders to a pattern.
  */
-public class GLShaderPattern extends TEPerformancePattern {
+public class GLShaderPattern extends TEPerformancePattern implements GpuDevice {
 
   public static final int NO_TEXTURE = -1;
 
