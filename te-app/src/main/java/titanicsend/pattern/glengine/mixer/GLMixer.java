@@ -1,15 +1,10 @@
 package titanicsend.pattern.glengine.mixer;
 
-import static com.jogamp.opengl.GL.GL_FRAMEBUFFER;
-import static com.jogamp.opengl.GL.GL_LINEAR;
-import static com.jogamp.opengl.GL.GL_RGBA;
-import static com.jogamp.opengl.GL.GL_RGBA8;
-import static com.jogamp.opengl.GL.GL_TEXTURE0;
-import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
-import static com.jogamp.opengl.GL.GL_TEXTURE_MAG_FILTER;
-import static com.jogamp.opengl.GL.GL_TEXTURE_MIN_FILTER;
-import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
-import static titanicsend.pattern.glengine.GLShaderPattern.NO_TEXTURE;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.jogamp.opengl.GL4;
 import heronarts.lx.LX;
@@ -24,14 +19,20 @@ import heronarts.lx.mixer.LXMasterBus;
 import heronarts.lx.mixer.LXMixerEngine;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.pattern.LXPattern;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import titanicsend.pattern.glengine.GLEngine;
 import titanicsend.pattern.glengine.GLShaderEffect;
 import titanicsend.pattern.glengine.GLShaderPattern;
+
+import static com.jogamp.opengl.GL.GL_FRAMEBUFFER;
+import static com.jogamp.opengl.GL.GL_LINEAR;
+import static com.jogamp.opengl.GL.GL_RGBA;
+import static com.jogamp.opengl.GL.GL_RGBA8;
+import static com.jogamp.opengl.GL.GL_TEXTURE0;
+import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
+import static com.jogamp.opengl.GL.GL_TEXTURE_MAG_FILTER;
+import static com.jogamp.opengl.GL.GL_TEXTURE_MIN_FILTER;
+import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
+import static titanicsend.pattern.glengine.GLShaderPattern.NO_TEXTURE;
 
 /** Experimental OpenGL-based LX mixer */
 public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer {
@@ -48,6 +49,9 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
 
   // Wrapper classes around LX channels
   private final GLMasterBus glMasterBus;
+  private final GLPreviewBus glCueBus;
+  private final GLPreviewBus glAuxBus;
+
   private final Map<LXAbstractChannel, GLAbstractChannel> channelMap = new HashMap<>();
   private final List<GLAbstractChannel> glChannels = new ArrayList<>();
 
@@ -56,6 +60,8 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     this.glEngine = glEngine;
 
     this.glMasterBus = new GLMasterBus(lx.engine.mixer.masterBus);
+    this.glCueBus = new GLPreviewBus(lx.engine.mixer.getFocusedChannel(), true);
+    this.glAuxBus = new GLPreviewBus(lx.engine.mixer.getFocusedChannelAux(), false);
 
     // Register for channels added/removed
     this.lx.engine.mixer.addListener(this);
@@ -92,6 +98,8 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
 
     // Initialize shader programs for any channels that were already created
     this.glMasterBus.init();
+    this.glCueBus.init();
+    this.glAuxBus.init();
     for (GLAbstractChannel glChannel : this.glChannels) {
       glChannel.init();
     }
@@ -123,9 +131,23 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
 
     // Set the target CPU buffer
     this.glMasterBus.setMain(main);
+    this.glCueBus.setCpuBuffer(cue);
+    this.glAuxBus.setCpuBuffer(aux);
 
     // Recursive run the buses
     this.glMasterBus.blend(this.blackBackground);
+
+    this.glCueBus.blend(this.blackBackground);
+    this.glAuxBus.blend(this.blackBackground);
+
+    // TODO: postMix() should probably accept LXEngine.Frame, so it can
+    //       also set the active states for the buffers.
+    boolean cueBusActive = this.glCueBus.isBusActive;
+    boolean auxBusActive = this.glAuxBus.isBusActive;
+
+//    // Mark the cue active state of the buffer
+//    render.setCueOn(cueBusActive);
+//    render.setAuxOn(auxBusActive);
 
     // Unbind framebuffer, the next GL commands might be out of GLEngine scope...
     this.gl4.glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -297,6 +319,74 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     @Override
     protected void dispose() {
       this.mainBusShader.dispose();
+    }
+  }
+
+  private class GLPreviewBus extends GLBus {
+
+    private final BusShader previewBusShader;
+    private final boolean isCue;
+    private boolean isBusActive = false;
+
+    public GLPreviewBus(LXBus masterBus, boolean isCue) {
+      super(masterBus);
+      this.previewBusShader = new BusShader(lx);
+      this.isCue = isCue;
+    }
+
+    void init() {
+      this.previewBusShader.init();
+    }
+
+    protected boolean isActive() {
+      return isCue || isPerformanceMode();
+    }
+
+    protected boolean isPerformanceMode() {
+      return lx.engine.performanceMode.isOn();
+    }
+
+    @Override
+    protected int blendContents() {
+      int dst = blackBackground;
+      isBusActive = false;
+
+      if (isCue) {
+        for (LXAbstractChannel channel : lx.engine.mixer.channels) {
+          if (channel.cueActive.isOn()) {
+            GLAbstractChannel glChannel = channelMap.get(channel);
+            dst = glChannel.blend(dst);
+          }
+        }
+      } else if (isPerformanceMode()) {
+        for (LXAbstractChannel channel : lx.engine.mixer.channels) {
+          if (channel.auxActive.isOn()) {
+            GLAbstractChannel glChannel = channelMap.get(channel);
+            dst = glChannel.blend(dst);
+          }
+        }
+      }
+      return dst;
+    }
+
+    /** Set the target CPU buffer for BusShader */
+    void setCpuBuffer(int[] cue) {
+      this.previewBusShader.setMain(cue);
+    }
+
+    @Override
+    protected int finalBlend(int dst, int src) {
+      this.previewBusShader.setSrc(src);
+      this.previewBusShader.setLevel(bus.fader.getValuef());
+      // Render GPU mixer output to current LX engine frame
+      this.previewBusShader.run();
+
+      return this.previewBusShader.getRenderTexture();
+    }
+
+    @Override
+    protected void dispose() {
+      this.previewBusShader.dispose();
     }
   }
 
