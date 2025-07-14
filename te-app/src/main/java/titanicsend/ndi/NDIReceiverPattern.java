@@ -37,6 +37,8 @@ import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.glengine.TEShader;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
+import titanicsend.preset.UIUserPresetCollection;
+import titanicsend.ui.UIMFTControls;
 
 /**
  * Receives video over NDI
@@ -129,19 +131,12 @@ public class NDIReceiverPattern extends GLShaderPattern implements GpuDevice, UI
     addParameter("select", this.select);
     addParameter("gain", this.gain);
 
-/*    setRemoteControls(
-      null,
-      this.controls.getControl(TEControlTag.XPOS).control,
-      this.controls.getControl(TEControlTag.YPOS).control,
-      null,
-      this.controls.getControl(TEControlTag.SIZE).control,
-
-      this.controls.getControl(TEControlTag.ANGLE).control,
-      this.controls.getControl(TEControlTag.SPIN).control,
-      this.controls.panic,
-      this.controls.color.offset
-
-    );*/
+    controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.SPEED));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
   }
 
   @Override
@@ -255,23 +250,52 @@ public class NDIReceiverPattern extends GLShaderPattern implements GpuDevice, UI
     super.dispose();
   }
 
+  /**
+   * Device UI
+   */
   @Override
   public void buildDeviceControls(LXStudio.UI ui, UIDevice uiDevice, NDIReceiverPattern device) {
-    uiDevice.setLayout(UI2dContainer.Layout.VERTICAL, 4);
-    uiDevice.setContentWidth(200);
+    uiDevice.setLayout(UI2dContainer.Layout.NONE);
+
+    // Remote controls, MFT-layout
+    UIMFTControls mftControls = new UIMFTControls(ui, device, uiDevice.getContentHeight());
+
+    // NDI source controls
+    newNDIcontrols(ui, device)
+      .addToContainer(mftControls);
+
+    // User Presets list
+    UIUserPresetCollection presets = (UIUserPresetCollection)
+      new UIUserPresetCollection(ui, device, uiDevice.getContentHeight())
+      .setX(mftControls.getContentWidth() + 4);
 
     uiDevice.addChildren(
-      new UILabel(100,"Selected Source:")
+      mftControls,
+      presets
+    );
+
+    uiDevice.setContentWidth(presets.getX() + presets.getWidth());
+  }
+
+  private UI2dContainer newNDIcontrols(LXStudio.UI ui, NDIReceiverPattern device) {
+    UI2dContainer uiNDI = new UI2dContainer(184,50,166, 0);
+    uiNDI.setLayout(UI2dContainer.Layout.VERTICAL, 4);
+
+    uiNDI.addChildren(
+      new UILabel(100,"Selected NDI Source:")
         .setFont(ui.theme.getControlFont()),
-      new UITextBox(150, 16, this.source)
+      new UITextBox(150, 16, device.source)
         .setEditable(false),
       new UILabel(100,"Available Sources:")
         .setFont(ui.theme.getControlFont()),
       UI2dContainer.newHorizontalContainer(16, 4,
-          new UIDropMenu(150, this.sources),
-          new UIButton(46, 16, this.select)
-        )
+        new UIDropMenu(116, device.sources)
+          .setMenuWidth(166),
+        new UIButton(46, 16, device.select)
+      )
     );
+
+    return uiNDI;
   }
 
 }
