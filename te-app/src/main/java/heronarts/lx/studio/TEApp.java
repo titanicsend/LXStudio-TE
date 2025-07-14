@@ -75,6 +75,7 @@ import titanicsend.modulator.outputOsc.OutputOscColorModulator;
 import titanicsend.modulator.outputOsc.OutputOscFloatModulator;
 import titanicsend.modulator.outputOsc.OutputOscTempoModulator;
 import titanicsend.ndi.NDIEngine;
+import titanicsend.ndi.NDIReceiverPattern;
 import titanicsend.osc.CrutchOSC;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.pattern.TEPerformancePattern;
@@ -264,7 +265,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(FxDualWave.class);
       lx.registry.addPattern(Kaleidosonic.class);
       lx.registry.addPattern(MultipassDemo.class);
-      lx.registry.addPattern(NDIReceiverTest.class);
+      lx.registry.addPattern(NDIReceiverPattern.class);
       lx.registry.addPattern(TdNdiPattern.class);
       lx.registry.addPattern(TdStableDiffusionPattern.class);
       lx.registry.addPattern(ModelFileWriter.class);
