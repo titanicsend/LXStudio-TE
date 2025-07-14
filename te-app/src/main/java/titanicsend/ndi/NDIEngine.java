@@ -3,12 +3,10 @@ package titanicsend.ndi;
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.LXLoopTask;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.ObjectParameter;
+import java.util.ArrayList;
+import java.util.List;
 import me.walkerknapp.devolay.*;
 
 public class NDIEngine extends LXComponent implements LXLoopTask {
@@ -42,9 +40,9 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
   }
 
   public final BooleanParameter receiveActive =
-    new BooleanParameter("RX Active", true)
-      .setMappable(false)
-      .setDescription("Whether NDI engine listens for incoming streams");
+      new BooleanParameter("RX Active", true)
+          .setMappable(false)
+          .setDescription("Whether NDI engine listens for incoming streams");
 
   private final DevolayFinder finder;
   private double elapsed = SOURCE_REFRESH_INTERVAL;
@@ -56,8 +54,8 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
   private final List<Selector> selectors = new ArrayList<>();
 
   // Object and String arrays for the Source Selector parameters
-  private String[] selectorObjects = { null };
-  private String[] selectorOptions = { NO_SOURCES };
+  private String[] selectorObjects = {null};
+  private String[] selectorOptions = {NO_SOURCES};
 
   public NDIEngine(LX lx) {
     current = this;
@@ -135,8 +133,8 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
       this.selectorObjects = new String[numOptions];
       this.selectorOptions = new String[numOptions];
     } else {
-      this.selectorObjects = new String[] { null };
-      this.selectorOptions = new String[] { NO_SOURCES };
+      this.selectorObjects = new String[] {null};
+      this.selectorOptions = new String[] {NO_SOURCES};
     }
 
     int i = 0;
@@ -155,7 +153,9 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
       selector.setObjects(this.selectorObjects, this.selectorOptions);
 
       // Restore the selected item
-      if (selected != null && !selected.equals(selector.getObject()) && this.sources.contains(selected)) {
+      if (selected != null
+          && !selected.equals(selector.getObject())
+          && this.sources.contains(selected)) {
         selector.setValue(selected);
       }
     }

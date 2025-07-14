@@ -19,9 +19,6 @@ import heronarts.lx.LXComponentName;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
-
-import java.nio.ByteBuffer;
-
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.StringParameter;
 import heronarts.lx.parameter.TriggerParameter;
@@ -29,6 +26,7 @@ import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
 import heronarts.lx.utils.LXUtils;
+import java.nio.ByteBuffer;
 import me.walkerknapp.devolay.DevolayFrameType;
 import me.walkerknapp.devolay.DevolayReceiver;
 import me.walkerknapp.devolay.DevolayVideoFrame;
@@ -40,12 +38,11 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.preset.UIUserPresetCollection;
 import titanicsend.ui.UIMFTControls;
 
-/**
- * Receives video over NDI
- */
+/** Receives video over NDI */
 @LXCategory("NDI")
 @LXComponentName("NDI Receiver")
-public class NDIReceiverPattern extends GLShaderPattern implements GpuDevice, UIDeviceControls<NDIReceiverPattern> {
+public class NDIReceiverPattern extends GLShaderPattern
+    implements GpuDevice, UIDeviceControls<NDIReceiverPattern> {
 
   private final NDIEngine ndi;
 
@@ -63,14 +60,14 @@ public class NDIReceiverPattern extends GLShaderPattern implements GpuDevice, UI
   protected GL4 gl4;
 
   public final StringParameter source =
-    new StringParameter("Source", "")
-      .setDescription("Name of the NDI stream we are currently receiving");
+      new StringParameter("Source", "")
+          .setDescription("Name of the NDI stream we are currently receiving");
 
   public final NDIEngine.Selector sources;
 
   public final TriggerParameter select =
-    new TriggerParameter("Select", this::onSelect)
-      .setDescription("Receive from the currently selected item in the Sources list");
+      new TriggerParameter("Select", this::onSelect)
+          .setDescription("Receive from the currently selected item in the Sources list");
 
   private void onSelect() {
     String sourceName = this.sources.getObject();
@@ -86,8 +83,7 @@ public class NDIReceiverPattern extends GLShaderPattern implements GpuDevice, UI
   }
 
   protected final LXListenableNormalizedParameter gain =
-    new CompoundParameter("Gain", 1, 0.5, 2)
-    .setDescription("Video gain");
+      new CompoundParameter("Gain", 1, 0.5, 2).setDescription("Video gain");
 
   public LXNormalizedParameter getSourceControl() {
     return sources;
@@ -103,8 +99,8 @@ public class NDIReceiverPattern extends GLShaderPattern implements GpuDevice, UI
     this.ndi = NDIEngine.get();
 
     this.receiver =
-      new DevolayReceiver(
-        DevolayReceiver.ColorFormat.BGRX_BGRA, RECEIVE_BANDWIDTH_HIGHEST, true, "TE");
+        new DevolayReceiver(
+            DevolayReceiver.ColorFormat.BGRX_BGRA, RECEIVE_BANDWIDTH_HIGHEST, true, "TE");
 
     // Create frame objects to handle incoming video stream
     // (note that we are omitting audio and metadata frames for now)
@@ -119,10 +115,10 @@ public class NDIReceiverPattern extends GLShaderPattern implements GpuDevice, UI
     // add the primary shader, which handles mapping incoming video frames
     // from the NDI source to the shared buffer.
     addShader(
-      GLShader.config(lx)
-        .withFilename("ndidefault.fs")
-        .withUniformSource(this::setUniforms)
-        .withLegacyBackBuffer(buffer));
+        GLShader.config(lx)
+            .withFilename("ndidefault.fs")
+            .withUniformSource(this::setUniforms)
+            .withLegacyBackBuffer(buffer));
 
     addCommonControls();
 
@@ -250,9 +246,7 @@ public class NDIReceiverPattern extends GLShaderPattern implements GpuDevice, UI
     super.dispose();
   }
 
-  /**
-   * Device UI
-   */
+  /** Device UI */
   @Override
   public void buildDeviceControls(LXStudio.UI ui, UIDevice uiDevice, NDIReceiverPattern device) {
     uiDevice.setLayout(UI2dContainer.Layout.NONE);
@@ -261,41 +255,33 @@ public class NDIReceiverPattern extends GLShaderPattern implements GpuDevice, UI
     UIMFTControls mftControls = new UIMFTControls(ui, device, uiDevice.getContentHeight());
 
     // NDI source controls
-    newNDIcontrols(ui, device)
-      .addToContainer(mftControls);
+    newNDIcontrols(ui, device).addToContainer(mftControls);
 
     // User Presets list
-    UIUserPresetCollection presets = (UIUserPresetCollection)
-      new UIUserPresetCollection(ui, device, uiDevice.getContentHeight())
-      .setX(mftControls.getContentWidth() + 4);
+    UIUserPresetCollection presets =
+        (UIUserPresetCollection)
+            new UIUserPresetCollection(ui, device, uiDevice.getContentHeight())
+                .setX(mftControls.getContentWidth() + 4);
 
-    uiDevice.addChildren(
-      mftControls,
-      presets
-    );
+    uiDevice.addChildren(mftControls, presets);
 
     uiDevice.setContentWidth(presets.getX() + presets.getWidth());
   }
 
   private UI2dContainer newNDIcontrols(LXStudio.UI ui, NDIReceiverPattern device) {
-    UI2dContainer uiNDI = new UI2dContainer(184,50,166, 0);
+    UI2dContainer uiNDI = new UI2dContainer(184, 50, 166, 0);
     uiNDI.setLayout(UI2dContainer.Layout.VERTICAL, 4);
 
     uiNDI.addChildren(
-      new UILabel(100,"Selected NDI Source:")
-        .setFont(ui.theme.getControlFont()),
-      new UITextBox(150, 16, device.source)
-        .setEditable(false),
-      new UILabel(100,"Available Sources:")
-        .setFont(ui.theme.getControlFont()),
-      UI2dContainer.newHorizontalContainer(16, 4,
-        new UIDropMenu(116, device.sources)
-          .setMenuWidth(166),
-        new UIButton(46, 16, device.select)
-      )
-    );
+        new UILabel(100, "Selected NDI Source:").setFont(ui.theme.getControlFont()),
+        new UITextBox(150, 16, device.source).setEditable(false),
+        new UILabel(100, "Available Sources:").setFont(ui.theme.getControlFont()),
+        UI2dContainer.newHorizontalContainer(
+            16,
+            4,
+            new UIDropMenu(116, device.sources).setMenuWidth(166),
+            new UIButton(46, 16, device.select)));
 
     return uiNDI;
   }
-
 }
