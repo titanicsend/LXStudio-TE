@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 import titanicsend.color.TEColorParameter;
 import titanicsend.pattern.TEPerformancePattern;
-import titanicsend.pattern.jon.TEControlTag;
 
 /**
  * A set of UI Knobs matching the layout of a MidiFighterTwister, for use in a device UI. The device
@@ -42,7 +41,7 @@ public class UIMFTControls extends UI2dContainer implements LXParameterListener 
     }
   }
 
-  protected void refresh() {
+  private void refresh() {
     clearControls();
     buildControls();
   }
@@ -50,7 +49,7 @@ public class UIMFTControls extends UI2dContainer implements LXParameterListener 
   private void clearControls() {
     // Remove only the parameter controls, not all children.
     for (UI2dComponent control : this.controls) {
-      control.removeFromContainer();
+      control.removeFromContainer().dispose();
     }
     this.controls.clear();
   }
@@ -58,18 +57,20 @@ public class UIMFTControls extends UI2dContainer implements LXParameterListener 
   private void buildControls() {
     List<LXNormalizedParameter> params = new ArrayList<>(Arrays.asList(device.getRemoteControls()));
 
-    // For the UI, replace unused remote controls with null
-    hideUnusedControls(params);
-
     // Fill in the remaining first MFT UI space with blanks
     while (params.size() < 16) {
       params.add(null);
     }
 
-    // Extra controls, displayed only in design mode
-    params.add(device.getControls().getControl(TEControlTag.BRIGHTNESS).control);
-    // TODO - twist disabled for now.  We may add it again later.
-    // params.add(device.getControls().getControl(TEControlTag.TWIST).control);
+    // Add device-specific parameters that are UI-only
+    for (LXNormalizedParameter subclassParam : this.device.subclassParameters) {
+      if (!params.contains(subclassParam) && !isUnusedControl(subclassParam)) {
+        params.add(subclassParam);
+      }
+    }
+
+    // For the UI, replace unused remote controls with null
+    hideUnusedControls(params);
 
     int ki = 0;
     int col = 0;
@@ -105,7 +106,7 @@ public class UIMFTControls extends UI2dContainer implements LXParameterListener 
   }
 
   /**
-   * Replace unused controls with null in the UI list. By keeping them in the remote controls list
+   * Replace unused controls with null in the UI list. By keeping them in the remote controls list,
    * we prevent MFT reboots on pattern change.
    */
   private void hideUnusedControls(List<LXNormalizedParameter> params) {

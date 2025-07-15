@@ -133,6 +133,9 @@ public class NDIReceiverPattern extends GLShaderPattern
     controls.markUnused(controls.getLXControl(TEControlTag.SPEED));
     controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
     controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
+
+    controls.markUnused(this.sources);
+    controls.markUnused(this.select);
   }
 
   @Override
@@ -269,7 +272,7 @@ public class NDIReceiverPattern extends GLShaderPattern
   }
 
   private UI2dContainer newNDIcontrols(LXStudio.UI ui, NDIReceiverPattern device) {
-    UI2dContainer uiNDI = new UI2dContainer(184, 50, 166, 0);
+    UI2dContainer uiNDI = new UI2dContainer(184, 50, 160, 0);
     uiNDI.setLayout(UI2dContainer.Layout.VERTICAL, 4);
 
     uiNDI.addChildren(
