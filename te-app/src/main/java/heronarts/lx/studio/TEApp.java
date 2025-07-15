@@ -34,8 +34,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.function.Function;
-import jkbstudio.supermod.SuperMod;
 import org.lwjgl.system.Platform;
+import studio.jkb.supermod.SuperMod;
 import titanicsend.app.*;
 import titanicsend.app.autopilot.*;
 import titanicsend.app.autopilot.justin.*;
@@ -62,7 +62,6 @@ import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lx.APC40Mk2;
 import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.lx.DirectorAPCminiMk2;
-import titanicsend.midi.MidiNames;
 import titanicsend.model.TEWholeModel;
 import titanicsend.model.TEWholeModelDynamic;
 import titanicsend.modulator.dmx.Dmx16bitModulator;
@@ -89,6 +88,7 @@ import titanicsend.pattern.jon.*;
 import titanicsend.pattern.justin.*;
 import titanicsend.pattern.look.*;
 import titanicsend.pattern.mike.*;
+import titanicsend.pattern.piemonte.IceGlint;
 import titanicsend.pattern.pixelblaze.*;
 import titanicsend.pattern.sinas.LightBeamsAudioReactivePattern;
 import titanicsend.pattern.sinas.TdNdiPattern;
@@ -255,13 +255,13 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(EdgeRunner.class);
       lx.registry.addPattern(Electric.class);
       lx.registry.addPattern(ElectricEdges.class);
+      lx.registry.addPattern(FireEdges.class);
       lx.registry.addPattern(Fireflies.class);
       lx.registry.addPattern(FollowThatStar.class);
       lx.registry.addPattern(FrameBrights.class);
       lx.registry.addPattern(FourStar.class);
       lx.registry.addPattern(FxEdgeRocket.class);
       lx.registry.addPattern(FxDualWave.class);
-      lx.registry.addPattern(Iceflow.class);
       lx.registry.addPattern(Kaleidosonic.class);
       lx.registry.addPattern(MultipassDemo.class);
       lx.registry.addPattern(NDIReceiverTest.class);
@@ -286,11 +286,11 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(TESparklePattern.class);
       lx.registry.addPattern(TurbulenceLines.class);
       lx.registry.addPattern(TriangleNoise.class);
-      lx.registry.addPattern(OldSpiralDiamonds.class);
       lx.registry.addPattern(PulsingTriangles.class);
       lx.registry.addPattern(Fire.class);
       lx.registry.addPattern(TESolidPattern.class);
       lx.registry.addPattern(TEGradientPattern.class);
+      lx.registry.addPattern(IceGlint.class);
 
       // Patterns that will not aspire to art direction standards
       lx.registry.addPattern(SigmoidDanceAudioWaveform.class);
@@ -405,14 +405,6 @@ public class TEApp extends LXStudio {
       // Fast edit: direct chain to SuperMod plugin
       this.superMod.initialize(lx);
       this.superMod.addModulatorSource(this.superModSource);
-
-      // Register midi surface names for Super Mod
-      this.superMod.registerAPCmini2("SuperMod Control");
-      this.superMod.registerAPCmini2(MidiNames.BOMEBOX_VIRTUAL_APCMINIMK2_SUPERMOD);
-      this.superMod.registerMidiFighterTwister(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1);
-      this.superMod.registerMidiFighterTwister(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER2);
-      this.superMod.registerMidiFighterTwister(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER3);
-      this.superMod.registerMidiFighterTwister(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER4);
 
       // Custom modulators
       lx.registry.addModulator(Dmx16bitModulator.class);
@@ -538,7 +530,7 @@ public class TEApp extends LXStudio {
           ShaderPanelsPatternConfig.NeonBlocks.class, covPanelPartial, cNonConforming, chorus);
       l.addPattern(Audio1.class, covPanelPartial, cPalette, chorus);
       l.addPattern(ShaderPanelsPatternConfig.OutrunGrid.class, covPanels, cNonConforming, chorus);
-      l.addPattern(OrganicPatternConfig.MatrixScroller.class, covPanels, cNonConforming, chorus);
+      l.addPattern(OrganicPatternConfig.OldMatrixScroller.class, covPanels, cNonConforming, chorus);
       l.addPattern(FollowThatStar.class, covBoth, cPalette, chorus);
       l.addPattern(ShaderPanelsPatternConfig.Marbling.class, covPanels, cNonConforming, chorus);
       l.addPattern(OrganicPatternConfig.NeonCellsLegacy.class, covPanelPartial, cPalette, chorus);
@@ -695,7 +687,7 @@ public class TEApp extends LXStudio {
     private static final int SUPERMOD_STEM_ROW_WAVE = 1;
 
     /** Redirect some of the SuperMod buttons to Audio Stem modulators */
-    private final SuperMod.ModulatorSource superModSource =
+    private final studio.jkb.supermod.SuperMod.ModulatorSource superModSource =
         (label, col, row) -> {
           if (col >= SUPERMOD_STEM_COLUMN_START
               && col < (SUPERMOD_STEM_COLUMN_START + SUPERMOD_STEM_COLUMNS)

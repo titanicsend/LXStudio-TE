@@ -3894,7 +3894,7 @@
               },
               {
                 "id": 51440,
-                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$MatrixScroller",
+                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$OldMatrixScroller",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
@@ -3905,7 +3905,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "MatrixScroller",
+                  "label": "OldMatrixScroller",
                   "view": 0,
                   "viewPriority": 0,
                   "enabled": true,

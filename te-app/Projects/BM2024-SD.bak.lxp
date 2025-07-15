@@ -16082,7 +16082,7 @@
               },
               {
                 "id": 45680,
-                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$MatrixScroller",
+                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$OldMatrixScroller",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
@@ -16093,7 +16093,7 @@
                   "modulationExpanded": true
                 },
                 "parameters": {
-                  "label": "+ MatrixScroller",
+                  "label": "+ OldMatrixScroller",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
                   "midiFilter/minNote": 0,
@@ -23257,7 +23257,7 @@
               },
               {
                 "id": 427085,
-                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$MatrixScroller",
+                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$OldMatrixScroller",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
@@ -23268,7 +23268,7 @@
                   "modulationExpanded": true
                 },
                 "parameters": {
-                  "label": "+ MatrixScroller",
+                  "label": "+ OldMatrixScroller",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
                   "midiFilter/minNote": 0,
@@ -29820,7 +29820,7 @@
               },
               {
                 "id": 132767,
-                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$MatrixScroller",
+                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$OldMatrixScroller",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
@@ -34922,7 +34922,7 @@
               },
               {
                 "id": 427659,
-                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$MatrixScroller",
+                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$OldMatrixScroller",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
@@ -39066,7 +39066,7 @@
               },
               {
                 "id": 81505,
-                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$MatrixScroller",
+                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$OldMatrixScroller",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
@@ -43323,7 +43323,7 @@
               },
               {
                 "id": 428156,
-                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$MatrixScroller",
+                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$OldMatrixScroller",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
@@ -51819,7 +51819,7 @@
               },
               {
                 "id": 150222,
-                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$MatrixScroller",
+                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$OldMatrixScroller",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
@@ -54491,7 +54491,7 @@
             }
           },
           {
-            "class": "jkbstudio.supermod.MidiFighterTwister",
+            "class": "studio.jkb.supermod.MidiFighterTwister",
             "name": "FoH: Midi Fighter Twister",
             "settings": {
               "knobClickMode": 0,
@@ -54502,7 +54502,7 @@
             }
           },
           {
-            "class": "jkbstudio.supermod.MidiFighterTwister",
+            "class": "studio.jkb.supermod.MidiFighterTwister",
             "name": "FoH: Midi Fighter Twister (2)",
             "settings": {
               "knobClickMode": 0,

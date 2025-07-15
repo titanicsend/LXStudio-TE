@@ -252,7 +252,7 @@ public class TEPanelModel extends TEModel {
     // Calculate UI backer triangles for dynamic model
     // Use the end points of the first row and the middle point of the last row.
     LXModel firstRow = this.model.children[0];
-    LXModel lastRow = this.model.children[this.model.children.length - 1];
+    LXModel lastRow = this.model.sub("row").getLast();
     LXVector vA = new LXVector(firstRow.points[0]);
     LXVector vB = new LXVector(firstRow.points[firstRow.size - 1]);
     LXVector vC = new LXVector(lastRow.points[lastRow.size / 2]);

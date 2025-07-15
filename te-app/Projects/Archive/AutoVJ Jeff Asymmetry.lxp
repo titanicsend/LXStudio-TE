@@ -4347,7 +4347,7 @@
               },
               {
                 "id": 28975,
-                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$MatrixScroller",
+                "class": "titanicsend.pattern.yoffa.config.OrganicPatternConfig$OldMatrixScroller",
                 "internal": {
                   "modulationColor": 0,
                   "expanded": true,
@@ -4355,7 +4355,7 @@
                   "autoCycleEligible": true
                 },
                 "parameters": {
-                  "label": "MatrixScroller",
+                  "label": "OldMatrixScroller",
                   "recall": false,
                   "Blast radius": 200000.0,
                   "Speed": 1.0,

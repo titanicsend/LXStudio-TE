@@ -4,8 +4,8 @@
   <artifactId>glx</artifactId>
   <versioning>
     <versions>
-      <version>1.1.1-TE.2-SNAPSHOT</version>
+      <version>1.1.1-TE.3.GPU-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20250710104130</lastUpdated>
+    <lastUpdated>20250714192627</lastUpdated>
   </versioning>
 </metadata>
