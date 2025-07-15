@@ -88,6 +88,7 @@ import titanicsend.pattern.jon.*;
 import titanicsend.pattern.justin.*;
 import titanicsend.pattern.look.*;
 import titanicsend.pattern.mike.*;
+import titanicsend.pattern.piemonte.CandyFlip;
 import titanicsend.pattern.piemonte.FaceMelt;
 import titanicsend.pattern.piemonte.IceGlint;
 import titanicsend.pattern.pixelblaze.*;
@@ -293,6 +294,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(TEGradientPattern.class);
       lx.registry.addPattern(IceGlint.class);
       lx.registry.addPattern(FaceMelt.class);
+      lx.registry.addPattern(CandyFlip.class);
 
       // Patterns that will not aspire to art direction standards
       lx.registry.addPattern(SigmoidDanceAudioWaveform.class);
