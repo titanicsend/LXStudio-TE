@@ -14,15 +14,18 @@ public class NDIOutRawEffect extends TEEffect {
   private boolean isInitialized = false;
 
   // output frame size
-  private static final int width = GLEngine.getWidth();
-  private static final int height = GLEngine.getHeight();
+  private final int width;
+  private final int height;
 
   private DevolaySender ndiSender;
   private DevolayVideoFrame ndiFrame;
-  private final ByteBuffer buffer = ByteBuffer.allocateDirect(width * height * 4);
+  private final ByteBuffer buffer;
 
   public NDIOutRawEffect(LX lx) {
     super(lx);
+    this.width = GLEngine.current.getWidth();
+    this.height = GLEngine.current.getHeight();
+    this.buffer = ByteBuffer.allocateDirect(width * height * 4);
   }
 
   @Override

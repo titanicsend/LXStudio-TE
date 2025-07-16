@@ -1,0 +1,21 @@
+{
+  /* High volume rectangular cloud */
+  label: "Cloud",
+   tags: [ "cloud"],
+   parameters: {
+     "width": { type: "int", default: "10", min: "1", label: "Width" },
+     "height": { type: "int", default: "10", min: "1", label: "Height" },
+     "depth": { type: "int", default: "10", min: "1", label: "Depth" },
+     "spacing": { type: "float", default: "5" }
+   },
+
+  "components": [
+    { type: "hires_grid",
+      width: "$width",
+      height: "$height",
+      spacing: "$spacing",
+      instances: "$depth",
+      z: "$instance*$spacing"
+    }
+  ]
+}

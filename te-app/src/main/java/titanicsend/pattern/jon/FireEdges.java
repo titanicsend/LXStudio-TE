@@ -61,20 +61,18 @@ public class FireEdges extends GLShaderPattern {
 
     // add the OpenGL shader and its frame-time setup function
     addShader(
-        "fireedges.fs",
-        new GLShaderFrameSetup() {
-          @Override
-          public void OnFrame(GLShader s) {
-            // Here, we update line segment geometry
-            // Shader uniforms associated with a context stay resident
-            // on the GPU,so we only need to set them when something changes.
+        GLShader.config(lx).withFilename("fireedges.fs").withUniformSource(this::setUniforms));
+  }
 
-            if (updateGeometry) {
-              sendSegments(s, saved_lines, lineCount);
-              updateGeometry = false;
-            }
-          }
-        });
+  private void setUniforms(GLShader s) {
+    // Here, we update line segment geometry
+    // Shader uniforms associated with a context stay resident
+    // on the GPU,so we only need to set them when something changes.
+
+    if (updateGeometry) {
+      sendSegments(s, saved_lines, lineCount);
+      updateGeometry = false;
+    }
   }
 
   // store segment descriptors in our GL line segment buffer.

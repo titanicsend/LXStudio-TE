@@ -23,6 +23,6 @@ public class Kaleidosonic extends GLShaderPattern {
     // register common controls with LX
     addCommonControls();
 
-    addShader(new GLShader(lx, "kaleidosonic.fs", getControlData(), "color_noise.png"));
+    addShader(GLShader.config(lx).withFilename("kaleidosonic.fs").withTextures("color_noise.png"));
   }
 }

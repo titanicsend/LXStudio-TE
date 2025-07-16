@@ -5,9 +5,12 @@ import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.BoundedParameter;
+import heronarts.lx.parameter.LXNormalizedParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import titanicsend.app.TEGlobalPatternControls;
 import titanicsend.pattern.glengine.ShaderConfiguration;
@@ -43,6 +46,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
   protected final TEGlobalPatternControls globalControls;
 
+  private boolean constructed = false;
+
   protected TEPerformancePattern(LX lx) {
     this(lx, null);
   }
@@ -72,6 +77,9 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
           // survive a file save/load which is much less inconvenient than this default behavior.
           this.controls.setRemoteControls();
         });
+
+    this.controls.markUnused(this.controls.getLXControl(TEControlTag.TWIST));
+    this.constructed = true;
   }
 
   public TECommonControls getControls() {
@@ -95,6 +103,30 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
   LXComponent removeParam(String path) {
     removeParameter(path);
     return this;
+  }
+
+  private final List<LXNormalizedParameter> mutableSubclassParameters = new ArrayList<>();
+  public final List<LXNormalizedParameter> subclassParameters =
+      Collections.unmodifiableList(mutableSubclassParameters);
+
+  @Override
+  protected LXComponent addParameter(String path, LXParameter p) {
+    // Track UI-only parameters added by subclasses
+    // Ignore params added from parent class constructors
+    if (this.constructed
+        && p.getParentParameter() == null
+        && p instanceof LXNormalizedParameter normalizedParameter) {
+      this.mutableSubclassParameters.add(normalizedParameter);
+    }
+    return super.addParameter(path, p);
+  }
+
+  @Override
+  protected LXComponent removeParameter(LXParameter p) {
+    if (p instanceof LXNormalizedParameter normalizedParameter) {
+      this.mutableSubclassParameters.remove(normalizedParameter);
+    }
+    return super.removeParameter(p);
   }
 
   public FloatBuffer getCurrentPalette() {

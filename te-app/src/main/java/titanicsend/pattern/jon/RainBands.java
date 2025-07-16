@@ -26,13 +26,12 @@ public class RainBands extends DriftEnabledPattern {
     addCommonControls();
 
     addShader(
-        "rain_noise.fs",
-        new GLShaderFrameSetup() {
-          @Override
-          public void OnFrame(GLShader s) {
-            // calculate incremental transform based on elapsed time
-            s.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
-          }
-        });
+        GLShader.config(lx)
+            .withFilename("rain_noise.fs")
+            .withUniformSource(
+                (s) -> {
+                  // calculate incremental transform based on elapsed time
+                  s.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
+                }));
   }
 }

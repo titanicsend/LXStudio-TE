@@ -48,13 +48,12 @@ public class RadialSimplex extends GLShaderPattern {
     addCommonControls();
 
     addShader(
-        "radial_simplex.fs",
-        new GLShaderFrameSetup() {
-          @Override
-          public void OnFrame(GLShader s) {
-            RadialSimplex.NoiseMode mode = noiseMode.getEnum();
-            s.setUniform("iWow1", (float) mode.ordinal());
-          }
-        });
+        GLShader.config(lx)
+            .withFilename("radial_simplex.fs")
+            .withUniformSource(
+                (s) -> {
+                  RadialSimplex.NoiseMode mode = noiseMode.getEnum();
+                  s.setUniform("iWow1", (float) mode.ordinal());
+                }));
   }
 }

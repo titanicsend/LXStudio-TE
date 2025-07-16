@@ -25,12 +25,11 @@ public class TriangleInfinityWaveform extends GLShaderPattern {
     addCommonControls();
 
     addShader(
-        "triangle_infinity.fs",
-        new GLShaderPattern.GLShaderFrameSetup() {
-          @Override
-          public void OnFrame(GLShader s) {
-            s.setUniform("brightnessDampening", 0.5f);
-          }
-        });
+        GLShader.config(lx)
+            .withFilename("triangle_infinity.fs")
+            .withUniformSource(
+                (s) -> {
+                  s.setUniform("brightnessDampening", 0.5f);
+                }));
   }
 }

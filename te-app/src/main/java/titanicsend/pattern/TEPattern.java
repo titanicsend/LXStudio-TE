@@ -54,7 +54,7 @@ public abstract class TEPattern extends DmxPattern {
 
   @Override
   public void onInactive() {
-    clearPixels();
+    // clearPixels(); // Note(JKB): should be ok to remove this, confirm after running for a while
     super.onInactive();
   }
 
@@ -64,6 +64,7 @@ public abstract class TEPattern extends DmxPattern {
     // With view-per-pattern, this can now get called when pattern is inactive.
     if (this.colors != null) {
       // Active pattern
+      // Note(JKB): does this get handled by LX now?
       clearPixels();
     }
     super.onModelChanged(model);
@@ -93,17 +94,13 @@ public abstract class TEPattern extends DmxPattern {
   }
 
   // During construction, make gap points show up in red
-  public static final int GAP_PIXEL_COLOR = TEColor.TRANSPARENT;
+  @Deprecated public static final int GAP_PIXEL_COLOR = TEColor.TRANSPARENT;
 
   // Compare to LXLayeredComponent's clearColors(), which is declared final.
-  public void clearPixels() {
-    for (LXPoint point : this.model.points) {
-      if (this.modelTE.isGapPoint(point)) {
-        colors[point.index] = GAP_PIXEL_COLOR;
-      } else {
-        colors[point.index] = TEColor.TRANSPARENT;
-      }
-    }
+  protected void clearPixels() {
+    // Note(JKB): Simplified. The dynamic model no longer loads points for gap pixels.
+    // And when clearing the entire buffer, Arrays.fill() should be even faster than clearColors():
+    Arrays.fill(colors, 0);
   }
 
   // For patterns that only want to operate on edges

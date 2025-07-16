@@ -22,13 +22,12 @@ public class SimplexPosterized extends DriftEnabledPattern {
     addCommonControls();
 
     addShader(
-        "simplex_posterized.fs",
-        new GLShaderFrameSetup() {
-          @Override
-          public void OnFrame(GLShader s) {
-            // calculate incremental transform based on elapsed time
-            s.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
-          }
-        });
+        GLShader.config(lx)
+            .withFilename("simplex_posterized.fs")
+            .withUniformSource(
+                (s) -> {
+                  // calculate incremental transform based on elapsed time
+                  s.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
+                }));
   }
 }

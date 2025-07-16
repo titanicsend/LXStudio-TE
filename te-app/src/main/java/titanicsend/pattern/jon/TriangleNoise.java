@@ -26,13 +26,12 @@ public class TriangleNoise extends DriftEnabledPattern {
     addCommonControls();
 
     addShader(
-        "triangle_noise.fs",
-        new GLShaderFrameSetup() {
-          @Override
-          public void OnFrame(GLShader s) {
-            // calculate incremental transform based on elapsed time
-            s.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
-          }
-        });
+        GLShader.config(lx)
+            .withFilename("triangle_noise.fs")
+            .withUniformSource(
+                (s) -> {
+                  // calculate incremental transform based on elapsed time
+                  s.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
+                }));
   }
 }

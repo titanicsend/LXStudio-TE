@@ -146,25 +146,25 @@ public class ExplodeEffect extends GLShaderEffect {
     addParameter("trigger", this.trigger);
 
     // add the first shader, passing in the effect's backbuffer
-    GLShader shader = new GLShader(lx, "explode_effect.fs", getControlData(), getImageBuffer());
     addShader(
-        shader,
-        new GLShaderFrameSetup() {
-          @Override
-          public void OnFrame(GLShader shader) {
-            double basis;
+        GLShader.config(lx)
+            .withFilename("explode_effect.fs")
+            .withUniformSource(this::setUniforms)
+            .withLegacyBackBuffer(getImageBuffer()));
+  }
 
-            basis = getBasis();
-            double exp = slope.getValue();
-            basis = (exp != 1) ? Math.pow(basis, exp) : basis;
+  private void setUniforms(GLShader shader) {
+    double basis;
 
-            shader.setUniform("basis", (float) (basis * effectDepth));
+    basis = getBasis();
+    double exp = slope.getValue();
+    basis = (exp != 1) ? Math.pow(basis, exp) : basis;
 
-            float granularity = size.getValuef();
-            granularity = (granularity > 0) ? 10 * (11 - granularity) : 0;
-            shader.setUniform("size", granularity);
-          }
-        });
+    shader.setUniform("basis", (float) (basis * effectDepth));
+
+    float granularity = size.getValuef();
+    granularity = (granularity > 0) ? 10 * (11 - granularity) : 0;
+    shader.setUniform("size", granularity);
   }
 
   @Override
