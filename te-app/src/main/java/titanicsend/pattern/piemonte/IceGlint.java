@@ -16,7 +16,7 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
  * QUANTITY: crystal density and count - WOW1: glint intensity and refraction - WOW2:
  * temperature/color temperature
  */
-@LXCategory("piemonte shaders")
+@LXCategory("PIEMONTE fx")
 public class IceGlint extends GLShaderPattern {
 
   /**
