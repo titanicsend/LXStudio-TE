@@ -159,12 +159,12 @@ public class CrutchOSC extends LXComponent
   private void unregisterChannel(LXChannel channel, boolean isAux) {
     if (isAux) {
       channel.patternEngine.focusedPattern.removeListener(focusedPatternAuxListener);
-      if (this.pattern != null) {
+      if (this.patternAux != null) {
         unRegisterPattern(isAux);
       }
     } else {
       channel.patternEngine.focusedPattern.removeListener(focusedPatternListener);
-      if (this.patternAux != null) {
+      if (this.pattern != null) {
         unRegisterPattern(isAux);
       }
     }
