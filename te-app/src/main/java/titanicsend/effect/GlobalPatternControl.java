@@ -1,12 +1,13 @@
 package titanicsend.effect;
 
+import heronarts.lx.GpuDevice;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.*;
 import titanicsend.app.TEGlobalPatternControls;
 
 @LXCategory("Titanics End")
-public class GlobalPatternControl extends TEEffect {
+public class GlobalPatternControl extends TEEffect implements GpuDevice {
 
   public final BooleanParameter speedEnable =
       new BooleanParameter("Enable", false).setDescription("Use speed from global controller");
