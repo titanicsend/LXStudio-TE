@@ -759,10 +759,6 @@ public class TEApp extends LXStudio {
       new UIUserPresetManager(ui, lx, ui.leftPane.content.getContentWidth())
           .addToContainer(ui.leftPane.content, 2);
 
-      // Add UI section for User Presets
-      new UIUserPresetManager(ui, lx, ui.leftPane.content.getContentWidth())
-          .addToContainer(ui.leftPane.content, 2);
-
       UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 4);
       UIColorPaletteManager.addToRightPerformancePane(
           ui, this.paletteManagerA, this.paletteManagerB);
