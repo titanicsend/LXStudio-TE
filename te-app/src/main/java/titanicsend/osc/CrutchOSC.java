@@ -132,26 +132,26 @@ public class CrutchOSC extends LXComponent
     }
   }
 
-  private void onFocusedPattern(LXPattern pattern, boolean isAux) {
+  private void onFocusedPattern(LXPattern focusedPattern, boolean isAux) {
     // We don't actually have to call patternListener.unregisterPattern,
     // it will be done automatically.
     if (isAux) {
-      this.patternAux = pattern;
+      this.patternAux = focusedPattern;
     } else {
-      this.pattern = pattern;
+      this.pattern = focusedPattern;
     }
-    registerPattern(this.pattern, isAux);
+    registerPattern(focusedPattern, isAux);
   }
 
   private void registerChannel(LXChannel channel, boolean isAux) {
-    LXPattern pattern = channel.getFocusedPattern();
+    LXPattern focusedPattern = channel.getFocusedPattern();
     if (isAux) {
       channel.patternEngine.focusedPattern.addListener(focusedPatternAuxListener);
-      this.patternAux = pattern;
+      this.patternAux = focusedPattern;
       registerPattern(this.patternAux, isAux); // ok to pass null
     } else {
       channel.patternEngine.focusedPattern.addListener(focusedPatternListener);
-      this.pattern = pattern;
+      this.pattern = focusedPattern;
       registerPattern(this.pattern, isAux); // ok to pass null
     }
   }
