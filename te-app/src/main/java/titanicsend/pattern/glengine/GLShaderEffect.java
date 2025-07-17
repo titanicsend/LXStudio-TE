@@ -1,5 +1,6 @@
 package titanicsend.pattern.glengine;
 
+import heronarts.lx.GpuDevice;
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXModel;
@@ -15,7 +16,7 @@ import titanicsend.pattern.jon.VariableSpeedTimer;
  * Wrapper class for OpenGL shaders. Simplifies handling of context and native memory management,
  * and provides a convenient interface for adding shaders to a pattern.
  */
-public class GLShaderEffect extends TEEffect {
+public class GLShaderEffect extends TEEffect implements GpuDevice {
 
   private final VariableSpeedTimer iTime = new VariableSpeedTimer();
   protected ByteBuffer imageBuffer;

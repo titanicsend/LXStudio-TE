@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import heronarts.glx.ui.UI2dContainer.Layout;
 import heronarts.glx.ui.component.UITextBox;
+import heronarts.lx.GpuDevice;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.BooleanParameter;
@@ -26,7 +27,8 @@ import java.util.Map;
 import titanicsend.model.TEPanelModel;
 
 @LXCategory("Utility")
-public class PanelAdjustEffect extends TEEffect implements UIDeviceControls<PanelAdjustEffect> {
+public class PanelAdjustEffect extends TEEffect
+    implements UIDeviceControls<PanelAdjustEffect>, GpuDevice {
 
   private static final String RESOURCES_PATH = "./resources/vehicle/";
   private static final int MAX_ADJUST = 200000;
