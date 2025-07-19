@@ -198,7 +198,9 @@ public class RandomStrobeEffect extends TEEffect {
           } else {
             int src = LXColor.gray(100 * strobe);
             for (LXPoint p : pe.panel.points) {
-              this.colors[p.index] = LXColor.multiply(this.colors[p.index], src, 0xFF);
+              if (p.index < this.colors.length) {
+                this.colors[p.index] = LXColor.multiply(this.colors[p.index], src, 0xFF);
+              }
             }
           }
         }
@@ -216,7 +218,9 @@ public class RandomStrobeEffect extends TEEffect {
             int src = LXColor.gray(100 * strobe);
             for (LXPoint p : e.edge.points) {
               // TODO(look): sanity-check length of `this.colors`? Or handle modelChanged below...
-              this.colors[p.index] = LXColor.multiply(this.colors[p.index], src, 0xFF);
+              if (p.index < this.colors.length) {
+                this.colors[p.index] = LXColor.multiply(this.colors[p.index], src, 0xFF);
+              }
             }
           }
         }
@@ -242,7 +246,6 @@ public class RandomStrobeEffect extends TEEffect {
   	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
   	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
   	at java.base/java.lang.Thread.run(Thread.java:1583)
-
   */
 
   /*
@@ -254,12 +257,11 @@ public class RandomStrobeEffect extends TEEffect {
 
   @Override
   public void onModelChanged(LXModel model) {
-      super.onModelChanged(model);
-      this.modelTE = (TEWholeModel) this.getModelView();
-      this.panelElements.clear();
-      this.edgeElements.clear();
-      buildElementLists();
+    super.onModelChanged(model);
+    this.modelTE = (TEWholeModel) this.getModelView();
+    this.panelElements.clear();
+    this.edgeElements.clear();
+    buildElementLists();
   }
   */
-
 }
