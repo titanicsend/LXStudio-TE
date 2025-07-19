@@ -89,24 +89,22 @@ public class CrutchOSC extends LXComponent
     }
   }
 
-  private LXParameterListener focusedPatternListener =
+  private final LXParameterListener focusedPatternListener =
       (p) -> {
         if (this.channel != null && p == this.channel.patternEngine.focusedPattern) {
-          onFocusedPattern(this.channel.getFocusedPattern(), false);
+          this.patternListener.registerPattern(this.channel.getFocusedPattern());
         }
       };
 
-  private LXParameterListener focusedPatternAuxListener =
+  private final LXParameterListener focusedPatternAuxListener =
       (p) -> {
         if (this.channelAux != null && p == this.channelAux.patternEngine.focusedPattern) {
-          onFocusedPattern(this.channelAux.getFocusedPattern(), true);
+          this.patternListenerAux.registerPattern(this.channelAux.getFocusedPattern());
         }
       };
 
   private LXChannel channel;
   private LXChannel channelAux;
-  private LXPattern pattern;
-  private LXPattern patternAux;
 
   private void onFocusedChannel() {
     if (this.channel != null) {
@@ -132,41 +130,21 @@ public class CrutchOSC extends LXComponent
     }
   }
 
-  private void onFocusedPattern(LXPattern pattern, boolean isAux) {
-    // We don't actually have to call patternListener.unregisterPattern,
-    // it will be done automatically.
-    if (isAux) {
-      this.patternAux = pattern;
-    } else {
-      this.pattern = pattern;
-    }
-    registerPattern(this.pattern, isAux);
-  }
-
   private void registerChannel(LXChannel channel, boolean isAux) {
-    LXPattern pattern = channel.getFocusedPattern();
     if (isAux) {
-      channel.patternEngine.focusedPattern.addListener(focusedPatternAuxListener);
-      this.patternAux = pattern;
-      registerPattern(this.patternAux, isAux); // ok to pass null
+      channel.patternEngine.focusedPattern.addListener(focusedPatternAuxListener, true);
     } else {
-      channel.patternEngine.focusedPattern.addListener(focusedPatternListener);
-      this.pattern = pattern;
-      registerPattern(this.pattern, isAux); // ok to pass null
+      channel.patternEngine.focusedPattern.addListener(focusedPatternListener, true);
     }
   }
 
   private void unregisterChannel(LXChannel channel, boolean isAux) {
     if (isAux) {
       channel.patternEngine.focusedPattern.removeListener(focusedPatternAuxListener);
-      if (this.pattern != null) {
-        unRegisterPattern(isAux);
-      }
+      this.patternListenerAux.registerPattern(null);
     } else {
       channel.patternEngine.focusedPattern.removeListener(focusedPatternListener);
-      if (this.patternAux != null) {
-        unRegisterPattern(isAux);
-      }
+      this.patternListener.registerPattern(null);
     }
   }
 
@@ -408,22 +386,6 @@ public class CrutchOSC extends LXComponent
 
   private final PatternParameterListener patternListener = new PatternParameterListener(false);
   private final PatternParameterListener patternListenerAux = new PatternParameterListener(true);
-
-  private void registerPattern(LXPattern pattern, boolean isAux) {
-    if (isAux) {
-      this.patternListenerAux.registerPattern(pattern);
-    } else {
-      this.patternListener.registerPattern(pattern);
-    }
-  }
-
-  private void unRegisterPattern(boolean isAux) {
-    if (isAux) {
-      this.patternListenerAux.registerPattern(null);
-    } else {
-      this.patternListener.registerPattern(null);
-    }
-  }
 
   @Override
   public String getOscPath() {
