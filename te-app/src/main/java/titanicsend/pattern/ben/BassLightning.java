@@ -279,8 +279,7 @@ public class BassLightning extends TEAudioPattern {
     }
 
     // TODO(look): exit if no bolts
-
-    for (int i = 0; i < values.length; i++) {
+    for (int i = 0; i < Math.min(values.length, colors.length); i++) {
       int v = (int) (values[i] * 255);
       colors[i] = LXColor.rgb(v, v, v);
     }
