@@ -1,12 +1,13 @@
 package titanicsend.app.director;
 
+import heronarts.lx.GpuDevice;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import titanicsend.effect.TEEffect;
 
 /** Applies filters from the Director component. Should be used on the Master channel. */
 @LXCategory("Titanics End")
-public class DirectorEffect extends TEEffect {
+public class DirectorEffect extends TEEffect implements GpuDevice {
 
   public DirectorEffect(LX lx) {
     super(lx);
