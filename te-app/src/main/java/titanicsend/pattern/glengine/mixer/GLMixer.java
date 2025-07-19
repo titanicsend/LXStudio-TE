@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import titanicsend.effect.NDIOutShaderEffect;
 import titanicsend.pattern.glengine.GLEngine;
 import titanicsend.pattern.glengine.GLShaderEffect;
 import titanicsend.pattern.glengine.GLShaderPattern;
@@ -251,6 +253,11 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
             effect.setModel(effect.getModelView());
             effect.loop(deltaMs);
             dst = glShaderEffect.getRenderTexture();
+          } else if (effect instanceof NDIOutShaderEffect ndiOutShaderEffect) {
+            ndiOutShaderEffect.setDst(dst);
+            effect.setModel(effect.getModelView());
+            effect.loop(deltaMs);
+            // Do not modify dst. Output texture is for NDI sending, not for us.
           } else {
             // Java effect in GPU mode
             // Currently gets looped for processing but the output is not used

@@ -42,6 +42,7 @@ import titanicsend.pattern.yoffa.shader_engine.FragmentShader;
 import titanicsend.pattern.yoffa.shader_engine.ShaderAttribute;
 import titanicsend.pattern.yoffa.shader_engine.ShaderProgram;
 import titanicsend.pattern.yoffa.shader_engine.Uniform;
+import titanicsend.pattern.yoffa.shader_engine.UniformNames;
 import titanicsend.pattern.yoffa.shader_engine.UniformType;
 
 /** Shader program components that are currently common across shader classes. */
@@ -208,6 +209,10 @@ public abstract class GLShader {
     this.indexBuffer = Buffers.newDirectIntBuffer(INDICES.length);
     this.vertexBuffer.put(VERTICES);
     this.indexBuffer.put(INDICES);
+
+    // Reserved texture units
+    this.uniformTextureUnits.put(UniformNames.BACK_BUFFER, TEXTURE_UNIT_BACKBUFFER);
+    this.uniformTextureUnits.put(UniformNames.LX_MODEL_COORDS, TEXTURE_UNIT_COORDS);
   }
 
   // Buffers

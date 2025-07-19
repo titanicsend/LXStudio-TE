@@ -339,6 +339,7 @@ public class TEApp extends LXStudio {
       lx.registry.addEffect(DirectorEffect.class);
       lx.registry.addEffect(SimplifyEffect.class);
       lx.registry.addEffect(SustainEffect.class);
+      lx.registry.addEffect(titanicsend.effect.NDIOutShaderEffect.class);
 
       // DMX effects
       lx.registry.addEffect(BeaconStrobeEffect.class);
