@@ -1,5 +1,14 @@
 package titanicsend.pattern.ben;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
@@ -8,8 +17,6 @@ import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.utils.LXUtils;
-import java.util.*;
-import java.util.stream.Collectors;
 import titanicsend.app.TEVirtualColor;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEVertex;
@@ -273,8 +280,7 @@ public class BassLightning extends TEAudioPattern {
     }
 
     // TODO(look): exit if no bolts
-
-    for (int i = 0; i < values.length; i++) {
+    for (int i = 0; i < Math.min(values.length, colors.length); i++) {
       int v = (int) (values[i] * 255);
       colors[i] = LXColor.rgb(v, v, v);
     }
