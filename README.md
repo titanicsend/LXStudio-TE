@@ -43,7 +43,7 @@ Verify your installation:
 /Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/bin/java --version
 ```
 
-Make sure JAVA_HOME points to temurin.
+Make sure JAVA_HOME points to temurin. Add to your .zshrc or equivalent.
 ```sh
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/
 ```

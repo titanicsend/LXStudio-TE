@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.1-SNAPSHOT",
-  "timestamp": 1752957489524,
+  "timestamp": 1751779628783,
   "fixtures": [
     {
       "jsonFixtureType": "TE/panel/FA",
@@ -2036,7 +2036,7 @@
         "pointSize": 5.0,
         "selected": false,
         "deactivate": false,
-        "enabled": false,
+        "enabled": true,
         "brightness": 1.0,
         "identify": false,
         "mute": false,
@@ -2170,7 +2170,7 @@
         "scale": 1.0,
         "hasCustomPointSize": false,
         "pointSize": 5.0,
-        "selected": false,
+        "selected": true,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
@@ -5010,49 +5010,6 @@
       "children": {}
     },
     {
-      "jsonFixtureType": "TE/edge/Edge33-38",
-      "jsonParameters": {
-        "points": 45,
-        "host": "10.7.100.255",
-        "output": 1,
-        "ledOffset": 209,
-        "artnetSequence": false,
-        "reverse": true,
-        "xOffset": 3.5636000633239746,
-        "onCar": true,
-        "hasOutput": true
-      },
-      "id": 4219,
-      "class": "heronarts.lx.structure.JsonFixture",
-      "internal": {
-        "modulationColor": 0,
-        "modulationControlsExpanded": true,
-        "modulationsExpanded": true
-      },
-      "parameters": {
-        "label": "Edge 33-38",
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "yaw": 0.0,
-        "pitch": 0.0,
-        "roll": 0.0,
-        "scale": 1.0,
-        "hasCustomPointSize": false,
-        "pointSize": 5.0,
-        "selected": false,
-        "deactivate": false,
-        "enabled": true,
-        "brightness": 1.0,
-        "identify": false,
-        "mute": false,
-        "solo": false,
-        "tags": "",
-        "fixtureType": "TE/edge/Edge33-38"
-      },
-      "children": {}
-    },
-    {
       "jsonFixtureType": "TE/edge/Edge33-39",
       "jsonParameters": {
         "points": 168,
@@ -5092,6 +5049,49 @@
         "solo": false,
         "tags": "",
         "fixtureType": "TE/edge/Edge33-39"
+      },
+      "children": {}
+    },
+    {
+      "jsonFixtureType": "TE/edge/Edge33-38",
+      "jsonParameters": {
+        "points": 45,
+        "host": "10.7.100.255",
+        "output": 1,
+        "ledOffset": 209,
+        "artnetSequence": false,
+        "reverse": true,
+        "xOffset": 3.5636000633239746,
+        "onCar": true,
+        "hasOutput": true
+      },
+      "id": 4219,
+      "class": "heronarts.lx.structure.JsonFixture",
+      "internal": {
+        "modulationColor": 0,
+        "modulationControlsExpanded": true,
+        "modulationsExpanded": true
+      },
+      "parameters": {
+        "label": "Edge 33-38",
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "yaw": 0.0,
+        "pitch": 0.0,
+        "roll": 0.0,
+        "scale": 1.0,
+        "hasCustomPointSize": false,
+        "pointSize": 5.0,
+        "selected": false,
+        "deactivate": false,
+        "enabled": true,
+        "brightness": 1.0,
+        "identify": false,
+        "mute": false,
+        "solo": false,
+        "tags": "",
+        "fixtureType": "TE/edge/Edge33-38"
       },
       "children": {}
     },
@@ -5225,49 +5225,6 @@
       "children": {}
     },
     {
-      "jsonFixtureType": "TE/edge/Edge36-56",
-      "jsonParameters": {
-        "points": 60,
-        "host": "10.7.6.124",
-        "output": 1,
-        "ledOffset": 0,
-        "artnetSequence": false,
-        "reverse": true,
-        "xOffset": 4.562351703643799,
-        "onCar": true,
-        "hasOutput": true
-      },
-      "id": 4229,
-      "class": "heronarts.lx.structure.JsonFixture",
-      "internal": {
-        "modulationColor": 0,
-        "modulationControlsExpanded": true,
-        "modulationsExpanded": true
-      },
-      "parameters": {
-        "label": "Edge 36-56",
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "yaw": 0.0,
-        "pitch": 0.0,
-        "roll": 0.0,
-        "scale": 1.0,
-        "hasCustomPointSize": false,
-        "pointSize": 5.0,
-        "selected": false,
-        "deactivate": false,
-        "enabled": true,
-        "brightness": 1.0,
-        "identify": false,
-        "mute": false,
-        "solo": false,
-        "tags": "",
-        "fixtureType": "TE/edge/Edge36-56"
-      },
-      "children": {}
-    },
-    {
       "jsonFixtureType": "TE/edge/Edge36-57",
       "jsonParameters": {
         "points": 160,
@@ -5307,6 +5264,49 @@
         "solo": false,
         "tags": "",
         "fixtureType": "TE/edge/Edge36-57"
+      },
+      "children": {}
+    },
+    {
+      "jsonFixtureType": "TE/edge/Edge36-56",
+      "jsonParameters": {
+        "points": 60,
+        "host": "10.7.6.124",
+        "output": 1,
+        "ledOffset": 0,
+        "artnetSequence": false,
+        "reverse": true,
+        "xOffset": 4.562351703643799,
+        "onCar": true,
+        "hasOutput": true
+      },
+      "id": 4229,
+      "class": "heronarts.lx.structure.JsonFixture",
+      "internal": {
+        "modulationColor": 0,
+        "modulationControlsExpanded": true,
+        "modulationsExpanded": true
+      },
+      "parameters": {
+        "label": "Edge 36-56",
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "yaw": 0.0,
+        "pitch": 0.0,
+        "roll": 0.0,
+        "scale": 1.0,
+        "hasCustomPointSize": false,
+        "pointSize": 5.0,
+        "selected": false,
+        "deactivate": false,
+        "enabled": true,
+        "brightness": 1.0,
+        "identify": false,
+        "mute": false,
+        "solo": false,
+        "tags": "",
+        "fixtureType": "TE/edge/Edge36-56"
       },
       "children": {}
     },
@@ -7065,7 +7065,7 @@
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
-        "identify": true,
+        "identify": false,
         "mute": false,
         "solo": false,
         "tags": "",
@@ -8480,7 +8480,7 @@
         "scale": 1.0,
         "hasCustomPointSize": false,
         "pointSize": 5.0,
-        "selected": true,
+        "selected": false,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
@@ -8613,7 +8613,7 @@
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
-        "identify": true,
+        "identify": false,
         "mute": false,
         "solo": false,
         "tags": "",
@@ -8699,7 +8699,7 @@
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
-        "identify": true,
+        "identify": false,
         "mute": false,
         "solo": false,
         "tags": "",
@@ -11537,7 +11537,7 @@
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
-        "identify": false,
+        "identify": true,
         "mute": false,
         "solo": false,
         "tags": "",
@@ -11838,7 +11838,7 @@
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
-        "identify": false,
+        "identify": true,
         "mute": false,
         "solo": false,
         "tags": "",
