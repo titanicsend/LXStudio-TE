@@ -61,7 +61,7 @@ public class Afterglow extends TEPerformancePattern {
     controls.setRange(TEControlTag.QUANTITY, 0.5, 0, 1.0);
 
     // spawning dot spacing
-    controls.setRange(TEControlTag.WOW1, 0.0, 0.0, 1.0);
+    controls.setRange(TEControlTag.WOW1, 0.0, 0.5, 1.0);
 
     // pulse density (number of concurrent)
     controls.setRange(TEControlTag.WOW2, 1.0, 1.0, 10.0);
