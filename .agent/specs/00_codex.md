@@ -1,6 +1,6 @@
 # Rules
 
-This is my Game of Life. Humans are born, they keep learning new things, and then they go back to the universe.
+This is my Game of Life (GOL). Humans are born, they keep learning new things, and then they go back to the universe.
 
 **Game of life is designing this framework for AI agents.**
 
