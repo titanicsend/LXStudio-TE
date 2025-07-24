@@ -1,0 +1,40 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Titanic's End Dynamic (VSCode)",
+            "request": "launch",
+            "mainClass": "heronarts.lx.studio.TEApp",
+            "projectName": "te-app", // Assuming 'te-app' is the VS Code Java project name corresponding to the IntelliJ module
+            "args": [
+                "dynamic",
+                "Projects/BM2024_TE.lxp"
+            ],
+            "vmArgs": [
+                "-ea",
+                "-Djava.awt.headless=true"
+            ],
+            "cwd": "${workspaceFolder}/te-app"
+        },
+        {
+            "type": "java",
+            "name": "Launch Titanic's End with Maven",
+            "request": "launch",
+            "mainClass": "heronarts.lx.studio.TEApp",
+            "args": [
+                "dynamic",
+                "Projects/BM2024_TE.lxp"
+            ],
+            "vmArgs": [
+                "-ea",
+                "-Djava.awt.headless=true"
+            ],
+            "cwd": "${workspaceFolder}/te-app",
+            "preLaunchTask": "Update Maven Project"
+        }
+    ]
+} 
