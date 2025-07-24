@@ -102,6 +102,34 @@ public class GLShaderEffect extends TEEffect implements GpuDevice {
     return lx.engine.palette.getSwatchColor(TEColorType.SECONDARY.swatchIndex()).getColor();
   }
 
+  // GPU Mixer Interface Methods
+  
+  /**
+   * Set input texture for shader processing (required by GLMixer)
+   */
+  public void setInput(int inputTextureHandle) {
+    // Store input texture for shaders to use
+    // For now, we'll implement this in subclasses that need it
+  }
+  
+  /**
+   * Run the shader effect (no-parameter version required by GLMixer)
+   */
+  public void run() {
+    // Call the existing run method with default values
+    run(16.67, 1.0); // ~60fps, fully enabled
+  }
+  
+  /**
+   * Get the render output texture handle (required by GLMixer)
+   */
+  public int getRenderTexture() {
+    if (!this.shaders.isEmpty()) {
+      return this.shaders.get(this.shaders.size() - 1).getRenderTexture();
+    }
+    return -1; // No texture
+  }
+
   // send a subset of the controls we use with patterns
   private void setUniforms(GLShader s) {
     s.setUniform("iTime", (float) getTime());

@@ -49,3 +49,4 @@ To the agent: "Assume the role of a highly professional technical artist, expert
 - LOG_FILE is an env variable that gets updated before every run to keep logs from different runs and not overwrite the logs. The logs are stored under .agent_logs/ and please make sure this is in the .gitignore
   - Note on LOG_FILE: when running the command, do it like this: LOG_FILE={timestamped_log_path.log} && echo LOG_FILE && {THE COMMAND TO LAUNCH TE-App} &> LOG_FILE
 - When the user closes the TE-App, the agent will review the logs and checks for errors or issues in the logs then continue on to the next task or whatever the agent wanted to do.
+  - Note on test runs: always run the test again after each change and don't stop until you fix errors

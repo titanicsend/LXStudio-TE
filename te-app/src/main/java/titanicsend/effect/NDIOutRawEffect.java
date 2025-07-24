@@ -30,10 +30,14 @@ public class NDIOutRawEffect extends TEEffect {
   private static final long FRAME_LOG_INTERVAL = 300; // Log frame details every 300 frames
   
   // NDI source configuration
-  private static final String NDI_SOURCE_NAME = "TE-Output";
+  private final String ndiSourceName;
 
   public NDIOutRawEffect(LX lx) {
     super(lx);
+
+    // Generate channel-specific NDI source name  
+    String channelName = "master"; // Default to master channel
+    this.ndiSourceName = "te_ndi_out_" + channelName.toLowerCase().replaceAll("[^a-z0-9]", "_");
 
     // Get dimensions from GLEngine
     this.width = GLEngine.current.getWidth();
@@ -48,15 +52,16 @@ public class NDIOutRawEffect extends TEEffect {
     this.lastLogTime = currentTime;
     this.lastFrameTime = currentTime;
     
-    LX.log("NDIOutRawEffect: Created with resolution " + this.width + "x" + this.height + 
+    LX.log("NDIOutRawEffect: 📺 CREATED - Resolution " + this.width + "x" + this.height + 
            ", buffer size: " + bufferSize + " bytes");
-    LX.log("NDIOutRawEffect: Memory allocated: " + (bufferSize / 1024.0 / 1024.0) + " MB");
+    LX.log("NDIOutRawEffect: 📺 CONFIGURED - Source name: '" + this.ndiSourceName + "', Memory: " + 
+           String.format("%.2f", bufferSize / 1024.0 / 1024.0) + " MB");
   }
 
   private void initializeNDI() {
     try {
       // Create NDI sender with descriptive name
-      this.ndiSender = new DevolaySender(NDI_SOURCE_NAME);
+      this.ndiSender = new DevolaySender(this.ndiSourceName);
       
       // Create video frame with our buffer
       this.ndiFrame = new DevolayVideoFrame();
@@ -67,8 +72,8 @@ public class NDIOutRawEffect extends TEEffect {
       this.ndiFrame.setAspectRatio(1);
       
       this.isInitialized = true;
-      LX.log("NDIOutRawEffect: ✅ NDI SENDER INITIALIZED - Source Name: '" + NDI_SOURCE_NAME + "'");
-      LX.log("NDIOutRawEffect: Publishing on NDI network as: '" + NDI_SOURCE_NAME + "'");
+      LX.log("NDIOutRawEffect: ✅ NDI SENDER INITIALIZED - Source Name: '" + this.ndiSourceName + "'");
+      LX.log("NDIOutRawEffect: Publishing on NDI network as: '" + this.ndiSourceName + "'");
       LX.log("NDIOutRawEffect: Frame format: " + this.width + "x" + this.height + " BGRX, 60fps");
       
     } catch (Exception e) {
@@ -86,14 +91,14 @@ public class NDIOutRawEffect extends TEEffect {
       initializeNDI();
     }
     if (this.isInitialized) {
-      LX.log("NDIOutRawEffect: 📡 NOW BROADCASTING to NDI source '" + NDI_SOURCE_NAME + "'");
+      LX.log("NDIOutRawEffect: 📡 NOW BROADCASTING to NDI source '" + this.ndiSourceName + "'");
     }
   }
 
   @Override
   protected void onDisable() {
     super.onDisable();
-    LX.log("NDIOutRawEffect: 🛑 EFFECT DISABLED - Stopping NDI broadcast from '" + NDI_SOURCE_NAME + "'");
+    LX.log("NDIOutRawEffect: 🛑 EFFECT DISABLED - Stopping NDI broadcast from '" + this.ndiSourceName + "'");
     
     if (this.ndiFrame != null) {
       this.ndiFrame.close();
@@ -190,7 +195,7 @@ public class NDIOutRawEffect extends TEEffect {
       
       // Log frame transmission every 60 frames (approximately once per second at 60fps)
       if (this.frameCount % 60 == 0) {
-        LX.log("NDIOutRawEffect: 📡 FRAME SENT #" + this.frameCount + " to NDI source '" + NDI_SOURCE_NAME + "'");
+        LX.log("NDIOutRawEffect: 📡 FRAME SENT #" + this.frameCount + " to NDI source '" + this.ndiSourceName + "'");
       }
       
       // Periodic detailed logging
@@ -203,7 +208,7 @@ public class NDIOutRawEffect extends TEEffect {
         double nonZeroPercent = (nonZeroPixels * 100.0) / this.colors.length;
         
         LX.log("NDIOutRawEffect: 📊 STREAMING STATS - Frame " + this.frameCount + 
-               " @ " + String.format("%.1f", fps) + " FPS to '" + NDI_SOURCE_NAME + "'");
+               " @ " + String.format("%.1f", fps) + " FPS to '" + this.ndiSourceName + "'");
         LX.log("NDIOutRawEffect: Content: " + processedPixels + " pixels, " + 
                nonZeroPixels + " non-black (" + String.format("%.1f", nonZeroPercent) + "%)");
         LX.log("NDIOutRawEffect: Sample pixel[" + samplePixel + "] = 0x" + 

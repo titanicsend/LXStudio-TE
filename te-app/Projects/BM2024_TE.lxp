@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.3.GPU-SNAPSHOT",
-  "timestamp": 1753392322687,
+  "timestamp": 1753397422515,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -2036,18 +2036,18 @@
               "band-1": 0.0,
               "band-2": 0.0,
               "band-3": 0.0,
-              "band-4": 0.04717680837200333,
-              "band-5": 0.09563096815893257,
-              "band-6": 0.16452944982709894,
-              "band-7": 0.27619619316657706,
-              "band-8": 0.281311322197348,
-              "band-9": 0.16648443821694003,
-              "band-10": 0.19779897123683077,
-              "band-11": 0.15155134680885018,
-              "band-12": 0.2496630528238336,
-              "band-13": 0.27661554784879827,
-              "band-14": 0.10653972685203783,
-              "band-15": 0.01800617815027772,
+              "band-4": 0.1394708745846054,
+              "band-5": 0.18460114858144738,
+              "band-6": 0.4046547960817447,
+              "band-7": 0.4543555650264981,
+              "band-8": 0.44279127201158264,
+              "band-9": 0.6190497595176183,
+              "band-10": 0.7710244743680446,
+              "band-11": 0.5187717237385763,
+              "band-12": 0.3749309211068267,
+              "band-13": 0.40508565293369436,
+              "band-14": 0.10406404569852101,
+              "band-15": 0.0,
               "band-16": 0.0
             },
             "children": {}
@@ -2119,54 +2119,8 @@
             },
             "effects": [
               {
-                "id": 252487,
-                "class": "titanicsend.app.director.DirectorEffect",
-                "internal": {
-                  "modulationColor": 0,
-                  "modulationControlsExpanded": true,
-                  "modulationsExpanded": true,
-                  "expanded": false,
-                  "expandedCue": true,
-                  "expandedAux": true,
-                  "modulationExpanded": false
-                },
-                "parameters": {
-                  "label": "Director",
-                  "midiFilter/enabled": true,
-                  "midiFilter/channel": 16,
-                  "midiFilter/channel/name": "OMNI",
-                  "midiFilter/minNote": 0,
-                  "midiFilter/noteRange": 128,
-                  "midiFilter/minVelocity": 1,
-                  "midiFilter/velocityRange": 127,
-                  "view": 0,
-                  "viewPriority": 0,
-                  "enabled": true,
-                  "locked": true
-                },
-                "children": {
-                  "modulation": {
-                    "id": 252488,
-                    "class": "heronarts.lx.modulation.LXModulationEngine",
-                    "internal": {
-                      "modulationColor": 0,
-                      "modulationControlsExpanded": true,
-                      "modulationsExpanded": true
-                    },
-                    "parameters": {
-                      "label": "Modulation"
-                    },
-                    "children": {},
-                    "modulators": [],
-                    "modulations": [],
-                    "triggers": []
-                  }
-                },
-                "deviceVersion": -1
-              },
-              {
-                "id": 464603,
-                "class": "titanicsend.effect.NDIOutRawEffect",
+                "id": 465216,
+                "class": "titanicsend.effect.GLNDIOutEffect",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
@@ -2177,7 +2131,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "NDIOutRaw",
+                  "label": "GLNDIOut",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
                   "midiFilter/channel/name": "OMNI",
@@ -2192,7 +2146,7 @@
                 },
                 "children": {
                   "modulation": {
-                    "id": 464604,
+                    "id": 465217,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,

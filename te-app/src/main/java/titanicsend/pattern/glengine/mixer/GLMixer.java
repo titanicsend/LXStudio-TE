@@ -233,11 +233,11 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     protected final int loopEffects(int dst, List<LXEffect> effects) {
       for (LXEffect effect : effects) {
         if (effect instanceof GLShaderEffect glShaderEffect) {
-          /*
-                    glShaderEffect.setInput(dst);
-                    glShaderEffect.run();
-                    dst = glShaderEffect.getRenderTexture();
-          */
+          glShaderEffect.setInput(dst);
+          glShaderEffect.run();
+          dst = glShaderEffect.getRenderTexture();
+        } else if (effect.isEnabled()) {
+          // LX.debug("GLMixer: ⚠️ SKIPPING CPU effect (not compatible with GPU mixer): " + effect.getClass().getSimpleName());
         }
       }
       return dst;

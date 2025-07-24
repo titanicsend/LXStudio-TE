@@ -135,34 +135,78 @@ Investigate current NDI implementation, identify performance bottlenecks, and en
   - Memory allocation calculated correctly (9.2MB buffer)
   - Project loads without affecting NDI functionality
 
-### Task 1.6 - 🔄 **NEXT** - Test NDI transmission with user interaction
+### Task 1.6 - ✅ **COMPLETED** - Enhanced NDI transmission logging and source name tracking
 
-**Objective:** Verify the NDI effect actually transmits video data when enabled
+- **Implementation:** Added comprehensive NDI transmission and source name logging:
+
+  - **NDI Source Name**: Configurable constant `NDI_SOURCE_NAME = "TE-Output"`
+  - **Initialization Logging**: Clear source name and publishing status messages
+  - **Frame Transmission Logging**: Real-time frame send notifications every 60 frames (~1/sec at 60fps)
+  - **Broadcasting Status**: Clear enable/disable state logging with source name
+  - **Enhanced Streaming Stats**: Detailed periodic reports with source name and transmission status
+
+- **Key Log Messages Added:**
+
+  ```bash
+  # Initialization
+  NDIOutRawEffect: ✅ NDI SENDER INITIALIZED - Source Name: 'TE-Output'
+  NDIOutRawEffect: Publishing on NDI network as: 'TE-Output'
+
+  # Broadcasting Control
+  NDIOutRawEffect: 🚀 EFFECT ENABLED - Starting NDI video stream...
+  NDIOutRawEffect: 📡 NOW BROADCASTING to NDI source 'TE-Output'
+
+  # Frame Transmission (every ~1 second)
+  NDIOutRawEffect: 📡 FRAME SENT #60 to NDI source 'TE-Output'
+  NDIOutRawEffect: 📡 FRAME SENT #120 to NDI source 'TE-Output'
+
+  # Detailed Stats (every 300 frames)
+  NDIOutRawEffect: 📊 STREAMING STATS - Frame 300 @ 60.0 FPS to 'TE-Output'
+  NDIOutRawEffect: Content: 2304000 pixels, 1234567 non-black (53.6%)
+
+  # Shutdown
+  NDIOutRawEffect: 🛑 EFFECT DISABLED - Stopping NDI broadcast from 'TE-Output'
+  NDIOutRawEffect: ✅ NDI resources cleaned up, broadcast stopped
+  ```
+
+- **Technical Improvements:**
+  - Centralized NDI source name configuration for easy modification
+  - Unicode emoji indicators for log message types (🚀🛑📡📊✅)
+  - Frame transmission tracking every 60 frames for real-time feedback
+  - Clear broadcasting lifecycle logging (start → transmit → stop)
+  - Enhanced error reporting with source name context
+
+### Task 1.7 - 🔄 **NEXT** - Test enhanced NDI transmission logging with user interaction
+
+**Objective:** Verify the enhanced NDI transmission logs work correctly when streaming actual video data
 
 **Test Protocol:**
 
-1. **User Interaction Required**: Add NDI Raw Output effect to an active channel in the TE UI
-2. **Monitor Enhanced Logs**: Watch for frame transmission messages:
-   - `NDIOutRawEffect: Sending frame [X], FPS: [Y]`
-   - `NDIOutRawEffect: Processing [N] colors for transmission`
-   - `NDIOutRawEffect: Sample pixel data and buffer status`
-3. **External Verification**: Use NDI Studio Monitor to verify "TE-Output" stream appears
-4. **Data Validation**: Confirm non-zero pixel data is being transmitted
+1. **Launch TE App**: Start with enhanced logging enabled
+2. **Add NDI Effect**: User adds NDI Raw Output effect to an active channel in UI
+3. **Monitor New Logs**: Watch for enhanced transmission messages:
+   - Source name initialization and broadcasting status
+   - Real-time frame transmission notifications
+   - Detailed streaming statistics with content analysis
+4. **External Verification**: Use NDI Studio Monitor to verify "TE-Output" stream reception
+5. **Lifecycle Testing**: Test enable/disable cycle to verify clean startup/shutdown logging
 
-**Expected Log Pattern:**
+**Expected Enhanced Log Sequence:**
 
+```bash
+[LX timestamp] NDIOutRawEffect: 🚀 EFFECT ENABLED - Starting NDI video stream...
+[LX timestamp] NDIOutRawEffect: ✅ NDI SENDER INITIALIZED - Source Name: 'TE-Output'
+[LX timestamp] NDIOutRawEffect: 📡 NOW BROADCASTING to NDI source 'TE-Output'
+[LX timestamp] NDIOutRawEffect: 📡 FRAME SENT #60 to NDI source 'TE-Output'
+[LX timestamp] NDIOutRawEffect: 📊 STREAMING STATS - Frame 300 @ 60.0 FPS to 'TE-Output'
 ```
-NDIOutRawEffect: Effect enabled, initializing NDI...
-NDIOutRawEffect: Successfully initialized NDI sender 'TE-Output'
-NDIOutRawEffect: Sending frame [300], FPS: [60.0]
-NDIOutRawEffect: Processing [2304000] colors, [X] non-black ([Y]%)
-```
 
-**Tools Ready:**
+**Success Criteria:**
 
-- Enhanced logging active and confirmed working
-- Log file: `.agent_logs/te_app_[timestamp].log`
-- NDI tools for external stream verification
+- Clear visibility of NDI source name throughout log messages
+- Real-time frame transmission confirmation
+- Detailed streaming statistics with FPS and content analysis
+- Clean enable/disable lifecycle logging
 
 ## Phase 2 - GPU NDI Integration
 
