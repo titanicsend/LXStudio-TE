@@ -114,10 +114,16 @@ public class GLShaderEffect extends TEEffect implements GpuDevice {
   
   /**
    * Run the shader effect (no-parameter version required by GLMixer)
+   * NOTE: This is called by GLMixer AFTER the normal engine has already run the effect.
+   * We should NOT re-run the shader here - just ensure the texture is available.
    */
   public void run() {
-    // Call the existing run method with default values
-    run(16.67, 1.0); // ~60fps, fully enabled
+    // The shader has already been executed by the normal LX engine loop.
+    // The texture is already available via getRenderTexture().
+    // No need to re-run the shader - this would cause double rendering!
+    
+    // If we need any GPU mixer specific processing, it would go here.
+    // For now, this is essentially a no-op since the texture is already rendered.
   }
   
   /**

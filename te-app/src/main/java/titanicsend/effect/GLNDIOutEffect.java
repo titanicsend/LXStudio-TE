@@ -241,8 +241,29 @@ public class GLNDIOutEffect extends GLShaderEffect {
   
   @Override
   public void run() {
-    // Call the existing run method with default values for GPU mixer
-    run(16.67, 1.0); // ~60fps, fully enabled
+    // This is called by GLMixer with the input texture already set.
+    // Capture the input texture for NDI transmission (no need to re-run the effect).
+    if (!this.isInitialized || this.ndiSender == null) {
+      return; // NDI not ready
+    }
+    
+    if (this.inputTextureHandle > 0) {
+      try {
+        // Read the already-rendered texture from GPU and transmit via NDI
+        readTextureData(this.inputTextureHandle);
+        this.ndiSender.sendVideoFrameAsync(this.ndiFrame);
+        this.frameCount++;
+        
+        // Periodic logging
+        if (this.frameCount % FRAME_LOG_INTERVAL == 0) {
+          LX.log("GLNDIOutEffect: 📡 GPU FRAME SENT #" + this.frameCount + " to NDI source '" + this.ndiSourceName + 
+                 "' (input texture: " + this.inputTextureHandle + ")");
+        }
+        
+      } catch (Exception e) {
+        LX.log("GLNDIOutEffect: ❌ Error capturing GPU texture for NDI: " + e.getMessage());
+      }
+    }
   }
   
   @Override
