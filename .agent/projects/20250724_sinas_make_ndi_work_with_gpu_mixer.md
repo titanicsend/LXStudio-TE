@@ -119,29 +119,50 @@ Investigate current NDI implementation, identify performance bottlenecks, and en
   - Chromatik version 1.1.1-TE.3.GPU-SNAPSHOT active
   - Audio input thread started, Art-Net listener active on port 6454
 
-### Task 1.5 - 🔄 **NEXT** - Test NDI output functionality and data flow
+### Task 1.5 - ✅ **COMPLETED** - Test NDI output initialization and logging
 
-**Objective:** Verify the enhanced NDI output actually transmits video data
+- **Result:** Successfully verified NDI effect creation and logging system
+- **Log Evidence:**
+  ```
+  [LX 2025/07/24 14:25:18] NDIOutRawEffect: Created with resolution 1920x1200, buffer size: 9216000 bytes
+  [LX 2025/07/24 14:25:18] NDIOutRawEffect: Memory allocated: 8.7890625 MB
+  [LX 2025/07/24 14:25:22] Project saved successfully to Projects/BM2024_TE.lxp
+  ```
+- **Key Achievements:**
+  - GPU-enabled TE app launches successfully with Metal renderer
+  - Enhanced NDI logging captures initialization details correctly
+  - NDI effect instantiates with proper resolution (1920x1200)
+  - Memory allocation calculated correctly (9.2MB buffer)
+  - Project loads without affecting NDI functionality
 
-**Test Plan:**
+### Task 1.6 - 🔄 **NEXT** - Test NDI transmission with user interaction
 
-1. **Enable NDI Effect:** Add NDI Raw Output effect to an active channel
-2. **Monitor Logs:** Check for frame transmission logs, FPS metrics, and buffer activity
-3. **NDI Discovery:** Use NDI tools to verify the "TE-Output" stream is discoverable
-4. **Data Validation:** Confirm color data is being processed and sent (not empty frames)
-5. **Performance Check:** Monitor FPS and memory usage under various loads
+**Objective:** Verify the NDI effect actually transmits video data when enabled
 
-**Expected Logs to Verify:**
+**Test Protocol:**
 
-- `NDIOutRawEffect: Sending frame [X], FPS: [Y]`
-- `NDIOutRawEffect: Processing [N] colors for transmission`
-- `NDIOutRawEffect: Buffer [X]MB, Sender active`
+1. **User Interaction Required**: Add NDI Raw Output effect to an active channel in the TE UI
+2. **Monitor Enhanced Logs**: Watch for frame transmission messages:
+   - `NDIOutRawEffect: Sending frame [X], FPS: [Y]`
+   - `NDIOutRawEffect: Processing [N] colors for transmission`
+   - `NDIOutRawEffect: Sample pixel data and buffer status`
+3. **External Verification**: Use NDI Studio Monitor to verify "TE-Output" stream appears
+4. **Data Validation**: Confirm non-zero pixel data is being transmitted
 
-**Tools for Verification:**
+**Expected Log Pattern:**
 
-- NDI Studio Monitor (for receiving stream)
-- NDI Access Manager (for network discovery)
-- TE app logs (for transmission confirmation)
+```
+NDIOutRawEffect: Effect enabled, initializing NDI...
+NDIOutRawEffect: Successfully initialized NDI sender 'TE-Output'
+NDIOutRawEffect: Sending frame [300], FPS: [60.0]
+NDIOutRawEffect: Processing [2304000] colors, [X] non-black ([Y]%)
+```
+
+**Tools Ready:**
+
+- Enhanced logging active and confirmed working
+- Log file: `.agent_logs/te_app_[timestamp].log`
+- NDI tools for external stream verification
 
 ## Phase 2 - GPU NDI Integration
 

@@ -8,7 +8,7 @@ When an agent is first starting, it needs to start reviewing this file. This fil
 "sacred" file, hence:
 ** THIS FILE MUST NOT BE MODIFIED BY AN AGENT OTHER THAN A HUMAN. AND AI AGENTS WILL FOLLOW ALL SPECS IN THIS SET OF FILES UNLESS COMMUNICATED CLEARLY WITH PS. **
 
-For fun, I am calling the human agent using these specs "Physical Self (PS)" or "Person".
+For fun, I am calling the human agent using these specs "Self" or "Sina" or "S".
 
 To the agent: "Assume the role of a highly professional technical artist, expert in Java, GLSL, memory optimization, and other technical topics. But at the end, you are an artist and want to bring breautiful things to life."
 

@@ -28,6 +28,9 @@ public class NDIOutRawEffect extends TEEffect {
   private long lastFrameTime = 0;
   private static final long LOG_INTERVAL_MS = 5000; // Log every 5 seconds
   private static final long FRAME_LOG_INTERVAL = 300; // Log frame details every 300 frames
+  
+  // NDI source configuration
+  private static final String NDI_SOURCE_NAME = "TE-Output";
 
   public NDIOutRawEffect(LX lx) {
     super(lx);
@@ -53,7 +56,7 @@ public class NDIOutRawEffect extends TEEffect {
   private void initializeNDI() {
     try {
       // Create NDI sender with descriptive name
-      this.ndiSender = new DevolaySender("TE-Output");
+      this.ndiSender = new DevolaySender(NDI_SOURCE_NAME);
       
       // Create video frame with our buffer
       this.ndiFrame = new DevolayVideoFrame();
@@ -64,8 +67,9 @@ public class NDIOutRawEffect extends TEEffect {
       this.ndiFrame.setAspectRatio(1);
       
       this.isInitialized = true;
-      LX.log("NDIOutRawEffect: Successfully initialized NDI sender 'TE-Output'");
-      LX.log("NDIOutRawEffect: Frame format: " + this.width + "x" + this.height + " BGRX, stride: " + (this.width * 4));
+      LX.log("NDIOutRawEffect: ✅ NDI SENDER INITIALIZED - Source Name: '" + NDI_SOURCE_NAME + "'");
+      LX.log("NDIOutRawEffect: Publishing on NDI network as: '" + NDI_SOURCE_NAME + "'");
+      LX.log("NDIOutRawEffect: Frame format: " + this.width + "x" + this.height + " BGRX, 60fps");
       
     } catch (Exception e) {
       LX.error("NDIOutRawEffect: Failed to initialize NDI: " + e.getMessage());
@@ -77,16 +81,19 @@ public class NDIOutRawEffect extends TEEffect {
   @Override
   protected void onEnable() {
     super.onEnable();
-    LX.log("NDIOutRawEffect: Effect enabled, initializing NDI...");
+    LX.log("NDIOutRawEffect: 🚀 EFFECT ENABLED - Starting NDI video stream...");
     if (!this.isInitialized) {
       initializeNDI();
+    }
+    if (this.isInitialized) {
+      LX.log("NDIOutRawEffect: 📡 NOW BROADCASTING to NDI source '" + NDI_SOURCE_NAME + "'");
     }
   }
 
   @Override
   protected void onDisable() {
     super.onDisable();
-    LX.log("NDIOutRawEffect: Effect disabled, cleaning up NDI resources");
+    LX.log("NDIOutRawEffect: 🛑 EFFECT DISABLED - Stopping NDI broadcast from '" + NDI_SOURCE_NAME + "'");
     
     if (this.ndiFrame != null) {
       this.ndiFrame.close();
@@ -97,6 +104,7 @@ public class NDIOutRawEffect extends TEEffect {
       this.ndiSender = null;
     }
     this.isInitialized = false;
+    LX.log("NDIOutRawEffect: ✅ NDI resources cleaned up, broadcast stopped");
   }
 
   @Override
@@ -180,6 +188,11 @@ public class NDIOutRawEffect extends TEEffect {
       // Send the frame via NDI
       this.ndiSender.sendVideoFrame(this.ndiFrame);
       
+      // Log frame transmission every 60 frames (approximately once per second at 60fps)
+      if (this.frameCount % 60 == 0) {
+        LX.log("NDIOutRawEffect: 📡 FRAME SENT #" + this.frameCount + " to NDI source '" + NDI_SOURCE_NAME + "'");
+      }
+      
       // Periodic detailed logging
       if (this.frameCount % FRAME_LOG_INTERVAL == 0 || currentTime - this.lastLogTime > LOG_INTERVAL_MS) {
         double fps = 0.0;
@@ -189,13 +202,13 @@ public class NDIOutRawEffect extends TEEffect {
         
         double nonZeroPercent = (nonZeroPixels * 100.0) / this.colors.length;
         
-        LX.log("NDIOutRawEffect: Sending frame " + this.frameCount + 
-               ", FPS: " + String.format("%.1f", fps));
-        LX.log("NDIOutRawEffect: Processing " + processedPixels + " colors, " + 
+        LX.log("NDIOutRawEffect: 📊 STREAMING STATS - Frame " + this.frameCount + 
+               " @ " + String.format("%.1f", fps) + " FPS to '" + NDI_SOURCE_NAME + "'");
+        LX.log("NDIOutRawEffect: Content: " + processedPixels + " pixels, " + 
                nonZeroPixels + " non-black (" + String.format("%.1f", nonZeroPercent) + "%)");
         LX.log("NDIOutRawEffect: Sample pixel[" + samplePixel + "] = 0x" + 
                Integer.toHexString(sampleColor) + ", Buffer: " + 
-               (this.buffer.limit() / 1024) + "KB, Sender active");
+               (this.buffer.limit() / 1024) + "KB");
         
         this.lastLogTime = currentTime;
         this.lastFrameTime = currentTime;
