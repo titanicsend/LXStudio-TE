@@ -34,3 +34,6 @@ te-app/Projects/Test*.lxp
 Logs/
 *.onnx
 /te-app/resources/shaders/cache/
+
+# Agent logs
+.agent_logs/
