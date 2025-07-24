@@ -70,6 +70,7 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   private static double trebleRatio = 0.0;
 
   // audio and related uniform block buffer parameters
+  private static final int MAX_AUDIO_STEMS = 5;
   private FloatBuffer perRunUniformBlock;
   private int perRunUniformBlockSize;
   private FloatBuffer perFrameUniformBlock;
@@ -222,6 +223,12 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     // store palette size (iPaletteSize)
     uniformBuffer.put((float) activeSwatch.colors.size());
 
+    // Move to the next 4-byte boundary
+    // NOTE: This is necessary to ensure that the palette colors array is properly
+    // aligned.  If you add more elements to the per-frame uniform block, you may need to
+    // adjust this padding to work with the new size.
+    uniformBuffer.position(uniformBuffer.position() + 3);
+
     // store palette colors
     for (int i = 0; i < n; i++) {
       int color = activeSwatch.getColor(i).getColor();
@@ -300,12 +307,13 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     // 1 float for stemDrums
     // 1 float for stemVocals
     // 1 float for stemOther
+    // 1 float for stemDrumHits
     // 1 float for iPaletteSize
     // 20 floats (5 x 4) for the palette
     // VERY IMPORTANT NOTE: whatever order this buffer is loaded in MUST be replicated exactly
     // in the shader framework code's uniform block declaration. Otherwise, the uniforms will not
     // have the correct values in the shader.
-    this.perFrameUniformBlockSize = getUBOAlignedSize(32);
+    this.perFrameUniformBlockSize = getUBOAlignedSize(36);
     this.perFrameUniformBlock = GLBuffers.newDirectFloatBuffer(perFrameUniformBlockSize / 4);
 
     // Generate the uniform block buffers
@@ -364,8 +372,11 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     perFrameUniformBlock.put((float) bassRatio); // bassRatio
     perFrameUniformBlock.put((float) trebleRatio); // trebleRatio
     perFrameUniformBlock.put((float) volumeRatio); // volumeRatio
-    for (AudioStems.Stem stem : AudioStems.get().stems) {
-      perFrameUniformBlock.put((float) stem.getValue());
+
+    int stemCount = Math.min(MAX_AUDIO_STEMS, AudioStems.get().stems.size());
+    for (int i = 0; i < MAX_AUDIO_STEMS; i++) {
+      perFrameUniformBlock.put(
+          (i < stemCount) ? (float) AudioStems.get().stems.get(i).getValue() : 0f);
     }
 
     // set the palette size and colors

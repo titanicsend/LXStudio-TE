@@ -100,6 +100,7 @@ uniform float stemBass;
 uniform float stemDrums;
 uniform float stemVocals;
 uniform float stemOther;
+uniform stem  drumHits;
 
 // TE color
 uniform vec3 iColorRGB;   // color 1 - the color returned by calcColor() 
@@ -274,6 +275,11 @@ RMS energy of the vocal stem - human voices, possibly other midrange melodic ins
 
 #### uniform float stemOther;
 RMS energy of all other audio content.
+
+#### uniform stem drumHits;
+RMS energy of drum hits in the current audio signal.  This will, of course, be zero unless
+the drums are actually being hit.  Note that the precise content of this signal is determined
+by settings in the AudioStems plugin and in the VJLab app that provides the audio stems.
 
 -----
 
