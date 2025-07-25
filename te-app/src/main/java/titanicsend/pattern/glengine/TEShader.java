@@ -214,10 +214,8 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
 
     // JKB note: Retrofit of CPU compatibility for the GPU branch:
     if (this.lx.engine.renderMode.cpu && this.cpuBuffer != null) {
-      // Bind the current PBO
-      this.ppPBOs.render.bind();
-
-      gl4.glReadPixels(0, 0, this.width, this.height, GL_BGRA, GL_UNSIGNED_BYTE, 0);
+      // Start async read of framebuffer into PBO
+      this.ppPBOs.render.startRead();
 
       if (firstFrame) {
         // Skip the first frame, PBO is empty
@@ -225,13 +223,10 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
       } else {
 
         // Map the other PBO for reading (from previous frame)
-        this.ppPBOs.copy.bind();
-
-        this.imageBuffer = this.gl4.glMapBuffer(GL4.GL_PIXEL_PACK_BUFFER, GL4.GL_READ_ONLY);
+        this.imageBuffer = this.ppPBOs.copy.getData();
 
         if (this.imageBuffer != null) {
           // Copy data from PBO to cpu buffer
-          this.imageBuffer.rewind();
           IntBuffer src = this.imageBuffer.asIntBuffer();
           // Clamp
           int count = Math.min(src.remaining(), this.cpuBuffer.length);
