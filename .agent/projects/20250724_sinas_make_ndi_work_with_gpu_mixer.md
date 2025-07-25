@@ -220,12 +220,19 @@ Phase 1 Status: **[✅ COMPLETED SUCCESSFULLY - GPU NDI Implementation Working]*
 - **Solution Required**: Model data optimization or canvas size adjustment
 
 **Recommended Launch Command:**
+**Prerequisites:** Build the project first:
+
+```bash
+cd te-app && mvn package -DskipTests
+```
+
+**Launch with NDI Testing:**
 
 ```bash
 cd te-app && LOG_FILE="../.agent_logs/ndi_1280x800_test_$(date +%Y%m%d_%H%M%S).log" && echo "🎯 Testing 1280x800 NDI Output: $LOG_FILE" && java -ea -XstartOnFirstThread -Djava.awt.headless=true -Dgpu -jar target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar --resolution 1280x800 Projects/highres_ndi_out.lxp &> $LOG_FILE
 ```
 
-**Important**: Run this command in the **same terminal** as the chat session, do not open a new terminal.
+**Important**: Run these commands in the **same terminal** as the chat session, do not open a new terminal.
 
 **Outstanding Items for Future Work:**
 
