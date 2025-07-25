@@ -48,5 +48,12 @@ To the agent: "Assume the role of a highly professional technical artist, expert
 - The agent pipes the logs from the TE-App into a temp log file (and making sure the logs are not showsn in the terminal to avoid context spamming &> LOG_FILE).
 - LOG_FILE is an env variable that gets updated before every run to keep logs from different runs and not overwrite the logs. The logs are stored under .agent_logs/ and please make sure this is in the .gitignore
   - Note on LOG_FILE: when running the command, do it like this: LOG_FILE={timestamped_log_path.log} && echo LOG_FILE && {THE COMMAND TO LAUNCH TE-App} &> LOG_FILE
+  - Note 2: do not use tee so the context doesn't get spammed
 - When the user closes the TE-App, the agent will review the logs and checks for errors or issues in the logs then continue on to the next task or whatever the agent wanted to do.
   - Note on test runs: always run the test again after each change and don't stop until you fix errors
+- Example command to run TE
+- Run the commands in the same terminal as the chat and do not open a new terminal.
+
+```
+cd ../te-app && LOG_FILE="../.agent_logs/te_app_highres_ndi_$(date +%Y%m%d_%H%M%S).log" && echo "🎯 Testing High-Res NDI Project: $LOG_FILE" && java -ea -XstartOnFirstThread -Djava.awt.headless=true -Dgpu -jar target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar --resolution 1920x1200 Projects/highres_ndi_out.lxp 2>&1 | tee $LOG_FILE
+```

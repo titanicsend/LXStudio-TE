@@ -56,15 +56,23 @@ public class GLNDIOutEffect extends GLShaderEffect {
     this.ndiBuffer = ByteBuffer.allocateDirect(bufferSize);
     this.pixelBuffer = IntBuffer.allocate(this.width * this.height);
     
-    // Enhanced initialization logging
+    // Initialize timing
     long currentTime = System.currentTimeMillis();
     this.lastLogTime = currentTime;
     this.lastFrameTime = currentTime;
     
-    LX.log("GLNDIOutEffect: 🎮 GPU NDI EFFECT CREATED - Resolution " + this.width + "x" + this.height);
-    LX.log("GLNDIOutEffect: 🎮 GPU-compatible NDI source: '" + this.ndiSourceName + "', Memory: " + 
-           String.format("%.2f", bufferSize / 1024.0 / 1024.0) + " MB");
-    LX.log("GLNDIOutEffect: ✅ COMPATIBLE with GPU mixer - will capture GPU textures directly");
+    // Debug: Constructor called
+    LX.log("GLNDIOutEffect: 🏗️ Constructor called - creating GPU NDI effect");
+    LX.log("GLNDIOutEffect: 🔍 Effect enabled state: " + this.enabled.isOn());
+    LX.log("GLNDIOutEffect: 📏 Resolution: " + this.width + "x" + this.height + " (" + bufferSize + " bytes)");
+    
+    // Try to initialize NDI immediately if effect is enabled
+    if (this.enabled.isOn()) {
+      LX.log("GLNDIOutEffect: 🚀 Effect is enabled in constructor, initializing NDI immediately");
+      initializeNDI();
+    } else {
+      LX.log("GLNDIOutEffect: ⏸️ Effect is disabled in constructor, waiting for onEnable()");
+    }
   }
 
   private void initializeNDI() {
@@ -81,9 +89,7 @@ public class GLNDIOutEffect extends GLShaderEffect {
       this.ndiFrame.setAspectRatio(1);
       
       this.isInitialized = true;
-      LX.log("GLNDIOutEffect: ✅ GPU NDI SENDER INITIALIZED - Source Name: '" + this.ndiSourceName + "'");
-      LX.log("GLNDIOutEffect: 📡 Publishing GPU-rendered content on NDI network as: '" + this.ndiSourceName + "'");
-      LX.log("GLNDIOutEffect: 🎮 Frame format: " + this.width + "x" + this.height + " BGRX, 60fps");
+      LX.log("GLNDIOutEffect: GPU NDI sender initialized for '" + this.ndiSourceName + "' (" + this.width + "x" + this.height + ")");
       
     } catch (Exception e) {
       LX.error("GLNDIOutEffect: ❌ Failed to initialize GPU NDI: " + e.getMessage());
@@ -95,19 +101,18 @@ public class GLNDIOutEffect extends GLShaderEffect {
   @Override
   protected void onEnable() {
     super.onEnable();
-    LX.log("GLNDIOutEffect: 🚀 GPU EFFECT ENABLED - Starting GPU-to-NDI video stream...");
+    LX.log("GLNDIOutEffect: 🚀 onEnable() called - current state: enabled=" + this.enabled.isOn() + ", initialized=" + this.isInitialized);
     if (!this.isInitialized) {
+      LX.log("GLNDIOutEffect: 🔄 NDI not initialized, calling initializeNDI()");
       initializeNDI();
-    }
-    if (this.isInitialized) {
-      LX.log("GLNDIOutEffect: 📡 NOW BROADCASTING GPU content to NDI source '" + this.ndiSourceName + "'");
+    } else {
+      LX.log("GLNDIOutEffect: ✅ NDI already initialized, ready for '" + this.ndiSourceName + "'");
     }
   }
 
   @Override
   protected void onDisable() {
     super.onDisable();
-    LX.log("GLNDIOutEffect: 🛑 GPU EFFECT DISABLED - Stopping GPU NDI broadcast from '" + this.ndiSourceName + "'");
     
     if (this.ndiFrame != null) {
       this.ndiFrame.close();
@@ -118,13 +123,18 @@ public class GLNDIOutEffect extends GLShaderEffect {
       this.ndiSender = null;
     }
     this.isInitialized = false;
-    LX.log("GLNDIOutEffect: ✅ GPU NDI resources cleaned up, broadcast stopped");
   }
 
   @Override
   protected void run(double deltaMs, double enabledAmount) {
+    // Debug: Log first few run calls
+    if (this.frameCount < 3) {
+      LX.log("GLNDIOutEffect: 🎬 run(deltaMs, enabledAmount) called - frame " + this.frameCount + ", enabled=" + enabledAmount + ", initialized=" + this.isInitialized);
+    }
+    
     if (!this.isInitialized) {
       // Try to initialize if we haven't yet
+      LX.log("GLNDIOutEffect: 🔄 Not initialized in run(), attempting initializeNDI()");
       initializeNDI();
       if (!this.isInitialized) {
         return; // Skip this frame if initialization failed
@@ -196,30 +206,10 @@ public class GLNDIOutEffect extends GLShaderEffect {
       // Send the frame via NDI (common for both GPU and CPU paths)
       this.ndiSender.sendVideoFrame(this.ndiFrame);
       
-      // Log frame transmission every 60 frames (approximately once per second at 60fps)
-      if (this.frameCount % FRAME_LOG_INTERVAL == 0) {
-        LX.log("GLNDIOutEffect: 📡 GPU FRAME SENT #" + this.frameCount + " to NDI source '" + this.ndiSourceName + "'");
-      }
-      
-      // Periodic detailed logging
-      if (this.frameCount % (FRAME_LOG_INTERVAL * 5) == 0 || currentTime - this.lastLogTime > LOG_INTERVAL_MS) {
-        double fps = 0.0;
-        if (currentTime > this.lastFrameTime) {
-          fps = (FRAME_LOG_INTERVAL * 5) / ((currentTime - this.lastFrameTime) / 1000.0);
-        }
-        
-        double nonZeroPercent = (nonZeroPixels * 100.0) / processedPixels;
-        
-        LX.log("GLNDIOutEffect: 📊 GPU STREAMING STATS - Frame " + this.frameCount + 
-               " @ " + String.format("%.1f", fps) + " FPS to '" + this.ndiSourceName + "'");
-        LX.log("GLNDIOutEffect: 🎮 GPU Content: " + processedPixels + " pixels, " + 
-               nonZeroPixels + " non-black (" + String.format("%.1f", nonZeroPercent) + "%)");
-        LX.log("GLNDIOutEffect: 🎮 Sample pixel[" + samplePixel + "] = 0x" + 
-               Integer.toHexString(sampleColor) + ", Buffer: " + 
-               (this.ndiBuffer.limit() / 1024) + "KB");
-        
-        this.lastLogTime = currentTime;
-        this.lastFrameTime = currentTime;
+      // Debug logging for frame transmission
+      if (this.frameCount % 300 == 0) {
+        // TODO: REMOVE
+        LX.log("GLNDIOutEffect: Frame #" + this.frameCount + " sent to '" + this.ndiSourceName + "' (pixels: " + processedPixels + ")");
       }
       
     } catch (Exception e) {
@@ -236,14 +226,21 @@ public class GLNDIOutEffect extends GLShaderEffect {
   @Override
   public void setInput(int inputTextureHandle) {
     this.inputTextureHandle = inputTextureHandle;
-    LX.log("GLNDIOutEffect: 🎯 INPUT TEXTURE SET - Handle: " + inputTextureHandle);
   }
   
   @Override
   public void run() {
+    // Debug: Track GPU mixer calls
+    if (this.frameCount < 3 || this.frameCount % 300 == 0) {
+      LX.log("GLNDIOutEffect: 🎮 GPU mixer run() called - frame " + this.frameCount + ", initialized=" + this.isInitialized + ", inputTexture=" + this.inputTextureHandle);
+    }
+    
     // This is called by GLMixer with the input texture already set.
     // Capture the input texture for NDI transmission (no need to re-run the effect).
     if (!this.isInitialized || this.ndiSender == null) {
+      if (this.frameCount < 3) {
+        LX.log("GLNDIOutEffect: ⚠️ GPU mixer called but NDI not ready - initialized=" + this.isInitialized + ", sender=" + (this.ndiSender != null));
+      }
       return; // NDI not ready
     }
     
@@ -254,10 +251,9 @@ public class GLNDIOutEffect extends GLShaderEffect {
         this.ndiSender.sendVideoFrameAsync(this.ndiFrame);
         this.frameCount++;
         
-        // Periodic logging
-        if (this.frameCount % FRAME_LOG_INTERVAL == 0) {
-          LX.log("GLNDIOutEffect: 📡 GPU FRAME SENT #" + this.frameCount + " to NDI source '" + this.ndiSourceName + 
-                 "' (input texture: " + this.inputTextureHandle + ")");
+        // Debug logging for GPU mixer frame transmission
+        if (this.frameCount % 300 == 0) {
+          LX.log("GLNDIOutEffect: GPU mixer frame #" + this.frameCount + " sent to '" + this.ndiSourceName + "' (texture: " + this.inputTextureHandle + ")");
         }
         
       } catch (Exception e) {
