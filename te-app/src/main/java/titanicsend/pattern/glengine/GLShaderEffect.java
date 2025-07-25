@@ -1,11 +1,11 @@
 package titanicsend.pattern.glengine;
 
+import static titanicsend.pattern.glengine.GLShaderPattern.NO_TEXTURE;
+
 import heronarts.lx.GpuDevice;
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXModel;
-
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,8 +13,6 @@ import titanicsend.color.TEColorType;
 import titanicsend.effect.TEEffect;
 import titanicsend.pattern.jon.VariableSpeedTimer;
 import titanicsend.pattern.yoffa.shader_engine.Uniform;
-
-import static titanicsend.pattern.glengine.GLShaderPattern.NO_TEXTURE;
 
 /**
  * Wrapper class for OpenGL shaders. Simplifies handling of context and native memory management,
@@ -108,9 +106,7 @@ public class GLShaderEffect extends TEEffect implements GpuDevice {
       this.shaders.get(i).setCpuBuffer(null);
     }
     // Set the CPU buffer for the last shader, if using CPU mixer
-    this.shaders
-      .getLast()
-      .setCpuBuffer(this.lx.engine.renderMode.cpu ? this.colors : null);
+    this.shaders.getLast().setCpuBuffer(this.lx.engine.renderMode.cpu ? this.colors : null);
 
     // Run the chain of shaders,
     // mapping the output texture of each to the next shader's input texture
@@ -151,7 +147,8 @@ public class GLShaderEffect extends TEEffect implements GpuDevice {
       initializeUniforms(s);
     }
 
-    // Shaders are run in sequence.  Pass the current iDst value, which may be the output of the previous shader
+    // Shaders are run in sequence.  Pass the current iDst value, which may be the output of the
+    // previous shader
     this.uniforms.iDst.setValue(this.currentShaderDst);
 
     this.uniforms.iTime.setValue((float) getTime());
@@ -164,15 +161,15 @@ public class GLShaderEffect extends TEEffect implements GpuDevice {
         (float) (0xff & LXColor.green(col)) / 255f,
         (float) (0xff & LXColor.blue(col)) / 255f);
     this.uniforms.iColorHSB.setValue(
-      LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
+        LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
 
     col = getColor2();
     this.uniforms.iColor2RGB.setValue(
-      (float) (0xff & LXColor.red(col)) / 255f,
-      (float) (0xff & LXColor.green(col)) / 255f,
-      (float) (0xff & LXColor.blue(col)) / 255f);
+        (float) (0xff & LXColor.red(col)) / 255f,
+        (float) (0xff & LXColor.green(col)) / 255f,
+        (float) (0xff & LXColor.blue(col)) / 255f);
     this.uniforms.iColor2HSB.setValue(
-      LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
+        LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
   }
 
   @Override

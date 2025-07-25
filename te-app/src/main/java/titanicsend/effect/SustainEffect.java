@@ -10,19 +10,17 @@ import titanicsend.pattern.glengine.GLShaderEffect;
 public class SustainEffect extends GLShaderEffect {
 
   public final CompoundParameter sustain =
-    new CompoundParameter("Sustain", 0)
-      .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
-      .setDescription("Amount of sustain to apply");
-
+      new CompoundParameter("Sustain", 0)
+          .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
+          .setDescription("Amount of sustain to apply");
 
   public SustainEffect(LX lx) {
     super(lx);
 
     addParameter("sustain", this.sustain);
 
-    addShader(GLShader.config(lx)
-      .withFilename("sustain_effect.fs")
-      .withUniformSource(this::setUniforms));
+    addShader(
+        GLShader.config(lx).withFilename("sustain_effect.fs").withUniformSource(this::setUniforms));
   }
 
   private void setUniforms(GLShader s) {

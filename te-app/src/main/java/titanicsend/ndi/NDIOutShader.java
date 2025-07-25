@@ -1,8 +1,12 @@
 package titanicsend.ndi;
 
+import static com.jogamp.opengl.GL.GL_BGRA;
+import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
+
 import com.jogamp.opengl.GL4;
 import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
+import java.nio.ByteBuffer;
 import me.walkerknapp.devolay.DevolayFrameFourCCType;
 import me.walkerknapp.devolay.DevolaySender;
 import me.walkerknapp.devolay.DevolayVideoFrame;
@@ -10,14 +14,6 @@ import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.TEShader;
 import titanicsend.pattern.yoffa.shader_engine.Uniform;
 import titanicsend.pattern.yoffa.shader_engine.UniformNames;
-
-import java.nio.ByteBuffer;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import static com.jogamp.opengl.GL.GL_BGRA;
-import static com.jogamp.opengl.GL.GL_MAP_INVALIDATE_BUFFER_BIT;
-import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
 
 public class NDIOutShader extends GLShader implements GLShader.UniformSource {
 

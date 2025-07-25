@@ -146,9 +146,7 @@ public class ExplodeEffect extends GLShaderEffect {
     addParameter("trigger", this.trigger);
 
     addShader(
-        GLShader.config(lx)
-            .withFilename("explode_effect.fs")
-            .withUniformSource(this::setUniforms));
+        GLShader.config(lx).withFilename("explode_effect.fs").withUniformSource(this::setUniforms));
   }
 
   private void setUniforms(GLShader shader) {

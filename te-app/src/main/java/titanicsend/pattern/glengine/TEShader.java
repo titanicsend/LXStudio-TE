@@ -173,7 +173,6 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
     // Use older FBO as backbuffer
     int backBufferHandle = this.ppFBOs.copy.getTextureHandle();
 
-
     bindTextureUnit(TEXTURE_UNIT_BACKBUFFER, backBufferHandle);
     this.uniforms.backBuffer.setValue(TEXTURE_UNIT_BACKBUFFER);
 

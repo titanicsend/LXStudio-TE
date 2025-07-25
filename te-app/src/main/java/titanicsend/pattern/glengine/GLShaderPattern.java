@@ -4,7 +4,6 @@ import heronarts.lx.GpuDevice;
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXModel;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -96,9 +95,7 @@ public class GLShaderPattern extends TEPerformancePattern implements GpuDevice {
       this.shaders.get(i).setCpuBuffer(null);
     }
     // Set the CPU buffer for the last shader, if using CPU mixer
-    this.shaders
-        .getLast()
-        .setCpuBuffer(this.lx.engine.renderMode.cpu ? this.colors : null);
+    this.shaders.getLast().setCpuBuffer(this.lx.engine.renderMode.cpu ? this.colors : null);
 
     // Run the chain of shaders,
     // mapping the output texture of each to the next shader's input texture
