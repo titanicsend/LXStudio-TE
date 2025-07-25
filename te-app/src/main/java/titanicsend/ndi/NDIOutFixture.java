@@ -24,12 +24,12 @@ public class NDIOutFixture extends LXFixture
     implements UIFixtureControls<NDIOutFixture>, UIControls {
 
   public final DiscreteParameter heightPixels =
-      new DiscreteParameter("Height Pixels", 10, 10, 4096)
+      new DiscreteParameter("Height Pixels", 480, 10, 4096)
           .setUnits(LXParameter.Units.INTEGER)
           .setDescription("Height of the fixture in pixels");
 
   public final DiscreteParameter widthPixels =
-      new DiscreteParameter("Width Pixels", 10, 10, 4096)
+      new DiscreteParameter("Width Pixels", 480, 10, 4096)
           .setUnits(LXParameter.Units.INTEGER)
           .setDescription("Width of the fixture in pixels");
 
@@ -51,6 +51,9 @@ public class NDIOutFixture extends LXFixture
     addGeometryParameter("widthFt", this.widthFt);
     addGeometryParameter("heightFt", this.heightFt);
     addParameter("stream", this.stream);
+
+    // Default position to avoid overlap with TE main car
+    this.x.setValue(500);
   }
 
   @Override
