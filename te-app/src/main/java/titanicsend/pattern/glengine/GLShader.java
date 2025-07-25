@@ -945,7 +945,6 @@ public abstract class GLShader {
 
       if (buffer != null) {
         // Anything here? rewind? copy to other buffer?
-
         gl4.glUnmapBuffer(GL4.GL_PIXEL_PACK_BUFFER);
       }
 
@@ -998,6 +997,82 @@ public abstract class GLShader {
     public void dispose() {
       this.render.dispose();
       this.copy.dispose();
+    }
+  }
+
+  protected class TripleFBO {
+    private final FBO[] fbo = new FBO[3];
+    private int a = 0;
+    private int b = 1;
+    private int c = 2;
+
+    public TripleFBO() {
+      for (int i = 0; i < fbo.length; i++) {
+        fbo[i] = new FBO();
+      }
+    }
+
+    public FBO a() {
+      return fbo[a];
+    }
+
+    public FBO b() {
+      return fbo[b];
+    }
+
+    public FBO c() {
+      return fbo[c];
+    }
+
+    public void swap() {
+      int temp = a;
+      a = c;
+      c = b;
+      b = temp;
+    }
+
+    public void dispose() {
+      for (FBO p : fbo) {
+        p.dispose();
+      }
+    }
+  }
+
+  protected class TriplePBO {
+    private final PBO[] pbo = new PBO[3];
+    private int a = 0;
+    private int b = 1;
+    private int c = 2;
+
+    public TriplePBO() {
+      for (int i = 0; i < pbo.length; i++) {
+        pbo[i] = new PBO();
+      }
+    }
+
+    public PBO a() {
+      return pbo[a];
+    }
+
+    public PBO b() {
+      return pbo[b];
+    }
+
+    public PBO c() {
+      return pbo[c];
+    }
+
+    public void swap() {
+      int temp = a;
+      a = c;
+      c = b;
+      b = temp;
+    }
+
+    public void dispose() {
+      for (PBO p : pbo) {
+        p.dispose();
+      }
     }
   }
 

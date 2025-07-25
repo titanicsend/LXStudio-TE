@@ -19,11 +19,11 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
 
   private static final int UNINITIALIZED = -1;
 
-  // Framebuffer object (FBO) for rendering
-  private GLShader.FBO fbo;
+  // Framebuffer objects (FBOs) for rendering
+  private GLShader.TripleFBO FBOs;
 
   // Pixel Pack Buffers (PBOs) for ping-pong output
-  private GLShader.PingPongPBO ppPBOs;
+  private GLShader.TriplePBO PBOs;
 
   private DevolaySender ndiSender;
   private DevolayVideoFrame ndiFrame;
@@ -58,11 +58,11 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
   protected void allocateShaderBuffers() {
     super.allocateShaderBuffers();
 
-    // FBO (framebuffer and texture) for rendering
-    this.fbo = new GLShader.FBO();
+    // FBOs (framebuffer and texture) for rendering
+    this.FBOs = new GLShader.TripleFBO();
 
     // Pixel Pack Buffers (PBOs) for ping-pong output
-    this.ppPBOs = new GLShader.PingPongPBO();
+    this.PBOs = new GLShader.TriplePBO();
 
     this.imageBuffer = TEShader.allocateBackBuffer();
   }
@@ -101,7 +101,7 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
     this.uniforms.iDst.setValue(this.iDst);
   }
 
-  boolean firstFrame = true;
+  int frameNum = 0;
 
   @Override
   protected void render() {
@@ -109,34 +109,36 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
     bindVAO();
 
     // Bind framebuffer object (FBO).
-    this.fbo.bind();
+    this.FBOs.a().bind();
 
     // Render frame
     drawElements();
 
     // Start async read of framebuffer into PBO
-    this.ppPBOs.render.startRead();
+    this.PBOs.a().startRead();
 
-    if (firstFrame) {
+    if (frameNum < 2) {
       // Skip the first frame, PBO is empty
-      firstFrame = false;
+      frameNum++;
+      // Unbind the PBO
+      this.gl4.glBindBuffer(GL4.GL_PIXEL_PACK_BUFFER, 0);
     } else {
 
       // Map the other PBO for reading (from previous frame)
-      this.imageBuffer = this.ppPBOs.copy.getData();
+      this.imageBuffer = this.PBOs.b().getData();
 
       if (this.imageBuffer != null) {
         // Send NDI frame
         this.ndiFrame.setData(this.imageBuffer);
         this.ndiSender.sendVideoFrame(this.ndiFrame);
       }
+
+      // PBO is unbound after getData()
     }
 
-    // Unbind the PBO
-    this.gl4.glBindBuffer(GL4.GL_PIXEL_PACK_BUFFER, 0);
-
     // Switch to the next PBO for the next frame
-    this.ppPBOs.swap();
+    this.FBOs.swap();
+    this.PBOs.swap();
 
     // No need to unbind VAO.
     // Also not unbinding the FBO here, as other shader render passes will change it.
@@ -169,8 +171,8 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
   @Override
   public void dispose() {
     if (isInitialized()) {
-      this.fbo.dispose();
-      this.ppPBOs.dispose();
+      this.FBOs.dispose();
+      this.PBOs.dispose();
       this.ndiSender.close();
     }
     super.dispose();
