@@ -12,12 +12,11 @@ import heronarts.lx.structure.LXStructure;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
+import heronarts.lx.utils.LXUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import heronarts.lx.utils.LXUtils;
 import titanicsend.ndi.NDIOutFixture;
 import titanicsend.ndi.NDIOutShader;
 
@@ -154,9 +153,10 @@ public class NDIOutShaderEffect extends TEEffect
     private int width;
     private int height;
 
-    private final LXParameterListener labelListener = (p) -> {
-      refreshLabel();
-    };
+    private final LXParameterListener labelListener =
+        (p) -> {
+          refreshLabel();
+        };
 
     private Output(NDIOutFixture fixture) {
       this.fixture = fixture;
