@@ -114,11 +114,8 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
     // Render frame
     drawElements();
 
-    // Bind the current PBO
-    this.ppPBOs.render.bind();
-
-    // Read pixels into current PBO
-    this.gl4.glReadPixels(0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, 0);
+    // Start async read of framebuffer into PBO
+    this.ppPBOs.render.startRead();
 
     if (firstFrame) {
       // Skip the first frame, PBO is empty
@@ -126,18 +123,12 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
     } else {
 
       // Map the other PBO for reading (from previous frame)
-      this.ppPBOs.copy.bind();
-      this.imageBuffer = this.gl4.glMapBuffer(GL4.GL_PIXEL_PACK_BUFFER, GL4.GL_READ_ONLY);
+      this.imageBuffer = this.ppPBOs.copy.getData();
 
       if (this.imageBuffer != null) {
-        this.imageBuffer.rewind(); // Needed?
-
         // Send NDI frame
         this.ndiFrame.setData(this.imageBuffer);
         this.ndiSender.sendVideoFrame(this.ndiFrame);
-
-        // Unmap the PBO
-        this.gl4.glUnmapBuffer(GL4.GL_PIXEL_PACK_BUFFER);
       }
     }
 
