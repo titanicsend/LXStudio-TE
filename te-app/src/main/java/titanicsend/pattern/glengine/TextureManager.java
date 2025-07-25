@@ -76,6 +76,7 @@ public class TextureManager implements LX.Listener {
    * @return The texture *handle* of the view's coordinate texture
    */
   public int getCoordinatesTexture(LXModel model) {
+    // TODO: refresh coordinates if model generation changed
     CoordTexture t = coordTextures.get(model);
     if (t != null) {
       return t.getHandle();

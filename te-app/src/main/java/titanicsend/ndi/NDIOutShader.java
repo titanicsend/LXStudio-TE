@@ -26,6 +26,10 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
   private DevolayVideoFrame ndiFrame;
   protected ByteBuffer imageBuffer;
 
+  private int ndiWidth = 150;
+  private int ndiHeight = 150;
+  private int ndiOffset = 0;
+
   private int modelCoordsTextureHandle = UNINITIALIZED;
 
   // Variables that will be passed to uniforms
@@ -40,10 +44,27 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
   private final NdiOutUniforms uniforms = new NdiOutUniforms();
   private boolean initializedUniforms = false;
 
-  public NDIOutShader(LX lx) {
+  public NDIOutShader(LX lx, int ndiWidth, int ndiHeight) {
     super(config(lx).withFilename("ndi_out_effect.fs"));
+    this.ndiWidth = ndiWidth;
+    this.ndiHeight = ndiHeight;
 
     addUniformSource(this);
+  }
+
+  public void setNdiResolution(int ndiWidth, int ndiHeight) {
+    this.ndiWidth = ndiWidth;
+    this.ndiHeight = ndiHeight;
+
+    // If already initialized, update the frame size
+    if (this.ndiFrame != null) {
+      this.ndiFrame.setResolution(this.ndiWidth, this.ndiHeight);
+    }
+  }
+
+  /** Set the number of pixels into the pixel buffers that is the start of this NDI output */
+  public void setNdiOffsetPixels(int offset) {
+    this.ndiOffset = offset;
   }
 
   @Override
@@ -78,7 +99,7 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
   private void initializeNdiSender() {
     ndiSender = new DevolaySender("TitanicsEnd");
     ndiFrame = new DevolayVideoFrame();
-    ndiFrame.setResolution(width, height);
+    ndiFrame.setResolution(this.ndiWidth, this.ndiHeight);
     ndiFrame.setFourCCType(DevolayFrameFourCCType.RGBA);
     ndiFrame.setData(this.imageBuffer);
     ndiFrame.setFrameRate(60, 1);
@@ -123,7 +144,7 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
     } else if (this.everyOtherFrame) {
 
       // Map the other PBO for reading (from previous frame)
-      this.imageBuffer = this.PBOs.b().getData();
+      this.imageBuffer = this.PBOs.b().getDataRange(this.ndiOffset, this.ndiWidth * this.ndiHeight);
 
       if (this.imageBuffer != null) {
         // Send NDI frame

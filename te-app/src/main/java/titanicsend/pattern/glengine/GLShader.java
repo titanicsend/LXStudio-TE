@@ -91,6 +91,7 @@ public abstract class GLShader {
   protected final FragmentShader fragmentShader;
   protected final int width;
   protected final int height;
+  protected final int numPixels;
 
   // Geometry buffers
   private final FloatBuffer vertexBuffer;
@@ -189,6 +190,7 @@ public abstract class GLShader {
     this.glEngine = (GLEngine) lx.engine.getChild(GLEngine.PATH);
     this.width = this.glEngine.getWidth();
     this.height = this.glEngine.getHeight();
+    this.numPixels = this.width * this.height;
 
     // Fragment Shader
     if (LXUtils.isEmpty(config.getShaderFilename())) {
@@ -427,7 +429,7 @@ public abstract class GLShader {
   public void debugTexture(String label, int textureId) {
     bindTextureUnit(0, textureId);
 
-    ByteBuffer pixels = BufferUtils.createByteBuffer(width * height * 4);
+    ByteBuffer pixels = BufferUtils.createByteBuffer(numPixels * 4);
 
     this.gl4.glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL4.GL_UNSIGNED_BYTE, pixels);
 
@@ -878,6 +880,7 @@ public abstract class GLShader {
 
     private final int pixelFormat;
     private final int pixelType;
+    private final int bytesPerPixel;
 
     public PBO() {
       this(GL_BGRA, GL_UNSIGNED_BYTE);
@@ -886,12 +889,13 @@ public abstract class GLShader {
     public PBO(int pixelFormat, int pixelType) {
       this.pixelFormat = pixelFormat;
       this.pixelType = pixelType;
+      this.bytesPerPixel = bytesPerPixel(pixelFormat, pixelType);
 
       gl4.glGenBuffers(1, this.handles, 0);
       gl4.glBindBuffer(GL4.GL_PIXEL_PACK_BUFFER, this.handles[0]);
       gl4.glBufferData(
           GL4.GL_PIXEL_PACK_BUFFER,
-          (long) width * height * bytesPerPixel(pixelFormat, pixelType),
+          (long) numPixels * this.bytesPerPixel,
           null,
           GL4.GL_STREAM_READ);
       gl4.glBindBuffer(GL4.GL_PIXEL_PACK_BUFFER, 0);
@@ -942,10 +946,27 @@ public abstract class GLShader {
       ByteBuffer buffer = gl4.glMapBuffer(GL4.GL_PIXEL_PACK_BUFFER, GL4.GL_READ_ONLY);
 
       if (buffer != null) {
-        // Anything here? rewind? copy to other buffer?
         gl4.glUnmapBuffer(GL4.GL_PIXEL_PACK_BUFFER);
       }
+      unbind();
+      return buffer;
+    }
 
+    /** Get sub-range of the data from PBO (may block if transfer not complete) */
+    public ByteBuffer getDataRange(int offsetPixels, int capacityPixels) {
+      bind();
+
+      int pixels = LXUtils.min(capacityPixels, numPixels - offsetPixels);
+      ByteBuffer buffer =
+          gl4.glMapBufferRange(
+              GL4.GL_PIXEL_PACK_BUFFER,
+              (long) offsetPixels * this.bytesPerPixel,
+              (long) pixels * this.bytesPerPixel,
+              GL4.GL_MAP_READ_BIT);
+
+      if (buffer != null) {
+        gl4.glUnmapBuffer(GL4.GL_PIXEL_PACK_BUFFER);
+      }
       unbind();
       return buffer;
     }
