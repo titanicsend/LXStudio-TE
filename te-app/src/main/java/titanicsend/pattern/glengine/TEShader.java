@@ -1,8 +1,5 @@
 package titanicsend.pattern.glengine;
 
-import static com.jogamp.opengl.GL.GL_BGRA;
-import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
-
 import com.jogamp.opengl.GL4;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.parameter.LXParameter;

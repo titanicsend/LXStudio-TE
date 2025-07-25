@@ -891,27 +891,29 @@ public abstract class GLShader {
       gl4.glBindBuffer(GL4.GL_PIXEL_PACK_BUFFER, this.handles[0]);
       gl4.glBufferData(
           GL4.GL_PIXEL_PACK_BUFFER,
-        (long) width * height * bytesPerPixel(pixelFormat, pixelType),
-        null,
-        GL4.GL_STREAM_READ);
+          (long) width * height * bytesPerPixel(pixelFormat, pixelType),
+          null,
+          GL4.GL_STREAM_READ);
       gl4.glBindBuffer(GL4.GL_PIXEL_PACK_BUFFER, 0);
     }
 
     private static int bytesPerPixel(int format, int type) {
-      int components = switch(format) {
-        case GL4.GL_RED, GL4.GL_DEPTH_COMPONENT -> 1;
-        case GL4.GL_RG -> 2;
-        case GL4.GL_RGB, GL4.GL_BGR -> 3;
-        case GL4.GL_RGBA, GL4.GL_BGRA -> 4;
-        default -> throw new IllegalArgumentException("Invalid pixel format: " + format);
-      };
+      int components =
+          switch (format) {
+            case GL4.GL_RED, GL4.GL_DEPTH_COMPONENT -> 1;
+            case GL4.GL_RG -> 2;
+            case GL4.GL_RGB, GL4.GL_BGR -> 3;
+            case GL4.GL_RGBA, GL4.GL_BGRA -> 4;
+            default -> throw new IllegalArgumentException("Invalid pixel format: " + format);
+          };
 
-      int bytesPerComponent = switch(type) {
-        case GL4.GL_BYTE, GL4.GL_UNSIGNED_BYTE -> 1;
-        case GL4.GL_SHORT, GL4.GL_UNSIGNED_SHORT -> 2;
-        case GL4.GL_INT, GL4.GL_UNSIGNED_INT, GL4.GL_FLOAT -> 4;
-        default -> throw new IllegalArgumentException("Invalid pixel type: " + type);
-      };
+      int bytesPerComponent =
+          switch (type) {
+            case GL4.GL_BYTE, GL4.GL_UNSIGNED_BYTE -> 1;
+            case GL4.GL_SHORT, GL4.GL_UNSIGNED_SHORT -> 2;
+            case GL4.GL_INT, GL4.GL_UNSIGNED_INT, GL4.GL_FLOAT -> 4;
+            default -> throw new IllegalArgumentException("Invalid pixel type: " + type);
+          };
 
       return components * bytesPerComponent;
     }
@@ -928,17 +930,13 @@ public abstract class GLShader {
       gl4.glBindBuffer(GL4.GL_PIXEL_PACK_BUFFER, 0);
     }
 
-    /**
-     * Async read from framebuffer to PBO
-     */
+    /** Async read from framebuffer to PBO */
     public void startRead() {
       bind();
       gl4.glReadPixels(0, 0, width, height, this.pixelFormat, this.pixelType, 0);
     }
 
-    /**
-     * Get data from PBO (may block if transfer not complete)
-     */
+    /** Get data from PBO (may block if transfer not complete) */
     public ByteBuffer getData() {
       bind();
       ByteBuffer buffer = gl4.glMapBuffer(GL4.GL_PIXEL_PACK_BUFFER, GL4.GL_READ_ONLY);
@@ -952,9 +950,7 @@ public abstract class GLShader {
       return buffer;
     }
 
-    /**
-     * Upload data to texture using PBO
-     */
+    /** Upload data to texture using PBO */
     public void uploadToTexture(ByteBuffer data, int textureHandle) {
       gl4.glBindBuffer(GL4.GL_PIXEL_UNPACK_BUFFER, this.handles[0]);
 
@@ -963,7 +959,8 @@ public abstract class GLShader {
 
       // Bind texture and upload from PBO
       gl4.glBindTexture(GL4.GL_TEXTURE_2D, textureHandle);
-      gl4.glTexSubImage2D(GL4.GL_TEXTURE_2D, 0, 0, 0, width, height, this.pixelFormat, this.pixelType, 0);
+      gl4.glTexSubImage2D(
+          GL4.GL_TEXTURE_2D, 0, 0, 0, width, height, this.pixelFormat, this.pixelType, 0);
 
       gl4.glBindTexture(GL4.GL_TEXTURE_2D, 0);
       gl4.glBindBuffer(GL4.GL_PIXEL_UNPACK_BUFFER, 0);
@@ -1075,5 +1072,4 @@ public abstract class GLShader {
       }
     }
   }
-
 }
