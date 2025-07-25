@@ -1,8 +1,5 @@
 package titanicsend.ndi;
 
-import static com.jogamp.opengl.GL.GL_BGRA;
-import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
-
 import com.jogamp.opengl.GL4;
 import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
@@ -102,6 +99,7 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
   }
 
   int frameNum = 0;
+  boolean everyOtherFrame = true;
 
   @Override
   protected void render() {
@@ -122,7 +120,7 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
       frameNum++;
       // Unbind the PBO
       this.gl4.glBindBuffer(GL4.GL_PIXEL_PACK_BUFFER, 0);
-    } else {
+    } else if (this.everyOtherFrame) {
 
       // Map the other PBO for reading (from previous frame)
       this.imageBuffer = this.PBOs.b().getData();
@@ -135,6 +133,8 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
 
       // PBO is unbound after getData()
     }
+
+    this.everyOtherFrame = !this.everyOtherFrame;
 
     // Switch to the next PBO for the next frame
     this.FBOs.swap();
