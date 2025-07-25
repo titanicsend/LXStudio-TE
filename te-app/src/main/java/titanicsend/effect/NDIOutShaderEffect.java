@@ -6,6 +6,7 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.LXComponentName;
 import heronarts.lx.model.LXModel;
+import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.structure.LXFixture;
 import heronarts.lx.structure.LXStructure;
 import heronarts.lx.studio.LXStudio;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import heronarts.lx.utils.LXUtils;
 import titanicsend.ndi.NDIOutFixture;
 import titanicsend.ndi.NDIOutShader;
 
@@ -151,6 +154,10 @@ public class NDIOutShaderEffect extends TEEffect
     private int width;
     private int height;
 
+    private final LXParameterListener labelListener = (p) -> {
+      refreshLabel();
+    };
+
     private Output(NDIOutFixture fixture) {
       this.fixture = fixture;
       this.width = fixture.widthPixels.getValuei();
@@ -158,8 +165,10 @@ public class NDIOutShaderEffect extends TEEffect
 
       // Create a new NDI Out Shader to go with this NDI Out Fixture
       this.shader = new NDIOutShader(lx, this.width, this.height);
-      // TODO: set output stream label
       refreshOffset();
+      refreshLabel();
+
+      this.fixture.stream.addListener(this.labelListener);
 
       // If LXEffect was already running, activate shader
       if (isEnabled()) {
@@ -170,6 +179,13 @@ public class NDIOutShaderEffect extends TEEffect
     void refreshOffset() {
       int offset = this.fixture.points.getFirst().index;
       this.shader.setNdiOffsetPixels(offset);
+    }
+
+    void refreshLabel() {
+      String label = this.fixture.stream.getString();
+      if (!LXUtils.isEmpty(label)) {
+        this.shader.setNdiStreamLabel(label);
+      }
     }
 
     private void modelChanged(LXModel model) {
@@ -190,6 +206,7 @@ public class NDIOutShaderEffect extends TEEffect
 
     private void dispose() {
       this.shader.dispose();
+      this.fixture.stream.removeListener(this.labelListener);
     }
   }
 }

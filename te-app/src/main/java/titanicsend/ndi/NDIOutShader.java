@@ -29,6 +29,7 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
   private int ndiWidth = 150;
   private int ndiHeight = 150;
   private int ndiOffset = 0;
+  private String ndiStreamLabel = "TitanicsEnd";
 
   private int modelCoordsTextureHandle = UNINITIALIZED;
 
@@ -59,6 +60,15 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
     // If already initialized, update the frame size
     if (this.ndiFrame != null) {
       this.ndiFrame.setResolution(this.ndiWidth, this.ndiHeight);
+    }
+  }
+
+  public void setNdiStreamLabel(String label) {
+    this.ndiStreamLabel = label;
+
+    if (this.ndiSender != null) {
+      this.ndiSender.close();
+      this.ndiSender = new DevolaySender(label);
     }
   }
 
@@ -97,7 +107,7 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
   }
 
   private void initializeNdiSender() {
-    ndiSender = new DevolaySender("TitanicsEnd");
+    ndiSender = new DevolaySender(this.ndiStreamLabel);
     ndiFrame = new DevolayVideoFrame();
     ndiFrame.setResolution(this.ndiWidth, this.ndiHeight);
     ndiFrame.setFourCCType(DevolayFrameFourCCType.RGBA);
