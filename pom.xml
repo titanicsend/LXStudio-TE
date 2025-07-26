@@ -44,6 +44,7 @@
 		<gov-nist-math-jama.version>1.1.1</gov-nist-math-jama.version>
 		<junit-jupiter.version>5.9.2</junit-jupiter.version>
 		<supermod.version>0.1.5-SNAPSHOT</supermod.version>
+		<beyond-plugin.version>0.1.5</beyond-plugin.version>
 	</properties>
 
 	<!-- Define a local repository -->
@@ -225,6 +226,26 @@
 				<groupId>me.walkerknapp</groupId>
 				<artifactId>devolay</artifactId>
 				<version>2.1.0-te</version>
+			</dependency>
+
+			<dependency>
+				<groupId>studio.jkb</groupId>
+				<artifactId>beyond</artifactId>
+				<version>${beyond-plugin.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.heronarts</groupId>
+						<artifactId>lx</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.heronarts</groupId>
+						<artifactId>glx</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.heronarts</groupId>
+						<artifactId>glxstudio</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 
 			<dependency>
