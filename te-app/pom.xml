@@ -93,6 +93,11 @@
 
 		<dependency>
 			<groupId>studio.jkb</groupId>
+			<artifactId>beyond</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>studio.jkb</groupId>
 			<artifactId>supermod</artifactId>
 		</dependency>
 

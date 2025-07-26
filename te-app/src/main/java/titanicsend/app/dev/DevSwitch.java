@@ -16,6 +16,7 @@ import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
+import heronarts.lx.parameter.TriggerParameter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -23,7 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import titanicsend.app.autopilot.TEOscMessage;
 import titanicsend.dmx.DmxEngine;
 import titanicsend.dmx.model.AdjStealthModel;
 import titanicsend.dmx.model.BeaconModel;
@@ -55,10 +55,22 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
   public class DetailParameter {
     public LXListenableNormalizedParameter parameter;
     public String label;
+    public String activeLabel = "On";
+    public String inactiveLabel = "Off";
 
     public DetailParameter(LXListenableNormalizedParameter parameter, String label) {
       this.parameter = parameter;
       this.label = label;
+    }
+
+    public DetailParameter setActiveLabel(String activeLabel) {
+      this.activeLabel = activeLabel;
+      return this;
+    }
+
+    public DetailParameter setInactiveLabel(String inactiveLabel) {
+      this.inactiveLabel = inactiveLabel;
+      return this;
     }
   }
 
@@ -191,8 +203,14 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     addDetailParameter(this.engineDJlights);
     addDetailParameter(this.lx.engine.osc.receiveActive, "OSC Input");
     addDetailParameter(this.lx.engine.osc.transmitActive, "OSC Output");
-    addDetailParameter(TELaserTask.get().enabled, INDENT + "OSC to lasers");
     addDetailParameter(CrutchOSC.get().transmitActive, INDENT + "OSC to iPads");
+    TriggerParameter setUpLaserSync = TELaserTask.get().setUpOsc;
+    addDetailParameter(setUpLaserSync, "Laser Sync")
+        .setInactiveLabel(setUpLaserSync.getLabel())
+        .setActiveLabel(setUpLaserSync.getLabel());
+    addDetailParameter(TELaserTask.get().sendBrightness, INDENT + "Brightness");
+    addDetailParameter(TELaserTask.get().sendColor, INDENT + "Color");
+    addDetailParameter(TELaserTask.get().sendTempo, INDENT + "BPM");
     addDetailParameter(this.lx.engine.dmx.artNetReceiveActive, "ArtNet Input");
     addDetailParameter(this.lx.engine.audio.enabled, "Audio Input");
     addDetailParameter(this.midiSurfaces);
@@ -211,12 +229,15 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     load();
   }
 
-  private void addDetailParameter(LXListenableNormalizedParameter parameter) {
-    addDetailParameter(parameter, parameter.getLabel());
+  private DetailParameter addDetailParameter(LXListenableNormalizedParameter parameter) {
+    return addDetailParameter(parameter, parameter.getLabel());
   }
 
-  private void addDetailParameter(LXListenableNormalizedParameter parameter, String label) {
-    this.detailParameters.add(new DetailParameter(parameter, label));
+  private DetailParameter addDetailParameter(
+      LXListenableNormalizedParameter parameter, String label) {
+    DetailParameter p = new DetailParameter(parameter, label);
+    this.detailParameters.add(p);
+    return p;
   }
 
   private void listenDetailParameters() {
@@ -343,7 +364,9 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
         && this.lx.engine.osc.receiveActive.isOn()
         && !this.lx.engine.osc.transmitActive.isOn()
         && !CrutchOSC.get().transmitActive.isOn()
-        && !TELaserTask.get().enabled.isOn()
+        && !TELaserTask.get().sendBrightness.isOn()
+        && !TELaserTask.get().sendColor.isOn()
+        && !TELaserTask.get().sendTempo.isOn()
         && this.lx.engine.dmx.artNetReceiveActive.isOn()
         && this.lx.engine.audio.enabled.isOn()
         && this.midiSurfaces.isOn()
@@ -359,7 +382,9 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
         && this.lx.engine.osc.receiveActive.isOn()
         && this.lx.engine.osc.transmitActive.isOn()
         && CrutchOSC.get().transmitActive.isOn()
-        && TELaserTask.get().enabled.isOn() == TELaserTask.DEFAULT_ENABLE_IN_PRODUCTION
+        && TELaserTask.get().sendBrightness.isOn() == TELaserTask.DEFAULT_ENABLE_IN_PRODUCTION
+        && TELaserTask.get().sendColor.isOn() == TELaserTask.DEFAULT_ENABLE_IN_PRODUCTION
+        && TELaserTask.get().sendTempo.isOn() == TELaserTask.DEFAULT_ENABLE_IN_PRODUCTION
         && this.lx.engine.dmx.artNetReceiveActive.isOn()
         && this.lx.engine.audio.enabled.isOn()
         && this.midiSurfaces.isOn()
@@ -389,7 +414,9 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     this.lx.engine.osc.receiveActive.setValue(true);
     this.lx.engine.osc.transmitActive.setValue(false);
     CrutchOSC.get().transmitActive.setValue(false);
-    TELaserTask.get().enabled.setValue(false);
+    TELaserTask.get().sendBrightness.setValue(false);
+    TELaserTask.get().sendColor.setValue(false);
+    TELaserTask.get().sendTempo.setValue(false);
     this.lx.engine.dmx.artNetReceiveActive.setValue(true);
     this.lx.engine.audio.enabled.setValue(true);
     if (!this.midiSurfaces.getValueb()) {
@@ -419,7 +446,9 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     this.lx.engine.osc.receiveActive.setValue(true);
     this.lx.engine.osc.transmitActive.setValue(true);
     CrutchOSC.get().transmitActive.setValue(true);
-    TELaserTask.get().enabled.setValue(TELaserTask.DEFAULT_ENABLE_IN_PRODUCTION);
+    TELaserTask.get().sendBrightness.setValue(TELaserTask.DEFAULT_ENABLE_IN_PRODUCTION);
+    TELaserTask.get().sendColor.setValue(TELaserTask.DEFAULT_ENABLE_IN_PRODUCTION);
+    TELaserTask.get().sendTempo.setValue(TELaserTask.DEFAULT_ENABLE_IN_PRODUCTION);
     this.lx.engine.dmx.artNetReceiveActive.setValue(true);
     this.lx.engine.audio.enabled.setValue(true);
     if (!this.midiSurfaces.getValueb()) {
@@ -434,7 +463,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     this.lx.engine.tempo.clockSource.setValue(ClockSource.OSC);
 
     // Set OSC output port & IP
-    TEOscMessage.applyTEOscOutputSettings(lx);
+    // TEOscMessage.applyTEOscOutputSettings(lx);
   }
 
   /**

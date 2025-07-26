@@ -35,6 +35,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.function.Function;
 import org.lwjgl.system.Platform;
+import studio.jkb.beyond.BeyondPlugin;
 import studio.jkb.supermod.SuperMod;
 import titanicsend.app.*;
 import titanicsend.app.autopilot.*;
@@ -59,7 +60,6 @@ import titanicsend.effect.SimplifyEffect;
 import titanicsend.effect.SustainEffect;
 import titanicsend.gamepad.GamepadEngine;
 import titanicsend.lasercontrol.PangolinHost;
-import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lx.APC40Mk2;
 import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.lx.DirectorAPCminiMk2;
@@ -91,10 +91,13 @@ import titanicsend.pattern.jon.*;
 import titanicsend.pattern.justin.*;
 import titanicsend.pattern.look.*;
 import titanicsend.pattern.mike.*;
+import titanicsend.pattern.piemonte.Afterglow;
 import titanicsend.pattern.piemonte.CandyFlip;
+import titanicsend.pattern.piemonte.EdgeGlitch;
 import titanicsend.pattern.piemonte.FaceMelt;
 import titanicsend.pattern.piemonte.IceGlint;
 import titanicsend.pattern.pixelblaze.*;
+import titanicsend.pattern.selina.HappyChibi;
 import titanicsend.pattern.sinas.LightBeamsAudioReactivePattern;
 import titanicsend.pattern.sinas.TdNdiPattern;
 import titanicsend.pattern.sinas.TdStableDiffusionPattern;
@@ -167,7 +170,6 @@ public class TEApp extends LXStudio {
 
     private final ColorPaletteManager paletteManagerA;
     private final ColorPaletteManager paletteManagerB;
-    private final TELaserTask laserTask;
     private final CrutchOSC crutchOSC;
     private DevSwitch devSwitch;
     private final Director director;
@@ -219,10 +221,6 @@ public class TEApp extends LXStudio {
       // lx.engine.registerComponent("autopilot", this.autopilotJKB = new AutopilotExample(lx));
       // initializeAutopilotLibraryJKB();
 
-      // create our loop task for outputting data to lasers
-      this.laserTask = new TELaserTask(lx);
-      lx.engine.addLoopTask(this.laserTask);
-
       // Load metadata about unused controls per-pattern into a singleton that patterns will
       // reference later
       MissingControlsManager.get();
@@ -243,6 +241,7 @@ public class TEApp extends LXStudio {
 
       // Register child plugin components
       AudioStemsPlugin.registerComponents(lx);
+      BeyondPlugin.registerComponents(lx);
 
       // Patterns/effects that currently conform to art direction standards
       lx.registry.addPattern(EdgeProgressions.class);
@@ -298,6 +297,9 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(IceGlint.class);
       lx.registry.addPattern(FaceMelt.class);
       lx.registry.addPattern(CandyFlip.class);
+      lx.registry.addPattern(Afterglow.class);
+      lx.registry.addPattern(EdgeGlitch.class);
+      lx.registry.addPattern(HappyChibi.class);
 
       // Patterns that will not aspire to art direction standards
       lx.registry.addPattern(SigmoidDanceAudioWaveform.class);
@@ -397,6 +399,7 @@ public class TEApp extends LXStudio {
       // lx.registry.addPattern(ModelFileWriter.class);
       lx.registry.addPattern(TwoColorPattern.class);
       lx.registry.addPattern(MothershipDrivingPattern.class);
+      lx.registry.addPattern(GammaTestPattern.class);
 
       // Midi surface names for use with BomeBox
       lx.engine.midi.registerSurface(APC40Mk2.class);
@@ -503,7 +506,7 @@ public class TEApp extends LXStudio {
       //      GPOutput gpOutput = new GPOutput(lx, this.gpBroadcaster);
       //      lx.addOutput(gpOutput);
 
-      TEOscMessage.applyTEOscOutputSettings(lx);
+      // TEOscMessage.applyTEOscOutputSettings(lx);
 
       // Developer/Production Switch
       // Must be after everything else has initialized.
@@ -782,17 +785,18 @@ public class TEApp extends LXStudio {
       // Import latest gamepad controllers db
       gamepadEngine.updateGamepadMappings();
 
-      lx.engine.addTask(
-          () -> {
-            setOscDestinationForIpads();
-            // openDelayedFile(lx);
-            // Replace old saved destination IPs from project files
-            // setOscDestinationForIpads();
-          });
+      /* lx.engine.addTask(
+      () -> {
+        setOscDestinationForIpads();
+        // openDelayedFile(lx);
+        // Replace old saved destination IPs from project files
+        // setOscDestinationForIpads();
+      }); */
 
       this.superMod.onUIReady(lx, ui);
     }
 
+    @Deprecated
     public void setOscDestinationForIpads() {
       try {
         this.lx.engine.osc.transmitHost.setValue(PangolinHost.HOSTNAME);
@@ -837,6 +841,7 @@ public class TEApp extends LXStudio {
       this.lx.removeProjectListener(this);
 
       this.devSwitch.dispose();
+      this.director.dispose();
       this.dmxEngine.dispose();
       this.crutchOSC.dispose();
       this.glEngine.dispose();

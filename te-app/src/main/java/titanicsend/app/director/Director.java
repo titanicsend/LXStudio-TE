@@ -10,6 +10,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import titanicsend.lasercontrol.TELaserTask;
 
 public class Director extends LXComponent
     implements LX.Listener, LXOscComponent, LX.ProjectListener {
@@ -30,17 +31,21 @@ public class Director extends LXComponent
 
   private final CompoundParameter beaconsFader;
 
+  public final TELaserTask laserTask;
+
   public Director(LX lx) {
     super(lx, "director");
     current = this;
 
     lx.engine.registerComponent("director", this);
 
+    // LaserTask is a child to ensure proper initialization order and to access the fader parameter
+    lx.engine.registerComponent("lasers", this.laserTask = new TELaserTask(lx));
+
     addFilter(new TagFilter("te", "TE", "te"));
     addFilter(new TagFilter("panels", "Panels", "panel"));
     addFilter(new TagFilter("edges", "Edges", "edge"));
     addFilter(new TagFilter("foh", "FOH", "mothership"));
-    addFilter(new Filter("lasers", "Lasers"));
 
     Filter beaconsFilter = new DmxFilter("beacons", "Beacons", "beacon");
     addFilter(beaconsFilter);
@@ -50,7 +55,6 @@ public class Director extends LXComponent
 
     lx.addListener(this);
     onModelChanged(lx.getModel());
-
     lx.addProjectListener(this);
   }
 
@@ -107,6 +111,7 @@ public class Director extends LXComponent
 
   @Override
   public void dispose() {
+    this.laserTask.dispose();
     lx.removeListener(this);
     super.dispose();
   }
