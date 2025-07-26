@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.1-SNAPSHOT",
-  "timestamp": 1753487504756,
+  "timestamp": 1753490159043,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -9350,7 +9350,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": false,
+          "selected": true,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -10597,7 +10597,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": true,
+          "selected": false,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -13695,7 +13695,7 @@
               "modulationsExpanded": true
             },
             "parameters": {
-              "label": "SoundStage",
+              "label": "",
               "mode": 0,
               "mode/name": "DEFAULT",
               "xAbsolute": 0.0,
@@ -13980,7 +13980,7 @@
           "label": "Mixer",
           "crossfader": 0.0,
           "crossfaderBlendMode": 1,
-          "focusedChannel": 0,
+          "focusedChannel": 1,
           "focusedChannelAux": 2,
           "cueA": false,
           "cueB": false,
@@ -14236,6 +14236,63 @@
                   }
                 },
                 "deviceVersion": -1
+              },
+              {
+                "id": 538241,
+                "class": "titanicsend.effect.ExplodeEffect",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true,
+                  "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "Explode",
+                  "midiFilter/enabled": true,
+                  "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
+                  "midiFilter/minNote": 0,
+                  "midiFilter/noteRange": 128,
+                  "midiFilter/minVelocity": 1,
+                  "midiFilter/velocityRange": 127,
+                  "view": 0,
+                  "viewPriority": 0,
+                  "enabled": true,
+                  "locked": false,
+                  "speed": 0.05,
+                  "depth": 0.03589843609370291,
+                  "waveshape": 0,
+                  "slope": 5.0,
+                  "tempoSync": false,
+                  "tempoDivision": 10,
+                  "tempoDivision/name": "WHOLE",
+                  "tempoPhaseOffset": 0.0,
+                  "size": 0.0,
+                  "manualTrigger": true,
+                  "trigger": false
+                },
+                "children": {
+                  "modulation": {
+                    "id": 538242,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
               }
             ],
             "clips": []
@@ -14259,7 +14316,7 @@
               "label": "HIGH",
               "fader": 0.9815290165133774,
               "arm": false,
-              "selected": true,
+              "selected": false,
               "stopClips": false,
               "enabled": false,
               "cue": false,
@@ -22425,12 +22482,12 @@
             },
             "parameters": {
               "label": "Channel-2",
-              "fader": 0.0,
+              "fader": 1.0,
               "arm": false,
-              "selected": false,
+              "selected": true,
               "stopClips": false,
               "enabled": true,
-              "cue": false,
+              "cue": true,
               "aux": false,
               "crossfadeGroup": 0,
               "crossfadeGroup/name": "BYPASS",
@@ -22516,8 +22573,8 @@
                   "cueActive": false,
                   "auxActive": false,
                   "setDefaults": false,
-                  "start": 20,
-                  "spacing": 2,
+                  "start": 0,
+                  "spacing": 1,
                   "compositeMode": 0
                 },
                 "children": {
@@ -22911,7 +22968,7 @@
               "exp": 0.0
             },
             "children": {},
-            "basis": 0.43470403735388613
+            "basis": 0.25455433872257754
           }
         ],
         "modulations": [
@@ -23305,8 +23362,8 @@
         "camera": {
           "active": false,
           "radius": 705.713885737873,
-          "theta": 350.1580035283696,
-          "phi": 13.386599302990362,
+          "theta": 150.9442628666293,
+          "phi": 2.411444180412218,
           "x": 93.4653008258062,
           "y": 167.50173219596036,
           "z": -28.973207070489934
