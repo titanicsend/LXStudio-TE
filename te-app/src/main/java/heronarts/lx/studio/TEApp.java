@@ -57,6 +57,7 @@ import titanicsend.dmx.pattern.*;
 import titanicsend.effect.GlobalPatternControl;
 import titanicsend.effect.RandomStrobeEffect;
 import titanicsend.effect.SimplifyEffect;
+import titanicsend.effect.SustainEffect;
 import titanicsend.gamepad.GamepadEngine;
 import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lx.APC40Mk2;
@@ -339,6 +340,8 @@ public class TEApp extends LXStudio {
       // Effects
       lx.registry.addEffect(DirectorEffect.class);
       lx.registry.addEffect(SimplifyEffect.class);
+      lx.registry.addEffect(SustainEffect.class);
+      lx.registry.addEffect(titanicsend.effect.NDIOutShaderEffect.class);
 
       // DMX effects
       lx.registry.addEffect(BeaconStrobeEffect.class);

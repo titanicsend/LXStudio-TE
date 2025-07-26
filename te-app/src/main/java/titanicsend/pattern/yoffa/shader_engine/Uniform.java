@@ -1,6 +1,7 @@
 package titanicsend.pattern.yoffa.shader_engine;
 
 import static com.jogamp.opengl.GL.GL_TEXTURE0;
+import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
 
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.util.texture.Texture;
@@ -580,10 +581,21 @@ public abstract class Uniform {
     }
 
     private final int textureUnit;
+
+    private boolean isObject = false;
     private Texture texture = null;
+    private int textureHandle = -1;
 
     public Sampler2D setValue(Texture texture) {
       this.texture = texture;
+      this.isObject = true;
+      this.modified = true;
+      return this;
+    }
+
+    public Sampler2D setValue(int textureHandle) {
+      this.textureHandle = textureHandle;
+      this.isObject = false;
       this.modified = true;
       return this;
     }
@@ -591,8 +603,17 @@ public abstract class Uniform {
     @Override
     public void update() {
       gl4.glActiveTexture(GL_TEXTURE0 + this.textureUnit);
-      this.texture.bind(gl4);
+      if (this.isObject) {
+        this.texture.bind(gl4);
+      } else {
+        gl4.glBindTexture(GL_TEXTURE_2D, this.textureHandle);
+      }
       gl4.glUniform1i(this.location, this.textureUnit);
+    }
+
+    public void unbind() {
+      gl4.glActiveTexture(GL_TEXTURE0 + this.textureUnit);
+      gl4.glBindTexture(GL_TEXTURE_2D, 0);
     }
   }
 }
