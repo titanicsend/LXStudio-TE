@@ -35,10 +35,13 @@ public class TELaserTask extends LXComponent {
       new BooleanParameter("SendTempo", DEFAULT_ENABLE_IN_PRODUCTION)
           .setDescription("Send beats and BPM to Pangolin Beyond with OSC");
 
-  public final TEColorParameter color;
-
   public final BeyondCompoundParameter brightness;
+
+  // User-editable laser color and an internal relay helper
+  public final TEColorParameter color;
   private final BeyondColorSync colorSync;
+
+  // Internal helper that is not a registered parameter
   private final BeyondBpmSync bpm;
 
   public final TriggerParameter setUpOsc =
@@ -52,10 +55,11 @@ public class TELaserTask extends LXComponent {
     addParameter("sendBrightness", this.sendBrightness);
     addParameter("sendColor", this.sendColor);
     addParameter("sendTempo", this.sendTempo);
-
+    addParameter(
+        "brightness",
+        this.brightness = new BeyondCompoundParameter(lx, BeyondVariable.BRIGHTNESS, "Lasers"));
     addParameter("color", this.color = new TEColorParameter(TEGradientSource.get(), "Lasers"));
 
-    this.brightness = new BeyondCompoundParameter(lx, BeyondVariable.BRIGHTNESS, "Lasers");
     this.colorSync = new BeyondColorSync(lx, this.color);
     this.bpm = new BeyondBpmSync(lx);
 
@@ -81,11 +85,8 @@ public class TELaserTask extends LXComponent {
 
   @Override
   public void dispose() {
-    this.brightness.dispose();
     this.colorSync.dispose();
     this.bpm.dispose();
-
-    this.color.dispose();
 
     super.dispose();
   }
