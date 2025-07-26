@@ -389,6 +389,7 @@ public class TEApp extends LXStudio {
       // lx.registry.addPattern(ModelFileWriter.class);
       lx.registry.addPattern(TwoColorPattern.class);
       lx.registry.addPattern(MothershipDrivingPattern.class);
+      lx.registry.addPattern(GammaTestPattern.class);
 
       // Midi surface names for use with BomeBox
       lx.engine.midi.registerSurface(APC40Mk2.class);
