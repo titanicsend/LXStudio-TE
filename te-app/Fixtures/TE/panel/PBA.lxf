@@ -1,3 +1,4 @@
+
 {
   /* Titanic's End Fixture File */
   label: "Panel PBA",
@@ -99,13 +100,13 @@
         { componentIndex: 2, reverse: false, padPre: 1 },
         { componentIndex: 3, reverse: true, padPre: 1 },
         { componentIndex: 4, reverse: false },
-        { componentIndex: 5, reverse: true, length: 22 }
+        { componentIndex: 5, reverse: true, start: 18, num: 22 }
       ]
     },
                   
     { host: "$strand2host", universe: "$strand2output*10", protocol: "artnet", sequenceEnabled: "$artnetSequence",
       segments: [
-        { componentIndex: 5, reverse: true, start: 22 },
+        { componentIndex: 5, reverse: true, num: 18 },
         { componentIndex: 6, reverse: false },
         { componentIndex: 7, reverse: true },
         { componentIndex: 8, reverse: false },
