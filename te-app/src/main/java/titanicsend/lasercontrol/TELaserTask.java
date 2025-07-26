@@ -53,7 +53,7 @@ public class TELaserTask extends LXComponent {
     addParameter("sendColor", this.sendColor);
     addParameter("sendTempo", this.sendTempo);
 
-    this.color = new TEColorParameter(TEGradientSource.get(), "Lasers");
+    addParameter("color", this.color = new TEColorParameter(TEGradientSource.get(), "Lasers"));
 
     this.brightness = new BeyondCompoundParameter(lx, BeyondVariable.BRIGHTNESS, "Lasers");
     this.colorSync = new BeyondColorSync(lx, this.color);
