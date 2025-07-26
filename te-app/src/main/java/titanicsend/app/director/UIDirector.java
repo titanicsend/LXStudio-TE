@@ -10,10 +10,11 @@ import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.studio.LXStudio.UI;
 import heronarts.lx.studio.ui.device.UIControls;
-import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.lasercontrol.UITELaserTask;
 
 public class UIDirector extends UICollapsibleSection implements UIControls {
+
+  private final Director director;
 
   private static final float VERTICAL_SPACING = 2;
   private static final float FADER_WIDTH = 20;
@@ -28,6 +29,7 @@ public class UIDirector extends UICollapsibleSection implements UIControls {
     super(ui, 0, 0, w, 30);
     this.setTitle("DIRECTOR");
     this.setLayout(Layout.VERTICAL, VERTICAL_SPACING);
+    this.director = director;
 
     this.columnWidth = this.getContentWidth() / COLUMNS;
 
@@ -48,24 +50,22 @@ public class UIDirector extends UICollapsibleSection implements UIControls {
     }
 
     // Lasers fader
-    UISlider laserFader = addFader(ui, row, TELaserTask.get().brightness, column++, labelUp);
+    UISlider laserFader = addFader(ui, row, director.laserTask.brightness, column++, labelUp);
     labelUp = !labelUp;
 
     // Set laser fader background color to gray when not sending, like channel faders
-    TELaserTask.get()
-        .brightness
-        .addListener(
-            this.laserBrightnessListener =
-                (p) -> {
-                  if (TELaserTask.get().sendBrightness.isOn()) {
-                    laserFader.resetFillColor();
-                    laserFader.redraw(); // TODO: why is this not refreshing the slider background?
-                  } else {
-                    laserFader.setFillColor(ui.theme.controlDisabledValueColor);
-                    laserFader.redraw();
-                  }
-                },
-            true);
+    director.laserTask.brightness.addListener(
+        this.laserBrightnessListener =
+            (p) -> {
+              if (director.laserTask.sendBrightness.isOn()) {
+                laserFader.resetFillColor();
+                laserFader.redraw(); // TODO: why is this not refreshing the slider background?
+              } else {
+                laserFader.setFillColor(ui.theme.controlDisabledValueColor);
+                laserFader.redraw();
+              }
+            },
+        true);
 
     // Master fader
     addFader(ui, row, director.master, column++, labelUp);
@@ -118,7 +118,7 @@ public class UIDirector extends UICollapsibleSection implements UIControls {
 
   @Override
   public void dispose() {
-    TELaserTask.get().brightness.removeListener(this.laserBrightnessListener);
+    this.director.laserTask.brightness.removeListener(this.laserBrightnessListener);
     super.dispose();
   }
 }
