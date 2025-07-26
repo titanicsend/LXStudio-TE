@@ -31,6 +31,7 @@ public class UITELaserTask extends UI2dContainer implements UIControls {
     float h = checkboxes.getHeight();
 
     addChildren(
+        // Description label
         newVerticalContainer(
             47,
             0,
@@ -41,7 +42,11 @@ public class UITELaserTask extends UI2dContainer implements UIControls {
             new UILabel(0, (h - 20) / 2, 45, 12, "Sync")
                 .setTextAlignment(VGraphics.Align.LEFT, VGraphics.Align.MIDDLE)
                 .setFont(ui.theme.getLabelFont())),
+
+        // Checkboxes
         checkboxes,
+
+        // Color
         new UITEColorControl(0, (h - UIKnob.HEIGHT) / 2, laserTask.color));
 
     setContentHeight(h);
