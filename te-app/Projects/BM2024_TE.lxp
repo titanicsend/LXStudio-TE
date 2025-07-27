@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.1-SNAPSHOT",
-  "timestamp": 1753591668160,
+  "timestamp": 1753593469357,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -1320,7 +1320,7 @@
           "x": 0.0,
           "y": 0.0,
           "z": 0.0,
-          "yaw": 180.0,
+          "yaw": 0.0,
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
@@ -1366,7 +1366,7 @@
           "x": 0.0,
           "y": 0.0,
           "z": 0.0,
-          "yaw": 180.0,
+          "yaw": 0.0,
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
@@ -1422,7 +1422,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": false,
+          "selected": true,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -2716,7 +2716,7 @@
           "x": 0.0,
           "y": 0.0,
           "z": 0.0,
-          "yaw": 180.0,
+          "yaw": 0.0,
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
@@ -2746,7 +2746,7 @@
           "strand3host": "10.7.19.110",
           "strand3output": 3,
           "artnetSequence": false,
-          "showBacking": true,
+          "showBacking": false,
           "flipBacking": true,
           "onCar": true
         },
@@ -2762,7 +2762,7 @@
           "x": 0.0,
           "y": 0.0,
           "z": 0.0,
-          "yaw": 180.0,
+          "yaw": 0.0,
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
@@ -12145,7 +12145,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": true,
+          "selected": false,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -22843,7 +22843,7 @@
                   "junk1": 16.406249767169356,
                   "junk2": 10.738280951045454,
                   "Altitude": 12.464844435453415,
-                  "Azimuth": 30.718744499608874,
+                  "Azimuth": 35.11717817746103,
                   "Height": 0.6588752594725295,
                   "Width": 0.5717819436133256,
                   "indexTip": "10,50",
@@ -22968,7 +22968,7 @@
               "exp": 0.0
             },
             "children": {},
-            "basis": 0.5416739840045596
+            "basis": 0.5466811256329178
           }
         ],
         "modulations": [
@@ -23221,7 +23221,7 @@
         "parameters": {
           "label": "TEVirtualOverlays",
           "vertexSpheresVisible": false,
-          "vertexLabelsVisible": true,
+          "vertexLabelsVisible": false,
           "panelLabelsVisible": true,
           "unknownPanelsVisible": true,
           "opaqueBackPanelsVisible": true,
@@ -23361,9 +23361,9 @@
         "animation": false,
         "camera": {
           "active": false,
-          "radius": 416.8922889080265,
-          "theta": 7.214156062807888,
-          "phi": -8.435645447811112,
+          "radius": 416.8453915262544,
+          "theta": 12.815827408339828,
+          "phi": -1.5238243730273098,
           "x": 93.4653008258062,
           "y": 167.50173219596036,
           "z": -28.973207070489934
