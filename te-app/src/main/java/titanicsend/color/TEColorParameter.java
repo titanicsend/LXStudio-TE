@@ -56,7 +56,7 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
     HSVCCW
   }
 
-  private final BlendMode BLEND_MODE_DEFAULT = BlendMode.HSVM;
+  private final BlendMode BLEND_MODE_DEFAULT = BlendMode.OKLAB;
 
   public final EnumParameter<BlendMode> blendMode =
       new EnumParameter<BlendMode>("BlendMode", BLEND_MODE_DEFAULT) {
