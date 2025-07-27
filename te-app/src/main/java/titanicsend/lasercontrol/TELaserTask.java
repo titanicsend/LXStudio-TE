@@ -10,7 +10,6 @@ import heronarts.lx.parameter.TriggerParameter;
 import studio.jkb.beyond.BeyondPlugin;
 import studio.jkb.beyond.BeyondVariable;
 import studio.jkb.beyond.parameter.BeyondBpmSync;
-import studio.jkb.beyond.parameter.BeyondColorSync;
 import studio.jkb.beyond.parameter.BeyondCompoundParameter;
 import titanicsend.color.TEColorParameter;
 import titanicsend.color.TEGradientSource;
@@ -38,10 +37,10 @@ public class TELaserTask extends LXComponent {
           .setDescription("Send beats and BPM to Pangolin Beyond with OSC");
 
   public final BeyondCompoundParameter brightness;
+  private final TEBeyondColorSync colorSync;
 
   // User-editable laser color and an internal relay helper
   public final TEColorParameter color;
-  private final BeyondColorSync colorSync;
 
   // Internal helper that is not a registered parameter
   private final BeyondBpmSync bpm;
@@ -62,7 +61,11 @@ public class TELaserTask extends LXComponent {
         this.brightness = new BeyondCompoundParameter(lx, BeyondVariable.BRIGHTNESS, "Lasers"));
     addParameter("color", this.color = new TEColorParameter(TEGradientSource.get(), "Lasers"));
 
-    this.colorSync = new BeyondColorSync(lx, this.color);
+    // NOTE(look): merge conflict from 'justin/laserChan', I think this is OK to remove but want to verify later
+    //this.brightness = new BeyondCompoundParameter(lx, BeyondVariable.BRIGHTNESS, "Lasers");
+    //this.color = new TEColorParameter(TEGradientSource.get(), "Lasers");
+    
+    this.colorSync = new TEBeyondColorSync(lx, this.color);
     this.bpm = new BeyondBpmSync(lx);
 
     this.brightness.setOutputEnabled(this.sendBrightness.isOn());
