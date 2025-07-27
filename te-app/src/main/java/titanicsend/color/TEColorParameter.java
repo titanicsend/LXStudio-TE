@@ -289,6 +289,32 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
     }
   }
 
+  public float calcHuef() {
+    switch (this.colorSource.getEnum()) {
+      case NORMAL:
+        return LXColor.h(getGradientColorFixed(getOffsetf(), TEGradient.NORMAL));
+      case DARK:
+        // Workaround: Hue will dip to 0(red) if we sample a black part of the Dark gradient.
+        // But the correct hue is visible in the Normal gradient, so we'll just use that.
+        return LXColor.h(getGradientColorFixed(getOffsetf(), TEGradient.NORMAL));
+      case STATIC:
+      default:
+        return this.hue.getValuef();
+    }
+  }
+
+  public float calcSaturationf() {
+    switch (this.colorSource.getEnum()) {
+      case NORMAL:
+        return LXColor.s(getGradientColorFixed(getOffsetf(), TEGradient.NORMAL));
+      case DARK:
+        return LXColor.s(getGradientColorFixed(getOffsetf(), TEGradient.DARK));
+      case STATIC:
+      default:
+        return this.saturation.getValuef();
+    }
+  }
+
   @Override
   public void dispose() {
     this.offset.removeListener(offsetListener);

@@ -38,7 +38,7 @@ public class TELaserTask extends LXComponent {
   public final TEColorParameter color;
 
   public final BeyondCompoundParameter brightness;
-  private final BeyondColorSync colorSync;
+  private final TEBeyondColorSync colorSync;
   private final BeyondBpmSync bpm;
 
   public final TriggerParameter setUpOsc =
@@ -56,7 +56,7 @@ public class TELaserTask extends LXComponent {
     this.color = new TEColorParameter(TEGradientSource.get(), "Lasers");
 
     this.brightness = new BeyondCompoundParameter(lx, BeyondVariable.BRIGHTNESS, "Lasers");
-    this.colorSync = new BeyondColorSync(lx, this.color);
+    this.colorSync = new TEBeyondColorSync(lx, this.color);
     this.bpm = new BeyondBpmSync(lx);
 
     this.brightness.setOutputEnabled(this.sendBrightness.isOn());
