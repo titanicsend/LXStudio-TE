@@ -8,7 +8,6 @@ import heronarts.lx.parameter.TriggerParameter;
 import studio.jkb.beyond.BeyondPlugin;
 import studio.jkb.beyond.BeyondVariable;
 import studio.jkb.beyond.parameter.BeyondBpmSync;
-import studio.jkb.beyond.parameter.BeyondColorSync;
 import studio.jkb.beyond.parameter.BeyondCompoundParameter;
 import titanicsend.color.TEColorParameter;
 import titanicsend.color.TEGradientSource;

@@ -3,7 +3,6 @@ package titanicsend.lasercontrol;
 import heronarts.lx.LX;
 import heronarts.lx.LXLoopTask;
 import heronarts.lx.color.ColorParameter;
-import heronarts.lx.color.LXColor;
 import studio.jkb.beyond.parameter.BeyondCompoundParameter;
 import titanicsend.color.TEColorParameter;
 
@@ -42,16 +41,12 @@ public class TEBeyondColorSync implements LXLoopTask {
     this.lx = lx;
     this.colorParameter = colorParameter;
 
-    this.hue = new BeyondCompoundParameter(lx, "Hue",
-      HUE_OSC_BEYOND_PATH,
-      HUE_VALUE_DEFAULT,
-      HUE_VALUE_0,
-      HUE_VALUE_1);
-    this.saturation = new BeyondCompoundParameter(lx, "Saturation",
-      SAT_OSC_BEYOND_PATH,
-      SAT_VALUE_DEFAULT,
-      SAT_VALUE_0,
-      SAT_VALUE_1);
+    this.hue =
+        new BeyondCompoundParameter(
+            lx, "Hue", HUE_OSC_BEYOND_PATH, HUE_VALUE_DEFAULT, HUE_VALUE_0, HUE_VALUE_1);
+    this.saturation =
+        new BeyondCompoundParameter(
+            lx, "Saturation", SAT_OSC_BEYOND_PATH, SAT_VALUE_DEFAULT, SAT_VALUE_0, SAT_VALUE_1);
 
     this.lx.engine.addLoopTask(this);
   }
