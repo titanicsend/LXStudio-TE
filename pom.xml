@@ -146,7 +146,8 @@
 			<dependency>
 				<groupId>com.heronarts</groupId>
 				<artifactId>lx</artifactId>
-				<version>${lx.version}</version>
+				<version>1.1.1-TE.2-LOOK-OSC-SNAPSHOT</version>
+				<!--version>${lx.version}</version-->
 			</dependency>
 
 			<dependency>
