@@ -111,7 +111,7 @@ import titanicsend.preset.PresetEngine;
 import titanicsend.preset.UIUserPresetManager;
 import titanicsend.ui.UI3DManager;
 import titanicsend.ui.UITEPerformancePattern;
-import titanicsend.ui.color.UIColorPaletteManager;
+import titanicsend.ui.color.UIColorPaletteManagerSection;
 import titanicsend.ui.effect.UIRandomStrobeEffect;
 import titanicsend.ui.modulator.UIDmx16bitModulator;
 import titanicsend.ui.modulator.UIDmxDualRangeModulator;
@@ -207,7 +207,7 @@ public class TEApp extends LXStudio {
 
       lx.engine.registerComponent(
           "paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
-      if (UIColorPaletteManager.DISPLAY_TWO_MANAGED_SWATCHES) {
+      if (UIColorPaletteManagerSection.DISPLAY_TWO_MANAGED_SWATCHES) {
         lx.engine.registerComponent(
             "paletteManagerB", this.paletteManagerB = new ColorPaletteManager(lx, "SWATCH B", 1));
       } else {
@@ -765,8 +765,9 @@ public class TEApp extends LXStudio {
       new UIUserPresetManager(ui, lx, ui.leftPane.content.getContentWidth())
           .addToContainer(ui.leftPane.content, 2);
 
-      UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 4);
-      UIColorPaletteManager.addToRightPerformancePane(
+      UIColorPaletteManagerSection.addToLeftGlobalPane(
+          ui, this.paletteManagerA, this.paletteManagerB);
+      UIColorPaletteManagerSection.addToRightPerformancePane(
           ui, this.paletteManagerA, this.paletteManagerB);
 
       // Add 3D Ui components
