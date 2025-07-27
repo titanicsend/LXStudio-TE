@@ -2,16 +2,20 @@ package titanicsend.lasercontrol;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
-import heronarts.lx.LXLoopTask;
-import heronarts.lx.color.LXDynamicColor;
 import heronarts.lx.parameter.BooleanParameter;
-import heronarts.lx.parameter.BooleanParameter.Mode;
-import titanicsend.app.autopilot.TEOscMessage;
-import titanicsend.color.TEColorType;
+import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.parameter.TriggerParameter;
+import studio.jkb.beyond.BeyondPlugin;
+import studio.jkb.beyond.BeyondVariable;
+import studio.jkb.beyond.parameter.BeyondBpmSync;
+import studio.jkb.beyond.parameter.BeyondColorSync;
+import studio.jkb.beyond.parameter.BeyondCompoundParameter;
+import titanicsend.color.TEColorParameter;
+import titanicsend.color.TEGradientSource;
 
-public class TELaserTask extends LXComponent implements LXLoopTask {
+public class TELaserTask extends LXComponent {
 
-  public static final boolean DEFAULT_ENABLE_IN_PRODUCTION = false;
+  public static final boolean DEFAULT_ENABLE_IN_PRODUCTION = true;
 
   private static TELaserTask current;
 
@@ -19,28 +23,70 @@ public class TELaserTask extends LXComponent implements LXLoopTask {
     return current;
   }
 
-  public final BooleanParameter enabled =
-      new BooleanParameter("Lasers", DEFAULT_ENABLE_IN_PRODUCTION).setMode(Mode.TOGGLE);
+  public final BooleanParameter sendBrightness =
+      new BooleanParameter("SendBrightness", DEFAULT_ENABLE_IN_PRODUCTION)
+          .setDescription("Send the laser fader to Pangolin Beyond master brightness with OSC");
+
+  public final BooleanParameter sendColor =
+      new BooleanParameter("SendColor", DEFAULT_ENABLE_IN_PRODUCTION)
+          .setDescription("Send the laser color to Pangolin Beyond with OSC");
+
+  public final BooleanParameter sendTempo =
+      new BooleanParameter("SendTempo", DEFAULT_ENABLE_IN_PRODUCTION)
+          .setDescription("Send beats and BPM to Pangolin Beyond with OSC");
+
+  public final TEColorParameter color;
+
+  public final BeyondCompoundParameter brightness;
+  private final BeyondColorSync colorSync;
+  private final BeyondBpmSync bpm;
+
+  public final TriggerParameter setUpOsc =
+      new TriggerParameter("Set Up Now", this::runSetup)
+          .setDescription("Add an OSC output for Beyond with the appropriate filter");
 
   public TELaserTask(LX lx) {
     super(lx);
     current = this;
 
-    addParameter("enabled", this.enabled);
+    addParameter("sendBrightness", this.sendBrightness);
+    addParameter("sendColor", this.sendColor);
+    addParameter("sendTempo", this.sendTempo);
+
+    this.color = new TEColorParameter(TEGradientSource.get(), "Lasers");
+
+    this.brightness = new BeyondCompoundParameter(lx, BeyondVariable.BRIGHTNESS, "Lasers");
+    this.colorSync = new BeyondColorSync(lx, this.color);
+    this.bpm = new BeyondBpmSync(lx);
+
+    this.brightness.setOutputEnabled(this.sendBrightness.isOn());
+    this.colorSync.setOutputEnabled(this.sendColor.isOn());
+    this.bpm.setOutputEnabled(this.sendTempo.isOn());
   }
 
   @Override
-  public void loop(double deltaMs) {
-    if (this.enabled.isOn() && this.lx.engine.output.enabled.isOn()) {
-      // get the swatch color
-      int primaryIndex = TEColorType.PRIMARY.swatchIndex();
-      LXDynamicColor primary = this.lx.engine.palette.swatch.getColor(primaryIndex);
-
-      // convert to a 0 - 360 format for Pangolin
-      int hue = (int) (primary.getHue());
-
-      // send the OSC message
-      TEOscMessage.sendOscToPangolin(lx, TEOscMessage.makePaletteHueAddress(), hue, false);
+  public void onParameterChanged(LXParameter p) {
+    if (p == this.sendBrightness) {
+      this.brightness.setOutputEnabled(this.sendBrightness.isOn());
+    } else if (p == this.sendColor) {
+      this.colorSync.setOutputEnabled(this.sendColor.isOn());
+    } else if (p == this.sendTempo) {
+      this.bpm.setOutputEnabled(this.sendTempo.isOn());
     }
+  }
+
+  private void runSetup() {
+    BeyondPlugin.confirmOscOutput(this.lx, PangolinHost.HOSTNAME, PangolinHost.PORT);
+  }
+
+  @Override
+  public void dispose() {
+    this.brightness.dispose();
+    this.colorSync.dispose();
+    this.bpm.dispose();
+
+    this.color.dispose();
+
+    super.dispose();
   }
 }

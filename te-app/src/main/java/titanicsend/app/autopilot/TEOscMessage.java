@@ -153,10 +153,11 @@ public class TEOscMessage {
     return TEPhrase.resolvePhrase(phraseTypeString);
   }
 
+  @Deprecated
   public static void applyTEOscOutputSettings(LX lx) {
-    lx.engine.osc.transmitActive.setValue(true);
-    lx.engine.osc.transmitHost.setValue(PangolinHost.HOSTNAME);
-    lx.engine.osc.transmitPort.setValue(PangolinHost.PORT);
+    // lx.engine.osc.transmitActive.setValue(true);
+    // lx.engine.osc.transmitHost.setValue(PangolinHost.HOSTNAME);
+    // lx.engine.osc.transmitPort.setValue(PangolinHost.PORT);
   }
 
   /**
@@ -165,6 +166,7 @@ public class TEOscMessage {
    * @param address String
    * @param value int
    */
+  @Deprecated
   public static void sendOscToPangolin(LX lx, String address, int value, boolean verbose) {
     if (verbose)
       TE.log(

@@ -145,12 +145,8 @@ public class ExplodeEffect extends GLShaderEffect {
     addParameter("manualTrigger", this.manualTrigger);
     addParameter("trigger", this.trigger);
 
-    // add the first shader, passing in the effect's backbuffer
     addShader(
-        GLShader.config(lx)
-            .withFilename("explode_effect.fs")
-            .withUniformSource(this::setUniforms)
-            .withLegacyBackBuffer(getImageBuffer()));
+        GLShader.config(lx).withFilename("explode_effect.fs").withUniformSource(this::setUniforms));
   }
 
   private void setUniforms(GLShader shader) {

@@ -13,6 +13,7 @@ import static titanicsend.pattern.glengine.GLShaderPattern.NO_TEXTURE;
 
 import com.jogamp.opengl.GL4;
 import heronarts.lx.LX;
+import heronarts.lx.ModelBuffer;
 import heronarts.lx.blend.LXBlend;
 import heronarts.lx.blend.MultiplyBlend;
 import heronarts.lx.effect.LXEffect;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import titanicsend.effect.NDIOutShaderEffect;
 import titanicsend.pattern.glengine.GLEngine;
 import titanicsend.pattern.glengine.GLShaderEffect;
 import titanicsend.pattern.glengine.GLShaderPattern;
@@ -44,7 +46,11 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
 
   private boolean initialized = false;
 
+  // Default starting texture for buses
   private int blackBackground = UNINITIALIZED;
+
+  // Dummy CPU buffer for Java effects in GPU mode
+  private final ModelBuffer dummyBuffer;
 
   // Wrapper classes around LX channels
   private final GLMasterBus glMasterBus;
@@ -54,6 +60,8 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
   public GLMixer(LX lx, GLEngine glEngine) {
     this.lx = lx;
     this.glEngine = glEngine;
+
+    this.dummyBuffer = new ModelBuffer(lx);
 
     this.glMasterBus = new GLMasterBus(lx.engine.mixer.masterBus);
 
@@ -117,6 +125,9 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
       throw new IllegalStateException("GLMixer was not initialized");
     }
 
+    // TODO: pass deltaMs from LXMixerEngine.loop()
+    double deltaMs = 16;
+
     // Patterns have been looped
 
     // Perform GPU mixing
@@ -125,7 +136,7 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     this.glMasterBus.setMain(main);
 
     // Recursive run the buses
-    this.glMasterBus.blend(this.blackBackground);
+    this.glMasterBus.blend(deltaMs, this.blackBackground);
 
     // Unbind framebuffer, the next GL commands might be out of GLEngine scope...
     this.gl4.glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -203,7 +214,7 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     }
 
     /** Blend down the bus onto the dst texture, returning the output texture handle */
-    final int blend(int dst) {
+    final int blend(double deltaMs, int dst) {
       // Fast-out if no blending or effect looping
       if (!isActive()) {
         return dst;
@@ -212,10 +223,10 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
       // Future expansion note: run geometry-manipulation effects here, *then* loop patterns.
 
       // Composite contents (If this is a group, subchannels. Or if this is a channel, patterns.)
-      int src = blendContents();
+      int src = blendContents(deltaMs);
 
       // Run Effects
-      src = loopEffects(src, bus.effects);
+      src = loopEffects(deltaMs, src, bus.effects);
 
       // Blend the bus texture onto the dst texture
       return finalBlend(dst, src);
@@ -228,16 +239,30 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     protected abstract boolean isActive();
 
     /** Blend the bus contents (either channels or patterns), but do not yet run effects. */
-    protected abstract int blendContents();
+    protected abstract int blendContents(double deltaMs);
 
-    protected final int loopEffects(int dst, List<LXEffect> effects) {
+    protected final int loopEffects(double deltaMs, int dst, List<LXEffect> effects) {
       for (LXEffect effect : effects) {
-        if (effect instanceof GLShaderEffect glShaderEffect) {
-          glShaderEffect.setInput(dst);
-          glShaderEffect.run();
-          dst = glShaderEffect.getRenderTexture();
-        } else if (effect.isEnabled()) {
-          // LX.debug("GLMixer: ⚠️ SKIPPING CPU effect (not compatible with GPU mixer): " + effect.getClass().getSimpleName());
+        // TODO: loop effect for damping even if disabled
+        if (effect.isEnabled()) {
+          effect.setBuffer(dummyBuffer);
+          if (effect instanceof GLShaderEffect glShaderEffect) {
+            // Shader effect in GPU mode
+            glShaderEffect.setDst(dst);
+            effect.setModel(effect.getModelView());
+            effect.loop(deltaMs);
+            dst = glShaderEffect.getRenderTexture();
+          } else if (effect instanceof NDIOutShaderEffect ndiOutShaderEffect) {
+            ndiOutShaderEffect.setDst(dst);
+            effect.setModel(effect.getModelView());
+            effect.loop(deltaMs);
+            // Do not modify dst. Output texture is for NDI sending, not for us.
+          } else {
+            // Java effect in GPU mode
+            // Currently gets looped for processing but the output is not used
+            effect.setModel(effect.getModelView());
+            effect.loop(deltaMs);
+          }
         }
       }
       return dst;
@@ -267,13 +292,13 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     }
 
     @Override
-    protected int blendContents() {
+    protected int blendContents(double deltaMs) {
       int dst = blackBackground;
       // Blend all channels in the mixer
       for (LXAbstractChannel channel : lx.engine.mixer.channels) {
         if (!channel.isInGroup()) {
           GLAbstractChannel glChannel = channelMap.get(channel);
-          dst = glChannel.blend(dst);
+          dst = glChannel.blend(deltaMs, dst);
         }
       }
       return dst;
@@ -381,12 +406,12 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     }
 
     @Override
-    protected int blendContents() {
+    protected int blendContents(double deltaMs) {
       int dst = blackBackground;
       // Blend all channels in the group
       for (LXAbstractChannel channel : this.group.channels) {
         GLAbstractChannel glChannel = channelMap.get(channel);
-        dst = glChannel.blend(dst);
+        dst = glChannel.blend(deltaMs, dst);
       }
       return dst;
     }
@@ -413,7 +438,7 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
 
     // Get output of active pattern or patterns within a channel. Do not apply channel-level effects
     @Override
-    protected int blendContents() {
+    protected int blendContents(double deltaMs) {
       // Fast-out if no patterns
       if (this.channel.patterns.isEmpty()) {
         return blackBackground;
@@ -423,9 +448,9 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
       if (this.channel.isComposite()) {
         return compositePatterns();
       } else if (this.channel.isInTransition()) {
-        return transition();
+        return transition(deltaMs);
       } else {
-        return getPatternTexture(this.channel.getActivePattern());
+        return getPatternTexture(deltaMs, this.channel.getActivePattern());
       }
     }
 
@@ -440,11 +465,11 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
       return blackBackground;
     }
 
-    private int transition() {
+    private int transition(double deltaMs) {
       // Get both patterns and blend them using the transition blend
       float transitionProgress = (float) this.channel.getTransitionProgress();
-      int activeTexture = getPatternTexture(this.channel.getActivePattern());
-      int nextTexture = getPatternTexture(this.channel.getNextPattern());
+      int activeTexture = getPatternTexture(deltaMs, this.channel.getActivePattern());
+      int nextTexture = getPatternTexture(deltaMs, this.channel.getNextPattern());
       this.transitionShader.setSrc(nextTexture);
       this.transitionShader.setDst(activeTexture);
       this.transitionShader.setLevel(transitionProgress);
@@ -452,7 +477,7 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
       return this.transitionShader.getRenderTexture();
     }
 
-    private int getPatternTexture(LXPattern pattern) {
+    private int getPatternTexture(double deltaMs, LXPattern pattern) {
       int patternTexture = blackBackground;
 
       // Get output texture from pattern, if any
@@ -465,7 +490,7 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
 
       // Loop pattern-level effects
       if (pattern != null) {
-        patternTexture = loopEffects(patternTexture, pattern.effects);
+        patternTexture = loopEffects(deltaMs, patternTexture, pattern.effects);
       }
 
       return patternTexture;

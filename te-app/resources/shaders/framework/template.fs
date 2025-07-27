@@ -27,6 +27,7 @@ layout (std140) uniform PerFrameBlock {
     uniform float stemDrums;
     uniform float stemVocals;
     uniform float stemOther;
+    uniform float stemDrumHits;
 
 // Palette uniforms
     uniform float iPaletteSize; // number of active entries in the palette

@@ -42,6 +42,7 @@ import titanicsend.pattern.yoffa.shader_engine.FragmentShader;
 import titanicsend.pattern.yoffa.shader_engine.ShaderAttribute;
 import titanicsend.pattern.yoffa.shader_engine.ShaderProgram;
 import titanicsend.pattern.yoffa.shader_engine.Uniform;
+import titanicsend.pattern.yoffa.shader_engine.UniformNames;
 import titanicsend.pattern.yoffa.shader_engine.UniformType;
 
 /** Shader program components that are currently common across shader classes. */
@@ -60,6 +61,9 @@ public abstract class GLShader {
   public interface UniformSource {
     /** Called once per frame. Set uniforms on the shader here. */
     void setUniforms(GLShader s);
+
+    /** Called once per frame after render(). Unbind any Sampler2D uniforms. */
+    default void unbindTextures() {}
   }
 
   // Vertices for default geometry - a rectangle that covers the entire canvas
@@ -87,6 +91,7 @@ public abstract class GLShader {
   protected final FragmentShader fragmentShader;
   protected final int width;
   protected final int height;
+  protected final int numPixels;
 
   // Geometry buffers
   private final FloatBuffer vertexBuffer;
@@ -185,6 +190,7 @@ public abstract class GLShader {
     this.glEngine = (GLEngine) lx.engine.getChild(GLEngine.PATH);
     this.width = this.glEngine.getWidth();
     this.height = this.glEngine.getHeight();
+    this.numPixels = this.width * this.height;
 
     // Fragment Shader
     if (LXUtils.isEmpty(config.getShaderFilename())) {
@@ -205,6 +211,10 @@ public abstract class GLShader {
     this.indexBuffer = Buffers.newDirectIntBuffer(INDICES.length);
     this.vertexBuffer.put(VERTICES);
     this.indexBuffer.put(INDICES);
+
+    // Reserved texture units
+    this.uniformTextureUnits.put(UniformNames.BACK_BUFFER, TEXTURE_UNIT_BACKBUFFER);
+    this.uniformTextureUnits.put(UniformNames.LX_MODEL_COORDS, TEXTURE_UNIT_COORDS);
   }
 
   // Buffers
@@ -348,6 +358,8 @@ public abstract class GLShader {
     // hand the complete uniform list to OpenGL
     updateUniforms();
     render();
+    unbindTextures();
+    activateDefaultTextureUnit();
   }
 
   /** Activate this shader for rendering in the current context */
@@ -372,6 +384,12 @@ public abstract class GLShader {
 
   /** Child classes should run GL draw commands here */
   protected abstract void render();
+
+  private void unbindTextures() {
+    for (UniformSource uniformSource : this.uniformSources) {
+      uniformSource.unbindTextures();
+    }
+  }
 
   /** Activates texture unit 0. */
   protected void activateDefaultTextureUnit() {
@@ -411,7 +429,7 @@ public abstract class GLShader {
   public void debugTexture(String label, int textureId) {
     bindTextureUnit(0, textureId);
 
-    ByteBuffer pixels = BufferUtils.createByteBuffer(width * height * 4);
+    ByteBuffer pixels = BufferUtils.createByteBuffer(numPixels * 4);
 
     this.gl4.glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL4.GL_UNSIGNED_BYTE, pixels);
 
@@ -815,10 +833,18 @@ public abstract class GLShader {
     }
 
     public void bind() {
+      bind(false);
+    }
+
+    public void bind(boolean zeroAlpha) {
       gl4.glBindFramebuffer(GL_FRAMEBUFFER, this.fboHandles[0]);
       gl4.glViewport(0, 0, width, height);
-      gl4.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+      gl4.glClearColor(0.0f, 0.0f, 0.0f, zeroAlpha ? 0f : 1.0f);
       gl4.glClear(GL_COLOR_BUFFER_BIT);
+    }
+
+    public void unbind() {
+      gl4.glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
     public void dispose() {
@@ -829,20 +855,20 @@ public abstract class GLShader {
 
   protected class PingPongFBO {
     /** FBO currently being rendered to */
-    FBO render = new FBO();
+    public FBO render = new FBO();
 
     /** Older FBO available for reading */
-    FBO copy = new FBO();
+    public FBO copy = new FBO();
 
-    protected PingPongFBO() {}
+    public PingPongFBO() {}
 
-    void swap() {
+    public void swap() {
       FBO temp = this.copy;
       this.copy = render;
       this.render = temp;
     }
 
-    void dispose() {
+    public void dispose() {
       this.copy.dispose();
       this.render.dispose();
     }
@@ -852,28 +878,122 @@ public abstract class GLShader {
   protected class PBO {
     private final int[] handles = new int[1];
 
+    private final int pixelFormat;
+    private final int pixelType;
+    private final int bytesPerPixel;
+
     public PBO() {
-      gl4.glGenBuffers(1, handles, 0);
+      this(GL_BGRA, GL_UNSIGNED_BYTE);
+    }
+
+    public PBO(int pixelFormat, int pixelType) {
+      this.pixelFormat = pixelFormat;
+      this.pixelType = pixelType;
+      this.bytesPerPixel = bytesPerPixel(pixelFormat, pixelType);
+
+      gl4.glGenBuffers(1, this.handles, 0);
       gl4.glBindBuffer(GL4.GL_PIXEL_PACK_BUFFER, this.handles[0]);
       gl4.glBufferData(
-          GL4.GL_PIXEL_PACK_BUFFER, (long) width * height * 4, null, GL4.GL_STREAM_READ);
+          GL4.GL_PIXEL_PACK_BUFFER,
+          (long) numPixels * this.bytesPerPixel,
+          null,
+          GL4.GL_STREAM_READ);
       gl4.glBindBuffer(GL4.GL_PIXEL_PACK_BUFFER, 0);
+    }
+
+    private static int bytesPerPixel(int format, int type) {
+      int components =
+          switch (format) {
+            case GL4.GL_RED, GL4.GL_DEPTH_COMPONENT -> 1;
+            case GL4.GL_RG -> 2;
+            case GL4.GL_RGB, GL4.GL_BGR -> 3;
+            case GL4.GL_RGBA, GL4.GL_BGRA -> 4;
+            default -> throw new IllegalArgumentException("Invalid pixel format: " + format);
+          };
+
+      int bytesPerComponent =
+          switch (type) {
+            case GL4.GL_BYTE, GL4.GL_UNSIGNED_BYTE -> 1;
+            case GL4.GL_SHORT, GL4.GL_UNSIGNED_SHORT -> 2;
+            case GL4.GL_INT, GL4.GL_UNSIGNED_INT, GL4.GL_FLOAT -> 4;
+            default -> throw new IllegalArgumentException("Invalid pixel type: " + type);
+          };
+
+      return components * bytesPerComponent;
     }
 
     public int getHandle() {
-      return handles[0];
+      return this.handles[0];
     }
 
-    public void bind() {
+    private void bind() {
       gl4.glBindBuffer(GL4.GL_PIXEL_PACK_BUFFER, this.handles[0]);
     }
 
-    public void unbind() {
+    private void unbind() {
       gl4.glBindBuffer(GL4.GL_PIXEL_PACK_BUFFER, 0);
     }
 
+    /** Async read from framebuffer to PBO */
+    public void startRead() {
+      bind();
+      gl4.glReadPixels(0, 0, width, height, this.pixelFormat, this.pixelType, 0);
+    }
+
+    /** Get data from PBO (may block if transfer not complete) */
+    public ByteBuffer getData() {
+      bind();
+      ByteBuffer buffer = gl4.glMapBuffer(GL4.GL_PIXEL_PACK_BUFFER, GL4.GL_READ_ONLY);
+
+      if (buffer != null) {
+        gl4.glUnmapBuffer(GL4.GL_PIXEL_PACK_BUFFER);
+      }
+      unbind();
+      return buffer;
+    }
+
+    /** Get sub-range of the data from PBO (may block if transfer not complete) */
+    public ByteBuffer getDataRange(int offsetPixels, int capacityPixels) {
+      bind();
+
+      int pixels = LXUtils.min(capacityPixels, numPixels - offsetPixels);
+      ByteBuffer buffer =
+          gl4.glMapBufferRange(
+              GL4.GL_PIXEL_PACK_BUFFER,
+              (long) offsetPixels * this.bytesPerPixel,
+              (long) pixels * this.bytesPerPixel,
+              GL4.GL_MAP_READ_BIT);
+
+      if (buffer != null) {
+        gl4.glUnmapBuffer(GL4.GL_PIXEL_PACK_BUFFER);
+      }
+      unbind();
+      return buffer;
+    }
+
+    /** Upload data to texture using PBO */
+    public void uploadToTexture(ByteBuffer data, int textureHandle) {
+      gl4.glBindBuffer(GL4.GL_PIXEL_UNPACK_BUFFER, this.handles[0]);
+
+      // Upload data to PBO
+      gl4.glBufferData(GL4.GL_PIXEL_UNPACK_BUFFER, data.capacity(), data, GL4.GL_STREAM_COPY);
+
+      // Bind texture and upload from PBO
+      gl4.glBindTexture(GL4.GL_TEXTURE_2D, textureHandle);
+      gl4.glTexSubImage2D(
+          GL4.GL_TEXTURE_2D, 0, 0, 0, width, height, this.pixelFormat, this.pixelType, 0);
+
+      gl4.glBindTexture(GL4.GL_TEXTURE_2D, 0);
+      gl4.glBindBuffer(GL4.GL_PIXEL_UNPACK_BUFFER, 0);
+    }
+
+    public ByteBuffer mapForWrite() {
+      gl4.glBindBuffer(GL4.GL_PIXEL_UNPACK_BUFFER, this.handles[0]);
+      return gl4.glMapBuffer(GL4.GL_PIXEL_UNPACK_BUFFER, GL4.GL_WRITE_ONLY);
+    }
+
     public void dispose() {
-      gl4.glDeleteBuffers(1, handles, 0);
+      gl4.glDeleteBuffers(1, this.handles, 0);
     }
   }
 
@@ -895,6 +1015,82 @@ public abstract class GLShader {
     public void dispose() {
       this.render.dispose();
       this.copy.dispose();
+    }
+  }
+
+  protected class TripleFBO {
+    private final FBO[] fbo = new FBO[3];
+    private int a = 0;
+    private int b = 1;
+    private int c = 2;
+
+    public TripleFBO() {
+      for (int i = 0; i < fbo.length; i++) {
+        fbo[i] = new FBO();
+      }
+    }
+
+    public FBO a() {
+      return fbo[a];
+    }
+
+    public FBO b() {
+      return fbo[b];
+    }
+
+    public FBO c() {
+      return fbo[c];
+    }
+
+    public void swap() {
+      int temp = a;
+      a = c;
+      c = b;
+      b = temp;
+    }
+
+    public void dispose() {
+      for (FBO p : fbo) {
+        p.dispose();
+      }
+    }
+  }
+
+  protected class TriplePBO {
+    private final PBO[] pbo = new PBO[3];
+    private int a = 0;
+    private int b = 1;
+    private int c = 2;
+
+    public TriplePBO() {
+      for (int i = 0; i < pbo.length; i++) {
+        pbo[i] = new PBO();
+      }
+    }
+
+    public PBO a() {
+      return pbo[a];
+    }
+
+    public PBO b() {
+      return pbo[b];
+    }
+
+    public PBO c() {
+      return pbo[c];
+    }
+
+    public void swap() {
+      int temp = a;
+      a = c;
+      c = b;
+      b = temp;
+    }
+
+    public void dispose() {
+      for (PBO p : pbo) {
+        p.dispose();
+      }
     }
   }
 }
