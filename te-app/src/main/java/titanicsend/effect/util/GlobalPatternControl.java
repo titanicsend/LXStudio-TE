@@ -1,10 +1,11 @@
-package titanicsend.effect;
+package titanicsend.effect.util;
 
 import heronarts.lx.GpuDevice;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.*;
 import titanicsend.app.TEGlobalPatternControls;
+import titanicsend.effect.TEEffect;
 
 @LXCategory("Titanics End")
 public class GlobalPatternControl extends TEEffect implements GpuDevice {

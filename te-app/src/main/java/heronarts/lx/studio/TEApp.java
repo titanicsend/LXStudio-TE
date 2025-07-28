@@ -46,6 +46,8 @@ import titanicsend.app.dev.UIDevSwitch;
 import titanicsend.app.director.Director;
 import titanicsend.app.director.DirectorEffect;
 import titanicsend.app.director.UIDirector;
+import titanicsend.app.effectmgr.GlobalEffectManager;
+import titanicsend.app.effectmgr.UIGlobalEffectManager;
 import titanicsend.audio.AudioStemModulator;
 import titanicsend.audio.AudioStems;
 import titanicsend.audio.AudioStemsPlugin;
@@ -54,10 +56,15 @@ import titanicsend.color.TEGradientSource;
 import titanicsend.dmx.DmxEngine;
 import titanicsend.dmx.effect.BeaconStrobeEffect;
 import titanicsend.dmx.pattern.*;
-import titanicsend.effect.GlobalPatternControl;
+import titanicsend.effect.BasicShaderEffect;
+import titanicsend.effect.EdgeSieveEffect;
+import titanicsend.effect.ExplodeEffect;
 import titanicsend.effect.RandomStrobeEffect;
 import titanicsend.effect.SimplifyEffect;
 import titanicsend.effect.SustainEffect;
+import titanicsend.effect.util.GlobalPatternControl;
+import titanicsend.effect.util.NDIOutRawEffect;
+import titanicsend.effect.util.NDIOutShaderEffect;
 import titanicsend.gamepad.GamepadEngine;
 import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lx.APC40Mk2;
@@ -172,6 +179,7 @@ public class TEApp extends LXStudio {
     private final CrutchOSC crutchOSC;
     private DevSwitch devSwitch;
     private final Director director;
+    private final GlobalEffectManager effectManager;
     private final PresetEngine presetEngine;
 
     // objects that manage UI displayed in 3D views
@@ -204,6 +212,9 @@ public class TEApp extends LXStudio {
 
       // Super Modulator midi controller
       this.superMod = new SuperMod(lx);
+
+      lx.engine.registerComponent(
+          "effectManager", this.effectManager = new GlobalEffectManager(lx));
 
       lx.engine.registerComponent(
           "paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
@@ -317,15 +328,6 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(BassReactiveEdge.class);
       lx.registry.addPattern(TempoReactiveEdge.class);
       lx.registry.addPattern(ArtStandards.class);
-      lx.registry.addEffect(titanicsend.effect.BasicShaderEffect.class);
-      lx.registry.addEffect(titanicsend.effect.EdgeSieve.class);
-      lx.registry.addEffect(titanicsend.effect.NoGapEffect.class);
-      lx.registry.addEffect(titanicsend.effect.NDIOutRawEffect.class);
-      lx.registry.addEffect(titanicsend.effect.ExplodeEffect.class);
-      lx.registry.addEffect(titanicsend.effect.PanelAdjustEffect.class);
-      lx.registry.addEffect(BeaconEffect.class);
-      lx.registry.addEffect(GlobalPatternControl.class);
-      lx.registry.addEffect(RandomStrobeEffect.class);
 
       // DMX patterns
       lx.registry.addPattern(BeaconDirectPattern.class);
@@ -339,9 +341,16 @@ public class TEApp extends LXStudio {
 
       // Effects
       lx.registry.addEffect(DirectorEffect.class);
+      lx.registry.addEffect(GlobalPatternControl.class);
+      lx.registry.addEffect(NDIOutShaderEffect.class);
+      lx.registry.addEffect(NDIOutRawEffect.class);
       lx.registry.addEffect(SimplifyEffect.class);
       lx.registry.addEffect(SustainEffect.class);
-      lx.registry.addEffect(titanicsend.effect.NDIOutShaderEffect.class);
+      lx.registry.addEffect(BasicShaderEffect.class);
+      lx.registry.addEffect(EdgeSieveEffect.class);
+      lx.registry.addEffect(ExplodeEffect.class);
+      lx.registry.addEffect(BeaconEffect.class);
+      lx.registry.addEffect(RandomStrobeEffect.class);
 
       // DMX effects
       lx.registry.addEffect(BeaconStrobeEffect.class);
@@ -740,10 +749,6 @@ public class TEApp extends LXStudio {
       new UIDevSwitch(ui, this.devSwitch, ui.leftPane.model.getContentWidth())
           .addToContainer(ui.leftPane.model, 0);
 
-      //      new GigglePixelUI(
-      //              ui, ui.leftPane.model.getContentWidth(), this.gpListener, this.gpBroadcaster)
-      //          .addToContainer(ui.leftPane.model, 1);
-
       new TEUIControls(ui, this.virtualOverlays, ui.leftPane.model.getContentWidth())
           .addToContainer(ui.leftPane.model, 1);
 
@@ -753,19 +758,27 @@ public class TEApp extends LXStudio {
       new UIDirector(ui, this.director, ui.leftPane.global.getContentWidth())
           .addToContainer(ui.leftPane.global, 0);
 
+      UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 2);
+
+      UIGlobalEffectManager.addToLeftGlobalPane(ui, this.effectManager, 3);
+
+      // Add UI section for User Presets
+      new UIUserPresetManager(ui, lx, ui.leftPane.content.getContentWidth())
+          .addToContainer(ui.leftPane.content, 4);
+
       // Add UI section for autopilot
       new TEUserInterface.AutopilotUISection(ui, this.autopilot)
-          .addToContainer(ui.leftPane.global, 6);
+          .addToContainer(ui.leftPane.global, 5);
 
       // Add UI section for JKB Autopilot
       // new UIAutopilot(ui, this.autopilotJKB, ui.leftPane.global.getContentWidth())
       //    .addToContainer(ui.leftPane.global, 7);
 
-      // Add UI section for User Presets
-      new UIUserPresetManager(ui, lx, ui.leftPane.content.getContentWidth())
-          .addToContainer(ui.leftPane.content, 2);
+      // Right Performance
 
-      UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 4);
+      UIGlobalEffectManager.addToRightPerformancePane(
+          ui, this.effectManager, ui.rightPerformance.tools.getChildren().size() - 1);
+
       UIColorPaletteManager.addToRightPerformancePane(
           ui, this.paletteManagerA, this.paletteManagerB);
 
