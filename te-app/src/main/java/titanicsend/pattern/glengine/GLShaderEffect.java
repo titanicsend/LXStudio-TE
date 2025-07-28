@@ -1,20 +1,19 @@
 package titanicsend.pattern.glengine;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import static titanicsend.pattern.glengine.GLShaderPattern.NO_TEXTURE;
 
 import heronarts.lx.GpuDevice;
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import titanicsend.color.TEColorType;
 import titanicsend.effect.TEPerformanceEffect;
 import titanicsend.pattern.jon.VariableSpeedTimer;
 import titanicsend.pattern.yoffa.shader_engine.Uniform;
-
-import static titanicsend.pattern.glengine.GLShaderPattern.NO_TEXTURE;
 
 /**
  * Wrapper class for OpenGL shaders. Simplifies handling of context and native memory management,

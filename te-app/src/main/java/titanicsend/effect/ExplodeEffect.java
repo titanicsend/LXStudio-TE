@@ -27,8 +27,8 @@ public class ExplodeEffect extends GLShaderEffect {
   public final ObjectParameter<LXWaveshape> waveshape =
       new ObjectParameter<LXWaveshape>(
           "Shape",
-          new LXWaveshape[]{
-              LXWaveshape.DOWN, LXWaveshape.UP, LXWaveshape.SIN, LXWaveshape.TRI, LXWaveshape.SQUARE
+          new LXWaveshape[] {
+            LXWaveshape.DOWN, LXWaveshape.UP, LXWaveshape.SIN, LXWaveshape.TRI, LXWaveshape.SQUARE
           });
 
   public final CompoundParameter speed =

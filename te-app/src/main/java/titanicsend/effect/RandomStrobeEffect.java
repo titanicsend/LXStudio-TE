@@ -19,8 +19,6 @@ package titanicsend.effect;
  *
  */
 
-import java.util.ArrayList;
-
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.Tempo;
@@ -37,6 +35,7 @@ import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.ObjectParameter;
 import heronarts.lx.utils.LXUtils;
+import java.util.ArrayList;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
 
@@ -71,8 +70,8 @@ public class RandomStrobeEffect extends TEPerformanceEffect {
   public final ObjectParameter<LXWaveshape> waveshape =
       new ObjectParameter<LXWaveshape>(
           "Waveshape",
-          new LXWaveshape[]{
-              LXWaveshape.SIN, LXWaveshape.TRI, LXWaveshape.SQUARE, LXWaveshape.UP, LXWaveshape.DOWN
+          new LXWaveshape[] {
+            LXWaveshape.SIN, LXWaveshape.TRI, LXWaveshape.SQUARE, LXWaveshape.UP, LXWaveshape.DOWN
           });
 
   public final BoundedParameter maxFrequency =
@@ -125,7 +124,7 @@ public class RandomStrobeEffect extends TEPerformanceEffect {
                 public double getValue() {
                   return 1000
                       / LXUtils.lerp(
-                      minFrequency.getValue(), maxFrequency.getValue(), speed.getValue());
+                          minFrequency.getValue(), maxFrequency.getValue(), speed.getValue());
                 }
               }));
 
@@ -173,7 +172,7 @@ public class RandomStrobeEffect extends TEPerformanceEffect {
   @Override
   public void trigger() {
     // TODO
-//    this.manualTrigger.toggle();
+    //    this.manualTrigger.toggle();
   }
 
   @Override
