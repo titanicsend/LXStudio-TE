@@ -5,6 +5,8 @@ import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.LXPresetComponent;
 import heronarts.lx.LXSerializable;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import titanicsend.pattern.TEPattern;
 
 /**
@@ -18,12 +20,17 @@ public class UserPreset extends LXComponent implements LXComponent.Renamable, LX
 
   private int index = -1;
 
+  private static final DateTimeFormatter dt = DateTimeFormatter.ofPattern("M-dd-yy HH:mm");
+
   public UserPreset(LX lx, String clazz) {
     this(lx, clazz, null);
+
+    this.label.setValue(getDefaultLabel());
   }
 
   public UserPreset(LX lx, String clazz, JsonObject preset) {
     super(lx);
+
     this.label.setDescription("The name of this preset");
 
     this.clazz = clazz;
@@ -33,6 +40,14 @@ public class UserPreset extends LXComponent implements LXComponent.Renamable, LX
   public UserPreset setLabel(String name) {
     this.label.setValue(name);
     return this;
+  }
+
+  private String getDefaultLabel() {
+    String userName = System.getProperty("user.name", "Preset");
+    userName = userName.replaceAll("[\\p{Punct}\\s]+", "");
+
+    String dateTime = LocalDateTime.now().format(dt);
+    return userName + " " + dateTime;
   }
 
   /** Checks whether an object instance matches this preset class */
