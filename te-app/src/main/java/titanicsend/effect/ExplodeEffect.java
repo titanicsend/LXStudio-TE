@@ -11,7 +11,7 @@ import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderEffect;
 
 @LXCategory("Titanics End")
-public class ExplodeEffect extends GLShaderEffect {
+public class ExplodeEffect extends GLShaderEffect implements TEPerformanceEffect {
   double effectDepth;
   private double lastBasis;
   private boolean triggerRequested = false;
@@ -39,10 +39,10 @@ public class ExplodeEffect extends GLShaderEffect {
       new BoundedParameter("Slope", 5, 1, 15).setDescription("Steepness of effect/time curve");
 
   public final BooleanParameter tempoSync =
-      new BooleanParameter("Sync", true).setDescription("Sync the effect to the engine tempo");
+      new BooleanParameter("Sync", false).setDescription("Sync the effect to the engine tempo");
 
   public final BooleanParameter manualTrigger =
-      new BooleanParameter("Manual", false)
+      new BooleanParameter("Manual", true)
           .setDescription("Enable manual triggering w/trigger button");
 
   public final EnumParameter<Tempo.Division> tempoDivision =
@@ -167,6 +167,21 @@ public class ExplodeEffect extends GLShaderEffect {
   public void run(double deltaMs, double enabledAmount) {
     effectDepth = enabledAmount * depth.getValue();
     super.run(deltaMs, enabledAmount);
+  }
+
+  @Override
+  public LXListenableNormalizedParameter primaryParam() {
+    return this.speed;
+  }
+
+  @Override
+  public LXListenableNormalizedParameter secondaryParam() {
+    return this.depth;
+  }
+
+  @Override
+  public void trigger() {
+    this.manualTrigger.toggle();
   }
 
   @Override

@@ -46,17 +46,17 @@ public class GlobalEffectManager extends LXComponent
 
   @Override
   public void effectAdded(LXBus channel, LXEffect effect) {
-    LOG.log("Effect added: " + effect.label.getLabel());
+    LOG.log("Effect added: " + effect.getLabel());
   }
 
   @Override
   public void effectRemoved(LXBus channel, LXEffect effect) {
-    LOG.log("Effect removed: " + effect.label.getLabel());
+    LOG.log("Effect removed: " + effect.getLabel());
   }
 
   @Override
   public void effectMoved(LXBus channel, LXEffect effect) {
-    LOG.log("Effect moved: " + effect.label.getLabel());
+    LOG.log("Effect moved: " + effect.getLabel());
   }
 
   @Override
@@ -69,13 +69,13 @@ public class GlobalEffectManager extends LXComponent
         if (effect instanceof TEPerformanceEffect) {
           LOG.log(
               "Effect[ProjectChanged - TEPerformanceEffect]: '"
-                  + effect.label.getLabel()
+                  + effect.getLabel()
                   + "', enabled: "
                   + isEnabled);
         } else {
           LOG.log(
               "Effect[ProjectChanged - LXEffect]: '"
-                  + effect.label.getLabel()
+                  + effect.getLabel()
                   + "', enabled: "
                   + isEnabled);
         }

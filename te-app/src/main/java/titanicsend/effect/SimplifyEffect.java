@@ -10,6 +10,7 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.EnumParameter;
+import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameter.Units;
 import heronarts.lx.studio.LXStudio.UI;
@@ -28,7 +29,7 @@ import java.util.List;
 @LXCategory("Model")
 @LXComponentName("Simplify")
 public class SimplifyEffect extends LXEffect
-    implements heronarts.lx.LX.Listener, UIDeviceControls<SimplifyEffect> {
+    implements TEPerformanceEffect, heronarts.lx.LX.Listener, UIDeviceControls<SimplifyEffect> {
 
   public enum BlendMode {
     HSB("HSB") {
@@ -162,6 +163,21 @@ public class SimplifyEffect extends LXEffect
   }
 
   @Override
+  public LXListenableNormalizedParameter primaryParam() {
+    return this.amount;
+  }
+
+  @Override
+  public LXListenableNormalizedParameter secondaryParam() {
+    return this.depth;
+  }
+
+  @Override
+  public void trigger() {
+    // this.manualTrigger.toggle();
+  }
+
+  @Override
   public void onParameterChanged(LXParameter p) {
     if (p == this.view || p == this.depth) {
       refreshModels();
@@ -183,6 +199,9 @@ public class SimplifyEffect extends LXEffect
   @Override
   protected void run(double deltaMs, double enabledAmount) {
     final double amount = this.amount.getValue();
+    if (amount < 0.01f) {
+      return;
+    }
     final BlendMode blendMode = this.blendMode.getEnum();
     final float gate = this.gate.getValuef();
     final float gain = this.gain.getValuef();
