@@ -1,5 +1,8 @@
 package titanicsend.effect;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.LXComponentName;
@@ -16,8 +19,6 @@ import heronarts.lx.studio.LXStudio.UI;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
 import heronarts.lx.utils.LXUtils;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The SimplifyEffect forces output to be the same for all points within each view group, or within
@@ -33,7 +34,7 @@ public class SimplifyEffect extends TEPerformanceEffect
   public enum BlendMode {
     HSB("HSB") {
       private int num = 0;
-      private float h, s, b;
+      private float h,s,b;
 
       @Override
       void clear() {
@@ -70,7 +71,7 @@ public class SimplifyEffect extends TEPerformanceEffect
     },
     RGB("RGB") {
       private int num = 0;
-      private int r, g, b;
+      private int r,g,b;
 
       @Override
       void clear() {
@@ -192,7 +193,20 @@ public class SimplifyEffect extends TEPerformanceEffect
     // Candidate models are calculated from View groups + depth parameter
     final int depth = this.depth.getValuei();
     this.models.clear();
-    extractModels(this.models, this.getModelView(), depth);
+    /*
+
+    java.lang.NullPointerException
+	at java.base/java.util.Objects.requireNonNull(Objects.java:233)
+	at heronarts.lx.LXDeviceComponent.getModelView(LXDeviceComponent.java:208)
+	at titanicsend.effect.SimplifyEffect.refreshModels(SimplifyEffect.java:195)
+	at titanicsend.effect.SimplifyEffect.<init>(SimplifyEffect.java:161)
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	... 27 more
+	
+     */
+    if (this.getParent() != null) {
+      extractModels(this.models, this.getModelView(), depth);
+    }
   }
 
   @Override
@@ -272,11 +286,11 @@ public class SimplifyEffect extends TEPerformanceEffect
         newKnob(this.amount),
         newDropMenu(this.blendMode).setTopMargin(6));
     addColumn(
-            uiDevice,
-            sectionLabel("Source").setWidth(colWidth),
-            newDropMenu(this.view).setWidth(colWidth).setTopMargin(6),
-            controlLabel(ui, "View").setWidth(colWidth).setTopMargin(-3).setBottomMargin(7),
-            newKnob(this.depth))
+        uiDevice,
+        sectionLabel("Source").setWidth(colWidth),
+        newDropMenu(this.view).setWidth(colWidth).setTopMargin(6),
+        controlLabel(ui, "View").setWidth(colWidth).setTopMargin(-3).setBottomMargin(7),
+        newKnob(this.depth))
         .setChildSpacing(4)
         .setWidth(colWidth)
         .setLeftMargin(1);
