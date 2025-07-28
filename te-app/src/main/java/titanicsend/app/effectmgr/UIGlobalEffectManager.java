@@ -15,17 +15,9 @@ public class UIGlobalEffectManager extends UICollapsibleSection implements UICon
     this.effectManager = effectManager;
   }
 
-  public static void addToLeftGlobalPane(
-      LXStudio.UI ui, GlobalEffectManager effectManager, int index) {
-    UI2dContainer parentContainer = ui.leftPane.global;
-    new UIGlobalEffectManager(ui, effectManager, parentContainer.getContentWidth())
-        .addToContainer(parentContainer, index);
-  }
-
-  public static void addToRightPerformancePane(
-      LXStudio.UI ui, GlobalEffectManager effectManager, int index) {
-    UI2dContainer parentContainer = ui.rightPerformance.tools;
-    new UIGlobalEffectManager(ui, effectManager, parentContainer.getContentWidth())
-        .addToContainer(parentContainer, parentContainer.getChildren().size() - 1);
+  public static void addToPane(
+      LXStudio.UI ui, UI2dContainer pane, GlobalEffectManager effectManager, int index) {
+    new UIGlobalEffectManager(ui, effectManager, pane.getContentWidth())
+        .addToContainer(pane, index);
   }
 }

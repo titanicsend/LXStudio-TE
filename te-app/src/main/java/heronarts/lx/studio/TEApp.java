@@ -18,6 +18,7 @@ package heronarts.lx.studio;
 import heronarts.glx.GLXWindow;
 import heronarts.glx.event.GamepadEvent;
 import heronarts.glx.event.KeyEvent;
+import heronarts.glx.ui.UI2dContainer;
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
 import heronarts.lx.mixer.LXBus;
@@ -37,10 +38,21 @@ import java.util.function.Function;
 import org.lwjgl.system.Platform;
 import studio.jkb.beyond.BeyondPlugin;
 import studio.jkb.supermod.SuperMod;
-import titanicsend.app.*;
-import titanicsend.app.autopilot.*;
-import titanicsend.app.autopilot.justin.*;
+import studio.jkb.supermod.UISuperMod;
+import titanicsend.app.TEAutopilot;
+import titanicsend.app.TEGlobalPatternControls;
+import titanicsend.app.TEOscListener;
+import titanicsend.app.TEUIControls;
+import titanicsend.app.TEVirtualOverlays;
+import titanicsend.app.autopilot.TEHistorian;
+import titanicsend.app.autopilot.TEPatternLibrary;
+import titanicsend.app.autopilot.TEPhrase;
+import titanicsend.app.autopilot.TEShowKontrol;
+import titanicsend.app.autopilot.TEUserInterface;
+import titanicsend.app.autopilot.justin.AutoParameter;
 import titanicsend.app.autopilot.justin.AutoParameter.Scale;
+import titanicsend.app.autopilot.justin.Autopilot;
+import titanicsend.app.autopilot.justin.AutopilotLibrary;
 import titanicsend.app.dev.DevSwitch;
 import titanicsend.app.dev.UIDevSwitch;
 import titanicsend.app.director.Director;
@@ -55,7 +67,14 @@ import titanicsend.color.ColorPaletteManager;
 import titanicsend.color.TEGradientSource;
 import titanicsend.dmx.DmxEngine;
 import titanicsend.dmx.effect.BeaconStrobeEffect;
-import titanicsend.dmx.pattern.*;
+import titanicsend.dmx.pattern.BeaconDirectPattern;
+import titanicsend.dmx.pattern.BeaconEasyPattern;
+import titanicsend.dmx.pattern.BeaconEverythingPattern;
+import titanicsend.dmx.pattern.BeaconGamePattern;
+import titanicsend.dmx.pattern.BeaconStraightUpPattern;
+import titanicsend.dmx.pattern.DjLightsDirectPattern;
+import titanicsend.dmx.pattern.DjLightsEasyPattern;
+import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
 import titanicsend.effect.BasicShaderEffect;
 import titanicsend.effect.EdgeSieveEffect;
 import titanicsend.effect.ExplodeEffect;
@@ -87,27 +106,83 @@ import titanicsend.ndi.NDIReceiverPattern;
 import titanicsend.osc.CrutchOSC;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.pattern.TEPerformancePattern;
-import titanicsend.pattern.ben.*;
+import titanicsend.pattern.ben.Audio1;
+import titanicsend.pattern.ben.BassLightning;
+import titanicsend.pattern.ben.Xorcery;
+import titanicsend.pattern.ben.XorceryDiamonds;
 import titanicsend.pattern.cesar.HandTracker;
 import titanicsend.pattern.glengine.GLEngine;
 import titanicsend.pattern.glengine.ShaderPatternClassFactory;
 import titanicsend.pattern.glengine.ShaderPrecompiler;
-import titanicsend.pattern.jeff.*;
-import titanicsend.pattern.jon.*;
-import titanicsend.pattern.justin.*;
-import titanicsend.pattern.look.*;
-import titanicsend.pattern.mike.*;
+import titanicsend.pattern.jeff.ArtStandards;
+import titanicsend.pattern.jeff.BasicRainbowPattern;
+import titanicsend.pattern.jeff.BassReactive;
+import titanicsend.pattern.jeff.BassReactiveEdge;
+import titanicsend.pattern.jeff.EdgeProgressions;
+import titanicsend.pattern.jeff.EdgeSymmetry;
+import titanicsend.pattern.jeff.SignalDebugger;
+import titanicsend.pattern.jeff.Smoke;
+import titanicsend.pattern.jeff.TempoReactiveEdge;
+import titanicsend.pattern.jon.ArcEdges;
+import titanicsend.pattern.jon.EdgeFall;
+import titanicsend.pattern.jon.EdgeKITT;
+import titanicsend.pattern.jon.Electric;
+import titanicsend.pattern.jon.ElectricEdges;
+import titanicsend.pattern.jon.FireEdges;
+import titanicsend.pattern.jon.Fireflies;
+import titanicsend.pattern.jon.FollowThatStar;
+import titanicsend.pattern.jon.FourStar;
+import titanicsend.pattern.jon.FrameBrights;
+import titanicsend.pattern.jon.FxDualWave;
+import titanicsend.pattern.jon.FxEdgeRocket;
+import titanicsend.pattern.jon.FxLaserCharge;
+import titanicsend.pattern.jon.Kaleidosonic;
+import titanicsend.pattern.jon.ModelFileWriter;
+import titanicsend.pattern.jon.MultipassDemo;
+import titanicsend.pattern.jon.Phasers;
+import titanicsend.pattern.jon.RadialSimplex;
+import titanicsend.pattern.jon.RainBands;
+import titanicsend.pattern.jon.SimplexPosterized;
+import titanicsend.pattern.jon.SpaceExplosionFX;
+import titanicsend.pattern.jon.SpiralDiamonds;
+import titanicsend.pattern.jon.TESparklePattern;
+import titanicsend.pattern.jon.TriangleNoise;
+import titanicsend.pattern.jon.TurbulenceLines;
+import titanicsend.pattern.justin.DmxGridPattern;
+import titanicsend.pattern.justin.GammaTestPattern;
+import titanicsend.pattern.justin.MothershipDrivingPattern;
+import titanicsend.pattern.justin.TEGradientPattern;
+import titanicsend.pattern.justin.TESolidPattern;
+import titanicsend.pattern.justin.TwoColorPattern;
+import titanicsend.pattern.look.SigmoidDanceAudioLevels;
+import titanicsend.pattern.look.SigmoidDanceAudioWaveform;
+import titanicsend.pattern.look.SketchDemo;
+import titanicsend.pattern.look.SketchStem;
+import titanicsend.pattern.look.TriangleCrossAudioLevels;
+import titanicsend.pattern.look.TriangleCrossAudioWaveform;
+import titanicsend.pattern.look.TriangleInfinityLevels;
+import titanicsend.pattern.look.TriangleInfinityRadialWaveform;
+import titanicsend.pattern.look.TriangleInfinityWaveform;
+import titanicsend.pattern.mike.Checkers;
+import titanicsend.pattern.mike.EdgeRunner;
+import titanicsend.pattern.mike.ModelDebugger;
 import titanicsend.pattern.piemonte.Afterglow;
 import titanicsend.pattern.piemonte.CandyFlip;
 import titanicsend.pattern.piemonte.EdgeGlitch;
 import titanicsend.pattern.piemonte.FaceMelt;
 import titanicsend.pattern.piemonte.IceGlint;
-import titanicsend.pattern.pixelblaze.*;
+import titanicsend.pattern.pixelblaze.PBAudio1;
+import titanicsend.pattern.pixelblaze.PBFireworkNova;
+import titanicsend.pattern.pixelblaze.PBXorcery;
+import titanicsend.pattern.pixelblaze.PixelblazeParallel;
+import titanicsend.pattern.pixelblaze.PixelblazeSandbox;
 import titanicsend.pattern.selina.HappyChibi;
 import titanicsend.pattern.sinas.LightBeamsAudioReactivePattern;
 import titanicsend.pattern.sinas.TdNdiPattern;
 import titanicsend.pattern.sinas.TdStableDiffusionPattern;
-import titanicsend.pattern.tom.*;
+import titanicsend.pattern.tom.BouncingDots;
+import titanicsend.pattern.tom.Fire;
+import titanicsend.pattern.tom.PulsingTriangles;
 import titanicsend.pattern.util.PanelDebugPattern;
 import titanicsend.pattern.util.TargetPixelStamper;
 import titanicsend.pattern.yoffa.config.OrganicPatternConfig;
@@ -744,40 +819,59 @@ public class TEApp extends LXStudio {
       // additional views and components to the UI heirarchy.
       log("TEApp.Plugin.onUIReady()");
 
+      //
       // Model pane
+      //
 
-      new UIDevSwitch(ui, this.devSwitch, ui.leftPane.model.getContentWidth())
-          .addToContainer(ui.leftPane.model, 0);
+      UI2dContainer modelPane = ui.leftPane.model;
+      float modelPaneWidth = modelPane.getContentWidth();
 
-      new TEUIControls(ui, this.virtualOverlays, ui.leftPane.model.getContentWidth())
-          .addToContainer(ui.leftPane.model, 1);
+      new UIDevSwitch(ui, this.devSwitch, modelPaneWidth).addToContainer(modelPane, 0);
 
+      new TEUIControls(ui, this.virtualOverlays, modelPaneWidth).addToContainer(modelPane, 1);
+
+      //
       // Global pane
+      //
+
+      UI2dContainer globalPane = ui.leftPane.global;
+      float wGlobal = globalPane.getContentWidth();
 
       // Add UI section for director
-      new UIDirector(ui, this.director, ui.leftPane.global.getContentWidth())
-          .addToContainer(ui.leftPane.global, 0);
+      new UIDirector(ui, this.director, wGlobal).addToContainer(globalPane, 0);
 
       UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 2);
 
-      UIGlobalEffectManager.addToLeftGlobalPane(ui, this.effectManager, 3);
-
-      // Add UI section for User Presets
-      new UIUserPresetManager(ui, lx, ui.leftPane.content.getContentWidth())
-          .addToContainer(ui.leftPane.content, 4);
+      new UISuperMod(ui, this.superMod, wGlobal).addToContainer(globalPane, 4);
 
       // Add UI section for autopilot
-      new TEUserInterface.AutopilotUISection(ui, this.autopilot)
-          .addToContainer(ui.leftPane.global, 5);
+      new TEUserInterface.AutopilotUISection(ui, this.autopilot).addToContainer(globalPane, 5);
 
-      // Add UI section for JKB Autopilot
-      // new UIAutopilot(ui, this.autopilotJKB, ui.leftPane.global.getContentWidth())
-      //    .addToContainer(ui.leftPane.global, 7);
+      //
+      // Content Pane
+      //
 
+      UI2dContainer contentPane = ui.leftPane.content;
+      float wContent = contentPane.getContentWidth();
+
+      UIGlobalEffectManager.addToPane(ui, contentPane, this.effectManager, 0);
+
+      // Add UI section for User Presets
+      new UIUserPresetManager(ui, lx, wContent).addToContainer(contentPane, 1);
+
+      /*
+      new UIAutopilot(ui, this.autopilotJKB, globalPaneWidth)
+         .addToContainer(ui.leftPane.global, 7);
+      */
+
+      //
       // Right Performance
+      //
 
-      UIGlobalEffectManager.addToRightPerformancePane(
-          ui, this.effectManager, ui.rightPerformance.tools.getChildren().size() - 1);
+      UI2dContainer rightPerformance = ui.rightPerformance.tools;
+
+      UIGlobalEffectManager.addToPane(
+          ui, rightPerformance, this.effectManager, rightPerformance.getChildren().size() - 1);
 
       UIColorPaletteManager.addToRightPerformancePane(
           ui, this.paletteManagerA, this.paletteManagerB);
@@ -801,8 +895,6 @@ public class TEApp extends LXStudio {
         // Replace old saved destination IPs from project files
         // setOscDestinationForIpads();
       }); */
-
-      this.superMod.onUIReady(lx, ui);
     }
 
     @Deprecated
