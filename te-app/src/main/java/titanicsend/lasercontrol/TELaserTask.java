@@ -61,10 +61,11 @@ public class TELaserTask extends LXComponent {
         this.brightness = new BeyondCompoundParameter(lx, BeyondVariable.BRIGHTNESS, "Lasers"));
     addParameter("color", this.color = new TEColorParameter(TEGradientSource.get(), "Lasers"));
 
-    // NOTE(look): merge conflict from 'justin/laserChan', I think this is OK to remove but want to verify later
-    //this.brightness = new BeyondCompoundParameter(lx, BeyondVariable.BRIGHTNESS, "Lasers");
-    //this.color = new TEColorParameter(TEGradientSource.get(), "Lasers");
-    
+    // NOTE(look): merge conflict from 'justin/laserChan', I think this is OK to remove but want to
+    // verify later
+    // this.brightness = new BeyondCompoundParameter(lx, BeyondVariable.BRIGHTNESS, "Lasers");
+    // this.color = new TEColorParameter(TEGradientSource.get(), "Lasers");
+
     this.colorSync = new TEBeyondColorSync(lx, this.color);
     this.bpm = new BeyondBpmSync(lx);
 
