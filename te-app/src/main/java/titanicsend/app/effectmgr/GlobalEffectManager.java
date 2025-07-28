@@ -1,5 +1,7 @@
 package titanicsend.app.effectmgr;
 
+import java.io.File;
+
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.LXComponent;
@@ -10,7 +12,6 @@ import heronarts.lx.osc.LXOscComponent;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.TriggerParameter;
-import java.io.File;
 import titanicsend.audio.LOG;
 import titanicsend.effect.TEPerformanceEffect;
 
@@ -59,17 +60,6 @@ public class GlobalEffectManager extends LXComponent
     LOG.log("Effect moved: " + effect.getLabel());
   }
 
-  public static boolean isTEPerformanceEffect(LXEffect effect) {
-    for (Class<?> iface : effect.getClass().getInterfaces()) {
-      LOG.log("CHECK: " + effect.getLabel() + " <- " + iface.getName());
-      if (iface.equals(TEPerformanceEffect.class)) {
-        LOG.log("\t->MATCH!");
-        return true;
-      }
-    }
-    return false;
-  }
-
   @Override
   public void projectChanged(File file, LX.ProjectListener.Change change) {
     // Auto-create Director Effect
@@ -78,7 +68,7 @@ public class GlobalEffectManager extends LXComponent
       for (LXEffect effect : this.lx.engine.mixer.masterBus.effects) {
         boolean isEnabled = effect.enabled.isOn();
 
-        if (isTEPerformanceEffect(effect)) {
+        if (effect instanceof TEPerformanceEffect) {
           LOG.log(
               "Effect[ProjectChanged - TEPerformanceEffect]: '"
                   + effect.getLabel()

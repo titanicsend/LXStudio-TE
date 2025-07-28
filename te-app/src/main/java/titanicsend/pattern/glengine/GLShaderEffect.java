@@ -1,24 +1,26 @@
 package titanicsend.pattern.glengine;
 
-import static titanicsend.pattern.glengine.GLShaderPattern.NO_TEXTURE;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import heronarts.lx.GpuDevice;
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXModel;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import titanicsend.color.TEColorType;
-import titanicsend.effect.TEEffect;
+import titanicsend.effect.TEPerformanceEffect;
 import titanicsend.pattern.jon.VariableSpeedTimer;
 import titanicsend.pattern.yoffa.shader_engine.Uniform;
+
+import static titanicsend.pattern.glengine.GLShaderPattern.NO_TEXTURE;
 
 /**
  * Wrapper class for OpenGL shaders. Simplifies handling of context and native memory management,
  * and provides a convenient interface for adding shaders to a pattern.
  */
-public class GLShaderEffect extends TEEffect implements GpuDevice {
+public class GLShaderEffect extends TEPerformanceEffect implements GpuDevice {
 
   private final VariableSpeedTimer iTime = new VariableSpeedTimer();
 
@@ -50,6 +52,21 @@ public class GLShaderEffect extends TEEffect implements GpuDevice {
 
   public GLShaderEffect(LX lx) {
     super(lx);
+  }
+
+  @Override
+  protected LXListenableNormalizedParameter primaryParam() {
+    throw new RuntimeException("Subclasses must override");
+  }
+
+  @Override
+  protected LXListenableNormalizedParameter secondaryParam() {
+    throw new RuntimeException("Subclasses must override");
+  }
+
+  @Override
+  protected void trigger() {
+    throw new RuntimeException("Subclasses must override");
   }
 
   protected TEShader addShader(GLShader.Config config) {

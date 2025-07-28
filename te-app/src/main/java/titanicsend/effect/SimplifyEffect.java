@@ -1,10 +1,12 @@
 package titanicsend.effect;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.LXComponentName;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.effect.LXEffect;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.CompoundParameter;
@@ -17,8 +19,6 @@ import heronarts.lx.studio.LXStudio.UI;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
 import heronarts.lx.utils.LXUtils;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The SimplifyEffect forces output to be the same for all points within each view group, or within
@@ -28,13 +28,13 @@ import java.util.List;
  */
 @LXCategory("Model")
 @LXComponentName("Simplify")
-public class SimplifyEffect extends LXEffect
-    implements TEPerformanceEffect, heronarts.lx.LX.Listener, UIDeviceControls<SimplifyEffect> {
+public class SimplifyEffect extends TEPerformanceEffect
+    implements heronarts.lx.LX.Listener, UIDeviceControls<SimplifyEffect> {
 
   public enum BlendMode {
     HSB("HSB") {
       private int num = 0;
-      private float h, s, b;
+      private float h,s,b;
 
       @Override
       void clear() {
@@ -71,7 +71,7 @@ public class SimplifyEffect extends LXEffect
     },
     RGB("RGB") {
       private int num = 0;
-      private int r, g, b;
+      private int r,g,b;
 
       @Override
       void clear() {
@@ -273,11 +273,11 @@ public class SimplifyEffect extends LXEffect
         newKnob(this.amount),
         newDropMenu(this.blendMode).setTopMargin(6));
     addColumn(
-            uiDevice,
-            sectionLabel("Source").setWidth(colWidth),
-            newDropMenu(this.view).setWidth(colWidth).setTopMargin(6),
-            controlLabel(ui, "View").setWidth(colWidth).setTopMargin(-3).setBottomMargin(7),
-            newKnob(this.depth))
+        uiDevice,
+        sectionLabel("Source").setWidth(colWidth),
+        newDropMenu(this.view).setWidth(colWidth).setTopMargin(6),
+        controlLabel(ui, "View").setWidth(colWidth).setTopMargin(-3).setBottomMargin(7),
+        newKnob(this.depth))
         .setChildSpacing(4)
         .setWidth(colWidth)
         .setLeftMargin(1);

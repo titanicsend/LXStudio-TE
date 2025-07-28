@@ -1,17 +1,22 @@
 package titanicsend.effect;
 
+import heronarts.lx.LX;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
 
 /** Effects for which we want easy trigger access on a dedicated MIDI controller. */
-public interface TEPerformanceEffect {
+public abstract class TEPerformanceEffect extends TEEffect {
+
+  public TEPerformanceEffect(LX lx) {
+    super(lx);
+  }
 
   // Knobs to expose
-  LXListenableNormalizedParameter primaryParam();
+  protected abstract LXListenableNormalizedParameter primaryParam();
 
-  LXListenableNormalizedParameter secondaryParam();
+  protected abstract LXListenableNormalizedParameter secondaryParam();
 
   // Behavior when triggered
-  void trigger();
+  protected abstract void trigger();
 
   // Idea: use these to annotate certain effects if they're only safe for GPU/CPU
   /*

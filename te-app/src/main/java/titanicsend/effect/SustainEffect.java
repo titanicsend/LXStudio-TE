@@ -3,6 +3,7 @@ package titanicsend.effect;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderEffect;
 
@@ -21,6 +22,21 @@ public class SustainEffect extends GLShaderEffect {
 
     addShader(
         GLShader.config(lx).withFilename("sustain_effect.fs").withUniformSource(this::setUniforms));
+  }
+
+  @Override
+  protected LXListenableNormalizedParameter primaryParam() {
+    return sustain;
+  }
+
+  @Override
+  protected LXListenableNormalizedParameter secondaryParam() {
+    return null;
+  }
+
+  @Override
+  protected void trigger() {
+    // TODO
   }
 
   private void setUniforms(GLShader s) {

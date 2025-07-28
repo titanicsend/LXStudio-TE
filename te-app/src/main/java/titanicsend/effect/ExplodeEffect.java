@@ -5,13 +5,20 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.Tempo;
 import heronarts.lx.modulator.LXWaveshape;
 import heronarts.lx.modulator.SawLFO;
-import heronarts.lx.parameter.*;
+import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.BoundedParameter;
+import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.EnumParameter;
+import heronarts.lx.parameter.FunctionalParameter;
+import heronarts.lx.parameter.LXListenableNormalizedParameter;
+import heronarts.lx.parameter.LXParameterListener;
+import heronarts.lx.parameter.ObjectParameter;
 import heronarts.lx.utils.LXUtils;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderEffect;
 
 @LXCategory("Titanics End")
-public class ExplodeEffect extends GLShaderEffect implements TEPerformanceEffect {
+public class ExplodeEffect extends GLShaderEffect {
   double effectDepth;
   private double lastBasis;
   private boolean triggerRequested = false;
@@ -20,8 +27,8 @@ public class ExplodeEffect extends GLShaderEffect implements TEPerformanceEffect
   public final ObjectParameter<LXWaveshape> waveshape =
       new ObjectParameter<LXWaveshape>(
           "Shape",
-          new LXWaveshape[] {
-            LXWaveshape.DOWN, LXWaveshape.UP, LXWaveshape.SIN, LXWaveshape.TRI, LXWaveshape.SQUARE
+          new LXWaveshape[]{
+              LXWaveshape.DOWN, LXWaveshape.UP, LXWaveshape.SIN, LXWaveshape.TRI, LXWaveshape.SQUARE
           });
 
   public final CompoundParameter speed =
