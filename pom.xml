@@ -88,7 +88,19 @@
 					<configuration>
 						<encoding>UTF-8</encoding>
 						<compilerArgs>
-							<arg>-Xlint:-this-escape</arg>
+							<!--
+							Github actions is still using JDK 17:, and "-Xlint:-this-escape" was causing a CI error.
+							https://github.com/titanicsend/LXStudio-TE/actions/runs/16585798669/job/46910611074?pr=673#step:4:1890
+
+							When I tried to change it to 21, suddenly the SuperMod
+							dependency wasn't resolving:
+							https://github.com/titanicsend/LXStudio-TE/actions/runs/16585798669/job/46910611074?pr=673#step:4:58148
+
+							For now, uncommenting "-this-escape" will let compile succeed and it'll just output more
+							warnings - but we'll get the benefit of seeing quickly on a PR whether the code compiles.
+							Helpful for refactoring (e.g. when I removed an effect, did I forget to delete in TEApp?)
+							-->
+							<!-- arg>-Xlint:-this-escape</arg -->
 							<arg>-Xpkginfo:always</arg>
 							<arg>-XDcompilePolicy=simple</arg>
 							<arg>--should-stop=ifError=FLOW</arg>
