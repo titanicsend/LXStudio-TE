@@ -789,7 +789,7 @@ public class TEApp extends LXStudio {
       float wContent = contentPane.getContentWidth();
 
       // Add UI section for User Presets
-      new UIUserPresetManager(ui, lx, wContent).addToContainer(contentPane, 0);
+      new UIUserPresetManager(ui, lx, wContent).addToContainer(contentPane, 2);
 
       // =======================================================================================
       // Custom UI - Performance Mode
