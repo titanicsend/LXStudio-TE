@@ -9,7 +9,7 @@ import heronarts.lx.parameter.LXParameter;
 import titanicsend.model.TEEdgeModel;
 
 @LXCategory(LXCategory.TEXTURE)
-public class EdgeSieve extends TEEffect {
+public class EdgeSieveEffect extends TEEffect {
   private final DiscreteParameter gap =
       new DiscreteParameter("Gap", 0, 0, 11)
           .setDescription("Number of off pixels between on pixels");
@@ -23,7 +23,7 @@ public class EdgeSieve extends TEEffect {
   protected int runLength;
   protected int offset;
 
-  public EdgeSieve(LX lx) {
+  public EdgeSieveEffect(LX lx) {
     super(lx);
     addParameter("gap", this.gap);
     addParameter("length", this.length);
