@@ -183,9 +183,6 @@ public class SimplifyEffect extends LXEffect
   @Override
   protected void run(double deltaMs, double enabledAmount) {
     final double amount = this.amount.getValue();
-    if (amount < 0.01f) {
-      return;
-    }
     final BlendMode blendMode = this.blendMode.getEnum();
     final float gate = this.gate.getValuef();
     final float gain = this.gain.getValuef();
