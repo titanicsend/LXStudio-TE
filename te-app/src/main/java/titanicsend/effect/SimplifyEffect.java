@@ -162,6 +162,21 @@ public class SimplifyEffect extends LXEffect
   }
 
   @Override
+  public LXListenableNormalizedParameter primaryParam() {
+    return this.amount;
+  }
+
+  @Override
+  public LXListenableNormalizedParameter secondaryParam() {
+    return this.depth;
+  }
+
+  @Override
+  public void trigger() {
+    // this.manualTrigger.toggle();
+  }
+
+  @Override
   public void onParameterChanged(LXParameter p) {
     if (p == this.view || p == this.depth) {
       refreshModels();
