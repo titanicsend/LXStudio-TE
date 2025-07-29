@@ -26,20 +26,14 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.LXWaveshape;
 import heronarts.lx.modulator.SawLFO;
-import heronarts.lx.parameter.BooleanParameter;
-import heronarts.lx.parameter.BoundedParameter;
-import heronarts.lx.parameter.CompoundParameter;
-import heronarts.lx.parameter.EnumParameter;
-import heronarts.lx.parameter.FunctionalParameter;
-import heronarts.lx.parameter.LXParameter;
-import heronarts.lx.parameter.ObjectParameter;
+import heronarts.lx.parameter.*;
 import heronarts.lx.utils.LXUtils;
 import java.util.ArrayList;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
 
 @LXCategory("Titanics End")
-public class RandomStrobeEffect extends TEEffect {
+public class RandomStrobeEffect extends TEEffect implements TEPerformanceEffect {
 
   private class Element {
     protected double offset;
@@ -158,21 +152,20 @@ public class RandomStrobeEffect extends TEEffect {
     }
   }
 
-//  @Override
-//  public LXListenableNormalizedParameter primaryParam() {
-//    return this.speed;
-//  }
-//
-//  @Override
-//  public LXListenableNormalizedParameter secondaryParam() {
-//    return this.depth;
-//  }
-//
-//  @Override
-//  public void trigger() {
-//    // TODO
-//    //    this.manualTrigger.toggle();
-//  }
+  @Override
+  public LXListenableNormalizedParameter primaryParam() {
+    return this.speed;
+  }
+
+  @Override
+  public LXListenableNormalizedParameter secondaryParam() {
+    return this.depth;
+  }
+
+  @Override
+  public void trigger() {
+    // TODO
+  }
 
   @Override
   protected void onEnable() {

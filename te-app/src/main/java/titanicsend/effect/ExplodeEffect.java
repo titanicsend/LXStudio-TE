@@ -169,20 +169,20 @@ public class ExplodeEffect extends GLShaderEffect {
     super.run(deltaMs, enabledAmount);
   }
 
-//  @Override
-//  public LXListenableNormalizedParameter primaryParam() {
-//    return this.speed;
-//  }
-//
-//  @Override
-//  public LXListenableNormalizedParameter secondaryParam() {
-//    return this.depth;
-//  }
-//
-//  @Override
-//  public void trigger() {
-//    this.manualTrigger.toggle();
-//  }
+  //  @Override
+  //  public LXListenableNormalizedParameter primaryParam() {
+  //    return this.speed;
+  //  }
+  //
+  //  @Override
+  //  public LXListenableNormalizedParameter secondaryParam() {
+  //    return this.depth;
+  //  }
+  //
+  //  @Override
+  //  public void trigger() {
+  //    this.manualTrigger.toggle();
+  //  }
 
   @Override
   public void dispose() {
