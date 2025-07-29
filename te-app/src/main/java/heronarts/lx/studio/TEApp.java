@@ -38,10 +38,13 @@ import java.util.function.Function;
 import org.lwjgl.system.Platform;
 import studio.jkb.beyond.BeyondPlugin;
 import studio.jkb.supermod.SuperMod;
+import studio.jkb.supermod.UISuperMod;
 import titanicsend.app.*;
 import titanicsend.app.autopilot.*;
-import titanicsend.app.autopilot.justin.*;
+import titanicsend.app.autopilot.justin.AutoParameter;
 import titanicsend.app.autopilot.justin.AutoParameter.Scale;
+import titanicsend.app.autopilot.justin.Autopilot;
+import titanicsend.app.autopilot.justin.AutopilotLibrary;
 import titanicsend.app.dev.DevSwitch;
 import titanicsend.app.dev.UIDevSwitch;
 import titanicsend.app.director.Director;
@@ -60,17 +63,12 @@ import titanicsend.effect.RandomStrobeEffect;
 import titanicsend.effect.SimplifyEffect;
 import titanicsend.effect.SustainEffect;
 import titanicsend.gamepad.GamepadEngine;
-import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lx.APC40Mk2;
 import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.lx.DirectorAPCminiMk2;
 import titanicsend.model.TEWholeModel;
 import titanicsend.model.TEWholeModelDynamic;
-import titanicsend.modulator.dmx.Dmx16bitModulator;
-import titanicsend.modulator.dmx.DmxDirectorColorModulator;
-import titanicsend.modulator.dmx.DmxDualRangeModulator;
-import titanicsend.modulator.dmx.DmxGridModulator;
-import titanicsend.modulator.dmx.DmxRangeModulator;
+import titanicsend.modulator.dmx.*;
 import titanicsend.modulator.justin.MultiplierModulator;
 import titanicsend.modulator.justin.UIMultiplierModulator;
 import titanicsend.modulator.outputOsc.OutputOscColorModulator;
@@ -771,24 +769,14 @@ public class TEApp extends LXStudio {
       UI2dContainer contentPane = ui.leftPane.content;
       float wContent = contentPane.getContentWidth();
 
-      UIGlobalEffectManager.addToPane(ui, contentPane, this.effectManager, 0);
-
       // Add UI section for User Presets
-      new UIUserPresetManager(ui, lx, wContent).addToContainer(contentPane, 1);
-
-      /*
-      new UIAutopilot(ui, this.autopilotJKB, globalPaneWidth)
-         .addToContainer(ui.leftPane.global, 7);
-      */
+      new UIUserPresetManager(ui, lx, wContent).addToContainer(contentPane, 0);
 
       //
       // Right Performance
       //
 
       UI2dContainer rightPerformance = ui.rightPerformance.tools;
-
-      UIGlobalEffectManager.addToPane(
-          ui, rightPerformance, this.effectManager, rightPerformance.getChildren().size() - 1);
 
       UIColorPaletteManager.addToRightPerformancePane(
           ui, this.paletteManagerA, this.paletteManagerB);
