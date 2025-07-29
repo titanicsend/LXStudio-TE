@@ -1,9 +1,5 @@
 package titanicsend.app.effectmgr;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.LXComponent;
@@ -11,6 +7,9 @@ import heronarts.lx.LXComponentName;
 import heronarts.lx.effect.LXEffect;
 import heronarts.lx.mixer.LXBus;
 import heronarts.lx.osc.LXOscComponent;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import titanicsend.audio.LOG;
 import titanicsend.effect.TEPerformanceEffect;
 
@@ -19,26 +18,13 @@ import titanicsend.effect.TEPerformanceEffect;
 public class GlobalEffectManager extends LXComponent
     implements LXOscComponent, LXBus.Listener, LX.ProjectListener {
 
-//  LXEffect effect1;
-//  final BooleanParameter effect1Registered =
-//      new BooleanParameter("E2 Registered", false).setDescription("");
-//
-//  public final TriggerParameter effect1Trigger =
-//      new TriggerParameter("E1 Trigger", this::triggerEffect1)
-//          .setDescription("Push the managed swatch to the global active swatch");
-//
-//  public LXListenableNormalizedParameter effect1Param = null;
-
   private static GlobalEffectManager instance;
-
-  public static GlobalEffectManager get() {
-    return instance;
-  }
 
   private final List<TEPerformanceEffect> registeredEffects = new ArrayList<>();
 
   public GlobalEffectManager(LX lx) {
     super(lx, "effectmgr");
+    GlobalEffectManager.instance = this;
 
     // When we first open the Project, we need to load up all effects from Master Bus
     this.lx.addProjectListener(this);
@@ -46,17 +32,21 @@ public class GlobalEffectManager extends LXComponent
     this.lx.engine.mixer.masterBus.addListener(this);
   }
 
+  public static GlobalEffectManager get() {
+    return instance;
+  }
+
   @Override
   public void effectAdded(LXBus channel, LXEffect effect) {
-    if (effect instanceof TEPerformanceEffect) {
-      attemptToRegister((TEPerformanceEffect) effect);
+    if (isPerformanceEffect(effect)) {
+      attemptToRegister(effect);
       LOG.log("TEPerformanceEffect added: " + effect.getLabel());
     }
   }
 
   @Override
   public void effectRemoved(LXBus channel, LXEffect effect) {
-    if (effect instanceof TEPerformanceEffect && registeredEffects.contains((TEPerformanceEffect) effect)) {
+    if (isPerformanceEffect(effect) && registeredEffects.contains((TEPerformanceEffect) effect)) {
       registeredEffects.remove(effect);
       LOG.log("TEPerformanceEffect removed: " + effect.getLabel());
     }
@@ -67,52 +57,34 @@ public class GlobalEffectManager extends LXComponent
     LOG.log("TEPerformanceEffect moved: " + effect.getLabel());
   }
 
-  private void attemptToRegister(TEPerformanceEffect effect) {
+  private void attemptToRegister(LXEffect effect) {
     LOG.log(
         "Effect[ProjectChanged - TEPerformanceEffect]: '"
             + effect.getLabel()
             + "', enabled: "
             + effect.enabled.isOn());
-    if (registeredEffects.contains(effect)) {
-      // already exists
+    if (!isPerformanceEffect(effect)) {
+      LOG.log("NOT A PERFORMANCE EFFECT");
       return;
     }
+    TEPerformanceEffect performanceEffect = (TEPerformanceEffect) effect;
+    if (registeredEffects.contains(performanceEffect)) {
+      registeredEffects.add(performanceEffect);
+    }
+  }
 
-    registeredEffects.add(effect);
+  private static boolean isPerformanceEffect(LXEffect effect) {
+    if (TEPerformanceEffect.class.isAssignableFrom(effect.getClass())) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @Override
   public void projectChanged(File file, LX.ProjectListener.Change change) {
     // TODO: is it enough to have the bus listener above / do I also need this proj listener?
-
-//    // Auto-create Director Effect
-//    if (change == LX.ProjectListener.Change.OPEN) {
-//      // Does effect already exist?
-//      for (LXEffect effect : this.lx.engine.mixer.masterBus.effects) {
-//        if (effect instanceof TEPerformanceEffect) {
-//          attemptToRegister((TEPerformanceEffect) effect);
-//        }
-//      }
-//    }
   }
-
-//  public void registerEffect1(LXEffect effect, LXListenableNormalizedParameter param) {
-//    this.effect1 = effect;
-//    this.effect1Registered.setValue(true);
-//    this.effect1Param = param;
-//  }
-//
-//  public void disposeEffect1(LXEffect effect) {
-//    if (this.effect1 != effect) {
-//      // for prototyping, I've hardcoded "effect1". Really, this will end up as
-//      // an array or list, so we'll find the effect in that list and dispose it.
-//      return;
-//    }
-//  }
-//
-//  public void triggerEffect1() {
-//    // TODO
-//  }
 
   @Override
   public void dispose() {
