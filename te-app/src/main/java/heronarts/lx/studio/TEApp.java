@@ -319,8 +319,6 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(ArtStandards.class);
       lx.registry.addEffect(titanicsend.effect.BasicShaderEffect.class);
       lx.registry.addEffect(titanicsend.effect.EdgeSieveEffect.class);
-      lx.registry.addEffect(titanicsend.effect.NoGapEffect.class);
-      lx.registry.addEffect(titanicsend.effect.PanelAdjustEffect.class);
       lx.registry.addEffect(BeaconEffect.class);
 
       // DMX patterns
