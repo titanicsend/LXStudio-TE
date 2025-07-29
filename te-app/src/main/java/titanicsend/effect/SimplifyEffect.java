@@ -7,10 +7,7 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.effect.LXEffect;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
-import heronarts.lx.parameter.CompoundParameter;
-import heronarts.lx.parameter.DiscreteParameter;
-import heronarts.lx.parameter.EnumParameter;
-import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.parameter.*;
 import heronarts.lx.parameter.LXParameter.Units;
 import heronarts.lx.studio.LXStudio.UI;
 import heronarts.lx.studio.ui.device.UIDevice;
@@ -28,7 +25,7 @@ import java.util.List;
 @LXCategory("Model")
 @LXComponentName("Simplify")
 public class SimplifyEffect extends LXEffect
-    implements heronarts.lx.LX.Listener, UIDeviceControls<SimplifyEffect> {
+    implements TEPerformanceEffect, heronarts.lx.LX.Listener, UIDeviceControls<SimplifyEffect> {
 
   public enum BlendMode {
     HSB("HSB") {
