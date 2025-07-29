@@ -46,6 +46,7 @@ import titanicsend.app.dev.UIDevSwitch;
 import titanicsend.app.director.Director;
 import titanicsend.app.director.DirectorEffect;
 import titanicsend.app.director.UIDirector;
+import titanicsend.app.effectmgr.GlobalEffectManager;
 import titanicsend.audio.AudioStemModulator;
 import titanicsend.audio.AudioStems;
 import titanicsend.audio.AudioStemsPlugin;
@@ -174,6 +175,7 @@ public class TEApp extends LXStudio {
     private DevSwitch devSwitch;
     private final Director director;
     private final PresetEngine presetEngine;
+    private final GlobalEffectManager effectManager;
 
     // objects that manage UI displayed in 3D views
     private UI3DManager ui3dManager;
@@ -202,6 +204,7 @@ public class TEApp extends LXStudio {
       gamepadEngine = new GamepadEngine(lx);
       this.presetEngine = new PresetEngine(lx);
       this.presetEngine.openFile(lx.getMediaFile("Presets/UserPresets/BM24.userPresets"));
+      this.effectManager = new GlobalEffectManager(lx);
 
       // Super Modulator midi controller
       this.superMod = new SuperMod(lx);

@@ -11,7 +11,7 @@ import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderEffect;
 
 @LXCategory("Titanics End")
-public class ExplodeEffect extends GLShaderEffect {
+public class ExplodeEffect extends GLShaderEffect implements TEPerformanceEffect {
   double effectDepth;
   private double lastBasis;
   private boolean triggerRequested = false;
@@ -169,20 +169,20 @@ public class ExplodeEffect extends GLShaderEffect {
     super.run(deltaMs, enabledAmount);
   }
 
-  //  @Override
-  //  public LXListenableNormalizedParameter primaryParam() {
-  //    return this.speed;
-  //  }
-  //
-  //  @Override
-  //  public LXListenableNormalizedParameter secondaryParam() {
-  //    return this.depth;
-  //  }
-  //
-  //  @Override
-  //  public void trigger() {
-  //    this.manualTrigger.toggle();
-  //  }
+  @Override
+  public LXListenableNormalizedParameter primaryParam() {
+    return this.speed;
+  }
+
+  @Override
+  public LXListenableNormalizedParameter secondaryParam() {
+    return this.depth;
+  }
+
+  @Override
+  public void trigger() {
+    this.manualTrigger.toggle();
+  }
 
   @Override
   public void dispose() {
