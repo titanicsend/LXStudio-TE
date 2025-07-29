@@ -718,10 +718,12 @@ public class TEApp extends LXStudio {
           return null;
         };
 
+    /**
+     * Here is where you may modify the initial settings of the UI before it is fully built. Note
+     * that this will not be called in headless mode. Anything required for headless mode should go
+     * in the raw initialize method above.
+     */
     public void initializeUI(LXStudio lx, LXStudio.UI ui) {
-      // Here is where you may modify the initial settings of the UI before it is fully
-      // built. Note that this will not be called in headless mode. Anything required
-      // for headless mode should go in the raw initialize method above.
       log("TEApp.Plugin.initializeUI()");
 
       ((LXStudio.Registry) lx.registry).addUIDeviceControls(UITEPerformancePattern.class);
@@ -729,14 +731,20 @@ public class TEApp extends LXStudio {
       this.superMod.initializeUI(lx, ui);
     }
 
+    /**
+     * At this point, the LX Studio application UI has been built. You may now add additional views
+     * and components to the UI hierarchy.
+     */
     public void onUIReady(LXStudio lx, LXStudio.UI ui) {
-      // At this point, the LX Studio application UI has been built. You may now add
-      // additional views and components to the UI heirarchy.
       log("TEApp.Plugin.onUIReady()");
 
-      //
+      // =======================================================================================
+      // Custom UI - Performance Mode
+      // =======================================================================================
+
+      // ------------
       // Model pane
-      //
+      // ------------
 
       UI2dContainer modelPane = ui.leftPane.model;
       float modelPaneWidth = modelPane.getContentWidth();
@@ -745,26 +753,37 @@ public class TEApp extends LXStudio {
 
       new TEUIControls(ui, this.virtualOverlays, modelPaneWidth).addToContainer(modelPane, 1);
 
-      //
+      // ------------
       // Global pane
-      //
+      // ------------
 
       UI2dContainer globalPane = ui.leftPane.global;
       float wGlobal = globalPane.getContentWidth();
 
-      // Add UI section for director
+      // 0. Add UI section for director
       new UIDirector(ui, this.director, wGlobal).addToContainer(globalPane, 0);
 
-      UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 2);
+      // 1. Add Palette manager right below director (since they share a MIDI controller)
+      UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 1);
 
+      // 2. Chromatik Audio (default)
+
+      // 3. AudioStems Plugin (added automatically when plugin initialized)
+      // NOTE(look): somewhat inconvenient to reason about the order that plugins add UI. Maybe
+      // easier for us
+      //             to initialize AudioStems plugin directly in this file (this.audioStems = new
+      // AudioStems())
+      //             and handle UI setup, registerComponents, dispose() here.
+
+      // 4. Add
       new UISuperMod(ui, this.superMod, wGlobal).addToContainer(globalPane, 4);
 
       // Add UI section for autopilot
       new TEUserInterface.AutopilotUISection(ui, this.autopilot).addToContainer(globalPane, 5);
 
-      //
+      // ------------
       // Content Pane
-      //
+      // ------------
 
       UI2dContainer contentPane = ui.leftPane.content;
       float wContent = contentPane.getContentWidth();
@@ -772,20 +791,32 @@ public class TEApp extends LXStudio {
       // Add UI section for User Presets
       new UIUserPresetManager(ui, lx, wContent).addToContainer(contentPane, 0);
 
-      //
-      // Right Performance
-      //
+      // =======================================================================================
+      // Custom UI - Performance Mode
+      // =======================================================================================
+
+      // ------------
+      // Right Tools
+      // ------------
 
       UI2dContainer rightPerformance = ui.rightPerformance.tools;
 
       UIColorPaletteManager.addToRightPerformancePane(
           ui, this.paletteManagerA, this.paletteManagerB);
 
+      // =======================================================================================
+      // Custom UI - Preview
+      // =======================================================================================
+
       // Add 3D Ui components
       this.ui3dManager = new UI3DManager(lx, ui, this.virtualOverlays);
 
       // Set camera zoom and point size to match current model
       applyTECameraPosition();
+
+      // =======================================================================================
+      // Non-UI Initialization Hooks
+      // =======================================================================================
 
       // precompile binaries for any new or changed shaders
       ShaderPrecompiler.rebuildCache();
@@ -886,17 +917,17 @@ public class TEApp extends LXStudio {
 
   @Override
   protected void onGamepadButtonPressed(GamepadEvent gamepadEvent, int button) {
-    this.gamepadEngine.lxGamepadButtonPressed(gamepadEvent, button);
+    gamepadEngine.lxGamepadButtonPressed(gamepadEvent, button);
   }
 
   @Override
   protected void onGamepadButtonReleased(GamepadEvent gamepadEvent, int button) {
-    this.gamepadEngine.lxGamepadButtonReleased(gamepadEvent, button);
+    gamepadEngine.lxGamepadButtonReleased(gamepadEvent, button);
   }
 
   @Override
   protected void onGamepadAxisChanged(GamepadEvent gamepadEvent, int axis, float value) {
-    this.gamepadEngine.lxGamepadAxisChanged(gamepadEvent, axis, value);
+    gamepadEngine.lxGamepadAxisChanged(gamepadEvent, axis, value);
   }
 
   private TEApp(GLXWindow window, Flags flags) throws IOException {
