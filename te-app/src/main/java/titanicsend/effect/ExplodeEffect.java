@@ -39,10 +39,10 @@ public class ExplodeEffect extends GLShaderEffect {
       new BoundedParameter("Slope", 5, 1, 15).setDescription("Steepness of effect/time curve");
 
   public final BooleanParameter tempoSync =
-      new BooleanParameter("Sync", true).setDescription("Sync the effect to the engine tempo");
+      new BooleanParameter("Sync", false).setDescription("Sync the effect to the engine tempo");
 
   public final BooleanParameter manualTrigger =
-      new BooleanParameter("Manual", false)
+      new BooleanParameter("Manual", true)
           .setDescription("Enable manual triggering w/trigger button");
 
   public final EnumParameter<Tempo.Division> tempoDivision =
