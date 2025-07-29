@@ -1,9 +1,10 @@
-package titanicsend.effect;
+package titanicsend.effect.util;
 
 import heronarts.lx.GpuDevice;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.model.LXModel;
+import titanicsend.effect.TEEffect;
 import titanicsend.ndi.NDIOutShader;
 
 @LXCategory("Titanics End")
