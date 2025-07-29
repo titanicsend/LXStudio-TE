@@ -18,6 +18,7 @@ package heronarts.lx.studio;
 import heronarts.glx.GLXWindow;
 import heronarts.glx.event.GamepadEvent;
 import heronarts.glx.event.KeyEvent;
+import heronarts.glx.ui.UI2dContainer;
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
 import heronarts.lx.mixer.LXBus;
@@ -735,37 +736,60 @@ public class TEApp extends LXStudio {
       // additional views and components to the UI heirarchy.
       log("TEApp.Plugin.onUIReady()");
 
+      //
       // Model pane
+      //
 
-      new UIDevSwitch(ui, this.devSwitch, ui.leftPane.model.getContentWidth())
-          .addToContainer(ui.leftPane.model, 0);
+      UI2dContainer modelPane = ui.leftPane.model;
+      float modelPaneWidth = modelPane.getContentWidth();
 
-      //      new GigglePixelUI(
-      //              ui, ui.leftPane.model.getContentWidth(), this.gpListener, this.gpBroadcaster)
-      //          .addToContainer(ui.leftPane.model, 1);
+      new UIDevSwitch(ui, this.devSwitch, modelPaneWidth).addToContainer(modelPane, 0);
 
-      new TEUIControls(ui, this.virtualOverlays, ui.leftPane.model.getContentWidth())
-          .addToContainer(ui.leftPane.model, 1);
+      new TEUIControls(ui, this.virtualOverlays, modelPaneWidth).addToContainer(modelPane, 1);
 
+      //
       // Global pane
+      //
+
+      UI2dContainer globalPane = ui.leftPane.global;
+      float wGlobal = globalPane.getContentWidth();
 
       // Add UI section for director
-      new UIDirector(ui, this.director, ui.leftPane.global.getContentWidth())
-          .addToContainer(ui.leftPane.global, 0);
+      new UIDirector(ui, this.director, wGlobal).addToContainer(globalPane, 0);
+
+      UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 2);
+
+      new UISuperMod(ui, this.superMod, wGlobal).addToContainer(globalPane, 4);
 
       // Add UI section for autopilot
-      new TEUserInterface.AutopilotUISection(ui, this.autopilot)
-          .addToContainer(ui.leftPane.global, 6);
+      new TEUserInterface.AutopilotUISection(ui, this.autopilot).addToContainer(globalPane, 5);
 
-      // Add UI section for JKB Autopilot
-      // new UIAutopilot(ui, this.autopilotJKB, ui.leftPane.global.getContentWidth())
-      //    .addToContainer(ui.leftPane.global, 7);
+      //
+      // Content Pane
+      //
+
+      UI2dContainer contentPane = ui.leftPane.content;
+      float wContent = contentPane.getContentWidth();
+
+      UIGlobalEffectManager.addToPane(ui, contentPane, this.effectManager, 0);
 
       // Add UI section for User Presets
-      new UIUserPresetManager(ui, lx, ui.leftPane.content.getContentWidth())
-          .addToContainer(ui.leftPane.content, 2);
+      new UIUserPresetManager(ui, lx, wContent).addToContainer(contentPane, 1);
 
-      UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 4);
+      /*
+      new UIAutopilot(ui, this.autopilotJKB, globalPaneWidth)
+         .addToContainer(ui.leftPane.global, 7);
+      */
+
+      //
+      // Right Performance
+      //
+
+      UI2dContainer rightPerformance = ui.rightPerformance.tools;
+
+      UIGlobalEffectManager.addToPane(
+          ui, rightPerformance, this.effectManager, rightPerformance.getChildren().size() - 1);
+
       UIColorPaletteManager.addToRightPerformancePane(
           ui, this.paletteManagerA, this.paletteManagerB);
 
@@ -788,8 +812,6 @@ public class TEApp extends LXStudio {
         // Replace old saved destination IPs from project files
         // setOscDestinationForIpads();
       }); */
-
-      this.superMod.onUIReady(lx, ui);
     }
 
     @Deprecated
