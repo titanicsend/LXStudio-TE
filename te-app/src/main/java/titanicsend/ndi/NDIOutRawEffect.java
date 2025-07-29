@@ -1,4 +1,4 @@
-package titanicsend.effect.util;
+package titanicsend.ndi;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;

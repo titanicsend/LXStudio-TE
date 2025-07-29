@@ -1,4 +1,4 @@
-package titanicsend.effect.util;
+package titanicsend.ndi;
 
 import heronarts.glx.ui.UI2dContainer;
 import heronarts.lx.GpuDevice;
@@ -18,8 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import titanicsend.effect.TEEffect;
-import titanicsend.ndi.NDIOutFixture;
-import titanicsend.ndi.NDIOutShader;
 
 @LXCategory("Titanics End")
 @LXComponentName("NDI Out Shader")

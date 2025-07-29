@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import titanicsend.effect.util.NDIOutShaderEffect;
+import titanicsend.ndi.NDIOutShaderEffect;
 import titanicsend.pattern.glengine.GLEngine;
 import titanicsend.pattern.glengine.GLShaderEffect;
 import titanicsend.pattern.glengine.GLShaderPattern;
