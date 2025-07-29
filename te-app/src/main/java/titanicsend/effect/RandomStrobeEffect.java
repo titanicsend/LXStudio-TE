@@ -158,6 +158,22 @@ public class RandomStrobeEffect extends TEEffect {
     }
   }
 
+//  @Override
+//  public LXListenableNormalizedParameter primaryParam() {
+//    return this.speed;
+//  }
+//
+//  @Override
+//  public LXListenableNormalizedParameter secondaryParam() {
+//    return this.depth;
+//  }
+//
+//  @Override
+//  public void trigger() {
+//    // TODO
+//    //    this.manualTrigger.toggle();
+//  }
+
   @Override
   protected void onEnable() {
     this.basis.setBasis(0).start();
