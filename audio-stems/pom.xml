@@ -11,7 +11,6 @@
 	</parent>
 
 	<artifactId>audio-stems</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
 	<name>Audio Stems Plugin</name>
 	<description>A Chromatik plugin that receives audio stem information over OSC and makes it available for real-time
 		display and mapping.
