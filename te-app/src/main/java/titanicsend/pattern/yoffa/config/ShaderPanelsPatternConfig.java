@@ -284,7 +284,7 @@ public class ShaderPanelsPatternConfig {
 
     @Override
     protected void createShader() {
-      controls.setRange(TEControlTag.SPEED, 0, -4, 4).setValue(TEControlTag.SPEED, 0.5);
+      controls.setRange(TEControlTag.SPEED, 0.5, -4, 4);
 
       controls.setRange(TEControlTag.SIZE, 1.3, 6., 0.75); // vortex size
       controls.setRange(TEControlTag.SPIN, 0, -0.5, 0.5); // rotate about x
