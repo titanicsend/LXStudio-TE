@@ -1,17 +1,17 @@
-##name: Spotless Format
+##name: Maven Checks
 on:
   pull_request:
     branches:
       - main
       - dev
-	  - look/remove-model-debug-effects
+      - look/remove-model-debug-effects
   push:
     branches:
       - main
       - dev
-	  - look/remove-model-debug-effects
+      - look/remove-model-debug-effects
 jobs:
-  spotless:
+  maven-checks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -19,8 +19,8 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: 17
-      - name: Verify Maven Compiles
+          java-version: 21
+      - name: Verify Maven Compilation Success
         run: mvn compile
-      - name: Check Spotless
+      - name: Check Code Style
         run: mvn spotless:check
