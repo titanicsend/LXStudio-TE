@@ -110,6 +110,7 @@ import titanicsend.pattern.ben.BassLightning;
 import titanicsend.pattern.ben.Xorcery;
 import titanicsend.pattern.ben.XorceryDiamonds;
 import titanicsend.pattern.cesar.HandTracker;
+import titanicsend.pattern.cnk.DotPolka;
 import titanicsend.pattern.glengine.GLEngine;
 import titanicsend.pattern.glengine.ShaderPatternClassFactory;
 import titanicsend.pattern.glengine.ShaderPrecompiler;
@@ -399,6 +400,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(BasicRainbowPattern.class);
       lx.registry.addPattern(BassReactive.class);
       lx.registry.addPattern(BassReactiveEdge.class);
+      lx.registry.addPattern(DotPolka.class);
       lx.registry.addPattern(TempoReactiveEdge.class);
       lx.registry.addPattern(ArtStandards.class);
 
