@@ -76,6 +76,7 @@ import titanicsend.modulator.outputOsc.OutputOscColorModulator;
 import titanicsend.modulator.outputOsc.OutputOscFloatModulator;
 import titanicsend.modulator.outputOsc.OutputOscTempoModulator;
 import titanicsend.ndi.NDIEngine;
+import titanicsend.ndi.NDIOutFixture;
 import titanicsend.ndi.NDIReceiverPattern;
 import titanicsend.osc.CrutchOSC;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
@@ -429,6 +430,9 @@ public class TEApp extends LXStudio {
       lx.registry.addModulator(OutputOscFloatModulator.class);
       lx.registry.addModulator(OutputOscTempoModulator.class);
       lx.registry.addModulator(OutputOscColorModulator.class);
+
+      // NDI Fixture
+      lx.registry.addFixture(NDIOutFixture.class);
 
       // Custom UI components
       if (lx instanceof LXStudio) {
