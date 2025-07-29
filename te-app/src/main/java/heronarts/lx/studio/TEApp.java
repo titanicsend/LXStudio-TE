@@ -792,24 +792,6 @@ public class TEApp extends LXStudio {
 
       // Import latest gamepad controllers db
       gamepadEngine.updateGamepadMappings();
-
-      /* lx.engine.addTask(
-      () -> {
-        setOscDestinationForIpads();
-        // openDelayedFile(lx);
-        // Replace old saved destination IPs from project files
-        // setOscDestinationForIpads();
-      }); */
-    }
-
-    @Deprecated
-    public void setOscDestinationForIpads() {
-      try {
-        this.lx.engine.osc.transmitHost.setValue(PangolinHost.HOSTNAME);
-        this.lx.engine.osc.transmitPort.setValue(PangolinHost.PORT);
-      } catch (Exception ex) {
-        TE.error(ex, "Failed to set destination OSC address to ShowKontrol IP for iPads relay");
-      }
     }
 
     @Override
