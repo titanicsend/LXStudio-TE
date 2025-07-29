@@ -846,6 +846,7 @@ public class TEApp extends LXStudio {
       this.dmxEngine.dispose();
       this.crutchOSC.dispose();
       this.glEngine.dispose();
+      this.effectManager.dispose();
       gamepadEngine.dispose();
 
       ((TEWholeModelDynamic) wholeModel).dispose();
