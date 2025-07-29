@@ -8,7 +8,7 @@ import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderEffect;
 
 @LXCategory("Titanics End")
-public class SustainEffect extends GLShaderEffect implements TEPerformanceEffect {
+public class SustainEffect extends GLShaderEffect {
 
   public final CompoundParameter sustain =
       new CompoundParameter("Sustain", 0)
@@ -22,21 +22,6 @@ public class SustainEffect extends GLShaderEffect implements TEPerformanceEffect
 
     addShader(
         GLShader.config(lx).withFilename("sustain_effect.fs").withUniformSource(this::setUniforms));
-  }
-
-  @Override
-  public LXListenableNormalizedParameter primaryParam() {
-    return sustain;
-  }
-
-  @Override
-  public LXListenableNormalizedParameter secondaryParam() {
-    return null;
-  }
-
-  @Override
-  public void trigger() {
-    // TODO
   }
 
   private void setUniforms(GLShader s) {

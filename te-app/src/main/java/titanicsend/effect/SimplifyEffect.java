@@ -25,7 +25,7 @@ import java.util.List;
 @LXCategory("Model")
 @LXComponentName("Simplify")
 public class SimplifyEffect extends LXEffect
-    implements TEPerformanceEffect, heronarts.lx.LX.Listener, UIDeviceControls<SimplifyEffect> {
+    implements heronarts.lx.LX.Listener, UIDeviceControls<SimplifyEffect> {
 
   public enum BlendMode {
     HSB("HSB") {
@@ -156,21 +156,6 @@ public class SimplifyEffect extends LXEffect
     this.lx.addListener(this);
 
     refreshModels();
-  }
-
-  @Override
-  public LXListenableNormalizedParameter primaryParam() {
-    return this.amount;
-  }
-
-  @Override
-  public LXListenableNormalizedParameter secondaryParam() {
-    return this.depth;
-  }
-
-  @Override
-  public void trigger() {
-    // this.manualTrigger.toggle();
   }
 
   @Override

@@ -33,7 +33,7 @@ import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
 
 @LXCategory("Titanics End")
-public class RandomStrobeEffect extends TEEffect implements TEPerformanceEffect {
+public class RandomStrobeEffect extends TEEffect {
 
   private class Element {
     protected double offset;
@@ -150,21 +150,6 @@ public class RandomStrobeEffect extends TEEffect implements TEPerformanceEffect 
       e.randomizeOffset();
       this.edgeElements.add(e);
     }
-  }
-
-  @Override
-  public LXListenableNormalizedParameter primaryParam() {
-    return this.speed;
-  }
-
-  @Override
-  public LXListenableNormalizedParameter secondaryParam() {
-    return this.depth;
-  }
-
-  @Override
-  public void trigger() {
-    // TODO
   }
 
   @Override
