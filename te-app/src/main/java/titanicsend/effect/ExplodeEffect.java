@@ -11,7 +11,7 @@ import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderEffect;
 
 @LXCategory("Titanics End")
-public class ExplodeEffect extends GLShaderEffect implements TEPerformanceEffect {
+public class ExplodeEffect extends GLShaderEffect {
   double effectDepth;
   private double lastBasis;
   private boolean triggerRequested = false;
@@ -57,8 +57,8 @@ public class ExplodeEffect extends GLShaderEffect implements TEPerformanceEffect
   public final BoundedParameter size =
       new BoundedParameter("Size", 0, 0, 10).setDescription("Explosion block size");
 
-  public final BooleanParameter trigger =
-      new BooleanParameter("Trigger", false)
+  public final TriggerParameter trigger =
+      new TriggerParameter("Trigger", this::triggerListener)
           .setMode(BooleanParameter.Mode.MOMENTARY)
           .setDescription("Explode NOW!!! (manual sync mode only");
 
@@ -75,22 +75,19 @@ public class ExplodeEffect extends GLShaderEffect implements TEPerformanceEffect
                 }
               }));
 
-  private final LXParameterListener triggerListener =
-      (p) -> {
-        if (trigger.isOn()) {
-          if (manualTrigger.isOn()) {
-            isRunning = true;
-            // in tempo sync mode, the trigger schedules an event on
-            // the next cycle start
-            triggerRequested = tempoSync.isOn();
-            lastBasis = 0;
+  private void triggerListener() {
+    if (manualTrigger.isOn()) {
+      isRunning = true;
+      // in tempo sync mode, the trigger schedules an event on
+      // the next cycle start
+      triggerRequested = tempoSync.isOn();
+      lastBasis = 0;
 
-            // if tempo sync, we wait 'till the next cycle start to trigger
-            // if free running, reset sawtooth and trigger immediately
-            if (!tempoSync.isOn()) basis.setBasis(0.0);
-          }
-        }
-      };
+      // if tempo sync, we wait 'till the next cycle start to trigger
+      // if free running, reset sawtooth and trigger immediately
+      if (!tempoSync.isOn()) basis.setBasis(0.0);
+    }
+  }
 
   private double getBasis() {
     double r;
@@ -130,8 +127,6 @@ public class ExplodeEffect extends GLShaderEffect implements TEPerformanceEffect
   public ExplodeEffect(LX lx) {
     super(lx);
 
-    trigger.addListener(triggerListener);
-
     addParameter("speed", this.speed);
     addParameter("depth", this.depth);
     addParameter("waveshape", this.waveshape);
@@ -170,23 +165,7 @@ public class ExplodeEffect extends GLShaderEffect implements TEPerformanceEffect
   }
 
   @Override
-  public LXListenableNormalizedParameter primaryParam() {
-    return this.speed;
-  }
-
-  @Override
-  public LXListenableNormalizedParameter secondaryParam() {
-    return this.depth;
-  }
-
-  @Override
-  public void trigger() {
-    this.manualTrigger.toggle();
-  }
-
-  @Override
   public void dispose() {
-    trigger.removeListener(triggerListener);
     super.dispose();
   }
 }
