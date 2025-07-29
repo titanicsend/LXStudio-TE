@@ -4,13 +4,12 @@ import heronarts.lx.effect.LXEffect;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.TriggerParameter;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
- * A translation layer between the GlobalEffectManager and an LXEffect instance.
- * This will be subclassed for every LXEffect type that can be used as a global effect.
+ * A translation layer between the GlobalEffectManager and an LXEffect instance. This will be
+ * subclassed for every LXEffect type that can be used as a global effect.
  */
 public abstract class GlobalEffect<T extends LXEffect> {
 
@@ -39,7 +38,11 @@ public abstract class GlobalEffect<T extends LXEffect> {
 
   public final GlobalEffect<T> register(LXEffect lxEffect) {
     if (lxEffect != null && !this.type.isInstance(lxEffect)) {
-      throw new IllegalArgumentException("Effect instance " + effect.getLabel() + " does not match GlobalEffect type " + this.type.getName());
+      throw new IllegalArgumentException(
+          "Effect instance "
+              + effect.getLabel()
+              + " does not match GlobalEffect type "
+              + this.type.getName());
     }
 
     T effect = this.type.cast(lxEffect);
@@ -58,15 +61,17 @@ public abstract class GlobalEffect<T extends LXEffect> {
 
   /**
    * Called when a new effect instance is tied to this GlobalEffect slot. Subclasses can override.
+   *
    * @param effect A newly found instance of T
    */
-  private void onRegister(T effect) { }
+  private void onRegister(T effect) {}
 
-  private void onUnregister(T effect) { }
+  private void onUnregister(T effect) {}
 
   /**
-   * Retrieve the parameter that corresponds to enabling/disabling the effect. By default
-   * this will be LXEffect.enabled but it can be overridden.
+   * Retrieve the parameter that corresponds to enabling/disabling the effect. By default this will
+   * be LXEffect.enabled but it can be overridden.
+   *
    * @return A parameter corresponding to enable/disable, or null if it does not apply.
    */
   public BooleanParameter getEnabledParameter() {
@@ -74,14 +79,16 @@ public abstract class GlobalEffect<T extends LXEffect> {
   }
 
   /**
-   * Retrieve the parameter that corresponds to the level or Amount of the effect
-   * that is being applied.
+   * Retrieve the parameter that corresponds to the level or Amount of the effect that is being
+   * applied.
+   *
    * @return A parameter that corresponds to Level, or null if it does not apply.
    */
-  abstract public LXListenableNormalizedParameter getLevelParameter();
+  public abstract LXListenableNormalizedParameter getLevelParameter();
 
   /**
    * Subclasses can override to indicate a secondary parameter.
+   *
    * @return A secondary parameter that can be controlled on the global effect
    */
   public LXListenableNormalizedParameter getSecondaryParameter() {
@@ -90,6 +97,7 @@ public abstract class GlobalEffect<T extends LXEffect> {
 
   /**
    * Retrieve a parameter that is the "run now" trigger parameter for the effect, if applicable.
+   *
    * @return A parameter that corresponds to Run Now, or null if it does not apply.
    */
   public TriggerParameter getTriggerParameter() {

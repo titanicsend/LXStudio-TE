@@ -7,13 +7,11 @@ import heronarts.lx.LXComponentName;
 import heronarts.lx.effect.LXEffect;
 import heronarts.lx.mixer.LXBus;
 import heronarts.lx.osc.LXOscComponent;
-
-import java.util.Objects;
-
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.TriggerParameter;
 import heronarts.lx.utils.ObservableList;
+import java.util.Objects;
 import titanicsend.effect.*;
 
 @LXCategory(LXCategory.OTHER)
@@ -22,8 +20,10 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
 
   private static GlobalEffectManager instance;
 
-  private final ObservableList<GlobalEffect<? extends LXEffect>> mutableSlots = new ObservableList<>();
-  public final ObservableList<GlobalEffect<? extends LXEffect>> slots = this.mutableSlots.asUnmodifiableList();
+  private final ObservableList<GlobalEffect<? extends LXEffect>> mutableSlots =
+      new ObservableList<>();
+  public final ObservableList<GlobalEffect<? extends LXEffect>> slots =
+      this.mutableSlots.asUnmodifiableList();
 
   public GlobalEffectManager(LX lx) {
     super(lx, "effectManager");
@@ -51,62 +51,66 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     // TODO: move this TE-specific method somewhere else, keep GlobalEffectManager generic.
 
     // Random Strobe
-    register(new GlobalEffect<RandomStrobeEffect>() {
-      @Override
-      public LXListenableNormalizedParameter getLevelParameter() {
-        return effect.depth;
-      }
+    register(
+        new GlobalEffect<RandomStrobeEffect>() {
+          @Override
+          public LXListenableNormalizedParameter getLevelParameter() {
+            return effect.depth;
+          }
 
-      @Override
-      public LXListenableNormalizedParameter getSecondaryParameter() {
-        return effect.speed;
-      }
-    });
+          @Override
+          public LXListenableNormalizedParameter getSecondaryParameter() {
+            return effect.speed;
+          }
+        });
 
     // Explode
-    register(new GlobalEffect<ExplodeEffect>() {
-      @Override
-      public BooleanParameter getEnabledParameter() {
-        // TODO: return effect.manualTrigger?
-        return effect.enabled;
-      }
+    register(
+        new GlobalEffect<ExplodeEffect>() {
+          @Override
+          public BooleanParameter getEnabledParameter() {
+            // TODO: return effect.manualTrigger?
+            return effect.enabled;
+          }
 
-      @Override
-      public LXListenableNormalizedParameter getLevelParameter() {
-        return effect.depth;
-      }
+          @Override
+          public LXListenableNormalizedParameter getLevelParameter() {
+            return effect.depth;
+          }
 
-      @Override
-      public LXListenableNormalizedParameter getSecondaryParameter() {
-        return effect.speed;
-      }
+          @Override
+          public LXListenableNormalizedParameter getSecondaryParameter() {
+            return effect.speed;
+          }
 
-      @Override
-      public TriggerParameter getTriggerParameter() {
-        return effect.trigger;
-      }
-    });
+          @Override
+          public TriggerParameter getTriggerParameter() {
+            return effect.trigger;
+          }
+        });
 
     // Simplify
-    register(new GlobalEffect<SimplifyEffect>() {
-      @Override
-      public LXListenableNormalizedParameter getLevelParameter() {
-        return effect.amount;
-      }
+    register(
+        new GlobalEffect<SimplifyEffect>() {
+          @Override
+          public LXListenableNormalizedParameter getLevelParameter() {
+            return effect.amount;
+          }
 
-      @Override
-      public LXListenableNormalizedParameter getSecondaryParameter() {
-        return effect.gain;
-      }
-    });
+          @Override
+          public LXListenableNormalizedParameter getSecondaryParameter() {
+            return effect.gain;
+          }
+        });
 
     // Sustain
-    register(new GlobalEffect<SustainEffect>() {
-      @Override
-      public LXListenableNormalizedParameter getLevelParameter() {
-        return effect.sustain;
-      }
-    });
+    register(
+        new GlobalEffect<SustainEffect>() {
+          @Override
+          public LXListenableNormalizedParameter getLevelParameter() {
+            return effect.sustain;
+          }
+        });
   }
 
   @Override
@@ -127,9 +131,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     refresh();
   }
 
-  /**
-   * Refresh all slots
-   */
+  /** Refresh all slots */
   private void refresh() {
     for (GlobalEffect<? extends LXEffect> globalEffect : this.slots) {
       // Allow null placeholder slots
