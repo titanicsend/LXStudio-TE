@@ -4,12 +4,12 @@ on:
     branches:
       - main
       - dev
-      - look/spotlessTest
+	  - look/remove-model-debug-effects
   push:
     branches:
       - main
       - dev
-      - look/spotlessTest
+	  - look/remove-model-debug-effects
 jobs:
   spotless:
     runs-on: ubuntu-latest
@@ -20,5 +20,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 17
+      - name: Verify Maven Compiles
+        run: mvn compile
       - name: Check Spotless
         run: mvn spotless:check
