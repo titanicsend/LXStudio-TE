@@ -758,10 +758,18 @@ public class TEApp extends LXStudio {
       // Custom UI - Design Mode
       // =======================================================================================
 
+      // ------------
+      // Content Pane
+      // ------------
+
       UI2dContainer contentPane = ui.leftPane.content;
+      float wContent = contentPane.getContentWidth();
+
+      // Add UI section for User Presets
+      new UIUserPresetManager(ui, lx, wContent).addToContainer(contentPane, 2);
+
       // Add SuperMod to the Content Pane
-      new UISuperMod(ui, this.superMod, contentPane.getContentWidth())
-          .addToContainer(contentPane, 3);
+      new UISuperMod(ui, this.superMod, wContent).addToContainer(contentPane, 3);
 
       // Add UI section for autopilot
       new TEUserInterface.AutopilotUISection(ui, this.autopilot).addToContainer(contentPane, 4);
@@ -799,16 +807,6 @@ public class TEApp extends LXStudio {
       //             to initialize AudioStems plugin directly in this file (this.audioStems = new
       // AudioStems())
       //             and handle UI setup, registerComponents, dispose() here.
-
-      // ------------
-      // Content Pane
-      // ------------
-
-      UI2dContainer contentPane = ui.leftPane.content;
-      float wContent = contentPane.getContentWidth();
-
-      // Add UI section for User Presets
-      new UIUserPresetManager(ui, lx, wContent).addToContainer(contentPane, 2);
 
       // =======================================================================================
       // Custom UI - Performance Mode
