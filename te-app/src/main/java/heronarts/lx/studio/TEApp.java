@@ -758,6 +758,14 @@ public class TEApp extends LXStudio {
       // Custom UI - Design Mode
       // =======================================================================================
 
+      UI2dContainer contentPane = ui.leftPane.content;
+      // Add SuperMod to the Content Pane
+      new UISuperMod(ui, this.superMod, contentPane.getContentWidth())
+          .addToContainer(contentPane, 3);
+
+      // Add UI section for autopilot
+      new TEUserInterface.AutopilotUISection(ui, this.autopilot).addToContainer(contentPane, 4);
+
       // ------------
       // Model pane
       // ------------
@@ -792,11 +800,6 @@ public class TEApp extends LXStudio {
       // AudioStems())
       //             and handle UI setup, registerComponents, dispose() here.
 
-      // Add UI section for autopilot
-      // TODO(look): Consider moving this to content pane, to preserve real estate in the global
-      // tab?
-      new TEUserInterface.AutopilotUISection(ui, this.autopilot).addToContainer(globalPane, 4);
-
       // ------------
       // Content Pane
       // ------------
@@ -806,9 +809,6 @@ public class TEApp extends LXStudio {
 
       // Add UI section for User Presets
       new UIUserPresetManager(ui, lx, wContent).addToContainer(contentPane, 2);
-
-      // Add SuperMod to the Content Pane
-      new UISuperMod(ui, this.superMod, wGlobal).addToContainer(globalPane, 3);
 
       // =======================================================================================
       // Custom UI - Performance Mode
