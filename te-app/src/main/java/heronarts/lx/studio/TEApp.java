@@ -18,6 +18,7 @@ package heronarts.lx.studio;
 import heronarts.glx.GLXWindow;
 import heronarts.glx.event.GamepadEvent;
 import heronarts.glx.event.KeyEvent;
+import heronarts.glx.ui.UI2dContainer;
 import heronarts.lx.LX;
 import heronarts.lx.LXPlugin;
 import heronarts.lx.mixer.LXBus;
@@ -37,15 +38,23 @@ import java.util.function.Function;
 import org.lwjgl.system.Platform;
 import studio.jkb.beyond.BeyondPlugin;
 import studio.jkb.supermod.SuperMod;
+import studio.jkb.supermod.UISuperMod;
 import titanicsend.app.*;
-import titanicsend.app.autopilot.*;
-import titanicsend.app.autopilot.justin.*;
+import titanicsend.app.autopilot.TEHistorian;
+import titanicsend.app.autopilot.TEPatternLibrary;
+import titanicsend.app.autopilot.TEPhrase;
+import titanicsend.app.autopilot.TEShowKontrol;
+import titanicsend.app.autopilot.TEUserInterface;
+import titanicsend.app.autopilot.justin.AutoParameter;
 import titanicsend.app.autopilot.justin.AutoParameter.Scale;
+import titanicsend.app.autopilot.justin.Autopilot;
+import titanicsend.app.autopilot.justin.AutopilotLibrary;
 import titanicsend.app.dev.DevSwitch;
 import titanicsend.app.dev.UIDevSwitch;
 import titanicsend.app.director.Director;
 import titanicsend.app.director.DirectorEffect;
 import titanicsend.app.director.UIDirector;
+import titanicsend.app.effectmgr.GlobalEffectManager;
 import titanicsend.audio.AudioStemModulator;
 import titanicsend.audio.AudioStems;
 import titanicsend.audio.AudioStemsPlugin;
@@ -54,6 +63,14 @@ import titanicsend.color.TEGradientSource;
 import titanicsend.dmx.DmxEngine;
 import titanicsend.dmx.effect.BeaconStrobeEffect;
 import titanicsend.dmx.pattern.*;
+import titanicsend.dmx.pattern.BeaconDirectPattern;
+import titanicsend.dmx.pattern.BeaconEasyPattern;
+import titanicsend.dmx.pattern.BeaconEverythingPattern;
+import titanicsend.dmx.pattern.BeaconGamePattern;
+import titanicsend.dmx.pattern.BeaconStraightUpPattern;
+import titanicsend.dmx.pattern.DjLightsDirectPattern;
+import titanicsend.dmx.pattern.DjLightsEasyPattern;
+import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
 import titanicsend.effect.BasicShaderEffect;
 import titanicsend.effect.EdgeSieveEffect;
 import titanicsend.effect.ExplodeEffect;
@@ -62,7 +79,6 @@ import titanicsend.effect.RandomStrobeEffect;
 import titanicsend.effect.SimplifyEffect;
 import titanicsend.effect.SustainEffect;
 import titanicsend.gamepad.GamepadEngine;
-import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lx.APC40Mk2;
 import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.lx.DirectorAPCminiMk2;
@@ -117,7 +133,7 @@ import titanicsend.preset.PresetEngine;
 import titanicsend.preset.UIUserPresetManager;
 import titanicsend.ui.UI3DManager;
 import titanicsend.ui.UITEPerformancePattern;
-import titanicsend.ui.color.UIColorPaletteManager;
+import titanicsend.ui.color.UIColorPaletteManagerSection;
 import titanicsend.ui.effect.UIRandomStrobeEffect;
 import titanicsend.ui.modulator.UIDmx16bitModulator;
 import titanicsend.ui.modulator.UIDmxDualRangeModulator;
@@ -179,6 +195,7 @@ public class TEApp extends LXStudio {
     private DevSwitch devSwitch;
     private final Director director;
     private final PresetEngine presetEngine;
+    private final GlobalEffectManager effectManager;
 
     // objects that manage UI displayed in 3D views
     private UI3DManager ui3dManager;
@@ -207,13 +224,14 @@ public class TEApp extends LXStudio {
       gamepadEngine = new GamepadEngine(lx);
       this.presetEngine = new PresetEngine(lx);
       this.presetEngine.openFile(lx.getMediaFile("Presets/UserPresets/BM24.userPresets"));
+      this.effectManager = new GlobalEffectManager(lx);
 
       // Super Modulator midi controller
       this.superMod = new SuperMod(lx);
 
       lx.engine.registerComponent(
           "paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
-      if (UIColorPaletteManager.DISPLAY_TWO_MANAGED_SWATCHES) {
+      if (UIColorPaletteManagerSection.DISPLAY_TWO_MANAGED_SWATCHES) {
         lx.engine.registerComponent(
             "paletteManagerB", this.paletteManagerB = new ColorPaletteManager(lx, "SWATCH B", 1));
       } else {
@@ -728,10 +746,12 @@ public class TEApp extends LXStudio {
           return null;
         };
 
+    /**
+     * Here is where you may modify the initial settings of the UI before it is fully built. Note
+     * that this will not be called in headless mode. Anything required for headless mode should go
+     * in the raw initialize method above.
+     */
     public void initializeUI(LXStudio lx, LXStudio.UI ui) {
-      // Here is where you may modify the initial settings of the UI before it is fully
-      // built. Note that this will not be called in headless mode. Anything required
-      // for headless mode should go in the raw initialize method above.
       log("TEApp.Plugin.initializeUI()");
 
       ((LXStudio.Registry) lx.registry).addUIDeviceControls(UITEPerformancePattern.class);
@@ -739,44 +759,86 @@ public class TEApp extends LXStudio {
       this.superMod.initializeUI(lx, ui);
     }
 
+    /**
+     * At this point, the LX Studio application UI has been built. You may now add additional views
+     * and components to the UI hierarchy.
+     */
     public void onUIReady(LXStudio lx, LXStudio.UI ui) {
-      // At this point, the LX Studio application UI has been built. You may now add
-      // additional views and components to the UI heirarchy.
       log("TEApp.Plugin.onUIReady()");
 
-      // Model pane
+      // =======================================================================================
+      // Custom UI - Design Mode
+      // =======================================================================================
 
-      new UIDevSwitch(ui, this.devSwitch, ui.leftPane.model.getContentWidth())
-          .addToContainer(ui.leftPane.model, 0);
+      // ------------
+      // Content Pane
+      // ------------
 
-      //      new GigglePixelUI(
-      //              ui, ui.leftPane.model.getContentWidth(), this.gpListener, this.gpBroadcaster)
-      //          .addToContainer(ui.leftPane.model, 1);
-
-      new TEUIControls(ui, this.virtualOverlays, ui.leftPane.model.getContentWidth())
-          .addToContainer(ui.leftPane.model, 1);
-
-      // Global pane
-
-      // Add UI section for director
-      new UIDirector(ui, this.director, ui.leftPane.global.getContentWidth())
-          .addToContainer(ui.leftPane.global, 0);
-
-      // Add UI section for autopilot
-      new TEUserInterface.AutopilotUISection(ui, this.autopilot)
-          .addToContainer(ui.leftPane.global, 6);
-
-      // Add UI section for JKB Autopilot
-      // new UIAutopilot(ui, this.autopilotJKB, ui.leftPane.global.getContentWidth())
-      //    .addToContainer(ui.leftPane.global, 7);
+      UI2dContainer contentPane = ui.leftPane.content;
+      float wContent = contentPane.getContentWidth();
 
       // Add UI section for User Presets
-      new UIUserPresetManager(ui, lx, ui.leftPane.content.getContentWidth())
-          .addToContainer(ui.leftPane.content, 2);
+      new UIUserPresetManager(ui, lx, wContent).addToContainer(contentPane, 2);
 
-      UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 4);
-      UIColorPaletteManager.addToRightPerformancePane(
+      // Add SuperMod to the Content Pane
+      UISuperMod uiSuperMod = new UISuperMod(ui, this.superMod, wContent);
+      uiSuperMod.addToContainer(contentPane, 3);
+      uiSuperMod.setExpanded(false);
+
+      // Add UI section for autopilot
+      TEUserInterface.AutopilotUISection uiAutopilot =
+          new TEUserInterface.AutopilotUISection(ui, this.autopilot);
+      uiAutopilot.addToContainer(contentPane, 4);
+      uiAutopilot.setExpanded(false);
+
+      // ------------
+      // Model pane
+      // ------------
+
+      UI2dContainer modelPane = ui.leftPane.model;
+      float modelPaneWidth = modelPane.getContentWidth();
+
+      new UIDevSwitch(ui, this.devSwitch, modelPaneWidth).addToContainer(modelPane, 0);
+
+      new TEUIControls(ui, this.virtualOverlays, modelPaneWidth).addToContainer(modelPane, 1);
+
+      // ------------
+      // Global pane
+      // ------------
+
+      UI2dContainer globalPane = ui.leftPane.global;
+      float wGlobal = globalPane.getContentWidth();
+
+      // 0. Add UI section for director
+      new UIDirector(ui, this.director, wGlobal).addToContainer(globalPane, 0);
+
+      // 1. Add Palette manager right below director (since they share a MIDI controller)
+      UIColorPaletteManagerSection.addToLeftGlobalPane(
           ui, this.paletteManagerA, this.paletteManagerB);
+
+      // 2. Chromatik Audio (default)
+
+      // 3. AudioStems Plugin (added automatically when plugin initialized)
+      // NOTE(look): somewhat inconvenient to reason about the order that plugins add UI. Maybe
+      // easier for us
+      //             to initialize AudioStems plugin directly in this file (this.audioStems = new
+      // AudioStems())
+      //             and handle UI setup, registerComponents, dispose() here.
+
+      // =======================================================================================
+      // Custom UI - Performance Mode
+      // =======================================================================================
+
+      // ------------
+      // Right Tools
+      // ------------
+
+      UIColorPaletteManagerSection.addToRightPerformancePane(
+          ui, this.paletteManagerA, this.paletteManagerB);
+
+      // =======================================================================================
+      // Custom UI - Preview
+      // =======================================================================================
 
       // Add 3D Ui components
       this.ui3dManager = new UI3DManager(lx, ui, this.virtualOverlays);
@@ -784,31 +846,15 @@ public class TEApp extends LXStudio {
       // Set camera zoom and point size to match current model
       applyTECameraPosition();
 
+      // =======================================================================================
+      // Non-UI Initialization Hooks
+      // =======================================================================================
+
       // precompile binaries for any new or changed shaders
       ShaderPrecompiler.rebuildCache();
 
       // Import latest gamepad controllers db
       gamepadEngine.updateGamepadMappings();
-
-      /* lx.engine.addTask(
-      () -> {
-        setOscDestinationForIpads();
-        // openDelayedFile(lx);
-        // Replace old saved destination IPs from project files
-        // setOscDestinationForIpads();
-      }); */
-
-      this.superMod.onUIReady(lx, ui);
-    }
-
-    @Deprecated
-    public void setOscDestinationForIpads() {
-      try {
-        this.lx.engine.osc.transmitHost.setValue(PangolinHost.HOSTNAME);
-        this.lx.engine.osc.transmitPort.setValue(PangolinHost.PORT);
-      } catch (Exception ex) {
-        TE.error(ex, "Failed to set destination OSC address to ShowKontrol IP for iPads relay");
-      }
     }
 
     @Override
@@ -850,6 +896,7 @@ public class TEApp extends LXStudio {
       this.dmxEngine.dispose();
       this.crutchOSC.dispose();
       this.glEngine.dispose();
+      this.effectManager.dispose();
       gamepadEngine.dispose();
 
       ((TEWholeModelDynamic) wholeModel).dispose();
@@ -903,17 +950,17 @@ public class TEApp extends LXStudio {
 
   @Override
   protected void onGamepadButtonPressed(GamepadEvent gamepadEvent, int button) {
-    this.gamepadEngine.lxGamepadButtonPressed(gamepadEvent, button);
+    gamepadEngine.lxGamepadButtonPressed(gamepadEvent, button);
   }
 
   @Override
   protected void onGamepadButtonReleased(GamepadEvent gamepadEvent, int button) {
-    this.gamepadEngine.lxGamepadButtonReleased(gamepadEvent, button);
+    gamepadEngine.lxGamepadButtonReleased(gamepadEvent, button);
   }
 
   @Override
   protected void onGamepadAxisChanged(GamepadEvent gamepadEvent, int axis, float value) {
-    this.gamepadEngine.lxGamepadAxisChanged(gamepadEvent, axis, value);
+    gamepadEngine.lxGamepadAxisChanged(gamepadEvent, axis, value);
   }
 
   private TEApp(GLXWindow window, Flags flags) throws IOException {
