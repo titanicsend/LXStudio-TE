@@ -40,7 +40,11 @@ import studio.jkb.beyond.BeyondPlugin;
 import studio.jkb.supermod.SuperMod;
 import studio.jkb.supermod.UISuperMod;
 import titanicsend.app.*;
-import titanicsend.app.autopilot.*;
+import titanicsend.app.autopilot.TEHistorian;
+import titanicsend.app.autopilot.TEPatternLibrary;
+import titanicsend.app.autopilot.TEPhrase;
+import titanicsend.app.autopilot.TEShowKontrol;
+import titanicsend.app.autopilot.TEUserInterface;
 import titanicsend.app.autopilot.justin.AutoParameter;
 import titanicsend.app.autopilot.justin.AutoParameter.Scale;
 import titanicsend.app.autopilot.justin.Autopilot;
@@ -58,6 +62,7 @@ import titanicsend.color.ColorPaletteManager;
 import titanicsend.color.TEGradientSource;
 import titanicsend.dmx.DmxEngine;
 import titanicsend.dmx.effect.BeaconStrobeEffect;
+import titanicsend.dmx.pattern.*;
 import titanicsend.dmx.pattern.BeaconDirectPattern;
 import titanicsend.dmx.pattern.BeaconEasyPattern;
 import titanicsend.dmx.pattern.BeaconEverythingPattern;
@@ -66,7 +71,10 @@ import titanicsend.dmx.pattern.BeaconStraightUpPattern;
 import titanicsend.dmx.pattern.DjLightsDirectPattern;
 import titanicsend.dmx.pattern.DjLightsEasyPattern;
 import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
-import titanicsend.effect.GlobalPatternControl;
+import titanicsend.effect.BasicShaderEffect;
+import titanicsend.effect.EdgeSieveEffect;
+import titanicsend.effect.ExplodeEffect;
+import titanicsend.effect.GlobalPatternControlEffect;
 import titanicsend.effect.RandomStrobeEffect;
 import titanicsend.effect.SimplifyEffect;
 import titanicsend.effect.SustainEffect;
@@ -88,6 +96,8 @@ import titanicsend.modulator.outputOsc.OutputOscFloatModulator;
 import titanicsend.modulator.outputOsc.OutputOscTempoModulator;
 import titanicsend.ndi.NDIEngine;
 import titanicsend.ndi.NDIOutFixture;
+import titanicsend.ndi.NDIOutRawEffect;
+import titanicsend.ndi.NDIOutShaderEffect;
 import titanicsend.ndi.NDIReceiverPattern;
 import titanicsend.osc.CrutchOSC;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
@@ -331,13 +341,6 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(BassReactiveEdge.class);
       lx.registry.addPattern(TempoReactiveEdge.class);
       lx.registry.addPattern(ArtStandards.class);
-      lx.registry.addEffect(titanicsend.effect.BasicShaderEffect.class);
-      lx.registry.addEffect(titanicsend.effect.EdgeSieve.class);
-      lx.registry.addEffect(titanicsend.effect.NDIOutRawEffect.class);
-      lx.registry.addEffect(titanicsend.effect.ExplodeEffect.class);
-      lx.registry.addEffect(BeaconEffect.class);
-      lx.registry.addEffect(GlobalPatternControl.class);
-      lx.registry.addEffect(RandomStrobeEffect.class);
 
       // DMX patterns
       lx.registry.addPattern(BeaconDirectPattern.class);
@@ -350,13 +353,22 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(ExampleDmxTEPerformancePattern.class);
 
       // Effects
+      lx.registry.addEffect(BasicShaderEffect.class);
       lx.registry.addEffect(DirectorEffect.class);
+      lx.registry.addEffect(EdgeSieveEffect.class);
+      lx.registry.addEffect(ExplodeEffect.class);
       lx.registry.addEffect(SimplifyEffect.class);
       lx.registry.addEffect(SustainEffect.class);
-      lx.registry.addEffect(titanicsend.effect.NDIOutShaderEffect.class);
+      lx.registry.addEffect(RandomStrobeEffect.class);
+
+      // Utility Effects
+      lx.registry.addEffect(GlobalPatternControlEffect.class);
+      lx.registry.addEffect(NDIOutRawEffect.class);
+      lx.registry.addEffect(NDIOutShaderEffect.class);
 
       // DMX effects
       lx.registry.addEffect(BeaconStrobeEffect.class);
+      lx.registry.addEffect(BeaconEffect.class);
 
       // Patterns for DMX input
       lx.registry.addPattern(DmxGridPattern.class);

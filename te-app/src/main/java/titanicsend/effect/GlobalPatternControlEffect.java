@@ -7,7 +7,7 @@ import heronarts.lx.parameter.*;
 import titanicsend.app.TEGlobalPatternControls;
 
 @LXCategory("Titanics End")
-public class GlobalPatternControl extends TEEffect implements GpuDevice {
+public class GlobalPatternControlEffect extends TEEffect implements GpuDevice {
 
   public final BooleanParameter speedEnable =
       new BooleanParameter("Enable", false).setDescription("Use speed from global controller");
@@ -19,7 +19,7 @@ public class GlobalPatternControl extends TEEffect implements GpuDevice {
 
   public TEGlobalPatternControls globalControls;
 
-  public GlobalPatternControl(LX lx) {
+  public GlobalPatternControlEffect(LX lx) {
     super(lx);
     addParameter("speedEnable", this.speedEnable);
     addParameter("speed", this.speed);

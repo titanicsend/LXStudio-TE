@@ -1,4 +1,4 @@
-package titanicsend.effect;
+package titanicsend.ndi;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import me.walkerknapp.devolay.DevolayFrameFourCCType;
 import me.walkerknapp.devolay.DevolaySender;
 import me.walkerknapp.devolay.DevolayVideoFrame;
+import titanicsend.effect.TEEffect;
 import titanicsend.pattern.glengine.GLEngine;
 
 @LXCategory("Titanics End")
