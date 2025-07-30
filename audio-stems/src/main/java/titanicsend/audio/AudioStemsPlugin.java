@@ -30,7 +30,7 @@ public class AudioStemsPlugin implements LXStudio.Plugin {
   @Override
   public void onUIReady(LXStudio lxStudio, LXStudio.UI ui) {
     new UIAudioStems(ui, this.audioStems, ui.leftPane.global.getContentWidth())
-        .addToContainer(ui.leftPane.global, 2);
+        .addToContainer(ui.leftPane.global, 1);
 
     new UIAudioStems(ui, this.audioStems, ui.leftPerformance.tools.getContentWidth())
         .addToContainer(ui.leftPerformance.tools, 0);

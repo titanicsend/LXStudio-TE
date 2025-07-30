@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import titanicsend.model.TEPanelModel;
 
 @LXCategory(LXCategory.TEST)
-public class Kaleidoscope extends TEEffect {
+public class KaleidoscopeEffect extends TEEffect {
   private final DiscreteParameter segments = new DiscreteParameter("Segments", 6, 2, 12);
   private final CompoundParameter startAngle =
       new CompoundParameter("Start Angle", 0, 0, 2 * Math.PI);
 
-  public Kaleidoscope(LX lx) {
+  public KaleidoscopeEffect(LX lx) {
 
     super(lx);
     addParameter("segments", this.segments);
