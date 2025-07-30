@@ -769,10 +769,15 @@ public class TEApp extends LXStudio {
       new UIUserPresetManager(ui, lx, wContent).addToContainer(contentPane, 2);
 
       // Add SuperMod to the Content Pane
-      new UISuperMod(ui, this.superMod, wContent).addToContainer(contentPane, 3);
+      UISuperMod uiSuperMod = new UISuperMod(ui, this.superMod, wContent);
+      uiSuperMod.addToContainer(contentPane, 3);
+      uiSuperMod.setExpanded(false);
 
       // Add UI section for autopilot
-      new TEUserInterface.AutopilotUISection(ui, this.autopilot).addToContainer(contentPane, 4);
+      TEUserInterface.AutopilotUISection uiAutopilot =
+          new TEUserInterface.AutopilotUISection(ui, this.autopilot);
+      uiAutopilot.addToContainer(contentPane, 4);
+      uiAutopilot.setExpanded(false);
 
       // ------------
       // Model pane
