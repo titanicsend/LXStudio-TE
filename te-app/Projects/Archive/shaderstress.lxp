@@ -3134,47 +3134,7 @@
               "previewMode": 0
             },
             "children": {},
-            "effects": [
-              {
-                "id": 111315,
-                "class": "titanicsend.effect.NoGapEffect",
-                "internal": {
-                  "modulationColor": 0,
-                  "modulationControlsExpanded": true,
-                  "modulationsExpanded": true,
-                  "expanded": true,
-                  "expandedCue": true,
-                  "expandedAux": true,
-                  "modulationExpanded": false
-                },
-                "parameters": {
-                  "label": "NoGap",
-                  "view": 0,
-                  "viewPriority": 0,
-                  "enabled": true,
-                  "Show": false
-                },
-                "children": {
-                  "modulation": {
-                    "id": 111316,
-                    "class": "heronarts.lx.modulation.LXModulationEngine",
-                    "internal": {
-                      "modulationColor": 0,
-                      "modulationControlsExpanded": true,
-                      "modulationsExpanded": true
-                    },
-                    "parameters": {
-                      "label": "Modulation"
-                    },
-                    "children": {},
-                    "modulators": [],
-                    "modulations": [],
-                    "triggers": []
-                  }
-                },
-                "deviceVersion": -1
-              }
-            ],
+            "effects": [],
             "clips": []
           }
         },
