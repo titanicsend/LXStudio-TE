@@ -40,9 +40,14 @@ public class NDIOutRawEffect extends TEEffect {
     for (int i = 0; i < nPoints; i++) {
       // Move alpha channel to the low order byte so we wind up with ARGB
       // data that NDI can use.
-      int k = colors[this.model.points[i].index];
-      k = ((k >> 24) & 0xFF) | (k << 8);
-      buffer.putInt(k);
+      int pointIndex = this.model.points[i].index;
+      if (pointIndex >= 0 && pointIndex < colors.length) {
+        int k = colors[pointIndex];
+        k = ((k >> 24) & 0xFF) | (k << 8);
+        buffer.putInt(k);
+      } else {
+        buffer.putInt(0);
+      }
     }
     buffer.flip();
 
