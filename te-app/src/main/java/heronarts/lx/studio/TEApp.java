@@ -50,6 +50,7 @@ import titanicsend.app.dev.UIDevSwitch;
 import titanicsend.app.director.Director;
 import titanicsend.app.director.DirectorEffect;
 import titanicsend.app.director.UIDirector;
+import titanicsend.app.effectmgr.GlobalEffectManager;
 import titanicsend.audio.AudioStemModulator;
 import titanicsend.audio.AudioStems;
 import titanicsend.audio.AudioStemsPlugin;
@@ -70,6 +71,7 @@ import titanicsend.effect.RandomStrobeEffect;
 import titanicsend.effect.SimplifyEffect;
 import titanicsend.effect.SustainEffect;
 import titanicsend.gamepad.GamepadEngine;
+import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lx.APC40Mk2;
 import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.lx.DirectorAPCminiMk2;
@@ -86,6 +88,7 @@ import titanicsend.modulator.outputOsc.OutputOscColorModulator;
 import titanicsend.modulator.outputOsc.OutputOscFloatModulator;
 import titanicsend.modulator.outputOsc.OutputOscTempoModulator;
 import titanicsend.ndi.NDIEngine;
+import titanicsend.ndi.NDIOutFixture;
 import titanicsend.ndi.NDIReceiverPattern;
 import titanicsend.osc.CrutchOSC;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
@@ -121,7 +124,7 @@ import titanicsend.preset.PresetEngine;
 import titanicsend.preset.UIUserPresetManager;
 import titanicsend.ui.UI3DManager;
 import titanicsend.ui.UITEPerformancePattern;
-import titanicsend.ui.color.UIColorPaletteManager;
+import titanicsend.ui.color.UIColorPaletteManagerSection;
 import titanicsend.ui.effect.UIRandomStrobeEffect;
 import titanicsend.ui.modulator.UIDmx16bitModulator;
 import titanicsend.ui.modulator.UIDmxDualRangeModulator;
@@ -183,6 +186,7 @@ public class TEApp extends LXStudio {
     private DevSwitch devSwitch;
     private final Director director;
     private final PresetEngine presetEngine;
+    private final GlobalEffectManager effectManager;
 
     // objects that manage UI displayed in 3D views
     private UI3DManager ui3dManager;
@@ -211,13 +215,14 @@ public class TEApp extends LXStudio {
       gamepadEngine = new GamepadEngine(lx);
       this.presetEngine = new PresetEngine(lx);
       this.presetEngine.openFile(lx.getMediaFile("Presets/UserPresets/BM24.userPresets"));
+      this.effectManager = new GlobalEffectManager(lx);
 
       // Super Modulator midi controller
       this.superMod = new SuperMod(lx);
 
       lx.engine.registerComponent(
           "paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
-      if (UIColorPaletteManager.DISPLAY_TWO_MANAGED_SWATCHES) {
+      if (UIColorPaletteManagerSection.DISPLAY_TWO_MANAGED_SWATCHES) {
         lx.engine.registerComponent(
             "paletteManagerB", this.paletteManagerB = new ColorPaletteManager(lx, "SWATCH B", 1));
       } else {
@@ -329,10 +334,8 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(ArtStandards.class);
       lx.registry.addEffect(titanicsend.effect.BasicShaderEffect.class);
       lx.registry.addEffect(titanicsend.effect.EdgeSieve.class);
-      lx.registry.addEffect(titanicsend.effect.NoGapEffect.class);
       lx.registry.addEffect(titanicsend.effect.NDIOutRawEffect.class);
       lx.registry.addEffect(titanicsend.effect.ExplodeEffect.class);
-      lx.registry.addEffect(titanicsend.effect.PanelAdjustEffect.class);
       lx.registry.addEffect(BeaconEffect.class);
       lx.registry.addEffect(GlobalPatternControl.class);
       lx.registry.addEffect(RandomStrobeEffect.class);
@@ -441,6 +444,9 @@ public class TEApp extends LXStudio {
       lx.registry.addModulator(OutputOscFloatModulator.class);
       lx.registry.addModulator(OutputOscTempoModulator.class);
       lx.registry.addModulator(OutputOscColorModulator.class);
+
+      // NDI Fixture
+      lx.registry.addFixture(NDIOutFixture.class);
 
       // Custom UI components
       if (lx instanceof LXStudio) {
@@ -775,7 +781,9 @@ public class TEApp extends LXStudio {
       new UIDirector(ui, this.director, wGlobal).addToContainer(globalPane, 0);
 
       // 1. Add Palette manager right below director (since they share a MIDI controller)
-      UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 1);
+        UIColorPaletteManagerSection.addToLeftGlobalPane(
+                ui, this.paletteManagerA, this.paletteManagerB);
+//        UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 1);
 
       // 2. Chromatik Audio (default)
 
@@ -812,10 +820,10 @@ public class TEApp extends LXStudio {
       // Right Tools
       // ------------
 
-      UI2dContainer rightPerformance = ui.rightPerformance.tools;
-
-      UIColorPaletteManager.addToRightPerformancePane(
-          ui, this.paletteManagerA, this.paletteManagerB);
+        UIColorPaletteManagerSection.addToRightPerformancePane(
+                ui, this.paletteManagerA, this.paletteManagerB);
+//      UI2dContainer rightPerformance = ui.rightPerformance.tools;
+//      UIColorPaletteManager.addToRightPerformancePane(
 
       // =======================================================================================
       // Custom UI - Preview
@@ -877,6 +885,7 @@ public class TEApp extends LXStudio {
       this.dmxEngine.dispose();
       this.crutchOSC.dispose();
       this.glEngine.dispose();
+      this.effectManager.dispose();
       gamepadEngine.dispose();
 
       ((TEWholeModelDynamic) wholeModel).dispose();
