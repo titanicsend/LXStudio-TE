@@ -55,5 +55,5 @@ To the agent: "Assume the role of a highly professional technical artist, expert
 - Run the commands in the same terminal as the chat and do not open a new terminal.
 
 ```
-cd ../te-app && LOG_FILE="../.agent_logs/te_app_highres_ndi_$(date +%Y%m%d_%H%M%S).log" && echo "🎯 Testing High-Res NDI Project: $LOG_FILE" && java -ea -XstartOnFirstThread -Djava.awt.headless=true -Dgpu -jar target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar --resolution 1920x1200 Projects/highres_ndi_out.lxp 2>&1 | tee $LOG_FILE
+LOG_FILE="../.agent_logs/te_app_playalchemist_bm_DEBUG_$(date +%Y%m%d_%H%M%S).log" && echo "🎯 Debugging playalchemist_bm_2025 Project resolution 1280x780: $LOG_FILE" && java -ea -XstartOnFirstThread -Djava.awt.headless=false -Dgpu -jar target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar --resolution 1280x780 Projects/playalchemist_bm_2025.lxp &> "$LOG_FILE"
 ```

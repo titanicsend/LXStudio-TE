@@ -107,6 +107,8 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
   }
 
   private void initializeNdiSender() {
+    LX.log(String.format("NDI: Initializing sender '%s' with resolution %dx%d", 
+        this.ndiStreamLabel, this.ndiWidth, this.ndiHeight));
     ndiSender = new DevolaySender(this.ndiStreamLabel);
     ndiFrame = new DevolayVideoFrame();
     ndiFrame.setResolution(this.ndiWidth, this.ndiHeight);
@@ -114,6 +116,7 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
     ndiFrame.setData(this.imageBuffer);
     ndiFrame.setFrameRate(60, 1);
     ndiFrame.setAspectRatio(1);
+    LX.log(String.format("NDI: Successfully initialized sender '%s'", this.ndiStreamLabel));
   }
 
   @Override

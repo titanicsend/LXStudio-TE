@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.function.Function;
 import org.lwjgl.system.Platform;
 import studio.jkb.beyond.BeyondPlugin;
+import titanicsend.resolume.ResolumePlugin;
 import studio.jkb.supermod.SuperMod;
 import studio.jkb.supermod.UISuperMod;
 import titanicsend.app.*;
@@ -188,6 +189,7 @@ public class TEApp extends LXStudio {
     private final NDIEngine ndiEngine;
     private final GLEngine glEngine;
     private final SuperMod superMod;
+    private final ResolumePlugin resolumePlugin;
 
     private final ColorPaletteManager paletteManagerA;
     private final ColorPaletteManager paletteManagerB;
@@ -228,6 +230,9 @@ public class TEApp extends LXStudio {
 
       // Super Modulator midi controller
       this.superMod = new SuperMod(lx);
+      
+      // Resolume plugin
+      this.resolumePlugin = new ResolumePlugin(lx);
 
       lx.engine.registerComponent(
           "paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
@@ -265,6 +270,7 @@ public class TEApp extends LXStudio {
       // Register child plugin components
       AudioStemsPlugin.registerComponents(lx);
       BeyondPlugin.registerComponents(lx);
+      ResolumePlugin.registerComponents(lx);
 
       // Patterns/effects that currently conform to art direction standards
       lx.registry.addPattern(EdgeProgressions.class);
@@ -440,6 +446,9 @@ public class TEApp extends LXStudio {
       // Fast edit: direct chain to SuperMod plugin
       this.superMod.initialize(lx);
       this.superMod.addModulatorSource(this.superModSource);
+      
+      // Initialize Resolume plugin
+      this.resolumePlugin.initialize(lx);
 
       // Custom modulators
       lx.registry.addModulator(Dmx16bitModulator.class);
@@ -757,6 +766,7 @@ public class TEApp extends LXStudio {
       ((LXStudio.Registry) lx.registry).addUIDeviceControls(UITEPerformancePattern.class);
 
       this.superMod.initializeUI(lx, ui);
+      this.resolumePlugin.initializeUI(lx, ui);
     }
 
     /**
@@ -855,6 +865,9 @@ public class TEApp extends LXStudio {
 
       // Import latest gamepad controllers db
       gamepadEngine.updateGamepadMappings();
+      
+      // Initialize Resolume plugin UI
+      this.resolumePlugin.onUIReady(lx, ui);
     }
 
     @Override
