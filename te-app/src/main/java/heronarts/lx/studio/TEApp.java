@@ -71,7 +71,6 @@ import titanicsend.effect.RandomStrobeEffect;
 import titanicsend.effect.SimplifyEffect;
 import titanicsend.effect.SustainEffect;
 import titanicsend.gamepad.GamepadEngine;
-import titanicsend.lasercontrol.PangolinHost;
 import titanicsend.lx.APC40Mk2;
 import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.lx.DirectorAPCminiMk2;
@@ -781,9 +780,8 @@ public class TEApp extends LXStudio {
       new UIDirector(ui, this.director, wGlobal).addToContainer(globalPane, 0);
 
       // 1. Add Palette manager right below director (since they share a MIDI controller)
-        UIColorPaletteManagerSection.addToLeftGlobalPane(
-                ui, this.paletteManagerA, this.paletteManagerB);
-//        UIColorPaletteManager.addToLeftGlobalPane(ui, this.paletteManagerA, this.paletteManagerB, 1);
+      UIColorPaletteManagerSection.addToLeftGlobalPane(
+          ui, this.paletteManagerA, this.paletteManagerB);
 
       // 2. Chromatik Audio (default)
 
@@ -820,10 +818,8 @@ public class TEApp extends LXStudio {
       // Right Tools
       // ------------
 
-        UIColorPaletteManagerSection.addToRightPerformancePane(
-                ui, this.paletteManagerA, this.paletteManagerB);
-//      UI2dContainer rightPerformance = ui.rightPerformance.tools;
-//      UIColorPaletteManager.addToRightPerformancePane(
+      UIColorPaletteManagerSection.addToRightPerformancePane(
+          ui, this.paletteManagerA, this.paletteManagerB);
 
       // =======================================================================================
       // Custom UI - Preview
