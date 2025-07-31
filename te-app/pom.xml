@@ -97,8 +97,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.titanicsend</groupId>
-			<artifactId>resolume</artifactId>
+			<groupId>magic</groupId>
+			<artifactId>oscremapper</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 

@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.3.GPU-SNAPSHOT",
-  "timestamp": 1753858923581,
+  "timestamp": 1753937053214,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -14004,19 +14004,19 @@
               "release": 238.32847665695334,
               "slope": 6.0,
               "band-1": 0.0,
-              "band-2": 0.0,
-              "band-3": 0.0,
-              "band-4": 0.0,
-              "band-5": 0.0,
-              "band-6": 0.0,
-              "band-7": 0.0,
-              "band-8": 0.0,
-              "band-9": 0.0,
-              "band-10": 0.0,
-              "band-11": 0.0,
-              "band-12": 0.04090548075568812,
-              "band-13": 0.0,
-              "band-14": 0.0,
+              "band-2": 0.10234696883554062,
+              "band-3": 0.18594188861608918,
+              "band-4": 0.2685831599495625,
+              "band-5": 0.27645990336922077,
+              "band-6": 0.23488045485802866,
+              "band-7": 0.5001898159791474,
+              "band-8": 0.5660562537888185,
+              "band-9": 0.6246450594108837,
+              "band-10": 0.7458883908070337,
+              "band-11": 0.12825739010002535,
+              "band-12": 0.19123121579316005,
+              "band-13": 0.09181094065505724,
+              "band-14": 0.062448258176382665,
               "band-15": 0.0,
               "band-16": 0.0
             },
@@ -14314,7 +14314,7 @@
               "label": "HIGH",
               "fader": 0.0,
               "arm": false,
-              "selected": false,
+              "selected": true,
               "stopClips": false,
               "enabled": true,
               "cue": true,
@@ -29121,7 +29121,7 @@
             },
             "parameters": {
               "label": "HIGH",
-              "fader": 1.0,
+              "fader": 0.7573660630732775,
               "arm": false,
               "selected": true,
               "stopClips": false,
@@ -29152,7 +29152,7 @@
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 29,
+              "focusedPattern": 27,
               "triggerPatternCycle": false,
               "launchPatternCycle": false
             },
@@ -29176,7 +29176,7 @@
             },
             "effects": [],
             "clips": [],
-            "patternIndex": 29,
+            "patternIndex": 27,
             "patterns": [
               {
                 "id": 426253,
@@ -36152,7 +36152,7 @@
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
                   "te_ypos": 0.0,
-                  "te_size": 0.0175,
+                  "te_size": 0.024934961011167617,
                   "te_quantity": 0.8,
                   "te_spin": 0.0,
                   "te_brightness": 1.0,
@@ -61435,11 +61435,11 @@
                   "te_color/blendMode": 0,
                   "te_color/blendMode/name": "OKLAB",
                   "te_color/offset": 0.0,
-                  "Glow": 0.1,
-                  "Double Layer": false,
+                  "Double Speed": false,
                   "Width": 0.5,
                   "Energy": 0.0,
-                  "Double Speed": false,
+                  "Glow": 0.1,
+                  "Double Layer": false,
                   "compositeMode": 0
                 },
                 "children": {
@@ -64627,7 +64627,7 @@
           "receiveActive": true,
           "transmitHost": "10.1.3.1",
           "transmitPort": 7890,
-          "transmitActive": false,
+          "transmitActive": true,
           "logInput": false,
           "logOutput": false
         },
@@ -64788,7 +64788,7 @@
   },
   "externals": {
     "ui": {
-      "leftPaneActiveSection": 1,
+      "leftPaneActiveSection": 0,
       "audioExpanded": true,
       "envelopExpanded": true,
       "reaperExpanded": true,
@@ -64813,12 +64813,12 @@
         "animation": false,
         "camera": {
           "active": false,
-          "radius": 1203.7836781177275,
-          "theta": 319.242873399402,
-          "phi": 3.402034059050493,
-          "x": 296.5078872266783,
-          "y": 264.1809349220712,
-          "z": 18.098079025514835
+          "radius": 963.5216557731472,
+          "theta": 339.8868760735495,
+          "phi": 7.1033541994402185,
+          "x": 20.29910414773957,
+          "y": 228.4461914806161,
+          "z": 190.87012147880387
         },
         "cue": [
           {

@@ -113,6 +113,102 @@ Custom Maven repository at `repo/` contains:
 - LWJGL loads native libraries via `System::load`
 - Future Java versions may require `--enable-native-access=ALL-UNNAMED`
 
+## External Libraries and Plugins
+
+### Building External Dependencies
+
+LXStudio-TE supports external plugins and libraries that can be developed separately and included as Maven dependencies.
+
+#### Development Workflow for External Libraries
+
+1. **Create External Project** (e.g., OscRemapper plugin)
+```bash
+# Structure outside main project
+/Users/sinas/workspace/
+├── LXStudio-TE/           # Main application
+├── OscRemapper/           # External plugin
+├── LX/                    # LX framework (for local dev)
+└── Beyond/                # Beyond plugin (for local dev)
+```
+
+2. **Build and Install External Library**
+```bash
+cd /path/to/external-library
+mvn clean install -DskipTests
+```
+
+3. **Add Dependency to te-app**
+```xml
+<!-- te-app/pom.xml -->
+<dependency>
+    <groupId>magic</groupId>
+    <artifactId>oscremapper</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</dependency>
+```
+
+4. **Build te-app with External Dependencies**
+```bash
+cd te-app
+mvn package -DskipTests
+```
+
+### Example: OscRemapper Plugin Integration
+
+**Plugin Structure:**
+```
+OscRemapper/
+├── pom.xml                           # groupId: magic, artifactId: oscremapper
+├── src/main/java/magic/oscremapper/
+│   ├── OscRemapperPlugin.java        # Main plugin class
+│   ├── modulator/                    # OSC modulators
+│   ├── parameter/                    # OSC parameters
+│   └── ui/                          # Plugin UI components
+└── src/main/resources/
+    ├── oscremapper.properties        # Plugin metadata
+    └── sync-config.yaml             # OSC configuration
+```
+
+**Integration Steps:**
+1. Plugin is built and installed to local Maven repository (`~/.m2/repository/magic/oscremapper/`)
+2. te-app references it as a dependency
+3. TEApp.java instantiates and manages the plugin lifecycle:
+   ```java
+   import magic.oscremapper.OscRemapperPlugin;
+   
+   private final OscRemapperPlugin oscRemapperPlugin;
+   this.oscRemapperPlugin = new OscRemapperPlugin(lx);
+   ```
+
+### Local Development with External Libraries
+
+For rapid development cycles with external libraries:
+
+1. **Install External Library Locally**
+```bash
+cd /path/to/external-lib
+mvn install -DskipTests
+```
+
+2. **Incremental Development**
+```bash
+# After changes to external library
+cd external-library && mvn install -DskipTests
+cd ../LXStudio-TE/te-app && mvn compile
+```
+
+3. **IDE Integration**
+- Import external projects as Maven modules in IntelliJ/Eclipse
+- Changes are automatically picked up during development
+- No need to reinstall for every change when using IDE
+
+### Repository Dependencies
+
+External libraries can reference:
+- **Local Repository**: `file://${basedir}/../LXStudio-TE/repo` for TE-specific dependencies
+- **Maven Central**: Standard dependencies
+- **Local Maven Cache**: `~/.m2/repository/` for installed external libraries
+
 ## Project Versioning
 
 - **Main Version**: 0.3.0-SNAPSHOT

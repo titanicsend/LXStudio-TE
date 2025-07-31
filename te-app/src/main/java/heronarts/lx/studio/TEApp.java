@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.function.Function;
 import org.lwjgl.system.Platform;
 import studio.jkb.beyond.BeyondPlugin;
-import titanicsend.resolume.ResolumePlugin;
+import magic.oscremapper.OscRemapperPlugin;
 import studio.jkb.supermod.SuperMod;
 import studio.jkb.supermod.UISuperMod;
 import titanicsend.app.*;
@@ -189,7 +189,7 @@ public class TEApp extends LXStudio {
     private final NDIEngine ndiEngine;
     private final GLEngine glEngine;
     private final SuperMod superMod;
-    private final ResolumePlugin resolumePlugin;
+    private final OscRemapperPlugin oscRemapperPlugin;
 
     private final ColorPaletteManager paletteManagerA;
     private final ColorPaletteManager paletteManagerB;
@@ -231,8 +231,8 @@ public class TEApp extends LXStudio {
       // Super Modulator midi controller
       this.superMod = new SuperMod(lx);
       
-      // Resolume plugin
-      this.resolumePlugin = new ResolumePlugin(lx);
+          // OscRemapper plugin
+    this.oscRemapperPlugin = new OscRemapperPlugin(lx);
 
       lx.engine.registerComponent(
           "paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
@@ -270,7 +270,6 @@ public class TEApp extends LXStudio {
       // Register child plugin components
       AudioStemsPlugin.registerComponents(lx);
       BeyondPlugin.registerComponents(lx);
-      ResolumePlugin.registerComponents(lx);
 
       // Patterns/effects that currently conform to art direction standards
       lx.registry.addPattern(EdgeProgressions.class);
@@ -447,8 +446,8 @@ public class TEApp extends LXStudio {
       this.superMod.initialize(lx);
       this.superMod.addModulatorSource(this.superModSource);
       
-      // Initialize Resolume plugin
-      this.resolumePlugin.initialize(lx);
+          // Initialize OscRemapper plugin
+    this.oscRemapperPlugin.initialize(lx);
 
       // Custom modulators
       lx.registry.addModulator(Dmx16bitModulator.class);
@@ -766,7 +765,7 @@ public class TEApp extends LXStudio {
       ((LXStudio.Registry) lx.registry).addUIDeviceControls(UITEPerformancePattern.class);
 
       this.superMod.initializeUI(lx, ui);
-      this.resolumePlugin.initializeUI(lx, ui);
+      this.oscRemapperPlugin.initializeUI(lx, ui);
     }
 
     /**
@@ -866,8 +865,8 @@ public class TEApp extends LXStudio {
       // Import latest gamepad controllers db
       gamepadEngine.updateGamepadMappings();
       
-      // Initialize Resolume plugin UI
-      this.resolumePlugin.onUIReady(lx, ui);
+          // Initialize OscRemapper plugin UI
+    this.oscRemapperPlugin.onUIReady(lx, ui);
     }
 
     @Override

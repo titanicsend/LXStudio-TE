@@ -1,100 +1,135 @@
-# Resolume OSC Output Integration
+# OSC Remapping Plugin Project
 
-## Project Overview
+## Project Evolution
 
-Create a Resolume Sync feature that enables OSC message forwarding from Chromatik/TE to Resolume, similar to the existing Laser Sync functionality.
+**Original Goal**: Create a Resolume OSC output plugin for forwarding messages from Chromatik/TE to Resolume.
 
-## Objective
+**Current Implementation**: Evolved into a comprehensive **OscRemapper Plugin** that captures ALL outgoing OSC messages and remaps `/lx` prefixes to `/test` prefixes using minimal LX engine changes.
 
-Implement a **Resolume Sync** button that:
+## Current Status ✅ WORKING
 
-1. Enables OSC message mapping from TE to Resolume
-2. Uses a YAML configuration file for flexible setup
-3. Supports dynamic IP/port configuration
-4. Provides real-time OSC message forwarding
+The project has successfully implemented a clean, minimal approach to OSC message remapping:
 
-## Current Status
+- **Plugin Operational**: OscRemapper plugin loads and integrates successfully
+- **Message Capture**: Captures ALL outgoing OSC messages including tempo/beat messages
+- **Remapping Active**: Successfully remaps `/lx/*` → `/test/*` (e.g., `/lx/tempo/beat` → `/test/tempo/beat`)
+- **Clean Architecture**: Uses minimal LX engine changes with proper TransmissionListener interface
 
-The OSC filtering is now working correctly, but the OSC path renaming is not functioning as expected. The original OSC path is being sent instead of the remapped path from the `sync-config.yaml` file. The next step is to investigate why the remapping is failing and implement the correct logic.
+## Known Issue 🔧
+
+**Output Routing**: Messages currently broadcast via `lx.engine.osc.sendMessage()` to all outputs. Need to route through specific output created by "Set Up Now" button.
+
+**Challenge**: Cannot access private `output.transmitter` field directly, and setup creates `/composition` filtered output while remapped messages use `/test` prefix.
+
+## Major Changes Made
+
+### 1. Project Restructure & Rename
+- **Moved**: From `LXStudio-TE/resolume/` to `/Users/sinas/workspace/OscRemapper/` (external directory)
+- **Renamed**: All references from "Resolume" → "OscRemapper" throughout codebase
+- **Package**: Changed from `titanicsend.resolume` → `magic.oscremapper`
+- **Maven**: Updated to `magic:oscremapper:1.0.0-SNAPSHOT` in `te-app/pom.xml`
+
+### 2. LX Engine Enhancement (Minimal Changes)
+Added clean **TransmissionListener** interface to `LX/src/main/java/heronarts/lx/osc/LXOscEngine.java`:
+
+```java
+public interface TransmissionListener {
+  public void oscMessageTransmitted(OscPacket packet);
+}
+```
+
+Plus listener management methods and notification in `Transmitter.send()` - **no reflection or complex proxies needed**.
+
+### 3. Plugin Functionality Evolution
+- **From**: Simple OSC forwarding to Resolume 
+- **To**: Comprehensive OSC message interception and remapping
+- **Captures**: ALL outgoing OSC messages including tempo/beat that previous approaches missed
+- **Remaps**: `/lx/tempo/beat` → `/test/tempo/beat`, `/lx/tempo/trigger` → `/test/tempo/trigger`, etc.
+
+## Test Results ✅
+
+**Working Log Output** (from te-app):
+```
+[LX 2025/07/30 16:59:15] [OscRemapper] OSC remapping started - listening to all transmitted OSC messages
+[LX 2025/07/30 16:59:16] [OscRemapper] [OSC-REMAP] /lx/tempo/beat -> /test/tempo/beat (fallback: 2)
+[LX 2025/07/30 16:59:16] [OscRemapper] [OSC-REMAP] /lx/tempo/trigger -> /test/tempo/trigger (fallback: 1)
+```
 
 ## Launch Command
 
 ```bash
-LOG_FILE="/Users/sinas/workspace/LXStudio-TE/.agent_logs/te_app_$(date +%Y%m%d_%H%M%S).log" && cd /Users/sinas/workspace/LXStudio-TE/te-app && mvn package -DskipTests && java -ea -XstartOnFirstThread -Djava.awt.headless=false -Dgpu -jar target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar --resolution 1920x1200 Projects/playalchemist_bm_2025.lxp &> "$LOG_FILE"
+LOG_FILE="/Users/sinas/workspace/LXStudio-TE/.agent_logs/te_app_$(date +%Y%m%d_%H%M%S).log" && cd /Users/sinas/workspace/LXStudio-TE/te-app && mvn package -DskipTests && java -ea -XstartOnFirstThread -Djava.awt.headless=true -Dgpu -jar target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar --resolution 1920x1200 &> "$LOG_FILE"
 ```
-
-## Deliverables
-
-### Phase 1: Research & Analysis
-
-- [x] Study existing Laser Sync implementation
-- [x] Understand OSC subscription and forwarding architecture
-- [x] Identify integration points for Resolume sync
-
-### Phase 2: Configuration System
-
-- [x] Create YAML config file structure at `te-app/resources/resolume-setup/sync-config.yaml`
-- [x] Define OSC message mapping schema (TE → Resolume)
-- [x] Include IP address and port configuration
-- [x] Implement YAML config parser
-
-### Phase 3: Core Implementation
-
-- [x] Add "Resolume Sync" button to UI (similar to Laser Sync)
-- [x] Implement OSC message subscription system
-- [ ] Create OSC message transformation/mapping logic
-- [x] Add network OSC client for Resolume communication
-
-### Phase 4: Integration & Testing
-
-- [x] Integrate with existing TE OSC infrastructure
-- [ ] Test message forwarding and transformation
-- [x] Validate configuration loading and hot-reload
-- [ ] Document usage and configuration options
 
 ## Technical Architecture
 
-### Configuration File Structure
+### OSC Remapping Strategy
 
-```yaml
-# sync-config.yaml
-resolume:
-  network:
-    ip: "127.0.0.1"
-    port: 7000
+The plugin uses a clean TransmissionListener approach to intercept all outgoing OSC messages:
 
-  mappings:
-    # TE OSC Path → Resolume OSC Path
-    "/lx/tempo/beat": "/composition/tempo/resync"
-    "/lx/mixer/master": "/composition/master"
+```java
+// OscRemapper/src/main/java/magic/oscremapper/OscRemapperPlugin.java
+private class OscRemapperTransmissionListener implements LXOscEngine.TransmissionListener {
+  @Override
+  public void oscMessageTransmitted(OscPacket packet) {
+    if (packet instanceof OscMessage) {
+      OscMessage message = (OscMessage) packet;
+      String originalAddress = message.getAddressPattern().getValue();
+      
+      if (originalAddress.startsWith("/lx")) {
+        // Create new address with /test prefix
+        String newAddress = originalAddress.replaceFirst("^/lx", "/test");
+        // Send remapped message...
+      }
+    }
+  }
+}
 ```
 
 ### Implementation Strategy
 
-1. **Follow Laser Sync Pattern** - Mirror the existing sync architecture
-2. **Modular Design** - Separate config, mapping, and networking concerns
-3. **Hot-reload Support** - Allow config changes without restart
-4. **Error Handling** - Graceful handling of network and config issues
+1. **Minimal LX Changes** - Added only TransmissionListener interface, no complex modifications
+2. **Clean Plugin Architecture** - Uses standard LX plugin patterns with proper lifecycle management
+3. **Comprehensive Capture** - Intercepts ALL outgoing messages, not just parameter changes
+4. **Simple Remapping** - Direct string replacement of OSC address prefixes
+
+## Current File Structure
+
+```
+/Users/sinas/workspace/OscRemapper/
+├── pom.xml (magic:oscremapper:1.0.0-SNAPSHOT)
+├── src/main/java/magic/oscremapper/
+│   ├── OscRemapperPlugin.java (main plugin + TransmissionListener)
+│   ├── ui/UIOscRemapperPlugin.java
+│   ├── modulator/
+│   │   ├── OscRemapperBrightnessModulator.java
+│   │   └── OscRemapperTempoModulator.java
+│   └── parameter/OscRemapperCompoundParameter.java
+```
 
 ## Success Criteria
 
-- [x] Resolume Sync button toggles OSC forwarding
-- [x] YAML config controls all mapping behavior
-- [ ] OSC messages transform correctly TE → Resolume
-- [x] Network configuration works reliably
-- [x] Integration follows TE architectural patterns
+- [x] OscRemapper Plugin UI appears in the Content Pane
+- [x] "Set Up Now" button successfully creates OSC output
+- [x] Plugin captures ALL outgoing OSC messages (including tempo/beat)
+- [x] Successful remapping of `/lx/*` → `/test/*` addresses
+- [x] Clean integration following LX plugin patterns
+- [ ] **TODO**: Route remapped messages through specific output (not broadcast)
 
-## Files to Modify/Create
+## Files Modified/Created
 
-- New: `te-app/resources/resolume-setup/sync-config.yaml`
-- Study: Laser Sync implementation files
-- Modify: Main UI for Resolume Sync button
-- New: `ResolumePlugin.java`
-- Modify: `ResolumeSyncTask.java`
+### LX Engine Changes
+- **Modified**: `LX/src/main/java/heronarts/lx/osc/LXOscEngine.java`
+  - Added `TransmissionListener` interface
+  - Added listener management methods
+  - Added listener notification in `Transmitter.send()`
 
-## Notes
+### OscRemapper Plugin (New External Project)
+- **New Directory**: `/Users/sinas/workspace/OscRemapper/`
+- **Integration**: `LXStudio-TE/te-app/pom.xml` dependency on `magic:oscremapper`
+- **Integration**: `LXStudio-TE/te-app/src/main/java/heronarts/lx/studio/TEApp.java` instantiation
 
-- Study existing laser sync architecture thoroughly
-- Ensure compatibility with current OSC infrastructure
-- Design for extensibility (other external tools)
-- Follow TE coding standards and patterns
+### Migration Actions Completed
+- **Removed**: All `titanicsend.resolume` references from TE codebase
+- **Renamed**: Complete package structure migration
+- **Relocated**: Plugin moved outside TE directory structure

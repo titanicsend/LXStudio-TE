@@ -1,0 +1,13 @@
+# OSC Remapper Configuration
+# This file maps OSC messages from TE/Chromatik to remote applications
+
+# Network configuration for remote application
+remote:
+  network:
+    ip: "127.0.0.1"
+    port: 7000
+
+  # OSC message mappings: TE OSC Path → Remote OSC Path
+  mappings:
+    # Tempo and beat sync
+    "/lx/tempo/beat": "/composition/tempo/resync"
