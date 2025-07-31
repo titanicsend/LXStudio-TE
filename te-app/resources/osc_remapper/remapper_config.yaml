@@ -47,7 +47,17 @@ remotes:
     # OSC message mappings: TE OSC Path → Remote OSC Path(s) - ALWAYS use arrays
     mappings:
       # Tempo and beat sync
-      "/lx/tempo/beat":
-        - "/lx/mship/tempo/beat"
+      "/lx/tempo/*":
+        - "/lx/mship/wildcard/*"
       "/lx/tempo/trigger":
         - "/lx/mship/layer/1/tempo/trigger"
+
+  - name: "MSHIP-Identity"
+    ip: "127.0.0.1"
+    port: 7002
+
+    # OSC message mappings: TE OSC Path → Remote OSC Path(s) - ALWAYS use arrays
+    mappings:
+      # Tempo and beat sync
+      "/lx/tempo/*":
+        - "/lx/tempo/*"
