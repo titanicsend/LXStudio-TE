@@ -4,16 +4,22 @@
 
 **Original Goal**: Create a Resolume OSC output plugin for forwarding messages from Chromatik/TE to Resolume.
 
-**Current Implementation**: Evolved into a comprehensive **OscRemapper Plugin** that captures ALL outgoing OSC messages and remaps `/lx` prefixes to `/test` prefixes using minimal LX engine changes.
+**Current Implementation**: Evolved into a comprehensive **OscRemapper Plugin** with YAML-based configuration supporting multiple remotes, custom OSC address mappings, and intelligent output routing using minimal LX engine changes.
 
-## Current Status ✅ WORKING
+## Current Status 🚧 EXPANDING
 
-The project has successfully implemented a clean, minimal approach to OSC message remapping:
+The project has successfully implemented a clean, minimal approach to OSC message remapping and is being extended with YAML configuration support:
 
+**Phase 1 Complete**:
 - **Plugin Operational**: OscRemapper plugin loads and integrates successfully
 - **Message Capture**: Captures ALL outgoing OSC messages including tempo/beat messages
-- **Remapping Active**: Successfully remaps `/lx/*` → `/test/*` (e.g., `/lx/tempo/beat` → `/test/tempo/beat`)
 - **Clean Architecture**: Uses minimal LX engine changes with proper TransmissionListener interface
+
+**Phase 2 In Progress**:
+- **YAML Configuration**: Support for `te-app/resources/osc_remapper/remapper_config.yaml`
+- **Multiple Remotes**: Create OSC outputs for each configured remote (Resolume, MSHIP, etc.)
+- **Custom Mappings**: Configurable address remapping (e.g., `/lx/tempo/beat` → `/composition/tempo/resync`)
+- **Smart Filtering**: Automatic OSC output filter calculation based on mapping prefixes
 
 ## Known Issue 🔧
 

@@ -53,6 +53,7 @@ To the agent: "Assume the role of a highly professional technical artist, expert
   - Note on test runs: always run the test again after each change and don't stop until you fix errors
 - Example command to run TE
 - Run the commands in the same terminal as the chat and do not open a new terminal.
+- Note: don't change the LOG_FILE pattern so that the files are sorted by time and can easily find the latest.
 
 ```
 LOG_FILE="../.agent_logs/te_app_playalchemist_bm_DEBUG_$(date +%Y%m%d_%H%M%S).log" && echo "🎯 Debugging playalchemist_bm_2025 Project resolution 1280x780: $LOG_FILE" && java -ea -XstartOnFirstThread -Djava.awt.headless=false -Dgpu -jar target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar --resolution 1280x780 Projects/playalchemist_bm_2025.lxp &> "$LOG_FILE"

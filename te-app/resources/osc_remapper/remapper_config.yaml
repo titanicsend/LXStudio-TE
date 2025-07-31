@@ -1,13 +1,53 @@
 # OSC Remapper Configuration
 # This file maps OSC messages from TE/Chromatik to remote applications
 
-# Network configuration for remote application
-remote:
-  network:
+# ReMapping config format:
+# We can have multiple remotes, each remote will need a name, ip and port and uniquely identifies a
+# remote application you want to send OSC messages to.
+# Each remote can have multiple mappings. There are two types of mappings:
+# 1. Exact mapping: which maps 1 single OSC address to another OSC address. This can be used to
+#    remap a single value from TE to the remote without overwhelming the network.
+#    Example: renamp the beat from LX to resolume.
+#      mappings:
+#        "/lx/tempo/beat": "/composition/tempo/resync"
+# 2. Prefix Mapping: which maps a prefix of OSC messages to another OSC address. This can be used
+#    to remap a group of values from TE to the remote. Example: share all LX values to MSHIP.
+#    Example: remap all LX values to MSHIP.
+#      mappings:
+#        "/lx/*": "/mship/*"
+#
+# Note: Instead of remapping, OSC messages can be rerouted to a different machine, by adding an identity
+#   mapping like this example:
+#    "/lx/tempo/beat": "/lx/tempo/beat"
+#    "/lx/*": "/lx/*" -> this will be an expensive rerouting.
+#  This will reroute the message to a different machine while keeping the same OSC address.
+#
+# The mapping distations are processed when the setup process is running to find the longest matching prefix
+# between them. This will be used as the filters for the OSC output created for each of the remotes.
+
+# Network configuration for remote applications
+remotes:
+  - name: "Resolume Machine"
     ip: "127.0.0.1"
     port: 7000
 
-  # OSC message mappings: TE OSC Path → Remote OSC Path
-  mappings:
-    # Tempo and beat sync
-    "/lx/tempo/beat": "/composition/tempo/resync"
+    # OSC message mappings: TE OSC Path → Remote OSC Path(s) - ALWAYS use arrays
+    mappings:
+      # Tempo and beat sync - single source can map to multiple destinations
+      "/lx/tempo/beat":
+        - "/composition/tempo/resync"
+        - "/composition/layer/1/tempo/resync"
+      "/lx/tempo/trigger":
+        - "/composition/layer/1/tempo/trigger"
+
+  - name: "MSHIP"
+    ip: "127.0.0.1"
+    port: 7001
+
+    # OSC message mappings: TE OSC Path → Remote OSC Path(s) - ALWAYS use arrays
+    mappings:
+      # Tempo and beat sync
+      "/lx/tempo/beat":
+        - "/lx/mship/tempo/beat"
+      "/lx/tempo/trigger":
+        - "/lx/mship/layer/1/tempo/trigger"

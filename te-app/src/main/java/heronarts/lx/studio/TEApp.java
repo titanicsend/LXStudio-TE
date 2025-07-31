@@ -28,6 +28,7 @@ import heronarts.lx.pattern.texture.NoisePattern;
 import java.io.File;
 import java.io.IOException;
 import java.net.SocketException;
+import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -232,7 +233,8 @@ public class TEApp extends LXStudio {
       this.superMod = new SuperMod(lx);
       
           // OscRemapper plugin
-    this.oscRemapperPlugin = new OscRemapperPlugin(lx);
+    Path configPath = Path.of("resources", "osc_remapper", "remapper_config.yaml");
+    this.oscRemapperPlugin = new OscRemapperPlugin(lx, configPath);
 
       lx.engine.registerComponent(
           "paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
