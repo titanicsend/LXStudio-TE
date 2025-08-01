@@ -730,6 +730,9 @@ public abstract class GLShader {
     if (uniform == null) {
       // First time accessing this uniform, create a new object.
       int location = this.gl4.glGetUniformLocation(this.shaderProgram.id, name);
+      if (location == Uniform.LOCATION_NOT_FOUND) {
+        LX.error("Uniform '" + name + "' not found in shader program " + this.shaderProgram.name);
+      }
       // Special handling for Sampler2D, textureUnit will be set once in the constructor.
       if (type == UniformType.SAMPLER2D || type == UniformType.SAMPLER2DSTATIC) {
         uniform = Uniform.create(this.gl4, name, location, type, getTextureUnit(name));
