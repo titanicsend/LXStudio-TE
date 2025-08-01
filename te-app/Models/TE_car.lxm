@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.1-SNAPSHOT",
-  "timestamp": 1753596843433,
+  "timestamp": 1754008334055,
   "fixtures": [
     {
       "jsonFixtureType": "TE/panel/FA",
@@ -933,9 +933,9 @@
       "jsonParameters": {
         "xOffset": 11.461127281188965,
         "yOffset": 6.0,
-        "strand1host": "10.7.8.11",
+        "strand1host": "10.7.101.22",
         "strand1output": 1,
-        "strand2host": "10.7.8.11",
+        "strand2host": "10.7.101.22",
         "strand2output": 2,
         "artnetSequence": false,
         "showBacking": true,
@@ -960,7 +960,7 @@
         "scale": 1.0,
         "hasCustomPointSize": false,
         "pointSize": 5.0,
-        "selected": false,
+        "selected": true,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
@@ -1257,9 +1257,9 @@
       "jsonParameters": {
         "xOffset": 8.955739974975586,
         "yOffset": 6.0,
-        "strand1host": "10.7.8.11",
+        "strand1host": "10.7.101.22",
         "strand1output": 3,
-        "strand2host": "10.7.8.11",
+        "strand2host": "10.7.101.22",
         "strand2output": 4,
         "artnetSequence": false,
         "showBacking": true,
@@ -2724,7 +2724,7 @@
         "scale": 1.0,
         "hasCustomPointSize": false,
         "pointSize": 5.0,
-        "selected": true,
+        "selected": false,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
@@ -4537,49 +4537,6 @@
       "children": {}
     },
     {
-      "jsonFixtureType": "TE/edge/Edge30-31",
-      "jsonParameters": {
-        "points": 168,
-        "host": "10.7.4.10",
-        "output": 2,
-        "ledOffset": 296,
-        "artnetSequence": false,
-        "reverse": true,
-        "xOffset": 6.197672367095947,
-        "onCar": true,
-        "hasOutput": true
-      },
-      "id": 4197,
-      "class": "heronarts.lx.structure.JsonFixture",
-      "internal": {
-        "modulationColor": 0,
-        "modulationControlsExpanded": true,
-        "modulationsExpanded": true
-      },
-      "parameters": {
-        "label": "Edge 30-31",
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "yaw": 0.0,
-        "pitch": 0.0,
-        "roll": 0.0,
-        "scale": 1.0,
-        "hasCustomPointSize": false,
-        "pointSize": 5.0,
-        "selected": false,
-        "deactivate": false,
-        "enabled": true,
-        "brightness": 1.0,
-        "identify": false,
-        "mute": false,
-        "solo": false,
-        "tags": "",
-        "fixtureType": "TE/edge/Edge30-31"
-      },
-      "children": {}
-    },
-    {
       "jsonFixtureType": "TE/edge/Edge30-33",
       "jsonParameters": {
         "points": 138,
@@ -4619,6 +4576,49 @@
         "solo": false,
         "tags": "",
         "fixtureType": "TE/edge/Edge30-33"
+      },
+      "children": {}
+    },
+    {
+      "jsonFixtureType": "TE/edge/Edge30-31",
+      "jsonParameters": {
+        "points": 168,
+        "host": "10.7.4.10",
+        "output": 2,
+        "ledOffset": 296,
+        "artnetSequence": false,
+        "reverse": true,
+        "xOffset": 6.197672367095947,
+        "onCar": true,
+        "hasOutput": true
+      },
+      "id": 4197,
+      "class": "heronarts.lx.structure.JsonFixture",
+      "internal": {
+        "modulationColor": 0,
+        "modulationControlsExpanded": true,
+        "modulationsExpanded": true
+      },
+      "parameters": {
+        "label": "Edge 30-31",
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "yaw": 0.0,
+        "pitch": 0.0,
+        "roll": 0.0,
+        "scale": 1.0,
+        "hasCustomPointSize": false,
+        "pointSize": 5.0,
+        "selected": false,
+        "deactivate": false,
+        "enabled": true,
+        "brightness": 1.0,
+        "identify": false,
+        "mute": false,
+        "solo": false,
+        "tags": "",
+        "fixtureType": "TE/edge/Edge30-31"
       },
       "children": {}
     },

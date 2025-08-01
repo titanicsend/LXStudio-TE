@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.1-SNAPSHOT",
-  "timestamp": 1753596843432,
+  "timestamp": 1754007862446,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -1115,9 +1115,9 @@
         "jsonParameters": {
           "xOffset": 11.461127281188965,
           "yOffset": 6.0,
-          "strand1host": "10.7.8.11",
+          "strand1host": "10.7.101.22",
           "strand1output": 1,
-          "strand2host": "10.7.8.11",
+          "strand2host": "10.7.101.22",
           "strand2output": 2,
           "artnetSequence": false,
           "showBacking": true,
@@ -1142,7 +1142,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": false,
+          "selected": true,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -1439,9 +1439,9 @@
         "jsonParameters": {
           "xOffset": 8.955739974975586,
           "yOffset": 6.0,
-          "strand1host": "10.7.8.11",
+          "strand1host": "10.7.101.22",
           "strand1output": 3,
-          "strand2host": "10.7.8.11",
+          "strand2host": "10.7.101.22",
           "strand2output": 4,
           "artnetSequence": false,
           "showBacking": true,
@@ -2906,7 +2906,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": true,
+          "selected": false,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -4719,49 +4719,6 @@
         "children": {}
       },
       {
-        "jsonFixtureType": "TE/edge/Edge30-31",
-        "jsonParameters": {
-          "points": 168,
-          "host": "10.7.4.10",
-          "output": 2,
-          "ledOffset": 296,
-          "artnetSequence": false,
-          "reverse": true,
-          "xOffset": 6.197672367095947,
-          "onCar": true,
-          "hasOutput": true
-        },
-        "id": 4197,
-        "class": "heronarts.lx.structure.JsonFixture",
-        "internal": {
-          "modulationColor": 0,
-          "modulationControlsExpanded": true,
-          "modulationsExpanded": true
-        },
-        "parameters": {
-          "label": "Edge 30-31",
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0,
-          "yaw": 0.0,
-          "pitch": 0.0,
-          "roll": 0.0,
-          "scale": 1.0,
-          "hasCustomPointSize": false,
-          "pointSize": 5.0,
-          "selected": false,
-          "deactivate": false,
-          "enabled": true,
-          "brightness": 1.0,
-          "identify": false,
-          "mute": false,
-          "solo": false,
-          "tags": "",
-          "fixtureType": "TE/edge/Edge30-31"
-        },
-        "children": {}
-      },
-      {
         "jsonFixtureType": "TE/edge/Edge30-33",
         "jsonParameters": {
           "points": 138,
@@ -4801,6 +4758,49 @@
           "solo": false,
           "tags": "",
           "fixtureType": "TE/edge/Edge30-33"
+        },
+        "children": {}
+      },
+      {
+        "jsonFixtureType": "TE/edge/Edge30-31",
+        "jsonParameters": {
+          "points": 168,
+          "host": "10.7.4.10",
+          "output": 2,
+          "ledOffset": 296,
+          "artnetSequence": false,
+          "reverse": true,
+          "xOffset": 6.197672367095947,
+          "onCar": true,
+          "hasOutput": true
+        },
+        "id": 4197,
+        "class": "heronarts.lx.structure.JsonFixture",
+        "internal": {
+          "modulationColor": 0,
+          "modulationControlsExpanded": true,
+          "modulationsExpanded": true
+        },
+        "parameters": {
+          "label": "Edge 30-31",
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "yaw": 0.0,
+          "pitch": 0.0,
+          "roll": 0.0,
+          "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
+          "selected": false,
+          "deactivate": false,
+          "enabled": true,
+          "brightness": 1.0,
+          "identify": false,
+          "mute": false,
+          "solo": false,
+          "tags": "",
+          "fixtureType": "TE/edge/Edge30-31"
         },
         "children": {}
       },
@@ -13978,9 +13978,9 @@
         },
         "parameters": {
           "label": "Mixer",
-          "crossfader": 0.0,
+          "crossfader": 0.4861225357744843,
           "crossfaderBlendMode": 1,
-          "focusedChannel": 2,
+          "focusedChannel": 0,
           "focusedChannelAux": 2,
           "cueA": false,
           "cueB": false,
@@ -14314,11 +14314,11 @@
             },
             "parameters": {
               "label": "HIGH",
-              "fader": 0.8863281249068677,
+              "fader": 1.0,
               "arm": false,
-              "selected": false,
+              "selected": true,
               "stopClips": false,
-              "enabled": false,
+              "enabled": true,
               "cue": false,
               "aux": false,
               "crossfadeGroup": 0,
@@ -22616,9 +22616,9 @@
             },
             "parameters": {
               "label": "TRACKER",
-              "fader": 1.0,
+              "fader": 0.0,
               "arm": false,
-              "selected": true,
+              "selected": false,
               "stopClips": false,
               "enabled": true,
               "cue": false,
@@ -22842,10 +22842,10 @@
                   "circle": true,
                   "junk1": 16.406249767169356,
                   "junk2": 10.738280951045454,
-                  "Altitude": 12.464844435453415,
-                  "Azimuth": 35.11717817746103,
-                  "Height": 0.6588752594725295,
-                  "Width": 0.5717819436133256,
+                  "Altitude": 0.46093747951090336,
+                  "Azimuth": 58.156239008530974,
+                  "Height": 1.1362323000089696,
+                  "Width": 1.3604066686108407,
                   "indexTip": "10,50",
                   "compositeMode": 0
                 },
@@ -22968,7 +22968,7 @@
               "exp": 0.0
             },
             "children": {},
-            "basis": 0.41591088159592216
+            "basis": 0.7582210660312257
           }
         ],
         "modulations": [
@@ -23361,9 +23361,9 @@
         "animation": false,
         "camera": {
           "active": false,
-          "radius": 416.8453915262544,
-          "theta": 164.16051767161116,
-          "phi": -8.160407053073868,
+          "radius": 574.565634414463,
+          "theta": 359.82858752738684,
+          "phi": 7.346701419213787,
           "x": 93.4653008258062,
           "y": 167.50173219596036,
           "z": -28.973207070489934
