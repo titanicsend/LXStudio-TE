@@ -5,6 +5,8 @@ import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
 
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.util.texture.Texture;
+import heronarts.lx.LX;
+
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
@@ -600,8 +602,14 @@ public abstract class Uniform {
       return this;
     }
 
+    private boolean loggedOnce = false;
+
     @Override
     public void update() {
+      if (this.textureHandle == -1 && !this.loggedOnce) {
+        this.loggedOnce = true;
+        LX.error("Missing texture '" + this.name + "' for unit " + this.textureUnit + ", this could be a bug...");
+      }
       gl4.glActiveTexture(GL_TEXTURE0 + this.textureUnit);
       if (this.isObject) {
         this.texture.bind(gl4);
