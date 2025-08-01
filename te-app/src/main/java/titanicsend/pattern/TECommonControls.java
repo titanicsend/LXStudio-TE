@@ -16,6 +16,10 @@ import titanicsend.color.TEGradientSource;
 import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon._CommonControlGetter;
+import titanicsend.preset.PresetEngine;
+import titanicsend.preset.TEUserPresetParameter;
+import titanicsend.preset.UserPreset;
+import titanicsend.preset.UserPresetCollection;
 import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
 
@@ -31,6 +35,8 @@ public class TECommonControls {
   // Color control is accessible, in case the pattern needs something
   // other than the current color.
   public TEColorParameter color;
+
+  public TEUserPresetParameter preset;
 
   // Panic control courtesy of JKB's Rubix codebase
   public final BooleanParameter panic =
@@ -101,7 +107,6 @@ public class TECommonControls {
     setControl(TEControlTag.QUANTITY, p);
 
     p =
-        (CompoundParameter)
             new CompoundParameter(TEControlTag.SPIN.getLabel(), 0, -1.0, 1.0)
                 .setPolarity(LXParameter.Polarity.BIPOLAR)
                 .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
@@ -135,7 +140,6 @@ public class TECommonControls {
 
     // in degrees for display 'cause more people think about it that way
     p =
-        (LXListenableNormalizedParameter)
             new TECommonAngleParameter(
                     this.pattern,
                     this.pattern.spinRotor,
@@ -278,7 +282,6 @@ public class TECommonControls {
     LXListenableNormalizedParameter newControl;
     if (oldControl instanceof CompoundParameter) {
       newControl =
-          (CompoundParameter)
               new CompoundParameter(label, value, v0, v1)
                   .setNormalizationCurve(((CompoundParameter) oldControl).getNormalizationCurve())
                   .setExponent(oldControl.getExponent())
@@ -287,7 +290,6 @@ public class TECommonControls {
                   .setUnits(oldControl.getUnits());
     } else if (oldControl instanceof BoundedParameter) {
       newControl =
-          (BoundedParameter)
               new BoundedParameter(label, value, v0, v1)
                   .setNormalizationCurve(((BoundedParameter) oldControl).getNormalizationCurve())
                   .setExponent(oldControl.getExponent())
@@ -296,14 +298,12 @@ public class TECommonControls {
                   .setUnits(oldControl.getUnits());
     } else if (oldControl instanceof BooleanParameter) {
       newControl =
-          (BooleanParameter)
               new BooleanParameter(label)
                   .setMode(((BooleanParameter) oldControl).getMode())
                   .setDescription(oldControl.getDescription())
                   .setUnits(oldControl.getUnits());
     } else if (oldControl instanceof DiscreteParameter) {
       newControl =
-          (DiscreteParameter)
               new DiscreteParameter(label, ((DiscreteParameter) oldControl).getOptions())
                   .setIncrementMode(((DiscreteParameter) oldControl).getIncrementMode())
                   .setDescription(oldControl.getDescription())
@@ -347,7 +347,26 @@ public class TECommonControls {
     if (missingControls != null && !missingControls.uses_palette) {
       colorPrefix = "[x] ";
     }
-    TEColorParameter colorParam = registerColorControl(colorPrefix);
+    color = new TEColorParameter(TEGradientSource.get(), colorPrefix + "Color").setDescription("TE Color");
+    this.pattern.addParam("te_color", color);
+
+    UserPresetCollection collection = PresetEngine.get().getLibrary().get(this.pattern);
+    if (!collection.getPresets().isEmpty()) {
+      preset = new TEUserPresetParameter(this.pattern, collection, "Presets");
+      this.pattern.addParam("te_preset", preset);
+      preset.addListener(new LXParameterListener() {
+        @Override
+        public void onParameterChanged(LXParameter parameter) {
+          if (parameter instanceof TEUserPresetParameter) {
+            System.out.println("USER PRESET");
+            UserPreset p = ((TEUserPresetParameter) parameter).getObject();
+            System.out.println(p.getLabel() + " - " + p.getIndex());
+          } else {
+            System.out.println("OTHER");
+          }
+        }
+      });
+    }
   }
 
   /** Included for consistency. We may need it later. */
@@ -366,7 +385,6 @@ public class TECommonControls {
   protected void setRemoteControls() {
     this.pattern.setCustomRemoteControls(
         new LXListenableNormalizedParameter[] {
-          // this.color.gradient,
           getControl(TEControlTag.LEVELREACTIVITY).control,
           getControl(TEControlTag.FREQREACTIVITY).control,
           this.pattern.view,
@@ -378,7 +396,7 @@ public class TECommonControls {
           getControl(TEControlTag.ANGLE).control,
           getControl(TEControlTag.SPIN).control,
           this.panic,
-          null,
+          this.preset,
           getControl(TEControlTag.WOW1).control,
           getControl(TEControlTag.WOW2).control,
           getControl(TEControlTag.WOWTRIGGER).control,
@@ -386,15 +404,6 @@ public class TECommonControls {
           this.pattern.captureDefaults
           // To be SHIFT, not implemented yet
         });
-  }
-
-  protected TEColorParameter registerColorControl(String prefix) {
-    color =
-        new TEColorParameter(TEGradientSource.get(), prefix + "Color").setDescription("TE Color");
-    // "addParameter(java.lang.String, heronarts.lx.parameter.LXParameter)' has protected access in
-    // 'heronarts.lx.LXComponent'"
-    this.pattern.addParam("te_color", color);
-    return color;
   }
 
   /**
