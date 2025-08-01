@@ -54,6 +54,8 @@ public class NDIOutFixture extends LXFixture
 
     // Default position to avoid overlap with TE main car
     this.x.setValue(500);
+    this.hasCustomPointSize.setValue(true);
+    this.pointSize.setValue(0.1);
   }
 
   @Override
