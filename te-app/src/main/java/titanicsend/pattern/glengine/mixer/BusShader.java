@@ -21,7 +21,7 @@ public class BusShader extends GLShader implements GLShader.UniformSource {
   // Amount of src to blend onto a black background
   private float level = 1f;
   // Target CPU buffer
-  private int[] main;
+  private int[] cpuBuffer;
 
   private static class BusUniforms {
     private Uniform.Sampler2D iSrc;
@@ -57,8 +57,8 @@ public class BusShader extends GLShader implements GLShader.UniformSource {
     this.level = level;
   }
 
-  public void setMain(int[] main) {
-    this.main = main;
+  public void setCpuBuffer(int[] cpuBuffer) {
+    this.cpuBuffer = cpuBuffer;
   }
 
   /** Set input texture handle */
@@ -113,9 +113,9 @@ public class BusShader extends GLShader implements GLShader.UniformSource {
         pboData.rewind();
         IntBuffer src = pboData.asIntBuffer();
         // Clamp
-        int count = Math.min(src.remaining(), this.main.length);
+        int count = Math.min(src.remaining(), this.cpuBuffer.length);
         // Safe copy
-        src.get(this.main, 0, count);
+        src.get(this.cpuBuffer, 0, count);
 
         // Unmap the PBO
         this.gl4.glUnmapBuffer(GL4.GL_PIXEL_PACK_BUFFER);

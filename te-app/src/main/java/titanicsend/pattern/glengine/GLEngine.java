@@ -518,7 +518,7 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     updatePerFrameUniforms();
 
     if (this.lx.engine.renderMode.gpu) {
-      this.mixer.loop();
+      this.mixer.loop(deltaMs);
     }
   }
 
