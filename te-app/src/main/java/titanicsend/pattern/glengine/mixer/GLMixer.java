@@ -166,9 +166,7 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     this.gl4.glBindFramebuffer(GL_FRAMEBUFFER, 0);
   }
 
-  /**
-   * Checks a channel for inclusion in cue/aux previews
-   */
+  /** Checks a channel for inclusion in cue/aux previews */
   private void checkForPreview(LXAbstractChannel channel, GLBus bus) {
     if (channel.cueActive.isOn() && !this.cueBusActive) {
       // Preview the first bus cued, per frame.
@@ -380,9 +378,7 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     }
   }
 
-  /**
-   * Unique, simple bus for cue and aux previews
-   */
+  /** Unique, simple bus for cue and aux previews */
   private class GLPreviewBus {
 
     public final boolean isAux;
@@ -486,9 +482,9 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     }
 
     protected final boolean isActive() {
-      return this.abstractChannel.cueActive.isOn() ||
-        this.abstractChannel.auxActive.isOn() ||
-        (this.abstractChannel.enabled.isOn() && !this.abstractChannel.isAutoMuted.isOn());
+      return this.abstractChannel.cueActive.isOn()
+          || this.abstractChannel.auxActive.isOn()
+          || (this.abstractChannel.enabled.isOn() && !this.abstractChannel.isAutoMuted.isOn());
     }
 
     @Override
