@@ -71,6 +71,12 @@ public class UserPresetCollection implements LXSerializable {
     return preset;
   }
 
+  public UserPreset addPreset(LXPresetComponent component, JsonObject object, String label) {
+    UserPreset preset = addPreset(component, object);
+    preset.setLabel(label);
+    return preset;
+  }
+
   public UserPresetCollection removePreset(UserPreset preset) {
     int index = this.mutablePresets.indexOf(preset);
     if (index < 0) {

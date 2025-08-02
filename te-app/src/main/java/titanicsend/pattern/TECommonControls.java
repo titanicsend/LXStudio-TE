@@ -16,10 +16,6 @@ import titanicsend.color.TEGradientSource;
 import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon._CommonControlGetter;
-import titanicsend.preset.PresetEngine;
-import titanicsend.preset.TEUserPresetParameter;
-import titanicsend.preset.UserPreset;
-import titanicsend.preset.UserPresetCollection;
 import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
 
@@ -35,8 +31,6 @@ public class TECommonControls {
   // Color control is accessible, in case the pattern needs something
   // other than the current color.
   public TEColorParameter color;
-
-  public TEUserPresetParameter preset;
 
   // Panic control courtesy of JKB's Rubix codebase
   public final BooleanParameter panic =
@@ -354,42 +348,6 @@ public class TECommonControls {
       colorPrefix = "[x] ";
     }
     TEColorParameter colorParam = registerColorControl(colorPrefix);
-
-    System.out.println("TECommonControls - A");
-    UserPresetCollection collection = PresetEngine.get().getLibrary().get(this.pattern);
-    if (!collection.getPresets().isEmpty()) {
-      System.out.println("TECommonControls - B");
-      preset = new TEUserPresetParameter(this.pattern, collection, "Presets");
-
-      this.pattern.addParam("te_preset", preset);
-      preset.addListener(
-          new LXParameterListener() {
-            @Override
-            public void onParameterChanged(LXParameter parameter) {
-              if (parameter instanceof TEUserPresetParameter) {
-                System.out.println("USER PRESET");
-                UserPreset p = ((TEUserPresetParameter) parameter).getObject();
-                System.out.println(p.getLabel() + " - " + p.getIndex());
-
-                /*
-                       [LX 2025/07/31 23:00:28] Unexpected error performing action heronarts.lx.command.LXCommand$Parameter$SetNormalized@c94c61d - bad internal state?
-                 java.util.ConcurrentModificationException
-                 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1598)
-                 	at heronarts.lx.parameter.LXListenableParameter.setValue(LXListenableParameter.java:224)
-                 	at heronarts.lx.parameter.LXListenableParameter.setValue(LXListenableParameter.java:208)
-                 	at heronarts.lx.parameter.DiscreteParameter.setNormalized(DiscreteParameter.java:407)
-                 	at heronarts.lx.parameter.DiscreteParameter.setNormalized(DiscreteParameter.java:26)
-                 	at heronarts.lx.command.LXCommand$Parameter$SetNormalized.perform(LXCommand.java:800)
-                 	at heronarts.lx.command.LXCommandEngine.perform(LXCommandEngine.java:62)
-                 	at heronarts.glx.ui.component.UIParameterComponent.setNormalizedCommand(UIParameterComponent.java:112)
-                */
-                p.restore(pattern);
-              } else {
-                System.out.println("OTHER");
-              }
-            }
-          });
-    }
   }
 
   /** Included for consistency. We may need it later. */
@@ -419,7 +377,7 @@ public class TECommonControls {
           getControl(TEControlTag.ANGLE).control,
           getControl(TEControlTag.SPIN).control,
           this.panic,
-          this.preset,
+          !this.pattern.presetCollection.getPresets().isEmpty() ? this.pattern.presets : null,
           getControl(TEControlTag.WOW1).control,
           getControl(TEControlTag.WOW2).control,
           getControl(TEControlTag.WOWTRIGGER).control,
