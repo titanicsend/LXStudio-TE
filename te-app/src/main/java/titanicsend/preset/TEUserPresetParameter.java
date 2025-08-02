@@ -47,7 +47,9 @@ public class TEUserPresetParameter extends ObjectParameter<UserPreset> {
   }
 
   protected void updateObjects() {
-    UserPreset[] presets = this.collection.getPresets().toArray(new UserPreset[0]);
+    // TODO: do I need to fetch this every time, or is it OK to save a handle?
+    UserPresetCollection collection = PresetEngine.get().getLibrary().get(this.pattern);
+    UserPreset[] presets = collection.getPresets().toArray(new UserPreset[0]);
     setObjects(presets);
   }
 
