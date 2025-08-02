@@ -25,6 +25,7 @@ import titanicsend.pattern.jon.VariableSpeedTimer;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.preset.PresetEngine;
 import titanicsend.preset.TEUserPresetParameter;
+import titanicsend.preset.UserPreset;
 import titanicsend.preset.UserPresetCollection;
 import titanicsend.util.Rotor;
 import titanicsend.util.TEColor;
@@ -97,7 +98,27 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
   // TODO(look): should this live in TEPattern?
   public void addPresetParameter() {
     this.presetCollection = PresetEngine.get().getLibrary().get(this);
-    this.presets = new TEUserPresetParameter(this, this.presetCollection, "Presets");
+    // Since we want to show/hide the presets knob depending on whether there are UserPresets,
+    // use a Listener to refresh the remote controls when Collection changes.
+    // Also, refresh the options/labels in the preset parameter upon any changes.
+    this.presetCollection.addListener(
+        new UserPresetCollection.Listener() {
+          @Override
+          public void presetAdded(UserPreset preset) {
+            TEPerformancePattern.this.presets.updateObjects();
+            TEPerformancePattern.this.setRemoteControls();
+          }
+
+          @Override
+          public void presetMoved(UserPreset preset) {}
+
+          @Override
+          public void presetRemoved(UserPreset preset) {
+            TEPerformancePattern.this.presets.updateObjects();
+            TEPerformancePattern.this.setRemoteControls();
+          }
+        });
+    this.presets = new TEUserPresetParameter(this, "Presets");
     addParameter("te_preset", this.presets);
 
     this.presets.addListener(

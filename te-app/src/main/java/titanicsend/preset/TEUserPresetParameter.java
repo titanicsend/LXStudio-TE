@@ -7,54 +7,21 @@ import titanicsend.pattern.TEPerformancePattern;
 
 public class TEUserPresetParameter extends ObjectParameter<UserPreset> {
   private TEPerformancePattern pattern;
-  private UserPresetCollection collection;
 
-  public TEUserPresetParameter(
-      TEPerformancePattern pat, UserPresetCollection collection, String label) {
-    super(label, collection.getPresets().toArray(new UserPreset[0]));
+  public TEUserPresetParameter(TEPerformancePattern pat, String label) {
+    super(label, PresetEngine.get().getLibrary().get(pat).getPresets().toArray(new UserPreset[0]));
     this.pattern = pat;
-    this.collection = collection;
-    this.updateLabels();
-
-    this.collection.addListener(
-        new UserPresetCollection.Listener() {
-          @Override
-          public void presetAdded(UserPreset preset) {
-            updateObjects();
-            updateLabels();
-          }
-
-          @Override
-          public void presetMoved(UserPreset preset) {
-            updateObjects();
-            updateLabels();
-          }
-
-          @Override
-          public void presetRemoved(UserPreset preset) {
-            updateObjects();
-            updateLabels();
-          }
-        });
-
-    //        this.addListener(new LXParameterListener() {
-    //            @Override
-    //            public void onParameterChanged(LXParameter parameter) {
-    //                UserPreset selected = getObject();
-    //                selected.restore(pattern);
-    //            }
-    //        });
+    this.updateObjects();
   }
 
-  protected void updateObjects() {
+  public void updateObjects() {
     //    // TODO: do I need to fetch this every time, or is it OK to save a handle?
     //    UserPresetCollection collection = PresetEngine.get().getLibrary().get(this.pattern);
     //    UserPreset[] presets = collection.getPresets().toArray(new UserPreset[0]);
-    UserPreset[] presets = this.collection.getPresets().toArray(new UserPreset[0]);
+    UserPreset[] presets =
+        PresetEngine.get().getLibrary().get(this.pattern).getPresets().toArray(new UserPreset[0]);
     setObjects(presets);
-  }
 
-  protected void updateLabels() {
     String[] options =
         Arrays.stream(getObjects()).map(LXComponent::getLabel).toList().toArray(new String[0]);
     setOptions(options);
