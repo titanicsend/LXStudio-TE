@@ -166,20 +166,6 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     this.gl4.glBindFramebuffer(GL_FRAMEBUFFER, 0);
   }
 
-  /** Checks a channel for inclusion in cue/aux previews */
-  private void checkForPreview(LXAbstractChannel channel, GLBus bus) {
-    if (channel.cueActive.isOn() && !this.cueBusActive) {
-      // Preview the first bus cued, per frame.
-      this.cueBusActive = true;
-      this.cueBusTexture = bus.getSrcTexture();
-    }
-    if (channel.auxActive.isOn() && !this.auxBusActive) {
-      // Preview the first bus aux cued, per frame.
-      this.auxBusActive = true;
-      this.auxBusTexture = bus.getSrcTexture();
-    }
-  }
-
   // LXMixerEngine.Listener
 
   @Override
@@ -319,7 +305,7 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     protected abstract int finalBlend(int dst, int src);
 
     /** Retrieve the most recent pre-fader texture */
-    private int getSrcTexture() {
+    protected int getSrcTexture() {
       return this.lastSrc;
     }
 
@@ -351,7 +337,8 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
         if (!channel.isInGroup()) {
           GLAbstractChannel glChannel = channelMap.get(channel);
           dst = glChannel.blend(deltaMs, dst);
-          checkForPreview(channel, glChannel);
+          // If this channel is cue/aux, set its source texture as the input for global aux/cue bus.
+          glChannel.checkForPreview();
         }
       }
       return dst;
@@ -487,6 +474,20 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
           || (this.abstractChannel.enabled.isOn() && !this.abstractChannel.isAutoMuted.isOn());
     }
 
+    /** Checks a channel for inclusion in cue/aux previews. */
+    protected final void checkForPreview() {
+      if (this.abstractChannel.cueActive.isOn() && !GLMixer.this.cueBusActive) {
+        // Preview the first bus cued, per frame.
+        GLMixer.this.cueBusActive = true;
+        GLMixer.this.cueBusTexture = this.getSrcTexture();
+      }
+      if (this.abstractChannel.auxActive.isOn() && !GLMixer.this.auxBusActive) {
+        // Preview the first bus aux cued, per frame.
+        GLMixer.this.auxBusActive = true;
+        GLMixer.this.auxBusTexture = this.getSrcTexture();
+      }
+    }
+
     @Override
     protected int finalBlend(int dst, int src) {
       this.blendShader.setDst(dst);
@@ -520,7 +521,8 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
       for (LXAbstractChannel channel : this.group.channels) {
         GLAbstractChannel glChannel = channelMap.get(channel);
         dst = glChannel.blend(deltaMs, dst);
-        checkForPreview(channel, glChannel);
+        // If this channel is cue/aux, set its source texture as the input for global aux/cue bus.
+        glChannel.checkForPreview();
       }
       return dst;
     }
