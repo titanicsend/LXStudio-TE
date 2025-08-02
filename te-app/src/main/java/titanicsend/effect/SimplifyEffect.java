@@ -177,7 +177,9 @@ public class SimplifyEffect extends LXEffect
     // Candidate models are calculated from View groups + depth parameter
     final int depth = this.depth.getValuei();
     this.models.clear();
-    extractModels(this.models, this.getModelView(), depth);
+    if (this.getParent() != null) {
+      extractModels(this.models, this.getModelView(), depth);
+    }
   }
 
   @Override
@@ -229,7 +231,6 @@ public class SimplifyEffect extends LXEffect
       for (LXModel child : fromModel.children) {
         extractModels(toList, child, depth - 1);
       }
-      return;
     } else {
       toList.add(fromModel);
     }
