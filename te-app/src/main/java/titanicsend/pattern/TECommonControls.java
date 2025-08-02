@@ -107,11 +107,12 @@ public class TECommonControls {
     setControl(TEControlTag.QUANTITY, p);
 
     p =
-        new CompoundParameter(TEControlTag.SPIN.getLabel(), 0, -1.0, 1.0)
-            .setPolarity(LXParameter.Polarity.BIPOLAR)
-            .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
-            .setExponent(2)
-            .setDescription("Spin");
+        (CompoundParameter)
+            new CompoundParameter(TEControlTag.SPIN.getLabel(), 0, -1.0, 1.0)
+                .setPolarity(LXParameter.Polarity.BIPOLAR)
+                .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
+                .setExponent(2)
+                .setDescription("Spin");
 
     setControl(TEControlTag.SPIN, p);
 
@@ -140,20 +141,21 @@ public class TECommonControls {
 
     // in degrees for display 'cause more people think about it that way
     p =
-        new TECommonAngleParameter(
-                this.pattern,
-                this.pattern.spinRotor,
-                TEControlTag.ANGLE.getLabel(),
-                0,
-                -Math.PI,
-                Math.PI)
-            .setDescription("Static Rotation Angle")
-            .setPolarity(LXParameter.Polarity.BIPOLAR)
-            .setWrappable(true)
-            .setFormatter(
-                (v) -> {
-                  return Double.toString(Math.toDegrees(v));
-                });
+        (LXListenableNormalizedParameter)
+            new TECommonAngleParameter(
+                    this.pattern,
+                    this.pattern.spinRotor,
+                    TEControlTag.ANGLE.getLabel(),
+                    0,
+                    -Math.PI,
+                    Math.PI)
+                .setDescription("Static Rotation Angle")
+                .setPolarity(LXParameter.Polarity.BIPOLAR)
+                .setWrappable(true)
+                .setFormatter(
+                    (v) -> {
+                      return Double.toString(Math.toDegrees(v));
+                    });
     setControl(TEControlTag.ANGLE, p);
   }
 
@@ -282,32 +284,36 @@ public class TECommonControls {
     LXListenableNormalizedParameter newControl;
     if (oldControl instanceof CompoundParameter) {
       newControl =
-          new CompoundParameter(label, value, v0, v1)
-              .setNormalizationCurve(((CompoundParameter) oldControl).getNormalizationCurve())
-              .setExponent(oldControl.getExponent())
-              .setDescription(oldControl.getDescription())
-              .setPolarity(oldControl.getPolarity())
-              .setUnits(oldControl.getUnits());
+          (CompoundParameter)
+              new CompoundParameter(label, value, v0, v1)
+                  .setNormalizationCurve(((CompoundParameter) oldControl).getNormalizationCurve())
+                  .setExponent(oldControl.getExponent())
+                  .setDescription(oldControl.getDescription())
+                  .setPolarity(oldControl.getPolarity())
+                  .setUnits(oldControl.getUnits());
     } else if (oldControl instanceof BoundedParameter) {
       newControl =
-          new BoundedParameter(label, value, v0, v1)
-              .setNormalizationCurve(((BoundedParameter) oldControl).getNormalizationCurve())
-              .setExponent(oldControl.getExponent())
-              .setDescription(oldControl.getDescription())
-              .setPolarity(oldControl.getPolarity())
-              .setUnits(oldControl.getUnits());
+          (BoundedParameter)
+              new BoundedParameter(label, value, v0, v1)
+                  .setNormalizationCurve(((BoundedParameter) oldControl).getNormalizationCurve())
+                  .setExponent(oldControl.getExponent())
+                  .setDescription(oldControl.getDescription())
+                  .setPolarity(oldControl.getPolarity())
+                  .setUnits(oldControl.getUnits());
     } else if (oldControl instanceof BooleanParameter) {
       newControl =
-          new BooleanParameter(label)
-              .setMode(((BooleanParameter) oldControl).getMode())
-              .setDescription(oldControl.getDescription())
-              .setUnits(oldControl.getUnits());
+          (BooleanParameter)
+              new BooleanParameter(label)
+                  .setMode(((BooleanParameter) oldControl).getMode())
+                  .setDescription(oldControl.getDescription())
+                  .setUnits(oldControl.getUnits());
     } else if (oldControl instanceof DiscreteParameter) {
       newControl =
-          new DiscreteParameter(label, ((DiscreteParameter) oldControl).getOptions())
-              .setIncrementMode(((DiscreteParameter) oldControl).getIncrementMode())
-              .setDescription(oldControl.getDescription())
-              .setUnits(oldControl.getUnits());
+          (DiscreteParameter)
+              new DiscreteParameter(label, ((DiscreteParameter) oldControl).getOptions())
+                  .setIncrementMode(((DiscreteParameter) oldControl).getIncrementMode())
+                  .setDescription(oldControl.getDescription())
+                  .setUnits(oldControl.getUnits());
     } else {
       TE.error("Unrecognized control type in TE Common Control " + oldControl.getClass().getName());
       return oldControl;
@@ -347,29 +353,14 @@ public class TECommonControls {
     if (missingControls != null && !missingControls.uses_palette) {
       colorPrefix = "[x] ";
     }
-    color =
-        new TEColorParameter(TEGradientSource.get(), colorPrefix + "Color")
-            .setDescription("TE Color");
-    this.pattern.addParam("te_color", color);
+    TEColorParameter colorParam = registerColorControl(colorPrefix);
 
     System.out.println("TECommonControls - A");
     UserPresetCollection collection = PresetEngine.get().getLibrary().get(this.pattern);
     if (!collection.getPresets().isEmpty()) {
       System.out.println("TECommonControls - B");
       preset = new TEUserPresetParameter(this.pattern, collection, "Presets");
-      /*
 
-            [LX 2025/07/31 23:00:28] Unexpected error performing action heronarts.lx.command.LXCommand$Parameter$SetNormalized@c94c61d - bad internal state?
-      java.util.ConcurrentModificationException
-      	at java.base/java.util.ArrayList.forEach(ArrayList.java:1598)
-      	at heronarts.lx.parameter.LXListenableParameter.setValue(LXListenableParameter.java:224)
-      	at heronarts.lx.parameter.LXListenableParameter.setValue(LXListenableParameter.java:208)
-      	at heronarts.lx.parameter.DiscreteParameter.setNormalized(DiscreteParameter.java:407)
-      	at heronarts.lx.parameter.DiscreteParameter.setNormalized(DiscreteParameter.java:26)
-      	at heronarts.lx.command.LXCommand$Parameter$SetNormalized.perform(LXCommand.java:800)
-      	at heronarts.lx.command.LXCommandEngine.perform(LXCommandEngine.java:62)
-      	at heronarts.glx.ui.component.UIParameterComponent.setNormalizedCommand(UIParameterComponent.java:112)
-             */
       this.pattern.addParam("te_preset", preset);
       preset.addListener(
           new LXParameterListener() {
@@ -380,6 +371,18 @@ public class TECommonControls {
                 UserPreset p = ((TEUserPresetParameter) parameter).getObject();
                 System.out.println(p.getLabel() + " - " + p.getIndex());
 
+                /*
+                       [LX 2025/07/31 23:00:28] Unexpected error performing action heronarts.lx.command.LXCommand$Parameter$SetNormalized@c94c61d - bad internal state?
+                 java.util.ConcurrentModificationException
+                 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1598)
+                 	at heronarts.lx.parameter.LXListenableParameter.setValue(LXListenableParameter.java:224)
+                 	at heronarts.lx.parameter.LXListenableParameter.setValue(LXListenableParameter.java:208)
+                 	at heronarts.lx.parameter.DiscreteParameter.setNormalized(DiscreteParameter.java:407)
+                 	at heronarts.lx.parameter.DiscreteParameter.setNormalized(DiscreteParameter.java:26)
+                 	at heronarts.lx.command.LXCommand$Parameter$SetNormalized.perform(LXCommand.java:800)
+                 	at heronarts.lx.command.LXCommandEngine.perform(LXCommandEngine.java:62)
+                 	at heronarts.glx.ui.component.UIParameterComponent.setNormalizedCommand(UIParameterComponent.java:112)
+                */
                 p.restore(pattern);
               } else {
                 System.out.println("OTHER");
@@ -424,6 +427,15 @@ public class TECommonControls {
           this.pattern.captureDefaults
           // To be SHIFT, not implemented yet
         });
+  }
+
+  protected TEColorParameter registerColorControl(String prefix) {
+    color =
+        new TEColorParameter(TEGradientSource.get(), prefix + "Color").setDescription("TE Color");
+    // "addParameter(java.lang.String, heronarts.lx.parameter.LXParameter)' has protected access in
+    // 'heronarts.lx.LXComponent'"
+    this.pattern.addParam("te_color", color);
+    return color;
   }
 
   /**
