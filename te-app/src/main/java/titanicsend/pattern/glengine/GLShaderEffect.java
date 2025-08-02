@@ -1,11 +1,22 @@
 package titanicsend.pattern.glengine;
 
+import static com.jogamp.opengl.GL.GL_BGRA;
+import static com.jogamp.opengl.GL.GL_LINEAR;
+import static com.jogamp.opengl.GL.GL_RGBA8;
+import static com.jogamp.opengl.GL.GL_TEXTURE0;
+import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
+import static com.jogamp.opengl.GL.GL_TEXTURE_MAG_FILTER;
+import static com.jogamp.opengl.GL.GL_TEXTURE_MIN_FILTER;
+import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
 import static titanicsend.pattern.glengine.GLShaderPattern.NO_TEXTURE;
 
+import com.jogamp.opengl.GL4;
 import heronarts.lx.GpuDevice;
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXModel;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -48,12 +59,15 @@ public class GLShaderEffect extends TEEffect implements GpuDevice {
   private final TEEffectUniforms uniforms = new TEEffectUniforms();
   private boolean initializedUniforms = false;
 
+  // Temporary flag to avoid a LX bug
+  private boolean onEnableCalled = false;
+
   public GLShaderEffect(LX lx) {
     super(lx);
   }
 
   protected TEShader addShader(GLShader.Config config) {
-    TEShader shader = new TEShader(config.withUniformSource(this::setUniforms));
+    TEShader shader = new TEShader(config.withUniformSource(this.uniformSource));
     this.mutableShaders.add(shader);
     return shader;
   }
@@ -84,13 +98,78 @@ public class GLShaderEffect extends TEEffect implements GpuDevice {
     this.iDst = iDst;
   }
 
+  private GL4 gl4;
+  private boolean cpuTextureInitialized = false;
+  private int cpuDstTexture = -1;
+  private ByteBuffer cpuByteBuffer;
+
+  private void initializeCpuTexture() {
+    this.gl4 = GLEngine.current.getCanvas().getGL().getGL4();
+
+    int width = GLEngine.current.getWidth();
+    int height = GLEngine.current.getHeight();
+
+    this.cpuByteBuffer =
+        ByteBuffer.allocateDirect(width * height * 4).order(ByteOrder.nativeOrder());
+    cpuByteBuffer.rewind();
+
+    int[] cpuDstHandles = new int[1];
+    this.gl4.glGenTextures(1, cpuDstHandles, 0);
+    this.cpuDstTexture = cpuDstHandles[0];
+    gl4.glActiveTexture(GL_TEXTURE0);
+    gl4.glBindTexture(GL_TEXTURE_2D, this.cpuDstTexture);
+    this.gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    this.gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    this.gl4.glTexImage2D(
+        GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, cpuByteBuffer);
+    this.gl4.glBindTexture(GL_TEXTURE_2D, 0);
+
+    this.iDst = cpuDstTexture;
+  }
+
   protected void run(double deltaMs, double enabledAmount) {
+    // Temporarily avoid LX bug: don't run if onEnable() was never called
+    if (!this.onEnableCalled) {
+      return;
+    }
+
     // Safety check: bail if the effect contains no shaders
     if (this.shaders.isEmpty()) {
       return;
     }
 
     iTime.tick();
+
+    // In CPU mode, use dedicated input texture
+    if (this.lx.engine.renderMode.cpu) {
+      // Allocate texture on first run
+      if (!this.cpuTextureInitialized) {
+        this.cpuTextureInitialized = true;
+        initializeCpuTexture();
+        onEnable();
+      }
+
+      // Load colors[] into texture
+      GLEngine.current.bindTextureUnit(0, this.cpuDstTexture);
+      this.cpuByteBuffer.rewind();
+      for (int i = 0; i < this.colors.length; i++) {
+        this.cpuByteBuffer.putInt(this.colors[i]);
+      }
+      this.cpuByteBuffer.rewind();
+
+      // Update texture without re-allocating
+      this.gl4.glTexSubImage2D(
+          GL_TEXTURE_2D,
+          0,
+          0,
+          0,
+          GLEngine.current.getWidth(),
+          GLEngine.current.getHeight(),
+          GL_BGRA,
+          GL_UNSIGNED_BYTE,
+          this.cpuByteBuffer);
+      this.gl4.glBindTexture(GL_TEXTURE_2D, 0);
+    }
 
     // Update the model coords texture only when changed (and the first run)
     if (this.modelChanged) {
@@ -106,7 +185,11 @@ public class GLShaderEffect extends TEEffect implements GpuDevice {
       this.shaders.get(i).setCpuBuffer(null);
     }
     // Set the CPU buffer for the last shader, if using CPU mixer
-    this.shaders.getLast().setCpuBuffer(this.lx.engine.renderMode.cpu ? this.colors : null);
+    if (this.lx.engine.renderMode.cpu) {
+      this.shaders.getLast().setCpuBuffer(this.colors);
+    } else {
+      this.shaders.getLast().setCpuBuffer(null);
+    }
 
     // Run the chain of shaders,
     // mapping the output texture of each to the next shader's input texture
@@ -132,6 +215,8 @@ public class GLShaderEffect extends TEEffect implements GpuDevice {
 
   private void initializeUniforms(GLShader s) {
     // Keep direct references to each Uniform, saves hashmap lookup.
+
+    // TODO: confirm shader template for TE Effect matches these uniforms:
     this.uniforms.iDst = s.getUniformSampler2D("iDst");
     this.uniforms.iTime = s.getUniformFloat1("iTime");
     this.uniforms.iColorRGB = s.getUniformFloat3("iColorRGB");
@@ -140,37 +225,47 @@ public class GLShaderEffect extends TEEffect implements GpuDevice {
     this.uniforms.iColor2HSB = s.getUniformFloat3("iColor2HSB");
   }
 
-  // send a subset of the controls we use with patterns
-  private void setUniforms(GLShader s) {
-    if (!this.initializedUniforms) {
-      this.initializedUniforms = true;
-      initializeUniforms(s);
-    }
+  private GLShader.UniformSource uniformSource =
+      new GLShader.UniformSource() {
+        /** Send a subset of the controls we use with patterns */
+        @Override
+        public void setUniforms(GLShader s) {
+          if (!initializedUniforms) {
+            initializedUniforms = true;
+            initializeUniforms(s);
+          }
 
-    // Shaders are run in sequence.  Pass the current iDst value, which may be the output of the
-    // previous shader
-    this.uniforms.iDst.setValue(this.currentShaderDst);
+          // Shaders are run in sequence.  Pass the current iDst value, which may be the output of
+          // the
+          // previous shader
+          uniforms.iDst.setValue(currentShaderDst);
 
-    this.uniforms.iTime.setValue((float) getTime());
+          uniforms.iTime.setValue((float) getTime());
 
-    // get current primary and secondary colors
-    // TODO - we're just grabbing swatch colors here.  Do we need to worry about modulation?
-    int col = getColor1();
-    this.uniforms.iColorRGB.setValue(
-        (float) (0xff & LXColor.red(col)) / 255f,
-        (float) (0xff & LXColor.green(col)) / 255f,
-        (float) (0xff & LXColor.blue(col)) / 255f);
-    this.uniforms.iColorHSB.setValue(
-        LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
+          // get current primary and secondary colors
+          // TODO - we're just grabbing swatch colors here.  Do we need to worry about modulation?
+          int col = getColor1();
+          uniforms.iColorRGB.setValue(
+              (float) (0xff & LXColor.red(col)) / 255f,
+              (float) (0xff & LXColor.green(col)) / 255f,
+              (float) (0xff & LXColor.blue(col)) / 255f);
+          uniforms.iColorHSB.setValue(
+              LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
 
-    col = getColor2();
-    this.uniforms.iColor2RGB.setValue(
-        (float) (0xff & LXColor.red(col)) / 255f,
-        (float) (0xff & LXColor.green(col)) / 255f,
-        (float) (0xff & LXColor.blue(col)) / 255f);
-    this.uniforms.iColor2HSB.setValue(
-        LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
-  }
+          col = getColor2();
+          uniforms.iColor2RGB.setValue(
+              (float) (0xff & LXColor.red(col)) / 255f,
+              (float) (0xff & LXColor.green(col)) / 255f,
+              (float) (0xff & LXColor.blue(col)) / 255f);
+          uniforms.iColor2HSB.setValue(
+              LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
+        }
+
+        @Override
+        public void unbindTextures() {
+          uniforms.iDst.unbind();
+        }
+      };
 
   @Override
   protected void onEnable() {
@@ -178,6 +273,9 @@ public class GLShaderEffect extends TEEffect implements GpuDevice {
     for (TEShader shader : this.shaders) {
       shader.onActive();
     }
+
+    // Temporary bug fix:
+    this.onEnableCalled = true;
   }
 
   @Override

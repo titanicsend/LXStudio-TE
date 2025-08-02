@@ -5,19 +5,19 @@ import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
 
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.util.texture.Texture;
-import heronarts.lx.LX;
-
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 public abstract class Uniform {
 
-  private static final int LOCATION_NOT_FOUND = -1;
+  public static final int LOCATION_NOT_FOUND = -1;
 
   protected final GL4 gl4;
   public final String name;
   public final int location;
   public final boolean hasLocation;
+  protected boolean hasError = false;
+  protected String error = null;
   public final UniformType type;
   protected boolean modified;
 
@@ -37,6 +37,14 @@ public abstract class Uniform {
 
   /** Send latest value to OpenGL */
   public abstract void update();
+
+  public boolean hasError() {
+    return this.hasError;
+  }
+
+  public String getError() {
+    return this.error;
+  }
 
   /** Factory to create a new uniform by type */
   public static Uniform create(
@@ -606,9 +614,15 @@ public abstract class Uniform {
 
     @Override
     public void update() {
-      if (this.textureHandle == -1 && !this.loggedOnce) {
+      if (!this.isObject && this.textureHandle == -1 && !this.loggedOnce) {
         this.loggedOnce = true;
-        LX.error("Missing texture '" + this.name + "' for unit " + this.textureUnit + ", this could be a bug...");
+        this.hasError = true;
+        this.error =
+            "Missing texture '"
+                + this.name
+                + "' for unit "
+                + this.textureUnit
+                + ", this could be a bug...";
       }
       gl4.glActiveTexture(GL_TEXTURE0 + this.textureUnit);
       if (this.isObject) {

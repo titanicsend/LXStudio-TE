@@ -30,6 +30,7 @@ import heronarts.lx.LX;
 import heronarts.lx.utils.LXUtils;
 import java.io.File;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -103,6 +104,7 @@ public abstract class GLShader {
   private final HashMap<String, Uniform> uniformMap = new HashMap<>();
   private final List<Uniform> mutableUniforms = new ArrayList<>();
   public final List<Uniform> uniforms = Collections.unmodifiableList(this.mutableUniforms);
+  private final List<Uniform> erroredUniforms = new ArrayList<>();
 
   // Map of uniform names to GL texture units
   protected final HashMap<String, Integer> uniformTextureUnits = new HashMap<>();
@@ -378,6 +380,11 @@ public abstract class GLShader {
     for (Uniform uniform : this.uniforms) {
       if (uniform.hasUpdate()) {
         uniform.update();
+        // Log new errors
+        if (uniform.hasError() && !this.erroredUniforms.contains(uniform)) {
+          this.erroredUniforms.add(uniform);
+          LX.error("Shader '" + this.shaderProgram.name + "' uniform error: " + uniform.getError());
+        }
       }
     }
   }
@@ -731,7 +738,7 @@ public abstract class GLShader {
       // First time accessing this uniform, create a new object.
       int location = this.gl4.glGetUniformLocation(this.shaderProgram.id, name);
       if (location == Uniform.LOCATION_NOT_FOUND) {
-        LX.error("Uniform '" + name + "' not found in shader program " + this.shaderProgram.name);
+        LX.warning("Uniform '" + name + "' not found in shader program " + this.shaderProgram.name);
       }
       // Special handling for Sampler2D, textureUnit will be set once in the constructor.
       if (type == UniformType.SAMPLER2D || type == UniformType.SAMPLER2DSTATIC) {
@@ -774,6 +781,7 @@ public abstract class GLShader {
     // Release references to uniform objects
     this.uniformMap.clear();
     this.mutableUniforms.clear();
+    this.erroredUniforms.clear();
 
     if (this.initialized) {
       // delete GPU buffers we directly allocated
@@ -848,6 +856,11 @@ public abstract class GLShader {
 
     public void unbind() {
       gl4.glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    public void clear() {
+      bind(true);
+      unbind();
     }
 
     public void dispose() {
@@ -993,6 +1006,29 @@ public abstract class GLShader {
     public ByteBuffer mapForWrite() {
       gl4.glBindBuffer(GL4.GL_PIXEL_UNPACK_BUFFER, this.handles[0]);
       return gl4.glMapBuffer(GL4.GL_PIXEL_UNPACK_BUFFER, GL4.GL_WRITE_ONLY);
+    }
+
+    /** Clear pixels in the PBO */
+    public void clear() {
+      bind();
+
+      ByteBuffer buffer =
+          gl4.glMapBufferRange(
+              GL4.GL_PIXEL_PACK_BUFFER,
+              0,
+              (long) numPixels * bytesPerPixel,
+              GL4.GL_MAP_WRITE_BIT | GL4.GL_MAP_INVALIDATE_BUFFER_BIT);
+
+      if (buffer != null) {
+        // Fill with zeros
+        IntBuffer intBuf = buffer.order(ByteOrder.nativeOrder()).asIntBuffer();
+        while (intBuf.remaining() > 0) {
+          intBuf.put(0);
+        }
+        gl4.glUnmapBuffer(GL4.GL_PIXEL_PACK_BUFFER);
+      }
+
+      unbind();
     }
 
     public void dispose() {
