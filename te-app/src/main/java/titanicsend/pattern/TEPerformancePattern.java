@@ -50,8 +50,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
   final Rotor spinRotor = new Rotor();
 
   protected final TECommonControls controls;
-  public final TEUserPresetParameter presets;
-  public final UserPresetCollection presetCollection;
+  public TEUserPresetParameter presets;
+  public UserPresetCollection presetCollection;
 
   protected final FloatBuffer palette = Buffers.newDirectFloatBuffer(15);
 
@@ -65,27 +65,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
   protected TEPerformancePattern(LX lx, TEShaderView defaultView) {
     super(lx);
-
-    // TODO(look): should this live in TEPattern?
-    this.presetCollection = PresetEngine.get().getLibrary().get(this);
-    this.presets = new TEUserPresetParameter(this, this.presetCollection, "Presets");
-    this.presets.addListener(
-        new LXParameterListener() {
-          @Override
-          public void onParameterChanged(LXParameter parameter) {
-            if (parameter instanceof TEUserPresetParameter) {
-              lx.engine.addTask(
-                  new Runnable() {
-                    public void run() {
-                      ((TEUserPresetParameter) parameter)
-                          .getObject()
-                          .restore(TEPerformancePattern.this);
-                    }
-                  });
-            }
-          }
-        });
-    addParameter("te_preset", this.presets);
+    addPresetParameter();
     this.controls = new TECommonControls(this);
 
     this.defaultView = defaultView;
@@ -112,6 +92,33 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     this.controls.markUnused(this.controls.getLXControl(TEControlTag.TWIST));
     this.constructed = true;
+  }
+
+  // TODO(look): should this live in TEPattern?
+  public void addPresetParameter() {
+    this.presetCollection = PresetEngine.get().getLibrary().get(this);
+    this.presets = new TEUserPresetParameter(this, this.presetCollection, "Presets");
+    addParameter("te_preset", this.presets);
+
+    this.presets.addListener(
+        new LXParameterListener() {
+          @Override
+          public void onParameterChanged(LXParameter parameter) {
+            if (parameter instanceof TEUserPresetParameter) {
+              lx.engine.addTask(
+                  new Runnable() {
+                    public void run() {
+                      // TODO(look): the preset knob disappears when I move it
+                      ((TEUserPresetParameter) parameter)
+                          .getObject()
+                          .restore(TEPerformancePattern.this);
+                      // Idea: setRemoteControls.. to ensure the knob is showing?
+                      TEPerformancePattern.this.controls.setRemoteControls();
+                    }
+                  });
+            }
+          }
+        });
   }
 
   // TEUserPresetParameter will complain about being initialized with an empty list. Add a
