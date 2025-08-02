@@ -364,6 +364,13 @@ public class TECommonControls {
 
   /** Set remote controls in order they will appear on the midi surfaces */
   protected void setRemoteControls() {
+    // TODO(look): occasionally some patterns (e.g. in BM2024_TE.lxp in Channel 1, the first
+    //             instance of Electric has preset knob, but the second instance (called
+    //             '@ Electric' does not). Unclear to me why that param would be missing,
+    //             but trying a check here as a fallback.
+    if (this.pattern.presets == null) {
+      this.pattern.addPresetParameter();
+    }
     this.pattern.setCustomRemoteControls(
         new LXListenableNormalizedParameter[] {
           getControl(TEControlTag.LEVELREACTIVITY).control,

@@ -17,6 +17,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.util.TE;
 
 /** Contains presets for multiple components */
@@ -72,28 +73,25 @@ public class UserPresetLibrary implements LXSerializable {
     String clazz = PresetEngine.getPresetName(component);
     UserPresetCollection c = get(clazz);
 
-    //    // NOTE(look): bit hacky way of ensuring that the defaults are always loaded up for a
-    // pattern.
-    //    boolean hasDefault = false;
-    //    for (UserPreset p : c.getPresets()) {
-    //      if (p.getLabel().equals("DEFAULT")) {
-    //        hasDefault = true;
-    //      }
-    //    }
-    //    if (!hasDefault) {
-    //      // TODO: do we need to update the defaults if some parameters were added to the pattern
-    // after
-    //      //       the call to UserPresetCollection.get()?
-    //      JsonObject defaultPreset = null;
-    //      if (component instanceof TEPerformancePattern) {
-    //        defaultPreset = ((TEPerformancePattern) component).getDefaultPreset();
-    //      }
-    //      if (defaultPreset != null) {
-    //        // TODO: ideally, add at index 0 - but UI seems to get wonky if we try to rewrite
-    // indices.
-    //        c.addPreset(component, defaultPreset, "DEFAULT");
-    //      }
-    //    }
+    // NOTE(look): bit hacky way of ensuring that the defaults are always loaded up for a pattern.
+    boolean hasDefault = false;
+    for (UserPreset p : c.getPresets()) {
+      if (p.getLabel().equals("DEFAULT")) {
+        hasDefault = true;
+      }
+    }
+    if (!hasDefault) {
+      // TODO: do we need to update the defaults if some parameters were added to the pattern after
+      //       the call to UserPresetCollection.get()?
+      JsonObject defaultPreset = null;
+      if (component instanceof TEPerformancePattern) {
+        defaultPreset = ((TEPerformancePattern) component).getDefaultPreset();
+      }
+      if (defaultPreset != null) {
+        // TODO: ideally, add at index 0 - but UI seems to get wonky if we try to rewrite indices.
+        c.addPreset(component, defaultPreset, "DEFAULT");
+      }
+    }
     return c;
   }
 
