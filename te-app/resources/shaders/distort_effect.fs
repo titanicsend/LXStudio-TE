@@ -6,11 +6,8 @@
 // Texture from the preceding pattern or effect
 uniform sampler2D iDst;
 
-uniform float basis;
-uniform float size; // Warping intensity (0 = no warp, higher = more warp)
-
-// uniform float iDepth;
-
+uniform float size;
+uniform float depth; // Warping intensity (0 = no warp, higher = more warp)
 
 // Simple 2D noise function
 float noise(vec2 p) {
@@ -51,43 +48,51 @@ float fbm(vec2 p) {
     return value;
 }
 
-// Domain warping function
-vec2 domainWarp(vec2 p, float intensity) {
+// Generate domain warp offset
+vec2 getDomainWarpOffset(vec2 p, float intensity) {
     if (intensity <= 0.0) {
-        return p;
+        return vec2(0.0);
     }
 
     // Create two FBM patterns offset from each other
-    vec2 q = vec2(fbm(p + vec2(0.0, 0.0)),
-                  fbm(p + vec2(5.2, 1.3)));
+    vec2 q = vec2(fbm(p + vec2(0.0, 0.0 + sin(iTime * .5))),
+                  fbm(p + vec2(5.2, 1.3 + cos(iTime * .2))));
 
     // Use the first pattern to warp the input for the second pattern
-    vec2 r = vec2(fbm(p + 4.0 * q + vec2(1.7, 9.2)),
-                  fbm(p + 4.0 * q + vec2(8.3, 2.8)));
+    vec2 r = vec2(fbm(p + size * sin(iTime) * q + vec2(1.7, 9.2)),
+                  fbm(p + size * cos(iTime * 2.) * q + vec2(8.3, 2.8)));
 
-    // Apply warping with controllable intensity
-    return p + intensity * r;
+    // Return warp offset scaled by intensity
+    return intensity * (r - 0.5) * 0.2; // Center around 0 and scale
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-    // Normalize coordinates to [0, 1]
-    vec2 uv = fragCoord.xy / iResolution;
+    fragColor = texelFetch(iDst, ivec2(gl_FragCoord.xy), 0);
 
-    // Scale coordinates for noise (adjust scale as needed)
-    vec2 noiseCoord = uv * 4.0;
+    // If no warping, just output original
+    if (depth <= 0.0) {
+        return;
+    }
 
-    // Apply domain warping
-    vec2 warpedCoord = domainWarp(noiseCoord, size * 0.1);
+    vec3 modelCoords = _getModelCoordinates().xyz;
+    vec2 uv = vec2((modelCoords.z < 0.5) ? modelCoords.x : 1. + (1. - modelCoords.x), modelCoords.y);
+    uv.x *= 0.5;
 
-    // Convert back to texture coordinates
-    vec2 warpedUV = warpedCoord / 4.0;
+    // Normalize coordinates for noise calculation
+    vec2 noiseCoord = uv; // Scale for noise frequency
+
+    // Calculate domain warp offset
+    vec2 warpOffset = getDomainWarpOffset(noiseCoord, depth);
+
+    // Apply warp to the sampling coordinates
+    vec2 warpedUV = (uv + warpOffset) * 2.0;
 
     // Clamp to avoid sampling outside texture bounds
     warpedUV = clamp(warpedUV, 0.0, 1.0);
 
-    // Convert UV back to pixel coordinates for texelFetch
+    // Convert back to pixel coordinates for texelFetch
     ivec2 warpedPixel = ivec2(warpedUV * iResolution);
 
     // Sample the warped pixel from the backbuffer
-    fragColor = texelFetch(iDst, warpedPixel, 0);
+    fragColor = ((1. - depth) * fragColor) + (depth * texelFetch(iDst, warpedPixel, 0));
 }
