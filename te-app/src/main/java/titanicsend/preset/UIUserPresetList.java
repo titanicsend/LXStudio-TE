@@ -7,6 +7,7 @@ import heronarts.lx.command.LXCommand;
 import heronarts.lx.studio.LXStudio;
 import java.util.HashMap;
 import java.util.Map;
+import titanicsend.pattern.TEPattern;
 
 public class UIUserPresetList extends UIItemList.ScrollList {
 
@@ -159,7 +160,12 @@ public class UIUserPresetList extends UIItemList.ScrollList {
 
     @Override
     public void onActivate() {
-      this.preset.restore(component);
+      if (component instanceof TEPattern) {
+        // For TEPattern / TEPerformancePattern, use
+        ((TEPattern) component).restore(this.preset);
+      } else {
+        this.preset.restore(component);
+      }
       setActiveItem(this);
     }
 

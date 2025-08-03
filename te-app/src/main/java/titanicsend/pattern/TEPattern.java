@@ -22,6 +22,7 @@ import titanicsend.model.TELaserModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
 import titanicsend.pattern.glengine.GLEngine;
+import titanicsend.preset.UserPreset;
 import titanicsend.util.TE;
 import titanicsend.util.TEColor;
 
@@ -50,6 +51,32 @@ public abstract class TEPattern extends DmxPattern {
     this.sdc = this.modelTE.getPanel("SDC");
 
     addParameter("setDefaults", this.captureDefaults);
+  }
+
+  public void restore(UserPreset preset) {
+    if (preset == null) {
+      restoreDefaults();
+    } else {
+      preset.restore(this);
+    }
+  }
+
+  /**
+   * Called to restore default parameters for the "default" (null) preset. Can be overridden by
+   * subclasses (e.g. TEPerformancePattern can replicate the "panic" button functionality).
+   */
+  public void restoreDefaults() {
+    for (LXParameter p : this.getParameters()) {
+      // If a custom default was captured/stored for this parameter,
+      if (this.defaults.containsKey(p.getPath())) {
+        // Set the value to the stored default.
+        p.setValue(this.defaults.get(p.getPath()));
+      } else {
+        // Otherwise, just call parameter.reset() to restore the default value
+        // given to Chromatik when param was created.
+        p.reset();
+      }
+    }
   }
 
   @Override

@@ -92,6 +92,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
   // TODO(look): should this live in TEPattern?
   public void addPresetParameter() {
     this.presets = PresetEngine.get().getLibrary().get(this).newUserPresetParameter("Presets");
+    //    addParameter(KEY_PRESET, this.presets);
     addInternalParameter(KEY_PRESET, this.presets);
 
     this.presets.addListener(
@@ -104,18 +105,17 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
                     public void run() {
                       UserPreset preset =
                           ((UserPresetCollection.UserPresetParameter) parameter).getObject();
-                      if (preset == null) {
-                        TEPerformancePattern.this.controls.onPanic();
-                      } else {
-                        preset.restore(TEPerformancePattern.this);
-                      }
-                      // Idea: setRemoteControls.. to ensure the knob is showing?
-                      TEPerformancePattern.this.controls.setRemoteControls();
+                      TEPerformancePattern.this.restore(preset);
                     }
                   });
             }
           }
         });
+  }
+
+  @Override
+  public void restoreDefaults() {
+    TEPerformancePattern.this.getControls().onPanic();
   }
 
   public TECommonControls getControls() {
@@ -515,6 +515,13 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     //    removeParameter(this.presets);
     super.save(lx, obj);
     //    addParameter(KEY_PRESET, this.presets);
+  }
+
+  @Override
+  public void load(LX lx, JsonObject obj) {
+    super.load(lx, obj);
+    // ensure the preset param gets re-added to controls after loading.
+    TEPerformancePattern.this.controls.setRemoteControls();
   }
 
   @Override

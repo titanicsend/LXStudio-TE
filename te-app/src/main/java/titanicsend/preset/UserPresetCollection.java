@@ -73,23 +73,16 @@ public class UserPresetCollection implements LXSerializable {
       ++i;
     }
 
-    // Update all of the selectors to have new range/options
+    // Update all of the params to have new range/options
     for (UserPresetParameter parameter : this.registeredParams) {
-
       final UserPreset selected = parameter.getObject();
       parameter.setObjects(this.presetObjects, this.presetLabels);
 
-      // TODO(look): do I want to keep this? this would update the selected preset on ALL pattern
-      //             instances, when what we really want is just a given pattern instance to be
-      //             updated. This mechanism could be handy, though, in design mode for the larger
-      //             list of preset names to respond to changes in the selected preset.
-      //
-      //      // Check if a selector had a non-null selection, if so
-      //      // it should be restored in the case of renaming/reordering
-      //      // where it is still in the list but its index may be different
-      //      if ((selected != parameter.getObject()) && this.presets.contains(selected)) {
-      //        parameter.setValue(selected);
-      //      }
+      // Check if a param had a non-null selection, if so it should be restored in the case of
+      // renaming/reordering where it is still in the list but its index may be different.
+      if ((selected != parameter.getObject()) && this.presets.contains(selected)) {
+        parameter.setValue(selected);
+      }
     }
   }
 
