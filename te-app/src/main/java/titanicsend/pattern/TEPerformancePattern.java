@@ -24,7 +24,6 @@ import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon.VariableSpeedTimer;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.preset.PresetEngine;
-import titanicsend.preset.TEUserPresetParameter;
 import titanicsend.preset.UserPreset;
 import titanicsend.preset.UserPresetCollection;
 import titanicsend.util.Rotor;
@@ -51,8 +50,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
   final Rotor spinRotor = new Rotor();
 
   protected final TECommonControls controls;
-  public TEUserPresetParameter presets;
-  public UserPresetCollection presetCollection;
+  public UserPresetCollection.UserPresetParameter presets;
 
   protected final FloatBuffer palette = Buffers.newDirectFloatBuffer(15);
 
@@ -97,43 +95,24 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
   // TODO(look): should this live in TEPattern?
   public void addPresetParameter() {
-
-    this.presetCollection = PresetEngine.get().getLibrary().get(this);
-    // Since we want to show/hide the presets knob depending on whether there are UserPresets,
-    // use a Listener to refresh the remote controls when Collection changes.
-    // Also, refresh the options/labels in the preset parameter upon any changes.
-    this.presetCollection.addListener(
-        new UserPresetCollection.Listener() {
-          @Override
-          public void presetAdded(UserPreset preset) {
-            TEPerformancePattern.this.presets.updateObjects();
-            TEPerformancePattern.this.setRemoteControls();
-          }
-
-          @Override
-          public void presetMoved(UserPreset preset) {}
-
-          @Override
-          public void presetRemoved(UserPreset preset) {
-            TEPerformancePattern.this.presets.updateObjects();
-            TEPerformancePattern.this.setRemoteControls();
-          }
-        });
-    this.presets = new TEUserPresetParameter(this, "Presets");
+    this.presets = PresetEngine.get().getLibrary().get(this).newUserPresetParameter("Presets");
     addParameter("te_preset", this.presets);
 
     this.presets.addListener(
         new LXParameterListener() {
           @Override
           public void onParameterChanged(LXParameter parameter) {
-            if (parameter instanceof TEUserPresetParameter) {
+            if (parameter instanceof UserPresetCollection.UserPresetParameter) {
               lx.engine.addTask(
                   new Runnable() {
                     public void run() {
-                      // TODO(look): the preset knob disappears when I move it
-                      ((TEUserPresetParameter) parameter)
-                          .getObject()
-                          .restore(TEPerformancePattern.this);
+                      UserPreset preset =
+                          ((UserPresetCollection.UserPresetParameter) parameter).getObject();
+                      if (preset == null) {
+                        TEPerformancePattern.this.controls.onPanic();
+                      } else {
+                        preset.restore(TEPerformancePattern.this);
+                      }
                       // Idea: setRemoteControls.. to ensure the knob is showing?
                       TEPerformancePattern.this.controls.setRemoteControls();
                     }
