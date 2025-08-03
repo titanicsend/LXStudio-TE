@@ -101,6 +101,7 @@ public class UserPresetCollection implements LXSerializable {
     }
     preset.setIndex(this.mutablePresets.size());
     this.mutablePresets.add(preset);
+    updatePresetParams();
     for (Listener listener : this.listeners) {
       listener.presetAdded(preset);
     }
