@@ -6,8 +6,9 @@
 // Texture from the preceding pattern or effect
 uniform sampler2D iDst;
 
-uniform float size;
 uniform float depth; // Warping intensity (0 = no warp, higher = more warp)
+uniform float size;
+uniform float speed;
 
 // Simple 2D noise function
 float noise(vec2 p) {
@@ -57,15 +58,16 @@ vec2 getDomainWarpOffset(vec2 p, float intensity) {
     }
 
     // Create two FBM patterns offset from each other
-    vec2 q = vec2(fbm(p + vec2(0.0, 0.0 + sin(time * .5))),
-                  fbm(p + vec2(5.2, 1.3 + cos(time * .2))));
+    vec2 q = vec2(fbm(p + vec2(0.0, 0.0 + (1. + sin(time * .5)))),
+                  fbm(p + vec2(5.2, 1.3 + (1. + cos(time * .2)))));
 
+    float t1 = (1. + sin(time));
     // Use the first pattern to warp the input for the second pattern
-    vec2 r = vec2(fbm(p + 4.0 * (1.0 + size) * q + vec2(1.7 + sin(time * 1.2), 9.2)),
-                  fbm(p + 4.0 * (1.0 + size) * q + vec2(8.3 + cos(time * 1.5), 2.8)));
+    vec2 r = vec2(fbm(p + 4.0 * t1 * (1.0 + size) * q + vec2(1.7 + sin(time * 1.2), 9.2)),
+                  fbm(p + 4.0 * (1. + sin(time*2.)) * (1.0 + size) * q + vec2(8.3 + cos(time * 1.5), 2.8)));
 
     // Return warp offset scaled by intensity
-    return intensity * (r - 0.5) * 0.2; // Center around 0 and scale
+    return intensity * (r - 0.5) * t1; // Center around 0 and scale
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {

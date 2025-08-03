@@ -11,7 +11,7 @@ public class DistortEffect extends GLShaderEffect {
   double effectDepth;
 
   public final CompoundParameter speed =
-      new CompoundParameter("Speed", 0.05)
+      new CompoundParameter("Speed", 0.15)
           .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
           .setExponent(2)
           .setDescription("Speed of the effect");
@@ -22,7 +22,7 @@ public class DistortEffect extends GLShaderEffect {
           .setDescription("Depth of the effect");
 
   public final BoundedParameter size =
-      new BoundedParameter("Size", 0, 0, 10).setDescription("Explosion block size");
+      new BoundedParameter("Size", 12, 0, 20).setDescription("Explosion block size");
 
   public DistortEffect(LX lx) {
     super(lx);
@@ -38,6 +38,8 @@ public class DistortEffect extends GLShaderEffect {
   private void setUniforms(GLShader shader) {
     shader.setUniform("size", size.getValuef());
     shader.setUniform("depth", depth.getValuef());
+    shader.setUniform("speed", speed.getValuef());
+    shader.setUniform("iTime", (float) getTime());
   }
 
   @Override
