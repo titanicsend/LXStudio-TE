@@ -1,5 +1,6 @@
 package titanicsend.pattern;
 
+import com.google.gson.JsonObject;
 import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
@@ -25,6 +26,7 @@ import titanicsend.util.TEColor;
 
 public abstract class TEPerformancePattern extends TEAudioPattern {
 
+  private static final String KEY_PRESET = "te_preset";
   private final TEShaderView defaultView;
 
   /**
@@ -90,7 +92,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
   // TODO(look): should this live in TEPattern?
   public void addPresetParameter() {
     this.presets = PresetEngine.get().getLibrary().get(this).newUserPresetParameter("Presets");
-    addParameter("te_preset", this.presets);
+    addParameter(KEY_PRESET, this.presets);
 
     this.presets.addListener(
         new LXParameterListener() {
@@ -503,6 +505,16 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     expireColors();
 
     super.run(deltaMs);
+  }
+
+  @Override
+  public void save(LX lx, JsonObject obj) {
+    // HACK: remove the presetParam from the list before saving.
+    // TODO(look): is there a better way to do this, without fully replicating all the save() logic
+    //             from superclasses like TEPattern, LXPattern, LXComponent?
+    LXParameter presetParam = this.parameters.remove(KEY_PRESET);
+    super.save(lx, obj);
+    addParam(KEY_PRESET, presetParam);
   }
 
   @Override
