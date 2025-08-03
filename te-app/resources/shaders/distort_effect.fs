@@ -57,8 +57,8 @@ vec2 getDomainWarpOffset(vec2 p, float intensity) {
     }
 
     // Create two FBM patterns offset from each other
-    vec2 q = vec2(fbm(p + vec2(0.0, 0.0 + sin(time * .5)),
-                  fbm(p + vec2(5.2, 1.3 + cos(time * .2));
+    vec2 q = vec2(fbm(p + vec2(0.0, 0.0 + sin(time * .5))),
+                  fbm(p + vec2(5.2, 1.3 + cos(time * .2))));
 
     // Use the first pattern to warp the input for the second pattern
     vec2 r = vec2(fbm(p + 4.0 * (1.0 + size) * q + vec2(1.7 + sin(time * 1.2), 9.2)),

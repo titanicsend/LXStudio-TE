@@ -10,6 +10,12 @@ import titanicsend.pattern.glengine.GLShaderEffect;
 public class DistortEffect extends GLShaderEffect {
   double effectDepth;
 
+  public final CompoundParameter speed =
+      new CompoundParameter("Speed", 0.05)
+          .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
+          .setExponent(2)
+          .setDescription("Speed of the effect");
+
   public final CompoundParameter depth =
       new CompoundParameter("Depth", 0.0, 0.0, 10.0)
           .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
@@ -18,16 +24,10 @@ public class DistortEffect extends GLShaderEffect {
   public final BoundedParameter size =
       new BoundedParameter("Size", 0, 0, 10).setDescription("Explosion block size");
 
-  public final CompoundParameter speed =
-      new CompoundParameter("Speed", 0.05)
-          .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
-          .setExponent(2)
-          .setDescription("Speed of the effect");
-
   public DistortEffect(LX lx) {
     super(lx);
 
-    addParameter("speed", this.speed); // TODO(look): is this affecting iTime?
+    addParameter("speed", this.speed);
     addParameter("depth", this.depth);
     addParameter("size", this.size);
 
@@ -44,10 +44,5 @@ public class DistortEffect extends GLShaderEffect {
   public void run(double deltaMs, double enabledAmount) {
     effectDepth = enabledAmount * depth.getValue();
     super.run(deltaMs, enabledAmount);
-  }
-
-  @Override
-  public void dispose() {
-    super.dispose();
   }
 }
