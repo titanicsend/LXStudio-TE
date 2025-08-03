@@ -1,23 +1,17 @@
 package titanicsend.pattern;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.BoundedParameter;
-import heronarts.lx.parameter.CompoundParameter;
-import heronarts.lx.parameter.LXListenableParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
-import heronarts.lx.parameter.StringParameter;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import titanicsend.app.TEGlobalPatternControls;
 import titanicsend.pattern.glengine.ShaderConfiguration;
 import titanicsend.pattern.jon.TEControlTag;
@@ -120,41 +114,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
             }
           }
         });
-  }
-
-  // TEUserPresetParameter will complain about being initialized with an empty list. Add a
-  // placeholder JsonObject for the defaults.
-  //
-  // We'll call this inside `UserPresetLibrary.get()`, so that we never return an empty list.
-  //
-  // TODO(look): confirm that the way 'captureDefaults' represents preset fields (param.getPath())
-  //             is compatible w/ UserPreset.
-  // TODO(look): also confirm that if I add an empty JsonObject to the preset, keep a reference to
-  //             it, and later update its properties, that those properties will be used.
-  public JsonObject getDefaultPreset() {
-    JsonObject defaultPreset = new JsonObject();
-    // If "captureDefaults" was called on this pattern AND it was loaded from a project file,
-    // "defaults" will be populated. Add that as a preset.
-    if (!this.defaults.isEmpty()) {
-      for (Map.Entry<String, Double> entry : this.defaults.entrySet()) {
-        defaultPreset.add(entry.getKey(), new JsonPrimitive(entry.getValue()));
-      }
-    } else {
-      // Otherwise, we should find the default param values and set those (note: doing this after
-      // TECommonControls, so
-      // that any defaults loaded up elsewhere will be params on the pattern by the time this code
-      // runs.
-      for (LXParameter p : this.getParameters()) {
-        if (p instanceof LXListenableParameter
-            && !isHiddenControl(p)
-            && p.getParent() == this
-            && !(p instanceof StringParameter)) {
-          double value = p instanceof CompoundParameter ? p.getBaseValue() : p.getValue();
-          defaultPreset.add(p.getPath(), new JsonPrimitive(value));
-        }
-      }
-    }
-    return defaultPreset;
   }
 
   public TECommonControls getControls() {
