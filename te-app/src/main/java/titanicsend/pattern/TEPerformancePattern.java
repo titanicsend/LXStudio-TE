@@ -92,7 +92,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
   // TODO(look): should this live in TEPattern?
   public void addPresetParameter() {
     this.presets = PresetEngine.get().getLibrary().get(this).newUserPresetParameter("Presets");
-    addParameter(KEY_PRESET, this.presets);
+    addInternalParameter(KEY_PRESET, this.presets);
 
     this.presets.addListener(
         new LXParameterListener() {
@@ -512,9 +512,9 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     // HACK: remove the presetParam from the list before saving.
     // TODO(look): is there a better way to do this, without fully replicating all the save() logic
     //             from superclasses like TEPattern, LXPattern, LXComponent?
-    LXParameter presetParam = this.parameters.remove(KEY_PRESET);
+    //    removeParameter(this.presets);
     super.save(lx, obj);
-    addParam(KEY_PRESET, presetParam);
+    //    addParameter(KEY_PRESET, this.presets);
   }
 
   @Override

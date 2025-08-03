@@ -16,7 +16,6 @@ import titanicsend.color.TEGradientSource;
 import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon._CommonControlGetter;
-import titanicsend.preset.PresetEngine;
 import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
 
@@ -385,11 +384,7 @@ public class TECommonControls {
           getControl(TEControlTag.ANGLE).control,
           getControl(TEControlTag.SPIN).control,
           this.panic,
-          // All patterns should have a "default" - only show preset knob if the pattern has at
-          // least one other preset.
-          PresetEngine.get().getLibrary().get(this.pattern).getPresets().size() > 1
-              ? this.pattern.presets
-              : null,
+          this.pattern.presets,
           getControl(TEControlTag.WOW1).control,
           getControl(TEControlTag.WOW2).control,
           getControl(TEControlTag.WOWTRIGGER).control,
