@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import heronarts.lx.LX;
 import heronarts.lx.LXPresetComponent;
 import heronarts.lx.LXSerializable;
+import heronarts.lx.parameter.ObjectParameter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,6 +21,25 @@ public class UserPresetCollection implements LXSerializable {
   private final List<UserPreset> mutablePresets = new ArrayList<UserPreset>();
   public final List<UserPreset> presets = Collections.unmodifiableList(this.mutablePresets);
 
+  private final String DEFAULT_PRESET = "Default";
+  private UserPreset[] presetObjects = {null};
+  private String[] presetLabels = {DEFAULT_PRESET};
+
+  private final List<UserPresetParameter> registeredParams = new ArrayList<>();
+
+  public class UserPresetParameter extends ObjectParameter<UserPreset> {
+    public UserPresetParameter(String label) {
+      super(label, presetObjects, presetLabels);
+      UserPresetCollection.this.registeredParams.add(this);
+    }
+
+    @Override
+    public void dispose() {
+      UserPresetCollection.this.registeredParams.remove(this);
+      super.dispose();
+    }
+  }
+
   public interface Listener {
     public default void presetAdded(UserPreset preset) {}
 
@@ -33,6 +53,44 @@ public class UserPresetCollection implements LXSerializable {
   public UserPresetCollection(LX lx, String clazz) {
     this.lx = lx;
     this.clazz = clazz;
+  }
+
+  public UserPresetParameter newUserPresetParameter(String label) {
+    return new UserPresetParameter(label);
+  }
+
+  private void updatePresetParams() {
+    int numOptions = 1 + this.getPresets().size();
+    this.presetObjects = new UserPreset[numOptions];
+    this.presetLabels = new String[numOptions];
+    this.presetObjects[0] = null;
+    this.presetLabels[0] = DEFAULT_PRESET;
+
+    int i = 1;
+    for (UserPreset preset : this.getPresets()) {
+      this.presetObjects[i] = preset;
+      this.presetLabels[i] = preset.getLabel();
+      ++i;
+    }
+
+    // Update all of the selectors to have new range/options
+    for (UserPresetParameter parameter : this.registeredParams) {
+
+      final UserPreset selected = parameter.getObject();
+      parameter.setObjects(this.presetObjects, this.presetLabels);
+
+      // TODO(look): do I want to keep this? this would update the selected preset on ALL pattern
+      //             instances, when what we really want is just a given pattern instance to be
+      //             updated. This mechanism could be handy, though, in design mode for the larger
+      //             list of preset names to respond to changes in the selected preset.
+      //
+      //      // Check if a selector had a non-null selection, if so
+      //      // it should be restored in the case of renaming/reordering
+      //      // where it is still in the list but its index may be different
+      //      if ((selected != parameter.getObject()) && this.presets.contains(selected)) {
+      //        parameter.setValue(selected);
+      //      }
+    }
   }
 
   public UserPreset addPreset() {
@@ -65,6 +123,7 @@ public class UserPresetCollection implements LXSerializable {
     }
     preset.setIndex(this.mutablePresets.size());
     this.mutablePresets.add(preset);
+    updatePresetParams();
     for (Listener listener : this.listeners) {
       listener.presetAdded(preset);
     }
@@ -86,6 +145,7 @@ public class UserPresetCollection implements LXSerializable {
     for (int i = index; i < this.mutablePresets.size(); ++i) {
       this.mutablePresets.get(i).setIndex(i);
     }
+    updatePresetParams();
     for (Listener listener : this.listeners) {
       listener.presetRemoved(preset);
     }
@@ -99,6 +159,7 @@ public class UserPresetCollection implements LXSerializable {
     for (UserPreset p : this.mutablePresets) {
       p.setIndex(i++);
     }
+    updatePresetParams();
     for (Listener listener : this.listeners) {
       listener.presetMoved(pattern);
     }
@@ -160,6 +221,7 @@ public class UserPresetCollection implements LXSerializable {
 
     preset.setIndex(this.mutablePresets.size());
     this.mutablePresets.add(preset);
+    updatePresetParams();
     for (Listener listener : this.listeners) {
       listener.presetAdded(preset);
     }

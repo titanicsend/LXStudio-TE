@@ -8,6 +8,7 @@ import heronarts.lx.LXSerializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import titanicsend.pattern.TEPattern;
+import titanicsend.pattern.TEPerformancePattern;
 
 /**
  * A saveable snapshot of a component including parameter values and modulators. Adds a renamable
@@ -124,5 +125,41 @@ public class UserPreset extends LXComponent implements LXComponent.Renamable, LX
       JsonObject presetObj = obj.get(KEY_PRESET_OBJ).getAsJsonObject().deepCopy();
       this.preset = presetObj;
     }
+  }
+
+  /**
+   * "Virtual" preset, used by TEUserPresetParameter to indicate that it should reload the default
+   * values. Should not be saved as part of the project's preset collections.
+   */
+  public static class DefaultPreset extends UserPreset {
+    public DefaultPreset(LX lx, String clazz) {
+      super(lx, clazz);
+    }
+
+    @Override
+    public UserPreset restore(LXPresetComponent component) {
+      if (!(component instanceof LXComponent)) {
+        throw new IllegalArgumentException("Component must be LXComponent to restore preset");
+      }
+      if (!matches(component)) {
+        throw new IllegalArgumentException(
+            "Can not restore UserPreset to unmatching component type" + component);
+      }
+
+      // For TEPerformancePattern, hit the "panic" button to restore defaults.
+      if (component instanceof TEPerformancePattern) {
+        ((TEPerformancePattern) component).getControls().panic.toggle();
+      }
+      // TODO: TEPattern stores its own list of defaults - do we want to recall those? it's probably
+      //       OK to limit this to TEPeformancePattern for now
+
+      return this;
+    }
+
+    @Override
+    public void save(LX lx, JsonObject obj) {}
+
+    @Override
+    public void load(LX lx, JsonObject obj) {}
   }
 }

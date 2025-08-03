@@ -97,6 +97,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
   // TODO(look): should this live in TEPattern?
   public void addPresetParameter() {
+
     this.presetCollection = PresetEngine.get().getLibrary().get(this);
     // Since we want to show/hide the presets knob depending on whether there are UserPresets,
     // use a Listener to refresh the remote controls when Collection changes.
