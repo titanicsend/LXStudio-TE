@@ -14,6 +14,8 @@ float noise(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
 }
 
+float time = iTime * speed;
+
 // Smooth noise using bilinear interpolation
 float smoothNoise(vec2 p) {
     vec2 i = floor(p);
@@ -55,12 +57,12 @@ vec2 getDomainWarpOffset(vec2 p, float intensity) {
     }
 
     // Create two FBM patterns offset from each other
-    vec2 q = vec2(fbm(p + vec2(0.0, 0.0 + sin(iTime * .5))),
-                  fbm(p + vec2(5.2, 1.3 + cos(iTime * .2))));
+    vec2 q = vec2(fbm(p + vec2(0.0, 0.0 + sin(time * .5)),
+                  fbm(p + vec2(5.2, 1.3 + cos(time * .2));
 
     // Use the first pattern to warp the input for the second pattern
-    vec2 r = vec2(fbm(p + size * sin(iTime) * q + vec2(1.7, 9.2)),
-                  fbm(p + size * cos(iTime * 2.) * q + vec2(8.3, 2.8)));
+    vec2 r = vec2(fbm(p + 4.0 * (1.0 + size) * q + vec2(1.7 + sin(time * 1.2), 9.2)),
+                  fbm(p + 4.0 * (1.0 + size) * q + vec2(8.3 + cos(time * 1.5), 2.8)));
 
     // Return warp offset scaled by intensity
     return intensity * (r - 0.5) * 0.2; // Center around 0 and scale
@@ -74,6 +76,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         return;
     }
 
+    // NOTE(look): for some reason all the color is squashed into the bottom half of the screen,
+    // when depth is between 0 and 1.
+    float adjustedDepth = 1.0 + depth;
+
     vec3 modelCoords = _getModelCoordinates().xyz;
     vec2 uv = vec2((modelCoords.z < 0.5) ? modelCoords.x : 1. + (1. - modelCoords.x), modelCoords.y);
     uv.x *= 0.5;
@@ -82,10 +88,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 noiseCoord = uv; // Scale for noise frequency
 
     // Calculate domain warp offset
-    vec2 warpOffset = getDomainWarpOffset(noiseCoord, depth);
+    vec2 warpOffset = getDomainWarpOffset(noiseCoord, adjustedDepth);
 
     // Apply warp to the sampling coordinates
-    vec2 warpedUV = (uv + warpOffset) * 2.0;
+    vec2 warpedUV = (uv + warpOffset);
 
     // Clamp to avoid sampling outside texture bounds
     warpedUV = clamp(warpedUV, 0.0, 1.0);

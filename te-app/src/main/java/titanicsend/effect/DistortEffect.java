@@ -11,7 +11,7 @@ public class DistortEffect extends GLShaderEffect {
   double effectDepth;
 
   public final CompoundParameter depth =
-      new CompoundParameter("Depth", 0.50)
+      new CompoundParameter("Depth", 0.0, 0.0, 10.0)
           .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
           .setDescription("Depth of the effect");
 
