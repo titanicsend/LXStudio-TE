@@ -23,7 +23,7 @@ public class DistortEffect extends GLShaderEffect {
           .setDescription("Depth of the effect");
 
   public final BoundedParameter size =
-      new BoundedParameter("Size", 12, 0, 20).setDescription("Explosion block size");
+      new BoundedParameter("Size", 12.0, 0.0, 20.0).setDescription("Explosion block size");
 
   public DistortEffect(LX lx) {
     super(lx);
