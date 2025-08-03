@@ -2,9 +2,12 @@ package titanicsend.effect;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import heronarts.lx.LXComponent;
 import heronarts.lx.LXComponentName;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.effect.LXEffect;
+import heronarts.lx.mixer.LXAbstractChannel;
+import heronarts.lx.mixer.LXMasterBus;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.CompoundParameter;
@@ -12,6 +15,8 @@ import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameter.Units;
+import heronarts.lx.pattern.LXPattern;
+import heronarts.lx.structure.view.LXViewDefinition;
 import heronarts.lx.studio.LXStudio.UI;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
@@ -178,8 +183,29 @@ public class SimplifyEffect extends LXEffect
     final int depth = this.depth.getValuei();
     this.models.clear();
     if (this.getParent() != null) {
-      extractModels(this.models, this.getModelView(), depth);
+      extractModels(this.models, this.getModelViewFixed(), depth);
     }
+  }
+
+  /**
+   * Temporary workaround for a bug in LXDeviceComponent.getModelView(). Context here:
+   * https://github.com/titanicsend/LXStudio-TE/pull/688#issuecomment-3146950180
+   */
+  private final LXModel getModelViewFixed() {
+    LXViewDefinition view = this.view.getObject();
+    if (view != null) {
+      return view.getModelView();
+    }
+    LXComponent parent = getParent();
+    if (parent == null) {
+      return getModel();
+    }
+    return switch (parent) {
+      case LXMasterBus master -> this.lx.getModel();
+      case LXAbstractChannel bus -> bus.getModelView();
+      case LXPattern pattern -> pattern.getModelView();
+      default -> getModel();
+    };
   }
 
   @Override
