@@ -148,8 +148,7 @@ public class ShaderPanelsPatternConfig {
       controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
       controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
 
-      addShader(
-      GLShader.config(lx).withFilename("space_explosion.fs"));
+      addShader(GLShader.config(lx).withFilename("space_explosion.fs"));
     }
   }
 

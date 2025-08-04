@@ -18,13 +18,11 @@ public class FourStar extends GLShaderPattern {
     controls.setRange(TEControlTag.QUANTITY, 5.0, 2.0, MAX_RAYS);
     controls.setRange(TEControlTag.WOW1, 0.5, 0.0, 0.6); // diffraction effect
     controls.setRange(TEControlTag.SPEED, .25, -4.0, 4.0);
-    controls.setRange(TEControlTag.SPIN,2.0 ,-4.0, 4.0);
+    controls.setRange(TEControlTag.SPIN, 2.0, -4.0, 4.0);
 
     controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
     controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
     controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
-
-
 
     addCommonControls();
     addShader("fourstar.fs");
