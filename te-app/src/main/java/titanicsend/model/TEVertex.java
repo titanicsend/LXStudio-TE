@@ -10,6 +10,10 @@ import titanicsend.util.TEMath;
 
 public class TEVertex extends LXVector {
 
+  private static Map<Integer, LXVector> mutableVertexLookup = new HashMap<>();
+  public static Map<Integer, LXVector> vertexLookup =
+      Collections.unmodifiableMap(mutableVertexLookup);
+
   public final int id;
   private final Set<TEEdgeModel> mutableEdges = new HashSet<TEEdgeModel>();
   public final Set<TEEdgeModel> edges = Collections.unmodifiableSet(this.mutableEdges);
@@ -76,5 +80,11 @@ public class TEVertex extends LXVector {
 
   public void nudgeToward(LXVector other, float distance) {
     lerp(other, distance);
+  }
+
+  public static void registerVertex(Integer id, LXVector coord) {
+    if (!mutableVertexLookup.containsKey(id)) {
+      mutableVertexLookup.put(id, coord);
+    }
   }
 }
