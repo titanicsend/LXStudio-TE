@@ -3,6 +3,8 @@ package titanicsend.app.effectmgr;
 import heronarts.lx.effect.LXEffect;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
+import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.parameter.TriggerParameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -12,9 +14,18 @@ import java.lang.reflect.Type;
  * subclassed for every LXEffect type that can be used as a global effect.
  */
 public abstract class GlobalEffect<T extends LXEffect> {
+  public enum State {
+    EMPTY,
+    DISABLED,
+    ENABLED
+  }
 
   private final Class<T> type;
-  protected T effect;
+  public T effect;
+  private LXParameterListener enabledListener;
+  private State state;
+
+  //  private int slotIndex = -1;
 
   @SuppressWarnings("unchecked")
   public GlobalEffect() {
@@ -36,7 +47,7 @@ public abstract class GlobalEffect<T extends LXEffect> {
     return this.type.isInstance(match);
   }
 
-  public final GlobalEffect<T> register(LXEffect lxEffect) {
+  public final void registerEffect(LXEffect lxEffect) {
     if (lxEffect != null && !this.type.isInstance(lxEffect)) {
       throw new IllegalArgumentException(
           "Effect instance "
@@ -48,25 +59,59 @@ public abstract class GlobalEffect<T extends LXEffect> {
     T effect = this.type.cast(lxEffect);
     if (this.effect != effect) {
       if (this.effect != null) {
-        onUnregister(this.effect);
+        onUnregister();
       }
       this.effect = effect;
       if (this.effect != null) {
-        onRegister(effect);
+        onRegister();
       }
     }
+  }
 
-    return this;
+  //  public void setSlotIndex(int slotIndex) {
+  //    this.slotIndex = slotIndex;
+  //  }
+  //
+  //  public final int getSlotIndex() {
+  //    return this.slotIndex;
+  //  }
+
+  public State getState() {
+    return state;
   }
 
   /**
    * Called when a new effect instance is tied to this GlobalEffect slot. Subclasses can override.
-   *
-   * @param effect A newly found instance of T
    */
-  private void onRegister(T effect) {}
+  protected void onRegister() {
+    state = State.DISABLED;
+    BooleanParameter enabledParam = getEnabledParameter();
+    if (enabledParam != null) {
+      enabledListener =
+          new LXParameterListener() {
+            @Override
+            public void onParameterChanged(LXParameter parameter) {
+              if (parameter instanceof BooleanParameter) {
+                boolean isEnabled = ((BooleanParameter) parameter).getValueb();
+                state = isEnabled ? State.ENABLED : State.DISABLED;
+              } else {
+                throw new IllegalStateException("Invalid parameter " + parameter);
+              }
+            }
+          };
+      enabledParam.addListener(enabledListener);
+    }
+  }
 
-  private void onUnregister(T effect) {}
+  protected void onUnregister() {
+    state = State.EMPTY;
+    if (enabledListener != null) {
+      BooleanParameter enabledParam = getEnabledParameter();
+      if (enabledParam != null) {
+        enabledParam.removeListener(enabledListener);
+      }
+    }
+  }
 
   /**
    * Retrieve the parameter that corresponds to enabling/disabling the effect. By default this will
@@ -75,6 +120,9 @@ public abstract class GlobalEffect<T extends LXEffect> {
    * @return A parameter corresponding to enable/disable, or null if it does not apply.
    */
   public BooleanParameter getEnabledParameter() {
+    if (this.effect == null) {
+      return null;
+    }
     return this.effect.enabled;
   }
 
@@ -105,6 +153,6 @@ public abstract class GlobalEffect<T extends LXEffect> {
   }
 
   public void dispose() {
-    register(null);
+    registerEffect(null);
   }
 }
