@@ -87,6 +87,7 @@ import titanicsend.gamepad.GamepadEngine;
 import titanicsend.lx.APC40Mk2;
 import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.lx.DirectorAPCminiMk2;
+import titanicsend.lx.EffectsMiniLab3;
 import titanicsend.model.TEWholeModel;
 import titanicsend.model.TEWholeModelDynamic;
 import titanicsend.modulator.dmx.Dmx16bitModulator;
@@ -289,6 +290,7 @@ public class TEApp extends LXStudio {
       this.presetEngine = new PresetEngine(lx);
       this.presetEngine.openFile(lx.getMediaFile("Presets/UserPresets/BM24.userPresets"));
       this.effectManager = new GlobalEffectManager(lx);
+      lx.engine.registerComponent("effectManager", this.effectManager);
 
       // Super Modulator midi controller
       this.superMod = new SuperMod(lx);
@@ -493,6 +495,7 @@ public class TEApp extends LXStudio {
       lx.engine.midi.registerSurface(APC40Mk2.class);
       // The Director midi surface must be registered *after* the Director and ColorPaletteManager
       lx.engine.midi.registerSurface(DirectorAPCminiMk2.class);
+      lx.engine.midi.registerSurface(EffectsMiniLab3.class);
       // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1,
       // MidiFighterTwister.class);
       // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER2,
