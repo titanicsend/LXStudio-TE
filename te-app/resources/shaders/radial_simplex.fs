@@ -7,8 +7,9 @@
 // https://github.com/ashima/webgl-noise
 //
 
-const float PI = 3.1415924;
-const float TAU = PI * 2.0;
+#include <include/constants.fs>
+#include <include/colorspace.fs>
+
 const float QUARTER_WAVE = PI / 2.0;
 
 vec3 mod289(vec3 x) {
@@ -167,12 +168,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         }
     }
 
-    // bump up the gain a little, and adjust gamma
-    noise *= 1.15 * (1. - beat * levelReact);
-    noise = noise * noise;
+    // bump up the gain a little, add beat reactivity
+    noise = clamp(abs(noise) * 1.15 * (1. - beat * levelReact), 0.0, 1.0);
 
-    // Wow2 controls the mix of foreground color vs. gradient
-    vec3 col = noise * mix(iColorRGB, mix(iColorRGB, iColor2RGB, wave(noise)), iWow2);
+    // Wow2 controls the mix of gradient vs foreground.
+    vec3 col = noise * mix(iColorRGB, getGradientColor(noise), 1.0 - iWow2);
 
-    fragColor = vec4(col, 1.0);
+    fragColor = vec4(col, 0.995);
 }

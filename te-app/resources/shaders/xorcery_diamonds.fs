@@ -1,15 +1,9 @@
-#define PI     3.14159265
-#define PI2     6.2831853
+#include <include/constants.fs>
+#include <include/colorspace.fs>
 
-vec3 primaryToSecondaryGradient(float v) {
-  return mix(iColorRGB, iColor2RGB, v);
-}
-
-// normalized HSV to RGB
-vec3 hsv2rgb(vec3 c) {
-    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+// build 2D rotation matrix
+mat2 rotate(float a) {
+    return mat2(cos(a), -sin(a), sin(a), cos(a));
 }
 
 float time(float interval) {
@@ -37,20 +31,19 @@ float measure() {
     return beat;
 }
 
-
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     float t1 = time(.1);
-    float t2 = time(.1) * PI2;
+    float t2 = time(.1) * TAU;
     float t3 = time(.523);
-    float t4 = time(.343) * PI2;
-    float scale = 5.0;
-
+    float t4 = time(0.343) * TAU;
+    float scale = iScale;
 
     // Normalized pixel coordinates (from 0 to 1)
     vec2 uv = fragCoord/iResolution.xy;
-
-
+    uv -= 0.5;
+    uv.x = abs(uv.x);
+    uv *= rotate(iRotationAngle);
 
     float m, h, v, x, y, z;
 
@@ -68,22 +61,12 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         , m) //variable modulus wrapping and range
     );
 
-
-    v = abs(h) + abs(m) + t1;
+    v = abs(h) + abs(m) + beat;
     v = mod(v, 1.0);
-    v = triangle(v * v);
-    //v = v * v;
-
-    //original hsv calculates teal through purple colors (.45 - .85):
-    // h = triangle(h) * .2 + triangle(x + y + z) * .2 + .45
-    // hsv(h, 1, v)
-
+    v = 1.0 - iWow1 * triangle(v);
 
     //for paint(), don't downscale the range
     h = triangle(triangle(h) * .2 + triangle(x + y + z) * .2 + iTime * .05);
 
-    // Output to screen
-//     fragColor = vec4(hsv2rgb(vec3(mod(h, 1.0), 1, v)), 1.0);
-
-    fragColor = vec4(primaryToSecondaryGradient(h), v);
+    fragColor = vec4(getGradientColor(h), v * v);
 }
