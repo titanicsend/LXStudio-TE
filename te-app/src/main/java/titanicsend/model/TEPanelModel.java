@@ -261,9 +261,17 @@ public class TEPanelModel extends TEModel {
     this.edge0id = this.model.meta(META_EDGE1);
     this.edge1id = this.model.meta(META_EDGE2);
     this.edge2id = this.model.meta(META_EDGE3);
+
+    // register vertices
+    int idA = Integer.parseInt(this.model.meta("v0"));
+    int idB = Integer.parseInt(this.model.meta("v1"));
+    int idC = Integer.parseInt(this.model.meta("v2"));
+    TEVertex.registerVertex(idA, vA);
+    TEVertex.registerVertex(idB, vB);
+    TEVertex.registerVertex(idC, vC);
   }
 
-  private static LXVector calculateCentroid(LXPoint[] points) {
+  public static LXVector calculateCentroid(LXPoint[] points) {
     LXVector centroid = new LXVector(0, 0, 0);
     if (points.length > 0) {
       for (LXPoint p : points) {
