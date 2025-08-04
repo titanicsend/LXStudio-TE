@@ -12,7 +12,10 @@ import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.TriggerParameter;
 import heronarts.lx.utils.ObservableList;
 import java.util.Objects;
-import titanicsend.effect.*;
+import titanicsend.effect.ExplodeEffect;
+import titanicsend.effect.RandomStrobeEffect;
+import titanicsend.effect.SimplifyEffect;
+import titanicsend.effect.SustainEffect;
 
 @LXCategory(LXCategory.OTHER)
 @LXComponentName("Effect Manager")

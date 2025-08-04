@@ -1,6 +1,9 @@
 package titanicsend.pattern.will.shaders;
 
-import static titanicsend.util.TEMath.*;
+import static titanicsend.util.TEMath.fract;
+import static titanicsend.util.TEMath.multiplyArray;
+import static titanicsend.util.TEMath.multiplyArrays;
+import static titanicsend.util.TEMath.subtractArrays;
 
 import heronarts.lx.Tempo;
 import heronarts.lx.color.LXColor;

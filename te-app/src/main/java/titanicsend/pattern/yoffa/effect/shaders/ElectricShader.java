@@ -1,9 +1,22 @@
 package titanicsend.pattern.yoffa.effect.shaders;
 
-import static java.lang.Math.*;
 import static java.lang.Math.abs;
-import static titanicsend.util.TEMath.*;
+import static java.lang.Math.atan2;
+import static java.lang.Math.cos;
+import static java.lang.Math.max;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+import static titanicsend.util.TEMath.addArrays;
+import static titanicsend.util.TEMath.addToArray;
+import static titanicsend.util.TEMath.divideArrays;
+import static titanicsend.util.TEMath.dotProduct;
 import static titanicsend.util.TEMath.floor;
+import static titanicsend.util.TEMath.fract;
+import static titanicsend.util.TEMath.multiplyArray;
+import static titanicsend.util.TEMath.multiplyVectorByMatrix;
+import static titanicsend.util.TEMath.step;
+import static titanicsend.util.TEMath.subtractArrays;
+import static titanicsend.util.TEMath.vectorLength;
 
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
