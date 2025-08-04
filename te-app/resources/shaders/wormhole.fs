@@ -15,6 +15,7 @@ vec2 rotate(vec2 point,float angle){
     return rotationMatrix*point;
 }
 
+// adapted from https://www.shadertoy.com/view/fdVSRc
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 st=fragCoord.xy/iResolution.xy;
     st.x*=iResolution.x/iResolution.y;
