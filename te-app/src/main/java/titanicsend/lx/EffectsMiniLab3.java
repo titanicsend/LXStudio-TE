@@ -75,7 +75,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   private void register() {
     this.isRegistered = true;
     try {
-      this.effectManager = (GlobalEffectManager) this.lx.engine.getChild("paletteManagerA");
+      this.effectManager = (GlobalEffectManager) this.lx.engine.getChild("effectManager");
     } catch (Exception e) {
       TE.error("Effect manager not found: " + e.getMessage());
     }
