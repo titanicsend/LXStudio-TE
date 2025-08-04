@@ -20,14 +20,6 @@ public class SimplexPosterized extends DriftEnabledPattern {
 
     // register common controls with LX
     addCommonControls();
-
-    addShader(
-        GLShader.config(lx)
-            .withFilename("simplex_posterized.fs")
-            .withUniformSource(
-                (s) -> {
-                  // calculate incremental transform based on elapsed time
-                  s.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
-                }));
+    addShader(GLShader.config(lx).withFilename("simplex_posterized.fs"));
   }
 }

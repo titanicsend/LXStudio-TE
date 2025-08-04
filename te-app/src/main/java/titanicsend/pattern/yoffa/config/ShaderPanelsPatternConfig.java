@@ -149,7 +149,7 @@ public class ShaderPanelsPatternConfig {
       controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
 
       addShader(
-      GLShader.config(lx).withFilename("space_explosion.fs").withTextures("color_noise.png"));
+      GLShader.config(lx).withFilename("space_explosion.fs"));
     }
   }
 

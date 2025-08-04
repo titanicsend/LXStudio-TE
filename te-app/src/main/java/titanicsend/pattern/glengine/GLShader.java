@@ -249,7 +249,7 @@ public abstract class GLShader {
     if (uniformSource == null) {
       throw new IllegalArgumentException("UniformSource cannot be null");
     }
-    this.uniformSources.add(0,uniformSource);
+    this.uniformSources.add(uniformSource);
     return this;
   }
 
