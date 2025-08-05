@@ -191,6 +191,7 @@ import titanicsend.pattern.yoffa.effect.BeaconEffect;
 import titanicsend.preset.PresetEngine;
 import titanicsend.preset.UIUserPresetManager;
 import titanicsend.ui.UI3DManager;
+import titanicsend.ui.UITEColorControl;
 import titanicsend.ui.UITEPerformancePattern;
 import titanicsend.ui.color.UIColorPaletteManagerSection;
 import titanicsend.ui.effect.UIRandomStrobeEffect;
@@ -813,7 +814,9 @@ public class TEApp extends LXStudio {
     public void initializeUI(LXStudio lx, LXStudio.UI ui) {
       log("TEApp.Plugin.initializeUI()");
 
-      ((LXStudio.Registry) lx.registry).addUIDeviceControls(UITEPerformancePattern.class);
+      LXStudio.Registry registry = (LXStudio.Registry) lx.registry;
+      registry.addUIDeviceControls(UITEPerformancePattern.class);
+      registry.addUIParameterControl(UITEColorControl.class);
 
       this.superMod.initializeUI(lx, ui);
     }
