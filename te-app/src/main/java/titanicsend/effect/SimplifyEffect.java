@@ -182,30 +182,28 @@ public class SimplifyEffect extends LXEffect
     // Candidate models are calculated from View groups + depth parameter
     final int depth = this.depth.getValuei();
     this.models.clear();
-    if (this.getParent() != null) {
-      extractModels(this.models, this.getModelViewFixed(), depth);
-    }
+    extractModels(this.models, this.getModelViewFixed(), depth);
   }
 
   /**
    * Temporary workaround for a bug in LXDeviceComponent.getModelView(). Context here:
    * https://github.com/titanicsend/LXStudio-TE/pull/688#issuecomment-3146950180
    */
-  private final LXModel getModelViewFixed() {
+  private LXModel getModelViewFixed() {
     LXViewDefinition view = this.view.getObject();
     if (view != null) {
       return view.getModelView();
     }
     LXComponent parent = getParent();
-    if (parent == null) {
-      return getModel();
+    if (parent != null) {
+      return switch (parent) {
+        case LXMasterBus master -> this.lx.getModel();
+        case LXAbstractChannel bus -> bus.getModelView();
+        case LXPattern pattern -> pattern.getModelView();
+        default -> getModel();
+      };
     }
-    return switch (parent) {
-      case LXMasterBus master -> this.lx.getModel();
-      case LXAbstractChannel bus -> bus.getModelView();
-      case LXPattern pattern -> pattern.getModelView();
-      default -> getModel();
-    };
+    return getModel();
   }
 
   @Override
