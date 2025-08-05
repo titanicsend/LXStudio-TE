@@ -30,8 +30,17 @@ import titanicsend.util.TE;
 import titanicsend.util.TEColor;
 
 public abstract class TEPattern extends DmxPattern {
+  // Key for the userPreset knob
   public static final String KEY_SELECTED_PRESET = "te_selected_preset";
+  // Key for the 'setDefaults' trigger
+  public static final String KEY_SET_DEFAULTS = "setDefaults";
+  // Key for the 'panic' button
+  public static final String KEY_PANIC = "panic";
+  // Key for the actual defaults stored alongside the pattern
   public static final String KEY_DEFAULTS = "defaults";
+
+  public static final List<String> NON_SERIALIZABLE_FIELDS =
+      List.of(KEY_SELECTED_PRESET, KEY_SET_DEFAULTS, KEY_PANIC);
 
   private final TEPanelModel sua;
   private final TEPanelModel sdc;
@@ -242,7 +251,9 @@ public abstract class TEPattern extends DmxPattern {
   /** Set all current parameter values as the defaults for this pattern instance */
   public void captureDefaults() {
     for (LXParameter p : this.getParameters()) {
-      if (p instanceof LXListenableParameter && !isHiddenControl(p)) {
+      if (p instanceof LXListenableParameter
+          && !isHiddenControl(p)
+          && !NON_SERIALIZABLE_FIELDS.contains(p.getPath())) {
         captureDefault((LXListenableParameter) p);
       }
     }
@@ -288,14 +299,18 @@ public abstract class TEPattern extends DmxPattern {
    */
   public void restoreDefaults() {
     for (LXParameter p : this.getParameters()) {
-      // If a custom default was captured/stored for this parameter,
-      if (this.defaults.containsKey(p.getPath())) {
+      // For any fields not explicitly excluded from serialization (e.g. the "setDefaults" button,
+      // user preset knob),
+      if (!NON_SERIALIZABLE_FIELDS.contains(p.getPath())) {
+        // If a custom default was captured/stored for this parameter,
         // Set the value to the stored default.
-        p.setValue(this.defaults.get(p.getPath()));
-      } else {
-        // Otherwise, just call parameter.reset() to restore the default value
-        // given to Chromatik when param was created.
-        p.reset();
+        if (this.defaults.containsKey(p.getPath())) {
+          p.setValue(this.defaults.get(p.getPath()));
+        } else {
+          // Otherwise, just call parameter.reset() to restore the default value
+          // given to Chromatik when param was created.
+          p.reset();
+        }
       }
     }
   }
@@ -304,9 +319,11 @@ public abstract class TEPattern extends DmxPattern {
   public void save(LX lx, JsonObject obj) {
     super.save(lx, obj);
     obj.add(KEY_DEFAULTS, toObject(lx, this.defaults));
-    // Ensure UserPreset param not serialized
-    if (obj.has(KEY_SELECTED_PRESET)) {
-      obj.remove(KEY_SELECTED_PRESET);
+    // Ensure non-serializable params not serialized.
+    for (String keyToExclude : NON_SERIALIZABLE_FIELDS) {
+      if (obj.has(keyToExclude)) {
+        obj.remove(keyToExclude);
+      }
     }
   }
 
