@@ -6,6 +6,8 @@ public class SignalLag {
   private double attackSmoothness = 0.9f;
   private double releaseSmoothness = 0.3f;
 
+  public SignalLag() {}
+
   /**
    * Constructor to initialize the SignalLag object.
    *
