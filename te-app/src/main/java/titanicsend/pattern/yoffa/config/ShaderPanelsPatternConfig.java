@@ -138,11 +138,17 @@ public class ShaderPanelsPatternConfig {
 
     @Override
     protected void createShader() {
-      controls.setRange(TEControlTag.SPEED, 0, -1.5, 1.5); // speed
+      controls.setRange(TEControlTag.SPEED, 0.5, -2, 2); // speed
       controls.setExponent(TEControlTag.SPEED, 2.0);
-      controls.setValue(TEControlTag.SPEED, 0.5);
 
-      addShader("space_explosion.fs");
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
+      controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
+      controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
+
+      addShader(GLShader.config(lx).withFilename("space_explosion.fs"));
     }
   }
 
