@@ -12,16 +12,19 @@ import java.util.function.Function;
 //   LXPoint maxZValuePoint = pointsList.stream().max(Comparator.comparing(p -> p.z)).get();
 //   LXPoint minZValuePoint = pointsList.stream().min(Comparator.comparing(p -> p.z)).get();
 public class ComparePointValues implements Comparator<LXPoint> {
-  private Function<LXPoint, Float> attributeGetter;
+  private final Function<LXPoint, Float> attributeGetter;
 
   public ComparePointValues(Function<LXPoint, Float> attributeGetter) {
     this.attributeGetter = attributeGetter;
   }
 
   public int compare(LXPoint a, LXPoint b) {
-    if (this.attributeGetter.apply(a) > this.attributeGetter.apply(b))
+    if (this.attributeGetter.apply(a) > this.attributeGetter.apply(b)) {
       return -1; // highest value first
-    if (this.attributeGetter.apply(a) == this.attributeGetter.apply(b)) return 0;
+    }
+    if (this.attributeGetter.apply(a).equals(this.attributeGetter.apply(b))) {
+      return 0;
+    }
     return 1;
   }
 }

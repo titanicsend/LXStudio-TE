@@ -7,8 +7,8 @@
 #pragma name "Circuitry"
 #pragma TEControl.SIZE.Range(2.0,10.0,0.1)
 #pragma TEControl.QUANTITY.Range(4.0,3.0,6.0)
+#pragma TEControl.WOW1.Range(0.0,0.0,0.25)
 #pragma TEControl.WOW2.Disable
-#pragma TEControl.WOW1.Disable
 #pragma TEControl.WOWTRIGGER.Disable
 #pragma TEControl.LEVELREACTIVITY.Disable
 #pragma TEControl.FREQREACTIVITY.Disable
@@ -34,7 +34,7 @@ float fractal(vec2 p) {
 
     for (float i = 0.; i < iQuantity; i++) {
         p = abs(p);
-        // adjust viewing region in x and y to get the most "interesting"
+        // adjust viewing region
         // part.
         p = p/clamp(p.x*p.y,0.15,5.) - vec2(1.525,1.5);
 
@@ -82,5 +82,5 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     }
     c = c/2.;
 
-    fragColor = vec4(mix(iColorRGB,iColor2RGB,minIteration/floor(iQuantity)),c);
+    fragColor = vec4(getGradientColor(minIteration/floor(iQuantity - 1.0)),max(iWow1,c));
 }

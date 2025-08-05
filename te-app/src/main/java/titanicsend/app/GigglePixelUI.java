@@ -5,7 +5,8 @@ import heronarts.glx.ui.component.UICollapsibleSection;
 import heronarts.glx.ui.component.UIDropMenu;
 import heronarts.glx.ui.component.UILabel;
 import heronarts.glx.ui.component.UITextBox;
-import heronarts.lx.parameter.*;
+import heronarts.lx.parameter.EnumParameter;
+import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.studio.LXStudio;
 
 @Deprecated

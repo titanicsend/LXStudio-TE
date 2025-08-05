@@ -19,14 +19,27 @@
  */
 package titanicsend.ui;
 
+import heronarts.glx.ui.UI;
 import heronarts.glx.ui.UIFocus;
-import heronarts.glx.ui.component.UIKnob;
+import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.studio.ui.device.UIDeviceControls;
 import titanicsend.color.TEColorParameter;
 
-public class UITEColorControl extends UITEColorPicker implements UIFocus {
+public class UITEColorControl extends UITEColorPicker
+    implements UIDeviceControls.ParameterControl<TEColorParameter>, UIFocus {
+
+  public UITEColorControl(UI ui, TEColorParameter color) {
+    this(ui, color, color.offset);
+  }
+
+  public UITEColorControl(UI ui, TEColorParameter color, LXParameter parameter) {
+    super(color);
+    // TODO: create a normal UIKnob for subparameters other than Offset (or decline building it?)
+    setDeviceMode(true);
+  }
 
   public UITEColorControl(float x, float y, TEColorParameter color) {
-    super(x, y, UIKnob.WIDTH, UIKnob.HEIGHT, color);
+    super(x, y, color);
     setDeviceMode(true);
     setCorner(Corner.TOP_RIGHT);
   }

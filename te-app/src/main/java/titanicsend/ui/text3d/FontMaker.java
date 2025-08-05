@@ -5,9 +5,15 @@ import static java.awt.Font.TRUETYPE_FONT;
 import static java.lang.System.exit;
 
 import heronarts.lx.color.LXColor;
-import java.awt.*;
+import java.awt.FontFormatException;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * FontMaker - Texture Atlas Creation Tool

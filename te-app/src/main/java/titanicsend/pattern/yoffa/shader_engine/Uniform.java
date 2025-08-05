@@ -10,12 +10,14 @@ import java.nio.IntBuffer;
 
 public abstract class Uniform {
 
-  private static final int LOCATION_NOT_FOUND = -1;
+  public static final int LOCATION_NOT_FOUND = -1;
 
   protected final GL4 gl4;
   public final String name;
   public final int location;
   public final boolean hasLocation;
+  protected boolean hasError = false;
+  protected String error = null;
   public final UniformType type;
   protected boolean modified;
 
@@ -35,6 +37,14 @@ public abstract class Uniform {
 
   /** Send latest value to OpenGL */
   public abstract void update();
+
+  public boolean hasError() {
+    return this.hasError;
+  }
+
+  public String getError() {
+    return this.error;
+  }
 
   /** Factory to create a new uniform by type */
   public static Uniform create(
@@ -600,8 +610,20 @@ public abstract class Uniform {
       return this;
     }
 
+    private boolean loggedOnce = false;
+
     @Override
     public void update() {
+      if (!this.isObject && this.textureHandle == -1 && !this.loggedOnce) {
+        this.loggedOnce = true;
+        this.hasError = true;
+        this.error =
+            "Missing texture '"
+                + this.name
+                + "' for unit "
+                + this.textureUnit
+                + ", this could be a bug...";
+      }
       gl4.glActiveTexture(GL_TEXTURE0 + this.textureUnit);
       if (this.isObject) {
         this.texture.bind(gl4);

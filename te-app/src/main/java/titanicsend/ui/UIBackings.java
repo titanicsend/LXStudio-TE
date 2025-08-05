@@ -15,7 +15,13 @@
  */
 package titanicsend.ui;
 
-import static org.lwjgl.bgfx.BGFX.*;
+import static org.lwjgl.bgfx.BGFX.BGFX_STATE_DEPTH_TEST_LESS;
+import static org.lwjgl.bgfx.BGFX.BGFX_STATE_PT_TRISTRIP;
+import static org.lwjgl.bgfx.BGFX.BGFX_STATE_WRITE_A;
+import static org.lwjgl.bgfx.BGFX.BGFX_STATE_WRITE_RGB;
+import static org.lwjgl.bgfx.BGFX.BGFX_STATE_WRITE_Z;
+import static org.lwjgl.bgfx.BGFX.bgfx_set_dynamic_vertex_buffer;
+import static org.lwjgl.bgfx.BGFX.bgfx_set_transform;
 
 import heronarts.glx.DynamicVertexBuffer;
 import heronarts.glx.GLX;

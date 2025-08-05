@@ -69,11 +69,11 @@ public class UITEColorPicker extends UI2dComponent {
   private boolean deviceMode = false;
 
   public UITEColorPicker(TEColorParameter color) {
-    this(UIKnob.WIDTH, UIKnob.WIDTH, color);
+    this(0, 0, color);
   }
 
-  public UITEColorPicker(float w, float h, TEColorParameter color) {
-    this(0, 0, w, h, color);
+  public UITEColorPicker(float x, float y, TEColorParameter color) {
+    this(x, y, UIKnob.WIDTH, UIKnob.HEIGHT, color);
   }
 
   public UITEColorPicker(float x, float y, float w, float h, TEColorParameter color) {

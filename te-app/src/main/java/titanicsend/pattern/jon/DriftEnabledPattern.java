@@ -27,15 +27,17 @@ public abstract class DriftEnabledPattern extends GLShaderPattern {
 
   private void updateTranslation(double deltaMs) {
     // calculate change in position since last frame.
-    xOffset += getXPos() * deltaMs / 1000.;
-    yOffset += getYPos() * deltaMs / 1000.;
+    xOffset += super.getXPos() * deltaMs / 1000.;
+    yOffset += super.getYPos() * deltaMs / 1000.;
   }
 
-  protected double getXPosition() {
+  @Override
+  public double getXPos() {
     return xOffset;
   }
 
-  protected double getYPosition() {
+  @Override
+  public double getYPos() {
     return yOffset;
   }
 

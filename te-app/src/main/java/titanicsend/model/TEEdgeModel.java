@@ -1,8 +1,14 @@
 package titanicsend.model;
 
+import static titanicsend.model.TEPanelModel.calculateCentroid;
+
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
-import java.util.*;
+import heronarts.lx.transform.LXVector;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TEEdgeModel extends TEModel {
@@ -45,10 +51,36 @@ public class TEEdgeModel extends TEModel {
 
   // Connections
   public final TEVertex v0, v1;
+  public final LXVector centroid;
   public final Set<TEPanelModel> connectedPanels = new HashSet<TEPanelModel>();
 
   /** This edge and any other that's a reflection about the XY or YZ planes */
   public final List<TEEdgeModel> symmetryGroup = new ArrayList<TEEdgeModel>();
+
+  /** Dynamic model constructor (2024+) */
+  public TEEdgeModel(LXModel model, TEVertex v0, TEVertex v1) {
+    super(TE_MODEL_TYPE, model);
+
+    this.v0 = v0;
+    this.v1 = v1;
+
+    setId(this.model.meta(META_ID));
+
+    this.size = this.model.points.length;
+    this.points = this.model.points;
+    this.centroid = calculateCentroid(this.points);
+    this.edgePoints = new Point[this.points.length];
+    for (int i = 0; i < this.points.length; i++) {
+      this.edgePoints[i] = new Point(this.points[i], i, fraction(i, this.size));
+    }
+    // register vertices
+    int id0 = Integer.parseInt(this.model.meta("v0"));
+    int id1 = Integer.parseInt(this.model.meta("v1"));
+    LXVector p0 = new LXVector(this.points[0]);
+    LXVector p1 = new LXVector(this.points[this.points.length - 1]);
+    TEVertex.registerVertex(id0, p0);
+    TEVertex.registerVertex(id1, p1);
+  }
 
   /** Static model constructor (2022-23) */
   public TEEdgeModel(TEVertex v0, TEVertex v1, int numPixels, boolean dark, String... tags) {
@@ -61,8 +93,9 @@ public class TEEdgeModel extends TEModel {
 
     this.size = this.model.size;
     this.points = this.model.points;
+    this.centroid = calculateCentroid(this.points);
     // Allocate an array of the LXPoint wrapper, TEEdgeModel.Point
-    this.edgePoints = new Point[this.model.points.length];
+    this.edgePoints = new Point[this.points.length];
     for (int i = 0; i < this.points.length; i++) {
       // Now that Point can't extend LXPoint we ended up calculating the fraction twice.
       this.edgePoints[i] = new Point(this.points[i], i, fraction(i, this.size));
@@ -89,23 +122,6 @@ public class TEEdgeModel extends TEModel {
       return (float) (i) / (numPixels - 1);
     } else {
       return .5f;
-    }
-  }
-
-  /** Dynamic model constructor (2024+) */
-  public TEEdgeModel(LXModel model, TEVertex v0, TEVertex v1) {
-    super(TE_MODEL_TYPE, model);
-
-    this.v0 = v0;
-    this.v1 = v1;
-
-    setId(this.model.meta(META_ID));
-
-    this.size = this.model.points.length;
-    this.points = this.model.points;
-    this.edgePoints = new Point[this.points.length];
-    for (int i = 0; i < this.points.length; i++) {
-      this.edgePoints[i] = new Point(this.points[i], i, fraction(i, this.size));
     }
   }
 

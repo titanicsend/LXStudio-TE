@@ -5,8 +5,11 @@ import heronarts.lx.model.LXModel;
 import heronarts.lx.parameter.LXParameter;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.*;
-import titanicsend.pattern.yoffa.shader_engine.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import titanicsend.pattern.yoffa.shader_engine.Uniform;
+import titanicsend.pattern.yoffa.shader_engine.UniformNames;
 
 /**
  * Shader class for TE patterns and effects. Adds image file textures and uniforms for TE common
@@ -51,7 +54,7 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
   private final TEShaderUniforms uniforms = new TEShaderUniforms();
   private boolean initializedUniforms = false;
 
-  boolean clearBackbuffer = false;
+  boolean needsClearBackBuffer = false;
 
   public TEShader(GLShader.Config config) {
     super(config);
@@ -124,7 +127,8 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
 
   @Override
   public void onActive() {
-    this.clearBackbuffer = true;
+    clearBackBuffer();
+    this.firstFrame = true;
     super.onActive();
   }
 
@@ -143,8 +147,11 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
       initializeUniforms();
     }
 
-    // Swap render/copy FBOs
+    // Swap render/copy buffers
     this.ppFBOs.swap();
+    if (this.lx.engine.renderMode.cpu) {
+      this.ppPBOs.swap();
+    }
 
     // Set audio waveform and fft data as a 512x2 texture on the specified audio
     // channel if it's a shadertoy shader, or iChannel0 if it's a local shader.
@@ -167,9 +174,14 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
     bindTextureUnit(TEXTURE_UNIT_COORDS, this.modelCoordsTextureHandle);
     this.uniforms.lxModelCoords.setValue(TEXTURE_UNIT_COORDS);
 
+    // Clear backbuffer on first frame
+    if (this.needsClearBackBuffer) {
+      this.needsClearBackBuffer = false;
+      _clearBackBuffer();
+    }
+
     // Use older FBO as backbuffer
     int backBufferHandle = this.ppFBOs.copy.getTextureHandle();
-
     bindTextureUnit(TEXTURE_UNIT_BACKBUFFER, backBufferHandle);
     this.uniforms.backBuffer.setValue(TEXTURE_UNIT_BACKBUFFER);
 
@@ -190,18 +202,26 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
     }
   }
 
+  /** Mark the backbuffer texture for clearing on the next run */
+  public TEShader clearBackBuffer() {
+    this.needsClearBackBuffer = true;
+    return this;
+  }
+
+  private void _clearBackBuffer() {
+    this.ppFBOs.copy.clear();
+    // PBOs are only used in CPU mode
+    if (this.lx.engine.renderMode.cpu) {
+      this.ppPBOs.copy.clear();
+    }
+  }
+
   boolean firstFrame = true;
 
   @Override
   protected void render() {
     // Bind vertex array object
     bindVAO();
-
-    // Clear backbuffer on first frame (TODO: do this on disable)
-    if (this.clearBackbuffer) {
-      this.clearBackbuffer = false;
-      this.ppFBOs.copy.bind(true);
-    }
 
     // Bind framebuffer object (FBO)
     this.ppFBOs.render.bind();
@@ -237,9 +257,6 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
 
       // Unbind the PBO
       this.gl4.glBindBuffer(GL4.GL_PIXEL_PACK_BUFFER, 0);
-
-      // Switch to the next PBO for the next frame
-      this.ppPBOs.swap();
     }
 
     // No need to unbind VAO.

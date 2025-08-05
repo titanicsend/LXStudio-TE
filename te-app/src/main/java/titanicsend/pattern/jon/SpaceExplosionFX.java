@@ -33,15 +33,22 @@ public class SpaceExplosionFX extends GLShaderPattern {
   boolean running;
 
   // how long an explosion lasts, in variable speed seconds
-  static final double eventDuration = 0.75;
+  private static final double eventDuration = 1.15;
+  private float explosionSeed = 0.0f;
 
   // Constructor
   public SpaceExplosionFX(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
 
-    controls.setRange(TEControlTag.SPEED, 0, -2, 2); // speed
+    controls.setRange(TEControlTag.SPEED, 0.5, -2, 2); // speed
     controls.setExponent(TEControlTag.SPEED, 2.0);
-    controls.setValue(TEControlTag.SPEED, 0.5);
+
+    controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
+    controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
+    controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
 
     addCommonControls();
 
@@ -81,6 +88,7 @@ public class SpaceExplosionFX extends GLShaderPattern {
         // reset the pattern's clock to sync to button press
         retrigger(TEControlTag.SPEED);
         eventStartTime = 0; // current time, since we just reset the clock
+        explosionSeed = (float) Math.random(); // random seed for explosion visuals
 
         // start explosion state machine and turn on visuals
         running = true;
@@ -100,6 +108,7 @@ public class SpaceExplosionFX extends GLShaderPattern {
             // another explosion
             retrigger(TEControlTag.SPEED);
             eventStartTime = 0;
+            explosionSeed = (float) Math.random();
             explode = true;
           }
         } else {
@@ -117,5 +126,6 @@ public class SpaceExplosionFX extends GLShaderPattern {
     // Send our visual flag, rather than the simple button value from the
     // control, to the shader.
     s.setUniform("iWowTrigger", explode);
+    s.setUniform("explosionSeed", explosionSeed);
   }
 }

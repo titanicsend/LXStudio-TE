@@ -11,7 +11,10 @@ import java.util.stream.Collectors;
 import titanicsend.pattern.glengine.ShaderConfiguration;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
-import titanicsend.pattern.yoffa.shader_engine.*;
+import titanicsend.pattern.yoffa.shader_engine.FragmentShader;
+import titanicsend.pattern.yoffa.shader_engine.NativeShader;
+import titanicsend.pattern.yoffa.shader_engine.OffscreenShaderRenderer;
+import titanicsend.pattern.yoffa.shader_engine.PatternControlData;
 
 @Deprecated // use GLShaderPattern instead
 public class NativeShaderPatternEffect extends PatternEffect {

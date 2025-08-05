@@ -3,7 +3,10 @@ package titanicsend.pattern.jon;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import java.util.ArrayList;
-import titanicsend.model.*;
+import titanicsend.model.TEEdgeModel;
+import titanicsend.model.TEPanelModel;
+import titanicsend.model.TEWholeModel;
+import titanicsend.model.TEWholeModelDynamic;
 
 public class ModelBender {
   private static final String[] endEdgeIds = {
