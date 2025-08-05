@@ -18,15 +18,10 @@ import titanicsend.pattern.glengine.ShaderConfiguration;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon.VariableSpeedTimer;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
-import titanicsend.preset.PresetEngine;
-import titanicsend.preset.UserPreset;
-import titanicsend.preset.UserPresetCollection;
 import titanicsend.util.Rotor;
 import titanicsend.util.TEColor;
 
 public abstract class TEPerformancePattern extends TEAudioPattern {
-
-  private static final String KEY_PRESET = "te_preset";
   private final TEShaderView defaultView;
 
   /**
@@ -46,7 +41,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
   final Rotor spinRotor = new Rotor();
 
   protected final TECommonControls controls;
-  public UserPresetCollection.UserPresetParameter presets;
 
   protected final FloatBuffer palette = Buffers.newDirectFloatBuffer(15);
 
@@ -60,11 +54,8 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
   protected TEPerformancePattern(LX lx, TEShaderView defaultView) {
     super(lx);
-    addPresetParameter();
     this.controls = new TECommonControls(this);
-
     this.defaultView = defaultView;
-
     this.globalControls = (TEGlobalPatternControls) lx.engine.getChild("globalPatternControls");
 
     lx.engine.addTask(
@@ -87,30 +78,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
     this.controls.markUnused(this.controls.getLXControl(TEControlTag.TWIST));
     this.constructed = true;
-  }
-
-  // TODO(look): should this live in TEPattern?
-  public void addPresetParameter() {
-    this.presets = PresetEngine.get().getLibrary().get(this).newUserPresetParameter("Presets");
-    //    addParameter(KEY_PRESET, this.presets);
-    addInternalParameter(KEY_PRESET, this.presets);
-
-    this.presets.addListener(
-        new LXParameterListener() {
-          @Override
-          public void onParameterChanged(LXParameter parameter) {
-            if (parameter instanceof UserPresetCollection.UserPresetParameter) {
-              lx.engine.addTask(
-                  new Runnable() {
-                    public void run() {
-                      UserPreset preset =
-                          ((UserPresetCollection.UserPresetParameter) parameter).getObject();
-                      TEPerformancePattern.this.restore(preset);
-                    }
-                  });
-            }
-          }
-        });
   }
 
   @Override
@@ -505,16 +472,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     expireColors();
 
     super.run(deltaMs);
-  }
-
-  @Override
-  public void save(LX lx, JsonObject obj) {
-    // HACK: remove the presetParam from the list before saving.
-    // TODO(look): is there a better way to do this, without fully replicating all the save() logic
-    //             from superclasses like TEPattern, LXPattern, LXComponent?
-    //    removeParameter(this.presets);
-    super.save(lx, obj);
-    //    addParameter(KEY_PRESET, this.presets);
   }
 
   @Override

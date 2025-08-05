@@ -377,7 +377,7 @@ public class TECommonControls {
           getControl(TEControlTag.ANGLE).control,
           getControl(TEControlTag.SPIN).control,
           this.panic,
-          this.pattern.presets,
+          this.pattern.selectedPreset,
           getControl(TEControlTag.WOW1).control,
           getControl(TEControlTag.WOW2).control,
           getControl(TEControlTag.WOWTRIGGER).control,

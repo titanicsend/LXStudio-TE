@@ -14,7 +14,6 @@ import java.util.Objects;
 
 /** A collection of presets for one component */
 public class UserPresetCollection implements LXSerializable {
-
   private final LX lx;
   private final String clazz;
 

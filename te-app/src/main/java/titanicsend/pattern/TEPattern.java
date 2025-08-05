@@ -11,6 +11,7 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXListenableParameter;
 import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.parameter.StringParameter;
 import heronarts.lx.parameter.TriggerParameter;
 import heronarts.lx.studio.TEApp;
@@ -22,15 +23,22 @@ import titanicsend.model.TELaserModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
 import titanicsend.pattern.glengine.GLEngine;
+import titanicsend.preset.PresetEngine;
 import titanicsend.preset.UserPreset;
+import titanicsend.preset.UserPresetCollection;
 import titanicsend.util.TE;
 import titanicsend.util.TEColor;
 
 public abstract class TEPattern extends DmxPattern {
+  public static final String KEY_SELECTED_PRESET = "te_selected_preset";
+  public static final String KEY_DEFAULTS = "defaults";
+
   private final TEPanelModel sua;
   private final TEPanelModel sdc;
 
   protected final TEWholeModel modelTE;
+  public UserPresetCollection.UserPresetParameter selectedPreset;
+  public LXParameterListener selectedPresetListener;
 
   public TEWholeModel getModelTE() {
     return this.modelTE;
@@ -46,37 +54,32 @@ public abstract class TEPattern extends DmxPattern {
   protected TEPattern(LX lx) {
     super(lx);
     this.modelTE = TEApp.wholeModel;
-
+    // TODO: clean this up
     this.sua = this.modelTE.getPanel("SUA");
     this.sdc = this.modelTE.getPanel("SDC");
+    this.selectedPreset =
+        PresetEngine.get().getLibrary().get(this).newUserPresetParameter("Presets");
 
+    addParameter(KEY_SELECTED_PRESET, this.selectedPreset);
     addParameter("setDefaults", this.captureDefaults);
-  }
 
-  public void restore(UserPreset preset) {
-    if (preset == null) {
-      restoreDefaults();
-    } else {
-      preset.restore(this);
-    }
-  }
-
-  /**
-   * Called to restore default parameters for the "default" (null) preset. Can be overridden by
-   * subclasses (e.g. TEPerformancePattern can replicate the "panic" button functionality).
-   */
-  public void restoreDefaults() {
-    for (LXParameter p : this.getParameters()) {
-      // If a custom default was captured/stored for this parameter,
-      if (this.defaults.containsKey(p.getPath())) {
-        // Set the value to the stored default.
-        p.setValue(this.defaults.get(p.getPath()));
-      } else {
-        // Otherwise, just call parameter.reset() to restore the default value
-        // given to Chromatik when param was created.
-        p.reset();
-      }
-    }
+    this.selectedPresetListener =
+        new LXParameterListener() {
+          @Override
+          public void onParameterChanged(LXParameter parameter) {
+            if (parameter instanceof UserPresetCollection.UserPresetParameter) {
+              lx.engine.addTask(
+                  new Runnable() {
+                    public void run() {
+                      UserPreset preset =
+                          ((UserPresetCollection.UserPresetParameter) parameter).getObject();
+                      TEPattern.this.restore(preset);
+                    }
+                  });
+            }
+          }
+        };
+    this.selectedPreset.addListener(this.selectedPresetListener);
   }
 
   @Override
@@ -232,6 +235,10 @@ public abstract class TEPattern extends DmxPattern {
     return rv;
   }
 
+  // -----------------------------------------------------------------------------------
+  // Capturing Defaults
+  //
+
   /** Set all current parameter values as the defaults for this pattern instance */
   public void captureDefaults() {
     for (LXParameter p : this.getParameters()) {
@@ -259,12 +266,48 @@ public abstract class TEPattern extends DmxPattern {
     }
   }
 
-  private static final String KEY_DEFAULTS = "defaults";
+  /**
+   * Called by the listener to restore from a UserPreset.
+   *
+   * <p>If called with a null preset, "restore defaults". Subclasses like TEPerformancePattern can
+   * override restoreDefaults, e.g. to replicate the behavior of panic button.
+   *
+   * @param preset
+   */
+  public void restore(UserPreset preset) {
+    if (preset == null) {
+      restoreDefaults();
+    } else {
+      preset.restore(this);
+    }
+  }
+
+  /**
+   * Called to restore default parameters for the "default" (null) preset. Can be overridden by
+   * subclasses (e.g. TEPerformancePattern can replicate the "panic" button functionality).
+   */
+  public void restoreDefaults() {
+    for (LXParameter p : this.getParameters()) {
+      // If a custom default was captured/stored for this parameter,
+      if (this.defaults.containsKey(p.getPath())) {
+        // Set the value to the stored default.
+        p.setValue(this.defaults.get(p.getPath()));
+      } else {
+        // Otherwise, just call parameter.reset() to restore the default value
+        // given to Chromatik when param was created.
+        p.reset();
+      }
+    }
+  }
 
   @Override
   public void save(LX lx, JsonObject obj) {
     super.save(lx, obj);
     obj.add(KEY_DEFAULTS, toObject(lx, this.defaults));
+    // Ensure UserPreset param not serialized
+    if (obj.has(KEY_SELECTED_PRESET)) {
+      obj.remove(KEY_SELECTED_PRESET);
+    }
   }
 
   public static JsonObject toObject(LX lx, Map<String, Double> map) {
@@ -321,5 +364,11 @@ public abstract class TEPattern extends DmxPattern {
   /** utility method for use during the static-to-dynamic model transition. */
   public float getXn(LXPoint p) {
     return p.xn;
+  }
+
+  @Override
+  public void dispose() {
+    this.selectedPreset.removeListener(this.selectedPresetListener);
+    super.dispose();
   }
 }
