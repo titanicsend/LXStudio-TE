@@ -35,16 +35,9 @@ import titanicsend.util.TEColor;
 
 public abstract class TEPattern extends DmxPattern {
   // Key for the userPreset knob
-  public static final String KEY_SELECTED_PRESET = "te_selected_preset";
-  // Key for the 'setDefaults' trigger
-  public static final String KEY_SET_DEFAULTS = "setDefaults";
-  // Key for the 'panic' button
-  public static final String KEY_PANIC = "panic";
+  public static final String KEY_PRESET_SELECTOR = "te_selected_preset";
   // Key for the actual defaults stored alongside the pattern
   public static final String KEY_DEFAULTS = "defaults";
-
-  public static final List<String> NON_SERIALIZABLE_FIELDS =
-      List.of(KEY_SELECTED_PRESET, KEY_SET_DEFAULTS, KEY_PANIC);
 
   private final TEPanelModel sua;
   private final TEPanelModel sdc;
@@ -74,7 +67,7 @@ public abstract class TEPattern extends DmxPattern {
     this.presetSelector =
         PresetEngine.get().getLibrary().get(this).newUserPresetParameter("Presets");
 
-    addParameter(KEY_SELECTED_PRESET, this.presetSelector);
+    addParameter(KEY_PRESET_SELECTOR, this.presetSelector);
     addParameter("setDefaults", this.captureDefaults);
 
     this.presetListener =
@@ -249,7 +242,7 @@ public abstract class TEPattern extends DmxPattern {
     for (LXParameter p : this.getParameters()) {
       if (p instanceof LXListenableParameter
           && !isHiddenControl(p)
-          && !NON_SERIALIZABLE_FIELDS.contains(p.getPath())) {
+          && !p.getPath().equals(KEY_PRESET_SELECTOR)) {
         captureDefault((LXListenableParameter) p);
       }
     }
@@ -291,22 +284,21 @@ public abstract class TEPattern extends DmxPattern {
 
   /**
    * Called to restore default parameters for the "default" (null) preset. Can be overridden by
-   * subclasses (e.g. TEPerformancePattern can replicate the "panic" button functionality).
+   * subclasses (e.g. TEPerformancePattern can replicate the "panic" button functionality). NOTE: we
+   * don't need to exclude KEY_PRESET_SELECTOR here (the way we do when restoring an arbitrary
+   * preset) because the selector's default value will be selected by "reset()" on the parameter.
+   * Context [here](https://github.com/titanicsend/LXStudio-TE/pull/685#discussion_r2254597754)
    */
   public void restoreDefaults() {
     for (LXParameter p : this.getParameters()) {
-      // For any fields not explicitly excluded from serialization (e.g. the "setDefaults" button,
-      // user preset knob),
-      if (!NON_SERIALIZABLE_FIELDS.contains(p.getPath())) {
-        // If a custom default was captured/stored for this parameter,
-        // Set the value to the stored default.
-        if (this.defaults.containsKey(p.getPath())) {
-          p.setValue(this.defaults.get(p.getPath()));
-        } else {
-          // Otherwise, just call parameter.reset() to restore the default value
-          // given to Chromatik when param was created.
-          p.reset();
-        }
+      // If a custom default was captured/stored for this parameter,
+      // Set the value to the stored default.
+      if (this.defaults.containsKey(p.getPath())) {
+        p.setValue(this.defaults.get(p.getPath()));
+      } else {
+        // Otherwise, just call parameter.reset() to restore the default value
+        // given to Chromatik when param was created.
+        p.reset();
       }
     }
   }
@@ -316,10 +308,8 @@ public abstract class TEPattern extends DmxPattern {
     super.save(lx, obj);
     obj.add(KEY_DEFAULTS, toObject(lx, this.defaults));
     // Ensure non-serializable params not serialized.
-    for (String keyToExclude : NON_SERIALIZABLE_FIELDS) {
-      if (obj.has(keyToExclude)) {
-        obj.remove(keyToExclude);
-      }
+    if (obj.has(KEY_PRESET_SELECTOR)) {
+      obj.remove(KEY_PRESET_SELECTOR);
     }
   }
 
