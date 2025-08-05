@@ -153,6 +153,8 @@ public class SimplifyEffect extends LXEffect
 
   final List<LXModel> models = new ArrayList<LXModel>();
 
+  private boolean needsRefresh = true;
+
   public SimplifyEffect(LX lx) {
     super(lx);
 
@@ -162,20 +164,18 @@ public class SimplifyEffect extends LXEffect
     addParameter("gain", this.gain);
 
     this.lx.addListener(this);
-
-    refreshModels();
   }
 
   @Override
   public void onParameterChanged(LXParameter p) {
     if (p == this.view || p == this.depth) {
-      refreshModels();
+      this.needsRefresh = true;
     }
   }
 
   @Override
   public void modelGenerationChanged(LX lx, LXModel model) {
-    refreshModels();
+    this.needsRefresh = true;
   }
 
   protected void refreshModels() {
@@ -208,6 +208,11 @@ public class SimplifyEffect extends LXEffect
 
   @Override
   protected void run(double deltaMs, double enabledAmount) {
+    if (this.needsRefresh) {
+      this.needsRefresh = false;
+      refreshModels();
+    }
+
     final double amount = this.amount.getValue();
     final BlendMode blendMode = this.blendMode.getEnum();
     final float gate = this.gate.getValuef();
