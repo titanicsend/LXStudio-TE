@@ -50,8 +50,9 @@ public abstract class TEPattern extends DmxPattern {
   private final TEPanelModel sdc;
 
   protected final TEWholeModel modelTE;
-  public UserPresetCollection.Selector presetSelector;
-  public LXParameterListener presetListener;
+  
+  public final UserPresetCollection.Selector presetSelector;
+  private final LXParameterListener presetListener;
 
   public TEWholeModel getModelTE() {
     return this.modelTE;
