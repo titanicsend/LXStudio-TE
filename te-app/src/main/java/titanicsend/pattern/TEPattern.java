@@ -50,7 +50,7 @@ public abstract class TEPattern extends DmxPattern {
   private final TEPanelModel sdc;
 
   protected final TEWholeModel modelTE;
-  
+
   public final UserPresetCollection.Selector presetSelector;
   private final LXParameterListener presetListener;
 
@@ -78,20 +78,12 @@ public abstract class TEPattern extends DmxPattern {
     addParameter("setDefaults", this.captureDefaults);
 
     this.presetListener =
-        new LXParameterListener() {
-          @Override
-          public void onParameterChanged(LXParameter parameter) {
-            if (parameter instanceof UserPresetCollection.Selector) {
-              lx.engine.addTask(
-                  new Runnable() {
-                    public void run() {
-                      UserPreset preset = ((UserPresetCollection.Selector) parameter).getObject();
-                      TEPattern.this.restore(preset);
-                    }
-                  });
-            }
-          }
-        };
+        (p) ->
+            lx.engine.addTask(
+                () -> {
+                  UserPreset preset = presetSelector.getObject();
+                  TEPattern.this.restore(preset);
+                });
     this.presetSelector.addListener(this.presetListener);
   }
 
