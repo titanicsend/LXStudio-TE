@@ -1,7 +1,5 @@
 package titanicsend.pattern;
 
-import static titanicsend.pattern.TEPattern.KEY_PANIC;
-
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.parameter.CompoundParameter;
@@ -343,7 +341,7 @@ public class TECommonControls {
       this.pattern.addParam(tag.getPath(), param);
     }
 
-    this.pattern.addParam(KEY_PANIC, this.panic);
+    this.pattern.addParam("panic", this.panic);
 
     String colorPrefix = "";
     if (missingControls != null && !missingControls.uses_palette) {
@@ -379,7 +377,7 @@ public class TECommonControls {
           getControl(TEControlTag.ANGLE).control,
           getControl(TEControlTag.SPIN).control,
           this.panic,
-          this.pattern.selectedPreset,
+          this.pattern.presetSelector,
           getControl(TEControlTag.WOW1).control,
           getControl(TEControlTag.WOW2).control,
           getControl(TEControlTag.WOWTRIGGER).control,
