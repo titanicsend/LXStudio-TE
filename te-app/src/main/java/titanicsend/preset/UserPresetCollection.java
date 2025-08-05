@@ -58,7 +58,7 @@ public class UserPresetCollection implements LXSerializable {
     return new Selector(label);
   }
 
-  private void updatePresetParams() {
+  private void updateSelectors() {
     int numOptions = 1 + this.presets.size();
     this.presetObjects = new UserPreset[numOptions];
     this.presetLabels = new String[numOptions];
@@ -100,10 +100,10 @@ public class UserPresetCollection implements LXSerializable {
     }
     preset.setIndex(this.mutablePresets.size());
     this.mutablePresets.add(preset);
-    updatePresetParams();
     for (Listener listener : this.listeners) {
       listener.presetAdded(preset);
     }
+    updateSelectors();
     return preset;
   }
 
@@ -116,10 +116,10 @@ public class UserPresetCollection implements LXSerializable {
     }
     preset.setIndex(this.mutablePresets.size());
     this.mutablePresets.add(preset);
-    updatePresetParams();
     for (Listener listener : this.listeners) {
       listener.presetAdded(preset);
     }
+    updateSelectors();
     return preset;
   }
 
@@ -138,10 +138,10 @@ public class UserPresetCollection implements LXSerializable {
     for (int i = index; i < this.mutablePresets.size(); ++i) {
       this.mutablePresets.get(i).setIndex(i);
     }
-    updatePresetParams();
     for (Listener listener : this.listeners) {
       listener.presetRemoved(preset);
     }
+    updateSelectors();
     return this;
   }
 
@@ -152,10 +152,10 @@ public class UserPresetCollection implements LXSerializable {
     for (UserPreset p : this.mutablePresets) {
       p.setIndex(i++);
     }
-    updatePresetParams();
     for (Listener listener : this.listeners) {
       listener.presetMoved(pattern);
     }
+    updateSelectors();
     return this;
   }
 
@@ -214,9 +214,9 @@ public class UserPresetCollection implements LXSerializable {
 
     preset.setIndex(this.mutablePresets.size());
     this.mutablePresets.add(preset);
-    updatePresetParams();
     for (Listener listener : this.listeners) {
       listener.presetAdded(preset);
     }
+    updateSelectors();
   }
 }
