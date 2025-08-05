@@ -75,7 +75,11 @@ public abstract class TEPattern extends DmxPattern {
             lx.engine.addTask(
                 () -> {
                   UserPreset preset = presetSelector.getObject();
-                  TEPattern.this.restore(preset);
+                  if (preset == null) {
+                    TEPattern.this.restoreDefaults();
+                  } else {
+                    preset.restore(this);
+                  }
                 });
     this.presetSelector.addListener(this.presetListener);
   }
@@ -274,13 +278,7 @@ public abstract class TEPattern extends DmxPattern {
    *
    * @param preset
    */
-  public void restore(UserPreset preset) {
-    if (preset == null) {
-      restoreDefaults();
-    } else {
-      preset.restore(this);
-    }
-  }
+  public void restore(UserPreset preset) {}
 
   /**
    * Called to restore default parameters for the "default" (null) preset. Can be overridden by
