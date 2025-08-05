@@ -3,6 +3,8 @@ package titanicsend.pattern;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import heronarts.lx.LX;
+import heronarts.lx.LXComponent;
+import heronarts.lx.LXPresetComponent;
 import heronarts.lx.Tempo;
 import heronarts.lx.audio.GraphicMeter;
 import heronarts.lx.color.LinkedColorParameter;
@@ -71,14 +73,32 @@ public abstract class TEPattern extends DmxPattern {
     addParameter("setDefaults", this.captureDefaults);
 
     this.presetListener =
-        (p) ->
+        (selector) ->
             lx.engine.addTask(
                 () -> {
                   UserPreset preset = presetSelector.getObject();
+                  LXComponent pattern = selector.getParent();
+
+                  // If preset is null, restore defaults
                   if (preset == null) {
-                    TEPattern.this.restoreDefaults();
+                    if (pattern instanceof TEPattern) {
+                      // For TEPattern / TEPerformancePattern, use overridable restoreDefaults()
+                      // method. We can't check for instanceof TEPerformancePattern without creating
+                      // a circular dependency.
+                      ((TEPattern) pattern).restoreDefaults();
+                    } else {
+                      // Otherwise, reset each parameter.
+                      for (LXParameter param : pattern.getParameters()) {
+                        param.reset();
+                      }
+                    }
                   } else {
-                    preset.restore(this);
+                    // This should never happen, but check the type and log an error just in case.
+                    if (pattern instanceof LXPresetComponent) {
+                      preset.restore((LXPresetComponent) pattern);
+                    } else {
+                      TE.error("Unable to restore preset for non-LXPresetComponent");
+                    }
                   }
                 });
     this.presetSelector.addListener(this.presetListener);
