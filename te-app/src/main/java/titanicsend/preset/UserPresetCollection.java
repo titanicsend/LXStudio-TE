@@ -24,17 +24,17 @@ public class UserPresetCollection implements LXSerializable {
   private UserPreset[] presetObjects = {null};
   private String[] presetLabels = {DEFAULT_PRESET};
 
-  private final List<UserPresetParameter> registeredParams = new ArrayList<>();
+  private final List<Selector> selectors = new ArrayList<>();
 
-  public class UserPresetParameter extends ObjectParameter<UserPreset> {
-    public UserPresetParameter(String label) {
+  public class Selector extends ObjectParameter<UserPreset> {
+    public Selector(String label) {
       super(label, presetObjects, presetLabels);
-      UserPresetCollection.this.registeredParams.add(this);
+      UserPresetCollection.this.selectors.add(this);
     }
 
     @Override
     public void dispose() {
-      UserPresetCollection.this.registeredParams.remove(this);
+      UserPresetCollection.this.selectors.remove(this);
       super.dispose();
     }
   }
@@ -54,12 +54,12 @@ public class UserPresetCollection implements LXSerializable {
     this.clazz = clazz;
   }
 
-  public UserPresetParameter newUserPresetParameter(String label) {
-    return new UserPresetParameter(label);
+  public Selector newUserPresetParameter(String label) {
+    return new Selector(label);
   }
 
   private void updatePresetParams() {
-    int numOptions = 1 + this.getPresets().size();
+    int numOptions = 1 + this.presets.size();
     this.presetObjects = new UserPreset[numOptions];
     this.presetLabels = new String[numOptions];
     this.presetObjects[0] = null;
@@ -73,7 +73,7 @@ public class UserPresetCollection implements LXSerializable {
     }
 
     // Update all of the params to have new range/options
-    for (UserPresetParameter parameter : this.registeredParams) {
+    for (Selector parameter : this.selectors) {
       final UserPreset selected = parameter.getObject();
       parameter.setObjects(this.presetObjects, this.presetLabels);
 
