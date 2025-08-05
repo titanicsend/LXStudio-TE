@@ -66,7 +66,7 @@ public class UserPresetCollection implements LXSerializable {
     this.presetLabels[0] = DEFAULT_PRESET;
 
     int i = 1;
-    for (UserPreset preset : this.getPresets()) {
+    for (UserPreset preset : this.presets) {
       this.presetObjects[i] = preset;
       this.presetLabels[i] = preset.getLabel();
       ++i;
