@@ -20,25 +20,6 @@ public class UserPresetCollection implements LXSerializable {
   private final List<UserPreset> mutablePresets = new ArrayList<UserPreset>();
   public final List<UserPreset> presets = Collections.unmodifiableList(this.mutablePresets);
 
-  private final String DEFAULT_PRESET = "Default";
-  private UserPreset[] presetObjects = {null};
-  private String[] presetLabels = {DEFAULT_PRESET};
-
-  private final List<Selector> selectors = new ArrayList<>();
-
-  public class Selector extends ObjectParameter<UserPreset> {
-    public Selector(String label) {
-      super(label, presetObjects, presetLabels);
-      UserPresetCollection.this.selectors.add(this);
-    }
-
-    @Override
-    public void dispose() {
-      UserPresetCollection.this.selectors.remove(this);
-      super.dispose();
-    }
-  }
-
   public interface Listener {
     public default void presetAdded(UserPreset preset) {}
 
@@ -52,37 +33,6 @@ public class UserPresetCollection implements LXSerializable {
   public UserPresetCollection(LX lx, String clazz) {
     this.lx = lx;
     this.clazz = clazz;
-  }
-
-  public Selector newUserPresetParameter(String label) {
-    return new Selector(label);
-  }
-
-  private void updateSelectors() {
-    int numOptions = 1 + this.presets.size();
-    this.presetObjects = new UserPreset[numOptions];
-    this.presetLabels = new String[numOptions];
-    this.presetObjects[0] = null;
-    this.presetLabels[0] = DEFAULT_PRESET;
-
-    int i = 1;
-    for (UserPreset preset : this.presets) {
-      this.presetObjects[i] = preset;
-      this.presetLabels[i] = preset.getLabel();
-      ++i;
-    }
-
-    // Update all of the params to have new range/options
-    for (Selector parameter : this.selectors) {
-      final UserPreset selected = parameter.getObject();
-      parameter.setObjects(this.presetObjects, this.presetLabels);
-
-      // Check if a param had a non-null selection, if so it should be restored in the case of
-      // renaming/reordering where it is still in the list but its index may be different.
-      if ((selected != parameter.getObject()) && this.presets.contains(selected)) {
-        parameter.setValue(selected);
-      }
-    }
   }
 
   public UserPreset addPreset() {
@@ -180,7 +130,63 @@ public class UserPresetCollection implements LXSerializable {
     return this.presets;
   }
 
-  // TODO: File save/load
+  // ----------------------------------------------------------------------------------
+  // Selectors
+  // ----------------------------------------------------------------------------------
+
+  private final String DEFAULT_PRESET = "Default";
+  private UserPreset[] presetObjects = {null};
+  private String[] presetLabels = {DEFAULT_PRESET};
+
+  private final List<Selector> selectors = new ArrayList<>();
+
+  public class Selector extends ObjectParameter<UserPreset> {
+    public Selector(String label) {
+      super(label, presetObjects, presetLabels);
+      UserPresetCollection.this.selectors.add(this);
+    }
+
+    @Override
+    public void dispose() {
+      UserPresetCollection.this.selectors.remove(this);
+      super.dispose();
+    }
+  }
+
+  public Selector newUserPresetParameter(String label) {
+    return new Selector(label);
+  }
+
+  private void updateSelectors() {
+    int numOptions = 1 + this.presets.size();
+    this.presetObjects = new UserPreset[numOptions];
+    this.presetLabels = new String[numOptions];
+    this.presetObjects[0] = null;
+    this.presetLabels[0] = DEFAULT_PRESET;
+
+    int i = 1;
+    for (UserPreset preset : this.presets) {
+      this.presetObjects[i] = preset;
+      this.presetLabels[i] = preset.getLabel();
+      ++i;
+    }
+
+    // Update all of the params to have new range/options
+    for (Selector parameter : this.selectors) {
+      final UserPreset selected = parameter.getObject();
+      parameter.setObjects(this.presetObjects, this.presetLabels);
+
+      // Check if a param had a non-null selection, if so it should be restored in the case of
+      // renaming/reordering where it is still in the list but its index may be different.
+      if ((selected != parameter.getObject()) && this.presets.contains(selected)) {
+        parameter.setValue(selected);
+      }
+    }
+  }
+
+  // ----------------------------------------------------------------------------------
+  // Save / Load
+  // ----------------------------------------------------------------------------------
 
   private boolean inLoad = false;
 
