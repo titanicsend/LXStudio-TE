@@ -50,8 +50,8 @@ public abstract class TEPattern extends DmxPattern {
   private final TEPanelModel sdc;
 
   protected final TEWholeModel modelTE;
-  public UserPresetCollection.Selector selectedPreset;
-  public LXParameterListener selectedPresetListener;
+  public UserPresetCollection.Selector presetSelector;
+  public LXParameterListener presetListener;
 
   public TEWholeModel getModelTE() {
     return this.modelTE;
@@ -70,13 +70,13 @@ public abstract class TEPattern extends DmxPattern {
     // TODO: clean this up
     this.sua = this.modelTE.getPanel("SUA");
     this.sdc = this.modelTE.getPanel("SDC");
-    this.selectedPreset =
+    this.presetSelector =
         PresetEngine.get().getLibrary().get(this).newUserPresetParameter("Presets");
 
-    addParameter(KEY_SELECTED_PRESET, this.selectedPreset);
+    addParameter(KEY_SELECTED_PRESET, this.presetSelector);
     addParameter("setDefaults", this.captureDefaults);
 
-    this.selectedPresetListener =
+    this.presetListener =
         new LXParameterListener() {
           @Override
           public void onParameterChanged(LXParameter parameter) {
@@ -91,7 +91,7 @@ public abstract class TEPattern extends DmxPattern {
             }
           }
         };
-    this.selectedPreset.addListener(this.selectedPresetListener);
+    this.presetSelector.addListener(this.presetListener);
   }
 
   @Override
@@ -388,7 +388,7 @@ public abstract class TEPattern extends DmxPattern {
 
   @Override
   public void dispose() {
-    this.selectedPreset.removeListener(this.selectedPresetListener);
+    this.presetSelector.removeListener(this.presetListener);
     super.dispose();
   }
 }
