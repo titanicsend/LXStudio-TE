@@ -2,18 +2,21 @@ package titanicsend.pattern.jon;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.LXParameter;
-import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.glengine.GLShader;
+import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 @LXCategory("Edge FG")
-public class FxDualWave extends TEPerformancePattern {
-  boolean active = false;
-  boolean stopRequest = false;
-  double time;
-  double startTime;
+public class FxDualWave extends GLShaderPattern {
+  double eventStartTime;
+  double lastBasis;
+  boolean running; // true if effect timing state machine is running
+  boolean runEffect; // true if the effect visual should be displayed
+
+  // how long a single instance of the effect lasts, in variable speed seconds
+  private static final double eventDuration = 2.0;
 
   public enum TriggerMode {
     ONCE("Once"),
@@ -38,91 +41,93 @@ public class FxDualWave extends TEPerformancePattern {
   public FxDualWave(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
 
-    // Speed controls the transit speed of the waves
-    controls.setRange(TEControlTag.SPEED, 0.5, -1.25, 1.25);
+    // initialize state machine for run control
+    eventStartTime = 0;
+    lastBasis = 0;
+    running = false;
+    runEffect = false;
 
-    // Size controls the width of the waves
-    controls.setRange(TEControlTag.SIZE, 0.05, 0.01, 0.25);
-
-    // Trigger mode (in Wow1 control position)
+    // SPEED - transit speed of the waves
+    controls.setRange(TEControlTag.SPEED, 1.0, -4, 4);
+    // SIZE - width of the waves
+    controls.setRange(TEControlTag.SIZE, 0.2, 0.05, 0.8);
+    // WOW1 - Trigger mode
     controls.setControl(TEControlTag.WOW1, triggerMode);
+    // QUANTITY - number of duplicates of the wave
+    controls.setRange(TEControlTag.QUANTITY, 1.0, 1.0, 12.0);
 
-    controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
+    // disable unused controls
+    controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
     controls.markUnused(controls.getLXControl(TEControlTag.XPOS));
     controls.markUnused(controls.getLXControl(TEControlTag.YPOS));
-    controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
 
     addCommonControls();
+
+    addShader(
+        GLShader.config(lx).withFilename("dual_wave.fs").withUniformSource(this::setUniforms));
   }
 
-  @Override
-  public void runTEAudioPattern(double deltaMs) {
-    if (!this.active) return;
+  /**
+   * Determine if we've recently started a beat. We use this rather than engine.tempo.beat() to give
+   * a dependable single trigger close to the start of a beat, with enough flexibility in timing to
+   * catch the event, even if we're running slow and miss the exact moment when tempo.basis == 0.
+   *
+   * @return true if we're near the start of a beat, false otherwise
+   */
+  boolean getBeatState() {
+    double basis = lx.engine.tempo.basis();
+    boolean isBeat = (basis < lastBasis);
+    lastBasis = basis;
+    return isBeat;
+  }
 
-    // generate a sawtooth wave that goes from 0 to 1 over the interval of a measure
-    // (which will, of course, be variable in this context)
-    time = getTime() * 4000.0;
-    float cycle = (float) (time - startTime) / 4000f;
+  // Run the effect if the WowTrigger button is pressed or if we're
+  // in continuous run mode.
+  private void setUniforms(GLShader s) {
 
-    // if we've completed a cycle see if we reset or stop,
-    // depending on the state of the WowTrigger button
-    if (cycle >= 1f) {
-      if (stopRequest) {
-        this.active = false;
-        this.stopRequest = false;
-        return;
+    // if the effect is running, check event duration to see if we
+    // need to retrigger, or just keep showing the visual
+    if (running) {
+      if (triggerMode.getEnum() == TriggerMode.RUN) {
+        // if we're in RUN mode, we always show the effect
+        runEffect = true;
       }
-      startTime = time;
-      cycle = 0;
+      // if we're in one-shot mode, see if the effect has run its full duration
+      else if (Math.abs(getTime() - eventStartTime) > eventDuration) {
+        if (getWowTrigger()) {
+          // If we're triggering for the first time, wait for a beat before
+          // starting the effect visual.
+          if (!runEffect) {
+            if (getBeatState()) {
+              // reset the pattern's clock to sync to the beat
+              retrigger(TEControlTag.SPEED);
+              eventStartTime = 0;
+              runEffect = true;
+            }
+          }
+        } else {
+          // WowTrigger button is up and we're not in continuous run
+          // mode, so stop the effect and return to idle state
+          running = false;
+          runEffect = false;
+        }
+      } else {
+        // continue running the effect
+        runEffect = true;
+      }
+    } else if (getWowTrigger()) {
+      // On initial trigger, set event start clock high
+      // so it causes a beat timing check on the next frame
+      eventStartTime = 999.;
+      // start state machine
+      running = true;
     }
 
-    // create a two peak sawtooth so we can run our wave twice per cycle,
-    // and shape it for a more organic look
-    float movement = (2f * cycle) % 1;
-    movement = movement * movement;
-
-    float lightWave = movement;
-
-    int color = calcColor();
-    float width = (float) getSize();
-
-    // precalculate trig for point rotation so we don't have to do it for every point
-    double theta = (float) -getRotationAngleFromSpin();
-    float cosT = (float) Math.cos(theta);
-    float sinT = (float) Math.sin(theta);
-
-    // do one wave on the panels
-    for (LXPoint point : this.modelTE.getPanelPoints()) {
-      // rotate point at x, y using precalculated trig values
-      float x = point.xn - 0.5f;
-      float y = (-0.5f + point.yn);
-      x = 0.5f + (x * cosT - y * sinT);
-
-      float dist = Math.abs(x - lightWave);
-
-      if (dist <= width) {
-        // color = setBrightness(color, (float) TEMath.clamp(dist, 0f, 1f));
-        colors[point.index] = color;
-      }
-    }
-
-    lightWave = 1 - movement;
-
-    // and another on the edges
-    for (LXPoint point : modelTE.getEdgePoints()) {
-
-      // rotate point at x, y using precalculated trig values
-      float x = point.xn - 0.5f;
-      float y = (-0.5f + point.yn);
-      x = 0.5f + (x * cosT - y * sinT);
-
-      float dist = Math.abs(x - lightWave);
-
-      if (dist <= width) {
-        // color = setBrightness(color, (float) TEMath.clamp(dist, 0f, 1f));
-        colors[point.index] = color;
-      }
-    }
+    // Send our visual control flag, rather than the raw value from the
+    // WowTrigger control to the shader.
+    s.setUniform("runEffect", runEffect);
   }
 
   // Button activation logic.  Keep going while button is held,
@@ -142,7 +147,6 @@ public class FxDualWave extends TEPerformancePattern {
         this.stopRequest = true;
       }
     }
-  }
 
   @Override
   public void onParameterChanged(LXParameter parameter) {
@@ -150,9 +154,5 @@ public class FxDualWave extends TEPerformancePattern {
     if (parameter == triggerMode) {
       if (triggerMode.getEnum() == TriggerMode.ONCE) {
         this.active = false;
-      } else {
-        this.active = true;
-      }
-    }
-  }
+
 }
