@@ -1,6 +1,7 @@
 package titanicsend.pattern.yoffa.shader_engine;
 
-import com.jogamp.opengl.*;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLContext;
 import java.nio.ByteBuffer;
 
 public class OffscreenShaderRenderer {

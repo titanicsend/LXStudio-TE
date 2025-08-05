@@ -2,7 +2,9 @@ package titanicsend.model;
 
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import titanicsend.app.TEVirtualColor;
 import titanicsend.util.TEMath;
 

@@ -2,7 +2,11 @@ package titanicsend.pattern.yoffa.shader_engine;
 
 import heronarts.lx.parameter.LXParameter;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import titanicsend.pattern.glengine.GLPreprocessor;
 import titanicsend.pattern.glengine.ShaderConfiguration;
 

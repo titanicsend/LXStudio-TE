@@ -1,11 +1,21 @@
 package titanicsend.pattern.glengine;
 
-import static titanicsend.pattern.glengine.GLPreprocessorHelpers.*;
+import static titanicsend.pattern.glengine.GLPreprocessorHelpers.getFileName;
+import static titanicsend.pattern.glengine.GLPreprocessorHelpers.parseClassName;
+import static titanicsend.pattern.glengine.GLPreprocessorHelpers.parseControl;
+import static titanicsend.pattern.glengine.GLPreprocessorHelpers.parseIUniforms;
+import static titanicsend.pattern.glengine.GLPreprocessorHelpers.parseLXCategory;
+import static titanicsend.pattern.glengine.GLPreprocessorHelpers.parseTextures;
+import static titanicsend.pattern.glengine.GLPreprocessorHelpers.removeIUniformLines;
 
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

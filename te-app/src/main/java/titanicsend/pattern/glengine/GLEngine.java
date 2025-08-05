@@ -1,6 +1,20 @@
 package titanicsend.pattern.glengine;
 
-import static com.jogamp.opengl.GL.*;
+import static com.jogamp.opengl.GL.GL_CLAMP_TO_EDGE;
+import static com.jogamp.opengl.GL.GL_FLOAT;
+import static com.jogamp.opengl.GL.GL_INVALID_ENUM;
+import static com.jogamp.opengl.GL.GL_INVALID_FRAMEBUFFER_OPERATION;
+import static com.jogamp.opengl.GL.GL_INVALID_OPERATION;
+import static com.jogamp.opengl.GL.GL_INVALID_VALUE;
+import static com.jogamp.opengl.GL.GL_NEAREST;
+import static com.jogamp.opengl.GL.GL_NO_ERROR;
+import static com.jogamp.opengl.GL.GL_OUT_OF_MEMORY;
+import static com.jogamp.opengl.GL.GL_TEXTURE0;
+import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
+import static com.jogamp.opengl.GL.GL_TEXTURE_MAG_FILTER;
+import static com.jogamp.opengl.GL.GL_TEXTURE_MIN_FILTER;
+import static com.jogamp.opengl.GL.GL_TEXTURE_WRAP_S;
+import static com.jogamp.opengl.GL.GL_TEXTURE_WRAP_T;
 import static titanicsend.pattern.glengine.GLShader.TEXTURE_UNIT_AUDIO;
 
 import com.jogamp.opengl.GL4;

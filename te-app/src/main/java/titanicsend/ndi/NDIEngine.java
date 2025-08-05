@@ -7,7 +7,10 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.ObjectParameter;
 import java.util.ArrayList;
 import java.util.List;
-import me.walkerknapp.devolay.*;
+import me.walkerknapp.devolay.Devolay;
+import me.walkerknapp.devolay.DevolayFinder;
+import me.walkerknapp.devolay.DevolayReceiver;
+import me.walkerknapp.devolay.DevolaySource;
 
 public class NDIEngine extends LXComponent implements LXLoopTask {
 

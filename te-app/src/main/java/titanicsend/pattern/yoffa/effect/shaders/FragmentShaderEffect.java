@@ -3,13 +3,15 @@ package titanicsend.pattern.yoffa.effect.shaders;
 import static heronarts.lx.utils.LXUtils.clamp;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
-import static titanicsend.util.TEMath.*;
+import static titanicsend.util.TEMath.addArrays;
+import static titanicsend.util.TEMath.multiplyVectorByMatrix;
+import static titanicsend.util.TEMath.subtractArrays;
 
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
-import java.awt.*;
-import java.util.*;
+import java.awt.Color;
+import java.util.Collection;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
 

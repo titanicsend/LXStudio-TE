@@ -17,7 +17,8 @@
  */
 package titanicsend.ui;
 
-import heronarts.glx.*;
+import heronarts.glx.GLX;
+import heronarts.glx.View;
 import heronarts.glx.ui.UI;
 import heronarts.glx.ui.UI3dComponent;
 import heronarts.lx.color.LXColor;

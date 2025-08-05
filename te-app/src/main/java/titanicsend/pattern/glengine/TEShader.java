@@ -5,8 +5,11 @@ import heronarts.lx.model.LXModel;
 import heronarts.lx.parameter.LXParameter;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.*;
-import titanicsend.pattern.yoffa.shader_engine.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import titanicsend.pattern.yoffa.shader_engine.Uniform;
+import titanicsend.pattern.yoffa.shader_engine.UniformNames;
 
 /**
  * Shader class for TE patterns and effects. Adds image file textures and uniforms for TE common

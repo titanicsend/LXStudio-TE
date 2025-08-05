@@ -3,7 +3,9 @@ package titanicsend.effect;
 import heronarts.lx.GpuDevice;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.parameter.*;
+import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.LXParameter;
 import titanicsend.app.TEGlobalPatternControls;
 
 @LXCategory("Titanics End")
