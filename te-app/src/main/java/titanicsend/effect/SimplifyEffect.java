@@ -2,9 +2,12 @@ package titanicsend.effect;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import heronarts.lx.LXComponent;
 import heronarts.lx.LXComponentName;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.effect.LXEffect;
+import heronarts.lx.mixer.LXAbstractChannel;
+import heronarts.lx.mixer.LXMasterBus;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.CompoundParameter;
@@ -12,6 +15,8 @@ import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameter.Units;
+import heronarts.lx.pattern.LXPattern;
+import heronarts.lx.structure.view.LXViewDefinition;
 import heronarts.lx.studio.LXStudio.UI;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
@@ -177,7 +182,28 @@ public class SimplifyEffect extends LXEffect
     // Candidate models are calculated from View groups + depth parameter
     final int depth = this.depth.getValuei();
     this.models.clear();
-    extractModels(this.models, this.getModelView(), depth);
+    extractModels(this.models, this.getModelViewFixed(), depth);
+  }
+
+  /**
+   * Temporary workaround for a bug in LXDeviceComponent.getModelView(). Context here:
+   * https://github.com/titanicsend/LXStudio-TE/pull/688#issuecomment-3146950180
+   */
+  private LXModel getModelViewFixed() {
+    LXViewDefinition view = this.view.getObject();
+    if (view != null) {
+      return view.getModelView();
+    }
+    LXComponent parent = getParent();
+    if (parent != null) {
+      return switch (parent) {
+        case LXMasterBus master -> this.lx.getModel();
+        case LXAbstractChannel bus -> bus.getModelView();
+        case LXPattern pattern -> pattern.getModelView();
+        default -> getModel();
+      };
+    }
+    return getModel();
   }
 
   @Override
@@ -229,7 +255,6 @@ public class SimplifyEffect extends LXEffect
       for (LXModel child : fromModel.children) {
         extractModels(toList, child, depth - 1);
       }
-      return;
     } else {
       toList.add(fromModel);
     }
