@@ -36,9 +36,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.function.Function;
+import magic.oscremapper.OscRemapperPlugin;
 import org.lwjgl.system.Platform;
 import studio.jkb.beyond.BeyondPlugin;
-import magic.oscremapper.OscRemapperPlugin;
 import studio.jkb.supermod.SuperMod;
 import studio.jkb.supermod.UISuperMod;
 import titanicsend.app.*;
@@ -231,10 +231,10 @@ public class TEApp extends LXStudio {
 
       // Super Modulator midi controller
       this.superMod = new SuperMod(lx);
-      
-          // OscRemapper plugin
-    Path configPath = Path.of("resources", "osc_remapper", "remapper_config.yaml");
-    this.oscRemapperPlugin = new OscRemapperPlugin(lx, configPath);
+
+      // OscRemapper plugin
+      Path configPath = Path.of("resources", "osc_remapper", "remapper_config.yaml");
+      this.oscRemapperPlugin = new OscRemapperPlugin(lx, configPath);
 
       lx.engine.registerComponent(
           "paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
@@ -447,9 +447,9 @@ public class TEApp extends LXStudio {
       // Fast edit: direct chain to SuperMod plugin
       this.superMod.initialize(lx);
       this.superMod.addModulatorSource(this.superModSource);
-      
-          // Initialize OscRemapper plugin
-    this.oscRemapperPlugin.initialize(lx);
+
+      // Initialize OscRemapper plugin
+      this.oscRemapperPlugin.initialize(lx);
 
       // Custom modulators
       lx.registry.addModulator(Dmx16bitModulator.class);
@@ -866,9 +866,9 @@ public class TEApp extends LXStudio {
 
       // Import latest gamepad controllers db
       gamepadEngine.updateGamepadMappings();
-      
-          // Initialize OscRemapper plugin UI
-    this.oscRemapperPlugin.onUIReady(lx, ui);
+
+      // Initialize OscRemapper plugin UI
+      this.oscRemapperPlugin.onUIReady(lx, ui);
     }
 
     @Override
