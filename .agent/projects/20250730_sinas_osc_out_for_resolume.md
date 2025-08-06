@@ -1,4 +1,4 @@
-# OSC Remapping Plugin Project
+# OSC Remapping Plugin Project (Done)
 
 ## Project Evolution
 

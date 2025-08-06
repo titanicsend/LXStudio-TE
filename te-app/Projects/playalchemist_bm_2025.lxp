@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.3.GPU-SNAPSHOT",
-  "timestamp": 1753937053214,
+  "timestamp": 1754504364975,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -12235,7 +12235,7 @@
           "autoCycleMode": 0,
           "autoCycleMode/name": "NEXT",
           "autoCycleTimeSecs": 60.0,
-          "autoCycleCursor": 0,
+          "autoCycleCursor": 2,
           "triggerSwatchCycle": false,
           "expandedPerformance": true,
           "label1": "1",
@@ -12254,7 +12254,7 @@
               "modulationsExpanded": true
             },
             "parameters": {
-              "label": "SWATCH A",
+              "label": "IceYelGrad",
               "recall": false,
               "autoCycleEligible": true
             },
@@ -12273,9 +12273,9 @@
                   "mode": 0,
                   "mode/name": "FIXED",
                   "period": 16.0,
-                  "primary/brightness": 100.0,
-                  "primary/saturation": 100.0,
-                  "primary/hue": 313.6470642089844,
+                  "primary/brightness": 91.0,
+                  "primary/saturation": 61.0,
+                  "primary/hue": 194.0,
                   "secondary/brightness": 94.99999237060547,
                   "secondary/saturation": 42.5,
                   "secondary/hue": 188.99998474121094
@@ -12296,33 +12296,11 @@
                   "mode/name": "FIXED",
                   "period": 24.0,
                   "primary/brightness": 100.0,
-                  "primary/saturation": 100.0,
-                  "primary/hue": 343.76470947265625,
+                  "primary/saturation": 20.833328247070312,
+                  "primary/hue": 225.0,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 95.83333587646484,
-                  "secondary/hue": 60.0
-                },
-                "children": {}
-              },
-              {
-                "id": 453813,
-                "class": "heronarts.lx.color.LXDynamicColor",
-                "internal": {
-                  "modulationColor": 0,
-                  "modulationControlsExpanded": true,
-                  "modulationsExpanded": true
-                },
-                "parameters": {
-                  "label": "LX",
-                  "mode": 0,
-                  "mode/name": "FIXED",
-                  "period": 30.0,
-                  "primary/brightness": 100.0,
-                  "primary/saturation": 100.0,
-                  "primary/hue": 283.7646789550781,
-                  "secondary/brightness": 100.0,
-                  "secondary/saturation": 100.0,
-                  "secondary/hue": 120.0
+                  "secondary/hue": 288.0
                 },
                 "children": {}
               }
@@ -14003,22 +13981,22 @@
               "attack": 0.0,
               "release": 238.32847665695334,
               "slope": 6.0,
-              "band-1": 0.0,
-              "band-2": 0.10234696883554062,
-              "band-3": 0.18594188861608918,
-              "band-4": 0.2685831599495625,
-              "band-5": 0.27645990336922077,
-              "band-6": 0.23488045485802866,
-              "band-7": 0.5001898159791474,
-              "band-8": 0.5660562537888185,
-              "band-9": 0.6246450594108837,
-              "band-10": 0.7458883908070337,
-              "band-11": 0.12825739010002535,
-              "band-12": 0.19123121579316005,
-              "band-13": 0.09181094065505724,
-              "band-14": 0.062448258176382665,
-              "band-15": 0.0,
-              "band-16": 0.0
+              "band-1": 0.5323716546682349,
+              "band-2": 0.5799350994897003,
+              "band-3": 0.5741284724485667,
+              "band-4": 0.5342766060987494,
+              "band-5": 0.45533582603772516,
+              "band-6": 0.39279689754994107,
+              "band-7": 0.43567376556277815,
+              "band-8": 0.419368857716757,
+              "band-9": 0.316919055234144,
+              "band-10": 0.3181768350000401,
+              "band-11": 0.37630188864979874,
+              "band-12": 0.4081586803396746,
+              "band-13": 0.395287460068392,
+              "band-14": 0.3816690919131105,
+              "band-15": 0.302219502009064,
+              "band-16": 0.19243696752985073
             },
             "children": {}
           }
@@ -61435,11 +61413,11 @@
                   "te_color/blendMode": 0,
                   "te_color/blendMode/name": "OKLAB",
                   "te_color/offset": 0.0,
-                  "Double Speed": false,
-                  "Width": 0.5,
-                  "Energy": 0.0,
-                  "Glow": 0.1,
                   "Double Layer": false,
+                  "Double Speed": false,
+                  "Energy": 0.0,
+                  "Width": 0.5,
+                  "Glow": 0.1,
                   "compositeMode": 0
                 },
                 "children": {
@@ -64627,13 +64605,71 @@
           "receiveActive": true,
           "transmitHost": "10.1.3.1",
           "transmitPort": 7890,
-          "transmitActive": true,
+          "transmitActive": false,
           "logInput": false,
           "logOutput": false
         },
         "children": {},
         "inputs": [],
-        "outputs": []
+        "outputs": [
+          {
+            "id": 497965,
+            "class": "heronarts.lx.osc.LXOscConnection$Output",
+            "internal": {
+              "modulationColor": 0,
+              "modulationControlsExpanded": true,
+              "modulationsExpanded": true
+            },
+            "parameters": {
+              "label": "Output",
+              "host": "127.0.0.1",
+              "port": 7000,
+              "log": false,
+              "hasFilter": true,
+              "filter": "/composition",
+              "active": true
+            },
+            "children": {}
+          },
+          {
+            "id": 497966,
+            "class": "heronarts.lx.osc.LXOscConnection$Output",
+            "internal": {
+              "modulationColor": 0,
+              "modulationControlsExpanded": true,
+              "modulationsExpanded": true
+            },
+            "parameters": {
+              "label": "Output",
+              "host": "127.0.0.1",
+              "port": 7001,
+              "log": false,
+              "hasFilter": true,
+              "filter": "/mship",
+              "active": true
+            },
+            "children": {}
+          },
+          {
+            "id": 497967,
+            "class": "heronarts.lx.osc.LXOscConnection$Output",
+            "internal": {
+              "modulationColor": 0,
+              "modulationControlsExpanded": true,
+              "modulationsExpanded": true
+            },
+            "parameters": {
+              "label": "Output",
+              "host": "127.0.0.1",
+              "port": 7002,
+              "log": false,
+              "hasFilter": true,
+              "filter": "/lx",
+              "active": true
+            },
+            "children": {}
+          }
+        ]
       },
       "audioStems": {
         "id": 105,
@@ -64788,7 +64824,7 @@
   },
   "externals": {
     "ui": {
-      "leftPaneActiveSection": 0,
+      "leftPaneActiveSection": 2,
       "audioExpanded": true,
       "envelopExpanded": true,
       "reaperExpanded": true,

@@ -1,4 +1,4 @@
-# NDI GPU Integration Project
+# NDI GPU Integration Project (Abandoned)
 
 Review these files and all referenced files:
 
