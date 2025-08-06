@@ -20,18 +20,19 @@ public class FireEdges extends GLShaderPattern {
   public FireEdges(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
 
-    // Controls HOW MUCH FIRE IS FIRE!!!
-    controls.setRange(TEControlTag.QUANTITY, 0.5, 1, 0.2);
 
-    // Controls how much of the color range of the current palette is
+
+    // LEVELREACTIVITY - Amount of "bounce" in reaction to bass stem signal
+    controls.setRange(TEControlTag.LEVELREACTIVITY,0.2,0.0, 0.35);
+    // WOW1 - How much of the color range of the current palette is
     // used to tint the fire. (0.0 = basically just the first color,
     // 1.0 = all colors in the palette)
-    controls.setRange(TEControlTag.WOW1, 0.5, 0, 1);
+    controls.setRange(TEControlTag.WOW1, 0.5, 0., 1.);
+    // WOW2 - Controls the mix of palette-tinted fire vs. fire-colored fire.
+    controls.setRange(TEControlTag.WOW2, 1., 0., 1.);
+    // QUANTITY - HOW MUCH FIRE!!!
+    controls.setRange(TEControlTag.QUANTITY, 0.5, 1., 0.2);
 
-    // Controls the mix of palette-tinted fire vs. fire-colored fire.
-    controls.setRange(TEControlTag.WOW2, 0., 0, 1);
-
-    controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
     controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
     controls.markUnused(controls.getLXControl(TEControlTag.XPOS));
     controls.markUnused(controls.getLXControl(TEControlTag.YPOS));

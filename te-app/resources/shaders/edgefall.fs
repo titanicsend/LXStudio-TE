@@ -25,7 +25,7 @@ const float lineNoiseAmplitude = 0.00575;
 // For TE, we also perturb the line slightly as we draw so it's never totally static
 float glowline(vec2 U, vec4 seg, float glow) {
     seg.xy -= U; seg.zw -= U;
-    float a = mod ( ( atan(seg.y,seg.x) - atan(seg.w,seg.z) ) / PI, 2.);
+    float a = mod((atan(seg.y,seg.x) - atan(seg.w,seg.z)) / PI, 2.);
 
     a += lineNoiseAmplitude * sin(60. * U.y - iTime * 3.0);
     return pow(min( a, 2.-a ),glow/6.);
