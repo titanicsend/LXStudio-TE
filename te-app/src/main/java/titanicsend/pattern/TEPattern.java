@@ -3,8 +3,6 @@ package titanicsend.pattern;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import heronarts.lx.LX;
-import heronarts.lx.LXComponent;
-import heronarts.lx.LXPresetComponent;
 import heronarts.lx.Tempo;
 import heronarts.lx.audio.GraphicMeter;
 import heronarts.lx.color.LinkedColorParameter;
@@ -67,40 +65,16 @@ public abstract class TEPattern extends DmxPattern {
     this.sua = this.modelTE.getPanel("SUA");
     this.sdc = this.modelTE.getPanel("SDC");
     this.presetSelector =
-        PresetEngine.get().getLibrary().get(this).newUserPresetParameter("Presets");
+        PresetEngine.get().getLibrary().get(this).newUserPresetSelector("Presets");
 
     addParameter(KEY_PRESET_SELECTOR, this.presetSelector);
     addParameter("setDefaults", this.captureDefaults);
 
     this.presetListener =
-        (selector) ->
-            lx.engine.addTask(
-                () -> {
-                  UserPreset preset = presetSelector.getObject();
-                  LXComponent pattern = selector.getParent();
-
-                  // If preset is null, restore defaults
-                  if (preset == null) {
-                    if (pattern instanceof TEPattern) {
-                      // For TEPattern / TEPerformancePattern, use overridable restoreDefaults()
-                      // method. We can't check for instanceof TEPerformancePattern without creating
-                      // a circular dependency.
-                      ((TEPattern) pattern).restoreDefaults();
-                    } else {
-                      // Otherwise, reset each parameter.
-                      for (LXParameter param : pattern.getParameters()) {
-                        param.reset();
-                      }
-                    }
-                  } else {
-                    // This should never happen, but check the type and log an error just in case.
-                    if (pattern instanceof LXPresetComponent) {
-                      preset.restore((LXPresetComponent) pattern);
-                    } else {
-                      TE.error("Unable to restore preset for non-LXPresetComponent");
-                    }
-                  }
-                });
+        (p) -> {
+          UserPreset preset = presetSelector.getObject();
+          PresetEngine.get().applyPresetDelayed(preset, this);
+        };
     this.presetSelector.addListener(this.presetListener);
   }
 
@@ -290,45 +264,13 @@ public abstract class TEPattern extends DmxPattern {
     }
   }
 
-  /**
-   * Called by the listener to restore from a UserPreset.
-   *
-   * <p>If called with a null preset, "restore defaults". Subclasses like TEPerformancePattern can
-   * override restoreDefaults, e.g. to replicate the behavior of panic button.
-   *
-   * @param preset
-   */
-  public void restore(UserPreset preset) {}
-
-  /**
-   * Called to restore default parameters for the "default" (null) preset. Can be overridden by
-   * subclasses (e.g. TEPerformancePattern can replicate the "panic" button functionality). NOTE: we
-   * don't need to exclude KEY_PRESET_SELECTOR here (the way we do when restoring an arbitrary
-   * preset) because the selector's default value will be selected by "reset()" on the parameter.
-   * Context [here](https://github.com/titanicsend/LXStudio-TE/pull/685#discussion_r2254597754)
-   */
-  public void restoreDefaults() {
-    for (LXParameter p : this.getParameters()) {
-      // If a custom default was captured/stored for this parameter,
-      // Set the value to the stored default.
-      if (this.defaults.containsKey(p.getPath())) {
-        p.setValue(this.defaults.get(p.getPath()));
-      } else {
-        // Otherwise, just call parameter.reset() to restore the default value
-        // given to Chromatik when param was created.
-        p.reset();
-      }
-    }
-  }
-
   @Override
   public void save(LX lx, JsonObject obj) {
     super.save(lx, obj);
     obj.add(KEY_DEFAULTS, toObject(lx, this.defaults));
+
     // Ensure non-serializable params not serialized.
-    if (obj.has(KEY_PRESET_SELECTOR)) {
-      obj.remove(KEY_PRESET_SELECTOR);
-    }
+    removePresetSelector(obj);
   }
 
   public static JsonObject toObject(LX lx, Map<String, Double> map) {
@@ -341,6 +283,9 @@ public abstract class TEPattern extends DmxPattern {
 
   @Override
   public void load(LX lx, JsonObject obj) {
+    // In case a preset selector was serialized by accident, remove it
+    removePresetSelector(obj);
+
     super.load(lx, obj);
 
     this.defaults.clear();
@@ -379,6 +324,15 @@ public abstract class TEPattern extends DmxPattern {
           "Invalid format loading default parameter value %s from JSON value: %s",
           path,
           defaultElement);
+    }
+  }
+
+  private void removePresetSelector(JsonObject obj) {
+    if (obj.has(KEY_PARAMETERS)) {
+      final JsonObject parametersObj = obj.getAsJsonObject(KEY_PARAMETERS);
+      if (parametersObj.has(KEY_PRESET_SELECTOR)) {
+        parametersObj.remove(KEY_PRESET_SELECTOR);
+      }
     }
   }
 

@@ -80,11 +80,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     this.constructed = true;
   }
 
-  @Override
-  public void restoreDefaults() {
-    TEPerformancePattern.this.getControls().onPanic();
-  }
-
   public TECommonControls getControls() {
     return controls;
   }
@@ -474,11 +469,17 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     super.run(deltaMs);
   }
 
+  // Key from LXDeviceComponent
+  private static final String KEY_REMOTE_CONTROLS = "remoteControls";
+
   @Override
   public void load(LX lx, JsonObject obj) {
+    // Strip out custom remote controls to avoid stale versions overriding the new. (8-25: We've
+    // been using custom remote controls wrong, which causes problems on project files and presets)
+    if (obj.has(KEY_REMOTE_CONTROLS)) {
+      obj.remove(KEY_REMOTE_CONTROLS);
+    }
     super.load(lx, obj);
-    // ensure the preset param gets re-added to controls after loading.
-    TEPerformancePattern.this.controls.setRemoteControls();
   }
 
   @Override
