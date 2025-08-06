@@ -1,6 +1,6 @@
 package titanicsend.util;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import heronarts.lx.transform.LXVector;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ class OffsetTrianglesTest {
     assert ot.inner.length == 3;
 
     for (int i = 0; i < 3; i++) {
-      assertEquals(ot.inner[i].copy().sub(vertexes[i]).mag(), 1);
+      assertEquals(1, ot.inner[i].copy().sub(vertexes[i]).mag());
     }
   }
 }

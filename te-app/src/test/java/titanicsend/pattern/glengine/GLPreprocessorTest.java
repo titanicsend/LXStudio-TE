@@ -1,6 +1,6 @@
 package titanicsend.pattern.glengine;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static titanicsend.pattern.glengine.GLPreprocessorHelpers.parseIUniforms;
 
 import java.util.List;
