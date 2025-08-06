@@ -53,9 +53,13 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
 
     // no water on very prominent ice features
     vec3 under = texture(iChannel1,uv).rgb;
-    float val = under.r * under.r;
+    float val = under.r * under.r * under.r;
     n = (val >= iWow1) ? n * max(0.0,iWow1 - val) : n;
+    n = mix(0.0,n,iWow1 / (val + 0.0006));
+
     under = texture(iChannel1,uv + (n / 52.)).rgb;
+    under = under * under * under; // increase contrast
+
 
     fragColor = vec4(mix(under, vec3(.1, .2, 1.), n / 24.0),1.0);
 }

@@ -1,4 +1,5 @@
 #define MAX_LINE_COUNT 104
+
 uniform int lineCount;
 uniform vec4[MAX_LINE_COUNT] lines;
 

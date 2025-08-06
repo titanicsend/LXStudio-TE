@@ -2,8 +2,6 @@ package titanicsend.pattern.justin;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.model.LXPoint;
-import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.jon.TEControlTag;
 

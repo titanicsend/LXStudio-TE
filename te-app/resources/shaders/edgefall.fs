@@ -10,10 +10,15 @@ precision mediump float;
   iSpeed
 */
 
-#define LINE_COUNT 52
+#define LINE_COUNT 104
+uniform float basis;
+uniform float glowLevel;
+uniform int lineCount;
 uniform vec4[LINE_COUNT] lines;
 
-const float PI = 3.14159265359;
+#include <include/constants.fs>
+#include <include/colorspace.fs>
+
 const float lineNoiseAmplitude = 0.00575;
 
 // line drawing algorithm from Fabrice Neyret: Makes interesting, pointy-ended lines.
@@ -35,9 +40,11 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     float bri = 0.0;
 
     for (int i = 0; i < LINE_COUNT; i++) {
-       bri = clamp(1.5 * glowline( uv, lines[i],iScale),0.0,1.0);
-       color += bri * mix(iColorRGB,mix(iColorRGB,iColor2RGB,bri),iWow2);
+       if (i >= lineCount) break;
+       bri = clamp(1.5 * glowline( uv, lines[i],glowLevel),0.0,1.0);
+       color += bri * mix(iColorRGB,getGradientColor(bri),iWow2);
     }
+    float fade = 1.0 - basis * basis;
 
-    fragColor = vec4(color,1.0);
+    fragColor = vec4(color,fade);
 }

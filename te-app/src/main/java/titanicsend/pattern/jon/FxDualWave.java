@@ -12,8 +12,9 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
 public class FxDualWave extends GLShaderPattern {
   double eventStartTime;
   double lastBasis;
+  boolean stopRequest; // true if the effect should stop at the end of this cycle
   boolean running; // true if effect timing state machine is running
-  boolean runEffect; // true if the effect visual should be displayed
+  boolean showVisual; // true if the effect visual should be displayed
 
   // how long a single instance of the effect lasts, in variable speed seconds
   private static final double eventDuration = 2.0;
@@ -44,22 +45,24 @@ public class FxDualWave extends GLShaderPattern {
     // initialize state machine for run control
     eventStartTime = 0;
     lastBasis = 0;
+    stopRequest = false;
     running = false;
-    runEffect = false;
+    showVisual = false;
 
     // SPEED - transit speed of the waves
-    controls.setRange(TEControlTag.SPEED, 1.0, -4, 4);
+    controls.setRange(TEControlTag.SPEED, 0.5, -2, 2);
     // SIZE - width of the waves
-    controls.setRange(TEControlTag.SIZE, 0.2, 0.05, 0.8);
+    controls.setRange(TEControlTag.SIZE, 0.2, 0.05, 0.5);
     // WOW1 - Trigger mode
     controls.setControl(TEControlTag.WOW1, triggerMode);
+    // WOW2 - palette color mix level
+    controls.setRange(TEControlTag.WOW2, 0.5, 0.0, 1.0);
     // QUANTITY - number of duplicates of the wave
     controls.setRange(TEControlTag.QUANTITY, 1.0, 1.0, 12.0);
 
     // disable unused controls
     controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
     controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
-    controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
     controls.markUnused(controls.getLXControl(TEControlTag.XPOS));
     controls.markUnused(controls.getLXControl(TEControlTag.YPOS));
 
@@ -90,44 +93,41 @@ public class FxDualWave extends GLShaderPattern {
     // if the effect is running, check event duration to see if we
     // need to retrigger, or just keep showing the visual
     if (running) {
+      // if we're in RUN mode, we always show the effect
       if (triggerMode.getEnum() == TriggerMode.RUN) {
-        // if we're in RUN mode, we always show the effect
-        runEffect = true;
+        showVisual = true;
       }
-      // if we're in one-shot mode, see if the effect has run its full duration
+      // If we're triggering from a button press, wait for a beat before
+      // starting the effect visual.
+      else if (getBeatState() && !showVisual) {
+        // reset the pattern's clock to sync to the beat
+        retrigger(TEControlTag.SPEED);
+        eventStartTime = getTime();
+        showVisual = true;
+        stopRequest = true;
+      }
+      // if we're in one-shot mode and have reached the end of the cycle,
+      // stop the effect and return to idle state
       else if (Math.abs(getTime() - eventStartTime) > eventDuration) {
-        if (getWowTrigger()) {
-          // If we're triggering for the first time, wait for a beat before
-          // starting the effect visual.
-          if (!runEffect) {
-            if (getBeatState()) {
-              // reset the pattern's clock to sync to the beat
-              retrigger(TEControlTag.SPEED);
-              eventStartTime = 0;
-              runEffect = true;
-            }
+        if (stopRequest && showVisual) {
+          // if the button was released, stop the effect
+          // if it's held down, keep running
+          if (!getWowTrigger()) {
+            running = false;
+            showVisual = false;
+          } else {
+            eventStartTime = getTime();
           }
-        } else {
-          // WowTrigger button is up and we're not in continuous run
-          // mode, so stop the effect and return to idle state
-          running = false;
-          runEffect = false;
         }
+        // we're in mid-cycle. Continue running the effect
       } else {
-        // continue running the effect
-        runEffect = true;
+        showVisual = true;
       }
-    } else if (getWowTrigger()) {
-      // On initial trigger, set event start clock high
-      // so it causes a beat timing check on the next frame
-      eventStartTime = 999.;
-      // start state machine
-      running = true;
     }
 
     // Send our visual control flag, rather than the raw value from the
     // WowTrigger control to the shader.
-    s.setUniform("runEffect", runEffect);
+    s.setUniform("runEffect", showVisual);
   }
 
   // Button activation logic.  Keep going while button is held,
@@ -139,20 +139,28 @@ public class FxDualWave extends GLShaderPattern {
     // trigger pattern when wow button is pressed.
     // restart if retriggered before cycle is complete.
     if (on) {
-      this.active = true;
-      this.stopRequest = false;
-      this.startTime = getTime() * 1000.0;
+      if (!running) {
+        this.running = true;
+        this.showVisual = false;
+        this.stopRequest = false;
+      }
     } else {
       if (this.triggerMode.getEnum() == TriggerMode.ONCE) {
         this.stopRequest = true;
       }
     }
+  }
 
   @Override
   public void onParameterChanged(LXParameter parameter) {
     super.onParameterChanged(parameter);
     if (parameter == triggerMode) {
       if (triggerMode.getEnum() == TriggerMode.ONCE) {
-        this.active = false;
-
+        // this.running = false;
+        this.stopRequest = true;
+      } else {
+        this.running = true;
+      }
+    }
+  }
 }

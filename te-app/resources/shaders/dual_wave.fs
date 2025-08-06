@@ -24,15 +24,6 @@ float square(float n,float dutyCycle) {
     return (abs(fract(n)) <= dutyCycle) ? 1.0 : 0.0;
 }
 
-// random number generators
-float rand(vec2 p) {
-    return fract(sin(dot(p, vec2(12.543, 514.123)))*4732.12);
-}
-
-vec2 random2(vec2 p) {
-    return vec2(rand(p), rand(p*vec2(12.9898, 78.233)));
-}
-
 // 2D rotation matrix
 mat2 rotate2D(float a) {
     float c = cos(a), s = sin(a);
@@ -58,18 +49,28 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )  {
     float x =  floor(iQuantity) * uv.x;
 
     // get time-based position offset for the waves, and square it to
-    // shape the motion a little.
-    float t1 = fract(iTime);
+    // shape the motion a little.  The 0.22 offset helps reposition the
+    // wave overlap at the end of the car, which can look like a stall
+    // when the effect is initially triggered.
+    float t1 = mod(0.22 + iTime,0.995);
     t1 = t1 * t1;
 
-    // build the two moving waves
+    // calculate the position of the leading edge of each wave
     float pct1 = x - t1;
     float pct2 = -x - t1;
 
-    float bri = max(max(0.,(tailPct - 1.0 + sawtooth(pct1,1.0)) / tailPct),
-        max(0.,(tailPct - 1.0 + sawtooth(pct2,1.0)) / tailPct));
-    // use smoothstep to keep the front edge very bright
-    bri = smoothstep(0.0, 0.6, bri);
+    // get the brightness of the wave, using a sawtooth generator so that it is
+    // bright at the leading edge, and then falls accoring to the tailPct
+    float bri1 = max(0.,(tailPct - 1.0 + sawtooth(pct1,1.0)) / tailPct);
+    float bri2 = max(0.,(tailPct - 1.0 + sawtooth(pct2,1.0)) / tailPct);
 
-    fragColor = vec4(iColorRGB,bri * bri * bri);
+    // Keep a large strip at the leading edge at full brightness. This helps preserve
+    // the illusion of smooth motion on the car when the wave is moving quickly.
+    bri1 = min(1.0, (bri1 * bri1 * bri1) * 1.3);
+    bri2 = min(1.0, (bri2 * bri2 * bri2) * 1.3);
+
+    // Calculate the wave colors and the final pixel color.
+    vec4 col1 = bri1 * vec4(iColorRGB,1.0);
+    vec4 col2 = bri2 * vec4(oklab_mix(iColorRGB, iColor2RGB,iWow2),1.0);
+    fragColor = col1 + col2;
 }
