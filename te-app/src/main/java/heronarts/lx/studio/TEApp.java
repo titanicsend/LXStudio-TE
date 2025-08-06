@@ -384,6 +384,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(Afterglow.class);
       lx.registry.addPattern(EdgeGlitch.class);
       lx.registry.addPattern(HappyChibi.class);
+      lx.registry.addPattern(DotPolka.class);
 
       // Patterns that will not aspire to art direction standards
       lx.registry.addPattern(SigmoidDanceAudioWaveform.class);
@@ -400,7 +401,6 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(BasicRainbowPattern.class);
       lx.registry.addPattern(BassReactive.class);
       lx.registry.addPattern(BassReactiveEdge.class);
-      lx.registry.addPattern(DotPolka.class);
       lx.registry.addPattern(TempoReactiveEdge.class);
       lx.registry.addPattern(ArtStandards.class);
 
