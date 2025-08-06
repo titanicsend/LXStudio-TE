@@ -99,28 +99,24 @@ public class DotPolka extends GLShaderPattern {
             });
 
     addCommonControls();
+    addShader(GLShader.config(lx).withFilename("dotpolka.fs").withUniformSource(this::setUniforms));
+  }
 
-    addShader(
-        "dotpolka.fs",
-        new GLShaderFrameSetup() {
-          @Override
-          public void OnFrame(GLShader s) {
-            // iBeatTime acts like iTime but counts beats instead of seconds
-            double iBeatTime = getIBeatTime(lx);
-            s.setUniform("iBeatTime", (float) iBeatTime);
+  private void setUniforms(GLShader s) {
+    // iBeatTime acts like iTime but counts beats instead of seconds
+    double iBeatTime = getIBeatTime(lx);
+    s.setUniform("iBeatTime", (float) iBeatTime);
 
-            // Map continuous speed to discrete values (uses beat-synchronized speed)
-            double gotSpeed = getSpeed();
-            double discreteSpeed = mapSpeedToDiscrete(gotSpeed);
-            s.setUniform("iSpeedDiscrete", (float) discreteSpeed);
+    // Map continuous control speed to discrete beat-synced uniform speed
+    double gotSpeed = getSpeed();
+    double discreteSpeed = mapSpeedToDiscrete(gotSpeed);
+    s.setUniform("iSpeedDiscrete", (float) discreteSpeed);
 
-            double animationSpeed = gotSpeed * getAnimationSpeed(discreteSpeed) / discreteSpeed;
-            s.setUniform("iAnimationSpeed", (float) animationSpeed);
+    double animationSpeed = gotSpeed * getAnimationSpeed(discreteSpeed) / discreteSpeed;
+    s.setUniform("iAnimationSpeed", (float) animationSpeed);
 
-            double smoothedTrigger = wowTriggerEnvelope.applyLag(getWowTrigger() ? 1.0 : 0.0);
-            s.setUniform("iWowTriggerValue", (float) smoothedTrigger);
-          }
-        });
+    double smoothedTrigger = wowTriggerEnvelope.applyLag(getWowTrigger() ? 1.0 : 0.0);
+    s.setUniform("iWowTriggerValue", (float) smoothedTrigger);
   }
 
   private static double getAnimationSpeed(double speed) {
