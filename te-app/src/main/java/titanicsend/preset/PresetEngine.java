@@ -4,7 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
+import heronarts.lx.LXDeviceComponent;
+import heronarts.lx.LXModulatorComponent;
 import heronarts.lx.LXPresetComponent;
+import heronarts.lx.mixer.LXBus;
+import heronarts.lx.modulation.LXModulationContainer;
+import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.StringParameter;
 import java.io.File;
 import java.io.FileReader;
@@ -118,5 +124,80 @@ public class PresetEngine extends LXComponent {
     this.currentLibrary.load(file);
     updateLibraryName();
     return this;
+  }
+
+  /**
+   * If a preset is applied from a parameter listener, and the parameter is also a device remote
+   * control (such as a preset Selector), the action needs to be delayed. Otherwise, a
+   * ConcurrentModificationException will occur when listeners of the remote controls list (such as
+   * UI device and UI performance device) perform downstream actions (such as disposing and
+   * rebuilding UI parameter controls).
+   *
+   * @param preset Preset to apply, or null for defaults
+   * @param presetComponent Target component
+   */
+  public void applyPresetDelayed(UserPreset preset, LXPresetComponent presetComponent) {
+    this.lx.engine.addTask(
+        () -> {
+          applyPreset(preset, presetComponent);
+        });
+  }
+
+  /**
+   * Apply a preset to a component of the matching class.
+   *
+   * @param preset Preset to apply, or null for defaults
+   * @param presetComponent Target component
+   */
+  public void applyPreset(UserPreset preset, LXPresetComponent presetComponent) {
+    if (preset != null) {
+      if (preset.matches(presetComponent)) {
+        // Normal operation: restore preset to component
+        preset.restore(presetComponent);
+      } else {
+        throw new IllegalArgumentException("Preset does not match component: " + presetComponent);
+      }
+    } else {
+      // "Default": No preset was supplied, so fully reset the component.
+
+      // Remove all modulations currently acting on the component's parameters
+      if (presetComponent instanceof LXModulatorComponent modulatorComponent) {
+        for (LXParameter parameter : modulatorComponent.getParameters()) {
+          if (parameter instanceof CompoundParameter compoundParameter) {
+            disposeModulations(modulatorComponent, compoundParameter);
+          }
+        }
+      }
+
+      // Remove all modulators that live directly on the component
+      if (presetComponent instanceof LXDeviceComponent deviceComponent) {
+        deviceComponent.modulation.clear();
+      } else if (presetComponent instanceof LXBus bus) {
+        bus.modulation.clear();
+      }
+
+      // Reset parameters
+      if (presetComponent instanceof LXComponent component) {
+        for (LXParameter p : component.getParameters()) {
+          // Avoid clearing the label
+          if (p != component.label) {
+            p.reset();
+          }
+        }
+      }
+    }
+  }
+
+  private void disposeModulations(LXComponent parent, CompoundParameter parameter) {
+    // Remove modulations from any containers up the chain
+    while ((parent != null) && (parent != this.lx.engine)) {
+      if (parent instanceof LXModulationContainer modulationContainer) {
+        modulationContainer.getModulationEngine().removeParameterModulations(parameter);
+      }
+      parent = parent.getParent();
+    }
+
+    // Remove global modulations
+    this.lx.engine.getModulationEngine().removeParameterModulations(parameter);
   }
 }
