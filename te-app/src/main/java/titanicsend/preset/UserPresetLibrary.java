@@ -73,7 +73,8 @@ public class UserPresetLibrary implements LXSerializable {
 
   /** Retrieve a collection of presets for a given component (pattern, etc) */
   public UserPresetCollection get(LXPresetComponent component) {
-    return get(PresetEngine.getPresetName(component));
+    String clazz = PresetEngine.getPresetName(component);
+    return get(clazz);
   }
 
   public UserPresetCollection get(String clazz) {

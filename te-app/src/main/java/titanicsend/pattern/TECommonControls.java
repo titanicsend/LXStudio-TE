@@ -366,7 +366,6 @@ public class TECommonControls {
   protected void setRemoteControls() {
     this.pattern.setCustomRemoteControls(
         new LXListenableNormalizedParameter[] {
-          // this.color.gradient,
           getControl(TEControlTag.LEVELREACTIVITY).control,
           getControl(TEControlTag.FREQREACTIVITY).control,
           this.pattern.view,
@@ -378,7 +377,7 @@ public class TECommonControls {
           getControl(TEControlTag.ANGLE).control,
           getControl(TEControlTag.SPIN).control,
           this.panic,
-          null,
+          this.pattern.presetSelector,
           getControl(TEControlTag.WOW1).control,
           getControl(TEControlTag.WOW2).control,
           getControl(TEControlTag.WOWTRIGGER).control,
