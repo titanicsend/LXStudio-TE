@@ -50,6 +50,8 @@ public class SketchDemo extends GLShaderPattern {
     controls.setValue(TEControlTag.YPOS, 0.85);
 
     controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
+    controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
 
     // register common controls with the UI
     addCommonControls();

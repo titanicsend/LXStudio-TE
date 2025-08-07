@@ -99,6 +99,8 @@ public class EdgeFall extends GLShaderPattern {
 
     // wow2 controls palette color mix
 
+    controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+
     addCommonControls();
 
     addShader(GLShader.config(lx).withFilename("edgefall.fs").withUniformSource(this::setUniforms));

@@ -21,6 +21,8 @@ public class TriangleCrossAudioLevels extends ConstructedShaderPattern {
     controls.setRange(TEControlTag.QUANTITY, 12.0, 1.0, 16.0);
     controls.setRange(TEControlTag.WOW1, 0.3, 0.0, 1.0);
     controls.setRange(TEControlTag.WOW2, 1.0, 0.9, 1.2);
+    controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
 
     addShader("triangle_cross.fs");
   }

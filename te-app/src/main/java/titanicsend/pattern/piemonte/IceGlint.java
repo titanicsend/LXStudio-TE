@@ -43,6 +43,8 @@ public class IceGlint extends GLShaderPattern {
 
     // disable unused controls
     controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
+    controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
 
     addCommonControls();
     addShader("ice_glint.fs");

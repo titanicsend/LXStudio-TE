@@ -35,6 +35,8 @@ public class HappyChibi extends GLShaderPattern {
 
     controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
     controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
+    controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
 
     addCommonControls();
     addShader("happy_chibi.fs");

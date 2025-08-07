@@ -35,6 +35,8 @@ public class ArcEdges extends GLShaderPattern {
     // effect of the audio reactivity controls
     controls.setRange(TEControlTag.WOW1, 0.015, 0.001, 0.04);
 
+    controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+
     // register common controls with the UI
     addCommonControls();
 

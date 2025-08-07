@@ -21,6 +21,8 @@ public class TriangleInfinityWaveform extends GLShaderPattern {
     controls.setRange(TEControlTag.FREQREACTIVITY, 0.04, 0.0, 0.5);
     controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
     controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
+    controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
 
     addCommonControls();
 
