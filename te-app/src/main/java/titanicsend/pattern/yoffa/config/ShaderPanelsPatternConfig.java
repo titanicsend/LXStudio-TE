@@ -383,6 +383,7 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.SIZE, 1, 4, 0.25);
       controls.setRange(TEControlTag.SPIN, 0.0, -.4f, .4f);
       controls.setRange(TEControlTag.WOW1, 0.1, 0, 1);
+      controls.setRange(TEControlTag.LEVELREACTIVITY, 0.2, 0, 3);
       controls.setRange(TEControlTag.FREQREACTIVITY, 0.8, 0, 2);
 
       addShader(
