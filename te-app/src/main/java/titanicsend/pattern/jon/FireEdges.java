@@ -20,10 +20,8 @@ public class FireEdges extends GLShaderPattern {
   public FireEdges(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
 
-
-
     // LEVELREACTIVITY - Amount of "bounce" in reaction to bass stem signal
-    controls.setRange(TEControlTag.LEVELREACTIVITY,0.2,0.0, 0.35);
+    controls.setRange(TEControlTag.LEVELREACTIVITY, 0.2, 0.0, 0.35);
     // WOW1 - How much of the color range of the current palette is
     // used to tint the fire. (0.0 = basically just the first color,
     // 1.0 = all colors in the palette)
