@@ -1,6 +1,6 @@
 package titanicsend.util;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import heronarts.lx.transform.LXVector;
 import org.junit.jupiter.api.Test;
