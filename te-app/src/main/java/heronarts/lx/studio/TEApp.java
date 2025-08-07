@@ -170,6 +170,7 @@ import titanicsend.pattern.piemonte.CandyFlip;
 import titanicsend.pattern.piemonte.EdgeGlitch;
 import titanicsend.pattern.piemonte.FaceMelt;
 import titanicsend.pattern.piemonte.IceGlint;
+import titanicsend.pattern.piemonte.SpecialKube;
 import titanicsend.pattern.pixelblaze.PBAudio1;
 import titanicsend.pattern.pixelblaze.PBFireworkNova;
 import titanicsend.pattern.pixelblaze.PBXorcery;
@@ -382,6 +383,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(CandyFlip.class);
       lx.registry.addPattern(Afterglow.class);
       lx.registry.addPattern(EdgeGlitch.class);
+      lx.registry.addPattern(SpecialKube.class);
       lx.registry.addPattern(HappyChibi.class);
 
       // Patterns that will not aspire to art direction standards
