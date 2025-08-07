@@ -56,7 +56,7 @@ public abstract class TEPattern extends DmxPattern {
           .setDescription(
               "Set current parameter values as the default values for this pattern instance");
 
-  protected final Map<String, Double> defaults = new LinkedHashMap<String, Double>();
+  private final Map<String, Double> defaults = new LinkedHashMap<String, Double>();
 
   protected TEPattern(LX lx) {
     super(lx);
