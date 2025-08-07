@@ -1,4 +1,5 @@
-#define LINE_COUNT 52
+#define LINE_COUNT 104
+uniform int lineCount;
 uniform vec4[LINE_COUNT] lines;
 
 float sparkAmp;
@@ -79,6 +80,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     float widthVariation = levelReact * max(0,bassRatio/volumeRatio) *
             0.1 * abs(noise(2.0 * uv + iTime));
     for (int i = 0; i < LINE_COUNT; i++) {
+        if (i >= lineCount) break;
 
       float dist = glowline2(uv,lines[i], baseWidth + widthVariation);
 

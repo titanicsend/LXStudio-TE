@@ -2,12 +2,11 @@ package titanicsend.pattern.justin;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.model.LXPoint;
-import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.jon.TEControlTag;
 
 @LXCategory(LXCategory.COLOR)
-public class TESolidPattern extends TEPerformancePattern {
+public class TESolidPattern extends GLShaderPattern {
 
   public TESolidPattern(LX lx) {
     super(lx);
@@ -24,18 +23,7 @@ public class TESolidPattern extends TEPerformancePattern {
     controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
     controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
     addCommonControls();
-  }
 
-  @Override
-  protected void runTEAudioPattern(double deltaMs) {
-    int color1 = calcColor();
-
-    for (LXPoint p : getModel().getPoints()) {
-      if (this.modelTE.isGapPoint(p)) {
-        continue;
-      }
-
-      colors[p.index] = color1;
-    }
+    addShader("solid_color.fs");
   }
 }

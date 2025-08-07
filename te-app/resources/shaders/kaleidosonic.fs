@@ -46,8 +46,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     uv = Kaleidoscope(uv, iQuantity);
 
     // levelReact controls audio-linked scaling "bounce" and minimum blob size
-    float level = levelReact * clamp(bassRatio, 0.5, 8.);
-    float intensity = levelReact * clamp(volumeRatio, 0.5, 8.);
+    float level = levelReact * 0.1 * clamp(bassRatio, 0.5, 8.);
+    float intensity = levelReact * 0.1 *  clamp(volumeRatio, 0.5, 8.);
 
     // modulate overall scale by level just a little for more movement.
     // (too much looks jittery)
@@ -86,8 +86,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     }
 
     // apply color modulation based on the field density
-    float colorMix = mod(final_density * 1.618, 1.0);
-    vec3 final_color = getGradientColor(colorMix); //mix(iColor2RGB,iColorRGB,colorMix);
+    float colorMix = fract(final_density);
+    vec3 final_color = getGradientColor(iTime + colorMix);
 
     // iWow2 controls the final gamma correction, which acts as a rough
     // contrast control, letting you thin out the kaleidoscope if you want.
