@@ -1,29 +1,48 @@
 ### Stories Spec
 
-Stories capture the evolving history of Game of Life work. They are the shared memory between S and the agents, forming a knowledge base to understand why things are the way they are.
+Stories capture the evolving history of Game of Life - TE work. They are the shared memory between S and the agents, forming a collective knowledge base to understand why things are the way they are.
 
 - **Purpose**: Long-lived record for decisions, experiments, learnings, and context.
 - **Representations**: Knowledge graph, short-term/long-term memory, timelines, or other forms suitable for fast/slow retrieval.
 - **Privacy warning**: If stories are committed to git, they become public. Do not include confidential or sensitive information.
 
-### Structure
+### Format and storage
 
-Stories follow a structure similar to projects:
+Stories are unstructured and can be in any form. Use whatever conveys the story best:
+- prose, bullet points, checklists
+- code/command/log blocks
+- diagrams, timelines, snapshots
 
-- **Time**: When it happened (timestamps, ranges, or checkpoints)
-- **Context**: What was being worked on and why
+Common optional prompts when writing a story:
+
+- **Time**: When it happened (timestamps, ranges, or checkpoints, time stores were generated)
+- **Context**: What was going on at the time
 - **Characters**: S, agents, tools, systems, or other relevant actors
 - **Events**: What happened, actions taken, results, and follow-ups
-- **Artifacts**: Commands, logs, links, code edits, or references
+- **Artifacts**: Commands, logs, links, code edits, or references (in short, story lines)
 - **Learnings**: What we discovered or decided
 
 Stories may be kept in this `stories` spec file and/or scattered as short contextual learnings in other spec files as needed. Cross-reference when possible.
+
+Storage convention for individual story files:
+- Path: `stories/MONTH-YEAR/DAYMONTHYEAR_story_name.md` (e.g., `stories/2025-08/08082025_launching_test.md`).
+- Use lowercase, hyphenated names; keep file names concise.
+- Short stories may remain inline in this spec, but prefer file-per-story for longevity.
+
+Authoring guidance:
+- Be concise; capture what matters and why.
+- Include exact commands/logs in fenced blocks where useful.
+- Add explicit “Learnings” when there’s a takeaway.
+- Optionally add tags at the end, e.g., `tags: osc, logging, remapper`.
+- Link PRs, issues, files, and commits where relevant.
+
+Privacy reminder: stories committed to git are public; omit sensitive data.
 
 ### Workflow
 
 - S can instruct an agent: “note down a new story”.
 - The story can be about anything: a bug, an experiment, a process, or a meta-reflection.
-- Agents should write it using the structure above, keeping it concise and actionable.
+- Agents should write it, while keeping it concise.
 
 ### First Story
 
@@ -50,4 +69,4 @@ echo "✅ Test completed - checking logs..." && tail -20 "$LOG_FILE"
   - Foreground execution ensures the UI is interactive; S controls lifecycle and ends the session when done.
   - Centralized log location enables quick triage and deeper grep-driven analysis when necessary.
 
-
+File it under `stories/MONTH-YEAR/DAYMONTHYEAR_story_name.md` when saving as a standalone story.
