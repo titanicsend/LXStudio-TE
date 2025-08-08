@@ -299,7 +299,6 @@ public class TEWholeModelDynamic implements TEWholeModel, LX.Listener {
       this.mutableVertexes.add(vertex);
       this.vertexesById.put(v, vertex);
     }
-    System.out.println("Vertex " + v + ": " + vertex);
     return vertex;
   }
 
