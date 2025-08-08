@@ -62,8 +62,8 @@ public class ShaderPatternClassFactory {
 
   public boolean isAutoShader(List<ShaderConfiguration> config) {
     for (ShaderConfiguration c : config) {
-      if (c.opcode == ShaderConfigOpcode.AUTO ||
-      c.opcode == ShaderConfigOpcode.SET_CLASS_NAME) return true;
+      if (c.opcode == ShaderConfigOpcode.AUTO || c.opcode == ShaderConfigOpcode.SET_CLASS_NAME)
+        return true;
     }
     return false;
   }

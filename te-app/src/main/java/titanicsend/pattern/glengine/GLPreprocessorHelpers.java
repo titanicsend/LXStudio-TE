@@ -9,7 +9,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
-import titanicsend.util.TE;
 
 public class GLPreprocessorHelpers {
   /** Converts strings from control definition #pragmas to shader configuration opcode values */
