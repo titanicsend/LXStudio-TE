@@ -46,9 +46,13 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
   public GlobalEffectManager register(GlobalEffect<? extends LXEffect> effect) {
     Objects.requireNonNull(effect, "May not add null GlobalEffect.effect");
     // TODO: prevent multiple entries for one effect type
+    // NOTE(look): ^ I could imagine having 2 versions for an Effect with lots of params,
+    // where two versions of the effect are set up very differently.
     this.mutableSlots.add(effect);
     return this;
   }
+
+  //  public LXEffect effectAtIndex()
 
   private void registerDefaults() {
     // TODO: move this TE-specific method somewhere else, keep GlobalEffectManager generic.
