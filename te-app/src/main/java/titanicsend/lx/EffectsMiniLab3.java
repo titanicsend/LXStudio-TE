@@ -1,6 +1,9 @@
 package titanicsend.lx;
 
+import static titanicsend.lx.DirectorAPCminiMk2.inRange;
+
 import heronarts.lx.LX;
+import heronarts.lx.effect.LXEffect;
 import heronarts.lx.midi.LXMidiEngine;
 import heronarts.lx.midi.LXMidiInput;
 import heronarts.lx.midi.LXMidiOutput;
@@ -8,6 +11,9 @@ import heronarts.lx.midi.MidiControlChange;
 import heronarts.lx.midi.MidiNote;
 import heronarts.lx.midi.MidiNoteOn;
 import heronarts.lx.midi.surface.LXMidiSurface;
+import heronarts.lx.utils.ObservableList;
+import java.util.List;
+import titanicsend.app.effectmgr.GlobalEffect;
 import titanicsend.app.effectmgr.GlobalEffectManager;
 import titanicsend.util.TE;
 
@@ -29,6 +35,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   public static final int KNOB_7 = 19;
   public static final int KNOB_8 = 16;
 
+  // Press pad
   public static final int PAD_1_A = 36;
   public static final int PAD_2_A = 37;
   public static final int PAD_3_A = 38;
@@ -38,6 +45,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   public static final int PAD_7_A = 42;
   public static final int PAD_8_A = 43;
 
+  // Tap pad
   public static final int PAD_1_B = 44;
   public static final int PAD_2_B = 45;
   public static final int PAD_3_B = 46;
@@ -49,61 +57,41 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
 
   private boolean isRegistered = false;
   private GlobalEffectManager effectManager;
+  private ObservableList.Listener<GlobalEffect<? extends LXEffect>> effectListener;
+
+  public enum EffectState {
+    EMPTY,
+    DISABLED,
+    ENABLED
+  }
+
+  private EffectState[] states;
 
   public EffectsMiniLab3(LX lx, LXMidiInput input, LXMidiOutput output) {
     super(lx, input, output);
-
-    // TODO: any setup needed?
   }
 
-  @Override
-  protected void onEnable(boolean on) {
-    if (on) {
-      initialize();
-      register();
-    } else {
-      if (this.isRegistered) {
-        unregister();
+  private void press(int padIndex) {
+    EffectState currState = this.states[padIndex];
+    if (currState != null) {
+      switch (currState) {
+        case DISABLED -> this.states[padIndex] = EffectState.ENABLED;
+        case ENABLED -> this.states[padIndex] = EffectState.DISABLED;
+        default -> TE.warning("unexpected pad press for empty slot " + padIndex);
       }
+      TE.log("PRESS: " + padIndex + " " + currState.name() + " -> " + this.states[padIndex].name());
     }
   }
 
-  private void initialize() {
-    // TODO: initial sysEx to setup pad lights
-  }
-
-  private void register() {
-    this.isRegistered = true;
-    try {
-      this.effectManager = (GlobalEffectManager) this.lx.engine.getChild("effectManager");
-    } catch (Exception e) {
-      TE.error("Effect manager not found: " + e.getMessage());
-    }
-  }
-
-  private void unregister() {
-    this.isRegistered = false;
-
-    // TODO: send sysex to clear
-  }
-
-  @Override
-  protected void onReconnect() {
-    if (this.enabled.isOn()) {
-      initialize();
-    }
-  }
-
-  @Override
-  public void dispose() {
-    if (this.isRegistered) {
-      unregister();
-    }
-    super.dispose();
-  }
+  private void tap(int padIndex) {}
 
   private void noteReceived(MidiNote note, boolean on) {
     final int pitch = note.getPitch();
+
+    if (inRange(pitch, PAD_1_A, PAD_8_A)) {
+      int padIndex = pitch - PAD_1_A;
+      press(padIndex);
+    }
 
     //    // Global momentary
     //    if (pitch == SHIFT) {
@@ -143,16 +131,6 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   }
 
   @Override
-  public void noteOnReceived(MidiNoteOn note) {
-    noteReceived(note, true);
-  }
-
-  @Override
-  public void noteOffReceived(MidiNote note) {
-    noteReceived(note, false);
-  }
-
-  @Override
   public void controlChangeReceived(MidiControlChange cc) {
     int number = cc.getCC();
     //
@@ -169,8 +147,98 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
 
     LXMidiEngine.error("APCmini unmapped control change: " + cc);
   }
-}
 
+  @Override
+  protected void onEnable(boolean on) {
+    if (on) {
+      register();
+      initialize();
+    } else {
+      if (this.isRegistered) {
+        unregister();
+      }
+    }
+  }
+
+  private void initialize() {
+    // TODO: initial sysEx to setup pad lights
+  }
+
+  private void register() {
+    this.isRegistered = true;
+    try {
+      this.effectManager = GlobalEffectManager.get();
+      // this.effectManager = (GlobalEffectManager) this.lx.engine.getChild("effectManager");
+
+      List<GlobalEffect<? extends LXEffect>> slots = this.effectManager.slots;
+      GlobalEffect<? extends LXEffect> curr;
+      states = new EffectState[this.effectManager.slots.size()];
+      for (int i = 0; i < states.length; i++) {
+        curr = slots.get(i);
+        if (curr == null) {
+          states[i] = EffectState.DISABLED;
+        } else {
+          states[i] =
+              curr.getEnabledParameter().isOn() ? EffectState.ENABLED : EffectState.DISABLED;
+        }
+      }
+
+      this.effectListener =
+          new ObservableList.Listener<>() {
+            @Override
+            public void itemAdded(GlobalEffect<? extends LXEffect> item) {
+              int slotIndex = effectManager.slots.indexOf(item);
+              states[slotIndex] = EffectState.DISABLED;
+              TE.log("Effect Slot added [" + slotIndex + "]: " + item);
+            }
+
+            @Override
+            public void itemRemoved(GlobalEffect<? extends LXEffect> item) {
+              int slotIndex = effectManager.slots.indexOf(item);
+              states[slotIndex] = EffectState.EMPTY;
+              TE.log("Effect Slot removed [" + slotIndex + "]: " + item);
+            }
+          };
+      this.effectManager.slots.addListener(this.effectListener);
+    } catch (Exception e) {
+      TE.error("Effect manager not found: " + e.getMessage());
+      this.effectManager = null;
+      this.effectListener = null;
+      this.states = new EffectState[0];
+    }
+  }
+
+  private void unregister() {
+    this.isRegistered = false;
+    effectManager.slots.removeListener(effectListener);
+    // TODO: send sysex to clear
+  }
+
+  @Override
+  protected void onReconnect() {
+    if (this.enabled.isOn()) {
+      initialize();
+    }
+  }
+
+  @Override
+  public void dispose() {
+    if (this.isRegistered) {
+      unregister();
+    }
+    super.dispose();
+  }
+
+  @Override
+  public void noteOnReceived(MidiNoteOn note) {
+    noteReceived(note, true);
+  }
+
+  @Override
+  public void noteOffReceived(MidiNote note) {
+    noteReceived(note, false);
+  }
+}
 /*
 
 Notes on SysEx protocol: https://forum.arturia.com/t/sysex-protocol-documentation/5746
