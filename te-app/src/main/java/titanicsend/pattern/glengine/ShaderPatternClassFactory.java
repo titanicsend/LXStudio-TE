@@ -60,9 +60,10 @@ public class ShaderPatternClassFactory {
     return false;
   }
 
-  public boolean hasConfigData(List<ShaderConfiguration> config) {
+  public boolean isAutoShader(List<ShaderConfiguration> config) {
     for (ShaderConfiguration c : config) {
-      if (c.opcode != ShaderConfigOpcode.ADD_LX_PARAMETER) return true;
+      if (c.opcode == ShaderConfigOpcode.AUTO ||
+      c.opcode == ShaderConfigOpcode.SET_CLASS_NAME) return true;
     }
     return false;
   }
@@ -109,8 +110,8 @@ public class ShaderPatternClassFactory {
 
       // if the shader has no embedded configuration at all, we have to assume
       // that it's set up the "normal" way.  Skip it.
-      if (hasConfigData(config) == false) {
-        // TE.log("Shader " + shaderFile + " has no configuration data.  Skipping.");
+      if (isAutoShader(config) == false) {
+        // TE.log("Shader " + shaderFile + " is not an auto shader.  Skipping.");
         continue;
       }
 
