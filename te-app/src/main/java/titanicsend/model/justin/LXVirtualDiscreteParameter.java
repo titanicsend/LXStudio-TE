@@ -221,6 +221,14 @@ public abstract class LXVirtualDiscreteParameter<T extends DiscreteParameter>
   }
 
   @Override
+  public String getBaseOption() {
+    if (this.parameter != null) {
+      return this.parameter.getBaseOption();
+    }
+    return super.getBaseOption();
+  }
+
+  @Override
   public String[] getOptions() {
     if (this.parameter != null) {
       return this.parameter.getOptions();
@@ -247,13 +255,7 @@ public abstract class LXVirtualDiscreteParameter<T extends DiscreteParameter>
 
   @Override
   public void dispose() {
-    if (this.parameter != null) {
-      this.parameter.removeListener(this.realParameterListener);
-      if (this.parameter instanceof DisposableParameter) {
-        ((DisposableParameter) this.parameter).unlistenDispose(disposeParameterListener);
-      }
-      this.parameter = null;
-    }
+    setParameter(null, false);
     super.dispose();
   }
 }

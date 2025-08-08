@@ -8,18 +8,24 @@ import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
+import heronarts.lx.structure.view.LXViewEngine;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import titanicsend.color.TEColorParameter;
 import titanicsend.color.TEGradientSource;
+import titanicsend.parameter.OffairDiscreteParameter;
 import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon._CommonControlGetter;
+import titanicsend.preset.UserPresetCollection;
 import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
 
 public class TECommonControls {
+
+  public static final String KEY_PRESET_SELECTOR_OFFAIR = "presetOffair";
+  public static final String KEY_VIEW_OFFAIR = "viewOffair";
 
   private final TEPerformancePattern pattern;
 
@@ -31,6 +37,10 @@ public class TECommonControls {
   // Color control is accessible, in case the pattern needs something
   // other than the current color.
   public TEColorParameter color;
+
+  // Wrapped parameters that cannot be changed while live
+  private OffairDiscreteParameter<UserPresetCollection.Selector> presetSelectorOffair;
+  private OffairDiscreteParameter<LXViewEngine.Selector> viewOffair;
 
   // Panic control courtesy of JKB's Rubix codebase
   public final BooleanParameter panic =
@@ -348,6 +358,14 @@ public class TECommonControls {
       colorPrefix = "[x] ";
     }
     TEColorParameter colorParam = registerColorControl(colorPrefix);
+
+    // Wrap the Preset parameter to prevent it from being changed while live
+    this.presetSelectorOffair = new OffairDiscreteParameter<>("Preset", pat.presetSelector);
+    this.pattern.addParam(KEY_PRESET_SELECTOR_OFFAIR, this.presetSelectorOffair);
+
+    // Wrap the View parameter to prevent it from being changed while live
+    this.viewOffair = new OffairDiscreteParameter<>("View", pat.view);
+    this.pattern.addParam(KEY_VIEW_OFFAIR, this.viewOffair);
   }
 
   /** Included for consistency. We may need it later. */
@@ -368,7 +386,7 @@ public class TECommonControls {
         new LXListenableNormalizedParameter[] {
           getControl(TEControlTag.LEVELREACTIVITY).control,
           getControl(TEControlTag.FREQREACTIVITY).control,
-          this.pattern.view,
+          this.viewOffair,
           getControl(TEControlTag.SPEED).control,
           getControl(TEControlTag.XPOS).control,
           getControl(TEControlTag.YPOS).control,
@@ -377,7 +395,7 @@ public class TECommonControls {
           getControl(TEControlTag.ANGLE).control,
           getControl(TEControlTag.SPIN).control,
           this.panic,
-          this.pattern.presetSelector,
+          this.presetSelectorOffair,
           getControl(TEControlTag.WOW1).control,
           getControl(TEControlTag.WOW2).control,
           getControl(TEControlTag.WOWTRIGGER).control,
@@ -430,5 +448,7 @@ public class TECommonControls {
 
   public void dispose() {
     panic.removeListener(panicListener);
+    this.presetSelectorOffair.setParameter(null);
+    this.viewOffair.setParameter(null);
   }
 }

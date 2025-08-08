@@ -270,7 +270,7 @@ public abstract class TEPattern extends DmxPattern {
     obj.add(KEY_DEFAULTS, toObject(lx, this.defaults));
 
     // Ensure non-serializable params not serialized.
-    removePresetSelector(obj);
+    removeParameter(obj, KEY_PRESET_SELECTOR);
   }
 
   public static JsonObject toObject(LX lx, Map<String, Double> map) {
@@ -284,7 +284,7 @@ public abstract class TEPattern extends DmxPattern {
   @Override
   public void load(LX lx, JsonObject obj) {
     // In case a preset selector was serialized by accident, remove it
-    removePresetSelector(obj);
+    removeParameter(obj, KEY_PRESET_SELECTOR);
 
     super.load(lx, obj);
 
@@ -327,11 +327,11 @@ public abstract class TEPattern extends DmxPattern {
     }
   }
 
-  private void removePresetSelector(JsonObject obj) {
+  protected static void removeParameter(JsonObject obj, String parameterKey) {
     if (obj.has(KEY_PARAMETERS)) {
       final JsonObject parametersObj = obj.getAsJsonObject(KEY_PARAMETERS);
-      if (parametersObj.has(KEY_PRESET_SELECTOR)) {
-        parametersObj.remove(KEY_PRESET_SELECTOR);
+      if (parametersObj.has(parameterKey)) {
+        parametersObj.remove(parameterKey);
       }
     }
   }
