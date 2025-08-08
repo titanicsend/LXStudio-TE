@@ -41,6 +41,10 @@ To the agent: "Assume the role of a highly professional technical artist, expert
 6. Build System
 
 - This project is maven based. For more information read the .agent/specs/03_mvn.md
+- Story of launching and starting a test
+  - Run te-app like this: cd ~/workspace/LXStudio-TE/te-app && LOG_FILE="../.agent_logs/te_app_logs_$(date +%Y%m%d_%H%M%S).log" && echo "🎯 Starting a test. Logs: $LOG_FILE" && java -ea -XstartOnFirstThread -Djava.awt.headless=true -Dgpu -jar target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar --resolution 1920x1200 &> "$LOG_FILE" && echo "✅ Test completed - checking logs..." && tail -20 "$LOG_FILE"
+  - The above command will start the LX UI, at that point, S will work with the UI, tests the new feature/bug test or whatever test they want to do, and finally close the te-app. At that point
+    the agent will read the tail of the logs, see if there was an clear failure or not. And depending on the debugging level at the time, the agent will dig into the files and find the relevant logs using regular terminal tools like 'grep'.
 
 7. Agent Launching Test Runs
 

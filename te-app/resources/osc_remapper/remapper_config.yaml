@@ -15,19 +15,24 @@
 # - filter: MANDATORY OSC filter prefix for routing messages to this destination
 
 destinations:
-  - name: "Resolume Machine"
+  - name: "Resolume Mapped"
     ip: "127.0.0.1"
     port: 7000
     filter: "/composition"
 
+  - name: "TouchDesigner Raw LX"
+    ip: "127.0.0.1"
+    port: 7891
+    filter: "/lx"
+
   - name: "MSHIP"
     ip: "127.0.0.1"
-    port: 7001
+    port: 7002
     filter: "/mship"
 
   - name: "MSHIP-Identity"
     ip: "127.0.0.1"
-    port: 7002
+    port: 7003
     filter: "/lx"
 
 # ================================
