@@ -61,6 +61,11 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     register(
         new GlobalEffect<RandomStrobeEffect>() {
           @Override
+          public BooleanParameter getEnabledParameter() {
+            return effect.enabled;
+          }
+
+          @Override
           public LXListenableNormalizedParameter getLevelParameter() {
             return effect.depth;
           }

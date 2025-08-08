@@ -72,8 +72,11 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   }
 
   private void press(int padIndex) {
+    TE.log("PRESS: " + padIndex);
     EffectState currState = this.states[padIndex];
-    if (currState != null) {
+    GlobalEffect<? extends LXEffect> globalEffect = this.effectManager.slots.get(padIndex);
+    if (currState != null && globalEffect.effect != null) {
+      globalEffect.getEnabledParameter().toggle();
       switch (currState) {
         case DISABLED -> this.states[padIndex] = EffectState.ENABLED;
         case ENABLED -> this.states[padIndex] = EffectState.DISABLED;
@@ -88,8 +91,8 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   private void noteReceived(MidiNote note, boolean on) {
     final int pitch = note.getPitch();
 
-    if (inRange(pitch, PAD_1_A, PAD_8_A)) {
-      int padIndex = pitch - PAD_1_A;
+    if (inRange(pitch, PAD_1_B, PAD_8_B)) {
+      int padIndex = pitch - PAD_1_B;
       press(padIndex);
     }
 
@@ -166,46 +169,41 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
 
   private void register() {
     this.isRegistered = true;
-    try {
-      this.effectManager = GlobalEffectManager.get();
-      // this.effectManager = (GlobalEffectManager) this.lx.engine.getChild("effectManager");
+    this.effectManager = null;
+    this.effectListener = null;
+    this.states = new EffectState[0];
+    this.effectManager = GlobalEffectManager.get();
+    // this.effectManager = (GlobalEffectManager) this.lx.engine.getChild("effectManager");
 
-      List<GlobalEffect<? extends LXEffect>> slots = this.effectManager.slots;
-      GlobalEffect<? extends LXEffect> curr;
-      states = new EffectState[this.effectManager.slots.size()];
-      for (int i = 0; i < states.length; i++) {
-        curr = slots.get(i);
-        if (curr == null) {
-          states[i] = EffectState.DISABLED;
-        } else {
-          states[i] =
-              curr.getEnabledParameter().isOn() ? EffectState.ENABLED : EffectState.DISABLED;
-        }
+    List<GlobalEffect<? extends LXEffect>> slots = this.effectManager.slots;
+    GlobalEffect<? extends LXEffect> curr;
+    states = new EffectState[this.effectManager.slots.size()];
+    for (int i = 0; i < states.length; i++) {
+      curr = slots.get(i);
+      if (curr == null || curr.effect == null) {
+        states[i] = EffectState.DISABLED;
+      } else {
+        states[i] = curr.getEnabledParameter().isOn() ? EffectState.ENABLED : EffectState.DISABLED;
       }
-
-      this.effectListener =
-          new ObservableList.Listener<>() {
-            @Override
-            public void itemAdded(GlobalEffect<? extends LXEffect> item) {
-              int slotIndex = effectManager.slots.indexOf(item);
-              states[slotIndex] = EffectState.DISABLED;
-              TE.log("Effect Slot added [" + slotIndex + "]: " + item);
-            }
-
-            @Override
-            public void itemRemoved(GlobalEffect<? extends LXEffect> item) {
-              int slotIndex = effectManager.slots.indexOf(item);
-              states[slotIndex] = EffectState.EMPTY;
-              TE.log("Effect Slot removed [" + slotIndex + "]: " + item);
-            }
-          };
-      this.effectManager.slots.addListener(this.effectListener);
-    } catch (Exception e) {
-      TE.error("Effect manager not found: " + e.getMessage());
-      this.effectManager = null;
-      this.effectListener = null;
-      this.states = new EffectState[0];
     }
+
+    this.effectListener =
+        new ObservableList.Listener<>() {
+          @Override
+          public void itemAdded(GlobalEffect<? extends LXEffect> item) {
+            int slotIndex = effectManager.slots.indexOf(item);
+            states[slotIndex] = EffectState.DISABLED;
+            TE.log("Effect Slot added [" + slotIndex + "]: " + item);
+          }
+
+          @Override
+          public void itemRemoved(GlobalEffect<? extends LXEffect> item) {
+            int slotIndex = effectManager.slots.indexOf(item);
+            states[slotIndex] = EffectState.EMPTY;
+            TE.log("Effect Slot removed [" + slotIndex + "]: " + item);
+          }
+        };
+    this.effectManager.slots.addListener(this.effectListener);
   }
 
   private void unregister() {
