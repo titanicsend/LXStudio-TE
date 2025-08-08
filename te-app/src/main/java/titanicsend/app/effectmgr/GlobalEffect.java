@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
 public abstract class GlobalEffect<T extends LXEffect> {
 
   private final Class<T> type;
-  protected T effect;
+  public T effect;
 
   @SuppressWarnings("unchecked")
   public GlobalEffect() {
