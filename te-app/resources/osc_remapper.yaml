@@ -60,7 +60,7 @@ destinations:
 # 
 # Two types of mappings supported:
 # 1. Exact mapping: "/lx/tempo/beat" -> ["/composition/tempo/resync"]
-# 2. Wildcard mapping: "/lx/tempo/*" -> ["/remote/tempo/*"]
+# 2. Prefix mapping: "/lx/tempo" -> ["/remote/tempo"]
 #
 # Each source can map to multiple destinations (1-to-many mapping)
 # Identity mappings (same source and destination) create passthrough routing
@@ -76,5 +76,5 @@ remappings:
     - "/composition/layer/1/tempo/trigger"
 
   # Wildcard mappings for MSHIP
-  "/lx/tempo/*":
-    - "/mship/wildcard/*"
+  "/lx/tempo":
+    - "/mship/wildcard"
