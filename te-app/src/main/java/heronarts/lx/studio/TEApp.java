@@ -110,6 +110,7 @@ import titanicsend.pattern.ben.BassLightning;
 import titanicsend.pattern.ben.Xorcery;
 import titanicsend.pattern.ben.XorceryDiamonds;
 import titanicsend.pattern.cesar.HandTracker;
+import titanicsend.pattern.cnk.DotPolka;
 import titanicsend.pattern.glengine.GLEngine;
 import titanicsend.pattern.glengine.ShaderPatternClassFactory;
 import titanicsend.pattern.glengine.ShaderPrecompiler;
@@ -386,6 +387,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(EdgeGlitch.class);
       lx.registry.addPattern(SpecialKube.class);
       lx.registry.addPattern(HappyChibi.class);
+      lx.registry.addPattern(DotPolka.class);
 
       // Patterns that will not aspire to art direction standards
       lx.registry.addPattern(SigmoidDanceAudioWaveform.class);

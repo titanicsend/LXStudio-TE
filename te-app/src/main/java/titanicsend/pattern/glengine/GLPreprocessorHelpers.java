@@ -117,6 +117,7 @@ public class GLPreprocessorHelpers {
     List<ShaderConfiguration> parameters = new ArrayList<>();
 
     Pattern pattern = Pattern.compile("^\\s*#iUniform.*", Pattern.MULTILINE);
+    input = removeTeIgnoreLines(input);
     Matcher matcher = pattern.matcher(input);
 
     while (matcher.find()) {
@@ -291,5 +292,34 @@ public class GLPreprocessorHelpers {
       throw new IllegalArgumentException("File " + str + " not found.");
     }
     return str;
+  }
+
+  // Remove lines between '#pragma teignore' and '#pragma endteignore'.
+  public static String removeTeIgnoreLines(String input) {
+    StringBuilder result = new StringBuilder();
+    String[] lines = input.split("\n");
+    boolean ignoring = false;
+
+    for (String line : lines) {
+      String trimmedLine = line.trim();
+      if (trimmedLine.startsWith("#pragma teignore")) {
+        if (ignoring) {
+          throw new IllegalArgumentException("Unmatched '#pragma teignore'");
+        }
+        ignoring = true;
+      } else if (trimmedLine.startsWith("#pragma endteignore")) {
+        if (!ignoring) {
+          throw new IllegalArgumentException("Unmatched '#pragma endteignore'");
+        }
+        ignoring = false;
+      } else if (!ignoring) {
+        result.append(line).append("\n");
+      }
+    }
+    if (ignoring) {
+      throw new IllegalArgumentException("Unmatched '#pragma teignore'");
+    }
+
+    return result.toString();
   }
 }
