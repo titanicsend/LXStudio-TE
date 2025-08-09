@@ -20,7 +20,7 @@ public class LOG {
     return loggingEnabled;
   }
 
-  public static void log(String message, Object... arguments) {
+  public static void debug(String message, Object... arguments) {
     if (loggingEnabled) {
       LX.log(PREFIX + String.format(message, arguments));
     }

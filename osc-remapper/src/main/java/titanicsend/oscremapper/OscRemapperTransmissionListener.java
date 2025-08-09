@@ -32,10 +32,10 @@ public class OscRemapperTransmissionListener implements LXOscEngine.Transmission
 
         // Check if this address matches any global remapping
         if (shouldRemapAddress(originalAddress)) {
-          LOG.log("Processing OSC message: %s", originalAddress);
+          LOG.debug("Processing OSC message: %s", originalAddress);
           // Get all remapped addresses from global remappings
           List<String> remappedAddresses = getRemappedAddresses(originalAddress);
-          LOG.log("Found %d remapped addresses: %s", remappedAddresses.size(), remappedAddresses);
+          LOG.debug("Found %d remapped addresses: %s", remappedAddresses.size(), remappedAddresses);
 
           // Send each remapped message (LX OSC outputs will route based on filters)
           for (String remappedAddress : remappedAddresses) {
@@ -121,7 +121,7 @@ public class OscRemapperTransmissionListener implements LXOscEngine.Transmission
       // filters
       float value = (originalMessage.size() > 0) ? originalMessage.getFloat(0) : 0.0f;
       lx.engine.osc.sendMessage(remappedAddress, value);
-      LOG.log("%s → %s (%s)", originalAddress, remappedAddress, value);
+      LOG.debug("%s → %s (%s)", originalAddress, remappedAddress, value);
     } catch (Exception e) {
       LOG.error(e, "Failed to send remapped message");
     }
