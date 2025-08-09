@@ -11,7 +11,7 @@ public class UIOscRemapperPlugin extends UICollapsibleSection {
 
   public UIOscRemapperPlugin(UI ui, OscRemapperPlugin plugin, float w) {
     super(ui, 0, 0, w, 0);
-    this.setTitle("OSC REMAPPER");
+    this.setTitle("OSC OUTPUT CONFIGS");
     this.setLayout(Layout.VERTICAL, VERTICAL_SPACING);
     this.setPadding(2, 0);
 
@@ -22,7 +22,7 @@ public class UIOscRemapperPlugin extends UICollapsibleSection {
         // OSC Message Capture section
         new UICollapsibleSection(ui, 0, 0, getContentWidth(), 0) {
           {
-            setTitle("OSC CAPTURE");
+            setTitle("OSC REMAPPER");
             setLayout(Layout.VERTICAL, 2);
             setPadding(4, 0);
 
