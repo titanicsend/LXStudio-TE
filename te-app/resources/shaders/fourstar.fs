@@ -1,54 +1,48 @@
 precision mediump float;
 
-const float pi = 3.14159265359;
-const float two_pi = (pi * 2.0);
+#include <include/constants.fs>
+#include <include/colorspace.fs>
 
-const float numRays = 3.0;    // actually sqrt of the number of rays
+const float maxRays = 8.0;    // number of rays
 float exposure;    // higher is brighter
 float falloff;     // higher is faster falloff
 float diff;        // amount of fake "diffraction" color
 float speed = 2.0; // base movement speed.
 
-float rand(int seed, float ray) {
-    return mod(sin(float(seed)*363.5346+ray*674.2454)*6743.4365, 1.0);
-}
-
-vec2 rotate(vec2 point, float angle) {
-  mat2 rotationMatrix = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
-  return rotationMatrix * point;
-}
-
-vec4 light(vec2 position, float pulse) {
+vec4 light(vec2 position, float pulse, float timeOffset) {
     vec4 ret = vec4(iColorRGB,1.0);
 
     // small brightly lit sphere in center
-    float dist = length(position);    
-    ret.rgb *= (1./dist) * (0.08 * pulse); 
+    float dist = length(position);
+    pulse = mod(pulse + timeOffset, 1.0);
+    ret.rgb *= ((1. - iScale)/dist) * 0.08 * (1.0 - pulse);
 
-    // create several rays at interesting offsets(golden ratio 1.618 is
+    // create several moving rays at interesting offsets(golden ratio conjugate .618 is
     // used here because... it looks about right), and slightly perturb color
     // for a diffraction grating-like look
-    float ang = atan(position.y, position.x);    
-    float offset = clamp(abs(position.x/position.y),1.,two_pi);
-	
-	float s = iTime * (speed * beat);
+    float ang = atan(position.y, position.x);
+    // convert angle to a value between 0 and TAU
+    if (ang < 0.0) {ang += TAU;}
+
+    float offset = clamp(abs(position.x/position.y),1.,TAU);
+	float deltaAngle = TAU / iQuantity;
+
+	float s = iRotationAngle;
    
-    for (float n = 1.0; n <= numRays; n += 1.0) {    
-        float rayang = 1.618 * n + (s) + offset;
-        rayang = mod(rayang, two_pi);
-        
-		// extend rays to both sides of circle
-        if (rayang < ang - pi) {rayang += two_pi;}
-        if (rayang > ang + pi) {rayang -= two_pi;}
-        
-        float bri = exposure - abs(ang - rayang);
+    for (float n = 0.0; n < maxRays; n += 1.0) {
+        // iQuantity controls the number of rays
+        if (n >= iQuantity) {
+            break;
+        }
+        float rayang = deltaAngle * n + s + offset;
+        rayang = mod(rayang, TAU);
+
+        float bri = clamp(exposure - abs(ang - rayang), 0.0, 1.0);
         bri -=(falloff * dist);
         
         if (bri > 0.0) {
             vec2 uv = floor(vec2(10000.,1.) * position);
-            ret.rgb += vec3(1.+diff*rand(8644, n),
-                            1.+diff*rand(4567, n),
-                            1.+diff*rand(7354, n)) * bri;
+            ret.rgb += getGradientColor(n/iQuantity) * bri;
         }
     }
     ret *= smoothstep(0.5, 0.0, dist);    
@@ -58,34 +52,35 @@ vec4 light(vec2 position, float pulse) {
 void mainImage( out vec4 fragColor, in vec2 fragCoord )  {
     // normalize and center coordinates
     vec2 position = ( fragCoord.xy / iResolution.xy ) - 0.5;
-    position.y *= iResolution.y/iResolution.x;
+    position.y += 0.2;
 
-    position = rotate(position,iRotationAngle);
+    // controls magnitude of all beat-linked featues
+    float beatVal = levelReact * beat;
 
     // roughly circular "bounce" with beat
-    float b = two_pi * beat;
-    vec2 offset = 0.05 * vec2(sin(iTime+b),cos(b));
+    float b = (TAU * fract(iTime + beatVal));
+    vec2 offset = 0.05 * vec2(sin(b),cos(b));
 
-    // change average star size and level of diffraction effect
-    // with Wow1
+    // change average level of diffraction effect
+    // with iWow1
     float k = 0.2 * iWow1;
-	falloff = 0.75 - k;
-	exposure = 0.575 + k;
-    diff = 0.5 + (0.5 * iWow1);
+	falloff = 0.65 - k;
+	exposure = (0.5 * iWow1) + 0.3 + k;
+    diff = 0.05 + (0.5 * iWow1);
 
     // display stars!
     //	First the lower panels
-    fragColor = light(position - offset + vec2(0.333, 0.125),sinPhaseBeat)
-        + light(position + offset + vec2(-0.285, 0.15),sinPhaseBeat);
+    fragColor = light(position - offset + vec2(0.333, 0.125),beatVal,0.0)
+        + light(position + offset + vec2(-0.285, 0.15),beatVal,0.5);
 
-    // change movement scale for upper panels
+    // reduce movement scale for upper panels
     offset /= 3.;
-    exposure = 0.2 + k;
+    exposure *= 0.75;
 	
 	// draw upper panel stars
     fragColor +=
-        light(position + offset + vec2(0.09, -0.2),1.-sinPhaseBeat)
-        + light(position - offset + vec2(-0.09, -0.2),sinPhaseBeat);
+        light(position + offset + vec2(0.09, -0.2),beatVal,0.2)
+        + light(position - offset + vec2(-0.09, -0.2),beatVal,0.75);
      
 	fragColor = clamp(fragColor,0.,1.);
 }

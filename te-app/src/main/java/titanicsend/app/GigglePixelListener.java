@@ -8,9 +8,15 @@ import heronarts.lx.color.LXSwatch;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
-import playasystems.gigglepixel.*;
+import playasystems.gigglepixel.GPColor;
+import playasystems.gigglepixel.GPException;
+import playasystems.gigglepixel.GPIdentificationPacket;
+import playasystems.gigglepixel.GPListener;
+import playasystems.gigglepixel.GPPacket;
+import playasystems.gigglepixel.GPPalettePacket;
 
 public class GigglePixelListener implements LXLoopTask {
   private final LX lx;

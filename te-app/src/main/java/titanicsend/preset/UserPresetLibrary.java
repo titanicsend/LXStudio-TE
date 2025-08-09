@@ -16,7 +16,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import titanicsend.util.TE;
 
 /** Contains presets for multiple components */
@@ -69,7 +73,8 @@ public class UserPresetLibrary implements LXSerializable {
 
   /** Retrieve a collection of presets for a given component (pattern, etc) */
   public UserPresetCollection get(LXPresetComponent component) {
-    return get(PresetEngine.getPresetName(component));
+    String clazz = PresetEngine.getPresetName(component);
+    return get(clazz);
   }
 
   public UserPresetCollection get(String clazz) {

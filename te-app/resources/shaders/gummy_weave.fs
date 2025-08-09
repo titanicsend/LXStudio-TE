@@ -7,6 +7,8 @@
 #iUniform float iQuantity = 4.0 in {1.0, 20.0}
 #iUniform float iWow2 = 2.5 in {1.0, 3.0}
 #iUniform float iWow1 = 0.9 in {0.5, 2.0}
+#pragma TEControl.LEVELREACTIVITY.Disable
+#pragma TEControl.FREQREACTIVITY.Disable
 
 #ifdef GL_ES
 precision mediump float;

@@ -3,7 +3,7 @@ package titanicsend.pattern.yoffa.media;
 import static java.lang.Math.abs;
 
 import heronarts.lx.model.LXPoint;
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;

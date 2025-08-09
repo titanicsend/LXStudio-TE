@@ -159,7 +159,7 @@ public class UIUserPresetList extends UIItemList.ScrollList {
 
     @Override
     public void onActivate() {
-      this.preset.restore(component);
+      PresetEngine.get().applyPreset(this.preset, component);
       setActiveItem(this);
     }
 

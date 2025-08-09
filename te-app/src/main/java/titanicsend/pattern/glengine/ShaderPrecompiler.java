@@ -1,7 +1,8 @@
 package titanicsend.pattern.glengine;
 
-import com.jogamp.opengl.*;
-import titanicsend.pattern.yoffa.shader_engine.*;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLContext;
+import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
 
 /** Checks shader cache and builds binaries for any changed or previously uncached shaders. */
 public class ShaderPrecompiler {

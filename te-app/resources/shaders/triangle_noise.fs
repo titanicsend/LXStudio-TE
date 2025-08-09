@@ -1,10 +1,7 @@
 #define TE_NOTRANSLATE
 
-vec3 hsv2rgb(vec3 c) {
-    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
-}
+#include <include/constants.fs>
+#include <include/colorspace.fs>
 
 // build 2D rotation matrix
 mat2 rotate2D(float a) {
@@ -56,9 +53,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     float noise = 0.5 + triangleNoise(0.2 * uv);
     noise = log(10.0 * pow(noise, iWow1));
+    noise = clamp(noise, 0.0, 1.0);
 
     // Wow2 controls the mix of foreground color vs. gradient
-    vec3 col = noise * mix(iColorRGB, mix(iColor2RGB, iColorRGB, smoothstep(0.5, 0.9, noise)), iWow2);
+    //vec3 col = noise * mix(iColorRGB, mix(iColor2RGB, iColorRGB, smoothstep(0.5, 0.9, noise)), iWow2);
+    vec3 col = noise * mix(iColorRGB, getGradientColor(noise * noise), 1.0 - iWow2);
 
-    fragColor = vec4(col, 1.);
+    fragColor = vec4(col, 0.995);
 }

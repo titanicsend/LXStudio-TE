@@ -11,10 +11,15 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXListenableParameter;
 import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.parameter.StringParameter;
 import heronarts.lx.parameter.TriggerParameter;
 import heronarts.lx.studio.TEApp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import titanicsend.color.TEColorType;
 import titanicsend.dmx.pattern.DmxPattern;
@@ -22,14 +27,25 @@ import titanicsend.model.TELaserModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEWholeModel;
 import titanicsend.pattern.glengine.GLEngine;
+import titanicsend.preset.PresetEngine;
+import titanicsend.preset.UserPreset;
+import titanicsend.preset.UserPresetCollection;
 import titanicsend.util.TE;
 import titanicsend.util.TEColor;
 
 public abstract class TEPattern extends DmxPattern {
+  // Key for the userPreset knob
+  public static final String KEY_PRESET_SELECTOR = "te_selected_preset";
+  // Key for the actual defaults stored alongside the pattern
+  public static final String KEY_DEFAULTS = "defaults";
+
   private final TEPanelModel sua;
   private final TEPanelModel sdc;
 
   protected final TEWholeModel modelTE;
+
+  public final UserPresetCollection.Selector presetSelector;
+  private final LXParameterListener presetListener;
 
   public TEWholeModel getModelTE() {
     return this.modelTE;
@@ -45,11 +61,21 @@ public abstract class TEPattern extends DmxPattern {
   protected TEPattern(LX lx) {
     super(lx);
     this.modelTE = TEApp.wholeModel;
-
+    // TODO: clean this up
     this.sua = this.modelTE.getPanel("SUA");
     this.sdc = this.modelTE.getPanel("SDC");
+    this.presetSelector =
+        PresetEngine.get().getLibrary().get(this).newUserPresetSelector("Presets");
 
+    addParameter(KEY_PRESET_SELECTOR, this.presetSelector);
     addParameter("setDefaults", this.captureDefaults);
+
+    this.presetListener =
+        (p) -> {
+          UserPreset preset = presetSelector.getObject();
+          PresetEngine.get().applyPresetDelayed(preset, this);
+        };
+    this.presetSelector.addListener(this.presetListener);
   }
 
   @Override
@@ -205,10 +231,16 @@ public abstract class TEPattern extends DmxPattern {
     return rv;
   }
 
+  // -----------------------------------------------------------------------------------
+  // Capturing Defaults
+  //
+
   /** Set all current parameter values as the defaults for this pattern instance */
   public void captureDefaults() {
     for (LXParameter p : this.getParameters()) {
-      if (p instanceof LXListenableParameter && !isHiddenControl(p)) {
+      if (p instanceof LXListenableParameter
+          && !isHiddenControl(p)
+          && !p.getPath().equals(KEY_PRESET_SELECTOR)) {
         captureDefault((LXListenableParameter) p);
       }
     }
@@ -232,12 +264,13 @@ public abstract class TEPattern extends DmxPattern {
     }
   }
 
-  private static final String KEY_DEFAULTS = "defaults";
-
   @Override
   public void save(LX lx, JsonObject obj) {
     super.save(lx, obj);
     obj.add(KEY_DEFAULTS, toObject(lx, this.defaults));
+
+    // Ensure non-serializable params not serialized.
+    removeParameter(obj, KEY_PRESET_SELECTOR);
   }
 
   public static JsonObject toObject(LX lx, Map<String, Double> map) {
@@ -250,6 +283,9 @@ public abstract class TEPattern extends DmxPattern {
 
   @Override
   public void load(LX lx, JsonObject obj) {
+    // In case a preset selector was serialized by accident, remove it
+    removeParameter(obj, KEY_PRESET_SELECTOR);
+
     super.load(lx, obj);
 
     this.defaults.clear();
@@ -291,8 +327,23 @@ public abstract class TEPattern extends DmxPattern {
     }
   }
 
+  protected static void removeParameter(JsonObject obj, String parameterKey) {
+    if (obj.has(KEY_PARAMETERS)) {
+      final JsonObject parametersObj = obj.getAsJsonObject(KEY_PARAMETERS);
+      if (parametersObj.has(parameterKey)) {
+        parametersObj.remove(parameterKey);
+      }
+    }
+  }
+
   /** utility method for use during the static-to-dynamic model transition. */
   public float getXn(LXPoint p) {
     return p.xn;
+  }
+
+  @Override
+  public void dispose() {
+    this.presetSelector.removeListener(this.presetListener);
+    super.dispose();
   }
 }

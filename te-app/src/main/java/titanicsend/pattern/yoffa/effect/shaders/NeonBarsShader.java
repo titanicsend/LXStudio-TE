@@ -1,13 +1,28 @@
 package titanicsend.pattern.yoffa.effect.shaders;
 
-import static java.lang.Math.*;
-import static titanicsend.util.TEMath.*;
+import static java.lang.Math.abs;
+import static java.lang.Math.cos;
+import static java.lang.Math.floor;
+import static java.lang.Math.min;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+import static titanicsend.util.TEMath.addToArray;
+import static titanicsend.util.TEMath.clamp;
+import static titanicsend.util.TEMath.divideArrays;
+import static titanicsend.util.TEMath.dotProduct;
+import static titanicsend.util.TEMath.fract;
+import static titanicsend.util.TEMath.mix;
+import static titanicsend.util.TEMath.mod;
+import static titanicsend.util.TEMath.multiplyArray;
+import static titanicsend.util.TEMath.multiplyVectorByMatrix;
+import static titanicsend.util.TEMath.subtractArrays;
 
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
 import java.util.Collection;
 import java.util.List;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.util.TEMath;
 
 // based on https://www.shadertoy.com/view/WsK3D3
 public class NeonBarsShader extends FragmentShaderEffect {
@@ -74,7 +89,7 @@ public class NeonBarsShader extends FragmentShaderEffect {
 
   private double[] hsv2rgb(double[] c) {
     double[] rgbTmp =
-        abs(addToArray(-3, mod(addToArray(c[0] * 6.0, new double[] {0.0, 4.0, 2.0}), 6)));
+        TEMath.abs(addToArray(-3, mod(addToArray(c[0] * 6.0, new double[] {0.0, 4.0, 2.0}), 6)));
     double[] rgb = clamp(addToArray(-1, rgbTmp), 0.0, 1.0);
     double[] mixed =
         new double[] {mix(1, rgb[0], c[1]), mix(1, rgb[1], c[1]), mix(1, rgb[2], c[1])};

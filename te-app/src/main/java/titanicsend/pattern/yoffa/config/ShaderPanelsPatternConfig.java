@@ -22,6 +22,8 @@ public class ShaderPanelsPatternConfig {
     protected void createShader() {
       controls.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
       controls.setValue(TEControlTag.SPEED, 0.5);
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
 
       addShader("light_beams.fs");
     }
@@ -36,6 +38,8 @@ public class ShaderPanelsPatternConfig {
     @Override
     protected void createShader() {
       controls.setRange(TEControlTag.QUANTITY, .25, .01, .5); // segment length
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
 
       addShader("neon_heart.fs");
     }
@@ -50,6 +54,8 @@ public class ShaderPanelsPatternConfig {
     @Override
     protected void createShader() {
       controls.setRange(TEControlTag.QUANTITY, 5, 1, 10);
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
 
       addShader("pixel_scanner.fs");
     }
@@ -87,6 +93,8 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.QUANTITY, 7, 1, 10); // iterations
       controls.setRange(TEControlTag.WOW1, 2.5, 1, 5); // x relative scale
       controls.setRange(TEControlTag.WOW2, 1.5, 1, 5); // y relative scale
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
 
       addShader("marbling.fs");
     }
@@ -107,6 +115,8 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.QUANTITY, 20, 1, 50); // pixelation scale
       controls.setRange(TEControlTag.WOW1, 0, 0, 0.25); // "wiggle" in rings
       controls.setRange(TEControlTag.WOW2, 0, 0, 3); // radial rotation distortion
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
 
       addShader("neon_ripples.fs");
     }
@@ -125,6 +135,8 @@ public class ShaderPanelsPatternConfig {
       controls.setValue(TEControlTag.SPEED, 0.5);
       controls.setRange(TEControlTag.QUANTITY, 1, 2, 0.1); // triangle density
       controls.setRange(TEControlTag.WOW1, 1, 0.2, 5); // glow
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
 
       addShader("neon_triangles.fs");
     }
@@ -138,11 +150,17 @@ public class ShaderPanelsPatternConfig {
 
     @Override
     protected void createShader() {
-      controls.setRange(TEControlTag.SPEED, 0, -1.5, 1.5); // speed
+      controls.setRange(TEControlTag.SPEED, 0.5, -2, 2); // speed
       controls.setExponent(TEControlTag.SPEED, 2.0);
-      controls.setValue(TEControlTag.SPEED, 0.5);
 
-      addShader("space_explosion.fs");
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
+      controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
+      controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
+
+      addShader(GLShader.config(lx).withFilename("space_explosion.fs"));
     }
   }
 
@@ -154,6 +172,9 @@ public class ShaderPanelsPatternConfig {
 
     @Override
     protected void createShader() {
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+
       addShader("synth_waves.fs");
     }
   }
@@ -167,6 +188,8 @@ public class ShaderPanelsPatternConfig {
     @Override
     protected void createShader() {
       controls.setRange(TEControlTag.SIZE, 1, 2.5, 0.4); // overall scale
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
 
       addShader("pulsing_heart.fs");
     }
@@ -180,6 +203,8 @@ public class ShaderPanelsPatternConfig {
 
     @Override
     protected void createShader() {
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
       addShader("neon_blocks.fs");
     }
   }
@@ -192,6 +217,8 @@ public class ShaderPanelsPatternConfig {
 
     @Override
     protected void createShader() {
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
       addShader("warp.fs");
     }
   }
@@ -204,6 +231,8 @@ public class ShaderPanelsPatternConfig {
 
     @Override
     protected void createShader() {
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
       addShader("fire.fs");
     }
   }
@@ -222,6 +251,9 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.SIZE, 1, 3, 0.5); // overall scale
       controls.setRange(TEControlTag.WOW1, .35, 0.1, 1); // Contrast
 
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+
       addShader(
           GLShader.config(lx).withFilename("storm_scanner.fs").withTextures("gray_noise.png"));
     }
@@ -235,6 +267,8 @@ public class ShaderPanelsPatternConfig {
 
     @Override
     protected void createShader() {
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
       addShader(GLShader.config(lx).withFilename("jet_stream.fs").withTextures("color_noise.png"));
     }
   }
@@ -248,6 +282,9 @@ public class ShaderPanelsPatternConfig {
     @Override
     protected void createShader() {
       controls.setRange(TEControlTag.YPOS, -.35, -1.0, 1.0);
+
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
 
       addShader("outrun_grid.fs");
     }
@@ -308,6 +345,8 @@ public class ShaderPanelsPatternConfig {
 
     @Override
     protected void createShader() {
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
       addShader("galaxy.fs");
     }
   }
@@ -320,6 +359,8 @@ public class ShaderPanelsPatternConfig {
 
     @Override
     protected void createShader() {
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
       addShader("audio_test2.fs");
     }
   }
@@ -342,7 +383,6 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.SIZE, 1, 4, 0.25);
       controls.setRange(TEControlTag.SPIN, 0.0, -.4f, .4f);
       controls.setRange(TEControlTag.WOW1, 0.1, 0, 1);
-
       controls.setRange(TEControlTag.LEVELREACTIVITY, 0.2, 0, 3);
       controls.setRange(TEControlTag.FREQREACTIVITY, 0.8, 0, 2);
 
@@ -387,6 +427,9 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.WOW1, 0.5, 0, 1.00); // snake color level
       controls.setRange(TEControlTag.WOW2, 0.4, 0, 1.00); // background level
 
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+
       addShader("snake_approaching.fs");
     }
   }
@@ -404,6 +447,9 @@ public class ShaderPanelsPatternConfig {
       controls.setValue(TEControlTag.SPEED, 0.5);
 
       controls.setRange(TEControlTag.SIZE, 1, 0.5, 5); // overall scale
+
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
 
       addShader("pulsing_petri_dish.fs");
     }
@@ -423,6 +469,9 @@ public class ShaderPanelsPatternConfig {
 
       controls.setRange(TEControlTag.SIZE, 1, 4, 0.6); // overall scale
       controls.setRange(TEControlTag.WOW1, 0.5, 0.05, 2.5); // contrast
+
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
 
       addShader("mandelbrot.fs");
     }
@@ -513,7 +562,8 @@ public class ShaderPanelsPatternConfig {
       controls.setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
       controls.setRange(TEControlTag.WOW1, 0, 0, 1);
       controls.setRange(TEControlTag.WOW2, 1.0, 0.25, 2.0);
-
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
       addShader("smoke_shader.fs");
     }
   }
@@ -531,6 +581,8 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.SIZE, 0.91, 1.15, 0.8);
       controls.setValue(TEControlTag.SPEED, 0.64);
 
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
       controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
       controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
       controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
@@ -550,6 +602,8 @@ public class ShaderPanelsPatternConfig {
     protected void createShader() {
       controls.setRange(TEControlTag.SIZE, 0.64, 0.25, 1); // overall scale
 
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
       controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
       controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
       controls.markUnused(controls.getLXControl(TEControlTag.WOW2));

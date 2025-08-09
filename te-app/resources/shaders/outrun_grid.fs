@@ -1,6 +1,12 @@
-#define PI 3.14159265359
-#define TAU PI * 2.0
+#include <include/constants.fs>
+#include <include/colorspace.fs>
+
 #define DEG2RAD PI/180.
+
+// NOTE: Change bin count if we ever decide to use more than 16 bins in
+// Chromatik
+#define BIN_COUNT 16.0
+#define BIN_SIZE (512.0 / BIN_COUNT)
 
 float horizonY = 0.15;
 float fov = 90.0;
@@ -17,6 +23,23 @@ float gridScale = 0.5 + (iQuantity);  // grid size (number of lines visible)
 vec2 rotate(vec2 point, float angle) {
   mat2 rotationMatrix = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
   return rotationMatrix * point;
+}
+
+float getSmoothedFFT(float x) {
+    float xNorm = 0.5 - (abs(x));
+    // Map to bin index [0, BIN_COUNT - 1]
+    float binf = xNorm * BIN_SIZE;
+    float bin = floor(binf);
+    float t = binf - bin; // fractional part for interpolation
+
+    float index = bin * BIN_SIZE + 0.5 * BIN_SIZE; // center of the bin
+
+    // Sample current and adjacent bins for smoothing. Otherwise, with
+    // only 16 FFT bins, the terrain data is pretty chunky.
+    float v1 = texelFetch(iChannel0, ivec2(index, 0), 0).x;
+    float v2 = texelFetch(iChannel0, ivec2(index + BIN_SIZE, 0), 0).x;
+
+    return mix(v1,v2,t);
 }
 
 // polynomial smooth min/max from
@@ -37,31 +60,34 @@ vec3 revProject(vec2 camPos, float worldY, float fov) {
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     vec2 uv = fragCoord / iResolution.xy;
-    vec2 p = (fragCoord.xy - iResolution.xy*.5) / iResolution.y;
+    vec2 p = (fragCoord.xy - iResolution.xy*.5) / iResolution.xy;
 
-    fragColor = vec4(0.0);
+    // Calculate terrain height displacement based on the current frame
+    // of FFT data.
+    float heightOffset = levelReact * getSmoothedFFT(p.x);
 
     // rotate according to current control settings
     p = rotate(p,iRotationAngle);
-
-    // iWow1 controls path curvature
-    // high values of iWow1 add 3D waves to the horizon
-    horizonY += (iWow1 > 0.5) ? (0.2*(iWow1 - 0.5)) * sin(p.x * 5.0 + iTime * 3.0) : 0.0;
 
     // Define the current grid displacement
     vec3 displace = vec3(0.0, -4.0 * (1.0 / gridScale) * -iTime, 1.5);
 
     // bend x axis to the beat - iWow1 controls the amplitude of the curves
-    p.x += min(0.5,iWow1)/6.0 * sin(iTime + p.y * 12.0);
+    p.x += min(0.5,iWow1)/6.0 * sin(iTime + p.y * 20.0);
 
     // Get worldspace position of grid
+    horizonY += heightOffset;
     vec3 gridPos = revProject(p - vec2(0.0, horizonY), displace.z, fov);
 
-    // display grid if inside z-clipping region
+    // default to transparent blackness if outside of grid
+    fragColor = vec4(0.0);
+
+    // draw grid if inside z-clipping region
     if (p.y <= horizonY && gridPos.z >= farClip)  {
 
         // Create grid - Quantity sets the number of gridlines (subdivision size)
         vec2 grid = fract(gridScale * (gridPos.xz - displace.xy)) - 0.5;
+        float clr = gridPos.z/farClip;
 
         // Compute distance from grid edges
         float dist = smin(invert * grid.x * grid.x,invert * grid.y * grid.y,-invert * glowScale);
@@ -83,13 +109,13 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
         // of potential aliasing trouble.
         float fade = 2.0-zn;
 
-        // vary the underlying "terrain" color a little to enhance movement
+        // vary the underlying ground color a little to enhance movement
         float glow = (glowScale - dist) + max(0.3*sin(8.0 * zn - iTime*6.0),0.0);
 
         // Calculate and scale overall brightness
         float intensity = max(glow,14.0 * fade * (dist + pattern));
 
         // set final color and build reasonable alpha value from brightness
-        fragColor = vec4(iColorRGB * intensity, 1.0);
+        fragColor = vec4(getGradientColor(clr) * intensity, 1.0);
     }
 }

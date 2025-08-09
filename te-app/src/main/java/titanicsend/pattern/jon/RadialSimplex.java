@@ -44,6 +44,8 @@ public class RadialSimplex extends GLShaderPattern {
     // noiseMode (in Wow1 control position)
     controls.setControl(TEControlTag.WOW1, noiseMode);
 
+    controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+
     // register common controls with LX
     addCommonControls();
 

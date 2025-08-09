@@ -13,7 +13,7 @@
 		Massively massive art car for Burning Man. It's an iceberg. You know,
 		the one that ended the Titanic.
 	</description>
-
+  
 	<modules>
 		<module>audio-stems</module>
 		<module>te-app</module>
@@ -32,6 +32,7 @@
 		<maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
 		<maven-enforcer-plugin.version>3.4.1</maven-enforcer-plugin.version>
 		<spotless.version>2.41.1</spotless.version>
+		<error-prone.version>2.41.0</error-prone.version>
 
 		<!-- LX dependency versions -->
 		<coremidi4j.version>1.6</coremidi4j.version>
@@ -83,10 +84,26 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>${maven-compiler-plugin.version}</version>
 					<configuration>
+						<encoding>UTF-8</encoding>
 						<compilerArgs>
 							<arg>-Xlint:-this-escape</arg>
 							<arg>-Xpkginfo:always</arg>
+							<arg>-XDcompilePolicy=simple</arg>
+							<arg>--should-stop=ifError=FLOW</arg>
+							<arg>-Xplugin:ErrorProne -Xep:WildcardImport:ERROR</arg>
 						</compilerArgs>
+						<annotationProcessorPaths>
+							<path>
+								<groupId>com.google.errorprone</groupId>
+								<artifactId>error_prone_core</artifactId>
+								<version>${error-prone.version}</version>
+							</path>
+							<!-- Other annotation processors go here.
+
+							If 'annotationProcessorPaths' is set, processors will no longer be
+							discovered on the regular -classpath; see also 'Using Error Prone
+							together with other annotation processors' below. -->
+						</annotationProcessorPaths>
 					</configuration>
 				</plugin>
 				<plugin>

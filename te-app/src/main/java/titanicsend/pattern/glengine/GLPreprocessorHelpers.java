@@ -9,7 +9,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
-import titanicsend.util.TE;
 
 public class GLPreprocessorHelpers {
   /** Converts strings from control definition #pragmas to shader configuration opcode values */
@@ -118,6 +117,7 @@ public class GLPreprocessorHelpers {
     List<ShaderConfiguration> parameters = new ArrayList<>();
 
     Pattern pattern = Pattern.compile("^\\s*#iUniform.*", Pattern.MULTILINE);
+    input = removeTeIgnoreLines(input);
     Matcher matcher = pattern.matcher(input);
 
     while (matcher.find()) {
@@ -223,7 +223,11 @@ public class GLPreprocessorHelpers {
           try {
             control.parameterId = TEControlTag.valueOf(tagName);
           } catch (IllegalArgumentException exception) {
-            TE.error("Unsupported tag name: %s", varName);
+            // Ignore #iUniforms with no corresponding tag as they are either typos, in which
+            // case the shader will not compile, or they correspond to additional custom uniforms
+            // supplied by a pattern's Java front-end.
+            // TE.log("Unsupported tag name: %s", varName);
+            continue;
           }
           control.opcode = ShaderConfigOpcode.SET_RANGE;
           control.name = control.parameterId.getLabel();
@@ -288,5 +292,34 @@ public class GLPreprocessorHelpers {
       throw new IllegalArgumentException("File " + str + " not found.");
     }
     return str;
+  }
+
+  // Remove lines between '#pragma teignore' and '#pragma endteignore'.
+  public static String removeTeIgnoreLines(String input) {
+    StringBuilder result = new StringBuilder();
+    String[] lines = input.split("\n");
+    boolean ignoring = false;
+
+    for (String line : lines) {
+      String trimmedLine = line.trim();
+      if (trimmedLine.startsWith("#pragma teignore")) {
+        if (ignoring) {
+          throw new IllegalArgumentException("Unmatched '#pragma teignore'");
+        }
+        ignoring = true;
+      } else if (trimmedLine.startsWith("#pragma endteignore")) {
+        if (!ignoring) {
+          throw new IllegalArgumentException("Unmatched '#pragma endteignore'");
+        }
+        ignoring = false;
+      } else if (!ignoring) {
+        result.append(line).append("\n");
+      }
+    }
+    if (ignoring) {
+      throw new IllegalArgumentException("Unmatched '#pragma teignore'");
+    }
+
+    return result.toString();
   }
 }

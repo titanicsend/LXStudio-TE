@@ -3,7 +3,8 @@ package titanicsend.pattern.jeff;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.parameter.*;
+import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.DiscreteParameter;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.pattern.TEAudioPattern;
 

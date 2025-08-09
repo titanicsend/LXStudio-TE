@@ -4,7 +4,8 @@ import heronarts.lx.Tempo;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.LXParameter;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 import titanicsend.pattern.TEPerformancePattern;
 
 public abstract class PatternEffect {

@@ -2,11 +2,19 @@ package titanicsend.model;
 
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import titanicsend.app.TEVirtualColor;
 import titanicsend.util.TEMath;
 
 public class TEVertex extends LXVector {
+
+  private static Map<Integer, LXVector> mutableVertexLookup = new HashMap<>();
+  public static Map<Integer, LXVector> vertexLookup =
+      Collections.unmodifiableMap(mutableVertexLookup);
 
   public final int id;
   private final Set<TEEdgeModel> mutableEdges = new HashSet<TEEdgeModel>();
@@ -74,5 +82,11 @@ public class TEVertex extends LXVector {
 
   public void nudgeToward(LXVector other, float distance) {
     lerp(other, distance);
+  }
+
+  public static void registerVertex(Integer id, LXVector coord) {
+    if (!mutableVertexLookup.containsKey(id)) {
+      mutableVertexLookup.put(id, coord);
+    }
   }
 }
