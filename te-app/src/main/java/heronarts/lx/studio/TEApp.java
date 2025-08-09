@@ -28,6 +28,7 @@ import heronarts.lx.pattern.texture.NoisePattern;
 import java.io.File;
 import java.io.IOException;
 import java.net.SocketException;
+import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -103,6 +104,7 @@ import titanicsend.ndi.NDIOutRawEffect;
 import titanicsend.ndi.NDIOutShaderEffect;
 import titanicsend.ndi.NDIReceiverPattern;
 import titanicsend.osc.CrutchOSC;
+import titanicsend.oscremapper.OscRemapperPlugin;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.ben.Audio1;
@@ -249,6 +251,7 @@ public class TEApp extends LXStudio {
     private final NDIEngine ndiEngine;
     private final GLEngine glEngine;
     private final SuperMod superMod;
+    private final OscRemapperPlugin oscRemapperPlugin;
 
     private final ColorPaletteManager paletteManagerA;
     private final ColorPaletteManager paletteManagerB;
@@ -289,6 +292,9 @@ public class TEApp extends LXStudio {
 
       // Super Modulator midi controller
       this.superMod = new SuperMod(lx);
+
+      // OscRemapper plugin
+      this.oscRemapperPlugin = new OscRemapperPlugin(lx, Path.of("resources", "osc_remapper.yaml"));
 
       lx.engine.registerComponent(
           "paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
@@ -501,6 +507,9 @@ public class TEApp extends LXStudio {
       // Fast edit: direct chain to SuperMod plugin
       this.superMod.initialize(lx);
       this.superMod.addModulatorSource(this.superModSource);
+
+      // Initialize OscRemapper plugin
+      this.oscRemapperPlugin.initialize(lx);
 
       // Custom modulators
       lx.registry.addModulator(Dmx16bitModulator.class);
@@ -821,6 +830,7 @@ public class TEApp extends LXStudio {
       registry.addUIParameterControl(UITEColorControl.class);
 
       this.superMod.initializeUI(lx, ui);
+      this.oscRemapperPlugin.initializeUI(lx, ui);
     }
 
     /**
@@ -919,6 +929,9 @@ public class TEApp extends LXStudio {
 
       // Import latest gamepad controllers db
       gamepadEngine.updateGamepadMappings();
+
+      // Initialize OscRemapper plugin UI
+      this.oscRemapperPlugin.onUIReady(lx, ui);
     }
 
     @Override
