@@ -114,6 +114,7 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
     ndiFrame.setData(this.imageBuffer);
     ndiFrame.setFrameRate(60, 1);
     ndiFrame.setAspectRatio(1);
+    LX.log(String.format("NDI: Successfully initialized sender '%s'", this.ndiStreamLabel));
   }
 
   @Override
