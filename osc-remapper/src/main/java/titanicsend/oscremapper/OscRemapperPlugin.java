@@ -33,30 +33,29 @@ public class OscRemapperPlugin implements LXStudio.Plugin {
   private static final int DEFAULT_OSC_PORT = 7000;
   private static final String DEFAULT_OSC_FILTER = "/test";
 
-  public final TriggerParameter setUpNow =
-      new TriggerParameter("Set Up Now", this::runSetup)
-          .setDescription(
-              "Add an OSC output and add global modulators for brightness and tempo sync");
+  public final TriggerParameter setUpOscOutputs =
+      new TriggerParameter("Set Up OSC Outputs", this::runSetup)
+          .setDescription("Add OSC Outputs from YAML Config");
 
-  public final TriggerParameter refreshConfig =
-      new TriggerParameter("Refresh Config", this::refreshConfiguration)
-          .setDescription("Reload configuration from YAML file and re-setup outputs");
+  public final TriggerParameter reloadYamlConfig =
+      new TriggerParameter("Reload YAML Config", this::refreshConfiguration)
+          .setDescription("Reload YAML Config Outputs and Re-mappings, and Re-Setup the Outputs");
 
-  public final BooleanParameter loggingEnabled =
-      new BooleanParameter("Enable Logs", false).setDescription("Enable/disable plugin logging");
+  public final BooleanParameter oscRemappingEnabled =
+      new BooleanParameter("OSC Remapping", false)
+          .setDescription("Enable remapping /lx OSC messages to /test");
+
+  public final BooleanParameter remapperLoggingEnabled =
+      new BooleanParameter("Enable Remapper Logs", false)
+          .setDescription("Enable/disable plugin logging");
 
   private final LX lx;
   private final Path configPath;
-  private OscRemapperTransmissionListener transmissionListener;
+  private final OscRemapperTransmissionListener transmissionListener;
   private RemapperConfig config;
 
   // Track OSC outputs by remote name
   private final Map<String, LXOscConnection.Output> remoteOutputs = new HashMap<>();
-
-  // OSC Capture parameters
-  public final BooleanParameter oscCaptureEnabled =
-      new BooleanParameter("OSC Remap", false)
-          .setDescription("Enable remapping /lx OSC messages to /test");
 
   public OscRemapperPlugin(LX lx, Path configPath) {
     this.lx = lx;
@@ -77,9 +76,9 @@ public class OscRemapperPlugin implements LXStudio.Plugin {
     this.transmissionListener = new OscRemapperTransmissionListener();
 
     // Listen for parameter changes
-    this.oscCaptureEnabled.addListener(
+    this.oscRemappingEnabled.addListener(
         p -> {
-          if (this.oscCaptureEnabled.isOn()) {
+          if (this.oscRemappingEnabled.isOn()) {
             startOscCapture();
           } else {
             stopOscCapture();
@@ -87,9 +86,9 @@ public class OscRemapperPlugin implements LXStudio.Plugin {
         });
 
     // Listen for logging parameter changes
-    this.loggingEnabled.addListener(
+    this.remapperLoggingEnabled.addListener(
         p -> {
-          LOG.setEnabled(this.loggingEnabled.isOn());
+          LOG.setEnabled(this.remapperLoggingEnabled.isOn());
         });
   }
 
@@ -101,7 +100,7 @@ public class OscRemapperPlugin implements LXStudio.Plugin {
 
   @Override
   public void onUIReady(LXStudio lx, LXStudio.UI ui) {
-    new UIOscRemapperPlugin(ui, this, ui.leftPane.content.getContentWidth())
+    new UIOscRemapperPlugin(ui, this, ui.leftPane.model.getContentWidth())
         .addToContainer(ui.leftPane.content, 2);
   }
 
@@ -298,7 +297,7 @@ public class OscRemapperPlugin implements LXStudio.Plugin {
 
     try {
       // Stop current OSC capture if active
-      if (oscCaptureEnabled.isOn()) {
+      if (oscRemappingEnabled.isOn()) {
         stopOscCapture();
       }
 
@@ -333,7 +332,7 @@ public class OscRemapperPlugin implements LXStudio.Plugin {
       runSetup();
 
       // Restart OSC capture if it was enabled
-      if (oscCaptureEnabled.isOn()) {
+      if (oscRemappingEnabled.isOn()) {
         startOscCapture();
       }
 
