@@ -13,9 +13,10 @@
 		Massively massive art car for Burning Man. It's an iceberg. You know,
 		the one that ended the Titanic.
 	</description>
-  
+
 	<modules>
 		<module>audio-stems</module>
+		<module>osc-remapper</module>
 		<module>te-app</module>
 	</modules>
 
@@ -46,6 +47,7 @@
 		<junit-jupiter.version>5.9.2</junit-jupiter.version>
 		<supermod.version>0.1.5-SNAPSHOT</supermod.version>
 		<beyond-plugin.version>0.1.5</beyond-plugin.version>
+		<snakeyaml.version>2.0</snakeyaml.version>
 	</properties>
 
 	<!-- Define a local repository -->
@@ -194,6 +196,12 @@
 				<groupId>uk.co.xfactory-librarians</groupId>
 				<artifactId>coremidi4j</artifactId>
 				<version>${coremidi4j.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.yaml</groupId>
+				<artifactId>snakeyaml</artifactId>
+				<version>${snakeyaml.version}</version>
 			</dependency>
 
 			<dependency>
