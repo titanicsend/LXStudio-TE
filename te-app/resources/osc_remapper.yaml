@@ -18,13 +18,13 @@ destinations:
   # filter paths defined in CrutchOSC:
   # https://github.com/titanicsend/LXStudio-TE/blob/ce0b925f178d442faaf6d31e5409186f65161f25/te-app/src/main/java/titanicsend/osc/CrutchOSC.java#L45
   - name: "iPad - Cue"
-    ip: "10.0.100.201"
-    port: 3030
+    ip: "10.100.0.201"
+    port: 7890
     filter: "/lx/focus"
 
   - name: "iPad - Aux"
-    ip: "10.0.100.202"
-    port: 3030
+    ip: "10.100.0.202"
+    port: 7890
     filter: "/lx/focus"
 
   - name: "Resolume Mapped"
