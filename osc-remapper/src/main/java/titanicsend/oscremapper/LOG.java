@@ -20,29 +20,29 @@ public class LOG {
     return loggingEnabled;
   }
 
-  public static void log(String message) {
+  public static void log(String message, Object... arguments) {
     if (loggingEnabled) {
-      LX.log(PREFIX + message);
+      LX.log(PREFIX + String.format(message, arguments));
     }
   }
 
   /** Log startup/important messages that should always be shown */
-  public static void startup(String message) {
-    LX.log(PREFIX + message);
+  public static void startup(String message, Object... arguments) {
+    LX.log(PREFIX + String.format(message, arguments));
   }
 
-  public static void error(String message) {
+  public static void error(String message, Object... arguments) {
     // Always show errors regardless of logging state
-    LX.error(PREFIX + message);
+    LX.error(PREFIX + String.format(message, arguments));
   }
 
-  public static void error(Exception e, String message) {
+  public static void error(Exception e, String message, Object... arguments) {
     // Always show errors regardless of logging state
-    LX.error(e, PREFIX + message);
+    LX.error(e, PREFIX + String.format(message, arguments));
   }
 
-  public static void warning(String message) {
+  public static void warning(String message, Object... arguments) {
     // Always show warnings regardless of logging state
-    LX.warning(PREFIX + message);
+    LX.warning(PREFIX + String.format(message, arguments));
   }
 }

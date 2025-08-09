@@ -28,7 +28,7 @@ public class ConfigLoader {
       LOG.startup("Loading OSC Remapper config from: " + configPath.toAbsolutePath());
 
       if (!Files.exists(configPath)) {
-        LOG.error("Config file not found: " + configPath.toAbsolutePath());
+        LOG.error("Config file not found: %s", configPath.toAbsolutePath());
         return createDefaultConfig();
       }
 
@@ -44,7 +44,7 @@ public class ConfigLoader {
       }
 
     } catch (Exception e) {
-      LOG.error(e, "Failed to load OSC Remapper config: " + e.getMessage());
+      LOG.error(e, "Failed to load OSC Remapper config: %s", e.getMessage());
       return createDefaultConfig();
     }
   }
@@ -56,7 +56,7 @@ public class ConfigLoader {
 
     // Parse the YAML as a generic object structure
     Object data = yaml.load(inputStream);
-    LOG.log("YAML data type: " + (data != null ? data.getClass().getSimpleName() : "null"));
+    LOG.log("YAML data type: %s", (data != null ? data.getClass().getSimpleName() : "null"));
 
     if (data == null) {
       LOG.error("YAML data is null - file might be empty or invalid");
@@ -70,28 +70,28 @@ public class ConfigLoader {
     if (data instanceof Map) {
       @SuppressWarnings("unchecked")
       Map<String, Object> rootMap = (Map<String, Object>) data;
-      LOG.log("YAML root keys: " + rootMap.keySet());
+      LOG.log("YAML root keys: %s", rootMap.keySet());
 
       // Handle destinations array format
       Object destinationsData = rootMap.get("destinations");
       LOG.log(
-          "Destinations data type: "
-              + (destinationsData != null ? destinationsData.getClass().getSimpleName() : "null"));
+          "Destinations data type: %s",
+          (destinationsData != null ? destinationsData.getClass().getSimpleName() : "null"));
 
       if (destinationsData instanceof List) {
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> destinationsList = (List<Map<String, Object>>) destinationsData;
-        LOG.log("Destinations list size: " + destinationsList.size());
+        LOG.log("Destinations list size: %d", destinationsList.size());
 
         for (int i = 0; i < destinationsList.size(); i++) {
           Map<String, Object> destinationMap = destinationsList.get(i);
-          LOG.log("Processing destination " + i + ": " + destinationMap.keySet());
+          LOG.log("Processing destination %d: %s", i, destinationMap.keySet());
           RemapperConfig.Destination destination = parseDestination(destinationMap);
           if (destination != null) {
             destinations.add(destination);
-            LOG.log("Successfully parsed destination: " + destination.getName());
+            LOG.log("Successfully parsed destination: %s", destination.getName());
           } else {
-            LOG.error("Failed to parse destination " + i);
+            LOG.error("Failed to parse destination %d", i);
           }
         }
       }
@@ -105,7 +105,7 @@ public class ConfigLoader {
       if (remappingsData instanceof Map) {
         @SuppressWarnings("unchecked")
         Map<String, Object> remappingsMap = (Map<String, Object>) remappingsData;
-        LOG.log("Found " + remappingsMap.size() + " remapping entries");
+        LOG.log("Found %d remapping entries", remappingsMap.size());
 
         for (Map.Entry<String, Object> entry : remappingsMap.entrySet()) {
           String source = entry.getKey();
@@ -131,17 +131,17 @@ public class ConfigLoader {
           List<Object> targetList = (List<Object>) targetData;
           List<String> destinationStrings = new ArrayList<>();
 
-          LOG.log("Source " + source + " has " + targetList.size() + " destinations");
+          LOG.log("Source %s has %d destinations", source, targetList.size());
 
           for (Object target : targetList) {
             String targetStr = target.toString();
             destinationStrings.add(targetStr);
-            LOG.log("Remapping: " + source + " -> " + targetStr);
+            LOG.log("Remapping: %s -> %s", source, targetStr);
           }
 
           // Validate wildcard mappings
           if (!validateWildcardMapping(source, destinationStrings)) {
-            LOG.error("Invalid wildcard mapping for '" + source + "' - skipping");
+            LOG.error("Invalid wildcard mapping for '%s' - skipping", source);
             continue; // Skip this invalid mapping
           }
 
@@ -150,7 +150,7 @@ public class ConfigLoader {
       }
 
     } else {
-      LOG.error("YAML root is not a Map. Found: " + data.getClass().getSimpleName());
+      LOG.error("YAML root is not a Map. Found: %s", data.getClass().getSimpleName());
     }
 
     config.setDestinations(destinations);
@@ -174,9 +174,9 @@ public class ConfigLoader {
       String source = mapping.getKey();
       List<String> destinationPaths = mapping.getValue();
       if (destinationPaths.size() == 1) {
-        LOG.log("remapping: " + source + " -> " + destinationPaths.get(0));
+        LOG.log("remapping: %s -> %s", source, destinationPaths.get(0));
       } else {
-        LOG.log("remapping: " + source + " -> " + destinationPaths);
+        LOG.log("remapping: %s -> %s", source, destinationPaths);
       }
     }
 
@@ -186,7 +186,7 @@ public class ConfigLoader {
   /** Parse a single destination configuration from YAML map */
   private static RemapperConfig.Destination parseDestination(Map<String, Object> destinationMap) {
     try {
-      LOG.log("Parsing destination: " + destinationMap.keySet());
+      LOG.log("Parsing destination: %s", destinationMap.keySet());
       RemapperConfig.Destination destination = new RemapperConfig.Destination();
 
       // Set basic properties
@@ -197,7 +197,7 @@ public class ConfigLoader {
 
       // Validate that filter is mandatory
       if (filter == null || filter.trim().isEmpty()) {
-        LOG.error("Filter is mandatory but missing for destination: " + name);
+        LOG.error("Filter is mandatory but missing for destination: %s", name);
         LOG.error("Each destination must have a 'filter' field specifying the OSC prefix");
         return null;
       }
@@ -220,7 +220,7 @@ public class ConfigLoader {
       return destination;
 
     } catch (Exception e) {
-      LOG.error(e, "Failed to parse destination configuration: " + e.getMessage());
+      LOG.error(e, "Failed to parse destination configuration: %s", e.getMessage());
       return null;
     }
   }
@@ -241,7 +241,7 @@ public class ConfigLoader {
       try {
         return Integer.parseInt((String) value);
       } catch (NumberFormatException e) {
-        LOG.error("Invalid integer value for " + key + ": " + value);
+        LOG.error("Invalid integer value for %s: %s", key, value);
       }
     }
     return defaultValue;
@@ -290,7 +290,7 @@ public class ConfigLoader {
                 + "' cannot have multiple destinations ("
                 + destinations.size()
                 + " found)");
-        LOG.error("Wildcard mappings must be 1:1. Found destinations: " + destinations);
+        LOG.error("Wildcard mappings must be 1:1. Found destinations: %s", destinations);
         return false;
       }
 

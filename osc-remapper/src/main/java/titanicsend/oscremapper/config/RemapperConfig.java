@@ -49,14 +49,11 @@ public class RemapperConfig {
 
       for (String destination : originalDestinations) {
         if (isLoopCausingMapping(sourcePattern, destination)) {
-          LOG.log("🚫 Filtering out loop-causing mapping: " + sourcePattern + " → " + destination);
+          LOG.log("Filtering out loop-causing mapping: %s → %s", sourcePattern, destination);
         } else if (sourcePattern.equals(destination)) {
           LOG.log(
-              "🔄 Skipping identity mapping (no-op): "
-                  + sourcePattern
-                  + " → "
-                  + destination
-                  + " (original message already sent)");
+              "Skipping identity mapping (no-op): %s → %s (original message already sent)",
+              sourcePattern, destination);
         } else {
           filteredDestinations.add(destination);
         }
@@ -67,18 +64,13 @@ public class RemapperConfig {
         filteredRemappings.put(sourcePattern, filteredDestinations);
       } else {
         LOG.log(
-            "🚫 Removing entire mapping "
-                + sourcePattern
-                + " - all destinations were loops or no-ops");
+            "Removing entire mapping %s - all destinations were loops or no-ops", sourcePattern);
       }
     }
 
     LOG.log(
-        "✅ Filtered mappings: "
-            + originalRemappings.size()
-            + " → "
-            + filteredRemappings.size()
-            + " source patterns");
+        "Filtered mappings: %d → %d source patterns",
+        originalRemappings.size(), filteredRemappings.size());
     return filteredRemappings;
   }
 
@@ -163,8 +155,7 @@ public class RemapperConfig {
 
     @Override
     public String toString() {
-      return String.format(
-          "Destination{name='%s', ip='%s', port=%d, filter='%s'}", name, ip, port, filter);
+      return String.format("%s → %s:%d (filter: %s)", name, ip, port, filter);
     }
   }
 }
