@@ -19,6 +19,8 @@ public class ShaderEdgesPatternConfig {
     protected void createShader() {
       controls.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
       controls.setValue(TEControlTag.SPEED, 0.5);
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
 
       addShader("light_beams.fs");
     }
@@ -50,6 +52,9 @@ public class ShaderEdgesPatternConfig {
 
       controls.setValue(TEControlTag.SPIN, 0.05);
 
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+
       addShader("neon_ripples.fs");
     }
   }
@@ -65,6 +70,8 @@ public class ShaderEdgesPatternConfig {
       controls.setRange(TEControlTag.SPEED, 0, -1.5, 1.5); // speed
       controls.setExponent(TEControlTag.SPEED, 2.0);
       controls.setValue(TEControlTag.SPEED, 0.5);
+      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
 
       addShader("space_explosion.fs");
     }

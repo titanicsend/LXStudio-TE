@@ -3,6 +3,9 @@
 
 #pragma name "FaceMelt"
 
+#pragma TEControl.LEVELREACTIVITY.Disable
+#pragma TEControl.FREQREACTIVITY.Disable
+
 #include <include/colorspace.fs>
 
 const float PI = asin(1.) * 2.;

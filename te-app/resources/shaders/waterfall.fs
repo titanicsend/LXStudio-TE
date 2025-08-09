@@ -5,6 +5,7 @@
 #pragma iChannel1 "resources/shaders/textures/icecliff.png"
 #pragma TEControl.WOW1.Range(0.4,0.0,1.0)
 #pragma TEControl.SPEED.Value(0.75)
+#pragma TEControl.FREQREACTIVITY.Disable
 
 #define PI 3.14159265359
 

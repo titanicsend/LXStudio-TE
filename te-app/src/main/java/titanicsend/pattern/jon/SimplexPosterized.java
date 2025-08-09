@@ -18,6 +18,9 @@ public class SimplexPosterized extends DriftEnabledPattern {
     controls.setRange(TEControlTag.SIZE, 5, 2, 9);
     controls.setRange(TEControlTag.QUANTITY, 1.5, 3, 0.5);
 
+    controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+
     // register common controls with LX
     addCommonControls();
     addShader(GLShader.config(lx).withFilename("simplex_posterized.fs"));
