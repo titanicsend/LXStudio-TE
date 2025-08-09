@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import titanicsend.oscremapper.LOG;
+import java.util.stream.Collectors;
 
 /**
  * Configuration data structures for OSC Remapper plugin Parses remapper_config.yaml from te-app
@@ -35,83 +35,45 @@ public class RemapperConfig {
 
   /**
    * Filter out mappings that would cause infinite loops and remove identity mappings (no-ops) Rule:
-   * if dest.hasPrefix(src) then it's a loop causing mapping Note: Identity mappings (src == dest)
-   * are filtered out as no-ops since original message is already sent
+   * if dest.hasPrefix(src) then it's a loop causing mapping.
    */
   private Map<String, List<String>> filterLoopCausingMappings(
       Map<String, List<String>> originalRemappings) {
     Map<String, List<String>> filteredRemappings = new HashMap<>();
 
     for (Map.Entry<String, List<String>> entry : originalRemappings.entrySet()) {
-      String sourcePattern = entry.getKey();
-      List<String> originalDestinations = entry.getValue();
-      List<String> filteredDestinations = new ArrayList<>();
-
-      for (String destination : originalDestinations) {
-        if (isLoopCausingMapping(sourcePattern, destination)) {
-          LOG.debug("Filtering out loop-causing mapping: %s → %s", sourcePattern, destination);
-        } else if (sourcePattern.equals(destination)) {
-          LOG.debug(
-              "Skipping identity mapping (no-op): %s → %s (original message already sent)",
-              sourcePattern, destination);
-        } else {
-          filteredDestinations.add(destination);
-        }
-      }
-
-      // Only add the mapping if there are valid destinations left
-      if (!filteredDestinations.isEmpty()) {
-        filteredRemappings.put(sourcePattern, filteredDestinations);
-      } else {
-        LOG.debug(
-            "Removing entire mapping %s - all destinations were loops or no-ops", sourcePattern);
-      }
+      String sourceAddressPrefix = entry.getKey();
+      filteredRemappings.put(
+          sourceAddressPrefix,
+          entry.getValue().stream()
+              .map(destination -> ensureNonLoopingDestination(destination, sourceAddressPrefix))
+              .collect(Collectors.toList()));
     }
 
-    LOG.debug(
-        "Filtered mappings: %d → %d source patterns",
-        originalRemappings.size(), filteredRemappings.size());
     return filteredRemappings;
   }
 
   /**
-   * Check if a mapping would cause a loop Rule: if dest.hasPrefix(src) then it's a loop causing
-   * mapping Note: Identity mappings (src == dest) are handled separately as no-ops
+   * Check if a mapping would cause a loop Rule. If dest.hasPrefix(src) then it's loop-causing. If a
+   * mapping is invalid, throw an exception and crash the whole app, so operators know to fix it.
    */
-  private boolean isLoopCausingMapping(String sourcePattern, String destination) {
+  private String ensureNonLoopingDestination(
+      String destinationAddressPrefix, String sourceAddressPrefix) {
     // Identity mappings are handled separately - not considered loops here
-    if (sourcePattern.equals(destination)) {
-      return false;
+    if (sourceAddressPrefix.equals(destinationAddressPrefix)) {
+      throw new RuntimeException(
+          String.format(
+              "Skipping identity mapping (no-op): %s → %s (original message already sent)",
+              sourceAddressPrefix, destinationAddressPrefix));
     }
 
-    // Handle wildcard patterns
-    if (sourcePattern.endsWith("/*") && destination.endsWith("/*")) {
-      String sourcePrefix = sourcePattern.substring(0, sourcePattern.length() - 2);
-      String destPrefix = destination.substring(0, destination.length() - 2);
-
-      // Check if dest has prefix of src: dest.hasPrefix(src)
-      if (destPrefix.startsWith(sourcePrefix)) {
-        return true;
-      }
+    if (destinationAddressPrefix.startsWith(sourceAddressPrefix)) {
+      throw new RuntimeException(
+          String.format(
+              "loop-causing mapping: %s → %s", sourceAddressPrefix, destinationAddressPrefix));
     }
 
-    // Handle exact to wildcard
-    if (!sourcePattern.endsWith("/*") && destination.endsWith("/*")) {
-      String destPrefix = destination.substring(0, destination.length() - 2);
-      if (sourcePattern.startsWith(destPrefix)) {
-        return true;
-      }
-    }
-
-    // Handle wildcard to exact
-    if (sourcePattern.endsWith("/*") && !destination.endsWith("/*")) {
-      String sourcePrefix = sourcePattern.substring(0, sourcePattern.length() - 2);
-      if (destination.startsWith(sourcePrefix)) {
-        return true;
-      }
-    }
-
-    return false;
+    return destinationAddressPrefix;
   }
 
   /** Destination configuration for OSC output endpoints */

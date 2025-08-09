@@ -30,21 +30,24 @@ public class OscRemapperTransmissionListener implements LXOscEngine.Transmission
       if (packet instanceof OscMessage message) {
         String originalAddress = message.getAddressPattern().getValue();
 
-        // Check if this address matches any global remapping
-        if (shouldRemapAddress(originalAddress)) {
-          LOG.debug("Processing OSC message: %s", originalAddress);
-          // Get all remapped addresses from global remappings
-          List<String> remappedAddresses = getRemappedAddresses(originalAddress);
-          LOG.debug("Found %d remapped addresses: %s", remappedAddresses.size(), remappedAddresses);
+        // Get all remapped addresses from global remappings
+        List<String> remappedAddresses = getRemappedAddresses(originalAddress);
 
-          // Send each remapped message (LX OSC outputs will route based on filters)
-          for (String remappedAddress : remappedAddresses) {
-            try {
-              sendRemappedMessage(message, originalAddress, remappedAddress);
-            } catch (Exception e) {
-              LOG.error(
-                  e, "Failed to send remapped message: %s → %s", originalAddress, remappedAddress);
-            }
+        if (remappedAddresses.isEmpty()) {
+          return;
+        }
+
+        LOG.debug(
+            "%s -> found %d remapped addresses: %s",
+            originalAddress, remappedAddresses.size(), remappedAddresses);
+
+        // Send each remapped message (LX OSC outputs will route based on filters)
+        for (String remappedAddress : remappedAddresses) {
+          try {
+            sendRemappedMessage(message, originalAddress, remappedAddress);
+          } catch (Exception e) {
+            LOG.error(
+                e, "Failed to send remapped message: %s → %s", originalAddress, remappedAddress);
           }
         }
       }
@@ -53,64 +56,27 @@ public class OscRemapperTransmissionListener implements LXOscEngine.Transmission
     }
   }
 
-  /** Check if an address should be remapped based on global remapping rules */
-  private boolean shouldRemapAddress(String oscAddress) {
-    Map<String, List<String>> globalRemappings = config.getRemappings();
-    for (String sourcePattern : globalRemappings.keySet()) {
-      if (matchesPattern(oscAddress, sourcePattern)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   /** Get all remapped addresses for a given source address */
   private List<String> getRemappedAddresses(String oscAddress) {
     List<String> results = new ArrayList<>();
     Map<String, List<String>> globalRemappings = config.getRemappings();
 
-    // Try exact match first
-    List<String> exactMatches = globalRemappings.get(oscAddress);
-    if (exactMatches != null) {
-      results.addAll(exactMatches);
-    }
-
-    // Also try prefix matching (don't return early from exact match)
     for (Map.Entry<String, List<String>> entry : globalRemappings.entrySet()) {
       String sourcePattern = entry.getKey();
-      List<String> targetPatterns = entry.getValue();
 
-      if (sourcePattern.endsWith("/*")) {
-        String sourcePrefix = sourcePattern.substring(0, sourcePattern.length() - 2);
-
-        if (oscAddress.startsWith(sourcePrefix + "/")) {
-          for (String targetPattern : targetPatterns) {
-            if (targetPattern.endsWith("/*")) {
-              String targetPrefix = targetPattern.substring(0, targetPattern.length() - 2);
-              results.add(targetPrefix + oscAddress.substring(sourcePrefix.length()));
-            } else {
-              results.add(targetPattern);
-            }
-          }
+      // If oscAddress exactly matches sourcePattern OR contains a prefix,
+      // replace the prefix as a message to publish.
+      //
+      // NOTE from LX OscMessage.hasPrefix: if the prefix is "/lx/some" we would want it to match
+      // for the address "/lx/some/thing" but NOT for "/lx/something"
+      if (OscMessage.hasPrefix(oscAddress, sourcePattern)) {
+        for (String targetPattern : entry.getValue()) {
+          results.add(oscAddress.replace(sourcePattern, targetPattern));
         }
       }
     }
 
     return results;
-  }
-
-  /** Check if an OSC address matches a pattern (supporting /* wildcards) */
-  private boolean matchesPattern(String address, String pattern) {
-    if (pattern.equals(address)) {
-      return true; // Exact match
-    }
-
-    if (pattern.endsWith("/*")) {
-      String prefix = pattern.substring(0, pattern.length() - 2);
-      return address.startsWith(prefix + "/");
-    }
-
-    return false;
   }
 
   /** Send a remapped OSC message through the LX engine (assuming all values are floats) */
