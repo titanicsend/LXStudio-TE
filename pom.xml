@@ -40,14 +40,14 @@
 		<gson.version>2.10.1</gson.version>
 		<jogamp.version>2.4.0-rc-20230123</jogamp.version>
 		<lx.version>1.1.1-TE.5.GPU-SNAPSHOT</lx.version>
-        <!--
-            Short term hack to unblock Drevo testing OSC remapper at the warehouse:
-            Using this forked version for LX only, GLX and GLXStudio will still use
-            lx.version above (this is safe because I know the changes to LX won't
-            break compatibility with the other 2 repos). Just a shortcut to avoid
-            re-compiling and vendorizing all 3 libraries.
-        -->
-        <temp.osc.lx.version>1.1.1-TE.5a.OSC-SNAPSHOT</temp.osc.lx.version>
+		<!--
+			Short term hack to unblock Drevo testing OSC remapper at the warehouse:
+			Using this forked version for LX only, GLX and GLXStudio will still use
+			lx.version above (this is safe because I know the changes to LX won't
+			break compatibility with the other 2 repos). Just a shortcut to avoid
+			re-compiling and vendorizing all 3 libraries.
+		-->
+		<temp.osc.lx.version>1.1.1-TE.5a.OSC-SNAPSHOT</temp.osc.lx.version>
 
 		<!-- Project dependency versions -->
 		<gigglepixel.version>0.0.3</gigglepixel.version>
@@ -173,7 +173,7 @@
 			<dependency>
 				<groupId>com.heronarts</groupId>
 				<artifactId>lx</artifactId>
-				<version>${lx.version}</version>
+				<version>${temp.osc.lx.version}</version>
 			</dependency>
 
 			<dependency>
