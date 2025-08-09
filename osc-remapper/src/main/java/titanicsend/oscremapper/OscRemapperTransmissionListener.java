@@ -37,10 +37,6 @@ public class OscRemapperTransmissionListener implements LXOscEngine.Transmission
           return;
         }
 
-        LOG.debug(
-            "%s -> found %d remapped addresses: %s",
-            originalAddress, remappedAddresses.size(), remappedAddresses);
-
         // Send each remapped message (LX OSC outputs will route based on filters)
         for (String remappedAddress : remappedAddresses) {
           try {
