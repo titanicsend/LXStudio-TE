@@ -473,13 +473,27 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
   private static final String KEY_REMOTE_CONTROLS = "remoteControls";
 
   @Override
+  public void save(LX lx, JsonObject obj) {
+    super.save(lx, obj);
+
+    // Don't save off-air virtual parameters
+    removeOffAirParameters(obj);
+  }
+
+  @Override
   public void load(LX lx, JsonObject obj) {
     // Strip out custom remote controls to avoid stale versions overriding the new. (8-25: We've
     // been using custom remote controls wrong, which causes problems on project files and presets)
     if (obj.has(KEY_REMOTE_CONTROLS)) {
       obj.remove(KEY_REMOTE_CONTROLS);
     }
+    removeOffAirParameters(obj);
     super.load(lx, obj);
+  }
+
+  private void removeOffAirParameters(JsonObject obj) {
+    removeParameter(obj, TECommonControls.KEY_PRESET_SELECTOR_OFFAIR);
+    removeParameter(obj, TECommonControls.KEY_VIEW_OFFAIR);
   }
 
   @Override
