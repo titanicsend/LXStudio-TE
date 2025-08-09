@@ -77,4 +77,6 @@ remappings:
 
   # Wildcard mappings for MSHIP
   "/lx/tempo":
-    - "/mship/wildcard"
+    - "/mship/tempo"
+  "/lx/palette/swatch/color":
+    - "/mship/palette/swatch/color"
