@@ -1,27 +1,21 @@
-package magic.oscremapper;
+package titanicsend.oscremapper;
 
 import heronarts.lx.LX;
 
-/**
- * Logging utility for the OscRemapper plugin
- */
+/** Logging utility for the OscRemapper plugin */
 public class LOG {
 
   private static final String PREFIX = "[OscRemapper] ";
   private static boolean loggingEnabled = false;
 
-  /**
-   * Set whether logging is enabled
-   */
+  /** Set whether logging is enabled */
   public static void setEnabled(boolean enabled) {
     loggingEnabled = enabled;
     // Always log the state change
     LX.log(PREFIX + "Logging " + (enabled ? "ENABLED" : "DISABLED"));
   }
 
-  /**
-   * Check if logging is currently enabled
-   */
+  /** Check if logging is currently enabled */
   public static boolean isEnabled() {
     return loggingEnabled;
   }
@@ -32,9 +26,7 @@ public class LOG {
     }
   }
 
-  /**
-   * Log startup/important messages that should always be shown
-   */
+  /** Log startup/important messages that should always be shown */
   public static void startup(String message) {
     LX.log(PREFIX + message);
   }
