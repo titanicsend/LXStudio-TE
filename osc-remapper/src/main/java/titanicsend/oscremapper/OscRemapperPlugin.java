@@ -100,8 +100,9 @@ public class OscRemapperPlugin implements LXStudio.Plugin {
 
   @Override
   public void onUIReady(LXStudio lx, LXStudio.UI ui) {
+    // Add right below devSwitch/controlPanel
     new UIOscRemapperPlugin(ui, this, ui.leftPane.model.getContentWidth())
-        .addToContainer(ui.leftPane.content, 2);
+        .addToContainer(ui.leftPane.model, 1);
   }
 
   /** Start OSC remapping by listening to transmission events */
