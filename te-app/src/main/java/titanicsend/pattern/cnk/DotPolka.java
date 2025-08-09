@@ -33,7 +33,7 @@ public class DotPolka extends GLShaderPattern {
 
   public DotPolka(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
-    controls.setRange(TEControlTag.SIZE, 8.0, 20.0, 1.0);
+    controls.setRange(TEControlTag.SIZE, 0.6, 0.05, 2.0);
     controls.setRange(TEControlTag.SPIN, 0.0, -0.125, 0.125); // Much gentler spin range
     controls.setRange(TEControlTag.LEVELREACTIVITY, 0.1, 0.0, 1.0);
     controls.setRange(TEControlTag.FREQREACTIVITY, 0.0, 0.0, 1.0);
