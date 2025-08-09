@@ -49,9 +49,9 @@ public class RemapperConfig {
 
       for (String destination : originalDestinations) {
         if (isLoopCausingMapping(sourcePattern, destination)) {
-          LOG.log("Filtering out loop-causing mapping: %s → %s", sourcePattern, destination);
+          LOG.debug("Filtering out loop-causing mapping: %s → %s", sourcePattern, destination);
         } else if (sourcePattern.equals(destination)) {
-          LOG.log(
+          LOG.debug(
               "Skipping identity mapping (no-op): %s → %s (original message already sent)",
               sourcePattern, destination);
         } else {
@@ -63,12 +63,12 @@ public class RemapperConfig {
       if (!filteredDestinations.isEmpty()) {
         filteredRemappings.put(sourcePattern, filteredDestinations);
       } else {
-        LOG.log(
+        LOG.debug(
             "Removing entire mapping %s - all destinations were loops or no-ops", sourcePattern);
       }
     }
 
-    LOG.log(
+    LOG.debug(
         "Filtered mappings: %d → %d source patterns",
         originalRemappings.size(), filteredRemappings.size());
     return filteredRemappings;

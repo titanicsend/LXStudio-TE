@@ -116,7 +116,7 @@ public class OscRemapperPlugin implements LXStudio.Plugin {
 
         if (output != null) {
           remoteOutputs.put(destination.getName(), output);
-          LOG.log("Added: %s", destination);
+          LOG.debug("Added: %s", destination);
         } else {
           LOG.error("Failed to create OSC output for destination: %s", destination);
         }
@@ -125,7 +125,7 @@ public class OscRemapperPlugin implements LXStudio.Plugin {
       }
     }
 
-    LOG.log("Setup complete - %d outputs active", remoteOutputs.size());
+    LOG.debug("Setup complete - %d outputs active", remoteOutputs.size());
   }
 
   /** Create or find a dedicated OSC output for remapped messages */
@@ -137,7 +137,7 @@ public class OscRemapperPlugin implements LXStudio.Plugin {
           && filter.equals(output.filter.getString())
           && host.equals(output.host.getString())
           && port == output.port.getValuei()) {
-        LOG.log("Found existing OSC output for %s: %s:%d", destinationName, host, port);
+        LOG.debug("Found existing OSC output for %s: %s:%d", destinationName, host, port);
         return output;
       }
     }
@@ -153,7 +153,7 @@ public class OscRemapperPlugin implements LXStudio.Plugin {
 
     try {
       oscOutput.active.setValue(true);
-      LOG.log(
+      LOG.debug(
           "Created new OSC output for %s: %s:%d (filter: %s)", destinationName, host, port, filter);
     } catch (Exception e) {
       LOG.error(e, "Failed to activate OSC output for %s. Check IP and port.", destinationName);
@@ -167,7 +167,7 @@ public class OscRemapperPlugin implements LXStudio.Plugin {
 
   /** Reload configuration from YAML file and re-setup all outputs */
   private void reloadConfiguration() {
-    LOG.log("Reloading configuration...");
+    LOG.debug("Reloading configuration...");
 
     try {
       // Stop current OSC capture if active
@@ -181,7 +181,7 @@ public class OscRemapperPlugin implements LXStudio.Plugin {
           try {
             output.active.setValue(false);
             lx.engine.osc.removeOutput(output);
-            LOG.log(
+            LOG.debug(
                 "Removed existing output: %s:%d", output.host.getString(), output.port.getValuei());
           } catch (Exception e) {
             LOG.error(e, "Error removing existing output");
@@ -201,7 +201,7 @@ public class OscRemapperPlugin implements LXStudio.Plugin {
         startOscCapture();
       }
 
-      LOG.log("Configuration reload complete!");
+      LOG.debug("Configuration reload complete!");
 
     } catch (Exception e) {
       LOG.error(e, "Failed to reload configuration");
@@ -211,7 +211,7 @@ public class OscRemapperPlugin implements LXStudio.Plugin {
   private void updateRemapperConfig(RemapperConfig newConfig) {
     this.config = newConfig;
     this.transmissionListener.setConfig(newConfig);
-    LOG.log(
+    LOG.debug(
         "Reloaded configuration with %d destinations and %d remappings",
         this.config.getDestinations().size(), this.config.getRemappings().size());
   }
@@ -223,7 +223,7 @@ public class OscRemapperPlugin implements LXStudio.Plugin {
     try {
       // Add transmission listener to capture ALL outgoing OSC messages
       lx.engine.osc.addTransmissionListener(this.transmissionListener);
-      LOG.log("OSC remapping started - listening to all transmitted OSC messages");
+      LOG.debug("OSC remapping started - listening to all transmitted OSC messages");
     } catch (Exception e) {
       LOG.error(e, "Failed to start OSC remapping");
     }
@@ -234,7 +234,7 @@ public class OscRemapperPlugin implements LXStudio.Plugin {
     try {
       // Remove transmission listener
       lx.engine.osc.removeTransmissionListener(this.transmissionListener);
-      LOG.log("OSC remapping stopped");
+      LOG.debug("OSC remapping stopped");
     } catch (Exception e) {
       LOG.error(e, "Failed to stop OSC remapping");
     }
