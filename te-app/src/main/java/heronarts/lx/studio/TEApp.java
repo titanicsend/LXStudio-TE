@@ -36,7 +36,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.function.Function;
-import magic.oscremapper.OscRemapperPlugin;
 import org.lwjgl.system.Platform;
 import studio.jkb.beyond.BeyondPlugin;
 import studio.jkb.supermod.SuperMod;
@@ -105,6 +104,7 @@ import titanicsend.ndi.NDIOutRawEffect;
 import titanicsend.ndi.NDIOutShaderEffect;
 import titanicsend.ndi.NDIReceiverPattern;
 import titanicsend.osc.CrutchOSC;
+import titanicsend.oscremapper.OscRemapperPlugin;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.ben.Audio1;
@@ -296,8 +296,7 @@ public class TEApp extends LXStudio {
       this.superMod = new SuperMod(lx);
 
       // OscRemapper plugin
-      Path configPath = Path.of("resources", "osc_remapper", "remapper_config.yaml");
-      this.oscRemapperPlugin = new OscRemapperPlugin(lx, configPath);
+      this.oscRemapperPlugin = new OscRemapperPlugin(lx, Path.of("resources", "osc_remapper.yaml"));
 
       lx.engine.registerComponent(
           "paletteManagerA", this.paletteManagerA = new ColorPaletteManager(lx));
