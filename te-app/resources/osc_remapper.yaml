@@ -1,0 +1,82 @@
+# OSC Remapper Configuration
+# This file defines OSC destinations and remapping rules for TE/Chromatik
+
+# Configuration is split into two sections:
+# 1. OSC destinations: Network endpoints for sending OSC messages
+# 2. OSC remappings: Global remapping rules applied to all destinations
+
+# ================================
+# 1. OSC DESTINATIONS
+# ================================
+# Each destination defines where to send OSC messages.
+# - name: Unique identifier for this destination
+# - ip: Target IP address
+# - port: Target port number  
+# - filter: MANDATORY OSC filter prefix for routing messages to this destination
+
+destinations:
+  # filter paths defined in CrutchOSC:
+  # https://github.com/titanicsend/LXStudio-TE/blob/ce0b925f178d442faaf6d31e5409186f65161f25/te-app/src/main/java/titanicsend/osc/CrutchOSC.java#L45
+  - name: "iPad - Cue"
+    ip: "10.100.0.201"
+    port: 7890
+    filter: "/lx/focus"
+
+  - name: "iPad - Aux"
+    ip: "10.100.0.202"
+    port: 7890
+    filter: "/lx/focus"
+
+  - name: "Resolume Mapped"
+    ip: "127.0.0.1"
+    port: 7000
+    filter: "/composition"
+
+  - name: "TouchDesigner Raw LX"
+    ip: "127.0.0.1"
+    port: 7891
+    filter: "/lx"
+
+  - name: "MSHIP"
+    ip: "127.0.0.1"
+    port: 7002
+    filter: "/mship"
+
+  - name: "MSHIP-Identity"
+    ip: "127.0.0.1"
+    port: 7003
+    filter: "/lx"
+
+  - name: "LINKUP-TEST"
+    ip: "127.0.0.1"
+    port: 7007
+    filter: "/lx/palette,/lx/tempo"
+
+# ================================
+# 2. OSC REMAPPINGS
+# ================================
+# Global remapping rules applied to OSC messages.
+# These define how OSC addresses are transformed before sending to destinations.
+# 
+# Two types of mappings supported:
+# 1. Exact mapping: "/lx/tempo/beat" -> ["/composition/tempo/resync"]
+# 2. Prefix mapping: "/lx/tempo" -> ["/remote/tempo"]
+#
+# Each source can map to multiple destinations (1-to-many mapping)
+# Identity mappings (same source and destination) create passthrough routing
+
+remappings:
+  # Tempo and beat sync - single source can map to multiple destinations
+  "/lx/tempo/beat":
+    - "/composition/tempo/resync"
+    - "/composition/layer/1/tempo/resync"
+    - "/lx/mship/layer/1/tempo/beat"
+  
+  "/lx/tempo/trigger":
+    - "/composition/layer/1/tempo/trigger"
+
+  # Wildcard mappings for MSHIP
+  "/lx/tempo":
+    - "/mship/tempo"
+  "/lx/palette/swatch/color":
+    - "/mship/palette/swatch/color"
