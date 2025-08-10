@@ -13,13 +13,14 @@ public class FollowThatStar extends GLShaderPattern {
     super(lx, TEShaderView.ALL_POINTS);
 
     controls
-        .setRange(TEControlTag.QUANTITY, 5, 1, 10)
+        .setRange(TEControlTag.QUANTITY, 5, 1, 30)
         .setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
 
     controls.setRange(TEControlTag.SIZE, 1.75, 1.0, 5);
     controls.setRange(TEControlTag.WOW2, 1, 1, 4);
     controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
     controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
 
     // register common controls with LX
     addCommonControls();

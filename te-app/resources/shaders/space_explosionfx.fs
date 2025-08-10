@@ -2,6 +2,7 @@
 // adapted for TE from:
 // https://www.shadertoy.com/view/Xd3GWn
 // NOTE: I love how parameterized this is.
+uniform bool trigger;
 uniform float explosionSeed;
 
 #include <include/constants.fs>
@@ -10,7 +11,7 @@ uniform float explosionSeed;
 #define CAM_ROTATION_SPEED 11.7
 #define CAM_TILT .20
 #define CAM_DIST 2.8
-#define MAX_MULT_EXPLOSIONS 15
+#define MAX_MULT_EXPLOSIONS 7
 
 // the bounding sphere of the entire explosion. We use this to reduce the number of rays we need
 // to march through the explosion's density field.  If a ray lies outside the sphere, we know it isn't
@@ -21,7 +22,7 @@ const int steps = 64;				// max ray marching steps
 const float delay_range = 0.25;		// maximum delay for explosion start up.
 
 float downscale = 1.25;				// how much smaller (than expRadius) one sphere should be. bigger value = smaller. 1.0 = no scale down.
-float grain = 3.0;					// increase for more detailed explosions
+float grain = 6.0;					// increase for more detailed explosions
 float speed = 1.0;					// animation speed (time stretch). nice = 0.5, default = 0.4
 float ballness = 1.0;				// lower values makes explosion look more like a cloud. higher values more like a ball.
 float growth = 2.0;					// initial growth to explosion ball. lower values makes explosion grow faster
@@ -318,7 +319,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
 
     // does pixel ray intersect with the explosion's bounding sphere?
     vec2 boundingSphereInter = iSphere( cameraPos, rayDir, expRadius );
-    if(iWowTrigger && boundingSphereInter.x > 0.) {
+    if(trigger && boundingSphereInter.x > 0.) {
         // if so, we raymarch through the explosion to get field density
         float d = 4000.0;
         col = raymarch( cameraPos, rayDir, boundingSphereInter, t, d );

@@ -87,7 +87,7 @@ public class SpaceExplosionFX extends GLShaderPattern {
       if (!running) {
         // reset the pattern's clock to sync to button press
         retrigger(TEControlTag.SPEED);
-        eventStartTime = 0; // current time, since we just reset the clock
+        eventStartTime = getTime(); // current time, since we just reset the clock
         explosionSeed = (float) Math.random(); // random seed for explosion visuals
 
         // start explosion state machine and turn on visuals
@@ -125,7 +125,7 @@ public class SpaceExplosionFX extends GLShaderPattern {
     // Use iWowTrigger to control display of the explosion visuals.
     // Send our visual flag, rather than the simple button value from the
     // control, to the shader.
-    s.setUniform("iWowTrigger", explode);
+    s.setUniform("trigger", explode);
     s.setUniform("explosionSeed", explosionSeed);
   }
 }
