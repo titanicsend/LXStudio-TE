@@ -3,14 +3,13 @@ package titanicsend.oscremapper;
 import heronarts.lx.LX;
 import heronarts.lx.osc.LXOscEngine;
 import heronarts.lx.osc.OscMessage;
-import heronarts.lx.osc.OscPacket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import titanicsend.oscremapper.config.RemapperConfig;
 
 /** TransmissionListener for capturing and remapping outgoing OSC messages */
-public class OscRemapperTransmissionListener implements LXOscEngine.TransmissionListener {
+public class OscRemapperTransmissionListener implements LXOscEngine.MessageListener {
   private final LX lx;
   private RemapperConfig config;
 
@@ -24,31 +23,34 @@ public class OscRemapperTransmissionListener implements LXOscEngine.Transmission
   }
 
   @Override
-  public void oscMessageTransmitted(OscPacket packet) {
-    try {
-      // Check if this is an OscMessage that we should remap
-      if (packet instanceof OscMessage message) {
-        String originalAddress = message.getAddressPattern().getValue();
+  public void willSend(String address, int value) {
+    // Get all remapped addresses from global remappings
+    List<String> remappedAddresses = getRemappedAddresses(address);
 
-        // Get all remapped addresses from global remappings
-        List<String> remappedAddresses = getRemappedAddresses(originalAddress);
+    // Send each remapped message (LX OSC outputs will route based on filters)
+    for (String remappedAddress : remappedAddresses) {
+      debug(address, remappedAddress, value);
+      this.lx.engine.osc.sendMessageVariant(remappedAddress, value);
+    }
+  }
 
-        if (remappedAddresses.isEmpty()) {
-          return;
-        }
+  @Override
+  public void willSend(String address, float value) {
+    List<String> remappedAddresses = getRemappedAddresses(address);
 
-        // Send each remapped message (LX OSC outputs will route based on filters)
-        for (String remappedAddress : remappedAddresses) {
-          try {
-            sendRemappedMessage(message, originalAddress, remappedAddress);
-          } catch (Exception e) {
-            LOG.error(
-                e, "Failed to send remapped message: %s → %s", originalAddress, remappedAddress);
-          }
-        }
-      }
-    } catch (Exception e) {
-      LOG.error(e, "Error processing transmitted OSC message");
+    for (String remappedAddress : remappedAddresses) {
+      debug(address, remappedAddress, value);
+      this.lx.engine.osc.sendMessageVariant(remappedAddress, value);
+    }
+  }
+
+  @Override
+  public void willSend(String address, String value) {
+    List<String> remappedAddresses = getRemappedAddresses(address);
+
+    for (String remappedAddress : remappedAddresses) {
+      debug(address, remappedAddress, value);
+      this.lx.engine.osc.sendMessageVariant(remappedAddress, value);
     }
   }
 
@@ -75,17 +77,15 @@ public class OscRemapperTransmissionListener implements LXOscEngine.Transmission
     return results;
   }
 
-  /** Send a remapped OSC message through the LX engine (assuming all values are floats) */
-  private void sendRemappedMessage(
-      OscMessage originalMessage, String originalAddress, String remappedAddress) {
-    try {
-      // Send the remapped message - LX engine will route it to appropriate outputs based on
-      // filters
-      float value = (originalMessage.size() > 0) ? originalMessage.getFloat(0) : 0.0f;
-      lx.engine.osc.sendMessage(remappedAddress, value);
-      LOG.debug("%s → %s (%s)", originalAddress, remappedAddress, value);
-    } catch (Exception e) {
-      LOG.error(e, "Failed to send remapped message");
-    }
+  private void debug(String originalAddress, String remappedAddress, int value) {
+    LOG.debug("%s → %s (%s)", originalAddress, remappedAddress, value);
+  }
+
+  private void debug(String originalAddress, String remappedAddress, float value) {
+    LOG.debug("%s → %s (%s)", originalAddress, remappedAddress, value);
+  }
+
+  private void debug(String originalAddress, String remappedAddress, String value) {
+    LOG.debug("%s → %s (%s)", originalAddress, remappedAddress, value);
   }
 }
