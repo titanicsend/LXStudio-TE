@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.5.GPU-SNAPSHOT",
-  "timestamp": 1754798816986,
+  "timestamp": 1754847464354,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -12270,7 +12270,7 @@
                 "children": {}
               },
               {
-                "id": 575203,
+                "id": 580768,
                 "class": "heronarts.lx.color.LXDynamicColor",
                 "internal": {
                   "modulationColor": 0,
@@ -13139,8 +13139,8 @@
           "label": "Tempo",
           "clockSource": 0,
           "clockSource/name": "INTERNAL",
-          "period": 447.9606999999999,
-          "bpm": 133.94032110406116,
+          "period": 489.398062625,
+          "bpm": 122.5995862717071,
           "tap": false,
           "nudgeUp": false,
           "nudgeDown": false,
@@ -14711,7 +14711,7 @@
                 "defaults": {}
               },
               {
-                "id": 575296,
+                "id": 586116,
                 "class": "titanicsend.pattern.jon.FollowThatStar",
                 "internal": {
                   "modulationColor": 0,
@@ -14744,15 +14744,15 @@
                   "cueActive": false,
                   "auxActive": false,
                   "setDefaults": false,
-                  "te_speed": 0.2934580446288022,
+                  "te_speed": 0.5,
                   "te_xpos": 0.0,
                   "te_ypos": 0.0,
-                  "te_size": 1.0,
-                  "te_quantity": 18.98000047588721,
-                  "te_spin": 0.0,
+                  "te_size": 0.5,
+                  "te_quantity": 20.71999820880592,
+                  "te_spin": 0.333,
                   "te_brightness": 1.0,
-                  "te_wow1": 0.44000002183020115,
-                  "te_wow2": 1.0,
+                  "te_wow1": 0.7999999136663973,
+                  "te_wow2": 0.5866666845977306,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "te_level": 0.1,
@@ -14771,7 +14771,7 @@
                 },
                 "children": {
                   "modulation": {
-                    "id": 575297,
+                    "id": 586117,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,
@@ -15448,9 +15448,9 @@
         "animation": false,
         "camera": {
           "active": false,
-          "radius": 529.1083731659731,
-          "theta": 2.0293518602848053,
-          "phi": -3.0048588134814054,
+          "radius": 577.6709542866018,
+          "theta": 358.01945117115974,
+          "phi": -3.272185526089743,
           "x": -1.7113183912263707,
           "y": 185.4640899852384,
           "z": 27.942448032789343
