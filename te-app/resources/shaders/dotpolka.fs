@@ -265,7 +265,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   vec2 uv = (fragCoord * 2. - iResolution.xy) / iResolution.y;
   vec2 uvPreTransform = uv;
 
-  uv *= iScale;
+  uv /= iScale;
 
   float beatMultiple = iSpeedDiscrete;
   float beat = fract(iBeatTime * beatMultiple);
