@@ -143,6 +143,7 @@ import titanicsend.pattern.jon.RainBands;
 import titanicsend.pattern.jon.SimplexPosterized;
 import titanicsend.pattern.jon.SpaceExplosionFX;
 import titanicsend.pattern.jon.SpiralDiamonds;
+import titanicsend.pattern.jon.StarSwarm;
 import titanicsend.pattern.jon.TESparklePattern;
 import titanicsend.pattern.jon.TriangleNoise;
 import titanicsend.pattern.jon.TurbulenceLines;
@@ -351,6 +352,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(Kaleidosonic.class);
       lx.registry.addPattern(MultipassDemo.class);
       lx.registry.addPattern(NDIReceiverPattern.class);
+      lx.registry.addPattern(StarSwarm.class);
       lx.registry.addPattern(TdNdiPattern.class);
       lx.registry.addPattern(TdStableDiffusionPattern.class);
       lx.registry.addPattern(ModelFileWriter.class);
@@ -630,7 +632,7 @@ public class TEApp extends LXStudio {
       l.addPattern(Audio1.class, covPanelPartial, cPalette, chorus);
       l.addPattern(ShaderPanelsPatternConfig.OutrunGrid.class, covPanels, cNonConforming, chorus);
       l.addPattern(OrganicPatternConfig.OldMatrixScroller.class, covPanels, cNonConforming, chorus);
-      l.addPattern(FollowThatStar.class, covBoth, cPalette, chorus);
+      l.addPattern(StarSwarm.class, covBoth, cPalette, chorus);
       l.addPattern(ShaderPanelsPatternConfig.Marbling.class, covPanels, cNonConforming, chorus);
       l.addPattern(OrganicPatternConfig.NeonCellsLegacy.class, covPanelPartial, cPalette, chorus);
       l.addPattern(

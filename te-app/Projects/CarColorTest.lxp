@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.5.GPU-SNAPSHOT",
-  "timestamp": 1754847464354,
+  "timestamp": 1754864279451,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -14711,8 +14711,8 @@
                 "defaults": {}
               },
               {
-                "id": 586116,
-                "class": "titanicsend.pattern.jon.FollowThatStar",
+                "id": 596760,
+                "class": "titanicsend.pattern.jon.StarSwarm",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
@@ -14723,7 +14723,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "FollowThatStar",
+                  "label": "StarSwarm",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
                   "midiFilter/channel/name": "OMNI",
@@ -14747,12 +14747,12 @@
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
                   "te_ypos": 0.0,
-                  "te_size": 0.5,
-                  "te_quantity": 20.71999820880592,
+                  "te_size": 2.0,
+                  "te_quantity": 5.0,
                   "te_spin": 0.333,
                   "te_brightness": 1.0,
-                  "te_wow1": 0.7999999136663973,
-                  "te_wow2": 0.5866666845977306,
+                  "te_wow1": 0.0,
+                  "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "te_level": 0.1,
@@ -14771,7 +14771,7 @@
                 },
                 "children": {
                   "modulation": {
-                    "id": 586117,
+                    "id": 596761,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,
