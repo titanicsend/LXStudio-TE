@@ -47,7 +47,7 @@
 			break compatibility with the other 2 repos). Just a shortcut to avoid
 			re-compiling and vendorizing all 3 libraries.
 		-->
-		<temp.osc.lx.version>1.1.1-TE.5a.OSC-SNAPSHOT</temp.osc.lx.version>
+		<temp.osc.lx.version>1.1.1-TE.5a.GPU-SNAPSHOT</temp.osc.lx.version>
 
 		<!-- Project dependency versions -->
 		<gigglepixel.version>0.0.3</gigglepixel.version>
