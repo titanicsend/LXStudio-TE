@@ -222,7 +222,7 @@ public class OscRemapperPlugin implements LXStudio.Plugin {
   private void startOscCapture() {
     try {
       // Add transmission listener to capture ALL outgoing OSC messages
-      lx.engine.osc.addTransmissionListener(this.transmissionListener);
+      lx.engine.osc.addMessageListener(this.transmissionListener);
       LOG.debug("OSC remapping started - listening to all transmitted OSC messages");
     } catch (Exception e) {
       LOG.error(e, "Failed to start OSC remapping");
@@ -233,7 +233,7 @@ public class OscRemapperPlugin implements LXStudio.Plugin {
   private void stopOscCapture() {
     try {
       // Remove transmission listener
-      lx.engine.osc.removeTransmissionListener(this.transmissionListener);
+      lx.engine.osc.removeMessageListener(this.transmissionListener);
       LOG.debug("OSC remapping stopped");
     } catch (Exception e) {
       LOG.error(e, "Failed to stop OSC remapping");
