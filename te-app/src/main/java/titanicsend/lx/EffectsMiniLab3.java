@@ -17,6 +17,16 @@ import titanicsend.app.effectmgr.GlobalEffect;
 import titanicsend.app.effectmgr.GlobalEffectManager;
 import titanicsend.util.TE;
 
+/**
+ * Important: before using, press SHIFT and then tap pad 3 ("Prog") to switch "programs", until you
+ * see "DAW" mode show up on the LCD display.
+ *
+ * <p>By default, the device is in "Arturia" mode, which won't modify button colors based on
+ * external SysEx messages.
+ *
+ * <p>Also, to switch between "Bank A" and "Bank B", hold SHIFT and tap pad 2 ("Pad") to switch the
+ * pad bank.
+ */
 @LXMidiSurface.Name("Minilab3 Effects Manager")
 @LXMidiSurface.DeviceName("Minilab3")
 public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidirectional {
@@ -35,7 +45,11 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   public static final int KNOB_7 = 19;
   public static final int KNOB_8 = 16;
 
-  // Press pad
+  public static final int SHIFT = 27;
+
+  public static final int NUM_PADS = 8;
+
+  // Pad Bank A
   public static final int PAD_1_A = 36;
   public static final int PAD_2_A = 37;
   public static final int PAD_3_A = 38;
@@ -45,7 +59,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   public static final int PAD_7_A = 42;
   public static final int PAD_8_A = 43;
 
-  // Tap pad
+  // Pad Bank B
   public static final int PAD_1_B = 44;
   public static final int PAD_2_B = 45;
   public static final int PAD_3_B = 46;
@@ -55,7 +69,6 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   public static final int PAD_7_B = 50;
   public static final int PAD_8_B = 51;
 
-  private boolean isRegistered = false;
   private GlobalEffectManager effectManager;
   private ObservableList.Listener<GlobalEffect<? extends LXEffect>> effectListener;
 
@@ -66,6 +79,8 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   }
 
   private EffectState[] states;
+  private boolean isRegistered = false;
+  private boolean shiftOn = false;
 
   public EffectsMiniLab3(LX lx, LXMidiInput input, LXMidiOutput output) {
     super(lx, input, output);
@@ -73,6 +88,10 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
 
   private void press(int padIndex) {
     TE.log("PRESS: " + padIndex);
+    //    setPadLEDColor(padIndex, 127, 127, 127);
+    if (padIndex >= this.states.length) {
+      return;
+    }
     EffectState currState = this.states[padIndex];
     GlobalEffect<? extends LXEffect> globalEffect = this.effectManager.slots.get(padIndex);
     if (currState != null && globalEffect.effect != null) {
@@ -92,16 +111,30 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   private void noteReceived(MidiNote note, boolean on) {
     final int pitch = note.getPitch();
 
-    if (inRange(pitch, PAD_1_B, PAD_8_B)) {
-      int padIndex = pitch - PAD_1_B;
-      press(padIndex);
+    // Global momentary
+    if (pitch == SHIFT) {
+      this.shiftOn = on;
+      if (!on) {
+        updatePadLEDs();
+      }
+      return;
     }
 
-    //    // Global momentary
-    //    if (pitch == SHIFT) {
-    //      this.shiftOn = on;
-    //      return;
-    //    }
+    if (inRange(pitch, PAD_1_B, PAD_8_B)) {
+      int padIndex = pitch - PAD_1_B;
+      if (on) {
+        press(padIndex);
+      }
+      return;
+    }
+
+    if (inRange(pitch, PAD_1_A, PAD_8_A)) {
+      int padIndex = pitch - PAD_1_A;
+      if (on) {
+        press(padIndex);
+      }
+      return;
+    }
     //
     //    // Clip grid buttons
     //    if (inRange(pitch, CLIP_LAUNCH, CLIP_LAUNCH_MAX)) {
@@ -157,6 +190,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     if (on) {
       register();
       initialize();
+      clearPadLEDs();
     } else {
       if (this.isRegistered) {
         unregister();
@@ -223,14 +257,6 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   }
 
   @Override
-  public void dispose() {
-    if (this.isRegistered) {
-      unregister();
-    }
-    super.dispose();
-  }
-
-  @Override
   public void noteOnReceived(MidiNoteOn note) {
     noteReceived(note, true);
   }
@@ -240,149 +266,97 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     noteReceived(note, false);
   }
 
-  private void setPadLEDColor(int padIndex, int red, int green, int blue) {
-    if (padIndex < 0 || padIndex >= 8) {
-      return;
-    }
-
-    // SysEx format: [0xF0, 0x00, 0x20, 0x6B, 0x7F, 0x42, 0x04, 0x02, 0x16, 0x00, <8x RGB values>,
-    // 0xF7]
-    byte[] sysex = new byte[32]; // Header (10) + 8 pads * 3 RGB (24) + end (1)
-
-    // Header
-    sysex[0] = (byte) 0xF0; // SysEx start
-    sysex[1] = (byte) 0x00; // Arturia manufacturer ID
-    sysex[2] = (byte) 0x20;
-    sysex[3] = (byte) 0x6B;
-    sysex[4] = (byte) 0x7F;
-    sysex[5] = (byte) 0x42;
-    sysex[6] = (byte) 0x04; // Set PAD LEDs command
-    sysex[7] = (byte) 0x02;
-    sysex[8] = (byte) 0x16;
-    sysex[9] = (byte) 0x00;
-
-    // Get current pad states for all 8 pads
-    for (int i = 0; i < 8; i++) {
-      int baseIdx = 10 + (i * 3);
-      if (i == padIndex) {
-        sysex[baseIdx] = (byte) (red & 0x7F); // R
-        sysex[baseIdx + 1] = (byte) (green & 0x7F); // G
-        sysex[baseIdx + 2] = (byte) (blue & 0x7F); // B
-      } else {
-        // Set other pads based on their current state
-        if (i < this.states.length) {
-          switch (this.states[i]) {
-            case EMPTY -> {
-              sysex[baseIdx] = 0; // R
-              sysex[baseIdx + 1] = 0; // G
-              sysex[baseIdx + 2] = 0; // B
-            }
-            case DISABLED -> {
-              sysex[baseIdx] = 0; // R
-              sysex[baseIdx + 1] = 0; // G
-              sysex[baseIdx + 2] = 127; // B (blue)
-            }
-            case ENABLED -> {
-              sysex[baseIdx] = 127; // R (red)
-              sysex[baseIdx + 1] = 0; // G
-              sysex[baseIdx + 2] = 0; // B
-            }
-          }
-        } else {
-          sysex[baseIdx] = 0; // R
-          sysex[baseIdx + 1] = 0; // G
-          sysex[baseIdx + 2] = 0; // B
-        }
-      }
-    }
-
-    sysex[31] = (byte) 0xF7; // SysEx end
-
-    sendSysex(sysex);
-  }
-
   private void updatePadLEDs() {
-    if (this.states == null) {
-      return;
-    }
-
-    // Build complete SysEx message for all 8 pads
-    byte[] sysex = new byte[35]; // Header (10) + 8 pads * 3 RGB (24) + end (1)
-
-    // Header
-    sysex[0] = (byte) 0xF0; // SysEx start
-    sysex[1] = (byte) 0x00; // Arturia manufacturer ID
-    sysex[2] = (byte) 0x20;
-    sysex[3] = (byte) 0x6B;
-    sysex[4] = (byte) 0x7F;
-    sysex[5] = (byte) 0x42;
-    sysex[6] = (byte) 0x04; // Set PAD LEDs command
-    sysex[7] = (byte) 0x02;
-    sysex[8] = (byte) 0x16;
-    sysex[9] = (byte) 0x00;
-
-    // Set colors for all 8 pads
-    for (int i = 0; i < 8; i++) {
-      int baseIdx = 10 + (i * 3);
-      if (i < this.states.length) {
+    // Send individual SysEx message for each pad
+    for (int i = 0; i < NUM_PADS; i++) {
+      if (this.states != null && i < this.states.length) {
         switch (this.states[i]) {
           case EMPTY -> {
-            sysex[baseIdx] = 0; // R (dark/off)
-            sysex[baseIdx + 1] = 0; // G
-            sysex[baseIdx + 2] = 0; // B
+            setPadA(i, 0x19, 0x19, 0x19);
+            setPadB(i, 0x19, 0x19, 0x19);
           }
           case DISABLED -> {
-            sysex[baseIdx] = 0; // R (blue)
-            sysex[baseIdx + 1] = 0; // G
-            sysex[baseIdx + 2] = 127; // B
+            setPadA(i, 0x19, 0x19, 0xFF);
+            setPadB(i, 0x19, 0x19, 0xFF);
           }
           case ENABLED -> {
-            sysex[baseIdx] = 127; // R (red)
-            sysex[baseIdx + 1] = 0; // G
-            sysex[baseIdx + 2] = 0; // B
+            setPadA(i, 0xFF, 0x19, 0x19);
+            setPadB(i, 0xFF, 0x19, 0x19);
           }
         }
       } else {
-        sysex[baseIdx] = 0; // R (dark/off)
-        sysex[baseIdx + 1] = 0; // G
-        sysex[baseIdx + 2] = 0; // B
+        setPadA(i, 0x10, 0x10, 0x10);
+        setPadB(i, 0x10, 0x10, 0x10);
       }
     }
-
-    sysex[31] = (byte) 0xF7; // SysEx end
-
-    sendSysex(sysex);
   }
 
   private void clearPadLEDs() {
-    // Build SysEx message to turn off all pad LEDs
-    byte[] sysex = new byte[35]; // Header (10) + 8 pads * 3 RGB (24) + end (1)
+    // Send individual SysEx message to turn off each pad
+    for (int i = 0; i < NUM_PADS; i++) {
+      setPadA(i, 0, 0, 0); // Turn off (RGB = 0,0,0)
+      setPadB(i, 0, 0, 0); // Turn off (RGB = 0,0,0)
+    }
+  }
 
-    // Header
+  private void setPadA(int padIndex, int red, int green, int blue) {
+    setPadLEDColor(0, padIndex, red, green, blue);
+  }
+
+  private void setPadB(int padIndex, int red, int green, int blue) {
+    setPadLEDColor(1, padIndex, red, green, blue);
+  }
+
+  private void setPadLEDColor(int bankIndex, int padIndex, int red, int green, int blue) {
+    if (bankIndex < 0 || bankIndex > 1) {
+      throw new IllegalStateException("Bank index must be 0 (A) or 1 (B)");
+    }
+    if (padIndex < 0 || padIndex >= NUM_PADS) {
+      throw new IllegalStateException("Pad index must be 0-8");
+    }
+
+    // SysEx format: F0 00 20 6B 7F 42 02 02 16 ID RR GG BB F7
+    // ID for pads 1-8 in DAW mode: 0x04 to 0x0B
+    byte[] sysex = new byte[14];
+
     sysex[0] = (byte) 0xF0; // SysEx start
     sysex[1] = (byte) 0x00; // Arturia manufacturer ID
     sysex[2] = (byte) 0x20;
     sysex[3] = (byte) 0x6B;
     sysex[4] = (byte) 0x7F;
     sysex[5] = (byte) 0x42;
-    sysex[6] = (byte) 0x04; // Set PAD LEDs command
-    sysex[7] = (byte) 0x02;
-    sysex[8] = (byte) 0x16;
-    sysex[9] = (byte) 0x00;
-
-    // Turn off all 8 pads (RGB = 0,0,0)
-    for (int i = 0; i < 8; i++) {
-      int baseIdx = 10 + (i * 3);
-      sysex[baseIdx] = 0; // R
-      sysex[baseIdx + 1] = 0; // G
-      sysex[baseIdx + 2] = 0; // B
-    }
-
-    sysex[31] = (byte) 0xF7; // SysEx end
+    sysex[6] = (byte) 0x02; // Mode command
+    sysex[7] = (byte) 0x02; // DAW mode
+    sysex[8] = (byte) 0x16; // Set color command
+    sysex[9] = (byte) (0x04 + (bankIndex * 0x08) + padIndex); // Pad ID (0x04-0x0B for pads 1-8)
+    sysex[10] = (byte) (red & 0x7F); // R
+    sysex[11] = (byte) (green & 0x7F); // G
+    sysex[12] = (byte) (blue & 0x7F); // B
+    sysex[13] = (byte) 0xF7; // SysEx end
 
     sendSysex(sysex);
   }
+
+  @Override
+  public void dispose() {
+    if (this.isRegistered) {
+      unregister();
+    }
+    super.dispose();
+  }
 }
+/*
+UPDATE: BETTER SYSEX DOCS: https://gist.github.com/Janiczek/04a87c2534b9d1435a1d8159c742d260
+
+
+F0                     # sysex header
+00 20 6B 7F 42         # Arturia header
+02 02 16 ID RR GG BB   # set color of button ID to 0xRRGGBB
+F7                     # sysex footer
+
+
+ */
+
 /*
 
 Notes on SysEx protocol: https://forum.arturia.com/t/sysex-protocol-documentation/5746
