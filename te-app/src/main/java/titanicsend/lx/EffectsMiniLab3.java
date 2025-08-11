@@ -307,7 +307,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     }
 
     // Build complete SysEx message for all 8 pads
-    byte[] sysex = new byte[32]; // Header (10) + 8 pads * 3 RGB (24) + end (1)
+    byte[] sysex = new byte[35]; // Header (10) + 8 pads * 3 RGB (24) + end (1)
 
     // Header
     sysex[0] = (byte) 0xF0; // SysEx start
@@ -356,7 +356,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
 
   private void clearPadLEDs() {
     // Build SysEx message to turn off all pad LEDs
-    byte[] sysex = new byte[32]; // Header (10) + 8 pads * 3 RGB (24) + end (1)
+    byte[] sysex = new byte[35]; // Header (10) + 8 pads * 3 RGB (24) + end (1)
 
     // Header
     sysex[0] = (byte) 0xF0; // SysEx start
