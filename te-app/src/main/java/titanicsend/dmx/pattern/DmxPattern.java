@@ -42,7 +42,7 @@ public abstract class DmxPattern extends LXPattern {
    */
   @Override
   public LXLayeredComponent setBuffer(LXBuffer buffer) {
-    this.dmx = DmxEngine.get().getDmxModelBuffer(buffer, this.getChannel());
+    this.dmx = DmxEngine.get().getDmxModelBuffer(buffer, this.getMixerChannel());
     return super.setBuffer(buffer);
   }
 

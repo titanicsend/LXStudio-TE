@@ -32,7 +32,7 @@ public abstract class DmxEffect extends LXEffect {
    */
   @Override
   public LXLayeredComponent setBuffer(LXBuffer buffer) {
-    this.dmx = DmxEngine.get().getDmxModelBuffer(buffer, this.getChannel());
+    this.dmx = DmxEngine.get().getDmxModelBuffer(buffer, this.getPattern().getMixerChannel());
     return super.setBuffer(buffer);
   }
 
