@@ -73,6 +73,7 @@ import titanicsend.dmx.pattern.BeaconGamePattern;
 import titanicsend.dmx.pattern.BeaconStraightUpPattern;
 import titanicsend.dmx.pattern.DjLightsDirectPattern;
 import titanicsend.dmx.pattern.DjLightsEasyPattern;
+import titanicsend.dmx.pattern.DjLightsShowPattern;
 import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
 import titanicsend.effect.BasicShaderEffect;
 import titanicsend.effect.EdgeSieveEffect;
@@ -411,6 +412,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(BeaconStraightUpPattern.class);
       lx.registry.addPattern(DjLightsDirectPattern.class);
       lx.registry.addPattern(DjLightsEasyPattern.class);
+      lx.registry.addPattern(DjLightsShowPattern.class);
       lx.registry.addPattern(ExampleDmxTEPerformancePattern.class);
 
       // Effects

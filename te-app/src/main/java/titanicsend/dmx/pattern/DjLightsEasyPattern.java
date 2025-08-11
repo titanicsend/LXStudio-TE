@@ -95,7 +95,7 @@ public class DjLightsEasyPattern extends DjLightsPattern
     b -= w;
 
     int i = 0;
-    for (DmxModel d : this.modelTE.getDjLights()) {
+    for (DmxModel d : this.modelTE.getBeacons()) {
       if (d instanceof AdjStealthModel) {
         if (mirror && i++ % 2 == 1) {
           setDmxNormalized(d, AdjStealthModel.INDEX_PAN, 1 - pan);

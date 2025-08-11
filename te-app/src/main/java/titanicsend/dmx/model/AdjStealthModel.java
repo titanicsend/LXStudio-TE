@@ -1,5 +1,7 @@
 package titanicsend.dmx.model;
 
+import heronarts.lx.model.LXModel;
+import heronarts.lx.model.LXPoint;
 import titanicsend.dmx.DmxBuffer;
 import titanicsend.dmx.parameter.DmxCompoundParameter;
 import titanicsend.dmx.parameter.DmxDiscreteParameter;
@@ -38,9 +40,76 @@ public class AdjStealthModel extends DmxModel {
   public static final int SHUTTER_CLOSED = 0;
   public static final int SHUTTER_OPEN = 246;
 
+  /**
+   * Configuration class for ADJ Stealth model - follows BeaconModel pattern
+   */
+  public static class AdjStealthConfig extends DmxCommonConfig {
+    // Add any ADJ Stealth specific config parameters here if needed in future
+    // For now, it just uses the common DMX config fields
+  }
+
+  /**
+   * Create configuration from LXModel metadata
+   */
+  static AdjStealthConfig createConfig(LXModel model) {
+    LXPoint point = model.points[0];
+    AdjStealthConfig c = new AdjStealthConfig();
+
+    // Read DMX host from metadata
+    c.host = model.meta("dmx_host");
+
+    // Parse channel with proper error handling
+    String channelStr = model.meta("dmx_channel");
+    if (channelStr != null && !channelStr.isEmpty()) {
+      try {
+        c.channel = Integer.parseInt(channelStr);
+      } catch (NumberFormatException e) {
+        c.channel = 0; // Default to channel 0 if parsing fails
+      }
+    } else {
+      c.channel = 0; // Default to channel 0 if not specified
+    }
+
+    // Parse universe with proper error handling
+    String universeStr = model.meta("dmx_universe");
+    if (universeStr != null && !universeStr.isEmpty()) {
+      try {
+        c.universe = Integer.parseInt(universeStr);
+      } catch (NumberFormatException e) {
+        c.universe = 0; // Default to universe 0 if parsing fails
+      }
+    } else {
+      c.universe = 0; // Default to universe 0 if not specified
+    }
+
+    // Set position from model point
+    c.x = point.x;
+    c.y = point.y;
+    c.z = point.z;
+
+    return c;
+  }
+
+  /**
+   * Dynamic model constructor - uses configuration from LXModel metadata
+   */
+  public AdjStealthModel(LXModel model) {
+    super(model, createConfig(model));
+    initialize();
+  }
+
+  /**
+   * Static model constructor - uses provided configuration
+   */
   public AdjStealthModel(DmxCommonConfig config, String... tags) {
     super(MODEL_TYPE, config, tags);
+    initialize();
+  }
 
+  /**
+   * Initialize DMX parameters
+   */
+  private void initialize() {
     DmxCompoundParameter pan = new DmxCompoundParameter("Pan").setNumBytes(2);
     DmxCompoundParameter tilt = new DmxCompoundParameter("Tilt", 0, -180, 180).setNumBytes(2);
     DmxCompoundParameter red = new DmxCompoundParameter("Red", 0, 0, 100);
