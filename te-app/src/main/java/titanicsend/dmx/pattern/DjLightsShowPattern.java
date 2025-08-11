@@ -16,9 +16,9 @@ import titanicsend.dmx.model.DmxModel;
 import titanicsend.ui.UIUtils;
 
 /**
- * Streamlined DJ lights pattern for show control with essential parameters only.
- * Extends DjLightsPattern for DMX control and TEPattern's palette/swatch integration.
- * Provides clean interface with color control, saturation adjustment, and core positioning.
+ * Streamlined DJ lights pattern for show control with essential parameters only. Extends
+ * DjLightsPattern for DMX control and TEPattern's palette/swatch integration. Provides clean
+ * interface with color control, saturation adjustment, and core positioning.
  */
 @LXCategory("DMX")
 public class DjLightsShowPattern extends DjLightsPattern
@@ -26,13 +26,11 @@ public class DjLightsShowPattern extends DjLightsPattern
 
   // Core visible controls - override the pan/tilt from parent to add descriptions
   public final CompoundParameter brightness =
-      new CompoundParameter("Brightness", 0.5)
-          .setDescription("Overall brightness (master dimmer)");
+      new CompoundParameter("Brightness", 0.5).setDescription("Overall brightness (master dimmer)");
 
   // Use LinkedColorParameter for full palette/swatch integration
   public final LinkedColorParameter color =
-      new LinkedColorParameter("Color")
-          .setDescription("Light color from palette/swatch");
+      new LinkedColorParameter("Color").setDescription("Light color from palette/swatch");
 
   public final CompoundParameter saturation =
       new CompoundParameter("Saturation", 1.0)
@@ -73,6 +71,7 @@ public class DjLightsShowPattern extends DjLightsPattern
 
   /**
    * Applies saturation adjustment to a color.
+   *
    * @param baseColor The original color
    * @param saturationMultiplier Saturation factor (0-1)
    * @return Modified color with adjusted saturation
@@ -83,15 +82,15 @@ public class DjLightsShowPattern extends DjLightsPattern
     float b = LXColor.b(baseColor);
 
     // Apply saturation multiplier
-    s = (float)(s * saturationMultiplier);
+    s = (float) (s * saturationMultiplier);
     s = Math.max(0, Math.min(100, s)); // Clamp to 0-100
 
     return LXColor.hsb(h, s, b);
   }
 
   /**
-   * Converts an LX color to RGBW values for DMX lights.
-   * Extracts white component and adjusts RGB accordingly.
+   * Converts an LX color to RGBW values for DMX lights. Extracts white component and adjusts RGB
+   * accordingly.
    */
   private static class RGBWColor {
     int r, g, b, w;
@@ -111,10 +110,10 @@ public class DjLightsShowPattern extends DjLightsPattern
       b = blue - w;
 
       // Apply brightness multiplier
-      r = (int)(r * brightnessMultiplier);
-      g = (int)(g * brightnessMultiplier);
-      b = (int)(b * brightnessMultiplier);
-      w = (int)(w * brightnessMultiplier);
+      r = (int) (r * brightnessMultiplier);
+      g = (int) (g * brightnessMultiplier);
+      b = (int) (b * brightnessMultiplier);
+      w = (int) (w * brightnessMultiplier);
     }
   }
 
@@ -166,10 +165,11 @@ public class DjLightsShowPattern extends DjLightsPattern
     }
 
     for (LXPoint point : this.lx.getModel().points) {
-      colors[point.index] = LXColor.hsb(
-          LXColor.h(adjustedColor),
-          LXColor.s(adjustedColor) * (float)saturationValue,
-          LXColor.b(adjustedColor) * (float)brightnessValue);
+      colors[point.index] =
+          LXColor.hsb(
+              LXColor.h(adjustedColor),
+              LXColor.s(adjustedColor) * (float) saturationValue,
+              LXColor.b(adjustedColor) * (float) brightnessValue);
     }
   }
 

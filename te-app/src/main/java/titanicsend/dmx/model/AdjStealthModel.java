@@ -40,17 +40,13 @@ public class AdjStealthModel extends DmxModel {
   public static final int SHUTTER_CLOSED = 0;
   public static final int SHUTTER_OPEN = 246;
 
-  /**
-   * Configuration class for ADJ Stealth model - follows BeaconModel pattern
-   */
+  /** Configuration class for ADJ Stealth model - follows BeaconModel pattern */
   public static class AdjStealthConfig extends DmxCommonConfig {
     // Add any ADJ Stealth specific config parameters here if needed in future
     // For now, it just uses the common DMX config fields
   }
 
-  /**
-   * Create configuration from LXModel metadata
-   */
+  /** Create configuration from LXModel metadata */
   static AdjStealthConfig createConfig(LXModel model) {
     LXPoint point = model.points[0];
     AdjStealthConfig c = new AdjStealthConfig();
@@ -90,25 +86,19 @@ public class AdjStealthModel extends DmxModel {
     return c;
   }
 
-  /**
-   * Dynamic model constructor - uses configuration from LXModel metadata
-   */
+  /** Dynamic model constructor - uses configuration from LXModel metadata */
   public AdjStealthModel(LXModel model) {
     super(model, createConfig(model));
     initialize();
   }
 
-  /**
-   * Static model constructor - uses provided configuration
-   */
+  /** Static model constructor - uses provided configuration */
   public AdjStealthModel(DmxCommonConfig config, String... tags) {
     super(MODEL_TYPE, config, tags);
     initialize();
   }
 
-  /**
-   * Initialize DMX parameters
-   */
+  /** Initialize DMX parameters */
   private void initialize() {
     DmxCompoundParameter pan = new DmxCompoundParameter("Pan").setNumBytes(2);
     DmxCompoundParameter tilt = new DmxCompoundParameter("Tilt", 0, -180, 180).setNumBytes(2);
