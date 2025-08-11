@@ -43,12 +43,13 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
 
   // Texture handle for the current view model coordinate texture
   private int modelCoordsTextureHandle = UNINITIALIZED;
+  private int modelIndexTextureHandle = UNINITIALIZED;
 
   private static class TEShaderUniforms {
     private Uniform.Int1 audio;
     private Uniform.Int1 lxModelCoords;
     private Uniform.Int1 backBuffer;
-    private Uniform.Int1 mappedBuffer;
+    private Uniform.Int1 lxModelIndex;
   }
 
   private final TEShaderUniforms uniforms = new TEShaderUniforms();
@@ -136,7 +137,7 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
     this.uniforms.audio = getUniformInt1(UniformNames.AUDIO_CHANNEL);
     this.uniforms.lxModelCoords = getUniformInt1(UniformNames.LX_MODEL_COORDS);
     this.uniforms.backBuffer = getUniformInt1(UniformNames.BACK_BUFFER);
-    this.uniforms.mappedBuffer = getUniformInt1(UniformNames.MAPPED_BUFFER);
+    this.uniforms.lxModelIndex = getUniformInt1(UniformNames.LX_MODEL_INDEX);
   }
 
   @Override
@@ -174,6 +175,9 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
     bindTextureUnit(TEXTURE_UNIT_COORDS, this.modelCoordsTextureHandle);
     this.uniforms.lxModelCoords.setValue(TEXTURE_UNIT_COORDS);
 
+    bindTextureUnit(TEXTURE_UNIT_COORD_MAP, this.modelIndexTextureHandle);
+    this.uniforms.lxModelCoords.setValue(TEXTURE_UNIT_COORD_MAP);
+
     // Clear backbuffer on first frame
     if (this.needsClearBackBuffer) {
       this.needsClearBackBuffer = false;
@@ -185,8 +189,7 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
     bindTextureUnit(TEXTURE_UNIT_BACKBUFFER, backBufferHandle);
     this.uniforms.backBuffer.setValue(TEXTURE_UNIT_BACKBUFFER);
 
-    // GL will complain if you don't assign a unit to the sampler2D...
-    this.uniforms.mappedBuffer.setValue(TEXTURE_UNIT_BACKBUFFER);
+
 
     // Bind shadertoy textures to corresponding shader-specific texture units.
     for (TextureInfo ti : this.textures) {
@@ -296,6 +299,7 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
    */
   public void setModelCoordinates(LXModel model) {
     this.modelCoordsTextureHandle = this.glEngine.textureCache.getCoordinatesTexture(model);
+    this.modelIndexTextureHandle = this.glEngine.textureCache.getIndexMapTexture(model);
   }
 
   // Releases native resources allocated by this shader.

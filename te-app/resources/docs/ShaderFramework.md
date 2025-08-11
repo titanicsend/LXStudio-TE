@@ -55,7 +55,7 @@ information on how to use the backbuffer in your shader.
 
 - For shaders that do filtering or other convolution effects, the iMappedBuffer texture is available.  This texture contains the
 data rendered by the previous shader in "normal" rectangular buffer form.  It is currently available only to effect shaders. See
-the section on iMappedBuffer below for more information.
+the section on iMappedBuffer below for more information. NOTE: This is being replaced shortly!
 
 - If you want to work directly with the normalized 3D model coordinates in your shader, use the lxModelCoords uniform sampler as
 described below.
