@@ -10,7 +10,7 @@
 #define CAM_ROTATION_SPEED 11.7
 #define CAM_TILT .20
 #define CAM_DIST 2.8
-#define MAX_MULT_EXPLOSIONS 15
+#define MAX_MULT_EXPLOSIONS 7
 
 // the bounding sphere of the entire explosion. We use this to reduce the number of rays we need
 // to march through the explosion's density field.  If a ray lies outside the sphere, we know it isn't
@@ -22,7 +22,7 @@ const float delay_range = 0.15;		// maximum delay for explosion start up.
 
 float explosion_seed = 0.618;       // seed for explosion noise.
 float downscale = 1.25;				// how much smaller (than expRadius) one explosion ball should be. bigger value = smaller. 1.0 = no scale down.
-float grain = 3.0;					// increase for more detailed explosions
+float grain = 4.0;					// increase for more detailed explosions
 float speed = 0.5;					// animation speed (time stretch). nice = 0.5, default = 0.4
 float ballness = 1.0;				// lower values makes explosion look more like a cloud. higher values more like a ball.
 float growth = 2.2;					// initial growth to explosion ball. lower values makes explosion grow faster
