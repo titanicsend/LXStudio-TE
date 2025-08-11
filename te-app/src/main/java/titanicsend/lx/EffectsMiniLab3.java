@@ -83,6 +83,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
         default -> TE.warning("unexpected pad press for empty slot " + padIndex);
       }
       TE.log("PRESS: " + padIndex + " " + currState.name() + " -> " + this.states[padIndex].name());
+      updatePadLEDs();
     }
   }
 
@@ -164,7 +165,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   }
 
   private void initialize() {
-    // TODO: initial sysEx to setup pad lights
+    updatePadLEDs();
   }
 
   private void register() {
@@ -194,6 +195,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
             int slotIndex = effectManager.slots.indexOf(item);
             states[slotIndex] = EffectState.DISABLED;
             TE.log("Effect Slot added [" + slotIndex + "]: " + item);
+            updatePadLEDs();
           }
 
           @Override
@@ -201,6 +203,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
             int slotIndex = effectManager.slots.indexOf(item);
             states[slotIndex] = EffectState.EMPTY;
             TE.log("Effect Slot removed [" + slotIndex + "]: " + item);
+            updatePadLEDs();
           }
         };
     this.effectManager.slots.addListener(this.effectListener);
@@ -209,7 +212,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   private void unregister() {
     this.isRegistered = false;
     effectManager.slots.removeListener(effectListener);
-    // TODO: send sysex to clear
+    clearPadLEDs();
   }
 
   @Override
@@ -235,6 +238,149 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   @Override
   public void noteOffReceived(MidiNote note) {
     noteReceived(note, false);
+  }
+
+  private void setPadLEDColor(int padIndex, int red, int green, int blue) {
+    if (padIndex < 0 || padIndex >= 8) {
+      return;
+    }
+
+    // SysEx format: [0xF0, 0x00, 0x20, 0x6B, 0x7F, 0x42, 0x04, 0x02, 0x16, 0x00, <8x RGB values>,
+    // 0xF7]
+    byte[] sysex = new byte[32]; // Header (10) + 8 pads * 3 RGB (24) + end (1)
+
+    // Header
+    sysex[0] = (byte) 0xF0; // SysEx start
+    sysex[1] = (byte) 0x00; // Arturia manufacturer ID
+    sysex[2] = (byte) 0x20;
+    sysex[3] = (byte) 0x6B;
+    sysex[4] = (byte) 0x7F;
+    sysex[5] = (byte) 0x42;
+    sysex[6] = (byte) 0x04; // Set PAD LEDs command
+    sysex[7] = (byte) 0x02;
+    sysex[8] = (byte) 0x16;
+    sysex[9] = (byte) 0x00;
+
+    // Get current pad states for all 8 pads
+    for (int i = 0; i < 8; i++) {
+      int baseIdx = 10 + (i * 3);
+      if (i == padIndex) {
+        sysex[baseIdx] = (byte) (red & 0x7F); // R
+        sysex[baseIdx + 1] = (byte) (green & 0x7F); // G
+        sysex[baseIdx + 2] = (byte) (blue & 0x7F); // B
+      } else {
+        // Set other pads based on their current state
+        if (i < this.states.length) {
+          switch (this.states[i]) {
+            case EMPTY -> {
+              sysex[baseIdx] = 0; // R
+              sysex[baseIdx + 1] = 0; // G
+              sysex[baseIdx + 2] = 0; // B
+            }
+            case DISABLED -> {
+              sysex[baseIdx] = 0; // R
+              sysex[baseIdx + 1] = 0; // G
+              sysex[baseIdx + 2] = 127; // B (blue)
+            }
+            case ENABLED -> {
+              sysex[baseIdx] = 127; // R (red)
+              sysex[baseIdx + 1] = 0; // G
+              sysex[baseIdx + 2] = 0; // B
+            }
+          }
+        } else {
+          sysex[baseIdx] = 0; // R
+          sysex[baseIdx + 1] = 0; // G
+          sysex[baseIdx + 2] = 0; // B
+        }
+      }
+    }
+
+    sysex[31] = (byte) 0xF7; // SysEx end
+
+    sendSysex(sysex);
+  }
+
+  private void updatePadLEDs() {
+    if (this.states == null) {
+      return;
+    }
+
+    // Build complete SysEx message for all 8 pads
+    byte[] sysex = new byte[32]; // Header (10) + 8 pads * 3 RGB (24) + end (1)
+
+    // Header
+    sysex[0] = (byte) 0xF0; // SysEx start
+    sysex[1] = (byte) 0x00; // Arturia manufacturer ID
+    sysex[2] = (byte) 0x20;
+    sysex[3] = (byte) 0x6B;
+    sysex[4] = (byte) 0x7F;
+    sysex[5] = (byte) 0x42;
+    sysex[6] = (byte) 0x04; // Set PAD LEDs command
+    sysex[7] = (byte) 0x02;
+    sysex[8] = (byte) 0x16;
+    sysex[9] = (byte) 0x00;
+
+    // Set colors for all 8 pads
+    for (int i = 0; i < 8; i++) {
+      int baseIdx = 10 + (i * 3);
+      if (i < this.states.length) {
+        switch (this.states[i]) {
+          case EMPTY -> {
+            sysex[baseIdx] = 0; // R (dark/off)
+            sysex[baseIdx + 1] = 0; // G
+            sysex[baseIdx + 2] = 0; // B
+          }
+          case DISABLED -> {
+            sysex[baseIdx] = 0; // R (blue)
+            sysex[baseIdx + 1] = 0; // G
+            sysex[baseIdx + 2] = 127; // B
+          }
+          case ENABLED -> {
+            sysex[baseIdx] = 127; // R (red)
+            sysex[baseIdx + 1] = 0; // G
+            sysex[baseIdx + 2] = 0; // B
+          }
+        }
+      } else {
+        sysex[baseIdx] = 0; // R (dark/off)
+        sysex[baseIdx + 1] = 0; // G
+        sysex[baseIdx + 2] = 0; // B
+      }
+    }
+
+    sysex[31] = (byte) 0xF7; // SysEx end
+
+    sendSysex(sysex);
+  }
+
+  private void clearPadLEDs() {
+    // Build SysEx message to turn off all pad LEDs
+    byte[] sysex = new byte[32]; // Header (10) + 8 pads * 3 RGB (24) + end (1)
+
+    // Header
+    sysex[0] = (byte) 0xF0; // SysEx start
+    sysex[1] = (byte) 0x00; // Arturia manufacturer ID
+    sysex[2] = (byte) 0x20;
+    sysex[3] = (byte) 0x6B;
+    sysex[4] = (byte) 0x7F;
+    sysex[5] = (byte) 0x42;
+    sysex[6] = (byte) 0x04; // Set PAD LEDs command
+    sysex[7] = (byte) 0x02;
+    sysex[8] = (byte) 0x16;
+    sysex[9] = (byte) 0x00;
+
+    // Turn off all 8 pads (RGB = 0,0,0)
+    for (int i = 0; i < 8; i++) {
+      int baseIdx = 10 + (i * 3);
+      sysex[baseIdx] = 0; // R
+      sysex[baseIdx + 1] = 0; // G
+      sysex[baseIdx + 2] = 0; // B
+    }
+
+    sysex[31] = (byte) 0xF7; // SysEx end
+
+    sendSysex(sysex);
   }
 }
 /*
