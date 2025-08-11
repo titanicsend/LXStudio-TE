@@ -424,7 +424,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   @Override
   public void onActive() {
     this.priorBlend = null;
-    LXChannel channel = this.getChannel();
+    LXChannel channel = this.getMixerChannel();
     if (channel != null) {
       // Set channel blend to Normal
       for (LXBlend blend : channel.blendMode.getObjects()) {
@@ -485,7 +485,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   @Override
   public void onInactive() {
     disconnect();
-    LXChannel channel = getChannel();
+    LXChannel channel = getMixerChannel();
     if (this.priorBlend != null & channel != null) {
       // Restore channel blend selection
       channel.blendMode.setValue(this.priorBlend);
