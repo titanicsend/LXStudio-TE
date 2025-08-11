@@ -76,7 +76,7 @@ public class CarGeometryPatternTools {
    * @return the number of edges actually retrieved
    */
   public static int getAllEdgesOnSide(
-      TEWholeModel model, float signum, float lines[][], int lineCount) {
+      TEWholeModel model, float signum, float[][] lines, int lineCount) {
     // signum is 1 for starboard side, -1 for port side (I think!)
 
     int edgeCount = 0;
@@ -92,7 +92,6 @@ public class CarGeometryPatternTools {
         }
       }
     }
-    TE.log("getAllEdgesOnSide: found %d edges on side %f", edgeCount, signum);
     return edgeCount;
   }
 
