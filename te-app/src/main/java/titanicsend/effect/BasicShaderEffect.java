@@ -2,7 +2,7 @@ package titanicsend.effect;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.parameter.*;
+import heronarts.lx.parameter.CompoundParameter;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderEffect;
 

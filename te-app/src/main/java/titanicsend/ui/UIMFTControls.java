@@ -14,9 +14,13 @@ import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.studio.LXStudio;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import titanicsend.color.TEColorParameter;
 import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.preset.UIUserPresetSelector;
+import titanicsend.preset.UserPresetCollection;
 
 /**
  * A set of UI Knobs matching the layout of a MidiFighterTwister, for use in a device UI. The device
@@ -24,12 +28,13 @@ import titanicsend.pattern.TEPerformancePattern;
  */
 public class UIMFTControls extends UI2dContainer implements LXParameterListener {
 
+  private final LXStudio.UI ui;
   private final TEPerformancePattern device;
-  private final List<UI2dComponent> controls = new ArrayList<>();
+  private final Map<LXNormalizedParameter, UI2dComponent> controls = new HashMap<>();
 
   public UIMFTControls(LXStudio.UI ui, TEPerformancePattern device, float height) {
     super(0, 0, 0, height);
-
+    this.ui = ui;
     this.device = device;
     this.device.remoteControlsChanged.addListener(this, true);
   }
@@ -41,20 +46,13 @@ public class UIMFTControls extends UI2dContainer implements LXParameterListener 
     }
   }
 
+  /** Rebuild parameter UI controls. Do not touch other child controls. */
   private void refresh() {
-    clearControls();
-    buildControls();
-  }
-
-  private void clearControls() {
-    // Remove only the parameter controls, not all children.
-    for (UI2dComponent control : this.controls) {
-      control.removeFromContainer().dispose();
-    }
+    // Remember previous controls so we can reuse them or dispose them at the end
+    Map<LXNormalizedParameter, UI2dComponent> oldControls = new HashMap<>(this.controls);
     this.controls.clear();
-  }
 
-  private void buildControls() {
+    // Get new controls from the device
     List<LXNormalizedParameter> params = new ArrayList<>(Arrays.asList(device.getRemoteControls()));
 
     // Fill in the remaining first MFT UI space with blanks
@@ -69,9 +67,10 @@ public class UIMFTControls extends UI2dContainer implements LXParameterListener 
       }
     }
 
-    // For the UI, replace unused remote controls with null
+    // Hide [from the UI] TE common controls that are not used but will still be in the remote list
     hideUnusedControls(params);
 
+    // Build MFT-style layout
     int ki = 0;
     int col = 0;
     for (LXNormalizedParameter param : params) {
@@ -81,28 +80,36 @@ public class UIMFTControls extends UI2dContainer implements LXParameterListener 
       }
       float x = (ki % 4) * (UIKnob.WIDTH + 2) + (col * ((4 * (UIKnob.WIDTH + 2) + 15) + 2));
       float y = -3 + (ki / 4) * (UIKnob.HEIGHT);
-      if (param instanceof TEColorParameter.TEColorOffsetParameter) {
-        this.controls.add(
-            new UITEColorControl(x, y, (TEColorParameter) param.getParentParameter())
-                .addToContainer(this));
-      } else if (param instanceof BoundedParameter
-          || param instanceof DiscreteParameter
-          || param instanceof BoundedFunctionalParameter) {
-        this.controls.add(new UIKnob(x, y).setParameter(param).addToContainer(this));
-      } else if (param instanceof BooleanParameter) {
-        this.controls.add(new UISwitch(x, y).setParameter(param).addToContainer(this));
-      } else if (param == null) {
-        // Leave a space
-      } else {
-        // Hey developer: probably added a type in isEligibleControlParameter() that wasn't handled
-        // down here.
-        throw new RuntimeException(
-            "Cannot generate control, unsupported pattern parameter type: " + param.getClass());
+
+      // Leave a space for null parameters
+      if (param != null) {
+        // If a parameter is in the remote list twice, skip entries after the first.
+        if (!this.controls.containsKey(param)) {
+
+          // Retrieve existing UI control
+          UI2dComponent control = oldControls.remove(param);
+
+          // Or create new UI control
+          if (control == null) {
+            control = getNewControl(param);
+            control.addToContainer(this);
+            this.controls.put(param, control);
+          }
+
+          // Position control at the current MFT knob
+          control.setPosition(x, y);
+        }
       }
 
       ++ki;
     }
     this.setContentWidth((col + 1) * (4 * (UIKnob.WIDTH + 2) + 15) - 15 - 2);
+
+    // Dispose old UI controls that were not reused
+    for (Map.Entry<LXNormalizedParameter, UI2dComponent> entry : oldControls.entrySet()) {
+      UI2dComponent control = entry.getValue();
+      control.removeFromContainer().dispose();
+    }
   }
 
   /**
@@ -118,8 +125,28 @@ public class UIMFTControls extends UI2dContainer implements LXParameterListener 
     }
   }
 
+  /** Use TECommonControls to determine if a common parameter is marked as "unused" */
   private boolean isUnusedControl(LXNormalizedParameter p) {
     return this.device.getControls().unusedParams.contains(p);
+  }
+
+  /** Build a new UI component for a remote control parameter */
+  private UI2dComponent getNewControl(LXNormalizedParameter param) {
+    if (param instanceof TEColorParameter.TEColorOffsetParameter) {
+      return new UITEColorControl(0, 0, (TEColorParameter) param.getParentParameter());
+    } else if (param instanceof UserPresetCollection.Selector selector) {
+      // Avoid command engine with userPreset selector, it bonks for unknown reasons
+      return new UIUserPresetSelector(this.ui, selector);
+    } else if (param instanceof BoundedParameter
+        || param instanceof DiscreteParameter
+        || param instanceof BoundedFunctionalParameter) {
+      return new UIKnob(x, y).setParameter(param);
+    } else if (param instanceof BooleanParameter) {
+      return new UISwitch(x, y).setParameter(param);
+    } else {
+      throw new RuntimeException(
+          "Cannot generate control, unsupported pattern parameter type: " + param.getClass());
+    }
   }
 
   @Override

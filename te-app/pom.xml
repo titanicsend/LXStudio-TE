@@ -15,10 +15,33 @@
 	<name>Titanic's End LX Studio Application</name>
 
 	<dependencies>
+		<!-- sibling modules from this repo -->
+
 		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
+			<groupId>com.titanicsend</groupId>
+			<artifactId>audio-stems</artifactId>
+			<version>${project.parent.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.titanicsend</groupId>
+			<artifactId>osc-remapper</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+
+		<!-- external plugins related to this project -->
+
+		<dependency>
+			<groupId>studio.jkb</groupId>
+			<artifactId>supermod</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>studio.jkb</groupId>
+			<artifactId>beyond</artifactId>
+		</dependency>
+
+		<!-- core Chromatik dependencies -->
 
 		<dependency>
 			<groupId>com.heronarts</groupId>
@@ -28,6 +51,13 @@
 		<dependency>
 			<groupId>com.heronarts</groupId>
 			<artifactId>glxstudio</artifactId>
+		</dependency>
+
+		<!-- third party libraries -->
+
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
 		</dependency>
 
 		<dependency>
@@ -48,12 +78,6 @@
 		<dependency>
 			<groupId>uk.co.xfactory-librarians</groupId>
 			<artifactId>coremidi4j</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -91,15 +115,12 @@
 			<artifactId>devolay</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>studio.jkb</groupId>
-			<artifactId>supermod</artifactId>
-		</dependency>
+		<!-- Test dependencies -->
 
 		<dependency>
-			<groupId>com.titanicsend</groupId>
-			<artifactId>audio-stems</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

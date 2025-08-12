@@ -17,15 +17,18 @@
  */
 package titanicsend.ui;
 
-import heronarts.glx.*;
+import heronarts.glx.GLX;
+import heronarts.glx.View;
 import heronarts.glx.ui.UI;
 import heronarts.glx.ui.UI3dComponent;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.studio.TEApp;
+import heronarts.lx.transform.LXVector;
 import java.util.ArrayList;
 import java.util.List;
 import org.joml.Vector3f;
 import titanicsend.app.TEVirtualOverlays;
+import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
 import titanicsend.model.TEVertex;
 import titanicsend.ui.text3d.Label;
@@ -36,6 +39,7 @@ public class UIModelLabels extends UI3dComponent {
   private final GLX glx;
   private TextManager3d textManager = null;
   private final List<Label> panelLabels = new ArrayList<Label>();
+  private final List<Label> edgeLabels = new ArrayList<Label>();
   private final List<Label> vertexLabels = new ArrayList<Label>();
 
   // initialization that should be done once, when the UI is ready
@@ -69,16 +73,22 @@ public class UIModelLabels extends UI3dComponent {
       panelLabels.add(textManager.labelMaker(p.getId(), position, rotation));
     }
 
-    /*
-    // TODO: Vertex labeling disabled 'till we actually have vertex data
+    textManager.setFontScale(fontScale * 0.5f);
+    textManager.setFontColor(LXColor.GREEN);
+    textManager.setFontBackground(LXColor.rgba(64, 64, 0, 150));
+    for (TEEdgeModel e : TEApp.wholeModel.getEdges()) {
+      getEdgeCoordinates(e, position, rotation, labelOffset);
+      edgeLabels.add(textManager.labelMaker(e.getId(), position, rotation));
+    }
+
     textManager.setFontScale(fontScale * 1.333f);
     textManager.setFontColor(LXColor.GREEN);
     textManager.setFontBackground(LXColor.rgba(0, 64, 64, 200));
-    for (TEVertex v : TEApp.wholeModel.getVertexes()) {
+    for (Integer vertexId : TEVertex.vertexLookup.keySet()) {
+      LXVector v = TEVertex.vertexLookup.get(vertexId);
       getVertexCoordinates(v, position, rotation, labelOffset);
-      vertexLabels.add(textManager.labelMaker(String.valueOf(v.id), position, rotation));
+      vertexLabels.add(textManager.labelMaker(String.valueOf(vertexId), position, rotation));
     }
-    */
   }
 
   /**
@@ -139,8 +149,49 @@ public class UIModelLabels extends UI3dComponent {
     getLabelCoordinates(panelCenter, position, rotation, offset, onCarEnd);
   }
 
+  public void getEdgeCoordinates(
+      TEEdgeModel edge, Vector3f position, Vector3f rotation, float offset) {
+    // TODO: fix
+    boolean onCarEnd = false; // edge.getId().startsWith("F") || edge.getId().startsWith("A");
+
+    getLabelCoordinates(
+        new Vector3f(edge.centroid.x, edge.centroid.y, edge.centroid.z),
+        position,
+        rotation,
+        offset,
+        onCarEnd);
+
+    // TODO: try to get the labels rotated alongside the edges...
+    //    int id0 = Integer.parseInt(edge.model.meta("v0"));
+    //    int id1 = Integer.parseInt(edge.model.meta("v1"));
+    //    LXVector v0 = TEVertex.vertexLookup.get(id0);
+    //    LXVector v1 = TEVertex.vertexLookup.get(id1);
+    //    if (v0 == null) {
+    //      return;
+    //    } else if (v1 == null) {
+    //      return;
+    //    }
+    //
+    //    LXVector direction = v0.sub(v1).normalize();
+    //    // Angle with YZ plane (complement of angle with X axis)
+    //    // This is how much the line deviates from being parallel to the YZ plane
+    //    float angleWithYZ = (float) Math.acos(Math.abs(direction.x));
+    //
+    //    // Angle with XZ plane (complement of angle with Y axis)
+    //    // This is how much the line deviates from being parallel to the XZ plane
+    //    float angleWithXZ = (float) Math.acos(Math.abs(direction.y));
+    //
+    //    // Angle with XY plane (complement of angle with Z axis)
+    //    // This is how much the line deviates from being parallel to the XY plane
+    //    float angleWithXY = (float) Math.acos(Math.abs(direction.z));
+    //
+    //    position.x = angleWithYZ;
+    //    position.y = angleWithXZ;
+    //    position.z = angleWithXY;
+  }
+
   public void getVertexCoordinates(
-      TEVertex vertex, Vector3f position, Vector3f rotation, float offset) {
+      LXVector vertex, Vector3f position, Vector3f rotation, float offset) {
     Vector3f panelCenter = new Vector3f(vertex.x, vertex.y, vertex.z);
 
     getLabelCoordinates(panelCenter, position, rotation, offset, false);
@@ -158,13 +209,13 @@ public class UIModelLabels extends UI3dComponent {
       textManager.draw(view, panelLabels);
     }
 
-    /*
-    // TODO - fill in vertex locations for dynamic model.  It currently has
-    // TODO - labels, but no data, so we only show these labels for the static model.
-    if (this.virtualOverlays.vertexLabelsVisible.isOn() && this.isStatic) {
+    if (this.virtualOverlays.edgeLabelsVisible.isOn()) {
+      textManager.draw(view, edgeLabels);
+    }
+
+    if (this.virtualOverlays.vertexLabelsVisible.isOn()) {
       textManager.draw(view, vertexLabels);
     }
-    */
   }
 
   @Override

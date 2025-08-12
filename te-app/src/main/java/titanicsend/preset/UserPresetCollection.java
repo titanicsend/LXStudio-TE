@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import heronarts.lx.LX;
 import heronarts.lx.LXPresetComponent;
 import heronarts.lx.LXSerializable;
+import heronarts.lx.parameter.ObjectParameter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +14,6 @@ import java.util.Objects;
 
 /** A collection of presets for one component */
 public class UserPresetCollection implements LXSerializable {
-
   private final LX lx;
   private final String clazz;
 
@@ -53,6 +53,7 @@ public class UserPresetCollection implements LXSerializable {
     for (Listener listener : this.listeners) {
       listener.presetAdded(preset);
     }
+    updateSelectors();
     return preset;
   }
 
@@ -68,6 +69,7 @@ public class UserPresetCollection implements LXSerializable {
     for (Listener listener : this.listeners) {
       listener.presetAdded(preset);
     }
+    updateSelectors();
     return preset;
   }
 
@@ -83,6 +85,7 @@ public class UserPresetCollection implements LXSerializable {
     for (Listener listener : this.listeners) {
       listener.presetRemoved(preset);
     }
+    updateSelectors();
     return this;
   }
 
@@ -96,6 +99,7 @@ public class UserPresetCollection implements LXSerializable {
     for (Listener listener : this.listeners) {
       listener.presetMoved(pattern);
     }
+    updateSelectors();
     return this;
   }
 
@@ -120,7 +124,64 @@ public class UserPresetCollection implements LXSerializable {
     return this.presets;
   }
 
-  // TODO: File save/load
+  // ----------------------------------------------------------------------------------
+  // Selectors
+  // ----------------------------------------------------------------------------------
+
+  private final String DEFAULT_PRESET = "Default";
+  private UserPreset[] presetObjects = {null};
+  private String[] presetLabels = {DEFAULT_PRESET};
+
+  private final List<Selector> selectors = new ArrayList<>();
+
+  public class Selector extends ObjectParameter<UserPreset> {
+    public Selector(String label) {
+      super(label, presetObjects, presetLabels);
+      setWrappable(false);
+      UserPresetCollection.this.selectors.add(this);
+    }
+
+    @Override
+    public void dispose() {
+      UserPresetCollection.this.selectors.remove(this);
+      super.dispose();
+    }
+  }
+
+  public Selector newUserPresetSelector(String label) {
+    return new Selector(label);
+  }
+
+  private void updateSelectors() {
+    int numOptions = 1 + this.presets.size();
+    this.presetObjects = new UserPreset[numOptions];
+    this.presetLabels = new String[numOptions];
+    this.presetObjects[0] = null;
+    this.presetLabels[0] = DEFAULT_PRESET;
+
+    int i = 1;
+    for (UserPreset preset : this.presets) {
+      this.presetObjects[i] = preset;
+      this.presetLabels[i] = preset.getLabel();
+      ++i;
+    }
+
+    // Update all of the params to have new range/options
+    for (Selector parameter : this.selectors) {
+      final UserPreset selected = parameter.getObject();
+      parameter.setObjects(this.presetObjects, this.presetLabels);
+
+      // Check if a param had a non-null selection, if so it should be restored in the case of
+      // renaming/reordering where it is still in the list but its index may be different.
+      if ((selected != parameter.getObject()) && this.presets.contains(selected)) {
+        parameter.setValue(selected);
+      }
+    }
+  }
+
+  // ----------------------------------------------------------------------------------
+  // Save / Load
+  // ----------------------------------------------------------------------------------
 
   private boolean inLoad = false;
 
@@ -157,5 +218,6 @@ public class UserPresetCollection implements LXSerializable {
     for (Listener listener : this.listeners) {
       listener.presetAdded(preset);
     }
+    updateSelectors();
   }
 }

@@ -13,6 +13,8 @@ import static titanicsend.pattern.glengine.GLShaderPattern.NO_TEXTURE;
 
 import com.jogamp.opengl.GL4;
 import heronarts.lx.LX;
+import heronarts.lx.LXEngine;
+import heronarts.lx.ModelBuffer;
 import heronarts.lx.blend.LXBlend;
 import heronarts.lx.blend.MultiplyBlend;
 import heronarts.lx.effect.LXEffect;
@@ -29,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import titanicsend.ndi.NDIOutShaderEffect;
 import titanicsend.pattern.glengine.GLEngine;
 import titanicsend.pattern.glengine.GLShaderEffect;
 import titanicsend.pattern.glengine.GLShaderPattern;
@@ -44,18 +47,34 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
 
   private boolean initialized = false;
 
+  // Default starting texture for buses
   private int blackBackground = UNINITIALIZED;
+
+  // Dummy CPU buffer for Java effects in GPU mode
+  private final ModelBuffer dummyBuffer;
 
   // Wrapper classes around LX channels
   private final GLMasterBus glMasterBus;
   private final Map<LXAbstractChannel, GLAbstractChannel> channelMap = new HashMap<>();
   private final List<GLAbstractChannel> glChannels = new ArrayList<>();
 
+  // Cue/Aux preview buses
+  private final GLPreviewBus glCueBus;
+  private final GLPreviewBus glAuxBus;
+  private boolean cueBusActive = false;
+  private boolean auxBusActive = false;
+  private int cueBusTexture = UNINITIALIZED;
+  private int auxBusTexture = UNINITIALIZED;
+
   public GLMixer(LX lx, GLEngine glEngine) {
     this.lx = lx;
     this.glEngine = glEngine;
 
+    this.dummyBuffer = new ModelBuffer(lx);
+
     this.glMasterBus = new GLMasterBus(lx.engine.mixer.masterBus);
+    this.glCueBus = new GLPreviewBus(false);
+    this.glAuxBus = new GLPreviewBus(true);
 
     // Register for channels added/removed
     this.lx.engine.mixer.addListener(this);
@@ -96,11 +115,15 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
       glChannel.init();
     }
 
+    // Initialize preview shaders
+    this.glCueBus.init();
+    this.glAuxBus.init();
+
     // Register GPU mixer
     this.lx.engine.mixer.addPostMixer(this);
   }
 
-  public void loop() {
+  public void loop(double deltaMs) {
     // This will be called [by GLEngine] every engine frame prior to the LXMixer running.
     // Do any pre-run setup here.
 
@@ -112,23 +135,49 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
    * and write the output to LX's (CPU) buffers for the main mix, primary cue, and aux cue.
    */
   @Override
-  public void postMix(int[] main, int[] cue, int[] aux) {
+  public void postMix(LXEngine.Frame frame, double deltaMs) {
     if (!this.initialized) {
       throw new IllegalStateException("GLMixer was not initialized");
     }
 
-    // Patterns have been looped
+    // Patterns have been looped. Perform GPU mixing.
 
-    // Perform GPU mixing
+    // Reset cue/aux active flags every frame
+    boolean cueWasActive = this.cueBusActive;
+    boolean auxWasActive = this.auxBusActive;
+    this.cueBusActive = false;
+    this.auxBusActive = false;
 
-    // Set the target CPU buffer
-    this.glMasterBus.setMain(main);
+    // Set the target CPU buffers
+    this.glMasterBus.setBuffer(frame.getMain());
+    this.glCueBus.setBuffer(frame.getCue());
+    this.glAuxBus.setBuffer(frame.getAux());
 
     // Recursive run the buses
-    this.glMasterBus.blend(this.blackBackground);
+    this.glMasterBus.blend(deltaMs, this.blackBackground);
+    this.glCueBus.blend(deltaMs, this.blackBackground);
+    this.glAuxBus.blend(deltaMs, this.blackBackground);
+
+    // Activate cues but not on the first frame they're enabled, to avoid stale buffer
+    frame.setCueOn(cueWasActive && this.cueBusActive);
+    frame.setAuxOn(auxWasActive && this.auxBusActive);
 
     // Unbind framebuffer, the next GL commands might be out of GLEngine scope...
     this.gl4.glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  }
+
+  /** Checks a channel for inclusion in cue/aux previews */
+  private void checkForPreview(LXAbstractChannel channel, GLBus bus) {
+    if (channel.cueActive.isOn() && !this.cueBusActive) {
+      // Preview the first bus cued, per frame.
+      this.cueBusActive = true;
+      this.cueBusTexture = bus.getSrcTexture();
+    }
+    if (channel.auxActive.isOn() && !this.auxBusActive) {
+      // Preview the first bus aux cued, per frame.
+      this.auxBusActive = true;
+      this.auxBusTexture = bus.getSrcTexture();
+    }
   }
 
   // LXMixerEngine.Listener
@@ -187,6 +236,10 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
       removeChannel(channel);
     }
 
+    // Dispose preview shaders
+    this.glCueBus.dispose();
+    this.glAuxBus.dispose();
+
     if (this.initialized) {
       this.lx.engine.mixer.removePostMixer(this);
     }
@@ -198,12 +251,14 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
 
     protected final LXBus bus;
 
+    private int lastSrc = UNINITIALIZED;
+
     public GLBus(LXBus bus) {
       this.bus = bus;
     }
 
     /** Blend down the bus onto the dst texture, returning the output texture handle */
-    final int blend(int dst) {
+    final int blend(double deltaMs, int dst) {
       // Fast-out if no blending or effect looping
       if (!isActive()) {
         return dst;
@@ -212,10 +267,13 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
       // Future expansion note: run geometry-manipulation effects here, *then* loop patterns.
 
       // Composite contents (If this is a group, subchannels. Or if this is a channel, patterns.)
-      int src = blendContents();
+      int src = blendContents(deltaMs);
 
       // Run Effects
-      src = loopEffects(src, bus.effects);
+      src = loopEffects(deltaMs, src, bus.effects);
+
+      // Remember the pre-fader texture for preview buses
+      this.lastSrc = src;
 
       // Blend the bus texture onto the dst texture
       return finalBlend(dst, src);
@@ -228,16 +286,30 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     protected abstract boolean isActive();
 
     /** Blend the bus contents (either channels or patterns), but do not yet run effects. */
-    protected abstract int blendContents();
+    protected abstract int blendContents(double deltaMs);
 
-    protected final int loopEffects(int dst, List<LXEffect> effects) {
+    protected final int loopEffects(double deltaMs, int dst, List<LXEffect> effects) {
       for (LXEffect effect : effects) {
-        if (effect instanceof GLShaderEffect glShaderEffect) {
-          /*
-                    glShaderEffect.setInput(dst);
-                    glShaderEffect.run();
-                    dst = glShaderEffect.getRenderTexture();
-          */
+        // TODO: loop effect for damping even if disabled
+        if (effect.isEnabled()) {
+          effect.setBuffer(dummyBuffer);
+          if (effect instanceof GLShaderEffect glShaderEffect) {
+            // Shader effect in GPU mode
+            glShaderEffect.setDst(dst);
+            effect.setModel(effect.getModelView());
+            effect.loop(deltaMs);
+            dst = glShaderEffect.getRenderTexture();
+          } else if (effect instanceof NDIOutShaderEffect ndiOutShaderEffect) {
+            ndiOutShaderEffect.setDst(dst);
+            effect.setModel(effect.getModelView());
+            effect.loop(deltaMs);
+            // Do not modify dst. Output texture is for NDI sending, not for us.
+          } else {
+            // Java effect in GPU mode
+            // Currently gets looped for processing but the output is not used
+            effect.setModel(effect.getModelView());
+            effect.loop(deltaMs);
+          }
         }
       }
       return dst;
@@ -245,6 +317,11 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
 
     /** Final step, blend the bus output texture onto the dst texture at the current fader level */
     protected abstract int finalBlend(int dst, int src);
+
+    /** Retrieve the most recent pre-fader texture */
+    private int getSrcTexture() {
+      return this.lastSrc;
+    }
 
     protected abstract void dispose();
   }
@@ -267,21 +344,22 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     }
 
     @Override
-    protected int blendContents() {
+    protected int blendContents(double deltaMs) {
       int dst = blackBackground;
       // Blend all channels in the mixer
       for (LXAbstractChannel channel : lx.engine.mixer.channels) {
         if (!channel.isInGroup()) {
           GLAbstractChannel glChannel = channelMap.get(channel);
-          dst = glChannel.blend(dst);
+          dst = glChannel.blend(deltaMs, dst);
+          checkForPreview(channel, glChannel);
         }
       }
       return dst;
     }
 
     /** Set the target CPU buffer for BusShader */
-    void setMain(int[] main) {
-      this.mainBusShader.setMain(main);
+    void setBuffer(int[] cpuBuffer) {
+      this.mainBusShader.setCpuBuffer(cpuBuffer);
     }
 
     @Override
@@ -297,6 +375,60 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     @Override
     protected void dispose() {
       this.mainBusShader.dispose();
+    }
+  }
+
+  /** Unique, simple bus for cue and aux previews */
+  private class GLPreviewBus {
+
+    public final boolean isAux;
+
+    private final BusShader previewBusShader;
+
+    public GLPreviewBus(boolean isAux) {
+      this.isAux = isAux;
+      this.previewBusShader = new BusShader(lx);
+    }
+
+    /** Blend down the bus onto the dst texture, returning the output texture handle */
+    private int blend(double deltaMs, int dst) {
+      // Fast-out if preview bus is not active
+      if (!isActive()) {
+        return dst;
+      }
+
+      // Composite contents
+      // int dst = blackBackground;
+      int src = this.isAux ? auxBusTexture : cueBusTexture;
+
+      // Blend the bus texture onto the dst texture
+      return finalBlend(dst, src);
+    }
+
+    private void init() {
+      this.previewBusShader.init();
+    }
+
+    private boolean isActive() {
+      return this.isAux ? auxBusActive : cueBusActive;
+    }
+
+    /** Set the target CPU buffer for BusShader */
+    void setBuffer(int[] colors) {
+      this.previewBusShader.setCpuBuffer(colors);
+    }
+
+    private int finalBlend(int dst, int src) {
+      this.previewBusShader.setSrc(src);
+      this.previewBusShader.setLevel(1);
+      // Render GPU mixer output to current LX engine frame
+      this.previewBusShader.run();
+
+      return this.previewBusShader.getRenderTexture();
+    }
+
+    private void dispose() {
+      this.previewBusShader.dispose();
     }
   }
 
@@ -350,8 +482,9 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     }
 
     protected final boolean isActive() {
-      return this.abstractChannel.enabled.isOn()
-          && (!this.abstractChannel.autoMute.isOn() || this.abstractChannel.fader.getValuef() > 0f);
+      return this.abstractChannel.cueActive.isOn()
+          || this.abstractChannel.auxActive.isOn()
+          || (this.abstractChannel.enabled.isOn() && !this.abstractChannel.isAutoMuted.isOn());
     }
 
     @Override
@@ -381,12 +514,13 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     }
 
     @Override
-    protected int blendContents() {
+    protected int blendContents(double deltaMs) {
       int dst = blackBackground;
       // Blend all channels in the group
       for (LXAbstractChannel channel : this.group.channels) {
         GLAbstractChannel glChannel = channelMap.get(channel);
-        dst = glChannel.blend(dst);
+        dst = glChannel.blend(deltaMs, dst);
+        checkForPreview(channel, glChannel);
       }
       return dst;
     }
@@ -413,7 +547,7 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
 
     // Get output of active pattern or patterns within a channel. Do not apply channel-level effects
     @Override
-    protected int blendContents() {
+    protected int blendContents(double deltaMs) {
       // Fast-out if no patterns
       if (this.channel.patterns.isEmpty()) {
         return blackBackground;
@@ -423,9 +557,9 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
       if (this.channel.isComposite()) {
         return compositePatterns();
       } else if (this.channel.isInTransition()) {
-        return transition();
+        return transition(deltaMs);
       } else {
-        return getPatternTexture(this.channel.getActivePattern());
+        return getPatternTexture(deltaMs, this.channel.getActivePattern());
       }
     }
 
@@ -440,11 +574,11 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
       return blackBackground;
     }
 
-    private int transition() {
+    private int transition(double deltaMs) {
       // Get both patterns and blend them using the transition blend
       float transitionProgress = (float) this.channel.getTransitionProgress();
-      int activeTexture = getPatternTexture(this.channel.getActivePattern());
-      int nextTexture = getPatternTexture(this.channel.getNextPattern());
+      int activeTexture = getPatternTexture(deltaMs, this.channel.getActivePattern());
+      int nextTexture = getPatternTexture(deltaMs, this.channel.getNextPattern());
       this.transitionShader.setSrc(nextTexture);
       this.transitionShader.setDst(activeTexture);
       this.transitionShader.setLevel(transitionProgress);
@@ -452,7 +586,7 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
       return this.transitionShader.getRenderTexture();
     }
 
-    private int getPatternTexture(LXPattern pattern) {
+    private int getPatternTexture(double deltaMs, LXPattern pattern) {
       int patternTexture = blackBackground;
 
       // Get output texture from pattern, if any
@@ -465,7 +599,7 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
 
       // Loop pattern-level effects
       if (pattern != null) {
-        patternTexture = loopEffects(patternTexture, pattern.effects);
+        patternTexture = loopEffects(deltaMs, patternTexture, pattern.effects);
       }
 
       return patternTexture;

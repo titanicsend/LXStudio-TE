@@ -3,6 +3,9 @@
 #define TE_EFFECTSHADER
 #define TE_NOPOSTPROCESSING
 
+// Texture from the preceding pattern or effect
+uniform sampler2D iDst;
+
 uniform float basis;
 uniform float size;
 
@@ -30,8 +33,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         vec2 scale=vec2(2. * size, size);
         quv = floor(quv * scale) / scale;
     }
-    vec2 displacement = (-0.5 + random2(quv)) * basis;
-    //fragColor = (basis <= 0.001) ? texelFetch(iBackbuffer, ivec2(gl_FragCoord.xy), 0) :
-    //    texelFetch(iMappedBuffer, ivec2((uv + displacement) * 639), 0);
-    fragColor = texelFetch(iMappedBuffer, ivec2((uv + displacement) * 639), 0);
+    vec2 displacement = iResolution.xy * ((-0.5 + random2(quv)) * basis);
+    fragColor = texelFetch(iDst, ivec2(gl_FragCoord.xy + displacement), 0);
 }

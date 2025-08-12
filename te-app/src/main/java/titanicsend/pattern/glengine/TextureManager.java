@@ -1,6 +1,14 @@
 package titanicsend.pattern.glengine;
 
-import static com.jogamp.opengl.GL.*;
+import static com.jogamp.opengl.GL.GL_CLAMP_TO_EDGE;
+import static com.jogamp.opengl.GL.GL_FLOAT;
+import static com.jogamp.opengl.GL.GL_NEAREST;
+import static com.jogamp.opengl.GL.GL_TEXTURE0;
+import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
+import static com.jogamp.opengl.GL.GL_TEXTURE_MAG_FILTER;
+import static com.jogamp.opengl.GL.GL_TEXTURE_MIN_FILTER;
+import static com.jogamp.opengl.GL.GL_TEXTURE_WRAP_S;
+import static com.jogamp.opengl.GL.GL_TEXTURE_WRAP_T;
 import static titanicsend.pattern.glengine.GLShader.TEXTURE_UNIT_COORDS;
 
 import com.jogamp.opengl.GL4;
@@ -76,6 +84,7 @@ public class TextureManager implements LX.Listener {
    * @return The texture *handle* of the view's coordinate texture
    */
   public int getCoordinatesTexture(LXModel model) {
+    // TODO: refresh coordinates if model generation changed
     CoordTexture t = coordTextures.get(model);
     if (t != null) {
       return t.getHandle();

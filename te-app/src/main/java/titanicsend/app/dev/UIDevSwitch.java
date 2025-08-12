@@ -42,16 +42,19 @@ public class UIDevSwitch extends UICollapsibleSection implements UIControls {
 
     addHorizontalBreak(ui, this);
 
-    for (DetailParameter p : devSwitch.detailParameters) {
-      addRow(this, ROW_HEIGHT, p.label, newControl(p.parameter));
+    for (DetailParameter dp : devSwitch.detailParameters) {
+      addRow(this, ROW_HEIGHT, dp.label, newControl(dp));
     }
   }
 
-  public UI2dComponent newControl(LXParameter p) {
+  public UI2dComponent newControl(DetailParameter dp) {
     UI2dComponent control = null;
+    LXParameter p = dp.parameter;
     if (p instanceof BooleanParameter) {
       control =
-          new UIButton(0, 0, (BooleanParameter) p).setActiveLabel("On").setInactiveLabel("Off");
+          new UIButton(0, 0, (BooleanParameter) p)
+              .setActiveLabel(dp.activeLabel)
+              .setInactiveLabel(dp.inactiveLabel);
     } else if (p instanceof BoundedParameter) {
       control = new UIDoubleBox(0, 0, (BoundedParameter) p);
     } else if (p instanceof DiscreteParameter) {

@@ -1,6 +1,7 @@
 package titanicsend.pattern.yoffa.shader_engine;
 
 import static com.jogamp.opengl.GL.GL_TEXTURE0;
+import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
 
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.util.texture.Texture;
@@ -9,12 +10,14 @@ import java.nio.IntBuffer;
 
 public abstract class Uniform {
 
-  private static final int LOCATION_NOT_FOUND = -1;
+  public static final int LOCATION_NOT_FOUND = -1;
 
   protected final GL4 gl4;
   public final String name;
   public final int location;
   public final boolean hasLocation;
+  protected boolean hasError = false;
+  protected String error = null;
   public final UniformType type;
   protected boolean modified;
 
@@ -34,6 +37,14 @@ public abstract class Uniform {
 
   /** Send latest value to OpenGL */
   public abstract void update();
+
+  public boolean hasError() {
+    return this.hasError;
+  }
+
+  public String getError() {
+    return this.error;
+  }
 
   /** Factory to create a new uniform by type */
   public static Uniform create(
@@ -580,19 +591,51 @@ public abstract class Uniform {
     }
 
     private final int textureUnit;
+
+    private boolean isObject = false;
     private Texture texture = null;
+    private int textureHandle = -1;
 
     public Sampler2D setValue(Texture texture) {
       this.texture = texture;
+      this.isObject = true;
       this.modified = true;
       return this;
     }
 
+    public Sampler2D setValue(int textureHandle) {
+      this.textureHandle = textureHandle;
+      this.isObject = false;
+      this.modified = true;
+      return this;
+    }
+
+    private boolean loggedOnce = false;
+
     @Override
     public void update() {
+      if (!this.isObject && this.textureHandle == -1 && !this.loggedOnce) {
+        this.loggedOnce = true;
+        this.hasError = true;
+        this.error =
+            "Missing texture '"
+                + this.name
+                + "' for unit "
+                + this.textureUnit
+                + ", this could be a bug...";
+      }
       gl4.glActiveTexture(GL_TEXTURE0 + this.textureUnit);
-      this.texture.bind(gl4);
+      if (this.isObject) {
+        this.texture.bind(gl4);
+      } else {
+        gl4.glBindTexture(GL_TEXTURE_2D, this.textureHandle);
+      }
       gl4.glUniform1i(this.location, this.textureUnit);
+    }
+
+    public void unbind() {
+      gl4.glActiveTexture(GL_TEXTURE0 + this.textureUnit);
+      gl4.glBindTexture(GL_TEXTURE_2D, 0);
     }
   }
 }

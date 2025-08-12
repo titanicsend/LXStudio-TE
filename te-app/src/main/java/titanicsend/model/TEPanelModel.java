@@ -3,7 +3,9 @@ package titanicsend.model;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import titanicsend.app.TEVirtualColor;
 import titanicsend.util.OffsetTriangles;
 import titanicsend.util.TEMath;
@@ -261,9 +263,17 @@ public class TEPanelModel extends TEModel {
     this.edge0id = this.model.meta(META_EDGE1);
     this.edge1id = this.model.meta(META_EDGE2);
     this.edge2id = this.model.meta(META_EDGE3);
+
+    // register vertices
+    int idA = Integer.parseInt(this.model.meta("v0"));
+    int idB = Integer.parseInt(this.model.meta("v1"));
+    int idC = Integer.parseInt(this.model.meta("v2"));
+    TEVertex.registerVertex(idA, vA);
+    TEVertex.registerVertex(idB, vB);
+    TEVertex.registerVertex(idC, vC);
   }
 
-  private static LXVector calculateCentroid(LXPoint[] points) {
+  public static LXVector calculateCentroid(LXPoint[] points) {
     LXVector centroid = new LXVector(0, 0, 0);
     if (points.length > 0) {
       for (LXPoint p : points) {

@@ -19,6 +19,8 @@ public class TriangleInfinityLevels extends GLShaderPattern {
     controls.setRange(TEControlTag.WOW1, 0.04, 0.0, 0.5);
     controls.setRange(TEControlTag.WOW2, 1.1, 1.0, 3.0);
     controls.setValue(TEControlTag.BRIGHTNESS, 0.5);
+    controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
 
     addCommonControls();
     addShader(

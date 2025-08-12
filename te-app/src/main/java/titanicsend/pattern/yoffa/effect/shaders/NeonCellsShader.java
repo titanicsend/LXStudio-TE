@@ -1,16 +1,19 @@
 package titanicsend.pattern.yoffa.effect.shaders;
 
-import static java.lang.Math.*;
-import static titanicsend.util.TEMath.*;
+import static java.lang.Math.PI;
+import static java.lang.Math.abs;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
 
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
-import java.awt.*;
+import java.awt.Color;
 import java.util.Collection;
 import java.util.List;
 import titanicsend.color.TEColorType;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
+import titanicsend.util.TEMath;
 
 // https://www.shadertoy.com/view/3sc3Df
 public class NeonCellsShader extends FragmentShaderEffect {
@@ -33,8 +36,9 @@ public class NeonCellsShader extends FragmentShaderEffect {
   protected double[] getColorForPoint(
       double[] fragCoordinates, double[] resolution, double timeSeconds) {
     double[] uv =
-        multiplyArray(
-            1 / resolution[1], subtractArrays(fragCoordinates, multiplyArray(.5, resolution)));
+        TEMath.multiplyArray(
+            1 / resolution[1],
+            TEMath.subtractArrays(fragCoordinates, TEMath.multiplyArray(.5, resolution)));
 
     double phase = PI * pattern.getTempo().getCompositeBasis();
     double speedMultiplier = doubleSpeed.getValueb() ? 2 : 1;
@@ -46,7 +50,7 @@ public class NeonCellsShader extends FragmentShaderEffect {
 
     float[] color =
         new Color(pattern.getSwatchColor(TEColorType.PRIMARY)).getRGBColorComponents(null);
-    return multiplyArray(.5 / d, new double[] {color[0], color[1], color[2]});
+    return TEMath.multiplyArray(.5 / d, new double[] {color[0], color[1], color[2]});
   }
 
   private double pat(double[] uv, double p, double q, double speed, double glow, double phase) {

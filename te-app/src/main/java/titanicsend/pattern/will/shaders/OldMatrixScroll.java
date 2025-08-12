@@ -1,6 +1,9 @@
 package titanicsend.pattern.will.shaders;
 
-import static titanicsend.util.TEMath.*;
+import static titanicsend.util.TEMath.fract;
+import static titanicsend.util.TEMath.multiplyArray;
+import static titanicsend.util.TEMath.multiplyArrays;
+import static titanicsend.util.TEMath.subtractArrays;
 
 import heronarts.lx.Tempo;
 import heronarts.lx.color.LXColor;
@@ -23,7 +26,7 @@ public class OldMatrixScroll extends FragmentShaderEffect {
 
     TECommonControls ctl = pattern.getControls();
 
-    ctl.setRange(TEControlTag.SPEED, 0, -4, 4); // speed
+    ctl.setRange(TEControlTag.SPEED, 0.4, -4, 4);
     ctl.setValue(TEControlTag.SPEED, 0.5);
 
     ctl.setRange(TEControlTag.SIZE, 0.02, 0.05, 0.01); // block size
