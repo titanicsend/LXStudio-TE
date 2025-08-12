@@ -3,11 +3,14 @@
 #define TE_EFFECTSHADER
 #define TE_NOPOSTPROCESSING
 
-// Texture from the preceding pattern or effect
-uniform sampler2D iDst;
+// tell the preprocessor and any control management scripts that this is a post effect shader
+// and doesn't use the common controls.
+#define TE_EFFECTSHADER
+#define TE_NOPOSTPROCESSING
 
 uniform float basis;
 uniform float size;
+uniform sampler2D iDst;
 
 float rand(vec2 p) {
     return fract(sin(dot(p, vec2(12.543, 514.123)))*4732.12);
@@ -18,9 +21,7 @@ vec2 random2(vec2 p) {
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-    vec3 modelCoords = _getModelCoordinates().xyz;
-    vec2 uv = vec2((modelCoords.z < 0.5) ? modelCoords.x : 1. + (1. - modelCoords.x), modelCoords.y);
-    uv.x *= 0.5;
+    vec2 uv = fragCoord / iResolution.xy;
     vec2 quv = uv; // copy we use to quantize later
 
     // To "explode", we randomly displace uv coordinates in
@@ -33,6 +34,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         vec2 scale=vec2(2. * size, size);
         quv = floor(quv * scale) / scale;
     }
-    vec2 displacement = iResolution.xy * ((-0.5 + random2(quv)) * basis);
-    fragColor = texelFetch(iDst, ivec2(gl_FragCoord.xy + displacement), 0);
+    vec2 displacement = (-0.5 + random2(quv));
+
+    fragColor = _getMappedPixel(iDst, uv + displacement * basis);
 }

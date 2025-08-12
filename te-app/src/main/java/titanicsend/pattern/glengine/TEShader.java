@@ -176,7 +176,7 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
     this.uniforms.lxModelCoords.setValue(TEXTURE_UNIT_COORDS);
 
     bindTextureUnit(TEXTURE_UNIT_COORD_MAP, this.modelIndexTextureHandle);
-    this.uniforms.lxModelCoords.setValue(TEXTURE_UNIT_COORD_MAP);
+    this.uniforms.lxModelIndex.setValue(TEXTURE_UNIT_COORD_MAP);
 
     // Clear backbuffer on first frame
     if (this.needsClearBackBuffer) {
@@ -271,6 +271,7 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
   public void unbindTextures() {
     // Unbind textures (except for audio, which stays bound for all patterns)
     unbindTextureUnit(TEXTURE_UNIT_COORDS);
+    unbindTextureUnit(TEXTURE_UNIT_COORD_MAP);
     unbindTextureUnit(TEXTURE_UNIT_BACKBUFFER);
     for (TextureInfo ti : this.textures) {
       unbindTextureUnit(ti.unit);
