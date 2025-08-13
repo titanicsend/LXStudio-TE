@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEVertex;
-import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
