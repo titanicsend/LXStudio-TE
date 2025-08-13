@@ -86,9 +86,10 @@ vec4 _getBackbufferPixel() {
 
 // Returns the color of the specified backbuffer pixel given 2d coordinates.
 vec4 _getMappedPixel(sampler2D tex, ivec2 coords) {
+    // get location of actual model pixel from the index map texture
     vec2 mapCoords = texelFetch(lxModelIndex, coords, 0).rg;
-    if (isnan(mapCoords.x) || isnan(mapCoords.y)) {
-        // If the coordinates are invalid, return black
+    // If coordinates point to an unmapped pixel, return black.
+    if (isnan(mapCoords.r)) {
         return vec4(0.0);
     }
     return texelFetch(tex, ivec2(mapCoords), 0);

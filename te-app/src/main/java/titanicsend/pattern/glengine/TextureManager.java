@@ -44,7 +44,7 @@ public class TextureManager implements LX.Listener {
 
   // For each LXModel we now store two CoordTextures
   // [0] = normalized model coordinates at current gl_FragCoord
-  // [1] = (GL_RG32I) integer indices of the model points
+  // [1] = (GL_RG32F) indices of the model points
   private final Map<LXModel, CoordTexture[]> coordTextures = new HashMap<>();
 
   // Textures that have been loaded for a filename
@@ -79,8 +79,8 @@ public class TextureManager implements LX.Listener {
   }
 
   /**
-   * Writes the index of a model point to a 3x3 pixel neighborhood in the index texture buffer. This
-   * greatly improves the sampling of the model buffer
+   * Writes the index of a model point to a 5x5 pixel neighborhood in the index texture buffer. This
+   * greatly improves the quality of sampling from the model buffer
    *
    * @param p The model point
    * @param indices The float buffer for the index texture
@@ -96,10 +96,9 @@ public class TextureManager implements LX.Listener {
     float val1 = (float) (p.index % width);
     float val2 = (float) Math.floor(p.index / width);
 
-    // Iterate over neighborhood
+    // Iterate over neighborhood centered at (px, py)
     for (int ny = py - 2; ny <= py + 2; ny++) {
       for (int nx = px - 2; nx <= px + 2; nx++) {
-        // Bounds check to ensure we don't write outside the texture
         if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
           int destIndex = (ny * width + nx) * 2;
           indices.put(destIndex, val1);
