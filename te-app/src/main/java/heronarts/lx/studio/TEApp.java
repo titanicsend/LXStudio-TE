@@ -76,6 +76,7 @@ import titanicsend.dmx.pattern.DjLightsDirectPattern;
 import titanicsend.dmx.pattern.DjLightsEasyPattern;
 import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
 import titanicsend.effect.BasicShaderEffect;
+import titanicsend.effect.DistortEffect;
 import titanicsend.effect.EdgeSieveEffect;
 import titanicsend.effect.ExplodeEffect;
 import titanicsend.effect.GlobalPatternControlEffect;
@@ -424,6 +425,7 @@ public class TEApp extends LXStudio {
       // Effects
       lx.registry.addEffect(BasicShaderEffect.class);
       lx.registry.addEffect(DirectorEffect.class);
+      lx.registry.addEffect(DistortEffect.class);
       lx.registry.addEffect(EdgeSieveEffect.class);
       lx.registry.addEffect(ExplodeEffect.class);
       lx.registry.addEffect(SimplifyEffect.class);

@@ -30,11 +30,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // onto the car, and it is set up so each half of the
     // car (sliced at x == 0) occupies half the width of the
     // texture.
-    if (size > 0.0) {
-        vec2 scale=vec2(2. * size, size);
+    if (size > 0.0)  {
+        vec2 scale=vec2(size, size);
         quv = floor(quv * scale) / scale;
     }
-    vec2 displacement = (-0.5 + random2(quv));
+    vec2 displacement = basis * (-0.5 + random2(quv));
+    vec2 finalCoords = iResolution.xy * (uv + displacement);
 
-    fragColor = _getMappedPixel(iDst, uv + displacement * basis);
+    fragColor = _getMappedPixel(iDst, ivec2(finalCoords));
 }
+

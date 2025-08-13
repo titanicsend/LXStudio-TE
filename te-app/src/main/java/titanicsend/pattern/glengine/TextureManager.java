@@ -93,11 +93,11 @@ public class TextureManager implements LX.Listener {
     int px = Math.round(p.xn * (width - 1));
     int py = Math.round(p.yn * (height - 1));
 
-    // Pre-calculate the values to be written
+    // Convert index to 2D coordinates
     float val1 = (float) (p.index % width);
     float val2 = (float) Math.floor(p.index / width);
 
-    // Iterate over the 3x3 neighborhood
+    // Iterate over 3x3 neighborhood
     for (int ny = py - 1; ny <= py + 1; ny++) {
       for (int nx = px - 1; nx <= px + 1; nx++) {
         // Bounds check to ensure we don't write outside the texture
@@ -216,6 +216,7 @@ public class TextureManager implements LX.Listener {
     // Check if the model has coordinate textures
     if (!this.coordTextures.containsKey(model)) {
       // OpenGL uses 0 to indicate an invalid texture handle
+      System.out.println("TextureManager: No coordinate textures found for model: ");
       return 0;
     }
 

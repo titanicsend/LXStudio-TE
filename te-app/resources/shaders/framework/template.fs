@@ -84,9 +84,13 @@ vec4 _getBackbufferPixel() {
     return texelFetch(iBackbuffer, ivec2(gl_FragCoord.xy), 0);
 }
 
-// Returns the color of the specified backbuffer pixel given normalized 2d coordinates.
-vec4 _getMappedPixel(sampler2D tex, vec2 uv) {
-    vec2 mapCoords = texelFetch(lxModelIndex,ivec2(iResolution.xy * uv), 0).xy;
+// Returns the color of the specified backbuffer pixel given 2d coordinates.
+vec4 _getMappedPixel(sampler2D tex, ivec2 coords) {
+    vec2 mapCoords = texelFetch(lxModelIndex, coords, 0).rg;
+    if (isnan(mapCoords.x) || isnan(mapCoords.y)) {
+        // If the coordinates are invalid, return black
+        return vec4(0.0);
+    }
     return texelFetch(tex, ivec2(mapCoords), 0);
 }
 
