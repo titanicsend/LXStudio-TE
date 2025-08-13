@@ -41,7 +41,7 @@ public class DistortEffect extends GLShaderEffect {
     shader.setUniform("depth", depth.getValuef());
     shader.setUniform("speed", speed.getValuef());
     // effects get iTime automatically.
-    //shader.setUniform("iTime", (float) getTime());
+    // shader.setUniform("iTime", (float) getTime());
   }
 
   @Override

@@ -23,7 +23,6 @@ import heronarts.lx.model.LXPoint;
 import java.io.File;
 import java.io.IOException;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 

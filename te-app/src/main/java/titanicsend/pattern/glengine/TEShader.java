@@ -189,8 +189,6 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
     bindTextureUnit(TEXTURE_UNIT_BACKBUFFER, backBufferHandle);
     this.uniforms.backBuffer.setValue(TEXTURE_UNIT_BACKBUFFER);
 
-
-
     // Bind shadertoy textures to corresponding shader-specific texture units.
     for (TextureInfo ti : this.textures) {
       bindTextureUnit(ti.unit, ti.handle);
