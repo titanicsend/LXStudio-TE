@@ -154,6 +154,7 @@ public class CandyFlip extends TEPerformancePattern {
     controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
 
     addCommonControls();
+    addShader("candy_flip.fs");
   }
 
   private void triggerBurst(TEVertex vertex, int generation) {
