@@ -51,11 +51,11 @@ to be aware of, especially if you want to use the engine's more advanced feature
 
 - iBackbuffer, the sampler containing the previous frame is not a rectangular texture. It contains pixel values from the previous frame
 in linear order, matching the order of pixels in the current Java LXModel view.  See the section on iBackbuffer below for more
-information on how to use the backbuffer in your shader.
+information on how to use the backbuffer in your shader. 
 
-- For shaders that do filtering or other convolution effects, the iMappedBuffer texture is available.  This texture contains the
-data rendered by the previous shader in "normal" rectangular buffer form.  It is currently available only to effect shaders. See
-the section on iMappedBuffer below for more information. NOTE: This is being replaced shortly!
+- Since a true rectangular buffer isn't available, shaders and effects that do filtering or other effects requiring
+data from neighboring pixels must get those pixels by using provided functions, like `_getBackbufferPixel()` and
+_getMappedPixel()`. These functions are discussed in the section on effects below.
 
 - If you want to work directly with the normalized 3D model coordinates in your shader, use the lxModelCoords uniform sampler as
 described below.
@@ -137,18 +137,6 @@ uniform sampler2D iChannel3;
 // vec4 pix = texelFetch(iBackbuffer, ivec2(gl_FragCoord.xy), 0);
 // 
 uniform sampler2D iBackbuffer;
-
-// iMappedBuffer is a texture containing the data rendered by the
-// previous shader.  It is available to effect shaders, and can be
-// used for convolution and other effects that need rectangular "neighborhoods"
-// of pixels.
-// Note that only pixels that exist on the target LED fixture will be colored.
-// Everything else will be zero.  So blur, bloom and other filters may not have the
-// expected effect.
-// It is currently not supported in pattern shaders, but will be 
-// available as an option at some point in the future. 
-//
-uniform sampler2D iMappedBuffer;
 
 // A floating point array containing normalized 3D coordinates for the
 // selected view of the current LX model.  The points are in linear order
@@ -358,21 +346,14 @@ iBackbuffer contains the output of the previous shader pass or frame. Important:
 a buffer, not a rectangular texture . It contains pixel values from the previous frame in linear order, matching the
 order of pixels in the current Java LXModel view.  There is no implied spatial relationship between pixels in the buffer.
 
-Use texelFetch() with the gl_FragCoords passed to the shader to retrieve the color values for the
-current pixel you're working on. For example:
+To get a `vec4` containing RGBA color data for the current pixel, you can simply call `_getBackbufferPixel()` 
 
+You can also directly call texelFetch() with the gl_FragCoords passed to the shader to retrieve color values for
+the current pixel. For example:
 `vec4 pix = texelFetch(iBackbuffer, ivec2(gl_FragCoord.xy), 0);`
 
-### iMappedBuffer (uniform sampler2D iMappedBuffer)
-
-iMappedBuffer is an optional texture containing the data rendered by the previous shader in "normal"
-rectangular buffer form.  It is currently available only to effect shaders, and can be used for convolution
-and other effects that need rectangular "neighborhoods" of pixels.
-
-Note that only pixels that actually exist on the target LED fixture will be colored. All other pixels
-will be zero.  So blur, bloom and similar filters may not have the expected effect.
-
-It is currently not supported in pattern shaders, but will be available as an option at some point in the future.
+But be aware - texelFetch with any other coordinate likely will not get you the pixel you expect.  To get neighboring
+pixels, use the `_getMappedPixel(sampler2D tex, ivec2 coords)` function instead. 
 
 ### lxModelCoords (uniform sampler2D lxModelCoords)
 
@@ -810,6 +791,29 @@ adjustment might change values passed between shaders in an unexpected way.
 If you're seeing strange results in a multipass shader, you can disable this post processing on 
 individual shaders by defining ```#TE_NOPOSTPROCESSING``` in the shader code.
 
+### Effects Shaders 
+Effects shaders are used to apply post-processing effects to the output of any channel, particularly Chromatik's
+Master channel. They're written just like other shaders, with the following exceptions:
+- An effect's shader code should include the preprocessor directive ```#define TE_EFFECTSHADER```
+- Effects must be built with a Java class derived from `GLShaderEffect` (instead of `GLShaderPattern`). 
+- Effects do not use the TE common controls. You must create and manage your own controls in your Java class,
+and set your own uniforms from them if necessary.
+- A limited set of common-control-like uniforms are available to effect shaders. You can see all currently supported 
+uniforms in `glengine/GLShaderEffect.java`, but the most commonly used are:
+  - `iTime`:  the current time in seconds. 
+  - `iResolution`: the resolution of the output surface, in pixels
+  - `iColorRGB` and `iColorHSB`: the current primary color
+  - `iColor2RGB` and `iColor2HSB`: the current secondary color
+  - Other system-level uniforms, like the audio uniforms, the iChannel(n) texture channels, and palette related uniforms,
+are always available to effects. This enables you to use TE's color (`#include <include/colorspace.fs>`) utilities in
+your effects shaders.
+
+For working examples of effects shaders, see:
+- `effect/SustainEffect.java`
+- `effect/ExplodeEffect.java`
+and their associated shaders in the `resources/shaders` directory.
+
+
 ### Preprocessor Directives for Output Control
 
 #### Rationale 
@@ -871,15 +875,6 @@ calculate a reasonable alpha channel. If you are porting a pattern, and it doesn
 do the right thing, you can either set the color to it's highest possible brightness
 and use alpha to control the brightness level, or set alpha to 1.0 and let the framework
 do it for you.
-
-### Mirroring vs 3D Wrapping
-By default, the TE shader engine produces symmetrically mirrored images on the port and starboard
-sides of the vehicle.  In most cases, this is the desired behavior because the audience is generally
-on only one side of the car, and the far side is not visible.  
-
-However, for effects, panoramic views and other "special occasions" you may want to produce a full
-3D wrap-around effect.  To enable this, all you need to do is call `setPainter(new ShaderPaint3d() {});` in
-your pattern's constructor.  
 
 ### Avoiding Version Chaos
 

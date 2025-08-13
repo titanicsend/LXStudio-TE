@@ -235,18 +235,7 @@ public abstract class GLShader {
         GLEngine.current.getWidth() * GLEngine.current.getHeight() * 4);
   }
 
-  /**
-   * Create appropriately sized buffer to contain a 2D texture mapped version of the last rendered
-   * frame.
-   *
-   * @return ByteBuffer
-   */
-  public static ByteBuffer allocateMappedBuffer(int width, int height) {
-    return GLBuffers.newDirectByteBuffer(width * height * 4);
-  }
-
   // Setup
-
   protected GLShader addUniformSource(UniformSource uniformSource) {
     if (uniformSource == null) {
       throw new IllegalArgumentException("UniformSource cannot be null");
