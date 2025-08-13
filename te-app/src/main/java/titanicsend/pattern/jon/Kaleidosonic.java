@@ -20,6 +20,8 @@ public class Kaleidosonic extends GLShaderPattern {
     controls.setRange(TEControlTag.LEVELREACTIVITY, 0.1, 0, 0.3);
     controls.setRange(TEControlTag.FREQREACTIVITY, 0.1, 0, 1);
 
+    controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
+
     // register common controls with LX
     addCommonControls();
 

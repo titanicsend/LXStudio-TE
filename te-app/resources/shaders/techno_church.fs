@@ -27,6 +27,7 @@
 #pragma TEControl.FREQREACTIVITY.Range(0.0,0.0,1.0)
 #pragma TEControl.WOW1.Range(0.0,0.0,1.0)
 #pragma TEControl.WOW2.Range(0.0,0.0,1.0)
+#pragma TEControl.WOWTRIGGER.Disable
 
 const float PI=3.14159265359;
 const float TWO_PI=6.28318530718;

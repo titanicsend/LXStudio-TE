@@ -4,6 +4,7 @@
 #pragma name "HappyChibi"
 #pragma TEControl.LEVELREACTIVITY.Disable
 #pragma TEControl.FREQREACTIVITY.Disable
+#pragma TEControl.WOWTRIGGER.Disable
 
 #include <include/colorspace.fs>
 
