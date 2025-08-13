@@ -80,7 +80,7 @@ public class TextureManager implements LX.Listener {
 
   /**
    * Writes the index of a model point to a 3x3 pixel neighborhood in the index texture buffer. This
-   * helps make a sparse texture easier to sample from.
+   * greatly improves the sampling of the model buffer
    *
    * @param p The model point
    * @param indices The float buffer for the index texture
@@ -148,7 +148,7 @@ public class TextureManager implements LX.Listener {
     // Create a buffer to hold the indices of the model points
     FloatBuffer indices = GLBuffers.newDirectFloatBuffer(enginePoints * 2);
 
-    // Initialize with NaNs for coordinates and -1 for indices
+    // Initialize with NaNs for coordinates and indices
     coords.rewind();
     indices.rewind();
     for (int i = 0; i < enginePoints; i++) {
@@ -166,7 +166,10 @@ public class TextureManager implements LX.Listener {
       coords.put(destIndex + 2, p.zn);
 
       // save normalized coordinates to a rectangular texture index
-      // using the model's width and height
+      // using the model's width and height. We actually write to
+      // a rectangular neighborhood around the target pixel to compensate
+      // for rounding errors in sampling, and the plain old non-contiguous
+      // nature of the model points.
       setIndexNeighborhood(p, indices, width, height);
     }
 
