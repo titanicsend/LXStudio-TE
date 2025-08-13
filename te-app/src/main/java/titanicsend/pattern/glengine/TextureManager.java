@@ -215,7 +215,6 @@ public class TextureManager implements LX.Listener {
     // Check if the model has coordinate textures
     if (!this.coordTextures.containsKey(model)) {
       // OpenGL uses 0 to indicate an invalid texture handle
-      System.out.println("TextureManager: No coordinate textures found for model: ");
       return 0;
     }
 
