@@ -97,9 +97,9 @@ public class TextureManager implements LX.Listener {
     float val1 = (float) (p.index % width);
     float val2 = (float) Math.floor(p.index / width);
 
-    // Iterate over 3x3 neighborhood
-    for (int ny = py - 1; ny <= py + 1; ny++) {
-      for (int nx = px - 1; nx <= px + 1; nx++) {
+    // Iterate over neighborhood
+    for (int ny = py - 2; ny <= py + 2; ny++) {
+      for (int nx = px - 2; nx <= px + 2; nx++) {
         // Bounds check to ensure we don't write outside the texture
         if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
           int destIndex = (ny * width + nx) * 2;

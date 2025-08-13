@@ -64,7 +64,7 @@ vec2 getDomainWarpOffset(vec2 p) {
     vec2 r = vec2(fbm(p + 4.0 * t1 * (1.0 + size) * q + vec2(1.7 + sin(time * 1.2), 9.2)),
     fbm(p + 4.0 * (1. + sin(time*2.)) * (1.0 + size) * q + vec2(8.3 + cos(time * 1.5), 2.8)));
 
-    return  r - 0.5;
+    return (r - 0.5) * depth; // Scale the offset by depth
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
