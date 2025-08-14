@@ -1,4 +1,5 @@
-#pragma name "PolySpiral"
+
+#ifdef SHADER_TOY
 #iUniform color3 iColorRGB=vec3(.964,.144,.519)
 #iUniform color3 iColor2RGB=vec3(.226,.046,.636)
 #iUniform float iRotationAngle=0.in{0.,6.28}
@@ -7,12 +8,7 @@
 #iUniform float iSpeed=0.1 in{-1.,1.}
 #iUniform float iWow2=5.in{1.,10.}// num turns
 #iUniform float iWow1=1.in{0.,3.}// zSpeed
-
-#pragma TEControl.YPOS.Value(-.07)
-#pragma TEControl.SPIN.Value(0.1)
-#pragma TEControl.WOWTRIGGER.Disable
-#pragma TEControl.LEVELREACTIVITY.Disable
-#pragma TEControl.FREQREACTIVITY.Disable
+#endif
 
 #include <include/colorspace.fs>
 

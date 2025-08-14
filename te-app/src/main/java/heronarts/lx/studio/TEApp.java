@@ -156,6 +156,7 @@ import titanicsend.pattern.justin.MothershipDrivingPattern;
 import titanicsend.pattern.justin.TEGradientPattern;
 import titanicsend.pattern.justin.TESolidPattern;
 import titanicsend.pattern.justin.TwoColorPattern;
+import titanicsend.pattern.look.PolySpiral;
 import titanicsend.pattern.look.SigmoidDanceAudioLevels;
 import titanicsend.pattern.look.SigmoidDanceAudioWaveform;
 import titanicsend.pattern.look.SketchDemo;
@@ -393,8 +394,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(SpecialKube.class);
       lx.registry.addPattern(HappyChibi.class);
       lx.registry.addPattern(DotPolka.class);
-
-      // Patterns that will not aspire to art direction standards
+      lx.registry.addPattern(PolySpiral.class);
       lx.registry.addPattern(SigmoidDanceAudioWaveform.class);
       lx.registry.addPattern(SigmoidDanceAudioLevels.class);
       lx.registry.addPattern(TriangleCrossAudioLevels.class);
