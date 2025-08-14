@@ -87,7 +87,7 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
   // Data and utility methods for the GL canvas/context.
   private GLAutoDrawable canvas = null;
-  private GL4 gl4;
+  public GL4 gl4; // TODO: make private again after particle testing
 
   public GLAutoDrawable getCanvas() {
     return canvas;

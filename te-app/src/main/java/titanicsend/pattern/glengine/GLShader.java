@@ -401,7 +401,8 @@ public abstract class GLShader {
    * @param unit Texture unit to activate (0+)
    * @param textureHandle Texture handle that should be bound to the unit
    */
-  protected void bindTextureUnit(int unit, int textureHandle) {
+  public void bindTextureUnit(
+      int unit, int textureHandle) { // TODO: make protected again after multipass testing
     this.glEngine.bindTextureUnit(unit, textureHandle);
   }
 
