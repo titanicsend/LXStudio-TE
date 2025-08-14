@@ -135,7 +135,7 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
   int stemIdx = 0;
   float stemMultiplier = 1.0;
 
-  for(int i=0;i<int(iQuantity);i++){
+  for(int i=0; i<int(iQuantity); i++){
 
     stemIdx = i % 5;
     if (stemIdx == 0) {
