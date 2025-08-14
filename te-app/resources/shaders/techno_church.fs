@@ -30,7 +30,7 @@
 // WowTrigger: initiates relative offset spinning within the layers
 
 #pragma TEControl.LEVELREACTIVITY.Disable
-#pragma TEControl.FREQREACTIVITY.Range
+#pragma TEControl.FREQREACTIVITY.Disable
 
 const float PI=3.14159265359;
 const float TWO_PI=6.28318530718;
