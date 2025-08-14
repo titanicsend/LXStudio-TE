@@ -64,7 +64,8 @@ float xcross(in vec2 st,float xsize,float ysize,float outer,float inner){
   return pct;
 }
 
-float offsetAmount = trebleLevel * levelReact;
+// speed modulates amount of inner movement
+float offsetAmount = (trebleLevel * levelReact) * iSpeed;
 
 float nest_xcross(float prev_pct,in vec2 st,float xsize,float ysize,float outer,float inner,float alpha,float baseSize,float inc,float stemMult){
   float f1=baseSize+inc;
