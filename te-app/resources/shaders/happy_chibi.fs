@@ -1,11 +1,6 @@
 // Happy Chibi - bouncing kawaii smiley face with animated highlights
 // for the deep playa!!!
 
-#pragma name "HappyChibi"
-#pragma TEControl.LEVELREACTIVITY.Disable
-#pragma TEControl.FREQREACTIVITY.Disable
-#pragma TEControl.WOWTRIGGER.Disable
-
 #include <include/colorspace.fs>
 
 float hash(vec2 p) {

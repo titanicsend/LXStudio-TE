@@ -1,11 +1,7 @@
 // Candy Flip - dots cascade out from edge joints and cause
 // a scattering butterfly effect, moving from one to the next
 
-#pragma name "CandyFlip"
 #include <include/colorspace.fs>
-#pragma TEControl.LEVELREACTIVITY.Disable
-#pragma TEControl.FREQREACTIVITY.Disable
-#pragma TEControl.WOWTRIGGER.Disable
 
 float hash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);

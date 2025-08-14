@@ -1,12 +1,6 @@
 // FACE MELT - a smiley face pattern with two-tone color glitch animation best viewed in deep playa.
 //
 
-#pragma name "FaceMelt"
-
-#pragma TEControl.LEVELREACTIVITY.Disable
-#pragma TEControl.FREQREACTIVITY.Disable
-#pragma TEControl.WOWTRIGGER.Disable
-
 #include <include/colorspace.fs>
 
 const float PI = asin(1.) * 2.;
