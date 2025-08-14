@@ -14,11 +14,13 @@
 #pragma TEControl.LEVELREACTIVITY.Disable
 #pragma TEControl.FREQREACTIVITY.Disable
 
+#include <include/colorspace.fs>
+
 //float iWow1=1.5 in{.5,3.} // perspective
 //float iWow1=.05 in{.001,.05}// line width
 
 float iHue=180.;//in{0.,360.}
-const float iLineWidth=0.04;
+const float iLineWidth=0.08;
 
 // #iUniform float stemDrums=.9 in{0.,1.}
 // #iUniform float stemVocals=.9 in{0.,1.}
@@ -29,13 +31,6 @@ precision mediump float;
 
 #define PI 3.14159265
 #define TWO_PI 6.28318530
-
-// HSV to RGB conversion
-vec3 hsv2rgb(vec3 c){
-    vec4 K=vec4(1.,2./3.,1./3.,3.);
-    vec3 p=abs(fract(c.xxx+K.xyz)*6.-K.www);
-    return c.z*mix(K.xxx,clamp(p-K.xxx,0.,1.),c.y);
-}
 
 // Project 3D point to 2D with perspective
 vec2 project3D(vec3 pos,float focalLength){
@@ -58,6 +53,14 @@ vec3 getPolygonVertex3D(float sides,float index,float radius,float z){
 
 void mainImage(out vec4 fragColor,in vec2 fragCoord){
     vec2 uv=(fragCoord.xy-.5*iResolution.xy)/min(iResolution.x,iResolution.y);
+
+    // move to car center on y axis and repeat pattern over x axis
+    // at an interval. (0.5 gets you two copies, smaller is more, larger, less)
+    // This should duplicate the center of the pattern on each end of the car.  We'll probably want to
+    // disable this or set interval to 1.0 for projection mapping use.
+    float interval = 0.5;
+    uv.x = mod(uv.x,interval) - 0.5 * interval;
+    uv.y += 0.3;
 
     float iZSpeed=iWow1;
     float zTime=iTime*iZSpeed;
@@ -196,7 +199,7 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
     float centerDist=length(uv);
     float colorT=fract(centerDist*2.5+iTime*.4+sin(zTime*.5)*.3);
 
-    vec3 color=hsv2rgb(vec3(iHue/360.+colorT*.25,.8,1.));
+    vec3 color=getGradientColor(colorT);
 
     // Smoother glow effect
     float glowIntensity=.4*(1.+sin(zTime*.8)*.3);
