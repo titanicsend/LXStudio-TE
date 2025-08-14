@@ -152,6 +152,9 @@ public class CandyFlip extends GLShaderPattern {
     controls.markUnused(controls.getLXControl(TEControlTag.YPOS));
     controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
     controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
+    controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
 
     addCommonControls();
     addShader("candy_flip.fs");
