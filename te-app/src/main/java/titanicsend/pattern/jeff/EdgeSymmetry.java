@@ -83,8 +83,8 @@ public class EdgeSymmetry extends TEPattern {
 
   public void run(double deltaMs) {
     int color = colorParam.getColor();
-    if (getChannel() != null) {
-      if (getChannel().blendMode.getObject().getClass().equals(MultiplyBlend.class)) {
+    if (getMixerChannel() != null) {
+      if (getMixerChannel().blendMode.getObject().getClass().equals(MultiplyBlend.class)) {
         // Operate in Mask mode
         setEdges(LXColor.BLACK);
         color = LXColor.WHITE;

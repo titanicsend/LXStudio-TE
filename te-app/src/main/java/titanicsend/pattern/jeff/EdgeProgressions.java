@@ -147,8 +147,8 @@ public class EdgeProgressions extends TEAudioPattern {
 
   public void runTEAudioPattern(double deltaMs) {
     int color = colorParam.getColor();
-    if (getChannel() != null) {
-      if (getChannel().blendMode.getObject().getClass().equals(MultiplyBlend.class)) {
+    if (getMixerChannel() != null) {
+      if (getMixerChannel().blendMode.getObject().getClass().equals(MultiplyBlend.class)) {
         // Operate in Mask mode
         setEdges(LXColor.BLACK);
         color = LXColor.WHITE;
@@ -189,6 +189,8 @@ public class EdgeProgressions extends TEAudioPattern {
 
   protected void loadScenes() {
     Gson gson = new Gson();
+    // TODO(look): verify these are up-to-date (esp after lighting build when stuff tends to get
+    //             shifted around a bit)
     JsonReader reader = new JsonReader(loadFile("resources/pattern/edgeSets.json"));
     EdgeSet[] edgeSetData = gson.fromJson(reader, EdgeSet[].class);
 
