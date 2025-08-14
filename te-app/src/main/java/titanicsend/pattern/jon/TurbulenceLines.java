@@ -21,6 +21,8 @@ public class TurbulenceLines extends DriftEnabledPattern {
     controls.setValue(TEControlTag.XPOS, 0.25);
     controls.setValue(TEControlTag.YPOS, -0.25);
 
+    controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
+
     // register common controls with LX
     addCommonControls();
     addShader(GLShader.config(lx).withFilename("turbulent_noise_lines.fs"));

@@ -75,6 +75,8 @@ public class ShaderPanelsPatternConfig {
           .setUnits(TEControlTag.SIZE, LXParameter.Units.INTEGER);
       controls.setRange(TEControlTag.QUANTITY, 0.25, 0.02, 1); // number of layers
 
+      controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
+
       addShader("rhythm_static.fs");
     }
   }
@@ -517,6 +519,8 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.SIZE, 1, 6, 0.1); // overall scale
       controls.setRange(TEControlTag.QUANTITY, 6, 1, 16); // number of waves
       controls.setRange(TEControlTag.WOW1, 0, 0, 0.25); // pixelated decomposition
+
+      controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
 
       addShader("metallic_bit_wave.fs");
     }

@@ -17,6 +17,8 @@ public class MultipassDemo extends GLShaderPattern {
     super(lx, TEShaderView.ALL_POINTS);
     controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
     controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
     controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
 
     // register common controls with LX
