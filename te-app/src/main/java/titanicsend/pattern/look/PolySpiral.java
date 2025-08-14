@@ -12,6 +12,7 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
 public class PolySpiral extends GLShaderPattern {
 
   public final CompoundParameter interval = new CompoundParameter("Interval", .5, 0.0, 1.0);
+  public final CompoundParameter lineWidth = new CompoundParameter("Line Width", .08, 0.03, 0.1);
 
   public PolySpiral(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
@@ -29,12 +30,15 @@ public class PolySpiral extends GLShaderPattern {
 
     addCommonControls();
     addParameter("interval", this.interval);
+    addParameter("lineWidth", this.lineWidth);
 
-    GLShader.config(lx)
-        .withFilename("polyspiral.fs")
-        .withUniformSource(
-            (s) -> {
-              s.setUniform("interval", interval.getValuef());
-            });
+    addShader(
+        GLShader.config(lx)
+            .withFilename("polyspiral.fs")
+            .withUniformSource(
+                (s) -> {
+                  s.setUniform("interval", interval.getValuef());
+                  s.setUniform("lineWidth", lineWidth.getValuef());
+                }));
   }
 }

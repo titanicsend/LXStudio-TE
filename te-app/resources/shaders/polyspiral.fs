@@ -12,10 +12,12 @@
 
 #include <include/colorspace.fs>
 
+uniform float interval;
+uniform float lineWidth;
+
 //float iWow1=1.5 in{.5,3.} // perspective
 //float iWow1=.05 in{.001,.05}// line width
 
-float iHue=180.;//in{0.,360.}
 const float iLineWidth=0.08;
 
 // #iUniform float stemDrums=.9 in{0.,1.}
@@ -54,7 +56,6 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
     // at an interval. (0.5 gets you two copies, smaller is more, larger, less)
     // This should duplicate the center of the pattern on each end of the car.  We'll probably want to
     // disable this or set interval to 1.0 for projection mapping use.
-    float interval = 0.5;
     uv.x = mod(uv.x,interval) - 0.5 * interval;
     uv.y += 0.3;
 
