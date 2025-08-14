@@ -12,6 +12,7 @@
 #pragma LXCategory("Utility")
 #pragma TEControl.LEVELREACTIVITY.Disable
 #pragma TEControl.FREQREACTIVITY.Disable
+#pragma TEControl.QUANTITY.Disable
 
 #include <include/constants.fs>
 #include <include/colorspace.fs>
