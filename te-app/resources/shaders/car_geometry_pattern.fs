@@ -12,6 +12,9 @@
 uniform int panelCount;
 uniform vec3[PANEL_COUNT] panelCenters;
 uniform vec3[PANEL_COUNT] panelNormals;
+uniform vec3[PANEL_COUNT] panelV0;
+uniform vec3[PANEL_COUNT] panelV1;
+uniform vec3[PANEL_COUNT] panelV2;
 uniform float panelRadius; // unused once iScale drives radius; kept for compatibility
 uniform vec3 axisLengths;  // physical axis lengths for anisotropy correction
 
@@ -61,25 +64,98 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     float bright = accum;
 
-    // Determine nearest panel center for this pixel (isotropic distance)
-    int nearestIdx = 0;
-    float bestD = 1e9;
+    // Determine which panel triangle contains this point using 2D projection per panel
+    // Choose among all containing panels the one with nearest center (isotropic distance)
+    int chosen = -1;
+    float bestCenterDist = 1e9;
+    const float EPS = 1e-8;
+    const float EPS2 = 0.;
     for (int i = 0; i < panelCount; i++) {
-        vec3 c = panelCenters[i].xyz - vec3(.5);
-        vec3 deltaN = model - c;
-        vec3 scaledN = deltaN * (axisLengths / maxAxis);
-        float dN = length(scaledN);
-        if (dN < bestD) { bestD = dN; nearestIdx = i; }
-    }
+        // triangle vertices centered
+        vec3 a3 = panelV0[i] - vec3(.5);
+        vec3 b3 = panelV1[i] - vec3(.5);
+        vec3 c3 = panelV2[i] - vec3(.5);
+        vec3 n  = normalize(panelNormals[i]);
 
-    // Base color: map panel normal XYZ to RGB
-    vec3 nrm = panelNormals[nearestIdx];
-    vec3 normalColor = 0.5 * (nrm + vec3(1.0));
-    vec3 base = normalColor;
+        // Project onto dominant plane of the panel normal for numerical stability
+        vec2 a, b, c, p;
+        float ax = abs(n.x), ay = abs(n.y), az = abs(n.z);
+        if (az >= ax && az >= ay) { // use XY
+            a = a3.xy; b = b3.xy; c = c3.xy; p = model.xy;
+        } else if (ay >= ax && ay >= az) { // use XZ
+            a = a3.xz; b = b3.xz; c = c3.xz; p = model.xz;
+        } else { // use YZ
+            a = a3.yz; b = b3.yz; c = c3.yz; p = model.yz;
+        }
+
+        // 2D barycentric test
+        vec2 v0 = b - a;
+        vec2 v1 = c - a;
+        vec2 v2 = p - a;
+        float d00 = dot(v0, v0);
+        float d01 = dot(v0, v1);
+        float d11 = dot(v1, v1);
+        float d20 = dot(v2, v0);
+        float d21 = dot(v2, v1);
+        float denom = d00 * d11 - d01 * d01;
+        if (abs(denom) > EPS) {
+            float inv = 1.0 / denom;
+            float v = (d11 * d20 - d01 * d21) * inv;
+            float w = (d00 * d21 - d01 * d20) * inv;
+            float u = 1.0 - v - w;
+            if (u >= -EPS2 && v >= -EPS2 && w >= -EPS2) {
+                vec3 cc = panelCenters[i] - vec3(.5);
+                float centerDist = length((model - cc) * (axisLengths / maxAxis));
+                if (centerDist < bestCenterDist) {
+                    bestCenterDist = centerDist;
+                    chosen = i; // inside or on edge; nearest center wins
+                }
+            }
+        }
+    }
+    vec3 base = vec3(0.0);
+    if (chosen >= 0) {
+        // Base color: map panel normal XYZ to RGB for chosen panel
+        vec3 nrm = panelNormals[chosen];
+        base = 0.5 * (nrm + vec3(1.0));
+    }
 
     // Keep circles overlay in primary color
     vec3 circles = iColorRGB * bright;
     vec3 col = mix(base, circles, clamp(bright, 0.0, 1.0));
+
+    // // DEBUG OVERLAY: draw bright lines along panel edges using segment distances in 3D
+    // // don't delete this, we'll uncomment sometimes to debug
+    // float edgeLines = 0.0;
+    // float edgeWidth = 0.01; // normalized thickness
+    // for (int i = 0; i < panelCount; i++) {
+    //     vec3 a = panelV0[i] - vec3(.5);
+    //     vec3 b = panelV1[i] - vec3(.5);
+    //     vec3 c = panelV2[i] - vec3(.5);
+
+    //     vec3 ab = b - a; float abLen2 = max(dot(ab, ab), 1e-8);
+    //     vec3 bc = c - b; float bcLen2 = max(dot(bc, bc), 1e-8);
+    //     vec3 ca = a - c; float caLen2 = max(dot(ca, ca), 1e-8);
+
+    //     float t;
+    //     // distance to segment AB
+    //     t = clamp(dot(model - a, ab) / abLen2, 0.0, 1.0);
+    //     float dAB = length((a + t * ab) - model);
+    //     // BC
+    //     t = clamp(dot(model - b, bc) / bcLen2, 0.0, 1.0);
+    //     float dBC = length((b + t * bc) - model);
+    //     // CA
+    //     t = clamp(dot(model - c, ca) / caLen2, 0.0, 1.0);
+    //     float dCA = length((c + t * ca) - model);
+
+    //     float m = 0.0;
+    //     m = max(m, smoothstep(edgeWidth, edgeWidth * 0.6, dAB));
+    //     m = max(m, smoothstep(edgeWidth, edgeWidth * 0.6, dBC));
+    //     m = max(m, smoothstep(edgeWidth, edgeWidth * 0.6, dCA));
+    //     edgeLines = max(edgeLines, m);
+    // }
+    // col = max(col, vec3(edgeLines));
+    // bright = max(bright, edgeLines);
 
     fragColor = vec4(col, clamp(.5 + bright, 0., 1.));
 }

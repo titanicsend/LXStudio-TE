@@ -28,6 +28,9 @@ public class CarGeometryTest extends GLShaderPattern {
   private int panelCount = 0;
   private final FloatBuffer glPanelCenters; // vec3 per panel: (xn, yn, zn)
   private final FloatBuffer glPanelNormals; // vec3 per panel: unit normal in raw space
+  private final FloatBuffer glPanelV0; // vec3 per panel: vertex 0 (normalized)
+  private final FloatBuffer glPanelV1; // vec3 per panel: vertex 1 (normalized)
+  private final FloatBuffer glPanelV2; // vec3 per panel: vertex 2 (normalized)
   private boolean updateGeometry = true;
   // Physical axis lengths of current model view (raw units)
   private float axisLx = 1f, axisLy = 1f, axisLz = 1f;
@@ -38,6 +41,9 @@ public class CarGeometryTest extends GLShaderPattern {
     // Allocate buffers: MAX_PANEL_COUNT vec3 entries (float count, not bytes)
     this.glPanelCenters = Buffers.newDirectFloatBuffer(MAX_PANEL_COUNT * 3);
     this.glPanelNormals = Buffers.newDirectFloatBuffer(MAX_PANEL_COUNT * 3);
+    this.glPanelV0 = Buffers.newDirectFloatBuffer(MAX_PANEL_COUNT * 3);
+    this.glPanelV1 = Buffers.newDirectFloatBuffer(MAX_PANEL_COUNT * 3);
+    this.glPanelV2 = Buffers.newDirectFloatBuffer(MAX_PANEL_COUNT * 3);
 
     // Precompute normalized panel centroids
     computePanelCenters();
@@ -65,6 +71,9 @@ public class CarGeometryTest extends GLShaderPattern {
                     // (e.g., "panelCenters[0]") when uploading a vector array
                     s.setUniform("panelCenters[0]", glPanelCenters, 3);
                     s.setUniform("panelNormals[0]", glPanelNormals, 3);
+                    s.setUniform("panelV0[0]", glPanelV0, 3);
+                    s.setUniform("panelV1[0]", glPanelV1, 3);
+                    s.setUniform("panelV2[0]", glPanelV2, 3);
                     // small default radius in model XY space
                     s.setUniform("panelRadius", 0.02f);
                     // Provide axis lengths so the shader can correct for non-uniform scaling
@@ -80,6 +89,9 @@ public class CarGeometryTest extends GLShaderPattern {
 
     this.glPanelCenters.clear();
     this.glPanelNormals.clear();
+    this.glPanelV0.clear();
+    this.glPanelV1.clear();
+    this.glPanelV2.clear();
 
     // Compute model extents from all points in current LXModel view
     float minX = Float.POSITIVE_INFINITY, minY = Float.POSITIVE_INFINITY, minZ = Float.POSITIVE_INFINITY;
@@ -177,11 +189,25 @@ public class CarGeometryTest extends GLShaderPattern {
           } else {
             nx = 0; ny = 0; nz = 1;
           }
+          // Save the three vertex positions (normalized) in a consistent order
+          LXPoint va = pts[ia];
+          LXPoint vb = pts[ib];
+          LXPoint vc = pts[ic];
+          glPanelV0.put(va.xn).put(va.yn).put(va.zn);
+          glPanelV1.put(vb.xn).put(vb.yn).put(vb.zn);
+          glPanelV2.put(vc.xn).put(vc.yn).put(vc.zn);
         } else {
           nx = 0; ny = 0; nz = 1;
+          // Fallback vertices: approximate with centroid in all slots
+          glPanelV0.put((float) sx).put((float) sy).put((float) sz);
+          glPanelV1.put((float) sx).put((float) sy).put((float) sz);
+          glPanelV2.put((float) sx).put((float) sy).put((float) sz);
         }
       } else {
         nx = 0; ny = 0; nz = 1;
+        glPanelV0.put((float) sx).put((float) sy).put((float) sz);
+        glPanelV1.put((float) sx).put((float) sy).put((float) sz);
+        glPanelV2.put((float) sx).put((float) sy).put((float) sz);
       }
       glPanelNormals.put(nx);
       glPanelNormals.put(ny);
@@ -189,6 +215,9 @@ public class CarGeometryTest extends GLShaderPattern {
     }
     this.glPanelCenters.rewind();
     this.glPanelNormals.rewind();
+    this.glPanelV0.rewind();
+    this.glPanelV1.rewind();
+    this.glPanelV2.rewind();
     this.updateGeometry = true;
 
     // Debug logging: dump count and a sample of centers
