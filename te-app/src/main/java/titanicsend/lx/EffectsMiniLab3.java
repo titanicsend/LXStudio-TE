@@ -7,9 +7,13 @@ import heronarts.lx.effect.LXEffect;
 import heronarts.lx.midi.LXMidiEngine;
 import heronarts.lx.midi.LXMidiInput;
 import heronarts.lx.midi.LXMidiOutput;
+import heronarts.lx.midi.LXSysexMessage;
+import heronarts.lx.midi.MidiAftertouch;
 import heronarts.lx.midi.MidiControlChange;
 import heronarts.lx.midi.MidiNote;
 import heronarts.lx.midi.MidiNoteOn;
+import heronarts.lx.midi.MidiPitchBend;
+import heronarts.lx.midi.MidiProgramChange;
 import heronarts.lx.midi.surface.LXMidiSurface;
 import heronarts.lx.utils.ObservableList;
 import java.util.List;
@@ -24,30 +28,75 @@ import titanicsend.util.TE;
  * <p>By default, the device is in "Arturia" mode, which won't modify button colors based on
  * external SysEx messages.
  *
- * <p>Also, to switch between "Bank A" and "Bank B", hold SHIFT and tap pad 2 ("Pad") to switch the
- * pad bank.
+ * <p>To switch between "Bank A" and "Bank B", hold SHIFT and tap pad 2 ("Pad") to switch the pad
+ * bank.
+ *
+ * <p>Octave shifts are invisible to the DAW (unless there's a sysex we could grab). Be careful to
+ * keep the octaves centered.
  */
 @LXMidiSurface.Name("Arturia MiniLab3 Effects")
 @LXMidiSurface.DeviceName("Minilab3 MIDI")
 public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidirectional {
 
-  // CCs
-  public static final int FADER_1 = 82;
-  public static final int FADER_2 = 83;
-  public static final int FADER_3 = 85;
-  public static final int FADER_4 = 17;
-  public static final int KNOB_1 = 74;
-  public static final int KNOB_2 = 71;
-  public static final int KNOB_3 = 76;
-  public static final int KNOB_4 = 77;
-  public static final int KNOB_5 = 93;
-  public static final int KNOB_6 = 18;
-  public static final int KNOB_7 = 19;
-  public static final int KNOB_8 = 16;
-  // TODO: touchpads
+  // MIDI Channels
+
+  public static final int MIDI_CHANNEL_COMMON = 0;
+  public static final int MIDI_CHANNEL_PADS = 9;
+
+  // CCs in DAW Mode
+
+  public static final int SHIFT = 27;
+
+  public static final int FADER_1 = 14;
+  public static final int FADER_2 = 15;
+  public static final int FADER_3 = 30;
+  public static final int FADER_4 = 31;
+
+  public static final int[] FADER_CCs = new int[] {FADER_1, FADER_2, FADER_3, FADER_4};
+
+  public static final int KNOB_1 = 86;
+  public static final int KNOB_2 = 87;
+  public static final int KNOB_3 = 89;
+  public static final int KNOB_4 = 90;
+  public static final int KNOB_5 = 110;
+  public static final int KNOB_6 = 111;
+  public static final int KNOB_7 = 116;
+  public static final int KNOB_8 = 117;
+
+  public static final int[] KNOB_CCs =
+      new int[] {KNOB_1, KNOB_2, KNOB_3, KNOB_4, KNOB_5, KNOB_6, KNOB_7, KNOB_8};
+
+  // CCs that are the same in both DAW & Arturia modes
+
+  public static final int KNOB_DAW = 28;
+  public static final int MOD_WHEEL = 1;
+
+  // CCs in Arturia Mode
+
+  public static final int ARTURIA_SHIFT = 9;
+
+  public static final int ARTURIA_FADER_1 = 82;
+  public static final int ARTURIA_FADER_2 = 83;
+  public static final int ARTURIA_FADER_3 = 85;
+  public static final int ARTURIA_FADER_4 = 17;
+
+  public static final int ARTURIA_KNOB_1 = 74;
+  public static final int ARTURIA_KNOB_2 = 71;
+  public static final int ARTURIA_KNOB_3 = 76;
+  public static final int ARTURIA_KNOB_4 = 77;
+  public static final int ARTURIA_KNOB_5 = 93;
+  public static final int ARTURIA_KNOB_6 = 18;
+  public static final int ARTURIA_KNOB_7 = 19;
+  public static final int ARTURIA_KNOB_8 = 16;
+
+  // Pitch Bends
+
+  public static final int PITCH_WHEEL = 0;
+  public static final int PITCH_WHEEL_SCALE = 8192; // Range: -8192 to 8191
 
   // Notes
-  public static final int SHIFT = 27;
+
+  // Pads
   public static final int PAD_1_A = 36;
   public static final int PAD_2_A = 37;
   public static final int PAD_3_A = 38;
@@ -67,6 +116,34 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
 
   private static final int NUM_PADS = 8;
 
+  // Pads + Shift
+  public static final int PAD_LOOP = 105;
+  public static final int PAD_STOP = 106;
+  public static final int PAD_PLAY = 107;
+  public static final int PAD_REC = 108;
+  public static final int PAD_TAP_TEMPO = 109; // Only in DAW mode
+
+  // Keys (with octaves centered)
+  public static final int[] KEYS_WHITE =
+      new int[] {48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71, 72};
+  public static final int[] KEYS_BLACK = new int[] {49, 51, 54, 56, 58, 61, 63, 66, 68, 70};
+  public static final int KEY_START = 48;
+  public static final int KEY_END = 72;
+  public static final int KEY_NUM = KEY_END - KEY_START + 1;
+
+  // Sysex
+
+  public static final byte MIDI_MFR_ID_0 = 0x00;
+  public static final byte MIDI_MFR_ID_1 = 0x20;
+  public static final byte MIDI_MFR_ID_2 = 0x6B;
+
+  public static final byte SYSEX_MODE = 0x62;
+  public static final byte SYSEX_MODE_ARTURIA = 0x01;
+  public static final byte SYSEX_MODE_DAW = 0x02;
+
+  public static final byte SYSEX_BANK = 0x63;
+  public static final byte SYSEX_BANK_A = 0x00;
+  public static final byte SYSEX_BANK_B = 0x01;
 
   private enum EffectState {
     DISABLED,
@@ -255,11 +332,49 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   @Override
   public void noteOnReceived(MidiNoteOn note) {
     noteReceived(note, true);
+    verbose(
+        "Minilab3 Note ON  CH: "
+            + note.getChannel()
+            + "  Pitch:"
+            + note.getPitch()
+            + "  Velocity:"
+            + note.getVelocity());
   }
 
   @Override
   public void noteOffReceived(MidiNote note) {
     noteReceived(note, false);
+    verbose(
+        "Minilab3 Note OFF CH: "
+            + note.getChannel()
+            + "  Pitch:"
+            + note.getPitch()
+            + "  Velocity:"
+            + note.getVelocity());
+  }
+
+  @Override
+  public void programChangeReceived(MidiProgramChange pc) {
+    verbose("Minilab3 Program Change: " + pc);
+  }
+
+  @Override
+  public void pitchBendReceived(MidiPitchBend pitchBend) {
+    verbose("Minilab3 Pitch Bend: " + pitchBend);
+  }
+
+  @Override
+  public void aftertouchReceived(MidiAftertouch aftertouch) {
+    verbose("Minilab3 After Touch: " + aftertouch);
+  }
+
+  @Override
+  public void sysexReceived(LXSysexMessage sysex) {
+    // User switched to Arturia Mode: F0 00 20 6B 7F 42 02 00 40 62 01 F7
+    // User switched to DAW Mode:     F0 00 20 6B 7F 42 02 00 40 62 02 F7
+    // User switched to Bank A:       F0 00 20 6B 7F 42 02 00 40 63 00 F7
+    // User switched to Bank B:       F0 00 20 6B 7F 42 02 00 40 63 01 F7
+    verbose("Minilab3 Sysex: " + sysex);
   }
 
   private void updatePadLEDs() {
@@ -331,6 +446,11 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     sysex[13] = (byte) 0xF7; // SysEx end
 
     sendSysex(sysex);
+  }
+
+  /** Temporary for dev */
+  private void verbose(String message) {
+    LXMidiEngine.error(message);
   }
 
   @Override
