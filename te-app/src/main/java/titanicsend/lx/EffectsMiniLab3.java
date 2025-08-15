@@ -67,6 +67,16 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
 
   private static final int NUM_PADS = 8;
 
+
+  private enum EffectState {
+    DISABLED,
+    ENABLED,
+    EMPTY,
+    ;
+  }
+
+  EffectState[] states;
+
   private GlobalEffectManager effectManager;
   private ObservableList.Listener<GlobalEffect<? extends LXEffect>> effectListener;
   private boolean isRegistered = false;
@@ -79,7 +89,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   private void press(int padIndex) {
     TE.log("PRESS: " + padIndex);
     //    setPadLEDColor(padIndex, 127, 127, 127);
-    if (padIndex >= effectManager.states.size()) {
+    if (padIndex >= effectManager.slots.size()) {
       return;
     }
     EffectState currState = this.states[padIndex];
