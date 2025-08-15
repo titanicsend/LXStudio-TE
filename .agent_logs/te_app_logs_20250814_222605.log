@@ -1,0 +1,495 @@
+[LX 2025/08/14 22:26:05] Starting Chromatik version 1.1.1-TE.5.GPU-SNAPSHOT
+[LX 2025/08/14 22:26:05] Running java 24.0.1 Oracle Corporation Mac OS X 15.5 aarch64
+[GLX 2025/08/14 22:26:05] CLI args: --resolution 1920x1200 
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.lwjgl.system.Library$$Lambda/0x00007ffc0100e568 in an unnamed module (file:/Users/sinas/workspace/LXStudio-TE/te-app/target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.lwjgl.system.MemoryUtil (file:/Users/sinas/workspace/LXStudio-TE/te-app/target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar)
+WARNING: Please consider reporting this to the maintainers of class org.lwjgl.system.MemoryUtil
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[GLX 2025/08/14 22:26:05] GLXWindow monitorWorkarea: size(1728x1079), pos(x:0,y:38)
+[GLX 2025/08/14 22:26:05] GLXWindow createWindow: 1728x1079
+[GLX 2025/08/14 22:26:05] GLXWindow systemContentScale: 2.0x2.0
+[GLX 2025/08/14 22:26:05] GLXWindow setWindowPos: 0,44
+[GLX 2025/08/14 22:26:05] GLXWindow windowSize: 1728x1051
+[GLX 2025/08/14 22:26:05] GLXWindow framebufferSize: 3456x2102
+[GLX 2025/08/14 22:26:05] GLXWindow uiSize: 1728.0x1051.0
+[GLX 2025/08/14 22:26:05] GLXWindow cursorScale: 1.0x1.0
+[GLX 2025/08/14 22:26:05] GLXWindow.main() awaiting GLX boostrap...
+[LX 2025/08/14 22:26:06] [AudioStems] AudioStemsPlugin(LX) version: 0.3.0-SNAPSHOT
+[GLX 2025/08/14 22:26:06] TEApp.Plugin(LX)
+[LX 2025/08/14 22:26:06] GLEngine: Rendering canvas size: 1920x1200 = 2304000 total points
+[LX 2025/08/14 22:26:06] Loading user presets: ./Presets/UserPresets/BM24.userPresets
+[LX 2025/08/14 22:26:06] [SuperMod] SuperMod Plugin version 0.1.5-SNAPSHOT
+[LX 2025/08/14 22:26:06] [OscRemapper] OscRemapperPlugin(LX) constructor called - version: 0.3.0-SNAPSHOT
+[LX 2025/08/14 22:26:06] [OscRemapper] Using config path: resources/osc_remapper.yaml
+[LX 2025/08/14 22:26:06] [OscRemapper] Loading OSC Remapper config from: /Users/sinas/workspace/LXStudio-TE/te-app/resources/osc_remapper.yaml
+[LX 2025/08/14 22:26:06] [OscRemapper] Successfully parsed YAML config with 7 destinations and 4 remappings
+[LX 2025/08/14 22:26:06] [OscRemapper] Loaded configuration with 7 destinations and 4 remappings
+[GLX 2025/08/14 22:26:06] TEApp.Plugin.initialize()
+[LX 2025/08/14 22:26:06] Creating Shader class: titanicsend.pattern.glengine.StarField1 for starfield1.fs
+[LX 2025/08/14 22:26:06] Creating Shader class: titanicsend.pattern.glengine.Circuitry for circuitry.fs
+[LX 2025/08/14 22:26:06] Creating Shader class: titanicsend.pattern.glengine.GummyWeave for gummy_weave.fs
+[LX 2025/08/14 22:26:06] Creating Shader class: titanicsend.pattern.glengine.Colortest for colortest.fs
+[LX 2025/08/14 22:26:06] Creating Shader class: titanicsend.pattern.glengine.GummyWorms for gummy_worms.fs
+[LX 2025/08/14 22:26:06] Creating Shader class: titanicsend.pattern.glengine.DatsaMoire for datsa_moire.fs
+[LX 2025/08/14 22:26:06] Creating Shader class: titanicsend.pattern.glengine.Waterfall for waterfall.fs
+[LX 2025/08/14 22:26:06] Creating Shader class: titanicsend.pattern.glengine.PolySpiral2 for polyspiral2.fs
+[LX 2025/08/14 22:26:06] Creating Shader class: titanicsend.pattern.glengine.NeonMess for neonmess.fs
+[LX 2025/08/14 22:26:06] Creating Shader class: titanicsend.pattern.glengine.Icemelt for icemelt.fs
+[LX 2025/08/14 22:26:06] Creating Shader class: titanicsend.pattern.glengine.GummyFireflies2 for gummy_fireflies2.fs
+[LX 2025/08/14 22:26:06] Creating Shader class: titanicsend.pattern.glengine.StemTriangleInfinity for triangle_infinity_mod_stems.fs
+[LX 2025/08/14 22:26:06] Creating Shader class: titanicsend.pattern.glengine.TechnoChurch for techno_church.fs
+[LX 2025/08/14 22:26:06] Creating Shader class: titanicsend.pattern.glengine.ArtOfCode for artofcode.fs
+[LX 2025/08/14 22:26:07] Creating Shader class: titanicsend.pattern.glengine.StarField2 for starfield2.fs
+[LX 2025/08/14 22:26:07] Creating Shader class: titanicsend.pattern.glengine.GummyNoise for gummy_noise.fs
+[LX 2025/08/14 22:26:07] Attaching the OSC message listener to port 42069 ...
+[LX 2025/08/14 22:26:07] [OSC] Started OSC listener /[0:0:0:0:0:0:0:0]:3030
+[LX 2025/08/14 22:26:07] DevSwitch setting state to DEVELOPER...
+[LX 2025/08/14 22:26:07] [ArtNet] Starting Art-Net listener on /0:0:0:0:0:0:0:0:6454
+[LX 2025/08/14 22:26:07] Started audio input thread: Default Audio Device
+[GLX 2025/08/14 22:26:07] BGFX renderer: Metal
+[GLX 2025/08/14 22:26:07] TEApp.Plugin.initializeUI()
+[GLX 2025/08/14 22:26:07] TEApp.Plugin.onUIReady()
+[LX 2025/08/14 22:26:08] Gamepad mappings updated successfully.
+[GLX 2025/08/14 22:26:08] Starting LX Engine...
+[LX 2025/08/14 22:26:08] LXEngine.ExecutorService starting...
+[GLX 2025/08/14 22:26:08] Running main BGFX loop...
+[GLX 2025/08/14 22:26:08] GLX boostrap complete, GLXWindow running event loop...
+[LX 2025/08/14 22:26:08] Opening project file: ./Projects/BM25_playachemist.lxp
+[LX 2025/08/14 22:26:08] DevSwitch detected potential file change, remembering state DEVELOPER
+Loaded sketches: 200
+Loaded sketches: 200
+[LX 2025/08/14 22:26:09] ParticlesTest: Initializing dynamic sphere emitter demo...
+[LX 2025/08/14 22:26:09] ParticlesTest: Dynamic sphere emitter initialized
+Loaded sketches: 200
+Loaded sketches: 200
+Loaded sketches: 200
+Loaded sketches: 200
+[LX 2025/08/14 22:26:09] Autopilot detected completion of openProject(), defensive positions have been taken (or is first file open)...
+[LX 2025/08/14 22:26:09] DevSwitch restoring the state DEVELOPER
+[LX 2025/08/14 22:26:09] DevSwitch setting state to DEVELOPER...
+[LX 2025/08/14 22:26:09] Project loaded successfully from ./Projects/BM25_playachemist.lxp
+[LX 2025/08/14 22:26:10] NDI: Successfully initialized sender 'TitanicsEnd'
+[LX 2025/08/14 22:26:10] Shader 'ndi_out_effect.fs' uniform error: Missing texture 'iDst' for unit 4, this could be a bug...
+[LX 2025/08/14 22:26:10] ParticlesTest: 6 active spheres
+[LX 2025/08/14 22:26:10]   sphere-0 age=1.00s world(5.33, 0.67, 2.13) norm(0.94, 0.17, 0.85)
+[LX 2025/08/14 22:26:10]   sphere-1 age=0.29s world(2.80, 1.17, 0.66) norm(0.73, 0.29, 0.61)
+[LX 2025/08/14 22:26:10]   sphere-2 age=0.28s world(-4.35, 2.15, 1.09) norm(0.14, 0.54, 0.68)
+[LX 2025/08/14 22:26:10]   sphere-3 age=0.27s world(1.18, 3.42, -1.00) norm(0.60, 0.85, 0.33)
+[LX 2025/08/14 22:26:10]   sphere-4 age=0.26s world(-2.22, 0.73, 1.19) norm(0.31, 0.18, 0.70)
+[LX 2025/08/14 22:26:10]   sphere-5 age=0.11s world(-0.66, 1.64, -0.33) norm(0.45, 0.41, 0.45)
+[LX 2025/08/14 22:26:12] ParticlesTest: 13 active spheres
+[LX 2025/08/14 22:26:12]   sphere-0 age=2.00s world(5.16, 0.82, 2.33) norm(0.93, 0.20, 0.89)
+[LX 2025/08/14 22:26:12]   sphere-1 age=1.30s world(4.23, 1.98, 1.08) norm(0.85, 0.50, 0.68)
+[LX 2025/08/14 22:26:12]   sphere-2 age=1.28s world(-4.93, 2.21, 1.05) norm(0.09, 0.55, 0.68)
+[LX 2025/08/14 22:26:12]   sphere-3 age=1.28s world(3.69, 2.41, -1.35) norm(0.81, 0.60, 0.28)
+[LX 2025/08/14 22:26:12]   sphere-4 age=1.26s world(-2.71, 0.80, 2.05) norm(0.27, 0.20, 0.84)
+[LX 2025/08/14 22:26:12]   sphere-5 age=1.11s world(-4.95, 1.60, -1.66) norm(0.09, 0.40, 0.22)
+[LX 2025/08/14 22:26:12]   sphere-6 age=0.96s world(-1.75, 2.48, 2.06) norm(0.35, 0.62, 0.84)
+[LX 2025/08/14 22:26:12]   sphere-7 age=0.81s world(1.85, 0.23, -1.87) norm(0.65, 0.06, 0.19)
+[LX 2025/08/14 22:26:12]   sphere-8 age=0.66s world(-2.77, 2.41, -1.16) norm(0.27, 0.60, 0.31)
+[LX 2025/08/14 22:26:12]   sphere-9 age=0.51s world(1.26, 2.87, -0.30) norm(0.60, 0.72, 0.45)
+[LX 2025/08/14 22:26:12]   sphere-10 age=0.36s world(0.12, 1.19, 1.41) norm(0.51, 0.30, 0.73)
+[LX 2025/08/14 22:26:12]   sphere-11 age=0.21s world(-1.05, 1.58, -0.53) norm(0.41, 0.40, 0.41)
+[LX 2025/08/14 22:26:12]   sphere-12 age=0.06s world(-0.12, 2.08, 0.00) norm(0.49, 0.52, 0.50)
+[LX 2025/08/14 22:26:14] ParticlesTest: 19 active spheres
+[LX 2025/08/14 22:26:14]   sphere-1 age=2.30s world(4.81, 2.03, 1.40) norm(0.90, 0.51, 0.73)
+[LX 2025/08/14 22:26:14]   sphere-2 age=2.29s world(-5.15, 2.22, 1.43) norm(0.07, 0.55, 0.74)
+[LX 2025/08/14 22:26:14]   sphere-3 age=2.28s world(4.84, 2.01, -1.52) norm(0.90, 0.50, 0.25)
+[LX 2025/08/14 22:26:14]   sphere-4 age=2.27s world(-2.97, 0.62, 2.07) norm(0.25, 0.16, 0.85)
+[LX 2025/08/14 22:26:14]   sphere-5 age=2.12s world(-5.56, 1.47, -1.36) norm(0.04, 0.37, 0.27)
+[LX 2025/08/14 22:26:14]   sphere-6 age=1.97s world(-2.21, 2.86, 2.35) norm(0.32, 0.71, 0.89)
+[LX 2025/08/14 22:26:14]   sphere-7 age=1.82s world(2.43, 1.00, -2.28) norm(0.70, 0.25, 0.12)
+[LX 2025/08/14 22:26:14]   sphere-8 age=1.67s world(-3.88, 3.14, -1.20) norm(0.18, 0.78, 0.30)
+[LX 2025/08/14 22:26:14]   sphere-9 age=1.52s world(2.96, 3.82, -0.39) norm(0.75, 0.95, 0.44)
+[LX 2025/08/14 22:26:14]   sphere-10 age=1.37s world(1.11, 1.81, 2.95) norm(0.59, 0.45, 0.99)
+[LX 2025/08/14 22:26:14]   sphere-11 age=1.22s world(-2.69, 0.63, -1.94) norm(0.28, 0.16, 0.18)
+[LX 2025/08/14 22:26:14]   sphere-12 age=1.07s world(-0.38, 3.24, -2.18) norm(0.47, 0.81, 0.14)
+[LX 2025/08/14 22:26:14]   sphere-13 age=0.92s world(-2.54, 1.33, 0.63) norm(0.29, 0.33, 0.60)
+[LX 2025/08/14 22:26:14]   sphere-14 age=0.77s world(-0.38, 0.82, 1.21) norm(0.47, 0.20, 0.70)
+[LX 2025/08/14 22:26:14]   sphere-15 age=0.62s world(0.33, 0.59, -2.03) norm(0.53, 0.15, 0.16)
+[LX 2025/08/14 22:26:14]   sphere-16 age=0.48s world(0.18, 2.85, -0.50) norm(0.51, 0.71, 0.42)
+[LX 2025/08/14 22:26:14]   sphere-17 age=0.32s world(-0.35, 0.88, -0.88) norm(0.47, 0.22, 0.35)
+[LX 2025/08/14 22:26:14]   sphere-18 age=0.17s world(0.03, 2.02, 0.22) norm(0.50, 0.50, 0.54)
+[LX 2025/08/14 22:26:14]   sphere-19 age=0.02s world(0.00, 2.00, 0.00) norm(0.50, 0.50, 0.50)
+[LX 2025/08/14 22:26:16] ParticlesTest: 20 active spheres
+[LX 2025/08/14 22:26:16]   sphere-6 age=2.97s world(-4.20, 2.77, 2.48) norm(0.15, 0.69, 0.91)
+[LX 2025/08/14 22:26:16]   sphere-7 age=2.82s world(4.73, 1.14, -1.96) norm(0.89, 0.28, 0.17)
+[LX 2025/08/14 22:26:16]   sphere-8 age=2.67s world(-4.91, 3.15, -0.90) norm(0.09, 0.79, 0.35)
+[LX 2025/08/14 22:26:16]   sphere-9 age=2.52s world(11.33, 31.98, -6.18) norm(1.00, 1.00, 0.00)
+[LX 2025/08/14 22:26:16]   sphere-10 age=2.37s world(4.93, 1.38, 2.31) norm(0.91, 0.35, 0.89)
+[LX 2025/08/14 22:26:16]   sphere-11 age=2.22s world(-3.74, 1.18, -1.96) norm(0.19, 0.30, 0.17)
+[LX 2025/08/14 22:26:16]   sphere-12 age=2.07s world(-1.33, 3.25, -2.11) norm(0.39, 0.81, 0.15)
+[LX 2025/08/14 22:26:16]   sphere-13 age=1.92s world(-4.63, 0.94, 1.14) norm(0.11, 0.24, 0.69)
+[LX 2025/08/14 22:26:16]   sphere-14 age=1.77s world(-0.23, 0.52, 2.36) norm(0.48, 0.13, 0.89)
+[LX 2025/08/14 22:26:16]   sphere-15 age=1.62s world(0.44, 0.50, -2.38) norm(0.54, 0.13, 0.10)
+[LX 2025/08/14 22:26:16]   sphere-16 age=1.48s world(3.64, 3.30, -1.89) norm(0.80, 0.83, 0.19)
+[LX 2025/08/14 22:26:16]   sphere-17 age=1.32s world(-2.46, 0.56, -0.06) norm(0.30, 0.14, 0.49)
+[LX 2025/08/14 22:26:16]   sphere-18 age=1.17s world(3.50, 2.54, 1.82) norm(0.79, 0.64, 0.80)
+[LX 2025/08/14 22:26:16]   sphere-19 age=1.02s world(-1.15, 1.41, -1.36) norm(0.40, 0.35, 0.27)
+[LX 2025/08/14 22:26:16]   sphere-20 age=0.88s world(-3.14, 3.26, 0.63) norm(0.24, 0.81, 0.61)
+[LX 2025/08/14 22:26:16]   sphere-21 age=0.72s world(3.69, 1.43, -0.58) norm(0.81, 0.36, 0.40)
+[LX 2025/08/14 22:26:16]   sphere-22 age=0.57s world(-1.82, 2.75, 2.16) norm(0.35, 0.69, 0.86)
+[LX 2025/08/14 22:26:16]   sphere-23 age=0.42s world(1.17, 1.69, 0.52) norm(0.60, 0.42, 0.59)
+[LX 2025/08/14 22:26:16]   sphere-24 age=0.27s world(-0.36, 2.91, 0.56) norm(0.47, 0.73, 0.59)
+[LX 2025/08/14 22:26:16]   sphere-25 age=0.12s world(-0.48, 1.44, 0.05) norm(0.46, 0.36, 0.51)
+[LX 2025/08/14 22:26:18] ParticlesTest: 20 active spheres
+[LX 2025/08/14 22:26:18]   sphere-13 age=2.93s world(-5.40, 1.36, 1.70) norm(0.05, 0.34, 0.78)
+[LX 2025/08/14 22:26:18]   sphere-14 age=2.78s world(-0.97, 1.04, 2.82) norm(0.42, 0.26, 0.97)
+[LX 2025/08/14 22:26:18]   sphere-15 age=2.63s world(1.93, 0.37, -1.98) norm(0.66, 0.09, 0.17)
+[LX 2025/08/14 22:26:18]   sphere-16 age=2.49s world(4.32, 2.70, -2.04) norm(0.86, 0.67, 0.16)
+[LX 2025/08/14 22:26:18]   sphere-17 age=2.33s world(-4.35, 0.88, 1.76) norm(0.14, 0.22, 0.79)
+[LX 2025/08/14 22:26:18]   sphere-18 age=2.18s world(4.29, 2.62, 1.88) norm(0.86, 0.66, 0.81)
+[LX 2025/08/14 22:26:18]   sphere-19 age=2.03s world(-4.45, 1.35, -2.01) norm(0.13, 0.34, 0.16)
+[LX 2025/08/14 22:26:18]   sphere-20 age=1.89s world(-5.30, 3.13, -0.14) norm(0.06, 0.78, 0.48)
+[LX 2025/08/14 22:26:18]   sphere-21 age=1.73s world(4.75, 1.26, -0.84) norm(0.90, 0.31, 0.36)
+[LX 2025/08/14 22:26:18]   sphere-22 age=1.58s world(-5.12, 2.89, 2.05) norm(0.07, 0.72, 0.84)
+[LX 2025/08/14 22:26:18]   sphere-23 age=1.43s world(2.03, 1.65, 1.64) norm(0.67, 0.41, 0.77)
+[LX 2025/08/14 22:26:18]   sphere-24 age=1.28s world(-2.75, 3.55, 1.59) norm(0.27, 0.89, 0.77)
+[LX 2025/08/14 22:26:18]   sphere-25 age=1.13s world(-3.69, 0.71, -0.15) norm(0.19, 0.18, 0.47)
+[LX 2025/08/14 22:26:18]   sphere-26 age=0.98s world(0.03, 3.73, -1.23) norm(0.50, 0.93, 0.29)
+[LX 2025/08/14 22:26:18]   sphere-27 age=0.83s world(2.26, 2.12, -2.45) norm(0.69, 0.53, 0.09)
+[LX 2025/08/14 22:26:18]   sphere-28 age=0.68s world(-2.18, 1.86, 1.04) norm(0.32, 0.47, 0.67)
+[LX 2025/08/14 22:26:18]   sphere-29 age=0.53s world(1.00, -0.06, -0.77) norm(0.58, 0.00, 0.37)
+[LX 2025/08/14 22:26:18]   sphere-30 age=0.38s world(0.51, 3.35, -0.72) norm(0.54, 0.84, 0.38)
+[LX 2025/08/14 22:26:18]   sphere-31 age=0.23s world(-1.01, 1.62, -1.35) norm(0.42, 0.41, 0.27)
+[LX 2025/08/14 22:26:18]   sphere-32 age=0.08s world(0.01, 2.14, -0.10) norm(0.50, 0.54, 0.48)
+[LX 2025/08/14 22:26:20] ParticlesTest: 20 active spheres
+[LX 2025/08/14 22:26:20]   sphere-20 age=2.89s world(-5.21, 3.26, -0.14) norm(0.07, 0.81, 0.48)
+[LX 2025/08/14 22:26:20]   sphere-21 age=2.73s world(5.81, 1.44, -1.16) norm(0.98, 0.36, 0.31)
+[LX 2025/08/14 22:26:20]   sphere-22 age=2.58s world(-5.36, 2.58, 2.15) norm(0.05, 0.64, 0.86)
+[LX 2025/08/14 22:26:20]   sphere-23 age=2.44s world(3.90, 1.83, 2.14) norm(0.82, 0.46, 0.86)
+[LX 2025/08/14 22:26:20]   sphere-24 age=2.28s world(-3.59, 3.18, 1.26) norm(0.20, 0.79, 0.71)
+[LX 2025/08/14 22:26:20]   sphere-25 age=2.13s world(-5.10, 0.95, -0.06) norm(0.07, 0.24, 0.49)
+[LX 2025/08/14 22:26:20]   sphere-26 age=1.98s world(-8.00, 32.80, -3.09) norm(0.00, 1.00, 0.00)
+[LX 2025/08/14 22:26:20]   sphere-27 age=1.84s world(4.02, 2.68, -2.32) norm(0.83, 0.67, 0.11)
+[LX 2025/08/14 22:26:20]   sphere-28 age=1.68s world(-4.08, 1.56, 1.75) norm(0.16, 0.39, 0.79)
+[LX 2025/08/14 22:26:20]   sphere-29 age=1.53s world(2.65, 0.92, -2.09) norm(0.72, 0.23, 0.15)
+[LX 2025/08/14 22:26:20]   sphere-30 age=1.39s world(3.03, 4.32, -0.97) norm(0.75, 1.00, 0.34)
+[LX 2025/08/14 22:26:20]   sphere-31 age=1.23s world(-3.28, 1.66, -2.43) norm(0.23, 0.42, 0.10)
+[LX 2025/08/14 22:26:20]   sphere-32 age=1.08s world(-2.10, 2.19, -0.48) norm(0.33, 0.55, 0.42)
+[LX 2025/08/14 22:26:20]   sphere-33 age=0.93s world(-0.61, 1.59, 2.82) norm(0.45, 0.40, 0.97)
+[LX 2025/08/14 22:26:20]   sphere-34 age=0.79s world(-0.33, 3.11, -2.53) norm(0.47, 0.78, 0.08)
+[LX 2025/08/14 22:26:20]   sphere-35 age=0.63s world(1.44, 0.46, -0.42) norm(0.62, 0.12, 0.43)
+[LX 2025/08/14 22:26:20]   sphere-36 age=0.49s world(1.42, 3.29, 1.01) norm(0.62, 0.82, 0.67)
+[LX 2025/08/14 22:26:20]   sphere-37 age=0.33s world(0.37, 2.25, 0.11) norm(0.53, 0.56, 0.52)
+[LX 2025/08/14 22:26:20]   sphere-38 age=0.19s world(0.67, 1.17, -0.31) norm(0.56, 0.29, 0.45)
+[LX 2025/08/14 22:26:20]   sphere-39 age=0.04s world(-0.23, 1.98, 0.08) norm(0.48, 0.50, 0.51)
+[LX 2025/08/14 22:26:22] ParticlesTest: 20 active spheres
+[LX 2025/08/14 22:26:22]   sphere-26 age=2.99s world(-17.59, 66.18, -4.80) norm(0.00, 1.00, 0.00)
+[LX 2025/08/14 22:26:22]   sphere-27 age=2.85s world(4.99, 2.51, -2.25) norm(0.92, 0.63, 0.12)
+[LX 2025/08/14 22:26:22]   sphere-28 age=2.69s world(-4.65, 1.68, 2.07) norm(0.11, 0.42, 0.85)
+[LX 2025/08/14 22:26:22]   sphere-29 age=2.54s world(4.83, 1.06, -1.89) norm(0.90, 0.27, 0.19)
+[LX 2025/08/14 22:26:22]   sphere-30 age=2.40s world(4.90, 3.37, -0.57) norm(0.91, 0.84, 0.41)
+[LX 2025/08/14 22:26:22]   sphere-31 age=2.24s world(-4.98, 1.84, -1.92) norm(0.08, 0.46, 0.18)
+[LX 2025/08/14 22:26:22]   sphere-32 age=2.09s world(-3.94, 3.07, -0.61) norm(0.17, 0.77, 0.40)
+[LX 2025/08/14 22:26:22]   sphere-33 age=1.94s world(-0.94, 1.55, 3.16) norm(0.42, 0.39, 1.00)
+[LX 2025/08/14 22:26:22]   sphere-34 age=1.80s world(-1.44, 2.35, -3.02) norm(0.38, 0.59, 0.00)
+[LX 2025/08/14 22:26:22]   sphere-35 age=1.64s world(4.76, 0.80, 0.49) norm(0.90, 0.20, 0.58)
+[LX 2025/08/14 22:26:22]   sphere-36 age=1.50s world(3.32, 2.20, 3.27) norm(0.78, 0.55, 1.00)
+[LX 2025/08/14 22:26:22]   sphere-37 age=1.34s world(2.21, 3.36, 0.19) norm(0.68, 0.84, 0.53)
+[LX 2025/08/14 22:26:22]   sphere-38 age=1.20s world(2.62, 0.85, -1.81) norm(0.72, 0.21, 0.20)
+[LX 2025/08/14 22:26:22]   sphere-39 age=1.05s world(-3.05, 0.44, 0.40) norm(0.25, 0.11, 0.57)
+[LX 2025/08/14 22:26:22]   sphere-40 age=0.90s world(0.66, 1.53, -2.06) norm(0.56, 0.38, 0.16)
+[LX 2025/08/14 22:26:22]   sphere-41 age=0.75s world(-1.16, 3.99, 1.61) norm(0.40, 1.00, 0.77)
+[LX 2025/08/14 22:26:22]   sphere-42 age=0.59s world(0.54, 0.25, 1.18) norm(0.55, 0.06, 0.70)
+[LX 2025/08/14 22:26:22]   sphere-43 age=0.44s world(-1.05, 3.31, -0.42) norm(0.41, 0.83, 0.43)
+[LX 2025/08/14 22:26:22]   sphere-44 age=0.30s world(-0.56, 1.08, 0.71) norm(0.45, 0.27, 0.62)
+[LX 2025/08/14 22:26:22]   sphere-45 age=0.14s world(-0.12, 1.84, -0.21) norm(0.49, 0.46, 0.47)
+[LX 2025/08/14 22:26:24] ParticlesTest: 20 active spheres
+[LX 2025/08/14 22:26:24]   sphere-33 age=2.94s world(-4.00, 1.65, 23.94) norm(0.17, 0.41, 1.00)
+[LX 2025/08/14 22:26:24]   sphere-34 age=2.80s world(-4.38, 1.51, -2.77) norm(0.13, 0.38, 0.04)
+[LX 2025/08/14 22:26:24]   sphere-35 age=2.64s world(5.21, 1.12, 0.09) norm(0.93, 0.28, 0.52)
+[LX 2025/08/14 22:26:24]   sphere-36 age=2.50s world(4.21, 1.96, 2.59) norm(0.85, 0.49, 0.93)
+[LX 2025/08/14 22:26:24]   sphere-37 age=2.34s world(4.76, 3.55, -0.41) norm(0.90, 0.89, 0.43)
+[LX 2025/08/14 22:26:24]   sphere-38 age=2.20s world(4.38, 1.14, -2.35) norm(0.86, 0.29, 0.11)
+[LX 2025/08/14 22:26:24]   sphere-39 age=2.05s world(-5.46, 0.97, 1.53) norm(0.05, 0.24, 0.76)
+[LX 2025/08/14 22:26:24]   sphere-40 age=1.90s world(1.74, 1.32, -5.08) norm(0.64, 0.33, 0.00)
+[LX 2025/08/14 22:26:24]   sphere-41 age=1.75s world(-3.08, 3.68, 2.45) norm(0.24, 0.92, 0.91)
+[LX 2025/08/14 22:26:24]   sphere-42 age=1.59s world(2.41, 0.44, 1.95) norm(0.70, 0.11, 0.83)
+[LX 2025/08/14 22:26:24]   sphere-43 age=1.44s world(-4.56, 3.71, -1.77) norm(0.12, 0.93, 0.20)
+[LX 2025/08/14 22:26:24]   sphere-44 age=1.30s world(-2.99, 0.75, 1.98) norm(0.25, 0.19, 0.83)
+[LX 2025/08/14 22:26:24]   sphere-45 age=1.14s world(-4.25, 1.90, -1.18) norm(0.15, 0.48, 0.30)
+[LX 2025/08/14 22:26:24]   sphere-46 age=0.99s world(1.93, 3.40, 1.85) norm(0.66, 0.85, 0.81)
+[LX 2025/08/14 22:26:24]   sphere-47 age=0.84s world(-0.83, 1.02, 1.15) norm(0.43, 0.25, 0.69)
+[LX 2025/08/14 22:26:24]   sphere-48 age=0.69s world(0.56, 2.86, -0.37) norm(0.55, 0.72, 0.44)
+[LX 2025/08/14 22:26:24]   sphere-49 age=0.54s world(1.94, 3.09, -1.67) norm(0.66, 0.77, 0.22)
+[LX 2025/08/14 22:26:24]   sphere-50 age=0.39s world(-1.42, 2.57, -0.68) norm(0.38, 0.64, 0.39)
+[LX 2025/08/14 22:26:24]   sphere-51 age=0.24s world(0.24, 0.93, -0.89) norm(0.52, 0.23, 0.35)
+[LX 2025/08/14 22:26:24]   sphere-52 age=0.09s world(0.35, 3.00, 0.62) norm(0.53, 0.75, 0.60)
+[LX 2025/08/14 22:26:26] ParticlesTest: 20 active spheres
+[LX 2025/08/14 22:26:26]   sphere-40 age=2.90s world(0.40, -5.40, -40.46) norm(0.53, 0.00, 0.00)
+[LX 2025/08/14 22:26:26]   sphere-41 age=2.75s world(-3.69, 3.08, 1.75) norm(0.19, 0.77, 0.79)
+[LX 2025/08/14 22:26:26]   sphere-42 age=2.59s world(4.85, 0.81, 1.87) norm(0.90, 0.20, 0.81)
+[LX 2025/08/14 22:26:26]   sphere-43 age=2.44s world(-5.29, 3.13, -2.09) norm(0.06, 0.78, 0.15)
+[LX 2025/08/14 22:26:26]   sphere-44 age=2.30s world(-4.16, 1.07, 2.15) norm(0.15, 0.27, 0.86)
+[LX 2025/08/14 22:26:26]   sphere-45 age=2.14s world(-4.68, 1.73, -1.16) norm(0.11, 0.43, 0.31)
+[LX 2025/08/14 22:26:26]   sphere-46 age=1.99s world(4.62, 3.22, 2.18) norm(0.88, 0.80, 0.86)
+[LX 2025/08/14 22:26:26]   sphere-47 age=1.84s world(-1.33, 0.70, 1.91) norm(0.39, 0.18, 0.82)
+[LX 2025/08/14 22:26:26]   sphere-48 age=1.69s world(3.40, 2.96, -1.02) norm(0.78, 0.74, 0.33)
+[LX 2025/08/14 22:26:26]   sphere-49 age=1.54s world(5.50, 2.17, -1.67) norm(0.96, 0.54, 0.22)
+[LX 2025/08/14 22:26:26]   sphere-50 age=1.39s world(-2.11, 2.43, -2.06) norm(0.32, 0.61, 0.16)
+[LX 2025/08/14 22:26:26]   sphere-51 age=1.24s world(1.42, 0.75, -2.33) norm(0.62, 0.19, 0.11)
+[LX 2025/08/14 22:26:26]   sphere-52 age=1.09s world(0.43, 3.20, 2.42) norm(0.54, 0.80, 0.90)
+[LX 2025/08/14 22:26:26]   sphere-53 age=0.94s world(-1.47, 1.45, 1.36) norm(0.38, 0.36, 0.73)
+[LX 2025/08/14 22:26:26]   sphere-54 age=0.79s world(-0.82, 3.88, 0.33) norm(0.43, 0.97, 0.55)
+[LX 2025/08/14 22:26:26]   sphere-55 age=0.64s world(3.23, 1.09, 1.03) norm(0.77, 0.27, 0.67)
+[LX 2025/08/14 22:26:26]   sphere-56 age=0.49s world(1.61, 2.79, -2.20) norm(0.63, 0.70, 0.13)
+[LX 2025/08/14 22:26:26]   sphere-57 age=0.35s world(0.20, 2.04, 0.15) norm(0.52, 0.51, 0.53)
+[LX 2025/08/14 22:26:26]   sphere-58 age=0.19s world(0.62, 1.89, -1.07) norm(0.55, 0.47, 0.32)
+[LX 2025/08/14 22:26:26]   sphere-59 age=0.04s world(-0.58, 1.79, 0.14) norm(0.45, 0.45, 0.52)
+[LX 2025/08/14 22:26:28] ParticlesTest: 20 active spheres
+[LX 2025/08/14 22:26:28]   sphere-46 age=2.99s world(5.41, 2.71, 2.00) norm(0.95, 0.68, 0.83)
+[LX 2025/08/14 22:26:28]   sphere-47 age=2.84s world(-2.83, 1.43, 2.67) norm(0.26, 0.36, 0.95)
+[LX 2025/08/14 22:26:28]   sphere-48 age=2.69s world(4.30, 2.66, -0.27) norm(0.86, 0.67, 0.46)
+[LX 2025/08/14 22:26:28]   sphere-49 age=2.54s world(5.03, 1.57, -1.81) norm(0.92, 0.39, 0.20)
+[LX 2025/08/14 22:26:28]   sphere-50 age=2.39s world(-3.68, 2.40, -2.87) norm(0.19, 0.60, 0.02)
+[LX 2025/08/14 22:26:28]   sphere-51 age=2.24s world(2.27, 0.78, -1.89) norm(0.69, 0.20, 0.19)
+[LX 2025/08/14 22:26:28]   sphere-52 age=2.09s world(2.58, 3.57, 2.57) norm(0.72, 0.89, 0.93)
+[LX 2025/08/14 22:26:28]   sphere-53 age=1.94s world(-4.85, 2.17, 1.30) norm(0.10, 0.54, 0.72)
+[LX 2025/08/14 22:26:28]   sphere-54 age=1.79s world(-3.39, 3.93, 1.16) norm(0.22, 0.98, 0.69)
+[LX 2025/08/14 22:26:28]   sphere-55 age=1.64s world(4.03, 0.44, 1.67) norm(0.84, 0.11, 0.78)
+[LX 2025/08/14 22:26:28]   sphere-56 age=1.49s world(1.85, 3.61, -2.04) norm(0.65, 0.90, 0.16)
+[LX 2025/08/14 22:26:28]   sphere-57 age=1.35s world(1.92, 1.62, 1.39) norm(0.66, 0.40, 0.73)
+[LX 2025/08/14 22:26:28]   sphere-58 age=1.19s world(0.77, 1.60, -2.27) norm(0.56, 0.40, 0.12)
+[LX 2025/08/14 22:26:28]   sphere-59 age=1.04s world(-4.49, 1.22, -0.92) norm(0.13, 0.31, 0.35)
+[LX 2025/08/14 22:26:28]   sphere-60 age=0.90s world(0.60, 2.73, 0.82) norm(0.55, 0.68, 0.64)
+[LX 2025/08/14 22:26:28]   sphere-61 age=0.75s world(-2.38, 3.19, -1.09) norm(0.30, 0.80, 0.32)
+[LX 2025/08/14 22:26:28]   sphere-62 age=0.59s world(-1.76, 0.25, -0.48) norm(0.35, 0.06, 0.42)
+[LX 2025/08/14 22:26:28]   sphere-63 age=0.45s world(-2.01, 2.19, -0.02) norm(0.33, 0.55, 0.50)
+[LX 2025/08/14 22:26:28]   sphere-64 age=0.30s world(-0.59, 0.75, -0.75) norm(0.45, 0.19, 0.38)
+[LX 2025/08/14 22:26:28]   sphere-65 age=0.15s world(-0.39, 1.94, -0.26) norm(0.47, 0.48, 0.46)
+[LX 2025/08/14 22:26:30] ParticlesTest: 20 active spheres
+[LX 2025/08/14 22:26:30]   sphere-53 age=2.94s world(-4.97, 2.29, 1.34) norm(0.09, 0.57, 0.72)
+[LX 2025/08/14 22:26:30]   sphere-54 age=2.79s world(-2.55, 3.61, 1.91) norm(0.29, 0.90, 0.82)
+[LX 2025/08/14 22:26:30]   sphere-55 age=2.64s world(4.99, 1.50, 1.71) norm(0.92, 0.37, 0.78)
+[LX 2025/08/14 22:26:30]   sphere-56 age=2.49s world(4.86, 2.97, -2.20) norm(0.90, 0.74, 0.13)
+[LX 2025/08/14 22:26:30]   sphere-57 age=2.35s world(4.31, 1.86, 0.95) norm(0.86, 0.47, 0.66)
+[LX 2025/08/14 22:26:30]   sphere-58 age=2.19s world(1.54, 1.91, -2.82) norm(0.63, 0.48, 0.03)
+[LX 2025/08/14 22:26:30]   sphere-59 age=2.04s world(-4.90, 1.26, -1.22) norm(0.09, 0.31, 0.30)
+[LX 2025/08/14 22:26:30]   sphere-60 age=1.90s world(1.49, 2.72, 2.48) norm(0.62, 0.68, 0.91)
+[LX 2025/08/14 22:26:30]   sphere-61 age=1.75s world(-3.07, 3.20, -1.63) norm(0.24, 0.80, 0.23)
+[LX 2025/08/14 22:26:30]   sphere-62 age=1.59s world(-2.81, 0.19, -0.27) norm(0.27, 0.05, 0.45)
+[LX 2025/08/14 22:26:30]   sphere-63 age=1.45s world(-2.40, 1.57, 1.74) norm(0.30, 0.39, 0.79)
+[LX 2025/08/14 22:26:30]   sphere-64 age=1.30s world(-2.09, 0.70, -2.68) norm(0.33, 0.17, 0.05)
+[LX 2025/08/14 22:26:30]   sphere-65 age=1.15s world(-1.98, 1.07, -1.41) norm(0.33, 0.27, 0.26)
+[LX 2025/08/14 22:26:30]   sphere-66 age=1.00s world(0.16, 0.19, 2.09) norm(0.51, 0.05, 0.85)
+[LX 2025/08/14 22:26:30]   sphere-67 age=0.85s world(1.31, 4.47, -0.35) norm(0.61, 1.00, 0.44)
+[LX 2025/08/14 22:26:30]   sphere-68 age=0.70s world(2.88, 1.22, -1.72) norm(0.74, 0.31, 0.21)
+[LX 2025/08/14 22:26:30]   sphere-69 age=0.54s world(0.92, 0.59, 0.67) norm(0.58, 0.15, 0.61)
+[LX 2025/08/14 22:26:30]   sphere-70 age=0.39s world(-0.95, 1.41, -0.77) norm(0.42, 0.35, 0.37)
+[LX 2025/08/14 22:26:30]   sphere-71 age=0.25s world(0.82, 2.76, 0.22) norm(0.57, 0.69, 0.54)
+[LX 2025/08/14 22:26:30]   sphere-72 age=0.10s world(-0.14, 2.08, -0.12) norm(0.49, 0.52, 0.48)
+[LX 2025/08/14 22:26:32] ParticlesTest: 20 active spheres
+[LX 2025/08/14 22:26:32]   sphere-60 age=2.90s world(3.52, 2.66, 2.50) norm(0.79, 0.67, 0.92)
+[LX 2025/08/14 22:26:32]   sphere-61 age=2.75s world(-3.86, 3.51, -1.26) norm(0.18, 0.88, 0.29)
+[LX 2025/08/14 22:26:32]   sphere-62 age=2.59s world(-3.21, 0.72, 1.37) norm(0.23, 0.18, 0.73)
+[LX 2025/08/14 22:26:32]   sphere-63 age=2.45s world(-4.66, 1.95, 2.11) norm(0.11, 0.49, 0.85)
+[LX 2025/08/14 22:26:32]   sphere-64 age=2.30s world(-3.63, 0.74, -2.16) norm(0.20, 0.19, 0.14)
+[LX 2025/08/14 22:26:32]   sphere-65 age=2.15s world(-2.91, 1.04, 0.05) norm(0.26, 0.26, 0.51)
+[LX 2025/08/14 22:26:32]   sphere-66 age=2.00s world(-1.38, 0.63, 2.42) norm(0.38, 0.16, 0.90)
+[LX 2025/08/14 22:26:32]   sphere-67 age=1.85s world(4.00, 2.69, -1.75) norm(0.83, 0.67, 0.21)
+[LX 2025/08/14 22:26:32]   sphere-68 age=1.70s world(5.26, 1.29, -1.60) norm(0.94, 0.32, 0.23)
+[LX 2025/08/14 22:26:32]   sphere-69 age=1.54s world(4.35, 0.52, 1.29) norm(0.86, 0.13, 0.72)
+[LX 2025/08/14 22:26:32]   sphere-70 age=1.40s world(-1.76, 1.27, -2.01) norm(0.35, 0.32, 0.17)
+[LX 2025/08/14 22:26:32]   sphere-71 age=1.25s world(5.30, 2.78, 0.92) norm(0.94, 0.70, 0.65)
+[LX 2025/08/14 22:26:32]   sphere-72 age=1.10s world(0.56, 1.62, -2.90) norm(0.55, 0.41, 0.02)
+[LX 2025/08/14 22:26:32]   sphere-73 age=0.95s world(-3.03, 3.28, 1.96) norm(0.25, 0.82, 0.83)
+[LX 2025/08/14 22:26:32]   sphere-74 age=0.79s world(-0.63, 2.28, 1.43) norm(0.45, 0.57, 0.74)
+[LX 2025/08/14 22:26:32]   sphere-75 age=0.64s world(2.27, 0.67, -0.27) norm(0.69, 0.17, 0.46)
+[LX 2025/08/14 22:26:32]   sphere-76 age=0.50s world(0.72, 3.51, -0.07) norm(0.56, 0.88, 0.49)
+[LX 2025/08/14 22:26:32]   sphere-77 age=0.34s world(0.33, 0.29, 0.37) norm(0.53, 0.07, 0.56)
+[LX 2025/08/14 22:26:32]   sphere-78 age=0.19s world(-0.22, 1.32, -1.00) norm(0.48, 0.33, 0.33)
+[LX 2025/08/14 22:26:32]   sphere-79 age=0.05s world(-0.12, 1.79, -0.23) norm(0.49, 0.45, 0.46)
+[LX 2025/08/14 22:26:34] ParticlesTest: 20 active spheres
+[LX 2025/08/14 22:26:34]   sphere-67 age=2.86s world(3.96, 2.75, -1.38) norm(0.83, 0.69, 0.27)
+[LX 2025/08/14 22:26:34]   sphere-68 age=2.71s world(4.92, 1.08, -1.52) norm(0.91, 0.27, 0.25)
+[LX 2025/08/14 22:26:34]   sphere-69 age=2.55s world(4.64, 1.23, 1.79) norm(0.89, 0.31, 0.80)
+[LX 2025/08/14 22:26:34]   sphere-70 age=2.40s world(-4.78, 2.48, -2.08) norm(0.10, 0.62, 0.15)
+[LX 2025/08/14 22:26:34]   sphere-71 age=2.26s world(4.91, 2.98, 1.43) norm(0.91, 0.75, 0.74)
+[LX 2025/08/14 22:26:34]   sphere-72 age=2.11s world(0.66, 1.92, -2.35) norm(0.55, 0.48, 0.11)
+[LX 2025/08/14 22:26:34]   sphere-73 age=1.96s world(-5.01, 3.12, 2.03) norm(0.08, 0.78, 0.84)
+[LX 2025/08/14 22:26:34]   sphere-74 age=1.80s world(-2.35, 2.50, 2.71) norm(0.30, 0.62, 0.95)
+[LX 2025/08/14 22:26:34]   sphere-75 age=1.65s world(3.01, 1.06, -0.12) norm(0.75, 0.26, 0.48)
+[LX 2025/08/14 22:26:34]   sphere-76 age=1.51s world(5.00, 22.24, -1.16) norm(0.92, 1.00, 0.31)
+[LX 2025/08/14 22:26:34]   sphere-77 age=1.35s world(1.60, 0.89, 1.95) norm(0.63, 0.22, 0.83)
+[LX 2025/08/14 22:26:34]   sphere-78 age=1.20s world(-3.25, 0.90, -2.33) norm(0.23, 0.23, 0.11)
+[LX 2025/08/14 22:26:34]   sphere-79 age=1.06s world(-4.96, 2.85, -0.03) norm(0.09, 0.71, 0.50)
+[LX 2025/08/14 22:26:34]   sphere-80 age=0.91s world(2.11, 2.67, 1.95) norm(0.68, 0.67, 0.83)
+[LX 2025/08/14 22:26:34]   sphere-81 age=0.75s world(-1.11, 2.54, -1.38) norm(0.41, 0.63, 0.27)
+[LX 2025/08/14 22:26:34]   sphere-82 age=0.60s world(-3.14, 0.10, 0.34) norm(0.24, 0.02, 0.56)
+[LX 2025/08/14 22:26:34]   sphere-83 age=0.46s world(-2.93, 2.92, 0.63) norm(0.26, 0.73, 0.61)
+[LX 2025/08/14 22:26:34]   sphere-84 age=0.30s world(0.68, 1.87, 0.77) norm(0.56, 0.47, 0.63)
+[LX 2025/08/14 22:26:34]   sphere-85 age=0.15s world(-0.76, 0.61, 0.33) norm(0.44, 0.15, 0.56)
+[LX 2025/08/14 22:26:34]   sphere-86 age=0.01s world(0.00, 2.00, 0.00) norm(0.50, 0.50, 0.50)
+[LX 2025/08/14 22:26:36] ParticlesTest: 20 active spheres
+[LX 2025/08/14 22:26:36]   sphere-73 age=2.96s world(-5.33, 2.91, 1.95) norm(0.06, 0.73, 0.83)
+[LX 2025/08/14 22:26:36]   sphere-74 age=2.80s world(-3.02, 2.39, 2.84) norm(0.25, 0.60, 0.97)
+[LX 2025/08/14 22:26:36]   sphere-75 age=2.65s world(5.29, 1.28, -1.86) norm(0.94, 0.32, 0.19)
+[LX 2025/08/14 22:26:36]   sphere-76 age=2.51s world(10.05, 46.60, -3.41) norm(1.00, 1.00, 0.00)
+[LX 2025/08/14 22:26:36]   sphere-77 age=2.35s world(4.73, 0.37, 1.85) norm(0.89, 0.09, 0.81)
+[LX 2025/08/14 22:26:36]   sphere-78 age=2.20s world(-5.06, 0.91, -2.27) norm(0.08, 0.23, 0.12)
+[LX 2025/08/14 22:26:36]   sphere-79 age=2.06s world(-5.43, 2.89, -0.54) norm(0.05, 0.72, 0.41)
+[LX 2025/08/14 22:26:36]   sphere-80 age=1.91s world(5.11, 3.14, 1.51) norm(0.93, 0.78, 0.75)
+[LX 2025/08/14 22:26:36]   sphere-81 age=1.75s world(-2.70, 2.52, -2.23) norm(0.27, 0.63, 0.13)
+[LX 2025/08/14 22:26:36]   sphere-82 age=1.60s world(-4.86, 0.70, 0.12) norm(0.10, 0.17, 0.52)
+[LX 2025/08/14 22:26:36]   sphere-83 age=1.46s world(-4.17, 3.30, -0.33) norm(0.15, 0.82, 0.44)
+[LX 2025/08/14 22:26:36]   sphere-84 age=1.30s world(4.08, 2.55, 1.16) norm(0.84, 0.64, 0.69)
+[LX 2025/08/14 22:26:36]   sphere-85 age=1.15s world(-2.04, 0.64, 1.08) norm(0.33, 0.16, 0.68)
+[LX 2025/08/14 22:26:36]   sphere-86 age=1.01s world(-1.73, 2.82, -0.60) norm(0.36, 0.70, 0.40)
+[LX 2025/08/14 22:26:36]   sphere-87 age=0.86s world(2.59, 2.03, -1.16) norm(0.72, 0.51, 0.31)
+[LX 2025/08/14 22:26:36]   sphere-88 age=0.71s world(1.24, 1.70, 2.19) norm(0.60, 0.43, 0.87)
+[LX 2025/08/14 22:26:36]   sphere-89 age=0.56s world(0.26, 0.38, -0.47) norm(0.52, 0.10, 0.42)
+[LX 2025/08/14 22:26:36]   sphere-90 age=0.40s world(1.56, 3.77, 0.47) norm(0.63, 0.94, 0.58)
+[LX 2025/08/14 22:26:36]   sphere-91 age=0.26s world(0.80, 1.89, 0.89) norm(0.57, 0.47, 0.65)
+[LX 2025/08/14 22:26:36]   sphere-92 age=0.11s world(-0.01, 1.74, -0.34) norm(0.50, 0.44, 0.44)
+[LX 2025/08/14 22:26:38] ParticlesTest: 20 active spheres
+[LX 2025/08/14 22:26:38]   sphere-80 age=2.91s world(5.75, 2.33, 1.86) norm(0.98, 0.58, 0.81)
+[LX 2025/08/14 22:26:38]   sphere-81 age=2.75s world(-3.90, 1.80, -2.04) norm(0.17, 0.45, 0.16)
+[LX 2025/08/14 22:26:38]   sphere-82 age=2.60s world(-5.03, 0.88, 1.24) norm(0.08, 0.22, 0.71)
+[LX 2025/08/14 22:26:38]   sphere-83 age=2.46s world(-4.89, 3.05, 2.25) norm(0.09, 0.76, 0.88)
+[LX 2025/08/14 22:26:38]   sphere-84 age=2.30s world(4.56, 2.43, 0.91) norm(0.88, 0.61, 0.65)
+[LX 2025/08/14 22:26:38]   sphere-85 age=2.15s world(-2.95, 0.99, 1.91) norm(0.25, 0.25, 0.82)
+[LX 2025/08/14 22:26:38]   sphere-86 age=2.01s world(-3.06, 3.52, 0.06) norm(0.25, 0.88, 0.51)
+[LX 2025/08/14 22:26:38]   sphere-87 age=1.86s world(3.55, 1.66, -1.72) norm(0.80, 0.42, 0.21)
+[LX 2025/08/14 22:26:38]   sphere-88 age=1.71s world(2.68, 0.96, 13.73) norm(0.72, 0.24, 1.00)
+[LX 2025/08/14 22:26:38]   sphere-89 age=1.56s world(-0.01, 0.03, -1.94) norm(0.50, 0.01, 0.18)
+[LX 2025/08/14 22:26:38]   sphere-90 age=1.40s world(3.06, 3.65, 0.75) norm(0.76, 0.91, 0.62)
+[LX 2025/08/14 22:26:38]   sphere-91 age=1.26s world(3.09, 1.08, 1.90) norm(0.76, 0.27, 0.82)
+[LX 2025/08/14 22:26:38]   sphere-92 age=1.11s world(0.74, 2.40, -3.03) norm(0.56, 0.60, 0.00)
+[LX 2025/08/14 22:26:38]   sphere-93 age=0.96s world(0.51, 3.28, 1.29) norm(0.54, 0.82, 0.71)
+[LX 2025/08/14 22:26:38]   sphere-94 age=0.81s world(-1.88, 2.25, 2.40) norm(0.34, 0.56, 0.90)
+[LX 2025/08/14 22:26:38]   sphere-95 age=0.66s world(-0.49, -0.18, -0.65) norm(0.46, 0.00, 0.39)
+[LX 2025/08/14 22:26:38]   sphere-96 age=0.51s world(0.52, 1.97, 2.68) norm(0.54, 0.49, 0.95)
+[LX 2025/08/14 22:26:38]   sphere-97 age=0.36s world(1.27, 2.03, 0.39) norm(0.61, 0.51, 0.57)
+[LX 2025/08/14 22:26:38]   sphere-98 age=0.20s world(-0.91, 2.19, 0.05) norm(0.42, 0.55, 0.51)
+[LX 2025/08/14 22:26:38]   sphere-99 age=0.05s world(-0.10, 2.10, 0.08) norm(0.49, 0.52, 0.51)
+[LX 2025/08/14 22:26:40] ParticlesTest: 20 active spheres
+[LX 2025/08/14 22:26:40]   sphere-87 age=2.86s world(4.26, 2.04, -2.16) norm(0.85, 0.51, 0.14)
+[LX 2025/08/14 22:26:40]   sphere-88 age=2.71s world(4.94, -3.04, 42.61) norm(0.91, 0.00, 1.00)
+[LX 2025/08/14 22:26:40]   sphere-89 age=2.56s world(0.58, 1.14, -2.54) norm(0.55, 0.29, 0.08)
+[LX 2025/08/14 22:26:40]   sphere-90 age=2.40s world(4.92, 3.34, 2.05) norm(0.91, 0.84, 0.84)
+[LX 2025/08/14 22:26:40]   sphere-91 age=2.26s world(4.60, 1.12, 2.05) norm(0.88, 0.28, 0.84)
+[LX 2025/08/14 22:26:40]   sphere-92 age=2.11s world(5.20, 1.96, -29.12) norm(0.93, 0.49, 0.00)
+[LX 2025/08/14 22:26:40]   sphere-93 age=1.96s world(1.74, 3.52, 1.63) norm(0.64, 0.88, 0.77)
+[LX 2025/08/14 22:26:40]   sphere-94 age=1.81s world(-4.20, 2.50, 2.53) norm(0.15, 0.63, 0.92)
+[LX 2025/08/14 22:26:40]   sphere-95 age=1.66s world(-3.04, 0.19, -1.18) norm(0.25, 0.05, 0.30)
+[LX 2025/08/14 22:26:40]   sphere-96 age=1.51s world(1.02, 0.99, 2.54) norm(0.58, 0.25, 0.92)
+[LX 2025/08/14 22:26:40]   sphere-97 age=1.36s world(4.16, 2.01, 0.08) norm(0.85, 0.50, 0.51)
+[LX 2025/08/14 22:26:40]   sphere-98 age=1.20s world(-3.45, 2.39, -1.84) norm(0.21, 0.60, 0.19)
+[LX 2025/08/14 22:26:40]   sphere-99 age=1.05s world(0.24, 3.24, -2.43) norm(0.52, 0.81, 0.10)
+[LX 2025/08/14 22:26:40]   sphere-100 age=0.91s world(1.46, 0.33, -0.48) norm(0.62, 0.08, 0.42)
+[LX 2025/08/14 22:26:40]   sphere-101 age=0.76s world(-4.66, 1.10, 1.30) norm(0.11, 0.28, 0.72)
+[LX 2025/08/14 22:26:40]   sphere-102 age=0.61s world(0.08, 2.49, 0.74) norm(0.51, 0.62, 0.62)
+[LX 2025/08/14 22:26:40]   sphere-103 age=0.46s world(-1.42, 1.79, 0.41) norm(0.38, 0.45, 0.57)
+[LX 2025/08/14 22:26:40]   sphere-104 age=0.31s world(2.21, 2.41, -0.75) norm(0.68, 0.60, 0.37)
+[LX 2025/08/14 22:26:40]   sphere-105 age=0.16s world(-0.18, 2.16, -0.53) norm(0.48, 0.54, 0.41)
+[LX 2025/08/14 22:26:40]   sphere-106 age=0.01s world(0.00, 2.00, 0.00) norm(0.50, 0.50, 0.50)
+[LX 2025/08/14 22:26:42] ParticlesTest: 20 active spheres
+[LX 2025/08/14 22:26:42]   sphere-93 age=2.97s world(4.24, 3.18, 1.58) norm(0.85, 0.80, 0.76)
+[LX 2025/08/14 22:26:42]   sphere-94 age=2.82s world(-4.49, 3.04, 1.87) norm(0.13, 0.76, 0.81)
+[LX 2025/08/14 22:26:42]   sphere-95 age=2.67s world(-4.19, 0.62, -1.47) norm(0.15, 0.15, 0.25)
+[LX 2025/08/14 22:26:42]   sphere-96 age=2.52s world(2.83, 0.62, 2.04) norm(0.74, 0.15, 0.84)
+[LX 2025/08/14 22:26:42]   sphere-97 age=2.37s world(5.63, 2.07, -1.27) norm(0.97, 0.52, 0.29)
+[LX 2025/08/14 22:26:42]   sphere-98 age=2.21s world(-4.84, 2.91, -1.35) norm(0.10, 0.73, 0.27)
+[LX 2025/08/14 22:26:42]   sphere-99 age=2.06s world(1.09, 3.03, -2.97) norm(0.59, 0.76, 0.01)
+[LX 2025/08/14 22:26:42]   sphere-100 age=1.92s world(3.70, 1.02, -2.01) norm(0.81, 0.25, 0.17)
+[LX 2025/08/14 22:26:42]   sphere-101 age=1.77s world(-5.55, 1.06, 1.56) norm(0.04, 0.27, 0.76)
+[LX 2025/08/14 22:26:42]   sphere-102 age=1.62s world(0.93, 2.99, 2.55) norm(0.58, 0.75, 0.92)
+[LX 2025/08/14 22:26:42]   sphere-103 age=1.47s world(-3.27, 2.00, 1.59) norm(0.23, 0.50, 0.77)
+[LX 2025/08/14 22:26:42]   sphere-104 age=1.32s world(3.35, 3.07, -1.97) norm(0.78, 0.77, 0.17)
+[LX 2025/08/14 22:26:42]   sphere-105 age=1.17s world(-2.13, 2.66, -2.02) norm(0.32, 0.67, 0.16)
+[LX 2025/08/14 22:26:42]   sphere-106 age=1.02s world(0.05, 0.94, -1.50) norm(0.50, 0.24, 0.25)
+[LX 2025/08/14 22:26:42]   sphere-107 age=0.87s world(5.09, 0.92, 0.86) norm(0.92, 0.23, 0.64)
+[LX 2025/08/14 22:26:42]   sphere-108 age=0.72s world(3.09, 1.40, -0.28) norm(0.76, 0.35, 0.45)
+[LX 2025/08/14 22:26:42]   sphere-109 age=0.57s world(-0.79, 1.22, -0.03) norm(0.43, 0.30, 0.49)
+[LX 2025/08/14 22:26:42]   sphere-110 age=0.42s world(0.86, 2.62, 1.04) norm(0.57, 0.65, 0.67)
+[LX 2025/08/14 22:26:42]   sphere-111 age=0.27s world(1.36, 3.42, -0.95) norm(0.61, 0.85, 0.34)
+[LX 2025/08/14 22:26:42]   sphere-112 age=0.12s world(0.20, 2.42, 0.13) norm(0.52, 0.61, 0.52)
+[LX 2025/08/14 22:26:44] ParticlesTest: 20 active spheres
+[LX 2025/08/14 22:26:44]   sphere-100 age=2.92s world(3.61, 0.95, -2.21) norm(0.80, 0.24, 0.13)
+[LX 2025/08/14 22:26:44]   sphere-101 age=2.77s world(-5.29, 0.92, 1.09) norm(0.06, 0.23, 0.68)
+[LX 2025/08/14 22:26:44]   sphere-102 age=2.62s world(2.65, 0.78, 28.40) norm(0.72, 0.20, 1.00)
+[LX 2025/08/14 22:26:44]   sphere-103 age=2.47s world(-4.61, 2.51, 1.60) norm(0.12, 0.63, 0.77)
+[LX 2025/08/14 22:26:44]   sphere-104 age=2.32s world(3.95, 3.14, -2.20) norm(0.83, 0.79, 0.13)
+[LX 2025/08/14 22:26:44]   sphere-105 age=2.17s world(-4.45, 2.69, -1.98) norm(0.13, 0.67, 0.17)
+[LX 2025/08/14 22:26:44]   sphere-106 age=2.02s world(-0.50, 0.78, -2.77) norm(0.46, 0.20, 0.04)
+[LX 2025/08/14 22:26:44]   sphere-107 age=1.87s world(5.88, 0.58, 1.73) norm(0.99, 0.14, 0.79)
+[LX 2025/08/14 22:26:44]   sphere-108 age=1.72s world(5.21, 1.56, -0.42) norm(0.93, 0.39, 0.43)
+[LX 2025/08/14 22:26:44]   sphere-109 age=1.57s world(-2.37, 0.13, 1.16) norm(0.30, 0.03, 0.69)
+[LX 2025/08/14 22:26:44]   sphere-110 age=1.42s world(3.79, 2.84, 2.47) norm(0.82, 0.71, 0.91)
+[LX 2025/08/14 22:26:44]   sphere-111 age=1.27s world(3.71, 3.08, -0.63) norm(0.81, 0.77, 0.39)
+[LX 2025/08/14 22:26:44]   sphere-112 age=1.12s world(4.21, 1.41, 1.19) norm(0.85, 0.35, 0.70)
+[LX 2025/08/14 22:26:44]   sphere-113 age=0.97s world(-2.42, 4.29, 0.79) norm(0.30, 1.00, 0.63)
+[LX 2025/08/14 22:26:44]   sphere-114 age=0.82s world(-0.23, 3.66, -2.01) norm(0.48, 0.91, 0.16)
+[LX 2025/08/14 22:26:44]   sphere-115 age=0.67s world(1.83, 0.88, 0.55) norm(0.65, 0.22, 0.59)
+[LX 2025/08/14 22:26:44]   sphere-116 age=0.52s world(1.22, 2.23, 0.76) norm(0.60, 0.56, 0.63)
+[LX 2025/08/14 22:26:44]   sphere-117 age=0.37s world(-3.07, 1.83, -1.67) norm(0.24, 0.46, 0.22)
+[LX 2025/08/14 22:26:44]   sphere-118 age=0.22s world(-0.54, 2.24, -0.32) norm(0.45, 0.56, 0.45)
+[LX 2025/08/14 22:26:44]   sphere-119 age=0.07s world(-0.19, 1.84, -0.52) norm(0.48, 0.46, 0.41)
+[LX 2025/08/14 22:26:46] ParticlesTest: 20 active spheres
+[LX 2025/08/14 22:26:46]   sphere-107 age=2.87s world(5.34, 0.74, 2.19) norm(0.94, 0.19, 0.87)
+[LX 2025/08/14 22:26:46]   sphere-108 age=2.72s world(4.93, 1.62, -2.52) norm(0.91, 0.41, 0.08)
+[LX 2025/08/14 22:26:46]   sphere-109 age=2.57s world(-4.20, 1.12, 1.17) norm(0.15, 0.28, 0.69)
+[LX 2025/08/14 22:26:46]   sphere-110 age=2.42s world(4.18, 2.81, 1.62) norm(0.85, 0.70, 0.77)
+[LX 2025/08/14 22:26:46]   sphere-111 age=2.27s world(3.35, 3.07, -1.87) norm(0.78, 0.77, 0.19)
+[LX 2025/08/14 22:26:46]   sphere-112 age=2.12s world(4.95, 1.58, -0.17) norm(0.91, 0.39, 0.47)
+[LX 2025/08/14 22:26:46]   sphere-113 age=1.97s world(-4.82, 2.94, 1.10) norm(0.10, 0.74, 0.68)
+[LX 2025/08/14 22:26:46]   sphere-114 age=1.82s world(0.61, 3.42, -2.29) norm(0.55, 0.85, 0.12)
+[LX 2025/08/14 22:26:46]   sphere-115 age=1.67s world(2.59, 0.51, -0.73) norm(0.72, 0.13, 0.38)
+[LX 2025/08/14 22:26:46]   sphere-116 age=1.52s world(1.55, 2.57, 2.20) norm(0.63, 0.64, 0.87)
+[LX 2025/08/14 22:26:46]   sphere-117 age=1.37s world(-4.11, 1.18, -2.31) norm(0.16, 0.29, 0.12)
+[LX 2025/08/14 22:26:46]   sphere-118 age=1.22s world(-2.51, 2.91, -1.15) norm(0.29, 0.73, 0.31)
+[LX 2025/08/14 22:26:46]   sphere-119 age=1.07s world(-0.43, -0.34, -1.31) norm(0.46, 0.00, 0.28)
+[LX 2025/08/14 22:26:46]   sphere-120 age=0.92s world(-1.48, 2.68, 2.46) norm(0.38, 0.67, 0.91)
+[LX 2025/08/14 22:26:46]   sphere-121 age=0.77s world(-0.27, 0.71, 1.71) norm(0.48, 0.18, 0.78)
+[LX 2025/08/14 22:26:46]   sphere-122 age=0.62s world(-0.07, 3.05, 0.16) norm(0.49, 0.76, 0.53)
+[LX 2025/08/14 22:26:46]   sphere-123 age=0.47s world(1.50, 1.70, -1.95) norm(0.62, 0.42, 0.17)
+[LX 2025/08/14 22:26:46]   sphere-124 age=0.32s world(-1.06, 1.76, -0.39) norm(0.41, 0.44, 0.43)
+[LX 2025/08/14 22:26:46]   sphere-125 age=0.17s world(0.40, 1.58, 0.12) norm(0.53, 0.39, 0.52)
+[LX 2025/08/14 22:26:46]   sphere-126 age=0.02s world(0.00, 2.00, 0.00) norm(0.50, 0.50, 0.50)
+[LX 2025/08/14 22:26:48] ParticlesTest: 20 active spheres
+[LX 2025/08/14 22:26:48]   sphere-113 age=2.97s world(-5.08, 2.16, 1.50) norm(0.08, 0.54, 0.75)
+[LX 2025/08/14 22:26:48]   sphere-114 age=2.82s world(0.60, 2.88, -2.22) norm(0.55, 0.72, 0.13)
+[LX 2025/08/14 22:26:48]   sphere-115 age=2.67s world(5.07, 1.30, -1.65) norm(0.92, 0.33, 0.22)
+[LX 2025/08/14 22:26:48]   sphere-116 age=2.52s world(4.50, 2.98, 2.58) norm(0.87, 0.75, 0.93)
+[LX 2025/08/14 22:26:48]   sphere-117 age=2.37s world(-5.36, 0.93, -2.11) norm(0.05, 0.23, 0.15)
+[LX 2025/08/14 22:26:48]   sphere-118 age=2.22s world(-4.06, 2.97, -1.14) norm(0.16, 0.74, 0.31)
+[LX 2025/08/14 22:26:48]   sphere-119 age=2.07s world(-0.25, 0.76, -2.28) norm(0.48, 0.19, 0.12)
+[LX 2025/08/14 22:26:48]   sphere-120 age=1.92s world(-1.93, 2.96, 2.51) norm(0.34, 0.74, 0.92)
+[LX 2025/08/14 22:26:48]   sphere-121 age=1.77s world(-0.89, 0.85, 2.04) norm(0.43, 0.21, 0.84)
+[LX 2025/08/14 22:26:48]   sphere-122 age=1.62s world(-1.73, 16.17, -1.54) norm(0.36, 1.00, 0.24)
+[LX 2025/08/14 22:26:48]   sphere-123 age=1.47s world(2.99, 2.38, -2.22) norm(0.75, 0.59, 0.13)
+[LX 2025/08/14 22:26:48]   sphere-124 age=1.32s world(-3.07, 0.75, -2.25) norm(0.24, 0.19, 0.13)
+[LX 2025/08/14 22:26:48]   sphere-125 age=1.17s world(5.01, 0.59, 0.71) norm(0.92, 0.15, 0.62)
+[LX 2025/08/14 22:26:48]   sphere-126 age=1.02s world(-2.88, 1.05, -0.72) norm(0.26, 0.26, 0.38)
+[LX 2025/08/14 22:26:48]   sphere-127 age=0.87s world(2.61, 0.60, 1.94) norm(0.72, 0.15, 0.82)
+[LX 2025/08/14 22:26:48]   sphere-128 age=0.72s world(2.95, 2.47, 0.23) norm(0.75, 0.62, 0.54)
+[LX 2025/08/14 22:26:48]   sphere-129 age=0.57s world(-1.58, 1.44, 0.12) norm(0.37, 0.36, 0.52)
+[LX 2025/08/14 22:26:48]   sphere-130 age=0.42s world(0.92, 2.38, 0.17) norm(0.58, 0.59, 0.53)
+[LX 2025/08/14 22:26:48]   sphere-131 age=0.27s world(0.29, 1.61, 0.43) norm(0.52, 0.40, 0.57)
+[LX 2025/08/14 22:26:48]   sphere-132 age=0.12s world(0.33, 1.49, -1.35) norm(0.53, 0.37, 0.28)
+[GLX 2025/08/14 22:26:50] GLXWindow closed, shutting down...
+[GLX 2025/08/14 22:26:50] Stopping LX engine...
+[LX 2025/08/14 22:26:50] LXEngine.ExecutorService has finished.
+[GLX 2025/08/14 22:26:50] Disposing GLX...
+[GLX 2025/08/14 22:26:50] Disposing GLX.UI...
+[GLX 2025/08/14 22:26:50] GLX.UI disposed.
+[LX 2025/08/14 22:26:50] Bullet Bootstrap: Cleaning up Bullet Physics resources
+[LX 2025/08/14 22:26:50] Bullet Bootstrap: Bullet Physics cleanup complete
+[GLX 2025/08/14 22:26:50] TEApp.Plugin.dispose()
+[LX 2025/08/14 22:26:50] [SuperMod] SuperMod.dispose()
+[LX 2025/08/14 22:26:50] Finished audio input thread: Default Audio Device
+[LX 2025/08/14 22:26:50] [MIDI] LXMidiEngine Device Update Thread finished.
+[GLX 2025/08/14 22:26:50] GLX disposed.
+[GLX 2025/08/14 22:26:50] Disposing BGFXEngine...
+[LX 2025/08/14 22:26:50] [ArtNet] Art-Net receiver thread finished /0:0:0:0:0:0:0:0:6454.
+[LX 2025/08/14 22:26:50] [OSC] Stopped OSC listener /[0:0:0:0:0:0:0:0]:42069
+[LX 2025/08/14 22:26:50] [OSC] Stopped OSC listener /[0:0:0:0:0:0:0:0]:3030
+[GLX 2025/08/14 22:26:50] BGFX Render Thread finished.
+[GLX 2025/08/14 22:26:50] Destroying main thread GLFW window...
+[GLX 2025/08/14 22:26:50] Done with main thread, GLX shutdown complete. Thanks for playing. <3

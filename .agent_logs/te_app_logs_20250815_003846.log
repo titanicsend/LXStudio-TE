@@ -1,0 +1,173 @@
+[LX 2025/08/15 00:38:46] Starting Chromatik version 1.1.1-TE.5.GPU-SNAPSHOT
+[LX 2025/08/15 00:38:46] Running java 24.0.1 Oracle Corporation Mac OS X 15.5 aarch64
+[GLX 2025/08/15 00:38:46] CLI args: --resolution 1920x1200 
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.lwjgl.system.Library$$Lambda/0x000003fc0100e568 in an unnamed module (file:/Users/sinas/workspace/LXStudio-TE/te-app/target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.lwjgl.system.MemoryUtil (file:/Users/sinas/workspace/LXStudio-TE/te-app/target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar)
+WARNING: Please consider reporting this to the maintainers of class org.lwjgl.system.MemoryUtil
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[GLX 2025/08/15 00:38:46] GLXWindow monitorWorkarea: size(1728x1079), pos(x:0,y:38)
+[GLX 2025/08/15 00:38:46] GLXWindow createWindow: 1728x1079
+[GLX 2025/08/15 00:38:46] GLXWindow systemContentScale: 2.0x2.0
+[GLX 2025/08/15 00:38:46] GLXWindow setWindowPos: 0,44
+[GLX 2025/08/15 00:38:46] GLXWindow windowSize: 1728x1051
+[GLX 2025/08/15 00:38:46] GLXWindow framebufferSize: 3456x2102
+[GLX 2025/08/15 00:38:46] GLXWindow uiSize: 1728.0x1051.0
+[GLX 2025/08/15 00:38:46] GLXWindow cursorScale: 1.0x1.0
+[GLX 2025/08/15 00:38:46] GLXWindow.main() awaiting GLX boostrap...
+[LX 2025/08/15 00:38:46] [AudioStems] AudioStemsPlugin(LX) version: 0.3.0-SNAPSHOT
+[GLX 2025/08/15 00:38:46] TEApp.Plugin(LX)
+[LX 2025/08/15 00:38:47] GLEngine: Rendering canvas size: 1920x1200 = 2304000 total points
+[LX 2025/08/15 00:38:47] Loading user presets: ./Presets/UserPresets/BM24.userPresets
+[LX 2025/08/15 00:38:47] [SuperMod] SuperMod Plugin version 0.1.5-SNAPSHOT
+[LX 2025/08/15 00:38:47] [OscRemapper] OscRemapperPlugin(LX) constructor called - version: 0.3.0-SNAPSHOT
+[LX 2025/08/15 00:38:47] [OscRemapper] Using config path: resources/osc_remapper.yaml
+[LX 2025/08/15 00:38:47] [OscRemapper] Loading OSC Remapper config from: /Users/sinas/workspace/LXStudio-TE/te-app/resources/osc_remapper.yaml
+[LX 2025/08/15 00:38:47] [OscRemapper] Successfully parsed YAML config with 7 destinations and 4 remappings
+[LX 2025/08/15 00:38:47] [OscRemapper] Loaded configuration with 7 destinations and 4 remappings
+[GLX 2025/08/15 00:38:47] TEApp.Plugin.initialize()
+[LX 2025/08/15 00:38:47] Creating Shader class: titanicsend.pattern.glengine.StarField1 for starfield1.fs
+[LX 2025/08/15 00:38:47] Creating Shader class: titanicsend.pattern.glengine.Circuitry for circuitry.fs
+[LX 2025/08/15 00:38:47] Creating Shader class: titanicsend.pattern.glengine.GummyWeave for gummy_weave.fs
+[LX 2025/08/15 00:38:47] Creating Shader class: titanicsend.pattern.glengine.Colortest for colortest.fs
+[LX 2025/08/15 00:38:47] Creating Shader class: titanicsend.pattern.glengine.GummyWorms for gummy_worms.fs
+[LX 2025/08/15 00:38:47] Creating Shader class: titanicsend.pattern.glengine.DatsaMoire for datsa_moire.fs
+[LX 2025/08/15 00:38:47] Creating Shader class: titanicsend.pattern.glengine.Waterfall for waterfall.fs
+[LX 2025/08/15 00:38:47] Creating Shader class: titanicsend.pattern.glengine.PolySpiral2 for polyspiral2.fs
+[LX 2025/08/15 00:38:47] Creating Shader class: titanicsend.pattern.glengine.NeonMess for neonmess.fs
+[LX 2025/08/15 00:38:47] Creating Shader class: titanicsend.pattern.glengine.Icemelt for icemelt.fs
+[LX 2025/08/15 00:38:47] Creating Shader class: titanicsend.pattern.glengine.GummyFireflies2 for gummy_fireflies2.fs
+[LX 2025/08/15 00:38:47] Creating Shader class: titanicsend.pattern.glengine.StemTriangleInfinity for triangle_infinity_mod_stems.fs
+[LX 2025/08/15 00:38:47] Creating Shader class: titanicsend.pattern.glengine.TechnoChurch for techno_church.fs
+[LX 2025/08/15 00:38:47] Creating Shader class: titanicsend.pattern.glengine.ArtOfCode for artofcode.fs
+[LX 2025/08/15 00:38:47] Creating Shader class: titanicsend.pattern.glengine.StarField2 for starfield2.fs
+[LX 2025/08/15 00:38:47] Creating Shader class: titanicsend.pattern.glengine.GummyNoise for gummy_noise.fs
+[LX 2025/08/15 00:38:47] Attaching the OSC message listener to port 42069 ...
+[LX 2025/08/15 00:38:47] [OSC] Started OSC listener /[0:0:0:0:0:0:0:0]:3030
+[LX 2025/08/15 00:38:47] DevSwitch setting state to DEVELOPER...
+[LX 2025/08/15 00:38:47] [ArtNet] Starting Art-Net listener on /0:0:0:0:0:0:0:0:6454
+[LX 2025/08/15 00:38:47] Started audio input thread: Default Audio Device
+[GLX 2025/08/15 00:38:47] BGFX renderer: Metal
+[GLX 2025/08/15 00:38:47] TEApp.Plugin.initializeUI()
+[GLX 2025/08/15 00:38:47] TEApp.Plugin.onUIReady()
+[LX 2025/08/15 00:38:49] Gamepad mappings updated successfully.
+[GLX 2025/08/15 00:38:49] Starting LX Engine...
+[LX 2025/08/15 00:38:49] LXEngine.ExecutorService starting...
+[GLX 2025/08/15 00:38:49] Running main BGFX loop...
+[GLX 2025/08/15 00:38:49] GLX boostrap complete, GLXWindow running event loop...
+[LX 2025/08/15 00:38:49] Opening project file: ./Projects/BM25_playachemist.lxp
+[LX 2025/08/15 00:38:49] DevSwitch detected potential file change, remembering state DEVELOPER
+Loaded sketches: 200
+Loaded sketches: 200
+[LX 2025/08/15 00:38:50] ParticlesTest: Initializing dynamic sphere emitter demo...
+[LX 2025/08/15 00:38:50] ParticlesTest: Dynamic sphere emitter initialized
+Loaded sketches: 200
+Loaded sketches: 200
+Loaded sketches: 200
+Loaded sketches: 200
+[LX 2025/08/15 00:38:50] Autopilot detected completion of openProject(), defensive positions have been taken (or is first file open)...
+[LX 2025/08/15 00:38:50] DevSwitch restoring the state DEVELOPER
+[LX 2025/08/15 00:38:50] DevSwitch setting state to DEVELOPER...
+[LX 2025/08/15 00:38:50] Project loaded successfully from ./Projects/BM25_playachemist.lxp
+[LX 2025/08/15 00:38:50] NDI: Successfully initialized sender 'TitanicsEnd'
+[LX 2025/08/15 00:38:50] Shader 'ndi_out_effect.fs' uniform error: Missing texture 'iDst' for unit 4, this could be a bug...
+[LX 2025/08/15 00:38:51] ParticlesTest: 5 active spheres
+[LX 2025/08/15 00:38:51]   sphere-0 age=0.00s world(6.67, 4.33, -0.68) norm(0.67, 0.43, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:51]   sphere-1 age=0.00s world(4.95, 3.28, -0.58) norm(0.50, 0.33, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:51]   sphere-2 age=0.00s world(6.53, 6.62, 0.54) norm(0.65, 0.66, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:51]   sphere-3 age=0.00s world(3.62, 6.58, 0.56) norm(0.36, 0.66, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:51]   sphere-4 age=0.00s world(3.31, 3.79, 0.57) norm(0.33, 0.38, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:53] ParticlesTest: 5 active spheres
+[LX 2025/08/15 00:38:53]   sphere-0 age=0.00s world(6.78, 4.47, -0.58) norm(0.68, 0.45, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:53]   sphere-1 age=0.00s world(4.85, 3.27, -0.62) norm(0.48, 0.33, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:53]   sphere-2 age=0.00s world(6.44, 6.59, 0.60) norm(0.64, 0.66, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:53]   sphere-3 age=0.00s world(3.50, 6.52, 0.46) norm(0.35, 0.65, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:53]   sphere-4 age=0.00s world(3.10, 3.75, 0.64) norm(0.31, 0.38, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:55] ParticlesTest: 5 active spheres
+[LX 2025/08/15 00:38:55]   sphere-0 age=0.00s world(6.68, 4.44, -0.67) norm(0.67, 0.44, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:55]   sphere-1 age=0.00s world(4.90, 3.31, -0.69) norm(0.49, 0.33, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:55]   sphere-2 age=0.00s world(6.32, 6.71, 0.62) norm(0.63, 0.67, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:55]   sphere-3 age=0.00s world(3.51, 6.54, 0.36) norm(0.35, 0.65, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:55]   sphere-4 age=0.00s world(3.24, 3.62, 0.76) norm(0.32, 0.36, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:57] ParticlesTest: 5 active spheres
+[LX 2025/08/15 00:38:57]   sphere-0 age=0.00s world(6.77, 4.52, -0.59) norm(0.68, 0.45, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:57]   sphere-1 age=0.00s world(4.73, 3.24, -0.71) norm(0.47, 0.32, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:57]   sphere-2 age=0.00s world(6.38, 6.76, 0.59) norm(0.64, 0.68, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:57]   sphere-3 age=0.00s world(3.44, 6.63, 0.16) norm(0.34, 0.66, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:57]   sphere-4 age=0.00s world(3.09, 3.78, 0.70) norm(0.31, 0.38, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:59] ParticlesTest: 5 active spheres
+[LX 2025/08/15 00:38:59]   sphere-0 age=0.00s world(6.73, 4.41, -0.56) norm(0.67, 0.44, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:59]   sphere-1 age=0.00s world(4.83, 3.31, -0.69) norm(0.48, 0.33, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:59]   sphere-2 age=0.00s world(6.31, 6.62, 0.55) norm(0.63, 0.66, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:59]   sphere-3 age=0.00s world(3.50, 6.54, -0.22) norm(0.35, 0.65, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:38:59]   sphere-4 age=0.00s world(3.29, 3.84, 0.60) norm(0.33, 0.38, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:01] ParticlesTest: 5 active spheres
+[LX 2025/08/15 00:39:01]   sphere-0 age=0.00s world(6.77, 4.37, -0.61) norm(0.68, 0.44, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:01]   sphere-1 age=0.00s world(4.84, 3.30, -0.66) norm(0.48, 0.33, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:01]   sphere-2 age=0.00s world(6.23, 6.71, 0.54) norm(0.62, 0.67, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:01]   sphere-3 age=0.00s world(3.51, 6.63, -0.55) norm(0.35, 0.66, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:01]   sphere-4 age=0.00s world(3.28, 3.90, 0.66) norm(0.33, 0.39, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:03] ParticlesTest: 5 active spheres
+[LX 2025/08/15 00:39:03]   sphere-0 age=0.00s world(6.71, 4.31, -0.57) norm(0.67, 0.43, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:03]   sphere-1 age=0.00s world(4.78, 3.30, -0.69) norm(0.48, 0.33, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:03]   sphere-2 age=0.00s world(6.15, 6.67, 0.62) norm(0.61, 0.67, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:03]   sphere-3 age=0.00s world(3.48, 6.60, -0.53) norm(0.35, 0.66, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:03]   sphere-4 age=0.00s world(3.35, 4.11, 0.73) norm(0.33, 0.41, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:05] ParticlesTest: 5 active spheres
+[LX 2025/08/15 00:39:05]   sphere-0 age=0.00s world(6.67, 4.20, -0.60) norm(0.67, 0.42, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:05]   sphere-1 age=0.00s world(4.63, 3.17, -0.76) norm(0.46, 0.32, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:05]   sphere-2 age=0.00s world(6.06, 6.63, 0.59) norm(0.61, 0.66, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:05]   sphere-3 age=0.00s world(3.46, 6.60, -0.55) norm(0.35, 0.66, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:05]   sphere-4 age=0.00s world(3.27, 4.20, 0.77) norm(0.33, 0.42, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:07] ParticlesTest: 5 active spheres
+[LX 2025/08/15 00:39:07]   sphere-0 age=0.00s world(6.77, 4.24, -0.53) norm(0.68, 0.42, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:07]   sphere-1 age=0.00s world(4.51, 3.24, -0.66) norm(0.45, 0.32, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:07]   sphere-2 age=0.00s world(6.17, 6.62, 0.56) norm(0.62, 0.66, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:07]   sphere-3 age=0.00s world(3.47, 6.70, -0.58) norm(0.35, 0.67, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:07]   sphere-4 age=0.00s world(3.31, 4.44, 0.84) norm(0.33, 0.44, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:09] ParticlesTest: 5 active spheres
+[LX 2025/08/15 00:39:09]   sphere-0 age=0.00s world(6.66, 4.12, -0.56) norm(0.67, 0.41, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:09]   sphere-1 age=0.00s world(4.37, 3.28, -0.75) norm(0.44, 0.33, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:09]   sphere-2 age=0.00s world(6.22, 6.61, 0.54) norm(0.62, 0.66, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:09]   sphere-3 age=0.00s world(3.55, 6.73, -0.58) norm(0.36, 0.67, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:09]   sphere-4 age=0.00s world(3.32, 4.52, 0.72) norm(0.33, 0.45, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:11] ParticlesTest: 5 active spheres
+[LX 2025/08/15 00:39:11]   sphere-0 age=0.00s world(6.58, 3.86, -0.02) norm(0.66, 0.39, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:11]   sphere-1 age=0.00s world(4.09, 3.25, -0.61) norm(0.41, 0.33, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:11]   sphere-2 age=0.00s world(6.31, 6.56, 0.57) norm(0.63, 0.66, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:11]   sphere-3 age=0.00s world(3.61, 6.63, -0.71) norm(0.36, 0.66, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:11]   sphere-4 age=0.00s world(3.26, 4.61, 0.73) norm(0.33, 0.46, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:13] ParticlesTest: 5 active spheres
+[LX 2025/08/15 00:39:13]   sphere-0 age=0.00s world(6.56, 3.63, 0.53) norm(0.66, 0.36, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:13]   sphere-1 age=0.00s world(4.10, 3.33, -0.64) norm(0.41, 0.33, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:13]   sphere-2 age=0.00s world(6.52, 6.54, 0.51) norm(0.65, 0.65, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:13]   sphere-3 age=0.00s world(3.84, 6.66, -0.68) norm(0.38, 0.67, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:13]   sphere-4 age=0.00s world(3.43, 4.74, 0.90) norm(0.34, 0.47, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:15] ParticlesTest: 5 active spheres
+[LX 2025/08/15 00:39:15]   sphere-0 age=0.00s world(6.55, 3.54, 0.55) norm(0.66, 0.35, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:15]   sphere-1 age=0.00s world(4.20, 3.28, -0.83) norm(0.42, 0.33, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:15]   sphere-2 age=0.00s world(6.54, 6.54, 0.52) norm(0.65, 0.65, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:15]   sphere-3 age=0.00s world(3.83, 6.69, -0.62) norm(0.38, 0.67, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:15]   sphere-4 age=0.00s world(3.40, 4.91, 0.89) norm(0.34, 0.49, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:17] ParticlesTest: 5 active spheres
+[LX 2025/08/15 00:39:17]   sphere-0 age=0.00s world(6.55, 3.57, 0.57) norm(0.66, 0.36, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:17]   sphere-1 age=0.00s world(4.20, 3.30, -0.71) norm(0.42, 0.33, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:17]   sphere-2 age=0.00s world(6.54, 6.50, 0.52) norm(0.65, 0.65, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:17]   sphere-3 age=0.00s world(3.96, 6.58, -0.75) norm(0.40, 0.66, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:17]   sphere-4 age=0.00s world(3.34, 4.82, 0.86) norm(0.33, 0.48, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:19] ParticlesTest: 5 active spheres
+[LX 2025/08/15 00:39:19]   sphere-0 age=0.00s world(6.62, 3.52, 0.53) norm(0.66, 0.35, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:19]   sphere-1 age=0.00s world(4.30, 3.26, -0.74) norm(0.43, 0.33, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:19]   sphere-2 age=0.00s world(6.56, 6.47, 0.51) norm(0.66, 0.65, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:19]   sphere-3 age=0.00s world(3.99, 6.71, -0.65) norm(0.40, 0.67, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:19]   sphere-4 age=0.00s world(3.38, 4.86, 0.94) norm(0.34, 0.49, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:21] ParticlesTest: 5 active spheres
+[LX 2025/08/15 00:39:21]   sphere-0 age=0.00s world(6.67, 3.57, 0.54) norm(0.67, 0.36, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:21]   sphere-1 age=0.00s world(4.28, 3.38, -0.87) norm(0.43, 0.34, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:21]   sphere-2 age=0.00s world(6.57, 6.49, 0.54) norm(0.66, 0.65, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:21]   sphere-3 age=0.00s world(3.97, 6.55, -0.64) norm(0.40, 0.65, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:39:21]   sphere-4 age=0.00s world(3.43, 4.82, 0.81) norm(0.34, 0.48, 0.50) r=1.50 nr=0.150 (scale=0.100)

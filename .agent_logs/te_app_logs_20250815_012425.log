@@ -1,0 +1,82 @@
+[LX 2025/08/15 01:24:25] Starting Chromatik version 1.1.1-TE.5.GPU-SNAPSHOT
+[LX 2025/08/15 01:24:25] Running java 24.0.1 Oracle Corporation Mac OS X 15.5 aarch64
+[GLX 2025/08/15 01:24:25] CLI args: --resolution 1920x1200 
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.lwjgl.system.Library$$Lambda/0x000001fe0100e568 in an unnamed module (file:/Users/sinas/workspace/LXStudio-TE/te-app/target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.lwjgl.system.MemoryUtil (file:/Users/sinas/workspace/LXStudio-TE/te-app/target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar)
+WARNING: Please consider reporting this to the maintainers of class org.lwjgl.system.MemoryUtil
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[GLX 2025/08/15 01:24:25] GLXWindow monitorWorkarea: size(1728x1079), pos(x:0,y:38)
+[GLX 2025/08/15 01:24:25] GLXWindow createWindow: 1728x1079
+[GLX 2025/08/15 01:24:25] GLXWindow systemContentScale: 2.0x2.0
+[GLX 2025/08/15 01:24:25] GLXWindow setWindowPos: 0,44
+[GLX 2025/08/15 01:24:25] GLXWindow windowSize: 1728x1051
+[GLX 2025/08/15 01:24:25] GLXWindow framebufferSize: 3456x2102
+[GLX 2025/08/15 01:24:25] GLXWindow uiSize: 1728.0x1051.0
+[GLX 2025/08/15 01:24:25] GLXWindow cursorScale: 1.0x1.0
+[GLX 2025/08/15 01:24:25] GLXWindow.main() awaiting GLX boostrap...
+[LX 2025/08/15 01:24:26] [AudioStems] AudioStemsPlugin(LX) version: 0.3.0-SNAPSHOT
+[GLX 2025/08/15 01:24:26] TEApp.Plugin(LX)
+[LX 2025/08/15 01:24:26] GLEngine: Rendering canvas size: 1920x1200 = 2304000 total points
+[LX 2025/08/15 01:24:26] Loading user presets: ./Presets/UserPresets/BM24.userPresets
+[LX 2025/08/15 01:24:26] [SuperMod] SuperMod Plugin version 0.1.5-SNAPSHOT
+[LX 2025/08/15 01:24:26] [OscRemapper] OscRemapperPlugin(LX) constructor called - version: 0.3.0-SNAPSHOT
+[LX 2025/08/15 01:24:26] [OscRemapper] Using config path: resources/osc_remapper.yaml
+[LX 2025/08/15 01:24:26] [OscRemapper] Loading OSC Remapper config from: /Users/sinas/workspace/LXStudio-TE/te-app/resources/osc_remapper.yaml
+[LX 2025/08/15 01:24:26] [OscRemapper] Successfully parsed YAML config with 7 destinations and 4 remappings
+[LX 2025/08/15 01:24:26] [OscRemapper] Loaded configuration with 7 destinations and 4 remappings
+[GLX 2025/08/15 01:24:26] TEApp.Plugin.initialize()
+[LX 2025/08/15 01:24:26] Creating Shader class: titanicsend.pattern.glengine.StarField1 for starfield1.fs
+[LX 2025/08/15 01:24:26] Creating Shader class: titanicsend.pattern.glengine.Circuitry for circuitry.fs
+[LX 2025/08/15 01:24:26] Creating Shader class: titanicsend.pattern.glengine.GummyWeave for gummy_weave.fs
+[LX 2025/08/15 01:24:27] Creating Shader class: titanicsend.pattern.glengine.Colortest for colortest.fs
+[LX 2025/08/15 01:24:27] Creating Shader class: titanicsend.pattern.glengine.GummyWorms for gummy_worms.fs
+[LX 2025/08/15 01:24:27] Creating Shader class: titanicsend.pattern.glengine.DatsaMoire for datsa_moire.fs
+[LX 2025/08/15 01:24:27] Creating Shader class: titanicsend.pattern.glengine.Waterfall for waterfall.fs
+[LX 2025/08/15 01:24:27] Creating Shader class: titanicsend.pattern.glengine.PolySpiral2 for polyspiral2.fs
+[LX 2025/08/15 01:24:27] Creating Shader class: titanicsend.pattern.glengine.NeonMess for neonmess.fs
+[LX 2025/08/15 01:24:27] Creating Shader class: titanicsend.pattern.glengine.Icemelt for icemelt.fs
+[LX 2025/08/15 01:24:27] Creating Shader class: titanicsend.pattern.glengine.GummyFireflies2 for gummy_fireflies2.fs
+[LX 2025/08/15 01:24:27] Creating Shader class: titanicsend.pattern.glengine.StemTriangleInfinity for triangle_infinity_mod_stems.fs
+[LX 2025/08/15 01:24:27] Creating Shader class: titanicsend.pattern.glengine.TechnoChurch for techno_church.fs
+[LX 2025/08/15 01:24:27] Creating Shader class: titanicsend.pattern.glengine.ArtOfCode for artofcode.fs
+[LX 2025/08/15 01:24:27] Creating Shader class: titanicsend.pattern.glengine.StarField2 for starfield2.fs
+[LX 2025/08/15 01:24:27] Creating Shader class: titanicsend.pattern.glengine.GummyNoise for gummy_noise.fs
+[LX 2025/08/15 01:24:27] Attaching the OSC message listener to port 42069 ...
+[LX 2025/08/15 01:24:27] [OSC] Started OSC listener /[0:0:0:0:0:0:0:0]:3030
+[LX 2025/08/15 01:24:27] DevSwitch setting state to DEVELOPER...
+[LX 2025/08/15 01:24:27] [ArtNet] Starting Art-Net listener on /0:0:0:0:0:0:0:0:6454
+[LX 2025/08/15 01:24:27] Started audio input thread: Default Audio Device
+[GLX 2025/08/15 01:24:27] BGFX renderer: Metal
+[GLX 2025/08/15 01:24:27] TEApp.Plugin.initializeUI()
+[GLX 2025/08/15 01:24:27] TEApp.Plugin.onUIReady()
+[LX 2025/08/15 01:24:28] Gamepad mappings updated successfully.
+[GLX 2025/08/15 01:24:28] Starting LX Engine...
+[LX 2025/08/15 01:24:28] LXEngine.ExecutorService starting...
+[GLX 2025/08/15 01:24:28] Running main BGFX loop...
+[GLX 2025/08/15 01:24:28] GLX boostrap complete, GLXWindow running event loop...
+[LX 2025/08/15 01:24:28] Opening project file: ./Projects/BM25_playachemist.lxp
+[LX 2025/08/15 01:24:28] DevSwitch detected potential file change, remembering state DEVELOPER
+Loaded sketches: 200
+Loaded sketches: 200
+[LX 2025/08/15 01:24:29] ParticlesTest: Initializing dynamic sphere emitter demo...
+[LX 2025/08/15 01:24:29] ParticlesTest: Dynamic sphere emitter initialized
+Loaded sketches: 200
+Loaded sketches: 200
+Loaded sketches: 200
+Loaded sketches: 200
+[LX 2025/08/15 01:24:29] Autopilot detected completion of openProject(), defensive positions have been taken (or is first file open)...
+[LX 2025/08/15 01:24:29] DevSwitch restoring the state DEVELOPER
+[LX 2025/08/15 01:24:29] DevSwitch setting state to DEVELOPER...
+[LX 2025/08/15 01:24:29] Project loaded successfully from ./Projects/BM25_playachemist.lxp
+[LX 2025/08/15 01:24:29] NDI: Successfully initialized sender 'TitanicsEnd'
+[LX 2025/08/15 01:24:29] Shader 'ndi_out_effect.fs' uniform error: Missing texture 'iDst' for unit 4, this could be a bug...
+[LX 2025/08/15 01:24:33] ParticlesTest: WOW TRIGGER! Exploding 200 spheres with strength 27.7
+[LX 2025/08/15 01:24:39] ParticlesTest: WOW TRIGGER! Exploding 200 spheres with strength 27.6
+[LX 2025/08/15 01:24:50] ParticlesTest: WOW TRIGGER! Exploding 200 spheres with strength 35.9
+[LX 2025/08/15 01:25:00] ParticlesTest: WOW TRIGGER! Exploding 200 spheres with strength 28.3
+[LX 2025/08/15 01:25:10] ParticlesTest: WOW TRIGGER! Exploding 200 spheres with strength 27.7

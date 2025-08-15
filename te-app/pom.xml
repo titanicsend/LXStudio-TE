@@ -115,6 +115,20 @@
 			<artifactId>devolay</artifactId>
 		</dependency>
 
+		<!-- JBullet Physics Engine (Pure Java Bullet Physics) -->
+		<dependency>
+			<groupId>cz.advel.jbullet</groupId>
+			<artifactId>jbullet</artifactId>
+			<version>20101010</version>
+		</dependency>
+		
+		<!-- JOML for vector math operations -->
+		<dependency>
+			<groupId>org.joml</groupId>
+			<artifactId>joml</artifactId>
+			<version>1.10.5</version>
+		</dependency>
+
 		<!-- Test dependencies -->
 
 		<dependency>

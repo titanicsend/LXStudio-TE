@@ -1,0 +1,95 @@
+[LX 2025/08/15 00:30:49] Starting Chromatik version 1.1.1-TE.5.GPU-SNAPSHOT
+[LX 2025/08/15 00:30:49] Running java 24.0.1 Oracle Corporation Mac OS X 15.5 aarch64
+[GLX 2025/08/15 00:30:49] CLI args: --resolution 1920x1200 
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.lwjgl.system.Library$$Lambda/0x000060000100e568 in an unnamed module (file:/Users/sinas/workspace/LXStudio-TE/te-app/target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.lwjgl.system.MemoryUtil (file:/Users/sinas/workspace/LXStudio-TE/te-app/target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar)
+WARNING: Please consider reporting this to the maintainers of class org.lwjgl.system.MemoryUtil
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[GLX 2025/08/15 00:30:49] GLXWindow monitorWorkarea: size(1728x1079), pos(x:0,y:38)
+[GLX 2025/08/15 00:30:49] GLXWindow createWindow: 1728x1079
+[GLX 2025/08/15 00:30:49] GLXWindow systemContentScale: 2.0x2.0
+[GLX 2025/08/15 00:30:49] GLXWindow setWindowPos: 0,44
+[GLX 2025/08/15 00:30:49] GLXWindow windowSize: 1728x1051
+[GLX 2025/08/15 00:30:49] GLXWindow framebufferSize: 3456x2102
+[GLX 2025/08/15 00:30:49] GLXWindow uiSize: 1728.0x1051.0
+[GLX 2025/08/15 00:30:49] GLXWindow cursorScale: 1.0x1.0
+[GLX 2025/08/15 00:30:49] GLXWindow.main() awaiting GLX boostrap...
+[LX 2025/08/15 00:30:49] [AudioStems] AudioStemsPlugin(LX) version: 0.3.0-SNAPSHOT
+[GLX 2025/08/15 00:30:49] TEApp.Plugin(LX)
+[LX 2025/08/15 00:30:50] GLEngine: Rendering canvas size: 1920x1200 = 2304000 total points
+[LX 2025/08/15 00:30:50] Loading user presets: ./Presets/UserPresets/BM24.userPresets
+[LX 2025/08/15 00:30:50] [SuperMod] SuperMod Plugin version 0.1.5-SNAPSHOT
+[LX 2025/08/15 00:30:50] [OscRemapper] OscRemapperPlugin(LX) constructor called - version: 0.3.0-SNAPSHOT
+[LX 2025/08/15 00:30:50] [OscRemapper] Using config path: resources/osc_remapper.yaml
+[LX 2025/08/15 00:30:50] [OscRemapper] Loading OSC Remapper config from: /Users/sinas/workspace/LXStudio-TE/te-app/resources/osc_remapper.yaml
+[LX 2025/08/15 00:30:50] [OscRemapper] Successfully parsed YAML config with 7 destinations and 4 remappings
+[LX 2025/08/15 00:30:50] [OscRemapper] Loaded configuration with 7 destinations and 4 remappings
+[GLX 2025/08/15 00:30:50] TEApp.Plugin.initialize()
+[LX 2025/08/15 00:30:50] Creating Shader class: titanicsend.pattern.glengine.StarField1 for starfield1.fs
+[LX 2025/08/15 00:30:50] Creating Shader class: titanicsend.pattern.glengine.Circuitry for circuitry.fs
+[LX 2025/08/15 00:30:50] Creating Shader class: titanicsend.pattern.glengine.GummyWeave for gummy_weave.fs
+[LX 2025/08/15 00:30:50] Creating Shader class: titanicsend.pattern.glengine.Colortest for colortest.fs
+[LX 2025/08/15 00:30:50] Creating Shader class: titanicsend.pattern.glengine.GummyWorms for gummy_worms.fs
+[LX 2025/08/15 00:30:50] Creating Shader class: titanicsend.pattern.glengine.DatsaMoire for datsa_moire.fs
+[LX 2025/08/15 00:30:50] Creating Shader class: titanicsend.pattern.glengine.Waterfall for waterfall.fs
+[LX 2025/08/15 00:30:50] Creating Shader class: titanicsend.pattern.glengine.PolySpiral2 for polyspiral2.fs
+[LX 2025/08/15 00:30:50] Creating Shader class: titanicsend.pattern.glengine.NeonMess for neonmess.fs
+[LX 2025/08/15 00:30:50] Creating Shader class: titanicsend.pattern.glengine.Icemelt for icemelt.fs
+[LX 2025/08/15 00:30:50] Creating Shader class: titanicsend.pattern.glengine.GummyFireflies2 for gummy_fireflies2.fs
+[LX 2025/08/15 00:30:50] Creating Shader class: titanicsend.pattern.glengine.StemTriangleInfinity for triangle_infinity_mod_stems.fs
+[LX 2025/08/15 00:30:50] Creating Shader class: titanicsend.pattern.glengine.TechnoChurch for techno_church.fs
+[LX 2025/08/15 00:30:50] Creating Shader class: titanicsend.pattern.glengine.ArtOfCode for artofcode.fs
+[LX 2025/08/15 00:30:50] Creating Shader class: titanicsend.pattern.glengine.StarField2 for starfield2.fs
+[LX 2025/08/15 00:30:50] Creating Shader class: titanicsend.pattern.glengine.GummyNoise for gummy_noise.fs
+[LX 2025/08/15 00:30:50] Attaching the OSC message listener to port 42069 ...
+[LX 2025/08/15 00:30:50] [OSC] Started OSC listener /[0:0:0:0:0:0:0:0]:3030
+[LX 2025/08/15 00:30:50] DevSwitch setting state to DEVELOPER...
+[LX 2025/08/15 00:30:50] [ArtNet] Starting Art-Net listener on /0:0:0:0:0:0:0:0:6454
+[LX 2025/08/15 00:30:50] Started audio input thread: Default Audio Device
+[GLX 2025/08/15 00:30:50] BGFX renderer: Metal
+[GLX 2025/08/15 00:30:50] TEApp.Plugin.initializeUI()
+[GLX 2025/08/15 00:30:50] TEApp.Plugin.onUIReady()
+[LX 2025/08/15 00:30:51] Gamepad mappings updated successfully.
+[GLX 2025/08/15 00:30:51] Starting LX Engine...
+[LX 2025/08/15 00:30:51] LXEngine.ExecutorService starting...
+[GLX 2025/08/15 00:30:51] Running main BGFX loop...
+[GLX 2025/08/15 00:30:51] GLX boostrap complete, GLXWindow running event loop...
+[LX 2025/08/15 00:30:51] Opening project file: ./Projects/BM25_playachemist.lxp
+[LX 2025/08/15 00:30:51] DevSwitch detected potential file change, remembering state DEVELOPER
+Loaded sketches: 200
+Loaded sketches: 200
+[LX 2025/08/15 00:30:52] ParticlesTest: Initializing dynamic sphere emitter demo...
+[LX 2025/08/15 00:30:52] ParticlesTest: Dynamic sphere emitter initialized
+Loaded sketches: 200
+Loaded sketches: 200
+Loaded sketches: 200
+Loaded sketches: 200
+[LX 2025/08/15 00:30:52] Autopilot detected completion of openProject(), defensive positions have been taken (or is first file open)...
+[LX 2025/08/15 00:30:52] DevSwitch restoring the state DEVELOPER
+[LX 2025/08/15 00:30:52] DevSwitch setting state to DEVELOPER...
+[LX 2025/08/15 00:30:52] Project loaded successfully from ./Projects/BM25_playachemist.lxp
+[LX 2025/08/15 00:30:52] NDI: Successfully initialized sender 'TitanicsEnd'
+[LX 2025/08/15 00:30:52] Shader 'ndi_out_effect.fs' uniform error: Missing texture 'iDst' for unit 4, this could be a bug...
+[LX 2025/08/15 00:30:53] ParticlesTest: 5 active spheres
+[LX 2025/08/15 00:30:53]   sphere-0 age=0.00s world(5.65, 4.68, 0.04) norm(0.56, 0.47, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:30:53]   sphere-1 age=0.00s world(3.26, 3.01, 0.23) norm(0.33, 0.30, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:30:53]   sphere-2 age=0.00s world(6.72, 6.62, 0.01) norm(0.67, 0.66, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:30:53]   sphere-3 age=0.00s world(3.28, 6.64, 0.05) norm(0.33, 0.66, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:30:53]   sphere-4 age=0.00s world(3.47, 3.88, -0.29) norm(0.35, 0.39, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:30:55] ParticlesTest: 5 active spheres
+[LX 2025/08/15 00:30:55]   sphere-0 age=0.00s world(6.02, 4.31, -0.14) norm(0.60, 0.43, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:30:55]   sphere-1 age=0.00s world(3.58, 2.81, 0.16) norm(0.36, 0.28, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:30:55]   sphere-2 age=0.00s world(6.79, 6.53, 0.03) norm(0.68, 0.65, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:30:55]   sphere-3 age=0.00s world(3.42, 6.84, -0.08) norm(0.34, 0.68, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:30:55]   sphere-4 age=0.00s world(3.49, 4.39, -0.07) norm(0.35, 0.44, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:30:57] ParticlesTest: 5 active spheres
+[LX 2025/08/15 00:30:57]   sphere-0 age=0.00s world(6.37, 3.92, -0.24) norm(0.64, 0.39, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:30:57]   sphere-1 age=0.00s world(3.81, 3.07, -0.15) norm(0.38, 0.31, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:30:57]   sphere-2 age=0.00s world(6.66, 6.56, -0.19) norm(0.67, 0.66, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:30:57]   sphere-3 age=0.00s world(3.46, 6.86, 0.06) norm(0.35, 0.69, 0.50) r=1.50 nr=0.150 (scale=0.100)
+[LX 2025/08/15 00:30:57]   sphere-4 age=0.00s world(3.47, 4.96, -0.15) norm(0.35, 0.50, 0.50) r=1.50 nr=0.150 (scale=0.100)
