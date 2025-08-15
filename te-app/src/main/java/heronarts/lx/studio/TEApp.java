@@ -236,7 +236,7 @@ public class TEApp extends LXStudio {
 
   public static GamepadEngine gamepadEngine;
 
-  @LXPlugin.Name("Titanic's End")
+  @LXPlugin.Name("Pacman")
   public static class Plugin implements LXStudio.Plugin, LX.Listener, LX.ProjectListener {
 
     private final TEVirtualOverlays virtualOverlays;
@@ -1080,7 +1080,7 @@ public class TEApp extends LXStudio {
       LX.LOG_WARNINGS = true;
 
       Flags flags = new Flags();
-      flags.windowTitle = "Chromatik — Titanic's End";
+      flags.windowTitle = "Chromatik — Pacman";
       flags.windowWidth = WINDOW_WIDTH;
       flags.windowHeight = WINDOW_HEIGHT;
       flags.zeroconf = false;

@@ -1,3 +1,23 @@
+# LXStudio-Pacman (Fork)
+
+> **This is a fork of [Titanic's End LXStudio-TE](https://github.com/titanicsend/LXStudio-TE)**
+> 
+> **Original Project**: Titanic's End - 128,000 LED art installation  
+> **This Fork**: Pacman Art Car LED configuration and utilities
+> 
+> This fork is inspired by and built upon the excellent work of the Titanic's End team. It adapts their LED control system for a Pacman-themed art car with custom strip configurations and utilities.
+
+## What's Different in This Fork
+
+- **Custom LED strip configurations** for Pacman art car layout
+- **Strip management utilities** (`useful_scripts/` directory):
+  - `move_strip_side.py` - Move LED strips by side (A/B)  
+  - `comprehensive_fixes_logger.py` - Analyze strip configurations
+- **Pacman-specific project files** and fixtures
+- **A-side and B-side** strip management for dual display setup
+
+---
+
 # Titanic's End LXStudio
 
 [Titanic's End](http://titanicsend.com) is a mutant vehicle that debuted at [Burning Man](https://burningman.org) 2022

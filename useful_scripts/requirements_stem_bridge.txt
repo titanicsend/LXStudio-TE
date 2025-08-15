@@ -1,0 +1,8 @@
+# Exact working versions for audio-separator stem bridge
+numpy==1.24.3
+audio-separator==0.35.2
+onnxruntime==1.15.1
+python-osc==1.8.3
+sounddevice==0.4.6
+librosa==0.10.1
+soundfile==0.12.1

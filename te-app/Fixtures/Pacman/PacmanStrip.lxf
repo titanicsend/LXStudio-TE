@@ -1,0 +1,66 @@
+{
+  /* Pacman Display Strip Fixture - Master Template */
+  label: "Pacman Strip",
+  tags: [ "strip", "pacman" ],
+
+  parameters: {
+    "points": { default: 25, type: "int", min: 1, max: 200, label: "Points", description: "Number of LEDs in the strip" },
+    "host": { default: "10.1.1.47", type: "string", label: "Host", description: "Controller IP address or hostname" },    
+    "universe": { default: 0, type: "int", min: 0, max: 255, label: "Universe", description: "ArtNet universe number" },
+    "dmxChannel": { default: 1, type: "int", min: 1, max: 512, label: "DMX Channel", description: "Starting DMX channel" },
+    "artnetSequence": { default: false, type: "boolean", label: "ArtNet Sequence", description: "Whether ArtNet sequence packets are enabled" },
+    "reverse": { default: false, type: "boolean", label: "Reverse", description: "Reverse the output direction" },
+    "byteOrder": { default: "RBG", type: "string", label: "Byte Order", description: "Color channel order (RGB, GRB, BRG, etc.)" },
+    
+    /* Position parameters */
+    "xPos": { default: 0.0, type: "float", label: "X Position", description: "X coordinate in 3D space" },
+    "yPos": { default: 0.0, type: "float", label: "Y Position", description: "Y coordinate in 3D space" },
+    "zPos": { default: 0.0, type: "float", label: "Z Position", description: "Z coordinate in 3D space" },
+    
+    /* Rotation parameters */
+    "yawRot": { default: 0.0, type: "float", label: "Yaw", description: "Yaw rotation in degrees" },
+    "pitchRot": { default: 0.0, type: "float", label: "Pitch", description: "Pitch rotation in degrees" },
+    "rollRot": { default: 0.0, type: "float", label: "Roll", description: "Roll rotation in degrees" },
+    
+    /* Debug tools */
+    "onCar": { default: false, type: "boolean", label: "On Display", description: "True = Locate strip to its position on the display, False = Locate to origin" },
+
+    /* Option to disable output */
+    "hasOutput": { default: true, type: "boolean", label: "Has Output", description: "Whether built-in output is enabled" }
+  },
+  
+  transforms: [
+    /* Position the strip in 3D space */
+    { x: "$xPos", enabled: "$onCar" },
+    { y: "$yPos", enabled: "$onCar" },
+    { z: "$zPos", enabled: "$onCar" },
+
+    /* Rotate the strip */
+    { yaw: "$yawRot", enabled: "$onCar" },
+    { pitch: "$pitchRot", enabled: "$onCar" },
+    { roll: "$rollRot", enabled: "$onCar" }
+  ],
+
+  meta: {
+    "pacmanDisplay": "true"
+  },
+
+  components: [
+    { type: "strip",
+      numPoints: "$points",
+      spacing: "0.8"
+    }
+  ],
+  
+  outputs: [
+    { enabled: "$hasOutput",
+      host: "$host",
+      universe: "$universe",
+      channel: "$dmxChannel",
+      protocol: "artnet", 
+      sequenceEnabled: "$artnetSequence",
+      reverse: "$reverse",
+      byteOrder: "$byteOrder"
+    }
+  ]
+}
