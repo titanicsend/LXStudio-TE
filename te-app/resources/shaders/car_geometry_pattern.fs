@@ -11,6 +11,7 @@
 #define PANEL_COUNT 68
 uniform int panelCount;
 uniform vec3[PANEL_COUNT] panelCenters;
+uniform vec3[PANEL_COUNT] panelNormals;
 uniform float panelRadius; // unused once iScale drives radius; kept for compatibility
 uniform vec3 axisLengths;  // physical axis lengths for anisotropy correction
 
@@ -60,10 +61,25 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     float bright = accum;
 
-    // Color using current palette: show circles in primary color over a dim base from XYZ
-    vec3 base = model; // dim geometry preview, helps confirm model-space addressing
-    vec3 circles = iColorRGB * bright;
-    vec3 col = mix(base * 0.2, circles, bright);
+    // Determine nearest panel center for this pixel (isotropic distance)
+    int nearestIdx = 0;
+    float bestD = 1e9;
+    for (int i = 0; i < panelCount; i++) {
+        vec3 c = panelCenters[i].xyz - vec3(.5);
+        vec3 deltaN = model - c;
+        vec3 scaledN = deltaN * (axisLengths / maxAxis);
+        float dN = length(scaledN);
+        if (dN < bestD) { bestD = dN; nearestIdx = i; }
+    }
 
-    fragColor = vec4(col, bright);
+    // Base color: map panel normal XYZ to RGB
+    vec3 nrm = panelNormals[nearestIdx];
+    vec3 normalColor = 0.5 * (nrm + vec3(1.0));
+    vec3 base = normalColor;
+
+    // Keep circles overlay in primary color
+    vec3 circles = iColorRGB * bright;
+    vec3 col = mix(base, circles, clamp(bright, 0.0, 1.0));
+
+    fragColor = vec4(col, clamp(.5 + bright, 0., 1.));
 }
