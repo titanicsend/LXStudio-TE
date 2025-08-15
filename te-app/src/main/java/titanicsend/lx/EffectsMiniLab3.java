@@ -67,13 +67,6 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
 
   private static final int NUM_PADS = 8;
 
-  public enum EffectState {
-    EMPTY,
-    DISABLED,
-    ENABLED
-  }
-
-  private EffectState[] states;
   private GlobalEffectManager effectManager;
   private ObservableList.Listener<GlobalEffect<? extends LXEffect>> effectListener;
   private boolean isRegistered = false;
@@ -86,11 +79,11 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   private void press(int padIndex) {
     TE.log("PRESS: " + padIndex);
     //    setPadLEDColor(padIndex, 127, 127, 127);
-    if (padIndex >= this.states.length) {
+    if (padIndex >= effectManager.states.size()) {
       return;
     }
     EffectState currState = this.states[padIndex];
-    GlobalEffect<? extends LXEffect> globalEffect = this.effectManager.slots.get(padIndex);
+    GlobalEffect<? extends LXEffect> globalEffect = effectManager.slots.get(padIndex);
     if (currState != null && globalEffect.effect != null) {
       globalEffect.getEnabledParameter().toggle();
       switch (currState) {
@@ -102,8 +95,6 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
       updatePadLEDs();
     }
   }
-
-  private void tap(int padIndex) {}
 
   private void noteReceived(MidiNote note, boolean on) {
     final int pitch = note.getPitch();
@@ -203,7 +194,6 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     this.isRegistered = true;
     this.effectManager = null;
     this.effectListener = null;
-    this.states = new EffectState[0];
     this.effectManager = GlobalEffectManager.get();
 
     List<GlobalEffect<? extends LXEffect>> slots = this.effectManager.slots;
