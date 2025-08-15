@@ -28,14 +28,14 @@ import titanicsend.util.TE;
  * pad bank.
  */
 @LXMidiSurface.Name("Arturia MiniLab3 Effects")
-@LXMidiSurface.DeviceName("Minilab3")
+@LXMidiSurface.DeviceName("Minilab3 MIDI")
 public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidirectional {
 
+  // CCs
   public static final int FADER_1 = 82;
   public static final int FADER_2 = 83;
   public static final int FADER_3 = 85;
   public static final int FADER_4 = 17;
-
   public static final int KNOB_1 = 74;
   public static final int KNOB_2 = 71;
   public static final int KNOB_3 = 76;
@@ -44,12 +44,10 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   public static final int KNOB_6 = 18;
   public static final int KNOB_7 = 19;
   public static final int KNOB_8 = 16;
+  // TODO: touchpads
 
+  // Notes
   public static final int SHIFT = 27;
-
-  public static final int NUM_PADS = 8;
-
-  // Pad Bank A
   public static final int PAD_1_A = 36;
   public static final int PAD_2_A = 37;
   public static final int PAD_3_A = 38;
@@ -58,8 +56,6 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   public static final int PAD_6_A = 41;
   public static final int PAD_7_A = 42;
   public static final int PAD_8_A = 43;
-
-  // Pad Bank B
   public static final int PAD_1_B = 44;
   public static final int PAD_2_B = 45;
   public static final int PAD_3_B = 46;
@@ -69,8 +65,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   public static final int PAD_7_B = 50;
   public static final int PAD_8_B = 51;
 
-  private GlobalEffectManager effectManager;
-  private ObservableList.Listener<GlobalEffect<? extends LXEffect>> effectListener;
+  private static final int NUM_PADS = 8;
 
   public enum EffectState {
     EMPTY,
@@ -79,6 +74,8 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   }
 
   private EffectState[] states;
+  private GlobalEffectManager effectManager;
+  private ObservableList.Listener<GlobalEffect<? extends LXEffect>> effectListener;
   private boolean isRegistered = false;
   private boolean shiftOn = false;
 
