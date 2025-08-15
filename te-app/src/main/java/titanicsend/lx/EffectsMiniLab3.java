@@ -27,7 +27,7 @@ import titanicsend.util.TE;
  * <p>Also, to switch between "Bank A" and "Bank B", hold SHIFT and tap pad 2 ("Pad") to switch the
  * pad bank.
  */
-@LXMidiSurface.Name("Minilab3 Effects Manager")
+@LXMidiSurface.Name("Arturia MiniLab3 Effects")
 @LXMidiSurface.DeviceName("Minilab3")
 public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidirectional {
 
@@ -164,7 +164,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     //      return;
     //    }
 
-    LXMidiEngine.error("APCminiMk2 received unmapped note: " + note);
+    LXMidiEngine.error("Minilab3 received unmapped note: " + note);
   }
 
   @Override
@@ -182,7 +182,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     //      return;
     //    }
 
-    LXMidiEngine.error("APCmini unmapped control change: " + cc);
+    LXMidiEngine.error("Minilab3 unmapped control change: " + cc);
   }
 
   @Override
@@ -208,7 +208,6 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     this.effectListener = null;
     this.states = new EffectState[0];
     this.effectManager = GlobalEffectManager.get();
-    // this.effectManager = (GlobalEffectManager) this.lx.engine.getChild("effectManager");
 
     List<GlobalEffect<? extends LXEffect>> slots = this.effectManager.slots;
     GlobalEffect<? extends LXEffect> curr;
