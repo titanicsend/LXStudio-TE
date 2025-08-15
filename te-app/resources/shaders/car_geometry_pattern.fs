@@ -12,14 +12,16 @@
 uniform int panelCount;
 uniform vec3[PANEL_COUNT] panelCenters;
 uniform float panelRadius; // unused once iScale drives radius; kept for compatibility
+uniform vec3 axisLengths;  // physical axis lengths for anisotropy correction
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // Per-pixel normalized car model coordinates
     vec3 model = _getModelCoordinates().xyz; // [0,1]
     model -= vec3(.5);
 
-    // Circle radius driven by iScale (clamped 0..1), scaled to model space
-    float radius = iScale;
+    // Sphere radius driven by iScale (0..1), relative to longest axis
+    float maxAxis = max(axisLengths.x, max(axisLengths.y, axisLengths.z));
+    float radius = iScale; // interpreted as a fraction of the normalized space
 
     // How many circles (balls really since they're in 3D now) to draw
     // hijact the levelReact control
@@ -35,11 +37,15 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         c -= vec3(.5);
         c -= vec3(-iTranslate.x, iTranslate.y, iWow1);
 
-        float d = distance(model.xyz, c);
+        vec3 delta = model.xyz - c;
+        // Scale by axis ratios so distances are isotropic in physical space
+        vec3 scaled = delta * (axisLengths / maxAxis);
+        float d = length(scaled);
 
         float ballbright = 1.;
         /* float ballbright =  1. / float(howmany); */
-        accum += ballbright * step(d / sqrt(3), radius);
+        // Normalize by sqrt(3) so the diagonal of the unit cube maps to ~1
+        accum += ballbright * step(d / sqrt(3.0), radius);
     }
 
     float bright = accum;

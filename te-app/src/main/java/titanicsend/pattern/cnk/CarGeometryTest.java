@@ -28,14 +28,14 @@ public class CarGeometryTest extends GLShaderPattern {
   private int panelCount = 0;
   private final FloatBuffer glPanelCenters; // vec3 per panel: (xn, yn, zn)
   private boolean updateGeometry = true;
+  // Physical axis lengths of current model view (raw units)
+  private float axisLx = 1f, axisLy = 1f, axisLz = 1f;
 
   public CarGeometryTest(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
 
-    // Allocate buffer: MAX_PANEL_COUNT vec3 entries.
-    // Note: Buffers.newDirectFloatBuffer argument follows the prevailing code style here,
-    // multiplying by 4 to account for float-bytes when sizing direct buffers.
-    this.glPanelCenters = Buffers.newDirectFloatBuffer(MAX_PANEL_COUNT * 3 * 4);
+    // Allocate buffer: MAX_PANEL_COUNT vec3 entries (float count, not bytes)
+    this.glPanelCenters = Buffers.newDirectFloatBuffer(MAX_PANEL_COUNT * 3);
 
     // Precompute normalized panel centroids
     computePanelCenters();
@@ -64,6 +64,8 @@ public class CarGeometryTest extends GLShaderPattern {
                     s.setUniform("panelCenters[0]", glPanelCenters, 3);
                     // small default radius in model XY space
                     s.setUniform("panelRadius", 0.02f);
+                    // Provide axis lengths so the shader can correct for non-uniform scaling
+                    s.setUniform("axisLengths", axisLx, axisLy, axisLz);
                     updateGeometry = false;
                   }
                 }));
@@ -74,6 +76,21 @@ public class CarGeometryTest extends GLShaderPattern {
     this.panelCount = Math.min(panels.size(), MAX_PANEL_COUNT);
 
     this.glPanelCenters.clear();
+
+    // Compute model extents from all points in current LXModel view
+    float minX = Float.POSITIVE_INFINITY, minY = Float.POSITIVE_INFINITY, minZ = Float.POSITIVE_INFINITY;
+    float maxX = Float.NEGATIVE_INFINITY, maxY = Float.NEGATIVE_INFINITY, maxZ = Float.NEGATIVE_INFINITY;
+    for (LXPoint pt : getModel().points) {
+      if (pt.x < minX) minX = (float) pt.x;
+      if (pt.y < minY) minY = (float) pt.y;
+      if (pt.z < minZ) minZ = (float) pt.z;
+      if (pt.x > maxX) maxX = (float) pt.x;
+      if (pt.y > maxY) maxY = (float) pt.y;
+      if (pt.z > maxZ) maxZ = (float) pt.z;
+    }
+    this.axisLx = Math.max(1e-6f, maxX - minX);
+    this.axisLy = Math.max(1e-6f, maxY - minY);
+    this.axisLz = Math.max(1e-6f, maxZ - minZ);
     for (int i = 0; i < panelCount; i++) {
       TEPanelModel p = panels.get(i);
 
@@ -117,6 +134,7 @@ public class CarGeometryTest extends GLShaderPattern {
       sb.append(String.format("[%d:(%.3f,%.3f,%.3f)] ", i, cx, cy, cz));
     }
     TE.log("CarGeometryTest centers sample: %s", sb.toString());
+    TE.log("CarGeometryTest axis lengths: Lx=%.3f Ly=%.3f Lz=%.3f", axisLx, axisLy, axisLz);
   }
 
   @Override
