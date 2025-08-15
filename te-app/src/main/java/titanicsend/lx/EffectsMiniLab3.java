@@ -1,5 +1,8 @@
 package titanicsend.lx;
 
+import static heronarts.lx.midi.LXSysexMessage.END_SYSEX;
+import static heronarts.lx.midi.LXSysexMessage.START_SYSEX;
+
 import heronarts.lx.LX;
 import heronarts.lx.effect.LXEffect;
 import heronarts.lx.midi.LXMidiEngine;
@@ -163,6 +166,8 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   public static final byte SYSEX_BANK_A = 0x00;
   public static final byte SYSEX_BANK_B = 0x01;
 
+  public static final byte SYSEX_COMMAND_SET_COLOR = 0x16;
+
   private enum EffectState {
     DISABLED,
     ENABLED,
@@ -179,26 +184,6 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
 
   public EffectsMiniLab3(LX lx, LXMidiInput input, LXMidiOutput output) {
     super(lx, input, output);
-  }
-
-  private void press(int padIndex) {
-    TE.log("PRESS: " + padIndex);
-    //    setPadLEDColor(padIndex, 127, 127, 127);
-    if (padIndex >= effectManager.slots.size()) {
-      return;
-    }
-    EffectState currState = this.states[padIndex];
-    GlobalEffect<? extends LXEffect> globalEffect = effectManager.slots.get(padIndex);
-    if (currState != null && globalEffect.effect != null) {
-      globalEffect.getEnabledParameter().toggle();
-      switch (currState) {
-        case DISABLED -> this.states[padIndex] = EffectState.ENABLED;
-        case ENABLED -> this.states[padIndex] = EffectState.DISABLED;
-        default -> TE.warning("unexpected pad press for empty slot " + padIndex);
-      }
-      TE.log("PRESS: " + padIndex + " " + currState.name() + " -> " + this.states[padIndex].name());
-      updatePadLEDs();
-    }
   }
 
   // Connection
@@ -224,6 +209,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   }
 
   private void initialize() {
+    sendModeDAW();
     updatePadLEDs();
   }
 
@@ -521,7 +507,24 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     sendMode(SYSEX_MODE_DAW);
   }
 
-  private void sendMode(byte mode) {}
+  private void sendMode(byte mode) {
+    byte[] sysex = new byte[14];
+
+    // TODO: flush out the details of this sysex
+    /*
+    sysex[0] = START_SYSEX; // SysEx start
+    sysex[1] = MIDI_MFR_ID_0; // Arturia manufacturer ID
+    sysex[2] = MIDI_MFR_ID_1;
+    sysex[3] = MIDI_MFR_ID_2;
+    sysex[4] = (byte) 0x7F;
+    sysex[5] = (byte) 0x42;
+    sysex[6] = (byte) 0x02; // Mode command
+    sysex[7] = mode; // DAW mode
+    sysex[13] = END_SYSEX;
+
+    sendSysex(sysex);
+    */
+  }
 
   private void sendBank(boolean bankA) {
     sendBank(bankA ? SYSEX_BANK_A : SYSEX_BANK_B);
@@ -530,6 +533,26 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   private void sendBank(byte bank) {}
 
   // Send Pad Colors
+
+  private void press(int padIndex) {
+    TE.log("PRESS: " + padIndex);
+    //    setPadLEDColor(padIndex, 127, 127, 127);
+    if (padIndex >= effectManager.slots.size()) {
+      return;
+    }
+    EffectState currState = this.states[padIndex];
+    GlobalEffect<? extends LXEffect> globalEffect = effectManager.slots.get(padIndex);
+    if (currState != null && globalEffect.effect != null) {
+      globalEffect.getEnabledParameter().toggle();
+      switch (currState) {
+        case DISABLED -> this.states[padIndex] = EffectState.ENABLED;
+        case ENABLED -> this.states[padIndex] = EffectState.DISABLED;
+        default -> TE.warning("unexpected pad press for empty slot " + padIndex);
+      }
+      TE.log("PRESS: " + padIndex + " " + currState.name() + " -> " + this.states[padIndex].name());
+      updatePadLEDs();
+    }
+  }
 
   private void updatePadLEDs() {
     // Send individual SysEx message for each pad
@@ -580,24 +603,31 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
       throw new IllegalStateException("Pad index must be 0-8");
     }
 
+    // Can it be done with a simple NoteOn?  Or do we have to use sysex to get full RGB?
+    // sendNoteOn(MIDI_CHANNEL_PADS, (byte) PAD_NOTES[padIndex], LXColor.rgb(red, green, blue));
+
     // SysEx format: F0 00 20 6B 7F 42 02 02 16 ID RR GG BB F7
     // ID for pads 1-8 in DAW mode: 0x04 to 0x0B
     byte[] sysex = new byte[14];
 
-    sysex[0] = (byte) 0xF0; // SysEx start
-    sysex[1] = (byte) 0x00; // Arturia manufacturer ID
-    sysex[2] = (byte) 0x20;
-    sysex[3] = (byte) 0x6B;
+    // TODO: JKB to Look: I might have broken this command when bringing in the constants
+    // Check for issues in int->byte conversions
+
+    sysex[0] = START_SYSEX; // SysEx start
+    sysex[1] = MIDI_MFR_ID_0; // Arturia manufacturer ID
+    sysex[2] = MIDI_MFR_ID_1;
+    sysex[3] = MIDI_MFR_ID_2;
     sysex[4] = (byte) 0x7F;
     sysex[5] = (byte) 0x42;
     sysex[6] = (byte) 0x02; // Mode command
-    sysex[7] = (byte) 0x02; // DAW mode
-    sysex[8] = (byte) 0x16; // Set color command
+    // sysex[7] = (byte) 0x02; // DAW mode
+    sysex[7] = SYSEX_MODE_DAW;
+    sysex[8] = SYSEX_COMMAND_SET_COLOR; // Set color command
     sysex[9] = (byte) (0x04 + (bankIndex * 0x08) + padIndex); // Pad ID (0x04-0x0B for pads 1-8)
     sysex[10] = (byte) (red & 0x7F); // R
     sysex[11] = (byte) (green & 0x7F); // G
     sysex[12] = (byte) (blue & 0x7F); // B
-    sysex[13] = (byte) 0xF7; // SysEx end
+    sysex[13] = END_SYSEX; // SysEx end
 
     sendSysex(sysex);
   }
