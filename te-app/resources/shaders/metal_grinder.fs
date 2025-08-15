@@ -6,7 +6,7 @@
 #pragma TEControl.SIZE.Range(0.75,0.1,1.25) // lifetime of a particle in seconds
 #pragma TEControl.QUANTITY.Range(400.0,100.0,500.0)  // particle count
 #pragma TEControl.SPIN.Range(0.75,-5.,5.)    // kinda angular momentum-ish
-#pragma TEControl.WOW1.Range(1.0,2.0,0.5    // glow (higher is brighter)
+#pragma TEControl.WOW1.Range(1.0,2.0,0.5)    // glow (higher is brighter)
 
 #pragma TEControl.WOWTRIGGER.Disable
 #pragma TEControl.LEVELREACTIVITY.Disable
