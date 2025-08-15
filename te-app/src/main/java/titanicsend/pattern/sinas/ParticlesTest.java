@@ -4,6 +4,7 @@ import com.bulletphysics.dynamics.RigidBody;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL4;
 import com.titanicsend.physics.BulletBootstrap;
+import com.titanicsend.physics.SceneConfig;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import titanicsend.pattern.glengine.GLShader;
@@ -219,13 +220,19 @@ public class ParticlesTest extends GLShaderPattern {
     try {
       TE.log("ParticlesTest: Initializing dynamic sphere emitter demo...");
 
+      // Create SceneConfig for ParticlesTest with no gravity and room bounds
+      SceneConfig config =
+          new SceneConfig()
+              // No gravity forces enabled (both globalGravityEnabled and centralGravityEnabled
+              // default to false)
+              .withRoom(
+                  0.5f, 9.5f, 0.5f, 9.5f, -0.1f, 0.1f,
+                  1.0f) // Room bounds: full scene with thin Z containment
+              .withSolver(10, 1.0f / 120.0f); // Standard solver settings
+
       bulletPhysics = new BulletBootstrap();
-      bulletPhysics.initialize();
-      // Gravity set to (0, -1, 0) per request
-      bulletPhysics.setGravity(0f, 0f, 0f);
-      // Create walls matching full scene borders: X:[0,10], Y:[0,10]
-      bulletPhysics.createRoom(
-          0.5f, 9.5f, 0.5f, 9.5f, -0.1f, 0.1f, 1.0f); // Full scene with thin Z containment
+      bulletPhysics.initializeScene(config);
+
       // Enable collision response for this test
       disableCollisions = false;
 

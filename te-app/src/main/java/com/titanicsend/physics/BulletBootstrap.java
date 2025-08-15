@@ -350,17 +350,23 @@ public class BulletBootstrap {
     // Solver knobs
     dynamicsWorld.getSolverInfo().numIterations = Math.max(1, cfg.solverIterations);
 
-    // Gravity
-    if (cfg.gravityType == SceneConfig.GravityType.GLOBAL_VECTOR) {
+    // Configure gravity forces independently
+    if (cfg.globalGravityEnabled) {
       dynamicsWorld.setGravity(new Vector3f(cfg.gravityVector));
-      centralGravityEnabled = false;
+      TE.log(
+          "BulletBootstrap: Enabled global gravity (%.2f, %.2f, %.2f)",
+          cfg.gravityVector.x, cfg.gravityVector.y, cfg.gravityVector.z);
     } else {
       dynamicsWorld.setGravity(new Vector3f(0f, 0f, 0f));
-      if (cfg.gravityType == SceneConfig.GravityType.CENTRAL_MASS) {
-        enableCentralGravity(cfg.gravityCenter, cfg.gravityMu, cfg.gravitySoftening);
-      } else {
-        centralGravityEnabled = false;
-      }
+    }
+
+    if (cfg.centralGravityEnabled) {
+      enableCentralGravity(cfg.gravityCenter, cfg.gravityMu, cfg.gravitySoftening);
+      TE.log(
+          "BulletBootstrap: Enabled central gravity at (%.2f, %.2f, %.2f) GM=%.2f",
+          cfg.gravityCenter.x, cfg.gravityCenter.y, cfg.gravityCenter.z, cfg.gravityMu);
+    } else {
+      centralGravityEnabled = false;
     }
 
     // Bounds
@@ -373,6 +379,72 @@ public class BulletBootstrap {
           cfg.roomMinZ,
           cfg.roomMaxZ,
           cfg.wallThickness);
+    }
+  }
+
+  /** Add spheres along a path defined in the scene config */
+  public void addSpheresOnPath(String namePrefix, int count, float mass, boolean enableCcd) {
+    if (sceneConfig == null || sceneConfig.pathType == null) {
+      throw new RuntimeException("No path configuration found in scene config");
+    }
+
+    switch (sceneConfig.pathType) {
+      case CIRCLE:
+        addSpheresOnCircle(namePrefix, count, mass, enableCcd);
+        break;
+      default:
+        throw new RuntimeException("Unsupported path type: " + sceneConfig.pathType);
+    }
+  }
+
+  /** Add spheres positioned on a circle path with orbital velocity */
+  private void addSpheresOnCircle(String namePrefix, int count, float mass, boolean enableCcd) {
+    SceneConfig.CirclePathConfig config = sceneConfig.circlePathConfig;
+    if (config == null) {
+      throw new RuntimeException("Circle path config not found");
+    }
+
+    for (int i = 0; i < count; i++) {
+      // Calculate position on circle
+      float angle = (float) (2.0 * Math.PI * i / count); // Evenly spaced around circle
+      float x = config.center.x + config.radius * (float) Math.cos(angle);
+      float z = config.center.z + config.radius * (float) Math.sin(angle);
+      float y = config.y; // Fixed Y plane
+
+      // Vary orb radius
+      float radiusRange = config.maxOrbRadius - config.minOrbRadius;
+      float radiusVariation = (float) Math.random() * radiusRange;
+      float orbRadius = config.minOrbRadius + radiusVariation;
+
+      // Create sphere
+      String name = namePrefix + "-" + i;
+      addSphere(name, x, y, z, orbRadius, mass * orbRadius, enableCcd);
+
+      // Set orbital velocity (tangential to the circle) for central gravity
+      RigidBody body = nameToRigidBody.get(name);
+      if (body != null) {
+        // Calculate correct orbital velocity for central gravity: v = sqrt(GM/r)
+        // Using the central mass parameters from scene config
+        float GM =
+            (sceneConfig.centralGravityEnabled)
+                ? sceneConfig.gravityMu
+                : 25f; // Default GM if central gravity not enabled
+        float orbitalRadius = config.radius;
+        float orbitalSpeed = (float) Math.sqrt(GM / orbitalRadius);
+
+        // Calculate tangential velocity direction (perpendicular to radius vector)
+        float vx = -orbitalSpeed * (float) Math.sin(angle); // Perpendicular to radius in X
+        float vz = orbitalSpeed * (float) Math.cos(angle); // Perpendicular to radius in Z
+        float vy = 0f; // No Y component for horizontal orbit
+
+        javax.vecmath.Vector3f velocity = new javax.vecmath.Vector3f(vx, vy, vz);
+        body.setLinearVelocity(velocity);
+        body.activate(true);
+
+        TE.log(
+            "BulletBootstrap: Added orbiting comet '%s' at (%.2f, %.2f, %.2f) radius=%.2f velocity=(%.2f, %.2f, %.2f) GM=%.2f",
+            name, x, y, z, orbRadius, vx, vy, vz, GM);
+      }
     }
   }
 
@@ -406,6 +478,25 @@ public class BulletBootstrap {
 
   public void clearTethers() {
     tethers.clear();
+  }
+
+  /** Add central tethers for all existing bodies based on SceneConfig */
+  public void addCentralTethersForAllBodies() {
+    if (sceneConfig == null || !sceneConfig.centralTetherEnabled) {
+      return;
+    }
+
+    Vector3f center = sceneConfig.tetherCenter;
+    float radius = sceneConfig.tetherRadius;
+    float stiffness = sceneConfig.tetherStiffness;
+    float damping = sceneConfig.tetherDamping;
+
+    for (String bodyName : nameToRigidBody.keySet()) {
+      addTether(bodyName, center, radius, stiffness, damping);
+      TE.log(
+          "BulletBootstrap: Added central tether for '%s' to center (%.2f, %.2f, %.2f) radius=%.2f stiffness=%.2f damping=%.2f",
+          bodyName, center.x, center.y, center.z, radius, stiffness, damping);
+    }
   }
 
   // --- Internal force application (call before each step) ---

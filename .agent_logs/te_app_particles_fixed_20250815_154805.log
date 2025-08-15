@@ -1,0 +1,133 @@
+[LX 2025/08/15 15:48:05] Starting Chromatik version 1.1.1-TE.5.GPU-SNAPSHOT
+[LX 2025/08/15 15:48:05] Running java 24.0.1 Oracle Corporation Mac OS X 15.5 aarch64
+[GLX 2025/08/15 15:48:05] CLI args: --resolution 1920x1200 
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.lwjgl.system.Library$$Lambda/0x000007fc0100e568 in an unnamed module (file:/Users/sinas/workspace/LXStudio-TE/te-app/target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.lwjgl.system.MemoryUtil (file:/Users/sinas/workspace/LXStudio-TE/te-app/target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar)
+WARNING: Please consider reporting this to the maintainers of class org.lwjgl.system.MemoryUtil
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[GLX 2025/08/15 15:48:05] GLXWindow monitorWorkarea: size(1728x1079), pos(x:0,y:38)
+[GLX 2025/08/15 15:48:05] GLXWindow createWindow: 1693x1079
+[GLX 2025/08/15 15:48:05] GLXWindow systemContentScale: 2.0x2.0
+[GLX 2025/08/15 15:48:05] GLXWindow windowSize: 1511x1051
+[GLX 2025/08/15 15:48:05] GLXWindow framebufferSize: 3022x2102
+[GLX 2025/08/15 15:48:05] GLXWindow uiSize: 1511.0x1051.0
+[GLX 2025/08/15 15:48:05] GLXWindow cursorScale: 1.0x1.0
+[GLX 2025/08/15 15:48:05] GLXWindow.main() awaiting GLX boostrap...
+[LX 2025/08/15 15:48:05] [AudioStems] AudioStemsPlugin(LX) version: 0.3.0-SNAPSHOT
+[GLX 2025/08/15 15:48:05] TEApp.Plugin(LX)
+[LX 2025/08/15 15:48:06] GLEngine: Rendering canvas size: 1920x1200 = 2304000 total points
+[LX 2025/08/15 15:48:06] Loading user presets: ./Presets/UserPresets/BM24.userPresets
+[LX 2025/08/15 15:48:06] [SuperMod] SuperMod Plugin version 0.1.5-SNAPSHOT
+[LX 2025/08/15 15:48:06] [OscRemapper] OscRemapperPlugin(LX) constructor called - version: 0.3.0-SNAPSHOT
+[LX 2025/08/15 15:48:06] [OscRemapper] Using config path: resources/osc_remapper.yaml
+[LX 2025/08/15 15:48:06] [OscRemapper] Loading OSC Remapper config from: /Users/sinas/workspace/LXStudio-TE/te-app/resources/osc_remapper.yaml
+[LX 2025/08/15 15:48:06] [OscRemapper] Successfully parsed YAML config with 7 destinations and 4 remappings
+[LX 2025/08/15 15:48:06] [OscRemapper] Loaded configuration with 7 destinations and 4 remappings
+[GLX 2025/08/15 15:48:06] TEApp.Plugin.initialize()
+[LX 2025/08/15 15:48:06] Creating Shader class: titanicsend.pattern.glengine.StarField1 for starfield1.fs
+[LX 2025/08/15 15:48:06] Creating Shader class: titanicsend.pattern.glengine.Circuitry for circuitry.fs
+[LX 2025/08/15 15:48:06] Creating Shader class: titanicsend.pattern.glengine.GummyWeave for gummy_weave.fs
+[LX 2025/08/15 15:48:06] Creating Shader class: titanicsend.pattern.glengine.Colortest for colortest.fs
+[LX 2025/08/15 15:48:06] Creating Shader class: titanicsend.pattern.glengine.GummyWorms for gummy_worms.fs
+[LX 2025/08/15 15:48:06] Creating Shader class: titanicsend.pattern.glengine.DatsaMoire for datsa_moire.fs
+[LX 2025/08/15 15:48:06] Creating Shader class: titanicsend.pattern.glengine.Waterfall for waterfall.fs
+[LX 2025/08/15 15:48:06] Creating Shader class: titanicsend.pattern.glengine.PolySpiral2 for polyspiral2.fs
+[LX 2025/08/15 15:48:06] Creating Shader class: titanicsend.pattern.glengine.NeonMess for neonmess.fs
+[LX 2025/08/15 15:48:06] Creating Shader class: titanicsend.pattern.glengine.Icemelt for icemelt.fs
+[LX 2025/08/15 15:48:06] Creating Shader class: titanicsend.pattern.glengine.GummyFireflies2 for gummy_fireflies2.fs
+[LX 2025/08/15 15:48:06] Creating Shader class: titanicsend.pattern.glengine.StemTriangleInfinity for triangle_infinity_mod_stems.fs
+[LX 2025/08/15 15:48:06] Creating Shader class: titanicsend.pattern.glengine.TechnoChurch for techno_church.fs
+[LX 2025/08/15 15:48:06] Creating Shader class: titanicsend.pattern.glengine.ArtOfCode for artofcode.fs
+[LX 2025/08/15 15:48:06] Creating Shader class: titanicsend.pattern.glengine.StarField2 for starfield2.fs
+[LX 2025/08/15 15:48:06] Creating Shader class: titanicsend.pattern.glengine.GummyNoise for gummy_noise.fs
+[LX 2025/08/15 15:48:06] Attaching the OSC message listener to port 42069 ...
+[LX 2025/08/15 15:48:06] [OSC] Started OSC listener /[0:0:0:0:0:0:0:0]:3030
+[LX 2025/08/15 15:48:06] DevSwitch setting state to DEVELOPER...
+[LX 2025/08/15 15:48:06] [ArtNet] Starting Art-Net listener on /0:0:0:0:0:0:0:0:6454
+[LX 2025/08/15 15:48:06] Started audio input thread: Default Audio Device
+[GLX 2025/08/15 15:48:07] BGFX renderer: Metal
+[GLX 2025/08/15 15:48:07] TEApp.Plugin.initializeUI()
+[GLX 2025/08/15 15:48:07] TEApp.Plugin.onUIReady()
+[LX 2025/08/15 15:48:08] Gamepad mappings updated successfully.
+[GLX 2025/08/15 15:48:08] Starting LX Engine...
+[LX 2025/08/15 15:48:08] LXEngine.ExecutorService starting...
+[GLX 2025/08/15 15:48:08] Running main BGFX loop...
+[GLX 2025/08/15 15:48:08] GLX boostrap complete, GLXWindow running event loop...
+[LX 2025/08/15 15:48:08] Opening project file: ./Projects/BM25_playachemist.lxp
+[LX 2025/08/15 15:48:08] DevSwitch detected potential file change, remembering state DEVELOPER
+Loaded sketches: 200
+Loaded sketches: 200
+[LX 2025/08/15 15:48:09] OrbitingComets: Initializing orbiting comets demo with circle path...
+[LX 2025/08/15 15:48:09] BulletBootstrap: Enabled central gravity at (5.00, 3.50, 5.00) GM=1.00
+[LX 2025/08/15 15:48:09] OrbitingComets: Orbiting comets physics demo initialized with circle path
+Loaded sketches: 200
+Loaded sketches: 200
+Loaded sketches: 200
+Loaded sketches: 200
+[LX 2025/08/15 15:48:09] Autopilot detected completion of openProject(), defensive positions have been taken (or is first file open)...
+[LX 2025/08/15 15:48:09] DevSwitch restoring the state DEVELOPER
+[LX 2025/08/15 15:48:09] DevSwitch setting state to DEVELOPER...
+[LX 2025/08/15 15:48:09] Project loaded successfully from ./Projects/BM25_playachemist.lxp
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added orbiting comet 'comet-0' at (8.00, 3.50, 5.00) radius=0.13 velocity=(-0.00, 0.00, 0.58) GM=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added orbiting comet 'comet-1' at (7.43, 3.50, 6.76) radius=0.12 velocity=(-0.34, 0.00, 0.47) GM=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added orbiting comet 'comet-2' at (5.93, 3.50, 7.85) radius=0.19 velocity=(-0.55, 0.00, 0.18) GM=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added orbiting comet 'comet-3' at (4.07, 3.50, 7.85) radius=0.17 velocity=(-0.55, 0.00, -0.18) GM=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added orbiting comet 'comet-4' at (2.57, 3.50, 6.76) radius=0.12 velocity=(-0.34, 0.00, -0.47) GM=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added orbiting comet 'comet-5' at (2.00, 3.50, 5.00) radius=0.13 velocity=(0.00, 0.00, -0.58) GM=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added orbiting comet 'comet-6' at (2.57, 3.50, 3.24) radius=0.15 velocity=(0.34, 0.00, -0.47) GM=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added orbiting comet 'comet-7' at (4.07, 3.50, 2.15) radius=0.17 velocity=(0.55, 0.00, -0.18) GM=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added orbiting comet 'comet-8' at (5.93, 3.50, 2.15) radius=0.10 velocity=(0.55, 0.00, 0.18) GM=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added orbiting comet 'comet-9' at (7.43, 3.50, 3.24) radius=0.12 velocity=(0.34, 0.00, 0.47) GM=1.00
+[LX 2025/08/15 15:48:09] OrbitingComets: Added comet 'comet-0' to tracking system at (8.00, 3.50, 5.00) radius=0.13
+[LX 2025/08/15 15:48:09] OrbitingComets: Added comet 'comet-1' to tracking system at (7.43, 3.50, 6.76) radius=0.12
+[LX 2025/08/15 15:48:09] OrbitingComets: Added comet 'comet-2' to tracking system at (5.93, 3.50, 7.85) radius=0.19
+[LX 2025/08/15 15:48:09] OrbitingComets: Added comet 'comet-3' to tracking system at (4.07, 3.50, 7.85) radius=0.17
+[LX 2025/08/15 15:48:09] OrbitingComets: Added comet 'comet-4' to tracking system at (2.57, 3.50, 6.76) radius=0.12
+[LX 2025/08/15 15:48:09] OrbitingComets: Added comet 'comet-5' to tracking system at (2.00, 3.50, 5.00) radius=0.13
+[LX 2025/08/15 15:48:09] OrbitingComets: Added comet 'comet-6' to tracking system at (2.57, 3.50, 3.24) radius=0.15
+[LX 2025/08/15 15:48:09] OrbitingComets: Added comet 'comet-7' to tracking system at (4.07, 3.50, 2.15) radius=0.17
+[LX 2025/08/15 15:48:09] OrbitingComets: Added comet 'comet-8' to tracking system at (5.93, 3.50, 2.15) radius=0.10
+[LX 2025/08/15 15:48:09] OrbitingComets: Added comet 'comet-9' to tracking system at (7.43, 3.50, 3.24) radius=0.12
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added central tether for 'floor' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added central tether for 'ceiling' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added central tether for 'wall-left' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added central tether for 'wall-right' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added central tether for 'wall-front' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added central tether for 'wall-back' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added central tether for 'comet-0' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added central tether for 'comet-1' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added central tether for 'comet-2' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added central tether for 'comet-3' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added central tether for 'comet-4' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added central tether for 'comet-5' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added central tether for 'comet-6' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added central tether for 'comet-7' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added central tether for 'comet-8' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=1.00
+[LX 2025/08/15 15:48:09] BulletBootstrap: Added central tether for 'comet-9' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=1.00
+[LX 2025/08/15 15:48:09] NDI: Successfully initialized sender 'TitanicsEnd'
+[LX 2025/08/15 15:48:09] Shader 'ndi_out_effect.fs' uniform error: Missing texture 'iDst' for unit 4, this could be a bug...
+[LX 2025/08/15 15:48:09] OrbitingComets: Sphere 'comet-0' - World(7.79, 3.50, 5.12) Norm(0.779, 0.350, 0.512) Radius=0.131 NormRadius=0.013 LogFPS=1.7
+[LX 2025/08/15 15:48:10] OrbitingComets: Sphere 'comet-0' - World(5.25, 3.50, 5.75) Norm(0.525, 0.350, 0.575) Radius=0.131 NormRadius=0.013 LogFPS=1.7
+[LX 2025/08/15 15:48:11] OrbitingComets: Sphere 'comet-0' - World(5.30, 3.50, 4.44) Norm(0.530, 0.350, 0.444) Radius=0.131 NormRadius=0.013 LogFPS=1.7
+[LX 2025/08/15 15:48:11] OrbitingComets: Sphere 'comet-0' - World(4.22, 3.50, 5.47) Norm(0.422, 0.350, 0.547) Radius=0.131 NormRadius=0.013 LogFPS=1.7
+[LX 2025/08/15 15:48:12] OrbitingComets: Sphere 'comet-0' - World(4.18, 3.50, 4.38) Norm(0.418, 0.350, 0.438) Radius=0.131 NormRadius=0.013 LogFPS=1.7
+[LX 2025/08/15 15:48:12] OrbitingComets: Sphere 'comet-0' - World(5.69, 3.50, 5.34) Norm(0.569, 0.350, 0.534) Radius=0.131 NormRadius=0.013 LogFPS=1.7
+[LX 2025/08/15 15:48:13] OrbitingComets: Sphere 'comet-0' - World(5.23, 3.50, 7.72) Norm(0.523, 0.350, 0.772) Radius=0.131 NormRadius=0.013 LogFPS=1.7
+[LX 2025/08/15 15:48:14] OrbitingComets: Sphere 'comet-0' - World(4.39, 3.50, 6.75) Norm(0.439, 0.350, 0.675) Radius=0.131 NormRadius=0.013 LogFPS=1.7
+[LX 2025/08/15 15:48:14] ParticlesTest: Initializing dynamic sphere emitter demo...
+[LX 2025/08/15 15:48:14] ParticlesTest: Dynamic sphere emitter initialized
+[LX 2025/08/15 15:48:14] OrbitingComets: Sphere 'comet-0' - World(5.33, 3.50, 3.28) Norm(0.533, 0.350, 0.328) Radius=0.131 NormRadius=0.013 LogFPS=1.7
+[LX 2025/08/15 15:48:15] OrbitingComets: Sphere 'comet-0' - World(6.62, 3.50, 2.78) Norm(0.662, 0.350, 0.278) Radius=0.131 NormRadius=0.013 LogFPS=1.7
+2025-08-15 15:48:15.886 java[27226:2491768] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=1 "Discarded (victim of GPU error/recovery) (00000005:kIOGPUCommandBufferCallbackErrorInnocentVictim)" UserInfo={NSLocalizedDescription=Discarded (victim of GPU error/recovery) (00000005:kIOGPUCommandBufferCallbackErrorInnocentVictim), NSUnderlyingError=0x3546ac460 {Error Domain=IOGPUCommandQueueErrorDomain Code=5 "(null)"}}
+2025-08-15 15:48:15.886 java[27226:2491814] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=1 "Discarded (victim of GPU error/recovery) (00000005:kIOGPUCommandBufferCallbackErrorInnocentVictim)" UserInfo={NSLocalizedDescription=Discarded (victim of GPU error/recovery) (00000005:kIOGPUCommandBufferCallbackErrorInnocentVictim), NSUnderlyingError=0x157f24eb0 {Error Domain=IOGPUCommandQueueErrorDomain Code=5 "(null)"}}
+2025-08-15 15:48:16.040 java[27226:2491768] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=1 "Discarded (victim of GPU error/recovery) (00000005:kIOGPUCommandBufferCallbackErrorInnocentVictim)" UserInfo={NSLocalizedDescription=Discarded (victim of GPU error/recovery) (00000005:kIOGPUCommandBufferCallbackErrorInnocentVictim), NSUnderlyingError=0x3546a8f00 {Error Domain=IOGPUCommandQueueErrorDomain Code=5 "(null)"}}
+2025-08-15 15:48:16.045 java[27226:2491768] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=2 "Caused GPU Hang Error (00000003:kIOGPUCommandBufferCallbackErrorHang)" UserInfo={NSLocalizedDescription=Caused GPU Hang Error (00000003:kIOGPUCommandBufferCallbackErrorHang), NSUnderlyingError=0x3546a8f30 {Error Domain=IOGPUCommandQueueErrorDomain Code=3 "(null)"}}
+2025-08-15 15:48:16.575 java[27226:2491815] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=2 "Caused GPU Hang Error (00000003:kIOGPUCommandBufferCallbackErrorHang)" UserInfo={NSLocalizedDescription=Caused GPU Hang Error (00000003:kIOGPUCommandBufferCallbackErrorHang), NSUnderlyingError=0x3093d94f0 {Error Domain=IOGPUCommandQueueErrorDomain Code=3 "(null)"}}
+2025-08-15 15:48:16.575 java[27226:2491815] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=1 "Discarded (victim of GPU error/recovery) (00000005:kIOGPUCommandBufferCallbackErrorInnocentVictim)" UserInfo={NSLocalizedDescription=Discarded (victim of GPU error/recovery) (00000005:kIOGPUCommandBufferCallbackErrorInnocentVictim), NSUnderlyingError=0x3093d9560 {Error Domain=IOGPUCommandQueueErrorDomain Code=5 "(null)"}}
+2025-08-15 15:48:16.575 java[27226:2491815] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=1 "Discarded (victim of GPU error/recovery) (00000005:kIOGPUCommandBufferCallbackErrorInnocentVictim)" UserInfo={NSLocalizedDescription=Discarded (victim of GPU error/recovery) (00000005:kIOGPUCommandBufferCallbackErrorInnocentVictim), NSUnderlyingError=0x3093d9590 {Error Domain=IOGPUCommandQueueErrorDomain Code=5 "(null)"}}
+2025-08-15 15:48:16.618 java[27226:2491815] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=4 "Ignored (for causing prior/excessive GPU errors) (00000004:kIOGPUCommandBufferCallbackErrorSubmissionsIgnored)" UserInfo={NSLocalizedDescription=Ignored (for causing prior/excessive GPU errors) (00000004:kIOGPUCommandBufferCallbackErrorSubmissionsIgnored), NSUnderlyingError=0x3093d7350 {Error Domain=IOGPUCommandQueueErrorDomain Code=4 "(null)"}}

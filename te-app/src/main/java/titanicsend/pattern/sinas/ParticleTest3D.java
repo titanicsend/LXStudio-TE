@@ -294,7 +294,8 @@ public class ParticleTest3D extends GLShaderPattern {
       // Create SceneConfig for the scene with room bounds
       SceneConfig config =
           new SceneConfig()
-              .withGravity(SceneConfig.GravityType.NONE) // No gravity
+              // No gravity forces enabled (both globalGravityEnabled and centralGravityEnabled
+              // default to false)
               .withRoom(
                   0.5f, 9.5f, 0.5f, 9.5f, 0.5f, 9.5f,
                   1.0f) // Room bounds: minX, maxX, minY, maxY, minZ, maxZ, thickness
@@ -496,7 +497,7 @@ public class ParticleTest3D extends GLShaderPattern {
 
     if (on && bulletPhysicsInitialized && !activeSpheres.isEmpty()) {
       // Wow trigger activated! Apply gentle wave force to all spheres
-      float waveStrength = 3.0f + (float) getWow1() * 7.0f; // Much gentler force
+      float waveStrength = 0.5f + (float) getWow1() * 7.0f; // Much gentler force
       TE.log(
           "ParticleTest3D: WOW TRIGGER! 3D wave affecting %d spheres with strength %.1f",
           activeSpheres.size(), waveStrength);

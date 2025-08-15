@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.5.GPU-SNAPSHOT",
-  "timestamp": 1755286939138,
+  "timestamp": 1755298221218,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -12235,7 +12235,7 @@
           "autoCycleMode": 0,
           "autoCycleMode/name": "NEXT",
           "autoCycleTimeSecs": 60.0,
-          "autoCycleCursor": 1,
+          "autoCycleCursor": 15,
           "triggerSwatchCycle": false,
           "expandedPerformance": true,
           "label1": "1",
@@ -12254,7 +12254,7 @@
               "modulationsExpanded": true
             },
             "parameters": {
-              "label": "IceGrad",
+              "label": "Swatch-20",
               "recall": false,
               "autoCycleEligible": true
             },
@@ -12270,15 +12270,15 @@
                 },
                 "parameters": {
                   "label": "LX",
-                  "mode": 1,
-                  "mode/name": "OSCILLATE",
+                  "mode": 0,
+                  "mode/name": "FIXED",
                   "period": 16.0,
                   "primary/brightness": 91.00000020116568,
-                  "primary/saturation": 61.00000087171793,
-                  "primary/hue": 192.58998466096818,
+                  "primary/saturation": 55.0,
+                  "primary/hue": 342.0,
                   "secondary/brightness": 73.33330535888672,
-                  "secondary/saturation": 65.0,
-                  "secondary/hue": 204.0
+                  "secondary/saturation": 77.5,
+                  "secondary/hue": 258.0
                 },
                 "children": {}
               },
@@ -12292,15 +12292,15 @@
                 },
                 "parameters": {
                   "label": "LX",
-                  "mode": 1,
-                  "mode/name": "OSCILLATE",
+                  "mode": 0,
+                  "mode/name": "FIXED",
                   "period": 16.0,
                   "primary/brightness": 95.0,
-                  "primary/saturation": 47.0,
-                  "primary/hue": 258.0,
-                  "secondary/brightness": 98.33332824707031,
-                  "secondary/saturation": 28.333335876464844,
-                  "secondary/hue": 273.0
+                  "primary/saturation": 51.66666793823242,
+                  "primary/hue": 333.0,
+                  "secondary/brightness": 66.66656494140625,
+                  "secondary/saturation": 55.83333206176758,
+                  "secondary/hue": 324.0
                 },
                 "children": {}
               }
@@ -13983,22 +13983,22 @@
               "attack": 0.0,
               "release": 238.32847665695334,
               "slope": 6.0,
-              "band-1": 0.6773712050522649,
-              "band-2": 0.7780580372351238,
-              "band-3": 0.831506511269644,
-              "band-4": 0.8867688561830629,
-              "band-5": 0.8125879602229572,
-              "band-6": 0.6871861233996419,
-              "band-7": 0.6734335993326714,
-              "band-8": 0.6198725138565462,
-              "band-9": 0.5943649851553627,
-              "band-10": 0.6513850731779309,
-              "band-11": 0.6292652239148122,
-              "band-12": 0.646760151330019,
-              "band-13": 0.6958666562041691,
-              "band-14": 0.6687106433040355,
-              "band-15": 0.5666553477202676,
-              "band-16": 0.3790485191694266
+              "band-1": 0.0,
+              "band-2": 1.0229456473054288E-4,
+              "band-3": 0.0,
+              "band-4": 0.0,
+              "band-5": 0.0,
+              "band-6": 0.12678263199526674,
+              "band-7": 0.2544529920940284,
+              "band-8": 0.26559363033380656,
+              "band-9": 0.14377197675870745,
+              "band-10": 0.12025380499877691,
+              "band-11": 0.19689054579842669,
+              "band-12": 0.1415977377946801,
+              "band-13": 5.03079313559085E-4,
+              "band-14": 0.02664772116049363,
+              "band-15": 0.0,
+              "band-16": 0.0
             },
             "children": {}
           }
@@ -14403,7 +14403,7 @@
             },
             "effects": [],
             "clips": [],
-            "patternIndex": 37,
+            "patternIndex": 36,
             "patterns": [
               {
                 "id": 157417,
@@ -21730,8 +21730,8 @@
                 "defaults": {}
               },
               {
-                "id": 556183,
-                "class": "titanicsend.pattern.sinas.OrbitingComets",
+                "id": 563723,
+                "class": "titanicsend.pattern.sinas.ParticlesTest",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
@@ -21742,7 +21742,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "OrbitingComets",
+                  "label": "ParticlesTest",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
                   "midiFilter/channel/name": "OMNI",
@@ -21771,7 +21771,7 @@
                   "te_spin": 0.0,
                   "te_brightness": 1.0,
                   "te_wow1": 1.0,
-                  "te_wow2": 10.0,
+                  "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "te_level": 0.1,
@@ -21790,7 +21790,7 @@
                 },
                 "children": {
                   "modulation": {
-                    "id": 556184,
+                    "id": 563724,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,
@@ -40229,12 +40229,12 @@
         "animation": false,
         "camera": {
           "active": false,
-          "radius": 956.8255777317571,
-          "theta": 354.2377009362681,
-          "phi": 10.34588158747647,
-          "x": 20.29910414773957,
-          "y": 228.4461914806161,
-          "z": 190.87012147880387
+          "radius": 491.84492927961605,
+          "theta": 180.16904439486098,
+          "phi": 2.196991084725596,
+          "x": 15.920288028882794,
+          "y": 244.14256899640895,
+          "z": 189.10984523105662
         },
         "cue": [
           {

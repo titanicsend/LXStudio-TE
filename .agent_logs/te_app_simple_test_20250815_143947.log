@@ -1,0 +1,808 @@
+[LX 2025/08/15 14:39:47] Starting Chromatik version 1.1.1-TE.5.GPU-SNAPSHOT
+[LX 2025/08/15 14:39:47] Running java 24.0.1 Oracle Corporation Mac OS X 15.5 aarch64
+[GLX 2025/08/15 14:39:47] CLI args: --resolution 1920x1200 
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.lwjgl.system.Library$$Lambda/0x00003ff00100e568 in an unnamed module (file:/Users/sinas/workspace/LXStudio-TE/te-app/target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.lwjgl.system.MemoryUtil (file:/Users/sinas/workspace/LXStudio-TE/te-app/target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar)
+WARNING: Please consider reporting this to the maintainers of class org.lwjgl.system.MemoryUtil
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[GLX 2025/08/15 14:39:47] GLXWindow monitorWorkarea: size(1728x1079), pos(x:0,y:38)
+[GLX 2025/08/15 14:39:47] GLXWindow createWindow: 1728x1079
+[GLX 2025/08/15 14:39:47] GLXWindow systemContentScale: 2.0x2.0
+[GLX 2025/08/15 14:39:47] GLXWindow setWindowPos: 217,44
+[GLX 2025/08/15 14:39:47] GLXWindow windowSize: 1511x1051
+[GLX 2025/08/15 14:39:47] GLXWindow framebufferSize: 3022x2102
+[GLX 2025/08/15 14:39:47] GLXWindow uiSize: 1511.0x1051.0
+[GLX 2025/08/15 14:39:47] GLXWindow cursorScale: 1.0x1.0
+[GLX 2025/08/15 14:39:47] GLXWindow.main() awaiting GLX boostrap...
+[LX 2025/08/15 14:39:48] [AudioStems] AudioStemsPlugin(LX) version: 0.3.0-SNAPSHOT
+[GLX 2025/08/15 14:39:48] TEApp.Plugin(LX)
+[LX 2025/08/15 14:39:48] GLEngine: Rendering canvas size: 1920x1200 = 2304000 total points
+[LX 2025/08/15 14:39:48] Loading user presets: ./Presets/UserPresets/BM24.userPresets
+[LX 2025/08/15 14:39:48] [SuperMod] SuperMod Plugin version 0.1.5-SNAPSHOT
+[LX 2025/08/15 14:39:48] [OscRemapper] OscRemapperPlugin(LX) constructor called - version: 0.3.0-SNAPSHOT
+[LX 2025/08/15 14:39:48] [OscRemapper] Using config path: resources/osc_remapper.yaml
+[LX 2025/08/15 14:39:48] [OscRemapper] Loading OSC Remapper config from: /Users/sinas/workspace/LXStudio-TE/te-app/resources/osc_remapper.yaml
+[LX 2025/08/15 14:39:48] [OscRemapper] Successfully parsed YAML config with 7 destinations and 4 remappings
+[LX 2025/08/15 14:39:48] [OscRemapper] Loaded configuration with 7 destinations and 4 remappings
+[GLX 2025/08/15 14:39:48] TEApp.Plugin.initialize()
+[LX 2025/08/15 14:39:48] Creating Shader class: titanicsend.pattern.glengine.StarField1 for starfield1.fs
+[LX 2025/08/15 14:39:48] Creating Shader class: titanicsend.pattern.glengine.Circuitry for circuitry.fs
+[LX 2025/08/15 14:39:48] Creating Shader class: titanicsend.pattern.glengine.GummyWeave for gummy_weave.fs
+[LX 2025/08/15 14:39:49] Creating Shader class: titanicsend.pattern.glengine.Colortest for colortest.fs
+[LX 2025/08/15 14:39:49] Creating Shader class: titanicsend.pattern.glengine.GummyWorms for gummy_worms.fs
+[LX 2025/08/15 14:39:49] Creating Shader class: titanicsend.pattern.glengine.DatsaMoire for datsa_moire.fs
+[LX 2025/08/15 14:39:49] Creating Shader class: titanicsend.pattern.glengine.Waterfall for waterfall.fs
+[LX 2025/08/15 14:39:49] Creating Shader class: titanicsend.pattern.glengine.PolySpiral2 for polyspiral2.fs
+[LX 2025/08/15 14:39:49] Creating Shader class: titanicsend.pattern.glengine.NeonMess for neonmess.fs
+[LX 2025/08/15 14:39:49] Creating Shader class: titanicsend.pattern.glengine.Icemelt for icemelt.fs
+[LX 2025/08/15 14:39:49] Creating Shader class: titanicsend.pattern.glengine.GummyFireflies2 for gummy_fireflies2.fs
+[LX 2025/08/15 14:39:49] Creating Shader class: titanicsend.pattern.glengine.StemTriangleInfinity for triangle_infinity_mod_stems.fs
+[LX 2025/08/15 14:39:49] Creating Shader class: titanicsend.pattern.glengine.TechnoChurch for techno_church.fs
+[LX 2025/08/15 14:39:49] Creating Shader class: titanicsend.pattern.glengine.ArtOfCode for artofcode.fs
+[LX 2025/08/15 14:39:49] Creating Shader class: titanicsend.pattern.glengine.StarField2 for starfield2.fs
+[LX 2025/08/15 14:39:49] Creating Shader class: titanicsend.pattern.glengine.GummyNoise for gummy_noise.fs
+[LX 2025/08/15 14:39:49] Attaching the OSC message listener to port 42069 ...
+[LX 2025/08/15 14:39:49] [OSC] Started OSC listener /[0:0:0:0:0:0:0:0]:3030
+[LX 2025/08/15 14:39:49] DevSwitch setting state to DEVELOPER...
+[LX 2025/08/15 14:39:49] [ArtNet] Starting Art-Net listener on /0:0:0:0:0:0:0:0:6454
+[LX 2025/08/15 14:39:49] Started audio input thread: Default Audio Device
+[GLX 2025/08/15 14:39:49] BGFX renderer: Metal
+[GLX 2025/08/15 14:39:49] TEApp.Plugin.initializeUI()
+[GLX 2025/08/15 14:39:49] TEApp.Plugin.onUIReady()
+[LX 2025/08/15 14:39:51] Gamepad mappings updated successfully.
+[GLX 2025/08/15 14:39:51] Starting LX Engine...
+[LX 2025/08/15 14:39:51] LXEngine.ExecutorService starting...
+[GLX 2025/08/15 14:39:51] Running main BGFX loop...
+[GLX 2025/08/15 14:39:51] GLX boostrap complete, GLXWindow running event loop...
+[LX 2025/08/15 14:39:51] Opening project file: ./Projects/BM25_playachemist.lxp
+[LX 2025/08/15 14:39:51] DevSwitch detected potential file change, remembering state DEVELOPER
+Loaded sketches: 200
+Loaded sketches: 200
+[LX 2025/08/15 14:39:52] OrbitingComets: Initializing single ball physics demo with SceneConfig...
+[LX 2025/08/15 14:39:52] OrbitingComets: Single ball physics demo initialized with SceneConfig
+Loaded sketches: 200
+Loaded sketches: 200
+Loaded sketches: 200
+Loaded sketches: 200
+[LX 2025/08/15 14:39:52] Autopilot detected completion of openProject(), defensive positions have been taken (or is first file open)...
+[LX 2025/08/15 14:39:52] DevSwitch restoring the state DEVELOPER
+[LX 2025/08/15 14:39:52] DevSwitch setting state to DEVELOPER...
+[LX 2025/08/15 14:39:52] Project loaded successfully from ./Projects/BM25_playachemist.lxp
+[LX 2025/08/15 14:39:52] OrbitingComets: Spawned sphere 'sphere-0' at World(2.00, 2.00, 6.75)
+[LX 2025/08/15 14:39:52] OrbitingComets: Spawned sphere 'sphere-1' at World(4.38, 2.00, 8.75)
+[LX 2025/08/15 14:39:52] OrbitingComets: Spawned sphere 'sphere-2' at World(6.75, 2.00, 2.44)
+[LX 2025/08/15 14:39:52] OrbitingComets: Spawned sphere 'sphere-3' at World(9.13, 2.00, 1.63)
+[LX 2025/08/15 14:39:52] OrbitingComets: Spawned sphere 'sphere-4' at World(2.00, 4.38, 7.24)
+[LX 2025/08/15 14:39:52] OrbitingComets: Spawned sphere 'sphere-5' at World(4.38, 4.38, 8.27)
+[LX 2025/08/15 14:39:52] OrbitingComets: Spawned sphere 'sphere-6' at World(6.75, 4.38, 8.89)
+[LX 2025/08/15 14:39:52] OrbitingComets: Spawned sphere 'sphere-7' at World(9.13, 4.38, 2.60)
+[LX 2025/08/15 14:39:52] OrbitingComets: Spawned sphere 'sphere-8' at World(2.00, 6.75, 1.77)
+[LX 2025/08/15 14:39:52] OrbitingComets: Spawned sphere 'sphere-9' at World(4.38, 6.75, 4.90)
+[LX 2025/08/15 14:39:52] OrbitingComets: updatePhysicsPositions - Processing 10 spheres
+[LX 2025/08/15 14:39:52] OrbitingComets: Sphere 0 'sphere-0' - Shader gets Norm(0.200, 0.200, 0.675) NormRadius=0.016
+[LX 2025/08/15 14:39:52] NDI: Successfully initialized sender 'TitanicsEnd'
+[LX 2025/08/15 14:39:52] Shader 'ndi_out_effect.fs' uniform error: Missing texture 'iDst' for unit 4, this could be a bug...
+[LX 2025/08/15 14:39:52] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:52] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:52] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:52] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:52] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:53] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:53] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:53] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:53] OrbitingComets: updatePhysicsPositions - Processing 10 spheres
+[LX 2025/08/15 14:39:53] OrbitingComets: Sphere 0 'sphere-0' - Shader gets Norm(0.200, 0.200, 0.675) NormRadius=0.016
+[LX 2025/08/15 14:39:53] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:53] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:53] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:53] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:53] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:54] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:54] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:54] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:54] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:54] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:54] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:54] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:54] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:54] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:55] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:55] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:55] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:55] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:55] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:55] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:55] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:55] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:55] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:56] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:56] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:56] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:56] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:56] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:56] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:56] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:56] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:56] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:57] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:57] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:57] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:57] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:57] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:57] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:57] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:57] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:57] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:58] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:58] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:58] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:58] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:58] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:58] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:58] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:58] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:58] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:58] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:59] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:59] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:59] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:59] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:59] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:59] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:59] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:59] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:39:59] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:00] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:00] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:00] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:00] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:00] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:00] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:00] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:00] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:00] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:01] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:01] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:01] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:01] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:01] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:01] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:01] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:01] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:01] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:02] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:02] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:02] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:02] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:02] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:02] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:02] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:02] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:02] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:03] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:03] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:03] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:03] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:03] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:03] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:03] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:03] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:03] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:04] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:04] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:04] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:04] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:04] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:04] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:04] OrbitingComets: Sphere 'sphere-0' - World(2.00, 2.00, 6.75) Norm(0.200, 0.200, 0.675) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:04] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 10.0
+[LX 2025/08/15 14:40:04] OrbitingComets: Applying 3D impulse (8.83, -0.77, -1.35) to sphere 'sphere-0'
+[LX 2025/08/15 14:40:04] OrbitingComets: Applying 3D impulse (-2.22, -5.80, -1.18) to sphere 'sphere-1'
+[LX 2025/08/15 14:40:04] OrbitingComets: Applying 3D impulse (-1.71, 7.11, 1.13) to sphere 'sphere-2'
+[LX 2025/08/15 14:40:04] OrbitingComets: Applying 3D impulse (4.82, 0.43, -3.64) to sphere 'sphere-3'
+[LX 2025/08/15 14:40:04] OrbitingComets: Applying 3D impulse (-1.90, -5.71, 3.74) to sphere 'sphere-4'
+[LX 2025/08/15 14:40:04] OrbitingComets: Applying 3D impulse (3.68, -0.41, -1.87) to sphere 'sphere-5'
+[LX 2025/08/15 14:40:04] OrbitingComets: Applying 3D impulse (2.80, -3.42, 4.68) to sphere 'sphere-6'
+[LX 2025/08/15 14:40:04] OrbitingComets: Applying 3D impulse (3.13, -4.53, -7.43) to sphere 'sphere-7'
+[LX 2025/08/15 14:40:04] OrbitingComets: Applying 3D impulse (1.16, 9.04, -3.13) to sphere 'sphere-8'
+[LX 2025/08/15 14:40:04] OrbitingComets: Applying 3D impulse (-2.46, 1.76, -2.04) to sphere 'sphere-9'
+[LX 2025/08/15 14:40:04] OrbitingComets: Sphere 'sphere-0' - World(5.36, 1.71, 6.24) Norm(0.536, 0.171, 0.624) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:04] OrbitingComets: Sphere 'sphere-0' - World(9.09, 1.26, 5.47) Norm(0.909, 0.126, 0.547) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:04] OrbitingComets: Sphere 'sphere-0' - World(8.22, 0.96, 4.93) Norm(0.822, 0.096, 0.493) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:05] OrbitingComets: Sphere 'sphere-0' - World(7.34, 0.65, 4.40) Norm(0.734, 0.065, 0.440) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:05] OrbitingComets: Sphere 'sphere-0' - World(6.64, 0.70, 3.99) Norm(0.664, 0.070, 0.399) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:05] OrbitingComets: Sphere 'sphere-0' - World(5.88, 0.75, 3.54) Norm(0.588, 0.075, 0.354) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:05] OrbitingComets: Sphere 'sphere-0' - World(4.99, 0.81, 3.02) Norm(0.499, 0.081, 0.302) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:05] OrbitingComets: Sphere 'sphere-0' - World(4.03, 0.87, 2.46) Norm(0.403, 0.087, 0.246) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:05] OrbitingComets: Sphere 'sphere-0' - World(3.27, 0.92, 2.01) Norm(0.327, 0.092, 0.201) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:05] OrbitingComets: Sphere 'sphere-0' - World(2.51, 0.97, 1.56) Norm(0.251, 0.097, 0.156) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:05] OrbitingComets: Sphere 'sphere-0' - World(1.62, 1.03, 1.03) Norm(0.162, 0.103, 0.103) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:05] OrbitingComets: Sphere 'sphere-0' - World(0.75, 1.09, 0.66) Norm(0.075, 0.109, 0.066) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:06] OrbitingComets: Sphere 'sphere-0' - World(0.78, 1.23, 0.94) Norm(0.078, 0.123, 0.094) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:06] OrbitingComets: Sphere 'sphere-0' - World(1.00, 1.40, 1.29) Norm(0.100, 0.140, 0.129) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:06] OrbitingComets: Sphere 'sphere-0' - World(1.21, 1.57, 1.63) Norm(0.121, 0.157, 0.163) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:06] OrbitingComets: Sphere 'sphere-0' - World(1.42, 1.75, 1.98) Norm(0.142, 0.175, 0.198) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:06] OrbitingComets: Sphere 'sphere-0' - World(1.63, 1.92, 2.32) Norm(0.163, 0.192, 0.232) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:06] OrbitingComets: Sphere 'sphere-0' - World(1.84, 2.09, 2.67) Norm(0.184, 0.209, 0.267) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 14:40:06] OrbitingComets: Sphere 'sphere-0' - World(2.05, 2.26, 3.02) Norm(0.205, 0.226, 0.302) Radius=0.158 NormRadius=0.016 LogFPS=9.1
+[LX 2025/08/15 14:40:06] OrbitingComets: Sphere 'sphere-0' - World(2.32, 2.48, 3.46) Norm(0.232, 0.248, 0.346) Radius=0.158 NormRadius=0.016 LogFPS=6.9
+[LX 2025/08/15 14:40:07] OrbitingComets: Sphere 'sphere-0' - World(2.81, 2.88, 4.25) Norm(0.281, 0.288, 0.425) Radius=0.158 NormRadius=0.016 LogFPS=3.9
+[LX 2025/08/15 14:40:07] OrbitingComets: Sphere 'sphere-0' - World(3.29, 3.27, 5.05) Norm(0.329, 0.327, 0.505) Radius=0.158 NormRadius=0.016 LogFPS=3.9
+[LX 2025/08/15 14:40:08] OrbitingComets: Sphere 'sphere-0' - World(5.10, 4.75, 8.01) Norm(0.510, 0.475, 0.801) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:09] OrbitingComets: Sphere 'sphere-0' - World(7.23, 5.83, 8.95) Norm(0.723, 0.583, 0.895) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:10] OrbitingComets: Sphere 'sphere-0' - World(9.12, 5.05, 8.11) Norm(0.912, 0.505, 0.811) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:11] OrbitingComets: Sphere 'sphere-0' - World(8.31, 4.07, 6.93) Norm(0.831, 0.407, 0.693) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:12] OrbitingComets: Sphere 'sphere-0' - World(7.51, 3.10, 5.74) Norm(0.751, 0.310, 0.574) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:13] OrbitingComets: Sphere 'sphere-0' - World(6.70, 2.12, 4.56) Norm(0.670, 0.212, 0.456) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:14] OrbitingComets: Sphere 'sphere-0' - World(5.89, 1.15, 3.38) Norm(0.589, 0.115, 0.338) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:15] OrbitingComets: Sphere 'sphere-0' - World(5.07, 0.80, 2.29) Norm(0.507, 0.080, 0.229) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:16] OrbitingComets: Sphere 'sphere-0' - World(4.24, 1.08, 1.33) Norm(0.424, 0.108, 0.133) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:17] OrbitingComets: Sphere 'sphere-0' - World(3.37, 1.32, 0.75) Norm(0.337, 0.132, 0.075) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:18] OrbitingComets: Sphere 'sphere-0' - World(2.44, 1.47, 1.09) Norm(0.244, 0.147, 0.109) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:19] OrbitingComets: Sphere 'sphere-0' - World(1.50, 1.62, 1.43) Norm(0.150, 0.162, 0.143) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:19] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 5.0
+[LX 2025/08/15 14:40:19] OrbitingComets: Applying 3D impulse (-2.22, 2.51, -3.01) to sphere 'sphere-0'
+[LX 2025/08/15 14:40:19] OrbitingComets: Applying 3D impulse (2.55, -1.46, -1.84) to sphere 'sphere-1'
+[LX 2025/08/15 14:40:19] OrbitingComets: Applying 3D impulse (-2.76, 0.13, -1.95) to sphere 'sphere-2'
+[LX 2025/08/15 14:40:19] OrbitingComets: Applying 3D impulse (1.00, 0.28, 2.97) to sphere 'sphere-3'
+[LX 2025/08/15 14:40:19] OrbitingComets: Applying 3D impulse (-4.13, 0.79, 0.16) to sphere 'sphere-4'
+[LX 2025/08/15 14:40:19] OrbitingComets: Applying 3D impulse (-0.16, 2.11, 3.26) to sphere 'sphere-5'
+[LX 2025/08/15 14:40:19] OrbitingComets: Applying 3D impulse (-3.90, -2.20, -1.99) to sphere 'sphere-6'
+[LX 2025/08/15 14:40:19] OrbitingComets: Applying 3D impulse (-0.40, 3.49, 2.18) to sphere 'sphere-7'
+[LX 2025/08/15 14:40:19] OrbitingComets: Applying 3D impulse (1.01, 3.11, -0.20) to sphere 'sphere-8'
+[LX 2025/08/15 14:40:19] OrbitingComets: Applying 3D impulse (1.88, 3.04, -1.75) to sphere 'sphere-9'
+[LX 2025/08/15 14:40:20] OrbitingComets: Sphere 'sphere-0' - World(1.74, 4.51, 2.92) Norm(0.174, 0.451, 0.292) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:21] OrbitingComets: Sphere 'sphere-0' - World(3.66, 6.68, 8.84) Norm(0.366, 0.668, 0.884) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:22] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 5.0
+[LX 2025/08/15 14:40:22] OrbitingComets: Applying 3D impulse (3.80, 0.47, -1.27) to sphere 'sphere-0'
+[LX 2025/08/15 14:40:22] OrbitingComets: Applying 3D impulse (-0.16, -2.37, 4.12) to sphere 'sphere-1'
+[LX 2025/08/15 14:40:22] OrbitingComets: Applying 3D impulse (-3.90, -1.35, -0.55) to sphere 'sphere-2'
+[LX 2025/08/15 14:40:22] OrbitingComets: Applying 3D impulse (-2.02, -2.18, 0.98) to sphere 'sphere-3'
+[LX 2025/08/15 14:40:22] OrbitingComets: Applying 3D impulse (-0.37, 0.59, -3.29) to sphere 'sphere-4'
+[LX 2025/08/15 14:40:22] OrbitingComets: Applying 3D impulse (-1.96, -1.08, 0.30) to sphere 'sphere-5'
+[LX 2025/08/15 14:40:22] OrbitingComets: Applying 3D impulse (1.74, 2.71, -0.41) to sphere 'sphere-6'
+[LX 2025/08/15 14:40:22] OrbitingComets: Applying 3D impulse (0.14, 2.12, 3.44) to sphere 'sphere-7'
+[LX 2025/08/15 14:40:22] OrbitingComets: Applying 3D impulse (-3.52, -2.44, 0.03) to sphere 'sphere-8'
+[LX 2025/08/15 14:40:22] OrbitingComets: Applying 3D impulse (-2.39, 1.21, -1.26) to sphere 'sphere-9'
+[LX 2025/08/15 14:40:22] OrbitingComets: Sphere 'sphere-0' - World(8.74, 8.30, 5.34) Norm(0.874, 0.830, 0.534) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:23] OrbitingComets: Sphere 'sphere-0' - World(4.92, 9.28, 1.03) Norm(0.492, 0.928, 0.103) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:24] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 5.0
+[LX 2025/08/15 14:40:24] OrbitingComets: Applying 3D impulse (0.97, -3.03, 0.47) to sphere 'sphere-0'
+[LX 2025/08/15 14:40:24] OrbitingComets: Applying 3D impulse (-3.31, -1.21, 2.75) to sphere 'sphere-1'
+[LX 2025/08/15 14:40:24] OrbitingComets: Applying 3D impulse (1.86, 3.35, -2.52) to sphere 'sphere-2'
+[LX 2025/08/15 14:40:24] OrbitingComets: Applying 3D impulse (1.71, -3.60, -1.57) to sphere 'sphere-3'
+[LX 2025/08/15 14:40:24] OrbitingComets: Applying 3D impulse (1.73, 2.25, -2.35) to sphere 'sphere-4'
+[LX 2025/08/15 14:40:24] OrbitingComets: Applying 3D impulse (-4.37, -2.14, 0.73) to sphere 'sphere-5'
+[LX 2025/08/15 14:40:24] OrbitingComets: Applying 3D impulse (0.42, -1.16, 0.06) to sphere 'sphere-6'
+[LX 2025/08/15 14:40:24] OrbitingComets: Applying 3D impulse (2.03, 2.22, 2.91) to sphere 'sphere-7'
+[LX 2025/08/15 14:40:24] OrbitingComets: Applying 3D impulse (4.93, 0.27, 0.09) to sphere 'sphere-8'
+[LX 2025/08/15 14:40:24] OrbitingComets: Applying 3D impulse (1.54, 1.30, -1.18) to sphere 'sphere-9'
+[LX 2025/08/15 14:40:24] OrbitingComets: Sphere 'sphere-0' - World(2.99, 2.64, 4.01) Norm(0.299, 0.264, 0.401) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:25] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 5.0
+[LX 2025/08/15 14:40:25] OrbitingComets: Applying 3D impulse (-1.84, 2.85, 2.29) to sphere 'sphere-0'
+[LX 2025/08/15 14:40:25] OrbitingComets: Applying 3D impulse (4.31, -1.31, -0.33) to sphere 'sphere-1'
+[LX 2025/08/15 14:40:25] OrbitingComets: Applying 3D impulse (-2.42, -1.97, -0.15) to sphere 'sphere-2'
+[LX 2025/08/15 14:40:25] OrbitingComets: Applying 3D impulse (-4.10, 1.20, -0.58) to sphere 'sphere-3'
+[LX 2025/08/15 14:40:25] OrbitingComets: Applying 3D impulse (1.62, -3.19, 2.65) to sphere 'sphere-4'
+[LX 2025/08/15 14:40:25] OrbitingComets: Applying 3D impulse (1.44, -0.93, 4.49) to sphere 'sphere-5'
+[LX 2025/08/15 14:40:25] OrbitingComets: Applying 3D impulse (2.77, 0.04, -3.95) to sphere 'sphere-6'
+[LX 2025/08/15 14:40:25] OrbitingComets: Applying 3D impulse (-0.79, 3.55, -1.72) to sphere 'sphere-7'
+[LX 2025/08/15 14:40:25] OrbitingComets: Applying 3D impulse (1.06, -0.99, 3.94) to sphere 'sphere-8'
+[LX 2025/08/15 14:40:25] OrbitingComets: Applying 3D impulse (0.19, -1.38, -0.37) to sphere 'sphere-9'
+[LX 2025/08/15 14:40:25] OrbitingComets: Sphere 'sphere-0' - World(2.55, 5.94, 9.09) Norm(0.255, 0.594, 0.909) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:25] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 5.0
+[LX 2025/08/15 14:40:25] OrbitingComets: Applying 3D impulse (-0.48, -2.53, -2.65) to sphere 'sphere-0'
+[LX 2025/08/15 14:40:25] OrbitingComets: Applying 3D impulse (-1.58, 0.53, 1.61) to sphere 'sphere-1'
+[LX 2025/08/15 14:40:25] OrbitingComets: Applying 3D impulse (1.73, 3.60, -0.26) to sphere 'sphere-2'
+[LX 2025/08/15 14:40:25] OrbitingComets: Applying 3D impulse (2.08, -1.40, -4.02) to sphere 'sphere-3'
+[LX 2025/08/15 14:40:25] OrbitingComets: Applying 3D impulse (2.03, -0.55, 2.34) to sphere 'sphere-4'
+[LX 2025/08/15 14:40:25] OrbitingComets: Applying 3D impulse (1.01, 0.53, -3.32) to sphere 'sphere-5'
+[LX 2025/08/15 14:40:25] OrbitingComets: Applying 3D impulse (-1.88, -4.27, -0.67) to sphere 'sphere-6'
+[LX 2025/08/15 14:40:25] OrbitingComets: Applying 3D impulse (0.25, 2.41, -0.58) to sphere 'sphere-7'
+[LX 2025/08/15 14:40:25] OrbitingComets: Applying 3D impulse (-0.68, 2.38, 0.63) to sphere 'sphere-8'
+[LX 2025/08/15 14:40:25] OrbitingComets: Applying 3D impulse (0.25, 1.45, 2.97) to sphere 'sphere-9'
+[LX 2025/08/15 14:40:26] OrbitingComets: Sphere 'sphere-0' - World(0.87, 0.76, 1.15) Norm(0.087, 0.076, 0.115) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:26] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 5.0
+[LX 2025/08/15 14:40:26] OrbitingComets: Applying 3D impulse (2.41, 0.34, -2.57) to sphere 'sphere-0'
+[LX 2025/08/15 14:40:26] OrbitingComets: Applying 3D impulse (0.01, 4.91, -0.67) to sphere 'sphere-1'
+[LX 2025/08/15 14:40:26] OrbitingComets: Applying 3D impulse (2.74, -2.98, 2.03) to sphere 'sphere-2'
+[LX 2025/08/15 14:40:26] OrbitingComets: Applying 3D impulse (-2.08, 1.95, -4.00) to sphere 'sphere-3'
+[LX 2025/08/15 14:40:26] OrbitingComets: Applying 3D impulse (0.79, -1.25, -3.94) to sphere 'sphere-4'
+[LX 2025/08/15 14:40:26] OrbitingComets: Applying 3D impulse (2.35, -0.91, -0.26) to sphere 'sphere-5'
+[LX 2025/08/15 14:40:26] OrbitingComets: Applying 3D impulse (-0.43, 3.19, -1.36) to sphere 'sphere-6'
+[LX 2025/08/15 14:40:26] OrbitingComets: Applying 3D impulse (3.57, 1.39, 2.80) to sphere 'sphere-7'
+[LX 2025/08/15 14:40:26] OrbitingComets: Applying 3D impulse (-3.12, 3.12, 1.31) to sphere 'sphere-8'
+[LX 2025/08/15 14:40:26] OrbitingComets: Applying 3D impulse (1.45, -0.06, 1.38) to sphere 'sphere-9'
+[LX 2025/08/15 14:40:27] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 5.0
+[LX 2025/08/15 14:40:27] OrbitingComets: Applying 3D impulse (3.92, 1.72, -1.96) to sphere 'sphere-0'
+[LX 2025/08/15 14:40:27] OrbitingComets: Applying 3D impulse (1.69, -0.13, -3.11) to sphere 'sphere-1'
+[LX 2025/08/15 14:40:27] OrbitingComets: Applying 3D impulse (-2.15, -4.01, 0.26) to sphere 'sphere-2'
+[LX 2025/08/15 14:40:27] OrbitingComets: Applying 3D impulse (0.76, 2.34, -2.02) to sphere 'sphere-3'
+[LX 2025/08/15 14:40:27] OrbitingComets: Applying 3D impulse (1.84, -3.08, -1.27) to sphere 'sphere-4'
+[LX 2025/08/15 14:40:27] OrbitingComets: Applying 3D impulse (-4.67, -0.33, -0.13) to sphere 'sphere-5'
+[LX 2025/08/15 14:40:27] OrbitingComets: Applying 3D impulse (2.39, -1.36, 2.01) to sphere 'sphere-6'
+[LX 2025/08/15 14:40:27] OrbitingComets: Applying 3D impulse (-1.41, -3.46, -1.08) to sphere 'sphere-7'
+[LX 2025/08/15 14:40:27] OrbitingComets: Applying 3D impulse (3.64, 0.55, -2.58) to sphere 'sphere-8'
+[LX 2025/08/15 14:40:27] OrbitingComets: Applying 3D impulse (-1.59, 2.73, -2.93) to sphere 'sphere-9'
+[LX 2025/08/15 14:40:27] OrbitingComets: Sphere 'sphere-0' - World(7.33, 5.98, 0.98) Norm(0.733, 0.598, 0.098) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:28] OrbitingComets: Sphere 'sphere-0' - World(1.07, 8.34, 1.93) Norm(0.107, 0.834, 0.193) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:29] OrbitingComets: Sphere 'sphere-0' - World(2.44, 5.40, 3.59) Norm(0.244, 0.540, 0.359) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:30] OrbitingComets: Sphere 'sphere-0' - World(4.31, 2.47, 5.27) Norm(0.431, 0.247, 0.527) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:31] OrbitingComets: Sphere 'sphere-0' - World(6.40, 0.95, 6.77) Norm(0.640, 0.095, 0.677) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:32] OrbitingComets: Sphere 'sphere-0' - World(8.74, 1.72, 7.96) Norm(0.874, 0.172, 0.796) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:33] OrbitingComets: Sphere 'sphere-0' - World(8.85, 2.67, 8.78) Norm(0.885, 0.267, 0.878) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:34] OrbitingComets: Sphere 'sphere-0' - World(8.19, 3.69, 9.31) Norm(0.819, 0.369, 0.931) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:35] OrbitingComets: Sphere 'sphere-0' - World(7.66, 4.69, 9.09) Norm(0.766, 0.469, 0.909) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:36] OrbitingComets: Sphere 'sphere-0' - World(7.12, 5.70, 8.87) Norm(0.712, 0.570, 0.887) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:37] OrbitingComets: Sphere 'sphere-0' - World(6.59, 6.69, 8.65) Norm(0.659, 0.669, 0.865) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:38] OrbitingComets: Sphere 'sphere-0' - World(6.06, 7.69, 8.44) Norm(0.606, 0.769, 0.844) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:39] OrbitingComets: Sphere 'sphere-0' - World(5.54, 8.69, 8.22) Norm(0.554, 0.869, 0.822) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:40] OrbitingComets: Sphere 'sphere-0' - World(4.93, 9.22, 7.98) Norm(0.493, 0.922, 0.798) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:41] OrbitingComets: Sphere 'sphere-0' - World(4.17, 8.85, 7.69) Norm(0.417, 0.885, 0.769) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:42] OrbitingComets: Sphere 'sphere-0' - World(3.41, 8.48, 7.40) Norm(0.341, 0.848, 0.740) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:43] OrbitingComets: Sphere 'sphere-0' - World(2.65, 8.11, 7.11) Norm(0.265, 0.811, 0.711) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:44] OrbitingComets: Sphere 'sphere-0' - World(1.89, 7.73, 6.82) Norm(0.189, 0.773, 0.682) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:45] OrbitingComets: Sphere 'sphere-0' - World(1.14, 7.37, 6.53) Norm(0.114, 0.737, 0.653) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:46] OrbitingComets: Sphere 'sphere-0' - World(0.74, 6.93, 6.28) Norm(0.074, 0.693, 0.628) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:47] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:40:47] OrbitingComets: Applying 3D impulse (-0.47, 5.12, 6.98) to sphere 'sphere-0'
+[LX 2025/08/15 14:40:47] OrbitingComets: Applying 3D impulse (-2.16, 6.00, 0.22) to sphere 'sphere-1'
+[LX 2025/08/15 14:40:47] OrbitingComets: Applying 3D impulse (-1.81, -0.08, -5.93) to sphere 'sphere-2'
+[LX 2025/08/15 14:40:47] OrbitingComets: Applying 3D impulse (3.02, -1.12, 4.57) to sphere 'sphere-3'
+[LX 2025/08/15 14:40:47] OrbitingComets: Applying 3D impulse (-0.01, 5.37, -4.80) to sphere 'sphere-4'
+[LX 2025/08/15 14:40:47] OrbitingComets: Applying 3D impulse (-4.80, 4.81, -4.63) to sphere 'sphere-5'
+[LX 2025/08/15 14:40:47] OrbitingComets: Applying 3D impulse (1.93, -2.01, -1.42) to sphere 'sphere-6'
+[LX 2025/08/15 14:40:47] OrbitingComets: Applying 3D impulse (0.83, -1.67, -3.21) to sphere 'sphere-7'
+[LX 2025/08/15 14:40:47] OrbitingComets: Applying 3D impulse (-7.09, 0.51, 2.80) to sphere 'sphere-8'
+[LX 2025/08/15 14:40:47] OrbitingComets: Applying 3D impulse (7.84, -0.46, -3.25) to sphere 'sphere-9'
+[LX 2025/08/15 14:40:47] OrbitingComets: Sphere 'sphere-0' - World(0.66, 9.30, 9.02) Norm(0.066, 0.930, 0.902) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:48] OrbitingComets: Sphere 'sphere-0' - World(1.12, 5.77, 0.88) Norm(0.112, 0.577, 0.088) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:49] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:40:49] OrbitingComets: Applying 3D impulse (0.25, -4.45, -5.27) to sphere 'sphere-0'
+[LX 2025/08/15 14:40:49] OrbitingComets: Applying 3D impulse (3.91, -1.87, -5.95) to sphere 'sphere-1'
+[LX 2025/08/15 14:40:49] OrbitingComets: Applying 3D impulse (-0.11, -6.99, -3.22) to sphere 'sphere-2'
+[LX 2025/08/15 14:40:49] OrbitingComets: Applying 3D impulse (6.98, 1.15, 0.43) to sphere 'sphere-3'
+[LX 2025/08/15 14:40:49] OrbitingComets: Applying 3D impulse (-2.42, 4.35, 7.01) to sphere 'sphere-4'
+[LX 2025/08/15 14:40:49] OrbitingComets: Applying 3D impulse (2.59, -3.06, 4.66) to sphere 'sphere-5'
+[LX 2025/08/15 14:40:49] OrbitingComets: Applying 3D impulse (1.41, -7.40, 2.98) to sphere 'sphere-6'
+[LX 2025/08/15 14:40:49] OrbitingComets: Applying 3D impulse (2.65, 7.98, 0.98) to sphere 'sphere-7'
+[LX 2025/08/15 14:40:49] OrbitingComets: Applying 3D impulse (8.24, 0.45, -0.65) to sphere 'sphere-8'
+[LX 2025/08/15 14:40:49] OrbitingComets: Applying 3D impulse (-0.25, -6.86, -1.57) to sphere 'sphere-9'
+[LX 2025/08/15 14:40:49] OrbitingComets: Sphere 'sphere-0' - World(2.28, 2.13, 1.45) Norm(0.228, 0.213, 0.145) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:50] OrbitingComets: Sphere 'sphere-0' - World(4.03, 8.48, 4.92) Norm(0.403, 0.848, 0.492) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:51] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:40:51] OrbitingComets: Applying 3D impulse (-3.89, 3.13, 5.76) to sphere 'sphere-0'
+[LX 2025/08/15 14:40:51] OrbitingComets: Applying 3D impulse (-0.10, -6.82, -0.05) to sphere 'sphere-1'
+[LX 2025/08/15 14:40:51] OrbitingComets: Applying 3D impulse (7.56, 0.86, 3.95) to sphere 'sphere-2'
+[LX 2025/08/15 14:40:51] OrbitingComets: Applying 3D impulse (5.32, -2.56, 0.81) to sphere 'sphere-3'
+[LX 2025/08/15 14:40:51] OrbitingComets: Applying 3D impulse (1.56, 3.89, 5.87) to sphere 'sphere-4'
+[LX 2025/08/15 14:40:51] OrbitingComets: Applying 3D impulse (-3.71, -2.37, -5.51) to sphere 'sphere-5'
+[LX 2025/08/15 14:40:51] OrbitingComets: Applying 3D impulse (4.08, 0.89, 3.97) to sphere 'sphere-6'
+[LX 2025/08/15 14:40:51] OrbitingComets: Applying 3D impulse (-4.70, 2.15, 4.84) to sphere 'sphere-7'
+[LX 2025/08/15 14:40:51] OrbitingComets: Applying 3D impulse (0.33, 2.54, 3.48) to sphere 'sphere-8'
+[LX 2025/08/15 14:40:51] OrbitingComets: Applying 3D impulse (-0.66, 5.71, -6.03) to sphere 'sphere-9'
+[LX 2025/08/15 14:40:51] OrbitingComets: Sphere 'sphere-0' - World(1.13, 9.03, 7.98) Norm(0.113, 0.903, 0.798) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:52] OrbitingComets: Sphere 'sphere-0' - World(2.97, 6.27, 0.96) Norm(0.297, 0.627, 0.096) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:53] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:40:53] OrbitingComets: Applying 3D impulse (-0.64, 1.46, 7.11) to sphere 'sphere-0'
+[LX 2025/08/15 14:40:53] OrbitingComets: Applying 3D impulse (-2.35, 5.43, 0.22) to sphere 'sphere-1'
+[LX 2025/08/15 14:40:53] OrbitingComets: Applying 3D impulse (-6.06, 1.42, 1.14) to sphere 'sphere-2'
+[LX 2025/08/15 14:40:53] OrbitingComets: Applying 3D impulse (-1.06, 0.24, 4.81) to sphere 'sphere-3'
+[LX 2025/08/15 14:40:53] OrbitingComets: Applying 3D impulse (2.65, 4.05, -5.76) to sphere 'sphere-4'
+[LX 2025/08/15 14:40:53] OrbitingComets: Applying 3D impulse (3.65, 6.42, 1.29) to sphere 'sphere-5'
+[LX 2025/08/15 14:40:53] OrbitingComets: Applying 3D impulse (-3.70, 7.07, 2.83) to sphere 'sphere-6'
+[LX 2025/08/15 14:40:53] OrbitingComets: Applying 3D impulse (-6.14, -0.68, 5.25) to sphere 'sphere-7'
+[LX 2025/08/15 14:40:53] OrbitingComets: Applying 3D impulse (-0.36, 5.46, -6.23) to sphere 'sphere-8'
+[LX 2025/08/15 14:40:53] OrbitingComets: Applying 3D impulse (-2.20, 2.43, 6.73) to sphere 'sphere-9'
+[LX 2025/08/15 14:40:53] OrbitingComets: Sphere 'sphere-0' - World(5.51, 4.71, 8.43) Norm(0.551, 0.471, 0.843) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:54] OrbitingComets: Sphere 'sphere-0' - World(4.51, 8.59, 1.40) Norm(0.451, 0.859, 0.140) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:55] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:40:55] OrbitingComets: Applying 3D impulse (2.16, 3.75, 1.13) to sphere 'sphere-0'
+[LX 2025/08/15 14:40:55] OrbitingComets: Applying 3D impulse (7.61, 0.40, 4.15) to sphere 'sphere-1'
+[LX 2025/08/15 14:40:55] OrbitingComets: Applying 3D impulse (0.39, -4.61, 3.77) to sphere 'sphere-2'
+[LX 2025/08/15 14:40:55] OrbitingComets: Applying 3D impulse (3.88, -2.36, -6.87) to sphere 'sphere-3'
+[LX 2025/08/15 14:40:55] OrbitingComets: Applying 3D impulse (-4.27, 4.22, -4.63) to sphere 'sphere-4'
+[LX 2025/08/15 14:40:55] OrbitingComets: Applying 3D impulse (-1.73, 2.88, -4.77) to sphere 'sphere-5'
+[LX 2025/08/15 14:40:55] OrbitingComets: Applying 3D impulse (1.64, 1.99, 2.84) to sphere 'sphere-6'
+[LX 2025/08/15 14:40:55] OrbitingComets: Applying 3D impulse (-1.15, 1.61, -0.84) to sphere 'sphere-7'
+[LX 2025/08/15 14:40:55] OrbitingComets: Applying 3D impulse (3.16, 2.58, 3.66) to sphere 'sphere-8'
+[LX 2025/08/15 14:40:55] OrbitingComets: Applying 3D impulse (5.49, 1.25, -0.83) to sphere 'sphere-9'
+[LX 2025/08/15 14:40:55] OrbitingComets: Sphere 'sphere-0' - World(6.87, 7.98, 3.24) Norm(0.687, 0.798, 0.324) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:56] OrbitingComets: Sphere 'sphere-0' - World(8.32, 4.08, 7.45) Norm(0.832, 0.408, 0.745) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:57] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:40:57] OrbitingComets: Applying 3D impulse (4.72, -0.91, 5.38) to sphere 'sphere-0'
+[LX 2025/08/15 14:40:57] OrbitingComets: Applying 3D impulse (-5.80, -2.99, -0.22) to sphere 'sphere-1'
+[LX 2025/08/15 14:40:57] OrbitingComets: Applying 3D impulse (-3.84, 7.78, 1.11) to sphere 'sphere-2'
+[LX 2025/08/15 14:40:57] OrbitingComets: Applying 3D impulse (-6.27, -4.80, 0.55) to sphere 'sphere-3'
+[LX 2025/08/15 14:40:57] OrbitingComets: Applying 3D impulse (0.71, -6.96, 0.26) to sphere 'sphere-4'
+[LX 2025/08/15 14:40:57] OrbitingComets: Applying 3D impulse (-0.46, 2.46, 4.43) to sphere 'sphere-5'
+[LX 2025/08/15 14:40:57] OrbitingComets: Applying 3D impulse (-3.31, -2.07, 3.18) to sphere 'sphere-6'
+[LX 2025/08/15 14:40:57] OrbitingComets: Applying 3D impulse (-3.29, -4.32, -4.95) to sphere 'sphere-7'
+[LX 2025/08/15 14:40:57] OrbitingComets: Applying 3D impulse (-4.95, -1.22, -4.01) to sphere 'sphere-8'
+[LX 2025/08/15 14:40:57] OrbitingComets: Applying 3D impulse (4.12, 7.65, 0.50) to sphere 'sphere-9'
+[LX 2025/08/15 14:40:57] OrbitingComets: Sphere 'sphere-0' - World(8.96, 0.91, 7.65) Norm(0.896, 0.091, 0.765) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:58] OrbitingComets: Sphere 'sphere-0' - World(7.59, 1.14, 3.74) Norm(0.759, 0.114, 0.374) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:40:59] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:40:59] OrbitingComets: Applying 3D impulse (-0.94, -1.56, -4.62) to sphere 'sphere-0'
+[LX 2025/08/15 14:40:59] OrbitingComets: Applying 3D impulse (-3.96, 6.13, 4.59) to sphere 'sphere-1'
+[LX 2025/08/15 14:40:59] OrbitingComets: Applying 3D impulse (-6.24, -4.52, -3.19) to sphere 'sphere-2'
+[LX 2025/08/15 14:40:59] OrbitingComets: Applying 3D impulse (-4.03, 6.03, 2.37) to sphere 'sphere-3'
+[LX 2025/08/15 14:40:59] OrbitingComets: Applying 3D impulse (1.50, 6.42, -1.63) to sphere 'sphere-4'
+[LX 2025/08/15 14:40:59] OrbitingComets: Applying 3D impulse (-1.87, 0.45, -0.78) to sphere 'sphere-5'
+[LX 2025/08/15 14:40:59] OrbitingComets: Applying 3D impulse (-1.28, 2.03, -2.61) to sphere 'sphere-6'
+[LX 2025/08/15 14:40:59] OrbitingComets: Applying 3D impulse (-2.21, -7.43, 3.48) to sphere 'sphere-7'
+[LX 2025/08/15 14:40:59] OrbitingComets: Applying 3D impulse (-0.71, 2.45, -4.17) to sphere 'sphere-8'
+[LX 2025/08/15 14:40:59] OrbitingComets: Applying 3D impulse (-5.67, -2.31, 2.84) to sphere 'sphere-9'
+[LX 2025/08/15 14:40:59] OrbitingComets: Sphere 'sphere-0' - World(6.74, 1.53, 1.22) Norm(0.674, 0.153, 0.122) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:00] OrbitingComets: Sphere 'sphere-0' - World(2.96, 4.92, 4.48) Norm(0.296, 0.492, 0.448) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:01] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:01] OrbitingComets: Applying 3D impulse (1.45, 4.15, -6.22) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:01] OrbitingComets: Applying 3D impulse (-0.09, -2.11, 5.84) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:01] OrbitingComets: Applying 3D impulse (-1.59, 4.01, 2.60) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:01] OrbitingComets: Applying 3D impulse (-4.66, 5.57, 4.40) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:01] OrbitingComets: Applying 3D impulse (4.80, -1.59, -3.67) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:01] OrbitingComets: Applying 3D impulse (0.29, -7.74, 1.33) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:01] OrbitingComets: Applying 3D impulse (6.76, 2.03, 1.90) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:01] OrbitingComets: Applying 3D impulse (5.63, -2.62, 3.54) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:01] OrbitingComets: Applying 3D impulse (-1.60, -2.64, 1.22) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:01] OrbitingComets: Applying 3D impulse (0.82, 0.45, -1.35) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:01] OrbitingComets: Sphere 'sphere-0' - World(2.38, 8.74, 3.99) Norm(0.238, 0.874, 0.399) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:02] OrbitingComets: Sphere 'sphere-0' - World(6.96, 3.22, 4.19) Norm(0.696, 0.322, 0.419) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:03] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:03] OrbitingComets: Applying 3D impulse (1.79, 4.26, -6.52) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:03] OrbitingComets: Applying 3D impulse (3.91, -3.56, 5.60) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:03] OrbitingComets: Applying 3D impulse (1.80, 5.37, 0.17) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:03] OrbitingComets: Applying 3D impulse (6.13, 0.40, 0.88) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:03] OrbitingComets: Applying 3D impulse (-0.28, 0.86, -0.46) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:03] OrbitingComets: Applying 3D impulse (-5.37, -0.66, -0.37) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:03] OrbitingComets: Applying 3D impulse (5.75, 2.87, 1.14) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:03] OrbitingComets: Applying 3D impulse (-0.53, -0.64, -4.29) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:03] OrbitingComets: Applying 3D impulse (0.11, -2.88, 5.20) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:03] OrbitingComets: Applying 3D impulse (-0.41, -1.79, -7.48) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:03] OrbitingComets: Sphere 'sphere-0' - World(8.61, 8.39, 1.41) Norm(0.861, 0.839, 0.141) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:04] OrbitingComets: Sphere 'sphere-0' - World(6.62, 6.61, 7.43) Norm(0.662, 0.661, 0.743) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:05] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:05] OrbitingComets: Applying 3D impulse (0.45, -7.37, 3.71) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:05] OrbitingComets: Applying 3D impulse (2.47, 6.49, -0.26) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:05] OrbitingComets: Applying 3D impulse (-1.28, 3.04, -6.47) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:05] OrbitingComets: Applying 3D impulse (0.72, 1.97, -5.47) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:05] OrbitingComets: Applying 3D impulse (1.78, 0.53, 8.38) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:05] OrbitingComets: Applying 3D impulse (0.99, 1.83, -1.04) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:05] OrbitingComets: Applying 3D impulse (-1.59, 7.18, 4.11) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:05] OrbitingComets: Applying 3D impulse (4.49, -2.01, 6.07) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:05] OrbitingComets: Applying 3D impulse (7.41, 3.99, 2.26) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:05] OrbitingComets: Applying 3D impulse (3.48, 4.97, 2.30) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:05] OrbitingComets: Sphere 'sphere-0' - World(6.04, 2.16, 7.82) Norm(0.604, 0.216, 0.782) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:06] OrbitingComets: Sphere 'sphere-0' - World(7.38, 8.98, 1.83) Norm(0.738, 0.898, 0.183) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:07] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:07] OrbitingComets: Applying 3D impulse (3.78, 4.68, -5.49) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:07] OrbitingComets: Applying 3D impulse (-7.50, 3.16, -0.76) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:07] OrbitingComets: Applying 3D impulse (2.66, -1.18, -2.15) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:07] OrbitingComets: Applying 3D impulse (4.95, 0.65, -3.33) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:07] OrbitingComets: Applying 3D impulse (-1.25, 7.01, 0.83) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:07] OrbitingComets: Applying 3D impulse (4.93, -2.81, 4.87) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:07] OrbitingComets: Applying 3D impulse (0.47, 8.35, 1.55) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:07] OrbitingComets: Applying 3D impulse (6.57, 3.90, 3.09) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:07] OrbitingComets: Applying 3D impulse (-0.99, 2.88, 2.17) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:07] OrbitingComets: Applying 3D impulse (-1.59, -1.94, -1.73) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:07] OrbitingComets: Sphere 'sphere-0' - World(7.97, 6.05, 5.71) Norm(0.797, 0.605, 0.571) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:08] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:08] OrbitingComets: Applying 3D impulse (-0.32, 0.72, 6.66) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:08] OrbitingComets: Applying 3D impulse (-0.54, -6.97, 4.41) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:08] OrbitingComets: Applying 3D impulse (0.69, -8.11, -1.31) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:08] OrbitingComets: Applying 3D impulse (3.17, 2.27, 7.56) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:08] OrbitingComets: Applying 3D impulse (-4.43, -2.78, -1.13) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:08] OrbitingComets: Applying 3D impulse (2.83, 1.90, 0.13) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:08] OrbitingComets: Applying 3D impulse (-4.62, -1.74, 2.91) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:08] OrbitingComets: Applying 3D impulse (2.01, 3.76, -5.82) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:08] OrbitingComets: Applying 3D impulse (0.65, -7.60, -1.18) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:08] OrbitingComets: Applying 3D impulse (-4.92, 0.62, -6.32) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:08] OrbitingComets: Sphere 'sphere-0' - World(4.20, 2.28, 5.19) Norm(0.420, 0.228, 0.519) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:09] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:09] OrbitingComets: Applying 3D impulse (-4.78, 0.51, -3.73) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:09] OrbitingComets: Applying 3D impulse (4.15, -0.85, 5.28) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:09] OrbitingComets: Applying 3D impulse (4.01, 6.73, -3.13) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:09] OrbitingComets: Applying 3D impulse (-2.20, -1.69, -3.40) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:09] OrbitingComets: Applying 3D impulse (-5.63, 1.69, 3.67) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:09] OrbitingComets: Applying 3D impulse (-0.36, -5.74, -6.10) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:09] OrbitingComets: Applying 3D impulse (3.56, 0.90, -3.92) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:09] OrbitingComets: Applying 3D impulse (3.09, -3.94, 5.27) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:09] OrbitingComets: Applying 3D impulse (0.22, -4.49, 3.26) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:09] OrbitingComets: Applying 3D impulse (7.27, 0.35, -2.38) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:09] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:09] OrbitingComets: Applying 3D impulse (-2.52, 7.29, -0.89) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:09] OrbitingComets: Applying 3D impulse (-3.99, 6.43, 2.22) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:09] OrbitingComets: Applying 3D impulse (-7.93, -0.78, -1.01) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:09] OrbitingComets: Applying 3D impulse (0.87, -0.90, -3.06) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:09] OrbitingComets: Applying 3D impulse (0.38, 2.59, -1.19) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:09] OrbitingComets: Applying 3D impulse (2.88, 0.61, 0.05) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:09] OrbitingComets: Applying 3D impulse (2.55, 0.57, -4.59) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:09] OrbitingComets: Applying 3D impulse (-7.00, 1.29, 3.10) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:09] OrbitingComets: Applying 3D impulse (7.86, -2.30, 0.93) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:09] OrbitingComets: Applying 3D impulse (3.56, -5.38, 1.16) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:09] OrbitingComets: Sphere 'sphere-0' - World(3.15, 7.79, 1.73) Norm(0.315, 0.779, 0.173) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:10] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:10] OrbitingComets: Applying 3D impulse (1.33, 5.72, -1.25) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:10] OrbitingComets: Applying 3D impulse (-1.85, -0.39, 0.03) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:10] OrbitingComets: Applying 3D impulse (-7.97, 2.45, 0.59) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:10] OrbitingComets: Applying 3D impulse (0.29, 4.64, -4.22) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:10] OrbitingComets: Applying 3D impulse (-4.86, 4.49, 4.36) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:10] OrbitingComets: Applying 3D impulse (3.86, 6.43, 0.14) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:10] OrbitingComets: Applying 3D impulse (-4.11, -1.41, -6.56) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:10] OrbitingComets: Applying 3D impulse (0.64, -2.25, 2.05) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:10] OrbitingComets: Applying 3D impulse (3.41, 2.70, -6.39) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:10] OrbitingComets: Applying 3D impulse (2.81, 5.95, -2.66) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:10] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:10] OrbitingComets: Applying 3D impulse (3.14, 5.53, 1.76) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:10] OrbitingComets: Applying 3D impulse (2.64, -0.06, -4.94) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:10] OrbitingComets: Applying 3D impulse (-3.12, 1.47, -0.35) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:10] OrbitingComets: Applying 3D impulse (-3.76, -6.14, 1.94) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:10] OrbitingComets: Applying 3D impulse (-2.67, -0.08, 5.18) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:10] OrbitingComets: Applying 3D impulse (-4.71, -1.90, -5.30) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:10] OrbitingComets: Applying 3D impulse (1.35, -5.39, -5.67) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:10] OrbitingComets: Applying 3D impulse (0.49, -1.39, -4.91) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:10] OrbitingComets: Applying 3D impulse (2.54, 5.71, 4.33) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:10] OrbitingComets: Applying 3D impulse (-1.94, -5.14, -2.89) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:10] OrbitingComets: Sphere 'sphere-0' - World(9.12, 7.98, 3.58) Norm(0.912, 0.798, 0.358) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:11] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:11] OrbitingComets: Applying 3D impulse (-2.57, -0.83, -5.42) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:11] OrbitingComets: Applying 3D impulse (-3.58, -3.55, -4.48) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:11] OrbitingComets: Applying 3D impulse (-3.17, -3.63, -1.73) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:11] OrbitingComets: Applying 3D impulse (0.58, -6.00, 5.59) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:11] OrbitingComets: Applying 3D impulse (-7.12, -1.35, -1.15) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:11] OrbitingComets: Applying 3D impulse (-0.15, -6.73, 3.97) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:11] OrbitingComets: Applying 3D impulse (6.41, -4.14, 3.21) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:11] OrbitingComets: Applying 3D impulse (-4.85, 5.17, 0.17) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:11] OrbitingComets: Applying 3D impulse (0.29, 5.13, 2.41) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:11] OrbitingComets: Applying 3D impulse (2.95, 2.59, 1.05) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:11] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:11] OrbitingComets: Applying 3D impulse (4.48, 6.05, 3.19) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:11] OrbitingComets: Applying 3D impulse (2.27, -6.45, 0.54) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:11] OrbitingComets: Applying 3D impulse (-0.13, -3.40, -6.64) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:11] OrbitingComets: Applying 3D impulse (-2.69, 5.34, -1.19) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:11] OrbitingComets: Applying 3D impulse (-4.74, 0.17, 4.98) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:11] OrbitingComets: Applying 3D impulse (1.71, -5.31, -6.22) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:11] OrbitingComets: Applying 3D impulse (0.34, 0.06, -8.29) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:11] OrbitingComets: Applying 3D impulse (1.29, 1.16, 2.44) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:11] OrbitingComets: Applying 3D impulse (7.88, -3.50, 0.09) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:11] OrbitingComets: Applying 3D impulse (-5.05, -2.68, -5.57) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:11] OrbitingComets: Sphere 'sphere-0' - World(4.48, 8.23, 7.64) Norm(0.448, 0.823, 0.764) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:12] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:12] OrbitingComets: Applying 3D impulse (-1.94, -3.98, -4.98) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:12] OrbitingComets: Applying 3D impulse (-3.73, -1.95, -5.49) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:12] OrbitingComets: Applying 3D impulse (3.34, -6.54, 4.39) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:12] OrbitingComets: Applying 3D impulse (0.83, 6.06, 0.04) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:12] OrbitingComets: Applying 3D impulse (-3.92, 6.16, -0.39) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:12] OrbitingComets: Applying 3D impulse (-0.40, -0.47, 7.49) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:12] OrbitingComets: Applying 3D impulse (-2.12, 7.01, 0.86) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:12] OrbitingComets: Applying 3D impulse (5.35, -3.82, 2.08) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:12] OrbitingComets: Applying 3D impulse (4.39, -1.47, 4.07) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:12] OrbitingComets: Applying 3D impulse (-1.39, -2.11, 7.14) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:12] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:12] OrbitingComets: Applying 3D impulse (-4.63, -2.07, 3.32) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:12] OrbitingComets: Applying 3D impulse (-5.09, 4.49, 1.05) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:12] OrbitingComets: Applying 3D impulse (2.54, 6.41, -0.38) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:12] OrbitingComets: Applying 3D impulse (6.39, 4.33, 1.08) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:12] OrbitingComets: Applying 3D impulse (-2.63, 1.13, 3.59) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:12] OrbitingComets: Applying 3D impulse (-2.15, 4.27, -2.54) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:12] OrbitingComets: Applying 3D impulse (2.56, -5.20, -4.00) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:12] OrbitingComets: Applying 3D impulse (-1.37, -2.80, -0.92) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:12] OrbitingComets: Applying 3D impulse (-1.14, -4.61, -4.15) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:12] OrbitingComets: Applying 3D impulse (-4.63, -3.89, -4.34) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:13] OrbitingComets: Sphere 'sphere-0' - World(1.37, 1.25, 7.80) Norm(0.137, 0.125, 0.780) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:13] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:13] OrbitingComets: Applying 3D impulse (-6.90, -4.30, -1.63) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:13] OrbitingComets: Applying 3D impulse (2.33, -2.43, 2.28) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:13] OrbitingComets: Applying 3D impulse (1.08, 8.39, 1.32) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:13] OrbitingComets: Applying 3D impulse (-0.90, 1.33, -3.35) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:13] OrbitingComets: Applying 3D impulse (-2.35, 2.42, 3.81) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:13] OrbitingComets: Applying 3D impulse (1.90, 0.43, -1.93) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:13] OrbitingComets: Applying 3D impulse (-3.50, 7.20, -2.10) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:13] OrbitingComets: Applying 3D impulse (1.32, 6.30, 0.08) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:13] OrbitingComets: Applying 3D impulse (1.68, 0.30, 4.94) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:13] OrbitingComets: Applying 3D impulse (0.05, 1.54, 8.48) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:13] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:13] OrbitingComets: Applying 3D impulse (0.58, 1.18, 3.56) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:13] OrbitingComets: Applying 3D impulse (0.05, 3.28, -7.94) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:13] OrbitingComets: Applying 3D impulse (4.04, -3.11, -4.55) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:13] OrbitingComets: Applying 3D impulse (-5.87, -1.12, 5.49) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:13] OrbitingComets: Applying 3D impulse (-2.68, 1.28, -1.03) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:13] OrbitingComets: Applying 3D impulse (-6.98, 3.84, -1.25) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:13] OrbitingComets: Applying 3D impulse (-4.45, -0.10, -4.69) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:13] OrbitingComets: Applying 3D impulse (6.37, 2.98, -4.36) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:13] OrbitingComets: Applying 3D impulse (-5.73, -1.93, -5.63) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:13] OrbitingComets: Applying 3D impulse (7.56, 2.13, -1.01) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:14] OrbitingComets: Sphere 'sphere-0' - World(5.32, 4.08, 9.16) Norm(0.532, 0.408, 0.916) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:14] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:14] OrbitingComets: Applying 3D impulse (0.58, 4.66, 5.05) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:14] OrbitingComets: Applying 3D impulse (0.85, -2.66, -0.30) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:14] OrbitingComets: Applying 3D impulse (-0.63, 4.61, 5.20) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:14] OrbitingComets: Applying 3D impulse (-5.90, 1.14, -4.31) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:14] OrbitingComets: Applying 3D impulse (3.45, -4.85, 2.64) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:14] OrbitingComets: Applying 3D impulse (4.31, -2.39, 1.05) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:14] OrbitingComets: Applying 3D impulse (2.48, 1.56, 1.39) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:14] OrbitingComets: Applying 3D impulse (0.13, 7.27, 0.58) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:14] OrbitingComets: Applying 3D impulse (2.15, -2.44, -1.49) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:14] OrbitingComets: Applying 3D impulse (5.53, -5.54, -0.50) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:14] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:14] OrbitingComets: Applying 3D impulse (-2.55, 4.04, -5.59) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:14] OrbitingComets: Applying 3D impulse (2.71, -6.01, 0.50) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:14] OrbitingComets: Applying 3D impulse (-3.76, 2.96, 4.47) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:14] OrbitingComets: Applying 3D impulse (-3.18, -1.54, 5.64) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:14] OrbitingComets: Applying 3D impulse (0.75, -1.99, 6.17) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:14] OrbitingComets: Applying 3D impulse (-7.73, 1.89, -2.85) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:14] OrbitingComets: Applying 3D impulse (4.95, -1.07, -1.90) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:14] OrbitingComets: Applying 3D impulse (6.97, -4.82, -1.13) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:14] OrbitingComets: Applying 3D impulse (7.15, -4.60, 0.91) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:14] OrbitingComets: Applying 3D impulse (-5.66, 2.46, -1.55) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:15] OrbitingComets: Sphere 'sphere-0' - World(6.54, 8.07, 1.62) Norm(0.654, 0.807, 0.162) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:15] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:15] OrbitingComets: Applying 3D impulse (0.23, 1.04, 6.22) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:15] OrbitingComets: Applying 3D impulse (8.22, 1.44, -2.33) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:15] OrbitingComets: Applying 3D impulse (-0.03, -7.33, -0.69) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:15] OrbitingComets: Applying 3D impulse (2.20, 0.25, 5.36) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:15] OrbitingComets: Applying 3D impulse (-0.46, -2.07, 2.38) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:15] OrbitingComets: Applying 3D impulse (-2.38, 5.48, 4.35) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:15] OrbitingComets: Applying 3D impulse (6.69, 1.09, -4.40) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:15] OrbitingComets: Applying 3D impulse (-0.90, -0.98, 2.49) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:15] OrbitingComets: Applying 3D impulse (-5.32, 0.97, 6.23) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:15] OrbitingComets: Applying 3D impulse (-5.23, 0.89, 5.96) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:15] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:15] OrbitingComets: Applying 3D impulse (0.12, -4.76, -4.61) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:15] OrbitingComets: Applying 3D impulse (3.79, 4.05, 0.63) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:15] OrbitingComets: Applying 3D impulse (-5.87, -4.07, 2.75) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:15] OrbitingComets: Applying 3D impulse (5.05, -0.21, -4.45) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:15] OrbitingComets: Applying 3D impulse (3.85, 4.26, -5.40) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:15] OrbitingComets: Applying 3D impulse (6.68, -0.32, -3.42) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:15] OrbitingComets: Applying 3D impulse (-1.92, -1.57, 0.55) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:15] OrbitingComets: Applying 3D impulse (3.18, -4.16, 0.50) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:15] OrbitingComets: Applying 3D impulse (-6.08, -2.17, 4.78) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:15] OrbitingComets: Applying 3D impulse (-1.03, 2.39, -5.37) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:16] OrbitingComets: Sphere 'sphere-0' - World(3.37, 0.67, 1.28) Norm(0.337, 0.067, 0.128) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:17] OrbitingComets: Sphere 'sphere-0' - World(2.83, 3.84, 9.19) Norm(0.283, 0.384, 0.919) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:18] OrbitingComets: Sphere 'sphere-0' - World(2.57, 8.48, 6.71) Norm(0.257, 0.848, 0.671) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:19] OrbitingComets: Sphere 'sphere-0' - World(2.51, 8.07, 3.67) Norm(0.251, 0.807, 0.367) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:20] OrbitingComets: Sphere 'sphere-0' - World(2.49, 6.46, 0.67) Norm(0.249, 0.646, 0.067) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:21] OrbitingComets: Sphere 'sphere-0' - World(2.54, 4.42, 1.74) Norm(0.254, 0.442, 0.174) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:21] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:21] OrbitingComets: Applying 3D impulse (-7.73, -0.82, 0.73) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:21] OrbitingComets: Applying 3D impulse (0.58, 6.11, -4.30) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:21] OrbitingComets: Applying 3D impulse (0.15, -0.53, -5.77) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:21] OrbitingComets: Applying 3D impulse (-0.47, 4.94, -1.95) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:21] OrbitingComets: Applying 3D impulse (-3.48, 1.56, -4.40) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:21] OrbitingComets: Applying 3D impulse (7.63, -1.00, -2.20) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:21] OrbitingComets: Applying 3D impulse (2.12, -6.78, -2.67) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:21] OrbitingComets: Applying 3D impulse (0.05, 0.01, -3.77) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:21] OrbitingComets: Applying 3D impulse (3.65, -2.88, -1.46) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:21] OrbitingComets: Applying 3D impulse (-7.18, -1.89, 1.60) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:22] OrbitingComets: Sphere 'sphere-0' - World(4.11, 1.02, 4.12) Norm(0.411, 0.102, 0.412) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:23] OrbitingComets: Sphere 'sphere-0' - World(9.05, 1.78, 6.94) Norm(0.905, 0.178, 0.694) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:23] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:23] OrbitingComets: Applying 3D impulse (1.83, 6.56, -0.28) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:23] OrbitingComets: Applying 3D impulse (-3.39, 5.90, 0.45) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:23] OrbitingComets: Applying 3D impulse (-2.45, 6.18, -0.92) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:23] OrbitingComets: Applying 3D impulse (-2.66, 5.13, 6.54) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:23] OrbitingComets: Applying 3D impulse (1.68, -5.56, -6.10) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:23] OrbitingComets: Applying 3D impulse (3.35, -4.65, 0.86) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:23] OrbitingComets: Applying 3D impulse (5.82, 4.41, -0.78) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:23] OrbitingComets: Applying 3D impulse (-4.12, -0.94, 7.19) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:23] OrbitingComets: Applying 3D impulse (-3.89, 0.89, -3.47) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:23] OrbitingComets: Applying 3D impulse (-3.58, -2.73, -1.28) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:24] OrbitingComets: Sphere 'sphere-0' - World(7.25, 5.72, 7.10) Norm(0.725, 0.572, 0.710) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:24] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:24] OrbitingComets: Applying 3D impulse (7.31, 0.83, -1.51) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:24] OrbitingComets: Applying 3D impulse (5.77, -1.61, 4.14) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:24] OrbitingComets: Applying 3D impulse (2.30, 1.47, 5.37) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:24] OrbitingComets: Applying 3D impulse (-5.55, 3.08, -5.65) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:24] OrbitingComets: Applying 3D impulse (3.71, -2.07, -1.61) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:24] OrbitingComets: Applying 3D impulse (-5.88, -2.04, -0.38) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:24] OrbitingComets: Applying 3D impulse (0.08, -5.51, 1.65) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:24] OrbitingComets: Applying 3D impulse (-5.36, 2.41, -5.19) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:24] OrbitingComets: Applying 3D impulse (2.93, -0.01, -7.25) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:24] OrbitingComets: Applying 3D impulse (0.89, 5.20, 0.05) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:25] OrbitingComets: Sphere 'sphere-0' - World(7.02, 2.28, 3.59) Norm(0.702, 0.228, 0.359) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:25] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:25] OrbitingComets: Applying 3D impulse (2.44, 3.36, -3.06) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:25] OrbitingComets: Applying 3D impulse (-2.88, 6.97, -2.59) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:25] OrbitingComets: Applying 3D impulse (4.17, -7.01, 1.62) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:25] OrbitingComets: Applying 3D impulse (-1.11, -2.65, -2.99) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:25] OrbitingComets: Applying 3D impulse (1.40, -0.51, -3.59) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:25] OrbitingComets: Applying 3D impulse (-5.79, 2.52, -1.12) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:25] OrbitingComets: Applying 3D impulse (6.22, 1.34, 0.66) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:25] OrbitingComets: Applying 3D impulse (1.75, 3.28, -4.40) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:25] OrbitingComets: Applying 3D impulse (1.34, -6.74, -0.48) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:25] OrbitingComets: Applying 3D impulse (-1.10, 1.10, -5.36) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:26] OrbitingComets: Sphere 'sphere-0' - World(6.14, 9.11, 2.71) Norm(0.614, 0.911, 0.271) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:27] OrbitingComets: Sphere 'sphere-0' - World(8.85, 7.07, 7.97) Norm(0.885, 0.707, 0.797) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:28] OrbitingComets: Sphere 'sphere-0' - World(8.29, 4.07, 8.36) Norm(0.829, 0.407, 0.836) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:28] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:28] OrbitingComets: Applying 3D impulse (-3.90, 2.73, 2.52) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:28] OrbitingComets: Applying 3D impulse (-2.95, 4.43, -6.19) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:28] OrbitingComets: Applying 3D impulse (-1.32, 6.70, 1.03) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:28] OrbitingComets: Applying 3D impulse (1.25, -5.84, -4.52) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:28] OrbitingComets: Applying 3D impulse (-5.54, -3.40, 1.64) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:28] OrbitingComets: Applying 3D impulse (3.58, -7.44, -2.47) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:28] OrbitingComets: Applying 3D impulse (2.95, 1.39, -2.54) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:28] OrbitingComets: Applying 3D impulse (5.09, 0.90, -3.60) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:28] OrbitingComets: Applying 3D impulse (3.83, -0.68, -7.18) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:28] OrbitingComets: Applying 3D impulse (-3.40, -2.31, 6.28) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:29] OrbitingComets: Sphere 'sphere-0' - World(1.57, 8.29, 8.02) Norm(0.157, 0.829, 0.802) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:29] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:29] OrbitingComets: Applying 3D impulse (5.99, 3.88, 1.53) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:29] OrbitingComets: Applying 3D impulse (5.67, -6.41, -0.54) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:29] OrbitingComets: Applying 3D impulse (-5.06, 6.29, 2.21) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:29] OrbitingComets: Applying 3D impulse (-0.31, -1.87, -0.02) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:29] OrbitingComets: Applying 3D impulse (4.75, -2.12, 3.78) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:29] OrbitingComets: Applying 3D impulse (6.90, -3.25, 1.44) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:29] OrbitingComets: Applying 3D impulse (-2.77, 0.45, 6.62) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:29] OrbitingComets: Applying 3D impulse (3.94, -4.10, 6.19) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:29] OrbitingComets: Applying 3D impulse (0.26, -6.17, -5.72) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:29] OrbitingComets: Applying 3D impulse (4.90, -4.70, -0.70) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:30] OrbitingComets: Sphere 'sphere-0' - World(6.80, 6.14, 9.20) Norm(0.680, 0.614, 0.920) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:30] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:30] OrbitingComets: Applying 3D impulse (0.53, -5.79, 5.45) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:30] OrbitingComets: Applying 3D impulse (-6.78, 0.54, -3.14) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:30] OrbitingComets: Applying 3D impulse (-1.64, -1.19, 5.17) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:30] OrbitingComets: Applying 3D impulse (-0.51, -5.18, 2.69) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:30] OrbitingComets: Applying 3D impulse (2.61, 2.88, -1.34) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:30] OrbitingComets: Applying 3D impulse (1.36, -5.42, -1.64) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:30] OrbitingComets: Applying 3D impulse (-3.31, 4.30, -5.43) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:30] OrbitingComets: Applying 3D impulse (0.11, 5.70, -5.55) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:30] OrbitingComets: Applying 3D impulse (-4.04, 2.50, 2.51) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:30] OrbitingComets: Applying 3D impulse (3.74, 6.57, -2.18) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:31] OrbitingComets: Sphere 'sphere-0' - World(2.23, 2.81, 5.74) Norm(0.223, 0.281, 0.574) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:32] OrbitingComets: Sphere 'sphere-0' - World(1.87, 8.12, 1.08) Norm(0.187, 0.812, 0.108) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:33] OrbitingComets: Sphere 'sphere-0' - World(4.97, 8.05, 3.35) Norm(0.497, 0.805, 0.335) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:34] OrbitingComets: Sphere 'sphere-0' - World(8.13, 6.39, 5.85) Norm(0.813, 0.639, 0.585) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:35] OrbitingComets: Sphere 'sphere-0' - World(8.65, 4.45, 8.47) Norm(0.865, 0.445, 0.847) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:35] OrbitingComets: WOW TRIGGER! Gentle wave affecting 10 spheres with strength 8.8
+[LX 2025/08/15 14:41:35] OrbitingComets: Applying 3D impulse (-6.30, -4.62, 1.53) to sphere 'sphere-0'
+[LX 2025/08/15 14:41:35] OrbitingComets: Applying 3D impulse (4.53, -2.09, 6.84) to sphere 'sphere-1'
+[LX 2025/08/15 14:41:35] OrbitingComets: Applying 3D impulse (0.44, 4.86, 2.22) to sphere 'sphere-2'
+[LX 2025/08/15 14:41:35] OrbitingComets: Applying 3D impulse (3.55, 4.87, -3.07) to sphere 'sphere-3'
+[LX 2025/08/15 14:41:35] OrbitingComets: Applying 3D impulse (-1.36, -3.95, 0.91) to sphere 'sphere-4'
+[LX 2025/08/15 14:41:35] OrbitingComets: Applying 3D impulse (1.88, -0.65, -6.49) to sphere 'sphere-5'
+[LX 2025/08/15 14:41:35] OrbitingComets: Applying 3D impulse (0.12, -0.90, -8.24) to sphere 'sphere-6'
+[LX 2025/08/15 14:41:35] OrbitingComets: Applying 3D impulse (-2.12, -7.58, 2.16) to sphere 'sphere-7'
+[LX 2025/08/15 14:41:35] OrbitingComets: Applying 3D impulse (3.54, 2.21, 3.25) to sphere 'sphere-8'
+[LX 2025/08/15 14:41:35] OrbitingComets: Applying 3D impulse (5.44, -0.12, 1.97) to sphere 'sphere-9'
+[LX 2025/08/15 14:41:36] OrbitingComets: Sphere 'sphere-0' - World(2.01, 3.39, 8.06) Norm(0.201, 0.339, 0.806) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:37] OrbitingComets: Sphere 'sphere-0' - World(7.09, 8.97, 5.46) Norm(0.709, 0.897, 0.546) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:38] OrbitingComets: Sphere 'sphere-0' - World(8.74, 6.70, 4.57) Norm(0.874, 0.670, 0.457) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:39] OrbitingComets: Sphere 'sphere-0' - World(7.75, 4.14, 4.03) Norm(0.775, 0.414, 0.403) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:40] OrbitingComets: Sphere 'sphere-0' - World(6.74, 1.54, 3.49) Norm(0.674, 0.154, 0.349) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:41] OrbitingComets: Sphere 'sphere-0' - World(4.78, 0.97, 3.11) Norm(0.478, 0.097, 0.311) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:42] OrbitingComets: Sphere 'sphere-0' - World(2.38, 1.46, 2.82) Norm(0.238, 0.146, 0.282) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:43] OrbitingComets: Sphere 'sphere-0' - World(0.81, 2.08, 2.50) Norm(0.081, 0.208, 0.250) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:44] OrbitingComets: Sphere 'sphere-0' - World(1.40, 3.08, 2.11) Norm(0.140, 0.308, 0.211) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:45] OrbitingComets: Sphere 'sphere-0' - World(1.99, 4.09, 1.72) Norm(0.199, 0.409, 0.172) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:46] OrbitingComets: Sphere 'sphere-0' - World(2.58, 5.09, 1.33) Norm(0.258, 0.509, 0.133) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:47] OrbitingComets: Sphere 'sphere-0' - World(3.18, 6.10, 0.94) Norm(0.318, 0.610, 0.094) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:48] OrbitingComets: Sphere 'sphere-0' - World(3.77, 7.09, 0.68) Norm(0.377, 0.709, 0.068) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:49] OrbitingComets: Sphere 'sphere-0' - World(4.34, 8.00, 0.77) Norm(0.434, 0.800, 0.077) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[LX 2025/08/15 14:41:50] OrbitingComets: Sphere 'sphere-0' - World(4.93, 8.93, 0.86) Norm(0.493, 0.893, 0.086) Radius=0.158 NormRadius=0.016 LogFPS=1.0
+[GLX 2025/08/15 14:41:50] GLXWindow closed, shutting down...
+[GLX 2025/08/15 14:41:50] Stopping LX engine...
+[LX 2025/08/15 14:41:50] LXEngine.ExecutorService has finished.
+[GLX 2025/08/15 14:41:50] Disposing GLX...
+[GLX 2025/08/15 14:41:50] Disposing GLX.UI...
+[GLX 2025/08/15 14:41:50] GLX.UI disposed.
+[LX 2025/08/15 14:41:50] Bullet Bootstrap: Cleaning up Bullet Physics resources
+[LX 2025/08/15 14:41:50] Bullet Bootstrap: Bullet Physics cleanup complete
+[GLX 2025/08/15 14:41:50] TEApp.Plugin.dispose()
+[LX 2025/08/15 14:41:50] [SuperMod] SuperMod.dispose()
+[LX 2025/08/15 14:41:50] Finished audio input thread: Default Audio Device
+[LX 2025/08/15 14:41:50] [MIDI] LXMidiEngine Device Update Thread finished.
+[GLX 2025/08/15 14:41:50] GLX disposed.
+[GLX 2025/08/15 14:41:50] Disposing BGFXEngine...
+[LX 2025/08/15 14:41:50] [ArtNet] Art-Net receiver thread finished /0:0:0:0:0:0:0:0:6454.
+[LX 2025/08/15 14:41:50] [OSC] Stopped OSC listener /[0:0:0:0:0:0:0:0]:3030
+[LX 2025/08/15 14:41:50] [OSC] Stopped OSC listener /[0:0:0:0:0:0:0:0]:42069
+[GLX 2025/08/15 14:41:51] BGFX Render Thread finished.
+[GLX 2025/08/15 14:41:51] Destroying main thread GLFW window...
+[GLX 2025/08/15 14:41:51] Done with main thread, GLX shutdown complete. Thanks for playing. <3

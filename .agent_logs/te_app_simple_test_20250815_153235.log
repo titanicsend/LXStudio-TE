@@ -1,0 +1,272 @@
+[LX 2025/08/15 15:32:35] Starting Chromatik version 1.1.1-TE.5.GPU-SNAPSHOT
+[LX 2025/08/15 15:32:35] Running java 24.0.1 Oracle Corporation Mac OS X 15.5 aarch64
+[GLX 2025/08/15 15:32:35] CLI args: --resolution 1920x1200 
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.lwjgl.system.Library$$Lambda/0x00003fe00100e568 in an unnamed module (file:/Users/sinas/workspace/LXStudio-TE/te-app/target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.lwjgl.system.MemoryUtil (file:/Users/sinas/workspace/LXStudio-TE/te-app/target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar)
+WARNING: Please consider reporting this to the maintainers of class org.lwjgl.system.MemoryUtil
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[GLX 2025/08/15 15:32:36] GLXWindow monitorWorkarea: size(1728x1079), pos(x:0,y:38)
+[GLX 2025/08/15 15:32:36] GLXWindow createWindow: 1728x1079
+[GLX 2025/08/15 15:32:36] GLXWindow systemContentScale: 2.0x2.0
+[GLX 2025/08/15 15:32:36] GLXWindow setWindowPos: 217,44
+[GLX 2025/08/15 15:32:36] GLXWindow windowSize: 1511x1051
+[GLX 2025/08/15 15:32:36] GLXWindow framebufferSize: 3022x2102
+[GLX 2025/08/15 15:32:36] GLXWindow uiSize: 1511.0x1051.0
+[GLX 2025/08/15 15:32:36] GLXWindow cursorScale: 1.0x1.0
+[GLX 2025/08/15 15:32:36] GLXWindow.main() awaiting GLX boostrap...
+[LX 2025/08/15 15:32:36] [AudioStems] AudioStemsPlugin(LX) version: 0.3.0-SNAPSHOT
+[GLX 2025/08/15 15:32:36] TEApp.Plugin(LX)
+[LX 2025/08/15 15:32:37] GLEngine: Rendering canvas size: 1920x1200 = 2304000 total points
+[LX 2025/08/15 15:32:37] Loading user presets: ./Presets/UserPresets/BM24.userPresets
+[LX 2025/08/15 15:32:37] [SuperMod] SuperMod Plugin version 0.1.5-SNAPSHOT
+[LX 2025/08/15 15:32:37] [OscRemapper] OscRemapperPlugin(LX) constructor called - version: 0.3.0-SNAPSHOT
+[LX 2025/08/15 15:32:37] [OscRemapper] Using config path: resources/osc_remapper.yaml
+[LX 2025/08/15 15:32:37] [OscRemapper] Loading OSC Remapper config from: /Users/sinas/workspace/LXStudio-TE/te-app/resources/osc_remapper.yaml
+[LX 2025/08/15 15:32:37] [OscRemapper] Successfully parsed YAML config with 7 destinations and 4 remappings
+[LX 2025/08/15 15:32:37] [OscRemapper] Loaded configuration with 7 destinations and 4 remappings
+[GLX 2025/08/15 15:32:37] TEApp.Plugin.initialize()
+[LX 2025/08/15 15:32:37] Creating Shader class: titanicsend.pattern.glengine.StarField1 for starfield1.fs
+[LX 2025/08/15 15:32:37] Creating Shader class: titanicsend.pattern.glengine.Circuitry for circuitry.fs
+[LX 2025/08/15 15:32:37] Creating Shader class: titanicsend.pattern.glengine.GummyWeave for gummy_weave.fs
+[LX 2025/08/15 15:32:37] Creating Shader class: titanicsend.pattern.glengine.Colortest for colortest.fs
+[LX 2025/08/15 15:32:37] Creating Shader class: titanicsend.pattern.glengine.GummyWorms for gummy_worms.fs
+[LX 2025/08/15 15:32:37] Creating Shader class: titanicsend.pattern.glengine.DatsaMoire for datsa_moire.fs
+[LX 2025/08/15 15:32:37] Creating Shader class: titanicsend.pattern.glengine.Waterfall for waterfall.fs
+[LX 2025/08/15 15:32:37] Creating Shader class: titanicsend.pattern.glengine.PolySpiral2 for polyspiral2.fs
+[LX 2025/08/15 15:32:37] Creating Shader class: titanicsend.pattern.glengine.NeonMess for neonmess.fs
+[LX 2025/08/15 15:32:37] Creating Shader class: titanicsend.pattern.glengine.Icemelt for icemelt.fs
+[LX 2025/08/15 15:32:37] Creating Shader class: titanicsend.pattern.glengine.GummyFireflies2 for gummy_fireflies2.fs
+[LX 2025/08/15 15:32:37] Creating Shader class: titanicsend.pattern.glengine.StemTriangleInfinity for triangle_infinity_mod_stems.fs
+[LX 2025/08/15 15:32:37] Creating Shader class: titanicsend.pattern.glengine.TechnoChurch for techno_church.fs
+[LX 2025/08/15 15:32:37] Creating Shader class: titanicsend.pattern.glengine.ArtOfCode for artofcode.fs
+[LX 2025/08/15 15:32:37] Creating Shader class: titanicsend.pattern.glengine.StarField2 for starfield2.fs
+[LX 2025/08/15 15:32:37] Creating Shader class: titanicsend.pattern.glengine.GummyNoise for gummy_noise.fs
+[LX 2025/08/15 15:32:37] Attaching the OSC message listener to port 42069 ...
+[LX 2025/08/15 15:32:37] [OSC] Started OSC listener /[0:0:0:0:0:0:0:0]:3030
+[LX 2025/08/15 15:32:37] DevSwitch setting state to DEVELOPER...
+[LX 2025/08/15 15:32:37] [ArtNet] Starting Art-Net listener on /0:0:0:0:0:0:0:0:6454
+[LX 2025/08/15 15:32:37] Started audio input thread: Default Audio Device
+[GLX 2025/08/15 15:32:37] BGFX renderer: Metal
+[GLX 2025/08/15 15:32:37] TEApp.Plugin.initializeUI()
+[GLX 2025/08/15 15:32:37] TEApp.Plugin.onUIReady()
+[LX 2025/08/15 15:32:39] Gamepad mappings updated successfully.
+[GLX 2025/08/15 15:32:39] Starting LX Engine...
+[LX 2025/08/15 15:32:39] LXEngine.ExecutorService starting...
+[GLX 2025/08/15 15:32:39] Running main BGFX loop...
+[GLX 2025/08/15 15:32:39] GLX boostrap complete, GLXWindow running event loop...
+[LX 2025/08/15 15:32:39] Opening project file: ./Projects/BM25_playachemist.lxp
+[LX 2025/08/15 15:32:39] DevSwitch detected potential file change, remembering state DEVELOPER
+Loaded sketches: 200
+Loaded sketches: 200
+[LX 2025/08/15 15:32:40] OrbitingComets: Initializing orbiting comets demo with circle path...
+[LX 2025/08/15 15:32:40] OrbitingComets: Orbiting comets physics demo initialized with circle path
+Loaded sketches: 200
+Loaded sketches: 200
+Loaded sketches: 200
+Loaded sketches: 200
+[LX 2025/08/15 15:32:40] Autopilot detected completion of openProject(), defensive positions have been taken (or is first file open)...
+[LX 2025/08/15 15:32:40] DevSwitch restoring the state DEVELOPER
+[LX 2025/08/15 15:32:40] DevSwitch setting state to DEVELOPER...
+[LX 2025/08/15 15:32:40] Project loaded successfully from ./Projects/BM25_playachemist.lxp
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added orbiting comet 'comet-0' at (8.00, 3.50, 5.00) radius=0.16 velocity=(-0.00, 0.00, 2.89) GM=25.00
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added orbiting comet 'comet-1' at (7.43, 3.50, 6.76) radius=0.19 velocity=(-1.70, 0.00, 2.34) GM=25.00
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added orbiting comet 'comet-2' at (5.93, 3.50, 7.85) radius=0.16 velocity=(-2.75, 0.00, 0.89) GM=25.00
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added orbiting comet 'comet-3' at (4.07, 3.50, 7.85) radius=0.15 velocity=(-2.75, 0.00, -0.89) GM=25.00
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added orbiting comet 'comet-4' at (2.57, 3.50, 6.76) radius=0.15 velocity=(-1.70, 0.00, -2.34) GM=25.00
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added orbiting comet 'comet-5' at (2.00, 3.50, 5.00) radius=0.19 velocity=(0.00, 0.00, -2.89) GM=25.00
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added orbiting comet 'comet-6' at (2.57, 3.50, 3.24) radius=0.17 velocity=(1.70, 0.00, -2.34) GM=25.00
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added orbiting comet 'comet-7' at (4.07, 3.50, 2.15) radius=0.11 velocity=(2.75, 0.00, -0.89) GM=25.00
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added orbiting comet 'comet-8' at (5.93, 3.50, 2.15) radius=0.18 velocity=(2.75, 0.00, 0.89) GM=25.00
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added orbiting comet 'comet-9' at (7.43, 3.50, 3.24) radius=0.12 velocity=(1.70, 0.00, 2.34) GM=25.00
+[LX 2025/08/15 15:32:40] OrbitingComets: Added comet 'comet-0' to tracking system at (8.00, 3.50, 5.00) radius=0.16
+[LX 2025/08/15 15:32:40] OrbitingComets: Added comet 'comet-1' to tracking system at (7.43, 3.50, 6.76) radius=0.19
+[LX 2025/08/15 15:32:40] OrbitingComets: Added comet 'comet-2' to tracking system at (5.93, 3.50, 7.85) radius=0.16
+[LX 2025/08/15 15:32:40] OrbitingComets: Added comet 'comet-3' to tracking system at (4.07, 3.50, 7.85) radius=0.15
+[LX 2025/08/15 15:32:40] OrbitingComets: Added comet 'comet-4' to tracking system at (2.57, 3.50, 6.76) radius=0.15
+[LX 2025/08/15 15:32:40] OrbitingComets: Added comet 'comet-5' to tracking system at (2.00, 3.50, 5.00) radius=0.19
+[LX 2025/08/15 15:32:40] OrbitingComets: Added comet 'comet-6' to tracking system at (2.57, 3.50, 3.24) radius=0.17
+[LX 2025/08/15 15:32:40] OrbitingComets: Added comet 'comet-7' to tracking system at (4.07, 3.50, 2.15) radius=0.11
+[LX 2025/08/15 15:32:40] OrbitingComets: Added comet 'comet-8' to tracking system at (5.93, 3.50, 2.15) radius=0.18
+[LX 2025/08/15 15:32:40] OrbitingComets: Added comet 'comet-9' to tracking system at (7.43, 3.50, 3.24) radius=0.12
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added central tether for 'floor' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=0.20
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added central tether for 'ceiling' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=0.20
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added central tether for 'wall-left' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=0.20
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added central tether for 'wall-right' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=0.20
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added central tether for 'wall-front' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=0.20
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added central tether for 'wall-back' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=0.20
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added central tether for 'comet-0' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=0.20
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added central tether for 'comet-1' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=0.20
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added central tether for 'comet-2' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=0.20
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added central tether for 'comet-3' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=0.20
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added central tether for 'comet-4' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=0.20
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added central tether for 'comet-5' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=0.20
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added central tether for 'comet-6' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=0.20
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added central tether for 'comet-7' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=0.20
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added central tether for 'comet-8' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=0.20
+[LX 2025/08/15 15:32:40] BulletBootstrap: Added central tether for 'comet-9' to center (5.00, 3.50, 5.00) radius=3.00 stiffness=100.00 damping=0.20
+[LX 2025/08/15 15:32:40] OrbitingComets: updatePhysicsPositions - Processing 10 spheres
+[LX 2025/08/15 15:32:40] OrbitingComets: Sphere 0 'comet-0' - Shader gets Norm(0.800, 0.350, 0.500) NormRadius=0.016
+[LX 2025/08/15 15:32:40] NDI: Successfully initialized sender 'TitanicsEnd'
+[LX 2025/08/15 15:32:40] Shader 'ndi_out_effect.fs' uniform error: Missing texture 'iDst' for unit 4, this could be a bug...
+[LX 2025/08/15 15:32:40] OrbitingComets: Sphere 'comet-0' - World(7.50, 3.28, 4.99) Norm(0.750, 0.328, 0.499) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 15:32:41] OrbitingComets: Sphere 'comet-0' - World(5.90, 2.58, 4.28) Norm(0.590, 0.258, 0.428) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 15:32:41] OrbitingComets: Sphere 'comet-0' - World(3.14, 1.40, 2.73) Norm(0.314, 0.140, 0.273) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 15:32:41] OrbitingComets: Sphere 'comet-0' - World(2.89, 2.84, 3.81) Norm(0.289, 0.284, 0.381) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 15:32:41] OrbitingComets: Sphere 'comet-0' - World(3.21, 4.73, 5.23) Norm(0.321, 0.473, 0.523) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 15:32:41] OrbitingComets: Sphere 'comet-0' - World(2.99, 5.79, 5.74) Norm(0.299, 0.579, 0.574) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 15:32:41] OrbitingComets: Sphere 'comet-0' - World(3.01, 5.22, 5.16) Norm(0.301, 0.522, 0.516) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 15:32:41] OrbitingComets: Sphere 'comet-0' - World(2.67, 3.61, 3.67) Norm(0.267, 0.361, 0.367) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 15:32:41] OrbitingComets: Sphere 'comet-0' - World(3.36, 2.15, 2.28) Norm(0.336, 0.215, 0.228) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 15:32:41] OrbitingComets: Sphere 'comet-0' - World(3.62, 1.73, 3.42) Norm(0.362, 0.173, 0.342) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 15:32:41] OrbitingComets: Sphere 'comet-0' - World(2.98, 1.33, 3.95) Norm(0.298, 0.133, 0.395) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 15:32:42] OrbitingComets: Sphere 'comet-0' - World(2.79, 1.94, 4.05) Norm(0.279, 0.194, 0.405) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 15:32:42] OrbitingComets: Sphere 'comet-0' - World(2.50, 2.54, 3.27) Norm(0.250, 0.254, 0.327) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 15:32:42] OrbitingComets: Sphere 'comet-0' - World(3.15, 2.97, 2.79) Norm(0.315, 0.297, 0.279) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 15:32:42] OrbitingComets: Sphere 'comet-0' - World(3.64, 2.82, 2.30) Norm(0.364, 0.282, 0.230) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 15:32:42] OrbitingComets: Sphere 'comet-0' - World(3.83, 2.18, 2.64) Norm(0.383, 0.218, 0.264) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 15:32:42] OrbitingComets: Sphere 'comet-0' - World(3.30, 1.44, 3.09) Norm(0.330, 0.144, 0.309) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 15:32:42] OrbitingComets: Sphere 'comet-0' - World(3.00, 1.62, 3.87) Norm(0.300, 0.162, 0.387) Radius=0.158 NormRadius=0.016 LogFPS=10.0
+[LX 2025/08/15 15:32:42] Bullet Bootstrap: Cleaning up Bullet Physics resources
+[LX 2025/08/15 15:32:42] Bullet Bootstrap: Bullet Physics cleanup complete
+[LX 2025/08/15 15:32:47] ParticleTest3D: Initializing 3D multi-ball physics demo with SceneConfig...
+[LX 2025/08/15 15:32:47] ParticleTest3D: 3D multi-ball physics demo initialized with SceneConfig
+[LX 2025/08/15 15:32:49] ParticleTest3D: Spawned sphere 'sphere-0' at World(0.80, 0.80, 6.25)
+[LX 2025/08/15 15:32:49] ParticleTest3D: Spawned sphere 'sphere-1' at World(3.60, 0.80, 2.03)
+[LX 2025/08/15 15:32:49] ParticleTest3D: Spawned sphere 'sphere-2' at World(6.40, 0.80, 3.55)
+[LX 2025/08/15 15:32:49] ParticleTest3D: Spawned sphere 'sphere-3' at World(9.20, 0.80, 6.15)
+[LX 2025/08/15 15:32:49] ParticleTest3D: Spawned sphere 'sphere-4' at World(0.80, 3.60, 6.89)
+[LX 2025/08/15 15:32:49] ParticleTest3D: Spawned sphere 'sphere-5' at World(3.60, 3.60, 8.58)
+[LX 2025/08/15 15:32:49] ParticleTest3D: Spawned sphere 'sphere-6' at World(6.40, 3.60, 2.10)
+[LX 2025/08/15 15:32:49] ParticleTest3D: Spawned sphere 'sphere-7' at World(9.20, 3.60, 5.77)
+[LX 2025/08/15 15:32:49] ParticleTest3D: Spawned sphere 'sphere-8' at World(0.80, 6.40, 5.86)
+[LX 2025/08/15 15:32:49] ParticleTest3D: Spawned sphere 'sphere-9' at World(3.60, 6.40, 1.34)
+[LX 2025/08/15 15:32:49] OrbitingComets: updatePhysicsPositions - Processing 10 spheres
+[LX 2025/08/15 15:32:49] OrbitingComets: Sphere 0 'sphere-0' - Shader gets Norm(0.080, 0.080, 0.625) NormRadius=0.023
+[LX 2025/08/15 15:32:49] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:49] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:49] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:49] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:49] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:49] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:49] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:49] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:50] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:50] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:50] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:50] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:50] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:50] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:50] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:50] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:50] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:51] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:51] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:51] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:51] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:51] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:51] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:51] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:51] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:51] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:52] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:52] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:52] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:52] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:52] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:52] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:52] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:52] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:52] OrbitingComets: Sphere 'sphere-0' - World(0.80, 0.80, 6.25) Norm(0.080, 0.080, 0.625) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:53] ParticleTest3D: WOW TRIGGER! 3D wave affecting 10 spheres with strength 10.0
+[LX 2025/08/15 15:32:53] OrbitingComets: Applying 3D impulse (5.06, 4.09, -5.39) to sphere 'sphere-0'
+[LX 2025/08/15 15:32:53] OrbitingComets: Applying 3D impulse (-4.92, 0.61, 4.75) to sphere 'sphere-1'
+[LX 2025/08/15 15:32:53] OrbitingComets: Applying 3D impulse (-8.75, 0.27, 4.31) to sphere 'sphere-2'
+[LX 2025/08/15 15:32:53] OrbitingComets: Applying 3D impulse (4.38, 6.68, 4.50) to sphere 'sphere-3'
+[LX 2025/08/15 15:32:53] OrbitingComets: Applying 3D impulse (2.42, 1.99, -1.67) to sphere 'sphere-4'
+[LX 2025/08/15 15:32:53] OrbitingComets: Applying 3D impulse (-3.46, -2.31, 0.11) to sphere 'sphere-5'
+[LX 2025/08/15 15:32:53] OrbitingComets: Applying 3D impulse (-4.22, 2.17, -3.69) to sphere 'sphere-6'
+[LX 2025/08/15 15:32:53] OrbitingComets: Applying 3D impulse (3.26, 1.62, -8.03) to sphere 'sphere-7'
+[LX 2025/08/15 15:32:53] OrbitingComets: Applying 3D impulse (7.77, 1.77, 4.78) to sphere 'sphere-8'
+[LX 2025/08/15 15:32:53] OrbitingComets: Applying 3D impulse (-0.54, -3.66, -4.35) to sphere 'sphere-9'
+[LX 2025/08/15 15:32:53] OrbitingComets: Sphere 'sphere-0' - World(1.54, 1.40, 5.46) Norm(0.154, 0.140, 0.546) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:53] OrbitingComets: Sphere 'sphere-0' - World(3.31, 2.83, 3.57) Norm(0.331, 0.283, 0.357) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:53] OrbitingComets: Sphere 'sphere-0' - World(5.39, 4.50, 1.37) Norm(0.539, 0.450, 0.137) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:53] OrbitingComets: Sphere 'sphere-0' - World(6.86, 5.69, 0.90) Norm(0.686, 0.569, 0.090) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:53] OrbitingComets: Sphere 'sphere-0' - World(8.57, 7.07, 1.30) Norm(0.857, 0.707, 0.130) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:53] OrbitingComets: Sphere 'sphere-0' - World(9.14, 8.10, 1.70) Norm(0.914, 0.810, 0.170) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:53] OrbitingComets: Sphere 'sphere-0' - World(8.76, 9.12, 2.22) Norm(0.876, 0.912, 0.222) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:53] OrbitingComets: Sphere 'sphere-0' - World(8.35, 9.10, 2.71) Norm(0.835, 0.910, 0.271) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:53] OrbitingComets: Sphere 'sphere-0' - World(7.88, 8.74, 3.26) Norm(0.788, 0.874, 0.326) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:54] OrbitingComets: Sphere 'sphere-0' - World(7.40, 8.38, 3.80) Norm(0.740, 0.838, 0.380) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:54] OrbitingComets: Sphere 'sphere-0' - World(6.92, 8.02, 4.35) Norm(0.692, 0.802, 0.435) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:54] OrbitingComets: updatePhysicsPositions - Processing 10 spheres
+[LX 2025/08/15 15:32:54] OrbitingComets: Sphere 0 'sphere-0' - Shader gets Norm(0.644, 0.766, 0.490) NormRadius=0.023
+[LX 2025/08/15 15:32:54] OrbitingComets: Sphere 'sphere-0' - World(6.00, 7.33, 5.40) Norm(0.600, 0.733, 0.540) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:54] OrbitingComets: Sphere 'sphere-0' - World(5.59, 7.02, 5.86) Norm(0.559, 0.702, 0.586) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:54] OrbitingComets: Sphere 'sphere-0' - World(5.04, 6.61, 6.49) Norm(0.504, 0.661, 0.649) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:54] OrbitingComets: Sphere 'sphere-0' - World(4.64, 6.30, 6.95) Norm(0.464, 0.630, 0.695) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:54] OrbitingComets: Sphere 'sphere-0' - World(4.12, 5.92, 7.54) Norm(0.412, 0.592, 0.754) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:54] OrbitingComets: Sphere 'sphere-0' - World(3.57, 5.50, 8.17) Norm(0.357, 0.550, 0.817) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:54] OrbitingComets: Sphere 'sphere-0' - World(3.13, 5.17, 8.67) Norm(0.313, 0.517, 0.867) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:55] OrbitingComets: Sphere 'sphere-0' - World(2.65, 4.81, 9.21) Norm(0.265, 0.481, 0.921) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:55] OrbitingComets: Sphere 'sphere-0' - World(2.12, 4.38, 9.14) Norm(0.212, 0.438, 0.914) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:55] OrbitingComets: Sphere 'sphere-0' - World(1.62, 3.96, 8.98) Norm(0.162, 0.396, 0.898) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:55] OrbitingComets: Sphere 'sphere-0' - World(1.12, 3.55, 8.81) Norm(0.112, 0.355, 0.881) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:55] OrbitingComets: Sphere 'sphere-0' - World(0.74, 3.10, 8.61) Norm(0.074, 0.310, 0.861) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:55] OrbitingComets: Sphere 'sphere-0' - World(0.89, 2.67, 8.35) Norm(0.089, 0.267, 0.835) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:55] OrbitingComets: Sphere 'sphere-0' - World(1.02, 2.31, 8.13) Norm(0.102, 0.231, 0.813) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:55] OrbitingComets: Sphere 'sphere-0' - World(1.19, 1.84, 7.84) Norm(0.119, 0.184, 0.784) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:55] OrbitingComets: Sphere 'sphere-0' - World(1.36, 1.38, 7.56) Norm(0.136, 0.138, 0.756) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:56] OrbitingComets: Sphere 'sphere-0' - World(1.52, 0.91, 7.28) Norm(0.152, 0.091, 0.728) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:56] OrbitingComets: Sphere 'sphere-0' - World(1.70, 0.77, 7.02) Norm(0.170, 0.077, 0.702) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:56] OrbitingComets: Sphere 'sphere-0' - World(1.95, 0.89, 6.69) Norm(0.195, 0.089, 0.669) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:56] OrbitingComets: Sphere 'sphere-0' - World(2.17, 1.00, 6.41) Norm(0.217, 0.100, 0.641) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:56] OrbitingComets: Sphere 'sphere-0' - World(2.38, 1.10, 6.13) Norm(0.238, 0.110, 0.613) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:56] OrbitingComets: Sphere 'sphere-0' - World(2.60, 1.21, 5.85) Norm(0.260, 0.121, 0.585) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:56] OrbitingComets: Sphere 'sphere-0' - World(2.85, 1.33, 5.52) Norm(0.285, 0.133, 0.552) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:56] OrbitingComets: Sphere 'sphere-0' - World(3.06, 1.44, 5.24) Norm(0.306, 0.144, 0.524) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:56] OrbitingComets: Sphere 'sphere-0' - World(3.31, 1.56, 4.92) Norm(0.331, 0.156, 0.492) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:57] OrbitingComets: Sphere 'sphere-0' - World(3.51, 1.72, 4.62) Norm(0.351, 0.172, 0.462) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:57] OrbitingComets: Sphere 'sphere-0' - World(3.71, 1.87, 4.32) Norm(0.371, 0.187, 0.432) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:57] OrbitingComets: Sphere 'sphere-0' - World(3.88, 2.00, 4.07) Norm(0.388, 0.200, 0.407) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:57] OrbitingComets: Sphere 'sphere-0' - World(4.08, 2.15, 3.78) Norm(0.408, 0.215, 0.378) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:57] OrbitingComets: Sphere 'sphere-0' - World(4.25, 2.28, 3.52) Norm(0.425, 0.228, 0.352) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:57] OrbitingComets: Sphere 'sphere-0' - World(4.45, 2.43, 3.23) Norm(0.445, 0.243, 0.323) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:57] OrbitingComets: Sphere 'sphere-0' - World(4.62, 2.56, 2.97) Norm(0.462, 0.256, 0.297) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:57] OrbitingComets: Sphere 'sphere-0' - World(4.82, 2.72, 2.68) Norm(0.482, 0.272, 0.268) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:57] OrbitingComets: Sphere 'sphere-0' - World(5.02, 2.87, 2.38) Norm(0.502, 0.287, 0.238) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:58] OrbitingComets: Sphere 'sphere-0' - World(5.22, 3.02, 2.09) Norm(0.522, 0.302, 0.209) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:58] OrbitingComets: Sphere 'sphere-0' - World(5.39, 3.15, 1.83) Norm(0.539, 0.315, 0.183) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:58] OrbitingComets: Sphere 'sphere-0' - World(5.59, 3.30, 1.54) Norm(0.559, 0.330, 0.154) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:58] OrbitingComets: Sphere 'sphere-0' - World(5.78, 3.44, 1.26) Norm(0.578, 0.344, 0.126) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:58] OrbitingComets: Sphere 'sphere-0' - World(5.98, 3.60, 0.97) Norm(0.598, 0.360, 0.097) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:58] OrbitingComets: Sphere 'sphere-0' - World(6.15, 3.73, 0.72) Norm(0.615, 0.373, 0.072) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:58] OrbitingComets: Sphere 'sphere-0' - World(6.37, 3.93, 0.81) Norm(0.637, 0.393, 0.081) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:58] OrbitingComets: Sphere 'sphere-0' - World(6.60, 4.13, 0.90) Norm(0.660, 0.413, 0.090) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[LX 2025/08/15 15:32:58] OrbitingComets: Sphere 'sphere-0' - World(6.79, 4.30, 0.97) Norm(0.679, 0.430, 0.097) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[GLX 2025/08/15 15:32:59] GLXWindow closed, shutting down...
+[LX 2025/08/15 15:32:59] OrbitingComets: Sphere 'sphere-0' - World(7.01, 4.50, 1.06) Norm(0.701, 0.450, 0.106) Radius=0.228 NormRadius=0.023 LogFPS=10.0
+[GLX 2025/08/15 15:32:59] Stopping LX engine...
+[LX 2025/08/15 15:32:59] LXEngine.ExecutorService has finished.
+[GLX 2025/08/15 15:32:59] Disposing GLX...
+[GLX 2025/08/15 15:32:59] Disposing GLX.UI...
+[GLX 2025/08/15 15:32:59] GLX.UI disposed.
+[LX 2025/08/15 15:32:59] Bullet Bootstrap: Cleaning up Bullet Physics resources
+[LX 2025/08/15 15:32:59] Bullet Bootstrap: Bullet Physics cleanup complete
+[GLX 2025/08/15 15:32:59] TEApp.Plugin.dispose()
+[LX 2025/08/15 15:32:59] [SuperMod] SuperMod.dispose()
+[LX 2025/08/15 15:32:59] Finished audio input thread: Default Audio Device
+[LX 2025/08/15 15:32:59] [MIDI] LXMidiEngine Device Update Thread finished.
+[LX 2025/08/15 15:32:59] [ArtNet] Art-Net receiver thread finished /0:0:0:0:0:0:0:0:6454.
+[LX 2025/08/15 15:32:59] [OSC] Stopped OSC listener /[0:0:0:0:0:0:0:0]:3030
+[LX 2025/08/15 15:32:59] [OSC] Stopped OSC listener /[0:0:0:0:0:0:0:0]:42069
+[GLX 2025/08/15 15:32:59] GLX disposed.
+[GLX 2025/08/15 15:32:59] Disposing BGFXEngine...
+[GLX 2025/08/15 15:32:59] BGFX Render Thread finished.
+[GLX 2025/08/15 15:32:59] Destroying main thread GLFW window...
+[GLX 2025/08/15 15:32:59] Done with main thread, GLX shutdown complete. Thanks for playing. <3
