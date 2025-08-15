@@ -101,8 +101,15 @@ public class UserPresetLibrary implements LXSerializable {
   }
 
   public void load(File file) {
+    load(file, true);
+  }
+
+  public void load(File file, boolean removeExisting) {
     TE.log("Loading user presets: %s", file.getPath());
     try (FileReader fr = new FileReader(file)) {
+      if (removeExisting) {
+        removeAll();
+      }
       load(this.lx, new Gson().fromJson(fr, JsonObject.class));
       this.file = file;
     } catch (FileNotFoundException ex) {
@@ -121,7 +128,6 @@ public class UserPresetLibrary implements LXSerializable {
 
   @Override
   public void load(LX lx, JsonObject obj) {
-    removeAll();
 
     // Load collections
     JsonArray collectionsArray = obj.getAsJsonArray(KEY_COLLECTIONS);
