@@ -46,20 +46,6 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   private final int width;
   private final int height;
 
-  // Dimensions of mapped texture backbuffer.
-  //
-  // This buffer is never directly rendered by either the GPU or by Java
-  // Instead, the pixel locations corresponding to the lx model's LEDs are
-  // colored at frame time and the buffer is supplied as a read-only sampler
-  // to the shader system.
-  //
-  // So increasing the size of this buffer affects memory usage but does
-  // not affect rendering performance.  The default size is sufficient for
-  // even very large models, but can be increased if necessary.
-  // TODO - make this configurable per pattern or effect.
-  @Deprecated private static final int mappedBufferWidth = 640;
-  @Deprecated private static final int mappedBufferHeight = 640;
-
   // audio texture size and buffer
   private static final int audioTextureWidth = 512;
   private static final int audioTextureHeight = 2;
@@ -113,16 +99,6 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
   public int getHeight() {
     return this.height;
-  }
-
-  @Deprecated
-  public static int getMappedBufferWidth() {
-    return mappedBufferWidth;
-  }
-
-  @Deprecated
-  public static int getMappedBufferHeight() {
-    return mappedBufferHeight;
   }
 
   // Utility methods to give java patterns access to the audio texture

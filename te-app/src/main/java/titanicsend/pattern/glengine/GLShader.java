@@ -53,7 +53,8 @@ public abstract class GLShader {
   public static final int TEXTURE_UNIT_AUDIO = 0;
   public static final int TEXTURE_UNIT_COORDS = 1;
   public static final int TEXTURE_UNIT_BACKBUFFER = 2;
-  public static final int FIRST_UNRESERVED_TEXTURE_UNIT = 3;
+  public static final int TEXTURE_UNIT_COORD_MAP = 3;
+  public static final int FIRST_UNRESERVED_TEXTURE_UNIT = 4;
 
   /**
    * Callback interface to set any uniforms that have been modified since the last frame. Can be
@@ -217,6 +218,7 @@ public abstract class GLShader {
     // Reserved texture units
     this.uniformTextureUnits.put(UniformNames.BACK_BUFFER, TEXTURE_UNIT_BACKBUFFER);
     this.uniformTextureUnits.put(UniformNames.LX_MODEL_COORDS, TEXTURE_UNIT_COORDS);
+    this.uniformTextureUnits.put(UniformNames.LX_MODEL_INDEX, TEXTURE_UNIT_COORD_MAP);
   }
 
   // Buffers
@@ -233,18 +235,7 @@ public abstract class GLShader {
         GLEngine.current.getWidth() * GLEngine.current.getHeight() * 4);
   }
 
-  /**
-   * Create appropriately sized buffer to contain a 2D texture mapped version of the last rendered
-   * frame.
-   *
-   * @return ByteBuffer
-   */
-  public static ByteBuffer allocateMappedBuffer(int width, int height) {
-    return GLBuffers.newDirectByteBuffer(width * height * 4);
-  }
-
   // Setup
-
   protected GLShader addUniformSource(UniformSource uniformSource) {
     if (uniformSource == null) {
       throw new IllegalArgumentException("UniformSource cannot be null");

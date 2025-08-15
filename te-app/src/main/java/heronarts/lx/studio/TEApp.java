@@ -76,6 +76,7 @@ import titanicsend.dmx.pattern.DjLightsDirectPattern;
 import titanicsend.dmx.pattern.DjLightsEasyPattern;
 import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
 import titanicsend.effect.BasicShaderEffect;
+import titanicsend.effect.DistortEffect;
 import titanicsend.effect.EdgeSieveEffect;
 import titanicsend.effect.ExplodeEffect;
 import titanicsend.effect.GlobalPatternControlEffect;
@@ -155,6 +156,7 @@ import titanicsend.pattern.justin.MothershipDrivingPattern;
 import titanicsend.pattern.justin.TEGradientPattern;
 import titanicsend.pattern.justin.TESolidPattern;
 import titanicsend.pattern.justin.TwoColorPattern;
+import titanicsend.pattern.look.PolySpiral;
 import titanicsend.pattern.look.SigmoidDanceAudioLevels;
 import titanicsend.pattern.look.SigmoidDanceAudioWaveform;
 import titanicsend.pattern.look.SketchDemo;
@@ -392,8 +394,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(SpecialKube.class);
       lx.registry.addPattern(HappyChibi.class);
       lx.registry.addPattern(DotPolka.class);
-
-      // Patterns that will not aspire to art direction standards
+      lx.registry.addPattern(PolySpiral.class);
       lx.registry.addPattern(SigmoidDanceAudioWaveform.class);
       lx.registry.addPattern(SigmoidDanceAudioLevels.class);
       lx.registry.addPattern(TriangleCrossAudioLevels.class);
@@ -424,6 +425,7 @@ public class TEApp extends LXStudio {
       // Effects
       lx.registry.addEffect(BasicShaderEffect.class);
       lx.registry.addEffect(DirectorEffect.class);
+      lx.registry.addEffect(DistortEffect.class);
       lx.registry.addEffect(EdgeSieveEffect.class);
       lx.registry.addEffect(ExplodeEffect.class);
       lx.registry.addEffect(SimplifyEffect.class);

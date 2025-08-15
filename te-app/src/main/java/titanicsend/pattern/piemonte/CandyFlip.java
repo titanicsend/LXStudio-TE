@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEVertex;
-import titanicsend.pattern.TEPerformancePattern;
+import titanicsend.pattern.glengine.GLShaderPattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.framework.TEShaderView;
 import titanicsend.util.TEColor;
@@ -26,7 +26,7 @@ import titanicsend.util.TEColor;
  * with burst and cascade mechanics
  */
 @LXCategory("Edge FG")
-public class CandyFlip extends TEPerformancePattern {
+public class CandyFlip extends GLShaderPattern {
 
   // Particle system parameters
   private static final int MAX_PARTICLES_PER_VERTEX = 8;
@@ -152,8 +152,12 @@ public class CandyFlip extends TEPerformancePattern {
     controls.markUnused(controls.getLXControl(TEControlTag.YPOS));
     controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
     controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
+    controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
 
     addCommonControls();
+    addShader("candy_flip.fs");
   }
 
   private void triggerBurst(TEVertex vertex, int generation) {
@@ -197,7 +201,7 @@ public class CandyFlip extends TEPerformancePattern {
   }
 
   @Override
-  protected void runTEAudioPattern(double deltaMs) {
+  public void runTEAudioPattern(double deltaMs) {
     currentTime += deltaMs * getSpeed();
 
     // Clear display

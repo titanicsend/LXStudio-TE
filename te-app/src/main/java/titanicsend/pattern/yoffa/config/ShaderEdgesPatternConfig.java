@@ -72,6 +72,7 @@ public class ShaderEdgesPatternConfig {
       controls.setValue(TEControlTag.SPEED, 0.5);
       controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
       controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
 
       addShader("space_explosion.fs");
     }
