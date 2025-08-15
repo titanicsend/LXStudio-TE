@@ -8,12 +8,10 @@ import heronarts.lx.midi.LXMidiEngine;
 import heronarts.lx.midi.LXMidiInput;
 import heronarts.lx.midi.LXMidiOutput;
 import heronarts.lx.midi.LXSysexMessage;
-import heronarts.lx.midi.MidiAftertouch;
 import heronarts.lx.midi.MidiControlChange;
 import heronarts.lx.midi.MidiNote;
 import heronarts.lx.midi.MidiNoteOn;
 import heronarts.lx.midi.MidiPitchBend;
-import heronarts.lx.midi.MidiProgramChange;
 import heronarts.lx.midi.surface.LXMidiSurface;
 import heronarts.lx.utils.ObservableList;
 import java.util.List;
@@ -260,6 +258,8 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     LXMidiEngine.error("Minilab3 unmapped control change: " + cc);
   }
 
+  // Connection
+
   @Override
   protected void onEnable(boolean on) {
     if (on) {
@@ -270,6 +270,13 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
       if (this.isRegistered) {
         unregister();
       }
+    }
+  }
+
+  @Override
+  protected void onReconnect() {
+    if (this.enabled.isOn()) {
+      initialize();
     }
   }
 
@@ -322,11 +329,20 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     clearPadLEDs();
   }
 
+  // Receiving MIDI Messages
+
   @Override
-  protected void onReconnect() {
-    if (this.enabled.isOn()) {
-      initialize();
-    }
+  public void sysexReceived(LXSysexMessage sysex) {
+    // User switched to Arturia Mode: F0 00 20 6B 7F 42 02 00 40 62 01 F7
+    // User switched to DAW Mode:     F0 00 20 6B 7F 42 02 00 40 62 02 F7
+    // User switched to Bank A:       F0 00 20 6B 7F 42 02 00 40 63 00 F7
+    // User switched to Bank B:       F0 00 20 6B 7F 42 02 00 40 63 01 F7
+    verbose("Minilab3 Sysex: " + sysex);
+  }
+
+  @Override
+  public void pitchBendReceived(MidiPitchBend pitchBend) {
+    verbose("Minilab3 Pitch Bend: " + pitchBend);
   }
 
   @Override
@@ -353,29 +369,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
             + note.getVelocity());
   }
 
-  @Override
-  public void programChangeReceived(MidiProgramChange pc) {
-    verbose("Minilab3 Program Change: " + pc);
-  }
-
-  @Override
-  public void pitchBendReceived(MidiPitchBend pitchBend) {
-    verbose("Minilab3 Pitch Bend: " + pitchBend);
-  }
-
-  @Override
-  public void aftertouchReceived(MidiAftertouch aftertouch) {
-    verbose("Minilab3 After Touch: " + aftertouch);
-  }
-
-  @Override
-  public void sysexReceived(LXSysexMessage sysex) {
-    // User switched to Arturia Mode: F0 00 20 6B 7F 42 02 00 40 62 01 F7
-    // User switched to DAW Mode:     F0 00 20 6B 7F 42 02 00 40 62 02 F7
-    // User switched to Bank A:       F0 00 20 6B 7F 42 02 00 40 63 00 F7
-    // User switched to Bank B:       F0 00 20 6B 7F 42 02 00 40 63 01 F7
-    verbose("Minilab3 Sysex: " + sysex);
-  }
+  // Pad colors
 
   private void updatePadLEDs() {
     // Send individual SysEx message for each pad
@@ -447,6 +441,8 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
 
     sendSysex(sysex);
   }
+
+  // Shutdown
 
   /** Temporary for dev */
   private void verbose(String message) {
