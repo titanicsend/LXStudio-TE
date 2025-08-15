@@ -1,7 +1,5 @@
 package titanicsend.lx;
 
-import static titanicsend.lx.DirectorAPCminiMk2.inRange;
-
 import heronarts.lx.LX;
 import heronarts.lx.effect.LXEffect;
 import heronarts.lx.midi.LXMidiEngine;
@@ -39,6 +37,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   // MIDI Channels
 
   public static final int MIDI_CHANNEL_COMMON = 0;
+  public static final int MIDI_CHANNEL_PITCH_WHEEL = 0;
   public static final int MIDI_CHANNEL_PADS = 9;
 
   // CCs in DAW Mode
@@ -50,8 +49,6 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   public static final int FADER_3 = 30;
   public static final int FADER_4 = 31;
 
-  public static final int[] FADER_CCs = new int[] {FADER_1, FADER_2, FADER_3, FADER_4};
-
   public static final int KNOB_1 = 86;
   public static final int KNOB_2 = 87;
   public static final int KNOB_3 = 89;
@@ -60,9 +57,6 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   public static final int KNOB_6 = 111;
   public static final int KNOB_7 = 116;
   public static final int KNOB_8 = 117;
-
-  public static final int[] KNOB_CCs =
-      new int[] {KNOB_1, KNOB_2, KNOB_3, KNOB_4, KNOB_5, KNOB_6, KNOB_7, KNOB_8};
 
   // CCs that are the same in both DAW & Arturia modes
 
@@ -87,10 +81,26 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   public static final int ARTURIA_KNOB_7 = 19;
   public static final int ARTURIA_KNOB_8 = 16;
 
-  // Pitch Bends
+  public static final int NUM_FADERS = 4;
+  public static final int NUM_KNOBS = 8;
 
-  public static final int PITCH_WHEEL = 0;
-  public static final int PITCH_WHEEL_SCALE = 8192; // Range: -8192 to 8191
+  public static final int[] FADER_CCs = new int[] {FADER_1, FADER_2, FADER_3, FADER_4};
+  public static final int[] ARTURIA_FADER_CCs =
+      new int[] {ARTURIA_FADER_1, ARTURIA_FADER_2, ARTURIA_FADER_3, ARTURIA_FADER_4};
+
+  public static final int[] KNOB_CCs =
+      new int[] {KNOB_1, KNOB_2, KNOB_3, KNOB_4, KNOB_5, KNOB_6, KNOB_7, KNOB_8};
+  public static final int[] ARTURIA_KNOB_CCs =
+      new int[] {
+        ARTURIA_KNOB_1,
+        ARTURIA_KNOB_2,
+        ARTURIA_KNOB_3,
+        ARTURIA_KNOB_4,
+        ARTURIA_KNOB_5,
+        ARTURIA_KNOB_6,
+        ARTURIA_KNOB_7,
+        ARTURIA_KNOB_8
+      };
 
   // Notes
 
@@ -112,7 +122,16 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   public static final int PAD_7_B = 50;
   public static final int PAD_8_B = 51;
 
-  private static final int NUM_PADS = 8;
+  public static final int PAD_START = PAD_1_A;
+  public static final int PAD_END = PAD_8_B;
+  public static final int NUM_PADS = 16;
+  public static final int NUM_PADS_PHYSICAL = 8; // Needed?
+
+  private static final int[] PAD_NOTES =
+      new int[] {
+        PAD_1_A, PAD_2_A, PAD_3_A, PAD_4_A, PAD_5_A, PAD_6_A, PAD_7_A, PAD_8_A,
+        PAD_1_B, PAD_2_B, PAD_3_B, PAD_4_B, PAD_5_B, PAD_6_B, PAD_7_B, PAD_8_B
+      };
 
   // Pads + Shift
   public static final int PAD_LOOP = 105;
@@ -122,12 +141,13 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   public static final int PAD_TAP_TEMPO = 109; // Only in DAW mode
 
   // Keys (with octaves centered)
+  public static final int KEY_START = 48;
+  public static final int KEY_END = 72;
+  public static final int NUM_KEYS = KEY_END - KEY_START + 1;
+
   public static final int[] KEYS_WHITE =
       new int[] {48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71, 72};
   public static final int[] KEYS_BLACK = new int[] {49, 51, 54, 56, 58, 61, 63, 66, 68, 70};
-  public static final int KEY_START = 48;
-  public static final int KEY_END = 72;
-  public static final int KEY_NUM = KEY_END - KEY_START + 1;
 
   // Sysex
 
@@ -179,83 +199,6 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
       TE.log("PRESS: " + padIndex + " " + currState.name() + " -> " + this.states[padIndex].name());
       updatePadLEDs();
     }
-  }
-
-  private void noteReceived(MidiNote note, boolean on) {
-    final int pitch = note.getPitch();
-
-    // Global momentary
-    if (pitch == SHIFT) {
-      this.shiftOn = on;
-      if (!on) {
-        updatePadLEDs();
-      }
-      return;
-    }
-
-    if (inRange(pitch, PAD_1_B, PAD_8_B)) {
-      int padIndex = pitch - PAD_1_B;
-      if (on) {
-        press(padIndex);
-      }
-      return;
-    }
-
-    if (inRange(pitch, PAD_1_A, PAD_8_A)) {
-      int padIndex = pitch - PAD_1_A;
-      if (on) {
-        press(padIndex);
-      }
-      return;
-    }
-    //
-    //    // Clip grid buttons
-    //    if (inRange(pitch, CLIP_LAUNCH, CLIP_LAUNCH_MAX)) {
-    //      if (pitch < 0 || pitch >= COLOR_NUM) {
-    //        LXMidiEngine.error("Grid button not assigned to color: " + note);
-    //        return;
-    //      }
-    //      if (isWhiteButton(pitch)) {
-    //        // Ignore white in Chromatik, this is only for lasers.
-    //        return;
-    //      }
-    //
-    //      int color = noteToColor[pitch];
-    //      float h = LXColor.h(color);
-    //      float s = LXColor.s(color);
-    //      float b = LXColor.b(color);
-    //      if (this.paletteManager != null) {
-    //        // Pass color to palette manager, which will push it immediately
-    //        this.paletteManager.setColor(color);
-    //      }
-    //      return;
-    //    } else if (inRange(pitch, SCENE_LAUNCH, SCENE_LAUNCH_MAX)) {
-    //      // placeholder for using scene launch buttons
-    //      return;
-    //    } else if (inRange(pitch, CHANNEL_BUTTON, CHANNEL_BUTTON_MAX)) {
-    //      // placeholder for using channel buttons
-    //      return;
-    //    }
-
-    LXMidiEngine.error("Minilab3 received unmapped note: " + note);
-  }
-
-  @Override
-  public void controlChangeReceived(MidiControlChange cc) {
-    int number = cc.getCC();
-    //
-    //    if (number == MASTER_FADER) {
-    //      this.masterFader.setValue(cc);
-    //      return;
-    //    }
-    //
-    //    if (number >= CHANNEL_FADER && number <= CHANNEL_FADER_MAX) {
-    //      int channel = number - CHANNEL_FADER;
-    //      this.channelFaders[channel].setValue(cc);
-    //      return;
-    //    }
-
-    LXMidiEngine.error("Minilab3 unmapped control change: " + cc);
   }
 
   // Connection
@@ -333,43 +276,260 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
 
   @Override
   public void sysexReceived(LXSysexMessage sysex) {
+    verbose("Minilab3 Sysex: " + sysex);
+
     // User switched to Arturia Mode: F0 00 20 6B 7F 42 02 00 40 62 01 F7
     // User switched to DAW Mode:     F0 00 20 6B 7F 42 02 00 40 62 02 F7
     // User switched to Bank A:       F0 00 20 6B 7F 42 02 00 40 63 00 F7
     // User switched to Bank B:       F0 00 20 6B 7F 42 02 00 40 63 01 F7
-    verbose("Minilab3 Sysex: " + sysex);
+
+    // TODO: send to modeReceived(bool) or bankReceived(bool)
   }
 
   @Override
   public void pitchBendReceived(MidiPitchBend pitchBend) {
-    verbose("Minilab3 Pitch Bend: " + pitchBend);
+    // verbose("Minilab3 Pitch Bend: " + pitchBend);
+    if (pitchBend.getChannel() == MIDI_CHANNEL_PITCH_WHEEL) {
+      touchStrip1Received(pitchBend.getNormalized());
+    }
   }
 
   @Override
   public void noteOnReceived(MidiNoteOn note) {
     noteReceived(note, true);
-    verbose(
-        "Minilab3 Note ON  CH: "
-            + note.getChannel()
-            + "  Pitch:"
-            + note.getPitch()
-            + "  Velocity:"
-            + note.getVelocity());
+    /* verbose(
+    "Minilab3 Note ON  CH: "
+        + note.getChannel()
+        + "  Pitch:"
+        + note.getPitch()
+        + "  Velocity:"
+        + note.getVelocity()); */
   }
 
   @Override
   public void noteOffReceived(MidiNote note) {
     noteReceived(note, false);
-    verbose(
-        "Minilab3 Note OFF CH: "
-            + note.getChannel()
-            + "  Pitch:"
-            + note.getPitch()
-            + "  Velocity:"
-            + note.getVelocity());
+    /* verbose(
+    "Minilab3 Note OFF CH: "
+        + note.getChannel()
+        + "  Pitch:"
+        + note.getPitch()
+        + "  Velocity:"
+        + note.getVelocity()); */
   }
 
-  // Pad colors
+  private void noteReceived(MidiNote note, boolean on) {
+    final int channel = note.getChannel();
+    final int pitch = note.getPitch();
+
+    if (channel == MIDI_CHANNEL_COMMON) {
+      // Special pads that required shift, not bank-dependent
+      if (on) {
+        switch (pitch) {
+          case PAD_LOOP:
+            padLoopReceived();
+            return;
+          case PAD_STOP:
+            padStopReceived();
+            return;
+          case PAD_PLAY:
+            padPlayReceived();
+            return;
+          case PAD_REC:
+            padRecordReceived();
+            return;
+          case PAD_TAP_TEMPO:
+            padTapReceived();
+            return;
+        }
+      }
+
+      // Keys
+      if (inRange(pitch, KEY_START, KEY_END)) {
+        int keyIndex = pitch - KEY_START;
+        keyReceived(pitch, keyIndex, on);
+        return;
+      }
+
+    } else if (channel == MIDI_CHANNEL_PADS) {
+      // Pads
+      if (inRange(pitch, PAD_START, PAD_END)) {
+        int padIndex = pitch - PAD_START;
+        padReceived(padIndex, on, note.getVelocity());
+        return;
+      }
+
+    } else {
+      LXMidiEngine.error("Minilab3 note received on unknown channel: " + note);
+      return;
+    }
+
+    LXMidiEngine.error("Minilab3 received unmapped note: " + note);
+  }
+
+  @Override
+  public void controlChangeReceived(MidiControlChange cc) {
+    int number = cc.getCC();
+    int value = cc.getValue();
+
+    // Shift
+    if (number == SHIFT || number == ARTURIA_SHIFT) {
+      shiftReceived(value != 0);
+      return;
+    }
+
+    // DAW Knob
+    if (number == KNOB_DAW) {
+      dawKnobReceived(value);
+      return;
+    }
+
+    // Knobs
+    for (int i = 0; i < NUM_KNOBS; i++) {
+      if (number == KNOB_CCs[i] || number == ARTURIA_KNOB_CCs[i]) {
+        knobReceived(i, value);
+        return;
+      }
+    }
+
+    // Faders
+    for (int i = 0; i < NUM_FADERS; i++) {
+      if (number == FADER_CCs[i] || number == ARTURIA_FADER_CCs[i]) {
+        faderReceived(i, value);
+        return;
+      }
+    }
+
+    // Touch Strip 2
+    if (number == MOD_WHEEL) {
+      touchStrip2Received(value);
+      return;
+    }
+
+    LXMidiEngine.error("Minilab3 unmapped control change: " + cc);
+  }
+
+  // Receive Physical Inputs (allows remap to logical)
+
+  private void shiftReceived(boolean on) {
+    this.shiftOn = on;
+    if (!on) {
+      updatePadLEDs();
+    }
+  }
+
+  private void dawKnobReceived(int value) {
+    // 61 = down fast, 62 = down, 65 = up, 66 = up fast
+  }
+
+  private void knobReceived(int knob, int value) {
+    parameterSetValue(knob, value);
+  }
+
+  private void faderReceived(int fader, int value) {
+    globalParameterSetValue(fader, value);
+  }
+
+  private void padReceived(int padIndex, boolean on, int velocity) {
+    // Here we could alter behavior for different modes we are trialing
+
+    if (on) {
+      toggleEdit(padIndex);
+      // press(padIndex);
+    }
+  }
+
+  private void padLoopReceived() {}
+
+  private void padStopReceived() {}
+
+  private void padPlayReceived() {}
+
+  private void padRecordReceived() {}
+
+  private void padTapReceived() {}
+
+  private void keyReceived(int note, int keyIndex, boolean on) {
+    // Here we could alter behavior for different modes we are trialing.
+
+    // Ignore key release
+    if (!on) {
+      return;
+    }
+
+    // To index using all keys:
+    // launch(keyIndex);
+
+    // To index only the white keys:
+    for (int i = 0; i < KEYS_WHITE.length; i++) {
+      if (note == KEYS_WHITE[i]) {
+        launch(i);
+
+        // Shift could be used in conjunction w/ keys, ex:
+        // if (shiftOn) { // Do it different }
+        return;
+      }
+    }
+  }
+
+  private void touchStrip1Received(double normalized) {
+    verbose("Touch strip 1: " + normalized);
+  }
+
+  private void touchStrip2Received(int value) {
+    verbose("Touch strip 2: " + value);
+  }
+
+  private void modeReceived(boolean isDAW) {
+    // To determine: This will be received if user changes it.  Does it also get received as an
+    // echo if we set it with a sysex?
+  }
+
+  private void bankReceived(boolean isBankA) {
+    // To determine: This will be received if user changes it.  Does it also get received as an
+    // echo if we set it with a sysex?
+  }
+
+  // Receive Logical Inputs (mapped from physical)
+
+  /** Launch, aka run, an effect or variation. */
+  private void launch(int index) {
+    verbose("Launch effect or variation index #: " + index);
+  }
+
+  /** Toggle whether an effect is being edited */
+  private void toggleEdit(int index) {
+    // If we are not yet editing this pad, start editing it. (Stop editing other ones first.)
+    // If we ARE editing this pad, stop editing it. (AKA toggle off)
+
+    verbose("Toggle Edit Effect #: " + index);
+  }
+
+  /** Set the value of an effect parameter at a given index */
+  private void parameterSetValue(int parameterIndex, int value) {
+    verbose("Effect Parameter " + parameterIndex + ": set to " + value);
+  }
+
+  /** Set the value of a global parameter */
+  private void globalParameterSetValue(int globalParamIndex, int value) {
+    verbose("Global Parameter " + globalParamIndex + ": set to " + value);
+  }
+
+  // Send Sysex
+
+  private void sendModeDAW() {
+    sendMode(SYSEX_MODE_DAW);
+  }
+
+  private void sendMode(byte mode) {}
+
+  private void sendBank(boolean bankA) {
+    sendBank(bankA ? SYSEX_BANK_A : SYSEX_BANK_B);
+  }
+
+  private void sendBank(byte bank) {}
+
+  // Send Pad Colors
 
   private void updatePadLEDs() {
     // Send individual SysEx message for each pad
@@ -455,6 +615,18 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
       unregister();
     }
     super.dispose();
+  }
+
+  /**
+   * Returns true if value is between [min, max] inclusive
+   *
+   * @param val Value
+   * @param min Min value
+   * @param max Max value
+   * @return True if contained in range
+   */
+  public static boolean inRange(int val, int min, int max) {
+    return (val >= min) && (val <= max);
   }
 }
 /*
