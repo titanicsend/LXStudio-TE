@@ -12,6 +12,7 @@ import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.Transform;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.vecmath.Vector3f;
@@ -42,6 +43,21 @@ public class BulletBootstrap {
 
   // Simulation parameters
   private final float gravity = -9.81f; // Standard gravity
+
+  // Enhanced scene configuration
+  private SceneConfig sceneConfig;
+  private final ArrayList<Tether> tethers = new ArrayList<>();
+
+  private boolean centralGravityEnabled = false;
+  private final Vector3f centralCenter = new Vector3f(0f, 0f, 0f);
+  private float centralMu = 25f;
+  private float centralSoft = 0.25f;
+
+  private static class Tether {
+    String bodyName;
+    final Vector3f anchor = new Vector3f();
+    float restLen, k, c; // stiffness, damping
+  }
 
   /** Initialize Bullet Physics simulation */
   public void initialize() {
@@ -91,14 +107,18 @@ public class BulletBootstrap {
    *
    * @param deltaTime time step in seconds
    */
+  /** Step with optional internal scene forces enabled by SceneConfig */
   public void step(float deltaTime) {
     if (!isInitialized) {
       throw new RuntimeException("Bullet Physics not initialized - cannot step simulation");
     }
 
     try {
-      // Step the physics simulation
-      dynamicsWorld.stepSimulation(deltaTime, 10); // max 10 substeps
+      // apply scene-wide forces (central gravity, tethers)
+      applySceneForces(deltaTime);
+      // fixed stepping hint (caller may also do fixed substeps externally)
+      float fixed = (sceneConfig != null) ? sceneConfig.fixedTimeStep : 1f / 120f;
+      dynamicsWorld.stepSimulation(deltaTime, 8, fixed);
 
       // Only log occasionally to avoid spam
       // TE.log("Bullet Bootstrap: Physics simulation step %.4fs", deltaTime);
@@ -152,9 +172,9 @@ public class BulletBootstrap {
     RigidBodyConstructionInfo rbInfo =
         new RigidBodyConstructionInfo(mass, motionState, sphereShape, localInertia);
     RigidBody rigidBody = new RigidBody(rbInfo);
-    // Basic material properties
-    rigidBody.setFriction(0.6f);
-    rigidBody.setRestitution(0.2f);
+    // Bouncy material properties
+    rigidBody.setFriction(0.2f); // Lower friction for more sliding
+    rigidBody.setRestitution(0.9f); // High restitution for bouncy behavior
     // Enable CCD by default to reduce tunneling through walls
     rigidBody.setCcdMotionThreshold(radius * 0.5f);
     rigidBody.setCcdSweptSphereRadius(radius * 0.9f);
@@ -305,6 +325,15 @@ public class BulletBootstrap {
     // TODO: Consider implementing via constraints if needed
   }
 
+  /** Set linear velocity of a body by name */
+  public void setBodyLinearVelocity(String name, float vx, float vy, float vz) {
+    RigidBody body = nameToRigidBody.get(name);
+    if (body != null) {
+      body.setLinearVelocity(new Vector3f(vx, vy, vz));
+      body.activate(true);
+    }
+  }
+
   /** Remove a body by name from the physics world and internal map. */
   public void removeBody(String name) {
     RigidBody body = nameToRigidBody.remove(name);
@@ -313,11 +342,127 @@ public class BulletBootstrap {
     }
   }
 
+  /** New: one-call scene setup */
+  public void initializeScene(SceneConfig cfg) {
+    this.sceneConfig = cfg;
+    if (!isInitialized) initialize();
+
+    // Solver knobs
+    dynamicsWorld.getSolverInfo().numIterations = Math.max(1, cfg.solverIterations);
+
+    // Gravity
+    if (cfg.gravityType == SceneConfig.GravityType.GLOBAL_VECTOR) {
+      dynamicsWorld.setGravity(new Vector3f(cfg.gravityVector));
+      centralGravityEnabled = false;
+    } else {
+      dynamicsWorld.setGravity(new Vector3f(0f, 0f, 0f));
+      if (cfg.gravityType == SceneConfig.GravityType.CENTRAL_MASS) {
+        enableCentralGravity(cfg.gravityCenter, cfg.gravityMu, cfg.gravitySoftening);
+      } else {
+        centralGravityEnabled = false;
+      }
+    }
+
+    // Bounds
+    if (cfg.boundsType == SceneConfig.BoundsType.ROOM) {
+      createRoom(
+          cfg.roomMinX,
+          cfg.roomMaxX,
+          cfg.roomMinY,
+          cfg.roomMaxY,
+          cfg.roomMinZ,
+          cfg.roomMaxZ,
+          cfg.wallThickness);
+    }
+  }
+
+  // --- Central gravity feature ---
+  public void enableCentralGravity(Vector3f center, float GM, float softening) {
+    centralCenter.set(center);
+    centralMu = GM;
+    centralSoft = Math.max(softening, 1e-4f);
+    centralGravityEnabled = true;
+  }
+
+  public void disableCentralGravity() {
+    centralGravityEnabled = false;
+  }
+
+  // --- Tether feature (force-based elastic leash to a point) ---
+  public void addTether(
+      String bodyName, Vector3f anchor, float restLen, float stiffness, float damping) {
+    Tether t = new Tether();
+    t.bodyName = bodyName;
+    t.anchor.set(anchor);
+    t.restLen = Math.max(0.01f, restLen);
+    t.k = Math.max(0f, stiffness);
+    t.c = Math.max(0f, damping);
+    tethers.add(t);
+  }
+
+  public void removeTethersFor(String bodyName) {
+    tethers.removeIf(t -> t.bodyName.equals(bodyName));
+  }
+
+  public void clearTethers() {
+    tethers.clear();
+  }
+
+  // --- Internal force application (call before each step) ---
+  private void applySceneForces(float dt) {
+    if (centralGravityEnabled) {
+      // softened inverse-square: F = -mu * r / (|r|^2 + s^2)^(3/2)
+      for (Map.Entry<String, RigidBody> e : nameToRigidBody.entrySet()) {
+        RigidBody b = e.getValue();
+        if (b == null || b.getInvMass() == 0f) continue;
+        Transform t = new Transform();
+        b.getMotionState().getWorldTransform(t);
+        float rx = t.origin.x - centralCenter.x,
+            ry = t.origin.y - centralCenter.y,
+            rz = t.origin.z - centralCenter.z;
+        float r2s = rx * rx + ry * ry + rz * rz + centralSoft * centralSoft;
+        float inv = (float) (1.0 / Math.pow(r2s, 1.5 / 2.0)); // 1 / (sqrt(r2s)^3)
+        float Fx = -centralMu * rx * inv, Fy = -centralMu * ry * inv, Fz = -centralMu * rz * inv;
+        b.activate(true);
+        b.applyCentralForce(new Vector3f(Fx, Fy, Fz));
+      }
+    }
+    // Tethers: spring + damping along rope direction when stretched
+    for (Tether t : tethers) {
+      RigidBody b = nameToRigidBody.get(t.bodyName);
+      if (b == null || b.getInvMass() == 0f) continue;
+
+      Transform xform = new Transform();
+      b.getMotionState().getWorldTransform(xform);
+      float rx = xform.origin.x - t.anchor.x,
+          ry = xform.origin.y - t.anchor.y,
+          rz = xform.origin.z - t.anchor.z;
+      float r2 = rx * rx + ry * ry + rz * rz;
+      float r = (float) Math.sqrt(Math.max(r2, 1e-8f));
+      if (r <= t.restLen) continue;
+
+      float ux = rx / r, uy = ry / r, uz = rz / r; // rope dir
+      Vector3f vel = new Vector3f();
+      b.getLinearVelocity(vel);
+      float vAlong = vel.x * ux + vel.y * uy + vel.z * uz;
+
+      float Fs = -t.k * (r - t.restLen); // spring inward
+      float Fd = -t.c * vAlong; // damping along rope
+
+      Vector3f F = new Vector3f((Fs + Fd) * ux, (Fs + Fd) * uy, (Fs + Fd) * uz);
+      b.activate(true);
+      b.applyCentralForce(F);
+    }
+  }
+
   /** Clean up Bullet Physics resources */
   public void cleanup() {
     try {
       if (isInitialized && dynamicsWorld != null) {
         TE.log("Bullet Bootstrap: Cleaning up Bullet Physics resources");
+
+        // cleanup: also clear tethers and any constraints you add later
+        clearTethers();
 
         // Remove all rigid bodies from the world
         for (RigidBody body : nameToRigidBody.values()) {

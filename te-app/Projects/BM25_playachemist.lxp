@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.5.GPU-SNAPSHOT",
-  "timestamp": 1755197098991,
+  "timestamp": 1755286939138,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -13983,22 +13983,22 @@
               "attack": 0.0,
               "release": 238.32847665695334,
               "slope": 6.0,
-              "band-1": 0.42698986241634274,
-              "band-2": 0.5257837391687643,
-              "band-3": 0.5549016486405034,
-              "band-4": 0.5823329811400326,
-              "band-5": 0.5366166378480299,
-              "band-6": 0.4855939327833677,
-              "band-7": 0.3658856800127802,
-              "band-8": 0.30970603060801494,
-              "band-9": 0.2394519569682353,
-              "band-10": 0.3663508521107338,
-              "band-11": 0.2156242433507346,
-              "band-12": 0.21029138451788276,
-              "band-13": 0.23100009785552567,
-              "band-14": 0.21889782109132072,
-              "band-15": 0.10144288105831656,
-              "band-16": 0.052410982997996514
+              "band-1": 0.6773712050522649,
+              "band-2": 0.7780580372351238,
+              "band-3": 0.831506511269644,
+              "band-4": 0.8867688561830629,
+              "band-5": 0.8125879602229572,
+              "band-6": 0.6871861233996419,
+              "band-7": 0.6734335993326714,
+              "band-8": 0.6198725138565462,
+              "band-9": 0.5943649851553627,
+              "band-10": 0.6513850731779309,
+              "band-11": 0.6292652239148122,
+              "band-12": 0.646760151330019,
+              "band-13": 0.6958666562041691,
+              "band-14": 0.6687106433040355,
+              "band-15": 0.5666553477202676,
+              "band-16": 0.3790485191694266
             },
             "children": {}
           }
@@ -21730,8 +21730,8 @@
                 "defaults": {}
               },
               {
-                "id": 533537,
-                "class": "titanicsend.pattern.sinas.ParticlesTest",
+                "id": 556183,
+                "class": "titanicsend.pattern.sinas.OrbitingComets",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
@@ -21742,7 +21742,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "ParticlesTest",
+                  "label": "OrbitingComets",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
                   "midiFilter/channel/name": "OMNI",
@@ -21763,15 +21763,15 @@
                   "cueActive": false,
                   "auxActive": false,
                   "setDefaults": false,
-                  "te_speed": 0.5,
+                  "te_speed": 1.0,
                   "te_xpos": 0.0,
                   "te_ypos": 0.0,
-                  "te_size": 0.1,
-                  "te_quantity": 20.0,
+                  "te_size": 0.2,
+                  "te_quantity": 0.5,
                   "te_spin": 0.0,
                   "te_brightness": 1.0,
-                  "te_wow1": 0.5,
-                  "te_wow2": 1.0,
+                  "te_wow1": 1.0,
+                  "te_wow2": 10.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "te_level": 0.1,
@@ -21790,7 +21790,7 @@
                 },
                 "children": {
                   "modulation": {
-                    "id": 533538,
+                    "id": 556184,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,
@@ -40230,8 +40230,8 @@
         "camera": {
           "active": false,
           "radius": 956.8255777317571,
-          "theta": 347.1909341037972,
-          "phi": -0.9950016749789938,
+          "theta": 354.2377009362681,
+          "phi": 10.34588158747647,
           "x": 20.29910414773957,
           "y": 228.4461914806161,
           "z": 190.87012147880387

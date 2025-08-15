@@ -362,6 +362,8 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(NDIReceiverPattern.class);
       lx.registry.addPattern(StarSwarm.class);
       lx.registry.addPattern(titanicsend.pattern.sinas.ParticlesTest.class);
+      lx.registry.addPattern(titanicsend.pattern.sinas.OrbitingComets.class);
+      lx.registry.addPattern(titanicsend.pattern.sinas.ParticleTest3D.class);
       lx.registry.addPattern(TdNdiPattern.class);
       lx.registry.addPattern(TdStableDiffusionPattern.class);
       lx.registry.addPattern(ModelFileWriter.class);

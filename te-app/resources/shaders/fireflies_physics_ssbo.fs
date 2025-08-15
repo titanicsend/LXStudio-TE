@@ -15,16 +15,16 @@ uniform float roomMinX;        // normalized [0,1]
 uniform float roomMinY;        // normalized [0,1]
 uniform float roomMaxX;        // normalized [0,1]
 uniform float roomMaxY;        // normalized [0,1]
+uniform float roomMinZ;        // normalized [0,1]
+uniform float roomMaxZ;        // normalized [0,1]
+uniform float radiusScale;     // Overall radius multiplier
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
     vec2 uv = ( fragCoord.xy / iResolution.xy );
     vec2 p = (uv*2.-1.) * vec2(iResolution.x/iResolution.y,1.);
 
-    // Visual scale multiplier for normalized radius
-    float radiusScale = 15.0; // Scale up for better visibility
-
-    // Calculate the contribution of each physics-driven firefly to the current pixel
+    // Calculate the contribution of each 3D orbital firefly to the current pixel
     float lit = 0.;
     for (int i = 0; i < instanceCount && i < prevModel.length() && i < currModel.length() && i < radius.length(); ++i) {
         // Interpolate between previous and current transforms
@@ -33,22 +33,30 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         // Extract position from transform matrix (last column)
         vec3 worldPos = worldMatrix[3].xyz;
         
-        // Use engine-provided normalized coords directly (no clamping)
+        // Use engine-provided normalized coords directly (3D coordinates)
         vec2 normalizedPos = worldPos.xy;
+        float normalizedZ = worldPos.z;
         vec2 screenPos = (normalizedPos*2.-1.) * vec2(iResolution.x/iResolution.y,1.);
 
-        // Convert normalized radius to screen space
-        // Account for aspect ratio and coordinate system scaling
-        float aspectRatio = iResolution.x / iResolution.y;
-        float effectiveRadius = radiusScale * radius[i]; // Use SSBO radius directly
+        // Z-based size scaling: closer objects (higher Z) appear larger
+        // Map Z from [roomMinZ, roomMaxZ] to [0, 1]
+        float zDepth = (normalizedZ - roomMinZ) / (roomMaxZ - roomMinZ);
+        float depthScale = 0.3 + (zDepth * 2.0); // Scale from 0.3x to 2.3x
+        
+        // Convert normalized radius to screen space with depth scaling
+        float effectiveRadius = radiusScale * radius[i] * depthScale * 25.0; // Enhanced visibility
 
-        // Brightness of the firefly at a given pixel location is inversely
-        // proportional to the distance from firefly center.
-        // We restrict light falloff range by making it so that distances
-        // greater than the desired radius go negative, and get clamped to 0.
-        float l = max(0.0, 1.0 - length(p - screenPos) / effectiveRadius);
-        // Sharpen brightness curve so tail decay will look more natural
-        lit += l * l;
+        // Add subtle pulsing based on Z position
+        float pulse = 1.0 + sin(iTime * 2.0 + normalizedZ * 10.0) * 0.1;
+        effectiveRadius *= pulse;
+
+        // Brightness calculation with Z-based intensity
+        float distance = length(p - screenPos);
+        float l = max(0.0, 1.0 - distance / effectiveRadius);
+        
+        // Z-based brightness: closer orbs are brighter
+        float zIntensity = 0.5 + zDepth * 0.8;
+        lit += l * l * zIntensity;
     }
 
     // Cool the entire backbuffer by a small amount (firefly tail effect)
@@ -67,12 +75,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // Add heat where the fireflies are with glow intensity
     fragColor += vec4(color * glowIntensity, 1.0);
 
-    // Draw red room border for normalized rectangle [roomMin, roomMax]
-    float edgeThickness = 0.003;
-    float left   = step(0.0, uv.x - roomMinX) * step(uv.x - roomMinX, edgeThickness);
-    float right  = step(0.0, roomMaxX - uv.x) * step(roomMaxX - uv.x, edgeThickness);
-    float bottom = step(0.0, uv.y - roomMinY) * step(uv.y - roomMinY, edgeThickness);
-    float top    = step(0.0, roomMaxY - uv.y) * step(roomMaxY - uv.y, edgeThickness);
-    float border = max(max(left, right), max(top, bottom));
-    fragColor += vec4(border * vec3(1.0, 0.0, 0.0), border);
+    // Draw a warm-colored center point to show the gravity center
+    vec2 centerScreen = (vec2(0.5, 0.5)*2.-1.) * vec2(iResolution.x/iResolution.y,1.);
+    float centerDist = length(p - centerScreen);
+    float centerGlow = max(0.0, 1.0 - centerDist / 0.05) * 0.3; // Small central glow
+    fragColor += vec4(centerGlow * vec3(1.0, 0.8, 0.6), centerGlow); // Warm center color
 }
