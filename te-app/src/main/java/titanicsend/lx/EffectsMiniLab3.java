@@ -478,11 +478,13 @@ public class EffectsMiniLab3 extends LXMidiSurface
   private void modeReceived(boolean isDAW) {
     // To determine: This will be received if user changes it.  Does it also get received as an
     // echo if we set it with a sysex?
+    verbose("Mode: DAW = " + isDAW);
   }
 
   private void bankReceived(boolean isBankA) {
     // To determine: This will be received if user changes it.  Does it also get received as an
     // echo if we set it with a sysex?
+    verbose("Bank: " + (isBankA ? "A" : "B"));
   }
 
   // ------------------------------------------------------------------------------------
@@ -586,25 +588,25 @@ public class EffectsMiniLab3 extends LXMidiSurface
   }
 
   private void updatePadLEDs() {
-    verbose("<<<<<<<<< Updating Pad LEDs >>>>>>>>>>");
+    padVerbose("<<<<<<<<< Updating Pad LEDs >>>>>>>>>>");
     // TEMP: just to keep an eye on the effect states while developing
     this.effectManager.debugStates();
 
     List<GlobalEffect<? extends LXEffect>> slots = effectManager.slots;
     if (slots == null) {
-      verbose("Slots is null, exit");
+      padVerbose("Slots is null, exit");
     }
     // Send individual SysEx message for each pad
     for (int i = 0; i < NUM_PADS; i++) {
-      verbose("Pad " + i);
+      padVerbose("Pad " + i);
       if (i < slots.size()) {
-        verbose("\tPad " + i + ": " + slots.get(i).getName());
+        padVerbose("\tPad " + i + ": " + slots.get(i).getName());
         GlobalEffect<? extends LXEffect> globalEffect = getSlot(i);
         if (globalEffect != null) {
-          verbose("\t\tSlot " + i + " is " + globalEffect.getName());
+          padVerbose("\t\tSlot " + i + " is " + globalEffect.getName());
           GlobalEffect.State state = globalEffect.getState();
           if (state != null) {
-            verbose("\t\t\t state is " + state);
+            padVerbose("\t\t\t state is " + state);
             switch (state) {
               case EMPTY -> {
                 setPadA(i, 0x00, 0x00, 0xFF);
@@ -620,19 +622,19 @@ public class EffectsMiniLab3 extends LXMidiSurface
               }
             }
           } else {
-            verbose("\t\t\t state is null");
+            padVerbose("\t\t\t state is null");
             // State is null
             setPadA(i, 0x00, 0x00, 0x00);
             //            setPadB(i, 0x00, 0x00, 0x00);
           }
         } else {
-          verbose("\t\tSlot " + i + " is null");
+          padVerbose("\t\tSlot " + i + " is null");
           // GlobalEffect is null
           setPadA(i, 0x10, 0x00, 0x00);
           //          setPadB(i, 0x10, 0x00, 0x00);
         }
       } else {
-        verbose("\t\tSlot " + i + " is out of range for " + slots.size());
+        padVerbose("\t\tSlot " + i + " is out of range for " + slots.size());
         //        // Slots is null
         //        setPadA(i, 0x00, 0x10, 0x00);
         //        //        setPadB(i, 0x00, 0x10, 0x00);
@@ -712,6 +714,13 @@ public class EffectsMiniLab3 extends LXMidiSurface
   /** Temporary for dev */
   private void verbose(String message) {
     LXMidiEngine.error(message);
+  }
+
+  private void padVerbose(String message) {
+    boolean debugPads = false;
+    if (debugPads) {
+      LXMidiEngine.error(message);
+    }
   }
 
   @Override
