@@ -34,6 +34,9 @@ public class CarGeometryTest extends GLShaderPattern {
   private boolean updateGeometry = true;
   // Physical axis lengths of current model view (raw units)
   private float axisLx = 1f, axisLy = 1f, axisLz = 1f;
+  // Debug toggle controlled by iWowTrigger press+release
+  private boolean debugMode = false;
+  private boolean wowPressed = false;
 
   public CarGeometryTest(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
@@ -63,6 +66,8 @@ public class CarGeometryTest extends GLShaderPattern {
             .withFilename("car_geometry_pattern.fs")
             .withUniformSource(
                 (s) -> {
+                  // Always send current debug toggle state as float (0.0/1.0)
+                  s.setUniform("debugMode", debugMode ? 1.0f : 0.0f);
                   if (updateGeometry) {
                     // Send panel centers once (they're static w.r.t. the dynamic model structure
                     // unless the model regenerates)
@@ -250,5 +255,17 @@ public class CarGeometryTest extends GLShaderPattern {
     super.onModelChanged(model);
     // Recompute panel centers when the underlying model changes
     computePanelCenters();
+  }
+
+  @Override
+  protected void onWowTrigger(boolean on) {
+    // Toggle debugMode on full press+release cycle
+    if (on) {
+      wowPressed = true;
+    } else if (wowPressed) {
+      debugMode = !debugMode;
+      wowPressed = false;
+      TE.log("CarGeometryTest: debugMode=%s", debugMode ? "ON" : "OFF");
+    }
   }
 }

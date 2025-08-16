@@ -17,6 +17,7 @@ uniform vec3[PANEL_COUNT] panelV1;
 uniform vec3[PANEL_COUNT] panelV2;
 uniform float panelRadius; // unused once iScale drives radius; kept for compatibility
 uniform vec3 axisLengths;  // physical axis lengths for anisotropy correction
+uniform float debugMode;   // 0.0 or 1.0, toggled via iWowTrigger
 
 const float ballBright = .9;
 
@@ -63,6 +64,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     }
 
     float bright = accum;
+
+    int whichone = int(mod(floor(iQuantity * howmany), howmany));
 
     // Determine which panel triangle contains this point using 2D projection per panel
     // Choose among all containing panels the one with nearest center (isotropic distance)
@@ -114,7 +117,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         }
     }
     vec3 base = vec3(0.0);
-    if (chosen >= 0) {
+    if (debugMode == 1. && chosen == whichone || debugMode == 0. && chosen > 0) {
         // Base color: map panel normal XYZ to RGB for chosen panel
         vec3 nrm = panelNormals[chosen];
         base = 0.5 * (nrm + vec3(1.0));
@@ -124,38 +127,40 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec3 circles = iColorRGB * bright;
     vec3 col = mix(base, circles, clamp(bright, 0.0, 1.0));
 
-    // // DEBUG OVERLAY: draw bright lines along panel edges using segment distances in 3D
-    // // don't delete this, we'll uncomment sometimes to debug
-    // float edgeLines = 0.0;
-    // float edgeWidth = 0.01; // normalized thickness
+    // DEBUG OVERLAY: draw bright lines along panel edges using segment distances in 3D
+    // don't delete this, we'll uncomment sometimes to debug
+    float edgeLines = 0.0;
+    float edgeWidth = 0.01; // normalized thickness
+    if (debugMode == 1.) {
     // for (int i = 0; i < panelCount; i++) {
-    //     vec3 a = panelV0[i] - vec3(.5);
-    //     vec3 b = panelV1[i] - vec3(.5);
-    //     vec3 c = panelV2[i] - vec3(.5);
+        int i = whichone;
+        vec3 a = panelV0[i] - vec3(.5);
+        vec3 b = panelV1[i] - vec3(.5);
+        vec3 c = panelV2[i] - vec3(.5);
 
-    //     vec3 ab = b - a; float abLen2 = max(dot(ab, ab), 1e-8);
-    //     vec3 bc = c - b; float bcLen2 = max(dot(bc, bc), 1e-8);
-    //     vec3 ca = a - c; float caLen2 = max(dot(ca, ca), 1e-8);
+        vec3 ab = b - a; float abLen2 = max(dot(ab, ab), 1e-8);
+        vec3 bc = c - b; float bcLen2 = max(dot(bc, bc), 1e-8);
+        vec3 ca = a - c; float caLen2 = max(dot(ca, ca), 1e-8);
 
-    //     float t;
-    //     // distance to segment AB
-    //     t = clamp(dot(model - a, ab) / abLen2, 0.0, 1.0);
-    //     float dAB = length((a + t * ab) - model);
-    //     // BC
-    //     t = clamp(dot(model - b, bc) / bcLen2, 0.0, 1.0);
-    //     float dBC = length((b + t * bc) - model);
-    //     // CA
-    //     t = clamp(dot(model - c, ca) / caLen2, 0.0, 1.0);
-    //     float dCA = length((c + t * ca) - model);
+        float t;
+        // distance to segment AB
+        t = clamp(dot(model - a, ab) / abLen2, 0.0, 1.0);
+        float dAB = length((a + t * ab) - model);
+        // BC
+        t = clamp(dot(model - b, bc) / bcLen2, 0.0, 1.0);
+        float dBC = length((b + t * bc) - model);
+        // CA
+        t = clamp(dot(model - c, ca) / caLen2, 0.0, 1.0);
+        float dCA = length((c + t * ca) - model);
 
-    //     float m = 0.0;
-    //     m = max(m, smoothstep(edgeWidth, edgeWidth * 0.6, dAB));
-    //     m = max(m, smoothstep(edgeWidth, edgeWidth * 0.6, dBC));
-    //     m = max(m, smoothstep(edgeWidth, edgeWidth * 0.6, dCA));
-    //     edgeLines = max(edgeLines, m);
-    // }
-    // col = max(col, vec3(edgeLines));
-    // bright = max(bright, edgeLines);
+        float m = 0.0;
+        m = max(m, smoothstep(edgeWidth, edgeWidth * 0.6, dAB));
+        m = max(m, smoothstep(edgeWidth, edgeWidth * 0.6, dBC));
+        m = max(m, smoothstep(edgeWidth, edgeWidth * 0.6, dCA));
+        edgeLines = max(edgeLines, m);
+    }
+    col = max(col, vec3(edgeLines));
+    bright = max(bright, edgeLines);
 
     fragColor = vec4(col, clamp(.5 + bright, 0., 1.));
 }
