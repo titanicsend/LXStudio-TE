@@ -214,8 +214,8 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
   }
 
   public void debugStates() {
+    TE.log("-------------------------------");
     for (int i = 0; i < slots.size(); i++) {
-      TE.log("-------------------------------");
       GlobalEffect<? extends LXEffect> globalEffect = slots.get(i);
       if (globalEffect == null) {
         TE.log(String.format("\t[Slot %02d] - null", i));

@@ -24,11 +24,13 @@ public abstract class GlobalEffect<T extends LXEffect> {
     ENABLED
   }
 
-  private final Class<T> type;
-  public T effect;
-  private State state;
+  // Default to EMPTY, meaning 'this.effecy' is null / no LXEffect matching 'this.type' is on
+  // the master bus.
+  private State state = State.EMPTY;
+
   // Subscribe to updates on the "enabled" param
   private LXParameterListener enabledListener;
+
   // Keep a handle to the effect manager, so we can notify it for any state updates:
   // - Effect registered / unregistered
   // - Effect enabled / disabled
@@ -38,6 +40,12 @@ public abstract class GlobalEffect<T extends LXEffect> {
   // and then Minilab3 can have a GlobalEffectManager.Listener which will get triggered
   // and redraw the pad LED's.
   private GlobalEffectManager manager;
+
+  // Class of the registered Effect.
+  private final Class<T> type;
+
+  // LXEffect matching 'this.type'.
+  public T effect;
 
   @SuppressWarnings("unchecked")
   public GlobalEffect() {

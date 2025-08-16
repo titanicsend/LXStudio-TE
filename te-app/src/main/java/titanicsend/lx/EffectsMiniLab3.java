@@ -577,25 +577,34 @@ public class EffectsMiniLab3 extends LXMidiSurface
       if (slots != null && i < slots.size()) {
         GlobalEffect<? extends LXEffect> globalEffect = getSlot(i);
         if (globalEffect != null) {
-          switch (globalEffect.getState()) {
-            case EMPTY -> {
-              setPadA(i, 0x19, 0x19, 0xFF);
-              setPadB(i, 0x19, 0x19, 0xFF);
+          GlobalEffect.State state = globalEffect.getState();
+          if (state != null) {
+            switch (state) {
+              case EMPTY -> {
+                setPadA(i, 0x19, 0x19, 0xFF);
+                setPadB(i, 0x19, 0x19, 0xFF);
+              }
+              case DISABLED -> {
+                setPadA(i, 0x19, 0xFF, 0x00);
+                setPadB(i, 0x19, 0xFF, 0x00);
+              }
+              case ENABLED -> {
+                setPadA(i, 0xFF, 0x19, 0x19);
+                setPadB(i, 0xFF, 0x19, 0x19);
+              }
             }
-            case DISABLED -> {
-              setPadA(i, 0x19, 0xFF, 0x00);
-              setPadB(i, 0x19, 0xFF, 0x00);
-            }
-            case ENABLED -> {
-              setPadA(i, 0xFF, 0x19, 0x19);
-              setPadB(i, 0xFF, 0x19, 0x19);
-            }
+          } else {
+            // State is null
+            setPadA(i, 0x00, 0x00, 0x00);
+            setPadB(i, 0x00, 0x00, 0x00);
           }
         } else {
+          // GlobalEffect is null
           setPadA(i, 0x10, 0x00, 0x00);
           setPadB(i, 0x10, 0x00, 0x00);
         }
       } else {
+        // Slots is null
         setPadA(i, 0x00, 0x10, 0x00);
         setPadB(i, 0x00, 0x10, 0x00);
       }
