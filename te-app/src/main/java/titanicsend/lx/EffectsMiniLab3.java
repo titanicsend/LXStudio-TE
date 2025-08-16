@@ -168,15 +168,6 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
 
   public static final byte SYSEX_COMMAND_SET_COLOR = 0x16;
 
-  private enum EffectState {
-    DISABLED,
-    ENABLED,
-    EMPTY,
-    ;
-  }
-
-  EffectState[] states;
-
   private GlobalEffectManager effectManager;
   private ObservableList.Listener<GlobalEffect<? extends LXEffect>> effectListener;
   private boolean isRegistered = false;
@@ -219,42 +210,40 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     this.effectListener = null;
     this.effectManager = GlobalEffectManager.get();
 
-    List<GlobalEffect<? extends LXEffect>> slots = this.effectManager.slots;
+    List<GlobalEffect<? extends LXEffect>> slots = GlobalEffectManager.slots;
     GlobalEffect<? extends LXEffect> curr;
-    states = new EffectState[this.effectManager.slots.size()];
-    for (int i = 0; i < states.length; i++) {
-      curr = slots.get(i);
-      if (curr == null || curr.effect == null) {
-        states[i] = EffectState.DISABLED;
-      } else {
-        states[i] = curr.getEnabledParameter().isOn() ? EffectState.ENABLED : EffectState.DISABLED;
-      }
-    }
 
     this.effectListener =
         new ObservableList.Listener<>() {
           @Override
           public void itemAdded(GlobalEffect<? extends LXEffect> item) {
-            int slotIndex = effectManager.slots.indexOf(item);
-            states[slotIndex] = EffectState.DISABLED;
-            TE.log("Effect Slot added [" + slotIndex + "]: " + item);
-            updatePadLEDs();
+            if (slots != null) {
+              int slotIndex = slots.indexOf(item);
+              //            states[slotIndex] = EffectState.DISABLED;
+              TE.log("Effect Slot added [" + slotIndex + "]: " + item);
+              updatePadLEDs();
+            }
           }
 
           @Override
           public void itemRemoved(GlobalEffect<? extends LXEffect> item) {
-            int slotIndex = effectManager.slots.indexOf(item);
-            states[slotIndex] = EffectState.EMPTY;
-            TE.log("Effect Slot removed [" + slotIndex + "]: " + item);
-            updatePadLEDs();
+            if (slots != null) {
+              int slotIndex = slots.indexOf(item);
+              //            states[slotIndex] = EffectState.EMPTY;
+              TE.log("Effect Slot removed [" + slotIndex + "]: " + item);
+              updatePadLEDs();
+            }
           }
+
+          // TODO: "updated" listener, so internal "enabled" state listener can
+          //       update controller state?
         };
-    this.effectManager.slots.addListener(this.effectListener);
+    GlobalEffectManager.slots.addListener(this.effectListener);
   }
 
   private void unregister() {
     this.isRegistered = false;
-    effectManager.slots.removeListener(effectListener);
+    GlobalEffectManager.slots.removeListener(effectListener);
     clearPadLEDs();
   }
 
@@ -535,48 +524,82 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   // Send Pad Colors
 
   private void press(int padIndex) {
-    TE.log("PRESS: " + padIndex);
+    verbose("PRESS: " + padIndex);
     //    setPadLEDColor(padIndex, 127, 127, 127);
     if (padIndex >= effectManager.slots.size()) {
+      verbose("Out of range: " + padIndex);
       return;
     }
-    EffectState currState = this.states[padIndex];
     GlobalEffect<? extends LXEffect> globalEffect = effectManager.slots.get(padIndex);
-    if (currState != null && globalEffect.effect != null) {
-      globalEffect.getEnabledParameter().toggle();
-      switch (currState) {
-        case DISABLED -> this.states[padIndex] = EffectState.ENABLED;
-        case ENABLED -> this.states[padIndex] = EffectState.DISABLED;
-        default -> TE.warning("unexpected pad press for empty slot " + padIndex);
-      }
-      TE.log("PRESS: " + padIndex + " " + currState.name() + " -> " + this.states[padIndex].name());
-      updatePadLEDs();
+    GlobalEffect.State currState = globalEffect.getState();
+    if (currState == null) {
+      verbose("Current state is null: " + globalEffect);
+      return;
+    } else if (currState == GlobalEffect.State.EMPTY) {
+      verbose("Current state is empty: " + globalEffect);
+      return;
+    } else if (globalEffect.effect == null) {
+      throw new IllegalStateException("LXEffect is null, but state is neither EMPTY nor null");
     }
+
+    verbose(
+        "Current state: "
+            + currState.toString()
+            + " for effect: "
+            + globalEffect.effect.getLabel());
+
+    globalEffect.getEnabledParameter().toggle();
+    TE.log(
+        "PRESS: "
+            + padIndex
+            + " "
+            + currState.name()
+            + " -> "
+            + globalEffect.getState().toString());
+    updatePadLEDs();
   }
 
   private void updatePadLEDs() {
+    List<GlobalEffect<? extends LXEffect>> slots = GlobalEffectManager.slots;
     // Send individual SysEx message for each pad
     for (int i = 0; i < NUM_PADS; i++) {
-      if (this.states != null && i < this.states.length) {
-        switch (this.states[i]) {
-          case EMPTY -> {
-            setPadA(i, 0x19, 0x19, 0x19);
-            setPadB(i, 0x19, 0x19, 0x19);
+      if (slots != null && i < slots.size()) {
+        GlobalEffect<? extends LXEffect> globalEffect = getSlot(i);
+        if (globalEffect != null) {
+          switch (globalEffect.getState()) {
+            case EMPTY -> {
+              setPadA(i, 0x19, 0x19, 0xFF);
+              setPadB(i, 0x19, 0x19, 0xFF);
+            }
+            case DISABLED -> {
+              setPadA(i, 0x19, 0xFF, 0x00);
+              setPadB(i, 0x19, 0xFF, 0x00);
+            }
+            case ENABLED -> {
+              setPadA(i, 0xFF, 0x19, 0x19);
+              setPadB(i, 0xFF, 0x19, 0x19);
+            }
           }
-          case DISABLED -> {
-            setPadA(i, 0x19, 0x19, 0xFF);
-            setPadB(i, 0x19, 0x19, 0xFF);
-          }
-          case ENABLED -> {
-            setPadA(i, 0xFF, 0x19, 0x19);
-            setPadB(i, 0xFF, 0x19, 0x19);
-          }
+        } else {
+          setPadA(i, 0x10, 0x00, 0x00);
+          setPadB(i, 0x10, 0x00, 0x00);
         }
       } else {
-        setPadA(i, 0x10, 0x10, 0x10);
-        setPadB(i, 0x10, 0x10, 0x10);
+        setPadA(i, 0x00, 0x10, 0x00);
+        setPadB(i, 0x00, 0x10, 0x00);
       }
     }
+  }
+
+  private List<GlobalEffect<? extends LXEffect>> allSlots() {
+    return GlobalEffectManager.slots;
+  }
+
+  private GlobalEffect<? extends LXEffect> getSlot(int index) {
+    if (allSlots() == null || index < 0 || index >= allSlots().size()) {
+      return null;
+    }
+    return allSlots().get(index);
   }
 
   private void clearPadLEDs() {
@@ -613,11 +636,25 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     // TODO: JKB to Look: I might have broken this command when bringing in the constants
     // Check for issues in int->byte conversions
 
-    sysex[0] = START_SYSEX; // SysEx start
-    sysex[1] = MIDI_MFR_ID_0; // Arturia manufacturer ID
-    sysex[2] = MIDI_MFR_ID_1;
-    sysex[3] = MIDI_MFR_ID_2;
+    sysex[0] = (byte) 0xF0; // SysEx start
+    if (sysex[0] != START_SYSEX) {
+      throw new IllegalStateException(
+          String.format(
+              "System exit value must be START_SYSEX %02X != %02X", sysex[0], START_SYSEX));
+    }
+    sysex[1] = (byte) 0x00; // Arturia manufacturer ID
+    if (sysex[1] != MIDI_MFR_ID_0) {
+      throw new IllegalStateException(
+          String.format(
+              "System exit value must be MIDI_MFR_ID_0 %02X != %02X", sysex[1], START_SYSEX));
+    }
+    sysex[2] = (byte) 0x20;
+    sysex[3] = (byte) 0x6B;
     sysex[4] = (byte) 0x7F;
+    //    sysex[0] = START_SYSEX; // SysEx start
+    //    sysex[1] = MIDI_MFR_ID_0; // Arturia manufacturer ID
+    //    sysex[2] = MIDI_MFR_ID_1;
+    //    sysex[3] = MIDI_MFR_ID_2;
     sysex[5] = (byte) 0x42;
     sysex[6] = (byte) 0x02; // Mode command
     // sysex[7] = (byte) 0x02; // DAW mode

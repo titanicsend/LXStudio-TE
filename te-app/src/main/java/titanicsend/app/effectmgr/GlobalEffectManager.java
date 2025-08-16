@@ -10,6 +10,8 @@ import heronarts.lx.osc.LXOscComponent;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.TriggerParameter;
 import heronarts.lx.utils.ObservableList;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import titanicsend.effect.ExplodeEffect;
 import titanicsend.effect.RandomStrobeEffect;
@@ -27,11 +29,17 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
   public static final ObservableList<GlobalEffect<? extends LXEffect>> slots =
       mutableSlots.asUnmodifiableList();
 
+  public interface Listener {
+    void stateUpdated(int slotIndex);
+  }
+
+  private final List<Listener> listeners = new ArrayList<>();
+
   public GlobalEffectManager(LX lx) {
     super(lx, "effectManager");
     GlobalEffectManager.instance = this;
 
-    registerDefaults();
+    allocateEffectSlots();
 
     // When effects are added / removed / moved on Master Bus, listen and update
     this.lx.engine.mixer.masterBus.addListener(this);
@@ -42,7 +50,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     return instance;
   }
 
-  public void registerSlot(GlobalEffect<? extends LXEffect> effect) {
+  public void allocateSlot(GlobalEffect<? extends LXEffect> effect) {
     Objects.requireNonNull(effect, "May not add null GlobalEffect.effect");
     // TODO: prevent multiple entries for one effect type
     // NOTE(look): ^ I could imagine having 2 versions for an Effect with lots of params,
@@ -50,13 +58,11 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     mutableSlots.add(effect);
   }
 
-  //  public LXEffect effectAtIndex()
-
-  private void registerDefaults() {
+  private void allocateEffectSlots() {
     // TODO: move this TE-specific method somewhere else, keep GlobalEffectManager generic.
 
     // Random Strobe
-    registerSlot(
+    allocateSlot(
         new GlobalEffect<RandomStrobeEffect>() {
           @Override
           public LXListenableNormalizedParameter getLevelParameter() {
@@ -76,7 +82,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
         });
 
     // Explode
-    registerSlot(
+    allocateSlot(
         // TODO: separate effect slots for "sync" version? How to handle "trigger"
         //  (feels more similar to FX patterns like BassLightning / SpaceExplosion)
         new GlobalEffect<ExplodeEffect>() {
@@ -106,7 +112,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
         });
 
     // Simplify
-    registerSlot(
+    allocateSlot(
         new GlobalEffect<SimplifyEffect>() {
           @Override
           public LXListenableNormalizedParameter getLevelParameter() {
@@ -126,7 +132,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
         });
 
     // Sustain
-    registerSlot(
+    allocateSlot(
         new GlobalEffect<SustainEffect>() {
           @Override
           public LXListenableNormalizedParameter getLevelParameter() {
@@ -152,6 +158,20 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     refresh();
   }
 
+  public void effectStateUpdated(int slotIndex) {
+    for (Listener listener : listeners) {
+      listener.stateUpdated(slotIndex);
+    }
+  }
+
+  public void effectStateUpdated(GlobalEffect<? extends LXEffect> globalEffect) {
+    int slotIndex = slots.indexOf(globalEffect);
+    if (slotIndex < 0) {
+      throw new IllegalArgumentException("Slot not found for " + globalEffect.getName());
+    }
+    effectStateUpdated(slotIndex);
+  }
+
   @Override
   public void effectMoved(LXBus channel, LXEffect effect) {
     refresh();
@@ -169,11 +189,21 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
       for (LXEffect effect : this.lx.engine.mixer.masterBus.effects) {
         if (globalEffect.matches(effect)) {
           // This will quick return if effect is already registered to the slot.
-          globalEffect.registerEffect(effect);
+          globalEffect.registerEffect(effect, this);
+          // Notify listeners of a state change.
+          this.effectStateUpdated(slots.indexOf(globalEffect));
           break;
         }
       }
     }
+  }
+
+  public void addListener(Listener listener) {
+    listeners.add(listener);
+  }
+
+  public void removeListener(Listener listener) {
+    listeners.remove(listener);
   }
 
   @Override

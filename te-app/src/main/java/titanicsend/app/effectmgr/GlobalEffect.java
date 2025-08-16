@@ -22,10 +22,18 @@ public abstract class GlobalEffect<T extends LXEffect> {
 
   private final Class<T> type;
   public T effect;
-  private LXParameterListener enabledListener;
   private State state;
-
-  //  private int slotIndex = -1;
+  // Subscribe to updates on the "enabled" param
+  private LXParameterListener enabledListener;
+  // Keep a handle to the effect manager, so we can notify it for any state updates:
+  // - Effect registered / unregistered
+  // - Effect enabled / disabled
+  // Since these affect button colors, we want a way to notify the Minilab3 driver
+  // to refresh button colors. If ObservableList had an "itemUpdated" option, that would
+  // work - but for now, the simplest thing feels like adding a hook to notify the manager,
+  // and then Minilab3 can have a GlobalEffectManager.Listener which will get triggered
+  // and redraw the pad LED's.
+  private GlobalEffectManager manager;
 
   @SuppressWarnings("unchecked")
   public GlobalEffect() {
@@ -47,7 +55,7 @@ public abstract class GlobalEffect<T extends LXEffect> {
     return this.type.isInstance(match);
   }
 
-  public final void registerEffect(LXEffect lxEffect) {
+  public final void registerEffect(LXEffect lxEffect, GlobalEffectManager manager) {
     if (lxEffect != null && !this.type.isInstance(lxEffect)) {
       throw new IllegalArgumentException(
           "Effect instance "
@@ -62,44 +70,87 @@ public abstract class GlobalEffect<T extends LXEffect> {
         onUnregister();
       }
       this.effect = effect;
+      // important: register(null, null) is effectively unregister.
+      // we'll need manager handle to trigger callback for onRegister()
+      // and onUnregister().
+      if (manager != null) {
+        this.manager = manager;
+      }
       if (this.effect != null) {
         onRegister();
       }
     }
   }
 
-  //  public void setSlotIndex(int slotIndex) {
-  //    this.slotIndex = slotIndex;
-  //  }
-  //
-  //  public final int getSlotIndex() {
-  //    return this.slotIndex;
-  //  }
+  // TODO(look): allow custom name when allocating slots, if we had multiple versions of an effect?
+  //             Maybe not relevant if we have presets and a good way to switch between them.
+  public String getName() {
+    if (this.effect == null) {
+      return String.format("[Class] %s", this.type.getSimpleName());
+    } else {
+      return String.format("[LXEffect] %s", this.effect.getLabel());
+    }
+  }
 
   public State getState() {
     return state;
   }
 
   /**
+   * State is only updated internally, so we can validate the state transition (e.g. so if state is
+   * ENABLED/DISABLED we never need to check if LXEffect is null), and also so we can notify
+   * GlobalEffectManager listeners.
+   *
+   * @param targetState, the new state that the underlying LXEffect is already updated to.
+   */
+  private void updateState(State targetState) {
+    if (this.effect == null) {
+      if (targetState == State.ENABLED
+          || targetState == State.DISABLED
+          || targetState == State.EMPTY) {
+        throw new IllegalStateException(
+            "Effect "
+                + this.type.getName()
+                + " has null LXEffect, cannot transition to "
+                + targetState.toString());
+      }
+    } else if (targetState == State.ENABLED && !this.effect.isEnabled()) {
+      throw new IllegalStateException(
+          "Effect " + this.type.getName() + " is disabled, cannot transition to ENABLED");
+    } else if (targetState == State.DISABLED && this.effect.isEnabled()) {
+      throw new IllegalStateException(
+          "Effect " + this.type.getName() + " is enabled, cannot transition to DISABLED");
+    }
+    this.state = targetState;
+    // Notify manager's listeners (to refresh MIDI controller pad LEDs)
+    if (this.manager != null) {
+      this.manager.effectStateUpdated(this);
+    }
+  }
+
+  /**
    * Called when a new effect instance is tied to this GlobalEffect slot. Subclasses can override.
    */
   protected void onRegister() {
-    state = State.DISABLED;
     BooleanParameter enabledParam = getEnabledParameter();
     if (enabledParam != null) {
+      updateState(enabledParam.isOn() ? State.ENABLED : State.DISABLED);
       enabledListener =
           new LXParameterListener() {
             @Override
             public void onParameterChanged(LXParameter parameter) {
               if (parameter instanceof BooleanParameter) {
                 boolean isEnabled = ((BooleanParameter) parameter).getValueb();
-                state = isEnabled ? State.ENABLED : State.DISABLED;
+                updateState(isEnabled ? State.ENABLED : State.DISABLED);
               } else {
                 throw new IllegalStateException("Invalid parameter " + parameter);
               }
             }
           };
       enabledParam.addListener(enabledListener);
+    } else {
+      throw new IllegalStateException(
+          "enabledParameter cannot be null when GlobalEffect is registered");
     }
   }
 
@@ -153,6 +204,6 @@ public abstract class GlobalEffect<T extends LXEffect> {
   }
 
   public void dispose() {
-    registerEffect(null);
+    registerEffect(null, null);
   }
 }
