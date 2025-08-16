@@ -32,6 +32,8 @@ import titanicsend.util.TE;
  *
  * <p>Octave shifts are invisible to the DAW (unless there's a sysex we could grab). Be careful to
  * keep the octaves centered.
+ *
+ * <p>[SYSEX DOCS](https://gist.github.com/Janiczek/04a87c2534b9d1435a1d8159c742d260)
  */
 @LXMidiSurface.Name("Arturia MiniLab3 Effects")
 @LXMidiSurface.DeviceName("Minilab3 MIDI")
@@ -178,7 +180,9 @@ public class EffectsMiniLab3 extends LXMidiSurface
     super(lx, input, output);
   }
 
+  // ------------------------------------------------------------------------------------
   // Connection
+  // ------------------------------------------------------------------------------------
 
   @Override
   protected void onEnable(boolean on) {
@@ -258,7 +262,9 @@ public class EffectsMiniLab3 extends LXMidiSurface
     updatePadLEDs();
   }
 
+  // ------------------------------------------------------------------------------------
   // Receiving MIDI Messages
+  // ------------------------------------------------------------------------------------
 
   @Override
   public void sysexReceived(LXSysexMessage sysex) {
@@ -395,7 +401,9 @@ public class EffectsMiniLab3 extends LXMidiSurface
     LXMidiEngine.error("Minilab3 unmapped control change: " + cc);
   }
 
+  // ------------------------------------------------------------------------------------
   // Receive Physical Inputs (allows remap to logical)
+  // ------------------------------------------------------------------------------------
 
   private void shiftReceived(boolean on) {
     this.shiftOn = on;
@@ -476,7 +484,9 @@ public class EffectsMiniLab3 extends LXMidiSurface
     // echo if we set it with a sysex?
   }
 
+  // ------------------------------------------------------------------------------------
   // Receive Logical Inputs (mapped from physical)
+  // ------------------------------------------------------------------------------------
 
   /** Launch, aka run, an effect or variation. */
   private void launch(int index) {
@@ -501,7 +511,9 @@ public class EffectsMiniLab3 extends LXMidiSurface
     verbose("Global Parameter " + globalParamIndex + ": set to " + value);
   }
 
+  // ------------------------------------------------------------------------------------
   // Send Sysex
+  // ------------------------------------------------------------------------------------
 
   private void sendModeDAW() {
     sendMode(SYSEX_MODE_DAW);
@@ -532,7 +544,9 @@ public class EffectsMiniLab3 extends LXMidiSurface
 
   private void sendBank(byte bank) {}
 
+  // ------------------------------------------------------------------------------------
   // Send Pad Colors
+  // ------------------------------------------------------------------------------------
 
   private void press(int padIndex) {
     verbose("PRESS: " + padIndex);
@@ -649,35 +663,22 @@ public class EffectsMiniLab3 extends LXMidiSurface
     // Can it be done with a simple NoteOn?  Or do we have to use sysex to get full RGB?
     // sendNoteOn(MIDI_CHANNEL_PADS, (byte) PAD_NOTES[padIndex], LXColor.rgb(red, green, blue));
 
-    // SysEx format: F0 00 20 6B 7F 42 02 02 16 ID RR GG BB F7
+    /*
+    SysEx format:
+      F0                     # sysex header
+      00 20 6B 7F 42         # Arturia header
+      02 02 16 ID RR GG BB   # set color of button ID to 0xRRGGBB
+      F7                     # sysex footer
+    */
     // ID for pads 1-8 in DAW mode: 0x04 to 0x0B
     byte[] sysex = new byte[14];
-
-    // TODO: JKB to Look: I might have broken this command when bringing in the constants
-    // Check for issues in int->byte conversions
-
-    sysex[0] = (byte) 0xF0; // SysEx start
-    if (sysex[0] != START_SYSEX) {
-      throw new IllegalStateException(
-          String.format(
-              "System exit value must be START_SYSEX %02X != %02X", sysex[0], START_SYSEX));
-    }
-    sysex[1] = (byte) 0x00; // Arturia manufacturer ID
-    if (sysex[1] != MIDI_MFR_ID_0) {
-      throw new IllegalStateException(
-          String.format(
-              "System exit value must be MIDI_MFR_ID_0 %02X != %02X", sysex[1], START_SYSEX));
-    }
-    sysex[2] = (byte) 0x20;
-    sysex[3] = (byte) 0x6B;
+    sysex[0] = START_SYSEX; // SysEx start
+    sysex[1] = MIDI_MFR_ID_0; // Arturia manufacturer ID
+    sysex[2] = MIDI_MFR_ID_1;
+    sysex[3] = MIDI_MFR_ID_2;
     sysex[4] = (byte) 0x7F;
-    //    sysex[0] = START_SYSEX; // SysEx start
-    //    sysex[1] = MIDI_MFR_ID_0; // Arturia manufacturer ID
-    //    sysex[2] = MIDI_MFR_ID_1;
-    //    sysex[3] = MIDI_MFR_ID_2;
     sysex[5] = (byte) 0x42;
-    sysex[6] = (byte) 0x02; // Mode command
-    // sysex[7] = (byte) 0x02; // DAW mode
+    sysex[6] = (byte) 0x02; // Mode command: set button color
     sysex[7] = SYSEX_MODE_DAW;
     sysex[8] = SYSEX_COMMAND_SET_COLOR; // Set color command
     sysex[9] = (byte) (0x04 + (bankIndex * 0x08) + padIndex); // Pad ID (0x04-0x0B for pads 1-8)
@@ -689,7 +690,9 @@ public class EffectsMiniLab3 extends LXMidiSurface
     sendSysex(sysex);
   }
 
+  // ------------------------------------------------------------------------------------
   // Shutdown
+  // ------------------------------------------------------------------------------------
 
   /** Temporary for dev */
   private void verbose(String message) {
@@ -716,66 +719,3 @@ public class EffectsMiniLab3 extends LXMidiSurface
     return (val >= min) && (val <= max);
   }
 }
-/*
-UPDATE: BETTER SYSEX DOCS: https://gist.github.com/Janiczek/04a87c2534b9d1435a1d8159c742d260
-
-
-F0                     # sysex header
-00 20 6B 7F 42         # Arturia header
-02 02 16 ID RR GG BB   # set color of button ID to 0xRRGGBB
-F7                     # sysex footer
-
-
- */
-
-/*
-
-Notes on SysEx protocol: https://forum.arturia.com/t/sysex-protocol-documentation/5746
-
-General SYSEX: [0xF0, 0x00, 0x20, 0x6B, 0x7F, 0x42, ...<data>, 0xF7]
-<data> for:
-Memory Request: [0x01, 0x00, 0x40, 0x01] // returns <data>:
-
-Arturia Test(?): [0x04, 0x01, 0x60, 0x01, 0x31, 0x32, 0x33, 0x00]
-Arturia Connect: [0x04, 0x01, 0x60, 0x01, 0x00, 0x02, 0x00]
-Arturia Disconnect: [0x04, 0x01, 0x60, 0x0A, 0x0A, 0x5F, 0x51, 0x00] followed by [0x02, 0x02, 0x40, 0x6A, 0x10]
-
-DAW Connect: [0x02, 0x02, 0x40, 0x6A, 0x21]
-DAW Disconnect: [0x02, 0x02, 0x40, 0x6A, 0x20]
-
-// r g b = 0-127
-Set Shift-LED: [0x02, 0x02, 0x16, <id>, <r>, <g>, <b>] // persistent: 0x57 Loop, 0x58 Stop, 0x59 Play, 0x5A Record, 0x5B Tap
-Set PAD LEDs: [0x04, 0x02, 0x16, 0x00] followed by 8x [<r>, <g>, <b>] for each pad // impermanent, mode or bank switch resets to white
-
-Set Display+Text: [0x04, 0x02, 0x60, ...<mode>, ...<line1>, ...<line2>] where
-<mode>:
-  default: [],
-  two lines: [0x1F, 0x02, 0x01, 0x00] // seems identical to default?
-  encoder: [0x1F, 0x03, 0x01, <value>, 0x00, 0x00] (value 0-127)
-  fader: [0x1F, 0x04, 0x01, <value>, 0x00, 0x00] (value 0-127)
-  pressure: [0x1F, 0x05, 0x01, <value>, 0x00, 0x00] (value 0-127)
-  leftright: [0x1F, 0x06, 0x01, <???>, <option>, 0x00] // Shows line 2, but not Line1. option 0x00 bottom bar, 0x01 no bar
-  icons: [0x1F, 0x07, 0x01, <top_icon>, <bottom_icon>, 0x01, 0x00] // icons are 0: Empty, 1 Heart, 2 Play, 3 Record, 4 Note, 5 Checkmark
-<line1>: [0x01, ...<up to 30 chars as bytes>, 0x00] // Zero terminated string? Display seems to show about 19 characters
-<line2>: [0x02, ...<up to 30 chars as bytes>, 0x00] // Zero terminated string? Larger font so only 15 characters displayed
-
-// note this is missing the pitchbend/modwheel display modes. DAW mode also has these hardwired to be active on inputs.
-
-enum DAW_CC : byte // all on channel 0x00 (aka 1) besides the modwheel
-{
-    MODWHEEL = 1, // on keyboard channel
-    SHIFT = 27,
-    ENC_TURN = 28, ENC_SHIFT_TURN = 29, // always relative around 64+-3
-    ENC_CLICK = 118, ENC_SHIFT_CLICK = 119,
-    FADER1 = 0x0E, FADER2 = 0x0F, FADER3 = 0x1E, FADER4 = 0x1F,
-    ENC1 = 86, ENC2 = 87, ENC3 = 89, ENC4 = 90, // forced absolute mode with device accel
-    ENC5 = 110, ENC6 = 111, ENC7 = 116, ENC8 = 117, // forced absolute mode with device accel
-    PAD_SHIFTLOOP = 105, PAD_SHIFTSTOP = 106, PAD_SHIFTPLAY = 107, PAD_SHIFTREC = 108, PAD_SHIFTTAP = 109,
-}
-enum DAW_NOTE : byte // Always on Channel 0x09 (aka 10 percussion)
-{
-    PADA1 = 36, PADA2 = 37, PADA3 = 38, PADA4 = 39, PADA5 = 40, PADA6 = 41, PADA7 = 42, PADA8 = 43,
-    PADB1 = 44, PADB2 = 45, PADB3 = 46, PADB4 = 47, PADB5 = 48, PADB6 = 49, PADB7 = 50, PADB8 = 51,
-}
-
-*/
