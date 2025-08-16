@@ -176,6 +176,9 @@ public class EffectsMiniLab3 extends LXMidiSurface
   private boolean isRegistered = false;
   private boolean shiftOn = false;
 
+  private boolean isBankA = false;
+  private boolean isDAW = false;
+
   public EffectsMiniLab3(LX lx, LXMidiInput input, LXMidiOutput output) {
     super(lx, input, output);
   }
@@ -267,16 +270,109 @@ public class EffectsMiniLab3 extends LXMidiSurface
   // Receiving MIDI Messages
   // ------------------------------------------------------------------------------------
 
+  // User switched to Arturia Mode: F0 00 20 6B 7F 42 02 00 40 62 01 F7
+  // User switched to DAW Mode:     F0 00 20 6B 7F 42 02 00 40 62 02 F7
+  // User switched to Bank A:       F0 00 20 6B 7F 42 02 00 40 63 00 F7
+  // User switched to Bank B:       F0 00 20 6B 7F 42 02 00 40 63 01 F7
+
+  private static final byte SYSEX_RECEIVED_TYPE_MODE = 0x62;
+  private static final byte SYSEX_RECEIVED_TYPE_BANK = 0x63;
+  private static final byte[] SYSEX_RECEIVED_TYPES =
+      new byte[] {SYSEX_RECEIVED_TYPE_MODE, SYSEX_RECEIVED_TYPE_BANK};
+
+  private static final byte SYSEX_RECEIVED_MODE_ARTURIA = 0x01;
+  private static final byte SYSEX_RECEIVED_MODE_DAW = 0x02;
+  private static final byte[] SYSEX_RECEIVED_MODES =
+      new byte[] {SYSEX_RECEIVED_MODE_ARTURIA, SYSEX_RECEIVED_MODE_DAW};
+
+  private static final byte SYSEX_RECEIVED_BANK_A = 0x00;
+  private static final byte SYSEX_RECEIVED_BANK_B = 0x01;
+  private static final byte[] SYSEX_RECEIVED_BANKS =
+      new byte[] {SYSEX_RECEIVED_BANK_A, SYSEX_RECEIVED_BANK_B};
+
   @Override
   public void sysexReceived(LXSysexMessage sysex) {
     verbose("Minilab3 Sysex: " + sysex);
 
-    // User switched to Arturia Mode: F0 00 20 6B 7F 42 02 00 40 62 01 F7
-    // User switched to DAW Mode:     F0 00 20 6B 7F 42 02 00 40 62 02 F7
-    // User switched to Bank A:       F0 00 20 6B 7F 42 02 00 40 63 00 F7
-    // User switched to Bank B:       F0 00 20 6B 7F 42 02 00 40 63 01 F7
+    byte[] msg = sysex.getMessage();
+    verbose("msg length: " + msg.length);
 
-    // TODO: send to modeReceived(bool) or bankReceived(bool)
+    // -1: mode byte not seen
+    // 0:  is's a Mode update
+    // 1:  it's a Bank update
+    int type = -1;
+
+    // -1: not seen
+    // 0:  Arturia (if isMode), Bank A (not isMode)
+    // 1:  DAW (if isMode),     Bank B (not isMode)
+    int option = -1;
+
+    for (int i = 0; i < msg.length; i++) {
+      byte b = msg[i];
+      verbose(String.format("msg[%02d]: %02b", i, b));
+
+      switch (i) {
+        case 0:
+          expectByte(i, (byte) 0xF0, b);
+        case 1:
+          expectByte(i, (byte) 0x00, b);
+        case 2:
+          expectByte(i, (byte) 0x20, b);
+        case 3:
+          expectByte(i, (byte) 0x6B, b);
+        case 4:
+          expectByte(i, (byte) 0x7F, b);
+        case 5:
+          expectByte(i, (byte) 0x42, b);
+        case 6:
+          expectByte(i, (byte) 0x02, b);
+        case 7:
+          expectByte(i, (byte) 0x00, b);
+        case 8:
+          expectByte(i, (byte) 0x40, b);
+        case 9:
+          type = expectOneOf(i, SYSEX_RECEIVED_TYPES, b);
+        case 10:
+          if (type == 0) {
+            option = expectOneOf(i, SYSEX_RECEIVED_MODES, b);
+          } else if (type == 1) {
+            option = expectOneOf(i, SYSEX_RECEIVED_BANKS, b);
+          } else {
+            throw new IllegalArgumentException(String.format("Invalid SYSEX_RECEIVED_TYPE" + type));
+          }
+        case 11:
+          expectByte(i, (byte) 0xF7, b);
+        default:
+          throw new IllegalArgumentException(String.format("Invalid SYSEX_RECEIVED_TYPE" + type));
+      }
+    }
+
+    if (type == 0) {
+      modeReceived(option == 0 ? true : false);
+    } else if (type == 1) {
+      bankReceived(option == 0 ? true : false);
+    } else {
+      throw new IllegalArgumentException(String.format("Invalid SYSEX_RECEIVED_TYPE" + type));
+    }
+  }
+
+  private static void expectByte(int index, byte expected, byte actual) {
+    if (actual != expected) {
+      throw new AssertionError(
+          String.format(
+              "Sysex message index %02d expected [%02b] but found [%02b]",
+              index, expected, actual));
+    }
+  }
+
+  private static int expectOneOf(int index, byte[] options, byte actual) {
+    for (int i = 0; i < options.length; i++) {
+      if (options[i] == actual) {
+        return i;
+      }
+    }
+    throw new AssertionError(
+        String.format("Sysex message index %02d invalid: found [%02b]", index, actual));
   }
 
   @Override
@@ -479,12 +575,15 @@ public class EffectsMiniLab3 extends LXMidiSurface
     // To determine: This will be received if user changes it.  Does it also get received as an
     // echo if we set it with a sysex?
     verbose("Mode: DAW = " + isDAW);
+    this.isDAW = isDAW;
   }
 
   private void bankReceived(boolean isBankA) {
     // To determine: This will be received if user changes it.  Does it also get received as an
     // echo if we set it with a sysex?
     verbose("Bank: " + (isBankA ? "A" : "B"));
+    this.isBankA = isBankA;
+    sendBank(this.isBankA);
   }
 
   // ------------------------------------------------------------------------------------
@@ -546,7 +645,15 @@ public class EffectsMiniLab3 extends LXMidiSurface
     sendBank(bankA ? SYSEX_BANK_A : SYSEX_BANK_B);
   }
 
-  private void sendBank(byte bank) {}
+  private void sendBank(byte bank) {
+    if (bank == SYSEX_BANK_A) {
+      verbose("Send Bank A");
+    } else if (bank == SYSEX_BANK_B) {
+      verbose("Send Bank B");
+    } else {
+      throw new IllegalArgumentException("Unknown bank: " + bank);
+    }
+  }
 
   // ------------------------------------------------------------------------------------
   // Send Pad Colors

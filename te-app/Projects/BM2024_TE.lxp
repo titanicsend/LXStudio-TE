@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.5.GPU-SNAPSHOT",
-  "timestamp": 1754857265535,
+  "timestamp": 1755385514607,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -13982,7 +13982,7 @@
               "band-10": 0.0,
               "band-11": 0.0,
               "band-12": 0.0,
-              "band-13": 0.05074898519249338,
+              "band-13": 0.06382075752632055,
               "band-14": 0.0,
               "band-15": 0.0,
               "band-16": 0.0
@@ -14003,7 +14003,7 @@
           "label": "Mixer",
           "crossfader": 0.5131578947368421,
           "crossfaderBlendMode": 1,
-          "focusedChannel": 7,
+          "focusedChannel": 17,
           "focusedChannelAux": 2,
           "cueA": false,
           "cueB": false,
@@ -14031,7 +14031,7 @@
               "label": "Master",
               "fader": 1.0,
               "arm": false,
-              "selected": false,
+              "selected": true,
               "stopClips": false,
               "previewMode": 0,
               "previewMode/name": "PRE"
@@ -14196,6 +14196,113 @@
                 "children": {
                   "modulation": {
                     "id": 142797,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 464048,
+                "class": "titanicsend.effect.SimplifyEffect",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true,
+                  "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "Simplify",
+                  "midiFilter/enabled": true,
+                  "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
+                  "midiFilter/minNote": 0,
+                  "midiFilter/noteRange": 128,
+                  "midiFilter/minVelocity": 1,
+                  "midiFilter/velocityRange": 127,
+                  "view": 0,
+                  "viewPriority": 0,
+                  "enabled": true,
+                  "locked": false,
+                  "amount": 1.0,
+                  "depth": 1,
+                  "gate": 0.1,
+                  "gain": 0.0
+                },
+                "children": {
+                  "modulation": {
+                    "id": 464049,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              },
+              {
+                "id": 464051,
+                "class": "titanicsend.effect.ExplodeEffect",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true,
+                  "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "Explode",
+                  "midiFilter/enabled": true,
+                  "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
+                  "midiFilter/minNote": 0,
+                  "midiFilter/noteRange": 128,
+                  "midiFilter/minVelocity": 1,
+                  "midiFilter/velocityRange": 127,
+                  "view": 0,
+                  "viewPriority": 0,
+                  "enabled": true,
+                  "locked": false,
+                  "speed": 0.05,
+                  "depth": 0.5,
+                  "waveshape": 0,
+                  "slope": 5.0,
+                  "tempoSync": false,
+                  "tempoDivision": 10,
+                  "tempoDivision/name": "WHOLE",
+                  "tempoPhaseOffset": 0.0,
+                  "size": 0.0,
+                  "manualTrigger": true,
+                  "trigger": false
+                },
+                "children": {
+                  "modulation": {
+                    "id": 464052,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,
@@ -56945,7 +57052,7 @@
               "label": "FX",
               "fader": 1.0,
               "arm": false,
-              "selected": true,
+              "selected": false,
               "stopClips": false,
               "enabled": true,
               "cue": false,
@@ -62325,11 +62432,11 @@
                   "te_color/blendMode": 0,
                   "te_color/blendMode/name": "OKLAB",
                   "te_color/offset": 0.0,
-                  "Width": 0.5,
-                  "Energy": 0.0,
+                  "Double Layer": false,
                   "Glow": 0.1,
                   "Double Speed": false,
-                  "Double Layer": false,
+                  "Width": 0.5,
+                  "Energy": 0.0,
                   "compositeMode": 0
                 },
                 "children": {
@@ -64917,6 +65024,19 @@
         },
         "parameters": {
           "label": "GLEngine"
+        },
+        "children": {}
+      },
+      "effectManager": {
+        "id": 160,
+        "class": "titanicsend.app.effectmgr.GlobalEffectManager",
+        "internal": {
+          "modulationColor": 0,
+          "modulationControlsExpanded": true,
+          "modulationsExpanded": true
+        },
+        "parameters": {
+          "label": "effectManager"
         },
         "children": {}
       },
