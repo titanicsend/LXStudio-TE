@@ -35,6 +35,10 @@ public class UserPresetCollection implements LXSerializable {
     this.clazz = clazz;
   }
 
+  public String getClazz() {
+    return clazz;
+  }
+
   public UserPreset addPreset() {
     return addPreset(null);
   }
@@ -186,7 +190,7 @@ public class UserPresetCollection implements LXSerializable {
   private boolean inLoad = false;
 
   public static final String KEY_CLASS = "clazz";
-  private static final String KEY_PRESETS = "presets";
+  public static final String KEY_PRESETS = "presets";
 
   @Override
   public void save(LX lx, JsonObject obj) {
@@ -209,7 +213,8 @@ public class UserPresetCollection implements LXSerializable {
     }
   }
 
-  private void loadPreset(JsonObject presetObj) {
+  // NOTE(look): making this package-protected
+  void loadPreset(JsonObject presetObj) {
     UserPreset preset = new UserPreset(this.lx, this.clazz);
     preset.load(this.lx, presetObj);
 

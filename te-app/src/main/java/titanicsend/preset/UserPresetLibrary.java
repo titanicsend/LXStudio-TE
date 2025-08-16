@@ -1,5 +1,8 @@
 package titanicsend.preset;
 
+import static titanicsend.preset.UserPresetCollection.KEY_CLASS;
+import static titanicsend.preset.UserPresetCollection.KEY_PRESETS;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -107,10 +110,13 @@ public class UserPresetLibrary implements LXSerializable {
   public void load(File file, boolean removeExisting) {
     TE.log("Loading user presets: %s", file.getPath());
     try (FileReader fr = new FileReader(file)) {
+      JsonObject obj = new Gson().fromJson(fr, JsonObject.class);
       if (removeExisting) {
         removeAll();
+        load(this.lx, obj);
+      } else {
+        merge(obj);
       }
-      load(this.lx, new Gson().fromJson(fr, JsonObject.class));
       this.file = file;
     } catch (FileNotFoundException ex) {
       TE.error("User preset library not found: %s", file.getPath());
@@ -128,7 +134,6 @@ public class UserPresetLibrary implements LXSerializable {
 
   @Override
   public void load(LX lx, JsonObject obj) {
-
     // Load collections
     JsonArray collectionsArray = obj.getAsJsonArray(KEY_COLLECTIONS);
     for (JsonElement patternElement : collectionsArray) {
@@ -138,10 +143,33 @@ public class UserPresetLibrary implements LXSerializable {
   }
 
   private void loadCollection(JsonObject patternObj, int index) {
-    String clazz = patternObj.get(UserPresetCollection.KEY_CLASS).getAsString();
+    String clazz = patternObj.get(KEY_CLASS).getAsString();
     // Find existing or create new
     // Existing are referenced by UI elements so we won't throw them away and recreate them.
     UserPresetCollection c = get(clazz);
     c.load(this.lx, patternObj);
+  }
+
+  public void merge(JsonObject obj) {
+    JsonArray collectionsArray = obj.getAsJsonArray(KEY_COLLECTIONS);
+    for (JsonElement patternElement : collectionsArray) {
+      JsonObject patternObj = (JsonObject) patternElement;
+      String clazz = patternObj.get(KEY_CLASS).getAsString();
+
+      // Create (OR get existing) collection for a pattern class
+      UserPresetCollection collection = get(clazz);
+
+      if (!collection.getClazz().equals(clazz)) {
+        throw new IllegalArgumentException("don't match: " + clazz);
+      }
+
+      if (obj.has(KEY_PRESETS)) {
+        JsonArray presetsArray = obj.getAsJsonArray(KEY_PRESETS);
+        for (JsonElement presetElement : presetsArray) {
+          JsonObject presetObj = (JsonObject) presetElement;
+          collection.loadPreset(presetObj);
+        }
+      }
+    }
   }
 }
