@@ -1,6 +1,6 @@
 #pragma name "GummyWorms"
-// #iUniform color3 iColorRGB = vec3(0.964, 0.144, 0.519)
-// #iUniform color3 iColor2RGB = vec3(0.226, 0.046, 0.636)
+#iUniform color3 iColorRGB = vec3(0.964, 0.144, 0.519)
+#iUniform color3 iColor2RGB = vec3(0.226, 0.046, 0.636)
 #iUniform float iRotationAngle = 0.0 in {0.0, 6.28}
 #iUniform float iSpeed = 0.5 in {0.25, 3.0}
 #iUniform float iScale = 0.05 in {0.01, 1.0}
@@ -20,6 +20,8 @@ precision mediump float;
 #define TWO_PI 6.28318530718
 #define TAU 6.28318530718
 
+#include <include/colorspace.fs>
+
 #define TEXTURE_SIZE 512.0
 #define CHANNEL_COUNT 16.0
 #define pixPerBin (TEXTURE_SIZE / CHANNEL_COUNT)
@@ -35,7 +37,7 @@ vec3 palette( float t )
     vec3 b = vec3(0.5, 0.5, 0.5);
     vec3 c = vec3(1.0, 1.0, 1.0);
     vec3 d = vec3(0.263, 0.416, 0.557);
-    
+
     return a + b*cos( 6.28318*(c*t*d) );
 }
 
@@ -48,23 +50,23 @@ vec3 mixPalette( vec3 c1, vec3 c2, float t )
 vec3 rgb2hsb( in vec3 c ){
     vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
     vec4 p = mix(vec4(c.bg, K.wz),
-                 vec4(c.gb, K.xy),
-                 step(c.b, c.g));
+    vec4(c.gb, K.xy),
+    step(c.b, c.g));
     vec4 q = mix(vec4(p.xyw, c.r),
-                 vec4(c.r, p.yzx),
-                 step(p.x, c.r));
+    vec4(c.r, p.yzx),
+    step(p.x, c.r));
     float d = q.x - min(q.w, q.y);
     float e = 1.0e-10;
     return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)),
-                d / (q.x + e),
-                q.x);
+    d / (q.x + e),
+    q.x);
 }
 
 vec3 hsb2rgb( in vec3 c ){
     vec3 rgb = clamp(abs(mod(c.x*6.0+vec3(0.0,4.0,2.0),
-                             6.0)-3.0)-1.0,
-                     0.0,
-                     1.0 );
+    6.0)-3.0)-1.0,
+    0.0,
+    1.0 );
     rgb = rgb*rgb*(3.0-2.0*rgb);
     return c.z * mix(vec3(1.0), rgb, c.y);
 }
@@ -120,7 +122,7 @@ void debugRect(in float rect, out vec3 color) {
     }
     if (rect < 2.) {
         color.g += .4*(rect / 2.);
-    } 
+    }
     color.b += 0.3*stroke(rect, 1., 0.01);
     color.g += 0.2*stroke(rect, 2., 0.01);
 }
@@ -146,30 +148,42 @@ vec2 random2( vec2 p ) {
 #define ALPHA 1. / N
 
 vec3 drawSquiggle(
-    in vec2 st,
-    in float rand,
-    in vec2 dims,
-    in vec2 offset,
-    in float max_n,
-    in vec4 wave,
-    in float time
+in vec2 st,
+in float rand,
+in vec2 dims,
+in vec2 offset,
+in float max_n,
+in vec4 wave,
+in float time
 ) {
-    vec3 color = vec3(0.);
-    float radius = 0.1;
+    float radius = 0.01;
     radius = iScale;
+
+    // coil and uncoil spring based on
+    vec2 coil =(1.0 + abs(wave.zw)) / 300.0;
+    coil *= (1.0 +  0.5 * abs(sin(PI * beat)));
+
+    // rotate around cell center at cell-dependent angle
+    // note that cell numbers are symmetrical around zero, so
+    // cells can rotate in both directions
+    st += 0.5;
+    float k = iTime;
+    st = rotate(st, -( (bassLevel * 2.0) * (1.0 + (wave. w * wave.z))) + k);
+    st -= 0.5;
 
     // vec2 x_wave = wave.xy;
     float x_freq = wave.x;
     float x_speed = wave.y;
 
     // vec2 y_wave = wave.zw;
-    float y_freq = wave.z;
-    float y_speed = wave.w;
+    // coil here instead of wave.zw for coil/uncoil effect
+    float y_freq = coil.x;
+    float y_speed = coil.y;
 
     vec2 crop = dims.xy - vec2(.5 * radius);
-    vec3 pal = getPaletteColor(time);
 
-    vec2 step = vec2(0.);  // x and y step size (for next circle)    
+    float brightness = 0.0;
+    vec2 step = vec2(0.);  // x and y step size (for next circle)
     vec2 acc = vec2(0.);   // accumulated offset, relative to (st), incl all past steps
     vec2 dir = vec2(1.);   // direction of the squiggle
 
@@ -190,7 +204,7 @@ vec3 drawSquiggle(
                 dir.y *= -1.;
             }
         }
-         
+
         if (x_freq > 0.) {
             step.x *= sin(x_freq*i + x_speed*iTime);
             step.x *= clamp(i, 0., 10.) * 0.05; // fix the base
@@ -203,15 +217,12 @@ vec3 drawSquiggle(
 
         acc += step;
 
-        float circleSize = radius;
-//         float audioIndex = mod(i / 200. * TEXTURE_SIZE, TEXTURE_SIZE);
-//         float audioWave = (2. * (1.0+texelFetch(iChannel0, ivec2(audioIndex, 1), 0).x)) - 1.;
-//         radius *= audioWave;
-
-        color += fill(sdCircle(st + acc), circleSize) * (N-i) * pal * ALPHA;
+        float circleSize = radius / 2.0;
+        brightness += max(brightness,fill(sdCircle(st + acc), circleSize) * (N-i) * ALPHA);
     }
 
-    return color;
+    vec3 pal = getGradientColor(fract(wave.z / iQuantity));
+    return pal * min(1.0, brightness);
 }
 
 vec3 tiledSquiggles(in vec2 st, float time) {
@@ -235,55 +246,34 @@ vec3 tiledSquiggles(in vec2 st, float time) {
     float freq = .1 + .1 * r;
     float speed = 1.5 + r;
 
-//     float len = N*(0.5 + .5*sin(time + 2.*r));
+    //     float len = N*(0.5 + .5*sin(time + 2.*r));
     // subdivide fft data into bins determined by iQuantity
     float p = floor(0.5*abs(n.x+n.y) / iQuantity);
     float tx = halfBin+pixPerBin * p;
     // get frequency data pixel from texture
+    // bogus simulated per-cell signal here
     float fftBin  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
-    float len = N*fftBin;
-    
+    float len = N* ((fftBin < 0.005) ? 1.0 : fftBin);
+
     vec2 step_size = vec2(
-        0.02 + 0.02 * r,
-        2. / N
+    0.02 + 0.02 * r,
+    2. / N
     );
-    vec4 wave = vec4(freq, speed, 0., 0.);
+
+    vec4 wave = vec4(freq, speed, n.x, n.y);
 
     return drawSquiggle(pt, r+fftBin, bounds, step_size, len, wave, time);
-
-    // // alternate axes
-    // //
-    // vec2 step_size = vec2(
-    //     2. / N,
-    //     0.02 + 0.02 * r
-    // );    
-    // vec4 wave = vec4(0., 0., freq, speed);
-    // drawSquiggle(pt, r, bounds, step_size, len, wave);
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-    vec3 color = vec3(0.);
-    vec2 st = fragCoord.xy/iResolution.xy;
+    vec2 st = -0.5 + fragCoord.xy/iResolution.xy;
     st.x *= iResolution.x/iResolution.y;
-    st = rotate(st, iRotationAngle);
-    st -= vec2(0.5);
-    
     st *= iQuantity;
+    st = rotate(st, iRotationAngle);
 
     float time = iTime;
-//     time *= iSpeed;
-
-//     // (LIGHT) overlapping
-//     color += 1.0 - tiledSquiggles(st, time);
-//     color *= 1.0 - tiledSquiggles(st*(iWow2 + 0.2*sin(time)), time);
-//
-    // (DARK) overlapping
-    color += tiledSquiggles(st, time);
+    vec3 color = tiledSquiggles(st, time);
     color += tiledSquiggles(st*(iWow2 + 0.2*sin(time)), time);
-
-
-
-    // color += tiledSquiggles(st);
 
     fragColor = vec4(color,1.0);
 
