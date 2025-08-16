@@ -20,7 +20,7 @@
 
 #pragma name "TechnoChurch"
 #pragma TEControl.XPOS.Range(0.00,-1.0,1.0)
-#pragma TEControl.YPOS.Range(-0.06,-1.0,1.0)
+#pragma TEControl.YPOS.Range(0.0,-1.0,1.0)
 #pragma TEControl.SPEED.Range(0.3,-4.0,4.0)
 #pragma TEControl.QUANTITY.Range(8.0,1.0,16.0)
 // how much wavy distortion
@@ -28,7 +28,6 @@
 // how much of second color to mix in (this looks baaaad with contrasting palettes)
 #pragma TEControl.WOW2.Range(0.0,0.0,1.0)
 // WowTrigger: initiates relative offset spinning within the layers
-
 #pragma TEControl.LEVELREACTIVITY.Disable
 #pragma TEControl.FREQREACTIVITY.Disable
 
@@ -124,12 +123,12 @@ float noise(vec2 st){
 }
 
 void mainImage(out vec4 fragColor,in vec2 fragCoord){
-    vec2 st=fragCoord.xy/iResolution.xy;
+    vec2 st = -0.5 + fragCoord.xy/iResolution.xy;
     st.x*=iResolution.x/iResolution.y;
 
-    st=st-vec2(.5);
-    st=rotate(st,iRotationAngle)/iScale;
-    st-=iTranslate;
+    if (iWowTrigger) {
+        st = rotate(st, iRotationAngle);
+    }
 
     float pct=0.;
     float pct2=0.;
@@ -147,21 +146,18 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
     noiseDist+=(sin(a*20.)*0.05*iWow1*pow(m,2.));
 
     vec2 st2 = st;
-    float angle = 0.;
-    for(int i=0;i<int(iQuantity);i++){
-        if (iWowTrigger) {
-            angle = 0. + iTime*.2 * (TWO_PI - noise1d(PI, float(i)));
-        }
-        st2 = rotate(st2, angle);
-        // center the drawing space after rotation, but before drawing
-        st2+=.5;
-        if(i%2==0){
-            pct=nest_xcross(pct,st2,xsize,ysize,outer,inner,.5,1.+1.5*float(i),.5, noiseDist);
+    vec2 offset = vec2(0.5, 0.66);
+    for(float i = 0;i < iQuantity ;i++) {
+        // parallax rotation, with each layer going in the opposite direction
+        float sign = (mod(i , 2.0) == 0.0) ? 2.0 : -2.0;
+        st2 = rotate(st2, iRotationAngle * ((iWowTrigger) ? 0.0 :  sign * i / iQuantity));
+        st2 += offset;
+        if(mod(i,2.0) == 0.0 ){
+            pct = nest_xcross(pct,st2,xsize,ysize,outer,inner,.5,1.+1.5*float(i),.5, noiseDist);
         }else{
-            pct2=nest_xcross(pct2,st2,xsize,ysize,outer,inner,.5,1.+1.5*float(i),.5, noiseDist);
+            pct2 = nest_xcross(pct2,st2,xsize,ysize,outer,inner,.5,1.+1.5*float(i),.5, noiseDist);
         }
-        // de-center before next rotation
-        st2-=.5;
+        st2 -= offset;
     }
 
     vec3 color = mix(vec3(0.0),mix(iColorRGB, iColor2RGB, pct2 * iWow2),pct);
