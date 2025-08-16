@@ -1,7 +1,5 @@
 package titanicsend.preset;
 
-import static titanicsend.preset.UserPresetCollection.KEY_CLASS;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -110,17 +108,11 @@ public class UserPresetLibrary implements LXSerializable {
     TE.log("Loading user presets: %s", file.getPath());
     try (FileReader fr = new FileReader(file)) {
       JsonObject obj = new Gson().fromJson(fr, JsonObject.class);
-      //      if (removeExisting) {
-      //        TE.log("LOAD/REPLACE user presets from file: %s", file.getPath());
-      //        removeAll();
-      //        load(this.lx, obj);
-      //      } else {
-      //        TE.log("MERGE user presets from file: %s", file.getPath());
-      //        merge(obj);
-      //      }
+      // For "Load", clear the patterns first
       if (removeExisting) {
         removeAll();
       }
+      // For both "Merge" and "Load", add all presets from file to collections
       load(this.lx, obj);
       this.file = file;
     } catch (FileNotFoundException ex) {
@@ -143,12 +135,12 @@ public class UserPresetLibrary implements LXSerializable {
     JsonArray collectionsArray = obj.getAsJsonArray(KEY_COLLECTIONS);
     for (JsonElement patternElement : collectionsArray) {
       JsonObject patternObj = (JsonObject) patternElement;
-      loadCollection(patternObj, -1);
+      loadCollection(patternObj);
     }
   }
 
-  private void loadCollection(JsonObject patternObj, int index) {
-    String clazz = patternObj.get(KEY_CLASS).getAsString();
+  private void loadCollection(JsonObject patternObj) {
+    String clazz = patternObj.get(UserPresetCollection.KEY_CLASS).getAsString();
     // Find existing or create new
     // Existing are referenced by UI elements so we won't throw them away and recreate them.
     UserPresetCollection c = get(clazz);

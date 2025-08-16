@@ -186,7 +186,7 @@ public class UserPresetCollection implements LXSerializable {
   private boolean inLoad = false;
 
   public static final String KEY_CLASS = "clazz";
-  public static final String KEY_PRESETS = "presets";
+  private static final String KEY_PRESETS = "presets";
 
   @Override
   public void save(LX lx, JsonObject obj) {
