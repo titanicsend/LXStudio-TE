@@ -32,10 +32,13 @@ import titanicsend.util.TE;
  *
  * <p>Octave shifts are invisible to the DAW (unless there's a sysex we could grab). Be careful to
  * keep the octaves centered.
+ *
+ * <p>[SYSEX DOCS](https://gist.github.com/Janiczek/04a87c2534b9d1435a1d8159c742d260)
  */
 @LXMidiSurface.Name("Arturia MiniLab3 Effects")
 @LXMidiSurface.DeviceName("Minilab3 MIDI")
-public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidirectional {
+public class EffectsMiniLab3 extends LXMidiSurface
+    implements LXMidiSurface.Bidirectional, GlobalEffectManager.Listener {
 
   // MIDI Channels
 
@@ -168,25 +171,21 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
 
   public static final byte SYSEX_COMMAND_SET_COLOR = 0x16;
 
-  private enum EffectState {
-    DISABLED,
-    ENABLED,
-    EMPTY,
-    ;
-  }
-
-  EffectState[] states;
-
   private GlobalEffectManager effectManager;
   private ObservableList.Listener<GlobalEffect<? extends LXEffect>> effectListener;
   private boolean isRegistered = false;
   private boolean shiftOn = false;
 
+  private boolean isBankA = false;
+  private boolean isDAW = false;
+
   public EffectsMiniLab3(LX lx, LXMidiInput input, LXMidiOutput output) {
     super(lx, input, output);
   }
 
+  // ------------------------------------------------------------------------------------
   // Connection
+  // ------------------------------------------------------------------------------------
 
   @Override
   protected void onEnable(boolean on) {
@@ -217,59 +216,186 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     this.isRegistered = true;
     this.effectManager = null;
     this.effectListener = null;
-    this.effectManager = GlobalEffectManager.get();
+    this.effectManager = GlobalEffectManager.get(this.lx);
 
-    List<GlobalEffect<? extends LXEffect>> slots = this.effectManager.slots;
-    GlobalEffect<? extends LXEffect> curr;
-    states = new EffectState[this.effectManager.slots.size()];
-    for (int i = 0; i < states.length; i++) {
-      curr = slots.get(i);
-      if (curr == null || curr.effect == null) {
-        states[i] = EffectState.DISABLED;
-      } else {
-        states[i] = curr.getEnabledParameter().isOn() ? EffectState.ENABLED : EffectState.DISABLED;
-      }
-    }
+    List<GlobalEffect<? extends LXEffect>> slots = effectManager.slots;
 
+    // Subscribe to state updates on enabled param for registered effects.
+    this.effectManager.addListener(this);
+    // Subscribe to effects getting registered/unregistered.
     this.effectListener =
+        // TODO(look): think through whether these listeners need to do anything beyond
+        //             calling updatePadLEDs().
         new ObservableList.Listener<>() {
           @Override
           public void itemAdded(GlobalEffect<? extends LXEffect> item) {
-            int slotIndex = effectManager.slots.indexOf(item);
-            states[slotIndex] = EffectState.DISABLED;
-            TE.log("Effect Slot added [" + slotIndex + "]: " + item);
-            updatePadLEDs();
+            if (slots != null) {
+              int slotIndex = slots.indexOf(item);
+              TE.log("Effect Slot added [" + slotIndex + "]: " + item);
+              updatePadLEDs();
+            }
           }
 
           @Override
           public void itemRemoved(GlobalEffect<? extends LXEffect> item) {
-            int slotIndex = effectManager.slots.indexOf(item);
-            states[slotIndex] = EffectState.EMPTY;
-            TE.log("Effect Slot removed [" + slotIndex + "]: " + item);
-            updatePadLEDs();
+            if (slots != null) {
+              int slotIndex = slots.indexOf(item);
+              TE.log("Effect Slot removed [" + slotIndex + "]: " + item);
+              updatePadLEDs();
+            }
           }
         };
-    this.effectManager.slots.addListener(this.effectListener);
+    effectManager.slots.addListener(this.effectListener);
   }
 
   private void unregister() {
     this.isRegistered = false;
+    effectManager.removeListener(this);
     effectManager.slots.removeListener(effectListener);
     clearPadLEDs();
   }
 
+  /**
+   * Update LED colors when any individual effect's ENABLED/DISABLED state changes.
+   *
+   * @param slotIndex
+   */
+  @Override
+  public void globalEffectStateUpdated(int slotIndex) {
+    verbose("Global Effect state updated [" + slotIndex + "]");
+    updatePadLEDs();
+  }
+
+  // ------------------------------------------------------------------------------------
   // Receiving MIDI Messages
+  // ------------------------------------------------------------------------------------
+
+  // User switched to Arturia Mode: F0 00 20 6B 7F 42 02 00 40 62 01 F7
+  // User switched to DAW Mode:     F0 00 20 6B 7F 42 02 00 40 62 02 F7
+  // User switched to Bank A:       F0 00 20 6B 7F 42 02 00 40 63 00 F7
+  // User switched to Bank B:       F0 00 20 6B 7F 42 02 00 40 63 01 F7
+
+  private static final byte SYSEX_RECEIVED_TYPE_MODE = 0x62;
+  private static final byte SYSEX_RECEIVED_TYPE_BANK = 0x63;
+  private static final byte[] SYSEX_RECEIVED_TYPES =
+      new byte[] {SYSEX_RECEIVED_TYPE_MODE, SYSEX_RECEIVED_TYPE_BANK};
+
+  private static final byte SYSEX_RECEIVED_MODE_ARTURIA = 0x01;
+  private static final byte SYSEX_RECEIVED_MODE_DAW = 0x02;
+  private static final byte[] SYSEX_RECEIVED_MODES =
+      new byte[] {SYSEX_RECEIVED_MODE_ARTURIA, SYSEX_RECEIVED_MODE_DAW};
+
+  private static final byte SYSEX_RECEIVED_BANK_A = 0x00;
+  private static final byte SYSEX_RECEIVED_BANK_B = 0x01;
+  private static final byte[] SYSEX_RECEIVED_BANKS =
+      new byte[] {SYSEX_RECEIVED_BANK_A, SYSEX_RECEIVED_BANK_B};
 
   @Override
   public void sysexReceived(LXSysexMessage sysex) {
     verbose("Minilab3 Sysex: " + sysex);
 
-    // User switched to Arturia Mode: F0 00 20 6B 7F 42 02 00 40 62 01 F7
-    // User switched to DAW Mode:     F0 00 20 6B 7F 42 02 00 40 62 02 F7
-    // User switched to Bank A:       F0 00 20 6B 7F 42 02 00 40 63 00 F7
-    // User switched to Bank B:       F0 00 20 6B 7F 42 02 00 40 63 01 F7
+    byte[] msg = sysex.getMessage();
+    verbose("msg length: " + msg.length);
 
-    // TODO: send to modeReceived(bool) or bankReceived(bool)
+    // -1: mode byte not seen
+    // 0:  is's a Mode update
+    // 1:  it's a Bank update
+    int type = -1;
+
+    // -1: not seen
+    // 0:  Arturia (if isMode), Bank A (not isMode)
+    // 1:  DAW (if isMode),     Bank B (not isMode)
+    int option = -1;
+
+    for (int i = 0; i < msg.length; i++) {
+      byte b = msg[i];
+      verbose(String.format("msg[%02d]: %02X", i, b));
+
+      switch (i) {
+        case 0:
+          expectByte(i, (byte) 0xF0, b);
+          continue;
+        case 1:
+          expectByte(i, (byte) 0x00, b);
+          continue;
+        case 2:
+          expectByte(i, (byte) 0x20, b);
+          continue;
+        case 3:
+          expectByte(i, (byte) 0x6B, b);
+          continue;
+        case 4:
+          expectByte(i, (byte) 0x7F, b);
+          continue;
+        case 5:
+          expectByte(i, (byte) 0x42, b);
+          continue;
+        case 6:
+          expectByte(i, (byte) 0x02, b);
+          continue;
+        case 7:
+          expectByte(i, (byte) 0x00, b);
+          continue;
+        case 8:
+          expectByte(i, (byte) 0x40, b);
+          continue;
+        case 9:
+          type = expectOneOf(i, SYSEX_RECEIVED_TYPES, b);
+          continue;
+        case 10:
+          if (type == 0) {
+            try {
+              option = expectOneOf(i, SYSEX_RECEIVED_MODES, b);
+            } catch (IllegalArgumentException e) {
+              verbose(
+                  "Additional mode (besides default Arturia and DAW) configured in Arturia MCC app: "
+                      + b);
+            }
+
+          } else if (type == 1) {
+            option = expectOneOf(i, SYSEX_RECEIVED_BANKS, b);
+          } else {
+            throw new IllegalArgumentException(String.format("Invalid SYSEX_RECEIVED_TYPE" + type));
+          }
+          continue;
+        case 11:
+          expectByte(i, (byte) 0xF7, b);
+          continue;
+        default:
+          throw new IllegalArgumentException(String.format("Invalid SYSEX_RECEIVED_TYPE" + type));
+      }
+    }
+
+    if (type == 0) {
+      if (option > 0) {
+        modeReceived(option == 0 ? true : false);
+      } else {
+        verbose("Non-standard mode received; ignoring");
+      }
+    } else if (type == 1) {
+      bankReceived(option == 0 ? true : false);
+    } else {
+      throw new IllegalArgumentException(String.format("Invalid SYSEX_RECEIVED_TYPE" + type));
+    }
+  }
+
+  private static void expectByte(int index, byte expected, byte actual) {
+    if (actual != expected) {
+      throw new AssertionError(
+          String.format(
+              "Sysex message index %02d expected [%02X] but found [%02X]",
+              index, expected, actual));
+    }
+  }
+
+  private static int expectOneOf(int index, byte[] options, byte actual) {
+    for (int i = 0; i < options.length; i++) {
+      if (options[i] == actual) {
+        return i;
+      }
+    }
+    throw new AssertionError(
+        String.format("Sysex message index %02d invalid: found [%02X]", index, actual));
   }
 
   @Override
@@ -395,7 +521,9 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     LXMidiEngine.error("Minilab3 unmapped control change: " + cc);
   }
 
+  // ------------------------------------------------------------------------------------
   // Receive Physical Inputs (allows remap to logical)
+  // ------------------------------------------------------------------------------------
 
   private void shiftReceived(boolean on) {
     this.shiftOn = on;
@@ -420,7 +548,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     // Here we could alter behavior for different modes we are trialing
 
     if (on) {
-      toggleEdit(padIndex);
+      toggleEffect(padIndex);
       // press(padIndex);
     }
   }
@@ -469,14 +597,21 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   private void modeReceived(boolean isDAW) {
     // To determine: This will be received if user changes it.  Does it also get received as an
     // echo if we set it with a sysex?
+    verbose("Mode: DAW = " + isDAW);
+    this.isDAW = isDAW;
   }
 
   private void bankReceived(boolean isBankA) {
     // To determine: This will be received if user changes it.  Does it also get received as an
     // echo if we set it with a sysex?
+    verbose("Bank: " + (isBankA ? "A" : "B"));
+    this.isBankA = isBankA;
+    sendBank(this.isBankA);
   }
 
+  // ------------------------------------------------------------------------------------
   // Receive Logical Inputs (mapped from physical)
+  // ------------------------------------------------------------------------------------
 
   /** Launch, aka run, an effect or variation. */
   private void launch(int index) {
@@ -484,11 +619,12 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   }
 
   /** Toggle whether an effect is being edited */
-  private void toggleEdit(int index) {
+  private void toggleEffect(int index) {
     // If we are not yet editing this pad, start editing it. (Stop editing other ones first.)
     // If we ARE editing this pad, stop editing it. (AKA toggle off)
 
     verbose("Toggle Edit Effect #: " + index);
+    press(index);
   }
 
   /** Set the value of an effect parameter at a given index */
@@ -501,7 +637,9 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     verbose("Global Parameter " + globalParamIndex + ": set to " + value);
   }
 
+  // ------------------------------------------------------------------------------------
   // Send Sysex
+  // ------------------------------------------------------------------------------------
 
   private void sendModeDAW() {
     sendMode(SYSEX_MODE_DAW);
@@ -530,53 +668,115 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     sendBank(bankA ? SYSEX_BANK_A : SYSEX_BANK_B);
   }
 
-  private void sendBank(byte bank) {}
-
-  // Send Pad Colors
-
-  private void press(int padIndex) {
-    TE.log("PRESS: " + padIndex);
-    //    setPadLEDColor(padIndex, 127, 127, 127);
-    if (padIndex >= effectManager.slots.size()) {
-      return;
-    }
-    EffectState currState = this.states[padIndex];
-    GlobalEffect<? extends LXEffect> globalEffect = effectManager.slots.get(padIndex);
-    if (currState != null && globalEffect.effect != null) {
-      globalEffect.getEnabledParameter().toggle();
-      switch (currState) {
-        case DISABLED -> this.states[padIndex] = EffectState.ENABLED;
-        case ENABLED -> this.states[padIndex] = EffectState.DISABLED;
-        default -> TE.warning("unexpected pad press for empty slot " + padIndex);
-      }
-      TE.log("PRESS: " + padIndex + " " + currState.name() + " -> " + this.states[padIndex].name());
-      updatePadLEDs();
+  private void sendBank(byte bank) {
+    if (bank == SYSEX_BANK_A) {
+      verbose("Send Bank A");
+    } else if (bank == SYSEX_BANK_B) {
+      verbose("Send Bank B");
+    } else {
+      throw new IllegalArgumentException("Unknown bank: " + bank);
     }
   }
 
+  // ------------------------------------------------------------------------------------
+  // Send Pad Colors
+  // ------------------------------------------------------------------------------------
+
+  private void press(int padIndex) {
+    verbose("PRESS: " + padIndex);
+    //    setPadLEDColor(padIndex, 127, 127, 127);
+    if (padIndex >= effectManager.slots.size()) {
+      verbose("Out of range: " + padIndex);
+      return;
+    }
+    GlobalEffect<? extends LXEffect> globalEffect = effectManager.slots.get(padIndex);
+    GlobalEffect.State currState = globalEffect.getState();
+    if (currState == null) {
+      verbose("Current state is null: " + globalEffect);
+      return;
+    } else if (currState == GlobalEffect.State.EMPTY) {
+      verbose("Current state is empty: " + globalEffect);
+      return;
+    } else if (globalEffect.effect == null) {
+      throw new IllegalStateException("LXEffect is null, but state is neither EMPTY nor null");
+    }
+
+    verbose("Current state: " + currState + " for effect: " + globalEffect.effect.getLabel());
+
+    globalEffect.getEnabledParameter().toggle();
+    TE.log(
+        "PRESS: "
+            + padIndex
+            + " "
+            + currState.name()
+            + " -> "
+            + globalEffect.getState().toString());
+  }
+
   private void updatePadLEDs() {
+    padVerbose("<<<<<<<<< Updating Pad LEDs >>>>>>>>>>");
+    // TEMP: just to keep an eye on the effect states while developing
+    this.effectManager.debugStates();
+
+    List<GlobalEffect<? extends LXEffect>> slots = effectManager.slots;
+    if (slots == null) {
+      padVerbose("Slots is null, exit");
+    }
     // Send individual SysEx message for each pad
     for (int i = 0; i < NUM_PADS; i++) {
-      if (this.states != null && i < this.states.length) {
-        switch (this.states[i]) {
-          case EMPTY -> {
-            setPadA(i, 0x19, 0x19, 0x19);
-            setPadB(i, 0x19, 0x19, 0x19);
+      padVerbose("Pad " + i);
+      if (i < slots.size()) {
+        padVerbose("\tPad " + i + ": " + slots.get(i).getName());
+        GlobalEffect<? extends LXEffect> globalEffect = getSlot(i);
+        if (globalEffect != null) {
+          padVerbose("\t\tSlot " + i + " is " + globalEffect.getName());
+          GlobalEffect.State state = globalEffect.getState();
+          if (state != null) {
+            padVerbose("\t\t\t state is " + state);
+            switch (state) {
+              case EMPTY -> {
+                setPadA(i, 0x00, 0x00, 0xFF);
+                //                setPadB(i, 0x00, 0x00, 0xFF);
+              }
+              case DISABLED -> {
+                setPadA(i, 0x00, 0xFF, 0x00);
+                //                setPadB(i, 0x00, 0xFF, 0x00);
+              }
+              case ENABLED -> {
+                setPadA(i, 0xFF, 0x00, 0x00);
+                //                setPadB(i, 0xFF, 0x00, 0x00);
+              }
+            }
+          } else {
+            padVerbose("\t\t\t state is null");
+            // State is null
+            setPadA(i, 0x00, 0x00, 0x00);
+            //            setPadB(i, 0x00, 0x00, 0x00);
           }
-          case DISABLED -> {
-            setPadA(i, 0x19, 0x19, 0xFF);
-            setPadB(i, 0x19, 0x19, 0xFF);
-          }
-          case ENABLED -> {
-            setPadA(i, 0xFF, 0x19, 0x19);
-            setPadB(i, 0xFF, 0x19, 0x19);
-          }
+        } else {
+          padVerbose("\t\tSlot " + i + " is null");
+          // GlobalEffect is null
+          setPadA(i, 0x10, 0x00, 0x00);
+          //          setPadB(i, 0x10, 0x00, 0x00);
         }
       } else {
-        setPadA(i, 0x10, 0x10, 0x10);
-        setPadB(i, 0x10, 0x10, 0x10);
+        padVerbose("\t\tSlot " + i + " is out of range for " + slots.size());
+        //        // Slots is null
+        //        setPadA(i, 0x00, 0x10, 0x00);
+        //        //        setPadB(i, 0x00, 0x10, 0x00);
       }
     }
+  }
+
+  private List<GlobalEffect<? extends LXEffect>> allSlots() {
+    return effectManager.slots;
+  }
+
+  private GlobalEffect<? extends LXEffect> getSlot(int index) {
+    if (allSlots() == null || index < 0 || index >= allSlots().size()) {
+      return null;
+    }
+    return allSlots().get(index);
   }
 
   private void clearPadLEDs() {
@@ -606,21 +806,22 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     // Can it be done with a simple NoteOn?  Or do we have to use sysex to get full RGB?
     // sendNoteOn(MIDI_CHANNEL_PADS, (byte) PAD_NOTES[padIndex], LXColor.rgb(red, green, blue));
 
-    // SysEx format: F0 00 20 6B 7F 42 02 02 16 ID RR GG BB F7
+    /*
+    SysEx format:
+      F0                     # sysex header
+      00 20 6B 7F 42         # Arturia header
+      02 02 16 ID RR GG BB   # set color of button ID to 0xRRGGBB
+      F7                     # sysex footer
+    */
     // ID for pads 1-8 in DAW mode: 0x04 to 0x0B
     byte[] sysex = new byte[14];
-
-    // TODO: JKB to Look: I might have broken this command when bringing in the constants
-    // Check for issues in int->byte conversions
-
     sysex[0] = START_SYSEX; // SysEx start
     sysex[1] = MIDI_MFR_ID_0; // Arturia manufacturer ID
     sysex[2] = MIDI_MFR_ID_1;
     sysex[3] = MIDI_MFR_ID_2;
     sysex[4] = (byte) 0x7F;
     sysex[5] = (byte) 0x42;
-    sysex[6] = (byte) 0x02; // Mode command
-    // sysex[7] = (byte) 0x02; // DAW mode
+    sysex[6] = (byte) 0x02; // Mode command: set button color
     sysex[7] = SYSEX_MODE_DAW;
     sysex[8] = SYSEX_COMMAND_SET_COLOR; // Set color command
     sysex[9] = (byte) (0x04 + (bankIndex * 0x08) + padIndex); // Pad ID (0x04-0x0B for pads 1-8)
@@ -632,11 +833,20 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     sendSysex(sysex);
   }
 
+  // ------------------------------------------------------------------------------------
   // Shutdown
+  // ------------------------------------------------------------------------------------
 
   /** Temporary for dev */
   private void verbose(String message) {
     LXMidiEngine.error(message);
+  }
+
+  private void padVerbose(String message) {
+    boolean debugPads = false;
+    if (debugPads) {
+      LXMidiEngine.error(message);
+    }
   }
 
   @Override
@@ -659,66 +869,3 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     return (val >= min) && (val <= max);
   }
 }
-/*
-UPDATE: BETTER SYSEX DOCS: https://gist.github.com/Janiczek/04a87c2534b9d1435a1d8159c742d260
-
-
-F0                     # sysex header
-00 20 6B 7F 42         # Arturia header
-02 02 16 ID RR GG BB   # set color of button ID to 0xRRGGBB
-F7                     # sysex footer
-
-
- */
-
-/*
-
-Notes on SysEx protocol: https://forum.arturia.com/t/sysex-protocol-documentation/5746
-
-General SYSEX: [0xF0, 0x00, 0x20, 0x6B, 0x7F, 0x42, ...<data>, 0xF7]
-<data> for:
-Memory Request: [0x01, 0x00, 0x40, 0x01] // returns <data>:
-
-Arturia Test(?): [0x04, 0x01, 0x60, 0x01, 0x31, 0x32, 0x33, 0x00]
-Arturia Connect: [0x04, 0x01, 0x60, 0x01, 0x00, 0x02, 0x00]
-Arturia Disconnect: [0x04, 0x01, 0x60, 0x0A, 0x0A, 0x5F, 0x51, 0x00] followed by [0x02, 0x02, 0x40, 0x6A, 0x10]
-
-DAW Connect: [0x02, 0x02, 0x40, 0x6A, 0x21]
-DAW Disconnect: [0x02, 0x02, 0x40, 0x6A, 0x20]
-
-// r g b = 0-127
-Set Shift-LED: [0x02, 0x02, 0x16, <id>, <r>, <g>, <b>] // persistent: 0x57 Loop, 0x58 Stop, 0x59 Play, 0x5A Record, 0x5B Tap
-Set PAD LEDs: [0x04, 0x02, 0x16, 0x00] followed by 8x [<r>, <g>, <b>] for each pad // impermanent, mode or bank switch resets to white
-
-Set Display+Text: [0x04, 0x02, 0x60, ...<mode>, ...<line1>, ...<line2>] where
-<mode>:
-  default: [],
-  two lines: [0x1F, 0x02, 0x01, 0x00] // seems identical to default?
-  encoder: [0x1F, 0x03, 0x01, <value>, 0x00, 0x00] (value 0-127)
-  fader: [0x1F, 0x04, 0x01, <value>, 0x00, 0x00] (value 0-127)
-  pressure: [0x1F, 0x05, 0x01, <value>, 0x00, 0x00] (value 0-127)
-  leftright: [0x1F, 0x06, 0x01, <???>, <option>, 0x00] // Shows line 2, but not Line1. option 0x00 bottom bar, 0x01 no bar
-  icons: [0x1F, 0x07, 0x01, <top_icon>, <bottom_icon>, 0x01, 0x00] // icons are 0: Empty, 1 Heart, 2 Play, 3 Record, 4 Note, 5 Checkmark
-<line1>: [0x01, ...<up to 30 chars as bytes>, 0x00] // Zero terminated string? Display seems to show about 19 characters
-<line2>: [0x02, ...<up to 30 chars as bytes>, 0x00] // Zero terminated string? Larger font so only 15 characters displayed
-
-// note this is missing the pitchbend/modwheel display modes. DAW mode also has these hardwired to be active on inputs.
-
-enum DAW_CC : byte // all on channel 0x00 (aka 1) besides the modwheel
-{
-    MODWHEEL = 1, // on keyboard channel
-    SHIFT = 27,
-    ENC_TURN = 28, ENC_SHIFT_TURN = 29, // always relative around 64+-3
-    ENC_CLICK = 118, ENC_SHIFT_CLICK = 119,
-    FADER1 = 0x0E, FADER2 = 0x0F, FADER3 = 0x1E, FADER4 = 0x1F,
-    ENC1 = 86, ENC2 = 87, ENC3 = 89, ENC4 = 90, // forced absolute mode with device accel
-    ENC5 = 110, ENC6 = 111, ENC7 = 116, ENC8 = 117, // forced absolute mode with device accel
-    PAD_SHIFTLOOP = 105, PAD_SHIFTSTOP = 106, PAD_SHIFTPLAY = 107, PAD_SHIFTREC = 108, PAD_SHIFTTAP = 109,
-}
-enum DAW_NOTE : byte // Always on Channel 0x09 (aka 10 percussion)
-{
-    PADA1 = 36, PADA2 = 37, PADA3 = 38, PADA4 = 39, PADA5 = 40, PADA6 = 41, PADA7 = 42, PADA8 = 43,
-    PADB1 = 44, PADB2 = 45, PADB3 = 46, PADB4 = 47, PADB5 = 48, PADB6 = 49, PADB7 = 50, PADB8 = 51,
-}
-
-*/
