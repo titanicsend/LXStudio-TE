@@ -17,6 +17,7 @@ import titanicsend.effect.ExplodeEffect;
 import titanicsend.effect.RandomStrobeEffect;
 import titanicsend.effect.SimplifyEffect;
 import titanicsend.effect.SustainEffect;
+import titanicsend.util.TE;
 
 @LXCategory(LXCategory.OTHER)
 @LXComponentName("Effect Manager")
@@ -24,13 +25,13 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
 
   private static GlobalEffectManager instance;
 
-  private static final ObservableList<GlobalEffect<? extends LXEffect>> mutableSlots =
+  private final ObservableList<GlobalEffect<? extends LXEffect>> mutableSlots =
       new ObservableList<>();
-  public static final ObservableList<GlobalEffect<? extends LXEffect>> slots =
+  public final ObservableList<GlobalEffect<? extends LXEffect>> slots =
       mutableSlots.asUnmodifiableList();
 
   public interface Listener {
-    void stateUpdated(int slotIndex);
+    void globalEffectStateUpdated(int slotIndex);
   }
 
   private final List<Listener> listeners = new ArrayList<>();
@@ -46,7 +47,12 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     refresh();
   }
 
-  public static GlobalEffectManager get() {
+  public static GlobalEffectManager get(LX lx) {
+    if (instance == null) {
+      // NOTE: making this function require LX so I can make the singleton never return null...
+      // maybe there's a better way to accomplish that?
+      instance = new GlobalEffectManager(lx);
+    }
     return instance;
   }
 
@@ -158,20 +164,6 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     refresh();
   }
 
-  public void effectStateUpdated(int slotIndex) {
-    for (Listener listener : listeners) {
-      listener.stateUpdated(slotIndex);
-    }
-  }
-
-  public void effectStateUpdated(GlobalEffect<? extends LXEffect> globalEffect) {
-    int slotIndex = slots.indexOf(globalEffect);
-    if (slotIndex < 0) {
-      throw new IllegalArgumentException("Slot not found for " + globalEffect.getName());
-    }
-    effectStateUpdated(slotIndex);
-  }
-
   @Override
   public void effectMoved(LXBus channel, LXEffect effect) {
     refresh();
@@ -198,12 +190,43 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     }
   }
 
+  public void effectStateUpdated(GlobalEffect<? extends LXEffect> globalEffect) {
+    int slotIndex = slots.indexOf(globalEffect);
+    if (slotIndex < 0) {
+      throw new IllegalArgumentException("Slot not found for " + globalEffect.getName());
+    }
+    effectStateUpdated(slotIndex);
+  }
+
+  public void effectStateUpdated(int slotIndex) {
+    debugStates(); // TEMP: just to keep an eye on the effect states while developing
+    for (Listener listener : listeners) {
+      listener.globalEffectStateUpdated(slotIndex);
+    }
+  }
+
   public void addListener(Listener listener) {
     listeners.add(listener);
   }
 
   public void removeListener(Listener listener) {
     listeners.remove(listener);
+  }
+
+  public void debugStates() {
+    for (int i = 0; i < slots.size(); i++) {
+      TE.log("-------------------------------");
+      GlobalEffect<? extends LXEffect> globalEffect = slots.get(i);
+      if (globalEffect == null) {
+        TE.log(String.format("\t[Slot %02d] - null", i));
+      } else {
+        TE.log(
+            String.format(
+                "\t[Slot %02d] '%s' - state %s",
+                i, globalEffect.getName(), globalEffect.getState()));
+      }
+    }
+    TE.log("-------------------------------");
   }
 
   @Override

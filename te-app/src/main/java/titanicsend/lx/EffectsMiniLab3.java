@@ -35,7 +35,8 @@ import titanicsend.util.TE;
  */
 @LXMidiSurface.Name("Arturia MiniLab3 Effects")
 @LXMidiSurface.DeviceName("Minilab3 MIDI")
-public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidirectional {
+public class EffectsMiniLab3 extends LXMidiSurface
+    implements LXMidiSurface.Bidirectional, GlobalEffectManager.Listener {
 
   // MIDI Channels
 
@@ -208,18 +209,18 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     this.isRegistered = true;
     this.effectManager = null;
     this.effectListener = null;
-    this.effectManager = GlobalEffectManager.get();
+    this.effectManager = GlobalEffectManager.get(this.lx);
 
-    List<GlobalEffect<? extends LXEffect>> slots = GlobalEffectManager.slots;
+    List<GlobalEffect<? extends LXEffect>> slots = effectManager.slots;
     GlobalEffect<? extends LXEffect> curr;
 
+    this.effectManager.addListener(this);
     this.effectListener =
         new ObservableList.Listener<>() {
           @Override
           public void itemAdded(GlobalEffect<? extends LXEffect> item) {
             if (slots != null) {
               int slotIndex = slots.indexOf(item);
-              //            states[slotIndex] = EffectState.DISABLED;
               TE.log("Effect Slot added [" + slotIndex + "]: " + item);
               updatePadLEDs();
             }
@@ -229,22 +230,29 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
           public void itemRemoved(GlobalEffect<? extends LXEffect> item) {
             if (slots != null) {
               int slotIndex = slots.indexOf(item);
-              //            states[slotIndex] = EffectState.EMPTY;
               TE.log("Effect Slot removed [" + slotIndex + "]: " + item);
               updatePadLEDs();
             }
           }
-
-          // TODO: "updated" listener, so internal "enabled" state listener can
-          //       update controller state?
         };
-    GlobalEffectManager.slots.addListener(this.effectListener);
+    effectManager.slots.addListener(this.effectListener);
   }
 
   private void unregister() {
     this.isRegistered = false;
-    GlobalEffectManager.slots.removeListener(effectListener);
+    effectManager.removeListener(this);
+    effectManager.slots.removeListener(effectListener);
     clearPadLEDs();
+  }
+
+  /**
+   * Update LED colors when any individual effect's ENABLED/DISABLED state changes.
+   *
+   * @param slotIndex
+   */
+  @Override
+  public void globalEffectStateUpdated(int slotIndex) {
+    updatePadLEDs();
   }
 
   // Receiving MIDI Messages
@@ -560,7 +568,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   }
 
   private void updatePadLEDs() {
-    List<GlobalEffect<? extends LXEffect>> slots = GlobalEffectManager.slots;
+    List<GlobalEffect<? extends LXEffect>> slots = effectManager.slots;
     // Send individual SysEx message for each pad
     for (int i = 0; i < NUM_PADS; i++) {
       if (slots != null && i < slots.size()) {
@@ -592,7 +600,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   }
 
   private List<GlobalEffect<? extends LXEffect>> allSlots() {
-    return GlobalEffectManager.slots;
+    return effectManager.slots;
   }
 
   private GlobalEffect<? extends LXEffect> getSlot(int index) {
