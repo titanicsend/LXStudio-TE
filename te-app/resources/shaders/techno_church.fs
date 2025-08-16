@@ -165,11 +165,6 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
         st2-=.5;
     }
 
-    // apply 1st color
-    color+=pct*iColorRGB;
-
-    // apply 2nd color
-    color+=pct2*mix(iColorRGB, iColor2RGB, iWow2);
-
+    vec3 color = mix(vec3(0.0),mix(iColorRGB, iColor2RGB, pct2 * iWow2),pct);
     fragColor=vec4(color,1.);
 }

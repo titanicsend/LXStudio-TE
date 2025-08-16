@@ -120,7 +120,6 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
   st=rotate(st,iRotationAngle)/iScale;
   st-=iTranslate;
 
-  vec3 color=vec3(0.);
   float pct=0.;
   float pct2=0.;
 
@@ -200,15 +199,12 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
   // mask out 1st color
   pct*=1.-inner_mask;
   pct+=step(tri_inner_start,triangle_dist)-step(tri_inner_start+tri_inner_thickness,triangle_dist);
-  // apply 1st color
-  color+=pct*iColorRGB;
 
   // mask out the second color
   pct2*=1.-inner_mask;
   pct2+=.4*step(tri_outer_start,triangle_dist)-step(tri_outer_start+tri_outer_thickness,triangle_dist);
   pct2+=step(tri_outer_start+2.*tri_outer_thickness,triangle_dist)-step(tri_outer_start+3.*tri_outer_thickness,triangle_dist);
-  // apply 2nd color
-  color+=pct2*mix(iColorRGB, iColor2RGB, iWow2);
 
+  vec3 color = mix(vec3(0.0),mix(iColorRGB, iColor2RGB, pct2 * iWow2),pct);
   fragColor=vec4(color,1.);
 }
