@@ -9926,18 +9926,6 @@
       "presets": []
     },
     {
-      "clazz": "titanicsend.pattern.look.TriangleCrossAudioLevels",
-      "presets": []
-    },
-    {
-      "clazz": "titanicsend.pattern.look.TriangleInfinityLevels",
-      "presets": []
-    },
-    {
-      "clazz": "titanicsend.pattern.look.TriangleInfinityWaveform",
-      "presets": []
-    },
-    {
       "clazz": "titanicsend.pattern.yoffa.config.ShaderPanelsPatternConfig.DarkRadiance",
       "presets": []
     },

@@ -19,15 +19,18 @@
 */
 
 #pragma name "TechnoChurch"
-#pragma TEControl.XPOS.Range(0.07,-1.0,1.0)
-#pragma TEControl.YPOS.Range(-0.03,-1.0,1.0)
-#pragma TEControl.SPEED.Range(1.0,1.0,10.0)
+#pragma TEControl.XPOS.Range(0.00,-1.0,1.0)
+#pragma TEControl.YPOS.Range(-0.06,-1.0,1.0)
+#pragma TEControl.SPEED.Range(0.3,-4.0,4.0)
 #pragma TEControl.QUANTITY.Range(8.0,1.0,16.0)
-#pragma TEControl.LEVELREACTIVITY.Range(0.0,0.0,1.0)
-#pragma TEControl.FREQREACTIVITY.Range(0.0,0.0,1.0)
+// how much wavy distortion
 #pragma TEControl.WOW1.Range(0.0,0.0,1.0)
+// how much of second color to mix in (this looks baaaad with contrasting palettes)
 #pragma TEControl.WOW2.Range(0.0,0.0,1.0)
-#pragma TEControl.WOWTRIGGER.Disable
+// WowTrigger: initiates relative offset spinning within the layers
+
+#pragma TEControl.LEVELREACTIVITY.Disable
+#pragma TEControl.FREQREACTIVITY.Disable
 
 const float PI=3.14159265359;
 const float TWO_PI=6.28318530718;
@@ -128,17 +131,9 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
     st=rotate(st,iRotationAngle)/iScale;
     st-=iTranslate;
 
-    vec3 color=vec3(0.);
     float pct=0.;
     float pct2=0.;
 
-    /*
-    float xsize=.1+levelReact*.5*trebleLevel;
-    float ysize=.25-levelReact*.2*trebleLevel;
-    float outer=1.2 + (.2 * sin(iTime))+levelReact*1.5*bassLevel;
-    float inner=1.1 + (.3 * cos(iTime))+levelReact*2.*bassLevel;
-    */
-    
     float xsize=.1;
     float ysize=.25;
     float outer=1.2+(.2*sin(iTime));
@@ -154,8 +149,9 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
     vec2 st2 = st;
     float angle = 0.;
     for(int i=0;i<int(iQuantity);i++){
-        angle = 0. + iWow2 * (TWO_PI - noise1d(PI, float(i)));
-
+        if (iWowTrigger) {
+            angle = 0. + iTime*.2 * (TWO_PI - noise1d(PI, float(i)));
+        }
         st2 = rotate(st2, angle);
         // center the drawing space after rotation, but before drawing
         st2+=.5;
@@ -168,11 +164,6 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
         st2-=.5;
     }
 
-    // apply 1st color
-    color+=pct*iColorRGB;
-
-    // apply 2nd color
-    color+=pct2*iColor2RGB;
-
+    vec3 color = mix(vec3(0.0),mix(iColorRGB, iColor2RGB, pct2 * iWow2),pct);
     fragColor=vec4(color,1.);
 }
