@@ -259,6 +259,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
    */
   @Override
   public void globalEffectStateUpdated(int slotIndex) {
+    verbose("Global Effect state updated [" + slotIndex + "]");
     updatePadLEDs();
   }
 
@@ -428,7 +429,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
     // Here we could alter behavior for different modes we are trialing
 
     if (on) {
-      toggleEdit(padIndex);
+      toggleEffect(padIndex);
       // press(padIndex);
     }
   }
@@ -494,11 +495,12 @@ public class EffectsMiniLab3 extends LXMidiSurface
   }
 
   /** Toggle whether an effect is being edited */
-  private void toggleEdit(int index) {
+  private void toggleEffect(int index) {
     // If we are not yet editing this pad, start editing it. (Stop editing other ones first.)
     // If we ARE editing this pad, stop editing it. (AKA toggle off)
 
     verbose("Toggle Edit Effect #: " + index);
+    press(index);
   }
 
   /** Set the value of an effect parameter at a given index */
@@ -585,6 +587,12 @@ public class EffectsMiniLab3 extends LXMidiSurface
   }
 
   private void updatePadLEDs() {
+    clearPadLEDs();
+
+    verbose("<<<<<<<<< Updating Pad LEDs >>>>>>>>>>");
+    // TEMP: just to keep an eye on the effect states while developing
+    this.effectManager.debugStates();
+
     List<GlobalEffect<? extends LXEffect>> slots = effectManager.slots;
     // Send individual SysEx message for each pad
     for (int i = 0; i < NUM_PADS; i++) {
@@ -595,16 +603,16 @@ public class EffectsMiniLab3 extends LXMidiSurface
           if (state != null) {
             switch (state) {
               case EMPTY -> {
-                setPadA(i, 0x19, 0x19, 0xFF);
-                setPadB(i, 0x19, 0x19, 0xFF);
+                setPadA(i, 0x00, 0x00, 0xFF);
+                setPadB(i, 0x00, 0x00, 0xFF);
               }
               case DISABLED -> {
-                setPadA(i, 0x19, 0xFF, 0x00);
-                setPadB(i, 0x19, 0xFF, 0x00);
+                setPadA(i, 0x00, 0xFF, 0x00);
+                setPadB(i, 0x00, 0xFF, 0x00);
               }
               case ENABLED -> {
-                setPadA(i, 0xFF, 0x19, 0x19);
-                setPadB(i, 0xFF, 0x19, 0x19);
+                setPadA(i, 0xFF, 0x00, 0x00);
+                setPadB(i, 0xFF, 0x00, 0x00);
               }
             }
           } else {

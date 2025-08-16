@@ -199,7 +199,6 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
   }
 
   public void effectStateUpdated(int slotIndex) {
-    debugStates(); // TEMP: just to keep an eye on the effect states while developing
     for (Listener listener : listeners) {
       listener.globalEffectStateUpdated(slotIndex);
     }
