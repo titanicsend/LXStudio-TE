@@ -64,22 +64,34 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     float bright = accum;
 
-    // Determine which panel triangle contains this point using 3D barycentric test
+    // Determine which panel triangle contains this point using 2D projection per panel
     // Choose among all containing panels the one with nearest center (isotropic distance)
     int chosen = -1;
     float bestCenterDist = 1e9;
     const float EPS = 1e-8;
-    const float EPS2 = 0.0;
+    const float EPS2 = 0.;
     for (int i = 0; i < panelCount; i++) {
         // triangle vertices centered
-        vec3 a = panelV0[i] - vec3(.5);
-        vec3 b = panelV1[i] - vec3(.5);
-        vec3 c = panelV2[i] - vec3(.5);
+        vec3 a3 = panelV0[i] - vec3(.5);
+        vec3 b3 = panelV1[i] - vec3(.5);
+        vec3 c3 = panelV2[i] - vec3(.5);
+        vec3 n  = normalize(panelNormals[i]);
 
-        // 3D barycentric via dot products
-        vec3 v0 = b - a;
-        vec3 v1 = c - a;
-        vec3 v2 = model - a;
+        // Project onto dominant plane of the panel normal for numerical stability
+        vec2 a, b, c, p;
+        float ax = abs(n.x), ay = abs(n.y), az = abs(n.z);
+        if (az >= ax && az >= ay) { // use XY
+            a = a3.xy; b = b3.xy; c = c3.xy; p = model.xy;
+        } else if (ay >= ax && ay >= az) { // use XZ
+            a = a3.xz; b = b3.xz; c = c3.xz; p = model.xz;
+        } else { // use YZ
+            a = a3.yz; b = b3.yz; c = c3.yz; p = model.yz;
+        }
+
+        // 2D barycentric test
+        vec2 v0 = b - a;
+        vec2 v1 = c - a;
+        vec2 v2 = p - a;
         float d00 = dot(v0, v0);
         float d01 = dot(v0, v1);
         float d11 = dot(v1, v1);
