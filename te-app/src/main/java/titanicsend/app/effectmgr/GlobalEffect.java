@@ -24,7 +24,7 @@ public abstract class GlobalEffect<T extends LXEffect> {
     ENABLED
   }
 
-  // Default to EMPTY, meaning 'this.effecy' is null / no LXEffect matching 'this.type' is on
+  // Default to EMPTY, meaning 'this.effect' is null / no LXEffect matching 'this.type' is on
   // the master bus.
   private State state = State.EMPTY;
 

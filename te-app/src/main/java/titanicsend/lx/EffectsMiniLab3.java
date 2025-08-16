@@ -583,52 +583,59 @@ public class EffectsMiniLab3 extends LXMidiSurface
             + currState.name()
             + " -> "
             + globalEffect.getState().toString());
-    updatePadLEDs();
   }
 
   private void updatePadLEDs() {
-    clearPadLEDs();
-
     verbose("<<<<<<<<< Updating Pad LEDs >>>>>>>>>>");
     // TEMP: just to keep an eye on the effect states while developing
     this.effectManager.debugStates();
 
     List<GlobalEffect<? extends LXEffect>> slots = effectManager.slots;
+    if (slots == null) {
+      verbose("Slots is null, exit");
+    }
     // Send individual SysEx message for each pad
     for (int i = 0; i < NUM_PADS; i++) {
-      if (slots != null && i < slots.size()) {
+      verbose("Pad " + i);
+      if (i < slots.size()) {
+        verbose("\tPad " + i + ": " + slots.get(i).getName());
         GlobalEffect<? extends LXEffect> globalEffect = getSlot(i);
         if (globalEffect != null) {
+          verbose("\t\tSlot " + i + " is " + globalEffect.getName());
           GlobalEffect.State state = globalEffect.getState();
           if (state != null) {
+            verbose("\t\t\t state is " + state);
             switch (state) {
               case EMPTY -> {
                 setPadA(i, 0x00, 0x00, 0xFF);
-                setPadB(i, 0x00, 0x00, 0xFF);
+                //                setPadB(i, 0x00, 0x00, 0xFF);
               }
               case DISABLED -> {
                 setPadA(i, 0x00, 0xFF, 0x00);
-                setPadB(i, 0x00, 0xFF, 0x00);
+                //                setPadB(i, 0x00, 0xFF, 0x00);
               }
               case ENABLED -> {
                 setPadA(i, 0xFF, 0x00, 0x00);
-                setPadB(i, 0xFF, 0x00, 0x00);
+                //                setPadB(i, 0xFF, 0x00, 0x00);
               }
             }
           } else {
+            verbose("\t\t\t state is null");
             // State is null
             setPadA(i, 0x00, 0x00, 0x00);
-            setPadB(i, 0x00, 0x00, 0x00);
+            //            setPadB(i, 0x00, 0x00, 0x00);
           }
         } else {
+          verbose("\t\tSlot " + i + " is null");
           // GlobalEffect is null
           setPadA(i, 0x10, 0x00, 0x00);
-          setPadB(i, 0x10, 0x00, 0x00);
+          //          setPadB(i, 0x10, 0x00, 0x00);
         }
       } else {
-        // Slots is null
-        setPadA(i, 0x00, 0x10, 0x00);
-        setPadB(i, 0x00, 0x10, 0x00);
+        verbose("\t\tSlot " + i + " is out of range for " + slots.size());
+        //        // Slots is null
+        //        setPadA(i, 0x00, 0x10, 0x00);
+        //        //        setPadB(i, 0x00, 0x10, 0x00);
       }
     }
   }
