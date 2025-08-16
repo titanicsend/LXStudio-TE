@@ -19,8 +19,8 @@
 */
 
 #pragma name "TechnoChurch"
-#pragma TEControl.XPOS.Range(0.07,-1.0,1.0)
-#pragma TEControl.YPOS.Range(-0.03,-1.0,1.0)
+#pragma TEControl.XPOS.Range(0.00,-1.0,1.0)
+#pragma TEControl.YPOS.Range(-0.06,-1.0,1.0)
 #pragma TEControl.SPEED.Range(0.3,-4.0,4.0)
 #pragma TEControl.QUANTITY.Range(8.0,1.0,16.0)
 // how much wavy distortion
@@ -131,7 +131,6 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
     st=rotate(st,iRotationAngle)/iScale;
     st-=iTranslate;
 
-    vec3 color=vec3(0.);
     float pct=0.;
     float pct2=0.;
 
