@@ -98,7 +98,7 @@ public class UIUserPresetManager extends UICollapsibleSection {
                             "User Presets File",
                             new String[] {"userPresets"},
                             engine.getLibrary().getFile().getPath(),
-                            engine::loadLibrary));
+                            engine::mergeLibrary));
               }
             }.setLabel("Merge")
                 .setMomentary(true)

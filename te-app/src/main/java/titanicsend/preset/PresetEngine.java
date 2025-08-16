@@ -73,7 +73,7 @@ public class PresetEngine extends LXComponent {
     updateLibraryName();
   }
 
-  public void addLibrary(String path) {
+  public void mergeLibrary(String path) {
     this.currentLibrary.load(new File(path), false);
     updateLibraryName();
   }
