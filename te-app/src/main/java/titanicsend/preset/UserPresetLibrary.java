@@ -101,9 +101,19 @@ public class UserPresetLibrary implements LXSerializable {
   }
 
   public void load(File file) {
+    load(file, true);
+  }
+
+  public void load(File file, boolean removeExisting) {
     TE.log("Loading user presets: %s", file.getPath());
     try (FileReader fr = new FileReader(file)) {
-      load(this.lx, new Gson().fromJson(fr, JsonObject.class));
+      JsonObject obj = new Gson().fromJson(fr, JsonObject.class);
+      // For "Load", clear the patterns first
+      if (removeExisting) {
+        removeAll();
+      }
+      // For both "Merge" and "Load", add all presets from file to collections
+      load(this.lx, obj);
       this.file = file;
     } catch (FileNotFoundException ex) {
       TE.error("User preset library not found: %s", file.getPath());
@@ -121,17 +131,15 @@ public class UserPresetLibrary implements LXSerializable {
 
   @Override
   public void load(LX lx, JsonObject obj) {
-    removeAll();
-
     // Load collections
     JsonArray collectionsArray = obj.getAsJsonArray(KEY_COLLECTIONS);
     for (JsonElement patternElement : collectionsArray) {
       JsonObject patternObj = (JsonObject) patternElement;
-      loadCollection(patternObj, -1);
+      loadCollection(patternObj);
     }
   }
 
-  private void loadCollection(JsonObject patternObj, int index) {
+  private void loadCollection(JsonObject patternObj) {
     String clazz = patternObj.get(UserPresetCollection.KEY_CLASS).getAsString();
     // Find existing or create new
     // Existing are referenced by UI elements so we won't throw them away and recreate them.
