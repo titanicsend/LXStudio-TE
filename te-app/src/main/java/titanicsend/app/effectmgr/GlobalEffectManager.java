@@ -7,7 +7,6 @@ import heronarts.lx.LXComponentName;
 import heronarts.lx.effect.LXEffect;
 import heronarts.lx.mixer.LXBus;
 import heronarts.lx.osc.LXOscComponent;
-import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.TriggerParameter;
 import heronarts.lx.utils.ObservableList;
@@ -23,10 +22,10 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
 
   private static GlobalEffectManager instance;
 
-  private final ObservableList<GlobalEffect<? extends LXEffect>> mutableSlots =
+  private static final ObservableList<GlobalEffect<? extends LXEffect>> mutableSlots =
       new ObservableList<>();
-  public final ObservableList<GlobalEffect<? extends LXEffect>> slots =
-      this.mutableSlots.asUnmodifiableList();
+  public static final ObservableList<GlobalEffect<? extends LXEffect>> slots =
+      mutableSlots.asUnmodifiableList();
 
   public GlobalEffectManager(LX lx) {
     super(lx, "effectManager");
@@ -43,74 +42,97 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     return instance;
   }
 
-  public GlobalEffectManager register(GlobalEffect<? extends LXEffect> effect) {
+  public void registerSlot(GlobalEffect<? extends LXEffect> effect) {
     Objects.requireNonNull(effect, "May not add null GlobalEffect.effect");
     // TODO: prevent multiple entries for one effect type
-    this.mutableSlots.add(effect);
-    return this;
+    // NOTE(look): ^ I could imagine having 2 versions for an Effect with lots of params,
+    // where two versions of the effect are set up very differently.
+    mutableSlots.add(effect);
   }
+
+  //  public LXEffect effectAtIndex()
 
   private void registerDefaults() {
     // TODO: move this TE-specific method somewhere else, keep GlobalEffectManager generic.
 
     // Random Strobe
-    register(
+    registerSlot(
         new GlobalEffect<RandomStrobeEffect>() {
           @Override
           public LXListenableNormalizedParameter getLevelParameter() {
+            if (effect == null) {
+              return null;
+            }
             return effect.depth;
           }
 
           @Override
           public LXListenableNormalizedParameter getSecondaryParameter() {
+            if (effect == null) {
+              return null;
+            }
             return effect.speed;
           }
         });
 
     // Explode
-    register(
+    registerSlot(
+        // TODO: separate effect slots for "sync" version? How to handle "trigger"
+        //  (feels more similar to FX patterns like BassLightning / SpaceExplosion)
         new GlobalEffect<ExplodeEffect>() {
           @Override
-          public BooleanParameter getEnabledParameter() {
-            // TODO: return effect.manualTrigger?
-            return effect.enabled;
-          }
-
-          @Override
           public LXListenableNormalizedParameter getLevelParameter() {
+            if (effect == null) {
+              return null;
+            }
             return effect.depth;
           }
 
           @Override
           public LXListenableNormalizedParameter getSecondaryParameter() {
+            if (effect == null) {
+              return null;
+            }
             return effect.speed;
           }
 
           @Override
           public TriggerParameter getTriggerParameter() {
+            if (effect == null) {
+              return null;
+            }
             return effect.trigger;
           }
         });
 
     // Simplify
-    register(
+    registerSlot(
         new GlobalEffect<SimplifyEffect>() {
           @Override
           public LXListenableNormalizedParameter getLevelParameter() {
+            if (effect == null) {
+              return null;
+            }
             return effect.amount;
           }
 
           @Override
           public LXListenableNormalizedParameter getSecondaryParameter() {
+            if (effect == null) {
+              return null;
+            }
             return effect.gain;
           }
         });
 
     // Sustain
-    register(
+    registerSlot(
         new GlobalEffect<SustainEffect>() {
           @Override
           public LXListenableNormalizedParameter getLevelParameter() {
+            if (effect == null) {
+              return null;
+            }
             return effect.sustain;
           }
         });
@@ -126,6 +148,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
 
   @Override
   public void effectRemoved(LXBus channel, LXEffect effect) {
+    // TODO: this isn't actually removing a missing effect from 'slots'.
     refresh();
   }
 
@@ -136,7 +159,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
 
   /** Refresh all slots */
   private void refresh() {
-    for (GlobalEffect<? extends LXEffect> globalEffect : this.slots) {
+    for (GlobalEffect<? extends LXEffect> globalEffect : slots) {
       // Allow null placeholder slots
       if (globalEffect == null) {
         continue;
@@ -146,7 +169,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
       for (LXEffect effect : this.lx.engine.mixer.masterBus.effects) {
         if (globalEffect.matches(effect)) {
           // This will quick return if effect is already registered to the slot.
-          globalEffect.register(effect);
+          globalEffect.registerEffect(effect);
           break;
         }
       }
@@ -156,7 +179,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
   @Override
   public void dispose() {
     this.lx.engine.mixer.masterBus.removeListener(this);
-    for (GlobalEffect<? extends LXEffect> globalEffect : this.slots) {
+    for (GlobalEffect<? extends LXEffect> globalEffect : slots) {
       if (globalEffect != null) {
         globalEffect.dispose();
       }
