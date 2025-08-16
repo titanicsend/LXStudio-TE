@@ -309,46 +309,69 @@ public class EffectsMiniLab3 extends LXMidiSurface
 
     for (int i = 0; i < msg.length; i++) {
       byte b = msg[i];
-      verbose(String.format("msg[%02d]: %02b", i, b));
+      verbose(String.format("msg[%02d]: %02X", i, b));
 
       switch (i) {
         case 0:
           expectByte(i, (byte) 0xF0, b);
+          continue;
         case 1:
           expectByte(i, (byte) 0x00, b);
+          continue;
         case 2:
           expectByte(i, (byte) 0x20, b);
+          continue;
         case 3:
           expectByte(i, (byte) 0x6B, b);
+          continue;
         case 4:
           expectByte(i, (byte) 0x7F, b);
+          continue;
         case 5:
           expectByte(i, (byte) 0x42, b);
+          continue;
         case 6:
           expectByte(i, (byte) 0x02, b);
+          continue;
         case 7:
           expectByte(i, (byte) 0x00, b);
+          continue;
         case 8:
           expectByte(i, (byte) 0x40, b);
+          continue;
         case 9:
           type = expectOneOf(i, SYSEX_RECEIVED_TYPES, b);
+          continue;
         case 10:
           if (type == 0) {
-            option = expectOneOf(i, SYSEX_RECEIVED_MODES, b);
+            try {
+              option = expectOneOf(i, SYSEX_RECEIVED_MODES, b);
+            } catch (IllegalArgumentException e) {
+              verbose(
+                  "Additional mode (besides default Arturia and DAW) configured in Arturia MCC app: "
+                      + b);
+            }
+
           } else if (type == 1) {
             option = expectOneOf(i, SYSEX_RECEIVED_BANKS, b);
           } else {
             throw new IllegalArgumentException(String.format("Invalid SYSEX_RECEIVED_TYPE" + type));
           }
+          continue;
         case 11:
           expectByte(i, (byte) 0xF7, b);
+          continue;
         default:
           throw new IllegalArgumentException(String.format("Invalid SYSEX_RECEIVED_TYPE" + type));
       }
     }
 
     if (type == 0) {
-      modeReceived(option == 0 ? true : false);
+      if (option > 0) {
+        modeReceived(option == 0 ? true : false);
+      } else {
+        verbose("Non-standard mode received; ignoring");
+      }
     } else if (type == 1) {
       bankReceived(option == 0 ? true : false);
     } else {
@@ -360,7 +383,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
     if (actual != expected) {
       throw new AssertionError(
           String.format(
-              "Sysex message index %02d expected [%02b] but found [%02b]",
+              "Sysex message index %02d expected [%02X] but found [%02X]",
               index, expected, actual));
     }
   }
@@ -372,7 +395,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
       }
     }
     throw new AssertionError(
-        String.format("Sysex message index %02d invalid: found [%02b]", index, actual));
+        String.format("Sysex message index %02d invalid: found [%02X]", index, actual));
   }
 
   @Override
@@ -678,11 +701,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
       throw new IllegalStateException("LXEffect is null, but state is neither EMPTY nor null");
     }
 
-    verbose(
-        "Current state: "
-            + currState.toString()
-            + " for effect: "
-            + globalEffect.effect.getLabel());
+    verbose("Current state: " + currState + " for effect: " + globalEffect.effect.getLabel());
 
     globalEffect.getEnabledParameter().toggle();
     TE.log(
