@@ -217,7 +217,9 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
       _calcColor = controls.color.calcColor();
       isStaleColor = false;
     }
-    return (setBrightness) ? TEColor.setBrightness(_calcColor, (float) getBrightness()) : _calcColor;
+    return (setBrightness)
+        ? TEColor.setBrightness(_calcColor, (float) getBrightness())
+        : _calcColor;
   }
 
   /**
@@ -231,7 +233,9 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
       _calcColor2 = controls.color.calcColor();
       isStaleColor = false;
     }
-    return (setBrightness) ? TEColor.setBrightness(_calcColor2, (float) getBrightness()) : _calcColor2;
+    return (setBrightness)
+        ? TEColor.setBrightness(_calcColor2, (float) getBrightness())
+        : _calcColor2;
   }
 
   public int calcColor() {
@@ -247,7 +251,6 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
   public int calcColor2() {
     return calcColor2(true);
   }
-
 
   public int getGradientColor(float lerp) {
     return TEColor.setBrightness(controls.color.getGradientColor(lerp), (float) getBrightness());

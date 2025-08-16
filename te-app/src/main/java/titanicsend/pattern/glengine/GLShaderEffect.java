@@ -240,7 +240,8 @@ public class GLShaderEffect extends TEEffect implements GpuDevice {
           // the
           // previous shader
           uniforms.iDst.setValue(currentShaderDst);
-          uniforms.iBrightness.setValue(1.0f);  // TODO: provide control for this or use effect level?
+          uniforms.iBrightness.setValue(
+              1.0f); // TODO: provide control for this or use effect level?
           uniforms.iTime.setValue((float) getTime());
 
           // get current primary and secondary colors
