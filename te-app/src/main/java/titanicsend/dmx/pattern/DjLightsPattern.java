@@ -7,8 +7,9 @@ import titanicsend.dmx.parameter.DmxCompoundParameter;
 import titanicsend.dmx.parameter.DmxDiscreteParameter;
 import titanicsend.dmx.parameter.DmxDiscreteParameterOption;
 import titanicsend.model.TEWholeModel;
+import titanicsend.pattern.TEPattern;
 
-public abstract class DjLightsPattern extends DmxPattern {
+public abstract class DjLightsPattern extends TEPattern {
 
   protected final TEWholeModel modelTE;
 

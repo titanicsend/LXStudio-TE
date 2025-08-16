@@ -50,7 +50,7 @@ public class DjLightsDirectPattern extends DjLightsPattern
     double ptSpeed = this.ptSpeed.getNormalized();
     int programs = this.programs.getDmxValue();
 
-    for (DmxModel d : this.modelTE.getDjLights()) {
+    for (DmxModel d : this.modelTE.getBeacons()) {
       if (d instanceof AdjStealthModel) {
         setDmxNormalized(d, AdjStealthModel.INDEX_PAN, pan);
         setDmxNormalized(d, AdjStealthModel.INDEX_TILT, tilt);

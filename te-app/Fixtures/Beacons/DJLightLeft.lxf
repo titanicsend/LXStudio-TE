@@ -1,0 +1,15 @@
+{
+  "label": "DJLightLeft",
+  "tags": [ "dmx", "djLight", "dmxFixture" ],
+  "meta": {
+    "dmx": "titanicsend.dmx.model.AdjStealthModel",
+    "dmx_host": "10.0.0.204",
+    "dmx_universe": 20,
+    "dmx_channel": 0
+  },
+  "components": [
+    {
+      "type": "point"
+    }
+  ]
+}
