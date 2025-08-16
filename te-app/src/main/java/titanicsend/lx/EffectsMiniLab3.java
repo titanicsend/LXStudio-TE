@@ -212,10 +212,13 @@ public class EffectsMiniLab3 extends LXMidiSurface
     this.effectManager = GlobalEffectManager.get(this.lx);
 
     List<GlobalEffect<? extends LXEffect>> slots = effectManager.slots;
-    GlobalEffect<? extends LXEffect> curr;
 
+    // Subscribe to state updates on enabled param for registered effects.
     this.effectManager.addListener(this);
+    // Subscribe to effects getting registered/unregistered.
     this.effectListener =
+        // TODO(look): think through whether these listeners need to do anything beyond
+        //             calling updatePadLEDs().
         new ObservableList.Listener<>() {
           @Override
           public void itemAdded(GlobalEffect<? extends LXEffect> item) {

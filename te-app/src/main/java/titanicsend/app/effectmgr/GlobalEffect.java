@@ -15,6 +15,10 @@ import java.lang.reflect.Type;
  */
 public abstract class GlobalEffect<T extends LXEffect> {
   public enum State {
+    // TODO(look): I'm taking EMPTY to mean GlobalEffectManager has "allocated" a lot, but
+    //             no LXEffect has been "registered" (actually added to the master bus).
+    //             Do I need a concept of "unregistered"? Or is that just 'null' (or maybe even
+    //             the GlobalEffect just wouldn't exist...?
     EMPTY,
     DISABLED,
     ENABLED
