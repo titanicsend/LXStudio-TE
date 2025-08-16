@@ -137,7 +137,7 @@ public class GLShaderPattern extends TEPerformancePattern implements GpuDevice {
     this.uniforms.iTime.setValue((float) getTime());
 
     // color-related uniforms
-    int col = calcColor();
+    int col = calcColor(false);
     this.uniforms.iColorRGB.setValue(
         (float) (0xff & LXColor.red(col)) / 255f,
         (float) (0xff & LXColor.green(col)) / 255f,
@@ -145,7 +145,7 @@ public class GLShaderPattern extends TEPerformancePattern implements GpuDevice {
     this.uniforms.iColorHSB.setValue(
         LXColor.h(col) / 360f, LXColor.s(col) / 100f, LXColor.b(col) / 100f);
 
-    col = calcColor2();
+    col = calcColor2(false);
     this.uniforms.iColor2RGB.setValue(
         (float) (0xff & LXColor.red(col)) / 255f,
         (float) (0xff & LXColor.green(col)) / 255f,
