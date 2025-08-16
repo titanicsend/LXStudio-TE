@@ -212,12 +212,30 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
    *     <p>At present, the brightness control lets you dim the current color, but if you want to
    *     brighten it, you have to do that with the channel fader or the color control.
    */
-  public int calcColor() {
+  public int calcColor(boolean setBrightness) {
     if (isStaleColor) {
-      _calcColor = TEColor.setBrightness(controls.color.calcColor(), (float) getBrightness());
+      _calcColor = controls.color.calcColor();
       isStaleColor = false;
     }
-    return _calcColor;
+    return (setBrightness) ? TEColor.setBrightness(_calcColor, (float) getBrightness()) : _calcColor;
+  }
+
+  /**
+   * For patterns that consume two solid colors, use this method to retrieve the 2nd color. Returns
+   * a color offset in position from the first color.
+   *
+   * @return
+   */
+  public int calcColor2(boolean setBrightness) {
+    if (isStaleColor) {
+      _calcColor2 = controls.color.calcColor();
+      isStaleColor = false;
+    }
+    return (setBrightness) ? TEColor.setBrightness(_calcColor2, (float) getBrightness()) : _calcColor2;
+  }
+
+  public int calcColor() {
+    return calcColor(true);
   }
 
   /**
@@ -227,24 +245,9 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
    * @return
    */
   public int calcColor2() {
-    if (isStaleColor2) {
-      _calcColor2 = TEColor.setBrightness(controls.color.calcColor2(), (float) getBrightness());
-      isStaleColor2 = false;
-    }
-    return _calcColor2;
+    return calcColor2(true);
   }
 
-  /**
-   * Gets the current color as set in the color control, without adjusting for brightness. This is
-   * used by the OpenGL renderer, which has a unified mechanism for handling brightness.
-   */
-  public int getColor() {
-    if (isStaleColorBase) {
-      _getColor = controls.color.calcColor();
-      isStaleColorBase = false;
-    }
-    return _getColor;
-  }
 
   public int getGradientColor(float lerp) {
     return TEColor.setBrightness(controls.color.getGradientColor(lerp), (float) getBrightness());
