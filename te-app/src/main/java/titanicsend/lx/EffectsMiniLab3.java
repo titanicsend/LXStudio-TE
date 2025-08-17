@@ -14,6 +14,7 @@ import heronarts.lx.midi.MidiNote;
 import heronarts.lx.midi.MidiNoteOn;
 import heronarts.lx.midi.MidiPitchBend;
 import heronarts.lx.midi.surface.LXMidiSurface;
+import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.utils.ObservableList;
 import java.util.List;
 import titanicsend.app.effectmgr.GlobalEffect;
@@ -634,6 +635,30 @@ public class EffectsMiniLab3 extends LXMidiSurface
   /** Set the value of an effect parameter at a given index */
   private void parameterSetValue(int parameterIndex, int value) {
     verbose("Effect Parameter " + parameterIndex + ": set to " + value);
+
+    int bankRelativeSlotIndex = parameterIndex % 4;
+    int slotIndex = isBankA ? bankRelativeSlotIndex : 4 + bankRelativeSlotIndex;
+    if (slotIndex >= effectManager.slots.size()) {
+      return;
+    }
+    GlobalEffect<? extends LXEffect> globalEffect = effectManager.slots.get(slotIndex);
+    if (globalEffect == null) {
+      return;
+    }
+
+    // Effect Slot 0:
+    // - primary param; knob 0 (labeled "1" on the device)
+    // - secondary param; knob 4 (labeled "5" on the device)
+    boolean isPrimaryParam = (parameterIndex / 4) == 0;
+
+    LXListenableNormalizedParameter effectParam =
+        isPrimaryParam ? globalEffect.getLevelParameter() : globalEffect.getSecondaryParameter();
+    if (effectParam == null) {
+      return;
+    }
+    float normalizedValue = value / 127f;
+    // TODO: ensure all effects have range 0-1? or handle normalization some other way?
+    effectParam.setValue(normalizedValue);
   }
 
   /** Set the value of a global parameter */
