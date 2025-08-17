@@ -620,11 +620,15 @@ public class EffectsMiniLab3 extends LXMidiSurface
 
   /** Toggle whether an effect is being edited */
   private void toggleEffect(int index) {
+    // Enable/Disable effect
+    press(index);
+    /*
+    Alternate approach:
+
     // If we are not yet editing this pad, start editing it. (Stop editing other ones first.)
     // If we ARE editing this pad, stop editing it. (AKA toggle off)
-
     verbose("Toggle Edit Effect #: " + index);
-    press(index);
+    */
   }
 
   /** Set the value of an effect parameter at a given index */
@@ -674,8 +678,8 @@ public class EffectsMiniLab3 extends LXMidiSurface
       padVerbose("Slots is empty, exit");
     }
 
-    // TEMP: just to keep an eye on the effect states while developing
-    this.effectManager.debugStates();
+    //    // TEMP: just to keep an eye on the effect states while developing
+    //    this.effectManager.debugStates();
 
     // Clear first
     clearPadLEDs();
@@ -709,7 +713,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
       return;
     }
 
-    GlobalEffect<? extends LXEffect> globalEffect = effectManager.slots.get(padIndex);
+    GlobalEffect<? extends LXEffect> globalEffect = effectManager.slots.get(slotIndex);
     GlobalEffect.State currState = globalEffect.getState();
     if (currState == null) {
       verbose("Current state is null: " + globalEffect.getName());
@@ -741,7 +745,11 @@ public class EffectsMiniLab3 extends LXMidiSurface
     verbose(
         String.format(
             "\tSlot %d :: Pad %d :: %s",
-            slotIndex, padIndex, globalEffect == null ? "null" : globalEffect.getName()));
+            slotIndex,
+            padIndex,
+            globalEffect == null
+                ? "null"
+                : String.format("%s (%s)", globalEffect.getName(), globalEffect.getState())));
 
     if (globalEffect != null) {
       padVerbose("\t\tSlot " + slotIndex + " is " + globalEffect.getName());
