@@ -18,10 +18,11 @@ import titanicsend.util.TE;
 public class FireSpinner extends GLShaderPattern {
   private TEShader renderShader;
 
-  // --- Particle Emitter Demo ---
+  // --- Fire Spinner Demo ---
   private static final int MAX_PARTICLES = 100; // Maximum particles in the system
-  private static final float PARTICLE_LIFETIME = 3.0f; // Particles live for 3 seconds
-  private static final float EMIT_RATE = 10.0f; // Particles per second
+  private static final float PARTICLE_LIFETIME = 1.0f; // Particles live for 1 second
+  private static final float BASE_EMITTER_SPEED =
+      1.0f; // Base emitter angular speed (rad/sec) when SPEED = 1.0
 
   // Room constants - same normalization as OrbitingComets
   private static final float NORM_MIN_X = 0.0f;
@@ -83,7 +84,7 @@ public class FireSpinner extends GLShaderPattern {
 
     // Controls
     controls.setRange(TEControlTag.SIZE, 0.1, 0.05, 0.3); // Particle size
-    controls.setRange(TEControlTag.SPEED, 2.0, 0.5, 5.0); // Spinning speed (faster range)
+    controls.setRange(TEControlTag.SPEED, 1.0, -2.0, 2.0); // Speed multiplier (-2x to 2x)
     controls.setRange(TEControlTag.WOW1, 5.0, 0.0, 20.0); // Initial particle velocity
     controls.setRange(TEControlTag.WOW2, 10.0, 1.0, 60.0); // Log FPS (logs per second)
     controls.setRange(
@@ -225,12 +226,19 @@ public class FireSpinner extends GLShaderPattern {
     try {
       TE.log("FireSpinner: Initializing particle emitter demo...");
 
-      // Ball radius (for calculating thin Z room)
-      float ballRadius = 0.1f; // Small particles
-      float zThickness = 1.5f * (2.0f * ballRadius); // 1.5 times the ball diameter
+      // Calculate room Z limits based on maximum possible particle size
+      float maxParticleRadius = 0.3f; // Maximum from SIZE control range (0.05-0.3)
+
+      // Create thin room based on maximum particle size with extra clearance
+      float zThickness =
+          4.0f * (2.0f * maxParticleRadius); // 4 times max particle diameter for safe movement
       float zCenter = 5.0f; // Center of the thin Z slab
       float zMin = zCenter - zThickness / 2.0f;
       float zMax = zCenter + zThickness / 2.0f;
+
+      TE.log(
+          "FireSpinner: Room Z bounds: %.3f to %.3f (thickness=%.3f) for max particle radius %.3f",
+          zMin, zMax, zThickness, maxParticleRadius);
 
       // Create scene with thin room bounds and gravity
       SceneConfig config =
@@ -243,13 +251,13 @@ public class FireSpinner extends GLShaderPattern {
       bulletPhysics = new BulletBootstrap();
       bulletPhysics.initializeScene(config);
 
-      // Create fast horizontal circular path for the fire spinner
+      // Create horizontal circular path in XY plane at Z=5 for the fire spinner
       emitterPath =
-          new LoopPath.CirclePath(
-              new javax.vecmath.Vector3f(5f, 5f, zCenter), // Center of room at thin Z
+          LoopPath.CirclePath.createXYCircle(
+              new javax.vecmath.Vector3f(5f, 5f, 0f), // Center in XY plane (Z will be overridden)
               3.0f, // Circle radius (larger for dramatic effect)
-              5.0f, // Y plane (mid-height)
-              3.0f); // Fast angular speed (radians/sec) for spinning fire effect
+              zCenter, // Z plane (constant Z=5)
+              BASE_EMITTER_SPEED); // Base angular speed - will be multiplied by SPEED control
 
       emitterStartTime = System.nanoTime();
 
@@ -257,12 +265,12 @@ public class FireSpinner extends GLShaderPattern {
       emitterCurrPos = emitterPath.getPosition(0, 1, 0);
       emitterPrevPos.set(emitterCurrPos);
 
-      // Create particle emitter in BulletBootstrap
+      // Create particle emitter in BulletBootstrap with random velocity
       bulletPhysics.addEmitter(
           "fire-emitter",
           MAX_PARTICLES,
           PARTICLE_LIFETIME,
-          BulletBootstrap.EmitterInitialSpeed.EMITTER_SPEED,
+          BulletBootstrap.EmitterInitialSpeed.RANDOM,
           emitterPath);
 
       // Configure emitter properties for fire effect
@@ -293,7 +301,8 @@ public class FireSpinner extends GLShaderPattern {
 
       // Update emitter properties
       bulletPhysics.setEmitterProperties("fire-emitter", particleSize, particleMass, emitRate);
-      bulletPhysics.setEmitterSpeed("fire-emitter", speed);
+      bulletPhysics.setEmitterSpeed(
+          "fire-emitter", speed); // Controls both emitter movement and particle speeds
 
       // Step physics (emitters are now updated automatically)
       bulletPhysics.step(dtSeconds);

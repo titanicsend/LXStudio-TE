@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.5.GPU-SNAPSHOT",
-  "timestamp": 1755453440231,
+  "timestamp": 1755455909350,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -12274,8 +12274,8 @@
                   "mode/name": "FIXED",
                   "period": 16.0,
                   "primary/brightness": 91.00000020116568,
-                  "primary/saturation": 95.58919525146484,
-                  "primary/hue": 0.87890625,
+                  "primary/saturation": 97.71598815917969,
+                  "primary/hue": 0.0,
                   "secondary/brightness": 73.33330535888672,
                   "secondary/saturation": 77.5,
                   "secondary/hue": 258.0
@@ -12296,8 +12296,8 @@
                   "mode/name": "FIXED",
                   "period": 16.0,
                   "primary/brightness": 95.0,
-                  "primary/saturation": 51.66666793823242,
-                  "primary/hue": 333.0,
+                  "primary/saturation": 83.38981628417969,
+                  "primary/hue": 7.21875,
                   "secondary/brightness": 66.66656494140625,
                   "secondary/saturation": 55.83333206176758,
                   "secondary/hue": 324.0
@@ -13985,20 +13985,20 @@
               "slope": 6.0,
               "band-1": 0.0,
               "band-2": 0.0,
-              "band-3": 0.09203894493338138,
-              "band-4": 0.19131760695663547,
-              "band-5": 0.23331565358603656,
-              "band-6": 0.3383363471312828,
-              "band-7": 0.4333579591764217,
-              "band-8": 0.4617329401034437,
-              "band-9": 0.41707115149346796,
-              "band-10": 0.3489458420897663,
-              "band-11": 0.3643935312620806,
-              "band-12": 0.2980712031180358,
-              "band-13": 0.4761470739547514,
-              "band-14": 0.4701122635827938,
-              "band-15": 0.2704014135223639,
-              "band-16": 0.0037183448699362742
+              "band-3": 0.0,
+              "band-4": 0.0,
+              "band-5": 0.0,
+              "band-6": 0.0,
+              "band-7": 0.033235068676925494,
+              "band-8": 0.027169142064523144,
+              "band-9": 0.0,
+              "band-10": 0.0,
+              "band-11": 0.0,
+              "band-12": 0.0,
+              "band-13": 0.0,
+              "band-14": 0.0,
+              "band-15": 0.0,
+              "band-16": 0.0
             },
             "children": {}
           }
@@ -22039,7 +22039,7 @@
                   "expanded": true,
                   "expandedCue": true,
                   "expandedAux": true,
-                  "modulationExpanded": false
+                  "modulationExpanded": true
                 },
                 "parameters": {
                   "label": "FireSpinner",
@@ -22066,12 +22066,12 @@
                   "te_speed": 1.0,
                   "te_xpos": 0.0,
                   "te_ypos": 0.0,
-                  "te_size": 0.1,
-                  "te_quantity": 10.0,
+                  "te_size": 0.19047850837232544,
+                  "te_quantity": 46.72343647573143,
                   "te_spin": 0.0,
                   "te_brightness": 1.0,
-                  "te_wow1": 5.0,
-                  "te_wow2": 3.318711045198143,
+                  "te_wow1": 0.465624975040555,
+                  "te_wow2": 1.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "te_level": 0.1,
@@ -40529,9 +40529,9 @@
         "animation": false,
         "camera": {
           "active": false,
-          "radius": 512.3881020254621,
-          "theta": 179.5297547847731,
-          "phi": -2.1055486066034064,
+          "radius": 771.0798451961772,
+          "theta": 0.3064731255872175,
+          "phi": -3.855824219645001,
           "x": 8.377008360461048,
           "y": 225.64128581271507,
           "z": 187.48040015594097

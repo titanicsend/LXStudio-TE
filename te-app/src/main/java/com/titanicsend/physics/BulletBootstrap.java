@@ -71,7 +71,9 @@ public class BulletBootstrap {
   public enum EmitterInitialSpeed {
     ZERO, // Particles start with zero velocity
     EMITTER_SPEED, // Particles inherit emitter's velocity
-    FIXED_SPEED // Particles have fixed initial speed
+    FIXED_SPEED, // Particles have fixed initial speed
+    TANGENTIAL, // Particles get tangential velocity based on emitter movement
+    RANDOM // Particles get random velocity scaled by speed multiplier
   }
 
   private static class ParticleEmitter {
@@ -84,6 +86,7 @@ public class BulletBootstrap {
     float particleRadius = 0.1f;
     float particleMass = 0.1f;
     float emitRate = 10.0f; // particles per second
+    float speedMultiplier = 1.0f; // Speed multiplier for movement and particle velocity
 
     // Emitter state
     Vector3f prevPosition = new Vector3f();
@@ -605,8 +608,13 @@ public class BulletBootstrap {
     emitter.particles.removeAll(toRemove);
   }
 
-  /** Set emitter speed multiplier (affects path traversal speed) */
+  /** Set emitter speed multiplier (affects path traversal speed and particle velocity) */
   public void setEmitterSpeed(String name, float speedMultiplier) {
+    ParticleEmitter emitter = emitters.get(name);
+    if (emitter != null) {
+      emitter.speedMultiplier = speedMultiplier;
+    }
+
     // Adjust the emitter's time offset to simulate speed change
     if (speedMultiplier != 1.0f && emitterStartTimes.containsKey(name)) {
       long currentTime = System.nanoTime();
@@ -651,6 +659,47 @@ public class BulletBootstrap {
           initialVel.x = (float) Math.cos(theta) * sinPhi * emitter.fixedSpeed;
           initialVel.y = (float) Math.sin(theta) * sinPhi * emitter.fixedSpeed;
           initialVel.z = (float) Math.cos(phi) * emitter.fixedSpeed;
+          break;
+        case TANGENTIAL:
+          // Calculate tangential velocity based on emitter movement speed
+          float speed = Math.abs(emitter.speedMultiplier) * -5.0f; // Base tangential speed
+
+          // Get normalized velocity direction (tangent to circle)
+          Vector3f velDir = new Vector3f(emitter.velocity);
+          float velMagnitude =
+              (float) Math.sqrt(velDir.x * velDir.x + velDir.y * velDir.y + velDir.z * velDir.z);
+          if (velMagnitude > 1e-6f) {
+            velDir.scale(1.0f / velMagnitude); // Normalize
+            // Scale by speed parameter
+            initialVel.x = velDir.x * speed;
+            initialVel.y = velDir.y * speed;
+            initialVel.z = velDir.z * speed;
+          } else {
+            initialVel.set(0, 0, 0);
+          }
+          break;
+        case RANDOM:
+          // Random direction with magnitude equal to emitter's current movement speed
+          Vector3f emitterVel = new Vector3f(emitter.velocity);
+          float baseEmitterSpeed =
+              (float)
+                  Math.sqrt(
+                      emitterVel.x * emitterVel.x
+                          + emitterVel.y * emitterVel.y
+                          + emitterVel.z * emitterVel.z);
+
+          // Scale by the speed multiplier to match emitter's speed changes
+          float particleSpeed = baseEmitterSpeed * Math.abs(emitter.speedMultiplier);
+
+          // Generate random direction (uniform distribution on sphere)
+          float randomTheta = (float) (Math.random() * Math.PI * 2);
+          float randomPhi = (float) (Math.acos(2.0 * Math.random() - 1.0));
+          float randomSinPhi = (float) Math.sin(randomPhi);
+
+          // Apply scaled speed in random direction
+          initialVel.x = (float) Math.cos(randomTheta) * randomSinPhi * particleSpeed;
+          initialVel.y = (float) Math.sin(randomTheta) * randomSinPhi * particleSpeed;
+          initialVel.z = (float) Math.cos(randomPhi) * particleSpeed;
           break;
       }
 
