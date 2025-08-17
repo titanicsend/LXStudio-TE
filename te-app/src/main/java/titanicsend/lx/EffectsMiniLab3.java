@@ -800,7 +800,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
     } else if (padIndex >= 9 && padIndex <= 12) {
       // Pad 9:  Slot 4
       // Pad 12: Slot 7
-      slotIndex = padIndex - 5;
+      slotIndex = padIndex - 1;
     }
     return slotIndex;
   }
@@ -808,12 +808,12 @@ public class EffectsMiniLab3 extends LXMidiSurface
   private int slotToPadIndex(int slotIndex) {
     if (slotIndex < 0) {
       throw new IllegalArgumentException("Slot index is negative: " + slotIndex);
-    } else if (slotIndex <= 3) {
+    } else if (slotIndex <= Math.min(3, effectManager.slots.size())) {
       // Bank A
       return slotIndex + 1;
-    } else if (slotIndex <= 7) {
+    } else if (slotIndex <= Math.min(7, effectManager.slots.size())) {
       // Bank B
-      return slotIndex + 5;
+      return slotIndex + 1;
     } else if (slotIndex < effectManager.slots.size()) {
       throw new IllegalArgumentException(
           "EffectManager has more than expected maximum of 8 slots: "
