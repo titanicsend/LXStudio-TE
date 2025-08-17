@@ -5,6 +5,7 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.LXComponent;
 import heronarts.lx.LXComponentName;
 import heronarts.lx.effect.LXEffect;
+import heronarts.lx.effect.StrobeEffect;
 import heronarts.lx.mixer.LXBus;
 import heronarts.lx.osc.LXOscComponent;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
@@ -13,6 +14,7 @@ import heronarts.lx.utils.ObservableList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import titanicsend.effect.DistortEffect;
 import titanicsend.effect.ExplodeEffect;
 import titanicsend.effect.RandomStrobeEffect;
 import titanicsend.effect.SimplifyEffect;
@@ -67,7 +69,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
   private void allocateEffectSlots() {
     // TODO: move this TE-specific method somewhere else, keep GlobalEffectManager generic.
 
-    // Random Strobe
+    // 0: Random Strobe
     allocateSlot(
         new GlobalEffect<RandomStrobeEffect>() {
           @Override
@@ -87,7 +89,27 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
           }
         });
 
-    // Explode
+    // 1 - Strobe
+    allocateSlot(
+        new GlobalEffect<StrobeEffect>() {
+          @Override
+          public LXListenableNormalizedParameter getLevelParameter() {
+            if (effect == null) {
+              return null;
+            }
+            return effect.depth;
+          }
+
+          @Override
+          public LXListenableNormalizedParameter getSecondaryParameter() {
+            if (effect == null) {
+              return null;
+            }
+            return effect.speed;
+          }
+        });
+
+    // 2 - Explode
     allocateSlot(
         // TODO: separate effect slots for "sync" version? How to handle "trigger"
         //  (feels more similar to FX patterns like BassLightning / SpaceExplosion)
@@ -117,7 +139,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
           }
         });
 
-    // Simplify
+    // 3 - Simplify
     allocateSlot(
         new GlobalEffect<SimplifyEffect>() {
           @Override
@@ -137,7 +159,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
           }
         });
 
-    // Sustain
+    // 4 - Sustain
     allocateSlot(
         new GlobalEffect<SustainEffect>() {
           @Override
@@ -146,6 +168,26 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
               return null;
             }
             return effect.sustain;
+          }
+        });
+
+    // 5 - Distort
+    allocateSlot(
+        new GlobalEffect<DistortEffect>() {
+          @Override
+          public LXListenableNormalizedParameter getLevelParameter() {
+            if (effect == null) {
+              return null;
+            }
+            return effect.depth;
+          }
+
+          @Override
+          public LXListenableNormalizedParameter getSecondaryParameter() {
+            if (effect == null) {
+              return null;
+            }
+            return effect.size; // or speed?
           }
         });
   }
