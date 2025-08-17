@@ -79,7 +79,8 @@ public class OrbitingComets extends GLShaderPattern {
 
     // Simplified controls for physics demo
     controls.setRange(TEControlTag.SIZE, 0.2, 0.1, 0.8); // Sphere size multiplier
-    controls.setRange(TEControlTag.SPEED, 1.0, 0.1, 3.0); // Physics simulation speed
+    // SPEED now controls tangential force multiplier (-1..1), not physics step rate
+    controls.setRange(TEControlTag.SPEED, 0.05, -1.0, 1.0);
     controls.setRange(TEControlTag.WOW1, 1.0, 0.0, 5.0); // Force strength multiplier
     controls.setRange(TEControlTag.WOW2, 10.0, 1.0, 60.0); // Log FPS (logs per second)
 
@@ -274,10 +275,11 @@ public class OrbitingComets extends GLShaderPattern {
               .withCentralTether(
                   new javax.vecmath.Vector3f(5f, 3.5f, 5f), /*radius*/
                   3.0f, /*stiffness*/
-                  50.0f, /*damping*/
-                  0.3f) // Constrains radius
+                  10.0f, /*damping*/
+                  0.3f, /*tangentialForce*/
+                  1.0f) // Constrains radius and adds merry-go-round force
               .withRoom(
-                  0.5f, 9.5f, 0.5f, 9.5f, 0.5f, 9.5f,
+                  0.5f, 9.5f, 0.5f, 9.5f, 0.5f, 20f,
                   1.0f) // Room bounds: minX, maxX, minY, maxY, minZ, maxZ, thickness
               .withCirclePath(
                   new javax.vecmath.Vector3f(
@@ -306,11 +308,13 @@ public class OrbitingComets extends GLShaderPattern {
     }
 
     try {
+      // SPEED is a pure multiplier for tangential force; keep physics timestep constant
       float speed = (float) controls.getLXControl(TEControlTag.SPEED).getValuef();
+      if (bulletPhysics != null) bulletPhysics.setExternalSpeedFactor(speed);
 
       // Fixed-step physics with interpolation
       long currentTime = System.nanoTime();
-      float frameTime = (currentTime - lastPhysicsTime) / 1_000_000_000.0f * speed;
+      float frameTime = (currentTime - lastPhysicsTime) / 1_000_000_000.0f; // decouple from SPEED
       lastPhysicsTime = currentTime;
 
       // Accumulate time and run fixed timesteps

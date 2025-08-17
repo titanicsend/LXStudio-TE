@@ -59,6 +59,8 @@ public final class SceneConfig {
   public float tetherRadius = 3.0f; // Rest length (desired distance from center)
   public float tetherStiffness = 50.0f; // Spring stiffness (higher = stiffer)
   public float tetherDamping = 0.1f; // Damping factor (0.0 = no damping, 1.0 = critical)
+  // Tangential force to push bodies perpendicular to the tether direction (merry-go-round)
+  public float tetherTangentialForce = 0.0f; // 0 disables
 
   // --- Bounds ---
   public BoundsType boundsType = BoundsType.INFINITE;
@@ -103,6 +105,17 @@ public final class SceneConfig {
     this.tetherRadius = radius;
     this.tetherStiffness = stiffness;
     this.tetherDamping = damping;
+    return this;
+  }
+
+  public SceneConfig withCentralTether(
+      Vector3f center, float radius, float stiffness, float damping, float tangentialForce) {
+    this.centralTetherEnabled = true;
+    this.tetherCenter.set(center);
+    this.tetherRadius = radius;
+    this.tetherStiffness = stiffness;
+    this.tetherDamping = damping;
+    this.tetherTangentialForce = tangentialForce;
     return this;
   }
 

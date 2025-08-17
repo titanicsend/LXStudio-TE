@@ -49,6 +49,8 @@ public class BulletBootstrap {
   private final ArrayList<Tether> tethers = new ArrayList<>();
 
   private boolean centralGravityEnabled = false;
+  // External speed factor for scaling tangential tether force; default 1.0
+  private float currentExternalSpeedFactor = 1.0f;
   private final Vector3f centralCenter = new Vector3f(0f, 0f, 0f);
   private float centralMu = 25f;
   private float centralSoft = 0.25f;
@@ -131,6 +133,15 @@ public class BulletBootstrap {
   /** Check if GPU dynamics are enabled (JBullet is optimized, so we say yes) */
   public boolean isGpuEnabled() {
     return isGpuEnabled;
+  }
+
+  /** Allow patterns to supply a speed factor used for tangential tether force scaling */
+  public void setExternalSpeedFactor(float speedFactor) {
+    if (Float.isFinite(speedFactor) && speedFactor > 0f) {
+      this.currentExternalSpeedFactor = speedFactor;
+    } else {
+      this.currentExternalSpeedFactor = 1.0f;
+    }
   }
 
   /** Check if Bullet Physics is initialized */
@@ -543,6 +554,30 @@ public class BulletBootstrap {
       Vector3f F = new Vector3f((Fs + Fd) * ux, (Fs + Fd) * uy, (Fs + Fd) * uz);
       b.activate(true);
       b.applyCentralForce(F);
+
+      // Optional tangential merry-go-round force: perpendicular to radial vector
+      if (sceneConfig != null
+          && sceneConfig.centralTetherEnabled
+          && sceneConfig.tetherTangentialForce != 0f) {
+        // Build a perpendicular direction to (ux,uy,uz). Choose a helper vector not parallel to u
+        float hx = Math.abs(ux) < 0.9f ? 1f : 0f;
+        float hy = Math.abs(uy) < 0.9f ? 1f : 0f;
+        float hz = (hx == 0f && hy == 0f) ? 1f : 0f;
+        // w = u x h
+        float wx = uy * hz - uz * hy;
+        float wy = uz * hx - ux * hz;
+        float wz = ux * hy - uy * hx;
+        float wLen = (float) Math.sqrt(wx * wx + wy * wy + wz * wz);
+        if (wLen > 1e-6f) {
+          wx /= wLen;
+          wy /= wLen;
+          wz /= wLen;
+          // Compute tangential magnitude, optionally scale by external speed factor set by caller
+          float mag = sceneConfig.tetherTangentialForce * currentExternalSpeedFactor;
+          Vector3f Ft = new Vector3f(wx * mag, wy * mag, wz * mag);
+          b.applyCentralForce(Ft);
+        }
+      }
     }
   }
 

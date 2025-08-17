@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.5.GPU-SNAPSHOT",
-  "timestamp": 1755298221218,
+  "timestamp": 1755307283555,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -13983,22 +13983,22 @@
               "attack": 0.0,
               "release": 238.32847665695334,
               "slope": 6.0,
-              "band-1": 0.0,
-              "band-2": 1.0229456473054288E-4,
-              "band-3": 0.0,
-              "band-4": 0.0,
-              "band-5": 0.0,
-              "band-6": 0.12678263199526674,
-              "band-7": 0.2544529920940284,
-              "band-8": 0.26559363033380656,
-              "band-9": 0.14377197675870745,
-              "band-10": 0.12025380499877691,
-              "band-11": 0.19689054579842669,
-              "band-12": 0.1415977377946801,
-              "band-13": 5.03079313559085E-4,
-              "band-14": 0.02664772116049363,
-              "band-15": 0.0,
-              "band-16": 0.0
+              "band-1": 0.6063730254658422,
+              "band-2": 0.702532174822921,
+              "band-3": 0.7246928532191919,
+              "band-4": 0.7294957447247408,
+              "band-5": 0.6551385700248209,
+              "band-6": 0.5742151138749823,
+              "band-7": 0.44957411485996124,
+              "band-8": 0.4142664530011123,
+              "band-9": 0.27719916580411585,
+              "band-10": 0.13936253257974174,
+              "band-11": 0.1241479654571549,
+              "band-12": 0.1191173740338426,
+              "band-13": 0.12086313665862392,
+              "band-14": 0.12325542909537468,
+              "band-15": 0.13714024552073312,
+              "band-16": 0.16783332265390172
             },
             "children": {}
           }
@@ -14403,7 +14403,7 @@
             },
             "effects": [],
             "clips": [],
-            "patternIndex": 36,
+            "patternIndex": 37,
             "patterns": [
               {
                 "id": 157417,
@@ -21730,8 +21730,8 @@
                 "defaults": {}
               },
               {
-                "id": 563723,
-                "class": "titanicsend.pattern.sinas.ParticlesTest",
+                "id": 571276,
+                "class": "titanicsend.pattern.sinas.OrbitingComets",
                 "internal": {
                   "modulationColor": 0,
                   "modulationControlsExpanded": true,
@@ -21742,7 +21742,7 @@
                   "modulationExpanded": false
                 },
                 "parameters": {
-                  "label": "ParticlesTest",
+                  "label": "OrbitingComets",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
                   "midiFilter/channel/name": "OMNI",
@@ -21763,15 +21763,15 @@
                   "cueActive": false,
                   "auxActive": false,
                   "setDefaults": false,
-                  "te_speed": 1.0,
+                  "te_speed": 0.0021921833924787304,
                   "te_xpos": 0.0,
                   "te_ypos": 0.0,
-                  "te_size": 0.2,
+                  "te_size": 0.6081601485377177,
                   "te_quantity": 0.5,
                   "te_spin": 0.0,
                   "te_brightness": 1.0,
-                  "te_wow1": 1.0,
-                  "te_wow2": 0.0,
+                  "te_wow1": 1.0023437500931323,
+                  "te_wow2": 1.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
                   "te_level": 0.1,
@@ -21790,7 +21790,7 @@
                 },
                 "children": {
                   "modulation": {
-                    "id": 563724,
+                    "id": 571277,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,
@@ -40229,9 +40229,9 @@
         "animation": false,
         "camera": {
           "active": false,
-          "radius": 491.84492927961605,
-          "theta": 180.16904439486098,
-          "phi": 2.196991084725596,
+          "radius": 487.48889236044954,
+          "theta": 179.34887731529307,
+          "phi": -1.0149514017393813,
           "x": 15.920288028882794,
           "y": 244.14256899640895,
           "z": 189.10984523105662
