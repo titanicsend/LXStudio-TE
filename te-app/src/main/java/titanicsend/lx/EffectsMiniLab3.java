@@ -14,6 +14,7 @@ import heronarts.lx.midi.MidiNote;
 import heronarts.lx.midi.MidiNoteOn;
 import heronarts.lx.midi.MidiPitchBend;
 import heronarts.lx.midi.surface.LXMidiSurface;
+import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.utils.ObservableList;
 import java.util.List;
 import titanicsend.app.effectmgr.GlobalEffect;
@@ -295,7 +296,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
     verbose("Minilab3 Sysex: " + sysex);
 
     byte[] msg = sysex.getMessage();
-    verbose("msg length: " + msg.length);
+    //    verbose("msg length: " + msg.length);
 
     // -1: mode byte not seen
     // 0:  is's a Mode update
@@ -309,7 +310,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
 
     for (int i = 0; i < msg.length; i++) {
       byte b = msg[i];
-      verbose(String.format("msg[%02d]: %02X", i, b));
+      //      verbose(String.format("msg[%02d]: %02X", i, b));
 
       switch (i) {
         case 0:
@@ -620,16 +621,44 @@ public class EffectsMiniLab3 extends LXMidiSurface
 
   /** Toggle whether an effect is being edited */
   private void toggleEffect(int index) {
+    // Enable/Disable effect
+    press(index);
+    /*
+    Alternate approach:
+
     // If we are not yet editing this pad, start editing it. (Stop editing other ones first.)
     // If we ARE editing this pad, stop editing it. (AKA toggle off)
-
     verbose("Toggle Edit Effect #: " + index);
-    press(index);
+    */
   }
 
   /** Set the value of an effect parameter at a given index */
   private void parameterSetValue(int parameterIndex, int value) {
     verbose("Effect Parameter " + parameterIndex + ": set to " + value);
+
+    int bankRelativeSlotIndex = parameterIndex % 4;
+    int slotIndex = isBankA ? bankRelativeSlotIndex : 4 + bankRelativeSlotIndex;
+    if (slotIndex >= effectManager.slots.size()) {
+      return;
+    }
+    GlobalEffect<? extends LXEffect> globalEffect = effectManager.slots.get(slotIndex);
+    if (globalEffect == null) {
+      return;
+    }
+
+    // Effect Slot 0:
+    // - primary param; knob 0 (labeled "1" on the device)
+    // - secondary param; knob 4 (labeled "5" on the device)
+    boolean isPrimaryParam = (parameterIndex / 4) == 0;
+
+    LXListenableNormalizedParameter effectParam =
+        isPrimaryParam ? globalEffect.getLevelParameter() : globalEffect.getSecondaryParameter();
+    if (effectParam == null) {
+      return;
+    }
+    float normalizedValue = value / 127f;
+    // TODO: ensure all effects have range 0-1? or handle normalization some other way?
+    effectParam.setValue(normalizedValue);
   }
 
   /** Set the value of a global parameter */
@@ -669,10 +698,34 @@ public class EffectsMiniLab3 extends LXMidiSurface
   }
 
   private void sendBank(byte bank) {
+    List<GlobalEffect<? extends LXEffect>> slots = effectManager.slots;
+    if (slots == null || slots.isEmpty()) {
+      padVerbose("Slots is empty, exit");
+    }
+
+    boolean isPersistentMode = true;
+
     if (bank == SYSEX_BANK_A) {
       verbose("Send Bank A");
+      for (int i = 0; i < 8; i++) {
+        int slotIndex = padToSlotIndex(slots, i);
+        if (slotIndex >= 0) {
+          updatePadForSlot(true, i, slotIndex, isPersistentMode);
+        } else {
+          setPadLEDColor(true, i, isPersistentMode, 0, 0, 0); // Turn off (RGB = 0,0,0)
+        }
+      }
     } else if (bank == SYSEX_BANK_B) {
       verbose("Send Bank B");
+      for (int i = 8; i < NUM_PADS; i++) {
+        int slotIndex = padToSlotIndex(slots, i);
+        if (slotIndex >= 0) {
+          updatePadForSlot(false, i, slotIndex, isPersistentMode);
+        } else {
+          // NOTE: use padIndex - 8 !!!
+          setPadLEDColor(false, i, isPersistentMode, 0, 0, 0); // Turn off (RGB = 0,0,0)
+        }
+      }
     } else {
       throw new IllegalArgumentException("Unknown bank: " + bank);
     }
@@ -683,88 +736,124 @@ public class EffectsMiniLab3 extends LXMidiSurface
   // ------------------------------------------------------------------------------------
 
   private void press(int padIndex) {
-    verbose("PRESS: " + padIndex);
-    //    setPadLEDColor(padIndex, 127, 127, 127);
-    if (padIndex >= effectManager.slots.size()) {
+    int slotIndex = padToSlotIndex(effectManager.slots, padIndex);
+    verbose("PRESS Pad: " + padIndex + " (Slot: " + slotIndex + ")");
+    if (slotIndex < 0) {
+      verbose("\tPad doesn't map to slot");
+      clearPadLEDs(); // TEMPORARY DEBUG HACK: clear colors if non-slot pad button pressed
+      return;
+    } else if (slotIndex >= effectManager.slots.size()) {
       verbose("Out of range: " + padIndex);
       return;
     }
-    GlobalEffect<? extends LXEffect> globalEffect = effectManager.slots.get(padIndex);
+
+    GlobalEffect<? extends LXEffect> globalEffect = effectManager.slots.get(slotIndex);
     GlobalEffect.State currState = globalEffect.getState();
     if (currState == null) {
-      verbose("Current state is null: " + globalEffect);
+      verbose("Current state is null: " + globalEffect.getName());
       return;
     } else if (currState == GlobalEffect.State.EMPTY) {
-      verbose("Current state is empty: " + globalEffect);
+      verbose("Current state is empty: " + globalEffect.getName());
       return;
     } else if (globalEffect.effect == null) {
       throw new IllegalStateException("LXEffect is null, but state is neither EMPTY nor null");
+    } else {
+      verbose("Current state: " + currState + " for effect: " + globalEffect.effect.getLabel());
     }
-
-    verbose("Current state: " + currState + " for effect: " + globalEffect.effect.getLabel());
 
     globalEffect.getEnabledParameter().toggle();
     TE.log(
-        "PRESS: "
-            + padIndex
-            + " "
-            + currState.name()
-            + " -> "
-            + globalEffect.getState().toString());
+        String.format(
+            "PRESS: %d: %s -> %s", padIndex, currState.name(), globalEffect.getState().toString()));
   }
 
   private void updatePadLEDs() {
-    padVerbose("<<<<<<<<< Updating Pad LEDs >>>>>>>>>>");
-    // TEMP: just to keep an eye on the effect states while developing
-    this.effectManager.debugStates();
+    padVerbose(String.format("<<< Updating Pad LEDs (BANK: %s) >>>", this.isBankA ? "A" : "B"));
+    sendBank(this.isBankA);
+  }
 
-    List<GlobalEffect<? extends LXEffect>> slots = effectManager.slots;
-    if (slots == null) {
-      padVerbose("Slots is null, exit");
-    }
-    // Send individual SysEx message for each pad
-    for (int i = 0; i < NUM_PADS; i++) {
-      padVerbose("Pad " + i);
-      if (i < slots.size()) {
-        padVerbose("\tPad " + i + ": " + slots.get(i).getName());
-        GlobalEffect<? extends LXEffect> globalEffect = getSlot(i);
-        if (globalEffect != null) {
-          padVerbose("\t\tSlot " + i + " is " + globalEffect.getName());
-          GlobalEffect.State state = globalEffect.getState();
-          if (state != null) {
-            padVerbose("\t\t\t state is " + state);
-            switch (state) {
-              case EMPTY -> {
-                setPadA(i, 0x00, 0x00, 0xFF);
-                //                setPadB(i, 0x00, 0x00, 0xFF);
-              }
-              case DISABLED -> {
-                setPadA(i, 0x00, 0xFF, 0x00);
-                //                setPadB(i, 0x00, 0xFF, 0x00);
-              }
-              case ENABLED -> {
-                setPadA(i, 0xFF, 0x00, 0x00);
-                //                setPadB(i, 0xFF, 0x00, 0x00);
-              }
-            }
-          } else {
-            padVerbose("\t\t\t state is null");
-            // State is null
-            setPadA(i, 0x00, 0x00, 0x00);
-            //            setPadB(i, 0x00, 0x00, 0x00);
+  private void updatePadForSlot(
+      boolean isBankA, int padIndex, int slotIndex, boolean isPersistentMode) {
+
+    GlobalEffect<? extends LXEffect> globalEffect = effectManager.slots.get(slotIndex);
+
+    verbose(
+        String.format(
+            "\tSlot %d :: Pad %d :: %s",
+            slotIndex,
+            padIndex,
+            globalEffect == null
+                ? "null"
+                : String.format("%s (%s)", globalEffect.getName(), globalEffect.getState())));
+
+    if (globalEffect != null) {
+      padVerbose("\t\tPad " + padIndex + " is " + globalEffect.getName());
+      GlobalEffect.State state = globalEffect.getState();
+      if (state != null) {
+        padVerbose("\t\t\t state is " + state);
+        switch (state) {
+          case EMPTY -> {
+            setPadLEDColor(isBankA, padIndex, isPersistentMode, 0x00, 0x00, 0xFF);
           }
-        } else {
-          padVerbose("\t\tSlot " + i + " is null");
-          // GlobalEffect is null
-          setPadA(i, 0x10, 0x00, 0x00);
-          //          setPadB(i, 0x10, 0x00, 0x00);
+          case DISABLED -> {
+            setPadLEDColor(isBankA, padIndex, isPersistentMode, 0x00, 0xFF, 0x00);
+          }
+          case ENABLED -> {
+            setPadLEDColor(isBankA, padIndex, isPersistentMode, 0xFF, 0x00, 0x00);
+          }
         }
       } else {
-        padVerbose("\t\tSlot " + i + " is out of range for " + slots.size());
-        //        // Slots is null
-        //        setPadA(i, 0x00, 0x10, 0x00);
-        //        //        setPadB(i, 0x00, 0x10, 0x00);
+        padVerbose("\t\t\t state is null");
+        // State is null
+        setPadLEDColor(isBankA, padIndex, isPersistentMode, 0x00, 0x00, 0x00);
       }
+    } else {
+      padVerbose("\t\tSlot " + slotIndex + " is null");
+      // GlobalEffect is null
+      setPadLEDColor(isBankA, padIndex, isPersistentMode, 0x10, 0x00, 0x00);
+    }
+  }
+
+  // ------------------------------------------------------------------------------------
+  // Virtual Slot <--> Pad Mapping (to use the 4 pads aligned with the rows of knobs)
+  // ------------------------------------------------------------------------------------
+
+  static int padToSlotIndex(List<GlobalEffect<? extends LXEffect>> slots, int padIndex) {
+    int slotIndex = -1;
+    // Bank A, the 4 buttons aligned with knobs
+    if (padIndex >= 1 && padIndex <= 4) {
+      // Pad 1: Slot 0
+      // Pad 4: Slot 3
+      slotIndex = padIndex - 1;
+    } else if (padIndex >= 9 && padIndex <= 12) {
+      // Pad 9:  Slot 4
+      // Pad 12: Slot 7
+      slotIndex = padIndex - 5;
+    }
+    if (slotIndex >= slots.size()) {
+      return -1;
+    }
+    return slotIndex;
+  }
+
+  static int slotToPadIndex(List<GlobalEffect<? extends LXEffect>> slots, int slotIndex) {
+    if (slotIndex < 0) {
+      throw new IllegalArgumentException("Slot index is negative: " + slotIndex);
+    } else if (slotIndex <= Math.min(3, slots.size())) {
+      // Bank A
+      return slotIndex + 1;
+    } else if (slotIndex <= Math.min(7, slots.size())) {
+      // Bank B
+      return slotIndex + 5;
+    } else if (slotIndex < slots.size()) {
+      throw new IllegalArgumentException(
+          "EffectManager has more than expected maximum of 8 slots: "
+              + slotIndex
+              + " < "
+              + slots.size());
+    } else {
+      throw new IllegalArgumentException(
+          "Slot index is out of range: " + slotIndex + " >= " + slots.size());
     }
   }
 
@@ -782,26 +871,31 @@ public class EffectsMiniLab3 extends LXMidiSurface
   private void clearPadLEDs() {
     // Send individual SysEx message to turn off each pad
     for (int i = 0; i < NUM_PADS; i++) {
-      setPadA(i, 0, 0, 0); // Turn off (RGB = 0,0,0)
-      setPadB(i, 0, 0, 0); // Turn off (RGB = 0,0,0)
+      setPadLEDColor(i < 8, i, false, 0, 0, 0); // Turn off (RGB = 0,0,0)
     }
   }
 
-  private void setPadA(int padIndex, int red, int green, int blue) {
-    setPadLEDColor(0, padIndex, red, green, blue);
-  }
+  private void setPadLEDColor(
+      boolean isBankA, int padIndex, boolean isPersistentMode, int red, int green, int blue) {
 
-  private void setPadB(int padIndex, int red, int green, int blue) {
-    setPadLEDColor(1, padIndex, red, green, blue);
-  }
-
-  private void setPadLEDColor(int bankIndex, int padIndex, int red, int green, int blue) {
-    if (bankIndex < 0 || bankIndex > 1) {
-      throw new IllegalStateException("Bank index must be 0 (A) or 1 (B)");
-    }
     if (padIndex < 0 || padIndex >= NUM_PADS) {
       throw new IllegalStateException("Pad index must be 0-8");
     }
+
+    /*
+    ID 04..0B => Temporary color for pads 1..8 (bank A)
+    ID 14..1B => Temporary color for pads 9..16 (bank B)
+    ID 34..3B => Persistent color for pads 1..8 (bank A)
+    ID 44..4B => Persistent color for pads 9..16 (bank B)
+     */
+    int baseOffset;
+    if (isBankA) {
+      baseOffset = isPersistentMode ? 0x34 : 0x04;
+    } else {
+      baseOffset = isPersistentMode ? 0x44 : 0x14;
+    }
+    int bankIndex = isBankA ? padIndex : padIndex - 8;
+    int sysExPadId = baseOffset + bankIndex;
 
     // Can it be done with a simple NoteOn?  Or do we have to use sysex to get full RGB?
     // sendNoteOn(MIDI_CHANNEL_PADS, (byte) PAD_NOTES[padIndex], LXColor.rgb(red, green, blue));
@@ -812,6 +906,8 @@ public class EffectsMiniLab3 extends LXMidiSurface
       00 20 6B 7F 42         # Arturia header
       02 02 16 ID RR GG BB   # set color of button ID to 0xRRGGBB
       F7                     # sysex footer
+
+      F0 00 20 6B 7F 42 02 02 16 34 00 7F 00 F7
     */
     // ID for pads 1-8 in DAW mode: 0x04 to 0x0B
     byte[] sysex = new byte[14];
@@ -824,11 +920,13 @@ public class EffectsMiniLab3 extends LXMidiSurface
     sysex[6] = (byte) 0x02; // Mode command: set button color
     sysex[7] = SYSEX_MODE_DAW;
     sysex[8] = SYSEX_COMMAND_SET_COLOR; // Set color command
-    sysex[9] = (byte) (0x04 + (bankIndex * 0x08) + padIndex); // Pad ID (0x04-0x0B for pads 1-8)
+    sysex[9] = (byte) sysExPadId; // SysEx Pad ID (e.g. 0x04-0x0B for pads 1-8)
     sysex[10] = (byte) (red & 0x7F); // R
     sysex[11] = (byte) (green & 0x7F); // G
     sysex[12] = (byte) (blue & 0x7F); // B
     sysex[13] = END_SYSEX; // SysEx end
+
+    padVerbose(String.format("\t\t\t\tSET %02X: (%d,%d,%d)", sysExPadId, red, green, blue));
 
     sendSysex(sysex);
   }
@@ -843,7 +941,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
   }
 
   private void padVerbose(String message) {
-    boolean debugPads = false;
+    boolean debugPads = true;
     if (debugPads) {
       LXMidiEngine.error(message);
     }

@@ -171,6 +171,41 @@ public abstract class GlobalEffect<T extends LXEffect> {
     if (enabledListener != null) {
       BooleanParameter enabledParam = getEnabledParameter();
       if (enabledParam != null) {
+        // TODO: fix dispose
+        /*
+                [LX 2025/08/17 13:51:39] WARNING / SHOULDFIX: Stranded listener on parameter: /lx/mixer/master/effect/0/enabled - titanicsend.app.effectmgr.GlobalEffect$1
+        java.lang.Exception
+        	at heronarts.lx.parameter.LXListenableParameter.dispose(LXListenableParameter.java:175)
+        	at heronarts.lx.LXComponent.removeParameter(LXComponent.java:1313)
+        	at heronarts.lx.LXComponent.removeParameter(LXComponent.java:1280)
+        	at heronarts.lx.LXComponent.dispose(LXComponent.java:1093)
+        	at heronarts.lx.LXModulatorComponent.dispose(LXModulatorComponent.java:153)
+        	at heronarts.lx.LXLayeredComponent.dispose(LXLayeredComponent.java:206)
+        	at heronarts.lx.LXDeviceComponent.dispose(LXDeviceComponent.java:443)
+        	at heronarts.lx.effect.LXEffect.dispose(LXEffect.java:402)
+        	at heronarts.lx.LX.dispose(LX.java:727)
+        	at heronarts.lx.mixer.LXBus.removeEffect(LXBus.java:313)
+        	at heronarts.lx.mixer.LXBus.clear(LXBus.java:564)
+        	at heronarts.lx.mixer.LXMixerEngine.clear(LXMixerEngine.java:1380)
+        	at heronarts.lx.LXEngine.dispose(LXEngine.java:1477)
+        	at heronarts.lx.LX.dispose(LX.java:727)
+        	at heronarts.lx.LX.dispose(LX.java:735)
+        	at heronarts.glx.GLX.dispose(GLX.java:319)
+        	at heronarts.glx.GLX.run(GLX.java:298)
+        	at heronarts.lx.studio.TEApp.applicationThread(TEApp.java:1226)
+        	at heronarts.lx.studio.TEApp.lambda$main$1(TEApp.java:1184)
+        	at java.base/java.lang.Thread.run(Thread.java:1583)
+        [LX 2025/08/17 13:51:39] java.lang.IllegalStateException:Trying to remove unregistered LXParameterListener /effect/0/enabled titanicsend.app.effectmgr.GlobalEffect$1
+        java.lang.IllegalStateException: Trying to remove unregistered LXParameterListener /effect/0/enabled titanicsend.app.effectmgr.GlobalEffect$1
+        	at heronarts.lx.parameter.LXListenableParameter.removeListener(LXListenableParameter.java:120)
+        	at titanicsend.app.effectmgr.GlobalEffect.onUnregister(GlobalEffect.java:174)
+        	at titanicsend.app.effectmgr.GlobalEffect.registerEffect(GlobalEffect.java:82)
+        	at titanicsend.app.effectmgr.GlobalEffect.dispose(GlobalEffect.java:219)
+        	at titanicsend.app.effectmgr.GlobalEffectManager.dispose(GlobalEffectManager.java:278)
+        	at heronarts.lx.studio.TEApp$Plugin.dispose(TEApp.java:983)
+        	at heronarts.lx.LXRegistry$Plugin.dispose(LXRegistry.java:527)
+        	at heronarts.lx.LXRegistry.disposePlugins(LXRegistry.java:1476)
+                 */
         enabledParam.removeListener(enabledListener);
       }
     }
