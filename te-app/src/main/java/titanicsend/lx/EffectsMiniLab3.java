@@ -726,9 +726,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
     globalEffect.getEnabledParameter().toggle();
     TE.log(
         String.format(
-            "PRESS: %d: %s -> %s" + padIndex,
-            currState.name(),
-            globalEffect.getState().toString()));
+            "PRESS: %d: %s -> %s", padIndex, currState.name(), globalEffect.getState().toString()));
   }
 
   private void updatePadLEDs() {
