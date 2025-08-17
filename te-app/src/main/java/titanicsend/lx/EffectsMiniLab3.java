@@ -846,7 +846,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
   private void clearPadLEDs() {
     // Send individual SysEx message to turn off each pad
     for (int i = 0; i < NUM_PADS; i++) {
-      setPadLEDColor(i, 0, 0, 0); // Turn off (RGB = 0,0,0)
+      setPadLEDColor(i < 8, i, false, 0, 0, 0); // Turn off (RGB = 0,0,0)
     }
   }
 
