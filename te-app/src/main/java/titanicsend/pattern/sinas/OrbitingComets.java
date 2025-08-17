@@ -1,10 +1,10 @@
 package titanicsend.pattern.sinas;
 
 import com.bulletphysics.dynamics.RigidBody;
-import com.bulletphysics.linearmath.Transform;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL4;
 import com.titanicsend.physics.BulletBootstrap;
+import com.titanicsend.physics.LoopPath;
 import com.titanicsend.physics.SceneConfig;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
@@ -62,12 +62,7 @@ public class OrbitingComets extends GLShaderPattern {
   }
 
   private final float sphereMass = 0.5f; // Standard sphere mass
-  private boolean spawnedStaticSet = false;
-
-  // Fixed-step physics timing for smooth interpolation
-  private static final float PHYSICS_TIMESTEP = 1.0f / 120.0f; // 120 Hz fixed timestep
-  private float physicsAccumulator = 0f;
-  private long lastPhysicsTime = System.nanoTime();
+  private LoopPath.CirclePath orbitPath;
 
   // Logging control
   private float logFPS = 10.0f; // Default 10 logs per second
@@ -268,33 +263,84 @@ public class OrbitingComets extends GLShaderPattern {
       // Create SceneConfig for orbiting comets with combined forces
       SceneConfig config =
           new SceneConfig()
-              .withCentralMass(
+              .addCentralGravity(
                   new javax.vecmath.Vector3f(5f, 3.5f, 5f), /*GM*/
                   1.0f, /*soft*/
                   0.25f) // Provides orbital dynamics
-              .withCentralTether(
-                  new javax.vecmath.Vector3f(5f, 3.5f, 5f), /*radius*/
-                  3.0f, /*stiffness*/
-                  10.0f, /*damping*/
-                  0.3f, /*tangentialForce*/
-                  1.0f) // Constrains radius and adds merry-go-round force
               .withRoom(
                   0.5f, 9.5f, 0.5f, 9.5f, 0.5f, 20f,
                   1.0f) // Room bounds: minX, maxX, minY, maxY, minZ, maxZ, thickness
-              .withCirclePath(
-                  new javax.vecmath.Vector3f(
-                      5.0f, 3.5f, 5.0f), // Center at (5, 3.5, 5) in world space
-                  3.0f, // Circle radius = 3
-                  3.5f, // Y plane = 3.5
-                  0.1f, // Min orb radius = 0.5
-                  0.2f) // Max orb radius = 1.0
               .withSolver(10, 1.0f / 120.0f); // Standard solver settings
 
       bulletPhysics = new BulletBootstrap();
       bulletPhysics.initializeScene(config);
 
+      // Create the circular path for orbiting comets
+      orbitPath =
+          new LoopPath.CirclePath(
+              new javax.vecmath.Vector3f(5f, 3.5f, 5f), // Center at (5, 3.5, 5) in world space
+              3.0f, // Circle radius = 3
+              3.5f); // Y plane = 3.5
+
+      // Create 10 tethered comets on the circle path
+      int numComets = 10;
+      javax.vecmath.Vector3f centerGravity = new javax.vecmath.Vector3f(5f, 3.5f, 5f);
+      float GM = 1.0f; // Match the central gravity GM
+
+      for (int i = 0; i < numComets; i++) {
+        String name = "comet-" + i;
+
+        // Get position from path
+        javax.vecmath.Vector3f pos = orbitPath.getPosition(i, numComets, 0);
+
+        // Vary orb radius
+        float minRadius = 0.1f;
+        float maxRadius = 0.2f;
+        float radiusRange = maxRadius - minRadius;
+        float radiusVariation = (float) Math.random() * radiusRange;
+        float orbRadius = minRadius + radiusVariation;
+
+        // Create tethered sphere
+        bulletPhysics.addTetheredSphere(
+            name,
+            pos.x,
+            pos.y,
+            pos.z,
+            orbRadius,
+            sphereMass * orbRadius,
+            true, // enableCcd
+            centerGravity, // tether anchor = center of gravity
+            3.0f, // rest length = circle radius
+            10.0f, // stiffness
+            0.3f, // damping
+            1.0f); // tangential force for merry-go-round effect
+
+        // Set orbital velocity
+        RigidBody body = bulletPhysics.getBody(name);
+        if (body != null) {
+          javax.vecmath.Vector3f velocity =
+              orbitPath.getOrbitalVelocity(i, numComets, centerGravity, GM);
+          body.setLinearVelocity(velocity);
+          body.activate(true);
+
+          // Set collision properties
+          bulletPhysics.setCollisionResponseEnabled(name, true);
+          bulletPhysics.setLinearFactor(name, new javax.vecmath.Vector3f(1, 1, 1));
+
+          // Add to our tracking system
+          ActiveSphere sphere = new ActiveSphere(name, orbRadius);
+          sphere.currPosition.set(pos.x, pos.y, pos.z);
+          sphere.prevPosition.set(pos.x, pos.y, pos.z);
+          activeSpheres.add(sphere);
+
+          TE.log(
+              "OrbitingComets: Added tethered comet '%s' at (%.2f, %.2f, %.2f) radius=%.2f velocity=(%.2f, %.2f, %.2f)",
+              name, pos.x, pos.y, pos.z, orbRadius, velocity.x, velocity.y, velocity.z);
+        }
+      }
+
       bulletPhysicsInitialized = true;
-      TE.log("OrbitingComets: Orbiting comets physics demo initialized with circle path");
+      TE.log("OrbitingComets: Orbiting comets physics demo initialized with %d comets", numComets);
 
     } catch (Exception e) {
       TE.error(e, "OrbitingComets: Failed to initialize Bullet Physics");
@@ -308,77 +354,15 @@ public class OrbitingComets extends GLShaderPattern {
     }
 
     try {
-      // SPEED is a pure multiplier for tangential force; keep physics timestep constant
+      // SPEED is a pure multiplier for tangential force
       float speed = (float) controls.getLXControl(TEControlTag.SPEED).getValuef();
       if (bulletPhysics != null) bulletPhysics.setExternalSpeedFactor(speed);
 
-      // Fixed-step physics with interpolation
-      long currentTime = System.nanoTime();
-      float frameTime = (currentTime - lastPhysicsTime) / 1_000_000_000.0f; // decouple from SPEED
-      lastPhysicsTime = currentTime;
+      // Just step the physics - BulletBootstrap handles fixed timestep internally
+      bulletPhysics.step(dtSeconds);
 
-      // Accumulate time and run fixed timesteps
-      physicsAccumulator += Math.min(frameTime, 0.25f); // Cap max frame time
-
-      // Store previous positions before stepping
-      for (ActiveSphere sphere : activeSpheres) {
-        sphere.prevPosition.set(sphere.currPosition);
-        sphere.prevRotation.set(sphere.currRotation);
-      }
-
-      // Run fixed timesteps (using SceneConfig timestep)
-      while (physicsAccumulator >= PHYSICS_TIMESTEP) {
-        bulletPhysics.step(PHYSICS_TIMESTEP);
-        physicsAccumulator -= PHYSICS_TIMESTEP;
-
-        // Update current positions after each physics step
-        updateCurrentTransforms();
-      }
-
-      // One-time spawn of 10 orbiting comets on circle path
-      if (!spawnedStaticSet) {
-        spawnedStaticSet = true;
-
-        // Use path-based spawning for 10 comets on a circle
-        int numComets = 10;
-        bulletPhysics.addSpheresOnPath("comet", numComets, sphereMass, true);
-
-        // Add the comets to our tracking system
-        for (int i = 0; i < numComets; i++) {
-          String name = "comet-" + i;
-          RigidBody body = bulletPhysics.getBody(name);
-          if (body != null) {
-            // Keep the orbital velocity set by BulletBootstrap - don't override it
-            body.activate(true);
-
-            // Get the actual radius from the physics body (varies between 0.5-1.0)
-            com.bulletphysics.collision.shapes.SphereShape shape =
-                (com.bulletphysics.collision.shapes.SphereShape) body.getCollisionShape();
-            float cometRadius = shape.getRadius();
-
-            // Set collision properties
-            bulletPhysics.setCollisionResponseEnabled(name, true);
-            bulletPhysics.setLinearFactor(name, new javax.vecmath.Vector3f(1, 1, 1));
-
-            // Add to our tracking system
-            ActiveSphere sphere = new ActiveSphere(name, cometRadius);
-            Transform transform = body.getWorldTransform(new Transform());
-            javax.vecmath.Vector3f pos = transform.origin;
-            sphere.currPosition.set(pos.x, pos.y, pos.z);
-            sphere.prevPosition.set(pos.x, pos.y, pos.z);
-            activeSpheres.add(sphere);
-
-            TE.log(
-                "OrbitingComets: Added comet '%s' to tracking system at (%.2f, %.2f, %.2f) radius=%.2f",
-                name, pos.x, pos.y, pos.z, cometRadius);
-          }
-        }
-
-        // Add central tethers to all spawned comets
-        bulletPhysics.addCentralTethersForAllBodies();
-      }
-      // No aging/removal; keep static set
-      // No periodic kicks - only WOW trigger forces
+      // Update current positions after physics step
+      updateCurrentTransforms();
 
     } catch (Exception e) {
       TE.error(e, "OrbitingComets: Error in Bullet Physics simulation");

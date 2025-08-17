@@ -82,16 +82,6 @@ public class ParticleTest3D extends GLShaderPattern {
   private int spawnCounter = 0;
   private boolean spawnedStaticSet = false;
 
-  // Kick timing
-  private float timeSinceLastKick = 0f;
-  private final float kickInterval = 5.0f; // 5 seconds between kicks
-
-  // Fixed-step physics timing for smooth interpolation
-  private static final float PHYSICS_TIMESTEP = 1.0f / 120.0f; // 120 Hz fixed timestep
-  private float physicsAccumulator = 0f;
-  private long lastPhysicsTime = System.nanoTime();
-  private float interpolationAlpha = 0f;
-
   // Logging control
   private float logFPS = 10.0f; // Default 10 logs per second
   private long lastLogTime = System.nanoTime();
@@ -324,37 +314,22 @@ public class ParticleTest3D extends GLShaderPattern {
     try {
       float speed = (float) controls.getLXControl(TEControlTag.SPEED).getValuef();
 
-      // Fixed-step physics with interpolation
-      long currentTime = System.nanoTime();
-      float frameTime = (currentTime - lastPhysicsTime) / 1_000_000_000.0f * speed;
-      lastPhysicsTime = currentTime;
-
-      // Accumulate time and run fixed timesteps
-      physicsAccumulator += Math.min(frameTime, 0.25f); // Cap max frame time
-
       // Store previous positions before stepping
       for (ActiveSphere sphere : activeSpheres) {
         sphere.prevPosition.set(sphere.currPosition);
         sphere.prevRotation.set(sphere.currRotation);
       }
 
-      // Run fixed timesteps (using SceneConfig timestep)
-      while (physicsAccumulator >= PHYSICS_TIMESTEP) {
-        bulletPhysics.step(PHYSICS_TIMESTEP);
-        physicsAccumulator -= PHYSICS_TIMESTEP;
+      // Step physics with speed multiplier - BulletBootstrap handles fixed timestep internally
+      bulletPhysics.step(dtSeconds * speed);
 
-        // Update current positions after each physics step
-        updateCurrentTransforms();
-      }
-
-      // Calculate interpolation alpha for smooth rendering
-      interpolationAlpha = physicsAccumulator / PHYSICS_TIMESTEP;
+      // Update current positions after physics step
+      updateCurrentTransforms();
 
       // One-time static spawn of smaller spheres on the ground
       if (!spawnedStaticSet) {
         spawnedStaticSet = true;
         int numBalls = MAX_SPHERES;
-        float baseRadius = 0.4f; // Base radius for variation
 
         // Spawn balls in a grid pattern inside the room bounds
         int gridSize = (int) Math.ceil(Math.sqrt(numBalls));

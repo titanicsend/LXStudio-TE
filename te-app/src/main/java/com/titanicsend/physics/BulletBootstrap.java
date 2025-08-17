@@ -46,20 +46,68 @@ public class BulletBootstrap {
 
   // Enhanced scene configuration
   private SceneConfig sceneConfig;
-  private final ArrayList<Tether> tethers = new ArrayList<>();
 
-  private boolean centralGravityEnabled = false;
   // External speed factor for scaling tangential tether force; default 1.0
   private float currentExternalSpeedFactor = 1.0f;
-  private final Vector3f centralCenter = new Vector3f(0f, 0f, 0f);
-  private float centralMu = 25f;
-  private float centralSoft = 0.25f;
 
+  private static class CentralGravity {
+    final Vector3f center = new Vector3f();
+    float mu;
+    float soft;
+  }
+
+  private final ArrayList<CentralGravity> centralGravities = new ArrayList<>();
+
+  // Tether tracking
   private static class Tether {
     String bodyName;
     final Vector3f anchor = new Vector3f();
-    float restLen, k, c; // stiffness, damping
+    float restLen, stiffness, damping, tangentialForce;
   }
+
+  private final ArrayList<Tether> tethers = new ArrayList<>();
+
+  // Particle Emitter
+  public enum EmitterInitialSpeed {
+    ZERO, // Particles start with zero velocity
+    EMITTER_SPEED, // Particles inherit emitter's velocity
+    FIXED_SPEED // Particles have fixed initial speed
+  }
+
+  private static class ParticleEmitter {
+    String name;
+    int maxParticles;
+    float particleLifetime;
+    EmitterInitialSpeed initialSpeedMode;
+    float fixedSpeed; // Used when initialSpeedMode is FIXED_SPEED
+    LoopPath path;
+    float particleRadius = 0.1f;
+    float particleMass = 0.1f;
+    float emitRate = 10.0f; // particles per second
+
+    // Emitter state
+    Vector3f prevPosition = new Vector3f();
+    Vector3f currPosition = new Vector3f();
+    Vector3f velocity = new Vector3f();
+    float timeSinceLastEmit = 0f;
+    int particleCounter = 0;
+
+    // Active particles tracking
+    static class Particle {
+      String bodyName;
+      float age;
+      float maxAge;
+      float radius;
+    }
+
+    final ArrayList<Particle> particles = new ArrayList<>();
+  }
+
+  private final Map<String, ParticleEmitter> emitters = new LinkedHashMap<>();
+
+  // Fixed-step physics timing
+  private long lastPhysicsTime = System.nanoTime();
+  private float physicsAccumulator = 0f;
 
   /** Initialize Bullet Physics simulation */
   public void initialize() {
@@ -109,21 +157,31 @@ public class BulletBootstrap {
    *
    * @param deltaTime time step in seconds
    */
-  /** Step with optional internal scene forces enabled by SceneConfig */
+  /** Step with fixed timestep accumulation - call this with actual frame time */
   public void step(float deltaTime) {
     if (!isInitialized) {
       throw new RuntimeException("Bullet Physics not initialized - cannot step simulation");
     }
 
     try {
-      // apply scene-wide forces (central gravity, tethers)
-      applySceneForces(deltaTime);
-      // fixed stepping hint (caller may also do fixed substeps externally)
-      float fixed = (sceneConfig != null) ? sceneConfig.fixedTimeStep : 1f / 120f;
-      dynamicsWorld.stepSimulation(deltaTime, 8, fixed);
+      long currentTime = System.nanoTime();
+      float frameTime = (currentTime - lastPhysicsTime) / 1_000_000_000.0f;
+      lastPhysicsTime = currentTime;
 
-      // Only log occasionally to avoid spam
-      // TE.log("Bullet Bootstrap: Physics simulation step %.4fs", deltaTime);
+      // Accumulate time and run fixed timesteps
+      physicsAccumulator += Math.min(frameTime, 0.25f); // Cap max frame time
+
+      float fixedStep = (sceneConfig != null) ? sceneConfig.fixedTimeStep : 1f / 120f;
+
+      // Run fixed timesteps
+      while (physicsAccumulator >= fixedStep) {
+        // Update all emitters
+        updateAllEmitters(fixedStep);
+        // apply scene-wide forces (central gravity, tethers)
+        applySceneForces(fixedStep);
+        dynamicsWorld.stepSimulation(fixedStep, 1, fixedStep);
+        physicsAccumulator -= fixedStep;
+      }
 
     } catch (Exception e) {
       throw new RuntimeException("Bullet Physics simulation step failed", e);
@@ -206,6 +264,25 @@ public class BulletBootstrap {
         body.setCcdSweptSphereRadius(0f);
       }
     }
+  }
+
+  /** Add a dynamic sphere and immediately tether it to a point with properties. */
+  public void addTetheredSphere(
+      String name,
+      float x,
+      float y,
+      float z,
+      float radius,
+      float mass,
+      boolean enableCcd,
+      Vector3f tetherAnchor,
+      float tetherRestLen,
+      float tetherStiffness,
+      float tetherDamping,
+      float tetherTangentialForce) {
+    addSphere(name, x, y, z, radius, mass, enableCcd);
+    addTether(
+        name, tetherAnchor, tetherRestLen, tetherStiffness, tetherDamping, tetherTangentialForce);
   }
 
   /** Set world gravity. */
@@ -371,13 +448,12 @@ public class BulletBootstrap {
       dynamicsWorld.setGravity(new Vector3f(0f, 0f, 0f));
     }
 
-    if (cfg.centralGravityEnabled) {
-      enableCentralGravity(cfg.gravityCenter, cfg.gravityMu, cfg.gravitySoftening);
-      TE.log(
-          "BulletBootstrap: Enabled central gravity at (%.2f, %.2f, %.2f) GM=%.2f",
-          cfg.gravityCenter.x, cfg.gravityCenter.y, cfg.gravityCenter.z, cfg.gravityMu);
-    } else {
-      centralGravityEnabled = false;
+    centralGravities.clear();
+    if (cfg.centralGravities != null && !cfg.centralGravities.isEmpty()) {
+      for (SceneConfig.CentralGravityConfig c : cfg.centralGravities) {
+        addCentralGravity(new Vector3f(c.center), c.mu, c.soft);
+      }
+      TE.log("BulletBootstrap: Added %d central gravities", centralGravities.size());
     }
 
     // Bounds
@@ -393,93 +469,35 @@ public class BulletBootstrap {
     }
   }
 
-  /** Add spheres along a path defined in the scene config */
-  public void addSpheresOnPath(String namePrefix, int count, float mass, boolean enableCcd) {
-    if (sceneConfig == null || sceneConfig.pathType == null) {
-      throw new RuntimeException("No path configuration found in scene config");
-    }
-
-    switch (sceneConfig.pathType) {
-      case CIRCLE:
-        addSpheresOnCircle(namePrefix, count, mass, enableCcd);
-        break;
-      default:
-        throw new RuntimeException("Unsupported path type: " + sceneConfig.pathType);
-    }
-  }
-
-  /** Add spheres positioned on a circle path with orbital velocity */
-  private void addSpheresOnCircle(String namePrefix, int count, float mass, boolean enableCcd) {
-    SceneConfig.CirclePathConfig config = sceneConfig.circlePathConfig;
-    if (config == null) {
-      throw new RuntimeException("Circle path config not found");
-    }
-
-    for (int i = 0; i < count; i++) {
-      // Calculate position on circle
-      float angle = (float) (2.0 * Math.PI * i / count); // Evenly spaced around circle
-      float x = config.center.x + config.radius * (float) Math.cos(angle);
-      float z = config.center.z + config.radius * (float) Math.sin(angle);
-      float y = config.y; // Fixed Y plane
-
-      // Vary orb radius
-      float radiusRange = config.maxOrbRadius - config.minOrbRadius;
-      float radiusVariation = (float) Math.random() * radiusRange;
-      float orbRadius = config.minOrbRadius + radiusVariation;
-
-      // Create sphere
-      String name = namePrefix + "-" + i;
-      addSphere(name, x, y, z, orbRadius, mass * orbRadius, enableCcd);
-
-      // Set orbital velocity (tangential to the circle) for central gravity
-      RigidBody body = nameToRigidBody.get(name);
-      if (body != null) {
-        // Calculate correct orbital velocity for central gravity: v = sqrt(GM/r)
-        // Using the central mass parameters from scene config
-        float GM =
-            (sceneConfig.centralGravityEnabled)
-                ? sceneConfig.gravityMu
-                : 25f; // Default GM if central gravity not enabled
-        float orbitalRadius = config.radius;
-        float orbitalSpeed = (float) Math.sqrt(GM / orbitalRadius);
-
-        // Calculate tangential velocity direction (perpendicular to radius vector)
-        float vx = -orbitalSpeed * (float) Math.sin(angle); // Perpendicular to radius in X
-        float vz = orbitalSpeed * (float) Math.cos(angle); // Perpendicular to radius in Z
-        float vy = 0f; // No Y component for horizontal orbit
-
-        javax.vecmath.Vector3f velocity = new javax.vecmath.Vector3f(vx, vy, vz);
-        body.setLinearVelocity(velocity);
-        body.activate(true);
-
-        TE.log(
-            "BulletBootstrap: Added orbiting comet '%s' at (%.2f, %.2f, %.2f) radius=%.2f velocity=(%.2f, %.2f, %.2f) GM=%.2f",
-            name, x, y, z, orbRadius, vx, vy, vz, GM);
-      }
-    }
-  }
-
   // --- Central gravity feature ---
-  public void enableCentralGravity(Vector3f center, float GM, float softening) {
-    centralCenter.set(center);
-    centralMu = GM;
-    centralSoft = Math.max(softening, 1e-4f);
-    centralGravityEnabled = true;
+  // New API for multi-center gravity
+  public void addCentralGravity(Vector3f center, float GM, float softening) {
+    CentralGravity cg = new CentralGravity();
+    cg.center.set(center);
+    cg.mu = GM;
+    cg.soft = Math.max(softening, 1e-4f);
+    centralGravities.add(cg);
   }
 
-  public void disableCentralGravity() {
-    centralGravityEnabled = false;
+  public void clearCentralGravities() {
+    centralGravities.clear();
   }
 
   // --- Tether feature (force-based elastic leash to a point) ---
   public void addTether(
-      String bodyName, Vector3f anchor, float restLen, float stiffness, float damping) {
+      String bodyName,
+      Vector3f anchor,
+      float restLen,
+      float stiffness,
+      float damping,
+      float tangentialForce) {
     Tether t = new Tether();
     t.bodyName = bodyName;
     t.anchor.set(anchor);
-    t.restLen = Math.max(0.01f, restLen);
-    t.k = Math.max(0f, stiffness);
-    t.c = Math.max(0f, damping);
+    t.restLen = restLen;
+    t.stiffness = stiffness;
+    t.damping = damping;
+    t.tangentialForce = tangentialForce;
     tethers.add(t);
   }
 
@@ -491,42 +509,231 @@ public class BulletBootstrap {
     tethers.clear();
   }
 
-  /** Add central tethers for all existing bodies based on SceneConfig */
-  public void addCentralTethersForAllBodies() {
-    if (sceneConfig == null || !sceneConfig.centralTetherEnabled) {
-      return;
+  // --- Particle Emitter API ---
+
+  /** Add a particle emitter to the scene */
+  public void addEmitter(
+      String name,
+      int maxParticles,
+      float particleLifetime,
+      EmitterInitialSpeed initialSpeedMode,
+      LoopPath path) {
+    ParticleEmitter emitter = new ParticleEmitter();
+    emitter.name = name;
+    emitter.maxParticles = maxParticles;
+    emitter.particleLifetime = particleLifetime;
+    emitter.initialSpeedMode = initialSpeedMode;
+    emitter.path = path;
+
+    // Initialize emitter position
+    emitter.currPosition = path.getPosition(0, 1, 0);
+    emitter.prevPosition.set(emitter.currPosition);
+
+    emitters.put(name, emitter);
+  }
+
+  /** Set emitter properties */
+  public void setEmitterProperties(
+      String name, float particleRadius, float particleMass, float emitRate) {
+    ParticleEmitter emitter = emitters.get(name);
+    if (emitter != null) {
+      emitter.particleRadius = particleRadius;
+      emitter.particleMass = particleMass;
+      emitter.emitRate = emitRate;
+    }
+  }
+
+  /** Internal emitter time tracking */
+  private final Map<String, Long> emitterStartTimes = new LinkedHashMap<>();
+
+  /** Update all emitters automatically during physics step */
+  private void updateAllEmitters(float dt) {
+    long currentTime = System.nanoTime();
+
+    for (Map.Entry<String, ParticleEmitter> entry : emitters.entrySet()) {
+      String name = entry.getKey();
+      ParticleEmitter emitter = entry.getValue();
+
+      // Get or initialize start time
+      Long startTime = emitterStartTimes.get(name);
+      if (startTime == null) {
+        startTime = currentTime;
+        emitterStartTimes.put(name, startTime);
+      }
+
+      // Calculate time since emitter started
+      long timeOffsetMicros = (currentTime - startTime) / 1000;
+
+      // Update emitter
+      updateEmitterInternal(emitter, timeOffsetMicros, dt);
+    }
+  }
+
+  /** Internal method to update a single emitter */
+  private void updateEmitterInternal(ParticleEmitter emitter, long timeOffsetMicros, float dt) {
+    // Update position along path
+    emitter.prevPosition.set(emitter.currPosition);
+    emitter.currPosition = emitter.path.getPosition(0, 1, timeOffsetMicros);
+
+    // Calculate velocity
+    emitter.velocity.x = (emitter.currPosition.x - emitter.prevPosition.x) / dt;
+    emitter.velocity.y = (emitter.currPosition.y - emitter.prevPosition.y) / dt;
+    emitter.velocity.z = (emitter.currPosition.z - emitter.prevPosition.z) / dt;
+
+    // Get emit rate
+    float actualEmitRate = emitter.emitRate;
+
+    // Emit new particles
+    emitter.timeSinceLastEmit += dt;
+    float emitInterval = 1.0f / actualEmitRate;
+
+    while (emitter.timeSinceLastEmit >= emitInterval
+        && emitter.particles.size() < emitter.maxParticles) {
+      emitParticle(emitter);
+      emitter.timeSinceLastEmit -= emitInterval;
     }
 
-    Vector3f center = sceneConfig.tetherCenter;
-    float radius = sceneConfig.tetherRadius;
-    float stiffness = sceneConfig.tetherStiffness;
-    float damping = sceneConfig.tetherDamping;
-
-    for (String bodyName : nameToRigidBody.keySet()) {
-      addTether(bodyName, center, radius, stiffness, damping);
-      TE.log(
-          "BulletBootstrap: Added central tether for '%s' to center (%.2f, %.2f, %.2f) radius=%.2f stiffness=%.2f damping=%.2f",
-          bodyName, center.x, center.y, center.z, radius, stiffness, damping);
+    // Update particle ages and remove old ones
+    ArrayList<ParticleEmitter.Particle> toRemove = new ArrayList<>();
+    for (ParticleEmitter.Particle p : emitter.particles) {
+      p.age += dt;
+      if (p.age >= p.maxAge) {
+        toRemove.add(p);
+        removeBody(p.bodyName);
+      }
     }
+    emitter.particles.removeAll(toRemove);
+  }
+
+  /** Set emitter speed multiplier (affects path traversal speed) */
+  public void setEmitterSpeed(String name, float speedMultiplier) {
+    // Adjust the emitter's time offset to simulate speed change
+    if (speedMultiplier != 1.0f && emitterStartTimes.containsKey(name)) {
+      long currentTime = System.nanoTime();
+      long oldStartTime = emitterStartTimes.get(name);
+      long elapsed = currentTime - oldStartTime;
+      long adjustedElapsed = (long) (elapsed / speedMultiplier);
+      long newStartTime = currentTime - adjustedElapsed;
+      emitterStartTimes.put(name, newStartTime);
+    }
+  }
+
+  /** Emit a single particle */
+  private void emitParticle(ParticleEmitter emitter) {
+    String particleName = emitter.name + "-p" + (emitter.particleCounter++);
+
+    // Add sphere to physics world
+    addSphere(
+        particleName,
+        emitter.currPosition.x,
+        emitter.currPosition.y,
+        emitter.currPosition.z,
+        emitter.particleRadius,
+        emitter.particleMass);
+
+    // Set initial velocity based on mode
+    RigidBody body = getBody(particleName);
+    if (body != null) {
+      Vector3f initialVel = new Vector3f();
+
+      switch (emitter.initialSpeedMode) {
+        case ZERO:
+          initialVel.set(0, 0, 0);
+          break;
+        case EMITTER_SPEED:
+          initialVel.set(emitter.velocity);
+          break;
+        case FIXED_SPEED:
+          // Random direction with fixed magnitude
+          float theta = (float) (Math.random() * Math.PI * 2);
+          float phi = (float) (Math.acos(2.0 * Math.random() - 1.0));
+          float sinPhi = (float) Math.sin(phi);
+          initialVel.x = (float) Math.cos(theta) * sinPhi * emitter.fixedSpeed;
+          initialVel.y = (float) Math.sin(theta) * sinPhi * emitter.fixedSpeed;
+          initialVel.z = (float) Math.cos(phi) * emitter.fixedSpeed;
+          break;
+      }
+
+      body.setLinearVelocity(initialVel);
+      body.activate(true);
+    }
+
+    // Track particle
+    ParticleEmitter.Particle particle = new ParticleEmitter.Particle();
+    particle.bodyName = particleName;
+    particle.age = 0f;
+    particle.maxAge = emitter.particleLifetime;
+    particle.radius = emitter.particleRadius;
+    emitter.particles.add(particle);
+  }
+
+  /** Force emit a burst of particles */
+  public void burstEmitter(String name, int count) {
+    ParticleEmitter emitter = emitters.get(name);
+    if (emitter == null) return;
+
+    for (int i = 0; i < count && emitter.particles.size() < emitter.maxParticles; i++) {
+      emitParticle(emitter);
+    }
+  }
+
+  /** Get list of active particle names from an emitter */
+  public java.util.List<String> getEmitterParticles(String name) {
+    ParticleEmitter emitter = emitters.get(name);
+    if (emitter == null) return new ArrayList<>();
+
+    ArrayList<String> names = new ArrayList<>();
+    for (ParticleEmitter.Particle p : emitter.particles) {
+      names.add(p.bodyName);
+    }
+    return names;
+  }
+
+  /** Get particle data [radius, maxAge, currentAge] */
+  public float[] getEmitterParticleData(String emitterName, String particleName) {
+    ParticleEmitter emitter = emitters.get(emitterName);
+    if (emitter == null) return null;
+
+    for (ParticleEmitter.Particle p : emitter.particles) {
+      if (p.bodyName.equals(particleName)) {
+        return new float[] {p.radius, p.maxAge, p.age};
+      }
+    }
+    return null;
+  }
+
+  /** Remove an emitter and all its particles */
+  public void removeEmitter(String name) {
+    ParticleEmitter emitter = emitters.remove(name);
+    if (emitter != null) {
+      for (ParticleEmitter.Particle p : emitter.particles) {
+        removeBody(p.bodyName);
+      }
+    }
+    emitterStartTimes.remove(name);
   }
 
   // --- Internal force application (call before each step) ---
   private void applySceneForces(float dt) {
-    if (centralGravityEnabled) {
-      // softened inverse-square: F = -mu * r / (|r|^2 + s^2)^(3/2)
+    if (!centralGravities.isEmpty()) {
       for (Map.Entry<String, RigidBody> e : nameToRigidBody.entrySet()) {
         RigidBody b = e.getValue();
         if (b == null || b.getInvMass() == 0f) continue;
         Transform t = new Transform();
         b.getMotionState().getWorldTransform(t);
-        float rx = t.origin.x - centralCenter.x,
-            ry = t.origin.y - centralCenter.y,
-            rz = t.origin.z - centralCenter.z;
-        float r2s = rx * rx + ry * ry + rz * rz + centralSoft * centralSoft;
-        float inv = (float) (1.0 / Math.pow(r2s, 1.5 / 2.0)); // 1 / (sqrt(r2s)^3)
-        float Fx = -centralMu * rx * inv, Fy = -centralMu * ry * inv, Fz = -centralMu * rz * inv;
+        Vector3f fSum = new Vector3f();
+        for (CentralGravity cg : centralGravities) {
+          float rx = t.origin.x - cg.center.x,
+              ry = t.origin.y - cg.center.y,
+              rz = t.origin.z - cg.center.z;
+          float r2s = rx * rx + ry * ry + rz * rz + cg.soft * cg.soft;
+          float inv = (float) (1.0 / Math.pow(r2s, 1.5 / 2.0));
+          fSum.x += -cg.mu * rx * inv;
+          fSum.y += -cg.mu * ry * inv;
+          fSum.z += -cg.mu * rz * inv;
+        }
         b.activate(true);
-        b.applyCentralForce(new Vector3f(Fx, Fy, Fz));
+        b.applyCentralForce(fSum);
       }
     }
     // Tethers: spring + damping along rope direction when stretched
@@ -548,17 +755,15 @@ public class BulletBootstrap {
       b.getLinearVelocity(vel);
       float vAlong = vel.x * ux + vel.y * uy + vel.z * uz;
 
-      float Fs = -t.k * (r - t.restLen); // spring inward
-      float Fd = -t.c * vAlong; // damping along rope
+      float Fs = -t.stiffness * (r - t.restLen); // spring inward
+      float Fd = -t.damping * vAlong; // damping along rope
 
       Vector3f F = new Vector3f((Fs + Fd) * ux, (Fs + Fd) * uy, (Fs + Fd) * uz);
       b.activate(true);
       b.applyCentralForce(F);
 
       // Optional tangential merry-go-round force: perpendicular to radial vector
-      if (sceneConfig != null
-          && sceneConfig.centralTetherEnabled
-          && sceneConfig.tetherTangentialForce != 0f) {
+      if (t.tangentialForce != 0f) {
         // Build a perpendicular direction to (ux,uy,uz). Choose a helper vector not parallel to u
         float hx = Math.abs(ux) < 0.9f ? 1f : 0f;
         float hy = Math.abs(uy) < 0.9f ? 1f : 0f;
@@ -573,7 +778,7 @@ public class BulletBootstrap {
           wy /= wLen;
           wz /= wLen;
           // Compute tangential magnitude, optionally scale by external speed factor set by caller
-          float mag = sceneConfig.tetherTangentialForce * currentExternalSpeedFactor;
+          float mag = t.tangentialForce * currentExternalSpeedFactor;
           Vector3f Ft = new Vector3f(wx * mag, wy * mag, wz * mag);
           b.applyCentralForce(Ft);
         }
@@ -587,8 +792,17 @@ public class BulletBootstrap {
       if (isInitialized && dynamicsWorld != null) {
         TE.log("Bullet Bootstrap: Cleaning up Bullet Physics resources");
 
-        // cleanup: also clear tethers and any constraints you add later
+        // cleanup: also clear tethers, emitters and any constraints you add later
         clearTethers();
+        clearCentralGravities();
+
+        // Clear all emitters
+        for (ParticleEmitter emitter : emitters.values()) {
+          for (ParticleEmitter.Particle p : emitter.particles) {
+            removeBody(p.bodyName);
+          }
+        }
+        emitters.clear();
 
         // Remove all rigid bodies from the world
         for (RigidBody body : nameToRigidBody.values()) {
