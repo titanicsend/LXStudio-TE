@@ -678,14 +678,14 @@ public class EffectsMiniLab3 extends LXMidiSurface
       padVerbose("Slots is empty, exit");
     }
 
-    boolean isPersistentMode = false;
+    boolean isPersistentMode = true;
 
     if (bank == SYSEX_BANK_A) {
       verbose("Send Bank A");
       for (int i = 0; i < 8; i++) {
         int slotIndex = padToSlotIndex(slots, i);
         if (slotIndex >= 0) {
-          updatePadForSlot(isBankA, i, slotIndex, isPersistentMode);
+          updatePadForSlot(true, i, slotIndex, isPersistentMode);
         } else {
           setPadLEDColor(true, i, isPersistentMode, 0, 0, 0); // Turn off (RGB = 0,0,0)
         }
@@ -695,7 +695,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
       for (int i = 8; i < NUM_PADS; i++) {
         int slotIndex = padToSlotIndex(slots, i);
         if (slotIndex >= 0) {
-          updatePadForSlot(isBankA, i, slotIndex, isPersistentMode);
+          updatePadForSlot(false, i, slotIndex, isPersistentMode);
         } else {
           // NOTE: use padIndex - 8 !!!
           setPadLEDColor(false, i, isPersistentMode, 0, 0, 0); // Turn off (RGB = 0,0,0)
@@ -881,6 +881,8 @@ public class EffectsMiniLab3 extends LXMidiSurface
       00 20 6B 7F 42         # Arturia header
       02 02 16 ID RR GG BB   # set color of button ID to 0xRRGGBB
       F7                     # sysex footer
+
+      F0 00 20 6B 7F 42 02 02 16 34 00 7F 00 F7
     */
     // ID for pads 1-8 in DAW mode: 0x04 to 0x0B
     byte[] sysex = new byte[14];
@@ -899,7 +901,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
     sysex[12] = (byte) (blue & 0x7F); // B
     sysex[13] = END_SYSEX; // SysEx end
 
-    padVerbose(String.format("\t\t\t\tSET %d: (%d,%d,%d)", sysExPadId, red, green, blue));
+    padVerbose(String.format("\t\t\t\tSET %02X: (%d,%d,%d)", sysExPadId, red, green, blue));
 
     sendSysex(sysex);
   }
