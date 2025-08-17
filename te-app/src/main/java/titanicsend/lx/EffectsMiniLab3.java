@@ -295,7 +295,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
     verbose("Minilab3 Sysex: " + sysex);
 
     byte[] msg = sysex.getMessage();
-    verbose("msg length: " + msg.length);
+    //    verbose("msg length: " + msg.length);
 
     // -1: mode byte not seen
     // 0:  is's a Mode update
@@ -309,7 +309,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
 
     for (int i = 0; i < msg.length; i++) {
       byte b = msg[i];
-      verbose(String.format("msg[%02d]: %02X", i, b));
+      //      verbose(String.format("msg[%02d]: %02X", i, b));
 
       switch (i) {
         case 0:
@@ -678,21 +678,26 @@ public class EffectsMiniLab3 extends LXMidiSurface
       padVerbose("Slots is empty, exit");
     }
 
-    //    // TEMP: just to keep an eye on the effect states while developing
-    //    this.effectManager.debugStates();
-
-    // Clear first
-    clearPadLEDs();
-
     if (bank == SYSEX_BANK_A) {
       verbose("Send Bank A");
-      for (int slotIndex = 0; slotIndex < Math.min(slots.size(), 4); slotIndex++) {
-        updatePadForSlot(slotIndex);
+      for (int i = 0; i < 8; i++) {
+        int slot = padToSlotIndex(i);
+        if (slot >= 0) {
+          updatePadForSlot(slot);
+        } else {
+          setPadLEDColor(i, 0, 0, 0); // Turn off (RGB = 0,0,0)
+        }
       }
     } else if (bank == SYSEX_BANK_B) {
       verbose("Send Bank B");
-      for (int slotIndex = 4; slotIndex < Math.min(slots.size(), 8); slotIndex++) {
-        updatePadForSlot(slotIndex);
+      for (int i = 8; i < NUM_PADS; i++) {
+        int slot = padToSlotIndex(i);
+        if (slot >= 0) {
+          updatePadForSlot(slot);
+        } else {
+          // NOTE: use padIndex - 8 !!!
+          setPadLEDColor(i - 8, 0, 0, 0); // Turn off (RGB = 0,0,0)
+        }
       }
     } else {
       throw new IllegalArgumentException("Unknown bank: " + bank);
@@ -708,6 +713,8 @@ public class EffectsMiniLab3 extends LXMidiSurface
     verbose("PRESS: " + padIndex + " (Slot: " + slotIndex + ")");
     if (slotIndex < 0) {
       verbose("\tPad doesn't map to slot");
+      clearPadLEDs(); // TEMPORARY DEBUG HACK: clear colors if non-slot pad button pressed
+      return;
     } else if (slotIndex >= effectManager.slots.size()) {
       verbose("Out of range: " + padIndex);
       return;
@@ -752,7 +759,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
                 : String.format("%s (%s)", globalEffect.getName(), globalEffect.getState())));
 
     if (globalEffect != null) {
-      padVerbose("\t\tSlot " + slotIndex + " is " + globalEffect.getName());
+      padVerbose("\t\tPad " + padIndex + " is " + globalEffect.getName());
       GlobalEffect.State state = globalEffect.getState();
       if (state != null) {
         padVerbose("\t\t\t state is " + state);
@@ -869,6 +876,8 @@ public class EffectsMiniLab3 extends LXMidiSurface
     sysex[12] = (byte) (blue & 0x7F); // B
     sysex[13] = END_SYSEX; // SysEx end
 
+    padVerbose(String.format("\t\t\t\tSET %d: (%d,%d,%d)", padIndex, red, green, blue));
+
     sendSysex(sysex);
   }
 
@@ -882,7 +891,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
   }
 
   private void padVerbose(String message) {
-    boolean debugPads = false;
+    boolean debugPads = true;
     if (debugPads) {
       LXMidiEngine.error(message);
     }
