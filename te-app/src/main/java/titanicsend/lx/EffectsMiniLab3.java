@@ -681,7 +681,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
     if (bank == SYSEX_BANK_A) {
       verbose("Send Bank A");
       for (int i = 0; i < 8; i++) {
-        int slot = padToSlotIndex(i);
+        int slot = padToSlotIndex(true, i);
         if (slot >= 0) {
           updatePadForSlot(slot);
         } else {
@@ -691,12 +691,12 @@ public class EffectsMiniLab3 extends LXMidiSurface
     } else if (bank == SYSEX_BANK_B) {
       verbose("Send Bank B");
       for (int i = 8; i < NUM_PADS; i++) {
-        int slot = padToSlotIndex(i);
+        int slot = padToSlotIndex(false, i);
         if (slot >= 0) {
           updatePadForSlot(slot);
         } else {
           // NOTE: use padIndex - 8 !!!
-          setPadLEDColor(i - 8, 0, 0, 0); // Turn off (RGB = 0,0,0)
+          setPadLEDColor(i, 0, 0, 0); // Turn off (RGB = 0,0,0)
         }
       }
     } else {
@@ -709,7 +709,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
   // ------------------------------------------------------------------------------------
 
   private void press(int padIndex) {
-    int slotIndex = padToSlotIndex(padIndex);
+    int slotIndex = padToSlotIndex(this.isBankA, padIndex);
     verbose("PRESS: " + padIndex + " (Slot: " + slotIndex + ")");
     if (slotIndex < 0) {
       verbose("\tPad doesn't map to slot");
@@ -790,17 +790,26 @@ public class EffectsMiniLab3 extends LXMidiSurface
   // Virtual Slot <--> Pad Mapping (to use the 4 pads aligned with the rows of knobs)
   // ------------------------------------------------------------------------------------
 
-  private int padToSlotIndex(int padIndex) {
+  private int padToSlotIndex(boolean isBankA, int padIndex) {
     int slotIndex = -1;
     // Bank A, the 4 buttons aligned with knobs
     if (padIndex >= 1 && padIndex <= 4) {
+      if (!isBankA) {
+        throw new IllegalArgumentException("Invalid Pad index: " + padIndex + " (BANK A)");
+      }
       // Pad 1: Slot 0
       // Pad 4: Slot 3
       slotIndex = padIndex - 1;
     } else if (padIndex >= 9 && padIndex <= 12) {
+      if (isBankA) {
+        throw new IllegalArgumentException("Invalid Pad index: " + padIndex + " (BANK B)");
+      }
       // Pad 9:  Slot 4
       // Pad 12: Slot 7
       slotIndex = padIndex - 1;
+    }
+    if (slotIndex >= effectManager.slots.size()) {
+      return -1;
     }
     return slotIndex;
   }
