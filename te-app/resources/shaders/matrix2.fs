@@ -15,7 +15,7 @@
 #iUniform float iScale = 45.0 in {20.0, 100.0}
 #iUniform float iQuantity = 3.0 in {1.0, 9.0}
 #iUniform float iWow2 = 0.0 in {0.0, 1.0}
-#iUniform float iWow1 = 0.0 in {0.0, 1.0}
+#iUniform float iWow1 = 0.5 in {0.0, 20.0}
 
 #pragma TEControl.YPOS.Value(-0.1)
 #pragma TEControl.WOW2.Disable
@@ -171,14 +171,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // This creates a grid pattern that gets denser as you approach the boundaries, creating the tunnel effect.
     vec3 i = ceil(8e2 * s.z * t) / iScale;
 
-    float pixPerBin = TEXTURE_SIZE / CHANNEL_COUNT;
-    float halfBin = pixPerBin / 2.0;
-
-    float binNum = abs(t.x) * 16.;
-    float tx = halfBin+pixPerBin * binNum;
-//     float fftBin  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
-    float fftBin = (0.5 * (1.0+texelFetch(iChannel0, ivec2(tx, 1), 0).x)) - 0.25;
-
     // Takes the fractional part of each component, creating repeating patterns in the [0,1] range.
     vec3 j = fract(i);
     i -= j;
@@ -193,8 +185,18 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float k = R / s.z;
 
 //     fragColor = vec4(vec3(k * iColorRGB), 1.);
-    float szBand = s.z > (20. * iWow1) ? s.z : 0.;
-    fragColor = vec4(vec3(k * getGradientColor(szBand)), 1.);
+    float szBand = (s.z > (20. * iWow1)) ? s.z : 0.;
+    float txMod = t.x / iWow1;
+
+    float pixPerBin = TEXTURE_SIZE / CHANNEL_COUNT;
+    float halfBin = pixPerBin / 2.0;
+    float binNum = abs(t.x) * 16. * iWow1;
+    float index = halfBin+pixPerBin * binNum;
+    float fftBin = (0.5 * (1.0+texelFetch(iChannel0, ivec2(index, 0), 0).x)) - 0.25;
+//     float fftBin  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
+
+
+    fragColor = vec4(vec3(k * getGradientColor(fftBin)), 1.);
 
 //     fragColor.rgb = k * oklab_mix(iColorRGB, iColor2RGB, .5*k + iWow1);
 //     fragColor.rgb = k * oklab_mix(iColorRGB, iColor2RGB, fftBin);
