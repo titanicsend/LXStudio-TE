@@ -220,14 +220,19 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
       }
 
       // Find the first matching global effect for this slot
+      boolean found = false;
       for (LXEffect effect : this.lx.engine.mixer.masterBus.effects) {
         if (globalEffect.matches(effect)) {
           // This will quick return if effect is already registered to the slot.
           globalEffect.registerEffect(effect, this);
           // Notify listeners of a state change.
           this.effectStateUpdated(slots.indexOf(globalEffect));
+          found = true;
           break;
         }
+      }
+      if (!found) {
+        globalEffect.registerEffect(null, this);
       }
     }
   }

@@ -4,6 +4,7 @@ import static heronarts.lx.midi.LXSysexMessage.END_SYSEX;
 import static heronarts.lx.midi.LXSysexMessage.START_SYSEX;
 
 import heronarts.lx.LX;
+import heronarts.lx.color.LXColor;
 import heronarts.lx.effect.LXEffect;
 import heronarts.lx.midi.LXMidiEngine;
 import heronarts.lx.midi.LXMidiInput;
@@ -35,6 +36,9 @@ import titanicsend.util.TE;
  * keep the octaves centered.
  *
  * <p>[SYSEX DOCS](https://gist.github.com/Janiczek/04a87c2534b9d1435a1d8159c742d260)
+ *
+ * <p>[Another
+ * guide](https://github.com/PrzemekBarski/arturia-keylab-essential-mk3-programming-guide)
  */
 @LXMidiSurface.Name("Arturia MiniLab3 Effects")
 @LXMidiSurface.DeviceName("Minilab3 MIDI")
@@ -132,7 +136,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
   public static final int PAD_START = PAD_1_A;
   public static final int PAD_END = PAD_8_B;
   public static final int NUM_PADS = 16;
-  public static final int NUM_PADS_PHYSICAL = 8; // Needed?
+  public static final int NUM_PADS_PHYSICAL = 8;
 
   private static final int[] PAD_NOTES =
       new int[] {
@@ -163,6 +167,19 @@ public class EffectsMiniLab3 extends LXMidiSurface
   public static final byte MIDI_MFR_ID_0 = 0x00;
   public static final byte MIDI_MFR_ID_1 = 0x20;
   public static final byte MIDI_MFR_ID_2 = 0x6B;
+  public static final byte MIDI_DEVICE_ID = 0x7F;
+  public static final byte MIDI_PRODUCT_FAMILY = 0x42;
+
+  private static final byte[] SYSEX_HEADER =
+      new byte[] {
+        START_SYSEX,
+        MIDI_MFR_ID_0,
+        MIDI_MFR_ID_1,
+        MIDI_MFR_ID_2,
+        MIDI_DEVICE_ID,
+        MIDI_PRODUCT_FAMILY
+      };
+  private static final int SYSEX_HEADER_LENGTH = SYSEX_HEADER.length;
 
   public static final byte SYSEX_MODE = 0x62;
   public static final byte SYSEX_MODE_ARTURIA = 0x01;
@@ -178,6 +195,54 @@ public class EffectsMiniLab3 extends LXMidiSurface
 
   public static final byte SYSEX_COMMAND_SET_COLOR = 0x16;
 
+  private static final int BANK_COLORS_LENGTH = 8 * 3;
+
+  // Configurable Colors
+
+  public enum PadColor {
+    OFF(LXColor.BLACK),
+    ENABLED(LXColor.RED),
+    DISABLED(LXColor.rgb(0, 150, 0)),
+    EMPTY(LXColor.gray(.2f));
+    public final int r, g, b;
+    public final byte rByte, gByte, bByte;
+
+    PadColor(int color) {
+      // RGB values for pads range 0-127 (0x00 to 0x7F)
+      r = (LXColor.red(color) & 0xFF) / 2;
+      g = (LXColor.green(color) & 0xFF) / 2;
+      b = (LXColor.blue(color) & 0xFF) / 2;
+
+      rByte = getRbyte(color);
+      gByte = getGbyte(color);
+      bByte = getBbyte(color);
+    }
+
+    public static int getRint(int color) {
+      return (LXColor.red(color) & 0xFF) / 2;
+    }
+
+    public static int getGint(int color) {
+      return (LXColor.green(color) & 0xFF) / 2;
+    }
+
+    public static int getBint(int color) {
+      return (LXColor.blue(color) & 0xFF) / 2;
+    }
+
+    public static byte getRbyte(int color) {
+      return (byte) (getRint(color) & 0x7F);
+    }
+
+    public static byte getGbyte(int color) {
+      return (byte) (getGint(color) & 0x7F);
+    }
+
+    public static byte getBbyte(int color) {
+      return (byte) (getBint(color) & 0x7F);
+    }
+  }
+
   private GlobalEffectManager effectManager;
   private ObservableList.Listener<GlobalEffect<? extends LXEffect>> effectListener;
   private boolean isRegistered = false;
@@ -190,16 +255,13 @@ public class EffectsMiniLab3 extends LXMidiSurface
     super(lx, input, output);
   }
 
-  // ------------------------------------------------------------------------------------
   // Connection
-  // ------------------------------------------------------------------------------------
 
   @Override
   protected void onEnable(boolean on) {
     if (on) {
       register();
       initialize();
-      clearPadLEDs();
     } else {
       if (this.isRegistered) {
         unregister();
@@ -216,7 +278,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
 
   private void initialize() {
     sendModeDAW();
-    updatePadLEDs();
+    sendPadColors();
   }
 
   private void register() {
@@ -239,7 +301,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
             if (slots != null) {
               int slotIndex = slots.indexOf(item);
               TE.log("Effect Slot added [" + slotIndex + "]: " + item);
-              updatePadLEDs();
+              sendPadColors();
             }
           }
 
@@ -248,7 +310,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
             if (slots != null) {
               int slotIndex = slots.indexOf(item);
               TE.log("Effect Slot removed [" + slotIndex + "]: " + item);
-              updatePadLEDs();
+              sendPadColors();
             }
           }
         };
@@ -259,7 +321,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
     this.isRegistered = false;
     effectManager.removeListener(this);
     effectManager.slots.removeListener(effectListener);
-    clearPadLEDs();
+    clearPadColors();
   }
 
   /**
@@ -269,17 +331,20 @@ public class EffectsMiniLab3 extends LXMidiSurface
    */
   @Override
   public void globalEffectStateUpdated(int slotIndex) {
-    verbose("Global Effect state updated [" + slotIndex + "]");
-    updatePadLEDs();
+    // verbose("Global Effect state updated [" + slotIndex + "]");
+    // JKB note: there are a LOT of these.  Don't send all pads on every effect property change.
+    // sendAllPadLEDs();
+    int padIndex = slotToPadIndex(slotIndex);
+    if (padIndex >= 0 && padIndex < NUM_PADS) {
+      sendPadColor(padIndex);
+    }
   }
 
-  // ------------------------------------------------------------------------------------
   // Receiving MIDI Messages
-  // ------------------------------------------------------------------------------------
 
   @Override
   public void sysexReceived(LXSysexMessage sysex) {
-    verbose("Minilab3 Sysex: " + sysex);
+    // verbose("Minilab3 Sysex: " + sysex);
 
     // User switched to Arturia Mode: F0 00 20 6B 7F 42 02 00 40 62 01 F7
     // User switched to DAW Mode:     F0 00 20 6B 7F 42 02 00 40 62 02 F7
@@ -343,7 +408,8 @@ public class EffectsMiniLab3 extends LXMidiSurface
               expectOneOf(i, SYSEX_BANKS, b);
               break;
             default:
-              throw new IllegalArgumentException("Invalid SYSEX_RECEIVED_TYPE " + type);
+              // throw new IllegalArgumentException(
+              LXMidiEngine.error("Invalid SYSEX_RECEIVED_TYPE " + type);
           }
           option = b;
           continue;
@@ -351,7 +417,8 @@ public class EffectsMiniLab3 extends LXMidiSurface
           expectByte(i, (byte) 0xF7, b);
           continue;
         default:
-          throw new IllegalArgumentException("Invalid SYSEX_RECEIVED_TYPE " + type);
+          // throw new IllegalArgumentException(
+          LXMidiEngine.error("Invalid SYSEX_RECEIVED_TYPE " + type);
       }
     }
 
@@ -378,7 +445,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
 
   private static void expectByte(int index, byte expected, byte actual) {
     if (actual != expected) {
-      throw new AssertionError(
+      LXMidiEngine.error( // throw new AssertionError(
           String.format(
               "Sysex message index %02d expected [%02X] but found [%02X]",
               index, expected, actual));
@@ -391,7 +458,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
         return;
       }
     }
-    throw new AssertionError(
+    LXMidiEngine.error( // throw new AssertionError(
         String.format("Sysex message index %02d invalid: found [%02X]", index, actual));
   }
 
@@ -406,25 +473,11 @@ public class EffectsMiniLab3 extends LXMidiSurface
   @Override
   public void noteOnReceived(MidiNoteOn note) {
     noteReceived(note, true);
-    /* verbose(
-    "Minilab3 Note ON  CH: "
-        + note.getChannel()
-        + "  Pitch:"
-        + note.getPitch()
-        + "  Velocity:"
-        + note.getVelocity()); */
   }
 
   @Override
   public void noteOffReceived(MidiNote note) {
     noteReceived(note, false);
-    /* verbose(
-    "Minilab3 Note OFF CH: "
-        + note.getChannel()
-        + "  Pitch:"
-        + note.getPitch()
-        + "  Velocity:"
-        + note.getVelocity()); */
   }
 
   private void noteReceived(MidiNote note, boolean on) {
@@ -518,15 +571,10 @@ public class EffectsMiniLab3 extends LXMidiSurface
     LXMidiEngine.error("Minilab3 unmapped control change: " + cc);
   }
 
-  // ------------------------------------------------------------------------------------
   // Receive Physical Inputs (allows remap to logical)
-  // ------------------------------------------------------------------------------------
 
   private void shiftReceived(boolean on) {
     this.shiftOn = on;
-    if (!on) {
-      updatePadLEDs();
-    }
   }
 
   private void dawKnobReceived(int value) {
@@ -546,7 +594,6 @@ public class EffectsMiniLab3 extends LXMidiSurface
 
     if (on) {
       toggleEffect(padIndex);
-      // press(padIndex);
     }
   }
 
@@ -594,21 +641,19 @@ public class EffectsMiniLab3 extends LXMidiSurface
   private void modeReceived(boolean isDAW) {
     // To determine: This will be received if user changes it.  Does it also get received as an
     // echo if we set it with a sysex?
-    verbose("Mode: DAW = " + isDAW);
+    verbose("Received Mode: " + (isDAW ? "DAW" : "Arturia"));
     this.isDAW = isDAW;
+    sendModeDAW();
   }
 
   private void bankReceived(boolean isBankA) {
     // To determine: This will be received if user changes it.  Does it also get received as an
     // echo if we set it with a sysex?
-    verbose("Bank: " + (isBankA ? "A" : "B"));
+    verbose("Received Bank: " + (isBankA ? "A" : "B"));
     this.isBankA = isBankA;
-    sendBank(this.isBankA);
   }
 
-  // ------------------------------------------------------------------------------------
   // Receive Logical Inputs (mapped from physical)
-  // ------------------------------------------------------------------------------------
 
   /** Launch, aka run, an effect or variation. */
   private void launch(int index) {
@@ -616,9 +661,9 @@ public class EffectsMiniLab3 extends LXMidiSurface
   }
 
   /** Toggle whether an effect is being edited */
-  private void toggleEffect(int index) {
+  private void toggleEffect(int padIndex) {
     // Enable/Disable effect
-    press(index);
+    //    press(index);
     /*
     Alternate approach:
 
@@ -626,6 +671,35 @@ public class EffectsMiniLab3 extends LXMidiSurface
     // If we ARE editing this pad, stop editing it. (AKA toggle off)
     verbose("Toggle Edit Effect #: " + index);
     */
+
+    int slotIndex = padToSlotIndex(padIndex);
+    verbose("PRESS Pad: " + padIndex + " (Slot: " + slotIndex + ")");
+    if (slotIndex < 0) {
+      verbose("\tPad doesn't map to slot");
+      return;
+    } else if (slotIndex >= effectManager.slots.size()) {
+      verbose("Out of range: " + padIndex);
+      return;
+    }
+
+    GlobalEffect<? extends LXEffect> globalEffect = effectManager.slots.get(slotIndex);
+    GlobalEffect.State currState = globalEffect.getState();
+    if (currState == null) {
+      verbose("Current state is null: " + globalEffect.getName());
+      return;
+    } else if (currState == GlobalEffect.State.EMPTY) {
+      verbose("Current state is empty: " + globalEffect.getName());
+      return;
+    } else if (globalEffect.effect == null) {
+      throw new IllegalStateException("LXEffect is null, but state is neither EMPTY nor null");
+    } else {
+      verbose("Current state: " + currState + " for effect: " + globalEffect.effect.getLabel());
+    }
+
+    globalEffect.getEnabledParameter().toggle();
+    TE.log(
+        String.format(
+            "PRESS: %d: %s -> %s", padIndex, currState.name(), globalEffect.getState().toString()));
   }
 
   /** Set the value of an effect parameter at a given index */
@@ -662,159 +736,11 @@ public class EffectsMiniLab3 extends LXMidiSurface
     verbose("Global Parameter " + globalParamIndex + ": set to " + value);
   }
 
-  // ------------------------------------------------------------------------------------
-  // Send Sysex
-  // ------------------------------------------------------------------------------------
-
-  private void sendModeDAW() {
-    sendMode(SYSEX_MODE_DAW);
-  }
-
-  private void sendMode(byte mode) {
-    byte[] sysex = new byte[14];
-
-    // TODO: flush out the details of this sysex
-    /*
-    sysex[0] = START_SYSEX; // SysEx start
-    sysex[1] = MIDI_MFR_ID_0; // Arturia manufacturer ID
-    sysex[2] = MIDI_MFR_ID_1;
-    sysex[3] = MIDI_MFR_ID_2;
-    sysex[4] = (byte) 0x7F;
-    sysex[5] = (byte) 0x42;
-    sysex[6] = (byte) 0x02; // Mode command
-    sysex[7] = mode; // DAW mode
-    sysex[13] = END_SYSEX;
-
-    sendSysex(sysex);
-    */
-  }
-
-  private void sendBank(boolean bankA) {
-    sendBank(bankA ? SYSEX_BANK_A : SYSEX_BANK_B);
-  }
-
-  private void sendBank(byte bank) {
-    List<GlobalEffect<? extends LXEffect>> slots = effectManager.slots;
-    if (slots == null || slots.isEmpty()) {
-      padVerbose("Slots is empty, exit");
-    }
-
-    boolean isPersistentMode = true;
-
-    if (bank == SYSEX_BANK_A) {
-      verbose("Send Bank A");
-      for (int i = 0; i < 8; i++) {
-        int slotIndex = padToSlotIndex(slots, i);
-        if (slotIndex >= 0) {
-          updatePadForSlot(true, i, slotIndex, isPersistentMode);
-        } else {
-          setPadLEDColor(true, i, isPersistentMode, 0, 0, 0); // Turn off (RGB = 0,0,0)
-        }
-      }
-    } else if (bank == SYSEX_BANK_B) {
-      verbose("Send Bank B");
-      for (int i = 8; i < NUM_PADS; i++) {
-        int slotIndex = padToSlotIndex(slots, i);
-        if (slotIndex >= 0) {
-          updatePadForSlot(false, i, slotIndex, isPersistentMode);
-        } else {
-          // NOTE: use padIndex - 8 !!!
-          setPadLEDColor(false, i, isPersistentMode, 0, 0, 0); // Turn off (RGB = 0,0,0)
-        }
-      }
-    } else {
-      throw new IllegalArgumentException("Unknown bank: " + bank);
-    }
-  }
-
-  // ------------------------------------------------------------------------------------
-  // Send Pad Colors
-  // ------------------------------------------------------------------------------------
-
-  private void press(int padIndex) {
-    int slotIndex = padToSlotIndex(effectManager.slots, padIndex);
-    verbose("PRESS Pad: " + padIndex + " (Slot: " + slotIndex + ")");
-    if (slotIndex < 0) {
-      verbose("\tPad doesn't map to slot");
-      clearPadLEDs(); // TEMPORARY DEBUG HACK: clear colors if non-slot pad button pressed
-      return;
-    } else if (slotIndex >= effectManager.slots.size()) {
-      verbose("Out of range: " + padIndex);
-      return;
-    }
-
-    GlobalEffect<? extends LXEffect> globalEffect = effectManager.slots.get(slotIndex);
-    GlobalEffect.State currState = globalEffect.getState();
-    if (currState == null) {
-      verbose("Current state is null: " + globalEffect.getName());
-      return;
-    } else if (currState == GlobalEffect.State.EMPTY) {
-      verbose("Current state is empty: " + globalEffect.getName());
-      return;
-    } else if (globalEffect.effect == null) {
-      throw new IllegalStateException("LXEffect is null, but state is neither EMPTY nor null");
-    } else {
-      verbose("Current state: " + currState + " for effect: " + globalEffect.effect.getLabel());
-    }
-
-    globalEffect.getEnabledParameter().toggle();
-    TE.log(
-        String.format(
-            "PRESS: %d: %s -> %s", padIndex, currState.name(), globalEffect.getState().toString()));
-  }
-
-  private void updatePadLEDs() {
-    padVerbose(String.format("<<< Updating Pad LEDs (BANK: %s) >>>", this.isBankA ? "A" : "B"));
-    sendBank(this.isBankA);
-  }
-
-  private void updatePadForSlot(
-      boolean isBankA, int padIndex, int slotIndex, boolean isPersistentMode) {
-
-    GlobalEffect<? extends LXEffect> globalEffect = effectManager.slots.get(slotIndex);
-
-    verbose(
-        String.format(
-            "\tSlot %d :: Pad %d :: %s",
-            slotIndex,
-            padIndex,
-            globalEffect == null
-                ? "null"
-                : String.format("%s (%s)", globalEffect.getName(), globalEffect.getState())));
-
-    if (globalEffect != null) {
-      padVerbose("\t\tPad " + padIndex + " is " + globalEffect.getName());
-      GlobalEffect.State state = globalEffect.getState();
-      if (state != null) {
-        padVerbose("\t\t\t state is " + state);
-        switch (state) {
-          case EMPTY -> {
-            setPadLEDColor(isBankA, padIndex, isPersistentMode, 0x00, 0x00, 0xFF);
-          }
-          case DISABLED -> {
-            setPadLEDColor(isBankA, padIndex, isPersistentMode, 0x00, 0xFF, 0x00);
-          }
-          case ENABLED -> {
-            setPadLEDColor(isBankA, padIndex, isPersistentMode, 0xFF, 0x00, 0x00);
-          }
-        }
-      } else {
-        padVerbose("\t\t\t state is null");
-        // State is null
-        setPadLEDColor(isBankA, padIndex, isPersistentMode, 0x00, 0x00, 0x00);
-      }
-    } else {
-      padVerbose("\t\tSlot " + slotIndex + " is null");
-      // GlobalEffect is null
-      setPadLEDColor(isBankA, padIndex, isPersistentMode, 0x10, 0x00, 0x00);
-    }
-  }
-
-  // ------------------------------------------------------------------------------------
   // Virtual Slot <--> Pad Mapping (to use the 4 pads aligned with the rows of knobs)
-  // ------------------------------------------------------------------------------------
 
-  static int padToSlotIndex(List<GlobalEffect<? extends LXEffect>> slots, int padIndex) {
+  private int padToSlotIndex(int padIndex) {
+    // Optional: This map could vary by mode
+
     int slotIndex = -1;
     // Bank A, the 4 buttons aligned with knobs
     if (padIndex >= 1 && padIndex <= 4) {
@@ -826,13 +752,11 @@ public class EffectsMiniLab3 extends LXMidiSurface
       // Pad 12: Slot 7
       slotIndex = padIndex - 5;
     }
-    if (slotIndex >= slots.size()) {
-      return -1;
-    }
     return slotIndex;
   }
 
-  static int slotToPadIndex(List<GlobalEffect<? extends LXEffect>> slots, int slotIndex) {
+  private int slotToPadIndex(int slotIndex) {
+    List<GlobalEffect<? extends LXEffect>> slots = this.effectManager.slots;
     if (slotIndex < 0) {
       throw new IllegalArgumentException("Slot index is negative: " + slotIndex);
     } else if (slotIndex <= Math.min(3, slots.size())) {
@@ -864,72 +788,154 @@ public class EffectsMiniLab3 extends LXMidiSurface
     return allSlots().get(index);
   }
 
-  private void clearPadLEDs() {
-    // Send individual SysEx message to turn off each pad
-    for (int i = 0; i < NUM_PADS; i++) {
-      setPadLEDColor(i < 8, i, false, 0, 0, 0); // Turn off (RGB = 0,0,0)
+  // Send Sysex
+
+  private static void applySysexHeader(byte[] sysex) {
+    System.arraycopy(SYSEX_HEADER, 0, sysex, 0, SYSEX_HEADER.length);
+  }
+
+  private void sendModeDAW() {
+    sendMode(SYSEX_MODE_DAW);
+  }
+
+  private void sendMode(byte mode) {
+    // NOT WORKING:
+
+    if (mode == SYSEX_MODE_DAW) {
+      // Initialize DAW connection
+      byte[] sysex = new byte[12];
+      applySysexHeader(sysex);
+      sysex[7] = 0x02; // or 00?
+      sysex[8] = 0x40;
+      sysex[9] = 0x6A;
+      sysex[10] = 0x21;
+      sysex[11] = END_SYSEX;
+      sendSysex(sysex);
     }
   }
 
-  private void setPadLEDColor(
-      boolean isBankA, int padIndex, boolean isPersistentMode, int red, int green, int blue) {
+  private void sendBank(boolean bankA) {
+    sendBank(bankA ? SYSEX_BANK_A : SYSEX_BANK_B);
+  }
 
-    if (padIndex < 0 || padIndex >= NUM_PADS) {
-      throw new IllegalStateException("Pad index must be 0-8");
+  private void sendBank(byte bank) {
+    // TODO: set the bank with sysex
+  }
+
+  // Send Pad Colors
+
+  private static int getSysexPadId(int padIndex, boolean isPersistent) {
+    // 04..0B => Temporary color for pads 1..8 (bank A)
+    // 14..1B => Temporary color for pads 9..16 (bank B)
+    // 34..3B => Persistent color for pads 1..8 (bank A)
+    // 44..4B => Persistent color for pads 9..16 (bank B)
+
+    int sysexPadId = 0x04 + (padIndex % NUM_PADS_PHYSICAL);
+    if (padIndex >= NUM_PADS_PHYSICAL) {
+      // Add 16 for Bank B
+      sysexPadId += 16;
     }
+    if (isPersistent) {
+      // Add 48 for persistent mode
+      sysexPadId += 48;
+    }
+    return sysexPadId;
+  }
 
-    /*
-    ID 04..0B => Temporary color for pads 1..8 (bank A)
-    ID 14..1B => Temporary color for pads 9..16 (bank B)
-    ID 34..3B => Persistent color for pads 1..8 (bank A)
-    ID 44..4B => Persistent color for pads 9..16 (bank B)
-     */
-    int baseOffset;
-    if (isBankA) {
-      baseOffset = isPersistentMode ? 0x34 : 0x04;
+  private void sendPadColors() {
+    padVerbose("<<< Sending Pad LEDs >>>");
+
+    for (int i = 0; i < NUM_PADS; i++) {
+      sendPadColor(i);
+    }
+  }
+
+  private void clearPadColors() {
+    // Send individual SysEx message to turn off each pad
+    for (int i = 0; i < NUM_PADS; i++) {
+      sendPadColor(i, PadColor.OFF);
+    }
+  }
+
+  private void sendPadColor(int padIndex) {
+    sendPadColor(padIndex, getPadColor(padIndex));
+  }
+
+  private PadColor getPadColor(int padIndex) {
+    int slotIndex = padToSlotIndex(padIndex);
+
+    if (slotIndex < 0 || slotIndex >= effectManager.slots.size()) {
+      // Pad index does not map to a slot
+      return PadColor.OFF;
     } else {
-      baseOffset = isPersistentMode ? 0x44 : 0x14;
+      GlobalEffect<? extends LXEffect> globalEffect = effectManager.slots.get(slotIndex);
+
+      // Allows null placeholder slot
+      if (globalEffect == null) {
+        return PadColor.EMPTY;
+      }
+
+      // Occupied slot
+      GlobalEffect.State state = globalEffect.getState();
+      //      padVerbose("\t\t\t state is " + state);
+      switch (state) {
+        case EMPTY -> {
+          return PadColor.EMPTY;
+        }
+        case DISABLED -> {
+          return PadColor.DISABLED;
+        }
+        case ENABLED -> {
+          return PadColor.ENABLED;
+        }
+      }
     }
-    int bankIndex = isBankA ? padIndex : padIndex - 8;
-    int sysExPadId = baseOffset + bankIndex;
+    return PadColor.OFF;
+  }
 
-    // Can it be done with a simple NoteOn?  Or do we have to use sysex to get full RGB?
-    // sendNoteOn(MIDI_CHANNEL_PADS, (byte) PAD_NOTES[padIndex], LXColor.rgb(red, green, blue));
+  /** Send the LED color for pad index 0-15 */
+  private void sendPadColor(int padIndex, PadColor padColor) {
+    int sysexPadId = getSysexPadId(padIndex, true);
 
-    /*
-    SysEx format:
-      F0                     # sysex header
-      00 20 6B 7F 42         # Arturia header
-      02 02 16 ID RR GG BB   # set color of button ID to 0xRRGGBB
-      F7                     # sysex footer
-
-      F0 00 20 6B 7F 42 02 02 16 34 00 7F 00 F7
-    */
-    // ID for pads 1-8 in DAW mode: 0x04 to 0x0B
     byte[] sysex = new byte[14];
-    sysex[0] = START_SYSEX; // SysEx start
-    sysex[1] = MIDI_MFR_ID_0; // Arturia manufacturer ID
-    sysex[2] = MIDI_MFR_ID_1;
-    sysex[3] = MIDI_MFR_ID_2;
-    sysex[4] = (byte) 0x7F;
-    sysex[5] = (byte) 0x42;
-    sysex[6] = (byte) 0x02; // Mode command: set button color
-    sysex[7] = SYSEX_MODE_DAW;
-    sysex[8] = SYSEX_COMMAND_SET_COLOR; // Set color command
-    sysex[9] = (byte) sysExPadId; // SysEx Pad ID (e.g. 0x04-0x0B for pads 1-8)
-    sysex[10] = (byte) (red & 0x7F); // R
-    sysex[11] = (byte) (green & 0x7F); // G
-    sysex[12] = (byte) (blue & 0x7F); // B
-    sysex[13] = END_SYSEX; // SysEx end
+    applySysexHeader(sysex);
+    sysex[6] = 0x02; // Mode command: set button color
+    sysex[7] = 0x02; // dawMode ? SYSEX_MODE_DAW : SYSEX_MODE_ARTURIA;
+    sysex[8] = SYSEX_COMMAND_SET_COLOR;
+    sysex[9] = (byte) sysexPadId;
+    sysex[10] = padColor.rByte; // 7-bit RGB brightness (0x00 to 0x7F)
+    sysex[11] = padColor.gByte;
+    sysex[12] = padColor.bByte;
+    sysex[13] = END_SYSEX;
 
-    padVerbose(String.format("\t\t\t\tSET %02X: (%d,%d,%d)", sysExPadId, red, green, blue));
+    padVerbose(
+        String.format(
+            "\t\t\t\tSET %02X: (%d,%d,%d)", sysexPadId, padColor.r, padColor.g, padColor.b));
 
     sendSysex(sysex);
   }
 
-  // ------------------------------------------------------------------------------------
+  /**
+   * Untested, but in theory this should work to send a full bank of colors in one sysex. Unknown if
+   * this is compatible with persistent mode.
+   */
+  private void sendBankColors(int bankIndex, byte[] colors) {
+    if (colors == null || colors.length != BANK_COLORS_LENGTH) {
+      throw new IllegalArgumentException("Bank colors must be array of length 24");
+    }
+
+    byte[] sysex = new byte[35];
+    applySysexHeader(sysex);
+    sysex[6] = 0x04;
+    sysex[7] = 0x02; // dawMode ? SYSEX_MODE_DAW : SYSEX_MODE_ARTURIA;
+    sysex[8] = SYSEX_COMMAND_SET_COLOR;
+    sysex[9] = (byte) bankIndex;
+    System.arraycopy(colors, 0, sysex, 10, BANK_COLORS_LENGTH);
+    sysex[34] = END_SYSEX;
+    sendSysex(sysex);
+  }
+
   // Shutdown
-  // ------------------------------------------------------------------------------------
 
   /** Temporary for dev */
   private void verbose(String message) {
