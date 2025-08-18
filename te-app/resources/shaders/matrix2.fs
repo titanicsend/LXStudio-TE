@@ -15,7 +15,7 @@
 #iUniform float iScale = 45.0 in {20.0, 100.0}
 #iUniform float iQuantity = 3.0 in {1.0, 9.0}
 #iUniform float iWow2 = 0.0 in {0.0, 1.0}
-#iUniform float iWow1 = 0.5 in {0.0, 20.0}
+#iUniform float iWow1 = 1.0 in {0.0, 2.0}
 
 #pragma TEControl.YPOS.Value(-0.1)
 #pragma TEControl.WOW2.Disable
@@ -35,8 +35,8 @@ precision mediump float;
 
 #define TEXTURE_SIZE 512.0
 #define CHANNEL_COUNT 16.0
-// #define pixPerBin (TEXTURE_SIZE / CHANNEL_COUNT)
-// #define halfBin (pixPerBin / 2.0)
+#define pixPerBin (TEXTURE_SIZE / CHANNEL_COUNT)
+#define halfBin (pixPerBin / 2.0)
 
 vec3 col1 = vec3(0.964, 0.144, 0.519);
 vec3 col2 = vec3(0.226, 0.046, 0.636);
@@ -186,18 +186,22 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float k = R / s.z;
 
 //     fragColor = vec4(vec3(k * iColorRGB), 1.);
-    float szBand = (s.z > (20. * iWow1)) ? s.z : 0.;
-    float txMod = t.x / iWow1;
 
-    float pixPerBin = TEXTURE_SIZE / CHANNEL_COUNT;
-    float halfBin = pixPerBin / 2.0;
-    float binNum = abs(h.x) * 16. * iWow1;
-    float index = halfBin+pixPerBin * binNum;
-    float fftBin = (2. * (1.0+texelFetch(iChannel0, ivec2(index, 0), 0).x)) - 1.;
+
+    // h.x will be equivalent to the 3-D perspective aware column,
+    // either along X for the bottom/top sides of the cube, or Y for right/left sides.
+    float row = (1. + clamp(h.x, -1., 1.)) / 2.;
+    // invert the row number for opposite sides of the cube.
+//     float mirroredRow = (t.x > 0. ? row : 1. - row);
+    float mirroredRow = row;
+    float binNum = mirroredRow * 16.;
+    float fftBin = (2. * (1.0+texelFetch(iChannel0, ivec2(halfBin+pixPerBin * binNum, 0), 0).x)) - 1.;
+
 //     float fftBin  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
 
+    float szBand = (s.z > iWow1 && s.z <= iWow1 * 1.2) ? s.z : 0.;
 
-    fragColor = vec4(vec3(k * getGradientColor(fftBin)), 1.);
+    fragColor = vec4(vec3(k * getGradientColor(fftBin * szBand)), 1.);
 
 //     fragColor.rgb = k * oklab_mix(iColorRGB, iColor2RGB, .5*k + iWow1);
 //     fragColor.rgb = k * oklab_mix(iColorRGB, iColor2RGB, fftBin);
