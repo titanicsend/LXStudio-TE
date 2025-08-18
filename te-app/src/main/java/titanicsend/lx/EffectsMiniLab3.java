@@ -165,10 +165,14 @@ public class EffectsMiniLab3 extends LXMidiSurface
   public static final byte SYSEX_MODE = 0x62;
   public static final byte SYSEX_MODE_ARTURIA = 0x01;
   public static final byte SYSEX_MODE_DAW = 0x02;
+  private static final byte[] SYSEX_MODES = new byte[] {SYSEX_MODE_ARTURIA, SYSEX_MODE_DAW};
 
   public static final byte SYSEX_BANK = 0x63;
   public static final byte SYSEX_BANK_A = 0x00;
   public static final byte SYSEX_BANK_B = 0x01;
+  private static final byte[] SYSEX_BANKS = new byte[] {SYSEX_BANK_A, SYSEX_BANK_B};
+
+  private static final byte[] SYSEX_TYPES = new byte[] {SYSEX_MODE, SYSEX_BANK};
 
   public static final byte SYSEX_COMMAND_SET_COLOR = 0x16;
 
@@ -271,29 +275,14 @@ public class EffectsMiniLab3 extends LXMidiSurface
   // Receiving MIDI Messages
   // ------------------------------------------------------------------------------------
 
-  // User switched to Arturia Mode: F0 00 20 6B 7F 42 02 00 40 62 01 F7
-  // User switched to DAW Mode:     F0 00 20 6B 7F 42 02 00 40 62 02 F7
-  // User switched to Bank A:       F0 00 20 6B 7F 42 02 00 40 63 00 F7
-  // User switched to Bank B:       F0 00 20 6B 7F 42 02 00 40 63 01 F7
-
-  private static final byte SYSEX_RECEIVED_TYPE_MODE = 0x62;
-  private static final byte SYSEX_RECEIVED_TYPE_BANK = 0x63;
-  private static final byte[] SYSEX_RECEIVED_TYPES =
-      new byte[] {SYSEX_RECEIVED_TYPE_MODE, SYSEX_RECEIVED_TYPE_BANK};
-
-  private static final byte SYSEX_RECEIVED_MODE_ARTURIA = 0x01;
-  private static final byte SYSEX_RECEIVED_MODE_DAW = 0x02;
-  private static final byte[] SYSEX_RECEIVED_MODES =
-      new byte[] {SYSEX_RECEIVED_MODE_ARTURIA, SYSEX_RECEIVED_MODE_DAW};
-
-  private static final byte SYSEX_RECEIVED_BANK_A = 0x00;
-  private static final byte SYSEX_RECEIVED_BANK_B = 0x01;
-  private static final byte[] SYSEX_RECEIVED_BANKS =
-      new byte[] {SYSEX_RECEIVED_BANK_A, SYSEX_RECEIVED_BANK_B};
-
   @Override
   public void sysexReceived(LXSysexMessage sysex) {
     verbose("Minilab3 Sysex: " + sysex);
+
+    // User switched to Arturia Mode: F0 00 20 6B 7F 42 02 00 40 62 01 F7
+    // User switched to DAW Mode:     F0 00 20 6B 7F 42 02 00 40 62 02 F7
+    // User switched to Bank A:       F0 00 20 6B 7F 42 02 00 40 63 00 F7
+    // User switched to Bank B:       F0 00 20 6B 7F 42 02 00 40 63 01 F7
 
     byte[] msg = sysex.getMessage();
     //    verbose("msg length: " + msg.length);
@@ -341,12 +330,12 @@ public class EffectsMiniLab3 extends LXMidiSurface
           expectByte(i, (byte) 0x40, b);
           continue;
         case 9:
-          type = expectOneOf(i, SYSEX_RECEIVED_TYPES, b);
+          type = expectOneOf(i, SYSEX_TYPES, b);
           continue;
         case 10:
           if (type == 0) {
             try {
-              option = expectOneOf(i, SYSEX_RECEIVED_MODES, b);
+              option = expectOneOf(i, SYSEX_MODES, b);
             } catch (IllegalArgumentException e) {
               verbose(
                   "Additional mode (besides default Arturia and DAW) configured in Arturia MCC app: "
@@ -354,7 +343,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
             }
 
           } else if (type == 1) {
-            option = expectOneOf(i, SYSEX_RECEIVED_BANKS, b);
+            option = expectOneOf(i, SYSEX_BANKS, b);
           } else {
             throw new IllegalArgumentException(String.format("Invalid SYSEX_RECEIVED_TYPE" + type));
           }
