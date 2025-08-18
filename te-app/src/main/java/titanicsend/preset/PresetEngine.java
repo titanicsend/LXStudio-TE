@@ -205,4 +205,122 @@ public class PresetEngine extends LXComponent {
     // Remove global modulations
     this.lx.engine.getModulationEngine().removeParameterModulations(parameter);
   }
+
+  /**
+   * Save only the active preset from the specified component to disk,
+   * preserving the saved library state. This reloads the library from disk,
+   * adds only the specified preset, and saves it back - ensuring other 
+   * in-memory presets that may be in development are not persisted.
+   */
+  public void saveActivePresetOnly(LXPresetComponent component, UserPreset activePreset) {
+    if (activePreset == null) {
+      return;
+    }
+
+    // Create a fresh library and load the current saved state from disk
+    UserPresetLibrary saveLibrary = new UserPresetLibrary(this.lx);
+    File currentFile = this.currentLibrary.getFile();
+    if (currentFile.exists()) {
+      saveLibrary.load(currentFile);
+    }
+
+    // Get the collection for this component type in the save library
+    UserPresetCollection saveCollection = saveLibrary.get(component);
+
+    // Remove any existing preset with the same label within this specific component class
+    // Note: saveCollection already contains only presets for this component class,
+    // so we only need to check label for deduplication within this collection
+    UserPreset existingPreset = null;
+    for (UserPreset preset : saveCollection.getPresets()) {
+      if (preset.getLabel().equals(activePreset.getLabel())) {
+        existingPreset = preset;
+        break;
+      }
+    }
+    if (existingPreset != null) {
+      saveCollection.removePreset(existingPreset);
+    }
+
+    // Add the current active preset to the save library
+    UserPreset newPreset = saveCollection.addPreset(component);
+    newPreset.setLabel(activePreset.getLabel());
+
+    // Save to the current library's file location
+    saveLibrary.save(currentFile);
+  }
+
+  /**
+   * Remove a specific preset from the saved library on disk,
+   * preserving all other presets in their saved state.
+   * Uses component class + preset label as unique identifier.
+   */
+  public void removePresetFromDisk(LXPresetComponent component, UserPreset presetToRemove) {
+    if (presetToRemove == null) {
+      return;
+    }
+    String presetLabel = presetToRemove.getLabel();
+    String componentClass = PresetEngine.getPresetName(component);
+
+    // Create a fresh library and load the current saved state from disk
+    UserPresetLibrary saveLibrary = new UserPresetLibrary(this.lx);
+    File currentFile = this.currentLibrary.getFile();
+    if (currentFile.exists()) {
+      saveLibrary.load(currentFile);
+    }
+
+    // Get the collection for this component type in the save library
+    UserPresetCollection saveCollection = saveLibrary.get(component);
+
+    // Find and remove the preset with the specified class + label combination
+    // Note: saveCollection already contains only presets for this component class,
+    // so we verify both class and label for absolute safety
+    UserPreset diskPresetToRemove = null;
+    for (UserPreset preset : saveCollection.getPresets()) {
+      if (preset.clazz.equals(componentClass) && preset.getLabel().equals(presetLabel)) {
+        diskPresetToRemove = preset;
+        break;
+      }
+    }
+    if (diskPresetToRemove != null) {
+      saveCollection.removePreset(diskPresetToRemove);
+    }
+
+    // Save to the current library's file location
+    saveLibrary.save(currentFile);
+  }
+
+  /**
+   * Rename a specific preset in the saved library on disk,
+   * preserving all other presets in their saved state.
+   * Uses component class + preset label as unique identifier.
+   */
+  public void renamePresetOnDisk(LXPresetComponent component, String oldLabel, String newLabel) {
+    if (oldLabel == null || newLabel == null || oldLabel.equals(newLabel)) {
+      return;
+    }
+    String componentClass = PresetEngine.getPresetName(component);
+
+    // Create a fresh library and load the current saved state from disk
+    UserPresetLibrary saveLibrary = new UserPresetLibrary(this.lx);
+    File currentFile = this.currentLibrary.getFile();
+    if (currentFile.exists()) {
+      saveLibrary.load(currentFile);
+    }
+
+    // Get the collection for this component type in the save library
+    UserPresetCollection saveCollection = saveLibrary.get(component);
+
+    // Find the preset with the specified class + old label combination and rename it
+    // Note: saveCollection already contains only presets for this component class,
+    // so we verify both class and label for absolute safety
+    for (UserPreset preset : saveCollection.getPresets()) {
+      if (preset.clazz.equals(componentClass) && preset.getLabel().equals(oldLabel)) {
+        preset.setLabel(newLabel);
+        break;
+      }
+    }
+
+    // Save to the current library's file location
+    saveLibrary.save(currentFile);
+  }
 }

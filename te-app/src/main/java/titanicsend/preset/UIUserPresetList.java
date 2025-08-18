@@ -114,6 +114,20 @@ public class UIUserPresetList extends UIItemList.ScrollList {
     return this;
   }
 
+  public UserPreset getActivePreset() {
+    return this.activeItem != null ? this.activeItem.preset : null;
+  }
+
+  public String getSelectedPresetLabel() {
+    PresetItem item = (PresetItem) this.getFocusedItem();
+    return item != null ? item.preset.getLabel() : null;
+  }
+
+  public UserPreset getSelectedPreset() {
+    PresetItem item = (PresetItem) this.getFocusedItem();
+    return item != null ? item.preset : null;
+  }
+
   public UIUserPresetList removeSelected() {
     PresetItem item = (PresetItem) this.getFocusedItem();
     if (item != null) {
@@ -165,7 +179,10 @@ public class UIUserPresetList extends UIItemList.ScrollList {
 
     @Override
     public void onRename(String label) {
+      String oldLabel = this.preset.getLabel();
       getLX().command.perform(new LXCommand.Parameter.SetString(this.preset.label, label));
+      // Auto-save the renamed preset to disk
+      PresetEngine.get().renamePresetOnDisk(component, oldLabel, label);
     }
 
     @Override

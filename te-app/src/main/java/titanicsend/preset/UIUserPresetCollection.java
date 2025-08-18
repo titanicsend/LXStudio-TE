@@ -87,15 +87,28 @@ public class UIUserPresetCollection extends UI2dContainer implements UIControls,
   }
 
   private void add() {
-    this.presetList.addPreset();
+    UserPreset newPreset = this.presetList.addPreset();
+    // Auto-save only this preset to disk
+    PresetEngine.get().saveActivePresetOnly(this.component, newPreset);
   }
 
   private void update() {
     this.presetList.updateActive();
+    // Auto-save only the updated preset to disk
+    UserPreset activePreset = this.presetList.getActivePreset();
+    if (activePreset != null) {
+      PresetEngine.get().saveActivePresetOnly(this.component, activePreset);
+    }
   }
 
   private void remove() {
+    // Get the preset object before removing it
+    UserPreset selectedPreset = this.presetList.getSelectedPreset();
     this.presetList.removeSelected();
+    // Auto-remove only this preset from disk
+    if (selectedPreset != null) {
+      PresetEngine.get().removePresetFromDisk(this.component, selectedPreset);
+    }
   }
 
   private void showLibraryManager() {
