@@ -169,7 +169,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     // Scales the projected coordinates by the distance to boundary (s.z) times 800, then takes the ceiling.
     // This creates a grid pattern that gets denser as you approach the boundaries, creating the tunnel effect.
-    vec3 i = ceil(8e2 * s.z * t) / iScale;
+    vec3 h = s.z * t;
+    vec3 i = ceil(8e2 * h) / iScale;
 
     // Takes the fractional part of each component, creating repeating patterns in the [0,1] range.
     vec3 j = fract(i);
@@ -190,9 +191,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     float pixPerBin = TEXTURE_SIZE / CHANNEL_COUNT;
     float halfBin = pixPerBin / 2.0;
-    float binNum = abs(t.x) * 16. * iWow1;
+    float binNum = abs(h.x) * 16. * iWow1;
     float index = halfBin+pixPerBin * binNum;
-    float fftBin = (0.5 * (1.0+texelFetch(iChannel0, ivec2(index, 0), 0).x)) - 0.25;
+    float fftBin = (2. * (1.0+texelFetch(iChannel0, ivec2(index, 0), 0).x)) - 1.;
 //     float fftBin  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
 
 
