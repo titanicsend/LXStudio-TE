@@ -34,6 +34,11 @@ precision mediump float;
 #define TWO_PI 6.28318530718
 #define TAU 6.28318530718
 
+#define TEXTURE_SIZE 512.0
+#define CHANNEL_COUNT 16.0
+// #define pixPerBin (TEXTURE_SIZE / CHANNEL_COUNT)
+// #define halfBin (pixPerBin / 2.0)
+
 vec3 col1 = vec3(0.964, 0.144, 0.519);
 vec3 col2 = vec3(0.226, 0.046, 0.636);
 
@@ -167,6 +172,12 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // This creates a grid pattern that gets denser as you approach the boundaries, creating the tunnel effect.
     vec3 i = ceil(8e2 * s.z * t) / iScale;
 
+    float pixPerBin = TEXTURE_SIZE / CHANNEL_COUNT;
+    float halfBin = pixPerBin / 2.0;
+
+    float tx = halfBin+pixPerBin * (abs(t.x) * iScale / 8e2);
+    float fftBin  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
+
     // Takes the fractional part of each component, creating repeating patterns in the [0,1] range.
     vec3 j = fract(i);
     i -= j;
@@ -180,8 +191,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     float k = R / s.z;
 
-    fragColor = vec4(vec3(k * iColorRGB), 1.);
+    fragColor = vec4(vec3(k * iColorRGB) * fftBin, 1.);
 //     fragColor.rgb = k * oklab_mix(iColorRGB, iColor2RGB, .5*k + iWow1);
+//     fragColor.rgb = k * oklab_mix(iColorRGB, iColor2RGB, fftBin);
 
     float mask = (R > 0.5 && j.x < 0.6 && j.y < 0.8) ? 1.25 : 0.0;
     fragColor *= vec4(vec3(mask), 1.0);
