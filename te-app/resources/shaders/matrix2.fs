@@ -214,9 +214,21 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 //     fragColor.rgb = k * oklab_mix(iColorRGB, iColor2RGB, .5*k + iWow1);
 //     fragColor.rgb = k * oklab_mix(iColorRGB, iColor2RGB, fftBin);
 
-    float szFFT = (szBand > 0. ? fftBin : 1.0);
+    float szFFT = (szBand > 0. ? 1.0+fftBin : 1.0);
 
 //     float mask = (R > 0.5 * szFFT && j.x < 0.6 * szFFT && j.y < 0.8 * szFFT) ? 1.25 : 0.0;
-    float mask = (R > 0.5 && j.x < 0.6 * szFFT && j.y < 0.8 * szFFT) ? 1.0 : 0.0;
+
+//     GOOD:
+//     float mask = (R > 0.5 && j.x < 0.6 * szFFT && j.y < 0.8 * szFFT) ? 1.0 : 0.0;
+
+
+    float mask = R > iWow1 ? 1.0 + 0.25*szFFT : 0.0; // NOTE: R > (1. / iQuantity) ??
+    mask *= 1. - smoothstep(0.59, 0.6*szFFT, j.x);
+    mask *= 1. - smoothstep(0.8, 0.81*szFFT, j.y);
+//     mask *= j.x < 0.6 * szFFT
+//     mask *= j.y < 0.8 * szFFT) ;
+
+
+
     fragColor *= vec4(vec3(mask), R > 0.5 * szFFT ? 1.0 : szFFT);
 }
