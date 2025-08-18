@@ -21,6 +21,12 @@ vec2 random2(vec2 p) {
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    // early out if effect is inactive
+    fragColor = texelFetch(iDst, ivec2(gl_FragCoord.xy), 0);
+    if (basis <= 0.0) {
+        return;
+    }
+    
     vec2 uv = fragCoord / iResolution.xy;
     vec2 quv = uv; // copy we use to quantize later
 
