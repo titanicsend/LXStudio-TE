@@ -18,7 +18,6 @@
 #iUniform float iWow1 = 0.0 in {0.0, 1.0}
 
 #pragma TEControl.YPOS.Value(-0.1)
-#pragma TEControl.WOW1.Disable
 #pragma TEControl.WOW2.Disable
 #pragma TEControl.QUANTITY.Disable
 #pragma TEControl.WOWTRIGGER.Disable
@@ -175,8 +174,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float pixPerBin = TEXTURE_SIZE / CHANNEL_COUNT;
     float halfBin = pixPerBin / 2.0;
 
-    float tx = halfBin+pixPerBin * (abs(t.x) * iScale / 8e2);
-    float fftBin  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
+    float binNum = abs(t.x) * 16.;
+    float tx = halfBin+pixPerBin * binNum;
+//     float fftBin  = texelFetch(iChannel0, ivec2(tx, 0), 0).x;
+    float fftBin = (0.5 * (1.0+texelFetch(iChannel0, ivec2(tx, 1), 0).x)) - 0.25;
 
     // Takes the fractional part of each component, creating repeating patterns in the [0,1] range.
     vec3 j = fract(i);
@@ -191,7 +192,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     float k = R / s.z;
 
-    fragColor = vec4(vec3(k * iColorRGB) * fftBin, 1.);
+//     fragColor = vec4(vec3(k * iColorRGB), 1.);
+    float szBand = s.z > (20. * iWow1) ? s.z : 0.;
+    fragColor = vec4(vec3(k * getGradientColor(szBand)), 1.);
+
 //     fragColor.rgb = k * oklab_mix(iColorRGB, iColor2RGB, .5*k + iWow1);
 //     fragColor.rgb = k * oklab_mix(iColorRGB, iColor2RGB, fftBin);
 
