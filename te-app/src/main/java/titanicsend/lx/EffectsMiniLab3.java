@@ -158,6 +158,8 @@ public class EffectsMiniLab3 extends LXMidiSurface
 
   // Sysex
 
+  private static final byte BYTE_UNKNOWN = Byte.MIN_VALUE;
+
   public static final byte MIDI_MFR_ID_0 = 0x00;
   public static final byte MIDI_MFR_ID_1 = 0x20;
   public static final byte MIDI_MFR_ID_2 = 0x6B;
@@ -287,15 +289,8 @@ public class EffectsMiniLab3 extends LXMidiSurface
     byte[] msg = sysex.getMessage();
     //    verbose("msg length: " + msg.length);
 
-    // -1: mode byte not seen
-    // 0:  is's a Mode update
-    // 1:  it's a Bank update
-    int type = -1;
-
-    // -1: not seen
-    // 0:  Arturia (if isMode), Bank A (not isMode)
-    // 1:  DAW (if isMode),     Bank B (not isMode)
-    int option = -1;
+    byte type = BYTE_UNKNOWN;
+    byte option = BYTE_UNKNOWN;
 
     for (int i = 0; i < msg.length; i++) {
       byte b = msg[i];
@@ -330,42 +325,54 @@ public class EffectsMiniLab3 extends LXMidiSurface
           expectByte(i, (byte) 0x40, b);
           continue;
         case 9:
-          type = expectOneOf(i, SYSEX_TYPES, b);
+          expectOneOf(i, SYSEX_TYPES, b);
+          type = b;
           continue;
         case 10:
-          if (type == 0) {
-            try {
-              option = expectOneOf(i, SYSEX_MODES, b);
-            } catch (IllegalArgumentException e) {
-              verbose(
-                  "Additional mode (besides default Arturia and DAW) configured in Arturia MCC app: "
-                      + b);
-            }
-
-          } else if (type == 1) {
-            option = expectOneOf(i, SYSEX_BANKS, b);
-          } else {
-            throw new IllegalArgumentException(String.format("Invalid SYSEX_RECEIVED_TYPE" + type));
+          switch (type) {
+            case SYSEX_MODE:
+              try {
+                expectOneOf(i, SYSEX_MODES, b);
+              } catch (IllegalArgumentException e) {
+                LXMidiEngine.error(
+                    "Additional mode (besides default Arturia and DAW) configured in Arturia MCC app: "
+                        + b);
+              }
+              break;
+            case SYSEX_BANK:
+              expectOneOf(i, SYSEX_BANKS, b);
+              break;
+            default:
+              throw new IllegalArgumentException("Invalid SYSEX_RECEIVED_TYPE " + type);
           }
+          option = b;
           continue;
         case 11:
           expectByte(i, (byte) 0xF7, b);
           continue;
         default:
-          throw new IllegalArgumentException(String.format("Invalid SYSEX_RECEIVED_TYPE" + type));
+          throw new IllegalArgumentException("Invalid SYSEX_RECEIVED_TYPE " + type);
       }
     }
 
-    if (type == 0) {
-      if (option > 0) {
-        modeReceived(option == 0 ? true : false);
-      } else {
-        verbose("Non-standard mode received; ignoring");
+    // Check for invalid bytes
+    if (type == BYTE_UNKNOWN) {
+      verbose("Non-standard sysex mode received; ignoring");
+      return;
+    }
+    if (option == BYTE_UNKNOWN) {
+      verbose("Non-standard sysex option received; ignoring");
+      return;
+    }
+
+    // Valid sysex received!
+    switch (type) {
+      case SYSEX_MODE -> {
+        modeReceived(option == SYSEX_MODE_DAW);
       }
-    } else if (type == 1) {
-      bankReceived(option == 0 ? true : false);
-    } else {
-      throw new IllegalArgumentException(String.format("Invalid SYSEX_RECEIVED_TYPE" + type));
+      case SYSEX_BANK -> {
+        bankReceived(option == SYSEX_BANK_A);
+      }
     }
   }
 
@@ -378,10 +385,10 @@ public class EffectsMiniLab3 extends LXMidiSurface
     }
   }
 
-  private static int expectOneOf(int index, byte[] options, byte actual) {
+  private static void expectOneOf(int index, byte[] options, byte actual) {
     for (int i = 0; i < options.length; i++) {
       if (options[i] == actual) {
-        return i;
+        return;
       }
     }
     throw new AssertionError(
