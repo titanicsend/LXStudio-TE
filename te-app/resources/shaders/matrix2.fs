@@ -18,7 +18,6 @@
 #iUniform float iWow1 = 1.0 in {0.0, 2.0}
 
 #pragma TEControl.YPOS.Value(-0.1)
-#pragma TEControl.WOW2.Disable
 #pragma TEControl.QUANTITY.Disable
 #pragma TEControl.WOWTRIGGER.Disable
 #pragma TEControl.LEVELREACTIVITY.Disable
@@ -210,13 +209,14 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         ),4)
       > 0.5*(1. - volumeRatio) ? s.z : 0.;
 
-    fragColor = vec4(vec3(k * getGradientColor(fftBin * szBand)), 1.);
+    fragColor = vec4(vec3(k * getGradientColor(mix(0.0, fftBin * szBand, iWow2))), 1.);
 
 //     fragColor.rgb = k * oklab_mix(iColorRGB, iColor2RGB, .5*k + iWow1);
 //     fragColor.rgb = k * oklab_mix(iColorRGB, iColor2RGB, fftBin);
 
     float szFFT = (szBand > 0. ? fftBin : 1.0);
 
-    float mask = (R > 0.5 * szFFT && j.x < 0.6 * szFFT && j.y < 0.8 * szFFT) ? 1.25 : 0.0;
-    fragColor *= vec4(vec3(mask), 1.0);
+//     float mask = (R > 0.5 * szFFT && j.x < 0.6 * szFFT && j.y < 0.8 * szFFT) ? 1.25 : 0.0;
+    float mask = (R > 0.5 && j.x < 0.6 * szFFT && j.y < 0.8 * szFFT) ? 1.0 : 0.0;
+    fragColor *= vec4(vec3(mask), R > 0.5 * szFFT ? 1.0 : szFFT);
 }
