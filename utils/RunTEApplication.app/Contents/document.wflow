@@ -59,7 +59,7 @@
 				<key>ActionParameters</key>
 				<dict>
 					<key>COMMAND_STRING</key>
-					<string>cd /Users/te/src/code/LXStudio-TE
+					<string>cd /Users/artarazavi/LXStudio-Pacman
 bash ./te-app/script/start-lx.sh</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
