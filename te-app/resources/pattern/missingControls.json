@@ -134,16 +134,6 @@
     ]
   },
   {
-    "shader_name": "triangle_cross_waveform.fs",
-    "pattern_classes": [
-      "TriangleCrossAudioWaveform"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "radial_simplex.fs",
     "pattern_classes": [
       "RadialSimplex"

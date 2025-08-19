@@ -229,9 +229,9 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
    * @return
    */
   public int calcColor2(boolean setBrightness) {
-    if (isStaleColor) {
-      _calcColor2 = controls.color.calcColor();
-      isStaleColor = false;
+    if (isStaleColor2) {
+      _calcColor2 = controls.color.calcColor2();
+      isStaleColor2 = false;
     }
     return (setBrightness)
         ? TEColor.setBrightness(_calcColor2, (float) getBrightness())
