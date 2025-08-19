@@ -1,15 +1,5 @@
 [
   {
-    "shader_name": "marbling.fs",
-    "pattern_classes": [
-      "Marbling"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "mandelbrot.fs",
     "pattern_classes": [
       "Mondelbrot"
