@@ -68,8 +68,13 @@ public class PresetEngine extends LXComponent {
     updateLibraryName();
   }
 
-  public void openLibrary(String path) {
-    this.currentLibrary.load(new File(path));
+  public void loadLibrary(String path) {
+    this.currentLibrary.load(new File(path), true);
+    updateLibraryName();
+  }
+
+  public void importLibrary(String path) {
+    this.currentLibrary.load(new File(path), false);
     updateLibraryName();
   }
 

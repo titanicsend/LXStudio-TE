@@ -28,7 +28,7 @@ public class UIUserPresetManager extends UICollapsibleSection {
 
     PresetEngine engine = PresetEngine.get();
 
-    final float buttonWidth = (getContentWidth() - (2 * BUTTON_SPACING)) / 3;
+    final float buttonWidth = (getContentWidth() - (2 * BUTTON_SPACING)) / 4;
 
     final UILabel fileName =
         (UILabel)
@@ -56,7 +56,7 @@ public class UIUserPresetManager extends UICollapsibleSection {
                 .setBorderRounding(4)
                 .setDescription("Start an empty User Presets library"),
 
-            // Open
+            // Load
             new UIButton(0, 0, buttonWidth, 18) {
               @Override
               public void onClick() {
@@ -73,12 +73,37 @@ public class UIUserPresetManager extends UICollapsibleSection {
                             "User Presets File",
                             new String[] {"userPresets"},
                             engine.getLibrary().getFile().getPath(),
-                            engine::openLibrary));
+                            engine::loadLibrary));
               }
-            }.setLabel("Open")
+            }.setLabel("Load")
                 .setMomentary(true)
                 .setBorderRounding(4)
-                .setDescription("Open a User Presets library"),
+                .setDescription(
+                    "Load a User Presets library (Replacing previously-loaded library)"),
+
+            // Import
+            new UIButton(0, 0, buttonWidth, 18) {
+              @Override
+              public void onClick() {
+                if (engine.getLibrary() == null) {
+                  LX.error("No user preset library found, can not save.");
+                  return;
+                }
+
+                lx.showConfirmDialog(
+                    "Import another User Presets file? Presets in the selected file will be added to the current loaded file.",
+                    () ->
+                        lx.showOpenFileDialog(
+                            "Import User Presets Library",
+                            "User Presets File",
+                            new String[] {"userPresets"},
+                            engine.getLibrary().getFile().getPath(),
+                            engine::importLibrary));
+              }
+            }.setLabel("Import")
+                .setMomentary(true)
+                .setBorderRounding(4)
+                .setDescription("Import a User Presets library into the already-loaded library"),
 
             // Save
             new UIButton(64, 0, buttonWidth, 18) {
