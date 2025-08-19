@@ -1,13 +1,5 @@
 [
   {
-    "shader_name": "audio_test2.fs",
-    "pattern_classes": [
-      "AudioTest2"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": []
-  },
-  {
     "shader_name": "turbulent_noise_lines.fs",
     "pattern_classes": [
       "TurbulenceLines"
