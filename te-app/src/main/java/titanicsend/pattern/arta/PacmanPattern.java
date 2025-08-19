@@ -32,6 +32,10 @@ public class PacmanPattern extends TEAudioPattern {
     public final BooleanParameter showEyes =
             new BooleanParameter("Eyes", true)
                     .setDescription("Show Pacman's eyes");
+    
+    public final CompoundParameter twist =
+            new CompoundParameter("Twist", 0.0f, 0.0f, 360.0f)
+                    .setDescription("Rotate the entire Pacman character");
 
     // Animation variables
     private double animationTime = 0.0;
@@ -43,6 +47,7 @@ public class PacmanPattern extends TEAudioPattern {
         addParameter("MSpeed", mouthSpeed);
         addParameter("MAnimation", mouthAnimation);
         addParameter("Eyes", showEyes);
+        addParameter("Twist", twist);
     }
 
     @Override
@@ -58,6 +63,9 @@ public class PacmanPattern extends TEAudioPattern {
         float maxDimension = Math.max(model.xMax - model.xMin, model.yMax - model.yMin);
         float radius = (maxDimension / 2.0f) * size.getValuef();
         
+        // Get twist angle in radians
+        float twistAngle = (float) Math.toRadians(twist.getValuef());
+        
         // Clear all colors first
         for (int i = 0; i < colors.length; i++) {
             colors[i] = LXColor.BLACK;
@@ -67,10 +75,15 @@ public class PacmanPattern extends TEAudioPattern {
         for (int i = 0; i < model.points.length; i++) {
             LXVector point = new LXVector(model.points[i]);
             
-            // Calculate distance from center
+            // Apply twist rotation to the point
+            float relX = point.x - centerX;
+            float relY = point.y - centerY;
+            float rotatedX = (float) (relX * Math.cos(twistAngle) - relY * Math.sin(twistAngle));
+            float rotatedY = (float) (relX * Math.sin(twistAngle) + relY * Math.cos(twistAngle));
+            
+            // Calculate distance from center (using rotated coordinates)
             float distance = (float) Math.sqrt(
-                (point.x - centerX) * (point.x - centerX) + 
-                (point.y - centerY) * (point.y - centerY)
+                rotatedX * rotatedX + rotatedY * rotatedY
             );
             
             // If point is within the circle radius, make it yellow
@@ -95,8 +108,14 @@ public class PacmanPattern extends TEAudioPattern {
         for (int i = 0; i < model.points.length; i++) {
             LXVector point = new LXVector(model.points[i]);
             
-            // Calculate angle from center to this point
-            float angle = (float) Math.atan2(point.y - centerY, point.x - centerX);
+            // Apply twist rotation to the point
+            float relX = point.x - centerX;
+            float relY = point.y - centerY;
+            float rotatedX = (float) (relX * Math.cos(twistAngle) - relY * Math.sin(twistAngle));
+            float rotatedY = (float) (relX * Math.sin(twistAngle) + relY * Math.cos(twistAngle));
+            
+            // Calculate angle from center (using rotated coordinates)
+            float angle = (float) Math.atan2(rotatedY, rotatedX);
             
             // Normalize angle to 0-2π range
             if (angle < 0) {
@@ -106,10 +125,9 @@ public class PacmanPattern extends TEAudioPattern {
             // Check if point is in the mouth area (left side, within mouth angle)
             // Mouth opens to the left (π to 2π range, which is left side)
             if (angle >= Math.PI - mouthAngle/2 && angle <= Math.PI + mouthAngle/2) {
-                // Calculate distance from center
+                // Calculate distance from center (using rotated coordinates)
                 float distance = (float) Math.sqrt(
-                    (point.x - centerX) * (point.x - centerX) + 
-                    (point.y - centerY) * (point.y - centerY)
+                    rotatedX * rotatedX + rotatedY * rotatedY
                 );
                 
                 // If point is within the circle radius, make it black (mouth cutout)
@@ -130,16 +148,27 @@ public class PacmanPattern extends TEAudioPattern {
             for (int i = 0; i < model.points.length; i++) {
                 LXVector point = new LXVector(model.points[i]);
                 
+                // Apply twist rotation to the point
+                float relX = point.x - centerX;
+                float relY = point.y - centerY;
+                float rotatedX = (float) (relX * Math.cos(twistAngle) - relY * Math.sin(twistAngle));
+                float rotatedY = (float) (relX * Math.sin(twistAngle) + relY * Math.cos(twistAngle));
+                
+                // Apply the opposite rotation to the eye position
+                float eyeRelX = eyeX - centerX;
+                float eyeRelY = eyeY - centerY;
+                float rotatedEyeX = centerX + (float) (eyeRelX * Math.cos(-twistAngle) - eyeRelY * Math.sin(-twistAngle));
+                float rotatedEyeY = centerY + (float) (eyeRelX * Math.sin(-twistAngle) + eyeRelY * Math.cos(-twistAngle));
+                
                 // Check if point is within the eye
                 float eyeDistance = (float) Math.sqrt(
-                    (point.x - eyeX) * (point.x - eyeX) + 
-                    (point.y - eyeY) * (point.y - eyeY)
+                    (point.x - rotatedEyeX) * (point.x - rotatedEyeX) + 
+                    (point.y - rotatedEyeY) * (point.y - rotatedEyeY)
                 );
                 
                 // If point is within the eye and within Pacman's body, make it black
                 if (eyeDistance <= eyeRadius && 
-                    (float) Math.sqrt((point.x - centerX) * (point.x - centerX) + 
-                                     (point.y - centerY) * (point.y - centerY)) <= radius) {
+                    (float) Math.sqrt(rotatedX * rotatedX + rotatedY * rotatedY) <= radius) {
                     colors[point.index] = LXColor.BLACK;
                 }
             }
