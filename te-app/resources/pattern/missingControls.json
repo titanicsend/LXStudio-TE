@@ -1,15 +1,5 @@
 [
   {
-    "shader_name": "triangle_infinity_radial_waveform.fs",
-    "pattern_classes": [
-      "TriangleInfinityRadialWaveform"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "space_explosion.fs",
     "pattern_classes": [
       "SpaceExplosionEdges",
