@@ -1,15 +1,5 @@
 [
   {
-    "shader_name": "triangle_noise.fs",
-    "pattern_classes": [
-      "TriangleNoise"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "neon_ripples.fs",
     "pattern_classes": [
       "NeonRipplesEdges",
