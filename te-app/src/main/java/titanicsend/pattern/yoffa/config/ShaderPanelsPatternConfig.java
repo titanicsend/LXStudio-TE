@@ -293,6 +293,8 @@ public class ShaderPanelsPatternConfig {
 
       controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
       controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
 
       addShader(
           GLShader.config(lx).withFilename("storm_scanner.fs").withTextures("gray_noise.png"));

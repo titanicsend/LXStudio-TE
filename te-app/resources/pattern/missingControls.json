@@ -94,17 +94,6 @@
     ]
   },
   {
-    "shader_name": "storm_scanner.fs",
-    "pattern_classes": [
-      "StormScanner"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "QUANTITY",
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "followthatstar.fs",
     "pattern_classes": [
       "FollowThatStar"
