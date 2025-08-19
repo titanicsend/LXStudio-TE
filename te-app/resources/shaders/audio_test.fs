@@ -1,3 +1,9 @@
+#pragma TEControl.SIZE.Disable
+#pragma TEControl.QUANTITY.Disable
+#pragma TEControl.WOW1.Disable
+#pragma TEControl.WOW2.Disable
+#pragma TEControl.WOWTRIGGER.Disable
+
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     vec2 h = (iResolution.xy*0.5);

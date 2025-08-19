@@ -1,3 +1,8 @@
+#pragma TEControl.SIZE.Disable
+#pragma TEControl.QUANTITY.Disable
+#pragma TEControl.WOW1.Disable
+#pragma TEControl.WOWTRIGGER.Disable
+
 //fork of https://www.shadertoy.com/view/4ttGWMf
 
 float rand(vec2 n) {

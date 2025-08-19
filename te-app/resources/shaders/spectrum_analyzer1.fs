@@ -1,3 +1,9 @@
+#pragma TEControl.SIZE.Disable
+#pragma TEControl.QUANTITY.Disable
+#pragma TEControl.WOW1.Disable
+#pragma TEControl.WOW2.Disable
+#pragma TEControl.WOWTRIGGER.Disable
+
 // TE Audio Test shader.  Based on.
 //https://www.shadertoy.com/view/NlKSRw
 

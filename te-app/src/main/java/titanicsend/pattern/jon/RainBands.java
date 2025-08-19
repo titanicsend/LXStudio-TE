@@ -23,6 +23,7 @@ public class RainBands extends DriftEnabledPattern {
 
     controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
     controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
 
     controls.setRange(TEControlTag.WOW1, 1.5, 8, 0.01); // relative y scale
     // register common controls with LX

@@ -95,6 +95,7 @@ public class EdgeFall extends GLShaderPattern {
     controls.setRange(TEControlTag.WOW2, 0.7, 0.0, 1.0);
 
     // disable unused controls
+    controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
     controls.markUnused(controls.getLXControl(TEControlTag.XPOS));
     controls.markUnused(controls.getLXControl(TEControlTag.YPOS));
     controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
