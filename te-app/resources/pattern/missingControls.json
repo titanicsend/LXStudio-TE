@@ -1,15 +1,5 @@
 [
   {
-    "shader_name": "sigmoid_dance_audio_waveform.fs",
-    "pattern_classes": [
-      "SigmoidDanceAudioWaveform"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "QUANTITY"
-    ]
-  },
-  {
     "shader_name": "edgefall.fs",
     "pattern_classes": [
       "EdgeFall"
