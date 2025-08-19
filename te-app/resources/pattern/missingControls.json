@@ -1,17 +1,5 @@
 [
   {
-    "shader_name": "neon_heart.fs",
-    "pattern_classes": [
-      "NeonHeartNative"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "WOW1",
-      "WOW2",
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "rain_noise.fs",
     "pattern_classes": [
       "RainBands"
