@@ -31,6 +31,10 @@ public class PacmanPattern extends TEAudioPattern {
             new CompoundParameter("MAnimation", 1.0f, 0.0f, 1.0f)
                     .setDescription("Mouth animation amount (0=closed, 1=open)");
     
+    public final BooleanParameter mouthMove =
+            new BooleanParameter("MouthMove", true)
+                    .setDescription("Enable mouth movement (off = mouth stays open)");
+    
     public final BooleanParameter showEyes =
             new BooleanParameter("Eyes", true)
                     .setDescription("Show Pacman's eyes");
@@ -90,6 +94,7 @@ public class PacmanPattern extends TEAudioPattern {
         addParameter("MSize", mouthSize);
         addParameter("MSpeed", mouthSpeed);
         addParameter("MAnimation", mouthAnimation);
+        addParameter("MouthMove", mouthMove);
         addParameter("Eyes", showEyes);
         addParameter("Twist", twist);
         addParameter("Color", colorChoice);
@@ -157,12 +162,18 @@ public class PacmanPattern extends TEAudioPattern {
         // Calculate animated mouth angle
         float baseMouthAngle = mouthSize.getValuef() * (float) Math.PI; // Convert to radians
         
-        // Create a sine wave animation (0 to 1 to 0)
-        float animationWave = (float) Math.sin(animationTime * 2 * Math.PI);
-        float animationAmount = (animationWave + 1.0f) / 2.0f; // Convert to 0-1 range
-        
-        // Apply manual animation control if needed
-        animationAmount = animationAmount * mouthAnimation.getValuef();
+        float animationAmount;
+        if (mouthMove.isOn()) {
+            // Create a sine wave animation (0 to 1 to 0)
+            float animationWave = (float) Math.sin(animationTime * 2 * Math.PI);
+            animationAmount = (animationWave + 1.0f) / 2.0f; // Convert to 0-1 range
+            
+            // Apply manual animation control if needed
+            animationAmount = animationAmount * mouthAnimation.getValuef();
+        } else {
+            // Mouth stays open (full animation amount)
+            animationAmount = 1.0f;
+        }
         
         // Final mouth angle with animation
         float mouthAngle = baseMouthAngle * animationAmount;
@@ -258,10 +269,11 @@ public class PacmanPattern extends TEAudioPattern {
      */
     protected void onPanic() {
         size.reset();
-        mouthSize.reset();
-        mouthSpeed.reset();
-        mouthAnimation.reset();
-        showEyes.reset();
+                        mouthSize.reset();
+                mouthSpeed.reset();
+                mouthAnimation.reset();
+                mouthMove.reset();
+                showEyes.reset();
         twist.reset();
         colorChoice.reset();
         colorShift.reset();
