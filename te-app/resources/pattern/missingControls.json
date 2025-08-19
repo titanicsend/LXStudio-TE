@@ -1,15 +1,5 @@
 [
   {
-    "shader_name": "triangle_cross.fs",
-    "pattern_classes": [
-      "TriangleCrossAudioLevels"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "simplex_posterized.fs",
     "pattern_classes": [
       "SimplexPosterized"
