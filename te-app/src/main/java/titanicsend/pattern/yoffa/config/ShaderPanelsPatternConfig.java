@@ -263,6 +263,10 @@ public class ShaderPanelsPatternConfig {
     protected void createShader() {
       controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
       controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.SIZE));
+      controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
       addShader("fire.fs");
     }
   }
