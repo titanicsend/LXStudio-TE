@@ -1,17 +1,5 @@
 [
   {
-    "shader_name": "mandelbrot.fs",
-    "pattern_classes": [
-      "Mondelbrot"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "QUANTITY",
-      "WOW2",
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "audio_test2.fs",
     "pattern_classes": [
       "AudioTest2"
