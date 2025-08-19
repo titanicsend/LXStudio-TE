@@ -1,18 +1,5 @@
 [
   {
-    "shader_name": "pixel_scanner.fs",
-    "pattern_classes": [
-      "PixelScanner"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "SIZE",
-      "WOW1",
-      "WOW2",
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "galaxy.fs",
     "pattern_classes": [
       "Galaxy"
