@@ -14,13 +14,13 @@ public class XorceryDiamonds extends ConstructedShaderPattern {
 
   @Override
   protected void createShader() {
+    controls.setRange(TEControlTag.SIZE, 2.5, 7.0, 0.1);
 
     controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
     controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
     controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
     controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
     controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
-    controls.setRange(TEControlTag.SIZE, 2.5, 7.0, 0.1);
 
     addShader("xorcery_diamonds.fs");
   }

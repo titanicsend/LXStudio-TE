@@ -1,13 +1,5 @@
 [
   {
-    "shader_name": "xorcery_diamonds.fs",
-    "pattern_classes": [
-      "XorceryDiamonds"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": []
-  },
-  {
     "shader_name": "audio_test.fs",
     "pattern_classes": [],
     "uses_palette": false,
