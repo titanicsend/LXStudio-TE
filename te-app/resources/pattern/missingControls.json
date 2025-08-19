@@ -1,15 +1,5 @@
 [
   {
-    "shader_name": "simplex_posterized.fs",
-    "pattern_classes": [
-      "SimplexPosterized"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "space_explosionfx.fs",
     "pattern_classes": [
       "SpaceExplosionFX"
