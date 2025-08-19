@@ -21,6 +21,12 @@ vec2 random2(vec2 p) {
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    // early out if effect is inactive
+    fragColor = texelFetch(iDst, ivec2(gl_FragCoord.xy), 0);
+    if (basis <= 0.0) {
+        return;
+    }
+
     vec2 uv = fragCoord / iResolution.xy;
     vec2 quv = uv; // copy we use to quantize later
 
@@ -37,6 +43,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 displacement = basis * (-0.5 + random2(quv));
     vec2 finalCoords = iResolution.xy * (uv + displacement);
 
-    fragColor = _getMappedPixel(iDst, ivec2(finalCoords));
+    fragColor = mix(fragColor,_getMappedPixel(iDst, ivec2(finalCoords)),smoothstep(0.0,0.01,basis));
 }
 
