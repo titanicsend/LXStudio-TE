@@ -168,7 +168,6 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.SPEED, 0.5, -2, 2); // speed
       controls.setExponent(TEControlTag.SPEED, 2.0);
 
-      controls.markUnused(controls.getLXControl(TEControlTag.SIZE));
       controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
       controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
       controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));

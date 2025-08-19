@@ -1,19 +1,5 @@
 [
   {
-    "shader_name": "space_explosion.fs",
-    "pattern_classes": [
-      "SpaceExplosionEdges",
-      "SpaceExplosion"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "SIZE",
-      "QUANTITY",
-      "WOW1",
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "triangle_cross.fs",
     "pattern_classes": [
       "TriangleCrossAudioLevels"
