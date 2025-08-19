@@ -114,7 +114,10 @@ public class UserPresetLibrary implements LXSerializable {
       }
       // For both "Import" and "Load", add all presets from file to collections
       load(this.lx, obj);
-      this.file = file;
+      // Do not change the current library file if this was an import
+      if (removeExisting) {
+        this.file = file;
+      }
     } catch (FileNotFoundException ex) {
       TE.error("User preset library not found: %s", file.getPath());
     } catch (IOException iox) {
