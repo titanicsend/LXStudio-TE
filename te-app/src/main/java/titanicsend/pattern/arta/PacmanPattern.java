@@ -6,6 +6,8 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.DiscreteParameter;
+import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.transform.LXVector;
 import titanicsend.color.TEColorType;
 import titanicsend.pattern.TEAudioPattern;
@@ -36,9 +38,51 @@ public class PacmanPattern extends TEAudioPattern {
     public final CompoundParameter twist =
             new CompoundParameter("Twist", 0.0f, 0.0f, 360.0f)
                     .setDescription("Rotate the entire Pacman character");
+    
+    public final DiscreteParameter colorChoice =
+            new DiscreteParameter("Color", 0, 0, 6)
+                    .setDescription("Pacman color (0=Yellow, 1=Pink, 2=Purple, 3=Green, 4=Blue, 5=Red, 6=Orange)");
+    
+    public final BooleanParameter colorShift =
+            new BooleanParameter("ColorShift", false)
+                    .setDescription("Automatically cycle through colors");
+    
+    public final BooleanParameter flipFace =
+            new BooleanParameter("FlipFace", false)
+                    .setDescription("Flip Pacman's face to the opposite side");
+    
+    public final CompoundParameter colorShiftSpeed =
+            new CompoundParameter("ColorSpeed", 2.0f, 0.1f, 2.0f)
+                    .setDescription("Speed of color cycling (seconds per color)");
+    
+    public final BooleanParameter panic =
+            new BooleanParameter("PANIC", false)
+                    .setDescription("Reset all parameters to defaults")
+                    .setMode(BooleanParameter.Mode.MOMENTARY);
 
     // Animation variables
     private double animationTime = 0.0;
+    
+    // Panic listener
+    private final LXParameterListener panicListener = (p) -> {
+        if (((BooleanParameter) p).getValueb()) {
+            onPanic();
+        }
+    };
+    
+    // Method to get color based on choice
+    private int getPacmanColor() {
+        switch (colorChoice.getValuei()) {
+            case 0: return TEColor.YELLOW;
+            case 1: return LXColor.hsb(330, 100, 100); // Pink
+            case 2: return LXColor.hsb(270, 100, 100); // Purple
+            case 3: return LXColor.hsb(120, 100, 100); // Green
+            case 4: return LXColor.hsb(240, 100, 100); // Blue
+            case 5: return LXColor.hsb(0, 100, 100);   // Red
+            case 6: return TEColor.ORANGE;
+            default: return TEColor.YELLOW;
+        }
+    }
 
     public PacmanPattern(LX lx) {
         super(lx);
@@ -48,12 +92,29 @@ public class PacmanPattern extends TEAudioPattern {
         addParameter("MAnimation", mouthAnimation);
         addParameter("Eyes", showEyes);
         addParameter("Twist", twist);
+        addParameter("Color", colorChoice);
+        addParameter("ColorShift", colorShift);
+        addParameter("ColorSpeed", colorShiftSpeed);
+        addParameter("FlipFace", flipFace);
+        addParameter("PANIC", panic);
+        
+        // Add panic listener
+        panic.addListener(panicListener);
+
     }
 
     @Override
     public void runTEAudioPattern(double deltaMs) {
         // Update animation time
         animationTime += deltaMs * mouthSpeed.getValuef() * 0.001; // Convert to seconds and apply speed
+        
+        // Update color shift if enabled
+        if (colorShift.isOn()) {
+            // Cycle through colors based on speed parameter
+            float colorTime = (float) (animationTime / colorShiftSpeed.getValuef());
+            int colorIndex = (int) (colorTime % 7); // 7 colors total
+            colorChoice.setValue(colorIndex);
+        }
         
         // Calculate the center of the model
         float centerX = (model.xMax + model.xMin) / 2.0f;
@@ -86,9 +147,9 @@ public class PacmanPattern extends TEAudioPattern {
                 rotatedX * rotatedX + rotatedY * rotatedY
             );
             
-            // If point is within the circle radius, make it yellow
+            // If point is within the circle radius, make it the selected color
             if (distance <= radius) {
-                colors[point.index] = TEColor.YELLOW;
+                colors[point.index] = getPacmanColor();
             }
         }
         
@@ -122,26 +183,43 @@ public class PacmanPattern extends TEAudioPattern {
                 angle += 2 * Math.PI;
             }
             
-            // Check if point is in the mouth area (left side, within mouth angle)
-            // Mouth opens to the left (π to 2π range, which is left side)
-            if (angle >= Math.PI - mouthAngle/2 && angle <= Math.PI + mouthAngle/2) {
-                // Calculate distance from center (using rotated coordinates)
-                float distance = (float) Math.sqrt(
-                    rotatedX * rotatedX + rotatedY * rotatedY
-                );
-                
-                // If point is within the circle radius, make it black (mouth cutout)
-                if (distance <= radius) {
-                    colors[point.index] = LXColor.BLACK;
+            // Check if point is in the mouth area (left or right side based on flipFace)
+            boolean isLeftSide = !flipFace.getValueb(); // true for left side, false for right side
+            if (isLeftSide) {
+                // Mouth opens to the left (around 0° or 2π)
+                if ((angle >= 0 - mouthAngle/2 && angle <= 0 + mouthAngle/2) || 
+                    (angle >= 2*Math.PI - mouthAngle/2 && angle <= 2*Math.PI)) {
+                    // Calculate distance from center (using rotated coordinates)
+                    float distance = (float) Math.sqrt(
+                        rotatedX * rotatedX + rotatedY * rotatedY
+                    );
+                    
+                    // If point is within the circle radius, make it black (mouth cutout)
+                    if (distance <= radius) {
+                        colors[point.index] = LXColor.BLACK;
+                    }
+                }
+            } else {
+                // Mouth opens to the right (around π)
+                if (angle >= Math.PI - mouthAngle/2 && angle <= Math.PI + mouthAngle/2) {
+                    // Calculate distance from center (using rotated coordinates)
+                    float distance = (float) Math.sqrt(
+                        rotatedX * rotatedX + rotatedY * rotatedY
+                    );
+                    
+                    // If point is within the circle radius, make it black (mouth cutout)
+                    if (distance <= radius) {
+                        colors[point.index] = LXColor.BLACK;
+                    }
                 }
             }
         }
         
         // Add eye if enabled
         if (showEyes.isOn()) {
-            // Single eye position (above and to the right of the mouth, since Pacman faces left)
+            // Single eye position (above and to the left/right of center based on flipFace)
             float eyeRadius = radius * 0.15f; // Eye size relative to Pacman size
-            float eyeX = centerX + radius * 0.1f; // Closer to center (more to the left)
+            float eyeX = flipFace.getValueb() ? centerX + radius * 0.1f : centerX - radius * 0.1f; // Right or left of center
             float eyeY = centerY + radius * 0.4f; // Above center but not too high
             
             // Draw the single eye
@@ -173,5 +251,21 @@ public class PacmanPattern extends TEAudioPattern {
                 }
             }
         }
+    }
+    
+    /**
+     * Called when the momentary PANIC button is pressed. Resets all parameters to defaults.
+     */
+    protected void onPanic() {
+        size.reset();
+        mouthSize.reset();
+        mouthSpeed.reset();
+        mouthAnimation.reset();
+        showEyes.reset();
+        twist.reset();
+        colorChoice.reset();
+        colorShift.reset();
+        colorShiftSpeed.reset();
+        flipFace.reset();
     }
 }
