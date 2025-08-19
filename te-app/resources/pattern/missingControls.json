@@ -1,38 +1,5 @@
 [
   {
-    "shader_name": "triangle_infinity_waveform.fs",
-    "pattern_classes": [
-      "TriangleInfinityWaveform"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "WOWTRIGGER"
-    ]
-  },
-  {
-    "shader_name": "circuitry.fs",
-    "pattern_classes": [],
-    "uses_palette": false,
-    "missing_control_tags": [
-      "SIZE",
-      "QUANTITY",
-      "WOW1",
-      "WOW2",
-      "WOWTRIGGER"
-    ]
-  },
-  {
-    "shader_name": "arcedges.fs",
-    "pattern_classes": [
-      "ArcEdges"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "ANGLE",
-      "SPIN"
-    ]
-  },
-  {
     "shader_name": "triangle_infinity_radial_waveform.fs",
     "pattern_classes": [
       "TriangleInfinityRadialWaveform"
