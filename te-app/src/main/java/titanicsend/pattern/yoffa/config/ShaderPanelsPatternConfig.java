@@ -589,6 +589,7 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.WOW2, 1.0, 0.25, 2.0);
       controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
       controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
       addShader("smoke_shader.fs");
     }
   }

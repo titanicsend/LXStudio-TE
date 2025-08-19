@@ -1,15 +1,5 @@
 [
   {
-    "shader_name": "smoke_shader.fs",
-    "pattern_classes": [
-      "SmokeShader"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "triangle_infinity_waveform.fs",
     "pattern_classes": [
       "TriangleInfinityWaveform"
