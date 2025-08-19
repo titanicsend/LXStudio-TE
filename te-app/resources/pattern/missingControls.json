@@ -1,25 +1,5 @@
 [
   {
-    "shader_name": "turbulent_noise_lines.fs",
-    "pattern_classes": [
-      "TurbulenceLines"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": []
-  },
-  {
-    "shader_name": "pulsing_heart.fs",
-    "pattern_classes": [
-      "PulsingHeart"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "QUANTITY",
-      "WOW1",
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "combustable_veronoi.fs",
     "pattern_classes": [],
     "uses_palette": false,

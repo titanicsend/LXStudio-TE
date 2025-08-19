@@ -212,6 +212,9 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.SIZE, 1, 2.5, 0.4); // overall scale
       controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
       controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
 
       addShader("pulsing_heart.fs");
     }
