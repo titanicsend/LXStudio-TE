@@ -205,7 +205,6 @@ import titanicsend.ui.modulator.UIDmx16bitModulator;
 import titanicsend.ui.modulator.UIDmxDualRangeModulator;
 import titanicsend.ui.modulator.UIDmxGridModulator;
 import titanicsend.ui.modulator.UIDmxRangeModulator;
-import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
 
 public class TEApp extends LXStudio {
@@ -313,10 +312,6 @@ public class TEApp extends LXStudio {
       // JKB Autopilot
       // lx.engine.registerComponent("autopilot", this.autopilotJKB = new AutopilotExample(lx));
       // initializeAutopilotLibraryJKB();
-
-      // Load metadata about unused controls per-pattern into a singleton that patterns will
-      // reference later
-      MissingControlsManager.get();
 
       // CrutchOSC is an LXOscEngine supplement for TouchOSC clients
       lx.engine.registerComponent("focus", this.crutchOSC = new CrutchOSC(lx));
