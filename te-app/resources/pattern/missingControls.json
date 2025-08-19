@@ -1,15 +1,5 @@
 [
   {
-    "shader_name": "galaxy.fs",
-    "pattern_classes": [
-      "Galaxy"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "fire.fs",
     "pattern_classes": [
       "Fire"
