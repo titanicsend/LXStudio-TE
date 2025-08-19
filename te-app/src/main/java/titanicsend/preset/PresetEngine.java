@@ -207,10 +207,9 @@ public class PresetEngine extends LXComponent {
   }
 
   /**
-   * Save only the active preset from the specified component to disk,
-   * preserving the saved library state. This reloads the library from disk,
-   * adds only the specified preset, and saves it back - ensuring other 
-   * in-memory presets that may be in development are not persisted.
+   * Save only the active preset from the specified component to disk, preserving the saved library
+   * state. This reloads the library from disk, adds only the specified preset, and saves it back -
+   * ensuring other in-memory presets that may be in development are not persisted.
    */
   public void saveActivePresetOnly(LXPresetComponent component, UserPreset activePreset) {
     if (activePreset == null) {
@@ -250,9 +249,8 @@ public class PresetEngine extends LXComponent {
   }
 
   /**
-   * Remove a specific preset from the saved library on disk,
-   * preserving all other presets in their saved state.
-   * Uses component class + preset label as unique identifier.
+   * Remove a specific preset from the saved library on disk, preserving all other presets in their
+   * saved state. Uses component class + preset label as unique identifier.
    */
   public void removePresetFromDisk(LXPresetComponent component, UserPreset presetToRemove) {
     if (presetToRemove == null) {
@@ -290,9 +288,8 @@ public class PresetEngine extends LXComponent {
   }
 
   /**
-   * Rename a specific preset in the saved library on disk,
-   * preserving all other presets in their saved state.
-   * Uses component class + preset label as unique identifier.
+   * Rename a specific preset in the saved library on disk, preserving all other presets in their
+   * saved state. Uses component class + preset label as unique identifier.
    */
   public void renamePresetOnDisk(LXPresetComponent component, String oldLabel, String newLabel) {
     if (oldLabel == null || newLabel == null || oldLabel.equals(newLabel)) {
