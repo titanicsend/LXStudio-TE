@@ -545,6 +545,9 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.LEVELREACTIVITY, 0.33, 0, 1);
       controls.setRange(TEControlTag.FREQREACTIVITY, 0.33, 0, 1);
 
+      controls.markUnused(controls.getLXControl(TEControlTag.SIZE));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
+
       addShader("metallic_wave.fs");
     }
   }

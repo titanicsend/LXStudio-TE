@@ -1,16 +1,5 @@
 [
   {
-    "shader_name": "metallic_wave.fs",
-    "pattern_classes": [
-      "MetallicWaves"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "SIZE",
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "triangle_noise.fs",
     "pattern_classes": [
       "TriangleNoise"
