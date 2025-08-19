@@ -433,6 +433,9 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.LEVELREACTIVITY, 0.2, 0, 3);
       controls.setRange(TEControlTag.FREQREACTIVITY, 0.8, 0, 2);
 
+      controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
+      controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
+
       addShader(
           GLShader.config(lx)
               .withFilename("neon_cells.fs")

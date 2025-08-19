@@ -1,16 +1,5 @@
 [
   {
-    "shader_name": "neon_cells.fs",
-    "pattern_classes": [
-      "NeonCells"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "QUANTITY",
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "light_beams.fs",
     "pattern_classes": [
       "LightBeamsEdges",
