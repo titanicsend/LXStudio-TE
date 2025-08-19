@@ -1,27 +1,5 @@
 [
   {
-    "shader_name": "phasers.fs",
-    "pattern_classes": [
-      "Phasers"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": []
-  },
-  {
-    "shader_name": "warp.fs",
-    "pattern_classes": [
-      "Warp"
-    ],
-    "uses_palette": false,
-    "missing_control_tags": [
-      "SIZE",
-      "QUANTITY",
-      "WOW1",
-      "WOW2",
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "pulsing_petri_dish.fs",
     "pattern_classes": [
       "PulsingPetriDish"
