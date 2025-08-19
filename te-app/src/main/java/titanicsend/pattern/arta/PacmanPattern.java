@@ -269,15 +269,22 @@ public class PacmanPattern extends TEAudioPattern {
      */
     protected void onPanic() {
         size.reset();
-                        mouthSize.reset();
-                mouthSpeed.reset();
-                mouthAnimation.reset();
-                mouthMove.reset();
-                showEyes.reset();
+        mouthSize.reset();
+        mouthSpeed.reset();
+        mouthAnimation.reset();
+        mouthMove.reset();
+        showEyes.reset();
         twist.reset();
         colorChoice.reset();
         colorShift.reset();
         colorShiftSpeed.reset();
         flipFace.reset();
+    }
+    
+    @Override
+    public void dispose() {
+        // Remove the panic listener to prevent memory leaks
+        panic.removeListener(panicListener);
+        super.dispose();
     }
 }
