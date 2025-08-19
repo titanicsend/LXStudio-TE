@@ -1,16 +1,5 @@
 [
   {
-    "shader_name": "neon_ripples.fs",
-    "pattern_classes": [
-      "NeonRipplesEdges",
-      "NeonRipples"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "jet_stream.fs",
     "pattern_classes": [
       "JetStream"
