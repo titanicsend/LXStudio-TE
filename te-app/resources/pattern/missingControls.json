@@ -1,15 +1,5 @@
 [
   {
-    "shader_name": "radial_simplex.fs",
-    "pattern_classes": [
-      "RadialSimplex"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "pixel_scanner.fs",
     "pattern_classes": [
       "PixelScanner"
