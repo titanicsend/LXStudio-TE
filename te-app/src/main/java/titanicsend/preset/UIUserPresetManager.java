@@ -81,7 +81,7 @@ public class UIUserPresetManager extends UICollapsibleSection {
                 .setDescription(
                     "Load a User Presets library (Replacing previously-loaded library)"),
 
-            // Merge
+            // Import
             new UIButton(0, 0, buttonWidth, 18) {
               @Override
               public void onClick() {
@@ -91,19 +91,19 @@ public class UIUserPresetManager extends UICollapsibleSection {
                 }
 
                 lx.showConfirmDialog(
-                    "Merge User Presets file? New presets will be loaded alongside current library.",
+                    "Import another User Presets file? Presets in the selected file will be added to the current loaded file.",
                     () ->
                         lx.showOpenFileDialog(
-                            "Merge User Presets Library",
+                            "Import User Presets Library",
                             "User Presets File",
                             new String[] {"userPresets"},
                             engine.getLibrary().getFile().getPath(),
-                            engine::mergeLibrary));
+                            engine::importLibrary));
               }
-            }.setLabel("Merge")
+            }.setLabel("Import")
                 .setMomentary(true)
                 .setBorderRounding(4)
-                .setDescription("Merge a User Presets library into the already-loaded library"),
+                .setDescription("Import a User Presets library into the already-loaded library"),
 
             // Save
             new UIButton(64, 0, buttonWidth, 18) {

@@ -112,7 +112,7 @@ public class UserPresetLibrary implements LXSerializable {
       if (removeExisting) {
         removeAll();
       }
-      // For both "Merge" and "Load", add all presets from file to collections
+      // For both "Import" and "Load", add all presets from file to collections
       load(this.lx, obj);
       this.file = file;
     } catch (FileNotFoundException ex) {
