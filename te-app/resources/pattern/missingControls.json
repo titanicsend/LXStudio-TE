@@ -1,16 +1,5 @@
 [
   {
-    "shader_name": "electric.fs",
-    "pattern_classes": [
-      "Electric",
-      "ElectricEdges"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "spectrum_analyzer1.fs",
     "pattern_classes": [],
     "uses_palette": false,
