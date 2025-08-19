@@ -1,15 +1,5 @@
 [
   {
-    "shader_name": "edgefall.fs",
-    "pattern_classes": [
-      "EdgeFall"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "QUANTITY"
-    ]
-  },
-  {
     "shader_name": "electric.fs",
     "pattern_classes": [
       "Electric",
