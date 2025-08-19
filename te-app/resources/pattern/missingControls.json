@@ -1,15 +1,5 @@
 [
   {
-    "shader_name": "rain_noise.fs",
-    "pattern_classes": [
-      "RainBands"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "xorcery_diamonds.fs",
     "pattern_classes": [
       "XorceryDiamonds"
