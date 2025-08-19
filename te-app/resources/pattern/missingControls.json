@@ -1,17 +1,5 @@
 [
   {
-    "shader_name": "pulsing_petri_dish.fs",
-    "pattern_classes": [
-      "PulsingPetriDish"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "QUANTITY",
-      "WOW1",
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "radial_simplex.fs",
     "pattern_classes": [
       "RadialSimplex"
