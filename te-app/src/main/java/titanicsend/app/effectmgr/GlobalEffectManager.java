@@ -45,7 +45,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     allocateEffectSlots();
 
     // When effects are added / removed / moved on Master Bus, listen and update
-    this.lx.engine.mixer.masterBus.addListener(this);
+    this.lx.engine.mixer.masterBus.addListener(this.masterBusListener);
     refresh();
   }
 
@@ -192,24 +192,27 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
         });
   }
 
-  @Override
-  public void effectAdded(LXBus channel, LXEffect effect) {
-    // If this effect matches one of our slots, we still need to check whether it is the first
-    // instance or secondary instance in the master effects. To keep things simple we can
-    // just refresh our slots every time there's a change.
-    refresh();
-  }
+  private final LXBus.Listener masterBusListener =
+      new LXBus.Listener() {
+        @Override
+        public void effectAdded(LXBus channel, LXEffect effect) {
+          // If this effect matches one of our slots, we still need to check whether it is the first
+          // instance or secondary instance in the master effects. To keep things simple we can
+          // just refresh our slots every time there's a change.
+          refresh();
+        }
 
-  @Override
-  public void effectRemoved(LXBus channel, LXEffect effect) {
-    // TODO: this isn't actually removing a missing effect from 'slots'.
-    refresh();
-  }
+        @Override
+        public void effectRemoved(LXBus channel, LXEffect effect) {
+          // TODO: this isn't actually removing a missing effect from 'slots'.
+          refresh();
+        }
 
-  @Override
-  public void effectMoved(LXBus channel, LXEffect effect) {
-    refresh();
-  }
+        @Override
+        public void effectMoved(LXBus channel, LXEffect effect) {
+          refresh();
+        }
+      };
 
   /** Refresh all slots */
   private void refresh() {
@@ -277,7 +280,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
 
   @Override
   public void dispose() {
-    this.lx.engine.mixer.masterBus.removeListener(this);
+    this.lx.engine.mixer.masterBus.removeListener(this.masterBusListener);
     for (GlobalEffect<? extends LXEffect> globalEffect : slots) {
       if (globalEffect != null) {
         globalEffect.dispose();
