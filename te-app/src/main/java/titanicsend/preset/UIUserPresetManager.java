@@ -122,6 +122,17 @@ public class UIUserPresetManager extends UICollapsibleSection {
                 .setDescription("Save User Presets Library"))
         .addToContainer(this);
 
+    // Autosave
+    newHorizontalContainer(
+            14,
+            4,
+            new UIButton.Toggle(engine.autoSave),
+            new UILabel(getContentWidth() - 18, engine.autoSave.getLabel())
+                .setTextAlignment(VGraphics.Align.LEFT, VGraphics.Align.MIDDLE)
+                .setFont(ui.theme.getControlFont()))
+        .setDescription(engine.autoSave.getDescription())
+        .addToContainer(this);
+
     addListener(
         engine.libraryName,
         (p) -> {
