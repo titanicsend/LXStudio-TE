@@ -1,17 +1,5 @@
 [
   {
-    "shader_name": "space_explosionfx.fs",
-    "pattern_classes": [
-      "SpaceExplosionFX"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "SIZE",
-      "QUANTITY",
-      "WOW1"
-    ]
-  },
-  {
     "shader_name": "neon_heart.fs",
     "pattern_classes": [
       "NeonHeartNative"
