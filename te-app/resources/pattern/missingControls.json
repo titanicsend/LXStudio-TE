@@ -1,15 +1,1 @@
-[
-  {
-    "shader_name": "light_beams.fs",
-    "pattern_classes": [
-      "LightBeamsEdges",
-      "LightBeamsPattern"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "QUANTITY",
-      "WOW1",
-      "WOWTRIGGER"
-    ]
-  }
-]
+[]
