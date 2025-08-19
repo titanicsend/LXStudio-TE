@@ -1,3 +1,4 @@
+#pragma name "CombustibleVoronoi"
 #pragma TEControl.SIZE.Disable
 #pragma TEControl.QUANTITY.Disable
 #pragma TEControl.WOW1.Disable
