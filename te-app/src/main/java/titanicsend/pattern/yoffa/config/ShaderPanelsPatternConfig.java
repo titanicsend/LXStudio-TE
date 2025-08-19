@@ -308,7 +308,6 @@ public class ShaderPanelsPatternConfig {
     protected void createShader() {
       controls.setRange(TEControlTag.YPOS, -.35, -1.0, 1.0);
 
-      controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
       controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
 
       addShader("outrun_grid.fs");

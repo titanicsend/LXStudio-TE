@@ -1,13 +1,5 @@
 [
   {
-    "shader_name": "outrun_grid.fs",
-    "pattern_classes": [
-      "OutrunGrid"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": []
-  },
-  {
     "shader_name": "phasers.fs",
     "pattern_classes": [
       "Phasers"
