@@ -10,9 +10,9 @@ Usage:
     python copy_pattern_simple.py <project_file> <source_channel> <target_channel> <source_pattern_name> <target_pattern_name> [source_channel_index]
 
 Examples:
-    python copy_pattern_simple.py BM2024_Pacman.lxp "HIGH" "Pacman High" "+ Phasers" "Phasers" 2
-    python copy_pattern_simple.py BM2024_Pacman.lxp "LOW" "Pacman Low" "Electric" "Electric"
-    python copy_pattern_simple.py BM2024_Pacman.lxp "EDGES" "Pacman Edge" "ArcEdges" "ArcEdges"
+    python copy_pattern_simple.py te-app/Projects/BM2024_Pacman.lxp "HIGH" "Pacman High" "+ Phasers" "Phasers" 2
+    python copy_pattern_simple.py te-app/Projects/BM2024_Pacman.lxp "LOW" "Pacman Low" "Electric" "Electric"
+    python copy_pattern_simple.py te-app/Projects/BM2024_Pacman.lxp "EDGES" "Pacman Edge" "ArcEdges" "ArcEdges"
 
 The script will:
 1. Find the source pattern by name in the source channel (or specific channel index if provided)
