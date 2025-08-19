@@ -94,16 +94,6 @@
     ]
   },
   {
-    "shader_name": "followthatstar.fs",
-    "pattern_classes": [
-      "FollowThatStar"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "neon_cells.fs",
     "pattern_classes": [
       "NeonCells"
