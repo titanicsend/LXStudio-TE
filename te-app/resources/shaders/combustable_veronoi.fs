@@ -1,3 +1,4 @@
+#pragma LXCategory("RareExceptions")
 #pragma name "CombustibleVoronoi"
 #pragma TEControl.SIZE.Disable
 #pragma TEControl.QUANTITY.Disable

@@ -150,7 +150,6 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.QUANTITY, 1, 2, 0.1); // triangle density
       controls.setRange(TEControlTag.LEVELREACTIVITY, 1, 0.2, 5); // glow
       controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
-      controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
       controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
 
       addShader("neon_triangles.fs");
