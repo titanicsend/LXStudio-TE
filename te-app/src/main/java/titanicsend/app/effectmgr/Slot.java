@@ -1,10 +1,12 @@
 package titanicsend.app.effectmgr;
 
+import heronarts.lx.LXDeviceComponent;
 import heronarts.lx.effect.LXEffect;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.parameter.TriggerParameter;
+import heronarts.lx.pattern.LXPattern;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -12,19 +14,18 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * A translation layer between the GlobalEffectManager and an LXEffect instance. This will be
- * subclassed for every LXEffect type that can be used as a global effect.
+ * A translation layer between the GlobalEffectManager and an effect or pattern instance. This will
+ * be subclassed for every LXDeviceComponent type that can be used as a global effect.
  */
-public abstract class Slot<T extends LXEffect> {
+public abstract class Slot<T extends LXDeviceComponent> {
 
   public enum State {
-    EMPTY, // Slot has been allocated, but no matching LXEffect exists in the current project
+    EMPTY, // Slot has been allocated, but no matching device exists in the current project
     DISABLED,
     ENABLED
   }
 
-  // Default to EMPTY, meaning 'this.effect' is null / no LXEffect matching 'this.type' is on
-  // the master bus.
+  // Default to EMPTY, meaning 'this.device' is null
   private State state = State.EMPTY;
 
   public interface Listener {
@@ -33,11 +34,11 @@ public abstract class Slot<T extends LXEffect> {
 
   private final List<Listener> listeners = new ArrayList<>();
 
-  // Class of the registered Effect.
+  // Class of the registered Device
   private final Class<T> type;
 
-  // LXEffect matching 'this.type'.
-  public T effect;
+  // LXDeviceComponent matching 'this.type'.
+  public T device;
 
   @SuppressWarnings("unchecked")
   public Slot() {
@@ -55,23 +56,26 @@ public abstract class Slot<T extends LXEffect> {
     }
   }
 
-  // Methods that should be overridden to provide a common interface to an Effect
+  // Methods that should be overridden to provide a common interface to a Device
 
   /**
-   * Retrieve the parameter that corresponds to enabling/disabling the effect. By default this will
-   * be LXEffect.enabled but it can be overridden.
+   * Retrieve the parameter that corresponds to enabling/disabling the device. By default this will
+   * be device.enabled but it can be overridden.
    *
    * @return A parameter corresponding to enable/disable, or null if it does not apply.
    */
   public BooleanParameter getEnabledParameter() {
-    if (this.effect == null) {
-      return null;
+    // Note: Both LXEffect and LXPattern have an enabled parameter, but it is not on the parent
+    if (this.device instanceof LXEffect) {
+      return ((LXEffect) device).enabled;
+    } else if (this.device instanceof LXPattern) {
+      return ((LXPattern) device).enabled;
     }
-    return this.effect.enabled;
+    return null;
   }
 
   /**
-   * Retrieve the parameter that corresponds to the level or Amount of the effect that is being
+   * Retrieve the parameter that corresponds to the level or Amount of the device that is being
    * applied.
    *
    * @return A parameter that corresponds to Level, or null if it does not apply.
@@ -81,14 +85,14 @@ public abstract class Slot<T extends LXEffect> {
   /**
    * Subclasses can override to indicate a secondary parameter.
    *
-   * @return A secondary parameter that can be controlled on the global effect
+   * @return A secondary parameter that can be controlled on the global device
    */
   public LXListenableNormalizedParameter getSecondaryParameter() {
     return null;
   }
 
   /**
-   * Retrieve a parameter that is the "run now" trigger parameter for the effect, if applicable.
+   * Retrieve a parameter that is the "run now" trigger parameter for the device, if applicable.
    *
    * @return A parameter that corresponds to Run Now, or null if it does not apply.
    */
@@ -97,20 +101,20 @@ public abstract class Slot<T extends LXEffect> {
   }
 
   /**
-   * TODO(look): allow custom name when allocating slots, if we had multiple versions of an effect?
+   * TODO(look): allow custom name when allocating slots, if we had multiple versions of a device?
    * Maybe not relevant if we have presets and a good way to switch between them.
    */
   public String getName() {
-    if (this.effect == null) {
+    if (this.device == null) {
       return String.format("[Class] %s", this.type.getSimpleName());
     } else {
-      return String.format("[LXEffect] %s", this.effect.getLabel());
+      return String.format("[LXDeviceComponent] %s", this.device.getLabel());
     }
   }
 
   // Device Management
 
-  public final boolean matches(LXEffect match) {
+  public final boolean matches(LXDeviceComponent match) {
     return this.type.isInstance(match);
   }
 
@@ -121,22 +125,22 @@ public abstract class Slot<T extends LXEffect> {
       };
 
   /** Internal method, package-scoped to be used by GlobalEffectManager */
-  final void setEffect(LXEffect lxEffect) {
-    if (lxEffect != null && !this.type.isInstance(lxEffect)) {
+  final void setDevice(LXDeviceComponent lxDevice) {
+    if (lxDevice != null && !this.type.isInstance(lxDevice)) {
       throw new IllegalArgumentException(
-          "Effect instance "
-              + effect.getLabel()
+          "Device instance "
+              + device.getLabel()
               + " does not match Slot type "
               + this.type.getName());
     }
 
-    T effect = this.type.cast(lxEffect);
-    if (this.effect != effect) {
-      if (this.effect != null) {
+    T device = this.type.cast(lxDevice);
+    if (this.device != device) {
+      if (this.device != null) {
         unregister();
       }
-      this.effect = effect;
-      if (this.effect != null) {
+      this.device = device;
+      if (this.device != null) {
         register();
       }
       refreshState();
@@ -153,7 +157,7 @@ public abstract class Slot<T extends LXEffect> {
     enabledParam.removeListener(this.stateParameterListener);
   }
 
-  /** A new effect instance has been tied to this slot. Subclasses can override. */
+  /** A new device instance has been tied to this slot. Subclasses can override. */
   protected void onRegister() {}
 
   /** Subclasses can override */
@@ -178,7 +182,7 @@ public abstract class Slot<T extends LXEffect> {
 
   /** Determine the current state. Subclasses can override. */
   protected State calcState() {
-    if (this.effect == null) {
+    if (this.device == null) {
       return State.EMPTY;
     }
 
@@ -207,7 +211,7 @@ public abstract class Slot<T extends LXEffect> {
   // Shutdown
 
   public void dispose() {
-    setEffect(null);
+    setDevice(null);
     this.listeners.clear();
   }
 }

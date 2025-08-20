@@ -4,6 +4,7 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.LXComponent;
 import heronarts.lx.LXComponentName;
+import heronarts.lx.LXDeviceComponent;
 import heronarts.lx.effect.LXEffect;
 import heronarts.lx.mixer.LXBus;
 import heronarts.lx.mixer.LXChannel;
@@ -22,8 +23,10 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     return instance;
   }
 
-  private final ObservableList<Slot<? extends LXEffect>> mutableSlots = new ObservableList<>();
-  public final ObservableList<Slot<? extends LXEffect>> slots = mutableSlots.asUnmodifiableList();
+  private final ObservableList<Slot<? extends LXDeviceComponent>> mutableSlots =
+      new ObservableList<>();
+  public final ObservableList<Slot<? extends LXDeviceComponent>> slots =
+      mutableSlots.asUnmodifiableList();
 
   private final ChannelTracker channelTracker;
 
@@ -40,7 +43,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     this.channelTracker.addListener(this.channelTrackerListener);
   }
 
-  public void allocateSlot(Slot<? extends LXEffect> slot) {
+  public void allocateSlot(Slot<? extends LXDeviceComponent> slot) {
     Objects.requireNonNull(slot, "May not add null Slot");
     // TODO: prevent multiple entries for one effect type
     // NOTE(look): ^ I could imagine having 2 versions for an Effect with lots of params,
@@ -86,7 +89,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
 
   /** Refresh all slots */
   private void refresh() {
-    for (Slot<? extends LXEffect> slot : slots) {
+    for (Slot<? extends LXDeviceComponent> slot : slots) {
       // Allow null placeholder slots
       if (slot == null) {
         continue;
@@ -97,7 +100,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
       for (LXEffect effect : this.lx.engine.mixer.masterBus.effects) {
         if (slot.matches(effect)) {
           // This will quick return if effect is already registered to the slot.
-          slot.setEffect(effect);
+          slot.setDevice(effect);
           found = true;
           break;
         }
@@ -110,7 +113,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
       }
 
       if (!found) {
-        slot.setEffect(null);
+        slot.setDevice(null);
       }
     }
   }
@@ -118,7 +121,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
   public void debugStates() {
     TE.log("-------------------------------");
     for (int i = 0; i < slots.size(); i++) {
-      Slot<? extends LXEffect> slot = slots.get(i);
+      Slot<? extends LXDeviceComponent> slot = slots.get(i);
       if (slot == null) {
         TE.log(String.format("\t[Slot %02d] - null", i));
       } else {
@@ -135,7 +138,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     this.channelTracker.removeListener(this.channelTrackerListener);
 
     // Clear all slots
-    for (Slot<? extends LXEffect> slot : slots) {
+    for (Slot<? extends LXDeviceComponent> slot : slots) {
       if (slot != null) {
         // Disposing a slot sets the target to null, then the MIDI controller will unregister
         slot.dispose();

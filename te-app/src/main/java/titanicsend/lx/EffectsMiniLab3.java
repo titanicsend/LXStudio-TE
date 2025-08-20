@@ -4,8 +4,8 @@ import static heronarts.lx.midi.LXSysexMessage.END_SYSEX;
 import static heronarts.lx.midi.LXSysexMessage.START_SYSEX;
 
 import heronarts.lx.LX;
+import heronarts.lx.LXDeviceComponent;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.effect.LXEffect;
 import heronarts.lx.midi.LXMidiEngine;
 import heronarts.lx.midi.LXMidiInput;
 import heronarts.lx.midi.LXMidiOutput;
@@ -297,7 +297,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     this.isRegistered = true;
 
     int slotIndex = 0;
-    for (Slot<? extends LXEffect> slot : this.effectManager.slots) {
+    for (Slot<? extends LXDeviceComponent> slot : this.effectManager.slots) {
       setSlot(slotIndex++, slot);
     }
 
@@ -314,24 +314,24 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     clearPadColors();
   }
 
-  private final ObservableList.Listener<Slot<? extends LXEffect>> slotsListener =
+  private final ObservableList.Listener<Slot<? extends LXDeviceComponent>> slotsListener =
       new ObservableList.Listener<>() {
         @Override
-        public void itemAdded(Slot<? extends LXEffect> item) {
+        public void itemAdded(Slot<? extends LXDeviceComponent> item) {
           int slotIndex = effectManager.slots.indexOf(item);
           TE.log("Slot added [" + slotIndex + "]: " + item);
           // Update registeredSlot for the new item and all slots after
           for (int i = slotIndex; i < effectManager.slots.size(); i++) {
-            Slot<? extends LXEffect> slot = effectManager.slots.get(i);
+            Slot<? extends LXDeviceComponent> slot = effectManager.slots.get(i);
             setSlot(i, slot);
           }
         }
 
         @Override
-        public void itemRemoved(Slot<? extends LXEffect> item) {
+        public void itemRemoved(Slot<? extends LXDeviceComponent> item) {
           // Refresh all slot registrations. If they didn't change it will fast-out.
           int slotIndex = 0;
-          for (Slot<? extends LXEffect> slot : effectManager.slots) {
+          for (Slot<? extends LXDeviceComponent> slot : effectManager.slots) {
             setSlot(slotIndex, slot);
             slotIndex++;
           }
@@ -345,9 +345,9 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   // Slots
 
   private static final int MAX_SLOTS = 8;
-  private final Slot<? extends LXEffect>[] registeredSlots = new Slot<?>[MAX_SLOTS];
+  private final Slot<? extends LXDeviceComponent>[] registeredSlots = new Slot<?>[MAX_SLOTS];
 
-  private void setSlot(int slotIndex, Slot<? extends LXEffect> slot) {
+  private void setSlot(int slotIndex, Slot<? extends LXDeviceComponent> slot) {
     if (slotIndex < 0) {
       throw new IllegalArgumentException("Invalid slotIndex: " + slotIndex);
     }
@@ -356,7 +356,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
       return;
     }
 
-    final Slot<? extends LXEffect> oldSlot = this.registeredSlots[slotIndex];
+    final Slot<? extends LXDeviceComponent> oldSlot = this.registeredSlots[slotIndex];
     if (oldSlot != slot) {
       if (oldSlot != null) {
         unregisterSlot(slotIndex, oldSlot);
@@ -370,11 +370,11 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     }
   }
 
-  private void registerSlot(int slotIndex, Slot<? extends LXEffect> slot) {
+  private void registerSlot(int slotIndex, Slot<? extends LXDeviceComponent> slot) {
     slot.addListener(this.slotStateListener);
   }
 
-  private void unregisterSlot(int slotIndex, Slot<? extends LXEffect> slot) {
+  private void unregisterSlot(int slotIndex, Slot<? extends LXDeviceComponent> slot) {
     slot.removeListener(this.slotStateListener);
   }
 
@@ -741,7 +741,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
       return;
     }
 
-    Slot<? extends LXEffect> slot = effectManager.slots.get(slotIndex);
+    Slot<? extends LXDeviceComponent> slot = effectManager.slots.get(slotIndex);
     Slot.State currState = slot.getState();
     if (currState == null) {
       verbose("Current state is null: " + slot.getName());
@@ -749,10 +749,11 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     } else if (currState == Slot.State.EMPTY) {
       verbose("Current state is empty: " + slot.getName());
       return;
-    } else if (slot.effect == null) {
-      throw new IllegalStateException("LXEffect is null, but state is neither EMPTY nor null");
+    } else if (slot.device == null) {
+      throw new IllegalStateException(
+          "LXDeviceComponent is null, but state is neither EMPTY nor null");
     } else {
-      verbose("Current state: " + currState + " for effect: " + slot.effect.getLabel());
+      verbose("Current state: " + currState + " for effect: " + slot.device.getLabel());
     }
 
     slot.getEnabledParameter().toggle();
@@ -770,7 +771,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     if (slotIndex >= effectManager.slots.size()) {
       return;
     }
-    Slot<? extends LXEffect> slot = effectManager.slots.get(slotIndex);
+    Slot<? extends LXDeviceComponent> slot = effectManager.slots.get(slotIndex);
     if (slot == null) {
       return;
     }
@@ -813,7 +814,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   }
 
   private int slotToPadIndex(int slotIndex) {
-    List<Slot<? extends LXEffect>> slots = this.effectManager.slots;
+    List<Slot<? extends LXDeviceComponent>> slots = this.effectManager.slots;
     if (slotIndex < 0) {
       throw new IllegalArgumentException("Slot index is negative: " + slotIndex);
     } else if (slotIndex <= Math.min(3, slots.size())) {
@@ -834,11 +835,11 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     }
   }
 
-  private List<Slot<? extends LXEffect>> allSlots() {
+  private List<Slot<? extends LXDeviceComponent>> allSlots() {
     return effectManager.slots;
   }
 
-  private Slot<? extends LXEffect> getSlot(int index) {
+  private Slot<? extends LXDeviceComponent> getSlot(int index) {
     if (allSlots() == null || index < 0 || index >= allSlots().size()) {
       return null;
     }
@@ -950,7 +951,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
       // Pad index does not map to a slot
       return PadColor.OFF;
     } else {
-      Slot<? extends LXEffect> slot = this.registeredSlots[slotIndex];
+      Slot<? extends LXDeviceComponent> slot = this.registeredSlots[slotIndex];
 
       // Unoccupied
       if (slot == null) {

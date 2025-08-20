@@ -24,18 +24,18 @@ public abstract class TEGlobalEffects {
         new Slot<RandomStrobeEffect>() {
           @Override
           public LXListenableNormalizedParameter getLevelParameter() {
-            if (effect == null) {
+            if (device == null) {
               return null;
             }
-            return effect.depth;
+            return device.depth;
           }
 
           @Override
           public LXListenableNormalizedParameter getSecondaryParameter() {
-            if (effect == null) {
+            if (device == null) {
               return null;
             }
-            return effect.speed;
+            return device.speed;
           }
         });
 
@@ -44,18 +44,18 @@ public abstract class TEGlobalEffects {
         new Slot<StrobeEffect>() {
           @Override
           public LXListenableNormalizedParameter getLevelParameter() {
-            if (effect == null) {
+            if (device == null) {
               return null;
             }
-            return effect.depth;
+            return device.depth;
           }
 
           @Override
           public LXListenableNormalizedParameter getSecondaryParameter() {
-            if (effect == null) {
+            if (device == null) {
               return null;
             }
-            return effect.speed;
+            return device.speed;
           }
         });
 
@@ -66,26 +66,26 @@ public abstract class TEGlobalEffects {
         new Slot<ExplodeEffect>() {
           @Override
           public LXListenableNormalizedParameter getLevelParameter() {
-            if (effect == null) {
+            if (device == null) {
               return null;
             }
-            return effect.depth;
+            return device.depth;
           }
 
           @Override
           public LXListenableNormalizedParameter getSecondaryParameter() {
-            if (effect == null) {
+            if (device == null) {
               return null;
             }
-            return effect.speed;
+            return device.speed;
           }
 
           @Override
           public TriggerParameter getTriggerParameter() {
-            if (effect == null) {
+            if (device == null) {
               return null;
             }
-            return effect.trigger;
+            return device.trigger;
           }
         });
 
@@ -94,18 +94,18 @@ public abstract class TEGlobalEffects {
         new Slot<SimplifyEffect>() {
           @Override
           public LXListenableNormalizedParameter getLevelParameter() {
-            if (effect == null) {
+            if (device == null) {
               return null;
             }
-            return effect.amount;
+            return device.amount;
           }
 
           @Override
           public LXListenableNormalizedParameter getSecondaryParameter() {
-            if (effect == null) {
+            if (device == null) {
               return null;
             }
-            return effect.gain;
+            return device.gain;
           }
         });
 
@@ -114,10 +114,10 @@ public abstract class TEGlobalEffects {
         new Slot<SustainEffect>() {
           @Override
           public LXListenableNormalizedParameter getLevelParameter() {
-            if (effect == null) {
+            if (device == null) {
               return null;
             }
-            return effect.sustain;
+            return device.sustain;
           }
         });
 
@@ -126,18 +126,18 @@ public abstract class TEGlobalEffects {
         new Slot<DistortEffect>() {
           @Override
           public LXListenableNormalizedParameter getLevelParameter() {
-            if (effect == null) {
+            if (device == null) {
               return null;
             }
-            return effect.depth;
+            return device.depth;
           }
 
           @Override
           public LXListenableNormalizedParameter getSecondaryParameter() {
-            if (effect == null) {
+            if (device == null) {
               return null;
             }
-            return effect.size; // or speed?
+            return device.size; // or speed?
           }
         });
   }
