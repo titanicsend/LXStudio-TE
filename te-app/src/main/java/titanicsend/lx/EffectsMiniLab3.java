@@ -244,7 +244,23 @@ public class EffectsMiniLab3 extends LXMidiSurface
   }
 
   private final GlobalEffectManager effectManager;
-  private ObservableList.Listener<GlobalEffect<? extends LXEffect>> effectListener;
+  private final ObservableList.Listener<GlobalEffect<? extends LXEffect>> slotsListener =
+      new ObservableList.Listener<>() {
+        @Override
+        public void itemAdded(GlobalEffect<? extends LXEffect> item) {
+          int slotIndex = effectManager.slots.indexOf(item);
+          TE.log("Effect Slot added [" + slotIndex + "]: " + item);
+          sendPadColors();
+        }
+
+        @Override
+        public void itemRemoved(GlobalEffect<? extends LXEffect> item) {
+          int slotIndex = effectManager.slots.indexOf(item);
+          TE.log("Effect Slot removed [" + slotIndex + "]: " + item);
+          sendPadColors();
+        }
+      };
+
   private boolean isRegistered = false;
   private boolean shiftOn = false;
 
@@ -284,42 +300,17 @@ public class EffectsMiniLab3 extends LXMidiSurface
 
   private void register() {
     this.isRegistered = true;
-    this.effectListener = null;
-
-    List<GlobalEffect<? extends LXEffect>> slots = effectManager.slots;
 
     // Subscribe to state updates on enabled param for registered effects.
     this.effectManager.addListener(this);
-    // Subscribe to effects getting registered/unregistered.
-    this.effectListener =
-        // TODO(look): think through whether these listeners need to do anything beyond
-        //             calling updatePadLEDs().
-        new ObservableList.Listener<>() {
-          @Override
-          public void itemAdded(GlobalEffect<? extends LXEffect> item) {
-            if (slots != null) {
-              int slotIndex = slots.indexOf(item);
-              TE.log("Effect Slot added [" + slotIndex + "]: " + item);
-              sendPadColors();
-            }
-          }
-
-          @Override
-          public void itemRemoved(GlobalEffect<? extends LXEffect> item) {
-            if (slots != null) {
-              int slotIndex = slots.indexOf(item);
-              TE.log("Effect Slot removed [" + slotIndex + "]: " + item);
-              sendPadColors();
-            }
-          }
-        };
-    effectManager.slots.addListener(this.effectListener);
+    // Subscribe to GlobalEffect slots added/removed
+    this.effectManager.slots.addListener(this.slotsListener);
   }
 
   private void unregister() {
     this.isRegistered = false;
     effectManager.removeListener(this);
-    effectManager.slots.removeListener(effectListener);
+    this.effectManager.slots.removeListener(this.slotsListener);
     clearPadColors();
   }
 
