@@ -42,8 +42,7 @@ import titanicsend.util.TE;
  */
 @LXMidiSurface.Name("Arturia MiniLab3 Effects")
 @LXMidiSurface.DeviceName("Minilab3 MIDI")
-public class EffectsMiniLab3 extends LXMidiSurface
-    implements LXMidiSurface.Bidirectional, GlobalEffectManager.Listener {
+public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidirectional {
 
   // MIDI Channels
 
@@ -244,28 +243,13 @@ public class EffectsMiniLab3 extends LXMidiSurface
   }
 
   private final GlobalEffectManager effectManager;
-  private final ObservableList.Listener<GlobalEffect<? extends LXEffect>> slotsListener =
-      new ObservableList.Listener<>() {
-        @Override
-        public void itemAdded(GlobalEffect<? extends LXEffect> item) {
-          int slotIndex = effectManager.slots.indexOf(item);
-          TE.log("Effect Slot added [" + slotIndex + "]: " + item);
-          sendPadColors();
-        }
-
-        @Override
-        public void itemRemoved(GlobalEffect<? extends LXEffect> item) {
-          int slotIndex = effectManager.slots.indexOf(item);
-          TE.log("Effect Slot removed [" + slotIndex + "]: " + item);
-          sendPadColors();
-        }
-      };
-
   private boolean isRegistered = false;
   private boolean shiftOn = false;
 
   private boolean isBankA = false;
   private boolean isDAW = false;
+
+  // Constructor
 
   public EffectsMiniLab3(LX lx, LXMidiInput input, LXMidiOutput output) {
     super(lx, input, output);
@@ -301,29 +285,100 @@ public class EffectsMiniLab3 extends LXMidiSurface
   private void register() {
     this.isRegistered = true;
 
-    // Subscribe to state updates on enabled param for registered effects.
-    this.effectManager.addListener(this);
+    int slotIndex = 0;
+    for (GlobalEffect<? extends LXEffect> slot : this.effectManager.slots) {
+      setSlot(slotIndex++, slot);
+    }
+
     // Subscribe to GlobalEffect slots added/removed
     this.effectManager.slots.addListener(this.slotsListener);
   }
 
   private void unregister() {
     this.isRegistered = false;
-    effectManager.removeListener(this);
     this.effectManager.slots.removeListener(this.slotsListener);
+    for (int i = 0; i < MAX_SLOTS; i++) {
+      setSlot(i, null);
+    }
     clearPadColors();
   }
 
-  /**
-   * Update LED colors when any individual effect's ENABLED/DISABLED state changes.
-   *
-   * @param slotIndex
-   */
-  @Override
-  public void globalEffectStateUpdated(int slotIndex) {
-    // verbose("Global Effect state updated [" + slotIndex + "]");
-    // JKB note: there are a LOT of these.  Don't send all pads on every effect property change.
-    // sendAllPadLEDs();
+  private final ObservableList.Listener<GlobalEffect<? extends LXEffect>> slotsListener =
+      new ObservableList.Listener<>() {
+        @Override
+        public void itemAdded(GlobalEffect<? extends LXEffect> item) {
+          int slotIndex = effectManager.slots.indexOf(item);
+          TE.log("Effect Slot added [" + slotIndex + "]: " + item);
+          // Update registeredSlot for the new item and all slots after
+          for (int i = slotIndex; i < effectManager.slots.size(); i++) {
+            GlobalEffect<? extends LXEffect> slot = effectManager.slots.get(i);
+            setSlot(i, slot);
+          }
+        }
+
+        @Override
+        public void itemRemoved(GlobalEffect<? extends LXEffect> item) {
+          // Refresh all slot registrations. If they didn't change it will fast-out.
+          int slotIndex = 0;
+          for (GlobalEffect<? extends LXEffect> slot : effectManager.slots) {
+            setSlot(slotIndex, slot);
+            slotIndex++;
+          }
+          // One was removed, so set the next location to null
+          setSlot(slotIndex, null);
+
+          TE.log("Effect Slot removed: " + item);
+        }
+      };
+
+  // Slots
+
+  private static final int MAX_SLOTS = 8;
+  private final GlobalEffect<? extends LXEffect>[] registeredSlots = new GlobalEffect<?>[MAX_SLOTS];
+
+  private void setSlot(int slotIndex, GlobalEffect<? extends LXEffect> slot) {
+    if (slotIndex < 0) {
+      throw new IllegalArgumentException("Invalid slotIndex: " + slotIndex);
+    }
+    if (slotIndex >= MAX_SLOTS) {
+      // Ignore slots beyond our capability
+      return;
+    }
+
+    final GlobalEffect<? extends LXEffect> oldSlot = this.registeredSlots[slotIndex];
+    if (oldSlot != slot) {
+      if (oldSlot != null) {
+        unregisterSlot(slotIndex, oldSlot);
+      }
+      this.registeredSlots[slotIndex] = slot;
+      if (slot != null) {
+        registerSlot(slotIndex, slot);
+      }
+      slotChanged(slotIndex);
+      verbose("Slot [" + slotIndex + "] set to: " + slot);
+    }
+  }
+
+  private void registerSlot(int slotIndex, GlobalEffect<? extends LXEffect> slot) {
+    slot.addListener(this.slotStateListener);
+  }
+
+  private void unregisterSlot(int slotIndex, GlobalEffect<? extends LXEffect> slot) {
+    slot.removeListener(this.slotStateListener);
+  }
+
+  private final GlobalEffect.Listener slotStateListener =
+      (slot, state) -> {
+        // Update LED colors when the state of a slot changes
+        for (int i = 0; i < MAX_SLOTS; i++) {
+          if (registeredSlots[i] == slot) {
+            slotChanged(i);
+            break;
+          }
+        }
+      };
+
+  private void slotChanged(int slotIndex) {
     int padIndex = slotToPadIndex(slotIndex);
     if (padIndex >= 0 && padIndex < NUM_PADS) {
       sendPadColor(padIndex);
@@ -854,13 +909,13 @@ public class EffectsMiniLab3 extends LXMidiSurface
   private PadColor getPadColor(int padIndex) {
     int slotIndex = padToSlotIndex(padIndex);
 
-    if (slotIndex < 0 || slotIndex >= effectManager.slots.size()) {
+    if (slotIndex < 0 || slotIndex >= MAX_SLOTS) {
       // Pad index does not map to a slot
       return PadColor.OFF;
     } else {
-      GlobalEffect<? extends LXEffect> globalEffect = effectManager.slots.get(slotIndex);
+      GlobalEffect<? extends LXEffect> globalEffect = this.registeredSlots[slotIndex];
 
-      // Allows null placeholder slot
+      // Unoccupied
       if (globalEffect == null) {
         return PadColor.EMPTY;
       }

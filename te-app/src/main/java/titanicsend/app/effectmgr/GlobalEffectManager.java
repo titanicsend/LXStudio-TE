@@ -11,8 +11,6 @@ import heronarts.lx.osc.LXOscComponent;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.TriggerParameter;
 import heronarts.lx.utils.ObservableList;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import titanicsend.effect.DistortEffect;
 import titanicsend.effect.ExplodeEffect;
@@ -35,12 +33,6 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
       new ObservableList<>();
   public final ObservableList<GlobalEffect<? extends LXEffect>> slots =
       mutableSlots.asUnmodifiableList();
-
-  public interface Listener {
-    void globalEffectStateUpdated(int slotIndex);
-  }
-
-  private final List<Listener> listeners = new ArrayList<>();
 
   public GlobalEffectManager(LX lx) {
     super(lx, "effectManager");
@@ -221,39 +213,15 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
       for (LXEffect effect : this.lx.engine.mixer.masterBus.effects) {
         if (globalEffect.matches(effect)) {
           // This will quick return if effect is already registered to the slot.
-          globalEffect.registerEffect(effect, this);
-          // Notify listeners of a state change.
-          this.effectStateUpdated(slots.indexOf(globalEffect));
+          globalEffect.setEffect(effect);
           found = true;
           break;
         }
       }
       if (!found) {
-        globalEffect.registerEffect(null, this);
+        globalEffect.setEffect(null);
       }
     }
-  }
-
-  public void effectStateUpdated(GlobalEffect<? extends LXEffect> globalEffect) {
-    int slotIndex = slots.indexOf(globalEffect);
-    if (slotIndex < 0) {
-      throw new IllegalArgumentException("Slot not found for " + globalEffect.getName());
-    }
-    effectStateUpdated(slotIndex);
-  }
-
-  public void effectStateUpdated(int slotIndex) {
-    for (Listener listener : listeners) {
-      listener.globalEffectStateUpdated(slotIndex);
-    }
-  }
-
-  public void addListener(Listener listener) {
-    listeners.add(listener);
-  }
-
-  public void removeListener(Listener listener) {
-    listeners.remove(listener);
   }
 
   public void debugStates() {
@@ -280,6 +248,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
         globalEffect.dispose();
       }
     }
+    this.mutableSlots.clear();
     super.dispose();
   }
 }
