@@ -202,8 +202,8 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   public enum PadColor {
     OFF(LXColor.BLACK),
     ENABLED(LXColor.RED),
-    DISABLED(LXColor.rgb(0, 150, 0)),
-    EMPTY(LXColor.gray(.2f));
+    DISABLED(LXColor.rgb(100, 100, 0)),
+    EMPTY(LXColor.grayn(.2f));
     public final int r, g, b;
     public final byte rByte, gByte, bByte;
 
