@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.5.GPU-SNAPSHOT",
-  "timestamp": 1755595308503,
+  "timestamp": 1755601522413,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -12343,7 +12343,7 @@
             },
             "parameters": {
               "label": "Input",
-              "device": 0
+              "device": 4
             },
             "children": {}
           },
@@ -12625,22 +12625,22 @@
               "attack": 0.0,
               "release": 437.47287494574994,
               "slope": 6.0,
-              "band-1": 0.30271830467033845,
-              "band-2": 0.4403384346973699,
-              "band-3": 0.5634367558551867,
-              "band-4": 0.6802427797736508,
-              "band-5": 0.6553121572048177,
-              "band-6": 0.4959768693568417,
-              "band-7": 0.5363573039264038,
-              "band-8": 0.4326348386407505,
-              "band-9": 0.2954700159998733,
-              "band-10": 0.4644290709984338,
-              "band-11": 0.37791147650013424,
-              "band-12": 0.30766655867159187,
-              "band-13": 0.3631151834644175,
-              "band-14": 0.4645999156537194,
-              "band-15": 0.41545448179476485,
-              "band-16": 0.11381965349433365
+              "band-1": 0.0,
+              "band-2": 0.0,
+              "band-3": 0.0,
+              "band-4": 0.0,
+              "band-5": 0.0,
+              "band-6": 0.0,
+              "band-7": 0.0,
+              "band-8": 0.0,
+              "band-9": 0.0,
+              "band-10": 0.0,
+              "band-11": 0.0,
+              "band-12": 0.0,
+              "band-13": 0.0,
+              "band-14": 0.0,
+              "band-15": 0.0,
+              "band-16": 0.0
             },
             "children": {}
           }
@@ -12983,6 +12983,7 @@
                   "MSize": 0.47999998927116394,
                   "MSpeed": 1.5499999523162842,
                   "MAnimation": 1.0,
+                  "MouthMove": true,
                   "Eyes": true,
                   "Twist": 0.0,
                   "Color": 0,
@@ -63003,9 +63004,9 @@
                   "te_color/blendMode": 0,
                   "te_color/blendMode/name": "OKLAB",
                   "te_color/offset": 0.0,
-                  "Energy": 0.0,
                   "Glow": 0.1,
                   "Double Layer": false,
+                  "Energy": 0.0,
                   "Double Speed": false,
                   "Width": 0.5,
                   "compositeMode": 0
@@ -65328,7 +65329,7 @@
         },
         "parameters": {
           "label": "Output",
-          "enabled": true,
+          "enabled": false,
           "brightness": 1.0,
           "fps": 0.0,
           "gamma": 1.0,
@@ -65677,7 +65678,7 @@
   },
   "externals": {
     "ui": {
-      "leftPaneActiveSection": 0,
+      "leftPaneActiveSection": 2,
       "audioExpanded": true,
       "envelopExpanded": true,
       "reaperExpanded": true,

@@ -175,7 +175,7 @@
 								<argument>-XstartOnFirstThread</argument>
 								<argument>-Djava.awt.headless=true</argument>
 								<argument>-jar</argument>
-								<argument>target/LXStudio-TE-${project.version}-jar-with-dependencies.jar</argument>
+								<argument>target/te-app-${project.version}-jar-with-dependencies.jar</argument>
 								<argument>vehicle</argument>
 							</arguments>
 						</configuration>
