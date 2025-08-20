@@ -15,7 +15,7 @@ import java.util.Objects;
  * A translation layer between the GlobalEffectManager and an LXEffect instance. This will be
  * subclassed for every LXEffect type that can be used as a global effect.
  */
-public abstract class GlobalEffect<T extends LXEffect> {
+public abstract class Slot<T extends LXEffect> {
 
   public enum State {
     EMPTY, // Slot has been allocated, but no matching LXEffect exists in the current project
@@ -28,7 +28,7 @@ public abstract class GlobalEffect<T extends LXEffect> {
   private State state = State.EMPTY;
 
   public interface Listener {
-    void stateChanged(GlobalEffect globalEffect, State state);
+    void stateChanged(Slot slot, State state);
   }
 
   private final List<Listener> listeners = new ArrayList<>();
@@ -40,7 +40,7 @@ public abstract class GlobalEffect<T extends LXEffect> {
   public T effect;
 
   @SuppressWarnings("unchecked")
-  public GlobalEffect() {
+  public Slot() {
     // Extract the generic type parameter (T) of the subclass
     Type superType = getClass().getGenericSuperclass();
     if (superType instanceof ParameterizedType pType) {
@@ -126,7 +126,7 @@ public abstract class GlobalEffect<T extends LXEffect> {
       throw new IllegalArgumentException(
           "Effect instance "
               + effect.getLabel()
-              + " does not match GlobalEffect type "
+              + " does not match Slot type "
               + this.type.getName());
     }
 
@@ -187,7 +187,7 @@ public abstract class GlobalEffect<T extends LXEffect> {
 
   // Listeners
 
-  public GlobalEffect<T> addListener(Listener listener) {
+  public Slot<T> addListener(Listener listener) {
     Objects.requireNonNull(listener, "May not add null Listener");
     if (this.listeners.contains(listener)) {
       throw new IllegalStateException("Cannot add duplicate Listener: " + listener);
@@ -196,7 +196,7 @@ public abstract class GlobalEffect<T extends LXEffect> {
     return this;
   }
 
-  public GlobalEffect<T> removeListener(Listener listener) {
+  public Slot<T> removeListener(Listener listener) {
     if (!this.listeners.contains(listener)) {
       throw new IllegalStateException("Cannot remove non-existent Listener: " + listener);
     }

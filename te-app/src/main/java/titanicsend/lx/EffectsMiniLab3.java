@@ -18,8 +18,8 @@ import heronarts.lx.midi.surface.LXMidiSurface;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.utils.ObservableList;
 import java.util.List;
-import titanicsend.app.effectmgr.GlobalEffect;
 import titanicsend.app.effectmgr.GlobalEffectManager;
+import titanicsend.app.effectmgr.Slot;
 import titanicsend.util.TE;
 
 /**
@@ -286,7 +286,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     this.isRegistered = true;
 
     int slotIndex = 0;
-    for (GlobalEffect<? extends LXEffect> slot : this.effectManager.slots) {
+    for (Slot<? extends LXEffect> slot : this.effectManager.slots) {
       setSlot(slotIndex++, slot);
     }
 
@@ -303,40 +303,40 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     clearPadColors();
   }
 
-  private final ObservableList.Listener<GlobalEffect<? extends LXEffect>> slotsListener =
+  private final ObservableList.Listener<Slot<? extends LXEffect>> slotsListener =
       new ObservableList.Listener<>() {
         @Override
-        public void itemAdded(GlobalEffect<? extends LXEffect> item) {
+        public void itemAdded(Slot<? extends LXEffect> item) {
           int slotIndex = effectManager.slots.indexOf(item);
-          TE.log("Effect Slot added [" + slotIndex + "]: " + item);
+          TE.log("Slot added [" + slotIndex + "]: " + item);
           // Update registeredSlot for the new item and all slots after
           for (int i = slotIndex; i < effectManager.slots.size(); i++) {
-            GlobalEffect<? extends LXEffect> slot = effectManager.slots.get(i);
+            Slot<? extends LXEffect> slot = effectManager.slots.get(i);
             setSlot(i, slot);
           }
         }
 
         @Override
-        public void itemRemoved(GlobalEffect<? extends LXEffect> item) {
+        public void itemRemoved(Slot<? extends LXEffect> item) {
           // Refresh all slot registrations. If they didn't change it will fast-out.
           int slotIndex = 0;
-          for (GlobalEffect<? extends LXEffect> slot : effectManager.slots) {
+          for (Slot<? extends LXEffect> slot : effectManager.slots) {
             setSlot(slotIndex, slot);
             slotIndex++;
           }
           // One was removed, so set the next location to null
           setSlot(slotIndex, null);
 
-          TE.log("Effect Slot removed: " + item);
+          TE.log("Slot removed: " + item);
         }
       };
 
   // Slots
 
   private static final int MAX_SLOTS = 8;
-  private final GlobalEffect<? extends LXEffect>[] registeredSlots = new GlobalEffect<?>[MAX_SLOTS];
+  private final Slot<? extends LXEffect>[] registeredSlots = new Slot<?>[MAX_SLOTS];
 
-  private void setSlot(int slotIndex, GlobalEffect<? extends LXEffect> slot) {
+  private void setSlot(int slotIndex, Slot<? extends LXEffect> slot) {
     if (slotIndex < 0) {
       throw new IllegalArgumentException("Invalid slotIndex: " + slotIndex);
     }
@@ -345,7 +345,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
       return;
     }
 
-    final GlobalEffect<? extends LXEffect> oldSlot = this.registeredSlots[slotIndex];
+    final Slot<? extends LXEffect> oldSlot = this.registeredSlots[slotIndex];
     if (oldSlot != slot) {
       if (oldSlot != null) {
         unregisterSlot(slotIndex, oldSlot);
@@ -359,15 +359,15 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     }
   }
 
-  private void registerSlot(int slotIndex, GlobalEffect<? extends LXEffect> slot) {
+  private void registerSlot(int slotIndex, Slot<? extends LXEffect> slot) {
     slot.addListener(this.slotStateListener);
   }
 
-  private void unregisterSlot(int slotIndex, GlobalEffect<? extends LXEffect> slot) {
+  private void unregisterSlot(int slotIndex, Slot<? extends LXEffect> slot) {
     slot.removeListener(this.slotStateListener);
   }
 
-  private final GlobalEffect.Listener slotStateListener =
+  private final Slot.Listener slotStateListener =
       (slot, state) -> {
         // Update LED colors when the state of a slot changes
         for (int i = 0; i < MAX_SLOTS; i++) {
@@ -727,24 +727,24 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
       return;
     }
 
-    GlobalEffect<? extends LXEffect> globalEffect = effectManager.slots.get(slotIndex);
-    GlobalEffect.State currState = globalEffect.getState();
+    Slot<? extends LXEffect> slot = effectManager.slots.get(slotIndex);
+    Slot.State currState = slot.getState();
     if (currState == null) {
-      verbose("Current state is null: " + globalEffect.getName());
+      verbose("Current state is null: " + slot.getName());
       return;
-    } else if (currState == GlobalEffect.State.EMPTY) {
-      verbose("Current state is empty: " + globalEffect.getName());
+    } else if (currState == Slot.State.EMPTY) {
+      verbose("Current state is empty: " + slot.getName());
       return;
-    } else if (globalEffect.effect == null) {
+    } else if (slot.effect == null) {
       throw new IllegalStateException("LXEffect is null, but state is neither EMPTY nor null");
     } else {
-      verbose("Current state: " + currState + " for effect: " + globalEffect.effect.getLabel());
+      verbose("Current state: " + currState + " for effect: " + slot.effect.getLabel());
     }
 
-    globalEffect.getEnabledParameter().toggle();
+    slot.getEnabledParameter().toggle();
     TE.log(
         String.format(
-            "PRESS: %d: %s -> %s", padIndex, currState.name(), globalEffect.getState().toString()));
+            "PRESS: %d: %s -> %s", padIndex, currState.name(), slot.getState().toString()));
   }
 
   /** Set the value of an effect parameter at a given index */
@@ -756,8 +756,8 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     if (slotIndex >= effectManager.slots.size()) {
       return;
     }
-    GlobalEffect<? extends LXEffect> globalEffect = effectManager.slots.get(slotIndex);
-    if (globalEffect == null) {
+    Slot<? extends LXEffect> slot = effectManager.slots.get(slotIndex);
+    if (slot == null) {
       return;
     }
 
@@ -767,7 +767,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     boolean isPrimaryParam = (parameterIndex / 4) == 0;
 
     LXListenableNormalizedParameter effectParam =
-        isPrimaryParam ? globalEffect.getLevelParameter() : globalEffect.getSecondaryParameter();
+        isPrimaryParam ? slot.getLevelParameter() : slot.getSecondaryParameter();
     if (effectParam == null) {
       return;
     }
@@ -801,7 +801,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   }
 
   private int slotToPadIndex(int slotIndex) {
-    List<GlobalEffect<? extends LXEffect>> slots = this.effectManager.slots;
+    List<Slot<? extends LXEffect>> slots = this.effectManager.slots;
     if (slotIndex < 0) {
       throw new IllegalArgumentException("Slot index is negative: " + slotIndex);
     } else if (slotIndex <= Math.min(3, slots.size())) {
@@ -822,11 +822,11 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     }
   }
 
-  private List<GlobalEffect<? extends LXEffect>> allSlots() {
+  private List<Slot<? extends LXEffect>> allSlots() {
     return effectManager.slots;
   }
 
-  private GlobalEffect<? extends LXEffect> getSlot(int index) {
+  private Slot<? extends LXEffect> getSlot(int index) {
     if (allSlots() == null || index < 0 || index >= allSlots().size()) {
       return null;
     }
@@ -913,15 +913,15 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
       // Pad index does not map to a slot
       return PadColor.OFF;
     } else {
-      GlobalEffect<? extends LXEffect> globalEffect = this.registeredSlots[slotIndex];
+      Slot<? extends LXEffect> slot = this.registeredSlots[slotIndex];
 
       // Unoccupied
-      if (globalEffect == null) {
+      if (slot == null) {
         return PadColor.EMPTY;
       }
 
       // Occupied slot
-      GlobalEffect.State state = globalEffect.getState();
+      Slot.State state = slot.getState();
       //      padVerbose("\t\t\t state is " + state);
       switch (state) {
         case EMPTY -> {

@@ -29,36 +29,34 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     return instance;
   }
 
-  private final ObservableList<GlobalEffect<? extends LXEffect>> mutableSlots =
-      new ObservableList<>();
-  public final ObservableList<GlobalEffect<? extends LXEffect>> slots =
-      mutableSlots.asUnmodifiableList();
+  private final ObservableList<Slot<? extends LXEffect>> mutableSlots = new ObservableList<>();
+  public final ObservableList<Slot<? extends LXEffect>> slots = mutableSlots.asUnmodifiableList();
 
   public GlobalEffectManager(LX lx) {
     super(lx, "effectManager");
     instance = this;
 
-    allocateEffectSlots();
+    allocateSlotsTE();
 
     // When effects are added / removed / moved on Master Bus, listen and update
     this.lx.engine.mixer.masterBus.addListener(this.masterBusListener);
     refresh();
   }
 
-  public void allocateSlot(GlobalEffect<? extends LXEffect> effect) {
-    Objects.requireNonNull(effect, "May not add null GlobalEffect.effect");
+  public void allocateSlot(Slot<? extends LXEffect> slot) {
+    Objects.requireNonNull(slot, "May not add null Slot");
     // TODO: prevent multiple entries for one effect type
     // NOTE(look): ^ I could imagine having 2 versions for an Effect with lots of params,
     // where two versions of the effect are set up very differently.
-    mutableSlots.add(effect);
+    mutableSlots.add(slot);
   }
 
-  private void allocateEffectSlots() {
+  private void allocateSlotsTE() {
     // TODO: move this TE-specific method somewhere else, keep GlobalEffectManager generic.
 
     // 0: Random Strobe
     allocateSlot(
-        new GlobalEffect<RandomStrobeEffect>() {
+        new Slot<RandomStrobeEffect>() {
           @Override
           public LXListenableNormalizedParameter getLevelParameter() {
             if (effect == null) {
@@ -78,7 +76,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
 
     // 1 - Strobe
     allocateSlot(
-        new GlobalEffect<StrobeEffect>() {
+        new Slot<StrobeEffect>() {
           @Override
           public LXListenableNormalizedParameter getLevelParameter() {
             if (effect == null) {
@@ -100,7 +98,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     allocateSlot(
         // TODO: separate effect slots for "sync" version? How to handle "trigger"
         //  (feels more similar to FX patterns like BassLightning / SpaceExplosion)
-        new GlobalEffect<ExplodeEffect>() {
+        new Slot<ExplodeEffect>() {
           @Override
           public LXListenableNormalizedParameter getLevelParameter() {
             if (effect == null) {
@@ -128,7 +126,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
 
     // 3 - Simplify
     allocateSlot(
-        new GlobalEffect<SimplifyEffect>() {
+        new Slot<SimplifyEffect>() {
           @Override
           public LXListenableNormalizedParameter getLevelParameter() {
             if (effect == null) {
@@ -148,7 +146,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
 
     // 4 - Sustain
     allocateSlot(
-        new GlobalEffect<SustainEffect>() {
+        new Slot<SustainEffect>() {
           @Override
           public LXListenableNormalizedParameter getLevelParameter() {
             if (effect == null) {
@@ -160,7 +158,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
 
     // 5 - Distort
     allocateSlot(
-        new GlobalEffect<DistortEffect>() {
+        new Slot<DistortEffect>() {
           @Override
           public LXListenableNormalizedParameter getLevelParameter() {
             if (effect == null) {
@@ -202,24 +200,24 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
 
   /** Refresh all slots */
   private void refresh() {
-    for (GlobalEffect<? extends LXEffect> globalEffect : slots) {
+    for (Slot<? extends LXEffect> slot : slots) {
       // Allow null placeholder slots
-      if (globalEffect == null) {
+      if (slot == null) {
         continue;
       }
 
       // Find the first matching global effect for this slot
       boolean found = false;
       for (LXEffect effect : this.lx.engine.mixer.masterBus.effects) {
-        if (globalEffect.matches(effect)) {
+        if (slot.matches(effect)) {
           // This will quick return if effect is already registered to the slot.
-          globalEffect.setEffect(effect);
+          slot.setEffect(effect);
           found = true;
           break;
         }
       }
       if (!found) {
-        globalEffect.setEffect(null);
+        slot.setEffect(null);
       }
     }
   }
@@ -227,14 +225,11 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
   public void debugStates() {
     TE.log("-------------------------------");
     for (int i = 0; i < slots.size(); i++) {
-      GlobalEffect<? extends LXEffect> globalEffect = slots.get(i);
-      if (globalEffect == null) {
+      Slot<? extends LXEffect> slot = slots.get(i);
+      if (slot == null) {
         TE.log(String.format("\t[Slot %02d] - null", i));
       } else {
-        TE.log(
-            String.format(
-                "\t[Slot %02d] '%s' - state %s",
-                i, globalEffect.getName(), globalEffect.getState()));
+        TE.log(String.format("\t[Slot %02d] '%s' - state %s", i, slot.getName(), slot.getState()));
       }
     }
     TE.log("-------------------------------");
@@ -243,9 +238,9 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
   @Override
   public void dispose() {
     this.lx.engine.mixer.masterBus.removeListener(this.masterBusListener);
-    for (GlobalEffect<? extends LXEffect> globalEffect : slots) {
-      if (globalEffect != null) {
-        globalEffect.dispose();
+    for (Slot<? extends LXEffect> slot : slots) {
+      if (slot != null) {
+        slot.dispose();
       }
     }
     this.mutableSlots.clear();
