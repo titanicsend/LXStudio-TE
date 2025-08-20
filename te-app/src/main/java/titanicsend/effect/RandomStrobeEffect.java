@@ -44,6 +44,8 @@ import titanicsend.model.TEPanelModel;
 @LXCategory("Titanics End")
 public class RandomStrobeEffect extends TEEffect implements LX.Listener {
 
+  private static final String TAG_MOTHERSHIP_WINDOW = "window";
+
   private abstract class Element {
     protected double offset;
 
@@ -83,6 +85,19 @@ public class RandomStrobeEffect extends TEEffect implements LX.Listener {
     @Override
     protected LXPoint[] getPoints() {
       return this.edge.points;
+    }
+  }
+
+  private class ModelElement extends Element {
+    private final LXModel model;
+
+    private ModelElement(LXModel model) {
+      this.model = model;
+    }
+
+    @Override
+    protected LXPoint[] getPoints() {
+      return this.model.points;
     }
   }
 
@@ -218,6 +233,12 @@ public class RandomStrobeEffect extends TEEffect implements LX.Listener {
       EdgeElement e = new EdgeElement(edge);
       e.randomizeOffset();
       this.elements.add(e);
+    }
+
+    for (LXModel mothershipWindow : getModel().sub(TAG_MOTHERSHIP_WINDOW)) {
+      ModelElement element = new ModelElement(mothershipWindow);
+      element.randomizeOffset();
+      this.elements.add(element);
     }
   }
 
