@@ -60,17 +60,26 @@ public abstract class Slot<T extends LXDeviceComponent> {
 
   /**
    * Retrieve the parameter that corresponds to enabling/disabling the device. By default this will
-   * be device.enabled but it can be overridden.
+   * be device.enabled but it can be modified by a child class.
    *
    * @return A parameter corresponding to enable/disable, or null if it does not apply.
    */
-  public BooleanParameter getEnabledParameter() {
+  public final BooleanParameter getEnabledParameter() {
+    if (this.device == null) {
+      return null;
+    }
+    return _getEnabledParameter();
+  }
+
+  /** Subclasses can override. Will only get called if device is non-null */
+  protected BooleanParameter _getEnabledParameter() {
     // Note: Both LXEffect and LXPattern have an enabled parameter, but it is not on the parent
     if (this.device instanceof LXEffect) {
       return ((LXEffect) device).enabled;
     } else if (this.device instanceof LXPattern) {
       return ((LXPattern) device).enabled;
     }
+    // Shouldn't be reached. This method is only called if device is not null.
     return null;
   }
 
@@ -80,14 +89,33 @@ public abstract class Slot<T extends LXDeviceComponent> {
    *
    * @return A parameter that corresponds to Level, or null if it does not apply.
    */
-  public abstract LXListenableNormalizedParameter getLevelParameter();
+  public final LXListenableNormalizedParameter getLevelParameter() {
+    if (this.device == null) {
+      return null;
+    }
+    return _getLevelParameter();
+  }
+
+  protected abstract LXListenableNormalizedParameter _getLevelParameter();
 
   /**
-   * Subclasses can override to indicate a secondary parameter.
+   * Retrieve an optional secondary parameter for the device
    *
    * @return A secondary parameter that can be controlled on the global device
    */
-  public LXListenableNormalizedParameter getSecondaryParameter() {
+  public final LXListenableNormalizedParameter getSecondaryParameter() {
+    if (this.device == null) {
+      return null;
+    }
+    return _getSecondaryParameter();
+  }
+
+  /**
+   * Subclasses can override to indicate a secondary parameter. Only called if device is non-null.
+   *
+   * @return A secondary parameter that can be controlled on the global device
+   */
+  protected LXListenableNormalizedParameter _getSecondaryParameter() {
     return null;
   }
 
@@ -96,7 +124,14 @@ public abstract class Slot<T extends LXDeviceComponent> {
    *
    * @return A parameter that corresponds to Run Now, or null if it does not apply.
    */
-  public TriggerParameter getTriggerParameter() {
+  public final TriggerParameter getTriggerParameter() {
+    if (this.device == null) {
+      return null;
+    }
+    return _getTriggerParameter();
+  }
+
+  protected TriggerParameter _getTriggerParameter() {
     return null;
   }
 

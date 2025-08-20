@@ -26,18 +26,12 @@ public abstract class TEGlobalEffects {
     manager.allocateSlot(
         new Slot<RandomStrobeEffect>() {
           @Override
-          public LXListenableNormalizedParameter getLevelParameter() {
-            if (device == null) {
-              return null;
-            }
+          protected LXListenableNormalizedParameter _getLevelParameter() {
             return device.depth;
           }
 
           @Override
-          public LXListenableNormalizedParameter getSecondaryParameter() {
-            if (device == null) {
-              return null;
-            }
+          protected LXListenableNormalizedParameter _getSecondaryParameter() {
             return device.speed;
           }
         });
@@ -46,18 +40,12 @@ public abstract class TEGlobalEffects {
     manager.allocateSlot(
         new Slot<StrobeEffect>() {
           @Override
-          public LXListenableNormalizedParameter getLevelParameter() {
-            if (device == null) {
-              return null;
-            }
+          protected LXListenableNormalizedParameter _getLevelParameter() {
             return device.depth;
           }
 
           @Override
-          public LXListenableNormalizedParameter getSecondaryParameter() {
-            if (device == null) {
-              return null;
-            }
+          protected LXListenableNormalizedParameter _getSecondaryParameter() {
             return device.speed;
           }
         });
@@ -68,26 +56,17 @@ public abstract class TEGlobalEffects {
         //  (feels more similar to FX patterns like BassLightning / SpaceExplosion)
         new Slot<ExplodeEffect>() {
           @Override
-          public LXListenableNormalizedParameter getLevelParameter() {
-            if (device == null) {
-              return null;
-            }
+          protected LXListenableNormalizedParameter _getLevelParameter() {
             return device.depth;
           }
 
           @Override
-          public LXListenableNormalizedParameter getSecondaryParameter() {
-            if (device == null) {
-              return null;
-            }
+          protected LXListenableNormalizedParameter _getSecondaryParameter() {
             return device.speed;
           }
 
           @Override
-          public TriggerParameter getTriggerParameter() {
-            if (device == null) {
-              return null;
-            }
+          protected TriggerParameter _getTriggerParameter() {
             return device.trigger;
           }
         });
@@ -96,18 +75,12 @@ public abstract class TEGlobalEffects {
     manager.allocateSlot(
         new Slot<SimplifyEffect>() {
           @Override
-          public LXListenableNormalizedParameter getLevelParameter() {
-            if (device == null) {
-              return null;
-            }
+          protected LXListenableNormalizedParameter _getLevelParameter() {
             return device.amount;
           }
 
           @Override
-          public LXListenableNormalizedParameter getSecondaryParameter() {
-            if (device == null) {
-              return null;
-            }
+          protected LXListenableNormalizedParameter _getSecondaryParameter() {
             return device.gain;
           }
         });
@@ -116,10 +89,7 @@ public abstract class TEGlobalEffects {
     manager.allocateSlot(
         new Slot<SustainEffect>() {
           @Override
-          public LXListenableNormalizedParameter getLevelParameter() {
-            if (device == null) {
-              return null;
-            }
+          protected LXListenableNormalizedParameter _getLevelParameter() {
             return device.sustain;
           }
         });
@@ -128,18 +98,12 @@ public abstract class TEGlobalEffects {
     manager.allocateSlot(
         new Slot<DistortEffect>() {
           @Override
-          public LXListenableNormalizedParameter getLevelParameter() {
-            if (device == null) {
-              return null;
-            }
+          protected LXListenableNormalizedParameter _getLevelParameter() {
             return device.depth;
           }
 
           @Override
-          public LXListenableNormalizedParameter getSecondaryParameter() {
-            if (device == null) {
-              return null;
-            }
+          protected LXListenableNormalizedParameter _getSecondaryParameter() {
             return device.size; // or speed?
           }
         });
@@ -151,18 +115,12 @@ public abstract class TEGlobalEffects {
         23,
         new Slot<BassLightning>() {
           @Override
-          public LXListenableNormalizedParameter getLevelParameter() {
-            if (device == null) {
-              return null;
-            }
+          protected LXListenableNormalizedParameter _getLevelParameter() {
             return device.energy;
           }
 
           @Override
-          public TriggerParameter getTriggerParameter() {
-            if (device == null) {
-              return null;
-            }
+          protected TriggerParameter _getTriggerParameter() {
             return device.trigger;
           }
         });
