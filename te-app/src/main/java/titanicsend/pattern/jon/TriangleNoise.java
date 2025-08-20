@@ -21,8 +21,10 @@ public class TriangleNoise extends DriftEnabledPattern {
     controls.setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
     controls.setRange(TEControlTag.SPIN, 0, -0.5, 0.5);
     controls.setRange(TEControlTag.WOW1, 4.4, 3, 6.5);
+
     controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
     controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
 
     // register common controls with LX
     addCommonControls();

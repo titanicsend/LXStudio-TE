@@ -19,7 +19,6 @@ import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon._CommonControlGetter;
 import titanicsend.preset.UserPresetCollection;
-import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
 
 public class TECommonControls {
@@ -333,31 +332,18 @@ public class TECommonControls {
    * addParameter() for them after calling this function so the UI stays consistent across patterns.
    */
   public void addCommonControls(TEPerformancePattern pat) {
-    // load the missing controls file
-    MissingControlsManager.MissingControls missingControls =
-        MissingControlsManager.get().findMissingControls(pat.getClass());
 
     // controls will be added in the order their tags appear in the
     // TEControlTag enum
     for (TEControlTag tag : TEControlTag.values()) {
       LXListenableNormalizedParameter param = controlList.get(tag).control;
 
-      if (missingControls != null) {
-        if (missingControls.missing_control_tags.contains(tag)) {
-          markUnused(param);
-        }
-      }
-
       this.pattern.addParam(tag.getPath(), param);
     }
 
     this.pattern.addParam("panic", this.panic);
 
-    String colorPrefix = "";
-    if (missingControls != null && !missingControls.uses_palette) {
-      colorPrefix = "[x] ";
-    }
-    TEColorParameter colorParam = registerColorControl(colorPrefix);
+    TEColorParameter colorParam = registerColorControl();
 
     // Wrap the Preset parameter to prevent it from being changed while live
     this.presetSelectorOffair = new OffairDiscreteParameter<>("Preset", pat.presetSelector);
@@ -405,9 +391,8 @@ public class TECommonControls {
         });
   }
 
-  protected TEColorParameter registerColorControl(String prefix) {
-    color =
-        new TEColorParameter(TEGradientSource.get(), prefix + "Color").setDescription("TE Color");
+  protected TEColorParameter registerColorControl() {
+    color = new TEColorParameter(TEGradientSource.get(), "Color").setDescription("TE Color");
     // "addParameter(java.lang.String, heronarts.lx.parameter.LXParameter)' has protected access in
     // 'heronarts.lx.LXComponent'"
     this.pattern.addParam("te_color", color);

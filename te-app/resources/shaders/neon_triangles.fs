@@ -121,7 +121,7 @@ vec3 getBloom(vec3 pos, vec3 dir)
         res += getCol(p.z) / d / float(BLOOM_IT);
     }
 
-    return res * 0.25 * iWow1 * bassLevel;
+    return res * 0.25 * levelReact * bassLevel;
 }
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )

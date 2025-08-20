@@ -18,8 +18,9 @@ public class FollowThatStar extends GLShaderPattern {
 
     controls.setRange(TEControlTag.SIZE, 1.75, 1.0, 5);
     controls.setRange(TEControlTag.WOW2, 1, 1, 4);
-    controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW1));
     controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
 
     // register common controls with LX
     addCommonControls();

@@ -20,6 +20,8 @@ public class ElectricEdges extends GLShaderPattern {
     controls.setRange(TEControlTag.WOW2, 0.02, 0.0, 0.2); // noise field amplitude
     controls.setRange(TEControlTag.SPIN, 0.6, -3, 3); // arc spin rate
 
+    controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
+
     // register common controls with LX
     addCommonControls();
 
