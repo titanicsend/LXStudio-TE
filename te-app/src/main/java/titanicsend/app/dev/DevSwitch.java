@@ -7,6 +7,7 @@ import com.google.gson.stream.JsonWriter;
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.LXSerializable;
+import heronarts.lx.Tempo;
 import heronarts.lx.Tempo.ClockSource;
 import heronarts.lx.midi.LXMidiInput;
 import heronarts.lx.midi.surface.LXMidiSurface;
@@ -43,6 +44,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
   private static final String DEVSWITCH_FILE_NAME = ".devSwitch";
   private static final String INDENT = "     ";
 
+  private static final Tempo.Division TE_PREFERRED_QUANTIZATION = Tempo.Division.WHOLE;
   private static final boolean SAVE_STATE_WHEN_DEFAULT = false;
 
   public enum State {
@@ -157,6 +159,13 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
           .setMode(Mode.TOGGLE)
           .setDescription("Tempo clockSource is OSC");
 
+  // Tempo Launch Quantization = TE Preferred
+
+  public final BooleanParameter tempoLaunchQuantization =
+      new BooleanParameter("Quantization", false)
+          .setMode(Mode.TOGGLE)
+          .setDescription("Tempo Launch Quantization is the TE preferred value");
+
   private final LXParameterListener detailParameterListener =
       (p) -> {
         onDetailParameterChanged(p);
@@ -165,6 +174,11 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
   private final LXParameterListener tempoSourceListener =
       (p) -> {
         onTempoSourceChanged(p);
+      };
+
+  private final LXParameterListener tempoLaunchQuantizationListener =
+      (p) -> {
+        engineQuantizationChanged();
       };
 
   // All parameters that are visible in the UI
@@ -185,6 +199,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     this.file = lx.getMediaFile(DEVSWITCH_FILE_NAME);
 
     this.tempoSourceOSC.setValue(this.lx.engine.tempo.clockSource.getEnum() == ClockSource.OSC);
+    this.tempoLaunchQuantization.setValue(isQuantizationPreferred());
 
     addParameter("lock", this.lock);
     addParameter("dev", this.isDev);
@@ -195,6 +210,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     addParameter("engineDJlights", this.engineDJlights);
     addParameter("midiSurfaces", this.midiSurfaces);
     addParameter("tempoSourceOSC", this.tempoSourceOSC);
+    addParameter("tempoLaunchQuantization", this.tempoLaunchQuantization);
 
     addDetailParameter(this.lx.engine.output.enabled, "LIVE Output");
     addDetailParameter(this.engineLEDs);
@@ -217,9 +233,11 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     addDetailParameter(this.lx.preferences.focusActivePattern);
     addDetailParameter(this.lx.engine.tempo.enabled, "Tempo Enabled");
     addDetailParameter(this.tempoSourceOSC);
+    addDetailParameter(this.tempoLaunchQuantization);
 
     listenDetailParameters();
     lx.engine.tempo.clockSource.addListener(this.tempoSourceListener);
+    lx.engine.tempo.launchQuantization.addListener(this.tempoLaunchQuantizationListener);
 
     refreshState();
 
@@ -267,6 +285,8 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
       onMidiSurfacesChanged(this.midiSurfaces.getValueb());
     } else if (p == this.tempoSourceOSC) {
       onTempoSourceOSCChanged(this.tempoSourceOSC.getValueb());
+    } else if (p == this.tempoLaunchQuantization) {
+      localQuantizationChanged(this.tempoLaunchQuantization.getValueb());
     }
   }
 
@@ -372,7 +392,8 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
         && this.lx.preferences.focusChannelOnCue.isOn()
         && this.lx.preferences.focusActivePattern.isOn()
         && this.lx.engine.tempo.enabled.isOn()
-        && this.lx.engine.tempo.clockSource.getEnum() == ClockSource.INTERNAL) {
+        && this.lx.engine.tempo.clockSource.getEnum() == ClockSource.INTERNAL
+        && isQuantizationPreferred()) {
       return State.DEVELOPER;
     } else if (this.lx.engine.output.enabled.isOn()
         && this.engineLEDs.isOn()
@@ -390,7 +411,8 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
         && this.lx.preferences.focusChannelOnCue.isOn()
         && this.lx.preferences.focusActivePattern.isOn()
         && this.lx.engine.tempo.enabled.isOn()
-        && this.lx.engine.tempo.clockSource.getEnum() == ClockSource.OSC) {
+        && this.lx.engine.tempo.clockSource.getEnum() == ClockSource.OSC
+        && isQuantizationPreferred()) {
       return State.PRODUCTION;
     }
 
@@ -428,6 +450,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     this.lx.preferences.focusActivePattern.setValue(true);
     this.lx.engine.tempo.enabled.setValue(true);
     this.lx.engine.tempo.clockSource.setValue(ClockSource.INTERNAL);
+    setTEPreferredQuantization();
   }
 
   /**
@@ -460,6 +483,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     this.lx.preferences.focusActivePattern.setValue(true);
     this.lx.engine.tempo.enabled.setValue(true);
     this.lx.engine.tempo.clockSource.setValue(ClockSource.OSC);
+    setTEPreferredQuantization();
 
     // Set OSC output port & IP
     // TEOscMessage.applyTEOscOutputSettings(lx);
@@ -549,6 +573,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
    */
 
   private boolean internalTempoSourceChange = false;
+  private boolean internalQuantizationChange = false;
 
   /** this.tempoSourceOSC changed */
   private void onTempoSourceOSCChanged(boolean isOn) {
@@ -567,6 +592,48 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
       this.internalTempoSourceChange = false;
       // onDetailParameterChanged(this.tempoSourceOSC);
     }
+  }
+
+  /** this.tempoLaunchQuantization changed */
+  private void localQuantizationChanged(boolean isOn) {
+    if (!this.internalQuantizationChange && isOn) {
+      this.internalQuantizationChange = true;
+      setTEPreferredQuantization();
+      this.internalQuantizationChange = false;
+    }
+  }
+
+  private void setTEPreferredQuantization() {
+    Tempo.Quantization q = findQuantization(TE_PREFERRED_QUANTIZATION);
+    if (q != null) {
+      this.lx.engine.tempo.launchQuantization.setValue(q);
+    } else {
+      TE.warning("Could not find preferred Quantization in global list");
+    }
+  }
+
+  /** Find the global Quantization item that matches the desired tempo */
+  private Tempo.Quantization findQuantization(Tempo.Division divison) {
+    for (Tempo.Quantization q : this.lx.engine.tempo.launchQuantization.getObjects()) {
+      if (q.hasDivision() && q.getDivision().equals(divison)) {
+        return q;
+      }
+    }
+    return null;
+  }
+
+  /** lx.engine.tempo.launchQuantization changed */
+  private void engineQuantizationChanged() {
+    if (!this.internalQuantizationChange) {
+      this.internalQuantizationChange = true;
+      this.tempoLaunchQuantization.setValue(isQuantizationPreferred());
+      this.internalQuantizationChange = false;
+    }
+  }
+
+  private boolean isQuantizationPreferred() {
+    Tempo.Quantization q = this.lx.engine.tempo.launchQuantization.getObject();
+    return q.hasDivision() && q.getDivision().equals(TE_PREFERRED_QUANTIZATION);
   }
 
   /*
@@ -657,6 +724,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
   public void dispose() {
     unListenDetailParameters();
     lx.engine.tempo.clockSource.removeListener(tempoSourceListener);
+    lx.engine.tempo.launchQuantization.removeListener(this.tempoLaunchQuantizationListener);
     super.dispose();
   }
 }
