@@ -785,9 +785,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     if (effectParam == null) {
       return;
     }
-    float normalizedValue = value / 127f;
-    // TODO: ensure all effects have range 0-1? or handle normalization some other way?
-    effectParam.setValue(normalizedValue);
+    effectParam.setNormalized(value / 127f);
   }
 
   /** Set the value of a global parameter */
