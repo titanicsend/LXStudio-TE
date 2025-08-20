@@ -29,10 +29,12 @@ import heronarts.lx.modulator.SawLFO;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.FunctionalParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.ObjectParameter;
+import heronarts.lx.parameter.QuantizedTriggerParameter;
 import heronarts.lx.utils.LXUtils;
 import java.util.ArrayList;
 import titanicsend.model.TEEdgeModel;
@@ -65,6 +67,21 @@ public class RandomStrobeEffect extends TEEffect {
 
   private final ArrayList<PanelElement> panelElements = new ArrayList<>();
   private final ArrayList<EdgeElement> edgeElements = new ArrayList<>();
+
+  public final QuantizedTriggerParameter launch =
+      new QuantizedTriggerParameter.Launch(lx, "Strobe!", this::start)
+          .setDescription(
+              "Launch the strobe effect. It will run when the next global quantization event is reached.");
+
+  private final String[] runBeatOptions = {"1", "4", "8"};
+  public final DiscreteParameter runBeats =
+      new DiscreteParameter("Run Beats", runBeatOptions, 1)
+          .setDescription("Length of time in beats for the strobe effect to run, in sync mode");
+
+  public final CompoundParameter runTimeMs =
+      new CompoundParameter("RunTime", 2000, 50, 5000)
+          .setUnits(LXParameter.Units.MILLISECONDS_RAW)
+          .setDescription("Length of time in milliseconds for the strobe effect to run");
 
   public final ObjectParameter<LXWaveshape> waveshape =
       new ObjectParameter<LXWaveshape>(
@@ -101,11 +118,11 @@ public class RandomStrobeEffect extends TEEffect {
           .setDescription("Bias of the strobe effect");
 
   public final BooleanParameter tempoSync =
-      new BooleanParameter("Sync", false)
+      new BooleanParameter("Sync", true)
           .setDescription("Whether to sync the tempo to a clock division");
 
   public final EnumParameter<Tempo.Division> tempoDivision =
-      new EnumParameter<Tempo.Division>("Division", Tempo.Division.QUARTER)
+      new EnumParameter<>("Division", Tempo.Division.EIGHTH)
           .setDescription("Which tempo division to use when in sync mode");
 
   public final BoundedParameter tempoPhaseOffset =
@@ -113,6 +130,7 @@ public class RandomStrobeEffect extends TEEffect {
           .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
           .setDescription("Shifts the phase of the strobe LFO relative to tempo");
 
+  // Non-tempo  basis
   private final SawLFO basis =
       startModulator(
           new SawLFO(
@@ -127,8 +145,26 @@ public class RandomStrobeEffect extends TEEffect {
                 }
               }));
 
+  private boolean isRunning = false;
+  private boolean isRunningTempo = false;
+  private long stopTime;
+  private int elapsedBeats = 0;
+  private int endBeats = 0;
+  private boolean tempoRegistered = false;
+
+  private final Tempo.Listener tempoListener =
+      new Tempo.Listener() {
+        @Override
+        public void onBeat(Tempo tempo, int beat) {
+          ++elapsedBeats;
+        }
+      };
+
   public RandomStrobeEffect(LX lx) {
     super(lx);
+    addParameter("launch", this.launch);
+    addParameter("runBeats", this.runBeats);
+    addParameter("runTimeMs", this.runTimeMs);
     addParameter("speed", this.speed);
     addParameter("depth", this.depth);
     addParameter("bias", this.bias);
@@ -163,6 +199,50 @@ public class RandomStrobeEffect extends TEEffect {
     this.basis.setBasis(0).start();
   }
 
+  private long now() {
+    return System.currentTimeMillis();
+  }
+
+  private void start() {
+    // Initialize run variables from parameters
+    this.isRunning = true;
+    this.isRunningTempo = this.tempoSync.isOn();
+    this.stopTime = now() + (long) (this.runTimeMs.getValue());
+    this.elapsedBeats = 0;
+    this.endBeats = Integer.parseInt(this.runBeats.getOption()) + 1;
+
+    // Register tempo if needed
+    if (this.isRunningTempo && !this.tempoRegistered) {
+      this.tempoRegistered = true;
+      this.lx.engine.tempo.addListener(this.tempoListener);
+    }
+
+    // Randomize element offsets
+    for (PanelElement pe : this.panelElements) {
+      pe.randomizeOffset();
+    }
+    for (EdgeElement e : this.edgeElements) {
+      e.randomizeOffset();
+    }
+  }
+
+  /** Determine if the strobe is finished. Only called while strobe is running. */
+  private boolean isFinished() {
+    if (this.isRunningTempo) {
+      return this.elapsedBeats >= this.endBeats;
+    } else {
+      return now() > this.stopTime;
+    }
+  }
+
+  private void stop() {
+    this.isRunning = false;
+    if (this.tempoRegistered) {
+      this.tempoRegistered = false;
+      this.lx.engine.tempo.removeListener(this.tempoListener);
+    }
+  }
+
   public float compute(double basis, boolean useBaseValue) {
     double strobe = this.waveshape.getObject().compute(basis);
     double bias = useBaseValue ? this.bias.getBaseValue() : this.bias.getValue();
@@ -181,9 +261,17 @@ public class RandomStrobeEffect extends TEEffect {
 
   @Override
   public void run(double deltaMs, double enabledAmount) {
+    if (!this.isRunning) {
+      return;
+    }
+    if (isFinished()) {
+      stop();
+      return;
+    }
+
     float amt = (float) enabledAmount * this.depth.getValuef();
 
-    if (amt > 0 && this.speed.getValue() > 0) {
+    if (amt > 0) {
       double strobeBasis = this.tempoSync.isOn() ? getTempoBasis() : this.basis.getValue();
 
       // each panel and edge has its own strobe basis, shifted by a random time offset
