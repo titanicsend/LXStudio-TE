@@ -131,7 +131,7 @@ public class SimplifyEffect extends LXEffect
   }
 
   public final CompoundParameter amount =
-      new CompoundParameter("Amount", 1)
+      new CompoundParameter("Amount", 0)
           .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
           .setDescription("Percentage of effect to apply");
 

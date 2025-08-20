@@ -102,6 +102,7 @@ public class UIUserPresetList extends UIItemList.ScrollList {
    */
   public UserPreset addPreset() {
     UserPreset preset = this.collection.addPreset(component);
+    PresetEngine.get().triggerAutoSave();
     // Listener will have added the listItem
     setActiveItem(this.presetToItem.get(preset));
     return preset;
@@ -110,6 +111,7 @@ public class UIUserPresetList extends UIItemList.ScrollList {
   public UIUserPresetList updateActive() {
     if (this.activeItem != null) {
       this.activeItem.preset.capture(this.component);
+      PresetEngine.get().triggerAutoSave();
     }
     return this;
   }
@@ -118,6 +120,7 @@ public class UIUserPresetList extends UIItemList.ScrollList {
     PresetItem item = (PresetItem) this.getFocusedItem();
     if (item != null) {
       collection.removePreset(item.preset);
+      PresetEngine.get().triggerAutoSave();
     }
     return this;
   }
@@ -166,17 +169,20 @@ public class UIUserPresetList extends UIItemList.ScrollList {
     @Override
     public void onRename(String label) {
       getLX().command.perform(new LXCommand.Parameter.SetString(this.preset.label, label));
+      PresetEngine.get().triggerAutoSave();
     }
 
     @Override
     public void onReorder(int index) {
       collection.movePreset(preset, index);
+      PresetEngine.get().triggerAutoSave();
     }
 
     @Override
     public void onDelete() {
       if (isDeleteEnabled) {
         collection.removePreset(preset);
+        PresetEngine.get().triggerAutoSave();
       }
     }
 

@@ -128,6 +128,8 @@ vec4 _blendFix(vec4 col) {
         // color will become the brightest possible version of itself.
         col.rgb = col.rgb / col.a;
     }
+    // and use the setting of the pattern's brightness control to determine the final brightness
+    col.a *= iBrightness;
     return col;
 }
 
@@ -157,12 +159,6 @@ void main() {
     // the 2023 pre-EDC blending behavior. Define TE_NOPOSTPROCESSING if you
     // want the unmodified shader output.
     #ifndef TE_NOPOSTPROCESSING
-    #ifndef TE_NOALPHAFIX
     finalColor = _blendFix(finalColor);
-    #else
-    // Old EDC blending - force black pixels to full transparency, otherwise
-    // use shader provided alpha
-    finalColor.a = ((finalColor.r + finalColor.g + finalColor.b) == 0.0) ? 0.0 : finalColor.a;
-    #endif
     #endif
 }

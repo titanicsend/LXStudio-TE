@@ -87,6 +87,7 @@ import titanicsend.gamepad.GamepadEngine;
 import titanicsend.lx.APC40Mk2;
 import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.lx.DirectorAPCminiMk2;
+import titanicsend.lx.EffectsMiniLab3;
 import titanicsend.model.TEWholeModel;
 import titanicsend.model.TEWholeModelDynamic;
 import titanicsend.modulator.dmx.Dmx16bitModulator;
@@ -161,11 +162,8 @@ import titanicsend.pattern.look.SigmoidDanceAudioLevels;
 import titanicsend.pattern.look.SigmoidDanceAudioWaveform;
 import titanicsend.pattern.look.SketchDemo;
 import titanicsend.pattern.look.SketchStem;
-import titanicsend.pattern.look.TriangleCrossAudioLevels;
 import titanicsend.pattern.look.TriangleCrossAudioWaveform;
-import titanicsend.pattern.look.TriangleInfinityLevels;
 import titanicsend.pattern.look.TriangleInfinityRadialWaveform;
-import titanicsend.pattern.look.TriangleInfinityWaveform;
 import titanicsend.pattern.mike.Checkers;
 import titanicsend.pattern.mike.EdgeRunner;
 import titanicsend.pattern.mike.ModelDebugger;
@@ -292,6 +290,7 @@ public class TEApp extends LXStudio {
       this.presetEngine = new PresetEngine(lx);
       this.presetEngine.openFile(lx.getMediaFile("Presets/UserPresets/BM24.userPresets"));
       this.effectManager = new GlobalEffectManager(lx);
+      lx.engine.registerComponent("effectManager", this.effectManager);
 
       // Super Modulator midi controller
       this.superMod = new SuperMod(lx);
@@ -397,10 +396,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(PolySpiral.class);
       lx.registry.addPattern(SigmoidDanceAudioWaveform.class);
       lx.registry.addPattern(SigmoidDanceAudioLevels.class);
-      lx.registry.addPattern(TriangleCrossAudioLevels.class);
       lx.registry.addPattern(TriangleCrossAudioWaveform.class);
-      lx.registry.addPattern(TriangleInfinityLevels.class);
-      lx.registry.addPattern(TriangleInfinityWaveform.class);
       lx.registry.addPattern(TriangleInfinityRadialWaveform.class);
       lx.registry.addPattern(SketchDemo.class);
       lx.registry.addPattern(SketchStem.class);
@@ -502,6 +498,7 @@ public class TEApp extends LXStudio {
       lx.engine.midi.registerSurface(APC40Mk2.class);
       // The Director midi surface must be registered *after* the Director and ColorPaletteManager
       lx.engine.midi.registerSurface(DirectorAPCminiMk2.class);
+      lx.engine.midi.registerSurface(EffectsMiniLab3.class);
       // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1,
       // MidiFighterTwister.class);
       // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER2,

@@ -68,10 +68,14 @@ vec2 getDomainWarpOffset(vec2 p) {
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-    time = iTime * speed;
-
-    vec2 uv = -0.5 + fragCoord / iResolution.xy;
+    // early out if effect is inactive
     fragColor = texelFetch(iDst, ivec2(gl_FragCoord.xy), 0);
+    if (depth <= 0.0) {
+        return;
+    }
+
+    time = iTime * speed;
+    vec2 uv = -0.5 + fragCoord / iResolution.xy;
 
     // Normalize coordinates for noise calculation
     vec2 noiseCoord = uv * size; // Scale for noise frequency
