@@ -5,6 +5,7 @@ import heronarts.lx.mixer.LXAbstractChannel;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.mixer.LXGroup;
 import heronarts.lx.mixer.LXMixerEngine;
+import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.utils.LXUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,18 +36,32 @@ public class ChannelTracker {
     this.lx.engine.mixer.addListener(this.mixerListener);
   }
 
+  private final LXParameterListener labelListener =
+      lxParameter -> {
+        // If a label was changed on ANY LXChannel, re-scan
+        refresh();
+      };
+
   private final LXMixerEngine.Listener mixerListener =
       new LXMixerEngine.Listener() {
         @Override
         public void channelAdded(LXMixerEngine lxMixerEngine, LXAbstractChannel lxAbstractChannel) {
+          if (lxAbstractChannel instanceof LXChannel lxChannel) {
+            lxChannel.label.addListener(labelListener);
+          }
           refresh();
         }
 
         @Override
         public void channelRemoved(
             LXMixerEngine lxMixerEngine, LXAbstractChannel lxAbstractChannel) {
-          if (lxAbstractChannel instanceof LXChannel lxChannel && lxChannel == channel) {
-            setChannel(null);
+
+          if (lxAbstractChannel instanceof LXChannel lxChannel) {
+            lxChannel.label.removeListener(labelListener);
+
+            if (lxChannel == channel) {
+              setChannel(null);
+            }
           }
         }
 
@@ -55,13 +70,13 @@ public class ChannelTracker {
             LXMixerEngine lxMixerEngine, LXAbstractChannel lxAbstractChannel) {}
       };
 
+  /** Search the mixer for a matching channel */
   private void refresh() {
-    // Search the mixer for a matching channel
     LXChannel channel = search(this.lx.engine.mixer.channels);
     setChannel(channel);
   }
 
-  /** Recursive search for the desired channel name */
+  /** Recursive search a list of channels for a match */
   private LXChannel search(List<? extends LXAbstractChannel> channels) {
     for (LXAbstractChannel abstractChannel : channels) {
       if (abstractChannel instanceof LXGroup group) {
@@ -77,6 +92,7 @@ public class ChannelTracker {
     return null;
   }
 
+  /** Is this the channel we are looking for? */
   private boolean matches(LXChannel channel) {
     return this.channelName.equals(channel.getLabel());
   }
