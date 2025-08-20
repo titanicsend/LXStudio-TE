@@ -6,6 +6,7 @@ import heronarts.lx.LXComponent;
 import heronarts.lx.LXComponentName;
 import heronarts.lx.effect.LXEffect;
 import heronarts.lx.mixer.LXBus;
+import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.osc.LXOscComponent;
 import heronarts.lx.utils.ObservableList;
 import java.util.Objects;
@@ -24,6 +25,8 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
   private final ObservableList<Slot<? extends LXEffect>> mutableSlots = new ObservableList<>();
   public final ObservableList<Slot<? extends LXEffect>> slots = mutableSlots.asUnmodifiableList();
 
+  private final ChannelTracker channelTracker;
+
   public GlobalEffectManager(LX lx) {
     super(lx, "effectManager");
     instance = this;
@@ -31,6 +34,10 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     // When effects are added / removed / moved on Master Bus, listen and update
     this.lx.engine.mixer.masterBus.addListener(this.masterBusListener);
     refresh();
+
+    // Actively watch for a channel labeled "FX"
+    this.channelTracker = new ChannelTracker(lx, "FX");
+    this.channelTracker.addListener(this.channelTrackerListener);
   }
 
   public void allocateSlot(Slot<? extends LXEffect> slot) {
@@ -41,6 +48,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     mutableSlots.add(slot);
   }
 
+  /** Master effects */
   private final LXBus.Listener masterBusListener =
       new LXBus.Listener() {
         @Override
@@ -62,6 +70,11 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
         }
       };
 
+  /** "FX" Channel */
+  private final ChannelTracker.Listener channelTrackerListener = (tracker, channel) -> refresh();
+
+  // Slot contents
+
   /** Refresh all slots */
   private void refresh() {
     for (Slot<? extends LXEffect> slot : slots) {
@@ -70,7 +83,7 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
         continue;
       }
 
-      // Find the first matching global effect for this slot
+      // Find a matching global effect for this slot
       boolean found = false;
       for (LXEffect effect : this.lx.engine.mixer.masterBus.effects) {
         if (slot.matches(effect)) {
@@ -80,6 +93,13 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
           break;
         }
       }
+
+      // Check for matching pattern in the FX channel
+      LXChannel fxChannel = this.channelTracker.getChannel();
+      if (fxChannel != null) {
+        // TODO
+      }
+
       if (!found) {
         slot.setEffect(null);
       }
@@ -101,13 +121,22 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
 
   @Override
   public void dispose() {
+    // Stop listening to external events
     this.lx.engine.mixer.masterBus.removeListener(this.masterBusListener);
+    this.channelTracker.removeListener(this.channelTrackerListener);
+
+    // Clear all slots
     for (Slot<? extends LXEffect> slot : slots) {
       if (slot != null) {
+        // Disposing a slot sets the target to null, then the MIDI controller will unregister
         slot.dispose();
       }
     }
     this.mutableSlots.clear();
+
+    // Dispose children
+    this.channelTracker.dispose();
+
     super.dispose();
   }
 }
