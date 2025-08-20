@@ -43,7 +43,7 @@ import titanicsend.model.TEPanelModel;
 @LXCategory("Titanics End")
 public class RandomStrobeEffect extends TEEffect {
 
-  private class Element {
+  private abstract class Element {
     protected double offset;
 
     // set this element's time offset for the strobe basis function
@@ -55,18 +55,37 @@ public class RandomStrobeEffect extends TEEffect {
     protected double shiftBasis(double basis) {
       return (basis + offset) % 1;
     }
+
+    protected abstract LXPoint[] getPoints();
   }
 
   private class PanelElement extends Element {
-    public TEPanelModel panel = null;
+    private final TEPanelModel panel;
+
+    private PanelElement(TEPanelModel panel) {
+      this.panel = panel;
+    }
+
+    @Override
+    protected LXPoint[] getPoints() {
+      return this.panel.points;
+    }
   }
 
   private class EdgeElement extends Element {
-    public TEEdgeModel edge = null;
+    private final TEEdgeModel edge;
+
+    private EdgeElement(TEEdgeModel edge) {
+      this.edge = edge;
+    }
+
+    @Override
+    protected LXPoint[] getPoints() {
+      return this.edge.points;
+    }
   }
 
-  private final ArrayList<PanelElement> panelElements = new ArrayList<>();
-  private final ArrayList<EdgeElement> edgeElements = new ArrayList<>();
+  private final ArrayList<Element> elements = new ArrayList<>();
 
   public final QuantizedTriggerParameter launch =
       new QuantizedTriggerParameter.Launch(lx, "Strobe!", this::start)
@@ -180,17 +199,15 @@ public class RandomStrobeEffect extends TEEffect {
 
   public void buildElementLists() {
     for (TEPanelModel panel : modelTE.getPanels()) {
-      PanelElement pwe = new PanelElement();
-      pwe.panel = panel;
+      PanelElement pwe = new PanelElement(panel);
       pwe.randomizeOffset();
-      this.panelElements.add(pwe);
+      this.elements.add(pwe);
     }
 
     for (TEEdgeModel edge : modelTE.getEdges()) {
-      EdgeElement e = new EdgeElement();
-      e.edge = edge;
+      EdgeElement e = new EdgeElement(edge);
       e.randomizeOffset();
-      this.edgeElements.add(e);
+      this.elements.add(e);
     }
   }
 
@@ -218,11 +235,8 @@ public class RandomStrobeEffect extends TEEffect {
     }
 
     // Randomize element offsets
-    for (PanelElement pe : this.panelElements) {
-      pe.randomizeOffset();
-    }
-    for (EdgeElement e : this.edgeElements) {
-      e.randomizeOffset();
+    for (Element element : this.elements) {
+      element.randomizeOffset();
     }
   }
 
@@ -274,35 +288,17 @@ public class RandomStrobeEffect extends TEEffect {
     if (amt > 0) {
       double strobeBasis = this.tempoSync.isOn() ? getTempoBasis() : this.basis.getValue();
 
-      // each panel and edge has its own strobe basis, shifted by a random time offset
-      // draw the panels
-      for (PanelElement pe : this.panelElements) {
-        double elementBasis = pe.shiftBasis(strobeBasis);
+      // Each fixture has its own strobe basis, shifted by a random time offset
+      for (Element element : this.elements) {
+        double elementBasis = element.shiftBasis(strobeBasis);
         float strobe = LXUtils.lerpf(1, compute(elementBasis, false), (float) enabledAmount);
         if (elementBasis <= 1) {
           if (elementBasis <= 0) {
             setColors(LXColor.BLACK);
-            pe.randomizeOffset();
+            element.randomizeOffset();
           } else {
             int src = LXColor.gray(100 * strobe);
-            for (LXPoint p : pe.panel.points) {
-              this.colors[p.index] = LXColor.multiply(this.colors[p.index], src, 0xFF);
-            }
-          }
-        }
-      }
-
-      // draw the edges
-      for (EdgeElement e : this.edgeElements) {
-        double elementBasis = e.shiftBasis(strobeBasis);
-        float strobe = LXUtils.lerpf(1, compute(elementBasis, false), (float) enabledAmount);
-        if (elementBasis <= 1) {
-          if (elementBasis <= 0) {
-            setColors(LXColor.BLACK);
-            e.randomizeOffset();
-          } else {
-            int src = LXColor.gray(100 * strobe);
-            for (LXPoint p : e.edge.points) {
+            for (LXPoint p : element.getPoints()) {
               this.colors[p.index] = LXColor.multiply(this.colors[p.index], src, 0xFF);
             }
           }
