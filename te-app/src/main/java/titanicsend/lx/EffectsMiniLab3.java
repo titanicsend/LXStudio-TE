@@ -877,6 +877,31 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
 
   private void sendBank(byte bank) {
     // TODO: set the bank with sysex
+    // NOTE(look): not sure if working - i used the protocols from bank received here...
+    byte[] sysex = new byte[13];
+    applySysexHeader(sysex);
+    sysex[7] = 0x02;
+    sysex[8] = 0x00;
+    sysex[9] = 0x40;
+    sysex[10] = 0x03;
+    sysex[11] = bank;
+    //    sysex[10] = 0x63;
+    //    sysex[11] = bank ? 0x01 : 0x02;
+    sysex[12] = END_SYSEX;
+    sendSysex(sysex);
+
+    /*
+      private void handleSysExData(String sysEx) {
+    switch (sysEx) {
+      case "f000206b7f420200406301f7":
+      case "f000206b7f420200400300f7":
+        this.toBankMode(PadBank.BANK_A);
+        break;
+      case "f000206b7f420200406302f7":
+      case "f000206b7f420200400301f7":
+        this.toBankMode(PadBank.BANK_B);
+        break;
+     */
   }
 
   // Send Pad Colors
