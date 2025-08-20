@@ -110,6 +110,7 @@ public abstract class TEGlobalEffects {
 
     // Trigger slots
 
+    // Example of non-linear allocation:
     // 23 (2nd to last key) - Bass Lightning
     manager.allocateTriggerSlot(
         23,

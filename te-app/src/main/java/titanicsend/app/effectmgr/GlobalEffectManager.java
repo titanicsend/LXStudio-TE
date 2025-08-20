@@ -51,7 +51,22 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
   }
 
   public void allocateSlot(Slot<? extends LXDeviceComponent> slot) {
-    this.mutableSlots.add(slot);
+    allocateSlot(-1, slot);
+  }
+
+  public void allocateSlot(int index, Slot<? extends LXDeviceComponent> slot) {
+    if (index < -1) {
+      throw new IllegalArgumentException("Invalid slot index: " + index + " for " + slot.getName());
+    }
+    if (index == -1) {
+      this.mutableSlots.add(slot);
+    } else {
+      // If slots were skipped in allocation, add null placeholders in the list
+      while (this.mutableSlots.size() < index) {
+        this.mutableSlots.add(null);
+      }
+      this.mutableSlots.add(index, slot);
+    }
   }
 
   public void allocateTriggerSlot(Slot<? extends LXDeviceComponent> slot) {

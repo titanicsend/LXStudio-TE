@@ -408,7 +408,8 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
         registerSlot(slotIndex, slot);
       }
       slotStateChanged(slotIndex);
-      verbose("Slot [" + slotIndex + "] set to: " + slot);
+      String slotName = slot != null ? slot.getName() : "<< EMPTY >>";
+      verbose("Slot [" + slotIndex + "] set to: " + slotName);
     }
   }
 
@@ -430,7 +431,8 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
       if (slot != null) {
         registerTriggerSlot(triggerSlotIndex, slot);
       }
-      verbose("TriggerSlot [" + triggerSlotIndex + "] set to: " + slot);
+      String slotName = slot != null ? slot.getName() : "<< EMPTY >>";
+      verbose("TriggerSlot [" + triggerSlotIndex + "] set to: " + slotName);
     }
   }
 
@@ -1020,8 +1022,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   }
 
   private void sendPadColors() {
-    padVerbose("<<< Sending Pad LEDs >>>");
-
+    // padVerbose("<<< Sending Pad LEDs >>>");
     for (int i = 0; i < NUM_PADS; i++) {
       sendPadColor(i);
     }
@@ -1085,9 +1086,9 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     sysex[12] = padColor.bByte;
     sysex[13] = END_SYSEX;
 
-    padVerbose(
-        String.format(
-            "\t\t\t\tSET %02X: (%d,%d,%d)", sysexPadId, padColor.r, padColor.g, padColor.b));
+    /* padVerbose(
+    String.format(
+        "\t\t\t\tSET %02X: (%d,%d,%d)", sysexPadId, padColor.r, padColor.g, padColor.b)); */
 
     sendSysex(sysex);
   }
@@ -1116,13 +1117,13 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
 
   /** Temporary for dev */
   private void verbose(String message) {
-    LXMidiEngine.error(message);
+    LX.error("[MiniLab3] " + message);
   }
 
   private void padVerbose(String message) {
     boolean debugPads = true;
     if (debugPads) {
-      LXMidiEngine.error(message);
+      verbose(message);
     }
   }
 
