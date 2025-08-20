@@ -199,7 +199,6 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
 
         @Override
         public void effectRemoved(LXBus channel, LXEffect effect) {
-          // TODO: this isn't actually removing a missing effect from 'slots'.
           refresh();
         }
 
