@@ -102,6 +102,9 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
         if (channel != null) {
           // Note the mixer will re-index channels, so this value may not stay the same:
           verbose("Found FX Channel at index " + channel.getIndex());
+          if (!channel.isComposite()) {
+            LX.warning("FX Channel is not composite, non-active patterns will not be visible");
+          }
         } else {
           verbose("Lost connection to FX Channel");
         }
