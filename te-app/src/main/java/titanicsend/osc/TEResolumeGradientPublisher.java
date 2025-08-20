@@ -22,6 +22,8 @@ public class TEResolumeGradientPublisher extends LXComponent
   private boolean pendingLog0 = false;
   private boolean pendingLog1 = false;
   private boolean pendingPublish = false;
+  // Global logging switch (disabled by default)
+  private boolean enableLogging = false;
 
   // Base OSC path for the Resolume effect
   private static final String OSC_EFFECT_BASE =
@@ -130,22 +132,24 @@ public class TEResolumeGradientPublisher extends LXComponent
     // (hue, saturation, brightness). Scheduling onto the engine task queue ensures
     // we log only once per user change rather than 2-3 times, and do so on the
     // engine thread after all parameter updates have settled for this tick.
-    if (index == 0) {
-      if (pendingLog0) return;
-      pendingLog0 = true;
-      lx.engine.addTask(
-          () -> {
-            pendingLog0 = false;
-            logColorChange(0, this.color0);
-          });
-    } else if (index == 1) {
-      if (pendingLog1) return;
-      pendingLog1 = true;
-      lx.engine.addTask(
-          () -> {
-            pendingLog1 = false;
-            logColorChange(1, this.color1);
-          });
+    if (enableLogging) {
+      if (index == 0) {
+        if (pendingLog0) return;
+        pendingLog0 = true;
+        lx.engine.addTask(
+            () -> {
+              pendingLog0 = false;
+              logColorChange(0, this.color0);
+            });
+      } else if (index == 1) {
+        if (pendingLog1) return;
+        pendingLog1 = true;
+        lx.engine.addTask(
+            () -> {
+              pendingLog1 = false;
+              logColorChange(1, this.color1);
+            });
+      }
     }
 
     // Also coalesce OSC publishing to one action after changes to either color0 or color1
