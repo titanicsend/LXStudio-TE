@@ -8,6 +8,7 @@ import titanicsend.effect.ExplodeEffect;
 import titanicsend.effect.RandomStrobeEffect;
 import titanicsend.effect.SimplifyEffect;
 import titanicsend.effect.SustainEffect;
+import titanicsend.pattern.ben.BassLightning;
 
 /**
  * Register TE-specific slots for Global Effects. These provide static locations for effects
@@ -18,6 +19,8 @@ public abstract class TEGlobalEffects {
 
   public static void allocateSlots() {
     final GlobalEffectManager manager = GlobalEffectManager.get();
+
+    // Effect slots (pad + knobs)
 
     // 0: Random Strobe
     manager.allocateSlot(
@@ -138,6 +141,28 @@ public abstract class TEGlobalEffects {
               return null;
             }
             return device.size; // or speed?
+          }
+        });
+
+    // Trigger slots
+
+    // 1 - Bass Lightning
+    manager.allocateTriggerSlot(
+        new Slot<BassLightning>() {
+          @Override
+          public LXListenableNormalizedParameter getLevelParameter() {
+            if (device == null) {
+              return null;
+            }
+            return device.energy;
+          }
+
+          @Override
+          public TriggerParameter getTriggerParameter() {
+            if (device == null) {
+              return null;
+            }
+            return device.trigger;
           }
         });
   }

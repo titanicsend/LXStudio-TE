@@ -16,6 +16,7 @@ import heronarts.lx.midi.MidiNoteOn;
 import heronarts.lx.midi.MidiPitchBend;
 import heronarts.lx.midi.surface.LXMidiSurface;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
+import heronarts.lx.parameter.TriggerParameter;
 import heronarts.lx.utils.ObservableList;
 import java.util.List;
 import titanicsend.app.effectmgr.GlobalEffectManager;
@@ -301,15 +302,27 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
       setSlot(slotIndex++, slot);
     }
 
+    int triggerSlotIndex = 0;
+    for (Slot<? extends LXDeviceComponent> slot : this.effectManager.triggerSlots) {
+      setTriggerSlot(triggerSlotIndex++, slot);
+    }
+
     // Subscribe to GlobalEffect slots added/removed
     this.effectManager.slots.addListener(this.slotsListener);
+    this.effectManager.triggerSlots.addListener(this.triggerSlotsListener);
   }
 
   private void unregister() {
     this.isRegistered = false;
+
     this.effectManager.slots.removeListener(this.slotsListener);
+    this.effectManager.triggerSlots.removeListener(this.triggerSlotsListener);
+
     for (int i = 0; i < MAX_SLOTS; i++) {
       setSlot(i, null);
+    }
+    for (int i = 0; i < MAX_TRIGGER_SLOTS; i++) {
+      setTriggerSlot(i, null);
     }
     clearPadColors();
   }
@@ -337,7 +350,32 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
           }
           // One was removed, so set the next location to null
           setSlot(slotIndex, null);
+          TE.log("Slot removed: " + item);
+        }
+      };
+  private final ObservableList.Listener<Slot<? extends LXDeviceComponent>> triggerSlotsListener =
+      new ObservableList.Listener<>() {
+        @Override
+        public void itemAdded(Slot<? extends LXDeviceComponent> item) {
+          int slotIndex = effectManager.triggerSlots.indexOf(item);
+          TE.log("TriggerSlot added [" + slotIndex + "]: " + item);
+          // Update registeredSlot for the new item and all slots after
+          for (int i = slotIndex; i < effectManager.triggerSlots.size(); i++) {
+            Slot<? extends LXDeviceComponent> slot = effectManager.triggerSlots.get(i);
+            setTriggerSlot(i, slot);
+          }
+        }
 
+        @Override
+        public void itemRemoved(Slot<? extends LXDeviceComponent> item) {
+          // Refresh all triggerslot registrations. If they didn't change it will fast-out.
+          int slotIndex = 0;
+          for (Slot<? extends LXDeviceComponent> slot : effectManager.triggerSlots) {
+            setTriggerSlot(slotIndex, slot);
+            slotIndex++;
+          }
+          // One was removed, so set the next location to null
+          setTriggerSlot(slotIndex, null);
           TE.log("Slot removed: " + item);
         }
       };
@@ -345,7 +383,11 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   // Slots
 
   private static final int MAX_SLOTS = 8;
+  private static final int MAX_TRIGGER_SLOTS = KEYS_WHITE.length;
+
   private final Slot<? extends LXDeviceComponent>[] registeredSlots = new Slot<?>[MAX_SLOTS];
+  private final Slot<? extends LXDeviceComponent>[] registeredTriggerSlots =
+      new Slot<?>[MAX_TRIGGER_SLOTS];
 
   private void setSlot(int slotIndex, Slot<? extends LXDeviceComponent> slot) {
     if (slotIndex < 0) {
@@ -365,8 +407,30 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
       if (slot != null) {
         registerSlot(slotIndex, slot);
       }
-      slotChanged(slotIndex);
+      slotStateChanged(slotIndex);
       verbose("Slot [" + slotIndex + "] set to: " + slot);
+    }
+  }
+
+  private void setTriggerSlot(int triggerSlotIndex, Slot<? extends LXDeviceComponent> slot) {
+    if (triggerSlotIndex < 0) {
+      throw new IllegalArgumentException("Invalid triggerSlotIndex: " + triggerSlotIndex);
+    }
+    if (triggerSlotIndex >= MAX_TRIGGER_SLOTS) {
+      // Ignore slots beyond our capability
+      return;
+    }
+
+    final Slot<? extends LXDeviceComponent> oldSlot = this.registeredTriggerSlots[triggerSlotIndex];
+    if (oldSlot != slot) {
+      if (oldSlot != null) {
+        unregisterTriggerSlot(triggerSlotIndex, oldSlot);
+      }
+      this.registeredTriggerSlots[triggerSlotIndex] = slot;
+      if (slot != null) {
+        registerTriggerSlot(triggerSlotIndex, slot);
+      }
+      verbose("TriggerSlot [" + triggerSlotIndex + "] set to: " + slot);
     }
   }
 
@@ -378,18 +442,26 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     slot.removeListener(this.slotStateListener);
   }
 
+  private void registerTriggerSlot(int slotIndex, Slot<? extends LXDeviceComponent> slot) {
+    // Placeholder
+  }
+
+  private void unregisterTriggerSlot(int slotIndex, Slot<? extends LXDeviceComponent> slot) {
+    // Placeholder
+  }
+
   private final Slot.Listener slotStateListener =
       (slot, state) -> {
         // Update LED colors when the state of a slot changes
         for (int i = 0; i < MAX_SLOTS; i++) {
           if (registeredSlots[i] == slot) {
-            slotChanged(i);
+            slotStateChanged(i);
             break;
           }
         }
       };
 
-  private void slotChanged(int slotIndex) {
+  private void slotStateChanged(int slotIndex) {
     int padIndex = slotToPadIndex(slotIndex);
     if (padIndex >= 0 && padIndex < NUM_PADS) {
       sendPadColor(padIndex);
@@ -716,7 +788,18 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
 
   /** Launch, aka run, an effect or variation. */
   private void launch(int index) {
-    verbose("Launch effect or variation index #: " + index);
+    verbose("Launch effect or variation #: " + index);
+    if (index < 0 || index >= MAX_TRIGGER_SLOTS) {
+      return;
+    }
+
+    Slot<? extends LXDeviceComponent> slot = this.registeredTriggerSlots[index];
+    if (slot != null) {
+      TriggerParameter triggerParam = slot.getTriggerParameter();
+      if (triggerParam != null) {
+        triggerParam.trigger();
+      }
+    }
   }
 
   /** Toggle whether an effect is being edited */

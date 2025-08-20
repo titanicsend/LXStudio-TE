@@ -11,7 +11,6 @@ import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.osc.LXOscComponent;
 import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.utils.ObservableList;
-import java.util.Objects;
 import titanicsend.util.TE;
 
 @LXCategory(LXCategory.OTHER)
@@ -24,10 +23,17 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     return instance;
   }
 
+  // Slots for [enabled button + knobs] effects
   private final ObservableList<Slot<? extends LXDeviceComponent>> mutableSlots =
       new ObservableList<>();
   public final ObservableList<Slot<? extends LXDeviceComponent>> slots =
       mutableSlots.asUnmodifiableList();
+
+  // Trigger slots for one-button effects
+  private final ObservableList<Slot<? extends LXDeviceComponent>> mutableTriggerSlots =
+      new ObservableList<>();
+  public final ObservableList<Slot<? extends LXDeviceComponent>> triggerSlots =
+      mutableTriggerSlots.asUnmodifiableList();
 
   private final ChannelTracker channelTracker;
 
@@ -45,11 +51,11 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
   }
 
   public void allocateSlot(Slot<? extends LXDeviceComponent> slot) {
-    Objects.requireNonNull(slot, "May not add null Slot");
-    // TODO: prevent multiple entries for one effect type
-    // NOTE(look): ^ I could imagine having 2 versions for an Effect with lots of params,
-    // where two versions of the effect are set up very differently.
-    mutableSlots.add(slot);
+    this.mutableSlots.add(slot);
+  }
+
+  public void allocateTriggerSlot(Slot<? extends LXDeviceComponent> slot) {
+    this.mutableTriggerSlots.add(slot);
   }
 
   /** Master effects */
@@ -90,7 +96,12 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
 
   /** Refresh all slots */
   private void refresh() {
-    for (Slot<? extends LXDeviceComponent> slot : slots) {
+    refreshList(this.slots);
+    refreshList(this.triggerSlots);
+  }
+
+  private void refreshList(ObservableList<Slot<? extends LXDeviceComponent>> slotsList) {
+    for (Slot<? extends LXDeviceComponent> slot : slotsList) {
       // Allow null placeholder slots
       if (slot == null) {
         continue;
