@@ -23,6 +23,7 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.Tempo;
 import heronarts.lx.color.LXColor;
+import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.LXWaveshape;
 import heronarts.lx.modulator.SawLFO;
@@ -41,7 +42,7 @@ import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
 
 @LXCategory("Titanics End")
-public class RandomStrobeEffect extends TEEffect {
+public class RandomStrobeEffect extends TEEffect implements LX.Listener {
 
   private abstract class Element {
     protected double offset;
@@ -164,6 +165,8 @@ public class RandomStrobeEffect extends TEEffect {
                 }
               }));
 
+  private boolean needsModelRefresh = true;
+
   private boolean isRunning = false;
   private boolean isRunningTempo = false;
   private long stopTime;
@@ -194,10 +197,17 @@ public class RandomStrobeEffect extends TEEffect {
     addParameter("minFrequency", this.minFrequency);
     addParameter("maxFrequency", this.maxFrequency);
 
-    buildElementLists();
+    this.lx.addListener(this);
+  }
+
+  @Override
+  public void modelGenerationChanged(LX lx, LXModel model) {
+    this.needsModelRefresh = true;
   }
 
   public void buildElementLists() {
+    this.elements.clear();
+
     for (TEPanelModel panel : modelTE.getPanels()) {
       PanelElement pwe = new PanelElement(panel);
       pwe.randomizeOffset();
@@ -283,6 +293,11 @@ public class RandomStrobeEffect extends TEEffect {
       return;
     }
 
+    if (this.needsModelRefresh) {
+      buildElementLists();
+      this.needsModelRefresh = false;
+    }
+
     float amt = (float) enabledAmount * this.depth.getValuef();
 
     if (amt > 0) {
@@ -307,21 +322,15 @@ public class RandomStrobeEffect extends TEEffect {
     }
   }
 
-  /*
-   * To be called when the model changes. Not working for now b/c
-   * the Chromatik view system doesn't seem to want to return a working
-   * partial TEWholeModel with panel and edge information.
-   * (Works fine if you're just using model.points though.)
-   * TODO - figure out how to get this working for real.
-
   @Override
-  public void onModelChanged(LXModel model) {
-      super.onModelChanged(model);
-      this.modelTE = (TEWholeModel) this.getModelView();
-      this.panelElements.clear();
-      this.edgeElements.clear();
-      buildElementLists();
-  }
-  */
+  public void dispose() {
+    // Remove tempo listener
+    if (this.isRunning) {
+      stop();
+    }
+    // Remove model listener
+    this.lx.removeListener(this);
 
+    super.dispose();
+  }
 }
