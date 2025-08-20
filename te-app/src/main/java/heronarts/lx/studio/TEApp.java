@@ -310,6 +310,10 @@ public class TEApp extends LXStudio {
 
       new TEGradientSource(lx);
 
+      // Initialize Resolume gradient publisher (logs palette color changes for now)
+      lx.engine.registerComponent(
+          "resolumePalette", new titanicsend.osc.TEResolumeGradientPublisher(lx));
+
       // JKB Autopilot
       // lx.engine.registerComponent("autopilot", this.autopilotJKB = new AutopilotExample(lx));
       // initializeAutopilotLibraryJKB();

@@ -35,3 +35,6 @@ Logs/
 *.onnx
 /te-app/resources/shaders/cache/
 .claude/
+
+.agent_logs/*
+**log
