@@ -743,19 +743,19 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
       return;
     }
 
-    // To index using all keys:
-    // launch(keyIndex);
+    // To use all keys:
+    launch(keyIndex);
 
-    // To index only the white keys:
-    for (int i = 0; i < KEYS_WHITE.length; i++) {
+    // Shift could be used in conjunction w/ keys, ex:
+    // if (shiftOn) { // Do it different }
+
+    // To use only the white keys:
+    /* for (int i = 0; i < KEYS_WHITE.length; i++) {
       if (note == KEYS_WHITE[i]) {
         launch(i);
-
-        // Shift could be used in conjunction w/ keys, ex:
-        // if (shiftOn) { // Do it different }
         return;
       }
-    }
+    } */
   }
 
   private void touchStrip1Received(double normalized) {
@@ -797,6 +797,8 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     if (slot != null) {
       TriggerParameter triggerParam = slot.getTriggerParameter();
       if (triggerParam != null) {
+        // This will be fun to grep after a show:
+        TE.log("MiniLab3: Launching trigger " + index + ": " + slot.getName());
         triggerParam.trigger();
       }
     }
