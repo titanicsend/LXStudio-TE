@@ -243,7 +243,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
     }
   }
 
-  private GlobalEffectManager effectManager;
+  private final GlobalEffectManager effectManager;
   private ObservableList.Listener<GlobalEffect<? extends LXEffect>> effectListener;
   private boolean isRegistered = false;
   private boolean shiftOn = false;
@@ -253,6 +253,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
 
   public EffectsMiniLab3(LX lx, LXMidiInput input, LXMidiOutput output) {
     super(lx, input, output);
+    this.effectManager = GlobalEffectManager.get();
   }
 
   // Connection
@@ -283,9 +284,7 @@ public class EffectsMiniLab3 extends LXMidiSurface
 
   private void register() {
     this.isRegistered = true;
-    this.effectManager = null;
     this.effectListener = null;
-    this.effectManager = GlobalEffectManager.get(this.lx);
 
     List<GlobalEffect<? extends LXEffect>> slots = effectManager.slots;
 

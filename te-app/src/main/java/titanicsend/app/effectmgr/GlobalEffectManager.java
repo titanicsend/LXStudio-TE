@@ -27,6 +27,10 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
 
   private static GlobalEffectManager instance;
 
+  public static GlobalEffectManager get() {
+    return instance;
+  }
+
   private final ObservableList<GlobalEffect<? extends LXEffect>> mutableSlots =
       new ObservableList<>();
   public final ObservableList<GlobalEffect<? extends LXEffect>> slots =
@@ -40,22 +44,13 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
 
   public GlobalEffectManager(LX lx) {
     super(lx, "effectManager");
-    GlobalEffectManager.instance = this;
+    instance = this;
 
     allocateEffectSlots();
 
     // When effects are added / removed / moved on Master Bus, listen and update
     this.lx.engine.mixer.masterBus.addListener(this.masterBusListener);
     refresh();
-  }
-
-  public static GlobalEffectManager get(LX lx) {
-    if (instance == null) {
-      // NOTE: making this function require LX so I can make the singleton never return null...
-      // maybe there's a better way to accomplish that?
-      instance = new GlobalEffectManager(lx);
-    }
-    return instance;
   }
 
   public void allocateSlot(GlobalEffect<? extends LXEffect> effect) {
