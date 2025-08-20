@@ -71,7 +71,16 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
       };
 
   /** "FX" Channel */
-  private final ChannelTracker.Listener channelTrackerListener = (tracker, channel) -> refresh();
+  private final ChannelTracker.Listener channelTrackerListener =
+      (tracker, channel) -> {
+        if (channel != null) {
+          // Note the mixer will re-index channels, so this value may not stay the same:
+          verbose("Found FX Channel at index " + channel.getIndex());
+        } else {
+          verbose("Lost connection to FX Channel");
+        }
+        refresh();
+      };
 
   // Slot contents
 
@@ -138,5 +147,9 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     this.channelTracker.dispose();
 
     super.dispose();
+  }
+
+  private void verbose(String message) {
+    TE.log("GlobalEffectManager: " + message);
   }
 }

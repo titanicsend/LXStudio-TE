@@ -60,7 +60,7 @@ public class ChannelTracker {
             lxChannel.label.removeListener(labelListener);
 
             if (lxChannel == channel) {
-              setChannel(null);
+              refresh();
             }
           }
         }
