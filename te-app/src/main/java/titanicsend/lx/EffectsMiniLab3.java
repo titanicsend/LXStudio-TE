@@ -262,7 +262,11 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   protected void onEnable(boolean on) {
     if (on) {
       register();
-      initialize();
+      try {
+        initialize();
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
     } else {
       if (this.isRegistered) {
         unregister();
@@ -273,12 +277,19 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   @Override
   protected void onReconnect() {
     if (this.enabled.isOn()) {
-      initialize();
+      try {
+        initialize();
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 
-  private void initialize() {
+  private void initialize() throws InterruptedException {
     sendModeDAW();
+    Thread.sleep(3);
+    sendBank(this.isBankA);
+    Thread.sleep(3);
     sendPadColors();
   }
 
@@ -696,6 +707,9 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     // echo if we set it with a sysex?
     verbose("Received Bank: " + (isBankA ? "A" : "B"));
     this.isBankA = isBankA;
+    // sometimes upon reconnect, buttons go all white but we do get a sysex for bank received -
+    // use this to send pad colors to stay consistent
+    sendPadColors();
   }
 
   // Receive Logical Inputs (mapped from physical)
