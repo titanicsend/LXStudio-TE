@@ -383,7 +383,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   // Slots
 
   private static final int MAX_SLOTS = 8;
-  private static final int MAX_TRIGGER_SLOTS = KEYS_WHITE.length;
+  private static final int MAX_TRIGGER_SLOTS = NUM_KEYS;
 
   private final Slot<? extends LXDeviceComponent>[] registeredSlots = new Slot<?>[MAX_SLOTS];
   private final Slot<? extends LXDeviceComponent>[] registeredTriggerSlots =
@@ -788,11 +788,15 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
 
   /** Launch, aka run, an effect or variation. */
   private void launch(int index) {
-    verbose("Launch effect or variation #: " + index);
-    if (index < 0 || index >= MAX_TRIGGER_SLOTS) {
+    if (index < 0) {
+      throw new IllegalArgumentException("Invalid trigger index: " + index);
+    }
+    if (index >= MAX_TRIGGER_SLOTS) {
+      TE.error("Trigger index exceeds number of trigger slots on MiniLab3: " + index);
       return;
     }
 
+    boolean found = false;
     Slot<? extends LXDeviceComponent> slot = this.registeredTriggerSlots[index];
     if (slot != null) {
       TriggerParameter triggerParam = slot.getTriggerParameter();
@@ -800,7 +804,12 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
         // This will be fun to grep after a show:
         TE.log("MiniLab3: Launching trigger " + index + ": " + slot.getName());
         triggerParam.trigger();
+        found = true;
       }
+    }
+
+    if (!found) {
+      verbose("Unoccupied tigger slot: " + index);
     }
   }
 

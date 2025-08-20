@@ -146,8 +146,9 @@ public abstract class TEGlobalEffects {
 
     // Trigger slots
 
-    // 1 - Bass Lightning
+    // 23 (2nd to last key) - Bass Lightning
     manager.allocateTriggerSlot(
+        23,
         new Slot<BassLightning>() {
           @Override
           public LXListenableNormalizedParameter getLevelParameter() {
