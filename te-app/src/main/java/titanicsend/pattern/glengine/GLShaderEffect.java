@@ -47,7 +47,7 @@ public class GLShaderEffect extends TEEffect implements GpuDevice {
 
   private static class TEEffectUniforms {
     private Uniform.Sampler2D iDst;
-    private Uniform.Float1 level; // Is this universal for LXEffects?
+    private Uniform.Float1 iBrightness;
 
     private Uniform.Float1 iTime;
     private Uniform.Float3 iColorRGB;
@@ -218,6 +218,7 @@ public class GLShaderEffect extends TEEffect implements GpuDevice {
 
     // TODO: confirm shader template for TE Effect matches these uniforms:
     this.uniforms.iDst = s.getUniformSampler2D("iDst");
+    this.uniforms.iBrightness = s.getUniformFloat1("iBrightness");
     this.uniforms.iTime = s.getUniformFloat1("iTime");
     this.uniforms.iColorRGB = s.getUniformFloat3("iColorRGB");
     this.uniforms.iColorHSB = s.getUniformFloat3("iColorHSB");
@@ -239,7 +240,8 @@ public class GLShaderEffect extends TEEffect implements GpuDevice {
           // the
           // previous shader
           uniforms.iDst.setValue(currentShaderDst);
-
+          uniforms.iBrightness.setValue(
+              1.0f); // TODO: provide control for this or use effect level?
           uniforms.iTime.setValue((float) getTime());
 
           // get current primary and secondary colors

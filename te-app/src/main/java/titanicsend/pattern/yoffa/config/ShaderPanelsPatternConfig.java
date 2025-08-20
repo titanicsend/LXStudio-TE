@@ -75,8 +75,6 @@ public class ShaderPanelsPatternConfig {
           .setUnits(TEControlTag.SIZE, LXParameter.Units.INTEGER);
       controls.setRange(TEControlTag.QUANTITY, 0.25, 0.02, 1); // number of layers
 
-      controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
-
       addShader("rhythm_static.fs");
     }
   }

@@ -74,7 +74,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     }
 
     // interpolate random color from current palette
-    vec3 color = getGradientColor(fract(rVec.x + rVec.y));
+    vec3 color = mix(iColorRGB, getGradientColor(fract(rVec.x + rVec.y)), iWow2);
 
     // threshold values by iQuantity, gamma adjust, and flash the whole thing to the beat
     // with depth controlled by WOW1.
