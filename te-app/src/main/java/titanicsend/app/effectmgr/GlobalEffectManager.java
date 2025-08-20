@@ -9,6 +9,7 @@ import heronarts.lx.effect.LXEffect;
 import heronarts.lx.mixer.LXBus;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.osc.LXOscComponent;
+import heronarts.lx.pattern.LXPattern;
 import heronarts.lx.utils.ObservableList;
 import java.util.Objects;
 import titanicsend.util.TE;
@@ -105,11 +106,20 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
           break;
         }
       }
+      if (found) {
+        continue;
+      }
 
       // Check for matching pattern in the FX channel
       LXChannel fxChannel = this.channelTracker.getChannel();
       if (fxChannel != null) {
-        // TODO
+        for (LXPattern pattern : fxChannel.patterns) {
+          if (slot.matches(pattern)) {
+            slot.setDevice(pattern);
+            found = true;
+            break;
+          }
+        }
       }
 
       if (!found) {
