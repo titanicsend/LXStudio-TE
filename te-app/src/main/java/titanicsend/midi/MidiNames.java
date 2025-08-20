@@ -11,6 +11,7 @@ public class MidiNames {
 
   // APC40Mk2
   public static final String APC40MK2 = "APC40 mkII";
+  public static final String APCMiniMk2 = "APC mini mk2 [1]";
   public static final String BOMEBOX_APC40MK2 = BOMEBOX + APC40MK2;
 
   // APCminiMk2
