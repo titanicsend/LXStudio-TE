@@ -60,6 +60,7 @@ import titanicsend.app.director.Director;
 import titanicsend.app.director.DirectorEffect;
 import titanicsend.app.director.UIDirector;
 import titanicsend.app.effectmgr.GlobalEffectManager;
+import titanicsend.app.effectmgr.TEGlobalEffects;
 import titanicsend.audio.AudioStemModulator;
 import titanicsend.audio.AudioStems;
 import titanicsend.audio.AudioStemsPlugin;
@@ -291,6 +292,7 @@ public class TEApp extends LXStudio {
       this.presetEngine.openFile(lx.getMediaFile("Presets/UserPresets/BM24.userPresets"));
       this.effectManager = new GlobalEffectManager(lx);
       lx.engine.registerComponent("effectManager", this.effectManager);
+      TEGlobalEffects.allocateSlots();
 
       // Super Modulator midi controller
       this.superMod = new SuperMod(lx);

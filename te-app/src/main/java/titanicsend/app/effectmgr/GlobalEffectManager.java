@@ -5,18 +5,10 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.LXComponent;
 import heronarts.lx.LXComponentName;
 import heronarts.lx.effect.LXEffect;
-import heronarts.lx.effect.StrobeEffect;
 import heronarts.lx.mixer.LXBus;
 import heronarts.lx.osc.LXOscComponent;
-import heronarts.lx.parameter.LXListenableNormalizedParameter;
-import heronarts.lx.parameter.TriggerParameter;
 import heronarts.lx.utils.ObservableList;
 import java.util.Objects;
-import titanicsend.effect.DistortEffect;
-import titanicsend.effect.ExplodeEffect;
-import titanicsend.effect.RandomStrobeEffect;
-import titanicsend.effect.SimplifyEffect;
-import titanicsend.effect.SustainEffect;
 import titanicsend.util.TE;
 
 @LXCategory(LXCategory.OTHER)
@@ -36,8 +28,6 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     super(lx, "effectManager");
     instance = this;
 
-    allocateSlotsTE();
-
     // When effects are added / removed / moved on Master Bus, listen and update
     this.lx.engine.mixer.masterBus.addListener(this.masterBusListener);
     refresh();
@@ -49,132 +39,6 @@ public class GlobalEffectManager extends LXComponent implements LXOscComponent, 
     // NOTE(look): ^ I could imagine having 2 versions for an Effect with lots of params,
     // where two versions of the effect are set up very differently.
     mutableSlots.add(slot);
-  }
-
-  private void allocateSlotsTE() {
-    // TODO: move this TE-specific method somewhere else, keep GlobalEffectManager generic.
-
-    // 0: Random Strobe
-    allocateSlot(
-        new Slot<RandomStrobeEffect>() {
-          @Override
-          public LXListenableNormalizedParameter getLevelParameter() {
-            if (effect == null) {
-              return null;
-            }
-            return effect.depth;
-          }
-
-          @Override
-          public LXListenableNormalizedParameter getSecondaryParameter() {
-            if (effect == null) {
-              return null;
-            }
-            return effect.speed;
-          }
-        });
-
-    // 1 - Strobe
-    allocateSlot(
-        new Slot<StrobeEffect>() {
-          @Override
-          public LXListenableNormalizedParameter getLevelParameter() {
-            if (effect == null) {
-              return null;
-            }
-            return effect.depth;
-          }
-
-          @Override
-          public LXListenableNormalizedParameter getSecondaryParameter() {
-            if (effect == null) {
-              return null;
-            }
-            return effect.speed;
-          }
-        });
-
-    // 2 - Explode
-    allocateSlot(
-        // TODO: separate effect slots for "sync" version? How to handle "trigger"
-        //  (feels more similar to FX patterns like BassLightning / SpaceExplosion)
-        new Slot<ExplodeEffect>() {
-          @Override
-          public LXListenableNormalizedParameter getLevelParameter() {
-            if (effect == null) {
-              return null;
-            }
-            return effect.depth;
-          }
-
-          @Override
-          public LXListenableNormalizedParameter getSecondaryParameter() {
-            if (effect == null) {
-              return null;
-            }
-            return effect.speed;
-          }
-
-          @Override
-          public TriggerParameter getTriggerParameter() {
-            if (effect == null) {
-              return null;
-            }
-            return effect.trigger;
-          }
-        });
-
-    // 3 - Simplify
-    allocateSlot(
-        new Slot<SimplifyEffect>() {
-          @Override
-          public LXListenableNormalizedParameter getLevelParameter() {
-            if (effect == null) {
-              return null;
-            }
-            return effect.amount;
-          }
-
-          @Override
-          public LXListenableNormalizedParameter getSecondaryParameter() {
-            if (effect == null) {
-              return null;
-            }
-            return effect.gain;
-          }
-        });
-
-    // 4 - Sustain
-    allocateSlot(
-        new Slot<SustainEffect>() {
-          @Override
-          public LXListenableNormalizedParameter getLevelParameter() {
-            if (effect == null) {
-              return null;
-            }
-            return effect.sustain;
-          }
-        });
-
-    // 5 - Distort
-    allocateSlot(
-        new Slot<DistortEffect>() {
-          @Override
-          public LXListenableNormalizedParameter getLevelParameter() {
-            if (effect == null) {
-              return null;
-            }
-            return effect.depth;
-          }
-
-          @Override
-          public LXListenableNormalizedParameter getSecondaryParameter() {
-            if (effect == null) {
-              return null;
-            }
-            return effect.size; // or speed?
-          }
-        });
   }
 
   private final LXBus.Listener masterBusListener =
