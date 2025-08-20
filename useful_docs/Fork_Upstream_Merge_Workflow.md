@@ -18,6 +18,17 @@ This workflow creates a safe space to merge upstream changes, then brings them i
 
 ### 1. Save Your Work First (Force Push)
 
+commands:
+```bash
+git branch my-backup-aug-15
+git remote add upstream git@github.com:titanicsend/LXStudio-TE.git
+git remote -v  
+git fetch upstream 
+git log --oneline HEAD..upstream/main 
+git merge -X ours upstream/main
+mvn clean package
+```
+
 Always start by ensuring your current work is safely stored on GitHub:
 
 ```bash
@@ -179,12 +190,6 @@ git status
 # Shows: both modified: some-file.java
 
 # Edit the conflicted files, look for:
-<<<<<<< HEAD
-Your version
-=======
-Their version
->>>>>>> upstream/main
-
 # Choose which version to keep or combine them
 # Then commit the resolution:
 git add some-file.java

@@ -360,6 +360,8 @@ If you just need to execute Chromatik to run a show without editing anything, yo
    version as necessary):
    ```sh
    java -XstartOnFirstThread -jar target/te-app-*-jar-with-dependencies.jar  Projects/BM2024_TE.lxp
+
+   cd te-app && java -XstartOnFirstThread -jar target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar Projects/BM2024_Pacman.lxp
    ```
 4. If the Temurin JDK isn't your default Java, then you can use the full path,
    for example:
@@ -371,6 +373,7 @@ If you just need to execute Chromatik to run a show without editing anything, yo
    ```shell
    mvn clean compile  # Cleaning and compiling is optional, depending on your needs
    mvn exec:exec@Main -Dexec.args="Projects/BM2024_TE.lxp"
+   mvn exec:exec@Main -Dexec.args="Projects/BM2024_Pacman.lxp"
    ```
 
    Fun fact: The "Main" target isn't defined in the POM to have arguments, but
