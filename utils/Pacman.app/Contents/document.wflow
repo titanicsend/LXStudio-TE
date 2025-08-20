@@ -60,7 +60,7 @@
 				<dict>
 					<key>COMMAND_STRING</key>
 					<string>cd /Users/artarazavi/LXStudio-Pacman
-./start-te.sh</string>
+./start-te-right-away.sh</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>
@@ -85,7 +85,7 @@
 				<key>Class Name</key>
 				<string>RunShellScriptAction</string>
 				<key>InputUUID</key>
-				<string>DA0475E5-FD26-4BD0-ACB1-37815F3621A1</string>
+				<string>1E65C085-6AB6-4E9D-BA75-9BA74F7727CB</string>
 				<key>Keywords</key>
 				<array>
 					<string>Shell</string>
@@ -95,9 +95,9 @@
 					<string>Unix</string>
 				</array>
 				<key>OutputUUID</key>
-				<string>7C7FC74B-896B-4376-9698-483BC6339A50</string>
+				<string>90CA0D9B-A0A0-4CED-813D-2523F13393F0</string>
 				<key>UUID</key>
-				<string>5AE8D89F-7612-4B83-8A7A-885E1C162CAB</string>
+				<string>C392DDFE-8F10-4122-9631-B6AC5C7B9C3D</string>
 				<key>UnlocalizedApplications</key>
 				<array>
 					<string>Automator</string>
