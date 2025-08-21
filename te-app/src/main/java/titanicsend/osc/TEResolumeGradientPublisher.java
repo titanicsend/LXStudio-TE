@@ -58,18 +58,7 @@ public class TEResolumeGradientPublisher extends LXComponent implements LXSwatch
     // Initialize reusable ColorStops
     this.stopBlack.setRGB(LXColor.BLACK);
 
-    if (this.enabled.isOn()) {
-      bindToActiveSwatch();
-      // Debug: Log initialization
-      LX.log(
-          "TEResolumeGradientPublisher initialized - enabled: "
-              + this.enabled.isOn()
-              + ", logging: "
-              + this.enableLogging.isOn());
-      LX.log("  OSC engine available: " + (lx.engine.osc != null));
-    } else {
-      LX.log("TEResolumeGradientPublisher disabled...");
-    }
+    bindToActiveSwatch();
   }
 
   private void bindToActiveSwatch() {
