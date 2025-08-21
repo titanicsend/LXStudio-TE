@@ -1,68 +1,69 @@
 # BomeBox Setup Guide for Remote MIDI Control
 
 ## Overview
-This guide explains how to set up BomeBox for remote MIDI control when your Mac Mini is connected via Ethernet and you need to control Chromatik from a remote location.
+This guide explains how to set up BomeBox for remote MIDI control when your Mac Mini is connected via Ethernet and BomeBox connects to your main WiFi network.
 
 ## Your Setup
 - **Mac Mini**: Connected to internet via Ethernet cable
-- **WiFi**: Available for creating a local network
+- **Main WiFi Router**: Broadcasting WiFi network (not Mac Mini)
+- **BomeBox**: Connected to main WiFi network
 - **Goal**: Control Chromatik remotely using MIDI controllers
 
 ## How It Works
 - **Ethernet**: Provides internet connection to Mac Mini
-- **WiFi**: Creates local network for BomeBox and remote control
-- **Both work simultaneously**
+- **Main WiFi**: Network that both Mac Mini and BomeBox connect to
+- **BomeBox**: Receives MIDI from controllers, sends over WiFi to Mac Mini
 
 ## Step-by-Step Setup
 
-### Step 1: Create WiFi Hotspot from Mac Mini
+### Step 1: Network Setup
 
-**On your Mac Mini:**
-1. **System Preferences** → **Sharing**
-2. Turn on **Internet Sharing**
-3. **Share from**: **Ethernet** (your internet connection)
-4. **To computers using**: **WiFi**
-5. Click **WiFi Options**
-6. Set network name (like "BurningManVJ") and password
-7. Click **OK**
+**Your network should be:**
+1. **Main WiFi Router**: Broadcasting your WiFi network
+2. **Mac Mini**: Connected to router via Ethernet (for internet)
+3. **Mac Mini**: Also connected to same WiFi network (for local communication)
+4. **BomeBox**: Connected to same WiFi network
 
-### Step 2: Connect BomeBox
+### Step 2: Connect BomeBox to Main WiFi
 
-1. Power on BomeBox
-2. BomeBox will create its own temporary WiFi network
-3. Connect to BomeBox's temporary network with your phone/laptop
-4. Open BomeBox web interface (usually 192.168.1.1)
-5. Set BomeBox to **Client Mode**
-6. Connect BomeBox to your "BurningManVJ" WiFi network
-7. Enter the password you set in Step 1
+1. **Power on BomeBox**
+2. **Connect to BomeBox's temporary WiFi** (it creates its own network initially)
+3. **Open BomeBox web interface** (usually 192.168.1.1)
+4. **Set BomeBox to Client Mode**
+5. **Connect BomeBox to your main WiFi network** (the one your router broadcasts)
+6. **Enter your main WiFi password**
 
-### Step 3: Connect Remote VJ Setup
+### Step 3: Configure Bome Network Software
 
-1. Your laptop/tablet connects to same "BurningManVJ" WiFi network
-2. Now you can control Chromatik remotely
+1. **On Mac Mini**: Open **Bome Network** software
+2. **Look for your BomeBox** in the network list
+3. **Enable "Remote Direct MIDI"** for your controllers
+4. **Controllers should appear** with names like "FoH: APC mini mkII"
 
-### Step 4: Configure MIDI Controllers
+### Step 4: Connect MIDI Controllers
 
-1. Plug your MIDI controllers into BomeBox's USB port
-2. On Mac Mini, open **Bome Network** software
-3. Enable **Remote Direct MIDI** for your controllers
-4. Controllers should appear with names like "FoH: APC mini mkII"
+1. **Plug your MIDI controllers** into BomeBox's USB port
+2. **Verify they appear** in Bome Network software
+3. **Test the connection** by pressing buttons on your controller
 
 ## Final Result
 
-- **Mac Mini**: Has internet (via Ethernet) + creates local WiFi network
-- **BomeBox**: Connected to local WiFi, sends MIDI data
-- **Remote VJ**: Connected to local WiFi, can control Chromatik
+- **Main WiFi Router**: Provides network connectivity
+- **Mac Mini**: Connected via Ethernet (internet) + WiFi (local network)
+- **BomeBox**: Connected to main WiFi, sends MIDI data
 - **Controllers**: Plugged into BomeBox, work wirelessly
+- **Remote VJ**: Can control Chromatik from anywhere on the same WiFi network
 
 ## Troubleshooting
 
 - **BomeBox not connecting**: Check WiFi password and network name
 - **Controllers not appearing**: Verify Remote Direct MIDI is enabled in Bome Network
 - **Connection drops**: Check WiFi signal strength between locations
+- **Mac Mini not seeing BomeBox**: Ensure both are on the same WiFi network
 
 ## Notes
 
-- This is the most common setup for remote MIDI control
-- Ethernet provides internet, WiFi provides local control network
-- BomeBox acts as a wireless MIDI bridge between controllers and Chromatik
+- **No WiFi sharing needed** - both devices connect to main WiFi router
+- **More reliable** than Mac Mini WiFi sharing
+- **Better range** - uses your main WiFi router's antenna
+- **Easier setup** - no need to deal with macOS WiFi sharing bugs
