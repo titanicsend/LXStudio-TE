@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.1-SNAPSHOT",
-  "timestamp": 1755747412998,
+  "timestamp": 1755758915288,
   "fixtures": [
     {
       "jsonFixtureType": "TE/panel/FA",
@@ -4798,7 +4798,7 @@
       "jsonFixtureType": "TE/edge/Edge31-39",
       "jsonParameters": {
         "points": 109,
-        "host": "10.7.5.11",
+        "host": "10.7.101.15",
         "output": 3,
         "ledOffset": 0,
         "artnetSequence": false,
@@ -4829,7 +4829,7 @@
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
-        "identify": false,
+        "identify": true,
         "mute": false,
         "solo": false,
         "tags": "",
@@ -4868,7 +4868,7 @@
         "scale": 1.0,
         "hasCustomPointSize": false,
         "pointSize": 5.0,
-        "selected": true,
+        "selected": false,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
@@ -5056,7 +5056,7 @@
       "jsonFixtureType": "TE/edge/Edge33-39",
       "jsonParameters": {
         "points": 168,
-        "host": "10.7.5.11",
+        "host": "10.7.101.15",
         "output": 3,
         "ledOffset": 109,
         "artnetSequence": false,
@@ -5083,7 +5083,7 @@
         "scale": 1.0,
         "hasCustomPointSize": false,
         "pointSize": 5.0,
-        "selected": false,
+        "selected": true,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
