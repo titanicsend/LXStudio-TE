@@ -42,7 +42,7 @@ public class UIUserPresetCollection extends UI2dContainer implements UIControls,
                   add();
                 }
               }
-            }.setLabel("Add").setMomentary(true).setTopMargin(20);
+            }.setLabel("Add").setMomentary(true);
 
     UIButton updateButton =
         new UIButton(BUTTONS_WIDTH, 16) {
