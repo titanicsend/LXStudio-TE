@@ -8,6 +8,7 @@ import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
 import titanicsend.effect.RandomStrobeEffect;
+import titanicsend.preset.UIUserPresetCollection;
 
 public class UIRandomStrobeEffect implements UIDeviceControls<RandomStrobeEffect> {
 
@@ -66,6 +67,9 @@ public class UIRandomStrobeEffect implements UIDeviceControls<RandomStrobeEffect
             newKnob(strobe.depth),
             newKnob(strobe.bias))
         .setChildSpacing(6);
+
+    // User Presets list
+    new UIUserPresetCollection(ui, strobe, uiDevice.getContentHeight()).addToContainer(uiDevice);
 
     // Toggle UI element visibility based on Sync parameter
     uiDevice.addListener(
