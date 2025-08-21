@@ -21,6 +21,10 @@ public class TEResolumeGradientPublisher extends LXComponent implements LXSwatch
   private boolean pendingLog0 = false;
   private boolean pendingLog1 = false;
   private boolean pendingPublish = false;
+
+  // The enabled and enableLogging parameters are used to control the behavior of the component.
+  // Currently, they are supposed to be change in code and by changing their default values.
+  // TODO: Make this more dynamic and controlled from the UI possibly.
   public final BooleanParameter enabled =
       new BooleanParameter("Enabled", true).setDescription("Enable OSC publishing to Resolume");
 
@@ -134,23 +138,25 @@ public class TEResolumeGradientPublisher extends LXComponent implements LXSwatch
     // (hue, saturation, brightness). Scheduling onto the engine task queue ensures
     // we log only once per user change rather than 2-3 times, and do so on the
     // engine thread after all parameter updates have settled for this tick.
-    if (index == 0) {
-      if (!pendingLog0) {
-        pendingLog0 = true;
-        lx.engine.addTask(
-            () -> {
-              pendingLog0 = false;
-              logColorChange(0, this.color0);
-            });
-      }
-    } else if (index == 1) {
-      if (!pendingLog1) {
-        pendingLog1 = true;
-        lx.engine.addTask(
-            () -> {
-              pendingLog1 = false;
-              logColorChange(1, this.color1);
-            });
+    if (this.enableLogging.isOn()) {
+      if (index == 0) {
+        if (!pendingLog0) {
+          pendingLog0 = true;
+          lx.engine.addTask(
+              () -> {
+                pendingLog0 = false;
+                logColorChange(0, this.color0);
+              });
+        }
+      } else if (index == 1) {
+        if (!pendingLog1) {
+          pendingLog1 = true;
+          lx.engine.addTask(
+              () -> {
+                pendingLog1 = false;
+                logColorChange(1, this.color1);
+              });
+        }
       }
     }
 
@@ -175,19 +181,6 @@ public class TEResolumeGradientPublisher extends LXComponent implements LXSwatch
   private void sendOsc(String address, float value) {
     if (canSendOsc()) {
       lx.engine.osc.sendMessage(address, value);
-    } else {
-      if (this.enableLogging.isOn()) {
-        // Debug: Log why OSC is not being sent
-        LX.log(
-            "OSC blocked - enabled: "
-                + this.enabled.isOn()
-                + ", lx: "
-                + (this.lx != null)
-                + ", engine: "
-                + (this.lx != null && this.lx.engine != null)
-                + ", osc: "
-                + (this.lx != null && this.lx.engine != null && this.lx.engine.osc != null));
-      }
     }
   }
 
