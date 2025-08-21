@@ -115,19 +115,17 @@ public class TEResolumeGradientPublisher extends LXComponent implements LXSwatch
     float b = dynamicColor.color.brightness.getValuef();
     int cFromHSB = LXColor.hsb(h, s, b);
     String hex = String.format("#%06X", (0xFFFFFF & cFromHSB));
-    if (this.enableLogging.isOn()) {
-      LX.log(
-          String.format(
-              "Palette color%d changed: %s hsb(%.1f, %.1f, %.1f) rgb(%d,%d,%d)",
-              index,
-              hex,
-              h,
-              s,
-              b,
-              (cFromHSB & LXColor.R_MASK) >>> LXColor.R_SHIFT,
-              (cFromHSB & LXColor.G_MASK) >>> LXColor.G_SHIFT,
-              (cFromHSB & LXColor.B_MASK)));
-    }
+    LX.log(
+        String.format(
+            "Palette color%d changed: %s hsb(%.1f, %.1f, %.1f) rgb(%d,%d,%d)",
+            index,
+            hex,
+            h,
+            s,
+            b,
+            (cFromHSB & LXColor.R_MASK) >>> LXColor.R_SHIFT,
+            (cFromHSB & LXColor.G_MASK) >>> LXColor.G_SHIFT,
+            (cFromHSB & LXColor.B_MASK)));
   }
 
   private void colorChanged(int index) {
