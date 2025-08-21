@@ -6,6 +6,7 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LXDynamicColor;
 import heronarts.lx.color.LXPalette;
 import heronarts.lx.color.LXSwatch;
+import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.lx.LXGradientUtils;
 
@@ -16,7 +17,7 @@ import titanicsend.lx.LXGradientUtils;
 public class TEResolumeGradientPublisher extends LXComponent
     implements LXSwatch.Listener, LXPalette.Listener {
 
-  private LXSwatch activeSwatch;
+  private final LXSwatch activeSwatch;
   private LXDynamicColor color0;
   private LXDynamicColor color1;
   private boolean pendingLog0 = false;
@@ -24,6 +25,9 @@ public class TEResolumeGradientPublisher extends LXComponent
   private boolean pendingPublish = false;
   // Global logging switch (disabled by default)
   private boolean enableLogging = false;
+
+  public final BooleanParameter enabled =
+      new BooleanParameter("Enabled", false).setDescription("Enable OSC publishing to Resolume");
 
   // Base OSC path for the Resolume effect
   private static final String OSC_EFFECT_BASE =
@@ -41,67 +45,42 @@ public class TEResolumeGradientPublisher extends LXComponent
 
   public TEResolumeGradientPublisher(LX lx) {
     super(lx);
-    // Listen for palette changes and bind to the active swatch
-    lx.engine.palette.addListener(this);
+    this.activeSwatch = lx.engine.palette.swatch;
+    addParameter("enabled", this.enabled);
     bindToActiveSwatch();
   }
 
   private void bindToActiveSwatch() {
-    this.activeSwatch = lx.engine.palette.swatch;
-    if (this.activeSwatch != null) {
-      try {
-        this.activeSwatch.addListener(this);
-      } catch (Exception ignored) {
-      }
-      rebindColors();
-    }
+    this.activeSwatch.addListener(this);
+    rebindColors();
   }
 
   private void unbindFromActiveSwatch() {
-    if (this.activeSwatch != null) {
-      try {
-        this.activeSwatch.removeListener(this);
-      } catch (Exception ignored) {
-      }
-      this.activeSwatch = null;
-    }
+    this.activeSwatch.removeListener(this);
     unbindColorListeners();
   }
 
   private void unbindColorListeners() {
     if (this.color0 != null) {
-      try {
-        this.color0.color.removeListener(this.color0Listener);
-      } catch (Exception ignored) {
-      }
+      this.color0.color.removeListener(this.color0Listener);
       this.color0 = null;
     }
     if (this.color1 != null) {
-      try {
-        this.color1.color.removeListener(this.color1Listener);
-      } catch (Exception ignored) {
-      }
+      this.color1.color.removeListener(this.color1Listener);
       this.color1 = null;
     }
   }
 
   private void rebindColors() {
     unbindColorListeners();
-    if (this.activeSwatch == null) return;
     int numColors = this.activeSwatch.colors.size();
     if (numColors > 0) {
       this.color0 = this.activeSwatch.getColor(0);
-      try {
-        this.color0.color.addListener(this.color0Listener, true);
-      } catch (Exception ignored) {
-      }
+      this.color0.color.addListener(this.color0Listener, true);
     }
     if (numColors > 1) {
       this.color1 = this.activeSwatch.getColor(1);
-      try {
-        this.color1.color.addListener(this.color1Listener, true);
-      } catch (Exception ignored) {
-      }
+      this.color1.color.addListener(this.color1Listener, true);
     }
   }
 
@@ -164,10 +143,10 @@ public class TEResolumeGradientPublisher extends LXComponent
   }
 
   private boolean canSendOsc() {
-    return this.lx != null
+    return this.enabled.isOn()
+        && this.lx != null
         && this.lx.engine != null
-        && this.lx.engine.osc != null
-        && this.lx.engine.osc.transmitActive.isOn();
+        && this.lx.engine.osc != null;
   }
 
   private void sendOsc(String address, float value) {
@@ -237,10 +216,6 @@ public class TEResolumeGradientPublisher extends LXComponent
   @Override
   public void dispose() {
     unbindFromActiveSwatch();
-    try {
-      lx.engine.palette.removeListener(this);
-    } catch (Exception ignored) {
-    }
     super.dispose();
   }
 }
