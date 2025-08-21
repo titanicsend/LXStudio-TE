@@ -68,6 +68,8 @@ public class UIRandomStrobeEffect implements UIDeviceControls<RandomStrobeEffect
             newKnob(strobe.bias))
         .setChildSpacing(6);
 
+    addVerticalBreak(ui, uiDevice);
+
     // User Presets list
     new UIUserPresetCollection(ui, strobe, uiDevice.getContentHeight()).addToContainer(uiDevice);
 
