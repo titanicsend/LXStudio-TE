@@ -53,15 +53,19 @@ public class TEResolumeGradientPublisher extends LXComponent implements LXSwatch
     addParameter("enableLogging", this.enableLogging);
     // Initialize reusable ColorStops
     this.stopBlack.setRGB(LXColor.BLACK);
-    bindToActiveSwatch();
 
-    // Debug: Log initialization
-    LX.log(
-        "TEResolumeGradientPublisher initialized - enabled: "
-            + this.enabled.isOn()
-            + ", logging: "
-            + this.enableLogging.isOn());
-    LX.log("  OSC engine available: " + (lx.engine.osc != null));
+    if (this.enabled.isOn()) {
+      bindToActiveSwatch();
+      // Debug: Log initialization
+      LX.log(
+          "TEResolumeGradientPublisher initialized - enabled: "
+              + this.enabled.isOn()
+              + ", logging: "
+              + this.enableLogging.isOn());
+      LX.log("  OSC engine available: " + (lx.engine.osc != null));
+    } else {
+      LX.log("TEResolumeGradientPublisher disabled...");
+    }
   }
 
   private void bindToActiveSwatch() {
@@ -107,43 +111,46 @@ public class TEResolumeGradientPublisher extends LXComponent implements LXSwatch
     float b = dynamicColor.color.brightness.getValuef();
     int cFromHSB = LXColor.hsb(h, s, b);
     String hex = String.format("#%06X", (0xFFFFFF & cFromHSB));
-    LX.log(
-        String.format(
-            "Palette color%d changed: %s hsb(%.1f, %.1f, %.1f) rgb(%d,%d,%d)",
-            index,
-            hex,
-            h,
-            s,
-            b,
-            (cFromHSB & LXColor.R_MASK) >>> LXColor.R_SHIFT,
-            (cFromHSB & LXColor.G_MASK) >>> LXColor.G_SHIFT,
-            (cFromHSB & LXColor.B_MASK)));
+    if (this.enableLogging.isOn()) {
+      LX.log(
+          String.format(
+              "Palette color%d changed: %s hsb(%.1f, %.1f, %.1f) rgb(%d,%d,%d)",
+              index,
+              hex,
+              h,
+              s,
+              b,
+              (cFromHSB & LXColor.R_MASK) >>> LXColor.R_SHIFT,
+              (cFromHSB & LXColor.G_MASK) >>> LXColor.G_SHIFT,
+              (cFromHSB & LXColor.B_MASK)));
+    }
   }
 
   private void colorChanged(int index) {
+    // Short fuse if disabled.
+    if (!this.enabled.isOn()) return;
+
     // Debounce/coalesce: a single palette color change emits multiple parameter events
     // (hue, saturation, brightness). Scheduling onto the engine task queue ensures
     // we log only once per user change rather than 2-3 times, and do so on the
     // engine thread after all parameter updates have settled for this tick.
-    if (this.enableLogging.isOn()) {
-      if (index == 0) {
-        if (!pendingLog0) {
-          pendingLog0 = true;
-          lx.engine.addTask(
-              () -> {
-                pendingLog0 = false;
-                logColorChange(0, this.color0);
-              });
-        }
-      } else if (index == 1) {
-        if (!pendingLog1) {
-          pendingLog1 = true;
-          lx.engine.addTask(
-              () -> {
-                pendingLog1 = false;
-                logColorChange(1, this.color1);
-              });
-        }
+    if (index == 0) {
+      if (!pendingLog0) {
+        pendingLog0 = true;
+        lx.engine.addTask(
+            () -> {
+              pendingLog0 = false;
+              logColorChange(0, this.color0);
+            });
+      }
+    } else if (index == 1) {
+      if (!pendingLog1) {
+        pendingLog1 = true;
+        lx.engine.addTask(
+            () -> {
+              pendingLog1 = false;
+              logColorChange(1, this.color1);
+            });
       }
     }
 
@@ -168,13 +175,9 @@ public class TEResolumeGradientPublisher extends LXComponent implements LXSwatch
   private void sendOsc(String address, float value) {
     if (canSendOsc()) {
       lx.engine.osc.sendMessage(address, value);
-      // Debug: Log first few OSC messages
-      if (address.contains("lxcolor1/")) {
-        LX.log("OSC sent: " + address + " = " + value);
-      }
     } else {
-      // Debug: Log why OSC is not being sent
-      if (address.contains("lxcolor1/hue")) {
+      if (this.enableLogging.isOn()) {
+        // Debug: Log why OSC is not being sent
         LX.log(
             "OSC blocked - enabled: "
                 + this.enabled.isOn()
