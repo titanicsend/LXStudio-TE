@@ -21,11 +21,11 @@ public class TEResolumeGradientPublisher extends LXComponent implements LXSwatch
   private boolean pendingLog0 = false;
   private boolean pendingLog1 = false;
   private boolean pendingPublish = false;
-  // Global logging switch (disabled by default)
-  private boolean enableLogging = false;
-
   public final BooleanParameter enabled =
-      new BooleanParameter("Enabled", false).setDescription("Enable OSC publishing to Resolume");
+      new BooleanParameter("Enabled", true).setDescription("Enable OSC publishing to Resolume");
+
+  public final BooleanParameter enableLogging =
+      new BooleanParameter("Enable Logging", true).setDescription("Enable color change logging");
 
   // Base OSC path for the Resolume effect
   private static final String OSC_EFFECT_BASE =
@@ -50,9 +50,18 @@ public class TEResolumeGradientPublisher extends LXComponent implements LXSwatch
     super(lx);
     this.activeSwatch = lx.engine.palette.swatch;
     addParameter("enabled", this.enabled);
+    addParameter("enableLogging", this.enableLogging);
     // Initialize reusable ColorStops
     this.stopBlack.setRGB(LXColor.BLACK);
     bindToActiveSwatch();
+
+    // Debug: Log initialization
+    LX.log(
+        "TEResolumeGradientPublisher initialized - enabled: "
+            + this.enabled.isOn()
+            + ", logging: "
+            + this.enableLogging.isOn());
+    LX.log("  OSC engine available: " + (lx.engine.osc != null));
   }
 
   private void bindToActiveSwatch() {
@@ -116,23 +125,25 @@ public class TEResolumeGradientPublisher extends LXComponent implements LXSwatch
     // (hue, saturation, brightness). Scheduling onto the engine task queue ensures
     // we log only once per user change rather than 2-3 times, and do so on the
     // engine thread after all parameter updates have settled for this tick.
-    if (enableLogging) {
+    if (this.enableLogging.isOn()) {
       if (index == 0) {
-        if (pendingLog0) return;
-        pendingLog0 = true;
-        lx.engine.addTask(
-            () -> {
-              pendingLog0 = false;
-              logColorChange(0, this.color0);
-            });
+        if (!pendingLog0) {
+          pendingLog0 = true;
+          lx.engine.addTask(
+              () -> {
+                pendingLog0 = false;
+                logColorChange(0, this.color0);
+              });
+        }
       } else if (index == 1) {
-        if (pendingLog1) return;
-        pendingLog1 = true;
-        lx.engine.addTask(
-            () -> {
-              pendingLog1 = false;
-              logColorChange(1, this.color1);
-            });
+        if (!pendingLog1) {
+          pendingLog1 = true;
+          lx.engine.addTask(
+              () -> {
+                pendingLog1 = false;
+                logColorChange(1, this.color1);
+              });
+        }
       }
     }
 
@@ -157,13 +168,42 @@ public class TEResolumeGradientPublisher extends LXComponent implements LXSwatch
   private void sendOsc(String address, float value) {
     if (canSendOsc()) {
       lx.engine.osc.sendMessage(address, value);
+      // Debug: Log first few OSC messages
+      if (address.contains("lxcolor1/")) {
+        LX.log("OSC sent: " + address + " = " + value);
+      }
+    } else {
+      // Debug: Log why OSC is not being sent
+      if (address.contains("lxcolor1/hue")) {
+        LX.log(
+            "OSC blocked - enabled: "
+                + this.enabled.isOn()
+                + ", lx: "
+                + (this.lx != null)
+                + ", engine: "
+                + (this.lx != null && this.lx.engine != null)
+                + ", osc: "
+                + (this.lx != null && this.lx.engine != null && this.lx.engine.osc != null));
+      }
     }
   }
 
   // Build a 16-color OKLab gradient with these anchors:
   // index 0 = black, index 4 = color0, index 15 = color1
   private void publishGradientIfReady() {
-    if (this.color0 == null || this.color1 == null) return;
+    if (this.color0 == null || this.color1 == null) {
+      LX.log(
+          "Gradient publish skipped - color0: "
+              + (this.color0 != null)
+              + ", color1: "
+              + (this.color1 != null));
+      return;
+    }
+
+    if (!this.enabled.isOn()) {
+      LX.log("Gradient publish skipped - component disabled");
+      return;
+    }
 
     // Update ColorStops with current colors (avoid repeated allocation)
     this.stop0.set(this.color0);
