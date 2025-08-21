@@ -4,6 +4,7 @@ import heronarts.glx.ui.UI2dComponent;
 import heronarts.glx.ui.UI2dContainer;
 import heronarts.glx.ui.component.UIKnob;
 import heronarts.glx.ui.component.UISwitch;
+import heronarts.lx.LXDeviceComponent;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.BoundedFunctionalParameter;
 import heronarts.lx.parameter.BoundedParameter;
@@ -29,13 +30,20 @@ import titanicsend.preset.UserPresetCollection;
 public class UIMFTControls extends UI2dContainer implements LXParameterListener {
 
   private final LXStudio.UI ui;
-  private final TEPerformancePattern device;
+  private final LXDeviceComponent device;
+  private final boolean isPerformancePattern;
+  private final TEPerformancePattern tePerformancePattern;
   private final Map<LXNormalizedParameter, UI2dComponent> controls = new HashMap<>();
 
-  public UIMFTControls(LXStudio.UI ui, TEPerformancePattern device, float height) {
+  public UIMFTControls(LXStudio.UI ui, LXDeviceComponent device, float height) {
     super(0, 0, 0, height);
     this.ui = ui;
+
     this.device = device;
+    this.isPerformancePattern = device instanceof TEPerformancePattern;
+    this.tePerformancePattern = isPerformancePattern ? (TEPerformancePattern) device : null;
+
+    // Refresh UI controls now and after any changes to remote controls
     this.device.remoteControlsChanged.addListener(this, true);
   }
 
@@ -60,15 +68,18 @@ public class UIMFTControls extends UI2dContainer implements LXParameterListener 
       params.add(null);
     }
 
-    // Add device-specific parameters that are UI-only
-    for (LXNormalizedParameter subclassParam : this.device.subclassParameters) {
-      if (!params.contains(subclassParam) && !isUnusedControl(subclassParam)) {
-        params.add(subclassParam);
+    if (this.isPerformancePattern) {
+      // Add device-specific parameters that are UI-only
+      for (LXNormalizedParameter subclassParam : this.tePerformancePattern.subclassParameters) {
+        if (!params.contains(subclassParam) && !isUnusedControl(subclassParam)) {
+          params.add(subclassParam);
+        }
       }
-    }
 
-    // Hide [from the UI] TE common controls that are not used but will still be in the remote list
-    hideUnusedControls(params);
+      // Hide [from the UI] TE common controls that are not used but will still be in the remote
+      // list
+      hideUnusedControls(params);
+    }
 
     // Build MFT-style layout
     int ki = 0;
@@ -127,7 +138,7 @@ public class UIMFTControls extends UI2dContainer implements LXParameterListener 
 
   /** Use TECommonControls to determine if a common parameter is marked as "unused" */
   private boolean isUnusedControl(LXNormalizedParameter p) {
-    return this.device.getControls().unusedParams.contains(p);
+    return this.tePerformancePattern.getControls().unusedParams.contains(p);
   }
 
   /** Build a new UI component for a remote control parameter */
