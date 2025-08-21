@@ -1,6 +1,7 @@
 package titanicsend.app.effectmgr;
 
 import heronarts.lx.effect.StrobeEffect;
+import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.TriggerParameter;
 import titanicsend.effect.DistortEffect;
@@ -9,6 +10,8 @@ import titanicsend.effect.RandomStrobeEffect;
 import titanicsend.effect.SimplifyEffect;
 import titanicsend.effect.SustainEffect;
 import titanicsend.pattern.ben.BassLightning;
+import titanicsend.pattern.jon.FxLaserCharge;
+import titanicsend.pattern.jon.TEControlTag;
 
 /**
  * Register TE-specific slots for Global Effects. These provide static locations for effects
@@ -110,8 +113,38 @@ public abstract class TEGlobalEffects {
 
     // Trigger slots
 
+    // 19 (4th white key from right) - FxLaserCharge "Slow" (requires preset!)
+    manager.allocateTriggerSlot(
+        19,
+        new Slot<FxLaserCharge>("Slow") {
+          @Override
+          protected LXListenableNormalizedParameter _getLevelParameter() {
+            return device.getControls().getLXControl(TEControlTag.WOW2);
+          }
+
+          @Override
+          protected BooleanParameter _getTriggerParameter() {
+            return (BooleanParameter) device.getControls().getLXControl(TEControlTag.WOWTRIGGER);
+          }
+        });
+
+    // 21 (3rd white key from right) - FxLaserCharge "Fast" (requires preset!)
+    manager.allocateTriggerSlot(
+        21,
+        new Slot<FxLaserCharge>("Fast") {
+          @Override
+          protected LXListenableNormalizedParameter _getLevelParameter() {
+            return device.getControls().getLXControl(TEControlTag.WOW2);
+          }
+
+          @Override
+          protected BooleanParameter _getTriggerParameter() {
+            return (BooleanParameter) device.getControls().getLXControl(TEControlTag.WOWTRIGGER);
+          }
+        });
+
     // Example of non-linear allocation:
-    // 23 (2nd to last key) - Bass Lightning
+    // 22 (3rd to last key) - Bass Lightning
     manager.allocateTriggerSlot(
         23,
         new Slot<BassLightning>() {
@@ -121,7 +154,7 @@ public abstract class TEGlobalEffects {
           }
 
           @Override
-          protected TriggerParameter _getTriggerParameter() {
+          protected BooleanParameter _getTriggerParameter() {
             return device.trigger;
           }
         });

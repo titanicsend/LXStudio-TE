@@ -7,11 +7,15 @@ import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.parameter.TriggerParameter;
 import heronarts.lx.pattern.LXPattern;
+import heronarts.lx.utils.LXUtils;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import titanicsend.preset.PresetEngine;
+import titanicsend.preset.UserPreset;
+import titanicsend.preset.UserPresetCollection;
 
 /**
  * A translation layer between the GlobalEffectManager and an effect or pattern instance. This will
@@ -40,8 +44,47 @@ public abstract class Slot<T extends LXDeviceComponent> {
   // LXDeviceComponent matching 'this.type'.
   public T device;
 
+  // Referencing a preset
+  private final boolean isPreset;
+  private final boolean hasPresetName;
+  private final String presetName;
+  private final int presetIndex;
+
+  /** Create a new slot */
   @SuppressWarnings("unchecked")
   public Slot() {
+    this(false, false, null, 0);
+  }
+
+  /** Create new slot that looks for a preset by name */
+  public Slot(String presetName) {
+    this(true, true, presetName, 0);
+  }
+
+  /** Create a new slot that looks for a preset by index */
+  public Slot(int presetIndex) {
+    this(true, false, null, presetIndex);
+  }
+
+  private Slot(boolean isPreset, boolean hasPresetName, String presetName, int presetIndex) {
+    this.isPreset = isPreset;
+    this.hasPresetName = hasPresetName;
+    this.presetName = presetName;
+    this.presetIndex = presetIndex;
+
+    // Safety checks
+    if (isPreset) {
+      if (hasPresetName) {
+        if (LXUtils.isEmpty(presetName)) {
+          throw new IllegalArgumentException("PresetName cannot be null or empty");
+        }
+      } else {
+        if (presetIndex < 0) {
+          throw new IllegalArgumentException("PresetIndex must be >= 0");
+        }
+      }
+    }
+
     // Extract the generic type parameter (T) of the subclass
     Type superType = getClass().getGenericSuperclass();
     if (superType instanceof ParameterizedType pType) {
@@ -124,14 +167,19 @@ public abstract class Slot<T extends LXDeviceComponent> {
    *
    * @return A parameter that corresponds to Run Now, or null if it does not apply.
    */
-  public final TriggerParameter getTriggerParameter() {
+  public final BooleanParameter getTriggerParameter() {
     if (this.device == null) {
       return null;
     }
     return _getTriggerParameter();
   }
 
-  protected TriggerParameter _getTriggerParameter() {
+  /**
+   * Subclasses can provide a "run now" parameter for the device, if applicable. In an inconvenient
+   * naming alignment it does not have to be of type "TriggerParameter"; it can be of type
+   * "BooleanParameter", either Momentary or Toggle.
+   */
+  protected BooleanParameter _getTriggerParameter() {
     return null;
   }
 
@@ -144,6 +192,95 @@ public abstract class Slot<T extends LXDeviceComponent> {
       return String.format("[Class] %s", this.type.getSimpleName());
     } else {
       return String.format("[LXDeviceComponent] %s", this.device.getLabel());
+    }
+  }
+
+  // Presets
+
+  public boolean isPreset() {
+    return this.isPreset;
+  }
+
+  // Helper methods that apply the preset before running
+  // TODO: make this slot look empty if the matching preset is not available
+
+  /** Apply preset if used, then trigger the device */
+  public boolean trigger(boolean on) {
+    BooleanParameter parameter = getTriggerParameter();
+
+    if (on) {
+      // Apply preset on trigger ON but not on trigger OFF
+      if (applyPreset()) {
+        if (parameter != null) {
+          if (parameter instanceof TriggerParameter t) {
+            t.trigger();
+          } else {
+            if (parameter.getMode() == BooleanParameter.Mode.TOGGLE) {
+              // Toggle Mode
+              parameter.toggle();
+            } else {
+              // Momentary Mode
+              parameter.setValue(true);
+            }
+          }
+          return true;
+        }
+      }
+      // Preset or Parameter not found
+      return false;
+    } else {
+      // Turning the trigger off, i.e. button release
+      if (parameter != null) {
+        // No-op for TriggerParameters, they have already turned themselves off.
+        if (!(parameter instanceof TriggerParameter)) {
+          if (parameter.getMode() == BooleanParameter.Mode.MOMENTARY) {
+            // Only Momentary Mode will turn off with button/key release
+            parameter.setValue(false);
+          }
+        }
+        return true;
+      } else {
+        // Parameter not found
+        return false;
+      }
+    }
+  }
+
+  /** Apply preset if possible. Returns true if the correct preset was found and applied. */
+  protected final boolean applyPreset() {
+    if (this.device == null) {
+      return false;
+    }
+    if (!this.isPreset) {
+      // Slot does not use a preset
+      return true;
+    } else {
+      UserPreset foundPreset = null;
+      // Pull the current list of presets for this device
+      UserPresetCollection presetCollection = PresetEngine.get().getLibrary().get(this.device);
+      if (this.hasPresetName) {
+        // Find preset by name
+        for (UserPreset preset : presetCollection.presets) {
+          if (this.presetName.equalsIgnoreCase(preset.getLabel())) {
+            foundPreset = preset;
+            break;
+          }
+        }
+      } else {
+        // Find preset by index
+        if (this.presetIndex < presetCollection.presets.size()) {
+          foundPreset = presetCollection.presets.get(this.presetIndex);
+        }
+      }
+
+      // If preset was found, apply it!
+      if (foundPreset != null) {
+        PresetEngine.get().applyPreset(foundPreset, this.device);
+        return true;
+      }
+
+      // Preset was not found
+      return false;
     }
   }
 

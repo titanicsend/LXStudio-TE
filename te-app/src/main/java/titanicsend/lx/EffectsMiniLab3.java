@@ -16,7 +16,6 @@ import heronarts.lx.midi.MidiNoteOn;
 import heronarts.lx.midi.MidiPitchBend;
 import heronarts.lx.midi.surface.LXMidiSurface;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
-import heronarts.lx.parameter.TriggerParameter;
 import heronarts.lx.utils.ObservableList;
 import java.util.List;
 import titanicsend.app.effectmgr.GlobalEffectManager;
@@ -740,13 +739,8 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   private void keyReceived(int note, int keyIndex, boolean on) {
     // Here we could alter behavior for different modes we are trialing.
 
-    // Ignore key release
-    if (!on) {
-      return;
-    }
-
     // To use all keys:
-    launch(keyIndex);
+    launch(keyIndex, on);
 
     // Shift could be used in conjunction w/ keys, ex:
     // if (shiftOn) { // Do it different }
@@ -789,7 +783,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   // Receive Logical Inputs (mapped from physical)
 
   /** Launch, aka run, an effect or variation. */
-  private void launch(int index) {
+  private void launch(int index, boolean on) {
     if (index < 0) {
       throw new IllegalArgumentException("Invalid trigger index: " + index);
     }
@@ -798,19 +792,18 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
       return;
     }
 
-    boolean found = false;
     Slot<? extends LXDeviceComponent> slot = this.registeredTriggerSlots[index];
     if (slot != null) {
-      TriggerParameter triggerParam = slot.getTriggerParameter();
-      if (triggerParam != null) {
-        // This will be fun to grep after a show:
-        TE.log("MiniLab3: Launching trigger " + index + ": " + slot.getName());
-        triggerParam.trigger();
-        found = true;
+      if (slot.trigger(on)) {
+        // Log only the key press, not key release
+        if (on) {
+          // This will be fun to grep after a show:
+          TE.log("MiniLab3: Launched Trigger " + index + ": " + slot.getName());
+        }
+      } else {
+        verbose("Missing preset or triggerParameter for trigger slot: " + index);
       }
-    }
-
-    if (!found) {
+    } else {
       verbose("Unoccupied tigger slot: " + index);
     }
   }
