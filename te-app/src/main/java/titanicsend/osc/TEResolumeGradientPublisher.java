@@ -25,7 +25,7 @@ public class TEResolumeGradientPublisher extends LXComponent implements LXSwatch
       new BooleanParameter("Enabled", true).setDescription("Enable OSC publishing to Resolume");
 
   public final BooleanParameter enableLogging =
-      new BooleanParameter("Enable Logging", true).setDescription("Enable color change logging");
+      new BooleanParameter("Enable Logging", false).setDescription("Enable color change logging");
 
   // Base OSC path for the Resolume effect
   private static final String OSC_EFFECT_BASE =
