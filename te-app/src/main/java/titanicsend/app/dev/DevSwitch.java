@@ -162,7 +162,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
   // Tempo Launch Quantization = TE Preferred
 
   public final BooleanParameter tempoLaunchQuantization =
-      new BooleanParameter("Quantization", false)
+      new BooleanParameter("Quantize = 1 Bar", false)
           .setMode(Mode.TOGGLE)
           .setDescription("Tempo Launch Quantization is the TE preferred value");
 
