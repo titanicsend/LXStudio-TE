@@ -34,12 +34,28 @@ public class GhostPattern extends TEAudioPattern {
             new BooleanParameter("Eyes", true)
                     .setDescription("Show ghost's eyes");
     
+    public final CompoundParameter eyeShift =
+            new CompoundParameter("EyeShift", 0.0f, -1.0f, 1.0f)
+                    .setDescription("Side-to-side eye movement (-1=left, +1=right)");
+    
+    public final CompoundParameter eyeShiftSpeed =
+            new CompoundParameter("EyeSpeed", 0.5f, 0.1f, 5.0f)
+                    .setDescription("Speed of eye shifting animation");
+    
+    public final BooleanParameter eyeShiftAnimate =
+            new BooleanParameter("EyeAnimate", false)
+                    .setDescription("Enable automatic eye shifting animation");
+    
+    public final BooleanParameter eyeDirection =
+            new BooleanParameter("EyeRight", false)
+                    .setDescription("Eye direction (false=left, true=right)");
+    
     public final CompoundParameter twist =
             new CompoundParameter("Twist", 0.0f, 0.0f, 360.0f)
                     .setDescription("Rotate the entire ghost");
     
     public final DiscreteParameter colorChoice =
-            new DiscreteParameter("Color", 0, 0, 7)
+            new DiscreteParameter("Color", 1, 0, 7)
                     .setDescription("Ghost color (0=Classic White, 1=Red/Blinky, 2=Pink/Pinky, 3=Cyan/Inky, 4=Orange/Clyde, 5=Blue, 6=Purple, 7=Green)");
     
     public final BooleanParameter colorShift =
@@ -101,6 +117,10 @@ public class GhostPattern extends TEAudioPattern {
         addParameter("FloatAmount", floatAmount);
         addParameter("Float", enableFloat);
         addParameter("Eyes", showEyes);
+        addParameter("EyeShift", eyeShift);
+        addParameter("EyeSpeed", eyeShiftSpeed);
+        addParameter("EyeAnimate", eyeShiftAnimate);
+        addParameter("EyeRight", eyeDirection);
         addParameter("Twist", twist);
         addParameter("Color", colorChoice);
         addParameter("ColorShift", colorShift);
@@ -229,18 +249,47 @@ public class GhostPattern extends TEAudioPattern {
      * Working ghost eyes that don't break the ghost shape
      */
     private void addWorkingGhostEyes(float centerX, float centerY, float scale, float twistAngle) {
-        // Eye parameters - using our improved sizing but simpler approach
-        float eyeWidth = Math.max(scale * 45.0f, 12.0f);   
-        float eyeHeight = Math.max(scale * 60.0f, 18.0f);  
-        float pupilSize = Math.max(scale * 20.0f, 7.0f);   
+        // Eye parameters - even bigger eye structure  
+        float eyeWidth = Math.max(scale * 70.0f, 20.0f);   
+        float eyeHeight = Math.max(scale * 90.0f, 28.0f);  
+        float pupilSize = Math.max(scale * 32.0f, 12.0f);   
         float eyeOffsetX = Math.max(scale * 35.0f, 15.0f); 
-        float eyeOffsetY = Math.max(scale * 25.0f, 12.0f); 
+        float eyeOffsetY = Math.max(scale * 20.0f, 10.0f); 
         
-        // Eye positions - shifted left for "side eye" look
-        float eyeShiftLeft = Math.max(scale * 15.0f, 8.0f);
-        float leftEyeX = centerX - eyeOffsetX + eyeShiftLeft;
+        // Calculate ghost bounds (approximate based on scale)
+        float ghostWidth = scale * 466.0f; // Width from ghost coordinates (486-20 = 466)
+        float ghostMaxX = centerX + ghostWidth/2;
+        float ghostMinX = centerX - ghostWidth/2;
+        
+        // Calculate eye shift amount
+        float currentEyeShift = 0.0f;
+        if (eyeShiftAnimate.isOn()) {
+            // Automatic animation using sine wave
+            currentEyeShift = (float) Math.sin(animationTime * eyeShiftSpeed.getValuef() * Math.PI) * 0.8f;
+        } else {
+            // Manual positioning based on direction toggle and manual shift
+            if (eyeDirection.isOn()) {
+                currentEyeShift = 0.5f; // Right side
+            } else {
+                currentEyeShift = -0.5f; // Left side  
+            }
+            // Add manual shift on top
+            currentEyeShift += eyeShift.getValuef() * 0.5f;
+        }
+        
+        // Calculate maximum shift to keep eyes within ghost bounds
+        float maxEyeWidth = eyeWidth;
+        float maxShiftLeft = (centerX - eyeOffsetX) - (ghostMinX + maxEyeWidth/2);
+        float maxShiftRight = (ghostMaxX - maxEyeWidth/2) - (centerX + eyeOffsetX);
+        float maxShift = Math.min(maxShiftLeft, maxShiftRight);
+        
+        // Apply constrained shift
+        float constrainedShift = currentEyeShift * maxShift;
+        
+        // Eye positions - constrained within ghost bounds
+        float leftEyeX = centerX - eyeOffsetX + constrainedShift;
         float leftEyeY = centerY + eyeOffsetY;
-        float rightEyeX = centerX + eyeOffsetX + eyeShiftLeft;
+        float rightEyeX = centerX + eyeOffsetX + constrainedShift;
         float rightEyeY = centerY + eyeOffsetY;
         
         // Draw eyes - only if pixel is already part of ghost body
@@ -483,6 +532,10 @@ public class GhostPattern extends TEAudioPattern {
         floatAmount.reset();
         enableFloat.reset();
         showEyes.reset();
+        eyeShift.reset();
+        eyeShiftSpeed.reset();
+        eyeShiftAnimate.reset();
+        eyeDirection.reset();
         twist.reset();
         colorChoice.reset();
         colorShift.reset();
