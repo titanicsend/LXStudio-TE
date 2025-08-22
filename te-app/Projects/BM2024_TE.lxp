@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.1-SNAPSHOT",
-  "timestamp": 1755838162457,
+  "timestamp": 1755838726087,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -11860,8 +11860,8 @@
         "jsonFixtureType": "TE/edge/Edge118-119",
         "jsonParameters": {
           "points": 175,
-          "host": "10.7.101.27",
-          "output": 1,
+          "host": "10.7.4.10",
+          "output": 2,
           "ledOffset": 0,
           "artnetSequence": false,
           "reverse": true,
@@ -23060,12 +23060,12 @@
         "animation": false,
         "camera": {
           "active": false,
-          "radius": 1051.5123135594174,
+          "radius": 391.3382823872586,
           "theta": 0.0,
-          "phi": 1.0368938222527504,
-          "x": -37.89721556768927,
-          "y": 285.2390407323837,
-          "z": -120.89059699117206
+          "phi": 0.8969015553593636,
+          "x": -123.06422887013468,
+          "y": 392.8013911470771,
+          "z": -119.20669079641812
         },
         "cue": [
           {

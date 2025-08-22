@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.1-SNAPSHOT",
-  "timestamp": 1755838162459,
+  "timestamp": 1755838726089,
   "fixtures": [
     {
       "jsonFixtureType": "TE/panel/FA",
@@ -11678,8 +11678,8 @@
       "jsonFixtureType": "TE/edge/Edge118-119",
       "jsonParameters": {
         "points": 175,
-        "host": "10.7.101.27",
-        "output": 1,
+        "host": "10.7.4.10",
+        "output": 2,
         "ledOffset": 0,
         "artnetSequence": false,
         "reverse": true,
