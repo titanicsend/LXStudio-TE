@@ -81,6 +81,7 @@ import titanicsend.effect.EdgeSieveEffect;
 import titanicsend.effect.ExplodeEffect;
 import titanicsend.effect.GlobalPatternControlEffect;
 import titanicsend.effect.RandomStrobeEffect;
+import titanicsend.effect.RgbGlitchEffect;
 import titanicsend.effect.SimplifyEffect;
 import titanicsend.effect.SustainEffect;
 import titanicsend.gamepad.GamepadEngine;
@@ -431,6 +432,7 @@ public class TEApp extends LXStudio {
       lx.registry.addEffect(SimplifyEffect.class);
       lx.registry.addEffect(SustainEffect.class);
       lx.registry.addEffect(RandomStrobeEffect.class);
+      lx.registry.addEffect(RgbGlitchEffect.class);
 
       // Utility Effects
       lx.registry.addEffect(GlobalPatternControlEffect.class);
