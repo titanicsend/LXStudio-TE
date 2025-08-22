@@ -27,6 +27,7 @@ import heronarts.lx.LXLoopTask;
 import heronarts.lx.audio.GraphicMeter;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LXSwatch;
+import heronarts.lx.parameter.BooleanParameter;
 import java.nio.FloatBuffer;
 import titanicsend.audio.AudioStems;
 import titanicsend.pattern.glengine.mixer.GLMixer;
@@ -37,6 +38,10 @@ import titanicsend.util.TEMath;
 public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   public static final String PATH = "GLEngine";
   public static GLEngine current;
+
+  public final BooleanParameter gpuJavaEffects =
+      new BooleanParameter("Java Fx in GPU Mode", true)
+          .setDescription("Loop Java effects in GPU mode (on master channel only)");
 
   private final int[] audioTextureHandle = new int[1];
   private final int[] uniformBlockHandles = new int[2];
@@ -409,6 +414,9 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
   public GLEngine(LX lx, int width, int height) {
     current = this;
+
+    addParameter("gpuJavaEffects", this.gpuJavaEffects);
+
     // The shape the user gives us affects the rendered aspect ratio,
     // but what really matters is that it needs to have room for the
     // largest number of points we're going to encounter during a run.

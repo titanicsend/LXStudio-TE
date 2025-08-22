@@ -15,6 +15,12 @@ import titanicsend.lx.LXGradientUtils;
  */
 public class TEResolumeGradientPublisher extends LXComponent implements LXSwatch.Listener {
 
+  private static TEResolumeGradientPublisher current;
+
+  public static TEResolumeGradientPublisher get() {
+    return current;
+  }
+
   private final LXSwatch activeSwatch;
   private LXDynamicColor color0;
   private LXDynamicColor color1;
@@ -52,6 +58,8 @@ public class TEResolumeGradientPublisher extends LXComponent implements LXSwatch
 
   public TEResolumeGradientPublisher(LX lx) {
     super(lx);
+    current = this;
+
     this.activeSwatch = lx.engine.palette.swatch;
     addParameter("enabled", this.enabled);
     addParameter("enableLogging", this.enableLogging);
