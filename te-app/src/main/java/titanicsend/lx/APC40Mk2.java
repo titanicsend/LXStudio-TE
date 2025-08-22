@@ -13,6 +13,7 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.pattern.LXPattern;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,9 +63,14 @@ public class APC40Mk2 extends heronarts.lx.midi.surface.APC40Mk2 {
 
   private boolean shiftOn = false;
 
+  private int[] channelKnobValues = new int[CHANNEL_KNOB_NUM];
+
   public APC40Mk2(LX lx, LXMidiInput input, LXMidiOutput output) {
     super(lx, input, output);
     surfaces.add(this);
+
+    // Initialize channel knob values
+    Arrays.fill(this.channelKnobValues, 0);
   }
 
   @Override
@@ -169,11 +175,14 @@ public class APC40Mk2 extends heronarts.lx.midi.surface.APC40Mk2 {
     // Track shift state (temporary until available from upstream)
     if (pitch == SHIFT) {
       this.shiftOn = on;
-      /* if (on) {
-        // TODO: Send normalized value for selected preset?
+      if (on) {
+        // TODO: Send normalized value for selected preset? So far it seems okay...
       } else {
-        // TODO: Send (restore) last received value for knob?
-      } */
+        // When shift is release, send (restore) channel knob values for pattern browsing
+        for (int i = 0; i < CHANNEL_KNOB_NUM; i++) {
+          sendControlChange(0, CHANNEL_KNOB + i, this.channelKnobValues[i]);
+        }
+      }
       return false;
     }
 
@@ -227,6 +236,8 @@ public class APC40Mk2 extends heronarts.lx.midi.surface.APC40Mk2 {
               tePattern.getControls().getPresetSelectorOffair().setNormalized(cc.getNormalized());
             }
           } else {
+            // Remember knob position in case shift is pressed
+            this.channelKnobValues[channelIndex] = cc.getValue();
             // Change active pattern on the channel
             int numPatterns = channel.patterns.size();
             if (numPatterns > 0) {
