@@ -376,16 +376,18 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
       this.mainBusShader.run();
 
       // Loop java effects on CPU buffer, on Master only. These run *after* GPU effects.
-      for (LXEffect effect : bus.effects) {
-        // TODO: loop effect for damping even if disabled
-        if (effect.isEnabled()) {
-          if (!(effect instanceof GLShaderEffect) && !(effect instanceof NDIOutShaderEffect)) {
-            // Java effects on master bus
-            // TODO: optional disable of java effects here, with global parameter
-            // But don't disable until Director effect is gpu-based
-            effect.setBuffer(this.lxEngineFrame);
-            effect.setModel(effect.getModelView());
-            effect.loop(deltaMs);
+      if (glEngine.gpuJavaEffects.isOn()) {
+        for (LXEffect effect : bus.effects) {
+          // TODO: loop effect for damping even if disabled
+          if (effect.isEnabled()) {
+            if (!(effect instanceof GLShaderEffect) && !(effect instanceof NDIOutShaderEffect)) {
+              // Java effects on master bus
+              // TODO: optional disable of java effects here, with global parameter
+              // But don't disable until Director effect is gpu-based
+              effect.setBuffer(this.lxEngineFrame);
+              effect.setModel(effect.getModelView());
+              effect.loop(deltaMs);
+            }
           }
         }
       }
