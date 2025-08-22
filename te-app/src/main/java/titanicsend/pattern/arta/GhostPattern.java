@@ -62,16 +62,11 @@ public class GhostPattern extends TEAudioPattern {
     // Animation variables
     private double animationTime = 0.0;
     
-    // Ghost shape coordinates (correctly parsed from your polygon coords)
-    // Original coords: 19,484,453,119,486,220,486,484,452,484,452,454,420,452,418,420,387,420,386,453,354,455,353,487,287,485,285,421,220,419,220,484,153,486,152,451,119,451,117,419,87,419,86,449,55,455,54,485,18,221,55,220,51,121,85,119,88,87,122,85,117,54,186,53,187,19,317,19,319,51,383,54,385,81,421,85
-    // Correctly parsed as (x,y) pairs from your polygon coords
-    // Your string: 19,484,453,119,486,220,486,484,452,484,452,454,420,452,418,420,387,420,386,453,354,455,353,487,287,485,285,421,220,419,220,484,153,486,152,451,119,451,117,419,87,419,86,449,55,455,54,485,18,221,55,220,51,121,85,119,88,87,122,85,117,54,186,53,187,19,317,19,319,51,383,54,385,81,421,85
-    // Properly ordered ghost coordinates following the outline clockwise from top-left
-    // Looking at your coordinate pairs and analyzing the ghost shape more carefully
-    // Your coordinates: (19,484), (453,119), (486,220), (486,484), (452,484), (452,454), (420,452), (418,420), (387,420), (386,453), (354,455), (353,487), (287,485), (285,421), (220,419), (220,484), (153,486), (152,451), (119,451), (117,419), (87,419), (86,449), (55,455), (54,485), (18,221), (55,220), (51,121), (85,119), (88,87), (122,85), (117,54), (186,53), (187,19), (317,19), (319,51), (383,54), (385,81), (421,85), (453,219)
-    // Reordered to create proper ghost shape: start from bottom-left, go up and around head, then down right side, then wavy bottom
-    private final int[] ghostPolyX = {51,85,88,122,117,186,187,317,319,383,385,421,453,486,486,452,452,420,418,387,386,354,353,287,285,220,220,153,152,119,117,87,86,55,54,19,18,55};
-    private final int[] ghostPolyY = {121,119,87,85,54,53,19,19,51,54,81,85,119,220,484,484,454,452,420,420,453,455,487,485,421,419,484,486,451,451,419,419,449,455,485,484,221,220};
+    // Fresh ghost shape coordinates from polygon tracing
+    // New coordinates: 20,486,52,486,54,455,85,452,87,422,118,422,119,453,150,455,152,486,220,487,220,420,284,422,286,485,352,486,354,454,385,453,387,422,418,421,419,453,451,456,452,484,486,486,485,217,452,217,452,121,420,119,419,85,386,83,387,51,319,50,319,21,186,20,184,51,120,52,118,85,85,88,84,117,52,118,52,216,20,219
+    // Parsed as coordinate pairs: (20,486), (52,486), (54,455), (85,452), (87,422), (118,422), (119,453), (150,455), (152,486), (220,487), (220,420), (284,422), (286,485), (352,486), (354,454), (385,453), (387,422), (418,421), (419,453), (451,456), (452,484), (486,486), (485,217), (452,217), (452,121), (420,119), (419,85), (386,83), (387,51), (319,50), (319,21), (186,20), (184,51), (120,52), (118,85), (85,88), (84,117), (52,118), (52,216), (20,219)
+    private final int[] ghostPolyX = {20,52,54,85,87,118,119,150,152,220,220,284,286,352,354,385,387,418,419,451,452,486,485,452,452,420,419,386,387,319,319,186,184,120,118,85,84,52,52,20};
+    private final int[] ghostPolyY = {486,486,455,452,422,422,453,455,486,487,420,422,485,486,454,453,422,421,453,456,484,486,217,217,121,119,85,83,51,50,21,20,51,52,85,88,117,118,216,219};
     
     // Panic listener
     private final LXParameterListener panicListener = (p) -> {
@@ -199,9 +194,9 @@ public class GhostPattern extends TEAudioPattern {
             }
         }
         
-        // Add eyes AFTER the ghost body is complete (exactly like PacmanPattern)
+        // Add eyes if enabled
         if (showEyes.isOn()) {
-            addProperGhostEyes(centerX, centerY, scale, twistAngle, normalizedPolyX, normalizedPolyY);
+            addWorkingGhostEyes(centerX, centerY, scale, twistAngle);
         }
     }
     
@@ -231,6 +226,83 @@ public class GhostPattern extends TEAudioPattern {
     }
     
     /**
+     * Working ghost eyes that don't break the ghost shape
+     */
+    private void addWorkingGhostEyes(float centerX, float centerY, float scale, float twistAngle) {
+        // Eye parameters - using our improved sizing but simpler approach
+        float eyeWidth = Math.max(scale * 45.0f, 12.0f);   
+        float eyeHeight = Math.max(scale * 60.0f, 18.0f);  
+        float pupilSize = Math.max(scale * 20.0f, 7.0f);   
+        float eyeOffsetX = Math.max(scale * 35.0f, 15.0f); 
+        float eyeOffsetY = Math.max(scale * 25.0f, 12.0f); 
+        
+        // Eye positions - shifted left for "side eye" look
+        float eyeShiftLeft = Math.max(scale * 15.0f, 8.0f);
+        float leftEyeX = centerX - eyeOffsetX + eyeShiftLeft;
+        float leftEyeY = centerY + eyeOffsetY;
+        float rightEyeX = centerX + eyeOffsetX + eyeShiftLeft;
+        float rightEyeY = centerY + eyeOffsetY;
+        
+        // Draw eyes - only if pixel is already part of ghost body
+        drawWorkingEye(leftEyeX, leftEyeY, eyeWidth, eyeHeight, pupilSize, centerX, centerY, twistAngle);
+        drawWorkingEye(rightEyeX, rightEyeY, eyeWidth, eyeHeight, pupilSize, centerX, centerY, twistAngle);
+    }
+    
+    private void drawWorkingEye(float eyeX, float eyeY, float eyeWidth, float eyeHeight, float pupilSize, float centerX, float centerY, float twistAngle) {
+        for (int i = 0; i < model.points.length; i++) {
+            LXVector point = new LXVector(model.points[i]);
+            
+            // Only modify pixels that are already ghost-colored (don't touch black pixels)
+            if (colors[point.index] == LXColor.BLACK) {
+                continue; // Skip black pixels - don't interfere with ghost shape
+            }
+            
+            // Apply twist rotation to the point
+            float relX = point.x - centerX;
+            float relY = point.y - centerY;
+            float rotatedX = (float) (relX * Math.cos(twistAngle) - relY * Math.sin(twistAngle));
+            float rotatedY = (float) (relX * Math.sin(twistAngle) + relY * Math.cos(twistAngle));
+            
+            // Apply the opposite rotation to the eye position
+            float eyeRelX = eyeX - centerX;
+            float eyeRelY = eyeY - centerY;
+            float rotatedEyeX = centerX + (float) (eyeRelX * Math.cos(-twistAngle) - eyeRelY * Math.sin(-twistAngle));
+            float rotatedEyeY = centerY + (float) (eyeRelX * Math.sin(-twistAngle) + eyeRelY * Math.cos(-twistAngle));
+            
+            // Define the two white rectangles to form a FAT + sign
+            float bottomRectWidth = eyeWidth/1.5f;  
+            float bottomRectHeight = eyeHeight;     
+            float topRectWidth = eyeWidth;          
+            float topRectHeight = eyeHeight/1.5f;   
+            
+            // Check distances
+            float deltaXBottom = Math.abs(point.x - rotatedEyeX);
+            float deltaYBottom = Math.abs(point.y - rotatedEyeY);
+            float deltaXTop = Math.abs(point.x - rotatedEyeX);
+            float deltaYTop = Math.abs(point.y - rotatedEyeY);
+            
+            // Draw bottom white rectangle (vertical bar of +)
+            if (deltaXBottom <= bottomRectWidth/2 && deltaYBottom <= bottomRectHeight/2) {
+                colors[point.index] = LXColor.WHITE;
+            }
+            
+            // Draw top white rectangle (horizontal bar of +) 
+            if (deltaXTop <= topRectWidth/2 && deltaYTop <= topRectHeight/2) {
+                colors[point.index] = LXColor.WHITE;
+            }
+            
+            // Draw blue pupil on the RIGHT side of the horizontal bar
+            float pupilX = rotatedEyeX + topRectWidth/4;
+            float pupilDeltaX = Math.abs(point.x - pupilX);
+            float pupilDeltaY = Math.abs(point.y - rotatedEyeY);
+            
+            if (pupilDeltaX <= pupilSize/2 && pupilDeltaY <= pupilSize/2) {
+                colors[point.index] = LXColor.BLUE;
+            }
+        }
+    }
+
+    /**
      * Classic Pac-Man ghost eyes - white rectangular bases with blue square pupils
      */
     private void addProperGhostEyes(float centerX, float centerY, float scale, float twistAngle, float[] normalizedPolyX, float[] normalizedPolyY) {
@@ -239,12 +311,13 @@ public class GhostPattern extends TEAudioPattern {
         float eyeHeight = Math.max(scale * 60.0f, 18.0f);  // Height of white eye base - even bigger!
         float pupilSize = Math.max(scale * 20.0f, 7.0f);   // Size of blue pupil - even bigger!
         float eyeOffsetX = Math.max(scale * 35.0f, 15.0f); // Closer together - distance from center horizontally 
-        float eyeOffsetY = Math.max(scale * 40.0f, 20.0f); // Distance from center (UP from center)
+        float eyeOffsetY = Math.max(scale * 25.0f, 12.0f); // Distance from center - moved down
         
-        // Left and right eye positions
-        float leftEyeX = centerX - eyeOffsetX;
+        // Left and right eye positions - shifted left for "side eye" look
+        float eyeShiftLeft = Math.max(scale * 15.0f, 8.0f); // How much to shift both eyes left
+        float leftEyeX = centerX - eyeOffsetX + eyeShiftLeft;  // ADD to move left (coordinates flipped)
         float leftEyeY = centerY + eyeOffsetY;  // UP from center
-        float rightEyeX = centerX + eyeOffsetX;
+        float rightEyeX = centerX + eyeOffsetX + eyeShiftLeft; // ADD to move left (coordinates flipped)
         float rightEyeY = centerY + eyeOffsetY; // UP from center
         
         // Draw classic Pac-Man style eyes
