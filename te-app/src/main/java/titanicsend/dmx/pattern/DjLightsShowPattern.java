@@ -4,7 +4,6 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
-import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.studio.LXStudio.UI;
@@ -162,14 +161,6 @@ public class DjLightsShowPattern extends DjLightsPattern
         setDmxValue(d, AdjStealthModel.INDEX_PT_SPEED, 0); // Instant pan/tilt movement
         setDmxValue(d, AdjStealthModel.INDEX_PROGRAMS, 0); // No programs
       }
-    }
-
-    for (LXPoint point : this.lx.getModel().points) {
-      colors[point.index] =
-          LXColor.hsb(
-              LXColor.h(adjustedColor),
-              LXColor.s(adjustedColor) * (float) saturationValue,
-              LXColor.b(adjustedColor) * (float) brightnessValue);
     }
   }
 
