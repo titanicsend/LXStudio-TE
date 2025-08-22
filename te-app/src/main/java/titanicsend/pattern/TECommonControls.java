@@ -167,6 +167,10 @@ public class TECommonControls {
     return controlList.get(tag);
   }
 
+  public OffairDiscreteParameter<UserPresetCollection.Selector> getPresetSelectorOffair() {
+    return this.presetSelectorOffair;
+  }
+
   /**
    * Retrieve backing LX control object for given tag
    *

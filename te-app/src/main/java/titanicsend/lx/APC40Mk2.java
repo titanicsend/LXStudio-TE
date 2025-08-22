@@ -7,15 +7,17 @@ import heronarts.lx.midi.MidiControlChange;
 import heronarts.lx.midi.MidiNote;
 import heronarts.lx.midi.MidiNoteOn;
 import heronarts.lx.midi.surface.LXMidiSurface;
-import heronarts.lx.mixer.LXBus;
+import heronarts.lx.mixer.LXAbstractChannel;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXParameterListener;
+import heronarts.lx.pattern.LXPattern;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import titanicsend.pattern.TEPerformancePattern;
 
 @LXMidiSurface.Name("Akai APC40 mkII TE")
 @LXMidiSurface.DeviceName("APC40 mkII")
@@ -57,6 +59,8 @@ public class APC40Mk2 extends heronarts.lx.midi.surface.APC40Mk2 {
   }
 
   private static final List<APC40Mk2> surfaces = new ArrayList<APC40Mk2>();
+
+  private boolean shiftOn = false;
 
   public APC40Mk2(LX lx, LXMidiInput input, LXMidiOutput output) {
     super(lx, input, output);
@@ -162,6 +166,17 @@ public class APC40Mk2 extends heronarts.lx.midi.surface.APC40Mk2 {
   private boolean noteReceived(MidiNote note, boolean on) {
     int pitch = note.getPitch();
 
+    // Track shift state (temporary until available from upstream)
+    if (pitch == SHIFT) {
+      this.shiftOn = on;
+      /* if (on) {
+        // TODO: Send normalized value for selected preset?
+      } else {
+        // TODO: Send (restore) last received value for knob?
+      } */
+      return false;
+    }
+
     if (on) {
       for (UserButton userButton : UserButton.values()) {
         if (pitch == userButton.note) {
@@ -187,22 +202,40 @@ public class APC40Mk2 extends heronarts.lx.midi.surface.APC40Mk2 {
   }
 
   @Override
+  public void noteOffReceived(MidiNote note) {
+    if (noteReceived(note, false)) {
+      return;
+    }
+    super.noteOffReceived(note);
+  }
+
+  @Override
   public void controlChangeReceived(MidiControlChange cc) {
     int number = cc.getCC();
 
     // TE: Channel knobs set focused pattern, if fader is down.
     if (number >= CHANNEL_KNOB && number <= CHANNEL_KNOB_MAX) {
-      int channel = number - CHANNEL_KNOB;
-      if (channel < this.lx.engine.mixer.channels.size()) {
-        LXBus bus = this.lx.engine.mixer.channels.get(channel);
-        if (bus instanceof LXChannel && bus.fader.getValue() == 0) {
-          int numPatterns = ((LXChannel) bus).patterns.size();
-          if (numPatterns > 0) {
-            double normalized = cc.getNormalized();
-            // Set active pattern
-            ((LXChannel) bus).goPatternIndex((int) (normalized * (numPatterns - 1)));
-            // Alternative for focused pattern
-            // ((LXChannel)bus).focusedPattern.setNormalized(normalized);
+      int channelIndex = number - CHANNEL_KNOB;
+      if (channelIndex < this.lx.engine.mixer.channels.size()) {
+        LXAbstractChannel abstractChannel = this.lx.engine.mixer.channels.get(channelIndex);
+        if (abstractChannel instanceof LXChannel channel && isNotLive(abstractChannel)) {
+          // Knob corresponds to channel, and channel is not live.
+          if (this.shiftOn) {
+            // Change user preset on selected pattern
+            LXPattern pattern = channel.getActivePattern();
+            if (pattern instanceof TEPerformancePattern tePattern) {
+              tePattern.getControls().getPresetSelectorOffair().setNormalized(cc.getNormalized());
+            }
+          } else {
+            // Change active pattern on the channel
+            int numPatterns = channel.patterns.size();
+            if (numPatterns > 0) {
+              double normalized = cc.getNormalized();
+              // Set active pattern
+              channel.goPatternIndex((int) (normalized * (numPatterns - 1)));
+              // Alternative for focused pattern
+              // ((LXChannel)bus).focusedPattern.setNormalized(normalized);
+            }
           }
         }
       }
@@ -210,6 +243,10 @@ public class APC40Mk2 extends heronarts.lx.midi.surface.APC40Mk2 {
     }
 
     super.controlChangeReceived(cc);
+  }
+
+  private boolean isNotLive(LXAbstractChannel abstractChannel) {
+    return abstractChannel.fader.getValue() == 0 || !abstractChannel.enabled.isOn();
   }
 
   @Override
