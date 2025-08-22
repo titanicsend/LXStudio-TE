@@ -32,6 +32,7 @@ import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.midi.MidiNames;
 import titanicsend.osc.CrutchOSC;
 import titanicsend.output.ChromatechSocket;
+import titanicsend.pattern.glengine.GLEngine;
 import titanicsend.util.TE;
 
 /**
@@ -133,6 +134,11 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
           .setMode(Mode.TOGGLE)
           .setDescription("DJ Lights output");
 
+  // GPU Mode options
+
+  private static final boolean DEV_JAVA_EFFECTS_IN_GPU_ENABLED = true;
+  private static final boolean PROD_JAVA_EFFECTS_IN_GPU_ENABLED = true;
+
   // OSC engine input (exists)
 
   // OSC engine output (exists)
@@ -216,6 +222,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     addDetailParameter(this.engineLEDs);
     addDetailParameter(this.engineBeacons);
     addDetailParameter(this.engineDJlights);
+    addDetailParameter(GLEngine.current.gpuJavaEffects);
     addDetailParameter(this.lx.engine.osc.receiveActive, "OSC Input");
     addDetailParameter(this.lx.engine.osc.transmitActive, "OSC Output");
     addDetailParameter(CrutchOSC.get().transmitActive, INDENT + "OSC to iPads");
@@ -380,6 +387,8 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
         && !this.engineLEDs.isOn()
         && !this.engineBeacons.isOn()
         && !this.engineDJlights.isOn()
+        // Java Effects in GPU mode can be either state for dev
+        && GLEngine.current.gpuJavaEffects.isOn() == DEV_JAVA_EFFECTS_IN_GPU_ENABLED
         && this.lx.engine.osc.receiveActive.isOn()
         && !this.lx.engine.osc.transmitActive.isOn()
         && !CrutchOSC.get().transmitActive.isOn()
@@ -399,6 +408,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
         && this.engineLEDs.isOn()
         && this.engineBeacons.isOn()
         && this.engineDJlights.isOn()
+        && GLEngine.current.gpuJavaEffects.isOn() == PROD_JAVA_EFFECTS_IN_GPU_ENABLED
         && this.lx.engine.osc.receiveActive.isOn()
         && this.lx.engine.osc.transmitActive.isOn()
         && CrutchOSC.get().transmitActive.isOn()
@@ -432,6 +442,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     this.engineLEDs.setValue(false);
     this.engineBeacons.setValue(false);
     this.engineDJlights.setValue(false);
+    GLEngine.current.gpuJavaEffects.setValue(DEV_JAVA_EFFECTS_IN_GPU_ENABLED);
     this.lx.engine.osc.receiveActive.setValue(true);
     this.lx.engine.osc.transmitActive.setValue(false);
     CrutchOSC.get().transmitActive.setValue(false);
@@ -465,6 +476,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     this.engineLEDs.setValue(true);
     this.engineBeacons.setValue(true);
     this.engineDJlights.setValue(false);
+    GLEngine.current.gpuJavaEffects.setValue(PROD_JAVA_EFFECTS_IN_GPU_ENABLED);
     this.lx.engine.osc.receiveActive.setValue(true);
     this.lx.engine.osc.transmitActive.setValue(true);
     CrutchOSC.get().transmitActive.setValue(true);
