@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.1-SNAPSHOT",
-  "timestamp": 1755755731660,
+  "timestamp": 1755838106809,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -4721,7 +4721,7 @@
       {
         "jsonFixtureType": "TE/edge/Edge30-33",
         "jsonParameters": {
-          "points": 138,
+          "points": 144,
           "host": "10.7.4.11",
           "output": 1,
           "ledOffset": 209,
@@ -4835,7 +4835,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": false,
+          "selected": true,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -4921,7 +4921,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": true,
+          "selected": false,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -4936,10 +4936,10 @@
       {
         "jsonFixtureType": "TE/edge/Edge31-33",
         "jsonParameters": {
-          "points": 109,
+          "points": 110,
           "host": "10.7.4.11",
           "output": 1,
-          "ledOffset": 100,
+          "ledOffset": 104,
           "artnetSequence": false,
           "reverse": false,
           "xOffset": 4.907185077667236,
@@ -4980,7 +4980,7 @@
         "jsonFixtureType": "TE/edge/Edge31-39",
         "jsonParameters": {
           "points": 109,
-          "host": "10.7.5.11",
+          "host": "10.7.101.15",
           "output": 3,
           "ledOffset": 0,
           "artnetSequence": false,
@@ -5108,7 +5108,7 @@
       {
         "jsonFixtureType": "TE/edge/Edge31-121",
         "jsonParameters": {
-          "points": 100,
+          "points": 105,
           "host": "10.7.4.11",
           "output": 1,
           "ledOffset": 0,
@@ -5238,7 +5238,7 @@
         "jsonFixtureType": "TE/edge/Edge33-39",
         "jsonParameters": {
           "points": 168,
-          "host": "10.7.5.11",
+          "host": "10.7.101.15",
           "output": 3,
           "ledOffset": 109,
           "artnetSequence": false,
@@ -11861,7 +11861,7 @@
         "jsonParameters": {
           "points": 175,
           "host": "10.7.4.10",
-          "output": 2,
+          "output": 1,
           "ledOffset": 0,
           "artnetSequence": false,
           "reverse": true,
@@ -13284,8 +13284,8 @@
         },
         "parameters": {
           "label": "Tempo",
-          "clockSource": 0,
-          "clockSource/name": "INTERNAL",
+          "clockSource": 2,
+          "clockSource/name": "OSC",
           "period": 3000.0,
           "bpm": 20.0,
           "tap": false,
@@ -14236,63 +14236,6 @@
                   }
                 },
                 "deviceVersion": -1
-              },
-              {
-                "id": 538241,
-                "class": "titanicsend.effect.ExplodeEffect",
-                "internal": {
-                  "modulationColor": 0,
-                  "modulationControlsExpanded": true,
-                  "modulationsExpanded": true,
-                  "expanded": true,
-                  "expandedCue": true,
-                  "expandedAux": true,
-                  "modulationExpanded": false
-                },
-                "parameters": {
-                  "label": "Explode",
-                  "midiFilter/enabled": true,
-                  "midiFilter/channel": 16,
-                  "midiFilter/channel/name": "OMNI",
-                  "midiFilter/minNote": 0,
-                  "midiFilter/noteRange": 128,
-                  "midiFilter/minVelocity": 1,
-                  "midiFilter/velocityRange": 127,
-                  "view": 0,
-                  "viewPriority": 0,
-                  "enabled": false,
-                  "locked": false,
-                  "speed": 0.20194962168764222,
-                  "depth": 0.0,
-                  "waveshape": 0,
-                  "slope": 3.692421867046505,
-                  "tempoSync": true,
-                  "tempoDivision": 9,
-                  "tempoDivision/name": "HALF_DOT",
-                  "tempoPhaseOffset": 0.4559765646699816,
-                  "size": 1.5578125743195415,
-                  "manualTrigger": true,
-                  "trigger": false
-                },
-                "children": {
-                  "modulation": {
-                    "id": 538242,
-                    "class": "heronarts.lx.modulation.LXModulationEngine",
-                    "internal": {
-                      "modulationColor": 0,
-                      "modulationControlsExpanded": true,
-                      "modulationsExpanded": true
-                    },
-                    "parameters": {
-                      "label": "Modulation"
-                    },
-                    "children": {},
-                    "modulators": [],
-                    "modulations": [],
-                    "triggers": []
-                  }
-                },
-                "deviceVersion": -1
               }
             ],
             "clips": []
@@ -14314,7 +14257,7 @@
             },
             "parameters": {
               "label": "HIGH",
-              "fader": 0.0,
+              "fader": 0.8589285640046,
               "arm": false,
               "selected": false,
               "stopClips": false,
@@ -22767,7 +22710,7 @@
         },
         "parameters": {
           "label": "Output",
-          "enabled": false,
+          "enabled": true,
           "brightness": 1.0,
           "fps": 0.0,
           "gamma": 1.0,
@@ -22944,7 +22887,7 @@
           "receiveActive": true,
           "transmitHost": "10.1.3.1",
           "transmitPort": 7890,
-          "transmitActive": false,
+          "transmitActive": true,
           "logInput": false,
           "logOutput": false
         },
@@ -22977,7 +22920,7 @@
         "parameters": {
           "label": "TEVirtualOverlays",
           "vertexSpheresVisible": false,
-          "vertexLabelsVisible": false,
+          "vertexLabelsVisible": true,
           "panelLabelsVisible": true,
           "unknownPanelsVisible": true,
           "opaqueBackPanelsVisible": true,
@@ -23117,12 +23060,12 @@
         "animation": false,
         "camera": {
           "active": false,
-          "radius": 631.8402820370808,
-          "theta": 327.995160728693,
-          "phi": 26.871397368609905,
-          "x": 13.70813462138176,
-          "y": 137.6844054311514,
-          "z": 122.08848775923252
+          "radius": 810.1638219062559,
+          "theta": 0.0,
+          "phi": 1.0368938222527504,
+          "x": -37.89721556768927,
+          "y": 285.2390407323837,
+          "z": -120.89059699117206
         },
         "cue": [
           {
