@@ -183,7 +183,7 @@ public class GhostPattern extends TEAudioPattern {
             normalizedPolyY[i] = centerY - (ghostPolyY[i] - minPolyY - polyHeight/2) * scale;
         }
         
-        // Draw the ghost shape
+        // Draw the ghost shape (exactly like PacmanPattern draws the body)
         for (int i = 0; i < model.points.length; i++) {
             LXVector point = new LXVector(model.points[i]);
             
@@ -199,12 +199,13 @@ public class GhostPattern extends TEAudioPattern {
             }
         }
         
-        // Add eyes if enabled
+        // Add eyes AFTER the ghost body is complete (exactly like PacmanPattern)
         if (showEyes.isOn()) {
-            addGhostEyes(centerX, centerY, scale, twistAngle);
+            addProperGhostEyes(centerX, centerY, scale, twistAngle, normalizedPolyX, normalizedPolyY);
         }
     }
     
+
     /**
      * Ray casting algorithm to determine if a point is inside a polygon
      * Fixed version to handle edge cases better
@@ -230,39 +231,156 @@ public class GhostPattern extends TEAudioPattern {
     }
     
     /**
-     * Add ghost eyes
+     * Classic Pac-Man ghost eyes - white rectangular bases with blue square pupils
      */
-    private void addGhostEyes(float centerX, float centerY, float scale, float twistAngle) {
-        // Eye parameters
-        float eyeRadius = scale * 0.05f; // Eye size relative to ghost size
-        float eyeOffsetX = scale * 0.15f; // Distance from center horizontally
-        float eyeOffsetY = scale * 0.2f;  // Distance above center
+    private void addProperGhostEyes(float centerX, float centerY, float scale, float twistAngle, float[] normalizedPolyX, float[] normalizedPolyY) {
+        // Eye parameters - EVEN BIGGER for better visibility!
+        float eyeWidth = Math.max(scale * 45.0f, 12.0f);   // Width of white eye base - even bigger!
+        float eyeHeight = Math.max(scale * 60.0f, 18.0f);  // Height of white eye base - even bigger!
+        float pupilSize = Math.max(scale * 20.0f, 7.0f);   // Size of blue pupil - even bigger!
+        float eyeOffsetX = Math.max(scale * 35.0f, 15.0f); // Closer together - distance from center horizontally 
+        float eyeOffsetY = Math.max(scale * 40.0f, 20.0f); // Distance from center (UP from center)
         
         // Left and right eye positions
         float leftEyeX = centerX - eyeOffsetX;
-        float leftEyeY = centerY - eyeOffsetY;
+        float leftEyeY = centerY + eyeOffsetY;  // UP from center
         float rightEyeX = centerX + eyeOffsetX;
-        float rightEyeY = centerY - eyeOffsetY;
+        float rightEyeY = centerY + eyeOffsetY; // UP from center
         
-        // Draw eyes
-        drawEye(leftEyeX, leftEyeY, eyeRadius, centerX, centerY, twistAngle);
-        drawEye(rightEyeX, rightEyeY, eyeRadius, centerX, centerY, twistAngle);
+        // Draw classic Pac-Man style eyes
+        drawClassicGhostEye(leftEyeX, leftEyeY, eyeWidth, eyeHeight, pupilSize, centerX, centerY, twistAngle, normalizedPolyX, normalizedPolyY);
+        drawClassicGhostEye(rightEyeX, rightEyeY, eyeWidth, eyeHeight, pupilSize, centerX, centerY, twistAngle, normalizedPolyX, normalizedPolyY);
     }
     
-    /**
-     * Draw a single eye
-     */
-    private void drawEye(float eyeX, float eyeY, float radius, float centerX, float centerY, float twistAngle) {
+    private void drawClassicGhostEye(float eyeX, float eyeY, float eyeWidth, float eyeHeight, float pupilSize, float centerX, float centerY, float twistAngle, float[] normalizedPolyX, float[] normalizedPolyY) {
         for (int i = 0; i < model.points.length; i++) {
             LXVector point = new LXVector(model.points[i]);
             
-            // Apply twist rotation to the point
+            // Apply twist rotation to the point (same as ghost body)
             float relX = point.x - centerX;
             float relY = point.y - centerY;
             float rotatedX = (float) (relX * Math.cos(twistAngle) - relY * Math.sin(twistAngle));
             float rotatedY = (float) (relX * Math.sin(twistAngle) + relY * Math.cos(twistAngle));
             
-            // Apply the opposite rotation to the eye position
+            // Apply the opposite rotation to the eye position (same as Pacman)
+            float eyeRelX = eyeX - centerX;
+            float eyeRelY = eyeY - centerY;
+            float rotatedEyeX = centerX + (float) (eyeRelX * Math.cos(-twistAngle) - eyeRelY * Math.sin(-twistAngle));
+            float rotatedEyeY = centerY + (float) (eyeRelX * Math.sin(-twistAngle) + eyeRelY * Math.cos(-twistAngle));
+            
+            // Only draw if within ghost body
+            if (isPointInPolygon(centerX + rotatedX, centerY + rotatedY, normalizedPolyX, normalizedPolyY)) {
+                
+                // Define the two white rectangles to form a FAT + sign
+                float bottomRectWidth = eyeWidth/1.5f;  // Bottom rectangle: much thicker vertical bar (was /3)
+                float bottomRectHeight = eyeHeight;     // Bottom rectangle: taller in Y (vertical bar of +)
+                float topRectWidth = eyeWidth;          // Top rectangle: wider in X (horizontal bar of +)  
+                float topRectHeight = eyeHeight/1.5f;   // Top rectangle: much thicker horizontal bar (was /3)
+                
+                // Bottom rectangle position (vertical bar of the + sign)
+                float deltaXBottom = Math.abs(point.x - rotatedEyeX);
+                float deltaYBottom = Math.abs(point.y - rotatedEyeY);
+                
+                // Top rectangle position (horizontal bar of the + sign)
+                float deltaXTop = Math.abs(point.x - rotatedEyeX);
+                float deltaYTop = Math.abs(point.y - rotatedEyeY);
+                
+                // Draw bottom white rectangle (vertical bar of +)
+                if (deltaXBottom <= bottomRectWidth/2 && deltaYBottom <= bottomRectHeight/2) {
+                    colors[point.index] = LXColor.WHITE;
+                }
+                
+                // Draw top white rectangle (horizontal bar of +) 
+                if (deltaXTop <= topRectWidth/2 && deltaYTop <= topRectHeight/2) {
+                    colors[point.index] = LXColor.WHITE;
+                }
+                
+                // Draw blue pupil on the RIGHT side of the horizontal bar (replaces right arm of +)
+                float pupilX = rotatedEyeX + topRectWidth/4; // Offset to the right side
+                float pupilDeltaX = Math.abs(point.x - pupilX);
+                float pupilDeltaY = Math.abs(point.y - rotatedEyeY);
+                
+                if (pupilDeltaX <= pupilSize/2 && pupilDeltaY <= pupilSize/2) {
+                    colors[point.index] = LXColor.BLUE;
+                }
+            }
+        }
+    }
+
+    /**
+     * Simple test eyes - just red circles to verify positioning
+     */
+    private void addSimpleTestEyes(float centerX, float centerY, float scale, float twistAngle) {
+        // Eye parameters - much larger for visibility!
+        float eyeRadius = Math.max(scale * 10.0f, 3.0f); // Make eyes much bigger, minimum 3 units
+        float eyeOffsetX = Math.max(scale * 15.0f, 8.0f); // Distance from center horizontally 
+        float eyeOffsetY = Math.max(scale * 20.0f, 10.0f); // Distance from center (UP from center)
+        
+        // Left and right eye positions
+        float leftEyeX = centerX - eyeOffsetX;
+        float leftEyeY = centerY + eyeOffsetY;  // UP from center
+        float rightEyeX = centerX + eyeOffsetX;
+        float rightEyeY = centerY + eyeOffsetY; // UP from center
+        
+        
+        // Draw simple red circles - no constraints, just to see if they appear
+        drawSimpleEye(leftEyeX, leftEyeY, eyeRadius, LXColor.RED);
+        drawSimpleEye(rightEyeX, rightEyeY, eyeRadius, LXColor.RED);
+    }
+    
+    private void drawSimpleEye(float eyeX, float eyeY, float eyeRadius, int color) {
+        int pixelsSet = 0;
+        for (int i = 0; i < model.points.length; i++) {
+            LXVector point = new LXVector(model.points[i]);
+            
+            // Simple distance check - no rotation for now
+            float distance = (float) Math.sqrt(
+                (point.x - eyeX) * (point.x - eyeX) + 
+                (point.y - eyeY) * (point.y - eyeY)
+            );
+            
+            // If point is within the eye radius, make it the specified color
+            if (distance <= eyeRadius) {
+                colors[point.index] = color;
+                pixelsSet++;
+            }
+        }
+    }
+
+    /**
+     * Add ghost eyes - using the same approach as PacmanPattern
+     */
+    private void addGhostEyes(float centerX, float centerY, float scale, float twistAngle, float[] normalizedPolyX, float[] normalizedPolyY) {
+        // Eye parameters - copying Pacman's approach exactly
+        float eyeRadius = scale * 0.15f; // Eye size relative to ghost size (same as Pacman)
+        float eyeOffsetX = scale * 0.2f; // Distance from center horizontally (slightly wider for ghost)
+        float eyeOffsetY = scale * 0.4f; // Distance from center (same as Pacman - UP from center)
+        
+        // Left and right eye positions (copying Pacman's Y positioning EXACTLY)
+        float leftEyeX = centerX - eyeOffsetX;
+        float leftEyeY = centerY + eyeOffsetY;  // + like in Pacman (UP from center)
+        float rightEyeX = centerX + eyeOffsetX;
+        float rightEyeY = centerY + eyeOffsetY; // + like in Pacman (UP from center)
+        
+        // Draw eyes using Pacman's exact approach
+        drawEyeLikePacman(leftEyeX, leftEyeY, eyeRadius, centerX, centerY, scale, twistAngle, normalizedPolyX, normalizedPolyY);
+        drawEyeLikePacman(rightEyeX, rightEyeY, eyeRadius, centerX, centerY, scale, twistAngle, normalizedPolyX, normalizedPolyY);
+    }
+    
+    /**
+     * Draw eye using Pacman's exact approach
+     */
+    private void drawEyeLikePacman(float eyeX, float eyeY, float eyeRadius, float centerX, float centerY, float scale, float twistAngle, float[] normalizedPolyX, float[] normalizedPolyY) {
+        for (int i = 0; i < model.points.length; i++) {
+            LXVector point = new LXVector(model.points[i]);
+            
+            // Apply twist rotation to the point (same as Pacman)
+            float relX = point.x - centerX;
+            float relY = point.y - centerY;
+            float rotatedX = (float) (relX * Math.cos(twistAngle) - relY * Math.sin(twistAngle));
+            float rotatedY = (float) (relX * Math.sin(twistAngle) + relY * Math.cos(twistAngle));
+            
+            // Apply the opposite rotation to the eye position (same as Pacman)
             float eyeRelX = eyeX - centerX;
             float eyeRelY = eyeY - centerY;
             float rotatedEyeX = centerX + (float) (eyeRelX * Math.cos(-twistAngle) - eyeRelY * Math.sin(-twistAngle));
@@ -274,8 +392,10 @@ public class GhostPattern extends TEAudioPattern {
                 (point.y - rotatedEyeY) * (point.y - rotatedEyeY)
             );
             
-            // If point is within the eye, make it black
-            if (eyeDistance <= radius) {
+            // If point is within the eye AND within ghost body, make it black (copying Pacman's logic)
+            // Check if point is within the ghost polygon using the same transform as the main body
+            if (eyeDistance <= eyeRadius && 
+                isPointInPolygon(centerX + rotatedX, centerY + rotatedY, normalizedPolyX, normalizedPolyY)) {
                 colors[point.index] = LXColor.BLACK;
             }
         }

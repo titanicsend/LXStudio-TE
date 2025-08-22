@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.5.GPU-SNAPSHOT",
-  "timestamp": 1755854487288,
+  "timestamp": 1755883947182,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -12031,7 +12031,7 @@
           "gridMode": 0,
           "gridMode/name": "PATTERNS",
           "gridViewOffset": 0,
-          "gridPatternOffset": 27,
+          "gridPatternOffset": 0,
           "gridViewExpanded": false,
           "clipInspectorExpanded": false,
           "scene-1": false,
@@ -12625,22 +12625,22 @@
               "attack": 0.0,
               "release": 437.47287494574994,
               "slope": 6.0,
-              "band-1": 0.0,
-              "band-2": 0.0,
-              "band-3": 0.047154863382924184,
-              "band-4": 0.14561495713023886,
-              "band-5": 0.20131169356805412,
-              "band-6": 0.3819166458375264,
-              "band-7": 0.36529858383824365,
-              "band-8": 0.37533413495178214,
-              "band-9": 0.47207999813643087,
-              "band-10": 0.4426207150016811,
-              "band-11": 0.4441311462510301,
-              "band-12": 0.21052944225654124,
-              "band-13": 0.338779556727976,
-              "band-14": 0.1709974764995955,
-              "band-15": 0.12944133222605014,
-              "band-16": 0.0
+              "band-1": 0.3681881621847882,
+              "band-2": 0.3834664966695428,
+              "band-3": 0.3704106583602599,
+              "band-4": 0.31566885725961435,
+              "band-5": 0.30011786986209243,
+              "band-6": 0.2630566478039015,
+              "band-7": 0.2696398361769786,
+              "band-8": 0.11399256472719144,
+              "band-9": 0.2788489177116945,
+              "band-10": 0.143705574288286,
+              "band-11": 0.07366511882824012,
+              "band-12": 0.07292092895065794,
+              "band-13": 0.1003714134665149,
+              "band-14": 0.018097626975924874,
+              "band-15": 0.0,
+              "band-16": 0.010395521055546753
             },
             "children": {}
           }
@@ -12919,7 +12919,7 @@
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 0,
+              "focusedPattern": 2,
               "triggerPatternCycle": false,
               "launchPatternCycle": false
             },
@@ -12943,7 +12943,7 @@
             },
             "effects": [],
             "clips": [],
-            "patternIndex": 0,
+            "patternIndex": 2,
             "patterns": [
               {
                 "id": 472055534,
@@ -13066,6 +13066,75 @@
                 "children": {
                   "modulation": {
                     "id": 472104136,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1,
+                "effects": [],
+                "defaults": {}
+              },
+              {
+                "id": 472112032,
+                "class": "titanicsend.pattern.arta.GhostPattern",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true,
+                  "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "Ghost",
+                  "midiFilter/enabled": true,
+                  "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
+                  "midiFilter/minNote": 0,
+                  "midiFilter/noteRange": 128,
+                  "midiFilter/minVelocity": 1,
+                  "midiFilter/velocityRange": 127,
+                  "view": 0,
+                  "viewPriority": 0,
+                  "enabled": true,
+                  "recall": false,
+                  "launch": false,
+                  "compositeBlend": 0,
+                  "compositeLevel": 1.0,
+                  "hasCustomCycleTime": false,
+                  "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
+                  "setDefaults": false,
+                  "GSize": 0.6000000238418579,
+                  "FloatSpeed": 1.0,
+                  "FloatAmount": 0.30000001192092896,
+                  "Float": true,
+                  "Eyes": true,
+                  "Twist": 0.0,
+                  "Color": 1,
+                  "ColorShift": false,
+                  "ColorSpeed": 2.0,
+                  "Scared": false,
+                  "PANIC": false,
+                  "compositeMode": 0
+                },
+                "children": {
+                  "modulation": {
+                    "id": 472112033,
                     "class": "heronarts.lx.modulation.LXModulationEngine",
                     "internal": {
                       "modulationColor": 0,
@@ -56359,11 +56428,11 @@
                   "te_color/blendMode": 0,
                   "te_color/blendMode/name": "OKLAB",
                   "te_color/offset": 0.0,
-                  "Glow": 0.1,
-                  "Energy": 0.0,
-                  "Double Layer": false,
                   "Width": 0.5,
+                  "Energy": 0.0,
                   "Double Speed": false,
+                  "Double Layer": false,
+                  "Glow": 0.1,
                   "compositeMode": 0
                 },
                 "children": {
