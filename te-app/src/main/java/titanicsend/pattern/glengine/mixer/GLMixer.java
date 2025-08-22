@@ -149,7 +149,7 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     this.auxBusActive = false;
 
     // Set the target CPU buffers
-    this.glMasterBus.setBuffer(frame.getMain());
+    this.glMasterBus.setBuffer(frame);
     this.glCueBus.setBuffer(frame.getCue());
     this.glAuxBus.setBuffer(frame.getAux());
 
@@ -276,7 +276,7 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
       this.lastSrc = src;
 
       // Blend the bus texture onto the dst texture
-      return finalBlend(dst, src);
+      return finalBlend(deltaMs, dst, src);
     }
 
     /**
@@ -304,19 +304,21 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
             effect.setModel(effect.getModelView());
             effect.loop(deltaMs);
             // Do not modify dst. Output texture is for NDI sending, not for us.
-          } else {
+          }
+          /* For now, don't loop Java effects at all on non-master
+          else if (!isMaster()) {
             // Java effect in GPU mode
-            // Currently gets looped for processing but the output is not used
+            // To loop for processing without using output:
             effect.setModel(effect.getModelView());
             effect.loop(deltaMs);
-          }
+          } */
         }
       }
       return dst;
     }
 
     /** Final step, blend the bus output texture onto the dst texture at the current fader level */
-    protected abstract int finalBlend(int dst, int src);
+    protected abstract int finalBlend(double deltaMs, int dst, int src);
 
     /** Retrieve the most recent pre-fader texture */
     private int getSrcTexture() {
@@ -358,16 +360,35 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     }
 
     /** Set the target CPU buffer for BusShader */
-    void setBuffer(int[] cpuBuffer) {
-      this.mainBusShader.setCpuBuffer(cpuBuffer);
+    void setBuffer(LXEngine.Frame frame) {
+      this.lxEngineFrame = frame;
+      this.mainBusShader.setCpuBuffer(frame.getMain());
     }
 
+    // We have to store the full frame for passing to effect.setBuffer()
+    LXEngine.Frame lxEngineFrame;
+
     @Override
-    protected int finalBlend(int dst, int src) {
+    protected int finalBlend(double deltaMs, int dst, int src) {
       this.mainBusShader.setSrc(src);
       this.mainBusShader.setLevel(bus.fader.getValuef());
       // Render GPU mixer output to current LX engine frame
       this.mainBusShader.run();
+
+      // Loop java effects on CPU buffer, on Master only. These run *after* GPU effects.
+      for (LXEffect effect : bus.effects) {
+        // TODO: loop effect for damping even if disabled
+        if (effect.isEnabled()) {
+          if (!(effect instanceof GLShaderEffect) && !(effect instanceof NDIOutShaderEffect)) {
+            // Java effects on master bus
+            // TODO: optional disable of java effects here, with global parameter
+            // But don't disable until Director effect is gpu-based
+            effect.setBuffer(this.lxEngineFrame);
+            effect.setModel(effect.getModelView());
+            effect.loop(deltaMs);
+          }
+        }
+      }
 
       return this.mainBusShader.getRenderTexture();
     }
@@ -488,7 +509,7 @@ public class GLMixer implements LXMixerEngine.Listener, LXMixerEngine.PostMixer 
     }
 
     @Override
-    protected int finalBlend(int dst, int src) {
+    protected int finalBlend(double deltaMs, int dst, int src) {
       this.blendShader.setDst(dst);
       this.blendShader.setSrc(src);
       this.blendShader.setLevel(bus.fader.getValuef());
