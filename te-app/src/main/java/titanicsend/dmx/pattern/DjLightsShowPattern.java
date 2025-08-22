@@ -3,13 +3,12 @@ package titanicsend.dmx.pattern;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.studio.LXStudio.UI;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
-import titanicsend.color.TEColorType;
+import titanicsend.color.TEColorParameter;
 import titanicsend.dmx.model.AdjStealthModel;
 import titanicsend.dmx.model.DmxModel;
 import titanicsend.ui.UIUtils;
@@ -27,9 +26,8 @@ public class DjLightsShowPattern extends DjLightsPattern
   public final CompoundParameter brightness =
       new CompoundParameter("Brightness", 0.5).setDescription("Overall brightness (master dimmer)");
 
-  // Use LinkedColorParameter for full palette/swatch integration
-  public final LinkedColorParameter color =
-      new LinkedColorParameter("Color").setDescription("Light color from palette/swatch");
+  // Use TEColorParameter for full palette/swatch integration
+  public final TEColorParameter color;
 
   public final CompoundParameter saturation =
       new CompoundParameter("Saturation", 1.0)
@@ -43,12 +41,11 @@ public class DjLightsShowPattern extends DjLightsPattern
     addParameter("tilt", this.tilt);
     addParameter("focus", this.focus);
     addParameter("brightness", this.brightness);
-    addParameter("color", this.color);
+    addParameter(
+        "color",
+        this.color =
+            new TEColorParameter("Color").setDescription("Light color from palette/swatch"));
     addParameter("saturation", this.saturation);
-
-    // Configure color parameter AFTER adding it to the pattern
-    this.color.mode.setValue(LinkedColorParameter.Mode.PALETTE);
-    this.color.index.setValue(TEColorType.PRIMARY.index);
 
     // Set defaults
     this.brightness.setValue(0.5);
@@ -61,6 +58,7 @@ public class DjLightsShowPattern extends DjLightsPattern
           this.tilt,
           this.focus,
           this.brightness,
+          this.color.offset,
           this.color.hue,
           this.color.saturation,
           this.color.brightness,
@@ -125,7 +123,7 @@ public class DjLightsShowPattern extends DjLightsPattern
     double brightnessValue = this.brightness.getNormalized();
     double saturationValue = this.saturation.getNormalized();
 
-    // Get color from LinkedColorParameter which handles palette/swatch integration
+    // Get color from TEColorParameter which handles palette/swatch integration
     int baseColor = this.color.calcColor();
 
     // Apply saturation adjustment

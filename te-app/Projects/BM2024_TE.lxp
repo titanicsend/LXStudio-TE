@@ -64953,18 +64953,6 @@
                   }
                 },
                 "deviceVersion": -1,
-                "remoteControls": [
-                  "/pan",
-                  "/tilt",
-                  "/strobeSpeed",
-                  "/strobe",
-                  "/color/hue",
-                  "/color/saturation",
-                  "/color/brightness",
-                  "/dimmer",
-                  "/focus",
-                  "/mirror"
-                ],
                 "effects": [],
                 "defaults": {}
               },
@@ -65034,16 +65022,6 @@
                   }
                 },
                 "deviceVersion": -1,
-                "remoteControls": [
-                  "/pan",
-                  "/tilt",
-                  "/focus",
-                  "/brightness",
-                  "/color/hue",
-                  "/color/saturation",
-                  "/color/brightness",
-                  "/saturation"
-                ],
                 "effects": [],
                 "defaults": {}
               }
