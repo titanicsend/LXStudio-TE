@@ -31,6 +31,7 @@ import titanicsend.dmx.model.BeaconModel;
 import titanicsend.lasercontrol.TELaserTask;
 import titanicsend.midi.MidiNames;
 import titanicsend.osc.CrutchOSC;
+import titanicsend.osc.TEResolumeGradientPublisher;
 import titanicsend.output.ChromatechSocket;
 import titanicsend.pattern.glengine.GLEngine;
 import titanicsend.util.TE;
@@ -226,6 +227,8 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     addDetailParameter(this.lx.engine.osc.receiveActive, "OSC Input");
     addDetailParameter(this.lx.engine.osc.transmitActive, "OSC Output");
     addDetailParameter(CrutchOSC.get().transmitActive, INDENT + "OSC to iPads");
+    addDetailParameter(TEResolumeGradientPublisher.get().enabled, INDENT + "Resolume Color");
+    addDetailParameter(TEResolumeGradientPublisher.get().enableLogging, INDENT + "Resolume Log");
     TriggerParameter setUpLaserSync = TELaserTask.get().setUpOsc;
     addDetailParameter(setUpLaserSync, "Laser Sync")
         .setInactiveLabel(setUpLaserSync.getLabel())
@@ -392,6 +395,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
         && this.lx.engine.osc.receiveActive.isOn()
         && !this.lx.engine.osc.transmitActive.isOn()
         && !CrutchOSC.get().transmitActive.isOn()
+        // Placeholder for Resolume gradient, currently no restriction
         && !TELaserTask.get().sendBrightness.isOn()
         && !TELaserTask.get().sendColor.isOn()
         && !TELaserTask.get().sendTempo.isOn()
@@ -411,6 +415,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
         && GLEngine.current.gpuJavaEffects.isOn() == PROD_JAVA_EFFECTS_IN_GPU_ENABLED
         && this.lx.engine.osc.receiveActive.isOn()
         && this.lx.engine.osc.transmitActive.isOn()
+        // Placeholder for Resolume gradient, currently no restriction
         && CrutchOSC.get().transmitActive.isOn()
         && TELaserTask.get().sendBrightness.isOn() == TELaserTask.DEFAULT_ENABLE_IN_PRODUCTION
         && TELaserTask.get().sendColor.isOn() == TELaserTask.DEFAULT_ENABLE_IN_PRODUCTION
@@ -446,6 +451,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     this.lx.engine.osc.receiveActive.setValue(true);
     this.lx.engine.osc.transmitActive.setValue(false);
     CrutchOSC.get().transmitActive.setValue(false);
+    // Placeholder for Resolume gradient, currently no restriction
     TELaserTask.get().sendBrightness.setValue(false);
     TELaserTask.get().sendColor.setValue(false);
     TELaserTask.get().sendTempo.setValue(false);
@@ -480,6 +486,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
     this.lx.engine.osc.receiveActive.setValue(true);
     this.lx.engine.osc.transmitActive.setValue(true);
     CrutchOSC.get().transmitActive.setValue(true);
+    // Placeholder for Resolume gradient, currently no restriction
     TELaserTask.get().sendBrightness.setValue(TELaserTask.DEFAULT_ENABLE_IN_PRODUCTION);
     TELaserTask.get().sendColor.setValue(TELaserTask.DEFAULT_ENABLE_IN_PRODUCTION);
     TELaserTask.get().sendTempo.setValue(TELaserTask.DEFAULT_ENABLE_IN_PRODUCTION);
