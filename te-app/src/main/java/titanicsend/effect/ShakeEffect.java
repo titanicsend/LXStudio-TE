@@ -6,43 +6,29 @@ import heronarts.lx.Tempo;
 import heronarts.lx.modulator.LXWaveshape;
 import heronarts.lx.modulator.SawLFO;
 import heronarts.lx.parameter.BooleanParameter;
-import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.FunctionalParameter;
-import heronarts.lx.parameter.ObjectParameter;
 import heronarts.lx.parameter.TriggerParameter;
-import heronarts.lx.utils.LXUtils;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderEffect;
 
 @LXCategory("Titanics End")
-public class RgbGlitchEffect extends GLShaderEffect {
+public class ShakeEffect extends GLShaderEffect {
   double effectDepth;
   private double lastBasis;
   private boolean triggerRequested = false;
   boolean isRunning = false;
 
-  public final ObjectParameter<LXWaveshape> waveshape =
-      new ObjectParameter<LXWaveshape>(
-          "Shape",
-          new LXWaveshape[] {
-            LXWaveshape.DOWN, LXWaveshape.UP, LXWaveshape.SIN, LXWaveshape.TRI, LXWaveshape.SQUARE
-          });
-
   public final CompoundParameter speed =
-      new CompoundParameter("Speed", 0.05)
+      new CompoundParameter("Speed", 0.5, 1.0, 0.1)
           .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
-          .setExponent(2)
           .setDescription("Speed of the effect");
 
   public final CompoundParameter depth =
       new CompoundParameter("Depth", 0.50)
           .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
           .setDescription("Depth of the effect");
-
-  public final BoundedParameter slope =
-      new BoundedParameter("Slope", 5, 1, 15).setDescription("Steepness of effect/time curve");
 
   public final BooleanParameter tempoSync =
       new BooleanParameter("Sync", false).setDescription("Sync the effect to the engine tempo");
@@ -55,18 +41,10 @@ public class RgbGlitchEffect extends GLShaderEffect {
       new EnumParameter<Tempo.Division>("Division", Tempo.Division.WHOLE)
           .setDescription("Tempo division to use in sync mode");
 
-  public final BoundedParameter tempoPhaseOffset =
-      new BoundedParameter("Phase Offset", 0)
-          .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
-          .setDescription("Shifts timing of effect relative to beat.");
-
-  public final BoundedParameter size =
-      new BoundedParameter("Size", 0, 0, 10).setDescription("Explosion block size");
-
   public final TriggerParameter trigger =
       new TriggerParameter("Trigger", this::triggerListener)
           .setMode(BooleanParameter.Mode.MOMENTARY)
-          .setDescription("Glitch NOW!!! (manual sync mode only");
+          .setDescription("Shake it NOW!!! (manual sync mode only");
 
   // sawtooth wave that can range in frequency between .1 and 10hz
   private final SawLFO basis =
@@ -77,7 +55,7 @@ public class RgbGlitchEffect extends GLShaderEffect {
               new FunctionalParameter() {
                 @Override
                 public double getValue() {
-                  return 1000 / LXUtils.lerp(0.1, 10, speed.getValue());
+                  return 2000 * speed.getValue();
                 }
               }));
 
@@ -101,7 +79,6 @@ public class RgbGlitchEffect extends GLShaderEffect {
 
     if (tempoSync.isOn()) {
       r = this.lx.engine.tempo.getBasis(this.tempoDivision.getEnum());
-      r = (r + this.tempoPhaseOffset.getValue()) % 1.;
     } else {
       r = basis.getBasis();
     }
@@ -111,9 +88,9 @@ public class RgbGlitchEffect extends GLShaderEffect {
       if (isRunning) {
         gate = (triggerRequested) ? 0 : 1;
         if (r < lastBasis) {
-          // If explosion was requested but not yet run, we
+          // If effect was requested but not yet run, we
           // start it on the next cycle.
-          // Otherwise, we've successfully completed an explosion.
+          // Otherwise, we've successfully completed a cycle.
           // Now, check the trigger state, and return to the idle state
           // if it's off
           if (triggerRequested) {
@@ -127,41 +104,33 @@ public class RgbGlitchEffect extends GLShaderEffect {
       lastBasis = r;
     }
 
-    return gate * waveshape.getObject().compute(r);
+    return gate * LXWaveshape.DOWN.compute(r);
   }
 
-  public RgbGlitchEffect(LX lx) {
+  public ShakeEffect(LX lx) {
     super(lx);
 
     addParameter("speed", this.speed);
     addParameter("depth", this.depth);
-    addParameter("waveshape", this.waveshape);
-    addParameter("slope", this.slope);
 
     addParameter("tempoSync", this.tempoSync);
     addParameter("tempoDivision", this.tempoDivision);
-    addParameter("tempoPhaseOffset", this.tempoPhaseOffset);
-    addParameter("size", this.size);
 
     addParameter("manualTrigger", this.manualTrigger);
     addParameter("trigger", this.trigger);
 
     addShader(
-        GLShader.config(lx).withFilename("rgb_glitch_effect.fs").withUniformSource(this::setUniforms));
+        GLShader.config(lx).withFilename("shake_effect.fs").withUniformSource(this::setUniforms));
   }
 
   private void setUniforms(GLShader shader) {
     double basis;
 
+    // make curve slightly steeper.
     basis = getBasis();
-    double exp = slope.getValue();
-    basis = (exp != 1) ? Math.pow(basis, exp) : basis;
+    basis = Math.pow(basis, 5.0);
 
     shader.setUniform("basis", (float) (basis * effectDepth));
-
-    float granularity = size.getValuef();
-    granularity = (granularity > 0) ? 10 * (11 - granularity) : 0;
-    shader.setUniform("size", granularity);
   }
 
   @Override
