@@ -39,7 +39,7 @@ public class SpecialKube extends GLShaderPattern {
     controls.setRange(TEControlTag.SPIN, 1.0, -4.0, 4.0);
 
     // rotation angle offset
-    //controls.setRange(TEControlTag.ANGLE, 0.0, 0.0, 6.28);
+    // controls.setRange(TEControlTag.ANGLE, 0.0, 0.0, 6.28);
 
     controls.setRange(TEControlTag.YPOS, -0.28, -1.0, 1.0);
 
