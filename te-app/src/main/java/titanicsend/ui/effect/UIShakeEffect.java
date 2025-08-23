@@ -7,7 +7,6 @@ import heronarts.glx.ui.vg.VGraphics;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
-import titanicsend.effect.RandomStrobeEffect;
 import titanicsend.effect.ShakeEffect;
 import titanicsend.preset.UIUserPresetCollection;
 

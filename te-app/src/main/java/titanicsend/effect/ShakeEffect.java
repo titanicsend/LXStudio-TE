@@ -21,8 +21,7 @@ public class ShakeEffect extends GLShaderEffect {
   private boolean isRunning = false;
 
   public final CompoundParameter speed =
-      new CompoundParameter("Speed", 0.7, 1.0, 0.1)
-          .setDescription("Speed of the effect");
+      new CompoundParameter("Speed", 0.7, 1.0, 0.1).setDescription("Speed of the effect");
 
   public final CompoundParameter depth =
       new CompoundParameter("Depth", 0.50)
