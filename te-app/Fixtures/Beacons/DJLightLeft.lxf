@@ -10,7 +10,11 @@
 
   "components": [
     {
-      "type": "point", "pointSize": 40
+      "type": "point",
+      "pointSize": 40,
+      "x": -120,
+      "y": 170,
+      "z": -50
     }
   ]
 }
