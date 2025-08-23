@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.1-SNAPSHOT",
-  "timestamp": 1755931972610,
+  "timestamp": 1755937762184,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -8635,7 +8635,7 @@
         "jsonFixtureType": "TE/edge/Edge73-75",
         "jsonParameters": {
           "points": 90,
-          "host": "10.7.13.112",
+          "host": "10.7.101.32",
           "output": 1,
           "ledOffset": 187,
           "artnetSequence": false,
@@ -8764,7 +8764,7 @@
         "jsonFixtureType": "TE/edge/Edge73-92",
         "jsonParameters": {
           "points": 58,
-          "host": "10.7.13.112",
+          "host": "10.7.101.32",
           "output": 1,
           "ledOffset": 0,
           "artnetSequence": false,
@@ -8850,7 +8850,7 @@
         "jsonFixtureType": "TE/edge/Edge75-92",
         "jsonParameters": {
           "points": 129,
-          "host": "10.7.13.112",
+          "host": "10.7.101.32",
           "output": 1,
           "ledOffset": 58,
           "artnetSequence": false,
@@ -10531,7 +10531,7 @@
           "output": 1,
           "ledOffset": 160,
           "artnetSequence": false,
-          "reverse": false,
+          "reverse": true,
           "xOffset": 5.113073348999023,
           "onCar": true,
           "hasOutput": true
@@ -10554,7 +10554,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": true,
+          "selected": false,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -12145,7 +12145,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": false,
+          "selected": true,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -14002,8 +14002,8 @@
           "label": "Mixer",
           "crossfader": 0.4861225357744843,
           "crossfaderBlendMode": 1,
-          "focusedChannel": 2,
-          "focusedChannelAux": 2,
+          "focusedChannel": 0,
+          "focusedChannelAux": 3,
           "cueA": false,
           "cueB": false,
           "auxA": false,
@@ -14265,6 +14265,180 @@
         },
         "channels": [
           {
+            "id": 528530,
+            "class": "heronarts.lx.mixer.LXChannel",
+            "internal": {
+              "modulationColor": 0,
+              "modulationControlsExpanded": true,
+              "modulationsExpanded": true,
+              "controlsExpandedCue": true,
+              "controlsExpandedAux": true,
+              "modulationExpanded": false,
+              "controlsExpanded": true,
+              "viewPatternLabel": false
+            },
+            "parameters": {
+              "label": "BG",
+              "fader": 0.46255578473210335,
+              "arm": false,
+              "selected": true,
+              "stopClips": false,
+              "enabled": true,
+              "cue": false,
+              "aux": false,
+              "crossfadeGroup": 0,
+              "crossfadeGroup/name": "BYPASS",
+              "blendMode": 0,
+              "autoMute": false,
+              "midiSource/index": 0,
+              "midiFilter/enabled": false,
+              "midiFilter/channel": 16,
+              "midiFilter/channel/name": "OMNI",
+              "midiFilter/minNote": 0,
+              "midiFilter/noteRange": 128,
+              "midiFilter/minVelocity": 1,
+              "midiFilter/velocityRange": 127,
+              "view": 0,
+              "compositeMode": 0,
+              "compositeMode/name": "PLAYLIST",
+              "compositeDampingEnabled": true,
+              "compositeDampingTimeSecs": 0.1,
+              "autoCycleEnabled": false,
+              "autoCycleMode": 0,
+              "autoCycleMode/name": "NEXT",
+              "autoCycleTimeSecs": 60.0,
+              "transitionEnabled": false,
+              "transitionTimeSecs": 5.0,
+              "transitionBlendMode": 0,
+              "focusedPattern": 0,
+              "triggerPatternCycle": false,
+              "launchPatternCycle": false
+            },
+            "children": {
+              "modulation": {
+                "id": 528531,
+                "class": "heronarts.lx.modulation.LXModulationEngine",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true
+                },
+                "parameters": {
+                  "label": "Modulation"
+                },
+                "children": {},
+                "modulators": [],
+                "modulations": [],
+                "triggers": []
+              }
+            },
+            "effects": [],
+            "clips": [],
+            "patternIndex": 0,
+            "patterns": [
+              {
+                "id": 528549,
+                "class": "titanicsend.pattern.justin.TESolidPattern",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true,
+                  "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "TESolid",
+                  "midiFilter/enabled": true,
+                  "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
+                  "midiFilter/minNote": 0,
+                  "midiFilter/noteRange": 128,
+                  "midiFilter/minVelocity": 1,
+                  "midiFilter/velocityRange": 127,
+                  "view": 0,
+                  "viewPriority": 0,
+                  "enabled": true,
+                  "recall": false,
+                  "launch": false,
+                  "compositeBlend": 0,
+                  "compositeLevel": 1.0,
+                  "hasCustomCycleTime": false,
+                  "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
+                  "setDefaults": false,
+                  "te_speed": 0.5,
+                  "te_xpos": 0.0,
+                  "te_ypos": 0.0,
+                  "te_size": 1.0,
+                  "te_quantity": 0.5,
+                  "te_spin": 0.0,
+                  "te_brightness": 1.0,
+                  "te_wow1": 0.0,
+                  "te_wow2": 0.0,
+                  "te_wowtrigger": false,
+                  "te_angle": 0.0,
+                  "te_level": 0.1,
+                  "te_freq": 0.1,
+                  "te_twist": false,
+                  "panic": false,
+                  "te_color/brightness": 100.0,
+                  "te_color/saturation": 95.42642974853516,
+                  "te_color/hue": 257.2265625,
+                  "te_color/solidSource": 0,
+                  "te_color/solidSource/name": "STATIC",
+                  "te_color/blendMode": 1,
+                  "te_color/blendMode/name": "HSVM",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
+                },
+                "children": {
+                  "modulation": {
+                    "id": 528550,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1,
+                "remoteControls": [
+                  "/te_level",
+                  "/te_freq",
+                  "/view",
+                  "/te_speed",
+                  "/te_xpos",
+                  "/te_ypos",
+                  "/te_quantity",
+                  "/te_size",
+                  "/te_angle",
+                  "/te_spin",
+                  "/panic",
+                  null,
+                  "/te_wow1",
+                  "/te_wow2",
+                  "/te_wowtrigger",
+                  "/te_color/offset",
+                  "/setDefaults"
+                ],
+                "effects": [],
+                "defaults": {}
+              }
+            ]
+          },
+          {
             "id": 157386,
             "class": "heronarts.lx.mixer.LXChannel",
             "internal": {
@@ -14279,7 +14453,7 @@
             },
             "parameters": {
               "label": "HIGH",
-              "fader": 0.8589285640046,
+              "fader": 0.8169642849825323,
               "arm": false,
               "selected": false,
               "stopClips": false,
@@ -22447,7 +22621,7 @@
             },
             "parameters": {
               "label": "TRACKER",
-              "fader": 1.0,
+              "fader": 0.9842633688822389,
               "arm": false,
               "selected": false,
               "stopClips": false,
@@ -22921,7 +23095,7 @@
               "label": "Channel-3",
               "fader": 0.0,
               "arm": false,
-              "selected": true,
+              "selected": false,
               "stopClips": false,
               "enabled": true,
               "cue": false,
@@ -23403,7 +23577,7 @@
   },
   "externals": {
     "ui": {
-      "leftPaneActiveSection": 1,
+      "leftPaneActiveSection": 0,
       "audioExpanded": true,
       "envelopExpanded": true,
       "reaperExpanded": true,
@@ -23429,8 +23603,8 @@
         "camera": {
           "active": false,
           "radius": 713.6313330166818,
-          "theta": 180.23292663693428,
-          "phi": 0.7070807963609695,
+          "theta": 176.1624725088477,
+          "phi": -1.5055089816451073,
           "x": -17.828315705482964,
           "y": 180.42844302207232,
           "z": -150.07112413289724

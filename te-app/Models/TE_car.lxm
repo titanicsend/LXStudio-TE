@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.1-SNAPSHOT",
-  "timestamp": 1755931972611,
+  "timestamp": 1755937762185,
   "fixtures": [
     {
       "jsonFixtureType": "TE/panel/FA",
@@ -7938,7 +7938,7 @@
       "jsonParameters": {
         "points": 209,
         "host": "10.7.10.22",
-        "output": 4,
+        "output": 2,
         "ledOffset": 208,
         "artnetSequence": false,
         "reverse": true,
@@ -8453,7 +8453,7 @@
       "jsonFixtureType": "TE/edge/Edge73-75",
       "jsonParameters": {
         "points": 90,
-        "host": "10.7.13.112",
+        "host": "10.7.101.32",
         "output": 1,
         "ledOffset": 187,
         "artnetSequence": false,
@@ -8582,7 +8582,7 @@
       "jsonFixtureType": "TE/edge/Edge73-92",
       "jsonParameters": {
         "points": 58,
-        "host": "10.7.13.112",
+        "host": "10.7.101.32",
         "output": 1,
         "ledOffset": 0,
         "artnetSequence": false,
@@ -8668,7 +8668,7 @@
       "jsonFixtureType": "TE/edge/Edge75-92",
       "jsonParameters": {
         "points": 129,
-        "host": "10.7.13.112",
+        "host": "10.7.101.32",
         "output": 1,
         "ledOffset": 58,
         "artnetSequence": false,
@@ -10045,7 +10045,7 @@
       "jsonParameters": {
         "points": 132,
         "host": "10.7.10.22",
-        "output": 4,
+        "output": 2,
         "ledOffset": 0,
         "artnetSequence": false,
         "reverse": false,
@@ -10303,7 +10303,7 @@
       "jsonParameters": {
         "points": 76,
         "host": "10.7.10.22",
-        "output": 4,
+        "output": 2,
         "ledOffset": 132,
         "artnetSequence": false,
         "reverse": true,
@@ -10349,7 +10349,7 @@
         "output": 1,
         "ledOffset": 160,
         "artnetSequence": false,
-        "reverse": false,
+        "reverse": true,
         "xOffset": 5.113073348999023,
         "onCar": true,
         "hasOutput": true
@@ -10372,7 +10372,7 @@
         "scale": 1.0,
         "hasCustomPointSize": false,
         "pointSize": 5.0,
-        "selected": true,
+        "selected": false,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
@@ -11963,7 +11963,7 @@
         "scale": 1.0,
         "hasCustomPointSize": false,
         "pointSize": 5.0,
-        "selected": false,
+        "selected": true,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
