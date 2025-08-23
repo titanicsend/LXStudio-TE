@@ -201,8 +201,7 @@ public class CandyFlip extends TEPerformancePattern {
 
   @Override
   public void runTEAudioPattern(double deltaMs) {
-    // currentTime += deltaMs * getSpeed();
-    currentTime = getTimeMs();
+    currentTime += deltaMs * getSpeed();
 
     // Clear display
     for (LXPoint point : model.points) {
