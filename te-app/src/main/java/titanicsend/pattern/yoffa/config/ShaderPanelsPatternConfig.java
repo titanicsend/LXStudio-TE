@@ -518,6 +518,8 @@ public class ShaderPanelsPatternConfig {
       controls.setRange(TEControlTag.QUANTITY, 6, 1, 16); // number of waves
       controls.setRange(TEControlTag.WOW1, 0, 0, 0.25); // pixelated decomposition
 
+      controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
+
       addShader("metallic_bit_wave.fs");
     }
   }

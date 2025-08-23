@@ -3,11 +3,14 @@
 #define TE_EFFECTSHADER
 #define TE_NOPOSTPROCESSING
 
-// Texture from the preceding pattern or effect
-uniform sampler2D iDst;
+// tell the preprocessor and any control management scripts that this is a post effect shader
+// and doesn't use the common controls.
+#define TE_EFFECTSHADER
+#define TE_NOPOSTPROCESSING
 
 uniform float basis;
 uniform float size;
+uniform sampler2D iDst;
 
 float rand(vec2 p) {
     return fract(sin(dot(p, vec2(12.543, 514.123)))*4732.12);
@@ -18,9 +21,13 @@ vec2 random2(vec2 p) {
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-    vec3 modelCoords = _getModelCoordinates().xyz;
-    vec2 uv = vec2((modelCoords.z < 0.5) ? modelCoords.x : 1. + (1. - modelCoords.x), modelCoords.y);
-    uv.x *= 0.5;
+    // early out if effect is inactive
+    fragColor = texelFetch(iDst, ivec2(gl_FragCoord.xy), 0);
+    if (basis <= 0.0) {
+        return;
+    }
+
+    vec2 uv = fragCoord / iResolution.xy;
     vec2 quv = uv; // copy we use to quantize later
 
     // To "explode", we randomly displace uv coordinates in
@@ -29,10 +36,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // onto the car, and it is set up so each half of the
     // car (sliced at x == 0) occupies half the width of the
     // texture.
-    if (size > 0.0) {
-        vec2 scale=vec2(2. * size, size);
+    if (size > 0.0)  {
+        vec2 scale=vec2(size, size);
         quv = floor(quv * scale) / scale;
     }
-    vec2 displacement = iResolution.xy * ((-0.5 + random2(quv)) * basis);
-    fragColor = texelFetch(iDst, ivec2(gl_FragCoord.xy + displacement), 0);
+    vec2 displacement = basis * (-0.5 + random2(quv));
+    vec2 finalCoords = iResolution.xy * (uv + displacement);
+
+    fragColor = mix(fragColor,_getMappedPixel(iDst, ivec2(finalCoords)),smoothstep(0.0,0.01,basis));
 }
+

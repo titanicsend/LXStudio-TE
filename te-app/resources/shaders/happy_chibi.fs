@@ -1,10 +1,6 @@
 // Happy Chibi - bouncing kawaii smiley face with animated highlights
 // for the deep playa!!!
 
-#pragma name "HappyChibi"
-#pragma TEControl.LEVELREACTIVITY.Disable
-#pragma TEControl.FREQREACTIVITY.Disable
-
 #include <include/colorspace.fs>
 
 float hash(vec2 p) {
@@ -108,7 +104,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = fragCoord.xy / iResolution.xy;
     uv = (uv - 0.5) * vec2(iResolution.x / iResolution.y, 1.0) + 0.5;
 
-    float t = iTime * iSpeed;
+    float t = iTime;
     
     vec3 totalColor = vec3(0.0);
     float totalAlpha = 0.0;

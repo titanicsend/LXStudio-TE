@@ -23,7 +23,7 @@ public class HappyChibi extends GLShaderPattern {
   public HappyChibi(LX lx) {
     super(lx, TEShaderView.DOUBLE_LARGE);
 
-    controls.setRange(TEControlTag.SPEED, 1.0, 0.1, 3.0);
+    controls.setRange(TEControlTag.SPEED, 1.0, 0.01, 6.0);
     controls.setRange(TEControlTag.SIZE, 1.0, 0.5, 2.0);
     controls.setRange(TEControlTag.QUANTITY, 15, 1, 40);
 
@@ -37,6 +37,7 @@ public class HappyChibi extends GLShaderPattern {
     controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
     controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
     controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOWTRIGGER));
 
     addCommonControls();
     addShader("happy_chibi.fs");

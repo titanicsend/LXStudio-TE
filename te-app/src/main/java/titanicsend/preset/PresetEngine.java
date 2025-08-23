@@ -9,6 +9,7 @@ import heronarts.lx.LXModulatorComponent;
 import heronarts.lx.LXPresetComponent;
 import heronarts.lx.mixer.LXBus;
 import heronarts.lx.modulation.LXModulationContainer;
+import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.StringParameter;
@@ -36,9 +37,15 @@ public class PresetEngine extends LXComponent {
 
   public final StringParameter libraryName = new StringParameter("Library", "");
 
+  public final BooleanParameter autoSave =
+      new BooleanParameter("Auto Save User Presets", true)
+          .setDescription("Auto save library after a preset is Added or Updated");
+
   public PresetEngine(LX lx) {
     super(lx, "PresetEngine");
     current = this;
+
+    addParameter("autosave", this.autoSave);
 
     this.currentLibrary = new UserPresetLibrary(lx);
     updateLibraryName();
@@ -68,9 +75,25 @@ public class PresetEngine extends LXComponent {
     updateLibraryName();
   }
 
-  public void openLibrary(String path) {
-    this.currentLibrary.load(new File(path));
+  public void loadLibrary(String path) {
+    this.currentLibrary.load(new File(path), true);
     updateLibraryName();
+  }
+
+  public void importLibrary(String path) {
+    this.currentLibrary.load(new File(path), false);
+    triggerAutoSave();
+  }
+
+  public void triggerAutoSave() {
+    if (this.autoSave.isOn()) {
+      LX.log("Autosaving user presets to " + this.currentLibrary.getFile().getName());
+      saveLibrary();
+    }
+  }
+
+  public void saveLibrary() {
+    this.currentLibrary.save(this.currentLibrary.getFile());
   }
 
   public void saveLibrary(String path) {

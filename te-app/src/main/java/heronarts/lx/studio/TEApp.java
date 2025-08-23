@@ -60,6 +60,7 @@ import titanicsend.app.director.Director;
 import titanicsend.app.director.DirectorEffect;
 import titanicsend.app.director.UIDirector;
 import titanicsend.app.effectmgr.GlobalEffectManager;
+import titanicsend.app.effectmgr.TEGlobalEffects;
 import titanicsend.audio.AudioStemModulator;
 import titanicsend.audio.AudioStems;
 import titanicsend.audio.AudioStemsPlugin;
@@ -77,16 +78,19 @@ import titanicsend.dmx.pattern.DjLightsEasyPattern;
 import titanicsend.dmx.pattern.DjLightsShowPattern;
 import titanicsend.dmx.pattern.ExampleDmxTEPerformancePattern;
 import titanicsend.effect.BasicShaderEffect;
+import titanicsend.effect.DistortEffect;
 import titanicsend.effect.EdgeSieveEffect;
 import titanicsend.effect.ExplodeEffect;
 import titanicsend.effect.GlobalPatternControlEffect;
 import titanicsend.effect.RandomStrobeEffect;
+import titanicsend.effect.ShakeEffect;
 import titanicsend.effect.SimplifyEffect;
 import titanicsend.effect.SustainEffect;
 import titanicsend.gamepad.GamepadEngine;
 import titanicsend.lx.APC40Mk2;
 import titanicsend.lx.APC40Mk2.UserButton;
 import titanicsend.lx.DirectorAPCminiMk2;
+import titanicsend.lx.EffectsMiniLab3;
 import titanicsend.model.TEWholeModel;
 import titanicsend.model.TEWholeModelDynamic;
 import titanicsend.modulator.dmx.Dmx16bitModulator;
@@ -156,15 +160,13 @@ import titanicsend.pattern.justin.MothershipDrivingPattern;
 import titanicsend.pattern.justin.TEGradientPattern;
 import titanicsend.pattern.justin.TESolidPattern;
 import titanicsend.pattern.justin.TwoColorPattern;
+import titanicsend.pattern.look.PolySpiral;
 import titanicsend.pattern.look.SigmoidDanceAudioLevels;
 import titanicsend.pattern.look.SigmoidDanceAudioWaveform;
 import titanicsend.pattern.look.SketchDemo;
 import titanicsend.pattern.look.SketchStem;
-import titanicsend.pattern.look.TriangleCrossAudioLevels;
 import titanicsend.pattern.look.TriangleCrossAudioWaveform;
-import titanicsend.pattern.look.TriangleInfinityLevels;
 import titanicsend.pattern.look.TriangleInfinityRadialWaveform;
-import titanicsend.pattern.look.TriangleInfinityWaveform;
 import titanicsend.pattern.mike.Checkers;
 import titanicsend.pattern.mike.EdgeRunner;
 import titanicsend.pattern.mike.ModelDebugger;
@@ -200,6 +202,7 @@ import titanicsend.ui.UITEColorControl;
 import titanicsend.ui.UITEPerformancePattern;
 import titanicsend.ui.color.UIColorPaletteManagerSection;
 import titanicsend.ui.effect.UIRandomStrobeEffect;
+import titanicsend.ui.effect.UIShakeEffect;
 import titanicsend.ui.modulator.UIDmx16bitModulator;
 import titanicsend.ui.modulator.UIDmxDualRangeModulator;
 import titanicsend.ui.modulator.UIDmxGridModulator;
@@ -291,6 +294,8 @@ public class TEApp extends LXStudio {
       this.presetEngine = new PresetEngine(lx);
       this.presetEngine.openFile(lx.getMediaFile("Presets/UserPresets/BM24.userPresets"));
       this.effectManager = new GlobalEffectManager(lx);
+      lx.engine.registerComponent("effectManager", this.effectManager);
+      TEGlobalEffects.allocateSlots();
 
       // Super Modulator midi controller
       this.superMod = new SuperMod(lx);
@@ -308,6 +313,10 @@ public class TEApp extends LXStudio {
       }
 
       new TEGradientSource(lx);
+
+      // Initialize Resolume gradient publisher (logs palette color changes for now)
+      lx.engine.registerComponent(
+          "resolumePalette", new titanicsend.osc.TEResolumeGradientPublisher(lx));
 
       // JKB Autopilot
       // lx.engine.registerComponent("autopilot", this.autopilotJKB = new AutopilotExample(lx));
@@ -393,14 +402,10 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(SpecialKube.class);
       lx.registry.addPattern(HappyChibi.class);
       lx.registry.addPattern(DotPolka.class);
-
-      // Patterns that will not aspire to art direction standards
+      lx.registry.addPattern(PolySpiral.class);
       lx.registry.addPattern(SigmoidDanceAudioWaveform.class);
       lx.registry.addPattern(SigmoidDanceAudioLevels.class);
-      lx.registry.addPattern(TriangleCrossAudioLevels.class);
       lx.registry.addPattern(TriangleCrossAudioWaveform.class);
-      lx.registry.addPattern(TriangleInfinityLevels.class);
-      lx.registry.addPattern(TriangleInfinityWaveform.class);
       lx.registry.addPattern(TriangleInfinityRadialWaveform.class);
       lx.registry.addPattern(SketchDemo.class);
       lx.registry.addPattern(SketchStem.class);
@@ -426,8 +431,10 @@ public class TEApp extends LXStudio {
       // Effects
       lx.registry.addEffect(BasicShaderEffect.class);
       lx.registry.addEffect(DirectorEffect.class);
+      lx.registry.addEffect(DistortEffect.class);
       lx.registry.addEffect(EdgeSieveEffect.class);
       lx.registry.addEffect(ExplodeEffect.class);
+      lx.registry.addEffect(ShakeEffect.class);
       lx.registry.addEffect(SimplifyEffect.class);
       lx.registry.addEffect(SustainEffect.class);
       lx.registry.addEffect(RandomStrobeEffect.class);
@@ -499,6 +506,7 @@ public class TEApp extends LXStudio {
       lx.engine.midi.registerSurface(APC40Mk2.class);
       // The Director midi surface must be registered *after* the Director and ColorPaletteManager
       lx.engine.midi.registerSurface(DirectorAPCminiMk2.class);
+      lx.engine.midi.registerSurface(EffectsMiniLab3.class);
       // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER1,
       // MidiFighterTwister.class);
       // lx.engine.midi.registerSurface(MidiNames.BOMEBOX_MIDIFIGHTERTWISTER2,
@@ -537,6 +545,7 @@ public class TEApp extends LXStudio {
       if (lx instanceof LXStudio) {
         // UI: Effects
         ((LXStudio.Registry) lx.registry).addUIDeviceControls(UIRandomStrobeEffect.class);
+        ((LXStudio.Registry) lx.registry).addUIDeviceControls(UIShakeEffect.class);
 
         // UI: Modulators
         ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmx16bitModulator.class);

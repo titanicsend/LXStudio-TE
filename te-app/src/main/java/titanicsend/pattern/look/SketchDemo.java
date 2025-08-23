@@ -49,8 +49,8 @@ public class SketchDemo extends GLShaderPattern {
     // set the x-axis near the bottom of the car
     controls.setValue(TEControlTag.YPOS, 0.85);
 
-    controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
     controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
 
     // register common controls with the UI
     addCommonControls();

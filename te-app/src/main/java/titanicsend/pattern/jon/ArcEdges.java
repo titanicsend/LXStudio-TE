@@ -40,6 +40,7 @@ public class ArcEdges extends GLShaderPattern {
     controls.markUnused(controls.getLXControl(TEControlTag.YPOS));
     controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
     controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
 
     // register common controls with the UI
     addCommonControls();

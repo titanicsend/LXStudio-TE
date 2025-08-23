@@ -9,6 +9,7 @@
 #iUniform float iWow1 = 0.9 in {0.5, 2.0}
 #pragma TEControl.LEVELREACTIVITY.Disable
 #pragma TEControl.FREQREACTIVITY.Disable
+#pragma TEControl.WOWTRIGGER.Disable
 
 #ifdef GL_ES
 precision mediump float;
