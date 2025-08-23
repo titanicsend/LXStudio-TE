@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.1-SNAPSHOT",
-  "timestamp": 1755927781672,
+  "timestamp": 1755927856637,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -7243,7 +7243,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": true,
+          "selected": false,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -8980,7 +8980,7 @@
         "jsonParameters": {
           "points": 123,
           "host": "10.7.12.111",
-          "output": 1,
+          "output": 3,
           "ledOffset": 0,
           "artnetSequence": false,
           "reverse": true,
@@ -9006,7 +9006,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": false,
+          "selected": true,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -23282,12 +23282,12 @@
         "animation": false,
         "camera": {
           "active": false,
-          "radius": 495.8122897209761,
-          "theta": 0.14948423206806183,
-          "phi": 2.4344441443681717,
-          "x": 54.16441499818757,
-          "y": 347.4898680523038,
-          "z": -170.38376946205972
+          "radius": 713.6313330166818,
+          "theta": 180.23292663693428,
+          "phi": 0.7070807963609695,
+          "x": -17.828315705482964,
+          "y": 180.42844302207232,
+          "z": -150.07112413289724
         },
         "cue": [
           {

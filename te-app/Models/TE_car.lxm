@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.1-SNAPSHOT",
-  "timestamp": 1755927781675,
+  "timestamp": 1755927856638,
   "fixtures": [
     {
       "jsonFixtureType": "TE/panel/FA",
@@ -7061,7 +7061,7 @@
         "scale": 1.0,
         "hasCustomPointSize": false,
         "pointSize": 5.0,
-        "selected": true,
+        "selected": false,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
@@ -8798,7 +8798,7 @@
       "jsonParameters": {
         "points": 123,
         "host": "10.7.12.111",
-        "output": 1,
+        "output": 3,
         "ledOffset": 0,
         "artnetSequence": false,
         "reverse": true,
@@ -8824,7 +8824,7 @@
         "scale": 1.0,
         "hasCustomPointSize": false,
         "pointSize": 5.0,
-        "selected": false,
+        "selected": true,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
