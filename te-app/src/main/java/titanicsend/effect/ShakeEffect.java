@@ -10,7 +10,6 @@ import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.FunctionalParameter;
 import heronarts.lx.parameter.QuantizedTriggerParameter;
-import heronarts.lx.parameter.TriggerParameter;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderEffect;
 
@@ -56,15 +55,15 @@ public class ShakeEffect extends GLShaderEffect {
               }));
 
   private void triggerListener() {
-      isRunning = true;
-      // in tempo sync mode, the trigger schedules an event on
-      // the next cycle start
-      triggerRequested = tempoSync.isOn();
-      lastBasis = 0;
+    isRunning = true;
+    // in tempo sync mode, the trigger schedules an event on
+    // the next cycle start
+    triggerRequested = tempoSync.isOn();
+    lastBasis = 0;
 
-      // if tempo sync, we wait 'till the next cycle start to trigger
-      // if free running, reset sawtooth and trigger immediately
-      if (!tempoSync.isOn()) basis.setBasis(0.0);
+    // if tempo sync, we wait 'till the next cycle start to trigger
+    // if free running, reset sawtooth and trigger immediately
+    if (!tempoSync.isOn()) basis.setBasis(0.0);
   }
 
   private double getBasis() {
