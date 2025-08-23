@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.1-SNAPSHOT",
-  "timestamp": 1755948300505,
+  "timestamp": 1755949526839,
   "fixtures": [
     {
       "jsonFixtureType": "TE/panel/FA",
@@ -776,7 +776,7 @@
         "scale": 1.0,
         "hasCustomPointSize": false,
         "pointSize": 5.0,
-        "selected": true,
+        "selected": false,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
@@ -2237,7 +2237,7 @@
         "strand3output": 3,
         "artnetSequence": false,
         "showBacking": true,
-        "flipBacking": true,
+        "flipBacking": false,
         "onCar": true
       },
       "id": 2921,
@@ -2258,7 +2258,7 @@
         "scale": 1.0,
         "hasCustomPointSize": false,
         "pointSize": 5.0,
-        "selected": false,
+        "selected": true,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
@@ -7925,7 +7925,7 @@
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
-        "identify": true,
+        "identify": false,
         "mute": false,
         "solo": false,
         "tags": "",

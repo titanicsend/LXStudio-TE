@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.1-SNAPSHOT",
-  "timestamp": 1755949267388,
+  "timestamp": 1755949523855,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -168,7 +168,7 @@
             "parameters": {
               "label": "backside",
               "enabled": true,
-              "selector": "m1,m12,m13,m15,m17,m18,m19",
+              "selector": "m1,m4,m7,m12,m13,m15,m17,m18,m19",
               "normalization": 0,
               "normalization/name": "RELATIVE",
               "orientation": 0,
@@ -2440,7 +2440,7 @@
           "strand3output": 3,
           "artnetSequence": false,
           "showBacking": true,
-          "flipBacking": true,
+          "flipBacking": false,
           "onCar": true
         },
         "id": 2921,
@@ -2461,7 +2461,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": false,
+          "selected": true,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -3781,7 +3781,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": true,
+          "selected": false,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -8128,7 +8128,7 @@
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
-          "identify": true,
+          "identify": false,
           "mute": false,
           "solo": false,
           "tags": "",
@@ -23481,12 +23481,12 @@
         "animation": false,
         "camera": {
           "active": false,
-          "radius": 734.1997993283694,
-          "theta": 178.4019699320197,
-          "phi": 1.7065132018178701,
-          "x": 52.65304615216155,
-          "y": 302.68379490845837,
-          "z": 16.187982843548525
+          "radius": 692.5777767268254,
+          "theta": 180.9574318230152,
+          "phi": -1.0506243649870157,
+          "x": 5.734874643923831,
+          "y": 252.71113041811623,
+          "z": -13.446638960565906
         },
         "cue": [
           {
