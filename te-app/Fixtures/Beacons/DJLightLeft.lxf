@@ -7,9 +7,10 @@
     "dmx_universe": 20,
     "dmx_channel": 0
   },
+
   "components": [
     {
-      "type": "point"
+      "type": "point", "pointSize": 40
     }
   ]
 }
