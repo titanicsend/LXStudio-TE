@@ -167,6 +167,6 @@ public class DjLightsShowPattern extends DjLightsPattern
 
   @Override
   public void buildDeviceControls(UI ui, UIDevice uiDevice, DjLightsShowPattern device) {
-    UIUtils.buildMftStyleDeviceControls(ui, uiDevice, device);
+    UIUtils.buildTEDeviceControls(ui, uiDevice, device);
   }
 }

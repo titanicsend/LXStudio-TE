@@ -125,6 +125,6 @@ public class DjLightsEasyPattern extends DjLightsPattern
 
   @Override
   public void buildDeviceControls(UI ui, UIDevice uiDevice, DjLightsEasyPattern device) {
-    UIUtils.buildMftStyleDeviceControls(ui, uiDevice, device);
+    UIUtils.buildTEDeviceControls(ui, uiDevice, device);
   }
 }
