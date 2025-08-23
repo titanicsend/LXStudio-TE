@@ -9,6 +9,7 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.FunctionalParameter;
+import heronarts.lx.parameter.QuantizedTriggerParameter;
 import heronarts.lx.parameter.TriggerParameter;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderEffect;
@@ -31,19 +32,15 @@ public class ShakeEffect extends GLShaderEffect {
           .setDescription("Depth of the effect");
 
   public final BooleanParameter tempoSync =
-      new BooleanParameter("Sync", false).setDescription("Sync the effect to the engine tempo");
-
-  public final BooleanParameter manualTrigger =
-      new BooleanParameter("Manual", true)
-          .setDescription("Enable manual triggering w/trigger button");
+      new BooleanParameter("Sync", false).setDescription("Sync to global quantization events.");
 
   public final EnumParameter<Tempo.Division> tempoDivision =
       new EnumParameter<Tempo.Division>("Division", Tempo.Division.WHOLE)
           .setDescription("Tempo division to use in sync mode");
 
-  public final TriggerParameter trigger =
-      new TriggerParameter("Trigger", this::triggerListener)
-          .setDescription("Shake it NOW!!! (manual sync mode only");
+  public final QuantizedTriggerParameter trigger =
+      new QuantizedTriggerParameter.Launch(lx, "Trigger", this::triggerListener)
+          .setDescription("Shake it on the next global quantization event!");
 
   // sawtooth wave that can range in frequency between .1 and 10hz
   private final SawLFO basis =
@@ -78,9 +75,7 @@ public class ShakeEffect extends GLShaderEffect {
       r = this.lx.engine.tempo.getBasis(this.tempoDivision.getEnum());
     } else {
       r = basis.getBasis();
-    }
 
-    if (manualTrigger.isOn()) {
       gate = 0;
       if (isRunning) {
         gate = (triggerRequested) ? 0 : 1;
@@ -113,7 +108,6 @@ public class ShakeEffect extends GLShaderEffect {
     addParameter("tempoSync", this.tempoSync);
     addParameter("tempoDivision", this.tempoDivision);
 
-    addParameter("manualTrigger", this.manualTrigger);
     addParameter("trigger", this.trigger);
 
     addShader(
