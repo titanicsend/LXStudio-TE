@@ -158,6 +158,9 @@ public class DjLightsShowPattern extends DjLightsPattern
         setDmxValue(d, AdjStealthModel.INDEX_COLOR_FADE, 0); // No color fade
         setDmxValue(d, AdjStealthModel.INDEX_PT_SPEED, 0); // Instant pan/tilt movement
         setDmxValue(d, AdjStealthModel.INDEX_PROGRAMS, 0); // No programs
+
+        // Mirror the DMX fixture's color to the LXPoint that represents it on the screen
+        setColor(d.model, adjustedColor);
       }
     }
   }

@@ -116,6 +116,9 @@ public class DjLightsEasyPattern extends DjLightsPattern
           setDmxValue(d, AdjStealthModel.INDEX_SHUTTER, AdjStealthModel.SHUTTER_OPEN);
         }
         setDmxNormalized(d, AdjStealthModel.INDEX_FOCUS, focus);
+
+        // Mirror the DMX fixture's color to the LXPoint that represents it on the screen
+        setColor(d.model, color);
       }
     }
   }
