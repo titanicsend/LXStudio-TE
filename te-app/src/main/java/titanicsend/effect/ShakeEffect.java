@@ -15,10 +15,10 @@ import titanicsend.pattern.glengine.GLShaderEffect;
 
 @LXCategory("Titanics End")
 public class ShakeEffect extends GLShaderEffect {
-  double effectDepth;
+  private double effectDepth;
   private double lastBasis;
   private boolean triggerRequested = false;
-  boolean isRunning = false;
+  private boolean isRunning = false;
 
   public final CompoundParameter speed =
       new CompoundParameter("Speed", 0.5, 1.0, 0.1)
@@ -43,7 +43,6 @@ public class ShakeEffect extends GLShaderEffect {
 
   public final TriggerParameter trigger =
       new TriggerParameter("Trigger", this::triggerListener)
-          .setMode(BooleanParameter.Mode.MOMENTARY)
           .setDescription("Shake it NOW!!! (manual sync mode only");
 
   // sawtooth wave that can range in frequency between .1 and 10hz
@@ -60,7 +59,6 @@ public class ShakeEffect extends GLShaderEffect {
               }));
 
   private void triggerListener() {
-    if (manualTrigger.isOn()) {
       isRunning = true;
       // in tempo sync mode, the trigger schedules an event on
       // the next cycle start
@@ -70,7 +68,6 @@ public class ShakeEffect extends GLShaderEffect {
       // if tempo sync, we wait 'till the next cycle start to trigger
       // if free running, reset sawtooth and trigger immediately
       if (!tempoSync.isOn()) basis.setBasis(0.0);
-    }
   }
 
   private double getBasis() {
