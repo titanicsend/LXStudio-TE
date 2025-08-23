@@ -1,5 +1,6 @@
 package titanicsend.pattern.ben;
 
+import heronarts.glx.ui.UI2dContainer;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
@@ -7,6 +8,9 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.TriggerParameter;
+import heronarts.lx.studio.LXStudio;
+import heronarts.lx.studio.ui.device.UIDevice;
+import heronarts.lx.studio.ui.device.UIDeviceControls;
 import heronarts.lx.utils.LXUtils;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,9 +24,11 @@ import titanicsend.app.TEVirtualColor;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEVertex;
 import titanicsend.pattern.TEAudioPattern;
+import titanicsend.preset.UIUserPresetCollection;
+import titanicsend.ui.UIMFTControls;
 
 @LXCategory("Geometry Masks")
-public class BassLightning extends TEAudioPattern {
+public class BassLightning extends TEAudioPattern implements UIDeviceControls<BassLightning> {
 
   static <T> T randomItem(Collection<T> collection) {
     return collection.stream().skip((int) (collection.size() * Math.random())).findFirst().get();
@@ -293,5 +299,17 @@ public class BassLightning extends TEAudioPattern {
     //					colors[point.index] = LXColor.RED;
     //			}
     //		}
+  }
+
+  @Override
+  public void buildDeviceControls(LXStudio.UI ui, UIDevice uiDevice, BassLightning device) {
+    uiDevice.setLayout(UI2dContainer.Layout.HORIZONTAL, 2);
+
+    uiDevice.addChildren(
+        // Remote controls, MFT-layout
+        new UIMFTControls(ui, device, uiDevice.getContentHeight()),
+
+        // User Presets list
+        new UIUserPresetCollection(ui, device, uiDevice.getContentHeight()));
   }
 }
