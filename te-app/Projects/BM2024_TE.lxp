@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.1-SNAPSHOT",
-  "timestamp": 1755927856637,
+  "timestamp": 1755927908422,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -8937,7 +8937,7 @@
         "jsonParameters": {
           "points": 155,
           "host": "10.7.12.111",
-          "output": 1,
+          "output": 3,
           "ledOffset": 123,
           "artnetSequence": false,
           "reverse": false,
@@ -8963,7 +8963,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": false,
+          "selected": true,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -9006,7 +9006,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": true,
+          "selected": false,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
