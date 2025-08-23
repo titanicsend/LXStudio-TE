@@ -24,7 +24,7 @@ public class SpecialKube extends GLShaderPattern {
     super(lx, TEShaderView.ALL_POINTS);
 
     controls.setRange(TEControlTag.QUANTITY, 15, 5, 30);
-    controls.setRange(TEControlTag.SPEED, 0.69, 0.1, 1.0);
+    controls.setRange(TEControlTag.SPEED, 0.69, -4.0, 4.0);
 
     // cube size
     controls.setRange(TEControlTag.SIZE, 1.0, 0.5, 3.0);
@@ -36,10 +36,10 @@ public class SpecialKube extends GLShaderPattern {
     controls.setRange(TEControlTag.WOW2, 0.2, 0.0, 1.0);
 
     // rotation speed
-    controls.setRange(TEControlTag.SPIN, 0.25, 0.0, 2.0);
+    controls.setRange(TEControlTag.SPIN, 1.0, -4.0, 4.0);
 
     // rotation angle offset
-    controls.setRange(TEControlTag.ANGLE, 0.0, 0.0, 6.28);
+    // controls.setRange(TEControlTag.ANGLE, 0.0, 0.0, 6.28);
 
     controls.setRange(TEControlTag.YPOS, -0.28, -1.0, 1.0);
 

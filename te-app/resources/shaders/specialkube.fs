@@ -118,16 +118,19 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         pos.x = (rand1 - 0.5) * 3.0 + variation1;
         pos.y = (rand2 - 0.5) * 2.0 + variation2;
         
-        float cycleTime = mod(iTime * iSpeed + rand3 * 10.0, 10.0);
-        pos.z = 7.0 - cycleTime * 1.5 * iSpeed;
+        float cycleTime = mod(iTime + rand3 * 10.0, 10.0);
+        pos.z = 7.0 - cycleTime * 1.5;
         
         // skip if too close or too far
         if (pos.z < -1.0 || pos.z > 6.0) continue;
         
-        // rotation angles with base angle offset
-        float rotX = iRotationAngle + iTime * iSpin * (0.5 + rand4 * 0.5);
-        float rotY = iRotationAngle * 0.7 + iTime * iSpin * (0.3 + rand5 * 0.5);
-        float rotZ = iRotationAngle * 0.4 + iTime * iSpin * (0.4 + rand1 * 0.5);
+        // Cubes rotate at different speeds per axis.  Note that
+        // for visual interest, each axis has a minimum rate.  If
+        // iRotationAngle is changing, meaning rotation is on, then
+        // there will always be some movement on each axis.
+        float rotX = iRotationAngle * (0.3 + rand4);
+        float rotY = iRotationAngle * (0.5 + rand5);
+        float rotZ = iRotationAngle * (0.5 * 1.0 + rand1);
         mat3 rotation = rotateX(rotX) * rotateY(rotY) * rotateZ(rotZ);
         
         float size = 0.15 * iScale * (0.7 + rand2 * 0.3);
