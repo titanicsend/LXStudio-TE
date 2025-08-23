@@ -25,9 +25,11 @@ public interface DmxWholeModel {
 
   public List<DmxModel> getDmxModels();
 
-  default void clearBeacons() {}
+  default void clearDmxModels() {}
 
   default void addBeacon(DmxModel dmxModel) {}
+
+  default void addDjLight(DmxModel dmxModel) {}
 
   public interface DmxWholeModelListener {
     public void dmxModelsChanged(List<DmxModel> dmxModels);

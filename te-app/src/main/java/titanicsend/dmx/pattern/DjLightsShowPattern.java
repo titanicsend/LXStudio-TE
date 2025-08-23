@@ -133,7 +133,7 @@ public class DjLightsShowPattern extends DjLightsPattern
     RGBWColor rgbw = new RGBWColor(adjustedColor, brightnessValue);
 
     // Apply to all beacon fixtures
-    for (DmxModel d : this.modelTE.getBeacons()) {
+    for (DmxModel d : this.modelTE.getDjLights()) {
       if (d instanceof AdjStealthModel) {
         // Position controls
         setDmxNormalized(d, AdjStealthModel.INDEX_PAN, panValue);

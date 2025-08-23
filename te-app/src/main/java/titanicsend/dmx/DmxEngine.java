@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import titanicsend.app.dev.DevSwitch;
+import titanicsend.dmx.model.BeaconModel;
 import titanicsend.dmx.model.DmxModel;
 import titanicsend.dmx.model.DmxWholeModel;
 import titanicsend.dmx.parameter.DmxParameter;
@@ -137,7 +138,7 @@ public class DmxEngine implements LXLoopTask, TEWholeModel.TEModelListener {
 
   private void refresh() {
     // Taking some shortcuts here for time's sake, leaving for the desert in a few days
-    this.dmxWholeModel.clearBeacons();
+    this.dmxWholeModel.clearDmxModels();
 
     // Search models for the DMX metadata tag
     // List<LXModel> subModels = new ArrayList<LXModel>();
@@ -162,8 +163,10 @@ public class DmxEngine implements LXLoopTask, TEWholeModel.TEModelListener {
       }
 
       // Add to DMX models list
-      if (dmxModel != null) {
-        this.dmxWholeModel.addBeacon(dmxModel);
+      if (dmxModel instanceof BeaconModel beaconModel) {
+        this.dmxWholeModel.addBeacon(beaconModel);
+      } else if (dmxModel != null) {
+        this.dmxWholeModel.addDjLight(dmxModel);
       }
     }
 
