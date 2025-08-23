@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.1-SNAPSHOT",
-  "timestamp": 1755914948794,
+  "timestamp": 1755927781672,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -4835,7 +4835,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": true,
+          "selected": false,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -5540,7 +5540,7 @@
         "jsonParameters": {
           "points": 131,
           "host": "10.7.6.22",
-          "output": 2,
+          "output": 3,
           "ledOffset": 0,
           "artnetSequence": false,
           "reverse": false,
@@ -5583,7 +5583,7 @@
         "jsonParameters": {
           "points": 121,
           "host": "10.7.6.22",
-          "output": 2,
+          "output": 3,
           "ledOffset": 308,
           "artnetSequence": false,
           "reverse": true,
@@ -5798,7 +5798,7 @@
         "jsonParameters": {
           "points": 177,
           "host": "10.7.6.22",
-          "output": 2,
+          "output": 3,
           "ledOffset": 131,
           "artnetSequence": false,
           "reverse": false,
@@ -7243,7 +7243,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": false,
+          "selected": true,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -23257,7 +23257,7 @@
   },
   "externals": {
     "ui": {
-      "leftPaneActiveSection": 2,
+      "leftPaneActiveSection": 1,
       "audioExpanded": true,
       "envelopExpanded": true,
       "reaperExpanded": true,
@@ -23283,8 +23283,8 @@
         "camera": {
           "active": false,
           "radius": 495.8122897209761,
-          "theta": 351.98722319304943,
-          "phi": 13.03945130854845,
+          "theta": 0.14948423206806183,
+          "phi": 2.4344441443681717,
           "x": 54.16441499818757,
           "y": 347.4898680523038,
           "z": -170.38376946205972
