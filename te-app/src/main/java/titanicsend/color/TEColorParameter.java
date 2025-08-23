@@ -112,6 +112,10 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
 
   private final TEGradientSource gradientSource;
 
+  public TEColorParameter(String label) {
+    this(TEGradientSource.get(), label);
+  }
+
   public TEColorParameter(TEGradientSource gradientSource, String label) {
     this(gradientSource, label, 0xff000000);
   }

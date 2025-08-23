@@ -2,7 +2,6 @@ package titanicsend.dmx.pattern;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
-import heronarts.lx.color.ColorParameter;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.BooleanParameter.Mode;
 import heronarts.lx.parameter.CompoundParameter;
@@ -11,6 +10,7 @@ import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.studio.LXStudio.UI;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
+import titanicsend.color.TEColorParameter;
 import titanicsend.dmx.model.AdjStealthModel;
 import titanicsend.dmx.model.DmxModel;
 import titanicsend.ui.UIUtils;
@@ -42,7 +42,7 @@ public class DjLightsEasyPattern extends DjLightsPattern
           .setWrappable(false)
           .setDescription("Strobe Speed");
 
-  public final ColorParameter linkedColor = new ColorParameter("Color");
+  public final TEColorParameter linkedColor;
 
   public DjLightsEasyPattern(LX lx) {
     super(lx);
@@ -51,7 +51,7 @@ public class DjLightsEasyPattern extends DjLightsPattern
     addParameter("tilt", this.tilt);
     addParameter("strobeSpeed", this.strobeSpeed);
     addParameter("strobe", this.strobe);
-    addParameter("color", this.linkedColor);
+    addParameter("color", this.linkedColor = new TEColorParameter("Color"));
     addParameter("dimmer", this.dimmer);
     addParameter("focus", this.focus);
     addParameter("mirror", this.mirror);
@@ -66,6 +66,7 @@ public class DjLightsEasyPattern extends DjLightsPattern
           this.tilt,
           this.strobeSpeed,
           this.strobe,
+          this.linkedColor.offset,
           this.linkedColor.hue,
           this.linkedColor.saturation,
           this.linkedColor.brightness,
@@ -115,6 +116,9 @@ public class DjLightsEasyPattern extends DjLightsPattern
           setDmxValue(d, AdjStealthModel.INDEX_SHUTTER, AdjStealthModel.SHUTTER_OPEN);
         }
         setDmxNormalized(d, AdjStealthModel.INDEX_FOCUS, focus);
+
+        // Mirror the DMX fixture's color to the LXPoint that represents it on the screen
+        setColor(d.model, color);
       }
     }
   }

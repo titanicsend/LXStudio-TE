@@ -2,6 +2,7 @@ package titanicsend.dmx.pattern;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
+import heronarts.lx.color.LXColor;
 import heronarts.lx.studio.LXStudio.UI;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
@@ -50,6 +51,8 @@ public class DjLightsDirectPattern extends DjLightsPattern
     double ptSpeed = this.ptSpeed.getNormalized();
     int programs = this.programs.getDmxValue();
 
+    int color = LXColor.rgbf((float) red, (float) green, (float) blue);
+
     for (DmxModel d : this.modelTE.getDjLights()) {
       if (d instanceof AdjStealthModel) {
         setDmxNormalized(d, AdjStealthModel.INDEX_PAN, pan);
@@ -66,6 +69,9 @@ public class DjLightsDirectPattern extends DjLightsPattern
         setDmxValue(d, AdjStealthModel.INDEX_COLOR_FADE, colorFade);
         setDmxNormalized(d, AdjStealthModel.INDEX_PT_SPEED, ptSpeed);
         setDmxValue(d, AdjStealthModel.INDEX_PROGRAMS, programs);
+
+        // Mirror the DMX fixture's color to the LXPoint that represents it on the screen
+        setColor(d.model, color);
       }
     }
   }
