@@ -39,9 +39,29 @@ public class PacmanPattern extends TEAudioPattern {
             new BooleanParameter("Eyes", true)
                     .setDescription("Show Pacman's eyes");
     
+    public final CompoundParameter eyeSize =
+            new CompoundParameter("EyeSize", 0.13f, 0.05f, 0.3f)
+                    .setDescription("Size of Pacman's eye relative to body size");
+    
+    public final CompoundParameter eyeX =
+            new CompoundParameter("EyeX", 0.1f, -0.5f, 0.5f)
+                    .setDescription("Horizontal position of eye relative to center (negative=left, positive=right)");
+    
+    public final CompoundParameter eyeY =
+            new CompoundParameter("EyeY", 0.4f, -0.5f, 0.5f)
+                    .setDescription("Vertical position of eye relative to center (negative=down, positive=up)");
+    
     public final CompoundParameter twist =
             new CompoundParameter("Twist", 0.0f, 0.0f, 360.0f)
                     .setDescription("Rotate the entire Pacman character");
+    
+    public final BooleanParameter autoTwist =
+            new BooleanParameter("AutoTwist", false)
+                    .setDescription("Enable automatic rotation of Pacman");
+    
+    public final CompoundParameter twistSpeed =
+            new CompoundParameter("TwistSpeed", 1.0f, 0.1f, 5.0f)
+                    .setDescription("Speed of automatic rotation (rotations per second)");
     
     public final DiscreteParameter colorChoice =
             new DiscreteParameter("Color", 0, 0, 6)
@@ -96,7 +116,12 @@ public class PacmanPattern extends TEAudioPattern {
         addParameter("MAnimation", mouthAnimation);
         addParameter("MouthMove", mouthMove);
         addParameter("Eyes", showEyes);
+        addParameter("EyeSize", eyeSize);
+        addParameter("EyeX", eyeX);
+        addParameter("EyeY", eyeY);
         addParameter("Twist", twist);
+        addParameter("AutoTwist", autoTwist);
+        addParameter("TwistSpeed", twistSpeed);
         addParameter("Color", colorChoice);
         addParameter("ColorShift", colorShift);
         addParameter("ColorSpeed", colorShiftSpeed);
@@ -119,6 +144,13 @@ public class PacmanPattern extends TEAudioPattern {
             float colorTime = (float) (animationTime / colorShiftSpeed.getValuef());
             int colorIndex = (int) (colorTime % 7); // 7 colors total
             colorChoice.setValue(colorIndex);
+        }
+        
+        // Update auto twist if enabled
+        if (autoTwist.isOn()) {
+            // Calculate automatic twist angle based on time and speed
+            float autoTwistAngle = (float) (animationTime * twistSpeed.getValuef() * 360.0f) % 360.0f;
+            twist.setValue(autoTwistAngle);
         }
         
         // Calculate the center of the model
@@ -228,10 +260,11 @@ public class PacmanPattern extends TEAudioPattern {
         
         // Add eye if enabled
         if (showEyes.isOn()) {
-            // Single eye position (above and to the left/right of center based on flipFace)
-            float eyeRadius = radius * 0.15f; // Eye size relative to Pacman size
-            float eyeX = flipFace.getValueb() ? centerX + radius * 0.1f : centerX - radius * 0.1f; // Right or left of center
-            float eyeY = centerY + radius * 0.4f; // Above center but not too high
+            // Eye position using parameters, with flipFace affecting the X direction
+            float eyeRadius = radius * eyeSize.getValuef(); // Eye size relative to Pacman size
+            float eyeXOffset = flipFace.getValueb() ? eyeX.getValuef() : -eyeX.getValuef(); // Flip X direction based on flipFace
+            float eyeXPos = centerX + radius * eyeXOffset; // X position relative to center
+            float eyeYPos = centerY + radius * eyeY.getValuef(); // Y position relative to center
             
             // Draw the single eye
             for (int i = 0; i < model.points.length; i++) {
@@ -244,8 +277,8 @@ public class PacmanPattern extends TEAudioPattern {
                 float rotatedY = (float) (relX * Math.sin(twistAngle) + relY * Math.cos(twistAngle));
                 
                 // Apply the opposite rotation to the eye position
-                float eyeRelX = eyeX - centerX;
-                float eyeRelY = eyeY - centerY;
+                float eyeRelX = eyeXPos - centerX;
+                float eyeRelY = eyeYPos - centerY;
                 float rotatedEyeX = centerX + (float) (eyeRelX * Math.cos(-twistAngle) - eyeRelY * Math.sin(-twistAngle));
                 float rotatedEyeY = centerY + (float) (eyeRelX * Math.sin(-twistAngle) + eyeRelY * Math.cos(-twistAngle));
                 
@@ -274,7 +307,12 @@ public class PacmanPattern extends TEAudioPattern {
         mouthAnimation.reset();
         mouthMove.reset();
         showEyes.reset();
+        eyeSize.reset();
+        eyeX.reset();
+        eyeY.reset();
         twist.reset();
+        autoTwist.reset();
+        twistSpeed.reset();
         colorChoice.reset();
         colorShift.reset();
         colorShiftSpeed.reset();

@@ -47,7 +47,7 @@ public class GhostPattern extends TEAudioPattern {
                     .setDescription("Enable automatic eye shifting animation");
     
     public final BooleanParameter eyeDirection =
-            new BooleanParameter("EyeRight", false)
+            new BooleanParameter("EyeRight", true)
                     .setDescription("Eye direction (false=left, true=right)");
     
     public final CompoundParameter twist =
@@ -55,8 +55,8 @@ public class GhostPattern extends TEAudioPattern {
                     .setDescription("Rotate the entire ghost");
     
     public final DiscreteParameter colorChoice =
-            new DiscreteParameter("Color", 1, 0, 7)
-                    .setDescription("Ghost color (0=Classic White, 1=Red/Blinky, 2=Pink/Pinky, 3=Cyan/Inky, 4=Orange/Clyde, 5=Blue, 6=Purple, 7=Green)");
+            new DiscreteParameter("Color", 0, 0, 5)
+                    .setDescription("Ghost color (0=Red/Blinky, 1=Pink/Pinky, 2=Cyan/Inky, 3=Orange/Clyde, 4=Purple, 5=Green)");
     
     public final BooleanParameter colorShift =
             new BooleanParameter("ColorShift", false)
@@ -65,10 +65,6 @@ public class GhostPattern extends TEAudioPattern {
     public final CompoundParameter colorShiftSpeed =
             new CompoundParameter("ColorSpeed", 2.0f, 0.1f, 5.0f)
                     .setDescription("Speed of color cycling (seconds per color)");
-    
-    public final BooleanParameter scared =
-            new BooleanParameter("Scared", false)
-                    .setDescription("Turn ghost blue (scared mode)");
     
     public final BooleanParameter panic =
             new BooleanParameter("PANIC", false)
@@ -93,20 +89,14 @@ public class GhostPattern extends TEAudioPattern {
     
     // Method to get ghost color based on choice
     private int getGhostColor() {
-        if (scared.isOn()) {
-            return LXColor.hsb(240, 100, 80); // Scared blue
-        }
-        
         switch (colorChoice.getValuei()) {
-            case 0: return LXColor.hsb(0, 0, 95);     // Classic White
-            case 1: return LXColor.hsb(0, 100, 100);   // Red (Blinky)
-            case 2: return LXColor.hsb(330, 100, 100); // Pink (Pinky)
-            case 3: return LXColor.hsb(180, 100, 100); // Cyan (Inky)
-            case 4: return TEColor.ORANGE;             // Orange (Clyde)
-            case 5: return LXColor.hsb(240, 100, 100); // Blue
-            case 6: return LXColor.hsb(270, 100, 100); // Purple
-            case 7: return LXColor.hsb(120, 100, 100); // Green
-            default: return LXColor.hsb(0, 0, 95);     // Default white
+            case 0: return LXColor.hsb(0, 100, 100);   // Red (Blinky)
+            case 1: return LXColor.hsb(330, 100, 100); // Pink (Pinky)
+            case 2: return LXColor.hsb(180, 100, 100); // Cyan (Inky)
+            case 3: return TEColor.ORANGE;             // Orange (Clyde)
+            case 4: return LXColor.hsb(270, 100, 100); // Purple
+            case 5: return LXColor.hsb(120, 100, 100); // Green
+            default: return LXColor.hsb(0, 100, 100);  // Default red
         }
     }
 
@@ -125,7 +115,6 @@ public class GhostPattern extends TEAudioPattern {
         addParameter("Color", colorChoice);
         addParameter("ColorShift", colorShift);
         addParameter("ColorSpeed", colorShiftSpeed);
-        addParameter("Scared", scared);
         addParameter("PANIC", panic);
         
         // Add panic listener
@@ -139,9 +128,9 @@ public class GhostPattern extends TEAudioPattern {
         
         // Update color shift if enabled
         if (colorShift.isOn()) {
-            // Cycle through colors based on speed parameter
+            // Cycle through all available colors (0-5)
             float colorTime = (float) (animationTime / colorShiftSpeed.getValuef());
-            int colorIndex = (int) (colorTime % 8); // 8 colors total
+            int colorIndex = (int) (colorTime % 6); // 6 colors total (0-5)
             colorChoice.setValue(colorIndex);
         }
         
@@ -269,9 +258,9 @@ public class GhostPattern extends TEAudioPattern {
         } else {
             // Manual positioning based on direction toggle and manual shift
             if (eyeDirection.isOn()) {
-                currentEyeShift = 0.5f; // Right side
+                currentEyeShift = 0.5f; // Right side (coordinates flipped - this goes left)
             } else {
-                currentEyeShift = -0.5f; // Left side  
+                currentEyeShift = -0.65f; // Left side (coordinates flipped - this goes right, shift more to touch edge)
             }
             // Add manual shift on top
             currentEyeShift += eyeShift.getValuef() * 0.5f;
@@ -540,7 +529,6 @@ public class GhostPattern extends TEAudioPattern {
         colorChoice.reset();
         colorShift.reset();
         colorShiftSpeed.reset();
-        scared.reset();
     }
     
     @Override
