@@ -200,6 +200,7 @@ import titanicsend.ui.UITEColorControl;
 import titanicsend.ui.UITEPerformancePattern;
 import titanicsend.ui.color.UIColorPaletteManagerSection;
 import titanicsend.ui.effect.UIRandomStrobeEffect;
+import titanicsend.ui.effect.UIShakeEffect;
 import titanicsend.ui.modulator.UIDmx16bitModulator;
 import titanicsend.ui.modulator.UIDmxDualRangeModulator;
 import titanicsend.ui.modulator.UIDmxGridModulator;
@@ -540,6 +541,7 @@ public class TEApp extends LXStudio {
       if (lx instanceof LXStudio) {
         // UI: Effects
         ((LXStudio.Registry) lx.registry).addUIDeviceControls(UIRandomStrobeEffect.class);
+        ((LXStudio.Registry) lx.registry).addUIDeviceControls(UIShakeEffect.class);
 
         // UI: Modulators
         ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmx16bitModulator.class);

@@ -21,8 +21,7 @@ public class ShakeEffect extends GLShaderEffect {
   private boolean isRunning = false;
 
   public final CompoundParameter speed =
-      new CompoundParameter("Speed", 0.5, 1.0, 0.1)
-          .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
+      new CompoundParameter("Speed", 0.7, 1.0, 0.1)
           .setDescription("Speed of the effect");
 
   public final CompoundParameter depth =
@@ -38,7 +37,7 @@ public class ShakeEffect extends GLShaderEffect {
           .setDescription("Tempo division to use in sync mode");
 
   public final QuantizedTriggerParameter trigger =
-      new QuantizedTriggerParameter.Launch(lx, "Trigger", this::triggerListener)
+      new QuantizedTriggerParameter.Launch(lx, "Shake!", this::triggerListener)
           .setDescription("Shake it on the next global quantization event!");
 
   // sawtooth wave that can range in frequency between .1 and 10hz
