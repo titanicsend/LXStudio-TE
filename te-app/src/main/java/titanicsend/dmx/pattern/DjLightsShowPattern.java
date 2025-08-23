@@ -26,7 +26,8 @@ public class DjLightsShowPattern extends DjLightsPattern
       new CompoundParameter("Brightness", 0.5).setDescription("Overall brightness (master dimmer)");
 
   // Use TEColorParameter for full palette/swatch integration
-  public final TEColorParameter color;
+  public final TEColorParameter colorL;
+  public final TEColorParameter colorR;
 
   // Allow desaturation from TE color which is often full-saturation
   public final CompoundParameter saturation =
@@ -46,9 +47,11 @@ public class DjLightsShowPattern extends DjLightsPattern
     addParameter("brightness", this.brightness);
 
     addParameter(
-        "color",
-        this.color =
-            new TEColorParameter("Color").setDescription("Light color from palette/swatch"));
+        "colorL",
+        this.colorL = new TEColorParameter("ColorL").setDescription("Left DJ light color"));
+    addParameter(
+        "colorR",
+        this.colorR = new TEColorParameter("ColorR").setDescription("Right DJ light color"));
     addParameter("saturation", this.saturation);
 
     // Set defaults
@@ -61,8 +64,8 @@ public class DjLightsShowPattern extends DjLightsPattern
         this.tilt,
         this.focus,
         this.brightness,
-        this.color.colorSource,
-        this.color.offset,
+        this.colorL.offset,
+        this.colorR.offset,
         this.saturation);
   }
 
@@ -124,18 +127,22 @@ public class DjLightsShowPattern extends DjLightsPattern
     double brightnessValue = this.brightness.getNormalized();
     double saturationValue = this.saturation.getNormalized();
 
-    // Get color from TEColorParameter which handles palette/swatch integration
-    int baseColor = this.color.calcColor();
-
-    // Apply saturation adjustment (can further de-saturate the TE color)
-    int adjustedColor = applySaturation(baseColor, saturationValue);
-
-    // Convert to RGBW with brightness applied
-    RGBWColor rgbw = new RGBWColor(adjustedColor, brightnessValue);
-
     // Apply to all beacon fixtures
     for (DmxModel d : this.modelTE.getDjLights()) {
       if (d instanceof AdjStealthModel) {
+
+        // Determine Left or Right DJ light by checking fixture tags
+        boolean isRight = d.model.tags.contains("right");
+
+        // Get color from TEColorParameter which handles palette/swatch integration
+        int baseColor = isRight ? this.colorR.calcColor() : this.colorL.calcColor();
+
+        // Apply saturation adjustment (further de-saturates the TE color)
+        int adjustedColor = applySaturation(baseColor, saturationValue);
+
+        // Convert to RGBW with brightness applied
+        RGBWColor rgbw = new RGBWColor(adjustedColor, brightnessValue);
+
         // Position controls
         setDmxNormalized(d, AdjStealthModel.INDEX_PAN, panValue);
         setDmxNormalized(d, AdjStealthModel.INDEX_TILT, tiltValue);

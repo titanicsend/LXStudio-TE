@@ -1,6 +1,6 @@
 {
   "label": "DJLightRight",
-  "tags": [ "dmx", "djLight", "dmxFixture" ],
+  "tags": [ "dmx", "djLight", "dmxFixture", "right" ],
   "meta": {
     "dmx": "titanicsend.dmx.model.AdjStealthModel",
     "dmx_host": "10.0.0.204",
