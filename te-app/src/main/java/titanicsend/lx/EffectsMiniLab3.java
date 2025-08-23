@@ -4,8 +4,8 @@ import static heronarts.lx.midi.LXSysexMessage.END_SYSEX;
 import static heronarts.lx.midi.LXSysexMessage.START_SYSEX;
 
 import heronarts.lx.LX;
+import heronarts.lx.LXDeviceComponent;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.effect.LXEffect;
 import heronarts.lx.midi.LXMidiEngine;
 import heronarts.lx.midi.LXMidiInput;
 import heronarts.lx.midi.LXMidiOutput;
@@ -201,8 +201,8 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   public enum PadColor {
     OFF(LXColor.BLACK),
     ENABLED(LXColor.RED),
-    DISABLED(LXColor.rgb(0, 150, 0)),
-    EMPTY(LXColor.gray(.2f));
+    DISABLED(LXColor.rgb(100, 100, 0)),
+    EMPTY(LXColor.grayn(.2f));
     public final int r, g, b;
     public final byte rByte, gByte, bByte;
 
@@ -297,47 +297,84 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     this.isRegistered = true;
 
     int slotIndex = 0;
-    for (Slot<? extends LXEffect> slot : this.effectManager.slots) {
+    for (Slot<? extends LXDeviceComponent> slot : this.effectManager.slots) {
       setSlot(slotIndex++, slot);
+    }
+
+    int triggerSlotIndex = 0;
+    for (Slot<? extends LXDeviceComponent> slot : this.effectManager.triggerSlots) {
+      setTriggerSlot(triggerSlotIndex++, slot);
     }
 
     // Subscribe to GlobalEffect slots added/removed
     this.effectManager.slots.addListener(this.slotsListener);
+    this.effectManager.triggerSlots.addListener(this.triggerSlotsListener);
   }
 
   private void unregister() {
     this.isRegistered = false;
+
     this.effectManager.slots.removeListener(this.slotsListener);
+    this.effectManager.triggerSlots.removeListener(this.triggerSlotsListener);
+
     for (int i = 0; i < MAX_SLOTS; i++) {
       setSlot(i, null);
+    }
+    for (int i = 0; i < MAX_TRIGGER_SLOTS; i++) {
+      setTriggerSlot(i, null);
     }
     clearPadColors();
   }
 
-  private final ObservableList.Listener<Slot<? extends LXEffect>> slotsListener =
+  private final ObservableList.Listener<Slot<? extends LXDeviceComponent>> slotsListener =
       new ObservableList.Listener<>() {
         @Override
-        public void itemAdded(Slot<? extends LXEffect> item) {
+        public void itemAdded(Slot<? extends LXDeviceComponent> item) {
           int slotIndex = effectManager.slots.indexOf(item);
           TE.log("Slot added [" + slotIndex + "]: " + item);
           // Update registeredSlot for the new item and all slots after
           for (int i = slotIndex; i < effectManager.slots.size(); i++) {
-            Slot<? extends LXEffect> slot = effectManager.slots.get(i);
+            Slot<? extends LXDeviceComponent> slot = effectManager.slots.get(i);
             setSlot(i, slot);
           }
         }
 
         @Override
-        public void itemRemoved(Slot<? extends LXEffect> item) {
+        public void itemRemoved(Slot<? extends LXDeviceComponent> item) {
           // Refresh all slot registrations. If they didn't change it will fast-out.
           int slotIndex = 0;
-          for (Slot<? extends LXEffect> slot : effectManager.slots) {
+          for (Slot<? extends LXDeviceComponent> slot : effectManager.slots) {
             setSlot(slotIndex, slot);
             slotIndex++;
           }
           // One was removed, so set the next location to null
           setSlot(slotIndex, null);
+          TE.log("Slot removed: " + item);
+        }
+      };
+  private final ObservableList.Listener<Slot<? extends LXDeviceComponent>> triggerSlotsListener =
+      new ObservableList.Listener<>() {
+        @Override
+        public void itemAdded(Slot<? extends LXDeviceComponent> item) {
+          int slotIndex = effectManager.triggerSlots.indexOf(item);
+          TE.log("TriggerSlot added [" + slotIndex + "]: " + item);
+          // Update registeredSlot for the new item and all slots after
+          for (int i = slotIndex; i < effectManager.triggerSlots.size(); i++) {
+            Slot<? extends LXDeviceComponent> slot = effectManager.triggerSlots.get(i);
+            setTriggerSlot(i, slot);
+          }
+        }
 
+        @Override
+        public void itemRemoved(Slot<? extends LXDeviceComponent> item) {
+          // Refresh all triggerslot registrations. If they didn't change it will fast-out.
+          int slotIndex = 0;
+          for (Slot<? extends LXDeviceComponent> slot : effectManager.triggerSlots) {
+            setTriggerSlot(slotIndex, slot);
+            slotIndex++;
+          }
+          // One was removed, so set the next location to null
+          setTriggerSlot(slotIndex, null);
           TE.log("Slot removed: " + item);
         }
       };
@@ -345,9 +382,13 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   // Slots
 
   private static final int MAX_SLOTS = 8;
-  private final Slot<? extends LXEffect>[] registeredSlots = new Slot<?>[MAX_SLOTS];
+  private static final int MAX_TRIGGER_SLOTS = NUM_KEYS;
 
-  private void setSlot(int slotIndex, Slot<? extends LXEffect> slot) {
+  private final Slot<? extends LXDeviceComponent>[] registeredSlots = new Slot<?>[MAX_SLOTS];
+  private final Slot<? extends LXDeviceComponent>[] registeredTriggerSlots =
+      new Slot<?>[MAX_TRIGGER_SLOTS];
+
+  private void setSlot(int slotIndex, Slot<? extends LXDeviceComponent> slot) {
     if (slotIndex < 0) {
       throw new IllegalArgumentException("Invalid slotIndex: " + slotIndex);
     }
@@ -356,7 +397,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
       return;
     }
 
-    final Slot<? extends LXEffect> oldSlot = this.registeredSlots[slotIndex];
+    final Slot<? extends LXDeviceComponent> oldSlot = this.registeredSlots[slotIndex];
     if (oldSlot != slot) {
       if (oldSlot != null) {
         unregisterSlot(slotIndex, oldSlot);
@@ -365,17 +406,49 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
       if (slot != null) {
         registerSlot(slotIndex, slot);
       }
-      slotChanged(slotIndex);
-      verbose("Slot [" + slotIndex + "] set to: " + slot);
+      slotStateChanged(slotIndex);
+      String slotName = slot != null ? slot.getName() : "<< EMPTY >>";
+      verbose("Slot [" + slotIndex + "] set to: " + slotName);
     }
   }
 
-  private void registerSlot(int slotIndex, Slot<? extends LXEffect> slot) {
+  private void setTriggerSlot(int triggerSlotIndex, Slot<? extends LXDeviceComponent> slot) {
+    if (triggerSlotIndex < 0) {
+      throw new IllegalArgumentException("Invalid triggerSlotIndex: " + triggerSlotIndex);
+    }
+    if (triggerSlotIndex >= MAX_TRIGGER_SLOTS) {
+      // Ignore slots beyond our capability
+      return;
+    }
+
+    final Slot<? extends LXDeviceComponent> oldSlot = this.registeredTriggerSlots[triggerSlotIndex];
+    if (oldSlot != slot) {
+      if (oldSlot != null) {
+        unregisterTriggerSlot(triggerSlotIndex, oldSlot);
+      }
+      this.registeredTriggerSlots[triggerSlotIndex] = slot;
+      if (slot != null) {
+        registerTriggerSlot(triggerSlotIndex, slot);
+      }
+      String slotName = slot != null ? slot.getName() : "<< EMPTY >>";
+      verbose("TriggerSlot [" + triggerSlotIndex + "] set to: " + slotName);
+    }
+  }
+
+  private void registerSlot(int slotIndex, Slot<? extends LXDeviceComponent> slot) {
     slot.addListener(this.slotStateListener);
   }
 
-  private void unregisterSlot(int slotIndex, Slot<? extends LXEffect> slot) {
+  private void unregisterSlot(int slotIndex, Slot<? extends LXDeviceComponent> slot) {
     slot.removeListener(this.slotStateListener);
+  }
+
+  private void registerTriggerSlot(int slotIndex, Slot<? extends LXDeviceComponent> slot) {
+    // Placeholder
+  }
+
+  private void unregisterTriggerSlot(int slotIndex, Slot<? extends LXDeviceComponent> slot) {
+    // Placeholder
   }
 
   private final Slot.Listener slotStateListener =
@@ -383,13 +456,13 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
         // Update LED colors when the state of a slot changes
         for (int i = 0; i < MAX_SLOTS; i++) {
           if (registeredSlots[i] == slot) {
-            slotChanged(i);
+            slotStateChanged(i);
             break;
           }
         }
       };
 
-  private void slotChanged(int slotIndex) {
+  private void slotStateChanged(int slotIndex) {
     int padIndex = slotToPadIndex(slotIndex);
     if (padIndex >= 0 && padIndex < NUM_PADS) {
       sendPadColor(padIndex);
@@ -666,24 +739,19 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   private void keyReceived(int note, int keyIndex, boolean on) {
     // Here we could alter behavior for different modes we are trialing.
 
-    // Ignore key release
-    if (!on) {
-      return;
-    }
+    // To use all keys:
+    launch(keyIndex, on);
 
-    // To index using all keys:
-    // launch(keyIndex);
+    // Shift could be used in conjunction w/ keys, ex:
+    // if (shiftOn) { // Do it different }
 
-    // To index only the white keys:
-    for (int i = 0; i < KEYS_WHITE.length; i++) {
+    // To use only the white keys:
+    /* for (int i = 0; i < KEYS_WHITE.length; i++) {
       if (note == KEYS_WHITE[i]) {
         launch(i);
-
-        // Shift could be used in conjunction w/ keys, ex:
-        // if (shiftOn) { // Do it different }
         return;
       }
-    }
+    } */
   }
 
   private void touchStrip1Received(double normalized) {
@@ -715,8 +783,29 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   // Receive Logical Inputs (mapped from physical)
 
   /** Launch, aka run, an effect or variation. */
-  private void launch(int index) {
-    verbose("Launch effect or variation index #: " + index);
+  private void launch(int index, boolean on) {
+    if (index < 0) {
+      throw new IllegalArgumentException("Invalid trigger index: " + index);
+    }
+    if (index >= MAX_TRIGGER_SLOTS) {
+      TE.error("Trigger index exceeds number of trigger slots on MiniLab3: " + index);
+      return;
+    }
+
+    Slot<? extends LXDeviceComponent> slot = this.registeredTriggerSlots[index];
+    if (slot != null) {
+      if (slot.trigger(on)) {
+        // Log only the key press, not key release
+        if (on) {
+          // This will be fun to grep after a show:
+          TE.log("MiniLab3: Launched Trigger " + index + ": " + slot.getName());
+        }
+      } else {
+        verbose("Missing preset or triggerParameter for trigger slot: " + index);
+      }
+    } else {
+      verbose("Unoccupied tigger slot: " + index);
+    }
   }
 
   /** Toggle whether an effect is being edited */
@@ -741,7 +830,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
       return;
     }
 
-    Slot<? extends LXEffect> slot = effectManager.slots.get(slotIndex);
+    Slot<? extends LXDeviceComponent> slot = effectManager.slots.get(slotIndex);
     Slot.State currState = slot.getState();
     if (currState == null) {
       verbose("Current state is null: " + slot.getName());
@@ -749,10 +838,11 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     } else if (currState == Slot.State.EMPTY) {
       verbose("Current state is empty: " + slot.getName());
       return;
-    } else if (slot.effect == null) {
-      throw new IllegalStateException("LXEffect is null, but state is neither EMPTY nor null");
+    } else if (slot.device == null) {
+      throw new IllegalStateException(
+          "LXDeviceComponent is null, but state is neither EMPTY nor null");
     } else {
-      verbose("Current state: " + currState + " for effect: " + slot.effect.getLabel());
+      verbose("Current state: " + currState + " for effect: " + slot.device.getLabel());
     }
 
     slot.getEnabledParameter().toggle();
@@ -770,7 +860,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     if (slotIndex >= effectManager.slots.size()) {
       return;
     }
-    Slot<? extends LXEffect> slot = effectManager.slots.get(slotIndex);
+    Slot<? extends LXDeviceComponent> slot = effectManager.slots.get(slotIndex);
     if (slot == null) {
       return;
     }
@@ -813,7 +903,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   }
 
   private int slotToPadIndex(int slotIndex) {
-    List<Slot<? extends LXEffect>> slots = this.effectManager.slots;
+    List<Slot<? extends LXDeviceComponent>> slots = this.effectManager.slots;
     if (slotIndex < 0) {
       throw new IllegalArgumentException("Slot index is negative: " + slotIndex);
     } else if (slotIndex <= Math.min(3, slots.size())) {
@@ -834,11 +924,11 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     }
   }
 
-  private List<Slot<? extends LXEffect>> allSlots() {
+  private List<Slot<? extends LXDeviceComponent>> allSlots() {
     return effectManager.slots;
   }
 
-  private Slot<? extends LXEffect> getSlot(int index) {
+  private Slot<? extends LXDeviceComponent> getSlot(int index) {
     if (allSlots() == null || index < 0 || index >= allSlots().size()) {
       return null;
     }
@@ -925,8 +1015,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   }
 
   private void sendPadColors() {
-    padVerbose("<<< Sending Pad LEDs >>>");
-
+    // padVerbose("<<< Sending Pad LEDs >>>");
     for (int i = 0; i < NUM_PADS; i++) {
       sendPadColor(i);
     }
@@ -950,7 +1039,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
       // Pad index does not map to a slot
       return PadColor.OFF;
     } else {
-      Slot<? extends LXEffect> slot = this.registeredSlots[slotIndex];
+      Slot<? extends LXDeviceComponent> slot = this.registeredSlots[slotIndex];
 
       // Unoccupied
       if (slot == null) {
@@ -990,9 +1079,9 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     sysex[12] = padColor.bByte;
     sysex[13] = END_SYSEX;
 
-    padVerbose(
-        String.format(
-            "\t\t\t\tSET %02X: (%d,%d,%d)", sysexPadId, padColor.r, padColor.g, padColor.b));
+    /* padVerbose(
+    String.format(
+        "\t\t\t\tSET %02X: (%d,%d,%d)", sysexPadId, padColor.r, padColor.g, padColor.b)); */
 
     sendSysex(sysex);
   }
@@ -1021,13 +1110,13 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
 
   /** Temporary for dev */
   private void verbose(String message) {
-    LXMidiEngine.error(message);
+    LX.error("[MiniLab3] " + message);
   }
 
   private void padVerbose(String message) {
     boolean debugPads = true;
     if (debugPads) {
-      LXMidiEngine.error(message);
+      verbose(message);
     }
   }
 

@@ -23,25 +23,30 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.Tempo;
 import heronarts.lx.color.LXColor;
+import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.LXWaveshape;
 import heronarts.lx.modulator.SawLFO;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.FunctionalParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.ObjectParameter;
+import heronarts.lx.parameter.QuantizedTriggerParameter;
 import heronarts.lx.utils.LXUtils;
 import java.util.ArrayList;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEPanelModel;
 
 @LXCategory("Titanics End")
-public class RandomStrobeEffect extends TEEffect {
+public class RandomStrobeEffect extends TEEffect implements LX.Listener {
 
-  private class Element {
+  private static final String TAG_MOTHERSHIP_WINDOW = "window";
+
+  private abstract class Element {
     protected double offset;
 
     // set this element's time offset for the strobe basis function
@@ -53,18 +58,65 @@ public class RandomStrobeEffect extends TEEffect {
     protected double shiftBasis(double basis) {
       return (basis + offset) % 1;
     }
+
+    protected abstract LXPoint[] getPoints();
   }
 
   private class PanelElement extends Element {
-    public TEPanelModel panel = null;
+    private final TEPanelModel panel;
+
+    private PanelElement(TEPanelModel panel) {
+      this.panel = panel;
+    }
+
+    @Override
+    protected LXPoint[] getPoints() {
+      return this.panel.points;
+    }
   }
 
   private class EdgeElement extends Element {
-    public TEEdgeModel edge = null;
+    private final TEEdgeModel edge;
+
+    private EdgeElement(TEEdgeModel edge) {
+      this.edge = edge;
+    }
+
+    @Override
+    protected LXPoint[] getPoints() {
+      return this.edge.points;
+    }
   }
 
-  private final ArrayList<PanelElement> panelElements = new ArrayList<>();
-  private final ArrayList<EdgeElement> edgeElements = new ArrayList<>();
+  private class ModelElement extends Element {
+    private final LXModel model;
+
+    private ModelElement(LXModel model) {
+      this.model = model;
+    }
+
+    @Override
+    protected LXPoint[] getPoints() {
+      return this.model.points;
+    }
+  }
+
+  private final ArrayList<Element> elements = new ArrayList<>();
+
+  public final QuantizedTriggerParameter launch =
+      new QuantizedTriggerParameter.Launch(lx, "Strobe!", this::start)
+          .setDescription(
+              "Launch the strobe effect. It will run when the next global quantization event is reached.");
+
+  private final String[] runBeatOptions = {"1", "4", "8"};
+  public final DiscreteParameter runBeats =
+      new DiscreteParameter("Run Beats", runBeatOptions, 1)
+          .setDescription("Length of time in beats for the strobe effect to run, in sync mode");
+
+  public final CompoundParameter runTimeMs =
+      new CompoundParameter("RunTime", 2000, 50, 5000)
+          .setUnits(LXParameter.Units.MILLISECONDS_RAW)
+          .setDescription("Length of time in milliseconds for the strobe effect to run");
 
   public final ObjectParameter<LXWaveshape> waveshape =
       new ObjectParameter<LXWaveshape>(
@@ -101,11 +153,11 @@ public class RandomStrobeEffect extends TEEffect {
           .setDescription("Bias of the strobe effect");
 
   public final BooleanParameter tempoSync =
-      new BooleanParameter("Sync", false)
+      new BooleanParameter("Sync", true)
           .setDescription("Whether to sync the tempo to a clock division");
 
   public final EnumParameter<Tempo.Division> tempoDivision =
-      new EnumParameter<Tempo.Division>("Division", Tempo.Division.QUARTER)
+      new EnumParameter<>("Division", Tempo.Division.EIGHTH)
           .setDescription("Which tempo division to use when in sync mode");
 
   public final BoundedParameter tempoPhaseOffset =
@@ -113,6 +165,7 @@ public class RandomStrobeEffect extends TEEffect {
           .setUnits(CompoundParameter.Units.PERCENT_NORMALIZED)
           .setDescription("Shifts the phase of the strobe LFO relative to tempo");
 
+  // Non-tempo  basis
   private final SawLFO basis =
       startModulator(
           new SawLFO(
@@ -127,8 +180,28 @@ public class RandomStrobeEffect extends TEEffect {
                 }
               }));
 
+  private boolean needsModelRefresh = true;
+
+  private boolean isRunning = false;
+  private boolean isRunningTempo = false;
+  private long stopTime;
+  private int elapsedBeats = 0;
+  private int endBeats = 0;
+  private boolean tempoRegistered = false;
+
+  private final Tempo.Listener tempoListener =
+      new Tempo.Listener() {
+        @Override
+        public void onBeat(Tempo tempo, int beat) {
+          ++elapsedBeats;
+        }
+      };
+
   public RandomStrobeEffect(LX lx) {
     super(lx);
+    addParameter("launch", this.launch);
+    addParameter("runBeats", this.runBeats);
+    addParameter("runTimeMs", this.runTimeMs);
     addParameter("speed", this.speed);
     addParameter("depth", this.depth);
     addParameter("bias", this.bias);
@@ -139,28 +212,80 @@ public class RandomStrobeEffect extends TEEffect {
     addParameter("minFrequency", this.minFrequency);
     addParameter("maxFrequency", this.maxFrequency);
 
-    buildElementLists();
+    this.lx.addListener(this);
+  }
+
+  @Override
+  public void modelGenerationChanged(LX lx, LXModel model) {
+    this.needsModelRefresh = true;
   }
 
   public void buildElementLists() {
+    this.elements.clear();
+
     for (TEPanelModel panel : modelTE.getPanels()) {
-      PanelElement pwe = new PanelElement();
-      pwe.panel = panel;
+      PanelElement pwe = new PanelElement(panel);
       pwe.randomizeOffset();
-      this.panelElements.add(pwe);
+      this.elements.add(pwe);
     }
 
     for (TEEdgeModel edge : modelTE.getEdges()) {
-      EdgeElement e = new EdgeElement();
-      e.edge = edge;
+      EdgeElement e = new EdgeElement(edge);
       e.randomizeOffset();
-      this.edgeElements.add(e);
+      this.elements.add(e);
+    }
+
+    for (LXModel mothershipWindow : getModel().sub(TAG_MOTHERSHIP_WINDOW)) {
+      ModelElement element = new ModelElement(mothershipWindow);
+      element.randomizeOffset();
+      this.elements.add(element);
     }
   }
 
   @Override
   protected void onEnable() {
     this.basis.setBasis(0).start();
+  }
+
+  private long now() {
+    return System.currentTimeMillis();
+  }
+
+  private void start() {
+    // Initialize run variables from parameters
+    this.isRunning = true;
+    this.isRunningTempo = this.tempoSync.isOn();
+    this.stopTime = now() + (long) (this.runTimeMs.getValue());
+    this.elapsedBeats = 0;
+    this.endBeats = Integer.parseInt(this.runBeats.getOption()) + 1;
+
+    // Register tempo if needed
+    if (this.isRunningTempo && !this.tempoRegistered) {
+      this.tempoRegistered = true;
+      this.lx.engine.tempo.addListener(this.tempoListener);
+    }
+
+    // Randomize element offsets
+    for (Element element : this.elements) {
+      element.randomizeOffset();
+    }
+  }
+
+  /** Determine if the strobe is finished. Only called while strobe is running. */
+  private boolean isFinished() {
+    if (this.isRunningTempo) {
+      return this.elapsedBeats >= this.endBeats;
+    } else {
+      return now() > this.stopTime;
+    }
+  }
+
+  private void stop() {
+    this.isRunning = false;
+    if (this.tempoRegistered) {
+      this.tempoRegistered = false;
+      this.lx.engine.tempo.removeListener(this.tempoListener);
+    }
   }
 
   public float compute(double basis, boolean useBaseValue) {
@@ -181,40 +306,35 @@ public class RandomStrobeEffect extends TEEffect {
 
   @Override
   public void run(double deltaMs, double enabledAmount) {
+    if (!this.isRunning) {
+      return;
+    }
+    if (isFinished()) {
+      stop();
+      return;
+    }
+
+    if (this.needsModelRefresh) {
+      buildElementLists();
+      this.needsModelRefresh = false;
+    }
+
     float amt = (float) enabledAmount * this.depth.getValuef();
 
-    if (amt > 0 && this.speed.getValue() > 0) {
+    if (amt > 0) {
       double strobeBasis = this.tempoSync.isOn() ? getTempoBasis() : this.basis.getValue();
 
-      // each panel and edge has its own strobe basis, shifted by a random time offset
-      // draw the panels
-      for (PanelElement pe : this.panelElements) {
-        double elementBasis = pe.shiftBasis(strobeBasis);
+      // Each fixture has its own strobe basis, shifted by a random time offset
+      for (Element element : this.elements) {
+        double elementBasis = element.shiftBasis(strobeBasis);
         float strobe = LXUtils.lerpf(1, compute(elementBasis, false), (float) enabledAmount);
         if (elementBasis <= 1) {
           if (elementBasis <= 0) {
             setColors(LXColor.BLACK);
-            pe.randomizeOffset();
+            element.randomizeOffset();
           } else {
             int src = LXColor.gray(100 * strobe);
-            for (LXPoint p : pe.panel.points) {
-              this.colors[p.index] = LXColor.multiply(this.colors[p.index], src, 0xFF);
-            }
-          }
-        }
-      }
-
-      // draw the edges
-      for (EdgeElement e : this.edgeElements) {
-        double elementBasis = e.shiftBasis(strobeBasis);
-        float strobe = LXUtils.lerpf(1, compute(elementBasis, false), (float) enabledAmount);
-        if (elementBasis <= 1) {
-          if (elementBasis <= 0) {
-            setColors(LXColor.BLACK);
-            e.randomizeOffset();
-          } else {
-            int src = LXColor.gray(100 * strobe);
-            for (LXPoint p : e.edge.points) {
+            for (LXPoint p : element.getPoints()) {
               this.colors[p.index] = LXColor.multiply(this.colors[p.index], src, 0xFF);
             }
           }
@@ -223,21 +343,15 @@ public class RandomStrobeEffect extends TEEffect {
     }
   }
 
-  /*
-   * To be called when the model changes. Not working for now b/c
-   * the Chromatik view system doesn't seem to want to return a working
-   * partial TEWholeModel with panel and edge information.
-   * (Works fine if you're just using model.points though.)
-   * TODO - figure out how to get this working for real.
-
   @Override
-  public void onModelChanged(LXModel model) {
-      super.onModelChanged(model);
-      this.modelTE = (TEWholeModel) this.getModelView();
-      this.panelElements.clear();
-      this.edgeElements.clear();
-      buildElementLists();
-  }
-  */
+  public void dispose() {
+    // Remove tempo listener
+    if (this.isRunning) {
+      stop();
+    }
+    // Remove model listener
+    this.lx.removeListener(this);
 
+    super.dispose();
+  }
 }

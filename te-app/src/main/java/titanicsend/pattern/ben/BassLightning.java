@@ -8,6 +8,7 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.parameter.TriggerParameter;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
@@ -187,9 +188,8 @@ public class BassLightning extends TEAudioPattern implements UIDeviceControls<Ba
       new BooleanParameter("On Beat", false).setDescription("Trigger on each beat");
   public final BooleanParameter onBassParam =
       new BooleanParameter("On Bass", false).setDescription("Trigger on audio bass");
-  public final BooleanParameter trigger =
-      new BooleanParameter("Trigger", false)
-          .setMode(BooleanParameter.Mode.MOMENTARY)
+  public final TriggerParameter trigger =
+      new TriggerParameter("Trigger", this::makeBolt)
           .setDescription("Trigger a bolt of lightning manually");
   public final BooleanParameter allowLoopsParam =
       new BooleanParameter("Loops", true)
@@ -220,13 +220,6 @@ public class BassLightning extends TEAudioPattern implements UIDeviceControls<Ba
     double r = Math.random();
     return r * r * delayParam.getValue();
     //		return 0;
-  }
-
-  @Override
-  public void onParameterChanged(LXParameter p) {
-    if (p == this.trigger && p.getValue() > 0.5) {
-      makeBolt();
-    }
   }
 
   private void makeBolt() {

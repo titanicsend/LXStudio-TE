@@ -60,6 +60,7 @@ import titanicsend.app.director.Director;
 import titanicsend.app.director.DirectorEffect;
 import titanicsend.app.director.UIDirector;
 import titanicsend.app.effectmgr.GlobalEffectManager;
+import titanicsend.app.effectmgr.TEGlobalEffects;
 import titanicsend.audio.AudioStemModulator;
 import titanicsend.audio.AudioStems;
 import titanicsend.audio.AudioStemsPlugin;
@@ -81,6 +82,7 @@ import titanicsend.effect.EdgeSieveEffect;
 import titanicsend.effect.ExplodeEffect;
 import titanicsend.effect.GlobalPatternControlEffect;
 import titanicsend.effect.RandomStrobeEffect;
+import titanicsend.effect.ShakeEffect;
 import titanicsend.effect.SimplifyEffect;
 import titanicsend.effect.SustainEffect;
 import titanicsend.gamepad.GamepadEngine;
@@ -199,6 +201,7 @@ import titanicsend.ui.UITEColorControl;
 import titanicsend.ui.UITEPerformancePattern;
 import titanicsend.ui.color.UIColorPaletteManagerSection;
 import titanicsend.ui.effect.UIRandomStrobeEffect;
+import titanicsend.ui.effect.UIShakeEffect;
 import titanicsend.ui.modulator.UIDmx16bitModulator;
 import titanicsend.ui.modulator.UIDmxDualRangeModulator;
 import titanicsend.ui.modulator.UIDmxGridModulator;
@@ -291,6 +294,7 @@ public class TEApp extends LXStudio {
       this.presetEngine.openFile(lx.getMediaFile("Presets/UserPresets/BM24.userPresets"));
       this.effectManager = new GlobalEffectManager(lx);
       lx.engine.registerComponent("effectManager", this.effectManager);
+      TEGlobalEffects.allocateSlots();
 
       // Super Modulator midi controller
       this.superMod = new SuperMod(lx);
@@ -308,6 +312,10 @@ public class TEApp extends LXStudio {
       }
 
       new TEGradientSource(lx);
+
+      // Initialize Resolume gradient publisher (logs palette color changes for now)
+      lx.engine.registerComponent(
+          "resolumePalette", new titanicsend.osc.TEResolumeGradientPublisher(lx));
 
       // JKB Autopilot
       // lx.engine.registerComponent("autopilot", this.autopilotJKB = new AutopilotExample(lx));
@@ -424,6 +432,7 @@ public class TEApp extends LXStudio {
       lx.registry.addEffect(DistortEffect.class);
       lx.registry.addEffect(EdgeSieveEffect.class);
       lx.registry.addEffect(ExplodeEffect.class);
+      lx.registry.addEffect(ShakeEffect.class);
       lx.registry.addEffect(SimplifyEffect.class);
       lx.registry.addEffect(SustainEffect.class);
       lx.registry.addEffect(RandomStrobeEffect.class);
@@ -534,6 +543,7 @@ public class TEApp extends LXStudio {
       if (lx instanceof LXStudio) {
         // UI: Effects
         ((LXStudio.Registry) lx.registry).addUIDeviceControls(UIRandomStrobeEffect.class);
+        ((LXStudio.Registry) lx.registry).addUIDeviceControls(UIShakeEffect.class);
 
         // UI: Modulators
         ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmx16bitModulator.class);
