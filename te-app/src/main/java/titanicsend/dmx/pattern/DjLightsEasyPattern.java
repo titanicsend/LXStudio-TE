@@ -6,7 +6,6 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.BooleanParameter.Mode;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.DiscreteParameter;
-import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.studio.LXStudio.UI;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
@@ -60,20 +59,15 @@ public class DjLightsEasyPattern extends DjLightsPattern
 
     this.dimmer.setNormalized(.5);
 
-    this.setCustomRemoteControls(
-        new LXListenableNormalizedParameter[] {
-          this.pan,
-          this.tilt,
-          this.strobeSpeed,
-          this.strobe,
-          this.linkedColor.offset,
-          this.linkedColor.hue,
-          this.linkedColor.saturation,
-          this.linkedColor.brightness,
-          this.dimmer,
-          this.focus,
-          this.mirror
-        });
+    this.setRemoteControls(
+        this.pan,
+        this.tilt,
+        this.strobeSpeed,
+        this.strobe,
+        this.linkedColor.offset,
+        this.dimmer,
+        this.focus,
+        this.mirror);
   }
 
   @Override

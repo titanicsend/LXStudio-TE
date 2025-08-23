@@ -4,7 +4,6 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.CompoundParameter;
-import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.studio.LXStudio.UI;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
@@ -29,6 +28,7 @@ public class DjLightsShowPattern extends DjLightsPattern
   // Use TEColorParameter for full palette/swatch integration
   public final TEColorParameter color;
 
+  // Allow desaturation from TE color which is often full-saturation
   public final CompoundParameter saturation =
       new CompoundParameter("Saturation", 1.0)
           .setDescription("Additional saturation adjustment (0=grayscale, 1=full color)");
@@ -40,7 +40,11 @@ public class DjLightsShowPattern extends DjLightsPattern
     addParameter("pan", this.pan);
     addParameter("tilt", this.tilt);
     addParameter("focus", this.focus);
+
+    // JKB note: how about using "Dimmer" instead of brightness? It's a DMX channel on the fixture.
+    // Like this: addParameter("dimmer", this.dimmer);
     addParameter("brightness", this.brightness);
+
     addParameter(
         "color",
         this.color =
@@ -52,18 +56,14 @@ public class DjLightsShowPattern extends DjLightsPattern
     this.focus.setValue(0.5);
 
     // Configure remote controls for MIDI/OSC mapping
-    this.setCustomRemoteControls(
-        new LXListenableNormalizedParameter[] {
-          this.pan,
-          this.tilt,
-          this.focus,
-          this.brightness,
-          this.color.offset,
-          this.color.hue,
-          this.color.saturation,
-          this.color.brightness,
-          this.saturation
-        });
+    this.setRemoteControls(
+        this.pan,
+        this.tilt,
+        this.focus,
+        this.brightness,
+        this.color.colorSource,
+        this.color.offset,
+        this.saturation);
   }
 
   /**
@@ -120,13 +120,14 @@ public class DjLightsShowPattern extends DjLightsPattern
     double panValue = this.pan.getNormalized();
     double tiltValue = this.tilt.getNormalized();
     double focusValue = this.focus.getNormalized();
+    // JKB note: use AdjStealth's Dimmer parameter instead?
     double brightnessValue = this.brightness.getNormalized();
     double saturationValue = this.saturation.getNormalized();
 
     // Get color from TEColorParameter which handles palette/swatch integration
     int baseColor = this.color.calcColor();
 
-    // Apply saturation adjustment
+    // Apply saturation adjustment (can further de-saturate the TE color)
     int adjustedColor = applySaturation(baseColor, saturationValue);
 
     // Convert to RGBW with brightness applied
