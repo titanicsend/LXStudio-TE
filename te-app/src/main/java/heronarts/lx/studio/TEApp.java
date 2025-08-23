@@ -168,6 +168,7 @@ import titanicsend.pattern.mike.Checkers;
 import titanicsend.pattern.mike.EdgeRunner;
 import titanicsend.pattern.mike.ModelDebugger;
 import titanicsend.pattern.piemonte.Afterglow;
+import titanicsend.pattern.piemonte.BratBurner;
 import titanicsend.pattern.piemonte.CandyFlip;
 import titanicsend.pattern.piemonte.EdgeGlitch;
 import titanicsend.pattern.piemonte.FaceMelt;
@@ -392,6 +393,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(IceGlint.class);
       lx.registry.addPattern(FaceMelt.class);
       lx.registry.addPattern(CandyFlip.class);
+      lx.registry.addPattern(BratBurner.class);
       lx.registry.addPattern(Afterglow.class);
       lx.registry.addPattern(EdgeGlitch.class);
       lx.registry.addPattern(SpecialKube.class);
