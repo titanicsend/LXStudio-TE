@@ -82,6 +82,7 @@ import titanicsend.effect.EdgeSieveEffect;
 import titanicsend.effect.ExplodeEffect;
 import titanicsend.effect.GlobalPatternControlEffect;
 import titanicsend.effect.RandomStrobeEffect;
+import titanicsend.effect.ShakeEffect;
 import titanicsend.effect.SimplifyEffect;
 import titanicsend.effect.SustainEffect;
 import titanicsend.gamepad.GamepadEngine;
@@ -200,6 +201,7 @@ import titanicsend.ui.UITEColorControl;
 import titanicsend.ui.UITEPerformancePattern;
 import titanicsend.ui.color.UIColorPaletteManagerSection;
 import titanicsend.ui.effect.UIRandomStrobeEffect;
+import titanicsend.ui.effect.UIShakeEffect;
 import titanicsend.ui.modulator.UIDmx16bitModulator;
 import titanicsend.ui.modulator.UIDmxDualRangeModulator;
 import titanicsend.ui.modulator.UIDmxGridModulator;
@@ -430,6 +432,7 @@ public class TEApp extends LXStudio {
       lx.registry.addEffect(DistortEffect.class);
       lx.registry.addEffect(EdgeSieveEffect.class);
       lx.registry.addEffect(ExplodeEffect.class);
+      lx.registry.addEffect(ShakeEffect.class);
       lx.registry.addEffect(SimplifyEffect.class);
       lx.registry.addEffect(SustainEffect.class);
       lx.registry.addEffect(RandomStrobeEffect.class);
@@ -540,6 +543,7 @@ public class TEApp extends LXStudio {
       if (lx instanceof LXStudio) {
         // UI: Effects
         ((LXStudio.Registry) lx.registry).addUIDeviceControls(UIRandomStrobeEffect.class);
+        ((LXStudio.Registry) lx.registry).addUIDeviceControls(UIShakeEffect.class);
 
         // UI: Modulators
         ((LXStudio.Registry) lx.registry).addUIModulatorControls(UIDmx16bitModulator.class);
