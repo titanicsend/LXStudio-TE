@@ -83,6 +83,6 @@ public class BeaconEasyPattern extends BeaconPattern
 
   @Override
   public void buildDeviceControls(UI ui, UIDevice uiDevice, BeaconEasyPattern device) {
-    UIUtils.buildMftStyleDeviceControls(ui, uiDevice, device);
+    UIUtils.buildTEDeviceControls(ui, uiDevice, device);
   }
 }

@@ -6,7 +6,6 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.BooleanParameter.Mode;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.DiscreteParameter;
-import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.studio.LXStudio.UI;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
@@ -42,7 +41,8 @@ public class DjLightsEasyPattern extends DjLightsPattern
           .setWrappable(false)
           .setDescription("Strobe Speed");
 
-  public final TEColorParameter linkedColor;
+  public final TEColorParameter colorL;
+  public final TEColorParameter colorR;
 
   public DjLightsEasyPattern(LX lx) {
     super(lx);
@@ -51,29 +51,24 @@ public class DjLightsEasyPattern extends DjLightsPattern
     addParameter("tilt", this.tilt);
     addParameter("strobeSpeed", this.strobeSpeed);
     addParameter("strobe", this.strobe);
-    addParameter("color", this.linkedColor = new TEColorParameter("Color"));
+    addParameter("colorL", this.colorL = new TEColorParameter("ColorL"));
+    addParameter("colorR", this.colorR = new TEColorParameter("ColorR"));
     addParameter("dimmer", this.dimmer);
     addParameter("focus", this.focus);
     addParameter("mirror", this.mirror);
 
-    // linkedColor.mode.setValue(LinkedColorParameter.Mode.PALETTE);
-
     this.dimmer.setNormalized(.5);
 
-    this.setCustomRemoteControls(
-        new LXListenableNormalizedParameter[] {
-          this.pan,
-          this.tilt,
-          this.strobeSpeed,
-          this.strobe,
-          this.linkedColor.offset,
-          this.linkedColor.hue,
-          this.linkedColor.saturation,
-          this.linkedColor.brightness,
-          this.dimmer,
-          this.focus,
-          this.mirror
-        });
+    this.setRemoteControls(
+        this.pan,
+        this.tilt,
+        this.strobeSpeed,
+        this.strobe,
+        this.colorL.offset,
+        this.colorR.offset,
+        this.dimmer,
+        this.focus,
+        this.mirror);
   }
 
   @Override
@@ -86,18 +81,24 @@ public class DjLightsEasyPattern extends DjLightsPattern
     double dimmer = this.dimmer.getNormalized();
     double focus = this.focus.getNormalized();
 
-    int color = this.linkedColor.calcColor();
-    int r = ((color >> 16) & 0xff);
-    int g = ((color >> 8) & 0xff);
-    int b = (color & 0xff);
-    int w = (r < g) ? ((r < b) ? r : b) : ((g < b) ? g : b);
-    r -= w;
-    g -= w;
-    b -= w;
-
     int i = 0;
     for (DmxModel d : this.modelTE.getDjLights()) {
       if (d instanceof AdjStealthModel) {
+
+        // Determine Left or Right DJ light by checking fixture tags
+        boolean isRight = d.model.tags.contains("right");
+
+        // Use color from the Left or Right parameter
+        int color = isRight ? this.colorR.calcColor() : this.colorL.calcColor();
+        int r = ((color >> 16) & 0xff);
+        int g = ((color >> 8) & 0xff);
+        int b = (color & 0xff);
+        int w = (r < g) ? ((r < b) ? r : b) : ((g < b) ? g : b);
+        r -= w;
+        g -= w;
+        b -= w;
+
+        // Optionally mirror every other light. Or just set it on the hardware fixture.
         if (mirror && i++ % 2 == 1) {
           setDmxNormalized(d, AdjStealthModel.INDEX_PAN, 1 - pan);
         } else {
@@ -117,6 +118,9 @@ public class DjLightsEasyPattern extends DjLightsPattern
         }
         setDmxNormalized(d, AdjStealthModel.INDEX_FOCUS, focus);
 
+        // Scale the screen color by the dimmer amount?
+        // color = LXColor.scaleBrightness(color, dimmer);
+
         // Mirror the DMX fixture's color to the LXPoint that represents it on the screen
         setColor(d.model, color);
       }
@@ -125,6 +129,6 @@ public class DjLightsEasyPattern extends DjLightsPattern
 
   @Override
   public void buildDeviceControls(UI ui, UIDevice uiDevice, DjLightsEasyPattern device) {
-    UIUtils.buildMftStyleDeviceControls(ui, uiDevice, device);
+    UIUtils.buildTEDeviceControls(ui, uiDevice, device);
   }
 }

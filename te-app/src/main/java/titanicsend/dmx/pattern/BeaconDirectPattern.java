@@ -104,6 +104,6 @@ public class BeaconDirectPattern extends BeaconPattern
 
   @Override
   public void buildDeviceControls(UI ui, UIDevice uiDevice, BeaconDirectPattern device) {
-    UIUtils.buildMftStyleDeviceControls(ui, uiDevice, device);
+    UIUtils.buildTEDeviceControls(ui, uiDevice, device);
   }
 }
