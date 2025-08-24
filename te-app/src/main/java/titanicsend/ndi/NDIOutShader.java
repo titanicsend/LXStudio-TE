@@ -198,8 +198,8 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
    * @param model Current LXModel of the calling context, which is a LXView or the global model
    */
   public void setModelCoordinates(LXModel model) {
-    this.modelCoordsTextureHandle = this.glEngine.textureCache.getCoordinatesTexture(model);
-    this.modelIndexTextureHandle = this.glEngine.textureCache.getIndexMapTexture(model);
+    this.modelCoordsTextureHandle = this.glEngine.textureCache.getModelCoordsTexture(model);
+    this.modelIndexTextureHandle = this.glEngine.textureCache.getModelIndexTexture(model);
   }
 
   @Override
