@@ -10431,7 +10431,7 @@
       "jsonFixtureType": "TE/edge/Edge98-99",
       "jsonParameters": {
         "points": 159,
-        "host": "10.7.2.10",
+        "host": "10.7.101.24",
         "output": 3,
         "ledOffset": 165,
         "artnetSequence": false,
@@ -10517,7 +10517,7 @@
       "jsonFixtureType": "TE/edge/Edge99-100",
       "jsonParameters": {
         "points": 165,
-        "host": "10.7.2.10",
+        "host": "10.7.101.24",
         "output": 3,
         "ledOffset": 0,
         "artnetSequence": false,
