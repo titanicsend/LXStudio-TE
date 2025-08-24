@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.1-SNAPSHOT",
-  "timestamp": 1756019333670,
+  "timestamp": 1756023025159,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -1222,11 +1222,11 @@
         "jsonParameters": {
           "xOffset": 9.903098106384277,
           "yOffset": 6.0,
-          "strand1host": "10.7.100.17",
+          "strand1host": "10.7.101.23",
           "strand1output": 1,
-          "strand2host": "10.7.100.17",
+          "strand2host": "10.7.101.23",
           "strand2output": 2,
-          "strand3host": "10.7.100.17",
+          "strand3host": "10.7.101.23",
           "strand3output": 3,
           "artnetSequence": false,
           "showBacking": true,
@@ -1780,13 +1780,13 @@
         "jsonParameters": {
           "xOffset": 8.61209774017334,
           "yOffset": 6.0,
-          "strand1host": "10.7.2.22",
+          "strand1host": "10.7.101.33",
           "strand1output": 1,
-          "strand2host": "10.7.2.22",
+          "strand2host": "10.7.101.33",
           "strand2output": 3,
-          "strand3host": "10.7.2.22",
+          "strand3host": "10.7.101.33",
           "strand3output": 2,
-          "strand4host": "10.7.2.22",
+          "strand4host": "10.7.101.33",
           "strand4output": 4,
           "strand5host": "10.7.2.23",
           "strand5output": 4,
@@ -8011,7 +8011,7 @@
         "jsonFixtureType": "TE/edge/Edge60-125",
         "jsonParameters": {
           "points": 158,
-          "host": "10.7.100.1",
+          "host": "10.7.101.29",
           "output": 1,
           "ledOffset": 249,
           "artnetSequence": false,
@@ -10204,8 +10204,8 @@
         "jsonFixtureType": "TE/edge/Edge89-126",
         "jsonParameters": {
           "points": 145,
-          "host": "10.7.100.1",
-          "output": 4,
+          "host": "10.7.101.29",
+          "output": 1,
           "ledOffset": 0,
           "artnetSequence": false,
           "reverse": false,
@@ -10231,7 +10231,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": true,
+          "selected": false,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -10634,7 +10634,7 @@
         "jsonFixtureType": "TE/edge/Edge98-99",
         "jsonParameters": {
           "points": 159,
-          "host": "10.7.2.10",
+          "host": "10.7.101.24",
           "output": 3,
           "ledOffset": 165,
           "artnetSequence": false,
@@ -10720,7 +10720,7 @@
         "jsonFixtureType": "TE/edge/Edge99-100",
         "jsonParameters": {
           "points": 165,
-          "host": "10.7.2.10",
+          "host": "10.7.101.24",
           "output": 3,
           "ledOffset": 0,
           "artnetSequence": false,
@@ -12010,7 +12010,7 @@
         "jsonFixtureType": "TE/edge/Edge125-126",
         "jsonParameters": {
           "points": 104,
-          "host": "10.7.100.1",
+          "host": "10.7.101.29",
           "output": 1,
           "ledOffset": 145,
           "artnetSequence": false,
@@ -12166,7 +12166,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": false,
+          "selected": true,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -23876,12 +23876,12 @@
         "animation": false,
         "camera": {
           "active": false,
-          "radius": 549.4168997970658,
-          "theta": 353.2898949496448,
-          "phi": -10.829915976850316,
-          "x": -102.92623985318642,
-          "y": 211.37036163383164,
-          "z": 47.90373720024945
+          "radius": 324.5547559169947,
+          "theta": 352.70857113972306,
+          "phi": -16.213686427799985,
+          "x": -146.18841874638747,
+          "y": 162.3188736217562,
+          "z": 73.75062559248181
         },
         "cue": [
           {
